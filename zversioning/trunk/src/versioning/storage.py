@@ -29,6 +29,7 @@ from zope.app.uniqueid.interfaces import IUniqueIdUtility
 
 from versioning.interfaces import IVersionHistory
 from versioning.interfaces import IHistoryStorage
+from versioning.interfaces import IVersion
 from versioning.interfaces import ICheckoutAware
 
 
@@ -39,7 +40,7 @@ class VersionHistory(Folder) :
     
     implements(IVersionHistory, INameChooser)
     
-    def checkName(self, name, object):
+    def checkName(self, name, obj):
         """Check whether an object name is valid.
 
         Raise a user error if the name is not valid.
@@ -47,7 +48,7 @@ class VersionHistory(Folder) :
         raise UserError("versions cannot be named by the user.")
         
 
-    def chooseName(self, name, object):
+    def chooseName(self, name, obj):
         """Choose a unique valid name for the object
 
         The given name and object may be taken into account when
@@ -56,8 +57,15 @@ class VersionHistory(Folder) :
         """
         return "%03d" % (len(self)+1)
           
-      
+    # del verbieten
     
+    def __setitem__(self, key, obj):
+        """
+        """
+        info = IVersion(obj)
+        super(VersionHistory, self).__setitem__(key, info)
+         
+         
          
 class SimpleHistoryStorage(Folder) :
     """
@@ -120,19 +128,55 @@ class SimpleHistoryStorage(Folder) :
         return history
 
 
+class Version(object) :
+    """An adapter for versionable data. 
+    """
+    
+    implements(IVersion)
+    
+    __parent__ = __name__ = None
+    
+    def __init__(self, obj):
+        self.obj = obj
+        self.time = datetime.now()
+    
+    def getData(self):
+        return self.obj
+        
+    def getTimestamp(self):
+        return self.time
+    
+    def getLabel(self):
+        return self.__name__
+    
+    def getName(self):
+        return 'Version %d' % int(self.getLabel())
+        
+        
+    def getComment(self):
+        return 'no comment'
+    
+    def getPrincipal(self):
+        raise NotImplementedError
+    
+    data = property(getData)
+    timestamp = property(getTimestamp)
+    label = property(getLabel)
+    name = property(getName)
+    
+    comment = property(getComment)
+    principal = property(getPrincipal)
+
+
+
 class DefaultCheckoutAware(object):
     """Default checkout and checkin aware storage extension.
     
-    Use this for IHistoryStorage components beeing unable to store checkin
-    and checkout information.
+    Restrictions:
     
-    XXX Should 'DefaultCheckoutAware' live here?
-    
-    XXX CAUTION! If currently a checked out object gets deleted
-    the counter doesn't get decremented! We should
-    
-    Asserts IContained (the same object can not live in different
-    locations).
+        Asserts IContained (the same object can not live in different
+        locations). If currently a checked out object gets deleted
+        the counter doesn't get decremented! 
     """
     
     implements(ICheckoutAware)

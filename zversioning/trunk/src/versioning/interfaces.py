@@ -38,7 +38,7 @@ used backend generates its own versions.
 import persistent, zope
 from zope.interface import Interface, Attribute
 
-from zope.app.container.interfaces import INameChooser
+from zope.app.container.interfaces import INameChooser, IContained
 from zope.app.uniqueid.interfaces import IReference
 
 
@@ -226,32 +226,26 @@ class ITicket(Interface) :
     """
 
 
-class IVersionableData(Interface) :
-    """ An adapter for versionable data. """
+class IVersion(IContained) :
+    """ Versions are snapshots of data that change over time. 
+        This interface defines some basic methods each version should 
+        fullfill.
+    """
     
     data = Attribute("A read only reference to the versioned data.")
     
-    ticket = Attribute("A read only ticket that is associated with "
-                       "IVersionableData.")
-        
     timestamp = Attribute("The read onyl timestamp when the version "
                          "was stored to the repository")
 
     principal = Attribute("The read only actor of the store action.")
     
-
-class IVersion(IVersionableData):
-    """ Versions are snapshots of data that change over time. 
-        This interface defines some basic methods each version should 
-        fullfill.
-    """
-
     label = Attribute("Short read only string encoding version information.")
     
     name = Attribute("User readable read only string encoding version "
                      "information.")
     
     comment = Attribute("Read only user defined comment.")
+    
     
 class IVersionNode(IVersion):
     """In group situations there can be parallel versions that must be 
@@ -318,13 +312,20 @@ class IHistoryStorage(Interface) : # IHistoriesStorage?
         """Returns the whole metadata history of the objects aspects.
         """
 
+
 class IVersionable(IReference):
     """Version control is allowed for objects that provide this."""
 
-   
+class IVersioned(IVersionable):
+    """Version control is in effect for this object."""
+
+
+
 class IMultiClientStorage(Interface) : 
     """ if the repository allows several ways to
     create versions and not only reacts to Zope calls.
+    
+    XXX Not yet landed.
     """
 
     def triggerEvents(ticket=None) :
@@ -338,13 +339,6 @@ class IMultiClientStorage(Interface) :
         If ticket is None all changes should be described.   
         """
 
-
-class IVersionable(persistent.interfaces.IPersistent,
-                   zope.app.annotation.interfaces.IAnnotatable):
-    """Version control is allowed for objects that provide this."""
-
-class IVersioned(IVersionable):
-    """Version control is in effect for this object."""
 
 
 # XXX describe generated events here

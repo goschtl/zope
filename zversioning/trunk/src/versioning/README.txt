@@ -164,6 +164,10 @@ can be used with the same storage:
   ...                      interfaces.ICopyModifyMergeRepository,
   ...                      repository.CheckoutCheckinRepository)
 
+  >>> ztapi.provideAdapter(None,
+  ...                      interfaces.IVersion,
+  ...                      storage.Version)
+
 
 Now we adapt our history storage to the chosen repository strategy:
 
@@ -229,3 +233,9 @@ We have a look if the version history grows with a checkin:
   
   >>> len(repo.listVersions(sample))
   2
+
+  >>> [v.label for v in repo.listVersions(sample)]
+  [u'001', u'002']
+
+  >>> [v.name for v in repo.listVersions(sample)]
+  ['Version 1', 'Version 2']
