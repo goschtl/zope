@@ -9,6 +9,7 @@ zodbcode              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zodbcode
 zope                  svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
 zope.app              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app
 zope.app.container    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/container
+zope.app.mail         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/mail
 zope.app.presentation svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/presentation
 zope.app.sqlscript    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/sqlscript
 zope.cachedescriptors svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/cachedescriptors
@@ -31,6 +32,7 @@ zope.tal              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/tal
 zope.tales            svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/tales
 zope.testing          svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/testing
 zope.thread           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/thread
+zope.xmlpickle        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/xmlpickle
 
 # These packages are copied from the ZConfig, zdaemon, and ZODB projects:
 #
