@@ -22,7 +22,6 @@ $Id$
 from transaction import get_transaction
 from zope.app.publication.zopepublication import ZopePublication
 from zope.interface import implements
-from zope.proxy import removeAllProxies
 from zope.component.exceptions import ComponentLookupError
 
 from zope.app import zapi
@@ -98,7 +97,6 @@ class BootstrapSubscriberBase(object):
             return None
         name = object_name
         obj = object_factory()
-        obj = removeAllProxies(obj)
         package[name] = obj
         return name
 
@@ -184,7 +182,6 @@ def addService(root_folder, service_type, service_factory, **kw):
     package = getServiceManagerDefault(root_folder)
     chooser = INameChooser(package)
     service = service_factory()
-    service = removeAllProxies(service)
     name = chooser.chooseName(service_type, service)
     package[name] = service
 
