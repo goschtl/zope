@@ -13,5 +13,7 @@
 ##############################################################################
 """LDAPAdapter packages.
 
-$Id: $
+$Id$
 """
+
+from utility import LDAPAdapter
