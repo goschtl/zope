@@ -27,6 +27,9 @@ Test harness.
     Unfortunately, the debug harness doesn't print the name of the
     test, so Use With Care.
 
+-D  debugger
+    Works like -d, except that it loads pdb when an exception occurs.
+
 -v  verbose
     With one -v, unittest prints a dot (".") for each test run.  With
     -vv, unittest prints the name of each test (for some definition of
@@ -94,6 +97,7 @@ Extreme (yet useful) examples:
 """
 
 import os
+import pdb
 import re
 import sys
 import traceback
@@ -279,7 +283,13 @@ def runner(files, test_filter, debug):
         if test_filter is not None:
             s = filter_testcases(s, test_filter)
         suite.addTest(s)
-    r = runner.run(suite)
+    try:
+        r = runner.run(suite)
+    except:
+        if debugger:
+            pdb.post_mortem(sys.exc_info()[2])
+        else:
+            raise
 
 def remove_stale_bytecode(arg, dirname, names):
     names = map(os.path.normcase, names)
@@ -317,6 +327,7 @@ def process_args(argv=None):
     global LOOP
     global GUI
     global debug
+    global debugger
     global build
     global gcthresh
 
@@ -326,12 +337,13 @@ def process_args(argv=None):
     LOOP = 0
     GUI = 0
     debug = 0 # Don't collect test results; simply let tests crash
+    debugger = 0
     build = 0
     gcthresh = None
     gcflags = []
 
     try:
-        opts, args = getopt.getopt(argv[1:], 'vdLbhCumg:G:', ['help'])
+        opts, args = getopt.getopt(argv[1:], 'vdDLbhCumg:G:', ['help'])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -340,9 +352,11 @@ def process_args(argv=None):
     for k, v in opts:
         if k == '-v':
             VERBOSE += 1
-
         elif k == '-d':
             debug = 1
+        elif k == '-D':
+            debug = 1
+            debugger = 1
         elif k == '-L':
             LOOP = 1
         elif k == '-b':
