@@ -21,9 +21,8 @@ from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 
-__metaclass__ = type
 
-class MetaDataEdit:
+class MetaDataEdit(object):
     """Provide view for editing basic dublin-core meta-data."""
 
     def edit(self):
@@ -33,8 +32,8 @@ class MetaDataEdit:
         message=''
 
         if 'dctitle' in request:
-            dc.title = request['dctitle']
-            dc.description = request['dcdescription']
+            dc.title = unicode(request['dctitle'])
+            dc.description = unicode(request['dcdescription'])
             notify(ObjectAnnotationsModifiedEvent(self.context))
             message = _("Changed data ${datetime}")
             message.mapping = {'datetime': formatter.format(datetime.utcnow())}
