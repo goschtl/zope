@@ -13,14 +13,14 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: package.py,v 1.4 2003/03/19 19:57:31 alga Exp $
+$Id: package.py,v 1.5 2003/03/21 21:06:26 jim Exp $
 """
 
 __metaclass__ = type
 
 from zope.app.component.nextservice import getNextServiceManager
 from zope.app.container.btree import BTreeContainer
-from zope.app.services.configurationmanager import ConfigurationManager
+from zope.app.services.configuration import ConfigurationManager
 from zope.app.traversing import getPath
 
 from zope.proxy.context import ContextMethod

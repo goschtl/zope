@@ -13,7 +13,7 @@
 ##############################################################################
 """View package.
 
-$Id: viewpackage.py,v 1.8 2003/03/19 19:57:31 alga Exp $
+$Id: viewpackage.py,v 1.9 2003/03/21 21:06:26 jim Exp $
 """
 __metaclass__ = type
 
@@ -24,8 +24,7 @@ from zope.app.traversing import getPath, traverse
 from zope.proxy.context import getItem, getAttr
 from zope.proxy.context import ContextMethod
 from zope.app.interfaces.services.configuration import Active
-from zope.app.services.configurationmanager \
-     import ConfigurationManager
+from zope.app.services.configuration import ConfigurationManager
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.proxy.introspection import removeAllProxies
 from zope.app.services.view import PageConfiguration

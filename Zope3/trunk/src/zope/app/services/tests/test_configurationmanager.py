@@ -12,13 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.3 2003/02/26 16:11:37 gvanrossum Exp $
+$Id: test_configurationmanager.py,v 1.4 2003/03/21 21:06:27 jim Exp $
 """
 
-from zope.app.services.configurationmanager \
-     import ConfigurationManager
-from zope.app.interfaces.services.configurationmanager \
-     import IConfigurationManager
+from zope.app.services.configuration import ConfigurationManager
+from zope.app.interfaces.services.configuration import IConfigurationManager
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface.common.tests.basemapping import BaseTestIEnumerableMapping
 from zope.interface.verify import verifyObject
