@@ -43,6 +43,9 @@
   <td style="width:16px" tal:repeat="state nodeInfo/row-state">
     <img tal:attributes="src context/++resource++tree_images/vline.png"
          tal:condition="state" alt="|" border="0" />
+    <img src="" width="16" height="16"
+		     tal:condition="not:state"
+         tal:attributes="src context/++resource++tree_images/shim.gif" />
   </td>
 
   <td style="width:16px">
@@ -70,10 +73,13 @@
     </tal:block>
   </td>
 
-  <td style="width:16px"
+  <td align="left" style="width:16px"
       tal:define="object nocall:node/context;
                   icon   object/@@zmi_icon | nothing">
     <img src="" tal:replace="structure icon" />
+    <img src="" width="16" height="16"
+		     tal:condition="not:icon"
+         tal:attributes="src context/++resource++tree_images/shim.gif" />
   </td>
 
   <td class="list-item"
