@@ -32,5 +32,6 @@
 
   <include file="fields.zcml" />
   <include package=".browser" />
+  <include file="fieldforms.zcml" />
 
 </configure>

@@ -62,7 +62,6 @@
   <!-- Utilities -->
   <include package="zope.app.session" />
   <include package="zope.app.schema" />
-  <include package="zope.app.schema" file="fieldforms.zcml" />
 
   <!-- Misc. Service Manager objects -->
   <include package="zope.app.module" />
