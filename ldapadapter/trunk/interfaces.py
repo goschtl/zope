@@ -108,7 +108,7 @@ class ILDAPConnection(Interface):
         - entry is the subset of attributes we want to modify.
         """
 
-    def search(base, scope='one', filter='(objectclass=*)', attrs=None):
+    def search(base, scope='one', filter='(objectClass=*)', attrs=None):
         """Search an LDAP server.
 
         - base is a unicode dn.
