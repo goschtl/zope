@@ -493,10 +493,12 @@ def showDependencies(path, zcml=False, long=False, all=False):
             print
 
 
-if __name__ == '__main__':
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
     try:
         opts, args = getopt.getopt(
-            sys.argv[1:],
+            argv[1:],
             'd:m:ahlz',
             ['all', 'help', 'dir=', 'module=', 'long', 'zcml'])
     except getopt.error, msg:
@@ -531,3 +533,7 @@ if __name__ == '__main__':
         usage(1, 'The module must be specified either by path, '
               'dotted name or ZCML file.')
     showDependencies(path, zcml, long, all)
+
+
+if __name__ == '__main__':
+    main()
