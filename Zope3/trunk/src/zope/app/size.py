@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: size.py,v 1.7 2003/08/06 14:45:01 srichter Exp $
+$Id: size.py,v 1.8 2003/08/19 14:57:13 fdrake Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.size import ISized
@@ -46,13 +46,12 @@ class DefaultSized:
 def byteDisplay(size):
     if size == 0:
         return _('0 KB')
-    if size < 1024:
+    if size <= 1024:
         return _('1 KB')
     if size > 1048576:
         size_str = _('${size} MB')
-        size_str.mapping = {'size': '%0.02f' %(size / 1048576.0)}
+        size_str.mapping = {'size': '%0.02f' % (size / 1048576.0)}
         return size_str
     size_str = _('${size} KB')
-    size_str.mapping = {'size': '%d' %(size / 1024.0)}
+    size_str.mapping = {'size': '%d' % (size / 1024.0)}
     return size_str
-
