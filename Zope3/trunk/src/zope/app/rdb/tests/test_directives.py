@@ -13,7 +13,7 @@
 ##############################################################################
 """Test 'rdb' ZCML Namespace Directives
 
-$Id: test_directives.py,v 1.4 2004/03/02 13:48:29 philikon Exp $
+$Id: test_directives.py,v 1.5 2004/04/11 18:16:25 jim Exp $
 """
 import unittest
 from zope.app import zapi
@@ -29,7 +29,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_provideConnection(self):
 
-        conns = zapi.getUtilitiesFor(None, IZopeDatabaseAdapter)
+        conns = list(zapi.getUtilitiesFor(None, IZopeDatabaseAdapter))
         self.assertEqual(conns, [])
         connectionstub = queryUtility(None,IZopeDatabaseAdapter, None, 'stub')
         self.assertEqual(connectionstub, None)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.6 2004/03/17 21:56:39 srichter Exp $
+$Id: vocabulary.py,v 1.7 2004/04/11 18:16:26 jim Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -41,7 +41,7 @@ class SourceTypeVocabulary(object):
     implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, context):
-        self.types = zapi.getFactoriesFor(None, ISource)
+        self.types = list(zapi.getFactoriesFor(None, ISource))
 
     def __contains__(self, value):
         return value in [name for name, fact in self.types]
