@@ -56,21 +56,21 @@ There are three issues we need to deal with:
 
     FTP and WebDAV
 
-      - Treat as a directory if there is an adapter to IReadDirectory.
+      - Treat as a directory if there is an adapter to `IReadDirectory`.
         Treat as a file otherwise.
 
       - For creating objects:
 
         - Directories:
 
-          Look for an IDirectoryFactory adapter.
+          Look for an `IDirectoryFactory` adapter.
 
         - Files
 
-          First lookj for a IFileFactory adapter with a name that is
+          First lookj for a `IFileFactory` adapter with a name that is
           the same as the extention (e.g. ".pt").
 
-          Then look for an unnamed IFileFactory adapter.
+          Then look for an unnamed `IFileFactory` adapter.
 
 
     File-system synchronization
@@ -79,11 +79,12 @@ There are three issues we need to deal with:
       for this, but we want to make it as easy as possible to use other
       adapters as well.
 
-      For reading, there must be a class adapter to IReadSync.  We will
+      For reading, there must be a class adapter to `IReadSync`.  We will
       then apply rules similar to those above.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.app.container.interfaces import IReadContainer, IWriteContainer
@@ -132,10 +133,10 @@ class IFileFactory(Interface):
     def __call__(name, content_type, data):
         """Create a file
 
-        where a file is an object with adapters to IReadFile
-        and IWriteFile.
+        where a file is an object with adapters to `IReadFile`
+        and `IWriteFile`.
 
-        The file name, content typem, and data are provided to help
+        The file `name`, content `type`, and `data` are provided to help
         create the object.
         """
 

@@ -15,12 +15,14 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app import zapi
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.component import ComponentLookupError
 
 def getCacheForObject(obj):
-    """Returns the cache associated with obj or None."""
+    """Returns the cache associated with `obj` or ``None``."""
     adapter = ICacheable(obj, None)
     if adapter is None:
         return None
@@ -30,7 +32,7 @@ def getCacheForObject(obj):
     return zapi.getUtility(ICache, cache_id)
 
 def getLocationForCache(obj):
-    """Returns the location to be used for caching the object or None."""
+    """Returns the location to be used for caching the object or ``None``."""
     try:
         return zapi.getPath(obj)
     except (ComponentLookupError, TypeError):

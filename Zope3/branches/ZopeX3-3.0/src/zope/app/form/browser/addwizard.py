@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import sys
 
 from zope.app import zapi
@@ -32,7 +34,7 @@ from editwizard import EditWizardView, WizardStorage
 class AddWizardView(EditWizardView):
     """Multi-page add-view base class.
 
-    Subclasses should provide a schema attribute defining the schema
+    Subclasses should provide a `schema` attribute defining the schema
     to be edited.
     """
 
@@ -54,9 +56,9 @@ class AddWizardView(EditWizardView):
 
         The data argument is a dictionary with the data entered in the form.
 
-        Issues a redirect to context.nextURL()
+        Issues a redirect to `context.nextURL()`
 
-        Returns False, as per editview.apply_update
+        Returns ``False``, as per `editview.apply_update`
         """
 
         # This code originally from add.py's createAndAdd method

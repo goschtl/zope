@@ -15,25 +15,28 @@
 
 $Id$
 """
+
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 
 class IAnnotatable(Interface):
     """Marker interface for objects that support storing annotations.
 
     This interface says "There exists an adapter to an IAnnotations
-    for an object that implements IAnnotatable".
+    for an object that implements `IAnnotatable`".
 
     Classes should not directly declare that they implement this interface.
     Instead they should implement an interface derived from this one, which
     details how the annotations are to be stored, such as
-    IAttributeAnnotatable.
+    `IAttributeAnnotatable`.
     """
 
 class IAnnotations(IAnnotatable):
     """Stores arbitrary application data under package-unique keys.
 
     By "package-unique keys", we mean keys that are are unique by
-    virtua of including the dotted name of a package as a prefex.  A
+    virtue of including the dotted name of a package as a prefex.  A
     package name is used to limit the authority for picking names for
     a package to the people using that package.
 
@@ -43,6 +46,10 @@ class IAnnotations(IAnnotatable):
       "zope.app.dublincore.ZopeDublinCore"
 
     """
+
+    def __nonzero__():
+        """Test whether there are any annotations
+        """
 
     def __getitem__(key):
         """Return the annotation stored under key.
@@ -70,7 +77,7 @@ class IAnnotations(IAnnotatable):
 class IAttributeAnnotatable(IAnnotatable):
     """Marker indicating that annotations can be stored on an attribute.
     
-    This is a marker interface giving permission for an IAnnotations
-    adapter to store data in an attribute named __annotations__.
+    This is a marker interface giving permission for an `IAnnotations`
+    adapter to store data in an attribute named `__annotations__`.
 
     """

@@ -17,6 +17,8 @@ This is a port of the Zope 2 error reporting object
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import time
 import logging
 from persistent import Persistent

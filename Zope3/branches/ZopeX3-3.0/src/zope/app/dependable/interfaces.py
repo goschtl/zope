@@ -15,13 +15,15 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 from zope.app.exception.interfaces import UserError
 
 class IDependable(Interface):
     """Objects that other objects depend on.
 
-    Note that IDependable will normally be implemented by an adapter.
+    Note that `IDependable` will normally be implemented by an adapter.
     """
 
     def addDependent(location):

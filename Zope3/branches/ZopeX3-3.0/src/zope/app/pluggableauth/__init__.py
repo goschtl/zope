@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import random
 import sys
 import time
@@ -52,7 +54,7 @@ from interfaces import IPrincipalSource, ILoginPasswordPrincipalSource
 from interfaces import IContainedPrincipalSource, IContainerPrincipalSource
 
 def gen_key():
-    """Return a random int (1, MAXINT), suitable for use as a BTree key."""
+    """Return a random int (1, MAXINT), suitable for use as a `BTree` key."""
 
     return random.randint(0, sys.maxint-1)
 
@@ -75,7 +77,7 @@ class PluggableAuthenticationService(OrderedContainer):
         OrderedContainer.__init__(self)
 
     def authenticate(self, request):
-        """ See IAuthenticationService. """
+        """ See `IAuthenticationService`. """
         for ps_key, ps in self.items():
             loginView = zapi.queryView(ps, "login", request)
             if loginView is not None:
@@ -95,7 +97,7 @@ class PluggableAuthenticationService(OrderedContainer):
         return None
 
     def unauthorized(self, id, request):
-        """ See IAuthenticationService. """
+        """ See `IAuthenticationService`. """
 
         next = queryNextService(self, Authentication, None)
         if next is not None:
@@ -104,12 +106,12 @@ class PluggableAuthenticationService(OrderedContainer):
         return None
 
     def getPrincipal(self, id):
-        """ See IAuthenticationService.
+        """ See `IAuthenticationService`.
 
-        For this implementation, an 'id' is a string which can be
+        For this implementation, an `id` is a string which can be
         split into a 3-tuple by splitting on tab characters.  The
-        three tuple consists of (auth_service_earmark,
-        principal_source_id, principal_id).
+        three tuple consists of (`auth_service_earmark`,
+        `principal_source_id`, `principal_id`).
 
         In the current strategy, the principal sources that are members
         of this authentication service cannot be renamed; if they are,
@@ -139,7 +141,7 @@ class PluggableAuthenticationService(OrderedContainer):
         return source.getPrincipal(id)
 
     def getPrincipals(self, name):
-        """ See IAuthenticationService. """
+        """ See `IAuthenticationService`. """
 
         for ps_key, ps in self.items():
             for p in ps.getPrincipals(name):
@@ -151,7 +153,7 @@ class PluggableAuthenticationService(OrderedContainer):
                 yield p
 
     def addPrincipalSource(self, id, principal_source):
-        """ See IPluggableAuthenticationService.
+        """ See `IPluggableAuthenticationService`.
 
         >>> pas = PluggableAuthenticationService()
         >>> sps = BTreePrincipalSource()
@@ -168,7 +170,7 @@ class PluggableAuthenticationService(OrderedContainer):
         self[id] = principal_source        
 
     def removePrincipalSource(self, id):
-        """ See IPluggableAuthenticationService.
+        """ See `IPluggableAuthenticationService`.
 
         >>> pas = PluggableAuthenticationService()
         >>> sps = BTreePrincipalSource()
@@ -190,7 +192,7 @@ class PluggableAuthenticationService(OrderedContainer):
 def PluggableAuthenticationServiceAddSubscriber(self, event):
     r"""Generates an earmark if one is not provided.
 
-    Define a stub for PluggableAuthenticationService
+    Define a stub for `PluggableAuthenticationService`
 
     >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
     >>> class PluggableAuthStub(object):
@@ -237,7 +239,7 @@ class IBTreePrincipalSource(
     ):
 
     def __setitem__(name, principal):
-        """Add a principal
+        """Add a `principal`
 
         The name must be the same as the principal login
         """
@@ -263,7 +265,7 @@ class BTreePrincipalSource(Persistent, Contained):
     # IContainer-related methods
 
     def __delitem__(self, login):
-        """ See IContainer.
+        """ See `IContainer`.
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('fred', 'fred', '123')
@@ -282,7 +284,7 @@ class BTreePrincipalSource(Persistent, Contained):
         del self._numbers_by_login[login]
 
     def __setitem__(self, login, ob):
-        """ See IContainerNamesContainer
+        """ See `IContainerNamesContainer`
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('gandalf', 'shadowfax')
@@ -302,7 +304,7 @@ class BTreePrincipalSource(Persistent, Contained):
         self._numbers_by_login[ob.login] = key
 
     def keys(self):
-        """ See IContainer.
+        """ See `IContainer`.
 
         >>> sps = BTreePrincipalSource()
         >>> sps.keys()
@@ -320,7 +322,7 @@ class BTreePrincipalSource(Persistent, Contained):
         return list(self._numbers_by_login.keys())
 
     def __iter__(self):
-        """ See IContainer.
+        """ See `IContainer`.
 
         >>> sps = BTreePrincipalSource()
         >>> sps.keys()
@@ -336,7 +338,7 @@ class BTreePrincipalSource(Persistent, Contained):
         return iter(self.keys())
 
     def __getitem__(self, key):
-        """ See IContainer
+        """ See `IContainer`
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('gag', 'justzisguy')
@@ -349,7 +351,7 @@ class BTreePrincipalSource(Persistent, Contained):
         return self._principals_by_number[number]
 
     def get(self, key, default=None):
-        """ See IContainer
+        """ See `IContainer`
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal(1, 'slartibartfast', 'fjord')
@@ -367,7 +369,7 @@ class BTreePrincipalSource(Persistent, Contained):
         return self._principals_by_number[number]
 
     def values(self):
-        """ See IContainer.
+        """ See `IContainer`.
 
         >>> sps = BTreePrincipalSource()
         >>> sps.keys()
@@ -386,7 +388,7 @@ class BTreePrincipalSource(Persistent, Contained):
                 for n in self._numbers_by_login.values()]
 
     def __len__(self):
-        """ See IContainer
+        """ See `IContainer`
 
         >>> sps = BTreePrincipalSource()
         >>> int(len(sps) == 0)
@@ -400,7 +402,7 @@ class BTreePrincipalSource(Persistent, Contained):
         return len(self._principals_by_number)
 
     def items(self):
-        """ See IContainer.
+        """ See `IContainer`.
 
         >>> sps = BTreePrincipalSource()
         >>> sps.keys()
@@ -419,7 +421,7 @@ class BTreePrincipalSource(Persistent, Contained):
         return [(p.login, p) for p in self.values()]
 
     def __contains__(self, key):
-        """ See IContainer.
+        """ See `IContainer`.
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('slinkp', 'password')
@@ -436,9 +438,9 @@ class BTreePrincipalSource(Persistent, Contained):
     # PrincipalSource-related methods
 
     def getPrincipal(self, id):
-        """ See IPrincipalSource.
+        """ See `IPrincipalSource`.
 
-        'id' is the id as returned by principal.getId(),
+        `id` is the id as returned by ``principal.getId()``,
         not a login.
 
         """
@@ -452,7 +454,7 @@ class BTreePrincipalSource(Persistent, Contained):
             raise NotFoundError, id
 
     def getPrincipals(self, name):
-        """ See IPrincipalSource.
+        """ See `IPrincipalSource`.
 
         >>> sps = BTreePrincipalSource()
         >>> prin1 = SimplePrincipal('gandalf', 'shadowfax')
@@ -478,7 +480,7 @@ class BTreePrincipalSource(Persistent, Contained):
                 yield self[k]
 
     def authenticate(self, login, password):
-        """ See ILoginPasswordPrincipalSource. """
+        """ See `ILoginPasswordPrincipalSource`. """
         number = self._numbers_by_login.get(login)
         if number is None:
             return
@@ -523,7 +525,7 @@ class LoginNameTaken(Exception):
 
 
 class SimplePrincipal(Persistent, Contained):
-    """A no-frills IUserSchemafied implementation."""
+    """A no-frills `IUserSchemafied` implementation."""
 
     implements(IUserSchemafied, IBTreePrincipalSourceContained)
 
@@ -555,11 +557,11 @@ class SimplePrincipal(Persistent, Contained):
         return self.description
 
     def getLogin(self):
-        """See IReadUser."""
+        """See `IReadUser`."""
         return self.login
 
     def validate(self, test_password):
-        """ See IReadUser.
+        """ See `IReadUser`.
 
         >>> pal = SimplePrincipal('gandalf', 'shadowfax', 'The Grey Wizard',
         ...                       'Cool old man with neato fireworks. '
@@ -575,7 +577,7 @@ class PrincipalAuthenticationView(object):
     """Simple basic authentication view
 
     This only handles requests which have basic auth credentials
-    in them currently (ILoginPassword-based requests).
+    in them currently (`ILoginPassword`-based requests).
     If you want a different policy, you'll need to write and register
     a different view, replacing this one.
     

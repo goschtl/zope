@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from datetime import datetime
 from zope.event import notify
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from xml.sax.saxutils import escape, quoteattr
 
 from zope.app.form.browser.complexsample import widgetapi

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.schema import getFieldNamesInOrder
 
@@ -102,10 +104,10 @@ class ObjectWidget(BrowserWidget, InputWidget):
     def getInputValue(self):
         """Return converted and validated widget data.
 
-        The value for this field will be represented as an ObjectStorage
+        The value for this field will be represented as an `ObjectStorage`
         instance which holds the subfield values as attributes. It will
         need to be converted by higher-level code into some more useful
-        object (note that the default EditView calls applyChanges, which
+        object (note that the default EditView calls `applyChanges`, which
         does this).
         """
         content = self.factory()
@@ -136,7 +138,7 @@ class ObjectWidget(BrowserWidget, InputWidget):
     def hasInput(self):
         """Is there input data for the field
 
-        Return True if there is data and False otherwise.
+        Return ``True`` if there is data and ``False`` otherwise.
         """
         for name in self.names:
             if self.getSubWidget(name).hasInput():

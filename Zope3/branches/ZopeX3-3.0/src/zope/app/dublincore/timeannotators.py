@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from datetime import datetime
 from zope.app.dublincore.interfaces import IZopeDublinCore

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.schema.interfaces import IIterableVocabularyQuery
 
@@ -47,7 +49,7 @@ class ActionHelper(TranslationHook):
     def getAction(self):
         """Retrieve a the executed action from the form.
 
-        Return None, if none of the registered actions was called.
+        Return ``None``, if none of the registered actions was called.
         """
         assert self.__actions is not None, \
                "getAction() called on %r with no actions defined" %self
@@ -74,7 +76,7 @@ class ViewSupport(TranslationHook):
     def textForValue(self, term):
         """Extract a string from the term.
 
-        The term must be a vocabulary tokenized term. 
+        The `term` must be a vocabulary tokenized term. 
 
         This can be overridden to support more complex term objects. The token
         is returned here since it's the only thing known to be a string, or
@@ -113,7 +115,7 @@ class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
         self.widget = None
 
     def setName(self, name):
-        """See interfaces.IVocabularyQueryView"""
+        """See `interfaces.IVocabularyQueryView`"""
         assert not name.endswith(".")
         self.name = name
 
@@ -123,15 +125,15 @@ class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
         self.widget = widget
 
     def performAction(self, value):
-        """See interfaces.IVocabularyQueryView"""
+        """See `interfaces.IVocabularyQueryView`"""
         return value
 
     def renderInput(self):
-        """See interfaces.IVocabularyQueryView"""
+        """See `interfaces.IVocabularyQueryView`"""
         return self._renderQueryInput()
 
     def renderResults(self, value):
-        """See interfaces.IVocabularyQueryView"""
+        """See `interfaces.IVocabularyQueryView`"""
         results = self._getResults()
         if results is not None:
             return self._renderQueryResults(results, value)
@@ -154,11 +156,11 @@ class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
 
 
 class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
-    """Query view for IIterableVocabulary objects without more
+    """Query view for `IIterableVocabulary` objects without more
     specific query views.
 
     This should only be used (directly) for vocabularies for which
-    getQuery() returns None.
+    `getQuery()` returns ``None``.
     """
     queryResultBatchSize = 8
 
@@ -180,7 +182,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         self.addAction(MORE,     self._msg_more)
 
     def setName(self, name):
-        """See interfaces.IVocabularyQueryView"""
+        """See `interfaces.IVocabularyQueryView`"""
         super(IterableVocabularyQueryViewBase, self).setName(name)
         name = self.name
         self.query_index_name = name + ".start"
@@ -272,7 +274,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
              "</div>"])
 
     def performAction(self, value):
-        """See interfaces.IVocabularyQueryView"""
+        """See `interfaces.IVocabularyQueryView`"""
         if self.action == ADD_DONE:
             value = self.addSelections(value)
             self.query_index = None

@@ -13,6 +13,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from xml.dom import minidom
 from zope.schema import getFieldNamesInOrder
 from zope.app import zapi

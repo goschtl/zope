@@ -11,10 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Support information for qualified Dublin Core metadata.
+"""Support information for qualified Dublin Core Metadata.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.app.dublincore import dcsv
 

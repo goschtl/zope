@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 class DTMLPageEval(object):
 
     def index(self, REQUEST=None, **kw):

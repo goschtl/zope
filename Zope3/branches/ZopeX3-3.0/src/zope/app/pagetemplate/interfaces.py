@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.dublincore.interfaces import IDCDescriptiveProperties
 from zope.app.dublincore.interfaces import IDCTimes
 from zope.interface import Interface

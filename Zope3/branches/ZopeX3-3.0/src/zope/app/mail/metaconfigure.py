@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.configuration.exceptions import ConfigurationError
 
 from zope.security.checker import InterfaceChecker, CheckerPublic

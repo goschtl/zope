@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements, Invalid
 from zope.exceptions import NotFoundError, DuplicationError
 
@@ -31,9 +33,9 @@ from zope.app.container.constraints import checkObject
 class ObjectMover(object):
     """Adapter for moving objects between containers
 
-    To use an object mover, pass a contained object to the class.
-    The contained object should implement IContained.  It should be
-    contained in a container that has an adapter to INameChooser.
+    To use an object mover, pass a contained `object` to the class.
+    The contained `object` should implement `IContained`.  It should be
+    contained in a container that has an adapter to `INameChooser`.
 
 
     >>> from zope.app.container.contained import Contained
@@ -162,10 +164,10 @@ class ObjectMover(object):
         self.__parent__ = object # TODO: see if we can automate this
 
     def moveTo(self, target, new_name=None):
-        '''Move this object to the target given.
+        '''Move this object to the `target` given.
 
-        Returns the new name within the target
-        Typically, the target is adapted to IPasteTarget.'''
+        Returns the new name within the `target`
+        Typically, the `target` is adapted to `IPasteTarget`.'''
 
         obj = self.context
         container = obj.__parent__
@@ -187,14 +189,14 @@ class ObjectMover(object):
         del container[orig_name]
 
     def moveable(self):
-        '''Returns True if the object is moveable, otherwise False.'''
+        '''Returns ``True`` if the object is moveable, otherwise ``False``.'''
         return True
 
     def moveableTo(self, target, name=None):
         '''Say whether the object can be moved to the given target.
 
-        Returns True if it can be moved there. Otherwise, returns
-        false.
+        Returns ``True`` if it can be moved there. Otherwise, returns
+        ``False``.
         '''
         if name is None:
             name = self.context.__name__
@@ -207,9 +209,9 @@ class ObjectMover(object):
 class ObjectCopier(object):
     """Adapter for copying objects between containers
 
-    To use an object copier, pass a contained object to the class.
-    The contained object should implement IContained.  It should be
-    contained in a container that has an adapter to INameChooser.
+    To use an object copier, pass a contained `object` to the class.
+    The contained `object` should implement `IContained`.  It should be
+    contained in a container that has an adapter to `INameChooser`.
 
     >>> from zope.app.container.contained import Contained
     >>> ob = Contained()
@@ -348,15 +350,15 @@ class ObjectCopier(object):
         self.__parent__ = object # TODO: see if we can automate this
 
     def copyTo(self, target, new_name=None):
-        """Copy this object to the target given.
+        """Copy this object to the `target` given.
 
-        Returns the new name within the target, or None
+        Returns the new name within the `target`, or ``None``
         if the target doesn't do names.
-        Typically, the target is adapted to IPasteTarget.
-        After the copy is added to the target container, publish
-        an IObjectCopied event in the context of the target container.
+        Typically, the `target` is adapted to `IPasteTarget`.
+        After the copy is added to the `target` container, publish
+        an `IObjectCopied` event in the context of the target container.
         If a new object is created as part of the copying process, then
-        an IObjectCreated event should be published.
+        an `IObjectCreated` event should be published.
         """
         obj = self.context
         container = obj.__parent__
@@ -377,11 +379,11 @@ class ObjectCopier(object):
         target[new_name] = copy
 
     def _configureCopy(self, copy, target, new_name):
-        """Configures the copied object before it is added to target.
+        """Configures the copied object before it is added to `target`.
         
-        target and new_name are provided as additional information.
+        `target` and `new_name` are provided as additional information.
         
-        By default, copy.__parent__ and copy.__name__ are set to None.
+        By default, `copy.__parent__` and `copy.__name__` are set to ``None``.
         
         Subclasses may override this method to perform additional
         configuration of the copied object.
@@ -393,10 +395,10 @@ class ObjectCopier(object):
         return True
 
     def copyableTo(self, target, name=None):
-        '''Say whether the object can be copied to the given target.
+        '''Say whether the object can be copied to the given `target`.
 
-        Returns True if it can be copied there. Otherwise, returns
-        False.
+        Returns ``True`` if it can be copied there. Otherwise, returns
+        ``False``.
         '''
         if name is None:
             name = self.context.__name__
@@ -411,7 +413,7 @@ class PrincipalClipboard(object):
     '''Principal clipboard
 
     Clipboard information consists on tuples of
-    {'action':action, 'target':target}.
+    ``{'action':action, 'target':target}``.
     '''
 
     def __init__(self, annotation):

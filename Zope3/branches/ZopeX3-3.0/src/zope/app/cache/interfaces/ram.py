@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Attribute
 
 from zope.app.cache.interfaces import ICache
@@ -36,7 +38,7 @@ class IRAMCache(ICache, IRegisterable):
         The returned value is a sequence of dictionaries with the
         following keys:
 
-          'path', 'hits', 'misses', 'size', 'entries'
+          `path`, `hits`, `misses`, `size`, `entries`
         """
 
     def update(maxEntries, maxAge, cleanupInterval):

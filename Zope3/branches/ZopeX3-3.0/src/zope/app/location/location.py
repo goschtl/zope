@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import zope.interface
 from zope.app.location.interfaces import ILocation
 from zope.proxy import ProxyBase, getProxiedObject
@@ -22,7 +24,7 @@ from zope.app.decorator import DecoratorSpecificationDescriptor
 from zope.app.decorator import DecoratedSecurityCheckerDescriptor
 
 class Location(object):
-    """Stupid mix-in that defines __parent__ and __name__ attributes
+    """Stupid mix-in that defines `__parent__` and `__name__` attributes
 
     Usage within an Object field:
     >>> from zope.interface import implements, Interface
@@ -121,7 +123,7 @@ class LocationProxy(ProxyBase):
     __doc__ = """Location-object proxy
 
     This is a non-picklable proxy that can be put around objects that
-    don't implement ILocation.
+    don't implement `ILocation`.
 
     >>> l = [1, 2, 3]
     >>> p = LocationProxy(l, "Dad", "p")

@@ -11,12 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Read/write access to Maildir folders.
-
-XXX check exception types
+"""Read/write access to `Maildir` folders.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import os
 import socket
 import time
@@ -27,13 +27,13 @@ from zope.app.mail.interfaces import \
      IMaildirFactory, IMaildir, IMaildirMessageWriter
 
 class Maildir(object):
-    """See zope.app.interfaces.mail.IMaildir"""
+    """See `zope.app.interfaces.mail.IMaildir`"""
 
     classProvides(IMaildirFactory)
     implements(IMaildir)
 
     def __init__(self, path, create=False):
-        "See zope.app.interfaces.mail.IMaildirFactory"
+        "See `zope.app.interfaces.mail.IMaildirFactory`"
         self.path = path
 
         def access(path):
@@ -56,7 +56,7 @@ class Maildir(object):
             raise ValueError('%s is not a Maildir folder' % path)
 
     def __iter__(self):
-        "See zope.app.interfaces.mail.IMaildir"
+        "See `zope.app.interfaces.mail.IMaildir`"
         join = os.path.join
         subdir_cur = join(self.path, 'cur')
         subdir_new = join(self.path, 'new')
@@ -69,10 +69,10 @@ class Maildir(object):
         return iter(new_messages + cur_messages)
 
     def newMessage(self):
-        "See zope.app.interfaces.mail.IMaildir"
-        # XXX http://www.qmail.org/man/man5/maildir.html says, that the first
-        #     step of the delivery process should be a chdir.  Chdirs and
-        #     threading do not mix.  Is that chdir really necessary?
+        "See `zope.app.interfaces.mail.IMaildir`"
+        # NOTE: http://www.qmail.org/man/man5/maildir.html says, that the first
+        #       step of the delivery process should be a chdir.  Chdirs and
+        #       threading do not mix.  Is that chdir really necessary?
         join = os.path.join
         subdir_tmp = join(self.path, 'tmp')
         subdir_new = join(self.path, 'new')
@@ -86,17 +86,17 @@ class Maildir(object):
             if not os.path.exists(filename):
                 break
             counter += 1
-            if counter >= 1000:  # XXX hardcoded magic number
+            if counter >= 1000:
                 raise RuntimeError("Failed to create unique file name in %s,"
                                    " are we under a DoS attack?" % subdir_tmp)
-            # XXX maildir.html (see above) says I should sleep for 2
-            # seconds, not 1
+            # NOTE: maildir.html (see above) says I should sleep for 2
+            #       seconds, not 1
             time.sleep(1)
         return MaildirMessageWriter(filename, join(subdir_new, unique))
 
 
 class MaildirMessageWriter(object):
-    """See zope.app.interfaces.mail.IMaildirMessageWriter"""
+    """See `zope.app.interfaces.mail.IMaildirMessageWriter`"""
 
     implements(IMaildirMessageWriter)
 
@@ -118,14 +118,14 @@ class MaildirMessageWriter(object):
 
     def commit(self):
         if self._closed and self._aborted:
-            raise AssertionError('Cannot commit, message already aborted')
+            raise RuntimeError('Cannot commit, message already aborted')
         elif not self._closed:
             self._closed = True
             self._aborted = False
             self._fd.close()
             os.rename(self._filename, self._new_filename)
-            # XXX the same maildir.html says it should be a link, followed by
-            #     unlink.  But Win32 does not necessarily have hardlinks!
+            # NOTE: the same maildir.html says it should be a link, followed by
+            #       unlink.  But Win32 does not necessarily have hardlinks!
 
     def abort(self):
         if not self._closed:
@@ -134,4 +134,4 @@ class MaildirMessageWriter(object):
             self._fd.close()
             os.unlink(self._filename)
 
-    # XXX should there be a __del__ that does abort()?
+    # should there be a __del__ that does abort()?

@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.debugskin.exceptions import ExceptionDebugView

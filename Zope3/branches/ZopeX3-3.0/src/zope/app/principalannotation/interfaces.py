@@ -11,27 +11,32 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Service for storing IAnnotations for principals.
+"""Service for storing `IAnnotations` for principals.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 
 
 class IPrincipalAnnotationService(Interface):
-    """Stores IAnnotations for IPrinicipals."""
+    """Stores `IAnnotations` for `IPrinicipals`."""
 
     def getAnnotations(principal):
-        """Return object implementing IAnnotations for the given IPrinicipal.
+        """Return object implementing `IAnnotations` for the given
+        `IPrinicipal`.
 
-        If there is no IAnnotations it will be created and then returned.
+        If there is no `IAnnotations` it will be created and then returned.
         """
 
     def getAnnotationsById(principalId):
-        """Return object implementing IAnnotations for the given prinicipal id.
+        """Return object implementing `IAnnotations` for the given
+        `prinicipalId`.
 
-        If there is no IAnnotations it will be created and then returned.
+        If there is no `IAnnotations` it will be created and then returned.
         """
 
     def hasAnnotations(principal):
-        """Return boolean indicating if given IPrincipal has IAnnotations."""
+        """Return boolean indicating if given `IPrincipal` has
+        `IAnnotations`."""

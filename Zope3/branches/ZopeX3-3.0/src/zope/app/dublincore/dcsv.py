@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Functions for working with Dublin Core Structured Value (DCSV) data.
+"""Functions for working with Dublin Core Structured Values (DCSV) scheme.
 
 DCSV is specified in 'DCMI DCSV: A syntax for writing a list of
 labelled values in a text string', at:
@@ -20,6 +20,7 @@ http://dublincore.org/documents/dcmi-dcsv/
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 import re
 

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 from zope.schema import TextLine, Bool
 from zope.app.form.interfaces import IWidget, IInputWidget
@@ -80,14 +82,14 @@ class IFormCollaborationView(Interface):
         Form input elements should be included, prefixed with the
         prefix given to setPrefix.
 
-        'form' and 'submit' elements should not be included. They
+        `form` and `submit` elements should not be included. They
         will be provided for the larger form.
         """
 
     def setPrefix(prefix):
-        """Set the prefix used for names of input elements
+        """Set the `prefix` used for names of input elements
 
-        Element names should begin with the given prefix,
+        Element names should begin with the given `prefix`,
         followed by a dot.
         """
 
@@ -101,9 +103,9 @@ class IAddFormCustomization(Interface):
     Classes supplied when defining add forms may need to override some
     of these methods.
 
-    In particular, when the context of an add form is not an IAdding,
-    a subclass needs to override ``nextURL`` and one of ``add`` or
-    ``createAndAdd``.
+    In particular, when the context of an add form is not an `IAdding`,
+    a subclass needs to override `nextURL` and one of `add` or
+    `createAndAdd`.
 
     To see how all this fits together, here's pseudo code for the
     update() method of the form:
@@ -125,7 +127,7 @@ class IAddFormCustomization(Interface):
         The data argument is a dictionary with values supplied by the form.
 
         If any user errors occur, they should be collected into a list
-        and raised as a WidgetsError.
+        and raised as a ``WidgetsError``.
 
         (For the default implementation, see pseudo-code in class docs.)
         """
@@ -134,11 +136,11 @@ class IAddFormCustomization(Interface):
         """Add the given content.
 
         This method is overridden when the context of the add form is
-        not an IAdding.  In this case, the class that customizes the
+        not an `IAdding`.  In this case, the class that customizes the
         form must take over adding the object.
 
-        The default implementation returns self.context.add(content),
-        i.e. it delegates to the IAdding view.
+        The default implementation returns `self.context.add(content)`,
+        i.e. it delegates to the `IAdding` view.
         """
 
     def nextURL():
@@ -146,11 +148,11 @@ class IAddFormCustomization(Interface):
 
         This can be relative to the view's context.
 
-        The default implementation returns self.context.nextURL(),
-        i.e. it delegates to the IAdding view.
+        The default implementation returns `self.context.nextURL()`,
+        i.e. it delegates to the `IAdding` view.
         """
 class IVocabularyQueryView(Interface):
-    """View support for IVocabularyQuery objects.
+    """View support for `IVocabularyQuery` objects.
 
     Implementations of this interface are used by vocabulary field
     edit widgets to support query and result presentations.
@@ -166,8 +168,8 @@ class IVocabularyQueryView(Interface):
         components separated by dots may be appended if multiple form
         fields are needed.
 
-        This method will be called after the IVocabularyQueryView has
-        been created and before performAction() is called.
+        This method will be called after the `IVocabularyQueryView` has
+        been created and before `performAction()` is called.
         """
 
 
@@ -177,23 +179,23 @@ class IVocabularyQueryView(Interface):
         This allows the query view to take advantage of rendering
         helper methods made available by the widget.
 
-        This method will be called after the IVocabularyQueryView has
-        been created and before performAction() is called.
+        This method will be called after the `IVocabularyQueryView` has
+        been created and before `performAction()` is called.
         """
 
     def performAction(value):
         """Perform any action indicated by any submit buttons in the
         sub-widget.
 
-        'value' is the current value of the field.  Submit actions may
+        `value` is the current value of the field.  Submit actions may
         cause the value to be modified.  If so, the new value should
         be returned; otherwise the old value should be returned.
 
         Actions should only be performed if a submit button provided
         by the view was selected.
 
-        This method will be called after setName() and setWidget() and
-        before renderInput() or renderResults().
+        This method will be called after `setName()` and `setWidget()` and
+        before `renderInput()` or `renderResults()`.
         """
 
     def renderInput():
@@ -202,7 +204,7 @@ class IVocabularyQueryView(Interface):
     def renderResults(value):
         """Return a rendering of the results portion of the widget.
 
-        'value' is the current value represented by the widget.
+        `value` is the current value represented by the widget.
         """
 
 class IWidgetInputErrorView(Interface):

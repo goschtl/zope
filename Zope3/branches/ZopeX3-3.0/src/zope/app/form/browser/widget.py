@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import re, cgi
 import traceback
 from xml.sax.saxutils import quoteattr
@@ -40,7 +42,7 @@ class BrowserWidget(Widget, BrowserView):
 
     The class provides some basic functionality common to all browser widgets.
 
-    Browser widgets have a 'required' attribute, which indicates whether or
+    Browser widgets have a `required` attribute, which indicates whether or
     not the underlying field requires input. By default, the widget's required
     attribute is equal to the field's required attribute:
 
@@ -55,16 +57,16 @@ class BrowserWidget(Widget, BrowserView):
         >>> widget.required
         False
 
-    However, the two 'required' values are independent of one another:
+    However, the two `required` values are independent of one another:
 
         >>> field.required = True
         >>> widget.required
         False
 
     Browser widgets have an error state, which can be rendered in a form using
-    the error() method. The error method delegates the error rendering to a
-    view that is registered as providing IWidgetInputErrorView. To illustrate,
-    we can create and register a simple error display view:
+    the `error()` method. The error method delegates the error rendering to a
+    view that is registered as providing `IWidgetInputErrorView`. To
+    illustrate, we can create and register a simple error display view:
 
         >>> from zope.app.form.interfaces import IWidgetInputError
         >>> class SnippetErrorView:
@@ -152,7 +154,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> widget.error()
         ''
 
-    setRenderedValue is used to specify the value displayed by the widget to
+    `setRenderedValue` is used to specify the value displayed by the widget to
     the user. This value, however, is not the same as the input value, which
     is read from the request:
 
@@ -170,7 +172,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> widget.name
         'baz.foo'
 
-    getInputValue always returns a value that can legally be assigned to
+    `getInputValue` always returns a value that can legally be assigned to
     the widget field. To illustrate widget validation, we can add a constraint
     to its field:
 
@@ -184,24 +186,24 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         u'bye world'
 
     This input violates the new field constraint and therefore causes an
-    error when getInputValue is called:
+    error when `getInputValue` is called:
 
         >>> widget.getInputValue()
         Traceback (most recent call last):
         WidgetInputError: ('foo', u'Foo', bye world)
 
     Simple input widgets require that input be available in the form request.
-    If input is not present, a MissingInputError is raised:
+    If input is not present, a ``MissingInputError`` is raised:
 
         >>> del request.form[widget.name]
         >>> widget.getInputValue()
         Traceback (most recent call last):
         MissingInputError: ('baz.foo', u'Foo', None)
 
-    A MissingInputError indicates that input is missing from the form
+    A ``MissingInputError`` indicates that input is missing from the form
     altogether. It does not indicate that the user failed to provide a value
-    for a required field. The MissingInputError above was caused by the fact
-    that the form does have any input for the widget:
+    for a required field. The ``MissingInputError`` above was caused by the
+    fact that the form does have any input for the widget:
 
         >>> request.form[widget.name]
         Traceback (most recent call last):
@@ -212,8 +214,8 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
 
         >>> request.form[widget.name] = ''
 
-    In such a case, if the field is required, a WidgetInputError will be
-    raised on a call to getInputValue:
+    In such a case, if the field is required, a ``WidgetInputError`` will be
+    raised on a call to `getInputValue`:
 
         >>> field.required = True
         >>> widget.getInputValue()
@@ -221,7 +223,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         WidgetInputError: ('foo', u'Foo', )
 
     However, if the field is not required, the empty string will be converted
-    by the widget into the field's 'missing_value' and read as a legal field
+    by the widget into the field's `missing_value` and read as a legal field
     value:
 
         >>> field.required = False
@@ -270,7 +272,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
     def hasInput(self):
         """See IWidget.hasInput.
 
-        Returns True if the submitted request form contains a value for
+        Returns ``True`` if the submitted request form contains a value for
         the widget, otherwise returns False.
 
         Some browser widgets may need to implement a more sophisticated test
@@ -322,7 +324,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         """Returns current form input.
         
         The value returned must be in a format that can be used as the 'input'
-        argument to _toFieldValue.
+        argument to `_toFieldValue`.
         
         The default implementation returns the form value that corresponds to
         the widget's name. Subclasses may override this method if their form
@@ -338,7 +340,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         perform an appropriate conversion.
 
         This method is used by getInputValue to perform the conversion
-        of form input (provided by _getFormInput) to an appropriate field 
+        of form input (provided by `_getFormInput`) to an appropriate field 
         value.
         """
         if input == self._missing:

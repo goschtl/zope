@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.http.interfaces import IHTTPException
 from zope.interface import implements
 

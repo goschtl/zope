@@ -16,6 +16,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import os
 
 from persistent import Persistent

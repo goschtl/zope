@@ -13,11 +13,13 @@
 ##############################################################################
 """Implementation of OnlineHelp System.
 
-This the default implementation of the OnlineHelp. It defines the global
-OnlineHelp in which all basic Zope-core help screens are registered.
+This the default implementation of the `OnlineHelp`. It defines the global
+`OnlineHelp` in which all basic Zope-core help screens are registered.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.component.servicenames import Utilities
 from zope.app import zapi
@@ -33,7 +35,7 @@ class OnlineHelp(OnlineHelpTopic):
     >>> from zope.app.onlinehelp.tests.test_onlinehelp import I1, Dummy1
     >>> path = os.path.join(testdir(), 'help.txt')
 
-    Create an onlinehelp instance
+    Create an `OnlineHelp` instance
     
     >>> onlinehelp = OnlineHelp('Help', path)
 

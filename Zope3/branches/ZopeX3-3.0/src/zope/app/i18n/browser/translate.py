@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.i18n.browser import BaseView
 
 class Translate(BaseView):

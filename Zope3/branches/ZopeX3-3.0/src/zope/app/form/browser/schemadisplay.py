@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app import zapi
 
 from zope.schema import getFieldNamesInOrder
@@ -32,7 +34,7 @@ from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 class DisplayView(BrowserView):
     """Simple display-view base class.
 
-    Subclasses should provide a schema attribute defining the schema
+    Subclasses should provide a `schema` attribute defining the schema
     to be displayed.
     """
 

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent import Persistent
 
 from zope.security.proxy import ProxyFactory
@@ -35,16 +37,17 @@ class DTMLPage(Persistent, Contained):
         self.setSource(source)
 
     def getSource(self):
-        '''See interface IDTMLPage'''
+        '''See interface `IDTMLPage`'''
         return self.template.read()
 
     def setSource(self, text, content_type='text/html'):
-        '''See interface IDTMLPage'''
+        '''See interface `IDTMLPage`'''
         self.template = UntrustedHTML(text)
         self.content_type = content_type
 
     def render(self, request, *args, **kw):
-        """See interface IDTMLRenderPage"""
+        """See interface `IDTMLRenderPage`"""
+        return self.template(self.__parent__, request, REQUEST=request, **kw)
         return self.template(self.__parent__, request, REQUEST=request, **kw)
 
 

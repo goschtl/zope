@@ -17,6 +17,8 @@ The macros are drawn from various different page templates.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.interface.common.mapping import IItemMapping
 from zope.component import getView

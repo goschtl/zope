@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 import zope.interface
 
@@ -48,13 +49,13 @@ class ISchemaManager(zope.interface.Interface):
         """Evolve a database to the given schema generation.
 
         The database should be assumed to be at the schema
-        generation one less than the given generation
-        argument. In other words, the evolve method is only
+        generation one less than the given `generation`
+        argument. In other words, the `evolve` method is only
         required to make one evolutionary step.
 
-        The context argument has a connection attribute,
+        The `context` argument has a connection attribute,
         providing a database connection to be used to change
-        the database.  A context argument is passed rather than
+        the database.  A `context` argument is passed rather than
         a connection to make it possible to provide additional
         information later, if it becomes necessary.
         """

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from xml.sax import saxutils
 from zope.interface import implements
 
@@ -73,7 +75,7 @@ class TextWidget(SimpleInputWidget):
       value="Bob"
       />
 
-    Calling setRenderedValue will change what gets output:
+    Calling `setRenderedValue` will change what gets output:
 
     >>> widget.setRenderedValue("Barry")
     >>> print normalize( widget() )
@@ -231,7 +233,7 @@ class TextAreaWidget(SimpleInputWidget):
     world!"
       />
 
-    Calling setRenderedValue will change what gets output:
+    Calling `setRenderedValue` will change what gets output:
 
     >>> widget.setRenderedValue("Hey\\ndude!")
     >>> print normalize( widget() )

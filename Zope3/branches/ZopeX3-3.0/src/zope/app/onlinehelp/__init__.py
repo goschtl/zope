@@ -13,10 +13,12 @@
 ##############################################################################
 """OnlineHelp System.
 
-Create the global OnlineHelp instance. 
+Create the global `OnlineHelp` instance. 
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import os
 
 import zope
@@ -42,7 +44,7 @@ class helpNamespace(object):
 
     def traverse(self, name, ignored):
         """Used to traverse to an online help topic.
-        Returns the global OnlineHelp instance with the traversal
+        Returns the global `OnlineHelp` instance with the traversal
         context.
         """
         help.context = self.context

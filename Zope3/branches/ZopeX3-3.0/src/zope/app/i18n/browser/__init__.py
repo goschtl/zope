@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.i18n.interfaces import ITranslationDomain
 
 class BaseView(object):

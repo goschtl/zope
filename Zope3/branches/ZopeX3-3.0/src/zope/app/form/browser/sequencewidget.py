@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import re
 from zope.interface import implements
 from zope.i18n import translate
@@ -132,12 +134,12 @@ class SequenceWidget(BrowserWidget, InputWidget):
         """Return converted and validated widget data.
 
         If there is no user input and the field is required, then a
-        MissingInputError will be raised.
+        ``MissingInputError`` will be raised.
 
         If there is no user input and the field is not required, then
         the field default value will be returned.
 
-        A WidgetInputError is returned in the case of one or more
+        A ``WidgetInputError`` is returned in the case of one or more
         errors encountered, inputting, converting, or validating the data.
         """
         sequence = self._generateSequence()
@@ -159,7 +161,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
     def hasInput(self):
         """Is there input data for the field
 
-        Return True if there is data and False otherwise.
+        Return ``True`` if there is data and ``False`` otherwise.
         """
         return len(self._generateSequence()) != 0
 

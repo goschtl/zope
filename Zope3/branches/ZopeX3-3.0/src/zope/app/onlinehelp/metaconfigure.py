@@ -13,16 +13,18 @@
 ##############################################################################
 """Meta-Configuration Handlers for "help" namespace.
 
-These handlers process the registerTopic() directive of
+These handlers process the `registerTopic()` directive of
 the "help" ZCML namespace.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.onlinehelp import help
 
 def register(_context, id, title, parent="", doc_path=None, for_=None,
              view=None, resources=None):
-    """Register an OnlineHelp topic"""
+    """Register an `OnlineHelp` topic"""
 
     _context.action(
         discriminator = ('registerHelpTopic', parent, id),

@@ -13,10 +13,12 @@
 ##############################################################################
 """Mail Delivery utility implementation
 
-This module contains various implementations of MailDeliverys.
+This module contains various implementations of `MailDeliverys`.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import rfc822
 import threading
 import logging
@@ -116,7 +118,7 @@ class QueuedMailDelivery(AbstractMailDelivery):
 
 class QueueProcessorThread(threading.Thread):
     """This thread is started at configuration time from the
-    mail:queuedDelivery directive handler.
+    `mail:queuedDelivery` directive handler.
     """
     log = logging.getLogger("QueueProcessorThread")
     __stopped = False
@@ -128,7 +130,7 @@ class QueueProcessorThread(threading.Thread):
     def setMaildir(self, maildir):
         """Set the maildir.
 
-        This method is used just to provide a maildir stubs ."""
+        This method is used just to provide a `maildir` stubs ."""
         self.maildir = maildir
 
     def setQueuePath(self, path):
@@ -139,7 +141,7 @@ class QueueProcessorThread(threading.Thread):
 
     def _parseMessage(self, message):
         """Extract fromaddr and toaddrs from the first two lines of
-        the message.
+        the `message`.
 
         Returns a fromaddr string, a toaddrs tuple and the message
         string.
@@ -177,7 +179,7 @@ class QueueProcessorThread(threading.Thread):
                     fromaddr, toaddrs, message = self._parseMessage(message)
                     self.mailer.send(fromaddr, toaddrs, message)
                     unlink(filename)
-                    # XXX maybe log the Message-Id of the message sent
+                    # TODO: maybe log the Message-Id of the message sent
                     self.log.info("Mail from %s to %s sent.",
                                   fromaddr, ", ".join(toaddrs))
                     # Blanket except because we don't want
