@@ -25,10 +25,9 @@ from zope.index.text.okapiindex import OkapiIndex
 from zope.index.text.lexicon import Lexicon
 from zope.index.text.lexicon import Splitter, CaseNormalizer, StopWordRemover
 from zope.index.text.queryparser import QueryParser
-from zope.index.text.nbest import NBest
+from zope.index.nbest import NBest
 
-from zope.index.interfaces import \
-     IInjection, IQuerying, IStatistics
+from zope.index.interfaces import IInjection, IQuerying, IStatistics
 
 class TextIndexWrapper(Persistent):
 

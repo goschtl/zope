@@ -189,20 +189,20 @@ TODO: Simplify the UI for selecting interfaces and attributes
         searchableText. 
 
 For text indexes, one generally uses
-`zope.index.interfaces.searchabletext.ISearchableText`,
+`zope.index.text.interfaces.ISearchableText`,
 `getSearchableText` and True.
 
   >>> print http(r"""
   ... POST /++etc++site/default/Catalog/+/AddTextIndex%3D HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 1003
+  ... Content-Length: 1008
   ... Content-Type: multipart/form-data; boundary=---------------------------12609588153518590761493918424
   ... Referer: http://localhost:8081/++etc++site/default/Catalog/+/AddTextIndex=
   ... 
   ... -----------------------------12609588153518590761493918424
   ... Content-Disposition: form-data; name="field.interface"
   ... 
-  ... zope.index.interfaces.searchabletext.ISearchableText
+  ... zope.index.text.interfaces.ISearchableText
   ... -----------------------------12609588153518590761493918424
   ... Content-Disposition: form-data; name="field.interface-empty-marker"
   ... 

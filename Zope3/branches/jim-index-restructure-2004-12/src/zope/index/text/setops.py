@@ -15,10 +15,9 @@
 
 $Id$
 """
-from BTrees.IIBTree import \
-     IIBucket, weightedIntersection, weightedUnion
+from BTrees.IIBTree import IIBucket, weightedIntersection, weightedUnion
 
-from zope.index.text.nbest import NBest
+from zope.index.nbest import NBest
 
 def mass_weightedIntersection(L):
     "A list of (mapping, weight) pairs -> their weightedIntersection IIBucket."

@@ -17,8 +17,9 @@ $Id$
 """
 from BTrees.IIBTree import difference
 
-from zope.index.interfaces.queryparsetree import IQueryParseTree
-from zope.index.text.setops import mass_weightedIntersection, mass_weightedUnion
+from zope.index.text.interfaces import IQueryParseTree
+from zope.index.text.setops import mass_weightedIntersection
+from zope.index.text.setops import mass_weightedUnion
 
 from zope.interface import implements
 
