@@ -74,6 +74,14 @@ class LoaderTestCase(LoaderTestBase):
            "repository:path/:tag")
         eq(convert("repository:/some/path/:tag"),
            "repository:/some/path/:tag")
+        eq(convert("svn://example.org/path/to/svnroot/tags/foo/file.txt"),
+           "svn://example.org/path/to/svnroot/tags/foo/file.txt")
+        eq(convert("svn://example.org/path/to/svnroot/branches/foo/file.txt"),
+           "svn://example.org/path/to/svnroot/branches/foo/file.txt")
+        eq(convert("svn+ssh://example.org/path/to/svnroot/tags/foo/file.txt"),
+           "svn+ssh://example.org/path/to/svnroot/tags/foo/file.txt")
+        eq(convert("svn+ssh://example.org/path/to/svnroot/branches/foo/file"),
+           "svn+ssh://example.org/path/to/svnroot/branches/foo/file")
         # not really a URL, but a supported tagless thing
         eq(convert("local/path/reference.conf"),
            "local/path/reference.conf")
