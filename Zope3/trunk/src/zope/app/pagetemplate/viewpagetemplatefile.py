@@ -45,8 +45,11 @@ class ViewPageTemplateFile(TrustedAppPT, PageTemplateFile):
             request=instance.request,
             instance=instance, args=args, options=keywords)
         debug_flags = instance.request.debug
-        s = self.pt_render(namespace, showtal=debug_flags.showTAL,
-                           sourceAnnotations=debug_flags.sourceAnnotations)
+        s = self.pt_render(
+            namespace,
+            showtal=getattr(debug_flags, 'showTAL', 0),
+            sourceAnnotations=getattr(debug_flags, 'sourceAnnotations', 0),
+            )
         response = instance.request.response
         if not response.getHeader("Content-Type"):
             response.setHeader("Content-Type", self.content_type)
