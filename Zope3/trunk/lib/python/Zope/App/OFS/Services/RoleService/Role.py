@@ -14,25 +14,14 @@
 """
 
 Revision information:
-$Id: Role.py,v 1.3 2002/06/20 15:54:55 jim Exp $
+$Id: Role.py,v 1.4 2002/06/23 17:03:42 jim Exp $
 """
 
 from Zope.App.Security.IRole import IRole
-from Zope.ComponentArchitecture.IFactory import IFactory
-from Zope.App.Security.Registries.RegisteredObject import RegisteredObject
+from Zope.App.Security.Registries.RoleRegistry import Role
 from Persistence import Persistent
 
-class Role(RegisteredObject, Persistent):
-    __implements__ = IRole
-    __class_implements__ = IFactory
-
-    def __init__(self):
-        super(Role, self).__init__('', '', '')
-    
-    def setId(self, id):
-        self._id = id
-        
-    def getInterfaces(self):
-        return self.__implements__
+class Role(Role, Persistent):
+    "Persistent Role"
 
 

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -11,14 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-from Interface import Interface     
+"""
+$Id: Adding.py,v 1.1 2002/06/23 17:03:43 jim Exp $
+"""
 
-class IZMIViewService(Interface):
-    
-    def getViews(object):
-        """Return UI views for an object
+from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
 
-        Return a sequence of tuples consisting of label, path for zmi
-        management views of an object """
-        
+class ServiceAdding(ContentAdding):
+    """Adding component for service containers
+    """
     
+    menu_id = "add_service"
+
+__doc__ = ServiceAdding.__doc__ + __doc__

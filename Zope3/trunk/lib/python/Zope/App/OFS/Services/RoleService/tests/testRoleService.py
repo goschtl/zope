@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testRoleService.py,v 1.3 2002/06/20 15:54:56 jim Exp $
+$Id: testRoleService.py,v 1.4 2002/06/23 17:03:43 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
@@ -49,8 +49,7 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
         
         from Zope.App.OFS.Services.RoleService.Role import Role
-        r = Role()
-        r.setId("Hacker")
+        r = Role("Hacker","","")
         self.rs.setObject("Hacker", r)
         self.assertEqual(self.rs.getRole('Hacker').getId(), 'Hacker')
         self.assertEqual(self.rs.getRole('Manager').getId(), 'Manager')
@@ -64,8 +63,7 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
         
         from Zope.App.OFS.Services.RoleService.Role import Role
-        r = Role()
-        r.setId("Hacker")
+        r = Role("Hacker","","")
         self.rs.setObject("Hacker", r)
         self.createServiceManager(self.folder1)
         self.sm1=getServiceManager(self.folder1)
@@ -74,8 +72,7 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         self.sm1.setObject("myRoleService", self.rs1)
         self.sm1.bindService("RoleService","myRoleService")
         self.rs1=self.sm1.getService("RoleService")
-        r1=Role()
-        r1.setId("Reviewer")
+        r1=Role("Reviewer",'','')
         self.rs1.setObject("Reviewer", r1)
         self.assertEqual(self.rs1.getRole('Hacker').getId(), 'Hacker')
         self.assertEqual(self.rs1.getRole('Manager').getId(), 'Manager')

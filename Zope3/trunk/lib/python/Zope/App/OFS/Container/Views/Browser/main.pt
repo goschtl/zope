@@ -19,7 +19,7 @@
 <form action="@@index.html" method="get">
   <table class="ContentListing">
   
-    <caption>Folder Contents <a href="@@create"> Add... </a> </caption>
+    <caption>Folder Contents <a href="+"> Add... </a> </caption>
   
     <tbody>
   

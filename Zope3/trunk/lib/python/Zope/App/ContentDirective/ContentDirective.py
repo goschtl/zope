@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.4 2002/06/20 20:00:19 jim Exp $
+$Id: ContentDirective.py,v 1.5 2002/06/23 17:03:40 jim Exp $
 """
 from Zope.Configuration.ConfigurationDirectiveInterfaces \
      import INonEmptyDirective
@@ -24,7 +24,6 @@ import Interface
 from Zope.App.ComponentArchitecture.ClassFactory import ClassFactory
 from Zope.App.Security.protectClass \
     import protectLikeUnto, protectName, checkPermission
-from Zope.App.ZMI.IGenericCreatorMarker import IGenericCreatorMarker
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Security.Checker import NamesChecker
 
@@ -124,7 +123,8 @@ class ContentDirective:
         return ()
 
 
-    def factory(self, _context, permission, title, id=None, description=''):
+    def factory(self, _context,
+                permission=None, title="", id=None, description=''):
         """Register a zmi factory for this class"""
 
         id = id or self.__id
@@ -134,21 +134,22 @@ class ContentDirective:
         # same namespace, despite the service/content division
         return [
             Action(
-                discriminator = ('AddableFactory', id),
+                discriminator = ('FactoryFromClass', id),
                 callable = provideClass,
                 args = (id, self.__class,
                         permission, title, description)
                 )
             ]
     
-def provideClass(id, _class, permission,
-                 title, description=''):
+def provideClass(id, _class, permission=None,
+                 title='', description=''):
     """Provide simple class setup
 
     - create a component
 
     - set component permission
     """
+
     factory = ClassFactory(_class)
     if permission and (permission != 'Zope.Public'):
         # XXX should getInterfaces be public, as below?

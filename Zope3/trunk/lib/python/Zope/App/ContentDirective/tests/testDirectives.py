@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.5 2002/06/20 20:00:19 jim Exp $
+$Id: testDirectives.py,v 1.6 2002/06/23 17:03:40 jim Exp $
 """
 
 import unittest
@@ -21,12 +21,12 @@ import sys
 import os
 from StringIO import StringIO
 
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.xmlconfig import ZopeXMLConfigurationError
+from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 
+import Zope.App.ComponentArchitecture
 import Zope.App.Security
-
 import Zope.App.ContentDirective
 
 # explicitly import ExampleClass and IExample using full paths
@@ -41,8 +41,9 @@ def configfile(s):
       </zopeConfigure>
       """ % s)
 
-class TestContentDirective(CleanUp, unittest.TestCase):
+class TestContentDirective(PlacelessSetup, unittest.TestCase):
     def setUp(self):
+        PlacelessSetup.setUp(self)
         XMLConfig('meta.zcml', Zope.App.ContentDirective)()
         XMLConfig('meta.zcml', Zope.App.Security)()
         
@@ -95,13 +96,10 @@ class TestContentDirective(CleanUp, unittest.TestCase):
                        """)
         xmlconfig(f)
         
-        
-from Zope.App.OFS.Services.AddableService.tests.AddableSetup \
-    import AddableSetup
 
-class TestFactorySubdirective(AddableSetup, CleanUp, unittest.TestCase):
+class TestFactorySubdirective(PlacelessSetup, unittest.TestCase):
     def setUp(self):
-        AddableSetup.setUp(self)
+        PlacelessSetup.setUp(self)
         XMLConfig('meta.zcml', Zope.App.ContentDirective)()
         XMLConfig('meta.zcml', Zope.App.Security)()
 

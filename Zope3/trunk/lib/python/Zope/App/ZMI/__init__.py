@@ -12,5 +12,3 @@
 # 
 ##############################################################################
 """ Zope Management Interface """
-
-from metaConfigure import provideClass

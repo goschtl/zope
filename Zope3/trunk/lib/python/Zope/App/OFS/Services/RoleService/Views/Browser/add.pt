@@ -1,0 +1,19 @@
+<html metal:use-macro="views/standard_macros/page">
+<head><title>Add Role</title></head>
+<body>
+<div metal:fill-slot="body">
+Enter the information about the role.
+<form action="action.html" method="post">
+<table cellspacing="0" cellpadding="2" border="0">
+  <tr><td>Id</td>
+      <td><input type="text" name="id" size="40" value="" /> </td>
+  </tr>
+  <tr><td>Title</td>
+      <td><input type="text" name="title" size="60" value="" /> </td>
+  </tr>
+  <tr><td>Descrption</td>
+      <td><textarea name="description" rows="10" cols="60"></textarea></td>
+  </tr>
+</table>
+<input type="submit" name="submit" value=" Create Role " />
+</form></div></body></html>

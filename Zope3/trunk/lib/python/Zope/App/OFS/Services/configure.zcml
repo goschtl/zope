@@ -1,8 +1,12 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'
+               xmlns:browser='http://namespaces.zope.org/browser'>
+
+<browser:menu id="add_service" 
+              title="Menu of objects to be added to service managers"
+              />
 
 <include package=".ServiceManager" />
 
-<include package=".AddableService" />
 <include package=".LocalEventService" />
 
 <include package=".RoleService" />

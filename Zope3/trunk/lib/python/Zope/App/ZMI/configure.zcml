@@ -24,13 +24,5 @@
                     file="www/zopetopStructure.css"/>
 
   <browser:resource name="arrowUp.gif" file="www/arrowUp.gif"/>
-  
-  <content class=".IGenericCreatorMarker.">
-    <require  
-        permission="Zope.ManageContent"
-        interface=".IGenericCreatorMarker." />
-  </content>
-  
-  <include package=".Views" />
 
 </zopeConfigure>

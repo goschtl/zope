@@ -23,16 +23,16 @@
 
   </browser:view> 
 
-   <browser:view
-       permission="Zope.ManageServices" 
-       for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
-       name="create"  
-       factory=".ServiceAdding."
-       >
-       <browser:page name="index.html"
-       template="add.pt" />
-       <browser:page name="action.html" attribute="action" />
-   </browser:view>
+  <browser:view 
+     name="+"
+     permission="Zope.ManageServices" 
+     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+     factory=".Adding.ServiceAdding">
+
+    <browser:page name="index.html"  attribute="index"  />
+    <browser:page name="action.html" attribute="action" />
+
+  </browser:view> 
   
   <browser:view 
      permission="Zope.ManageServices" 

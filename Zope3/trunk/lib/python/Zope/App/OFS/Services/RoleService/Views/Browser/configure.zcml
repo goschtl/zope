@@ -25,18 +25,13 @@
                     />
 
   <browser:view 
-     name="adder"
      permission="Zope.ManageServices" 
      for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
-     factory="Zope.App.OFS.Services.RoleService.Views.Browser.Adder."
+     factory="Zope.App.OFS.Services.RoleService.Views.Browser.Add."
      >
 
-    <browser:page name="addForm.html"
-                  attribute="index"
-                  />
-    <browser:page name="add.html"
-                  attribute="action"
-                  />
+    <browser:page name="+"        template="add.pt" />
+    <browser:page name="action.html" attribute="action" />
 
   </browser:view>
 

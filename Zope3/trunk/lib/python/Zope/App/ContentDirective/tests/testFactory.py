@@ -20,14 +20,10 @@ from cStringIO import StringIO
 
 from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
 from Zope.Configuration.xmlconfig import XMLConfig
-
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
+from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 
 import Zope.App.Security
 from Zope.App.Security.Exceptions import UndefinedPermissionError
-
-from Zope.App.OFS.Services.AddableService.tests.AddableSetup \
-    import AddableSetup
 
 import Zope.App.ContentDirective
 from Zope.App.ContentDirective.tests.ExampleClass \
@@ -40,9 +36,9 @@ def configfile(s):
       </zopeConfigure>
       """ % s)
 
-class Test(AddableSetup, CleanUp, unittest.TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
-        AddableSetup.setUp(self)
+        PlacelessSetup.setUp(self)
         XMLConfig('meta.zcml', Zope.App.ContentDirective)()
         XMLConfig('meta.zcml', Zope.App.Security)()
 

@@ -5,25 +5,30 @@
    xmlns:service='http://namespaces.zope.org/service'
 >
   <content class=".RoleService.">
+
     <factory
         id="RoleService"
         permission="Zope.ManageServices"
-        title="Roles" />
+        />
+
     <require
         permission="Zope.Security"
         interface="Zope.App.Security.IRoleService." />
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IContainer." />
+
   </content>
+
+  <browser:menuItem menu="add_service" for="Zope.App.OFS.Container.IAdding."
+     action="RoleService"  title="Role Service" />
   
   <content class=".Role.">
+    <factory />
     <require
         permission="Zope.Security"
         interface="Zope.App.Security.IRole." />
   </content>
-
-  <factory component=".Role." />
 
   <include package=".Views" />
 

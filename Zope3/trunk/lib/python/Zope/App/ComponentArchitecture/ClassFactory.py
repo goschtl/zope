@@ -11,14 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-""" ZMI Addable Registration
-
-$Id: ClassFactory.py,v 1.1 2002/06/20 20:00:19 jim Exp $
-"""
+"$Id: ClassFactory.py,v 1.2 2002/06/23 17:03:40 jim Exp $"
 
 from Zope.ComponentArchitecture.IFactory import IFactory
 
 class ClassFactory:
+    "Class that creates a factory component from a class"
     
     __implements__ = IFactory
 
@@ -30,3 +28,5 @@ class ClassFactory:
     
     def getInterfaces(self):
         return getattr(self._class, '__implements__', None)
+
+__doc__ = "%s\n\n%s" % (ClassFactory.__doc__, __doc__)
