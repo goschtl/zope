@@ -6,6 +6,7 @@
     class=".browser.SimpleContentView"
     attribute="eagle"
     name="eagle.txt"
+    permission="zope.ViewManagementScreens"
     />
 
   <five:implements
@@ -22,27 +23,18 @@
     class=".browser.SimpleFolderView"
     attribute="eagle"
     name="eagle.txt"
+    permission="zope.Public"
     />
 
-  <five:content class=".browser.SimpleContentView">
+  <five:content class=".simplecontent.SimpleContent">
 
-    <five:require attributes="eagle"
-	     permission="zope.ViewManagementScreens"
+    <allow interface=".interfaces.IPublicSimpleContent" />
+
+    <deny interface=".interfaces.IPrivateSimpleContent" />
+
+    <require permission="zope.ViewManagementScreens"
+	     interface=".interfaces.IProtectedSimpleContent"
 	     />
-
-  </five:content>
-
-  <five:content class=".browser.SimpleFolderView">
-
-    <implements interface=".interfaces.ISimpleFolderView"
-		/>
-
-    <require interface=".interfaces.IWriteSimpleFolderView"
-	     permission="zope.ViewManagementScreens"
-	     />
-
-    <allow interface=".interfaces.IReadSimpleFolderView"
-	   />
 
   </five:content>
 

@@ -11,7 +11,8 @@ from provideinterface import provideInterface
 from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
-from security.permission import getSecurityInfo
+from security.permission import getSecurityInfo, CheckerPublic
+from handlers.content import protectName, initializeClass
 
 #def handler(serviceName, methodName, *args, **kwargs):
 #    method=getattr(getService(serviceName), methodName)
@@ -24,6 +25,7 @@ def handler(serviceName, methodName, *args, **kwargs):
 def page(_context, name, for_,
          layer='default', template=None, class_=None,
          attribute='__call__', menu=None, title=None,
+         permission=CheckerPublic
          ):
 
     try:
@@ -60,6 +62,7 @@ def page(_context, name, for_,
         # the security decls directives haven't been
         # executed yet.
         if template:
+            attribute = 'index'
             # class and template
             new_class = SimpleViewClass(
                 template, bases=(class_, ),
@@ -72,6 +75,7 @@ def page(_context, name, for_,
 
     else:
         # template
+        attribute = 'index'
         new_class = SimpleViewClass(template, bases=(BrowserView,))
 
     _handle_for(_context, for_)
@@ -83,6 +87,17 @@ def page(_context, name, for_,
                 IBrowserRequest, new_class, name, [for_], Interface, layer,
                 _context.info),
         )
+    _context.action(
+        discriminator = ('five:protectName', new_class, attribute),
+        callable = protectName,
+        args = (new_class, attribute, permission)
+        )
+    _context.action(
+        discriminator = ('five:initialize:class', new_class),
+        callable = initializeClass,
+        args = (new_class,)
+        )
+
 
 def _handle_for(_context, for_):
     if for_ is not None:

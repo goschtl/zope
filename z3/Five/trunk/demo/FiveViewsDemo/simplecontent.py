@@ -1,28 +1,33 @@
+from zope.interface import implements
+
 from OFS.SimpleItem import SimpleItem
-from Globals import InitializeClass
-from AccessControl import ClassSecurityInfo
-from helpers import add_and_edit
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.Five.api import Viewable
-from zope.interface import implements
+
 from interfaces import ISimpleContent
+from helpers import add_and_edit
 
 class SimpleContent(SimpleItem, Viewable):
+    """A Simple Content"""
 
     implements(ISimpleContent)
-    
     meta_type = 'SimpleContent'
-    security = ClassSecurityInfo()
 
     def __init__(self, id, title):
         self.id = id
         self.title = title
-        
-    security.declarePublic('mymethod')
+
     def mymethod(self):
+        """A public method"""
         return "Hello world"
 
-InitializeClass(SimpleContent)
+    def myprivatemethod(self):
+        """A private method"""
+        return "Hello private world"
+
+    def myprotectedmethod(self):
+        """A protected method"""
+        return "Hello protected world"
 
 manage_addSimpleContentForm = PageTemplateFile(
     "www/simpleContentAdd", globals(),

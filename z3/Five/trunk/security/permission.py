@@ -15,6 +15,15 @@ def getSecurityInfo(klass):
             sec[k] = v
     return sec
 
+def clearSecurityInfo(klass):
+    sec = {}
+    info = vars(klass)
+    if info.has_key('__ac_permissions__'):
+        delattr(klass, '__ac_permissions__')
+    for k, v in info.items():
+        if k.endswith('__roles__'):
+            delattr(klass, k)
+
 def checkPermission(context, permission_id):
     """Check whether a given permission exists in the provided context.
 

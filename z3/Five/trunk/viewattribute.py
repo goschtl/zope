@@ -8,10 +8,10 @@ class FiveViewError(Exception):
     pass
 
 class ViewAttribute(Acquisition.Explicit):
- 
+
     def __init__(self, view_type):
         self._view_type = view_type
-        
+
     def index_html(self):
         """Default method on view
         """
@@ -26,9 +26,9 @@ class ViewAttribute(Acquisition.Explicit):
         security_manager = getSecurityManager()
         if not security_manager.validate(method_on_view, obj, 'index_html',
                                          method_on_view):
-            raise Unauthorized        
+            raise Unauthorized
         return method_on_view()
-     
+
     def __getitem__(self, name):
         """Get correct method on view
         """
@@ -40,10 +40,10 @@ class ViewAttribute(Acquisition.Explicit):
         view = view.__of__(obj)
         # look up method
         method_on_view = getattr(view, name, None)
-        
+
         if method_on_view is None:
             # we do not accept calling unknown methods
-            raise FiveViewError, "Unknown view method: %s" % name 
-        
+            raise FiveViewError, "Unknown view method: %s" % name
+
         # let the ZPublisher do the calling, its security kicks in
         return method_on_view

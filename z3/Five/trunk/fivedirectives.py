@@ -2,6 +2,7 @@ from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens,\
      PythonIdentifier, MessageID
 from zope.schema import TextLine, Id
+from Products.Five.security.fields import Permission
 
 class IBasicViewInformation(Interface):
     """
@@ -88,6 +89,15 @@ class IPagesPageSubdirective(Interface):
         supplied.""",
         required=False
         )
+
+    permission = Permission(
+        title=u"Permission",
+        description=u"""
+        Specifies the permission by id that will be required to
+        access or mutate the attributes and methods specified.""",
+        required=False
+        )
+
 
 class IPageDirective(IPagesDirective, IPagesPageSubdirective):
     """

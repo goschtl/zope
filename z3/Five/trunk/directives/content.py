@@ -18,7 +18,6 @@ from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, \
      PythonIdentifier, MessageID
 from zope.schema import TextLine, Id
-
 from Products.Five.security.fields import Permission
 
 class IContentDirective(Interface):

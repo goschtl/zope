@@ -89,7 +89,7 @@ class ContentDirective:
     def __protectName(self, name, permission_id):
         "Set a permission on a particular name."
         self.__context.action(
-            discriminator = ('protectName', self.__class, name),
+            discriminator = ('five:protectName', self.__class, name),
             callable = protectName,
             args = (self.__class, name, permission_id)
             )
@@ -109,7 +109,6 @@ class ContentDirective:
 
 
 def initializeClass(klass):
-    print 'Initializing class %r' % klass
     InitializeClass(klass)
 
 def _getSecurity(klass):
@@ -122,7 +121,6 @@ def _getSecurity(klass):
     return security
 
 def protectName(klass, name, permission_id):
-    print klass, name, permission_id
     security = _getSecurity(klass)
     # Zope 2 uses string, not unicode yet
     name = str(name)

@@ -1,9 +1,26 @@
 from zope.interface import Interface
 
-class ISimpleContent(Interface):
+class IPublicSimpleContent(Interface):
+
     def mymethod():
         """This is just a sample method.
         """
+class IPrivateSimpleContent(Interface):
+
+    def myprivatemethod():
+        """This is just a sample method.
+        """
+
+class IProtectedSimpleContent(Interface):
+
+    def myprotectedmethod():
+        """This is just a sample method.
+        """
+
+class ISimpleContent(IPublicSimpleContent,
+                     IPrivateSimpleContent,
+                     IProtectedSimpleContent):
+    """A Simple Content Interface"""
 
 class IFolder(Interface):
     pass
