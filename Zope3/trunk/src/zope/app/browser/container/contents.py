@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.15 2003/03/30 17:28:31 sidnei Exp $
+Revision information: $Id: contents.py,v 1.16 2003/04/19 21:27:16 srichter Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -55,13 +55,14 @@ class Contents(BrowserView):
             if title:
                 info['title'] = title
 
+            formatter = self.request.locale.getDateFormatter('medium')
             created = dc.created
             if created is not None:
-                info['created'] = formatTime(created)
+                info['created'] = formatter.format(created)
 
             modified = dc.modified
             if modified is not None:
-                info['modified'] = formatTime(modified)
+                info['modified'] = formatter.format(modified)
 
         sized_adapter = queryAdapter(obj, ISized)
         if sized_adapter is not None:
@@ -179,16 +180,3 @@ class JustContents(Contents):
 
     def index(self):
         return self._index()
-
-
-
-# XXX L10N Below is prime material for localization.
-# We are a touchpoint that should contact the personalization
-# service so that users can see datetime and decimals
-
-def formatTime(in_date):
-    format='%m/%d/%Y'
-    undefined=u'N/A'
-    if hasattr(in_date, 'strftime'):
-        return in_date.strftime(format)
-    return undefined

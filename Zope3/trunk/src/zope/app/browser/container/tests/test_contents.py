@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.11 2003/03/30 17:38:41 sidnei Exp $
+$Id: test_contents.py,v 1.12 2003/04/19 21:27:16 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -107,7 +107,6 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
         from datetime import datetime
         from zope.app.interfaces.dublincore import IZopeDublinCore
-        from zope.app.browser.container.contents import formatTime
         class FauxDCAdapter:
             __implements__ = IZopeDublinCore
 
@@ -128,8 +127,8 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         self.assertEqual(info['url'], 'document')
         self.assertEqual(info['object'], document)
         self.assertEqual(info['title'], 'faux title')
-        self.assertEqual(info['created'], formatTime(FauxDCAdapter.created))
-        self.assertEqual(info['modified'], formatTime(FauxDCAdapter.modified))
+        self.assertEqual(info['created'], 'Jan 1, 2001')
+        self.assertEqual(info['modified'], 'Feb 2, 2002')
 
     def testRemove(self):
         container = self._TestView__newContext()
