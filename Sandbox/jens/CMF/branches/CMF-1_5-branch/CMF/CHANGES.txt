@@ -17,6 +17,9 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - ZPT skin: Refactored registered_notify_template.
+      For security reasons, it no longer adds the password to the login URL.
+
     - PortalFolder: Fixed '_checkId' policy.
       In a subfolder, members without 'Manage portal' permission were not able
       to overwrite content items of the portal root.
