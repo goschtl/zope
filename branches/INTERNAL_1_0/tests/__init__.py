@@ -1,0 +1,4 @@
+""" PluginRegistry unit tests
+
+$Id$
+"""
