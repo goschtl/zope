@@ -285,6 +285,8 @@ pre {
 }
 
 #breadcrumbs {
+    padding-top: 1px;
+    padding-bottom: 1px;
     border: 1px solid #369;
     border-style: none none solid none;
     margin: 0;
