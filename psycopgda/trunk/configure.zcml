@@ -13,7 +13,7 @@
 
   <browser:addform
       name="AddPsycopgDA"
-      schema="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+      schema="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
       label="Add Psycopg (PostGreSQL) Database Adapter"
       content_factory=".adapter.PsycopgAdapter"
       arguments="dsn"
