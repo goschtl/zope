@@ -31,6 +31,8 @@ import posixpath
 import re
 import sys
 
+from distutils.cmd import Command
+
 from zpkgsetup import package
 from zpkgsetup import publication
 
@@ -105,18 +107,12 @@ class SetupContext:
         for name in self.__dict__:
             if name[0] == "_":
                 del kwargs[name]
-        if "--debug" in sys.argv:
-            import pprint
-            try:
-                pprint.pprint(kwargs)
-            except IOError, e:
-                if e.errno != errno.EPIPE:
-                    raise
-        else:
-            from zpkgsetup.dist import ZPkgDistribution
-            from distutils.core import setup
-            kwargs["distclass"] = ZPkgDistribution
-            setup(**kwargs)
+        from zpkgsetup.dist import ZPkgDistribution
+        from distutils.core import setup
+        kwargs["distclass"] = ZPkgDistribution
+        ContextDisplay.kwargs = kwargs
+        kwargs["cmdclass"] = {"debugdisplay": ContextDisplay}
+        setup(**kwargs)
 
     def load_metadata(self, path):
         f = open(path, "rU")
@@ -235,3 +231,27 @@ class SetupContext:
     def add_package_file(self, pkgname, relfn):
         L = self.package_data.setdefault(pkgname, [])
         L.append(relfn)
+
+
+class ContextDisplay(Command):
+    """Command to display the information being passed to setup()."""
+
+    # Note: The .kwargs attribute is set on this class by the setup()
+    # method above; this is a really hackish way to get the kwargs
+    # dict, but it works.
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import pprint
+        try:
+            pprint.pprint(self.kwargs)
+        except IOError, e:
+            if e.errno != errno.EPIPE:
+                raise
