@@ -11,16 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test zapi-provided implementation
+"""XXX short summary goes here.
 
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctest import DocTestSuite
+from zope.testing.cleanup import CleanUp
+
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.zapi.__init__'),
+        DocTestSuite('zope.publisher.xmlrpc',
+                     tearDown=lambda ignored=None: CleanUp().cleanUp()),
         ))
 
 if __name__ == '__main__':

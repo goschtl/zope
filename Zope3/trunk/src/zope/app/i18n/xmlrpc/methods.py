@@ -17,9 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.proxy import removeAllProxies
 from zope.app.publisher.xmlrpc import XMLRPCView
-
 
 class Methods(XMLRPCView):
 
@@ -30,6 +28,6 @@ class Methods(XMLRPCView):
         messages = []
         for msg in self.context.getMessages():
             if msg['language'] in languages:
-                messages.append(removeAllProxies(msg))
+                messages.append(msg)
 
         return messages
