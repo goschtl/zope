@@ -26,10 +26,10 @@
 
 <browser:editform
     schema=".interfaces.IBuddy"
-    label="Change Buddy Information"    
-    name="edit.html"       
+    label="Change Buddy Information"
+    name="edit.html"
     menu="zmi_views" title="Edit"
-    permission="zope.ManageContent" 
+    permission="zope.ManageContent"
     />
 
 <browser:addform
@@ -38,13 +38,13 @@
     content_factory=".buddy.Buddy"
     arguments="first last email address postal_code"
     name="AddBuddy.html"
-    permission="zope.ManageContent" 
+    permission="zope.ManageContent"
     />
 
 <browser:addMenuItem
     class=".buddy.Buddy"
     title="Buddy"
-    permission="zope.ManageContent" 
+    permission="zope.ManageContent"
     view="AddBuddy.html"
     />
 
@@ -53,16 +53,16 @@
 </content>
 
 <utility
-    factory=".stubpostal.Lookup" 
+    factory=".stubpostal.Lookup"
     provides=".interfaces.IPostalLookup"
-    permission="zope.Public" 
+    permission="zope.Public"
     />
 
 <adapter
     factory=".buddy.BuddyCityState"
-    provides=".interfaces.IPostalInfo" 
+    provides=".interfaces.IPostalInfo"
     for=".interfaces.IBuddy"
-    permission="zope.Public" 
+    permission="zope.Public"
     />
 
 <browser:pages
@@ -82,16 +82,16 @@
 </browser:pages>
 
 <content class=".buddy.BuddyFolder">
-  <require permission="zope.View" 
+  <require permission="zope.View"
            interface="zope.app.container.interfaces.IReadContainer"
            />
-  <require permission="zope.ManageContent" 
-         interface="zope.app.container.interfaces.IWriteContainer"
+  <require permission="zope.ManageContent"
+           interface="zope.app.container.interfaces.IWriteContainer"
            />
 </content>
 
 <browser:addMenuItem
-    title="Buddy Folder" 
+    title="Buddy Folder"
     class=".buddy.BuddyFolder"
     permission="zope.ManageContent"
     />
