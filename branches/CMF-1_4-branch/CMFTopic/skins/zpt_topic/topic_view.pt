@@ -35,9 +35,11 @@
     <div tal:repeat="match batch" tal:condition="batch">
         <a href=""
             tal:attributes="href string:${match/getURL}/view"
-            tal:content="match/Title"> Match Title </a>
+        ><tal:span tal:content="match/getId">ID</tal:span>
+        <tal:case tal:condition="match/Title"
+           tal:content="string:(${match/Title})">(Title)</tal:case
+      ></a>
     </div>
-
 
     <span tal:define="p batch/previous" tal:condition="p">
     <a href=""
