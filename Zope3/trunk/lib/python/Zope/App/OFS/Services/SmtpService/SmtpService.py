@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """SMTP service.
 
@@ -27,7 +27,7 @@ from ISMTPService import ISMTPService
 import Exception
 
 
-        
+
 class SmtpService(Persistent):
     """
     """
@@ -36,9 +36,9 @@ class SmtpService(Persistent):
     def __init__(self, smtphost='localhost', smtpport= 25):
         self.smtphost = smtphost
         self.smtpport = int(smtpport)
-        
 
-    
+
+
     def sendMessage(self, messageText, mto=None, mfrom=None, subject=None,
              encode=None):
         headers = extractheaders(messageText)
@@ -52,15 +52,15 @@ class SmtpService(Persistent):
             headers['to'] = filter(None, mto)
         if mfrom:
             headers['from'] = mfrom
-            
+
         for requiredHeader in ('to', 'from'):
             if not headers.has_key(requiredHeader):
                 raise MailHostError,"Message missing SMTP Header '%s'"\
                 % requiredHeader
-        self.__send(messageText, encode, headers['to'], headers['from'])    
+        self.__send(messageText, encode, headers['to'], headers['from'])
 
     def sendBody(self, mto, mfrom, subject, body, encode=None):
-        
+
         body="from: %s\nto: %s\nsubject: %s\n\n%s" % (
             mfrom, mto, subject, body)
         self.__send(body, encode, mto, mfrom)
@@ -69,9 +69,10 @@ class SmtpService(Persistent):
     def __send(self, messageText, encode, mto, mfrom):
         if encode:
             messageText=_encode(messageText, encode)
-            
+
         smtpserver = SMTP(self.smtphost, int(self.smtpport))
         smtpserver.sendmail(mfrom, mto, messageText)
+        smtpserver.quit()
 
 
 def _encode(body, encode=None):
@@ -79,7 +80,7 @@ def _encode(body, encode=None):
         return body
     mfile=StringIO(body)
     mo=mimetools.Message(mfile)
-    if mo.getencoding() != '7bit': 
+    if mo.getencoding() != '7bit':
         raise MailHostError, 'Message already encoded'
     newmfile=StringIO()
     newmfile.write(string.joinfields(mo.headers, ''))
@@ -104,9 +105,7 @@ def extractheaders(message):
         if not header: continue
         for name, addr in header:
             hd['to'].append(addr)
-    
+
     hd['from']=mo.getaddr('from')[1]
     hd['subject']=mo.getheader('subject') or ''
     return hd
-     
- 
