@@ -33,4 +33,11 @@
     view = "zope.app.browser.onlinehelp.OnlineHelpTopicView"
     doc_path = "./help.txt" />
 
+<help:register
+    id = "onlinehelp"
+    title = "Online help system"
+    for = "zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
+    view = "zope.app.browser.onlinehelp.OnlineHelpTopicView"
+    doc_path = "./README.txt" />
+    
 </zopeConfigure>
