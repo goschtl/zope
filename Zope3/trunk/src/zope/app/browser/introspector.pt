@@ -1,7 +1,7 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
 
-<style metal:fill-slot="style_slot">
+<style type="text/css" metal:fill-slot="style_slot">
 .preclass {
     color : #000066;
     font-family : monospace;

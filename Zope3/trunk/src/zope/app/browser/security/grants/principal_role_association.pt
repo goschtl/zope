@@ -18,7 +18,7 @@
             </select>
 
            Role(s):
-            <select name="roles:list" multiple>
+            <select name="roles:list" multiple="multiple">
              <option tal:repeat="role view/getAllRoles"
                      tal:attributes="value role/getId"
                      tal:content="role/getTitle">my title</option>

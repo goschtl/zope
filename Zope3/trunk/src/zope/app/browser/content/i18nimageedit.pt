@@ -45,13 +45,8 @@
                 <select name="defaultLanguage">
                   <span tal:repeat="lang context/getAvailableLanguages"
                         tal:omit-tag="">
-                  <option selected
-                          tal:attributes="value lang"
-                          tal:condition="python:context.getDefaultLanguage() == lang"
-                          tal:content="lang" />
-                  <option
-                          tal:attributes="value lang"
-                          tal:condition="python:context.getDefaultLanguage() != lang"
+                  <option tal:attributes="value    lang;
+                                          selected python:context.getDefaultLanguage() == lang"
                           tal:content="lang" />
                  </span>
                 </select>

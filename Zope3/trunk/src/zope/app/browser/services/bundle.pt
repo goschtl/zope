@@ -1,5 +1,5 @@
 <html metal:use-macro="views/standard_macros/page">
-
+<body>
 <div metal:fill-slot="body" tal:define="message view/update">
 
 <h1>Bundle Information</h1>
@@ -38,7 +38,7 @@
     <br /><br /><i><a href="@@bundle.html">(click to clear message)</a></i>
   </div>
 
-<form action="@@bundle.html" method="GET">
+<form action="@@bundle.html" method="get">
 
   <tal:block tal:repeat="svc view/listServices">
 
@@ -66,7 +66,7 @@
             <input type="radio" tal:attributes="name cnf/path"
                    value="Registered" />Register only
             <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Active" checked />Register and activate</b>
+                   value="Active" checked="checked" />Register and activate</b>
           </span>
           <span tal:condition="python: cnf['advice'] == 'Registered'">
             <b><input type="radio" tal:attributes="name cnf/path"
@@ -89,7 +89,7 @@
 
 </form>
 
-<form action="@@bundle.html" method="GET">
+<form action="@@bundle.html" method="get">
 
   <p>Click "Deactivate bundle" to unregister all registrations in
   this bundle.</p>
@@ -101,5 +101,5 @@
 </form>
 
 </div>
-
+</body>
 </html>

@@ -94,7 +94,7 @@ No exceptions logged.
 </div>
 </form>
 <p>
-<form action="index.html" method="GET">
+<form action="index.html" method="get">
 <input type="submit" name="submit" value=" Refresh " />
 </form>
 </p>

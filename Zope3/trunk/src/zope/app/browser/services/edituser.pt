@@ -46,13 +46,9 @@
 	      <select name="roles:list" size="5" multiple="multiple">
               	<tal:block tal:repeat="role view/getAvailableRoles"
               	           tal:define="user_roles context/getRoles"> 
-              	  <option value=""
-              		  tal:condition="python: role.getId() not in user_roles"
-              	    tal:attributes="value role/getId"
-              	    tal:content="role/getTitle" />
-              	  <option value="" selected=""
-              		  tal:condition="python: role.getId() in user_roles"
-              	    tal:attributes="value role/getId"
+              	  <option
+              	    tal:attributes="value role/getId;
+                                    selected python:role.getId() in user_roles"
               	    tal:content="role/getTitle" />
               	</tal:block>
               </select>

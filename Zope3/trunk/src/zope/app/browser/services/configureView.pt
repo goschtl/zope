@@ -1,5 +1,5 @@
 <html metal:use-macro="context/@@standard_macros/page">
-
+<body>
 <div metal:fill-slot="body">
 
 <h2>View registrations for
@@ -25,5 +25,5 @@
 </form>
 
 </div>
-
+</body>
 </html>

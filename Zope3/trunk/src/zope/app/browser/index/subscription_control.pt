@@ -23,7 +23,7 @@
         Registration done.
     </span>
 
-    <form method="post">
+    <form action="" method="post">
        <span tal:condition="context/isSubscribed" tal:omit-tag="">
            Subscription state: ON
            <input type="submit" value="Unsubscribe" name="callUnsubscribe" />

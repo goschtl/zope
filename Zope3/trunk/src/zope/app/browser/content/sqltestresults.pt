@@ -27,10 +27,10 @@
       </tbody>
     </table>
 
-    <span tal:condition="view/error">
+    <tal:block tal:condition="view/error">
       <h3>An Error occurred</h3>
       <pre tal:content="view/getFormattedError" />
-    </span>
+    </tal:block>
 
   </div>
 

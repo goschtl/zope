@@ -59,11 +59,11 @@ Traceback (text)
 
 </div>
 
-<p>
-<form action="index.html" method="get">
-<input type="submit" name="submit" value=" Return to log " />
-</form>
-</p>
+<div>
+  <form action="index.html" method="get">
+    <input type="submit" name="submit" value=" Return to log " />
+  </form>
+</div>
 
 </div>
 </div>

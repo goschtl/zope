@@ -1,5 +1,5 @@
 <html metal:use-macro="context/@@standard_macros/page">
-
+<body>
 <div metal:fill-slot="body"
      i18n:domain="zope"
      >
@@ -28,5 +28,5 @@
 </form>
 
 </div>
-
+</body>
 </html>

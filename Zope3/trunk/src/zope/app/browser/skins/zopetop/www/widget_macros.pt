@@ -43,22 +43,26 @@
    <div class="body">
    <div class="content even">
    <img src="user_accounts.gif" width="22" height="28"
-      tal:attributes="src context/++resource++user_accounts.gif" />
+      tal:attributes="src context/++resource++user_accounts.gif"
+      alt="user accounts" />
     User Accounts
    </div>
    <div class="content odd">
     <img src="control_panels.gif" width="24" height="28"
-      tal:attributes="src context/++resource++control_panels.gif" />
+      tal:attributes="src context/++resource++control_panels.gif"
+      alt="control panels" />
     Control Panels
    </div>
    <div class="content even">
     <img src="system_security.gif" width="23" height="28"
-      tal:attributes="src context/++resource++system_security.gif" />
+      tal:attributes="src context/++resource++system_security.gif"
+      alt="system security" />
     System Security
    </div>
    <div class="content odd">
     <img src="add_more.gif" width="26" height="28"
-      tal:attributes="src context/++resource++add_more.gif" />
+      tal:attributes="src context/++resource++add_more.gif"
+      alt="add more" />
     Add More
    </div>
   </div>
@@ -73,29 +77,36 @@
     </thead>
     <tbody>
     <tr> 
-      <td colspan="2" class="odd"><a href="#"><img src="plus.gif" width="19" height="25"
-	tal:attributes="src context/++resource++plus.gif"/><img
-	src="closed_folder.gif" width="26" height="25"
-	tal:attributes="src context/++resource++closed_folder.gif"
-	/>Folder Name</a>
+      <td colspan="2" class="odd"><a href="#">
+        <img src="plus.gif" width="19" height="25"
+             tal:attributes="src context/++resource++plus.gif"
+             alt="+" />
+        <img src="closed_folder.gif" width="26" height="25"
+             tal:attributes="src context/++resource++closed_folder.gif"
+             alt="folder" />
+        Folder Name</a>
       </td>
     </tr>
     <tr> 
-      <td colspan="2" class="odd"><a href="#"><img src="plus.gif"
-	width="19" height="25"
-	tal:attributes="src context/++resource++plus.gif"/><img 
-	src="closed_folder.gif" width="26" height="25"
-	tal:attributes="src context/++resource++closed_folder.gif"
-	/>Folder Name</a>
+      <td colspan="2" class="odd"><a href="#">
+        <img src="plus.gif" width="19" height="25"
+             tal:attributes="src context/++resource++plus.gif"
+             alt="+" />
+        <img src="closed_folder.gif" width="26" height="25"
+             tal:attributes="src context/++resource++closed_folder.gif"
+             alt="folder" />
+        Folder Name</a>
       </td>
     </tr>
     <tr> 
-      <td colspan="2" class="even"><a 
-	href="#"><img src="minus.gif" width="19" height="25"
-	tal:attributes="src context/++resource++minus.gif"/><img 
-	src="closed_folder.gif" width="26" height="25"
-	tal:attributes="src context/++resource++closed_folder.gif"
-	/>Folder Name</a>
+      <td colspan="2" class="even"><a href="#">
+        <img src="minus.gif" width="19" height="25"
+             tal:attributes="src context/++resource++minus.gif"
+             alt="-" />
+        <img src="closed_folder.gif" width="26" height="25"
+             tal:attributes="src context/++resource++closed_folder.gif"
+             alt="folder" />
+        Folder Name</a>
       </td>
     </tr>
     </tbody>
@@ -113,8 +124,8 @@
       <tr>
 	<td colspan="2" nowrap="nowrap">
           <form name="search">
-          <input type="text" size="15" style="width: 85%;"
-          /><input type="submit" value="Go" style="width: 15%;" />
+          <input type="text" size="15" style="width: 85%;" />
+          <input type="submit" value="Go" style="width: 15%;" />
           </form>
 	</td>
       </tr>
@@ -174,7 +185,8 @@
     <a href="#">
       Help
       <img src="help.gif" width="25" height="25"
-           tal:attributes="src context/++resource++help.gif"/>
+           tal:attributes="src context/++resource++help.gif"
+           alt="help" />
     </a>
   </span>
 
