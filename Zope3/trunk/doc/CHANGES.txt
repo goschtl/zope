@@ -70,6 +70,8 @@ Zope Changes
 
     Bug fixes
     
+    - Fixed issue 119. Unicode-based names are handled correctly now.
+
     - Fixed issue 128. The TALES Iterator class is now up-to-date.
 
     - BTreeContainer's '__contains__()' and 'has_key()' methods return 'True'
