@@ -5,7 +5,7 @@ Pluggable Authentication Service
 The Pluggable Authentication Service (PAS) provides a framework for
 authenticating principals and associating information with them.  It
 uses a variety of different utilities, called plugins, and subscribers
-to get it's work done.
+to get its work done.
 
 Authentication
 ==============
