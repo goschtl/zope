@@ -107,9 +107,6 @@ To Do
 
   * Bundles should be read-only.
 
-- New command-line utility to convert a checkout of a site-management
-  folder to a bundle (in progress).
-
 - Documentation for the **zsync** and **zbundle** command line tools
   (in progress)
 
