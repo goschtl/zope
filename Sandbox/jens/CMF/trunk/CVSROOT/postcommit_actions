@@ -125,7 +125,7 @@ KNOWN_HOSTS_FILE = "%s/cvs-known_hosts" % CVSROOT
 WAIT = 0                                # Fork unless --wait is requested.
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
-VERBOSE = 0                             # '--verbose' option
+VERBOSE = 1                             # '--verbose' option
 SYNCREPO = 0                            # '--syncrepo' option
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
@@ -390,14 +390,14 @@ def do_mail(name, remote, repo, addrs, subjs,
     oldcontents = mf.read()
     mf.close()
     mf = open(msgfilenm, 'w')
-    mf.write("Subject: %s\n\n%s %s"
-             % (subject, oldcontents, diff_msg))
+    mf.write("Subject: %s\nTo: %s\n\n%s %s"
+             % (subject, addrs, oldcontents, diff_msg))
     mf.close()
     cmd = cmd + "< %s" % msgfilenm
 
     if VERBOSE:
-        complain("%sDoing mail cmd:\n\t%s\n",
-                 ((DRYRUN and "NOT ") or ""), cmd)
+        complain("%sDoing mail cmd for user %s:\n\t%s\n",
+                 ((DRYRUN and "NOT ") or ""), user, cmd)
     result = os.system(cmd)
     if result:
         note_failure("*** Mail failed with error %s...", result)
