@@ -55,8 +55,7 @@ the directive.  There are four kinds of directives:
   Other directives can be nested in grouping directives.
 
   To learn how to implement nested directives, look at the
-  documentation in tests/test_nested.py (when it exists, which isn't
-  yet ;).
+  documentation in tests/test_nested.py.
 
 - Complex directives are directives that have subdirectives.  
   Subdirectives have handlers that are simply methods of complex
