@@ -1,17 +1,23 @@
 """Table dictating what goes where for the traffic_cop module.
 
-A list of entries for each project that has anything going anywhere.
+the global var 'table' contains a list of entries identifying project dirs
+to be mirrored.
 
-Each entry is a tuple containing:
+Each 'table' entry is a tuple containing:
 
  - a string name for the entry - often the repository dir
 
- - a regular expression qualifying checkins for membership
-   - matched against the repository path of the checkin, sans CVSROOT
+ - inclusions - a regular expression identifying the checkins that qualify
+   for treatment; it's matched against the repository path of the checkin,
+   sans CVSROOT
 
- - a list of addresses for delivery of checkin message
+ - exclusions - a regular expression identifying checkins that *would*
+   qualify according to the previous expresion, but should be excluded.
+   A value of None means no exclusions.
 
- - an optional dictionary specifying the remote host to which repository
+ - a list of addresses to which checkin messages should be delivered
+
+ - an dictionary specifying the remote host to which repository
    checkins should be synced.  The fields are:
 
     'host'
@@ -24,10 +30,10 @@ Each entry is a tuple containing:
 
 E.g.: 
 
-MIRROR = {'host': "www.zope.org",
-          'acct': "anonymous",
-          'repodir': "%s"}
-("test", "^test", ["klm@digicool.com"], MIRROR)
+
+("test", "^test", None, ["klm@digicool.com"], {'host': "www.zope.org",
+					       'acct': "anonymous",
+					       'repodir': "%s"})
 """
 
 MIRROR = {'host': "www.zope.org",
@@ -35,6 +41,6 @@ MIRROR = {'host': "www.zope.org",
           'repodir': "/cvs-repository"}
 
 table = [
-    ("test", "^test", ["klm@digicool.com"], MIRROR),
-    ("CVSROOT", "^CVSROOT", ["klm@digicool.com"], MIRROR)
+    ("test", "^test", None, ["klm@digicool.com"], MIRROR),
+    ("CVSROOT", "^CVSROOT", "^CVSROOT/history", ["klm@digicool.com"], MIRROR)
 ]
