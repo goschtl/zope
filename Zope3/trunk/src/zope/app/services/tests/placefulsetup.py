@@ -13,13 +13,12 @@
 ##############################################################################
 """Base Mix-in class for Placeful Setups 
 
-$Id: placefulsetup.py,v 1.27 2003/07/31 21:35:16 srichter Exp $
+$Id: placefulsetup.py,v 1.28 2003/09/21 17:33:09 jim Exp $
 """
 from zope.app import zapi
 from zope.app.tests import setup
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.content.folder import RootFolder
-from zope.app.context import ContextWrapper
+from zope.app.content.folder import rootFolder
 
 class Place(object):
 
@@ -36,7 +35,6 @@ class Place(object):
         except KeyError:
             root = inst.rootFolder = setup.buildSampleFolderTree()
 
-        root = ContextWrapper(root, None)
         return zapi.traverse(root, self.path)
 
 class PlacefulSetup(PlacelessSetup):
@@ -75,7 +73,7 @@ class PlacefulSetup(PlacelessSetup):
         return setup.createServiceManager(folder)
 
     def createRootFolder(self):
-        self.rootFolder = RootFolder()
+        self.rootFolder = rootFolder()
 
     # The following is a hook that some base classes might want to override.
     def getObjectHub(self):
