@@ -11,6 +11,10 @@ After CMF-1.5.1beta
       incompatible with SpeedPack, but includes one of its two
       optimizations about skins. (http://collector.zope.org/CMF/198)
 
+    - DublinCore: Fixed creators upgrade to not call a potentially
+      costly method on the user folder.
+      (http://zope.org/Collectors/CMF/300)
+
 CMF 1.5.1beta (2005/03/24)
 
   New Features
