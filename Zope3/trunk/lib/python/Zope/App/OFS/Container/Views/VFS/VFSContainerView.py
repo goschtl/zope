@@ -16,7 +16,7 @@
 VFS-view implementation for a generic container. It should really work for
 all container-like objects. There is not much that can be done differently.
 
-$Id: VFSContainerView.py,v 1.4 2002/12/20 09:25:37 srichter Exp $
+$Id: VFSContainerView.py,v 1.5 2002/12/23 08:15:35 srichter Exp $
 """
 import fnmatch
 import datetime
@@ -54,8 +54,8 @@ class VFSContainerView(VFSView):
         try:
             self.publishTraverse(self.request, name)
         except NotFound:
-            return 0
-        return 1
+            return False
+        return True
 
     def listdir(self, with_stats=0, pattern='*'):
         'See Zope.Publisher.VFS.IVFSDirectoryPublisher.IVFSDirectoryPublisher'
@@ -160,6 +160,9 @@ class VFSContainerView(VFSView):
             created = zerotime
             modified = zerotime
 
+        # Sometimes this value is not set, but we need to return a datetime
+        if created is None:
+            created = zerotime
         # It happens that modified might still be None, so make sure we return
         # a date. *nix then uses the created date as the modified one, which we
         # do too. ;)

@@ -11,31 +11,31 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""VFS ZPTPage Add View
+"""VFS ZPTTemplate Add View
 
-$Id: ZPTPageAdd.py,v 1.3 2002/12/23 08:15:37 srichter Exp $
+$Id: ZPTTemplateAdd.py,v 1.1 2002/12/23 08:15:39 srichter Exp $
 """
 from Zope.Publisher.VFS.VFSView import VFSView
 
 from Zope.Event import publish
 from Zope.App.Event.ObjectEvent import ObjectCreatedEvent
 
-from Zope.App.OFS.Container.IAdding import IAdding
-from Zope.App.OFS.Content.ZPTPage.ZPTPage import ZPTPage
+from Zope.App.OFS.Services.ServiceManager.IPackageAdding import IPackageAdding
+from Zope.App.OFS.Services.zpt import ZPTTemplate
 
 
-class ZPTPageAdd(VFSView):
-    "Provide a user interface for adding a ZPTPage content object"
+class ZPTTemplateAdd(VFSView):
+    "Provide a user interface for adding a ZPTTemplate content object"
 
-    __used_for__ = IAdding
+    __used_for__ = IPackageAdding
 
     def __call__(self, mode, instream, start):
-        content = ZPTPage()
+        content = ZPTTemplate()
         try:
             instream.seek(start)
         except:
             pass
-        content.setSource(unicode(instream.read()))
+        content.source = unicode(instream.read())
         
         publish(self.context, ObjectCreatedEvent(content))
         return self.context.add(content)

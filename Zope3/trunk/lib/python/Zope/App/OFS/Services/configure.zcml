@@ -110,6 +110,8 @@
 <include package=".PrincipalAnnotationService" />
 <include package=".SessionService" />
 
+<!-- View Directives -->
 <include package=".Browser" />
+<include package=".VFS" />
 
 </zopeConfigure>

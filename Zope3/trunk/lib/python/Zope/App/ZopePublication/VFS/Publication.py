@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Publication.py,v 1.3 2002/06/29 15:41:42 srichter Exp $
+$Id: Publication.py,v 1.4 2002/12/23 08:15:39 srichter Exp $
 """
 
 from Zope.App.ZopePublication.ZopePublication import ZopePublication
@@ -30,6 +30,7 @@ class VFSPublication(ZopePublication):
     def callObject(self, request, ob):
 
         view = queryView(ob, 'vfs', request, self) 
+        #view = ob
 
         if view is not self:
             method = getattr(view, request.method)

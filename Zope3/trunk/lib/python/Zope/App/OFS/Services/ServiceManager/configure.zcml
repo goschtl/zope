@@ -106,6 +106,7 @@
   </content>
 
   
-  <include package="Zope.App.OFS.Services.ServiceManager.Browser" />
+  <include package=".Browser" />
+  <include package=".VFS" />
 
 </zopeConfigure>

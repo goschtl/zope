@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""VFS ZPTPage Add View
+"""VFS Package Add View
 
-$Id: ZPTPageAdd.py,v 1.3 2002/12/23 08:15:37 srichter Exp $
+$Id: PackageAdd.py,v 1.1 2002/12/23 08:15:38 srichter Exp $
 """
 from Zope.Publisher.VFS.VFSView import VFSView
 
@@ -21,22 +21,17 @@ from Zope.Event import publish
 from Zope.App.Event.ObjectEvent import ObjectCreatedEvent
 
 from Zope.App.OFS.Container.IAdding import IAdding
-from Zope.App.OFS.Content.ZPTPage.ZPTPage import ZPTPage
+from Zope.App.OFS.Services.ServiceManager.Package import Package
 
 
-class ZPTPageAdd(VFSView):
-    "Provide a user interface for adding a ZPTPage content object"
+class PackageAdd(VFSView):
+    "Provide a user interface for adding a Package content object"
 
     __used_for__ = IAdding
 
-    def __call__(self, mode, instream, start):
-        content = ZPTPage()
-        try:
-            instream.seek(start)
-        except:
-            pass
-        content.setSource(unicode(instream.read()))
-        
+    def __call__(self):
+        "Add a folder"
+        content = Package()
         publish(self.context, ObjectCreatedEvent(content))
         return self.context.add(content)
 

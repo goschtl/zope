@@ -1,0 +1,55 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:vfs="http://namespaces.zope.org/vfs"
+>
+
+  <!-- Note that we have to use another Adding interface here, since 
+       it conflicts otherwise with the content namespace definitions. --> 
+
+   <vfs:view
+       for="Zope.App.OFS.Services.ServiceManager.IPackage."
+       name="+"  
+       factory=".PackageAdding."
+       allowed_attributes="setContentName add"
+       permission="Zope.ManageContent" />
+
+
+   <vfs:view
+       for="Zope.App.OFS.Container.IContainer."
+       name="+"  
+       factory="Zope.App.OFS.Container.Views.VFS.Adding."
+       allowed_attributes="setContentName add"
+       permission="Zope.ManageContent" />
+
+  <vfs:view
+      name="Package"
+      for="Zope.App.OFS.Container.IAdding."
+      factory=".PackageAdd."
+      permission="Zope.ManageContent" />
+
+
+  <vfs:view
+      name="vfs"
+      for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+      permission="Zope.ManageContent" 
+      allowed_interface="Zope.Publisher.VFS.IVFSDirectoryPublisher." 
+      factory=".ServiceManagerView." 
+      />
+
+  <vfs:view
+      name="vfs"
+      for="Zope.App.OFS.Services.ServiceManager.IPackages."
+      permission="Zope.ManageContent" 
+      allowed_interface="Zope.Publisher.VFS.IVFSDirectoryPublisher." 
+      factory=".PackagesView." 
+      />
+
+  <vfs:view
+      name="vfs"
+      for="Zope.App.OFS.Services.ServiceManager.IPackage."
+      permission="Zope.ManageContent" 
+      allowed_interface="Zope.Publisher.VFS.IVFSDirectoryPublisher." 
+      factory=".PackageView." 
+      />
+
+</zopeConfigure>
