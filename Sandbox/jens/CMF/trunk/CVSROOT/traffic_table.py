@@ -40,10 +40,15 @@ remote = {'host': "www.zope.org",
 zopeaddr = ["zope-checkins@zope.org"]
 
 table = [
-    {'path': "CVSROOT", 'addrs': ["digicool-cvs@zope.org"],
+##     {'path': "CVSROOT", 'addrs': ["digicool-cvs@zope.org"],
+##      'excludes': ["/history"]},
+    {'path': "CVSROOT", 'addrs': ["klm@zope.org"],
      'excludes': ["/history"]},
 
     {'path': "test", 'addrs': "klm@digicool.com"},
+
+    {'path': "Zope2", 'addrs': ["klm@digicool.com"]},
+
 
 ##     {'path': "Publishers/ZServer", 'addrs': zopeaddr},
 
