@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_dsnparser.py,v 1.3 2003/06/09 14:58:35 stevea Exp $
+$Id: test_dsnparser.py,v 1.4 2003/06/09 15:02:46 stevea Exp $
 """
 import unittest
 from zope.app.rdb import parseDSN
@@ -37,6 +37,12 @@ class TestDSNParser(unittest.TestCase):
         dsn = 'dbi://mike:muster/test'
         result = {'parameters': {}, 'dbname': 'test', 'username': 'mike',
                   'password': 'muster', 'host': '', 'port': ''}
+        self.assertEqual(result, parseDSN(dsn))
+
+    def testPasswordWithColon(self):
+        dsn = 'dbi://mike:before:after/test'
+        result = {'parameters': {}, 'dbname': 'test', 'username': 'mike',
+                  'password': 'before:after', 'host': '', 'port': ''}
         self.assertEqual(result, parseDSN(dsn))
 
     def testUserPasswordAndParams(self):
