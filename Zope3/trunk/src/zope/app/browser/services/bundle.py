@@ -28,7 +28,7 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all configurations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.5 2003/06/17 01:53:47 gvanrossum Exp $
+$Id: bundle.py,v 1.6 2003/06/17 02:04:47 gvanrossum Exp $
 """
 
 from transaction import get_transaction
@@ -56,6 +56,15 @@ class BundleView(BrowserView):
     # Methods called from the page template (bundle.pt)
 
     def update(self):
+        if not self.request.form:
+            return
+        if zapi.getName(self.context) == "default":
+            # XXX This is not right: we should be able to tell bundles
+            # from non-bundles and only allow this command for
+            # bundles.  The Bundle tab should only be present for
+            # bundles.  But for now, we simply prevent the user from
+            # making a big mistake and changing the default folder.
+            return "ERROR: Won't change the default folder"
         if "allclear" in self.request:
             count = 0
             for path, obj in self.configurations:
