@@ -28,10 +28,34 @@ Five - Zope 3 in Zope 2
 %center
 Martijn Faassen, Infrae
 faassen@infrae.com
+Five developer
+
+%page
+
+Parts
+
+
+	An introduction to Five
+
+	Interfaces, adapters and how to glue them
+
+	Views
+
+	Advanced topics
+
+%page
+
+Part I - An Introduction to Five
+
+
+	Why Five?
+
+	What is Five?
 
 %page
 
 Motto
+
 
 It was the dawn of the third age of Zope. The Five project was a dream given form. Its goal: to use Zope 3 technologies in Zope 2.7 by creating a Zope 2 product where Zope 3 and Zope 2 could work out their differences peacefully.
 
@@ -41,13 +65,13 @@ It was the dawn of the third age of Zope. The Five project was a dream given for
 
 Motto 2
 
+
 The Law of Fives states simply that: ALL THINGS HAPPEN IN FIVES, OR ARE DIVISIBLE BY OR ARE MULTIPLES OF FIVE, OR ARE SOMEHOW DIRECTLY OR INDIRECTLY RELATED TO FIVE.
 
 THE LAW OF FIVES IS NEVER WRONG. 
 
 (Principia Discordia)
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 
 The problem
@@ -59,9 +83,8 @@ The problem
 
 	Zope 3 has better ways to do things
 
-	But can't just switch, we have customers!
+	But can't just switch, we have codebases, customers!
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %page
 
 Benefits of using Zope 3 in Zope 2
@@ -75,11 +98,56 @@ Benefits of using Zope 3 in Zope 2
 
 	Evolution, not revolution
 
-	Convergence, not divergence
+	Convergence, not divergence (this is important)
 
 %page
 
-What works now?
+Divergence
+
+
+	Infrae created Silva
+
+	Everybody else started using Plone (why?!)
+
+	I want to use cool Plone technology
+
+	Silva is cool too, you may want to use it
+
+	I don't want to have to reinvent every wheel (just some)
+
+%page
+
+What's stopping us from sharing?
+
+
+	Zope 2 components are hard to share between apps
+
+	Even CMF components need work to share
+
+	Especially if you don't use CMF... (Silva)
+
+	Python code is easier to share
+
+	Zope 2 frameworks can make it harder
+
+%page
+
+Convergence
+
+
+	Unify our diverse efforts
+
+	Zope 3 allows you to write Python
+
+	Zope 3 allows the glueing of components
+
+	Zope 3 is the future
+
+	Five makes some of the future available today
+
+%page
+
+What works now? - an overview
 
 
 	Interfaces
@@ -96,38 +164,66 @@ What works now?
 
 What works now, continued
 
+
+	Zope 3 page template engine
+
 	Traversal, resources
+
+	Zope 2 security from ZCML
 
 	Events
 
-%page
-
-Brief demo
-
-
-	Show ZCML, adapters and views in action
- 
-%page
-
-Next?
-
-
-	Utilities (global ones should work)
-
-	Forms
-
-	Views (improve the current system)
-
-	Who knows?
+	Beginnings of forms machinery
 
 %page
 
-Plans
+Progress made since June
 
 
-	Relicense from BSD to generic ZPL 2.1
+	Initial announcement at Europython
 
-	Move from CVS at Infrae into SVN at codespeak.net
+	As promised, moved to SVN at codespeak.net
 
-	Convergence; join us!
+	People joined the project. Lots of excellent contributions!
+
+	UnionCMS and other projects are starting to use it!
+
+%page
+
+The Zope 3 Base
+
+
+	Five is part of the Zope 3 Base
+
+	Zope 3 Base - All Your Bobobase Are Belong To Us
+
+	Possibly the cutest Zope 3 website anywhere
+
+	http://codespeak.net/z3
+
+%page
+
+Zope 3 Base, continued
+
+
+	Second area of Zope 3 related development
+
+	Equivalent of Plone collective, for Zope 3
+
+	More freewheeling than dev.zope.org
+
+	Less freewheeling than Plone collective, however
+
+	Cuter than both
+
+%page
+
+Evolution: Five-ification
+
+
+	Five is not just for new Zope 2 projects
+
+	Five can interoperate with existing Zope 2 applications
+
+	Five in Plone - Flon
 
