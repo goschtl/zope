@@ -239,8 +239,10 @@ We have a look if the version history grows with a checkin:
   >>> len(repo.listVersions(sample))
   1
   >>> repo.checkout(sample)
-  >>> repo.text = 'text version 2 of sample'
+  >>> sample.text = 'text version 2 of sample'
   >>> repo.checkin(sample)
+  >>> sample.text
+  'text version 2 of sample'
   
   >>> len(repo.listVersions(sample))
   2
