@@ -13,10 +13,11 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.4 2004/03/05 22:09:05 jim Exp $
+$Id: fssync.py,v 1.5 2004/03/06 15:38:43 jim Exp $
 """
 
 from zope.fssync.server.entryadapter import DirectoryAdapter
+from zope.app.interfaces.services.service import ISite
 
 __metaclass__ = type
 
@@ -77,6 +78,36 @@ class FolderAdapter(DirectoryAdapter):
     """
 
     def contents(self):
+        """Compute a folder listing.
+
+        A folder listing is a list of the items in the folder.  It is
+        a combination of the folder contents and the site-manager, if
+        a folder is a site.
+
+        The adapter will take any mapping:
+
+        >>> adapter = FolderAdapter({'x': 1, 'y': 2})
+        >>> contents = adapter.contents()
+        >>> contents.sort()
+        >>> contents
+        [('x', 1), ('y', 2)]
+
+        If a folder is a site, then we'll get ++etc++site included:
+
+        >>> import zope.interface
+        >>> class Site(dict):
+        ...     zope.interface.implements(ISite)
+        ...
+        ...     def getSiteManager(self):
+        ...         return 'site goes here :)'
+        
+        >>> adapter = FolderAdapter(Site({'x': 1, 'y': 2}))
+        >>> contents = adapter.contents()
+        >>> contents.sort()
+        >>> contents
+        [('++etc++site', 'site goes here :)'), ('x', 1), ('y', 2)]
+
+        """
         result = super(FolderAdapter, self).contents()
         if ISite.providedBy(self.context):
             sm = self.context.getSiteManager()

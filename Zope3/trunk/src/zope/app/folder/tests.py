@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: tests.py,v 1.4 2004/03/01 15:02:51 philikon Exp $
+$Id: tests.py,v 1.5 2004/03/06 15:38:43 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -57,7 +57,7 @@ def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(FolderMetaDataTest),
-        DocTestSuite('zope.app.content'),
+        DocTestSuite('zope.app.folder.fssync'),
         ))    
 
 if __name__=='__main__':
