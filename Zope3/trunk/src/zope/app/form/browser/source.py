@@ -66,6 +66,34 @@ class SourceDisplayWidget(zope.app.form.Widget):
 
         return value
 
+class SourceSequenceDisplayWidget(SourceDisplayWidget):
+
+    def __call__(self):
+
+        if self._renderedValueSet():
+            seq = self._data
+        else:
+            seq = self.context.default
+
+        terms = zapi.getMultiAdapter(
+            (self.source, self.request),
+            zope.app.form.browser.interfaces.ITerms,
+            )
+        result = []
+        for value in seq:
+            try:
+                term = terms.getTerm(value)
+            except LookupError:
+                value = self._translate(_("SourceDisplayWidget-invalid",
+                                          default="Invalid value"))
+            else:
+                value = cgi.escape(term.title)
+
+            result.append(value)
+
+        return '<br />\n'.join(result)
+    
+
 class SourceInputWidget(zope.app.form.InputWidget):
 
     _error = None

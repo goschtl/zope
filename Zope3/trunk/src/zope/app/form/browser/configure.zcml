@@ -398,11 +398,21 @@
       permission="zope.Public"
       />
 
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISequence
+           zope.schema.interfaces.ISource"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".source.SourceSequenceDisplayWidget"
+      permission="zope.Public"
+      />
+
+
   <!-- XXX The configuration below should be for IList -->
   <!--     We need a widget for tuples (and sets, for that matter). -->
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.ISequence
+      for="zope.schema.interfaces.IList
            zope.schema.interfaces.ISource"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".source.SourceListInputWidget"
