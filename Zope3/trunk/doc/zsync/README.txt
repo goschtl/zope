@@ -149,8 +149,12 @@ To Do
 
   * A commit unpickles user-provided data.  Unpickling is not a safe
     operation.  Possible solution: have an unpickler that finds
-    globals in a secure way.  Use an import on a security proxy for
+    globals in a secure way.  Use an import with a security proxy for
     sys.modules.
+
+  * Permissions:  Registration of an adapter can include a required
+    permission.  When no adapter is registered, the XML pickle adapter
+    is used with a permission that is very carefully controlled.
 
   * The adapters returned by the fs registry should optionally have a
     permission associated with them.  If you have an adapter that
