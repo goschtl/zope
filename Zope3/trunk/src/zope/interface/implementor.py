@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: implementor.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: implementor.py,v 1.3 2003/03/21 21:06:47 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -36,8 +36,10 @@ class ImplementorRegistry:
     # Where the registered provides is what was registered and
     # provided may be some base interface
 
-    def __init__(self):
-        self._reg = {}
+    def __init__(self, data=None):
+        if data is None:
+            data = {}
+        self._reg = data
 
     def _registerAllProvided(self, primary_provide, object, provide):
         # Registers a component using (require, provide) as a key.
@@ -70,12 +72,24 @@ class ImplementorRegistry:
 
         self._registerAllProvided(provide, object, provide)
 
-    def get(self, provide, default=None):
+    def getRegistered(self, interface, default=None):
+        """Find the component registered exactly for the interface
         """
-        Finds a registered component that provides the given interface.
-        Returns None if not found.
+        c = self._reg.get(interface)
+        if c is not None and c[0] is interface:
+            return c[1]
+
+        return default
+        
+
+    def get(self, interface, default=None):
+        """Find the component registered for the interface
+
+        A component may be returned if it was registered fgor a more
+        specific interface.
+        
         """
-        c = self._reg.get(provide)
+        c = self._reg.get(interface)
         if c is not None:
             return c[1]
 
