@@ -141,7 +141,7 @@ class Introspector(object):
 
     def getDirectlyProvided(self):
         """See IIntrospector"""
-        return directlyProvidedBy(self.context)
+        return directlyProvidedBy(removeSecurityProxy(self.context))
 
     def getDirectlyProvidedNames(self):
         """See IIntrospector"""
