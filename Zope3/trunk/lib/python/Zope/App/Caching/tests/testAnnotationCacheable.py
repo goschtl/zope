@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: testAnnotationCacheable.py,v 1.3 2002/10/04 18:37:12 jim Exp $
+$Id: testAnnotationCacheable.py,v 1.4 2002/10/09 13:08:44 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,9 +23,30 @@ from Zope.App.OFS.Annotation.IAnnotations import IAnnotations
 from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
 from Zope.App.OFS.Annotation.AttributeAnnotations import AttributeAnnotations
 from Zope.App.Caching.AnnotationCacheable import AnnotationCacheable
+from Zope.App.Caching.ICachingService import ICachingService
+from Zope.ComponentArchitecture.GlobalServiceManager import \
+     serviceManager as sm
 
 class ObjectStub:
     __implements__ = IAttributeAnnotatable
+
+class CacheStub:
+
+    def __init__(self):
+        self.invalidated = []
+
+    def invalidate(self, obj):
+        self.invalidated.append(obj)
+
+class CachingServiceStub:
+
+    __implements__ = ICachingService
+
+    def __init__(self):
+        self.caches = {}
+
+    def getCache(self, name):
+        return self.caches[name]
 
 class TestAnnotationCacheable(PlacelessSetup, TestCase):
 
@@ -34,6 +55,9 @@ class TestAnnotationCacheable(PlacelessSetup, TestCase):
         getService(None, "Adapters").provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
+        self.service = CachingServiceStub()
+        sm.defineService('Caching', ICachingService)
+        sm.provideService('Caching', self.service)
 
     def testNormal(self):
         ob = ObjectStub()
@@ -45,6 +69,21 @@ class TestAnnotationCacheable(PlacelessSetup, TestCase):
         self.assertEquals(adapter.getCacheId(), "my_id",
                           "failed to set cache ID")
 
+    def testInvalidate(self):
+        """Test that setting a different cache ID invalidates the old
+        cached value"""
+        self.service.caches['cache1'] = cache1 = CacheStub()
+        self.service.caches['cache2'] = cache2 = CacheStub()
+        ob = ObjectStub()
+        adapter = AnnotationCacheable(ob)
+        adapter.setCacheId('cache1')
+        self.assertEquals(cache1.invalidated, [], "called invalidate too early")
+        adapter.setCacheId('cache2')
+        self.assertEquals(cache1.invalidated, [ob], "did not call invalidate")
+        adapter.setCacheId('cache2')
+        self.assertEquals(cache2.invalidated, [],
+                          "called invalidate when reassigning to the same cache")
+                
 
 def test_suite():
     return TestSuite((

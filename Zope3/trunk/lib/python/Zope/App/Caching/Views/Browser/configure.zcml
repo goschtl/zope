@@ -1,0 +1,16 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+  <browser:view for="Zope.App.OFS.Annotation.IAnnotatable."
+                permission="Zope.Public"
+                factory=".CacheableView.">
+
+    <browser:page name="Caching.html"
+                  attribute="form" />
+    <browser:page name="ChangeCaching.html"
+                  attribute="action" />
+    <browser:page name="InvalidateCache.html"
+                  attribute="invalidate" />
+  </browser:view>
+</zopeConfigure>

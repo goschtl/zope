@@ -1,0 +1,41 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+  <div metal:fill-slot="body">
+
+    <p>This edit form allows you to associate a cache with this object.</p>
+
+    <div tal:condition="python: options.has_key('errors') and
+                                options['errors']">
+      <span style="font-weight: bold">Errors:</span>
+      <div tal:repeat="error options/errors | nothing">
+        <span tal:replace="python: error[0].title" />:
+        <span tal:replace="python: error[1].error_name" />
+      </div>
+    </div>
+    <br />
+
+    <form action="./" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="nextURL" value=""
+          tal:attributes="value request/URL" />
+
+      <table class="EditTable">
+        <tr>
+          <th class="EditAttributeName">Cache name</th>
+          <td class="EditAttributeValue"
+              tal:content="structure python: view.renderCacheId()">
+            <input size="20" />
+          </td>
+        </tr>
+      </table>
+
+      <input type="submit" name="ChangeCaching.html:method" value="Save Changes" />
+      <input type="submit" name="InvalidateCache.html:method"
+             value="Invalidate Cached Value" />
+
+    </form>
+    <div tal:replace="options/message|nothing" />
+
+  </div>
+  </body>
+
+</html>

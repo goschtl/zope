@@ -10,6 +10,8 @@
            provides=".ICacheable."
            for="Zope.App.OFS.Annotation.IAnnotatable." />
 
+  <include package=".Views" />
+
 </zopeConfigure>
 
 
