@@ -41,7 +41,6 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from ZTUtils import Batch
 from App.class_init import default__class_init__ as InitializeClass
 from Products.PluginRegistry.PluginRegistry import PluginRegistry
-from Products.StandardCacheManagers.RAMCacheManager import RAMCacheManager
 import Products
 
 from interfaces.authservice import IUserFolder
