@@ -13,9 +13,8 @@
 ##############################################################################
 """Form-related exception views
 
-$Id: form.py,v 1.1 2004/03/14 04:44:51 srichter Exp $
+$Id: form.py,v 1.2 2004/04/11 10:34:44 srichter Exp $
 """
-
 from zope.app.form.interfaces import IWidgetInputError
 from cgi import escape
 
@@ -31,9 +30,13 @@ class WidgetInputErrorView:
         """Convert a widget input error to an html snippet
 
         >>> from zope.app.form.interfaces import WidgetInputError
-        >>> err = WidgetInputError("foo", "Foo", ["Foo input < 1"])
+        >>> class TooSmallError:
+        ...     def doc(self):
+        ...         return "Foo input < 1"
+        >>> err = WidgetInputError("foo", "Foo", TooSmallError())
         >>> view = WidgetInputErrorView(err, None)
         >>> view.snippet()
         '<span class="error">Foo input &lt; 1</span>'
         """
-        return '<span class="error">%s</span>' % escape(self.context.errors[0])
+        return '<span class="error">%s</span>' %(
+            escape(self.context.errors.doc()))
