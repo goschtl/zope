@@ -119,7 +119,7 @@ def removeIntIdSubscriber(ob, event):
     # Notify the catalogs that this object is about to be removed.
     notify(IntIdRemovedEvent(ob, event))
 
-    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
+    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
         try:
             utility.unregister(ob)
         except KeyError:
@@ -131,7 +131,7 @@ def addIntIdSubscriber(ob, event):
     Registers the object added in all unique id utilities and fires
     an event for the catalogs.
     """
-    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
+    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
         utility.register(ob)
 
     notify(IntIdAddedEvent(ob, event))
