@@ -210,7 +210,7 @@ Issues
       proxies" always go on the outside?
 
       + I think this has to do with how intrinsic something is.
-        
+
         A descriptor from a class implementation should have full
         access to the implementation.  If adapters could be registered
         for classes, rather than interfaces, then the adapter could
@@ -243,38 +243,41 @@ Issues
     If it is made possible to do this, adapters registered for classes would
     always trump those registered for interfaces.
 
-* ContextAware mix-in considered harmful
+* ContextAwareDescriptors class advice
 
-  ContextAware is a marker mix-in class that causes all descriptors
-  for instances of the class to be implicitly rebound to context
-  wrappers if they are accessed through context wrappers. These
-  descriptors include descriptors not defined in the class statement,
-  such as inherited descriptors and descriptors set by interface
-  declarations. 
+  You can make all descriptors defined in a particular class into
+  context-aware descriptors by using the ContextAwareDescriptors() function
+  within the class suite. For example::
 
-  This implicit behavior has a high potential to break the
-  expectations of descrioptors set in the class statement.
+      class FooBaseClass:
+          def m0(self, ...)
 
-  Note that it would not be so evil to have a way to say that all of
-  the descriptors defined in a class statement are context
-  descriptoes, since that is still explicit.  For example::
+      class Foo(FooBaseClass):
+          ContextAwareDescriptors()
+          implements(IFoo)
 
-     class Foo(A, B):
+          def m1(self, ...): ...
 
-        ContextAware()
+          def m2(self, ...): ...
 
-        implements(IFoo)
+          ...
 
-        def m1(self, ...): ...
+          p = property(_getP, _setP)
 
-        def m2(self, ...): ...
+  In this case, all of the methods defined in Foo, such as m1, m2, and
+  we assume _getP and _setP, will be made into the equivalent of
+  ContextMethods.
+  Properties such as p will be made into the equivalent of ContextProperties.
+  However, m0, inherited from FooBaseClass, will remain a normal
+  instance method.
 
-        ...
+  If a ContextMethod or other ContextDescriptor is used in Foo, then
+  it will be left exactly as it is.
 
-  would assert that m1, m2, etc are context methods but would not
-  affect descriptors provided by A and B. 
+  The ContextAwareDescriptors class advice is better than using a marker
+  base-class because with the class advice, you always will be able to see
+  that the descriptors of a class will be made context-aware.
+  With the base-class approach, descriptors could be unpredictably converted
+  into context-aware descriptors through deriving new classes.
+  Such unpredictability and implicitness is bad.
 
-  The way to achieve this is with the __metaclass__ advice hack.
-
-  Actually, I *think* the ContextAware mixin could be fixed with a suitably
-  tricky meta class.
