@@ -11,7 +11,6 @@
 # 
 ##############################################################################
 
-import sys
 import os
 from os import path as os_path
 import re
@@ -619,4 +618,3 @@ def minimalpath(p):
     while p[:1] in separators:
         p = p[1:]
     return p
-
