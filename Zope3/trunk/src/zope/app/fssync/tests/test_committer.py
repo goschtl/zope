@@ -104,9 +104,11 @@ class DictAdapter(DefaultFileAdpater):
 
     def setBody(self, body):
         old = self.context
-        assert old.__class__ is dict
+        if old.__class__ is not dict:
+            raise AssertionError("old.__class__ is not dict")
         new = loads(body)
-        assert type(new) is dict
+        if type(new) is not dict:
+            raise AssertionError("type(new) is not dict")
         old.update(new)
         for key in old.keys():
             if key not in new:

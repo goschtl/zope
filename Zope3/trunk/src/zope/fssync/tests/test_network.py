@@ -69,7 +69,8 @@ class DummyServer(threading.Thread):
                 conn, addr = svr.accept()
                 ##print "connect from", `addr`
             else:
-                assert s is conn
+                if s is not conn:
+                    raise AssertionError("s is not conn")
                 data = conn.recv(1000)
                 ##print "received", `data`
                 if not data:

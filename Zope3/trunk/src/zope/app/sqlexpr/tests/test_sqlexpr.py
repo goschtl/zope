@@ -60,7 +60,8 @@ class CursorStub(object):
                (2, 'Foo Bar', 'foobar'))
 
     def execute(self, operation, *args, **kw):
-        assert operation == 'SELECT num FROM hitchhike'
+        if operation != 'SELECT num FROM hitchhike':
+            raise AssertionError(operation, 'SELECT num FROM hitchhike')
 
 
 class TypeInfoStub(object):

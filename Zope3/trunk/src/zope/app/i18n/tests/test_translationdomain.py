@@ -59,8 +59,9 @@ class TestILocalTranslationDomain(object):
 
     def setUp(self):
         self._domain = self._getTranslationDomain()
-        assert verifyObject(ITranslationDomain, self._domain)
 
+    def testInterface(self):
+        verifyObject(ITranslationDomain, self._domain)
 
     def _getLanguages(self, domain):
         languages = domain.getAllLanguages()
@@ -143,8 +144,9 @@ class TestISyncTranslationDomain(object):
 
     def setUp(self):
         self._domain = self._getTranslationDomain()
-        assert verifyObject(ISyncTranslationDomain, self._domain)
 
+    def testInterface(self):
+        verifyObject(ISyncTranslationDomain, self._domain)
 
     def testGetMessagesMapping(self):
         mapping = self._domain.getMessagesMapping(['de', 'en'],
