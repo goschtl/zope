@@ -1,3 +1,12 @@
+Post CMF 1,4.2
+
+  Bug Fixes
+  
+    - CMFCore.CookieCrumbler: No longer disregards an existing cookie auth
+      token for DAV requests (like PROPFIND) that occur over the main HTTP
+      port. Eliminates additional user challenges for browser-based DAV 
+      clients like MS WebFolders.
+
 CMF 1.4.2 (2003/10/27)
 
   Bug Fixes

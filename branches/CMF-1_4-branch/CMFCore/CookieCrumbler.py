@@ -104,7 +104,8 @@ class CookieCrumbler (SimpleItemWithProperties):
         if req.__class__ is not HTTPRequest:
             return ATTEMPT_DISABLED
 
-        if not req[ 'REQUEST_METHOD' ] in ( 'HEAD', 'GET', 'PUT', 'POST' ):
+        if (req[ 'REQUEST_METHOD' ] not in ( 'HEAD', 'GET', 'PUT', 'POST' )
+            and not req.has_key(self.auth_cookie)):
             return ATTEMPT_DISABLED
 
         if req.environ.has_key( 'WEBDAV_SOURCE_PORT' ):
