@@ -1,16 +1,32 @@
+from Schema.Exceptions import StopValidation, ValidationError, ValidationErrorsAll
 
-def validate(schema, values):
-    """Pass in field values in dictionary and validate whether they
-    conform to schema. Return validated values.
+def validateMapping(schema, values):
+    """Pass in field values in mapping and validate whether they
+    conform to schema. Stop at first error. 
     """
     from IField import IField
-    result = {}
     for name in schema.names(1):
         attr = schema.getDescriptionFor(name)
         if IField.isImplementedBy(attr):
-            result[name] = attr.validate(values.get(name))
-    return result
-    
+	    attr.validate(values.get(name))
+
+
+def validateMappingAll(schema, values):
+    """Pass in field values in mapping and validate whether they
+    conform to schema. 
+    """
+    list=[]
+    from IField import IField
+    for name in schema.names(1):
+        attr = schema.getDescriptionFor(name)
+        if IField.isImplementedBy(attr):
+	    try:
+		attr.validate(values.get(name))
+	    except ValidationError, e:
+		list.append((name, e))	
+    if len(list) > 0:
+	raise ValidationErrorsAll, list
+		
 # Now we can create the interesting interfaces and wire them up:
 def wire():
 
