@@ -298,6 +298,13 @@ class TestDate(unittest.TestCase):
         t = self.theclass(2002, 3, 4)
         self.assertEqual(t.strftime('%Y-%m-%d %H:%M:%S'), "2002-03-04 00:00:00")
 
+    def test_timetuple(self):
+        # If t.timetuple uses time.localtime instead of time.gmtime while west
+        # from GMT, the date will be incorrect.  If that happens east from GMT,
+        # the time will be nonzero.  If we test in GMT, we won't notice the bug.
+        t = self.theclass(2002, 3, 4)
+        self.assertEqual(t.timetuple()[:6], (2002, 3, 4, 0, 0, 0))
+
     def test_ctime(self):
         t = self.theclass(2002, 3, 2)
         self.assertEqual(t.ctime(), "Sat Mar  2 00:00:00 2002")
@@ -522,14 +529,6 @@ class TestDateTime(TestDate):
     def test_ctime(self):
         t = self.theclass(2002, 3, 2, 18, 3, 5, 123)
         self.assertEqual(t.ctime(), "Sat Mar  2 18:03:05 2002")
-
-    def test_timetuple(self):
-        # If t.timetuple uses time.localtime instead of time.gmtime while west
-        # from GMT, the date will be incorrect.  If that happens east from GMT,
-        # the time will be nonzero.  If we test in GMT, we won't notice the bug.
-        t = self.theclass(2002, 3, 4)
-        self.assertEqual(t.timetuple()[:6], (2002, 3, 4, 0, 0, 0))
-
 
 
 class FixedOffset(object):
