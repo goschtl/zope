@@ -14,6 +14,7 @@
 <grant permission="Zope.View"              role="Manager" />
 <grant permission="Zope.ManageContent"     role="Manager" />
 <grant permission="Zope.Security"          role="Manager" />
+<grant permission="Zope.ManageCode"        role="Manager" />
 <grant permission="Zope.ManageServices"    role="Manager" />
 <grant permission="Zope.ManageApplication" role="Manager" />
 

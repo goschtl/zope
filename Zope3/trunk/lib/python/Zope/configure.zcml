@@ -30,10 +30,17 @@
                      title="Manage Service Bindings"
                      />
 
+<permission id="Zope.ManageCode" 
+                     title="Manage Code"
+		     description="Manage executable code, including
+                                  Python, SQL, ZPT, etc."
+                      />
+
 <permission id="Zope.ManageServices" 
                      title="Manage Services"
                       />
 
+<!-- XXX What is this for? -->
 <permission id="Zope.ManageApplication" 
                      title="Manage Application"
                      />
