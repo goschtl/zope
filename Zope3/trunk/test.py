@@ -77,6 +77,9 @@ Test harness.
 -p
     Show running progress.  It can be combined with -v or -vv.
 
+-r
+    Look for refcount problems.
+
 -T
     Use the trace module from Python for code coverage.  XXX This only works
     if trace.py is explicitly added to PYTHONPATH.  The current utility writes
@@ -441,6 +444,41 @@ def gui_runner(files, test_filter):
     minimal = (GUI == "minimal")
     unittestgui.main(suites, minimal)
 
+class TrackRefs:
+    """Object to track reference counts across test runs."""
+
+
+    def __init__(self):
+        self.type2count = {}
+        self.type2all = {}
+        
+    def update(self):
+        obs = sys.getobjects(0)
+        type2count = {}
+        type2all = {}
+        for o in obs:
+            all = sys.getrefcount(o)
+            t = type(o)
+            if t in type2count:
+                type2count[t] += 1
+                type2all[t] += all
+            else:
+                type2count[t] = 1
+                type2all[t] = all
+
+        ct = [(type2count[t] - self.type2count.get(t, 0),
+               type2all[t] - self.type2all.get(t, 0),
+               t)
+              for t in type2count.iterkeys()]
+        ct.sort()
+        ct.reverse()
+        for delta1, delta2, t in ct:
+            if delta1 or delta2:
+                print "%-55s %8d %8d" % (t, delta1, delta2)
+
+        self.type2count = type2count
+        self.type2all = type2all
+
 def runner(files, test_filter, debug):
     runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug,
                                  progress=progress)
@@ -506,8 +544,20 @@ def main(module_filter, test_filter, libdir):
     if GUI:
         gui_runner(files, test_filter)
     elif LOOP:
+        if REFCOUNT:
+            rc = sys.gettotalrefcount()
+            track = TrackRefs()
         while True:
             runner(files, test_filter, debug)
+            gc.collect()
+            if gc.garbage:
+                print "GARBAGE:", len(gc.garbage), gc.garbage
+                return
+            if REFCOUNT:
+                prev = rc
+                rc = sys.gettotalrefcount()
+                print "totalrefcount=%-8d change=%-6d" % (rc, rc - prev)
+                track.update()
     else:
         runner(files, test_filter, debug)
 
@@ -520,6 +570,7 @@ def process_args(argv=None):
     global LOOP
     global GUI
     global TRACE
+    global REFCOUNT
     global debug
     global debugger
     global build
@@ -539,6 +590,7 @@ def process_args(argv=None):
     LOOP = False
     GUI = False
     TRACE = False
+    REFCOUNT = False
     debug = False # Don't collect test results; simply let tests crash
     debugger = False
     build = False
@@ -553,7 +605,7 @@ def process_args(argv=None):
     timetests = 0
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:bBcdDg:G:hLmptTuv",
+        opts, args = getopt.getopt(sys.argv[1:], "a:bBcdDg:G:hLmprtTuv",
                                    ["all", "help", "libdir=", "times="])
     except getopt.error, msg:
         print msg
@@ -597,6 +649,9 @@ def process_args(argv=None):
             GUI = "minimal"
         elif k == "-p":
             progress = True
+        elif k == "-r" and hasattr(sys, "gettotalrefcount"):
+            # REFCOUNT can only be true in a debug build.
+            REFCOUNT = True
         elif k == "-T":
             TRACE = True
         elif k == "-t":
