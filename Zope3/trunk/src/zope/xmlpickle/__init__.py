@@ -18,7 +18,8 @@ The zope.xmlpickle package exports two functions:
   dumps(object) -- Returns an XML pickle
 
   loads(xmlpickle) -- Returns an object loaded from the pickle.
-"""
 
+$Id$
+"""
 from xmlpickle import dumps, loads
 from xmlpickle import fromxml, toxml

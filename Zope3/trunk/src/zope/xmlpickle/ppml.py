@@ -10,8 +10,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Provide conversion between Python pickles and XML."""
+"""Provide conversion between Python pickles and XML.
 
+$Id$
+"""
 # TODO: This doesn't work properly for protocol 2 pickles yet; that
 # still needs to be dealt with.  Particular issues that need to be
 # addressed involve supporting the changes for new-style objects.

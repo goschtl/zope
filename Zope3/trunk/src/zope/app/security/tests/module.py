@@ -14,4 +14,7 @@
 """This empty module is for containing objects used in the course of tests.
 
 (There is a problem with the way the unit tests interact with the modules
-being tests, so the objects can't be expected to show up in place.)"""
+being tests, so the objects can't be expected to show up in place.)
+
+$Id$
+"""

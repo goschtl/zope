@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test Restricted Python Interpreter
+
+$Id$
+"""
 import unittest
 
 from zope.security.interpreter import RestrictedInterpreter

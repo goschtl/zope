@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""API tests
 
+$Id$
+"""
 import unittest
 
 from zope import component

@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Tests standard date parsing
+
+$Id$
+"""
 import unittest
 
 from zope.app.datetimeutils import time

@@ -246,8 +246,9 @@ Extreme (yet useful) examples:
     As before, but now opens up a minimized PyUnit GUI window (only showing
     the progress bar).  Useful for refactoring runs where you continually want
     to make sure all tests still pass.
-"""
 
+$Id$
+"""
 import gc
 import hotshot, hotshot.stats
 import logging
