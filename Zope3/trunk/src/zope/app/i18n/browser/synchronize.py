@@ -20,6 +20,8 @@ import urllib
 import xmlrpclib
 from base64 import encodestring
 
+from zope.security.proxy import trustedRemoveSecurityProxy
+
 from zope.app.i18n.browser import BaseView
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -118,6 +120,11 @@ class Synchronize(BaseView):
         return self.context.getMessagesMapping(self.sync_languages,
                                                fmsgs)
 
+    def queryMessageItems(self):
+        items = self.queryMessages().items()
+        items = trustedRemoveSecurityProxy(items)
+        items.sort(lambda x, y: cmp(x[0][0] + x[0][1], y[0][0]+y[0][1]))
+        return items
 
     def getStatus(self, fmsg, lmsg, verbose=1):
         state = 0
