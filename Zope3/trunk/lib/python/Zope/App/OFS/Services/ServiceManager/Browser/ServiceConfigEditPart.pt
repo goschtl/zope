@@ -1,11 +1,12 @@
 <div metal:use-macro="view/generated_form/macros/formbody">
 
-  <table metal:fill-slot="extra_info">
-    <tr>
-      <td>Service type</td>
-      <td tal:content="context/serviceType">Foo</td>    
-    </tr>
-    <tr>
+
+  <h5 metal:fill-slot="heading">
+      <span tal:replace="context/serviceType">Foo</span> Service 
+  </h5>
+
+  <table>
+  <tr metal:fill-slot="extra_top">
       <td>Component Path</td>
       <td>
        <a href="."
