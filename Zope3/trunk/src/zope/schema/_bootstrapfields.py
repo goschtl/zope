@@ -12,15 +12,15 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.23 2003/09/24 00:37:42 garrett Exp $
+$Id: _bootstrapfields.py,v 1.24 2003/10/15 20:28:22 shane Exp $
 """
 __metaclass__ = type
 
 import warnings
 
 from zope.interface import Attribute, providedBy, implements
-from zope.schema.interfaces import StopValidation, ValidationError
-from zope.schema.interfaces import IFromUnicode
+from zope.schema._bootstrapinterfaces import StopValidation, ValidationError
+from zope.schema._bootstrapinterfaces import IFromUnicode
 from zope.schema._schema import getFields
 from zope.schema import errornames
 

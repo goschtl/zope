@@ -13,9 +13,13 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.33 2003/09/25 15:24:31 anthony Exp $
+$Id: interfaces.py,v 1.34 2003/10/15 20:28:22 shane Exp $
 """
+
 from zope.interface import Interface, Attribute
+from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
+from zope.schema._bootstrapfields import Container, Iterable
+
 try:
     from zope.i18n import MessageIDFactory
     _ = MessageIDFactory("zope")
@@ -23,41 +27,11 @@ except ImportError:
     import gettext
     gettext.install(domain='zope')
 
+# Import from _bootstrapinterfaces only because other packages will expect
+# to find these interfaces here.
+from zope.schema._bootstrapinterfaces import StopValidation, ValidationError
+from zope.schema._bootstrapinterfaces import IFromUnicode
 
-
-class StopValidation(Exception):
-    """Raised if the validation is completed early.
-
-    Note that this exception should be always caught, since it is just
-    a way for the validator to save time.
-    """
-
-
-class ValidationError(Exception):
-    """Raised if the Validation process fails."""
-
-    def __cmp__(self, other):
-        return cmp(self.args, other.args)
-
-    def __repr__(self):
-        return ' '.join(map(str, self.args))
-
-class IFromUnicode(Interface):
-    """Parse a unicode string to a value
-
-    We will often adapt fields to this interface to support views and
-    other applications that need to conver raw data as unicode
-    values.
-
-    """
-
-    def fromUnicode(str):
-        """Convert a unicode string to a value.
-        """
-
-# Delay these imports to avoid circular import problems
-from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
-from zope.schema._bootstrapfields import Container, Iterable
 
 class IField(Interface):
     """Basic Schema Field Interface.
