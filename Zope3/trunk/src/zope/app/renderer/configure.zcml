@@ -12,6 +12,24 @@
       component=".sourcetype.SourceTypes" />
 
 
+  <!-- Source Type Vocabulary Setup -->
+
+  <vocabulary
+     name="SourceTypes"
+     factory=".vocabulary.SourceTypeVocabulary" />
+
+  <content class=".vocabulary.SourceTypeVocabulary">
+    <allow interface="zope.schema.interfaces.IVocabulary"/>
+    <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
+    <allow attributes="__contains__"/>
+  </content>
+
+  <content class=".vocabulary.SourceTypeTerm">
+    <allow
+        interface="zope.schema.interfaces.ITokenizedTerm"
+        attributes="title"/>
+  </content>
+
   <!-- Plain Text Support -->
 
   <renderer:sourcetype

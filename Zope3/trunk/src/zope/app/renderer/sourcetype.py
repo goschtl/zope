@@ -15,7 +15,7 @@
 
 Allows us to register source types.
 
-$Id: sourcetype.py,v 1.1 2003/07/31 17:59:36 srichter Exp $
+$Id: sourcetype.py,v 1.2 2003/07/31 18:48:38 srichter Exp $
 """
 from zope.interface import implements
 from zope.app.interfaces.renderer import IGlobalSourceTypeService
@@ -52,5 +52,7 @@ class GlobalSourceTypeService:
         klass = self.__types[title][1]
         return klass(source)
 
+    _clear = __init__
 
 SourceTypes = GlobalSourceTypeService()
+clear = SourceTypes._clear
