@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.13 2003/09/21 17:34:06 jim Exp $
+$Id: __init__.py,v 1.14 2003/11/21 17:09:23 jim Exp $
 """
 
 import sys
@@ -22,7 +22,7 @@ from zope.interface import moduleProvides
 from zope.component.interfaces import IComponentArchitecture
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
-from zope.component.servicenames import Adapters, Skins, Resources
+from zope.component.servicenames import Adapters, Presentation
 from zope.component.servicenames import Factories
 
 # Try to be hookable. Do so in a try/except to avoid a hard dependence
@@ -132,48 +132,46 @@ def queryFactory(context, name, default=None):
 def getFactoryInterfaces(context, name):
     return getService(context, Factories).getInterfaces(name)
 
-# Skin service
 
-def getSkin(wrapped_object, name, view_type):
-    return getService(wrapped_object,
-                      Skins).getSkin(wrapped_object, name, view_type)
-
-# View service
+# Presentation service
 
 def getView(object, name, request, context=None):
     v = queryView(object, name, request, context=context)
     if v is not None:
         return v
-    
-    raise ComponentLookupError("Couldn't find view", context, name)
+
+    raise ComponentLookupError("Couldn't find view",
+                               name, object, context, request)
 
 def queryView(object, name, request, default=None, context=None):
     if context is None:
         context = object
-    return getService(context,
-                      'Views').queryView(object, name, request, default)
+    s = getService(context, Presentation)
+    return s.queryView(object, name, request, default=default)
 
 queryView = hookable(queryView)
 
 def getDefaultViewName(object, request, context=None):
-    if context is None:
-        context = object
-    return getService(context, 'Views').getDefaultViewName(object, request)
+    v = queryDefaultViewName(object, request, context=context)
+    if v is not None:
+        return v
+
+    raise ComponentLookupError("Couldn't find default view name",
+                               context, request)
 
 def queryDefaultViewName(object, request, default=None, context=None):
     if context is None:
         context = object
-    return getService(context,
-                      'Views').queryDefaultViewName(object, request, default)
-
-# Resource service
+    s = getService(context, Presentation)
+    return s.queryDefaultViewName(object, request, default)
 
 def getResource(wrapped_object, name, request):
-    return getService(wrapped_object,
-                      Resources).getResource(
-        wrapped_object, name, request)
+    v = queryResource(wrapped_object, name, request)
+    if v is not None:
+        return v
 
-def queryResource(wrapped_object, name, request, default=None):
-    return getService(wrapped_object,
-                      Resources).queryResource(
-        wrapped_object, name, request, default)
+    raise ComponentLookupError("Couldn't find resource", name, request)
+
+def queryResource(context, name, request, default=None):
+    s = getService(context, Presentation)
+    return s.queryResource(name, request, default)

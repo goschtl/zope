@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.14 2003/09/21 17:34:08 jim Exp $
+$Id: interfaces.py,v 1.15 2003/11/21 17:09:23 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -166,20 +166,7 @@ class IComponentArchitecture(Interface):
         context, and returns the interface or interface tuple that
         object instances created by the named factory will implement."""
 
-    # Skin service
-
-    def getSkin(wrapped_object, name, view_type):
-        """Get a skin definition as a sequence of layers
-
-        Returns the nearest skin (sequence of layer names) to the
-        object, as specified by the name and the view type (browser,
-        xml-rpc, etc.) as expressed by an interface.  If a matching
-        skin is not found, raises ComponentLookupError
-
-        There is a predefined skin in the global skin service, '', with
-        a single layer, ''."""
-
-    # View service
+    # Presentation service
 
     def getView(object, name, request, context=None):
         """Get a named view for a given object.
@@ -231,8 +218,6 @@ class IComponentArchitecture(Interface):
         object to specify a context.
 
         """
-
-    # Resource service
 
     def getResource(wrapped_object, name, request):
         """Get a named resource for a given request
@@ -380,40 +365,8 @@ class IContextDependent(Interface):
 
 class IAdapterService(Interface):
 
-    def getAdapter(object, interface):
-        """Get an adapter to an interface for an object
-
-        If the object has a __conform__ method, this method will be
-        called with the requested interface.  If the method returns a
-        non-None value, that value will be returned. Otherwise, if the
-        object already implements the interface, the object will be
-        returned.
-
-        If a matching adapter cannot be found, raises
-        ComponentLookupError.
-
-        """
-
-    def getNamedAdapter(object, interface, name):
-        """Get a named adapter to an interface for an object
-
-        If a matching adapter cannot be found, raises
-        ComponentLookupError.
-
-        The name consisting of an empty string is reserved for unnamed
-        adapters. The unnamed adapter methods will often call the
-        named adapter methods with an empty string for a name.
-
-        """
-
     def queryAdapter(object, interface, default=None):
         """Look for an adapter to an interface for an object
-
-        If the object has a __conform__ method, this method will be
-        called with the requested interface.  If the method returns a
-        non-None value, that value will be returned. Otherwise, if the
-        object already implements the interface, the object will be
-        returned.
 
         If a matching adapter cannot be found, returns the default.
 
@@ -430,8 +383,19 @@ class IAdapterService(Interface):
 
         """
 
+    def queryMultiAdapter(objects, interface, name, default=None):
+        """Look for a named adapter to an interface for an object
+
+        If a matching adapter cannot be found, returns the default.
+
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+
+        """
+
     # XXX need to add name support
-    def getRegisteredMatching(for_interfaces=None, provided_interfaces=None):
+    def getRegisteredMatching(required=None, provided=None):
         """Return information about registered data
 
         Zero or more for and provided interfaces may be
@@ -449,39 +413,6 @@ class IAdapterService(Interface):
         - the object registered specifically for the required and
           provided interfaces.
 
-        """
-
-class IGlobalAdapterService(IAdapterService):
-
-    def provideAdapter(forInterface, providedInterface, maker, name=''):
-        """Provide an adapter
-
-        An adapter provides an interface for objects that have another
-        interface.
-
-        Arguments:
-
-        forInterface -- The interface the adapter provides an interface for.
-
-        providedInterface -- The provided interface
-
-        maker -- a sequence of factories that are used to create the adapter.
-        The first factory is called with the object to be adapted, subsequent
-        factories are called with the results of the previous factory.
-        """
-    def getRegisteredMatching(for_interface=None, provide_interface=None,
-                              name=None):
-        """Return information about registered data
-
-        A four-tuple is returned containing:
-
-          - registered name,
-
-          - registered for interface
-
-          - registered provided interface, and
-
-          - registered data
         """
 
 class IPresentation(Interface):
@@ -505,13 +436,6 @@ class IPresentationRequest(Interface):
     """An IPresentationRequest provides methods for getting view meta data.
     """
 
-    def getPresentationType():
-        """Get a view type
-
-        The view type is expressed as an interface, as would be passed
-        to IViewService.getView.
-        """
-
     def getPresentationSkin():
         """Get the skin to be used for a request.
 
@@ -532,30 +456,6 @@ class IResourceFactory(Interface):
 
         """
 
-class IResourceService(Interface):
-
-    def getResource(object, name, request):
-        """Look up a named resource for a given request
-
-        The request must implement IPresentationRequest.
-
-        The object provides a place to look for placeful resources.
-
-        A ComponentLookupError will be
-        raised if the component can't be found.
-        """
-
-    def queryResource(object, name, request, default=None):
-        """Look up a named resource for a given request
-
-        The request must implement IPresentationRequest.
-
-        The object provides a place to look for placeful resources.
-
-        The default will be returned if the component can't be found.
-        """
-
-
 class IView(IPresentation, IContextDependent):
     """Views provide a connection between an external actor and an object
     """
@@ -572,85 +472,32 @@ class IViewFactory(Interface):
         "stands in" for the user.
         """
 
+class IPresentationService(Interface):
 
-
-class IViewService(Interface):
-
-    def getView(object, name, request):
-        """Get a named view for a given object and request
-
+    def queryResource(name, request, providing=Interface, default=None):
+        """Look up a named resource for a given request
+        
         The request must implement IPresentationRequest.
-
-        The object also provides a place to look for placeful views.
-
-        A ComponentLookupError will be
-        raised if the component can't be found.
+        
+        The default will be returned if the component can't be found.
         """
 
-    def queryView(object, name, request, default=None):
+    def queryView(object, name, request, providing=Interface, default=None):
         """Look for a named view for a given object and request
 
         The request must implement IPresentationRequest.
 
-        The object also provides a place to look for placeful views.
-
-        The default will be returned
-        if the component can't be found.
+        The default will be returned if the component can't be found.
         """
 
-    def getDefaultViewName(object, request):
-        """Get the name of the default view for the object and request
+    def queryMultiView(objects, name, request, providing=Interface,
+                       default=None):
+        """Adapt the given objects and request
 
-        The request must implement IPresentationRequest.
-
-        A NotFoundError will be raised if the suitable
-        default view name for the object cannot be found.
+        The first argument is a tuple of objects to be adapted with the
+        request.
         """
-
-    def queryDefaultViewName(object, request, default=None):
-        """Look for the name of the default view for the object and request
-
-        The request must implement IPresentationRequest.
-
-        The default will be returned if a suitable
-        default view name for the object cannot be found.
-        """
-
-class IGlobalViewService(IViewService):
-
-    def setDefaultViewName(i_required, i_provided, name):
-        """Add name to registry of default view names for interfaces given."""
-
-    def provideView(forInterface, name, type, factory, layer='default'):
-        """Register a view factory
-
-        The factory is a sequence. The last object in the sequence
-        must be an IViewFactory. The other objects in the sequence
-        must be adapter factories.
-
-        XXX I'm not sure if there are right.
-        The name is the view name.
-        The type is the presentation type.
-        """
-
-    def getRegisteredMatching(required_interfaces=None, presentation_type=None,
-                              viewName=None, layer=None):
-        """Return registration info matching keyword arg criteria.
-
-        Return is an iterable 5-tuples containing:
-        - required interface
-        - provided interface
-        - chain of factories
-        - layer
-        - view name
-        """
-
-class ISkinService(Interface):
-
-    def getSkin(object, name, view_type):
-        """Return the sequence of layers (names) making up the skin.
-
-        The object provides a place to look for placeful skin definitions.
-
-        If the skin was not defined, an empty sequence will be returned.
-        """
+        
+        
+        
+        
