@@ -13,7 +13,7 @@
 ##############################################################################
 __doc__ = """ Server Control View
 
-$Id: ServerControlView.py,v 1.2 2002/06/10 23:27:53 jim Exp $ """
+$Id: ServerControlView.py,v 1.3 2002/12/07 17:16:02 ctheune Exp $ """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -24,8 +24,11 @@ from Zope.ComponentArchitecture import getUtility
 class ServerControlView(BrowserView):
     
     def serverControl(self):
+        # XXX Refactor alarm! This is *required*. We really
+        # rely on it beeing there. If it was a utility,
+        # we wouldn't care, if the ServerControl is gone,
+        # but actually we do. Maybe this should be a service ...
         return getUtility(self.context, IServerControl)
-          # XXX what are we going to do if this fails???
     
     def action(self):
         """Do the shutdown/restart!"""

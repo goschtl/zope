@@ -13,20 +13,34 @@
 ##############################################################################
 """Define runtime information view component for Application Control
 
-$Id: RuntimeInfoView.py,v 1.2 2002/06/10 23:27:54 jim Exp $
+$Id: RuntimeInfoView.py,v 1.3 2002/12/07 17:16:02 ctheune Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.OFS.ApplicationControl.IRuntimeInfo import IRuntimeInfo
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.ComponentArchitecture import getAdapter
+from Zope.ComponentArchitecture import ComponentLookupError
 
 class RuntimeInfoView(BrowserView):
     
     def runtimeInfo(self):
-        # XXX what are we going to do if this fails???
-        runtime_info = getAdapter(self.context, IRuntimeInfo)
-        formatted = {}  # contains formatted runtime information
+        formatted = {}  # will contain formatted runtime information
+        
+        try:
+            runtime_info = getAdapter(self.context, IRuntimeInfo)
+        except ComponentLookupError:
+            # XXX We avoid having errors in the ApplicationController,
+            # because all those things need to stay accessible.
+            # Everybody ok with that?
+            formatted['ZopeVersion'] = "N/A"
+            formatted['PythonVersion'] = "N/A"
+            formatted['PythonPath'] = "N/A"
+            formatted['SystemPlatform'] = "N/A"
+            formatted['CommandLine'] = "N/A"
+            formatted['ProcessId'] = "N/A"
+            formatted['Hint'] = "Could not retrieve runtime information."
+        
         formatted['ZopeVersion'] = runtime_info.getZopeVersion()
         formatted['PythonVersion'] = runtime_info.getPythonVersion()
         formatted['PythonPath'] = runtime_info.getPythonPath()
