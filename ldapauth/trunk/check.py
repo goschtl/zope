@@ -16,7 +16,7 @@
 $Id$
 """
 import ldap
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.interface import implements
 from zope.app.pluggableauth import SimplePrincipal
 
@@ -33,7 +33,7 @@ class CheckLDAPAdapter:
     
     def testConnection(self):
         self.report = []
-        source = trustedRemoveSecurityProxy(self.context)
+        source = removeSecurityProxy(self.context)
         self.report.append("... check existing connection")
 
         try:
@@ -69,7 +69,7 @@ class CheckLDAPAdapter:
             
     def testGetPrincipals(self, name):
         self.report = []
-        source = trustedRemoveSecurityProxy(self.context)
+        source = removeSecurityProxy(self.context)
 
         try:
             connectstring = "ldap://%s:%s" % (source.host, source.port)

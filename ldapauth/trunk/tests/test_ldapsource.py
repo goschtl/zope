@@ -53,7 +53,6 @@ class LDAPPrincipalSourceTest(TestCase):
 
     def test_getPrincipal(self):
         toto = self.source.getPrincipal('\t\ttoto_l')
-        self.assertEqual(toto.password, 'toto_p')
         self.assertEqual(toto.login, 'toto_l')
         self.assertRaises(NotFoundError, self.source.getPrincipal, '\t\tmoo')
 
@@ -65,10 +64,12 @@ class LDAPPrincipalSourceTest(TestCase):
         self.assertEquals(len(self.source.getPrincipals('ta')), 1)
 
     def test_authenticate(self):
-        self.assertEquals(self.source.authenticate('toto_l', 'toto_p').login,
+        self.assertEquals(
+                self.source.authenticate('toto_l', 'toto_p').login,
                 'toto_l')
-        self.assertEquals(self.source.authenticate('toto_l', 'toto_p').password,
-                'toto_p')
+        self.assertEquals(
+                self.source.authenticate('toto_l', 'toto_p').login,
+                'toto_l')
         self.assertEquals(self.source.authenticate('toto_l', 'toto'), None)
         self.assertEquals(self.source.authenticate('toto', 'toto'), None)
 

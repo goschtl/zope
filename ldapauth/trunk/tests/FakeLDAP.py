@@ -4,7 +4,7 @@
 #               independently of a running LDAP server
 #
 # This software is governed by a license (ZPL v2.1).
-# (c) Jens Vagelpohl
+# (c) Jens Vagelpohl, Nicolas Évrard
 #
 #####################################################################
 __version__='$Revision: 1.7 $'[11:-2]

@@ -19,10 +19,17 @@ from zope.interface import Interface
 
 from zope.schema import TextLine, Int, List, Password, Choice
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.pluggableauth.interfaces import IPrincipalSource
+from zope.app.pluggableauth.interfaces import IPrincipalSource, IPrincipal
 
+class ILDAPPrincipal(IPrincipal):
+    """A principal in LDPA language
+    """
 
-
+    login = TextLine(
+            title = _(u'Login'),
+            description = _(u'Login name used on the site'),
+            required = True)
+    
 class ILDAPBasedPrincipalSource(IPrincipalSource):
     """Describe LDAP-based authentication sources.
     

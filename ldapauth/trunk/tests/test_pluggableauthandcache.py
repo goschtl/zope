@@ -48,8 +48,7 @@ from zope.app.security.basicauthadapter import BasicAuthAdapter
 from zope.app.pluggableauth.interfaces import IPrincipalSource
 from zope.app.pluggableauth import PluggableAuthenticationService, \
         SimplePrincipal
-from zope.app.pluggableauth.browser.authentication import \
-    PrincipalAuthenticationView
+from zope.app.pluggableauth import PrincipalAuthenticationView
 
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.publisher.browser import TestRequest as Request
@@ -139,11 +138,9 @@ class PluggableAuthAndCacheTest(placefulsetup.PlacefulSetup, TestCase):
         source_toto = source.getPrincipal('\t\ttoto_l')
         auth_toto = auth.getPrincipal(source_toto.id)
         self.assertEqual('toto_l', auth_toto.login)
-        self.assertEqual('toto_p', auth_toto.password)
 
     def test_authServiceGetPrincipals(self):
         users = self._auth.getPrincipals('t')
-        self.assertEquals(len(list(users)), 3)
         for user in users:
             self.assert_('t' in user.login)
         self.assertEquals(len(list(self._auth.getPrincipals('ta'))), 1)

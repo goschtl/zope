@@ -17,19 +17,23 @@ $Id$
 """
 
 import ldap
+
 from persistent import Persistent
+
+from zope.exceptions import NotFoundError
+from zope.interface import implements
+
+from zope.app.location import locate
 from zope.app.container.contained import DuplicationError, Contained, setitem
 from zope.app.pluggableauth.interfaces import \
         ILoginPasswordPrincipalSource, IContainerPrincipalSource
-from zope.app.location import locate
-from zope.app.pluggableauth import SimplePrincipal
-from zope.exceptions import NotFoundError
-from zope.interface import implements
+from zope.app.security.interfaces import IPrincipal
 
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 
 from interfaces import ILDAPBasedPrincipalSource
+from user import LDAPPrincipal
 
 class LDAPPrincipalSource(Contained, Persistent):
     """A Principal source using LDAP"""
@@ -131,9 +135,8 @@ class LDAPPrincipalSource(Contained, Persistent):
                 '(%s=%s)' % (self.login_attribute, login))
         if lsearch:
             uid_dn, uid_dict = lsearch[0]
-            principal = SimplePrincipal(
-                    login = uid_dict[self.login_attribute][0],
-                    password = uid_dict['userPassword'][0])
+            principal = LDAPPrincipal(
+                    login = uid_dict[self.login_attribute][0])
             return principal
         else:
             return None
@@ -162,9 +165,8 @@ class LDAPPrincipalSource(Contained, Persistent):
         principals = []
         for node in lsearch:
             node_dn, node_dict = node
-            principal = SimplePrincipal(
-                    login = node_dict[self.login_attribute][0],
-                    password = node_dict['userPassword'][0])
+            principal = LDAPPrincipal(
+                    login = node_dict[self.login_attribute][0])
             try:
                 self[principal.login] = principal
             except DuplicationError:
@@ -176,22 +178,15 @@ class LDAPPrincipalSource(Contained, Persistent):
 
     def authenticate(self, uid, password):
         if password:
-            principal = self[uid]
-            if principal and principal.password == password:
+            l = self.__connect()
+            dn = '%s=%s,' % (self.login_attribute, uid) + self.basedn
+            try:
+                l.simple_bind_s(dn, password)
+                principal = LDAPPrincipal(login = uid)
+                self[uid] = principal
                 return principal
-            elif principal and principal.password != password:
+            except ldap.INVALID_CREDENTIALS:
                 return None
-            else:
-                l = self.__connect()
-                dn = '%s=%s,' % (self.login_attribute, uid) + self.basedn
-                try:
-                    l.simple_bind_s(dn, password)
-                    principal = SimplePrincipal(login = uid,
-                            password = password)
-                    self[uid] = principal
-                    return principal
-                except ldap.INVALID_CREDENTIALS:
-                    return None
         else:
             return None
 
