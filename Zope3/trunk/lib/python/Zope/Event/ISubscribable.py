@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ISubscribable.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: ISubscribable.py,v 1.3 2002/09/03 20:13:38 jim Exp $
 """
 
 from Interface import Interface
@@ -31,10 +31,11 @@ class ISubscribable(Interface):
         
             o Hard Reference (for placeless, global objects and event service)
 
-                Simply register the subscriber directly, in which case, the
-                subscription, and possibly the subscriber, is as persistent as the
-                subscribable.  The subscriber will not be wrapped for context
-                or security when called.
+                Simply register the subscriber directly, in which
+                case, the subscription, and possibly the subscriber,
+                is as persistent as the subscribable.  The subscriber
+                will not be wrapped for context or security when
+                called.
 
             o Soft reference (for placeful, local objects and event service)
 
@@ -43,8 +44,9 @@ class ISubscribable(Interface):
 
             o Location-independent reference (for placeful)
 
-                Register an object with a notify method and an ObjectHub ruid that
-                dereferences the ruid via the hub and delegates notifications.
+                Register an object with a notify method and an
+                ObjectHub ruid that dereferences the ruid via the hub
+                and delegates notifications.
 
             o Abstract reference (for both)
 
