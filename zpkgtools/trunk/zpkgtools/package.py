@@ -22,7 +22,6 @@
   - `Helper functions`: create_extension expand_globs
   - `Datatype functions`: cpp_definition cpp_names path_ref extension
 
-:undocumented: _cpp_ident_match
 """
 
 import glob
