@@ -256,8 +256,13 @@ class ZODBRoleManager( BasePlugin ):
 
                 parent = aq_parent( self )
                 info = parent.searchPrincipals( id=k, exact_match=True )
-                assert( len( info ) == 1 )
-                result.append( ( k, info[0].get( 'title', k ) ) )
+                # This assertion used to be == 1. However, if a user
+                # is deleted, this would break the whole plugin.
+                # So that can't be right. Now checking that is is
+                # instead less than two.
+                assert( len( info ) < 2 )
+                if info:
+                    result.append( ( k, info[0].get( 'title', k ) ) )
         
         return result
 
