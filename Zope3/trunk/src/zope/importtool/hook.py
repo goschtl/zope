@@ -31,53 +31,48 @@ $Id$
 import __builtin__
 import sys
 
-__all__ = "install_reporter", "uninstall_reporter"
 
+class ReportingHook:
 
-previous__import__ = None
-current__import__ = None
+    def __init__(self, reporter):
+        self.reporter = reporter
+        self.active = False
+        self.previous = None
 
+    def install(self):
+        if self.active:
+            raise RuntimeError("import reporting hook already installed")
+        self.previous = __import__
+        __builtin__.__import__ = self.importhook
+        self.active = True
 
-def install_reporter(reporter):
-    global current__import__
-    global previous__import__
-    if previous__import__ is not None:
-        raise RuntimeError("import reporting hook already installed")
+    def uninstall(self):
+        if not self.active:
+            raise RuntimeError("import reporting hook not installed")
+        if __import__ != self.importhook:
+            raise RuntimeError("someone else is controlling imports: %r"
+                               % __import__)
+        __builtin__.__import__ = self.previous
+        self.active = False
+        self.previous = None
 
-    def importhook(name, globals=None, locals=None, fromlist=None):
+    def reset(self):
+        # reset as best we can; this is really for use from tests
+        if self.previous is not None:
+            __builtin__.__import__ = self.previous
+            self.previous = None
+        self.active = False
+
+    def importhook(self, name, globals=None, locals=None, fromlist=None):
         if globals is None:
             globals = sys._getframe(1).f_globals
         importer = globals.get("__name__")
-        reporter.request(importer, name, fromlist)
-        v = previous__import__(name, globals, locals, fromlist)
+        self.reporter.request(importer, name, fromlist)
+        v = self.previous(name, globals, locals, fromlist)
         if fromlist:
             imported = getattr(v, "__name__", None)
         else:
-            mod = previous__import__(name, globals, locals, ("foo",))
+            mod = self.previous(name, globals, locals, ("foo",))
             imported = getattr(mod, "__name__", None)
-        reporter.found(importer, imported, fromlist)
+        self.reporter.found(importer, imported, fromlist)
         return v
-
-    previous__import__ = __builtin__.__import__
-    __builtin__.__import__ = importhook
-    current__import__ = importhook
-
-
-def uninstall_reporter():
-    if __builtin__.__import__ is not current__import__:
-        raise RuntimeError("someone else is controlling imports")
-    reset()
-
-
-def active():
-    return current__import__ is not None
-
-
-def reset():
-    # reset as best we can; this is really for use from tests
-    global current__import__
-    global previous__import__
-    if previous__import__ is not None:
-        __builtin__.__import__ = previous__import__
-        previous__import__ = None
-    current__import__ = None

@@ -51,9 +51,15 @@ class HookTestCase(unittest.TestCase):
 
     def setUp(self):
         self.reports = []
+        self.__import__ = __import__
 
     def tearDown(self):
-        hook.reset()
+        __builtin__.__import__ = self.__import__
+
+    def get_hook(self, reporter=None):
+        if reporter is None:
+            reporter = self
+        return hook.ReportingHook(reporter)
 
     def request(self, importer, name, fromlist):
         self.reports.append(name)
@@ -67,37 +73,43 @@ class HookTestCase(unittest.TestCase):
         raise TestException()
 
     def test_normal_installation(self):
-        self.failIf(hook.active())
-        hook.install_reporter(self)
-        self.failIf(not hook.active())
-        hook.uninstall_reporter()
-        self.failIf(hook.active())
+        h = self.get_hook()
+        self.failIf(h.active)
+        h.install()
+        self.failIf(not h.active)
+        h.uninstall()
+        self.failIf(h.active)
         # now do it again, to make sure we really can re-install the hook
-        hook.install_reporter(self)
-        self.failIf(not hook.active())
+        h.install()
+        self.failIf(not h.active)
 
     def test_reinstall_fails_if_active(self):
-        hook.install_reporter(self)
-        self.assertRaises(RuntimeError, hook.install_reporter, self)
+        h = self.get_hook()
+        h.install()
+        self.assertRaises(RuntimeError, h.install)
 
     def test_uninstall_fails_if_never_active(self):
-        self.assertRaises(RuntimeError, hook.uninstall_reporter)
+        h = self.get_hook()
+        self.assertRaises(RuntimeError, h.uninstall)
 
     def test_uninstall_fails_if_no_longer_active(self):
-        hook.install_reporter(self)
-        hook.uninstall_reporter()
-        self.assertRaises(RuntimeError, hook.uninstall_reporter)
+        h = self.get_hook()
+        h.install()
+        h.uninstall()
+        self.assertRaises(RuntimeError, h.uninstall)
 
     def test_wrap_other_hook(self):
+        h = self.get_hook()
         __builtin__.__import__ = alternate_hook
-        hook.install_reporter(self)
-        self.failUnless(hook.active())
-        hook.uninstall_reporter()
-        self.failIf(hook.active())
+        h.install()
+        self.failUnless(h.active)
+        h.uninstall()
+        self.failIf(h.active)
         self.failUnless(__builtin__.__import__ is alternate_hook)
 
     def test_report_record(self):
-        hook.install_reporter(self)
+        h = self.get_hook()
+        h.install()
         import sys
         import sys
         from sample import THE_ANSWER
@@ -110,7 +122,8 @@ class HookTestCase(unittest.TestCase):
              ])
 
     def test_exception_on_request(self):
-        hook.install_reporter(ReporterRaiseOnRequest())
+        h = self.get_hook(ReporterRaiseOnRequest())
+        h.install()
         try:
             import sys
         except TestException, e:
@@ -119,7 +132,8 @@ class HookTestCase(unittest.TestCase):
             self.fail("expected TestException")
 
     def test_exception_on_found(self):
-        hook.install_reporter(ReporterRaiseOnFound())
+        h = self.get_hook(ReporterRaiseOnFound())
+        h.install()
         try:
             import sys
         except TestException, e:
@@ -130,7 +144,8 @@ class HookTestCase(unittest.TestCase):
     def test_direct_calls(self):
         # make sure the hook function can be called directly as well,
         # and behave the way the default __import__() works
-        hook.install_reporter(self)
+        h = self.get_hook()
+        h.install()
         m = __import__("sys")
         self.assertEqual(self.reports[-1],
                          (__name__, "sys", "sys", None))

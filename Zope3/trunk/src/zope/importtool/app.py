@@ -34,7 +34,8 @@ def main(argv=None):
 
 def run(options):
     reporter = FirstImportReporter()
-    hook.install_reporter(reporter)
+    h = hook.ReportingHook(reporter)
+    h.install()
     globals = {"__name__": "__main__",
                "__file__": options.argv[0]}
     old_argv = sys.argv[:]
@@ -42,7 +43,7 @@ def run(options):
     try:
         execfile(options.script, globals)
     finally:
-        hook.uninstall_reporter()
+        h.uninstall()
         sys.argv[:] = old_argv
     reporter.display_report()
 
