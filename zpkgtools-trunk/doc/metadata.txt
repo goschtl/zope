@@ -1,0 +1,41 @@
+=======================================
+Metadata Descriptions for Distributions
+=======================================
+
+Packages will be described using a collection of files that contain
+different aspects of the package metadata.
+
+DEPENDENCIES.txt
+  A list of dependencies for this package.  This is currently simply a
+  list of imported packages that aren't provided with the package
+  (listed one per line), but additional features may be identified by
+  adding lines that use a prefix to denote the type of the dependency.
+  For example::
+
+    feature:XML parser
+
+  Lines starting with ``#`` as the first non-white character are
+  ignored.  All other lines are considered a single dependency;
+  leading and trailing whitespace will be ignored.  Dependencies are
+  case-sensitive.
+
+INLCUDES.txt
+  List of inclusions (and exclusions) that are added/removed from the
+  package as it's constructed for distribution.  This is currently
+  only used for collection distributions.
+
+PUBLICATION.txt
+  General metadata related to a distribution package.  This includes
+  information such as the name of the package (i.e., "Frobnitz
+  Manager"), author and maintainer information, and Trove
+  classification.  Version information should not be included; it will
+  be ignored if present (perhaps should be an error?).  This is the
+  information distutils normally pushes into the generated PKG-INFO
+  file; this file has the same format as PKG-INFO.
+
+package.conf
+  This file contains information on building extension modules and, if
+  needed, detailed information about the files to be included in the
+  package for distribution.  Information about scripts and
+  documentation files will also be included in this file.  The format
+  of this file is not yet documented.
