@@ -14,17 +14,14 @@
 """
 This module handles the :startup directives.
 
-$Id: metaconfigure.py,v 1.4 2003/02/11 15:59:58 sidnei Exp $
+$Id: metaconfigure.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
 """
 
-from zope.app.startup.sitedefinition import SiteDefinition
 from zope.configuration.action import Action
-from zope.app.startup import requestfactoryregistry
-from zope.app.startup import servertyperegistry
-from zope.app.startup.requestfactory import RequestFactory
-from zope.app.startup.servertype import ServerType
-
-defineSite = SiteDefinition
+from zope.app.process import requestfactoryregistry
+from zope.app.process import servertyperegistry
+from zope.app.process.requestfactory import RequestFactory
+from zope.app.process.servertype import ServerType
 
 
 def registerRequestFactory(_context, name, request=None, publication=None,

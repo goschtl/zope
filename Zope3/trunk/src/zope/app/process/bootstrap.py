@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.20 2003/06/22 14:01:45 jim Exp $
+$Id: bootstrap.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
 """
 from transaction import get_transaction
 
@@ -36,14 +36,16 @@ from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.proxy import removeAllProxies
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.app.event import function
 
-def bootstrapInstance(db):
+def bootstrapInstance(event):
     """Bootstrap a Zope3 instance given a database object.
 
     This first checks if the root folder exists.  If it exists, nothing
     is changed.  If no root folder exists, one is added, and several
     essential services are added and configured.
     """
+    db = event.database
     connection = db.open()
     root = connection.root()
     root_folder = root.get(ZopePublication.root_name, None)
@@ -59,6 +61,9 @@ def bootstrapInstance(db):
         get_transaction().commit()
 
     connection.close()
+
+
+bootstrapInstance = function.Subscriber(bootstrapInstance)
 
 
 def addEssentialServices(root_folder):

@@ -12,17 +12,17 @@
 #
 ##############################################################################
 """
-$Id: servertyperegistry.py,v 1.3 2003/06/06 19:42:56 stevea Exp $
+$Id: requestfactoryregistry.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
-from zope.app.startup.servertype import IServerType
-from zope.app.startup.simpleregistry import SimpleRegistry
+from zope.app.process.simpleregistry import SimpleRegistry
+from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
 from zope.interface import implements
 
 
-class IServerTypeRegistry(ISimpleRegistry):
+class IRequestFactoryRegistry(ISimpleRegistry):
     """
-    The ServerType Registry manages a list of all the fields
+    The RequestFactory Registry manages a list of all the fields
     available in Zope. A registry is useful at this point, since
     fields can be initialized and registered by many places.
 
@@ -32,11 +32,17 @@ class IServerTypeRegistry(ISimpleRegistry):
     """
 
 
-class ServerTypeRegistry(SimpleRegistry):
-    """Registry for the various Server types"""
-    implements(IServerTypeRegistry)
+class RequestFactoryRegistry(SimpleRegistry):
+    implements(IRequestFactoryRegistry)
 
 
-ServerTypeRegistry = ServerTypeRegistry(IServerType)
-registerServerType = ServerTypeRegistry.register
-getServerType = ServerTypeRegistry.get
+RequestFactoryRegistry = RequestFactoryRegistry(
+    IPublicationRequestFactoryFactory)
+
+registerRequestFactory = RequestFactoryRegistry.register
+getRequestFactory = RequestFactoryRegistry.get
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(RequestFactoryRegistry._clear)
+del addCleanUp

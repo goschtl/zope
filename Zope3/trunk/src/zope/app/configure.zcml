@@ -99,7 +99,7 @@
   <include package="zope.app.form" />
   <include package="zope.app.cache" />
   <include package="zope.app.dublincore" />
-  <include package="zope.app.startup" />
+  <include package="zope.app.process" />
   <include package="zope.app.index" />
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.onlinehelp" />

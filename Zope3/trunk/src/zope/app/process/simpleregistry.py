@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.7 2003/06/06 19:42:56 stevea Exp $
+$Id: simpleregistry.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
 from types import ListType, TupleType

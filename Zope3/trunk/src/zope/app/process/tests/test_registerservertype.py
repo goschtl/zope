@@ -17,7 +17,7 @@
 import unittest
 from zope.configuration.xmlconfig import xmlconfig
 from zope.configuration.tests.basetestdirectivesxml import makeconfig
-from zope.app.startup.servertyperegistry import getServerType
+from zope.app.process.servertyperegistry import getServerType
 
 
 class Test(unittest.TestCase):
@@ -27,7 +27,7 @@ class Test(unittest.TestCase):
             '''<directive
                    name="registerServerType"
                    attributes="name publication request"
-                   handler="zope.app.startup.metaconfigure.registerServerType"
+                   handler="zope.app.process.metaconfigure.registerServerType"
                    />''',
             '''<test:registerServerType
                  name = "Browser"

@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_registerrequestfactory.py,v 1.7 2003/06/06 19:42:57 stevea Exp $
+$Id: test_registerrequestfactory.py,v 1.2 2003/06/25 15:29:33 fdrake Exp $
 """
 
 import unittest
 from zope.configuration.xmlconfig import xmlconfig
 from zope.configuration.tests.basetestdirectivesxml import makeconfig
-from zope.app.startup.requestfactoryregistry import getRequestFactory
+from zope.app.process.requestfactoryregistry import getRequestFactory
 from zope.testing.cleanup import CleanUp
 from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
 from zope.interface import implements
@@ -39,7 +39,7 @@ class Test(CleanUp, unittest.TestCase):
                    name="registerRequestFactory"
                    attributes="name publication request"
                    handler=
-                   "zope.app.startup.metaconfigure.registerRequestFactory"
+                   "zope.app.process.metaconfigure.registerRequestFactory"
                    />''',
             '''<test:registerRequestFactory
                    name="BrowserRequestFactory"
@@ -68,21 +68,21 @@ class Test(CleanUp, unittest.TestCase):
                    name="registerRequestFactory"
                    attributes="name publication request"
                    handler=
-                   "zope.app.startup.metaconfigure.registerRequestFactory"
+                   "zope.app.process.metaconfigure.registerRequestFactory"
                    />''',
             '''<test:registerRequestFactory
                    name="BrowserRequestFactory"
                    factory="
-                   zope.app.startup.tests.test_registerrequestfactory.tf"
+                   zope.app.process.tests.test_registerrequestfactory.tf"
                    />
             '''
             ))
 
-        import zope.app.startup.tests.test_registerrequestfactory
+        import zope.app.process.tests.test_registerrequestfactory
 
         self.assertEqual(
             getRequestFactory('BrowserRequestFactory'),
-            zope.app.startup.tests.test_registerrequestfactory.tf
+            zope.app.process.tests.test_registerrequestfactory.tf
             )
 
 

@@ -1,0 +1,17 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <directives namespace="http://namespaces.zope.org/startup">
+
+    <directive name="registerRequestFactory"
+               attributes="name publication request"
+               handler="zope.app.process.metaconfigure.registerRequestFactory"
+               />
+
+    <directive name="registerServerType"
+               attributes="name publication request"
+               handler="zope.app.process.metaconfigure.registerServerType"
+               />
+
+  </directives>
+
+</zopeConfigure>

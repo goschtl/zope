@@ -15,20 +15,20 @@
 I do not think it is necessary to do the entire SimpleRegistry tests again.
 Instead we will test whether the module in itself works.
 
-$Id: test_requestfactoryregistry.py,v 1.4 2003/06/06 19:42:57 stevea Exp $
+$Id: test_servertyperegistry.py,v 1.2 2003/06/25 15:29:33 fdrake Exp $
 """
 
 import unittest
-from zope.app.startup.requestfactoryregistry import \
-     registerRequestFactory, getRequestFactory
-from zope.app.startup.requestfactory import IRequestFactory
+from zope.app.process.servertyperegistry import \
+     registerServerType, getServerType
+from zope.app.process.servertype import IServerType
 from zope.interface import implements
 
 
-class RequestFactory:
-    """RequestFactory Stub."""
+class ServerType:
+    """ServerType Stub."""
 
-    implements(IRequestFactory)
+    implements(IServerType)
 
 
 class Test(unittest.TestCase):
@@ -36,10 +36,10 @@ class Test(unittest.TestCase):
 
     def testRegistry(self):
 
-        factory = RequestFactory()
+        server = ServerType()
 
-        registerRequestFactory('factory', factory)
-        self.assertEqual(getRequestFactory('factory'), factory)
+        registerServerType('server', server)
+        self.assertEqual(getServerType('server'), server)
 
 
 def test_suite():

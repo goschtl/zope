@@ -1,6 +1,7 @@
 <zopeConfigure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:startup="http://namespaces.zope.org/startup">
+   xmlns:startup="http://namespaces.zope.org/startup"
+   xmlns:event="http://namespaces.zope.org/event">
 
 
   <startup:registerRequestFactory 
@@ -63,5 +64,10 @@
     defaultPort="8021"
     defaultVerbose="true" />
 
+
+  <event:subscribe
+    subscriber=".bootstrap.bootstrapInstance"
+    event_types="zope.app.interfaces.event.IDatabaseOpenedEvent"
+    />
 
 </zopeConfigure>
