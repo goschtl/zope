@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.7 2003/09/21 17:32:54 jim Exp $
+$Id: menu.py,v 1.8 2003/12/03 05:41:34 jim Exp $
 """
 __metaclass__ = type
 
@@ -58,6 +58,11 @@ class LocalBrowserMenuItem(Persistent):
     # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
     filter_string = u''
 
+    # XXX the filter should probably be some kind of descriptor.
+    # There's nothing here to hook this up.
+    filter = None
+
+    extra = None
 
 class LocalBrowserMenu(OrderedContainer):
     """A persistent browser menu that can store menu item objects."""
@@ -86,12 +91,7 @@ class LocalBrowserMenu(OrderedContainer):
         interfaces = list(providedBy(object).flattened())
         for menuitem in self.values():
             if menuitem.interface in interfaces or object is None:
-                result.append(
-                    (menuitem.action,
-                     menuitem.title,
-                     menuitem.description,
-                     menuitem.filter_string or None,
-                     menuitem.permission))
+                result.append(menuitem)
 
         return result
 

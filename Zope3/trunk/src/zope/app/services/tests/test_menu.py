@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: test_menu.py,v 1.3 2003/09/21 17:33:13 jim Exp $
+$Id: test_menu.py,v 1.4 2003/12/03 05:41:35 jim Exp $
 """
 import unittest
 
@@ -246,7 +246,7 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
             (self.folder_ms, 'test_id2', ('ar4', 'ar5')),
             (self.folder_ms, 'test_id3', ('a7', 'a8', 'af7', 'af8')),
             ]:
-            actions = map(lambda m: m[0],
+            actions = map(lambda m: m.action,
                           ms.getAllMenuItems(menu_id, TestObject()))
             actions.sort()
             self.assertEqual(tuple(actions), titles)
@@ -256,7 +256,7 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
         self.assertRaises(KeyError, self.root_ms.getAllMenuItems, 'test_id4',
                           TestObject())
 
-        actions = map(lambda m: m[0],
+        actions = map(lambda m: m.action,
                       self.folder_ms.getAllMenuItems('test_id', None))
         actions.sort()
         self.assertEqual(tuple(actions), ('a0', 'a1', 'a2', 'a3',
