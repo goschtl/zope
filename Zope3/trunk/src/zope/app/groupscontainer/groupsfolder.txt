@@ -1,5 +1,5 @@
 Groups Folder Implementation
-========================
+============================
 
 The GroupsFolder class offers a groups container that mantains maps between groups and principals as 
 well as maps from principals to groups.
@@ -10,25 +10,25 @@ from a given group id and, vice-versa, get a list of groups
 a principal belongs to by providing its id.
    
       >>> import zope.interface
-      >>> from zope.security.interfaces import IPrincipal, IGroup
+      >>> from zope.security.interfaces import IGroupAwarePrincipal, IGroup
       >>> from zope.security.group import Group
       >>> from zope.app.groupscontainer.interfaces import IGroupsFolder, IGroupContained
       >>> from zope.app.groupscontainer.groupsfolder import GroupsFolder
       >>> from zope.interface import implements
       >>> class GoldrakePrincipal:
-      ...     implements(IPrincipal)
+      ...     implements(IGroupAwarePrincipal)
       ...     id = '0'
       ...     title = 'Goldrake'
       ...     description = 'Ufo robot'
       ...     groups = ['superheroes', 'robots']
       >>> class MazingaPrincipal:
-      ...     implements(IPrincipal)
+      ...     implements(IGroupAwarePrincipal)
       ...     id = '1'
       ...     title = 'Mazinga'
       ...     description = 'Mazinga Z'
       ...     groups = ['superheroes', 'robots']
       >>> class CaptainAmericaPrincipal:
-      ...     implements(IPrincipal)
+      ...     implements(IGroupAwarePrincipal)
       ...     id = '2'
       ...     title = 'CaptainAmerica'
       ...     description = 'Captain America'
@@ -71,8 +71,12 @@ a principal belongs to by providing its id.
       [u'robots']
       >>> notordinarypeople.getGroupsForPrincipal('1')
       ['robots']
+      >>> mazinga.groups
+      ['superheroes', 'robots']
       >>> notordinarypeople.getGroupsForPrincipal('2')
       []
+      >>> captainamerica.groups
+      ['superheroes']
       
     Now we test the search capabilities, as in IQuerySchemaSearch example:
     
@@ -117,7 +121,7 @@ a principal belongs to by providing its id.
     
     so that we now get results (!):
     
-      >>> view.results('test')
+      >>> list(view.results('test'))
       [u'robots']
       >>> request.form['test.field.search'] = 'eek'
       

@@ -37,11 +37,12 @@ class GroupsFolder(BTreeContainer):
         self.__inverseMapping = OOBTree()
 
     def __delitem__(self, name):
-        """ Removes a group and updates the inverse mapping"""
+        """Removes a group and updates the inverse mapping"""
         for principal in self.__inverseMapping.keys():
             groupListForPrincipal = self.__inverseMapping[principal]
             if name in groupListForPrincipal:
                 groupListForPrincipal.remove(name)
+        # Clean up 
         for principal in self.__inverseMapping.keys():
             groupListForPrincipal = self.__inverseMapping[principal]
             if len(groupListForPrincipal) == 0:
@@ -56,12 +57,11 @@ class GroupsFolder(BTreeContainer):
             if self.__inverseMapping.has_key(principal):
                 self.__inverseMapping[principal].append(name)
             else:
-                self.__inverseMapping[principal] = [name]
-                     
+                self.__inverseMapping[principal] = [name]        
    
     def getGroupsForPrincipal(self, principalid):
         """Get groups the given principal belongs to"""
-        if principalid in self.__inverseMapping.keys():
+        if self.__inverseMapping.has_key(principalid):
             return self.__inverseMapping[principalid]
         else:
             return []
@@ -104,7 +104,6 @@ class GroupsFolder(BTreeContainer):
     def search(self, query, start=None, batch_size=None):
         """ Search for groups"""
         search = query.get('search')
-        tmpResults = []
         if search is not None:
             i = 0
             n = 0
@@ -113,7 +112,13 @@ class GroupsFolder(BTreeContainer):
                     if not ((start is not None and i < start)
                             or
                             (batch_size is not None and n > batch_size)):
-                        tmpResults.append(value)
-        return tmpResults
+                        n += 1
+                        yield value
+                i += 1
+        
+    def principalInfo(self, id):
+        if id in self:
+            return {'title': self[id].title, 'description': self[id].description}
+        
         
             

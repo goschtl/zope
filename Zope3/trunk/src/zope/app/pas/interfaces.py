@@ -176,7 +176,7 @@ class IPrincipalSearchPlugin(IPrincipalIdAwarePlugin):
         (See README.txt.)
     """
 
-    def get(principal_id):
+    def principalInfo(principal_id):
         """Try to get principal information for the principal id.
 
         If the principal id is valid, then return a dictionary
