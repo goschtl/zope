@@ -51,10 +51,13 @@ PACKAGE_CONF = "PACKAGE.cfg"
 
 
 class InclusionError(Error):
-    pass
+    """Raised to indicate errors processing inclusions."""
 
 
-class InclusionSpecificationError(cfgparser.ConfigurationError, InclusionError):
+class InclusionSpecificationError(cfgparser.ConfigurationError,
+                                  InclusionError):
+    """Raised to indicate errors in an inclusion specification."""
+
     def __init__(self, message, filename=None, lineno=None):
         InclusionError.__init__(self, message)
         cfgparser.ConfigurationError.__init__(self, message)
@@ -201,6 +204,15 @@ class Specification:
         destination) to either an absolute path in the source
         directory or a URL.
 
+      - `source`: Source directory which will be used to expand glob
+        patterns.
+
+      - `filename`: Path of the file from which this specification was
+        loaded.  This is used when reporting errors.
+
+      - `group`: String indicating which section of the specification
+        file was used to generate this specification.
+
     """
 
     def __init__(self, source, filename, group):
@@ -209,6 +221,13 @@ class Specification:
         :Parameters:
           - `source`: Directory that will serve as the primary source
             directory; this is needed to support exclusions.
+
+          - `filename`: Path of the file from which this specification
+            was loaded.  This is used when reporting errors.
+
+          - `group`: String indicating which section of the
+            specification file was used to generate this
+            specification.
 
         """
         # The source directory is needed since globbing is performed
@@ -243,6 +262,16 @@ class InclusionProcessor:
 
     """
     def __init__(self, source, loader):
+        """Initialize the processor.
+
+        :Parameters:
+          - `source`: Source directory for the primary resource being
+            included.
+
+          - `loader`: Resource loader which should be used to load
+            external resources.
+
+        """
         if not os.path.exists(source):
             raise InclusionError("source directory does not exist: %r"
                                  % source)
@@ -265,7 +294,7 @@ class InclusionProcessor:
         if spec is None:
             spec = Specification(self.source, None, "collection")
         destination = os.path.abspath(destination)
-        self.copyTree(self.source, destination, spec.excludes)
+        self.copyTree(spec.source, destination, spec.excludes)
         self.addIncludes(destination, spec)
 
     def copyTree(self, source, destination, excludes={}):
