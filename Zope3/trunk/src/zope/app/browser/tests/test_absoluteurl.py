@@ -14,22 +14,23 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.16 2003/09/21 17:31:10 jim Exp $
+$Id: test_absoluteurl.py,v 1.17 2003/11/21 17:11:22 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
+
+from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getService, getView
-from zope.app.services.servicenames import Adapters, Views
+from zope.app.services.servicenames import Adapters
 
 from zope.i18n.interfaces import IUserPreferredCharsets
 
-from zope.publisher.tests.httprequest import TestRequest
+from zope.publisher.browser import TestRequest
 from zope.publisher.http import IHTTPRequest
 from zope.publisher.http import HTTPCharsets
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.container.contained import contained
 
 
@@ -47,47 +48,40 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         PlacelessSetup.setUp(self)
         from zope.app.browser.absoluteurl \
              import AbsoluteURL, SiteAbsoluteURL
-        provideView=getService(None,Views).provideView
-        provideView(None, 'absolute_url', IBrowserPresentation,
-                    [AbsoluteURL])
-        provideView(IRoot, 'absolute_url', IBrowserPresentation,
-                    [SiteAbsoluteURL])
-        provideAdapter = getService(None, Adapters).provideAdapter
-        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)
+        ztapi.browserView(None, 'absolute_url', [AbsoluteURL])
+        ztapi.browserView(IRoot, 'absolute_url', [SiteAbsoluteURL])
+        ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,
+                             HTTPCharsets)
 
     def testBadObject(self):
         request = TestRequest()
-        request.setViewType(IBrowserPresentation)
         view = getView(42, 'absolute_url', request)
         self.assertRaises(TypeError, view.__str__)
 
     def testNoContext(self):
         request = TestRequest()
-        request.setViewType(IBrowserPresentation)
         view = getView(Root(), 'absolute_url', request)
-        self.assertEqual(str(view), 'http://foobar.com')
+        self.assertEqual(str(view), 'http://127.0.0.1')
 
     def testBasicContext(self):
         request = TestRequest()
-        request.setViewType(IBrowserPresentation)
 
         content = contained(TrivialContent(), Root(), name='a')
         content = contained(TrivialContent(), content, name='b')
         content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
-        self.assertEqual(str(view), 'http://foobar.com/a/b/c')
+        self.assertEqual(str(view), 'http://127.0.0.1/a/b/c')
 
         breadcrumbs = view.breadcrumbs()
         self.assertEqual(breadcrumbs,
-                         ({'name':  '', 'url': 'http://foobar.com'},
-                          {'name': 'a', 'url': 'http://foobar.com/a'},
-                          {'name': 'b', 'url': 'http://foobar.com/a/b'},
-                          {'name': 'c', 'url': 'http://foobar.com/a/b/c'},
+                         ({'name':  '', 'url': 'http://127.0.0.1'},
+                          {'name': 'a', 'url': 'http://127.0.0.1/a'},
+                          {'name': 'b', 'url': 'http://127.0.0.1/a/b'},
+                          {'name': 'c', 'url': 'http://127.0.0.1/a/b/c'},
                           ))
 
     def testVirtualHosting(self):
         request = TestRequest()
-        request.setViewType(IBrowserPresentation)
 
         vh_root = TrivialContent()
         content = contained(vh_root, Root(), name='a')
@@ -95,18 +89,17 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         content = contained(TrivialContent(), content, name='b')
         content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
-        self.assertEqual(str(view), 'http://foobar.com/b/c')
+        self.assertEqual(str(view), 'http://127.0.0.1/b/c')
 
         breadcrumbs = view.breadcrumbs()
         self.assertEqual(breadcrumbs,
-         ({'name':  '', 'url': 'http://foobar.com'},
-          {'name': 'b', 'url': 'http://foobar.com/b'},
-          {'name': 'c', 'url': 'http://foobar.com/b/c'},
+         ({'name':  '', 'url': 'http://127.0.0.1'},
+          {'name': 'b', 'url': 'http://127.0.0.1/b'},
+          {'name': 'c', 'url': 'http://127.0.0.1/b/c'},
           ))
 
     def testVirtualHostingWithVHElements(self):
         request = TestRequest()
-        request.setViewType(IBrowserPresentation)
 
         vh_root = TrivialContent()
         content = contained(vh_root, Root(), name='a')
@@ -114,18 +107,17 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         content = contained(TrivialContent(), content, name='b')
         content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
-        self.assertEqual(str(view), 'http://foobar.com/b/c')
+        self.assertEqual(str(view), 'http://127.0.0.1/b/c')
 
         breadcrumbs = view.breadcrumbs()
         self.assertEqual(breadcrumbs,
-         ({'name':  '', 'url': 'http://foobar.com'},
-          {'name': 'b', 'url': 'http://foobar.com/b'},
-          {'name': 'c', 'url': 'http://foobar.com/b/c'},
+         ({'name':  '', 'url': 'http://127.0.0.1'},
+          {'name': 'b', 'url': 'http://127.0.0.1/b'},
+          {'name': 'c', 'url': 'http://127.0.0.1/b/c'},
           ))
 
     def testVirtualHostingInFront(self):
         request = TestRequest()
-        request.setViewType(IBrowserPresentation)
 
         root = Root()
         request._vh_root = contained(root, root, name='')
@@ -134,14 +126,14 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         content = contained(TrivialContent(), content, name='b')
         content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
-        self.assertEqual(str(view), 'http://foobar.com/a/b/c')
+        self.assertEqual(str(view), 'http://127.0.0.1/a/b/c')
 
         breadcrumbs = view.breadcrumbs()
         self.assertEqual(breadcrumbs,
-         ({'name':  '', 'url': 'http://foobar.com'},
-          {'name': 'a', 'url': 'http://foobar.com/a'},
-          {'name': 'b', 'url': 'http://foobar.com/a/b'},
-          {'name': 'c', 'url': 'http://foobar.com/a/b/c'},
+         ({'name':  '', 'url': 'http://127.0.0.1'},
+          {'name': 'a', 'url': 'http://127.0.0.1/a'},
+          {'name': 'b', 'url': 'http://127.0.0.1/a/b'},
+          {'name': 'c', 'url': 'http://127.0.0.1/a/b/c'},
           ))
 
 
