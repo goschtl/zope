@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.10 2003/07/02 22:10:39 jim Exp $
+"""$Id: test_editview.py,v 1.11 2003/07/12 01:29:01 richard Exp $
 """
 import unittest
 
@@ -33,7 +33,7 @@ class I(Interface):
     foo = TextLine(title=u"Foo")
     bar = TextLine(title=u"Bar")
     a   = TextLine(title=u"A")
-    b   = TextLine(title=u"B")
+    b   = TextLine(title=u"B", min_length=0)
     getbaz, setbaz = accessors(TextLine(title=u"Baz"))
 
 class EV(EditView):
@@ -116,11 +116,12 @@ class Test(PlacelessSetup, unittest.TestCase):
         d['foo'] = u'd foo'
         d['bar'] = u'd bar'
         d['getbaz'] = u'd baz'
+        d['b'] = u''
         self.failIf(v.apply_update(d))
         self.assertEqual(c.foo, u'd foo')
         self.assertEqual(c.bar, u'd bar')
         self.assertEqual(c.a  , u'c a')
-        self.assertEqual(c.b  , u'c b')
+        self.assertEqual(c.b  , u'')
         self.assertEqual(c.getbaz(), u'd baz')
         self.failUnless(getEvents(filter=lambda event: event.object == c))
 

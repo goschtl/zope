@@ -83,7 +83,7 @@
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.interfaces.ITuple"
       name="edit"
-      class="zope.app.browser.form.widget.TextAreaWidget"
+      class="zope.app.browser.form.widget.TupleSequenceWidget"
       />
 
   <browser:page
@@ -91,7 +91,7 @@
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.interfaces.IList"
       name="edit"
-      class="zope.app.browser.form.widget.TextAreaWidget"
+      class="zope.app.browser.form.widget.ListSequenceWidget"
       />
 
   <browser:page

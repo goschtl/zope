@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.15 2003/06/04 09:09:46 stevea Exp $
+$Id: _field.py,v 1.16 2003/07/12 01:29:04 richard Exp $
 """
 __metaclass__ = type
 
@@ -166,7 +166,6 @@ class Sequence(MinMaxLen, Iterable, Field):
         errors = _validate_sequence(self.value_types, value)
         if errors:
             raise ValidationError(WrongContainedType, errors)
-
 
 class Tuple(Sequence):
     """A field representing a Tuple."""

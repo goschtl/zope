@@ -12,12 +12,14 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.35 2003/06/30 22:44:13 jeremy Exp $
+$Id: widget.py,v 1.36 2003/07/12 01:28:59 richard Exp $
 """
 
 __metaclass__ = type
 
+import re
 import warnings
+from zope.app import zapi
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
@@ -931,6 +933,206 @@ class MultiCheckBoxWidget(MultiItemsWidget):
                               id = name,
                               value = value,
                               checked = None) + text
+
+class SequenceWidget(BrowserWidget):
+    """A sequence of fields.
+
+    Contains a sequence of *Widgets which have a numeric __name__ which
+    represents their position in the sequence.
+    """
+    _type = tuple
+    _stored = ()        # pre-existing sequence items (from setData)
+    _sequence = ()      # current list of sequence items (existing & request)
+    _sequence_generated = False
+
+    def __call__(self):
+        """Render the widget
+        """
+        # XXX we really shouldn't allow value_types of None
+        if self.context.value_types is None:
+            return ''
+
+        if not self._sequence_generated:
+            self._generateSequenceFromRequest()
+
+        render = []
+        r = render.append
+
+        # prefix for form elements
+        prefix = self._prefix + self.context.__name__
+
+        # length of sequence info
+        sequence = list(self._sequence)
+        num_items = len(sequence)
+        min_length = self.context.min_length
+        max_length = self.context.max_length
+
+        # ensure minimum number of items in the form
+        if num_items < min_length:
+            for i in range(min_length - num_items):
+                sequence.append(None)
+        num_items = len(sequence)
+
+        # generate each widget from items in the _sequence - adding a
+        # "remove" button for each one
+        field = self.context.value_types[0]
+        for i in range(num_items):
+            value = sequence[i]
+            r('<tr><td>')
+            if num_items > min_length:
+                r('<input type="checkbox" name="%s.remove_%d">'%(prefix, i))
+            widget = zapi.getView(field, 'edit', self.request, self.context)
+            widget.setPrefix('%s.%d.'%(prefix, i))
+            widget.setData(value)
+            r(widget()+'</td></tr>')
+            
+        # possibly generate the "remove" and "add" buttons
+        s = ''
+        if render and num_items > min_length:
+            s += '<input type="submit" value="Remove Selected Items">'
+        if max_length is None or num_items < max_length:
+            s += '<input type="submit" name="%s.add" value="Add %s">'%(prefix,
+                field.title or field.__name__)
+        if s:
+            r('<tr><td>%s</td></tr>'%s)
+
+        return '<table border="0">' + ''.join(render) + '</table>'
+
+
+    def hidden(self):
+        ''' Render the list as hidden fields '''
+        prefix = self._prefix + self.context.__name__
+        # length of sequence info
+        sequence = list(self._sequence)
+        num_items = len(sequence)
+        min_length = self.context.min_length
+        max_length = self.context.max_length
+
+        # ensure minimum number of items in the form
+        if num_items < min_length:
+            for i in range(min_length - num_items):
+                sequence.append(None)
+        num_items = len(sequence)
+
+        # generate hidden fields for each value
+        field = self.context.value_types[0]
+        s = ''
+        for i in range(num_items):
+            value = sequence[i]
+            widget = zapi.getView(field, 'edit', self.request, self.context)
+            widget.setPrefix('%s.%d.'%(prefix, i))
+            widget.setData(value)
+            s += widget.hidden()
+        return s
+
+    def getData(self):
+        """Return converted and validated widget data.
+
+        If there is no user input and the field is required, then a
+        MissingInputError will be raised.
+
+        If there is no user input and the field is not required, then
+        the field default value will be returned.
+
+        A WidgetInputError is returned in the case of one or more
+        errors encountered, inputting, converting, or validating the data.
+        """
+        # XXX enforce required
+        if not self._sequence_generated:
+            self._generateSequenceFromRequest()
+        return self._type(self._sequence)
+
+    def haveData(self):
+        """Is there input data for the field
+
+        Return True if there is data and False otherwise.
+        """
+        if not self._sequence_generated:
+            self._generateSequenceFromRequest()
+        return len(self._sequence) != 0
+
+    def setData(self, value):
+        """Set the default data for the widget.
+
+        The given value should be used even if the user has entered
+        data.
+        """
+        # the current list of values derived from the "value" parameter
+        self._stored = value
+        self._sequence_generated = False
+
+    def _generateSequenceFromRequest(self):
+        """Take sequence info in the self.request and populate our _sequence.
+
+        This is kinda expensive, so we only do it once.
+        """
+        prefix = self._prefix + self.context.__name__
+        len_prefix = len(prefix)
+        adding = False
+        removing = []
+        subprefix = re.compile(r'(\d+)\.(.+)')
+        if self.context.value_types is None:
+            self._sequence = []
+            self._sequence_generated = True
+            return
+        field = self.context.value_types[0]
+
+        # pre-populate 
+        found = {}
+        for i in range(len(self._stored)):
+            entry = self._stored[i]
+            found[i] = entry
+
+        # now look through the request for interesting values
+        have_request_data = False
+        for k, v in self.request.items():
+            if not k.startswith(prefix):
+                continue
+            s = k[len_prefix+1:]        # skip the '.'
+            if s == 'add':
+                # append a new blank field to the sequence
+                adding = True
+                have_request_data = True
+            elif s.startswith('remove_'):
+                # remove the index indicated
+                removing.append(int(s[7:]))
+                have_request_data = True
+            else:
+                m = subprefix.match(s)
+                if m is None:
+                    continue
+                # key refers to a sub field
+                i = int(m.group(1))
+                have_request_data = True
+
+                # find a widget for the sub-field and use that to parse the
+                # request data
+                widget = zapi.getView(field, 'edit', self.request, self.context)
+                widget.setPrefix('%s.%d.'%(prefix, i))
+                value = widget.getData()
+                field.validate(value)
+                found[i] = value
+
+        # remove the indicated indexes 
+        for i in  removing:
+            del found[i]
+
+        # generate the list, sorting the dict's contents by key
+        l = found.items()
+        l.sort()
+        self._sequence = [v for k,v in l]
+
+        # the submission might add or remove a sequence item
+        if adding:
+            self._sequence.append(None)
+
+        self._sequence_generated = True
+
+class TupleSequenceWidget(SequenceWidget):
+    pass
+
+class ListSequenceWidget(SequenceWidget):
+    _type = list
 
 
 # XXX Note, some HTML quoting is needed in renderTag and renderElement.
