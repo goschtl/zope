@@ -105,17 +105,13 @@ To Do
 - Implement bundle commands via a new command-line utility to convert
   a checkout of a site-management folder to a bundle (in progress).
 
-  * Need a way to turn site-management folders into bundles, and
-    vice-versa, using the command-line **zbundle** utility or more
-    directly through the ZMI (the tool can currently create a "raw"
-    bundle; conversion should be a simple step forward).
-
   * Bundles should be read-only.
 
 - New command-line utility to convert a checkout of a site-management
   folder to a bundle (in progress).
 
-- Documentation for the zsync command line tool (in progress)
+- Documentation for the **zsync** and **zbundle** command line tools
+  (in progress)
 
 - Explicit import/export facilities, similar to the functionality
   found in Zope 2
@@ -232,9 +228,9 @@ Working With Bundles
 
 - Creating a bundle from an existing folder.  If you have some
   existing work done in the default folder or another non-bundle
-  folder, you can save your work to the filesystem using the zsync
-  checkout command, and then check it in under a different name using
-  the zsync checkin command.  Example; replace u:p with your manager
+  folder, you can save your work to the filesystem using the **zsync
+  checkout** command, and then check it in under a different name using
+  the **zsync checkin** command.  Example; replace u:p with your manager
   username and password::
 
     $ zsync checkout http://u:p@localhost:8080/++etc++site/default
