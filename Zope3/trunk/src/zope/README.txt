@@ -8,9 +8,9 @@ useful and usable outside of the Zope application server.  Subpackages
 of the zope package should have minimal interdependencies, although
 most depend on zope.interfaces.
 
-The one package that's not usable outside the application server is
-that app package, which *is* the application server. Sub-packages of
-app are not usable outside of the application server. If there's
-something in app you want to use elsewhere, let us know and we can
-talk about abstracting some of it up put of app.
+The one subpackage that's not usable outside the application server is
+the app subpackage, zope.app, which *is* the application
+server. Sub-packages of zope.app are not usable outside of the application
+server. If there's something in zope.app you want to use elsewhere, let us
+know and we can talk about abstracting some of it up put of zope.app.
 
