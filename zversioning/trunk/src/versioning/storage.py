@@ -13,16 +13,19 @@
 ##############################################################################
 
 import unittest, doctest
+from datetime import datetime
 
 from zope.interface import implements
-from zope.app.copypastemove.interfaces import IObjectCopier 
-from zope.app.container.interfaces import INameChooser
+from persistent.dict import PersistentDict
 from zope.app.folder import Folder
 from zope.app.exception.interfaces import UserError
+from zope.app.copypastemove.interfaces import IObjectCopier 
+from zope.app.container.interfaces import INameChooser
+from zope.app.annotation.interfaces import IAnnotations
 
 from versioning.interfaces import IVersionHistory
 from versioning.interfaces import IHistoryStorage
-
+from versioning.interfaces import ICheckoutAware
 
 
 class VersionHistory(Folder) :
@@ -104,13 +107,59 @@ class SimpleHistoryStorage(Folder) :
         
     def getVersion(self, obj, selector) :
         """ Returns the version of an object that is specified by selector. """
-        history = self.getVersionHistory(obj)
+        history = self.getHistory(obj)
         return history[selector]
-        
-  
-             
-   
 
+
+class DefaultCheckoutAware(object):
+    """Default checkout and checkin aware storage extension.
+    
+    Use this for IHistoryStorage components beeing unable to store checkin
+    and checkout information.
+    
+    XXX Should 'DefaultCheckoutAware' live here?
+    
+    XXX CAUTION! If currently a checked out object gets deleted
+    the counter doesn't get decremented! We should
+    
+    Asserts IContained (the same object can not live in different
+    locations).
+    """
+    
+    implements(ICheckoutAware)
+    __used_for__ = IHistoryStorage
+    
+    namespace_key = 'versioning.interfaces.ICheckoutAware'
+    
+    def getCheckedOutList(self):
+        return self.annotations.get(self.namespace_key)
+    
+    checkedOutDict = property(getCheckedOutList)
+    
+    def __init__(self, histories):
+        self.histories = histories
+        self.annotations = anno = IAnnotations(histories)
+        data = self.getCheckedOutList()
+        if data is None:
+            anno[self.namespace_key] = PersistentDict()
+    
+    def markAsCheckedOut(self, obj):
+        """See versioning.interfaces.ICheckoutAware
+        """
+        ticket = self.histories.getTicket(obj)
+        self.checkedOutDict[ticket] = datetime.now()
+        
+    def markAsCheckedIn(self, obj):
+        """See versioning.interfaces.ICheckoutAware
+        """
+        ticket = self.histories.getTicket(obj)
+        del self.checkedOutDict[ticket]
+        
+    def isCheckedOut(self, obj):
+        """See versioning.interfaces.ICheckoutAware
+        """
+        ticket = self.histories.getTicket(obj)
+        return self.checkedOutDict.has_key(ticket)
 
 
 def test_suite():

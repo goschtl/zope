@@ -82,7 +82,7 @@ handles the checkout/checkin status for the repository.
 
   >>> ztapi.provideAdapter(interfaces.IHistoryStorage,
   ...                      interfaces.ICheckoutAware,
-  ...                      repository.DefaultCheckoutAware)
+  ...                      storage.DefaultCheckoutAware)
 
 Our 'ICheckoutAware' adapter XXX
 
