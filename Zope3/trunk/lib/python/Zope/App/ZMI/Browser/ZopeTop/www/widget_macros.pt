@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<link href="zopetopBasic.css" rel="stylesheet" type="text/css" />
+<link href="zopetopStructure.css" rel="stylesheet" type="text/css" />
+<link href="zopetopWidgets.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+
+<span metal:define-macro="logged_user"
+   >Logged in as <span tal:replace="request/user/getTitle"
+   >dtremea</span></span>
+
+<table metal:define-macro="services_bar" border="0" cellspacing="0" cellpadding="0">
+  <tr tal:on-error="string: No services available">
+    <td>&nbsp;
+      <img src="service_manager.gif" alt="Sort" 
+      tal:attributes="src context/++resource++service_manager.gif"/>
+    </td>
+    <td>
+      <a href="./++etc++Services/"
+      tal:condition="context/hasServiceManager">Services</a>
+      <a href="@@addServiceManager.html" 
+      tal:condition="not: context/hasServiceManager">Allow Services</a>
+    </td>     
+    <td><img src="spacer2.gif" width="15" height="28"
+      tal:attributes="src context/++resource++spacer2.gif"/>
+    </td>
+    <td><img src="user_accounts.gif" width="22" height="28"
+      tal:attributes="src context/++resource++user_accounts.gif"/>
+    </td>
+    <td nowrap="nowrap">User Accounts
+    </td>
+    <td><img src="spacer2.gif" width="15" height="28"
+      tal:attributes="src context/++resource++spacer2.gif"/>
+    </td>
+    <td><img src="control_panels.gif" width="24" height="28"
+      tal:attributes="src context/++resource++control_panels.gif"/>
+    </td>
+    <td nowrap="nowrap">Control Panels
+    </td>
+    <td><img src="spacer2.gif" width="15" height="28"
+      tal:attributes="src context/++resource++spacer2.gif"/>
+    </td>
+    <td><img src="system_security.gif" width="23" height="28"
+      tal:attributes="src context/++resource++system_security.gif"/>
+    </td>
+    <td nowrap="nowrap">System Security
+    </td>
+    <td><img src="spacer2.gif" width="15" height="28"
+      tal:attributes="src context/++resource++spacer2.gif"/>
+    </td>
+    <td><img src="add_more.gif" width="26" height="28"
+      tal:attributes="src context/++resource++add_more.gif"/>
+    </td>
+    <td nowrap="nowrap">Add More
+    </td>
+  </tr>
+</table>
+
+<table metal:define-macro="explorer_box" align="center" class="box" width="150">
+  <thead>
+    <tr> 
+      <th align="center" >Root Folder</th>
+      <th class="empty">&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr> 
+      <td colspan="2" class="odd"><a href="#"><img src="plus.gif" width="19" height="25"
+	tal:attributes="src context/++resource++plus.gif"/><img
+	src="closed_folder.gif" width="26" height="25"
+	tal:attributes="src context/++resource++closed_folder.gif"
+	/>Folder Name</a>
+      </td>
+    </tr>
+    <tr> 
+      <td colspan="2" class="odd"><a href="#"><img src="plus.gif" 
+	width="19" height="25"
+	tal:attributes="src context/++resource++plus.gif"/><img 
+	src="closed_folder.gif" width="26" height="25"
+	tal:attributes="src context/++resource++closed_folder.gif"
+	/>Folder Name</a>
+      </td>
+    </tr>
+    <tr> 
+      <td colspan="2" class="even"><a 
+	href="#"><img src="minus.gif" width="19" height="25"
+	tal:attributes="src context/++resource++minus.gif"/><img 
+	src="closed_folder.gif" width="26" height="25"
+	tal:attributes="src context/++resource++closed_folder.gif"
+	/>Folder Name</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <table metal:define-macro="views_box" align="center" class="box" width="150">
+    <thead>
+      <tr> 
+	  <th align="center">Views</th>
+	<th class="empty">&nbsp;</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr tal:repeat="view views/ZMIUtility/getZMIViews"> 
+	<td colspan="2"> <a href="" 
+	  tal:attributes="href view/action">
+	  <span style="color: #E9A90F; font-size: 15px;
+	  font-weight: bold;">&raquo;</span> 
+                    <span tal:content="view/title">Contents</span></a>
+	</td>
+      </tr>
+      </tbody>
+    </table>
+
+<table metal:define-macro="content_header_bar" width="100%" border="0" cellpadding="0" cellspacing="0">
+  <tr> 
+    <td width="26"> <img src="closed_folder.gif" width="26" height="25"
+      tal:attributes="src context/++resource++closed_folder.gif"/>
+    </td>
+    <td width="95">Folder at </td>
+    <td><span
+      metal:define-macro="breadcrumbs"
+	  tal:omit-tag=""
+      tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs"> <a href="" 
+      tal:attributes="href breadcrumb/url"
+      tal:content="string:${breadcrumb/name}/"
+      >name</a></span></td>
+    <td width="45" align="right">Help </td>
+    <td width="25"> <img src="help.gif" width="25" height="25"
+      tal:attributes="src context/++resource++help.gif"/>
+    </td>
+  </tr>
+</table>
+
+<div metal:define-macro="footer">
+  <p>Powered by Zope</p>
+</div>
+		    
+</body>
+</html>
