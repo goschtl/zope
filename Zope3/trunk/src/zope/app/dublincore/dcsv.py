@@ -18,7 +18,7 @@ labelled values in a text string', at:
 
 http://dublincore.org/documents/dcmi-dcsv/
 
-$Id: dcsv.py,v 1.1 2003/08/21 04:40:10 fdrake Exp $
+$Id: dcsv.py,v 1.2 2003/08/21 04:52:51 fdrake Exp $
 """
 
 import re
@@ -79,7 +79,7 @@ def decode(text):
             m = _find_value(text)
             if m:
                 value = m.group(1)
-                text = text[m.end():].rstrip()
+                text = text[m.end():].lstrip()
             else:
                 value = text
                 text = ''
