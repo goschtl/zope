@@ -22,11 +22,12 @@ principals accessible via an authentication service.
 To illustrate the group interaction with the authentication service,
 we'll create a sample authentication service:
 
-  >>> import zope.interface
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope import interface
+  >>> from zope.app.security.interfaces import IAuthentication, IPrincipal
   >>> from zope.app.authentication.groupfolder import setGroupsForPrincipal
 
   >>> class Principal:
+  ...     interface.implements(IPrincipal)
   ...     def __init__(self, id, title, description):
   ...         self.id, self.title, self.description = id, title, description
   ...         self.groups = []
@@ -37,7 +38,7 @@ we'll create a sample authentication service:
 
   >>> class Principals:
   ...
-  ...     zope.interface.implements(IAuthentication)
+  ...     interface.implements(IAuthentication)
   ...
   ...     def __init__(self, groups):
   ...         self.principals = {
@@ -168,3 +169,30 @@ If you don't supply a search key, no results will be returned:
 
   >>> list(groups.search({}))
   []
+
+Identifying groups
+------------------
+
+The function, `setGroupsForPrincipal`, is a subscriber to
+principal-creation events.  It adds any group-folder-defined groups to
+users in those groups:
+
+  >>> principal = principals.getPrincipal('p1')
+  >>> principal.groups
+  [u'group.G1', u'group.GA']
+
+Of course, this applies to groups too:
+
+  >>> principal = principals.getPrincipal('group.G1')
+  >>> principal.groups
+  [u'group.G2']
+
+In addition to setting principal groups, the `setGroupsForPrincipal`
+function also declares the `IGroup` interface on groups:
+
+  >>> [iface.__name__ for iface in interface.providedBy(principal)]
+  ['IGroup', 'IPrincipal']
+  
+  >>> [iface.__name__ 
+  ...  for iface in interface.providedBy(principals.getPrincipal('p1'))]
+  ['IPrincipal']

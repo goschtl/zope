@@ -26,7 +26,10 @@ from BTrees.OOBTree import OOBTree
 from persistent import Persistent
 
 import zope.interface
+from zope.interface import alsoProvides
 import zope.schema
+
+from zope.security.interfaces import IGroup
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
@@ -239,3 +242,8 @@ def setGroupsForPrincipal(event):
         principal.groups.extend(
             groupfolder.getGroupsForPrincipal(principal.id),
             )
+        id = principal.id
+        prefix = groupfolder.prefix
+        if id.startswith(prefix) and id[len(prefix):] in groupfolder:
+            alsoProvides(principal, IGroup)
+            
