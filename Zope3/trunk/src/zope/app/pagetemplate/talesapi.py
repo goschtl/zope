@@ -14,21 +14,24 @@
 """Implementation of the Zope TALES API
 
 
-$Id: talesapi.py,v 1.6 2003/06/13 17:41:19 stevea Exp $
+$Id: talesapi.py,v 1.7 2003/09/16 22:11:26 srichter Exp $
 """
-
 from zope.app.interfaces.talesapi import IZopeTalesAPI
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app import zapi
 from zope.interface import implements
+from zope.tales.interfaces import ITALESFunctionNamespace
 
 class ZopeTalesAPI(object):
 
-    implements(IZopeTalesAPI)
+    implements(IZopeTalesAPI, ITALESFunctionNamespace)
 
     def __init__(self, context):
         self.context = context
+
+    def setEngine(self, engine):
+        self._engine = engine
 
     def title(self):
         a = zapi.queryAdapter(self.context, IZopeDublinCore)
