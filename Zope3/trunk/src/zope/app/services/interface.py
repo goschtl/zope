@@ -42,11 +42,12 @@ class PersistentInterfaceWrapper(Wrapper):
     def unwrap(self):
         return PersistentInterfaceClass(self._obj.__name__)
 
-def register(): # XXX has been refactored on a branch
-    registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
-                    lambda iface: (),
-                    lambda iface: iface.__dict__,
-                    )
+
+registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
+                lambda iface: (),
+                lambda iface: iface.__dict__,
+                )
+
 
 class LocalInterfaceService(object):
     """I need a doc string."""

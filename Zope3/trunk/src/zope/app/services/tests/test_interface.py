@@ -21,9 +21,7 @@ from zodb.storage.mapping import MappingStorage
 from zodb.code.module import ManagedRegistry
 
 from zope.interface import Interface
-from zope.app.services.interface import PersistentInterface, register
-
-register()
+from zope.app.services.interface import PersistentInterface
 
 code = """\
 from zope.interface import Interface
