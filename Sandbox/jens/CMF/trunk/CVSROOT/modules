@@ -108,6 +108,9 @@ ZServer Publishers/ZServer
 # actual webdav directory lived in GreyThing...  klm 03/26/1999.
 GreyThing -d lib/python -l Components/GreyThing
 
+# ZopeBase has most of what you need to build Zope, without anything
+# specific to a source or a binary distribution.
+#
 ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZClasses &lpWebdav \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
@@ -119,9 +122,6 @@ ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZSQLMethods &lpZGadflyDA \
   &ZServer 
 
-Zope2 ZSrc &ZopeBase \
-  &lExtensionClass &lBTree &lcPickle &lzlib \
-
 Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
   &lpZClasses &lpWebdav \
@@ -131,7 +131,7 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpSearchIndex \
   &lpSharedInit &lpDCInit &lpProductsInit \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
-  &lpZSQLMethods &lpZGadflyDA
+  &lpZSQLMethods &lpZGadflyDA &ZServer
 
 
 # KLM end
