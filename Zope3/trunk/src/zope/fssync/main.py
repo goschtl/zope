@@ -27,7 +27,7 @@ For now, the only global option is -h/--help; there are no local
 options yet except for diff, which supports a small subset of the
 options of GNU diff.
 
-$Id: main.py,v 1.7 2003/05/13 21:02:21 gvanrossum Exp $
+$Id: main.py,v 1.8 2003/05/13 21:16:22 gvanrossum Exp $
 """
 
 import os
@@ -83,6 +83,9 @@ def main(argv=None):
             if o in ("-h", "--help"):
                 print __doc__
                 return 0
+
+        if not args:
+            raise Usage("missing command argument")
 
         command = args[0]
         if command not in command_table:
