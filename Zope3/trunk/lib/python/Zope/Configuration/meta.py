@@ -15,13 +15,46 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.9 2002/09/18 04:24:37 rdmurray Exp $
+$Id: meta.py,v 1.10 2002/09/18 04:45:14 rdmurray Exp $
 """
 
 
 from INonEmptyDirective import INonEmptyDirective
 from ISubdirectiveHandler import ISubdirectiveHandler
 
+#_directives is a registry that holds information on zcml directives
+#and subdirectives.  It is filled by the 'directives', 'directive' and
+#'subdirective' directives that are provided as the bootstrap
+#directives by the _clear function of this module.
+#
+#The top level of the registry is a dictionary keyed by two element
+#tuples.  Each key tuple consists of a namespace designator (such as
+#http://namespaces.zope.org/zope) and a directive name.  Thus, the
+#key that accesses the 'directive' directive is::
+#
+#    (http://namespaces.zope.org/zope', 'directive')
+#
+#The value of a directive entry is a two element tuple consisting
+#of a callable and a (possibly empty) subdirective registry.  The
+#callable is the object to be called to process the directive and
+#its parameters.  The callable must be either an IEmptyDirective (in
+#which case the subdirective registry should be empty), or an
+#INonEmptyDirective (in which case there should be one or more entries
+#in the subdirective registry).
+#
+#A subdirective registry is also keyed by (ns, name) tuples.  Handler
+#methods for subdirectives are looked up on the ISubdirectiveHandler
+#object that is returned by the INonEmptyDirective that handles
+#the directive to which the subdirective registry belongs.
+#INonEmptyDirective objects are thus most often classes.
+#
+#The value of an entry in the subdirective registry is a tuple of
+#two elements.  The first element is a subdirective registry, and
+#the second is the name to be looked up to find the callable that
+#will handle the processing of the subdirective.  That callable
+#should implement either IEmtpyDirective or INonEmptyDirective.  The
+#accompanying sub-subdirective registry should be empty or not,
+#accordingly.
 
 _directives = {}
 
