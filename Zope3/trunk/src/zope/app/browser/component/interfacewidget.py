@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.19 2003/01/16 19:50:25 stevea Exp $
+$Id: interfacewidget.py,v 1.20 2003/01/17 16:31:32 stevea Exp $
 """
 
 import sys
@@ -35,7 +35,7 @@ class InterfaceWidget(Widget, BrowserView):
             v = self.request.form[self.name]
             return v and (v == 'None' or nameToInterface(self.context, v))
         return False
-   
+
     def getData(self, optional=0):
         field = self.context
         value = self.request.form.get(self.name, self) # self used as marker
@@ -63,14 +63,14 @@ class InterfaceWidget(Widget, BrowserView):
                                        self.title, str(v))
 
         return value
-        
+
     def __call__(self):
         name = self.name
         search_name = name + ".search"
         search_string = self.request.form.get(search_name, '')
 
         value = self.request.form.get(self.name, self) # self used as marker
-        
+
         field = self.context
         service = getService(field.context, "Interfaces")
         base = field.basetype
@@ -138,7 +138,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
     #
     #  name.i0, name.i1, ...  the value of the interfaces
     #  name.search.i0, ...    the search box for that interface
-    #  
+    #
     def haveData(self):
         name_i = self.name+'.i'
         field = self.context
@@ -156,14 +156,14 @@ class MultiInterfaceWidget(Widget, BrowserView):
         # values will be sorted in key order
         values = [v
                   for k,v in items_sorted
-                  if k.startswith(name_i)]
+                  if k.startswith(name_i)
+                  if v]
         if not values:
             # No user input
             if field.required and not optional:
                 raise MissingInputError(field.__name__, field.title,
                                         'the field is required')
             return field.default
-
         try:
             values = tuple([nameToInterface(field, value) for value in values])
         except ComponentLookupError:
@@ -186,7 +186,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
         name = self.name
         name_i = name+'.i'
         name_search_i = name+'.search.i'
-        
+
         service = getService(field.context, "Interfaces")
         base = field.basetype
         include_none = base is None
@@ -195,7 +195,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
 
         if self._data is None:  # no data has been set with Widget.setData(),
                                 # so use the data in the form
-            
+
             # If a search term is entered, that interface selection remains.
             # If an interface is selected, that interface selection remains.
             # Remove all others.
@@ -229,7 +229,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
                 # the order as the user might expect.
                 if selections[0][0] != 0:
                     first_is_blank = True
-                
+
                 # get just [search, value], and discard the keys
                 selections = [v for k,v in selections]
                 # XXX is validation here really needed?
@@ -243,7 +243,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
             # data has been set with Widget.setData()
             selections = [('', interfaceToName(interface))
                           for interface in self._data]
-                          
+
         # If there are no empty values, add one extra empty selection
         if not [1 for s,v in selections if v == '']:
             # if first_is_blank, put the empty selection at the start
@@ -313,7 +313,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
         'See IBrowserWidget'
         raise NotImplementedError
 
-            
+
 class InterfaceDisplayWidget(InterfaceWidget):
     def __call__(self):
         if self._data is None:
@@ -354,7 +354,7 @@ def renderInterfaceSelect(
     return HTML
 
 def nameToInterface(context, name):
-    if name is 'None':
+    if name == 'None':
         return None
     service = getService(context, "Interfaces")
     return service.getInterface(name)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.14 2003/01/16 19:50:27 stevea Exp $
+$Id: test_interfacewidget.py,v 1.15 2003/01/17 16:31:33 stevea Exp $
 """
 
 __metaclass__ = type
@@ -332,12 +332,12 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
                                basetype=None)
 
         widget = InterfaceWidget(field, request)
-        
+
         out = (
         '<input type="hidden" name="field.TestName" value="None" />'
         )
         self.assertEqual(widget.hidden(), out)
-        
+
         request.form["field.TestName"] = (
         'None'
         )
@@ -346,7 +346,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<input type="hidden" name="field.TestName" value="None" />'
         )
         self.assertEqual(widget.hidden(), out)
-        
+
 class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
     def testMultiInterfaceWidget(self):
@@ -533,7 +533,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
                                 title=u'This is a test',
                                 basetype=None)
         widget = MultiInterfaceWidget(field, request)
-        
+
         self.assertEqual(widget.getData(), ())
         self.failIf(widget.haveData())
 
@@ -670,7 +670,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         self.assertEqual(widget(), out)
 
         # test that None / Anything disappears when there is a search string
-        
+
         request.form["field.TestName.search.i1"] = 'two'
 
         out = (
@@ -732,7 +732,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         request.form["field.TestName.i0"] = ('bad interface name')
         self.assertRaises(ConversionError, widget.getData)
-        
+
     def testHidden(self):
         request = self.request
         field = InterfacesField(__name__='TestName',
@@ -740,9 +740,9 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
                                 required=False)
 
         widget = MultiInterfaceWidget(field, request)
-        
+
         self.assertEqual(widget.hidden(), '')
-        
+
         request.form["field.TestName.i0"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )
@@ -772,9 +772,9 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
                                 basetype=None)
 
         widget = MultiInterfaceWidget(field, request)
-        
+
         self.assertEqual(widget.hidden(), '')
-        
+
         request.form["field.TestName.i0"] = (
         'None'
         )
@@ -783,7 +783,23 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<input type="hidden" name="field.TestName.i0" value="None" />'
         )
         self.assertEqual(widget.hidden(), out)
-        
+
+    def testEmptyFormData(self):
+        request = self.request
+        field = InterfacesField(__name__='TestName',
+                                title=u'This is a test',
+                                required=False)
+        widget = MultiInterfaceWidget(field, request)
+
+        self.assertEqual(widget.getData(), ())
+        self.failIf(widget.haveData())
+
+        request.form["field.TestName.i1"] = (
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        )
+        request.form["field.TestName.i0"] = ''
+        self.assertEqual(widget.getData(), (I2,))
+        self.failUnless(widget.haveData())
 
 class TestRenderInterfaceSelect(TestCase):
 
