@@ -221,6 +221,8 @@ def main(args):
             do_chmod(subjs)
 
     for entry in entries:
+        wasVerbose = VERBOSE
+        VERBOSE = entry.get('verbose', VERBOSE)
         path, addrs = entry['path'], entry['addrs']
         excludes, remote = entry['excludes'], entry['remote']
         if remote:
@@ -234,6 +236,7 @@ def main(args):
             do_sync(path, repo, remote, receiverid, subjs, excludes,
                     recurse=RECURSE, 
                     doing_directory=doing_directory, no_files=no_files)
+        VERBOSE = wasVerbose
     if not entries and only_sync:
             note_failure("*** --syncrepo invalid - no repository"
                          " for %s in config file.\n",
