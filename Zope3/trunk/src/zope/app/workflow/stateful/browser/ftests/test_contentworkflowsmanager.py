@@ -98,18 +98,18 @@ class Test(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
         self.assert_(body.find(
-            '<option value="zope.app.workflow.stateful.interfaces.IState">'
+            '<option value="zope.app.folder.interfaces.IFolder">'
             ) >= 0)        
         self.assert_(body.find(
-            '<option value="zope.app.workflow.stateful.interfaces.ITransition">'
+            '<option value="zope.app.file.interfaces.IFile">'
             ) >= 0)        
 
         response = self.publish(
             self.basepath + '/mgr/registry.html',
             basic='mgr:mgrpw',
             form={
-            'field.iface':['zope.app.workflow.stateful.interfaces.IState',
-                           'zope.app.workflow.stateful.interfaces.ITransition'],
+            'field.iface':['zope.app.folder.interfaces.IFolder',
+                           'zope.app.file.interfaces.IFile'],
             'field.name':['dummy-definition'],
             'ADD':'Add'
             })
@@ -121,26 +121,25 @@ class Test(BrowserTestCase):
 
         self.assert_(nameToInterface(
             None,
-            'zope.app.workflow.stateful.interfaces.IState'
+            'zope.app.folder.interfaces.IFolder'
             ) in ifaces)
         self.assert_(nameToInterface(
             None,
-            'zope.app.workflow.stateful.interfaces.ITransition'
+            'zope.app.file.interfaces.IFile'
             ) in ifaces)
-        self.assertEqual(len(ifaces),2)
+        self.assertEqual(len(ifaces), 2)
 
         response = self.publish(
             self.basepath + '/mgr/registry.html',
             basic='mgr:mgrpw',
             form={
-            'mappings':
-            ['dummy-definition:zope.app.workflow.stateful.interfaces.IState',
-             'dummy-definition:zope.app.workflow.stateful.interfaces.ITransition'],
+            'mappings': ['dummy-definition:zope.app.folder.interfaces.IFolder',
+                         'dummy-definition:zope.app.file.interfaces.IFile'],
             'REMOVE':''
             })
 
         ifaces = mgr.getInterfacesForProcessName('dummy-definition')
-        self.assertEqual(len(ifaces),0)
+        self.assertEqual(len(ifaces), 0)
 
 def test_suite():
     return unittest.makeSuite(Test)

@@ -37,12 +37,12 @@ class ContentWorkflowsManagerView(object):
 class IContentProcessMapping(Interface):
 
     iface = List(
-        title=u"Content Interface",
+        title=u"Content Type Interface",
         description=u"Specifies the interfaces that characterizes a particular "
                     u"content type. Feel free to select several at "
                     u"once.", 
         required=True,
-        value_type=Choice(vocabulary="Interfaces")        
+        value_type=Choice(vocabulary="Content Types")
         )
     
     name = List(
