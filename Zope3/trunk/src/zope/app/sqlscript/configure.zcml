@@ -17,7 +17,7 @@
       />
 
   <vocabulary
-      name="Connections"
+      name="Connection Names"
       factory="zope.app.utility.vocabulary.UtilityVocabulary"
       interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
 

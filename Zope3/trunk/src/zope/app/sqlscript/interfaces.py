@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.5 2004/04/24 23:20:10 srichter Exp $
+$Id: interfaces.py,v 1.6 2004/04/26 23:58:37 srichter Exp $
 """
 import zope.schema
 from zope.app import zapi
@@ -29,7 +29,7 @@ class ISQLScript(ISQLCommand):
     connectionName = zope.schema.Choice(
         title=_(u"Connection Name"),
         description=_(u"The Connection Name for the connection to be used."),
-        vocabulary="Connections",
+        vocabulary="Connection Names",
         required=False)
 
     arguments = zope.schema.BytesLine(
