@@ -219,6 +219,10 @@ if [ -e "$prefix" -a ! "$FORCE_APP_HOME" ] ; then
     exit 2
 fi
 
+if [ ! "${prefix::1}" = "/" ] ; then
+    prefix="`pwd`/$prefix"
+fi
+
 sed -e "s|@prefix@|$prefix|g" \
     -e "s|@PYTHON@|$FOUND|g" \
     "$HERE/Makefile.in" > "$HERE/Makefile"
