@@ -430,6 +430,11 @@
 
 <fssync:adapter class=".dtmlpage.DTMLPage" factory=".fssync.DTMLPageAdapter" />
 
+<fssync:adapter
+    class=".xmldocument.XMLDocument"
+    factory=".xmldocument.XMLDocumentAdapter"
+    />
+
 <!-- Further Directives -->
 
 </zopeConfigure>

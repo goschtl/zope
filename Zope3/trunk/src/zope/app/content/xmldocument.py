@@ -12,9 +12,11 @@
 #
 ##############################################################################
 """
-$Id: xmldocument.py,v 1.4 2003/06/07 06:37:23 stevea Exp $
+$Id: xmldocument.py,v 1.5 2003/07/17 18:34:21 fdrake Exp $
 """
 from persistence import Persistent
+from zope.app.fssync.classes import ObjectEntryAdapter
+from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.content.xmldocument import IXMLDocument
 from zope.app.xml.w3cschemalocations import setInstanceInterfacesForXMLText
 from zope.interface import implements
@@ -42,3 +44,17 @@ class XMLDocument(Persistent):
         return self._source
 
     source = property(_getSource, _setSource)
+
+
+class XMLDocumentAdapter(ObjectEntryAdapter):
+
+    implements(IObjectFile)
+
+    def getBody(self):
+        return self.context.source
+
+    def setBody(self, data):
+        self.context.source = data
+
+    def extra(self):
+        return None
