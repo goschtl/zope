@@ -13,15 +13,13 @@
 ##############################################################################
 """Helper classes for local view registry.
 
-$Id: view.py,v 1.24 2003/08/16 00:42:54 srichter Exp $
+$Id: view.py,v 1.25 2003/09/21 17:30:52 jim Exp $
 """
 import md5
 
 from zope.app.component.interfacefield import InterfaceField
-from zope.app.context import ContextWrapper
 from zope.app.form.utility import setUpWidgets
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
@@ -74,7 +72,6 @@ class _SharedBase:
         infos = [info for info in infos if info[0] == forInterface]
         assert len(infos) == 1
         registry = infos[0][2]
-        registry = ContextWrapper(registry, self.context)
         assert registry
         return registry
 
@@ -174,8 +171,7 @@ class ViewServiceView(_SharedBase):
                 conf.status = UnregisteredStatus
                 parent = getParent(conf)
                 name = getName(conf)
-                container = getAdapter(parent, IZopeContainer)
-                del container[name]
+                del parent[name]
 
         s = _("Deleted: ${cache_names}")
         s.mapping = {'cache_names': ", ".join(todo)}
@@ -212,7 +208,6 @@ class ViewServiceView(_SharedBase):
             presentationType = (
                 presentationType.__module__ +"."+ presentationType.getName())
 
-            registry = ContextWrapper(registry, self.context)
             view = getView(registry, "ChangeRegistrations", self.request)
             # XXX Why are we setting this unique prefix?
             prefix = md5.new('%s %s' %
