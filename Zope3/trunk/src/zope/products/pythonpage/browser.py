@@ -13,9 +13,10 @@
 ##############################################################################
 """Python Page Browser Views 
 
-$Id: browser.py,v 1.2 2004/01/30 23:28:40 srichter Exp $
+$Id: browser.py,v 1.3 2004/01/31 14:02:09 srichter Exp $
 """
 from zope.app.browser.form.editview import EditView
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class PythonPageEval:
     """Evaluate the Python Page."""
@@ -40,7 +41,7 @@ class PythonPageEditView(EditView):
             status = super(PythonPageEditView, self).update()
         except SyntaxError, err:
             self.syntaxError = err
-            status = u'A syntax error occured.'
+            status = _('A syntax error occured.')
             self.update_status = status
 
         return status

@@ -27,13 +27,16 @@
         <div class="message"
            tal:condition="view/syntaxError"
            tal:define="err view/syntaxError">
-          <h3>Syntax Error: 
-            <span tal:content="err/msg">invalid syntax</span>
+          <h3 i18n:translate="">Syntax Error: 
+            <span tal:content="err/msg" i18n:name="msg">invalid syntax</span>
           </h3>
-          <div>
-            File "<span tal:replace='err/filename'>filename</span>",
-            line <span tal:replace="err/lineno">10</span>,
-            offset <span tal:replace="err/offset">1</span>
+          <div i18n:translate="">
+            File 
+            "<span tal:replace="err/filename" i18n:name="filename">
+               filename
+            </span>",
+            line <span tal:replace="err/lineno" i18n:name="lineno">10</span>,
+            offset <span tal:replace="err/offset" i18n:name="offset">1</span>
           </div>
           <pre tal:content="python:err.text+'\n'+' '*err.offset+'^'">
              prin "foo"
