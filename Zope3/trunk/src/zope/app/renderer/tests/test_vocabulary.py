@@ -13,15 +13,16 @@
 ##############################################################################
 """Tests for Global Wiki Source Type Service.
 
-$Id: test_vocabulary.py,v 1.4 2004/03/05 22:09:15 jim Exp $
+$Id: test_vocabulary.py,v 1.5 2004/03/09 12:39:09 srichter Exp $
 """
 import unittest
 
 from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.renderer import SourceFactory
 from zope.app.renderer.interfaces import ISource
 from zope.app.renderer.vocabulary import SourceTypeTerm, SourceTypeVocabulary
-from zope.component.factory import FactoryInfo
+from zope.component.interfaces import IFactory
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
@@ -30,19 +31,19 @@ from zope.schema.interfaces import \
 class IFoo(ISource):
     """Source marker interface"""
 
-FooFactory = SourceFactory(IFoo)
+FooFactory = SourceFactory(IFoo, 'Foo', 'Foo Source')
 
 class IFoo2(ISource):
     """Source marker interface"""
 
-Foo2Factory = SourceFactory(IFoo2)
+Foo2Factory = SourceFactory(IFoo2, 'Foo2', 'Foo2 Source')
 
 
 
 class SourceTypeTermTest(unittest.TestCase):
 
     def setUp(self):
-        self.term = SourceTypeTerm('zope.Foo', FactoryInfo('Foo', 'Foo Source'))
+        self.term = SourceTypeTerm('zope.Foo', FooFactory)
 
     def test_Interface(self):
         self.failUnless(ITokenizedTerm.providedBy(self.term))
@@ -59,11 +60,8 @@ class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(SourceTypeVocabularyTest, self).setUp()
         
-        factories = zapi.getService(None, 'Factories')
-        factories.provideFactory('zope.source.Foo', FooFactory,
-                                 FactoryInfo('Foo', 'Foo Source'))
-        factories.provideFactory('zope.source.Foo2', Foo2Factory,
-                                 FactoryInfo('Foo2', 'Foo2 Source'))
+        ztapi.provideUtility(IFactory, FooFactory, 'zope.source.Foo')
+        ztapi.provideUtility(IFactory, Foo2Factory, 'zope.source.Foo2')
 
         self.vocab = SourceTypeVocabulary(None)
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Plain Text Renderer Classes
 
-$Id: __init__.py,v 1.3 2004/03/02 14:24:45 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/09 12:39:08 srichter Exp $
 """
 from zope.component.interfaces import IFactory
 from zope.interface import implements, directlyProvides, Declaration
@@ -29,8 +29,10 @@ class SourceFactory(object):
     """Creates an ISource object."""
     implements(IFactory)
 
-    def __init__(self, iface):
+    def __init__(self, iface, title='', description=''):
         self._iface = iface
+        self.title = title
+        self.description = description
 
     def getInterfaces(self):
         return Declaration(self._iface).flattened()

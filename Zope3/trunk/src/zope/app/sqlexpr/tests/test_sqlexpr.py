@@ -13,18 +13,17 @@
 ##############################################################################
 """SQL Expression Type Tests
 
-$Id: test_sqlexpr.py,v 1.2 2004/03/04 02:06:15 philikon Exp $
+$Id: test_sqlexpr.py,v 1.3 2004/03/09 12:39:11 srichter Exp $
 """
-
 import unittest
 
 from zope.interface import implements
 from zope.component.interfaces import IFactory
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.component.factory import provideFactory
 from zope.tales.tests.test_expressions import Data
 from zope.tales.engine import Engine
 
+from zope.app.tests import ztapi
 from zope.app.rdb.tests.stubs import ConnectionStub
 from zope.app.sqlexpr.sqlexpr import SQLExpr, NoConnectionSpecified
 
@@ -76,6 +75,9 @@ class TypeInfoStub:
 class FactoryStub:
     implements(IFactory)
 
+    title = ''
+    description = ''
+
     def __call__(self, *args, **kw):
         return ConnectionStub
 
@@ -90,7 +92,8 @@ class SQLExprTest(PlacelessSetup, unittest.TestCase):
         self.context = Data(vars = {'rdb': 'rdb_conn',
                                     'dsn': 'dbi://test'})
         self.engine = Engine
-        provideFactory('rdb_conn', FactoryStub())
+        
+        ztapi.provideUtility(IFactory, FactoryStub(), 'rdb_conn')
 
     def test_exprUsingRDBAndDSN(self):
         expr = SQLExpr('name', 'SELECT num FROM hitchhike', self.engine)

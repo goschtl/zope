@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.47 2004/03/08 23:33:56 srichter Exp $
+$Id: adding.py,v 1.48 2004/03/09 12:39:03 srichter Exp $
 """
 __metaclass__ = type
 
@@ -24,6 +24,7 @@ import zope.security.checker
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.proxy import removeAllProxies
+from zope.component.interfaces import IFactory
 
 from zope.app.interfaces.exceptions import UserError
 from zope.app.container.interfaces import IAdding
@@ -154,7 +155,7 @@ class BasicAdding(BrowserView):
         #      then ProxyFactory does not the right thing and the original's
         #      checker info gets lost. No factory that was registered via ZCML
         #      and was used via addMenuItem worked here. (SR)
-        factory = zapi.getFactory(self, type_name)
+        factory = zapi.getUtility(self, IFactory, type_name)
         if not type(factory) is zope.security.checker.Proxy:
             factory = LocationProxy(factory, self, type_name)
             factory = zope.security.checker.ProxyFactory(factory)
@@ -196,7 +197,7 @@ class Adding(BasicAdding):
                 if extra:
                     factory = extra.get('factory')
                     if factory:
-                        factory = zapi.getFactory(container, factory)
+                        factory = zapi.getUtility(container, IFactory, factory)
                         if not checkFactory(container, None, factory):
                             continue
                         elif item['extra']['factory'] != item['action']:

@@ -13,20 +13,20 @@
 ##############################################################################
 """This module tests the regular persistent Translation Domain.
 
-$Id: test_translationdomain.py,v 1.1 2004/03/08 23:34:51 srichter Exp $
+$Id: test_translationdomain.py,v 1.2 2004/03/09 12:39:05 srichter Exp $
 """
 import unittest
 
 from zope.app import zapi
-from zope.app.component.metaconfigure import handler
-from zope.app.component.metaconfigure import managerHandler
+from zope.component.interfaces import IFactory
+from zope.component.factory import Factory
 from zope.app.i18n.interfaces import ISyncTranslationDomain
-from zope.app.services.servicenames import Factories, Utilities
+from zope.app.services.servicenames import Utilities
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.i18n.translationdomain \
      import TranslationDomain as GlobalTranslationDomain
 from zope.app.i18n.translationdomain import TranslationDomain
-from zope.app.tests import setup
+from zope.app.tests import setup, ztapi
 from zope.i18n.interfaces import IUserPreferredLanguages, ITranslationDomain
 from zope.i18n.tests.test_itranslationdomain import TestITranslationDomain
 from zope.interface import implements, classImplements
@@ -195,8 +195,8 @@ class TestTranslationDomain(TestITranslationDomain,
         setup.addService(self.sm, Utilities, LocalUtilityService())
         setup.addUtility(self.sm, 'default', ITranslationDomain, self._domain)
         
-        handler(Factories, 'provideFactory', 'Message Catalog',
-                MessageCatalog)
+        ztapi.provideUtility(IFactory, Factory(MessageCatalog),
+                             'Message Catalog')
 
 
     def _getTranslationDomain(self):

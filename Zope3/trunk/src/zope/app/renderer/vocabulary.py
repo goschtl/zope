@@ -13,26 +13,26 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.3 2004/03/02 14:24:45 srichter Exp $
+$Id: vocabulary.py,v 1.4 2004/03/09 12:39:08 srichter Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
+from zope.component.interfaces import IFactory
 
 from zope.app import zapi
 from zope.app.browser.form.vocabularywidget import DropdownListWidget
-from zope.app.services.servicenames import Factories
 from zope.app.renderer.interfaces import ISource
 
 class SourceTypeTerm:
 
     implements(ITokenizedTerm)
 
-    def __init__(self, name, info):
+    def __init__(self, name, factory):
         self.token = self.value = name
-        self.title = info.title
-        self.description = info.description
+        self.title = factory.title
+        self.description = factory.description
 
 
 class SourceTypeVocabulary(object):
@@ -40,15 +40,13 @@ class SourceTypeVocabulary(object):
     implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, context):
-        factories = zapi.getService(context, Factories)
-        self.types = [(name, factories.getFactoryInfo(name)) \
-                      for name, fact in factories.queryFactoriesFor(ISource,
-                                                                    ())]
+        self.types = zapi.getFactoriesFor(None, ISource)
+
     def __contains__(self, value):
-        return value in [name for name, info in self.types]
+        return value in [name for name, fact in self.types]
 
     def __iter__(self):
-        return iter([SourceTypeTerm(name, info) for name, info in self.types])
+        return iter([SourceTypeTerm(name, fact) for name, fact in self.types])
 
     def __len__(self):
         return len(self.types)
@@ -57,9 +55,9 @@ class SourceTypeVocabulary(object):
         return None
 
     def getTerm(self, value):
-        for name, info in self.types:
+        for name, fact in self.types:
             if name == value:
-                return SourceTypeTerm(name, info)
+                return SourceTypeTerm(name, fact)
 
         raise KeyError, 'item (%s) not in vocabulary.' %value
 

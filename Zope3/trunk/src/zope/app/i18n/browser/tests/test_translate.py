@@ -12,14 +12,15 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
+$Id: test_translate.py,v 1.2 2004/03/09 12:39:05 srichter Exp $
 """
 import unittest
 from StringIO import StringIO
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.tests import ztapi
-from zope.component.factory import provideFactory
+from zope.component.interfaces import IFactory
+from zope.component.factory import Factory
 
 from zope.app.i18n.browser.translate import Translate
 from zope.app.i18n.translationdomain import TranslationDomain
@@ -46,7 +47,9 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
         # Setup the registries
         ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,
                              HTTPCharsets)
-        provideFactory('Message Catalog', MessageCatalog)
+
+        ztapi.provideUtility(IFactory, Factory(MessageCatalog),
+                             'Message Catalog')
 
         domain = TranslationDomain()
         domain.domain = 'default'

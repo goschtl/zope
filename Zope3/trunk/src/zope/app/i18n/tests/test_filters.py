@@ -14,19 +14,17 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Domain.
 
-$Id: test_filters.py,v 1.1 2004/03/08 23:34:51 srichter Exp $
+$Id: test_filters.py,v 1.2 2004/03/09 12:39:05 srichter Exp $
 """
 import unittest
 import time
 from cStringIO import StringIO
 from zope.interface import implements
 
-from zope.app.services.servicenames import Factories
-
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.component.metaconfigure import \
-     provideService, managerHandler, handler
+from zope.component.interfaces import IFactory
+from zope.component.factory import Factory
 
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.i18n.negotiator import negotiator
@@ -75,9 +73,8 @@ msgstr "hallo"
 
         self._domain = TranslationDomain()
         self._domain.domain = 'default'
-        handler(Factories, 'provideFactory', 'Message Catalog',
-                MessageCatalog)
-
+        ztapi.provideUtility(IFactory, Factory(MessageCatalog),
+                             'Message Catalog')
 
     def testImportExport(self):
         imp = GettextImportFilter(self._domain)

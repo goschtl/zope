@@ -13,9 +13,8 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.28 2004/03/05 22:08:53 jim Exp $
+$Id: test_adding.py,v 1.29 2004/03/09 12:39:04 srichter Exp $
 """
-
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.app import zapi
@@ -27,7 +26,6 @@ from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.interfaces.exceptions import UserError
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
-from zope.component.factory import provideFactory
 from zope.component.interfaces import IFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import implements, Interface, directlyProvides
@@ -59,6 +57,9 @@ class Content:
 class Factory:
 
     implements(IFactory)
+
+    title = ''
+    description = ''
 
     def getInterfaces(self):
         return ()
@@ -113,12 +114,12 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def testAction(self):
         # make a private factory
-        provideFactory('fooprivate', Factory())
+        ztapi.provideUtility(IFactory, Factory(), 'fooprivate')
 
         factory = Factory()
         factory.__Security_checker__ = zope.security.checker.NamesChecker(      
             ['__call__'])
-        provideFactory('foo', factory)
+        ztapi.provideUtility(IFactory, factory, 'foo')
 
         container = Container()
         adding = Adding(container, TestRequest())
@@ -211,7 +212,7 @@ def test_constraint_driven_adding():
     ...     if not isinstance(object, F1):
     ...         raise zope.interface.Invalid()
     >>> def prefactory(container, name, factory):
-    ...     if factory._class is not F1:
+    ...     if factory._callable is not F1:
     ...         raise zope.interface.Invalid()
     >>> pre.factory = prefactory
 
@@ -225,10 +226,9 @@ def test_constraint_driven_adding():
     >>> class Container:
     ...     zope.interface.implements(IContainer)
 
-    >>> from zope.app.component.classfactory import ClassFactory
-    >>> factoryService = zapi.getService(None, zapi.servicenames.Factories)
-    >>> factoryService.provideFactory('f1', ClassFactory(F1))
-    >>> factoryService.provideFactory('f2', ClassFactory(F2))
+    >>> from zope.component.factory import Factory
+    >>> ztapi.provideUtility(IFactory, Factory(F1), 'f1')
+    >>> ztapi.provideUtility(IFactory, Factory(F2), 'f2')
 
     >>> from zope.app.browser.container.adding import Adding
     >>> adding = Adding(Container(), TestRequest())
@@ -376,7 +376,7 @@ def test_SingleMenuItem_and_CustomAddView_NonICNC():
     ...     if not isinstance(object, F1):
     ...         raise zope.interface.Invalid()
     >>> def prefactory(container, name, factory):
-    ...     if factory._class is not F1:
+    ...     if factory._callable is not F1:
     ...         raise zope.interface.Invalid()
     >>> pre.factory = prefactory
 
@@ -390,10 +390,9 @@ def test_SingleMenuItem_and_CustomAddView_NonICNC():
     >>> class Container:
     ...     zope.interface.implements(IContainer)
 
-    >>> from zope.app.component.classfactory import ClassFactory
-    >>> factoryService = zapi.getService(None, zapi.servicenames.Factories)
-    >>> factoryService.provideFactory('f1', ClassFactory(F1))
-    >>> factoryService.provideFactory('f2', ClassFactory(F2))
+    >>> from zope.component.factory import Factory
+    >>> ztapi.provideUtility(IFactory, Factory(F1), 'f1')
+    >>> ztapi.provideUtility(IFactory, Factory(F2), 'f2')
 
     >>> from zope.app.browser.container.adding import Adding
     >>> adding = Adding(Container(), TestRequest())
@@ -447,7 +446,7 @@ def test_SingleMenuItem_and_NoCustomAddView_NonICNC():
     ...     if not isinstance(object, F1):
     ...         raise zope.interface.Invalid()
     >>> def prefactory(container, name, factory):
-    ...     if factory._class is not F1:
+    ...     if factory._callable is not F1:
     ...         raise zope.interface.Invalid()
     >>> pre.factory = prefactory
 
@@ -461,10 +460,9 @@ def test_SingleMenuItem_and_NoCustomAddView_NonICNC():
     >>> class Container:
     ...     zope.interface.implements(IContainer)
 
-    >>> from zope.app.component.classfactory import ClassFactory
-    >>> factoryService = zapi.getService(None, zapi.servicenames.Factories)
-    >>> factoryService.provideFactory('f1', ClassFactory(F1))
-    >>> factoryService.provideFactory('f2', ClassFactory(F2))
+    >>> from zope.component.factory import Factory
+    >>> ztapi.provideUtility(IFactory, Factory(F1), 'f1')
+    >>> ztapi.provideUtility(IFactory, Factory(F2), 'f2')
     
     >>> from zope.app.browser.container.adding import Adding
     >>> adding = Adding(Container(), TestRequest())
@@ -518,7 +516,7 @@ def test_isSingleMenuItem_with_ICNC():
     ...     if not isinstance(object, F1):
     ...         raise zope.interface.Invalid()
     >>> def prefactory(container, name, factory):
-    ...     if factory._class is not F1:
+    ...     if factory._callable is not F1:
     ...         raise zope.interface.Invalid()
     >>> pre.factory = prefactory
 

@@ -13,17 +13,17 @@
 ##############################################################################
 """Field Factory Tests
 
-$Id: test_fieldfactory.py,v 1.4 2004/03/03 22:54:27 srichter Exp $
+$Id: test_fieldfactory.py,v 1.5 2004/03/09 12:39:10 srichter Exp $
 """
 import unittest
 
 import zope.app.schema
 
+from zope.app import zapi
 from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import IFactory
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.management import newSecurityManager, system_user
-from zope.component import getService
-from zope.app.services.servicenames import Factories
 from zope.schema.interfaces import IField, IText
 from zope.interface import Interface
 from zope.configuration import xmlconfig
@@ -39,27 +39,23 @@ class TestFieldFactory(PlacelessSetup, unittest.TestCase):
                                  zope.app.schema)
 
     def testRegisterFields(self):
-        factory = getService(None, Factories).getFactory(
-            'zope.schema._bootstrapfields.Text')
+        factory = zapi.getUtility(None, IFactory,
+                                  'zope.schema._bootstrapfields.Text')
         self.assertEquals(factory.title, "Text Field")
         self.assertEquals(factory.description, "Text Field")
 
     def testGetFactoriesForIField(self):
-        factories = getService(None, Factories).getFactoriesFor(IField)
+        factories = zapi.getFactoriesFor(None, IField)
         self.assertEqual(len(factories), 3)
 
     def testGetFactoriesForIText(self):
-        factories = getService(None, Factories).getFactoriesFor(IText)
+        factories = zapi.getFactoriesFor(None, IText)
         self.assertEqual(len(factories), 2)
 
     def testGetFactoriesUnregistered(self):
-        fservice = getService(None, Factories)
-        self.assertRaises(ComponentLookupError, fservice.getFactoriesFor,
-                          IFoo)
+        factories = zapi.getFactoriesFor(None, IFoo)
+        self.assertEqual(len(factories), 0)
 
-    def testQueryFactoriesUnregistered(self):
-        fservice = getService(None, Factories)
-        self.assertEqual(fservice.queryFactoriesFor(IFoo, None), None)
 
 def test_suite():
     suite = unittest.TestSuite()
