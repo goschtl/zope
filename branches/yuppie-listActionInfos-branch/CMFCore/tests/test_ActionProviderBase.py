@@ -164,18 +164,28 @@ class ActionProviderBaseTests(SecurityRequestTest):
         self.assertEqual( old_ids, another_ids )
 
     def test_listActionInfos(self):
+        wanted = [{'permissions': '', 'id': 'an_id', 'url': '',
+                   'name': 'A Title', 'visible': 0, 'category': 'object'}]
+
         apb = self.site._setObject( 'portal_apb', self._makeProvider(1) )
         rval = apb.listActionInfos()
         self.assertEqual( rval, [] )
         rval = apb.listActionInfos(check_visibility=0)
-        self.assertEqual( rval, [{'permissions': '', 'id': 'an_id', 'url': '',
-                     'name': 'A Title', 'visible': 0, 'category': 'object'}] )
+        self.assertEqual( rval, wanted )
+        rval = apb.listActionInfos('foo/another_id', check_visibility=0)
+        self.assertEqual( rval, [] )
 
     def test_getActionInfo(self):
+        wanted = {'permissions': '', 'id': 'an_id', 'url': '',
+                  'name': 'A Title', 'visible': 0, 'category': 'object'}
+
         apb = self.site._setObject( 'portal_apb', self._makeProvider(1) )
         rval = apb.getActionInfo( ('object/an_id',) )
-        self.assertEqual( rval, {'permissions': '', 'id': 'an_id', 'url': '',
-                      'name': 'A Title', 'visible': 0, 'category': 'object'} )
+        self.assertEqual( rval, wanted )
+        rval = apb.getActionInfo('object/an_id')
+        self.assertEqual( rval, wanted )
+        rval = apb.getActionInfo('object/an_id', check_visibility=1)
+        self.assertEqual( rval, None )
 
     def test_interface(self):
         from Products.CMFCore.interfaces.portal_actions \
