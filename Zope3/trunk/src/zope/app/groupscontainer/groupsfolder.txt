@@ -1,0 +1,75 @@
+Groups Folder Implementation
+========================
+
+The GroupsFolder class offers a groups container that mantains maps between groups and principals as 
+well as maps from principals to groups.
+
+We test that we can add a Group to a GroupsFolder;
+we also check that it is possible to retrieve principals
+from a given group id and, vice-versa, get a list of groups
+a principal belongs to by providing its id.
+   
+      >>> import zope.interface
+      >>> from zope.security.interfaces import IPrincipal, IGroup
+      >>> from zope.security.group import Group
+      >>> from zope.app.groupscontainer.interfaces import IGroupsFolder, IGroupContained
+      >>> from zope.app.groupscontainer.groupsfolder import GroupsFolder
+      >>> from zope.interface import implements
+      >>> class GoldrakePrincipal:
+      ...     implements(IPrincipal)
+      ...     id = '0'
+      ...     title = 'Goldrake'
+      ...     description = 'Ufo robot'
+      ...     groups = ['superheroes', 'robots']
+      >>> class MazingaPrincipal:
+      ...     implements(IPrincipal)
+      ...     id = '1'
+      ...     title = 'Mazinga'
+      ...     description = 'Mazinga Z'
+      ...     groups = ['superheroes', 'robots']
+      >>> class CaptainAmericaPrincipal:
+      ...     implements(IPrincipal)
+      ...     id = '2'
+      ...     title = 'CaptainAmerica'
+      ...     description = 'Captain America'
+      ...     groups = ['superheroes']
+      
+      Then we create instances of our fake principal classes:
+      
+      >>> goldrake = GoldrakePrincipal()
+      >>> mazinga = MazingaPrincipal()
+      >>> captainamerica = CaptainAmericaPrincipal()
+      >>> superheroesgroup = Group(id='superheroes', title='Superheroes group', description='The best superheroes', principalsids=['0', '1', '2'])
+      >>> robotsgroup = Group(id='robots', title='Robots group', description='The best robots', principalsids=['0', '1'])
+      
+      A groups folder contains groups:
+      
+      >>> notordinarypeople = GroupsFolder()
+      >>> notordinarypeople[superheroesgroup.id] = superheroesgroup
+      >>> notordinarypeople[robotsgroup.id] = robotsgroup
+      
+      We test that 'getGroupsForPrincipal' returns the groups the provided principal id belongs to:
+      
+      >>> notordinarypeople.getGroupsForPrincipal('1')
+      ['superheroes', 'robots']
+      >>> notordinarypeople.getGroupsForPrincipal('2')
+      ['superheroes']
+      >>> notordinarypeople.getGroupsForPrincipal('99')
+      []
+      
+      The 'getPrincipalsForGroup' returns the principals id contained in a group:
+      
+      >>> notordinarypeople.getPrincipalsForGroup('superheroes')
+      ['0', '1', '2']
+      >>> notordinarypeople.getPrincipalsForGroup('users')
+      []
+      
+      We also test removing a group:
+      
+      >>> del notordinarypeople['superheroes']
+      >>> print list(notordinarypeople.keys())
+      [u'robots']
+      >>> notordinarypeople.getGroupsForPrincipal('1')
+      ['robots']
+      >>> notordinarypeople.getGroupsForPrincipal('2')
+      []

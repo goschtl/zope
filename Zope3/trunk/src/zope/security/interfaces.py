@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -18,6 +18,9 @@ $Id$
 
 from zope.interface import Interface, Attribute, implements
 from zope.interface.common.interfaces import IAttributeError
+from zope.schema import Text, TextLine, List
+from zope.i18nmessageid import MessageFactory
+_ = MessageFactory('zope')
 
 class IUnauthorized(Interface):
     pass
@@ -231,4 +234,104 @@ class IInteractionManagement(Interface):
 
         Does nothing if there is no interaction.
         """
+        
+class IPrincipal(Interface):
+    """Principals are security artifacts that execute actions in a security
+    environment.
+
+    The most common examples of principals include user and group objects.
+
+    It is likely that IPrincipal objects will have associated views
+    used to list principals in management interfaces. For example, a
+    system in which other meta-data are provided for principals might
+    extend IPrincipal and register a view for the extended interface
+    that displays the extended information. We'll probably want to
+    define a standard view name (e.g.  'inline_summary') for this
+    purpose.
+    """
+
+    id = TextLine(
+        title=_("Id"),
+        description=_("The unique identification of the principal."),
+        required=True,
+        readonly=True)
+
+    title = TextLine(
+        title=_("Title"),
+        description=_("The title of the principal. "
+                      "This is usually used in the UI."),
+        required=False)
+
+    description = Text(
+        title=_("Description"),
+        description=_("A detailed description of the principal."),
+        required=False)
+        
+    groups = List(
+        title=_("Groups"),
+        description=_("List of groups the principal belongs to"),
+        required=False)
+
+                
+class IPermission(Interface):
+    """A permission object."""
+
+    id = TextLine(
+        title=_("Id"),
+        description=_("Id as which this permission will be known and used."),
+        readonly=True,
+        required=True)
+
+    title = TextLine(
+        title=_("Title"),
+        description=_("Provides a title for the permission."),
+        required=True)
+
+    description = Text(
+        title=_("Description"),
+        description=_("Provides a description for the permission."),
+        required=False)
+        
+class IGroup(IPrincipal):
+    
+    id = TextLine(
+        title=_("Id"),
+        description=_("Id as which this group will be known and used."),
+        readonly=True,
+        required=True)
+
+    title = TextLine(
+        title=_("Title"),
+        description=_("Provides a title for the group."),
+        required=True)
+
+    description = Text(
+        title=_("Description"),
+        description=_("Provides a description for the group."),
+        required=False)
+
+    principals = List(
+        title=_("Principals"),
+        value_type=TextLine(),
+        description=_("List of principals which belong to the group"),
+        required=False)
+
+        
+class IPrincipalCreatedEvent(Interface):
+    """ Interface for principal created events"""
+    principal = Attribute(
+                    "The principal that was created")
+    
+class IGroupChangedEvent(Interface):
+    """ Interface for group changed event"""
+    group = Attribute(
+                    "The group that was changed")
+    
+    
+        
+    
+
+
+
+
 

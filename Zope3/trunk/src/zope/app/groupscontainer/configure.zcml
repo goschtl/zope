@@ -1,0 +1,48 @@
+<configure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain="groupscontainer"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    >
+    
+  <browser:tool
+      interface=".interfaces.IGroupsFolder"
+      title="Groups Folder"
+      description="Groups Folder"
+      />
+
+  <localUtility class=".groupsfolder.GroupsFolder">
+    <implements
+        interface=".interfaces.IGroupsFolder" />
+    <implements
+        interface="zope.app.annotation.IAttributeAnnotatable" />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.container.interfaces.IContainer" />
+  </localUtility>
+
+  <browser:addMenuItem
+      title="Groups Folder"
+      description="A Groups folder"
+      class=".groupsfolder.GroupsFolder"
+      permission="zope.ManageServices"
+      />
+      
+<browser:containerViews
+     for=".interfaces.IGroupsFolder"
+     contents="zope.ManageContent"
+     index="zope.View"
+     add="zope.ManageContent"
+     />
+      
+</configure> 
+
+
+
+
+
+
+
+
+
+

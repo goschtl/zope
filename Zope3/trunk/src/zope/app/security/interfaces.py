@@ -18,39 +18,8 @@ $Id$
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.schema import Text, TextLine
+from zope.security.interfaces import IPrincipal, IPermission
 from zope.schema.interfaces import ISource
-
-class IPrincipal(Interface):
-    """Principals are security artifacts that execute actions in a security
-    environment.
-
-    The most common examples of principals include user and group objects.
-
-    It is likely that IPrincipal objects will have associated views
-    used to list principals in management interfaces. For example, a
-    system in which other meta-data are provided for principals might
-    extend IPrincipal and register a view for the extended interface
-    that displays the extended information. We'll probably want to
-    define a standard view name (e.g.  'inline_summary') for this
-    purpose.
-    """
-
-    id = TextLine(
-        title=_("Id"),
-        description=_("The unique identification of the principal."),
-        required=True,
-        readonly=True)
-
-    title = TextLine(
-        title=_("Title"),
-        description=_("The title of the principal. "
-                      "This is usually used in the UI."),
-        required=False)
-
-    description = Text(
-        title=_("Description"),
-        description=_("A detailed description of the principal."),
-        required=False)
 
 
 class IUnauthenticatedPrincipal(IPrincipal):
@@ -58,7 +27,6 @@ class IUnauthenticatedPrincipal(IPrincipal):
 
     Authenticated principals are preferable to UnauthenticatedPrincipals.
     """
-
 
 class IAuthenticationService(Interface):
     """Provide support for establishing principals for requests.
@@ -177,25 +145,6 @@ class ILoginPassword(Interface):
         The realm argument is the name of the principal registry.
         """
 
-class IPermission(Interface):
-    """A permission object."""
-
-    id = TextLine(
-        title=_("Id"),
-        description=_("Id as which this permission will be known and used."),
-        readonly=True,
-        required=True)
-
-    title = TextLine(
-        title=_("Title"),
-        description=_("Provides a title for the permission."),
-        required=True)
-
-    description = Text(
-        title=_("Description"),
-        description=_("Provides a description for the permission."),
-        required=False)
-
-
 class IPrincipalSource(ISource):
     """A Source of Principal Ids"""
+

@@ -13,7 +13,7 @@
   <vocabulary 
       name="Permissions"
       factory="zope.app.utility.vocabulary.UtilityVocabulary"
-      interface="zope.app.security.interfaces.IPermission" />
+      interface="zope.security.interfaces.IPermission" />
 
   <vocabulary
       name="Permission Ids"
