@@ -133,20 +133,20 @@ class ViewSupport(object, TranslationHook):
         return term.token
 
     def mkselectionlist(self, type, info, name):
-        L = ["<table>\n"]
-        for term, selected, disabled in info:
-            flag = ""
-            if selected:
-                flag = "checked "
-            if disabled:
-                flag += "disabled "
-            L.append("<tr><td>"
-                     "<input type='%s' value='%s' name='%s' %s/>"
-                     "</td>\n    <td>%s</td>"
-                     "</tr>\n"
-                     % (type, term.token, name, flag, self.textForValue(term)))
-        L.append("</table>")
-        return ''.join(L)
+        L = [self.mkselectionitem(type, name, *item) for item in info]
+        return widget.renderElement("table",
+                                    contents="\n%s\n" % "\n".join(L))
+
+    def mkselectionitem(self, type, name, term, selected, disabled):
+        flag = ""
+        if selected:
+            flag = "checked "
+        if disabled:
+            flag += "disabled "
+        return ("<tr><td>"
+                "<input type='%s' value='%s' name='%s' %s/>"
+                "</td>\n    <td>%s</td></tr>"
+                % (type, term.token, name, flag, self.textForValue(term)))
 
 
 class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
