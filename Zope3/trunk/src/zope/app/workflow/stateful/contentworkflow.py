@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.15 2004/04/15 22:11:09 srichter Exp $
+$Id: contentworkflow.py,v 1.16 2004/04/24 23:18:25 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -27,7 +27,7 @@ from zope.app.servicenames import EventSubscription, Utilities
 
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
-from zope.app.workflow.interfaces.stateful import IContentWorkflowsManager
+from zope.app.workflow.stateful.interfaces import IContentWorkflowsManager
 from zope.app.workflow.instance import createProcessInstance
 from zope.interface import implements, providedBy
 from zope.app.container.contained import Contained

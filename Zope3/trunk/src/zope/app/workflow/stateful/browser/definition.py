@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
 
-$Id: definition.py,v 1.6 2004/03/19 20:26:38 srichter Exp $
+$Id: definition.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
 """
 __metaclass__ = type
 
@@ -24,9 +24,8 @@ from zope.app.form.browser.submit import Update
 from zope.app.form.browser.editview import EditView
 from zope.app.form.interfaces import IInputWidget
 from zope.app.workflow.stateful.definition import State, Transition
-from zope.schema import getFields
+from zope.schema import getFields, Choice
 
-from zope.app.security.permission import PermissionField
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.form.utility import setUpWidget
@@ -78,19 +77,21 @@ class RelevantDataSchemaEdit(EditView):
                     get_perm, set_perm = None, None
 
                 # Create the Accessor Permission Widget for this field
-                permField = PermissionField(
+                permField = Choice(
                     __name__=name+'_get_perm',
                     title=u"Accessor Permission",
+                    vocabulary="Permissions",
                     default=CheckerPublic,
                     required=False)
                 setUpWidget(self, name + '_get_perm', permField, IInputWidget, 
                             value=get_perm)
 
                 # Create the Mutator Permission Widget for this field
-                permField = PermissionField(
+                permField = Choice(
                     __name__=name+'_set_perm',
                     title=u"Mutator Permission",
                     default=CheckerPublic,
+                    vocabulary="Permissions",
                     required=False)
                 setUpWidget(self, name+'_set_perm', permField, IInputWidget, 
                             value=set_perm)

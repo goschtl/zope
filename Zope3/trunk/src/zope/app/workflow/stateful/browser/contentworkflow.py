@@ -13,19 +13,18 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.7 2004/04/15 22:11:10 srichter Exp $
+$Id: contentworkflow.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.introspector import interfaceToName
 from zope.app.component.interface import nameToInterface
-from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.servicenames import Utilities
 from zope.app.form.interfaces import IInputWidget
 from zope.interface import Interface
 from zope.app.publisher.browser import BrowserView
-from zope.schema.vocabulary import VocabularyListField
+from zope.schema import Choice
 from zope.security.proxy import trustedRemoveSecurityProxy 
 from zope.app.workflow.interfaces import IProcessDefinition
 
@@ -37,19 +36,20 @@ class ContentWorkflowsManagerView(object):
 
 class IContentProcessMapping(Interface):
 
-    iface = InterfaceField(
+    iface = Choice(
         title=u"Content Interface",
         description=u"Specifies the interface that characterizes a particular "
                     u"content type. Select one interface at a time.",
+        vocabulary="Interfaces",        
         required=True)
     
-    name = VocabularyListField(
+    name = Choice(
         title = u"Process Definition Name",
         description = u"The name of the process that will be available for "
                       u"this content type. Feel free to select several at "
                       u"once.",
-        required = True,
-        vocabulary = "ProcessDefinitions")
+        vocabulary = "ProcessDefinitions",
+        required = True)
 
 
 class ManageContentProcessRegistry(BrowserView):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.13 2004/04/16 11:51:55 srichter Exp $
+$Id: xmlimportexport.py,v 1.14 2004/04/24 23:18:26 srichter Exp $
 """
 from xml.sax import parseString
 from xml.sax.handler import ContentHandler
@@ -28,10 +28,10 @@ from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.interfaces import IPermission 
-from zope.app.workflow.interfaces.stateful import IStatefulProcessDefinition
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.stateful.definition import State, Transition
+from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
 
 
 # basic implementation for a format-checker

@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.9 2004/04/15 22:11:10 srichter Exp $
+$Id: instance.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.security.proxy import trustedRemoveSecurityProxy

@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.18 2004/04/15 22:11:34 srichter Exp $
+$Id: instance.py,v 1.19 2004/04/24 23:18:25 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -21,14 +21,14 @@ from persistent.dict import PersistentDict
 from zope.app import zapi
 from zope.app.event import publish
 from zope.app.workflow.interfaces import IProcessDefinition
-from zope.app.workflow.interfaces.stateful import AUTOMATIC
-from zope.app.workflow.interfaces.stateful import IAfterTransitionEvent
-from zope.app.workflow.interfaces.stateful import IBeforeTransitionEvent
-from zope.app.workflow.interfaces.stateful import IRelevantDataChangeEvent
-from zope.app.workflow.interfaces.stateful import IStatefulProcessInstance
-from zope.app.workflow.interfaces.stateful import ITransitionEvent
-from zope.app.workflow.interfaces.stateful import IBeforeRelevantDataChangeEvent
-from zope.app.workflow.interfaces.stateful import IAfterRelevantDataChangeEvent
+from zope.app.workflow.stateful.interfaces import AUTOMATIC
+from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
+from zope.app.workflow.stateful.interfaces import IBeforeTransitionEvent
+from zope.app.workflow.stateful.interfaces import IRelevantDataChangeEvent
+from zope.app.workflow.stateful.interfaces import IStatefulProcessInstance
+from zope.app.workflow.stateful.interfaces import ITransitionEvent
+from zope.app.workflow.stateful.interfaces import IBeforeRelevantDataChangeEvent
+from zope.app.workflow.stateful.interfaces import IAfterRelevantDataChangeEvent
 from zope.app.servicenames import Utilities
 from zope.app.traversing import getParent
 from zope.app.workflow.instance import ProcessInstance

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for stateful workflow.
 
-$Id: interfaces.py,v 1.1 2004/02/27 16:50:38 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
 """
 from zope.interface import Interface
 

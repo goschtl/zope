@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.18 2004/04/15 22:11:09 srichter Exp $
+$Id: test_instance.py,v 1.19 2004/04/24 23:18:32 srichter Exp $
 """
 import unittest
 
@@ -38,12 +38,12 @@ from zope.app.servicenames import Utilities
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.instance import createProcessInstance
-from zope.app.workflow.interfaces.stateful import IStatefulProcessInstance
-from zope.app.workflow.interfaces.stateful import IBeforeTransitionEvent
-from zope.app.workflow.interfaces.stateful import IAfterTransitionEvent
-from zope.app.workflow.interfaces.stateful import IRelevantDataChangeEvent
-from zope.app.workflow.interfaces.stateful import IBeforeRelevantDataChangeEvent
-from zope.app.workflow.interfaces.stateful import IAfterRelevantDataChangeEvent
+from zope.app.workflow.stateful.interfaces import IStatefulProcessInstance
+from zope.app.workflow.stateful.interfaces import IBeforeTransitionEvent
+from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
+from zope.app.workflow.stateful.interfaces import IRelevantDataChangeEvent
+from zope.app.workflow.stateful.interfaces import IBeforeRelevantDataChangeEvent
+from zope.app.workflow.stateful.interfaces import IAfterRelevantDataChangeEvent
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.instance import StatefulProcessInstance

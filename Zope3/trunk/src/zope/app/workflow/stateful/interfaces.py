@@ -13,13 +13,11 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.1 2004/02/27 16:50:39 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/04/24 23:18:25 srichter Exp $
 """
 import zope.schema
-from zope.app.security.permission import PermissionField
 
 from zope.interface import Interface, Attribute
-from zope.app.component.interfacefield import InterfaceField
 from zope.app.workflow.interfaces import IWorkflowEvent
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstance
@@ -141,8 +139,9 @@ class ITransition(Interface):
     # required=False does not help as well
     # so for now the permission needs to be set ttw
     # till we find another solution
-    permission = PermissionField(
+    permission = zope.schema.Choice(
         title=u"The permission needed to fire the Transition.",
+        vocabulary="Permissions",
         required=True)
 
 
@@ -199,10 +198,11 @@ class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
 class IStatefulProcessDefinition(IProcessDefinition):
     """Interface for stateful workflow process definition."""
 
-    relevantDataSchema = InterfaceField(
+    relevantDataSchema = zope.schema.Choice(
         title=u"Workflow-Relevant Data Schema",
         description=u"Specifies the schema that characterizes the workflow "
                     u"relevant data of a process instance, found in pd.data.",
+        vocabulary="Interfaces",
         default=None,
         required=False)
 

@@ -13,17 +13,17 @@
 ##############################################################################
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.13 2004/03/03 20:20:35 srichter Exp $
+$Id: definition.py,v 1.14 2004/04/24 23:18:25 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface import implements
 
 from zope.app.container.interfaces import IReadContainer
-from zope.app.workflow.interfaces.stateful import IStatefulProcessDefinition
-from zope.app.workflow.interfaces.stateful import IState, ITransition, INITIAL
-from zope.app.workflow.interfaces.stateful import IStatefulStatesContainer
-from zope.app.workflow.interfaces.stateful import IStatefulTransitionsContainer
+from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
+from zope.app.workflow.stateful.interfaces import IState, ITransition, INITIAL
+from zope.app.workflow.stateful.interfaces import IStatefulStatesContainer
+from zope.app.workflow.stateful.interfaces import IStatefulTransitionsContainer
 
 from zope.app.container.contained import Contained
 from zope.app.workflow.definition import ProcessDefinition
