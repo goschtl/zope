@@ -13,13 +13,13 @@
 ##############################################################################
 """Service interfaces
 
-$Id: view.py,v 1.2 2003/05/01 19:35:22 faassen Exp $
+$Id: view.py,v 1.3 2003/05/29 20:48:14 gvanrossum Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.security.permission import PermissionField
-from zope.schema import BytesLine, TextLine, Text
+from zope.schema import BytesLine, TextLine, Text, Bool
 from zope.interface import Interface
 from zope.app.services.field import ComponentPath
 from zope.component.interfaces import IPresentation
@@ -134,6 +134,10 @@ class IZPTTemplate(Interface):
         title=u"Source",
         description=u"""The source of the page template.""",
         required=True)
+
+    expand = Bool(
+        title=u"Expand macros",
+        )
 
     def render(context, request, *args, **kw):
         """Render the page template.
