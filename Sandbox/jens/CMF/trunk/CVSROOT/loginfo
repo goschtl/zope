@@ -1,1 +1,0 @@
-^cvsetc echo "(date; cat; (sleep 2; cd $CVSROOT/cvsetc; cvs -q update -d) &)"

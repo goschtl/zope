@@ -2,3 +2,4 @@
 
 # Actions executed (via commitinfo) at the start of a commit.
 
+echo '$0': $0, '$*':, $*
