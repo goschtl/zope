@@ -16,6 +16,7 @@
 $Id$
 """
 from datetime import datetime
+from transaction import get_transaction
 
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -106,6 +107,7 @@ class EditView(BrowserView):
             except WidgetsError, errors:
                 self.errors = errors
                 status = _("An error occured.")
+                get_transaction().abort()
             else:
                 setUpEditWidgets(self, self.schema, source=self.adapted,
                                  ignoreStickyValues=True, 
