@@ -2,17 +2,21 @@
  Zope X3 Security Target for EAL 1
 ===================================
 
-:Version: $Revision: 1.2 $ (Draft)
-:Date: $Date: 2003/07/15 18:41:42 $
+:Version: $Revision: 1.3 $ (Draft)
+:Date: $Date: 2003/07/16 21:13:30 $
 :Authors: Steve Alexander <steve@catbox.net>, Christian Theune <ct@gocept.com>
 :DocumentID: ST_ZOPE_001
 
 .. contents::
 
-$Log: SecurityTarget.txt,v $
-Revision 1.2  2003/07/15 18:41:42  ctheune
- - substituted correct keywords
+Document History
+================
 
+    ========  ========  ==================  ================
+    Version   Date      Change              Editor
+    ========  ========  ==================  ================
+    0.1                 First draft         Christian Theune
+    ========  ========  ==================  ================
 
 ST introduction
 ===============
@@ -40,7 +44,7 @@ ST identification
 
 :Certification Body: Certification Body of TUV Informationstechnik GmbH, Germany
 
-This ST is based upon Common Criteria, Version 2.1 ([CC]).
+This ST is based upon Common Criteria, Version 2.1 (*[CC]*).
 The TOE consists of the following component:
 
     ===========     ==========  ================
@@ -74,7 +78,7 @@ ISO/IEC 15408 (CC) Conformance
 ------------------------------
 
 This ST is claimed to be conformant with the ISO/IEC 15408:1999 (Common
-Criteria, Version 2.1 with final interpretations, see [CC]) and its following
+Criteria, Version 2.1 with final interpretations, see *[CC]*) and its following
 parts:
 
     *   Part 2 and
@@ -161,11 +165,12 @@ The following assets have been identified:
     =================   ===========================================
     Asset Name          Description                 
     =================   ===========================================
-    Content-Objects
+    Content-Objects     
     Operations
     Principals
     Role grants
     Permission grants
+    Audit data
     =================   ===========================================
 
 Subjects
@@ -244,7 +249,13 @@ Threats
 
 The following threat agents have been identified:
 
-...
+    *   Users having correct authentication credentials who might try to
+        acquire more permission or role grants to get access to operations they
+        shall not.
+        
+    *   Users without correct authentication credentials for a certain
+        principal trying to authenticate as this.
+        
 
 The following threats against the assets have been identified:
 
@@ -253,12 +264,48 @@ The following threats against the assets have been identified:
     ============    ===============================================     ====================
     T.IA            An attacker might impersonate an authorised         Principal
                     principal without providing the necessary 
-                    credentials.              
+                    credentials.
     T.PermRole      A principal changes the role grants or              Permission grants,
                     permission grants without having that right.        Role grants
     T.Operation     A principal performs an operation on an object      Operation, Object
-                    without having the correct permission.               
+                    without having the correct permission.
     ============    ===============================================     ====================
+
+    ===============    ===================================================     ====================
+    Threat             **proposed threats**
+    ===============    ===================================================     ====================
+    T.AuditDOS         An attacker might misuse the audit data 
+                       generation functions to flood the server with 
+                       data resulting in the denial of service.
+    T.AuditFake        An attacker might convince the audit data 
+                       generation functions to log false information 
+                       (date, time, type of event, outcome, user)
+    T.Import           An attacker might try to make the system
+                       interprete imported security attributes in a
+                       not intended way to acquire a higher level of 
+                       access to the system.
+    T.RIP              An attacker might try to make the system use
+                       residual information for deciding to allow
+                       or deny access to an operation to gain more
+                       access than intended.
+    T.Transaction      An attacker might try to perform commit or 
+                       abort operations on foreign transactions to
+                       perform operations on the behalf of other
+                       users.
+    T.Rollback         An attacker might try to perform a rollback
+                       to invalid revisions.
+    T.USB              An attacker might try to use executable code
+                       which runs on behalf of another user to perform
+                       unauthorised operations and maybe hide his
+                       traces.
+    T.Timestamps       An attacker might try to hide his actions
+                       by making the system create false timestamps
+                       which would result in wrong association to a
+                       user on dynamic ip address ranges.
+    T.TrustedPath      An attacker might try to use "user data import"
+                       or "user data export" without beeing a local user
+                       and using the trusted path.
+    ===============    ===================================================     ====================
 
 Organisational security policies
 --------------------------------
@@ -272,7 +319,7 @@ The following OSP have been identified:
                                 persons who have signed an agreement with Zope 
                                 Corporation, Virginia USA. They must preserve a 
                                 cryptographic key in order to change code.
-    OSP.Version_numbre          Released versions of Zope cannot be modified. 
+    OSP.Version_number          Released versions of Zope cannot be modified. 
                                 Any modification would imply a new release 
                                 number.
     ========================    ===============================================
@@ -325,6 +372,11 @@ The following security objectives have been defined for the TOE environment:
                         horses.
     ===============     =======================================================
 
+Operating System,
+Python Version,
+Browsers (Can't assure about browser behaviour),
+ZODB Storage
+
 Security requirements
 =====================
 
@@ -340,11 +392,36 @@ They have beend drawn from the CC Part 2 functional requirements components.
 Class FAU: Audit data generation
 ********************************
 
-FAU_GEN.1 
-    (select: level of detail)
+FAU_GEN.1 Audit data generation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FAU_GEN.1.1
+    The TSF shall be able to generate an audit record of the following auditable
+    events:
+
+    a)  Start-up and shutdown of audit functions;
+
+    b)  All auditable events for the *[minimum]* level of audit; and
+
+    c)  *[select: other events XXX]*
+
+FAU_GEN.1.2
+    The TSF shall record within each audit record at least the following information:
+
+    a)  Date and time of the event, type of event, subject identity, and the outcome
+        (success or failure) of the event; and
+
+    b)  For each audit event type, based on auditable event definitions of the
+        the the functional components included in the ST, *[assignment: other audit
+        relevant information XXX]* 
     
 FAU_GEN.2
+~~~~~~~~~
 
+FAU_GEN.2.1
+    The TSF shall be able to associate each auditable event with the identity
+    of the user that caused the event.
+    
 Class FDP: Data protection
 ***************************
 
@@ -352,9 +429,9 @@ FDP_ACC.2 Complete access control
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FDP_ACC.2.1
-    The TSF shall enforce the [formal security policy] on
-    [subjects: principals and objects: operations on content objects, role
-    grants, permission grants] and all operations among subjects and
+    The TSF shall enforce the *[formal security policy]* on
+    *[subjects: principals and objects: operations on content objects, role
+    grants, permission grants]* and all operations among subjects and
     objects covered by the SFP.
 
 FDP_ACC.2.2
@@ -362,78 +439,124 @@ FDP_ACC.2.2
     subject in the TSC and any object within the TSC are covered by an
     access control SFP.
 
-FDP_ACF.1 
-~~~~~~~~~
+FDP_ACF.1 Security attribute based access control
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FDP_ACF.1.1
-    The TSF shall enforce the [formal security policy] to objects
-    based on [context, object, operation, principal].
+    The TSF shall enforce the *[formal security policy]* to objects
+    based on *[context, object, operation, principal]*.
 
 FDP_ACF.1.2
     The TSF shall enforce the following rules to determine
     if an operation among controlled subjects and controlled objects is
-    allowed: [The principal has been granted the required permission to
+    allowed: *[The principal has been granted the required permission to
     perform the operation on that object in that context. A special
     permission is required to rollback to historical versions of content
-    objects.]
+    objects.]*
 
 FDP_ACF.1.3
     The TSF shall explicitly authorise access of subjects to
-    objects based on the following additional rules: 
+    objects based on the following additional rules: *[none]*
 
 FDP_ACF.1.4
     The TSF shall explicitly deny access of subjcets to objects
-    based on the following additional rules: [none]
+    based on the following additional rules: *[none]*
 
-FDP_ETC.2
-~~~~~~~~~
+FDP_ETC.2 Export of user data with security attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
          
-(als standardoperation beschreiben (TOE description), eventueller threat)
+FDP_ETC.2.1
+    The TSF shall enforce the *[formal security policy]* when exporting user
+    data, controlled under the SFP, outside the TSC.
+
+FDP_ETC.2.2
+    The TSF shall export the user data with the user data's associated 
+    security attributes.
+
+FDP_ETC.2.3
+    The TSF shall ensure that the security attributes, when 
+    exported outside the TSC, are unambiguously associated 
+    with the exported user data.
+
+FDP_ETC.2.4
+    The TSF shall enforce the following rules when user data 
+    is exported from the TSC: *[none]*.
     
-FDP_ITC.1
-~~~~~~~~~
+FDP_ITC.1 Import of user data without security attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-XXX provide details (data import)
+FDP_ITC.1.1
+    The TSF shall enforce the *[formal security policy]* when importing user 
+    data, controlled under the SFP, from outside of the TSC.
 
-FDP_ITC.2
-~~~~~~~~~
+FDP_ITC.1.2
+    The TSF shall ignore any security attributes associated with the user data 
+    when imported from outside the TSC.
+    
+FDP_ITC.1.3
+    The TSF shall enforce the following rules when importing user data 
+    controlled under the SFP from outside the TSC: 
+    *[ensure that the appropriate security attributes are applied 
+    based on the context where the user data is imported to]*.
 
-XXX provide details (data import)
+FDP_ITC.2 Import of user data with security attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FDP_ITC.2.1
+    The TSF shall enforce the *[formal security policy]* when importing user 
+    data, controlled under the SFP, from outside of the TSC. 
+    
+FDP_ITC.2.2 
+    The TSF shall use the security attributes associated with the imported 
+    user data. 
+    
+FDP_ITC.2.3
+    The TSF shall ensure that the protocol used provides for the unambiguous 
+    association between the security attributes and the user data received. 
+    
+FDP_ITC.2.4
+    The TSF shall ensure that interpretation of the security attributes of 
+    the imported user data is as intended by the source of the user data. 
+
+FDP_ITC.2.5
+    The TSF shall enforce the following rules when importing user data 
+    controlled under the SFP from outside the TSC:
+    *[none XXX]*.
     
 FDP_RIP.1 Subset residual information protection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     
 FDP_RIP.1.1
     The TSF shall ensure that any previous information content
-    of a resource is made unavailable upon the [allocation of the resource
-    to, deallocation of the resource from] the following objects:
-    [principals, permission grants, role grants, permission definition and
-    role definition].
+    of a resource is made unavailable upon the *[allocation of the resource
+    to, deallocation of the resource from]* the following objects:
+    *[principals, permission grants, role grants, permission definition and
+    role definition]*.
 
 FDP_ROL.2_TRANSACTIONS Advanced Rollback
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FDP_ROL.2.1 
-    The TSF shall permit [the rollback of all
-    operations on all objects].
+    The TSF shall permit *[the rollback of all
+    operations on all objects]*.
 
 FDP_ROL.2.2 
     The TSF shall permit operations to be rolled
-    back [at any time before the transaction in which the operation was
-    performed is committed].
+    back *[at any time before the transaction in which the operation was
+    performed is committed]*.
 
 FDP_ROL.1_UNDO Basic rollback 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FDP_ROL.1.1 
-    The TSF shall enforce [formal security policy] to permit
-    the rollback of the [operations cause changes] on the [content
-    objects].
+    The TSF shall enforce the *[formal security policy]* to permit
+    the rollback of the *[operations that caused changes]* on the *[content
+    objects]*.
 
 FDP_ROL.1.2 
     The TSF shall permit operations to be rolled back
-    within the [period of time for which the old revisions of the objects
-    exist].
+    within the *[period of time for which the old revisions of the objects
+    exist]*.
 
 Class FIA: Identification and authentication
 ********************************************
@@ -443,46 +566,65 @@ FIA_ATD.1 User attribute definition
 
 FIA_ATD.1.1 
     The TSF shall maintain the following list of security
-    attributes belonging to individual principals [uniqueid, credentials,
-    role grants, permission grants]
+    attributes belonging to individual principals *[uniqueid, credentials,
+    role grants, permission grants]*
 
 FIA_UAU.1 Timing of authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FIA_UAU.1.1 
-    The TSF shall allow [only those operations granted to the
-    anonymous principal] on behalf of the user before the [principal] is
+    The TSF shall allow *[only those operations granted to the
+    anonymous principal]* on behalf of the user before the *[principal]* is
     authenticated.
 
-    [Note: It is possible to deny all operations to the anonymous
-    principal. This means that a user must login before any actions may
-    performed on their behalf. This fullfills the terms of FIA_UAU.2]
+    *[Note: It is possible to deny all operations to the anonymous
+    principal. This means that a user must login before any operations may
+    be performed on their behalf. This fullfills the terms of FIA_UAU.2]*
 
 FIA_UAU.1.2 
-    The TSF shall require each [principal] to be successfully
+    The TSF shall require each *[principal]* to be successfully
     authenticated before allowing any other TSF-mediated actions on behalf
     of that user.
 
-FIA.UAU.5
-~~~~~~~~~
+FIA_UAU.5 Multiple authentication systems
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    XXX (basic auth, diget, cookie ... look that up)
+FIA_UAU.5.1
+    The TSF shall provide *[HTTP Basic Auth, HTTP Digest Auth, Cookie 
+    Authentication, FTP authentication]* 
+
+FIA_UAU.5.2
+    The TSF shall authenticate any users claimed identity according
+    to the *[transfer of a username/password pair for HTTP basic auth, cookie 
+    authentication, FTP authentication]*
     
 FIA.UAU.6 Re-authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FIA_UAU.6.1 
     The TSF shall re-authenticate the user under the conditions
-    [a) that he is trying to perform an action that has been unauthorised and
+    *[a) that he is trying to perform an action that has been unauthorised and
     is offered the opportunity to present other credentials, if it possible
     that presenting other credentials may result in authorisation. 
     b) If the credentials held by the user agent have expired due to a time 
-    limit encoded in those credentials. E.g. a cookie held by a web browser].
+    limit encoded in those credentials. E.g. a cookie held by a web browser]*.
 
-FIA_UID.1
-~~~~~~~~~
+FIA_UID.1 Timing of identification
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- XXX (copy FIA_UAU.1 here)
+FIA_UID.1.1 
+    The TSF shall allow *[only those operations granted to the
+    anonymous principal]* on behalf of the user before the *[principal]* is
+    identified.
+
+    *[Note: It is possible to deny all operations to the anonymous
+    principal. This means that a user must login before any operations may
+    be performed on their behalf. This fullfills the terms of FIA_UID.2]*
+
+FIA_UID.1.2 
+    The TSF shall require each *[principal]* to be successfully
+    identified before allowing any other TSF-mediated actions on behalf
+    of that user.
 
 FIA_USB.1 User-subject binding
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -491,11 +633,87 @@ FIA_USB.1.1
     The TSF shall associate the appropriate user security
     attributes with subjects acting on behalf of that user.
 
-    [Note: This has to do with ownership in the sense of responsibility for
-    executable code.]
+    *[Note: This has to do with ownership in the sense of responsibility for
+    executable code.]*
+
+Class FPT: Protection of the TSF
+********************************
+
+FPT_STM.1 Reliable time stamps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FPT_STM.1.1
+    The TSF shall be able to provide reliable time stamps for its own use.
+
+FPT_TDC.1 Inter-TSF basic TSF data consistency
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FPT_TDC.1.1
+    The TSF shall provide the capability to consistently interpret *[XXX description
+    of available data types. E.g. "python objects"]* when shared between the TSF
+    and another trusted IT product.
+
+FPT_TDC.1.2
+    The TSF shall use *[XXX python pickle module]* when interpreting the TSF 
+    data from another trusted IT product.
+
+Class FMT: Security management
+******************************
+
+FMT_SMR.1 Security roles
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+FMT_SMR.1.1
+    The TSF shall maintain *[a list of authorised roles]*.
+
+FMT_SMR.1.2
+    The TSF shall be able to associate *[principals]* with roles.
+
+FMT_MSA.1 Management of security attributes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FMT_MSA.1.1
+    The TSF shall enforce the *[formal security policy]* to
+    restrict the ability to *[apply operations modifying]*
+    the security attributes *[role grants, permission grants, principals,
+    permissions]* to *[principals with the appropriate roles]*.
+
+FMT_MSA.3 Static attribute initialisation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FMT_MSA.3.1
+    The TSF shall enforce the *[formal security policy]* to provide 
+    *[restrictive]* default values for security attributes that are used to 
+    enforce the SFP.
+
+FMT_MSA.3.2
+    The TSF shall allow the *[principals with appropriate permission
+    grants]* to specify alternative initial values to override the default values
+    when an object or information is created.
+
+Class FTP: Trusted path/channels
+********************************
+
+FTP_TRP.1 Trusted path
+~~~~~~~~~~~~~~~~~~~~~~
+
+FTP_TRP.1.1
+    The TSF shall provide a communication path between itself and
+    *[local]* users that is logically distinct from other communication paths
+    and provides assured identification of its end points and protection
+    of the communicated data from modification or disclosure.
+
+FTP_TRP.1.2
+    The TSF shall permit *[local users]* to initiate communication
+    via the trusted path.
+
+FTP_TRP.1.3
+    The TSF shall require the use of the trusted path for 
+    *[user data import, user data export]*.
+    
 
 XXX Nice to have:
-~~~~~~~~~~~~~~~~~
+*****************
 
     This is currently not sure if it is going to be implemented. Ask someone who knows.
 
@@ -536,46 +754,205 @@ Security requirements for the IT environment
 The following security requirements exist for the IT environment:
 
 Security requirements for the non-IT environment
+------------------------------------------------
 
+The following security requirements exist for the IT environment:
+
+TOE summary specification
+=========================
 
 TOE security functions
+----------------------
 
-    TSF_AUD Audit
-
-    TSF_DATA Data im-/export
-
-    TSF_RIP Residual information protection
-
-    TSF_IA Identification and authentication
-
-        *example*
-        The TSF does not allow any kind of transactions until the principal has
-        presented his username and password. The length of the password is at
-        least 6 characters.
-
-    TSF_ACC Access control
-
-    TSF_ROLL Rollback
+The following security functions have been determined:
 
 
+    ================          ================================
+    TSF                       Description
+    ================          ================================
+    TSF_AUD                   Audit
+    TSF_DATA                  Data im-/export
+    TSF_RIP                   Residual information protection
+    TSF_IA                    Identification and authentication
+    TSF_ACC                   Access control
+    TSF_ROLL                  Rollback
+    ================          ================================
 
+*example*
+The TSF does not allow any kind of transactions until the principal has
+presented his username and password. The length of the password is at
+least 6 characters.
+
+Assurance measures
+------------------
+
+AM_ACM: CONFIGURATION MANAGEMENT
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+XXX
+
+AM_ADO: DELIVERY AND OPERATION
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+XXX
+
+AM_ADV: DEVELOPMENT
+^^^^^^^^^^^^^^^^^^^
+
+A functional specification and a RCR document will be provided.
+
+AM_AGD: GUIDANCE DOCUMENTS
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+XXX
+
+AM_ATE: TESTS
+^^^^^^^^^^^^^
+
+No deliverable. Only independend testing from the evaluator is needed.
 Operating Environment Boundaries:
 
-    Operating System
-    Python Version
-    Browsers (Can't assure about browser behaviour)
-    ZODB Storage
+PP claims
+=========
 
+There are no PP claims.
+
+SOF claims
+==========
+
+There is no SOF claim here for EAL 1.
+
+Rationale
+=========
+
+Security objectives rationale
+-----------------------------
+
+XXX
+
+Security requirements rationale
+-------------------------------
+
+XXX
+
+Choice of security functional requirements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+XXX
+
+Justification for suitability of SFR - TOE security objectives
+--------------------------------------------------------------
+
+Choice of TOE security assurance requirements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The choice of assurance requirements is based on the analysis of the security
+objectives for the TOE and on functional requirements defined to meet these
+objectives.  
+
+The assurance level is **EAL 1**.
+
+Evaluation Assurance Level rationale:
+-------------------------------------
+
+
+XXX review this paragraph please.
+
+The Zope development community recognizes the need of mature and well defined
+security functions by its users.
+
+Therefore to meet this requirements the decision for an entry level evaluation
+was made in respect to the resource constraints of available developers and
+budget. 
+
+Additionally an entry level evaluation gives a glance to the community how
+certification may effect Zopes degree of documentation and stabilize the good
+security history even more, maybe raising the interest for projects that require
+good security behaviour and seek free alternatives. 
+
+It is intended to show that mature open source projects can outperform
+proprietary systems not only on pure functional and monetary aspects but also
+in domains that are typically governed by proprietary systems.
+
+Glossary
+========
+
+CC
+    Common Criteria (referenced as [CC])
+    
+SF
+    Security Function
+    
+SFP
+    Security Function Policy
+    
+SFR
+    Security Functional Requirement
+    
+ST
+    Security Targets
+   
+TOE
+    Target of Evaluation
+    
+TSF
+    TOE Security Functions
 
 TODO
 ====
 
+General
+-------
+
     *   Bibliographic references
+
+    *   Numbering of sections would be fine
+    
+Part 1
+------
 
     *   Threat agents
 
-    *   RST table formatting
+    *   TOE description
 
-    *   Put in the rest of the Security Target template from word document
+    *   TOE security functions
 
-    *   Numbering of sections would be fine
+Part 2
+------
+
+    *   Rationale
+
+Questions to Zope 3 Dev
+=======================
+
+FMT_MSA.3.1
+    Is "restrictive" the thing we do when nothing else is specified?
+
+FTP_TRP.1.1
+    Is the import/export feature going to be local only? What would
+    a "disctinct" communication path be if not local?
+
+FAU_GEN.1.2
+    Other audit data to store?        
+
+FDP_ITC.2
+    What other rules shall be applied?
+
+FIA_UAU.5
+    Provide information about the out-of-the-box authentication
+    mechanisms that are delivered with Zope X3.
+
+FPT_TDC.1.1
+    Describe data types
+
+FPT_TDC.1.2
+    Describe the rules that apply for interpretation of data.
+
+Questions to TUV-IT
+===================
+
+    *   What does FDP_ETC.2.3 mean?
+    
+    *   Are DOS within the range of possible threats?
+
+    *   Review threats/threat agents
