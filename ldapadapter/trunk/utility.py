@@ -87,26 +87,6 @@ class LDAPAdapter(object):
         proto =  self.useSSL and 'ldaps' or 'ldap'
         return '%s://%s:%s' % (proto, self.host, self.port)
 
-    def _setServerURL(self, url):
-        """Set the server info from an LDAP URL.
-
-        An LDAP url is of the form ldap[s]://host:port
-        """
-        port = 389
-        url = url.strip()
-        urlList = url.split(':')
-        if len(urlList) >= 2:
-            useSSL = urlList[0].endswith('s')
-            host = urlList[1][2:]
-            if len(urlList) == 3:
-                port = int(urlList[2])
-        else:
-            LDAPURIParseError(LDAP_uri_parse_error)
-
-        self.host = host
-        self.port = port
-        self.useSSL = useSSL
-
 
 class LDAPConnection(object):
     implements(ILDAPConnection)
@@ -173,6 +153,24 @@ class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
     """
     implements(IManageableLDAPAdapter)
 
-    serverURL = property(LDAPAdapter.getServerURL, LDAPAdapter._setServerURL)
-    bindDN = u''
-    bindPassword = u''
+    def _setServerURL(self, url):
+        """Set the server info from an LDAP URL.
+
+        An LDAP url is of the form ldap[s]://host:port
+        """
+        port = 389
+        url = url.strip()
+        urlList = url.split(':')
+        if len(urlList) >= 2:
+            useSSL = urlList[0].endswith('s')
+            host = urlList[1][2:]
+            if len(urlList) == 3:
+                port = int(urlList[2])
+        else:
+            LDAPURIParseError(LDAP_uri_parse_error)
+
+        self.host = host
+        self.port = port
+        self.useSSL = useSSL
+
+    serverURL = property(LDAPAdapter.getServerURL, _setServerURL)
