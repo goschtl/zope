@@ -36,24 +36,45 @@ from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.traversing.adapters import Traverser
+from zope.app.traversing.adapters import Traverser, traversePathElement
 from zope.app.traversing.interfaces import IPathAdapter, ITraversable
 
 class InlineCodeError(Exception):
     pass
 
+
 def zopeTraverser(object, path_items, econtext):
+    """Traverses a sequence of names, first trying attributes then items.
+    """
+    request = getattr(econtext, 'request', None)
+    path_items = list(path_items)
+    path_items.reverse()
+
+    while path_items:
+        name = path_items.pop()
+        object = traversePathElement(object, name, path_items,
+                                     request=request)
+        object = ProxyFactory(object)
+    return object
+
+class ZopePathExpr(PathExpr):
+
+    def __init__(self, name, expr, engine):
+        super(ZopePathExpr, self).__init__(name, expr, engine, zopeTraverser)
+
+
+def trustedZopeTraverser(object, path_items, econtext):
     """Traverses a sequence of names, first trying attributes then items.
     """
     traverser = Traverser(object)
     return traverser.traverse(path_items,
                               request=getattr(econtext, 'request', None))
 
-
-class ZopePathExpr(PathExpr):
+class TrustedZopePathExpr(PathExpr):
 
     def __init__(self, name, expr, engine):
-        super(ZopePathExpr, self).__init__(name, expr, engine, zopeTraverser)
+        super(TrustedZopePathExpr, self).__init__(name, expr, engine,
+                                                  trustedZopeTraverser)
 
 
 # Create a version of the restricted built-ins that uses a safe
@@ -196,6 +217,7 @@ class AdapterNamespaces(object):
             self.namespaces[name] = namespace
         return namespace
 
+
 class ZopeEngine(ExpressionEngine):
     """Untrusted expression engine.
 
@@ -236,6 +258,54 @@ class ZopeEngine(ExpressionEngine):
       >>> r = context.evaluate('python: {12: object()}.values()[0].__class__')
       >>> type(r)
       <type 'zope.security._proxy._Proxy'>
+
+    General path expressions provide objects that are wrapped in
+    security proxies as well::
+
+      >>> from zope.app.container.sample import SampleContainer
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.security.checker import NamesChecker, defineChecker
+
+      >>> class Container(SampleContainer):
+      ...     implements(ITraversable)
+      ...     def traverse(self, name, further_path):
+      ...         return self[name]
+
+      >>> setUp()
+      >>> defineChecker(Container, NamesChecker(['traverse']))
+      >>> d = engine.getBaseNames()
+      >>> foo = Container()
+      >>> foo.__name__ = 'foo'
+      >>> d['foo'] = ProxyFactory(foo)
+      >>> foo['bar'] = bar = Container()
+      >>> bar.__name__ = 'bar'
+      >>> bar.__parent__ = foo
+      >>> bar['baz'] = baz = Container()
+      >>> baz.__name__ = 'baz'
+      >>> baz.__parent__ = bar
+      >>> context = engine.getContext(d)
+
+      >>> o1 = context.evaluate('foo/bar')
+      >>> o1.__name__
+      'bar'
+      >>> type(o1)
+      <type 'zope.security._proxy._Proxy'>
+
+      >>> o2 = context.evaluate('foo/bar/baz')
+      >>> o2.__name__
+      'baz'
+      >>> type(o2)
+      <type 'zope.security._proxy._Proxy'>
+      >>> o3 = o2.__parent__
+      >>> type(o3)
+      <type 'zope.security._proxy._Proxy'>
+      >>> o1 == o3
+      True
+
+      >>> o1 is o2
+      False
+
+      >>> tearDown()
 
     """
 
@@ -312,7 +382,7 @@ class TraversableModuleImporter(SimpleModuleImporter):
 def _Engine(engine=None):
     if engine is None:
         engine = ZopeEngine()
-    engine = _create_base_engine(engine)
+    engine = _create_base_engine(engine, ZopePathExpr)
     engine.registerType('python', ZopePythonExpr)
 
     # Using a proxy around sys.modules allows page templates to use
@@ -326,14 +396,14 @@ def _Engine(engine=None):
 def _TrustedEngine(engine=None):
     if engine is None:
         engine = TrustedZopeEngine()
-    engine = _create_base_engine(engine)
+    engine = _create_base_engine(engine, TrustedZopePathExpr)
     engine.registerType('python', PythonExpr)
     engine.registerBaseName('modules', TraversableModuleImporter())
     return engine
 
-def _create_base_engine(engine):
-    for pt in ZopePathExpr._default_type_names:
-        engine.registerType(pt, ZopePathExpr)
+def _create_base_engine(engine, pathtype):
+    for pt in pathtype._default_type_names:
+        engine.registerType(pt, pathtype)
     engine.registerType('string', StringExpr)
     engine.registerType('not', NotExpr)
     engine.registerType('defer', DeferExpr)
