@@ -283,6 +283,23 @@
 
     </content>
 
+<!-- Bundle -->
+
+  <content class="zope.app.services.bundle.Bundle">
+    <factory permission="zope.ManageServices" />
+    <require
+        permission="zope.View"
+        interface="zope.app.interfaces.container.IReadContainer" />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.container.IWriteContainer"
+        attributes="getRegistrationManager resolve" 
+        />
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+    </content>
+
 <!-- Registration Manager -->
 
   <content class="zope.app.services.registration.RegistrationManager">
@@ -460,6 +477,11 @@
 
 <fssync:adapter
     class=".registration.RegistrationManager"
+    factory="zope.app.content.fssync.DirectoryAdapter"
+    />
+
+<fssync:adapter
+    class=".bundle.Bundle"
     factory="zope.app.content.fssync.DirectoryAdapter"
     />
 
