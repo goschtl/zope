@@ -127,6 +127,7 @@ class Surrogate(object):
         self.adapters = {}
         self.dependents = weakref.WeakKeyDictionary()
 
+        self.registry = registry
         self.__bases__ = [registry.get(base) for base in spec.__bases__]
         for base in self.__bases__:
             base.subscribe(self)
@@ -141,6 +142,13 @@ class Surrogate(object):
             dependent.dirty()
 
     def clean(self):
+        for base in self.__bases__:
+            base.unsubscribe(self)
+        self.__bases__ = [self.registry.get(base)
+                          for base in self.spec().__bases__]
+        for base in self.__bases__:
+            base.subscribe(self)
+
         self.selfImplied, self.multImplied = adapterImplied(self.adapters)
 
         implied = {}

@@ -15,7 +15,7 @@
 
 $Id$
 """
-import unittest, doctest
+import unittest
 import zope.interface
 from zope.interface.adapter import AdapterRegistry
 import zope.interface
@@ -229,13 +229,67 @@ def test_adapter_hook_with_factory_producing_None():
     >>> registry.adapter_hook(IB0, Object2(), default=default) is default
     True
     """
+
+def test_adapter_registry_update_upon_interface_bases_change():
+    """
+    Let's first create a adapter registry and a simple adaptation hook:
+
+    >>> globalRegistry = AdapterRegistry()
+
+    >>> def _hook(iface, ob, lookup=globalRegistry.lookup1):
+    ...     factory = lookup(zope.interface.providedBy(ob), iface)
+    ...     if factory is None:
+    ...         return None
+    ...     else:
+    ...         return factory(ob)
+
+    >>> zope.interface.interface.adapter_hooks.append(_hook)
+
+    Now we create some interfaces and an implementation:
     
+    >>> class IX(zope.interface.Interface):
+    ...   pass
+
+    >>> class IY(zope.interface.Interface):
+    ...   pass
+
+    >>> class X(object):
+    ...  pass
+
+    >>> class Y(object):
+    ...  zope.interface.implements(IY)
+    ...  def __init__(self, original):
+    ...   self.original=original
+
+    and register an adapter:
+    
+    >>> globalRegistry.register((IX,), IY, '', Y)
+
+    at first, we still expect the adapter lookup from `X` to `IY` to fail:
+    
+    >>> IY(X()) #doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    TypeError: ('Could not adapt',
+                <zope.interface.tests.test_adapter.X object at ...>,
+                <InterfaceClass zope.interface.tests.test_adapter.IY>)
+
+    But after we declare an interface on the class `X`, it should pass:
+
+    >>> zope.interface.classImplementsOnly(X, IX)
+
+    >>> IY(X()) #doctest: +ELLIPSIS
+    <zope.interface.tests.test_adapter.Y object at ...>
+
+    >>> hook = zope.interface.interface.adapter_hooks.pop()
+    """
 
 def test_suite():
-    from zope.testing.doctestunit import DocFileSuite
+    from zope.testing import doctest, doctestunit
     return unittest.TestSuite((
-        DocFileSuite('../adapter.txt', '../human.txt', 'foodforthought.txt',
-                     globs={'__name__': '__main__'}),
+        doctestunit.DocFileSuite('../adapter.txt', '../human.txt',
+                                 'foodforthought.txt',
+                                 globs={'__name__': '__main__'}),
         doctest.DocTestSuite(),
         ))
 
