@@ -14,11 +14,12 @@
 """Implementation of the Zope TALES API
 
 
-$Id: talesapi.py,v 1.2 2003/05/23 22:18:38 jim Exp $
+$Id: talesapi.py,v 1.3 2003/05/27 12:57:17 jim Exp $
 """
 
 from zope.app.interfaces.talesapi import IZopeTalesAPI
 from zope.app.interfaces.dublincore import IDCDescriptiveProperties, IDCTimes
+from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app import zapi
 
@@ -30,28 +31,28 @@ class ZopeTalesAPI(object):
         self.context = context
 
     def title(self):
-        a = zapi.queryAdapter(self.context, IDCDescriptiveProperties)
+        a = zapi.queryAdapter(self.context, IZopeDublinCore)
         if a is None:
             raise AttributeError, 'title'
         return a.title
     title = property(title)
 
     def description(self):
-        a = zapi.queryAdapter(self.context, IDCDescriptiveProperties)
+        a = zapi.queryAdapter(self.context, IZopeDublinCore)
         if a is None:
             raise AttributeError, 'description'
         return a.description
     description = property(description)
 
     def created(self):
-        a = zapi.queryAdapter(self.context, IDCTimes)
+        a = zapi.queryAdapter(self.context, IZopeDublinCore)
         if a is None:
             raise AttributeError, 'created'
         return a.created
     created = property(created)
 
     def modified(self):
-        a = zapi.queryAdapter(self.context, IDCTimes)
+        a = zapi.queryAdapter(self.context, IZopeDublinCore)
         if a is None:
             raise AttributeError, 'modified'
         return a.modified

@@ -13,13 +13,12 @@
 ##############################################################################
 """Tales API Tests
 
-$Id: test_talesapi.py,v 1.1 2003/05/23 22:18:39 jim Exp $
+$Id: test_talesapi.py,v 1.2 2003/05/27 12:57:18 jim Exp $
 """
 
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import implements
-from zope.app.interfaces.dublincore import IDCDescriptiveProperties
-from zope.app.interfaces.dublincore import IDCTimes
+from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from datetime import datetime
 from zope.app.pagetemplate.talesapi import ZopeTalesAPI
@@ -27,7 +26,8 @@ from zope.proxy.context import ContextWrapper
 
 class TestObject(object):
 
-    implements(IDCDescriptiveProperties, IDCTimes, ISized)
+    implements(IZopeDublinCore, # not really, but who's checking. ;)
+               ISized)
 
     description = u"This object stores some number of apples"
     title = u"apple cart"
