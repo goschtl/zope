@@ -454,6 +454,9 @@ class DocResponseWrapper(ResponseWrapper):
             return "%s\n\n%s" % (self.header_output, body)
         return "%s\n" % (self.header_output)
 
+    def getBody(self):
+        return self.getOutput()
+
 def http(request_string, handle_errors=True):
     """Execute an HTTP request string via the publisher
 
