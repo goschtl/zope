@@ -221,8 +221,8 @@ another helpful message
 </tr>
 
 <tbody tal:repeat="perm view/permissionRoles">
-<tr class="row-hilite" 
-    tal:condition="repeat/perm/odd"
+<tr class="row-normal"
+    tal:attributes="class python:path('repeat/perm/even') and 'row-normal' or 'row-hilite'"
     >
   <td align="left" nowrap>
     <div class="list-item">
@@ -244,31 +244,6 @@ another helpful message
            CHECKED role; 
            name string:p${repeat/perm/index}r${repeat/role/index}"
            />
-  </td>
-</tr>
-<tr class="row-normal" 
-    tal:condition="repeat/perm/even"
-    >
-  <td align="left" nowrap>
-    <div class="list-item">
-       <a
-       href="manage_permissionForm.pt"
-       tal:attributes="
-         href string:manage_permissionForm?permission_to_manage=${perm/getId}"
-       tal:content="perm/getTitle"
-       >Access Transient Objects</a>
-       <input type="hidden" name="r0" value=""
-         tal:attributes="
-         name string:p${repeat/perm/index};
-         value  string:${perm/getId}">
-    </div>
-  </td>
-  <td align="center" tal:repeat="role perm/roles">
-    <input type="checkbox" name="p0r0"
-           tal:attributes="
-           CHECKED role; 
-           name string:p${repeat/perm/index}r${repeat/role/index}"
-            />
   </td>
 </tr>
 </tbody>
