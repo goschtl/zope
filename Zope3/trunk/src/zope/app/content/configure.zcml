@@ -381,26 +381,6 @@
 
 <fssync:adapter class=".dtmlpage.DTMLPage" factory=".fssync.DTMLPageAdapter" />
 
-  <!-- zope:adapter directives -->
-
-<adapter
-  for="zope.app.interfaces.content.file.IFile"
-  factory=".fssync.FileAdapter"
-  provides="zope.app.interfaces.fssync.IObjectFile"
-  />
-
-<adapter
-  for="zope.app.interfaces.content.folder.IFolder"
-  factory=".fssync.DirectoryAdapter"
-  provides="zope.app.interfaces.fssync.IObjectDirectory"
-  />
-
-<adapter
-  for="zope.app.interfaces.content.zpt.IZPTPage"
-  factory=".fssync.FileAdapter"
-  provides="zope.app.interfaces.fssync.IObjectFile"
-  />
-
 <!-- Further Directives -->
 
 </zopeConfigure>
