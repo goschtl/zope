@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.10 2003/09/24 20:43:11 fdrake Exp $
+$Id: registration.py,v 1.11 2003/10/16 14:37:07 fdrake Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -158,7 +158,7 @@ class IComponentRegistration(IRegistration):
 
 
 class INamedComponentRegistration(INamedRegistration,
-                                   IComponentRegistration):
+                                  IComponentRegistration):
     """Components registered by name, using componemt path and permission."""
 
 
