@@ -49,8 +49,6 @@ class SetupContext:
         if os.path.isdir(depsdir):
             depnames = os.listdir(depsdir)
             suffix = "-%s-%s" % (pkgname, version)
-            print depnames
-            print "suffix = %r" % suffix
             for name in depnames:
                 if name != "Includes" and not name.endswith(suffix):
                     # an unexpected name; we didn't put this here!
