@@ -2,6 +2,9 @@ After 1.3.1
 
   Bug Fixes
 
+    - Correct security assertion on CMFDefault.Image's manage_afterAdd
+      (Collector #141).
+
     - Ensure that the security attributes are reindexed on all
       subobjects too when a folderish object changes state in the
       workflow (Collector #115).
