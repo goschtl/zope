@@ -24,11 +24,12 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
+from zope.app.form.browser.metaconfigure import BaseFormDirective
 
 from resource import FileResourceFactory, ImageResourceFactory
 from resource import PageTemplateResourceFactory
 from resource import DirectoryResourceFactory
-from browser import BrowserView
+from browser import BrowserView, EditView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
 
@@ -292,93 +293,6 @@ def resourceDirectory(_context, name, directory, layer='default',
 #
 # Form generation from schema
 #
-from zope.app.form.browser.metaconfigure import BaseFormDirective
-from zope.app.location.interfaces import ILocation
-from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
-from zope.app.form.browser.submit import Update
-
-class EditView(BrowserView):
-    """Simple edit-view base class
-
-    Subclasses should provide a schema attribute defining the schema
-    to be edited.
-    """
-
-    errors = ()
-    update_status = None
-    label = ''
-
-    # Fall-back field names computes from schema
-    fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
-    # Fall-back template
-    generated_form = ViewPageTemplateFile('edit.pt')
-
-    def __init__(self, context, request):
-        BrowserView.__init__(self, context, request)
-        self._setUpWidgets()
-
-    def _setUpWidgets(self):
-        adapted = self.schema(self.context)
-        if adapted is not self.context:
-            if not ILocation.providedBy(adapted):
-                adapted = LocationProxy(adapted)
-            adapted.__parent__ = self.context
-        self.adapted = adapted
-        setUpEditWidgets(self, self.schema, source=self.adapted, 
-                         names=self.fieldNames)
-
-    def setPrefix(self, prefix):
-        for widget in self.widgets():
-            widget.setPrefix(prefix)
-
-    def widgets(self):
-        return [getattr(self, name+'_widget')
-                for name in self.fieldNames]
-
-    def changed(self):
-        # This method is overridden to execute logic *after* changes
-        # have been made.
-        pass
-
-    def update(self):
-        if self.update_status is not None:
-            # We've been called before. Just return the status we previously
-            # computed.
-            return self.update_status
-
-        status = ''
-
-        content = self.adapted
-
-        if Update in self.request.form.keys():
-            changed = False
-            try:
-                changed = applyWidgetsChanges(self, self.schema,
-                    target=content, names=self.fieldNames)
-                # We should not generate events when an adapter is used.
-                # That's the adapter's job.
-                if changed and self.context is self.adapted:
-                    notify(ObjectModifiedEvent(content))
-            except WidgetsError, errors:
-                self.errors = errors
-                status = _("An error occured.")
-                get_transaction().abort()
-            else:
-                setUpEditWidgets(self, self.schema, source=self.adapted,
-                                 ignoreStickyValues=True, 
-                                 names=self.fieldNames)
-                if changed:
-                    self.changed()
-                    formatter = self.request.locale.dates.getFormatter(
-                        'dateTime', 'medium')
-                    status = _("Updated on ${date_time}")
-                    status.mapping = {'date_time': formatter.format(
-                        datetime.utcnow())}
-
-        self.update_status = status
-        return status
-
-        
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u''):
@@ -406,7 +320,7 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     s.provideView(for_, name, IBrowserRequest, class_, layer)
 
-                    
+
 class EditFormDirective(BaseFormDirective):
 
     view = EditView
@@ -428,7 +342,7 @@ class EditFormDirective(BaseFormDirective):
             args=self._args(),
             kw={'menu': self.menu},
         )
-                    
+
 #
 # mixin classes / class factories
 #
@@ -471,4 +385,3 @@ def makeClassForTemplate(src, template=None, used_for=None,
 
     return class_
 
-    

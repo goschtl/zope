@@ -8,6 +8,7 @@
   <include file="permissions.zcml" />
 
   <include package="zope.app.traversing" />
+  <include package="zope.app.form.browser" />
 
   <!-- do 'traditional' traversing by default; needed by ZPT -->
   <adapter
