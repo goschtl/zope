@@ -13,24 +13,35 @@
 ##############################################################################
 """Test 'rdb' ZCML Namespace Directives
 
-$Id: test_directives.py,v 1.2 2003/08/17 06:07:52 philikon Exp $
+$Id: test_directives.py,v 1.3 2003/12/19 16:53:18 mchandra Exp $
 """
 import unittest
-
+from zope.app import zapi
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.component import getUtilitiesFor, queryUtility
 from zope.configuration import xmlconfig
-from zope.app.rdb import queryConnection, getAvailableConnections
+from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.rdb.tests.test_zopedatabaseadapter import DAStub
 from zope.app.rdb import ZopeConnection
 import zope.app.rdb.tests
 
-class DirectivesTest(unittest.TestCase):
+class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_provideConnection(self):
-        self.assertEqual(getAvailableConnections(), [])
-        self.assertEqual(queryConnection('stub', None), None)
+
+        conns = zapi.getUtilitiesFor(None, IZopeDatabaseAdapter)
+        self.assertEqual(conns, [])
+        connectionstub = queryUtility(None,IZopeDatabaseAdapter, None, 'stub')
+        self.assertEqual(connectionstub, None)
+
         self.context = xmlconfig.file("rdb.zcml", zope.app.rdb.tests)
-        self.assertEqual(getAvailableConnections(), ["stub"])
-        self.assertEqual(queryConnection('stub').__class__, ZopeConnection)
-        self.assertEqual(queryConnection('stubbie', None), None)
+        connectionstub = queryUtility(None,IZopeDatabaseAdapter, None, 'stub')
+        connection = connectionstub()
+        self.assertEqual(connectionstub.__class__, DAStub)
+        conns = zapi.getUtilitiesFor(None, IZopeDatabaseAdapter)
+           
+        self.assertEqual([c[0] for c in conns], ["stub"])
+        self.assertEqual(connection.__class__, ZopeConnection)
 
 
 def test_suite():

@@ -3,7 +3,7 @@
 
   <include package="zope.app.component" file="meta.zcml"/>
   <include package="zope.app.rdb" file="meta.zcml"/>
-  <include package="zope.app.rdb" file="service.zcml"/>
+
 
   <rdb:provideConnection 
       name="stub"

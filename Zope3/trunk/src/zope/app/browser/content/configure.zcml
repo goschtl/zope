@@ -4,7 +4,8 @@
    xmlns:help="http://namespaces.zope.org/help">
 
 <!-- File View Directives -->
-
+  
+  
   <editform
       name="edit.html"
       schema="zope.app.interfaces.content.file.IFile"
@@ -343,16 +344,6 @@
 
   </pages>
 
-  <!-- XXXX
-  <menuItem
-      menu="add_content"
-      for="zope.app.interfaces.container.IAdding"
-      title="SQLScript"
-      action="SQLScript"
-      description="A content object getting its data from a RDB."
-      permission="zope.ManageContent"
-      /> 
-   -->
   
   <addMenuItem
       title="SQLScript"

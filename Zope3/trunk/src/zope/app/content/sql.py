@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.11 2003/11/05 02:46:36 jeremy Exp $
+$Id: sql.py,v 1.12 2003/12/19 16:53:15 mchandra Exp $
 """
 
 import re
@@ -159,11 +159,12 @@ from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.interface import implements
 from zope.component import getService
-
+from zope.app.services.servicenames import Utilities
+from zope.app import zapi
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
 from zope.app.interfaces.content.file import IFileContent
 from zope.app.interfaces.content.sql import ISQLScript, MissingInput
-from zope.app.rdb import SQLCommand
+from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.rdb import queryForResults
 from zope.app.container.contained import Contained
 
@@ -497,7 +498,7 @@ class SQLDTML(HTML):
     commands['sqlgroup' ] = SQLGroup
 
 
-class SQLScript(SQLCommand, Persistent, Contained):
+class SQLScript(Persistent, Contained):
 
     implements(ISQLScript, IFileContent)
 
@@ -549,9 +550,9 @@ class SQLScript(SQLCommand, Persistent, Contained):
         return self._connectionName
 
     def getConnection(self):
-        connection_service = getService(self, "SQLDatabaseConnections")
-        connection = connection_service.getConnection(self.connectionName)
-        return connection
+        name = self.connectionName
+        connection = zapi.getUtility(self, IZopeDatabaseAdapter, name)
+        return connection()
 
     # See zope.app.interfaces.content.sql.ISQLScript
     connectionName = property(_getConnectionName, _setConnectionName)

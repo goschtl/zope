@@ -13,7 +13,7 @@
 ##############################################################################
 """Gadfly Database Adapter (batteries included)
 
-$Id: gadflyda.py,v 1.5 2003/08/19 07:09:48 srichter Exp $
+$Id: gadflyda.py,v 1.6 2003/12/19 16:53:17 mchandra Exp $
 """
 import gadfly
 import os
@@ -27,6 +27,9 @@ GadflyError = DatabaseAdapterError
 class GadflyAdapter(ZopeDatabaseAdapter):
     """A Gadfly adapter for Zope3"""
 
+    # The registerable object needs to have a container
+    __name__ = __parent__ = None 
+    
     def _getGadflyRoot(self):
         # XXX: Need to write a configuration directive for setting this up
         # At the moment gadfly root is 'gadfly' under the instance home (which

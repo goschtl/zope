@@ -13,10 +13,7 @@
   <include package="zope.app.event" />
   <include package="zope.app.mail" />
 
-  <serviceType
-     id="SQLDatabaseConnections"
-     interface="zope.app.interfaces.rdb.IConnectionService"
-     />
+  
 
   <content class="zope.app.rdb.ZopeConnection">
     <require
@@ -123,7 +120,6 @@
   <include package="zope.app.dav" />
 
    <!-- Services -->
-  <include package="zope.app.rdb" file="service.zcml" />
   <include package="zope.app.catalog"/>
 
   <!-- Utilities -->

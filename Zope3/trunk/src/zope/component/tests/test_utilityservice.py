@@ -15,12 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: test_utilityservice.py,v 1.7 2003/08/06 21:16:54 sidnei Exp $
+$Id: test_utilityservice.py,v 1.8 2003/12/19 16:53:21 mchandra Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.component import \
-     getUtility, getService, queryUtility, getServiceManager
+     getUtility, getUtilitiesFor, getService, queryUtility, getServiceManager
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 from zope.interface import Interface, implements
@@ -60,6 +60,13 @@ class Test(TestCase, CleanUp):
         us.provideUtility(IDummyService, dummyService)
         self.assertEqual(queryUtility(None, IDummyService), dummyService)
 
+    def testgetUtilitiesFor(self):
+        us = getService(None, Utilities)
+        us.provideUtility(IDummyService, dummyService)
+        conns = getUtilitiesFor(None, IDummyService)
+        self.assertEqual(getUtilitiesFor(None, IDummyService),
+                         [('',dummyService)])
+        
     def testRegisteredMatching(self):
         us = getService(None, Utilities)
         self.assertEqual(queryUtility(None, IDummyService), None)

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.16 2003/12/17 10:06:59 jim Exp $
+$Id: interfaces.py,v 1.17 2003/12/19 16:53:20 mchandra Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -66,6 +66,13 @@ class IComponentArchitecture(Interface):
         Returns the nearest utility to the context that implements
         the specified interface.  If one is not found, returns default."""
 
+    def getUtilitiesFor(context, interface):
+        """Look up the registered utilities that provide an interface.
+
+        Returns the list of utilities found
+
+        """
+        
     # Adapter service
 
     def getAdapter(object, interface, context=None):

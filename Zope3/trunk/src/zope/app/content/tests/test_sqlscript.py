@@ -12,13 +12,13 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.16 2003/11/27 13:59:17 philikon Exp $
+$Id: test_sqlscript.py,v 1.17 2003/12/19 16:53:16 mchandra Exp $
 """
 import unittest
 from zope.app.tests import ztapi
 from zope.interface import implements, classImplements
 
-from zope.app.interfaces.rdb import IConnectionService
+from zope.app.interfaces.rdb import IConnectionService, IZopeDatabaseAdapter
 from zope.app.interfaces.rdb import IZopeConnection
 from zope.app.interfaces.rdb import IZopeCursor
 from zope.component import getService
@@ -66,6 +66,7 @@ class CursorStub:
         return self.result
 
 
+
 class ConnectionStub:
     implements(IZopeConnection)
 
@@ -73,6 +74,15 @@ class ConnectionStub:
         return CursorStub()
 
 
+class ConnectionUtilityStub:
+    implements(IZopeDatabaseAdapter)
+
+    def __init__(self):
+        self.connection = ConnectionStub()
+        
+    def __call__(self):
+        return  self.connection
+        
 class ConnectionServiceStub:
     implements(IConnectionService, ISimpleService)
 
@@ -129,10 +139,10 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(SQLScriptTest, self).setUp()
         classImplements(SQLScript, IAttributeAnnotatable)
-        sm.defineService('SQLDatabaseConnections', IConnectionService)
-        sm.provideService('SQLDatabaseConnections', ConnectionServiceStub())
-        self._old_getNextServiceManager = nextservice.getNextServiceManager
-        nextservice.getNextServiceManager = getNextServiceManager
+        self.connectionUtilityStub = ConnectionUtilityStub()
+        ztapi.provideUtility(IZopeDatabaseAdapter, self.connectionUtilityStub,
+                             'my_connection')
+        
         self.caching_service = CachingServiceStub()
         sm.defineService('Caching', ICachingService)
         sm.provideService('Caching', self.caching_service)
@@ -147,7 +157,9 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
             AnnotationCacheable)
 
     def tearDown(self):
-        nextservice.getNextServiceManager = self._old_getNextServiceManager
+        pass
+        
+        #nextservice.getNextServiceManager = self._old_getNextServiceManager
 
     def _getScript(self):
         return SQLScript("my_connection",
@@ -185,6 +197,12 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual('my_connection', script.connectionName)
         script.connectionName = 'test_conn'
         self.assertEqual('test_conn', script.connectionName)
+
+    def testgetConnection(self):
+        script = self._getScript()
+        name = script.connectionName
+        conns = script.getConnection()
+        self.assertEqual(conns, self.connectionUtilityStub.connection)
 
     def testSQLScript(self):
         result = self._getScript()(id=1)

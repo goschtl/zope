@@ -13,10 +13,11 @@
 ##############################################################################
 """'rdb' ZCML Namespace Directive Handler
 
-$Id: metaconfigure.py,v 1.3 2003/08/17 06:07:45 philikon Exp $
+$Id: metaconfigure.py,v 1.4 2003/12/19 16:53:17 mchandra Exp $
 """
-from zope.component import getService
-from zope.app.services.servicenames import SQLDatabaseConnections
+from zope.app import zapi
+from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+
 
 def connectionhandler(_context, name, component, dsn):
     connection = component(dsn)
@@ -24,7 +25,15 @@ def connectionhandler(_context, name, component, dsn):
             discriminator = ('provideConnection', name),
             callable = provideConnection,
             args = (name, connection) )
-
+    
 def provideConnection(name, connection):
-    getService(None, SQLDatabaseConnections).provideConnection(name, connection)
+    """ Registers a database connection
+    
+     Uses the Utility Service for registering
+    """
+    utilities = zapi.getService(None, zapi.servicenames.Utilities)
+    utilities.provideUtility(IZopeDatabaseAdapter, connection, name)
+
+
+    
 

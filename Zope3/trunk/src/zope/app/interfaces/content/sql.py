@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.10 2003/12/17 10:20:48 mukruthi Exp $
+$Id: sql.py,v 1.11 2003/12/19 16:53:16 mchandra Exp $
 """
 import zope.schema
-
-from zope.app.interfaces.rdb import ISQLCommand
+from zope.app import zapi
+from zope.app.interfaces.rdb import IZopeDatabaseAdapter, ISQLCommand
 from zope.component import getService, ComponentLookupError
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -28,13 +28,16 @@ class SQLConnectionName(zope.schema.TextLine):
 
     def __allowed(self):
         """Note that this method works only if the Field is context wrapped."""
+        
         try:
-            connection_service = getService(self.context,
-                                            "SQLDatabaseConnections")
+            connections = zapi.getUtilitiesFor(self.context,
+                                                      IZopeDatabaseAdapter)
+
         except ComponentLookupError:
             return []
 
-        return connection_service.getAvailableConnections()
+        return  [c[0] for c in connections]
+        
 
     allowed_values = property(__allowed)
 
@@ -48,8 +51,9 @@ class ISQLScript(ISQLCommand):
 
     arguments = zope.schema.BytesLine(
         title=_(u"Arguments"),
-        description=_(u"A set of attributes that can be used during the SQL command "
-                      u"rendering process to provide dynamic data."),
+        description=_(
+        u"A set of attributes that can be used during the SQL command "
+        u"rendering process to provide dynamic data."),
         required=False,
         default='',
         missing_value='')

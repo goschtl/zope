@@ -232,18 +232,7 @@
 <!-- Page Folder --> 
   <include file="pagefolder.zcml" />
 
-<!-- Connection Service -->
 
-  <content class="zope.app.services.connection.ConnectionService">
-    <factory
-       id="zope.services.ConnectionService"
-       permission="zope.ManageServices" />
-
-    <require
-        permission="zope.View"
-        interface="zope.app.interfaces.rdb.IConnectionService" />
-
-  </content>
 
 <!-- Principal annotations (user data) service -->
 

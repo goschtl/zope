@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.15 2003/12/17 10:06:59 jim Exp $
+$Id: __init__.py,v 1.16 2003/12/19 16:53:20 mchandra Exp $
 """
 
 import sys
@@ -58,6 +58,9 @@ def queryUtility(context, interface, default=None, name=''):
     return getService(context, 'Utilities').queryUtility(
         interface, default, name)
 
+def getUtilitiesFor(context, interface):
+    return getService(context, 'Utilities').getUtilitiesFor(interface)
+    
 # Adapter service
 
 def getAdapter(object, interface, name='', context=None):
