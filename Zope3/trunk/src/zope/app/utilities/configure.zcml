@@ -1,0 +1,50 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <content
+    class=".schema.SchemaUtility">
+
+    <factory
+      permission="zope.ManageServices"
+      title="Persistent Schema Utility"
+      description="A Persistent Schema that can be edited through the web"
+      />
+
+    <allow attributes="__name__" />
+
+    <implements
+      interface="zope.app.interfaces.services.utility.ILocalUtility" />
+
+    <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.schemagen.ISchemaSpec"
+      />
+
+  </content>
+
+
+  <!-- Menu entry for "add component" menu -->
+  <browser:menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_component"
+      action="zope.app.utilities.schema.SchemaUtility"
+      title="Persistent Schema Utility"
+      description="A Persistent Schema that can be edited through the web"
+      permission="zope.ManageServices"
+      />
+
+  <!-- Menu entry for "add utility" menu -->
+  <browser:menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_utility"
+      action="zope.app.utilities.schema.SchemaUtility"
+      title="Persistent Schema Utility"
+      description="A Persistent Schema that can be edited through the web"
+      permission="zope.ManageServices"
+      />
+
+</configure>
