@@ -16,7 +16,7 @@
 This is a test of the assertions made in
 zope.security.checkers._default_checkers.
 
-$Id: test_standard_checkers.py,v 1.2 2003/05/27 21:14:11 jim Exp $
+$Id: test_standard_checkers.py,v 1.3 2003/06/22 20:50:24 jeremy Exp $
 """
 
 from zope.security.checker import ProxyFactory, NamesChecker
@@ -203,6 +203,24 @@ def test_tuple():
     >>> int(l.__class__ == tuple)
     1
         
+    """
+
+def test_iter():
+    """
+    >>> list(ProxyFactory(iter([1, 2])))
+    [1, 2]
+    >>> list(ProxyFactory(iter((1, 2))))
+    [1, 2]
+    >>> list(ProxyFactory(iter({1:1, 2:2})))
+    [1, 2]
+    >>> def f():
+    ...     for i in 1, 2:
+    ...             yield i
+    ...
+    >>> list(ProxyFactory(f()))
+    [1, 2]
+    >>> list(ProxyFactory(f)())
+    [1, 2]
     """
 
 def test_new_class():
