@@ -73,7 +73,19 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             'testoid', 'Testoid')
         old_view = self.root.unrestrictedTraverse('testoid/direct')
         self.assertEquals('Direct traversal worked', old_view())
+
+    def test_zpt_things(self):
+        self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        view = self.root.unrestrictedTraverse('testoid/condor.html')
+        expected = """\
+<p>Hello world</p>
+<p>The eagle has landed</p>
+<p>Hello world</p>
+"""
+        self.assertEquals(expected, view())
         
+                          
 if __name__ == '__main__':
     framework()
 else:

@@ -38,4 +38,11 @@
     name="flamingo2.html"
     />
 
+  <five:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    template="condor.pt"
+    name="condor.html"
+    />
+
 </configure>
