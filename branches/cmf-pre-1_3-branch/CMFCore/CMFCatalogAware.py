@@ -72,9 +72,10 @@ class CMFCatalogAware:
             #   Now let our "aspects" know we are going away.
             #
             for item_id, subitem in self.objectItems():
-                m = getattr(subitem, 'manage_beforeDelete', None)
-                if m is not None:
-                    m(item, container)
+                # Carefully avoid implicit acquisition of the
+                # name "manage_beforeDelete"
+                if hasattr(aq_base(subitem), 'manage_beforeDelete'):
+                    subitem.manage_beforeDelete(item, container)
 
 
 Globals.InitializeClass(CMFCatalogAware)
