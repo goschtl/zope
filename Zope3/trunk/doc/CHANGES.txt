@@ -6,9 +6,27 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Some future release
+  Some future release (Zope X3 3.1.0)
 
     New features
+
+      - Removed Presentation Serivce and implemented views as adapters. This
+        mainly means that layers and skins became adapters. Here are some
+        other points:
+
+        o Backward-compatibility of the Zope component API and the browser
+          directives was ensured.
+
+        o The `setPresentationSkin()` and `getPresentationSkin()` directives
+          of `IRequest` objects were removed. They were not used anywhere but 
+          testing anyways.
+
+        o The default skin is now just an adapter from `IRequest` to
+          `IDefaultSkin`. You have to use `adapter_service.lookup()`, since
+          the returned component is a skin interface and not a factory.
+
+        o The adapter service can now provide adapters from objects as well,
+          like it was possible in the presentation service before.
 
       - Added `apidoc:rootModule` directive, so that third-party products can
         add their packages to the class browser documentation module.
@@ -49,60 +67,20 @@ Zope Changes
         
     Restructuring
 
-      - Implemented both, getCell and queryCell, for ISecurityMap. Also
-        updated the interface.
-
-      - Removed CacheName field and replaced it by a 'Cache Names' vocabulary
-        and a Choice field.
-
-      - Templated Pages are now called ZPT Pages.
-
-      - The "layer" and "skin" ZCML directives were redundantly
-        registered for both the zope and the browser namespace. They
-        now only exist in the browser namespace; the "defaultSkin"
-        directive was moved to the browser namespace.
-
-      - Updating of all doc strings to ReStructuredText begun
 
     Bug Fixes
 
-      - Fixed issue 264.  Substituting a Unicode value containing
-        non-ASCII text into a translated string caused a
-        UnicodeDecodeError.
-
-      - Fixed issue 228.
-
-      - Fixed issue 248.  Path expressions in page templates that
-        contain empty segments now cause an error to be raised when
-        the expression is compiled rather than when it is evaluated.
-        This has always been illegal according to the specification,
-        and most often caused a runtime error before.  Template
-        authors can now get an error up front, avoiding embarrasment
-        when once an application is moved into production after
-        insufficient testing.
-
-      - Removed 'grants' module from zope.app.security.interfaces
-        (ISecurityMap). It is (including implementation) available at
-        zope.app.securitypolicy.interfaces.
-
-      - Wrote tests for security map implementation.
-
-      - Factory IDs have to be real IDs now, i.e. either a dotted
-        name or a URI.
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
-      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
-      Eckart Hertzler, Roger Ineichen, Stuart Bishop, Viktorija Zaksiene,
-      Phil Ruggera
+      Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
 
   ------------------------------------------------------------------
 
-  Zope X3.0.0 Beta 2
+  Zope X3.0.0
 
     New Features
 
@@ -123,6 +101,23 @@ Zope Changes
         o It is now possible to pass a dictionary of initial global variables.
 
         o Error output is improved as is meta data used for verbose output.
+
+    Restructuring
+
+      - Implemented both, getCell and queryCell, for ISecurityMap. Also
+        updated the interface.
+
+      - Removed CacheName field and replaced it by a 'Cache Names' vocabulary
+        and a Choice field.
+
+      - Templated Pages are now called ZPT Pages.
+
+      - The "layer" and "skin" ZCML directives were redundantly
+        registered for both the zope and the browser namespace. They
+        now only exist in the browser namespace; the "defaultSkin"
+        directive was moved to the browser namespace.
+
+      - Updating of all doc strings to ReStructuredText begun
 
     Bug fixes
 
@@ -159,6 +154,30 @@ Zope Changes
         of outdated getContentType method.
 
       - ZopeVersion now knows about Subversion.
+
+      - Fixed issue 264.  Substituting a Unicode value containing
+        non-ASCII text into a translated string caused a
+        UnicodeDecodeError.
+
+      - Fixed issue 228.
+
+      - Fixed issue 248.  Path expressions in page templates that
+        contain empty segments now cause an error to be raised when
+        the expression is compiled rather than when it is evaluated.
+        This has always been illegal according to the specification,
+        and most often caused a runtime error before.  Template
+        authors can now get an error up front, avoiding embarrasment
+        when once an application is moved into production after
+        insufficient testing.
+
+      - Removed 'grants' module from zope.app.security.interfaces
+        (ISecurityMap). It is (including implementation) available at
+        zope.app.securitypolicy.interfaces.
+
+      - Wrote tests for security map implementation.
+
+      - Factory IDs have to be real IDs now, i.e. either a dotted
+        name or a URI.
 
     Much thanks to everyone who contributed to this release:
 
