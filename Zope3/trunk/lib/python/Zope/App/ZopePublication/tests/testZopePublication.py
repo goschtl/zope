@@ -13,9 +13,6 @@
 ##############################################################################
 import unittest
 
-from StringIO import StringIO
-
-from Interface import Interface
 from Interface.Verify import verifyClass
 from Interface.Implements import instancesOfObjectImplements
 
@@ -23,61 +20,31 @@ import ZODB
 from ZODB.MappingStorage import MappingStorage
 
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
-from Zope.ComponentArchitecture import getService, getServiceManager
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter 
 
 from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
 
-from Zope.Publisher.Publish import publish
 from Zope.Publisher.DefaultPublication import TestPublication
-from Zope.Publisher.IPublication import IPublication
 from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
 from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
-from Zope.Publisher.Browser.BrowserRequest import TestRequest
-from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
-from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 
-from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry
-from Zope.App.Security.Grants.Global.PrincipalRoleManager \
-     import principalRoleManager
-
-from Zope.App.ZopePublication.ZopePublication import ZopePublication
-from Zope.App.ZopePublication.Browser.Publication import BrowserPublication
-from Zope.App.ZopePublication.Traversers import TestTraverser
-
-from Zope.Configuration.name import resolve
-from Zope.Proxy.ContextWrapper import getWrapperContext
-from Zope.ContextWrapper import Wrapper
-from Zope.ContextWrapper import wrapperTypes
-from Zope.Publisher.Exceptions import Retry
 from Zope.Security import SimpleSecurityPolicies
 from Zope.Security.SecurityManagement import setSecurityPolicy
 
-from Zope.Proxy.ProxyIntrospection import removeAllProxies
-from Zope.Security.Checker import defineChecker, NamesChecker
+from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry
+from Zope.App.Security.IUnauthenticatedPrincipal \
+     import IUnauthenticatedPrincipal
 
+from Zope.App.ZopePublication.ZopePublication import ZopePublication
 
-def foo():
-    " "
-    return '<html><body>hello base fans</body></html>'
+from Zope.App.OFS.Content.Folder.Folder import Folder
+from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
 
-class DummyPublished:
+from Zope.ComponentArchitecture.IServiceService import IServiceService
 
-    __implements__ = IBrowserPublisher
+from Zope.Publisher.BaseRequest import TestRequest
 
-    def publishTraverse(self, request, name):
-        if name == 'bruce':
-            return foo
-        raise KeyError, name
-
-    def browserDefault(self, request):
-        return self, ['bruce']
-
-class DummyView(DummyPublished, BrowserView):
-
-    __implements__ = DummyPublished.__implements__, BrowserView.__implements__
-
+from Zope.ComponentArchitecture.GlobalServiceManager import serviceManager
 
 class BasePublicationTests(PlacelessSetup, unittest.TestCase):
     klass = ZopePublication 
@@ -123,244 +90,118 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
         for interface in instancesOfObjectImplements(self.klass):
             verifyClass(interface, TestPublication)
 
-    def _createRequest(self, path, publication, **kw):
-        request = TestRequest(PATH_INFO=path, **kw)
-        request.setPublication(publication)
-        return request
+class Principal:
+    def __init__(self, id): self._id = id
+    def getId(self): return self._id
+    def getTitle(self): return ''
+    def getDescription(self): return ''
+
+class UnauthenticatedPrincipal(Principal):
+    __implements__ = IUnauthenticatedPrincipal
+
+
+class AuthService1:
+
+    def authenticate(self, request):
+        return None
+
+    def unauthenticatedPrincipal(self):
+        return 'test.anonymous'
+
+    def unauthorized(self, id, request):
+        pass
+
+    def getPrincipal(self, id):
+        return UnauthenticatedPrincipal(id)
+        
+
+class AuthService2(AuthService1):
+
+    def authenticate(self, request):
+        return 'test.bob'
+
+    def getPrincipal(self, id):
+        return Principal(id)
+        
+
+class ServiceManager:
+
+    __implements__ = IServiceService # a dirty lie
+    
+    def __init__(self, auth):   self.auth = auth
+    def get(self, key, d=None):      return self.auth
+    __getitem__ = get
+    def __contains__(self, key): return 1
+
+    def getService(self, name):
+        # I just wanna get the test to pass. Waaaaa
+        return serviceManager.getService(name)
+
+
 
 class ZopePublicationTests(BasePublicationTests):
     klass = ZopePublication
 
-class BrowserDefaultTests(BasePublicationTests):
-    """
-    test browser default
-
-    many views lead to a default view
-    <base href="/somepath/@@view/view_method">
-
-    """
-    klass = BrowserPublication
-    
-    def testBaseTagNoBase(self):
-        self._testBaseTags('/somepath/@@view/', '')
-
-    def testBaseTag1(self):
-        self._testBaseTags('/somepath/@@view',
-                           'http://127.0.0.1/somepath/@@view/bruce')
-
-    def testBaseTag2(self):
-        self._testBaseTags('/somepath/',
-                           'http://127.0.0.1/somepath/@@view/bruce')
-
-    def testBaseTag3(self):
-        self._testBaseTags('/somepath',
-                           'http://127.0.0.1/somepath/@@view/bruce')
+    def testPlacefullAuth(self):
+        principalRegistry.defineDefaultPrincipal('anonymous', '')
         
-
-
-    def _testBaseTags(self, url, expected):
-
-        class I1(Interface): pass
-        
-        from Persistence import Persistent
-        
-        class O1(Persistent):
-            __implements__ = I1
-
-
-        pub = BrowserPublication(self.db)
-        
-        getService(None,'Views').provideView(I1, 'view',
-                           IBrowserPresentation, [DummyView])
-        getService(None,'Views').setDefaultViewName(I1,
-                             IBrowserPresentation, 'view')
-        getService(None, 'Views').provideView(None,
-                    '_traverse', IBrowserPresentation, [TestTraverser])
-        
-        ob = O1()
-
-        ## the following is for running the tests standalone
-        principalRegistry.defineDefaultPrincipal(
-            'tim', 'timbot', 'ai at its best')
-        
-        principalRoleManager.assignRoleToPrincipal('Manager', 'tim')
-
-
-        # now place our object inside the application
-        from Transaction import get_transaction
-        
-        connection = self.db.open()
-        app = connection.root()['Application']
-        app.somepath = ob
+        db = self.db
+        connection = db.open()
+        root = connection.root()
+        app = root[ZopePublication.root_name]
+        app.setObject('f1', Folder())
+        f1 = app['f1']
+        f1.setObject('f2', Folder())
+        f1.setServiceManager(ServiceManager(AuthService1()))
+        f2 = f1['f2']
+        f2.setServiceManager(ServiceManager(AuthService2()))
         get_transaction().commit()
-        connection.close()        
-
-        defineChecker(app.__class__, NamesChecker(somepath='xxx'))
-
-        req = self._createRequest(url, pub)
-        response = req.response
-
-        publish(req, handle_errors=0)
-            
-        self.assertEqual(response.getBase(), expected)
 
 
-    def _createRequest(self, path, publication, **kw):
-        request = TestRequest(PATH_INFO=path, **kw)
-        request.setPublication(publication)
-        return request
+        request = TestRequest('/f1/f2')
+
+        from Zope.ComponentArchitecture.GlobalViewService import provideView
+        from Zope.App.OFS.Container.IContainer import ISimpleReadContainer
+        from Zope.App.OFS.Container.ContainerTraverser \
+             import ContainerTraverser
+        from Zope.ComponentArchitecture.IPresentation import IPresentation
+        provideView(ISimpleReadContainer, '_traverse', IPresentation,
+                    ContainerTraverser)
 
 
+        from Zope.App.OFS.Content.Folder.Folder import IFolder
+        from Zope.Security.Checker import defineChecker, InterfaceChecker
+        defineChecker(Folder, InterfaceChecker(IFolder))
+        defineChecker(RootFolder, InterfaceChecker(IFolder))
+
+        
+        request.setViewType(IPresentation)
+
+
+
+        publication = self.klass(self.db)
+
+        publication.beforeTraversal(request)
+        self.assertEqual(request.user.getId(), 'anonymous')
+        root = publication.getApplication(request)
+        publication.callTraversalHooks(request, root)
+        self.assertEqual(request.user.getId(), 'anonymous')
+        ob = publication.traverseName(request, root, 'f1')
+        publication.callTraversalHooks(request, ob)
+        self.assertEqual(request.user.getId(), 'test.anonymous')
+        ob = publication.traverseName(request, ob, 'f2')
+        publication.afterTraversal(request, ob)
+        self.assertEqual(request.user.getId(), 'test.bob')
+        
+        
 
 class SimpleObject:
     def __init__(self, v):
         self.v = v
 
-class I1(Interface):
-    pass
-
-class mydict(dict):
-    __implements__ = I1
-
-
-class BrowserPublicationTests(BasePublicationTests):
-
-    klass = BrowserPublication
-
-    def testNativeTraverseNameWrapping(self):
-        pub = self.klass(self.db)
-        ob = DummyPublished()
-        ob2 = pub.traverseName(self._createRequest('/bruce',pub), ob, 'bruce')
-        self.failUnless(ob2 is not ob)
-        self.failUnless(type(ob2) in wrapperTypes)
-
-    def testAdaptedTraverseNameWrapping(self):
-
-        class Adapter:
-            " "
-            __implements__ = IBrowserPublisher
-            def __init__(self, context, request):
-                self.context = context
-                self.counter = 0
-
-            def publishTraverse(self, request, name):
-                self.counter+=1
-                return self.context[name]
-
-        provideView=getService(None, "Views").provideView
-        provideView(I1, '_traverse', IBrowserPresentation, [Adapter])
-        ob = mydict()
-        ob['bruce'] =  SimpleObject('bruce')
-        ob['bruce2'] =  SimpleObject('bruce2')
-        pub = self.klass(self.db)
-        ob2 = pub.traverseName(self._createRequest('/bruce',pub), ob, 'bruce')
-        self.failUnless(type(ob2) in wrapperTypes)
-        unw = removeAllProxies(ob2)
-        self.assertEqual(unw.v, 'bruce')
-
-    def testAdaptedTraverseDefaultWrapping(self):
-        """Test default content and make sure that it's wrapped.
-        """
-
-        class Adapter:
-            __implements__ = IBrowserPublisher
-            def __init__(self, context, request):
-                self.context = context
-
-            def browserDefault(self, request):
-                return (self.context['bruce'], 'dummy')
-
-        provideView=getService(None, "Views").provideView
-        provideView(I1, '_traverse', IBrowserPresentation, [Adapter])
-        ob = mydict()
-        ob['bruce'] =  SimpleObject('bruce')
-        ob['bruce2'] =  SimpleObject('bruce2')
-        pub = self.klass(self.db)
-        ob2, x = pub.getDefaultTraversal(self._createRequest('/bruce',pub), ob)
-        self.assertEqual(x, 'dummy')
-        self.failUnless(type(ob2) in wrapperTypes)
-        unw = removeAllProxies(ob2)
-        self.assertEqual(unw.v, 'bruce')
-
-
-    # XXX we no longer support path parameters! (At least for now)
-    def XXXtestTraverseSkinExtraction(self):
-        class I1(Interface): pass
-        class C: __implements__ = I1
-        class BobView(DummyView): pass
-
-        pub = self.klass(self.db)
-        ob = C()
-        provideView=getService(None, "Views").provideView
-        provideView(I1, 'edit', IBrowserPresentation, [BobView])
-
-        r = self._createRequest('/@@edit;skin=zmi',pub)
-        ob2 = pub.traverseName(r , ob, '@@edit;skin=zmi')
-        self.assertEqual(r.getPresentationSkin(), 'zmi')
-        self.assertEqual(ob2.__class__ , BobView)
-
-        r = self._createRequest('/@@edit;skin=zmi',pub)
-        ob2 = pub.traverseName(r , ob, '@@edit;skin=zmi')
-        self.assertEqual(r.getPresentationSkin(), 'zmi')
-        self.assertEqual(ob2.__class__ , BobView)
-
-    def testTraverseName(self):
-        pub = self.klass(self.db)
-        class C:
-            x = SimpleObject(1)
-        ob = C()
-        r = self._createRequest('/x',pub)
-        provideView=getService(None, "Views").provideView
-        provideView(None, '_traverse', IBrowserPresentation, [TestTraverser])
-        ob2 = pub.traverseName(r, ob, 'x')
-        self.assertEqual(removeAllProxies(ob2).v, 1)
-        self.assertEqual(getWrapperContext(ob2), ob)
-
-    def testTraverseNameView(self):
-        pub = self.klass(self.db)
-        class I(Interface): pass
-        class C:
-            __implements__ = I
-        ob = C()
-        class V:
-            def __init__(self, context, request): pass
-            __implements__ = IBrowserPresentation
-        r = self._createRequest('/@@spam',pub)
-        provideView=getService(None, "Views").provideView
-        provideView(I, 'spam', IBrowserPresentation, [V])
-        ob2 = pub.traverseName(r, ob, '@@spam')
-        self.assertEqual(removeAllProxies(ob2).__class__, V)
-        self.assertEqual(getWrapperContext(ob2), ob)
-
-    def testTraverseNameServices(self):
-        pub = self.klass(self.db)
-        class C:
-            def getServiceManager(self):
-                return SimpleObject(1)
-        ob = C()
-        r = self._createRequest('/++etc++Services',pub)
-        ob2 = pub.traverseName(r, ob, '++etc++Services')
-        self.assertEqual(removeAllProxies(ob2).v, 1)
-        self.assertEqual(getWrapperContext(ob2), ob)
-
-    def testTraverseNameApplicationControl(self):
-        from Zope.App.OFS.ApplicationControl.ApplicationControl \
-             import ApplicationController
-        pub = self.klass(self.db)
-        r = self._createRequest('/++etc++ApplicationController',pub)
-        ac = pub.traverseName(r, None, '++etc++ApplicationController')
-        self.assertEqual(ac, ApplicationController)
-        r = self._createRequest('/++etc++ApplicationController',pub)
-        app = r.publication.getApplication(r)
-        self.assertEqual(app, ApplicationController)
-        self.failIf(r.getTraversalStack())
-
-
 def test_suite():
     t1 = unittest.makeSuite(ZopePublicationTests, 'test')
-    t2 = unittest.makeSuite(BrowserPublicationTests, 'test')
-    t3 = unittest.makeSuite(BrowserDefaultTests, 'test')
-    return unittest.TestSuite((t1,t2,t3))
+    return unittest.TestSuite((t1, ))
 
 if __name__=='__main__':
     unittest.TextTestRunner().run( test_suite() )

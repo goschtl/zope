@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: ServiceManager.py,v 1.5 2002/07/15 20:34:51 poster Exp $
+$Id: ServiceManager.py,v 1.6 2002/07/15 22:01:10 jim Exp $
 """
 from Persistence import Persistent
 
@@ -266,6 +266,9 @@ class ServiceManager(Persistent):
     ############################################################
 
 
+    # We provide a mapping interface for traversal, but we only expose
+    # local services through the mapping interface.
+
     def __getitem__(self, key):
         "See Interface.Common.Mapping.IReadMapping"
 
@@ -281,7 +284,13 @@ class ServiceManager(Persistent):
         if key == 'Packages':
             return self.Packages
 
-        return self.queryService(key, default)
+        directives = self.__bindings.get(key)
+        if directives and directives[0] is not None:
+            return self.queryService(key, default)
+
+        return default
+
+    get = ContextMethod(get)
 
     def __contains__(self, key):
         "See Interface.Common.Mapping.IReadMapping"

@@ -13,22 +13,36 @@
 ##############################################################################
 import sys
 from types import StringType, ClassType
-
 from zLOG import LOG, ERROR, INFO
+
+from ZODB.POSException import ConflictError
+
 from Zope.Publisher.DefaultPublication import DefaultPublication
 from Zope.Publisher.mapply import mapply
 from Zope.Publisher.Exceptions import Retry
+
 from Zope.Security.SecurityManagement import getSecurityManager
 from Zope.Security.SecurityManagement import newSecurityManager
-from Zope.App.Security.Registries.PrincipalRegistry \
-     import principalRegistry as prin_reg
+from Zope.Security.Checker import ProxyFactory
+
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
+
+from Zope.ComponentArchitecture.IServiceManagerContainer \
+     import IServiceManagerContainer
+
 from Zope.Exceptions import Unauthorized
 
-from ZODB.POSException import ConflictError
+from Zope.App.Security.Registries.PrincipalRegistry \
+     import principalRegistry as prin_reg
+
+from Zope.App.Security.IUnauthenticatedPrincipal \
+     import IUnauthenticatedPrincipal
+
 from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
+
 from PublicationTraverse import PublicationTraverse
 
-from Zope.Security.Checker import ProxyFactory
+from Zope.Proxy.ContextWrapper import ContextWrapper
 
 class RequestContainer:
     # TODO: add security assertion declaring access to REQUEST
@@ -61,13 +75,62 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
         self.db = db
 
     def beforeTraversal(self, request):
+
+        # Try to authenticate against the default global registry.
         id = prin_reg.authenticate(request)
         if id is None:
             id = prin_reg.unauthenticatedPrincipal()
             if id is None:
                 raise Unauthorized # If there's no default principal
+
         newSecurityManager(id)
+        request.user = prin_reg.getPrincipal(id)
         get_transaction().begin()
+
+    def _maybePlacefullyAuthenticate(self, request, ob):
+        if not IUnauthenticatedPrincipal.isImplementedBy(request.user):
+            # We've already got an authenticated user. There's nothing to do.
+            # Note that beforeTraversal guarentees that user is not None.
+            return
+
+        if not IServiceManagerContainer.isImplementedBy(ob):
+            # We won't find an authentication service here, so give up.
+            return
+
+        sm = removeAllProxies(ob).queryServiceManager()
+        if sm is None:
+            # No service manager here, and thus no auth service
+            return
+
+        sm = ContextWrapper(sm, ob, name="++etc++Services")
+        
+        auth_service = sm.get('AuthenticationService')
+        if auth_service is None:
+            # No auth service here
+            return
+
+        # Try to authenticate against the auth service
+        id = auth_service.authenticate(request)
+        if id is None:
+            id = auth_service.unauthenticatedPrincipal()
+            if id is None:
+                # nothing to do here
+                return
+
+        newSecurityManager(id)
+        request.user = auth_service.getPrincipal(id)
+        
+
+    def callTraversalHooks(self, request, ob):
+        # Call __before_publishing_traverse__ hooks
+
+        # This is also a handy place to try and authenticate.
+        self._maybePlacefullyAuthenticate(request, ob)
+
+    def afterTraversal(self, request, ob):
+        #recordMetaData(object, request)
+        self._maybePlacefullyAuthenticate(request, ob)
+            
 
     def openedConnection(self, conn):
         # Hook for auto-refresh
@@ -103,16 +166,8 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
 
         return ProxyFactory(app)
 
-    def callTraversalHooks(self, request, ob):
-        # Call __before_publishing_traverse__ hooks
-        pass
-
     def getDefaultTraversal(self, request, ob):
         return ob, None
-
-    def afterTraversal(self, request, ob):
-        #recordMetaData(object, request)
-        pass
 
     def callObject(self, request, ob):
         return mapply(ob, request.getPositionalArguments(), request)

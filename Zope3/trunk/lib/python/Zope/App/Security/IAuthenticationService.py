@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IAuthenticationService.py,v 1.3 2002/06/20 15:54:59 jim Exp $
+$Id: IAuthenticationService.py,v 1.4 2002/07/15 22:01:10 jim Exp $
 """
 
 from Interface import Interface
@@ -69,9 +69,11 @@ class IAuthenticationService(Interface):
         """
 
     def unauthenticatedPrincipal():
-        """
-        Return the id of the unauthenticated principal, if one is defined;
-        return None if no unauthenticated principal is defined.
+        """Return the id of the unauthenticated principal, if one is defined.
+        
+        Return None if no unauthenticated principal is defined.
+
+        The unauthenticated principal must be an IUnauthenticatedPrincipal.
         """
         
     def unauthorized(id, request):

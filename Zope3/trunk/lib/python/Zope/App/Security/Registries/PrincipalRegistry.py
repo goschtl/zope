@@ -13,19 +13,21 @@
 ##############################################################################
 """
 
-$Id: PrincipalRegistry.py,v 1.1 2002/06/20 15:55:02 jim Exp $
+$Id: PrincipalRegistry.py,v 1.2 2002/07/15 22:01:10 jim Exp $
 """
+__metaclass__ = type
 
 from Zope.Exceptions import NotFoundError
 from Zope.App.Security.ILoginPassword import ILoginPassword
 from Zope.ComponentArchitecture import getAdapter, queryAdapter
 from Zope.App.Security.IAuthenticationService import IAuthenticationService
 from Zope.App.Security.IPrincipal import IPrincipal
+from Zope.App.Security.IUnauthenticatedPrincipal \
+     import IUnauthenticatedPrincipal
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
 
-# XXX why isn't this subclassing 'Registry' ? ? ?
 class PrincipalRegistry:
 
     __implements__ = IAuthenticationService
@@ -52,7 +54,7 @@ class PrincipalRegistry:
         if id in self.__principalsById:
             raise DuplicateId(id)
         self.__defaultid = id
-        p = Principal(principal, title, description, '', '')
+        p = UnauthenticatedPrincipal(principal, title, description)
         self.__defaultObject = p
         return p
 
@@ -116,16 +118,12 @@ from Zope.Testing.CleanUp import addCleanUp
 addCleanUp(principalRegistry._clear)
 del addCleanUp
 
-class Principal:
+class PrincipalBase:
 
-    __implements__ = IPrincipal
-
-    def __init__(self, id, title, description, login, pw):
+    def __init__(self, id, title, description):
         self.__id = id
         self.__title = title
         self.__description = description
-        self.__login = login
-        self.__pw = pw
 
     def getId(self):
         return self.__id
@@ -136,8 +134,23 @@ class Principal:
     def getDescription(self):
         return self.__description
 
+class Principal(PrincipalBase):
+
+    __implements__ = IPrincipal
+
+    def __init__(self, id, title, description, login, pw):
+        super(Principal, self).__init__(id, title, description)
+        self.__login = login
+        self.__pw = pw
+
     def getLogin(self):
         return self.__login
 
     def validate(self, pw):
         return pw == self.__pw
+
+
+class UnauthenticatedPrincipal(PrincipalBase):
+
+    __implements__ = IUnauthenticatedPrincipal
+    
