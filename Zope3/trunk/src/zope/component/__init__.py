@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.23 2004/03/10 00:58:31 srichter Exp $
+$Id: __init__.py,v 1.24 2004/03/15 20:42:21 jim Exp $
 """
 import sys
 import warnings
@@ -123,7 +123,10 @@ def interfaceAdapterHook(iface, ob):
     try:
         adapters = getService(ob, Adapters)
     except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
+        
+        # Oh blast, no adapter service. We're probably just running
+        # from a test
+
         return None
 
     return adapters.queryNamedAdapter(ob, iface, '')
@@ -131,7 +134,11 @@ def interfaceAdapterHook(iface, ob):
 from zope.interface.interface import adapter_hooks
 adapter_hooks.append(interfaceAdapterHook)
 
-def queryMultiAdapter(objects, interface, context, name=u'', default=None):
+def queryMultiAdapter(objects, interface, name=u'', default=None,
+                      context=None):
+    if context is None and objects:
+        context = objects[0]
+        
     try:
         adapters = getService(context, Adapters)
     except ComponentLookupError:
@@ -140,28 +147,16 @@ def queryMultiAdapter(objects, interface, context, name=u'', default=None):
 
     return adapters.queryMultiAdapter(objects, interface, name, default)
 
-def querySubscriptionAdapter(object, interface, name, default=(),
-                             context=None):
-    if context is None:
-        context = object
+def subscribers(objects, interface, context=None):
+    if context is None and objects:
+        context = objects[0]
     try:
         adapters = getService(context, Adapters)
     except ComponentLookupError:
         # Oh blast, no adapter service. We're probably just running from a test
-        return default
+        return []
+    return adapters.subscribers(objects, interface)
 
-    return adapters.querySubscriptionAdapter(object, interface, name, default)
-
-def querySubscriptionMultiAdapter(objects, interface, context, name=u'',
-                             default=()):
-    try:
-        adapters = getService(context, Adapters)
-    except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
-        return default
-
-    return adapters.querySubscriptionMultiAdapter(objects, interface, name,
-                                                  default)
 
 # Factories
 

@@ -83,7 +83,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(Conforming, I3, Test), Test)
 
-        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
+        getService(None, Adapters).register([I1], I2, '', Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -104,13 +104,13 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(ob, I2, Test), Test)
 
-        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
+        getService(None, Adapters).register([I1], I2, '', Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
     def testInterfaceCall(self):
-        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
+        getService(None, Adapters).register([I1], I2, '', Comp)
         c = I2(ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -131,7 +131,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         # ...otherwise, you get the default
         self.assertEquals(queryAdapter(ob, I2, Test, context=ob), Test)
 
-        getService(None, Adapters).provideAdapter(I1, I2, [Comp])
+        getService(None, Adapters).register([I1], I2, '', Comp)
         c = getAdapter(ob, I2, context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -157,19 +157,10 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         class Comp2(Comp): pass
 
-        getService(None, Adapters).provideAdapter(I1, I2, [Comp2], name='test')
+        getService(None, Adapters).register([I1], I2, 'test', Comp2)
         c = getNamedAdapter(ob, I2, 'test')
         self.assertEquals(c.__class__, Comp2)
         self.assertEquals(c.context, ob)
-
-    def testMultipleAdapterFactories(self):
-
-        # Basically, this represents a 2-stage adaptation. You can get
-        # from I1 to I2 by way of adapter Comp adapting Comp2
-        getService(None, Adapters).provideAdapter(I1, I2, [Comp2, Comp])
-        c = getAdapter(ob, I2)
-        self.assertEquals(c.__class__, Comp)
-        self.assertEquals(c.context.context, ob)
 
     def testQueryMultiAdapter(self):
         # Adapting a combination of 2 objects to an interface
@@ -182,8 +173,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             implements(I2)
         ob2 = Ob2()
         context = None
-        getService(context, Adapters).provideAdapter(I1, I3, [DoubleAdapter],
-                                                     with=[I2])
+        getService(context, Adapters).register([I1, I2], I3, '', DoubleAdapter)
         c = queryMultiAdapter((ob, ob2), I3, context=context)
         self.assertEquals(c.__class__, DoubleAdapter)
         self.assertEquals(c.first, ob)
@@ -193,7 +183,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         # providing an adapter for None says that your adapter can
         # adapt anything to I2.
-        getService(None, Adapters).provideAdapter(None, I2, [Comp])
+        getService(None, Adapters).register([None], I2, '', Comp)
         c = getAdapter(ob, I2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -232,7 +222,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test), Test)
 
         getService(None, servicenames.Presentation).provideView(
-            I1, 'foo', I2, [Comp])
+            I1, 'foo', I2, Comp)
         c = getView(ob, 'foo', Request(I2))
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -258,7 +248,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             Test)
 
         getService(None, servicenames.Presentation).provideView(
-            I1, 'foo', I2, [Comp])
+            I1, 'foo', I2, Comp)
 
         self.assertRaises(ComponentLookupError,
                           getView, ob, 'foo', Request(I1), providing=I3)
@@ -270,7 +260,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
 
         getService(None, servicenames.Presentation).provideView(
-            I1, 'foo', I2, [Comp], providing=I3)
+            I1, 'foo', I2, Comp, providing=I3)
         
         c = getView(ob, 'foo', Request(I2), providing=I3)
         self.assertEquals(c.__class__, Comp)
@@ -325,7 +315,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryResource(ob, 'foo', r2, Test), Test)
 
         getService(None, servicenames.Presentation).provideResource(
-            'foo', I2, [Comp])
+            'foo', I2, Comp)
         c = getResource(ob, 'foo', r2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, r2)
@@ -351,7 +341,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                           Test)
 
         getService(None, servicenames.Presentation).provideResource(
-            'foo', I2, [Comp])
+            'foo', I2, Comp)
 
         self.assertRaises(ComponentLookupError,
                           getResource, ob, 'foo', r1, providing=I3)
@@ -362,7 +352,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
 
         getService(None, servicenames.Presentation).provideResource(
-            'foo', I2, [Comp], providing=I3)
+            'foo', I2, Comp, providing=I3)
         
         c = getResource(ob, 'foo', r2, providing=I3)
         self.assertEquals(c.__class__, Comp)
@@ -383,7 +373,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                           Test)
 
         getService(None, servicenames.Presentation).provideView(
-            I1, 'foo', I2, [Comp])
+            I1, 'foo', I2, Comp)
         c = getView(ob, 'foo', Request(I2), context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
