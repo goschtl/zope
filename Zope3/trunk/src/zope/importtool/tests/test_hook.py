@@ -41,6 +41,12 @@ class ReporterRaiseOnFound(reporter.Reporter):
         raise TestException("found")
 
 
+class ReporterRaiseOnException(reporter.Reporter):
+
+    def exception(self, *args):
+        raise TestException("exception")
+
+
 class ReporterRaiseOnRequest(reporter.Reporter):
 
     def request(self, *args):
@@ -144,6 +150,16 @@ class HookTestCase(unittest.TestCase):
             import sys
         except TestException, e:
             self.assertEqual(e[0], "found")
+        else:
+            self.fail("expected TestException")
+
+    def test_exception_on_exception(self):
+        h = self.get_hook(ReporterRaiseOnException())
+        h.install()
+        try:
+            import zope.importtools.tests.does_not_exist
+        except TestException, e:
+            self.assertEqual(e[0], "exception")
         else:
             self.fail("expected TestException")
 
