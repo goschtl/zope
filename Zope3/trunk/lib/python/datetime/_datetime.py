@@ -693,6 +693,310 @@ date.max = date(9999, 12, 31)
 date.resolution = timedelta(days=1)
 
 
+class time(object):
+    """Concrete time type.
+
+    Constructors:
+
+    __init__()
+
+    Operators:
+
+    __repr__, __str__
+    __cmp__, __hash__
+
+    Methods:
+
+    strftime()
+    isoformat()
+
+    Properties (readonly):
+    hour, minute, second, microsecond
+    """
+
+    def __init__(self, hour, minute, second=0, microsecond=0):
+        """Constructor.
+
+        Arguments:
+
+        hour, minute (required)
+        second, microsecond (default to zero)
+        """
+        if not 0 <= hour <= 23:
+            raise ValueError('hour must be in 0..23', hour)
+        if not 0 <= minute <= 59:
+            raise ValueError('minute must be in 0..59', minute)
+        if not 0 <= second <= 59:
+            raise ValueError('second must be in 0..59', second)
+        if not 0 <= microsecond <= 999999:
+            raise ValueError('microsecond must be in 0..999999', microsecond)
+        self.__hour = hour
+        self.__minute = minute
+        self.__second = second
+        self.__microsecond = microsecond
+
+    # Read-only field accessors
+    hour = property(lambda self: self.__hour, doc="hour (0-23)")
+    minute = property(lambda self: self.__minute, doc="minute (0-59)")
+    second = property(lambda self: self.__second, doc="second (0-59)")
+    microsecond = property(lambda self: self.__microsecond,
+                           doc="microsecond (0-999999)")
+
+    # Standard conversions, __cmp__, __hash__ (and helpers)
+
+    def __cmp__(self, other):
+        """Three-way comparison."""
+        if isinstance(other, time):
+            return cmp((self.__hour, self.__minute, self.__second,
+                        self.__microsecond),
+                       (other.__hour, other.__minute, other.__second,
+                        other.__microsecond))
+        raise TypeError, ("can't compare time to %s instance" %
+                          type(other).__name__)
+
+    def __hash__(self):
+        """Hash."""
+        return hash((self.__hour, self.__minute, self.__second,
+                     self.__microsecond))
+
+    # Conversions to string
+
+    def __repr__(self):
+        """Convert to formal string, for repr()."""
+        if self.__microsecond != 0:
+            s = ", %d, %d" % (self.__second, self.__microsecond)
+        elif self.__second != 0:
+            s = ", %d" % self.__second
+        else:
+            s = ""
+        return "%s(%d, %d%s)" % (self.__class__.__name__,
+                                 self.__hour, self.__minute, s)
+
+    def __str__(self):
+        """Convert to pretty string, for str()."""
+        pretty = "%d:%02d:%02d.%06d" % (
+            self.__hour, self.__minute, self.__second,
+            self.__microsecond)
+        # trim microseconds: hh:mm:ss.xxx000 -> hh:mm:ss.xxx
+        while pretty.endswith('0'):
+            pretty = pretty[:-1]
+        # trim microseconds: hh:mm:ss.000000 -> hh:mm:ss
+        if pretty.endswith('.'):
+            pretty = pretty[:-1]
+        # trim seconds: hh:mm:00 -> hh:mm
+        if pretty.endswith(':00'):
+            pretty = pretty[:-3]
+        return pretty
+
+    def isoformat(self):
+        """Return the time formatted according to ISO.
+
+        This is 'HH:MM:SS.mmmmmm'.
+        """
+        return "%02d:%02d:%02d.%06d" % (
+            self.__hour, self.__minute, self.__second,
+            self.__microsecond)
+
+    def strftime(self, fmt):
+        """Format using strftime().  The date part of the timestamp passed
+        to underlying strftime should not be used.
+        """
+        return _time.strftime(fmt, (0, 0, 0, self.__hour, self.__minute,
+                                    self.__second, 0, 0, -1))
+
+
+time.min = time(0, 0, 0)
+time.max = time(23, 59, 59, 999999)
+time.resolution = timedelta(microseconds=1)
+
+
+class timetz(time):
+    """Time with time zone.
+
+    Constructors:
+
+    __init__()
+
+    Operators:
+
+    __repr__, __str__
+    __cmp__, __hash__
+
+    Methods:
+
+    strftime()
+    isoformat()
+    utcoffset()
+    tzname()
+    dst()
+
+    Properties (readonly):
+    hour, minute, second, microsecond, tzinfo
+    """
+
+    def __init__(self, hour, minute, second=0, microsecond=0, tzinfo=None):
+        """Constructor.
+
+        Arguments:
+
+        hour, minute (required)
+        second, microsecond (default to zero)
+        tzinfo (default to None)
+        """
+        super(timetz, self).__init__(hour, minute, second, microsecond)
+        if tzinfo is not None:
+            # Better fail now than later
+            assert hasattr(tzinfo, 'utcoffset')
+            assert hasattr(tzinfo, 'dst')
+            assert hasattr(tzinfo, 'tzname')
+        self.__tzinfo = tzinfo
+
+    # Read-only field accessors
+    tzinfo = property(lambda self: self.__tzinfo, doc="timezone info object")
+
+    # Standard conversions, __cmp__, __hash__ (and helpers)
+
+    def __cmp__(self, other):
+        """Three-way comparison."""
+        if not isinstance(other, time):
+            raise TypeError("can't compare timetz to %s instance" %
+                            type(other).__name__)
+        superself = super(timetz, self)
+        supercmp = superself.__cmp__
+        mytz = self.__tzinfo
+        ottz = None
+        if isinstance(other, timetz):
+            ottz = other.__tzinfo
+        if mytz is ottz:
+            return supercmp(other)
+        myoff = otoff = None
+        if mytz is not None:
+            myoff = mytz.utcoffset(self)
+        if ottz is not None:
+            otoff = ottz.utcoffset(other)
+        if myoff == otoff:
+            return supercmp(other)
+        if myoff is None or otoff is None:
+            raise ValueError, "cannot mix naive and timezone-aware time"
+        myhhmm = self.hour * 60 + self.minute - myoff
+        othhmm = other.hour * 60 + other.minute - otoff
+        return cmp((myhhmm, self.second, self.microsecond),
+                   (othhmm, other.second, other.microsecond))
+
+    def __hash__(self):
+        """Hash."""
+        tz = self.__tzinfo
+        if tz == None:
+            return super(timetz, self).__hash__()
+        tzoff = tz.utcoffset(self)
+        if not tzoff: # zero or None!
+            return super(timetz, self).__hash__()
+        h, m = divmod(self.hour * 60 + self.minute - tzoff, 60)
+        # Unfortunately it is not possible to construct a new timetz object
+        # and use super().__hash__(), since hour may exceed the range of
+        # allowed values
+        return hash((h, m, self.second, self.microsecond))
+
+    # Conversion to string
+
+    def _tzstr(self, sep=":"):
+        """Return formatted timezone offset (+xx:xx) or None."""
+        if self.__tzinfo is not None:
+            off = self.__tzinfo.utcoffset(self)
+            if off is not None:
+                if off < 0:
+                    sign = "-"
+                    off = -off
+                else:
+                    sign = "+"
+                hh, mm = divmod(off, 60)
+                return "%s%02d%s%02d" % (sign, hh, sep, mm)
+
+    def __repr__(self):
+        """Convert to formal string, for repr()."""
+        s = super(timetz, self).__repr__()
+        if self.__tzinfo is not None:
+            assert s[-1:] == ")"
+            s = s[:-1] + ", tzinfo=%r" % self.__tzinfo + ")"
+        return s
+
+    def __str__(self):
+        """Convert to pretty string, for str()."""
+        s = super(timetz, self).__str__()
+        tz = self._tzstr()
+        if tz: s = "%s %s" % (s, tz)
+        return s
+
+    def isoformat(self):
+        """Return the time formatted according to ISO.
+
+        This is 'HH:MM:SS.mmmmmm+zz:zz'.
+        """
+        s = super(timetz, self).isoformat()
+        tz = self._tzstr()
+        if tz: s += tz
+        return s
+
+    def strftime(self, fmt):
+        """Format using strftime().  The date part of the timestamp passed
+        to underlying strftime should not be used.
+
+        You can use %Z to refer to the timezone name and %z to refer to its
+        UTC offset (+zzzz).
+        """
+        tz = self._tzstr(sep="")
+        # FIXME: this will break %%z/%%Z!
+        if tz:
+            fmt = fmt.replace("%z", tz).replace("%Z", self.tzinfo.tzname(None))
+        else:
+            fmt = fmt.replace("%z", "").replace("%Z", "")
+        return super(timetz, self).strftime(fmt)
+
+    # Timezone functions
+
+    def utcoffset(self):
+        """Return the timezone offset in minutes east of UTC (negative west of
+        UTC)."""
+        tz = self.__tzinfo
+        if tz is None:
+            return None
+        else:
+            return tz.utcoffset(self)
+
+    def tzname(self):
+        """Return the timezone name.
+
+        Note that the name is 100% informational -- there's no requirement that
+        it mean anything in particular. For example, "GMT", "UTC", "-500",
+        "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
+        """
+        tz = self.__tzinfo
+        if tz is None:
+            return None
+        else:
+            return tz.tzname(self)
+
+    def dst(self):
+        """Return 0 if DST is not in effect, or the DST offset (in minutes
+        eastward) if DST is in effect.
+
+        This is purely informational; the DST offset has already been added to
+        the UTC offset returned by utcoffset() if applicable, so there's no
+        need to consult dst() unless you're interested in displaying the DST
+        info.
+        """
+        tz = self.__tzinfo
+        if tz is None:
+            return None
+        else:
+            return tz.dst(self)
+
+
+timetz.min = timetz(0, 0, 0)
+timetz.max = timetz(23, 59, 59, 999999)
+timetz.resolution = timedelta(microseconds=1)
+
+
 class datetime(date):
     """Concrete date/time type, inheriting from date.
 
@@ -777,6 +1081,12 @@ class datetime(date):
         return cls.utcfromtimestamp(t)
     utcnow = classmethod(utcnow)
 
+    def combine(cls, date, time):
+        "Construct a datetime from a given date and a given time."
+        return cls(date.year, date.month, date.day,
+                   time.hour, time.minute, time.second, time.microsecond)
+    combine = classmethod(combine)
+
     # Conversions to string
 
     def __repr__(self):
@@ -806,6 +1116,15 @@ class datetime(date):
         return (self.__year, self.__month, self.__day,
                 self.__hour, self.__minute, self.__second,
                 self.weekday(), self._yday(), -1)
+
+    def date(self):
+        "Return the date part."
+        return date(self.__year, self.__month, self.__day)
+
+    def time(self):
+        "Return the time part."
+        return time(self.__hour, self.__minute, self.__second,
+                    self.__microsecond)
 
     def __cmp__(self, other):
         "Three-way comparison."
@@ -941,6 +1260,14 @@ class datetimetz(datetime):
         return cls.fromtimestamp(t, tzinfo)
     now = classmethod(now)
 
+    def combine(cls, date, time):
+        "Construct a datetime from a given date and a given time."
+        return cls(date.year, date.month, date.day,
+                   time.hour, time.minute, time.second, time.microsecond,
+                   getattr(time, 'tzinfo', None))
+    combine = classmethod(combine)
+
+
     def utctimetuple(self):
         "Return UTC time tuple compatible with time.gmtime()."
         offset = self.utcoffset()
@@ -951,6 +1278,11 @@ class datetimetz(datetime):
                       self.microsecond)
         dt = timedelta(minutes=offset)
         return (ts - dt).timetuple()
+
+    def timetz(self):
+        "Return the time part."
+        return timetz(self.hour, self.minute, self.second, self.microsecond,
+                      self.__tzinfo)
 
     def isoformat(self, sep=' '):
         s = super(datetimetz, self).isoformat(sep)

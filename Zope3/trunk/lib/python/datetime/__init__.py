@@ -5,4 +5,4 @@
 # deal with in CVS for now.  This __init__ file makes the package look
 # like the eventual module.
 
-from _datetime import timedelta, date, datetime, datetimetz
+from _datetime import timedelta, date, time, timetz, datetime, datetimetz
