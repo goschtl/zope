@@ -18,7 +18,7 @@ $Id$
 """
 
 from zope.interface import implements, Interface
-from zope.schema import TextLine  
+from zope.schema import TextLine
 from persistent import Persistent
 from zope.app.component import hooks
 from zope.app.container.contained import Contained
@@ -28,6 +28,43 @@ from zope.app.session.interfaces import ISession
 from urllib import urlencode
 
 from zope.app.pas.interfaces import IExtractionPlugin, IChallengePlugin
+
+
+class ISessionCredentials(Interface):
+    """ Interface for storing and accessing credentials in a session.
+
+        We use a real class with interface here to prevent unauthorized
+        access to the credentials.
+    """
+
+    def __init__(login, password):
+        pass
+
+    def getLogin():
+        """Return login name."""
+
+    def getPassword():
+        """Return password."""
+
+
+class SessionCredentials:
+    """ Credentials class for use with sessions.
+
+        >>> cred = SessionCredentials('scott', 'tiger')
+        >>> cred.getLogin()
+        'scott'
+        >>> cred.getPassword()
+        'tiger'
+    """
+    implements(ISessionCredentials)
+
+    def __init__(self, login, password):
+        self.login = login
+        self.password = password
+
+    def getLogin(self): return self.login
+
+    def getPassword(self): return self.password
 
 
 class SessionExtractor(Persistent, Contained):
@@ -51,33 +88,47 @@ class SessionExtractor(Persistent, Contained):
         If the session does not contain the credentials check
         the request for form variables.
         >>> request = createTestRequest(login='scott', password='tiger')
-
         >>> se.extractCredentials(request)
         {'login': 'scott', 'password': 'tiger'}
 
+        If there are credentials present use them.
         >>> request = createTestRequest()
-        >>> sessionData = Session(request)['pas_credentials']
-        >>> sessionData['login'] = 'scott'
-        >>> sessionData['password'] = 'tiger'
+        >>> sessionData = Session(request)['pas']
+        >>> sessionData['credentials'] = SessionCredentials('scott', 'tiger')
         >>> se.extractCredentials(request)
         {'login': 'scott', 'password': 'tiger'}
+
+        Magic logout command in URL forces log out by deleting the
+        credentials from the session.
+        >>> request = createTestRequest(authrequest='logout')
+        >>> sessionData = Session(request)['pas']
+        >>> sessionData['credentials'] = SessionCredentials('scott', 'tiger')
+        >>> se.extractCredentials(request) is None
+        True
+        >>> Session(request)['pas']['credentials'] is None
+        True
      """
     implements(IExtractionPlugin)
 
     def extractCredentials(self, request):
         """ return credentials from session, request or None """
-        sessionData = ISession(request)['pas_credentials']
-        if not sessionData:
+        sessionData = ISession(request)['pas']
+        credentials = sessionData and sessionData['credentials'] or None
+        if not credentials:
             # check for form data
             login = request.get('login', None)
             password = request.get('password', None)
             if login and password:
-                sessionData['login'] = login
-                sessionData['password'] = password
+                credentials = SessionCredentials(login, password)
+                sessionData['credentials'] = credentials
             else:
                 return None
-        return {'login': sessionData['login'],
-                'password': sessionData['password']}
+        authrequest = request.get('authrequest', None)
+        if authrequest == 'logout':
+            sessionData['credentials'] = None
+            return None
+        return {'login': credentials.getLogin(),
+                'password': credentials.getPassword()}
 
 
 
@@ -101,7 +152,7 @@ class FormChallenger(Persistent, Contained):
         >>> from zope.app.tests.setup import placefulSetUp
         >>> site = placefulSetUp(True)
 
-        
+
         >>> from zope.publisher.browser import TestRequest
         >>> request = TestRequest()
         >>> response = request.response
