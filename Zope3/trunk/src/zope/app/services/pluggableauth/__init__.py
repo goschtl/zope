@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.7 2003/08/17 06:08:15 philikon Exp $
+$Id: __init__.py,v 1.8 2003/09/21 17:33:05 jim Exp $
 """
 
 from __future__ import generators
@@ -27,25 +27,23 @@ from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 from zope.interface import implements
 from zope.component import queryAdapter
-from zope.context.wrapper import Wrapper
-from zope.context import getWrapperData
 from zope.app.services.servicenames import Authentication
 from zope.component.interfaces import IViewFactory
 from zope.app.container.ordered import OrderedContainer
-from zope.app.interfaces.container import IContainerNamesContainer
 from zope.app.interfaces.container import IOrderedContainer
 from zope.app.interfaces.container import IAddNotifiable
 from zope.app.interfaces.services.pluggableauth import IUserSchemafied
 from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.services.pluggableauth \
      import IPluggableAuthenticationService
-from zope.app.interfaces.services.pluggableauth import IPrincipalSource, \
-     ILoginPasswordPrincipalSource, IContainerPrincipalSource
+from zope.app.interfaces.services.pluggableauth import \
+     IPrincipalSource, ILoginPasswordPrincipalSource, IContainerPrincipalSource
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.component.nextservice import queryNextService
 from zope.app import zapi
-from zope.context import ContextMethod
+from zope.app.traversing import getPath
 from zope.exceptions import NotFoundError
+from zope.app.container.contained import Contained, setitem, uncontained
 
 def gen_key():
     """Return a random int (1, MAXINT), suitable for use as a BTree key."""
@@ -70,17 +68,15 @@ class PluggableAuthenticationService(OrderedContainer):
         # references which embed the old earmark.
         OrderedContainer.__init__(self)
 
-    def afterAddHook(self, ob, container):
+    def addNotify(self, event):
         """ See IAddNotifiable. """
         if self.earmark is None:
             # we manufacture what is intended to be a globally unique
             # earmark if one is not provided in __init__
-            myname = zapi.name(ob)
+            myname = zapi.name(self)
             rand_id = gen_key()
             t = int(time.time())
             self.earmark = '%s-%s-%s' % (myname, rand_id, t)
-
-    afterAddHook = ContextMethod(afterAddHook)
 
     def authenticate(self, request):
         """ See IAuthenticationService. """
@@ -89,16 +85,13 @@ class PluggableAuthenticationService(OrderedContainer):
             if loginView is not None:
                 principal = loginView.authenticate()
                 if principal is not None:
-                    id = '\t'.join((self.earmark, ps_key,
-                                    str(principal.getId())))
-                    return PrincipalWrapper(principal, self, id=id)
+                    return principal
 
         next = queryNextService(self, Authentication, None)
         if next is not None:
             return next.authenticate(request)
 
         return None
-    authenticate = ContextMethod(authenticate)
 
     def unauthenticatedPrincipal(self):
         """ See IAuthenticationService. """
@@ -112,7 +105,6 @@ class PluggableAuthenticationService(OrderedContainer):
             return next.unauthorized(id, request)
 
         return None
-    unauthorized = ContextMethod(unauthorized)
 
     def getPrincipal(self, id):
         """ See IAuthenticationService.
@@ -147,24 +139,19 @@ class PluggableAuthenticationService(OrderedContainer):
         source = self.get(principal_src_id)
         if source is None:
             raise NotFoundError, principal_src_id
-        p = source.getPrincipal(principal_id)
-        return PrincipalWrapper(p, self, id=id)
-
-    getPrincipal = ContextMethod(getPrincipal)
+        return source.getPrincipal(id)
 
     def getPrincipals(self, name):
         """ See IAuthenticationService. """
 
         for ps_key, ps in self.items():
             for p in ps.getPrincipals(name):
-                id = '\t'.join((self.earmark, ps_key, str(p.getId())))
-                yield PrincipalWrapper(p, self, id=id)
+                yield p
 
         next = queryNextService(self, Authentication, None)
         if next is not None:
             for p in next.getPrincipals(name):
                 yield p
-    getPrincipals = ContextMethod(getPrincipals)
 
     def addPrincipalSource(self, id, principal_source):
         """ See IPluggableAuthenticationService.
@@ -180,7 +167,7 @@ class PluggableAuthenticationService(OrderedContainer):
 
         if not IPrincipalSource.isImplementedBy(principal_source):
             raise TypeError("Source must implement IPrincipalSource")
-        self.setObject(id, principal_source)
+        self[id] = principal_source
 
     def removePrincipalSource(self, id):
         """ See IPluggableAuthenticationService.
@@ -201,11 +188,10 @@ class PluggableAuthenticationService(OrderedContainer):
 
         del self[id]
 
-class BTreePrincipalSource(Persistent):
+class BTreePrincipalSource(Persistent, Contained):
     """An efficient, scalable provider of Authentication Principals."""
 
-    implements(ILoginPasswordPrincipalSource, IContainerPrincipalSource,
-               IContainerNamesContainer)
+    implements(ILoginPasswordPrincipalSource, IContainerPrincipalSource)
 
     def __init__(self):
 
@@ -214,13 +200,12 @@ class BTreePrincipalSource(Persistent):
 
     # IContainer-related methods
 
-    def __delitem__(self, key):
+    def __delitem__(self, login):
         """ See IContainer.
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('fred', 'fred', '123')
-        >>> sps.setObject('fred', prin)
-        'fred'
+        >>> sps['fred'] = prin
         >>> int(sps.get('fred') == prin)
         1
         >>> del sps['fred']
@@ -228,20 +213,23 @@ class BTreePrincipalSource(Persistent):
         0
 
         """
-        number = self._numbers_by_login[key]
+        number = self._numbers_by_login[login]
 
+        uncontained(self._principals_by_number[number], self, login)
         del self._principals_by_number[number]
-        del self._numbers_by_login[key]
+        del self._numbers_by_login[login]
 
-    def setObject(self, id, ob):
+    def __setitem__(self, login, ob):
         """ See IContainerNamesContainer
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('gandalf', 'shadowfax')
-        >>> dummy = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> sps.get('doesntmatter')
         """
+        setitem(self, self.__setitem, login, ob)
 
+    def __setitem(self, login, ob):
         store = self._principals_by_number
 
         key = gen_key()
@@ -251,8 +239,6 @@ class BTreePrincipalSource(Persistent):
         ob.id = key
         self._numbers_by_login[ob.login] = key
 
-        return ob.login
-
     def keys(self):
         """ See IContainer.
 
@@ -260,11 +246,11 @@ class BTreePrincipalSource(Persistent):
         >>> sps.keys()
         []
         >>> prin = SimplePrincipal('arthur', 'tea')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> sps.keys()
         ['arthur']
         >>> prin = SimplePrincipal('ford', 'towel')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> sps.keys()
         ['arthur', 'ford']
         """
@@ -278,9 +264,9 @@ class BTreePrincipalSource(Persistent):
         >>> sps.keys()
         []
         >>> prin = SimplePrincipal('trillian', 'heartOfGold')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> prin = SimplePrincipal('zaphod', 'gargleblaster')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> [i for i in sps]
         ['trillian', 'zaphod']
         """
@@ -292,7 +278,7 @@ class BTreePrincipalSource(Persistent):
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('gag', 'justzisguy')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> sps['gag'].login
         'gag'
         """
@@ -305,7 +291,7 @@ class BTreePrincipalSource(Persistent):
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal(1, 'slartibartfast', 'fjord')
-        >>> key = sps.setObject('slartibartfast', prin)
+        >>> sps['slartibartfast'] = prin
         >>> principal = sps.get('slartibartfast')
         >>> sps.get('marvin', 'No chance, dude.')
         'No chance, dude.'
@@ -325,11 +311,11 @@ class BTreePrincipalSource(Persistent):
         >>> sps.keys()
         []
         >>> prin = SimplePrincipal('arthur', 'tea')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> [user.login for user in sps.values()]
         ['arthur']
         >>> prin = SimplePrincipal('ford', 'towel')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> [user.login for user in sps.values()]
         ['arthur', 'ford']
         """
@@ -344,7 +330,7 @@ class BTreePrincipalSource(Persistent):
         >>> int(len(sps) == 0)
         1
         >>> prin = SimplePrincipal(1, 'trillian', 'heartOfGold')
-        >>> key = sps.setObject('trillian', prin)
+        >>> sps['trillian'] = prin
         >>> int(len(sps) == 1)
         1
         """
@@ -358,11 +344,11 @@ class BTreePrincipalSource(Persistent):
         >>> sps.keys()
         []
         >>> prin = SimplePrincipal('zaphod', 'gargleblaster')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> [(k, v.login) for k, v in sps.items()]
         [('zaphod', 'zaphod')]
         >>> prin = SimplePrincipal('marvin', 'paranoid')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> [(k, v.login) for k, v in sps.items()]
         [('marvin', 'marvin'), ('zaphod', 'zaphod')]
         """
@@ -375,7 +361,7 @@ class BTreePrincipalSource(Persistent):
 
         >>> sps = BTreePrincipalSource()
         >>> prin = SimplePrincipal('slinkp', 'password')
-        >>> key = sps.setObject('doesntmatter', prin)
+        >>> sps['doesntmatter'] = prin
         >>> int('slinkp' in sps)
         1
         >>> int('desiato' in sps)
@@ -394,10 +380,10 @@ class BTreePrincipalSource(Persistent):
         not a login.
 
         """
-        try:
-            id = int(id)
-        except TypeError:
-            raise NotFoundError, id
+
+        id = id.split('\t')[2]
+        id = int(id)
+
         try:
             return self._principals_by_number[id]
         except KeyError:
@@ -408,15 +394,15 @@ class BTreePrincipalSource(Persistent):
 
         >>> sps = BTreePrincipalSource()
         >>> prin1 = SimplePrincipal('gandalf', 'shadowfax')
-        >>> dummy = sps.setObject('doesntmatter', prin1)
+        >>> sps['doesntmatter'] = prin1
         >>> prin1 = SimplePrincipal('frodo', 'ring')
-        >>> dummy = sps.setObject('doesntmatter', prin1)
+        >>> sps['doesntmatter'] = prin1
         >>> prin1 = SimplePrincipal('pippin', 'pipe')
-        >>> dummy = sps.setObject('doesntmatter', prin1)
+        >>> sps['doesntmatter'] = prin1
         >>> prin1 = SimplePrincipal('sam', 'garden')
-        >>> dummy = sps.setObject('doesntmatter', prin1)
+        >>> sps['doesntmatter'] = prin1
         >>> prin1 = SimplePrincipal('merry', 'food')
-        >>> dummy = sps.setObject('doesntmatter', prin1)
+        >>> sps['doesntmatter'] = prin1
         >>> [p.login for p in sps.getPrincipals('a')]
         ['gandalf', 'sam']
         >>> [p.login for p in sps.getPrincipals('')]
@@ -438,7 +424,18 @@ class BTreePrincipalSource(Persistent):
         if user.password == password:
             return user
 
-class SimplePrincipal(Persistent):
+    def chooseName(self, name, object):
+        "See zope.app.interfaces.container.INameChooser"
+
+        store = self._principals_by_number
+        while 1:
+            key = gen_key()
+            if key not in store:
+                return str(key)
+            
+
+
+class SimplePrincipal(Persistent, Contained):
     """A no-frills IUserSchemafied implementation."""
 
     implements(IUserSchemafied)
@@ -453,11 +450,10 @@ class SimplePrincipal(Persistent):
     def getId(self):
         """ See IPrincipal.
 
-        This method returns just a simple id, PrincipalWrapper is
-        used to get the full id as used by the
-        PluggableAuthenticationService.
         """
-        return self.id
+        source = self.__parent__
+        auth = source.__parent__
+        return "%s\t%s\t%s" %(auth.earmark, source.__name__, self.id)
 
     def getTitle(self):
         """ See IPrincipal. """
@@ -505,16 +501,3 @@ class PrincipalAuthenticationView:
 
         p = self.context.authenticate(login, password)
         return p
-
-
-class PrincipalWrapper(Wrapper):
-    """ A wrapper for a principal as returned from the authentication
-    service.  This wrapper returns the principal id which includes
-    identification of the auth service and the principal store id in
-    addition to the principal id."""
-
-    def getId(self):
-        """ Return the id as passed in to the wrapper """
-        return getWrapperData(self)['id']
-
-

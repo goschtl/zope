@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_pluggableauth.py,v 1.5 2003/08/17 06:08:18 philikon Exp $
+$Id: test_pluggableauth.py,v 1.6 2003/09/21 17:33:05 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,13 +28,15 @@ from zope.exceptions import NotFoundError
 
 from zope.app.services.pluggableauth import BTreePrincipalSource, \
      SimplePrincipal, PluggableAuthenticationService, \
-     PrincipalAuthenticationView, PrincipalWrapper
+     PrincipalAuthenticationView
 
 from zope.app.interfaces.services.pluggableauth import IUserSchemafied
 from zope.app.interfaces.security import IPrincipal
 from zope.interface.verify import verifyObject
 
 from zope.publisher.browser import TestRequest as Request
+
+from zope.app.tests.placelesssetup import setUp, tearDown
 
 import base64
 
@@ -69,14 +71,15 @@ class Setup(placefulsetup.PlacefulSetup, TestCase):
         self.createUsers()
 
     def createUsers(self):
+        
         self._slinkp = SimplePrincipal('slinkp', '123')
         self._slinkp2 = SimplePrincipal('slinkp2', '123')
         self._chrism = SimplePrincipal('chrism', '123')
         self._chrism2 = SimplePrincipal('chrism2', '123')
-        self._one.setObject('slinkp', self._slinkp)
-        self._one.setObject('chrism', self._chrism)
-        self._two.setObject('slinkp2', self._slinkp2)
-        self._two.setObject('chrism2', self._chrism2)
+        self._one['slinkp'] = self._slinkp
+        self._one['chrism'] = self._chrism
+        self._two['slinkp2'] = self._slinkp2
+        self._two['chrism2'] = self._chrism2
 
     def getRequest(self, uid=None, passwd=None):
         if uid is None:
@@ -124,7 +127,7 @@ class AuthServiceTest(Setup):
 
     def testAuthServiceGetPrincipal(self):
         auth = self._auth
-        id = '\t'.join((auth.earmark, 'one', str(self._slinkp.getId())))
+        id = self._slinkp.getId()
         self.assertEqual(self._slinkp, auth.getPrincipal(id))
         self.assertRaises(NotFoundError, self._fail_NoSourceId)
         self.assertRaises(NotFoundError, self._fail_BadIdType)
@@ -134,12 +137,6 @@ class AuthServiceTest(Setup):
         auth = self._auth
         self.failUnless(self._slinkp in auth.getPrincipals('slinkp'))
         self.failUnless(self._slinkp2 in auth.getPrincipals('slinkp'))
-
-
-    def testPrincipalWrapper(self):
-        wrapper = PrincipalWrapper(self._slinkp, self._auth, id='wrong')
-        self.assertEqual(wrapper.getId(), 'wrong')
-
 
     def testPrincipalInterface(self):
         verifyObject(IUserSchemafied, self._slinkp)
@@ -157,7 +154,6 @@ class BTreePrincipalSourceTest(Setup):
         one = self._one
         p = self._slinkp
         self.assertEqual(p, one.getPrincipal(p.getId()))
-        self.assertRaises(NotFoundError, one.getPrincipal, None)
 
 class PrincipalAuthenticationViewTest(Setup):
 
@@ -170,7 +166,8 @@ class PrincipalAuthenticationViewTest(Setup):
 def test_suite():
     t1 = makeSuite(AuthServiceTest)
     from zope.testing.doctestunit import DocTestSuite
-    t2 = DocTestSuite('zope.app.services.pluggableauth')
+    t2 = DocTestSuite('zope.app.services.pluggableauth',
+                      setUp=setUp, tearDown=tearDown)
     t3 = makeSuite(BTreePrincipalSourceTest)
     t4 = makeSuite(PrincipalAuthenticationViewTest)
     return TestSuite((t1, t2, t3, t4))
