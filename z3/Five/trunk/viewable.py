@@ -1,3 +1,4 @@
+from webdav.NullResource import NullResource
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -27,6 +28,7 @@ class Viewable:
                 return self[name]
             except (AttributeError, KeyError):
                 pass
+            # XXX not sure this is very useful
             method = REQUEST.get('REQUEST_METHOD', 'GET')
             if not method in ('GET', 'POST'):
                 return NullResource(self, name, REQUEST).__of__(self)
