@@ -13,7 +13,7 @@
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.3 2002/07/18 16:07:02 jeremy Exp $
+$Id: DateTimeParse.py,v 1.4 2002/10/04 18:06:15 jim Exp $
 """
     
 import re, math, DateTimeZone
@@ -400,7 +400,7 @@ def safelocaltime(t):
 
 class DateTimeParser:
 
-    def parse(self, arg):
+    def parse(self, arg, local=1):
         """Parse a string containing some sort of date-time data
         
         As a general rule, any date-time representation that is 
@@ -470,7 +470,7 @@ class DateTimeParser:
         if arg.find(' ')==-1 and arg[4]=='-':
             yr,mo,dy,hr,mn,sc,tz=self._parse_iso8601(arg)
         else:
-            yr,mo,dy,hr,mn,sc,tz=self._parse(arg)
+            yr,mo,dy,hr,mn,sc,tz=self._parse(arg, local)
 
 
         if not self._validDate(yr,mo,dy):
@@ -572,27 +572,40 @@ class DateTimeParser:
         tz = self.localZone(ltm)
         return tz
 
-    def _parse(self, string):
+    def _parse(self, string, local=1):
         # Parse date-time components from a string
-        month=year=tz=tm=None
-        spaces        =self.space_chars
-        intpat        =self.int_pattern
-        fltpat        =self.flt_pattern
-        wordpat       =self.name_pattern
-        delimiters    =self.delimiters
-        MonthNumbers  =self._monthmap
-        DayOfWeekNames=self._daymap
-        ValidZones    =self._tzinfo._zidx
-        TimeModifiers =['am','pm']
+        month = year = tz = tm = None
+        spaces         = self.space_chars
+        intpat         = self.int_pattern
+        fltpat         = self.flt_pattern
+        wordpat        = self.name_pattern
+        delimiters     = self.delimiters
+        MonthNumbers   = self._monthmap
+        DayOfWeekNames = self._daymap
+        ValidZones     = self._tzinfo._zidx
+        TimeModifiers  = ['am','pm']
+
+        string = string.strip()
 
         # Find timezone first, since it should always be the last
         # element, and may contain a slash, confusing the parser.
-        string = string.strip()
-        sp=string.split()
-        tz=sp[-1]
-        if tz and (tz.lower() in ValidZones): string=' '.join(sp[:-1])
-        else: tz = None  # Decide later, since the default time zone
-        # could depend on the date.
+
+        
+        # First check for time zone of form +dd:dd
+        tz = _iso_tz_re.search(string)
+        if tz:
+            tz = tz.start(0)
+            tz, string = string[tz:], string[:tz].strip()
+            tz = tz[:3]+tz[4:]
+        else:
+            # Look at last token
+            sp=string.split()
+            tz = sp[-1]
+            if tz and (tz.lower() in ValidZones):
+                string=' '.join(sp[:-1])
+            else:
+                tz = None  # Decide later, since the default time zone
+                           # could depend on the date.
 
         ints,dels=[],[]
         i,l=0,len(string)
@@ -744,7 +757,8 @@ class DateTimeParser:
         tod_int = int(math.floor(tod))
         ms = tod - tod_int
         hr,mn,sc = _calcHMS(tod_int, ms)
-        if not tz:
+
+        if local and not tz:
             # Figure out what time zone it is in the local area
             # on the given date.
             x = _calcDependentSecond2(year,month,day,hr,mn,sc)
@@ -806,3 +820,31 @@ class DateTimeParser:
 parser = DateTimeParser()
 parse = parser.parse
 time = parser.time
+
+class tzinfo(object):
+
+    __slots__ = ('offset', )
+    
+    def __init__(self, offset):
+        self.offset = offset
+
+    def utcoffset(self, dt=None):
+        return self.offset
+
+    __getstate__ = utcoffset
+    __setstate__ = __init__
+
+    def dst(self, dt): return 0
+    def tzname(self, dt): return ''
+
+from datetime import datetimetz as _datetimetz
+def parseDatetimetz(string):
+    y, mo, d, h, m, s, tz = parse(string)
+    s, micro = divmod(s, 1.0)
+    micro = int(micro * 1000000)
+    offset = _tzoffset(tz, None) / 60
+    return _datetimetz(y, mo, d, h, m, s, micro, tzinfo(offset))
+
+_iso_tz_re = re.compile("[-+]\d\d:\d\d$")
+
+    
