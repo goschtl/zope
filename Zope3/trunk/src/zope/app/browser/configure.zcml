@@ -19,7 +19,6 @@
   <include package=".skins" />
   <include package=".index" />
   <include package=".rdb" />
-  <include package=".workflow" />
   <include package=".catalog" />
   <include file="introspector.zcml" />
   <include file="traversal.zcml" />

@@ -14,7 +14,7 @@
 
 """Stateful workflow process definition.
 
-$Id: test_definition.py,v 1.4 2003/11/27 13:59:27 philikon Exp $
+$Id: test_definition.py,v 1.5 2004/02/27 16:50:40 philikon Exp $
 """
 import unittest
 
@@ -22,7 +22,7 @@ from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 
-from zope.app.interfaces.workflow.stateful import IStatefulProcessDefinition
+from zope.app.workflow.interfaces.stateful import IStatefulProcessDefinition
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.tests.placelesssetup import PlacelessSetup
 

@@ -15,12 +15,12 @@
 
 Status: Draft
 
-$Id: wfmc.py,v 1.3 2004/02/24 14:25:37 srichter Exp $
+$Id: wfmc.py,v 1.1 2004/02/27 16:50:39 philikon Exp $
 """
 from zope.interface import Interface, Attribute
 
-from zope.app.interfaces.workflow import IProcessDefinition
-from zope.app.interfaces.workflow import IProcessInstance
+from zope.app.workflow.interfaces import IProcessDefinition
+from zope.app.workflow.interfaces import IProcessInstance
 
 from zope.app.interfaces.container import IContainer
 

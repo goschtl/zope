@@ -11,12 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: directive_helpers.py,v 1.4 2004/02/27 16:50:47 philikon Exp $
+"""
 
 __metaclass__ = type
 
-from zope.app.interfaces.workflow import IProcessDefinition
-from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
-from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
+from zope.app.workflow.interfaces import IProcessDefinition
+from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
+from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.interface import implements
 
 

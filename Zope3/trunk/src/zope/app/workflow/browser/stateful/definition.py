@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
 
-$Id: definition.py,v 1.8 2003/09/21 17:30:42 jim Exp $
+$Id: definition.py,v 1.1 2004/02/27 16:50:38 philikon Exp $
 """
 __metaclass__ = type
 

@@ -12,14 +12,14 @@
       description="A stateful workflow process definition" />
 
   <page
-      for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+      for="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
       name="index.html"
       class=".definition.StatefulProcessDefinitionView"
       permission="zope.ManageServices"
       template="definition_index.pt" />
 
   <editform
-      schema="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+      schema="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
       name="edit.html"
       template="definition_edit.pt"
       class=".definition.RelevantDataSchemaEdit"
@@ -27,7 +27,7 @@
       permission="zope.workflow.ManageProcessDefinitions"/>
 
   <menuItems
-      for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+      for="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
       menu="zmi_actions">
 
     <menuItem
@@ -48,7 +48,7 @@
 <!-- States Container -->
 
   <view
-      for="zope.app.interfaces.workflow.stateful.IStatefulStatesContainer"
+      for="zope.app.workflow.interfaces.stateful.IStatefulStatesContainer"
       name="+"
       menu="zmi_actions" title="Add"
       class=".definition.StatesContainerAdding"
@@ -64,7 +64,7 @@
 <!-- State -->
   <!-- nothing to edit yet
   <editform
-      schema="zope.app.interfaces.workflow.stateful.IState"
+      schema="zope.app.workflow.interfaces.stateful.IState"
       name="edit.html"
       menu="zmi_views"
       label="Edit a State"
@@ -74,7 +74,7 @@
   <addform
       name="AddState"
       menu="add_stateful_states" title="Stateful State"
-      schema="zope.app.interfaces.workflow.stateful.IState"
+      schema="zope.app.workflow.interfaces.stateful.IState"
       class=".definition.StateAddFormHelper"
       permission="zope.workflow.ManageProcessDefinitions"
       content_factory="zope.app.workflow.stateful.definition.State"
@@ -85,7 +85,7 @@
 <!-- Transitions Container -->
 
   <view
-      for="zope.app.interfaces.workflow.stateful.IStatefulTransitionsContainer"
+      for="zope.app.workflow.interfaces.stateful.IStatefulTransitionsContainer"
       name="+"
       menu="zmi_actions" title="Add"
       class=".definition.TransitionsContainerAdding"
@@ -101,7 +101,7 @@
 
 <!-- Transition -->
   <editform
-      schema="zope.app.interfaces.workflow.stateful.ITransition"
+      schema="zope.app.workflow.interfaces.stateful.ITransition"
       name="edit.html"
       menu="zmi_views"
       label="Edit a Transition"
@@ -110,7 +110,7 @@
   <addform
       name="AddTransition"
       menu="add_stateful_transitions" title="Stateful Transition"
-      schema="zope.app.interfaces.workflow.stateful.ITransition"
+      schema="zope.app.workflow.interfaces.stateful.ITransition"
       permission="zope.workflow.ManageProcessDefinitions"
       content_factory="zope.app.workflow.stateful.definition.Transition"
       arguments="sourceState destinationState"
@@ -129,7 +129,7 @@
 
   <page
       name="index.html"
-      for="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
+      for="zope.app.workflow.interfaces.stateful.IContentWorkflowsManager"
       class=".contentworkflow.ContentWorkflowsManagerView"
       permission="zope.ManageServices"
       template="contentworkflow_index.pt"
@@ -137,7 +137,7 @@
 
   <page
       name="registry.html"
-      for="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
+      for="zope.app.workflow.interfaces.stateful.IContentWorkflowsManager"
       class=".contentworkflow.ManageContentProcessRegistry"
       permission="zope.ManageServices"
       template="contentworkflow_registry.pt"
@@ -146,7 +146,7 @@
 
 <!-- ProcessInstanceContainerAdaptable -->
   <pages
-      for="zope.app.interfaces.workflow.IProcessInstanceContainerAdaptable"
+      for="zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"
       permission="zope.workflow.UseProcessInstances"
       class=".instance.ManagementView">
 
@@ -159,7 +159,7 @@
   <page
       for="zope.app.interfaces.container.IContentContainer"
       permission="zope.View"
-      class="zope.app.browser.workflow.stateful.content_filter.FilterList"
+      class="zope.app.workflow.browser.stateful.content_filter.FilterList"
       name="published_content.html"
       attribute="published_content" />
 

@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.9 2004/02/20 16:57:34 fdrake Exp $
+$Id: contentworkflow.py,v 1.10 2004/02/27 16:50:40 philikon Exp $
 """
 __metaclass__ = type
 
@@ -27,9 +27,9 @@ from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectCreatedEvent
 from zope.app.services.servicenames import EventSubscription, Workflows
 
-from zope.app.interfaces.workflow import IProcessInstanceContainer
-from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
-from zope.app.interfaces.workflow.stateful import IContentWorkflowsManager
+from zope.app.workflow.interfaces import IProcessInstanceContainer
+from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
+from zope.app.workflow.interfaces.stateful import IContentWorkflowsManager
 from zope.interface import implements, providedBy
 from zope.app.container.contained import Contained
 
@@ -112,13 +112,13 @@ class ContentWorkflowsManager(Persistent, Contained):
         return names
 
     def register(self, iface, name):
-        """See zope.app.interfaces.workflows.stateful.IContentProcessRegistry"""
+        """See zope.app.workflow.interfacess.stateful.IContentProcessRegistry"""
         if iface not in self._registry.keys():
             self._registry[iface] = ()
         self._registry[iface] += (name,)
         
     def unregister(self, iface, name):
-        """See zope.app.interfaces.workflows.stateful.IContentProcessRegistry"""
+        """See zope.app.workflow.interfacess.stateful.IContentProcessRegistry"""
         names = list(self._registry[iface])
         names = filter(lambda n: n != name, names)
         if not names:
@@ -127,7 +127,7 @@ class ContentWorkflowsManager(Persistent, Contained):
             self._registry[iface] = tuple(names)
 
     def getProcessNamesForInterface(self, iface):
-        """See zope.app.interfaces.workflows.stateful.IContentProcessRegistry"""
+        """See zope.app.workflow.interfacess.stateful.IContentProcessRegistry"""
         return self._registry.get(iface, ())
 
     def getInterfacesForProcessName(self, name):

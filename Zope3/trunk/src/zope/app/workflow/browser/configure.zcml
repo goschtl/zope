@@ -1,11 +1,12 @@
 <zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
-   xmlns="http://namespaces.zope.org/browser">
+   xmlns="http://namespaces.zope.org/browser"
+   >
 
 
 <!-- Workflow Service -->
   <page
-      for="zope.app.interfaces.workflow.IWorkflowService"
+      for="zope.app.workflow.interfaces.IWorkflowService"
       name="index.html"
       template="workflows.pt"
       class=".workflows.WorkflowsRegistryView"
@@ -23,7 +24,7 @@
 <!-- ProcessDefinition Registration -->
 
   <page
-      for="zope.app.interfaces.workflow.IProcessDefinition"
+      for="zope.app.workflow.interfaces.IProcessDefinition"
       name="useRegistration.html"
       template="useprocessdefinitionconfig.pt"
       class=".definition.Registered"
@@ -32,9 +33,9 @@
 
 
   <addform
-      for="zope.app.interfaces.workflow.IProcessDefinition"
+      for="zope.app.workflow.interfaces.IProcessDefinition"
       name="addRegistration.html"
-      schema="zope.app.interfaces.workflow.IProcessDefinitionRegistration"
+      schema="zope.app.workflow.interfaces.IProcessDefinitionRegistration"
       class="zope.app.browser.services.registration.AddComponentRegistration"
       permission="zope.workflow.ManageProcessDefinitions"
       content_factory="zope.app.workflow.service.ProcessDefinitionRegistration"
@@ -46,13 +47,13 @@
   <editform
       name="index.html"
       menu="zmi_views" title="Edit"
-      schema="zope.app.interfaces.workflow.IProcessDefinitionRegistration"
+      schema="zope.app.workflow.interfaces.IProcessDefinitionRegistration"
       label="ProcessDefinition Registration"
       permission="zope.workflow.ManageProcessDefinitions"
       fields="name componentPath permission status" />
 
   <page
-      for="zope.app.interfaces.workflow.IProcessDefinition"
+      for="zope.app.workflow.interfaces.IProcessDefinition"
       name="importexport.html"
       template="importexport_index.pt"
       class=".definition.ImportExportView"
@@ -60,7 +61,7 @@
       menu="zmi_views" title="Import/Export" />
 
   <pages
-      for="zope.app.interfaces.workflow.IProcessDefinition"
+      for="zope.app.workflow.interfaces.IProcessDefinition"
       permission="zope.workflow.ManageProcessDefinitions"
       class=".definition.ImportExportView">
       
@@ -72,7 +73,7 @@
 <!-- ProcessDefinitionElementContainer -->
 
   <page
-      for="zope.app.interfaces.workflow.IProcessDefinitionElementContainer"
+      for="zope.app.workflow.interfaces.IProcessDefinitionElementContainer"
       permission="zope.workflow.ManageProcessDefinitions"
       class="zope.app.browser.container.contents.Contents"
       name="contents.html" 
@@ -80,15 +81,15 @@
       menu="zmi_views" title="Contents" />
 
   <defaultView
-      for="zope.app.interfaces.workflow.IProcessDefinitionElementContainer"
+      for="zope.app.workflow.interfaces.IProcessDefinitionElementContainer"
       name="contents.html" />  
 
   <!-- ProcessInstanceContainerAdaptable 
        XXX Commented Out .. is just a demo
   <pages
-      for="zope.app.interfaces.workflow.IProcessInstanceContainerAdaptable"
+      for="zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"
       permission="zope.workflow.UseProcessInstances"
-      class="zope.app.browser.workflow.instance.InstanceContainerView">
+      class="zope.app.workflow.browser.instance.InstanceContainerView">
 
     <page name="processinstances.html" attribute="contents"
           menu="zmi_views" title="ProcessInstances" />

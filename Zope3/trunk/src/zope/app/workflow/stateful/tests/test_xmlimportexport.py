@@ -20,8 +20,8 @@ from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.services.registration import IRegisterable
-from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
-from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
+from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
+from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.services.servicenames import Permissions
 from zope.app.services.tests.placefulsetup import PlacefulSetup

@@ -13,7 +13,7 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.7 2003/08/21 20:10:30 srichter Exp $
+$Id: contentworkflow.py,v 1.1 2004/02/27 16:50:38 philikon Exp $
 """
 from zope.app.introspector import interfaceToName, nameToInterface
 from zope.app.component.interfacefield import InterfaceField

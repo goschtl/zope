@@ -9,7 +9,7 @@
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"/>
 
     <implements interface=
-        "zope.app.interfaces.workflow.IProcessInstanceContainerAdaptable"/>
+        "zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"/>
 
     <factory
         id="TestObject"

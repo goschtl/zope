@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.16 2004/02/20 16:57:34 fdrake Exp $
+$Id: instance.py,v 1.17 2004/02/27 16:50:40 philikon Exp $
 """
 __metaclass__ = type
 
@@ -22,13 +22,13 @@ from persistent.dict import PersistentDict
 
 from zope.app import zapi
 from zope.app.event import publish
-from zope.app.interfaces.workflow.stateful import AUTOMATIC
-from zope.app.interfaces.workflow.stateful import IAfterTransitionEvent
-from zope.app.interfaces.workflow.stateful import IBeforeTransitionEvent
-from zope.app.interfaces.workflow.stateful import IRelevantDataChangeEvent
-from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
-from zope.app.interfaces.workflow.stateful import ITransitionEvent
-from zope.app.interfaces.workflow.stateful import \
+from zope.app.workflow.interfaces.stateful import AUTOMATIC
+from zope.app.workflow.interfaces.stateful import IAfterTransitionEvent
+from zope.app.workflow.interfaces.stateful import IBeforeTransitionEvent
+from zope.app.workflow.interfaces.stateful import IRelevantDataChangeEvent
+from zope.app.workflow.interfaces.stateful import IStatefulProcessInstance
+from zope.app.workflow.interfaces.stateful import ITransitionEvent
+from zope.app.workflow.interfaces.stateful import \
      IBeforeRelevantDataChangeEvent, IAfterRelevantDataChangeEvent
 from zope.app.traversing import getParent
 from zope.app.workflow.instance import ProcessInstance
@@ -168,7 +168,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
     data = property(getData) 
 
     def initialize(self):
-        """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
+        """See zope.app.workflow.interfaces.IStatefulProcessInstance"""
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         self._status = clean_pd.getInitialStateName()
@@ -187,13 +187,13 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         self._checkAndFireAuto(clean_pd)
 
     def getOutgoingTransitions(self):
-        """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
+        """See zope.app.workflow.interfaces.IStatefulProcessInstance"""
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         return self._outgoingTransitions(clean_pd)
 
     def fireTransition(self, id):
-        """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
+        """See zope.app.workflow.interfaces.IStatefulProcessInstance"""
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         if not id in self._outgoingTransitions(clean_pd):

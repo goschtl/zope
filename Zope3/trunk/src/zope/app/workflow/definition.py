@@ -13,40 +13,32 @@
 ##############################################################################
 """Implementation of workflow process definition.
 
-$Id: definition.py,v 1.5 2004/02/20 16:57:33 fdrake Exp $
+$Id: definition.py,v 1.6 2004/02/27 16:50:37 philikon Exp $
 """
 __metaclass__ = type
 
 from types import StringTypes
 from persistent import Persistent
 from persistent.dict import PersistentDict
-from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
-from zope.app.interfaces.workflow import IProcessDefinition
+from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
+from zope.app.workflow.interfaces import IProcessDefinition
 from zope.interface import implements
 from zope.app.container.contained import Contained, setitem, uncontained
 
 class ProcessDefinition(Persistent, Contained):
-
     __doc__ = IProcessDefinition.__doc__
 
     implements(IProcessDefinition)
 
     name = None
 
-    ############################################################
-    # Implementation methods for interface
-    # zope.app.interfaces.workflow.IProcessDefinition
-
     def createProcessInstance(self, definition_name):
+        """See zope.app.workflow.interfaces.IProcessDefinition"""
         return None
-
-    #
-    ############################################################
 
 class ProcessDefinitionElementContainer(Persistent, Contained):
     """ See IProcessDefinitionElementContainer.
     """
-
     implements(IProcessDefinitionElementContainer)
 
     def __init__(self):

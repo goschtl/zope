@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.10 2003/12/15 13:33:17 srichter Exp $
+$Id: test_instance.py,v 1.11 2004/02/27 16:50:40 philikon Exp $
 """
 
 import unittest
@@ -39,12 +39,12 @@ from zope.app.interfaces.services.registration import ActiveStatus
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.service import ProcessDefinitionRegistration
-from zope.app.interfaces.workflow.stateful \
+from zope.app.workflow.interfaces.stateful \
      import IStatefulProcessInstance
-from zope.app.interfaces.workflow.stateful import \
+from zope.app.workflow.interfaces.stateful import \
      IBeforeTransitionEvent, IAfterTransitionEvent
-from zope.app.interfaces.workflow.stateful import IRelevantDataChangeEvent
-from zope.app.interfaces.workflow.stateful import \
+from zope.app.workflow.interfaces.stateful import IRelevantDataChangeEvent
+from zope.app.workflow.interfaces.stateful import \
      IBeforeRelevantDataChangeEvent, IAfterRelevantDataChangeEvent
 from zope.app.workflow.stateful.definition \
      import StatefulProcessDefinition, State, Transition

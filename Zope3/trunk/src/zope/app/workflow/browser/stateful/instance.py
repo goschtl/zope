@@ -13,20 +13,22 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.10 2003/09/21 17:31:12 jim Exp $
+$Id: instance.py,v 1.1 2004/02/27 16:50:38 philikon Exp $
 """
-from zope.app.browser.form.submit import Update
-from zope.app.form.utility import setUpWidget, applyWidgetsChanges
-from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.app.interfaces.workflow import IProcessInstanceContainer
-from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
-from zope.app.services.servicenames import Workflows
 from zope.component import getAdapter, getService
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.schema import getFields
+
+from zope.app.browser.form.submit import Update
+from zope.app.form.utility import setUpWidget, applyWidgetsChanges
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.services.servicenames import Workflows
+
+from zope.app.workflow.interfaces import IProcessInstanceContainer
+from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 
 __metaclass__ = type
 

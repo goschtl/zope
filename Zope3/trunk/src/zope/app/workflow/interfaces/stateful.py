@@ -13,17 +13,17 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.21 2004/02/24 14:25:37 srichter Exp $
+$Id: stateful.py,v 1.1 2004/02/27 16:50:39 philikon Exp $
 """
 import zope.schema
 from zope.app.security.permission import PermissionField
 
 from zope.interface import Interface, Attribute
 from zope.app.component.interfacefield import InterfaceField
-from zope.app.interfaces.workflow import IWorkflowEvent
-from zope.app.interfaces.workflow import IProcessDefinition
-from zope.app.interfaces.workflow import IProcessInstance
-from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
+from zope.app.workflow.interfaces import IWorkflowEvent
+from zope.app.workflow.interfaces import IProcessDefinition
+from zope.app.workflow.interfaces import IProcessInstance
+from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 
 AUTOMATIC = u'Automatic'
 MANUAL = u'Manual'

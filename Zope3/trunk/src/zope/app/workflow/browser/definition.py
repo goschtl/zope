@@ -13,15 +13,14 @@
 ##############################################################################
 """ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.3 2003/08/07 17:41:45 srichter Exp $
+$Id: definition.py,v 1.1 2004/02/27 16:50:37 philikon Exp $
 """
 __metaclass__ = type
  
 from zope.component import getAdapter, getView, getUtility
 from zope.app.traversing import traverse
 from zope.app.interfaces.services.registration import IRegistered
-from zope.app.interfaces.workflow import IProcessDefinitionImportExport
-
+from zope.app.workflow.interfaces import IProcessDefinitionImportExport
 
 class Registered:
     """View for displaying the registrations for a process definition"""

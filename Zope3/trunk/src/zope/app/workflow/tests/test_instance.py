@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: test_instance.py,v 1.4 2004/02/27 16:50:47 philikon Exp $
+"""
 
 import unittest
 from zope.interface.verify import verifyClass
@@ -18,10 +21,10 @@ from zope.interface.verify import verifyClass
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.app.interfaces.workflow import IProcessInstance
+from zope.app.workflow.interfaces import IProcessInstance
 from zope.app.workflow.instance import ProcessInstance
 
-from zope.app.interfaces.workflow import IProcessInstanceContainer
+from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.instance import ProcessInstanceContainerAdapter, WFKey
 from zope.interface import implements
 

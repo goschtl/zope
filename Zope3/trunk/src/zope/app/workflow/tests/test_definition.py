@@ -11,15 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: test_definition.py,v 1.3 2004/02/27 16:50:47 philikon Exp $
+"""
 
 import unittest
 
 from zope.interface.verify import verifyClass
 
-from zope.app.interfaces.workflow import IProcessDefinition
+from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.definition import ProcessDefinition
 
-from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
+from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 
 

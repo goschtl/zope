@@ -14,7 +14,7 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.12 2004/02/20 16:57:33 fdrake Exp $
+$Id: service.py,v 1.13 2004/02/27 16:50:37 philikon Exp $
 """
 __metaclass__ = type
 
@@ -24,9 +24,9 @@ from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.services.registration import INameComponentRegistry
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.interfaces.workflow import IProcessDefinition
-from zope.app.interfaces.workflow import IProcessDefinitionRegistration
-from zope.app.interfaces.workflow import IWorkflowService
+from zope.app.workflow.interfaces import IProcessDefinition
+from zope.app.workflow.interfaces import IProcessDefinitionRegistration
+from zope.app.workflow.interfaces import IWorkflowService
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
 from zope.app.services.servicenames import Workflows
@@ -42,19 +42,12 @@ class ILocalWorkflowService(IWorkflowService, INameComponentRegistry):
     """A Local WorkflowService.
     """
 
-
 class WorkflowService(Persistent, NameComponentRegistry, Contained):
-
     __doc__ = IWorkflowService.__doc__
-
     implements(ILocalWorkflowService, ISimpleService)
 
-    ############################################################
-    # Implementation methods for interface
-    # zope.app.interfaces.workflow.IWorkflowService
-
     def getProcessDefinitionNames(self):
-        'See IWorkflowService'
+        """See zope.app.workflow.interfaces.IWorkflowService"""
         definition_names = {}
         for name in self.listRegistrationNames():
             registry = self.queryRegistrations(name)
@@ -66,11 +59,8 @@ class WorkflowService(Persistent, NameComponentRegistry, Contained):
                 definition_names[name] = 0
         return definition_names.keys()
 
-
-
-
     def getProcessDefinition(self, name):
-        'See IWorkflowService'
+        """See zope.app.workflow.interfaces.IWorkflowService"""
         pd = self.queryActiveComponent(name)
         if pd is not None:
             return pd
@@ -79,30 +69,20 @@ class WorkflowService(Persistent, NameComponentRegistry, Contained):
             return service.getProcessDefinition(name)
         raise KeyError, name
 
-
-
     def queryProcessDefinition(self, name, default=None):
-        'See IWorkflowService'
+        """See zope.app.workflow.interfaces.IWorkflowService"""
         try:
             return self.getProcessDefinition(name)
         except KeyError:
             return default
 
-
-
     def createProcessInstance(self, definition_name):
+        """See zope.app.workflow.interfaces.IWorkflowService"""
         pd = self.getProcessDefinition(definition_name)
         return pd.createProcessInstance(definition_name)
 
-
-    #
-    ############################################################
-
-
 class ProcessDefinitionRegistration(NamedComponentRegistration):
-
     __doc__ = IProcessDefinitionRegistration.__doc__
-
     implements(IProcessDefinitionRegistration)
 
     serviceType = Workflows
@@ -134,18 +114,14 @@ class ProcessDefinitionRegistration(NamedComponentRegistration):
         adapter.removeUsage(getPath(self))
         super(ProcessDefinitionRegistration, self).removeNotify(event)
 
-
 class ProcessDefinitionTerm:
-
     implements(ITokenizedTerm)
 
     def __init__(self, name):
         self.value = name
         self.token = name
 
-
-class ProcessDefinitionVocabulary(object):
-
+class ProcessDefinitionVocabulary:
     implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, context):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.10 2004/02/20 16:57:33 fdrake Exp $
+$Id: instance.py,v 1.11 2004/02/27 16:50:37 philikon Exp $
 """
 __metaclass__ = type
 
@@ -22,7 +22,7 @@ from persistent.dict import PersistentDict
 from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
-from zope.app.interfaces.workflow \
+from zope.app.workflow.interfaces \
      import IProcessInstance, IProcessInstanceContainer
 
 from zope.interface import implements
@@ -41,16 +41,9 @@ class ProcessInstance(Contained):
         self._pd_name = pd_name
         self._status = None
 
-    ############################################################
-    # Implementation methods for interface
-    # zope.app.interfaces.workflow.IProcessInstance
-
     processDefinitionName = property(lambda self: self._pd_name)
 
     status = property(lambda self: self._status)
-
-    #
-    ############################################################
 
     ## should probably have a method "getProcessDefinition"
 

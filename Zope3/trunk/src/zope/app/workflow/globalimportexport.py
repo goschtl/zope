@@ -13,15 +13,16 @@
 ##############################################################################
 """ProcessDefinition Import Export Utility
 
-$Id: globalimportexport.py,v 1.4 2003/06/07 13:23:46 stevea Exp $
+$Id: globalimportexport.py,v 1.5 2004/02/27 16:50:37 philikon Exp $
 """
 __metaclass__ = type
 
 from zope.interface.implementor import ImplementorRegistry
 from zope.proxy import removeAllProxies
-from zope.app.interfaces.workflow import IProcessDefinition
-from zope.app.interfaces.workflow import IGlobalProcessDefinitionImportExport
 from zope.interface import implements, providedBy
+
+from zope.app.workflow.interfaces import IProcessDefinition
+from zope.app.workflow.interfaces import IGlobalProcessDefinitionImportExport
 
 from StringIO import StringIO
 

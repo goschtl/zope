@@ -13,9 +13,9 @@
   <require
       permission="zope.workflow.ManageProcessDefinitions"
       interface="
-         zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+         zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
       set_schema="
-         zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition" 
+         zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition" 
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -40,7 +40,7 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.interfaces.workflow.stateful.IStatefulStatesContainer"
+      interface="zope.app.workflow.interfaces.stateful.IStatefulStatesContainer"
       />
   <implements 
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
@@ -56,8 +56,8 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.interfaces.workflow.stateful.IState"
-      set_schema="zope.app.interfaces.workflow.stateful.IState"
+      interface="zope.app.workflow.interfaces.stateful.IState"
+      set_schema="zope.app.workflow.interfaces.stateful.IState"
       />
   <implements 
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
@@ -74,7 +74,7 @@
   <require
       permission="zope.workflow.ManageProcessDefinitions"
       interface=
-          "zope.app.interfaces.workflow.stateful.IStatefulTransitionsContainer" 
+          "zope.app.workflow.interfaces.stateful.IStatefulTransitionsContainer" 
       />
   <implements 
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
@@ -90,8 +90,8 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.interfaces.workflow.stateful.ITransition" 
-      set_schema="zope.app.interfaces.workflow.stateful.ITransition"
+      interface="zope.app.workflow.interfaces.stateful.ITransition" 
+      set_schema="zope.app.workflow.interfaces.stateful.ITransition"
       />
   <implements 
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
@@ -108,19 +108,19 @@
   />
   <require
     permission="zope.ManageServices"
-    interface="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
+    interface="zope.app.workflow.interfaces.stateful.IContentWorkflowsManager"
     attributes="cpRegistry"
     />
 </content>
 
 <!-- Stateful workflow import/Export -->
 <workflow:importHandler
-   interface="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+   interface="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
    factory=".xmlimportexport.XMLImportHandler"
    />
 
 <workflow:exportHandler
-   interface="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+   interface="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
    factory=".xmlimportexport.XMLExportHandler"
    />
 

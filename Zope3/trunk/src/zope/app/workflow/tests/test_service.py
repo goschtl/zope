@@ -12,9 +12,7 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_service.py,v 1.7 2003/12/18 09:57:18 pnaveen Exp $
+$Id: test_service.py,v 1.8 2004/02/27 16:50:47 philikon Exp $
 """
 
 import unittest
@@ -30,7 +28,7 @@ from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
-from zope.app.interfaces.workflow \
+from zope.app.workflow.interfaces \
      import IWorkflowService, IProcessDefinition
 from zope.app.workflow.service import WorkflowService
 from zope.app.workflow.service import ProcessDefinitionRegistration

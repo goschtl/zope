@@ -13,7 +13,7 @@
 ##############################################################################
 """Workflow View Classes
 
-$Id: workflows.py,v 1.3 2003/08/17 06:06:04 philikon Exp $
+$Id: workflows.py,v 1.1 2004/02/27 16:50:37 philikon Exp $
 """
 from zope.app.browser.services.registration import \
      NameComponentRegistryView, NameRegistryView
