@@ -1,6 +1,6 @@
 Zope Road Map
 
-  This file lists fratures planned for future releases. It is roughly
+  This file lists features planned for future releases. It is roughly
   the compliment of CHANGES.txt. Over time, entries from this file
   will migrate to CHANGES.txt and then to HISTORY.txt.
 
@@ -35,7 +35,7 @@ Zope Road Map
         - A flexible and pluggable authentication service.
 
         - Interface service, for browsing and changing configuration
-          by interface.  This will include focussed browsing and
+          by interface.  This will include focused browsing and
           configuration of "content types".
 
       - A file-system synchronization system.  Initially, this will

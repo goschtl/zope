@@ -21,7 +21,7 @@ schema field is bound to an instance of a content object.
 **XXX** Need to mention tokens. Tokens are ASCII-encoded non-empty
 strings that represent particular values. There is a 1-to-1
 bidirectional mapping between tokens and values. One way to think of a
-token is as an optimisation of getting a Browser ``id_string`` view on
+token is as an optimization of getting a Browser ``id_string`` view on
 a ``Term``. But, don't think that if doing so makes your head hurt.
 Tokens effectively exist to allow any value to be encoded in an HTML
 form.
@@ -54,7 +54,7 @@ interface.
 
 A more typical vocabulary would have a moderately limited number of
 entries, but be easily iterable; lets say 10s to 1000s of values.  The
-vobulary could consist of the people sharing a dorm room (two or three
+vocabulary could consist of the people sharing a dorm room (two or three
 usually!), or it could be the set of registered users of your site
 (10, 100, or many, many thousand).  These cases are supported by the
 IIterableVocabulary interface, which derives from ``IBaseVocabulary``.
@@ -86,7 +86,7 @@ interface types may be defined to allow easy tests for specific kinds
 of query support; these interfaces should be viewed as mix-ins, since
 a single vocabulary may provide support for more than one type of
 query.  For example, a dictionary may support both prefix-based
-completion and part-of-speach or keyword searching.
+completion and part-of-speech or keyword searching.
 
 
 Vocabulary Fields
@@ -115,7 +115,7 @@ The remaining four field types are all used to define fields for which
 more than one value may be selected.  These fields combine options of
 orderable vs. non-orderable and whether each value may be included
 more than once (uniqueness).  These fields also implement
-``IMinMaxLen``, allowing a schema to set the minumum and maximum
+``IMinMaxLen``, allowing a schema to set the minimum and maximum
 number of values for each field.
 
 =========================  ==========  ==========

@@ -15,7 +15,7 @@ The order that items are listed here is not significant.
 - Implement a local permission service (using configurations)
 
 - Rethink the organization of the security software to reflect the
-  fact that people will likley plug in different grant and owndership
+  fact that people will likely plug in different grant and ownership
   systems for different security policies.
 
   * Document the relationship between the security policy and the
@@ -54,7 +54,7 @@ The order that items are listed here is not significant.
     Maybe do something similar w annotations.
 
   * Maybe do some more xmlpickle refinement with an eye toward
-    impproving the usability of simple dictionary pickles.
+    improving the usability of simple dictionary pickles.
 
   * export and import as a special case
 
@@ -108,7 +108,7 @@ The order that items are listed here is not significant.
 
   * Undo everybody
 
-  * Undo optionally takes place into acount.
+  * Undo optionally takes place into account.
 
   * Should be an undo last. 
 
@@ -150,9 +150,9 @@ The order that items are listed here is not significant.
 - Finish "process control", specifically shutting down and restarting
   via the web.  The main issue here is plumbing.  How to get the
   signal from the UI to the server logic. The way to do this is via
-  events. The UI should generate some sort of ShutwornRequest event
-  and code in the server should be subscribed. Care needs to be taked
-  to assure that only privaledged users can generate these events.
+  events. The UI should generate some sort of ShutdownRequest event
+  and code in the server should be subscribed. Care needs to be taken
+  to assure that only privileged users can generate these events.
 
 - Help System?
 
@@ -171,7 +171,7 @@ The order that items are listed here is not significant.
   See http://collector.zope.org/Zope3-dev/109
   This requires a hook in the ZODB that Zope can override.
 
-- Python scipts
+- Python scripts
 
   What form should these take? Should they be like Zope 2 Python
   scripts? or should they by like Python modules.
@@ -202,7 +202,7 @@ The order that items are listed here is not significant.
 - Mailing service
 
   Mail sending service that integrates with Zope 3 transactions and
-  only sends out email on successfull commits (and no multiple emails
+  only sends out email on successful commits (and no multiple emails
   on ConflictErrors), is asynchronous (does not force the user to wait
   until the mail is completely sent) and reliable (does not lose mail
   on crashes, keeps a queue that can survive server restarts).

@@ -2,7 +2,7 @@ Zope 3 Functional Testing
 
  How to run Zope 3 functional tests
 
-  In the toplevel directory, run "python test.py -f".  If you've read
+  In the top-level directory, run "python test.py -f".  If you've read
   UNITTEST.txt you'll notice that the same script is used, but with an
   additional argument '-f'.  That's because in Zope 3 functional tests are
   just a special case of unit tests.  The rest of test.py options work as
@@ -41,7 +41,7 @@ Zope 3 Functional Testing
    - Functional test cases inherit from zope.functional.FunctionalTestCase
      or zope.functional.BrowserTestCase instead of unittest.TestCase.
 
-   - All global services, components etc. defined in assored configure.zcml
+   - All global services, components etc. defined in assorted configure.zcml
      are available during test run time.
 
    - A volatile in-memory storage with an empty root folder and all essential

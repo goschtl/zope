@@ -3,7 +3,7 @@ Using the Zope Debugger
   Introduction
   
     Zope3 includes a mechanism to debug an object publishing request, 
-    similiar to the Zope2 
+    similar to the Zope2 
     "debug mechanism":http://www.zope.org/Members/mcdonc/HowTos/UsingTheZopeDebugger
 
   Setting up Environment
@@ -36,7 +36,7 @@ Using the Zope Debugger
     Run
 
       The 'run' method executes a request with the publisher's normal 
-      error handling disabled and without outputing anything.  This is
+      error handling disabled and without outputting anything.  This is
       useful for use with Python's post-mortem.
 
          >> app.run(path='/folder/content_object')
@@ -47,7 +47,7 @@ Using the Zope Debugger
     Debug
       
       The 'debug' method starts up the publisher in the python
-      debugger, with an extra convience break point, setup just before
+      debugger, with an extra convenience break point, setup just before
       the published object call::
 
         >> app.debug(path='/folder/content_object')
@@ -61,7 +61,7 @@ Using the Zope Debugger
 
       - path - the url path to debug
 
-      - basic - user:password used for http basic auth (it will be
+      - basic - user:password used for HTTP basic auth (it will be
         base64 encoded by the debug method).
 
   Accessing objects (without the debugger)
@@ -77,5 +77,5 @@ Using the Zope Debugger
        print list(root)
 
     Also note that, after initializing the application, by creating
-    the root object, you can access any global services setup diring
+    the root object, you can access any global services setup during
     initialization. 

@@ -14,7 +14,7 @@
 
       <attribute name="for" required="yes">
         <description>
-              The interface of the process defintion, 
+              The interface of the process definition, 
               this handler can load. 
           </description>
       </attribute>
@@ -38,7 +38,7 @@
 
       <attribute name="for" required="yes">
         <description>
-              The interface of the process defintion, 
+              The interface of the process definition, 
               this handler can save. 
           </description>
       </attribute>

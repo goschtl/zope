@@ -50,15 +50,15 @@ menuItems (class zope.app.publisher.browser.menuItemsDirective)
 
           The id of the permission needed access the item
           
-          This can usually be infered by the system, however, doing
+          This can usually be inferred by the system, however, doing
           so may be expensive. When displaying a menu, the system
           tries to traverse to the URLs given in each action to
-          determine whether the url is accessable to the current
+          determine whether the url is accessible to the current
           user.  This can be avoided if the permission is given explicitly.
 
         description -- 
 
-          A longer explaination of the menu item
+          A longer explanation of the menu item
           
           A UI may display this with the item or display it when the
           user requests more assistance.

@@ -42,7 +42,7 @@ Zope Changes
       'c'.
 
       Also defined and registered an adapter named 'zope', that
-      provides a number of handy functions. For example, to gewt an
+      provides a number of handy functions. For example, to get an
       object's name, use::
 
          someobject/zope:name
@@ -87,7 +87,7 @@ Zope Changes
      The interface service will someday provide a tool for browsing 
      and modifying all of the configurations for a interface (type).
 
-     The initial version demostrates browsing component configurations
+     The initial version demonstrates browsing component configurations
      be showing you all views configured for an interface.
 
    - WebDAV:
@@ -142,7 +142,7 @@ Zope Changes
 
     - FTP Support
 
-    - PUT support (Allowing editing with Mozolla/Netscape Composer and 
+    - PUT support (Allowing editing with Mozilla/Netscape Composer and 
                    Amaya).
 
     - Partial WebDAV support
@@ -165,7 +165,7 @@ Zope Changes
 
     - Views on exceptions.
 
-    Much thanks to everone who contributed to this release:
+    Much thanks to everyone who contributed to this release:
 
         Alan Runyan, Albertas Agejevas, Alexander Limi, Andreas Jung,
         Anthony Baxter, Axel Bringenberg, Barry Warsaw, Bruce Eckel,

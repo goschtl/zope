@@ -195,7 +195,7 @@ The Meta Configuration System
 
   Implementing Directives with No Subdirectives
 
-    The simplist type of directive (or subdirective) to implement
+    The simplest type of directive (or subdirective) to implement
     is one that has no subdirectives.  And the only difference
     between the two is where the handler method is actually located.
     In both cases, the handler must conform to the IEmptyDirective

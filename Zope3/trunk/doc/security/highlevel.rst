@@ -11,7 +11,7 @@ Permission
 
 Object in Context
 
- -- the main point is we're interested in what permissions a prinicpal needs
+ -- the main point is we're interested in what permissions a principal needs
     to access an attribute of a particular object.
 
 To help us manage and understand this task for larger systems, we have

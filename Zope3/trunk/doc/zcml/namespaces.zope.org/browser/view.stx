@@ -1,6 +1,6 @@
 view (class zope.app.publisher.browser.view)
 
-  The view directive defines a viewe that has subpages.
+  The view directive defines a view that has subpages.
   
   The pages provided by the defined view are accessed by first
   traversing to the view name and then traversing to the page

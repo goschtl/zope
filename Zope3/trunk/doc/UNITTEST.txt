@@ -2,7 +2,7 @@ Zope 3 Unit Testing
 
  How to run Zope 3 unit tests
 
-  In the toplevel directory, run "python test.py".  This runs all unit
+  In the top level directory, run "python test.py".  This runs all unit
   tests silently (unless errors occur).  It is possible to run the
   tests more verbosely or to be more selective about which tests to
   run.  There are also other options.  For information about all this,
@@ -66,7 +66,7 @@ Zope 3 Unit Testing
   written.  A short, healthy cycle of "code/write test/run
   test/repeat" can help a developer code more quickly by reducing
   "backtracking" effort and by helping the developer focus on the
-  actual problem at hand.  Additonally, the unit tests generated at
+  actual problem at hand.  Additionally, the unit tests generated at
   initial development time can serve as later assurance that
   maintenance and refactoring performed on code does not break any of
   its intended functionality or behavior.  The results of unit tests
@@ -82,7 +82,7 @@ Zope 3 Unit Testing
   Writing unit tests post-facto can be boring and also robs you of the
   main benefits that unit testing can provide.  Writing unit tests at
   the same time you write the code helps you focus on the task at
-  hand.  Writing unit tests in conjuction with code can be fun and
+  hand.  Writing unit tests in conjunction with code can be fun and
   satisfying, and can help you improve the quality of your code while
   its goals are fresh in your mind.  Used properly, unit testing may
   also help you write code faster, because you will need to
@@ -111,7 +111,7 @@ Zope 3 Unit Testing
   name of the unit test that failed.
 
   "It is better to have tried to test and failed than to not have
-  tried to test at all" aka "test the riskist things first."  If the
+  tried to test at all" aka "test the riskiest things first."  If the
   prospect of writing a series of unit tests for an existing system
   seems daunting, it's important to remember that no matter how many
   unit tests you write, you cannot prove that your software does not
@@ -192,7 +192,7 @@ Zope 3 Unit Testing
   in some cases depends on state provided only in the context of a web
   request, so calling Zope methods directly may not work as you
   expect.  If you're not intimately familiar with Zope, implementing
-  unit tests can be fustrating.  For example, for the common case,
+  unit tests can be frustrating.  For example, for the common case,
   before you are able to write code which tests a Zope SQL Method, you
   must establish a test fixture which represents your entire Zope
   site.
@@ -228,7 +228,7 @@ Zope 3 Unit Testing
   Beck).
 
   Unit testing is a primary tenet of "Extreme Programming", a software
-  development methodology designed to faciliate the rapid production
+  development methodology designed to facilitate the rapid production
   of high quality code with a minimum of developmental ceremony.  For
   more information on unit tests as they relate to Extreme
   Programming, see http://c2.com/cgi/wiki?UnitTestsDefined.  Although

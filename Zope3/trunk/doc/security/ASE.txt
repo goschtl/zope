@@ -1,7 +1,7 @@
 ASE
 
 This is a preliminary version of the ASE document. It is used as a
-preparation for the evaluation workshop in july.
+preparation for the evaluation workshop in July.
 
 Selected functions:
 

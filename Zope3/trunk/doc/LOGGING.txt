@@ -139,7 +139,7 @@ Zope 3 Logging
   we won't discuss further here.
 
   Logger objects are lightweight and cached by the logging module;
-  subseqent calls to logging.getLogger() with the same logger name
+  subsequent calls to logging.getLogger() with the same logger name
   will return the same logger object.  However, there is no way to
   delete logger objects, so it's not a good idea to make up arbitrary
   logger names dynamically.

@@ -5,7 +5,7 @@ Things to do After Zope X3.0
   too many other things to do. We *are* committed to adding this
   eventually.
 
-- Support for permission catagories in the security model. No
+- Support for permission categories in the security model. No
   one has been interested in working on this and, at this point,
   there are too many other things to do. We *are* committed to
   adding this eventually assuming that it becomes necessary due
@@ -19,7 +19,7 @@ Things to do After Zope X3.0
   It's sometimes hard to tell where the pieces that make up a
   page come from.  We'll investigate:
 
-  - Leaving TAL and METAL markup in the ooutput, and
+  - Leaving TAL and METAL markup in the output, and
 
   - Including special source attributes that record locations
     of objects used in expressions.

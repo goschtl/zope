@@ -17,7 +17,7 @@ sprints.
   was instrumental in helping us figure out this format and
   teaching me the XP process.
 
-- Chris Wither's and NIP hosted the first European sprint in
+- Chris Withers and NIP hosted the first European sprint in
   London in February 2002.
 
 - Alastair Burt hosted a workflow sprint in Saarbruecken, Germany,
@@ -69,7 +69,7 @@ CVS Contributors
 - Steve Alexander
 
   Providing much technical leadership and documentation in the TUV
-  securiry certification effort.
+  security certification effort.
 
   Provided major improvements to the implementation of context
   wrappers, context descriptors, and worked out the decorator ideas.
@@ -86,7 +86,7 @@ CVS Contributors
   are declared.
 
   Created (with Marius) a framework, within the registration framework
-  for dealing with the common case of objects registered soley by
+  for dealing with the common case of objects registered solely by
   name.
 
   Created (with Martijn Faassen) the schemagen system for generating
@@ -129,9 +129,9 @@ CVS Contributors
   Did a lot of early implementation work for supporting FTP and
   WebDAV.
 
-  Ported (with folks from Coideworks) DTML to Zope 3.
+  Ported (with folks from Codeworks) DTML to Zope 3.
 
-  Much work on the RDB-Connection and SQL-method frameworks and implementstion.
+  Much work on the RDB-Connection and SQL-method frameworks and implementation.
 
   Worked with Shane on early server implementations.
 
@@ -154,7 +154,7 @@ CVS Contributors
   on ideas from the Zope 2 caching framework.
 
   Created (with Steve) a framework, within the registration framework
-  for dealing with the common case of objects registered soley by
+  for dealing with the common case of objects registered solely by
   name.
 
   Helped Steve on much of the context-wrapper and decorator work.
@@ -173,7 +173,7 @@ CVS Contributors
   zope3-checkins@zope.org and formats a summary of checkin messages as
   a Mozilla sidebar or an RSS feed.
 
-  Much work on the RDB-Connection and SQL-method frameworks and implementstion.
+  Much work on the RDB-Connection and SQL-method frameworks and implementation.
 
   Numerous bug fixes and cleanups.
 
@@ -186,7 +186,7 @@ CVS Contributors
   Implemented (with others from Codeworks) the Cache framework based
   on ideas from the Zope 2 caching framework.
 
-  Much work on the RDB-Connection and SQL-method frameworks and implementstion.
+  Much work on the RDB-Connection and SQL-method frameworks and implementation.
 
   Added named-adapter support to the local adapter service.
 
@@ -198,7 +198,7 @@ CVS Contributors
 
   Working (with others at Codeworks) on a new mail service.
 
-  Much work on the RDB-Connection and SQL-method frameworks and implementstion.
+  Much work on the RDB-Connection and SQL-method frameworks and implementation.
 
   Implemented (with others from Codeworks) the Cache framework based
   on ideas from the Zope 2 caching framework.
@@ -230,7 +230,7 @@ CVS Contributors
 
   Implemented security proxies (with Fred).
 
-  Added initial bootstraping implementation to install standard
+  Added initial bootstrapping implementation to install standard
   services in the root folder.
 
   Integrated the Python logging module.
@@ -384,7 +384,7 @@ CVS Contributors
 
 - Tres Seaver
 
-  Built much of the earliest Zope 3 infrustructure.
+  Built much of the earliest Zope 3 infrastructure.
 
   Created the NewsSite demonstration product.
 
@@ -418,7 +418,7 @@ CVS Contributors
 
   Helped out on the NewsSite demo.
 
-  Added support for tracking object creators as dublin-core meta data.
+  Added support for tracking object creators as Dublin-core meta data.
 
   Added a type-conversion framework for use with database adapters.
 
@@ -434,7 +434,7 @@ CVS Contributors
 
 - Alan Runyan
 
-  Made RDB search result accessable in ZPT.
+  Made RDB search result accessible in ZPT.
 
   A number of bug fixes and cleanups.
 
@@ -463,7 +463,7 @@ CVS Contributors
 
   Implemented the initial principal-role management view.
 
-  Contibuted to the translation service and implemented a translation
+  Contributed to the translation service and implemented a translation
   service for Zope 2.
 
   A number of bug fixes and cleanups.
@@ -510,7 +510,7 @@ CVS Contributors
 
 - Deb Hazarika and S. Raju 
 
-  Filled out the initial file-system synchroniozation prototype.
+  Filled out the initial file-system synchronization prototype.
 
 - Paul Winkler
 
@@ -670,7 +670,7 @@ Other Contributions
 
   o The folks at Codeworks, Albertas Agejevas, Marius Gedminas, and
     Viktorija Zaksiene and contributed major parts of Zope, especially
-    the relational database support and caching infrustructure. Much
+    the relational database support and caching infrastructure. Much
     thanks to M Carling for making their time available.
 
   o Much thanks to Alexander Limi, Alan Runyan, Godefroid Chapelle,

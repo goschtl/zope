@@ -8,7 +8,7 @@ register (class zope.app.onlinehelp.metaconfigure)
 
       Location of this topic's parent in the OnlineHelp tree.
 
-    id -- (reqired)
+    id -- (required)
 
       The id of the help topic.
 
