@@ -113,7 +113,7 @@ Registration stack
   This is a little but confusing, so we'll look at an example.
   Utilities are registered using 2 parameterer, the interface provided
   by the uttility, and the utility name.  For a given interface and
-  name, the utility service may have multiple ustility
+  name, the utility service may have multiple utility
   registrations. It uses a registration stack to store these. We can
   get the registration stack by calling `queryRegistrationsFor()` with
   a registration object that has the desired interface and name.  The

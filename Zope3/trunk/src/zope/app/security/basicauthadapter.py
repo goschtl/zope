@@ -18,8 +18,9 @@ $Id$
 from zope.publisher.interfaces.http import IHTTPCredentials
 from loginpassword import LoginPassword
 
+
 class BasicAuthAdapter(LoginPassword):
-    """Adapter for handling HTTP Basic Auth.""" 
+    """Adapter for handling HTTP Basic Auth."""
 
     __used_for__ = IHTTPCredentials
 

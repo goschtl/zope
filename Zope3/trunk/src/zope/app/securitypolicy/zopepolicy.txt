@@ -9,7 +9,7 @@ can grant or deny:
 
   - roles to principals,
 
-  - permissions to principals, and 
+  - permissions to principals, and
 
   - permissions to roles
 
@@ -33,7 +33,7 @@ and `groups` attributes:
   ...         self.groups = []
 
   >>> principal = Principal('bob')
- 
+
 Roles and permissions are also represented by objects, however, for
 the purposes of the scurity policy, only string `ids` are used.
 
@@ -169,7 +169,7 @@ Grants made to an object are said to be "local".  We can also make
 global grants:
 
   >>> from zope.app.securitypolicy.rolepermission \
-  ...     import rolePermissionManager as roleperG  
+  ...     import rolePermissionManager as roleperG
   >>> from zope.app.securitypolicy.principalpermission \
   ...     import principalPermissionManager as prinperG
   >>> from zope.app.securitypolicy.principalrole \
@@ -207,7 +207,7 @@ routines not to check the validity of the values.
   >>> interaction.checkPermission('P3G', ob)
   True
 
-Local verses global grants
+Local versus global grants
 --------------------------
 
 We, of course, acquire global grants by default:
@@ -225,7 +225,7 @@ Local role-based grants do not override global prinicipal-specific denials:
   >>> prinrole.assignRoleToPrincipal('R1G', 'bob')
   >>> interaction.checkPermission('P1G', ob)
   False
-  
+
 And local role-based denials don't override global
 principal-grants:
 
@@ -267,7 +267,7 @@ Sublocations
 ------------
 
 We can have sub-locations. A sublocation of a location is an object
-whos `__parent__` attribute is the location:
+whose `__parent__` attribute is the location:
 
   >>> ob2 = Ob()
   >>> ob2.__parent__ = ob
@@ -290,7 +290,7 @@ By default, sublocations acquire grants from higher locations:
   True
 
 Sublocation role-based grants do not override their parent
-prinicipal-specific denials:
+principal-specific denials:
 
   >>> roleper2  = interfaces.IRolePermissionManager(ob2)
   >>> prinrole2 = interfaces.IPrincipalRoleManager(ob2)
@@ -300,7 +300,7 @@ prinicipal-specific denials:
   >>> prinrole2.assignRoleToPrincipal('R1', 'bob')
   >>> interaction.checkPermission('P1', ob2)
   False
-  
+
 And local role-based denials don't override their parents
 principal-grant:
 
@@ -326,7 +326,7 @@ and a local role-based grant can override a parent role-based denial:
   >>> prinrole.removeRoleFromPrincipal('R1', 'bob')
   >>> interaction.checkPermission('P4', ob2)
   True
-  
+
 
 Of course, a local permission-based grant or denial overrides any
 global setting and overrides local role-based grants or denials:
@@ -340,7 +340,7 @@ global setting and overrides local role-based grants or denials:
   False
 
 If an object is not annotatable, but does have a parent, it will get
-it's grants from it's parent:
+its grants from its parent:
 
   >>> class C:
   ...     pass
@@ -433,7 +433,7 @@ The Anonymous role
 ------------------
 
 The security policy defines a special role named "zope.Anonymous".  All
-principals have this role and the role cannot be taken away. 
+principals have this role and the role cannot be taken away.
 
   >>> roleperG.grantPermissionToRole('P5', 'zope.Anonymous', False)
   >>> interaction.checkPermission('P5', ob2)
@@ -511,7 +511,7 @@ Let's define a group:
 
   >>> auth['g1'] = Principal('g1')
 
-Lets put the principal in our group.  We do that by adding the group id
+Let's put the principal in our group.  We do that by adding the group id
 to the new principals groups:
 
   >>> principal.groups.append('g1')
@@ -594,8 +594,8 @@ premission is allowed:
   >>> interaction.checkPermission('gP2', ob2)
   True
 
-In a case where a principal has two or more groups, the group denys
-prevent allows from thier parents. They don't prevent the principal
+In a case where a principal has two or more groups, the group denies
+prevent allows from their parents. They don't prevent the principal
 from getting an allow from another principal.
 
 Grants can be inherited from ancestor groups through multiple paths.
@@ -608,7 +608,7 @@ Now, as before, the deny in g1 blocks the grant in g2:
 
   >>> interaction.checkPermission('gP3', ob2)
   False
-  
+
 Let's make g2 a group of g3:
 
   >>> auth['g3'].groups.append('g2')
@@ -641,7 +641,7 @@ and through principals:
   >>> prinrole.assignRoleToPrincipal('gR1', 'bob')
   >>> interaction.checkPermission('gP4', ob2)
   True
-  
+
 Cleanup
 -------
 

@@ -144,10 +144,10 @@ def addConfigureUtility(
     return name
 
 def addUtility(root_folder, utility_type, utility_factory, **kw):
-    """ Add a Utility to the root folders Utility Service.
+    """ Add a Utility to the root folder's Utility Service.
 
     The utility is added to the default package and activated.
-    This assumes the root folder already as a Utility Service
+    This assumes that the root folder already has a Utility Service.
     """
     package = getServiceManagerDefault(root_folder)
     chooser = INameChooser(package)

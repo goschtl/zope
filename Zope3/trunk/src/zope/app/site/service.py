@@ -63,16 +63,11 @@ class IRegisterableContainerContainer(zope.interface.Interface):
        zope.app.registration.interfaces.IRegisterableContainer)
 
 
-class SiteManager(
-    BTreeContainer,
-    PersistentModuleRegistry,
-    ):
+class SiteManager(BTreeContainer, PersistentModuleRegistry):
 
-    zope.interface.implements(
-        ISiteManager,
-        IRegisterableContainerContainer,
-        IRegistry,
-        )
+    zope.interface.implements(ISiteManager,
+                              IRegisterableContainerContainer,
+                              IRegistry)
 
     def __init__(self, site):
         self._bindings = {}
@@ -171,7 +166,7 @@ class SiteManager(
 
         # This is rather tricky. Normally, getting a service requires
         # the use of other services, like the adapter service.  We
-        # need to be careful not to get into an infinate recursion by
+        # need to be careful not to get into an infinite recursion by
         # getting out getService to be called while looking up
         # services, so we'll use _v_calling to prevent recursive
         # getService calls.
@@ -179,16 +174,15 @@ class SiteManager(
         if name == 'Services':
             return self # We are the service service
 
-        if not getattr(self, '_v_calling', 0):
+        if not getattr(self, '_v_calling', False):
 
-            self._v_calling = 1
+            self._v_calling = True
             try:
                 service = self.queryActiveComponent(name)
                 if service is not None:
                     return service
-
             finally:
-                self._v_calling = 0
+                self._v_calling = False
 
         return getNextService(self, name)
 
@@ -206,16 +200,15 @@ class SiteManager(
         if name == 'Services':
             return self # We are the service service
 
-        if not getattr(self, '_v_calling', 0):
+        if not getattr(self, '_v_calling', False):
 
-            self._v_calling = 1
+            self._v_calling = True
             try:
                 service = self.queryActiveComponent(name)
                 if service is not None:
                     return service
-
             finally:
-                self._v_calling = 0
+                self._v_calling = False
 
         return default
 

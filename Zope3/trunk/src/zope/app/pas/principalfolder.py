@@ -41,7 +41,7 @@ class IInternalPrincipal(zope.interface.Interface):
         required=True)
 
     password = zope.schema.Password(
-        title=_(u"Password"),
+        title=_("Password"),
         description=_("The password for the principal."),
         required=True)
 
@@ -55,8 +55,7 @@ class IInternalPrincipal(zope.interface.Interface):
         description=_("Provides a description for the principal."),
         required=False,
         missing_value='',
-        default=u'',
-        )
+        default=u'')
 
 
 class IInternalPrincipalContainer(zope.interface.Interface):

@@ -32,7 +32,7 @@ class IGlobalUtilityService(IUtilityService, IRegistry):
 class UtilityService(AdapterRegistry):
     """Provide IUtilityService
 
-    Mixin that superimposes utility management on adapter registery
+    Mixin that superimposes utility management on adapter registry
     implementation
     """
 

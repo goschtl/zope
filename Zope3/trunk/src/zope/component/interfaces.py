@@ -505,7 +505,7 @@ class IUtilityService(Interface):
     def getAllUtilitiesRegisteredFor(interface):
         """Return all registered utilities for an interface
 
-        This includes overwridden utilities.
+        This includes overridden utilities.
 
         An iterable of utility instances is returned.  No names are
         returned.

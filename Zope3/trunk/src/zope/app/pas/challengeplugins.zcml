@@ -10,7 +10,7 @@
       factory=".httpplugins.HTTPBasicAuthChallenger"
       provides=".interfaces.IChallengePlugin"
       />
-  
+
   <!-- Locally custom-configured basic auth -->
   <localUtility class=".httpplugins.HTTPBasicAuthChallenger">
 
@@ -27,9 +27,9 @@
       provides=".interfaces.IChallengePlugin"
       />
 
-  
+
   <utility
-      name="Rediect to loginForm.html"
+      name="Redirect to loginForm.html"
       factory=".browserplugins.FormChallenger"
       provides=".interfaces.IChallengePlugin"
       />
@@ -43,5 +43,5 @@
         set_schema=".browserplugins.IFormChallengerLoginPageName" />
 
   </localUtility>
-  
+
 </configure>

@@ -99,7 +99,7 @@ We provide a principal factory plugin:
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(), 
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(),
   ...                name='pf')
 
 Finally, we create a PAS instance:
@@ -147,11 +147,11 @@ and it's request set to the request we created:
   True
 
 Normally, we provide subscribers to these events that add additional
-information to the principal. For examples, we'll add one that sets
+information to the principal. For example, we'll add one that sets
 the title to a repr of the event info:
 
   >>> def add_info(event):
-  ...     event.principal.title = `event.info`
+  ...     event.principal.title = repr(event.info)
 
   >>> from zope.app.tests.ztapi import subscribe
   >>> subscribe([interfaces.IPASPrincipalCreated], None, add_info)
@@ -208,7 +208,7 @@ As with with authenticators, we can specify multiple extractors:
 
   >>> provideUtility(interfaces.IExtractionPlugin, OddExtractor(), name='eodd')
   >>> service.extractors = 'eodd', 'emy'
- 
+
   >>> request = TestRequest(credentials=41)
   >>> service.authenticate(request)
   Principal('1', "{'int': 1}")
@@ -246,15 +246,15 @@ And we can specify multiple factories:
   ...                     principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(), 
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(),
   ...                name='oddf')
 
   >>> service.factories = 'oddf', 'pf'
- 
+
   >>> request = TestRequest(credentials=41)
   >>> service.authenticate(request)
   OddPrincipal('1', "{'int': 1}")
- 
+
   >>> request = TestRequest(credentials=42)
   >>> service.authenticate(request)
   Principal('42', "{'domain': 42}")
@@ -270,7 +270,7 @@ data they need.
 Get a principal given an id
 ===========================
 
-We can ask the PAS for a principal, given an id. 
+We can ask the PAS for a principal, given an id.
 
 To do this, the PAS uses principal search plugins:
 
@@ -282,7 +282,7 @@ To do this, the PAS uses principal search plugins:
   ...         if principal_id == '42':
   ...             return {'domain': 42}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(), 
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(),
   ...                name='s42')
 
   >>> class IntSearch:
@@ -297,9 +297,9 @@ To do this, the PAS uses principal search plugins:
   ...         if (i >= 0 and i < 100):
   ...             return {'int': i}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(), 
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(),
   ...                name='sint')
- 
+
   >>> service.searchers = 's42', 'sint'
 
   >>> service.getPrincipal('41')
@@ -366,9 +366,9 @@ What happens if a plugin is registered depends on the plugin.  Let's
 create a plugin that sets a response header:
 
   >>> class Challenge:
-  ...     
+  ...
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...     
+  ...
   ...     def challenge(self, requests, response):
   ...         response.setHeader('X-Unauthorized', 'True')
   ...         return True
@@ -389,7 +389,7 @@ How challenges work in Zope 3
 -----------------------------
 
 To understand how the challenge plugins work, it's helpful to
-understand how the unauthorized method of authenticaton services 
+understand how the unauthorized method of authenticaton services
 get called.
 
 If an 'Unauthorized' exception is raised and not caught by application
@@ -422,12 +422,12 @@ add challenges to a X-Challenges headers:
 
   >>> class ColorChallenge:
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...     
+  ...
   ...     protocol = 'bridge'
-  ...     
+  ...
   ...     def challenge(self, requests, response):
   ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge', 
+  ...         response.setHeader('X-Challenge',
   ...                            challenge + 'favorite color? ')
   ...         return True
 
@@ -436,12 +436,12 @@ add challenges to a X-Challenges headers:
 
   >>> class BirdChallenge:
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...     
+  ...
   ...     protocol = 'bridge'
-  ...     
+  ...
   ...     def challenge(self, requests, response):
   ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge', 
+  ...         response.setHeader('X-Challenge',
   ...                            challenge + 'swallow air speed? ')
   ...         return True
 
@@ -525,7 +525,7 @@ ids. They're also used to find principals given search criteria.
 
 Different search plugins are likely to use very different search
 criteria.  There are two approaches a plugin can use to support
-searching: 
+searching:
 
 - A plugin can provide IQuerySchemaSearch, in addition to
   `IPrincipalSearchPlugin`.  In this case, the plugin provises a search
@@ -541,7 +541,7 @@ PAS uses search plugins in a very simple way.  It mearly implements
 
   >>> [id for (id, queriable) in service.getQueriables()]
   ['s42', 'sint']
-  >>> [queriable.__class__.__name__ 
+  >>> [queriable.__class__.__name__
   ...  for (id, queriable) in service.getQueriables()]
   ['Search42', 'IntSearch']
 
@@ -552,4 +552,4 @@ Design Notes
   search or extraction and challenge. See
   `ISearchableAuthenticationPlugin` and
   `IExtractionAndChallengePlugin`.
- 
+

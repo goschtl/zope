@@ -51,7 +51,7 @@
 
  <browser:addMenuItem
      title="Permission"
-     description="A Secutiry Permission"
+     description="A Security Permission"
      class="..permission.LocalPermission"
      permission="zope.ManageServices"
      view="AddPermission.html"

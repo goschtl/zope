@@ -362,10 +362,10 @@ class IRegisterableContainer(IContainer):
     """
 
     def getRegistrationManager():
-        """get a registration manager.
+        """Get a registration manager.
 
         Find a registration manager.  Clients can get the
-        registration manager without knowing it's name. Normally,
+        registration manager without knowing its name. Normally,
         folders have one registration manager. If there is more than
         one, this method will return one; which one is undefined.
 

@@ -59,7 +59,7 @@ class Test(TestCase, CleanUp):
         defineService = sm.defineService
         provideService = sm.provideService
         from zope.component.interfaces import IUtilityService
-        defineService('Utilities',IUtilityService)
+        defineService('Utilities', IUtilityService)
         from zope.component.utility import GlobalUtilityService
         provideService('Utilities', GlobalUtilityService())
 
