@@ -154,4 +154,5 @@ Zope  ZSrc &utilities &pcgi &GreyThing \
 # KLM end
 
 # Jim begin
-saZODB Releases/StandaloneZODB &lpZODB
+zpZODB -d ZODB Zope2/lib/python/ZODB
+saZODB Releases/StandaloneZODB &zpZODB
