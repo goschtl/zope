@@ -13,11 +13,14 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.4 2003/05/28 14:40:04 gvanrossum Exp $
+$Id: test_network.py,v 1.5 2003/05/28 17:52:44 gvanrossum Exp $
 """
 
 import os
+import select
+import socket
 import unittest
+import threading
 
 from StringIO import StringIO
 
@@ -27,6 +30,59 @@ from zope.fssync.fssync import Network, Error
 from zope.fssync.tests.tempfiles import TempFiles
 
 sample_rooturl = "http://user:passwd@host:8080/path"
+
+HOST = "127.0.0.1"     # localhost
+PORT = 60841           # random number
+RESPONSE = """HTTP/1.0 404 Not found\r
+Content-type: text/plain\r
+Content-length: 0\r
+\r
+"""
+
+class DummyServer(threading.Thread):
+
+    """A server that can handle one HTTP request (returning a 404 error)."""
+
+    stopping = False
+
+    def run(self):
+        svr = socket.socket()
+        svr.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        svr.bind((HOST, PORT))
+        svr.listen(1)
+        conn = None
+        sent_response = False
+        while not self.stopping:
+            if conn is None:
+                r = [svr]
+            else:
+                r = [conn]
+            r, w, x = select.select(r, [], [], 0.01)
+            if not r:
+                continue
+            s = r[0]
+            if s is svr:
+                conn, addr = svr.accept()
+                ##print "connect from", `addr`
+            else:
+                assert s is conn
+                data = conn.recv(1000)
+                ##print "received", `data`
+                if not data:
+                    break
+                if not sent_response:
+                    conn.send(RESPONSE)
+                    conn.close()
+                    conn = None
+                    sent_response = True
+        if conn is not None:
+            conn.close()
+        svr.close()
+        ##print "stopped"
+        
+    def stop(self):
+        ##print "stopping"
+        self.stopping = True
 
 class TestNetwork(TempFiles):
 
@@ -97,11 +153,13 @@ class TestNetwork(TempFiles):
         self.assertEqual(new.rooturl, sample_rooturl)
 
     def test_httpreq(self):
-        # XXX I don't want to write up a dummy server just to test
-        # this so I'll just send a request to python.org that I know
-        # will fail.
-        self.network.setrooturl("http://python.org")
-        self.assertRaises(Error, self.network.httpreq, "/xyzzy", "@@view")
+        svr = DummyServer()
+        svr.start()
+        try:
+            self.network.setrooturl("http://%s:%s" % (HOST, PORT))
+            self.assertRaises(Error, self.network.httpreq, "/xyzzy", "@@view")
+        finally:
+            svr.stop()
 
     def test_slurptext_html(self):
         fp = StringIO("<p>This is some\n\ntext.</p>\n")
