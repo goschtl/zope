@@ -244,6 +244,9 @@ class MembershipTool( BaseTool ):
             f.index_html.notifyWorkflowCreated()
         return f
 
+    security.declarePublic('createMemberarea')
+    createMemberarea = createMemberArea
+
     def getHomeFolder(self, id=None, verifyPermission=0):
         """ Return a member's home folder object, or None.
         """
