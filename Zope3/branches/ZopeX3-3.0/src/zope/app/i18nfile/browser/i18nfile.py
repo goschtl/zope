@@ -61,3 +61,11 @@ class I18nFileEdit(object):
             self.context.contentType = contentType
         return self.request.response.redirect(self.request.URL[-1] +
                       "/editForm.html?language=%s" % quote(language, ''))
+
+    def data(self):
+        language = self.request.get('language')
+        # We have to decode it here, since we want to display the data. This
+        # does not seem the right thing to do, but it is the only fix I could
+        # think of without changing a lot of code. 
+        return self.context.getData(language).decode('UTF-8')
+        

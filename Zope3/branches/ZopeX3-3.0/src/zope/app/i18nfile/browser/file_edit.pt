@@ -78,7 +78,7 @@
       <div class="label" i18n:translate="">Data</div>
       <div class="field">
         <textarea name="data" cols="70" rows="10"
-             tal:content="python:context.getData(request.get('language'))" />
+             tal:content="view/data" />
       </div>
     </div>
 
