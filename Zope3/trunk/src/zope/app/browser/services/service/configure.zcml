@@ -67,7 +67,7 @@
       for="zope.app.interfaces.services.service.ISiteManager">
 
     <menuItem
-        title="Visit default package"
+        title="Visit default folder"
         action="default/@@SelectedManagementView.html"
         permission="zope.ManageServices" />
     <menuItem
