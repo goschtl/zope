@@ -13,12 +13,11 @@
 ##############################################################################
 """
 
-$Id: query.py,v 1.8 2003/02/11 15:59:51 sidnei Exp $
+$Id: query.py,v 1.9 2003/03/21 21:05:22 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
 from zope.app.security.permission import PermissionField
-from zope.app.interfaces.services.configuration import INamedConfigurationInfo
 from zope.app.interfaces.services.configuration import INamedConfiguration
 from zope.app.component.interfacefield import InterfacesField
 from zope.schema.interfaces import ITuple
@@ -76,7 +75,7 @@ class IQueryListItem(Interface):
 # The import is here to avoid circular imports
 from zope.app.services.queryfield import QueryProcessorsField
 
-class IQueryConfigurationInfo(INamedConfigurationInfo):
+class IQueryConfiguration(INamedConfiguration):
 
     permission = PermissionField(title=u'Required permission', required=False)
     inputInterfaces = InterfacesField(title=u'Input interfaces',
@@ -85,8 +84,6 @@ class IQueryConfigurationInfo(INamedConfigurationInfo):
                                        basetype=None)
     processors = QueryProcessorsField(title=u'Query processors',
                                       required=False)
-
-class IQueryConfiguration(IQueryConfigurationInfo, INamedConfiguration):
 
     def getProcessors():
         'Returns a sequence of query processor objects.'
