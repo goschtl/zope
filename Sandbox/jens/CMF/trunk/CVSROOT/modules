@@ -25,6 +25,7 @@ webdav      	 Packages/webdav
 Shared           Packages/Shared  __init__.py
 DC               -d Shared/DC Packages/Shared/DC  __init__.py
 ZRDB             -d Shared/DC/ZRDB Packages/Shared/DC/ZRDB
+xml              -d Shared/DC/xml Packages/Shared/DC/xml
 
 Products         Packages/Products  __init__.py
 OFSP             -d Products/OFSP Packages/Products/OFSP
@@ -48,7 +49,7 @@ zsb &waaaGreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZClasses &webdav \
   &ZPublisher &OFS &StructuredText &TreeDisplay &SearchIndex \
-  &Shared &DC &ZRDB \
+  &Shared &DC &ZRDB &xml \
   &Products &OFSP &IMAPAdapter &MailHost &ExternalMethod \
   &ZSQLMethods &ZGadflyDA \
   &ZODB &ZopeZODB3 &zsZope
@@ -58,7 +59,7 @@ zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZClasses &webdav \
   &ZPublisher &OFS &StructuredText &TreeDisplay &SearchIndex \
-  &Shared &DC &ZRDB \
+  &Shared &DC &ZRDB &xml \
   &Products &OFSP &IMAPAdapter &MailHost &ExternalMethod \
   &ZSQLMethods &ZGadflyDA \
   &ZODB &ZopeZODB3 &zsZope
@@ -89,6 +90,7 @@ lpWebdav      	   -d lib/python/webdav Packages/webdav
 lpSharedInit       -d lib/python/Shared cvs-indirect/Zope/Shared
 lpDCInit           -d lib/python/Shared/DC cvs-indirect/Zope/DC
 lpZRDB             -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
+lpXml             -d lib/python/Shared/DC/xml Packages/Shared/DC/xml
 
 lpProductsInit    -d lib/python/Products cvs-indirect/Zope/Products
 lpOFSP            -d lib/python/Products/OFSP Packages/Products/OFSP
@@ -130,7 +132,7 @@ ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZPublisher &lpOFS &lpStructuredText &lpTreeDisplay \
   &lpSearchIndex \
   &lpSharedInit &lpDCInit &lpProductsInit \
-  &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
+  &lpZRDB &lpXml &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZSQLMethods &lpZGadflyDA \
   &lpZODB &lpZope &lpZopeZODB3 \
   &ZServer &lpMIMETools 
@@ -143,7 +145,7 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZPublisher &lpOFS &lpStructuredText &lpTreeDisplay \
   &lpSearchIndex \
   &lpSharedInit &lpDCInit &lpProductsInit \
-  &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
+  &lpZRDB &lpXml &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZODB &lpZope &lpZopeZODB3 \
   &lpZSQLMethods &lpZGadflyDA &ZServer &lpMIMETools
 
