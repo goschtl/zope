@@ -63,6 +63,15 @@ class Test(unittest.TestCase):
         alias_module(module=m1, alias=m2, context=context)
         self.assert_(m1 in sys.modules)
         self.assert_(sys.modules[m1] is sys.modules[m2])
+        # Clean up after ourselves, so the test can be run in a loop:
+        del sys.modules[m1]
+        del sys.modules[m2]
+        # Normal import causes the dummymodule to appear in the
+        # package module as well, so remove it there, since
+        # ConfigurationContext.resolve() will prefer that to
+        # sys.modules.
+        from zope.modulealias import tests
+        del tests.dummymodule
 
     def test_nonmodule_alias(self):
         from zope.modulealias.metaconfigure import ModuleAliasException
