@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.19 2003/06/05 21:05:49 gvanrossum Exp $
+$Id: fssync.py,v 1.20 2003/06/10 22:01:33 gvanrossum Exp $
 """
 
 import os
@@ -192,7 +192,10 @@ class SnarfCommit(BrowserView):
         uns.unsnarf(self.tempdir)
 
     def call_checker(self):
-        c = Checker(self.metadata)
+        if self.get_arg("raise"):
+            c = Checker(self.metadata, True)
+        else:
+            c = Checker(self.metadata)
         c.check(self.container, self.name, self.fspath)
         self.errors = c.errors()
 
