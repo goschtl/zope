@@ -474,7 +474,7 @@
     >
 
   <menuItem title="Manage Local Services"
-            action="++etc++Services/@@services.html"
+            action="++etc++Services/@@index.html"
             filter="context/hasServiceManager"
             />
 
