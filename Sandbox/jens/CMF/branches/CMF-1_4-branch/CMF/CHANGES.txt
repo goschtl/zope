@@ -2,6 +2,10 @@ CMF 1.4.3 (unreleased)
 
   Bug Fixes
 
+    - CMFCore.CachingPolicyManager:  make REQUEST argument optional
+      for public methods, to ease scripting policy operations from
+      setup code. (Collector #234)
+
     - Action definitions: Removed leading spaces. (Collector #229)
 
 CMF 1.4.3-rc1 (2004/02/05)
