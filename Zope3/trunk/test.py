@@ -187,9 +187,6 @@ class TestFileFinder:
     def visit(self, rx, dir, files):
         if dir[-5:] != "tests":
             return
-        # ignore tests in ZopeLegacy directory
-        if dir.startswith(join('lib','python','ZopeLegacy')):
-            return
         # ignore tests that aren't in packages
         if not "__init__.py" in files:
             if not files or files == ['CVS']:
