@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.6 2003/09/02 20:46:51 jim Exp $
+$Id: setup.py,v 1.7 2003/09/21 17:33:30 jim Exp $
 """
 
 import zope.component
@@ -49,7 +49,7 @@ from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
-from zope.app.traversing.adapters import WrapperPhysicallyLocatable
+from zope.app.location import LocationPhysicallyLocatable
 from zope.app.traversing.namespace import etc, provideNamespaceHandler
 from zope.publisher.interfaces.browser import IBrowserPresentation
 def setUpTraversal():
@@ -59,7 +59,7 @@ def setUpTraversal():
     provideAdapter(
         ISimpleReadContainer, ITraversable, ContainerTraversable)
     provideAdapter(
-        None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
+        None, IPhysicallyLocatable, LocationPhysicallyLocatable)
     provideAdapter(
         IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
 
@@ -95,7 +95,7 @@ def placefulSetUp(site=False):
     setUpRegistered()
 
     if site:
-        site = RootFolder()
+        site = rootFolder()
         createServiceManager(site)
         return site
 
@@ -104,7 +104,8 @@ def placefulTearDown():
     zope.component.getServiceManager.reset()
 
 
-from zope.app.content.folder import Folder, RootFolder
+from zope.app.content.folder import Folder, rootFolder
+
 def buildSampleFolderTree():
     # set up a reasonably complex folder structure
     #
@@ -116,16 +117,16 @@ def buildSampleFolderTree():
     #   |           \            |            |
     # folder1_1_1 folder1_1_2  folder1_2_1  folder2_1_1
 
-    root = RootFolder()
-    root.setObject('folder1', Folder())
-    root['folder1'].setObject('folder1_1', Folder())
-    root['folder1']['folder1_1'].setObject('folder1_1_1', Folder())
-    root['folder1']['folder1_1'].setObject('folder1_1_2', Folder())
-    root['folder1'].setObject('folder1_2', Folder())
-    root['folder1']['folder1_2'].setObject('folder1_2_1', Folder())
-    root.setObject('folder2', Folder())
-    root['folder2'].setObject('folder2_1', Folder())
-    root['folder2']['folder2_1'].setObject('folder2_1_1', Folder())
+    root = rootFolder()
+    root['folder1'] = Folder()
+    root['folder1']['folder1_1'] = Folder()
+    root['folder1']['folder1_1']['folder1_1_1'] = Folder()
+    root['folder1']['folder1_1']['folder1_1_2'] = Folder()
+    root['folder1']['folder1_2'] = Folder()
+    root['folder1']['folder1_2']['folder1_2_1'] = Folder()
+    root['folder2'] = Folder()
+    root['folder2']['folder2_1'] = Folder()
+    root['folder2']['folder2_1']['folder2_1_1'] = Folder()
 
     return root
 
@@ -134,22 +135,23 @@ from zope.app.services.service import ServiceManager
 from zope.app.interfaces.services.service import ISite
 def createServiceManager(folder):
     if not ISite.isImplementedBy(folder):
-        folder.setSiteManager(ServiceManager())
+        folder.setSiteManager(ServiceManager(folder))
 
     return zapi.traverse(folder, "++etc++site")
 
 from zope.app.services.service import ServiceRegistration
 from zope.app.interfaces.services.registration import ActiveStatus
+
 def addService(servicemanager, name, service, suffix=''):
     """Add a service to a service manager
 
     This utility is useful for tests that need to set up services.
     """
     default = zapi.traverse(servicemanager, 'default')
-    default.setObject(name+suffix, service)
+    default[name+suffix] = service
     path = "%s/default/%s" % (zapi.getPath(servicemanager), name+suffix)
-    registration = ServiceRegistration(name, path, servicemanager)
-    key = default.getRegistrationManager().setObject("", registration)
+    registration = ServiceRegistration(name, path, default)
+    key = default.getRegistrationManager().addRegistration(registration)
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
     return zapi.traverse(servicemanager, path)
 
