@@ -12,20 +12,17 @@
 #
 ##############################################################################
 """
-$Id: testPasswordWidget.py,v 1.3 2002/10/28 23:52:31 jim Exp $
+$Id: testPasswordWidget.py,v 1.4 2002/11/11 20:43:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import PasswordWidget
 
-from testBrowserWidget import BrowserWidgetTest, Field
+from testBrowserWidget import BrowserWidgetTest
 
 
 class PasswordWidgetTest(BrowserWidgetTest):
-    
-    def setUp(self):
-        field = Field()
-        request = {'field.foo': 'Foo Value'}
-        self._widget = PasswordWidget(field, request)
+
+    _WidgetFactory = PasswordWidget
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('tag'), 'input')

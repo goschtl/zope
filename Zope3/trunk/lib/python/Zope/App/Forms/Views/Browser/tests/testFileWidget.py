@@ -12,20 +12,24 @@
 #
 ##############################################################################
 """
-$Id: testFileWidget.py,v 1.3 2002/10/28 23:52:31 jim Exp $
+$Id: testFileWidget.py,v 1.4 2002/11/11 20:43:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import FileWidget
+from StringIO import StringIO
 
-from testBrowserWidget import BrowserWidgetTest, Field
-
+from testBrowserWidget import BrowserWidgetTest
 
 class FileWidgetTest(BrowserWidgetTest):
-    
-    def setUp(self):
-        field = Field()
-        request = {'field.foo': 'Foo Value'}
-        self._widget = FileWidget(field, request)
+
+    _WidgetFactory = FileWidget
+
+    def setUp(self):        
+        BrowserWidgetTest.setUp(self)
+
+        file = StringIO('Foo Value')
+        file.filename = 'test.txt'
+        self._widget.request.form['field.foo'] = file
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('tag'), 'input')

@@ -12,37 +12,24 @@
 #
 ##############################################################################
 """
-$Id: testRadioWidget.py,v 1.5 2002/10/28 23:52:31 jim Exp $
+$Id: testRadioWidget.py,v 1.6 2002/11/11 20:43:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import RadioWidget
 
 from testBrowserWidget import BrowserWidgetTest
 
-class Field:
-    """Field Stub """
-    items = [('foo1', 'Foo'), ('bar1', 'Bar')]
-
-    __name__ = 'foo'
-
-    def getName(self):
-        return 'foo'
-    
-    def get(self, name):
-        return getattr(self, name)
-
-
 class RadioWidgetTest(BrowserWidgetTest):
-    
+
+    _WidgetFactory = RadioWidget
+
     def setUp(self):
-        field = Field()
-        request = {'field.foo': 'Foo Value'}
-        self._widget = RadioWidget(field, request)
+        BrowserWidgetTest.setUp(self)
+        self._widget.context.allowed_values = (u'foo', u'bar')
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('cssClass'), "")
         self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('items'), [])
         self.assertEqual(self._widget.getValue('firstItem'), 0)
         self.assertEqual(self._widget.getValue('orientation'), 'vertical')
 
@@ -60,19 +47,19 @@ class RadioWidgetTest(BrowserWidgetTest):
 
 
     def testRenderItems(self):
-        check_list = ('type="radio"', 'name="field.foo"', 'value="bar1"',
-                      'Bar', 'value="foo1"', 'Foo', 'checked="checked"')
-        self._verifyResult('\n'.join(self._widget.renderItems('bar1')),
+        check_list = ('type="radio"', 'name="field.foo"', 'value="bar"',
+                      'bar', 'value="foo"', 'foo', 'checked="checked"')
+        self._verifyResult('\n'.join(self._widget.renderItems('bar')),
                            check_list)
 
 
     def testRender(self):
-        value = 'bar1'
-        check_list = ('type="radio"', 'name="field.foo"', 'value="bar1"',
-                      'Bar', 'value="foo1"', 'Foo', 'checked="checked"')
+        value = 'bar'
+        check_list = ('type="radio"', 'name="field.foo"', 'value="bar"',
+                      'bar', 'value="foo"', 'foo', 'checked="checked"')
         self._verifyResult(self._widget.render(value), check_list)
 
-        check_list = ('type="hidden"', 'name="field.foo"', 'value="bar1"')
+        check_list = ('type="hidden"', 'name="field.foo"', 'value="bar"')
         self._verifyResult(self._widget.renderHidden(value), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'

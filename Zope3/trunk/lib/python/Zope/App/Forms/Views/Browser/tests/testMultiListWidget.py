@@ -12,38 +12,24 @@
 #
 ##############################################################################
 """
-$Id: testMultiListWidget.py,v 1.5 2002/10/28 23:52:31 jim Exp $
+$Id: testMultiListWidget.py,v 1.6 2002/11/11 20:43:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import MultiListWidget
 
 from testBrowserWidget import BrowserWidgetTest
 
-class Field:
-    """Field Stub """
-    items = [('foo', 'Foo'), ('bar', 'Bar')]
-
-    __name__ = 'foo'
-
-    def getName(self):
-        return 'foo'
-    
-    def get(self, name):
-        return getattr(self, name)
-
-
 class MultiListWidgetTest(BrowserWidgetTest):
-    
-    def setUp(self):
-        field = Field()
-        request = {'field.foo': 'Foo Value'}
-        self._widget = MultiListWidget(field, request)
 
+    _WidgetFactory = MultiListWidget
+
+    def setUp(self):
+        BrowserWidgetTest.setUp(self)
+        self._widget.context.allowed_values = (u'foo', u'bar')
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('cssClass'), "")
         self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('items'), [])
         self.assertEqual(self._widget.getValue('size'), 5)
 
 
@@ -59,8 +45,8 @@ class MultiListWidgetTest(BrowserWidgetTest):
 
 
     def testRenderItems(self):
-        check_list = ('option', 'value="foo"', 'Bar',
-                      'value="foo"', 'Foo', 'selected="selected"')
+        check_list = ('option', 'value="foo"', 'bar',
+                      'value="foo"', 'foo', 'selected="selected"')
         self._verifyResult('\n'.join(self._widget.renderItems('foo')),
                            check_list)
 
@@ -68,8 +54,8 @@ class MultiListWidgetTest(BrowserWidgetTest):
     def testRender(self):
         value = 'foo'
         check_list = ('select', 'name="field.foo"', 'size="5"', 
-                      'option', 'value="foo"', '>Foo<',
-                      'value="foo"', '>Bar<', 'selected="selected"',
+                      'option', 'value="foo"', '>foo<',
+                      'value="foo"', '>bar<', 'selected="selected"',
                       'multiple="multiple"')
         self._verifyResult(self._widget.render(value), check_list)
 

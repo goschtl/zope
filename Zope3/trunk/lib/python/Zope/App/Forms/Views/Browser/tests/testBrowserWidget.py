@@ -13,30 +13,38 @@
 ##############################################################################
 """
 
-$Id: testBrowserWidget.py,v 1.4 2002/10/28 23:52:31 jim Exp $
+$Id: testBrowserWidget.py,v 1.5 2002/11/11 20:43:33 jim Exp $
 """
 import unittest
 from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
-
-class Field:
-    """Field Stub """
-    __name__ = 'foo'
-    
-    def getName(self):
-        return 'foo'
-    
+from Zope.Publisher.Browser.BrowserRequest import TestRequest
+from Zope.Schema import Text
 
 class BrowserWidgetTest(unittest.TestCase):
 
+    _WidgetFactory = BrowserWidget
+
     def setUp(self):
-        field = Field()
-        request = {'field.foo': 'Foo Value'}
-        self._widget = BrowserWidget(field, request)
+        field = Text(__name__ = 'foo', title = u"Foo Title")
+        request = TestRequest()
+        request.form['field.foo'] = u'Foo Value'
+        self._widget = self._WidgetFactory(field, request)
 
     def _verifyResult(self, result, check_list):
         for check in check_list:
             self.assertNotEqual(-1, result.find(check),
                                 '"'+check+'" not found in "'+result+'"')
+
+    def test_required(self):
+        self._widget.context.required = False
+        self.failIf(self._widget.required)
+        self._widget.context.required = True
+        self.failUnless(self._widget.required)
+
+    def test_haveData(self):
+        self.failUnless(self._widget.haveData())
+        del self._widget.request.form['field.foo']
+        self.failIf(self._widget.haveData())
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('tag'), 'input')
@@ -54,6 +62,17 @@ class BrowserWidgetTest(unittest.TestCase):
         self._widget.extra = 'style="color: red"'
         self._verifyResult(self._widget.renderHidden(value), check_list)
 
+    def testLabel(self):
+        label = ' '.join(self._widget.label().strip().split())
+        self.assertEqual(label, '<label for="field.foo">Foo Title</label>')
+
+    def testRow(self):
+        self._widget.request.form.clear()
+        label = ''.join(self._widget.label().strip().split())
+        value = ''.join(self._widget().strip().split())
+        row = ''.join(self._widget.row().strip().split())
+        self.assertEqual(row, '<td>%s</td><td>%s</td>' % (label, value))
+        
 
 def test_suite():
     return unittest.makeSuite(BrowserWidgetTest)

@@ -12,38 +12,43 @@
 #
 ##############################################################################
 """
-$Id: testTextAreaWidget.py,v 1.3 2002/10/28 23:52:31 jim Exp $
+$Id: testTextAreaWidget.py,v 1.4 2002/11/11 20:43:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import TextAreaWidget
 
-from testBrowserWidget import BrowserWidgetTest, Field
+from testBrowserWidget import BrowserWidgetTest
 
 
 class TextAreaWidgetTest(BrowserWidgetTest):
-    
-    def setUp(self):
-        field = Field()
-        request = {'field.foo': 'Foo Value'}
-        self._widget = TextAreaWidget(field, request)
+
+    _WidgetFactory = TextAreaWidget
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('tag'), 'input')
         self.assertEqual(self._widget.getValue('type'), 'text')
         self.assertEqual(self._widget.getValue('cssClass'), '')
         self.assertEqual(self._widget.getValue('extra'), '')
-        self.assertEqual(self._widget.getValue('width'), 80)
+        self.assertEqual(self._widget.getValue('width'), 60)
         self.assertEqual(self._widget.getValue('height'), 15)
 
     def testRender(self):
         value = "Foo Value"
-        check_list = ('rows="15"', 'cols="80"', 'name="field.foo"', 'textarea')
+        check_list = ('rows="15"', 'cols="60"', 'name="field.foo"', 'textarea')
         self._verifyResult(self._widget.render(value), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
         self._verifyResult(self._widget.render(value), check_list)
         check_list = ('type="hidden"', 'name="field.foo"', 'value="Foo Value"')
         self._verifyResult(self._widget.renderHidden(value), check_list)
+
+    def testRow(self):
+        self._widget.request.form.clear()
+        label = ''.join(self._widget.label().strip().split())
+        value = ''.join(self._widget().strip().split())
+        row = ''.join(self._widget.row().strip().split())
+        self.assertEqual(row,
+                         '<tdcolspan="2">%s<br/>%s</td>' % (label, value))
 
 
 

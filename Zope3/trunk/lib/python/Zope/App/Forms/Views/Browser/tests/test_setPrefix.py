@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_setPrefix.py,v 1.1 2002/10/29 17:19:48 jim Exp $
+$Id: test_setPrefix.py,v 1.2 2002/11/11 20:43:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import TextWidget
@@ -21,7 +21,7 @@ from testBrowserWidget import BrowserWidgetTest
 from Zope.Schema import Text
 
 
-class TextWidgetTest(BrowserWidgetTest):
+class Test(TestCase):
     
     def setUp(self):
         field = Text(__name__ = 'foo')
@@ -45,10 +45,15 @@ class TextWidgetTest(BrowserWidgetTest):
         self._widget.extra = 'style="color: red"'
         self._verifyResult(self._widget.hidden(), check_list)
 
+    def _verifyResult(self, result, check_list):
+        for check in check_list:
+            self.assertNotEqual(-1, result.find(check),
+                                '"'+check+'" not found in "'+result+'"')
+
 
 
 def test_suite():
-    return makeSuite(TextWidgetTest)
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

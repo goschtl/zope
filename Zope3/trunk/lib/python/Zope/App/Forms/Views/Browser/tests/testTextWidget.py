@@ -12,21 +12,18 @@
 #
 ##############################################################################
 """
-$Id: testTextWidget.py,v 1.3 2002/10/28 23:52:31 jim Exp $
+$Id: testTextWidget.py,v 1.4 2002/11/11 20:43:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import TextWidget
 
-from testBrowserWidget import BrowserWidgetTest, Field
+from testBrowserWidget import BrowserWidgetTest
 
 
 class TextWidgetTest(BrowserWidgetTest):
-    
-    def setUp(self):
-        field = Field()
-        request = {'field.foo': 'Foo Value'}
-        self._widget = TextWidget(field, request)
 
+    _WidgetFactory = TextWidget
+    
     def testProperties(self):
         self.assertEqual(self._widget.getValue('tag'), 'input')
         self.assertEqual(self._widget.getValue('type'), 'text')

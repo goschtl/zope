@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IBrowserWidget.py,v 1.3 2002/10/28 23:52:31 jim Exp $
+$Id: IBrowserWidget.py,v 1.4 2002/11/11 20:43:32 jim Exp $
 """
 
 from Zope.App.Forms.IWidget import IWidget
@@ -56,5 +56,12 @@ class IBrowserWidget(IWidget):
         
     def renderHidden(value):
         """Renders this widget as a hidden field.
+        """
+        
+    def label():
+        """Render a label tag"""
+
+    def row():
+        """Render the widget as a table row with the label and input widget
         """
         

@@ -5,19 +5,35 @@
 >
 
   <!-- Form Widget View Directives -->
+  <browser:defaultView for="Zope.Schema.IField." name="widget" />
+
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
-      for="Zope.Schema.IField.IText"
+      for="Zope.Schema.IField.ITextLine"
       name="widget"
       factory=".Widget.TextWidget." />
 
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
-      for="Zope.Schema.IField.IBytes"
+      for="Zope.Schema.IField.IText"
+      name="widget"
+      factory=".Widget.TextAreaWidget." />
+
+  <browser:view
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
+      for="Zope.Schema.IField.ILine"
       name="widget"
       factory=".Widget.BytesWidget." />
+
+  <browser:view
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
+      for="Zope.Schema.IField.IBytes"
+      name="widget"
+      factory=".Widget.BytesAreaWidget." />
 
   <browser:view
       permission="Zope.Public"
@@ -54,8 +70,5 @@
       name="widget"
       factory=".Widget.TextAreaWidget." />
 
-  <!-- Insert a simple test/demo -->
-
-  <include package=".tests" file="testConfigure.zcml" />
   
 </zopeConfigure>
