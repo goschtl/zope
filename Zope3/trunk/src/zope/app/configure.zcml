@@ -30,7 +30,7 @@
   
 
   <!-- Usages and Menus -->
-  <include package=".browser" file="usages.zcml" />
+  <include file="usages.zcml" />
   <include file="menus.zcml" />
 
   <include package="zope.app.copypastemove" />
@@ -47,7 +47,6 @@
   <include package="zope.app.renderer" />
   
   <!-- Views -->
-  <include package="zope.app.browser" />
   <include package="zope.app.ftp" />
   <include package="zope.app.xmlrpc" />
   <include package="zope.app.http" />
@@ -136,17 +135,7 @@
 
 
   <!-- Browser Configurations -->
-
-  <include package="zope.app.traversing.browser" />
-
-  <include package="zope.app.component.browser" />
-  <include package="zope.app.container.browser" />
-  <include package="zope.app.event.browser" />
-  <include package="zope.app.registration.browser" />  
-  <include package="zope.app.form.browser" />
-
-  <include package="zope.app.site.browser" />  
-
+  <include file="browser.zcml" />
 
   <!-- Fixup ZODB - For backward-compatibility -->
   <include file="backward.zcml" />
