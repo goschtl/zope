@@ -33,15 +33,16 @@ class ExternalEditor(BrowserView):
         adapted = IReadFile(context)
 
         if hasattr(adapted, 'contentType'):
-            # XXX Although IReadFile declares contentType,
+            # Although IReadFile declares contentType,
             # the default adapter for File doesn't seem
             # to provide it.
             r.append('content_type:%s' % adapted.contentType)
 
-        # XXX There's no such thing as a meta_type
+        # There's no such thing as a meta_type
         # in Zope3, so we try to get as far as we can
         # using IContentType, which is a marker interface
-        # XXX Had to use trustedRemoveSecurityProxy because
+
+        # Had to use trustedRemoveSecurityProxy because
         # I was getting I was getting unauthorized on __iro__
         meta_type = queryType(trustedRemoveSecurityProxy(context), IContentType)
         if meta_type:
@@ -56,7 +57,7 @@ class ExternalEditor(BrowserView):
 
         r.append('cookie:%s' % request._environ.get('HTTP_COOKIE', ''))
 
-        # XXX Once we have lock, add the lock token here
+        # TODO: Once we have lock, add the lock token here
 
         r.append('')
 
