@@ -73,11 +73,51 @@
       interface=".interfaces.ISimpleItem"
       />
 
+  <implements
+      class="OFS.ObjectManager.ObjectManager"
+      interface=".interfaces.IObjectManager"
+      />
+
+  <implements
+      class="OFS.PropertyManager.PropertyManager"
+      interface=".interfaces.IPropertyManager"
+      />
+
+  <implements
+      class="OFS.FindSupport.FindSupport"
+      interface=".interfaces.IFindSupport"
+      />
+
+  <implements
+      class="OFS.Folder.Folder"
+      interface=".interfaces.IFolder"
+      />
+
+  <implements
+      class="OFS.OrderSupport.OrderSupport"
+      interface=".interfaces.IOrderedContainer"
+      />
+
+  <implements
+      class="OFS.OrderedFolder.OrderedFolder"
+      interface=".interfaces.IOrderedFolder"
+      />
+
+  <implements
+      class="OFS.Application.Application"
+      interface=".interfaces.IApplication"
+      />
+
  <!-- App -->
 
   <implements
       class="App.Undo.UndoSupport"
       interface=".interfaces.IUndoSupport"
+      />
+
+  <implements
+      class="App.Management.Navigation"
+      interface=".interfaces.INavigation"
       />
 
   <!-- AccessControl -->
@@ -87,6 +127,14 @@
       interface=".interfaces.IOwned"
       />
 
-  <!-- ... -->
+  <implements
+      class="AccessControl.PermissionMapping.RoleManager"
+      interface=".interfaces.IPermissionMapping"
+      />
+
+  <implements
+      class="AccessControl.Role.RoleManager"
+      interface=".interfaces.IRoleManager"
+      />
 
 </configure>
