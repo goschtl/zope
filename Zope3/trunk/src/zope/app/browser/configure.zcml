@@ -94,7 +94,7 @@
 
 
   <page
-      name="interfaceBrowser.html"
+      name="index.html"
       for="zope.interface.interfaces.IInterface"
       permission="zope.View"
       template="introspector.pt"
