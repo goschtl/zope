@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import unittest
 from persistent import Persistent
 from transaction import get_transaction
@@ -117,9 +116,10 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.s1' : 123 }) # not unicode
         self.assertEqual(response.getStatus(), 200)
-        
-        object = traverse(self.getRootFolder(), 'test')
-        self.assert_(object.s1, '123')
+        # Note: We don't have a invalid field value
+        # since we convert the value to unicode
+        self.assert_(not validationErrorExists(
+            's1', 'Object is of wrong type.', response.getBody()))
 
 
     def test_missing_value(self):
