@@ -725,6 +725,9 @@ def main(module_filter, test_filter, libdir):
     except ImportError:
         pass
     else:
+        # zLOG is available, so we need to make sure it doesn't
+        # re-initialize anything we set up.  If we don't, zLOG assumes
+        # it can clobber everything the first time it's initialized.
         def null_initializer():
             pass
         zLOG.set_initializer(null_initializer)
