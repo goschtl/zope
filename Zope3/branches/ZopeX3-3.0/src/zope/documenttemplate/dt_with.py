@@ -48,10 +48,10 @@ class With:
     mapping = None
     only = 0
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         tname, args, section = blocks[0]
         args = parse_params(args, name='', expr='', mapping=1, only=1)
-        name, expr = name_param(args, 'with', 1)
+        name, expr = name_param(context, args, 'with', 1)
         if expr is None:
             expr = name
         else:

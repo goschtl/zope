@@ -50,7 +50,7 @@ class Let:
     blockContinuations = ()
     name = 'let'
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         tname, args, section = blocks[0]
         self.__name__ = args
         self.section = section.blocks
@@ -62,7 +62,7 @@ class Let:
                 # expr shorthand
                 expr = expr[1:-1]
                 try:
-                    args[i] = name, Eval(expr).eval
+                    args[i] = name, Eval(context, expr).eval
                 except SyntaxError, v:
                     m,(huh,l,c,src) = v
                     raise ParseError, (

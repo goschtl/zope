@@ -41,10 +41,10 @@ class SQLTest:
             v = "''".join(v.split("\'"))
         return "'%s'" %v
 
-    def __init__(self, args):
+    def __init__(self, context, args):
         args = parse_params(args, name='', type=None, column=None,
                             multiple=1, optional=1, op=None)
-        self.__name__ = name_param(args, 'sqlvar')
+        self.__name__ = name_param(context, args, 'sqlvar')
         has_key=args.has_key
         if not has_key('type'):
             raise ParseError, ('the type attribute is required', 'sqltest')
@@ -142,7 +142,7 @@ class SQLGroup:
     required = None
     where = None
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         self.blocks = blocks
         tname, args, section = blocks[0]
         self.__name__ = "%s %s" % (tname, args)
@@ -193,10 +193,10 @@ class SQLVar:
             v = "''".join(v.split("\'"))
         return "'%s'" %v
 
-    def __init__(self, args):
+    def __init__(self, context, args):
         args = parse_params(args, name='', expr='', type=None, optional=1)
 
-        name, expr = name_param(args, 'sqlvar', 1)
+        name, expr = name_param(context, args, 'sqlvar', 1)
         if expr is None:
             expr = name
         else:
@@ -276,10 +276,7 @@ class SQLVar:
 class SQLDTML(HTML):
     __name__ = 'SQLDTML'
 
-    commands = {}
-
-    for k, v in HTML.commands.items():
-        commands[k]=v
+    commands = HTML.commands.copy()
 
     # add the new tags to the DTML
     commands['sqlvar' ] = SQLVar

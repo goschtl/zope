@@ -21,9 +21,9 @@ class ReturnTag:
     name = 'return'
     expr = None
 
-    def __init__(self, args):
+    def __init__(self, context, args):
         args = parse_params(args, name='', expr='')
-        name, expr = name_param(args,'var',1)
+        name, expr = name_param(context, args,'var',1)
         self.__name__, self.expr = name, expr
 
     def render(self, md):

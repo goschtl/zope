@@ -147,7 +147,7 @@ Evaluating expressions without rendering results
 
 $Id$
 """
-from zope.documenttemplate.dt_util import parse_params, name_param, html_quote, str
+from zope.documenttemplate.dt_util import parse_params, name_param, html_quote
 import re, sys
 from urllib import quote, quote_plus
 
@@ -156,7 +156,7 @@ class Var:
     name = 'var'
     expr = None
 
-    def __init__(self, args, fmt='s'):
+    def __init__(self, context, args, fmt='s'):
         if args[:4] == 'var ':
             args = args[4:]
         args = parse_params(args, name='', lower=1, upper=1, expr='',
@@ -173,7 +173,7 @@ class Var:
                        used(m[0]) and args[m[0]],
                        modifiers)))
 
-        name, expr = name_param(args, 'var', 1)
+        name, expr = name_param(context, args, 'var', 1)
 
         self.__name__, self.expr = name, expr
         self.fmt = fmt
@@ -285,9 +285,9 @@ class Call:
     name = 'call'
     expr = None
 
-    def __init__(self, args):
+    def __init__(self, context, args):
         args = parse_params(args, name='', expr='')
-        name, expr = name_param(args,'call',1)
+        name, expr = name_param(context, args,'call',1)
         if expr is None:
             expr = name
         else:
@@ -451,7 +451,7 @@ class Comment:
     name = 'comment'
     blockContinuations = ()
 
-    def __init__(self, args, fmt=''):
+    def __init__(self, context, args, fmt=''):
         pass
 
     def render(self, md):

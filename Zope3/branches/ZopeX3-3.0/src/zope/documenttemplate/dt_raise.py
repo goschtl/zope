@@ -25,19 +25,20 @@
 
 $Id$
 '''
-from zope.documenttemplate.dt_util import \
-     parse_params, name_param, render_blocks
+from zope.documenttemplate.dt_util \
+     import parse_params, name_param, render_blocks
 
 class Raise:
     blockContinuations = ()
     name = 'raise'
     expr = ''
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         tname, args, section = blocks[0]
         self.section=section.blocks
         args=parse_params(args, type='', expr='')
-        self.__name__, self.expr = name_param(args, 'raise', 1, attr='type')
+        self.__name__, self.expr = name_param(
+            context, args, 'raise', 1, attr='type')
 
     def render(self, md):
         expr = self.expr

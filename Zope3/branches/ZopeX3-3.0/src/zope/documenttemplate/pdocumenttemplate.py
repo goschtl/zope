@@ -171,6 +171,102 @@ class TemplateDict:
             m=kw
         return (DictInstance(m),)
 
+    # extra handy utilities that people expect to find in template dicts:
+
+    import math
+    import random
+
+    def range(md, iFirst, *args):
+        # limited range function from Martijn Pieters
+        RANGELIMIT = 1000
+        if not len(args):
+            iStart, iEnd, iStep = 0, iFirst, 1
+        elif len(args) == 1:
+            iStart, iEnd, iStep = iFirst, args[0], 1
+        elif len(args) == 2:
+            iStart, iEnd, iStep = iFirst, args[0], args[1]
+        else:
+            raise AttributeError, u'range() requires 1-3 int arguments'
+        if iStep == 0:
+            raise ValueError, u'zero step for range()'
+        iLen = int((iEnd - iStart) / iStep)
+        if iLen < 0:
+            iLen = 0
+        if iLen >= RANGELIMIT:
+            raise ValueError, u'range() too large'
+        return range(iStart, iEnd, iStep)
+
+    def pow(self, x, y, z):
+        if not z:
+            raise ValueError, 'pow(x, y, z) with z==0'
+        return pow(x,y,z)
+
+    def test(self, *args):
+        l = len(args)
+        for i in range(1, l, 2):
+            if args[i-1]:
+                return args[i]
+
+        if l%2:
+            return args[-1]
+
+    getattr = getattr
+    attr = getattr
+    hasattr = hasattr
+    
+    def namespace(self, **kw):
+        return self(**kw)
+
+    def render(self, v):
+        "Render an object in the way done by the 'name' attribute"
+        if hasattr(v, '__render_with_namespace__'):
+            v = v.__render_with_namespace__(self)
+        else:
+            vbase = getattr(v, 'aq_base', v)
+            if callable(vbase):
+                v = v()
+        return v
+
+    def reorder(self, s, with=None, without=()):
+        if with is None:
+            with = s
+        d = {}
+        for i in s:
+            if isinstance(i, TupleType) and len(i) == 2:
+                k, v = i
+            else:
+                k = v = i
+            d[k] = v
+        r = []
+        a = r.append
+        h = d.has_key
+
+        for i in without:
+            if isinstance(i, TupleType) and len(i) == 2:
+                k, v = i
+            else:
+                k= v = i
+            if h(k):
+                del d[k]
+
+        for i in with:
+            if isinstance(i, TupleType) and len(i) == 2:
+                k, v = i
+            else:
+                k= v = i
+            if h(k):
+                a((k,d[k]))
+                del d[k]
+
+        return r
+
+
+# Add selected builtins to template dicts
+for name in ('None', 'abs', 'chr', 'divmod', 'float', 'hash', 'hex', 'int',
+             'len', 'max', 'min', 'oct', 'ord', 'round', 'str'):
+    setattr(TemplateDict, name, __builtins__[name])
+
+
 
 def render_blocks(blocks, md):
     rendered = []
