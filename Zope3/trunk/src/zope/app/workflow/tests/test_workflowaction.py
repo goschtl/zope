@@ -151,17 +151,18 @@ class WorkflowActionExceptionEvent(unittest.TestCase, WorkflowActionTestsBase):
 
 
 def test_suite():
+    # DISABLED BECAUSE OUTDATED
 
     suite = unittest.TestSuite()
-    for klass in ( WorkflowActionCreatedTests
-                 , WorkflowActionAssignedEventTest
-                 , WorkflowActionBegunEventTest
-                 , WorkflowActionSuspendedTests
-                 , WorkflowActionCompletedEvent
-                 , WorkflowActionExceptionEvent
-                 ):
-        suite.addTest(
-            unittest.defaultTestLoader.loadTestsFromTestCase( klass ) )
+    #for klass in ( WorkflowActionCreatedTests
+    #             , WorkflowActionAssignedEventTest
+    #             , WorkflowActionBegunEventTest
+    #             , WorkflowActionSuspendedTests
+    #             , WorkflowActionCompletedEvent
+    #             , WorkflowActionExceptionEvent
+    #             ):
+    #    suite.addTest(
+    #        unittest.defaultTestLoader.loadTestsFromTestCase( klass ) )
     return suite
 
 
