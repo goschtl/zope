@@ -43,12 +43,20 @@
 		 tal:attributes="value info/id" />
 	</td>
   
-	<td class="ContentIcon" tal:content="structure info/icon|default">
+        <td> 
+          <a href="#" 
+             tal:attributes="href 
+                             string:${info/url}/@@SelectedManagementView.html"
+             tal:content="structure info/icon|default"
+             >
+          </a> 
+        </td>
 	</td>
   
 	<td class="ContentTitle">
 	  <a href="subfolder_id"
-	     tal:attributes="href string:${info/url}"
+	     tal:attributes="href 
+                             string:${info/url}/@@SelectedManagementView.html"
 	     tal:content="info/title"
 	  >Folder Title or ID here</a>
 	</td>

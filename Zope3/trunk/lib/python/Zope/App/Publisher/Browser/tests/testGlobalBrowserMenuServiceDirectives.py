@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
+$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.4 2002/10/01 12:49:08 jim Exp $
 """
 
 from StringIO import StringIO
@@ -99,6 +99,10 @@ class Test(PlacelessSetup, TestCase):
         
         self.assertEqual(list(menu), [d(5), d(6), d(3), d(2), d(1)])
 
+        first = globalBrowserMenuService.getFirstMenuItem(
+            'test_id', X(), TestRequest())
+
+        self.assertEqual(first, d(5))
 
 def test_suite():
     return makeSuite(Test)

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.6 2002/07/11 18:21:29 jim Exp $
+Revision information: $Id: Contents.py,v 1.7 2002/10/01 12:49:07 jim Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -71,6 +71,14 @@ class Contents(BrowserView):
     def listContentInfo(self):
         return map(self._extractContentInfo, self.context.items())
 
-    index = ViewPageTemplateFile('main.pt')
+    contents = ViewPageTemplateFile('main.pt')
     confirmRemoved = ViewPageTemplateFile('remove_confirmed.pt')
 
+    _index = ViewPageTemplateFile('index.pt')
+
+    def index(self):
+        if 'index.html' in self.context:
+            self.request.response.redirect('index.html')
+            return ''
+
+        return self._index()

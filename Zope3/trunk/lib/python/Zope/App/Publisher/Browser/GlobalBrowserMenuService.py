@@ -53,7 +53,7 @@ class GlobalBrowserMenuService:
         data.append((action, title, description, filter))
         registry.register(interface, data)
 
-    def getMenu(self, menu_id, object, request):
+    def getMenu(self, menu_id, object, request, max=999999):
         registry = self._registry[menu_id]
         traverser = PublicationTraverser()
 
@@ -90,8 +90,17 @@ class GlobalBrowserMenuService:
                     'description': description,
                     'action': "%s" % action,
                     })
+
+                if len(result) >= max:
+                    return result
         
         return result
+
+    def getFirstMenuItem(self, menu_id, object, request):
+        r = self.getMenu(menu_id, object, request, max=1)
+        if r:
+            return r[0]
+        return None
 
 def menuDirective(_context, id, title, description=''):
     return [Action(
@@ -136,5 +145,5 @@ del addCleanUp
 
 __doc__ = GlobalBrowserMenuService.__doc__ + """
 
-$Id: GlobalBrowserMenuService.py,v 1.4 2002/08/01 15:33:44 jim Exp $
+$Id: GlobalBrowserMenuService.py,v 1.5 2002/10/01 12:49:08 jim Exp $
 """

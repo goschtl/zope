@@ -32,8 +32,8 @@
 
 <browser:menuItems menu="zmi_views" for=".ZPTPage.IZPTPage.">
   <browser:menuItem title="Edit" action="editForm.html"/>
-  <browser:menuItem title="View" action="."/>
   <browser:menuItem title="Role Permissions" action="AllRolePermissions.html"/>
+  <browser:menuItem title="View" action="."/>
 </browser:menuItems>
 
 <browser:icon name="zmi_icon" for=".ZPTPage.IZPTPage." file="zpt.gif" />

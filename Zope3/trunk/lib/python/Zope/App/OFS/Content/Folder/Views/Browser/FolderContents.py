@@ -14,7 +14,7 @@
 """
     Define view component for folder contents.
 
-$Id: FolderContents.py,v 1.2 2002/06/10 23:28:00 jim Exp $
+$Id: FolderContents.py,v 1.3 2002/10/01 12:49:07 jim Exp $
 """
 
 import os
@@ -36,4 +36,4 @@ class FolderContents(Contents):
         if REQUEST is not None:
             return self.index(REQUEST)
 
-    index = ViewPageTemplateFile('contents.pt')
+    contents = ViewPageTemplateFile('contents.pt')

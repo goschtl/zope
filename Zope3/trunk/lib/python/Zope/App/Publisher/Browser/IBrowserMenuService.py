@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IBrowserMenuService.py,v 1.1 2002/06/18 19:34:57 jim Exp $
+$Id: IBrowserMenuService.py,v 1.2 2002/10/01 12:49:08 jim Exp $
 """
 
 from Interface import Interface
@@ -33,6 +33,23 @@ class IBrowserMenuService(Interface):
         The entries returned are accessable to the current user and
         have passed any menu item filters, if any.
 
+        """
+
+    def getFirstMenuItem(menu_id, object, request):
+        """Get the first browser menu item for an object and request
+
+        Return a mapping object with keys:
+
+        title -- The menu item title
+
+        description -- The item title
+
+        action -- A (possibly relative to object) URL for the menu item.
+
+        The entry returned is accessable to the current user and
+        has passed any menu item filters, if any.
+
+        If no entry can be found, None is returned.
         """
 
         

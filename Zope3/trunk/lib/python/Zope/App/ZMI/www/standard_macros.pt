@@ -29,7 +29,8 @@
        metal:define-macro="breadcrumbs"
        tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs">
       <a href="" 
-         tal:attributes="href breadcrumb/url"
+         tal:attributes="href 
+                    string:${breadcrumb/url}/@@SelectedManagementView.html"
          tal:content="string:${breadcrumb/name}/"
          >name</a>&nbsp</span>
 

@@ -22,11 +22,12 @@
     file="Folder_icon.gif" />
 
 <browser:menuItems menu="zmi_views" for=".Folder.IFolder.">
-  <browser:menuItem title="Contents" action="@@index.html"/>
+  <browser:menuItem title="Contents" action="@@contents.html"/>
   <browser:menuItem title="Role Permissions" 
       action="@@AllRolePermissions.html"/>
   <browser:menuItem title="Principal Roles" 
       action="@@PrincipalRoles.html"/>
+  <browser:menuItem title="View" action="@@index.html"/>
 </browser:menuItems>
 
 <browser:menuItem menu="add_content"
@@ -39,7 +40,9 @@
     permission="Zope.ManageContent" 
     factory=".Views.Browser.FolderContents.">
 
-  <browser:page name="index.html" attribute="index" />
+  <browser:page name="index.html" attribute="index" permission="Zope.View" />
+  <browser:page name="contents.html" attribute="contents" />
+  <browser:page name="manage" attribute="contents" />
   <browser:page name="addServiceManager.html" attribute="addServiceManager" />
   <browser:page name="removeObjects.html" attribute="removeObjects" />
 

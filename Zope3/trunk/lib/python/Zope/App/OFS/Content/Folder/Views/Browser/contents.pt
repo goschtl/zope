@@ -50,12 +50,18 @@
                                      checked request/ids_checked|nothing;"/>
             </td>
             <td> 
-              <a href="#" tal:attributes="href url"
-                 tal:content="structure item/icon|default">
+              <a href="#" 
+                 tal:attributes="href 
+                                 string:${url}/@@SelectedManagementView.html"
+                 tal:content="structure item/icon|default"
+                 >
               </a> 
             </td>
             <td> 
-              <a href="#" tal:attributes="href url">
+              <a href="#" 
+                 tal:attributes="href 
+                                 string:${url}/@@SelectedManagementView.html"
+                 >
                 <span tal:replace="item/id">Id</span>
                 <span tal:condition="item/title"
                       tal:replace="string: (${item/title})">(Title)</span>

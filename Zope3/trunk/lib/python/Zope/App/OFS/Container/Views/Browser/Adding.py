@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.5 2002/07/12 13:26:09 jim Exp $
+$Id: Adding.py,v 1.6 2002/10/01 12:49:07 jim Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -45,7 +45,8 @@ class Adding(BrowserView):
 
     def nextURL(self):
         'See Zope.App.OFS.Container.IAdding.IAdding'
-        return str(getView(self.context, "absolute_url", self.request))
+        return (str(getView(self.context, "absolute_url", self.request))
+                + '/@@contents.html')
 
     ######################################
     # from: Zope.ComponentArchitecture.IPresentation.IPresentation
