@@ -44,6 +44,38 @@ class SimpleComponentTraverser(object):
             raise NotFound(ob, name)
         return view
 
+class MethodTraverser(object):
+    """Support traversal of methods
+
+    This adapter actually prevents traversal:
+
+      >>> ob = object()      # don't really care what object
+      >>> request = object() # request is ignored
+      >>> adapter = MethodTraverser(ob, request)
+      >>> try:
+      ...     adapter.publishTraverse(request, 'foo')
+      ... except NotFound, v:
+      ...     print (v.ob, v.name) == (ob, 'foo')
+      True
+
+    Method objects are their own browser default:
+
+      >>> adapter.browserDefault(request) == (ob, None)
+      True
+      
+    """
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+    
+    def browserDefault(self, request):
+        return self.context, None
+
+    def publishTraverse(self, request, name):
+        raise NotFound(self.context, name)
+
+    
+
 class FileContentTraverser(SimpleComponentTraverser):
     """Browser traverser for file content.
 
