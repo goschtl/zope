@@ -38,15 +38,6 @@
       layer="templates" 
       />
 
-  <browser:page
-    name="contents.html"
-    for="zope.app.interfaces.content.folder.IFolder"
-    permission="zope.ManageContent"
-    layer="templates"
-    class="zope.app.browser.container.contents.Contents"
-    template="www/folder_contents.pt" 
-    />
-
   <browser:resource  
       name="pdlib.js" 
       file="www/pdlib.js"

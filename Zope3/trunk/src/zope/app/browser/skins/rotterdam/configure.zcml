@@ -76,16 +76,6 @@
     template="dialog_macros.pt" />
 
 <browser:page
-    name="contents.html"
-    for="zope.app.interfaces.content.folder.IFolder"
-    permission="zope.ManageContent"
-    layer="rotterdam"
-    class="zope.app.browser.container.contents.Contents"
-    template="folder_contents.pt"
-    usage="objectview"
-    />
-
-<browser:page
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
     for="zope.schema.interfaces.ISourceText"

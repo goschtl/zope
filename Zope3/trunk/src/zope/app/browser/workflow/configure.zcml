@@ -84,29 +84,14 @@
   name="contents.html"
   />  
 
-<browser:pages
+<browser:page
      for="zope.app.interfaces.workflow.IProcessDefinitionElementContainer"
      permission="zope.workflow.ManageProcessDefinitions"
-     class="zope.app.browser.container.contents.Contents">
-     >
-
-    <browser:page name="contents.html" attribute="contents" />
-    <browser:page name="removeObjects.html" attribute="removeObjects" />
-    <browser:page name="cutObjects.html" attribute="cutObjects" />
-    <browser:page name="copyObjects.html" attribute="copyObjects" />
-    <browser:page name="pasteObjects.html" attribute="pasteObjects" />
-    <browser:page name="renameObjects.html" attribute="renameObjects" />
-    <browser:page name="rename.html" attribute="rename" />
-
-  </browser:pages>
-
-
-<browser:menuItem
-  for="zope.app.interfaces.workflow.IProcessDefinitionElementContainer"
-  menu="zmi_views"
-  title="Contents"
-  action="contents.html"
-  />
+     class="zope.app.browser.container.contents.Contents"
+     name="contents.html" attribute="contents"
+     menu="zmi_views"
+     title="Contents"
+     />
 
 <adapter factory="zope.app.container.zopecontainer.ZopeContainerAdapter"
   provides="zope.app.interfaces.container.IZopeContainer"
