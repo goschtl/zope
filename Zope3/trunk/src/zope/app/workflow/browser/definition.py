@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """ProcessDefinition registration adding view
- 
+
 $Id$
 """
 
@@ -23,7 +23,7 @@ from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 
 
 class ProcessDefinitionView(object):
- 
+
     def getName(self):
         return """I'm a dummy ProcessInstance"""
 
@@ -31,7 +31,7 @@ class ProcessDefinitionView(object):
 class ImportExportView(object):
 
     def importDefinition(self):
-        xml = self.request.get('definition')
+        xml = str(self.request.get('definition'))
         if xml:
             IProcessDefinitionImportHandler(self.context).doImport(xml)
         self.request.response.redirect('@@importexport.html?success=1')
