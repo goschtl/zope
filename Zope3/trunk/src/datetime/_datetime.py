@@ -903,8 +903,7 @@ class date(object):
             self._checkOverflow(t.year)
             result = self.__class__(t.year, t.month, t.day)
             return result
-        raise TypeError
-        # XXX Should be 'return NotImplemented', but there's a bug in 2.2...
+        return NotImplemented
 
     __radd__ = __add__
 
@@ -1168,7 +1167,6 @@ class time(object):
                        (other.__hour, other.__minute, other.__second,
                         other.__microsecond))
         if myoff is None or otoff is None:
-            # XXX Buggy in 2.2.2.
             raise TypeError("cannot compare naive and aware times")
         myhhmm = self.__hour * 60 + self.__minute - myoff
         othhmm = other.__hour * 60 + other.__minute - otoff
@@ -1692,7 +1690,6 @@ class datetime(date):
                         other.__hour, other.__minute, other.__second,
                         other.__microsecond))
         if myoff is None or otoff is None:
-            # XXX Buggy in 2.2.2.
             raise TypeError("cannot compare naive and aware datetimes")
         # XXX What follows could be done more efficiently...
         diff = self - other     # this will take offsets into account
