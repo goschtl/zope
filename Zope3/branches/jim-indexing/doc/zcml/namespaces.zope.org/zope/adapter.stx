@@ -1,0 +1,41 @@
+adapter
+
+  File zope/app/component/meta.zcml, lines 13 - 17.
+
+  Handler: zope.app.component.metaconfigure.adapter
+
+  Register an adapter
+
+  Attributes
+
+    factory -- Tokens (required)
+
+      Adapter factory/factories
+
+      A list of factories (usually just one) that create the adapter instance.
+
+    provides -- GlobalObject (required)
+
+      Interface the component provides
+
+      This attribute specifes the interface the adapter instance must provide.
+
+    for -- Tokens (required)
+
+      Specifications to be adapted
+
+      This should be a list of interfaces or classes
+
+    permission -- Permission (optional, default=None)
+
+      Permission
+
+      This adapter is only available, if the principal has this permission.
+
+    name -- TextLine (optional, default=None)
+
+      Name
+
+      Adapters can have names. This attribute allows you to specify the name
+      for this adapter.
+

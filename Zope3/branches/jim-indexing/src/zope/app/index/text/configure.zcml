@@ -1,0 +1,43 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+<content class="zope.app.index.text.index.TextIndex">
+  <factory
+      id="zope.app.index.text.TextIndex"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.index.interfaces.text.IUITextIndex"
+      attributes="query"
+      />
+  <implements
+      interface="zope.app.index.interfaces.IQueryProcessable"
+      />
+</content>
+
+
+<content class="zope.app.index.text.index.TextCatalogIndex">
+  <factory
+      id="zope.app.index.text.TextCatalogIndex"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.index.interfaces.text.IUITextCatalogIndex"
+      attributes="query"
+      />
+  <require
+      permission="zope.ManageContent"
+      set_schema="zope.app.index.interfaces.text.IUITextCatalogIndex"
+      />
+  <implements
+      interface="zope.app.index.interfaces.IQueryProcessable"
+      />
+</content>
+
+
+<adapter
+    factory="zope.app.index.text.processors.BatchedRankedProcessor"
+    provides="zope.app.index.interfaces.IQueryProcessor"
+    for="zope.index.interfaces.IQuerying"
+    />
+
+</configure>

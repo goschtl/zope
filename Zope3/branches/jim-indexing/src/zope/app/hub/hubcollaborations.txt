@@ -1,0 +1,187 @@
+Sample Object-Hub collaborations
+
+
+  Participants:
+
+    eventService: IEventService
+
+    hub: IObjectHub
+
+    auto_reg_plugin: ISubscriber
+        """An autoregistration plugin
+
+         This implements a policy of automatically registring objects
+         when they are added. It also implements a policy of
+         automatically removing objects that are moved to (or out of)
+         special locations.
+
+         This plugin is subscribed to the hub for IObjectAddedEvents and
+         IObjectMovedEvents.
+
+         """
+     
+    plugin1: ISubscriber
+         """Some plugin
+
+         This plugin is subscribed to ObjectHubEvents
+         """
+     
+    queue: ISubscriber
+         """An event queue plugin.
+
+         This plugin is subscribed to ObjectHubEvents.
+         """
+     
+    path_index: ISubscriber
+         """An index that supports searching for objects by their paths
+
+         This plugin is subscribed to ObjectHubEvents
+         """
+    
+    links: ISubscriber
+         """A link tracker
+
+         It will sometimes veto removal hub events if removing an
+         object would violate referential integrity.
+         """         
+
+
+    creation_view: 
+        "some creation view"
+
+    adding: IAdding
+
+    folder: 
+        "a folder containing cotent objects"
+
+    some_admin_view:
+         "A view that allows an unregistered object to be registered"
+
+    some_management_view:
+        "A view for managing the contents of a container"
+
+    objectRemovedEvent:IObjectRemovedEvent
+        "An event computed as: ObjectRemovedEvent(location, object)
+
+
+  Values:
+ 
+    add_event:IObjectAddedEvent
+         "Computed as ObjectAddedEvent(newLocation)"
+
+    newLocation: 
+         "The location of newObject"
+
+    newObject: 
+         "an object object added in a scenario"
+
+    id:Text
+         "The given id for the new object"
+
+    object:
+         "An object that exists prior to a scenario"
+
+    objectRegisteredHubEvent:IObjectRegisteredHubEvent
+         "Computed as ObjectRegisteredHubEvent(hub, hid, location)
+
+    location:
+         "The location of object"
+
+    hid:
+         "The hub-generated hub-id of the object.
+
+
+
+  Scenario: Object created and added to the hub
+
+    creation_view.action()
+
+       adding.add(newObject)
+
+           folder.setObject(id, newObject) 
+
+           eventService.publishEvent(AddEvent(location))
+
+              hub.notify(addedEvent)
+
+                 auto_reg_plugin.notify(addedEvent)
+
+                    hub.registerAdded(location, object)
+
+                        plugin1.notify(objectAddedHubEvent)
+
+                        queue.notify(objectAddedHubEvent)
+
+                        path_index.notify(objectAddedHubEvent)
+              
+                        links.notify(objectAddedHubEvent)
+
+
+  Scenario: Previously created object added to the hub
+
+     some_admin_view.action()
+
+        hub.register(location, object)
+
+           plugin1.notify(objectRegisteredHubEvent)
+           
+           queue.notify(objectRegisteredHubEvent)
+           
+           path_index.notify(objectRegisteredHubEvent)
+              
+           links.notify(objectRegisteredHubEvent)
+
+
+  Scenario: Moved an object that has been registered
+           
+     some_management_view.action()
+
+        eventService.publishEvent(objectMovedEvent)
+
+           hub.notify(objectMovedEvent)
+
+              auto_reg_plugin.notify(objectMovedEvent)
+              # It might have decided to unregister the object
+              # on the basis of the destination
+
+              path_index.notify(objectMovedHubEvent)
+
+  Scenario: A previously registered object is deleted
+
+     some_management_view.delete()
+     
+        del folder[id]
+
+        eventService.publishEvent(objectRemovedEvent)
+
+           hub.notify(objectRemovedEvent)
+
+              plugin1.notify(objectRemovedHubEvent)
+           
+              queue.notify(objectRemovedHubEvent)
+           
+              path_index.notify(objectRemovedHubEvent)
+              
+              links.notify(objectRemovedHubEvent)
+
+
+  Scenario: A previously registered object is deleted, but would break
+            references.  We assume we have a links plugin that tracks
+            links between objects.
+
+     some_management_view.delete()
+     
+        eventService.publishEvent(objectRemovedEvent)
+
+           hub.notify(objectRemovedEvent)
+
+              plugin1.notify(objectRemovedHubEvent)
+           
+              queue.notify(objectRemovedHubEvent)
+           
+              path_index.notify(objectRemovedHubEvent)
+              
+              links.notify(objectRemovedHubEvent)
+
+                 raise "That would break a link"
+

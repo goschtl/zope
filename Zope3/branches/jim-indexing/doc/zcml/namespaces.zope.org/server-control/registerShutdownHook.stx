@@ -1,0 +1,26 @@
+registerShutdownHook
+
+  File zope/app/applicationcontrol/meta.zcml, lines 8 - 12.
+
+  Register a shutdown hook
+
+  Attributes
+
+    call -- GlobalObject (required)
+
+      Callable
+
+      Callable that takes no arguments and invokes the shutdown
+
+    priority -- Float (required)
+
+      Priority
+
+      
+
+    name -- TextLine (optional, default=None)
+
+      Name
+
+      
+
