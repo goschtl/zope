@@ -1101,6 +1101,7 @@ class PluggableAuthService( Folder ):
         stack.append(resp._unauthorized)
         resp._unauthorized_stack = stack
         resp._unauthorized = self._unauthorized
+        resp._has_challenged = False
 
     #
     # Response override
@@ -1108,10 +1109,14 @@ class PluggableAuthService( Folder ):
     def _unauthorized(self):
         req = self.REQUEST
         resp = req['RESPONSE']
+        if resp._has_challenged: # Been here already
+            return
         if not self.challenge(req, resp):
             # Need to fall back here
             resp = self._cleanupResponse()
             resp._unauthorized()
+        else:
+            resp._has_challenged = True
 
     def challenge(self, request, response):
         # Go through all challenge plugins
