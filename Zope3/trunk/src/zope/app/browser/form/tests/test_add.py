@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.11 2003/04/14 08:27:15 jim Exp $
+$Id: test_add.py,v 1.12 2003/04/17 18:00:53 fdrake Exp $
 """
 
 import sys
@@ -42,9 +42,8 @@ class Context:
             # eek, we got a real dotted name
             m = sys.modules[name[:l]]
             return getattr(m, name[l+1:])
-
-
-        return globals()[name]
+        else:
+            return globals()[name]
 
 class I(Interface):
 
@@ -266,7 +265,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         class Adding:
             __implements__ = IAdding
 
-
         adding = Adding()
         [(descriminator, callable, args, kw)] = self._invoke_add()
         factory = AddViewFactory(*args)
@@ -298,11 +296,9 @@ class Test(PlacelessSetup, unittest.TestCase):
         V.nextURL = lambda self: 'next'
 
         try:
-
             self.assertEqual(view.update(), '')
 
             self.assertEqual(view.errors, ())
-
 
             self.assertEqual(l[0].extra1, "extra1")
             self.assertEqual(l[0].extra2, "extra2")
