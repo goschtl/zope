@@ -1,0 +1,90 @@
+# Recipe file for symlinks in the repository.
+
+# When checked in, this file is read and the specified link structure
+# is imposed on the repository.  Any existing repository links not
+# specified in this file are deleted.  Any links specified here that
+# wind up pointing outside the repository are also deleted.
+
+# Lines beginning with a '#' sign, like this, and blank lines are
+# ignored.
+
+# The other lines should be white-space separated pairs of paths:
+
+# - The first path indicates where the symlink is situated.  It is
+#   interepreted relative to the repository root, whether or not it
+#   starts with a '/'.
+
+# - The second path indicates the target of the link.  It is
+#   interpreted relative to the repo root if it is absolute, otherwise
+#   it is used as is, for relative links within the repository.
+#
+#   To gracefully retire an existing symlink, include an entry but
+#   omit the second path.  This will cause a link to be created
+#   pointing to an empty directory - the CVS equivalent of a removed
+#   directory.
+
+/Zope/ZServer                                   /Packages/ZServer
+/Zope/lib/Components/ExtensionClass             /Cruft/ExtensionClass
+/Zope/lib/python/AccessControl                  /Packages/AccessControl
+/Zope/lib/python/App                            /Packages/App
+/Zope/lib/python/BTrees                         /Packages/BTrees
+/Zope/lib/python/ComponentArchitecture          /Packages/ComponentArchitecture
+/Zope/lib/python/DateTime                       /Packages/DateTime
+/Zope/lib/python/DocumentTemplate               /Packages/DocumentTemplate
+/Zope/lib/python/HelpSys                        /Packages/HelpSys
+/Zope/lib/python/Interface                      /Packages/Interface
+/Zope/lib/python/Locales                        /Packages/Locales
+/Zope/lib/python/OFS                            /Packages/OFS
+/Zope/lib/python/RestrictedPython               /Packages/RestrictedPython
+/Zope/lib/python/SearchIndex                    /Packages/SearchIndex
+/Zope/lib/python/Shared                         /Packages/Shared
+/Zope/lib/python/SkinnableAndLocalizable    /Packages/SkinnableAndLocalizable
+/Zope/lib/python/Skins                          /Packages/Skins
+/Zope/lib/python/StructuredText                 /Packages/StructuredText
+/Zope/lib/python/Testing                        /Packages/Testing
+/Zope/lib/python/TreeDisplay                    /Packages/TreeDisplay
+/Zope/lib/python/ZClasses                       /Packages/ZClasses
+/Zope/lib/python/ZDom                           /Packages/ZDom
+/Zope/lib/python/ZLogger                        /Packages/ZLogger
+/Zope/lib/python/ZODB                           /Packages/ZODB
+/Zope/lib/python/ZPublisher                     /Packages/ZPublisher
+/Zope/lib/python/Zope                           /Packages/Zope
+/Zope/lib/python/webdav                         /Packages/webdav
+/Zope/lib/python/Persistence                    /Packages/Persistence
+/Zope/lib/python/ThreadedAsync                  /Packages/ThreadedAsync
+/Zope/lib/python/zdaemon                        /Packages/zdaemon
+/Zope/lib/python/zLOG                           /Packages/zLOG
+/Zope/lib/python/Products/ExternalMethod        /Products/ExternalMethod
+/Zope/lib/python/Products/MailHost              /Products/MailHost
+/Zope/lib/python/Products/MIMETools             /Products/MIMETools
+/Zope/lib/python/Products/OFSP                  /Products/OFSP
+/Zope/lib/python/Products/PluginIndexes         /Products/PluginIndexes
+/Zope/lib/python/Products/PythonScripts         /Products/PythonScripts
+/Zope/lib/python/Products/STXDocument           /Products/STXDocument
+/Zope/lib/python/Products/SiteAccess            /Products/SiteAccess
+/Zope/lib/python/Products/StandardCacheManagers /Products/StandardCacheManagers
+/Zope/lib/python/Products/ZCatalog              /Products/ZCatalog
+/Zope/lib/python/Products/ZGadflyDA             /Products/ZGadflyDA
+/Zope/lib/python/Products/ZSQLMethods           /Products/ZSQLMethods
+/Zope/lib/python/Products/ZopeTutorial          /Products/ZopeTutorial
+
+/StandaloneZODB/ZODB              /Packages/ZODB
+/StandaloneZODB/ZEO               /Packages/ZEO
+/StandaloneZODB/ExtensionClass    /Cruft/ExtensionClass
+/StandaloneZODB/BTrees            /Packages/BTrees
+/StandaloneZODB/bsddb3Storage     /Packages/bsddb3Storage
+/StandaloneZODB/Persistence       /Packages/Persistence
+/StandaloneZODB/ThreadedAsync     /Packages/ThreadedAsync
+/StandaloneZODB/zdaemon           /Packages/zdaemon
+/StandaloneZODB/zLOG              /Packages/zLOG
+
+/CMF/CMFCalendar                  /Products/CMFCalendar
+/CMF/CMFCore                      /Products/CMFCore
+/CMF/CMFDecor                     /Products/CMFDecor
+/CMF/CMFDefault                   /Products/CMFDefault
+/CMF/CMFTopic                     /Products/CMFTopic
+/CMF/CMFTracker                   /Products/CMFTracker
+/CMF/CMFWiki                      /Products/CMFWiki
+/CMF/DCWorkflow                   /Products/DCWorkflow
+
+/ZEO/ZEO                          /Packages/ZEO
