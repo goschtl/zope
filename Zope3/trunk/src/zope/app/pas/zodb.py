@@ -116,6 +116,8 @@ class PersistentPrincipalStorage(Persistent, Contained):
         try:
             return self._principal_by_id[id][0], None
         except TypeError:
+            # We were not passed an integer id, for instance
+            # because traversal to a view was attempted.
             raise KeyError, id
 
     def get(self, id, default=None):
