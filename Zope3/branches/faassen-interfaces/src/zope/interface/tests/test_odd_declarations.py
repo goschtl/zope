@@ -33,7 +33,7 @@ class I5(Interface): pass
 
 class Odd: __metaclass__ = odd.MetaClass
 
-class B(Odd): __implements__ = I2
+class B(Odd): __implemented__ = I2
 
 
 # XXX We are going to need more magic to make classProvides work with odd
@@ -87,7 +87,7 @@ class Test(unittest.TestCase):
         self.assert_(providedBy(c).extends(I31))
         self.assert_(providedBy(c).extends(I5))
 
-        class COnly(A, B): __implements__ = I31
+        class COnly(A, B): __implemented__ = I31
         class D(COnly):
             implements(I5)
 

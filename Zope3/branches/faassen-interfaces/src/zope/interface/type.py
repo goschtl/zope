@@ -140,7 +140,7 @@ class TypeRegistry:
     def getAllForObject(self, object):
         # XXX This isn't quite right, since it doesn't take into
         # account implementation registries for objects that can't
-        # have '__implements__' attributes.
+        # have '__implemented__' attributes.
         return self.getAll(providedBy(object))
 
     def getTypesMatching(self, interface):

@@ -808,7 +808,7 @@ class Attribute(Element):
     # We can't say this yet because we don't have enough
     # infrastructure in place.
     #
-    #__implements__ = IAttribute
+    #__implemented__ = IAttribute
 
 class Method(Attribute):
     """Method interfaces
@@ -820,7 +820,7 @@ class Method(Attribute):
     # We can't say this yet because we don't have enough
     # infrastructure in place.
     #
-    #__implements__ = IMethod
+    #__implemented__ = IMethod
 
     interface=''
 

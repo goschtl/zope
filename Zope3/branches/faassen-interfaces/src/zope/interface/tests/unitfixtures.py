@@ -42,7 +42,7 @@ class IC(Interface):
 
 
 
-C.__implements__=IC
+C.__implemented__=IC
 
 class I1(Interface):
     def ma():
@@ -55,15 +55,15 @@ class I3(Interface): pass
 class I4(Interface): pass
 
 class A(I1.deferred()):
-    __implements__=I1
+    __implemented__=I1
 
 class B:
-    __implements__=I2, I3
+    __implemented__=I2, I3
 
 class D(A, B): pass
 
 class E(A, B):
-    __implements__ = A.__implements__, C.__implements__
+    __implemented__ = A.__implemented__, C.__implemented__
 
 
 class FooInterface(Interface):
@@ -86,7 +86,7 @@ class FooInterface(Interface):
 class Foo:
     """ A concrete class """
 
-    __implements__ = FooInterface,
+    __implemented__ = FooInterface,
 
     foobar = "yeah"
 

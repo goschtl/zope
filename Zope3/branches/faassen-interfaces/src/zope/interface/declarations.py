@@ -292,7 +292,7 @@ def implementedByFallback(cls):
     # This also manages storage of implementation specifications
 
     try:
-        spec = cls.__dict__.get('__implements__')
+        spec = cls.__dict__.get('__implemented__')
     except AttributeError:
         
         # we can't get the class dict. This is probably due to a
@@ -305,7 +305,7 @@ def implementedByFallback(cls):
 
         # We'll check to see if there's an implements:
 
-        spec = getattr(cls, '__implements__', None)
+        spec = getattr(cls, '__implemented__', None)
         if spec is None:
             return _empty
         if spec.__class__ == Implements:
@@ -313,7 +313,8 @@ def implementedByFallback(cls):
             # Return it.
             return spec
 
-        # Hm, there's an __implements__, but it's not a spec. Must be
+        # XXX need old style __implements__ compatibility?
+        # Hm, there's an __implemented__, but it's not a spec. Must be
         # an old-style declaration. Just compute a spec for it
         return Declaration(*_normalizeargs((spec, )))
         
@@ -325,12 +326,13 @@ def implementedByFallback(cls):
         if spec is not None:
             return spec
 
+    # XXX need old style __implements__ comptability?
     if spec is not None:
-        # old-style __implements__ = foo declaration
+        # old-style __implemented__ = foo declaration
         spec = (spec, ) # tuplefy, as it might be just an int
         spec = Implements(*_normalizeargs(spec))
         spec.inherit = None    # old-style implies no inherit
-        del cls.__implements__ # get rid of the old-style declaration
+        del cls.__implemented__ # get rid of the old-style declaration
     else:
         try:
             bases = cls.__bases__
@@ -343,7 +345,7 @@ def implementedByFallback(cls):
     spec.__name__ = getattr(cls, '__module__', '?') + '.' + cls.__name__
 
     try:
-        cls.__implements__ = spec
+        cls.__implemented__ = spec
         if not hasattr(cls, '__providedBy__'):
             cls.__providedBy__ = objectSpecificationDescriptor
 
@@ -1069,7 +1071,7 @@ def ObjectSpecification(direct, cls):
         ...
         >>> class A: implements(I1)
         ...
-        >>> class B: __implements__ = I2
+        >>> class B: __implemented__ = I2
         ...
         >>> class C(A, B): implements(I31)
         ...
