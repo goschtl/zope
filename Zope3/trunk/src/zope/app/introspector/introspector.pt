@@ -9,6 +9,8 @@
     }
     th.introspector {
       vertical-align: top;
+      text-align: right;
+      padding-right: 1ex;
     }
   </style>
 </head>
