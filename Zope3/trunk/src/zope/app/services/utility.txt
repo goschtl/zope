@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.4 $
+:Version: $Revision: 1.5 $
 
 .. contents::
 
@@ -20,13 +20,13 @@ service above it, in the file ``utility.py``::
 
   from persistence import Persistent
   from zope.component.exceptions import ComponentLookupError
-  from zope.context import ContextMethod
   from zope.app.component.nextservice import getNextService
   from zope.component.interfaces import IUtilityService
   from zope.app.interfaces.services.interfaces import ISimpleService
   from zope.interface import implements
+  from zope.app.container.contained import Contained
 
-  class LocalUtilityService(Persistent):
+  class LocalUtilityService(Persistent, Contained):
 
       implements(IUtilityService, ISimpleService)
 
@@ -35,20 +35,23 @@ service above it, in the file ``utility.py``::
           if utility is None:
               raise ComponentLookupError("utility", interface, name)
           return utility
-      getUtility = ContextMethod(getUtility)
 
       def queryUtility(self, interface, default=None, name=''):
           next = getNextService(self, "Utilities")
           return next.queryUtility(interface, default, name)
-      queryUtility = ContextMethod(queryUtility)
 
 The local service subclasses ``Persistent`` to provide support for
 transparent persistent in the ZODB.
 
-The local service uses the `ContextMethod`` function to convert it's
-methods to be context methods.  Context methods are called with "self"
-arguments that are context wrapped.  This is needed if the methods or
-properties are going to call APIs that need acquisition context.
+The local service also subclasses ``Contained''.  ``Contained'' is a
+simple base class that defines two attributes, ``__parent__'' and
+``__name__'' and declares implementation of the ``IContained''
+interface.  The containment framework is used to keep track of object
+locations. If objects don't care about containment, they needn't
+implement this interface. Their containes will use containment proxies
+to support the framework. If objects need to use location information,
+then they need to implement ``IContained''.  This is needed to call
+most component apis.
 
 The ``getUtility`` method simply delegates to ``queryUtility``.  The
 ``queryUtility`` method delegates to the next utility service using
@@ -222,7 +225,8 @@ Utility service user interface
 The utility service needs a view for showing what utilities have been
 registered. 
 
-MORE DOCUMENTATION TO FOLLOW
+MORE DOCUMENTATION TO FOLLOW 
+(well, not really, we're just saying that ;)
 
 Utility registration user interface
 ===================================
