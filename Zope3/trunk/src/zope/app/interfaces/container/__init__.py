@@ -91,6 +91,16 @@ class IContentContainer(IWriteContainer):
 class IContainer(IReadContainer, IWriteContainer):
     """Readable and writable content container."""
 
+class IOrderedContainer(IContainer):
+    """Containers whose contents are maintained in order
+    """
+
+    def updateOrder(order):
+        """Revise the order of keys, replacing the current ordering
+
+        Raise something(XXX) if the set of keys passed in is not complete.
+        """
+
 class IOptionalNamesContainer(IContainer):
     """Containers that will choose names for their items if no names are given
     """

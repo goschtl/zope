@@ -1,0 +1,75 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+<content class=".PluggableAuthenticationService">
+    <factory
+        id="zope.app.services.PluggableAuthenticationService"
+        permission="zope.ManageServices"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="
+  zope.app.interfaces.services.pluggableauth.IPluggableAuthenticationService"
+        />
+    <allow
+        interface="zope.app.interfaces.container.IReadContainer"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.container.IWriteContainer"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.container.IAddNotifiable"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.services.service.ISimpleService"
+        />
+</content>
+
+<content class=".BTreePrincipalSource">
+    <factory
+        id="zope.app.principalsources.BTreePrincipalSource"
+        permission="zope.ManageServices"
+        />
+    <allow
+        interface="zope.app.interfaces.container.IReadContainer"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.container.IWriteContainer"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="
+  zope.app.interfaces.services.pluggableauth.IWritePrincipalSource"
+        />
+    <allow
+        interface="
+  zope.app.interfaces.services.pluggableauth.IReadPrincipalSource"
+        />
+</content>
+
+<content class=".SimplePrincipal">
+    <factory
+        id="zope.app.principals.SimplePrincipal"
+        permission="zope.ManageServices"
+        />
+    <allow
+        interface="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+        />
+    <require
+        permission="zope.ManageServices"
+        set_schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+        />
+</content>
+
+<browser:view
+       name="login"
+       for="zope.app.interfaces.services.pluggableauth.IPrincipalSource"
+       class="zope.app.services.pluggableauth.PrincipalAuthenticationView"
+       permission="zope.Public"
+/> <!-- XXX why do we need a permission? -->
+
+</zopeConfigure>

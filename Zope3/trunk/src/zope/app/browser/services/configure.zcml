@@ -173,6 +173,10 @@
     <menuItem title="Edit" action="editForm.html"/>
   </menuItems>
 
+<!-- Pluggable Authentication Service -->
+
+<include package=".pluggableauth" />
+
 <!-- Component Location widget -->
 
 <!-- XXX we are phasing these widgets out -->

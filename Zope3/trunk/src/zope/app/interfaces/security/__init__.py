@@ -105,7 +105,7 @@ class IAuthenticationService(Interface):
         Note that the authentication service nearest to the
         requested resource is called. It is up to
         authentication service implementations to
-        colaborate with services higher in the object
+        collaborate with services higher in the object
         hierarchy.
 
         If no principal has been identified, id will be
@@ -121,18 +121,16 @@ class IAuthenticationService(Interface):
 
         Note that the authentication service nearest to the requested
         resource is called. It is up to authentication service
-        implementations to colaborate with services higher in the
+        implementations to collaborate with services higher in the
         object hierarchy.
         """
 
     def getPrincipals(name):
         """Get principals with matching names.
 
-        Get a iterable object with the principals with names that are
+        Get an iterable object with the principals with names that are
         similar to (e.g. contain) the given name.
         """
-
-
 
 class ILoginPassword(Interface):
     """A password based login.
