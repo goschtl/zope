@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.17 2003/02/20 16:46:05 stevea Exp $
+$Id: widget.py,v 1.18 2003/02/21 09:46:09 alga Exp $
 """
 
 __metaclass__ = type
@@ -44,7 +44,7 @@ class BrowserWidget(Widget, BrowserView):
     _missing = None
 
     def haveData(self):
-        if (self.name) in self.request.form:
+        if self.name in self.request.form:
             return self._convert(self.request[self.name]) is not None
         return False
 
@@ -181,10 +181,10 @@ class PossiblyEmptyMeansMissing:
     def haveData(self):
         v = self.request.form.get(self.name)
         if v is None:
-            return 0
+            return False
         if not v and getattr(self.context, 'min_length', 1) > 0:
-            return 0
-        return 1
+            return False
+        return True
 
     def _convert(self, value):
         v = self.request.form.get(self.name)
