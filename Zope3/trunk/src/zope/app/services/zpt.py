@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.11 2003/05/29 19:55:42 gvanrossum Exp $
+$Id: zpt.py,v 1.12 2003/05/29 20:50:42 gvanrossum Exp $
 """
 
 import re
@@ -148,4 +148,4 @@ class ZPTPageAdapter(ObjectEntryAdapter):
         self.context.source = unicode(data)
 
     def extra(self):
-        return AttrMapping(self.context, ('contentType',))
+        return AttrMapping(self.context, ('contentType', 'expand'))
