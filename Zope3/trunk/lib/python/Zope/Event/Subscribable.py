@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: Subscribable.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: Subscribable.py,v 1.3 2002/08/01 15:33:45 jim Exp $
 """
 
-from Zope.ComponentArchitecture.IToIRegistry import TypeRegistry
+from Interface.Registry.TypeRegistry import TypeRegistry
 from Zope.Exceptions import NotFoundError
 from ISubscribable import ISubscribable
 from ISubscriptionAware import ISubscriptionAware
@@ -46,7 +46,7 @@ class Subscribable(object): # do we need this to be a type?
         ev_type=event_type
         if ev_type is IEvent: ev_type=None # optimization
         
-        subscribers = self._registry.getJustForType(ev_type)
+        subscribers = self._registry.get(ev_type)
         if subscribers is None:
             subscribers = []
             self._registry.register(ev_type, subscribers)
@@ -86,7 +86,7 @@ class Subscribable(object): # do we need this to be a type?
                 ev_type=None # handle optimization
             if ev_type not in ev_set:
                 raise NotFoundError(subscriber, event_type, filter)
-            subscriptions = self._registry.getJustForType(ev_type)
+            subscriptions = self._registry.get(ev_type)
             if not subscriptions:
                 raise NotFoundError(subscriber, event_type, filter)
             try: 
@@ -103,7 +103,7 @@ class Subscribable(object): # do we need this to be a type?
                     del self._subscribers[subscriber_index]
         else:
             for ev_type in ev_set:
-                subscriptions = self._registry.getJustForType(ev_type)
+                subscriptions = self._registry.get(ev_type)
                 subs=subscriptions[:]
                 subscriptions[:] = []
                 for sub in subs:
@@ -116,6 +116,9 @@ class Subscribable(object): # do we need this to be a type?
                         subscriptions.append(sub)
             del self._subscribers[subscriber_index]
         self._registry=self._registry #trigger persistence, if pertinent
+
+    def subscriptionsForEvent(self, event):
+        return self._registry.getAllForObject(event)
     
     def listSubscriptions(self, subscriber, event_type=None):
         
@@ -126,7 +129,7 @@ class Subscribable(object): # do we need this to be a type?
             ev_type=event_type
             if event_type is IEvent:
                 ev_type=None # handle optimization
-            subscriptions = self._registry.getJustForType(ev_type)
+            subscriptions = self._registry.get(ev_type)
             if subscriptions:
                 for sub in subscriptions:
                     if sub[0]==subscriber:
@@ -140,7 +143,7 @@ class Subscribable(object): # do we need this to be a type?
             else:
                 return result
             for ev_type in ev_set:
-                subscriptions = self._registry.getJustForType(ev_type)
+                subscriptions = self._registry.get(ev_type)
                 if subscriptions:
                     for sub in subscriptions:
                         if sub[0]==subscriber:

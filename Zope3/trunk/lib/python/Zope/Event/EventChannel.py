@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: EventChannel.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: EventChannel.py,v 1.3 2002/08/01 15:33:45 jim Exp $
 """
 
 from Subscribable import Subscribable
@@ -26,11 +26,9 @@ class EventChannel(Subscribable):
         
     def notify(self, event):
         
-        subscriptionses = self._registry.getAllForObject(event)
-
-        for subscriptions in subscriptionses:
+        for subscriptions in self.subscriptionsForEvent(event):
             
-            for subscriber,filter in subscriptions:
+            for subscriber, filter in subscriptions:
                 if filter is not None and not filter(event):
                     continue
                 subscriber.notify(event)

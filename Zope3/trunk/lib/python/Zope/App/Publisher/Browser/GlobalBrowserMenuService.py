@@ -14,7 +14,7 @@
 
 from IBrowserMenuService import IBrowserMenuService
 from Zope.Configuration.Action import Action
-from Zope.ComponentArchitecture.IToIRegistry import TypeRegistry
+from Interface.Registry.TypeRegistry import TypeRegistry
 from Zope.Exceptions import DuplicationError, Unauthorized, Forbidden
 from Zope.App.PageTemplate.Engine import Engine
 from Zope.App.ZopePublication.Browser.PublicationTraverse \
@@ -49,7 +49,7 @@ class GlobalBrowserMenuService:
         else:
             filter = None
 
-        data = registry.getJustForType(interface) or []
+        data = registry.get(interface) or []
         data.append((action, title, description, filter))
         registry.register(interface, data)
 
@@ -136,5 +136,5 @@ del addCleanUp
 
 __doc__ = GlobalBrowserMenuService.__doc__ + """
 
-$Id: GlobalBrowserMenuService.py,v 1.3 2002/06/20 21:47:45 jim Exp $
+$Id: GlobalBrowserMenuService.py,v 1.4 2002/08/01 15:33:44 jim Exp $
 """

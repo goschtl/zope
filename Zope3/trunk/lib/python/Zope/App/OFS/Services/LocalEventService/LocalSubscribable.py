@@ -14,10 +14,9 @@
 """
 
 Revision information:
-$Id: LocalSubscribable.py,v 1.2 2002/06/10 23:28:10 jim Exp $
+$Id: LocalSubscribable.py,v 1.3 2002/08/01 15:33:43 jim Exp $
 """
 
-from Zope.ComponentArchitecture.IToIRegistry import TypeRegistry
 from Zope.Exceptions import NotFoundError
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
 from Zope.Event.IEvent import IEvent
@@ -42,7 +41,7 @@ class LocalSubscribable(Subscribable, Persistent):
         ev_type=event_type
         if ev_type is IEvent: ev_type=None # optimization
         
-        subscribers = clean_self._registry.getJustForType(ev_type)
+        subscribers = clean_self._registry.get(ev_type)
         if subscribers is None:
             subscribers = []
             clean_self._registry.register(ev_type, subscribers)
@@ -84,7 +83,7 @@ class LocalSubscribable(Subscribable, Persistent):
                 ev_type=None # handle optimization
             if ev_type not in ev_set:
                 raise NotFoundError(subscriber, event_type, filter)
-            subscriptions = clean_self._registry.getJustForType(ev_type)
+            subscriptions = clean_self._registry.get(ev_type)
             if not subscriptions:
                 raise NotFoundError(subscriber, event_type, filter)
             try:
@@ -101,7 +100,7 @@ class LocalSubscribable(Subscribable, Persistent):
                     del clean_self._subscribers[subscriber_index]
         else:
             for ev_type in ev_set:
-                subscriptions = clean_self._registry.getJustForType(ev_type)
+                subscriptions = clean_self._registry.get(ev_type)
                 subs=subscriptions[:]
                 subscriptions[:] = []
                 for sub in subs:

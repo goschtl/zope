@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.3 2002/07/18 16:03:17 jeremy Exp $
+$Id: LocalEventService.py,v 1.4 2002/08/01 15:33:43 jim Exp $
 """
 
 from Zope.Event.GlobalEventService import eventService
@@ -153,7 +153,7 @@ class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
             raise NotFoundError(subscriber)
         do_alert=ISubscriptionAware.isImplementedBy(subscriber)
         for ev_type in ev_set:
-            subscriptions = clean_self._registry.getJustForType(ev_type)
+            subscriptions = clean_self._registry.get(ev_type)
             subs=subscriptions[:]
             subscriptions[:] = []
             for sub in subs:

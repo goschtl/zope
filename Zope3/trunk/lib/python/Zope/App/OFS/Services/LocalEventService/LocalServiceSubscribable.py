@@ -14,10 +14,9 @@
 """
 
 Revision information:
-$Id: LocalServiceSubscribable.py,v 1.2 2002/06/10 23:28:10 jim Exp $
+$Id: LocalServiceSubscribable.py,v 1.3 2002/08/01 15:33:43 jim Exp $
 """
 
-from Zope.ComponentArchitecture.IToIRegistry import TypeRegistry
 from Zope.Exceptions import NotFoundError
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
 from Zope.Event.IEvent import IEvent
@@ -62,7 +61,7 @@ class LocalServiceSubscribable(LocalSubscribable, Persistent):
                     wrapped_self, clean_self._serviceName).unsubscribe(
                     subscriber, event_type, filter)
             else:
-                subscriptions = clean_self._registry.getJustForType(ev_type)
+                subscriptions = clean_self._registry.get(ev_type)
                 try:
                     subscriptions.remove((subscriber, filter))
                 except ValueError:
@@ -78,7 +77,7 @@ class LocalServiceSubscribable(LocalSubscribable, Persistent):
                         del clean_self._subscribers[subscriber_index]
         else:
             for ev_type in ev_set:
-                subscriptions = clean_self._registry.getJustForType(ev_type)
+                subscriptions = clean_self._registry.get(ev_type)
                 subs=subscriptions[:]
                 subscriptions[:] = []
                 for sub in subs:
