@@ -13,7 +13,7 @@
 ##############################################################################
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.22 2003/08/06 14:41:41 srichter Exp $
+$Id: fssync.py,v 1.23 2003/08/07 17:04:48 fdrake Exp $
 """
 import os
 import cgi
@@ -66,52 +66,21 @@ class NewMetadata(Metadata):
             entry["flag"] = "added"
         return entry
 
-class SnarfCommit(BrowserView):
-    """View for committing and checking in changes.
 
-    The input to commit() should be a POST request whose data is a
-    snarf archive.  It returns an updated snarf archive, or a text
-    document with errors.
+class SnarfSubmission(BrowserView):
+    """Base class for the commit and checkin views."""
 
-    The alternate entry point checkin() is for checking in a new
-    archive.  It is similar to commit() but creates a brand new tree
-    and doesn't return anything.
-    """
-
-    # XXX Maybe split into two classes with a common base instead?
-
-    def commit(self):
+    def run(self):
         self.check_content_type()
         self.set_transaction()
         self.parse_args()
         self.set_note()
         try:
             self.make_tempdir()
-            self.set_commit_arguments()
-            self.make_commit_metadata()
+            self.set_arguments()
+            self.make_metadata()
             self.unsnarf_body()
-            self.call_checker()
-            if self.errors:
-                return self.send_errors()
-            else:
-                self.call_committer()
-                self.write_to_filesystem()
-                return self.send_archive()
-        finally:
-            self.remove_tempdir()
-
-    def checkin(self):
-        self.check_content_type()
-        self.set_transaction()
-        self.parse_args()
-        self.set_note()
-        try:
-            self.make_tempdir()
-            self.set_checkin_arguments()
-            self.make_checkin_metadata()
-            self.unsnarf_body()
-            self.call_committer()
-            return ""
+            return self.run_submission()
         finally:
             self.remove_tempdir()
 
@@ -144,35 +113,6 @@ class SnarfCommit(BrowserView):
         if note:
             self.txn.note(note)
 
-    def set_commit_arguments(self):
-        # Compute self.{name, container, fspath} for commit()
-        self.name = getName(self.context)
-        self.container = getParent(self.context)
-        if self.container is None and self.name == "":
-            # Hack to get loading the root to work
-            self.container = getRoot(self.context)
-            self.fspath = os.path.join(self.tempdir, "root")
-        else:
-            self.fspath = os.path.join(self.tempdir, self.name)
-
-    def set_checkin_arguments(self):
-        # Compute self.{name, container, fspath} for checkin()
-        name = self.get_arg("name")
-        if not name:
-            raise ValueError(_("required argument 'name' missing"))
-        src = self.get_arg("src")
-        if not src:
-            src = name
-        self.container = self.context
-        self.name = name
-        self.fspath = os.path.join(self.tempdir, src)
-
-    def make_commit_metadata(self):
-        self.metadata = Metadata()
-
-    def make_checkin_metadata(self):
-        self.metadata = NewMetadata()
-
     tempdir = None
 
     def make_tempdir(self):
@@ -188,6 +128,71 @@ class SnarfCommit(BrowserView):
         fp.seek(0)
         uns = Unsnarfer(fp)
         uns.unsnarf(self.tempdir)
+
+    def call_committer(self):
+        c = Committer(self.metadata)
+        c.synch(self.container, self.name, self.fspath)
+
+
+class SnarfCheckin(SnarfSubmission):
+    """View for checking a new sub-tree into Zope.
+
+    The input should be a POST request whose data is a snarf archive.
+    This creates a brand new tree and doesn't return anything.
+    """
+
+    def run_submission(self):
+        # XXX need to make sure the top-level name doesn't already
+        # exist, or existing site data can get screwed
+        self.call_committer()
+        return ""
+
+    def set_arguments(self):
+        # Compute self.{name, container, fspath} for checkin()
+        name = self.get_arg("name")
+        if not name:
+            raise ValueError(_("required argument 'name' missing"))
+        src = self.get_arg("src")
+        if not src:
+            src = name
+        self.container = self.context
+        self.name = name
+        self.fspath = os.path.join(self.tempdir, src)
+
+    def make_metadata(self):
+        self.metadata = NewMetadata()
+
+
+class SnarfCommit(SnarfSubmission):
+    """View for committing changes to an existing tree.
+
+    The input should be a POST request whose data is a snarf archive.
+    It returns an updated snarf archive, or a text document with
+    errors.
+    """
+
+    def run_submission(self):
+        self.call_checker()
+        if self.errors:
+            return self.send_errors()
+        else:
+            self.call_committer()
+            self.write_to_filesystem()
+            return self.send_archive()
+
+    def set_arguments(self):
+        # Compute self.{name, container, fspath} for commit()
+        self.name = getName(self.context)
+        self.container = getParent(self.context)
+        if self.container is None and self.name == "":
+            # Hack to get loading the root to work
+            self.container = getRoot(self.context)
+            self.fspath = os.path.join(self.tempdir, "root")
+        else:
+            self.fspath = os.path.join(self.tempdir, self.name)
+
+    def make_metadata(self):
+        self.metadata = Metadata()
 
     def call_checker(self):
         if self.get_arg("raise"):
@@ -206,10 +211,6 @@ class SnarfCommit(BrowserView):
         lines.append("")
         self.request.response.setHeader("Content-Type", "text/plain")
         return "\n".join(lines)
-
-    def call_committer(self):
-        c = Committer(self.metadata)
-        c.synch(self.container, self.name, self.fspath)
 
     def write_to_filesystem(self):
         shutil.rmtree(self.tempdir) # Start with clean slate

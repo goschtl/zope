@@ -372,14 +372,14 @@
       name="fromFS.snarf"
       permission="zope.ManageServices"
       class="zope.app.browser.content.fssync.SnarfCommit"
-      attribute="commit" />
+      attribute="run" />
 
   <!-- fssync checkin -->
   <page
       for="zope.interface.Interface"
       name="checkin.snarf"
       permission="zope.ManageServices"
-      class="zope.app.browser.content.fssync.SnarfCommit"
-      attribute="checkin" />
+      class="zope.app.browser.content.fssync.SnarfCheckin"
+      attribute="run" />
 
 </configure>
