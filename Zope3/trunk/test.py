@@ -449,9 +449,30 @@ def walk_with_symlinks(top, func, arg):
             if os.path.isdir(name):
                 walk_with_symlinks(name, func, arg)
 
+
+def check_test_dir():
+    global test_dir
+    if test_dir and not os.path.exists(test_dir):
+        d = pathinit.libdir
+        d = os.path.join(d, test_dir)
+        if os.path.exists(d):
+            if not os.path.isdir(d):
+                raise ValueError(
+                    "%s does not exist and %s is not a directory"
+                    % (test_dir, d)
+                    )
+            test_dir = d
+        else:
+            raise ValueError("%s does not exist!" % test_dir)
+
+    print "test_dir", test_dir
+    
+
 def find_tests(rx):
     global finder
     finder = TestFileFinder(pathinit.libdir)
+
+    check_test_dir()
     walkdir = test_dir or pathinit.libdir
     walk_with_symlinks(walkdir, finder.visit, rx)
     return finder.files
