@@ -26,8 +26,18 @@ class IUniqueIdUtilityQuery(Interface):
 
     def getId(ob):
         """Get a unique id of an object.
+        """
 
-        If the id for an object is unknown, ValueError is raised.
+    def queryObject(uid, default=None):
+        """Return an object by its unique id
+
+        Return the default if the uid isn't registered
+        """
+
+    def queryId(ob, default=None):
+        """Get a unique id of an object.
+
+        Return the default if the object isn't registered
         """
 
 class IUniqueIdUtilitySet(Interface):

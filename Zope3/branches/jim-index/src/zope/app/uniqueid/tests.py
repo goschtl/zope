@@ -71,9 +71,16 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         obj = P()
         obj._p_jar = ConnectionStub()
 
+        self.assert_(u.queryId(obj) is None)
+        self.assert_(u.queryId(obj, 42) is 42)
+        self.assert_(u.queryObject(42) is None)
+        self.assert_(u.queryObject(42, obj) is obj)
+
         uid = u.register(obj)
         self.assert_(u.getObject(uid) is obj)
+        self.assert_(u.queryObject(uid) is obj)
         self.assertEquals(u.getId(obj), uid)
+        self.assertEquals(u.queryId(obj), uid)
 
         uid2 = u.register(obj)
         self.assertEquals(uid, uid2)

@@ -31,6 +31,8 @@ from ZODB.interfaces import IConnection
 from BTrees import OIBTree, IOBTree
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
+
+# XXX get rid of this 
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.event import notify
 
@@ -60,9 +62,19 @@ class UniqueIdUtility(Persistent):
     def getObject(self, id):
         return self.refs[id]()
 
+    def queryObject(self, id, default=None):
+        r = self.refs.get(id)
+        if r is not None:
+            return r()
+        return default
+
     def getId(self, ob):
         ref = zapi.getAdapter(ob, IReference)
         return self.ids[ref]
+
+    def queryId(self, ob, default=None):
+        ref = zapi.getAdapter(ob, IReference)
+        return self.ids.get(ref, default)
 
     def _generateId(self):
         """Generate an id which is not yet taken.
@@ -81,6 +93,8 @@ class UniqueIdUtility(Persistent):
             self._v_nextid = None
 
     def register(self, ob):
+
+        # Note that we'll still need to keep this proxy removal.
         ob = trustedRemoveSecurityProxy(ob)
         ref = zapi.getAdapter(ob, IReference)
         if ref in self.ids:
@@ -105,9 +119,11 @@ class ReferenceToPersistent:
     implements(IReference)
 
     def __init__(self, object):
-        self.object = object
+        # XXX This should be a trusted adapter
+        object = trustedRemoveSecurityProxy(object)
         if not getattr(object, '_p_oid', None):
-            zapi.getAdapter(object, IConnection).add(object)
+            IConnection(object).add(object)
+        self.object = object
 
     def __call__(self):
         return self.object
