@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.6 2002/12/13 19:15:42 gvanrossum Exp $
+$Id: _app.py,v 1.7 2002/12/19 19:44:49 jim Exp $
 """
 __metaclass__ = type
 
@@ -82,11 +82,12 @@ class Application:
     __browser_pub = None
     __TestRequest = None
 
-    def debug(self, path='/', stdin='', stdout=None, basic=None, pm=0,
-              environment=None, **kw):
-        import base64
-        from cStringIO import StringIO
-        from Zope.Publisher.Publish import publish
+    def _request(self,
+                 path='/', stdin='', stdout=None, basic=None,
+                 environment = None, form=None):
+
+
+        env = {}
 
         if stdout is None:
             stdout = StringIO()
@@ -94,10 +95,16 @@ class Application:
         if type(stdin) is str:
             stdin = StringIO(stdin)
 
-        env = {'PATH_INFO': path}
+        p=path.split('?')
+        if len(p)==1:
+            env['PATH_INFO'] = p[0]
+        elif len(p)==2:
+            env['PATH_INFO'], env['QUERY_STRING'] = p
+        else:
+            raise ValueError("Too many ?s in path", path)
+
         if environment is not None:
             env.update(environment)
-        env.update(kw)
 
         if basic:
             env['HTTP_AUTHORIZATION']="Basic %s" % base64.encodestring(basic)
@@ -106,13 +113,93 @@ class Application:
             from Zope.Publisher.Browser.BrowserRequest import TestRequest
             from Zope.App.ZopePublication.Browser.Publication \
                  import BrowserPublication
+            from Zope.App.ZopePublication.ZopePublication \
+                 import DebugPublication
+
+            class BrowserPublication(DebugPublication, BrowserPublication):
+                pass
+            
             self.__TestRequest = TestRequest
             self.__browser_pub = BrowserPublication(self.db)
 
         request = self.__TestRequest(stdin, stdout, env)
         request.setPublication(self.__browser_pub)
+        if form:
+            request.update(form)
 
-        publish(request, handle_errors= not pm)
+        return request
 
+    def publish(self, path='/', stdin='', stdout=None, *args, **kw):
+        
+        if stdout is None:
+            stdout = StringIO()
+
+        request = self._request(path, stdin, stdout, *args, **kw)
+        _publish(request)
         stdout.seek(0)
         print stdout.read()
+
+    def run(self, *args, **kw):
+        request = self._request(*args, **kw)
+        _publish(request, handle_errors = 0)
+
+    def debug(self, *args, **kw):
+        
+        import pdb
+
+        class Pdb(pdb.Pdb):
+            def do_pub(self,arg):
+                if hasattr(self,'done_pub'):
+                    print 'pub already done.'
+                else:
+                    self.do_s('')
+                    self.do_s('')
+                    self.do_c('')
+                    self.done_pub=1
+            def do_ob(self,arg):
+                if hasattr(self,'done_ob'):
+                    print 'ob already done.'
+                else:
+                    self.do_pub('')
+                    self.do_c('')
+                    self.done_ob=1
+
+        db=Pdb()
+
+        def fbreak(db, meth):
+            try:
+                meth = meth.im_func
+            except AttributeError:
+                pass
+            code = meth.func_code
+            lineno = getlineno(code)
+            filename = code.co_filename
+            db.set_break(filename,lineno)
+
+        request = self._request(*args, **kw)
+        fbreak(db, _publish)
+        fbreak(db, request.publication.call_wrapper.__call__)
+
+##         dbdata = {'breakpoints':(), 'env':env, 'extra': extra}
+##         b=''
+##         try: b=open('.bobodb','r').read()
+##         except: pass
+##         if b:
+##             exec b in dbdata
+
+##         for b in dbdata['breakpoints']:
+##             if isinstance(b, TupleType):
+##                 apply(db.set_break, b)
+##             else:
+##                 fbreak(db,b)
+
+        db.prompt='pdb> '
+
+        print '* Type c<cr> to jump to published object call.'
+        db.runcall(_publish, request)
+
+try:
+    from codehack import getlineno
+except:
+    def getlineno(code):
+        return code.co_firstlineno
