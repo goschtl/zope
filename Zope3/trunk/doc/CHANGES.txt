@@ -223,6 +223,8 @@ Zope Changes
 
     Restructuring
 
+    - Reimplemented the utility services using adapter registries.
+
     - Replaced the *used* names in schema.errornames to exceptions in
       schema.interfaces. Deprecated schema.errornames. The doc strings of the
       exceptions/errors is now used for user output. Eventually we should

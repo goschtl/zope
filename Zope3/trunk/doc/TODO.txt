@@ -44,8 +44,6 @@ Things to do for the next release (in no particular order)
 
   Steve and Marius are working on this
 
-- Redo utility service
-
 - Restructure registration framework to use direct references rather
   than paths.
 
