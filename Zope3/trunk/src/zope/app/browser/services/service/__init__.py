@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.13 2004/02/07 07:21:25 anthony Exp $
+$Id: __init__.py,v 1.14 2004/02/09 01:25:29 anthony Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -55,6 +55,7 @@ class ComponentAdding(Adding):
     def action(self, type_name, id):
         # For special case of that we want to redirect to another adding view
         # (usually another menu such as AddService)
+        import re
         if type_name.startswith("../"):
             # Special case
             url = type_name
@@ -69,6 +70,14 @@ class ComponentAdding(Adding):
             l = id.rfind('.')
             if l >= 0:
                 id = id[l+1:]
+                # Add menus generate meaningless factory names.
+                # Skip them.
+                if re.match('^f[0-9]*$', id):
+                    id = type_name[:l]
+                    l = id.rfind('.')
+                    if l >= 0:
+                        id = id[l+1:]
+                
             
         chooser = zapi.getAdapter(self.context, INameChooser)
         id = chooser.chooseName(id, None)
@@ -77,10 +86,38 @@ class ComponentAdding(Adding):
         # As a side effect, self.added_object is set by add() above.
         super(ComponentAdding, self).action(type_name, id)
 
+    _addFilterInterface = None
+    def addingInfo(self):
+        # A site management folder can have many things. We only want 
+        # things that implement a particular interface
+        info = super(ComponentAdding, self).addingInfo()
+        if self._addFilterInterface is None:
+            return info
+        out = []
+        for item in info:
+            extra = item.get('extra')
+            if extra:
+                factoryname = extra.get('factory')
+                if factoryname:
+                    factory = zapi.getFactory(self.context, factoryname)
+                    intf = factory.getInterfaces()
+                    if not intf.extends(self._addFilterInterface):
+                        # We only skip new addMenuItem style objects
+                        # that don't implement our wanted interface.
+                        continue
+
+            out.append(item)
+
+        return out
+
+
 class ServiceAdding(ComponentAdding):
     """Adding subclass used for adding services."""
 
     menu_id = "add_service"
+    title = _("Add Service")
+
+    _addFilterInterface = ILocalService
 
     def add(self, content):
         # Override so as to check the type of the new object.
@@ -110,10 +147,14 @@ class ServiceAdding(ComponentAdding):
 
         return content
 
+
 class UtilityAdding(ComponentAdding):
     """Adding subclass used for adding utilities."""
 
     menu_id = "add_utility"
+    title = _("Add Utility")
+
+    _addFilterInterface = ILocalUtility
 
     def add(self, content):
         # Override so as to check the type of the new object.
@@ -121,6 +162,16 @@ class UtilityAdding(ComponentAdding):
         if not ILocalUtility.isImplementedBy(content):
             raise TypeError("%s is not a local utility" % content)
         return super(UtilityAdding, self).add(content)
+
+    def nextURL(self):
+        v = zapi.queryView(
+            self.added_object, "addRegistration.html", self.request)
+        if v is not None:
+            url = str(
+                zapi.getView(self.added_object, 'absolute_url', self.request))
+            return url + "/addRegistration.html"
+
+        return super(UtilityAdding, self).nextURL()
 
 
 class AddServiceRegistration(BrowserView):
