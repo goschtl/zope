@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.16 2003/05/15 19:46:45 gvanrossum Exp $
+$Id: syncer.py,v 1.17 2003/05/15 21:24:52 gvanrossum Exp $
 """
 
 import os
@@ -132,6 +132,7 @@ def toFS(ob, name, location):
             writeFile(data, path)
     else:
         # Directory
+        assert IObjectDirectory.isImplementedBy(adapter)
         if os.path.exists(path):
             dir_entries = os.path.join(path, '@@Zope', 'Entries.xml')
             if os.path.exists(dir_entries):
@@ -155,7 +156,8 @@ def _setItem(container, name, ob, old=False):
         newName = container.setObject(name, ob)
         if newName != name:
             raise SynchronizationError(
-                "Container generated new name for %s" % path)
+                "Container generated new name for %s (new name %s)" %
+                (name, newName))
     else:
         # Not a container, must be a mapping
         container[name] = ob
@@ -263,6 +265,7 @@ def fromFS(container, name, location):
             else:
                 # Special case pickle data
                 oldOb = container[name]
+                oldOb = removeAllProxies(oldOb)
                 newOb = loadFile(path)
                 try:
                     # See if we can and should just copy the state
