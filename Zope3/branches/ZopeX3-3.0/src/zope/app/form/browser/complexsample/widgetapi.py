@@ -155,11 +155,11 @@ class BaseWidget(object):
     def loadValueFromRequest(self):
         """Load the value from data in the request."""
         raise NotImplementedError(
-            "BaseWidget subclasses must implement `loadValueFromRequest()`")
+            "BaseWidget subclasses must implement loadValueFromRequest()")
 
     def render(self, value):
         raise NotImplementedError(
-            "BaseWidget subclasses must implement `render()`")
+            "BaseWidget subclasses must implement render()")
 
 
 class BaseVocabularyWidget(BaseWidget):
@@ -364,14 +364,14 @@ class BaseQueryView(object):
         that `renderQueryResults()` can provide a helpful message.
         """
         raise NotImplementedError(
-            "`BaseQueryView` subclasses must implement `getResults()`")
+            "BaseQueryView subclasses must implement getResults()")
 
     def renderInput(self):
         """Render the input area of the query view."""
         raise NotImplementedError(
-            "`BaseQueryView` subclasses must implement `renderInput()`")
+            "BaseQueryView subclasses must implement renderInput()")
 
     def renderQueryResults(self, results, value):
         """Render the results returned by `getResults()`."""
         raise NotImplementedError(
-            "`BaseQueryView` subclasses must implement `renderQueryResults()`")
+            "BaseQueryView subclasses must implement renderQueryResults()")
