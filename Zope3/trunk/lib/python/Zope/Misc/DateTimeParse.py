@@ -13,7 +13,7 @@
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.2 2002/06/10 23:29:28 jim Exp $
+$Id: DateTimeParse.py,v 1.3 2002/07/18 16:07:02 jeremy Exp $
 """
     
 import re, math, DateTimeZone
@@ -465,7 +465,7 @@ class DateTimeParser:
             raise TypeError, 'Expected a string argument'
 
         if not arg:
-            raise SyntaxError(args)
+            raise SyntaxError(arg)
 
         if arg.find(' ')==-1 and arg[4]=='-':
             yr,mo,dy,hr,mn,sc,tz=self._parse_iso8601(arg)
