@@ -122,6 +122,14 @@ TO DO
   dictionary, separate the annotations from the dict so they appear in
   the @@Zope/Annotations/ tree.
 
+  XXX Note that IAttributeAnnotatable doesn't say anything about *how*
+  the __annotations__ attribute is stored; it can be in the object's
+  __dict__, it can be a property, or who know what else.  There's
+  probably not enough information about how the manipulate the
+  object's state in a reliable way to implement this feature
+  automatically.  The only way to always do the right thing is to
+  define and appropriate adapter.
+
 - Implement bundle commands.
 
   * Need a way to turn site-management folders into bundles, and
