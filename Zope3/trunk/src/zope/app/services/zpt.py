@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: zpt.py,v 1.3 2002/12/28 17:49:31 stevea Exp $
 """
 
 import re
@@ -63,7 +63,7 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent):
 
 # Adapter for ISearchableText
 
-from zope.app.interfaces.index.text.interfaces import ISearchableText
+from zope.app.interfaces.index.text import ISearchableText
 
 tag = re.compile(r"<[^>]+>")
 class SearchableText:

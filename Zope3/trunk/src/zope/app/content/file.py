@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: file.py,v 1.3 2002/12/28 17:49:25 stevea Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -179,7 +179,7 @@ class File(Persistent):
 
 # Adapter for ISearchableText
 
-from zope.app.interfaces.index.text.interfaces import ISearchableText
+from zope.app.interfaces.index.text import ISearchableText
 
 class SearchableText:
 

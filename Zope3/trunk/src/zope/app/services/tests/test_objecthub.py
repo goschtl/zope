@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
+$Id: test_objecthub.py,v 1.4 2002/12/28 17:49:32 stevea Exp $
 """
 
 import unittest, sys
@@ -266,7 +266,6 @@ class TestSearchRegistrations(BasicHubTest):
                           self.object_hub.register, u'/foo/\uffffstuff')
 
     def testIterObjectRegistrations(self):
-        from zope.app.traversing import locationAsUnicode
         def fake_object_for_location(location):
             return 'object at %s' % locationAsUnicode(location)
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.2 2002/12/25 14:12:33 jim Exp $
+$Id: control.py,v 1.3 2002/12/28 17:49:24 stevea Exp $
 """
 
 from __future__ import generators
@@ -27,7 +27,7 @@ from zope.publisher.browser import BrowserView
 
 from zope.app.traversing import locationAsUnicode
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.app.interfaces.index.text.interfaces import IQueryView
+from zope.app.interfaces.index.text import IQueryView
 
 class ControlView(BrowserView):
 

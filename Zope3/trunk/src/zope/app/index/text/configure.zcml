@@ -4,7 +4,7 @@
 
     <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.index.text.interfaces.IUITextIndex"
+      interface="zope.app.interfaces.index.text.IUITextIndex"
       attributes="query"
       />
 

@@ -13,33 +13,25 @@
 ##############################################################################
 """Event service implementation.
 
-$Id: event.py,v 1.3 2002/12/28 14:13:27 stevea Exp $
+$Id: event.py,v 1.4 2002/12/28 17:49:31 stevea Exp $
 """
 
 from persistence import Persistent
 
-from zope.app.component.nextservice import getNextService
+from zope.app.component.nextservice import getNextService, queryNextService
 from zope.app.event.globaleventservice import eventService
 from zope.app.interfaces.services.event import IPathSubscriber
 from zope.app.interfaces.traversing import ITraverser
-from zope.app.traversing import getPhysicalPathString
-from zope.component import getAdapter
-from zope.component import getService
+from zope.app.traversing import getPhysicalPathString, traverse
+from zope.component import getAdapter, getService
 from zope.event.subscribable import Subscribable
 from zope.exceptions import NotFoundError
-from zope.interface import Attribute
-from zope.interfaces.event import IEvent
-from zope.interfaces.event import IEventChannel
-from zope.interfaces.event import IEventService
+from zope.interfaces.event import IEvent, IEventChannel, IEventService
 from zope.interfaces.event import ISubscriptionAware
-from zope.proxy.context import ContextWrapper
-from zope.proxy.context import isWrapper
-from zope.proxy.context import ContextMethod
+from zope.proxy.context import ContextWrapper, ContextMethod, isWrapper
 from zope.proxy.introspection import removeAllProxies
 
-from zope.app.component.nextservice import getNextService, queryNextService
 from zope.app.interfaces.services.service import IBindingAware
-from zope.app.traversing import getPhysicalPathString, traverse
 
 
 class LocalSubscribable(Persistent, Subscribable):

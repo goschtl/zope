@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: interfaces.py,v 1.2 2002/12/25 14:13:00 jim Exp $
+$Id: text.py,v 1.1 2002/12/28 17:49:27 stevea Exp $
 """
 
 from zope.interface import Interface

@@ -14,23 +14,13 @@
 """
 
 Revision information:
-$Id: eventsetup.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: eventsetup.py,v 1.3 2002/12/28 17:49:32 stevea Exp $
 """
 
-from zope.app.services.tests.placefulsetup \
-  import PlacefulSetup
-
-from zope.app.services.service \
-     import ServiceManager
-
-from zope.app.services.event \
-     import LocalEventService
-
-from zope.app.services.service \
-     import ServiceConfiguration
-
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.services.service import ServiceManager, ServiceConfiguration
+from zope.app.services.event import LocalEventService
 from zope.app.traversing import getPhysicalPathString, traverse
-
 from zope.app.interfaces.services.configuration import Active
 
 class EventSetup(PlacefulSetup):

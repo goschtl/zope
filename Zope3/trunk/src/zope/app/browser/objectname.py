@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: objectname.py,v 1.2 2002/12/25 14:12:26 jim Exp $
+$Id: objectname.py,v 1.3 2002/12/28 17:49:23 stevea Exp $
 """
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.proxy.context import getInnerWrapperData
-from zope.app.traversing.objectname \
-    import IObjectName, ObjectName, SiteObjectName
+from zope.app.interfaces.traversing import IObjectName
+from zope.app.traversing.adapters import ObjectName, SiteObjectName
 
 class ObjectNameView(ObjectName):
 

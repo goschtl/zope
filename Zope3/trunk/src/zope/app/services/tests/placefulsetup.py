@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
+$Id: placefulsetup.py,v 1.4 2002/12/28 17:49:32 stevea Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -31,12 +31,11 @@ from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.traversing.defaulttraversable import DefaultTraversable
-from zope.app.traversing.etcnamespace import etc
-from zope.app.traversing.namespaces import provideNamespaceHandler
-from zope.app.traversing.physicallocationadapters \
-     import WrapperPhysicallyLocatable, RootPhysicallyLocatable
-from zope.app.traversing.traverser import Traverser
+from zope.app.traversing.adapters import DefaultTraversable
+from zope.app.traversing.namespace import etc
+from zope.app.traversing.namespace import provideNamespaceHandler
+from zope.app.traversing.adapters import WrapperPhysicallyLocatable
+from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
 
 
 class PlacefulSetup(PlacelessSetup):

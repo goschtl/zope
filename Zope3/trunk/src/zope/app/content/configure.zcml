@@ -151,7 +151,7 @@
 </content>
 
 <adapter factory="zope.app.content.zpt.SearchableText"
-         provides="zope.app.interfaces.index.text.interfaces.ISearchableText"
+         provides="zope.app.interfaces.index.text.ISearchableText"
          for="zope.app.interfaces.content.zpt.IZPTPage" />
 
 <adapter factory="zope.app.content.zpt.Sized"
@@ -233,7 +233,7 @@
 </content>
 
 <adapter factory="zope.app.content.file.SearchableText"
-         provides="zope.app.interfaces.index.text.interfaces.ISearchableText"
+         provides="zope.app.interfaces.index.text.ISearchableText"
          for="zope.app.interfaces.content.file.IReadFile" />
 
 <!-- SQL Script Directives -->

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.3 2002/12/28 14:13:24 stevea Exp $
+$Id: test_index.py,v 1.4 2002/12/28 17:49:27 stevea Exp $
 """
 
 import unittest
@@ -34,7 +34,7 @@ from zope.app.services.hub import \
      ObjectModifiedHubEvent
 from zope.app.services.hub import ObjectHub
 
-from zope.app.interfaces.index.text.interfaces import ISearchableText
+from zope.app.interfaces.index.text import ISearchableText
 from zope.app.index.text.index import TextIndex
 
 

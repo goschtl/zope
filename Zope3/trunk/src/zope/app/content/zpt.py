@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.3 2002/12/27 20:33:49 stevea Exp $
+$Id: zpt.py,v 1.4 2002/12/28 17:49:25 stevea Exp $
 """
 
 import re
@@ -25,7 +25,7 @@ from zope.security.proxy import ProxyFactory
 
 from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.app.pagetemplate.engine import AppPT
-from zope.app.interfaces.index.text.interfaces import ISearchableText
+from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.size import ISized
 from zope.app.interfaces.content.zpt import IZPTPage, IRenderZPTPage
 

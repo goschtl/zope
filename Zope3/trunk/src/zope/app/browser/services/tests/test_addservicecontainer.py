@@ -15,39 +15,30 @@
 
 XXX longer description goes here.
 
-$Id: test_addservicecontainer.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: test_addservicecontainer.py,v 1.3 2002/12/28 17:49:24 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.placefulsetup \
-     import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component.service import defineService
 from zope.interface import Interface
 from zope.app.services.service import ServiceManager
-from zope.component import getServiceManager
-from zope.app.browser.services.service \
-     import AddServiceConfiguration
+from zope.component import getServiceManager, getService
+from zope.app.browser.services.service import AddServiceConfiguration
 from zope.publisher.browser import TestRequest
 from zope.app.browser.services.service import ComponentAdding
-from zope.app.browser.services.package \
-     import PackagesContents
-
-from zope.component import getService
+from zope.app.browser.services.package import PackagesContents
 
 from zope.component.exceptions import ComponentLookupError
 
-from zope.app.browser.absoluteurl \
-     import AbsoluteURL, SiteAbsoluteURL
+from zope.app.browser.absoluteurl import AbsoluteURL, SiteAbsoluteURL
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.interfaces.content.folder import IRootFolder
 from zope.component.adapter import provideAdapter
-from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.container.zopecontainer import ZopeContainerAdapter
 
-from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.annotation \
-     import IAttributeAnnotatable
+from zope.app.interfaces.annotation import IAnnotatable, IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.dependable import IDependable
@@ -55,8 +46,7 @@ from zope.app.dependable import Dependable
 
 from zope.app.traversing import traverse
 
-from zope.component.view import provideView
-from zope.component.view import setDefaultViewName
+from zope.component.view import provideView, setDefaultViewName
 
 from zope.app.interfaces.services.configuration import IConfigurationStatus
 from zope.app.browser.services.configurationstatuswidget \

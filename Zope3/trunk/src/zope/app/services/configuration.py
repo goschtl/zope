@@ -13,16 +13,16 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: configuration.py,v 1.3 2002/12/28 17:49:31 stevea Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
-from zope.app.interfaces.services.configuration import IConfigurationRegistry, IConfiguration
-from zope.app.interfaces.services.configuration import INamedConfiguration
-from zope.app.interfaces.services.configuration import INamedComponentConfiguration
-from zope.app.interfaces.services.configuration import INameConfigurable
-from zope.app.interfaces.services.configuration import INameComponentConfigurable
+from zope.app.interfaces.services.configuration import IConfigurationRegistry
+from zope.app.interfaces.services.configuration \
+    import INamedComponentConfiguration, INameConfigurable
+from zope.app.interfaces.services.configuration \
+    import INameComponentConfigurable, INamedConfiguration, IConfiguration
 from zope.component import getService, queryService
 from zope.component import getServiceManager
 from zope.component import getAdapter
