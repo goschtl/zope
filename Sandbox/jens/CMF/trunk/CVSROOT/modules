@@ -68,11 +68,11 @@ lpTreeDisplay     -d lib/python/TreeDisplay Packages/TreeDisplay
 lpSearchIndex     -d lib/python/SearchIndex Packages/SearchIndex
 lpZClasses        -d lib/python/ZClasses Packages/ZClasses
 
-lpShared          -d lib/python/Shared Packages/Shared  __init__.py
-lpDC               -d lib/python/Shared/DC Packages/Shared/DC  __init__.py
-lpZRDB             -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
+lpSharedInit      -d lib/python/Shared cvs-indirect/Zope/Shared
+lpDCInit          -d lib/python/Shared/DC cvs-indirect/Zope/DC
+lpZRDB            -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
 
-lpProducts        -d lib/python/Products Packages/Products  __init__.py
+lpProductsInit    -d lib/python/Products cvs-indirect/Zope/Products
 lpOFSP           -d lib/python/Products/OFSP Packages/Products/OFSP
 lpMailHost       -d lib/python/Products/MailHost Packages/Products/MailHost
 lpExternalMethod -d lib/python/Products/ExternalMethod Packages/Products/ExternalMethod
@@ -91,14 +91,13 @@ ZopeHTTPServer Components/ZopeHTTPServer
 
 GreyThing -d lib/python Components/GreyThing
 
-Awry &lpDC
-
-Zope ZSrc &utilities &pcgi &ZopeHTTPServer \
-  &GreyThing \
+Zope ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
-  &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate &lpHelpSys \
-  &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay &lpSearchIndex \
-  &lpShared &lpDC &lpZRDB \
-  &lpProducts &lpOFSP &lpMailHost &lpExternalMethod &lpZSQLMethods &lpZGadflyDA
+  &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
+  &lpHelpSys \
+  &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay \
+  &lpSearchIndex \
+  &lpSharedInit &lpDCInit &lpProductsInit \
+  &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod &lpZSQLMethods &lpZGadflyDA
 
 # KLM end
