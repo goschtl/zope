@@ -341,14 +341,8 @@ class IVersionable(persistent.interfaces.IPersistent,
                    zope.app.annotation.interfaces.IAnnotatable):
     """Version control is allowed for objects that provide this."""
 
-class INonVersionable(zope.interface.Interface):
-    """Version control is not allowed for objects that provide this.
-    
-    XXX Do we need that? Is this YAGNI?
-    """
-
 class IVersioned(IVersionable):
     """Version control is in effect for this object."""
 
 
-# XXX describe Event types here
+# XXX describe generated events here

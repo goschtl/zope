@@ -107,10 +107,9 @@ class SimpleHistoryStorage(Folder) :
     def listVersions(self, obj) :
         """ Returns the versions of an object. The versions are
             returned sorted in the order of appearance. """
-        list = self.history.values()
-        list.sort()
-        return list
-        
+        history = list(self.getVersionHistory(obj).values())
+        history.sort(lambda l,r:cmp(l.__name__, r.__name__))
+        return history
 
 
 class DefaultCheckoutAware(object):

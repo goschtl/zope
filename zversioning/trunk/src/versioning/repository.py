@@ -97,15 +97,15 @@ class CopyModifyMergeRepository(object):
             (obj, self.histories), interfaces.IVersionableAspects)
         versionable_state.updateAspects(specifier)
         
+    def getTicket(self, obj):
+        return self.histories.getTicket(obj)
+        
     def getVersion(self, obj, selector):
         return self.histories.getVersion(obj, selector)
         
-    def getVersionHistory(self, obj):
-        return self.histories.getVersionHistory(obj)
+    def listVersions(self, obj):
+        return self.histories.listVersions(obj)
         
-    def getMetadataHistory(self, obj):
-        return self.histories.getMetadataHistory(obj)
-
 
 class CheckoutCheckinRepository(CopyModifyMergeRepository):
     """The repository handles simple linear histories.

@@ -182,12 +182,11 @@ The text shall be unchanged:
 
 We have a look if the version history grows with a checkin:
 
-  #>>> len(repo.getVersionHistory(sample))
+  >>> len(repo.listVersions(sample))
   1
   >>> repo.checkout(sample)
   >>> repo.text = 'text version 2 of sample'
   >>> repo.checkin(sample)
   
-  #>>> len(repo.getVersionHistory(sample))
+  >>> len(repo.listVersions(sample))
   2
-  >>> 
