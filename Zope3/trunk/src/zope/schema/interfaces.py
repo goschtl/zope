@@ -13,12 +13,16 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.31 2003/08/25 18:59:44 sidnei Exp $
+$Id: interfaces.py,v 1.32 2003/09/19 06:47:53 anthony Exp $
 """
 from zope.interface import Interface, Attribute
-from zope.i18n import MessageIDFactory
+try:
+    from zope.i18n import MessageIDFactory
+    _ = MessageIDFactory("zope")
+except ImportError:
+    import gettext
+    gettext.install(domain='zope')
 
-_ = MessageIDFactory("zope")
 
 
 class StopValidation(Exception):
