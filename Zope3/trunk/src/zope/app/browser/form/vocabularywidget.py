@@ -613,7 +613,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
     queryResultBatchSize = 8
 
     _msg_add_done   = message(_("vocabulary-query-button-add-done"),
-                              "Add")
+                              "Add+Done")
     _msg_add_more   = message(_("vocabulary-query-button-add-more"),
                               "Add+More")
     _msg_more       = message(_("vocabulary-query-button-more"),
