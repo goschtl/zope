@@ -11,6 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Top-level application object for **zpkg**."""
 
 import logging
 import optparse
