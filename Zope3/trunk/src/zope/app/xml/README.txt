@@ -32,19 +32,34 @@ IXMLRepresentable
 
     * Potentially other representations in the future.
 
-XML Schema Interface
+XML Schema Interfaces
 
-  We can define XML Schema Interfaces in ZCML, as follows::
+  We can define XML schema interfaces in ZCML, as follows::
 
     <zopexml:schemaInterface
-      uri="http://xml.zope.org/hypothetical/invoice.xsd"
+        uri="http://xml.zope.org/hypothetical/invoice.xsd"
     />
 
-  This interface defines no methods. In order to provide a Pythonic
-  API for these invoices (IInvoice) you can do one of two things:
+  The URI for the zopexml namespace is http://namespaces.zope.org/zope-xml.
+
+  This schema interface defines no methods. In order to provide a Pythonic API
+  for these invoices (IInvoice) you can do one of two things:
 
     * provide an adapter from IInvoiceSchema to IInvoice.
 
     * create a class that implements IInvoice as well as
       IXMLRepresentable. The only XML this object should represent
       should be conformant to IInvoiceSchema.
+
+Views
+
+  Since XML schema interfaces can be treated like any other interfaces in many
+  ways, we can also define views for them. Using the above example schema, the
+  following browser page would be a view for XMLRepresentables implementing
+  it::
+
+    <browser:page
+        name="report.html"
+        for="http://xml.zope.org/hypothetical/invoice.xsd"
+        template="report-invoice.pt"
+        permission="zope.View" />
