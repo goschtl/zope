@@ -6,7 +6,8 @@ See http://www.zope.org/Members/fdrake/DateTimeWiki/TestCases
 import sys
 import unittest
 
-from datetime import date, datetime, datetimetz, timedelta, MINYEAR, MAXYEAR
+from datetime import date, datetime, datetimetz, timedelta
+from datetime._datetime import MINYEAR, MAXYEAR
 
 
 class TestTimeDelta(unittest.TestCase):
@@ -96,7 +97,7 @@ class TestDate(unittest.TestCase):
             self.assertEqual(dt, dt2)
 
     def test_ordinal_conversions(self):
-        from datetime import _ymd2ord, _ord2ymd
+        from datetime._datetime import _ymd2ord, _ord2ymd
 
         # Check some fixed values.
         for y, m, d, n in [(1, 1, 1, 1),      # calendar origin
@@ -498,7 +499,7 @@ class TestDateTime(TestDate):
         self.assertEqual(t.isoformat(' '), "0002-03-02 04:05:01.000123")
 
     def test_tmxxx(self):
-        from datetime import tmxxx
+        from datetime._datetime import tmxxx
         for timestamp in 123456789.0, 987654321.0:
             dt = self.theclass.utcfromtimestamp(timestamp)
             # Mangles the fields, but in such a way that normalization should
