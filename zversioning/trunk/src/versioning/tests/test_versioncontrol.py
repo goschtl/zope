@@ -29,15 +29,12 @@ from zope.app.tests.setup import buildSampleFolderTree
 
 
 def buildSite(items=None) :
-	""" Returns s small test site of original content objects:
-		
-		>>> folders = buildSampleFolderTree()
-		>>> folders is not None
-		True
-	    
-	"""
-  
+    """ Returns s small test site of original content objects:
     
+        >>> folders = buildSampleFolderTree()
+        >>> folders is not None
+        True
+    """
 
 def test_suite():
     return unittest.TestSuite((
