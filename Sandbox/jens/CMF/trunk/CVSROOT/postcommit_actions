@@ -322,7 +322,6 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0):
                                           trailing_slash_or_comma_v))
     if VERBOSE:
         complain("Doing rsync cmd:\n\t%s\n", cmd)
-    raise SystemExit                    # DEBUG
 
     result = os.system(cmd)
     if result:
