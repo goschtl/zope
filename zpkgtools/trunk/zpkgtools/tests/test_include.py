@@ -330,6 +330,20 @@ class InclusionProcessorTestCase(unittest.TestCase):
                           self.processor.createDistributionTree,
                           self.destination, specs.collection)
 
+    def test_package_conf_processed_in_inclusion(self):
+        # There's an edge case when a directory is included explicity
+        # by a parent, but includes a PACKAGE_CONF file itself; at one
+        # point, the nested PACKAGE_CONF wasn't being processed.  This
+        # test guards against a regression for that case.
+        self.source = os.path.join(self.source, "input", "collection-2")
+        specs = include.load(self.source)
+        specs.collection.cook()
+        self.processor.createDistributionTree(self.destination,
+                                              specs.collection)
+        included = os.path.join(self.destination, "included")
+        self.assert_(os.path.isdir(included))
+        self.failIf(os.path.exists(os.path.join(included, "dropped.txt")))
+
     def check_file(self, name):
         srcname = join(self.source, name)
         destname = join(self.destination, name)

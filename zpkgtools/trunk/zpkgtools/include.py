@@ -339,9 +339,10 @@ class InclusionProcessor:
             self.create_directory(spec.source, destination)
             self.addIncludes(destination, spec)
         else:
-            self.copyTree(spec.source, destination, spec.excludes)
+            self.copyTree(spec.source, destination, spec.excludes,
+                          nested=False)
 
-    def copyTree(self, source, destination, excludes=()):
+    def copyTree(self, source, destination, excludes=(), nested=True):
         """Populate the destination tree from the source tree.
 
         :Parameters:
@@ -358,6 +359,13 @@ class InclusionProcessor:
         Files and directories will be created with the same permission
         bits and stat info as the source tree.
         """
+        # The `nested` flag is only for internal use; it should be
+        # False only when calling copyTree based on a specification
+        # object represented by a PACKAGE_CONF file located in the
+        # directory identified by `source`.  For any other call,
+        # `nested` should be True since PACKAGE_CONF files need to be
+        # processed.
+
         self.create_directory(source, destination)
         prefix = os.path.join(source, "")
 
@@ -378,7 +386,7 @@ class InclusionProcessor:
             else:
                 destdir = destination
 
-            if PACKAGE_CONF in files and dirname != source:
+            if PACKAGE_CONF in files and ((dirname != source) or nested):
                 # a nested PACKAGE.cfg needs to be handled as well
                 specs = load(dirname)
                 if specs.loads:
