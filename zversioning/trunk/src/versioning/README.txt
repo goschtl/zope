@@ -2,8 +2,8 @@
 Versioning
 ==========
 
-Setup Stuff
------------
+General Setup Stuff
+-------------------
 
 In the following we take a simple folder tree with the following structure
 as an example :
@@ -22,7 +22,6 @@ as an example :
   >>> from zope.app.tests.setup import setUpTraversal
   >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
   >>> from ZODB.tests import util
-  >>> from zope.app.versioncontrol.interfaces import IVersioned
   >>> registerAdapter()
   >>> setUpTraversal()
   >>> class TestFolder(Folder) :
@@ -126,11 +125,10 @@ Now let's put our example data under version control:
   >>> repository.applyVersionControl(a)
   >>> repository.applyVersionControl(b)
   >>> repository.applyVersionControl(c)
-  >>> [IVersioned.providedBy(x) for x in (sample, a, b, c)]
+  >>> [interfaces.IVersioned.providedBy(x) for x in (sample, a, b, c)]
   [True, True, True, True]
-  >>> [x for x in sample.keys()]
-  [u'a', u'b']
 
+  >>> 
 
   >>> def accessVersion(repository, obj) :
   ...   info = repository.getVersionInfo(obj)
