@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.43 2003/12/16 20:33:36 garrett Exp $
+$Id: editview.py,v 1.44 2003/12/17 21:27:32 sidnei Exp $
 """
 from datetime import datetime
 
@@ -139,7 +139,7 @@ def EditViewFactory(name, schema, label, permission, layer,
         usage = u''
     s.useUsage(usage)
     class_.usage = usage
-    
+
     defineChecker(class_,
                   NamesChecker(("__call__", "__getitem__",
                                 "browserDefault", "publishTraverse"),

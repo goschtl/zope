@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.13 2003/12/16 10:32:06 srichter Exp $
+$Id: schema.py,v 1.14 2003/12/17 21:27:32 sidnei Exp $
 """
 from types import FunctionType
 
@@ -40,7 +40,7 @@ from zope.interface.interface import Attribute, Method, fromFunction
 from zope.interface.interface import InterfaceClass
 from zope.interface.exceptions import InvalidInterface
 
-class SchemaUtility(PersistentInterfaceClass, Contained):
+class BaseSchemaUtility(InterfaceClass):
 
     implements(IMutableSchema, ISchemaUtility)
 
@@ -48,10 +48,13 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
                  __doc__=None, __module__=None):
         if not bases:
             bases = (Interface,)
-        super(SchemaUtility, self).__init__(name, bases,
+        super(BaseSchemaUtility, self).__init__(name, bases,
                                             attrs, __doc__, __module__)
-        self.schemaPermissions = PersistentDict()
-        self._attrs = PersistentDict()
+        self._clear()
+
+    def _clear(self):
+        self.schemaPermissions = {}
+        self._attrs = {}
 
     def setName(self, name):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -84,6 +87,7 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
             raise KeyError, "Field %s already exists." % target_name
         field = self[orig_name]
         del self[orig_name]
+        field.__name__ = None
         self[target_name] = field
 
     def insertField(self, name, field, position):
@@ -96,10 +100,10 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
         if not 0 <= position <= len(field_names):
             raise IndexError, "Position %s out of range." % position
         fields.insert(position, field)
-        self[name] = field
         for p, f in enumerate(fields):
             if not f.order == p:
                 f.order = p
+        self[name] = field
 
     def moveField(self, name, position):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -133,9 +137,6 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
                 attrs[name] = fromFunction(value, name, name=name)
             else:
                 raise InvalidInterface("Concrete attribute, %s" % name)
-
-        if not isinstance(value, Persistent):
-            value = Struct(value)
 
         setitem(self, self._attrs.__setitem__, name, value)
 
@@ -229,6 +230,27 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
                 dict[k]=v
 
         for b in self.getBases(): b.__d(dict)
+
+class StructPersistentDict(PersistentDict):
+
+    def __setitem__(self, name, value):
+        if not isinstance(value, Persistent):
+            value = Struct(value)
+        return super(StructPersistentDict, self).__setitem__(name, value)
+
+class SchemaUtility(BaseSchemaUtility, PersistentInterfaceClass, Contained):
+
+    def __init__(self, name='', bases=(), attrs=None,
+                 __doc__=None, __module__=None):
+        if not bases:
+            bases = (Interface,)
+        PersistentInterfaceClass.__init__(self, name, bases,
+                                          attrs, __doc__, __module__)
+        self._clear()
+
+    def _clear(self):
+        self.schemaPermissions = PersistentDict()
+        self._attrs = StructPersistentDict()
 
 class SchemaAdding(Adding):
 

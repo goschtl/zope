@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.39 2003/12/17 12:40:29 mukruthi Exp $
+$Id: adding.py,v 1.40 2003/12/17 21:27:31 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -50,23 +50,23 @@ class BasicAdding(BrowserView):
         container = self.context
         name = self.contentName
         chooser = zapi.getAdapter(container, INameChooser)
-        
+
         if IContainerNamesContainer.isImplementedBy(container):
             # The container pick's it's own names.
             # We need to ask it to pick one.
             name = chooser.chooseName(self.contentName or '', content)
         else:
-            request = self.request           
-            name = request.get('add_input_name',name)
+            request = self.request
+            name = request.get('add_input_name', name)
 
             if name is None:
                 name = chooser.chooseName(self.contentName or '', content)
-            elif name=='':
+            elif name == '':
                 name = chooser.chooseName('', content)
             chooser.checkName(name, container)
 
         container[name] = content
-        self.contentName = name #Set  the added object Name
+        self.contentName = name # Set the added object Name
         return container[name]
 
     contentName = None # usually set by Adding traverser
@@ -200,10 +200,10 @@ class Adding(BasicAdding):
                         elif item['extra']['factory'] != item['action']:
                             item['has_custom_add_view']=True
                 result.append(item)
-                
+
         result.sort(lambda a, b: cmp(a['title'], b['title']))
         return result
-    
+
     def isSingleMenuItem(self):
         "Return whether there is single menu item or not."
         return len(self.addingInfo()) == 1
@@ -215,7 +215,7 @@ class Adding(BasicAdding):
            if 'has_custom_add_view' in menu_item:
                return True
        return False
-           
+
 class ContentAdding(Adding):
 
     menu_id = "add_content"

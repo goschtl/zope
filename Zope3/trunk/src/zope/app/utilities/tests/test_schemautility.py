@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.7 2003/12/12 22:24:03 sidnei Exp $
+$Id: test_schemautility.py,v 1.8 2003/12/17 21:27:33 sidnei Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -29,11 +29,17 @@ import zope.app.utilities.tests
 
 class SchemaUtilityTests(TestCase):
 
-    def setUp(self):
-        setup.placefulSetUp()
-        self.s = SchemaUtility()
+    def _createSchemaUtility(self):
+        return SchemaUtility()
+
+    def _additionalSetup(self):
+        self.s = self._createSchemaUtility()
         self.s.setName('IFoo')
         self.alpha = Text(title=u"alpha")
+
+    def setUp(self):
+        setup.placefulSetUp()
+        self._additionalSetup()
 
     def test_addField(self):
         s = self.s

@@ -13,7 +13,7 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.7 2003/12/09 07:35:37 sraju Exp $
+$Id: container.py,v 1.8 2003/12/17 21:27:32 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute, implements, Invalid
@@ -233,7 +233,7 @@ class IAdding(IView):
 
     def renderAddButton():
         """It will add Add button"""
-        
+
 
 class INameChooser(Interface):
 
