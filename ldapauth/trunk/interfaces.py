@@ -39,7 +39,7 @@ class ILDAPBasedPrincipalSource(IPrincipalSource):
             description = _(u'Base of the distinguished name'))
 
     login_attribute = TextLine(
-            title = _(u'Login attribut name'),
+            title = _(u'Login attribute name'),
             description = _(u'LDAP attribute used as login name'))
 
     manager_dn = TextLine(
