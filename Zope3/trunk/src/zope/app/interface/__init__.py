@@ -15,14 +15,13 @@
 
 This module contains code for interfaces in persistent modules.
 
-$Id: __init__.py,v 1.2 2004/03/20 22:10:06 nathan Exp $
+$Id: __init__.py,v 1.3 2004/03/20 22:33:45 nathan Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zodbcode.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
 from zope.interface import Interface
-from zope.app.content.interfaces import IContentType
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
 
@@ -63,6 +62,7 @@ from zope.interface.declarations import providedBy
 def queryType(object, interface):
     """Returns the object's interface which implements interface.
 
+    >>> from zope.app.content.interfaces import IContentType
     >>> from zope.interface import Interface, implements, directlyProvides
     >>> class I(Interface):
     ...     pass
