@@ -15,7 +15,8 @@
 
 $Id$
 """
-from difflib import ndiff
+from difflib import SequenceMatcher
+from string import split, join
 
 MAX_OLD_LINES_DISPLAY = 40
 MAX_NEW_LINES_DISPLAY = 40
@@ -30,7 +31,7 @@ def textdiff(old_text, new_text, verbose=1):
 
     old = split(old_text, '\n')
     new = split(new_text, '\n')
-    cruncher=ndiff.SequenceMatcher(
+    cruncher=SequenceMatcher(
         isjunk=lambda x: x in " \\t",
         a=old,
         b=new)
@@ -41,7 +42,7 @@ def textdiff(old_text, new_text, verbose=1):
             if verbose: r.append('??changed:')
             r = r + _abbreviateDiffLines(old[old_lo:old_hi],'-',
                                          MAX_OLD_LINES_DISPLAY)
-            r = r + _abbreviateDiffLines(new[new_lo:new_hi],'',
+            r = r + _abbreviateDiffLines(new[new_lo:new_hi],'+',
                                          MAX_NEW_LINES_DISPLAY)
             r.append('')
         elif tag == 'delete':

@@ -207,11 +207,15 @@
   <!-- Register event listener for change mails -->
   <subscriber
       factory=".wikipage.mailer"
-      for="zope.app.container.interfaces.IObjectMovedEvent"
+      for="zope.app.container.interfaces.IObjectAddedEvent"
       />
   <subscriber
       factory=".wikipage.mailer"
-      for="zope.app.event.interfaces.IObjectModifiedEvent"
+      for="zope.app.container.interfaces.IObjectRemovedEvent"
+      />
+  <subscriber
+      factory=".wikipage.mailer"
+      for=".interfaces.IWikiPageEditEvent"
       />
 
 

@@ -25,6 +25,7 @@ from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import IContainer, IContentContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.event.interfaces import IObjectEvent
 from zope.app.i18n import ZopeMessageIDFactory as _ 
 
 class IComment(Interface):
@@ -139,6 +140,17 @@ class IWikiContained(IContained):
     __parent__ = Field(
         constraint = ContainerTypesConstraint(IWiki))
 
+
+class IWikiPageEditEvent(IObjectEvent):
+    """ an object event containing the old source in addition
+    to the changed object
+    """
+
+    oldSource = SourceText(
+        title=_(u"Previous Source Text"),
+        description=_(u"Previous source text of the Wiki Page."),
+        default=u"",
+        required=True)
 
 class IMailSubscriptions(Interface):
     """This interface allows you to retrieve a list of E-mails for

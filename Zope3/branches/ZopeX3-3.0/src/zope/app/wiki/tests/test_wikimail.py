@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 
+from zope.event import subscribers
 from zope.interface import classImplements, implements 
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -27,6 +28,7 @@ from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.mail.interfaces import IMailDelivery
 
 from zope.app.wiki.interfaces import IWikiPage, IWiki, IMailSubscriptions
+from zope.app.wiki.interfaces import IWikiPageEditEvent
 from zope.app.wiki.wikipage import WikiPage
 from zope.app.wiki.wikipage import MailSubscriptions, WikiMailer, mailer
 from zope.app.wiki.wiki import Wiki
@@ -108,10 +110,6 @@ class MailDeliveryStub(object):
 
 class WikiMailerTest(PlacefulSetup, unittest.TestCase):
 
-    # Note: There are several other methods in this class, but they require
-    #       mail to be sent out. One way to still write tests for these would
-    #       be to implement a dummy smtplib.SMTP class...not now though. ;)
-
     def setUp(self):
         PlacefulSetup.setUp(self)
         # This needs to be done, since the IAttributeAnnotable interface
@@ -127,6 +125,11 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
         delivery = MailDeliveryStub()
         ztapi.provideUtility(IMailDelivery, delivery,
                              name='wiki-delivery')
+        subscribers.append(mailer)
+
+    def tearDown(self):
+        mail_result=[]
+        subscribers.remove(mailer)
 
     def test_getAllSubscribers(self):
         wiki = Wiki()
@@ -150,13 +153,23 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
         page_sub.context.__annotations__[SubscriberKey] = ('blah@bar.com',)
         wiki['page1'] = page
         page.source = 'Hello World!'
-        event = ObjectModifiedEvent(page)
-        mailer(event)
         self.assertEqual('wiki@zope3.org', 
-                         mail_result[0][0])
-        self.assertEqual(('blah@bar.com', 'foo@bar.com'), mail_result[0][1])
-        self.assertEqual('Subject: Modified: page1\n\n\nHello World!',
-                         mail_result[0][2])
+                         mail_result[-1][0])
+        self.assertEqual(('blah@bar.com', 'foo@bar.com'), mail_result[-1][1])
+        self.assertEqual(
+            u'''Subject: Modified: page1\n\n\n\n??changed:\n'''
+            u'''-\n'''
+            u'''+Hello World!\n''',
+            mail_result[-1][2])
+        page.source = 'Hello New World!'
+        self.assertEqual('wiki@zope3.org', 
+                         mail_result[-1][0])
+        self.assertEqual(('blah@bar.com', 'foo@bar.com'), mail_result[-1][1])
+        self.assertEqual(
+            u'''Subject: Modified: page1\n\n\n\n??changed:\n'''
+            u'''-Hello World!\n'''
+            u'''+Hello New World!\n''',
+            mail_result[-1][2])
   
 
 

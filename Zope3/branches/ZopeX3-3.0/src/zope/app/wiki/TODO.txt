@@ -37,5 +37,3 @@ Other Features
     Differ.
 
   - Update POT and translations
-
-  - Use MailDelivery utility

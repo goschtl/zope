@@ -15,24 +15,26 @@
 
 $Id$
 """
-import smtplib
 from persistent import Persistent
 
 from zope.interface import implements
+from zope.event import notify
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.event.interfaces import IObjectModifiedEvent
+from zope.app.event.objectevent import ObjectEvent
 from zope.app.container.interfaces import \
-     IObjectAddedEvent, IObjectRemovedEvent, IObjectMovedEvent
+     IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.mail.interfaces import IMailDelivery
 
 from zope.app.wiki.interfaces import IWiki, IWikiPage, IComment
 from zope.app.wiki.interfaces import IWikiContained, IWikiPageContained
 from zope.app.wiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
+from zope.app.wiki.interfaces import IWikiPageEditEvent
+from zope.app.wiki.diff import textdiff
 
 __metaclass__ = type
 
@@ -48,9 +50,21 @@ class WikiPage(BTreeContainer):
     # See zope.app.container.interfaces.IContained
     __parent__ = __name__ = None
 
+    def __init__(self, source=u''):
+        super(WikiPage, self).__init__()
+        self._source = source
+
+    def _getSource(self):
+        return self._source
+
+    def _setSource(self, source):
+        old_source = self._source 
+        self._source = source
+        notify(WikiPageEditEvent(self, old_source))
+
     # See zope.app.wiki.interfaces.IWikiPage
-    source = u''
-    
+    source = property(_getSource, _setSource)
+
     # See zope.app.wiki.interfaces.IWikiPage
     type = u'zope.source.rest'
 
@@ -167,6 +181,17 @@ class WikiPageWriteFile:
         self.context.source = unicode(data)
 
 
+# An edit event containing the source before the update
+
+class WikiPageEditEvent(ObjectEvent):
+    implements(IWikiPageEditEvent)
+
+    oldSource = u''
+
+    def __init__(self, object, old_source):
+        super(WikiPageEditEvent, self).__init__(object)
+        self.oldSource = old_source
+
 # Component to fullfill mail subscriptions
 
 class MailSubscriptions:
@@ -208,19 +233,14 @@ class MailSubscriptions:
 class WikiMailer:
     """Class to handle all outgoing mail."""
 
-    def __init__(self, host="localhost", port="25"):
-        """Initialize the the object.""" 
-        self.host = host
-        self.port = port
-
     def __call__(self, event):
         # XXX event handling should be separated from mailing
         if IWikiPage.providedBy(event.object):
             if IObjectAddedEvent.providedBy(event):
                 self.handleAdded(event.object)
 
-            elif IObjectModifiedEvent.providedBy(event):
-                self.handleModified(event.object)
+            elif IWikiPageEditEvent.providedBy(event):
+                self.handleModified(event)
 
             elif IObjectRemovedEvent.providedBy(event):
                 self.handleRemoved(event.object)
@@ -231,13 +251,13 @@ class WikiMailer:
         body = object.source
         self.mail(emails, subject, body)        
 
-    def handleModified(self, object):
-        # XXX: Should have some nice diff code here.
-        # from diff import textdiff
-        subject = 'Modified: '+zapi.name(object)
-        emails = self.getAllSubscribers(object)
-        body = object.source
-        self.mail(emails, subject, body)
+    def handleModified(self, event):
+        object = event.object
+        if zapi.name(object) is not None:
+            subject = 'Modified: '+zapi.name(object)
+            emails = self.getAllSubscribers(object)
+            body = textdiff(event.oldSource, object.source)
+            self.mail(emails, subject, body)
 
     def handleRemoved(self, object):
         subject = 'Removed: '+zapi.name(object)
