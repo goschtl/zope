@@ -1,50 +1,53 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'
+	       xmlns:browser='http://namespaces.zope.org/browser'>
 
-<page 
+<browser:page 
     name="_traverse" 
     for="zope.interface.Interface"
     class="zope.app.publication.traversers.SimpleComponentTraverser" 
     permission="zope.Public"
     />
 
-<view 
+<browser:view 
     name="_traverse" 
     for="zope.app.interfaces.content.file.IFileContent"
     class="zope.app.publication.traversers.FileContentTraverser" 
     permission="zope.Public"
     />
 
-<page
+<browser:page
     name="_traverse" 
     for="zope.app.interfaces.container.IItemContainer"
     class="zope.app.container.traversal.ItemTraverser" 
     permission="zope.Public"
     />
 
-<page
+<browser:page
     name="_traverse" 
     for="zope.app.interfaces.container.ISimpleReadContainer"
     class="zope.app.container.traversal.ContainerTraverser" 
     permission="zope.Public"
     />
 
-<page
+<view
     for="*"
     name="absolute_url"
-    class=".absoluteurl.AbsoluteURL"
+    factory=".absoluteurl.AbsoluteURL"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
     />
 
-<page
+<view
     for="zope.app.interfaces.traversing.IContainmentRoot"
     name="absolute_url"
-    class=".absoluteurl.SiteAbsoluteURL"
+    factory=".absoluteurl.SiteAbsoluteURL"
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
     />
 
-<page
+<browser:page
     for="*"
     name="object_name"
     class=".objectname.ObjectNameView"
@@ -52,7 +55,7 @@
     allowed_interface="zope.app.interfaces.traversing.IObjectName" 
     />
 
-<page
+<browser:page
     for="zope.app.interfaces.content.folder.IRootFolder"
     name="object_name"
     class=".objectname.SiteObjectNameView"
