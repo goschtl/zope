@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.16 2004/03/03 10:38:56 philikon Exp $
+$Id: schema.py,v 1.17 2004/03/03 20:20:05 srichter Exp $
 """
 from types import FunctionType
 
@@ -231,12 +231,14 @@ class BaseSchemaUtility(InterfaceClass):
 
         for b in self.getBases(): b.__d(dict)
 
+
 class StructPersistentDict(PersistentDict):
 
     def __setitem__(self, name, value):
         if not isinstance(value, Persistent):
             value = Struct(value)
         return super(StructPersistentDict, self).__setitem__(name, value)
+
 
 class SchemaUtility(BaseSchemaUtility, PersistentInterfaceClass, Contained):
 
@@ -251,6 +253,7 @@ class SchemaUtility(BaseSchemaUtility, PersistentInterfaceClass, Contained):
     def _clear(self):
         self.schemaPermissions = PersistentDict()
         self._attrs = StructPersistentDict()
+
 
 class SchemaAdding(Adding):
 
