@@ -2,6 +2,9 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - ZPT skin: Improved folder_copy_control and folder_cut_control.
+      They now catch CopyErrors.
+
     - DirectoryView: Readded expandpath() for backwards compatibility.
       Some products still import expandpath from DirectoryView because it was
       once defined there. Note that importing expandpath from DirectoryView is
