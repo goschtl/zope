@@ -14,7 +14,7 @@
 """
 Default service names
 
-$Id: servicenames.py,v 1.11 2003/08/19 17:34:24 srichter Exp $
+$Id: servicenames.py,v 1.12 2003/12/29 16:41:03 sidnei Exp $
 """
 
 from zope.component.servicenames import *
@@ -30,6 +30,5 @@ HubIds = 'HubIds'
 Permissions = 'Permissions'
 PrincipalAnnotation = 'PrincipalAnnotation'
 Roles = 'Roles'
-SQLDatabaseConnections = 'SQLDatabaseConnections'
 Translation = 'Translation'
 Workflows = 'Workflows'
