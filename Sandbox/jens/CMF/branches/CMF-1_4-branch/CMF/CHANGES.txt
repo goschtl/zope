@@ -1,27 +1,4 @@
-Future
-
-  New Features
-
-    - (__future__) Exposed role management for manager users on the
-      default roster:  managers can now "promote" members without going
-      to the ZMI.
-
-    - (__future__) Added "custom schema" mechanism for content objects:
-      site managers can now define additional propertysheets for a
-      content type, which will then be reflected in instances created
-      from the type.
-
-    - (__future__) Added simple link extraction / checking for textual
-      content.  Link checking also works for Link objects.
-
-    - (__future__) Added "composite content" types (see the "dogbowl
-      proposal",
-      (http://cmf.zope.org/rqmts/proposals/compounds/compoundproposal.txt).
-
-    - (__future__) Added DCWorkflow (through-the-web configurable
-      workflows) to the core set of CMF products.
-
-CMF 1.4 alpha
+CMF 1.4beta1 (2003/04/28)
 
   New Features
 
@@ -37,10 +14,6 @@ CMF 1.4 alpha
       'content_*_form.pt' now use this template.
 
     - skins (CMFDefault): Made scripts independent of submit button 'values'.
-
-    - utils: Changed behavior of 'StrippingParser' and 'scrubHTML'.
-      They now close empty tags.
-      (Collector #108, thanks to 'tanghus' for the patch)
 
     - Added .css to the extensions that create FSFile objects in
       DirectoryViews (see CMFCore/FSFile.py)
@@ -63,40 +36,11 @@ CMF 1.4 alpha
       The head check in bodyfinder is removed. In most cases you want to call
       bodyfinder only if html_headcheck is true.
 
-    - Cleaned up Interfaces and API Help (Collector #96):
-
-      o  Removed redundant 'Syndicatable' and 'IndexableContent' interfaces.
-
-      o  Removed unfixable 'Membership' and 'ReviewableContent' interfaces.
-
-      o  Removed listActions() from 'Contentish' and 'portal_workflow'
-         interface.
-
-      o  Removed redundant or 'None' overriding of listActions().
-
-      o  Updated all interfaces to work with new Zope 2.6 Interface API.
-
-      o  Added 'portal_properties' and 'Dynamic' interfaces.
-
-      o  Added many interface implementation tests and made them pass.
-
-    - Removed deprecated 'register' module and 'PortalContentRegistration'
-      interface.
-
-    - Moved URLTool to CMFCore. Added interface and basic tests.
-      (Collector #67)
-
     - Added FSFile skin object, in order to allow .swf files (et al.) in 
       skins
 
     - Added 'listMetaTags' skin method, which filters the DublinCore
       metadata into a form suitable for inclusion as <meta> tags.
-
-    - Protected the Pending review action in DefaultWorkflow by
-      ReviewPortalContent (Collector #52).
-
-    - Raise ValueError instead of TypeError in TypesTool.getActionById
-      if the action is not found (Collector #56).
 
     - Added .metadata file for FSObjects, which allows the easy addition of 
       more features without adding lots and lots of files. ConfigParser format.
@@ -105,6 +49,39 @@ CMF 1.4 alpha
       property in .metadata files.
 
   Bug Fixes
+
+    - utils: Changed behavior of 'StrippingParser' and 'scrubHTML'.
+      They now close empty tags.
+      (Collector #108, thanks to 'tanghus' for the patch)
+
+    - Removed deprecated 'register' module and 'PortalContentRegistration'
+      interface.
+
+    - Moved URLTool to CMFCore. Added interface and basic tests.
+      (Collector #67)
+
+    - Protected the Pending review action in DefaultWorkflow by
+      ReviewPortalContent (Collector #52).
+
+    - Raise ValueError instead of TypeError in TypesTool.getActionById
+      if the action is not found (Collector #56).
+
+    - Cleaned up Interfaces and API Help (Collector #96):
+
+      o Removed redundant 'Syndicatable' and 'IndexableContent' interfaces.
+
+      o Removed unfixable 'Membership' and 'ReviewableContent' interfaces.
+
+      o Removed listActions() from 'Contentish' and 'portal_workflow'
+        interface.
+
+      o Removed redundant or 'None' overriding of listActions().
+
+      o Updated all interfaces to work with new Zope 2.6 Interface API.
+
+      o Added 'portal_properties' and 'Dynamic' interfaces.
+
+      o Added many interface implementation tests and made them pass.
 
     - MembershipTool (CMFDefault): Fixed acquisition bug. (Collector #102)
 
@@ -141,3 +118,19 @@ CMF 1.4 alpha
 
     - Remove redundant VERSION.txt files;  the canonical spelling is
       'version.txt' (Collector #13).
+
+    - Correct security assertion on CMFDefault.Image's manage_afterAdd
+      (Collector #141).
+
+    - Ensure that the security attributes are reindexed on all
+      subobjects too when a folderish object changes state in the
+      workflow (Collector #115).
+
+    - Backport fix of CMFCore/tests/test_FSImage.py to work with
+      recent Zopes (> 2.6), which force HTTP headers to be strings.
+
+    - Use return instead of raise in RegistrationTool.testPropertiesValidity
+      if id is incorrect (Collector #48).
+
+    - Correctly cleanup temporaries in CMFCore.MemberDataTool when
+      wrapping a user object (Collector #136).
