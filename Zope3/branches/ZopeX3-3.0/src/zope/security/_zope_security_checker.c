@@ -79,6 +79,8 @@ checkPermission(PyObject *permission, PyObject *object, PyObject *name)
                                      permission, object, interaction, NULL);
       Py_DECREF(policy);
       Py_DECREF(interaction);
+      if (r == NULL)
+        return -1;
       i = PyObject_IsTrue(r);
       Py_DECREF(r);
       if (i < 0)
