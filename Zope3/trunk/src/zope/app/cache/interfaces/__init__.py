@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 from zope.schema import Choice
 
@@ -40,7 +42,7 @@ class ICache(Interface):
     def invalidate(ob, key=None):
         """Invalidates cached entries that apply to the given object.
 
-        ob is an object location.  If key is specified, only
+        `ob` is an object location.  If `key` is specified, only
         invalidates entry for the given key.  Otherwise invalidates
         all entries for the object.
         """
@@ -49,9 +51,9 @@ class ICache(Interface):
         """Invalidates all cached entries."""
 
     def query(ob, key=None, default=None):
-        """Returns the cached data previously stored by set().
+        """Returns the cached data previously stored by `set()`.
 
-        ob is the location of the content object being cached.  key is
+        `ob` is the location of the content object being cached.  `key` is
         a mapping of keywords and values which should all be used to
         select a cache entry.
         """

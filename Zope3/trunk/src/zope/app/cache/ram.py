@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from time import time
 from thread import allocate_lock
 from pickle import dumps
@@ -41,15 +43,15 @@ class RAMCache(Persistent, Contained):
     The design of this class is heavily based on RAMCacheManager in
     Zope2.
 
-    The idea behind the RAMCache is that it should be shared between
+    The idea behind the `RAMCache` is that it should be shared between
     threads, so that the same objects are not cached in each thread.
     This is achieved by storing the cache data structure itself as a
-    module level variable (RAMCache.caches).  This, of course,
+    module level variable (`RAMCache.caches`).  This, of course,
     requires locking on modifications of that data structure.
 
-    RAMCache is a persistent object.  The actual data storage is a
+    `RAMCache` is a persistent object.  The actual data storage is a
     volatile object, which can be acquired/created by calling
-    _getStorage().  Storage objects are shared between threads and
+    ``_getStorage()``.  Storage objects are shared between threads and
     handle their blocking internally.
     """
 
@@ -152,7 +154,7 @@ class Storage(object):
     entries.
 
     This object is shared between threads.  It corresponds to a single
-    persistent RAMCache object.  Storage does the locking necessary
+    persistent `RAMCache` object.  Storage does the locking necessary
     for thread safety.
 
     """
@@ -170,7 +172,7 @@ class Storage(object):
     def update(self, maxEntries=None, maxAge=None, cleanupInterval=None):
         """Set the registration options.
 
-        None values are ignored.
+        ``None`` values are ignored.
         """
         if maxEntries is not None:
             self.maxEntries = maxEntries
@@ -216,7 +218,7 @@ class Storage(object):
     def _do_invalidate(self, ob, key=None):
         """This does the actual invalidation, but does not handle the locking.
 
-        This method is supposed to be called from invalidate()
+        This method is supposed to be called from `invalidate`
         """
         try:
             if key is None:
@@ -264,7 +266,7 @@ class Storage(object):
             self.writelock.release()
 
     def removeStaleEntries(self):
-        "Remove the entries older than maxAge"
+        "Remove the entries older than `maxAge`"
 
         if self.maxAge > 0:
             punchline = time() - self.maxAge

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app import zapi
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.form.utility import setUpEditWidgets
