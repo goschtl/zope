@@ -67,6 +67,7 @@ lpStructuredText  -d lib/python/StructuredText Packages/StructuredText
 lpTreeDisplay     -d lib/python/TreeDisplay Packages/TreeDisplay
 lpSearchIndex     -d lib/python/SearchIndex Packages/SearchIndex
 lpZClasses        -d lib/python/ZClasses Packages/ZClasses
+lpWebdav      	  -d lib/python/webdav Packages/webdav
 
 lpSharedInit      -d lib/python/Shared cvs-indirect/Zope/Shared
 lpDCInit          -d lib/python/Shared/DC cvs-indirect/Zope/DC
@@ -93,6 +94,7 @@ GreyThing -d lib/python Components/GreyThing
 
 Zope ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
+  &ZClasses &lpWebdav \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
   &lpHelpSys \
   &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay \
