@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: I18nFile.py,v 1.1 2002/06/24 15:44:25 mgedmin Exp $
+$Id: I18nFile.py,v 1.2 2002/06/25 10:47:44 mgedmin Exp $
 """
 
 import Persistence
@@ -30,7 +30,9 @@ class II18nFile(IFile, II18nAware):
 
 
 class I18nFile(Persistence.Persistent):
-    """I18n aware file object."""
+    """I18n aware file object.  It contains a number of File objects --
+    one for each language.
+    """
 
     __implements__ = II18nFile
 
@@ -38,17 +40,48 @@ class I18nFile(Persistence.Persistent):
         """ """
 
         self._data = {}
+        self.defaultLanguage = defaultLanguage
         self.setData(data, language=defaultLanguage)
-        self.setDefaultLanguage(defaultLanguage)
 
         if contentType is None:
-            self._contentType = ''
+            self.setContentType('')
         else:
-            self._contentType = contentType
+            self.setContentType(contentType)
 
 
     def __len__(self):
         return self.getSize()
+
+
+    def _create(self, data):
+        """Create a new subobject of the appropriate type.  Should be
+        overriden in subclasses.
+        """
+        return File(data)
+
+
+    def _get(self, language):
+        """Helper function -- return a subobject for a given language,
+        and if it does not exist, return a subobject for the default
+        language.
+        """
+        file = self._data.get(language)
+        if not file:
+            file = self._data[self.defaultLanguage]
+        return file
+
+
+    def _get_or_add(self, language, data=''):
+        """Helper function -- return a subobject for a given language,
+        and if it does not exist, create and return a new subobject.
+        """
+        if language is None:
+            language = self.defaultLanguage
+        file = self._data.get(language)
+        if not file:
+            self._data[language] = file = self._create(data)
+            self._p_changed = 1
+        return file
 
 
     ############################################################
@@ -72,37 +105,23 @@ class I18nFile(Persistence.Persistent):
         # content type explicitly passed in.
 
         if contentType is not None:
-            self._contentType = contentType
+            self.setContentType(contentType)
         self.setData(data, language)
 
 
     def getData(self, language=None):
         '''See interface IFile'''
-        file = self._data.get(language)
-        if not file:
-            file = self._data[self.defaultLanguage]
-        return file.getData()
+        return self._get(language).getData()
 
 
     def setData(self, data, language=None):
         '''See interface IFile'''
-
-        if language is None:
-            language = self.defaultLanguage
-        file = self._data.get(language)
-        if file:
-            file.setData(data)
-        else:
-            self._data[language] = File(data)
-            self._p_changed = 1
+        self._get_or_add(language).setData(data)
 
 
     def getSize(self, language=None):
         '''See interface IFile'''
-        file = self._data.get(language)
-        if not file:
-            file = self._data[self.defaultLanguage]
-        return file.getSize()
+        return self._get(language).getSize()
 
     #
     ############################################################
