@@ -32,7 +32,7 @@ def main(args = sys.argv[1:]):
     print """\
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:wfmc="http://namespaces.zope.com/wfmc"
+    xmlns:wfmc="http://namespaces.zope.org/wfmc"
     >
 """
 
