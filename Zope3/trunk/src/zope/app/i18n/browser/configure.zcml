@@ -2,6 +2,13 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
+  <tool
+      interface="zope.i18n.interfaces.ITranslationDomain"
+      title="Translation Domains"
+      description="Translation Domains allow you to localize your software by
+      providing message translations."
+      />
+
   <pages 
       permission="zope.ManageServices" 
       for="zope.i18n.interfaces.ITranslationDomain"

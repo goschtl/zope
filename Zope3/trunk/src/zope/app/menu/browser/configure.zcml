@@ -2,6 +2,13 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
+  <tool
+      interface="zope.app.menu.interfaces.ILocalBrowserMenu"
+      title="Browser Menu"
+      description="Browser Menu tools are used to build menus for Web user 
+      interfaces."
+      />
+
 <!-- Browser Menu Service -->
 
    <addMenuItem

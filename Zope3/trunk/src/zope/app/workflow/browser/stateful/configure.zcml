@@ -2,6 +2,13 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
+  <tool
+      interface="zope.app.workflow.interfaces.IProcessDefinition"
+      title="Workflow Process Definitions"
+      description="Process Definitions are used to define the way a workflow
+      will behave."
+      />
+
 <!-- Stateful Workflow Process Definition -->
 
   <menuItem

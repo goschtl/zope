@@ -3,6 +3,13 @@
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="zope">
 
+  <tool
+      interface="zope.app.securitypolicy.interfaces.IRole"
+      title="Role"
+      description="Roles are used to combine permissions and can be assigned
+      to principals."
+      />
+
 <!-- Role Utility -->
 
   <addform
