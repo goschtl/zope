@@ -21,8 +21,19 @@ from StringIO import StringIO
 from zope.publisher.publish import publish as _publish, debug_call
 from zope.publisher.browser import TestRequest
 from zope.app.publication.browser import BrowserPublication
+from zope.security.interfaces import IParticipation
+from zope.security.management import system_user
+from zope.interface import implements
 
 __metaclass__ = type
+
+
+class SystemConfigurationParticipation:
+    implements(IParticipation)
+
+    principal = system_user
+    interaction = None
+
 
 _configured = 0
 def config(file, execute=True):
@@ -35,16 +46,15 @@ def config(file, execute=True):
     from zope.configuration import xmlconfig
 
     # Set user to system_user, so we can do anything we want
-    from zope.security.management import system_user
-    from zope.security.management import newSecurityManager
-    newSecurityManager(system_user)
+    from zope.security.management import newInteraction
+    newInteraction(SystemConfigurationParticipation())
 
     # Load server-independent site config
     context = xmlconfig.file(file, execute=execute)
 
     # Reset user
-    from zope.security.management import noSecurityManager
-    noSecurityManager()
+    from zope.security.management import endInteraction
+    endInteraction()
 
     _configured = execute
 
