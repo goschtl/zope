@@ -265,8 +265,7 @@ class BrowserTestCase(FunctionalTestCase):
                 if request:
                     request.close()
                 # Make sure the interaction is ended
-                try: endInteraction()
-                except: pass
+                endInteraction()
         if errors:
             self.fail("%s contains broken links:\n" % path
                       + "\n".join(["  %s:\t%s" % (a, e) for a, e in errors]))

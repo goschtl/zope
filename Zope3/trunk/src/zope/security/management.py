@@ -80,9 +80,6 @@ def newInteraction(participation=None, _thread=None, _policy=None):
 
 def endInteraction(_thread=None):
     """End the current interaction."""
-    if getInteraction(_thread=_thread) is None:
-        raise AssertionError("endInteraction called"
-                             " without an active interaction")
     thread_globals(_thread).interaction = None
 
 

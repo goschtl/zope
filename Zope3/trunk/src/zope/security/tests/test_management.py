@@ -83,7 +83,9 @@ class Test(CleanUp, unittest.TestCase):
         endInteraction(_thread=thread)
         self.assert_(thread.__zope3_thread_globals__.interaction is None)
 
-        self.assertRaises(AssertionError, endInteraction, _thread=thread)
+        # again
+        endInteraction(_thread=thread)
+        self.assert_(thread.__zope3_thread_globals__.interaction is None)
 
     def test_checkPermission(self):
         from zope.security import checkPermission

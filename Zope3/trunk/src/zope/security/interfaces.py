@@ -153,12 +153,17 @@ class IParticipation(Interface):
 
 
 class IInteractionManagement(Interface):
-    """Interaction management API."""
+    """Interaction management API.
+
+    Every thread has at most one active interaction at a time.
+    """
 
     def newInteraction(participation=None):
         """Start a new interaction.
 
         If participation is not None, it is added to the new interaction.
+
+        Raises an error if the calling thread already has an interaction.
         """
 
     def getInteraction():
@@ -169,5 +174,8 @@ class IInteractionManagement(Interface):
         """
 
     def endInteraction():
-        """End the current interaction."""
+        """End the current interaction.
+
+        Does nothing if there is no interaction.
+        """
 
