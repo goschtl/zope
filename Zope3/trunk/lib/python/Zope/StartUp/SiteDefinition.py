@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.2 2002/06/10 23:29:43 jim Exp $
+$Id: SiteDefinition.py,v 1.3 2002/07/18 22:26:46 jeremy Exp $
 """
 
 import sys
@@ -39,9 +39,6 @@ from Zope.Server.TaskThreads import ThreadedTaskDispatcher
 from Zope.App.ZopePublication.ZopePublication import ZopePublication
 
 import asyncore, zLOG
-
-from ZODB import DB
-
 
 DEFAULT_STORAGE_FILE = 'Data.fs'
 DEFAULT_LOG_FILE = 'STDERR'
@@ -72,15 +69,15 @@ class SiteDefinition:
 
     def useFileStorage(self, _context, file=DEFAULT_STORAGE_FILE):
         """Lets you specify the ZODB to use."""
-        from ZODB.FileStorage import FileStorage
-        self._zodb = DB(FileStorage(file))
+        from ZODB.FileStorage import DB
+        self._zodb = DB(file)
         return []
 
 
     def useMappingStorage(self, _context):
         """Lets you specify the ZODB to use."""
-        from ZODB.MappingStorage import MappingStorage
-        self._zodb = DB(MappingStorage(file))
+        from ZODB.MappingStorage import DB
+        self._zodb = DB(file)
         return []
 
 
@@ -132,10 +129,6 @@ class SiteDefinition:
         td = ThreadedTaskDispatcher()
         td.setThreadCount(self._threads)
         
-        # setup the storage, if not already done
-        if self._zodb is None:
-            self.useStorage(_context)
-        
         # check whether a root was already specified for this ZODB; if
         # not create one.
         self._initDB()
@@ -171,5 +164,5 @@ class SiteDefinition:
         "Handle empty/simple declaration."
         return [ Action(discriminator = 'Start Servers',
                         callable = self.start,
-                        args = (),
-                        ) ]    
+                        args = ()),
+                 ]
