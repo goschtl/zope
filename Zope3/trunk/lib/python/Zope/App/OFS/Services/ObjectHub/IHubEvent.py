@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IHubEvent.py,v 1.4 2002/10/21 06:14:48 poster Exp $
+$Id: IHubEvent.py,v 1.1 2002/10/30 03:47:47 poster Exp $
 """
 from Zope.Event.IEvent import IEvent
 from Interface.Attribute import Attribute
@@ -24,6 +24,9 @@ class IHubEvent(IEvent):
        which there is a hub id.
        A hub id is a way of refering to an object independent of location.
     """
+    hub = Attribute(
+        """the originating object hub (and thus the hub for which this
+        hubid is pertinent)""")
 
     object = Attribute("The subject of the event.")
 

@@ -13,12 +13,12 @@
 ##############################################################################
 """ Define view component for object hub.
 
-$Id: Control.py,v 1.1 2002/10/21 06:14:46 poster Exp $
+$Id: Control.py,v 1.1 2002/10/30 03:47:48 poster Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.ComponentArchitecture.ContextDependent import ContextDependent
-from Zope.ObjectHub.IObjectHub import IObjectHub
+from Zope.App.OFS.Services.ObjectHub.IObjectHub import IObjectHub
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 

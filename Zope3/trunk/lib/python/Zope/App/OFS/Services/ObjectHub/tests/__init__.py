@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -14,6 +14,8 @@
 """
 
 Revision information:
-$Id: __init__.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: __init__.py,v 1.1 2002/10/30 03:47:48 poster Exp $
 """
+
+
 

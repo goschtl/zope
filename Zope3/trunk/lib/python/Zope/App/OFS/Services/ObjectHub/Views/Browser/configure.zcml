@@ -1,22 +1,22 @@
 <zopeConfigure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    package="Zope.App.OFS.Services.LocalObjectHub">
+    package="Zope.App.OFS.Services.ObjectHub">
 
 <browser:defaultView 
     name="index.html"
-    for="Zope.ObjectHub.IObjectHub+" />
+    for=".IObjectHub+" />
 
 <browser:view 
     permission="Zope.ManageServices" 
-    for="Zope.ObjectHub.IObjectHub+"
+    for=".IObjectHub+"
     factory=".Views.Browser.Control.">
 
     <browser:page name="index.html" attribute="index" />
 
 </browser:view>
 
-<browser:menuItems menu="zmi_views" for="Zope.ObjectHub.IObjectHub+">
+<browser:menuItems menu="zmi_views" for=".IObjectHub+">
   <browser:menuItem title="Control" action="@@index.html" />
 </browser:menuItems>
 
@@ -24,7 +24,7 @@
     action="ObjectHub"  title='ObjectHub'
     description='An object hub, for cataloging, unique object ids, and more: use sparingly' />
 
-<browser:icon name="zmi_icon" for="Zope.ObjectHub.IObjectHub+" 
+<browser:icon name="zmi_icon" for=".IObjectHub+" 
             file="./objecthub.gif" />
 
 </zopeConfigure>

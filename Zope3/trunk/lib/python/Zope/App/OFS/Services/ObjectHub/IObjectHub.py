@@ -14,10 +14,13 @@
 """
 
 Revision information:
-$Id: IObjectHub.py,v 1.4 2002/10/21 06:14:48 poster Exp $
+$Id: IObjectHub.py,v 1.1 2002/10/30 03:47:47 poster Exp $
 """
 
 from Zope.Event.IEventChannel import IEventChannel
+
+class ObjectHubError(Exception):
+    pass
 
 class IObjectHub(IEventChannel):
     """ObjectHub.
@@ -92,10 +95,10 @@ class IObjectHub(IEventChannel):
                  remove hub id<->old_location
              send out hub id object remove event to subscribers
      """
-
-        
-    def lookupHubId(location):
-        """Returns the hub id int that is mapped to the given location.
+    
+    def getHubId(obj_or_loc):
+        """Returns the hub id int that is mapped to the given location
+        or wrapped object.
         
         Location is either a string, or a sequence of strings.
         It must be absolute, so if it is a string it must start with a '/',
@@ -108,7 +111,7 @@ class IObjectHub(IEventChannel):
         
         """
         
-    def lookupLocation(hubid):
+    def getLocation(hubid):
         """Returns a location as a string.
         
         If there is no location, raise Zope.Exceptions.NotFoundError.
@@ -122,16 +125,17 @@ class IObjectHub(IEventChannel):
         the traversal service raises.
         """
 
-    def register(location):
-        """Returns a new hub id for the given location if it is not 
-        already registered. 
+    def register(obj_or_loc):
+        """Returns a new hub id for the given location or wrapped object
+        if it is not already registered. 
 
         It also emits a HubIdObjectRegisteredEvent.  Raises an 
         ObjectHubError if the location was previously registered. 
         """
 
-    def unregister(hubid_or_location):
-        """Unregister an object identified either by location or by hubid.
+    def unregister(obj_or_loc_or_hubid):
+        """Unregister an object by wrapped object, by location, or by
+        hubid.
 
         It also emits a HubIdObjectUnregisteredEvent. 
         If the hub id or location wasn't registered a 

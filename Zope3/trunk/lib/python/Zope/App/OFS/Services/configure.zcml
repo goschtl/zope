@@ -7,7 +7,7 @@
 <include package=".RoleService" />
 <include package=".TranslationService" />
 <include package=".CachingService" />
-<include package=".LocalObjectHub" />
+<include package=".ObjectHub" />
 <include package=".ErrorReportingService" />
 
 </zopeConfigure>

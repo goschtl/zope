@@ -4,7 +4,10 @@
    xmlns:service='http://namespaces.zope.org/service'
 >
 
-  <content class='.LocalObjectHub.'>
+<serviceType id='ObjectHub' 
+             interface='.IObjectHub.' />
+
+  <content class='.ObjectHub.'>
 
     <factory
         id='ObjectHub'
@@ -23,7 +26,7 @@
      action="ObjectHub"  title='ObjectHub'
      description='An object hub, for cataloging, unique object ids, and more: use sparingly' />
   
-  <browser:icon name="zmi_icon" for="Zope.ObjectHub.IObjectHub." 
+  <browser:icon name="zmi_icon" for=".IObjectHub." 
                 file="./objecthub.gif" />
 
   <include package=".Views" />
