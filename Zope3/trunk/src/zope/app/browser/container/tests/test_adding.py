@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.20 2003/12/16 14:53:47 jim Exp $
+$Id: test_adding.py,v 1.21 2003/12/17 09:07:52 sraju Exp $
 """
 
 import unittest
@@ -307,21 +307,51 @@ def test_renderAddButton():
     ...        return "foo"
     ...    def __setitem__(self, name, object):
     ...        setattr(self, name, object)
+    ...        self.name=name
     ...    def __getitem__(self, key):
-    ...        return key
+    ...        return self
 
     >>> request = TestRequest()
     >>> request.form.update({'add_input_name': 'reqname'})
     >>> mycontainer = MyContainer()
     >>> adding = Adding(mycontainer, request)
     >>> o = object()
-    >>> adding.add(o)
+    >>> add_obj = adding.add(o)
+    >>> add_obj.name
     'reqname'
     >>> mycontainer.reqname is o
     True
     >>> tearDown()
 
     """
+
+def test_chooseName():
+    """If user don't enter name, pick one
+    
+    >>> class MyContainer:
+    ...    zope.interface.implements(INameChooser, IContainer)
+    ...    def chooseName(self, name, object):
+    ...        return 'pickone'
+    ...    def checkName(self, name, object):
+    ...        pass
+    ...    def __setitem__(self, name, object):
+    ...        setattr(self, name, object)
+    ...        self.name = name
+    ...    def __getitem__(self, key):
+    ...        return getattr(self, key)
+
+    >>> request = TestRequest()
+    >>> mycontainer = MyContainer()
+    >>> adding = Adding(mycontainer, request)
+    >>> o = object()
+    >>> add_obj = adding.add(o)
+    >>> mycontainer.name
+    'pickone'
+    >>> add_obj is o
+    True
+    """
+    
+
 
 def test_SingleMenuItem_and_CustomAddView_NonICNC():
     """
