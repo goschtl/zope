@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.9 2003/08/07 20:27:39 srichter Exp $
+$Id: registration.py,v 1.10 2003/08/13 19:44:23 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -562,7 +562,6 @@ class RegistrationManager(Persistent):
         "See IReadMapping"
         return self.get(key) is not None
 
-
     def keys(self):
         "See IEnumerableMapping"
         return [k for k, v in self._data]
@@ -726,13 +725,12 @@ class RegistrationManagerContainer(object):
             if IModuleManager.isImplementedBy(manager):
                 return manager.getModule()
 
-
         # See if out container is a RegistrationManagerContainer:
         c = zapi.getWrapperContainer(self)
         if interfaces.IRegistrationManagerContainer.isImplementedBy(c):
             return c.findModule(name)
 
-        # Use sys.modules in leu of module service:
+        # Use sys.modules in lieu of module service:
         module = sys.modules.get(name)
         if module is not None:
             return module
