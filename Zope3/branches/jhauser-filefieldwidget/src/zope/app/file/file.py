@@ -22,35 +22,35 @@ from transaction import get_transaction
 from zope.interface import implements
 
 from zope.publisher.browser import FileUpload
-from interfaces import IFile, IFileContent
+from interfaces import IMime, IFile, IFileContent
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
 
-class File(Persistent):
+class Mime(Persistent):
     """A persistent content component storing binary file data
 
     Let's test the constructor:
 
-    >>> file = File()
+    >>> file = Mime()
     >>> file.contentType
     ''
     >>> file.data
     ''
 
-    >>> file = File('Foobar')
+    >>> file = Mime('Foobar')
     >>> file.contentType
     ''
     >>> file.data
     'Foobar'
 
-    >>> file = File('Foobar', 'text/plain')
+    >>> file = Mime('Foobar', 'text/plain')
     >>> file.contentType
     'text/plain'
     >>> file.data
     'Foobar'
 
-    >>> file = File(data='Foobar', contentType='text/plain')
+    >>> file = Mime(data='Foobar', contentType='text/plain')
     >>> file.contentType
     'text/plain'
     >>> file.data
@@ -59,7 +59,7 @@ class File(Persistent):
 
     Let's test the mutators:
 
-    >>> file = File()
+    >>> file = Mime()
     >>> file.contentType = 'text/plain'
     >>> file.contentType
     'text/plain'
@@ -76,7 +76,7 @@ class File(Persistent):
 
     Let's test large data input:
 
-    >>> file = File()
+    >>> file = Mime()
 
     Insert as string:
 
@@ -111,13 +111,13 @@ class File(Persistent):
     Last, but not least, verify the interface:
 
     >>> from zope.interface.verify import verifyClass
-    >>> IFile.implementedBy(File)
+    >>> IMime.implementedBy(Mime)
     True
-    >>> verifyClass(IFile, File)
+    >>> verifyClass(IMime, Mime)
     True
     """
     
-    implements(IFileContent, IFile)
+    implements(IMime)
 
     def __init__(self, data='', contentType=''):
         self.data = data
@@ -130,6 +130,7 @@ class File(Persistent):
             return self._data
 
     def _setData(self, data):
+        # XXX can probably be removed
         # Handle case when data is a string
         if isinstance(data, unicode):
             data = data.encode('UTF-8')
@@ -213,6 +214,133 @@ class File(Persistent):
         '''See `IFile`'''
         return self._size
 
+    def open(self, mode='r'):
+        pass
+
+    data = property(_getData, _setData)
+    
+
+class File(Persistent):
+    """
+    Let's test the constructor:
+
+    >>> file = File()
+    >>> file.data
+    ''
+
+    >>> file = File('Foobar')
+    >>> file.contentType
+    ''
+    >>> file.data
+    'Foobar'
+
+    >>> file = File('Foobar', 'text/plain')
+    >>> file.contentType
+    'text/plain'
+    >>> file.data
+    'Foobar'
+
+    >>> file = File(data='Foobar', contentType='text/plain')
+    >>> file.contentType
+    'text/plain'
+    >>> file.data
+    'Foobar'
+
+
+    Let's test the mutators:
+
+    >>> file = File()
+    >>> file.contentType = 'text/plain'
+    >>> file.contentType
+    'text/plain'
+
+    >>> file.data = 'Foobar'
+    >>> file.data
+    'Foobar'
+
+    >>> file.data = None
+    Traceback (most recent call last):
+    ...
+    TypeError: Cannot set None data on a file.
+
+
+    Let's test large data input:
+
+    >>> file = File()
+
+    Insert as string:
+
+    >>> file.data = 'Foobar'*60000
+    >>> file.getSize()
+    360000
+    >>> file.data == 'Foobar'*60000
+    True
+
+    Insert data as FileChunk:
+
+    >>> fc = FileChunk('Foobar'*4000)
+    >>> file.data = fc
+    >>> file.getSize()
+    24000
+    >>> file.data == 'Foobar'*4000
+    True
+
+    Insert data from file object:
+
+    >>> import cStringIO
+    >>> sio = cStringIO.StringIO()
+    >>> sio.write('Foobar'*100000)
+    >>> sio.seek(0)
+    >>> file.data = sio
+    >>> file.getSize()
+    600000
+    >>> file.data == 'Foobar'*100000
+    True
+
+
+    Last, but not least, verify the interface:
+
+    >>> from zope.interface.verify import verifyClass
+    >>> IFile.implementedBy(File)
+    True
+    >>> verifyClass(IFile, File)
+    True
+    """
+
+    implements(IFile, IFileContent)
+    
+    def __init__(self, data='', contentType=''):
+        self.contents = Mime()
+        self.contents.data = data
+        self.contentType = contentType
+
+    # old compatibility methods
+    def _getData(self):
+        if isinstance(self.contents._data, FileChunk):
+            # XXX here we loose our memory efficient handling
+            return str(self.contents._data)
+        else:
+            return self.contents._data
+
+    def _setData(self, data):
+        self.contents.data = data
+
+## Leads to maximum recursion erro ?
+##     # new access to file data
+##     def _getContents(self):
+##         return self.contents.open()
+
+##     def _setContents(self, data):
+##         self.contents = Mime()
+##         contents = getattr(self, 'contents')
+##         contents.data = data
+##         return
+
+##    contents = property(_getContents, _setContents)
+
+    def getSize(self):
+        return self.contents.getSize()
+    
     # See IFile.
     data = property(_getData, _setData)
 

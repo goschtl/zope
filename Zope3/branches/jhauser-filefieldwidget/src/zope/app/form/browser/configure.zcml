@@ -138,6 +138,22 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMime"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMime"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".MimeDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IASCII"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".BytesAreaWidget"

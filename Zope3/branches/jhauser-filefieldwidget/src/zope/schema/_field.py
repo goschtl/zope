@@ -28,7 +28,7 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
-from zope.schema.interfaces import IBytes, IASCII, IBytesLine
+from zope.schema.interfaces import IBytes, IMime, IASCII, IBytesLine
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate
@@ -93,6 +93,55 @@ class Bytes(MinMaxLen, Field):
         v = str(u)
         self.validate(v)
         return v
+
+class Mime(Bytes):
+    __doc__ = IMime.__doc__
+    implements(IMime)
+
+    _type = str # Is this needed for the WrongType exception?
+
+    def set(self, obj, value):
+        """
+        Do a two phase save, first create an empty file-like object, make it
+        persistent, than read the data into it in chunks, to reduce memory
+        consumption.
+
+        'value' is a file-like, most often an FileUpload() object.
+        """
+        if self.readonly:
+            raise TypeError("Can't set values on read-only fields "
+                            "(name=%s, class=%s.%s)"
+                            % (self.__name__,
+                               obj.__class__.__module__,
+                               obj.__class__.__name__))
+        # now create an empty file object and store it at the persistent object
+        setattr(obj, self.__name__, MimeData())
+        file = getattr(obj, self.__name__)
+        # now do the upload in chunks
+        file.data = value
+        # save additional information 
+        file.filename = self._extractFilename(value)
+        small_body = file.read(64)
+        file.seek(0) # XXX needed?
+        file.contentType = guess_content_type(name=file.filename, body=small_body)
+
+    def _validate(self, value):
+        # just test that there is a read method, more is not needed.
+        if getattr(value, 'read',''):
+            return
+        super(Bytes, self)._validate(value)
+
+    def _extractFilename(self, data):
+        # if it is a fileupload object
+        if hasattr(data,'filename'):
+            fid = data.filename
+            # sometimes the full pathname is included
+            fid=fid[max(fid.rfind('/'),
+                        fid.rfind('\\'), # escaped backslash
+                        fid.rfind(':'))+1:]
+            return fid
+        else:
+            return ''
 
 class ASCII(Bytes):
     __doc__ = IASCII.__doc__

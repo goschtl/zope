@@ -95,15 +95,20 @@
       permission="zope.ManageContent"
       />
 
-  <!-- define another widget for the mimefield -->
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for=".mimefield.IFileData"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".mimefield.FileDataWidget"
-      permission="zope.Public"
-      />
+  <!-- handle the mime field value as content -->
+  <content class=".file.Mime">
 
+    <factory
+        id="zope.app.file.Mime"
+        title="Mime field Value"
+        description="Mime field Value" />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema="zope.app.file.interfaces.IMime"
+        />
+
+  </content>
 
   <!-- include browser package -->
 

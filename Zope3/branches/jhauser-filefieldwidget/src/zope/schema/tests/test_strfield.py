@@ -16,7 +16,7 @@
 $Id$
 """
 from unittest import TestSuite, main, makeSuite
-from zope.schema import Bytes, BytesLine, Text, TextLine
+from zope.schema import Bytes, Mime, BytesLine, Text, TextLine
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import RequiredMissing, InvalidValue
 from zope.schema.interfaces import TooShort, TooLong, ConstraintNotSatisfied
@@ -101,7 +101,15 @@ class BytesTest(StrTest, MultiLine):
         field = self._Field_Factory()
         self.assertRaises(ValidationError, field.validate, u'hello')
 
+class MimeTest(StrTest, MultiLine):
+    _Field_Factory = Mime
+    _convert = str
+    dummy_file = open('__init__.py','r')
 
+    def testValidateFile(self):
+        field = self._Field_Factory()
+        field.validate(self.dummy_file)
+    
 class TextTest(StrTest, MultiLine):
     _Field_Factory = Text
     def _convert(self, v):
@@ -129,6 +137,7 @@ class TextLineTest(SingleLine, TextTest):
 def test_suite():
     return TestSuite((
         makeSuite(BytesTest),
+        makeSuite(MimeTest),
         makeSuite(TextTest),
         makeSuite(LineTest),
         makeSuite(TextLineTest),

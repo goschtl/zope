@@ -196,6 +196,7 @@ class BytesDisplayWidget(DisplayWidget):
         else:
             content = self.context.default
         return renderElement("pre", contents=escape(content))
+    
 
 class ASCII(Bytes):
     """ASCII"""
@@ -423,6 +424,75 @@ class FileWidget(TextWidget):
             else:
                 return self.context.missing_value
 
+class MimeWidget(TextWidget):
+    u"""Mime file upload widget"""
+
+    type = 'file'
+
+    def __call__(self):
+        # XXX set the width to 40 to be sure to recognize this widget
+        displayMaxWidth = self.displayMaxWidth or 0
+        if displayMaxWidth > 0:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=40,
+                                 maxlength=40,
+                                 extra=self.extra)
+        else:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=40,
+                                 extra=self.extra)
+
+    def _toFieldValue(self, input):
+        if input == '':
+            return self.context.missing_value
+        try:
+            seek = input.seek
+            read = input.read
+        except AttributeError, e:
+            raise ConversionError('Form input is not a file object', e)
+        else:
+            # if the FileUpload instance has no filename set, there is
+            # no upload.
+            if getattr(input, 'filename', ''):
+                return input
+            else:
+                return self.context.missing_value
+
+    def applyChanges(self, content):
+        field = self.context
+        value = self.getInputValue()
+        # need to test for value, as an empty field is not an error, but
+        # the current file should not be replaced.
+        if value and (field.query(content, self) != value):
+            field.set(content, value)
+            return True
+        else:
+            return False
+
+class MimeDisplayWidget(DisplayWidget):
+    """Mime data display widget."""
+    # There need to be probably some widget options to determine how
+    # the file is displayed, e.g. as a download link.
+
+    def __call__(self):
+        if self._renderedValueSet():
+            content = self._data
+        else:
+            content = self.context.default
+
+        show = u"Filename %s, size in bytes: %s" (content.filename,
+                                                  content.getSize())
+        return renderElement("span", contents=escape(show))
+   
+    
 class IntWidget(TextWidget):
     displayWidth = 10
 

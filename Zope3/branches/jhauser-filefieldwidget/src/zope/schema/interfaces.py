@@ -274,6 +274,12 @@ class IBytes(IMinMaxLen, IIterable, IField):
     The value might be constrained to be with length limits.
     """
 
+class IMime(IBytes):
+    u"""Field holding a byte string (in an efficient data structure).
+
+    The type of the data is described by it's mime type.
+    """
+    
 class IASCII(IBytes):
     u"""Field containing a 7-bit ASCII string. No characters > DEL
     (chr(127)) are allowed
