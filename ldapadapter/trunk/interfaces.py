@@ -46,16 +46,20 @@ class ILDAPAdapter(Interface):
     bindDN = TextLine(
         title=_("Bind DN"),
         default=u'',
+        required=False,
         )
     bindPassword = TextLine(
         title=_("Bind password"),
         default=u'',
+        required=False,
         )
 
     def connect(dn, password=None):
         """Connect to the server.
 
         Returns an ILDAPConnection.
+
+        May raise InvalidCredentials.
         """
 
 class ILDAPAdapterManagement(Interface):
@@ -72,10 +76,12 @@ class ILDAPAdapterManagement(Interface):
     bindDN = TextLine(
         title=_("Bind DN"),
         default=u'',
+        required=False,
         )
     bindPassword = TextLine(
         title=_("Bind password"),
         default=u'',
+        required=False,
         )
 
 class IManageableLDAPAdapter(ILDAPAdapter,
@@ -106,6 +112,8 @@ class ILDAPConnection(Interface):
         - dn is a unicode dn.
 
         - entry is the subset of attributes we want to modify.
+
+        May raise NoSuchObject.
         """
 
     def search(base, scope='one', filter='(objectClass=*)', attrs=None):
@@ -123,7 +131,7 @@ class ILDAPConnection(Interface):
         Returns a sequence of (dn, entry), where dn is unicode and entry
         is a mapping whose values are lists of unicode strings.
 
-        May raise ldap exceptions.
+        May raise NoSuchObject.
         """
         # TODO: some values are binary and should not be converted to unicode
 
