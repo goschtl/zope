@@ -264,6 +264,36 @@ class PluggableAuthService( Folder ):
                 return user
 
         if not is_top:
+            # Try to validate with user folders higher up.
+            innerob=self.aq_parent
+            while hasattr(innerob,"aq_parent"):
+                inner = getattr(innerob, 'aq_inner', innerob)
+                parent = getattr(inner, 'aq_parent', None)
+                if parent is not None:
+                    innerob = parent
+                else:
+                    if hasattr(innerob, 'im_self'):
+                        innerob = innerob.im_self
+                        innerob = getattr(innerob, 'aq_inner', innerob)
+                if hasattr(innerob,"__allow_groups__"):
+                    userfolder=innerob.__allow_groups__
+                    if hasattr(userfolder,"validate"):
+                        user=userfolder.validate(request,auth,roles)
+                        if user is not None:
+                            return user
+                        
+            # No validation in upper user folders: Make a challenge
+            challengers = plugins.listPlugins(IChallengePlugin)
+            if challengers:
+                # We just pick the first one
+                challenger_id, challenger = challengers[0] 
+                try:
+                    return challenger.challenge(request, request.RESPONSE)
+                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+                    LOG('PluggableAuthService', WARNING, 
+                        'ChallengePlugin %s error' % challenger_id,
+                        error=sys.exc_info())
+            
             return None
 
         #
