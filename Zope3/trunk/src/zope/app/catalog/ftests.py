@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for catalog
 
-$Id: ftests.py,v 1.4 2004/03/06 02:35:11 garrett Exp $
+$Id: ftests.py,v 1.5 2004/03/19 03:17:13 srichter Exp $
 """
 import unittest
 
@@ -96,7 +96,7 @@ class TestCatalogAdd(BrowserTestCase):
 
         # Now add some content
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'File', 
+                                form={'type_name':u'zope.app.content.File', 
                                       'id':u'First'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/First/@@EditMetaData.html",basic='mgr:mgrpw',
@@ -106,7 +106,7 @@ class TestCatalogAdd(BrowserTestCase):
                                       })
         self.assertEqual(response.getStatus(), 200)
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'File', 
+                                form={'type_name':u'zope.app.content.File', 
                                       'id':u'Second'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/Second/@@EditMetaData.html",basic='mgr:mgrpw',
@@ -117,7 +117,7 @@ class TestCatalogAdd(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
 
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'File', 
+                                form={'type_name':u'zope.app.content.File', 
                                       'id':u'Third'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/Third/@@EditMetaData.html",basic='mgr:mgrpw',
@@ -127,7 +127,7 @@ class TestCatalogAdd(BrowserTestCase):
                                       })
         self.assertEqual(response.getStatus(), 200)
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'File', 
+                                form={'type_name':u'zope.app.content.File', 
                                       'id':u'Thirda'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/Thirda/@@EditMetaData.html",basic='mgr:mgrpw',

@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for the case-insensitive traverser and folder.
 
-$Id: ftests.py,v 1.1 2004/02/27 14:50:22 philikon Exp $
+$Id: ftests.py,v 1.2 2004/03/19 03:17:14 srichter Exp $
 """
 import unittest
 from zope.testing.functional import BrowserTestCase
@@ -34,7 +34,8 @@ class TestCaseInsensitiveFolder(BrowserTestCase):
         # Step 2: add the file
         response = self.publish('/cisf/+/action.html',
                                 basic='mgr:mgrpw',
-                                form={'type_name': u'File', 'id': u'foo'})
+                                form={'type_name': u'zope.app.content.File',
+                                      'id': u'foo'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
                          'http://localhost/cisf/@@contents.html')
