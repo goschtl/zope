@@ -26,6 +26,7 @@ from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.tests import ztapi
 
 from zope.app.tests.setup import buildSampleFolderTree
+from zope.testing import doctest
 
 
 def buildSite(items=None) :
@@ -38,7 +39,7 @@ def buildSite(items=None) :
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite(),
+        doctest.DocTestSuite(),
         ))
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')
