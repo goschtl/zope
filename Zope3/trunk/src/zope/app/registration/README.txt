@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.12 $
+:Version: $Revision: 1.1 $
 
 This package includes implementations of several local services.
 It also contains infrastructure for implementing local services.
