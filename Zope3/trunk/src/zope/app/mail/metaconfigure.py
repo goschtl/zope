@@ -13,7 +13,7 @@
 ##############################################################################
 """mail ZCML Namespace handler
 
-$Id: metaconfigure.py,v 1.6 2004/03/03 09:15:41 srichter Exp $
+$Id: metaconfigure.py,v 1.7 2004/04/25 04:41:00 srichter Exp $
 """
 from zope.configuration.exceptions import ConfigurationError
 
@@ -36,7 +36,7 @@ def _assertPermission(permission, interfaces, component):
     return proxify(component, checker)
     
 
-def queuedDelivery(_context, permission, queuePath, mailer, name=None):
+def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
 
     def createQueuedDelivery():
         delivery = QueuedMailDelivery(queuePath)
@@ -61,7 +61,7 @@ def queuedDelivery(_context, permission, queuePath, mailer, name=None):
             args = () )
 
 
-def directDelivery(_context, permission, mailer, name=None):
+def directDelivery(_context, permission, mailer, name="Mail"):
 
     def createDirectDelivery():
         mailerObject = zapi.queryUtility(None, IMailer, name=mailer)

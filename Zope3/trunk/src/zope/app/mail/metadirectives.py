@@ -13,7 +13,7 @@
 ##############################################################################
 """'mail' ZCML Namespaces Schemas
 
-$Id: metadirectives.py,v 1.5 2004/03/20 19:52:46 srichter Exp $
+$Id: metadirectives.py,v 1.6 2004/04/25 04:41:00 srichter Exp $
 """
 from zope.configuration.fields import Path
 from zope.interface import Interface
@@ -88,7 +88,7 @@ class ISMTPMailerDirective(IMailerDirective):
     port = Int(
         title=u"Port",
         description=u"Port of the SMTP server.",
-        default=23,
+        default=25,
         required=False)
 
     username = TextLine(

@@ -166,6 +166,11 @@ Zope Changes
 
     Bug fixes
 
+    - 'mail:queuedDelivery' and 'mail:directDelivery' directives have now
+      "Mail" as a default name as the interface claims. Also, the 
+      'mail:smtpMailer' directive interface specifies now a port default of 25
+      as it should be.
+
     - Content-Length header bug fixed. The problem was that while encoding
       an output data to output encoding data length can be changed, but
       headers were already sent.
