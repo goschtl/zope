@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.12 2003/11/04 04:04:28 jeremy Exp $
+$Id: copypastemove.py,v 1.13 2003/12/10 13:07:53 jace Exp $
 """
 
 from zope.app import zapi
@@ -29,6 +29,9 @@ from zope.app.location import locationCopy
 from zope.interface import implements
 from zope.exceptions import NotFoundError, DuplicationError
 from zope.proxy import removeAllProxies
+from zope.component.exceptions import ComponentLookupError
+from zope.app.container.constraints import checkObject
+from zope.interface import Invalid
 
 class ObjectMover:
     """Adapter for moving objects between containers
@@ -65,7 +68,9 @@ class ObjectMover:
     >>> mover.moveableTo(container2)
     1
     >>> mover.moveableTo({})
-    0
+    Traceback (most recent call last):
+    ...
+    TypeError: Container is not a valid Zope container.
 
     Of course, once we've decided we can move an object, we can use
     the mover to do so:
@@ -77,7 +82,7 @@ class ObjectMover:
     [u'foo']
     >>> ob.__parent__ is container2
     1
-    
+
     We can also specify a name:
 
     >>> mover.moveTo(container2, u'bar')
@@ -99,15 +104,67 @@ class ObjectMover:
     [u'splat', u'splat_']
     >>> ob.__name__
     u'splat_'
-    
+
 
     If we try to move to an invalid container, we'll get an error:
 
     >>> mover.moveTo({})
     Traceback (most recent call last):
     ...
-    TypeError: Can only move objects between like containers
-        
+    TypeError: Container is not a valid Zope container.
+
+
+    Do a test for preconditions:
+
+    >>> import zope.interface
+    >>> import zope.schema
+    >>> def preNoZ(container, name, ob):
+    ...     "Silly precondition example"
+    ...     if name.startswith("Z"):
+    ...         raise zope.interface.Invalid("Invalid name.")
+
+    >>> class I1(zope.interface.Interface):
+    ...     def __setitem__(name, on):
+    ...         "Add an item"
+    ...     __setitem__.precondition = preNoZ
+
+    >>> from zope.app.interfaces.container import IContainer
+    >>> class C1:
+    ...     zope.interface.implements(I1, IContainer)
+    ...     def __repr__(self):
+    ...         return 'C1'
+
+    >>> from zope.app.container.constraints import checkObject
+    >>> container3 = C1()
+    >>> mover.moveableTo(container3, 'ZDummy')
+    0
+    >>> mover.moveableTo(container3, 'newName')
+    1
+
+    And a test for constraints:
+
+    >>> def con1(container):
+    ...     "silly container constraint"
+    ...     if not hasattr(container, 'x'):
+    ...         return False
+    ...     return True
+    ...
+    >>> class I2(zope.interface.Interface):
+    ...     __parent__ = zope.schema.Field(constraint = con1)
+    ...
+    >>> class constrainedObject:
+    ...     zope.interface.implements(I2)
+    ...     def __init__(self):
+    ...         self.__name__ = 'constrainedObject'
+    ...
+    >>> cO = constrainedObject()
+    >>> mover2 = ObjectMover(cO)
+    >>> mover2.moveableTo(container)
+    0
+    >>> container.x = 1
+    >>> mover2.moveableTo(container)
+    1
+
     """
 
     implements(IObjectMover)
@@ -124,16 +181,11 @@ class ObjectMover:
         obj = self.context
         container = obj.__parent__
 
-        # XXX Only allow moving between the same types of containers for
-        # now, until we can properly implement containment constraints:
-        if target.__class__ != container.__class__:
-            raise TypeError(
-                _("Can only move objects between like containers")
-                )
-        
         orig_name = obj.__name__
         if new_name is None:
             new_name = orig_name
+
+        checkObject(target, new_name, obj)
 
         if target is container and new_name == orig_name:
             # Nothing to do
@@ -158,7 +210,13 @@ class ObjectMover:
         Returns True if it can be moved there. Otherwise, returns
         false.
         '''
-        return self.context.__parent__.__class__ == target.__class__ 
+        if name is None:
+            name = self.context.__name__
+        try:
+            checkObject(target, name, self.context)
+        except Invalid:
+            return 0
+        return 1
 
 class ObjectCopier:
     """Adapter for copying objects between containers
@@ -195,7 +253,9 @@ class ObjectCopier:
     >>> copier.copyableTo(container2)
     1
     >>> copier.copyableTo({})
-    0
+    Traceback (most recent call last):
+    ...
+    TypeError: Container is not a valid Zope container.
 
     Of course, once we've decided we can copy an object, we can use
     the copier to do so:
@@ -213,7 +273,7 @@ class ObjectCopier:
     1
     >>> container2[u'foo'].__name__
     u'foo'
-    
+
     We can also specify a name:
 
     >>> copier.copyTo(container2, u'bar')
@@ -241,15 +301,66 @@ class ObjectCopier:
     [u'bar', u'bar_', u'foo']
     >>> container2[u'bar_'].__name__
     u'bar_'
-    
+
 
     If we try to copy to an invalid container, we'll get an error:
 
     >>> copier.copyTo({})
     Traceback (most recent call last):
     ...
-    TypeError: Can only copy objects to like containers
-        
+    TypeError: Container is not a valid Zope container.
+
+    Do a test for preconditions:
+
+    >>> import zope.interface
+    >>> import zope.schema
+    >>> def preNoZ(container, name, ob):
+    ...     "Silly precondition example"
+    ...     if name.startswith("Z"):
+    ...         raise zope.interface.Invalid("Invalid name.")
+
+    >>> class I1(zope.interface.Interface):
+    ...     def __setitem__(name, on):
+    ...         "Add an item"
+    ...     __setitem__.precondition = preNoZ
+
+    >>> from zope.app.interfaces.container import IContainer
+    >>> class C1:
+    ...     zope.interface.implements(I1, IContainer)
+    ...     def __repr__(self):
+    ...         return 'C1'
+
+    >>> from zope.app.container.constraints import checkObject
+    >>> container3 = C1()
+    >>> copier.copyableTo(container3, 'ZDummy')
+    0
+    >>> copier.copyableTo(container3, 'newName')
+    1
+
+    And a test for constraints:
+
+    >>> def con1(container):
+    ...     "silly container constraint"
+    ...     if not hasattr(container, 'x'):
+    ...         return False
+    ...     return True
+    ...
+    >>> class I2(zope.interface.Interface):
+    ...     __parent__ = zope.schema.Field(constraint = con1)
+    ...
+    >>> class constrainedObject:
+    ...     zope.interface.implements(I2)
+    ...     def __init__(self):
+    ...         self.__name__ = 'constrainedObject'
+    ...
+    >>> cO = constrainedObject()
+    >>> copier2 = ObjectCopier(cO)
+    >>> copier2.copyableTo(container)
+    0
+    >>> container.x = 1
+    >>> copier2.copyableTo(container)
+    1
+
     """
 
     implements(IObjectCopier)
@@ -271,16 +382,11 @@ class ObjectCopier:
         obj = self.context
         container = obj.__parent__
 
-        # XXX Only allow moving between the same types of containers for
-        # now, until we can properly implement containment constraints:
-        if target.__class__ != container.__class__:
-            raise TypeError(
-                _("Can only copy objects to like containers")
-                )
-
         orig_name = obj.__name__
         if new_name is None:
             new_name = orig_name
+
+        checkObject(target, new_name, obj)
 
         chooser = zapi.getAdapter(target, INameChooser)
         new_name = chooser.chooseName(new_name, obj)
@@ -302,7 +408,13 @@ class ObjectCopier:
         Returns True if it can be copied there. Otherwise, returns
         False.
         '''
-        return self.context.__parent__.__class__ == target.__class__ 
+        if name is None:
+            name = self.context.__name__
+        try:
+            checkObject(target, name, self.context)
+        except Invalid:
+            return 0
+        return 1
 
 
 class PrincipalClipboard:

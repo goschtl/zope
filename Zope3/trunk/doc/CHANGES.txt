@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+    - Copy/Move now checks constraints and preconditions, instead of just
+      expecting the source's and target's class to be the same.
+
     Bug fixes
 
     Refactoring
