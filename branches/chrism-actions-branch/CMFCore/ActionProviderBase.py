@@ -63,7 +63,7 @@ class ActionProviderBase:
 
             for a in self.listActions():
 
-                a1 = {}
+                a1 = a.getActionInfoDict()
                 a1['id'] = a.getId()
                 a1['name'] = a.Title()
                 p = a.getPermissions()
@@ -138,7 +138,10 @@ class ActionProviderBase:
         actions = []
 
         for index in range( len( self._actions ) ):
-            actions.append( self._extractAction( properties, index ) )
+            action = self._actions[index].clone()
+            new_action = self._extractAction( properties, index )
+            action.updateActionInfoDict(new_action.getActionInfoDict())
+            actions.append( action )
 
         self._actions = tuple( actions )
 

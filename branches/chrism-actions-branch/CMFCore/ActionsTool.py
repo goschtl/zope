@@ -32,6 +32,7 @@ from Expression import Expression, createExprContext
 from ActionInformation import ActionInformation, oai
 from ActionProviderBase import ActionProviderBase
 from TypesTool import TypeInformation
+from types import DictionaryType
 
 class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
     """
@@ -159,119 +160,126 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
     #   'portal_actions' interface methods
     #
 
-    def _listActions(self,append,object,info,ec):
-        a = object.listActions(info)
-        if a and type(a[0]) is not type({}):
-            for ai in a:
-                if ai.testCondition(ec):
-                    append(ai.getAction(ec))
-        else:
-            for i in a:
-                append(i)
+    security.declarePrivate('getProviderActions')
+    def getProviderActions(self, info=None):
+        # Return actions from specific tools.
+        l = []
+        for provider_name in self.listActionProviders():
+            provider = getattr(self, provider_name)
+            actions = provider.listActions(info)
+            l.extend(actions)
+        return l
+
+    security.declarePrivate('getTypeActions')
+    def getTypeActions(self, object, info=None):
+        # Return actions from object.
+        if object is None:
+            return []
         
+        l = []
+        types_tool = getToolByName( self, 'portal_types' )
+        # we might get None back from getTypeInfo.  We construct
+        # a dummy TypeInformation object here in that case (the 'or'
+        # case).  This prevents us from needing to check the condition.
+        ti = types_tool.getTypeInfo( object ) or TypeInformation('Dummy')
+        defs = ti.getActions()
+        url = object_url = object.absolute_url()
+        for d in defs:
+            # we can't modify or expose the original actionsd... this
+            # stems from the fact that getActions returns a ref to the
+            # actual dictionary used to store actions instead of a
+            # copy.  We copy it here to prevent it from being modified.
+            d = d.copy()
+            d['id'] = d.get('id', None)
+            if d['action']:
+                url = '%s/%s' % (object_url, d['action'])
+            d['url'] = url
+            d['category'] = d.get('category', 'object')
+            d['visible'] = d.get('visible', 1)
+            l.append(d)
+
+        if hasattr(aq_base(object), 'listActions'):
+            l.extend(object.listActions())
+
+        return l
+
+    def _findParentFolder(self, object):
+        # Search up the object's containment hierarchy until we find an
+        # object that claims it's a folder.
+        context = object
+        while not hasattr(aq_base(context), 'isPrincipiaFolderish'):
+            new_context = aq_parent(aq_inner(context))
+            if context is new_context:
+                break
+            context = new_context
+        return context
+
     security.declarePublic('listFilteredActionsFor')
     def listFilteredActionsFor(self, object=None):
         '''Gets all actions available to the user and returns a mapping
         containing user actions, object actions, and global actions.
         '''
-        portal = aq_parent(aq_inner(self))
-        if object is None or not hasattr(object, 'aq_base'):
-            folder = portal
-        else:
-            folder = object
-            # Search up the containment hierarchy until we find an
-            # object that claims it's a folder.
-            while folder is not None:
-                if getattr(aq_base(folder), 'isPrincipiaFolderish', 0):
-                    # found it.
-                    break
-                else:
-                    folder = aq_parent(aq_inner(folder))
-        ec = createExprContext(folder, portal, object)
         actions = []
-        append = actions.append
-        info = oai(self, folder, object)
-        # Include actions from specific tools.
-        for provider_name in self.listActionProviders():
-            provider = getattr(self, provider_name)
-            self._listActions(append,provider,info,ec)
+        portal = folder = aq_parent(aq_inner(self))
 
-        # Include actions from object.
-        if object is not None:
-            base = aq_base(object)
-            types_tool = getToolByName( self, 'portal_types' )
-            # we might get None back from getTypeInfo.  We construct
-            # a dummy TypeInformation object here in that case (the 'or'
-            # case).  This prevents us from needing to check the condition.
-            ti = types_tool.getTypeInfo( object ) or TypeInformation('Dummy')
-            defs = ti.getActions()
-            url = object_url = object.absolute_url()
-            for d in defs:
-                # we can't modify or expose the original actionsd... this
-                # stems from the fact that getActions returns a ref to the
-                # actual dictionary used to store actions instead of a
-                # copy.  We copy it here to prevent it from being modified.
-                d = d.copy()
-                d['id'] = d.get('id', None)
-                if d['action']:
-                    url = '%s/%s' % (object_url, d['action'])
-                d['url'] = url
-                d['category'] = d.get('category', 'object')
-                d['visible'] = d.get('visible', 1)
-                actions.append(d)
+        if object is not None and hasattr(object, 'aq_base'):
+            folder = self._findParentFolder(object)
 
-            if hasattr(base, 'listActions'):
-                self._listActions(append,object,info,ec)
+        # include actions from action providers
+        actions.extend(self.getProviderActions(oai(self, folder, object)))
 
-        # Reorganize the actions by category,
-        # filtering out disallowed actions.
-        filtered_actions={'user':[],
-                          'folder':[],
-                          'object':[],
-                          'global':[],
-                          'workflow':[],
+        # include actions from types tool
+        actions.extend(self.getTypeActions(object))
+
+        # Reorganize the actions by category, filtering out disallowed actions.
+        filtered_actions={
+            'user':[], 'folder':[], 'object':[], 'global':[], 'workflow':[],
                           }
+        expr_context = createExprContext(folder, portal, object)
         for action in actions:
-            category = action['category']
-            permissions = action.get('permissions', None)
-            visible = action.get('visible', 1)
-            if not visible:
+            action, category = organizeAction(
+                action, portal, folder, object, expr_context
+                )
+            if None in (action, category):
                 continue
-            verified = 0
-            if not permissions:
-                # This action requires no extra permissions.
-                verified = 1
-            else:
-                if (object is not None and
-                    (category.startswith('object') or
-                     category.startswith('workflow'))):
-                    context = object
-                elif (folder is not None and
-                      category.startswith('folder')):
-                    context = folder
-                else:
-                    context = portal
-                for permission in permissions:
-                    # The user must be able to match at least one of
-                    # the listed permissions.
-                    if _checkPermission(permission, context):
-                        verified = 1
-                        break
-            if verified:
-                catlist = filtered_actions.get(category, None)
-                if catlist is None:
-                    filtered_actions[category] = catlist = []
-                # Filter out duplicate actions by identity...
-                if not action in catlist:
-                    catlist.append(action)
-                # ...should you need it, here's some code that filters
-                # by equality (use instead of the two lines above)
-                #if not [a for a in catlist if a==action]:
-                #    catlist.append(action)
+            catlist = filtered_actions.setdefault(category, [])
+            if not action in catlist:
+                # no dupes
+                catlist.append(action)
+
         return filtered_actions
 
-    # listFilteredActions() is an alias.
+    # listFilteredActions is an alias for listFilteredActionsFor.
     security.declarePublic('listFilteredActions')
     listFilteredActions = listFilteredActionsFor
+
+def organizeAction(action, portal, folder, object, expr_context):
+    """ Organize the action into a category and expand the action
+    into a dictionary if it is an ActionInformation object """
+    if not isinstance(action, DictionaryType):
+        # this is an ActionInformation object
+        if not action.testCondition(expr_context):
+            # it did not pass the condition
+            return None, None
+        action = action.getAction(expr_context)
+
+    if action.get('visible', 1):
+        category = action.get('category', 'object')
+        permissions = action.get('permissions', None)
+        # context will be one of object, folder, or portal
+        context = ((category in ('object', 'workflow') and object) or
+                   (category == 'folder' and folder)) or portal
+        if permissions and not checkPermissions(permissions, context):
+            # inadequate permissions to see the action
+            return None, None
+
+    return action, category
+
+def checkPermissions(permissions, context):
+    for permission in permissions:
+        # The user must be able to match at least one of
+        # the listed permissions.
+        if _checkPermission(permission, context):
+            return 1
 
 InitializeClass(ActionsTool)

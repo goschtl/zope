@@ -40,6 +40,7 @@ class ActionsToolTests( SecurityRequestTest ):
 
     def test_delActionProvider(self):
         tool = self.tool
+        tool.addActionProvider('foo')
         tool.deleteActionProvider('foo')
         self.assertEqual(tool.listActionProviders(),
                           ('portal_actions',))
@@ -51,19 +52,32 @@ class ActionsToolTests( SecurityRequestTest ):
         """
         root = self.root
         tool = self.tool
-        root._setObject('portal_registration', RegistrationTool())
-        self.tool.action_providers = ('portal_actions','portal_registration')
-        self.assertEqual(tool.listFilteredActionsFor(root.portal_registration),
-                         {'workflow': [],
-                          'user': [],
-                          'object': [{'permissions': ('List folder contents',),
-                                      'id': 'folderContents',
-                                      'url': ' http://foo/folder_contents',
-                                      'name': 'Folder contents',
-                                      'visible': 1,
-                                      'category': 'object'}],
-                          'folder': [],
-                          'global': []})
+        tool = tool.__of__(root)
+        for info in tool.listActions():
+            if info.query('category') == 'folder':
+                ai = info
+                break
+        filtered = tool.listFilteredActionsFor(tool)
+        self.assertEqual(filtered['workflow'], [])
+        self.assertEqual(filtered['user'], [])
+        self.assertEqual(filtered['object'], [])
+        self.assertEqual(filtered['global'], [])
+        folder_actions = filtered['folder']
+        self.assertEqual(len(folder_actions), 1)
+        actiond = folder_actions[0]
+        self.assertEqual(actiond['permissions'], ('List folder contents',))
+        self.assertEqual(actiond['condition'].text,
+                         ai.query('condition').text)
+        self.assertEqual(actiond['action'].text,
+                         ai.query('action').text)
+        self.assertEqual(actiond['id'], 'folderContents')
+        self.assertEqual(actiond['url'], ' http://foo/portal_actions/folder_contents')
+        self.assertEqual(actiond['visible'], 1)
+        self.assertEqual(actiond['priority'], 10)
+        self.assertEqual(actiond['description'], '')
+        self.assertEqual(actiond['name'], 'Folder contents')
+        self.assertEqual(actiond['title'], 'Folder contents')
+        self.assertEqual(actiond['category'], 'folder')
         
     def test_listDictionaryActions(self):
         """
@@ -73,17 +87,27 @@ class ActionsToolTests( SecurityRequestTest ):
         root = self.root
         tool = self.tool
         root._setObject('donkey', PortalFolder('donkey'))
-        self.assertEqual(tool.listFilteredActionsFor(root.donkey),
-                         {'workflow': [],
-                          'user': [],
-                          'object': [],
-                          'folder': [{'permissions': ('List folder contents',),
-                                      'id': 'folderContents',
-                                      'url': ' http://foo/donkey/folder_contents',
-                                      'name': 'Folder contents',
-                                      'visible': 1,
-                                      'category': 'folder'}],
-                          'global': []})
+        actiond = tool.listFilteredActionsFor(root.donkey)['folder'][0]
+        self.assertEqual(actiond['permissions'], ('List folder contents',))
+        self.assertEqual(actiond['id'], 'folderContents')
+        self.assertEqual(actiond['url'], ' http://foo/donkey/folder_contents')
+        self.assertEqual(actiond['visible'], 1)
+        self.assertEqual(actiond['priority'], 10)
+        self.assertEqual(actiond['description'], '')
+        self.assertEqual(actiond['name'], 'Folder contents')
+        self.assertEqual(actiond['title'], 'Folder contents')
+        self.assertEqual(actiond['category'], 'folder')
+##         self.assertEqual(tool.listFilteredActionsFor(root.donkey),
+##                          {'workflow': [],
+##                           'user': [],
+##                           'object': [],
+##                           'folder': [{'permissions': ('List folder contents',),
+##                                       'id': 'folderContents',
+##                                       'url': ' http://foo/donkey/folder_contents',
+##                                       'name': 'Folder contents',
+##                                       'visible': 1,
+##                                       'category': 'folder'}],
+##                           'global': []})
 
     def test_DuplicateActions(self):
         """
@@ -104,13 +128,8 @@ class ActionsToolTests( SecurityRequestTest ):
                                    )
         tool._actions = [action,action]
         self.tool.action_providers = ('portal_actions',)
-        self.assertEqual(tool.listFilteredActionsFor(root)['object'],
-                          [{'permissions': (),
-                            'id': 'test',
-                            'url': ' a_url',
-                            'name': 'Test',
-                            'visible': 1,
-                            'category': 'object'}])
+        filtered = tool.listFilteredActionsFor(root)['object']
+        self.failUnless(len(filtered) == 1)
 
 def test_suite():
     return TestSuite((

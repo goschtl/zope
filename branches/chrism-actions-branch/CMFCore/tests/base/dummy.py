@@ -4,6 +4,7 @@ from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.TypesTool import TypeInformation
 from Products.CMFCore.TypesTool import FactoryTypeInformation
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from Products.CMFCore.ActionInformation import ActionInformation
 
 class DummyObject(Implicit):
     """
@@ -168,8 +169,8 @@ class DummyTool(Implicit,ActionProviderBase):
     """
 
     _actions = [
-        DummyObject(),
-        DummyObject()
+        ActionInformation('a'),
+        ActionInformation('b'),
         ]
 
     root = 'DummyTool'

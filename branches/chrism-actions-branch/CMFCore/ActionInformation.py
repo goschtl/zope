@@ -26,6 +26,7 @@ from CMFCorePermissions import View
 from CMFCorePermissions import ManagePortal
 from utils import _dtmldir
 from utils import getToolByName
+from types import StringType
 
 class ActionInformation( SimpleItem ):
 
@@ -38,57 +39,36 @@ class ActionInformation( SimpleItem ):
     __allow_access_to_unprotected_subobjects__ = 1
 
     security = ClassSecurityInfo()
+    _action_info = None
 
-    def __init__( self
-                , id
-                , title=''
-                , description=''
-                , category='object'
-                , condition=''
-                , permissions=()
-                , priority=10
-                , visible=1
-                , action=''
-                ):
+    def __init__( self, id, **kw):
         """ Set up an instance.
         """
-        if condition and type( condition ) == type( '' ):
-            condition = Expression( condition )
-
-        if action and type( action ) == type( '' ):
-            action = Expression( action )
-
-        self.id = id
-        self.title = title
-        self.description = description
-        self.category = category 
-        self.condition = condition
-        self.permissions = permissions
-        self.priority = priority 
-        self.visible = visible
-        self.action = action
+        kw['id'] = id
+        self.updateActionInfoDict(kw)
 
     security.declareProtected( View, 'Title' )
     def Title(self):
 
         """ Return the Action title.
         """
-        return self.title or self.getId()
+        return self._action_info['title'] or self.getId()
 
     security.declareProtected( View, 'Description' )
     def Description( self ):
 
         """ Return a description of the action.
         """
-        return self.description
+        return self._action_info['description']
 
     security.declarePrivate( 'testCondition' )
     def testCondition( self, ec ):
 
         """ Evaluate condition using context, 'ec', and return 0 or 1.
         """
-        if self.condition:
-            return self.condition(ec)
+        cond = self._action_info['condition']
+        if cond:
+            return cond(ec)
         else:
             return 1
 
@@ -99,6 +79,7 @@ class ActionInformation( SimpleItem ):
             info about the action.
         """
         info = {}
+        info.update(self._action_info)
         info['id'] = self.id
         info['name'] = self.Title()
         action_obj = self._getActionObject()
@@ -106,22 +87,14 @@ class ActionInformation( SimpleItem ):
         info['permissions'] = self.getPermissions()
         info['category'] = self.getCategory()
         info['visible'] = self.getVisibility()
-        return info 
+        return info
 
     security.declarePrivate( '_getActionObject' )
     def _getActionObject( self ):
 
         """ Find the action object, working around name changes.
         """
-        action = getattr( self, 'action', None )
-
-        if action is None:  # Forward compatibility, used to be '_action'
-            action = getattr( self, '_action', None )
-            if action is not None:
-                self.action = self._action
-                del self._action
-
-        return action
+        return self._action_info.get('action', None )
 
     security.declarePublic( 'getActionExpression' )
     def getActionExpression( self ):
@@ -136,7 +109,10 @@ class ActionInformation( SimpleItem ):
 
         """ Return the text of the TALES expression for our condition.
         """
-        return getattr( self, 'condition', None ) and self.condition.text or ''
+        cond = self._action_info['condition']
+        if hasattr(cond, 'text'):
+            return cond.text
+        return ''
 
     security.declarePublic( 'getPermission' )
     def getPermissions( self ):
@@ -145,37 +121,73 @@ class ActionInformation( SimpleItem ):
 
         Return an empty tuple if no permission is required.
         """
-        return self.permissions
+        return self._action_info['permissions']
 
     security.declarePublic( 'getCategory' )
     def getCategory( self ):
 
         """ Return the category in which the action should be grouped.
         """
-        return self.category or 'object'
+        return self._action_info.get('category') or 'object'
 
     security.declarePublic( 'getVisibility' )
     def getVisibility( self ):
 
         """ Return whether the action should be visible in the CMF UI.
         """
-        return self.visible
+        return self._action_info['visible']
 
     security.declarePrivate( 'clone' )
     def clone( self ):
 
         """ Return a newly-created AI just like us.
         """
-        return self.__class__( id=self.id
-                             , title=self.title
-                             , description=self.description
-                             , category =self.category
-                             , condition=self.getCondition()
-                             , permissions=self.permissions
-                             , priority =self.priority
-                             , visible=self.visible
-                             , action=self.getActionExpression()
-                             )
+        kw = self._action_info.copy()
+        id = kw['id']
+        del kw['id']
+        return apply(self.__class__, (id,), kw)
+
+    security.declarePrivate('getActionInfo')
+    def getActionInfoDict( self ):
+        return self._action_info.copy()
+
+    security.declarePrivate('updateActionInfo')
+    def updateActionInfoDict( self, kw ):
+        if self._action_info is None:
+            self._action_info = {}
+        kw['id'] = kw.get('id', getattr(self, 'id'))
+        kw['title'] = kw.get('title', '')
+        kw['description'] = kw.get('description', '')
+        kw['category'] = kw.get('category', 'object')
+        kw['condition'] = kw.get('condition', '')
+        kw['permissions'] = kw.get('permissions', ())
+        kw['priority'] = kw.get('priority', 10)
+        kw['visible'] = kw.get('visible', 1)
+        kw['action'] = kw.get('action', '')
+        condition = kw['condition'] = kw.get('condition', '')
+        if condition and isinstance(condition, StringType):
+            condition = kw['condition'] = Expression( condition )
+
+        action = kw['action'] = kw.get('action', '')
+        if action and isinstance(action, StringType):
+            action = kw['action'] = Expression( action )
+        self._action_info.update(kw)
+        self.id = kw['id']
+
+    security.declarePublic('query')
+    def query(self, name, default=None):
+        """ returns the item named by name in _action_info_dict or default """
+        return self._action_info.get(name, default)
+
+    def __setstate__(self, state):
+        if not state.has_key('_action_info'):
+            kw = {}
+            for name in ('id', 'title', 'description', 'category', 'condition',
+                         'permissions', 'priority', 'visible', 'action'):
+                kw[name] = state.get(name)
+                del state[name]
+            self._action_info = kw
+            self.__dict__.update(state)
 
 InitializeClass( ActionInformation )
 

@@ -57,7 +57,7 @@ class ActionProviderBaseTests(unittest.TestCase):
         self.failUnless( apb._actions )
         self.failIf( apb._actions is old_actions )
         # make sure a blank permission gets stored as an empty tuple
-        self.assertEqual( apb._actions[0].permissions, () )
+        self.assertEqual( apb._actions[0].getPermissions(), () )
 
     def test_changeActions( self ):
 
@@ -100,7 +100,7 @@ class ActionProviderBaseTests(unittest.TestCase):
                     attr = 'permissions'
                     value = ( value, )
 
-                attr_value = getattr( apb._actions[i], attr, marker )
+                attr_value = apb._actions[i].query(attr, marker)
                 self.assertEqual( attr_value
                                 , value
                                 , '%s, %s != %s, %s'
