@@ -201,12 +201,45 @@ class STXDecapitatorTests( unittest.TestCase ):
         self.assertEqual( md[ 'Title' ], 'Sample Title' )
         self.assertEqual( md[ 'Description' ], 'Sample description' )
 
+PLAIN_TEXT_WITH_PARAGRAPHS = """\
+This is the first paragraph.  It contains just enough text that we have to
+wrap it.
+
+This is the second paragraph.
+"""
+
+class ParagraphInserterTests( unittest.TestCase ):
+
+    def testInterface( self ):
+
+        from Products.CMFCore.interfaces.portal_textmanager import TextFilter
+        from Products.CMFCore.TextFilters import ParagraphInserter
+
+        self.failUnless(
+                TextFilter.isImplementedByInstancesOf( ParagraphInserter ) )
+
+    def testInsert( self ):
+
+        from Products.CMFCore.TextFilters import ParagraphInserter
+
+        inserter = ParagraphInserter()
+
+        ti = inserter.filterText( PLAIN_TEXT_WITH_PARAGRAPHS )
+
+        import re
+        text = ti()
+        pattern = re.compile( r'<p>(.*?)</p>', re.MULTILINE | re.DOTALL )
+        graphs = pattern.findall( text )
+        self.assertEqual( len( graphs ), 2 )
+
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest( unittest.makeSuite( TextInfoTests ) )
     suite.addTest( unittest.makeSuite( PassthroughFilterTests ) )
     suite.addTest( unittest.makeSuite( HTMLDecapitatorTests ) )
     suite.addTest( unittest.makeSuite( STXDecapitatorTests ) )
+    suite.addTest( unittest.makeSuite( ParagraphInserterTests ) )
     return suite
 
 def run():

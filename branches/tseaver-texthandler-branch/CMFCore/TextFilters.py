@@ -50,7 +50,6 @@ class PassthroughFilter:
     __call__ = filterText
 
 
-
 class HTMLDecapitator:
     """
         Strip everything outside of <body> from an HTML document;
@@ -84,9 +83,11 @@ class HTMLDecapitator:
 
     def filterText( self, text_info='' ):
 
-        text = _ensureTextInfo( text_info )()
+        text_info = _ensureTextInfo( text_info )
+        result = _makeTextInfo( text_info )
 
-        result = _makeTextInfo( _bodyfinder( text ) )
+        text = text_info()
+        result.setText( _bodyfinder( text ) )
 
         parser = _SimpleHTMLParser()
         parser.feed( text )
@@ -104,13 +105,15 @@ class STXDecapitator:
     """
     __implements__ = TextFilter
 
-
     def filterText( self, text_info='' ):
 
-        text = _ensureTextInfo( text_info )()
+        text_info = _ensureTextInfo( text_info )
+        result = _makeTextInfo( text_info )
+
+        text = text_info()
 
         headers, body = _parseSTXHeadersBody( text )
-        result = _makeTextInfo( body )
+        result.setText( body )
 
         result[ 'metadata' ] = headers
 
@@ -119,11 +122,39 @@ class STXDecapitator:
     __call__ = filterText
 
 
+class ParagraphInserter:
+    """
+        Convert "plain" text to paragraph-separated HTML.
+    """
+    __implements__ = TextFilter
+
+    def filterText( self
+                  , text_info=''
+                  , DOUBLE_NEWLINE=re.compile( r'\n\n' )
+                  ):
+        text_info = _ensureTextInfo( text_info )
+        result = _makeTextInfo( text_info )
+
+        graphs = []
+        for graph in DOUBLE_NEWLINE.split( text_info() ):
+
+            while graph and graph[-1] == '\n':
+                graph = graph[ :-1 ]
+
+            graph = '<p>%s</p>' % graph
+            graphs.append( graph )
+
+        result.setText( join( graphs, '\n' ) )
+
+        return result
+
+    __call__ = filterText
+
 #
 #   Helper functions & classes
 #
 from sgmllib import SGMLParser
-from string import join, split, capitalize   # XXX: WAAAA!  2.3 compatibility
+from string import join, capitalize   # XXX: WAAAA!  2.3 compatibility
 
 
 def _makeTextInfo( text_or_info ):
@@ -171,7 +202,6 @@ class _SimpleHTMLParser(SGMLParser):
         self.savedata = None
         self.title = ''
         self.metatags = {}
-        self.body = ''
         self.links = []
 
     def handle_data(self, data):
@@ -291,17 +321,22 @@ def _parseSTXHeadersBody( body
 
     hdrlist = []
     for line in lines:
+
         if line and line[-1] == '\r':
             line = line[:-1]
+
         if not line:
             break
+
         tokens = COLON_SPLIT.split( line )
+
         if len( tokens ) > 1:
             hdrlist.append( ( capitalize( tokens[0] )
                             , join( tokens[1:], ': ' )
                             ) )
         elif i == 0:
             return headers, body     # no headers, just return those passed in.
+
         else:    # continuation
             last, hdrlist = hdrlist[ -1 ], hdrlist[ :-1 ]
             hdrlist.append( ( last[ 0 ]
