@@ -835,7 +835,7 @@ wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
             Py_DECREF(res);
             return 0;
         }
-        return PyObject_SetItem(Proxy_GET_OBJECT(self), key, value);
+        return PyObject_SetItem(wrapped, key, value);
     }
 }
 

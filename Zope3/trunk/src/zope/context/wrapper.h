@@ -66,11 +66,11 @@ Wrapper_Import(void)
 }
 
 #define WrapperType                       \
-        (_wrapper_api->wrappertype)
+        (*_wrapper_api->wrappertype)
 #define ContextDescriptorType             \
-        (_wrapper_api->contextdescriptortype)
+        (*_wrapper_api->contextdescriptortype)
 #define ContextAwareType                  \
-        (_wrapper_api->contextawaretype)
+        (*_wrapper_api->contextawaretype)
 #define Wrapper_Check(obj)                   \
         (_wrapper_api->check((obj)))
 #define Wrapper_New(object, context)         \
