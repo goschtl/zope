@@ -48,8 +48,9 @@ def main():
         os.path.exists('products.zcml.in')):
         print 'Copying products.zcml.in to products.zcml'
         open('products.zcml', 'w').write(open('products.zcml.in').read())
+    srcdir = os.path.join(os.getcwd(), "lib/python")
     setup_dirs = []
-    os.path.walk(os.getcwd(), visit, setup_dirs)
+    os.path.walk(srcdir, visit, setup_dirs)
     args = sys.argv[1:]
     if not args:
         args = ['clean']
