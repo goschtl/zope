@@ -16,7 +16,7 @@
 $Id$
 """
 
-class ConnectionStub:
+class ConnectionStub(object):
 
     def __init__(self):
         self._called={}
@@ -36,11 +36,11 @@ class ConnectionStub:
         v+=1
         self._called['rollback']=v
 
-class CursorStub:
+class CursorStub(object):
     def execute(*args, **kw):
         pass
 
-class TypeInfoStub:
+class TypeInfoStub(object):
     paramstyle = 'pyformat'
     threadsafety = 0
     def getConverter(self, type):

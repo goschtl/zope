@@ -67,7 +67,7 @@ def test_providedBy_iter_w_new_style_class():
 
 def test_providedBy_iter_w_classic_class():
     """
-    >>> class X:
+    >>> class X(object):
     ...   implements(I3)
 
     >>> x = X()
@@ -84,7 +84,7 @@ def test_providedBy_iter_w_classic_class():
     """
 
 
-class Thing:
+class Thing(object):
     pass
 
 def test_SecurityCheckerDescriptor():
@@ -95,7 +95,7 @@ def test_SecurityCheckerDescriptor():
     >>> class MyDecorator(Decorator):
     ...     __Security_checker__ = DecoratedSecurityCheckerDescriptor()
 
-    >>> class Foo:
+    >>> class Foo(object):
     ...     a = 1
     ...     b = 2
     ...     c = 3

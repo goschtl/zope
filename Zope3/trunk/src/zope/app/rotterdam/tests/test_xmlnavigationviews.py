@@ -31,7 +31,7 @@ from zope.app.rotterdam.xmlobject import XmlObjectView
 
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 
-class File:
+class File(object):
     pass
 
 class TestXmlObject(PlacefulSetup, TestCase):

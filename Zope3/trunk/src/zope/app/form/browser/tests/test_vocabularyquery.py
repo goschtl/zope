@@ -39,7 +39,7 @@ def provideMultiView(for_, factory, providing, name='', layer="default"):
 
 _marker = object()
 
-class SampleContent:
+class SampleContent(object):
     """Stub content object used by makeField()."""
     def __init__(self, value):
         self.f = value
@@ -56,7 +56,7 @@ class ISampleVocabularyQuery(IVocabularyQuery):
     """Specialized query type."""
 
 
-class SampleVocabularyQuery:
+class SampleVocabularyQuery(object):
     """Vocabulary query object which query views can be registered for."""
 
     implements(ISampleVocabularyQuery)

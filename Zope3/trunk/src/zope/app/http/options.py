@@ -13,8 +13,6 @@
 
 $Id$
 """
-__metaclass__ = type
-
 _allowed_methods = ['PUT', 'DELETE', 'CONNECT', \
            'OPTIONS', 'PATCH', 'PROPFIND', 'PROPPATCH', 'MKCOL', \
            'COPY', 'MOVE', 'LOCK', 'UNLOCK', 'TRACE']
@@ -22,7 +20,7 @@ _allowed_methods = ['PUT', 'DELETE', 'CONNECT', \
 
 from zope.component import queryView
 
-class OPTIONS:
+class OPTIONS(object):
     """OPTIONS handler for all objects
     """
 

@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Custom Widgets for the rotterdam layer.
+
 $Id$
 """
-__metaclass__ = type
-
 from zope.interface import implements
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextAreaWidget

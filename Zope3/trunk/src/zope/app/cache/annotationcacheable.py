@@ -24,7 +24,7 @@ from zope.app.cache.interfaces import ICacheable, ICache
 
 annotation_key = 'zope.app.cache.CacheManager'
 
-class AnnotationCacheable:
+class AnnotationCacheable(object):
     """Stores cache information in object's annotations."""
 
     implements(ICacheable)

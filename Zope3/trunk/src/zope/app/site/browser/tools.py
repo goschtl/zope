@@ -68,7 +68,7 @@ class IUtilityToolView(IToolView):
     interface = Attribute("Interface the utility provides.")
 
 
-class ToolsOverview:
+class ToolsOverview(object):
     def getTools(self):
         tools = []
         for n, iface in zapi.getUtilitiesFor(IToolType):
@@ -81,7 +81,7 @@ class ToolsOverview:
         tools.sort(lambda x, y: cmp(x['title'], y['title']))
         return tools
 
-class ToolsBacklink:
+class ToolsBacklink(object):
     def getLink(self):
         service = zapi.getService(Services)
         iface = zapi.queryType(self.context, IToolType)

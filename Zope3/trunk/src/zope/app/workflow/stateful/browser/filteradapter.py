@@ -21,10 +21,7 @@ from zope.app.workflow.interfaces import IProcessInstanceContainer
 
 from interfaces import IContentFilterAdapter
 
-__metaclass__ = type
-
-
-class FilterAdapter:
+class FilterAdapter(object):
     
     __used_for__ = IProcessInstanceContainerAdaptable
     implements(IContentFilterAdapter)

@@ -24,7 +24,7 @@ from zope.app.schema.vocabulary import ZopeVocabularyRegistry
 import zope.app.schema
 
 
-class MyFactory:
+class MyFactory(object):
     def __init__(self, context, **kw):
         self.ob = context
         self.kw = kw

@@ -22,7 +22,7 @@ from zope.app.interpreter.interfaces import IInterpreter
 from zope.interface import implements
 from zope.security.interpreter import RestrictedInterpreter
 
-class PythonInterpreter:
+class PythonInterpreter(object):
 
     implements(IInterpreter)
 

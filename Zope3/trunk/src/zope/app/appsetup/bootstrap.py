@@ -44,7 +44,7 @@ from zope.app.utility import UtilityRegistration, LocalUtilityService
 from zope.app.principalannotation import PrincipalAnnotationService
 
 
-class BootstrapSubscriberBase:
+class BootstrapSubscriberBase(object):
     """A startup event subscriber base class.
 
     Ensures the root folder and the service manager are created.

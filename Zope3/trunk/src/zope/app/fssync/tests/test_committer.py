@@ -208,12 +208,12 @@ class TestCommitterModule(TestBase):
         c.create_object(*args, **kw)
 
     def test_create_object_extra(self):
-        class TestContainer:
+        class TestContainer(object):
             # simulate AttrMapping
             def __setitem__(self, name, value):
                 self.name = name
                 self.value = value
-        class TestRoot:
+        class TestRoot(object):
             implements(IContainmentRoot, ITraverser)
             def traverse(self, *args):
                 pass

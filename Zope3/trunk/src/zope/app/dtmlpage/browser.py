@@ -15,9 +15,7 @@
 
 $Id$
 """
-__metaclass__ = type
-
-class DTMLPageEval:
+class DTMLPageEval(object):
 
     def index(self, REQUEST=None, **kw):
         """Call a Page Template"""

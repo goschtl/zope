@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.app.servicenames import ErrorLogging
 from zope.app.errorservice.interfaces import ILocalErrorReportingService
 
-class EditErrorLog:
+class EditErrorLog(object):
     __used_for__ = ILocalErrorReportingService
 
     def updateProperties(self, keep_entries, copy_to_zlog=None,

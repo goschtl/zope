@@ -35,11 +35,11 @@ from zope.app.securitypolicy.interfaces import IPrincipalPermissionMap
 from zope.app.securitypolicy.browser.principalpermissionview \
      import PrincipalPermissionView
 
-class DummyContext:
+class DummyContext(object):
     implements(IAttributeAnnotatable)
 
 
-class DummyAuthenticationService:
+class DummyAuthenticationService(object):
     implements(IAuthenticationService, ISimpleService)
 
     def __init__(self, principals):
@@ -52,7 +52,7 @@ class DummyAuthenticationService:
         return self.principals[principal_id]
 
 
-class DummyPrincipal:
+class DummyPrincipal(object):
     implements(IPrincipal)
 
     def __init__(self, id, title):
@@ -60,7 +60,7 @@ class DummyPrincipal:
         self.title = title
 
 
-class DummyAdapter:
+class DummyAdapter(object):
     implements(IPrincipalPermissionManager, IPrincipalPermissionMap)
 
     def __init__(self, context):
@@ -110,7 +110,7 @@ class DummyAdapter:
         except KeyError:
             return []
 
-class DummyPermission:
+class DummyPermission(object):
     implements(IPermission)
     
     def __init__(self, id, title):

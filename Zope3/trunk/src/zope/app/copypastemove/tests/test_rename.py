@@ -28,7 +28,7 @@ from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove import ObjectMover
 from zope.app.copypastemove import rename
 
-class File:
+class File(object):
     pass
 
 class RenameTest(PlacefulSetup, TestCase):

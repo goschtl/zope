@@ -15,12 +15,11 @@
 
 $Id$
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-class C:
+class C(object):
     pass
 
 class Test(PlacelessSetup, TestCase):

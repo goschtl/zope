@@ -23,7 +23,7 @@ from zope.exceptions.exceptionformatter import format_exception
 from zope.publisher.tests.httprequest import TestRequest
 
 
-class C1:
+class C1(object):
     def getAnErrorInfo(self):
         exc_info = None
         try:

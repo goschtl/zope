@@ -19,11 +19,11 @@ $Id$
 from zope.fssync.server.interfaces import IObjectDirectory, IObjectFile
 from zope.interface import implements
 
-class C1: "C1 Doc"
-class C2: "C2 Doc"
+class C1(object): "C1 Doc"
+class C2(object): "C2 Doc"
 
 
-class CDefaultAdapter:
+class CDefaultAdapter(object):
     """Default File-system representation for object
     """
     implements(IObjectFile)
@@ -46,7 +46,7 @@ class CDefaultAdapter:
     def setBody(self):
          pass
 
-class CDirAdapter:
+class CDirAdapter(object):
     """Directory Adapter
     """
 
@@ -67,7 +67,7 @@ class CDirAdapter:
     def contents(self):
         return []
 
-class CFileAdapter:
+class CFileAdapter(object):
     """File Adapter
     """
 

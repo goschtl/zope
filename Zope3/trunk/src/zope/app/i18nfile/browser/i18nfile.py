@@ -15,14 +15,11 @@
 
 $Id$
 """
-
 from urllib import quote
 from zope.i18n.negotiator import negotiator
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-__metaclass__ = type
-
-class I18nFileView:
+class I18nFileView(object):
 
     def __call__(self):
         """Call the File
@@ -41,7 +38,7 @@ class I18nFileView:
         return self.context.getData(language)
 
 
-class I18nFileEdit:
+class I18nFileEdit(object):
 
     name = 'editForm'
     title = _('Edit Form')

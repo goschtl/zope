@@ -145,7 +145,7 @@ class RAMCache(Persistent, Contained):
     _buildKey = staticmethod(_buildKey)
 
 
-class Storage:
+class Storage(object):
     """Storage.
 
     Storage keeps the count and does the aging and cleanup of cached

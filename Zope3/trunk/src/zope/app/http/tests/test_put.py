@@ -15,8 +15,6 @@
 
 $Id$
 """
-__metaclass__ = type
-
 from unittest import TestCase, TestSuite, makeSuite
 from StringIO import StringIO
 import zope.app.http.put
@@ -26,7 +24,7 @@ from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 
-class File:
+class File(object):
 
     implements(IWriteFile)
 
@@ -38,7 +36,7 @@ class File:
     def write(self, data):
         self.data = data
 
-class Container:
+class Container(object):
 
     implements(IWriteDirectory, IFileFactory)
 

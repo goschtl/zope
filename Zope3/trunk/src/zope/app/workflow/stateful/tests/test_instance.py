@@ -54,7 +54,7 @@ from zope.app.container.contained import contained
 from zope.app.utility import UtilityRegistration
 
 
-class ParticipationStub:
+class ParticipationStub(object):
 
     def __init__(self, principal):
         self.principal = principal
@@ -417,7 +417,7 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.assertEqual(pi.getOutgoingTransitions(), ['state1_state2'])
 
 
-class DummyTransition:
+class DummyTransition(object):
     def __init__(self, source, destination):
         self.sourceState = source
         self.destinationState = destination

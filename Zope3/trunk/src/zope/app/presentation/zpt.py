@@ -122,7 +122,7 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
 
 # Adapters for file-system emulation
 
-class ReadFile:
+class ReadFile(object):
 
     implements(IReadFile)
 
@@ -136,7 +136,7 @@ class ReadFile:
         return len(self.context.source)
 
 
-class WriteFile:
+class WriteFile(object):
 
     implements(IWriteFile)
 
@@ -147,7 +147,7 @@ class WriteFile:
         self.context.source = data
 
 
-class ZPTFactory:
+class ZPTFactory(object):
 
     implements(IFileFactory)
 

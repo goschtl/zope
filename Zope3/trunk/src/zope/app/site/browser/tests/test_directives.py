@@ -21,7 +21,7 @@ from zope.testing.doctestunit import DocTestSuite
 
 from zope.app.tests.placelesssetup import setUp, tearDown
 
-class FauxContext:
+class FauxContext(object):
     def __init__(self):
         self.actions = []
         self.info = 'info'

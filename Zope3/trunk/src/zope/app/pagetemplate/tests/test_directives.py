@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import unittest
 from cStringIO import StringIO
 
@@ -36,7 +35,7 @@ template = """<configure
    </configure>"""
 
 
-class Handler:
+class Handler(object):
     pass
 
 class Test(PlacelessSetup, unittest.TestCase):

@@ -15,8 +15,6 @@
 
 $Id$
 """
-__metaclass__ = type 
-
 import re
 from zope.interface import implements
 from zope.component import getService, createObject
@@ -24,16 +22,13 @@ from zope.app.rdb import queryForResults
 from zope.tales.interfaces import ITALESExpression
 from zope.tales.expressions import NAME_RE
 
-__metaclass__ = type
-
 _interp = re.compile(r'\$(%(n)s)|\${(%(n)s(?:/[^}]*)*)}' % {'n': NAME_RE})
 
 class NoConnectionSpecified(Exception):
     pass
 
-class SQLExpr:
-    """SQL Expression Handler class
-    """
+class SQLExpr(object):
+    """SQL Expression Handler class"""
     implements(ITALESExpression)
 
     def __init__(self, name, expr, engine):

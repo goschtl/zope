@@ -17,7 +17,7 @@ $Id$
 """
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-class Content:
+class Content(object):
     def getSomething(self):
         return 42
 

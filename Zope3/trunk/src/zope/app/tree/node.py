@@ -11,19 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A node in the treee
+"""A node in the tree
 
 $Id$
 """
-
 from zope.interface import implements
 from zope.app import zapi
 from zope.app.tree.interfaces import INode, IUniqueId, IChildObjects
 from zope.app.tree.interfaces import ITreeStateEncoder
 
-__metaclass__ = type
-
-class Node:
+class Node(object):
     """A tree node
 
     This object represents a node in the tree. It wraps the actual

@@ -11,14 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Database adapter stubs for testing.
+
 $Id$
 """
 import unittest
 from zope.app.rdb import ZopeDatabaseAdapter
 from zope.app.rdb import ZopeConnection
 
-class ConnectionStub:
+class ConnectionStub(object):
 
     def close(self):
         pass

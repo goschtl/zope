@@ -18,12 +18,12 @@ $Id$
 from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp
 
-class Engine:
+class Engine(object):
 
     def getTypes(self):
         return {}
 
-class Context:
+class Context(object):
 
     _engine = Engine()
 

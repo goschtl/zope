@@ -39,20 +39,20 @@ from zope.app.securitypolicy.browser.principalroleview import \
 class PrincipalRoleView(PrincipalRoleView, BrowserView):
     """Adding BrowserView to Utilities; this is usually done by ZCML."""
 
-class DummySetting:
+class DummySetting(object):
     def __init__(self, name):
         self._name = name
     def getName(self):
         return self._name
 
-class DummyManager:
+class DummyManager(object):
 
     implements(IPrincipalRoleManager)
 
     def getSetting(self, role, principal):
         return DummySetting('%r:%r' % (role, principal))
 
-class DummyAuthenticationService:
+class DummyAuthenticationService(object):
 
     implements(IAuthenticationService, ISimpleService)
 
@@ -62,7 +62,7 @@ class DummyAuthenticationService:
     def getPrincipals(self, name):
         return self._principals
 
-class DummyPrincipal:
+class DummyPrincipal(object):
     implements(IPrincipal)
 
     def __init__(self, id, title):

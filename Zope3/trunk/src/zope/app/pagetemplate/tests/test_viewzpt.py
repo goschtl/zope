@@ -27,14 +27,14 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 class I1(Interface):
     pass
 
-class C1:
+class C1(object):
     implements(I1)
 
-class InstanceWithContext:
+class InstanceWithContext(object):
     def __init__(self, context):
         self.context = context
 
-class InstanceWithoutContext:
+class InstanceWithoutContext(object):
     pass
 
 
@@ -72,7 +72,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
             type=IPresentationRequest,
             maker=ViewMaker)
 
-        class MyRequest:
+        class MyRequest(object):
             implements(IPresentationRequest)
             def getPresentationSkin(self):
                 return '' # default

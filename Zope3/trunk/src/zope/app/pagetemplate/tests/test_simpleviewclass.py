@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 
-class data: pass
+class data(object): pass
 
 class SimpleViewTestCase(unittest.TestCase):
 
@@ -40,7 +40,7 @@ class SimpleViewTestCase(unittest.TestCase):
         from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
         from zope.publisher.browser import TestRequest
 
-        class C: pass
+        class C(object): pass
 
         SimpleTestView = SimpleViewClass('testsimpleviewclass.pt', bases=(C, ))
 

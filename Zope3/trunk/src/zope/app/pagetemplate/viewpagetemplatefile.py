@@ -11,13 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-See ViewPageTemplateFile
+"""File-based page templates that can be used as methods on views.
 
 $Id$
 """
-__metaclass__ = type # All classes are new style when run with Python 2.2+
-
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.component import getView
 from zope.app.pagetemplate.engine import AppPT
@@ -52,7 +49,7 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile):
     def __get__(self, instance, type):
         return BoundPageTemplate(self, instance)
 
-class ViewMapper:
+class ViewMapper(object):
     def __init__(self, ob, request):
         self.ob = ob
         self.request = request
@@ -61,7 +58,7 @@ class ViewMapper:
         return getView(self.ob, name, self.request)
 
 
-class BoundPageTemplate:
+class BoundPageTemplate(object):
     def __init__(self, pt, ob):
         object.__setattr__(self, 'im_func', pt)
         object.__setattr__(self, 'im_self', ob)

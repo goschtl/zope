@@ -30,7 +30,7 @@ from zope.app.securitypolicy.securitymap import SecurityMap
 # we'll keep it as is, to prevent breaking on data:
 annotation_key = 'zopel.app.security.AnnotationPrincipalPermissionManager'
 
-class AnnotationPrincipalPermissionManager:
+class AnnotationPrincipalPermissionManager(object):
     """Mappings between principals and permissions."""
 
     implements(IPrincipalPermissionManager)

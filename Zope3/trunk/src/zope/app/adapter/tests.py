@@ -730,16 +730,16 @@ class IR0(zope.interface.Interface):
 class IR1(IR0):
     pass
 
-class R1:
+class R1(object):
     zope.interface.implements(IR1)
 
-class F0:
+class F0(object):
     zope.interface.implements(IF0)
 
-class F2:
+class F2(object):
     zope.interface.implements(IF2)
 
-class Registration:
+class Registration(object):
     name=u''
     with=()
     provided=zope.interface.Interface
@@ -768,7 +768,7 @@ class GlobalAdapterRegistry(AdapterRegistry):
 
 globalAdapterRegistry = GlobalAdapterRegistry()
 
-class TestStack:
+class TestStack(object):
     registration = None
     registrations = ()
 

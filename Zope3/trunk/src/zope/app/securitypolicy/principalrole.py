@@ -15,9 +15,6 @@
 
 $Id$
 """
-
-__metaclass__ = type
-
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
 
@@ -34,7 +31,7 @@ from zope.app.securitypolicy.role import checkRole
 
 annotation_key = 'zope.app.security.AnnotationPrincipalRoleManager'
 
-class AnnotationPrincipalRoleManager:
+class AnnotationPrincipalRoleManager(object):
     """Mappings between principals and roles."""
 
     implements(IPrincipalRoleManager)

@@ -11,20 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Define Zope\'s default interaction class
+"""Define Zope's default interaction class
 
 $Id$
 """
-
 import sets
 
 from zope.interface import implements
 from zope.security.interfaces import IInteraction
 
-__metaclass__ = type
-
-
-class Interaction:
+class Interaction(object):
     implements(IInteraction)
 
     def __init__(self):

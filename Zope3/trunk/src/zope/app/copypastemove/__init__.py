@@ -28,7 +28,7 @@ from zope.app.location.pickling import locationCopy
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.constraints import checkObject
 
-class ObjectMover:
+class ObjectMover(object):
     """Adapter for moving objects between containers
 
     To use an object mover, pass a contained object to the class.
@@ -117,7 +117,7 @@ class ObjectMover:
     ...     __setitem__.precondition = preNoZ
 
     >>> from zope.app.container.interfaces import IContainer
-    >>> class C1:
+    >>> class C1(object):
     ...     zope.interface.implements(I1, IContainer)
     ...     def __repr__(self):
     ...         return 'C1'
@@ -140,7 +140,7 @@ class ObjectMover:
     >>> class I2(zope.interface.Interface):
     ...     __parent__ = zope.schema.Field(constraint = con1)
     ...
-    >>> class constrainedObject:
+    >>> class constrainedObject(object):
     ...     zope.interface.implements(I2)
     ...     def __init__(self):
     ...         self.__name__ = 'constrainedObject'
@@ -206,7 +206,7 @@ class ObjectMover:
             return False
         return True
 
-class ObjectCopier:
+class ObjectCopier(object):
     """Adapter for copying objects between containers
 
     To use an object copier, pass a contained object to the class.
@@ -305,7 +305,7 @@ class ObjectCopier:
     ...     __setitem__.precondition = preNoZ
 
     >>> from zope.app.container.interfaces import IContainer
-    >>> class C1:
+    >>> class C1(object):
     ...     zope.interface.implements(I1, IContainer)
     ...     def __repr__(self):
     ...         return 'C1'
@@ -328,7 +328,7 @@ class ObjectCopier:
     >>> class I2(zope.interface.Interface):
     ...     __parent__ = zope.schema.Field(constraint = con1)
     ...
-    >>> class constrainedObject:
+    >>> class constrainedObject(object):
     ...     zope.interface.implements(I2)
     ...     def __init__(self):
     ...         self.__name__ = 'constrainedObject'
@@ -409,7 +409,7 @@ class ObjectCopier:
         return True
 
 
-class PrincipalClipboard:
+class PrincipalClipboard(object):
     '''Principal clipboard
 
     Clipboard information consists on tuples of

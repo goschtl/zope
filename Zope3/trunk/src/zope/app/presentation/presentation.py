@@ -491,7 +491,7 @@ def PageRegistrationRemoveSubscriber(self, event):
 # instances of this class; probably because of a difference in the
 # pickling protocol, we get an UnpicklingError if we simply make this
 # a newstyle class.
-class TemplateViewFactory:
+class TemplateViewFactory(object):
 
     def __init__(self, cls, template, permission):
         self.cls, self.template, self.permission = cls, template, permission

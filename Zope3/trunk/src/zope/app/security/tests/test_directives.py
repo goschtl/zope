@@ -81,7 +81,7 @@ def test_allow():
     The allow directive creates actions for each named defined
     directly, or via interface:
 
-    >>> class Context:
+    >>> class Context(object):
     ...     def __init__(self):
     ...         self.actions = []
     ...
@@ -139,7 +139,7 @@ def test_require():
     The allow directive creates actions for each named defined
     directly, or via interface:
 
-    >>> class Context:
+    >>> class Context(object):
     ...     def __init__(self):
     ...         self.actions = []
     ...

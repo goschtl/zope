@@ -25,11 +25,11 @@ from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.cache.interfaces import ICache
 
-class ObjectStub:
+class ObjectStub(object):
     implements(IAttributeAnnotatable)
 
 
-class CacheStub:
+class CacheStub(object):
     implements(ICache)
     def __init__(self):
         self.invalidated = []

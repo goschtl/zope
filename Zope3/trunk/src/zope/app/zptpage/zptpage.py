@@ -32,8 +32,6 @@ from zope.app import zapi
 
 from interfaces import IZPTPage, IRenderZPTPage
 
-__metaclass__ = type
-
 class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
     implements(IZPTPage, IRenderZPTPage)
@@ -97,7 +95,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
                       """Source of the Page Template.""")
 
 
-class Sized:
+class Sized(object):
 
     implements(ISized)
 
@@ -118,7 +116,7 @@ class Sized:
 
 # File-system access adapters
 
-class ZPTReadFile:
+class ZPTReadFile(object):
 
     implements(IReadFile)
 
@@ -131,7 +129,7 @@ class ZPTReadFile:
     def size(self):
         return len(self.read())
 
-class ZPTWriteFile:
+class ZPTWriteFile(object):
 
     implements(IWriteFile)
 
@@ -143,7 +141,7 @@ class ZPTWriteFile:
         # so use it.
         self.context.setSource(data.decode('UTF-8'), None)
 
-class ZPTFactory:
+class ZPTFactory(object):
 
     implements(IFileFactory)
 
@@ -158,7 +156,7 @@ class ZPTFactory:
         page.setSource(data.decode('UTF-8'), content_type or 'text/html')
         return page
 
-class ZPTSourceView:
+class ZPTSourceView(object):
 
     def __init__(self, context, request):
         self.context = context

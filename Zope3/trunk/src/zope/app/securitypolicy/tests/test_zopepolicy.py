@@ -48,16 +48,16 @@ from zope.app.securitypolicy.rolepermission \
     import AnnotationRolePermissionManager
 
 
-class RequestStub:
+class RequestStub(object):
     def __init__(self, principal, interaction=None):
         self.principal = principal
         self.interaction = interaction
 
-class Interaction:
+class Interaction(object):
     def __init__(self, user):
         self.participations = [RequestStub(user, self)]
 
-class Unprotected:
+class Unprotected(object):
     pass
 
 class Principal(PrincipalBase):
@@ -343,7 +343,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 class ITest(IAttributeAnnotatable):
     pass
 
-class TestClass:
+class TestClass(object):
     implements(ITest)
 
     __parent__ = None

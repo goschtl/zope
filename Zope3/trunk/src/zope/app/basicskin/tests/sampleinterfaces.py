@@ -11,16 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Fake Traverser with interfaces.
 
 $Id$
 """
-
 from zope.interface import Interface, implements
 
 from zope.app.traversing.interfaces import ITraverser
 
-class FakeTraverser:
+class FakeTraverser(object):
 
     implements(ITraverser)
 
@@ -33,8 +32,8 @@ class FakeTraverser:
 class I1(Interface): pass
 class I2(I1): pass
 
-class O1:
+class O1(object):
     implements(I1)
 
-class O2:
+class O2(object):
     implements(I2)

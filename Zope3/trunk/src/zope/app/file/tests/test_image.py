@@ -90,7 +90,7 @@ class TestFileAdapters(unittest.TestCase):
         FileWriteFile(file).write(content)
         self.assertEqual(file.data, content)
 
-class DummyImage:
+class DummyImage(object):
 
     def __init__(self, width, height, bytes):
         self.width = width

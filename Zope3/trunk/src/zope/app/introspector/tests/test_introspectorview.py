@@ -65,7 +65,7 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
     def test_update(self):
         from zope.app.introspector.browser import IntrospectorView
 
-        class Context:
+        class Context(object):
             implements(Interface)
 
         context = Context()

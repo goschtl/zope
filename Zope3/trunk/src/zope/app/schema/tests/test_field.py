@@ -29,7 +29,7 @@ from zope.security.checker import getChecker, _defaultChecker
 import zope.app.schema.tests
 
 
-class ParticipationStub:
+class ParticipationStub(object):
 
     def __init__(self, principal):
         self.principal = principal

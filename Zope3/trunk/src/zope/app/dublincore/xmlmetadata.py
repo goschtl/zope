@@ -37,7 +37,7 @@ DEFAULT_NAMESPACE_PREFIXES = {
     dcterms.XSI_NS:     "xsi",
     }
 
-class NamespaceTracker:
+class NamespaceTracker(object):
     def __init__(self, mapping=None):
         self._mapping = {}
         self._used = {}
@@ -135,7 +135,7 @@ def _setup_parser(error_handler):
     return parser, ch
 
 
-class PrefixManager:
+class PrefixManager(object):
     # We don't use this other than in the DublinCoreHandler, but it's
     # entirely general so we'll separate it out for now.
 

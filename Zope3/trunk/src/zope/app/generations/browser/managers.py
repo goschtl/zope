@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from zope.app import zapi
 from zope.app.generations.interfaces import ISchemaManager
 from zope.app.generations.generations import generations_key, Context
@@ -23,7 +22,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 
 request_key_format = "evolve-app-%s"
 
-class Managers:
+class Managers(object):
 
     def __init__(self, context, request):
         self.context = context
@@ -49,7 +48,7 @@ class Managers:
 
            We also need to give it a publication with a database:
 
-             >>> class Publication:
+             >>> class Publication(object):
              ...     pass
 
              >>> request.setPublication(Publication())
@@ -197,7 +196,7 @@ class Managers:
 
            We also need to give it a publication with a database:
 
-             >>> class Publication:
+             >>> class Publication(object):
              ...     pass
 
              >>> request.setPublication(Publication())

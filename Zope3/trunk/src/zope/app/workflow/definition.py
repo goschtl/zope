@@ -97,7 +97,7 @@ class ProcessDefinitionElementContainer(Persistent, Contained):
         return self.__parent__
 
 
-class ProcessDefinitionTerm:
+class ProcessDefinitionTerm(object):
     """A term representing the name of a process definition."""
     implements(ITokenizedTerm)
 
@@ -105,7 +105,7 @@ class ProcessDefinitionTerm:
         self.value = self.token = name
 
 
-class ProcessDefinitionVocabulary:
+class ProcessDefinitionVocabulary(object):
     """Vocabulary providing available process definition names."""
     implements(IVocabulary, IVocabularyTokenized)
 

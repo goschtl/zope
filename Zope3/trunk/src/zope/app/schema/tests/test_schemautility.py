@@ -25,7 +25,7 @@ from zope.app.tests import setup
 from zope.app import zapi
 import zope.app.schema.tests
 
-class ParticipationStub:
+class ParticipationStub(object):
 
     def __init__(self, principal):
         self.principal = principal

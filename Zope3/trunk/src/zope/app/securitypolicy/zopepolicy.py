@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Define Zope\'s default security policy
+"""Define Zope's default security policy
 
 $Id$
 """
@@ -39,7 +39,7 @@ getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 globalContext = object()
 
 
-class ZopeSecurityPolicy:
+class ZopeSecurityPolicy(object):
     implements(ISecurityPolicy)
 
     def __init__(self, ownerous=True, authenticated=True):

@@ -31,7 +31,7 @@ class ITestContact(Interface):
     name = TextLine()
     email = TextLine()
     
-class TestContact:
+class TestContact(object):
     implements(ITestContact)
 
 class ObjectWidgetTest(BrowserWidgetTest):
@@ -55,7 +55,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
                     title=title,
                     description=desc
                     )
-        class TestObject:
+        class TestObject(object):
             implements(ITestContent)
 
         self.content = TestObject()

@@ -13,11 +13,9 @@
 
 $Id$
 """
-__metaclass__ = type
-
 from zope.app.filerepresentation.interfaces import IWriteDirectory
 
-class DELETE:
+class DELETE(object):
     """Delete handler for all objects
     """
 

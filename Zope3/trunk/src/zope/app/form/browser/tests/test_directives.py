@@ -59,7 +59,7 @@ class Schema(Interface):
 
 class IC(Schema): pass
 
-class Ob:
+class Ob(object):
     implements(IC)
 
 ob = Ob()

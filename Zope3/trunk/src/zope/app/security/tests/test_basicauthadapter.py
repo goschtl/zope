@@ -11,11 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test Basic Authentication Adapter
+
+$Id$
+"""
 import unittest
 
 from zope.app.security.basicauthadapter import BasicAuthAdapter
 
-class Request:
+class Request(object):
 
     def __init__(self, lpw):
         self.lpw = lpw

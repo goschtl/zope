@@ -15,8 +15,6 @@
 
 $Id$
 """
-__metaclass__ = type
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
 from zope.app.traversing.api import traverse

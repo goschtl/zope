@@ -188,7 +188,7 @@ class PageFolderAdapter(ObjectEntryAdapter):
         return AttrMapping(self.context, _attrNames)
 
 
-class PageFolderFactory:
+class PageFolderFactory(object):
 
     implements(IDirectoryFactory)
 

@@ -27,9 +27,7 @@ from zope.app.tests import ztapi
 from zope.app.rdb.tests.stubs import ConnectionStub
 from zope.app.sqlexpr.sqlexpr import SQLExpr, NoConnectionSpecified
 
-__metaclass__ = type
-
-class ConnectionStub:
+class ConnectionStub(object):
 
     def __init__(self):
         self._called = {}
@@ -50,7 +48,7 @@ class ConnectionStub:
         v += 1
         self._called['rollback'] = v
 
-class CursorStub:
+class CursorStub(object):
 
     description = (('id', 0, 0, 0, 0, 0, 0),
                    ('name', 0, 0, 0, 0, 0, 0),
@@ -65,14 +63,14 @@ class CursorStub:
         assert operation == 'SELECT num FROM hitchhike'
 
 
-class TypeInfoStub:
+class TypeInfoStub(object):
     paramstyle = 'pyformat'
     threadsafety = 0
     def getConverter(self, type):
         return lambda x: x
 
 
-class FactoryStub:
+class FactoryStub(object):
     implements(IFactory)
 
     title = ''

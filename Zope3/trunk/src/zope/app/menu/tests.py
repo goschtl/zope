@@ -40,7 +40,7 @@ class I1(Interface): pass
 class I12(I1): pass
 class I11(I1): pass
 
-class TestObject:
+class TestObject(object):
     implements(IBrowserPublisher, I11)
 
     def f(self):

@@ -33,6 +33,7 @@ from zope.interface import Interface
 class IFoo(Interface):
     pass
 
+# This must be a classobj
 class Foo:
     __implemented__ = IFoo
 
@@ -55,7 +56,7 @@ class PersistentInterfaceTest(unittest.TestCase):
         class IFoo(PersistentInterface):
             pass
 
-        class Foo:
+        class Foo(object):
             implements(IFoo)
 
         self.assert_(IFoo.providedBy(Foo()))

@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Security Checker tests
+
 $Id$
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import implements
 from zope.interface.verify import verifyObject
@@ -29,16 +29,14 @@ from zope.security.checker import defineChecker, ProxyFactory
 from zope.security.proxy import Proxy
 import types, pickle
 
-__metaclass__ = type
-
-class SecurityPolicy:
+class SecurityPolicy(object):
     implements(ISecurityPolicy)
 
     def checkPermission(self, permission, object, interaction):
         'See ISecurityPolicy'
         return permission == 'test_allowed'
 
-class RecordedSecurityPolicy:
+class RecordedSecurityPolicy(object):
     implements(ISecurityPolicy)
 
     def __init__(self):
@@ -55,7 +53,7 @@ class RecordedSecurityPolicy:
         self._checked = []
         return res
 
-class TransparentProxy:
+class TransparentProxy(object):
     def __init__(self, ob):
         self._ob = ob
 

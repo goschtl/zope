@@ -157,7 +157,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             '-->Foo\n')
 
 
-class DummyZPT:
+class DummyZPT(object):
 
     def __init__(self, source):
         self.source = source

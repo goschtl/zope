@@ -22,7 +22,7 @@ from zope.interface import implements
 from zope.app.form.interfaces import IWidgetInputError
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
-class WidgetInputErrorView:
+class WidgetInputErrorView(object):
     """Display an input error as a snippet of text."""
     implements(IWidgetInputErrorView)
 
@@ -35,7 +35,7 @@ class WidgetInputErrorView:
         """Convert a widget input error to an html snippet
 
         >>> from zope.app.form.interfaces import WidgetInputError
-        >>> class TooSmallError:
+        >>> class TooSmallError(object):
         ...     def doc(self):
         ...         return "Foo input < 1"
         >>> err = WidgetInputError("foo", "Foo", TooSmallError())

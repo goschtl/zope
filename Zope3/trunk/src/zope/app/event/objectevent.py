@@ -15,9 +15,6 @@
 
 $Id$
 """
-
-__metaclass__ = type
-
 from zope.app.event.interfaces import IObjectEvent, IObjectCreatedEvent
 from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.event.interfaces import IObjectCopiedEvent
@@ -29,7 +26,7 @@ from zope.component import subscribers
 
 _marker = object()
 
-class ObjectEvent:
+class ObjectEvent(object):
     """Something has happened to an object"""
 
     implements(IObjectEvent)

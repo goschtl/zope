@@ -31,7 +31,7 @@ from zope.interface import implements
 class TestAnnotations(dict):
     implements(IAnnotations)
 
-class DummyInstance:
+class DummyInstance(object):
     pass
 
 

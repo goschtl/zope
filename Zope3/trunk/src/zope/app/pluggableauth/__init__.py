@@ -193,7 +193,7 @@ def PluggableAuthenticationServiceAddSubscriber(self, event):
     Define a stub for PluggableAuthenticationService
 
     >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
-    >>> class PluggableAuthStub:
+    >>> class PluggableAuthStub(object):
     ...     implements(IPhysicallyLocatable)
     ...     def __init__(self, earmark=None):
     ...         self.earmark = earmark
@@ -570,7 +570,7 @@ class SimplePrincipal(Persistent, Contained):
         """
         return test_password == self.password
 
-class PrincipalAuthenticationView:
+class PrincipalAuthenticationView(object):
     """Simple basic authentication view
 
     This only handles requests which have basic auth credentials

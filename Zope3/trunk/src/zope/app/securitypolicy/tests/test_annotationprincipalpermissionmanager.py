@@ -31,7 +31,7 @@ from zope.app.security.permission import Permission
 from zope.app.securitypolicy.principalpermission \
     import AnnotationPrincipalPermissionManager
 
-class Manageable:
+class Manageable(object):
     implements(IAttributeAnnotatable)
 
 class Test(PlacelessSetup, unittest.TestCase):

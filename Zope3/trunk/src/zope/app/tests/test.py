@@ -466,7 +466,7 @@ def club_debug(test):
         club_debug(subtest)
 
 # setup list of directories to put on the path
-class PathInit:
+class PathInit(object):
     def __init__(self, build, build_inplace, libdir=None):
         self.inplace = None
         # Figure out if we should test in-place or test in-build.  If the -b
@@ -515,7 +515,7 @@ def match(rxlist, s):
             return True
     return False
 
-class TestFileFinder:
+class TestFileFinder(object):
     def __init__(self, prefix):
         self.files = []
         self._plen = len(prefix)
@@ -619,7 +619,7 @@ def package_import(modname):
     __import__(modname)
     return sys.modules[modname]
 
-class PseudoTestCase:
+class PseudoTestCase(object):
     """Minimal test case objects to create error reports.
 
     If test.py finds something that looks like it should be a test but
@@ -679,7 +679,7 @@ def gui_runner(files, test_filter):
     minimal = (GUI == "minimal")
     unittestgui.main(suites, minimal)
 
-class TrackRefs:
+class TrackRefs(object):
     """Object to track reference counts across test runs."""
 
     def __init__(self):

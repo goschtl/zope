@@ -12,13 +12,15 @@
 #
 ##############################################################################
 """Provide persistent wrappers for objects that cannot derive from
-persistence for some reason."""
+persistence for some reason.
 
+$Id$
+"""
 from persistent import Persistent, GHOST
 from zope.interface import implementedBy
 from zope.security.checker import selectChecker
 
-class SecurityDescriptor:
+class SecurityDescriptor(object):
     """ SecurityDescriptor is used by Struct to return the
     checker for the proxied object when its an instance,
     and return the checker for the Struct class, when its a class
@@ -41,7 +43,7 @@ class SecurityDescriptor:
                 inst._p_activate()
             return selectChecker(inst.__proxied__)
 
-class ClassDescriptor:
+class ClassDescriptor(object):
     """ ClassDescriptor is used by Struct to return the
     real class for Struct when a class is being used, and return
     the proxied object's class when its an instance.

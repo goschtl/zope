@@ -24,7 +24,7 @@ from zope.i18n.tests.test_imessagecatalog import TestIMessageCatalog
 
 
 # This is a mixin class -- don't add it to the suite
-class TestILocalMessageCatalog:
+class TestILocalMessageCatalog(object):
 
     # This should be overwritten by every class that inherits this test
     def _getMessageCatalog(self):

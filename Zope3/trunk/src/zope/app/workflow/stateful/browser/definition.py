@@ -15,8 +15,6 @@
 
 $Id$
 """
-__metaclass__ = type
-
 from zope.app import zapi
 from zope.proxy import removeAllProxies
 from zope.app.publisher.browser import BrowserView
@@ -46,7 +44,7 @@ class TransitionsContainerAdding(Adding):
 
 
 # TODO: Temporary ...
-class StateAddFormHelper:
+class StateAddFormHelper(object):
     # Hack to prevent from displaying an empty addform
     def __call__(self, template_usage=u'', *args, **kw):
         if not len(self.fieldNames):

@@ -30,7 +30,7 @@ from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.principalrole import AnnotationPrincipalRoleManager
 
-class Manageable:
+class Manageable(object):
     implements(IAttributeAnnotatable)
 
 def defineRole(id, title=None, description=None):

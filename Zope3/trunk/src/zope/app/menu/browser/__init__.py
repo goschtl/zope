@@ -52,7 +52,7 @@ class MenuContents(Contents):
         return info
 
 
-class BrowserMenuServiceOverview:
+class BrowserMenuServiceOverview(object):
 
     def getLocalMenus(self):
         menus_info = []

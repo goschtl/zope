@@ -44,7 +44,7 @@ from zope.app.sqlscript.interfaces import ISQLScript
 def getLocalServices(context):
     return sm
 
-class CursorStub:
+class CursorStub(object):
 
     implements(IZopeCursor)
 
@@ -66,14 +66,14 @@ class CursorStub:
 
 
 
-class ConnectionStub:
+class ConnectionStub(object):
     implements(IZopeConnection)
 
     def cursor(self):
         return CursorStub()
 
 
-class ConnectionUtilityStub:
+class ConnectionUtilityStub(object):
     implements(IZopeDatabaseAdapter)
 
     def __init__(self):
@@ -82,14 +82,14 @@ class ConnectionUtilityStub:
     def __call__(self):
         return  self.connection
 
-class ConnectionServiceStub:
+class ConnectionServiceStub(object):
     implements(IConnectionService, ISimpleService)
 
     def getConnection(self, name):
         return ConnectionStub()
 
 
-class CacheStub:
+class CacheStub(object):
     implements(ICache)
     def __init__(self):
         self.cache = {}
@@ -109,7 +109,7 @@ class CacheStub:
         return self.cache.get((obj, keywords), default)
 
 
-class LocatableStub:
+class LocatableStub(object):
 
     implements(IPhysicallyLocatable)
 

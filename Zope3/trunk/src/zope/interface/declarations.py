@@ -26,7 +26,6 @@ There are three flavors of declarations:
 
 $Id$
 """
-
 import sys
 import weakref
 from zope.interface.interface import InterfaceClass, Specification
@@ -37,9 +36,6 @@ from zope.interface.advice import addClassAdvisor
 
 # Registry of class-implementation specifications 
 BuiltinImplementationSpecifications = {}
-
-
-__metaclass__ = type
 
 class Declaration(Specification):
     """Interface declarations

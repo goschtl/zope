@@ -22,14 +22,12 @@ from zope.documenttemplate.dt_util import ParseError, parse_params, name_param
 
 from interfaces import MissingInput
 
-__metaclass__ = type
-
 valid_type = {'int':    True,
               'float':  True,
               'string': True,
               'nb':     True}.has_key
 
-class SQLTest:
+class SQLTest(object):
     name = 'sqltest'
     optional = multiple = None
 
@@ -136,7 +134,7 @@ comparison_operators = { 'eq': '=', 'ne': '<>',
                          'gt': '>', 'ge': '>=', 'gte': '>=' }
 
 
-class SQLGroup:
+class SQLGroup(object):
     blockContinuations = 'and', 'or'
     name = 'sqlgroup'
     required = None
@@ -182,7 +180,7 @@ class SQLGroup:
     __call__ = render
 
 
-class SQLVar:
+class SQLVar(object):
     name = 'sqlvar'
 
     # Some defaults

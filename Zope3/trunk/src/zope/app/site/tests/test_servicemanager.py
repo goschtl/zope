@@ -33,7 +33,7 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 class ITestService(Interface):
     pass
 
-class TestService:
+class TestService(object):
     implements(ITestService, IAttributeAnnotatable)
 
 class ServiceManagerTests(PlacefulSetup, TestCase):

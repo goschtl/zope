@@ -26,7 +26,7 @@ from zope.app.location.interfaces import ILocation
 
 _marker = object()
 
-class SchemaFieldTraverser:
+class SchemaFieldTraverser(object):
     implements(IBrowserPublisher)
     __used_for__ = IMutableSchema
 
@@ -57,7 +57,7 @@ class SchemaFieldTraverser:
         view_uri = "@@%s" % view_name
         return c, (view_uri,)
 
-class SchemaFieldTraversable:
+class SchemaFieldTraversable(object):
     """Traverses Schema Fields.
     """
 

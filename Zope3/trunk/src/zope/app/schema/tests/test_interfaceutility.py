@@ -41,7 +41,7 @@ from zope.interface import Interface
 
 class IBaz(Interface): pass
 
-class Baz:
+class Baz(object):
     # We implement IRegistered and IDependable directly to
     # depend as little  as possible on other infrastructure.
     implements(IBaz, ILocalUtility, IRegistered, IDependable)

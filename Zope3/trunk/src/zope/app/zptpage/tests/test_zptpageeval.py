@@ -24,14 +24,14 @@ class Test(CleanUp, TestCase):
 
     def testTemplateRendering(self):
 
-        class Template:
+        class Template(object):
             def render(self, request, **kw):
                 self.called = request, kw
                 return 42
 
             content_type = 'text/x-test'
 
-        class Folder:
+        class Folder(object):
             name='zope'
         folder = Folder()
 

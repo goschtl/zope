@@ -29,7 +29,7 @@ from zope.interface import Interface
 from zope.configuration import xmlconfig
 
 
-class ParticipationStub:
+class ParticipationStub(object):
 
     def __init__(self, principal):
         self.principal = principal

@@ -29,7 +29,7 @@ class ITestClass(Interface):
     def drool():
         """...drool..."""
 
-class BaseTestClass:
+class BaseTestClass(object):
     """This is stupid base class"""
     pass
 
@@ -57,7 +57,7 @@ class I3(I, I2):
     def two(param1, param2):
         """method two"""
 
-class WeirdClass:
+class WeirdClass(object):
     def namesAndDescriptions(self):
         return "indeed"
 
@@ -185,7 +185,7 @@ class M3(I3): pass
 
 class M4(I4): pass
 
-class Content:
+class Content(object):
     implements(I3)
 
     def one(self, a): pass

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Test handler for 'protectClass' directive
+"""Test handler for 'protectClass' directive
 
 $Id$
 """
@@ -40,7 +40,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         ztapi.provideUtility(IPermission, Permission(P1), P1)
         ztapi.provideUtility(IPermission, Permission(P2), P2)
 
-        class B:
+        class B(object):
             def m1(self):
                 return "m1"
             def m2(self):

@@ -11,19 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test tree node code.
+
 $Id$
 """
-
 import unittest
 from basetest import BaseTestCase
 from zope.interface import implements
 from zope.app.container.interfaces import IObjectFindFilter
 from zope.app.tree.node import Node
 
-__metaclass__ = type
-
-class FilterByObject:
+class FilterByObject(object):
     """Simple filter that filters out any objects that wasn't passed
     in as a valid object before
     """

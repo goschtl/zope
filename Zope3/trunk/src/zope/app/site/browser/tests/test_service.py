@@ -25,7 +25,7 @@ from zope.testing.doctestunit import DocTestSuite
 class IFoo(Interface):
     pass
 
-class Foo:
+class Foo(object):
     implements(IFoo)
     def __init__(self, url='some_url'):
         self.url = url
@@ -35,7 +35,7 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
     def test_nextURL(self):
         from zope.app.site.browser import ComponentAdding
 
-        class AU:
+        class AU(object):
             def __init__(self, context, request):
                 self.context = context
             def __str__(self):

@@ -19,9 +19,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.size.interfaces import ISized
 from zope.interface import implements
 
-__metaclass__ = type
-
-class DefaultSized:
+class DefaultSized(object):
     implements(ISized)
 
     def __init__(self, obj):

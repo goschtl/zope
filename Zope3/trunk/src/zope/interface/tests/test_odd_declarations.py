@@ -18,7 +18,6 @@ classic ExtensionClass classes and instances.
 
 $Id$
 """
-
 import unittest, odd
 from zope.interface import Interface, implements, implementsOnly
 from zope.interface import directlyProvides, providedBy, directlyProvidedBy

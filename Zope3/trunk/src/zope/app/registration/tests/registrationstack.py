@@ -20,8 +20,6 @@ from zope.app.container.contained import Contained
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 import zope.interface
 
-__metaclass__ = type
-
 class TestingRegistration(Contained):
     zope.interface.implements(IPhysicallyLocatable)
 

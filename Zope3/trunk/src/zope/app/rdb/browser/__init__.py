@@ -20,7 +20,7 @@ from zope.proxy import removeAllProxies
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app.rdb import queryForResults
 
-class TestSQL:
+class TestSQL(object):
 
     __used_for__ = IZopeDatabaseAdapter
 
@@ -31,7 +31,7 @@ class TestSQL:
         return result
 
 
-class Connection:
+class Connection(object):
     __used_for__ = IZopeDatabaseAdapter
 
     def edit(self, dsn):

@@ -28,7 +28,7 @@ from transaction import get_transaction
 class ITestService(Interface):
     pass
 
-class TestService:
+class TestService(object):
 
     implements(ITestService)
 
@@ -38,7 +38,7 @@ NAME = 'zope.app.module.tests.sample1'
 called = 0
 
 SOURCE = """\
-class C:
+class C(object):
     def __init__(self, v):
         self.ini = v
 

@@ -27,10 +27,10 @@ from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.caching import getCacheForObject
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 
-class ObjectStub:
+class ObjectStub(object):
     implements(IAttributeAnnotatable)
 
-class CacheStub:
+class CacheStub(object):
     implements(ICache)
 
 class Test(PlacelessSetup, unittest.TestCase):

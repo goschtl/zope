@@ -25,7 +25,7 @@ from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.size.interfaces import ISized
 
-class DAVSchemaAdapter:
+class DAVSchemaAdapter(object):
     """An adapter for all content objects that provides the basic DAV
     schema/namespace."""
     implements(IDAVSchema)

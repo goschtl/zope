@@ -34,7 +34,7 @@ from zope.app.i18n.translationdomain import TranslationDomain
 from zope.app.i18n.filters import GettextImportFilter, GettextExportFilter
 
 
-class Environment:
+class Environment(object):
 
     implements(IUserPreferredLanguages)
 

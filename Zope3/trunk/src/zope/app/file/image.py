@@ -27,8 +27,6 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from file import File
 from interfaces import IImage
 
-__metaclass__ = type
-
 class Image(File):
     implements(IImage)
 
@@ -50,7 +48,7 @@ class Image(File):
 
     data = property(File._getData, _setData)
 
-class ImageSized:
+class ImageSized(object):
     implements(ISized)
 
     def __init__(self, image):
@@ -75,7 +73,7 @@ class ImageSized:
         size.mapping = mapping 
         return size
 
-class FileFactory:
+class FileFactory(object):
 
     def __init__(self, context):
         self.context = context

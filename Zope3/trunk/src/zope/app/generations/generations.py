@@ -98,7 +98,7 @@ class SchemaManager(object):
 
         evolver.evolve(context)
 
-class Context:
+class Context(object):
     pass
 
 def findManagers():
@@ -120,7 +120,7 @@ def evolve(db, how=EVOLVE):
     Here's an example (silly) schema manager:
 
       >>> from zope.app.generations.interfaces import ISchemaManager
-      >>> class FauxApp:
+      >>> class FauxApp(object):
       ...     zope.interface.implements(ISchemaManager)
       ...
       ...     erron = None # Raise an error is asked to evolve to this

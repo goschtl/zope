@@ -11,11 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test ISized Adapter
+
+$Id$
+"""
 import unittest
 
 from zope.app.size.interfaces import ISized
 
-class DummyObject:
+class DummyObject(object):
 
     def __init__(self, size):
         self._size = size

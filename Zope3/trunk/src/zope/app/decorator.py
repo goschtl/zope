@@ -45,7 +45,7 @@ class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
     >>> class D2(Decorator):
     ...   implements(I2)
 
-    >>> class X:
+    >>> class X(object):
     ...   implements(I3)
 
     >>> x = X()

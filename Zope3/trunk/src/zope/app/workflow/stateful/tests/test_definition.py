@@ -28,14 +28,14 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 class IDummyState(Interface):
     """A really dummy state"""
 
-class DummyState:
+class DummyState(object):
     implements(IDummyState)
 
 
 class IDummyTransition(Interface):
     """A really dummy transition"""
 
-class DummyTransition:
+class DummyTransition(object):
     implements(IDummyTransition)
 
 

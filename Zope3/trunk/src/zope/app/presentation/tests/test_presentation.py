@@ -76,7 +76,7 @@ class I4(Interface):
     pass
 
 
-class Registration:
+class Registration(object):
     required = I1
     requestType = I2
     name = 'test'
@@ -93,9 +93,9 @@ class Registration:
     def __repr__(self):
         return 'Registration(%s)' % self.factory.__name__
 
-class C: pass
+class C(object): pass
 
-class PhonyTemplate:
+class PhonyTemplate(object):
     __name__ = __parent__ = None
     implements(IZPTTemplate, IDependable, IRegistered)
 
@@ -117,7 +117,7 @@ class PhonyTemplate:
         return self._dependents
 
 
-class A:
+class A(object):
     def __init__(self, object, request):
         self.context = object
         self.request = request
@@ -160,7 +160,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         # We don't let people define the default view name locally
         # yet.  So just test that we can get it from the global
         # service
-        class O:
+        class O(object):
             implements(I1)
         o = O()
         r = TestRequest()
@@ -174,9 +174,9 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
     def test_queryMultiView(self):
         # We don't let people define multiviews locally yet.
         # So just test that we can get them from the global service
-        class X:
+        class X(object):
             implements(I1)
-        class Y:
+        class Y(object):
             implements(I3)
         x = X()
         y = Y()
@@ -186,7 +186,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
                          None)
         globalService = zapi.getGlobalService(Presentation)
 
-        class MV:
+        class MV(object):
             def __init__(self, x, y, request):
                 self.x, self.y, self.request = x, y, request
                 
@@ -207,7 +207,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         self.assertEqual(self._service.queryResource('logo.gif', r),
                          None)
 
-        class Resource:
+        class Resource(object):
             def __init__(self, request):
                 self.request = request
 
@@ -234,7 +234,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
 
     def test_queryView_no_view(self):
         service = self._service
-        class O:
+        class O(object):
             implements(I1)
 
         o = O()
@@ -249,7 +249,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         key = registration_manager.addRegistration(Registration())
         registration = traverse(registration_manager, key)
 
-        class O:
+        class O(object):
             implements(I1)
 
         registration.factory = A
@@ -279,7 +279,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         name = registration_manager.addRegistration(registration)
         registration = traverse(registration_manager, name)
 
-        class O:
+        class O(object):
             implements(I1)
 
         o = O()
@@ -342,7 +342,7 @@ class PhonyServiceManager(ServiceManager):
 
     implements(IServiceService)
 
-class ModuleFinder:
+class ModuleFinder(object):
 
     implements(IContained)
 
@@ -366,7 +366,7 @@ class ModuleFinder:
         return self._dict.get(key, default)
 
 
-class PhonyPathAdapter:
+class PhonyPathAdapter(object):
     implements(IPhysicallyLocatable)
 
     def __init__(self, context):

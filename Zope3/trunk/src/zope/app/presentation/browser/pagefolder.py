@@ -11,13 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Page Folder Default Configuration View.
 
 $Id$
 """
 from zope.app.presentation.pagefolder import IPageFolder
 
-class PageFolderDefaultConfiguration:
+class PageFolderDefaultConfiguration(object):
 
     def changed(self):
         """Apply changes to existing configurations"""

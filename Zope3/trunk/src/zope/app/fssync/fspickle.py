@@ -107,7 +107,7 @@ def loads(data, location, parent=None):
     return u.load()
 
 
-class ParentPersistentIdGenerator:
+class ParentPersistentIdGenerator(object):
     """
 
     >>> from zope.app.location.tests import TLocation
@@ -155,7 +155,7 @@ class ParentPersistentIdGenerator:
             return None
 
 
-class PersistentLoader:
+class PersistentLoader(object):
 
     def __init__(self, context):
         locatable = LocationPhysicallyLocatable(context)
