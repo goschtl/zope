@@ -1,6 +1,20 @@
-/* csv module */
+/*############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+############################################################################*/
 
-/*
+#define _CSV_C "$Id: _csv.c,v 1.5 2004/05/03 20:20:45 spascoe Exp $\n"
+
+/* csv module
 
 This module provides the low-level underpinnings of a CSV reading/writing
 module.  Users should not use this module directly, but import the csv.py
