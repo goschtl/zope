@@ -54,9 +54,9 @@ import os
 
 def load_site():
     # load instance site configuration file
-    site_zcml = os.path.join(INSTANCE_HOME, "site.zcml")
+    site_zcml = os.path.join(INSTANCE_HOME, "etc", "site.zcml")
     if os.path.exists(site_zcml):
         process(site_zcml)
     else:
-        fallback = os.path.join(os.path.dirname(__file__), "fallback.zcml")
+        fallback = os.path.join(os.path.dirname(__file__), "skel", "site.zcml")
         process(fallback)
