@@ -1,0 +1,50 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+  <role
+      id="book.messageboard.User"
+      title="Message Board User"
+      description="Users that actually use the Message Board."
+      />
+  <grant
+      permission="book.messageboard.View"
+      role="book.messageboard.User"
+      />
+  <grant
+      permission="book.messageboard.Add"
+      role="book.messageboard.User"
+      />
+
+  <role
+      id="book.messageboard.Editor"
+      title="Message Board Editor"
+      description="The Editor can edit and delete Messages."
+      />
+  <grant
+      permission="book.messageboard.Edit"
+      role="book.messageboard.Editor"
+      />
+  <grant
+      permission="book.messageboard.Delete"
+      role="book.messageboard.Editor"
+      />
+
+
+  <grant
+      permission="book.messageboard.View"
+      role="zope.Manager"
+      />
+  <grant
+      permission="book.messageboard.Add"
+      role="zope.Manager"
+      />
+  <grant
+      permission="book.messageboard.Edit"
+      role="zope.Manager"
+      />
+  <grant
+      permission="book.messageboard.Delete"
+      role="zope.Manager"
+      /> 
+
+</configure>
