@@ -21,7 +21,7 @@ import zope.schema
 
 from zope import component
 from zope.schema.interfaces import ISourceQueriables
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication, PrincipalLookupError
 from zope.app.component import queryNextUtility
 from zope.app.component.site import SiteManagementFolder
 
@@ -82,7 +82,9 @@ class PluggableAuthentication(SiteManagementFolder):
             principal.id = self.prefix + info.id
             return principal
         next = queryNextUtility(self, IAuthentication)
-        return (next is not None) and next.getPrincipal(self.prefix+id) or None
+        if next is not None:
+            return next.getPrincipal(self.prefix + id)
+        raise PrincipalLookupError(id)
 
     def getQueriables(self):
         for name in self.authenticatorPlugins:
