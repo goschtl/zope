@@ -12,18 +12,26 @@
 #
 ##############################################################################
 """
-$Id: test_registered.py,v 1.2 2003/09/21 17:31:13 jim Exp $
+$Id: test_registered.py,v 1.3 2003/09/24 20:43:14 fdrake Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.registration import Registered
 from zope.app.interfaces.annotation import IAnnotations
+from zope.app.interfaces.traversing import ITraverser
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 from zope.app.container.contained import Contained
 
 class C(dict, Contained):
-    implements(IAnnotations)
+    implements(IAnnotations, ITraverser)
+
+    def __init__(self, testobjs={}):
+        self.testobjs = testobjs
+
+    def traverse(self, path, default=None, request=None):
+        return self.testobjs[path]
+        
 
 class TestRegistered(PlacelessSetup, TestCase):
 
@@ -34,7 +42,13 @@ class TestRegistered(PlacelessSetup, TestCase):
         verifyObject(IRegistered, obj)
 
     def testBasic(self):
-        obj = Registered(C())
+        a_b = 12
+        c_d = 24
+        c_e = 36
+        obj = Registered(C({'/a/b': a_b,
+                            '/c/d': c_d,
+                            '/c/e': c_e,
+                            }))
         self.failIf(obj.usages())
         obj.addUsage('/a/b')
         obj.addUsage('/c/d')
@@ -43,14 +57,30 @@ class TestRegistered(PlacelessSetup, TestCase):
         locs = list(obj.usages())
         locs.sort()
         self.assertEqual(locs, ['/a/b', '/c/d', '/c/e'])
+        regs = list(obj.registrations())
+        self.assertEqual(len(regs), 3)
+        self.assert_(a_b in regs)
+        self.assert_(c_d in regs)
+        self.assert_(c_e in regs)
+
         obj.removeUsage('/c/d')
         locs = list(obj.usages())
         locs.sort()
         self.assertEqual(locs, ['/a/b', '/c/e'])
+        regs = list(obj.registrations())
+        self.assertEqual(len(regs), 2)
+        self.assert_(a_b in regs)
+        self.assert_(c_d not in regs)
+        self.assert_(c_e in regs)
+
         obj.removeUsage('/c/d')
         locs = list(obj.usages())
         locs.sort()
         self.assertEqual(locs, ['/a/b', '/c/e'])
+        self.assertEqual(len(regs), 2)
+        self.assert_(a_b in regs)
+        self.assert_(c_d not in regs)
+        self.assert_(c_e in regs)
 
     def testRelativeAbsolute(self):
         obj = Registered(C())

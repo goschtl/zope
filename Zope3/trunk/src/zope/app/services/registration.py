@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.15 2003/09/21 17:32:58 jim Exp $
+$Id: registration.py,v 1.16 2003/09/24 20:43:13 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -519,6 +519,10 @@ class Registered(PathSetAnnotation):
     addUsage = PathSetAnnotation.addPath
     removeUsage = PathSetAnnotation.removePath
     usages = PathSetAnnotation.getPaths
+
+    def registrations(self):
+        return [zapi.traverse(self.context, path)
+                for path in self.getPaths()]
 
 
 class RegistrationManager(Persistent, Contained):
