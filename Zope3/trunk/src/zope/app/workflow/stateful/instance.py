@@ -34,7 +34,7 @@ from zope.app.traversing.api import getParent
 from zope.app.workflow.instance import ProcessInstance
 from zope.app.container.contained import Contained
 
-from zope.exceptions import Unauthorized
+from zope.security.interfaces import Unauthorized
 from zope.interface import directlyProvides, implements
 from zope.proxy import removeAllProxies
 from zope.schema import getFields

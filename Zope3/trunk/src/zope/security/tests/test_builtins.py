@@ -23,7 +23,7 @@ class Test(CleanUp, TestCase):
 
     def test(self):
         from zope.security.builtins import RestrictedBuiltins
-        from zope.exceptions import Forbidden
+        from zope.security.interfaces import Forbidden
 
         def e(expr):
             return eval(expr, {'__builtins__': RestrictedBuiltins})

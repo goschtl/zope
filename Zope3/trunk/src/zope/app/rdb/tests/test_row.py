@@ -35,7 +35,7 @@ class RowTests(TestCase):
     def test_RowClassFactory_Proxied(self):
         from zope.app.rdb import RowClassFactory
         from zope.security.proxy import ProxyFactory
-        from zope.exceptions import ForbiddenAttribute
+        from zope.security.interfaces import ForbiddenAttribute
         from zope.security.interfaces import IChecker
 
         columns = ('type', 'speed')

@@ -21,8 +21,10 @@ from zope.interface.verify import verifyObject
 from zope.security.checker import Checker, NamesChecker, CheckerPublic
 from zope.testing.cleanup import CleanUp
 from zope.security.interfaces import ISecurityPolicy
-from zope.exceptions import Forbidden, Unauthorized, ForbiddenAttribute
-from zope.security.management import setSecurityPolicy, newInteraction, endInteraction, getInteraction
+from zope.security.interfaces import Forbidden, ForbiddenAttribute
+from zope.security.interfaces import Unauthorized
+from zope.security.management import setSecurityPolicy, newInteraction
+from zope.security.management import endInteraction, getInteraction
 from zope.proxy import getProxiedObject
 from zope.security.proxy import getChecker
 from zope.security.checker import defineChecker, ProxyFactory

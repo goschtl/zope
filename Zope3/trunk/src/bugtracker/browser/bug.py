@@ -19,7 +19,8 @@ import docutils.core
 import re
 
 from zope.component.interfaces import IViewFactory
-from zope.exceptions import Unauthorized, ForbiddenAttribute, NotFoundError
+from zope.exceptions import NotFoundError
+from zope.security.interfaces import Unauthorized, ForbiddenAttribute
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.schema.vocabulary import getVocabularyRegistry

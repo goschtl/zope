@@ -6,7 +6,7 @@
   <skin name="Debug" layers="debug rotterdam default" />
 
   <page
-      for="zope.exceptions.IUnauthorized"
+      for="zope.security.interfaces.IUnauthorized"
       name="index.html"
       permission="zope.Public"
       template="unauthorized.pt"

@@ -19,7 +19,7 @@ zope.security.checkers._default_checkers.
 $Id$
 """
 from zope.security.checker import ProxyFactory, NamesChecker
-from zope.exceptions import ForbiddenAttribute
+from zope.security.interfaces import ForbiddenAttribute
 
 
 def check_forbidden_get(object, attr):

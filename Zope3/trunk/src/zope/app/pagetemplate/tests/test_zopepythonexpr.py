@@ -34,7 +34,7 @@ class Test(CleanUp, TestCase):
 
     def test(self):
         from zope.app.pagetemplate.engine import ZopePythonExpr
-        from zope.exceptions import Forbidden
+        from zope.security.interfaces import Forbidden
 
         expr = ZopePythonExpr('python', 'max(a,b)', Engine())
         self.assertEqual(expr(Context(a=1, b=2)), 2)

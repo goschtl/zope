@@ -15,7 +15,36 @@
 
 $Id$
 """
-from zope.interface import Interface, Attribute
+
+from zope.exceptions import ZopeError
+from zope.exceptions import IZopeError
+from zope.interface import Interface, Attribute, implements
+from zope.interface.common.interfaces import IAttributeError
+
+class IUnauthorized(IZopeError):
+    pass
+
+class Unauthorized(ZopeError):
+    """Some user wasn't allowed to access a resource"""
+
+    implements(IUnauthorized)
+
+
+class IForbidden(IZopeError):
+    pass
+
+class Forbidden(ZopeError):
+    """A resource cannot be accessed under any circumstances
+    """
+    implements(IForbidden)
+
+class IForbiddenAttribute(IForbidden, IAttributeError):
+    pass
+
+class ForbiddenAttribute(Forbidden, AttributeError):
+    """An attribute is unavailable because it is forbidden (private)
+    """
+    implements(IForbiddenAttribute)
 
 
 class ISecurityManagement(Interface):

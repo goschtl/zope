@@ -19,7 +19,7 @@ import unittest
 
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.interpreter.python import PythonInterpreter
-from zope.exceptions import ForbiddenAttribute
+from zope.security.interfaces import ForbiddenAttribute
 from zope.interface.verify import verifyObject
 
 class PythonInterpreterTest(unittest.TestCase):
