@@ -115,7 +115,7 @@
 
 /Zope3/lib/python/Interface                    /Packages/Interface
 /Zope3/lib/python/Persistence                  /Packages/Persistence
-/Zope3/lib/python/Persistence/BTrees           /Packages/BTrees
+#/Zope3/lib/python/Persistence/BTrees           /Packages/BTrees
 /Zope3/lib/python/pre_python_2_2               /Packages/pre_python_2_2
 /Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
 /Zope3/lib/python/zdaemon                      /Packages/zdaemon
