@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.10 2003/06/01 22:26:51 jim Exp $
+$Id: declarations.py,v 1.11 2003/06/02 11:07:58 jim Exp $
 """
 
 import sys
@@ -231,6 +231,32 @@ class ObjectSpecification_py:
         self.provides = provides
         self.cls = cls
 
+    def __nonzero__(self):
+        """
+        >>> from zope.interface import Interface
+        >>> class I1(Interface):
+        ...     pass
+        >>> class I2(Interface):
+        ...     pass
+        >>> class C:
+        ...     implements(I1)
+        >>> c = C()
+        >>> int(bool(providedBy(c)))
+        1
+        >>> directlyProvides(c, I2)
+        >>> int(bool(providedBy(c)))
+        1
+        >>> class C:
+        ...     pass
+        >>> c = C()
+        >>> int(bool(providedBy(c)))
+        0
+        >>> directlyProvides(c, I2)
+        >>> int(bool(providedBy(c)))
+        1
+        """
+        return bool(self.__signature__)
+
     def __signature__(self):
 
         provides = self.provides
@@ -416,6 +442,21 @@ class InterfaceSpecification(InterfaceSpecificationBase):
         self.set = set
 
         self._computeSignature(iro)
+
+    def __nonzero__(self):
+        """Test whether there are any interfaces in a specification.
+
+        >>> from zope.interface import Interface
+        >>> class I1(Interface): pass
+        ...
+        >>> spec = InterfaceSpecification(I1)
+        >>> int(bool(spec))
+        1
+        >>> spec = InterfaceSpecification()
+        >>> int(bool(spec))
+        0
+        """
+        return bool(self.interfaces)
 
     def _computeSignature(self, iro):
         """Compute a specification signature
