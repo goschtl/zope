@@ -18,7 +18,7 @@ $Id$
 from string import split
 from os import path, stat
 
-import Acquisition, Globals
+import Acquisition, Globals, ExtensionClass
 from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import Item
 from DateTime import DateTime
@@ -31,7 +31,7 @@ from CMFCorePermissions import ManagePortal
 
 from OFS.Cache import Cacheable
 
-class FSObject(Acquisition.Implicit, Item, Cacheable):
+class FSObject(Item, Cacheable, Acquisition.Implicit, ExtensionClass.Base):
     """FSObject is a base class for all filesystem based look-alikes.
     
     Subclasses of this class mimic ZODB based objects like Image and

@@ -61,8 +61,7 @@ Skinned folders can define custom 'view' actions.
 ,
 )
 
-
-class SkinnedFolder(CMFCatalogAware, PortalFolder):
+class SkinnedFolder(PortalFolder):
     """
     """
     meta_type = 'Skinned Folder'
@@ -70,6 +69,10 @@ class SkinnedFolder(CMFCatalogAware, PortalFolder):
     security = ClassSecurityInfo()
 
     manage_options = PortalFolder.manage_options
+
+    indexObject = CMFCatalogAware.indexObject
+    unindexObject = CMFCatalogAware.unindexObject
+    reindexObject = CMFCatalogAware.reindexObject
 
     def __call__(self):
         '''
