@@ -46,12 +46,7 @@
       provides="zope.app.interfaces.copypastemove.IPrincipalClipboard"
       for="zope.app.interfaces.annotation.IAnnotations" />
 
-  <adapter 
-      for=".interfaces.location.ILocation"
-      provides=".interfaces.traversing.IPhysicallyLocatable"
-      factory=".location.LocationPhysicallyLocatable" 
-      />
-
+  <include package="zope.app.location" />
   <include package="zope.app.container" />
   <include package="zope.app.services" />
   <include package="zope.app.schema" />
