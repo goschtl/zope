@@ -30,8 +30,9 @@
               The view factory interface is documented in IViewFactory. View
               factories are passed two arguments, the context object
               and the request object. You must specify either 'factory' or 
-              'template'. Attributes of the view can be exposed as pages 
-              with the 'page' subdirective." />
+              'template'. If it not allowed to use 'class' when you use
+              the 'factory' attribute. Attributes of the view can be exposed 
+              as pages with the 'page' subdirective." />
        <attribute
           name="template"
           description="The name of a page template.
@@ -39,8 +40,23 @@
               Refers to a file containing a page template (must end in
               extension '.pt'). You must specify either 'template' or
               'factory'. If you supply a template, you must
-              also supply a name. You cannot have sub pages if you
-              use 'template'." />
+              also supply a name. You can also optionally supply a
+              'class' attribute which contains a view class that has
+              methods that can be used by the template.
+
+              You cannot have sub pages if you use 'template'." />
+       <attribute
+          name="class"
+          description="A class to use with the template.
+
+              If you use the 'template' attribute you can optionally use
+              the 'class' attribute. This should point to a class that
+              provides methods that can be used in the template. This class
+              will be mixed in with the page template. From the template
+              you can refer to the methods using 'view/method_name'.
+    
+              You cannot use the 'class' attribute in combination with the
+              'factory' attribute." />
        <attribute
           name="permission" 
           description="The permission needed to use the view. 
