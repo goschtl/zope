@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.6 2003/04/02 17:33:39 mgedmin Exp $
+$Id: __init__.py,v 1.7 2003/05/12 09:01:24 ryzaja Exp $
 """
 from types import StringTypes
 
@@ -57,7 +57,7 @@ class ResultSet(list):
         return (ResultSet,
                 (cols, [[getattr(row, col) for col in cols] for row in self])
                )
-                
+
     def __cmp__(self, other):
         if not isinstance(other, ResultSet):
             return super(ResultSet, self).__cmp__(other)
