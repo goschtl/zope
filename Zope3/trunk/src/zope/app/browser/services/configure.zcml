@@ -135,6 +135,12 @@
 
 <!-- SiteManagementFolder -->
 
+  <addMenuItem
+      class="zope.app.services.folder.SiteManagementFolder"
+      permission="zope.ManageServices"
+      title="Site-Management Folder"
+      />
+
   <page
     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
     permission="zope.ManageServices" 
