@@ -21,7 +21,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: zope/app/translation_files/extract.py\n"
+"Generated-By: zope/app/locales/extract.py\n"
 
 #: src/zope/app/adapter/adapter.py:283
 #: src/zope/app/presentation/pagefolder.py:54

@@ -56,7 +56,7 @@ msgstr ""
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=%(charset)s\\n"
 "Content-Transfer-Encoding: %(encoding)s\\n"
-"Generated-By: zope/app/translation_files/extract.py\\n"
+"Generated-By: zope/app/locales/extract.py\\n"
 
 '''
 

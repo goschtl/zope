@@ -39,7 +39,7 @@
   <include package="zope.app.http" />
 
   <!-- Translations -->
-  <i18n:registerTranslations directory="translation_files" />
+  <i18n:registerTranslations directory="locales" />
 
   <include package="zope.app.i18n" />
 
