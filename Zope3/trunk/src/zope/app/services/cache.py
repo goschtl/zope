@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.3 2002/12/30 14:03:16 stevea Exp $
+$Id: cache.py,v 1.4 2003/01/23 09:53:28 ryzaja Exp $
 """
 __metaclass__ = type
 
@@ -87,7 +87,7 @@ class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
 
 """A configuration for a cache.
 
-$Id: cache.py,v 1.3 2002/12/30 14:03:16 stevea Exp $
+$Id: cache.py,v 1.4 2003/01/23 09:53:28 ryzaja Exp $
 """
 
 from zope.app.interfaces.services.cache import ICacheConfiguration
@@ -96,6 +96,7 @@ from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.component import getService
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.proxy.context import ContextMethod
+from zope.app.interfaces.cache.cache import ICache
 
 class CacheConfiguration(NamedComponentConfiguration):
 
@@ -123,3 +124,6 @@ class CacheConfiguration(NamedComponentConfiguration):
         service.unsubscribe(cache, IObjectModifiedEvent)
         cache.invalidateAll()
     deactivated = ContextMethod(deactivated)
+
+    def getInterface(self):
+        return ICache

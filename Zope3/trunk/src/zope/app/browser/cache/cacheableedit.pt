@@ -4,6 +4,17 @@
 
     <p>This edit form allows you to associate a cache with this object.</p>
 
+    <p tal:condition="not: view/current_cache_id">
+      Currently there is no cache associated with the object.
+    </p>
+    
+    <p tal:condition="view/current_cache_id">
+      Currently the object uses
+      <a tal:omit-tag="not:view/current_cache_url"
+         tal:attributes="href view/current_cache_url"
+         tal:content="view/current_cache_id"/>.
+    </p>
+
     <div tal:condition="python: options.has_key('errors') and
                                 options['errors']">
       <span style="font-weight: bold">Errors:</span>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.3 2003/01/09 14:12:58 jim Exp $
+$Id: cacheable.py,v 1.4 2003/01/23 09:53:26 ryzaja Exp $
 """
 
 from zope.component import getService, getAdapter
@@ -35,12 +35,23 @@ class CacheableView(BrowserView):
 
     __used_for__ = IAnnotatable
 
-    form = ViewPageTemplateFile("edit.pt")
+    form = ViewPageTemplateFile("cacheableedit.pt")
 
     def __init__(self, *args):
         super(CacheableView, self).__init__(*args)
-        self.cachable = getAdapter(self.context, ICacheable)
-        setUpEditWidgets(self, ICacheable, self.cachable)
+        self.cacheable = getAdapter(self.context, ICacheable)
+        setUpEditWidgets(self, ICacheable, self.cacheable)
+
+    def current_cache_id(self):
+        "Returns the current cache ID."
+        return self.cacheable.getCacheId()
+
+    def current_cache_url(self):
+        "Returns the current cache provider's URL."
+        # XXX: it would be *really* useful to the user to be able to jump to
+        # the cache component and see the stats etc. directly from the
+        # cacheable view.  All this needs is to find out the URL somehow.
+        return None
 
     def invalidate(self):
         "Invalidate the current cached value."
@@ -61,5 +72,5 @@ class CacheableView(BrowserView):
             #return self.form(errors=e.errors)
             return repr(e.errors)
         else:
-            self.cachable.setCacheId(cacheId)
+            self.cacheable.setCacheId(cacheId)
             return self.form(message="Saved changes.")
