@@ -282,20 +282,6 @@ class PluggableAuthService( Folder ):
                         if user is not None:
                             return user
                         
-            # No validation in upper user folders: Make a challenge
-            challengers = plugins.listPlugins(IChallengePlugin)
-            if challengers:
-                # We just pick the first one
-                challenger_id, challenger = challengers[0] 
-                try:
-                    return challenger.challenge(request, request.RESPONSE)
-                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', WARNING, 
-                        'ChallengePlugin %s error' % challenger_id,
-                        error=sys.exc_info())
-            
-            return None
-
         #
         #   No other user folder above us can satisfy, and we have no user;
         #   return a constructed anonymous only if anonymous is authorized.
@@ -310,6 +296,18 @@ class PluggableAuthService( Folder ):
                               ):
             return anonymous
 
+        # No validation in upper user folders: Make a challenge
+        challengers = plugins.listPlugins(IChallengePlugin)
+        for challenger_id, challenger in challengers:
+            try:
+                # A successful challenge involves raising a 
+                # "Redirect", url exception.
+                challenger.challenge(request, request.RESPONSE)
+            except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+                LOG('PluggableAuthService', WARNING, 
+                    'ChallengePlugin %s error' % challenger_id,
+                    error=sys.exc_info())
+        
         return None
 
     security.declareProtected( SearchPrincipals, 'searchUsers')
