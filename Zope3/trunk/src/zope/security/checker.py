@@ -350,7 +350,8 @@ _always_available = ['__lt__', '__le__', '__eq__',
                      ]
 
 _callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
-_typeChecker = NamesChecker(['__str__', '__name__', '__module__', '__bases__'])
+_typeChecker = NamesChecker(
+    ['__str__', '__name__', '__module__', '__bases__', '__mro__'])
 
 _interfaceChecker = NamesChecker(['__str__', '__name__', '__module__',
                                   '__bases__', 'getBases', 'isImplementedBy',
