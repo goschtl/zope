@@ -37,8 +37,6 @@ class TempFile:
             self.file.close()
             self.remove(self.file.name)
             self.closed = 1
-    def __del__(self):
-        self.close()
 
 from zope.configuration.xmlconfig import xmlconfig
 from zope.configuration.xmlconfig import testxmlconfig
