@@ -10,7 +10,7 @@
   <import package="ZODB" />
 
   <!-- logging configuration -->
-  <import package="zope.app.process" />
+  <import package="ZConfig.components.logger" />
 
   <sectiontype name="server" datatype="zope.app.process.server.ServerFactory">
     <key name="type" required="yes" />
