@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces that give the size of an object.
 
-$Id: size.py,v 1.5 2003/08/21 14:19:23 srichter Exp $
+$Id: size.py,v 1.6 2003/11/04 18:33:35 fdrake Exp $
 """
 
 from zope.interface import Interface
@@ -36,4 +36,3 @@ class ISized(Interface):
     def sizeForDisplay():
         """Returns a string giving the size.
         """
-
