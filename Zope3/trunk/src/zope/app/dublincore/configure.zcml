@@ -1,8 +1,6 @@
 <configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:event="http://namespaces.zope.org/event"
-   i18n_domain="zope"
-   >
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:event="http://namespaces.zope.org/event">
 
   <adapter
       factory=".annotatableadapter.ZDCAnnotatableAdapter"
