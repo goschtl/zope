@@ -13,7 +13,7 @@
 #
 ##############################################################################
 """
-test.py [-aBbcdDfgGhLmprtTuv] [modfilter [testfilter]]
+test.py [-aBbcdDfgGhLmPprtTuv] [modfilter [testfilter]]
 
 Test harness.
 
@@ -82,6 +82,10 @@ Test harness.
 -t
     Time the individual tests and print a list of the top 50, sorted from
     longest to shortest.
+
+-P
+    Run the tests under hotshot and display the top 50 stats, sorted by
+    cumulative time and number of calls.
 
 -p
     Show running progress.  It can be combined with -v or -vv.
@@ -156,6 +160,7 @@ Extreme (yet useful) examples:
 """
 
 import gc
+import hotshot, hotshot.stats
 import os
 import re
 import pdb
@@ -317,9 +322,13 @@ class ImmediateTestRunner(unittest.TextTestRunner):
         progress = kwarg.get("progress")
         if progress is not None:
             del kwarg["progress"]
+        profile = kwarg.get("profile")
+        if profile is not None:
+            del kwarg["profile"]
         self.__super_init(**kwarg)
         self._debug = debug
         self._progress = progress
+        self._profile = profile
 
     def _makeResult(self):
         return ImmediateTestResult(self.stream, self.descriptions,
@@ -328,6 +337,15 @@ class ImmediateTestRunner(unittest.TextTestRunner):
 
     def run(self, test):
         self._count = test.countTestCases()
+        if self._profile:
+            prof = hotshot.Profile("tests_profile.prof")
+            args = (self, test)
+            r = prof.runcall(unittest.TextTestRunner.run, *args)
+            prof.close()
+            stats = hotshot.stats.load("testrun.prof")
+            stats.sort_stats('cumulative', 'calls')
+            stats.print_stats(50)
+            return r
         return unittest.TextTestRunner.run(self, test)
 
 # setup list of directories to put on the path
@@ -405,7 +423,7 @@ class TestFileFinder:
                 path = os.path.join(dir, "tests.py")
                 if match(rx, path):
                     self.files.append(path)
-                    return 
+                    return
             return
         # ignore tests that aren't in packages
         if not "__init__.py" in files:
@@ -589,7 +607,7 @@ class TrackRefs:
 
 def runner(files, test_filter, debug):
     runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug,
-                                 progress=progress)
+                                 progress=progress, profile=profile)
     suite = unittest.TestSuite()
     for file in files:
         s = get_suite(file)
@@ -698,6 +716,7 @@ def process_args(argv=None):
     global keepStaleBytecode
     global functional
     global test_dir
+    global profile
 
     if argv is None:
         argv = sys.argv
@@ -724,9 +743,10 @@ def process_args(argv=None):
     keepStaleBytecode = 0
     functional = False
     test_dir = None
+    profile = False
 
     try:
-        opts, args = getopt.getopt(argv[1:], "a:bBcdDfg:G:hLmprtTuv",
+        opts, args = getopt.getopt(argv[1:], "a:bBcdDfg:G:hLmPprtTuv",
                                    ["all", "help", "libdir=", "times=",
                                     "keepbytecode", "dir=", "build"])
     except getopt.error, msg:
@@ -774,6 +794,8 @@ def process_args(argv=None):
             LOOP = 1
         elif k == "-m":
             GUI = "minimal"
+        elif k == "-P":
+            profile = True
         elif k == "-p":
             progress = True
         elif k == "-r":

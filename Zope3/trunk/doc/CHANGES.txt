@@ -13,6 +13,12 @@ Zope Changes
     - Copy/Move now checks constraints and preconditions, instead of just
       expecting the source's and target's class to be the same.
 
+    - Added new switch '-P' to test.py, to allow profiling of
+      tests. Profile data is saved into <zope3>/tests_profile.prof. All
+      the additional switches and options apply. This is useful for
+      running a profile on a single test (specially useful for
+      functional tests) without having to do the whole profile setup.
+
     Bug fixes
 
     Refactoring
