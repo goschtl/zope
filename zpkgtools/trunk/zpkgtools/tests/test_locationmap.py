@@ -14,6 +14,7 @@
 """Tests for zpkgtools.cvsmap."""
 
 import doctest
+import logging
 import os.path
 import unittest
 
@@ -103,6 +104,37 @@ class LoadTestCase(unittest.TestCase):
             self.assertEqual(e.lineno, 1)
         else:
             self.fail("expected MapLoadingError")
+
+    def test_duplicate_entry_generates_warning(self):
+        sio = StringIO("r1 cvs://cvs.example.org/cvsroot:foo\n"
+                       "r1 cvs://cvs.example.org/cvsroot:foo\n")
+        map = self.collect_warnings(locationmap.load, sio)
+        self.assertEqual(len(map), 1)
+        self.assertEqual(len(self.warnings), 1)
+        r = self.warnings[0]
+        self.assertEqual(r.levelno, logging.WARNING)
+        self.assertEqual(r.name, "zpkgtools.locationmap")
+
+    def collect_warnings(self, callable, *args, **kw):
+        self.warnings = []
+        handler = CollectingHandler(self.warnings)
+        root_logger = logging.getLogger()
+        root_logger.addHandler(handler)
+        try:
+            return callable(*args, **kw)
+        finally:
+            root_logger.removeHandler(handler)
+
+
+class CollectingHandler(logging.StreamHandler):
+    """Log handler that simply collects emitted warning records."""
+
+    def __init__(self, list):
+        self.list = list
+        logging.StreamHandler.__init__(self)
+
+    def emit(self, record):
+        self.list.append(record)
 
 
 class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
