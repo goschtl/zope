@@ -72,7 +72,7 @@ class portal_actions(Interface):
 
         Permission -- Always available
 
-        Returns -- Dictionary of category / action list pairs.
+        Returns -- Dictionary of category / ActionInfo list pairs
         """
 
     def listFilteredActions(object=None):
@@ -93,7 +93,7 @@ class ActionProvider(Interface):
         version. If 'object' isn't specified, the method uses for backwards
         compatibility 'info.content' as object.
 
-        Returns -- Tuple of ActionInformation objects
+        Returns -- Tuple of ActionInformation objects (or Action mappings)
         """
 
     def getActionObject(action):
@@ -110,7 +110,7 @@ class ActionProvider(Interface):
 
     def listActionInfos(action_chain=None, object=None, check_visibility=1,
                         check_permissions=1, check_condition=1, max=-1):
-        """ List Action info mappings.
+        """ List ActionInfo objects.
 
         'action_chain' is a sequence of action 'paths' (e.g. 'object/view').
         If specified, only these actions will be returned in the given order.
@@ -121,46 +121,14 @@ class ActionProvider(Interface):
 
         Permission -- Always available (not publishable)
 
-        Returns -- Tuple of Action info mappings
+        Returns -- Tuple of ActionInfo objects
         """
 
     def getActionInfo(action_chain, object=None, check_visibility=0,
                       check_condition=0):
-        """ Get an Action info mapping specified by a chain of actions.
+        """ Get an ActionInfo object specified by a chain of actions.
 
         Permission -- Always available
 
-        Returns -- Action info mapping
-        """
-
-
-class OldstyleActionProvider(ActionProvider):
-    """ Deprecated interface expected of an object that can provide actions.
-
-    Still used by 'Oldstyle CMF Discussion Tool' and 'CMF Workflow Tool'.
-    """
-
-    def listActions(info):
-        """ List all the actions defined by a provider.
-
-        Each action should contain the keys "name", "url", "permissions" and
-        "category", conforming to the specs outlined in
-        portal_actions.listFilteredActionsFor(). The info argument contains
-        at least the following attributes, some of which may be set to "None":
-
-        - isAnonymous
-
-        - portal
-
-        - portal_url
-
-        - folder
-
-        - folder_url
-
-        - content
-
-        - content_url
-
-        Returns -- Tuple of mappings describing actions
+        Returns -- ActionInfo object
         """
