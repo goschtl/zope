@@ -162,7 +162,24 @@ an entry to run it in Control Panel's Add/Remove Programs applet.
 Creating a Zope instance home
 -----------------------------
 
-XXX to be written
+The Zope installation includes a script called "mkzopeinstance"; this
+is used to create a new "instance home."  On Unix, this will be in
+$prefix/bin/, and on Windows this will be in Scripts\ in the Python
+installation.
+
+Run this script to create the instance home:
+
+  $ .../bin/mkzopeinstance -u username:password -d directory
+
+or
+  C:\Python23\Scripts> ..\python mkzopeinstance -u username:password -d directory
+
+This will create the directory named on the command line and provide a
+default configuration.  The configuration files for the Zope
+application server are in the etc/ sub-directory in the instance home.
+You should review those files to make sure they meet your needs before
+starting the application server for the first time.  Of particular
+interest are the files zope.conf and principals.zcml.
 
 
 Starting Zope
