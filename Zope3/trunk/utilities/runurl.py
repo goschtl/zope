@@ -57,7 +57,7 @@
 
          Output this usage information.
          
-$Id: runurl.py,v 1.1 2003/05/02 18:28:18 jim Exp $
+$Id: runurl.py,v 1.2 2003/05/13 21:11:11 jim Exp $
 """
 
 import sys, os, getopt
@@ -131,10 +131,22 @@ def main(argv=None):
 resultfmt = "elapsed: %.4f, cpu=%.4f, status=%s"
 def _mainrun(app, path, basic, run, stdin, environment):
     if run:
+        es = []
+        cs = []
         for i in range(run):
-            print resultfmt %  app.run(path=path, basic=basic, stdin=stdin,
-                                       environment=environment)
-            
+            e, c, status = app.run(path=path, basic=basic, stdin=stdin,
+                                   environment=environment)
+            es.append(e)
+            cs.append(c)
+            print resultfmt % (e, c, status)
+
+        if run > 1:
+            print "min elapsted: %.4f, min cpu=%.4f" % (min(es), min(cs))
+            es.sort()
+            cs.sort()
+            e = (es[(run+1)/2-1]+es[(run+2)/2-1]) / 2.0
+            c = (cs[(run+1)/2-1]+cs[(run+2)/2-1]) / 2.0
+            print "med elapsted: %.4f, med cpu=%.4f" % (e, c)
     else:
         print resultfmt % app.publish(path=path, basic=basic, stdin=stdin,
                                       environment=environment)
