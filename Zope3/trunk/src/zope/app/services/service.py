@@ -23,7 +23,7 @@ A service manager has a number of roles:
   - A registry for persistent modules.  The Zope import hook uses the
     ServiceManager to search for modules.
 
-$Id: service.py,v 1.5 2003/01/08 17:41:49 stevea Exp $
+$Id: service.py,v 1.6 2003/01/08 17:47:56 stevea Exp $
 """
 
 import sys
@@ -48,7 +48,6 @@ from zope.app.interfaces.services.service import INameResolver
 from zope.app.interfaces.services.service import IServiceConfiguration
 from zope.app.interfaces.services.service import IServiceManager
 from zope.app.interfaces.services.service import IServiceManagerContainer
-
 
 ModuleType = type(INameResolver)
 ModuleType = ModuleType, PersistentModule
@@ -251,9 +250,9 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
         else:
             repeat = 0
 
-        names=name.split('.')
-        last=names[-1]
-        mod='.'.join(names[:-1])
+        names = name.split('.')
+        last = names[-1]
+        mod = '.'.join(names[:-1])
 
         if not mod:
             return wrapped_self.__import(name)
@@ -261,7 +260,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
         while 1:
             m = wrapped_self.__import(mod)
             try:
-                a=getattr(m, last)
+                a = getattr(m, last)
             except AttributeError:
                 if not repeat:
                     return wrapped_self.__import(name)
@@ -271,6 +270,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
                     return a
             mod += '.' + last
     resolve = ContextMethod(resolve)
+
 
 class ServiceConfiguration(NamedComponentConfiguration):
 
