@@ -12,14 +12,19 @@
 # 
 ##############################################################################
 """
-$Id: IConfigurationManager.py,v 1.2 2002/11/30 18:39:16 jim Exp $
+$Id: IConfigurationManager.py,v 1.3 2002/12/01 10:28:22 jim Exp $
 """
 
 from Zope.App.OFS.Container.IContainer  import IContainerNamesContainer
+from Interface import Interface
 
-class IConfigurationManager(IContainerNamesContainer):
-    """Manage Configuration Directives
+class IOrderedContainer(Interface):
+    """Container with items that can be rearranged.
     """
+    
+    # Yes, maybe this should be in the container package, but, we are
+    # likely to come up with a better general ordering interface, so
+    # we'll leave this one here for now.
 
     def moveTop(names):
         """Move the objects corresponding to the given names to the top
@@ -36,6 +41,10 @@ class IConfigurationManager(IContainerNamesContainer):
     def moveDown(names):
         """Move the objects corresponding to the given names down
         """
+
+class IConfigurationManager(IContainerNamesContainer, IOrderedContainer):
+    """Manage Configurations
+    """
 
 __doc__ = IConfigurationManager.__doc__ + __doc__
 

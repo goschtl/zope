@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: EditConfiguration.py,v 1.2 2002/11/30 18:39:17 jim Exp $
+$Id: EditConfiguration.py,v 1.3 2002/12/01 10:28:22 jim Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -43,13 +43,13 @@ class EditConfiguration(BrowserView):
         elif 'remove_submit' in self.request:
             self.remove_objects(k)
         elif 'top_submit' in self.request:
-            self.context.arrange_object(k[0], 'top')
+            self.context.moveTop(k)
         elif 'bottom_submit' in self.request:
-            self.context.arrange_object(k[0],'bottom')
+            self.context.moveBottom(k)
         elif 'up_submit' in self.request:
-            self.context.arrange_object(k[0],'up')
+            self.context.moveUp(k)
         elif 'down_submit' in self.request:
-            self.context.arrange_object(k[0],'down')
+            self.context.moveDown(k)
 
         return ''
 

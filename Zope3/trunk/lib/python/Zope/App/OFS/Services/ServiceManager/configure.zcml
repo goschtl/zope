@@ -45,7 +45,7 @@
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
     <require
         permission="Zope.ManageServices"
-    	attributes="arrange_object remove_objects" />
+    	interface=".IConfigurationManager.IOrderedContainer" />
     <factory 
         id = "Zope.App.OFS.Services.ServiceManager.ConfigurationManager" 
 	permission = "Zope.ManageServices"
