@@ -12,14 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.5 2002/11/11 20:24:35 jim Exp $
+$Id: _Field.py,v 1.6 2002/11/18 13:20:44 stevea Exp $
 """
-__metaclass__ = object
+__metaclass__ = type
 
-from Interface.Attribute import Attribute
 from Interface.Implements import implements
 
-from Exceptions import StopValidation, ValidationError
+from Exceptions import ValidationError
 import ErrorNames
 
 import IField
