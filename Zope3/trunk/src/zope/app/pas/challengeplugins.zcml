@@ -23,6 +23,13 @@
       permission="zope.ManageServices"
       />
 
+  <localUtility class=".browserplugins.FormChallenger">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+  </localUtility>
+
   <browser:addMenuItem
       title="PAS Browser Session Challenge Plugin"
       description="A PAS Challenge Plugin"

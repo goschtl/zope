@@ -2,6 +2,12 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser">
 
+  <page
+      name="loginForm.html" 
+      for="*"
+      template="loginform.pt"
+      permission="zope.Public" />
+
   <pages 
       permission="zope.ManageServices" 
       for="..zodb.IPersistentPrincipalStorage"
@@ -13,5 +19,7 @@
     <page name="delete.html" attribute="delete" />
 
   </pages>
+
+
 
 </zope:configure>

@@ -149,11 +149,12 @@ class PAS:
             if protocol is None or challenger_protocol == protocol:
                 if challenger.challenge(request, request.response):
                     if challenger_protocol is None:
-                        break
+                        return
                     elif protocol is None:
                         protocol = challenger_protocol
 
-        return self._delegate('unauthorized', id, request)
+        if protocol is None:
+            self._delegate('unauthorized', id, request)
 
     def _delegate(self, meth, *args):
         # delegate to next AS

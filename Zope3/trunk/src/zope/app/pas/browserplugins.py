@@ -76,7 +76,6 @@ class SessionExtractor(Persistent, Contained):
         return {'username': sessionData['username'],
                 'password': sessionData['password']}
 
-
 class FormChallenger(Persistent, Contained):
     """ Query the user for credentials using a browser form.
 
@@ -106,7 +105,7 @@ class FormChallenger(Persistent, Contained):
     
     def getLoginPage(self):
         """ return configurable login page """
-        return '/login.html'
+        return '/@@loginForm.html'
 
     def challenge(self, request, response):
         """ Response shuold redirect to login page cause Credebtials
