@@ -3,6 +3,10 @@
   <!-- Add include directives for your custom products -->
   <!-- or 3rd-party installed products here. -->
 
+  <!-- The Zope 3 API documentation tool should be available by default. -->
+  <include package="zope.products.apidoc"/>
+  <include package="zope.products.statictree"/>
+
   <!-- The default security policy, including roles. -->
   <include package="zope.products.securitypolicy"/>
 
