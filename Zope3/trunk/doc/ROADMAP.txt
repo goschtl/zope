@@ -4,10 +4,11 @@ Zope Road Map
   the compliment of CHANGES.txt. Over time, entries from this file
   will migrate to CHANGES.txt and then to HISTORY.txt.
 
-  Zope 3x.0.0 alpha 2
+  Zope X3.0.0 Milestone release 3
 
-    The second alpha release will probably happen around the begining
-    of February 2003. 
+    The third milestone release will probably happen around mid-May
+    2003.  We may skip this release and have an alpha around the
+    beginning of June instead.
 
     The goals of the second alpha release release are to:
 
@@ -19,13 +20,13 @@ Zope Road Map
       developers who want to start building Zope 3 products or to
       contribute to development.  
 
+    - Provide support for web "scriptors", who are creators of active
+      content. 
+
     - Provide wider exposure of Zope 3.
 
     - Solicit input on features, current and missing.
 
-    The alpha release may be slow. We have intentionally avoided
-    optimization to keep the code as clean as possible. Optimization
-    will be performed prior to the first beta release.
 
     New Features
 
@@ -33,20 +34,15 @@ Zope Road Map
 
         - A flexible and pluggable authentication service.
 
-        - Virtual host service
-
         - Interface service, for browsing and changing configuration
-          by interface.
-
-        - Some sort of mail delivery service service
+          by interface.  This will include focussed browsing and
+          configuration of "content types".
 
       - A file-system synchronization system.  Initially, this will
         use a CVS-like command-line tool.  It allows objects to be checked out
         of Zope to the file system, modified and then checked back
         in. Objects can be added on the file systems and changes made
         in the database and on the file-system can be merged.
-
-      - WebDAV support would be nice.
 
       - ...
   

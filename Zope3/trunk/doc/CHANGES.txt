@@ -6,17 +6,17 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Zope 3x.0.0 Alpha 1
+  Zope X3.0.0 Milestone 2
 
-    What is Zope 3x? It's Zope 3 "experimental". This is the release
+    What is Zope X3? It's Zope 3 "experimental". This is the release
     that will provide the new features of Zope 3 without any Zope 2
     support.   Zope 3.0 will provide support for Zope 2 content and
     products, probably using conversion utilities of some sort. 
 
-    This release will be the first Zope 3 release. The goals of
+    This release is the second Zope 3 release. The goals of
     this release are to:
 
-    - Provide a relatively firm foundation for beginner Zope 3
+    - Provide a relatively firm foundation for Zope 3
       developers who want to start building Zope 3 products or to
       contribute to development.  
 
@@ -24,7 +24,84 @@ Zope Changes
 
     - Solicit input on features, current and missing.
 
-    The alpha release *will* be slow. We have intentionally avoided
+    The first release was very slow.  This release is much less
+    slow, but it's not fast.  We have mostly avoided
+    optimization to keep the code as clean as possible. Optimization
+    will be performed prior to the first beta release.
+
+    This is STILL an EARLY release. There is very little organized
+    documentation, although there are some tutorials
+    (http://dev.zope.org/Zope3/ProgrammerTutorial) and lots of bits of
+    documentation spread around the system.
+
+    A lot of work has been done since the last release, including:
+
+    - General UI improvements
+
+    - Performance improvements (much more to come)
+
+      This release is much less slow than the previous release.
+
+    - Improvements to the through-the-web site management experience
+      (There's still a lot more to do.)
+
+    - Internationalization improvements
+
+    - FTP Support
+
+    - PUT support (Allowing editing with Mozolla/Netscape Composer and 
+                   Amaya).
+
+    - Partial WebDAV support
+          
+    - A basic workflow system
+
+    - Improvements to Zope 3 schemas and form generation
+
+    - A functional testing framework
+
+    - Virtual Hosting support
+
+    - A Utility service
+
+    - XML "interfaces" derived from XML Schema URIs.
+      These marker interfaces can be used to control application
+      of XML processing using the component architecture.
+
+    - New search indexes
+
+    - Views on exceptions.
+
+    Much thanks to everone who contributed to this release:
+
+        Alan Runyan, Albertas Agejevas, Alexander Limi, Andreas Jung,
+        Anthony Baxter, Axel Bringenberg, Barry Warsaw, Bruce Eckel,
+        Christian Heimes, Christian Theune, Fred Drake, Gary Poster,
+        Godefroid Chapelle, Gregoire Weber, Guido van Rossum, Jeremy
+        Hylton, Jim Fulton, Marius Gedminas, Martijn Faassen, Michael
+        Howitz, Nathan Yergler, Paul Winkler, Philipp von
+        Weitershausen, Phillip Eby, R. David Murray, R. Sean Bowman,
+        Sathya Rangaswami, Sidnei da Silva, Stephan Richter, Steve
+        Alexander, Tim Peters, Tres Seaver, Ulrich Eck, Viktorija
+        Zaksiene, and Volker Bachschneider
+
+
+  ------------------------------------------------------------------
+
+  Zope X3.0.0 Milestone 1 (formerly known as 3x.0.0 Alpha 1)
+
+    This release was the first Zope 3 release. The goals of
+    this release are to:
+
+    - Provide a relatively firm foundation for Zope 3
+      developers who want to start building Zope 3 products or to
+      contribute to development.  
+
+    - Provide wider exposure of Zope 3.
+
+    - Solicit input on features, current and missing.
+
+    The alpha release *was* very slow. We have intentionally avoided
     optimization to keep the code as clean as possible. Optimization
     will be performed prior to the first beta release.
 
