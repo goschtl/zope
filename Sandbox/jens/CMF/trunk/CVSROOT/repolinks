@@ -101,26 +101,22 @@
 
 
 # These are retired in favor of ZODB3
-/StandaloneZODB/ZODB
 /StandaloneZODB/ZODB/tests
-/StandaloneZODB/ZEO
 /StandaloneZODB/ZEO/tests
 /StandaloneZODB/ZEO/zrpc
-/StandaloneZODB/ZEO1
 /StandaloneZODB/ZEO1/tests
 /StandaloneZODB/ExtensionClass
 /StandaloneZODB/BTrees
-/StandaloneZODB/bsddb3Storage
+/StandaloneZODB/bsddb3Storage/bsddb3Storage
 /StandaloneZODB/bsddb3Storage/docs
 /StandaloneZODB/Persistence
 /StandaloneZODB/ThreadedAsync
 /StandaloneZODB/zdaemon
-/StandaloneZODB/zLOG
 /StandaloneZODB/zLOG/tests
 /StandaloneZODB/logging
 
 # Retire these in favor of BDBStorage
-/ZODB3/bsddb3Storage     
+/ZODB3/bsddb3Storage/bsddb3Storage
 /ZODB3/bsddb3Storage/docs
 
 /ZODB3/ZODB              /Packages/ZODB
