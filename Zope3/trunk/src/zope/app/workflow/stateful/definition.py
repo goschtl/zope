@@ -14,27 +14,24 @@
 
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.7 2003/09/21 17:33:56 jim Exp $
+$Id: definition.py,v 1.8 2003/11/04 04:04:24 jeremy Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 
-from zope.app.container.contained import Contained
-
 from zope.app.interfaces.container import IReadContainer
-
 from zope.app.interfaces.workflow.stateful import IStatefulProcessDefinition
 from zope.app.interfaces.workflow.stateful import IState, ITransition, INITIAL
 from zope.app.interfaces.workflow.stateful import IStatefulStatesContainer
 from zope.app.interfaces.workflow.stateful import IStatefulTransitionsContainer
+from zope.interface import implements
 
+from zope.app.container.contained import Contained
 from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.instance import StatefulProcessInstance
-from zope.interface import implements
-from zope.app.container.contained import Contained
 
 
 class State(Persistent, Contained):

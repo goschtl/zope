@@ -13,25 +13,24 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.40 2003/08/20 18:21:03 philikon Exp $
+$Id: interfacewidget.py,v 1.41 2003/11/04 04:04:27 jeremy Exp $
 """
 from zope.interface import Interface, implements
-from zope.app.interfaces.browser.form import IBrowserWidget
-from zope.app.interfaces.form import WidgetInputError, ConversionError
-from zope.publisher.browser import BrowserView
-from zope.component import getService
-from zope.app.services.servicenames import Interfaces
-from zope.component.exceptions import ComponentLookupError
-from xml.sax.saxutils import quoteattr
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.browser.form import IBrowserWidget
+from zope.app.interfaces.form \
+     import WidgetInputError, ConversionError, MissingInputError
 from zope.app.introspector import nameToInterface, interfaceToName
-from zope.app.interfaces.form import WidgetInputError, MissingInputError
+from zope.app.services.servicenames import Interfaces
+from zope.component import getService
+from zope.component.exceptions import ComponentLookupError
+from zope.publisher.browser import BrowserView
+from xml.sax.saxutils import quoteattr
 
 class InterfaceWidget(BrowserWidget, BrowserView):
 
     implements(IBrowserWidget)
-
 
     def _convert(self, value):
         if value and value != 'None':

@@ -145,7 +145,7 @@ Evaluating expressions without rendering results
    without rendering the result.
 
 
-$Id: dt_var.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: dt_var.py,v 1.3 2003/11/04 04:04:24 jeremy Exp $
 """
 from zope.documenttemplate.dt_util import parse_params, name_param, html_quote, str
 import re, sys
@@ -372,7 +372,7 @@ def len_comma(v, name='(Unknown name)', md={}):
     return thousands_commas(str(len(v)))
 
 
-StructuredText=None
+StructuredText = None
 def structured_text(v, name='(Unknown name)', md={}):
     global StructuredText
     if StructuredText is None:

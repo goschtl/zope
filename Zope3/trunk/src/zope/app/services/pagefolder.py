@@ -16,27 +16,26 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.14 2003/09/21 17:32:54 jim Exp $
+$Id: pagefolder.py,v 1.15 2003/11/04 04:04:25 jeremy Exp $
 """
 __metaclass__ = type
 
 from zope.app.container.btree import BTreeContainer
-from zope.app.interfaces.services.view import IZPTTemplate
-from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.traversing import getPath
-from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.services.registration import RegistrationManagerContainer
-from zope.proxy import removeAllProxies
-from zope.app.services.view import PageRegistration
-from zope.app.interfaces.services.pagefolder import IPageFolder
-from zope.app.interfaces.services.registration import IRegistrationManager
-from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
+from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.interfaces.fssync import IObjectDirectory
-from zope.interface import implements
+from zope.app.interfaces.services.pagefolder import IPageFolder
 from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import IRegistrationManager
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.view import IZPTTemplate
+from zope.app.services.registration import RegistrationManagerContainer
+from zope.app.services.view import PageRegistration
+from zope.app.traversing import getPath
+from zope.interface import implements
+from zope.proxy import removeAllProxies
+from zope.publisher.interfaces.browser import IBrowserPresentation
 
 class PageFolder(RegistrationManagerContainer, BTreeContainer):
 

@@ -13,11 +13,10 @@
 ##############################################################################
 """High-level class to support bundle management on an fssync checkout.
 
-$Id: fsbundle.py,v 1.3 2003/10/06 20:04:32 fdrake Exp $
+$Id: fsbundle.py,v 1.4 2003/11/04 04:04:27 jeremy Exp $
 """
 
 import os
-import posixpath
 import shutil
 
 from zope.fssync.copier import ObjectCopier

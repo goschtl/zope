@@ -13,10 +13,12 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.15 2003/09/21 17:34:26 jim Exp $
+$Id: test_proxy.py,v 1.16 2003/11/04 04:04:23 jeremy Exp $
 """
 import pickle
+import sys
 import unittest
+
 from zope.testing.doctestunit import DocTestSuite
 from zope.proxy import ProxyBase
 
@@ -277,7 +279,6 @@ class ProxyTestCase(unittest.TestCase):
         P = self.new_proxy
 
         # Before 2.3, coerce() of two proxies returns them unchanged
-        import sys
         fixed_coerce = sys.version_info >= (2, 3, 0)
 
         x = P(1)
@@ -557,7 +558,6 @@ def test_suite():
     return suite
 
 if __name__ == "__main__":
-    import sys
     runner = unittest.TextTestRunner(sys.stdout)
     result = runner.run(test_suite())
     newerrs = len(result.errors) + len(result.failures)

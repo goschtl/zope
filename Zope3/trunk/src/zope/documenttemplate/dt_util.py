@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: dt_util.py,v 1.4 2003/06/30 16:57:11 jeremy Exp $
+$Id: dt_util.py,v 1.5 2003/11/04 04:04:24 jeremy Exp $
 """
 import re
 import math
@@ -174,12 +174,6 @@ def careful_pow(self, x, y, z):
     return pow(x,y,z)
 
 d['pow'] = careful_pow
-
-try:
-    import random
-    d['random'] = random
-except:
-    pass
 
 try:
     import DateTime

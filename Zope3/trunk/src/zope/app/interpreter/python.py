@@ -13,9 +13,11 @@
 ##############################################################################
 """Python Code Interpreter
 
-$Id: python.py,v 1.2 2003/08/21 14:19:24 srichter Exp $
+$Id: python.py,v 1.3 2003/11/04 04:04:27 jeremy Exp $
 """
-import sys, StringIO
+import StringIO
+import sys
+
 from zope.app.interfaces.interpreter import IInterpreter
 from zope.interface import implements
 from zope.security.interpreter import RestrictedInterpreter

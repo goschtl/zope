@@ -13,16 +13,19 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.7 2003/11/03 21:37:56 jeremy Exp $
+$Id: servicecontainer.py,v 1.8 2003/11/04 04:04:25 jeremy Exp $
 """
 
-from zope.component.exceptions import ComponentLookupError
+import zope.interface
+
+from transaction import get_transaction
+from zope.app.container.contained import Contained
+from zope.app.event.function import Subscriber
+from zope.app import zapi
 from zope.app.interfaces.services.service import IPossibleSite, ISite
+from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService
 from zope.interface import implements
-from zope.app.container.contained import Contained
-from zope.app import zapi
-import zope.interface
 
 class ServiceManagerContainer(Contained):
 
@@ -58,13 +61,6 @@ class ServiceManagerContainer(Contained):
             ISite,
             zope.interface.directlyProvidedBy(self))
 
-
-
-
-from zope.app.event.function import Subscriber
-from transaction import get_transaction
-from zope.component.exceptions import ComponentLookupError
-
 def fixup(event):
         database = event.database
         connection = database.open()
@@ -97,5 +93,3 @@ def fixfolder(folder):
     for item in folder.values():
         if IPossibleSite.isImplementedBy(item):
             fixfolder(item)
-                
-                

@@ -15,11 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: typereg.py,v 1.4 2003/06/04 10:46:37 stevea Exp $
+$Id: typereg.py,v 1.5 2003/11/04 04:04:25 jeremy Exp $
 """
 
 from zope.interface import implements, providedBy
-from zope.schema import getFields
+import zope.schema
 
 from zope.app.interfaces.schemagen import ITypeRepresentation
 
@@ -90,7 +90,7 @@ class DefaultFieldRepresentation:
         # representations of them, and sort out appropriate imports.
         names = {} # used as set of property names, ignoring values
         for interface in providedBy(field):
-            names.update(getFields(interface))
+            names.update(zope.schema.getFields(interface))
         # getFields only returns data for Fields in the interface.
         # Otherwise, it returns an empty dict.
 
@@ -131,8 +131,6 @@ class DefaultFieldRepresentation:
     getTypes = staticmethod(getTypes)
 
     def _getImportList(field):
-        import zope.schema
-
         field_class = type(field)
         if getattr(zope.schema, field_class.__name__, None) is field_class:
             module_name = 'zope.schema'

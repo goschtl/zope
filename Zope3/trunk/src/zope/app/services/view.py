@@ -12,44 +12,36 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.35 2003/09/21 17:31:12 jim Exp $
+$Id: view.py,v 1.36 2003/11/04 04:04:25 jeremy Exp $
 """
 __metaclass__ = type
-
-from __future__ import generators
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 
-from zope.publisher.interfaces.browser import IBrowserPresentation
-
-from zope.component.interfaces import IViewService, IGlobalViewService
-from zope.component.exceptions import ComponentLookupError
-
+from zope.app.component.nextservice import getNextService
+from zope.app.container.contained import Contained
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app import zapi
 from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import IRegistry, IRegistration
+from zope.app.interfaces.services.service import ISimpleService
+from zope.app.interfaces.services.view import ILocalViewService
+from zope.app.interfaces.services.view import IPageRegistration
+from zope.app.interfaces.services.view import IViewRegistration
+from zope.app.services.adapter import PersistentAdapterRegistry
 from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
 from zope.app.services.servicenames import Views
-from zope.app.component.nextservice import getNextService
-from zope.app import zapi
-from zope.interface import implements
-
-from zope.security.checker import NamesChecker, ProxyFactory
-
-from zope.proxy import removeAllProxies
-from zope.exceptions import NotFoundError
-
-from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
-from zope.app.interfaces.services.view import IViewRegistration
-from zope.app.interfaces.services.view import IPageRegistration
-from zope.app.interfaces.services.view import ILocalViewService
-from zope.app.services.adapter import PersistentAdapterRegistry
+from zope.component.exceptions import ComponentLookupError
+from zope.component.interfaces import IViewService, IGlobalViewService
 from zope.configuration.exceptions import ConfigurationError
-from zope.app.interfaces.services.service import ISimpleService
-from zope.app.container.contained import Contained
+from zope.exceptions import NotFoundError
+from zope.interface import implements
+from zope.proxy import removeAllProxies
+from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.security.checker import NamesChecker, ProxyFactory
 
 class ViewService(Persistent, Contained):
 
@@ -350,7 +342,8 @@ class PageRegistration(ViewRegistration):
         if self.template and self.attribute:
             raise ConfigurationError(
                 "PageRegistration for %s view name %s: "
-                "Cannot have both 'template' and 'attribute' at the same time." %
+                "Cannot have both 'template' and 'attribute' "
+                "at the same time." %
                 (self.forInterface, self.viewName))
 
         if not self.template and not self.attribute:

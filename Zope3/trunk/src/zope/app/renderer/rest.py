@@ -13,12 +13,10 @@
 ##############################################################################
 """ReStructured Text Renderer Classes
 
-$Id: rest.py,v 1.4 2003/11/03 21:37:57 jeremy Exp $
+$Id: rest.py,v 1.5 2003/11/04 04:04:26 jeremy Exp $
 """
-import re
 import docutils.core, docutils.io
-from docutils import writers
-from docutils import nodes
+from docutils import nodes, writers
 from docutils.writers.html4css1 import HTMLTranslator
 from docutils.writers.html4css1 import Writer as HTMLWriter
 

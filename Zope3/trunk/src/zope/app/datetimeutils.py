@@ -15,10 +15,10 @@
 
 Encapsulation of date/time values
 
-$Id: datetimeutils.py,v 1.9 2003/09/24 00:16:26 garrett Exp $
+$Id: datetimeutils.py,v 1.10 2003/11/04 04:04:28 jeremy Exp $
 """
 
-__version__='$Revision: 1.9 $'[11:-2]
+__version__='$Revision: 1.10 $'[11:-2]
 
 import math
 import re
@@ -30,7 +30,7 @@ from types import StringTypes
 try:
     from time import tzname
 except ImportError:
-    tzname = ('UNKNOWN','UNKNOWN')
+    tzname = ('UNKNOWN', 'UNKNOWN')
 
 # These are needed because the various date formats below must
 # be in english per the RFCs. That means we can't use strftime,

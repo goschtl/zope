@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.12 2003/09/21 17:33:57 jim Exp $
+$Id: instance.py,v 1.13 2003/11/04 04:04:24 jeremy Exp $
 """
 __metaclass__ = type
 
@@ -22,14 +22,13 @@ from persistence.dict import PersistentDict
 
 from zope.app.event import publish
 from zope.app.interfaces.workflow.stateful import AUTOMATIC
+from zope.app.interfaces.workflow.stateful import IAfterTransitionEvent
+from zope.app.interfaces.workflow.stateful import IBeforeTransitionEvent
+from zope.app.interfaces.workflow.stateful import IRelevantDataChangeEvent
 from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
 from zope.app.interfaces.workflow.stateful import ITransitionEvent
 from zope.app.interfaces.workflow.stateful import \
-     IBeforeTransitionEvent, IAfterTransitionEvent
-from zope.app.interfaces.workflow.stateful import IRelevantDataChangeEvent
-from zope.app.interfaces.workflow.stateful import \
      IBeforeRelevantDataChangeEvent, IAfterRelevantDataChangeEvent
-from zope.app.interfaces.workflow.stateful import AUTOMATIC
 from zope.app.traversing import getParent
 from zope.app.workflow.instance import ProcessInstance
 from zope.component import getService, getServiceManager

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.22 2003/10/31 23:09:16 garrett Exp $
+$Id: hub.py,v 1.23 2003/11/04 04:04:25 jeremy Exp $
 """
 
 from __future__ import generators
@@ -26,38 +26,34 @@ from zope.app import zapi
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 
-from zope.app.traversing import getPath, canonicalPath
-
 from zope.component import getAdapter, getService
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
 from zope.app.services.servicenames import EventSubscription
 
-from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.event import IObjectEvent
 from zope.app.interfaces.container import IObjectRemovedEvent
 from zope.app.interfaces.container import IObjectMovedEvent
+from zope.app.interfaces.container import IObjectAddedEvent
+from zope.app.interfaces.content.folder import IFolder
+from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectCreatedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.hub import IObjectHub, ObjectHubError
-from zope.app.services.event import ServiceSubscriberEventChannel
 from zope.app.interfaces.services.hub import IObjectRegisteredHubEvent
 from zope.app.interfaces.services.hub import IObjectUnregisteredHubEvent
 from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
 from zope.app.interfaces.services.hub import IObjectMovedHubEvent
 from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
-from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.services.service import ISimpleService
-from zope.interface import implements
-from zope.app.interfaces.event import ISubscriber
-from zope.app.interfaces.container import IObjectAddedEvent
-from zope.app.interfaces.content.folder import IFolder
-from zope.app.interfaces.traversing import ITraversable
-from zope.app.services.servicenames import HubIds
+from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.container.contained import ObjectAddedEvent
+from zope.interface import implements
+from zope.app.services.event import ServiceSubscriberEventChannel
+from zope.app.services.servicenames import HubIds
 
-from zope.app.traversing import traverse, traverseName, getPath, getRoot
-from zope.app.interfaces.services.hub import ObjectHubError
+from zope.app.traversing \
+     import getPath, canonicalPath, traverse, traverseName, getRoot
 from zope.app.interfaces.services.hub import ISubscriptionControl
 from persistence import Persistent
 from zope.app.container.contained import Contained

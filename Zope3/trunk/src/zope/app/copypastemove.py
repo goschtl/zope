@@ -14,21 +14,20 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.11 2003/09/21 17:30:08 jim Exp $
+$Id: copypastemove.py,v 1.12 2003/11/04 04:04:28 jeremy Exp $
 """
 
 from zope.app import zapi
+from zope.app.event import publish
+from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.interfaces.container import IAddNotifiable
 from zope.app.interfaces.container import INameChooser
-from zope.proxy import removeAllProxies
+from zope.app.location import locationCopy
 from zope.interface import implements
 from zope.exceptions import NotFoundError, DuplicationError
-from zope.app.location import locationCopy
-from zope.app.event import publish
-from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.proxy import removeAllProxies
 
 class ObjectMover:
