@@ -2,10 +2,10 @@
  Zope X3 Security Target for EAL 1
 ===================================
 
-:Version: $Revision: 1.4 $ (Draft)
-:Date: $Date: 2003/07/22 17:27:51 $
+:Version: $Revision: 1.5 $ (Draft)
+:Date: $Date: 2003/10/02 07:01:24 $
 :Authors: Steve Alexander <steve@catbox.net>, Christian Theune <ct@gocept.com>
-:DocumentID: ST_ZOPE_001
+:DocumentID: $Id: SecurityTarget.txt,v 1.5 2003/10/02 07:01:24 ctheune Exp $
 
 .. contents::
 
@@ -26,17 +26,17 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: ST_ZOPE_001
+:Document ID: $Id: SecurityTarget.txt,v 1.5 2003/10/02 07:01:24 ctheune Exp $
 
-:Document Version: $Version$
+:Document Version: $Revision: 1.5 $
 
-:Origin: 
+:Origin: Zope Corporation public CVS server
 
 :TOE Reference: Zope X3
 
 :TOE Commercial Name: Zope X3
 
-:TOE Short Description: Platform independent, Python, XXX feature article from zope.org
+:TOE Short Description: A platform independent web application server and framework written in Python
 
 :Product Type: Web Application Server
 
@@ -93,49 +93,122 @@ TOE description
 Overview
 --------
 
-For b uilding Web application, framework, ...
-Functionality should be provided, main structure
+Zope 3 (also referred to as "Zope") is a component based framework that may be
+used to built web applications. It's development is historically focused but
+not limited on building content management systems.
+
+It is written as platform independent software using the Python programming
+language. Therefore it is available for Windows NT, Linux, MacOS X and other
+operating systems.
+
+Zope 3 features a set of core components that form an infrastructore for 
+building applications by reusing existing components and adding new components
+that work together by defined interfaces.
+
+The core functionality contains a web server with WebDAV support, a ftp server
+and a XML/RPC server.  It has components that provide functionality for
+security management including administration of users, roles and permissions.
+Other core components cover an object database, indexing mechanisms,
+workflow, a web interface, SQL support an XML-based and a non-XML based templating
+mechanism, Python Scripting, I18n and L10n support and many more.
+
+Finally Zope can be fully modified and extended by the use of "products" that
+are packages that can contain configuration directives, templates, python code
+and classes. Those are intended to work together seamlessly using the
+ComponentArchitecture to plug them together into more complex systems.
 
 TOE definition
 --------------
 
-Product type: Web application server software that provides functionality for
-restricting operations on objects based on permissions declared to protect
-those operations. 
+As a general rule it is possible to describe all activities with and within Zope as
+"operations" performed on "objects". The need for security adds a protecting
+subject to this by guarding operations with "permissions".
 
-Principals are granted permissions both statically via configuration files and
-dynamically via settings in the object database.  
+Users of the system are internally identified with "principals" which act on
+their behalf.  Those principals are granted permissions (both statically via
+configuration files and dynamically via settings in the object database) within
+an context to allow them performing operations on a selected set of objects.
 
-You can use roles to mediate between principals and permissions. 
+To make assignments between several permissions and several principals easy you
+can define roles.  Those can be thought of as "hats" or "responsibilities" a
+user may have, where each responsibility grants the user a different *set* of
+permissions.  A role exists of a list of permissions and can be granted to a
+principal within a context.
 
 Principals are authenticated in various way depending on the means of
 connection to a server.  Authentication usually envolves a username-password
-such as for FTP-Authentication and HTTP-Basic-Authentication.  Other
+pair such as for FTP-Authentication and HTTP-Basic-Authentication.  Other
 authentication mechanisms are possible.
 
 TOE Development and Production
 ------------------------------
 
-Only authorised persons can modify the Zope source code.
+The development of Zope 3 is driven by the Zope Corporation together with the
+free community of Zope developers. The Zope 3 source code is free to be
+retrieved and used by everybody.
 
-The official / canonical version of Zope is held by Zope Corporation (ZC) in
-the ZC the repository.
+The official Zope 3 source code is maintained within the revision management
+system CVS.  Everybody is free to retrieve any available version of the code
+anonymously. The certified version is available on a named branch and
+identified by a tag.
 
-The certified version is held as a named branch in the ZC repository.
+To ensure a stable production every developer wishing to directly access the
+repository they must retrieve authorisation from Zope Corporation. This is
+expressed by providing a signed contributors agreement. (XXX Download the
+current CA and refer to it)
 
-Open source
+Write access to the repository is only available through ssh and by providing a
+public key to the maintainer of the repository.
 
 All changes to source code and other files in the repository are reported
 publically to interested persons including those persons that are responsible
 for overseeing the quality and direction of parts of Zope.
 
 Any change to a file in the repository causes that file to have a new version
-number and the exact change is recorded.
+number and the exact change is recorded. Before writing a change back to the
+repository on a branch that is declared for public use or for main development
+(release branches, HEAD, main development branches) the developer must
+successfully run the prepared unit tests to assure that no code breaks when
+applying his changes. Additionally every developer is required to provide unit
+test for new code he writes or problems he solves, as far as applicable.
 
 TOE Life Cycle
 --------------
 
-describe releases here
+The TOE is developed in cycles. New features are introduced in iterative steps
+called "feature release" and solutions to known problems are introduced by
+steps called "bugfix releases".
+
+The version numbers of the TOE releases express if it is a feature or bugfix
+release like this: 3.f.b where f and b are continuous given numbers and f
+expresses the f-th feature relase for Zope 3 and b expresses the b-th bugfix
+relase for the f-th feature release. Every feature relase starts with bugfix
+release 0 in which case the bugfix number may be ommitted. (E.g. 3.1.4,
+3.1.0/3.1, 3.0.0/3.0)
+
+Test releases are identified by adding their grade (a for alpha, b for beta, rc
+for release candidate) at the end of the version number that it is targeted at.
+(3.1.4b2 would be the second beta release for the upcoming version 3.1.4)
+
+New features are proposed and agreed within the developers community by the use
+of mailinglists and wiki pages. They are incorportated in an agreed feature
+release.
+
+Until agreed to be ready for public test the development and until all features
+are available (but maybe untested), development of a feature release happens
+onthe CVS HEAD branch. WHen starting public releases, no further features are
+allowed to be introduced and the development enters maintanence mode. Therefore
+a named branch is created to identify changes that are applied for maintenance.
+New features will be introduced on the HEAD branch that is heading for the next
+feature release.
+
+Therefore an overall of about 3 concurrent maintained versions can exist:
+
+        * old feature release in maintenance mode
+        
+        * upcoming feature release, already in maintance mode but not stable
+        
+        * upcoming feature relaese in free development mode
 
 TOE Boundaries
 --------------
@@ -162,22 +235,35 @@ Assets
 
 The following assets have been identified:
 
-    =================   ===========================================
-    Asset Name          Description                 
-    =================   ===========================================
-    Content-Objects     
-    Operations
-    Principals          Principals 
-    Role grants
+    =================   ====================================================
+    Asset Name          Description
+    =================   ====================================================
+    (Content) objects   Generic objects (instances of Python classes) that 
+                        are stored and controlled by Zope and carry 
+                        information that is to be protected. Objects are 
+                        stored in a connected manner that is typically 
+                        hierarchical and allows the derivation of 
+                        information by the objects context.
+    Operations          Operations are the way of accessing and modifying 
+                        data provided by (content) objects.
+    Principals          Principals are the systems representation of acting 
+                        individuals. A principal acts in behalf of the user 
+                        and represents a (content) object of it's own.
+    Permission          A permission is a name guarding an operation.
+    Role grants         A permission grant associates a role with a
+                        permission to allow or deny an operation in the context.
+                        As a third state, permissions may be declared to
+                        be acquired from the context. 
+
     Permission grants
     Audit data
-    =================   ===========================================
+    =================   ====================================================
 
 Subjects
 --------
 
-Outside of Zope the "system-administrator" configures the Config-files as an
-initial step before the first starting of Zope occurs.
+Outside of Zope the "system-administrator" configures the config files as an
+initial step before the first start of Zope happens.
 
 Subjects are instantiated principals.
 
@@ -897,6 +983,9 @@ TOE
     
 TSF
     TOE Security Functions
+
+Acquisition
+    XXX Jim? A two sentence description of acquisition in Zope 3 that makes sense? :)
 
 TODO
 ====
