@@ -23,26 +23,26 @@ from zope.app.folder.interfaces import IRootFolder
 from zope.app.file import File
 from zope.app.testing.functional import BrowserTestCase
 from zope.app.onlinehelp.tests.test_onlinehelp import testdir
-from zope.app.onlinehelp import help
+from zope.app.onlinehelp import globalhelp
 
 class Test(BrowserTestCase):
 
     def test_contexthelp(self):
         path = os.path.join(testdir(), 'help.txt')
-        help.registerHelpTopic('ui','help','Help',path,
-             IRootFolder,
-             None)
+        globalhelp.registerHelpTopic('help', 'Help', '', path, IRootFolder)
         path = os.path.join(testdir(), 'help2.txt')
-        help.registerHelpTopic('ui','help2','Help2',path,
-             IRootFolder,
-             'contents.html')
-        root = self.getRootFolder()
-        root['file']=File()
+        globalhelp.registerHelpTopic('help2', 'Help2', '', path, IRootFolder,
+            'contents.html')
+
         transaction.commit()
 
-        response = self.publish(
-            '/contents.html',
-            basic='mgr:mgrpw')
+        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
+                                form={'type_name':u'zope.app.content.File', 
+                                      'id':u'file'})
+
+        self.assertEqual(response.getStatus(), 302)
+
+        response = self.publish('/contents.html', basic='mgr:mgrpw')
 
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
@@ -50,24 +50,21 @@ class Test(BrowserTestCase):
             "javascript:popup('contents.html/++help++/@@contexthelp.html") >= 0)
 
         response = self.publish(
-            '/contents.html/++help++/@@contexthelp.html',
-            basic='mgr:mgrpw')
+            '/contents.html/++help++/@@contexthelp.html', basic='mgr:mgrpw')
 
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
         self.assert_(body.find("This is another help!") >= 0)
 
-        response = self.publish(
-            '/index.html/++help++/@@contexthelp.html',
-            basic='mgr:mgrpw')
+        response = self.publish('/index.html/++help++/@@contexthelp.html', 
+                                basic='mgr:mgrpw')
 
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
         self.assert_(body.find("This is a help!") >= 0)
 
-        response = self.publish(
-            '/file/edit.html/++help++/@@contexthelp.html',
-            basic='mgr:mgrpw')
+        response = self.publish('/file/edit.html/++help++/@@contexthelp.html',
+                                basic='mgr:mgrpw')
 
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
@@ -75,14 +72,11 @@ class Test(BrowserTestCase):
             "Welcome to the Zope 3 Online Help System.") >= 0)
 
         path = '/contents.html/++help++'
-        response = self.publish(
-            path,
-            basic='mgr:mgrpw')
+        response = self.publish(path, basic='mgr:mgrpw')
 
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
-        self.assert_(body.find(
-            "Online Help - TOC") >= 0)
+        self.assert_(body.find("Topics") >= 0)
 
         self.checkForBrokenLinks(body, path, basic='mgr:mgrpw')
 

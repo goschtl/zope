@@ -32,8 +32,8 @@ from onlinehelp import OnlineHelp
 
 # Global Online Help Instance
 path = os.path.join(os.path.dirname(zope.app.__file__),
-                    'onlinehelp', 'help','welcome.stx')
-help = OnlineHelp('Online Help', path)
+                    'onlinehelp', 'help', 'welcome.stx')
+globalhelp = OnlineHelp('Online Help', path)
 
 
 class helpNamespace(object):
@@ -47,8 +47,8 @@ class helpNamespace(object):
         Returns the global `OnlineHelp` instance with the traversal
         context.
         """
-        help.context = self.context
-        return help
+        globalhelp.context = self.context
+        return globalhelp
 
 def getTopicFor(obj, view=None):
     """Determine topic for an object and optionally a view.
@@ -61,6 +61,21 @@ def getTopicFor(obj, view=None):
     >>> import os
     >>> from tests.test_onlinehelp import testdir
     >>> from tests.test_onlinehelp import I1, Dummy1, Dummy2
+    >>> from zope.app.tests import ztapi
+    >>> from zope.component.interfaces import IFactory
+    >>> from zope.component.factory import Factory
+    >>> from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
+    >>> from zope.app.onlinehelp.onlinehelptopic import RESTOnlineHelpTopic
+    >>> from zope.app.onlinehelp.onlinehelptopic import STXOnlineHelpTopic
+    >>> from zope.app.onlinehelp.onlinehelptopic import ZPTOnlineHelpTopic
+    >>> default = Factory(OnlineHelpTopic)
+    >>> rest = Factory(RESTOnlineHelpTopic)
+    >>> stx = Factory(STXOnlineHelpTopic)
+    >>> zpt = Factory(ZPTOnlineHelpTopic)
+    >>> ztapi.provideUtility(IFactory, default, 'onlinehelp.topic.default')
+    >>> ztapi.provideUtility(IFactory, rest, 'onlinehelp.topic.rest')
+    >>> ztapi.provideUtility(IFactory, stx, 'onlinehelp.topic.stx')
+    >>> ztapi.provideUtility(IFactory, zpt, 'onlinehelp.topic.zpt')
     >>> path = os.path.join(testdir(), 'help.txt')
 
     Register a help topic for the interface 'I1' and the view 'view.html'
@@ -105,8 +120,8 @@ def getTopicFor(obj, view=None):
 
 
 def _clear():
-    global help
-    help.__init__(help.title, help.path)
+    global globalhelp
+    globalhelp.__init__(globalhelp.title, globalhelp.path)
 
 
 cleanup.addCleanUp(_clear)

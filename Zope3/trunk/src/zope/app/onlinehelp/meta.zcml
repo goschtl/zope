@@ -2,10 +2,14 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:meta="http://namespaces.zope.org/meta">
 
-  <meta:directive 
-      namespace="http://namespaces.zope.org/help"
+  <meta:directives namespace="http://namespaces.zope.org/help">
+
+  <meta:complexDirective
       name="register"
-      schema=".metadirectives.IRegisterDirective"
-      handler=".metaconfigure.register" />
+      schema=".metadirectives.IOnlineHelpTopicDirective"
+      handler=".metaconfigure.OnlineHelpTopicDirective"
+      />
+
+  </meta:directives>
 
 </configure>

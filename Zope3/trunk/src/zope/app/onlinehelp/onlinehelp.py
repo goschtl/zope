@@ -20,6 +20,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import os
+
 from zope.interface import implements
 from zope.app import zapi
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -30,6 +32,9 @@ from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 class OnlineHelp(OnlineHelpTopic):
     """
     >>> import os
+    >>> from zope.app.tests import ztapi
+    >>> from zope.component.interfaces import IFactory
+    >>> from zope.component.factory import Factory
     >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
     >>> from zope.app.onlinehelp.tests.test_onlinehelp import I1, Dummy1
     >>> path = os.path.join(testdir(), 'help.txt')
@@ -48,7 +53,19 @@ class OnlineHelp(OnlineHelpTopic):
     True
 
     Register a new subtopic for interface 'I1' and view 'view.html'
-    
+
+    >>> from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
+    >>> from zope.app.onlinehelp.onlinehelptopic import RESTOnlineHelpTopic
+    >>> from zope.app.onlinehelp.onlinehelptopic import STXOnlineHelpTopic
+    >>> from zope.app.onlinehelp.onlinehelptopic import ZPTOnlineHelpTopic
+    >>> default = Factory(OnlineHelpTopic)
+    >>> rest = Factory(RESTOnlineHelpTopic)
+    >>> stx = Factory(STXOnlineHelpTopic)
+    >>> zpt = Factory(ZPTOnlineHelpTopic)
+    >>> ztapi.provideUtility(IFactory, default, 'onlinehelp.topic.default')
+    >>> ztapi.provideUtility(IFactory, rest, 'onlinehelp.topic.rest')
+    >>> ztapi.provideUtility(IFactory, stx, 'onlinehelp.topic.stx')
+    >>> ztapi.provideUtility(IFactory, zpt, 'onlinehelp.topic.zpt')
     >>> path = os.path.join(testdir(), 'help2.txt')
     >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
     ...     path, I1, 'view.html')
@@ -98,15 +115,20 @@ class OnlineHelp(OnlineHelpTopic):
 
     def registerHelpTopic(self, parent_path, id, title,
                           doc_path, interface=None, view=None,
-                          resources=None):
+                          class_=None, resources=None):
         "See zope.app.onlineHelp.interfaces.IOnlineHelp"
-        # Create topic
-        topic = OnlineHelpTopic(id,
-                                title,
-                                doc_path,
-                                parent_path,
-                                interface,
-                                view)
+
+        if not os.path.exists(doc_path):
+            raise ConfigurationError(
+                "Help Topic definition %s does not exist" % doc_path
+                )
+
+        if class_ is None:
+            class_ = OnlineHelpTopic
+        
+        
+        # Create topic base on the custom class or OnlinHelpTopic
+        topic = class_(id, title, doc_path, parent_path, interface, view)
 
         # add resources to topic
         if resources is not None:
@@ -128,7 +150,8 @@ class OnlineHelp(OnlineHelpTopic):
                 topic[t[1].id] = t[1]
 
         # Add topic to utilities registry
+        #utils = zapi.getService(Utilities)
+        #utils.provideUtility(IOnlineHelpTopic, topic, topic.getTopicPath())
+
         zapi.getGlobalSiteManager().provideUtility(
             IOnlineHelpTopic, topic, topic.getTopicPath())
-
-

@@ -9,23 +9,41 @@
       title="Menu for displaying help actions to be performed with popup"
       />
 
-  <pages
-      for="zope.app.onlinehelp.interfaces.IOnlineHelpTopic"
-      permission="zope.View"
-      class=".OnlineHelpTopicView"
-      >
-
-      <page name="index.html" template="helptopic.pt" />
-      <page name="getTopicTree" attribute="getTopicTree" />
-
-  </pages>
-
+  <!-- generic topic tree -->
   <page
-      for="zope.app.onlinehelp.interfaces.IOnlineHelp"
+      for="*"
+      name="getTopicTree"
       permission="zope.View"
-      class=".ContextHelpView"
-      name="contexthelp.html" 
-      template="contexthelp.pt" />
+      class=".tree.OnlineHelpTopicTreeView"
+      attribute="getTopicTree"
+      />
+
+  <!-- simply topic view -->
+  <page
+      name="index.html"
+      for="zope.app.onlinehelp.interfaces.IOnlineHelpTopic"
+      class=".OnlineHelpTopicView"
+      permission="zope.View"
+      attribute="renderTopic"
+      />
+
+  <!-- topic view for page template based topics -->
+  <page
+      name="index.html"
+      for="zope.app.onlinehelp.interfaces.IZPTOnlineHelpTopic"
+      class=".ZPTOnlineHelpTopicView"
+      permission="zope.View"
+      attribute="renderTopic"
+      />
+
+  <!-- generic contextual topic view -->
+  <page
+      name="contexthelp.html"
+      for="zope.app.onlinehelp.interfaces.IOnlineHelp"
+      class=".ContextHelpView" 
+      permission="zope.View"
+      attribute="getContextualTopicView"
+      />
 
   <menuItem
       for="*"
@@ -33,6 +51,51 @@
       menu="help_actions"
       title="Help"
       action="++help++/@@contexthelp.html"
+      />
+
+  <!-- resources for onlinhelp -->
+  <resource 
+      name="onlinehelp.css" 
+      file="onlinehelp.css"
+      />
+
+  <resource 
+      name="tree.css" 
+      file="tree.css"
+      />
+
+  <resource 
+      name="tree.js" 
+      file="tree.js"
+      />
+
+  <resource 
+      name="minus.gif" 
+      file="minus.gif"
+      />
+
+  <resource 
+      name="plus.gif" 
+      file="plus.gif"
+      />
+
+  <resource 
+      name="item.gif" 
+      file="item.gif"
+      />
+
+  <page
+      for="*"
+      name="onlinehelp_macros"
+      permission="zope.View"
+      template="onlinehelp_macros.pt"
+      />
+
+  <page
+      for="*"
+      name="onlinehelp_navigation_macros"
+      permission="zope.View"
+      template="onlinehelp_navigation_macros.pt"
       />
  
 </zope:configure>

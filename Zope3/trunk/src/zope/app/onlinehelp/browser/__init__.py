@@ -17,61 +17,24 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.security.proxy import removeSecurityProxy
+
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.publisher.browser import BrowserView
 from zope.app.publisher.interfaces.browser import IBrowserView
 
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, IOnlineHelp
 from zope.app.onlinehelp import getTopicFor
 
-class TopicTreeView(object):
 
-    def __init__(self, context, request, base_url=''):
-        self.context = context
-        self.treecontext = context
-        self.request = request
-        self.base_url = base_url
-
-    def getTopicTree(self):
-        """ return the tree of help topics."""
-        # set up the root values
-        if self.base_url == '':
-            self.base_url = '/++help++'
-        self.treecontext = zapi.getUtility(IOnlineHelp,"OnlineHelp")
-        return self.subtopics()
-
-    topicTree = property(getTopicTree)
-
-    def listHelpItems(self):
-        """ recurse through the help topic tree"""
-        children=[]
-        for name, helpitem in self.treecontext.items():
-            if IOnlineHelpTopic.providedBy(helpitem):
-                info={}
-                info['title'] = helpitem.title
-                info['path'] = self.base_url+'/'+name
-                topic = TopicTreeView(
-                    helpitem,
-                    self.request,
-                    self.base_url+'/'+name)
-                
-                info['topics']=topic.subtopics()
-                children.append(info)
-
-        return children
-
-    subtopics = ViewPageTemplateFile('topiclink.pt')
-
-
-class OnlineHelpTopicView(TopicTreeView):
+class OnlineHelpTopicView(BrowserView):
     """View for one particular help topic."""
 
     def __init__(self, context, request):
         super(OnlineHelpTopicView, self).__init__(context, request)
-        self.context = context
-        self.request = request
 
-    def renderTopic(self):
+    def topicContent(self):
         """ render the source of the help topic """
         source = zapi.createObject(None,
                                    self.context.type,
@@ -80,23 +43,33 @@ class OnlineHelpTopicView(TopicTreeView):
         html = view.render()
         return html
 
-class ContextHelpView(TopicTreeView):
+    renderTopic = ViewPageTemplateFile('helptopic.pt')
+
+
+class ZPTOnlineHelpTopicView(BrowserView):
+    """View for a page template based help topic."""
+
+    def __init__(self, context, request):
+        super(ZPTOnlineHelpTopicView, self).__init__(context, request)
+
+    def renderTopic(self):
+        """Render the registred topic."""
+        path = self.context.path
+        view = ViewPageTemplateFile(path)
+        return view(self)
+
+
+class ContextHelpView(BrowserView):
 
     def __init__(self, context, request):
         super(ContextHelpView, self).__init__(context, request)
-        self.context = context
-        self.request = request
         self.topic = None
 
-    def renderContextTopic(self):
+    def getContextualTopicView(self):
         """ retrieve and render the source of a context help topic """
         topic = self.getContextHelpTopic()
-        source = zapi.createObject(None,
-                                   topic.type,
-                                   topic.source)
-        view = zapi.getMultiAdapter((source, self.request))
-        html = view.render()
-        return html
+        view = zapi.getMultiAdapter((topic, self.request), name='index.html')
+        return view.renderTopic()
 
     def getContextHelpTopic(self):
         """ Retrieve a help topic based on the context of the
@@ -140,4 +113,3 @@ class ContextHelpView(TopicTreeView):
         return self.topic
 
     contextHelpTopic = property(getContextHelpTopic)
-

@@ -17,11 +17,13 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.configuration.fields import GlobalInterface, Path, MessageID, Tokens
 from zope.interface import Interface
 from zope.schema import BytesLine, TextLine
+from zope.configuration.fields import GlobalInterface, GlobalObject
+from zope.configuration.fields import Path, MessageID, Tokens
 
-class IRegisterDirective(Interface):
+
+class IOnlineHelpTopicDirective(Interface):
     """Register an online topic.
 
     Optionally you can register a topic for a component and view.
@@ -59,6 +61,12 @@ class IRegisterDirective(Interface):
         title=u"Path to File",
         description=u"Path to the file that contains the Help Topic content.",
         required=True)
+
+    class_ = GlobalObject(
+        title=u"Factory",
+        description=u"The factory is the topic class used for initializeing the topic",
+        required=False,
+        )
 
     resources = Tokens(
         title=u"A list of resources.",

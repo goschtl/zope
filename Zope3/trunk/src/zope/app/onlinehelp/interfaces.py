@@ -40,8 +40,12 @@ class IOnlineHelpTopic(IContainer):
     The Content is stored in a file and not the Topic itself.
     The file is only read when required.
     
-    Note that all the Sub-Topic management is done by the `IContainer`
-    interface. 
+    Note that all the Sub-Topic management is done via the utility service.
+    The topic itself is stored in the IContainer implementation after add
+    the right parent topic of a child. This mechanism ensures that we don't 
+    have to take care on the registration order. 
+    The topic resources are stroed in the `IContainer` implementation of 
+    the topic too. 
     """
 
     id = TextLine(
@@ -62,25 +66,11 @@ class IOnlineHelpTopic(IContainer):
         default = _(u"Help Topic"),
         required = True)
 
-    source = SourceText(
-        title=_(u"Source Text"),
-        description=_(u"Renderable source text of the topic."),
-        default=u"",
-        required=True,
-        readonly=True)
-
     path = TextLine(
         title = _(u"Path to the Topic"),
         description = _(u"The Path to the Definition of a Help Topic"),
         default = u"./README.TXT",
         required = True)
-
-    type = Choice(
-        title=_(u"Source Type"),
-        description=_(u"Type of the source text, e.g. structured text"),
-        default=u"zope.source.rest",
-        required = True,
-        vocabulary = "SourceTypes")
 
     interface = GlobalInterface(
         title=_(u"Object Interface"),
@@ -104,7 +94,41 @@ class IOnlineHelpTopic(IContainer):
         """ return the presumed path to the topic, even the topic is not
         traversable from the onlinehelp. """
 
-class IOnlineHelp(IOnlineHelpTopic):
+    def getSubTopics():
+        """Returns IOnlineHelpTopic provided childs."""
+
+
+class ISourceTextOnlineHelpTopic(IOnlineHelpTopic):
+    """REstructed text based online help topic."""
+
+    source = SourceText(
+        title=_(u"Source Text"),
+        description=_(u"Renderable source text of the topic."),
+        default=u"",
+        required=True,
+        readonly=True)
+
+    type = Choice(
+        title=_(u"Source Type"),
+        description=_(u"Type of the source text, e.g. structured text"),
+        default=u"zope.source.rest",
+        required = True,
+        vocabulary = "SourceTypes")
+
+
+class IRESTOnlineHelpTopic(ISourceTextOnlineHelpTopic):
+    """REstructed text based online help topic."""
+
+
+class ISTXOnlineHelpTopic(ISourceTextOnlineHelpTopic):
+    """Structed text based online help topic."""
+
+
+class IZPTOnlineHelpTopic(IOnlineHelpTopic):
+    """Page template based online help topic."""
+
+
+class IOnlineHelp(ISourceTextOnlineHelpTopic):
     """The root of an onlinehelp hierarchy.
     Manages the registration of new topics.
     """

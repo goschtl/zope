@@ -18,12 +18,19 @@ What's the Online Help System?
 
         - HTML documents
 
+        - Page template based content
+
     Topics are also containers and can contain further Topics or 
     resources associated with the Help Topic. 
     This way we can have
     nested help pages, which will help with content organization. It is
     possible to associate a topic with an interface or even 
     a particular view of an interface.
+
+    New topic classes can be easy defined and used. A new topic implementation
+    has only to provide the constructor attributes and the interface 
+    IOnlineHelpTopic. A new topic class can be used as the dotted name of the 
+    class attribute in the "help:register" directive.
 
     The Online Help System is implemented as global service.
 
@@ -51,6 +58,9 @@ Usage:
     -  'view'     - The name of the view for wich this topic is registered.
                  Optional.
 
+    -  'class'    - The dotted path to the class which will be used for initialize
+                 a topic. Optional.
+
     -  'resources'  - A list of resources that can be referenced by the Help Topic (e.g. images). Optional.
 
 
@@ -66,19 +76,38 @@ Examples::
     <!-- Register Help Topics -->
 
     <help:register
-        id="ui"
-        title="Zope UI Help"
+        id="zmi"
+        title="Zope ZMI"
         doc_path="./help/ui.stx"
         resources="mgmt-main-1.png"
         />
-
+  
     <help:register 
         id="welcome"
+        parent="onlinehelp"
         title="Welcome"
-        parent="ui"
-        for="zope.app.onlinehelp.interfaces.IOnlineHelpTopic"
-        view="index.html"
         doc_path="./help/welcome.stx"
+        />
+  
+    <help:register
+        id="onlinehelp"
+        title="Online Help System"
+        doc_path="./help/README.stx"
+        />
+
+    <help:register
+        id="styleguide"
+        title="Zope Style Guide"
+        doc_path="styleguides.txt"
+        class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+        />
+  
+    <help:register
+        id="css"
+        parent="styleguide"
+        title="CSS Style Guide"
+        doc_path="index.html"
+        class="zope.app.onlinehelp.onlinehelptopic.ZPTOnlineHelpTopic"
         />
 
     </configure>
