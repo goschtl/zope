@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.51 2003/08/13 21:27:50 garrett Exp $
+$Id: vocabularywidget.py,v 1.52 2003/08/13 23:44:54 garrett Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -509,12 +509,12 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
     def renderItems(self, value):
         vocabulary = self.context.vocabulary
         # check if we want to select first item
-        if (value == self._missing
+        if (value == self.context.missing_value
             and getattr(self.context, 'firstItem', False)
             and len(vocabulary) > 0):
             # Grab the first item from the iterator:
             values = [iter(vocabulary).next().value]
-        elif value != self._missing:
+        elif value != self.context.missing_value:
             values = [value]
         else:
             values = ()
@@ -537,7 +537,7 @@ class VocabularyMultiEditWidget(MultiDataHelper, VocabularyEditWidgetBase):
     """Vocabulary-backed widget supporting multiple selections."""
 
     def renderItems(self, value):
-        if value == self._missing:
+        if value == self.context.missing_value:
             values = ()
         else:
             values = list(value)
