@@ -1,8 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope"
 	   xmlns:five="http://namespaces.zope.org/five">
 
-  <!-- Copy this file to your INSTANCE_HOME directory and name it
-      'site.zcml' -->
+  <!-- Copy this file to your ``INSTANCE_HOME/etc`` directory -->
 
   <include package="Products.Five" />
   <redefinePermission from="zope2.Public" to="zope.Public" />
