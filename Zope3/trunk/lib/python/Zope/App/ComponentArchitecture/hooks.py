@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: hooks.py,v 1.3 2002/07/12 22:46:08 jim Exp $
+$Id: hooks.py,v 1.4 2002/08/01 18:42:09 jim Exp $
 """
 from Zope.ComponentArchitecture.IServiceService import IServiceService
-from Zope.ComponentArchitecture.IServiceManagerContainer \
+from Zope.App.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from Zope.Proxy.ContextWrapper import getWrapperContainer, ContextWrapper
@@ -50,32 +50,3 @@ def getServiceManager_hook(context):
         context = getWrapperContainer(context)
 
     return serviceManager
-
-def getNextServiceManager_hook(context):
-    """if the context is a service manager or a placeful service, tries
-    to return the next highest service manager"""
-
-    # get this service manager
-    sm = getServiceManager_hook(context)
-    if sm is serviceManager:
-        raise ComponentLookupError('service manager')
-
-    # get the service manager container, which ought to be the context
-    # contaioner.
-    container = getWrapperContainer(sm)
-
-    # But we're *really* paranoid, so we'll double check.
-    while ((container is not None) and not 
-           IServiceManagerContainer.isImplementedBy(
-                      removeAllProxies(container))
-           ):
-        container = getWrapperContainer(container) # we should be
-
-    # Now we need to step up so we can look for a service manager above.
-    context = getWrapperContainer(container)
-
-    # But we have to make sure we haven't got the same object..
-    while (context is not None) and (context == container):
-        context = getWrapperContainer(context)
-
-    return getServiceManager_hook(context)

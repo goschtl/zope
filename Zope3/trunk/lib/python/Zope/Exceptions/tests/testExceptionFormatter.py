@@ -15,14 +15,13 @@
 ExceptionFormatter tests.
 
 Revision information:
-$Id: testExceptionFormatter.py,v 1.5 2002/07/17 16:54:22 jeremy Exp $
+$Id: testExceptionFormatter.py,v 1.6 2002/08/01 18:42:18 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
 import sys
-from Zope.ContextWrapper import wrapper
 from Zope.Exceptions.ExceptionFormatter import format_exception
 
 

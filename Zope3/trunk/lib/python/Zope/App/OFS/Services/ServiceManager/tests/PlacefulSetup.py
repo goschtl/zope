@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: PlacefulSetup.py,v 1.4 2002/07/15 20:34:51 poster Exp $
+$Id: PlacefulSetup.py,v 1.5 2002/08/01 18:42:12 jim Exp $
 """
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 
@@ -29,10 +29,14 @@ class PlacefulSetup(PlacelessSetup):
         # set up placeful hooks, saving originals for tearDown
         from Zope import ComponentArchitecture as CA
         self.__old_getServiceManager_hook = CA.getServiceManager_hook
-        self.__old_getNextServiceManager_hook = CA.getNextServiceManager_hook
         from Zope.App.ComponentArchitecture import hooks
         CA.getServiceManager_hook = hooks.getServiceManager_hook
-        CA.getNextServiceManager_hook = hooks.getNextServiceManager_hook
+
+    def tearDown(self):
+        # clean up folders and placeful service managers and services too?
+        from Zope import ComponentArchitecture as CA
+        CA.getServiceManager_hook = self.__old_getServiceManager_hook
+        PlacelessSetup.tearDown(self)
 
     def buildFolders(self):
         # set up a reasonably complex folder structure
@@ -94,11 +98,4 @@ class PlacefulSetup(PlacelessSetup):
         from Zope.App.OFS.Services.ServiceManager.ServiceManager \
              import ServiceManager
         folder.setServiceManager(ServiceManager())
-
-    def tearDown(self):
-        # clean up folders and placeful service managers and services too?
-        from Zope import ComponentArchitecture as CA
-        CA.getServiceManager_hook = self.__old_getServiceManager_hook
-        CA.getNextServiceManager_hook = self.__old_getNextServiceManager_hook
-        PlacelessSetup.tearDown(self)
 

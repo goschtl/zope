@@ -12,11 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: ConnectionService.py,v 1.3 2002/07/16 23:41:15 jim Exp $
+$Id: ConnectionService.py,v 1.4 2002/08/01 18:42:11 jim Exp $
 """
 from types import TupleType
 
-from Zope.ComponentArchitecture import queryNextService
+from Zope.App.ComponentArchitecture.NextService import queryNextService
 from Zope.ContextWrapper import ContextMethod
 
 from Zope.App.OFS.Container.IContainer import IHomogenousContainer, IContainer

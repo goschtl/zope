@@ -14,7 +14,7 @@
 """An exception formatter that shows traceback supplements and traceback info,
 optionally in HTML.
 
-$Id: ExceptionFormatter.py,v 1.4 2002/06/10 23:29:26 jim Exp $
+$Id: ExceptionFormatter.py,v 1.5 2002/08/01 18:42:18 jim Exp $
 """
 
 import sys
@@ -58,27 +58,6 @@ class TextExceptionFormatter:
             except:
                 revision = '???'
         return revision
-
-    def getObjectPath(self, o):
-        """Returns an informal path to an object.
-        """
-        try:
-            from Zope.ContextWrapper import wrapper
-        except ImportError:
-            # Not available.
-            return None
-
-        res = []
-        while o is not None:
-            d = wrapper.getdict(o)
-            if d:
-                name = d.get('name', None)
-                if name:
-                    res.append(name)
-            o = wrapper.getcontext(o)
-
-        res.reverse()
-        return res
 
     def formatSupplementLine(self, line):
         return '   - %s' % line

@@ -13,7 +13,7 @@
 ##############################################################################
 import unittest
 from unittest import TestCase
-from Zope.ComponentArchitecture.tests.testServiceManagerContainer \
+from Zope.App.ComponentArchitecture.tests.testServiceManagerContainer \
      import BaseTestServiceManagerContainer
 from Zope.App.OFS.Container.tests.testIContainer import BaseTestIContainer
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalServiceSubscribable.py,v 1.3 2002/08/01 15:33:43 jim Exp $
+$Id: LocalServiceSubscribable.py,v 1.4 2002/08/01 18:42:11 jim Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -25,7 +25,7 @@ from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from LocalSubscribable import LocalSubscribable
 from Persistence import Persistent
-from Zope.ComponentArchitecture import getNextService
+from Zope.App.ComponentArchitecture.NextService import getNextService
 
 class LocalServiceSubscribable(LocalSubscribable, Persistent):
     """a local mix-in for services"""

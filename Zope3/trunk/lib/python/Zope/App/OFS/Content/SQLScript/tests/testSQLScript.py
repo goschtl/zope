@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testSQLScript.py,v 1.2 2002/07/16 23:41:14 jim Exp $
+$Id: testSQLScript.py,v 1.3 2002/08/01 18:42:10 jim Exp $
 """
 
 import unittest
@@ -20,7 +20,7 @@ import unittest
 from Zope.App.RDB.IConnectionService import IConnectionService
 from Zope.App.RDB.IZopeConnection import IZopeConnection
 from Zope.App.RDB.IZopeCursor import IZopeCursor
-import Zope.ComponentArchitecture
+from Zope.App.ComponentArchitecture import NextService
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
@@ -66,15 +66,11 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
         PlacelessSetup.setUp(self)
         sm.defineService('Connections', IConnectionService)
         sm.provideService('Connections', ConnectionServiceStub())
-        self._old_getNextServiceManager = \
-                              Zope.ComponentArchitecture.getNextServiceManager
-        Zope.ComponentArchitecture.getNextServiceManager = \
-                              getNextServiceManager
+        self._old_getNextServiceManager = NextService.getNextServiceManager
+        NextService.getNextServiceManager = getNextServiceManager
 
     def tearDown(self):
-        Zope.ComponentArchitecture.getNextServiceManager = \
-                              self._old_getNextServiceManager
-        
+        NextService.getNextServiceManager = self._old_getNextServiceManager
 
     def _getScript(self):
         return SQLScript("my_connection",

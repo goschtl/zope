@@ -14,14 +14,14 @@
 """
 
 Revision information:
-$Id: RoleService.py,v 1.4 2002/07/16 23:41:15 jim Exp $
+$Id: RoleService.py,v 1.5 2002/08/01 18:42:12 jim Exp $
 """
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.App.Security.IRoleService import IRoleService
 from Zope.App.OFS.Container.IContainer import IContainer
 from Zope.App.Security.Registries.RoleRegistry import roleRegistry
 from Zope.ContextWrapper import ContextMethod
-from Zope.ComponentArchitecture import getNextService
+from Zope.App.ComponentArchitecture.NextService import getNextService
 
 class ILocalRoleService(IRoleService, IContainer):
     """TTW manageable role service"""
@@ -48,7 +48,7 @@ class RoleService(BTreeContainer):
     def getRoles(wrapped_self):
         '''See interface IRoleService'''
         roles = list(wrapped_self.values())
-        roleserv=getNextService(wrapped_self, 'Roles')
+        roleserv = getNextService(wrapped_self, 'Roles')
         if roleserv:
             roles.extend(roleserv.getRoles())
         return roles

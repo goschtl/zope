@@ -27,7 +27,7 @@ from Zope.Security.Checker import ProxyFactory
 
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
-from Zope.ComponentArchitecture.IServiceManagerContainer \
+from Zope.App.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
 
 from Zope.Exceptions import Unauthorized

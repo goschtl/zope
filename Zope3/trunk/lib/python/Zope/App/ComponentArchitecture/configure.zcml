@@ -40,16 +40,11 @@
            component='.GlobalResourceService.resourceService' />
            
   <hookable name=".getServiceManager" />
-  <hookable name=".getNextServiceManager" />
 
   <hook module="Zope.ComponentArchitecture"
         name="getServiceManager"
         implementation="
            Zope.App.ComponentArchitecture.hooks.getServiceManager_hook" />
-  <hook module="Zope.ComponentArchitecture"
-        name="getNextServiceManager"
-        implementation="
-           Zope.App.ComponentArchitecture.hooks.getNextServiceManager_hook" />
 
 </zopeConfigure>
 

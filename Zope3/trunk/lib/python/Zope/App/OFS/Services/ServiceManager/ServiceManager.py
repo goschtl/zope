@@ -13,16 +13,17 @@
 ##############################################################################
 """
 
-$Id: ServiceManager.py,v 1.6 2002/07/15 22:01:10 jim Exp $
+$Id: ServiceManager.py,v 1.7 2002/08/01 18:42:12 jim Exp $
 """
 from Persistence import Persistent
 
 from Zope.Exceptions import NotFoundError, ZopeError
 
-from Zope.ComponentArchitecture.IServiceManagerContainer \
+from Zope.App.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
-from Zope.ComponentArchitecture \
-     import getService, getNextServiceManager, getNextService, queryAdapter
+from Zope.ComponentArchitecture import getService, queryAdapter
+from Zope.App.ComponentArchitecture.NextService \
+     import getNextServiceManager, getNextService
 from Zope.ComponentArchitecture.GlobalServiceManager import UndefinedService
 from Zope.ComponentArchitecture.GlobalServiceManager import InvalidService
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError

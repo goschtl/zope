@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.4 2002/08/01 15:33:43 jim Exp $
+$Id: LocalEventService.py,v 1.5 2002/08/01 18:42:11 jim Exp $
 """
 
 from Zope.Event.GlobalEventService import eventService
@@ -25,7 +25,8 @@ from Zope.Event.ISubscriptionAware import ISubscriptionAware
 
 from Zope.App.OFS.Services.ServiceManager.IBindingAware import IBindingAware
 from Zope.App.Traversing.ITraverser import ITraverser
-from Zope.ComponentArchitecture import getNextService, getAdapter, getService
+from Zope.ComponentArchitecture import getAdapter, getService
+from Zope.App.ComponentArchitecture.NextService import getNextService
 from Zope.ContextWrapper import ContextMethod
 from Zope.Exceptions import NotFoundError
 from Zope.Proxy.ContextWrapper import ContextWrapper

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSQLCommand.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
+$Id: testSQLCommand.py,v 1.4 2002/08/01 18:42:16 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -21,7 +21,7 @@ from Zope.App.RDB.SQLCommand import SQLCommand
 from Zope.App.RDB.IConnectionService import IConnectionService
 from Zope.App.RDB.IZopeConnection import IZopeConnection
 from Zope.App.RDB.IZopeCursor import IZopeCursor
-import Zope.ComponentArchitecture
+from Zope.App.ComponentArchitecture import NextService
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
@@ -67,14 +67,11 @@ class Test(TestCase, PlacelessSetup):
         PlacelessSetup.setUp(self)
         sm.defineService('Connections', IConnectionService)
         sm.provideService('Connections', ConnectionServiceStub())
-        self._old_getNextServiceManager = \
-                              Zope.ComponentArchitecture.getNextServiceManager
-        Zope.ComponentArchitecture.getNextServiceManager = \
-                              getNextServiceManager
+        self._old_getNextServiceManager = NextService.getNextServiceManager
+        NextService.getNextServiceManager = getNextServiceManager
 
     def tearDown(self):
-        Zope.ComponentArchitecture.getNextServiceManager = \
-                              self._old_getNextServiceManager
+        NextService.getNextServiceManager = self._old_getNextServiceManager
 
 
     def testSimpleSQLCommand(self):

@@ -12,9 +12,9 @@
 # 
 ##############################################################################
 """
-$Id: SQLCommand.py,v 1.2 2002/07/16 23:41:16 jim Exp $
+$Id: SQLCommand.py,v 1.3 2002/08/01 18:42:16 jim Exp $
 """
-from Zope.ComponentArchitecture import getNextService
+from Zope.App.ComponentArchitecture.NextService import getNextService
 
 from ISQLCommand import ISQLCommand
 from Util import queryForResults

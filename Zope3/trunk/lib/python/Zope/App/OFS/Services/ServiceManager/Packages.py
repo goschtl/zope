@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Packages.py,v 1.2 2002/07/17 23:04:02 jeremy Exp $
+$Id: Packages.py,v 1.3 2002/08/01 18:42:12 jim Exp $
 """
 __metaclass__ = type
 
@@ -24,8 +24,7 @@ from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.App.Traversing import getPhysicalPathString
-from Zope.ComponentArchitecture \
-     import getNextServiceManager
+from Zope.App.ComponentArchitecture.NextService import getNextServiceManager
 from Zope.App.OFS.Services.ServiceManager.IServiceManager \
      import IServiceManager
 

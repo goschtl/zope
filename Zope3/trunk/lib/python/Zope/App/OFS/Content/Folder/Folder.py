@@ -15,10 +15,10 @@ from Zope.App.OFS.Container.IContainer import IContainer
 
 import Persistence
 from Persistence.BTrees.OOBTree import OOBTree
-from Zope.ComponentArchitecture.ServiceManagerContainer \
+from Zope.App.ComponentArchitecture.ServiceManagerContainer \
      import ServiceManagerContainer
 
-from Zope.ComponentArchitecture.IServiceManagerContainer import \
+from Zope.App.ComponentArchitecture.IServiceManagerContainer import \
      IServiceManagerContainer
 from types import StringTypes
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testNextService.py,v 1.3 2002/07/17 16:54:15 jeremy Exp $
+$Id: testNextService.py,v 1.4 2002/08/01 18:42:09 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 
 from Zope.ContextWrapper import Wrapper
 
-from Zope.ComponentArchitecture.IServiceManagerContainer \
+from Zope.App.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
 
 from Zope.ComponentArchitecture.IServiceService import IServiceService
@@ -69,15 +69,15 @@ class Test(TestCase):
     def test_getNextServiceManager(self):
         from Zope.ComponentArchitecture.GlobalServiceManager \
              import serviceManager
-        from Zope.App.ComponentArchitecture.hooks \
-             import getNextServiceManager_hook
+        from Zope.App.ComponentArchitecture.NextService \
+             import getNextServiceManager
 
         self.assertRaises(ComponentLookupError,
-                          getNextServiceManager_hook, root)
+                          getNextServiceManager, root)
 
-        self.assertEqual(getNextServiceManager_hook(Wrapper(sm1, f1)),
-                                                    serviceManager)
-        self.assertEqual(getNextServiceManager_hook(Wrapper(sm2, f2)), sm1)
+        self.assertEqual(getNextServiceManager(Wrapper(sm1, f1)),
+                         serviceManager)
+        self.assertEqual(getNextServiceManager(Wrapper(sm2, f2)), sm1)
         
 
 def test_suite():

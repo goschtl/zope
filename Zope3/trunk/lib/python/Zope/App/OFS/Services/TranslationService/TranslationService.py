@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: TranslationService.py,v 1.2 2002/07/16 23:41:16 jim Exp $
+$Id: TranslationService.py,v 1.3 2002/08/01 18:42:13 jim Exp $
 """
 import re
 from types import StringTypes, TupleType
@@ -21,8 +21,8 @@ from types import StringTypes, TupleType
 import Persistence
 from Persistence.BTrees.OOBTree import OOBTree
 
-from Zope.ComponentArchitecture import createObject
-from Zope.ComponentArchitecture import getService, queryNextService
+from Zope.ComponentArchitecture import createObject, getService
+from Zope.App.ComponentArchitecture.NextService import queryNextService
 
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.App.OFS.Container.IContainer import IContainer

@@ -10,10 +10,10 @@
       title="Folder"
       description="Minimal folder" />
   <allow
-      interface="Zope.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" />
+      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" />
   <require
       permission="Zope.ManageServices"
-      interface="Zope.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" />
+      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" />
   <require
       permission="Zope.View"
       interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
@@ -39,11 +39,11 @@
 
   <allow
       interface="
-Zope.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" />
+Zope.App.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" />
   <require
       permission="Zope.ManageServices"
       interface="
-Zope.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" />
+Zope.App.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" />
   <require
       permission="Zope.View"
       interface="Zope.App.OFS.Container.IContainer.IReadContainer" />

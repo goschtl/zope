@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testNames.py,v 1.2 2002/06/10 23:29:24 jim Exp $
+$Id: testNames.py,v 1.3 2002/08/01 18:42:17 jim Exp $
 """
 
 import unittest, sys
@@ -60,10 +60,10 @@ class NameTest(unittest.TestCase):
         
     def testPackage(self):
         from Zope.Configuration.name import resolve
-        c=resolve('Zope.App.ZMI')
-        import Zope.App.ZMI
+        c=resolve('Zope.Configuration.tests')
+        import Zope.Configuration.tests
 
-        self.assertEquals(id(c), id(Zope.App.ZMI))
+        self.assertEquals(id(c), id(Zope.Configuration.tests))
 
     nameSet={
         ('Zope.Configuration.tests','Noplace'):'Zope.Configuration.tests',
