@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: annotatableadapter.py,v 1.6 2004/02/20 16:57:25 fdrake Exp $
+$Id: annotatableadapter.py,v 1.7 2004/03/04 22:42:01 jim Exp $
 """
 
 __metaclass__ = type
@@ -39,18 +39,9 @@ class ZDCAnnotatableAdapter(ZopeDublinCore):
     def __init__(self, context):
         annotations = getAdapter(context, IAnnotations)
         dcdata = annotations.get(DCkey)
-        if not dcdata:
+        if dcdata is None:
             self.annotations = annotations
             dcdata = ZDCAnnotationData()
-        elif not isinstance(dcdata, ZDCAnnotationData):
-            # Convert mapping to a ZDCAnnotationData, and set things
-            # up so that the annotations object is only updated the
-            # first time we're writing to it; this avoids converting
-            # it when we wouldn't otherwise write to the object.
-            self.annotations = annotations
-            d = ZDCAnnotationData()
-            d.update(dcdata)
-            dcdata = d
 
         super(ZDCAnnotatableAdapter, self).__init__(dcdata)
 
