@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.2 2002/12/06 13:20:15 gvanrossum Exp $
+$Id: subscribers.py,v 1.3 2002/12/08 20:36:29 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -61,7 +61,8 @@ class Registration(Persistent):
 
     def notify(wrapped_self, event):
         """An event occured. Perhaps register this object with the hub."""
-        self._registerObject(event.object)
+        hub = getService(wrapped_self, "ObjectHub")
+        self._registerObject(event.object, hub)
     notify = ContextMethod(notify)
 
     currentlySubscribed = False # Default subscription state
@@ -87,11 +88,12 @@ class Registration(Persistent):
 
     def registerExisting(wrapped_self):
         object = findContentObject(wrapped_self)
-        wrapped_self._registerTree(object)
+        hub = getService(wrapped_self, "ObjectHub")
+        wrapped_self._registerTree(object, hub)
     registerExisting = ContextMethod(registerExisting)
 
-    def _registerTree(wrapped_self, object):
-        wrapped_self._registerObject(object)
+    def _registerTree(wrapped_self, object, hub):
+        wrapped_self._registerObject(object, hub)
         # XXX Policy decision: only traverse into folders
         if not IFolder.isImplementedBy(object):
             return
@@ -101,18 +103,15 @@ class Registration(Persistent):
             # XXX Once traverseName is refactored, should get an
             #     ITraversable from object and pass it to traverseName
             sub_object = traverseName(object, name)
-            wrapped_self._registerTree(sub_object)
+            wrapped_self._registerTree(sub_object, hub)
     _registerTree = ContextMethod(_registerTree)
 
-    def _registerObject(wrapped_self, object):
+    def _registerObject(wrapped_self, object, hub):
         # XXX Policy decision: register absolutely everything
         try:
-            getService(wrapped_self, "ObjectHub").register(object)
+            hub.register(object)
         except ObjectHubError:
-            # Probably already registered
-            # XXX It would be more convenient if register() returned
-            #     a bool indicating whether the object was already
-            #     registered, we wouldn't have to catch this exception.
+            # Already registered
             pass
     _registerObject = ContextMethod(_registerObject)
 
