@@ -13,14 +13,13 @@
 ##############################################################################
 """Test for PrincipalLogging.
 
-$Id: test_principallogging.py,v 1.1 2003/07/22 15:09:39 ryzaja Exp $
+$Id: test_principallogging.py,v 1.2 2003/07/22 15:20:15 ryzaja Exp $
 """
 
 import unittest
 from zope.interface.verify import verifyObject
 
 class PrincipalStub:
-    #implements(IPrincipal)
     def getId(self):
         return 42
 
