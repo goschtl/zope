@@ -120,9 +120,11 @@ class Application:
             "PACKAGE_VERSION": self.options.version,
             }
         appsupport = os.path.join(zpkgtools.__path__[0], "appsupport")
+        readme_txt = os.path.join(self.destination, "README.txt")
+        if not os.path.exists(readme_txt):
+            self.copy_template(appsupport, "README.txt", metavars)
         self.copy_template(appsupport, "configure", metavars)
         self.copy_template(appsupport, "Makefile.in", metavars)
-        self.copy_template(appsupport, "README.txt", metavars)
         self.generate_collection_setup(self.destination, self.resource_name,
                                        packages, collections,
                                        filename="install.py")
@@ -151,6 +153,15 @@ class Application:
         deps = self.add_component("collection",
                                   self.resource_name,
                                   self.source)
+        readme = os.path.join(self.source, "README")
+        readme_txt = readme + ".txt"
+        output_readme_txt = os.path.join(self.destination, "README.txt")
+        if os.path.isfile(readme_txt):
+            shutil.copy2(readme_txt, output_readme_txt)
+            self.ip.add_output(output_readme_txt)
+        elif os.path.isfile(readme):
+            shutil.copy2(readme, output_readme_txt)
+            self.ip.add_output(output_readme_txt)
         remaining = deps - self.handled_resources
         collections = []
         packages = []
