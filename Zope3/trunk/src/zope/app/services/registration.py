@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.11 2003/08/17 06:08:11 philikon Exp $
+$Id: registration.py,v 1.12 2003/08/21 21:48:52 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -724,7 +724,7 @@ class RegistrationManagerContainer(object):
             if IModuleManager.isImplementedBy(manager):
                 return manager.getModule()
 
-        # See if out container is a RegistrationManagerContainer:
+        # See if our container is a RegistrationManagerContainer:
         c = zapi.getWrapperContainer(self)
         if interfaces.IRegistrationManagerContainer.isImplementedBy(c):
             return c.findModule(name)
