@@ -204,13 +204,12 @@ class ViewMixinForAttributes(BrowserView):
     def __browser_default__(self, request):
         return self, (self.__page_attribute__,)
 
+    # this is technically not needed because ZPublisher finds our
+    # attribute through __browser_default__; but we also want to be
+    # able to call pages from python modules, PythonScripts or ZPT
     def __call__(self, *args, **kw):
         attr = self.__page_attribute__
         meth = getattr(self, attr)
-        #XXX not sure if this is really necessary; we need tests for this
-        #security_manager = getSecurityManager()
-        #if not security_manager.validate(meth, self, attr, meth):
-        #    raise Unauthorized
         return meth(*args, **kw)
 
 class ViewMixinForTemplates(BrowserView):
@@ -221,9 +220,6 @@ class ViewMixinForTemplates(BrowserView):
 
     # make the template publishable
     def __call__(self, *args, **kw):
-        # we technically would have to validate here, but it doesn't
-        # seem to work because index is a ViewPageTemplateFile
-        #XXX not sure if we really need to validate here anyway
         return self.index(self, *args, **kw)
 
 def makeClassForTemplate(src, template=None, used_for=None, bases=(), cdict=None):
