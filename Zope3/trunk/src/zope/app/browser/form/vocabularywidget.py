@@ -86,6 +86,11 @@ def VocabularyUniqueListFieldEditWidget(field, request):
 
 def _get_vocabulary_widget(field, request, viewname):
     view = getView(field.vocabulary, "field-%s-widget" % viewname, request)
+    # XXX: The hack of the century. After all ZCML attempts via ZCML failed,
+    #      this is the only way I could find to make it work! (SR)
+    #      Fred, please have a look at this.
+    from zope.proxy import removeAllProxies
+    view = removeAllProxies(view)
     view.setField(field)
     return view
 
