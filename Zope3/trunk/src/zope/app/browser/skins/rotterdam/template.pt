@@ -172,7 +172,7 @@
               <div class="body">
                 <div class="content odd">
                   <metal:block define-slot="pagetip"
-                               tal:replace="pagetip">
+                               tal:replace="structure pagetip">
                     A short tip goes here
                   </metal:block>
                 </div>
