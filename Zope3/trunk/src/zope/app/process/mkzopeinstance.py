@@ -27,6 +27,8 @@ import os
 import shutil
 import sys
 
+import zope
+
 from zope.app.applicationcontrol import zopeversion
 
 
@@ -107,7 +109,8 @@ class Application:
         # XXX we should be able to compute the script
         script = os.path.abspath(sys.argv[0])
         zope_home = os.path.dirname(os.path.dirname(script))
-        software_home = os.path.join(zope_home, "lib", "python")
+        zope_init = os.path.abspath(zope.__file__)
+        software_home = os.path.dirname(os.path.dirname(zope_init))
         self.replacements = [
             ("<<USERNAME>>",      options.username),
             ("<<PASSWORD>>",      options.password),
