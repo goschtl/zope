@@ -1,23 +1,20 @@
 <zope:zopeConfigure
-   xmlns:zope='http://namespaces.zope.org/zope'
-   xmlns='http://namespaces.zope.org/browser'
-   package="Zope.App.OFS.Services.ServiceManager"
+    xmlns:zope='http://namespaces.zope.org/zope'
+    xmlns='http://namespaces.zope.org/browser'
+    package="Zope.App.OFS.Services.ServiceManager"
 >
 
   <defaultView 
-     for=".IServiceManager."
-     name="index.html"
-     />
+      for=".IServiceManager."
+      name="index.html"
+      />
  
   <view 
-     permission="Zope.ManageServices" 
-     for=".IServiceManager."
-     factory=".Views.Browser.Bindings." >
-
-    <page name="index.html"
-                  attribute="action"
-                  />
-
+      permission="Zope.ManageServices" 
+      for=".IServiceManager."
+      factory=".Views.Browser.Bindings."
+      >
+    <page name="index.html" attribute="action" />
   </view> 
 
   <menuItems menu="zmi_views" for=".IServiceManager.">
@@ -35,79 +32,87 @@
   <view
       for=".IPackages."
       permission="Zope.ManageServices" 
-      factory=".Views.Browser.PackagesContents.">
-
-    <page name="contents.html"
-                  attribute="index"
-                  />
-    <page name="addPackage.html"
-                  attribute="addPackage"
-                  />
-    <page name="removeObjects.html"
-                  attribute="removeObjects"
-                  />
+      factory=".Views.Browser.PackagesContents."
+      >
+    <page name="contents.html" attribute="index" />
+    <page name="addPackage.html" attribute="addPackage" />
+    <page name="removeObjects.html" attribute="removeObjects" />
   </view>
 
   <defaultView for=".IPackage." name="contents.html" />
 
 
   <view 
-     for=".IPackage."
-     permission="Zope.ManageServices"
-     factory="Zope.App.OFS.Container.Views.Browser.Contents."
-     >
-
+      for=".IPackage."
+      permission="Zope.ManageServices"
+      factory="Zope.App.OFS.Container.Views.Browser.Contents."
+      >
     <page name="contents.html" attribute="contents" />
     <page name="removeObjects.html" attribute="removeObjects" />
-   </view>
+  </view>
 
 
-   <menu id="add_component" 
-                 title="Menu of objects to be added to service managers"
-                 />
+  <menu id="add_component" 
+        title="Menu of objects to be added to service managers"
+        />
 
 
   <view 
-     name="+"
-     permission="Zope.ManageServices" 
-     for=".IPackage."
-     factory=".Views.Browser.Adding.ComponentAdding">
-
+      name="+"
+      permission="Zope.ManageServices" 
+      for=".IPackage."
+      factory=".Views.Browser.Adding.ComponentAdding"
+      >
     <page name="index.html"  attribute="index"  />
     <page name="action.html" attribute="action" />
-
   </view> 
 
-  <view for="Zope.App.OFS.Container.IAdding."
-                name="ServiceDirective"
-                factory=".Views.Browser.AddServiceDirective."
-                >
+  <view
+      for="Zope.App.OFS.Container.IAdding."
+      name="ServiceDirective"
+      factory=".Views.Browser.AddServiceDirective."
+      permission="Zope.ManageServices"
+      >
       <page name="step1.html" template="Views/Browser/add_service_1.pt" />
       <page name="step2.html" template="Views/Browser/add_service_2.pt" />
       <page name="finish.html" attribute="action" />
   </view>
 
-  <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
-     action="ServiceDirective"  title="Service Directive" />
+  <menuItem
+      menu="add_component"
+      for="Zope.App.OFS.Container.IAdding."
+      action="ServiceDirective"
+      title="Service Directive"
+      />
 
-  <view for="Zope.App.OFS.Container.IAdding."
-        name="Module"
-        factory=".Views.Browser.AddModule."
-        >
-      <page name="index.html" template="Views/Browser/add_module.pt" />
-      <page name="action.html" attribute="action" />
+  <view
+      for="Zope.App.OFS.Container.IAdding."
+      name="Module"
+      factory=".Views.Browser.AddModule."
+      permission="Zope.ManageServices"
+      >
+    <page name="index.html" template="Views/Browser/add_module.pt" />
+    <page name="action.html" attribute="action" />
   </view>
 
-  <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
-     action="Module"  title="Module" />
+  <menuItem
+      menu="add_component"
+      for="Zope.App.OFS.Container.IAdding."
+      action="Module"
+      title="Module"
+      />
 
-  <view for="Persistence.IPersistentModuleManager."
-        factory=".Views.Browser.EditModule."
-        >
-      <page name="edit.html" template="Views/Browser/edit_module.pt" />
+  <view
+      for="Persistence.IPersistentModuleManager."
+      factory=".Views.Browser.EditModule."
+      permission="Zope.ManageServices"
+      >
+    <page name="edit.html" template="Views/Browser/edit_module.pt" />
   </view>
 
-  <menuItems menu="zmi_views" for="Persistence.IPersistentModuleManager.">
+  <menuItems
+      menu="zmi_views"
+      for="Persistence.IPersistentModuleManager.">
     <menuItem title="Edit" action="edit.html" />
   </menuItems>
 
