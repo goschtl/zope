@@ -12,12 +12,10 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.2 2003/08/17 06:06:42 philikon Exp $
+$Id: metadirectives.py,v 1.3 2004/03/08 23:36:26 srichter Exp $
 """
-
 from zope.interface import Interface
-from zope.configuration.fields import Tokens, Path
-from zope.schema import TextLine
+from zope.configuration.fields import Path
 
 class IRegisterTranslationsDirective(Interface):
 
@@ -25,13 +23,4 @@ class IRegisterTranslationsDirective(Interface):
         title=u"Directory",
         description=u"Directory containing the translations",
         required=True
-        )
-
-class IDefaultLanguagesDirective(Interface):
-
-    languages = Tokens(
-        title=u"Languages",
-        description=u"Use these as default languages",
-        required=True,
-        value_type=TextLine()
         )

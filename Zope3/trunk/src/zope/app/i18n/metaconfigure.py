@@ -11,19 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-This module handles the :startup directives.
+"""This module handles the 'i18n' namespace directives.
 
-$Id: metaconfigure.py,v 1.3 2003/08/03 20:58:38 philikon Exp $
+$Id: metaconfigure.py,v 1.4 2004/03/08 23:36:26 srichter Exp $
 """
-
 import os
+from zope.app.component.metaconfigure import utility
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
-from zope.i18n.globaltranslationservice import translationService
+from zope.i18n.translationdomain import TranslationDomain
+from zope.i18n.interfaces import ITranslationDomain
 
 def registerTranslations(_context, directory):
     path = os.path.normpath(directory)
+    domains = {}
 
+    # Gettext has the domain-specific catalogs inside the language directory,
+    # which is exactly the opposite as we need it. So create a dictionary that
+    # reverses the nesting. 
     for language in os.listdir(path):
         lc_messages_path = os.path.join(path, language, 'LC_MESSAGES')
         if os.path.isdir(lc_messages_path):
@@ -31,18 +35,14 @@ def registerTranslations(_context, directory):
                 if domain_file.endswith('.mo'):
                     domain_path = os.path.join(lc_messages_path, domain_file)
                     domain = domain_file[:-3]
-                    catalog = GettextMessageCatalog(language, domain,
-                                                    domain_path)
+                    if not domain in domains:
+                        domains[domain] = {}
+                    domains[domain][language] = domain_path
 
-                    _context.action(
-                        discriminator = catalog.getIdentifier(),
-                        callable = translationService.addCatalog,
-                        args = (catalog,)
-                        )
-
-def defaultLanguages(_context, languages):
-    return _context.action(
-        discriminator = ('gts', tuple(languages)),
-        callable = translationService.setLanguageFallbacks,
-        args = (languages,)
-        )
+    # Now create TranslationDomain objects and add them as utitlities
+    for name, langs in domains.items():
+        domain = TranslationDomain(name)
+        for lang, file in langs.items():
+            domain.addCatalog(GettextMessageCatalog(lang, name, file))
+        utility(_context, ITranslationDomain, domain, name=name)
+                              

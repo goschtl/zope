@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: testi18ndirectives.py,v 1.7 2003/11/27 13:59:20 philikon Exp $
+$Id: testi18ndirectives.py,v 1.8 2004/03/08 23:36:27 srichter Exp $
 """
 import os
 import unittest
@@ -21,23 +21,19 @@ import unittest
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 
+from zope.app import zapi
+from zope.i18n.interfaces import ITranslationDomain
 import zope.app.i18n
 import zope.i18n.tests
 
-from zope.i18n.globaltranslationservice import translationService
-
-
 template = """<configure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:gts='http://namespaces.zope.org/gts'>
-   xmlns:test='http://www.zope.org/NS/Zope3/test'>
+   xmlns:i18n='http://namespaces.zope.org/i18n'>
    %s
    </configure>"""
 
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
-
-    # XXX: tests for other directives needed
 
     def setUp(self):
         super(DirectivesTest, self).setUp()
@@ -45,27 +41,18 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def testRegisterTranslations(self):
         eq = self.assertEqual
-        eq(translationService._catalogs, {})
+        eq(zapi.queryUtility(None, ITranslationDomain), None)
         xmlconfig.string(
             template % '''
             <configure package="zope.i18n.tests">
-            <gts:registerTranslations directory="./locale" />
+            <i18n:registerTranslations directory="./locale" />
             </configure>
             ''', self.context)
         path = os.path.join(os.path.dirname(zope.i18n.tests.__file__),
                             'locale', 'en',
                             'LC_MESSAGES', 'zope-i18n.mo')
-        eq(translationService._catalogs,
-           {('en', 'zope-i18n'): [unicode(path)]})
-
-    def testDefaultLanguages(self):
-        eq = self.assertEqual
-        eq(translationService._fallbacks, ['en'])
-        xmlconfig.string(
-            template % '''
-            <gts:defaultLanguages languages="de nl xx" />
-            ''', self.context)
-        eq(translationService._fallbacks, ['de', 'nl', 'xx'])
+        util = zapi.getUtility(None, ITranslationDomain, name='zope-i18n')
+        eq(util._catalogs, {'en': [unicode(path)]})
 
 
 def test_suite():
