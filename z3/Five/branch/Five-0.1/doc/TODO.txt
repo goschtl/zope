@@ -1,0 +1,15 @@
+====
+TODO
+====
+
+- allow Zope2 boilerplate context.registerClass be configured thru zcml
+
+- implement/register missing zope.app directives:
+
+  * browser:defaultView (need extra machinery in Viewable)
+
+  * ...
+
+- secure page templates
+
+- now that we have zope:content, do we still need five:implements?

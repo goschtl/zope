@@ -1,0 +1,107 @@
+=================================
+ZCML Directives supported by Five
+=================================
+
+Five tries to use the Zope 3 ZCML directives where possible, though
+does sometimes subset the possible attributes. It also introduces a
+few directives of its own under the ``five`` namespace.
+
+Directives are listed per namespace, in alphabetic order.
+
+zope ``http://namespaces.zope.org/zope``
+========================================
+
+adapter
+-------
+
+Hook an adapter factory to an interface.
+
+content
+-------
+
+Declare interface and permissions on content object. Declares Zope 2
+permissions.
+
+permission 
+----------
+
+Way to make Zope 2 permissions available to Five, ``title`` is
+permission name.
+
+redefinePermission
+------------------
+
+Redefine a permission in included ZCML as another one.
+
+service
+-------
+
+Declare a global service
+
+serviceType
+-----------
+
+Declare a type of service.
+
+skin
+----
+
+Declare a skin, consisting of layers.
+
+utility
+-------
+
+Declare a global utility.
+
+browser ``http://namespaces.zope.org/browser``
+==============================================
+
+page
+----
+
+Declare a page view for an interface. Permission is a Zope 2
+permission.
+
+pages
+-----
+
+Declare multiple page views for an interface. Permissions are Zope 2
+permissions.
+
+defaultSkin
+-----------
+
+Declare the default skin used.
+
+interface
+---------
+Define an interface in ZCML.
+
+layer
+-----
+
+Declare a layer.
+
+five ``http://namespaces.zope.org/five``
+========================================
+
+implements
+----------
+
+Make a ``class`` declare it implements an ``interface``.
+
+loadProducts
+------------
+
+Loads ZCML in all Zope 2 products. First processes all ``meta.zcml``
+files, then processes all ``configure.zcml`` files.
+
+loadProductsOverrides
+---------------------
+
+Loads overriding ZCML in all products (``overrides.zcml``).
+
+viewable
+--------
+
+Make a Zope 2 content ``class`` viewable using Five.
