@@ -33,6 +33,7 @@ from interfaces import ILDAPBasedPrincipalSource
 
 class LDAPPrincipalSource(Contained, Persistent):
     """A Principal source using LDAP"""
+
     implements(ILoginPasswordPrincipalSource, ILDAPBasedPrincipalSource,
             IContainerPrincipalSource)
 
@@ -95,7 +96,11 @@ class LDAPPrincipalSource(Contained, Persistent):
         return principal
 
     def get(self, key, default=None):
-        return self[key]
+        principal = self[key]
+        if principal:
+            return principal
+        else:
+            return default
 
     def values(self):
         principals = []
@@ -130,6 +135,8 @@ class LDAPPrincipalSource(Contained, Persistent):
                     login = uid_dict[self.login_attribute][0],
                     password = uid_dict['userPassword'][0])
             return principal
+        else:
+            return None
 
     def getPrincipal(self, id):
         uid = id.split('\t')[2]
@@ -160,7 +167,7 @@ class LDAPPrincipalSource(Contained, Persistent):
                     password = node_dict['userPassword'][0])
             try:
                 self[principal.login] = principal
-            except DuplicationError, msg:
+            except DuplicationError:
                 # There is already a principal with this login in the cache
                 principal = self[principal.login]
             principals.append(principal)
