@@ -15,9 +15,8 @@
 $Id$
 """
 
-from Globals import DTMLFile
+from Globals import DTMLFile, InitializeClass
 from AccessControl import ClassSecurityInfo
-from OFS.SimpleItem import SimpleItem
 
 from ActionInformation import ActionInformation
 from CMFCorePermissions import ManagePortal
@@ -274,3 +273,5 @@ class ActionProviderBase:
                                 , category=category
                                 , visible=visible
                                 )
+
+InitializeClass(ActionProviderBase)
