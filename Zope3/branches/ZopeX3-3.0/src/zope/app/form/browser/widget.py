@@ -106,7 +106,7 @@ class BrowserWidget(Widget, BrowserView):
 
 
 class SimpleInputWidget(BrowserWidget, InputWidget):
-    """A widget that uses a single HTML form element to capture user input.
+    """A baseclass for simple HTML form widgets.
 
     >>> setUp()
 
@@ -255,12 +255,11 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         field = self.context
 
         # form input is required, otherwise raise an error
-        input = self.request.form.get(self.name)
-        if input is None:
+        if not self.hasInput():
             raise MissingInputError(self.name, self.label, None)
 
         # convert input to suitable value - may raise conversion error
-        value = self._toFieldValue(input)
+        value = self._toFieldValue(self._getFormInput())
 
         # allow missing values only for non-required fields
         if value == field.missing_value and not field.required:
@@ -284,6 +283,19 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         else:
             return False
 
+    def _getFormInput(self):
+        """Returns current form input.
+        
+        The value returned must be in a format that can be used as the 'input'
+        argument to _toFieldValue.
+        
+        The default implementation returns the form value that corresponds to
+        the widget's name. Subclasses may override this method if their form
+        input consists of more than one form element or use an alternative
+        naming convention.
+        """
+        return self.request.get(self.name)
+
     def _toFieldValue(self, input):
         """Converts input to a value appropriate for the field type.
 
@@ -291,10 +303,8 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         perform an appropriate conversion.
 
         This method is used by getInputValue to perform the conversion
-        of a form input value (keyed by the widget's name) to an appropriate
-        field value. Widgets that require a more complex conversion process
-        (e.g. utilize more than one form field) should override getInputValue
-        and disregard this method.
+        of form input (provided by _getFormInput) to an appropriate field 
+        value.
         """
         if input == self._missing:
             return self.context.missing_value

@@ -29,9 +29,7 @@ class CheckBoxWidget(SimpleInputWidget):
     
     For more detailed documentation, including sample code, see
     tests/test_checkboxwidget.py.
-    """
-    implements(IInputWidget)
-    
+    """    
     type = 'checkbox'
     default = 0
     extra = ''
@@ -39,7 +37,7 @@ class CheckBoxWidget(SimpleInputWidget):
     def __call__(self):
         """Render the widget to HTML."""
         value = self._getFormValue()
-        if value:
+        if value == 'on':
             kw = {'checked': None}
         else:
             kw = {}
@@ -51,12 +49,12 @@ class CheckBoxWidget(SimpleInputWidget):
                           value=""
                           ),
             renderElement(self.tag,
-                             type=self.type,
-                             name=self.name,
-                             id=self.name,
-                             cssClass=self.cssClass,
-                             extra=self.extra,
-                             **kw),
+                          type=self.type,
+                          name=self.name,
+                          id=self.name,
+                          cssClass=self.cssClass,
+                          extra=self.extra,
+                          **kw),
             )
 
     def _toFieldValue(self, input):
@@ -65,20 +63,29 @@ class CheckBoxWidget(SimpleInputWidget):
 
     def _toFormValue(self, value):
         """Convert from Python bool to HTML representation."""
-        return value and "on" or ""
+        return value and 'on' or ''
 
     def hasInput(self):
         """Check whether the field is represented in the form."""
         return self.name + ".used" in self.request.form or \
             super(CheckBoxWidget, self).hasInput()
 
-    def getInputValue(self):
-        """Get the value from the form
+    def _getFormInput(self):
+        """Returns the form input used by _toFieldValue.
         
-        When it's checked, its value is 'on'.
-        When a checkbox is unchecked, it does not appear in the form data."""
-        value = self.request.form.get(self.name, 'off')
-        return value == 'on'
+        Return values:
+        
+          'on'  checkbox is checked
+          ''    checkbox is not checked
+          None  form input was not provided
+
+        """
+        if self.request.get(self.name) == 'on':
+            return 'on'
+        elif self.name + '.used' in self.request:
+            return ''
+        else:
+            return None
 
 
 def BooleanRadioWidget(field, request, true=_('on'), false=_('off')):
