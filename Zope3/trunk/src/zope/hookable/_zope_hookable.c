@@ -29,15 +29,15 @@ typedef struct {
         PyObject *implementation;
 } hookable;
 
-static PyObject *
+static int
 hookable_init(hookable *self, PyObject *args, PyObject *kwds)
 {
-  static char *kwlist[] = {"implementation:hookable", NULL};
+  static char *kwlist[] = {"implementation", NULL};
   PyObject *implementation;
 
-  if (! PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, 
+  if (! PyArg_ParseTupleAndKeywords(args, kwds, "O:hookable", kwlist,
                                     &implementation))
-    return NULL; 
+    return -1;
 
   Py_INCREF(implementation);
   Py_INCREF(implementation);
@@ -46,8 +46,7 @@ hookable_init(hookable *self, PyObject *args, PyObject *kwds)
   Py_XDECREF(self->implementation);
   self->implementation = implementation;
 
-  Py_INCREF(Py_None);
-  return Py_None;
+  return 0;
 }
 
 static int
@@ -55,12 +54,12 @@ hookable_traverse(hookable *self, visitproc visit, void *arg)
 {
   if (self->implementation != NULL && visit(self->implementation, arg) < 0)
     return -1;
-  if (self->old != NULL 
-      && self->old != self->implementation 
+  if (self->old != NULL
+      && self->old != self->implementation
       && visit(self->old, arg) < 0
       )
     return -1;
-      
+
   return 0;
 }
 
@@ -90,9 +89,9 @@ hookable_sethook(hookable *self, PyObject *args, PyObject *kwds)
   static char *kwlist[] = {"implementation:sethook", NULL};
   PyObject *implementation, *old;
 
-  if (! PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, 
+  if (! PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist,
                                     &implementation))
-    return NULL; 
+    return NULL;
 
   old = self->implementation;
   Py_INCREF(implementation);
@@ -142,7 +141,7 @@ static PyMemberDef hookable_members[] = {
 };
 
 
-static char Hookabletype__doc__[] = 
+static char Hookabletype__doc__[] =
 "Callable objects that support being overridden"
 ;
 
@@ -169,7 +168,7 @@ static PyTypeObject hookabletype = {
         /* tp_setattro       */ (setattrofunc)0,
         /* tp_as_buffer      */ 0,
         /* tp_flags          */ Py_TPFLAGS_DEFAULT
-				| Py_TPFLAGS_BASETYPE 
+				| Py_TPFLAGS_BASETYPE
                                 | Py_TPFLAGS_HAVE_GC,
 	/* tp_doc            */ Hookabletype__doc__,
         /* tp_traverse       */ (traverseproc)hookable_traverse,
@@ -189,7 +188,7 @@ static PyTypeObject hookabletype = {
         /* tp_init           */ (initproc)hookable_init,
         /* tp_alloc          */ (allocfunc)0,
         /* tp_new            */ (newfunc)0 /*PyType_GenericNew*/,
-	/* tp_free           */ 0/*_PyObject_GC_Del*/, 
+	/* tp_free           */ 0/*_PyObject_GC_Del*/,
 };
 
 static struct PyMethodDef zch_methods[] = {
@@ -207,17 +206,17 @@ init_zope_hookable(void)
 
   hookabletype.tp_new = PyType_GenericNew;
   hookabletype.tp_free = _PyObject_GC_Del;
-  
+
   if (PyType_Ready(&hookabletype) < 0)
     return;
-        
+
   m = Py_InitModule3("_zope_hookable", zch_methods,
                      "Provide an efficient implementation for hookable objects"
                      );
 
   if (m == NULL)
     return;
-        
+
   if (PyModule_AddObject(m, "hookable", (PyObject *)&hookabletype) < 0)
     return;
 }

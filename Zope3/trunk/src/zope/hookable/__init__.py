@@ -19,7 +19,7 @@
 
    The idea is you create a function that does some default thing and
    make it hookable. Later, someone can modify what it does by calling
-   it's sethook method and changing it's implementation.  All users of
+   its sethook method and changing its implementation.  All users of
    the function, including tose that imported it, will see the change.
 
    >>> def f41():
@@ -54,7 +54,25 @@
    ...
    TypeError: readonly attribute
 
-   
+   Some error cases.
+
+   >>> g = hookable()  # not enough args
+   Traceback (most recent call last):
+      ...
+   TypeError: hookable() takes exactly 1 argument (0 given)
+
+   >>> g = hookable(f, f)  # too many args
+   Traceback (most recent call last):
+      ...
+   TypeError: hookable() takes exactly 1 argument (2 given)
+
+   >>> g = hookable(implementation=f)  # OK, but not advertised
+
+   >>> g = hookable(f, madeupkeywordname=f)  # bad kw name
+   Traceback (most recent call last):
+      ...
+   TypeError: 'madeupkeywordname' is an invalid keyword argument for this function
+
 $Id$
 """
 from _zope_hookable import *
