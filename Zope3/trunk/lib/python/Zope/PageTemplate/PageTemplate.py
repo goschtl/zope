@@ -2,20 +2,20 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Page Template module
 
 HTML- and XML-based template objects using TAL, TALES, and METAL.
 
-$Id: PageTemplate.py,v 1.7 2002/10/22 15:16:52 stevea Exp $
+$Id: PageTemplate.py,v 1.8 2002/12/05 17:15:21 fdrake Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -140,6 +140,7 @@ class PageTemplate:
                 text = text[errend + 4:]
         if self._text != text:
             self._text = text
+        # XXX can this be done only if we changed self._text?
         self._cook()
 
     def read(self):
