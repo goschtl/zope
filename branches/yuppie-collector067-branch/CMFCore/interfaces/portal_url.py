@@ -40,14 +40,6 @@ class portal_url(Interface):
         Returns -- Slash-separated string
         """
 
-    def listActions(info=None):
-        """ List actions provided via the tool.
-
-        Permission -- Python only
-
-        Returns -- List of actions
-        """
-
     def getPortalObject():
         """ Get the portal object itself.
 

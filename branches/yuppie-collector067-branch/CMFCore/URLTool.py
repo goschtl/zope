@@ -32,8 +32,10 @@ from interfaces.portal_url import portal_url as IURLTool
 
 
 class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
+    """ CMF URL Tool.
+    """
 
-    __implements__ = IURLTool
+    __implements__ = (IURLTool, ActionProviderBase.__implements__)
 
     id = 'portal_url'
     meta_type = 'CMF URL Tool'
@@ -64,12 +66,6 @@ class URLTool(UniqueObject, SimpleItem, ActionProviderBase):
         """ Get by default the absolute URL of the portal.
         """
         return self.getPortalObject().absolute_url(relative=relative)
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """ List actions provided via the tool.
-        """
-        return self._actions
 
     security.declarePublic('getPortalObject')
     def getPortalObject(self):
