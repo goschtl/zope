@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.10 2003/06/07 06:37:24 stevea Exp $
+$Id: globalservice.py,v 1.11 2003/06/30 17:50:28 jeremy Exp $
 """
 
 __metaclass__ = type
@@ -82,13 +82,10 @@ class Logger:
     def notify(self, event):
         c = event.__class__
         detail = StringIO()
-        if 0:
-            # XXX Apparently this doesn't work; why not?
-            data = event.__dict__.items()
-            data.sort()
-            pprint(data, detail)
-        else:
-            print >>detail, 'XXX detail temporarily disabled'
+        data = event.__dict__.items()
+        data.sort()
+        # XXX The detail output could be improved.  Not sure what is wanted.
+        pprint.pprint(data, detail)
         self.logger.log(self.severity, "%s.%s: %s",
                         c.__module__, c.__name__, detail.getvalue())
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_logger.py,v 1.8 2003/03/08 21:46:04 seanb Exp $
+$Id: test_logger.py,v 1.9 2003/06/30 17:50:30 jeremy Exp $
 """
 
 import unittest
@@ -74,7 +74,8 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         self.assertEqual(result.levelno, logging.INFO)
         self.assertEqual(result.getMessage(),
                          "zope.app.event.objectevent.ObjectAddedEvent: "
-                         "XXX detail temporarily disabled\n")
+                         "[('_ObjectEvent__location', 'foo'), "
+                         "('object', None)]\n")
         self.assertEqual(result.exc_info, None)
 
 class TestLogger2(TestLogger1):
@@ -88,9 +89,11 @@ class TestLogger2(TestLogger1):
         result = results[0]
         self.assertEqual(result.name, "Event.Logger")
         self.assertEqual(result.levelno, logging.CRITICAL)
+        print result.getMessage()
         self.assertEqual(result.getMessage(),
                          "zope.app.event.objectevent.ObjectAddedEvent: "
-                         "XXX detail temporarily disabled\n")
+                         "[('_ObjectEvent__location', 'foo'), "
+                         "('object', None)]\n")
         self.assertEqual(result.exc_info, None)
 
 def test_suite():
