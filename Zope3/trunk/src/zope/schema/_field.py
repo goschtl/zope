@@ -14,7 +14,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.28 2004/01/22 16:31:27 philikon Exp $
+$Id: _field.py,v 1.29 2004/03/02 14:27:14 srichter Exp $
 """
 __metaclass__ = type
 
@@ -33,7 +33,8 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
-from zope.schema.interfaces import IBool, IInt, IBytes, IASCII, IBytesLine, IFloat
+from zope.schema.interfaces import IBytes, IASCII, IBytesLine
+from zope.schema.interfaces import IBool, IInt, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate, IEnumeratedDate
 from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
