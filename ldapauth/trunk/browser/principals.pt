@@ -6,13 +6,22 @@
            i18n:attributes="summary">
       <thead>
         <tr>
-          <th i18n:translate="">Login</th>
+          <th><span i18n:translate="">Login Attribute: </span>
+						(<span tal:content="view/getLoginAttribute" tal:omit-tag="">cn</span>=*)</th>
+          <th i18n:translate="">Title</th>
+          <th i18n:translate="">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr tal:repeat="principal view/getPrincipals" >
+        <tr tal:repeat="info python:view.getUserInfos()" >
           <td>
-					  <!--<span tal:content="python:principal.getLogin()">login</span>-->
+					  <span tal:content="python:info['login']">login</span>
+          </td>
+          <td>
+					  <span tal:content="python:info['title']">title</span>
+          </td>
+          <td>
+					  <span tal:content="python:info['description']">description</span>
           </td>
         </tr>
       </tbody>

@@ -17,6 +17,7 @@ $Id: contents.py 25177 2004-06-02 13:17:31Z jim $
 """
 
 from zope.exceptions import NotFoundError
+from zope.security.proxy import trustedRemoveSecurityProxy
 
 from zope.app import zapi
 from zope.app.size.interfaces import ISized
@@ -33,24 +34,33 @@ class Principals(BrowserView):
 
     error = ""
 
-    def getPrincipals(self):
+    def getUserInfos(self):
         context = self.context
         request = self.request
+        infoList = []
         try:
-            print "START Principals getPrincipals"
             principals = self.context.getPrincipals(name='')
-            print "END Principals getPrincipals"
         except :
             principals = []
             self.error = _("Error, No LDAP server or connection found")
         
-        return principals
+        for principal in principals:
+            info = trustedRemoveSecurityProxy(principal)
+            entry = {}
+            entry['login'] = info.getLogin()
+            entry['title'] = info.title
+            entry['description'] = info.description
+            infoList.append(entry)
+        
+        return infoList
+
+
+    def getLoginAttribute(self):
+        context = self.context
+        try:
+            return context.login_attribute
+        except:
+            return "Lookup Error"
+
 
     principals = ViewPageTemplateFile('principals.pt')
-
-    def index(self):
-        if 'index.html' in self.context:
-            self.request.response.redirect('index.html')
-            return ''
-
-        return self._index()
