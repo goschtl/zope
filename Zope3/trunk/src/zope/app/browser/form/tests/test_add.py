@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.14 2003/06/05 20:13:07 jim Exp $
+$Id: test_add.py,v 1.15 2003/06/06 21:35:17 philikon Exp $
 """
 
 import sys
 import unittest
 
 from zope.app.browser.form.add import add, AddViewFactory, AddView
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.schema import TextLine, accessors
 from zope.app.interfaces.container import IAdding
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -59,7 +59,7 @@ class I(Interface):
 
 class C:
 
-    __implements__ = (I, )
+    implements(I)
 
     def __init__(self, *args, **kw):
         self.args = args
@@ -170,7 +170,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         class Adding:
 
-            __implements__ = IAdding
+            implements(IAdding)
 
             def __init__(self, test):
                 self.test = test
@@ -202,7 +202,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         class Adding:
 
-            __implements__ = IAdding
+            implements(IAdding)
 
             def __init__(self, test):
                 self.test = test
@@ -236,7 +236,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         class Adding:
 
-            __implements__ = IAdding
+            implements(IAdding)
 
             def __init__(self, test):
                 self.test = test
@@ -264,7 +264,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def test_hooks(self):
 
         class Adding:
-            __implements__ = IAdding
+            implements(IAdding)
 
         adding = Adding()
         [(descriminator, callable, args, kw)] = self._invoke_add()

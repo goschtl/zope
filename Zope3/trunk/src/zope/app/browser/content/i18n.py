@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: i18n.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: i18n.py,v 1.3 2003/06/06 21:35:16 philikon Exp $
 """
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -40,8 +40,6 @@ class I18nFileView(BrowserView):
 
 
 class I18nFileEdit(BrowserView):
-
-    __implements__ = BrowserView.__implements__
 
     name = 'editForm'
     title = 'Edit Form'

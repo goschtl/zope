@@ -15,7 +15,7 @@
 Define view component for image editing.
 
 Revision Information:
-$Id: i18nimage.py,v 1.3 2003/04/30 23:37:51 faassen Exp $
+$Id: i18nimage.py,v 1.4 2003/06/06 21:35:16 philikon Exp $
 """
 
 from zope.app.browser.content.image import ImageData
@@ -24,8 +24,6 @@ from zope.publisher.browser import BrowserView
 
 
 class I18nImageEdit(BrowserView):
-
-    __implements__ = BrowserView.__implements__
 
     name = 'editForm'
     title = 'Edit Form'

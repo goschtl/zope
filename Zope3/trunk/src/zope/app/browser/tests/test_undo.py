@@ -14,18 +14,19 @@
 """
 
 Revision information:
-$Id: test_undo.py,v 1.3 2003/04/30 23:37:58 faassen Exp $
+$Id: test_undo.py,v 1.4 2003/06/06 21:35:20 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 
+from zope.interface import implements
 from zope.app.interfaces.undo import IUndoManager
 from zope.app.browser.undo import Undo
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 
 class TestIUndoManager:
-    __implements__ = IUndoManager
+    implements(IUndoManager)
 
     def __init__(self):
         dict1 = {'id': '1', 'user_name': 'monkey', 'description': 'thing1',

@@ -11,13 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.8 2003/04/14 08:27:15 jim Exp $
+"""$Id: test_editview.py,v 1.9 2003/06/06 21:35:17 philikon Exp $
 """
 import unittest
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.event.tests.placelesssetup import getEvents
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.schema import TextLine, accessors
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
@@ -40,7 +40,7 @@ class EV(EditView):
     schema = I
 
 class C:
-    __implements__ = (I, )
+    implements(I)
     foo = u"c foo"
     bar = u"c bar"
     a   = u"c a"
@@ -58,7 +58,7 @@ class IBar(Interface):
     bar = TextLine(title=u"Bar")
 
 class Foo:
-    __implements__ = IFoo
+    implements(IFoo)
 
     foo = 'Foo foo'
 

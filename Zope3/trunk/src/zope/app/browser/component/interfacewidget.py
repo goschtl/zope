@@ -13,11 +13,11 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.28 2003/04/08 21:44:34 gotcha Exp $
+$Id: interfacewidget.py,v 1.29 2003/06/06 21:35:16 philikon Exp $
 """
 
 import sys
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.form import WidgetInputError, ConversionError
 from zope.app.form.widget import Widget
@@ -31,7 +31,7 @@ from xml.sax.saxutils import quoteattr
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class InterfaceWidget(Widget, BrowserView):
-    __implements__ = IBrowserWidget
+    implements(IBrowserWidget)
 
     def haveData(self):
         if self.name in self.request.form:
@@ -143,7 +143,7 @@ class InterfaceWidget(Widget, BrowserView):
 # which is a tuple of interfaces.
 class MultiInterfaceWidget(Widget, BrowserView):
 
-    __implements__ = IBrowserWidget
+    implements(IBrowserWidget)
 
     # Names used:
     #

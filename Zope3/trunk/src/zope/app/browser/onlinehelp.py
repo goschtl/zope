@@ -13,9 +13,9 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.6 2003/06/01 15:59:25 jim Exp $
+$Id: onlinehelp.py,v 1.7 2003/06/06 21:35:15 philikon Exp $
 """
-from zope.interface.implements import flattenInterfaces
+from zope.interface import providedBy
 
 from zope.component import getService, getView
 from zope.publisher.browser import BrowserView
@@ -57,7 +57,7 @@ class FindRelevantHelpTopics(BrowserView):
         view = self.context
         obj = view.context
         help = getService(obj, 'OnlineHelp')
-        ifaces = flattenInterfaces(removeAllProxies(obj.__implements__))
+        ifaces = providedBy(obj).flattened()
         topics = []
         for klass in view.__class__.__bases__ + (view.__class__, None):
             for iface in ifaces:

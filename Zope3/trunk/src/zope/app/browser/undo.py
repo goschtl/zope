@@ -14,8 +14,9 @@
 """
 
 Revision information:
-$Id: undo.py,v 1.3 2003/01/20 19:58:57 jim Exp $
+$Id: undo.py,v 1.4 2003/06/06 21:35:15 philikon Exp $
 """
+from zope.interface import implements
 from zope.component import getUtility
 from zope.publisher.browser import BrowserView
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -26,7 +27,7 @@ class ZODBUndoManager:
     """Implement the basic undo management api for a single ZODB database.
     """
 
-    __implements__ =  IUndoManager
+    implements(IUndoManager)
 
     def __init__(self, db):
         self.__db = db

@@ -13,16 +13,16 @@
 ##############################################################################
 """
 
-$Id: sampleinterfaces.py,v 1.3 2002/12/28 14:13:22 stevea Exp $
+$Id: sampleinterfaces.py,v 1.4 2003/06/06 21:35:18 philikon Exp $
 """
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.app.interfaces.traversing import ITraverser
 
 class FakeTraverser:
 
-    __implements__ = ITraverser
+    implements(ITraverser)
 
     def __init__(self, *args, **kw): pass
 
@@ -34,7 +34,7 @@ class I1(Interface): pass
 class I2(I1): pass
 
 class O1:
-    __implements__ = I1
+    implements(I1)
 
 class O2:
-    __implements__ = I2
+    implements(I2)

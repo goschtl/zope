@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: folder.py,v 1.2 2002/12/25 14:12:30 jim Exp $
+$Id: folder.py,v 1.3 2003/06/06 21:35:16 philikon Exp $
 """
-
+from zope.interface import implements
 from zope.app.browser.container.adding import Adding
 from zope.app.interfaces.content.folder import IFolderAdding
 
 class FolderAdding(Adding):
 
-    __implements__ = IFolderAdding
+    implements(IFolderAdding)

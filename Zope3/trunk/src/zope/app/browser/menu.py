@@ -12,9 +12,10 @@
 #
 ##############################################################################
 """
-$Id: menu.py,v 1.2 2002/12/25 14:12:26 jim Exp $
+$Id: menu.py,v 1.3 2003/06/06 21:35:15 philikon Exp $
 """
 
+from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.menu import IMenuAccessView
 from zope.component import getService
@@ -22,7 +23,7 @@ from zope.component import getService
 class MenuAccessView(BrowserView):
     __doc__ = IMenuAccessView.__doc__
 
-    __implements__ = BrowserView.__implements__, IMenuAccessView
+    implements(IMenuAccessView)
 
     def __getitem__(self, menu_id):
         context = self.context

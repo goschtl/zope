@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.8 2003/03/11 16:10:54 jim Exp $
+$Id: test_menu.py,v 1.9 2003/06/06 21:35:20 philikon Exp $
 """
 
 import unittest
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.component import getService, getServiceManager
 from zope.app.services.servicenames import Views
@@ -39,7 +39,7 @@ def d(title, action):
     return {'action': action, 'title': title, 'description': ''}
 
 class Service:
-    __implements__ = IBrowserMenuService, ISimpleService
+    implements(IBrowserMenuService, ISimpleService)
 
     def getMenu(self, name, ob, req):
         return [d('l1', 'a1'),
@@ -48,7 +48,7 @@ class Service:
 
 class I(Interface): pass
 class C:
-    __implements__ = I
+    implements(I)
 
     def __call__(self):
         pass
@@ -61,7 +61,7 @@ ob.abad = C()
 ob.abad.bad = 1
 
 class V:
-    __implements__ = IBrowserView
+    implements(IBrowserView)
 
     def __init__(self, context, request):
         self.context = context

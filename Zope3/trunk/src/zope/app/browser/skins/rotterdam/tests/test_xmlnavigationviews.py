@@ -14,13 +14,13 @@
 """
 
 Revision information:
-$Id: test_xmlnavigationviews.py,v 1.6 2003/01/02 15:34:08 stevea Exp $
+$Id: test_xmlnavigationviews.py,v 1.7 2003/06/06 21:35:19 philikon Exp $
 """
 
 #import sys
 #sys.path.insert(0, r"c:\Zope3\src")
 
-
+from zope.interface import implements
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.pagetemplate.tests.util import check_xml
@@ -60,8 +60,7 @@ class TestXmlObject(EventSetup, TestCase):
         from zope.publisher.interfaces.browser import IBrowserPresentation
         from zope.publisher.interfaces.browser import IBrowserPublisher
         class ReadContainerView(ReadContainerXmlObjectView):
-            __implements__ = (IBrowserPublisher, 
-                              ReadContainerXmlObjectView.__implements__)
+            implements(IBrowserPublisher)
             def browserDefault(self, request):
                 return self, ()
             def publishTraverse(self, request, name):

@@ -12,8 +12,9 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.6 2003/05/27 14:18:07 jim Exp $
+$Id: sql.py,v 1.7 2003/06/06 21:35:16 philikon Exp $
 """
+from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.rdb import DatabaseException

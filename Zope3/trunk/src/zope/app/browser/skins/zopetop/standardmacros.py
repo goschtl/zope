@@ -15,14 +15,12 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.4 2003/03/30 15:40:57 sidnei Exp $
+$Id: standardmacros.py,v 1.5 2003/06/06 21:35:19 philikon Exp $
 """
 from zope.app.browser.skins.basic.standardmacros import StandardMacros
 
 BaseMacros = StandardMacros
 
 class StandardMacros(BaseMacros):
-
-    __implements__ = BaseMacros.__implements__
 
     macro_pages = ('view_macros', 'widget_macros', 'dialog_macros')

@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.33 2003/05/28 15:46:00 jim Exp $
+$Id: widget.py,v 1.34 2003/06/06 21:35:17 philikon Exp $
 """
 
 __metaclass__ = type
 
 import warnings
+from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
@@ -78,7 +79,7 @@ class BrowserWidget(Widget, BrowserView):
     
     """
 
-    __implements__ = IBrowserWidget
+    implements(IBrowserWidget)
 
     propertyNames = (Widget.propertyNames +
                      ['tag', 'type', 'cssClass', 'extra'])
@@ -752,7 +753,6 @@ class SingleItemsWidget(ItemsWidget):
 
 class ListWidget(SingleItemsWidget):
     """List widget."""
-    __implements__ = SingleItemsWidget.__implements__
     propertyNames = (SingleItemsWidget.propertyNames +
                      ['firstItem', 'items', 'size', 'extra']
                      )

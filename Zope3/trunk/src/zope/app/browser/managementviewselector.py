@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: managementviewselector.py,v 1.2 2002/12/25 14:12:26 jim Exp $
+$Id: managementviewselector.py,v 1.3 2003/06/06 21:35:15 philikon Exp $
 """
 
 __metaclass__ = type
 
+from zope.interface import implements
 from zope.component import getService
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
@@ -25,7 +26,7 @@ class ManagementViewSelector(BrowserView):
     """View that selects the first available management view
     """
 
-    __implements__ = BrowserView.__implements__, IBrowserPublisher
+    implements(IBrowserPublisher)
 
     def browserDefault(self, request):
         return self, ()

@@ -22,6 +22,7 @@ query objects and helper views.
 
 from xml.sax.saxutils import quoteattr
 
+from zope.interface import implements, implementedBy
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IVocabularyQueryView
@@ -103,7 +104,7 @@ def _get_vocabulary_edit_widget(field, request, modifier=''):
 class IterableVocabularyQuery(object):
     """Simple query object used to invoke the simple selection mechanism."""
 
-    __implements__ = IIterableVocabularyQuery
+    implements(IIterableVocabularyQuery)
 
     def __init__(self, vocabulary):
         self.vocabulary = vocabulary
@@ -482,7 +483,7 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
     This widget can be used when the number of selections isn't going
     to be very large.
     """
-    __implements__ = widget.SingleItemsWidget.__implements__
+    implements(implementedBy(widget.SingleItemsWidget))
     propertyNames = VocabularyEditWidgetBase.propertyNames + ['firstItem']
     firstItem = False
 
@@ -542,7 +543,7 @@ class VocabularyMultiEditWidget(MultiDataHelper, VocabularyEditWidgetBase):
 class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
     """Vocabulary query support base class."""
 
-    __implements__ = IVocabularyQueryView
+    implements(IVocabularyQueryView)
 
     # This specifically isn't a widget in it's own right, but is a
     # form of BrowserView (at least conceptually).
@@ -604,7 +605,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
     getQuery() returns None.
     """
 
-    __implements__ = IVocabularyQueryView
+    implements(IVocabularyQueryView)
 
     queryResultBatchSize = 8
 

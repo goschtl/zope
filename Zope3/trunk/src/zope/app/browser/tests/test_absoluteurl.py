@@ -14,11 +14,11 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.12 2003/06/01 15:59:28 jim Exp $
+$Id: test_absoluteurl.py,v 1.13 2003/06/06 21:35:20 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getService, getView
@@ -36,7 +36,7 @@ from zope.app.context import ContextWrapper
 class IRoot(Interface): pass
 
 class Root:
-    __implements__ = IRoot
+    implements(IRoot)
 
 class TrivialContent(object):
     """Trivial content object, used because instances of object are rocks."""

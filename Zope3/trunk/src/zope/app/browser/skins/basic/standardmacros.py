@@ -15,15 +15,16 @@
 
 The macros are drawn from various different page templates.
 
-$Id: standardmacros.py,v 1.4 2003/04/30 23:37:57 faassen Exp $
+$Id: standardmacros.py,v 1.5 2003/06/06 21:35:18 philikon Exp $
 """
+from zope.interface import implements
 from zope.interface.common.mapping import IItemMapping
 from zope.component import getView
 from zope.publisher.browser import BrowserView
 
 class Macros:
 
-    __implements__ = IItemMapping
+    implements(IItemMapping)
 
     macro_pages = ()
 
@@ -42,7 +43,5 @@ class Macros:
 
 
 class StandardMacros(BrowserView, Macros):
-
-    __implements__ = BrowserView.__implements__, Macros.__implements__
 
     macro_pages = ('view_macros', 'dialog_macros')

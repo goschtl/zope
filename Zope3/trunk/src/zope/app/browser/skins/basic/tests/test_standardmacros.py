@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.6 2003/04/30 23:37:58 faassen Exp $
+$Id: test_standardmacros.py,v 1.7 2003/06/06 21:35:18 philikon Exp $
 """
 
 import unittest
+from zope.interface import implements
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.component import getService
@@ -28,7 +29,7 @@ from zope.app.browser.skins.basic.standardmacros import Macros
 
 
 class ViewWithMacros:
-    __implements__ = IBrowserView
+    implements(IBrowserView)
 
     def __init__(self, context, request):
         self.context = context
@@ -45,7 +46,7 @@ class ViewWithMacros:
 class I(Interface): pass
 
 class C:
-    __implements__ = I
+    implements(I)
 
 class Request:
     def getPresentationType(self):
