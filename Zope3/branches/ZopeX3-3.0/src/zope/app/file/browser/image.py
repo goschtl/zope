@@ -15,7 +15,9 @@
 
 $Id$
 """
+from zope.app import zapi
 from zope.app.size import byteDisplay
+from zope.app.size.interfaces import ISized
 
 class ImageData(object):
 
@@ -85,11 +87,5 @@ class ImageUpload(object):
     """Image edit view mix-in that provides access to image size info"""
 
     def size(self):
-        sx, sy = self.context.getImageSize()
-        if sx < 0:
-            sx = '?'
-        if sy < 0:
-            sy = '?'
-        return "%s x %s pixels, %s" % (
-                sx, sy, byteDisplay(self.context.getSize())
-                )
+        sized = zapi.getAdapter(self.context, ISized)
+        return sized.sizeForDisplay()
