@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.2 2002/12/25 14:13:33 jim Exp $
+$Id: xmlconfig.py,v 1.3 2002/12/27 23:25:18 jim Exp $
 """
 
 import os
@@ -85,6 +85,13 @@ class ConfigurationHandler(ContentHandler):
 
     def setDocumentLocator(self, locator):
         self.__locator = locator
+
+    def characters(self, text):
+        stack = self.__stack
+        if len(stack) > 1:
+            base = stack[-1][0]
+            if hasattr(base, 'zcmlText'):
+                base.zcmlText(text)
 
     def startElementNS(self, name, qname, attrs):
         stack = self.__stack
