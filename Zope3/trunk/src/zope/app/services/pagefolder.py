@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.11 2003/06/21 21:22:12 jim Exp $
+$Id: pagefolder.py,v 1.12 2003/07/02 22:11:13 jim Exp $
 """
 __metaclass__ = type
 
@@ -37,6 +37,9 @@ from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectDirectory
 from zope.interface import implements
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
 
 class PageFolder(RegistrationManagerContainer, BTreeContainer):
 
@@ -49,6 +52,13 @@ class PageFolder(RegistrationManagerContainer, BTreeContainer):
     factoryName = None
     attribute = None
     template = None
+    apply = True
+
+    ########################################################
+    # The logic for managing registrations is handled by the
+    # decorator class below.
+    ########################################################
+
 
     def setObject(self, name, object):
         if (IRegistrationManager.isImplementedBy(object) or
@@ -56,17 +66,6 @@ class PageFolder(RegistrationManagerContainer, BTreeContainer):
             return super(PageFolder, self).setObject(name, object)
         else:
             raise TypeError("Can only add templates", object)
-
-    def configured(self):
-        return (hasattr(self, 'permission')
-                and hasattr(self, 'forInterface')
-                )
-
-    def activated(self):
-        "See IRegistration"
-
-    def deactivated(self):
-        "See IRegistration"
 
 
 _attrNames = (
@@ -100,6 +99,20 @@ class PageFolderFactory:
 
 class PageFolderContextDecorator(ZopeContainerDecorator):
 
+    # The logic for handling registrations is provided here.
+    #
+    # There are 2 reasons for this:
+    #
+    # 1. It may be clearer to let decorators, which are context
+    #    wrappers. handle context-sensitive logic.
+    #
+    # 2. There is a limitation that decorators can't delegate
+    #    to context-methods of the objects they decorate. That means
+    #    we can't make PageFolder's setObject method context aware,
+    #    because PageFolders, will get decorated with container
+    #    decorators that define setObject (to generate necessary
+    #    events).
+
     def setObject(self, name, object):
         name = super(PageFolderContextDecorator, self).setObject(name, object)
 
@@ -107,7 +120,7 @@ class PageFolderContextDecorator(ZopeContainerDecorator):
         if IZPTTemplate.isImplementedBy(object):
             template = getItem(self, name)
             template = getPath(template)
-            config = PageRegistration(
+            registration = PageRegistration(
                 forInterface=self.forInterface,
                 viewName=name,
                 permission=self.permission,
@@ -115,11 +128,42 @@ class PageFolderContextDecorator(ZopeContainerDecorator):
                 template=template,
                 layer=self.layer,
                 )
-            configure = self.getRegistrationManager()
-            id = configure.setObject('', config)
-            config = getItem(configure, id)
-            config.status = ActiveStatus
+            
+            registrations = self.getRegistrationManager()
+            id = registrations.setObject('', registration)
+            registration = getItem(registrations, id)
+            registration.status = ActiveStatus
+            
         return name
+
+    def applyDefaults(self):
+        """Apply the default configuration to the already-registered pages. 
+        """
+        
+        rm = self.getRegistrationManager()
+        for name in rm:
+            registration = rm[name]
+            status = registration.status
+            if status == ActiveStatus:
+                registration.status = RegisteredStatus
+            registration.status = UnregisteredStatus
+
+            # Cheat and set forInterface and layer even though they're
+            # read-only.  This is ok since the registration is now not
+            # registered.
+
+            registration.forInterface = removeAllProxies(self.forInterface)
+            registration.factoryName = self.factoryName
+            registration.layer = self.layer
+            registration.permission = self.permission
+
+            # Now restore the registration status
+
+            registration.status = status
+
+
+
+
 
 
 # XXX Backward compatibility. This is needed to support old pickles.
