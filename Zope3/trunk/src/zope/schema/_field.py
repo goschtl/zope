@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.25 2003/12/17 09:51:42 dominikhuber Exp $
+$Id: _field.py,v 1.26 2003/12/17 10:48:51 mukruthi Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,7 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
-from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
+from zope.schema.interfaces import IBool, IInt, IBytes, IASCII, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate
 from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
@@ -92,6 +92,11 @@ class Bytes(Enumerated, MinMaxLen, Field):
         v = str(u)
         self.validate(v)
         return v
+
+class ASCII(Bytes):
+    __doc__ = IASCII.__doc__
+    implements(IASCII)
+    
 
 class BytesLine(Bytes):
     """A Text field with no newlines."""

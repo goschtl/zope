@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.34 2003/10/15 20:28:22 shane Exp $
+$Id: interfaces.py,v 1.35 2003/12/17 10:48:51 mukruthi Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -257,6 +257,18 @@ class IBool(IField):
         )
 
 class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
+    # XXX IEnumerated will be removed in the future.
+    u"""Field containing a byte string (like the python str).
+
+    The value might be contrained to be with length limits.
+    """
+class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
+    # XXX IEnumerated will be removed in the future.
+    u"""Field containing a byte data(binary!).
+
+    The value might be contrained to be with length limits.
+    """
+class IASCII(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated will be removed in the future.
     u"""Field containing a byte string (like the python str).
 
