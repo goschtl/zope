@@ -1,4 +1,8 @@
+import module
+
 def initialize(context):
-    import module
-    
+    print "*" * 70
+    module.demo_manual_adaptation()
+    print "*" * 70
+
 

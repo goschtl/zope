@@ -44,6 +44,7 @@ class ElephantNoiseMaker:
      def makeNoise(self):
          return self.context.trumpet()
      
-elephant = AfricanElephant()
-noise_maker = ElephantNoiseMaker(elephant)
-print noise_maker.makeNoise()
+def demo_manual_adaptation():
+    elephant = AfricanElephant()
+    noise_maker = ElephantNoiseMaker(elephant)
+    print noise_maker.makeNoise()
