@@ -29,8 +29,8 @@ here = os.path.dirname(os.path.realpath(__file__))
 lib = os.path.join(here, "build", "lib." + PLAT_SPEC)
 sys.path.append(lib)
 
-import zope.testing.test
+import zope.app.tests.test
 
 if __name__ == '__main__':
     args = sys.argv[:1] + ["-ul", lib] + sys.argv[1:]
-    zope.testing.test.process_args(args)
+    zope.app.tests.test.process_args(args)

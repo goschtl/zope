@@ -28,7 +28,7 @@ instance_lib = os.path.join(here, "lib", "python")
 sys.path[:0] = [instance_lib, SOFTWARE_HOME]
 
 
-from zope.testing import test
+from zope.app.tests import test
 
 
 testzope = "--testzope" in sys.argv[1:]
