@@ -13,7 +13,7 @@
        factory=".Adding."
        permission="Zope.ManageContent"
        >
-       <browser:page name="index.html"  attribute="index" />
+       <browser:page name="index.html"  template="add.pt" />
        <browser:page name="action.html" attribute="action" />
    </browser:view>
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.13 2002/12/01 10:32:28 jim Exp $
+$Id: Adding.py,v 1.14 2002/12/04 13:56:12 runyaga Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -23,7 +23,6 @@ from Zope.Publisher.IPublishTraverse import IPublishTraverse
 from Zope.ComponentArchitecture \
      import getView, getService, createObject, \
             queryFactory, queryView, getAdapter
-from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.ContextWrapper import ContextMethod, getbaseobject
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Event import publish
@@ -93,8 +92,6 @@ class Adding(BrowserView):
     
     #
     ############################################################
-
-    index = ViewPageTemplateFile("add.pt")
 
     def addingInfo(self):
         """Return menu data"""

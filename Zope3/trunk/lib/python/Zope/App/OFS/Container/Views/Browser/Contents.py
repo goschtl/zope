@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.15 2002/12/03 17:43:48 runyaga Exp $
+Revision information: $Id: Contents.py,v 1.16 2002/12/04 13:56:12 runyaga Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -95,11 +95,16 @@ def formatTime(in_date):
        return in_date.strftime(format)
     return undefined
 
+#SteveA recommneded that getSize return
+#a tuple (magnitude, (size, text_label))
+#this way we can sort things intelligibly
+#that dont have sizes.  
+
 def getSize(obj):
     try:
         size=int(obj.getSize())
     except (AttributeError, ValueError):
-        return u'N/A'
+        return (0, u'N/A')
 
     result = u''
     if size < 1024:
@@ -108,5 +113,5 @@ def getSize(obj):
         result = "%0.02f MB" % (size / 1048576.0)
     else:
         result = "%d KB" % (size / 1024.0)
-    return result
+    return (size, result)
 

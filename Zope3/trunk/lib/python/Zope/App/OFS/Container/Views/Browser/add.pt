@@ -23,7 +23,6 @@
 <body>
 
 <div metal:fill-slot="body">
-
 <form action="action.html" method="POST">
 <table class="TypeListing" cellpadding="3">
 
