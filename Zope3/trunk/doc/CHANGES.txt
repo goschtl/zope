@@ -151,6 +151,9 @@ Zope Changes
  
     - Removed unused imports.
 
+    - Removed the simple local authentication service
+      zope.app.services.auth. It was deprecated for a while already.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Jeremy Hylton, Fred Drake, Sidnei da Silva,

@@ -278,8 +278,9 @@
                     iterRegistrations" />
     </content>
 
-<!-- Old simple auth service --> <include file="auth.zcml" />
-<!-- Pluggable Authentication Service --> <include package=".pluggableauth" />
+
+<!-- Pluggable Authentication Service --> 
+<include package=".pluggableauth" />
 
 <!-- Event Service -->
 <content class='zope.app.services.event.EventService'>
