@@ -88,7 +88,7 @@ five ``http://namespaces.zope.org/five``
 implements
 ----------
 
-Make a ``class`` declare it implements an ``interface``.
+Make a class declare it implements an interface.
 
 loadProducts
 ------------
@@ -101,7 +101,17 @@ loadProductsOverrides
 
 Loads overriding ZCML in all products (``overrides.zcml``).
 
-viewable
---------
+traversable
+-----------
 
-Make a Zope 2 content ``class`` viewable using Five.
+Make a Zope 2 content class traversable in the Zope 3 manner using
+Five. This is used to attached views, resources and other things to
+Zope 2 objects.
+
+defaultViewable
+---------------
+
+Make a Zope 2 content class use a Zope 3 default view when looking at
+it without any paths appended to it. This works then instead of
+``index_html`` in Zope 2.
+

@@ -337,3 +337,5 @@ related things; it's
 Zope 2 permission needs in order to access this view. The file
 ``permissions.zcml`` in Five contains a mapping of Zope 2 permissions
 to their Zope 3 names.
+
+[XXX need something about five:defaultViewable]
