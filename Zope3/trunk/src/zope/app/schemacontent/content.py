@@ -33,7 +33,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, implements
 from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 
 from interfaces import IContentComponentDefinition, IContentComponentMenuItem
 from interfaces import IContentComponentInstance
@@ -268,7 +268,7 @@ class ContentComponentDefinitionRegistration(UtilityRegistration):
         appropriate menu.
         """
         component = self.getComponent()
-        component = trustedRemoveSecurityProxy(component)
+        component = removeSecurityProxy(component)
         component.name = self.name
         IContentComponentMenuItem(component).createMenuItem()
 
@@ -276,7 +276,7 @@ class ContentComponentDefinitionRegistration(UtilityRegistration):
         """Once activated, we have to unregister the new Content Object with
         the appropriate menu."""
         component = self.getComponent()
-        component = trustedRemoveSecurityProxy(component)
+        component = removeSecurityProxy(component)
         component.name = None
         IContentComponentMenuItem(component).removeMenuItem()
 

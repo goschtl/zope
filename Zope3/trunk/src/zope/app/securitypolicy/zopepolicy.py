@@ -22,7 +22,7 @@ from zope.security.checker import CheckerPublic
 from zope.security.management import system_user
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 from zope.security.interfaces import ISecurityPolicy
-from zope.security.proxy import getProxiedObject
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app.security.settings import Allow, Deny
 
@@ -126,7 +126,7 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
                 cache_prin_per[permission] = prinper
                 return prinper
 
-        parent = getProxiedObject(getattr(parent, '__parent__', None))
+        parent = removeSecurityProxy(getattr(parent, '__parent__', None))
         prinper = self.cached_prinper(parent, principal, permission)
         cache_prin_per[permission] = prinper
         return prinper
@@ -153,7 +153,7 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
             return roles
 
         roles = self.cached_roles(
-            getProxiedObject(getattr(parent, '__parent__', None)),
+            removeSecurityProxy(getattr(parent, '__parent__', None)),
             permission)
         roleper = IRolePermissionMap(parent, None)
         if roleper:
@@ -190,7 +190,7 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
             return roles
             
         roles = self.cached_principal_roles(
-            getProxiedObject(getattr(parent, '__parent__', None)),
+            removeSecurityProxy(getattr(parent, '__parent__', None)),
             principal)
         prinrole = IPrincipalRoleMap(parent, None)
         if prinrole:
@@ -219,8 +219,8 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
         if not principals:
             return True
 
-        object = getProxiedObject(object)
-        parent = getProxiedObject(getattr(object, '__parent__', None))
+        object = removeSecurityProxy(object)
+        parent = removeSecurityProxy(getattr(object, '__parent__', None))
 
         grant_info = IGrantInfo(object, None)
         if not grant_info:

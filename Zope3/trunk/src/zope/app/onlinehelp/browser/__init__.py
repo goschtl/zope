@@ -17,8 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.proxy import removeAllProxies
-
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.interfaces.browser import IBrowserView
@@ -78,7 +76,7 @@ class OnlineHelpTopicView(TopicTreeView):
         source = zapi.createObject(None,
                                    self.context.type,
                                    self.context.source)
-        view = zapi.getView(removeAllProxies(source), '', self.request)
+        view = zapi.getView(source, '', self.request)
         html = view.render()
         return html
 
@@ -96,7 +94,7 @@ class ContextHelpView(TopicTreeView):
         source = zapi.createObject(None,
                                    topic.type,
                                    topic.source)
-        view = zapi.getView(removeAllProxies(source), '', self.request)
+        view = zapi.getView(source, '', self.request)
         html = view.render()
         return html
 
@@ -118,7 +116,7 @@ class ContextHelpView(TopicTreeView):
         if self.topic is not None:
             return self.topic
 
-        onlinehelp = removeAllProxies(self.context)
+        onlinehelp = self.context
         help_context = onlinehelp.context
         self.topic = None
         if IBrowserView.providedBy(help_context):

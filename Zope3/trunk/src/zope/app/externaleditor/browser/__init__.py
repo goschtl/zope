@@ -20,7 +20,7 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.interface import queryType
 from zope.app.content.interfaces import IContentType
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 
 class ExternalEditor(BrowserView):
 
@@ -44,9 +44,9 @@ class ExternalEditor(BrowserView):
         # in Zope3, so we try to get as far as we can
         # using IContentType, which is a marker interface
 
-        # Had to use trustedRemoveSecurityProxy because
+        # Had to use removeSecurityProxy because
         # I was getting unauthorized on __iro__
-        meta_type = queryType(trustedRemoveSecurityProxy(context), IContentType)
+        meta_type = queryType(removeSecurityProxy(context), IContentType)
         if meta_type:
             r.append('meta_type:%s' % meta_type.__name__)
 

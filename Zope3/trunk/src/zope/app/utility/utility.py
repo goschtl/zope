@@ -23,7 +23,7 @@ from zope.app.registration.registration import ComponentRegistration
 from zope.app.utility.interfaces import ILocalUtilityService
 from zope.app.utility.interfaces import IUtilityRegistration
 from zope.component.utility import UtilityService
-from zope.proxy import removeAllProxies
+from zope.security.proxy import removeSecurityProxy
 import zope.app.site.interfaces
 import zope.interface
 import zope.interface.adapter
@@ -78,7 +78,7 @@ class LocalUtilityService(UtilityService, LocalAdapterService):
                     # why/if this is truly safe
                     
                     radapters[key] = radapters.get(key, ()) + (
-                        removeAllProxies(registration.factory), )
+                        removeSecurityProxy(registration.factory), )
 
 
 

@@ -69,3 +69,10 @@ class IZAPI(
         """
         
     servicenames = Attribute("Service Names")
+
+    def isinstance(object, cls):
+        """Test whether an object is an instance of the given type
+
+        This function is useful because it works even if the instance
+        is security proxied.
+        """

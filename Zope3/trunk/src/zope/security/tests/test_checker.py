@@ -25,7 +25,7 @@ from zope.security.interfaces import Forbidden, ForbiddenAttribute
 from zope.security.interfaces import Unauthorized
 from zope.security.management import setSecurityPolicy, newInteraction
 from zope.security.management import endInteraction, getInteraction
-from zope.proxy import getProxiedObject
+from zope.security.proxy import removeSecurityProxy
 from zope.security.proxy import getChecker
 from zope.security.checker import defineChecker, ProxyFactory
 from zope.security.proxy import Proxy
@@ -218,7 +218,7 @@ class Test(TestCase, CleanUp):
 
             for ob in inst, class_:
                 proxy = checker.proxy(ob)
-                self.failUnless(getProxiedObject(proxy) is ob)
+                self.failUnless(removeSecurityProxy(proxy) is ob)
                 checker = getChecker(proxy)
                 if ob is inst:
                     self.assertEqual(checker.permission_id('__str__'),
@@ -235,7 +235,7 @@ class Test(TestCase, CleanUp):
             #
             #for ob in inst, TransparentProxy(inst):
             #    proxy = checker.proxy(ob)
-            #    self.failUnless(getProxiedObject(proxy) is ob)
+            #    self.failUnless(removeSecurityProxy(proxy) is ob)
             #
             #    checker = getChecker(proxy)
             #    self.failUnless(checker is special,

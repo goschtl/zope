@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.proxy import removeAllProxies
+from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
 from zope.app.container.browser.adding import Adding
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -481,7 +481,7 @@ class MakeSite(BrowserView):
         # We don't want to store security proxies (we can't,
         # actually), so we have to remove proxies here before passing
         # the context to the SiteManager.
-        bare = removeAllProxies(self.context)
+        bare = removeSecurityProxy(self.context)
         sm = SiteManager(bare)
         self.context.setSiteManager(sm)
         self.request.response.redirect(

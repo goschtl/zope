@@ -30,7 +30,7 @@ from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema import getFieldsInOrder, Choice
 from zope.security.checker import CheckerPublic
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 
 class ContentComponentPermissionEdit(EditView):
 
@@ -90,7 +90,7 @@ class ContentComponentPermissionEdit(EditView):
             self.buildPermissionWidgets()
         elif 'CHANGE' in self.request:
             schema = self.context.schema
-            perms = trustedRemoveSecurityProxy(self.context.permissions)
+            perms = removeSecurityProxy(self.context.permissions)
             for name, field in getFieldsInOrder(schema):
                 getPermWidget = getattr(self, name+'_get_perm_widget')
                 setPermWidget = getattr(self, name+'_set_perm_widget')
@@ -118,7 +118,7 @@ class ContentComponentPermissionEdit(EditView):
         schema = self.context.schema
         info = []
         for name, field in getFieldsInOrder(schema):
-            field = trustedRemoveSecurityProxy(field)
+            field = removeSecurityProxy(field)
             info.append(
                 {'fieldName': name,
                  'fieldTitle': field.title,

@@ -25,7 +25,7 @@ from zope.app.form.interfaces import IInputWidget
 from zope.interface import Interface
 from zope.app.publisher.browser import BrowserView
 from zope.schema import Choice, List
-from zope.security.proxy import trustedRemoveSecurityProxy 
+from zope.security.proxy import removeSecurityProxy 
 from zope.app.workflow.interfaces import IProcessDefinition
 
 class IContentProcessMapping(Interface):
@@ -71,7 +71,7 @@ class ManageContentProcessRegistry(BrowserView):
     def getInterfaceProcessesMapping(self):
         mapping = []
         # Nothing bad here; we just read the registry data
-        registry = trustedRemoveSecurityProxy(self.context)._registry
+        registry = removeSecurityProxy(self.context)._registry
         for iface, names in registry.items(): 
             mapping.append({'iface': interfaceToName(self.context, iface),
                             'names': names})

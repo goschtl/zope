@@ -373,10 +373,6 @@ else:
 
 _getChecker = _checkers.get
 
-
-# Marker type used by bogus zope.security.proxy.trustedRemoveSecurityProxy
-TrustedCheckerBase = Checker
-
 class CombinedChecker(Checker):
     """A checker that combines two other checkers in a logical-or fashion.
 

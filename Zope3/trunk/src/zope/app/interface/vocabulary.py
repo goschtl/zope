@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import providedBy
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm 
 from zope.app.introspector import interfaceToName
 
@@ -52,7 +52,7 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
     """
 
     def __init__(self, context):
-        component = trustedRemoveSecurityProxy(context)
+        component = removeSecurityProxy(context)
         interfaces = providedBy(component).flattened()
         terms = [SimpleTerm(interface, interfaceToName(context, interface))
                  for interface in interfaces]

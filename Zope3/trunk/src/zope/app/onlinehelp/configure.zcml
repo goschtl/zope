@@ -11,6 +11,17 @@
         />
   </content>
 
+  <content class=".onlinehelp.OnlineHelp">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IOnlineHelpTopic"
+        />
+    <require
+        permission="zope.View"
+        attributes="context"
+        />
+  </content>
+
   <content class=".onlinehelptopic.OnlineHelpResource">
     <require
         permission="zope.View"
@@ -21,7 +32,6 @@
   <!-- Setup OnlineHelp Root as a Utility -->
   <utility
       provides=".interfaces.IOnlineHelp"
-      permission="zope.View"
       component="zope.app.onlinehelp.help"
       name="OnlineHelp" />
 

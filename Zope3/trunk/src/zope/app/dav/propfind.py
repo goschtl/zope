@@ -16,7 +16,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from xml.dom import minidom
-from zope.proxy import removeAllProxies
 from zope.schema import getFieldNamesInOrder
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
@@ -134,8 +133,8 @@ class PROPFIND(object):
                         value = response.createTextNode(value)
                         el.appendChild(value)
                     else:
-                        if isinstance(removeAllProxies(value), minidom.Node):
-                            el.appendChild(removeAllProxies(value))
+                        if zapi.isinstance(value, minidom.Node):
+                            el.appendChild(value)
                         else:
                             # Try to string-ify
                             value = str(getattr(self, p+'_widget'))

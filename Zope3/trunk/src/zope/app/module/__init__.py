@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from persistent import Persistent
 from zodbcode.module import PersistentModule, compileModule
 from zope.interface import implements
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.filerepresentation.interfaces import IFileFactory
@@ -62,7 +62,7 @@ class Manager(Persistent, Contained):
         # the modules will be proxied.
         # When we do support untrusted code, we're going to have to do
         # something different.
-        folder = trustedRemoveSecurityProxy(folder)
+        folder = removeSecurityProxy(folder)
 
         compileModule(mod, folder, self.source)
         self._recompile = False

@@ -17,7 +17,7 @@ $Id$
 """
 
 from zope.security.checker import ProxyFactory
-from zope.security.proxy import getProxiedObject
+from zope.security.proxy import removeSecurityProxy
 from zope.app.location import ILocation, Location
 
 class TrustedAdapterFactory(object):
@@ -68,7 +68,7 @@ class TrustedAdapterFactory(object):
        And the object proxied is not.  (We actually have to remove the
        adapter to get to the adapted object in this case.)
 
-         >>> a = getProxiedObject(a)
+         >>> a = removeSecurityProxy(a)
          >>> type(a.context).__name__
          'list'
 
@@ -86,14 +86,14 @@ class TrustedAdapterFactory(object):
          >>> a = TM(p, o2, o3)
          >>> type(a).__name__
          '_Proxy'
-         >>> a = getProxiedObject(a)
+         >>> a = removeSecurityProxy(a)
          >>> a.context[0] is o, a.context[1] is o2, a.context[2] is o3
          (True, True, True)
 
          >>> a = TM(p, ProxyFactory(o2), ProxyFactory(o3))
          >>> type(a).__name__
          '_Proxy'
-         >>> a = getProxiedObject(a)
+         >>> a = removeSecurityProxy(a)
          >>> a.context[0] is o, a.context[1] is o2, a.context[2] is o3
          (True, True, True)
 
@@ -116,10 +116,11 @@ class TrustedAdapterFactory(object):
 
          >>> TL(o).__parent__ is o
          True
-         >>> getProxiedObject(TL(p)).__parent__ is o
+         >>> removeSecurityProxy(TL(p)).__parent__ is o
          True
 
-       The factory adapter has the __name__ and __module__ of the factory it adapts:
+       The factory adapter has the __name__ and __module__ of the
+       factory it adapts:
 
          >>> (TA.__module__, TA.__name__) == (A.__module__, A.__name__)
          True
@@ -133,8 +134,8 @@ class TrustedAdapterFactory(object):
 
     def __call__(self, *args):
         for arg in args:
-            if getProxiedObject(arg) is not arg:
-                args = map(getProxiedObject, args)
+            if removeSecurityProxy(arg) is not arg:
+                args = map(removeSecurityProxy, args)
                 adapter = self.factory(*args)
                 if (ILocation.providedBy(adapter)
                     and adapter.__parent__ is None):

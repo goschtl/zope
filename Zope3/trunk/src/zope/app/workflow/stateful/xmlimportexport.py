@@ -22,7 +22,7 @@ from zope.configuration.name import resolve
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.security.checker import CheckerPublic
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
@@ -86,7 +86,7 @@ class XMLStatefulImporter(ContentHandler):
             self.context.relevantDataSchema = resolve(name)
 
     def startPermission(self, attrs):
-        perms = trustedRemoveSecurityProxy(self.context.schemaPermissions)
+        perms = removeSecurityProxy(self.context.schemaPermissions)
         fieldName = attrs.get('for')
         type = attrs.get('type')
         perm_id = attrs.get('id')

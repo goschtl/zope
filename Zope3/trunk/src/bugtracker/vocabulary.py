@@ -22,7 +22,7 @@ from zope.interface import implements
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.vocabulary import getVocabularyRegistry
-from zope.security.proxy import trustedRemoveSecurityProxy 
+from zope.security.proxy import removeSecurityProxy 
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
@@ -172,7 +172,7 @@ class UserTerm(Persistent):
 
     def __init__(self, principal):
         # This is safe here, since we only read non-critical data
-        naked = trustedRemoveSecurityProxy(principal)
+        naked = removeSecurityProxy(principal)
         self.principal = {'id': naked.id,
                           'login': naked.getLogin(),
                           'title': naked.title,

@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.proxy import removeAllProxies
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.schema import getFields
 
 from zope.app import zapi
@@ -45,7 +45,7 @@ class ManagementView(BrowserView):
         schema = workflow.data.getSchema()
         for name, field in getFields(schema).items():
             # setUpWidget() does not mutate the field, so it is ok.
-            field = trustedRemoveSecurityProxy(field)
+            field = removeSecurityProxy(field)
             setUpWidget(self, name, field, IInputWidget,
                         value=getattr(workflow.data, name))
 
@@ -143,7 +143,7 @@ class ManagementView(BrowserView):
         workflow = self._getSelWorkflow() 
         # Workflow might be None
         if Update in self.request and (workflow is not None and workflow.data is not None):
-            schema = trustedRemoveSecurityProxy(workflow.data.getSchema())
+            schema = removeSecurityProxy(workflow.data.getSchema())
             changed = applyWidgetsChanges(self, schema, target=workflow.data, 
                 names=getFields(schema).keys())
             if changed:

@@ -30,7 +30,6 @@ from zope.tales.tales import ExpressionEngine, Context
 
 from zope.component.exceptions import ComponentLookupError
 from zope.exceptions import NotFoundError
-from zope.proxy import removeAllProxies
 from zope.security.untrustedpython import rcompile
 from zope.security.proxy import ProxyFactory
 from zope.security.untrustedpython.builtins import SafeBuiltins
@@ -109,15 +108,11 @@ class ZopeContextBase(Context):
 
     def evaluateMacro(self, expr):
         macro = Context.evaluateMacro(self, expr)
-        macro = removeAllProxies(macro)
         return macro
 
     def translate(self, msgid, domain=None, mapping=None, default=None):
-        # When running Zope, request is a Proxy, but no mutation is done here,
-        # so it is safe to remove all proxies
-        request = removeAllProxies(self.request)
         return translate(msgid, domain, mapping,
-                         context=request, default=default)
+                         context=self.request, default=default)
 
     evaluateInlineCode = False
 

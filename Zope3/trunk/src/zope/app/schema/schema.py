@@ -21,7 +21,7 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface import Interface, implements
 
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.proxy import removeAllProxies
 from zope.app import zapi
 from zope.app.container.browser.adding import Adding

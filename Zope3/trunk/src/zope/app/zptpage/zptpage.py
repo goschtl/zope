@@ -17,7 +17,6 @@ $Id$
 """
 from persistent import Persistent
 
-from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.interface import implements
 from zope.pagetemplate.pagetemplate import PageTemplate
@@ -63,7 +62,6 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
     def pt_getContext(self, instance, request, **_kw):
         # instance is a View component
-        self = removeAllProxies(self)
         namespace = super(ZPTPage, self).pt_getContext(**_kw)
         namespace['template'] = self
         namespace['request'] = request

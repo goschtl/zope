@@ -15,13 +15,13 @@
 
 $Id$
 """
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
 
 class UniqueIdUtilityView(object):
 
     def len(self):
-        return len(trustedRemoveSecurityProxy(self.context).refs)
+        return len(removeSecurityProxy(self.context).refs)
 
     def populate(self):
         # TODO: I think this should be moved to the functional test.

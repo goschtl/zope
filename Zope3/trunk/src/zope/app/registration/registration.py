@@ -25,7 +25,7 @@ from zope.interface import implements
 from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies, getProxiedObject
 from zope.security.checker import InterfaceChecker, CheckerPublic
-from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
+from zope.security.proxy import Proxy, removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -619,7 +619,7 @@ class ComponentRegistration(SimpleRegistration):
                 # There should be at most one security Proxy around an object.
                 # So, if we're going to add a new security proxy, we need to
                 # remove any existing one.
-                component = trustedRemoveSecurityProxy(component)
+                component = removeSecurityProxy(component)
 
             interface = self.getInterface()
 

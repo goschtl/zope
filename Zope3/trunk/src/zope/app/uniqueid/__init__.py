@@ -31,7 +31,7 @@ from zope.app.uniqueid.interfaces import IUniqueIdUtility, IReference
 from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
 from zope.interface import implements
 from zope.app import zapi
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.event import notify
 
 
@@ -79,7 +79,7 @@ class UniqueIdUtility(Persistent, Contained):
             self._v_nextid = None
 
     def register(self, ob):
-        ob = trustedRemoveSecurityProxy(ob)
+        ob = removeSecurityProxy(ob)
         ref = IReference(ob)
         if ref in self.ids:
             return self.ids[ref]

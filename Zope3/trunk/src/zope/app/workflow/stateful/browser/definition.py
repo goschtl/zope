@@ -27,7 +27,7 @@ from zope.schema import getFields, Choice
 
 from zope.app.security.interfaces import IPermission
 from zope.security.checker import CheckerPublic
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.app.form.utility import setUpWidget
 
 class StatesContainerAdding(Adding):
@@ -112,7 +112,7 @@ class RelevantDataSchemaEdit(EditView):
             self.buildPermissionWidgets()
         elif 'CHANGE' in self.request:
             schema = self.context.relevantDataSchema
-            perms = trustedRemoveSecurityProxy(self.context.schemaPermissions)
+            perms = removeSecurityProxy(self.context.schemaPermissions)
             for name, field in getFields(schema).items():
                 
                 getPermWidget = getattr(self, name+'_get_perm_widget')
@@ -145,7 +145,7 @@ class RelevantDataSchemaEdit(EditView):
             return None
         info = []
         for name, field in getFields(schema).items():
-            field = trustedRemoveSecurityProxy(field)
+            field = removeSecurityProxy(field)
             info.append(
                 {'fieldName': name,
                  'fieldTitle': field.title,

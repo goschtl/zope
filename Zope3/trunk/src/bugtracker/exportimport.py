@@ -25,7 +25,7 @@ from zope.exceptions import NotFoundError
 from zope.i18n.locales import locales
 from zope.publisher.browser import TestRequest
 from zope.schema.vocabulary import getVocabularyRegistry
-from zope.security.proxy import trustedRemoveSecurityProxy 
+from zope.security.proxy import removeSecurityProxy 
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
@@ -279,7 +279,7 @@ class XMLImporter(ContentHandler):
         registry = getVocabularyRegistry()
         vocab = registry.get(self.context, self.vocab_name)
         # TODO: I do not understand why my security does not work here.
-        vocab = trustedRemoveSecurityProxy(vocab)
+        vocab = removeSecurityProxy(vocab)
         vocab.add(attrs.get('value'), attrs.get('title'))
         if attrs.get('default', None) is not None:
             vocab.default = attrs.get('value')

@@ -23,7 +23,7 @@ from zope.app import zapi
 from zope.app.registration.registration import NotifyingRegistrationStack
 from zope.interface.adapter import adapterImplied, Default
 from zope.interface.adapter import Surrogate, AdapterRegistry
-from zope.proxy import removeAllProxies
+from zope.security.proxy import removeSecurityProxy
 import sys
 import zope.app.component.localservice
 import zope.app.container.contained
@@ -166,7 +166,7 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
                     # (Why can't we?)  we need to think more about
                     # why/if this is truly safe
                     
-                    radapters[key] = removeAllProxies(registration.factory)
+                    radapters[key] = removeSecurityProxy(registration.factory)
 
     def adaptersChanged(self, *args):
 
