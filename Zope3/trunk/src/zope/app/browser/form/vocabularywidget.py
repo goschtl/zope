@@ -196,6 +196,34 @@ class VocabularyMultiDisplayWidget(VocabularyWidgetBase):
         return L
 
 
+class ActionHelper:
+    __actions = None
+
+    def addAction(self, action, msgid):
+        if self.__actions is None:
+            self.__actions = {}
+        assert action not in self.__actions
+        self.__actions[action] = msgid
+
+    def getAction(self):
+        get = self.request.form.get
+        for action in self.__actions.iterkeys():
+            name = "%s.action-%s" % (self.name, action)
+            if get(name):
+                return action
+        return None
+
+    def renderAction(self, action, disabled=False):
+        msgid = self.__actions[action]
+        return ("<input type='submit' name='%s.action-%s' value=%s %s/>"
+                % (self.name, action, self.translate(msgid),
+                   disabled and "disabled " or ""))
+
+    def translate(self, msgid):
+        # XXX This is where we should be calling on the translation service
+        return msgid.default
+
+
 class VocabularyEditWidgetBase(VocabularyWidgetBase):
     propertyNames = (VocabularyWidgetBase.propertyNames
                      + ['size', 'tag'])
@@ -372,7 +400,7 @@ class VocabularyMultiEditWidget(VocabularyEditWidgetBase):
         return ''.join(L)
 
 
-class VocabularyQueryViewBase(ViewSupport, BrowserView):
+class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
     """Vocabulary query support base class."""
 
     __implements__ = IVocabularyQueryView
@@ -447,22 +475,21 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
 
     action = None
 
+    _msg_add_done = _message(_("vocabulary-query-button-add-done"), "Add")
+    _msg_add_more = _message(_("vocabulary-query-button-add-more"), "Add+More")
+    _msg_more     = _message(_("vocabulary-query-button-more"),     "More")
+
     def setName(self, name):
         VocabularyQueryViewBase.setName(self, name)
+        self.addAction(ADD_DONE, self._msg_add_done)
+        self.addAction(ADD_MORE, self._msg_add_more)
+        self.addAction(MORE,     self._msg_more)
         name = self.name
-        self.adddone_name = name + "." + ADD_DONE
-        self.addmore_name = name + "." + ADD_MORE
-        self.more_name = name + "." + MORE
         self.query_index_name = name + ".start"
         self.query_selections_name = name + ".picks"
         #
         get = self.request.form.get
-        if get(self.adddone_name):
-            self.action = ADD_DONE
-        elif get(self.addmore_name):
-            self.action = ADD_MORE
-        elif get(self.more_name):
-            self.action = MORE
+        self.action = self.getAction()
         try:
             self.query_index = int(get(self.query_index_name, 0))
         except ValueError:
@@ -511,31 +538,14 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         L = ["<div class='results'>\n",
              self.makeSelectionList(items, self.query_selections_name),
              "\n",
-             self._mkbutton(ADD_DONE), "\n",
-             self._mkbutton(ADD_MORE, not have_more), "\n",
-             self._mkbutton(MORE, not have_more), "\n"]
+             self.renderAction(ADD_DONE), "\n",
+             self.renderAction(ADD_MORE, not have_more), "\n",
+             self.renderAction(MORE, not have_more), "\n"]
         if qi:
             L.append("<input type='hidden' name='%s' value='%d' />\n"
                      % (self.query_index_name, qi))
         L.append("</div>")
         return ''.join(L)
-
-    _messages = {
-        ADD_DONE: _message(_("vocabulary-query-button-add-done"), "Add"),
-        ADD_MORE: _message(_("vocabulary-query-button-add-more"), "Add+More"),
-        MORE:     _message(_("vocabulary-query-button-more"),     "More"),
-        }
-
-    def _mkbutton(self, action, disabled=False):
-        msg = self._messages[action]
-        return ("<input name='%s.%s' type='submit' value=%s %s/>"
-                % (self.name, action,
-                   quoteattr(self.translate(msg)),
-                   (disabled and "disabled " or "")))
-
-    def translate(self, msgid):
-        # XXX This is where we should be calling on the translation service
-        return msgid.default
 
     def performQueryAction(self, value):
         if self.action == ADD_DONE:
