@@ -1,22 +1,26 @@
-Post CMF 1.4.2
+CMF 1.4.3-rc1 (2004/02/05)
 
   Bug Fixes
 
     - CMFCore.PortalFolder: Explicitly declare base interfaces.
 
+    - CMFCore.MembershipTool: Don't swallow ConflictError during wrapUser.
+
     - CMFDefault.SkinnedFolder: Creator() method now resembles the one from
       DublinCore. This allows for unowned objects and shuts up a deprecation
       warning in Zope 2.6.4/2.7.0.
-
-    - CMFCore.FSMetadata: the "acquire" flag for permission mappings was
-      not converted to an int;  '0' was therefore coming through as true.
 
     - CMFCore.CookieCrumbler: No longer disregards an existing cookie auth
       token for DAV requests (like PROPFIND) that occur over the main HTTP
       port. Eliminates additional user challenges for browser-based DAV
       clients like MS WebFolders.
 
-    - CMFCore.MembershipTool: Don't swallow ConflictError during wrapUser.
+    - CMFCore.FSMetadata: the "acquire" flag for permission mappings was
+      not converted to an int;  '0' was therefore coming through as true.
+
+    - CMFCore.FSPageTemplate.py: compatibiltity with Python 2.3 (can't
+      mutate a class' __dict__ directly;  use setattr(klass, name, value)
+      instead).
 
 CMF 1.4.2 (2003/10/27)
 

@@ -64,11 +64,15 @@ Installation
      should have a version number matching the release version of
      the snapshot:
 
+      - CMFCalendar
+
       - CMFCore
 
       - CMFDefault
 
       - CMFTopic
+
+      - DCWorkflow
 
   4. Create a CMF Site:
 
