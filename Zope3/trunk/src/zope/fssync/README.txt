@@ -1,19 +1,22 @@
-Filesystem synchronization
+==========================
+Filesystem Synchronization
 ==========================
 
-For background and the original description by Jim Fulton, see:
+For background and the original description by Jim Fulton, see the
+|FSSYNC|_.  Additional background material can be found in the
+|TTWSITE|_ proposal.
 
-  http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
+.. |FSSYNC| replace::   Filesystem Synchronization Proposal
+.. |TTWSITE| replace::  Through the Web Site Development
+
+.. _FSSYNC:   http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
+.. _TTWSITE:  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
+
+The "bundles" mentioned there are likely candidates for filesystem
+synchronization.  (See section `Working With Bundles`_ below.)
 
 This version is based loosely on a prototype written by Jim Fulton and
 Deb Hazarika.  It is now maintained by Fred Drake.
-
-Possibly also relevant background:
-
-  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
-
-The "bundles" mentioned there are likely candidates for filesystem
-synchronization.  (See section "Working with bundles" below.)
 
 
 User stories
@@ -24,7 +27,7 @@ User stories
   that time.  On Friday, before going offline, he checks out a subtree
   of the site to his laptop's disk.  This maps folders to directories
   and other objects to files.  Metadata is stored in a subdirectory
-  named @@Zope, some of it as XML.  Over the weekend he edits the
+  named ``@@Zope/``, some of it as XML.  Over the weekend he edits the
   files and perhaps the metadata on his laptop.  On Monday, once
   online again, he commits his work back to the site.
 
@@ -46,16 +49,16 @@ User stories
 
 * Merging changes should deal with simultaneous changes in the same
   file, at least for text files; what CVS does is pretty reasonable
-  (this seems to be based on the diff3 command).
+  (this seems to be based on the **diff3** command).
 
 * Update and commit should handle addition and removal of files and
   directories.  For local additions and removals, an explicit command
   must be given to confirm these, to avoid committing files that were
   accidentally created or lost.
 
-* Commands that are reasonable to do offline (e.g. add, remove,
-  status, and the simplest form of diff) must be performed entirely
-  offline.
+* Commands that are reasonable to do offline (**add**, **remove**,
+  **status**, and the simplest form of **diff**) must be performed
+  entirely offline.
 
 * An interesting possibility: you could couple your filesystem copy to
   a revision control system like CVS or Subversion, to have an
@@ -68,14 +71,14 @@ User stories
 
 * Another possibility: export and import (a la Zope 2 export/import)
   should be easily implemented on top of this.  Export would be done
-  with checkout; import could be a new "checkin" command.  (This is
+  with checkout; import could be a new **checkin** command.  (This is
   now implemented.)
 
-* And last but not least, this will form the basis of bundles; see the
-  ThroughTheWebSiteDevelopment reference above.
+* And last but not least, this will form the basis of bundles; see
+  |TTWSITE|_.
 
 
-BUGS
+Bugs
 ----
 
 * When committing an added file, you must commit the directory
@@ -87,7 +90,7 @@ BUGS
   are reported rather than the nice relative names.
 
 
-PLATFORM NOTES
+Platform Notes
 --------------
 
 * RedHat Linux 9:  Anthony Baxter reports that the tests can hang in a
@@ -96,7 +99,7 @@ PLATFORM NOTES
   at least glibc-2.3.2-27.9 fixes the problem.
 
 
-TO DO
+To Do
 -----
 
 - Documentation for the zsync command line tool
@@ -114,21 +117,21 @@ TO DO
 
 - Figure out how to write meaningful adapter tests.
 
-- More adapters.  Should make sure that an XML Pickle will always work
+- More adapters.  Should make sure that an XML pickle will always work
   as a serialization, even if an adapter gets added.
 
 - For objects serialized as XML pickles which are
-  IAttributeAnnotatable and have an __annotations__ key in the pickled
-  dictionary, separate the annotations from the dict so they appear in
-  the @@Zope/Annotations/ tree.
+  ``IAttributeAnnotatable`` and have an ``__annotations__`` key in the
+  pickled dictionary, separate the annotations from the dict so they
+  appear in the ``@@Zope/Annotations/`` tree.
 
-  XXX Note that IAttributeAnnotatable doesn't say anything about *how*
-  the __annotations__ attribute is stored; it can be in the object's
-  __dict__, it can be a property, or who know what else.  There's
-  probably not enough information about how the manipulate the
+  XXX Note that ``IAttributeAnnotatable`` doesn't say anything about
+  *how* the ``__annotations__`` attribute is stored; it can be in the
+  object's ``__dict__``, it can be a property, or who know what else.
+  There's probably not enough information about how the manipulate the
   object's state in a reliable way to implement this feature
   automatically.  The only way to always do the right thing is to
-  define and appropriate adapter.
+  define an appropriate adapter.
 
 - Implement bundle commands.
 
@@ -141,46 +144,51 @@ TO DO
 - Work out security details (before beta).
 
   * A commit unpickles user-provided data.  Unpickling is not a safe
-    operation.  Possible solution: have an unpickler that finds globals
-    in a secure way.  Use an import on a security proxy for sys.modules.
+    operation.  Possible solution: have an unpickler that finds
+    globals in a secure way.  Use an import on a security proxy for
+    sys.modules.
 
   * The adapters returned by the fs registry should optionally have a
     permission associated with them.  If you have an adapter that
-    calls removeAllProxies or trustedRemoveSecurityProxy, the adapter
-    should require a permission.
+    calls ``removeAllProxies()`` or ``trustedRemoveSecurityProxy()``,
+    the adapter should require a permission.
 
 - In the sync application (nice-to-haves):
 
-  * More diff options:
-    -2 diffs between local and remote
-    -3 diffs between original and remote
-    -N shows diffs for added/removed files as diffs with /dev/null
+  * More **diff** options:
 
-  * Something akin to cvs -n update, which shows what update would do
-    without actually doing it.
+    -2 diffs between local and remote
+
+    -3 diffs between original and remote
+
+    -N shows diffs for added/removed files as diffs with ``/dev/null``
+
+  * Something akin to **cvs -n** update, which shows what update would
+    do without actually doing it.
 
   * Make the commands more closely match Subversion, since the model
     is more similar.
 
   * Add support for HTTP proxies.
 
-  * Implement diff using difflib.  (is this really needed?)
+  * Implement **diff** using ``difflib``.  (is this really needed?)
 
 - Code maintenance:
 
-  * Unit tests for the zsync utility.
+  * Unit tests for the **zsync** utility.
 
-  * Rewrite toFS() to use the Metadata class, and add unit tests.
+  * Rewrite ``toFS()`` to use the ``Metadata`` class, and add unit
+    tests.
 
-  * More refactoring and cleanup of the zsync utility (the
-    zope.fssync.main module)
+  * More refactoring and cleanup of the **zsync** utility (the
+    ``zope.fssync.main`` module)
 
   * Use camelCase for public method names.
 
 - Refine the fssync adapter protocol or implementation to leverage the
   file-system representation (== FTP, WebDAV) protocol.
 
-  * look in: zope.app.interface.file
+  * look in: ``zope.app.interface.file``
 
 - In common case where extra data are simple values, store extra data
   in the entries file to simplify representation and updates.  Maybe
@@ -189,13 +197,13 @@ TO DO
 - Maybe leverage adaptable storage (APE) ideas to assure losslessness.
 
 
-Working with bundles
+Working With Bundles
 --------------------
 
 - Bundles aren't quite as easy to use as they are supposed to be as
-  described in the ThroughTheWebSiteDevelopment Wiki page referenced
-  above, but you can do some basic bundle-ish things.  All these need
-  is a little better packaging.
+  described in the |TTWSITE|_ Wiki page referenced above, but you can
+  do some basic bundle-ish things.  All these need is a little better
+  packaging.
 
 - Permissions.  Everything described here requires the
   zope.ManageServices permission, which usually requires being logged
@@ -211,11 +219,11 @@ Working with bundles
   <name>-<version>, where <version> is two or more decimal numbers
   separated by dots and <name> is unconstrained.
 
-- Creating a bundle.  There is no specific command to create a
-  bundle.  Instead, you create a new site management folder by going
-  to the Contents view of the site (e.g. /++etc++site/@@contents.html)
-  and clicking on "Add" in the actions menu.  A box will appear in
-  which you should type the name + version of your bundle.  Then in
+- Creating a bundle.  There is no specific command to create a bundle.
+  Instead, you create a new site management folder by going to the
+  Contents view of the site (e.g. ``/++etc++site/@@contents.html``)
+  and clicking on **Add** in the actions menu.  A box will appear in
+  which you should type the name and version of your bundle.  Then in
   that bundle you should create the things that you want to go into
   the bundle, e.g. modules, templates, services, utilities, etc.
 
@@ -224,37 +232,37 @@ Working with bundles
   folder, you can save your work to the filesystem using the zsync
   checkout command, and then check it in under a different name using
   the zsync checkin command.  Example; replace u:p with your manager
-  username and password:
+  username and password::
 
-  $ zsync checkout http://u:p@localhost:8080/++etc++site/default
-  <lots of output>
-  All done.
-  $ zsync checkin http://u:p@localhost:8080/++etc++site/bundle-1.0 default
-  $
+    $ zsync checkout http://u:p@localhost:8080/++etc++site/default
+    <lots of output>
+    All done.
+    $ zsync checkin http://u:p@localhost:8080/++etc++site/bundle-1.0 default
 
   Now go back to your web browser and check out the contents of
-  /++etc++site/; a new folder bundle-1.0 should exist, containing a
-  copy of the default folder.  You should delete unnecessary things;
+  ``/++etc++site/``; a new folder bundle-1.0 should exist, containing
+  a copy of the default folder.  You should delete unnecessary things;
   especially the standard service definitions are not needed.
 
 - Exporting a bundle.  First deactivate the bundle by using the
-  "Deactivate bundle" button on the Bundle tab (see below).  Then save
-  the bundle to the filesystem using zsync checkout.  Finally tar or
-  zip it up.  Make sure to include the @@Zope directory at the same
-  level as the bundle directory in the archive.  Example:
+  **Deactivate bundle** button on the Bundle tab (see below).  Then
+  save the bundle to the filesystem using **zsync checkout**.  Finally
+  tar or zip it up.  Make sure to include the ``@@Zope/`` directory at
+  the same level as the bundle directory in the archive.
 
-  $ zsync checkout http://u:p@localhost:8080/++etc++site/bundle-1.0
-  <lots of output>
-  All done.
-  $ tar tf - bundle-1.0 @@Zope | gzip >bundle-1.0.tgz
-  $
+  ::
+
+    $ zsync checkout http://u:p@localhost:8080/++etc++site/bundle-1.0
+    <lots of output>
+    All done.
+    $ tar tf - bundle-1.0 @@Zope | gzip >bundle-1.0.tgz
 
   Now distribute the gzipped tar file via the web.
 
 - Importing a bundle.  First extract the zip or tar file to the
-  filesystem.  Then use zsync checkin command to add it to your Zope
-  server.  Warning: the checkin command will happily overwrite an
-  existing site management folder!
+  filesystem.  Then use **zsync checkin** command to add it to your
+  Zope server.  Warning: the **checkin** command will happily
+  overwrite an existing site management folder!
 
 - Activating a bundle.  An imported bundle is completely inactive.
   Its configuration records (the objects in the bundle's
@@ -281,8 +289,8 @@ Working with bundles
     3) No usable definition of the service can be found.  Note that a
        service active in a parent site cannot be used.  This is called
        an unfulfilled dependency.  This means that the bundle cannot
-       be activated.  A helpful link to the "Add service" view of the
-       default folder is provided, where you can create (and
+       be activated.  A helpful link to the **Add service** view of
+       the default folder is provided, where you can create (and
        activate!) the service and then navigate back to the bundle;
        but you may also import the service as part of another bundle.
 
@@ -302,14 +310,14 @@ Working with bundles
     clicking the radio button labeled "Register and activate".  You
     can also leave a configuration record inactive by clicking the
     radio button "Register only".  When you are satisfied with the
-    selections, click the "Activate bundle" button below the list to
+    selections, click the **Activate bundle** button below the list to
     register and activate the bundle's configuration records; this
     performs the actions selected by the radio buttons.  If you later
     change your mind, you can always go back to the Bundle tab and
     change your selections.
 
-  - At the very bottom of the page is a button labeled "Deactivate
-    bundle".  This is used for uninstalling a bundle; it makes all
+  - At the very bottom of the page is a button labeled **Deactivate
+    bundle**.  This is used for uninstalling a bundle; it makes all
     configuration records contained in the bundle inactive and
     unregistered.  It is also used for exporting a bundle; before you
     export a bundle, you should deactivate it (see above).  In
@@ -321,8 +329,8 @@ Working with bundles
     of the registries would be necessary to accommodate this feature.
 
 - To delete a deactivated bundle, go to the site manager's contents
-  display (/++etc++site/@@contents.html), select the checkbox in front
-  of the bundle name, and click the Delete button below the list.
-  Deleting an active bundle usually doesn't work because of the
+  display (``/++etc++site/@@contents.html``), select the checkbox in
+  front of the bundle name, and click the **Delete** button below the
+  list.  Deleting an active bundle usually doesn't work because of the
   dependencies between the configuration records and the configured
   objects in the bundle.
