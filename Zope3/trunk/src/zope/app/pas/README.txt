@@ -519,4 +519,28 @@ We can still lookup a principal, as long as we supply the prefix:
 Searching
 =========
 
-  XXX Still workin this out
+As their name suggests, search plugins provide searching support.
+We've already seen them used to get principals given principal
+ids. They're also used to find principals given search criteria.
+
+Different search plugins are likely to use very different search
+criteria.  There are two approaches a plugin can use to support
+searching: 
+
+- A plugin can provide IQuerySchemaSearch, in addition to
+  `IPrincipalSearchPlugin`.  In this case, the plugin provises a search
+  method and a schema that describes the input to be provided to the
+  search method.
+
+- For browser-based applications, the plugin can provide a browser
+  view that provides
+  `zope.app.form.browser.interfaces.ISourceQueryView`.
+
+PAS uses search plugins in a very simple way.  It mearly implements
+`zope.schema.interfaces.ISourceQueriables`:
+
+  >>> [id for (id, queriable) in service.getQueriables()]
+  ['s42', 'sint']
+  >>> [queriable.__class__.__name__ 
+  ...  for (id, queriable) in service.getQueriables()]
+  ['Search42', 'IntSearch']

@@ -21,6 +21,8 @@ import zope.interface
 import zope.schema
 from persistent import Persistent
 
+from zope.schema.interfaces import ISourceQueriables
+
 from zope.app import zapi
 
 from zope.app.security.interfaces import IAuthenticationService
@@ -74,7 +76,7 @@ class IPAS(zope.interface.Interface):
 
 class PAS:
 
-    zope.interface.implements(IPAS, IAuthenticationService)
+    zope.interface.implements(IPAS, IAuthenticationService, ISourceQueriables)
 
     authenticators = extractors = challengers = factories = search = ()
 
@@ -133,6 +135,12 @@ class PAS:
             return self._create('createFoundPrincipal', self.prefix+id, info)
 
         return self._delegate('getPrincipal', self.prefix+id)
+
+    def getQueriables(self):
+        for searcher_id in self.searchers:
+            searcher = zapi.queryUtility(IPrincipalSearchPlugin, searcher_id)
+            yield searcher_id, searcher
+        
 
     def unauthenticatedPrincipal(self):
         return None
