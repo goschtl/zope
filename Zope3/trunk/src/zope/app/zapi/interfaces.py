@@ -76,3 +76,12 @@ class IZAPI(
         This function is useful because it works even if the instance
         is security proxied.
         """
+
+    def site():
+        """Return the current (thread-local) site
+        """
+
+    def principals():
+        """Return the authentication service (someday utility)
+        """
+        

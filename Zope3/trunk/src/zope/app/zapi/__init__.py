@@ -36,3 +36,7 @@ from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app.exception.interfaces import UserError
 
 name = getName
+
+def principals():
+    return getServices().getService(servicenames.Authentication)
+
