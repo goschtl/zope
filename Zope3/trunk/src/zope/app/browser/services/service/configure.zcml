@@ -49,6 +49,7 @@
      template="tasks.pt"
      permission="zope.ManageServices" />
 
+
   <page
      for="zope.app.interfaces.services.service.ISiteManager"
      name="services.html"
@@ -63,6 +64,35 @@
      template="serviceactivation.pt"
      class=".ServiceActivation"
      permission="zope.ManageServices" />
+
+
+  <page
+      for="zope.app.interfaces.services.service.ISiteManager"
+      name="interfacebrowse.html"
+      template="interfacebrowse.pt"
+      class=".Interfaces"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Interface Browse" 
+      />
+  
+  <page
+      for="zope.app.interfaces.services.service.ISiteManager"
+      name="interfacedetail.html"
+      template="interfacedetail.pt"
+      class=".Detail"
+      permission="zope.ManageServices"
+      />
+
+  <page
+      for="zope.app.interfaces.services.service.ISiteManager"
+      name="interfacemethoddetail.html"
+      template="interfacemethoddetail.pt"
+      class=".MethodDetail"
+      permission="zope.ManageServices"
+      />
+
+
+
 
   <icon
       name="zmi_icon"
