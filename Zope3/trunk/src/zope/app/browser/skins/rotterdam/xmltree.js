@@ -373,7 +373,7 @@ function createPresentationNodes(title, icon_url) {
         // create elem for item icon
         var iconElem = document.createElement('icon');
         expandElem.appendChild(iconElem);
-        iconElem.style.backgroundImage = 'url("' + baseurl + icon_url + '")';
+        iconElem.style.backgroundImage = 'url("' + icon_url + '")';
         // create title
         var titleElem = document.createElement('title');
         var newtextnode = document.createTextNode(title);
