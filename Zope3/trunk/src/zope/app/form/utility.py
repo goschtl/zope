@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.29 2004/03/19 03:17:30 srichter Exp $
+$Id: utility.py,v 1.30 2004/05/07 19:43:49 garrett Exp $
 """
 __metaclass__ = type
 
@@ -274,7 +274,7 @@ def getWidgetsData(view, schema, names=None):
                     errors.append(v)
             elif field.required:
                 errors.append(MissingInputError(
-                    name, widget.title, 'the field is required'))
+                    name, widget.label, 'the field is required'))
             
     if errors:
         raise WidgetsError(errors, widgetsData=result)

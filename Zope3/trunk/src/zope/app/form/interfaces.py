@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: interfaces.py,v 1.3 2004/04/11 10:34:48 srichter Exp $
+$Id: interfaces.py,v 1.4 2004/05/07 19:40:09 garrett Exp $
 """
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
@@ -102,15 +102,18 @@ class IWidget(IView):
 
         This must be unique within a set of widgets.""")
 
-    title = Attribute(
-        """The widget title.
+    label = Attribute(
+        """The widget label.
         
-        Title may be translated for the request.""")
+        Label may be translated for the request.""")
 
-    description = Attribute(
-        """The widget description.
+    hint = Attribute(
+        """A hint regarding the use of the widget.
         
-        Description may be translated for the request.""")
+        Hints are traditionally rendered using tooltips in GUIs, but may be
+        rendered differently depending on the UI implementation.
+        
+        Hint may be translated for the request.""")
         
     visible = Attribute(
         """A flag indicating whether or not the widget is visible.""")
