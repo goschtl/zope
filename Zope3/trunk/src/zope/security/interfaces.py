@@ -279,6 +279,9 @@ class IGroupAwarePrincipal(IPrincipal):
         value_type=TextLine(),
         required=False)
 
+class IGroup(IPrincipal):
+    """Group of principals
+    """
                 
 class IPermission(Interface):
     """A permission object."""
