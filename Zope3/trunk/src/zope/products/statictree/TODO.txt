@@ -1,7 +1,7 @@
 
 TODO
 
-for v1.1
+for v1.2
 
 - allow sorting: would work similar to filter
 
