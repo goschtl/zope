@@ -16,7 +16,7 @@
         }
 
         .box {
-            border: 1px solid black; 
+            border: 1px solid black;
             margin-right: 12px;
             padding-left: 0.5ex;
         }
@@ -91,7 +91,7 @@
 
     <!-- An element with this id is used by pdlib for drag feedback. Style as
         desired. -->
-    <div id="drag-feedback-box" 
+    <div id="drag-feedback-box"
             style="position: absolute; display: none; border: 1px dashed red;">
     </div>
 
@@ -108,7 +108,7 @@
                 if (my_target == target)
                     return false;
             }
-                    
+
             return true;
         }
 
@@ -122,14 +122,14 @@
         // This function is specific to the html layout of the example.
         function moveNode(source, target) {
             source.parentNode.parentNode.removeChild(source.parentNode);
-            target.parentNode.parentNode.insertBefore(source.parentNode, 
+            target.parentNode.parentNode.insertBefore(source.parentNode,
                                                       target.parentNode);
         }
 
         function setUpBox(node) {
-            // pd_setupDragUI takes three arguments: the node to set up, 
-            //  the function to call when the node is dropped, and the 
-            //  function to call to see if it is OK to drop a node on a 
+            // pd_setupDragUI takes three arguments: the node to set up,
+            //  the function to call when the node is dropped, and the
+            //  function to call to see if it is OK to drop a node on a
             //  target.
             pd_setupDragUI(node, move, checkmove);
         }
