@@ -11,13 +11,12 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.11 2003/06/23 17:17:02 sidnei Exp $
+$Id: propfind.py,v 1.12 2003/09/21 17:32:04 jim Exp $
 """
 __metaclass__ = type
 
 from xml.dom import minidom
 from zope.component import getView, queryView, queryAdapter
-from zope.app.context import ContextWrapper
 from zope.proxy import removeAllProxies
 from zope.schema import getFieldNamesInOrder
 from zope.app.interfaces.container import IReadContainer
@@ -169,8 +168,7 @@ class PROPFIND:
         if depth != '0':
             if IReadContainer.isImplementedBy(self.context):
                 for id, obj in self.context.items():
-                    wrapped = ContextWrapper(obj, self.context, name=id)
-                    pfind = queryView(wrapped, 'PROPFIND', self.request, None)
+                    pfind = queryView(obj, 'PROPFIND', self.request, None)
                     if pfind is not None:
                         pfind.setDepth(subdepth)
                         value = pfind.PROPFIND()
