@@ -2,5 +2,11 @@ include MANIFEST
 include Makefile
 include test.py
 include log.ini
-global-include *.h *.c *.txt
-global-include *.conf *.css *.gif *.html *.js *.png *.pt *.xml *.zcml 
+global-include lib/python *.h *.c 
+global-include lib/python *.txt
+global-include lib/python *.conf *.zcml 
+global-include lib/python *.css *.gif *.html *.js *.png *.pt *.xml
+global-include lib/python *.mo *.po
+
+include lib/python/Zope/App/RDB/GadflyDA/gadfly/COPYRIGHT
+include lib/python/Zope/App/RDB/GadflyDA/gadfly/*.mar

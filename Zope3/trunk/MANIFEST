@@ -1,7 +1,5 @@
-MANIFEST
 Makefile
 README.txt
-dump.txt
 log.ini
 sample_principals.zcml
 setup.py
@@ -88,6 +86,7 @@ lib/python/Persistence/IPersistent.py
 lib/python/Persistence/IPersistentDataManager.py
 lib/python/Persistence/IPersistentModuleManager.py
 lib/python/Persistence/IPersistentModuleRegistry.py
+lib/python/Persistence/Maintainer.txt
 lib/python/Persistence/Module.py
 lib/python/Persistence/PersistentDict.py
 lib/python/Persistence/PersistentList.py
@@ -891,6 +890,10 @@ lib/python/Zope/App/OFS/Services/TranslationService/Views/Browser/tests/testTran
 lib/python/Zope/App/OFS/Services/TranslationService/Views/XMLRPC/Methods.py
 lib/python/Zope/App/OFS/Services/TranslationService/Views/XMLRPC/__init__.py
 lib/python/Zope/App/OFS/Services/TranslationService/Views/XMLRPC/configure.zcml
+lib/python/Zope/App/OFS/Services/TranslationService/locale/de/LC_MESSAGES/Zope-I18n.mo
+lib/python/Zope/App/OFS/Services/TranslationService/locale/de/LC_MESSAGES/Zope-I18n.po
+lib/python/Zope/App/OFS/Services/TranslationService/locale/en/LC_MESSAGES/Zope-I18n.mo
+lib/python/Zope/App/OFS/Services/TranslationService/locale/en/LC_MESSAGES/Zope-I18n.po
 lib/python/Zope/App/OFS/Services/TranslationService/tests/__init__.py
 lib/python/Zope/App/OFS/Services/TranslationService/tests/testGettextExportImport.py
 lib/python/Zope/App/OFS/Services/TranslationService/tests/testMessageCatalog.py
@@ -1007,6 +1010,7 @@ lib/python/Zope/App/RDB/GadflyDA/Views/configure.zcml
 lib/python/Zope/App/RDB/GadflyDA/Views/Browser/GadflyDAAddView.py
 lib/python/Zope/App/RDB/GadflyDA/Views/Browser/__init__.py
 lib/python/Zope/App/RDB/GadflyDA/Views/Browser/configure.zcml
+lib/python/Zope/App/RDB/GadflyDA/gadfly/COPYRIGHT
 lib/python/Zope/App/RDB/GadflyDA/gadfly/DLispShort.py
 lib/python/Zope/App/RDB/GadflyDA/gadfly/DumbLispGen.py
 lib/python/Zope/App/RDB/GadflyDA/gadfly/SQLTESTG.py
@@ -1036,6 +1040,7 @@ lib/python/Zope/App/RDB/GadflyDA/gadfly/pygram.py
 lib/python/Zope/App/RDB/GadflyDA/gadfly/relalg.py
 lib/python/Zope/App/RDB/GadflyDA/gadfly/remotetest.py
 lib/python/Zope/App/RDB/GadflyDA/gadfly/server.html
+lib/python/Zope/App/RDB/GadflyDA/gadfly/sql.mar
 lib/python/Zope/App/RDB/GadflyDA/gadfly/sqlbind.py
 lib/python/Zope/App/RDB/GadflyDA/gadfly/sqlgen.py
 lib/python/Zope/App/RDB/GadflyDA/gadfly/sqlgram.py
@@ -1351,6 +1356,9 @@ lib/python/Zope/App/schemagen/modulegen.py
 lib/python/Zope/App/schemagen/schemaspec.py
 lib/python/Zope/App/schemagen/typereg.py
 lib/python/Zope/App/schemagen/tests/__init__.py
+lib/python/Zope/App/schemagen/tests/setstate.py.txt
+lib/python/Zope/App/schemagen/tests/setstatemodule.py.txt
+lib/python/Zope/App/schemagen/tests/setstatemodule_no_history.py.txt
 lib/python/Zope/App/schemagen/tests/test_modulegen.py
 lib/python/Zope/App/schemagen/tests/test_schemaspec.py
 lib/python/Zope/App/schemagen/tests/test_typereg.py
@@ -1514,6 +1522,10 @@ lib/python/Zope/I18n/SimpleTranslationService.py
 lib/python/Zope/I18n/Translate.py
 lib/python/Zope/I18n/__init__.py
 lib/python/Zope/I18n/tests/__init__.py
+lib/python/Zope/I18n/tests/de-default.mo
+lib/python/Zope/I18n/tests/de-default.po
+lib/python/Zope/I18n/tests/en-default.mo
+lib/python/Zope/I18n/tests/en-default.po
 lib/python/Zope/I18n/tests/testGettextMessageCatalog.py
 lib/python/Zope/I18n/tests/testGlobalTranslationService.py
 lib/python/Zope/I18n/tests/testI18nAwareObject.py
@@ -1525,6 +1537,8 @@ lib/python/Zope/I18n/tests/testIWriteMessageCatalog.py
 lib/python/Zope/I18n/tests/testIWriteTranslationService.py
 lib/python/Zope/I18n/tests/testNegotiator.py
 lib/python/Zope/I18n/tests/testSimpleTranslationService.py
+lib/python/Zope/I18n/tests/locale/en/LC_MESSAGES/Zope-I18n.mo
+lib/python/Zope/I18n/tests/locale/en/LC_MESSAGES/Zope-I18n.po
 lib/python/Zope/Misc/DateTimeParse.py
 lib/python/Zope/Misc/DateTimeZone.py
 lib/python/Zope/Misc/GetDescr.py
@@ -1749,7 +1763,6 @@ lib/python/Zope/Server/ServerBase.py
 lib/python/Zope/Server/ServerChannelBase.py
 lib/python/Zope/Server/TaskThreads.py
 lib/python/Zope/Server/Utilities.py
-lib/python/Zope/Server/ZLogIntegration.py
 lib/python/Zope/Server/__init__.py
 lib/python/Zope/Server/FTP/CommonFTPActivityLogger.py
 lib/python/Zope/Server/FTP/FTPServer.py
