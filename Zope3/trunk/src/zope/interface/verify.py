@@ -50,7 +50,7 @@ def _verify(iface, candidate, tentative=0, vtype=None):
         if type(attr) is FunctionType:
             # should never get here
             meth = fromFunction(attr, n)
-        elif type(attr) is MethodType:
+        elif type(attr) is MethodType and type(attr.im_func) is FunctionType:
             meth = fromMethod(attr, n)
         else:
             continue # must be an attribute...
