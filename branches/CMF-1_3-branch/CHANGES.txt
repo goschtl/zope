@@ -1,10 +1,11 @@
+CMF 1.3.1 (2003/03/06)
 
   Bug Fixes
 
     - Fixed editSyInformationProperties in SyndicationTool to ensure  
       that updateBase is saved as a DateTime instance.
 
-1.3.1beta1
+CMF 1.3.1beta1 (2003/02/26)
 
   New Features
 
@@ -62,7 +63,7 @@
     - Fixed a bug in CalendarTool where events were not showing on the
       last day of the month.
 
-CMF 1.3
+CMF 1.3 (2002/08/06)
 
   New Features
   
