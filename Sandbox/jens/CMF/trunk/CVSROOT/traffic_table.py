@@ -126,7 +126,7 @@ def init_table():
          'remote': products_remote},
 
         {'path': "Packages/Products/ParsedXML",
-         'addrs': None,
+         'addrs': ["fred@digicool.com", "karl@digicool.com"],
          'remote': products_remote},
     ])
 
