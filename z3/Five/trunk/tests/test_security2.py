@@ -48,7 +48,9 @@ class RestrictedPythonTest(ZopeTestCase.ZopeTestCase):
             self.folder.ps()
         except (AttributeError, Unauthorized):
             pass
-
+        else:
+            self.fail("Authorized but shouldn't be")
+            
 view_names = [
     'eagle.txt',
     'falcon.html',
