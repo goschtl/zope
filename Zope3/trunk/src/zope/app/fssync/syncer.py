@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.7 2003/05/08 15:29:58 gvanrossum Exp $
+$Id: syncer.py,v 1.8 2003/05/08 19:48:26 gvanrossum Exp $
 """
 
 import os
@@ -238,7 +238,7 @@ def fromFS(container, name, location, mode=None):
 
         elif not factory:
             if entry.get('type') == '__builtin__.str':
-                newOb = loadFile(path)
+                newOb = readFile(path)
                 _setItem(container, name, newOb, old=1)
             else:
                 # Special case pickle data
