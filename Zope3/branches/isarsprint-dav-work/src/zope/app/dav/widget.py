@@ -65,4 +65,4 @@ class SequenceDAVWidget(DAVWidget):
         return u', '.join(self._data)
     
     def getInputValue(self):
-        return list(self._data).split(',').strip()
+        return [v.strip() for v in self._data.split(',')]
