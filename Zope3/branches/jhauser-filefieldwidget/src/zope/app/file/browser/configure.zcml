@@ -10,9 +10,10 @@
       class="zope.app.publication.traversers.FileContentTraverser"
       permission="zope.Public"
       />
-  
+
+<!-- Old style text-based files -->
   <browser:editform
-      name="edit.html"
+      name="BBB_edit.html"
       schema="zope.app.file.interfaces.IFile"
       label="Change a file"
       permission="zope.ManageContent" 
@@ -24,6 +25,7 @@
 
   </browser:editform>
 
+
   <browser:menuItem
       menu="zmi_views" title="Edit"
       for="zope.app.file.interfaces.IFile"
@@ -31,9 +33,24 @@
       filter="python:context.contentType.startswith('text/')"
       permission="zope.ManageContent" />
 
-  <browser:page
+
+
+<!-- upload for new style files -->
+
+  <browser:editform
       name="upload.html"
       menu="zmi_views" title="Upload"
+      for="zope.app.file.interfaces.IFile"
+      schema="zope.app.file.interfaces.IFile"
+      fields="contents"
+      permission="zope.ManageContent"
+      />
+
+<!-- BBB: upload for old style files -->
+
+  <browser:page
+      name="BBB_upload.html"
+      menu="zmi_views" title="BBB Upload"
       for="zope.app.file.interfaces.IFile"
       template="file_upload.pt"
       class=".file.FileUpload"

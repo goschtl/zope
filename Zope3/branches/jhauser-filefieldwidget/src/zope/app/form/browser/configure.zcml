@@ -154,6 +154,30 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMimeData"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeDataWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMimeDataEncoding"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeDataEncodingWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMimeType"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeTypeWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IASCII"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".BytesAreaWidget"

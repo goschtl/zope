@@ -176,18 +176,59 @@ class MimeData(Field):
             return ''
 
 
+# TODO: add encodng vocabulary for selecting possible mime-types
 class MimeDataEncoding(Field):
     __doc__ = IMimeDataEncoding.__doc__
-    implements(IMimeDataEncoding)
+    implements(IMimeDataEncoding, IFromUnicode)
 
     _type = str
 
+    def fromUnicode(self, u):
+        """
+        >>> b = Bytes(constraint=lambda v: 'x' in v)
 
+        >>> b.fromUnicode(u" foo x.y.z bat")
+        ' foo x.y.z bat'
+        >>> b.fromUnicode(u" foo y.z bat")
+        Traceback (most recent call last):
+        ...
+        ConstraintNotSatisfied:  foo y.z bat
+
+        """
+        v = str(u)
+        self.validate(v)
+        return v
+
+    def constraint(self, value):
+        return '\n' not in value
+
+
+# TODO: perhaps add mime-type vocabulary for possible mime-types.
+# If so, we need also to list the mime-types from the python lib mimetypes
 class MimeType(Field):
     __doc__ = IMimeType.__doc__
-    implements(IMimeType)
+    implements(IMimeType, IFromUnicode)
 
     _type = str
+
+    def fromUnicode(self, u):
+        """
+        >>> b = Bytes(constraint=lambda v: 'x' in v)
+
+        >>> b.fromUnicode(u" foo x.y.z bat")
+        ' foo x.y.z bat'
+        >>> b.fromUnicode(u" foo y.z bat")
+        Traceback (most recent call last):
+        ...
+        ConstraintNotSatisfied:  foo y.z bat
+
+        """
+        v = str(u)
+        self.validate(v)
+        return v
+
+    def constraint(self, value):
+        return '\n' not in value
 
 
 class ASCII(Bytes):

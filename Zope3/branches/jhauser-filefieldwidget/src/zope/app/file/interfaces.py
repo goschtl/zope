@@ -89,7 +89,7 @@ class IMime(Interface):
 
 class IFile(Interface):
 
-    content = Mime(
+    contents = Mime(
         title = _(u'The file data'),
         description = _(u'The mime information and file data, which can be '
                          'read as a file.'),

@@ -22,6 +22,7 @@ from zope.interface import implements
 
 from zope.app.form.interfaces import IInputWidget, ConversionError
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
+from zope.app.form.browser.textwidgets import BytesWidget
 from zope.app.form.browser.widget import DisplayWidget
 from zope.app.form.browser.textwidgets import escape
 
@@ -46,24 +47,82 @@ class MimeDataWidget(SimpleInputWidget):
     The session is initiated from the MimeWidget and contains the fileupload.
     The method _toFieldValue() reads the fileupload (input) from the session.
     """
-    pass
+    type = 'file'
+
+    default = ''
+    displayWidth = 20
+    displayMaxWidth = ""
+    extra = ''
+    style = ''
+    convert_missing_value = True
+
+    def __call__(self):
+        # XXX set the width to 40 to be sure to recognize this widget
+        displayMaxWidth = self.displayMaxWidth or 0
+        if displayMaxWidth > 0:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=40,
+                                 maxlength=40,
+                                 extra=self.extra)
+        else:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=40,
+                                 extra=self.extra)
+
+    def _toFieldValue(self, input):
+        if input == '':
+            return self.context.missing_value
+        try:
+            seek = input.seek
+            read = input.read
+        except AttributeError, e:
+            raise ConversionError('Form input is not a file object', e)
+        else:
+            # if the FileUpload instance has no filename set, there is
+            # no upload.
+            if getattr(input, 'filename', ''):
+                return input
+            else:
+                return self.context.missing_value
+
+    def applyChanges(self, content):
+        field = self.context
+        value = self.getInputValue()
+        # need to test for value, as an empty field is not an error, but
+        # the current file should not be replaced.
+        if value and (field.query(content, self) != value):
+            field.set(content, value)
+            return True
+        else:
+            return False
 
 
-class MimeTypeWidget(SimpleInputWidget):
+# TODO: add better description.
+
+# till now we use a simply BytesWidget, later we can make use of a vocabulary
+# for list the encoding via a Choice field 
+class MimeDataEncodingWidget(BytesWidget):
+    """MimeDataEncodingWidget set the encoding on text-based data.
+    
+    If we have a file with a mime-type 'text/...' we can set the encoding.
+    """
+
+# till now we use a simply BytesWidget, later we can make use of a vocabulary
+# for list the encoding via a Choice field 
+class MimeTypeWidget(BytesWidget):
     """MimeTypeWidget is used for to guess the mime-type.
     
     The session is initiated from the MimeWidget and contains the filename.
     The method _toFieldValue() reads the filename (input) from the session
     and finds the mime-type via the python mimetypes lib.
-    """
-    pass
-
-
-# TODO: better description.
-class MimeDataEncodingWidget(SimpleInputWidget):
-    """MimeDataEncodingWidget set the encoding on text-based data.
-    
-    If we have a file with a mime-type 'text/...' we can set the encoding.
     """
     pass
 
@@ -134,8 +193,8 @@ class FileWidget(SimpleInputWidget):
             else:
                 return self.context.missing_value
 
-
-class MimeWidget(SimpleInputWidget):
+# TODO: remove it
+class XXXMimeWidget(SimpleInputWidget):
     u"""Mime file upload widget"""
 
     type = 'file'

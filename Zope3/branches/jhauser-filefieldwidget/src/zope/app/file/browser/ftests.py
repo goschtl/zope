@@ -65,7 +65,7 @@ class FileTest(BrowserTestCase):
     def testEditForm(self):
         self.addFile()
         response = self.publish(
-            '/file/@@edit.html',
+            '/file/@@BBB_edit.html',
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
@@ -78,7 +78,7 @@ class FileTest(BrowserTestCase):
     def testEdit(self):
         self.addFile()
         response = self.publish(
-            '/file/@@edit.html',
+            '/file/@@BBB_edit.html',
             form={'field.data': u'<h1>A File</h1>',
                   'field.contentType': u'text/plain',
                   'UPDATE_SUBMIT': u'Edit'},
@@ -97,7 +97,7 @@ class FileTest(BrowserTestCase):
     def testUploadForm(self):
         self.addFile()
         response = self.publish(
-            '/file/@@upload.html',
+            '/file/@@BBB_upload.html',
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
@@ -110,7 +110,7 @@ class FileTest(BrowserTestCase):
     def testUpload(self):
         self.addFile()
         response = self.publish(
-            '/file/@@upload.html',
+            '/file/@@BBB_upload.html',
             form={'field.data': StringIO('<h1>A file</h1>'),
                   'field.contentType': u'text/plain',
                   'UPDATE_SUBMIT': u'Change'},

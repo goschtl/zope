@@ -31,7 +31,11 @@ from zope.app.form.browser.textwidgets import BytesDisplayWidget
 
 # Widgets for file-based fields
 from zope.app.form.browser.filewidgets import FileWidget
-from zope.app.form.browser.filewidgets import MimeDisplayWidget, MimeWidget
+from zope.app.form.browser.filewidgets import MimeWidget
+from zope.app.form.browser.filewidgets import MimeDataWidget
+from zope.app.form.browser.filewidgets import MimeDataEncodingWidget
+from zope.app.form.browser.filewidgets import MimeTypeWidget
+from zope.app.form.browser.filewidgets import MimeDisplayWidget
 
 # Widgets for boolean fields
 from zope.app.form.browser.boolwidgets import CheckBoxWidget
