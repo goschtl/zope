@@ -106,20 +106,10 @@ from distutils.util import get_platform
 # We know we're going to need this so import it now.  Python 2.2 does not come
 # with the pyexpat library by default, although Python 2.3 will.
 try:
-    import pyexpat
+    import xml.parsers.expat
 except ImportError:
-    
-    # lets try Kapil's nasty hack to see if we can get further
-    # this isn't nice, surely there must be a better way?!
-    from xml.parsers import expat as pyexpat
-    sys.modules['pyexpat']=pyexpat
-    
-    # now lets try again...
-    try:        
-        import pyexpat
-    except:
-        print >> sys.stderr, "WARNING: the pyexpat module is required"
-        raise
+    print >> sys.stderr, "WARNING: the pyexpat module is required"
+    raise
 
 class ImmediateTestResult(unittest._TextTestResult):
 
