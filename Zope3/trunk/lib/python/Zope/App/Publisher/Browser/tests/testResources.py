@@ -14,17 +14,28 @@
 """
 
 Revision information:
-$Id: testResources.py,v 1.2 2002/06/14 09:25:20 stevea Exp $
+$Id: testResources.py,v 1.3 2002/06/14 16:50:19 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
-from Zope.Publisher.Browser.BrowserRequest import TestRequest
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalResourceService import provideResource
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
+
+from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
+
+from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
+from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
+from Zope.Publisher.Browser.BrowserRequest import TestRequest
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 
 class Test(PlacelessSetup, TestCase):
+
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)    
+
 
     def test(self):
         from Zope.App.Publisher.Browser.Resources import Resources

@@ -14,20 +14,37 @@
 """
 
 Revision information:
-$Id: testFileResource.py,v 1.1 2002/06/13 23:15:44 jim Exp $
+$Id: testFileResource.py,v 1.2 2002/06/14 16:50:19 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 import os
+
 from Zope.Exceptions import NotFoundError
+
+from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.ComponentArchitecture.GlobalResourceService import provideResource
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
+
+from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
+
+from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
+from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
-import Zope.App.Publisher.Browser.tests as p        
-test_directory = os.path.split(p.__file__)[0]
+
 from Zope.App.Publisher.Browser.FileResource import FileResourceFactory
 from Zope.App.Publisher.Browser.FileResource import ImageResourceFactory
+import Zope.App.Publisher.Browser.tests as p        
 
-class Test(TestCase):
+test_directory = os.path.split(p.__file__)[0]
+
+
+class Test(PlacelessSetup, TestCase):
+
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)    
 
     def testNoTraversal(self):
 

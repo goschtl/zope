@@ -17,11 +17,11 @@ An implementation of a generic TALES engine
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-__version__ = '$Revision: 1.2 $'[11:-2]
+__version__ = '$Revision: 1.3 $'[11:-2]
 
 import re
 import sys
-from types import StringType
+from types import StringType, StringTypes
 
 import Zope.ZTUtils
 from SafeMapping import SafeMapping
@@ -229,7 +229,9 @@ class Context:
         text = self.evaluate(expr)
         if text is _default or text is None:
             return text
-        return str(text)
+        if not isinstance(text, StringTypes):
+            text = unicode(text)
+        return text
 
     def evaluateStructure(self, expr):
         return self.evaluate(expr)

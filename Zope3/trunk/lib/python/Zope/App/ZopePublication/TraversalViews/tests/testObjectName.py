@@ -14,17 +14,22 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: testObjectName.py,v 1.1 2002/06/13 16:20:09 stevea Exp $
+$Id: testObjectName.py,v 1.2 2002/06/14 16:50:19 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Interface import Interface
 
+from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getService, getView, getAdapter
+
+from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
+
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.Publisher.HTTP.tests.TestRequest import TestRequest
+from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
+from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
+
 from Zope.Proxy.ContextWrapper import ContextWrapper
-from Interface import Interface
 
 from Zope.App.ZopePublication.TraversalViews.ObjectName \
     import IObjectName, ObjectName, SiteObjectName
@@ -49,6 +54,7 @@ class Test(PlacelessSetup, TestCase):
                     [SiteObjectName])
                     
         provideAdapter = getService(None, "Adapters").provideAdapter
+        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)    
         provideAdapter(None, IObjectName, [ObjectName])
         provideAdapter(IRoot, IObjectName, [ObjectName])
 

@@ -14,11 +14,18 @@
 """
 
 Revision information:
-$Id: testContents.py,v 1.3 2002/06/13 23:15:41 jim Exp $
+$Id: testContents.py,v 1.4 2002/06/14 16:50:19 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
+
+from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
+
+from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
+from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
+
 
 class BaseTestContentsBrowserView(PlacelessSetup):
     """Base class for testing browser contents.
@@ -29,6 +36,11 @@ class BaseTestContentsBrowserView(PlacelessSetup):
     Subclasses need to define a method, '_TestView__newView', that
     takes a context object and that returns a new test view.
     """
+
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)
+        
 
     def testInfo(self):
         """ Do we get the correct information back from ContainerContents? """

@@ -11,18 +11,25 @@
 ##############################################################################
 """
 
-$Id: testPublisherServer.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: testPublisherServer.py,v 1.3 2002/06/14 16:50:22 srichter Exp $
 """
 
 import unittest
 from asyncore import socket_map, poll
 import sys
-
 from threading import Thread
+
 from Zope.Server.TaskThreads import ThreadedTaskDispatcher
 from Zope.Server.HTTP.PublisherHTTPServer import PublisherHTTPServer
-from Zope.Publisher.Browser.BrowserRequest import BrowserRequest
 
+from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
+
+from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
+
+from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
+from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
+from Zope.Publisher.Browser.BrowserRequest import BrowserRequest
 from Zope.Publisher.DefaultPublication import DefaultPublication
 from Zope.Publisher.Exceptions import Redirect, Retry
 from Zope.Publisher.HTTP import HTTPRequest
@@ -82,10 +89,11 @@ class tested_object:
 
 
 
-class Tests(unittest.TestCase):
+class Tests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-
+        PlacelessSetup.setUp(self)
+        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)
         obj = tested_object()
         obj.folder = tested_object()
         obj.folder.item = tested_object()

@@ -13,41 +13,49 @@
 ##############################################################################
 import unittest
 
-from Zope.Publisher.Publish import publish
-from Zope.Publisher.Browser.BrowserRequest import TestRequest
-from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.App.ZopePublication.ZopePublication import ZopePublication
-from Zope.App.ZopePublication.Browser.Publication import BrowserPublication
-from Zope.Configuration.name import resolve
-from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
-from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
-from Zope.Publisher.DefaultPublication import TestPublication
-from Zope.Publisher.IPublication import IPublication
-from Zope.Proxy.ContextWrapper import getWrapperContext
-from Zope.ContextWrapper import Wrapper
-from Zope.ContextWrapper import wrapperTypes
-import ZODB
-from ZODB.MappingStorage import MappingStorage
-from Zope.Publisher.Exceptions import Retry
-from Zope.App.ZopePublication.Traversers import TestTraverser
-from Zope.Security import SimpleSecurityPolicies
-from Zope.Security.SecurityManagement import setSecurityPolicy
+from StringIO import StringIO
+
 from Interface import Interface
 from Interface.Verify import verifyClass
 from Interface.Implements import instancesOfObjectImplements
 
-from Zope.ComponentArchitecture.tests.PlacelessSetup\
-           import PlacelessSetup
-from Zope.ComponentArchitecture import getService, getServiceManager
+import ZODB
+from ZODB.MappingStorage import MappingStorage
 
+from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.ComponentArchitecture import getService, getServiceManager
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter 
+
+from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
+
+from Zope.Publisher.Publish import publish
+from Zope.Publisher.DefaultPublication import TestPublication
+from Zope.Publisher.IPublication import IPublication
+from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
+from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
+from Zope.Publisher.Browser.BrowserRequest import TestRequest
+from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
+from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 
 from Zope.App.Security.PrincipalRegistry import principalRegistry
 from Zope.App.Security.PrincipalRoleManager import principalRoleManager
 
+from Zope.App.ZopePublication.ZopePublication import ZopePublication
+from Zope.App.ZopePublication.Browser.Publication import BrowserPublication
+from Zope.App.ZopePublication.Traversers import TestTraverser
+
+from Zope.Configuration.name import resolve
+from Zope.Proxy.ContextWrapper import getWrapperContext
+from Zope.ContextWrapper import Wrapper
+from Zope.ContextWrapper import wrapperTypes
+from Zope.Publisher.Exceptions import Retry
+from Zope.Security import SimpleSecurityPolicies
+from Zope.Security.SecurityManagement import setSecurityPolicy
+
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Security.Checker import defineChecker, NamesChecker
 
-from StringIO import StringIO
 
 def foo():
     " "
@@ -75,6 +83,7 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
     
     def setUp(self):
         PlacelessSetup.setUp(self)
+        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)    
         self.policy = setSecurityPolicy(
             SimpleSecurityPolicies.PermissiveSecurityPolicy()
             )
