@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: interfaces.py,v 1.3 2003/01/10 18:44:23 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -262,7 +262,7 @@ class IContextDependent(Interface):
     context = Attribute(
         """The context of the object
 
-        This is the object being adapted, viewed, extemded, etc.
+        This is the object being adapted, viewed, extended, etc.
 
         """)
 
@@ -378,11 +378,6 @@ class IResourceService(Interface):
 
         The default will be returned if the component can't be found.
         """
-
-
-
-
-
 
 
 class IView(IPresentation, IContextDependent):
