@@ -6,7 +6,8 @@ The repolinks file is found in the CVSROOT of the repository, along with this
 script.
 
 The links asserted by repolinks are compared with existing links in the
-filesystem, and links are added and deleted as necessary.
+filesystem, and links are added and deleted as necessary.  See
+LinkManager.assert_map() for specifics.
 
 Errors - illegal or invalid paths, collisions, etc - are reported to
 stderr."""
@@ -21,12 +22,14 @@ import string
 SCRIPT_DIR = os.path.abspath(os.path.split(sys.argv[0])[0])
 # Assume the repository root dir contains the CVSROOT script dir.
 REPO_ROOT = os.path.split(SCRIPT_DIR)[0]
+
 RECIPE_PATH = os.path.join(SCRIPT_DIR, RECIPE_NAME)
 
 EMPTY_DIR = REPO_ROOT + "/CVSROOT/Emptydir"
 
 def main(argv=None):
     lm = LinkManager()
+    lm.assess_existing_links()
     lm.assert_map()
 
 class LinkManager:
@@ -37,9 +40,7 @@ class LinkManager:
         # [(from, to, lineno), ...]
         self._recipe_lines = self.get_recipe_lines()
         # {actual_path: actual_target}
-        self._fslinks = self.assess_existing_links()
-        # Dictionary: {actual_path: (link_target, (recipe_file line numbers))}
-
+        self._fslinks = {}
 
     def assert_map(self,
                    isdir=os.path.isdir, isfile=os.path.isfile,
@@ -47,8 +48,32 @@ class LinkManager:
                    abspath=os.path.abspath, split=os.path.split,
                    readlink=os.readlink, unlink=os.unlink, pjoin=os.path.join,
                    symlink=os.symlink, lstat=os.lstat, ST_INO=stat.ST_INO):
-        """Impose the links specified by the recipe, removing existing links
-        not in the map."""
+        """Impose the links specified by the recipe, removing preexisting
+        links that are not specified in the map.  Specifically:
+
+          - Add prescribed links that are absent, when there's no non-link
+            file in the way.
+
+          - Adjust already-existing links that don't point to the prescribed
+            place - so we can use the file to redirect existing links.
+
+          - Remove links that are not prescribed.
+
+          - Do nothing for links that already exist as prescribed.
+
+          - Warn about prescribed links that point nowhere.
+
+          - Warn about prescribed links that cannot be created because the
+            indicated containing dir does not exist.
+
+          - Reiterate attempts until all are done, or no more progress is
+            being made - so it's not a problem for links to be dependent on
+            others in order to be situated.
+
+          - Delete prescribed links that point outside the repository.
+
+          - Produce output about all the actions."""
+
         link2inode = self._fslinks
         inode2link = {}
         for k, v in link2inode.items(): inode2link[v] = k
@@ -127,7 +152,7 @@ class LinkManager:
                 warn("Orphaned link - points at nothing:\n %s => %s",
                      link, readlink(link))
 
-            # Cull accounted-for links from inode2link.
+            # Cull accounted-for inode2link links, preparing for next step.
             if inode2link.has_key(inode):
                del inode2link[inode]
 
@@ -136,7 +161,6 @@ class LinkManager:
             if inode not in retargeted:
                 info("Removing obsolete link %s", link)
                 unlink(link)
-
 
     def get_recipe_lines(self,
                          strip=string.strip, split=string.split,
@@ -168,7 +192,7 @@ class LinkManager:
                 link, target = fields
                 if isabs(target):
                     target = REPO_ROOT + target
-            delim = (not isabs(link) and '/') or ''
+            delim = (not isabs(link) and os.sep) or ''
             link =  REPO_ROOT + delim + link
             got.append((link, target, lineno))
         # Warn about dups:
@@ -182,15 +206,67 @@ class LinkManager:
 
     def assess_existing_links(self, readlink=os.readlink, lstat=os.lstat,
                               ST_INO=stat.ST_INO):
-        """Walk the repo from the root, collecting existing links.
+        """Walk the repository from the root, collecting existing links."""
 
-        We return two mappings - one from the link paths to their inode
-        numbers, the other vice-versa."""
         m = {}
         for i in find_fs_links(REPO_ROOT):
             m[i] = lstat(i)[ST_INO]
+        self._fslinks = m
         return m
 
+    def all_containers(self, path,
+                       exists=os.path.exists, ST_INO=stat.ST_INO):
+        """Given a repo-relative path, return *all* the repository paths that
+        contain it - both direct containers, and containers by virtue of
+        symlinks in the repolinks map.
+
+        Used to identify all the checkin-notification subscriber entries that
+        qualify for a particular file, not just the direct containers of the
+        file.
+
+        We expect a path relative to the repository root, and return paths
+        relative to the repository root."""
+        # We get the inodes of all the directories on the actual (physical)
+        # path, and identify all those links whose targets are one of those
+        # directories.
+
+        if path[:len(os.sep)] == os.sep:
+            path = path[len(os.sep):]
+        path = os.path.join(REPO_ROOT, path)
+
+        got = []
+        element_inodes = path_element_inodes(path)
+        if element_inodes:
+            for link, target, lineno in self._recipe_lines:
+                if (exists(target)
+                    and (os.stat(target)[ST_INO] in element_inodes)):
+                    # (Strip the REPO_ROOT prefix.)
+                    got.append(link[len(REPO_ROOT)+1:])
+
+        return got
+
+def path_element_inodes(path, split=os.path.split,
+                        stat=os.stat, ST_INO=stat.ST_INO):
+    """Return inodes of directory elements leading to path's physical location.
+    We return the empty list if path doesn't actually exist."""
+    got = []
+    if os.path.exists(path):
+        origdir = os.getcwd()
+        try:
+            if os.path.isdir(path):
+                os.chdir(path)
+            else:
+                os.chdir(split(path)[0])
+
+            here = os.getcwd()
+            while here and (here != '/'):
+                got.insert(0, stat(here)[ST_INO])
+                here = split(here)[0]
+
+        finally:
+            os.chdir(origdir)
+    return got
+    
 
 def find_fs_links(dir,
                   join=os.path.join,
@@ -198,18 +274,16 @@ def find_fs_links(dir,
     """Return a breadth-first list of paths of symlinks within dir."""
     got = []
     dirs = []
+
     for f in os.listdir(dir):
         p = join(dir, f)
-        if islink(p):
-            got.append(p)
-        elif isdir(p):
-            dirs.append(p)
+        if islink(p): got.append(p)
+        elif isdir(p): dirs.append(p)
+
     for d in dirs:
         got.extend(find_fs_links(d))
-    return got
 
-def actual_path(dir):
-    return os.getcwd()
+    return got
 
 def info(*args):
     if not QUIET:
