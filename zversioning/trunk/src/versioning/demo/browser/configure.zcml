@@ -30,7 +30,35 @@
     menu="zmi_views"
     title="Edit"
     permission="zope.ManageContent"
-    />
+    >
+
+  <browser:widget
+      field="usecase"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "5"
+      style="width: 100%"/>
+
+  <browser:widget
+      field="concept"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "10"
+      style="width: 100%"/>
+
+  <browser:widget
+      field="todo"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "5"
+      style="width: 100%"/>
+
+  <browser:widget
+      field="issues"
+      class="zope.app.form.browser.TextAreaWidget"
+      height = "5"
+      style="width: 100%"/>
+
+
+</browser:editform>
+
 
 <browser:addMenuItem
     class="..vproposal.VProposal"
