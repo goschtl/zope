@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.3 2002/12/28 17:49:31 stevea Exp $
+$Id: configuration.py,v 1.4 2002/12/31 13:27:17 stevea Exp $
 """
 __metaclass__ = type
 
@@ -321,10 +321,9 @@ class NamedComponentConfiguration(NamedConfiguration):
 
         if wrapped_self.permission:
             if type(component) is Proxy:
-                # XXX what is this?
-                # Answer: There should be at most one security Proxy around
-                # an object. So, if we're going to add a new security proxy,
-                # we need to remove any existing one.
+                # There should be at most one security Proxy around an object.
+                # So, if we're going to add a new security proxy, we need to
+                # remove any existing one.
                 component = removeSecurityProxy(component)
 
             interface = wrapped_self.getInterface()
