@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.20 2003/06/10 22:01:33 gvanrossum Exp $
+$Id: fssync.py,v 1.21 2003/06/13 17:41:12 stevea Exp $
 """
 
 import os
@@ -25,7 +25,7 @@ import tempfile
 from transaction import get_transaction
 
 from zope.publisher.browser import BrowserView
-from zope.app.traversing import objectName, getParent, getRoot
+from zope.app.traversing import getName, getParent, getRoot
 from zope.app.interfaces.exceptions import UserError
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.app.fssync.syncer import toFS
@@ -52,7 +52,7 @@ class SnarfFile(BrowserView):
         dirname = tempfile.mktemp()
         try:
             os.mkdir(dirname)
-            toFS(self.context, objectName(self.context) or "root", dirname)
+            toFS(self.context, getName(self.context) or "root", dirname)
             return snarf_dir(self.request.response, dirname)
         finally:
             if os.path.isdir(dirname):
@@ -148,7 +148,7 @@ class SnarfCommit(BrowserView):
 
     def set_commit_arguments(self):
         # Compute self.{name, container, fspath} for commit()
-        self.name = objectName(self.context)
+        self.name = getName(self.context)
         self.container = getParent(self.context)
         if self.container is None and self.name == "":
             # Hack to get loading the root to work
@@ -216,7 +216,7 @@ class SnarfCommit(BrowserView):
     def write_to_filesystem(self):
         shutil.rmtree(self.tempdir) # Start with clean slate
         os.mkdir(self.tempdir)
-        toFS(self.context, objectName(self.context) or "root", self.tempdir)
+        toFS(self.context, getName(self.context) or "root", self.tempdir)
 
     def send_archive(self):
         return snarf_dir(self.request.response, self.tempdir)

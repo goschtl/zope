@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.21 2003/06/12 09:30:49 jim Exp $
+$Id: test_contents.py,v 1.22 2003/06/13 17:41:12 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,7 +28,6 @@ from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.copypastemove import IObjectMover
 
 from zope.app.traversing import traverse
-from zope.app.traversing import IObjectName
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.interfaces.container import IPasteTarget
@@ -36,7 +35,6 @@ from zope.app.interfaces.container import IMoveSource
 from zope.app.interfaces.container import ICopySource
 from zope.app.interfaces.container import IPasteNamesChooser
 
-from zope.app.traversing.adapters import ObjectName
 from zope.app.copypastemove import ObjectMover
 from zope.app.copypastemove import ObjectCopier
 from zope.app.container.copypastemove import PasteTarget
@@ -198,7 +196,6 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         provideAdapter(IContainer, IPasteTarget, PasteTarget)
         provideAdapter(IContainer, IMoveSource, MoveSource)
         provideAdapter(IContainer, ICopySource, CopySource)
-        provideAdapter(None, IObjectName, ObjectName)
         provideAdapter(IContainer, IPasteNamesChooser, PasteNamesChooser)
 
         provideAdapter(IAnnotations, IPrincipalClipboard, PrincipalClipboard)

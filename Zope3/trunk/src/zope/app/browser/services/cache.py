@@ -13,7 +13,7 @@
 ##############################################################################
 """Cache configuration support classes.
 
-$Id: cache.py,v 1.9 2003/05/01 16:28:28 gvanrossum Exp $
+$Id: cache.py,v 1.10 2003/06/13 17:41:13 stevea Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
@@ -23,7 +23,7 @@ from zope.component import getAdapter, getView
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
-from zope.app.traversing import traverse, getPath, getParent, objectName
+from zope.app.traversing import traverse, getPath, getParent, getName
 
 class Caches(BrowserView):
 
@@ -103,14 +103,14 @@ class Caches(BrowserView):
                 caches[path] = obj
                 conf.status = Unregistered
                 parent = getParent(conf)
-                name = objectName(conf)
+                name = getName(conf)
                 container = getAdapter(parent, IZopeContainer)
                 del container[name]
 
         # 2) Delete the cache objects
         for path, obj in caches.items():
             parent = getParent(obj)
-            name = objectName(obj)
+            name = getName(obj)
             container = getAdapter(parent, IZopeContainer)
             del container[name]
 

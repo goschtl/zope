@@ -14,7 +14,7 @@
 """Implementation of the Zope TALES API
 
 
-$Id: talesapi.py,v 1.5 2003/06/06 20:44:31 stevea Exp $
+$Id: talesapi.py,v 1.6 2003/06/13 17:41:19 stevea Exp $
 """
 
 from zope.app.interfaces.talesapi import IZopeTalesAPI
@@ -70,5 +70,3 @@ class ZopeTalesAPI(object):
             raise AttributeError, 'created'
         return a.sizeForDisplay()
 
-    
-    

@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper classes for local view configuration.
 
-$Id: view.py,v 1.18 2003/06/03 22:46:16 jim Exp $
+$Id: view.py,v 1.19 2003/06/13 17:41:13 stevea Exp $
 """
 __metaclass__ = type
 
@@ -31,7 +31,7 @@ from zope.app.form.utility import setUpWidgets
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration import \
      Unregistered, Registered, Active
-from zope.app.traversing import getPath, getParent, objectName
+from zope.app.traversing import getPath, getParent, getName
 
 class IViewSearch(Interface):
 
@@ -166,7 +166,7 @@ class ViewServiceView(_SharedBase):
                 conf = info['configuration']
                 conf.status = Unregistered
                 parent = getParent(conf)
-                name = objectName(conf)
+                name = getName(conf)
                 container = getAdapter(parent, IZopeContainer)
                 del container[name]
 

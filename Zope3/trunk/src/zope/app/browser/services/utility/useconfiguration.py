@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Configuration view for utilities.
 
-$Id: useconfiguration.py,v 1.10 2003/06/06 16:01:30 philikon Exp $
+$Id: useconfiguration.py,v 1.11 2003/06/13 17:41:14 stevea Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -22,7 +22,7 @@ from zope.app.form.widget import CustomWidget
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
-from zope.app.traversing import getPath, getParent, objectName
+from zope.app.traversing import getPath, getParent, getName
 from zope.component import getServiceManager, getView, getAdapter
 from zope.interface import providedBy
 from zope.proxy import removeAllProxies
@@ -149,14 +149,14 @@ class Utilities(BrowserView):
                 services[path] = obj
                 conf.status = Unregistered
                 parent = getParent(conf)
-                name = objectName(conf)
+                name = getName(conf)
                 container = getAdapter(parent, IZopeContainer)
                 del container[name]
 
         # 2) Delete the service objects
         for path, obj in services.items():
             parent = getParent(obj)
-            name = objectName(obj)
+            name = getName(obj)
             container = getAdapter(parent, IZopeContainer)
             del container[name]
 

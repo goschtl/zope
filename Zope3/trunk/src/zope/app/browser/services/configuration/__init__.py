@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.11 2003/06/12 17:03:43 gvanrossum Exp $
+$Id: __init__.py,v 1.12 2003/06/13 17:41:13 stevea Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.configuration import IComponentConfiguration
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.traversing import getPath, objectName, traverse
+from zope.app.traversing import getPath, getName, traverse
 from zope.component import getView, getServiceManager, getAdapter
 from zope.context import getWrapperContainer
 from zope.app.context import ContextWrapper
@@ -214,7 +214,7 @@ class ComponentPathWidget(BrowserWidget):
             # It must be a component that is about to be configured.
             component = context
             # Always use a relative path (just the component name)
-            path = objectName(context)
+            path = getName(context)
 
         url = getView(component, 'absolute_url', self.request)
 
@@ -236,7 +236,7 @@ class ComponentPathWidget(BrowserWidget):
         else:
             # It must be a component that is about to be configured.
             # Always return a relative path (just the component name)
-            path = objectName(context)
+            path = getName(context)
 
         return path
 

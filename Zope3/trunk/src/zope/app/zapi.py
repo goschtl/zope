@@ -15,7 +15,7 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.5 2003/06/03 19:50:02 gvanrossum Exp $
+$Id: zapi.py,v 1.6 2003/06/13 17:41:10 stevea Exp $
 """
 
 from zope.app.interfaces.zapi import IZAPI
@@ -30,11 +30,4 @@ from zope.context import *
 from zope.app.context import *
 from zope.app.traversing import *
 
-def name(obj):
-    data = getWrapperData(obj)
-    if data:
-        return data.get('name')
-    else:
-        return None
-
-    
+name = getName

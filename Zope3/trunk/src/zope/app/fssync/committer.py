@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.13 2003/06/10 22:02:36 gvanrossum Exp $
+$Id: committer.py,v 1.14 2003/06/13 17:41:18 stevea Exp $
 """
 
 import os
@@ -33,7 +33,7 @@ from zope.app.interfaces.fssync \
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.fssync.classes import Default
-from zope.app.traversing import getPath, traverseName, objectName
+from zope.app.traversing import getPath, traverseName, getName
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
@@ -307,9 +307,9 @@ class Committer(object):
                         adapter.setBody(newdata)
                     # Now publish an event, but not for annotations or
                     # extras.  To know which case we have, see if
-                    # objectName() works.  XXX This is a hack.
+                    # getName() works.  XXX This is a hack.
                     try:
-                        objectName(obj)
+                        getName(obj)
                     except:
                         pass
                     else:

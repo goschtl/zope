@@ -16,11 +16,11 @@
 This the default implmentation of the OnlineHelp. It defines the global
 OnlineHelp in which all basic Zope-core help screens are registered.
 
-$Id: __init__.py,v 1.7 2003/06/03 15:45:10 stevea Exp $
+$Id: __init__.py,v 1.8 2003/06/13 17:41:18 stevea Exp $
 """
 import os
 from zope.app.container.sample import SampleContainer
-from zope.app.traversing import getParent, objectName
+from zope.app.traversing import getParent, getName
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.traversing.adapters import Traverser
 import zope.app
@@ -95,7 +95,7 @@ class OnlineHelp(OnlineHelpTopic):
         "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
         # Delete topic from tree
         topic = Traverser(self).traverse(topic_path)
-        name = objectName(topic)
+        name = getName(topic)
         parent = getParent(topic)
         del parent[name]
         # unregister from registry

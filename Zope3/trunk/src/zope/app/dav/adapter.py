@@ -13,15 +13,15 @@
 ##############################################################################
 """WebDAV Adapters
 
-$Id: adapter.py,v 1.2 2003/06/03 22:46:19 jim Exp $
+$Id: adapter.py,v 1.3 2003/06/13 17:41:16 stevea Exp $
 """
 
 from xml.dom import minidom
 from zope.component import getAdapter, queryAdapter
-from zope.app.interfaces.traversing import IObjectName
 from zope.app.interfaces.dublincore import IDCTimes
 from zope.app.interfaces.file import IReadDirectory
 from zope.app.interfaces.size import ISized
+from zope.app import zapi
 
 class DAVSchemaAdapter:
 
@@ -29,8 +29,7 @@ class DAVSchemaAdapter:
         self.context = object
 
     def displayname(self):
-        value = getAdapter(self.context, IObjectName)()
-        return value
+        return zapi.name(self.context)
 
     def creationdate(self):
         value = getAdapter(self.context, IDCTimes).created

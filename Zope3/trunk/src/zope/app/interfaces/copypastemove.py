@@ -166,7 +166,7 @@ Stepped out examples
       def copyableTo(self, target, name=None):
           obj = self.context
           if name is None:
-              name = objectName(obj)
+              name = getName(obj)
           pastetarget = getAdapter(target, IPasteTarget)
           return pastetarget.acceptsObject(name, obj)
 
@@ -175,7 +175,7 @@ Stepped out examples
       def copy(self, target, name=None):
           obj = self.context
           if name is None:
-              name = objectName(obj)
+              name = getName(obj)
           copysource = getAdapter(getParent(obj), ICopySource)
           obj = copysource.copyObject(name, target)
           pastetarget = getAdapter(target, IPasteTarget)
@@ -192,7 +192,7 @@ Stepped out examples
           ....
 
 
-$Id: copypastemove.py,v 1.5 2003/06/12 11:04:56 jim Exp $
+$Id: copypastemove.py,v 1.6 2003/06/13 17:41:18 stevea Exp $
 """
 
 from zope.interface import Interface

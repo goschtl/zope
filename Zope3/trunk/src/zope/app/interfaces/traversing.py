@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.5 2003/06/03 19:43:43 jim Exp $
+$Id: traversing.py,v 1.6 2003/06/13 17:41:18 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -37,20 +37,6 @@ class INamespaceHandler(Interface):
         It is not the respoonsibility of the handler to wrap the return value.
         """
 
-class IObjectName(Interface):
-
-    def __str__():
-        """Get a human-readable string representation
-        """
-
-    def __repr__():
-        """Get a string representation
-        """
-
-    def __call__():
-        """Get a string representation
-        """
-
 class IPhysicallyLocatable(Interface):
     """Objects that have a physical location in a containment hierarchy.
     """
@@ -61,6 +47,10 @@ class IPhysicallyLocatable(Interface):
 
     def getPath():
         """Return the physical path to the object as a string.
+        """
+
+    def getName():
+        """Return the last segment of the physical path.
         """
 
 class ITraversable(Interface):
@@ -102,7 +92,7 @@ class ITraverser(Interface):
         'request' is passed in when traversing from presentation code. This
         allows paths like @@foo to work.
         """
- 
+
 class ITraversalAPI(Interface):
     """Common API functions to ease traversal computations
     """
@@ -172,10 +162,8 @@ class ITraversalAPI(Interface):
 
         """
 
-    def objectName(obj):
+    def getName(obj):
         """Get the name an object was traversed via
-
-        Raises TypeError if the object is not context-wrapped
         """
 
     def getParent(obj):
@@ -201,4 +189,4 @@ class ITraversalAPI(Interface):
 
         Raises ValueError if a badly formed path is given.
         """
-    
+

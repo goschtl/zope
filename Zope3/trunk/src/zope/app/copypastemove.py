@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.9 2003/06/03 15:33:55 stevea Exp $
+$Id: copypastemove.py,v 1.10 2003/06/13 17:41:10 stevea Exp $
 """
 
-from zope.app.traversing import getParent, objectName, getPath
+from zope.app.traversing import getParent, getName, getPath
 from zope.component import getAdapter, queryAdapter
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.copypastemove import IObjectCopier
@@ -51,7 +51,7 @@ class ObjectMover:
 
         obj = self.context
         container = getParent(obj)
-        orig_name = objectName(obj)
+        orig_name = getName(obj)
         if new_name is None:
             new_name = orig_name
 
@@ -96,7 +96,7 @@ class ObjectMover:
         '''
         obj = self.context
         if name is None:
-            name = objectName(obj)
+            name = getName(obj)
         pastetarget = getAdapter(target, IPasteTarget)
         return pastetarget.acceptsObject(name, obj)
 
@@ -120,7 +120,7 @@ class ObjectCopier:
         """
         obj = self.context
         container = getParent(obj)
-        orig_name = objectName(obj)
+        orig_name = getName(obj)
         if new_name is None:
             new_name = orig_name
 
@@ -159,7 +159,7 @@ class ObjectCopier:
         '''
         obj = self.context
         if name is None:
-            name = objectName(obj)
+            name = getName(obj)
         pastetarget = getAdapter(target, IPasteTarget)
         return pastetarget.acceptsObject(name, obj)
 
@@ -184,7 +184,7 @@ class NoChildrenObjectCopier(ObjectCopier):
         """
         obj = self.context
         container = getParent(obj)
-        orig_name = objectName(obj)
+        orig_name = getName(obj)
         if new_name is None:
             new_name = orig_name
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.28 2003/06/12 17:03:42 gvanrossum Exp $
+$Id: service.py,v 1.29 2003/06/13 17:41:13 stevea Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -132,7 +132,7 @@ class AddServiceConfiguration(BrowserView):
         return lst
 
     def action(self, name=[], active=[]):
-        path = zapi.objectName(self.context)
+        path = zapi.name(self.context)
         configure = zapi.getWrapperContainer(
             self.context).getConfigurationManager()
         container = zapi.getAdapter(configure, IZopeContainer)
@@ -226,7 +226,7 @@ class ServiceSummary(BrowserView):
                 services[path] = obj
                 conf.status = Unregistered
                 parent = zapi.getParent(conf)
-                name = zapi.objectName(conf)
+                name = zapi.name(conf)
                 container = zapi.getAdapter(parent, IZopeContainer)
                 del container[name]
 
@@ -240,7 +240,7 @@ class ServiceSummary(BrowserView):
         #     manipulate the folder explicitly.
         for path, obj in services.items():
             parent = zapi.getParent(obj)
-            name = zapi.objectName(obj)
+            name = zapi.name(obj)
             container = zapi.getAdapter(parent, IZopeContainer)
             del container[name]
 
