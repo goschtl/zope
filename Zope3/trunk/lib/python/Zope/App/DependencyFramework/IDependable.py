@@ -12,13 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: IDependable.py,v 1.1 2002/10/14 11:51:05 jim Exp $
+$Id: IDependable.py,v 1.2 2002/10/15 07:26:02 jim Exp $
 """
 
 from Interface import Interface
 
 class IDependable(Interface):
-   """Objects that can have dependencies
+   """Objects that other objects depend on.
    """
 
    def addDependent(location):
