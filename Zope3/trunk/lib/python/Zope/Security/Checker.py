@@ -19,7 +19,7 @@ else:
 CheckerPublic = object()
 
 def ProxyFactory(object, checker=None):
-    """Factory function that creats a proxy for an object
+    """Factory function that creates a proxy for an object
 
     The proxy checker is looked up if not provided.
     """
