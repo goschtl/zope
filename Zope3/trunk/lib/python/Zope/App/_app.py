@@ -13,13 +13,9 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.4 2002/10/24 15:37:02 jim Exp $
+$Id: _app.py,v 1.5 2002/12/12 20:16:34 gvanrossum Exp $
 """
 __metaclass__ = type
-
-import base64
-from cStringIO import StringIO
-from Zope.Publisher.Publish import publish as _publish
 
 _configured = 0
 def config(file):
@@ -63,16 +59,12 @@ def database(db):
             from ZODB.DB import DB
             storage = FileStorage(db)
             db = DB(storage)
-            
-    # Make sure we have an application object
-    connection = db.open()
-    if 'Application' not in connection.root():
-        from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
-        import Transaction
-        connection.root()['Application'] = RootFolder()
-        Transaction.get_transaction().commit()
 
-    connection.close()
+    # XXX When bootstrapping a new database, the following will fail
+    #     while trying to add services when no config_file was passed
+    #     to Application() below.  So, don't do that. :-)
+    from Zope.App.StartUp import bootstrap
+    bootstrap.bootstrapInstance(db)
 
     return db
 
@@ -88,9 +80,13 @@ class Application:
 
     __browser_pub = None
     __TestRequest = None
+
     def debug(self, path='/', stdin='', stdout=None, basic=None, pm=0,
-              environment = None, **kw):
-        
+              environment=None, **kw):
+        import base64
+        from cStringIO import StringIO
+        from Zope.Publisher.Publish import publish
+
         if stdout is None:
             stdout = StringIO()
 
@@ -115,8 +111,7 @@ class Application:
         request = self.__TestRequest(stdin, stdout, env)
         request.setPublication(self.__browser_pub)
 
-        _publish(request, handle_errors = not pm)
+        publish(request, handle_errors= not pm)
 
         stdout.seek(0)
         print stdout.read()
-        

@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.7 2002/12/11 18:07:25 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.8 2002/12/12 20:16:35 gvanrossum Exp $
 """
 
 import sys
@@ -24,15 +24,7 @@ from Zope.Configuration.Action import Action
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
 from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 
-# Import classes related to initial-services
-from Zope.App.Traversing import traverse, traverseName
 from ServerTypeRegistry import getServerType
-from Zope.App.OFS.Services.ObjectHub.ObjectHub import ObjectHub
-from Zope.App.OFS.Services.LocalEventService.LocalEventService import \
-     LocalEventService
-from Zope.App.OFS.Services.ServiceManager.ServiceManager import ServiceManager
-from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration import \
-     ServiceConfiguration
 
 # Import Undo-related classes 
 from Zope.ComponentArchitecture import getService
@@ -150,68 +142,11 @@ class SiteDefinition:
     def _initDB(self):
         """Initialize the ZODB and persistence module importer."""
 
-        connection = self._zodb.open()
-        root = connection.root()
-        app = root.get(ZopePublication.root_name, None)
-
-        if app is None:
-
-            from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
-            from Transaction import get_transaction
-        
-            app = RootFolder()
-            self._addEssentialServices(app)
-            root[ZopePublication.root_name] = app
-
-            get_transaction().commit()
-
-        connection.close()
+        from Zope.App.StartUp import bootstrap
+        bootstrap.bootstrapInstance(self._zodb)
 
         imp = PersistentModuleImporter()
         imp.install()
-
-
-    def _addEssentialServices(self, root_folder):
-        """Add essential services.
-
-        XXX This ought to be configurable.  For now, hardcode an Event
-        service and an ObjectHub.  I'll refactor later.
-
-        XXX To reiterate, THIS IS AN EXAMPLE ONLY!!!  This code should
-        be generalized.  Preferably, using marker interfaces,
-        adapters, and a factory or two.  Oh, and don't forget
-        metameta.zcml. :-)
-        """
-
-        sm = ServiceManager()
-        root_folder.setServiceManager(sm)
-        self._addService(root_folder, 'Events', LocalEventService)
-        self._addService(root_folder, 'ObjectHub', ObjectHub)
-
-
-    def _addService(self, root_folder, service_type, service_factory,
-                    initial_status='Active'):
-        """Add and configure a service to the root folder.
-
-        The service is added to the default package and activated.
-        This assumes the root folder already has a service manager,
-        and that we add at most one service of each type.
-        """
-        # The code here is complicated by the fact that the registry
-        # calls at the end require a fully context-wrapped
-        # configuration; hence all the traverse[Name]() calls.
-        # XXX Could we use the factory registry instead of the 3rd arg?
-        package_name = ('', '++etc++Services', 'Packages', 'default')
-        package = traverse(root_folder, package_name)
-        name = service_type + '-1'
-        service = service_factory()
-        package.setObject(name, service)
-        configuration_manager = traverseName(package, 'configure')
-        configuration =  ServiceConfiguration(service_type,
-                                              package_name + (name,))
-        key = configuration_manager.setObject(None, configuration)
-        configuration = traverseName(configuration_manager, key)
-        configuration.status = initial_status
 
 
     def __call__(self):
