@@ -13,19 +13,13 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.8 2003/06/27 02:50:11 fdrake Exp $
+$Id: zapi.py,v 1.9 2003/09/21 17:32:26 jim Exp $
 """
 from zope.component.interfaces import IComponentArchitecture
-from zope.app.interfaces.context import IContextWrapper
-from zope.context.interfaces import IWrapperIntrospection
-from zope.context.interfaces import IContextAwareDescriptorSupport
 from zope.app.interfaces.traversing import ITraversalAPI
 
 class IZAPI(
     IComponentArchitecture,
-    IContextWrapper,
-    IWrapperIntrospection,
-    IContextAwareDescriptorSupport,
     ITraversalAPI,
     ):
     """Convenience API for use with Zope applications.
@@ -46,3 +40,21 @@ class IZAPI(
         The given args will be converted to strings and displayed in
         the message shown the user.
         """
+
+    def add(container, name, object):
+        """Add an object to a container
+
+        This helper function takes care of getting an adapter that
+        publishes necessary errors and calling necessary hooks.
+        
+        """
+
+    def remove(container, name):
+        """Remove an object from a container
+
+        This helper function takes care of getting an adapter that
+        publishes necessary errors and calling necessary hooks.
+        
+        """
+
+        
