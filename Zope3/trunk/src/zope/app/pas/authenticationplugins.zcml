@@ -28,5 +28,34 @@
       class="zope.app.pas.zodb.PersistentPrincipalStorage"
       permission="zope.ManageServices"
       />
+      
+      
+    <localUtility class=".sql.SQLAuthenticationPlugin">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.sqlscript.interfaces.ISQLScript"
+        set_schema="zope.app.sqlscript.interfaces.ISQLScript"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.file.interfaces.IFileContent"
+        />
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IAuthenticationPlugin" />
+
+  </localUtility>
+
+
+  <browser:addMenuItem
+      title="SQL PAS Authentication Plugin"
+      description="A SQL PAS Authentication Plugin"
+      class="zope.app.pas.sql.SQLAuthenticationPlugin"
+      permission="zope.ManageContent"
+      />
 
 </configure>
