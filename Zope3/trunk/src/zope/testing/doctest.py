@@ -1273,7 +1273,7 @@ def _extract_doctests(items, module, mdict, tests, prefix, minlineno=0):
                                        mdict,
                                        tests,
                                        prefix + name + ".")
-            # XXX "-3" is unclear.
+            # TODO: "-3" is unclear.
             _get_doctest(name, object, tests, prefix,
                          lineno="%s (or above)" % (lineno - 3))
 

@@ -261,7 +261,7 @@ def testsource(module, name):
     if not test:
         raise ValueError(name, "not found in tests")
     test = test[0]
-    # XXX we rely on an internal doctest function:
+    # TODO: we rely on an internal doctest function:
     examples = doctest._extract_examples(test)
     testsrc = '\n'.join([
         "%s%s" % (source, _expect(expect))
@@ -274,7 +274,7 @@ def debug_src(src, pm=False, globs=None):
 
     The string is provided directly
     """
-    # XXX we rely on an internal doctest function:
+    # TODO: we rely on an internal doctest function:
     examples = doctest._extract_examples(src)
     src = '\n'.join([
         "%s%s" % (source, _expect(expect))
