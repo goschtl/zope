@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.33 2004/04/17 14:33:51 srichter Exp $
+$Id: interfaces.py,v 1.34 2004/04/20 11:01:09 stevea Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -130,7 +130,8 @@ class IComponentArchitecture(Interface):
         returned.
         """
 
-    def queryNamedAdapter(object, interface, name, default=None, context=None):
+    def queryNamedAdapter(object, interface, name, default=None,
+                          context=None):
         """Look for a named adapter to an interface for an object
 
         Returns the nearest named adapter to the context that can adapt
@@ -167,7 +168,7 @@ class IComponentArchitecture(Interface):
         Returns the subscribers for the context.  If context is not
         specified, attempts to use object to specify a context.
         """
-    
+
 
     # Factory service
 
@@ -265,19 +266,19 @@ class IComponentArchitecture(Interface):
         If context is not specified, attempts to use the first object
         to specify a context.
         """
-        
+
     def getViewProviding(object, providing, request, context=None):
         """Look for a view based on the interface it provides.
-        
+
         A call to this method is equivalent to:
-            
+
             getView(object, '', request, context, providing)
         """
-        
+
     def queryViewProviding(object, providing, request, 
                            default=None, context=None):
         """Look for a view that provides the specified interface.
-        
+
         A call to this method is equivalent to:
 
             queryView(object, '', request, default, context, providing)
@@ -515,9 +516,9 @@ class IPresentationService(Interface):
 
     def queryResource(name, request, providing=Interface, default=None):
         """Look up a named resource for a given request
-        
+
         The request must implement IPresentationRequest.
-        
+
         The default will be returned if the component can't be found.
         """
 

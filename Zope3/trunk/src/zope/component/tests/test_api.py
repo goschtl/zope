@@ -140,7 +140,6 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         self.testAdapter()
 
-
         # If an object implements the interface you want to adapt to,
         # getAdapter should simply return the object UNLESS we are asking for a
         # named adapter.
@@ -261,7 +260,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         getService(None, servicenames.Presentation).provideView(
             I1, 'foo', I2, Comp, providing=I3)
-        
+
         c = getView(ob, 'foo', Request(I2), providing=I3)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -302,33 +301,33 @@ class Test(PlacelessSetup, unittest.TestCase):
         # passes its arguments through to getView/queryView - here we hack
         # getView and queryView to inspect the args passed through.
         import zope.component
-        
+
         # hack zope.component.getView
         def getView(object, name, request, context, providing):
             self.args = [object, name, request, context, providing]
         savedGetView = zope.component.getView
         zope.component.getView = getView
-        
+
         # confirm pass through of args to getView by way of getViewProviding
         zope.component.getViewProviding(
             object='object', providing='providing', request='request', 
             context='context')
         self.assertEquals(self.args, 
             ['object', '', 'request', 'context', 'providing'])
-        
+
         # hack zope.component.queryView
         def queryView(object, name, request, default, context, providing):
             self.args = [object, name, request, default, context, providing]
         savedQueryView = zope.component.queryView
         zope.component.queryView = queryView
-        
+
         # confirm pass through of args to queryView by way of queryViewProviding 
         zope.component.queryViewProviding(
             object='object', providing='providing', request='request', 
             default='default', context='context')
         self.assertEquals(self.args, 
             ['object', '', 'request', 'default', 'context', 'providing'])
-        
+
         # restore zope.component
         zope.component.getView = savedGetView
         zope.component.queryView = savedQueryView
@@ -384,7 +383,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         getService(None, servicenames.Presentation).provideResource(
             'foo', I2, Comp, providing=I3)
-        
+
         c = getResource(ob, 'foo', r2, providing=I3)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, r2)
@@ -441,7 +440,6 @@ class TestNoSetup(unittest.TestCase):
     def testNotBrokenWhenNoService(self):
         self.assertRaises(TypeError, I2, ob)
         self.assertEquals(I2(ob, 42), 42)
-
 
 
 def test_suite():

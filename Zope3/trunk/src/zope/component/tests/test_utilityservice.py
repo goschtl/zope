@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_utilityservice.py,v 1.11 2004/04/17 14:33:58 srichter Exp $
+$Id: test_utilityservice.py,v 1.12 2004/04/20 11:01:21 stevea Exp $
 """
 from unittest import TestCase, main, makeSuite
 from zope.component import \
@@ -82,7 +82,7 @@ class Test(TestCase, CleanUp):
         self.assertEqual(
             map(str, us.registrations()),
             ["UtilityRegistration('IDummyUtility', '', 'DummyUtility', '')"])
-        
+
 
 def test_suite():
     return makeSuite(Test)

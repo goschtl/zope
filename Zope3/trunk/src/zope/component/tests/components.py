@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: components.py,v 1.5 2003/06/06 19:29:08 stevea Exp $
+$Id: components.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -59,7 +59,7 @@ class Comp:
         # Ignore arguments passed to constructor
         pass
 
-    a=1
+    a = 1
     def f(): pass
 
 comp = Comp()

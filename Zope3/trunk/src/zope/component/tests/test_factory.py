@@ -13,7 +13,7 @@
 ##############################################################################
 """Factory-related Tests
 
-$Id: test_factory.py,v 1.5 2004/04/11 18:16:56 jim Exp $
+$Id: test_factory.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
 """
 import unittest
 from zope.interface import Interface, implements
@@ -59,8 +59,8 @@ class TestFactory(unittest.TestCase):
         self.assertEqual(list(implemented), [IKlass])
         implemented2 = self._factory2.getInterfaces()
         self.assertEqual(list(implemented2), [])
-        
-    
+
+
 class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -83,7 +83,7 @@ class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
     def testGetFactoriesFor(self):
         self.assertEqual(list(getFactoriesFor(None, IKlass)),
                          [('klass', self.factory)])
-        
+
 
 def test_suite():
     return unittest.TestSuite((

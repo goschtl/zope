@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.29 2004/04/11 18:16:40 jim Exp $
+$Id: __init__.py,v 1.30 2004/04/20 11:01:09 stevea Exp $
 """
 import sys
 import warnings
@@ -58,7 +58,7 @@ def queryUtility(context, interface, default=None, name=''):
 
 def getUtilitiesFor(context, interface):
     return getService(context, 'Utilities').getUtilitiesFor(interface)
-    
+
 # Adapter service
 
 def getAdapter(object, interface, name='', context=None):
@@ -72,7 +72,7 @@ def queryAdapter(object, interface, default=None, name='', context=None):
         warnings.warn("The name argument to queryAdapter is deprecated",
                       DeprecationWarning, 2)
         return queryNamedAdapter(object, interface, name, default, context)
-    
+
     conform = getattr(object, '__conform__', None)
     if conform is not None:
         try:
@@ -123,7 +123,7 @@ def interfaceAdapterHook(iface, ob):
     try:
         adapters = getService(ob, Adapters)
     except ComponentLookupError:
-        
+
         # Oh blast, no adapter service. We're probably just running
         # from a test
 
@@ -145,7 +145,7 @@ def queryMultiAdapter(objects, interface, name=u'', default=None,
                       context=None):
     if context is None and objects:
         context = objects[0]
-        
+
     try:
         adapters = getService(context, Adapters)
     except ComponentLookupError:
@@ -174,7 +174,7 @@ def getFactoryInterfaces(context, name):
     return getUtility(context, IFactory, name).getInterfaces()
 
 def getFactoriesFor(context, interface):
-    utils =  getService(context, 'Utilities')
+    utils = getService(context, 'Utilities')
     for (name, factory) in utils.getUtilitiesFor(IFactory):
         interfaces = factory.getInterfaces()
         try:
@@ -237,7 +237,7 @@ def queryMultiView(objects, request, providing=Interface, name='',
 
 def getViewProviding(object, providing, request, context=None):
     return getView(object, '', request, context, providing)
-    
+
 def queryViewProviding(object, providing, request, default=None, 
                        context=None):
     return queryView(object, '', request, default, context, providing)

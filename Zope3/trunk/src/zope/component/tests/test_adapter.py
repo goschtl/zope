@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Adapter Service Tests
 
-$Id: test_adapter.py,v 1.5 2004/04/15 13:26:21 srichter Exp $
+$Id: test_adapter.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
 """
 import unittest
 from doctest import DocTestSuite
@@ -21,7 +21,7 @@ from doctest import DocTestSuite
 from zope.component.adapter import GlobalAdapterService
 
 class GlobalAdapterServiceTests(unittest.TestCase):
-    
+
     def test_pickling(self):
         from zope.component.tests.test_service import testServiceManager
         from zope.component.interfaces import IAdapterService

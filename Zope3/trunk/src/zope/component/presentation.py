@@ -24,7 +24,7 @@ service. Additionally it contains all registration classes that can occur:
 
   - PresentationRegistration
 
-$Id: presentation.py,v 1.14 2004/04/17 14:33:51 srichter Exp $
+$Id: presentation.py,v 1.15 2004/04/20 11:01:09 stevea Exp $
 """
 from types import ClassType
 from zope.component.interfaces import IPresentationService, IRegistry
@@ -59,7 +59,7 @@ class IGlobalPresentationService(zope.interface.Interface):
     def defineLayer(name):
         """Define a layer
         """
-    
+
     def provideAdapter(request_type, factory, name='', contexts=(),
                        providing=zope.interface.Interface, layer='default'):
         """Provide a presentation adapter
@@ -205,7 +205,7 @@ class GlobalPresentationService(GlobalService):
                               IGlobalPresentationService,
                               IRegistry,
                               )
-    
+
     def __init__(self):
         self._layers = {'default': GlobalLayer(self, 'default')}
         self._skins = {'default': [self._layers['default']]}
@@ -326,7 +326,7 @@ class GlobalPresentationService(GlobalService):
         >>> s.defineLayer('custom', 'blah')
 
         You can't define a layer that's already defined:
-        
+
         >>> s.defineLayer('custom')
         Traceback (most recent call last):
         ...
@@ -351,7 +351,7 @@ class GlobalPresentationService(GlobalService):
 
         This is a fairly low-level interface that supports both
         resources and views.
-        
+
         """
 
         ifaces = []
@@ -362,12 +362,12 @@ class GlobalPresentationService(GlobalService):
                 context = zope.interface.implementedBy(context)
 
             ifaces.append(context)
-            
+
         ifaces.append(request_type)
         ifaces = tuple(ifaces)
-        
+
         reg = self._layers[layer]
-        
+
         reg.register(ifaces, providing, name, factory)
 
         self._registrations[
@@ -375,14 +375,12 @@ class GlobalPresentationService(GlobalService):
             ] = PresentationRegistration(layer, ifaces, providing, name,
                                          factory, info)
 
-        
-
     def queryResource(self, name, request, default=None,
                       providing=zope.interface.Interface):
         """Look up a named resource for a given request
-        
+
         The request must implement IPresentationRequest.
-        
+
         The default will be returned if the component can't be found.
         """
         skin = request.getPresentationSkin() or self.defaultSkin
@@ -407,7 +405,6 @@ class GlobalPresentationService(GlobalService):
             if r is not None:
                 return r
         return default
-        
 
     def queryMultiView(self, objects, request,
                        providing=zope.interface.Interface, name='',
@@ -472,6 +469,7 @@ class GlobalPresentationService(GlobalService):
 def GL(presentation_service, layer_name):
     return presentation_service.queryLayer(layer_name)
 
+
 class Layer(zope.interface.adapter.AdapterRegistry):
 
     def queryNamedAdapter(self, obj, interface, name, default=None):
@@ -500,7 +498,7 @@ class GlobalLayer(Layer):
 
 class SkinRegistration(object):
     """Registration for a global skin."""
-    
+
     def __init__(self, skin, layers, info):
         self.skin, self.layers, self.doc = skin, layers, info
 
@@ -508,8 +506,7 @@ class SkinRegistration(object):
         """Representation of the object in a doctest-friendly format."""
         return '%s.%s(%r, %r, %r)' % (
             self.__class__.__module__, self.__class__.__name__,
-            self.skin, self.layers, self.doc) 
-
+            self.skin, self.layers, self.doc)
 
 
 class LayerRegistration(object):
@@ -522,7 +519,7 @@ class LayerRegistration(object):
         """Representation of the object in a doctest-friendly format."""
         return '%s.%s(%r, %r)' % (
             self.__class__.__module__, self.__class__.__name__,
-            self.layer, self.doc) 
+            self.layer, self.doc)
 
 
 class DefaultSkinRegistration(object):
@@ -535,7 +532,7 @@ class DefaultSkinRegistration(object):
         """Representation of the object in a doctest-friendly format."""
         return '%s.%s(%r, %r)' % (
             self.__class__.__module__, self.__class__.__name__,
-            self.skin, self.doc) 
+            self.skin, self.doc)
 
 
 class PresentationRegistration(object):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Adapter Service
 
-$Id: adapter.py,v 1.12 2004/04/17 14:33:51 srichter Exp $
+$Id: adapter.py,v 1.13 2004/04/20 11:01:09 stevea Exp $
 """
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService, IRegistry
@@ -40,7 +40,7 @@ class IGlobalAdapterService(IAdapterService, IRegistry):
 
     def subscribe(required, provided, factory, info=''):
         """Register a subscriber factory
-        
+
         :Parameters:
           - `required`: a sequence of specifications for objects to be
              adapted. 
@@ -66,7 +66,7 @@ class AdapterService(AdapterRegistry):
         factory = self.lookup1(providedBy(object), interface, name)
         if factory is not None:
             return factory(object)
-        
+
         return default
 
     def queryMultiAdapter(self, objects, interface, name='', default=None):
@@ -101,7 +101,7 @@ class GlobalAdapterService(AdapterService, GlobalService):
         ...     pass
         >>> class P2(P1):
         ...     pass
-        
+
         >>> registry.register((R1, ), P2, 'bob', 'c1', 'd1')
         >>> registry.register((R1, ), P2,    '', 'c2', 'd2')
         >>> registry.lookup((R2, ), P1, '')
@@ -113,14 +113,14 @@ class GlobalAdapterService(AdapterService, GlobalService):
         ...    print registration
         AdapterRegistration(('R1',), 'P2', '', 'c2', 'd2')
         AdapterRegistration(('R1',), 'P2', 'bob', 'c1', 'd1')
-        
+
         """
         required = tuple(required)
         self._registrations[(required, provided, name)] = AdapterRegistration(
             required, provided, name, factory, info)
-        
+
         AdapterService.register(self, required, provided, name, factory)
-    
+
     def subscribe(self, required, provided, factory, info=''):
         """Register an subscriptions adapter
 
@@ -133,7 +133,7 @@ class GlobalAdapterService(AdapterService, GlobalService):
         ...     pass
         >>> class P2(P1):
         ...     pass
-        
+
         >>> registry.subscribe((R1, ), P2, 'c1', 'd1')
         >>> registry.subscribe((R1, ), P2, 'c2', 'd2')
         >>> subscriptions = map(str, registry.subscriptions((R2, ), P1))
@@ -147,13 +147,13 @@ class GlobalAdapterService(AdapterService, GlobalService):
         ...    print registration
         SubscriptionRegistration(('R1',), 'P2', 'c1', 'd1')
         SubscriptionRegistration(('R1',), 'P2', 'c2', 'd2')
-        
+
         """
         required = tuple(required)
 
         registration = SubscriptionRegistration(
             required, provided, factory, info)
-        
+
         self._registrations[(required, provided)] = (
             self._registrations.get((required, provided), ())
             +
@@ -173,7 +173,7 @@ class GlobalAdapterService(AdapterService, GlobalService):
 
 class AdapterRegistration(object):
     """Registration for a simple adapter."""
-    
+
     def __init__(self, required, provided, name, value, doc=''):
         (self.required, self.provided, self.name, self.value, self.doc
          ) = required, provided, name, value, doc

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.8 2004/03/05 22:09:25 jim Exp $
+$Id: service.py,v 1.9 2004/04/20 11:01:09 stevea Exp $
 """
 
 from zope.exceptions import DuplicationError
@@ -131,7 +131,8 @@ serviceManager = GlobalServiceManager('serviceManager', __name__)
 
 defineService = serviceManager.defineService
 
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+# Register our cleanup with Testing.CleanUp to make writing unit tests
+# simpler.
 from zope.testing.cleanup import addCleanUp
 addCleanUp(serviceManager._clear)
 del addCleanUp

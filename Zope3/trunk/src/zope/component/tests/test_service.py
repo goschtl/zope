@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_service.py,v 1.5 2003/12/03 05:41:43 jim Exp $
+$Id: test_service.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
 """
 
 import unittest
@@ -127,7 +127,7 @@ class Test(CleanUp, unittest.TestCase):
         s = pickle.loads(pickle.dumps(s2))
         self.assert_(s is s2)
         testServiceManager._clear()
-        
+
 
 testServiceManager = GlobalServiceManager('testServiceManager', __name__)
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.13 2004/04/17 14:33:54 srichter Exp $
+$Id: utility.py,v 1.14 2004/04/20 11:01:09 stevea Exp $
 """
 from zope.component.exceptions import Invalid, ComponentLookupError
 from zope.component.interfaces import IUtilityService, IRegistry
@@ -31,7 +31,7 @@ class IGlobalUtilityService(IUtilityService, IRegistry):
 
 class UtilityService(AdapterRegistry):
     """Provide IUtilityService
-    
+
     Mixin that superimposes utility management on adapter registery
     implementation
     """
@@ -57,7 +57,7 @@ class UtilityService(AdapterRegistry):
         if byname:
             for item in byname.iteritems():
                 yield item
-    
+
 
 class GlobalUtilityService(UtilityService, GlobalService):
 
@@ -68,7 +68,7 @@ class GlobalUtilityService(UtilityService, GlobalService):
         self._registrations = {}
 
     def provideUtility(self, providedInterface, component, name='', info=''):
-    
+
         if not providedInterface.providedBy(component):
             raise Invalid("The registered component doesn't implement "
                           "the promised interface.")

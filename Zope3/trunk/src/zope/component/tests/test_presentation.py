@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_presentation.py,v 1.5 2004/04/09 11:36:14 jim Exp $
+$Id: test_presentation.py,v 1.6 2004/04/20 11:01:21 stevea Exp $
 """
 import unittest
 from doctest import DocTestSuite
@@ -37,7 +37,6 @@ class Contact:
 class MyView:
     def __init__(self, context, request):
         self.context, self.request = context, request
-
 
 
 def test_view_lookup_fails_w_wrong_skin():
@@ -91,7 +90,7 @@ def test_multi_views():
 
     >>> bob = Contact()
     >>> acme = Company()
-    
+
     >>> v = s.queryMultiView((bob, acme), request, name='foo')
     >>> v.__class__.__name__
     'ContactInCompanyView'
@@ -105,7 +104,7 @@ def test_multi_views():
     >>> s.provideAdapter(IRequest, ContactInFamilyView,
     ...                  contexts=[IContact, IFamily], name='foo',
     ...                  info='test 2')
-    
+
     >>> smith = Family()
     >>> v = s.queryMultiView((bob, smith), request, name='foo')
     >>> v.__class__.__name__
@@ -129,7 +128,7 @@ def test_multi_views():
     zope.component.presentation.PresentationRegistration(""" \
        """default, ('IContact', 'IFamily', 'IRequest'), """ \
        """'Interface', 'foo', 'ContactInFamilyView', 'test 2')
-    
+
     """
 
 def test_provideView():
@@ -160,7 +159,7 @@ def test_provideView():
 
     >>> c = Contact()
     >>> request.skin = 'custom'
-    
+
     >>> v = s.queryView(c, 'foo', request)
 
     >>> v.__class__.__name__
@@ -197,12 +196,12 @@ def test_default_view_names():
     >>> s.defineLayer('custom')
     >>> s.defineSkin('custom', ['custom', 'default'])
     >>> s.setDefaultViewName(IContact, IRequest, 'hello.html', layer='custom')
-    
+
     If we don't specify the custum skin, we'll still get the default:
 
     >>> s.queryDefaultViewName(c, request)
     'index.html'
-    
+
     But if we specify a custom skin, we'll get the custom value for a contact:
 
     >>> request.skin = 'custom'
@@ -210,10 +209,10 @@ def test_default_view_names():
     'hello.html'
 
     But not for something else:
-    
+
     >>> s.queryDefaultViewName(42, request)
     'index.html'
-    
+
     """
 
 def test_default_skin_affects_lookup():
@@ -267,7 +266,7 @@ def test_pickling():
     >>> s = pickle.loads(pickle.dumps(presentation))
     >>> s is presentation
     True
-    
+
     >>> layer = pickle.loads(pickle.dumps(presentation.queryLayer('default')))
     >>> (layer is presentation.queryLayer('default')) and (layer is not None)
     True
