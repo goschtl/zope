@@ -72,7 +72,7 @@ $Id: runurl.py,v 1.6 2003/11/21 17:12:47 jim Exp $
 import sys, os, getopt
 
 def main(argv=None):
-    global app, path, basic, run, stdin, env
+    global app, path, basic, run, stdin, env, debugger
 
     if argv is None:
         argv = sys.argv
@@ -135,13 +135,14 @@ def main(argv=None):
             env[name]=value
 
     app = _doimport(script, src)
-    app = app.Application(database, config)
+    from zope.app.debug import Debugger
+    debugger = Debugger(database, config)
 
     if warm:
-        _mainrun(app, path, basic, 1, stdin, env)
+        _mainrun(debugger, path, basic, 1, stdin, env)
 
     if profilef or hotshotf:
-        cmd = "_mainrun(app, path, basic, run, stdin, env)"
+        cmd = "_mainrun(debugger, path, basic, run, stdin, env)"
         if profilef:
             import profile
             profile.run(cmd, profilef)
@@ -160,16 +161,16 @@ def main(argv=None):
             print 'Wrote', hotshotf
 
     else:
-        _mainrun(app, path, basic, run, stdin, env)
+        _mainrun(debugger, path, basic, run, stdin, env)
 
 resultfmt = "elapsed: %.4f, cpu=%.4f, status=%s"
-def _mainrun(app, path, basic, run, stdin, environment):
+def _mainrun(debugger, path, basic, run, stdin, environment):
     if run:
         es = []
         cs = []
         for i in range(run):
-            e, c, status = app.run(path=path, basic=basic, stdin=stdin,
-                                   environment=environment)
+            e, c, status = debugger.run(path=path, basic=basic, stdin=stdin,
+                                        environment=environment)
             es.append(e)
             cs.append(c)
             print resultfmt % (e, c, status)
@@ -182,8 +183,8 @@ def _mainrun(app, path, basic, run, stdin, environment):
             c = (cs[(run+1)/2-1]+cs[(run+2)/2-1]) / 2.0
             print "med elapsted: %.4f, med cpu=%.4f" % (e, c)
     else:
-        print resultfmt % app.publish(path=path, basic=basic, stdin=stdin,
-                                      environment=environment)
+        print resultfmt % debugger.publish(path=path, basic=basic, stdin=stdin,
+                                           environment=environment)
 
 
 def _doimport(script, src):
