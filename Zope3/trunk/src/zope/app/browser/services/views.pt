@@ -52,10 +52,14 @@ Add a page to this views service</a></p>
 <h3>Search filter:</h3>
 
 <form action="." method="GET">
-    <div class="row" tal:content="structure view/forInterface/row" />
+    <div class="row" 
+         tal:content="structure view/forInterface_widget/row" 
+         />
     <!-- presentationType search is not useful yet since we can
          so far only register "pages", which are a browser-only concept.
-    <div class="row" tal:content="structure view/presentationType/row" />
+    <div class="row" 
+         tal:content="structure view/presentationType_widget/row" 
+         />
     -->
     <div class="row">
     <div class="controls"> 

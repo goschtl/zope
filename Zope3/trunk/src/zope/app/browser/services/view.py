@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper classes for local view registry.
 
-$Id: view.py,v 1.20 2003/06/21 21:21:59 jim Exp $
+$Id: view.py,v 1.21 2003/06/21 21:50:15 jim Exp $
 """
 __metaclass__ = type
 
@@ -175,10 +175,10 @@ class ViewServiceView(_SharedBase):
 
     def configInfo(self):
         """Do a search, or (by default) return all view pages."""
-        input_for = self.forInterface.getData()
-        input_type = self.presentationType.getData()
-        input_name = self.viewName.getData()
-        input_layer = self.layer.getData()
+        input_for = self.forInterface_widget.getData()
+        input_type = self.presentationType_widget.getData()
+        input_name = self.viewName_widget.getData()
+        input_layer = self.layer_widget.getData()
 
         result = []
         for info in self.context.getRegisteredMatching(
