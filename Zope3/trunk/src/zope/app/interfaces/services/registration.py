@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.8 2003/08/21 22:04:39 fdrake Exp $
+$Id: registration.py,v 1.9 2003/09/21 17:32:28 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -396,6 +396,14 @@ class IOrderedContainer(Interface):
 class IRegistrationManager(IContainerNamesContainer, IOrderedContainer):
     """Manage Registrations
     """
+
+    def addRegistration(registration):
+        """Add a registration
+
+        The registration name is chosen automatically. The chosen name
+        is returned.
+        """
+
 
 class INoRegistrationManagerError(Interface):
     """No registration manager error
