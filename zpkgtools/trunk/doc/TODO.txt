@@ -7,6 +7,13 @@ Things that need to be done
 
 - Package assembler script to build sumo/combined distro (mostly done)
 
+  - Move the revision control repository to Subversion.
+
+  - Split the distro-builder and setup.py runtime support into two
+    separate packages so there's not so much support code in
+    distributions or checkouts that use this as the foundation for
+    setup.py.
+
   - There should be a way to specify a Download-URL when building a
     package; using the distutils "register" command would then cause
     that field to be provided via PyPI.
@@ -104,5 +111,9 @@ Things that need to be done
 
 - Write a new setup.py for Zope 3 and ZODB to use in a checkout that
   uses the package metadata; this can happen after the ZopeX3 release.
+
+  A preliminary setup.py replacement for the ZODB project is much
+  shorter than the conventional setup.py (28 lines, not including the
+  license blurb).
 
 - Documentation, documentation, documentation!
