@@ -40,7 +40,6 @@ class BrowserWidgetTest(PlacelessSetup,
     _WidgetFactory = None
     
     def setUpContent(self, desc=u'', title=u'Foo Title'):
-        assert self._FieldFactory is not None
         class ITestContent(Interface):
             foo = self._FieldFactory(
 	            title=title,
@@ -52,7 +51,6 @@ class BrowserWidgetTest(PlacelessSetup,
         field = field.bind(self.content)
         request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         request.form['field.foo'] = u'Foo Value'
-        assert self._WidgetFactory is not None
         self._widget = self._WidgetFactory(field, request)
     
     def setUp(self):

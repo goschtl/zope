@@ -101,9 +101,9 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
 
     def testAddDeleteLanguage(self):
         self._view.addLanguage('es')
-        assert 'es' in self._view.getAllLanguages()
+        self.assert_('es' in self._view.getAllLanguages())
         self._view.deleteLanguages(['es'])
-        assert 'es' not in self._view.getAllLanguages()
+        self.assert_('es' not in self._view.getAllLanguages())
 
 
 

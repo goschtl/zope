@@ -35,7 +35,9 @@ class TestILocalMessageCatalog:
 
     def setUp(self):
         self._catalog = self._getMessageCatalog()
-        assert verifyObject(ILocalMessageCatalog, self._catalog)
+
+    def testInterface(self):
+        verifyObject(ILocalMessageCatalog, self._catalog)        
 
     def testGetFullMessage(self):
         catalog = self._catalog

@@ -102,7 +102,8 @@ class ProxyTestCase(unittest.TestCase):
 
         class MyProxy3(MyProxy2):
             def __init__(self, arg):
-                assert list(self) == list('value')
+                if list(self) != list('value'):
+                    raise AssertionError("list(self) != list('value')")
                 super(MyProxy3, self).__init__('another')
 
         p = MyProxy3('notused')
