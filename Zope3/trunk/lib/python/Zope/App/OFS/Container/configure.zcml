@@ -3,6 +3,7 @@
    xmlns:browser='http://namespaces.zope.org/browser'
    xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
    xmlns:vfs='http://namespaces.zope.org/vfs'
+   xmlns:event="http://namespaces.zope.org/event"
 >
 
   <include package=".Views" />
@@ -41,9 +42,15 @@
            provides="Zope.App.Traversing.ITraversable."
            for=".IContainer.IReadContainer." />
 
-  <adapter factory=".ContainerTraversable."
-           provides="Zope.App.Traversing.ITraversable."
-           for=".IContainer.IReadContainer." />
+
+  <adapter factory=".ZopeContainerAdapter."
+           provides=".IZopeContainer."
+           for=".IContainer." />
+
+  <event:subscribe 
+      subscriber = ".DependencyChecker.CheckDependency"
+      event_types = "Zope.Event.IObjectEvent.IObjectRemovedEvent"
+      />
 
 
   <include package=".Find" />
