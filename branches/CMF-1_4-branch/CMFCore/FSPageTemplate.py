@@ -33,7 +33,7 @@ from CMFCorePermissions import ViewManagementScreens
 from CMFCorePermissions import View
 from CMFCorePermissions import FTPAccess
 from FSObject import FSObject
-from utils import getToolByName, _setCacheHeaders
+from utils import _setCacheHeaders
 
 xml_detect_re = re.compile('^\s*<\?xml\s+')
 

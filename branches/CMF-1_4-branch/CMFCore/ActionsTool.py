@@ -28,7 +28,6 @@ from TypesTool import TypeInformation
 from CMFCorePermissions import ManagePortal
 from utils import _checkPermission
 from utils import _dtmldir
-from utils import getToolByName
 from utils import SimpleItemWithProperties
 from utils import UniqueObject
 
