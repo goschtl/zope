@@ -128,8 +128,8 @@ Contributors
   Created much of the i18n implementation, including the translation
   service and the ICU-based localization libraries.
 
-  Internationalized and localized Zope 3 to German with Phillip von
-  Weitershausen. 
+  Internationalized and localized Zope 3 to German with Philipp von
+  Weitershausen.
 
   Implemented a mail service.
 
