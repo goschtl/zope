@@ -13,10 +13,10 @@
 ##############################################################################
 """Interfaces for standard python exceptions
 
-$Id: interfaces.py,v 1.3 2003/04/25 10:39:51 ryzaja Exp $
+$Id: interfaces.py,v 1.4 2003/05/03 16:36:52 jim Exp $
 """
 from zope.interface import Interface
-from zope.interface.implements import implements
+from zope.interface import classImplements
 
 class IException(Interface): pass
 class IStandardError(IException): pass
@@ -57,42 +57,42 @@ class IUnicodeError(IValueError): pass
 class IUserWarning(IWarning): pass
 class IZeroDivisionError(IArithmeticError): pass
 
-implements(ArithmeticError, IArithmeticError)
-implements(AssertionError, IAssertionError)
-implements(AttributeError, IAttributeError)
-implements(DeprecationWarning, IDeprecationWarning)
-implements(EOFError, IEOFError)
-implements(EnvironmentError, IEnvironmentError)
-implements(Exception, IException)
-implements(FloatingPointError, IFloatingPointError)
-implements(IOError, IIOError)
-implements(ImportError, IImportError)
-implements(IndentationError, IIndentationError)
-implements(IndexError, IIndexError)
-implements(KeyError, IKeyError)
-implements(KeyboardInterrupt, IKeyboardInterrupt)
-implements(LookupError, ILookupError)
-implements(MemoryError, IMemoryError)
-implements(NameError, INameError)
-implements(NotImplementedError, INotImplementedError)
-implements(OSError, IOSError)
-implements(OverflowError, IOverflowError)
-implements(OverflowWarning, IOverflowWarning)
-implements(ReferenceError, IReferenceError)
-implements(RuntimeError, IRuntimeError)
-implements(RuntimeWarning, IRuntimeWarning)
-implements(StandardError, IStandardError)
-implements(StopIteration, IStopIteration)
-implements(SyntaxError, ISyntaxError)
-implements(SyntaxWarning, ISyntaxWarning)
-implements(SystemError, ISystemError)
-implements(SystemExit, ISystemExit)
-implements(TabError, ITabError)
-implements(TypeError, ITypeError)
-implements(UnboundLocalError, IUnboundLocalError)
-implements(UnicodeError, IUnicodeError)
-implements(UserWarning, IUserWarning)
-implements(ValueError, IValueError)
-implements(Warning, IWarning)
-implements(ZeroDivisionError, IZeroDivisionError)
+classImplements(ArithmeticError, IArithmeticError)
+classImplements(AssertionError, IAssertionError)
+classImplements(AttributeError, IAttributeError)
+classImplements(DeprecationWarning, IDeprecationWarning)
+classImplements(EnvironmentError, IEnvironmentError)
+classImplements(EOFError, IEOFError)
+classImplements(Exception, IException)
+classImplements(FloatingPointError, IFloatingPointError)
+classImplements(ImportError, IImportError)
+classImplements(IndentationError, IIndentationError)
+classImplements(IndexError, IIndexError)
+classImplements(IOError, IIOError)
+classImplements(KeyboardInterrupt, IKeyboardInterrupt)
+classImplements(KeyError, IKeyError)
+classImplements(LookupError, ILookupError)
+classImplements(MemoryError, IMemoryError)
+classImplements(NameError, INameError)
+classImplements(NotImplementedError, INotImplementedError)
+classImplements(OSError, IOSError)
+classImplements(OverflowError, IOverflowError)
+classImplements(OverflowWarning, IOverflowWarning)
+classImplements(ReferenceError, IReferenceError)
+classImplements(RuntimeError, IRuntimeError)
+classImplements(RuntimeWarning, IRuntimeWarning)
+classImplements(StandardError, IStandardError)
+classImplements(StopIteration, IStopIteration)
+classImplements(SyntaxError, ISyntaxError)
+classImplements(SyntaxWarning, ISyntaxWarning)
+classImplements(SystemError, ISystemError)
+classImplements(SystemExit, ISystemExit)
+classImplements(TabError, ITabError)
+classImplements(TypeError, ITypeError)
+classImplements(UnboundLocalError, IUnboundLocalError)
+classImplements(UnicodeError, IUnicodeError)
+classImplements(UserWarning, IUserWarning)
+classImplements(ValueError, IValueError)
+classImplements(Warning, IWarning)
+classImplements(ZeroDivisionError, IZeroDivisionError)
 
