@@ -87,6 +87,15 @@ BUGS
   are reported rather than the nice relative names.
 
 
+PLATFORM NOTES
+--------------
+
+* RedHat Linux 9:  Anthony Baxter reports that the tests can hang in a
+  futex() system call.  It appears that the glibc version shipped with
+  RedHat 9 (glibc-2.3.2-11) has some bug that causes this; updating to
+  at least glibc-2.3.2-27.9 fixes the problem.
+
+
 TO DO
 -----
 
