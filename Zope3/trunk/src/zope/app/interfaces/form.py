@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.5 2003/07/14 15:28:30 Zen Exp $
+$Id: form.py,v 1.6 2003/08/07 21:34:49 jim Exp $
 """
 
 import cgi
@@ -37,11 +37,6 @@ class WidgetInputError(UserError):
         self.field_name = field_name
         self.widget_title = widget_title
         self.errors = errors
-
-class WidgetInputErrorView:
-    __used_for__ = IWidgetInputError
-    def snippet(self):
-        return '<span class="error">%s</span>' % self.context.errors[0]
 
 class MissingInputError(WidgetInputError):
     """Required data was not supplied
