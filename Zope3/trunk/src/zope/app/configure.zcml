@@ -138,6 +138,7 @@
   <!-- Browser Configurations -->
 
   <include package="zope.app.component.browser" />
+  <include package="zope.app.container.browser" />
   <include package="zope.app.event.browser" />
   <include package="zope.app.registration.browser" />  
   <include package="zope.app.form.browser" />

@@ -32,7 +32,7 @@
       menu="zmi_views"
       title="Indexes"
       attribute="contents"
-      class="zope.app.browser.container.contents.Contents"
+      class="zope.app.container.browser.contents.Contents"
       permission="zope.ManageContent"
       />
 

@@ -13,14 +13,14 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.30 2004/03/13 21:03:04 srichter Exp $
+$Id: test_adding.py,v 1.1 2004/03/14 02:17:03 srichter Exp $
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.browser.absoluteurl import AbsoluteURL
-from zope.app.browser.container.adding import Adding
+from zope.app.container.browser.adding import Adding
 from zope.app.container.interfaces import IAdding
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.interfaces.exceptions import UserError
@@ -230,7 +230,7 @@ def test_constraint_driven_adding():
     >>> ztapi.provideUtility(IFactory, Factory(F1), 'f1')
     >>> ztapi.provideUtility(IFactory, Factory(F2), 'f2')
 
-    >>> from zope.app.browser.container.adding import Adding
+    >>> from zope.app.container.browser.adding import Adding
     >>> adding = Adding(Container(), TestRequest())
     >>> items = adding.addingInfo()
     >>> len(items)
@@ -256,7 +256,7 @@ def test_renderAddButton():
     Test for renderAddButton in adding.py 
     
     >>> setUp()
-    >>> from zope.app.browser.container.adding import Adding
+    >>> from zope.app.container.browser.adding import Adding
     >>> from zope.app.container.interfaces import IContainerNamesContainer
 
     Class implements IContainerNamesContainer
@@ -394,7 +394,7 @@ def test_SingleMenuItem_and_CustomAddView_NonICNC():
     >>> ztapi.provideUtility(IFactory, Factory(F1), 'f1')
     >>> ztapi.provideUtility(IFactory, Factory(F2), 'f2')
 
-    >>> from zope.app.browser.container.adding import Adding
+    >>> from zope.app.container.browser.adding import Adding
     >>> adding = Adding(Container(), TestRequest())
     >>> items = adding.addingInfo()
     >>> len(items)
@@ -464,7 +464,7 @@ def test_SingleMenuItem_and_NoCustomAddView_NonICNC():
     >>> ztapi.provideUtility(IFactory, Factory(F1), 'f1')
     >>> ztapi.provideUtility(IFactory, Factory(F2), 'f2')
     
-    >>> from zope.app.browser.container.adding import Adding
+    >>> from zope.app.container.browser.adding import Adding
     >>> adding = Adding(Container(), TestRequest())
     >>> items = adding.addingInfo()
     >>> len(items)
@@ -530,7 +530,7 @@ def test_isSingleMenuItem_with_ICNC():
     >>> class Container:
     ...     zope.interface.implements(IContainer, IContainerNamesContainer)
 
-    >>> from zope.app.browser.container.adding import Adding
+    >>> from zope.app.container.browser.adding import Adding
     >>> adding = Adding(Container(), TestRequest())
     >>> items = adding.addingInfo()
     >>> len(items)

@@ -13,9 +13,9 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.3 2004/03/14 01:11:38 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/14 02:17:06 srichter Exp $
 """
-from zope.app.browser.container.adding import Adding
+from zope.app.container.browser.adding import Adding
 from zope.app.form.browser.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.browser.interfaces import IBrowserWidget

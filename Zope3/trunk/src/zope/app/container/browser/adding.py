@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.48 2004/03/09 12:39:03 srichter Exp $
+$Id: adding.py,v 1.1 2004/03/14 02:17:02 srichter Exp $
 """
 __metaclass__ = type
 

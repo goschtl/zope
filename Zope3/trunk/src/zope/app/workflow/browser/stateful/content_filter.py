@@ -13,10 +13,10 @@
 ##############################################################################
 """filtering view for ProcessInstances of a stateful workflow
  
-$Id: content_filter.py,v 1.2 2004/03/06 17:48:55 jim Exp $
+$Id: content_filter.py,v 1.3 2004/03/14 02:17:09 srichter Exp $
 """
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.browser.container.contents import Contents
+from zope.app.container.browser.contents import Contents
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 

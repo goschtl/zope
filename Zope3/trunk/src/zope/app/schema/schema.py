@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.3 2004/03/11 12:38:15 srichter Exp $
+$Id: schema.py,v 1.4 2004/03/14 02:17:07 srichter Exp $
 """
 from types import FunctionType
 
@@ -24,7 +24,7 @@ from zope.interface import Interface, implements
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.proxy import removeAllProxies
 from zope.app import zapi
-from zope.app.browser.container.adding import Adding
+from zope.app.container.browser.adding import Adding
 from zope.app.interface import PersistentInterfaceClass
 from zope.app.utility import UtilityRegistration
 from zope.app.container.contained import Contained, setitem, uncontained

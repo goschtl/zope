@@ -4,7 +4,6 @@
 
   <browser:defaultView name="index.html" />
 
-  <include package=".container" />
   <include file="traversal.zcml" />
   <include file="auth.zcml" />
 

@@ -45,7 +45,7 @@
   <page
       for="zope.app.workflow.interfaces.IProcessDefinitionElementContainer"
       permission="zope.workflow.ManageProcessDefinitions"
-      class="zope.app.browser.container.contents.Contents"
+      class="zope.app.container.browser.contents.Contents"
       name="contents.html" 
       attribute="contents"
       menu="zmi_views" title="Contents" />

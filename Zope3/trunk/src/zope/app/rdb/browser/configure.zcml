@@ -9,7 +9,7 @@
   <view
       name="+"
       for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
-      class="zope.app.browser.container.adding.Adding" 
+      class="zope.app.container.browser.adding.Adding" 
       permission="zope.ManageContent" />
 
   <pages

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.37 2004/03/13 23:00:42 srichter Exp $
+$Id: test_contents.py,v 1.1 2004/03/14 02:17:03 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -277,7 +277,7 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         self.failIf('folder1_1_1' not in target)
 
     def _TestView__newView(self, container):
-        from zope.app.browser.container.contents import Contents
+        from zope.app.container.browser.contents import Contents
         from zope.publisher.browser import TestRequest
         request = TestRequest()
         request.setUser(Principal())
@@ -293,7 +293,7 @@ class Test(BaseTestContentsBrowserView, TestCase):
         return contained(container, root, 'sample')
 
     def _TestView__newView(self, container):
-        from zope.app.browser.container.contents import Contents
+        from zope.app.container.browser.contents import Contents
         from zope.publisher.browser import TestRequest
         request = TestRequest()
         request.setUser(Principal())

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for Wikis
 
-$Id: wiki.py,v 1.6 2004/03/13 23:55:29 srichter Exp $
+$Id: wiki.py,v 1.7 2004/03/14 02:17:08 srichter Exp $
 """
 from datetime import datetime
 from zope.proxy import removeAllProxies
@@ -22,7 +22,7 @@ from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.servicenames import HubIds
 from zope.app.traversing import getName, getPath
-from zope.app.browser.container.adding import Adding
+from zope.app.container.browser.adding import Adding
 from zope.app.hub import Registration
 
 from zope.app.wiki.interfaces import IWikiPageHierarchy

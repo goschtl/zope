@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.37 2004/03/06 17:48:45 jim Exp $
+$Id: contents.py,v 1.1 2004/03/14 02:17:02 srichter Exp $
 """
 
 from zope.exceptions import NotFoundError
@@ -30,7 +30,7 @@ from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove import rename
 
-from zope.app.browser.container.adding import BasicAdding
+from zope.app.container.browser.adding import BasicAdding
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IContainerNamesContainer
 

@@ -13,9 +13,9 @@
 ##############################################################################
 """Catalog Views
 
-$Id: catalog.py,v 1.1 2004/03/01 11:46:23 philikon Exp $
+$Id: catalog.py,v 1.2 2004/03/14 02:17:01 srichter Exp $
 """
-from zope.app.browser.container.adding import Adding
+from zope.app.container.browser.adding import Adding
 from zope.app.catalog.interfaces.catalog import ICatalog
 
 class CatalogEditView:

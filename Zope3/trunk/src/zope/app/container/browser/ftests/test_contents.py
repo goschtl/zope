@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_contents.py,v 1.9 2004/03/13 23:00:41 srichter Exp $
+$Id: test_contents.py,v 1.1 2004/03/14 02:17:02 srichter Exp $
 """
 
 import unittest

@@ -29,7 +29,7 @@
       name="+"
       for="zope.app.menu.interfaces.ILocalBrowserMenu"
       permission="zope.ManageContent"
-      class="zope.app.browser.container.adding.Adding" />
+      class="zope.app.container.browser.adding.Adding" />
 
 
   <addform

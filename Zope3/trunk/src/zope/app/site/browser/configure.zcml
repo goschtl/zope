@@ -13,7 +13,7 @@
   <page
     for="zope.app.site.interfaces.ISiteManagementFolder"
     permission="zope.ManageServices" 
-    class="zope.app.browser.container.contents.JustContents"
+    class="zope.app.container.browser.contents.JustContents"
     name="index.html" attribute="index" />
 
   <page
@@ -21,7 +21,7 @@
      for="zope.app.site.interfaces.ISiteManagementFolder"
      menu="zmi_views" title="Contents"
      permission="zope.ManageServices"
-     class="zope.app.browser.container.contents.Contents"
+     class="zope.app.container.browser.contents.Contents"
      attribute="contents" />
 
   <view
@@ -155,7 +155,7 @@
       for="zope.app.site.interfaces.ISiteManager"
       menu="zmi_views" title="Software"
       permission="zope.ManageServices"
-      class="zope.app.browser.container.contents.Contents"
+      class="zope.app.container.browser.contents.Contents"
       attribute="contents" />
 
   <view
@@ -163,7 +163,7 @@
       menu="zmi_actions" title="Add Site Management Folder"
       for="zope.app.site.interfaces.ISiteManager"
       permission="zope.ManageServices"
-      class="zope.app.browser.container.adding.Adding" 
+      class="zope.app.container.browser.adding.Adding" 
       >
 
     <page name="index.html" attribute="index"/>
@@ -173,7 +173,7 @@
   <pages
       for="zope.app.site.interfaces.ISiteManager"
       permission="zope.ManageServices"
-      class="zope.app.browser.container.contents.JustContents">
+      class="zope.app.container.browser.contents.JustContents">
 
     <page name="index.html" attribute="index" />
 

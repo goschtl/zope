@@ -13,10 +13,10 @@
 ##############################################################################
 """Folder-specific view classes
 
-$Id: folder.py,v 1.2 2004/02/24 16:49:59 philikon Exp $
+$Id: folder.py,v 1.3 2004/03/14 02:17:04 srichter Exp $
 """
 from zope.interface import implements
-from zope.app.browser.container.adding import Adding
+from zope.app.container.browser.adding import Adding
 from zope.app.folder.interfaces import IFolderAdding
 
 #XXX this is currently not used

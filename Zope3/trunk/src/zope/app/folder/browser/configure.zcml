@@ -22,7 +22,7 @@
       menu="zmi_views" title="Contents"
       for="zope.app.folder.interfaces.IFolder"
       permission="zope.ManageContent"
-      class="zope.app.browser.container.contents.Contents"
+      class="zope.app.container.browser.contents.Contents"
       attribute="contents"
       />
 
@@ -30,7 +30,7 @@
       name="index.html"
       for="zope.app.folder.interfaces.IFolder"
       permission="zope.View"
-      class="zope.app.browser.container.contents.Contents"
+      class="zope.app.container.browser.contents.Contents"
       attribute="index"
       />
 

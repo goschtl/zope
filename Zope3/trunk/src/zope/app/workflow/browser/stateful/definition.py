@@ -13,13 +13,13 @@
 ##############################################################################
 """ProcessDefinition registration adding view
 
-$Id: definition.py,v 1.4 2004/03/14 01:11:43 srichter Exp $
+$Id: definition.py,v 1.5 2004/03/14 02:17:09 srichter Exp $
 """
 __metaclass__ = type
 
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
-from zope.app.browser.container.adding import Adding
+from zope.app.container.browser.adding import Adding
 from zope.app.form.browser.submit import Update
 from zope.app.form.browser.editview import EditView
 from zope.app.form.interfaces import IInputWidget
