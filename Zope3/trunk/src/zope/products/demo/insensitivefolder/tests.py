@@ -13,24 +13,22 @@
 ##############################################################################
 """Tests for the case-insensitive Folder.
 
-$Id: tests.py,v 1.1 2004/02/13 23:28:45 srichter Exp $
+$Id: tests.py,v 1.2 2004/02/14 02:27:40 srichter Exp $
 """
 import unittest
-from zope.component.tests.request import Request
-from zope.component.servicenames import Presentation
-from zope.products.demo.insensitivefolder import CaseInsensitiveContainerTraverser
-from zope.interface import Interface, implements
-from zope.exceptions import NotFoundError
 from zope.app import zapi
-from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.container import IReadContainer
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-
-class I(Interface):
-    pass
-
+from zope.component.tests.request import Request
+from zope.exceptions import NotFoundError
+from zope.interface import implements
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.products.demo.insensitivefolder import \
+     CaseInsensitiveContainerTraverser
 
 class Container:
-    implements(IContainer)
+    implements(IReadContainer)
 
     def __init__(self, **kw):
         for k in kw:
@@ -45,52 +43,53 @@ class Container:
     def __getitem__(self, name):
         return self.__dict__[name]
 
-class Request(Request):
-    def getEffectiveURL(self):
-        return ''
-
 
 class View:
-    def __init__(self, comp, request):
-        self._comp = comp
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
 
-class Test(PlacelessSetup, unittest.TestCase):
+class TraverserTest(PlacelessSetup, unittest.TestCase):
 
-    def testAttr(self):
-        # test container traverse
-        foo = Container()
-        c   = Container(foo=foo)
-        req = Request(I, '')
+    def setUp(self):
+        super(TraverserTest, self).setUp()
+        self.foo = Container()
+        foo2 = Container(foo=self.foo)
+        self.request = Request(IBrowserRequest, '')
+        self.traverser = CaseInsensitiveContainerTraverser(foo2, self.request)
+        ztapi.browserView(IReadContainer, 'viewfoo', [View])
+        
+    def test_itemTraversal(self):
+        self.assertEquals(
+            self.traverser.publishTraverse(self.request, 'foo'),
+            self.foo)
+        self.assertEquals(
+            self.traverser.publishTraverse(self.request, 'foO'),
+            self.foo)
+        self.assertRaises(
+            NotFoundError,
+            self.traverser.publishTraverse, self.request, 'morebar')
 
-        T = CaseInsensitiveContainerTraverser(c, req)
-        self.failUnless(T.publishTraverse(req,'foo') is foo)
-        self.failUnless(T.publishTraverse(req,'foO') is foo)
-        self.assertRaises(NotFoundError , T.publishTraverse, req ,'morebar')
-
-
-    def testView(self):
-        # test getting a view
-        foo = Container()
-        c   = Container(foo=foo)
-        req = Request(I, '')
-
-        T = CaseInsensitiveContainerTraverser(c, req)
-        zapi.getService(None, Presentation).provideView(
-            IContainer, 'viewfoo', I, [View])
-
-        self.failUnless(T.publishTraverse(req,'viewfoo').__class__ is View )
-        self.failUnless(T.publishTraverse(req,'foo') is foo)
-
-        self.assertRaises(NotFoundError , T.publishTraverse, req, 'morebar')
-        self.assertRaises(NotFoundError , T.publishTraverse, req,
-                          '@@morebar')
+    def test_viewTraversal(self):
+        self.assertEquals(
+            self.traverser.publishTraverse(self.request, 'viewfoo').__class__,
+            View)
+        self.assertEquals(
+            self.traverser.publishTraverse(self.request, 'foo'),
+            self.foo)
+        self.assertRaises(
+            NotFoundError,
+            self.traverser.publishTraverse, self.request, 'morebar')
+        self.assertRaises(
+            NotFoundError,
+            self.traverser.publishTraverse, self.request, '@@morebar')
 
 
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
-
+    return unittest.TestSuite((
+        unittest.makeSuite(TraverserTest),
+        ))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
+    unittest.main(defaultTest='test_suite')
