@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventpublisher.py,v 1.7 2003/11/27 13:59:18 philikon Exp $
+$Id: test_eventpublisher.py,v 1.8 2004/02/09 09:07:44 dunny Exp $
 """
 
 import unittest
@@ -36,10 +36,12 @@ from zope.interface import implements
 class DummyEvent:
 
     implements(IObjectAddedEvent, IObjectRemovedEvent)
+    object = None
 
 class ObjectEvent:
 
     implements(IObjectEvent)
+    object = None
 
 class TestEventService(PlacelessSetup, unittest.TestCase):
 

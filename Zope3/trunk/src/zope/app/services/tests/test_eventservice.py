@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.30 2003/12/18 09:57:15 pnaveen Exp $
+$Id: test_eventservice.py,v 1.31 2004/02/09 09:07:44 dunny Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -66,10 +66,12 @@ class UnpromotingEventService(EventService):
 class DummyEvent:
 
     implements(IObjectAddedEvent, IObjectRemovedEvent)
+    object = None
 
 class ObjectEvent:
 
     implements(IObjectEvent)
+    object = None
 
 class IObjectHub(Interface):
     def getObject(hubid):

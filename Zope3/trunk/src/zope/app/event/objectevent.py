@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.7 2003/09/21 17:32:06 jim Exp $
+$Id: objectevent.py,v 1.8 2004/02/09 09:07:43 dunny Exp $
 """
 
 __metaclass__ = type
@@ -23,9 +23,13 @@ from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.event import IObjectCopiedEvent
 from zope.app.interfaces.event import IObjectAnnotationsModifiedEvent
 from zope.app.interfaces.event import IObjectContentModifiedEvent
+from zope.app.interfaces.event import ISubscriber
 from zope.app.traversing import getPath
 from zope.interface import implements
 from zope.app.event import publish
+from zope.component import querySubscriptionMultiAdapter
+from zope.component import getService
+from zope.app.services.servicenames import Adapters
 
 _marker = object()
 
@@ -70,3 +74,41 @@ class ObjectCopiedEvent(ObjectCreatedEvent):
     """An object has been copied"""
 
     implements(IObjectCopiedEvent)
+
+
+class ObjectEventNotifier:
+    """Event subscriber to dispatch ObjectEvents to interested adapters."""
+    implements(ISubscriber)
+
+    def notify(self, event):
+        assert IObjectEvent.isImplementedBy(event)
+        adapters = querySubscriptionMultiAdapter((event.object, event),
+                                                 ISubscriber, context=None)
+        for adapter in adapters:
+            adapter.notify(event)
+
+objectEventNotifierInstance = ObjectEventNotifier()
+
+
+def objectEventCallbackHelper(callback):
+    """Build a factory implementing ISubscriber that just calls a callback
+
+    callback will be called with an ObjectEvent instance. Example usage:
+
+    factory = objectEventCallbackHelper(events.append)
+    getService(None, Adapters).provideSubscriptionAdapter(
+        MyObjectType, ISubscriber, [factory], with=[IObjectRemovedEvent]
+    )
+    """
+    class _CallbackHelper:
+        implements(ISubscriber)           
+        def __init__(self, object, event):
+            self.object = object
+            self.event = event
+
+        def notify(self, event):
+            callback(event)
+
+    return _CallbackHelper
+
+
