@@ -13,7 +13,7 @@
 ##############################################################################
 """Mock Metadata class used for testing.
 
-$Id: mockmetadata.py,v 1.1 2003/05/28 13:48:16 gvanrossum Exp $
+$Id: mockmetadata.py,v 1.2 2003/05/28 18:08:10 gvanrossum Exp $
 """
 
 import os
@@ -32,10 +32,11 @@ class MockMetadata(object):
     def getnames(self, dirpath):
         dirkey, dirpath = self.makekey(dirpath)
         names = []
-        for key in self.database:
-            head, tail = os.path.split(key)
-            if head == dirkey:
-                names.append(tail)
+        for key, entry in self.database.iteritems():
+            if entry:
+                head, tail = os.path.split(key)
+                if head == dirkey:
+                    names.append(tail)
         return names
 
     def flush(self):
