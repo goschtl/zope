@@ -1631,8 +1631,7 @@ msgstr "Ereignisdienst"
 #: src/zope/app/browser/services/configure.zcml:57
 msgid "An event service. One of these in the root is usually enough"
 msgstr ""
-"Ein Ereignisdienst. Einer dieser im Wurzelelement ist normalerweise "
-"ausreichend"
+"Ein Ereignisdienst. Normalerweise ist einer im Wurzelelement ausreichend"
 
 #: src/zope/app/browser/services/configure.zcml:71
 msgid "Role Service"
@@ -1935,7 +1934,7 @@ msgid ""
 "A Pluggable Authentication Service                      Uses plug-in "
 "principal sources."
 msgstr ""
-"Ein einfügbarer Legitimationsdienst                  Nutzt einfügbare "
+"Ein einfügbarer Legitimationsdienst                  Benützt einfügbare "
 "Prinzipalquellen."
 
 #: src/zope/app/browser/services/pluggableauth/configure.zcml:7
@@ -2043,7 +2042,7 @@ msgid ""
 "specific function and is activated."
 msgstr ""
 "Dieses Objekt wird eigentlich nicht benutzt werden, es sei denn es ist "
-"registriert, um eine spezielle Funktion zu erfüllen, und aktiv."
+"registriert, um eine spezielle Funktion zu erfüllen, und es ist aktiv."
 
 #: src/zope/app/browser/services/service/__init__.py:175
 msgid "Activated: ${activated_services}"
