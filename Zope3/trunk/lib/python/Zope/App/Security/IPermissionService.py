@@ -13,14 +13,15 @@
 ##############################################################################
 """
 
-$Id: IPermissionService.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+$Id: IPermissionService.py,v 1.3 2002/12/01 10:31:59 jim Exp $
 """
 
 from Interface import Interface
 
 class IPermissionService(Interface):
 
-    """
+    """Manage information about permissions
+    
      'IPermissionService' objects are used to implement
      permission-definition services. Because they implement services,
      they are expected to collaborate with services in other
@@ -36,10 +37,16 @@ class IPermissionService(Interface):
      """
 
     def getPermission(permission_id):
-        """Return an 'IPermission' object for the
-         given permission id.  Return None if there is no permission defined"""
+        """Get permission information
+
+        Return an 'IPermission' object for the
+        given permission id.  Return None if there is no permission defined
+        """
 
     def getPermissions():
-        """Return a sequence of the permissions
-         (IPermission objects) defined in the place containing the
-         service."""
+        """Get the defined permissions
+
+        Return a sequence of the permissions
+        (IPermission objects) defined in the place containing the
+        service.
+        """
