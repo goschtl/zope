@@ -122,7 +122,7 @@ class TextWidget(SimpleInputWidget):
 
     def __call__(self):
         value = self._getFormValue()
-        if value == self._missing:
+        if value is None or value == self.context.missing_value:
             value = ''
 
         kwargs = {'type': self.type,

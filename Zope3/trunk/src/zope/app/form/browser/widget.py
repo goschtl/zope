@@ -298,7 +298,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         except ConversionError, error:
             # ConversionError is already a WidgetInputError
             self._error = error
-            raise self._error            
+            raise self._error
 
         # allow missing values only for non-required fields
         if value == field.missing_value and not field.required:
@@ -457,7 +457,7 @@ def renderTag(tag, **kw):
         items = kw.items()
         items.sort()
         for key, value in items:
-            if value == None:
+            if value is None:
                 warnings.warn(
                     "None was passed for attribute %r.  Passing None "
                     "as attribute values to renderTag is deprecated. "
