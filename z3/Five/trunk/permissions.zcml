@@ -11,7 +11,7 @@
 
   <permission
     id="zope2.Private"
-    title="Private, no one can access"
+    title="Private, only accessible from trusted code"
     />
 
   <permission
