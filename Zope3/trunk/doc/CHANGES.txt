@@ -42,7 +42,7 @@ Zope Changes
       - A monkey patch to cope with weakref problems in Python 2.3.3
         was removed, so Python 2.3.4 is required now.
 
-      - utilities/runurl.py hadn't been updated to relect recent
+      - utilities/runurl.py hadn't been updated to reflect recent
         changes in the debugging support.
 
       - Views for I18nFile/I18nImage now use contentType attribute instead
@@ -98,7 +98,7 @@ Zope Changes
       - New api for getting sublocations and adapters for containers
         and folders.
 
-      - Implememented a sub-location event dispatcher do notify
+      - Implemented a sub-location event dispatcher do notify
         subscribers when containing objects are removed.
 
       - The event system was completely reimplemented:
@@ -110,7 +110,7 @@ Zope Changes
           subscriber directive (rather than event:subscribe).
 
         - No longer have IEvent.  There's no need for a common base
-          interface. 
+          interface.
 
         - No longer have event publication or subscription services.
 
@@ -154,7 +154,7 @@ Zope Changes
     New features
 
       - It is no longer necessary to pass context arguments to api
-        functions to provide a place to look up services.  
+        functions to provide a place to look up services.
 
     Bug fixes
 
@@ -163,7 +163,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
-      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius, 
+      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
       Eckart Hertzler
 
   ------------------------------------------------------------------
@@ -197,13 +197,13 @@ Zope Changes
       building informational GUIs and documentation. Examples of its use are
       in the 'apidoc' package.
 
-      The change was motivated by the desirable removal of the 
+      The change was motivated by the desirable removal of the
       'getRegisteredMatching()' method, which has been done now.
 
     - 'Content-Type' header now updates with charset information if
       necessary.
 
-    - Implemented ObservableAdapter and Observers registry for 
+    - Implemented ObservableAdapter and Observers registry for
       Instance-based subscriptions.
 
     - RuntimeInfo now has two new methods (getPreferredEncoding,
@@ -211,7 +211,7 @@ Zope Changes
 
     - Removed usages. We do not need them. Instead the macroname is now
       available in TAL. The standard macros can now have aliases, so that you
-      can provide different macro names and still use the same template. 
+      can provide different macro names and still use the same template.
 
     - The macro name is now available via 'macroname' (reserved name) in the
       TALES namespace.
@@ -223,10 +223,10 @@ Zope Changes
     - Hard restart and shutdown works now. A utility is used to do the work
       and is server specific. So if someone uses Twisted instead of
       zope.server they just need to provide their own implementation of the
-      utility. 
+      utility.
 
     - You can run Zope 3 using zdaemon now. Thanks to Chris McDonough for his
-      help there. Just use 'make runners' and start with 'bin/zopectl start'.   
+      help there. Just use 'make runners' and start with 'bin/zopectl start'.
 
     - http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions
 
@@ -249,11 +249,11 @@ Zope Changes
 
     - Implemented Tools
 
-      o Implement the tool ZCML directive. 
+      o Implement the tool ZCML directive.
 
       o Register utility interface as 'IToolType'.
 
-      o Implement tools overview. 
+      o Implement tools overview.
 
       o Create back-links from utilities and services to the tools screens.
 
@@ -262,7 +262,7 @@ Zope Changes
 
     - Write generic get/queryType(object, type) that returns the interface of
       the 'object' that provides 'type'.
-      
+
     - Implemented Permission Redefinition portion of ZCMLEnhancements.
 
     - Implemented http://dev.zope.org/Zope3/MinimalDefaultViewDirectives
@@ -339,7 +339,7 @@ Zope Changes
     - when adding content to a container, check the preconditions.
 
     - 'mail:queuedDelivery' and 'mail:directDelivery' directives have now
-      "Mail" as a default name as the interface claims. Also, the 
+      "Mail" as a default name as the interface claims. Also, the
       'mail:smtpMailer' directive interface specifies now a port default of 25
       as it should be.
 
@@ -348,7 +348,7 @@ Zope Changes
       headers were already sent.
 
     - Fixed issue 159. barryp sent in a patch concerning timezone handling in
-      the HTTP server date utility. 
+      the HTTP server date utility.
 
     - Fixed issue 154. Page Template code entered TTW is now stored as
       unicode, which had no side effect whatsoever. We only had to allow in
@@ -382,20 +382,20 @@ Zope Changes
       and 'False' now instead 0 or a positive integer. Added tests for
       BTreeContainer.
 
-    - All IContainer objects are tree items now by default. 
+    - All IContainer objects are tree items now by default.
 
     - Fixed issue 126. HTML entities and elements are now correctly escaped
       when editing via the browser. The fix has been made in the browser
       widget code.
 
     - Fixed issue 195. The remove language buttons for I18n File and Image have
-      now a value. 
+      now a value.
 
-    - Removed last TAB characters from Python code. 
+    - Removed last TAB characters from Python code.
 
-    - The configuration machinery's resolve() method  can now handle single
-      ".", which referes to the current package. Therefore you can reference a
-      module in ZCML simply by ".". 
+    - The configuration machinery's resolve() method can now handle single
+      ".", which refers to the current package. Therefore you can reference a
+      module in ZCML simply by ".".
 
     - Fixed inline-code support for Windows.
 
@@ -404,10 +404,10 @@ Zope Changes
 
     - Fixed Utility Service 'getRegisteredMatching()' method.
 
-    - Validation of object field fixed (zope.schema.Object). Validate only 
+    - Validation of object field fixed (zope.schema.Object). Validate only
       attributes of the schema that are implemented as fields.
 
-    - Security-proxied adapter support for the form framework. It provides 
+    - Security-proxied adapter support for the form framework. It provides
       LocationProxies for all adapters which do not implement ILocation itself.
 
     Restructuring
@@ -428,14 +428,14 @@ Zope Changes
     - All enumerated fields are gone. Instead there is now a 'Choice' field
       that can take a listing of values, vocabulary or vocabulary name as
       source for the choices. The Sequence field has been improved to cope
-      better with Choice value types. 
+      better with Choice value types.
 
     - A new attribute 'unique' was added to sequence to require uniqueness of
       the values. This way all four container classes, set, bag, list and
       unique list can be expressed using only two fields.
 
     - All vocabulary widgets are gone. They were replaced by widgets that
-      expect choice- or sequence-like fields and vocabularies. Convinience
+      expect choice- or sequence-like fields and vocabularies. Convenience
       broker widgets are provided to provide simple views for the fields only.
 
     - Use new Utility Vocabulary is now used to provide fields for permissions
@@ -445,7 +445,7 @@ Zope Changes
     - Moved stateful workflow interfaces and browser code to
       zope.app.workflow.stateful. This way we can distribute the workflow
       package without specific implementations or choose the implementations
-      we want to distribute. 
+      we want to distribute.
 
     - The workflow XML import/export functionality uses now a set of adapters
       instead of a complicated utility and custom registry structure.
@@ -470,7 +470,7 @@ Zope Changes
 
     - Reorganize software into a much flatter package structure.
 
-      o Folded interfaces and browser back into packages. For example 
+      o Folded interfaces and browser back into packages. For example
 
         zope.app.foo
         zope.app.interfaces.foo
@@ -514,14 +514,14 @@ Zope Changes
         the utilities are found in the utility service.
 
       o Language Negotiator. The language negotiator is now a utility instead
-        of a service. 
+        of a service.
 
       o Converted MailService --> MailDelivery utility; also the Mailer is now
         a utility, instead of using its own registry.
 
       o Made Zope-specific Vocabulary Registry use utilities. The vocabulary
         directive now registers vocabulary factories as utilities.
-    
+
       o Roles are now stored as utilities. While doing this, I also schemafied
         the IRole interface to use 'id', 'title', 'description' instead of
         'getId()', 'getTitle()' and 'getDescription()'. This was done for
@@ -529,7 +529,7 @@ Zope Changes
         registered "active" and the id value is the registration name for the
         utility.
 
-      o Permissions are now stored as utitlities. As for roles, I schemafied
+      o Permissions are now stored as utilities. As for roles, I schemafied
         the API to use 'id', 'title', and 'description'.
 
       o Interfaces are now registered and looked up as utilities. The local
@@ -545,14 +545,14 @@ Zope Changes
 
           translate(location, msgid, domain=None, mapping=None, context=None,
                     target_language=None, default=None):
- 
+
       o The Factory Service was removed and factories became utilities. The
         'getFactoryInterfaces()' and 'createObject()' functions are still
         available via 'zope.app.zapi'. I also added the 'getFactoriesFor()'
-        function to zapi, since it was only available from the service before. 
+        function to zapi, since it was only available from the service before.
 
       o Removed the Caching Service; Caches were already utilities, so it was
-        easy to rip it out. Updated the views, so that the only example usage, 
+        easy to rip it out. Updated the views, so that the only example usage,
         the SQL Script, can make use of caches.
 
     - The IPrincipal now uses 'id', 'title' and 'description instead of
@@ -560,10 +560,10 @@ Zope Changes
       backwards-compatiblity 'getTitle()' and 'getDescription()' are available
       with a deprecation warning.
 
-    - Converted local Workflow Definitions from being registerable components
+    - Converted local Workflow Definitions from being registrable components
       to be local utilities. Therefore, **a lot** of boiler-plate registration
-      code became obselete and was removed. Using utilities is a huge
-      improvement! 
+      code became obsolete and was removed. Using utilities is a huge
+      improvement!
 
     - Rearranged the package hierarchy below zope.app.
 
@@ -616,15 +616,15 @@ Zope Changes
     - Gave many class and function doc strings some meaning, including some
       that just contained XXX statements. Many more files exist that have
       meaningless or incomplete doc strings.
- 
+
     - Removed unused imports.
 
     - Removed the simple local authentication service
       zope.app.services.auth. It was deprecated for a while already.
-      
+
     - Removed all fixup entries in zope/app/backward.zcml. backward.zcml was
       not included anywhere anyways, so that this should not pose a
-      problem. Removed all fixup code as well. 
+      problem. Removed all fixup code as well.
 
     - Renamed __implements__ in zope.interface to __implemented__ to
       make Zope 3 code interoperate with Zope 2 code.
@@ -646,7 +646,7 @@ Zope Changes
     What is Zope X3? It's Zope 3 "experimental". This is the release
     that will provide the new features of Zope 3 without any Zope 2
     support. Zope 3.0 will provide support for Zope 2 content and
-    products, probably using conversion utilities of some sort. 
+    products, probably using conversion utilities of some sort.
 
 
     Backward compatibility notes
@@ -697,7 +697,7 @@ Zope Changes
     - Refactored the way object location is modeled. Zope 3 no longer uses
       context wrappers. Instead, objects have __parent__ attributes that
       reference their containers.  Objects that don't maintain these
-      attributes themselves are warpped in persistent proxy objects that do
+      attributes themselves are wrapped in persistent proxy objects that do
       so.
 
       For more details, see:
@@ -712,7 +712,7 @@ Zope Changes
 
       o Local content objects.
 
-        A catalog is added to a regular content folder. 
+        A catalog is added to a regular content folder.
 
     - Added object fields. Object fields provide a simple composite field
       mechanism. An object field is defined by a schema and, thus, can contain
@@ -722,7 +722,7 @@ Zope Changes
       monogenous values.
 
     - Improved forms error reporting. Error messages now appear next to fields
-      where errors occured.
+      where errors occurred.
 
     - Major fixes to the TAL I18n-Namespace support. Almost all fixes were
       backported to Zope 2.7 as well.
@@ -738,10 +738,10 @@ Zope Changes
     - Implemented explicit message ids in ZCML
 
     - New Persistent/Mutable Schemas allow us to generate Schema-based
-      interfaces through the Web. 
+      interfaces through the Web.
 
     - New local Menu Service and Content Component Definitions allow you to
-      create simple Content objects TTW. 
+      create simple Content objects TTW.
 
     - Major fssync improvements. The commands to use now are "zsync" and
       "zbundle". New flags include: copy, login (+ new options for checkout),
@@ -749,7 +749,7 @@ Zope Changes
 
     - Introspector uses the Interface service now, instead of the ++module++
       namespace.
-     
+
     - Refactoring and cleanup of the schema/form code.
 
     - Improvements to the OnlineHelp, which has been deactivated for this
@@ -764,12 +764,12 @@ Zope Changes
 
     - Various improvements to ZConfig
 
-    
+
     Miscellaneous
 
-    - Progress with the TUV-IT security accredidation
+    - Progress with the TUV-IT security accreditation
 
-    - Much maintainance work and bug fixes.  
+    - Much maintenance work and bug fixes.
 
 
     Much thanks to everyone who contributed to this release:
@@ -813,7 +813,7 @@ Zope Changes
     - New schema field types for vocabularies.  See
       schema/vocabularies.txt for detailed documentation.
 
-    - Added low-level support in TALES for path expressions of the form 
+    - Added low-level support in TALES for path expressions of the form
       'a/b:c', which work by finding an adapter named 'b' for the
       object named by 'a' and traversing the adapter with the name
       'c'.
@@ -842,7 +842,7 @@ Zope Changes
 
    - Added a pluggable authentication service.  The service supports
      pluggable principal sources and authentication methods (through
-     views on principal sources). 
+     views on principal sources).
 
      Deprecated the simple auth service.
 
@@ -861,7 +861,7 @@ Zope Changes
 
    - Very preliminary local interface service
 
-     The interface service will someday provide a tool for browsing 
+     The interface service will someday provide a tool for browsing
      and modifying all of the configurations for a interface (type).
 
      The initial version demonstrates browsing component configurations
@@ -882,13 +882,13 @@ Zope Changes
     What is Zope X3? It's Zope 3 "experimental". This is the release
     that will provide the new features of Zope 3 without any Zope 2
     support.   Zope 3.0 will provide support for Zope 2 content and
-    products, probably using conversion utilities of some sort. 
+    products, probably using conversion utilities of some sort.
     This release is the second Zope 3 release. The goals of
     this release are to:
 
     - Provide a relatively firm foundation for Zope 3
       developers who want to start building Zope 3 products or to
-      contribute to development.  
+      contribute to development.
 
     - Provide wider exposure of Zope 3.
 
@@ -919,11 +919,11 @@ Zope Changes
 
     - FTP Support
 
-    - PUT support (Allowing editing with Mozilla/Netscape Composer and 
+    - PUT support (Allowing editing with Mozilla/Netscape Composer and
                    Amaya).
 
     - Partial WebDAV support
-          
+
     - A basic workflow system
 
     - Improvements to Zope 3 schemas and form generation
@@ -965,7 +965,7 @@ Zope Changes
 
     - Provide a relatively firm foundation for Zope 3
       developers who want to start building Zope 3 products or to
-      contribute to development.  
+      contribute to development.
 
     - Provide wider exposure of Zope 3.
 
@@ -985,7 +985,7 @@ Zope Changes
         feedback, ideas, and even code!
 
       - A framework for configuring and installing file-system-based
-        products. 
+        products.
 
       - An initial through-the-web configuration and development system based
         on services. Services are similar to CMF tools except that
@@ -1030,7 +1030,7 @@ Zope Changes
 
         - Templates
 
-        - Component instances 
+        - Component instances
 
         - Configuration objects
 
