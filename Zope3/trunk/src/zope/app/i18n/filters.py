@@ -11,17 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Translation Service Message Export and Import Filters
+"""Translation Domain Message Export and Import Filters
 
-$Id: filters.py,v 1.5 2003/06/06 21:21:46 stevea Exp $
+$Id: filters.py,v 1.1 2004/03/08 23:34:50 srichter Exp $
 """
 import time, re
 from types import StringTypes
-
-from zope.i18n.interfaces import IMessageExportFilter
-from zope.i18n.interfaces import IMessageImportFilter
-from zope.app.interfaces.services.translation import ILocalTranslationService
 from zope.interface import implements
+
+from zope.i18n.interfaces import IMessageExportFilter, IMessageImportFilter
+from zope.app.i18n.interfaces import ILocalTranslationDomain
 
 
 class ParseError(Exception):
@@ -37,22 +36,15 @@ class ParseError(Exception):
 class GettextExportFilter:
 
     implements(IMessageExportFilter)
-    __used_for__ = ILocalTranslationService
+    __used_for__ = ILocalTranslationDomain
 
 
-    def __init__(self, service):
-        self.service = service
+    def __init__(self, domain):
+        self.domain = domain
 
-    def exportMessages(self, domains, languages):
+    def exportMessages(self, languages):
         'See IMessageExportFilter'
-
-        if isinstance(domains, StringTypes):
-            domain = domains
-        elif len(domains) == 1:
-            domain = domains[0]
-        else:
-            raise TypeError, \
-                  'Only one domain at a time is supported for gettext export.'
+        domain = self.domain.domain
 
         if isinstance(languages, StringTypes):
             language = languages
@@ -67,10 +59,9 @@ class GettextExportFilter:
         dt = time.strftime('%Y/%m/%d %H:%M', dt)
         output = _file_header %(dt, language.encode('UTF-8'),
                                 domain.encode('UTF-8'))
-        service = self.service
 
-        for msgid in service.getMessageIdsOfDomain(domain):
-            msgstr = service.translate(msgid, domain, target_language=language)
+        for msgid in self.domain.getMessageIds():
+            msgstr = self.domain.translate(msgid, target_language=language)
             msgstr = msgstr.encode('UTF-8')
             msgid = msgid.encode('UTF-8')
             output += _msg_template %(msgid, msgstr)
@@ -82,22 +73,14 @@ class GettextExportFilter:
 class GettextImportFilter:
 
     implements(IMessageImportFilter)
-    __used_for__ = ILocalTranslationService
+    __used_for__ = ILocalTranslationDomain
 
 
-    def __init__(self, service):
-        self.service = service
+    def __init__(self, domain):
+        self.domain = domain
 
-    def importMessages(self, domains, languages, file):
+    def importMessages(self, languages, file):
         'See IMessageImportFilter'
-
-        if isinstance(domains, StringTypes):
-            domain = domains
-        elif len(domains) == 1:
-            domain = domains[0]
-        else:
-            raise TypeError, \
-                  'Only one domain at a time is supported for gettext export.'
 
         if isinstance(languages, StringTypes):
             language = languages
@@ -111,13 +94,12 @@ class GettextImportFilter:
         headers = parserHeaders(''.join(result[('',)][1]))
         del result[('',)]
         charset = extractCharset(headers['content-type'])
-        service = self.service
         for msg in result.items():
             msgid = unicode(''.join(msg[0]), charset)
             msgid = msgid.replace('\\n', '\n')
             msgstr = unicode(''.join(msg[1][1]), charset)
             msgstr = msgstr.replace('\\n', '\n')
-            service.addMessage(domain, msgid, msgstr, language)
+            self.domain.addMessage(msgid, msgstr, language)
 
 
 

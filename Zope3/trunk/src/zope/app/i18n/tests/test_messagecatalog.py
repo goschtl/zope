@@ -13,13 +13,13 @@
 ##############################################################################
 """Test the generic persistent Message Catalog.
 
-$Id: test_messagecatalog.py,v 1.3 2003/03/25 23:25:13 bwarsaw Exp $
+$Id: test_messagecatalog.py,v 1.1 2004/03/08 23:34:51 srichter Exp $
 """
 import unittest
 
 from zope.interface.verify import verifyObject
-from zope.app.services.translation.messagecatalog import MessageCatalog
-from zope.app.interfaces.services.translation import ILocalMessageCatalog
+from zope.app.i18n.messagecatalog import MessageCatalog
+from zope.app.i18n.interfaces import ILocalMessageCatalog
 from zope.i18n.tests.test_imessagecatalog import TestIMessageCatalog
 
 

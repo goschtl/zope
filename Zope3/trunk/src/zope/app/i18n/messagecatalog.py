@@ -13,7 +13,7 @@
 ##############################################################################
 """A simple implementation of a Message Catalog.
 
-$Id: messagecatalog.py,v 1.11 2004/03/08 12:06:22 srichter Exp $
+$Id: messagecatalog.py,v 1.1 2004/03/08 23:34:50 srichter Exp $
 """
 from zope.interface import classProvides, providedBy, implements
 import time
@@ -22,7 +22,7 @@ from BTrees.OOBTree import OOBTree
 from persistent import Persistent
 from zope.proxy import removeAllProxies
 from zope.component.interfaces import IFactory
-from zope.app.interfaces.services.translation import ILocalMessageCatalog
+from zope.app.i18n.interfaces import ILocalMessageCatalog
 
 
 class MessageCatalog(Persistent):
@@ -35,8 +35,8 @@ class MessageCatalog(Persistent):
         self.id  = ''
         self.title = ''
         self.description = ''
-        self._language = language
-        self._domain = domain
+        self.language = language
+        self.domain = domain
         self._messages = OOBTree()
 
     def getMessage(self, id):
@@ -52,23 +52,15 @@ class MessageCatalog(Persistent):
             result = default
         return result
 
-    def getLanguage(self):
-        'See IReadMessageCatalog'
-        return self._language
-
-    def getDomain(self):
-        'See IReadMessageCatalog'
-        return self._domain
-
     def getIdentifier(self):
         'See IReadMessageCatalog'
-        return (self._language, self._domain)
+        return (self.language, self.domain)
 
     def getFullMessage(self, msgid):
         'See IWriteMessageCatalog'
         message = removeAllProxies(self._messages[msgid])
-        return {'domain'   : self._domain,
-                'language' : self._language,
+        return {'domain'   : self.domain,
+                'language' : self.language,
                 'msgid'    : msgid,
                 'msgstr'   : message[0],
                 'mod_time' : message[1]}
@@ -91,8 +83,8 @@ class MessageCatalog(Persistent):
         'See IWriteMessageCatalog'
         messages = []
         for message in self._messages.items():
-            messages.append({'domain'   : self._domain,
-                             'language' : self._language,
+            messages.append({'domain'   : self.domain,
+                             'language' : self.language,
                              'msgid'    : message[0],
                              'msgstr'   : message[1][0],
                              'mod_time' : message[1][1]})

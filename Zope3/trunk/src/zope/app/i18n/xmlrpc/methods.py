@@ -11,28 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Translation Domain XML-RPC Methods 
 
-$Id: methods.py,v 1.4 2003/06/06 21:21:47 stevea Exp $
+$Id: methods.py,v 1.1 2004/03/08 23:34:49 srichter Exp $
 """
 from zope.proxy import removeAllProxies
-
 from zope.publisher.xmlrpc import XMLRPCView
 
 
 class Methods(XMLRPCView):
 
-    def getAllDomains(self):
-        return self.context.getAllDomains()
-
     def getAllLanguages(self):
         return self.context.getAllLanguages()
 
-    def getMessagesFor(self, domains, languages):
+    def getMessagesFor(self, languages):
         messages = []
-        for domain in domains:
-            for msg in self.context.getMessagesOfDomain(domain):
-                if msg['language'] in languages:
-                    messages.append(removeAllProxies(msg))
+        for msg in self.context.getMessages():
+            if msg['language'] in languages:
+                messages.append(removeAllProxies(msg))
 
         return messages

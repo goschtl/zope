@@ -12,13 +12,14 @@
 #
 ##############################################################################
 """This module tests the Gettext Export and Import funciotnality of the
-Translation Service.
+Translation Domain.
 
-$Id: test_filters.py,v 1.4 2004/03/02 17:49:39 srichter Exp $
+$Id: test_filters.py,v 1.1 2004/03/08 23:34:51 srichter Exp $
 """
-import unittest, time
-
+import unittest
+import time
 from cStringIO import StringIO
+from zope.interface import implements
 
 from zope.app.services.servicenames import Factories
 
@@ -27,15 +28,12 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.component.metaconfigure import \
      provideService, managerHandler, handler
 
-from zope.app.services.translation.messagecatalog import MessageCatalog
+from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.i18n.negotiator import negotiator
 from zope.i18n.interfaces import INegotiator, IUserPreferredLanguages
 
-from zope.app.services.translation.translationservice import \
-     TranslationService
-from zope.app.services.translation.filters import GettextImportFilter
-from zope.app.services.translation.filters import GettextExportFilter
-from zope.interface import implements
+from zope.app.i18n.translationdomain import TranslationDomain
+from zope.app.i18n.filters import GettextImportFilter, GettextExportFilter
 
 
 class Environment:
@@ -75,20 +73,18 @@ msgstr "hallo"
         # Setup the negotiator utility
         ztapi.provideUtility(INegotiator, negotiator)
 
-        self._service = TranslationService('default')
+        self._domain = TranslationDomain()
+        self._domain.domain = 'default'
         handler(Factories, 'provideFactory', 'Message Catalog',
                 MessageCatalog)
 
 
     def testImportExport(self):
-        service = self._service
+        imp = GettextImportFilter(self._domain)
+        imp.importMessages(['de'], StringIO(self._data %'2002/02/02 02:02'))
 
-        imp = GettextImportFilter(service)
-        imp.importMessages(['default'], ['de'],
-                           StringIO(self._data %'2002/02/02 02:02'))
-
-        exp = GettextExportFilter(service)
-        result = exp.exportMessages(['default'], ['de'])
+        exp = GettextExportFilter(self._domain)
+        result = exp.exportMessages(['de'])
 
         dt = time.time()
         dt = time.localtime(dt)
