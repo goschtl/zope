@@ -411,6 +411,25 @@
       for="zope.app.interfaces.services.hub.IObjectHub"
       file="hub.gif" />
 
+<!-- Registration -->
+
+  <menuItem
+    menu="add_component"
+    for="zope.app.interfaces.container.IAdding"
+    action="zope.app.services.hub.Registration"
+    title="Registration subscriber"
+    description="An event subscriber that registers content with the objecthub"
+    />
+
+  <page
+    for="zope.app.services.hub.ISubscriptionControl"
+    permission="zope.ManageServices"
+    name="index.html"
+    menu="zmi_views"
+    title="Control"
+    template="subscription_control.pt"
+    />
+
 <!-- Utility Service --> <include package=".utility" />
 
 <!-- "Add Service" menu -->

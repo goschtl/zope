@@ -14,6 +14,18 @@
       />
 </content>
 
+<content class="zope.app.services.hub.Registration">
+  <require
+    permission="zope.ManageServices"
+    interface="zope.app.services.hub.ISubscriptionControl"
+    />
+  <factory
+    id="zope.app.services.hub.Registration"
+    permission="zope.ManageServices"
+    />
+</content>
+
+
 <!-- Adapter Service -->
 
 <content class="zope.app.services.adapter.AdapterService">

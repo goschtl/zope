@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.3 2003/07/02 10:59:18 alga Exp $
+$Id: bootstrap.py,v 1.4 2003/07/11 05:50:44 anthony Exp $
 """
 from transaction import get_transaction
 from zope.interface import implements
@@ -30,7 +30,7 @@ from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.servicenames import ErrorLogging, Interfaces
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceRegistration
-from zope.app.services.hub import ObjectHub
+from zope.app.services.hub import ObjectHub, Registration
 from zope.app.services.event import EventService
 from zope.app.services.error import ErrorReportingService
 from zope.app.services.principalannotation import PrincipalAnnotationService
@@ -40,6 +40,7 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event import function
 from zope.component.exceptions import ComponentLookupError
+from zope.app.interfaces.services.hub import ISubscriptionControl
 
 class BootstrapSubscriberBase:
     """A startup event subscriber base class.
@@ -82,6 +83,23 @@ class BootstrapSubscriberBase:
         get_transaction().commit()
         connection.close()
 
+    def ensureObject(self, object_name, object_type, object_factory):
+        """Check that there's a basic object in the service
+        manager. If not, add one.
+        
+        Return the name added, if we added an object, otherwise None.
+        """
+        package = getServiceManagerDefault(self.root_folder)
+        valid_objects = [ obj for obj in package 
+                          if object_type.isImplementedBy(obj) ]
+        if valid_objects:
+            return None
+        name = object_name + '-1'
+        obj = object_factory()
+        obj = removeAllProxies(obj)
+        package.setObject(name, obj)
+        return name
+
     def ensureService(self, service_type, service_factory, **kw):
         """Add and configure a service to the root folder if it's
         not yet provided.
@@ -117,6 +135,17 @@ class BootstrapInstance(BootstrapSubscriberBase):
 
         # Add the HubIds service, which subscribes itself to the event service
         name = self.ensureService(HubIds, ObjectHub)
+        # Add a Registration object so that the Hub has something to do.
+        name = self.ensureObject('Registration', 
+                                 ISubscriptionControl, Registration)
+        if name:
+            package = getServiceManagerDefault(self.root_folder)
+            reg = package[name]
+            # It's possible that we would want to reindex all objects when
+            # this is added - this seems like a very site-specific decision,
+            # though. 
+            reg.subscribe()
+            
 
         # Sundry other services
         self.ensureService(ErrorLogging,
@@ -156,8 +185,7 @@ def addService(root_folder, service_type, service_factory, **kw):
     # The code here is complicated by the fact that the registry
     # calls at the end require a fully context-wrapped
     # registration; hence all the traverse() and traverseName() calls.
-    package_name = '/++etc++site/default'
-    package = traverse(root_folder, package_name)
+    package = getServiceManagerDefault(root_folder)
     name = service_type + '-1'
     service = service_factory()
     service = removeAllProxies(service)
@@ -170,8 +198,7 @@ def addService(root_folder, service_type, service_factory, **kw):
 
 def configureService(root_folder, service_type, name, initial_status='Active'):
     """Configure a service in the root folder."""
-    package_name = '/++etc++site/default'
-    package = traverse(root_folder, package_name)
+    package = getServiceManagerDefault(root_folder)
     registration_manager = package.getRegistrationManager()
     registration =  ServiceRegistration(service_type,
                                         name,
@@ -179,3 +206,8 @@ def configureService(root_folder, service_type, name, initial_status='Active'):
     key = registration_manager.setObject("", registration)
     registration = traverseName(registration_manager, key)
     registration.status = initial_status
+
+def getServiceManagerDefault(root_folder):
+    package_name = '/++etc++site/default'
+    package = traverse(root_folder, package_name)
+    return package

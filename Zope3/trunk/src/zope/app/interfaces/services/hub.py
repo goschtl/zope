@@ -13,13 +13,14 @@
 ##############################################################################
 """Object hub interfaces.
 
-$Id: hub.py,v 1.5 2003/03/19 18:05:03 stevea Exp $
+$Id: hub.py,v 1.6 2003/07/11 05:50:41 anthony Exp $
 """
 
 from zope.interface import Attribute
 
 from zope.app.interfaces.services.event import IEventChannel
 from zope.app.interfaces.event import IEvent
+from zope.interface import Interface
 
 
 class ObjectHubError(Exception):
@@ -216,3 +217,19 @@ class IObjectMovedHubEvent(IHubEvent):
 
 class IObjectRemovedHubEvent(IObjectUnregisteredHubEvent):
     """An object with a hub id has been removed and unregistered."""
+
+
+class ISubscriptionControl(Interface):
+    def subscribe():
+        """Subscribe to the prevailing object hub service."""
+
+    def unsubscribe():
+        """Unsubscribe from the object hub service."""
+
+    def isSubscribed():
+        """Return whether we are currently subscribed."""
+
+    def registerExisting():
+        """Register all existing objects (for some definition of all)."""
+
+
