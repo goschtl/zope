@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.14 2002/12/11 13:52:48 jim Exp $
+$Id: Widget.py,v 1.15 2002/12/19 19:53:28 jim Exp $
 """
 
 __metaclass__ = type
@@ -44,7 +44,9 @@ class BrowserWidget(Widget, BrowserView):
     _missing = None
 
     def haveData(self):
-        return (self.name) in self.request.form
+        if (self.name) in self.request.form:
+            return self._convert(self.request[self.name]) is not None
+        return False
 
     def getData(self, optional=0):
         field = self.context
@@ -87,8 +89,12 @@ class BrowserWidget(Widget, BrowserView):
         return value
 
     def _showData(self):
-        if (self._data is None) and self.haveData():
-            data = self.getData(1)
+
+        if (self._data is None):
+            if self.haveData():
+                data = self.getData(1)
+            else:
+                data = self.context.default
         else:
             data = self._data
 
@@ -196,6 +202,11 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     style = "width:100%"
     __values = None
 
+    def _convert(self, value):
+        if self.context.min_length and not value:
+            return None
+        return value
+
     def __init__(self, *args):
         super(TextWidget, self).__init__(*args)
         
@@ -264,6 +275,9 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
 class Bytes:
 
     def _convert(self, value):
+        if self.context.min_length and not value:
+            return None
+
         value = super(Bytes, self)._convert(value)
         if type(value) is unicode:
             value = value.encode('ascii')
@@ -293,6 +307,11 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     height = 15
     extra=""
     style="width:100%"
+
+    def _convert(self, value):
+        if self.context.min_length and not value:
+            return None
+        return value
     
     def __call__(self):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
