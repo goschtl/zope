@@ -25,11 +25,10 @@
 
  <addform
       for="zope.app.services.zpt.IZPTTemplate"
-      schema="zope.app.services.presentation.IPageRegistration"
+      schema="zope.app.presentation.IPageRegistration"
       name="addRegistration.html"
-      class="
-           zope.app.browser.services.registration.AddComponentRegistration"
-      content_factory="zope.app.services.presentation.PageRegistration"
+      class="zope.app.browser.services.registration.AddComponentRegistration"
+      content_factory="zope.app.presentation.PageRegistration"
       keyword_arguments="required factoryName name permission 
                          layer  attribute"
       set_before_add="template"

@@ -83,13 +83,6 @@
       permission="zope.ManageServices"
       />
 
-
-<!-- Adapters -->
-  <zope:include package=".adapter" />
-
-<!-- Views -->  
-  <zope:include package=".presentation" />
-
 <!-- Menu -->  
   <zope:include file="menu.zcml" />
 

@@ -1,0 +1,48 @@
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:event='http://namespaces.zope.org/event'
+    xmlns:fssync='http://namespaces.zope.org/fssync'
+    i18n_domain="zope"
+    >
+
+
+<content class=".presentation.LocalPresentationService">
+  <factory permission="zope.ManageServices" />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.registration.IRegistry"
+      attributes="getRegisteredMatching"
+      />
+</content>
+
+<content class=".presentation.ViewRegistration">
+  <require
+      permission="zope.ManageServices"
+      interface=".presentation.IViewRegistration"
+      set_schema="zope.app.interfaces.services.registration.IRegistration"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.container.interfaces.IRemoveNotifiable"
+      />
+</content>
+
+<content class=".presentation.PageRegistration">
+  <require
+      permission="zope.ManageServices"
+      interface=".presentation.IPageRegistration"
+      set_schema=".presentation.IPageRegistration"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.container.interfaces.IRemoveNotifiable"
+      />
+</content>
+
+<modulealias module="zope.app.presentation.presentation"
+             alias="zope.app.services.presentation"
+             />
+
+<include package=".browser" />
+
+</configure>

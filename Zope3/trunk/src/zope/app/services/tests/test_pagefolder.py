@@ -13,7 +13,7 @@
 ##############################################################################
 """Page folder tests.
 
-$Id: test_pagefolder.py,v 1.10 2003/12/18 06:09:44 sraju Exp $
+$Id: test_pagefolder.py,v 1.11 2004/03/08 19:40:31 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,7 +22,7 @@ from zope.app.tests import setup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.pagefolder import PageFolder, IPageFolder
 from zope.app.services.zpt import ZPTTemplate
-from zope.app.services.presentation import LocalPresentationService
+from zope.app.presentation import LocalPresentationService
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest

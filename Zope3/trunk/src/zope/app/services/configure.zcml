@@ -37,29 +37,6 @@
   factory="zope.app.services.registration.Registered"
   />
 
-<!-- Adapter Service -->
-
-<content class="zope.app.services.adapter.LocalAdapterService">
-  <factory permission="zope.ManageServices" />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.registration.IRegistry"
-      attributes="getRegisteredMatching"
-      />
-</content>
-
-<content class=".adapter.AdapterRegistration">
-  <require
-      permission="zope.ManageServices"
-      interface=".adapter.IAdapterRegistration"
-      set_schema=".adapter.IAdapterRegistration"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.container.interfaces.IRemoveNotifiable"
-      />
-</content>
-
 <!-- Menu Service -->
 <include file="menu.zcml"/>
 
@@ -181,9 +158,6 @@
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
         />
   </content>
-
-<!-- Presentation components -->
-  <include file="presentation.zcml" />
 
 <!-- Page templates -->
   <include file="zpt.zcml" />

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Local Surrogate Tests
+"""Local Adapter Tests
 
    Local surrogates and surrogate registries share declarations with
    those "above" them.
@@ -22,11 +22,11 @@
 
    we also have a local surrogate registry, with G as it's base:
 
-   >>> L1 = LocalSurrogateRegistry(G)
+   >>> L1 = LocalAdapterRegistry(G)
 
    and so on:
 
-   >>> L2 = LocalSurrogateRegistry(G, L1)
+   >>> L2 = LocalAdapterRegistry(G, L1)
 
    Now, if we declare an adapter globally:
 
@@ -173,7 +173,7 @@
    >>> a.args == (f2, )
    True
 
-   $Id: test_surrogates.py,v 1.4 2004/03/08 17:26:55 jim Exp $
+   $Id: tests.py,v 1.1 2004/03/08 19:40:25 jim Exp $
    """
 
 def test_named_adapters():
@@ -184,11 +184,11 @@ def test_named_adapters():
 
     we also have a local surrogate registry, with G as it's base:
 
-    >>> L1 = LocalSurrogateRegistry(G)
+    >>> L1 = LocalAdapterRegistry(G)
 
     and so on:
 
-    >>> L2 = LocalSurrogateRegistry(G, L1)
+    >>> L2 = LocalAdapterRegistry(G, L1)
 
     Now, if we declare an adapter globally:
 
@@ -362,11 +362,11 @@ def test_multi_adapters():
 
     we also have a local surrogate registry, with G as it's base:
 
-    >>> L1 = LocalSurrogateRegistry(G)
+    >>> L1 = LocalAdapterRegistry(G)
 
     and so on:
 
-    >>> L2 = LocalSurrogateRegistry(G, L1)
+    >>> L2 = LocalAdapterRegistry(G, L1)
 
     Now, if we declare an adapter globally:
 
@@ -525,8 +525,8 @@ def test_persistence():
     >>> conn1 = db.open()
 
     >>> G = globalAdapterRegistry
-    >>> L1 = LocalSurrogateRegistry(G)
-    >>> L2 = LocalSurrogateRegistry(G, L1)
+    >>> L1 = LocalAdapterRegistry(G)
+    >>> L2 = LocalAdapterRegistry(G, L1)
 
     >>> conn1.root()['L1'] = L1
     >>> conn1.root()['L2'] = L2
@@ -731,7 +731,7 @@ def test_persistence():
 def test_local_default():
     """
     >>> G = AdapterRegistry()
-    >>> L1 = LocalSurrogateRegistry(G)
+    >>> L1 = LocalAdapterRegistry(G)
     >>> r = Registration(required = None, provided=IB1, factory=Adapter)
     >>> L1.createRegistrationsFor(r).activate(r)
     >>> f2 = F2()
@@ -743,8 +743,8 @@ def test_local_default():
 def test_changing_next():
     """
     >>> G = AdapterRegistry()
-    >>> L1 = LocalSurrogateRegistry(G)
-    >>> L2 = LocalSurrogateRegistry(G, L1)
+    >>> L1 = LocalAdapterRegistry(G)
+    >>> L2 = LocalAdapterRegistry(G, L1)
     >>> f2 = F2()
 
     >>> L2.queryAdapter(f2, IB1).__class__.__name__
@@ -767,7 +767,7 @@ def test_changing_next():
     True
     >>> L1.subs == (L2,)
     True
-    >>> L3 = LocalSurrogateRegistry(G, L1)
+    >>> L3 = LocalAdapterRegistry(G, L1)
     >>> L2.setNext(L3)
     >>> L2.next == L3
     True
@@ -799,7 +799,7 @@ def test_changing_next():
 
     """
 
-def test_LocalSurrogateBasedService():
+def test_LocalAdapterBasedService():
     """
     Setup folders and service managers:
     
@@ -825,7 +825,7 @@ def test_LocalSurrogateBasedService():
     Create a local service class, which must define setNext:
 
     >>> import zope.app.interfaces.services.service
-    >>> class LocalF(LocalSurrogateBasedService):
+    >>> class LocalF(LocalAdapterBasedService):
     ...     zope.interface.implements(
     ...         IF2,
     ...         zope.app.interfaces.services.service.ISimpleService,
@@ -884,8 +884,8 @@ def test_LocalSurrogateBasedService():
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface.adapter import AdapterRegistry
-from zope.app.services.surrogate import LocalSurrogateRegistry
-from zope.app.services.surrogate import LocalSurrogateBasedService
+from zope.app.adapter.adapter import LocalAdapterRegistry
+from zope.app.adapter.adapter import LocalAdapterBasedService
 import zope.interface
 from ZODB.tests.util import DB
 from transaction import get_transaction
@@ -986,7 +986,7 @@ class TestStack:
         return self.registration
     
 
-class LocalSurrogateRegistry(LocalSurrogateRegistry):
+class LocalAdapterRegistry(LocalAdapterRegistry):
     """For testing, use custom stack type
     """
     _stackType = TestStack

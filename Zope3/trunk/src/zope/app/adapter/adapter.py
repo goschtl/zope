@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,21 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Local/persistent surrogate (adapter) registry support
+"""Adapter Service
 
-$Id: surrogate.py,v 1.5 2004/03/08 17:26:55 jim Exp $
+$Id: adapter.py,v 1.1 2004/03/08 19:40:25 jim Exp $
 """
+__metaclass__ = type
 
-from persistent import Persistent
 from persistent.dict import PersistentDict
-from zope.interface.adapter import Surrogate, AdapterRegistry
-from zope.interface.adapter import adapterImplied, Default
+from persistent import Persistent
+from zope.app import zapi
 from zope.app.services.registration import NotifyingRegistrationStack
+from zope.interface.adapter import adapterImplied, Default
+from zope.interface.adapter import Surrogate, AdapterRegistry
+import sys
+import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
-import zope.app.interfaces.services.service
 import zope.app.interfaces.services.registration
-from zope.app import zapi
+import zope.app.interfaces.services.service
+import zope.app.security.permission
+import zope.app.services.registration
+import zope.component.interfaces
+import zope.interface
+import zope.schema
 
 class LocalSurrogate(Surrogate):
     """Local surrogates
@@ -52,7 +60,7 @@ class LocalSurrogate(Surrogate):
         self.adapters = adapters
         Surrogate.clean(self)
 
-class LocalSurrogateRegistry(AdapterRegistry, Persistent):
+class LocalAdapterRegistry(AdapterRegistry, Persistent):
     """Local/persistent surrogate registry
     """
 
@@ -157,7 +165,7 @@ class LocalSurrogateRegistry(AdapterRegistry, Persistent):
 
     notifyActivated = notifyDeactivated = adaptersChanged
 
-class LocalSurrogateBasedService(
+class LocalAdapterBasedService(
     zope.app.container.contained.Contained,
     Persistent,
     ):
@@ -204,3 +212,99 @@ class LocalSurrogateBasedService(
                 s.__updateNext(servicename)
             else:
                 self.__notifySubs(sub.subSites, servicename)
+
+
+class LocalAdapterService(LocalAdapterRegistry, LocalAdapterBasedService):
+
+    zope.interface.implements(
+        zope.component.interfaces.IAdapterService,
+        zope.app.interfaces.services.service.ISimpleService,
+        )
+
+    def __init__(self):
+        LocalAdapterRegistry.__init__(
+            self, zapi.getService(None, zapi.servicenames.Adapters)
+            )
+
+
+class IAdapterRegistration(
+    zope.app.interfaces.services.registration.IRegistration):
+
+    required = zope.app.component.interfacefield.InterfaceField(
+        title = u"For interface",
+        description = u"The interface of the objects being adapted",
+        readonly = True,
+        basetype = None,
+        )
+
+    provided = zope.app.component.interfacefield.InterfaceField(
+        title = u"Provided interface",
+        description = u"The interface provided",
+        readonly = True,
+        required = True,
+        )
+
+    name = zope.schema.TextLine(
+        title=u"Name",
+        readonly=True,
+        required=False,
+        )
+
+    factoryName = zope.schema.BytesLine(
+        title=u"The dotted name of a factory for creating the adapter",
+        readonly = True,
+        required = True,
+        )
+
+    permission = zope.app.security.permission.PermissionField(
+        title=u"The permission required for use",
+        readonly=False,
+        required=False,
+        )
+        
+    factories = zope.interface.Attribute(
+        "A sequence of factories to be called to construct the component"
+        )
+
+class AdapterRegistration(zope.app.services.registration.SimpleRegistration):
+
+    zope.interface.implements(IAdapterRegistration)
+
+    serviceType = zapi.servicenames.Adapters
+
+    with = () # XXX Don't support multi-adapters yet
+
+    # XXX These should be positional arguments, except that required
+    #     isn't passed in if it is omitted. To fix this, we need a
+    #     required=False,explicitly_unrequired=True in the schema field
+    #     so None will get passed in.
+    def __init__(self, provided, factoryName,
+                 name='', required=None, permission=None):
+        self.required = required
+        self.provided = provided
+        self.name = name
+        self.factoryName = factoryName
+        self.permission = permission
+
+    def factories(self):
+        folder = self.__parent__.__parent__
+        factory = folder.resolve(self.factoryName)
+        return factory,
+    factories = property(factories)
+
+# XXX Pickle backward compatability
+AdapterConfiguration = AdapterRegistration
+
+
+#BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+
+import persistent
+from zope.interface.adapter import ReadProperty
+
+AdapterRegistration.required = ReadProperty(lambda self: self.forInterface)
+AdapterRegistration.provided = ReadProperty(
+    lambda self: self.providedInterface)
+AdapterRegistration.name     = ReadProperty(lambda self: self.adapterName)
+
+class AdapterService(persistent.Persistent):
+    pass

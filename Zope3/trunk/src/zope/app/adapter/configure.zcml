@@ -2,10 +2,12 @@
     xmlns='http://namespaces.zope.org/zope'
     xmlns:event='http://namespaces.zope.org/event'
     xmlns:fssync='http://namespaces.zope.org/fssync'
+    i18n_domain='zope'
     >
 
+<!-- Adapter Service -->
 
-<content class=".presentation.LocalPresentationService">
+<content class=".adapter.LocalAdapterService">
   <factory permission="zope.ManageServices" />
   <require
       permission="zope.ManageServices"
@@ -14,11 +16,11 @@
       />
 </content>
 
-<content class=".presentation.ViewRegistration">
+<content class=".adapter.AdapterRegistration">
   <require
       permission="zope.ManageServices"
-      interface=".presentation.IViewRegistration"
-      set_schema="zope.app.interfaces.services.registration.IRegistration"
+      interface=".adapter.IAdapterRegistration"
+      set_schema=".adapter.IAdapterRegistration"
       />
   <require
       permission="zope.ManageServices"
@@ -26,16 +28,10 @@
       />
 </content>
 
-<content class=".presentation.PageRegistration">
-  <require
-      permission="zope.ManageServices"
-      interface=".presentation.IPageRegistration"
-      set_schema=".presentation.IPageRegistration"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.container.interfaces.IRemoveNotifiable"
-      />
-</content>
+<modulealias module="zope.app.adapter.adapter"
+             alias="zope.app.services.adapter"
+             />
+
+<include package=".browser" />
 
 </configure>

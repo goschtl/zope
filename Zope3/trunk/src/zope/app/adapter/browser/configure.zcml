@@ -1,16 +1,18 @@
 <zope:configure 
    xmlns:zope="http://namespaces.zope.org/zope"
-   xmlns="http://namespaces.zope.org/browser">
+   xmlns="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
 
   <addMenuItem
-      class="zope.app.services.adapter.LocalAdapterService"
+      class="..adapter.LocalAdapterService"
       title="Adapter Service" 
       description="Allows the registration of Adapters in this site" 
       permission="zope.ManageServices"
       />
 
   <editform
-    schema="zope.app.services.adapter.IAdapterRegistration"
+    schema="..adapter.IAdapterRegistration"
     name="index.html"
     menu="zmi_views"
     label="Change adapter"
@@ -18,9 +20,9 @@
     />
 
   <addform
-      schema="zope.app.services.adapter.IAdapterRegistration"
+      schema="..adapter.IAdapterRegistration"
       name="AdapterRegistration"
-      content_factory="zope.app.services.adapter.AdapterRegistration"
+      content_factory="..adapter.AdapterRegistration"
       arguments="provided factoryName"
       keyword_arguments="required name permission"
       label="Register an adapter"

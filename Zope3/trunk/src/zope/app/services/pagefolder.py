@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.21 2004/03/05 22:09:16 jim Exp $
+$Id: pagefolder.py,v 1.22 2004/03/08 19:40:30 jim Exp $
 """
 __metaclass__ = type
 
@@ -30,7 +30,7 @@ from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.services.presentation import PageRegistration
+from zope.app.presentation import PageRegistration
 from zope.app.services.registration import RegistrationManagerContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.services.zpt import IZPTTemplate

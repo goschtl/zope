@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.8 2004/03/08 17:26:55 jim Exp $
+$Id: presentation.py,v 1.1 2004/03/08 19:40:26 jim Exp $
 """
 
 from zope.app import zapi
@@ -26,10 +26,10 @@ import zope.app.component.nextservice
 import zope.app.container.contained
 import zope.app.interfaces.services.registration
 import zope.app.interfaces.services.service
-import zope.app.services.adapter
+import zope.app.adapter
 import zope.app.services.field
 import zope.app.interfaces.services.interface
-import zope.app.services.surrogate
+import zope.app.adapter
 import zope.app.services.zpt
 import zope.component.interfaces
 import zope.configuration.exceptions
@@ -46,7 +46,7 @@ from zope.app.interfaces.services.registration import IRegistered
 # which effectively means to the global service.
 
 class LocalPresentationService(
-    zope.app.services.surrogate.LocalSurrogateBasedService,
+    zope.app.adapter.LocalAdapterBasedService,
     ):
 
     zope.interface.implements(
@@ -279,18 +279,18 @@ class GlobalViewRegistration:
 
 
 class LocalLayer(
-    zope.app.services.surrogate.LocalSurrogateRegistry,
+    zope.app.adapter.LocalAdapterRegistry,
     zope.app.container.contained.Contained,
     ):
 
     def __init__(self, base, next, parent, name):
-        zope.app.services.surrogate.LocalSurrogateRegistry.__init__(
+        zope.app.adapter.LocalAdapterRegistry.__init__(
             self, base, next)
         self.__parent__ = parent
         self.__name__ = name
 
 
-class IViewRegistration(zope.app.services.adapter.IAdapterRegistration):
+class IViewRegistration(zope.app.adapter.IAdapterRegistration):
 
     required = zope.app.component.interfacefield.InterfaceField(
         title = u"For interface",

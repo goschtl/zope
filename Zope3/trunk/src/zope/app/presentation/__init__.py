@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Presentation-service presentations
+"""Presentation-component support
 
-$Id: __init__.py,v 1.2 2003/11/21 17:11:19 jim Exp $
+$Id: __init__.py,v 1.1 2004/03/08 19:40:26 jim Exp $
 """
 
-class PageRegistrationView(object):
-    """Helper class for the page edit form."""
-
-    def update(self):
-        super(PageRegistrationView, self).update()
-        if "UPDATE_SUBMIT" in self.request:
-            self.context.validate()
+from zope.app.presentation.presentation import IPageRegistration
+from zope.app.presentation.presentation import PageRegistration
+from zope.app.presentation.presentation import LocalPresentationService
