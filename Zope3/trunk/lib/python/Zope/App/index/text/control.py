@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.1 2002/12/09 19:47:16 gvanrossum Exp $
+$Id: control.py,v 1.2 2002/12/12 17:25:15 gvanrossum Exp $
 """
 
 from __future__ import generators
@@ -23,21 +23,21 @@ from __future__ import generators
 from Zope.ComponentArchitecture import getService, queryAdapter
 from Zope.Exceptions import NotFoundError
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
+from Zope.Publisher.Browser.BrowserView import BrowserView
 
 from Zope.App.Traversing import locationAsUnicode
 from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
 from Zope.App.index.text.interfaces import IQueryView
 
-class ControlView(object):
+class ControlView(BrowserView):
 
-    __implements__ = IBrowserView, IQueryView
+    __implements__ = BrowserView.__implements__, IQueryView
 
     default_start = 0 # Don't change -- always start at first batch
     default_count = 2 # Default batch size -- tune as you please
 
     def __init__(self, context, request):
-        self.index = self.context = context
-        self.request = request
+        super(ControlView, self).__init__(context, request)
         self.hub = getService(context, "ObjectHub")
 
     def nextBatch(self):
@@ -55,7 +55,7 @@ class ControlView(object):
         if start is None:
             start = int(self.request.get('start', self.default_start))
         count = int(self.request.get('count', self.default_count))
-        results, total = self.index.query(queryText, start, count)
+        results, total = self.context.query(queryText, start, count)
         nresults = len(results)
         first = start + 1
         last = first + len(results) - 1
@@ -91,7 +91,7 @@ class ControlView(object):
         except NotFoundError:
             pass
         else:
-            dc = queryAdapter(object, IZopeDublinCore, context=self.index)
+            dc = queryAdapter(object, IZopeDublinCore, context=self.context)
             if dc is not None:
                 title = dc.title
                 result['title'] = title
