@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: zopepolicy.py,v 1.2 2004/03/02 13:42:39 philikon Exp $
 """
 from zope.interface import implements
 from zope.component import queryAdapter
@@ -39,30 +39,27 @@ globalContext = object()
 
 
 class ZopeSecurityPolicy:
-
     implements(ISecurityPolicy)
 
     def __init__(self, ownerous=True, authenticated=True):
         """
-            Two optional keyword arguments may be provided:
+        Two optional keyword arguments may be provided:
 
-            ownerous -- Untrusted users can create code
-                (e.g. Python scripts or templates),
-                so check that code owners can access resources.
-                The argument must have a truth value.
-                The default is true.
+        ownerous -- Untrusted users can create code (e.g. Python
+            scripts or templates), so check that code owners can
+            access resources.  The argument must have a truth value.
+            The default is true.
 
-            authenticated -- Allow access to resources based on the
-                privileges of the authenticated user.
-                The argument must have a truth value.
-                The default is true.
+        authenticated -- Allow access to resources based on the
 
-                This (somewhat experimental) option can be set
-                to false on sites that allow only public
-                (unauthenticated) access. An anticipated
-                scenario is a ZEO configuration in which some
-                clients allow only public access and other
-                clients allow full management.
+            privileges of the authenticated user.  The argument must
+            have a truth value.  The default is true.
+
+            This (somewhat experimental) option can be set to false on
+            sites that allow only public (unauthenticated) access. An
+            anticipated scenario is a ZEO configuration in which some
+            clients allow only public access and other clients allow
+            full management.
         """
 
         self._ownerous = ownerous
