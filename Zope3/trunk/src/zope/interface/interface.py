@@ -14,13 +14,11 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.7 2003/03/06 20:46:53 jeremy Exp $
+$Id: interface.py,v 1.8 2003/04/14 08:29:09 jim Exp $
 """
 
 from inspect import currentframe
 from types import FunctionType
-
-sig_traits = ['positional', 'required', 'optional', 'varargs', 'kwargs']
 
 CO_VARARGS = 4
 CO_VARKEYWORDS = 8
@@ -360,11 +358,12 @@ class Method(Attribute):
         raise BrokenImplementation(self.interface, self.__name__)
 
     def getSignatureInfo(self):
-        info = {}
-        for t in sig_traits:
-            info[t] = getattr(self, t)
-
-        return info
+        return {'positional': self.positional,
+                'required': self.required,
+                'optional': self.optional,
+                'varargs': self.varargs,
+                'kwargs': self.kwargs,
+                }
 
     def getSignatureString(self):
         sig = "("
