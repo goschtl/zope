@@ -43,12 +43,24 @@ class ServiceTwo(GlobalService):
 
 class Test(CleanUp, unittest.TestCase):
 
+    def setUp(self):
+        super(Test, self).setUp()
+        from zope.component import bbb
+        bbb.__warn__ = False
+        bbb.service.__warn__ = False
+
+    def cleanUp(self):
+        super(Test, self).cleanUp()
+        from zope.component import bbb
+        bbb.__warn__ = True
+        bbb.service.__warn__ = True
+
     def testNormal(self):
         ss = getGlobalServices()
         ss.defineService('one', IOne)
         c = ServiceOne()
         ss.provideService('one', c)
-        self.assertEqual(id(getService('one')), id(c))
+        self.assertEqual(id(getService('one',)), id(c))
 
     def testFailedLookup(self):
         self.assertRaises(ComponentLookupError, getService, 'two')
@@ -123,8 +135,10 @@ class Test(CleanUp, unittest.TestCase):
         self.assert_(s is s2)
         testServiceManager._clear()
 
-
+from zope.component import bbb
+bbb.service.__warn__ = False
 testServiceManager = GlobalServiceManager('testServiceManager', __name__)
+bbb.service.__warn__ = True
 
 
 def test_suite():

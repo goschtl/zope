@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,13 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Testing Package for the Component Architecture
+"""Placeless Test Setup
 
 $Id$
 """
-__docformat__ = "reStructuredText"
-import sys
+from zope.testing import cleanup
 
-# BBB: Import some backward-compatibility; 12/10/2004
-from zope.component.bbb.tests import request
-sys.modules['zope.component.tests.request'] = request
+# A mix-in class inheriting from CleanUp that also connects the CA services
+class PlacelessSetup(cleanup.CleanUp):
+
+    def setUp(self):
+        super(PlacelessSetup, self).setUp()
+
+    def tearDown(self):
+        super(PlacelessSetup, self).tearDown()
+
+
+def setUp(test):
+    cleanup.setUp()
+
+def tearDown(test):
+    cleanup.tearDown()

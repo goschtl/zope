@@ -16,15 +16,44 @@
 $Id$
 """
 import sys
-import warnings
 from zope.interface import moduleProvides, Interface, providedBy
-from zope.interface.interfaces import IInterface
-from zope.component.interfaces import IComponentArchitecture, IFactory
-from zope.component.interfaces import IServiceService
+from zope.component.interfaces import IComponentArchitecture
 from zope.component.interfaces import IDefaultViewName
-from zope.component.exceptions import ComponentLookupError
-from zope.component.service import serviceManager
-from zope.component.servicenames import Adapters, Utilities
+from zope.component.interfaces import IFactory
+from zope.component.interfaces import ISiteManager
+from zope.component.interfaces import ComponentLookupError
+from zope.component.site import globalSiteManager
+
+##############################################################################
+# BBB: Import some backward-compatibility; 12/10/2004
+from zope.component.bbb import exceptions
+sys.modules['zope.component.exceptions'] = exceptions
+from zope.component.bbb import service
+sys.modules['zope.component.service'] = service
+from zope.component.bbb import adapter
+sys.modules['zope.component.adapter'] = adapter
+from zope.component.bbb import utility
+sys.modules['zope.component.utility'] = utility
+from zope.component.bbb import servicenames
+sys.modules['zope.component.servicenames'] = servicenames
+from zope.component.bbb import contextdependent
+sys.modules['zope.component.contextdependent'] = contextdependent
+
+service.__warn__ = False
+service.serviceManager = service.GlobalServiceManager(
+    'serviceManager', __name__, globalSiteManager)
+service.__warn__ = True
+
+from zope.component.bbb import getGlobalServices, getGlobalService
+from zope.component.bbb import getServices, getService
+from zope.component.bbb import getServiceDefinitions
+from zope.component.bbb import getView, queryView
+from zope.component.bbb import getMultiView, queryMultiView
+from zope.component.bbb import getViewProviding, queryViewProviding
+from zope.component.bbb import getDefaultViewName, queryDefaultViewName
+from zope.component.bbb import getResource, queryResource
+##############################################################################
+
 
 # Try to be hookable. Do so in a try/except to avoid a hard dependency.
 try:
@@ -36,64 +65,26 @@ except ImportError:
 moduleProvides(IComponentArchitecture)
 __all__ = tuple(IComponentArchitecture)
 
-def warningLevel():
-    """Returns the number of the first stack frame outside of zope.component"""
-    try:
-        level = 2
-        while sys._getframe(level).f_globals['__name__'] == 'zope.component':
-            level += 1
-        return level
-    except ValueError:
-        return 2
+# SiteManager API
 
-def getGlobalServices():
-    return serviceManager
+def getGlobalSiteManager():
+    return globalSiteManager
 
-def getGlobalService(name):
-    return serviceManager.getService(name)
-
-def getServices(context=None):
+def getSiteManager(context=None):
     if context is None:
-        return serviceManager
+        return getGlobalSiteManager()
     else:
-        # Use the global service manager to adapt context to IServiceService
-        # to avoid the recursion implied by using a local getAdapter call.
+        # Use the global site manager to adapt context to `ISiteManager`
+        # to avoid the recursion implied by using a local `getAdapter()` call.
         try:
-            return IServiceService(context)
+            return ISiteManager(context)
         except TypeError, error:
             raise ComponentLookupError(*error.args)
 
-getServices = hookable(getServices)
-
-def getService(name, context=None):
-    return getServices(context).getService(name)
-
-def getServiceDefinitions(context=None):
-    return getServices(context).getServiceDefinitions()
-
-# Utility service
-
-def getUtility(interface, name='', context=None):
-    return getService(Utilities, context=context).getUtility(interface, name)
-
-def queryUtility(interface, name='', default=None, context=None):
-    return getService(Utilities, context).queryUtility(
-        interface, name, default)
-
-def getUtilitiesFor(interface, context=None):
-    if not IInterface.providedBy(interface):
-        raise TypeError("getUtilitiesFor got nonsense arguments."
-                        " Check that you are updated with the"
-                        " component API change.")
-    return getService(Utilities, context).getUtilitiesFor(interface)
+getSiteManager = hookable(getSiteManager)
 
 
-def getAllUtilitiesRegisteredFor(interface, context=None):
-    return getService(Utilities, context
-                      ).getAllUtilitiesRegisteredFor(interface)
-
-
-# Adapter service
+# Adapter API
 
 def getAdapterInContext(object, interface, context):
     adapter = queryAdapterInContext(object, interface, context)
@@ -126,8 +117,7 @@ def queryAdapterInContext(object, interface, context, default=None):
     if interface.providedBy(object):
         return object
 
-    adapters = getService(Adapters, context)
-    return adapters.queryAdapter(object, interface, '', default)
+    return getSiteManager(context).queryAdapter(object, interface, '', default)
 
 def getAdapter(object, interface, name, context=None):
     adapter = queryAdapter(object, interface, name, None, context)
@@ -135,24 +125,11 @@ def getAdapter(object, interface, name, context=None):
         raise ComponentLookupError(object, interface)
     return adapter
 
-def adapter_hook(interface, object, name='', default=None):
-    try:
-        adapters = getService(Adapters)
-    except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running
-        # from a test
-        return None
-    return adapters.queryAdapter(object, interface, name, default)
-adapter_hook = hookable(adapter_hook)
-
-import zope.interface.interface
-zope.interface.interface.adapter_hooks.append(adapter_hook)
-
 def queryAdapter(object, interface, name, default=None, context=None):
     if context is None:
         return adapter_hook(interface, object, name, default)
-    adapters = getService(Adapters, context)
-    return adapters.queryAdapter(object, interface, name, default)
+    return getSiteManager(context).queryAdapter(object, interface, name,
+                                                default)
 
 def getMultiAdapter(objects, interface, name=u'', context=None):
     adapter = queryMultiAdapter(objects, interface, name, context=context)
@@ -163,31 +140,68 @@ def getMultiAdapter(objects, interface, name=u'', context=None):
 def queryMultiAdapter(objects, interface, name=u'', default=None,
                       context=None):
     try:
-        adapters = getService(Adapters, context)
+        sitemanager = getSiteManager(context)
     except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
+        # Oh blast, no site manager. This should *never* happen!
         return default
 
-    return adapters.queryMultiAdapter(objects, interface, name, default)
+    return sitemanager.queryMultiAdapter(objects, interface, name, default)
 
 def getAdapters(objects, provided, context=None):
     try:
-        adapters = getService(Adapters, context)
+        sitemanager = getSiteManager(context)
     except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
+        # Oh blast, no site manager. This should *never* happen!
         return []
-    return [(name, adapter(*objects))
-            for name, adapter in adapters.lookupAll(map(providedBy, objects),
-                                                    provided)
-            ]
+    return sitemanager.getAdapters(objects, provided)
+
 
 def subscribers(objects, interface, context=None):
     try:
-        adapters = getService(Adapters, context=context)
+        sitemanager = getSiteManager(context)
     except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
+        # Oh blast, no site manager. This should *never* happen!
         return []
-    return adapters.subscribers(objects, interface)
+    return sitemanager.subscribers(objects, interface)
+
+#############################################################################
+# Register the component architectures adapter hook, with the adapter hook
+# registry of the `zope.inteface` package. This way we will be able to call
+# interfaces to create adapters for objects. For example, `I1(ob)` is
+# equvalent to `getAdapterInContext(I1, ob, '')`.
+def adapter_hook(interface, object, name='', default=None):
+    try:
+        sitemanager = getSiteManager()
+    except ComponentLookupError:
+        # Oh blast, no site manager. This should *never* happen!
+        return None
+    return sitemanager.queryAdapter(object, interface, name, default)
+
+# Make the component architecture's adapter hook hookable 
+adapter_hook = hookable(adapter_hook)
+
+import zope.interface.interface
+zope.interface.interface.adapter_hooks.append(adapter_hook)
+#############################################################################
+
+
+# Utility API
+
+def getUtility(interface, name='', context=None):
+    utility = queryUtility(interface, name, context=context)
+    if utility is not None:
+        return utility
+    raise ComponentLookupError(interface, name)
+
+def queryUtility(interface, name='', default=None, context=None):
+    return getSiteManager(context).queryUtility(interface, name, default)
+
+def getUtilitiesFor(interface, context=None):
+    return getSiteManager(context).getUtilitiesFor(interface)
+
+
+def getAllUtilitiesRegisteredFor(interface, context=None):
+    return getSiteManager(context).getAllUtilitiesRegisteredFor(interface)
 
 
 # Factories
@@ -199,7 +213,7 @@ def getFactoryInterfaces(name, context=None):
     return getUtility(IFactory, name, context).getInterfaces()
 
 def getFactoriesFor(interface, context=None):
-    utils = getService(Utilities, context)
+    utils = getSiteManager(context)
     for (name, factory) in utils.getUtilitiesFor(IFactory):
         interfaces = factory.getInterfaces()
         try:
@@ -210,73 +224,3 @@ def getFactoriesFor(interface, context=None):
                 if iface.isOrExtends(interface):
                     yield name, factory
                     break
-
-
-# Presentation API
-
-def getView(object, name, request, providing=Interface, context=None):
-    view = queryView(object, name, request, context=context,
-                     providing=providing)
-    if view is not None:
-        return view
-
-    raise ComponentLookupError("Couldn't find view",
-                               name, object, context, request, providing)
-
-def queryView(object, name, request,
-              default=None, providing=Interface, context=None):
-    return queryMultiAdapter((object, request), providing, name,
-                             default, context)
-
-queryView = hookable(queryView)
-
-def getMultiView(objects, request, providing=Interface, name='', context=None):
-    view = queryMultiView(objects, request, providing, name, context=context)
-    if view is not None:
-        return view
-
-    raise ComponentLookupError("Couldn't find view",
-                               name, objects, context, request)
-
-def queryMultiView(objects, request, providing=Interface, name='',
-                   default=None, context=None):
-    return queryMultiAdapter(objects+(request,), providing, name,
-                             default, context)
-
-def getViewProviding(object, providing, request, context=None):
-    return getView(object, '', request, providing, context)
-
-def queryViewProviding(object, providing, request, default=None, 
-                       context=None):
-    return queryView(object, '', request, default, providing, context)
-
-def getDefaultViewName(object, request, context=None):
-    view = queryDefaultViewName(object, request, context=context)
-    if view is not None:
-        return view
-
-    raise ComponentLookupError("Couldn't find default view name",
-                               context, request)
-
-def queryDefaultViewName(object, request, default=None, context=None):
-    try:
-        adapters = getService(Adapters, context)
-    except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
-        return default
-
-    name = adapters.lookup(map(providedBy, (object, request)), IDefaultViewName)
-    if name is not None:
-        return name
-    return default
-
-def getResource(name, request, providing=Interface, context=None):
-    view = queryResource(name, request, providing=providing, context=context)
-    if view is not None:
-        return view
-
-    raise ComponentLookupError("Couldn't find resource", name, request)
-
-def queryResource(name, request, default=None, providing=Interface,
-                  context=None):
-    return queryAdapter(request, providing, name, default, context)

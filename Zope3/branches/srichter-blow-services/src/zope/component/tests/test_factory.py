@@ -17,13 +17,12 @@ $Id$
 """
 import unittest
 from zope.interface import Interface, implements
-from zope.interface.interfaces import IDeclaration
 
-from zope.component import createObject, getFactoryInterfaces, getFactoriesFor
-from zope.component import getService, servicenames
+from zope import component as capi
 from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.component.tests.placelesssetup import setUp, tearDown
+from zope.testing import doctest
 
 class IFunction(Interface):
     pass
@@ -38,44 +37,62 @@ class Klass(object):
         self.args = args
         self.kw = kw
 
+factory = Factory(Klass, 'Klass', 'Klassier')
+factory2 = Factory(lambda x: x, 'Func', 'Function')
+factory3 = Factory(lambda x: x, 'Func', 'Function', (IFunction,))
 
-class TestFactory(unittest.TestCase):
+def testFactoryCall():
+    """Here we test whether the factory correctly creates the objects and
+    including the correct handling of constructor elements.
 
-    def setUp(self):
-        self._factory = Factory(Klass, 'Klass', 'Klassier')
-        self._factory2 = Factory(lambda x: x, 'Func', 'Function')
-        self._factory3 = Factory(lambda x: x, 'Func', 'Function', (IFunction,))
+    First we create a factory that creates instanace of the `Klass` class:
 
-    def testCall(self):
-        kl = self._factory(3, foo=4)
-        self.assert_(isinstance(kl, Klass))
-        self.assertEqual(kl.args, (3, ))
-        self.assertEqual(kl.kw, {'foo': 4})
-        self.assertEqual(self._factory2(3), 3)
-        self.assertEqual(self._factory3(3), 3)
+      >>> factory = Factory(Klass, 'Klass', 'Klassier')
 
-    def testTitleDescription(self):
-        self.assertEqual(self._factory.title, 'Klass')
-        self.assertEqual(self._factory.description, 'Klassier')
-        self.assertEqual(self._factory2.title, 'Func')
-        self.assertEqual(self._factory2.description, 'Function')
-        self.assertEqual(self._factory3.title, 'Func')
-        self.assertEqual(self._factory3.description, 'Function')
+    Now we use the factory to create the instance
+    
+      >>> kl = factory(1, 2, foo=3, bar=4)
 
-    def testGetInterfaces(self):
-        implemented = self._factory.getInterfaces()
-        self.assert_(implemented.isOrExtends(IKlass))
-        self.assertEqual(list(implemented), [IKlass])
-        self.assertEqual(implemented.__name__,
-                         'zope.component.tests.test_factory.Klass')
+    and make sure that the correct class was used to create the object:
+    
+      >>> kl.__class__
+      <>
 
-        implemented2 = self._factory2.getInterfaces()
-        self.assertEqual(list(implemented2), [])
-        self.assertEqual(implemented2.__name__, '<lambda>')
+    Since we passed in one 
+      
+      >>> kl.args
+      (3, )
+      >>> kl.kw
+      {'foo': 4}
+      
+      >>> factory2(3)
+      3
+      >>> factory3(3)
+      3
+    """
 
-        implemented3 = self._factory3.getInterfaces()
-        self.assertEqual(list(implemented3), [IFunction])
-        self.assertEqual(implemented3.__name__, '<lambda>')
+def testTitleDescription(self):
+    self.assertEqual(self._factory.title, 'Klass')
+    self.assertEqual(self._factory.description, 'Klassier')
+    self.assertEqual(self._factory2.title, 'Func')
+    self.assertEqual(self._factory2.description, 'Function')
+    self.assertEqual(self._factory3.title, 'Func')
+    self.assertEqual(self._factory3.description, 'Function')
+
+def testGetInterfaces(self):
+    implemented = self._factory.getInterfaces()
+    self.assert_(implemented.isOrExtends(IKlass))
+    self.assertEqual(list(implemented), [IKlass])
+    self.assertEqual(implemented.__name__,
+                     'zope.component.tests.test_factory.Klass')
+
+    implemented2 = self._factory2.getInterfaces()
+    self.assertEqual(list(implemented2), [])
+    self.assertEqual(implemented2.__name__, '<lambda>')
+
+    implemented3 = self._factory3.getInterfaces()
+    self.assertEqual(list(implemented3), [IFunction])
+    self.assertEqual(implemented3.__name__, '<lambda>')
 
 
 class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
@@ -83,29 +100,28 @@ class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(TestFactoryZAPIFunctions, self).setUp()
         self.factory = Factory(Klass, 'Klass', 'Klassier')
-        utilityService = getService(servicenames.Utilities)
-        utilityService.provideUtility(IFactory, self.factory, 'klass')
+        gsm = capi.getGlobalSiteManager() 
+        gsm.registerUtility(IFactory, self.factory, 'klass')
 
     def testCreateObject(self):
-        kl = createObject(None, 'klass', 3, foo=4)
+        kl = capi.createObject(None, 'klass', 3, foo=4)
         self.assert_(isinstance(kl, Klass))
         self.assertEqual(kl.args, (3, ))
         self.assertEqual(kl.kw, {'foo': 4})
 
     def testGetFactoryInterfaces(self):
-        implemented = getFactoryInterfaces('klass')
+        implemented = capi.getFactoryInterfaces('klass')
         self.assert_(implemented.isOrExtends(IKlass))
         self.assertEqual([iface for iface in implemented], [IKlass])
 
     def testGetFactoriesFor(self):
-        self.assertEqual(list(getFactoriesFor(IKlass)),
+        self.assertEqual(list(capi.getFactoriesFor(IKlass)),
                          [('klass', self.factory)])
 
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(TestFactory),
-        unittest.makeSuite(TestFactoryZAPIFunctions)
+        doctest.DocTestSuite(),
         ))
 
 if __name__=='__main__':

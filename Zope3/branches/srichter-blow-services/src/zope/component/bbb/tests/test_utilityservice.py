@@ -54,6 +54,10 @@ dummyUtility2 = DummyUtility2()
 class Test(TestCase, CleanUp):
 
     def setUp(self):
+        from zope.component import bbb
+        bbb.__warn__ = False
+        bbb.service.__warn__ = False
+
         CleanUp.setUp(self)
         sm = getGlobalServices()
         defineService = sm.defineService
@@ -62,6 +66,12 @@ class Test(TestCase, CleanUp):
         defineService('Utilities',IUtilityService)
         from zope.component.utility import GlobalUtilityService
         provideService('Utilities', GlobalUtilityService())
+
+    def cleanUp(self):
+        super(Test, self).cleanUp()
+        from zope.component import bbb
+        bbb.__warn__ = True
+        bbb.service.__warn__ = True
 
     def testGetUtility(self):
         us = getService(Utilities)

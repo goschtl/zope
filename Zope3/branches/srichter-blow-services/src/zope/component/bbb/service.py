@@ -15,11 +15,12 @@
 
 $Id$
 """
+__warn__ = True
+import warnings
 
 from zope.exceptions import DuplicationError
-from zope.component.interfaces import IServiceService
-from zope.component.exceptions import ComponentLookupError
-from zope.interface import implements
+from zope.component.bbb.interfaces import IServiceService
+from zope.interface import implements, Interface, directlyProvides
 
 
 class IGlobalServiceManager(IServiceService):
@@ -41,6 +42,14 @@ class IGlobalServiceManager(IServiceService):
 
         """
 
+class IService(Interface):
+    """Marker interface that is used as utility interface to simulate
+       services."""
+
+class IServiceDefinition(Interface):
+    """Marker interface that is used as utility interface to store service
+    defintions (name, interface)."""
+
 class UndefinedService(Exception):
     """An attempt to register a service that has not been defined
     """
@@ -55,14 +64,22 @@ class GlobalServiceManager(object):
 
     implements(IGlobalServiceManager)
 
-    def __init__(self, name=None, module=None):
-        self._clear()
+    def __init__(self, name=None, module=None, sitemanager=None):
+        if __warn__:
+            warnings.warn(
+                "The concept of services has been deprecated. You now have "
+                "only adapters and utilities, which are managed by the site "
+                "manager, which is probably the object you want.",
+                DeprecationWarning, 2)
+        if sitemanager is None:
+            from zope.component.site import GlobalSiteManager
+            sitemanager = GlobalSiteManager()
+        self.sm = sitemanager
         self.__name__ = name
         self.__module__ = module
 
     def _clear(self):
-        self.__defs     = {'Services': IServiceService}
-        self.__services = {'Services': self}
+        pass
 
     def __reduce__(self):
         # Global service managers are pickled as global objects
@@ -71,14 +88,18 @@ class GlobalServiceManager(object):
     def defineService(self, name, interface):
         """see IGlobalServiceManager interface"""
 
-        if name in self.__defs:
+        utils = self.sm.getAllUtilitiesRegisteredFor(IServiceDefinition)
+        names = [n for n, iface in utils]
+        if name in names:
             raise DuplicationError(name)
 
-        self.__defs[name] = interface
+        self.sm.registerUtility(IServiceDefinition, (name, interface),
+                                name=name, strict=False)
 
     def getServiceDefinitions(self):
         """see IServiceService Interface"""
-        return self.__defs.items()
+        defs = list(self.sm.getAllUtilitiesRegisteredFor(IServiceDefinition))
+        return defs + [('Services', IServiceService)]
 
     def provideService(self, name, component, force=False):
         """see IGlobalServiceManager interface, above
@@ -87,25 +108,45 @@ class GlobalServiceManager(object):
         service.  This is mostly useful in testing scenarios.
         """
 
-        if not force and name in self.__services:
+        if not force and self.sm.queryUtility(IService, name) is not None:
             raise DuplicationError(name)
 
-        if name not in self.__defs:
+        utils = self.sm.getAllUtilitiesRegisteredFor(IServiceDefinition)
+        if name not in [name for name, iface in utils]:
             raise UndefinedService(name)
 
-        if not self.__defs[name].providedBy(component):
-            raise InvalidService(name, component, self.__defs[name])
+        if not dict(self.getServiceDefinitions())[name].providedBy(component):
+            raise InvalidService(name, component,
+                                 dict(self.getServiceDefinitions())[name])
 
         if isinstance(component, GlobalService):
             component.__parent__ = self
             component.__name__ = name
 
-        self.__services[name] = component
+        # Ignore the base services, since their functionality is provided by
+        # the SM.
+        if name in ('Adapters', 'Utilities', 'Services'):
+            return
+
+        directlyProvides(component, IService)
+        self.sm.registerUtility(IService, component, name)
 
     def getService(self, name):
         """see IServiceService interface"""
-        service = self.__services.get(name)
+        if name == 'Services':
+            return self
+
+        if name == 'Adapters':
+            from zope.component.bbb.adapter import GlobalAdapterService
+            return GlobalAdapterService(self.sm)
+
+        if name == 'Utilities':
+            from zope.component.bbb.utility import GlobalUtilityService
+            return GlobalUtilityService(self.sm)
+
+        service = self.sm.queryUtility(IService, name)
         if service is None:
+            from zope.component.bbb.exceptions import ComponentLookupError
             raise ComponentLookupError(name)
 
         return service
@@ -120,14 +161,9 @@ class GlobalService(object):
         return GS, (self.__parent__, self.__name__)
 
 
+def __getSM(sitemanager=None):
+    return GlobalServiceManager('serviceManager', __name__, sitemanager)
 
-# the global service manager instance
-serviceManager = GlobalServiceManager('serviceManager', __name__)
+def defineService(name, interface, sitemanager=None):
+    __getSM().defineService(name, interface)
 
-defineService = serviceManager.defineService
-
-# Register our cleanup with Testing.CleanUp to make writing unit tests
-# simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(serviceManager._clear)
-del addCleanUp

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,24 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Global Adapter Service
+"""Global Site Manager
 
 $Id$
 """
-import sys
-import warnings
-from types import ClassType
+__docformat__ = "reStructuredText"
+import types
 
-from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IAdapterService, IRegistry
-from zope.component.service import GlobalService
+from zope.interface import implements, providedBy, implementedBy
 from zope.interface.adapter import AdapterRegistry
-from zope.interface import implements, providedBy, Interface, implementedBy
 from zope.interface.interfaces import IInterface
 
-class IGlobalAdapterService(IAdapterService, IRegistry):
+from zope.component.interfaces import ISiteManager, IRegistry
+from zope.component.interfaces import ComponentLookupError
 
-    def register(required, provided, name, factory, info=''):
+
+class IGlobalSiteManager(ISiteManager, IRegistry):
+
+    def registerAdapter(required, provided, name, factory, info=''):
         """Register an adapter factory
 
         :Parameters:
@@ -52,28 +52,75 @@ class IGlobalAdapterService(IAdapterService, IRegistry):
           - `info`: Provide some info about this particular adapter.
         """
 
-class AdapterService(AdapterRegistry):
-    """Base implementation of an adapter service, implementing only the
-    'IAdapterService' interface.
+    def registerUtility(providedInterface, component, name='', info='',
+                        strict=True):
+        """Register a utility
 
-    No write-methods were implemented.
-    """
+        If strict is true, then the specified component *must* implement the
+        `providedInterface`. Turning strict off is particularly useful for
+        tests.
+        """
 
-    implements(IAdapterService)
 
-class GlobalAdapterService(AdapterService, GlobalService):
-    """Global Adapter Service implementation."""
-
-    implements(IGlobalAdapterService)
+class SiteManager(object):
+    """Site Manager implementation"""
 
     def __init__(self):
-        AdapterRegistry.__init__(self)
+        self.adapters = AdapterRegistry()
+        self.utilities = AdapterRegistry()
+
+    def queryAdapter(self, object, interface, name, default=None):
+        """See ISiteManager interface"""
+        return self.adapters.queryAdapter(object, interface, name, default)
+
+    def queryMultiAdapter(self, objects, interface, name='', default=None):
+        """See ISiteManager interface"""
+        return self.adapters.queryMultiAdapter(objects, interface, name,
+                                               default)
+    
+    def getAdapters(self, objects, provided):
+        """See ISiteManager interface"""
+        return [(name, adapter(*objects))
+                for name, adapter in self.adapters.lookupAll(
+                                        map(providedBy, objects), provided)]
+
+    def subscribers(self, required, provided):
+        """See ISiteManager interface"""
+        return self.adapters.subscribers(required, provided)
+    
+    def queryUtility(self, interface, name='', default=None):
+        """See ISiteManager interface"""
+
+        byname = self.utilities._null.get(interface)
+        if byname:
+            return byname.get(name, default)
+        else:
+            return default
+
+    def getUtilitiesFor(self, interface):
+        byname = self.utilities._null.get(interface)
+        if byname:
+            for item in byname.iteritems():
+                yield item
+
+    def getAllUtilitiesRegisteredFor(self, interface):
+        return iter(self.utilities._null.get(('s', interface)) or ())
+
+
+class GlobalSiteManager(SiteManager):
+    """Global Site Manager implementation."""
+
+    implements(IGlobalSiteManager)
+
+    def __init__(self):
+        super(GlobalSiteManager, self).__init__()
         self._registrations = {}
 
-    def register(self, required, provided, name, factory, info=''):
+    def registerAdapter(self, required, provided, name, factory, info=''):
         """Register an adapter
 
-        >>> registry = GlobalAdapterService()
+        >>> from zope.interface import Interface
+        >>> registry = GlobalSiteManager()
         >>> class R1(Interface):
         ...     pass
         >>> class R2(R1):
@@ -83,9 +130,9 @@ class GlobalAdapterService(AdapterService, GlobalService):
         >>> class P2(P1):
         ...     pass
 
-        >>> registry.register((R1, ), P2, 'bob', 'c1', 'd1')
-        >>> registry.register((R1, ), P2,    '', 'c2', 'd2')
-        >>> registry.lookup((R2, ), P1, '')
+        >>> registry.registerAdapter((R1, ), P2, 'bob', 'c1', 'd1')
+        >>> registry.registerAdapter((R1, ), P2,    '', 'c2', 'd2')
+        >>> registry.adapters.lookup((R2, ), P1, '')
         'c2'
 
         >>> registrations = map(repr, registry.registrations())
@@ -106,18 +153,18 @@ class GlobalAdapterService(AdapterService, GlobalService):
         ...     def __init__(self, obj1, obj2=None):
         ...         pass
 
-        >>> registry.register((O1, ), R1, '', O3)
+        >>> registry.registerAdapter((O1, ), R1, '', O3)
         >>> registry.queryAdapter(O1(), R1, '').__class__
-        <class 'zope.component.adapter.O3'>
+        <class 'zope.component.site.O3'>
 
-        >>> registry.register((O1, O2), R1, '', O3)
+        >>> registry.registerAdapter((O1, O2), R1, '', O3)
         >>> registry.queryMultiAdapter((O1(), O2()), R1, '').__class__
-        <class 'zope.component.adapter.O3'>
+        <class 'zope.component.site.O3'>
         """
         ifaces = []
         for iface in required:
             if not IInterface.providedBy(iface) and iface is not None:
-                if not isinstance(iface, (type, ClassType)):
+                if not isinstance(iface, (type, types.ClassType)):
                     raise TypeError(iface, IInterface)
                 iface = implementedBy(iface)
 
@@ -127,12 +174,13 @@ class GlobalAdapterService(AdapterService, GlobalService):
         self._registrations[(required, provided, name)] = AdapterRegistration(
             required, provided, name, factory, info)
 
-        AdapterService.register(self, required, provided, name, factory)
+        self.adapters.register(required, provided, name, factory)
 
     def subscribe(self, required, provided, factory, info=''):
         """Register an subscriptions adapter
 
-        >>> registry = GlobalAdapterService()
+        >>> from zope.interface import Interface
+        >>> registry = GlobalSiteManager()
         >>> class R1(Interface):
         ...     pass
         >>> class R2(R1):
@@ -144,7 +192,8 @@ class GlobalAdapterService(AdapterService, GlobalService):
 
         >>> registry.subscribe((R1, ), P2, 'c1', 'd1')
         >>> registry.subscribe((R1, ), P2, 'c2', 'd2')
-        >>> subscriptions = map(str, registry.subscriptions((R2, ), P1))
+        >>> subscriptions = map(str,
+        ...                     registry.adapters.subscriptions((R2, ), P1))
         >>> subscriptions.sort()
         >>> subscriptions
         ['c1', 'c2']
@@ -155,7 +204,6 @@ class GlobalAdapterService(AdapterService, GlobalService):
         ...    print registration
         SubscriptionRegistration(('R1',), 'P2', 'c1', 'd1')
         SubscriptionRegistration(('R1',), 'P2', 'c2', 'd2')
-
         """
         required = tuple(required)
 
@@ -168,7 +216,22 @@ class GlobalAdapterService(AdapterService, GlobalService):
             (registration, )
             )
 
-        AdapterService.subscribe(self, required, provided, factory)
+        self.adapters.subscribe(required, provided, factory)
+
+    def registerUtility(self, providedInterface, component, name='', info='',
+                        strict=True):
+
+        if strict and not providedInterface.providedBy(component):
+            raise Invalid("The registered component doesn't implement "
+                          "the promised interface.")
+
+        self.utilities.register((), providedInterface, name, component)
+
+        # Also subscribe to support getAllUtilitiesRegisteredFor:
+        self.utilities.subscribe((), providedInterface, component)
+
+        self._registrations[(providedInterface, name)] = UtilityRegistration(
+            providedInterface, name, component, info)
 
     def registrations(self):
         for registration in self._registrations.itervalues():
@@ -177,6 +240,17 @@ class GlobalAdapterService(AdapterService, GlobalService):
                     yield r
             else:
                 yield registration
+
+
+# Global Site Manager Instance
+globalSiteManager = GlobalSiteManager()
+
+# Register our cleanup with zope.testing.cleanup to make writing unit tests
+# simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(globalSiteManager.__init__)
+del addCleanUp
+
 
 
 class AdapterRegistration(object):
@@ -208,3 +282,18 @@ class SubscriptionRegistration(object):
             tuple([getattr(r, '__name__', None) for r in self.required]),
             self.provided.__name__, self.value, self.doc,
             )
+
+class UtilityRegistration(object):
+
+    def __init__(self, provided, name, component, doc):
+        (self.provided, self.name, self.component, self.doc
+         ) = provided, name, component, doc
+
+    def __repr__(self):
+        return '%s(%r, %r, %r, %r)' % (
+            self.__class__.__name__,
+            self.provided.__name__, self.name,
+            getattr(self.component, '__name__', self.component), self.doc,
+            )
+
+

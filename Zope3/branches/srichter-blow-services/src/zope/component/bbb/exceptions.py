@@ -15,17 +15,10 @@
 
 $Id$
 """
-from zope.exceptions import NotFoundError
+from zope.component.interfaces import ComponentLookupError
+from zope.component.interfaces import Invalid, Misused
+
 
 __all__ = ["ComponentLookupError",
            "Invalid",
            "Misused"]
-
-class ComponentLookupError(NotFoundError):
-    """A component could not be found."""
-
-class Invalid(Exception):
-    """A component doesn't satisfy a promise."""
-
-class Misused(Exception):
-    """A component is being used (registered) for the wrong interface."""
