@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.7 2003/07/31 14:56:40 jim Exp $
+$Id: config.py,v 1.8 2003/08/02 12:46:20 jim Exp $
 """
 
 from keyword import iskeyword
@@ -318,7 +318,7 @@ class ConfigurationAdapterRegistry(object):
         f = r.getForObject(context, Interface)
         if f is None:
             raise ConfigurationError(
-                "The directive %s cannot ne used in this context" % (name, ))
+                "The directive %s cannot be used in this context" % (name, ))
         return f
 
 class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
@@ -352,7 +352,6 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
     basepath = None
     includepath = ()
     info = ''
-
 
     def __init__(self):
         ConfigurationAdapterRegistry.__init__(self)
@@ -578,11 +577,11 @@ class GroupingStackItem(RootStackItem):
 
     >>> class SampleGrouping(GroupingContextDecorator):
     ...    def before(self):
-    ...       self.context.action(('before', self.x, self.y), f)
+    ...       self.action(('before', self.x, self.y), f)
     ...    def after(self):
-    ...       self.context.action(('after'), f)
+    ...       self.action(('after'), f)
 
-    We'll use our decorator to decorate out initial context, providing
+    We'll use our decorator to decorate our initial context, providing
     keyword arguments x and y:
 
     >>> dec = SampleGrouping(context, x=1, y=2)
@@ -594,11 +593,11 @@ class GroupingStackItem(RootStackItem):
 
     >>> item = GroupingStackItem(dec)
 
-    The before method was called, which we can verify by looking at
-    the context actions:
+    We still haven't called the before action yet, which we can verify
+    by looking at the context actions:
 
     >>> context.actions
-    [(('before', 1, 2), f)]
+    []
 
     Subdirectives will get looked up as adapters of the context.
 
@@ -610,18 +609,19 @@ class GroupingStackItem(RootStackItem):
 
     and register it with the context:
 
+    >>> context.register(IConfigurationContext, (testns, 'simple'), simple)
+
     This handler isn't really a propert handler, because it doesn't
     return a new context.  It will do for this example.
-
-    >>> context.register(IConfigurationContext, (testns, 'simple'), simple)
 
     Now we'll call the contained method on the stack item:
 
     >>> item.contained((testns, 'simple'), {'z': 'zope'}, "someinfo")
     'someinfo'
 
-    we can verify thet the simple method was called by looking at the
-    context actions:
+    We can verify thet the simple method was called by looking at the
+    context actions. Note that the before method was called before
+    handling the contained directive.
 
     >>> from pprint import PrettyPrinter
     >>> pprint=PrettyPrinter(width=60).pprint
@@ -640,22 +640,45 @@ class GroupingStackItem(RootStackItem):
      ('after', f)]
 
 
+    If there were no nested directives:
+
+    >>> context = ConfigurationMachine()
+    >>> dec = SampleGrouping(context, x=1, y=2)
+    >>> item = GroupingStackItem(dec)
+    >>> item.finish()
+
+    Then before will be when we call finish:
+    
+    >>> pprint(context.actions)
+    [(('before', 1, 2), f), ('after', f)]
+
     """
 
     implements(IStackItem)
 
     def __init__(self, context):
         RootStackItem.__init__(self, context)
-        actions = context.before()
+
+    def __callBefore(self):
+        actions = self.context.before()
         if actions:
             for action in actions:
-                context.action(*action)
+                self.context.action(*action)
+        self.__callBefore = noop
+
+    def contained(self, name, data, info):
+        self.__callBefore()
+        return RootStackItem.contained(self, name, data, info)
 
     def finish(self):
+        self.__callBefore()
         actions = self.context.after()
         if actions:
             for action in actions:
                 self.context.action(*action)
+
+def noop():
+    pass
 
 class ComplexStackItem(object):
     """Complex stack item
@@ -1022,8 +1045,7 @@ class ComplexDirectiveDefinition(GroupingContextDecorator, dict):
         def factory(context, data, info):
             return ComplexStackItem(self, context, data, info)
 
-        self.context.register(self.usedIn, (self.namespace, self.name),
-                              factory)
+        self.register(self.usedIn, (self.namespace, self.name), factory)
 
 def subdirective(context, name, schema):
     context.context[name] = schema, context.info
