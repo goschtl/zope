@@ -13,7 +13,8 @@
 
   <!-- move this javascript to a pagelet -->
   <script type="text/javascript" src="boston.js"
-          tal:attributes="src string:${context/++resource++boston.js}" />
+          tal:attributes="src string:${context/++resource++boston.js}">
+  </script>
 
   <style type="text/css" media="all" 
          tal:content="string: @import url(${context/++resource++skin.css});">
