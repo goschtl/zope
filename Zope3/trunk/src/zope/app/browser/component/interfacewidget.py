@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.5 2003/01/06 18:39:28 stevea Exp $
+$Id: interfacewidget.py,v 1.6 2003/01/06 19:09:55 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -32,7 +32,7 @@ class InterfaceWidget(Widget, BrowserView):
     def haveData(self):
         if self.name in self.request.form:
             v = self.request.form[self.name]
-            return v and nameToInterface(self.context, v)
+            return v and (v == 'None' or nameToInterface(self.context, v))
         return False
    
     def getData(self, optional=0):
@@ -143,8 +143,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
         field = self.context
         for k,v in self.request.form.iteritems():
             if k.startswith(name_i):
-                # XXX write test for this code path
-                if v and nameToInterface(field, v):
+                if v and (v == 'None' or nameToInterface(field, v)):
                     return True
         return False
 

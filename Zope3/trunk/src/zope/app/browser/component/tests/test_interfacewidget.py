@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.5 2003/01/06 18:39:29 stevea Exp $
+$Id: test_interfacewidget.py,v 1.6 2003/01/06 19:09:57 stevea Exp $
 """
 
 __metaclass__ = type
@@ -61,7 +61,393 @@ class BaseInterfaceWidgetTest(CleanUp, TestCase):
 
         self.request = request
 
+
+class TestInterfaceWidget(BaseInterfaceWidgetTest):
+
+    def testInterfaceWidget(self):
+        request = self.request
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               required=False)
+
+        widget = InterfaceWidget(field, request)
+
+        self.assertEqual(widget.getData(), None)
+        self.failIf(widget.haveData())
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+
+        self.assertEqual(widget(), out)
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '" selected>'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+
+        self.assertEqual(widget.getData(), None)
+        self.failIf(widget.haveData())
+
+        widget = InterfaceWidget(field, request)
+
+        request.form["field.TestName"] = (
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        )
+        self.assertEqual(widget.getData(), I2)
+        self.failUnless(widget.haveData())
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="">'
+        '<select name="field.TestName">'
+
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '" selected>'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+        self.assertEqual(widget(), out)
+
+        request.form["field.TestName.search"] = 'two'
+        out = (
+        '<input type="text" name="field.TestName.search" value="two">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+        self.assertEqual(widget(), out)
+
+    def testInterfaceWidgetNone(self):
+    
+        request = self.request
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               basetype=None)
+
+        widget = InterfaceWidget(field, request)
+
+        self.assertEqual(widget.getData(), None)
+        self.failIf(widget.haveData())
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'None'
+        '">'
+        'Anything'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+
+        self.assertEqual(widget(), out)
+
+        request.form["field.TestName"] = (
+        'None'
+        )
+        self.assertEqual(widget.getData(), None)
+        self.failUnless(widget.haveData())
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'None'
+        '" selected>'
+        'Anything'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+
+        self.assertEqual(widget(), out)
+
+
 class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
+
+    def testMultiInterfaceWidget(self):
+        request = self.request
+        field = InterfacesField(__name__='TestName',
+                                title=u'This is a test',
+                                required=False)
+        widget = MultiInterfaceWidget(field, request)
+        
+        self.assertEqual(widget.getData(), ())
+        self.failIf(widget.haveData())
+
+        out = (
+        'Use refresh to enter more interfaces'
+        '<br>'
+
+        '<input type="text" name="field.TestName.search.i0" value="">'
+
+        '<select name="field.TestName.i0">'
+
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+
+        '<br>'
+
+        '<input type="text" name="field.TestName.search.i1" value="">'
+
+        '<select name="field.TestName.i1">'
+
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+        self.assertEqual(widget(), out)
+        self.failIf(widget.haveData())
+
+        widget = MultiInterfaceWidget(field, request)
+
+        request.form["field.TestName.i1"] = (
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        )
+        self.assertEqual(widget.getData(), (I2,))
+        self.failUnless(widget.haveData())
+        out = (
+        'Use refresh to enter more interfaces'
+        '<br>'
+
+        '<input type="text" name="field.TestName.search.i0" value="">'
+
+        '<select name="field.TestName.i0">'
+
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+
+        '<br>'
+        '<input type="text" name="field.TestName.search.i1" value="">'
+
+        '<select name="field.TestName.i1">'
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '" selected>'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+        self.assertEqual(widget(), out)
+        self.failUnless(widget.haveData())
+
+        # There is no selected option because the option that would be
+        # selected has been filtered out by the search.
+        request.form["field.TestName.search.i1"] = 'two'
+        out = (
+        'Use refresh to enter more interfaces'
+        '<br>'
+
+        '<input type="text" name="field.TestName.search.i0" value="">'
+
+        '<select name="field.TestName.i0">'
+
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        '</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        
+        '<br>'
+        
+        '<input type="text" name="field.TestName.search.i1" value="two">'
+
+        '<select name="field.TestName.i1">'
+        '<option value="">---select interface---</option>'
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+        self.assertEqual(widget(), out)
+        self.failUnless(widget.haveData())
+        label = '<label for="field.TestName">This is a test</label>'
+        self.assertEqual(widget.label(), label)
+        self.assertEqual(widget.row(),
+                         '<td>%s</td><td>%s</td>' % (label, out)
+                         )
 
     def testMultiInterfaceWidgetNone(self):
         request = self.request
@@ -71,6 +457,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         widget = MultiInterfaceWidget(field, request)
         
         self.assertEqual(widget.getData(), ())
+        self.failIf(widget.haveData())
 
         out = (
         'Use refresh to enter more interfaces'
@@ -138,6 +525,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         request.form["field.TestName.i1"] = 'None'
         self.assertEqual(widget.getData(), (None,))
+        self.failUnless(widget.haveData())
 
         out = (
         'Use refresh to enter more interfaces'
@@ -193,384 +581,6 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '">'
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-        self.assertEqual(widget(), out)
-
-
-    def testMultiInterfaceWidget(self):
-        request = self.request
-        field = InterfacesField(__name__='TestName',
-                                title=u'This is a test',
-                                required=False)
-        widget = MultiInterfaceWidget(field, request)
-        
-        self.assertEqual(widget.getData(), ())
-
-        out = (
-        'Use refresh to enter more interfaces'
-        '<br>'
-
-        '<input type="text" name="field.TestName.search.i0" value="">'
-
-        '<select name="field.TestName.i0">'
-
-        '<option value="">---select interface---</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-
-        '<br>'
-
-        '<input type="text" name="field.TestName.search.i1" value="">'
-
-        '<select name="field.TestName.i1">'
-
-        '<option value="">---select interface---</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-        self.assertEqual(widget(), out)
-
-        widget = MultiInterfaceWidget(field, request)
-
-        request.form["field.TestName.i1"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        )
-        self.assertEqual(widget.getData(), (I2,))
-        out = (
-        'Use refresh to enter more interfaces'
-        '<br>'
-
-        '<input type="text" name="field.TestName.search.i0" value="">'
-
-        '<select name="field.TestName.i0">'
-
-        '<option value="">---select interface---</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-
-        '<br>'
-        '<input type="text" name="field.TestName.search.i1" value="">'
-
-        '<select name="field.TestName.i1">'
-        '<option value="">---select interface---</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '" selected>'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-        self.assertEqual(widget(), out)
-
-        # There is no selected option because the option that would be
-        # selected has been filtered out by the search.
-        request.form["field.TestName.search.i1"] = 'two'
-        out = (
-        'Use refresh to enter more interfaces'
-        '<br>'
-
-        '<input type="text" name="field.TestName.search.i0" value="">'
-
-        '<select name="field.TestName.i0">'
-
-        '<option value="">---select interface---</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        
-        '<br>'
-        
-        '<input type="text" name="field.TestName.search.i1" value="two">'
-
-        '<select name="field.TestName.i1">'
-        '<option value="">---select interface---</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-        self.assertEqual(widget(), out)
-        label = '<label for="field.TestName">This is a test</label>'
-        self.assertEqual(widget.label(), label)
-        self.assertEqual(widget.row(),
-                         '<td>%s</td><td>%s</td>' % (label, out)
-                         )
-
-
-class TestInterfaceWidget(BaseInterfaceWidgetTest):
-
-    def testInterfaceWidgetNone(self):
-    
-        request = self.request
-        field = InterfaceField(__name__='TestName',
-                               title=u"This is a test",
-                               basetype=None)
-
-        widget = InterfaceWidget(field, request)
-
-        self.assertEqual(widget.getData(), None)
-
-        out = (
-        '<input type="text" name="field.TestName.search" value="">'
-        '<select name="field.TestName">'
-        '<option value="">---select interface---</option>'
-
-        '<option value="'
-        'None'
-        '">'
-        'Anything'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-
-        self.assertEqual(widget(), out)
-
-        request.form["field.TestName"] = (
-        'None'
-        )
-        self.assertEqual(widget.getData(), None)
-
-        out = (
-        '<input type="text" name="field.TestName.search" value="">'
-        '<select name="field.TestName">'
-        '<option value="">---select interface---</option>'
-
-        '<option value="'
-        'None'
-        '" selected>'
-        'Anything'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-
-        self.assertEqual(widget(), out)
-
-    def testInterfaceWidget(self):
-        request = self.request
-        field = InterfaceField(__name__='TestName',
-                               title=u"This is a test",
-                               required=False)
-
-        widget = InterfaceWidget(field, request)
-
-        self.assertEqual(widget.getData(), None)
-
-        out = (
-        '<input type="text" name="field.TestName.search" value="">'
-        '<select name="field.TestName">'
-        '<option value="">---select interface---</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-
-        self.assertEqual(widget(), out)
-
-        out = (
-        '<input type="text" name="field.TestName.search" value="">'
-        '<select name="field.TestName">'
-        '<option value="">---select interface---</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '" selected>'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-
-        # self.assertEqual(widget.render(I), out)
-
-        self.assertEqual(widget.getData(), None)
-
-        widget = InterfaceWidget(field, request)
-
-        request.form["field.TestName"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        )
-        self.assertEqual(widget.getData(), I2)
-
-        out = (
-        '<input type="text" name="field.TestName.search" value="">'
-        '<select name="field.TestName">'
-
-        '<option value="">---select interface---</option>'
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '" selected>'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
-        '</option>'
-
-        '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
-        '</option>'
-
-        '</select>'
-        )
-        self.assertEqual(widget(), out)
-
-        request.form["field.TestName.search"] = 'two'
-        out = (
-        '<input type="text" name="field.TestName.search" value="two">'
-        '<select name="field.TestName">'
-        '<option value="">---select interface---</option>'
-
         '<option value="'
         'zope.app.browser.component.tests.test_interfacewidget.I3'
         '">'
