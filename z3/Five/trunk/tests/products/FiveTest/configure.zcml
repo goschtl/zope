@@ -1,16 +1,17 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:five="http://namespaces.zope.org/five">
 
-  <adapter 
+  <adapter
     for=".interfaces.IAdaptable"
     provides=".interfaces.IAdapted"
-    factory=".classes.Adapter" /> 
-  
-  <five:page 
+    factory=".classes.Adapter" />
+
+  <five:page
     for=".interfaces.ISimpleContent"
     class=".browser.SimpleContentView"
     attribute="eagle"
     name="eagle.txt"
+    permission="zope.ViewManagementScreens"
     />
 
   <five:page
@@ -18,24 +19,28 @@
     class=".browser.SimpleContentView"
     template="falcon.pt"
     name="falcon.html"
+    permission="zope.ViewManagementScreens"
     />
 
   <five:page
     for=".interfaces.ISimpleContent"
     template="owl.pt"
     name="owl.html"
+    permission="zope.ViewManagementScreens"
     />
 
   <five:page
     for=".interfaces.ISimpleContent"
     template="flamingo.pt"
     name="flamingo.html"
+    permission="zope.ViewManagementScreens"
     />
 
   <five:page
     for=".interfaces.ISimpleContent"
     template="flamingo2.pt"
     name="flamingo2.html"
+    permission="zope.ViewManagementScreens"
     />
 
   <five:page
@@ -43,6 +48,7 @@
     class=".browser.SimpleContentView"
     template="condor.pt"
     name="condor.html"
+    permission="zope.ViewManagementScreens"
     />
 
 </configure>

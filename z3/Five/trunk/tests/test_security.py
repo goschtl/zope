@@ -64,13 +64,14 @@ class PageSecurityTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
 
     def setUp(self):
         super(PageSecurityTestCase, self).setUp()
-        self.dummy1 = Dummy1
+        zcml.reset()
         zcml.initialize()
+        self.dummy1 = Dummy1
 
     def tearDown(self):
         super(PageSecurityTestCase, self).tearDown()
-        clearSecurityInfo(self.dummy1)
         zcml.reset()
+        clearSecurityInfo(self.dummy1)
 
     def test_page_security(self):
         self.failIf(hasattr(self.dummy1, '__ac_permissions__'))
@@ -105,15 +106,16 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
 
     def setUp(self):
         super(SecurityEquivalenceTestCase, self).setUp()
+        zcml.reset()
+        zcml.initialize()
         self.dummy1 = Dummy1
         self.dummy2 = Dummy2
-        zcml.initialize()
 
     def tearDown(self):
+        zcml.reset()
         super(SecurityEquivalenceTestCase, self).tearDown()
         clearSecurityInfo(self.dummy1)
         clearSecurityInfo(self.dummy2)
-        zcml.reset()
 
     def test_equivalence(self):
         self.failIf(hasattr(self.dummy1, '__ac_permissions__'))

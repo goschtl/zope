@@ -20,13 +20,16 @@ class BrowserView(Acquisition.Explicit):
         else:
             attr = self.__page_attribute__
         meth = getattr(self, attr)
-        security_manager = getSecurityManager()
-        if not security_manager.validate(meth, self, attr, meth):
-            raise Unauthorized
         if attr == '__call__':
             raise AttributeError("__call__")
         elif attr == 'index':
             return meth(self, *args, **kw)
+        # XXX for some reason, validating 'index' doesn't work
+        # as expected. I suspect that its because it's a
+        # ViewPageTemplateFile.
+        security_manager = getSecurityManager()
+        if not security_manager.validate(meth, self, attr, meth):
+            raise Unauthorized
         return meth(*args, **kw)
 
 InitializeClass(BrowserView)
