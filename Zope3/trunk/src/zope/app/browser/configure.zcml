@@ -173,7 +173,7 @@
     name="object_name"
     factory=".objectname.ObjectNameView"
     permission="zope.Public"
-    allowed_interface="zope.app.interfaces.traversing.objectname.IObjectName" 
+    allowed_interface="zope.app.interfaces.traversing.IObjectName" 
     />
 
 <view
@@ -181,7 +181,7 @@
     name="object_name"
     factory=".objectname.SiteObjectNameView"
     permission="zope.Public"
-    allowed_interface="zope.app.interfaces.traversing.objectname.IObjectName" 
+    allowed_interface="zope.app.interfaces.traversing.IObjectName" 
     />
 
 </zopeConfigure>
