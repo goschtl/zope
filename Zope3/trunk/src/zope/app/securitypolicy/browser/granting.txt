@@ -163,19 +163,19 @@ Now we change some settings and submit the form:
 
   >>> from zope.app.security import settings
 
-  >>> view.request.form['field.jim.role.role1'] = 'unset'
-  >>> view.request.form['field.jim.role.role1-empty-makrer'] = 1
-  >>> view.request.form['field.jim.role.role2'] = 'allow'
-  >>> view.request.form['field.jim.role.role2-empty-makrer'] = 1
-  >>> view.request.form['field.jim.role.role3'] = 'deny'
-  >>> view.request.form['field.jim.role.role3-empty-makrer'] = 1
+  >>> view.request.form['field.amlt.role.role1'] = 'unset'
+  >>> view.request.form['field.amlt.role.role1-empty-makrer'] = 1
+  >>> view.request.form['field.amlt.role.role2'] = 'allow'
+  >>> view.request.form['field.amlt.role.role2-empty-makrer'] = 1
+  >>> view.request.form['field.amlt.role.role3'] = 'deny'
+  >>> view.request.form['field.amlt.role.role3-empty-makrer'] = 1
 
-  >>> view.request.form['field.jim.permission.permission1'] = 'unset'
-  >>> view.request.form['field.jim.permission.permission1-empty-makrer'] = 1
-  >>> view.request.form['field.jim.permission.permission2'] = 'allow'
-  >>> view.request.form['field.jim.permission.permission2-empty-makrer'] = 1
-  >>> view.request.form['field.jim.permission.permission3'] = 'deny'
-  >>> view.request.form['field.jim.permission.permission3-empty-makrer'] = 1
+  >>> view.request.form['field.amlt.permission.permission1'] = 'unset'
+  >>> view.request.form['field.amlt.permission.permission1-empty-makrer'] = 1
+  >>> view.request.form['field.amlt.permission.permission2'] = 'allow'
+  >>> view.request.form['field.amlt.permission.permission2-empty-makrer'] = 1
+  >>> view.request.form['field.amlt.permission.permission3'] = 'deny'
+  >>> view.request.form['field.amlt.permission.permission3-empty-makrer'] = 1
 
   >>> view.request.form['GRANT_SUBMIT'] = 'Submit'
 

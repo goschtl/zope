@@ -57,13 +57,17 @@ class Granting(object):
         principal = self.principal_widget.getInputValue()
         self.principal = principal
 
+        # Make sure we can use the principal id in a form by base64ing it
+        principal_token = unicode(principal).encode('base64').strip().replace(
+            '=', '_')
+
         roles = [role for name, role in zapi.getUtilitiesFor(IRole)]
         roles.sort(lambda x, y: cmp(x.title, y.title))
         principal_roles = IPrincipalRoleManager(self.context)
 
         self.roles = []
         for role in roles:
-            name = principal + '.role.'+role.id
+            name = principal_token + '.role.'+role.id
             field = zope.schema.Choice(__name__= name,
                                        title=role.title,
                                        vocabulary=settings_vocabulary)
@@ -79,7 +83,7 @@ class Granting(object):
         for perm in perms:
             if perm.id == 'zope.Public':
                 continue
-            name = principal + '.permission.'+perm.id
+            name = principal_token + '.permission.'+perm.id
             field = zope.schema.Choice(__name__=name,
                                        title=perm.title,
                                        vocabulary=settings_vocabulary)
@@ -92,7 +96,7 @@ class Granting(object):
             return u''
         
         for role in roles:
-            name = principal + '.role.'+role.id
+            name = principal_token + '.role.'+role.id
             role_widget = getattr(self, name+'_widget')
             if role_widget.hasInput():
                 setting = role_widget.getInputValue()
@@ -110,7 +114,7 @@ class Granting(object):
         for perm in perms:
             if perm.id == 'zope.Public':
                 continue
-            name = principal + '.permission.'+perm.id
+            name = principal_token + '.permission.'+perm.id
             perm_widget = getattr(self, name+'_widget')
             if perm_widget.hasInput():
                 setting = perm_widget.getInputValue()
