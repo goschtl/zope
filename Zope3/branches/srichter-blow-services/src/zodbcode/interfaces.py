@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Persistent Module Interfaces
+
+$Id$
+"""
 from zope.interface import Interface, Attribute
 
 class IPersistentModuleImportRegistry(Interface):
