@@ -13,53 +13,45 @@
 ##############################################################################
 """Interfaces for security machinery.
 
-$Id: interfaces.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: interfaces.py,v 1.3 2002/12/31 18:39:49 jeremy Exp $
 """
 
-from zope.interface import Interface
-from zope.interface import Attribute
+from zope.interface import Interface, Attribute
 
+class ISecurityManagementSetup(Interface):
+    """Methods to manage the security manager.
 
-class ISecurityManagementSetup( Interface ):
+    Infrastructure (including tests, etc.) calls these things to
+    tweak the security manager.
     """
-        Infrastructure (including tests, etc.) calls these things to
-        tweak the security manager.
-    """
-    def newSecurityManager( user ):
-        """
-            Install a new SecurityManager, using user.  Return the
-            old SecurityManager, if any, or None.
+    
+    def newSecurityManager(user):
+        """Install a new SecurityManager, using user.
+
+        Return the old SecurityManager, if any, or None.
         """
 
-    def replaceSecurityManager( old_manager ):
-        """
-            Replace the SecurityManager with 'old_manager', which
-            must implement ISecurityManager.
+    def replaceSecurityManager(old_manager):
+        """Replace the SecurityManager with old_manager.
+
+        old_manager must implement ISecurityManager.
         """
 
     def noSecurityManager():
-        """
-            Clear any existing SecurityManager.
-        """
+        """Clear any existing SecurityManager."""
 
-
-class ISecurityManagement( Interface ):
-    """
-        "Public" SM API.
-    """
+class ISecurityManagement(Interface):
+    """Public security management API."""
+    
     def getSecurityManager():
-        """
-            Get a SecurityManager (create if needed).
-        """
+        """Get a SecurityManager (create if needed)."""
 
-    def setSecurityPolicy( aSecurityPolicy ):
-        """
-            Set the system default security policy.
+    def setSecurityPolicy(aSecurityPolicy):
+        """Set the system default security policy.
 
-            This method should only be called by system startup code.
-            It should never, for example, be called during a web request.
+        This method should only be called by system startup code.  It
+        should never, for example, be called during a web request.
         """
-
 
 class ISecurityProxyFactory(Interface):
 
@@ -73,46 +65,38 @@ class ISecurityProxyFactory(Interface):
         returned.
         """
 
-
 # XXX This interface has too much Zope application dependence. This
 # needs to be refactored somehow.
 
-class ISecurityManager( Interface ):
+class ISecurityManager(Interface):
     """
         A security manager provides methods for checking access and managing
         executable context and policies.
     """
 
     def getPrincipal():
-        """
-            Return the authenticated principal.
+        """Return the authenticated principal.
 
-            This is equivalent to something like::
-
-            REQUEST['AUTHENTICATED_USER']
-
-            but is a bit cleaner, especially if 'REQUEST' isn't handy.
+        This is equivalent to something like::
+        REQUEST['AUTHENTICATED_USER']
+        but is a bit cleaner, especially if 'REQUEST' isn't handy.
         """
 
-    def checkPermission( permission, object ):
-        """
-            Check whether the security context allows the given
-            permission on the given object. Return a boolean value.
+    def checkPermission(permission, object):
+        """Return whether security context allows permission on object.
 
-            Arguments:
-
-            permission -- A permission name
-
-            object -- The object being accessed according to the permission
+        Arguments:
+        permission -- A permission name
+        object -- The object being accessed according to the permission
         """
 
-    def pushExecutable( anExecutableObject ):
+    def pushExecutable(anExecutableObject):
         """
             Push an ExecutableObject onto the manager's stack, and
             activate its custom security policy, if any.
         """
 
-    def popExecutable( anExecutableObject ):
+    def popExecutable(anExecutableObject):
         """
             Pop the topmost ExecutableObject from the stack, deactivating
             any custom security policy it might have installed.
@@ -147,12 +131,10 @@ class IChecker(Interface):
     """
 
     def check_getattr(ob, name):
-        """Check whether attribute access is allowed.
-        """
+        """Check whether attribute access is allowed."""
 
     def check_setattr(ob, name):
-        """Check whether attribute assignment is allowed.
-        """
+        """Check whether attribute assignment is allowed."""
 
     def check(ob, operation):
         """Check whether operation is allowed.
@@ -162,41 +144,31 @@ class IChecker(Interface):
         """
 
     def proxy(value):
-        """Return a security proxy for the value.
+        """Return a security proxy for the value."""
+
+
+class ISecurityPolicy(Interface):
+
+    def checkPermission(permission, object, context):
+        """Return whether security context allows permission on object.
+        
+        Arguments:
+        permission -- A permission name
+        object -- The object being accessed according to the permission
+        context -- A SecurityContext, which provides access to information
+            such as the context stack and AUTHENTICATED_USER.
         """
 
 
-class ISecurityPolicy( Interface ):
+class ISecurityContext(Interface):
+    """Capture transient request-specific security information."""
+    
+    Attribute('stack',
+              'A stack of elements, each either be an ExecutableObject'
+              'or a tuple consisting of an ExecutableObject and a'
+              'custom SecurityPolicy.'
+            )
 
-    def checkPermission( permission
-                       , object
-                       , context
-                       ):
-        """
-            Check whether the security context allows the given permission on
-            the given object, returning a boolean value.
-
-            Arguments:
-
-            permission -- A permission name
-
-            object -- The object being accessed according to the permission
-
-            context -- A SecurityContext, which provides access to information
-            shuch as the context stack and AUTHENTICATED_USER.
-        """
-
-
-class ISecurityContext( Interface ):
-    """
-        Capture transient request-specific security information.
-    """
-    Attribute( 'stack'
-             , 'A stack of elements, each either be an ExecutableObject'
-               'or a tuple consisting of an ExecutableObject and a'
-               'custom SecurityPolicy.'
-             )
-
-    Attribute( 'user'
-             , 'The AUTHENTICATED_USER for the request.'
-             )
+    Attribute('user',
+              'The AUTHENTICATED_USER for the request.'
+              )
