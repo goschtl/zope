@@ -69,7 +69,7 @@ class ICopyModifyMergeRepository(IRepository):
     """Top level API for a copy-modify-merge (subversion like) repository.
     """
     
-    def saveAsVersion(obj):
+    def saveAsVersion(obj, metadata=None):
         """Save the current state of the object for later retreival.
         """
 
@@ -86,7 +86,7 @@ class ICheckoutCheckinRepository(IRepository):
         """Marks the object as checked out (being in use somehow).
         """
     
-    def checkin(obj):
+    def checkin(obj, metadata=None):
         """Check in the current state of an object.
         
         Raises an RepositoryError if the object is not versionable.
@@ -116,11 +116,15 @@ class IIntrospectableRepository(Interface):
         does). Instead it returns the version as new object.
         """
 
-    def getVersionIds(self, obj)
-        """Returns references to all versions of the passed object.
+    def getVersionIds(self, obj):
+        """Returns all versions of the given object.
         
         XXX Naming: Should we name that 'listVersions' just returning
         references to the objects?
+        """
+
+    def listMetadata(self, obj):
+        """Returns the metadata of all versions of the given object.
         """
 
 
@@ -156,16 +160,24 @@ class IVersionableAspects(Interface) :
         XXX Explain that this is a multidapter?
     """
 
+    def writeAspects():
+        """Write an aspect from the original object.
+        """
+
     def updateAspects(selector):
         """Updates a certain aspect on the original object.
         
         XXX exceptions?
         XXX Should reading only certain parts of an aspect be possible?
+            E.g. to avoid reading a big blob?
+        XXX Probably the implementation has to handle lazy reading
+            of only parts of an aspect.
         """
     
-    def writeAspects():
-        """Write an aspect from the original object.
+    def readAspects(selector):
         """
+        """
+
  
 class ITicket(Interface) :
     """ A marker interface for access information for versioned data.
@@ -197,14 +209,14 @@ class IHistoryStorage(Interface) : # IHistories
         XXX YAGNI?
         """
     
-    def getObject
-    
     def getVersion(history, selector):
         """
         """
-   
+        
+        
 class IPythonReferenceStorage :
-    """ Marker interface for a storage that is able to preserve 
+    """ XXX Do we need that? No!
+        Marker interface for a storage that is able to preserve 
         python references and thus is able to accept originals.
     
         A minimal implementation would only ensure that versioned originals
