@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.8 2003/05/13 17:32:50 gvanrossum Exp $
+$Id: fssync.py,v 1.9 2003/05/13 19:16:58 gvanrossum Exp $
 """
 
 import os
@@ -38,6 +38,8 @@ from zope.xmlpickle import loads, dumps
 from zope.fssync.compare import treeComparisonWalker, classifyContents
 from zope.fssync.metadata import Metadata
 from zope.fssync.merger import Merger
+
+unwanted = ("", os.curdir, os.pardir)
 
 class Error(Exception):
     """User-level error, e.g. non-existent file.
@@ -133,7 +135,6 @@ class Network(object):
 
         If no root url is found, return None.
         """
-        unwanted = ("", os.curdir, os.pardir)
         dir = realpath(target)
         while dir:
             zopedir = join(dir, "@@Zope")
@@ -307,22 +308,31 @@ class FSSync(object):
         if exists(target) and not isdir(target):
             raise Error("target should be a directory", target)
         self.ensuredir(target)
-        fp, headers = self.network.httpreq(rootpath,
-                                           "@@toFS.zip?writeOriginals=False")
+        fp, headers = self.network.httpreq(rootpath, "@@toFS.zip")
         try:
             self.merge_zipfile(fp, target)
         finally:
             fp.close()
         self.network.saverooturl(target)
 
+    def multiple(self, args, method):
+        if not args:
+            args = [os.curdir]
+        for target in args:
+            if self.metadata.getentry(target):
+                method(target)
+            else:
+                names = self.metadata.getnames(target)
+                if not names:
+                    method(target) # Will raise an exception
+                else:
+                    for name in names:
+                        method(join(target, name))
+
     def commit(self, target):
         entry = self.metadata.getentry(target)
         if not entry:
-            names = self.metadata.getnames(target)
-            if len(names) != 1:
-                raise Error("can only commit a single directory")
-            target = join(target, names[0])
-            entry = self.metadata.getentry(target)
+            raise Error("nothing known about", target)
         self.network.loadrooturl(target)
         path = entry["path"]
         zipfile = tempfile.mktemp(".zip")
@@ -353,16 +363,11 @@ class FSSync(object):
     def update(self, target):
         entry = self.metadata.getentry(target)
         if not entry:
-            names = self.metadata.getnames(target)
-            if len(names) != 1:
-                raise Error("can only commit a single directory")
-            target = join(target, names[0])
-            entry = self.metadata.getentry(target)
+            raise Error("nothing known about", target)
         self.network.loadrooturl(target)
         head, tail = split(realpath(target))
         path = entry["path"]
-        fp, headers = self.network.httpreq(path,
-                                           "@@toFS.zip?writeOriginals=False")
+        fp, headers = self.network.httpreq(path, "@@toFS.zip")
         try:
             self.merge_zipfile(fp, head)
         finally:
@@ -397,8 +402,7 @@ class FSSync(object):
         if entry:
             raise Error("path '%s' is already registered", path)
         head, tail = split(path)
-        unwanted = ("", os.curdir, os.pardir)
-        if tail in unwanted:
+        if tail in unwanted or not head:
             path = realpath(path)
             head, tail = split(path)
             if head == path or tail in unwanted:
@@ -416,8 +420,6 @@ class FSSync(object):
         entry["flag"] = "added"
         if isdir(path):
             entry["type"] = "zope.app.content.folder.Folder"
-            self.ensuredir(join(path, "@@Zope"))
-            self.dumpentries({}, path)
         else:
             # XXX Need to guess better based on extension
             entry["type"] = "zope.app.content.file.File"
@@ -426,6 +428,9 @@ class FSSync(object):
         self.metadata.flush()
 
     def merge_dirs(self, localdir, remotedir):
+        if not isdir(remotedir):
+            return
+
         self.ensuredir(localdir)
 
         ldirs, lnondirs = classifyContents(localdir)

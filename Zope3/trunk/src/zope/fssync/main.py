@@ -12,22 +12,20 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""New fssync utility.
-
-Connects to the database using HTTP (using the toFS.zip view for
-checkout and update and the fromFS.form view for commit).
-
-An attempt is made to make the behavior similar to that of cvs.
+"""Filesystem synchronization utility for Zope 3.
 
 Command line syntax summary:
 
-fssync checkout URL TARGETDIR
-fssync update [FILE_OR_DIR ...]
-fssync status [FILE_OR_DIR ...]
-fssync commit [FILE_OR_DIR ...]
-fssync diff [FILE_OR_DIR ...]
+fssync [global_options] checkout [options] URL [TARGETDIR]
+fssync [global_options] update [options] [TARGET ...]
+fssync [global_options] commit [options] [TARGET ...]
+fssync [global_options] diff [options] [TARGET ...]
+fssync [global_options] status [options] [TARGET ...]
 
-$Id: main.py,v 1.3 2003/05/13 15:28:03 gvanrossum Exp $
+For now, the only global option is -h/--help; there are no local
+options yet.
+
+$Id: main.py,v 1.4 2003/05/13 19:16:59 gvanrossum Exp $
 """
 
 import os
@@ -44,74 +42,104 @@ rootdir = dirname(dirname(dirname(scriptdir)))
 
 # Hack to fix the module search path
 try:
-    import zope.xmlpickle
+    import zope.fssync
     # All is well
 except ImportError:
     # Fix the path to include <root>/src
     srcdir = join(rootdir, "src")
     sys.path.append(srcdir)
 
-from zope.xmlpickle import loads, dumps
-
 from zope.fssync.fssync import Error, FSSync
 
 class Usage(Error):
     """Subclass for usage error (command-line syntax).
 
-    This should set an exit status of 2 rather than 1.
+    You should return an exit status of 2 rather than 1 when catching this.
     """
 
 def main(argv=None):
+    """Main program.
+
+    You can pass it an argument list (which must include the command
+    name as argv[0]); it defaults to sys.argv.
+
+    The return value is the suggested sys.exit() status code:
+    0 or None for success
+    2 for command line syntax errors
+    1 or other for later errors
+    """
     try:
         if argv is None:
             argv = sys.argv
-        # XXX getopt
-        args = argv[1:]
+
+        try:
+            opts, args = getopt.getopt(argv[1:], "h", ["help"])
+        except getopt.error, msg:
+            raise Usage("global option error: %s", msg)
+
+        for o, a in opts:
+            if o in ("-h", "--help"):
+                print __doc__
+                return 0
+
         command = args[0]
-        # XXX more getopt
-        args = args[1:]
-        if command in ("checkout", "co"):
-            url, fspath = args
-            checkout(url, fspath)
-        elif command in ("update", "up"):
-            args = args or [os.curdir]
-            for fspath in args:
-                print "update(%r)" % fspath
-                update(fspath)
-        elif command in ("commit", "com"):
-            args = args or [os.curdir]
-            [fspath] = args
-            commit(fspath)
-        elif command == "add":
-            add(args)
-        else:
-            raise Usage("command %r not recognized" % command)
+        if command not in command_table:
+            hits = []
+            for c in command_table:
+                if c.startswith(command):
+                    hits.append(c)
+            if not hits:
+                raise Usage("unrecognized command", command)
+            if len(hits) > 1:
+                raise Usage("ambiguous command abbreviation %r (%s)",
+                            command, "|".join(hits))
+            command = hits[0]
+
+        short_opts, long_opts, handler = command_table[command]
+
+        try:
+            opts, args = getopt.getopt(args[1:], short_opts, long_opts)
+        except getopt.error, msg:
+            raise Usage("%s option error: %s", command, msg)
+
+        return handler(opts, args)
+
     except Usage, msg:
-        print msg
-        print "for help use --help"
+        print >>sys.stderr, msg
+        print >>sys.stderr, "for help use --help"
         return 2
+
     except Error, msg:
-        print msg
+        print >>sys.stderr, msg
         return 1
+
     else:
         return None
 
-def checkout(rooturl, target):
+def checkout(opts, args):
+    rooturl, target = args
     fs = FSSync(rooturl=rooturl)
     fs.checkout(target)
 
-def commit(target):
+def commit(opts, args):
     fs = FSSync()
-    fs.commit(target)
+    fs.multiple(args, fs.commit)
 
-def update(target):
+def update(opts, args):
     fs = FSSync()
-    fs.update(target)
+    fs.multiple(args, fs.update)
 
-def add(args):
-    fs = FSSync(os.curdir)
+def add(opts, args):
+    fs = FSSync()
     for a in args:
         fs.add(a)
+
+command_table = {
+    "checkout": ("", [], checkout),
+    "update":   ("", [], update),
+    "commit":   ("", [], commit),
+    "add":      ("", [], add),
+    }
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
