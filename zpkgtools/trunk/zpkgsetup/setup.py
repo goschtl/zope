@@ -112,19 +112,9 @@ class SetupContext:
                 if e.errno != errno.EPIPE:
                     raise
         else:
-            if sys.version_info < (2, 3):
-                from distutils.dist import DistributionMetadata
-                DistributionMetadata.classifiers = None
-                DistributionMetadata.download_url = None
-            try:
-                from setuptools import setup
-            except ImportError:
-                # package_data can't be handled this way ;-(
-                if self.package_data:
-                    print >>sys.stderr, (
-                        "can't import setuptools;"
-                        " some package data will not be properly installed")
-                from distutils.core import setup
+            from zpkgsetup.dist import ZPkgDistribution
+            from distutils.core import setup
+            kwargs["distclass"] = ZPkgDistribution
             setup(**kwargs)
 
     def load_metadata(self, path):

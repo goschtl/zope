@@ -16,11 +16,6 @@ Things that need to be done
     when building an "application" distribution since that has some
     support to select from different available Python interpreters.)
 
-  - Instead of using setuptools to pick up only the package_data
-    facility, copy the build_py implementation into the **zpkg**
-    runtime package and use it from there.  This removes a large chunk
-    of unused code from distributions (the rest of setuptools).
-
   - When installing an application bundle, it should be an error if
     the installation directory already exists and the user hasn't
     explicitly said that's ok (-f/--force).

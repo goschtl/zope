@@ -197,13 +197,11 @@ class BuilderApplication(Application):
         shutil.copymode(template, output)
 
     def include_support_code(self):
-        """Include any support code needed by the generated setup.py
-        files.
+        """Include any support code needed by the generated setup.py.
 
-        This will add the ``setuptools`` and ``zpkgsetup`` packages to
-        the output directory if not already present, but they won't be
-        added to the set of packages that will be installed by the
-        resulting distribution.
+        This will add the ``zpkgsetup`` package to the Support
+        directory, but they won't be added to the set of packages that
+        will be installed by the resulting distribution.
         """
         old_loader = self.loader
         if self.options.revision_tag:
@@ -213,9 +211,6 @@ class BuilderApplication(Application):
         self.include_support_package(
             "zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/tags/*/"
                           "zpkgsetup"))
-        self.include_support_package(
-            "setuptools", ("cvs://cvs.python.sourceforge.net/cvsroot/python"
-                           ":python/nondist/sandbox/setuptools/setuptools"))
         if self.options.revision_tag:
             self.loader.cleanup()
         self.loader = old_loader
