@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.16 2003/05/29 09:06:35 stevea Exp $
+$Id: test_wrapper.py,v 1.17 2003/05/29 18:53:44 jim Exp $
 """
 import pickle
 import unittest
@@ -531,6 +531,8 @@ class WrapperTestCase(ProxyTestCase):
             pass
         class WrapperWithReduce(self.proxy_class):
             def __reduce__(self):
+                raise CustomPicklingError
+            def __reduce_ex__(self, proto):
                 raise CustomPicklingError
         w = WrapperWithReduce(Thing())
         self.assertRaises(CustomPicklingError, pickle.dumps, w)

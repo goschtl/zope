@@ -722,7 +722,16 @@ wrap_getattro(PyObject *self, PyObject *name)
 
         descriptor = WrapperType_Lookup(
                 self->ob_type, name,
-                strcmp(name_as_string, "__reduce__") == 0);
+                (name_as_string[0] == '_' && name_as_string[1] == '_'
+                 &&
+                 (
+                  strcmp(name_as_string, "__reduce__") == 0
+                  ||
+                  strcmp(name_as_string, "__reduce_ex__") == 0
+                  )
+                 )
+                 );
+
         if (descriptor != NULL) {
             if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
                 && descriptor->ob_type->tp_descr_get != NULL) {
@@ -1089,8 +1098,14 @@ reduce__doc__[] =
 "Raise an exception; this prevents wrappers from being picklable by\n"
 "default, even if the underlying object is picklable.";
 
+static char
+reduce_ex__doc__[] =
+"__reduce_ex__()\n"
+"Raise an exception; this prevents wrappers from being picklable by\n"
+"default, even if the underlying object is picklable.";
+
 static PyObject *
-wrap_reduce(PyObject *self)
+wrap_reduce(PyObject *self, PyObject *ignored_args)
 {
     PyObject *pickle_error = NULL;
     PyObject *pickle = PyImport_ImportModule("pickle");
@@ -1114,7 +1129,9 @@ wrap_reduce(PyObject *self)
 
 static PyMethodDef
 wrap_methods[] = {
-    {"__reduce__", (PyCFunction)wrap_reduce, METH_NOARGS, reduce__doc__},
+    {"__reduce__", (PyCFunction)wrap_reduce, METH_VARARGS, reduce__doc__},
+    {"__reduce_ex__", (PyCFunction)wrap_reduce, METH_VARARGS, 
+      reduce_ex__doc__},
     {NULL, NULL},
 };
 
