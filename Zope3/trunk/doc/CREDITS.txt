@@ -46,8 +46,8 @@ Credits
     many other contributions, in design, code, to say nothing of moral
     support. 
 
-  o Stephan Richter help launch Zope 3 with abundant energy and
-    enthusiasm, as wrell as many software andf documentation
+  o Stephan Richter helped launch Zope 3 with abundant energy and
+    enthusiasm, as well as many software and documentation
     contributions. 
 
   o Shane Hathaway created some of the initial prototypes of Zope 3
@@ -56,13 +56,13 @@ Credits
     despite his heavy workload at Zope Corporation.
 
   o Python Labs: Guido van Rossum, Fred Drake, Jeremy Hylton, Tim
-    Peters, and Barry Warsaw and been crucial contributors to Zope 3
+    Peters, and Barry Warsaw have been crucial contributors to Zope 3
     since it was just a bunch of stray ideas floating around 
 
-  o Gary Poster has made significant contributions in a varity of
+  o Gary Poster has made significant contributions in a variety of
     areas, including the object hub and event service.
 
-  o David Murray has been a constant source of well-though feedback,
+  o David Murray has been a constant source of well-thought feedback,
     suggestions, and ideas. 
 
   o Sidnei da Silva created the first attractive skin for Zope 3. 
@@ -74,7 +74,7 @@ Credits
   o The folks at Code works, Albertas Agejevas, Marius Gedminas, and
     Viktorija Zaksiene and contributed major parts of Zope, especially
     the relational database support and caching infrustructure. Much
-    Thanks to M. Carling for makin their time available.
+    Thanks to M. Carling for making their time available.
 
   o Much thanks to Alexander Limi, Alan Runyan, Godefroid Chapelle,
     Joachim Werner, Paul Everitt, and others for the "Rotterdam Skin"
