@@ -22,5 +22,6 @@
 <include package="zope.app.schema" file="meta.zcml" />
 <include package="zope.app.interpreter" file="meta.zcml" />
 <include package="zope.app.renderer" file="meta.zcml" />
+<include package="zope.app.browser.container" file="meta.zcml" />
 
 </configure>

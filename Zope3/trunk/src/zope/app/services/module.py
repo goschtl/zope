@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.18 2003/10/16 21:43:11 fdrake Exp $
+$Id: module.py,v 1.19 2003/12/18 10:29:49 nmurthy Exp $
 """
 
 from persistence import Persistent
@@ -73,6 +73,7 @@ class Manager(Persistent, Contained):
             self.execute()
         return self._module
 
+    
     def _get_source(self):
         return self._source
     def _set_source(self, source):
