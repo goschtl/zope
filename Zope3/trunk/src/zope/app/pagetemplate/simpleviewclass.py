@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: simpleviewclass.py,v 1.4 2003/03/25 11:23:08 gotcha Exp $
+$Id: simpleviewclass.py,v 1.5 2003/04/04 15:49:37 stevea Exp $
 """
 
 import sys
@@ -22,6 +22,7 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
 from zope.proxy.context import ContextAware
+from zope.publisher.interfaces import NotFound
 
 class simple(ContextAware, BrowserView):
 
