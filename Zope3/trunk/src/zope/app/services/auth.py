@@ -12,16 +12,16 @@
 #
 ##############################################################################
 """
-$Id: auth.py,v 1.3 2002/12/26 18:57:11 jim Exp $
+$Id: auth.py,v 1.4 2002/12/26 23:21:47 rdmurray Exp $
 """
 from types import TupleType
 from persistence import Persistent
+from zodb.btrees.OOBTree import OOBTree
 
 from zope.exceptions import NotFoundError
 from zope.component import getAdapter, queryAdapter
 
 from zope.app.interfaces.container import IContainer
-from zope.app.container.btree import BTreeContainer
 
 from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.security import IAuthenticationService
@@ -38,28 +38,22 @@ from zope.app.security.grants.principalrole import principalRoleManager
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
 
-class ILocalAuthenticationService(IAuthenticationService, IContainer):
-    """TTW manageable authentication service"""
 
-    def getAllUsers():
-        """Get all users of the Service."""
+class AuthenticationService(Persistent):
 
-
-class AuthenticationService(BTreeContainer):
-
-    __implements__ = ILocalAuthenticationService
+    __implements__ = IAuthenticationService, IContainer
 
     def __init__(self):
-        super(AuthenticationService, self).__init__()
+        self._usersbylogin = OOBTree()
+        self._usersbyid = OOBTree()
+        self._next = 1
 
     def getPrincipalByLogin(self, login):
-        for p in self.values():
-            if p.getLogin() == login:
-                return p
-        return None
+        try: return self._usersbylogin[login]
+        except KeyError: raise NotFoundError(login)
 
-    def getAllUsers(self):
-        return self.values()
+    def queryPrincipalByLogin(self, login):
+        return self._usersbylogin.get(login)
 
     def authenticate(self, request):
         'See IAuthenticationService'
@@ -67,7 +61,7 @@ class AuthenticationService(BTreeContainer):
         if a is not None:
             login = a.getLogin()
             if login is not None:
-                p = self.getPrincipalByLogin(login)
+                p = self.queryPrincipalByLogin(login)
                 if p is not None:
                     password = a.getPassword()
                     if p.validate(password):
@@ -87,15 +81,58 @@ class AuthenticationService(BTreeContainer):
 
     def getPrincipal(self, id):
         'See IAuthenticationService'
-        r = self.get(id)
-        return r
+        try: return self._usersbyid[id]
+        except KeyError: raise NotFoundError(id)
 
     def getPrincipals(self, name):
         'See IAuthenticationService'
         name = name.lower()
-        return [p for p in self.values()
-                  if p.getTitle().lower().startswith(name) or
-                     p.getLogin().lower().startswith(name)]
+        return [p for p in self._usersbylogin.values()
+                  if p.getTitle().lower().find(name) >= 0 or
+                     p.getLogin().lower().find(name) >= 0 ]
+
+    def __getitem__(self, id):
+        'see IItemContainer'
+        return self._usersbyid[id]
+
+    def setObject(self, key, object):
+        'See IWriteContainer'
+        if key.strip()=='':
+            self._next += 1
+            key = self._next
+        self._usersbyid[key] = object
+        self._usersbylogin[object.getLogin()] = object
+
+    def __delitem__(self, key):
+        'See IWriteContainer'
+        user = self._usersbyid[key]
+        del self._usersbylogin[user.getLogin()]
+        del self._usersbyid[key]
+
+    def keys(self):
+        'See IEnumerableMapping'
+        return self._usersbyid.keys()
+
+    def values(self):
+        'See IEnumerableMapping'
+        return self._usersbyid.values()
+
+    def items(self):
+        'See IEnumerableMapping'
+        return self._usersbyid.items()
+
+    def __len__(self):
+        'See IEnumerableMapping'
+        return len(self._usersbyid)
+
+    def get(self, key, default=None):
+        'See IReadMapping'
+        return self._usersbyid.get(key, default)
+
+    def __contains__(self,key):
+        'See IReadMapping'
+        return key in self._usersbyid
+
 
 
 class User(Persistent):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_auth.py,v 1.3 2002/12/26 23:21:47 rdmurray Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,8 +23,9 @@ from zope.app.interfaces.services.auth import IUser
 
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.services.tests.placefulsetup \
-           import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+
+from zope.app.container.tests.test_icontainer import BaseTestIContainer
 
 class Request:
 
@@ -98,14 +99,25 @@ class AuthServiceTest(TestCase, PlacefulSetup):
     def testGetPrincipal(self):
         auth = self._auth
         self.assertEqual(auth['srichter'], auth.getPrincipal('srichter'))
-        self.assertEqual(None, auth.getPrincipal('srichter2'))
+        self.assertRaises(NotFoundError, auth.getPrincipal, 'srichter2')
 
     def testGetPrincipals(self):
         auth = self._auth
         self.assertEqual([auth['srichter']], auth.getPrincipals('srichter'))
 
+
+class TestAuthAsIContainer(BaseTestIContainer, TestCase):
+
+    def _Test__new(self):
+        return AuthenticationService()
+
+
 def test_suite():
-    return makeSuite(AuthServiceTest)
+    t1 = makeSuite(AuthServiceTest)
+    #XXX Need to fix IContainer to get the object list from subclass
+    #t2 = makeSuite(TestAuthAsIContainer)
+    #return TestSuite((t1, t2))
+    return TestSuite((t1,))
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

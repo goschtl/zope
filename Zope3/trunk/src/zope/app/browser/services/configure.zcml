@@ -149,7 +149,7 @@
 
   <browser:view 
      permission="zope.ManageServices" 
-     for="zope.app.services.auth.ILocalAuthenticationService"
+     for="zope.app.services.auth.IAuthenticationService"
      factory="zope.app.browser.container.contents.Contents">
 
      <browser:page name="index.html" attribute="contents" />
@@ -158,7 +158,7 @@
 
   <browser:view
       name="+"  
-      for="zope.app.services.auth.ILocalAuthenticationService"
+      for="zope.app.services.auth.IAuthenticationService"
       permission="zope.ManageContent"
       factory="zope.app.browser.services.auth.AddUser" >
 
