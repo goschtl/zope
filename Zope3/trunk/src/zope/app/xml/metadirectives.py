@@ -13,9 +13,9 @@
 ##############################################################################
 """'xml' namespace directives schema 
 
-$Id: metadirectives.py,v 1.1 2003/08/01 20:18:05 srichter Exp $
+$Id: metadirectives.py,v 1.2 2003/08/02 16:36:01 srichter Exp $
 """
-from zope.configuration.fields import URI
+from zope.schema import URI
 from zope.interface import Interface
 
 class ISchemaInterfaceDirective(Interface):
