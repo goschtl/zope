@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_contents.py,v 1.1 2003/06/12 09:30:49 jim Exp $
+$Id: test_contents.py,v 1.2 2003/06/18 16:03:33 jim Exp $
 """
 
 import unittest
@@ -56,6 +56,24 @@ class Test(BrowserTestCase):
         root.setObject('foo', File())
         self.assert_('foo' in root)
         get_transaction().commit()
+
+        # Check that we don't change mode if there are no items selected
+        
+        response = self.publish('/@@contents.html',
+                                basic='mgr:mgrpw',
+                                form={'container_rename_button': u''})
+        body = ' '.join(response.getBody().split())
+        self.assert_(body.find('input name="new_value:list"') < 0)
+        self.assert_(body.find('type="submit" name="container_cancel_button"')
+                     < 0)
+        self.assert_(body.find('type="submit" name="container_rename_button"')
+                     >= 0)
+        self.assert_(body.find('div class="error"')
+                     >= 0)
+
+
+        # Check normal multiple select
+
         
         response = self.publish('/@@contents.html',
                                 basic='mgr:mgrpw',

@@ -7,10 +7,10 @@
 <div metal:fill-slot="body">
 <div metal:define-macro="contents">
 
-  <p tal:condition="view/error" tal:content="view/error">Error message</p>
-
   <form name="containerContentsForm" method="POST" action="."
-        tal:attributes="action request/URL">
+        tal:attributes="action request/URL"
+        tal:define="container_contents view/listContentInfo"
+        >
 
       <input type="hidden" name="type_name" value=""
              tal:attributes="value request/type_name"
@@ -21,10 +21,13 @@
              tal:condition="request/retitle_id|nothing"
              />
 
-      <table id="sortable" class="listing" summary="Content listing"
-             metal:define-macro="contents_table"
-             tal:define="container_contents view/listContentInfo"
-             >
+      <div class="page_error"
+           tal:condition="view/error" 
+           tal:content="view/error">
+        Error message
+      </div>
+
+      <table id="sortable" class="listing" summary="Content listing">
     
         <thead> 
           <tr>

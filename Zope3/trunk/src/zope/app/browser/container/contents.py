@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.22 2003/06/12 16:35:12 jim Exp $
+Revision information: $Id: contents.py,v 1.23 2003/06/18 16:03:32 jim Exp $
 """
 
 from zope.app import zapi
@@ -56,6 +56,9 @@ class Contents(BrowserView):
 
             return self._normalListContentsInfo()
 
+        elif "container_rename_button" in request and not request.get("ids"):
+            self.error = _("You didn't specify any ids to rename.")
+
         elif "type_name" in request and "new_value" in request:
             self.addObject()
         elif "rename_ids" in request and "new_value" in request:
@@ -88,7 +91,8 @@ class Contents(BrowserView):
         self.specialButtons = (
                  'type_name' in request or
                  'rename_ids' in request or
-                 'container_rename_button' in request or
+                 ('container_rename_button' in request
+                  and request.get("ids")) or
                  'retitle_id' in request
                  )
         self.normalButtons = not self.specialButtons
@@ -211,7 +215,7 @@ class Contents(BrowserView):
         request = self.request
         ids = request.get('ids')
         if not ids:
-            self.error = _("You didn't specify any ids to rename.")
+            self.error = _("You didn't specify any ids to remove.")
             return
                  
         container = zapi.getAdapter(self.context, IZopeContainer)
