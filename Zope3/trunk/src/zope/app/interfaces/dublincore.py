@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dublincore.py,v 1.3 2002/12/30 21:43:05 jeremy Exp $
+$Id: dublincore.py,v 1.4 2003/02/25 14:13:47 stevea Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -218,8 +218,7 @@ class ICMFDublinCore(Interface):
 
         The first unqualified Dublin Core 'Type' element value is
         returned as a unicode string if an unqualified element is
-        defined, otherwise, an empty unicode string is returned. The
-        string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
+        defined, otherwise, an empty unicode string is returned.
         """
 
     def Format():
@@ -230,8 +229,7 @@ class ICMFDublinCore(Interface):
 
         The first unqualified Dublin Core 'Format' element value is
         returned as a unicode string if an unqualified element is
-        defined, otherwise, an empty unicode string is returned. The
-        string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
+        defined, otherwise, an empty unicode string is returned.
         """
 
     def Identifier():
@@ -249,8 +247,7 @@ class ICMFDublinCore(Interface):
 
         The first unqualified Dublin Core 'Language' element value is
         returned as a unicode string if an unqualified element is
-        defined, otherwise, an empty unicode string is returned. The
-        string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
+        defined, otherwise, an empty unicode string is returned.
         """
 
     def Rights():
@@ -261,8 +258,7 @@ class ICMFDublinCore(Interface):
 
         The first unqualified Dublin Core 'Rights' element value is
         returned as a unicode string if an unqualified element is
-        defined, otherwise, an empty unicode string is returned. The
-        string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
+        defined, otherwise, an empty unicode string is returned.
         """
 
 class IZopeDublinCore(
