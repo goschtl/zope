@@ -10,6 +10,20 @@ Zope Changes
 
     New features
 
+    - Redesigned the undo functionality according to
+      http://dev.zope.org/Zope3/SimplifyUndoModel. There are three types
+      of undo now:
+
+      o Undo/redo my last transaction (the "Undo!" button)
+
+      o Undo one or more of my last transactions
+
+      o Undo one or more of anybody's transactions
+
+      By default, transactions are loooked up by location and can
+      optionally be looked up everywhere. Undo security is
+      permission-driven now.
+
     - Implemented Tools
 
       o Implement the tool ZCML directive. 
