@@ -501,6 +501,11 @@
     factory=".zpt.ZPTPageAdapter"
     />
 
+<fssync:adapter
+    class=".module.Manager"
+    factory=".module.ModuleAdapter"
+    />
+
 <adapter 
   for="zope.app.interfaces.services.service.IServiceManager"
   provides="zope.app.interfaces.file.IDirectoryFactory"
