@@ -13,21 +13,17 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.31 2004/03/13 21:37:19 srichter Exp $
+$Id: test_interfacewidget.py,v 1.1 2004/03/14 00:15:19 srichter Exp $
 """
-
-__metaclass__ = type
-
 from zope.interface import Interface
 from unittest import TestCase, TestSuite, makeSuite
 from zope.app.component.interfacefield import InterfaceField, InterfacesField
-from zope.app.browser.component.interfacewidget import InterfaceWidget
-from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
+from zope.app.component.browser.interfacewidget import InterfaceWidget
+from zope.app.component.browser.interfacewidget import MultiInterfaceWidget
 from zope.publisher.browser import TestRequest
 from zope.app.form.interfaces import ConversionError, WidgetInputError
 from zope.app.tests import placelesssetup
-from zope.app.component.interface import getInterface
-from zope.app.component.interface import provideInterface
+from zope.app.component.interface import getInterface, provideInterface
     
 class I(Interface):
     """bah blah
@@ -51,11 +47,11 @@ class BaseInterfaceWidgetTest(TestCase):
     def setUp(self):
         placelesssetup.setUp()
         provideInterface(
-            'zope.app.browser.component.tests.test_interfacewidget.I', I)
+            'zope.app.component.browser.tests.test_interfacewidget.I', I)
         provideInterface(
-            'zope.app.browser.component.tests.test_interfacewidget.I2', I2)
+            'zope.app.component.browser.tests.test_interfacewidget.I2', I2)
         provideInterface(
-            'zope.app.browser.component.tests.test_interfacewidget.I3', I3)
+            'zope.app.component.browser.tests.test_interfacewidget.I3', I3)
         request = TestRequest()
         self.request = request
 
@@ -82,21 +78,21 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="">---select interface---</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -110,21 +106,21 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="">---select interface---</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '" selected>'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -136,7 +132,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         widget = InterfaceWidget(field, request)
 
         request.form["field.TestName"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         )
         self.assertEqual(widget.getInputValue(), I2)
         self.failUnless(widget.hasInput())
@@ -147,21 +143,21 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '" selected>'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -176,9 +172,9 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="">---select interface---</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -203,9 +199,9 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="">---select interface---</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
 
         '</select>'
@@ -233,15 +229,15 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="">---select interface---</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -272,21 +268,21 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -312,21 +308,21 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -346,9 +342,9 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<option value="">---select interface---</option>'
 
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -381,13 +377,13 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         self.assertEqual(widget.hidden(), out)
         
         request.form["field.TestName"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         )
 
         self.assertEqual(widget.getInputValue(), I2)
         out = (
         '<input type="hidden" name="field.TestName"'
-        ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
+        ' value="zope.app.component.browser.tests.test_interfacewidget.I2" />'
         )
         self.assertEqual(widget.hidden(), out)
 
@@ -438,19 +434,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -463,19 +459,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -486,7 +482,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         widget = MultiInterfaceWidget(field, request)
 
         request.form["field.TestName.i1"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         )
         self.assertEqual(widget.getInputValue(), (I2,))
         self.failUnless(widget.hasInput())
@@ -500,19 +496,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -523,19 +519,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<select name="field.TestName.i1">'
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '" selected>'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -556,19 +552,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -580,9 +576,9 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '<select name="field.TestName.i1">'
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -621,19 +617,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         'any-interface'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -651,19 +647,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         'any-interface'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -689,19 +685,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         'any-interface'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -719,19 +715,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         'any-interface'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -757,19 +753,19 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         'any-interface'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I'
+        'zope.app.component.browser.tests.test_interfacewidget.I'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         '</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -782,9 +778,9 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '<option value="">---select interface---</option>'
         '<option value="'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '">'
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         '</option>'
 
         '</select>'
@@ -813,24 +809,24 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         self.assertEqual(widget.hidden(), '')
 
         request.form["field.TestName.i0"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         )
         self.assertEqual(widget.getInputValue(), (I2,))
         out = (
         '<input type="hidden" name="field.TestName.i0"'
-        ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
+        ' value="zope.app.component.browser.tests.test_interfacewidget.I2" />'
         )
         self.assertEqual(widget.hidden(), out)
 
         request.form["field.TestName.i1"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        'zope.app.component.browser.tests.test_interfacewidget.I3'
         )
         self.assertEqual(widget.getInputValue(), (I2, I3))
         out = (
         '<input type="hidden" name="field.TestName.i0"'
-        ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
+        ' value="zope.app.component.browser.tests.test_interfacewidget.I2" />'
         '<input type="hidden" name="field.TestName.i1"'
-        ' value="zope.app.browser.component.tests.test_interfacewidget.I3" />'
+        ' value="zope.app.component.browser.tests.test_interfacewidget.I3" />'
         )
         self.assertEqual(widget.hidden(), out)
 
@@ -864,7 +860,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         self.assertRaises(WidgetInputError, widget.getInputValue)
 
         request.form["field.TestName.i1"] = (
-        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        'zope.app.component.browser.tests.test_interfacewidget.I2'
         )
         request.form["field.TestName.i0"] = ''
         self.assertEqual(widget.getInputValue(), (I2,))
@@ -873,7 +869,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 class TestRenderInterfaceSelect(TestCase):
 
     def testInterfaceSelect(self):
-        from zope.app.browser.component.interfacewidget \
+        from zope.app.component.browser.interfacewidget \
             import renderInterfaceSelect
         interfaces = ['foo', 'bar', 'baz']
         selected = 'bar'
@@ -895,7 +891,7 @@ class TestRenderInterfaceSelect(TestCase):
             out)
 
     def testEmptyInterfaceSelect(self):
-        from zope.app.browser.component.interfacewidget \
+        from zope.app.component.browser.interfacewidget \
             import renderInterfaceSelect
         interfaces = []
         selected = 'bar'

@@ -4,7 +4,6 @@
 
   <browser:defaultView name="index.html" />
 
-  <include package=".component" />
   <include package=".container" />
   <include package=".form" />
   <include file="traversal.zcml" />

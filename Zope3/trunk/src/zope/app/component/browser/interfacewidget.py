@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface widgets
 
-$Id: interfacewidget.py,v 1.49 2004/03/13 21:37:18 srichter Exp $
+$Id: interfacewidget.py,v 1.1 2004/03/14 00:15:18 srichter Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget
