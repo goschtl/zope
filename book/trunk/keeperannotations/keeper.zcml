@@ -1,0 +1,48 @@
+<configure
+    package="book.keeperannotations"
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <content class="zope.app.folder.Folder">
+    <implements
+      interface=".interfaces.IAnnotationKeeper"
+       />
+  </content>
+
+  <content class=".ftests.KeeperFile">
+    <factory
+        id="book.keeperannotations.KeeperFile"
+        title="Keeper File"
+        description="A Keeper File"
+        />
+    <implements
+        interface=".interfaces.IKeeperAnnotatable"
+        />  
+    <require
+        permission="zope.View"
+        interface="zope.app.filerepresentation.interfaces.IReadFile" 
+        />
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.filerepresentation.interfaces.IWriteFile"
+        set_schema="zope.app.filerepresentation.interfaces.IReadFile"
+        />
+  </content>
+  
+  <browser:addMenuItem
+      class=".ftests.KeeperFile"
+      title="Keeper File"
+      permission="zope.ManageContent"
+      view="KeeperFile"
+      />
+  
+  <browser:addform
+      schema="zope.app.file.interfaces.IFile"
+      label="Add a Keeper File"
+      content_factory=".ftests.KeeperFile"
+      name="AddKeeperFile"
+      permission="zope.ManageContent"
+      />
+
+</configure>

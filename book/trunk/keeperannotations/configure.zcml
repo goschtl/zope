@@ -1,0 +1,11 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+  
+  <adapter
+      for=".interfaces.IKeeperAnnotatable"
+      provides="zope.app.annotation.interfaces.IAnnotations"
+      factory=".KeeperAnnotations" />
+  
+</configure>
