@@ -47,7 +47,7 @@
   -->
   
   <defaultView
-      for="zope.schema.interfaces.IText"
+      for="zope.schema.interfaces.IField"
       name="view"
       permission="zope.Public"
       type="zope.publisher.interfaces.http.IHTTPRequest"
