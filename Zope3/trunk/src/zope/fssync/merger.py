@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.11 2003/05/29 15:07:29 gvanrossum Exp $
+$Id: merger.py,v 1.12 2003/08/06 20:11:01 fdrake Exp $
 """
 
 import os
@@ -118,14 +118,14 @@ class Merger(object):
         return self.metadata.getentry(file)
 
     def merge_files(self, local, original, remote, action, state):
-        """Helper to carry out a file merge.
+        """Merge files.
 
         The action and state arguments correspond to the return value
-        of classify().
+        of classify_files().
 
         Return the state as returned by the second return value of
-        classify().  This is either the argument state or recalculated
-        based upon the effect of the action.
+        classify_files().  This is either the argument state or
+        recalculated based upon the effect of the action.
         """
         method = getattr(self, "merge_files_" + action.lower())
         return method(local, original, remote) or state
@@ -155,6 +155,7 @@ class Merger(object):
             origfile = original
         else:
             origfile = "/dev/null"
+        # commands.mkarg() is undocumented; maybe use fssync.quote()
         cmd = "diff3 -m -E %s %s %s" % (commands.mkarg(local),
                                         commands.mkarg(origfile),
                                         commands.mkarg(remote))
@@ -182,6 +183,7 @@ class Merger(object):
         shutil.copy(remote, original)
         self.clearflag(local)
         self.getentry(local).update(self.getentry(remote))
+        return None
 
     def clearflag(self, file):
         """Helper to clear the added/removed metadata flag."""
@@ -190,7 +192,7 @@ class Merger(object):
             del metadata["flag"]
 
     def classify_files(self, local, original, remote):
-        """Helper for merge to classify file changes.
+        """Classify file changes.
 
         Arguments are pathnames to the local, original, and remote
         copies.
@@ -216,6 +218,7 @@ class Merger(object):
                 return ("Nothing", "Spurious")
             else:
                 # Why are we here?
+                # classify_files() should not have been called in this case.
                 return ("Nothing", "Nonexistent")
 
         if lmeta.get("flag") == "added":
@@ -228,6 +231,7 @@ class Merger(object):
                 if self.cmpfile(local, remote):
                     return ("Fix", "Uptodate")
                 else:
+                    # CVS would say "move local file out of the way"
                     return ("Merge", "Modified")
 
         if rmeta and not lmeta:
@@ -268,7 +272,7 @@ class Merger(object):
                 # Only local changes
                 return ("Nothing", "Modified")
         else:
-            # Some local changes; classify local changes
+            # Some remote changes; classify local changes
             if self.cmpfile(local, original):
                 # Only remote changes
                 return ("Copy", "Uptodate")
