@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.5 2003/05/28 15:11:07 gvanrossum Exp $
+$Id: test_committer.py,v 1.6 2003/05/28 15:16:19 gvanrossum Exp $
 """
 
 import os
@@ -267,9 +267,9 @@ class TestCommitter(TempFiles, PlacelessSetup):
         parentdir = self.tempdir()
         childdir = os.path.join(parentdir, "child")
         foofile = os.path.join(childdir, "foo")
-        self.writefile(dumps(foo), foofile)
+        self.writefile(dumps(foo), foofile, "wb")
         originalfoofile = fsutil.getoriginal(foofile)
-        self.writefile(dumps(foo), originalfoofile)
+        self.writefile(dumps(foo), originalfoofile, "wb")
         parententry = self.getentry(parentdir)
         parententry["@"] = "@" # To make it non-empty
         childentry = self.getentry(childdir)
