@@ -15,7 +15,7 @@
 Get a descriptor corresponding to an attribute.
 
 Revision information:
-$Id: GetDescr.py,v 1.3 2002/09/28 01:02:39 gvanrossum Exp $
+$Id: GetDescr.py,v 1.4 2002/09/28 16:28:11 efge Exp $
 """
 
 def GetDescr(obj, name):
@@ -56,7 +56,7 @@ def GetDescr(obj, name):
             break
     else:
         return None
-_loop_callbacks    if not hasattr(found, "__get__"):
+    if not hasattr(found, "__get__"):
         return None
     if not isivar or hasattr(found, "__set__"):
         return found
