@@ -60,9 +60,7 @@
   <include package="zope.app.uniqueid" />
 
   <!-- Misc. Service Manager objects -->
-  <!-- Aktari delete - we don't want this
   <include package="zope.app.module" />
-  -->
 
   <!-- Broken-object support -->
   <include package="zope.app.broken" />
