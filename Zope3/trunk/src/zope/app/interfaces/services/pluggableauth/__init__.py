@@ -13,24 +13,42 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.5 2003/07/10 09:37:59 alga Exp $
+$Id: __init__.py,v 1.6 2003/08/08 23:21:13 srichter Exp $
 """
-from zope.interface import Interface
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IContainer 
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
-from zope.schema import TextLine, Password
-from zope.i18n import MessageIDFactory
-
-_ = MessageIDFactory("zope.app.services.pluggableauth")
+from zope.interface import Interface
+from zope.schema import Text, TextLine, Password
 
 class IUserSchemafied(IPrincipal):
     """A User object with schema-defined attributes."""
 
-    id = TextLine(title=_(u"Id"))
-    title = TextLine(title=_(u"Title"))
-    description = TextLine(title=_(u"Description"))
-    login = TextLine(title=_(u"Login"))
-    password = Password(title=_(u"Password"))
+    id = TextLine(
+        title=_("Id"),
+        description=_("The unique identification of the user"),
+        required=True,
+        readonly=True)
+
+    title = TextLine(
+        title=_("Title"),
+        description=_("The title of the user. This is usually used in the UI."),
+        required=False)
+
+    description = Text(
+        title=_("Description"),
+        description=_("A detailed description of the user."),
+        required=False)
+
+    login = TextLine(
+        title=_("Login"),
+        description=_("The Login/Username of the user. This value can change."),
+        required=True)
+
+    password = Password(
+        title=_(u"Password"),
+        description=_("The password for the user."),
+        required=True)
 
     def validate(test_password):
         """Confirm whether 'password' is the password of the user."""
