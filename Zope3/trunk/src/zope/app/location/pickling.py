@@ -47,7 +47,7 @@ def locationCopy(loc):
     >>> o1.o2.o4 = Location(); o1.o2.o4.__parent__ = o1.o2
     >>> o1.o3.o5 = Location(); o1.o3.o5.__parent__ = o1.o3
 
-    In addition, o3 has a non-locatin reference to o4.
+    In addition, o3 has a non-location reference to o4.
 
     >>> o1.o3.o4 = o1.o2.o4
 
@@ -81,6 +81,7 @@ def locationCopy(loc):
     unpickler.persistent_load = persistent.load
 
     return unpickler.load()
+
 
 class CopyPersistent(object):
     """Persistence hooks for copying locations
@@ -149,7 +150,7 @@ class CopyPersistent(object):
                 # in pickle.py. The pickle checks the boolean value
                 # of the id, rather than whether it is None.
                 pid += 1
-                
+
                 self.pids_by_id[id(object)] = pid
                 self.others_by_pid[pid] = object
                 return pid

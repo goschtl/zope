@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Interface, Attribute
 from zope import schema
 
+
 class ILocation(Interface):
     """Objects that have a structural location"""
 
@@ -31,14 +32,13 @@ class ILocation(Interface):
         required=False,
         default=None)
 
+
 class ISublocations(Interface):
-    """Provide access to sublocations
-    """
+    """Provide access to sublocations."""
 
     def sublocations():
         """Return sublocations
 
         An iterable of objects whose __parent__ is the object
         providing the interface is returned.
-        
         """
