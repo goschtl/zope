@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.3
 ##############################################################################
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
@@ -15,14 +16,15 @@
 Page Templates and ZCML.
 
 This tool will extract all findable message strings from all
-internationalizable files in your Zope 3 product. It only extracts message ids
-of the specified domain. It defaults to the 'zope' domain and the zope.app
-package.
+internationalizable files in your Zope 3 product. It only extracts
+message ids of the specified domain. It defaults to the 'zope' domain
+and the zope.app package.
 
-Note: The Python Code extraction tool does not support domain registration, so
-      that all message strings are returned for Python code.
+Note: The Python Code extraction tool does not support domain
+      registration, so that all message strings are returned for
+      Python code.
 
-Usage: extract.py [options]
+Usage: i18nextract.py [options]
 Options:
     -h / --help
         Print this message and exit.
@@ -34,8 +36,9 @@ Options:
     -o dir
         Specifies a directory, relative to the package in which to put the
         output translation template.
+
+$Id: i18nextract.py,v 1.1 2003/12/17 07:59:34 philikon Exp $
 """
-__id__ = "$Id: extract.py,v 1.12 2003/12/04 07:09:59 jim Exp $"
 
 import os, sys, fnmatch
 import getopt
@@ -76,14 +79,14 @@ msgstr ""
 '''
 
 def usage(code, msg=''):
-    # Python 2.1 required
     print >> sys.stderr, __doc__
     if msg:
         print >> sys.stderr, msg
     sys.exit(code)
 
 class POTEntry:
-    """This class represents a single message entry in the POT file."""
+    """This class represents a single message entry in the POT file.
+    """
 
     def __init__(self, msgid, comments=None):
         self.msgid = msgid
@@ -111,13 +114,13 @@ class POTEntry:
 
 
 class POTMaker:
-    """This class inserts sets of strings into a POT file."""
+    """This class inserts sets of strings into a POT file.
+    """
     
     def __init__ (self, output_fn, path):
         self._output_filename = output_fn
         self.path = path
         self.catalog = {}
-
 
     def add(self, strings, base_dir=None):
         for msgid, locations in strings.items():
@@ -147,7 +150,6 @@ class POTMaker:
 
 
     def write(self):
-        
         file = open(self._output_filename, 'w')
         file.write(pot_header % {'time': time.ctime(),
                                  'version': self._getProductVersion()})
@@ -164,8 +166,9 @@ class POTMaker:
 
 
 class TokenEater:
-    """This is almost 100% taken from pygettext.py, except that I removed all
-    option handling and output a dictionary."""
+    """This is almost 100% taken from pygettext.py, except that I
+    removed all option handling and output a dictionary.
+    """
     
     def __init__(self):
         self.__messages = {}
@@ -283,9 +286,7 @@ def app_dir():
 
         import zope.app
 
-    dir = os.path.dirname(zope.app.__file__)
-
-    return dir
+    return os.path.dirname(zope.app.__file__)
 
 
 def find_files(dir, pattern, exclude=()):
@@ -302,7 +303,8 @@ def find_files(dir, pattern, exclude=()):
 
 
 def py_strings(dir, domain="zope"):
-    """Retrieve all Python messages from dir that are in the domain."""
+    """Retrieve all Python messages from dir that are in the domain.
+    """
     eater = TokenEater()
     make_escapes(0)
     for filename in find_files(dir, '*.py', 
@@ -322,7 +324,8 @@ def py_strings(dir, domain="zope"):
 
 
 def zcml_strings(dir, domain="zope"):
-    """Retrieve all ZCML messages from dir that are in the domain."""
+    """Retrieve all ZCML messages from dir that are in the domain.
+    """
     from zope.app._app import config
     import zope
     dirname = os.path.dirname
@@ -333,7 +336,8 @@ def zcml_strings(dir, domain="zope"):
 
 
 def tal_strings(dir, domain="zope", include_default_domain=False):
-    """Retrieve all TAL messages from dir that are in the domain."""
+    """Retrieve all TAL messages from dir that are in the domain.
+    """
     # We import zope.tal.talgettext here because we can't rely on the
     # right sys path until app_dir has run
     from zope.tal.talgettext import POEngine, POTALInterpreter
