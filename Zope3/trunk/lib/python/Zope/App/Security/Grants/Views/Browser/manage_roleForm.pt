@@ -16,18 +16,38 @@ Permissions assigned to the role
 </p>
 
 
-<form action="update_role" method="get">
+<form action="ChangeRolePermissions.html" method="get">
 <input type="hidden" name="role_id" value="Role ID"
     tal:attributes="value role/getId" />
-<div class="form-element">
-<select name="permissions:list" multiple size="20">
-<option tal:repeat="permission role/permissionsInfo"
-        tal:content="permission/title"
-        tal:attributes="selected permission/checked;
-                        value permission/id"
-        >Sample Permission</option>
-</select>
-</div>
+
+<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap
+       tal:define="availableSettings python:view.availableSettings(noacquire=1)">
+<tr class="list-header">
+  <td align="left" valign="top"
+      tal:repeat="setting availableSettings">
+    <div class="form-label">
+      <strong tal:content="setting/title">Allow</strong>
+    </div>
+  </td>
+</tr>
+
+<tr>
+  <td align="left" valign="top"
+      tal:repeat="settinginfo availableSettings">
+    <div class="form-element">
+      <select name="Unset:list" multiple size="20"
+              tal:define="setting settinginfo/id"
+              tal:attributes="name string:${setting}:list">
+      <option tal:repeat="permissioninfo role/permissionsInfo"
+              tal:content="permissioninfo/title"
+              tal:attributes="selected python:path('permissioninfo/setting') == setting;
+                              value permissioninfo/id"
+              >Sample Permission</option>
+      </select>
+    </div>
+  </td>
+</tr>
+</table>
 
 <div class="form-element">
 <input class="form-element" type="submit" name="submit" value="Save Changes" />

@@ -59,7 +59,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             del ids[i]
             del titles[i]
 
-    def testGrantDenyUnset(self):
+    def testMatrix(self):
         roles = self.view.roles()
         permissions = self.view.permissions()
 
@@ -113,82 +113,59 @@ class Test(PlacefulSetup, unittest.TestCase):
                 else:
                     self.failUnless(setting == 'Unset')
 
+    def testPermissionRoles(self):
+        self.view.update_permission(REQUEST=None,
+                                    permission_id='write',
+                                    settings=['Allow', 'Unset'],
+                                    testing=1)
+        permission = self.view.permissionForID('write')
+        settings = permission.roleSettings()
+        self.assertEquals(settings, ['Allow', 'Unset'])
+
 
         self.view.update_permission(REQUEST=None,
                                     permission_id='write',
-                                    roles=['member'],
+                                    settings=['Unset', 'Deny'],
                                     testing=1)
-
         permission = self.view.permissionForID('write')
-        self.assertEquals(
-            [r['id']
-             for r in permission.rolesInfo()
-             if r['checked']],
-            ['member'])
+        settings = permission.roleSettings()
+        self.assertEquals(settings, ['Unset', 'Deny'])
 
-        self.view.update_permission(REQUEST=None,
-                                    permission_id='write',
-                                    # roles=[],  roles attr omitted
-                                    testing=1)
+        self.assertRaises(ValueError,
+                          self.view.update_permission,
+                          REQUEST=None,
+                          permission_id='write',
+                          settings=['Unset', 'foo'],
+                          testing=1)
 
-        permission = self.view.permissionForID('write')
-        self.assertEquals(
-            [r['id']
-             for r in permission.rolesInfo()
-             if r['checked']],
-            [])
-
-        self.view.update_permission(REQUEST=None,
-                                    permission_id='write',
-                                    roles=['manager','member'],
-                                    testing=1)
-
-        permission = self.view.permissionForID('write')
-        result = [r['id']
-                  for r in permission.rolesInfo()
-                  if r['checked']]
-        what_result_should_be = ['manager','member']
-        result.sort()
-        what_result_should_be.sort()
-        self.assertEquals(
-            result,
-            what_result_should_be
-            )
-
-        self.view.update_role(REQUEST=None,
+    def testRolePermissions(self):
+        REQ={'Allow': ['read'],
+             'Deny': ['write']}
+        self.view.update_role(REQUEST=REQ,
                               role_id='member',
-                              permissions=['write','read'],
                               testing=1)
-
         role = self.view.roleForID('member')
-        result = [r['id']
-                  for r in role.permissionsInfo()
-                  if r['checked']]
-        what_result_should_be = ['write','read']
-        result.sort()
-        what_result_should_be.sort()
-        self.assertEquals(
-            result,
-            what_result_should_be
-            )
+        pinfos = role.permissionsInfo()
+        for pinfo in pinfos:
+            pid = pinfo['id']
+            if pid == 'read':
+                self.assertEquals(pinfo['setting'], 'Allow')
+            if pid == 'write':
+                self.assertEquals(pinfo['setting'], 'Deny')
 
-        self.view.update_role(REQUEST=None,
+        REQ={'Allow': [],
+             'Deny': ['read']}
+        self.view.update_role(REQUEST=REQ,
                               role_id='member',
-                              # omitted attribute permissions,
                               testing=1)
-
         role = self.view.roleForID('member')
-        result = [r['id']
-                  for r in role.permissionsInfo()
-                  if r['checked']]
-        what_result_should_be = []
-        result.sort()
-        what_result_should_be.sort()
-        self.assertEquals(
-            result,
-            what_result_should_be
-            )
-
+        pinfos = role.permissionsInfo()
+        for pinfo in pinfos:
+            pid = pinfo['id']
+            if pid == 'read':
+                self.assertEquals(pinfo['setting'], 'Deny')
+            if pid == 'write':
+                self.assertEquals(pinfo['setting'], 'Unset')
 
 
 def test_suite():

@@ -4,22 +4,22 @@
 >
 
 <!-- Role-Permission management view -->
-  
+
   <browser:view for="Zope.App.OFS.Annotation.IAnnotatable."
                 permission="Zope.Security"
                 factory=".RolePermissionView.">
 
-    <browser:page name="AllRolePermissions.html" 
+    <browser:page name="AllRolePermissions.html"
                   attribute="index" />
-    <browser:page name="ChangeAllRolePermissions.html" 
+    <browser:page name="ChangeAllRolePermissions.html"
                   attribute="action" />
-    <browser:page name="RolePermissions.html" 
-                  attribute="manage_RoleForm" />
-    <browser:page name="ChangeRolePermissions.html" 
+    <browser:page name="RolePermissions.html"
+                  attribute="manage_roleForm" />
+    <browser:page name="ChangeRolePermissions.html"
                   attribute="update_role" />
-    <browser:page name="RolesWithPermission.html" 
+    <browser:page name="RolesWithPermission.html"
                   attribute="manage_permissionForm" />
-    <browser:page name="ChangeRolesWithPermission.html" 
+    <browser:page name="ChangeRolesWithPermission.html"
                   attribute="update_permission" />
   </browser:view>
 
@@ -35,5 +35,5 @@
       name="PrincipalPermissionsManagement"
       for="Zope.App.OFS.Annotation.IAnnotatable."
       factory=".PrincipalPermissionView." />
-  
+
 </zopeConfigure>

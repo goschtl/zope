@@ -207,9 +207,9 @@ another helpful message
   <td></td>
   <td align="center" tal:repeat="role view/roles">
     <div class="list-item">
-      <a href="manage_roleForm.pt"
+      <a href="RolePermissions.html"
         tal:attributes="
-        href string:manage_roleForm?role_to_manage=${role/getId}" 
+        href string:RolePermissions.html?role_to_manage=${role/getId}" 
         tal:content="role/getTitle">Anonymous</a>
       <input type="hidden" name="r0" value=""
         tal:attributes="
@@ -226,10 +226,9 @@ another helpful message
     >
   <td align="left" nowrap>
     <div class="list-item">
-       <a
-       href="manage_permissionForm.pt"
+       <a href="RolesWithPermission.html"
        tal:attributes="
-         href string:manage_permissionForm?permission_to_manage=${perm/getId}"
+         href string:RolesWithPermission.html?permission_to_manage=${perm/getId}"
        tal:content="perm/getTitle"
        >Access Transient Objects</a>
        <input type="hidden" name="r0" value=""
@@ -245,7 +244,7 @@ another helpful message
            tal:repeat="option view/availableSettings"
            tal:attributes="value option/id;
                            selected python:setting == option['id']"
-           tal:content="option/title">+</option>
+           tal:content="option/shorttitle">+</option>
     </select>
   </td>
 </tr>
