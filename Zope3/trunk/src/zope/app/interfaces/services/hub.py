@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub interfaces.
 
-$Id: hub.py,v 1.4 2003/02/03 16:01:11 stevea Exp $
+$Id: hub.py,v 1.5 2003/03/19 18:05:03 stevea Exp $
 """
 
 from zope.interface import Attribute
@@ -130,8 +130,8 @@ class IObjectHub(IHubEventChannel):
         If there is no hub id, raise NotFoundError.
         """
 
-    def getLocation(hubid):
-        """Returns a location as a tuple of unicodes.
+    def getPath(hubid):
+        """Returns a location as a unicodes string path.
 
         If there is no location, raise NotFoundError.
         """
@@ -144,18 +144,18 @@ class IObjectHub(IHubEventChannel):
         the traversal service raises.
         """
 
-    def register(obj_or_loc):
-        """Returns a new hub id for the given location or the given
+    def register(path_or_object):
+        """Returns a new hub id for the given path or the given
         wrapped object if it is not already registered.
 
-        A hubId is an int. 0 is never a valid hubId.
+        A hubId is an int, but 0 is never a valid hubId.
 
         It also emits a HubIdObjectRegisteredEvent.  Raises an
-        ObjectHubError if the location was previously registered.
+        ObjectHubError if the path was previously registered.
         """
 
-    def unregister(obj_or_loc_or_hubid):
-        """Unregister an object by wrapped object, by location, or by hubid.
+    def unregister(path_or_object_or_hubid):
+        """Unregister an object by path, by wrapped object, or by hubid.
 
         It also emits a HubIdObjectUnregisteredEvent.
         If the hub id or location wasn't registered a
@@ -163,14 +163,14 @@ class IObjectHub(IHubEventChannel):
         """
 
     def numRegistrations():
-        """Returns the number of location<-->hubid registrations held.
+        """Returns the number of path<-->hubid registrations held.
         """
 
-    def getRegistrations(location='/'):
+    def iterRegistrations(path=u'/'):
         """Returns a sequence of the registrations at and within the
-        given location.
+        given path.
 
-        A registration a tuple (location, hib_id).
+        A registration a tuple (path, hubid).
         """
 
 

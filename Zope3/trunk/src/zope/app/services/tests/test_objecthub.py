@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.5 2002/12/30 14:03:17 stevea Exp $
+$Id: test_objecthub.py,v 1.6 2003/03/19 18:05:04 stevea Exp $
 """
 
 import unittest, sys
@@ -40,7 +40,8 @@ from zope.app.services.hub \
 from zope.exceptions import NotFoundError
 from types import StringTypes
 
-from zope.app.traversing import locationAsUnicode, locationAsTuple, traverse
+from zope.app.traversing import traverse
+from zope.app.traversing import locationAsUnicode as canonicalPath
 
 # while these tests don't really test much of the placeful aspect of the
 # object hub, they do at least test basic functionality.
@@ -51,7 +52,7 @@ from zope.app.traversing import locationAsUnicode, locationAsTuple, traverse
 
 class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
     hubid = 23
-    location = locationAsTuple('/foo/bar')
+    location = '/foo/bar'
     obj = object()
     # Don't test the HubEvent base class.
     # See below for testing subclasses / subinterfaces
@@ -62,9 +63,9 @@ class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
         ObjectHubSetup.setUp(self)
         self.setUpLoggingSubscriber()
         self.hub_event = self.klass(self.object_hub,
-                                           self.hubid,
-                                           self.location,
-                                           self.obj)
+                                    self.hubid,
+                                    self.location,
+                                    self.obj)
 
     def testTransmittedEvent(self):
         # Test that the HubEvents are transmitted by the notify method
@@ -91,7 +92,7 @@ class TransmitObjectMovedHubEventTest(TransmitHubEventTest):
         self.setUpLoggingSubscriber()
         self.hub_event = self.klass(
                 self.object_hub, self.hubid,
-                locationAsTuple('/old/location'), self.location, self.obj)
+                '/old/location', self.location, self.obj)
 
 class TransmitObjectRegisteredHubEventTest(TransmitHubEventTest):
     interface = IObjectRegisteredHubEvent
@@ -102,9 +103,9 @@ class TransmitObjectUnregisteredHubEventTest(TransmitHubEventTest):
     klass = ObjectUnregisteredHubEvent
 
 class BasicHubTest(ObjectHubSetup, unittest.TestCase):
-    location = locationAsTuple('/foo/bar')
+    location = '/foo/bar'
     obj = object()
-    new_location = locationAsTuple('/baz/spoo')
+    new_location = '/baz/spoo'
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
@@ -170,38 +171,30 @@ class TestSearchRegistrations(BasicHubTest):
         '/foo/bas',
         '/foo/bas/baz',
         )
-        
+
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        
+
     def testSearchAll(self):
         object_hub = self.object_hub
-        location_hubid = [(locationAsTuple(location),
+        location_hubid = [(location,
                            object_hub.register(location))
                           for location in self.locations]
         location_hubid.sort()
 
-        r = list(object_hub.getRegistrations())
+        r = list(object_hub.iterRegistrations())
         self.assertEqual(r, location_hubid)
 
     def testSearchSome(self):
         object_hub = self.object_hub
-        location_hubid= [(locationAsTuple(location),
+        location_hubid= [(location,
                            object_hub.register(location))
                           for location in self.locations
                           if location.startswith('/foo/bar/')]
         location_hubid.sort()
 
-        r = list(object_hub.getRegistrations('/foo/bar'))
+        r = list(object_hub.iterRegistrations('/foo/bar'))
         self.assertEqual(r, location_hubid)
-
-    def testDetectUnichrFFFF(self):
-        # this is an implementation wrinkle.
-        # the character \uffff is used as a sentinel in searching
-        # so, you're not allowed to register a location with a segment
-        # that starts with that character.
-        self.assertRaises(ValueError,
-                          self.object_hub.register, u'/foo/\uffffstuff')
 
     def testIterObjectRegistrations(self):
         class FakeObject:
@@ -213,7 +206,7 @@ class TestSearchRegistrations(BasicHubTest):
                 return self.location == other.location
 
         def fake_object_for_location(location):
-            return FakeObject(locationAsUnicode(location))
+            return FakeObject(canonicalPath(location))
 
         from zope.app.interfaces.traversing import ITraverser
         class DummyTraverser:
@@ -227,7 +220,7 @@ class TestSearchRegistrations(BasicHubTest):
         provideAdapter(None, ITraverser, DummyTraverser)
 
         object_hub = self.object_hub
-        location_hubid_object = [(locationAsTuple(location),
+        location_hubid_object = [(location,
                                   object_hub.register(location),
                                   fake_object_for_location(location)
                                  )
@@ -305,7 +298,7 @@ class TestObjectAddedEvent(BasicHubTest):
         # check that hub id is an int
         self.failUnless(isinstance(hubid, int)) # int(hubid)
 
-        location_from_hub = hub.getLocation(hubid)
+        location_from_hub = hub.getPath(hubid)
 
         self.assertEqual(location_from_hub, location)
 
@@ -337,7 +330,7 @@ class TestObjectAddedEvent(BasicHubTest):
 
         absent_hubid = 12
 
-        self.assertRaises(NotFoundError, hub.getLocation, absent_hubid)
+        self.assertRaises(NotFoundError, hub.getPath, absent_hubid)
 
         self.subscriber.verifyEventsReceived(self, [])
 
@@ -366,7 +359,7 @@ class TestObjectRemovedEvent(BasicHubTest):
         hub.notify(removed_event)
 
         self.assertRaises(NotFoundError, hub.getHubId, location)
-        self.assertRaises(NotFoundError, hub.getLocation, hubid)
+        self.assertRaises(NotFoundError, hub.getPath, hubid)
 
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectAddedEvent, location),
@@ -412,13 +405,13 @@ class TestObjectModifiedEvent(BasicHubTest):
         # check that hubid is an int
         self.failUnless(isinstance(hubid, int)) # int(hubid)
 
-        location_from_hub = hub.getLocation(hubid)
+        location_from_hub = hub.getPath(hubid)
         self.assertEqual(location_from_hub, location)
 
         hub.notify(modified_event)
 
         hubid2 = hub.getHubId(location)
-        location_from_hub2 = hub.getLocation(hubid2)
+        location_from_hub2 = hub.getPath(hubid2)
 
         self.assertEqual(location_from_hub, location_from_hub2)
         self.assertEqual(hubid, hubid2)
@@ -469,7 +462,7 @@ class TestObjectMovedEvent(BasicHubTest):
 
         hub.notify(moved_event)
 
-        location_from_hub = hub.getLocation(hubid)
+        location_from_hub = hub.getPath(hubid)
 
         self.assertEqual(location_from_hub, new_location)
         self.assertRaises(NotFoundError, hub.getHubId, location)

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_hubevent.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_hubevent.py,v 1.3 2003/03/19 18:05:04 stevea Exp $
 """
 
 import unittest, sys
@@ -40,7 +40,7 @@ class DummyObjectHub:
 
         raise NotFoundError
 
-    def getLocation(self, ruid):
+    def getPath(self, ruid):
         if ruid==self.ruid:
             return self.location
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_hookedhubevent.py,v 1.3 2002/12/30 14:03:17 stevea Exp $
+$Id: test_hookedhubevent.py,v 1.4 2003/03/19 18:05:04 stevea Exp $
 """
 
 # in this version of these tests, we are no longer using a fake
@@ -25,9 +25,8 @@ import unittest, sys
 from zope.app.services.tests.objecthubsetup import ObjectHubSetup
 from zope.app.services.hub import \
      ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
-     ObjectModifiedHubEvent, ObjectMovedHubEvent, \
-     ObjectRemovedHubEvent
-from zope.app.traversing import getPhysicalPath
+     ObjectModifiedHubEvent, ObjectMovedHubEvent, ObjectRemovedHubEvent
+from zope.app.traversing import getPhysicalPathString as getPath
 
 from zope.component import getService
 
@@ -39,7 +38,7 @@ class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
         ObjectHubSetup.setUp(self)
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPath(self.obj)
+        self.location = getPath(self.obj)
         self.event = self.klass(self.object_hub,
                                 self.hubid,
                                 self.location,
@@ -67,7 +66,7 @@ class TestEmptyObjectRegisteredHubEvent(TestObjectRegisteredHubEvent):
         ObjectHubSetup.setUp(self)
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPath(self.obj)
+        self.location = getPath(self.obj)
         self.event = self.klass(self.object_hub, self.hubid)
 
 class TestObjectUnregisteredHubEvent(AbstractTestHubEvent):
@@ -80,7 +79,7 @@ class TestEmptyObjectUnregisteredHubEvent(TestObjectUnregisteredHubEvent):
         ObjectHubSetup.setUp(self)
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPath(self.obj)
+        self.location = getPath(self.obj)
         self.event = self.klass(self.object_hub, self.hubid, self.location)
 
 class TestObjectModifiedHubEvent(AbstractTestHubEvent):
@@ -93,7 +92,7 @@ class TestEmptyObjectModifiedHubEvent(TestObjectModifiedHubEvent):
         ObjectHubSetup.setUp(self)
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPath(self.obj)
+        self.location = getPath(self.obj)
         self.event = self.klass(self.object_hub, self.hubid)
 
 class TestObjectMovedHubEvent(AbstractTestHubEvent):
@@ -104,7 +103,7 @@ class TestObjectMovedHubEvent(AbstractTestHubEvent):
         ObjectHubSetup.setUp(self)
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPath(self.obj)
+        self.location = getPath(self.obj)
         self.event = self.klass(self.object_hub,
                                 self.hubid,
                                 self.fromLocation,
@@ -123,7 +122,7 @@ class TestEmptyObjectMovedHubEvent(TestObjectMovedHubEvent):
         ObjectHubSetup.setUp(self)
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPath(self.obj)
+        self.location = getPath(self.obj)
         self.event = self.klass(self.object_hub,
                                 self.hubid,
                                 self.fromLocation)

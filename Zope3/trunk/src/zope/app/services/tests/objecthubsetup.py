@@ -14,15 +14,15 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.7 2003/02/12 02:17:34 seanb Exp $
+$Id: objecthubsetup.py,v 1.8 2003/03/19 18:05:04 stevea Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.component import getServiceManager, getService
 from zope.app.services.servicenames import HubIds
 from zope.app.services.service import ServiceConfiguration
-from zope.app.traversing import getPhysicalPathString, traverse
-from zope.app.traversing import locationAsTuple
+from zope.app.traversing import traverse
+from zope.app.traversing import locationAsUnicode as canonicalPath
 
 from zope.app.services.hub import ObjectHub
 from zope.app.interfaces.event import IObjectAddedEvent
@@ -58,7 +58,7 @@ class LoggingSubscriber:
                 interface, location = spec
                 obj = None
                 hubid = None
-            location = locationAsTuple(location)
+            location = canonicalPath(location)
             testcase.assert_(interface.isImplementedBy(event),
                              'Interface %s' % interface.getName())
             testcase.assertEqual(event.location, location)

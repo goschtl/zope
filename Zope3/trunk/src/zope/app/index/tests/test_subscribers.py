@@ -11,14 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_subscribers.py,v 1.2 2003/03/18 21:02:21 jim Exp $
+$Id: test_subscribers.py,v 1.3 2003/03/19 18:05:02 stevea Exp $
 """
 
 from unittest import makeSuite, main, TestCase
 
 from zope.app.index.subscribers import Registration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse, locationAsTuple
+from zope.app.traversing import traverse, locationAsUnicode as canonicalPath
 from zope.app.event.objectevent import ObjectAddedEvent
 from zope.component import getService
 from zope.app.services.servicenames import EventPublication, HubIds
@@ -51,7 +51,7 @@ class TestRegistration(PlacefulSetup, TestCase):
         content = object()
         name = 'blah'
 
-        event = ObjectAddedEvent(content, locationAsTuple('/%s' %(name,)))
+        event = ObjectAddedEvent(content, canonicalPath('/%s' % name))
         self.events.publish(event)
         self.assertEqual(self.hub.numRegistrations(), 1)
 
