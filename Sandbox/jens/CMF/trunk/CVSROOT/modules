@@ -153,6 +153,13 @@ Zope  ZSrc &utilities &pcgi &GreyThing \
 
 # KLM end
 
-# Jim begin
-zpZODB -d ZODB Zope2/lib/python/ZODB
-saZODB Releases/StandaloneZODB &zpZODB
+# modules that define the StandaloneZODB release
+# -- jeremy 3/27/01
+
+sazZODB -d ZODB Zope2/lib/python/ZODB
+sazZEO -d ZEO Packages/ZEO
+sazExtensionClass -d ExtensionClass Zope2/lib/Components/ExtensionClass
+sazLib -d Lib Zope2/lib/python Persistence.py ThreadedAsync.py zLOG.py \
+       zdaemon.py
+
+saZODB Releases/StandaloneZODB &sazZODB &sazZEO &sazExtensionClass &sazLib
