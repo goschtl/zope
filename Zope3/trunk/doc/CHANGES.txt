@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+      - Added `apidoc:rootModule` directive, so that third-party products can
+        add their packages to the class browser documentation module.
+
       - Separated the trusted and untrusted behaviors of page
         templates in the application server.  File-system-based
         templates are trusted, and database-based templates are

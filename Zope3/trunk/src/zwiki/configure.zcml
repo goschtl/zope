@@ -1,6 +1,7 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:mail="http://namespaces.zope.org/mail"
+   xmlns:apidoc="http://namespaces.zope.org/apidoc"
    i18n_domain="zope"
    >
 
@@ -275,5 +276,8 @@
 
   <!-- Register various browser related components, including all views -->
   <include package=".browser" />
+
+  <!-- Register application with API Doc Tool -->
+  <apidoc:rootModule module="zwiki" />
 
 </configure>
