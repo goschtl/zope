@@ -2,17 +2,17 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.14 2002/12/05 12:36:48 bcsaller Exp $
+$Id: ZPTPage.py,v 1.15 2002/12/05 15:52:44 fdrake Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -45,7 +45,7 @@ class IZPTPage(Interface):
         title=u"Source",
         description=u"""The source of the page template.""",
         required=True)
-    
+
 
 class IRenderZPTPage(Interface):
 
@@ -74,7 +74,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
         if isinstance(text, unicode):
             text = text.encode('utf-8')
-        
+
         self.pt_edit(text, content_type)
 
     def pt_getContext(self, instance, request, **_kw):
@@ -92,7 +92,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         instance = ProxyFactory(instance)
         if args: args = ProxyFactory(args)
         kw = ProxyFactory(keywords)
-        
+
         namespace = self.pt_getContext(instance, request,
                                        args=args, options=kw)
 
@@ -114,7 +114,7 @@ class SearchableText:
 
     def __init__(self, page):
         self.page = page
-        
+
     def getSearchableText(self):
         try:
             # XXX check about encoding here and in the ZPTPage.read
