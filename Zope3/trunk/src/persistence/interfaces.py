@@ -194,8 +194,9 @@ class IPersistent(Interface):
     def _p_deactivate():
         """Deactivate the object
 
-        Change the object to the ghost state is it is in the
-        up-to-date state.
+        If possible, change an object in the up-to-date state to the
+        ghost state.  It may not be possible to make some persistent
+        objects ghosts.
         """
 
 class IPersistentNoReadConflicts(IPersistent):
@@ -247,59 +248,76 @@ class IPersistentDataManager(Interface):
 class ICache(Interface):
     """In-memory object cache
 
-    Cache objects are used by data managers to implement in-memory
-    object caches with automatic object deactivation and removal of
-    unreferenced objects.
+    The cache serves two purposes.  It peforms pointer swizzling, and
+    it keeps a bounded set of recently used but otherwise unreferenced
+    in objects to avoid the cost of re-loading them.
 
-    Cache objects depend heavily on the Persistent object C API.
+    Pointer swizzling is the process of converting between persistent
+    object ids and Python object ids.  When a persistent object is
+    serialized, its references to other persistent objects are
+    represented as persitent object ids (oids).  When the object is
+    unserialized, the oids are converted into references to Python
+    objects.  If several different serialized objects refer to the
+    same object, they must all refer to the same object when they are
+    unserialized.
+
+    A cache stores persistent objects, but it treats ghost objects and
+    non-ghost or active objects differently.  It has weak references
+    to ghost objects, because ghost objects are only stored in the
+    cache to satisfy the pointer swizzling requirement.  It has strong
+    references to active objects, because it caches some number of
+    them even if they are unreferenced.
+
+    The cache keeps some number of recently used but otherwise
+    unreferenced objects in memory.  We assume that there is a good
+    chance the object will be used again soon, so keeping it memory
+    avoids the cost of recreating the object.
+    
+    An ICache implementation is intended for use by an
+    IPersistentDataManager.
     """
 
-    def __getitem__(key):
-        """Get a cached object
+    def get(oid):
+        """Return the object from the cache or None."""
+
+    def set(oid, obj):
+        """Store obj in the cache under oid.
+
+        obj must implement IPersistent
         """
 
-    def __setitem__(key, value):
-        """Add an object to the cache
-        """
-
-    def __len__():
-        """Return the number of objects in the cache
-        """
-
-    def get(oid, default=None):
-        """Get a cached object
-        """
-
-    def incrgc(multiple=1):
-        """Perform incremental garbage collection
-
-        An positive integer argument can be provided to specify a
-        number of incremental steps to take.
-        """
+    def remove(oid):
+        """Remove oid from the cache if it exists."""
 
     def invalidate(oids):
-        """Invalidate the object for the given object ids
+        """Make all of the objects in oids ghosts.
+
+        `oids` is an iterable object that yields oids.
+        
+        The cache must attempt to change each object to a ghost by
+        calling _p_deactivate().
+
+        If an oid is not in the cache, ignore it.
         """
 
-    def invalidateMany(oids):
-        """Invalidate the objects for the given collection of object ids
+    def clear():
+        """Invalidate all the active objects."""
 
-        If oids is None, all of the objects in the cache are
-        invalidated.
+    def activate(oid):
+        """Notification that object oid is now active.
 
-        The collection must be iterable as if it was a sequence of oids.
+        The caller is notifying the cache of a state change.
+
+        Raises LookupError if oid is not in cache.
         """
 
-class ICachePolicy(Interface):
+    def shrink():
+        """Remove excess active objects from the cache."""
 
-    def maximum_quiet(cache_size):
-        """Return a number of seconds
-
-        Objects that haven't been accessed in the last number seconds
-        should be deactivated.
-        """
-
-    def incremental_check_count(cache_size):
-        """Return the number of objects that should be checked in an
-        incremental garbage collection.
+    def statistics():
+        """Return dictionary of statistics about cache size.
+        
+        Contains at least the following keys:
+        active -- number of active objects
+        ghosts -- number of ghost objects
         """
