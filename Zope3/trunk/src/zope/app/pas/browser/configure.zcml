@@ -115,7 +115,7 @@
       description="PAS Credential Extraction and Challenge Plugin"
       />
 
-<include file="groupfolder.zcml" />
+  <include file="groupfolder.zcml" />
 
 <!-- Challengers -->
   
