@@ -94,6 +94,10 @@ checkPermission(PyObject *permission, PyObject *object, PyObject *name)
 
 
 /*     def check(self, object, name): */
+
+/* Note that we have an int version gere because we will use it for
+   __setitem__, as describd below */
+
 static int
 Checker_check_int(Checker *self, PyObject *object, PyObject *name)
 {
@@ -154,6 +158,9 @@ Checker_check_int(Checker *self, PyObject *object, PyObject *name)
     return -1;
   }
 }
+
+/* Here we have the non-int version, implemented using the int
+   version, which is exposed as a method */
 
 static PyObject *
 Checker_check(Checker *self, PyObject *args)
@@ -350,6 +357,13 @@ static PyGetSetDef Checker_getset[] = {
      NULL},
     {NULL}  /* Sentinel */
 };
+
+/* We create operator aliases for check and proxy. Why? Because
+   calling operator slots is much faster than calling methods and
+   security checks are done so often that speed matters.  So we have
+   this hack of using almost-arbitrary operations to represent methods
+   that we call alot.  The security proxy implementation participates
+   in the same hack. */
 
 static PyMappingMethods Checker_as_mapping = {
 	/* mp_length        */ (inquiry)NULL,
