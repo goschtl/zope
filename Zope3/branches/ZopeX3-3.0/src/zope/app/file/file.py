@@ -188,14 +188,14 @@ class File(Persistent):
             # Woooop Woooop Woooop! This is a trick.
             # We stuff the data directly into our jar to reduce the
             # number of updates necessary.
-            data._p_jar = jar
+            jar.add(data)
 
             # This is needed and has side benefit of getting
             # the thing registered:
             data.next = next
 
             # Now make it get saved in a sub-transaction!
-            get_transaction().savepoint()
+            get_transaction().commit(1)
 
             # Now make it a ghost to free the memory.  We
             # don't need it anymore!
