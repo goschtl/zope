@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Event-related interfaces
 
-Revision information:
-$Id: interfaces.py,v 1.1 2004/03/02 18:50:59 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/03/03 09:15:26 srichter Exp $
 """
 
 from zope.interface import Interface, Attribute
