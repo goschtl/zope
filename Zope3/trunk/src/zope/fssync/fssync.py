@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.12 2003/05/13 20:28:01 gvanrossum Exp $
+$Id: fssync.py,v 1.13 2003/05/13 20:56:44 gvanrossum Exp $
 """
 
 import os
@@ -398,14 +398,35 @@ class FSSync(object):
 
     def diff(self, target, mode=1, diffopts=""):
         assert mode == 1, "modes 2 and 3 are not yet supported"
+        entry = self.metadata.getentry(target)
+        if not entry:
+            raise Error("diff target '%s' doesn't exist", target)
+        if entry.get("flag"):
+            raise Error("diff target '%s' is added or deleted", target)
         if isdir(target):
-            raise Error("recursive diff not yet supported")
+            self.dirdiff(target, mode, diffopts)
+            return
+        if not isfile(target):
+            raise Error("diff target '%s' is file nor directory", target)
         head, tail = self.split(target)
         orig = join(head, "@@Zope", "Original", tail)
+        if not isfile(orig):
+            raise Error("can't find original for diff target '%s'", target)
+        if self.cmp(target, orig):
+            return
         print "Index:", target
         sys.stdout.flush()
         os.system("diff %s %s %s" %
                   (diffopts, commands.mkarg(orig), commands.mkarg(target)))
+
+    def dirdiff(self, target, mode=1, diffopts=""):
+        assert isdir(target)
+        names = self.metadata.getnames(target)
+        for name in names:
+            t = join(target, name)
+            e = self.metadata.getentry(t)
+            if e and not e.get("flag"):
+                self.diff(t, mode, diffopts)
 
     def add(self, path):
         if not exists(path):
