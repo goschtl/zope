@@ -165,7 +165,7 @@ msgstr "Язык"
 
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:17
 msgid "Files"
-msgstr "Файл"
+msgstr "Файлы"
 
 # Default: "Reload"
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:29
@@ -228,7 +228,7 @@ msgstr "Разрушенный объект"
 
 #: src/zope/app/bundle/browser/__init__.py:112
 msgid "Activated: ${activated}.\n"
-msgstr "Активизирован: ${activated}.\n"
+msgstr "Активирован: ${activated}.\n"
 
 #: src/zope/app/bundle/browser/__init__.py:115
 msgid "Registered: ${registered}.\n"
@@ -240,7 +240,7 @@ msgstr "Снято регистраций: ${count}"
 
 #: src/zope/app/bundle/browser/bundle.pt:11
 msgid "Services needed by this bundle"
-msgstr ""
+msgstr "Сервисы необходимые для данного пакета"
 
 #: src/zope/app/bundle/browser/bundle.pt:110
 msgid "(is: ${active_status})"
@@ -248,16 +248,16 @@ msgstr "(состояние: ${active_status})"
 
 #: src/zope/app/bundle/browser/bundle.pt:119
 msgid "No registrations are provided by this bundle."
-msgstr ""
+msgstr "Данный пакет не предоставляет регистраций."
 
 #: src/zope/app/bundle/browser/bundle.pt:123
 msgid "Click \"Activate bundle\" to perform the above actions."
-msgstr ""
+msgstr "Нажмите \"Активировать пакет\" для выполнения действия указанного выше."
 
 # Default: "Activate bundle"
 #: src/zope/app/bundle/browser/bundle.pt:127
 msgid "activate-bundle-button"
-msgstr ""
+msgstr "Активировать пакет"
 
 # Default: "Reset"
 #: src/zope/app/bundle/browser/bundle.pt:130
@@ -268,57 +268,59 @@ msgstr "Сбросить"
 
 #: src/zope/app/bundle/browser/bundle.pt:137
 msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
-msgstr ""
+msgstr "Нажмите \"Деактивировать пакет\" для отмены всех регистраций в данном пакете."
 
 # Default: "Deactivate bundle"
 #: src/zope/app/bundle/browser/bundle.pt:140
 msgid "deactivate-bundle-button"
-msgstr ""
+msgstr "Деактивировать пакет"
 
 #: src/zope/app/bundle/browser/bundle.pt:16
 msgid "${service_name} service"
-msgstr ""
+msgstr "${service_name} сервис"
 
 #: src/zope/app/bundle/browser/bundle.pt:20
 msgid "present in site at ${path}"
-msgstr ""
+msgstr "на сайте находится в ${path}"
 
 #: src/zope/app/bundle/browser/bundle.pt:26
 msgid "registered in bundle at ${path}"
-msgstr ""
+msgstr "зарегистрирован в пакете ${path}"
 
 #: src/zope/app/bundle/browser/bundle.pt:3
 #: src/zope/app/bundle/browser/bundle.pt:8
 msgid "Bundle Information"
-msgstr ""
+msgstr "Информация пакета"
 
 #: src/zope/app/bundle/browser/bundle.pt:31
 msgid "UNFULFILLED DEPENDENCY"
-msgstr ""
+msgstr "НЕВЫПОЛНИМАЯ ЗАВИСИМОСТЬ"
 
 #: src/zope/app/bundle/browser/bundle.pt:36
 msgid ""
 "(You must <a href=\"../default/AddService\">add a ${service_name} service to "
 "this site</a> before you can activate this bundle)"
 msgstr ""
+"(Вы должны <a href=\"../default/AddService\">добавить ${service_name} сервис для данного сайта "
+"</a> перед тем как Вы сможете активировать данный пакет)"
 
 #: src/zope/app/bundle/browser/bundle.pt:43
 msgid "No services are required by this bundle."
-msgstr ""
+msgstr "Для данного пакета нет необходимых сервисов."
 
 #: src/zope/app/bundle/browser/bundle.pt:47
 msgid "Registrations in this bundle"
-msgstr ""
+msgstr "Регистрации для данного пакета"
 
 #: src/zope/app/bundle/browser/bundle.pt:53
 #: src/zope/app/site/browser/services.pt:15
 #: src/zope/app/utility/browser/utilities.pt:11
 msgid "(click to clear message)"
-msgstr ""
+msgstr "(нажмите для сброса сообщения)"
 
 #: src/zope/app/bundle/browser/bundle.pt:63
 msgid "For ${service_name} service"
-msgstr ""
+msgstr "Для ${service_name} сервиса"
 
 #: src/zope/app/bundle/browser/bundle.pt:73
 msgid "${usage_summary} implemented by ${impl_summary}"
@@ -326,25 +328,25 @@ msgstr "${usage_summary} реализован ${impl_summary}"
 
 #: src/zope/app/bundle/browser/bundle.pt:78
 msgid "Conflicts with"
-msgstr ""
+msgstr "Конфилктует с"
 
 #: src/zope/app/bundle/browser/bundle.pt:82
 msgid "Overrides"
-msgstr ""
+msgstr "Заменяет"
 
 #: src/zope/app/bundle/browser/bundle.pt:92
 #: src/zope/app/bundle/browser/bundle.pt:103
 msgid "Register only"
-msgstr ""
+msgstr "Только зарегистрировать"
 
 #: src/zope/app/bundle/browser/bundle.pt:96
 #: src/zope/app/bundle/browser/bundle.pt:107
 msgid "Register and activate"
-msgstr ""
+msgstr "Зарегистрировать и активировать"
 
 #: src/zope/app/bundle/browser/configure.zcml:19
 msgid "Bundle"
-msgstr ""
+msgstr "Пакет"
 
 # Default: "Invalidated."
 #: src/zope/app/cache/browser/cacheable.py:57
@@ -717,11 +719,11 @@ msgstr ""
 
 #: src/zope/app/demo/passwdauth/interfaces.py:27
 msgid "File Name"
-msgstr ""
+msgstr "Имя файла"
 
 #: src/zope/app/demo/passwdauth/interfaces.py:28
 msgid "File name of the data file."
-msgstr ""
+msgstr "Имя файла данных."
 
 #: src/zope/app/dtmlpage/configure.zcml:102
 msgid "A simple, content-based DTML page"
@@ -1276,7 +1278,7 @@ msgstr "Снять регистрацию для отсутствующих об
 
 #: src/zope/app/hub/browser/hubcontrol.pt:7
 msgid "${missing_num} object(s) unregistered."
-msgstr ""
+msgstr "снята регистрация с ${missing_num} объекта(ов)."
 
 #: src/zope/app/hub/browser/subscription_control.pt:11
 #: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:11
@@ -1287,17 +1289,17 @@ msgstr "Контроль подписки"
 #: src/zope/app/index/browser/field/control.pt:26
 #: src/zope/app/index/browser/text/control.pt:26
 msgid "Successfully subscribed."
-msgstr ""
+msgstr "Успешно подписан."
 
 #: src/zope/app/hub/browser/subscription_control.pt:20
 #: src/zope/app/index/browser/field/control.pt:31
 #: src/zope/app/index/browser/text/control.pt:31
 msgid "Successfully unsubscribed."
-msgstr ""
+msgstr "Успешно отписан."
 
 #: src/zope/app/hub/browser/subscription_control.pt:24
 msgid "Registration done."
-msgstr ""
+msgstr "Зарегистрирован."
 
 #: src/zope/app/hub/browser/subscription_control.pt:29
 #: src/zope/app/index/browser/field/control.pt:51
@@ -1309,7 +1311,7 @@ msgstr "Состояние подписки: Подписан"
 #: src/zope/app/hub/browser/subscription_control.pt:3
 #: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:3
 msgid "Registration \"Service\" Control Page"
-msgstr ""
+msgstr "Контроль сервиса регистраций"
 
 #: src/zope/app/hub/browser/subscription_control.pt:33
 #: src/zope/app/index/browser/field/control.pt:56
@@ -1320,7 +1322,7 @@ msgstr "Состояние подписки: Не подписан"
 
 #: src/zope/app/hub/browser/subscription_control.pt:39
 msgid "Register Existing Objects"
-msgstr ""
+msgstr "Зарегистрировать существующие объекты"
 
 #: src/zope/app/i18n/browser/configure.zcml:17
 msgid "Translate"
@@ -2278,7 +2280,7 @@ msgstr "Ошибка синтаксиса: ${msg}"
 
 #: src/zope/app/pythonpage/edit.pt:39
 msgid "File \"${filename}\", line ${lineno}, offset ${offset}"
-msgstr ""
+msgstr "Файл \"${filename}\", строка ${lineno}, столбец ${offset}"
 
 # Default: "Test"
 #: src/zope/app/rdb/browser/configure.zcml:39
@@ -2991,31 +2993,31 @@ msgstr ""
 #: src/zope/app/security/browser/login.pt:13
 #: src/zope/app/security/browser/logout.pt:11
 msgid "Back to the main page."
-msgstr ""
+msgstr "Вернуться к основной странице."
 
 #: src/zope/app/security/browser/login.pt:5
 msgid "Login successful!"
-msgstr ""
+msgstr "Вы успешно вошли в систему!"
 
 #: src/zope/app/security/browser/login.pt:9
 msgid "You are now logged in as ${UserTitle}."
-msgstr ""
+msgstr "Вы вошли в систему как ${UserTitle}."
 
 #: src/zope/app/security/browser/login_failed.pt:5
 msgid "Login Failed!"
-msgstr ""
+msgstr "Вход в систему неудачен!"
 
 #: src/zope/app/security/browser/login_failed.pt:9
 msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
-msgstr ""
+msgstr "Вы прервали процедуру входа в систему. <a href=\"\"> Вернуться назад. </a>"
 
 #: src/zope/app/security/browser/logout.pt:5
 msgid "Logout successful!"
-msgstr ""
+msgstr "Вы успешно вышли из системы!"
 
 #: src/zope/app/security/browser/logout.pt:7
 msgid "You are now logged out."
-msgstr ""
+msgstr "Вы вышли из системы."
 
 #: src/zope/app/security/browser/permissionwidget.py:72
 msgid "---select permission---"
@@ -3023,11 +3025,11 @@ msgstr "---выберите права доступа---"
 
 #: src/zope/app/security/browser/redirect.pt:11
 msgid "You are being redirected!"
-msgstr ""
+msgstr "Ваш запрос был перенаправлен!"
 
 #: src/zope/app/security/browser/redirect.pt:14
 msgid "If you you see this screen for more than 5 seconds, click here."
-msgstr ""
+msgstr "Если вы видите данную страницу больше чем 5 секунд, идите по данной ссылке."
 
 # Default: "View"
 #: src/zope/app/security/configure.zcml:30
@@ -3901,7 +3903,7 @@ msgstr ""
 
 #: src/zope/app/utility/browser/__init__.py:103
 msgid "Activated: ${activated_utilities}"
-msgstr ""
+msgstr "Активированы: ${activated_utilities}"
 
 #: src/zope/app/utility/browser/__init__.py:107
 msgid "All of the checked utilities were already active"
