@@ -13,7 +13,7 @@
 ##############################################################################
 """Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.12 2003/11/21 17:10:10 jim Exp $
+$Id: schemadisplay.py,v 1.13 2003/12/16 20:31:27 garrett Exp $
 """
 from zope.app import zapi
 
@@ -83,5 +83,5 @@ def DisplayViewFactory(name, schema, label, permission, layer,
     defineChecker(class_,
                   NamesChecker(("__call__", "__getitem__", "browserDefault"),
                                permission))
-    s = zapi.getService(None, zapi.servicenames.Prefix)
+    s = zapi.getService(None, zapi.servicenames.Presentation)
     s.provideView(for_, name, IBrowserRequest, class_, layer)
