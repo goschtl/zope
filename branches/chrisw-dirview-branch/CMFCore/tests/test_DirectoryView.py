@@ -3,6 +3,10 @@ from unittest import TestCase, TestSuite, makeSuite, main
 
 from Products.CMFCore.tests.base.dummy import DummyFolder
 
+#
+# XXX: 2002/08/12  Generic rule:  *don't* do imports of the module-under-test
+#       at module scope in the unittest;  failure here suppresses information!
+#
 from Products.CMFCore.DirectoryView import registerDirectory
 from Products.CMFCore.DirectoryView import addDirectoryViews
 from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
@@ -33,7 +37,13 @@ def _registerDirectory(self=None):
     if self is not None:
         ob = self.ob = DummyFolder()
         addDirectoryViews(ob, 'fake_skins', _prefix)
-    
+
+#
+# XXX: 2002/08/12:  Another thumb-rule:  don't write to the filesystem
+#       as part of a unittest (failure modes are too hard to track down,
+#       and it should be possible to run them *anywhere*, including in
+#       a setup where the files / directories are readonly.
+#
 def _writeFile(filename, stuff):
     # write some stuff to a file on disk
     # make sure the file's modification time has changed
@@ -63,6 +73,12 @@ class DirectoryViewTests1( TestCase ):
         """ Test registerDirectory  """
         pass
     
+    #
+    # XXX: 2002/08/12: These tests "smell funny";  they are perhaps too
+    #       "white box"?  #   (and two of them fail on Linux, as well;
+    #       you are hardwiring assumptions about the shape of
+    #       SOFTWARE_HOME/INSTANCE_HOME).
+    #
     def test_getDirectoryInfo1( self ):
         """ windows INSTANCE_HOME  """
         addDirectoryViews(self.ob, 'fake_skins', _prefix)

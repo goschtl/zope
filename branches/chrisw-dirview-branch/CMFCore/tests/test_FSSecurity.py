@@ -6,8 +6,17 @@ from time import sleep
 
 from AccessControl.Permission import Permission
 from Products.CMFCore.tests.base.testcase import RequestTest
+
+#
+# XXX: 2002/08/12:  Tests shouldn't depend on one another;  common
+#       stuff like this should be factored out into a utilty module.
+#
 from test_DirectoryView import _registerDirectory
 from test_DirectoryView import _prefix
+
+#
+# XXX: 2002/08/12:  don't write to the filesystem (see test_DirectoryView)
+#
 from test_DirectoryView import _writeFile
 from test_DirectoryView import _deleteFile
 from Globals import DevelopmentMode

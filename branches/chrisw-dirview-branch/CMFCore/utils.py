@@ -628,6 +628,10 @@ def expandpath(p):
 security.declarePublic('minimalpath')
 def minimalpath(p):
     # Trims INSTANCE_HOME or SOFTWARE_HOME from a path.
+    #
+    # XXX: 2002/08/12  This "fix" is unacceptable;  it breaks existing
+    #      functionality (e.g., PRODUCTS_PATH), and adds a new requirement
+    #      (that 'p' include 'Products').  Reverting head to 1.26.
     p = os_path.abspath(p)
     #abs = normalize(p)
     p = p[p.index('Products'):]
