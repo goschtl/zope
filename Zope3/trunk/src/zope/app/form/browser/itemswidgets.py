@@ -15,6 +15,7 @@
 
 $Id$
 """
+from xml.sax.saxutils import escape
 from zope.interface import implements
 from zope.i18n import translate
 from zope.proxy import removeAllProxies
@@ -269,9 +270,10 @@ class ItemsMultiDisplayWidget(MultiDataHelper, ItemsWidgetBase):
         tag = self.itemTag
         for item in value:
             term = self.vocabulary.getTerm(item)
-            items.append(renderElement(tag,
-                                       cssClass=cssClass,
-                                       contents=self.textForValue(term)))
+            items.append(renderElement(
+                tag,
+                cssClass=cssClass,
+                contents=escape(self.textForValue(term))))
         return items
 
 class ListDisplayWidget(ItemsMultiDisplayWidget):
@@ -405,14 +407,14 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
     def renderItem(self, index, text, value, name, cssClass):
         """Render an item for a particular value."""
         return renderElement('option',
-                             contents=text,
+                             contents=escape(text),
                              value=value,
                              cssClass=cssClass)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
         """Render an item for a particular value that is selected."""
         return renderElement('option',
-                             contents=text,
+                             contents=escape(text),
                              value=value,
                              cssClass=cssClass,
                              selected='selected')

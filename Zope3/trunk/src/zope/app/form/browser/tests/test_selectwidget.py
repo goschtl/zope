@@ -19,6 +19,7 @@ import unittest
 
 from zope.schema import Choice, List
 from zope.app.form.browser import SelectWidget
+from zope.publisher.browser import TestRequest
 
 choice = Choice(
     title=u"Number",
@@ -35,13 +36,43 @@ class SelectWidgetTest(unittest.TestCase):
     
     def _makeWidget(self, form):
         request = TestRequest(form=form)
-        return SelectWidget(sequence, request) 
+        return SelectWidget(sequence, choice.vocabulary, request) 
 
 
+select_html = '''<div id="field.terms">
+<div class="value">
+<select name="field.terms" size="5" >
+<option value="&lt; foo">&lt; foo</option>
+<option value="bar/&gt;">bar/&gt;</option>
+<option value="&amp;blah&amp;">&amp;blah&amp;</option>
+</select>
+</div>
+</div>'''
 
+class SelectWidgetHTMLEncodingTest(unittest.TestCase):
+    
+    def testOptionEncoding(self):
+        choice = Choice(
+            title=u"Number",
+            description=u"The Number",
+            values=['< foo', 'bar/>', '&blah&'])
+
+        sequence = List(
+            __name__="terms",
+            title=u"Numbers",
+            description=u"The Numbers",
+            value_type=choice)
+        
+        request = TestRequest()
+        sequence = sequence.bind(object())
+        widget = SelectWidget(sequence, choice.vocabulary, request) 
+        self.assertEqual(widget(), select_html)
 
 def test_suite():
-    return unittest.makeSuite(SelectWidgetTest)
+    return unittest.TestSuite((
+        unittest.makeSuite(SelectWidgetTest),
+        unittest.makeSuite(SelectWidgetHTMLEncodingTest)
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest="test_suite")
