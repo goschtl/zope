@@ -13,6 +13,7 @@
 ##############################################################################
 """Browser view for the LocalInterfaceService."""
 
+from __future__ import generators
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
 from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
