@@ -28,7 +28,7 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all registrations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.13 2004/03/05 22:08:55 jim Exp $
+$Id: __init__.py,v 1.1 2004/03/10 13:11:13 srichter Exp $
 """
 import re
 from transaction import get_transaction

@@ -13,9 +13,8 @@
 ##############################################################################
 """Interfaces for bundles.
 
-$Id: bundle.py,v 1.2 2004/03/03 10:38:46 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 13:11:13 srichter Exp $
 """
-
 from zope.app.container.interfaces import IContainer
 from zope.app.interfaces.services.registration \
      import IRegistrationManagerContainer

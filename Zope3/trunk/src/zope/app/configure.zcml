@@ -55,6 +55,9 @@
   <!-- WebDAV Support -->
   <include package="zope.app.dav" />
 
+  <!-- Services -->
+  <include package="zope.app.bundle" />  
+
   <!-- Utilities -->
   <include package="zope.app.session" />
   <include package="zope.app.schema" />

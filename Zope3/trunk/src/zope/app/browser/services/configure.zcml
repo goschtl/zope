@@ -127,22 +127,6 @@
 
   </view>
 
-<!-- Bundle -->
-
-  <page
-    for="zope.app.interfaces.services.bundle.IBundle"
-    permission="zope.ManageServices" 
-    class="zope.app.browser.container.contents.JustContents"
-    name="index.html" attribute="index" />
-
-  <page
-     name="contents.html"
-     for="zope.app.interfaces.services.bundle.IBundle"
-     menu="zmi_views" title="Contents"
-     permission="zope.ManageServices"
-     class="zope.app.browser.container.contents.Contents"
-     attribute="contents" />
-
 <!-- Generic page for objects that keep track of their registrations -->
 
 <!--
@@ -230,17 +214,6 @@
     <page name="action.html" attribute="action" />
 
   </view>    
-
-<!-- Bundles -->
-
-  <page
-      name="bundle.html"
-      for="zope.app.interfaces.services.bundle.IBundle"
-      menu="zmi_views" title="Bundle"
-      permission="zope.ManageServices"
-      class=".bundle.BundleView"
-      template="bundle.pt" />
-
 
   <zope:include file="error.zcml" />
 
