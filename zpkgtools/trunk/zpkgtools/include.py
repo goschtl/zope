@@ -167,7 +167,8 @@ class InclusionProcessor:
         already exist.
         """
         self.copyTree(self.source, self.destination)
-        self.addIncludes()
+        for relpath, source in self.includes.iteritems():
+            self.addSingleInclude(relpath, source)
 
     def copyTree(self, source, destination):
         """Populate the destination tree from the source tree.
@@ -215,11 +216,6 @@ class InclusionProcessor:
                 os.mkdir(destname)
                 shutil.copymode(srcname, destname)
                 shutil.copystat(srcname, destname)
-
-    def addIncludes(self):
-        """Add files and directories based on the specification."""
-        for relpath, source in self.includes.iteritems():
-            self.addSingleInclude(relpath, source)
 
     def addSingleInclude(self, relpath, source):
         dirname, basename = os.path.split(relpath)
