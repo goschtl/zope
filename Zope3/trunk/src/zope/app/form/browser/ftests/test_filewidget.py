@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_filewidget.py,v 1.1 2004/03/14 01:11:36 srichter Exp $
+$Id: test_filewidget.py,v 1.2 2004/03/17 17:37:05 philikon Exp $
 """
 
 import unittest
@@ -27,7 +27,7 @@ from zope.interface import implements
 from zope.schema.interfaces import IField, IEnumerated
 from zope.schema import Field, Enumerated
 
-from zope.app.form.browser.widget import FileWidget
+from zope.app.form.browser.textwidgets import FileWidget
 
 from support import *
 from zope.app.traversing import traverse

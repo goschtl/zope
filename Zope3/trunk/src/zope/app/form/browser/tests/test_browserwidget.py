@@ -12,8 +12,7 @@
 #
 ##############################################################################
 """
-
-$Id: test_browserwidget.py,v 1.1 2004/03/14 01:11:36 srichter Exp $
+$Id: test_browserwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import os
 import unittest

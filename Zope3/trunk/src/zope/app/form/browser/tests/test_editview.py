@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+"""$Id: test_editview.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import unittest
 
@@ -25,8 +25,8 @@ from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.event.tests.placelesssetup import getEvents
 
+from zope.app.form.browser import TextWidget
 from zope.app.form.browser.editview import EditView
-from zope.app.form.browser.widget import TextWidget
 from zope.app.form.browser.submit import Update
 from zope.component.exceptions import ComponentLookupError
 from zope.app.form.interfaces import IInputWidget

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.1 2004/03/14 01:11:36 srichter Exp $
+$Id: test_add.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 
 import unittest
@@ -29,9 +29,10 @@ from zope.app.form.browser.add import AddViewFactory, AddView
 from zope.app.form.browser.metaconfigure import AddFormDirective
 from zope.app.container.interfaces import IAdding
 from zope.app.form.widget import CustomWidgetFactory
-from zope.app.form.browser.widget import TextWidget as Text
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.form.browser import TextWidget as Text
 from zope.app.form.browser.submit import Update
+from zope.app.tests.placelesssetup import PlacelessSetup
+
 # Foo needs to be imported as globals() are checked
 from zope.app.form.browser.tests.test_editview import IFoo, IBar, Foo
 from zope.app.form.browser.tests.test_editview import FooBarAdapter

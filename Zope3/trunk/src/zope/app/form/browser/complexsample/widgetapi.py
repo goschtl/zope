@@ -11,18 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Alternate base classes for IBrowserWidget implementations.
 
 The base classes provided here implement the IBrowserWidget API and
 provide a simpler API that derived classes are expected to implement.
-"""
 
+$Id: widgetapi.py,v 1.2 2004/03/17 17:37:04 philikon Exp $
+"""
 from xml.sax.saxutils import escape, quoteattr
+
+from zope.interface import implements
+from zope.i18n.messageid import MessageIDFactory
 
 from zope.app.form.browser.interfaces import IBrowserWidget
 from zope.app.form.interfaces import WidgetInputError
-from zope.i18n.messageid import MessageIDFactory
 
 
 DOMAIN = "zope-widget-examples"
@@ -57,7 +59,7 @@ _msg_missing_multiple_value = message(
 
 
 class BaseWidget(object):
-    __implements__ = IBrowserWidget
+    implements(IBrowserWidget)
 
     name = property(lambda self: self.__prefix + self.context.__name__)
     required = property(lambda self: self.context.required)

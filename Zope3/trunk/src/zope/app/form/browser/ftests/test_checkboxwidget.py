@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_checkboxwidget.py,v 1.1 2004/03/14 01:11:36 srichter Exp $
+$Id: test_checkboxwidget.py,v 1.2 2004/03/17 17:37:05 philikon Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Bool
-from zope.app.form.browser.widget import CheckBoxWidget
+from zope.app.form.browser.itemwidgets import CheckBoxWidget
 
 from support import *
 from zope.app.traversing import traverse

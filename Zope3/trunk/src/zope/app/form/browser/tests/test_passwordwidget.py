@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_passwordwidget.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+$Id: test_passwordwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import unittest, doctest
 
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.widget import PasswordWidget
+from zope.app.form.browser import PasswordWidget
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.interface.verify import verifyClass
 

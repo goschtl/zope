@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+$Id: test_checkboxwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import unittest, doctest
 
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.widget import CheckBoxWidget
+from zope.app.form.browser import CheckBoxWidget
 from zope.publisher.browser import TestRequest
 from zope.schema import Bool
 from zope.interface.verify import verifyClass

@@ -11,13 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Gewneral registry-related views
+"""General registry-related views
 
-$Id: __init__.py,v 1.4 2004/03/14 02:17:06 srichter Exp $
+$Id: __init__.py,v 1.5 2004/03/17 17:37:07 philikon Exp $
 """
+from zope.component import getView, getServiceManager
+from zope.proxy import removeAllProxies
+from zope.interface import implements
+
+from zope.app.publisher.browser import BrowserView
 from zope.app.container.browser.adding import Adding
-from zope.app.form.browser.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.form.browser import BrowserWidget, RadioWidget
 from zope.app.form.browser.interfaces import IBrowserWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.container.interfaces import INameChooser
@@ -29,10 +34,6 @@ from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getName, traverse
-from zope.component import getView, getServiceManager
-from zope.proxy import removeAllProxies
-from zope.app.publisher.browser import BrowserView
-from zope.interface import implements
 
 
 class RegistrationView(BrowserView):

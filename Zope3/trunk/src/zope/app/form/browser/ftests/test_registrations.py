@@ -9,8 +9,10 @@ from zope.schema import interfaces
 from zope.schema import vocabulary
 
 import zope.app.form.browser.vocabularywidget as vocabwidgets
-import zope.app.form.browser.widget as widgets
-from zope.app.form.browser import enumerated
+
+# import all widgets (in this case, importing * is ok, since we
+# absolutely know what we're importing)
+from zope.app.form.browser import *
 
 from zope.app.form.interfaces import IDisplayWidget
 from zope.app.form.interfaces import IInputWidget
@@ -54,140 +56,140 @@ class Tests:
         
         >>> field = fields.Field()
         >>> widget = zapi.getViewProviding(field, IDisplayWidget, request)
-        >>> isinstance(widget, widgets.DisplayWidget)
+        >>> isinstance(widget, DisplayWidget)
         True
         
     ITextLine, IInputWidget -> TextWidget 
         
         >>> field = fields.TextLine()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.TextWidget)
+        >>> isinstance(widget, TextWidget)
         True
         
     IText, IInputWidget -> TextAreaWidget
     
         >>> field = fields.Text()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.TextAreaWidget)
+        >>> isinstance(widget, TextAreaWidget)
         True
         
     ISourceText, IInputWidget -> TextAreaWidget
     
         >>> field = fields.SourceText()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.TextAreaWidget)
+        >>> isinstance(widget, TextAreaWidget)
         True
 
     IBytesLine, IInputWidget -> BytesWidget
     
         >>> field = fields.BytesLine()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.BytesWidget)
+        >>> isinstance(widget, BytesWidget)
         True
 
     IBytes, IInputWidget -> FileWidget
     
         >>> field = fields.Bytes()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.FileWidget)
+        >>> isinstance(widget, FileWidget)
         True
         
     IASCII, IInputWidget -> BytesAreaWidget
     
         >>> field = fields.ASCII()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.BytesAreaWidget)
+        >>> isinstance(widget, BytesAreaWidget)
         True
         
     IInt, IInputWidget -> IntWidget
     
         >>> field = fields.Int()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.IntWidget)
+        >>> isinstance(widget, IntWidget)
         True
         
     IFloat, IInputWidget -> FloatWidget
     
         >>> field = fields.Float()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.FloatWidget)
+        >>> isinstance(widget, FloatWidget)
         True
         
     IDatetime, IInputWidget -> DatetimeWidget
     
         >>> field = fields.Datetime()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.DatetimeWidget)
+        >>> isinstance(widget, DatetimeWidget)
         True
         
     IDate, IInputWidget -> DateWidget
     
         >>> field = fields.Date()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.DateWidget)
+        >>> isinstance(widget, DateWidget)
         True
         
     IBool, IInputWidget -> CheckBoxWidget
     
         >>> field = fields.Bool()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.CheckBoxWidget)
+        >>> isinstance(widget, CheckBoxWidget)
         True
         
     ITuple, IInputWidget -> TupleSequenceWidget
     
         >>> field = fields.Tuple()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.TupleSequenceWidget)
+        >>> isinstance(widget, TupleSequenceWidget)
         True
 
     IList, IInputWidget -> ListSequenceWidget
     
         >>> field = fields.List()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.ListSequenceWidget)
+        >>> isinstance(widget, ListSequenceWidget)
         True
 
     IPassword, IInputWidget -> PasswordWidget
     
         >>> field = fields.Password()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, widgets.PasswordWidget)
+        >>> isinstance(widget, PasswordWidget)
         True
 
     IEnumeratedTextLine, IInputWidget -> EnumeratedTextWidget
     
         >>> field = fields.EnumeratedTextLine()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, enumerated.EnumeratedTextWidget)
+        >>> isinstance(widget, EnumeratedTextWidget)
         True
 
     IEnumeratedInt, IInputWidget -> EnumeratedIntWidget
     
         >>> field = fields.EnumeratedInt()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, enumerated.EnumeratedIntWidget)
+        >>> isinstance(widget, EnumeratedIntWidget)
         True
 
     IEnumeratedFloat, IInputWidget -> EnumeratedFloatWidget
     
         >>> field = fields.EnumeratedFloat()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, enumerated.EnumeratedFloatWidget)
+        >>> isinstance(widget, EnumeratedFloatWidget)
         True
 
     IEnumeratedDatetime, IInputWidget -> EnumeratedDatetimeWidget
     
         >>> field = fields.EnumeratedDatetime()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, enumerated.EnumeratedDatetimeWidget)
+        >>> isinstance(widget, EnumeratedDatetimeWidget)
         True
 
     IEnumeratedDate, IInputWidget -> EnumeratedDateWidget
     
         >>> field = fields.EnumeratedDate()
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
-        >>> isinstance(widget, enumerated.EnumeratedDateWidget)
+        >>> isinstance(widget, EnumeratedDateWidget)
         True
 
         

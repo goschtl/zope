@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_intwidget.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+$Id: test_intwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import unittest, doctest
 from unittest import main, makeSuite
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.widget import IntWidget
+from zope.app.form.browser import IntWidget
 from zope.app.form.interfaces import ConversionError, WidgetInputError
 from zope.interface.verify import verifyClass
 

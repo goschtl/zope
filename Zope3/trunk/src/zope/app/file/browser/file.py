@@ -13,9 +13,9 @@
 ##############################################################################
 """File views.
 
-$Id: file.py,v 1.3 2004/03/14 01:11:33 srichter Exp $
+$Id: file.py,v 1.4 2004/03/17 17:37:02 philikon Exp $
 """
-from zope.app.form.browser.widget import BytesAreaWidget
+from zope.app.form.browser import BytesAreaWidget
 from zope.app.form.widget import CustomWidgetFactory
 
 __metaclass__ = type

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textwidget.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+$Id: test_textwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import unittest, doctest
 
@@ -20,7 +20,7 @@ from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.widget import TextWidget
+from zope.app.form.browser import TextWidget
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 
 class TextWidgetTest(BrowserWidgetTest):

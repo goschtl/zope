@@ -13,7 +13,7 @@
 ##############################################################################
 """Form Directives Tests
 
-$Id: test_directives.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+$Id: test_directives.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import os
 import unittest
@@ -90,7 +90,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
               provides="zope.app.form.interfaces.IInputWidget"
-              factory="zope.app.form.browser.widget.TextWidget"
+              factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
 
@@ -117,7 +117,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
               provides="zope.app.form.interfaces.IInputWidget"
-              factory="zope.app.form.browser.widget.TextWidget"
+              factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
           <browser:editform
@@ -145,7 +145,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
               provides="zope.app.form.interfaces.IInputWidget"
-              factory="zope.app.form.browser.widget.TextWidget"
+              factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
           <browser:editform
@@ -174,7 +174,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               type="zope.publisher.interfaces.browser.IBrowserRequest"
               for="zope.schema.interfaces.ITextLine"
               provides="zope.app.form.interfaces.IInputWidget"
-              factory="zope.app.form.browser.widget.TextWidget"
+              factory="zope.app.form.browser.TextWidget"
               permission="zope.Public"
               />
           <browser:editform

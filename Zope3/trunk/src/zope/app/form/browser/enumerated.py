@@ -13,11 +13,12 @@
 ##############################################################################
 """Widgets for enumerated field flavours.
 
-$Id: enumerated.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id: enumerated.py,v 1.2 2004/03/17 17:37:03 philikon Exp $
 """
 
-from widget import TextWidget, IntWidget, FloatWidget, \
-     DatetimeWidget, DateWidget
+from zope.app.form.browser.textwidgets import TextWidget
+from zope.app.form.browser.textwidgets import IntWidget, FloatWidget
+from zope.app.form.browser.textwidgets import DatetimeWidget, DateWidget
 
 __metaclass__ = type
 

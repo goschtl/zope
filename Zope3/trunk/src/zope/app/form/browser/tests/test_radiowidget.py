@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.1 2004/03/14 01:11:37 srichter Exp $
+$Id: test_radiowidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
 """
 import os
 import unittest, doctest
@@ -24,7 +24,7 @@ from zope.i18n.translationdomain import TranslationDomain
 
 from zope.app.tests import ztapi
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.widget import RadioWidget
+from zope.app.form.browser import RadioWidget
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 import zope.app.form.browser.tests
 

@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id: vocabularywidget.py,v 1.2 2004/03/17 17:37:03 philikon Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -32,9 +32,9 @@ from zope.i18n import translate
 from zope.app import zapi
 from zope.app.form.browser import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.form.browser.itemswidgets import SingleItemsWidget
 from zope.app.form.browser.interfaces import IVocabularyQueryView
 from zope.app.form.interfaces import WidgetInputError
-
 
 # These widget factories delegate to the vocabulary on the field.
 
@@ -500,7 +500,7 @@ class RadioWidget(SingleDataHelper, VocabularyEditWidgetBase):
     This widget can be used when the number of selections is going
     to be small.
     """
-    implements(implementedBy(widget.SingleItemsWidget))
+    implements(implementedBy(SingleItemsWidget))
     firstItem = False
 
     _msg_no_value = _msg_missing_single_value_edit
@@ -571,7 +571,7 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
     This widget can be used when the number of selections isn't going
     to be very large.
     """
-    implements(implementedBy(widget.SingleItemsWidget))
+    implements(implementedBy(SingleItemsWidget))
     firstItem = False
 
     _msg_no_value = _msg_missing_single_value_edit
