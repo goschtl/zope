@@ -32,6 +32,10 @@ optional fields (optional fields have default values described)
    The default value used for every entry is dictated by a module global
    variable, 'remote'.
 
+   If 'remote' is set to None, then no remote setting is used.  (This is
+   useful for cases where no mirroring is to be done, particularly useful when 
+   the checkins are happening at the mirror site, eg when public checkins are 
+   happening.)
 """
 
 remote = {'host': "cvs.zope.org",
