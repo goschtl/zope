@@ -13,7 +13,7 @@ from zope.component import getView
 from zope.testing.cleanup import CleanUp
 from Products.Five import zcml
 from Products.Five.traversable import FakeRequest
-from Products.Five.security import clearSecurityInfo
+from Products.Five.security import clearSecurityInfo, checkPermission
 from Products.Five.tests.dummy import Dummy1, Dummy2
 from Globals import InitializeClass
 
@@ -129,10 +129,28 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
         baz_roles2 = getattr(self.dummy2, 'baz__roles__')
         self.assertEquals(baz_roles2, ())
 
+class CheckPermissionTest(ZopeTestCase.ZopeTestCase):
+
+    def test_publicPermissionId(self):
+        #import pdb;pdb.set_trace()
+        self.failUnless(checkPermission('zope2.Public', self.folder))
+
+    def test_privatePermissionId(self):
+        self.failIf(checkPermission('zope.Private', self.folder))
+        self.failIf(checkPermission('zope2.Private', self.folder))
+
+    def test_accessPermissionId(self):
+        self.failUnless(checkPermission('zope2.AccessContentsInformation', self.folder))
+
+    def test_invalidPermissionId(self):
+        self.failIf(checkPermission('notapermission', self.folder))
+
+
 def test_suite():
     suite = unittest.TestSuite()
     #suite.addTest(unittest.makeSuite(SecurityEquivalenceTestCase))
     #suite.addTest(unittest.makeSuite(PageSecurityTestCase))
+    suite.addTest(unittest.makeSuite(CheckPermissionTest))
     return suite
 
 if __name__ == '__main__':

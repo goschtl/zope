@@ -13,12 +13,15 @@ $Id$
 from zope.interface import implements
 from zope.component import queryUtility, getUtility
 from zope.app.security.interfaces import IPermission
+from zope.app import zapi
 
-from AccessControl import ClassSecurityInfo
+from AccessControl import ClassSecurityInfo, getSecurityManager
 from Globals import InitializeClass
+from types import StringTypes
 
-CheckerPublic = 'zope.Public'
-CheckerPrivate = 'zope2.Private'
+CheckerPublicId = 'zope.Public'
+CheckerPrivateId = 'zope2.Private'
+from zope.security.checker import CheckerPublic
 
 def getSecurityInfo(klass):
     sec = {}
@@ -39,27 +42,32 @@ def clearSecurityInfo(klass):
         if k.endswith('__roles__'):
             delattr(klass, k)
 
-def checkPermission(context, permission_id):
-    """Check whether a given permission exists in the provided context.
+def checkPermission(permission, object, interaction=None):
+    """Return whether security policy allows permission on object.
 
-    >>> from zope.app.tests.placelesssetup import setUp, tearDown
-    >>> setUp()
+    Arguments:
+    permission -- A permission name
+    object -- The object being accessed according to the permission
+    interaction -- This Zope 3 concept has no equivalent in Zope 2,
+        and is ignored.
 
-    >>> from zope.app.tests.ztapi import provideUtility
-    >>> provideUtility(IPermission, Permission('x'), 'x')
-
-    >>> checkPermission(None, 'x')
-    >>> checkPermission(None, 'y')
-    Traceback (most recent call last):
-    ...
-    ValueError: ('Undefined permission id', 'y')
-
-    >>> tearDown()
+    checkPermission is guaranteed to return True if permission is
+    CheckerPublic or None.
     """
-    if permission_id == CheckerPublic:
-        return
-    if not queryUtility(IPermission, permission_id, context=context):
-        raise ValueError("Undefined permission id", permission_id)
+
+    if (permission in ('zope.Public', 'zope2.Public') or
+        permission is None or permission is CheckerPublic):
+        return True
+
+    if isinstance(permission, StringTypes):
+        permission = zapi.queryUtility(IPermission, unicode(permission))
+        if permission is None:
+            return False
+
+    if getSecurityManager().checkPermission(permission.title, object):
+        return True
+
+    return False
 
 def initializeClass(klass):
     InitializeClass(klass)
@@ -85,9 +93,9 @@ def protectName(klass, name, permission_id):
     security = _getSecurity(klass)
     # Zope 2 uses string, not unicode yet
     name = str(name)
-    if permission_id == CheckerPublic:
+    if permission_id == CheckerPublicId:
         security.declarePublic(name)
-    elif permission_id == CheckerPrivate:
+    elif permission_id == CheckerPrivateId:
         security.declarePrivate(name)
     else:
         permission = getUtility(IPermission, name=permission_id)
@@ -98,9 +106,9 @@ def protectName(klass, name, permission_id):
 def protectClass(klass, permission_id):
     """Protect the whole class with the given permission"""
     security = _getSecurity(klass)
-    if permission_id == CheckerPublic:
+    if permission_id == CheckerPublicId:
         security.declareObjectPublic()
-    elif permission_id == CheckerPrivate:
+    elif permission_id == CheckerPrivateId:
         security.declareObjectPrivate()
     else:
         permission = getUtility(IPermission, name=permission_id)
