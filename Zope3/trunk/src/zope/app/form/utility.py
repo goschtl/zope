@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.16 2003/04/14 08:27:16 jim Exp $
+$Id: utility.py,v 1.17 2003/04/16 21:49:29 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -126,6 +126,32 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=False,
     No initial data is provided if the content lacks a named
     attribute, or if the named attribute value is None.
     """
+    _setUpWidgets(view, schema, content, prefix, force,
+                  names, context, 'display', 'edit')
+
+def setUpDisplayWidgets(view, schema, content=None, prefix=None, force=False,
+                        names=None, context=None):
+    """Set up widgets for the fields defined by a schema
+
+    Initial data is provided by content object attributes.
+    No initial data is provided if the content lacks a named
+    attribute, or if the named attribute value is None.
+    """
+    _setUpWidgets(view, schema, content, prefix, force,
+                  names, context, 'display', 'display')
+
+def _setUpWidgets(view, schema, content, prefix, force,
+                  names, context, displayname, editname):
+    # Set up widgets for the fields defined by a schema.
+    #
+    # displayname is the name of the view used for a field that is
+    # marked read-only; editname is the name of the view used for a
+    # field that is editable.
+    #
+    # Initial data is provided by content object attributes.
+    # No initial data is provided if the content lacks a named
+    # attribute, or if the named attribute value is None.
+    #
     if content is None:
         if context is None:
             content = view.context
@@ -134,9 +160,9 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=False,
 
     for name, field in _fieldlist(names, schema):
         if field.readonly:
-            vname = 'display'
+            vname = displayname
         else:
-            vname = 'edit'
+            vname = editname
 
         try:
             value = field.get(content)
