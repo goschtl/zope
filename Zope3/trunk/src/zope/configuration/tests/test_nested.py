@@ -181,7 +181,7 @@ Let's see what happens if we declare duplicate fields:
 File "<string>", line 5.7-5.24
     ValueError: ('Duplicate field', 'x')
 
-$Id: test_nested.py,v 1.2 2004/01/23 16:59:39 poster Exp $
+$Id: test_nested.py,v 1.3 2004/04/26 23:14:57 srichter Exp $
 """
 
 import unittest
@@ -197,17 +197,12 @@ class ISchemaInfo(interface.Interface):
     """
 
     name = schema.TextLine(
-        __doc__=
-        """The schema name
-
-        This is a descriptive name for the schema.
-        """
+        title=u"The schema name",
+        description=u"This is a descriptive name for the schema."
         )
 
     id = schema.Id(
-        __doc__=
-        """The unique id for the schema
-        """
+        title=u"The unique id for the schema"
         )
 
 class ISchema(interface.Interface):
@@ -244,58 +239,43 @@ class Schema(config.GroupingContextDecorator):
 class IFieldInfo(interface.Interface):
 
     name = schema.BytesLine(
-        __doc__="The field name"
+        title=u"The field name"
         )
 
     title = schema.TextLine(
-        __doc__=
-        """Title
-
-        A short summary or label
-        """,
+        title=u"Title",
+        description=u"A short summary or label",
         default=u"",
         required=False,
         )
 
     required = fields.Bool(
-        __doc__=
-        """Required
-
-        Determines whether a value is required.
-        """,
+        title=u"Required",
+        description=u"Determines whether a value is required.",
         default=True)
 
     readonly = fields.Bool(
-        __doc__=
-        """Read Only
-
-        Can the value be modified?
-        """,
+        title=u"Read Only",
+        description=u"Can the value be modified?",
         required=False,
         default=False)
 
 class ITextInfo(IFieldInfo):
 
     min_length = schema.Int(
-        __doc__=
-        """Minimum length
-
-        Value after whitespace processing cannot have less than
-        min_length characters. If min_length is None, there is
-        no minimum.
-        """,
+        title=u"Minimum length",
+        description=u"Value after whitespace processing cannot have less than "
+                    u"min_length characters. If min_length is None, there is "
+                    u"no minimum.",
         required=False,
         min=0, # needs to be a positive number
         default=0)
 
     max_length = schema.Int(
-        __doc__=
-        """Maximum length
-
-        Value after whitespace processing cannot have greater
-        or equal than max_length characters. If max_length is
-        None, there is no maximum.
-        """,
+        title=u"Maximum length",
+        description=u"Value after whitespace processing cannot have greater "
+                    u"or equal than max_length characters. If max_length is "
+                    u"None, there is no maximum.",
         required=False,
         min=0, # needs to be a positive number
         default=None)
@@ -318,13 +298,13 @@ def textField(context, **kw):
 class IIntInfo(IFieldInfo):
 
     min = schema.Int(
-        __doc__="Start of the range",
+        title=u"Start of the range",
         required=False,
         default=None
         )
 
     max = schema.Int(
-        __doc__="End of the range (excluding the value itself)",
+        title=u"End of the range (excluding the value itself)",
         required=False,
         default=None
         )

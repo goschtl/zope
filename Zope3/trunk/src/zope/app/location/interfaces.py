@@ -11,23 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Location framework
+"""Location framework interfaces
 
-$Id: interfaces.py,v 1.1 2004/03/02 17:51:52 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/04/26 23:14:56 srichter Exp $
 """
-
 from zope.interface import Interface, Attribute
 from zope import schema
 
 class ILocation(Interface):
-    """Objects that have a structural location
-    """
+    """Objects that have a structural location"""
 
     __parent__ = Attribute("The parent in the location hierarchy")
 
     __name__ = schema.TextLine(
-        __doc__=
-        """The name within the parent
-
-        The parent can be traversed with this name to get the object.
-        """)
+        title=u"The name within the parent",
+        description=u"The parent can be traversed with this name to "
+                    u"get the object."
+        )

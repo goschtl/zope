@@ -33,7 +33,7 @@ There are two aspects of this:
 This file contains the implementations of the old-style meta
 configurations.
 
-$Id: backward.py,v 1.5 2003/11/03 21:37:55 jeremy Exp $
+$Id: backward.py,v 1.6 2004/04/26 23:14:56 srichter Exp $
 """
 
 from keyword import iskeyword
@@ -45,19 +45,13 @@ from zope import schema
 class IDescribed(interface.Interface):
 
     name = schema.TextLine(
-        __doc__=
-        """Directive name
-
-        The name of the directive being defined
-        """,
+        title=u"Directive name",
+        description=u"The name of the directive being defined"
         )
 
     description = schema.Text(
-        __doc__=
-        """Directive discription
-
-        This should document how the directive is used.
-        """,
+        title=u"Directive discription",
+        description=u"This should document how the directive is used.",
         default=u"",
         )
 
@@ -66,12 +60,10 @@ class ISubdirectiveInfo(IDescribed):
     """
 
     attributes = schema.Bytes(
-        __doc__=
-        """Attribute names
-
-        This is a space-speratated list of attribute names. This is
-        used to provide a mimimal specification the attributes used.
-        """,
+        title=u"Attribute names",
+        description=u"This is a space-speratated list of attribute names. "
+                    u"This is used to provide a mimimal specification the "
+                    u"attributes used.",
         default="",
         )
 
@@ -80,11 +72,8 @@ class IDirectiveInfo(ISubdirectiveInfo):
     """
     
     handler = config.fields.GlobalObject(
-        __doc__=
-        """Directive handler
-
-        The dotted name of the directive handler
-        """,
+        title=u"Directive handler",
+        description=u"The dotted name of the directive handler",
         )
 
 class ISubdirectiveContext(ISubdirectiveInfo, config.IConfigurationContext):
@@ -290,11 +279,8 @@ class Subdirective(Attributed, Described):
 class IAttribute(IDescribed):
 
     required = config.fields.Bool(
-        __doc__=
-        """Required
-
-        Is the attribute required?
-        """,
+        title=u"Required",
+        description=u"Is the attribute required?",
         required=True,
         default=False,
         )

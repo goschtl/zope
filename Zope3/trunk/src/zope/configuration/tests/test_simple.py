@@ -163,7 +163,7 @@ We'll clean up after ourselves:
 
 >>> del file_registry[:]
 
-$Id: test_simple.py,v 1.4 2003/09/23 19:12:34 jim Exp $
+$Id: test_simple.py,v 1.5 2004/04/26 23:14:57 srichter Exp $
 """
 
 file_registry = []
@@ -178,19 +178,13 @@ from zope.configuration import fields, xmlconfig
 class IRegisterFile(interface.Interface):
 
     path = fields.Path(
-        __doc__=
-        """File path
-
-        This is the path name of the file to be registered.
-        """
+        title=u"File path",
+        description=u"This is the path name of the file to be registered."
         )
 
     title = schema.Text(
-        __doc__=
-        """Short summary of the file
-
-        This will be used in file listings
-        """,
+        title=u"Short summary of the file",
+        description=u"This will be used in file listings",
         required = False
         )
 

@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.21 2004/03/01 21:22:08 jim Exp $
+$Id: xmlconfig.py,v 1.22 2004/04/26 23:14:56 srichter Exp $
 """
 import errno
 import os
@@ -290,21 +290,16 @@ def openInOrPlain(filename):
 class IInclude(Interface):
 
     file = schema.BytesLine(
-        __doc__=
-        """Configuration file name
-
-        The name of a configuration file to be included,
-        relative to the directive containing the
-        including configuration file.
-
-        """,
+        title=u"Configuration file name",
+        description=u"The name of a configuration file to be included, "
+                    u"relative to the directive containing the "
+                    u"including configuration file.",
         required=False,
         )
 
     files = schema.BytesLine(
-        __doc__=
-        """Configuration file name pattern
-
+        title=u"Configuration file name pattern",
+        description=u"""\
         The names of multiple configuration files to be included,
         expressed as a file-name pattern, relative to the directive
         containing the including configuration file.  The pattern can
@@ -320,15 +315,13 @@ class IInclude(Interface):
 
         The file names are included in sorted order, where sorting is
         without regard to case.
-
         """,
         required=False,
         )
 
     package = config.fields.GlobalObject(
-        __doc__=
-        """Include package
-
+        title=u"Include package",
+        description=u"""\
         Include the named file (or configure.zcml)
         from the directory of this package.
         """,
