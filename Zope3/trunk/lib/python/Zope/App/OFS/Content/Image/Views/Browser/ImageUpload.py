@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for image editing.
 
-$Id: ImageUpload.py,v 1.2 2002/12/03 13:56:05 runyaga Exp $
+$Id: ImageUpload.py,v 1.3 2002/12/03 14:01:42 runyaga Exp $
 """
 from Zope.App.OFS.Content.File.Views.Browser.FileUpload import FileUpload
 from Zope.Event import publish
@@ -51,7 +51,6 @@ class ImageUpload(FileUpload):
             unchanged = False
         
         if not unchanged:
-            import pdb; pdb.set_trace()
             publish(self.context, ObjectModifiedEvent(self.context))
 
         return unchanged
