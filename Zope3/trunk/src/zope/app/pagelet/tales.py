@@ -266,6 +266,7 @@ class TALESPageletExpression(StringExpr):
     implements(ITALESPageletExpression)
 
     def __init__(self, name, expr, engine):
+        self._s = expr
         if not '/' in expr:
             error_msg = "use iface/pageletname for defining the pagelet."
             raise KeyError(error_msg)
