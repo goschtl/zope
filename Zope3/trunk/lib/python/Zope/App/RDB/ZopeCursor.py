@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZopeCursor.py,v 1.3 2002/08/12 15:07:30 alga Exp $
+$Id: ZopeCursor.py,v 1.4 2002/11/05 12:15:28 alga Exp $
 """
 from types import UnicodeType
 from IZopeCursor import IZopeCursor
@@ -55,6 +55,9 @@ class ZopeCursor:
         getConverter = self.connection.getTypeInfo().getConverter
         converters = [getConverter(col_info[1])
                       for col_info in self.cursor.description]
+## A possible optimization -- need benchmarks to check if it is worth it
+##      if filter(lambda x: x is not ZopeDatabaseAdapter.identity, converters):
+##          return results  # optimize away
         def convertRow(row):
             return map(lambda converter, value: converter(value),
                        converters, row)
