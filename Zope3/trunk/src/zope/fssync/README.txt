@@ -177,8 +177,7 @@ To Do
 
   * Unit tests for the **zsync** utility.
 
-  * Rewrite ``toFS()`` to use the ``Metadata`` class, and add unit
-    tests.
+  * Add unit tests for ``zope.app.fssync.syncer``.
 
   * More refactoring and cleanup of the **zsync** utility (the
     ``zope.fssync.main`` module)
