@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.16 2003/08/28 15:38:47 fdrake Exp $
+$Id: fsmerger.py,v 1.17 2003/08/29 15:27:07 fdrake Exp $
 """
 
 import os
@@ -301,4 +301,9 @@ class FSMerger(object):
         # ignore, and honor .cvsignore
         fn = basename(path)
         return (fn.endswith("~")
+
+                # CVS crud (retrieved older versions):
+                or fn.startswith(".#")
+
+                # special names from various revision control systems:
                 or fn in (".cvsignore", "CVS", "RCS", "SCCS", ".svn"))
