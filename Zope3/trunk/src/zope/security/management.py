@@ -11,57 +11,59 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Default ISecurityManagement implementation """
+"""
+Default ISecurityManagement implementation
 
-system_user = object() # Special system user that has all permissions
+$Id: management.py,v 1.2 2003/02/25 10:23:24 alga Exp $
+"""
 
+# Special system user that has all permissions
+# zope.security.manager needs it
+system_user = object()
 
 from zope.security.interfaces import ISecurityManagement, ISecurityManagementSetup
 from zope.security.manager import SecurityManager
 from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
 from zope.security.context import SecurityContext
 
-__implements__ = ( ISecurityManagement, ISecurityManagementSetup )
+__implements__ = (ISecurityManagement, ISecurityManagementSetup)
 
 try:
     import thread
 except:
-    get_ident=lambda: 0
+    get_ident = lambda: 0
 else:
-    get_ident=thread.get_ident
+    get_ident = thread.get_ident
 
-_managers={}
+_managers = {}
 
 from zope.testing.cleanup import addCleanUp
 addCleanUp(_managers.clear)
 
-
 #
 #   ISecurityManagementSetup implementation
 #
-def newSecurityManager( user ):
-    """
-        Install a new SecurityManager, using user.  Return the
-        old SecurityManager, if any, or None.
-    """
-    return replaceSecurityManager( SecurityManager( SecurityContext( user ) ) )
+def newSecurityManager(user):
+    """Install a new SecurityManager, using user.
 
-def replaceSecurityManager( old_manager ):
+    Return the old SecurityManager, if any, or None.
     """
-        Replace the SecurityManager with 'old_manager', which
-        must implement ISecurityManager.
+    return replaceSecurityManager(SecurityManager(SecurityContext(user)))
+
+def replaceSecurityManager(old_manager):
+    """Replace the SecurityManager with 'old_manager', which must
+    implement ISecurityManager.
     """
+
     thread_id = get_ident()
-    old = _managers.get( thread_id, None )
-    _managers[ thread_id ] = old_manager
+    old = _managers.get(thread_id, None)
+    _managers[thread_id] = old_manager
     return old
 
 def noSecurityManager():
-    """
-        Clear any existing SecurityManager.
-    """
+    """Clear any existing SecurityManager."""
     try:
-        del _managers[ get_ident() ]
+        del _managers[get_ident()]
     except KeyError:
         pass
 
@@ -69,24 +71,21 @@ def noSecurityManager():
 #   ISecurityManagement implementation
 #
 def getSecurityManager():
-    """
-        Get a SecurityManager (create if needed).
-    """
+    """Get a SecurityManager (create if needed)."""
     thread_id = get_ident()
-    manager=_managers.get( thread_id, None )
+    manager = _managers.get(thread_id, None)
 
     if manager is None:
-        newSecurityManager( None )
-        manager=_managers.get( thread_id, None )
+        newSecurityManager(None)
+        manager = _managers.get(thread_id, None)
 
     return manager
 
-def setSecurityPolicy( aSecurityPolicy ):
-    """
-        Set the system default security policy, and return the previous
-        value.
+def setSecurityPolicy(aSecurityPolicy):
+    """Set the system default security policy, and return the previous
+    value.
 
-        This method should only be called by system startup code.
-        It should never, for example, be called during a web request.
+    This method should only be called by system startup code.
+    It should never, for example, be called during a web request.
     """
-    return _setSecurityPolicy( aSecurityPolicy )
+    return _setSecurityPolicy(aSecurityPolicy)
