@@ -11,7 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Subversion support functions."""
+"""Subversion support functions.
+
+:var REPOSITORY_CONTENT: List of Subversion repository features
+  checked for by `is_repository()`.
+"""
 
 import os
 import posixpath
@@ -44,7 +48,10 @@ else:
 
 
 def is_subversion_url(url):
-    """Return `True` if the URL should be used for Subversion."""
+    """Return `True` if the URL should be used for Subversion.
+
+    :rtype: bool
+    """
     type, rest = urllib.splittype(url)
     if type in ("svn", "svn+ssh"):
         return True
@@ -83,7 +90,9 @@ REPOSITORY_CONTENT = [
 
 def is_repository(path):
     # internal use
-    """Return true if `path` is a Subversion repository.
+    """Return `True` if `path` is a Subversion repository.
+
+    :rtype: bool
 
     This uses some general expectations of what the repository is
     supposed to look like; some repositories may not have everything
@@ -103,6 +112,9 @@ def is_repository(path):
 
 
 class SubversionUrl:
+    """Parsed representation for a Subversion URL that appears to use the
+    'standard' trunk/tags tree structure.
+    """
     def __init__(self, prefix, tail, tag=None):
         self.prefix = prefix
         self.tail = tail
@@ -141,6 +153,12 @@ class SubversionUrl:
 
 
 class TaglessSubversionUrl:
+    """Parsed representation for a Subversion URL that does not appear
+    to use the 'standard' trunk/tags tree structure.
+
+    This has different limitations on how it can be joined with
+    ``repository:`` URLs.
+    """
     def __init__(self, url):
         self.url = url
         self.prefix = url
@@ -162,6 +180,10 @@ class TaglessSubversionUrl:
 
 
 def parse(url):
+    """Return a parsed representation of a Subversion URL.
+
+    :raises ValueError: If the URL is not a valid Subversion URL.
+    """
     if not is_subversion_url(url):
         raise ValueError("not a Subversion URL")
 
@@ -192,6 +214,19 @@ class SubversionLoader:
     """Simpler loader object that loads from Subversion."""
 
     def load(self, url, workdir):
+        """Load a resource from Subversion.
+
+        :return: Local filesystem path to the loaded resource.  The
+          path will always be located in the tree rooted at `workdir`.
+
+        :param url: URL to pass to Subversion.
+
+        :param workdir: Directory to write results into.
+
+        :raises SubversionLoadingError: When Subversion exits with an
+          error not handled by this method.
+
+        """
         # do an "svn cat" to get a file, or learn that this is a directory
         stdin, stdout, stderr = os.popen3("svn cat '%s'" % url)
         data = stdout.read()
