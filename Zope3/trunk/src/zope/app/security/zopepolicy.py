@@ -13,12 +13,12 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.4 2003/02/11 15:59:55 sidnei Exp $
+$Id: zopepolicy.py,v 1.5 2003/02/12 02:17:31 seanb Exp $
 """
-__version__='$Revision: 1.4 $'[11:-2]
+__version__='$Revision: 1.5 $'[11:-2]
 
 from zope.component import queryAdapter, getService
-from zope.component.servicenames import Authentication
+from zope.app.services.servicenames import Authentication
 from zope.proxy.context import ContainmentIterator
 
 from zope.exceptions import Unauthorized, Forbidden

@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.5 2003/02/11 16:00:04 sidnei Exp $
+$Id: __init__.py,v 1.6 2003/02/12 02:17:42 seanb Exp $
 """
 
 from zope.component.interfaces import IComponentArchitecture
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
-from zope.component.servicenames import Adapters, Skins, ResourceService
+from zope.component.servicenames import Adapters, Skins, Resources
 from zope.component.servicenames import Factories
 
 __implements__ = IComponentArchitecture
@@ -130,17 +130,17 @@ def queryDefaultViewName(wrapped_object, request, default=None, context=None):
 
 def getResource(wrapped_object, name, request):
     return getService(wrapped_object,
-                      ResourceService).getResource(
+                      Resources).getResource(
         wrapped_object, name, request)
 
 def queryResource(wrapped_object, name, request, default=None):
     return getService(wrapped_object,
-                      ResourceService).queryResource(
+                      Resources).queryResource(
         wrapped_object, name, request, default)
 
 
 #def _clear():
 #    from Service import _clear;     _clear()
 #    from ViewService import _clear; _clear()
-#    from ResourceService import _clear; _clear()
+#    from Resources import _clear; _clear()
 #    from SkinService import _clear; _clear()

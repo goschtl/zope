@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.6 2003/02/11 15:59:44 sidnei Exp $
+$Id: subs.py,v 1.7 2003/02/12 02:17:21 seanb Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -33,7 +33,7 @@ from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
 from zope.app.interfaces.event import ISubscribingAware
 
 from zope.component import getService, getAdapter, queryAdapter
-from zope.component.servicenames import HubIds
+from zope.app.services.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
 import logging

@@ -23,7 +23,7 @@ from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
 from zope.app.browser.applicationcontrol.runtimeinfo \
   import RuntimeInfoView
 from zope.component import getService
-from zope.component.servicenames import Adapters
+from zope.app.services.servicenames import Adapters
 from types import DictType
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup

@@ -17,7 +17,7 @@ import unittest
 
 from zope.testing.cleanup import CleanUp
 from zope.component import getService
-from zope.component.servicenames import Views
+from zope.app.services.servicenames import Views
 from zope.interface import Interface
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

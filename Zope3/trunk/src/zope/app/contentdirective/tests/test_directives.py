@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_directives.py,v 1.6 2003/02/11 15:59:43 sidnei Exp $
+$Id: test_directives.py,v 1.7 2003/02/12 02:17:19 seanb Exp $
 """
 
 import unittest
@@ -31,7 +31,7 @@ import zope.app.security
 import zope.app.contentdirective
 from zope.app.security.exceptions import UndefinedPermissionError
 from zope.component import getService
-from zope.component.servicenames import Factories
+from zope.app.services.servicenames import Factories
 
 # explicitly import ExampleClass and IExample using full paths
 # so that they are the same objects as resolve will get.

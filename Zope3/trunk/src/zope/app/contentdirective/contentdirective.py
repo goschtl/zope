@@ -13,14 +13,14 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.7 2003/02/11 15:59:43 sidnei Exp $
+$Id: contentdirective.py,v 1.8 2003/02/12 02:17:18 seanb Exp $
 """
 from types import ModuleType
 from zope.interface.implements import implements
 from zope.configuration.interfaces import INonEmptyDirective
 from zope.configuration.interfaces import ISubdirectiveHandler
 from zope.component import getService
-from zope.component.servicenames import Interfaces, Factories
+from zope.app.services.servicenames import Interfaces, Factories
 from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.action import Action
 from zope.app.component.classfactory import ClassFactory

@@ -17,7 +17,7 @@ import sys
 import unittest
 
 from zope.component.service import serviceManager as services
-from zope.component.servicenames import Permissions, Authentication
+from zope.app.services.servicenames import Permissions, Authentication
 
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IAuthenticationService

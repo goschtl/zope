@@ -13,13 +13,13 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: permission.py,v 1.4 2003/02/11 15:59:55 sidnei Exp $
+$Id: permission.py,v 1.5 2003/02/12 02:17:31 seanb Exp $
 """
 
 from zope.schema import ValueSet
 from zope.schema.interfaces import ValidationError
 from zope.component import getService
-from zope.component.servicenames import Permissions
+from zope.app.services.servicenames import Permissions
 from zope.app.interfaces.security import IPermissionField
 
 

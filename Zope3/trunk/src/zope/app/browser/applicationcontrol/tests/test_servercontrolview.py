@@ -22,7 +22,7 @@ from zope.app.browser.applicationcontrol.servercontrol import ServerControlView
 from zope.app.applicationcontrol.servercontrol import \
   ServerControl
 from zope.component import getService
-from zope.component.servicenames import Utilities
+from zope.app.services.servicenames import Utilities
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 

@@ -18,7 +18,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.component \
      import getServiceManager, getService
-from zope.component.servicenames import Permissions, Adapters
+from zope.app.services.servicenames import Permissions, Adapters
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.roleregistry import roleRegistry

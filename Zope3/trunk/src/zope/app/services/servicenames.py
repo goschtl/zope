@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,21 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""These are the interfaces for the common fields.
+"""
+Default service names
 
-$Id: principal.py,v 1.4 2003/02/12 02:17:31 seanb Exp $
+$Id: servicenames.py,v 1.1 2003/02/12 02:17:34 seanb Exp $
 """
 
-from zope.exceptions import NotFoundError
-from zope.component import getService
-from zope.app.services.servicenames import Authentication
+from zope.component.servicenames import *
 
-def checkPrincipal(context, principal_id):
+HubIds = 'HubIds'
+Events = 'Events'
+Subscription = 'Subscription'
+ErrorReports = 'ErrorReportingService'
+Roles = 'Roles'
+Permissions = 'Permissions'
+Authentication = 'Authentication'
+Workflows = 'Workflows'
 
-    try:
-        if getService(context, Authentication).getPrincipal(principal_id):
-            return
-    except NotFoundError:
-        pass
-    
-    raise ValueError("Undefined principal id", principal_id)

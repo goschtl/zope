@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalpermissionview.py,v 1.4 2003/02/11 15:59:35 sidnei Exp $
+$Id: principalpermissionview.py,v 1.5 2003/02/12 02:17:09 seanb Exp $
 """
 import time
 
@@ -22,7 +22,7 @@ from zope.app.interfaces.security import IPrincipalPermissionMap
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.component import getService, getAdapter
-from zope.component.servicenames import Permissions, Authentication
+from zope.app.services.servicenames import Permissions, Authentication
 from zope.publisher.browser import BrowserView
 
 

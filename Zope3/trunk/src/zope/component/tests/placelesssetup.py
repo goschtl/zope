@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: placelesssetup.py,v 1.4 2003/02/11 16:00:05 sidnei Exp $
+$Id: placelesssetup.py,v 1.5 2003/02/12 02:17:43 seanb Exp $
 """
 
 # A mix-in class inheriting from CleanUp that also connects the CA services
@@ -22,7 +22,7 @@ $Id: placelesssetup.py,v 1.4 2003/02/11 16:00:05 sidnei Exp $
 from zope.testing.cleanup import CleanUp
 from zope.component import getServiceManager
 from zope.component.servicenames import Adapters, Skins, Utilities
-from zope.component.servicenames import ResourceService, Factories
+from zope.component.servicenames import Resources, Factories
 
 class PlacelessSetup(CleanUp):
     def setUp(self):
@@ -47,9 +47,9 @@ class PlacelessSetup(CleanUp):
         provideService(Adapters, adapterService)
         # resource service
         from zope.component.interfaces import IResourceService
-        defineService(ResourceService,IResourceService)
+        defineService(Resources,IResourceService)
         from zope.component.resource import resourceService
-        provideService(ResourceService, resourceService)
+        provideService(Resources, resourceService)
         # skin service
         from zope.component.interfaces import ISkinService
         defineService(Skins,ISkinService)

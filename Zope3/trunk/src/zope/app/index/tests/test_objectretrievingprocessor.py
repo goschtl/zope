@@ -12,14 +12,14 @@
 ##############################################################################
 """
 
-$Id: test_objectretrievingprocessor.py,v 1.5 2003/02/11 15:59:46 sidnei Exp $
+$Id: test_objectretrievingprocessor.py,v 1.6 2003/02/12 02:17:23 seanb Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component import getAdapter
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
-from zope.component.servicenames import HubIds
+from zope.app.services.servicenames import HubIds
 
 from zope.interface.verify import verifyObject
 from zope.app.tests.placelesssetup import PlacelessSetup

@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.8 2003/02/11 15:59:56 sidnei Exp $
+$Id: adapter.py,v 1.9 2003/02/12 02:17:34 seanb Exp $
 """
 __metaclass__ = type
 
@@ -23,7 +23,7 @@ from persistence.dict import PersistentDict
 from zope.component.interfaces import IAdapterService
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getServiceManager
-from zope.component.servicenames import Adapters
+from zope.app.services.servicenames import Adapters
 from zope.app.interfaces.services.configuration import IConfigurable
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.configuration import SimpleConfiguration

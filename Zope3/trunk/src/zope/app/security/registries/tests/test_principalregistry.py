@@ -20,7 +20,7 @@ from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.services.tests.placefulsetup \
            import PlacefulSetup
-from zope.component.servicenames import Adapters
+from zope.app.services.servicenames import Adapters
 
 class Request:
 

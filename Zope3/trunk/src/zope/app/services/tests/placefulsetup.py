@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.7 2003/02/11 15:59:57 sidnei Exp $
+$Id: placefulsetup.py,v 1.8 2003/02/12 02:17:34 seanb Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
-from zope.component.servicenames import HubIds, Events, Subscription
+from zope.app.services.servicenames import HubIds, Events, Subscription
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL

@@ -15,7 +15,7 @@ import unittest, sys
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.component import getServiceManager
-from zope.component.servicenames import Roles, Permissions
+from zope.app.services.servicenames import Roles, Permissions
 from zope.app.interfaces.security import IRoleService
 from zope.app.browser.security.grants.tests.roleservice import RoleService
 from zope.app.browser.security.grants.tests.permissionservice import PermissionService

@@ -14,14 +14,14 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.9 2003/02/11 15:59:57 sidnei Exp $
+$Id: test_eventservice.py,v 1.10 2003/02/12 02:17:34 seanb Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.interface import Interface
 from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.component import getServiceManager
-from zope.component.servicenames import Events, Subscription
+from zope.app.services.servicenames import Events, Subscription
 from zope.app.services.event import EventService
 from zope.app.traversing import getPhysicalPathString, traverse
 from zope.exceptions import NotFoundError

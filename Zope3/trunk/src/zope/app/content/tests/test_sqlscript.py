@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.5 2003/02/11 15:59:43 sidnei Exp $
+$Id: test_sqlscript.py,v 1.6 2003/02/12 02:17:18 seanb Exp $
 """
 
 import unittest
@@ -21,7 +21,7 @@ from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.rdb import IZopeConnection
 from zope.app.interfaces.rdb import IZopeCursor
 from zope.component import getService
-from zope.component.servicenames import Adapters
+from zope.app.services.servicenames import Adapters
 from zope.app.component import nextservice
 from zope.component.service import serviceManager as sm
 from zope.app.tests.placelesssetup import PlacelessSetup

@@ -17,7 +17,7 @@ import sys
 import unittest
 
 from zope.component.service import serviceManager as services
-from zope.component.servicenames import Authentication
+from zope.app.services.servicenames import Authentication
 
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService

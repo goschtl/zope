@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_securitydirectives.py,v 1.5 2003/02/11 15:59:56 sidnei Exp $
+$Id: test_securitydirectives.py,v 1.6 2003/02/12 02:17:33 seanb Exp $
 """
 
 import unittest
 from StringIO import StringIO
 
 from zope.component.service import serviceManager as services
-from zope.component.servicenames import Roles, Permissions, Authentication
+from zope.app.services.servicenames import Roles, Permissions, Authentication
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService

@@ -12,23 +12,15 @@
 #
 ##############################################################################
 """
-Default service names
+Default service names for CA core services
 
-$Id: servicenames.py,v 1.4 2003/02/11 16:00:04 sidnei Exp $
+$Id: servicenames.py,v 1.5 2003/02/12 02:17:42 seanb Exp $
 """
 
-HubIds = 'HubIds'
-Events = 'Events'
-Subscription = 'Subscription'
-ErrorReports = 'ErrorReportingService'
-Roles = 'Roles'
-Permissions = 'Permissions'
 Adapters = 'Adapters'
-Authentication = 'Authentication'
 Interfaces = 'Interfaces'
 Utilities = 'Utilities'
 Skins = 'Skins'
 Views = 'Views'
-ResourceService = 'Resources'
+Resources = 'Resources'
 Factories = 'Factories'
-Workflows = 'Workflows'

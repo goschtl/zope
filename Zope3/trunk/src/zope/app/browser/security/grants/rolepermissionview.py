@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: rolepermissionview.py,v 1.5 2003/02/11 15:59:35 sidnei Exp $
+$Id: rolepermissionview.py,v 1.6 2003/02/12 02:17:09 seanb Exp $
 """
 import time
 
@@ -23,7 +23,7 @@ from zope.app.security.grants.permissionroles import PermissionRoles
 from zope.app.security.grants.rolepermission import RolePermissions
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.component import getService, getAdapter
-from zope.component.servicenames import Roles, Permissions
+from zope.app.services.servicenames import Roles, Permissions
 from zope.publisher.browser import BrowserView
 
 

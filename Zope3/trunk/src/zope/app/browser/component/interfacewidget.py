@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.26 2003/02/11 15:59:29 sidnei Exp $
+$Id: interfacewidget.py,v 1.27 2003/02/12 02:17:04 seanb Exp $
 """
 
 import sys
@@ -23,7 +23,7 @@ from zope.app.interfaces.form import WidgetInputError, ConversionError
 from zope.app.form.widget import Widget
 from zope.publisher.browser import BrowserView
 from zope.component import getService
-from zope.component.servicenames import Interfaces
+from zope.app.services.servicenames import Interfaces
 from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
 from xml.sax.saxutils import quoteattr

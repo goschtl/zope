@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.7 2003/02/11 15:59:57 sidnei Exp $
+$Id: test_auth.py,v 1.8 2003/02/12 02:17:34 seanb Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -20,7 +20,7 @@ from zope.app.services.auth \
      import AuthenticationService, DuplicateLogin, DuplicateId
 from zope.app.services.auth import User
 from zope.app.interfaces.services.auth import IUser
-from zope.component.servicenames import Adapters, Authentication
+from zope.app.services.servicenames import Adapters, Authentication
 
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials

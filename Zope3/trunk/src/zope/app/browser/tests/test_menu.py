@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.5 2003/02/11 15:59:39 sidnei Exp $
+$Id: test_menu.py,v 1.6 2003/02/12 02:17:14 seanb Exp $
 """
 
 import unittest
 from zope.interface import Interface
 
 from zope.component import getService, getServiceManager
-from zope.component.servicenames import Views
+from zope.app.services.servicenames import Views
 from zope.app.services.tests.placefulsetup \
            import PlacefulSetup
 

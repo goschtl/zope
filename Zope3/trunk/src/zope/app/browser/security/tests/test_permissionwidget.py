@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.6 2003/02/11 15:59:37 sidnei Exp $
+$Id: test_permissionwidget.py,v 1.7 2003/02/12 02:17:11 seanb Exp $
 """
 
 __metaclass__ = type
@@ -29,7 +29,7 @@ from zope.component.service \
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.component import getServiceManager
-from zope.component.servicenames import Permissions
+from zope.app.services.servicenames import Permissions
 from zope.app.interfaces.security import IPermissionService
 
 class TestPermissionWidget(PlacelessSetup, TestCase):

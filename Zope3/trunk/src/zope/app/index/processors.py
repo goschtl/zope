@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.7 2003/02/11 15:59:45 sidnei Exp $
+$Id: processors.py,v 1.8 2003/02/12 02:17:23 seanb Exp $
 """
 
 from __future__ import generators
@@ -24,7 +24,7 @@ from zope.app.interfaces.index.interfaces import \
 from zope.app.interfaces.services.query import IQueryProcessor
 
 from zope.component import getAdapter, getService
-from zope.component.servicenames import HubIds
+from zope.app.services.servicenames import HubIds
 from zope.proxy.context import ContextMethod
 
 class ObjectRetrievingProcessor:

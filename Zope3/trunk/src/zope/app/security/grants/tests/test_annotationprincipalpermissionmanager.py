@@ -18,7 +18,7 @@ import unittest
 
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.component import getService
-from zope.component.servicenames import Adapters
+from zope.app.services.servicenames import Adapters
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.registries.permissionregistry \

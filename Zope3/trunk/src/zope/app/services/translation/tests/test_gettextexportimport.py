@@ -14,13 +14,13 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: test_gettextexportimport.py,v 1.5 2003/02/11 15:59:58 sidnei Exp $
+$Id: test_gettextexportimport.py,v 1.6 2003/02/12 02:17:35 seanb Exp $
 """
 import unittest, time
 
 from cStringIO import StringIO
 
-from zope.component.servicenames import Factories
+from zope.app.services.servicenames import Factories
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.component.metaconfigure import \

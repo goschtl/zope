@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.11 2003/02/11 15:59:56 sidnei Exp $
+$Id: auth.py,v 1.12 2003/02/12 02:17:34 seanb Exp $
 """
 
 from types import TupleType
@@ -23,7 +23,7 @@ from zodb.btrees.OOBTree import OOBTree
 
 from zope.exceptions import NotFoundError
 from zope.component import getAdapter, queryAdapter
-from zope.component.servicenames import Authentication
+from zope.app.services.servicenames import Authentication
 
 from zope.app.interfaces.container import IContainer
 

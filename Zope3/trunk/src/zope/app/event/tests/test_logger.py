@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_logger.py,v 1.5 2003/02/11 15:59:45 sidnei Exp $
+$Id: test_logger.py,v 1.6 2003/02/12 02:17:22 seanb Exp $
 """
 
 import unittest
@@ -20,7 +20,7 @@ import logging
 
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
-from zope.component.servicenames import Events
+from zope.app.services.servicenames import Events
 
 from zope.app.event import globalSubscribe, globalUnsubscribe, publish
 from zope.app.event.objectevent import ObjectAddedEvent

@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.7 2003/02/11 15:59:59 sidnei Exp $
+$Id: sitedefinition.py,v 1.8 2003/02/12 02:17:36 seanb Exp $
 """
 
 import logging
@@ -38,7 +38,7 @@ from zope.app.interfaces.undo import IUndoManager
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.browser.undo import ZODBUndoManager
 from zope.component import getService
-from zope.component.servicenames import Utilities
+from zope.app.services.servicenames import Utilities
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
 from zodb.code.module import PersistentModuleImporter

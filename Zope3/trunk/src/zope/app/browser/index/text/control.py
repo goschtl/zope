@@ -15,13 +15,13 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.6 2003/02/11 15:59:33 sidnei Exp $
+$Id: control.py,v 1.7 2003/02/12 02:17:06 seanb Exp $
 """
 
 from __future__ import generators
 
 from zope.component import getService, queryAdapter
-from zope.component.servicenames import HubIds
+from zope.app.services.servicenames import HubIds
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.browser import BrowserView

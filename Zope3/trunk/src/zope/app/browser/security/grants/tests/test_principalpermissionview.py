@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_principalpermissionview.py,v 1.4 2003/02/11 15:59:36 sidnei Exp $
+$Id: test_principalpermissionview.py,v 1.5 2003/02/12 02:17:10 seanb Exp $
 """
 
 import unittest
 
 from zope.component import getService, getServiceManager
-from zope.component.servicenames import Permissions, Adapters
-from zope.component.servicenames import Authentication
+from zope.app.services.servicenames import Permissions, Adapters
+from zope.app.services.servicenames import Authentication
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
