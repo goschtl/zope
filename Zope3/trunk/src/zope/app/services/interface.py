@@ -32,5 +32,6 @@ class PersistentInterfaceWrapper(Wrapper):
         pi.__dict__.update(dict)
         return pi
 
-registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
-                lambda iface: (iface.__bases__, iface.__dict__))
+def register():
+    registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
+                    lambda iface: (iface.__bases__, iface.__dict__))

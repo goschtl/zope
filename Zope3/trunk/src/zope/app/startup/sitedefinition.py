@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.4 2002/12/31 02:52:09 jim Exp $
+$Id: sitedefinition.py,v 1.5 2003/01/28 21:03:10 jeremy Exp $
 """
 
 import logging
@@ -29,6 +29,7 @@ from zope.configuration.action import Action
 from zope.configuration.interfaces import INonEmptyDirective
 from zope.configuration.interfaces import ISubdirectiveHandler
 
+from zope.app.startup import bootstrap
 from zope.app.startup.servertyperegistry import getServerType
 
 # Import Undo-related classes
@@ -40,6 +41,7 @@ from zope.component import getService
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
 from zodb.code.module import PersistentModuleImporter
+from zope.app.services.interface import register
 
 DEFAULT_STORAGE_FILE = 'Data.fs'
 DEFAULT_LOG_FILE = 'STDERR'
@@ -196,12 +198,11 @@ class SiteDefinition:
     def _initDB(self):
         """Initialize the ZODB and persistence module importer."""
 
-        from zope.app.startup import bootstrap
         bootstrap.bootstrapInstance(self._zodb)
 
         imp = PersistentModuleImporter()
         imp.install()
-
+        register()
 
     def __call__(self):
         "Handle empty/simple declaration."
