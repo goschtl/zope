@@ -14,17 +14,17 @@
 """
 
 Revision information:
-$Id: ISubscriptionAware.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: ISubscriptionAware.py,v 1.3 2002/11/11 08:33:45 stevea Exp $
 """
 from Interface import Interface
 
-# these are calls and not events because they are traditional messages
+# these are method calls and not events because they are traditional messages
 # between two objects, not events of general interest.
 
 class ISubscriptionAware(Interface):
     
     def subscribedTo(subscribable, event_type, filter):
-        """alerts the object that it has subscribed, via a call from
+        """Alerts the object that it has subscribed, via a call from
         itself or from another object, to the subscribable.  The
         event_type and filter match the arguments provided to the
         ISubscribable.subscribe.
@@ -33,7 +33,7 @@ class ISubscriptionAware(Interface):
         that the global event service will have no wrapping)."""
     
     def unsubscribedFrom(subscribable, event_type, filter):
-        """alerts the object that it has unsubscribed, via a call from
+        """Alerts the object that it has unsubscribed, via a call from
         itself or from another object, to the subscribable.  The
         event_type and filter match the exact event_type and filter of
         the deleted subscription, rather than, necessarily, the

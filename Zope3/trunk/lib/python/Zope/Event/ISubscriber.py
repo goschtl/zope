@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ISubscriber.py,v 1.3 2002/09/03 20:14:00 jim Exp $
+$Id: ISubscriber.py,v 1.4 2002/11/11 08:33:45 stevea Exp $
 """
 
 from Interface import Interface
@@ -31,7 +31,7 @@ class ISubscriber(Interface):
         """
 
 class IIndirectSubscriber(ISubscriber):
-    """Interface for objects that handle subscriptions for another object"""
+    """Interface for objects that handle subscriptions for another object."""
     
     def __eq__(other):
         """Compare two indirect subscribers

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ISubscribable.py,v 1.4 2002/10/21 06:14:47 poster Exp $
+$Id: ISubscribable.py,v 1.5 2002/11/11 08:33:45 stevea Exp $
 """
 
 from Interface import Interface
@@ -57,9 +57,8 @@ class ISubscribable(Interface):
         about which subscriber should be notified, and must implement
         IEvent.  The subscriber will be notified of all events of this
         event_type and of subclasses of this event_type.
-        The default value, IEvent, as the parent type,
-        is effectively a single catch-all event type that will pass all
-        event types to the subscriber.
+        The default value, IEvent, as the parent type, is effectively a single
+        catch-all event type that will pass all event types to the subscriber.
 
         filter, if supplied, must implement IEventFilter; subscriber
         will be notified of events only if they pass.
@@ -86,7 +85,7 @@ class ISubscribable(Interface):
         subscriptions for this subscriber are present, no error is
         raised.
         
-        if event_type is supplied, this method will unsubscribe the
+        If event_type is supplied, this method will unsubscribe the
         subscriber from one subscription exactly matching the
         event_type/filter pair given (the default filter being None).
         If other subscriptions are present they will remain.  If the
@@ -101,8 +100,8 @@ class ISubscribable(Interface):
         """
         
     def listSubscriptions(subscriber, event_type=None):
-        """returns an iterator of the subscriptions to this channel for
-        the subscriber. if event_type is supplied, the list is limited
+        """Returns an iterator of the subscriptions to this channel for
+        the subscriber. If event_type is supplied, the list is limited
         to that exact event_type.  If the subscribable is a placeful
         service, the list will include subscriptions to parent services.
         The subscriber is matched via equality (not identity).  No

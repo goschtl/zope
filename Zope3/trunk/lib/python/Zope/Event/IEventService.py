@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IEventService.py,v 1.3 2002/09/05 21:41:09 jeremy Exp $
+$Id: IEventService.py,v 1.4 2002/11/11 08:33:45 stevea Exp $
 """
 
 from ISubscribable import ISubscribable
@@ -34,7 +34,3 @@ class IEventService(ISubscribable):
         Events will often be propagated to higher level IEventServices;
         This is a policy decision for the IEventService.
         """
-
-    
-
-    
