@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.27 2003/06/23 00:31:31 jim Exp $
+$Id: service.py,v 1.28 2003/06/30 16:26:15 jim Exp $
 """
 
 import sys
@@ -49,10 +49,6 @@ from zope.app.interfaces.services.module import IModuleService
 from zope.app.interfaces.services.service import IServiceRegistration
 from zope.app.interfaces.services.service import IServiceManager
 
-# Declare a tuple of all types we consider to be modules
-# (used as 2nd argument to isinstance() in method resolve() below)
-ModuleType = type(IModuleService), PersistentModule
-
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
 from zope.app.services.folder import SiteManagementFolders
@@ -62,7 +58,7 @@ from zope.app.traversing import getPath
 
 class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
 
-    implements(IServiceManager, IContainer, IModuleService)
+    implements(IServiceManager, IContainer)
 
     def __init__(self):
         PersistentModuleRegistry.__init__(self)
@@ -262,37 +258,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
 
         return mod
     __import = ContextMethod(__import)
-
-    def resolve(wrapped_self, name):
-
-        name = name.strip()
-
-        if name.endswith('.') or name.endswith('+'):
-            name = name[:-1]
-            repeat = 1
-        else:
-            repeat = 0
-
-        names = name.split('.')
-        last = names[-1]
-        mod = '.'.join(names[:-1])
-
-        if not mod:
-            return wrapped_self.__import(name)
-
-        while 1:
-            m = wrapped_self.__import(mod)
-            try:
-                a = getattr(m, last)
-            except AttributeError:
-                if not repeat:
-                    return wrapped_self.__import(name)
-
-            else:
-                if not repeat or (not isinstance(a, ModuleType)):
-                    return a
-            mod += '.' + last
-    resolve = ContextMethod(resolve)
 
 
 class ServiceRegistration(NamedComponentRegistration):
