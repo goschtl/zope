@@ -68,8 +68,7 @@ def implements(_context, class_, interface):
             )
 
 def isFiveMethod(m):
-    marker = '__five_method__'
-    return getattr(m, marker, None)
+    return hasattr(m, '__five_method__')
 
 def classTraversable(class_):
     # If a class already has this attribute, it means it is either a
