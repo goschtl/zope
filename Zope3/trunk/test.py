@@ -399,10 +399,12 @@ def main(module_filter, test_filter):
     setup_path()
 
     # Initialize the logging module.
-    # XXX Should allow command line control.
-    import logging
+    import logging.config
     logging.basicConfig()
     logging.root.setLevel(logging.CRITICAL)
+    # If log.ini exists, use it
+    if os.path.exists("log.ini"):
+        logging.config.fileConfig("log.ini")
 
     files = find_tests(module_filter)
     files.sort()
