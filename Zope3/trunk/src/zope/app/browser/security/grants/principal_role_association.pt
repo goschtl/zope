@@ -1,4 +1,4 @@
-<html metal:use-macro="views/standard_macros/page">
+<html metal:use-macro="views/standard_macros/dialog">
   <head>
     <style metal:fill-slot="headers" type="text/css"> </style>
   </head>
