@@ -47,13 +47,13 @@
       factory=".adapters.ContainerSiteChildObjects"
       />
 
-<!-- Register icons -->
+  <!-- Register icons -->
 
   <browser:resourceDirectory
       name="tree_images"
       directory="tree_images" />
 
-<!-- browser stuff -->
+  <!-- browser stuff -->
 
   <browser:pages
       for="*"
