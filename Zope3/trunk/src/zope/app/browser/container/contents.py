@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.6 2003/01/17 13:35:45 efge Exp $
+Revision information: $Id: contents.py,v 1.7 2003/01/31 10:51:45 alga Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -71,7 +71,8 @@ class Contents(BrowserView):
         self.request.response.redirect('@@contents.html')
 
     def listContentInfo(self):
-        return map(self._extractContentInfo, self.context.items())
+        return map(self._extractContentInfo,
+                   getAdapter(self.context, IZopeContainer).items())
 
     contents = ViewPageTemplateFile('main.pt')
     contentsMacros = contents
