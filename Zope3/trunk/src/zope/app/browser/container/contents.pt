@@ -47,7 +47,8 @@
           <td></td>
         </tr>
 
-        <metal:block tal:repeat="item container_contents">
+        <metal:block tal:define="supportsRename view/supportsRename"
+                     tal:repeat="item container_contents">
           <tr tal:define="oddrow repeat/item/odd; url item/url"
               tal:attributes="class python:oddrow and 'even' or 'odd'" > 
             <td>
@@ -77,6 +78,7 @@
                   ><a href="#" 
                      tal:attributes="href 
                          string:${request/URL}?rename_ids:list=${item/id}"
+                     tal:condition="supportsRename"
                      >&nbsp;&nbsp;</a
                 ></span
                ></td>

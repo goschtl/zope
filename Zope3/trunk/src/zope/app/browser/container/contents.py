@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.21 2003/06/12 09:30:48 jim Exp $
+Revision information: $Id: contents.py,v 1.22 2003/06/12 16:35:12 jim Exp $
 """
 
 from zope.app import zapi
@@ -41,6 +41,7 @@ class Contents(BrowserView):
     message = ''
     normalButtons = False
     specialButtons = False
+    supportsRename = False
 
     def listContentInfo(self):
         request = self.request
