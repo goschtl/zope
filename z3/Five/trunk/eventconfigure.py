@@ -9,6 +9,8 @@
 """
 Use 'structured monkey patching' to enable zope.app.container event sending for
 Zope 2 objects.
+
+$Id$
 """
 
 from Products.Five.fiveconfigure import isFiveMethod
