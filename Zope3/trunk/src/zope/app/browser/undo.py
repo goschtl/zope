@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: undo.py,v 1.2 2002/12/25 14:12:26 jim Exp $
+$Id: undo.py,v 1.3 2003/01/20 19:58:57 jim Exp $
 """
 from zope.component import getUtility
 from zope.publisher.browser import BrowserView
@@ -53,20 +53,18 @@ class ZODBUndoManager:
 class Undo(BrowserView):
     """Undo View"""
 
-    def __init__(self, *args):
-        super(Undo, self).__init__(*args)
-        self.utility = getUtility(self.context, IUndoManager)
-
     index = ViewPageTemplateFile('undo_log.pt')
 
     def action (self, id_list, REQUEST=None):
         """
         processes undo form and redirects to form again (if possible)
         """
-        self.utility.undoTransaction(id_list)
+        utility = getUtility(self.context, IUndoManager)
+        utility.undoTransaction(id_list)
 
         if REQUEST is not None:
             REQUEST.response.redirect('index.html')
 
     def getUndoInfo(self):
-        return self.utility.getUndoInfo()
+        utility = getUtility(self.context, IUndoManager)
+        return utility.getUndoInfo()
