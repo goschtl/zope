@@ -58,6 +58,8 @@ import sys, os, tempfile
 import re, string
 import getopt
 
+import traffic_table
+
 OUTPUT_LOG = "/var/tmp/cvs-postcommit_actions.log"
 ERROR_LOG = "/var/tmp/cvs-postcommit_actions.errors"
 
@@ -147,12 +149,12 @@ def main(args):
         do_chmod(subjs)
 
     for entry in got:
-        (nm, expr, addrs, remote) = entry
+        (path, expr, excludes, addrs, remote) = entry
         if addrs and not only_repo:
-                do_mail(nm, repo, addrs, subjs)
+                do_mail(path, repo, addrs, subjs)
         if remote:
             print "remote:", remote
-            do_sync(nm, repo, remote, subjs, recurse=RECURSE)
+            do_sync(path, repo, remote, subjs, excludes, recurse=RECURSE)
     if not got and only_repo:
             print "no remote"
             note_failure("*** --syncrepo invalid - no repository"
@@ -160,7 +162,7 @@ def main(args):
                          repo)
 
     if VERBOSE:
-        complain("Th th th th that's all folks.\n")
+        complain("Done.\n")
 
     if failures:
         handle_failures()
@@ -196,7 +198,6 @@ def detach(args):
 
 def find_entries(repo):
     """Return all traffic_table entries that trigger for repo."""
-    import traffic_table
     got = []
     for t in traffic_table.table:
         if re.search(t[1], repo):
@@ -231,7 +232,7 @@ def do_mail(name, repo, addrs, subjs):
     if MSGFILENM:
         os.unlink(MSGFILENM)
 
-def do_sync(name, repo, remote, subjs=None, recurse=0):
+def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0):
     """Instigate repository mirror synchronize.
 
     The repository directory containing the subjects is synced.  (In fact,
@@ -256,12 +257,19 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     ssh_fragment = ('--rsh="%s %s -i %s -l %s"'
                     % (SSH_EXE, (VERBOSE and "-v") or "",
                        IDENTITY_FILE, IDENTITY_ACCT))
+    
+    if excludes:
+        specific_excludes = ' --exclude "%s"' % excludes
+    else:
+        specific_excludes = ''
+
     cmd = (RSYNC_EXE
            + " %s " % ssh_fragment
            + " --update"                # Preserve newer files
            + " --recursive"
            + ' --exclude "#cvs.*"'      # Do not dup cvs lock files
            + ' --exclude ".#*"'         # Do not dup cvs backup files
+           + specific_excludes          # empty if None specified
            + " --links"                 # preserve soft-links
            + " --hard-links"            #    "     hard-links
            + " --perms"                 #    "     permissions
