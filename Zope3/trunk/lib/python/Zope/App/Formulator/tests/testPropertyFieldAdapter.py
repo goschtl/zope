@@ -16,7 +16,7 @@ This test suite tests the functionality of the PropertyFieldAdapter. This test
 will actually depend on the Field class, but the required ContentObject is
 implemented as a stub.
 
-$Id: testPropertyFieldAdapter.py,v 1.2 2002/06/10 23:27:50 jim Exp $
+$Id: testPropertyFieldAdapter.py,v 1.3 2002/07/16 22:55:30 jeremy Exp $
 """
 
 import unittest
@@ -48,15 +48,15 @@ class ContentObject:
 class Test(unittest.TestCase):
 
 
-    def testAdapterRegistry(self):
-        """Test somehow whether the PropertyFieldAdapter was correclty
-           registered"""
+##    def testAdapterRegistry(self):
+##        """Test somehow whether the PropertyFieldAdapter was correctly
+##           registered"""
 
-        # XXX I do not know how to do these tests yet.
+##        # XXX I do not know how to do these tests yet.
 
 
     def testSetData(self):
-        """Test setting the data in the ContentObejct."""
+        """Test setting the data in the ContentObject."""
 
         content = ContentObject()
         field = DataField(content)
@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
 
 
     def testGetData(self):
-        """Test getting the data from the ContentObejct."""
+        """Test getting the data from the ContentObject."""
 
         content = ContentObject()
         content.data = 'Some Data'
