@@ -1,4 +1,4 @@
-<html metal:use-macro="views/standard_macros/page">
+<html metal:use-macro="views/standard_macros/view">
 <head>
   <style metal:fill-slot="headers" type="text/css">
     <!--
@@ -32,7 +32,7 @@
       <div class="label" i18n:translate="">Content Type</div>
       <div class="field">
         <input name="contentType" type="text" size="20"
-               tal:attributes="value context/getContentType" />
+               tal:attributes="value context/contentType" />
       </div>
     </div>
     
@@ -85,14 +85,7 @@
       <div class="label" i18n:translate="">Dimensions</div>
       <div class="field"
           tal:content="python:view.getImageSize(request.get('language'))">
-        40 x 40
-      </div>
-    </div>
-    <div class="row">
-      <div class="label" i18n:translate="">Dimensions</div>
-      <div class="field"
-          tal:content="python:view.getSize(request.get('language'))">
-        40 kB
+        40 x 40 pixels, 10 kB
       </div>
     </div>
 

@@ -16,6 +16,7 @@
 $Id$
 """
 from zope.i18n.negotiator import negotiator
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 __metaclass__ = type
 
@@ -31,7 +32,7 @@ class I18nFileView:
             language = negotiator.getLanguage(langs, request)
 
             request.response.setHeader('Content-Type',
-                                       self.context.getContentType())
+                                       self.context.contentType)
             request.response.setHeader('Content-Length',
                                        self.context.getSize(language))
 
@@ -41,8 +42,8 @@ class I18nFileView:
 class I18nFileEdit:
 
     name = 'editForm'
-    title = 'Edit Form'
-    description = ('This edit form allows you to make changes to the ' +
+    title = _('Edit Form')
+    description = _('This edit form allows you to make changes to the ' +
                    'properties of this file.')
 
     def action(self, contentType, data, language, defaultLanguage,

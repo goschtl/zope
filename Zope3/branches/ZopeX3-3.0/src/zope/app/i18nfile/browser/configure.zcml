@@ -15,7 +15,7 @@
 
   <browser:pages
       for="zope.app.i18nfile.interfaces.II18nFile"
-      permission="zope.View"
+      permission="zope.ManageContent"
       class=".i18nfile.I18nFileEdit">
 
     <browser:page name="editForm.html" template="file_edit.pt" />

@@ -18,10 +18,10 @@ $Id$
 from zope.i18n.negotiator import negotiator
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.file.browser.image import ImageData
+from zope.app.size import byteDisplay
 
-__metaclass__ = type
 
-class I18nImageEdit:
+class I18nImageEdit(object):
 
     name = 'editForm'
     title = _('Edit Form')
@@ -31,7 +31,13 @@ class I18nImageEdit:
     def getImageSize(self, language=None):
         # XXX Change to ISizeable adapter
         size = self.context.getImageSize(language)
-        return "%d x %d" % (size[0], size[1])
+        sx, sy = size
+        if sx < 0:
+            sx = '?'
+        if sy < 0:
+            sy = '?'
+        return "%s x %s pixels, %s" % (sx, sy,
+            byteDisplay(self.context.getSize()))
 
     def action(self, contentType, data, language, defaultLanguage,
                selectLanguage=None, removeLanguage=None,
@@ -48,7 +54,7 @@ class I18nImageEdit:
             self.context.setData(data, language)
             self.context.contentType = contentType
         return self.request.response.redirect(self.request.URL[-1] +
-                      "/editForm.html?language=%s" % language)  # XXX url_quote
+                      "/upload.html?language=%s" % language)  # XXX url_quote
 
 
 class I18nImageData(ImageData):
@@ -60,8 +66,7 @@ class I18nImageData(ImageData):
             langs = self.context.getAvailableLanguages()
             language = negotiator.getLanguage(langs, self.request)
 
-            self.request.response.setHeader('content-type',
-                                                 image.getContentType())
+            self.request.response.setHeader('content-type', image.contentType)
             # XXX: no content-length?  See ImageData.__call__
         return image.getData(language)
 
