@@ -28,6 +28,9 @@ from zope.app.container.contained import Contained
 import interfaces
 
 
+class IPersistentPrincipalStorage(IContainer):
+    """Marker Interface"""
+
 class PersistentPrincipalStorage(Persistent, Contained):
     """A Persistent Principal Storage and Authentication plugin
 
@@ -35,7 +38,7 @@ class PersistentPrincipalStorage(Persistent, Contained):
     form (login, password). Since we try not to expose the password, password
     is always `None` in any output.
     """
-    implements(interfaces.IAuthenticationPlugin, IContainer)           
+    implements(interfaces.IAuthenticationPlugin, IPersistentPrincipalStorage)
 
     def __init__(self):
         self._principal_by_id = IOBTree()

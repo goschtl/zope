@@ -4,7 +4,7 @@
     i18n_domain="zope"
     >
 
-  <localUtility class=".principalplugin.PrincipalFactory">
+  <localUtility class=".principalplugins.PrincipalFactory">
 
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -19,7 +19,7 @@
   <browser:addMenuItem
       title="PAS Principal Factory Plugin"
       description="A PAS Principal Factory Plugin"
-      class=".principalplugin.PrincipalFactory"
+      class=".principalplugins.PrincipalFactory"
       permission="zope.ManageContent"
       />
 

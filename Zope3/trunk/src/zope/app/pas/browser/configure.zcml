@@ -1,0 +1,17 @@
+<zope:configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser">
+
+  <pages 
+      permission="zope.ManageServices" 
+      for="..zodb.IPersistentPrincipalStorage"
+      class=".zodb.PrincipalManagement">
+    
+    <page name="editForm.html" template="zodb_overview.pt"
+          menu="zmi_views" title="Managament" />
+    <page name="add.html" attribute="add" />
+    <page name="delete.html" attribute="delete" />
+
+  </pages>
+
+</zope:configure>

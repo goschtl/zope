@@ -69,5 +69,7 @@
   <include file="challengeplugins.zcml" />
   <include file="principalplugins.zcml" />
   <include file="authenticationplugins.zcml" />
+
+  <include package=".browser" />
   
 </configure>
