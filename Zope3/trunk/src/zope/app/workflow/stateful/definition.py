@@ -11,13 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.12 2004/03/03 10:38:59 philikon Exp $
+$Id: definition.py,v 1.13 2004/03/03 20:20:35 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface import implements

@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_instance.py,v 1.4 2004/02/27 16:50:47 philikon Exp $
-"""
+"""Process Instance Tests
 
+$Id: test_instance.py,v 1.5 2004/03/03 20:20:36 srichter Exp $
+"""
 import unittest
 from zope.interface.verify import verifyClass
 
@@ -29,7 +29,6 @@ from zope.app.workflow.instance import ProcessInstanceContainerAdapter, WFKey
 from zope.interface import implements
 
 class TestAnnotations(dict):
-
     implements(IAnnotations)
 
 class DummyInstance:

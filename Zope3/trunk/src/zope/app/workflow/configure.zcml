@@ -58,37 +58,19 @@
         id="ProcessDefinition"
         permission="zope.ManageServices"
         />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.workflow.interfaces.IProcessDefinition" 
+    <implements
+        interface="zope.app.interfaces.services.utility.ILocalUtility" 
         />
     <implements 
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
         />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.workflow.interfaces.IProcessDefinition" 
+        />
   </content>
 
-
-  <!-- Process Definition Registration -->
-
-  <content class="zope.app.workflow.service.ProcessDefinitionRegistration">
-    <factory
-        id="ProcessDefinitionRegistration"
-        permission="zope.ManageServices"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.workflow.interfaces.IProcessDefinitionRegistration"
-        set_schema="zope.app.workflow.interfaces.IProcessDefinitionRegistration"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IAddNotifiable"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IRemoveNotifiable"
-        />
-  </content>
+  <!-- Process Definition Name Vocabualry -->
 
   <vocabulary
      name="ProcessDefinitions"
@@ -107,7 +89,8 @@
 
   <!-- Process Instance Container -->
 
-  <content class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
+  <content 
+        class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
 
     <implements interface="zope.app.container.interfaces.IContentContainer" />
 

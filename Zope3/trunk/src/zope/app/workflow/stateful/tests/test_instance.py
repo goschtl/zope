@@ -13,9 +13,8 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.11 2004/02/27 16:50:40 philikon Exp $
+$Id: test_instance.py,v 1.12 2004/03/03 20:20:35 srichter Exp $
 """
-
 import unittest
 
 from zope.interface import Interface, implements
@@ -38,7 +37,7 @@ from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.registration import ActiveStatus
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
-from zope.app.workflow.service import ProcessDefinitionRegistration
+from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces.stateful \
      import IStatefulProcessInstance
 from zope.app.workflow.interfaces.stateful import \
@@ -52,15 +51,13 @@ from zope.app.workflow.stateful.instance \
      import StatefulProcessInstance, StateChangeInfo
 from zope.app import zapi
 from zope.app.container.contained import contained
+from zope.app.services.utility import UtilityRegistration
 
 
 # define and create ProcessDefinition (PD) for tests
 class TestProcessDefinition(StatefulProcessDefinition):
-    implements(IAttributeAnnotatable, IRegisterable, IRegistered)
+    implements(IAttributeAnnotatable)
 
-    # Incompletely implementing IRegistered
-    def addUsage(self, location):
-        pass
 
 class ITestDataSchema(Interface):
 
@@ -98,8 +95,8 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.default['pd1'] = pd 
 
         name = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition1',
-                                          '/++etc++site/default/pd1'))
+            UtilityRegistration('definition1', IProcessDefinition,
+                                '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       name).status = ActiveStatus
 
@@ -210,8 +207,8 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.default['pd1'] = pd 
 
         n = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition1',
-                                          '/++etc++site/default/pd1'))
+            UtilityRegistration('definition1', IProcessDefinition,
+                                '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(), n
                       ).status = ActiveStatus
 
@@ -296,8 +293,8 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.default['pd1'] = pd 
 
         k = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition1',
-                                          '/++etc++site/default/pd1'))
+            UtilityRegistration('definition1', IProcessDefinition,
+                                '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
@@ -384,8 +381,8 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.default['pd1'] = pd 
 
         k = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition1',
-                                          '/++etc++site/default/pd1'))
+            UtilityRegistration('definition1', IProcessDefinition,
+                                '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 

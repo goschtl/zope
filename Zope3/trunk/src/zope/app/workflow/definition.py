@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process definition.
 
-$Id: definition.py,v 1.7 2004/03/03 17:07:23 srichter Exp $
+$Id: definition.py,v 1.8 2004/03/03 20:20:33 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -29,7 +29,6 @@ class ProcessDefinition(Persistent, Contained):
 
     Must be inherited by a particular implementation.
     """ 
-
     implements(IProcessDefinition)
 
     name = None

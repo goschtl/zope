@@ -9,7 +9,7 @@
       for="zope.app.workflow.interfaces.IWorkflowService"
       name="index.html"
       template="workflows.pt"
-      class=".workflows.WorkflowsRegistryView"
+      class=".workflows.WorkflowsOverview"
       permission="zope.ManageServices"  
       menu="zmi_views" title="Processes" />
 
@@ -20,37 +20,7 @@
       permission="zope.ManageServices" />
 
 
-
-<!-- ProcessDefinition Registration -->
-
-  <page
-      for="zope.app.workflow.interfaces.IProcessDefinition"
-      name="useRegistration.html"
-      template="useprocessdefinitionconfig.pt"
-      class=".definition.Registered"
-      permission="zope.workflow.ManageProcessDefinitions"
-      menu="zmi_views" title="Registrations" />
-
-
-  <addform
-      for="zope.app.workflow.interfaces.IProcessDefinition"
-      name="addRegistration.html"
-      schema="zope.app.workflow.interfaces.IProcessDefinitionRegistration"
-      class="zope.app.browser.services.registration.AddComponentRegistration"
-      permission="zope.workflow.ManageProcessDefinitions"
-      content_factory="zope.app.workflow.service.ProcessDefinitionRegistration"
-      arguments="name componentPath"
-      set_after_add="status"
-      fields="name componentPath permission status" 
-      usage="addingdialog" />
-   
-  <editform
-      name="index.html"
-      menu="zmi_views" title="Edit"
-      schema="zope.app.workflow.interfaces.IProcessDefinitionRegistration"
-      label="ProcessDefinition Registration"
-      permission="zope.workflow.ManageProcessDefinitions"
-      fields="name componentPath permission status" />
+<!-- Process Definition Import/Export -->
 
   <page
       for="zope.app.workflow.interfaces.IProcessDefinition"

@@ -13,21 +13,12 @@
 ##############################################################################
 """Workflow View Classes
 
-$Id: workflows.py,v 1.1 2004/02/27 16:50:37 philikon Exp $
+$Id: workflows.py,v 1.2 2004/03/03 20:20:34 srichter Exp $
 """
-from zope.app.browser.services.registration import \
-     NameComponentRegistryView, NameRegistryView
-from zope.app.traversing import traverse, getParent
-from zope.component import getView
+from zope.app import zapi
 
-class WorkflowsRegistryView(NameComponentRegistryView):
+class WorkflowsOverview(object):
 
-    def _getItem(self, name, view, cfg):
-        item_dict = NameRegistryView._getItem(self, name, view, cfg)
-        if cfg is not None:
-            ob = traverse(getParent(getParent(cfg)), cfg.componentPath)
-            url = str(getView(ob, 'absolute_url', self.request))
-        else:
-            url = None
-        item_dict['url'] = url
-        return item_dict
+    def getProcessDefinitions(self):
+        """Return a list of all available process definitions."""
+        return self.context.getProcessDefinitionNames()

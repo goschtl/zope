@@ -2,41 +2,25 @@
 <body>
 <div metal:fill-slot="body">
 
-  <div metal:use-macro="view/indexMacros/macros/body">
- 
-    <h2 metal:fill-slot="heading" i18n:translate="">
-      ProcessDefinitions configured in this workflow service.
-    </h2>
- 
-    <p metal:fill-slot="empty_text" i18n:translate="">
-      No ProcessDefinitions have been configured
-    </p>
- 
-    <div metal:fill-slot="extra_top">
- 
-      <p i18n:translate="">
-        For each ProcessDefinition, the ProcessDefinition name is given and all
-        of the components registered to provide the ProcessDefinition are
-        shown.  You may select the component to provide the ProcessDefinition
-        or disable the ProcessDefinition.</p>
- 
-      <p i18n:translate="">
-        Select a ProcessDefinition name or a component name to visit the
-        ProcessDefinition or component.</p>
- 
-    </div>
- 
-    <p metal:fill-slot="help_text" i18n:translate="">
-       To configure a ProcessDefinition, add a ProcessDefinition
-       component to a <em>package</em> in <a
-       href="../../../Packages">Packages</a> or to the <a
-       href="../../../Packages/default">default package</a>. After the component
-       is added, add a ProcessDefinition configuration that configures the 
-       component to provide a ProcessDefinition.
-    </p>
- 
-  </div>
+  <h2 i18n:translate="">
+    Process Definitions configured in this workflow service
+  </h2>
 
+  <ul>
+    <li tal:repeat="pd view/getProcessDefinitions">
+      <div tal:replace="pd">Publish Folder</div>
+    </li>
+  </ul>
+
+  <p i18n:translate="">
+     To configure a Process Definition, add a Process Definition
+     utility to a <em>package</em> in <a
+     href="../../../Packages">Packages</a> or to the <a
+     href="../../../Packages/default">default package</a>. After the utility
+     is added, add a Process Definition configuration that configures the 
+     component to provide a Process Definition.
+  </p>
+ 
 </div>
 </body>
 </html>

@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.1 2004/02/27 16:50:37 philikon Exp $
+$Id: definition.py,v 1.2 2004/03/03 20:20:34 srichter Exp $
 """
 __metaclass__ = type
  
@@ -21,24 +21,6 @@ from zope.component import getAdapter, getView, getUtility
 from zope.app.traversing import traverse
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.workflow.interfaces import IProcessDefinitionImportExport
-
-class Registered:
-    """View for displaying the registrations for a process definition"""
-
-    def uses(self):
-        """Get a sequence of registration summaries"""
-        component = self.context
-        useconfig = getAdapter(component, IRegistered)
-        result = []
-        for path in useconfig.usages():
-            config = traverse(component, path)
-            url = getView(config, 'absolute_url', self.request)
-            result.append({'name': config.name,
-                           'path': path,
-                           'url': url(),
-                           'status': config.status,
-                           })
-        return result
 
 
 class ProcessDefinitionView:

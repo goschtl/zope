@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_definition.py,v 1.3 2004/02/27 16:50:47 philikon Exp $
-"""
+"""Process Definition Tests
 
+$Id: test_definition.py,v 1.4 2004/03/03 20:20:36 srichter Exp $
+"""
 import unittest
 
 from zope.interface.verify import verifyClass

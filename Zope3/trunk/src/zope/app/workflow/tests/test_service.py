@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_service.py,v 1.8 2004/02/27 16:50:47 philikon Exp $
-"""
+"""Workflow Service Tests
 
+$Id: test_service.py,v 1.9 2004/03/03 20:20:36 srichter Exp $
+"""
 import unittest
 
 from zope.app import zapi
@@ -22,21 +22,19 @@ from zope.interface import implements
 from zope.interface.verify import verifyClass
 from zope.app.container.contained import Contained
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.services.registration import IRegisterable
-from zope.app.interfaces.services.registration import IRegistered
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.utility import ILocalUtility
+from zope.app.interfaces.services.registration import \
+     RegisteredStatus, ActiveStatus
+from zope.app.services.utility import UtilityRegistration
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
-from zope.app.workflow.interfaces \
-     import IWorkflowService, IProcessDefinition
+from zope.app.workflow.interfaces import \
+     IWorkflowService, IProcessDefinition
 from zope.app.workflow.service import WorkflowService
-from zope.app.workflow.service import ProcessDefinitionRegistration
 
 # define and create dummy ProcessDefinition (PD) for tests
 class DummyProcessDefinition(Contained):
-    implements(IProcessDefinition, IAttributeAnnotatable, IRegisterable,
-               IRegistered)
+    implements(IProcessDefinition, IAttributeAnnotatable, ILocalUtility)
 
     def __init__(self, n):
         self.n = n
@@ -68,18 +66,18 @@ class WorkflowServiceTests(WorkflowSetup, unittest.TestCase):
         self.default['pd2'] = DummyProcessDefinition(2)
 
         n = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition1',
-                                          '/++etc++site/default/pd1'))
+            UtilityRegistration('definition1', IProcessDefinition,
+                                '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       n).status = ActiveStatus
         n = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition2',
-                                          '/++etc++site/default/pd2'))
+            UtilityRegistration('definition2', IProcessDefinition,
+                                '/++etc++site/default/pd2'))
         zapi.traverse(self.default.getRegistrationManager(),
                       n).status = ActiveStatus
         n = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition3',
-                                              '/++etc++site/default/pd1'))
+            UtilityRegistration('definition3', IProcessDefinition,
+                                '/++etc++site/default/pd2'))
         zapi.traverse(self.default.getRegistrationManager(),
                  n).status = RegisteredStatus
 
@@ -90,17 +88,16 @@ class WorkflowServiceTests(WorkflowSetup, unittest.TestCase):
         self.default1['pd4'] = DummyProcessDefinition(4)
 
         n = self.cm1.addRegistration(
-            ProcessDefinitionRegistration(
-                'definition1',
-                '/folder1/++etc++site/default/pd3'))
+            UtilityRegistration('definition1', IProcessDefinition,
+                                '/folder1/++etc++site/default/pd3'))
         zapi.traverse(self.default1.getRegistrationManager(),
                       n).status = ActiveStatus
         n = self.cm1.addRegistration(
-            ProcessDefinitionRegistration(
-                     'definition4',
-                     '/folder1/++etc++site/default/pd4'))
+            UtilityRegistration('definition4', IProcessDefinition,
+                                '/folder1/++etc++site/default/pd4'))
         zapi.traverse(self.default1.getRegistrationManager(),
                       n).status = ActiveStatus
+
         # Now self.service1 overrides definition1, adds new definition4
         # available, and inherits definition2 from self.service
 

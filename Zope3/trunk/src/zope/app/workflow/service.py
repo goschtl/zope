@@ -13,136 +13,87 @@
 ##############################################################################
 """Workflow service implementation.
 
-Revision information:
-$Id: service.py,v 1.13 2004/02/27 16:50:37 philikon Exp $
+$Id: service.py,v 1.14 2004/03/03 20:20:33 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
-from zope.component import getService
-from zope.app.component.nextservice import queryNextService
-from zope.app.interfaces.services.registration import INameComponentRegistry
-from zope.app.interfaces.services.registration import IRegistered
-from zope.app.interfaces.services.service import ISimpleService
-from zope.app.workflow.interfaces import IProcessDefinition
-from zope.app.workflow.interfaces import IProcessDefinitionRegistration
-from zope.app.workflow.interfaces import IWorkflowService
-from zope.app.services.registration import NameComponentRegistry
-from zope.app.services.registration import NamedComponentRegistration
-from zope.app.services.servicenames import Workflows
-from zope.app.traversing import getPath
-from zope.component import getAdapter
-from zope.app.container.contained import Contained
+
 from zope.interface import implements
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
 
+from zope.app import zapi
+from zope.app.container.contained import Contained
+from zope.app.interfaces.services.service import ISimpleService
+from zope.app.services.servicenames import Workflows
+from zope.app.workflow.interfaces import IProcessDefinition, IWorkflowService
 
-class ILocalWorkflowService(IWorkflowService, INameComponentRegistry):
-    """A Local WorkflowService.
-    """
 
-class WorkflowService(Persistent, NameComponentRegistry, Contained):
-    __doc__ = IWorkflowService.__doc__
+class ILocalWorkflowService(IWorkflowService):
+    """A Local Workflow Service."""
+
+
+class WorkflowService(Persistent, Contained):
+    """Local Workflow Service implementation."""
     implements(ILocalWorkflowService, ISimpleService)
 
     def getProcessDefinitionNames(self):
         """See zope.app.workflow.interfaces.IWorkflowService"""
-        definition_names = {}
-        for name in self.listRegistrationNames():
-            registry = self.queryRegistrations(name)
-            if registry.active() is not None:
-                definition_names[name] = 0
-        service = queryNextService(self, Workflows)
-        if service is not None:
-            for name in service.getProcessDefinitionNames():
-                definition_names[name] = 0
-        return definition_names.keys()
+        names = {}
+        for name, util in zapi.getUtilitiesFor(self, IProcessDefinition):
+            names[name] = None
+        return names.keys()
 
     def getProcessDefinition(self, name):
         """See zope.app.workflow.interfaces.IWorkflowService"""
-        pd = self.queryActiveComponent(name)
-        if pd is not None:
-            return pd
-        service = queryNextService(self, Workflows)
-        if service is not None:
-            return service.getProcessDefinition(name)
-        raise KeyError, name
+        return zapi.getUtility(self, IProcessDefinition, name)
 
     def queryProcessDefinition(self, name, default=None):
         """See zope.app.workflow.interfaces.IWorkflowService"""
-        try:
-            return self.getProcessDefinition(name)
-        except KeyError:
-            return default
+        return zapi.queryUtility(self, IProcessDefinition, default, name)
 
-    def createProcessInstance(self, definition_name):
+    def createProcessInstance(self, name):
         """See zope.app.workflow.interfaces.IWorkflowService"""
-        pd = self.getProcessDefinition(definition_name)
-        return pd.createProcessInstance(definition_name)
+        pd = self.getProcessDefinition(name)
+        return pd.createProcessInstance(name)
 
-class ProcessDefinitionRegistration(NamedComponentRegistration):
-    __doc__ = IProcessDefinitionRegistration.__doc__
-    implements(IProcessDefinitionRegistration)
-
-    serviceType = Workflows
-
-    def getInterface(self):
-        return IProcessDefinition
-
-    # The following hooks are called only if we implement
-    # IAddNotifiable and IRemoveNotifiable.
-
-    def addNotify(self, event):
-        """Hook method will call after an object is added to container.
-
-        Defined in IAddNotifiable.
-        """
-        super(ProcessDefinitionRegistration, self).addNotify(event)
-        pd = self.getComponent()
-        adapter = getAdapter(pd, IRegistered)
-        adapter.addUsage(getPath(self))
-
-
-    def removeNotify(self, event):
-        """Hook method will call before object is removed from container.
-
-        Defined in IRemoveNotifiable.
-        """
-        pd = self.getComponent()
-        adapter = getAdapter(pd, IRegistered)
-        adapter.removeUsage(getPath(self))
-        super(ProcessDefinitionRegistration, self).removeNotify(event)
 
 class ProcessDefinitionTerm:
+    """A term representing the name of a process definition."""
     implements(ITokenizedTerm)
 
     def __init__(self, name):
-        self.value = name
-        self.token = name
+        self.value = self.token = name
+
 
 class ProcessDefinitionVocabulary:
+    """Vocabulary providing available process definition names."""
     implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, context):
-        self.workflows = getService(context, Workflows)
+        self.workflows = zapi.getService(context, Workflows)
 
     def __contains__(self, value):
+        """See zope.schema.interfaces.IVocabulary"""
         return value in self.workflows.getProcessDefinitionNames()
 
     def __iter__(self):
+        """See zope.schema.interfaces.IVocabulary"""
         terms = map(lambda p: ProcessDefinitionTerm(p),
                     self.workflows.getProcessDefinitionNames())
         return iter(terms)
 
     def __len__(self):
+        """See zope.schema.interfaces.IVocabulary"""
         return len(self.workflows.getProcessDefinitionNames())
 
     def getQuery(self):
+        """See zope.schema.interfaces.IVocabulary"""
         return None
 
     def getTerm(self, value):
+        """See zope.schema.interfaces.IVocabulary"""
         return ProcessDefinitionTerm(value)
 
     def getTermByToken(self, token):
+        """See zope.schema.interfaces.IVocabularyTokenized"""
         return self.getTerm(token)

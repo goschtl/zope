@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.11 2004/03/02 18:51:08 philikon Exp $
+$Id: test_contentworkflow.py,v 1.12 2004/03/03 20:20:35 srichter Exp $
 """
 import unittest
 
@@ -29,14 +29,15 @@ from zope.app.interfaces.annotation import IAnnotatable, IAttributeAnnotatable
 from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.services.event import EventService
 from zope.app.services.servicenames import EventSubscription
+from zope.app.services.utility import UtilityRegistration
 from zope.app.interfaces.services.event import ISubscriptionService
 from zope.app.interfaces.services.registration import ActiveStatus
 
+from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces.stateful import IContentWorkflowsManager
 from zope.app.workflow.instance import ProcessInstanceContainerAdapter
-from zope.app.workflow.service import ProcessDefinitionRegistration
 from zope.app.workflow.stateful.contentworkflow import ContentWorkflowsManager
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.tests.test_service import DummyProcessDefinition
@@ -164,13 +165,13 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
         self.default['pd2'] = DummyProcessDefinition(2)
 
         id = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition1',
-                                          '/++etc++site/default/pd1'))
+            UtilityRegistration('definition1', IProcessDefinition,
+                                '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       id).status = ActiveStatus
         id = self.cm.addRegistration(
-            ProcessDefinitionRegistration('definition2',
-                                          '/++etc++site/default/pd2'))
+            UtilityRegistration('definition2', IProcessDefinition,
+                                '/++etc++site/default/pd2'))
         zapi.traverse(self.default.getRegistrationManager(),
                       id).status = ActiveStatus
         manager = self.getManager()

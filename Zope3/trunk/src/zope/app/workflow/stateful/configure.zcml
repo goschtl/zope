@@ -10,6 +10,12 @@
       id="StatefulProcessDefinition"
       permission="zope.workflow.ManageProcessDefinitions"
       />
+  <implements
+      interface="zope.app.interfaces.services.utility.ILocalUtility" 
+      />
+  <implements 
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+      />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
       interface="
@@ -21,14 +27,7 @@
       permission="zope.workflow.ManageProcessDefinitions"
       interface="zope.app.container.interfaces.IReadContainer" 
       />
-  <implements 
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
-      />
-  <implements 
-      interface="zope.app.interfaces.services.registration.IRegisterable" 
-      />
 </content>
-
 
 
 <!-- States Container -->

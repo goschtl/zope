@@ -13,16 +13,12 @@
 ##############################################################################
 """Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.3 2004/03/03 10:38:58 philikon Exp $
+$Id: __init__.py,v 1.4 2004/03/03 20:20:34 srichter Exp $
 """
-from zope.interface import Interface
-from zope.interface import Attribute
+from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import IContainer
 from zope.app.event.interfaces import IEvent
-from zope.app.interfaces.services.registration \
-     import INamedComponentRegistration
-from zope.app.interfaces.services.registration import ComponentPath
 
 
 class IWorkflowEvent(IEvent):
@@ -46,19 +42,8 @@ class IWorkflowService(Interface):
     def queryProcessDefinition(name, default=None):
         """Return the IProcessDefinition for the name or default."""
 
-    def createProcessInstance(definition_name):
+    def createProcessInstance(name):
         """Create a process instance from a process definition."""
-
-
-class IProcessDefinitionRegistration(INamedComponentRegistration):
-    """Registration for a workflow process definition."""
-
-    componentPath = ComponentPath(
-        title=_("Component path"),
-        description=_("The physical path to the component"),
-        required=True,
-        readonly=True,
-        )
 
 
 class IProcessDefinition(Interface):
