@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: Configuration.py,v 1.6 2002/12/18 20:23:02 stevea Exp $
+$Id: Configuration.py,v 1.7 2002/12/21 19:52:09 stevea Exp $
 """
 __metaclass__ = type
 
@@ -290,6 +290,7 @@ class NamedComponentConfiguration(NamedConfiguration):
     of the component.
     """
 
+    # NamedConfiguration.__implements__ includes IDeleteNotifiable
     __implements__ = (INamedComponentConfiguration,
                       NamedConfiguration.__implements__, IAddNotifiable)
 
@@ -308,7 +309,7 @@ class NamedComponentConfiguration(NamedConfiguration):
         # We have to be clever here. We need to do an honest to
         # god unrestricted traveral, which means we have to
         # traverse from an unproxied object. But, it's not enough
-        # for the service manager to be unproxies, because the
+        # for the service manager to be unproxied, because the
         # path is an absolute path. When absolute paths are
         # traversed, the traverser finds the physical root and
         # traverses from there, so we need to make sure the
@@ -321,6 +322,9 @@ class NamedComponentConfiguration(NamedConfiguration):
         if wrapped_self.permission:
             if type(component) is Proxy:
                 # XXX what is this?
+                # Answer: There should be at most one security Proxy around
+                # an object. So, if we're going to add a new security proxy,
+                # we need to remove any existing one.
                 component = removeSecurityProxy(component)
 
             interface = wrapped_self.getInterface()
