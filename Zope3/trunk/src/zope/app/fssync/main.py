@@ -16,12 +16,13 @@
 Command line syntax summary:
 
 %(program)s create BUNDLE SOURCE
+%(program)s unpack BUNDLE TARGET
 
 ``%(program)s help'' prints the global help (this message)
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.1 2003/09/05 21:13:15 fdrake Exp $
+$Id: main.py,v 1.2 2004/01/15 19:43:20 fdrake Exp $
 """
 
 from zope.fssync.command import Command, Usage
