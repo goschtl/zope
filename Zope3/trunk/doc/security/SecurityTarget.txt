@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.8 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.9 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.8 $ (Draft)
-:Date: $Date: 2004/05/06 14:23:36 $
+:Version: $Revision: 1.9 $ (Draft)
+:Date: $Date: 2004/05/06 14:24:13 $
 :Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>
-:DocumentID: $Id: SecurityTarget.txt,v 1.8 2004/05/06 14:23:36 jim Exp $
+:DocumentID: $Id: SecurityTarget.txt,v 1.9 2004/05/06 14:24:13 jim Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.8 2004/05/06 14:23:36 jim Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.9 2004/05/06 14:24:13 jim Exp $
 
-:Document Version: $Revision: 1.8 $
+:Document Version: $Revision: 1.9 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -1081,6 +1081,26 @@ Zope's security functions are provided via four independent subsystems:
 - authorization
 
 
+Christian
+
+
+
+
+
+
+
+Steve
+
+
+
+
+
+
+
+
+
+
+Jim
 
 
 
