@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication Service Tests
 
-$Id: tests.py 27985 2004-10-12 08:00:42Z srichter $
+$Id$
 """
 __docformat__ = "reStructuredText"
 import unittest
