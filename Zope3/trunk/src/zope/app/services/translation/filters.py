@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Service Message Export and Import Filters
 
-$Id: filters.py,v 1.4 2003/04/17 20:05:12 bwarsaw Exp $
+$Id: filters.py,v 1.5 2003/06/06 21:21:46 stevea Exp $
 """
 import time, re
 from types import StringTypes
@@ -21,6 +21,7 @@ from types import StringTypes
 from zope.i18n.interfaces import IMessageExportFilter
 from zope.i18n.interfaces import IMessageImportFilter
 from zope.app.interfaces.services.translation import ILocalTranslationService
+from zope.interface import implements
 
 
 class ParseError(Exception):
@@ -35,7 +36,7 @@ class ParseError(Exception):
 
 class GettextExportFilter:
 
-    __implements__ =  IMessageExportFilter
+    implements(IMessageExportFilter)
     __used_for__ = ILocalTranslationService
 
 
@@ -80,7 +81,7 @@ class GettextExportFilter:
 
 class GettextImportFilter:
 
-    __implements__ =  IMessageImportFilter
+    implements(IMessageImportFilter)
     __used_for__ = ILocalTranslationService
 
 

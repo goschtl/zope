@@ -13,14 +13,14 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.3 2003/06/02 16:55:47 jim Exp $
+$Id: test_creatorannotator.py,v 1.4 2003/06/06 21:21:46 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.testing.cleanup import CleanUp
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.component.adapter import provideAdapter
 
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
@@ -33,12 +33,12 @@ class IDummyContent(Interface):
     pass
 
 class DummyEvent:
-    __implements__ = IEvent
+    implements(IEvent)
 
 class DummyDCAdapter(object):
 
     __used_for__ = IDummyContent
-    __implements__ = IZopeDublinCore
+    implements(IZopeDublinCore)
 
     def _getcreator(self):
         return self.context.creators
@@ -54,12 +54,12 @@ class DummyDCAdapter(object):
 
 class DummyDublinCore:
 
-    __implements__ = IDummyContent
+    implements(IDummyContent)
 
     creators = ()
 
 class DummyPrincipal:
-    __implements__ = IPrincipal
+    implements(IPrincipal)
 
     def getId(self):
         return self._id

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: methods.py,v 1.3 2003/05/28 15:46:12 jim Exp $
+$Id: methods.py,v 1.4 2003/06/06 21:21:47 stevea Exp $
 """
 from zope.proxy import removeAllProxies
 
@@ -21,8 +21,6 @@ from zope.publisher.xmlrpc import XMLRPCView
 
 
 class Methods(XMLRPCView):
-
-    __implements__ = XMLRPCView.__implements__
 
     def getAllDomains(self):
         return self.context.getAllDomains()

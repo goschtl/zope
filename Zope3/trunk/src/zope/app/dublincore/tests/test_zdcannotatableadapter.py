@@ -15,16 +15,17 @@
 
 XXX longer description goes here.
 
-$Id: test_zdcannotatableadapter.py,v 1.2 2002/12/25 14:12:50 jim Exp $
+$Id: test_zdcannotatableadapter.py,v 1.3 2003/06/06 21:21:46 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.interface import implements
 
 class TestAnnotations(dict):
 
-    __implements__ = IAnnotations
+    implements(IAnnotations)
 
 
 class Test(PlacelessSetup, TestCase):

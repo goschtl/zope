@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zopedublincore.py,v 1.3 2003/01/08 20:18:28 tim_one Exp $
+$Id: zopedublincore.py,v 1.4 2003/06/06 21:21:46 stevea Exp $
 """
 
 __metaclass__ = type
@@ -20,6 +20,7 @@ __metaclass__ = type
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.datetimeutils import parseDatetimetz
 from datetime import datetime
+from zope.interface import implements
 
 class SimpleProperty:
 
@@ -97,8 +98,7 @@ class ZopeDublinCore:
     Just mix with Persistence to get a persistent version.
     """
 
-
-    __implements__ =  IZopeDublinCore
+    implements(IZopeDublinCore)
 
     def __init__(self, mapping=None):
         if mapping is None:

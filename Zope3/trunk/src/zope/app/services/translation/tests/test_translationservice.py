@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.10 2003/05/01 19:35:36 faassen Exp $
+$Id: test_translationservice.py,v 1.11 2003/06/06 21:21:47 stevea Exp $
 """
 
 import unittest
@@ -31,11 +31,12 @@ from zope.app.services.translation.messagecatalog import \
 from zope.i18n.tests.test_itranslationservice import \
      TestITranslationService
 from zope.app.component.metaconfigure import provideService, managerHandler
+from zope.interface import implements
 
 
 class Environment:
 
-    __implements__ = IUserPreferredLanguages
+    implements(IUserPreferredLanguages)
 
     def __init__(self, langs=()):
         self.langs = langs

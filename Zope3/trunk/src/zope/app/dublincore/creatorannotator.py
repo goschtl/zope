@@ -13,7 +13,7 @@
 ##############################################################################
 """Object that takes care of annotating the dublin core creator field.
 
-$Id: creatorannotator.py,v 1.3 2003/05/21 17:26:38 sidnei Exp $
+$Id: creatorannotator.py,v 1.4 2003/06/06 21:21:46 stevea Exp $
 """
 __metaclass__ = type
 
@@ -21,11 +21,12 @@ from zope.component import queryAdapter
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.event import ISubscriber
 from zope.security.management import getSecurityManager
+from zope.interface import implements
 
 class CreatorAnnotatorClass:
     """Update Dublin-Core creator property
     """
-    __implements__ = ISubscriber
+    implements(ISubscriber)
 
     def notify(self, event):
         dc = queryAdapter(event.object, IZopeDublinCore)

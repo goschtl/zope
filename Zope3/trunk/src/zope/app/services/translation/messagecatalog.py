@@ -13,9 +13,9 @@
 ##############################################################################
 """A simple implementation of a Message Catalog.
 
-$Id: messagecatalog.py,v 1.6 2003/05/28 15:46:12 jim Exp $
+$Id: messagecatalog.py,v 1.7 2003/06/06 21:21:46 stevea Exp $
 """
-from zope.interface import classProvides
+from zope.interface import classProvides, providedBy, implements
 import time
 
 from zodb.btrees.OOBTree import OOBTree
@@ -28,7 +28,7 @@ from zope.app.interfaces.services.translation import ILocalMessageCatalog
 
 class MessageCatalog(RegisteredObject, Persistent):
 
-    __implements__ =  ILocalMessageCatalog
+    implements(ILocalMessageCatalog)
     classProvides(IFactory)
 
     def __init__(self, language, domain="default"):
@@ -99,4 +99,4 @@ class MessageCatalog(RegisteredObject, Persistent):
 
     def getInterfaces(self):
         'See IFactory'
-        return self.__implements__
+        return tuple(providedBy(self))

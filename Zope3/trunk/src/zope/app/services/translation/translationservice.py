@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.10 2003/05/01 19:35:35 faassen Exp $
+$Id: translationservice.py,v 1.11 2003/06/06 21:21:46 stevea Exp $
 """
 import re
 
@@ -29,11 +29,12 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.i18n.negotiator import negotiator
 from zope.app.interfaces.services.translation import ILocalTranslationService
 from zope.i18n.simpletranslationservice import SimpleTranslationService
+from zope.interface import implements
 
 
 class TranslationService(BTreeContainer, SimpleTranslationService):
 
-    __implements__ =  ILocalTranslationService, ISimpleService
+    implements(ILocalTranslationService, ISimpleService)
 
     def __init__(self, default_domain='global'):
         super(TranslationService, self).__init__()

@@ -14,7 +14,7 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: test_filters.py,v 1.1 2003/03/25 18:21:37 srichter Exp $
+$Id: test_filters.py,v 1.2 2003/06/06 21:21:47 stevea Exp $
 """
 import unittest, time
 
@@ -34,12 +34,12 @@ from zope.app.services.translation.translationservice import \
      TranslationService
 from zope.app.services.translation.filters import GettextImportFilter
 from zope.app.services.translation.filters import GettextExportFilter
-
+from zope.interface import implements
 
 
 class Environment:
 
-    __implements__ = IUserPreferredLanguages
+    implements(IUserPreferredLanguages)
 
     def __init__(self, langs=()):
         self.langs = langs
