@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Event Interfaces
 
-Revision information:
-$Id: event.py,v 1.6 2003/05/01 19:35:22 faassen Exp $
+$Id: event.py,v 1.7 2003/08/18 18:48:30 srichter Exp $
 """
-
 from zope.app.interfaces.event import ISubscribable, ISubscriber, IPublisher
 from zope.app.interfaces.event import IEvent
 
