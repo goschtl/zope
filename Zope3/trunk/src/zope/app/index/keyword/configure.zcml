@@ -1,10 +1,14 @@
 <zopeConfigure xmlns="http://namespaces.zope.org/zope">
 
-<content class="zope.app.index.keyword.index.KeywordIndex">
+<content class="zope.app.index.keyword.index.KeywordCatalogIndex">
 
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.index.keyword.IUIKeywordIndex"
+      interface="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
+      />
+  <require
+      permission="zope.ManageContent"
+      set_schema="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
       />
 
   <implements

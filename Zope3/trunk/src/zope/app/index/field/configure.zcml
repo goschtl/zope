@@ -12,13 +12,15 @@
       />
 
 </content>
-
-<!--
-<adapter
-    factory="zope.app.index.text.processors.BatchedRankedProcessor"
-    provides="zope.app.interfaces.services.query.IQueryProcessor"
-    for="zope.index.interfaces.IQuerying"
-    />
--->
+<content class="zope.app.index.field.index.FieldCatalogIndex">
+  <require
+      permission="zope.ManageContent"
+      interface="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
+      />
+  <require
+      permission="zope.ManageContent"
+      set_schema="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
+      />
+</content>
 
 </zopeConfigure>

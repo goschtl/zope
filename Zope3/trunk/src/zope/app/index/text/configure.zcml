@@ -25,6 +25,10 @@
       interface="zope.app.interfaces.index.text.IUITextCatalogIndex"
       attributes="query"
       />
+  <require
+      permission="zope.ManageContent"
+      set_schema="zope.app.interfaces.index.text.IUITextCatalogIndex"
+      />
 
   <factory
       id="zope.app.index.text.TextCatalogIndex"
@@ -35,6 +39,8 @@
       />
 
 </content>
+
+
 
 
 <adapter

@@ -23,4 +23,17 @@
     class=".control.ControlView"
     template="control.pt" />
 
+  <browser:editform
+    name="edit.html"
+    schema="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
+    label="Edit Field Index"
+    permission="zope.ManageContent"
+  />
+
+  <browser:menuItems menu="zmi_views"
+         for="zope.app.interfaces.index.field.IUIFieldCatalogIndex">
+    <menuItem title="Edit" action="edit.html"/>
+  </browser:menuItems>
+
+
 </configure>

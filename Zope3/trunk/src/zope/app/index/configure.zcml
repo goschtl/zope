@@ -2,6 +2,7 @@
 
   <include package=".text" />
   <include package=".field" />
+  <include package=".keyword" />
 
 <adapter
   factory=".adapters.SimpleQuery"

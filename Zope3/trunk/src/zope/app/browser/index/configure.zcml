@@ -3,5 +3,6 @@
 
   <include package=".text" />
   <include package=".field" />
+  <include package=".keyword" />
  
 </configure>
