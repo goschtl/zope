@@ -6,8 +6,7 @@
 <div metal:fill-slot="body">
 
   <p class="form-help" i18n:translate="">
-    This page lists the exceptions that have occurred in this site
-    recently.  You can configure how many exceptions should be kept
+    You can configure how many exceptions should be kept
     and whether the exceptions should be copied to Zope's event log
     file(s).
   </p>

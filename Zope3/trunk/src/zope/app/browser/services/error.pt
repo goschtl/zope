@@ -7,6 +7,9 @@
 
     <h3 i18n:translate="">Exception Log (most recent first)</h3>
 
+    <p i18n:translate="">This page lists the exceptions that have occurred
+    in this site recently.</p>
+
     <div tal:define="entries context/getLogEntries">
 
       <em tal:condition="not:entries">
