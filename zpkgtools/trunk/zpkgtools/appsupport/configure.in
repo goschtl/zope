@@ -194,6 +194,9 @@ while [ "$1" ] ; do
         shift 1
         ;;
     *)
+        echo "argument not understood: $OPT" >@2
+        usage >@2
+        exit 2
         ;;
     esac
 done
