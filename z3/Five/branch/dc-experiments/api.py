@@ -11,4 +11,4 @@
 $Id$
 """
 from browser import BrowserView, StandardMacros
-from viewable import Viewable
+from traversable import Traversable
