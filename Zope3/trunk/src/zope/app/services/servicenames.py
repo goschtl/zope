@@ -11,18 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Default service names
+"""Default service names
 
-$Id: servicenames.py,v 1.15 2004/02/09 05:16:29 Zen Exp $
+$Id: servicenames.py,v 1.16 2004/03/03 17:07:10 srichter Exp $
 """
-
 from zope.component.servicenames import *
 
 Authentication = 'Authentication'
 BrowserMenu = 'BrowserMenu'
 Caching = 'Caching'
-DAVSchema = 'DAVSchema'
 EventPublication = 'EventPublication'
 EventSubscription = 'Subscription'
 ErrorLogging = 'ErrorLogging'
