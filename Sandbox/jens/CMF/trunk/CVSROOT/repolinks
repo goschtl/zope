@@ -166,3 +166,6 @@
 
 # Zope 3 layout.
 /Zope3/src/ZConfig		       /Packages/ZConfig
+
+# ZopeProducts
+/ZopeProducts                   /Products3
