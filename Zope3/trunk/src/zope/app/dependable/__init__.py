@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from interfaces import IDependable
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.traversing.api import getParent, canonicalPath, getPath
@@ -25,7 +27,7 @@ class PathSetAnnotation(object):
     """Abstract base class for annotations that are sets of paths.
 
     To make this into a concrete class, a subclass must set the class
-    attribute 'key' to a unique annotation key.  A subclass may also
+    attribute `key` to a unique annotation key.  A subclass may also
     choose to rename the methods.
     """
 
@@ -90,7 +92,7 @@ class PathSetAnnotation(object):
 
 
 class Dependable(PathSetAnnotation):
-    """See IDependable."""
+    """See `IDependable`."""
 
     implements(IDependable)
 
