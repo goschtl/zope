@@ -13,7 +13,7 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.8 2004/04/18 16:00:32 jim Exp $
+$Id: ztapi.py,v 1.9 2004/04/23 11:38:57 jim Exp $
 """
 from zope.app import zapi
 import zope.interface
@@ -80,4 +80,4 @@ def provideUtility(provided, component, name=''):
 
 def provideNamespaceHandler(name, handler):
     provideAdapter(None, ITraversable, handler, name=name)
-    provideView(None, zope.interface.Interface, ITraversable, name, handler)
+    provideView(None, None, ITraversable, name, handler)

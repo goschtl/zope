@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.14 2004/04/18 16:00:31 jim Exp $
+$Id: test_presentation.py,v 1.15 2004/04/23 11:38:55 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -312,7 +312,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
                "default, (None, 'IBrowserRequest'), 'Interface', "
                "'absolute_url', 'AbsoluteURL', '')",
              "zope.component.presentation.PresentationRegistration("
-               "default, (None, 'Interface'), "
+               "default, (None, None), "
                "'ITraversable', 'etc', 'etc', '')",
              ]
             )

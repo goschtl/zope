@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.26 2004/04/18 16:00:32 jim Exp $
+$Id: setup.py,v 1.27 2004/04/23 11:38:57 jim Exp $
 """
 
 import zope.component
@@ -65,7 +65,7 @@ def setUpTraversal():
 
     # set up etc namespace
     ztapi.provideAdapter(None, ITraversable, etc, name="etc")
-    ztapi.provideView(None, zope.interface.Interface, ITraversable, "etc", etc)
+    ztapi.provideView(None, None, ITraversable, "etc", etc)
 
     ztapi.browserView(None, "absolute_url", AbsoluteURL)
     ztapi.browserView(IContainmentRoot, "absolute_url", SiteAbsoluteURL)
