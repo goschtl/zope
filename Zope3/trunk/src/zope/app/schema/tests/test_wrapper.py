@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Tests of persistent schema wrappers.
+
+$Id$
+"""
 import unittest
 
 from persistent import Persistent, GHOST, UPTODATE
@@ -43,6 +47,11 @@ def makeInstance(self):
 class Test(unittest.TestCase):
 
     klass = None # override in subclass
+
+    def tearDown(self):
+        # Make sure that we leave the environment as we found it.
+        global DUMMY
+        DUMMY.__init__(42)
 
     def testSaved(self):
         p = self.klass()

@@ -151,6 +151,12 @@ class TestSetUpWidget:
             >>> view.foo_widget is widget
             True
 
+        We now have to cleanup, so that these tests can be run in a loop. We
+        modified the 'IContent' interface saying that 'foo' is not mandatory,
+        so we have to change that back.
+
+            >>> IContent['foo'].required = True
+
         >>> tearDown()
         """
         

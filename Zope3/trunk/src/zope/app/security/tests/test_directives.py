@@ -210,6 +210,10 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         
         self.context = xmlconfig.file("redefineperms.zcml", tests)
 
+    def tearDown(self):
+        global perms
+        perms.remove('zope.Security')
+
     def testRedefinePermission(self):
         self.assertEqual(perms, ['zope.Security'])
 
