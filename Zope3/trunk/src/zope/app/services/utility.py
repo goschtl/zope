@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.13 2003/08/06 21:16:41 sidnei Exp $
+$Id: utility.py,v 1.14 2003/08/07 15:29:48 sidnei Exp $
 """
 
 from zope.interface import implements
@@ -111,15 +111,17 @@ class LocalUtilityService(Persistent):
     def getUtilitiesFor(self, interface=None):
         utilities = {}
         for name in self._utilities:
-            for iface, cr in self._utilities[reg_name].getRegisteredMatching():
+            for iface, cr in self._utilities[name].getRegisteredMatching():
                 if not cr:
                     continue
                 if interface and not iface is interface:
                     continue
+                cr = ContextWrapper(cr, self)
                 utility = cr.active().getComponent()
                 utilities[(name, utility)] = None
 
         next = getNextService(self, "Utilities")
+
         for utility in next.getUtilitiesFor(interface):
             if not utilities.has_key(utility):
                 utilities[utility] = None
