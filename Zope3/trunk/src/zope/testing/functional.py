@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.17 2004/02/20 16:57:37 fdrake Exp $
+$Id: functional.py,v 1.18 2004/02/23 10:20:23 philikon Exp $
 """
 
 import logging
@@ -28,13 +28,14 @@ from StringIO import StringIO
 from transaction import get_transaction
 from ZODB.DB import DB
 from ZODB.DemoStorage import DemoStorage
-from zope.app import Application
-from zope.app.publication.zopepublication import ZopePublication
-from zope.app.publication.http import HTTPPublication
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.http import HTTPRequest
 from zope.publisher.publish import publish
 from zope.exceptions import Forbidden, Unauthorized
+
+from zope.app import Application
+from zope.app.publication.zopepublication import ZopePublication
+from zope.app.publication.http import HTTPPublication
 
 __metaclass__ = type
 
@@ -96,7 +97,7 @@ class FunctionalTestSetup:
             self.app = Application(self.db, config_file)
             self.connection = None
             self._config_file = config_file
-            self._init = 1
+            self._init = True
         elif config_file and config_file != self._config_file:
             # Running different tests with different configurations is not
             # supported at the moment
@@ -135,13 +136,13 @@ class FunctionalTestCase(unittest.TestCase):
 
     def setUp(self):
         """Prepares for a functional test case."""
-        unittest.TestCase.setUp(self)
+        super(FunctionalTestCase, self).setUp()
         FunctionalTestSetup().setUp()
 
     def tearDown(self):
         """Cleans up after a functional test case."""
         FunctionalTestSetup().tearDown()
-        unittest.TestCase.tearDown(self)
+        super(FunctionalTestCase, self).tearDown()
 
     def getRootFolder(self):
         """Returns the Zope root folder."""
