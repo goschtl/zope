@@ -124,7 +124,7 @@ Supporting Other Revision Control Systems
 -----------------------------------------
 
 Currently, only CVS locations are supported.  It should not be too
-difficult to add support for Subversion's "svn:" URLs if a reasonable
+difficult to add support for Subversion's ``svn:`` URLs if a reasonable
 way to map the notion of a tag onto the paths in a Subversion
 repository; this could rely on heuristics, configuration, or possibly
 additional metadata stored in the Subversion repository.
