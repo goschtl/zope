@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.3 2002/12/08 20:36:29 gvanrossum Exp $
+$Id: subscribers.py,v 1.4 2002/12/08 22:05:49 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -62,7 +62,7 @@ class Registration(Persistent):
     def notify(wrapped_self, event):
         """An event occured. Perhaps register this object with the hub."""
         hub = getService(wrapped_self, "ObjectHub")
-        self._registerObject(event.object, hub)
+        wrapped_self._registerObject(event.object, hub)
     notify = ContextMethod(notify)
 
     currentlySubscribed = False # Default subscription state
