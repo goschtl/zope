@@ -13,10 +13,12 @@
 ##############################################################################
 """Bootstrap schema interfaces and exceptions
 
-$Id: _bootstrapinterfaces.py,v 1.2 2003/12/01 16:19:44 jim Exp $
+$Id: _bootstrapinterfaces.py,v 1.3 2004/04/11 10:35:08 srichter Exp $
 """
 import zope.interface
 
+from zope.i18nmessageid import MessageIDFactory
+_ = MessageIDFactory("zope")
 
 class StopValidation(Exception):
     """Raised if the validation is completed early.
@@ -25,15 +27,48 @@ class StopValidation(Exception):
     a way for the validator to save time.
     """
 
-
 class ValidationError(zope.interface.Invalid):
     """Raised if the Validation process fails."""
+
+    def doc(self):
+        return self.__class__.__doc__
 
     def __cmp__(self, other):
         return cmp(self.args, other.args)
 
     def __repr__(self):
         return ' '.join(map(str, self.args))
+
+class RequiredMissing(ValidationError):
+    __doc__ = _("""Required input is missing.""")
+
+class WrongType(ValidationError):
+    __doc__ = _("""Object is of wrong type.""")
+
+class TooBig(ValidationError):
+    __doc__ = _("""Value is too big""")
+
+class TooSmall(ValidationError):
+    __doc__ = _("""Value is too small""")
+
+class TooLong(ValidationError):
+    __doc__ = _("""Value is too long""")
+
+class TooShort(ValidationError):
+    __doc__ = _("""Value is too short""")
+
+class InvalidValue(ValidationError):
+    __doc__ = _("""Invalid value""")
+
+class ConstraintNotSatisfied(ValidationError):
+    __doc__ = _("""Constraint not satisfied""")
+
+class NotAContainer(ValidationError):
+    __doc__ = _("""Not a container""")
+
+class NotAnIterator(ValidationError):
+    __doc__ = _("""Not an iterator""")
+
 
 class IFromUnicode(zope.interface.Interface):
     """Parse a unicode string to a value
