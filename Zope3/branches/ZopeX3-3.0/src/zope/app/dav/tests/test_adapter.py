@@ -46,19 +46,19 @@ class RobotSize(object):
     implements(ISized)
 
     def __init__(self, context):
-	self.context = context
+        self.context = context
 
     def sizeForSorting(self):
-	return None
+        return None
 
     def sizeForDisplay(self):
-	return u"1 robot unit"
+        return u"1 robot unit"
 
 class RobotDirectory(object):
     implements(IReadDirectory)
 
     def __init__(self, context):
-	self.context = context
+        self.context = context
 
 def test_DAVSchemaAdapter():
     """Before we can start off, we need to provide a few basic components.
