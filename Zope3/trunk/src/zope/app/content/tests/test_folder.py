@@ -16,12 +16,16 @@ from unittest import TestCase
 from zope.app.component.tests.test_servicemanagercontainer \
      import BaseTestServiceManagerContainer
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
+from zope.app.container.tests.test_icontainer import DefaultTestData
 
 class Test(BaseTestIContainer, BaseTestServiceManagerContainer, TestCase):
 
     def makeTestObject(self):
         from zope.app.content.folder import Folder
         return Folder()
+
+    def makeTestData(self):
+        return DefaultTestData()
 
 def test_suite():
     loader = unittest.TestLoader()
