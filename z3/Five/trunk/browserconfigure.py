@@ -77,18 +77,18 @@ def page(_context, name, permission, for_,
                                   (class_, ViewMixinForAttributes),
                                   cdict)
 
-	    # in case the attribute does not provide a docstring,
-	    # ZPublisher refuses to publish it.  So, as a workaround,
-	    # we provide a stub docstring
-	    func = getattr(new_class, attribute)
-	    if not func.__doc__:
-		# cannot test for MethodType/UnboundMethod here
-		# because of ExtensionClass
-		if hasattr(func, 'im_func'):
-		    # you can only set a docstring on functions, not
-		    # on method objects
-		    func = func.im_func
-		func.__doc__ = "Stub docstring to make ZPublisher work"
+            # in case the attribute does not provide a docstring,
+            # ZPublisher refuses to publish it.  So, as a workaround,
+            # we provide a stub docstring
+            func = getattr(new_class, attribute)
+            if not func.__doc__:
+                # cannot test for MethodType/UnboundMethod here
+                # because of ExtensionClass
+                if hasattr(func, 'im_func'):
+                    # you can only set a docstring on functions, not
+                    # on method objects
+                    func = func.im_func
+                func.__doc__ = "Stub docstring to make ZPublisher work"
         else:
             # we could use the class verbatim here, but we'll execute
             # some security declarations on it so we really shouldn't

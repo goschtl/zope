@@ -8,7 +8,7 @@ class SimpleContentView(BrowserView):
         return "The eagle has landed"
 
     def mouse(self):
-	"""Docstring"""
+        """Docstring"""
         return "The mouse has been eaten by the eagle"""
 
 class CallableNoDocstring:

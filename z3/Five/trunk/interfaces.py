@@ -23,12 +23,12 @@ try:
     from persistent.interfaces import IPersistent
 except ImportError:
     class IPersistent(Interface):
-	"""Persistent object"""
+        """Persistent object"""
 
 class IPersistentExtra(Interface):
 
     def bobobase_modification_time():
-	""" """
+        """ """
 
     def locked_in_version():
         """Was the object modified in any version?"""
@@ -39,79 +39,79 @@ class IPersistentExtra(Interface):
 class IAcquisitionWrapper(Interface):
 
     def acquire(name, filter=0, extra=None, expl=0, default=0,
-		explicit=1, containment=0):
-	"""Get an attribute, acquiring it if necessary"""
+                explicit=1, containment=0):
+        """Get an attribute, acquiring it if necessary"""
 
     aq_acquire = acquire
 
     def aq_inContextOf(obj, inner=1):
-	"""Test whether the object is currently in the context of the
-	argument"""
+        """Test whether the object is currently in the context of the
+        argument"""
 
 class IAcquisition(Interface):
 
     def __of__(context):
-	"""Return the object in a context"""
+        """Return the object in a context"""
 
     def aq_acquire(name, filter=None, extra=None, explicit=None):
-	"""Get an attribute, acquiring it if necessary"""
+        """Get an attribute, acquiring it if necessary"""
 
     def aq_get(name, default=None):
-	"""Get an attribute, acquiring it if necessary."""
+        """Get an attribute, acquiring it if necessary."""
 
     # those are computed attributes, aren't they?
 
     def aq_base():
-	"""Get the object unwrapped"""
+        """Get the object unwrapped"""
 
     def aq_parent():
-	"""Get the parent of an object"""
+        """Get the parent of an object"""
 
     def aq_self():
-	"""Get the object with the outermost wrapper removed"""
+        """Get the object with the outermost wrapper removed"""
 
     def aq_inner():
-	"""Get the object with alll but the innermost wrapper removed"""
+        """Get the object with alll but the innermost wrapper removed"""
 
     def aq_chain(containment=0):
-	"""Get a list of objects in the acquisition environment"""
+        """Get a list of objects in the acquisition environment"""
 
 class IManageable(Interface):
     """Something that is manageable in the ZMI"""
 
     def manage(URL1):
-	"""Show management screen"""
+        """Show management screen"""
 
     def manage_afterAdd(item, container):
-	"""Gets called after being added to a container"""
+        """Gets called after being added to a container"""
 
     def manage_beforeDelete(item, container):
-	"""Gets called before being deleted"""
+        """Gets called before being deleted"""
 
     def manage_afterClone(item):
-	"""Gets called after being cloned"""
+        """Gets called after being cloned"""
 
     def manage_editedDialog(REQUEST, **args):
-	"""Show an 'edited' dialog"""
+        """Show an 'edited' dialog"""
 
     def filtered_manage_options(REQUEST=None):
-	""" """
+        """ """
 
     def manage_workspace():
         """Dispatch to first interface in manage_options"""
 
     def tabs_path_default(REQUEST):
-	""" """
+        """ """
 
     def tabs_path_info(script, path,):
-	""" """
+        """ """
 
     def class_manage_path(self):
-	""" """
+        """ """
 
     manage_options = Tuple(
-	title=u"Manage options",
-	)
+        title=u"Manage options",
+        )
 
     manage_tabs = Attribute("""Management tabs""")
 
@@ -205,16 +205,16 @@ class IDAVResource(IWriteLock):
     """Provide basic WebDAV support for non-collection objects."""
 
     __dav_resource__ = Bool(
-	title=u"Is DAV resource"
-	)
+        title=u"Is DAV resource"
+        )
 
     __http_methods__ = Tuple(
-	title=u"HTTP methods",
-	description=u"Sequence of valid HTTP methods"
-	)
+        title=u"HTTP methods",
+        description=u"Sequence of valid HTTP methods"
+        )
 
     def dav__init(request, response):
-	"""
+        """
         Init expected HTTP 1.1 / WebDAV headers which are not
         currently set by the base response object automagically.
         
@@ -224,11 +224,11 @@ class IDAVResource(IWriteLock):
         itself)."""
 
     def dav__validate(object, methodname, REQUEST):
-	""" """
+        """ """
 
     def dav__simpleifhandler(request, response, method='PUT',
                              col=0, url=None, refresh=0):
-	""" """
+        """ """
 
     def HEAD(EQUEST, RESPONSE):
         """Retrieve resource information without a response body."""
@@ -288,7 +288,7 @@ class IDAVResource(IWriteLock):
         """Gets the document source"""
 
     def listDAVObjects():
-	""" """
+        """ """
 
 class ICopySource(Interface):
     """Interface for objects which allow themselves to be copied."""
@@ -303,7 +303,7 @@ class ICopySource(Interface):
         0 for a copy, 1 for a move."""
 
     def _getCopy(container):
-	"""
+        """
         Commit a subtransaction to:
         1) Make sure the data about to be exported is current
         2) Ensure self._p_jar and container._p_jar are set even if
@@ -311,8 +311,8 @@ class ICopySource(Interface):
         """
 
     def _postCopy(self, container, op=0):
-	"""Called after the copy is finished to accomodate special cases.
-	The op var is 0 for a copy, 1 for a move."""
+        """Called after the copy is finished to accomodate special cases.
+        The op var is 0 for a copy, 1 for a move."""
 
     def _setId(self, id):
         """Called to set the new id of a copied object."""
@@ -324,7 +324,7 @@ class ICopySource(Interface):
         """Is object moveable? Returns 0 or 1"""
 
     def cb_userHasCopyOrMovePermission(self):
-	""" """
+        """ """
 
 class ITraversable(Interface):
 
@@ -427,7 +427,7 @@ class IOwned(Interface):
         sub-objects retain their ownership information."""
 
     def userCanTakeOwnership(self):
-	""" """
+        """ """
 
     def manage_takeOwnership(REQUEST, RESPONSE, recursive=0):
         """Take ownership (responsibility) for an object. If 'recursive'
@@ -439,22 +439,22 @@ class IOwned(Interface):
         """
 
     def _deleteOwnershipAfterAdd(self):
-	""" """
+        """ """
 
     def manage_fixupOwnershipAfterAdd(self):
-	""" """
+        """ """
 
 class IUndoSupport(Interface):
 
     manage_UndoForm = Attribute("""Manage Undo form""")
 
     def get_request_var_or_attr(name, default):
-	""" """
+        """ """
 
     def undoable_transactions(first_transaction=None,
                               last_transaction=None,
                               PrincipiaUndoBatchSize=None):
-	""" """
+        """ """
 
     def manage_undo_transactions(transaction_info=(), REQUEST=None):
         """ """
@@ -462,30 +462,30 @@ class IUndoSupport(Interface):
 class IZopeObject(Interface):
 
     isPrincipiaFolderish = Bool(
-	title=u"Is a folderish object",
-	description=u"Should be false for simple items",
-	)
+        title=u"Is a folderish object",
+        description=u"Should be false for simple items",
+        )
 
     meta_type = BytesLine(
-	title=u"Meta type",
-	description=u"The object's Zope2 meta type",
-	)
+        title=u"Meta type",
+        description=u"The object's Zope2 meta type",
+        )
 
 class IItem(IZopeObject, IManageable, IFTPAccess, IDAVResource,
-	    ICopySource, ITraversable, IOwned, IUndoSupport):
+            ICopySource, ITraversable, IOwned, IUndoSupport):
 
     __name__ = BytesLine(
-	title=u"Name"
-	)
+        title=u"Name"
+        )
 
     title = BytesLine(
-	title=u"Title"
-	)
+        title=u"Title"
+        )
 
     icon = BytesLine(
-	title=u"Icon",
-	description=u"Name of icon, relative to SOFTWARE_URL",
-	)
+        title=u"Icon",
+        description=u"Name of icon, relative to SOFTWARE_URL",
+        )
 
     def getId():
         """Return the id of the object as a string.
@@ -495,20 +495,20 @@ class IItem(IZopeObject, IManageable, IFTPAccess, IDAVResource,
         """
 
     def _setId(id):
-	"""Set the id"""
+        """Set the id"""
 
     def title_or_id():
         """Returns the title if it is not blank and the id otherwise."""
 
     def title_and_id():
-	"""Returns the title if it is not blank and the id otherwise.  If the
+        """Returns the title if it is not blank and the id otherwise.  If the
         title is not blank, then the id is included in parens."""
 
     def raise_standardErrorMessage(client=None, REQUEST={},
-				   error_type=None, error_value=None, tb=None,
-				   error_tb=None, error_message='',
-				   tagSearch=None, error_log_url=''):
-	"""Raise standard error message"""
+                                   error_type=None, error_value=None, tb=None,
+                                   error_tb=None, error_message='',
+                                   tagSearch=None, error_log_url=''):
+        """Raise standard error message"""
 
 class IItemWithName(IItem):
     """Item with name"""
@@ -541,13 +541,13 @@ class IRoleManager(IPermissionMapping):
     permissionMappingPossibleValues = Attribute("""Acquired attribute""")
 
     def ac_inherited_permissions(all=0):
-	"""Get all permissions not defined in ourself that are inherited This
+        """Get all permissions not defined in ourself that are inherited This
         will be a sequence of tuples with a name as the first item and
         an empty tuple as the second."""
 
     def permission_settings(permission=None):
         """Return user-role permission settings. If 'permission' is passed to
-	the method then only the settings for 'permission' returned."""
+        the method then only the settings for 'permission' returned."""
 
     manage_roleForm = Attribute(""" """)
 
@@ -562,7 +562,7 @@ class IRoleManager(IPermissionMapping):
     manage_permissionForm = Attribute(""" """)
 
     def manage_permission(permission_to_manage, roles=[], acquire=0,
-			  REQUEST=None):
+                          REQUEST=None):
         """Change the settings for the given permission
 
         If optional arg acquire is true, then the roles for the permission
@@ -600,19 +600,19 @@ class IRoleManager(IPermissionMapping):
     manage_editLocalRoles = Attribute(""" """)
 
     def has_local_roles():
-	""" """
+        """ """
 
     def get_local_roles():
-	""" """
+        """ """
 
     def users_with_local_role(role):
-	""" """
+        """ """
 
     def get_valid_userids():
-	""" """
+        """ """
 
     def get_local_roles_for_userid(userid):
-	""" """
+        """ """
 
     def manage_addLocalRoles(userid, roles, REQUEST=None):
         """Set local roles for a user."""
@@ -641,22 +641,22 @@ class IRoleManager(IPermissionMapping):
         """Called by management screen."""
 
     def _addRole(role, REQUEST=None):
-	""" """
+        """ """
 
     def _delRoles(roles, REQUEST=None):
-	""" """
+        """ """
 
     def _has_user_defined_role(role):
-	""" """
+        """ """
 
     def manage_editRoles(REQUEST, acl_type='A', acl_roles=[]):
-	""" """
+        """ """
 
     def _setRoles(acl_type, acl_roles):
-	""" """
+        """ """
 
     def possible_permissions():
-	""" """
+        """ """
 
 class ISimpleItem(IItem, IPersistent, IAcquisition, IRoleManager):
     """Not-so-simple item"""
@@ -667,16 +667,16 @@ class ICopyContainer(Interface):
     # The following three methods should be overridden to store sub-objects
     # as non-attributes.
     def _setOb(id, object):
-	""" """
+        """ """
 
     def _delOb(id):
-	""" """
+        """ """
 
     def _getOb(id, default=None):
-	""" """
+        """ """
 
     def manage_CopyContainerFirstItem(self, REQUEST):
-	""" """
+        """ """
 
     def manage_CopyContainerAllItems(self, REQUEST):
         return map(lambda i, s=self: s._getOb(i), tuple(REQUEST['ids']))
@@ -693,9 +693,9 @@ class ICopyContainer(Interface):
 
     def manage_pasteObjects(cb_copy_data=None, REQUEST=None):
         """Paste previously copied objects into the current object.  If
-	calling manage_pasteObjects from python code, pass the result
-	of a previous call to manage_cutObjects or manage_copyObjects
-	as the first argument."""
+        calling manage_pasteObjects from python code, pass the result
+        of a previous call to manage_cutObjects or manage_copyObjects
+        as the first argument."""
 
     manage_renameForm = Attribute("""Rename management view""")
 
@@ -712,10 +712,10 @@ class ICopyContainer(Interface):
         """Return true if clipboard data seems valid."""
 
     def cb_dataItems():
-	"""List of objects in the clip board"""
+        """List of objects in the clip board"""
 
     def _verifyObjectPaste(object, validate_src=1):
-	"""Verify whether the current user is allowed to paste the passed
+        """Verify whether the current user is allowed to paste the passed
         object into self. This is determined by checking to see if the
         user could create a new object of the same meta_type of the
         object passed in and checking that the user actually is
@@ -755,12 +755,12 @@ class IDAVCollection(IDAVResource):
     resources."""
 
     __dav_collection__ = Bool(
-	title=u"Is a DAV collection",
-	description=u"Should be true",
-	)
+        title=u"Is a DAV collection",
+        description=u"Should be true",
+        )
 
     def dav__init(request, response):
-	""" """
+        """ """
 
     def HEAD(REQUEST, RESPONSE):
         """Retrieve resource information without a response body."""
@@ -778,10 +778,10 @@ class IDAVCollection(IDAVResource):
         success. Note that in Zope a DELETE currently never returns 207."""
 
     def listDAVObjects():
-	""" """
+        """ """
 
 class IObjectManager(IZopeObject, ICopyContainer, INavigation, IManageable,
-		     IAcquisition, IPersistent, IDAVCollection, ITraversable):
+                     IAcquisition, IPersistent, IDAVCollection, ITraversable):
     """Generic object manager
 
     This interface provides core behavior for collections of
@@ -789,13 +789,13 @@ class IObjectManager(IZopeObject, ICopyContainer, INavigation, IManageable,
 
 
     meta_types = Tuple(
-	title=u"Meta types",
-	description=u"Sub-object types that are specific to this object",
-	)
+        title=u"Meta types",
+        description=u"Sub-object types that are specific to this object",
+        )
 
     isAnObjectManager = Bool(
-	title=u"Is an object manager",
-	)
+        title=u"Is an object manager",
+        )
 
     manage_main = Attribute(""" """)
     manage_index_main = Attribute(""" """)
@@ -803,29 +803,29 @@ class IObjectManager(IZopeObject, ICopyContainer, INavigation, IManageable,
     manage_importExportForm = Attribute(""" """)
 
     def all_meta_types(interfaces=None):
-	""" """
+        """ """
 
     def filtered_meta_types(user=None):
-	"""Return a list of the types for which the user has adequate
+        """Return a list of the types for which the user has adequate
         permission to add that type of object."""
 
     def _setOb(id, object):
-	""" """
+        """ """
 
     def _delOb(id):
-	""" """
+        """ """
 
     def _getOb(id, default=None):
-	""" """
+        """ """
 
     def _setObject(id, object, roles=None, user=None, set_owner=1):
-	""" """
+        """ """
 
     def _delObject(id, dp=1):
-	""" """
+        """ """
 
     def objectIds(spec=None):
-	"""Returns a list of subobject ids of the current object.  If 'spec'
+        """Returns a list of subobject ids of the current object.  If 'spec'
         is specified, returns objects whose meta_type matches 'spec'.
         """
 
@@ -863,10 +863,10 @@ class IObjectManager(IZopeObject, ICopyContainer, INavigation, IManageable,
         """Import an object from a file"""
 
     def _importObjectFromFile(filepath, verify=1, set_owner=1):
-	""" """
+        """ """
 
     def __getitem__(key):
-	""" """
+        """ """
 
 class IPropertyManager(Interface):
     """The PropertyManager mixin class provides an object with
@@ -933,17 +933,17 @@ class IPropertyManager(Interface):
     manage_propertyTypeForm = Attribute(""" """)
 
     title = BytesLine(
-	title=u"Title"
-	)
+        title=u"Title"
+        )
 
     _properties = Tuple(
-	title=u"Properties",
-	)
+        title=u"Properties",
+        )
 
     propertysheets = Attribute(""" """)
 
     def valid_property_id(id):
-	""" """
+        """ """
 
     def hasProperty(id):
         """Return true if object has a property 'id'"""
@@ -957,7 +957,7 @@ class IPropertyManager(Interface):
            such property exists"""
 
     def _setProperty(id, value, type='string'):
-	""" """
+        """ """
 
     def _updateProperty(id, value):
         """Update the value of an existing property. If value is a string, an
@@ -965,7 +965,7 @@ class IPropertyManager(Interface):
         existing property."""
 
     def _delProperty(id):
-	""" """
+        """ """
 
     def propertyIds():
         """Return a list of property ids """
@@ -989,7 +989,7 @@ class IPropertyManager(Interface):
         """
 
     def propdict():
-	""" """
+        """ """
 
     # Web interface
 
@@ -1052,7 +1052,7 @@ class IFindSupport(Interface):
         """Zope Find interface and apply"""
 
 class IFolder(IObjectManager, IPropertyManager, IRoleManager,
-	      IDAVCollection, IItem, IFindSupport):
+              IDAVCollection, IItem, IFindSupport):
     """Folders are basic container objects that provide a standard
     interface for object management. Folder objects also implement a
     management interface and can have arbitrary properties."""
@@ -1160,8 +1160,8 @@ class IApplication(IFolder, IFindSupport):
     """Top-level system object"""
 
     isTopLevelPrincipiaApplicationObject = Bool(
-	title=u"Is top level Principa application object",
-	)
+        title=u"Is top level Principa application object",
+        )
 
     HelpSys = Attribute("Help system")
 
@@ -1174,7 +1174,7 @@ class IApplication(IFolder, IFindSupport):
     Redirect = ZopeRedirect = PrincipiaRedirect
 
     def __bobo_traverse__(REQUEST, name=None):
-	"""Bobo traverse"""
+        """Bobo traverse"""
 
     def PrincipiaTime(*args):
         """Utility function to return current date/time"""
@@ -1203,10 +1203,10 @@ class IApplication(IFolder, IFindSupport):
         '''
 
     def getPhysicalRoot():
-	"""Returns self"""
+        """Returns self"""
 
     def fixupZClassDependencies(rebuild=0):
-	""" """
+        """ """
 
     def checkGlobalRegistry():
         """Check the global (zclass) registry for problems, which can
