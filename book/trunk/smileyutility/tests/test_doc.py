@@ -28,7 +28,7 @@ class AbsoluteURL:
     def __str__(self):
         return ''
 
-def setUp():
+def setUp(test):
     placelesssetup.setUp()
     ztapi.browserView(Interface, 'absolute_url', AbsoluteURL)
 
