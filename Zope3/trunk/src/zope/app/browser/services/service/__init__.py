@@ -13,8 +13,10 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.7 2003/11/21 17:11:21 jim Exp $
+$Id: __init__.py,v 1.8 2003/12/05 14:42:00 philikon Exp $
 """
+
+from zope.proxy import removeAllProxies
 
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -388,6 +390,11 @@ class MakeSite(BrowserView):
         """
         if ISite.isImplementedBy(self.context):
             raise zapi.UserError('This is already a site')
-        sm = ServiceManager(self.context)
+
+        # we don't want to store security proxies (we can't,
+        # actually), so we have to remove proxies here before passing
+        # the context to the ServiceManager.
+        bare = removeAllProxies(self.context)
+        sm = ServiceManager(bare)
         self.context.setSiteManager(sm)
         self.request.response.redirect("++etc++site/")

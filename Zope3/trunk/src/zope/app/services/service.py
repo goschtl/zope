@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.32 2003/12/05 14:15:27 jim Exp $
+$Id: service.py,v 1.33 2003/12/05 14:42:01 philikon Exp $
 """
 
 import sys
@@ -35,8 +35,6 @@ from zope.interface import implements
 
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
-
-from zope.proxy import removeAllProxies
 
 from zope.app.component.nextservice import getNextService
 from zope.app.component.nextservice import getNextServiceManager
@@ -60,9 +58,8 @@ from zope.app.interfaces.services.service import ISite
 from zope.app.location import inside
 
 class SiteManager(BTreeContainer,
-                     PersistentModuleRegistry,
-                     NameComponentRegistry,
-                     ):
+                  PersistentModuleRegistry,
+                  NameComponentRegistry):
 
     implements(IServiceManager)
 
@@ -79,8 +76,7 @@ class SiteManager(BTreeContainer,
     def _setNext(self, site):
         """Find set the next service manager
         """
-
-        while 1:
+        while True:
             if IContainmentRoot.isImplementedBy(site):
                 # we're the root site, use the global sm
                 self.next = zapi.getServiceManager(None)
@@ -89,12 +85,13 @@ class SiteManager(BTreeContainer,
             if site is None:
                 raise TypeError("Not enough context information")
             if ISite.isImplementedBy(site):
-                self.next = removeAllProxies(site.getSiteManager())
+                self.next = site.getSiteManager()
                 self.next.addSubsite(self)
                 return
 
     def addSubsite(self, sub):
-
+        """See IServiceManager interface
+        """
         subsite = sub.__parent__
 
         # Update any sites that are now in the subsite:
@@ -110,8 +107,8 @@ class SiteManager(BTreeContainer,
         self.subSites = tuple(subsites)
 
     def getServiceDefinitions(wrapped_self):
-        "See IServiceService"
-
+        """See IServiceService
+        """
         # Get the services defined here and above us, if any (as held
         # in a ServiceInterfaceService, presumably)
         sm = getNextServiceManager(wrapped_self)
@@ -122,14 +119,16 @@ class SiteManager(BTreeContainer,
         return serviceDefs
 
     def queryService(wrapped_self, name, default=None):
-        "See IServiceService"
+        """See IServiceService
+        """
         try:
             return wrapped_self.getService(name)
         except ComponentLookupError:
             return default
 
     def getService(wrapped_self, name):
-        "See IServiceService"
+        """See IServiceService
+        """
 
         # This is rather tricky. Normally, getting a service requires
         # the use of other services, like the adapter service.  We
@@ -155,7 +154,8 @@ class SiteManager(BTreeContainer,
 
 
     def queryLocalService(wrapped_self, name, default=None):
-        "See IServiceManager"
+        """See IServiceManager
+        """
 
         # This is rather tricky. Normally, getting a service requires
         # the use of other services, like the adapter service.  We
@@ -180,10 +180,9 @@ class SiteManager(BTreeContainer,
 
         return default
 
-
-
     def getInterfaceFor(wrapped_self, service_type):
-        "See IServiceService"
+        """See IServiceService
+        """
         for type, interface in wrapped_self.getServiceDefinitions():
             if type == service_type:
                 return interface
