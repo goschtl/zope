@@ -13,15 +13,22 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: testTranslationService.py,v 1.6 2002/06/16 18:25:14 srichter Exp $
+$Id: testTranslationService.py,v 1.1 2002/07/11 07:12:44 srichter Exp $
 """
 import unittest, sys
 
-from Zope.I18n.TranslationService import TranslationService
-from Zope.I18n.MessageCatalog import MessageCatalog 
-from testIReadTranslationService import TestIReadTranslationService
-from testIWriteTranslationService import TestIWriteTranslationService
-from testISyncTranslationService import TestISyncTranslationService
+from Zope.App.ComponentArchitecture.metaConfigure import handler
+
+from Zope.App.OFS.Services.TranslationService.TranslationService import \
+     TranslationService
+from Zope.App.OFS.Services.TranslationService.MessageCatalog import \
+     MessageCatalog 
+from Zope.I18n.tests.testIReadTranslationService import \
+     TestIReadTranslationService
+from Zope.I18n.tests.testIWriteTranslationService import \
+     TestIWriteTranslationService
+from Zope.I18n.tests.testISyncTranslationService import \
+     TestISyncTranslationService
 
 
 class TestTranslationService(TestIReadTranslationService,
@@ -33,6 +40,8 @@ class TestTranslationService(TestIReadTranslationService,
         TestISyncTranslationService.setUp(self)
         TestIReadTranslationService.setUp(self)
         TestIWriteTranslationService.setUp(self)
+        handler('Factories', 'provideFactory', 'Message Catalog',
+                MessageCatalog)
 
 
     def _getTranslationService(self):

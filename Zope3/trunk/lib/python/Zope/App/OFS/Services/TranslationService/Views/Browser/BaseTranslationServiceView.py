@@ -11,33 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""Synchronize with Foreign Translation Services
+
+$Id: BaseTranslationServiceView.py,v 1.1 2002/07/11 07:12:42 srichter Exp $
 """
 
-$Id: Methods.py,v 1.1 2002/06/16 18:25:14 srichter Exp $
-"""
-from Zope.Proxy.ProxyIntrospection import removeAllProxies
-
-from Zope.Publisher.XMLRPC.XMLRPCView import XMLRPCView
-from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.I18n.ITranslationService import ITranslationService
 
 
-class Methods(XMLRPCView):
-
-    __implements__ = XMLRPCView.__implements__
-        
-    def getAllDomains(self):
-        return self.context.getAllDomains()
+class BaseTranslationServiceView(BrowserView):
+    
+    __used_for__ = ITranslationService
 
 
     def getAllLanguages(self):
+        """Get all available languages from the Translation Service."""
         return self.context.getAllLanguages()
 
 
-    def getMessagesFor(self, domains, languages):
-        messages = []
-        for domain in domains:
-            for msg in self.context.getMessagesOfDomain(domain):
-                if msg['language'] in languages:
-                    messages.append(removeAllProxies(msg))
-
-        return messages
+    def getAllDomains(self):
+        return self.context.getAllDomains()

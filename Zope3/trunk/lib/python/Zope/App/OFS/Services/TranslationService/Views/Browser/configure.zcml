@@ -2,15 +2,12 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-<browser:defaultView 
-   for="Zope.I18n.ITranslationService."
-   name="index.html"
-   />
+<browser:defaultView for="Zope.I18n.ITranslationService." name="index.html" />
 
 <browser:view 
    permission="Zope.ManageServices" 
    for="Zope.I18n.ITranslationService."
-   factory="Zope.I18n.Views.Browser.Translate.">
+   factory=".Translate.">
 
    <browser:page name="index.html" attribute="index" />
    <browser:page name="translateMessage.html" attribute="translateMessage" />
@@ -38,7 +35,7 @@
 <browser:view 
    permission="Zope.ManageServices" 
    for="Zope.I18n.ITranslationService."
-   factory="Zope.I18n.Views.Browser.ExportImport.">
+   factory=".ExportImport.">
 
    <browser:page name="exportImportForm.html" attribute="exportImportForm" />
 
@@ -50,7 +47,7 @@
 <browser:view 
    permission="Zope.ManageServices" 
    for="Zope.I18n.ITranslationService."
-   factory="Zope.I18n.Views.Browser.Synchronize.">
+   factory=".Synchronize.">
 
    <browser:page name="synchronizeForm.html" attribute="synchronizeForm" />
    <browser:page name="synchronize.html" attribute="synchronize" />

@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation GUI
 
-$Id: Translate.py,v 1.4 2002/06/18 14:47:05 jim Exp $
+$Id: Translate.py,v 1.1 2002/07/11 07:12:42 srichter Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 

@@ -6,11 +6,9 @@
               />
 
 <include package=".ServiceManager" />
-
 <include package=".LocalEventService" />
-
 <include package=".ConnectionService" />
-
 <include package=".RoleService" />
+<include package=".TranslationService" />
 
 </zopeConfigure>

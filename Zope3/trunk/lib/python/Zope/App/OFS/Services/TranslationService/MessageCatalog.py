@@ -13,7 +13,7 @@
 ##############################################################################
 """A simple implementation of a Message Catalog. 
 
-$Id: MessageCatalog.py,v 1.7 2002/06/20 15:55:07 jim Exp $
+$Id: MessageCatalog.py,v 1.1 2002/07/11 07:12:41 srichter Exp $
 """
 import time
 

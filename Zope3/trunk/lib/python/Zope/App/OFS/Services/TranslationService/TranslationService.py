@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: TranslationService.py,v 1.9 2002/07/11 00:54:02 srichter Exp $
+$Id: TranslationService.py,v 1.1 2002/07/11 07:12:41 srichter Exp $
 """
 import re
 from types import StringTypes, TupleType

@@ -13,13 +13,14 @@
 ##############################################################################
 """Test the generic persistent Message Catalog.
 
-$Id: testMessageCatalog.py,v 1.4 2002/06/16 18:25:14 srichter Exp $
+$Id: testMessageCatalog.py,v 1.1 2002/07/11 07:12:44 srichter Exp $
 """
 import unittest
 
-from Zope.I18n.MessageCatalog import MessageCatalog
-from testIReadMessageCatalog import TestIReadMessageCatalog
-from testIWriteMessageCatalog import TestIWriteMessageCatalog
+from Zope.App.OFS.Services.TranslationService.MessageCatalog import \
+     MessageCatalog
+from Zope.I18n.tests.testIReadMessageCatalog import TestIReadMessageCatalog
+from Zope.I18n.tests.testIWriteMessageCatalog import TestIWriteMessageCatalog
 
 
 class MessageCatalogTest(TestIReadMessageCatalog, TestIWriteMessageCatalog):

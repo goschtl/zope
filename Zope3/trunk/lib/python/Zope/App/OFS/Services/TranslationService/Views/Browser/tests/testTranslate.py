@@ -12,8 +12,7 @@
 # 
 ##############################################################################
 """
-
-$Id: testTranslate.py,v 1.3 2002/06/14 16:50:20 srichter Exp $
+$Id: testTranslate.py,v 1.1 2002/07/11 07:12:43 srichter Exp $
 """
 
 import unittest
@@ -23,9 +22,12 @@ from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter 
 from Zope.ComponentArchitecture.GlobalFactoryService import provideFactory
 
-from Zope.I18n.Views.Browser.Translate import Translate
-from Zope.I18n.TranslationService import TranslationService
-from Zope.I18n.MessageCatalog import MessageCatalog
+from Zope.App.OFS.Services.TranslationService.Views.Browser.Translate \
+     import Translate
+from Zope.App.OFS.Services.TranslationService.TranslationService import \
+     TranslationService
+from Zope.App.OFS.Services.TranslationService.MessageCatalog import \
+     MessageCatalog
 from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
 
 from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest

@@ -14,7 +14,7 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: testGettextExportImport.py,v 1.1 2002/06/16 18:25:14 srichter Exp $
+$Id: testGettextExportImport.py,v 1.1 2002/07/11 07:12:44 srichter Exp $
 """
 import unittest, time
 
@@ -25,14 +25,18 @@ from Zope.App.ComponentArchitecture.metaConfigure import \
      provideService, managerHandler
 from Zope.App.ComponentArchitecture.metaConfigure import handler
 
-from Zope.I18n.MessageCatalog import MessageCatalog 
+from Zope.App.OFS.Services.TranslationService.MessageCatalog import \
+     MessageCatalog 
 from Zope.I18n.Negotiator import negotiator
 from Zope.I18n.INegotiator import INegotiator
 from Zope.I18n.IUserPreferredLanguages import IUserPreferredLanguages
 
-from Zope.I18n.TranslationService import TranslationService
-from Zope.I18n.GettextImportFilter import GettextImportFilter
-from Zope.I18n.GettextExportFilter import GettextExportFilter
+from Zope.App.OFS.Services.TranslationService.TranslationService import \
+     TranslationService
+from Zope.App.OFS.Services.TranslationService.GettextImportFilter import \
+     GettextImportFilter
+from Zope.App.OFS.Services.TranslationService.GettextExportFilter import \
+     GettextExportFilter
 
 
 

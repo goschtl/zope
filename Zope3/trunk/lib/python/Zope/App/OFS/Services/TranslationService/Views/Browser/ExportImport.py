@@ -13,7 +13,7 @@
 ##############################################################################
 """Message Export/Import View
 
-$Id: ExportImport.py,v 1.2 2002/06/18 14:47:05 jim Exp $
+$Id: ExportImport.py,v 1.1 2002/07/11 07:12:42 srichter Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter

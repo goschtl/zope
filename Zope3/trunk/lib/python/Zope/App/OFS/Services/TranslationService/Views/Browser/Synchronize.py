@@ -13,7 +13,7 @@
 ##############################################################################
 """Synchronize with Foreign Translation Services
 
-$Id: Synchronize.py,v 1.3 2002/06/29 15:41:43 srichter Exp $
+$Id: Synchronize.py,v 1.1 2002/07/11 07:12:42 srichter Exp $
 """
 import xmlrpclib, httplib, urllib
 from base64 import encodestring

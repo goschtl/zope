@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Service Message Import Filter 
 
-$Id: GettextImportFilter.py,v 1.1 2002/06/16 18:25:13 srichter Exp $
+$Id: GettextImportFilter.py,v 1.1 2002/07/11 07:12:41 srichter Exp $
 """
 import time, re
 from types import StringTypes
