@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.6 2003/12/07 11:31:13 zagy Exp $
+$Id: location.py,v 1.7 2003/12/07 12:56:49 zagy Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -202,7 +202,7 @@ class LocationPhysicallyLocatable:
     def getNearestSite(self):
         "return the nearest site, see IPhysicallyLocatable"
         if ISite.isImplementedBy(self.context):
-            return self
+            return self.context
         for parent in zapi.getParents(self.context):
             if ISite.isImplementedBy(parent):
                 return parent
