@@ -199,7 +199,7 @@ class SingleDataHelper:
             data = self.context.query(self.context.context, self)
             if data is self:
                 # not on the content object either
-                if self.context.required:
+                if self.context.required and not optional:
                     raise MissingInputError(self.context.__name__,
                                             self.title,
                                             "required field not present")
@@ -223,7 +223,7 @@ class MultiDataHelper:
             data = self.context.query(self.context.context, self)
             if data is self:
                 # not on the content object either
-                if self.context.required:
+                if self.context.required and not optional:
                     raise MissingInputError(self.context.__name__,
                                             self.title,
                                             "required field not present")
