@@ -450,30 +450,30 @@ _FOO_EXPORT = """\
   <action
      action_id="view"
      title="View"
-     action_expr="string:${object_url}/foo_view"
-     condition=""
-     permissions="View"
+     url_expr="string:${object_url}/foo_view"
+     condition_expr=""
      category="object"
-     visible="True"
-     />
+     visible="True">
+   <permission>View</permission>
+  </action>
   <action
      action_id="edit"
      title="Edit"
-     action_expr="string:${object_url}/foo_edit_form"
-     condition=""
-     permissions="Modify portal content"
+     url_expr="string:${object_url}/foo_edit_form"
+     condition_expr=""
      category="object"
-     visible="True"
-     />
+     visible="True">
+   <permission>Modify portal content</permission>
+  </action>
   <action
      action_id="metadata"
      title="Metadata"
-     action_expr="string:${object_url}/metadata_edit_form"
-     condition=""
-     permissions="Modify portal content"
+     url_expr="string:${object_url}/metadata_edit_form"
+     condition_expr=""
      category="object"
-     visible="True"
-     />
+     visible="True">
+   <permission>Modify portal content</permission>
+  </action>
 </type-info>
 """
 
@@ -499,39 +499,39 @@ _BAR_EXPORT = """\
   <action
      action_id="view"
      title="View"
-     action_expr="string:${object_url}/bar_view"
-     condition=""
-     permissions="View"
+     url_expr="string:${object_url}/bar_view"
+     condition_expr=""
      category="object"
-     visible="True"
-     />
+     visible="True">
+   <permission>View</permission>
+  </action>
   <action
      action_id="edit"
      title="Edit"
-     action_expr="string:${object_url}/bar_edit_form"
-     condition=""
-     permissions="Modify portal content"
+     url_expr="string:${object_url}/bar_edit_form"
+     condition_expr=""
      category="object"
-     visible="True"
-     />
+     visible="True">
+   <permission>Modify portal content</permission>
+  </action>
   <action
      action_id="contents"
      title="Contents"
-     action_expr="string:${object_url}/folder_contents"
-     condition=""
-     permissions="Access contents information"
+     url_expr="string:${object_url}/folder_contents"
+     condition_expr=""
      category="object"
-     visible="True"
-     />
+     visible="True">
+   <permission>Access contents information</permission>
+  </action>
   <action
      action_id="metadata"
      title="Metadata"
-     action_expr="string:${object_url}/metadata_edit_form"
-     condition=""
-     permissions="Modify portal content"
+     url_expr="string:${object_url}/metadata_edit_form"
+     condition_expr=""
      category="object"
-     visible="True"
-     />
+     visible="True">
+   <permission>Modify portal content</permission>
+  </action>
 </type-info>
 """
 
