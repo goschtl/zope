@@ -6,7 +6,7 @@
 
   <include file="meta.zcml" />
 
-<!-- Ordinary Application (non-view) configuration) --> 
+<!-- Ordinary Application (non-view) configuration) -->
 
   <include package="zope.app.component" />
   <include package="zope.app.security" />
@@ -15,7 +15,7 @@
 
   <serviceType
      id="SQLDatabaseConnections"
-     interface="zope.app.interfaces.rdb.IConnectionService" 
+     interface="zope.app.interfaces.rdb.IConnectionService"
      />
 
   <content class="zope.app.rdb.ZopeConnection">
@@ -67,19 +67,19 @@
   <adapter
       factory="zope.app.copypastemove.ObjectMover"
       provides="zope.app.interfaces.copypastemove.IObjectMover"
-      permission="zope.ManageContent" 
+      permission="zope.ManageContent"
       for="*" />
 
   <adapter
       factory="zope.app.copypastemove.ObjectCopier"
       provides="zope.app.interfaces.copypastemove.IObjectCopier"
-      permission="zope.ManageContent" 
+      permission="zope.ManageContent"
       for="*" />
 
   <adapter
       factory="zope.app.copypastemove.NoChildrenObjectCopier"
       provides="zope.app.interfaces.copypastemove.INoChildrenObjectCopier"
-      permission="zope.ManageContent" 
+      permission="zope.ManageContent"
       for="zope.app.interfaces.content.folder.IFolder" />
 
   <adapter

@@ -4,20 +4,20 @@
   <!--page
       name="classBrowser.html"
       for = "zope.interface.Interface"
-      permission="zope.ManageServices" 
+      permission="zope.ManageServices"
       template="introspector.pt"
       class="zope.app.browser.introspector.IntrospectorView"
-      title="Introspector" 
-      menu="zmi_views" 
+      title="Introspector"
+      menu="zmi_views"
       /-->
   <pages
       for = "zope.interface.Interface"
-      permission="zope.ManageServices" 
+      permission="zope.ManageServices"
       class="zope.app.browser.introspector.IntrospectorView" >
       <page name="classBrowser.html"
-            title="Introspector" 
+            title="Introspector"
             template="introspector.pt"
-            menu="zmi_views" 
+            menu="zmi_views"
       />
     </pages>
 
@@ -27,6 +27,6 @@
       permission="zope.View"
       template="introspector.pt"
       class="zope.app.browser.introspector.IntrospectorView"
-      /> 
+      />
 
 </zopeConfigure>

@@ -15,38 +15,38 @@ th.introspector {
 
 <body>
 <div metal:fill-slot="body">
-<tal:block 
-    tal:define = 
+<tal:block
+    tal:define =
        "global introspector view/getIntrospector;
         global services view/getServicesFor">
 
 <div tal:condition="python:introspector.isInterface()">
 
-<table tal:define = 
+<table tal:define =
     "global interfacedata introspector/getInterfaceDetails">
     <tr>
         <th colspan="2">Interface Browser</th>
     </tr>
     <tr>
-        <th class="introspector">Interface :</th>
+        <th class="introspector">Interface:</th>
         <td tal:content="python:interfacedata[0]">Interface</td>
     </tr>
     <tr>
-        <th class="introspector">Bases :</th>
+        <th class="introspector">Bases:</th>
         <td>
             <div tal:repeat="interface python:interfacedata[1]">
-                <a href="" 
-                    tal:attributes="href 
-                        string: ++module++${repeat/interface/item}"  
+                <a href=""
+                    tal:attributes="href
+                        string: ++module++${repeat/interface/item}"
                     tal:content="repeat/interface/item">Interface</a>
             </div>
         </td>
     </tr>
     <tr>
-        <th class="introspector">Description :</th>
+        <th class="introspector">Description:</th>
         <td>
-        <!-- the start of all of these preclass spans are carefully 
-        spatially placed (in terms of whitespace), because they are 
+        <!-- the start of all of these preclass spans are carefully
+        spatially placed (in terms of whitespace), because they are
         "pre" formatted (i.e., whitespace matters within the span) -->
         <span class="preclass"
                 tal:content="python:interfacedata[2]">
@@ -54,7 +54,7 @@ th.introspector {
         </td>
     </tr>
     <tr>
-        <th class="introspector">Attributes :</th>
+        <th class="introspector">Attributes:</th>
         <td>
             <div tal:repeat="attributes python:interfacedata[4]">
                 <tal:block tal:define="details repeat/attributes/item">
@@ -69,7 +69,7 @@ th.introspector {
         </td>
     </tr>
     <tr>
-        <th class="introspector">Methods :</th>
+        <th class="introspector">Methods:</th>
         <td>
             <div tal:repeat="methods python:interfacedata[3]">
                 <tal:block tal:define="details repeat/methods/item">
@@ -78,7 +78,7 @@ th.introspector {
                     <strong tal:content="python:details[1]">
                         Signature</strong>
                     <div class="preclass">
-        <span 
+        <span
                         tal:content="python:details[2]">
                         Method Description</span></div>
 		</tal:block>
@@ -87,7 +87,7 @@ th.introspector {
     </tr>
     <!-- this section is currently not available
     <tr>
-        <th class="introspector">Services :</th>
+        <th class="introspector">Services:</th>
         <td>
 	    <div tal:repeat="servicedic services">
                 <span tal:define="dic repeat/servicedic/item">
@@ -95,7 +95,7 @@ th.introspector {
                 </span>
 	    </div>
         </td>
-    </tr> 
+    </tr>
     -->
 </table>
 </div>
@@ -107,38 +107,38 @@ th.introspector {
         <th colspan="2">Class Browser</th>
     </tr>
     <tr>
-        <th class="introspector">Class :</th>
+        <th class="introspector">Class:</th>
         <td><span tal:content="introspector/getClass">Name</span></td>
     </tr>
     <tr>
-        <th class="introspector">Bases :</th>
+        <th class="introspector">Bases:</th>
         <td>
             <div tal:repeat="base introspector/getBaseClassNames">
-                <a href="" 
-                    tal:attributes="href 
-                        string: ++module++${repeat/base/item}"  
+                <a href=""
+                    tal:attributes="href
+                        string: ++module++${repeat/base/item}"
                     tal:content="repeat/base/item">Base</a>
             </div>
         </td>
     </tr>
     <tr>
-        <th class="introspector">Module :</th>
+        <th class="introspector">Module:</th>
         <td><span tal:content="introspector/getModule">Module</span></td>
     </tr>
     <tr>
-        <th>Description :</th>
+        <th>Description:</th>
         <td>
-        <span class="preclass" 
+        <span class="preclass"
                 tal:content="introspector/getDocString">
                 Description</span>
         </td>
     </tr>
     <tr>
-        <th class="introspector">Interface :</th>
+        <th class="introspector">Interface:</th>
         <td>
             <div tal:repeat="interface introspector/getInterfaceNames">
-                <a href="" 
-                    tal:attributes="href 
+                <a href=""
+                    tal:attributes="href
                         string: ++module++${repeat/interface/item}"
                     tal:content="repeat/interface/item">Interface</a>
             </div>

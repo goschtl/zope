@@ -113,9 +113,13 @@ class Introspector:
         methods = []
         attributes = []
         if interface is not None:
-            namesAndDescriptions = interface.namesAndDescriptions()
+            namesAndDescriptions = list(interface.namesAndDescriptions())
             namesAndDescriptions.sort()
             for name, desc in namesAndDescriptions:
+                # XXX According to Jim, Introspector is going away soon
+                # to be replaced with something else, so just add
+                # 'removeAllProxies' for now
+                desc = removeAllProxies(desc)
                 if hasattr(desc, 'getSignatureString'):
                     methods.append((desc.getName(),
                                     desc.getSignatureString(),
@@ -125,7 +129,7 @@ class Introspector:
 
             for base in interface.getBases():
                 bases.append(base.__module__+'.'+base.__name__)
-            desc = str(interface.__doc__)
+            desc = str(interface.getDoc())
         return [Iname, bases, desc, methods, attributes]
 
     def getExtends(self):
@@ -140,5 +144,4 @@ class Introspector:
         for name, interface in getServiceDefinitions(self.context):
             if self.context.extends(interface):
                 service.append(str(name))
-        print service
         return service

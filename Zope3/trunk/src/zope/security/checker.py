@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.36 2003/06/23 00:03:57 jim Exp $
+$Id: checker.py,v 1.37 2003/06/24 18:58:12 sidnei Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -702,7 +702,7 @@ _InterfaceSpecification_checker = InterfaceChecker(IInterfaceSpecification)
 
 def f():
     yield f
-    
+
 
 _default_checkers = {
     dict: NamesChecker(['__getitem__', '__len__', '__iter__',
@@ -715,7 +715,7 @@ _default_checkers = {
 
     # YAGNI: () a rock
     tuple: NamesChecker(['__getitem__', '__getslice__', '__add__', '__radd__',
-                         '__contains__', '__len__', '__iter__', 
+                         '__contains__', '__len__', '__iter__',
                          '__str__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
