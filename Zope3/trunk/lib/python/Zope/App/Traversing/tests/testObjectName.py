@@ -11,28 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Test the AbsoluteURL view
+"""Test the ObjectName adapter
 
 Revision information:
-$Id: testObjectName.py,v 1.3 2002/06/15 20:38:18 stevea Exp $
+$Id: testObjectName.py,v 1.1 2002/06/15 20:38:18 stevea Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Interface import Interface
 
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
-from Zope.ComponentArchitecture import getService, getView, getAdapter
-
-from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
-
-from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
-from Zope.Publisher.HTTP.tests.TestRequest import TestRequest
-from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
-from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
+from Zope.ComponentArchitecture import getService, getAdapter
 
 from Zope.Proxy.ContextWrapper import ContextWrapper
 
-from Zope.App.ZopePublication.TraversalViews.ObjectName \
-    import ObjectNameView, SiteObjectNameView
+from Zope.App.Traversing.ObjectName \
+    import IObjectName, ObjectName, SiteObjectName
 
 class IRoot(Interface): pass
 
@@ -46,36 +39,25 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideView = getService(None, "Views").provideView
-        provideView(None, 'object_name', IBrowserPresentation,
-                    [ObjectNameView])
-        provideView(IRoot, 'object_name', IBrowserPresentation,
-                    [SiteObjectNameView])
                     
         provideAdapter = getService(None, "Adapters").provideAdapter
-        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)    
+        provideAdapter(None, IObjectName, [ObjectName])
+        provideAdapter(IRoot, IObjectName, [ObjectName])
 
-    def testViewBadObject(self):
-        request = TestRequest()
-        request.setViewType(IBrowserPresentation)
-        view = getView(None, 'object_name', request)
-        self.assertRaises(TypeError, view.__str__)
+    def testAdapterBadObject(self):
+        adapter = getAdapter(None, IObjectName)
+        self.assertRaises(TypeError, adapter)
         
-    def testViewNoContext(self):
-        request = TestRequest()
-        request.setViewType(IBrowserPresentation)
-        view = getView(Root(), 'object_name', request)
-        self.assertRaises(TypeError, str(view))
-        
-    def testViewBasicContext(self):
-        request = TestRequest()
-        request.setViewType(IBrowserPresentation)
-
+    def testAdapterNoContext(self):
+        adapter = getAdapter(Root(), IObjectName)
+        self.assertRaises(TypeError, adapter)
+    
+    def testAdapterBasicContext(self):
         content = ContextWrapper(TrivialContent(), Root(), name='a')
         content = ContextWrapper(TrivialContent(), content, name='b')
         content = ContextWrapper(TrivialContent(), content, name='c')
-        view = getView(content, 'object_name', request)
-        self.assertEqual(str(view), 'c')
+        adapter = getAdapter(content, IObjectName)
+        self.assertEqual(adapter(), 'c')
         
 def test_suite():
     return TestSuite((

@@ -14,55 +14,26 @@
 """
 
 Revision information:
-$Id: ObjectName.py,v 1.1 2002/06/13 16:20:09 stevea Exp $
+$Id: ObjectName.py,v 1.2 2002/06/15 20:38:18 stevea Exp $
 """
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Zope.Proxy.ContextWrapper import getWrapperData
+from Zope.App.Traversing.ObjectName \
+    import IObjectName, ObjectName, SiteObjectName
 
 from Interface import Interface
 
-class IObjectName(Interface):
-
-    def __str__():
-        """Get a human-readable string representation
-        """
-
-    def __repr__():
-        """Get a string representation
-        """
-        
-    def __call__():
-        """Get a string representation
-        """
-
-class ObjectName(object):
-    # functions as both view and adapter
+class ObjectNameView(ObjectName):
 
     __implements__ = IBrowserView, IObjectName
     
-    def __init__(self, context, request=None):
+    def __init__(self, context, request):
         self.context = context
 
-    def __str__(self):
-        dict = getWrapperData(self.context)
-        name = dict and dict.get('name') or None
-        if name is None:
-            raise TypeError, \
-                  'Not enough context information to get an object name'
-        return name
 
-    __call__ = __str__
-
-
-class SiteObjectName(object):
-    # functions as both view and adapter
+class SiteObjectNameView(SiteObjectName):
 
     __implements__ = IBrowserView, IObjectName
     
-    def __init__(self, context, request=None):
+    def __init__(self, context, request):
         pass
-        
-    def __str__(self):
-        return ''
-
-    __call__ = __str__

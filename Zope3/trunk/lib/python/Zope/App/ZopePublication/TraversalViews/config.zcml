@@ -4,47 +4,30 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-  <browser:view
-      name="absolute_url"
-      factory=".AbsoluteURL."
-      permission='Zope.Public'
-      allowed_interface=".AbsoluteURL.IAbsoluteURL"
-  />
-  
-  <browser:view
-      for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
-      name="absolute_url"
-      factory=".AbsoluteURL.SiteAbsoluteURL"
-      permission='Zope.Public'
-      allowed_interface=".AbsoluteURL.IAbsoluteURL"
-  />
+<browser:view
+    name="absolute_url"
+    factory=".AbsoluteURL."
+    permission='Zope.Public'
+    allowed_interface=".AbsoluteURL.IAbsoluteURL" />
 
-  <browser:view
-      name="object_name"
-      factory=".ObjectName."
-      permission='Zope.Public'
-      allowed_interface=".ObjectName.IObjectName"
-  />
-  
-  <browser:view
-      for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
-      name="object_name"
-      factory=".ObjectName.SiteObjectName"
-      permission='Zope.Public'
-      allowed_interface=".ObjectName.IObjectName"
-  />
+<browser:view
+    for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
+    name="absolute_url"
+    factory=".AbsoluteURL.SiteAbsoluteURL"
+    permission='Zope.Public'
+    allowed_interface=".AbsoluteURL.IAbsoluteURL" />
 
-  <adapter
-      factory=".ObjectName."
-      provides=".ObjectName.IObjectName"
-      permission='Zope.Public'
-  />
-  
-  <adapter
-      factory=".ObjectName.SiteObjectName"
-      provides=".ObjectName.IObjectName"
-      for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
-      permission='Zope.Public'
-  />
+<browser:view
+    name="object_name"
+    factory=".ObjectName.ObjectNameView"
+    permission='Zope.Public'
+    allowed_interface="Zope.App.Traversing.ObjectName.IObjectName" />
+
+<browser:view
+    for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
+    name="object_name"
+    factory=".ObjectName.SiteObjectNameView"
+    permission='Zope.Public'
+    allowed_interface="Zope.App.Traversing.ObjectName.IObjectName" />
 
 </zopeConfigure>
