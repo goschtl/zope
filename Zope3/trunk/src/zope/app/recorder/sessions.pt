@@ -1,11 +1,5 @@
 <html metal:use-macro="context/@@standard_macros/view"
     i18n:domain="zope">
-<head>
-  <title i18n:translate="">Recorded HTTP Sessions</title>
-  <style type="text/css" metal:fill-slot="style_slot">
-    td { border-bottom: 1px dotted #eee; }
-  </style>
-</head>
 <body>
 <metal:block fill-slot="body" tal:define="requests view/requests">
 
@@ -49,7 +43,6 @@
 
   <form method="GET"
         tal:attributes="action request/URL">
-    <hr />
 
     <p class="error" tal:condition="view/error" tal:content="view/error">
       Something's wrong.
