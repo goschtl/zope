@@ -207,6 +207,14 @@
       permission="zope.View"
       />
 
+  <browser:page
+      name="source.html" 
+      for="zope.app.content.zpt.IZPTPage"
+      class="zope.app.content.zpt.ZPTSourceView"
+      attribute="__call__" 
+      permission="zope.ManageContent"
+      />
+
   <browser:editform
       schema="zope.app.content.zpt.IZPTPage"
       name="edit.html"

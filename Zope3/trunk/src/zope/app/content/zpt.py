@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.6 2003/02/03 15:08:32 jim Exp $
+$Id: zpt.py,v 1.7 2003/04/02 18:38:21 sidnei Exp $
 """
 
 import re
@@ -155,3 +155,14 @@ class ZPTFactory:
         # XXX Hm, how does one figure out an ftp encoding. Waaa.
         r.setSource(unicode(data), content_type or 'text/html')
         return r
+
+class ZPTSourceView:
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __str__(self):
+        return self.context.getSource()
+
+    __call__ = __str__

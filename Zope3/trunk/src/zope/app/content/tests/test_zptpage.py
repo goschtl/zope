@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.7 2003/02/03 15:08:34 jim Exp $
+$Id: test_zptpage.py,v 1.8 2003/04/02 18:38:21 sidnei Exp $
 """
 
 import unittest
@@ -23,10 +23,13 @@ from zope.interface.verify import verifyClass
 from zope.exceptions import Forbidden
 
 import zope.app.content.zpt
-from zope.app.content.zpt import ZPTPage, SearchableText
+from zope.app.content.zpt import ZPTPage, SearchableText, ZPTSourceView
 from zope.app.interfaces.content.zpt import IZPTPage
 from zope.app.interfaces.index.text import ISearchableText
-from zope.component import getAdapter
+from zope.component import getAdapter, getView
+from zope.component.view import provideView
+from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.browser import TestRequest
 
 # Wow, this is a lot of work. :(
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -160,12 +163,32 @@ class TestFileEmulation(unittest.TestCase):
         page = zope.app.content.zpt.ZPTFactory(None)('foo', '', content)
         self.assertEqual(page.getSource(), content)
     
+class ZPTSourceTest(PlacelessSetup, unittest.TestCase):
+
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        provideView(IZPTPage, 'source.html', IBrowserPresentation, ZPTSourceView)
+
+    def testSourceView(self):
+        page = ZPTPage()
+
+        utext = u'another test\n' # The source will grow a newline if ommited
+        html = u"<html><body>%s</body></html>\n" % (utext, )
+        page.setSource(html, content_type='text/plain')
+        request = TestRequest()
+
+        view = getView(page, 'source.html', request)
+
+        self.assertEqual(str(view), html)
+        self.assertEqual(view(), html)
+
 
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ZPTPageTests),
         unittest.makeSuite(SizedTests),
         unittest.makeSuite(TestFileEmulation),
+        unittest.makeSuite(ZPTSourceTest),
         ))
 
 if __name__=='__main__':
