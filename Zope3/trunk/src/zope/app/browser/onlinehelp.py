@@ -13,14 +13,11 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.16 2003/10/16 10:15:45 jim Exp $
+$Id: onlinehelp.py,v 1.17 2003/11/21 17:10:16 jim Exp $
 """
 from zope.interface import providedBy
 
-from zope.publisher.interfaces.browser import IBrowserPresentation
-
 from zope.component import getService, getView
-from zope.component.view import viewService
 from zope.app.publisher.browser import BrowserView
 from zope.app.traversing import getRoot
 from zope.app.traversing import getParents, getName
@@ -42,3 +39,39 @@ class OnlineHelpTopicView(BrowserView):
         onlinehelp = getRoot(self.context)
         return self._makeSubTree(onlinehelp)
 
+# XXX The view below is highly qeustionable on many levels.
+# - It uses the global view service (now refactored to presentation service
+# - It's very expensive.
+# Perhaps we'll resurrect this later when we have time to do it bit better.
+
+## class FindRelevantHelpTopics(BrowserView):
+##     """This object is used as a view on a view, so that we can get all the
+##     required information."""
+
+##     def __call__(self):
+
+##         class FindResult:
+##             def __init__(self, url, topic):
+##                 self.url = url
+##                 self.topic = topic
+
+##         view_class = self.context.__class__
+##         obj = self.context.context
+##         help = getService(obj, 'OnlineHelp')
+##         ifaces = providedBy(obj).flattened()
+##         topics = []
+##         for iface in ifaces:
+##             specs = viewService.getRegisteredMatching((iface,),
+##                                                       IBrowserRequest)
+##             for spec in specs:
+##                 if spec[2][0] is not view_class:
+##                     continue
+##                 for topic in help.getTopicsForInterfaceAndView(iface, spec[4]):
+##                     parents = getParents(topic)
+##                     path = map(getName, [topic]+parents[:-1]) 
+##                     path.reverse()
+##                     url = getView(obj, 'absolute_url', self.request)()
+##                     url += '/++help++/++skin++Onlinehelp/'+'/'.join(path)
+##                     topics.append(FindResult(url, topic))
+        
+##         return topics
