@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IAuthenticationService.py,v 1.5 2002/12/05 10:41:25 itamar Exp $
+$Id: IAuthenticationService.py,v 1.6 2002/12/06 13:12:08 itamar Exp $
 """
 
 from Interface import Interface
@@ -42,7 +42,7 @@ class IAuthenticationService(Interface):
         """Identify a principal for a request.
 
         If a principal can be identified, then return the
-        principal id. Otherwise, return None.
+        principal. Otherwise, return None.
 
         The request object is fairly opaque. We may decide
         that it implements some generic request interface.
@@ -68,7 +68,7 @@ class IAuthenticationService(Interface):
         """
 
     def unauthenticatedPrincipal():
-        """Return the id of the unauthenticated principal, if one is defined.
+        """Return the unauthenticated principal, if one is defined.
         
         Return None if no unauthenticated principal is defined.
 

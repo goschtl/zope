@@ -104,14 +104,14 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testAuthenticate(self):
         req = Request(('tim', '123'))
-        pid = self.reg.authenticate(req)
+        pid = self.reg.authenticate(req).getId()
         self.assertEquals(pid, '1')
         req = Request(('tim', '1234'))
-        pid = self.reg.authenticate(req)
-        self.assertEquals(pid, None)
+        p = self.reg.authenticate(req)
+        self.assertEquals(p, None)
         req = Request(('kim', '123'))
-        pid = self.reg.authenticate(req)
-        self.assertEquals(pid, None)
+        p = self.reg.authenticate(req)
+        self.assertEquals(p, None)
 
     def testUnauthorized(self):
         request = Request(None)
@@ -129,10 +129,10 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertRaises(DuplicateId, self.reg.defineDefaultPrincipal,
                           "1", "tim")
         self.reg.defineDefaultPrincipal("everybody", "Default Principal")
-        self.assertEquals(self.reg.unauthenticatedPrincipal(), "everybody")
+        self.assertEquals(self.reg.unauthenticatedPrincipal().getId(), "everybody")
         self.reg.defineDefaultPrincipal("anybody", "Default Principal",
                                         "This is the default headmaster")
-        self.assertEquals(self.reg.unauthenticatedPrincipal(), "anybody")
+        self.assertEquals(self.reg.unauthenticatedPrincipal().getId(), "anybody")
         self.assertRaises(NotFoundError, self.reg.getPrincipal, "everybody")
         p = self.reg.getPrincipal("anybody")
         self.assertEquals(p.getId(), "anybody")

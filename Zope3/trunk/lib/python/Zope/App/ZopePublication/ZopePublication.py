@@ -71,14 +71,14 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
     def beforeTraversal(self, request):
 
         # Try to authenticate against the default global registry.
-        id = prin_reg.authenticate(request)
-        if id is None:
-            id = prin_reg.unauthenticatedPrincipal()
-            if id is None:
+        p = prin_reg.authenticate(request)
+        if p is None:
+            p = prin_reg.unauthenticatedPrincipal()
+            if p is None:
                 raise Unauthorized # If there's no default principal
 
-        newSecurityManager(id)
-        request.user = prin_reg.getPrincipal(id)
+        newSecurityManager(p.getId())
+        request.user = p
         get_transaction().begin()
 
     def _maybePlacefullyAuthenticate(self, request, ob):
@@ -104,15 +104,15 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
             return
 
         # Try to authenticate against the auth service
-        id = auth_service.authenticate(request)
-        if id is None:
-            id = auth_service.unauthenticatedPrincipal()
-            if id is None:
+        principal = auth_service.authenticate(request)
+        if principal is None:
+            principal = auth_service.unauthenticatedPrincipal()
+            if principal is None:
                 # nothing to do here
                 return
 
-        newSecurityManager(id)
-        request.user = auth_service.getPrincipal(id)
+        newSecurityManager(principal.getId())
+        request.user = principal
         
 
     def callTraversalHooks(self, request, ob):

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PrincipalRegistry.py,v 1.2 2002/07/15 22:01:10 jim Exp $
+$Id: PrincipalRegistry.py,v 1.3 2002/12/06 13:12:09 itamar Exp $
 """
 __metaclass__ = type
 
@@ -43,7 +43,7 @@ class PrincipalRegistry:
                 if p is not None:
                     password = a.getPassword()
                     if p.validate(password):
-                        return p.getId()
+                        return p
         return None
 
     __defaultid = None
@@ -59,7 +59,7 @@ class PrincipalRegistry:
         return p
 
     def unauthenticatedPrincipal(self):
-        return self.__defaultid
+        return self.__defaultObject
 
     def unauthorized(self, id, request):
         # XXX This is a mess. request has no place here!

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: AuthenticationService.py,v 1.4 2002/08/05 20:08:39 jeremy Exp $
+$Id: AuthenticationService.py,v 1.5 2002/12/06 13:12:08 itamar Exp $
 """
 from types import TupleType
 
@@ -71,7 +71,7 @@ class AuthenticationService(BTreeContainer):
                 if p is not None:
                     password = a.getPassword()
                     if p.validate(password):
-                        return p.getId()
+                        return p
         return None
 
     def unauthenticatedPrincipal(self):

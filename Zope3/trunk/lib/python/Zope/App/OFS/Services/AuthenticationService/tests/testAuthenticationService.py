@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testAuthenticationService.py,v 1.2 2002/07/17 16:54:18 jeremy Exp $
+$Id: testAuthenticationService.py,v 1.3 2002/12/06 13:12:08 itamar Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -70,14 +70,14 @@ class AuthServiceTest(TestCase, PlacefulSetup):
     def testAuthenticate(self):
         auth = self._auth
         req = Request(('srichter', 'hello'))
-        pid = auth.authenticate(req)
+        pid = auth.authenticate(req).getId()
         self.assertEquals(pid, 'srichter')
         req = Request(('srichter', 'hello2'))
-        pid = auth.authenticate(req)
-        self.assertEquals(pid, None)
-        req = Request(('strichter', 'hello'))
-        pid = auth.authenticate(req)
-        self.assertEquals(pid, None)
+        p = auth.authenticate(req)
+        self.assertEquals(p, None)
+        req = Request(('doesnotexit', 'hello'))
+        principal = auth.authenticate(req)
+        self.assertEquals(principal, None)
 
     def testUnauthenticatedPrincipal(self):
         auth = self._auth

@@ -103,7 +103,7 @@ class AuthService1:
         return None
 
     def unauthenticatedPrincipal(self):
-        return 'test.anonymous'
+        return UnauthenticatedPrincipal('test.anonymous')
 
     def unauthorized(self, id, request):
         pass
@@ -115,7 +115,7 @@ class AuthService1:
 class AuthService2(AuthService1):
 
     def authenticate(self, request):
-        return 'test.bob'
+        return Principal('test.bob')
 
     def getPrincipal(self, id):
         return Principal(id)
