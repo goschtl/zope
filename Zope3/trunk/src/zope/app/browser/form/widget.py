@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.24 2003/03/26 11:28:53 tseaver Exp $
+$Id: widget.py,v 1.25 2003/03/26 15:26:21 jim Exp $
 """
 
 __metaclass__ = type
@@ -126,6 +126,8 @@ class BrowserWidget(Widget, BrowserView):
     def label(self):
         ts = getService(self.context.context, "Translation")
         title = ts.translate("zope", self.title, context=self.request)
+        if title is None:
+            title = self.title
         return '<label for="%s">%s</label>' % (
             self.name,
             title,
