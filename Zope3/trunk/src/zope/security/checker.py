@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.27 2003/06/02 14:36:03 stevea Exp $
+$Id: checker.py,v 1.28 2003/06/02 17:43:03 stevea Exp $
 """
 
 import os
@@ -522,12 +522,14 @@ def selectChecker(object):
 
     # XXX we really need formal proxy introspection
 
-    if type(object) is Proxy:
-        # Is this already a security proxy?
-        return None
+    #if type(object) is Proxy:
+    #    # Is this already a security proxy?
+    #    return None
 
-    checker = _getChecker(getattr(object, '__class__', type(object)),
-                          _defaultChecker)
+    checker = _getChecker(type(object), _defaultChecker)
+
+    #checker = _getChecker(getattr(object, '__class__', type(object)),
+    #                      _defaultChecker)
 
     if checker is NoProxy:
         return None

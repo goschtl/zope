@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.5 2003/06/02 16:55:46 jim Exp $
+$Id: context.py,v 1.6 2003/06/02 17:43:02 stevea Exp $
 """
 
 from pickle import PicklingError
@@ -29,11 +29,13 @@ from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.interface import moduleProvides, implements, providedBy
 from zope.proxy import queryProxy, getProxiedObject
-from zope.security.checker import defineChecker, selectChecker, BasicTypes
 from zope.security.proxy import Proxy, getChecker
+from zope.security.checker import defineChecker, BasicTypes
+from zope.security.checker import selectChecker, CombinedChecker, NoProxy
 
 moduleProvides(IContextWrapper)
 __all__ = tuple(IContextWrapper)
+__metaclass__ = type
 
 class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
     """Support for interface declarations on decorators
@@ -75,11 +77,8 @@ class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
 
     >>> [interface.__name__ for interface in list(providedBy(D2(D1(x))))]
     ['I4', 'I3', 'I1', 'I2']
-
-    $Id: context.py,v 1.5 2003/06/02 16:55:46 jim Exp $
     """
-
-    def __get__(self, inst, cls):
+    def __get__(self, inst, cls=None):
         if inst is None:
             return getObjectSpecification(cls)
         else:
@@ -89,7 +88,27 @@ class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
             # will return the proxied object's class.
             cls = type(inst) 
             return ObjectSpecification(provided, cls)
-        
+
+
+class DecoratedSecurityCheckerDescriptor:
+    """Descriptor for a Wrapper that provides a decorated security checker.
+    """
+    def __get__(self, inst, cls=None):
+        if inst is None:
+            return self
+        else:
+            proxied_object = getProxiedObject(inst)
+            checker = getattr(proxied_object, '__Security_checker__', None)
+            if checker is None:
+                checker = selectChecker(proxied_object)
+            wrapper_checker = selectChecker(inst)
+            if wrapper_checker is None:
+                return checker
+            elif checker is None:
+                return wrapper_checker
+            else:
+                return CombinedChecker(wrapper_checker, checker)
+
 
 class Wrapper(BaseWrapper):
     """Zope-specific context wrapper
@@ -102,9 +121,11 @@ class Wrapper(BaseWrapper):
 
     __providedBy__ = DecoratorSpecificationDescriptor()
 
+    __Security_checker__ = DecoratedSecurityCheckerDescriptor()
+
 
 def ContextWrapper(_ob, _parent, **kw):
-    
+
     if type(_ob) in BasicTypes:
         # Don't wrap basic objects
         return _ob
@@ -131,10 +152,7 @@ def ContextWrapper(_ob, _parent, **kw):
 
     return _ob
 
-# XXX Do I actually need these?
-def _contextWrapperChecker(ob):
-    return selectChecker(getProxiedObject(ob))
-defineChecker(Wrapper, _contextWrapperChecker)
+defineChecker(Wrapper, NoProxy)
 
 def getItem(collection, name):
     return ContextWrapper(collection[name], collection, name=name)

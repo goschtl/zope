@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.12 2003/06/02 14:36:04 stevea Exp $
+$Id: test_checker.py,v 1.13 2003/06/02 17:43:04 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -212,7 +212,6 @@ class Test(TestCase, CleanUp):
         rocks += (AttributeError(), AttributeError)
         for rock in rocks:
             proxy = checker.proxy(rock)
-
             self.failUnless(proxy is rock, (rock, type(proxy)))
 
         for class_ in OldInst, NewInst:
@@ -229,19 +228,22 @@ class Test(TestCase, CleanUp):
                     self.assertEqual(checker.permission_id('__str__'),
                                      CheckerPublic)
 
-            special = NamesChecker(['a', 'b'], 'test_allowed')
-            defineChecker(class_, special)
-
-            for ob in inst, TransparentProxy(inst):
-                proxy = checker.proxy(ob)
-                self.failUnless(getProxiedObject(proxy) is ob)
-
-                checker = getChecker(proxy)
-                self.failUnless(checker is special,
-                                checker.getPermission_func().__self__)
-
-                proxy2 = checker.proxy(proxy)
-                self.failUnless(proxy2 is proxy, [proxy, proxy2])
+            #No longer doing anything special for transparent proxies.
+            #A proxy needs to provide its own security checker.
+            #
+            #special = NamesChecker(['a', 'b'], 'test_allowed')
+            #defineChecker(class_, special)
+            #
+            #for ob in inst, TransparentProxy(inst):
+            #    proxy = checker.proxy(ob)
+            #    self.failUnless(getProxiedObject(proxy) is ob)
+            #
+            #    checker = getChecker(proxy)
+            #    self.failUnless(checker is special,
+            #                    checker.getPermission_func().__self__)
+            #
+            #    proxy2 = checker.proxy(proxy)
+            #    self.failUnless(proxy2 is proxy, [proxy, proxy2])
 
     def testMultiChecker(self):
         from zope.interface import Interface

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_context.py,v 1.2 2003/06/02 16:29:44 jim Exp $
+$Id: test_context.py,v 1.3 2003/06/02 17:43:02 stevea Exp $
 """
 
 import pickle
@@ -44,16 +44,16 @@ def test_providedBy_iter_w_new_style_class():
     """
     >>> class X(object):
     ...   implements(I3)
-    
+
     >>> x = X()
     >>> directlyProvides(x, I4)
-    
+
     >>> [interface.__name__ for interface in list(providedBy(x))]
     ['I4', 'I3']
 
     >>> [interface.__name__ for interface in list(providedBy(D1(x)))]
     ['I4', 'I3', 'I1']
-    
+
     >>> [interface.__name__ for interface in list(providedBy(D2(D1(x))))]
     ['I4', 'I3', 'I1', 'I2']
     """
@@ -62,7 +62,7 @@ def test_providedBy_signature_w_new_style_class():
     """
     >>> class X(object):
     ...   implements(I3)
-    
+
     >>> x = X()
 
     >>> int(providedBy(x).__signature__ == implementedBy(X).__signature__)
@@ -71,7 +71,7 @@ def test_providedBy_signature_w_new_style_class():
     >>> int(providedBy(Wrapper(x)).__signature__ ==
     ...     implementedBy(X).__signature__)
     1
-    
+
     >>> directlyProvides(x, I4)    
     >>> int(providedBy(x).__signature__ ==
     ...      (directlyProvidedBy(x).__signature__,
@@ -79,7 +79,7 @@ def test_providedBy_signature_w_new_style_class():
     ...      )
     ...     )
     1
-    
+
     >>> int(providedBy(D1(x)).__signature__ ==
     ...      (
     ...       (directlyProvidedBy(x).__signature__,
@@ -89,7 +89,7 @@ def test_providedBy_signature_w_new_style_class():
     ...      )
     ...     )
     1
-    
+
     >>> int(providedBy(D2(D1(x))).__signature__ ==
     ...       (
     ...        (
@@ -109,7 +109,7 @@ def test_providedBy_signature_w_classic_class():
     """
     >>> class X:
     ...   implements(I3)
-    
+
     >>> x = X()
 
 
@@ -121,14 +121,14 @@ def test_providedBy_signature_w_classic_class():
     1
 
     >>> directlyProvides(x, I4)
-    
+
     >>> int(providedBy(x).__signature__ ==
     ...      (directlyProvidedBy(x).__signature__,
     ...       implementedBy(X).__signature__,
     ...      )
     ...     )
     1
-    
+
     >>> int(providedBy(D1(x)).__signature__ ==
     ...      (
     ...       (directlyProvidedBy(x).__signature__,
@@ -138,7 +138,7 @@ def test_providedBy_signature_w_classic_class():
     ...      )
     ...     )
     1
-    
+
     >>> int(providedBy(D2(D1(x))).__signature__ ==
     ...       (
     ...        (
@@ -175,7 +175,7 @@ def test_ContextWrapper_basic():
     1
     >>> getWrapperData(w2)
     {'name': 2}
-    
+
     >>> c3 = C('c3')
     >>> p3 = ProxyFactory(c3)
     >>> w3 = ContextWrapper(p3, w2, name=3)
@@ -192,7 +192,7 @@ def test_ContextWrapper_basic():
     1
     >>> getWrapperData(w3)
     {'name': 'x'}
-    
+
     """
 
 class Thing:
@@ -225,10 +225,70 @@ def test_reduce_in_subclass():
     CustomPicklingError
     """
 
+def test_SecurityCheckerDescriptor():
+    """Descriptor for a Wrapper that provides a decorated security checker.
+
+    >>> from zope.security.checker import defineChecker, NamesChecker, NoProxy
+    >>> from zope.context import Wrapper
+    >>> from zope.app.context import DecoratedSecurityCheckerDescriptor
+    >>> class MyWrapper(Wrapper):
+    ...     __Security_checker__ = DecoratedSecurityCheckerDescriptor()
+
+    >>> class Foo:
+    ...     a = 1
+    ...     b = 2
+    ...     c = 3
+
+    >>> defineChecker(Foo, NamesChecker(['a']))
+    >>> defineChecker(MyWrapper, NoProxy)
+
+    >>> w = MyWrapper(Foo())
+    >>> from zope.security.checker import selectChecker
+    >>> print selectChecker(w)
+    None
+    >>> c = w.__Security_checker__
+    >>> print type(c)
+    <class 'zope.security.checker.Checker'>
+    >>> c.check_getattr(w, 'a')
+
+    >>> c.check_getattr(w, 'b')
+    Traceback (most recent call last):
+    ...
+    ForbiddenAttribute: b
+    >>> c.check_getattr(w, 'c')
+    Traceback (most recent call last):
+    ...
+    ForbiddenAttribute: c
+
+    >>> class MyWrapper2(Wrapper):
+    ...     __Security_checker__ = DecoratedSecurityCheckerDescriptor()
+    >>> defineChecker(MyWrapper2, NamesChecker(['b']))
+    >>> w = MyWrapper2(Foo())
+    >>> c = w.__Security_checker__
+    >>> print type(c)
+    <class 'zope.security.checker.CombinedChecker'>
+    >>> c.check_getattr(w, 'a')
+
+    >>> c.check_getattr(w, 'b')
+
+    >>> c.check_getattr(w, 'c')
+    Traceback (most recent call last):
+    ...
+    ForbiddenAttribute: c
+
+    >>> w = MyWrapper(None)
+    >>> int(w.__Security_checker__ is None)
+    1
+    >>> w = MyWrapper2(None)
+    >>> type(w.__Security_checker__)
+    <class 'zope.security.checker.Checker'>
+    """
+
 def test_suite():
     suite = DocTestSuite()
     suite.addTest(DocTestSuite('zope.app.context'))
     return suite
 
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    unittest.main()
