@@ -1,3 +1,11 @@
+CMF 1.4.2 (unreleased)
+
+  Bug Fixes
+
+    - CMFCore MembershipTool: Changed the permission for searchMembers to
+      'List portal members'. By default Anonymous users are no longer able to
+      list member ids and email addresses. (Collector #189)
+
 CMF 1.4.1 (2003/09/08)
 
   Bug Fixes
