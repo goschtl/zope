@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_type.py,v 1.2 2002/12/25 14:15:12 jim Exp $
+$Id: test_type.py,v 1.3 2003/01/29 18:48:54 jim Exp $
 """
 
 import unittest, sys
@@ -26,14 +26,17 @@ def getAllForObject(reg, ob):
     all.sort()
     return all
 
-class Test(unittest.TestCase):
+class TestTypeRegistry(unittest.TestCase):
+
+    def new_instance(self):
+        return TypeRegistry()
 
     def test(self):
         class I1(Interface): pass
         class I2(I1): pass
         class I3(I2): pass
 
-        reg = TypeRegistry()
+        reg = self.new_instance()
         reg.register(I2, 2)
 
         class C1: __implements__ = I1
@@ -71,6 +74,17 @@ class Test(unittest.TestCase):
         self.assertEqual(reg.get(I1), 1)
         self.assertEqual(reg.get(I2), 2)
         self.assertEqual(reg.get(I3), 3)
+
+        reg.unregister(I3)
+        
+        self.assertEqual(getAllForObject(reg, C1()), [1])
+        self.assertEqual(getAllForObject(reg, C2()), [1, 2])
+        self.assertEqual(getAllForObject(reg, C3()), [1, 2])
+        self.assertEqual(getAllForObject(reg,  C()), [])
+
+        self.assertEqual(reg.get(I1), 1)
+        self.assertEqual(reg.get(I2), 2)
+        self.assertEqual(reg.get(I3), None)
 
     def testSetdefault(self):
         class I(Interface):
@@ -111,7 +125,7 @@ class Test(unittest.TestCase):
 
 def test_suite():
     loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return loader.loadTestsFromTestCase(TestTypeRegistry)
 
 if __name__=='__main__':
     unittest.TextTestRunner().run(test_suite())

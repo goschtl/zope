@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.3 2002/12/30 14:00:48 stevea Exp $
+$Id: type.py,v 1.4 2003/01/29 18:48:52 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -40,12 +40,23 @@ class TypeRegistry:
     # Where the registered provides is what was registered and
     # provided may be some base interface
 
-    def __init__(self):
-        self._reg = {}
+    def __init__(self, data=None):
+        if data is None:
+            data = {}
+            
+        self._reg = data
 
     def register(self, interface, object):
         if interface is None or IInterface.isImplementedBy(interface):
             self._reg[interface] = object
+        else:
+            raise TypeError(
+                "The interface argument must be an interface (or None)")
+
+    def unregister(self, interface):
+        if interface is None or IInterface.isImplementedBy(interface):
+            if interface in self._reg:
+                del self._reg[interface]
         else:
             raise TypeError(
                 "The interface argument must be an interface (or None)")

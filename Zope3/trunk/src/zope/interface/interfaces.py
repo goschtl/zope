@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.4 2003/01/29 17:03:33 jim Exp $
+$Id: interfaces.py,v 1.5 2003/01/29 18:48:52 jim Exp $
 """
 
 from zope.interface import Interface
@@ -264,6 +264,12 @@ class ITypeRegistry(Interface):
 
         The interface argument may be None.  This effectively defines a
         default object.
+        """
+
+    def unregister(interface):
+        """Remove the registration for the given interface
+
+        If nothing is registered for the interface, the call is ignored.
         """
 
     def get(interface, default=None):
