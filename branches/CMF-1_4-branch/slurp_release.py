@@ -7,6 +7,7 @@ import os
 import httplib
 import getopt
 import base64
+import mimetypes
 
 CVSROOT = ':pserver:anonymous@cvs.zope.org:/cvs-repository'
 
@@ -169,11 +170,19 @@ options:
         """ Upload the zipfile for the release to the dogbowl.
         """
         URL = ( '/Products/CMF/%s/%s' % ( self._version_id, filename ) )
-        body = open( filename ).read()
+        body = open(filename, 'rb').read()
 
         conn = httplib.HTTPConnection( 'www.zope.org' )
         print 'PUTting file, %s, to URL, %s' % ( filename, URL )
-        conn.request( 'PUT', URL, body, self._getAuthHeaders() )
+        headers = self._getAuthHeaders()
+
+        new_hdrs = {'Content-Length':len(body)}
+        content_type, content_enc = mimetypes.guess_type(URL)
+        new_hdrs['Content-Type'] = content_type
+        new_hdrs['Content-Encoding'] = content_enc
+        new_hdrs.update(headers)
+
+        conn.request('PUT', URL, body, new_hdrs)
         response = conn.getresponse()
         if int( response.status ) not in ( 200, 201, 204, 302 ):
             raise ValueError, 'Failed: %s (%s)' % ( response.status
