@@ -40,7 +40,7 @@
 
 <!-- XXX What is this for? -->
 <permission id="Zope.I18n" 
-                     title="Manage Application"
+                     title="Use Internationalization (?XXX)"
                      />
 
 <!-- Configuration -->
