@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.7 2004/04/15 15:29:39 jim Exp $
+$Id: registration.py,v 1.8 2004/04/17 14:33:30 srichter Exp $
 """
 from persistent import Persistent
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -366,7 +366,8 @@ class RegistrationStack(Persistent, Contained):
                   for registration in data
                  ]
 
-        result[0]['active'] = True
+        if result:
+            result[0]['active'] = True
 
         return [r for r in result if r['registration'] is not None]
 
