@@ -51,37 +51,16 @@ def getGlobalServices():
 def getGlobalService(name):
     return serviceManager.getService(name)
 
-def getServiceManager(context):
-    # Backwards compatibility stub
-    warnings.warn("getServiceManager(context) is  deprecated,"
-                  " use getServices(context=None) instead.",
-                  DeprecationWarning, 2)
-    return getServices(context)
-
-
 def getServices(context=None):
     if context is None:
         return serviceManager
     else:
         # Use the global service manager to adapt context to IServiceService
         # to avoid the recursion implied by using a local getAdapter call.
-
-        # We should be using the line of code below.
-        ## return IServiceService(context)
-        #
-        # Instead, we need to support code that has passed in an object
-        # as context, at least until the whole component API is fixed up.
-        # XXX try ripping this code out.
-        sm = IServiceService(context, None)
-        if sm is None:
-            # Deprecated support for a context that isn't adaptable to
-            # IServiceService.  Return the default service manager.
-            # warnings.warn("getServices' context arg must be None or"
-            #               "  adaptable to IServiceService.",
-            #               DeprecationWarning, warningLevel())
-            return serviceManager
-        else:
-            return sm
+        try:
+            return IServiceService(context)
+        except TypeError, error:
+            raise ComponentLookupError(*error.args)
 
 getServices = hookable(getServices)
 
@@ -94,23 +73,9 @@ def getServiceDefinitions(context=None):
 # Utility service
 
 def getUtility(interface, name='', context=None):
-    if not isinstance(name, basestring):
-        context, interface, name = interface, name, context
-        if name is None:
-            name = ''
-        warnings.warn("getUtility(context, interface, name) is deprecated."
-                      "  Use getUtility(interface, name, context=context).",
-                      DeprecationWarning, warningLevel())
     return getService(Utilities, context=context).getUtility(interface, name)
 
 def queryUtility(interface, name='', default=None, context=None):
-    ## XXX this check is for migration.  Remove soon.
-    if (not IInterface.providedBy(interface) or
-        not isinstance(name, basestring) or
-        isinstance(default, basestring)):
-        raise TypeError("queryUtility got nonsense arguments."
-                        " Check that you are updated with the"
-                        " component API change.")
     return getService(Utilities, context).queryUtility(
         interface, name, default)
 
@@ -234,29 +199,10 @@ def getFactoriesFor(interface, context=None):
                     yield name, factory
                     break
 
-def getFactory(context, name):
-    warnings.warn(
-        "Use getUtility(IFactory, name, context) instead of getFactory(...)",
-        DeprecationWarning, 2)
-    return getUtility(IFactory, name, context=context)
-
-def queryFactory(context, name, default=None):
-    warnings.warn(
-        "Use getUtility(IFactory, name, context) instead of getFactory(...)",
-        DeprecationWarning, 2)
-    return queryUtility(IFactory, name=name, context=context)
-
 
 # Presentation service
 
 def getView(object, name, request, providing=Interface, context=None):
-    if not IInterface.providedBy(providing):
-        providing, context = context, providing
-        warnings.warn("Use getView(object, name, request,"
-                      " providing=Interface, context=Interface)"
-                      " instead of getView(object, name, request,"
-                      " context=None, providing=Interface)",
-                      DeprecationWarning, 2)
     view = queryView(object, name, request, context=context,
                      providing=providing)
     if view is not None:
@@ -306,9 +252,6 @@ def queryDefaultViewName(object, request, default=None, context=None):
     return s.queryDefaultViewName(object, request, default)
 
 def getResource(name, request, providing=Interface, context=None):
-    if isinstance(request, basestring):
-        # "Backwards compatibility"
-        raise TypeError("getResource got incorrect arguments.")
     view = queryResource(name, request, providing=providing, context=context)
     if view is not None:
         return view
@@ -317,8 +260,5 @@ def getResource(name, request, providing=Interface, context=None):
 
 def queryResource(name, request, default=None, providing=Interface,
                   context=None):
-    if isinstance(request, basestring):
-        # "Backwards compatibility"
-        raise TypeError("queryResource got incorrect arguments.")
     s = getService(Presentation, context)
     return s.queryResource(name, request, default, providing=providing)

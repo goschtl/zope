@@ -124,10 +124,9 @@ class Test(PlacelessSetup, unittest.TestCase):
         context = ConformsToIServiceService(servicemanager)
         self.assert_(getServices(context) is servicemanager)
 
-        # XXX enable this test before checking in
         # Using a context that is not adaptable to IServiceService should
         # fail.
-        ##self.assertRaises(ComponentLookupError, getServices, object())
+        self.assertRaises(ComponentLookupError, getServices, object())
 
     def test_getService(self):
         from zope.component import getService, getServices
@@ -147,11 +146,10 @@ class Test(PlacelessSetup, unittest.TestCase):
         context = ConformsToIServiceService(servicemanager)
         self.assert_(getService(Adapters, context) is adapterservice)
 
-        # XXX enable this test before checking in
         # Using a context that is not adaptable to IServiceService should
         # fail.
-        ##self.assertRaises(ComponentLookupError,
-        ##                  getService, Adapters, object())
+        self.assertRaises(ComponentLookupError,
+                          getService, Adapters, object())
 
     def testAdapterInContext(self):
         class I1(Interface):
