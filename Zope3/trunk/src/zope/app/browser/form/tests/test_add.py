@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_add.py,v 1.3 2002/12/27 16:04:53 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -136,8 +136,8 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(label, 'Add this')
         self.assertEqual(permission, 'zope.Public')
         self.assertEqual(layer, 'default')
-        self.assertEqual(template, 'edit.pt')
-        self.assertEqual(default_template, 'edit.pt')
+        self.assertEqual(template, 'add.pt')
+        self.assertEqual(default_template, 'add.pt')
         self.assertEqual(bases, (V, AddView, ))
         self.assertEqual(for_, IAdding)
         self.assertEqual(" ".join(fields),
