@@ -15,7 +15,7 @@
     </span>
     <span tal:condition="not:svc/insite">
       <span tal:condition="svc/inbundle">
-        configured in bundle at
+        registered in bundle at
         <a tal:content="svc/inbundle"
            tal:attributes="href svc/inbundle">path</a>
       </span>
@@ -31,7 +31,7 @@
   </li>
 </ul>
 
-<h4>Configurations in this bundle</h4>
+<h4>Registrations in this bundle</h4>
 
   <div class="message" tal:condition="message">
     <span tal:replace="message">view/update message here</span>
@@ -45,7 +45,7 @@
     <p>For <i tal:content="svc/service">Foo</i> service</p>
 
     <ul>
-      <tal:block tal:repeat="cnf view/listConfigurations">
+      <tal:block tal:repeat="cnf view/listRegistrations">
         <li tal:condition="python: cnf['service'] == svc['service']"
             tal:define="activate python:cnf['advice'] == 'Active'">
           <a tal:attributes="href cnf/path">
