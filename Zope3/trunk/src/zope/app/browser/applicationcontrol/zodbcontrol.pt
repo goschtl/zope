@@ -17,9 +17,8 @@
       <form action="." method="POST" tal:attributes="action request/URL">
         <div class="row">
           <div class="label" i18n:translate="">Keep up to:</div>
-          <div class="view" i18n:translate="">
-            <input type="text" size="4" name="days" value="0"
-              i18n:name="days_input" /> days
+          <div class="view">
+            <input type="text" size="4" name="days" value="0" /><span tal:omit-tag="" i18n:translate="">days</span>
           </div> 
         </div>
         <div class="row">
