@@ -39,7 +39,7 @@ from zpkgtools import cvsloader
 
 # Names that are exluded from globbing results:
 EXCLUDE_NAMES = ["CVS", ".cvsignore", "RCS", "SCCS", ".svn"]
-EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]"]
+EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]", ".#*", "*~"]
 
 
 class InclusionError(Error):
