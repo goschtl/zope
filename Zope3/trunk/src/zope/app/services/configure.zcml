@@ -295,22 +295,6 @@
         />
     </content>
 
-<!-- Modules -->
-
-  <content class="zope.app.services.module.Manager">
-    <require
-        permission="zope.ManageCode"
-        interface="zodb.code.interfaces.IPersistentModuleManager"
-        />
-    <require
-        permission="zope.ManageCode"
-        attributes="beforeDeleteHook"
-        />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-        />
-  </content>
-
 <!-- Page Folder -->
 
   <content class="zope.app.services.pagefolder.PageFolder">
@@ -498,11 +482,6 @@
     />
 
 <fssync:adapter
-    class=".module.Manager"
-    factory=".module.ModuleAdapter"
-    />
-
-<fssync:adapter
     class=".cache.CacheRegistration"
     factory=".registration.ComponentRegistrationAdapter"
     />
@@ -536,21 +515,10 @@
   permission="zope.ManageContent"
   />
 
-<adapter 
-  for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-  provides="zope.app.interfaces.file.IFileFactory"
-  name=".py"
-  factory=".module.ModuleFactory"
-  permission="zope.ManageContent"
-  />
-
 <!-- Local Interface Service -->
 <include file="interface.zcml" />
 
-<!-- Enable import of persistent modules -->
-<event:subscribe
-  subscriber=".module.installPersistentModuleImporter"
-  event_types="zope.app.interfaces.event.IProcessStartingEvent"
-  />
+<!-- Local Module Support -->
+<include file="module.zcml" />
 
 </zopeConfigure>
