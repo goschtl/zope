@@ -21,7 +21,7 @@ from persistent.dict import PersistentDict
 from zope.interface import implements
 
 from zope.schema.interfaces import ITokenizedTerm
-from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
+from zope.schema.interfaces import IVocabularyTokenized
 
 from zope.app import zapi
 from zope.app.container.contained import Contained, setitem, uncontained
@@ -107,7 +107,7 @@ class ProcessDefinitionTerm(object):
 
 class ProcessDefinitionVocabulary(object):
     """Vocabulary providing available process definition names."""
-    implements(IVocabulary, IVocabularyTokenized)
+    implements(IVocabularyTokenized)
 
     def __init__(self, context):
         self.utilities = zapi.getService(Utilities, context)
@@ -128,10 +128,6 @@ class ProcessDefinitionVocabulary(object):
     def __len__(self):
         """See zope.schema.interfaces.IVocabulary"""
         return len(self.__names())
-
-    def getQuery(self):
-        """See zope.schema.interfaces.IVocabulary"""
-        return None
 
     def getTerm(self, value):
         """See zope.schema.interfaces.IVocabulary"""

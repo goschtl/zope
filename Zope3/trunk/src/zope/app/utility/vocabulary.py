@@ -173,7 +173,7 @@ class UtilityVocabulary(object):
     [u'object1', u'object2', u'object3']
     """
 
-    implements(IVocabulary, IVocabularyTokenized)
+    implements(IVocabularyTokenized)
 
     def __init__(self, context, interface, nameOnly=False):
         if nameOnly is not False:
@@ -320,24 +320,17 @@ class UtilityNames:
     >>> term2.value
     u''
 
-    There is no special query support for `UtilityNames`:
-
-    >>> vocab.getQuery()
-
     >>> placelesssetup.tearDown()
 
     """
 
-    implements(IVocabulary, IVocabularyTokenized)
+    implements(IVocabularyTokenized)
 
     def __init__(self, interface):
         self.interface = interface
 
     def __contains__(self, value):
         return zapi.queryUtility(self.interface, value) is not None
-
-    def getQuery(self):
-        return None
 
     def getTerm(self, value):
         if value in self:

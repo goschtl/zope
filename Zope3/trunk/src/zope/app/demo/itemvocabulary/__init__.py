@@ -21,8 +21,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
-from zope.schema.interfaces import \
-     ITokenizedTerm, IVocabulary, IVocabularyTokenized
+from zope.schema.interfaces import ITokenizedTerm, IVocabularyTokenized
 from zope.interface.common.mapping import IEnumerableMapping
 
 
@@ -49,8 +48,6 @@ class ItemVocabulary(object):
       3
       >>> 'c' in vocab
       True
-      >>> vocab.getQuery() is None
-      True
       >>> vocab.getTerm('b').value
       'b'
       >>> vocab.getTerm('d')
@@ -64,7 +61,7 @@ class ItemVocabulary(object):
       ...
       LookupError: d
     """
-    implements(IVocabulary, IVocabularyTokenized)
+    implements(IVocabularyTokenized)
     __used_for__ = IEnumerableMapping
 
     def __init__(self, context):
@@ -82,10 +79,6 @@ class ItemVocabulary(object):
         """See zope.schema.interfaces.IBaseVocabulary"""
         return value in self.context.keys()
 
-    def getQuery(self):
-        """See zope.schema.interfaces.IBaseVocabulary"""
-        return None
-    
     def getTerm(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
         if value not in self.context.keys():
