@@ -13,7 +13,7 @@
 ##############################################################################
 # -*- Mode: Python; tab-width: 4 -*-
 
-VERSION_STRING = "$Id: SelectTrigger.py,v 1.5 2002/12/20 22:35:11 jeremy Exp $"
+VERSION_STRING = "$Id: SelectTrigger.py,v 1.6 2002/12/20 22:37:28 jeremy Exp $"
 
 import asyncore
 import asynchat
@@ -141,8 +141,8 @@ else:
 
             # tricky: get a pair of connected sockets
             for i in range(NPORTS):
-                trigger.portoffset = (trigger.portoffset + 1) % NPORTS
-                port = MINPORT + trigger.portoffset
+                Trigger.portoffset = (Trigger.portoffset + 1) % NPORTS
+                port = MINPORT + Trigger.portoffset
                 address = (HOST, port)
                 try:
                     a.bind(address)
@@ -226,9 +226,7 @@ class TriggerFile:
         self.buffer = self.buffer + data
         if len(self.buffer) > self.buffer_size:
             d, self.buffer = self.buffer, ''
-            the_trigger.pull_trigger (
-                    lambda d=d,p=self.parent: p.push (d)
-                    )
+            the_trigger.pull_trigger(lambda: self.parent.push(d))
 
     def writeline (self, line):
         self.write(line + '\r\n')
