@@ -1,0 +1,11 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:event="http://namespaces.zope.org/event"
+   >
+
+  <event:subscribe
+      subscriber=".bootstrap.bootstrapInstance"
+      event_types="zope.app.appsetup.IDatabaseOpenedEvent"
+      />
+
+</configure>

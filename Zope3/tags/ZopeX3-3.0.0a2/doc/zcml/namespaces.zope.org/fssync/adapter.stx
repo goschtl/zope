@@ -1,0 +1,22 @@
+adapter
+
+  File zope/app/fssync/meta.zcml, lines 5 - 9.
+
+  Handler: zope.app.fssync.metaconfigure.registerFSRegistry
+
+  
+
+  Attributes
+
+    class -- GlobalObject (optional, default=None)
+
+      Class
+
+      Specifies the class for which this adapter is registered.
+
+    factory -- GlobalObject (required)
+
+      Factory
+
+      Specifies the factory that will create the adapter.
+

@@ -1,0 +1,14 @@
+usage
+
+  File zope/app/publisher/browser/meta.zcml, lines 155 - 159.
+
+  Defines a view usage
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Name
+
+      The name of the usage.
+

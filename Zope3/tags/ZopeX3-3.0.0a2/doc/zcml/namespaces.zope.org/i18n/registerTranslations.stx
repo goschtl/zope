@@ -1,0 +1,16 @@
+registerTranslations
+
+  File zope/app/i18n/meta.zcml, lines 8 - 12.
+
+  Handler: zope.app.i18n.metaconfigure.registerTranslations
+
+  
+
+  Attributes
+
+    directory -- Path (required)
+
+      Directory
+
+      Directory containing the translations
+

@@ -1,0 +1,16 @@
+layer
+
+  File zope/app/publisher/browser/meta.zcml, lines 131 - 135.
+
+  Handler: zope.app.component.metaconfigure.layer
+
+  Defines a browser layer
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Name
+
+      The name of the skin.
+
