@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.21 2003/04/28 21:35:29 gvanrossum Exp $
+$Id: service.py,v 1.22 2003/04/29 21:21:55 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -29,7 +29,7 @@ from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.services.folder import SiteManagementFolder
 from zope.app.services.service import ServiceConfiguration
-from zope.app.traversing import traverse, getPath
+from zope.app.traversing import traverse, getPath, getParent, objectName
 from zope.component import getServiceManager
 from zope.component import getView, getAdapter, queryView
 from zope.proxy.context import ContextWrapper, ContextSuper
@@ -151,6 +151,83 @@ class AddServiceConfiguration(BrowserView):
 
 class ServiceSummary(BrowserView):
     """A view on the service manager, used by services.pt."""
+
+    def update(self):
+        """Possibly delete one or more services.
+
+        In that case, issue a message.
+        """
+        deletes = self.request.get("delete")
+        doDeactivate = self.request.get("Deactivate")
+        doDelete = self.request.get("Delete")
+        if not deletes:
+            if doDeactivate or doDelete:
+                return "Please select at least one checkbox"
+            return None
+        if doDeactivate:
+            return self._deactivate(deletes)
+        if doDelete:
+            return self._delete(deletes)
+
+    def _deactivate(self, todo):
+        done = []
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            obj = registry.active()
+            if obj is not None:
+                obj.status = Registered
+                done.append(name)
+        if done:
+            return "Deactivated: " + ", ".join(done)
+        else:
+            return "None of the checked services were active"
+
+    def _delete(self, todo):
+        errors = []
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            assert registry
+            if registry.active() is not None:
+                errors.append(name)
+                continue
+        if errors:
+            return ("Can't delete active service%s: %s; "
+                    "use the Deactivate button to deactivate" %
+                    (len(errors) != 1 and "s" or "", ", ".join(errors)))
+
+        # 1) Delete the registrations
+        services = {}
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            assert registry
+            assert registry.active() is None # Phase error
+            for info in registry.info():
+                conf = info['configuration']
+                obj = conf.getComponent()
+                path = getPath(obj)
+                services[path] = obj
+                conf.status = Unregistered
+                parent = getParent(conf)
+                name = objectName(conf)
+                container = getAdapter(parent, IZopeContainer)
+                del container[name]
+
+        # 2) Delete the service objects
+        # XXX Jim doesn't like this very much; he thinks it's too much
+        #     magic behind the user's back.  OTOH, Guido believes that
+        #     we're providing an abstraction here that hides the
+        #     existence of the folder and its registration manager as
+        #     much as possible, so it's appropriate to clean up when
+        #     deleting a service; if you don't want that, you can
+        #     manipulate the folder explicitly.
+        print services
+        for path, obj in services.items():
+            parent = getParent(obj)
+            name = objectName(obj)
+            container = getAdapter(parent, IZopeContainer)
+            del container[name]
+
+        return "Deleted: %s" % ", ".join(todo)
 
     def listConfiguredServices(self):
         names = list(self.context.listConfigurationNames())

@@ -1,14 +1,6 @@
 <html metal:use-macro="views/standard_macros/page">
 
-<tal:block
-    metal:fill-slot="headers"
-    tal:define="global pagetip string:
-
-    To add a service, click on the Add Service link at the
-    top of this page.
-    "
-    />
-
+<tal:block metal:fill-slot="headers" />
 
 <div metal:fill-slot="body">
 
@@ -16,7 +8,13 @@
     Services registered in this service manager
   </h2>
 
-  <div tal:define="registries view/listConfiguredServices">
+  <div tal:define="message view/update;
+                   registries view/listConfiguredServices">
+
+      <div class="message" tal:condition="message">
+         <span tal:replace="message">view/update message here</span>
+         <br><br><i><a href="">(click to clear message)</a></i>
+      </div>
 
       <p tal:condition="not:registries">No services are registered.</p>
 
@@ -27,9 +25,12 @@
            disabling the service altogether.
         </p>
 
-        <table>
-          <tbody>
+	<form method="POST" action="services.html">
+
+          <table>
             <tr tal:repeat="reg registries">
+              <td><input type="checkbox" name="delete:list"
+                         tal:attributes="value reg/name" /></td>
               <td>
                 <a href="(link to the active service)"
                    tal:condition="reg/url"
@@ -50,8 +51,13 @@
                 </a>
               </td>
             </tr>
-          <tbody>
-        </table>
+          </table>
+
+          <input type="submit" name="Deactivate" value="Deactivate" />
+          <input type="submit" name="Delete" value="Delete" />
+          <input type="submit" name="Refresh" value="Refresh" />
+
+	</form>
 
         <p><a href="default/AddService">Add a service to this service
            mananger</a></p>
@@ -59,5 +65,7 @@
       </div>
 
   </div>
+
 </div>
+
 </html>
