@@ -7,7 +7,7 @@
       id="zope.Public"
       title="[public-permission] Public"
       description="Special permission indicating unconditional access.
-                   Public resources are always accessable."
+                   Public resources are always accessible."
       />
 
   <vocabulary 
