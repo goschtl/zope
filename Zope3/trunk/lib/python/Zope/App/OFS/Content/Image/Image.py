@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Image.py,v 1.5 2002/07/25 22:09:31 faassen Exp $
+$Id: Image.py,v 1.6 2002/11/11 15:32:04 stevea Exp $
 """
 import struct
 
@@ -108,6 +108,9 @@ def getImageInfo(data):
                 b = jpeg.read(1)
             width = int(w)
             height = int(h)
-        except: pass
+        except struct.error:
+            pass
+        except ValueError:
+            pass
 
     return content_type, width, height
