@@ -2,6 +2,7 @@
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser"
   xmlns:apidoc="http://namespaces.zope.org/apidoc"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
   i18n_domain="zope">
 
   <view
@@ -20,7 +21,7 @@
       />
 
   <!-- Root preference group -->
-  <apidoc:preferenceGroup
+  <preferenceGroup
       id=""
       title="User Preferences" 
       />
@@ -98,7 +99,7 @@
 
   <browser:page
       name="tree"
-      for="zope.app.apidoc.preference.interfaces.IPreferenceGroup"
+      for=".interfaces.IPreferenceGroup"
       class=".browser.PreferencesTree"
       permission="zope.View"
       attribute="tree" 
@@ -110,6 +111,7 @@
       id="preferences"
       title="User Preferences API"
       doc_path="README.txt"
+      zcml:condition="have apidoc"
       />
 
 </configure>

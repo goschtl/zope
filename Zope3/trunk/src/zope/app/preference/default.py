@@ -28,7 +28,7 @@ from zope.app.container.contained import Contained
 from zope.app.location import locate
 from zope.app.traversing.interfaces import IContainmentRoot
 
-from zope.app.apidoc.preference import preference, interfaces
+from zope.app.preference import preference, interfaces
 
 
 class DefaultPreferenceProvider(persistent.Persistent, Contained):
@@ -58,7 +58,8 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
     def __init__(self, group, provider):
         self.provider = provider
         super(DefaultPreferenceGroup, self).__init__(
-            group.id, group.schema, group.title, group.description)
+            group.__id__, group.__schema__,
+            group.__title__, group.__description__)
 
         # Make sure that we also mark the default group as category if the
         # actual group is one; this is important for the UI.
@@ -83,7 +84,7 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
             return group
 
         # Try to find a preference of the given name
-        if self.schema and key in self.schema:
+        if self.__schema__ and key in self.__schema__:
             marker = object()
             value = self.data.get(key, marker)
             if value is not marker:
@@ -96,19 +97,19 @@ class DefaultPreferenceGroup(preference.PreferenceGroup):
 
             # No more providers found, so return the schema's default
             if nextProvider is None: 
-                return self.schema[key].default
+                return self.__schema__[key].default
 
-            nextGroup = nextProvider.getDefaultPreferenceGroup(self.id)
-            return getattr(nextGroup, key, self.schema[key].default)
+            nextGroup = nextProvider.getDefaultPreferenceGroup(self.__id__)
+            return getattr(nextGroup, key, self.__schema__[key].default)
 
         # Nothing found, raise an attribute error
         raise AttributeError, "'%s' is not a preference or sub-group." %key
 
     def data(self):
-        if self.id not in self.provider.data:
-            self.provider.data[self.id] = OOBTree()
+        if self.__id__ not in self.provider.data:
+            self.provider.data[self.__id__] = OOBTree()
 
-        return self.provider.data[self.id]
+        return self.provider.data[self.__id__]
     data = property(data)
 
 

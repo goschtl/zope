@@ -10,6 +10,36 @@ Zope Changes
 
     New features
 
+      - Implemented a generic user preferences system.
+
+        * User preferences are combined in groups that are described by
+          schemas.
+
+        * One can create a tree of preference groups using Python's dot
+          notation in the group ids.
+
+        * Preference groups can be declared to act as categories, which is
+          used by the UI to improve the organization of the preferences.
+
+        * Using a default preference provider, the site administrator can
+          customize the default settings of the preferences for a user on a
+          site wide bases. Acquisition in multi-site pages is supported.
+
+        * The preferences are very easily accessible in TALES via a traversal
+          namespace::
+
+            /++preferences++/zmi/folder/sortedby
+     
+        * Preferences are easily accessible in Python code::
+
+           >>> prefs = IUserPreferences(context)
+
+          where the context merely has to be an ``ILocation``.
+
+        * Preferences can be easily edited using intuitive URLs::
+
+            http://localhost:8080/++preferences++/zmi
+
       - Added virtual host support in xml and static tree. The tree will
         switch the root to the virtualhost base.
 

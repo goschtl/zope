@@ -22,7 +22,7 @@ from zope.app.testing import setup
 
 def setUp(test):
     testing.setUp(test)
-    setup.setUpTestAsModule(test, 'zope.app.apidoc.preference.README')
+    setup.setUpTestAsModule(test, 'zope.app.preference.README')
 
 def tearDown(test):
     testing.tearDown(test)

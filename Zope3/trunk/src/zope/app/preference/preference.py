@@ -23,16 +23,17 @@ from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
 from zope.security.management import getInteraction
 
-from zope.app.container.interfaces import IReadContainer
+import zope.app.component.hooks
 from zope.app import zapi
 from zope.app.container.contained import Contained
+from zope.app.container.interfaces import IReadContainer
 from zope.app.location import LocationProxy, locate, Location
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.traversing.interfaces import IContainmentRoot
 
-from zope.app.apidoc.preference.interfaces import IPreferenceGroup 
-from zope.app.apidoc.preference.interfaces import IPreferenceCategory 
-from zope.app.apidoc.preference.interfaces import IDefaultPreferenceProvider 
+from zope.app.preference.interfaces import IPreferenceGroup 
+from zope.app.preference.interfaces import IPreferenceCategory 
+from zope.app.preference.interfaces import IDefaultPreferenceProvider 
 
 pref_key = 'zope.app.user.UserPreferences'
 
@@ -45,17 +46,17 @@ class PreferenceGroup(Location):
     zope.interface.implements(IPreferenceGroup, IReadContainer)
 
     # Declare attributes here, so that they are always available.
-    id = None
-    schema = None
-    title = None
-    description = None
+    __id__ = None
+    __schema__ = None
+    __title__ = None
+    __description__ = None
 
     def __init__(self, id, schema=None, title=u'', description=u'',
                  isCategory=False):
-        self.id = id
-        self.schema = schema
-        self.title = title
-        self.description = description
+        self.__id__ = id
+        self.__schema__ = schema
+        self.__title__ = title
+        self.__description__ = description
 
         # The last part of the id is the name.
         self.__name__ = id.split('.')[-1]
@@ -68,16 +69,24 @@ class PreferenceGroup(Location):
             directlyProvided += (schema,)
         zope.interface.directlyProvides(self, directlyProvided)
 
+    # Store the actual parent in ``__parent``. Usually we would just override
+    # the property to an actual value during binding, but because we overrode
+    # ``__setattr__`` this is not possible anymore. 
+    __parent = None
+    def __parent__(self):
+        return self.__parent or zope.app.component.hooks.getSite()
+    __parent__ = property(__parent__)
+
 
     def __bind__(self, parent):
         clone = self.__class__.__new__(self.__class__)
         clone.__dict__.update(self.__dict__)
-        clone.__parent__ = parent
+        clone.__parent = parent
         return clone
 
 
     def get(self, key, default=None):
-        id = self.id and self.id + '.' + key or key
+        id = self.__id__ and self.__id__ + '.' + key or key
         group = zapi.queryUtility(IPreferenceGroup, id, default)
         if group is default:
             return default
@@ -85,11 +94,11 @@ class PreferenceGroup(Location):
     
 
     def items(self):
-        cutoff = self.id and len(self.id)+1 or 0
+        cutoff = self.__id__ and len(self.__id__)+1 or 0
         return [(id[cutoff:], group.__bind__(self))
                 for id, group in zapi.getUtilitiesFor(IPreferenceGroup)
-                if id != self.id and \
-                   id.startswith(self.id) and \
+                if id != self.__id__ and \
+                   id.startswith(self.__id__) and \
                    id[cutoff:].find('.') == -1]
 
 
@@ -128,15 +137,16 @@ class PreferenceGroup(Location):
             return group
 
         # Try to find a preference of the given name
-        if self.schema and key in self.schema:
+        if self.__schema__ and key in self.__schema__:
             marker = object()
             value = self.data.get(key, marker)
             if value is marker:
                 # Try to find a default preference provider
-                provider = zapi.queryUtility(IDefaultPreferenceProvider)
+                provider = zapi.queryUtility(IDefaultPreferenceProvider,
+                                             context=self)
                 if provider is None:
-                    return self.schema[key].default
-                defaultGroup = provider.getDefaultPreferenceGroup(self.id)
+                    return self.__schema__[key].default
+                defaultGroup = provider.getDefaultPreferenceGroup(self.__id__)
                 return getattr(defaultGroup, key)
             return value
 
@@ -144,9 +154,9 @@ class PreferenceGroup(Location):
         raise AttributeError, "'%s' is not a preference or sub-group." %key
 
     def __setattr__(self, key, value):
-        if self.schema and key in self.schema:
+        if self.__schema__ and key in self.__schema__:
             # Validate the value
-            bound = self.schema[key].bind(self)
+            bound = self.__schema__[key].bind(self)
             bound.validate(value)
             # Assign value
             self.data[key] = value
@@ -154,13 +164,13 @@ class PreferenceGroup(Location):
             self.__dict__[key] = value
 
     def __delattr__(self, key):
-        if self.schema and key in self.schema:
+        if self.__schema__ and key in self.__schema__:
             del self.data[key]
         else:
             del self.__dict__[key]
 
     def data(self):
-        utility = zapi.getUtility(IPrincipalAnnotationUtility)
+        utility = zapi.getUtility(IPrincipalAnnotationUtility, context=self)
         # TODO: what if we have multiple participations?
         principal = getInteraction().participations[0].principal
         ann = utility.getAnnotations(principal)
@@ -171,10 +181,10 @@ class PreferenceGroup(Location):
         prefs = ann[pref_key]
 
         # If no entry for the group exists, create a new entry.
-        if self.id not in prefs.keys():
-            prefs[self.id] = OOBTree()
+        if self.__id__ not in prefs.keys():
+            prefs[self.__id__] = OOBTree()
 
-        return prefs[self.id]
+        return prefs[self.__id__]
     data = property(data)
 
 
@@ -192,14 +202,14 @@ def PreferenceGroupChecker(instance):
 
     # Make sure that the attributes from IPreferenceGroup and IReadContainer
     # are public.
-    for attrName in ('id', 'schema', 'title', 'description',
+    for attrName in ('__id__', '__schema__', '__title__', '__description__',
                      'get', 'items', 'keys', 'values',
                      '__getitem__', '__contains__', '__iter__', '__len__'):
         read_perm_dict[attrName] = CheckerPublic
 
     # Make the attributes generated from the schema available as well.
-    if instance.schema is not None:
-        for name in getFields(instance.schema):
+    if instance.__schema__ is not None:
+        for name in getFields(instance.__schema__):
             read_perm_dict[name] = CheckerPublic
             write_perm_dict[name] = CheckerPublic
 
@@ -213,6 +223,15 @@ def PreferenceGroupChecker(instance):
 defineChecker(PreferenceGroup, PreferenceGroupChecker)
 
 
+def UserPreferences(context=None):
+    """Adapts an ``ILocation`` object to the ``IUserPreferences`` interface."""
+    if context is None:
+        context = zapi.getSiteManager()
+    rootGroup = zapi.getUtility(IPreferenceGroup)
+    rootGroup = rootGroup.__bind__(context)
+    rootGroup.__name__ = '++preferences++'
+    zope.interface.alsoProvides(rootGroup, IContainmentRoot)
+    return rootGroup
 
 class preferencesNamespace(object):
     """Used to traverse to the root preferences group."""

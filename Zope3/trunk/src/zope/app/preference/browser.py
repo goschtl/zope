@@ -29,7 +29,7 @@ from zope.app.pagetemplate.simpleviewclass import simple
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.tree.browser.cookie import CookieTreeView
 
-from zope.app.apidoc.preference import interfaces
+from zope.app.preference import interfaces
 
 NoneInterface = zope.interface.interface.InterfaceClass('None')
 
@@ -67,27 +67,31 @@ class PreferencesTree(CookieTreeView):
 class EditPreferenceGroup(EditView):
 
     def __init__(self, context, request):
-        self.__used_for__ = removeSecurityProxy(context.schema)
-        self.schema = removeSecurityProxy(context.schema)
+        self.__used_for__ = removeSecurityProxy(context.__schema__)
+        self.schema = removeSecurityProxy(context.__schema__)
 
         if self.schema is None:
             self.schema = NoneInterface 
             zope.interface.alsoProvides(removeSecurityProxy(context),
                                         NoneInterface)
             
-        self.label = context.title + ' Preferences'
+        self.label = context.__title__ + ' Preferences'
         super(EditPreferenceGroup, self).__init__(context, request)
-        self.setPrefix(context.id)
+        self.setPrefix(context.__id__)
 
     def getIntroduction(self):
-        # TODO: Remove dependency
-        from zope.app.apidoc import utilities
-        text = self.context.description or self.schema.__doc__
+        text = self.context.__description__ or self.schema.__doc__
 
         # Determine common whitespace ...
         cols = len(re.match('^[ ]*', text).group())
         # ... and clean it up.
-        text = re.sub('\n[ ]{%i}' %cols, '\n', text)
+        text = re.sub('\n[ ]{%i}' %cols, '\n', text).strip()
 
-        return utilities.renderText(text.strip(), self.schema.__module__)
+        if not text:
+            return u''
+
+        # Render the description as ReST.
+        source = zapi.createObject('zope.source.rest', text)
+        renderer = zapi.getMultiAdapter((source, self.request))
+        return renderer.render()
 

@@ -35,24 +35,27 @@ class IPreferenceGroup(ILocation):
     items of the group instance. It is up to the implementation how this is
     realized, however, most often one will implement __setattr__ and
     __getattr__ as well as the common mapping API. 
+
+    The reason all the API fields are doubly underlined is to avoid name
+    clashes.
     """
 
-    id = zope.schema.TextLine(
+    __id__ = zope.schema.TextLine(
         title=u"Id",
         description=u"The id of the group.",
         required=True)
 
-    schema = zope.schema.InterfaceField(
+    __schema__ = zope.schema.InterfaceField(
         title=u"Schema",
         description=u"Schema describing the preferences of the group.",
         required=False)
 
-    title = zope.schema.TextLine(
+    __title__ = zope.schema.TextLine(
         title=u"Title",
         description=u"The title of the group used in the UI.",
         required=True)
 
-    description = zope.schema.Text(
+    __description__ = zope.schema.Text(
         title=u"Description",
         description=u"The description of the group used in the UI.",
         required=False)
@@ -65,6 +68,10 @@ class IPreferenceCategory(zope.interface.Interface):
     groups. This allows UIs to distinguish between high- and low-level
     prefernce groups.
     """
+
+class IUserPreferences(zope.interface.Interface):
+    """Objects providing this interface have to provide the root preference
+    group API as well."""
 
 
 class IDefaultPreferenceProvider(zope.interface.Interface):

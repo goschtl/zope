@@ -18,8 +18,8 @@ $Id: metaconfigure.py 26889 2004-08-04 04:00:36Z pruggera $
 __docformat__ = 'restructuredtext'
 from zope.app.component.metaconfigure import utility
 
-from zope.app.apidoc.preference.interfaces import IPreferenceGroup
-from zope.app.apidoc.preference.preference import PreferenceGroup
+from zope.app.preference.interfaces import IPreferenceGroup
+from zope.app.preference.preference import PreferenceGroup
 
 
 def preferenceGroup(_context, id=None, schema=None,
