@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.16 2003/06/03 17:08:51 gvanrossum Exp $
+$Id: fssync.py,v 1.17 2003/06/03 18:46:21 gvanrossum Exp $
 """
 
 import os
@@ -103,8 +103,8 @@ class SnarfCommit(BrowserView):
             md = Metadata()
             c = Checker(md)
             c.check(container, name, fspath)
-            e = c.errors()
-            if e:
+            errors = c.errors()
+            if errors:
                 # 3.1) Generate error response
                 txn.abort()
                 lines = ["Up-to-date check failed:"]
