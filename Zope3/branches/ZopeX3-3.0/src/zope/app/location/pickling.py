@@ -146,7 +146,7 @@ class CopyPersistent(object):
 
                 # The following is needed to overcome a bug
                 # in pickle.py. The pickle checks the boolean value
-                # if the id, rather than whether it is None.
+                # of the id, rather than whether it is None.
                 pid += 1
                 
                 self.pids_by_id[id(object)] = pid
