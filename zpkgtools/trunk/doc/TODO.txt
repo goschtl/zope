@@ -11,9 +11,6 @@
     module in Python's standard library as a possible approach to a
     solution
 
-- find way to ditch setup.cfg completely; we only need it to mark
-  files as documentation for bdist_rpm
-
 - fix up finddeps.py to stop searching at PUBLICATION.txt boundaries
   (have patch)
 
