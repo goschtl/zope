@@ -20,7 +20,7 @@ $Id$
 """
 
 from zope.interface import Interface
-from zope.schema import Bytes, ASCII, BytesLine
+from zope.schema import ASCII, BytesLine
 
 
 class IModuleManager(Interface):
