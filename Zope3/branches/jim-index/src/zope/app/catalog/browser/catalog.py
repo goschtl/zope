@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.app.container.browser.adding import Adding
-from zope.app.catalog.interfaces.catalog import ICatalog
+from zope.app.catalog.interfaces import ICatalog
 
 class CatalogEditView:
     "Provides a user interface for configuring a catalog"

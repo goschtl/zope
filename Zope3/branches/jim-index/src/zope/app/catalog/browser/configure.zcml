@@ -1,4 +1,4 @@
-<zope:configure 
+<zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser"
    i18n_domain="zope"
@@ -12,12 +12,12 @@
       permission="zope.ManageContent"
       />
 
-  <icon 
-      name="zmi_icon" 
-      for="zope.app.catalog.interfaces.catalog.ICatalog"
+  <icon
+      name="zmi_icon"
+      for="zope.app.catalog.interfaces.ICatalog"
       file="catalog_icon.gif"
       />
-  
+
   <addMenuItem
       title="Site Catalog"
       description="A Catalog allows indexing and searching of objects"
@@ -27,7 +27,7 @@
 
   <!-- Standard container 'contents' tab -->
   <page
-      for="zope.app.catalog.interfaces.catalog.ICatalog"
+      for="zope.app.catalog.interfaces.ICatalog"
       name="contents.html"
       menu="zmi_views"
       title="Indexes"
@@ -38,7 +38,7 @@
 
   <!-- This hooks up a custom add menu.  -->
   <view
-      for="zope.app.catalog.interfaces.catalog.ICatalog"
+      for="zope.app.catalog.interfaces.ICatalog"
       name="+"
       menu="zmi_actions" title="Add"
       class="zope.app.catalog.browser.catalog.IndexAdding"
@@ -46,10 +46,10 @@
     <page name="index.html"  attribute="index" />
     <page name="action.html" attribute="action" />
   </view>
-  
+
   <!-- the add menu is browser.IndexAdding -->
   <menu id="catalog_index_menu" title="Add Index" />
-  
+
   <!-- Add a couple of items to the add menu -->
   <!-- TextIndex -->
   <addform
@@ -62,7 +62,7 @@
       keyword_arguments="interface"
       description="A full text index"
       />
-  
+
   <!-- FieldIndex -->
   <addform
       name="AddFieldIndexToCatalog"
@@ -74,7 +74,7 @@
       keyword_arguments="interface"
       description="An index of a specific field"
       />
-  
+
   <!-- KeywordIndex -->
   <addform
       name="AddKeywordIndexToCatalog"
@@ -86,13 +86,13 @@
       keyword_arguments="interface"
       description="A keyword index of a specific field"
       />
-  
+
   <!-- the Advanced tab of the Catalog -->
   <pages
-      for="zope.app.catalog.interfaces.catalog.ICatalog"
+      for="zope.app.catalog.interfaces.ICatalog"
       class="zope.app.catalog.browser.catalog.CatalogEditView"
       permission="zope.ManageContent">
-  
+
     <page name="index.html" template="advanced.pt"
           menu="zmi_views" title="Advanced"/>
     <page name="subscribe.html" attribute="subscribe"/>
