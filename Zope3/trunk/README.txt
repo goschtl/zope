@@ -21,7 +21,7 @@ Building and running tests
     # cd Zope3
     # python2.3 setup.py -q build_ext -i
 
-  On a unix variant, you can just type: make
+  On a unix variant, you can just type: 'make'
 
   On Windows, if you downloaded the binary distribution, this has
   already been done for you (since the compiler we use on Windows
@@ -40,9 +40,9 @@ Building and running tests
 
 Starting Zope3
 
-  Before running Zope, you need to create one or more bootstrap
-  users.  Try copying and editing the file sample_principals.zcml to
-  principals.zcml.  Make sure you change the passwords.
+  Before running Zope, you need to create one or more bootstrap users.
+  Copy the file 'sample_principals.zcml' to 'principals.zcml', and edit the
+  result to your needs.  Make sure you change the passwords.
 
   To run Zope just run the z3.py script:
 
