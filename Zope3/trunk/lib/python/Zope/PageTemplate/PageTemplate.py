@@ -15,7 +15,7 @@
 
 HTML- and XML-based template objects using TAL, TALES, and METAL.
 
-$Id: PageTemplate.py,v 1.4 2002/06/14 19:21:03 bwarsaw Exp $
+$Id: PageTemplate.py,v 1.5 2002/10/22 14:11:05 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -182,7 +182,6 @@ class PageTemplate:
         try:
             parser.parseString(self._text)
             self._v_program, self._v_macros = parser.getCode()
-            self._v_macros = self._v_macros
         except:
             self._v_errors = ["Compilation failed",
                               "%s: %s" % sys.exc_info()[:2]]
