@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: query.py,v 1.5 2003/01/06 19:13:14 stevea Exp $
+$Id: query.py,v 1.6 2003/01/07 19:51:26 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -21,6 +21,10 @@ from zope.app.security.permission import PermissionField
 from zope.app.interfaces.services.configuration import INamedConfigurationInfo
 from zope.app.interfaces.services.configuration import INamedConfiguration
 from zope.app.component.interfacefield import InterfacesField
+from zope.schema.interfaces import ITuple
+
+class IQueryProcessorsField(ITuple):
+    """Field for entering a pipeline of query processors."""
 
 class IQueryProcessable(Interface):
     """Marker interface that says that the implementing component is adaptable
