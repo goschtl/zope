@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.9 2003/05/31 22:12:17 jim Exp $
+$Id: declarations.py,v 1.10 2003/06/01 22:26:51 jim Exp $
 """
 
 import sys
@@ -388,11 +388,11 @@ class ObjectSpecificationDescriptor:
         else:
             return getObjectSpecification(inst)
 
-## from _zope_interface_ospec import _implements_reg
-## from _zope_interface_ospec import InterfaceSpecificationBase
-## from _zope_interface_ospec import ObjectSpecification
-## from _zope_interface_ospec import getObjectSpecification, providedBy
-## from _zope_interface_ospec import ObjectSpecificationDescriptor
+from _zope_interface_ospec import _implements_reg
+from _zope_interface_ospec import InterfaceSpecificationBase
+from _zope_interface_ospec import ObjectSpecification
+from _zope_interface_ospec import getObjectSpecification, providedBy
+from _zope_interface_ospec import ObjectSpecificationDescriptor
 
 class InterfaceSpecification(InterfaceSpecificationBase):
     """Create an interface specification
