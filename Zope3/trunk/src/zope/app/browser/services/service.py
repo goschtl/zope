@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.22 2003/04/29 21:21:55 gvanrossum Exp $
+$Id: service.py,v 1.23 2003/04/29 21:22:20 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -220,7 +220,6 @@ class ServiceSummary(BrowserView):
         #     much as possible, so it's appropriate to clean up when
         #     deleting a service; if you don't want that, you can
         #     manipulate the folder explicitly.
-        print services
         for path, obj in services.items():
             parent = getParent(obj)
             name = objectName(obj)
