@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.7 2003/05/27 14:18:14 jim Exp $
+$Id: fssync.py,v 1.8 2003/05/28 22:34:38 gvanrossum Exp $
 """
 
 from zope.app.content.file import File
@@ -58,7 +58,10 @@ class ZPTPageAdapter(ObjectEntryAdapter):
         return self.context.getSource()
 
     def setBody(self, data):
-        self.context.setSource(data)
+        # Convert the data to Unicode, since that's what ZPTPage wants;
+        # it's normally read from a file so it'll be bytes.
+        # XXX This will die if it's not ASCII.  Guess encoding???
+        self.context.setSource(unicode(data))
 
 class DTMLPageAdapter(ObjectEntryAdapter):
 
