@@ -14,9 +14,9 @@
 """
 
 Revision information:
-$Id: PlacefulSetup.py,v 1.5 2002/08/01 18:42:12 jim Exp $
+$Id: PlacefulSetup.py,v 1.6 2002/10/04 18:37:22 jim Exp $
 """
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 class PlacefulSetup(PlacelessSetup):
     

@@ -28,7 +28,7 @@ from Zope.ComponentArchitecture \
      import getView, queryView, getResource, queryResource, createObject
 from Zope.ComponentArchitecture import getDefaultViewName
 
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.tests.TestViews import \
      IV, IC, V1, VZMI, R1, RZMI
 from Zope.ComponentArchitecture.tests.Request import Request

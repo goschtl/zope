@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.4 2002/07/17 16:54:19 jeremy Exp $
+$Id: testIconDirective.py,v 1.5 2002/10/04 18:37:23 jim Exp $
 """
 import os
 from StringIO import StringIO
@@ -22,7 +22,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from Zope.Exceptions import Forbidden
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.ComponentArchitecture.tests.Request import Request
 from Zope.ComponentArchitecture.tests.TestViews import IC

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testServiceDirective.py,v 1.2 2002/07/17 16:54:19 jeremy Exp $
+$Id: testServiceDirective.py,v 1.3 2002/10/04 18:37:22 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,7 @@ from Zope.App.Traversing.ITraversable import ITraversable
 from Interface import Interface
 from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
      import ServiceDirective
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
 from Zope.App.Traversing.IContainmentRoot import IContainmentRoot

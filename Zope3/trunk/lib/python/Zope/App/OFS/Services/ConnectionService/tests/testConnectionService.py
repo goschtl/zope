@@ -12,11 +12,11 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testConnectionService.py,v 1.2 2002/07/16 23:41:15 jim Exp $
+$Id: testConnectionService.py,v 1.3 2002/10/04 18:37:19 jim Exp $
 """
 
 import unittest
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
 from Zope.App.RDB.IZopeConnection import IZopeConnection

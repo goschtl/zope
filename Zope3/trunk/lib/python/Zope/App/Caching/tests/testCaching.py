@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: testCaching.py,v 1.1 2002/10/03 10:37:50 mgedmin Exp $
+$Id: testCaching.py,v 1.2 2002/10/04 18:37:12 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -27,7 +27,7 @@ from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
 from Zope.App.OFS.Annotation.AttributeAnnotations import AttributeAnnotations
 from Zope.ComponentArchitecture import getAdapter
 from Zope.ComponentArchitecture import getService
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
 

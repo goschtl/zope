@@ -18,7 +18,7 @@ from Zope.App.PageTemplate.tests.testpackage.content \
      import Content, PTComponent
 
 # Wow, this is a lot of work. :(
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.App.Traversing.Traverser import Traverser
 from Zope.App.Traversing.ITraverser import ITraverser
 from Zope.App.Traversing.DefaultTraversable import DefaultTraversable

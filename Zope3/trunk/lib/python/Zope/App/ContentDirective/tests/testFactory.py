@@ -20,7 +20,7 @@ from cStringIO import StringIO
 
 from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
 from Zope.Configuration.xmlconfig import XMLConfig
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Security.SecurityManagement import newSecurityManager, system_user
 
 import Zope.App.Security

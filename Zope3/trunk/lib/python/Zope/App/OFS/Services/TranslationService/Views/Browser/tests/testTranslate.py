@@ -12,13 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: testTranslate.py,v 1.1 2002/07/11 07:12:43 srichter Exp $
+$Id: testTranslate.py,v 1.2 2002/10/04 18:37:22 jim Exp $
 """
 
 import unittest
 from StringIO import StringIO
 
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup 
+from Zope.App.tests.PlacelessSetup import PlacelessSetup 
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter 
 from Zope.ComponentArchitecture.GlobalFactoryService import provideFactory
 

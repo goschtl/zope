@@ -13,11 +13,11 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: testCachingService.py,v 1.1 2002/10/03 11:56:34 mgedmin Exp $
+$Id: testCachingService.py,v 1.2 2002/10/04 18:37:19 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
 

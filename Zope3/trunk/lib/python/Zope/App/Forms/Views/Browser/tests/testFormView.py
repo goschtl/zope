@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.14 2002/09/07 16:18:48 jim Exp $
+$Id: testFormView.py,v 1.15 2002/10/04 18:37:15 jim Exp $
 """
 from cStringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
 from Zope.ComponentArchitecture import getService
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Zope.App.Forms.Views.Browser.FormView import FormView

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testI18nFileResource.py,v 1.2 2002/07/17 16:54:19 jeremy Exp $
+$Id: testI18nFileResource.py,v 1.3 2002/10/04 18:37:23 jim Exp $
 """
 
 from unittest import TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ import os
 
 from Zope.Exceptions import NotFoundError
 
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalResourceService import provideResource
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
 

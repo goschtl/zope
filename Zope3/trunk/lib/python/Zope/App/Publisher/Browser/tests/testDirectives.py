@@ -20,7 +20,7 @@ from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.ComponentArchitecture.tests.TestViews import IC, V1, VZMI, R1, RZMI
 from Zope.ComponentArchitecture import getView, queryView, queryResource
 from Zope.ComponentArchitecture import getDefaultViewName, getResource
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Security.Proxy import ProxyFactory
 from cStringIO import StringIO
 

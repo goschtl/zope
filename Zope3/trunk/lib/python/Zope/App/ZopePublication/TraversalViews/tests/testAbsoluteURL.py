@@ -14,13 +14,13 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: testAbsoluteURL.py,v 1.5 2002/07/17 16:54:21 jeremy Exp $
+$Id: testAbsoluteURL.py,v 1.6 2002/10/04 18:37:24 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Interface import Interface
 
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getService, getView
 
 from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets

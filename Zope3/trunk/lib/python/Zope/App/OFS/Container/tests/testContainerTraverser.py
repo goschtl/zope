@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testContainerTraverser.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: testContainerTraverser.py,v 1.3 2002/10/04 18:37:16 jim Exp $
 """
 
 import unittest, sys
@@ -23,7 +23,7 @@ from Zope.App.OFS.Container.ContainerTraverser import ContainerTraverser
 from Interface import Interface
 from Zope.Exceptions import NotFoundError
 from Zope.App.OFS.Container.IContainer import IContainer
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 class I(Interface): pass
 

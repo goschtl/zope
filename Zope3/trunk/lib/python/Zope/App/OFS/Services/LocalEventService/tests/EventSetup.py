@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: EventSetup.py,v 1.4 2002/07/12 19:28:32 jim Exp $
+$Id: EventSetup.py,v 1.5 2002/10/04 18:37:20 jim Exp $
 """
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
   import PlacefulSetup
@@ -65,11 +65,6 @@ class EventSetup(PlacefulSetup):
         from Zope.App.Traversing.EtcNamespace import etc
         provideNamespaceHandler('etc', etc)
         
-        from Zope.Event.IEventService import IEventService
-        from Zope.Event.GlobalEventService import eventService
-        globsm=getServiceManager(None)
-        globsm.defineService("Events", IEventService)
-        globsm.provideService("Events", eventService)
         self.createEventService()
     
     def createEventService(self, folder=None):

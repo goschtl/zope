@@ -18,7 +18,7 @@ from Interface.Implements import instancesOfObjectImplements
 
 from ZODB.MappingStorage import DB
 
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter 
 
 from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets

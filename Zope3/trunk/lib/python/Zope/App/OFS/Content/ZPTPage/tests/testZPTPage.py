@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: testZPTPage.py,v 1.2 2002/06/10 23:28:07 jim Exp $
+$Id: testZPTPage.py,v 1.3 2002/10/04 18:37:18 jim Exp $
 """
 
 import unittest
@@ -22,7 +22,7 @@ import unittest
 from Zope.App.OFS.Content.ZPTPage.ZPTPage import ZPTPage
 
 # Wow, this is a lot of work. :(
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.App.Traversing.Traverser import Traverser
 from Zope.App.Traversing.ITraverser import ITraverser
 from Zope.App.Traversing.DefaultTraversable import DefaultTraversable

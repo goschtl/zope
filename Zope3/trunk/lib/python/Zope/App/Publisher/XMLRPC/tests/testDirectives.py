@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.4 2002/06/29 15:41:41 srichter Exp $
+$Id: testDirectives.py,v 1.5 2002/10/04 18:37:24 jim Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.ComponentArchitecture.tests.TestViews import IC, V1, VZMI, R1, RZMI
 from Zope.ComponentArchitecture import getView, queryView
 from Zope.ComponentArchitecture import getDefaultViewName
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Security.Proxy import ProxyFactory
 from cStringIO import StringIO
 

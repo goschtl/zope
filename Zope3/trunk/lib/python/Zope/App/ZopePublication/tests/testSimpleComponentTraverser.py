@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testSimpleComponentTraverser.py,v 1.2 2002/06/10 23:29:22 jim Exp $
+$Id: testSimpleComponentTraverser.py,v 1.3 2002/10/04 18:37:25 jim Exp $
 """
 
 import unittest, sys
@@ -22,7 +22,7 @@ from Zope.App.ZopePublication.Traversers import SimpleComponentTraverser
 from Zope.ComponentArchitecture import getService
 from Interface import Interface
 from Zope.Exceptions import NotFoundError
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 class I(Interface): pass
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSQLCommand.py,v 1.4 2002/08/01 18:42:16 jim Exp $
+$Id: testSQLCommand.py,v 1.5 2002/10/04 18:37:24 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,7 +22,7 @@ from Zope.App.RDB.IConnectionService import IConnectionService
 from Zope.App.RDB.IZopeConnection import IZopeConnection
 from Zope.App.RDB.IZopeCursor import IZopeCursor
 from Zope.App.ComponentArchitecture import NextService
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalServiceManager import \
      serviceManager as sm
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuService.py,v 1.2 2002/07/17 16:54:19 jeremy Exp $
+$Id: testGlobalBrowserMenuService.py,v 1.3 2002/10/04 18:37:23 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Exceptions import Forbidden, Unauthorized, DuplicationError
 from Interface import Interface
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 class I1(Interface): pass
 class I11(I1): pass

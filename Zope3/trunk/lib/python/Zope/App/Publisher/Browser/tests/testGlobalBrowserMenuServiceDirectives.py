@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.4 2002/10/01 12:49:08 jim Exp $
+$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.5 2002/10/04 18:37:23 jim Exp $
 """
 
 from StringIO import StringIO
@@ -24,7 +24,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 import Zope.App.Publisher.Browser
 

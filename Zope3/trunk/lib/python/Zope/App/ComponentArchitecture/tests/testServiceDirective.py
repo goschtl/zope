@@ -32,7 +32,7 @@ from Zope.App.ComponentArchitecture.tests.TestService \
 
 import Zope.App.ComponentArchitecture
 from Zope.ComponentArchitecture import getService
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 
 
 template = """<zopeConfigure
