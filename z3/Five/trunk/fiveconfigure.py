@@ -99,7 +99,7 @@ def classTraversable(class_):
 
 def traversable(_context, class_):
     _context.action(
-        discriminator = ('five:traversable', class_,),
+        discriminator = None,
         callable = classTraversable,
         args = (class_,)
         )
@@ -131,7 +131,7 @@ def classDefaultViewable(class_):
 
 def defaultViewable(_context, class_):
     _context.action(
-        discriminator = ('five:defaultViewable', class_,),
+        discriminator = None,
         callable = classDefaultViewable,
         args = (class_,)
         )
@@ -145,7 +145,7 @@ def viewable(_context, class_):
         DeprecationWarning)
 
     _context.action(
-        discriminator = ('five:traversable', class_),
+        discriminator = None,
         callable = classTraversable,
         args=(class_,)
         )
