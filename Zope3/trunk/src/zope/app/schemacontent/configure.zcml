@@ -33,23 +33,6 @@
       />
   </content>
 
-
-<!-- Content Component Menu Item -->
-
-  <content class=".content.ContentComponentDefinitionMenuItem">
-
-    <require
-      permission="zope.ManageServices"
-      interface=".interfaces.IContentComponentMenuItem"
-      set_schema=".interfaces.IContentComponentMenuItem" />
-
-  </content>
-
-  <adapter
-     for=".interfaces.IContentComponentDefinition"
-     provides=".interfaces.IContentComponentMenuItem"
-     factory=".content.ContentComponentDefinitionMenuItem" />
-
 <!-- Content Component Instance -->
 
   <content class=".content.ContentComponentInstance">

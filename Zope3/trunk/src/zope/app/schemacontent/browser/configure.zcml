@@ -62,15 +62,6 @@
       menu="zmi_views" title="Define Permissions"
       permission="zope.ManageContent"/>
 
-  <editform
-      for="zope.app.schemacontent.interfaces.IContentComponentDefinition"
-      schema="zope.app.schemacontent.interfaces.IContentComponentMenuItem"
-      name="menuItem.html"
-      menu="zmi_views" title="Menu Item"
-      fields="menuId interface create title description permission 
-              filter_string"
-      permission="zope.ManageContent"/>
-
   <defaultView
       for="zope.app.schemacontent.interfaces.IContentComponentDefinition"
       name="edit.html" />
