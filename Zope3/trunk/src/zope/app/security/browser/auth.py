@@ -134,4 +134,4 @@ class LoginLogout(object):
             label = _('[Logout]')
         return u'<a href="%s?nextURL=%s">%s</a>' % (
             page, urllib.quote(self.request.getURL()),
-            translate(label, context=self.request))
+            translate(label, context=self.request, default=label))
