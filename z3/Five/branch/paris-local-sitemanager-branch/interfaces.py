@@ -31,6 +31,15 @@ class IFiveSite(ISite):
     """Five specialization of ISite
     """
 
+class IServiceProvider(Interface):
+    """Lookup a service for a given context
+    """
+
+    def getService(name):
+        """Given a service name, find the service within the adapted
+        context and return it, or raise a ComponentLookupError.
+        """
+
 class IPersistentExtra(Interface):
 
     def bobobase_modification_time():
@@ -232,7 +241,7 @@ class IDAVResource(IWriteLock):
         """
         Init expected HTTP 1.1 / WebDAV headers which are not
         currently set by the base response object automagically.
-        
+
         Note we set an borg-specific header for ie5 :( Also, we sniff
         for a ZServer response object, because we don't want to write
         duplicate headers (since ZS writes Date and Connection
@@ -384,18 +393,18 @@ class ITraversable(Interface):
 
     def unrestrictedTraverse(path, default=None, restricted=0):
         """Lookup an object by path,
-        
+
         path -- The path to the object. May be a sequence of strings or a slash
         separated string. If the path begins with an empty path element
         (i.e., an empty string or a slash) then the lookup is performed
         from the application root. Otherwise, the lookup is relative to
         self. Two dots (..) as a path element indicates an upward traversal
         to the acquisition parent.
-        
+
         default -- If provided, this is the value returned if the path cannot
         be traversed for any reason (i.e., no object exists at that path or
         the object is inaccessible).
-        
+
         restricted -- If false (default) then no security checking is performed.
         If true, then all of the objects along the path are validated with
         the security machinery. Usually invoked using restrictedTraverse().
@@ -1235,4 +1244,4 @@ class IMenuItemType(IInterface):
     Menu item types are interfaces that define classes of
     menu items.
     """
-        
+

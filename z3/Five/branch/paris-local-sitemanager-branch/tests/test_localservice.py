@@ -312,14 +312,14 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         clearSite()
 
     def test_getServicesHook(self):
-        from Products.FiveTest.localsite import SimpleService
+        from Products.Five.localsite import LocalService
         local_sm = getServices(None)
         self.failIf(local_sm is serviceManager)
-        self.failUnless(isinstance(local_sm, SimpleService))
+        self.failUnless(isinstance(local_sm, LocalService))
 
         local_sm = getServices(self.site)
         self.failIf(local_sm is serviceManager)
-        self.failUnless(isinstance(local_sm, SimpleService))
+        self.failUnless(isinstance(local_sm, LocalService))
 
     def test_getUtilityService(self):
         from Products.FiveTest.localsite import SimpleLocalUtilityService

@@ -12,15 +12,20 @@ $Id: traversable.py 9776 2005-03-15 09:18:43Z dreamcatcher $
 
 from zope.event import notify
 from zope.interface import directlyProvides, directlyProvidedBy
+from zope.interface import implements
+from zope.component import getGlobalServices
+from zope.component.interfaces import IServiceService
 from zope.component.exceptions import ComponentLookupError
 from zope.app.site.interfaces import ISite
 from zope.app.site.interfaces import IPossibleSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
+from zope.component.servicenames import Adapters
 
 from interfaces import IFiveSite
 from ExtensionClass import Base
 from Acquisition import aq_base, aq_inner, aq_parent
 from Products.SiteAccess.AccessRule import AccessRule
+from Products.Five.interfaces import IServiceProvider
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 
@@ -87,3 +92,44 @@ def disableLocalSiteHook(obj):
         delattr(obj, HOOK_NAME)
 
     directlyProvides(obj, directlyProvidedBy(obj) - ISite)
+
+class LocalService:
+    implements(IServiceService)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getServiceDefinitions(self):
+        """Retrieve all Service Definitions
+
+        Should return a list of tuples (name, interface)
+        """
+        return getGlobalServices().getServiceDefinitions()
+
+    def getInterfaceFor(self, name):
+        """Retrieve the service interface for the given name
+        """
+        return getGlobalServices().getInterfaceFor(name)
+
+    def getService(self, name):
+        """Retrieve a service implementation
+
+        Raises ComponentLookupError if the service can't be found.
+        """
+        if name not in (Adapters,):
+            adapted = IServiceProvider(self.context, None)
+            if adapted is not None:
+                return adapted.getService(name)
+        return getGlobalServices().getService(name)
+
+class FiveSiteAdapter:
+    implements(IFiveSite)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getSiteManager(self):
+        return LocalService(self.context)
+
+    def setSiteManager(self, sm):
+        return

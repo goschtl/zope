@@ -420,14 +420,9 @@
 
   <include package="zope.app.form.browser"/>
 
-  <adapter
-      for=".interfaces.IDummySite"
-      provides="Products.Five.interfaces.IFiveSite"
-      factory=".localsite.SimpleFiveSiteAdapter"
-      />
-
   <five:localsitehook
       class=".localsite.DummySite"
+      service_provider=".localsite.ServiceProvider"
       />
 
 </configure>

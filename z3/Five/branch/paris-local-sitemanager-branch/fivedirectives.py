@@ -109,4 +109,7 @@ class IFiveLocalSiteHook(Interface):
         title=u"Class",
         required=True
         )
-
+    service_provider = GlobalObject(
+        title=u"Service Provider",
+        required=False
+        )

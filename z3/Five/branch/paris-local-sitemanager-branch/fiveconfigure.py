@@ -17,12 +17,16 @@ import os
 import glob
 import warnings
 from zope.interface import classImplements
+from zope.interface.interface import InterfaceClass
 from zope.configuration import xmlconfig
+from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.interface import provideInterface
+from zope.app.component.metaconfigure import adapter
 from zope.app.site.interfaces import IPossibleSite
 from viewable import Viewable
 from traversable import Traversable
 from localsite import FiveSite
+from interfaces import IServiceProvider
 from bridge import fromZ2Interface
 from browserconfigure import page
 
@@ -208,7 +212,13 @@ def classFiveSiteHook(class_):
             FiveSite.setSiteManager.im_func)
     setattr(class_, '__five_possible_site__', True)
 
-def installFiveSiteHook(_context, class_):
+count = 0
+def next():
+    global count
+    count += 1
+    return count
+
+def installFiveSiteHook(_context, class_, service_provider=None):
     _context.action(
         discriminator = None,
         callable = classFiveSiteHook,
@@ -219,3 +229,14 @@ def installFiveSiteHook(_context, class_):
         callable = classImplements,
         args=(class_, IPossibleSite)
         )
+    if service_provider:
+        if not IServiceProvider.implementedBy(service_provider):
+            raise ConfigurationError('Global object does not implement '
+                                     'IServiceProvider: %s' % service_provider)
+        # Generate a marker interface that should be unique, so that
+        # we can register the service provider only for this class.
+        iface = InterfaceClass('I%s' % next())
+        adapter(_context, factory=(service_provider,),
+                provides=IServiceProvider,
+                for_=(iface,))
+        classImplements(class_, iface)
