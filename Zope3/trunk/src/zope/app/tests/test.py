@@ -759,7 +759,7 @@ def main(module_filter, test_filter, libdir):
     files.sort()
 
     # Make sure functional tests find ftesting.zcml
-    if files and functional:
+    if functional:
         config_file = FTESTING
         if not pathinit.inplace:
             # We chdired into build, so ftesting.zcml is in the
