@@ -1,0 +1,31 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<body>
+<div metal:fill-slot="body">
+
+   <h1 i18n:translate="">PageletContent View</h1>
+
+  <div class="row">
+    <div class="label">
+        <label>Title</label>
+    </div>
+    <div class="field">
+		<span tal:content="view/title">title</span>
+    </div>
+  </div>
+
+  <div class="row">
+    	<div class="label">
+        <label>Description</label>
+      </div>
+      <div class="field">
+				<span tal:content="view/description">description</span>
+      </div>
+	</div>
+
+  <div class="row">
+		<tal:block metal:use-macro="pagelet:zope.app.demo.pageletchooser.interfaces.IFirstLevelPagelets/firstlevel" />
+	</div>
+
+</div>
+
+</body></html>

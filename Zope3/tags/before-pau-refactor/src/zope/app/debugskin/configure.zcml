@@ -1,0 +1,24 @@
+<configure xmlns="http://namespaces.zope.org/browser">
+
+  <layer name="debug" />
+  <skin 
+      name="Debug" 
+      layers="debug zope.app.rotterdam.rotterdam default" />
+
+  <page
+      for="zope.security.interfaces.IUnauthorized"
+      name="index.html"
+      permission="zope.Public"
+      template="unauthorized.pt"
+      class="zope.app.exception.browser.unauthorized.Unauthorized"
+      layer="debug" />
+
+  <page 
+      name="index.html"
+      template="error_debug.pt"
+      for="zope.interface.common.interfaces.IException"
+      class=".exceptions.ExceptionDebugView"
+      permission="zope.Public"
+      layer="debug" />
+
+</configure>
