@@ -13,7 +13,7 @@
 ##############################################################################
 import unittest
 
-from zope.app.interfaces.size import ISized
+from zope.app.size.interfaces import ISized
 
 class DummyObject:
 

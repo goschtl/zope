@@ -83,7 +83,7 @@
 
   <adapter
       for=".interfaces.IZPTPage"
-      provides="zope.app.interfaces.size.ISized"
+      provides="zope.app.size.interfaces.ISized"
       factory=".zptpage.Sized"
       />
 

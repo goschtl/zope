@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.2 2004/02/24 16:49:50 philikon Exp $
+$Id: test_image.py,v 1.3 2004/03/03 11:04:00 philikon Exp $
 """
 
 import unittest
@@ -137,7 +137,7 @@ class TestFileFactory(unittest.TestCase):
 class TestSized(unittest.TestCase):
 
     def testInterface(self):
-        from zope.app.interfaces.size import ISized
+        from zope.app.size.interfaces import ISized
         self.failUnless(ISized.isImplementedByInstancesOf(ImageSized))
         self.failUnless(verifyClass(ISized, ImageSized))
 

@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.3 2004/03/02 14:40:17 philikon Exp $
+$Id: test_zptpage.py,v 1.4 2004/03/03 11:04:05 philikon Exp $
 """
 
 import unittest
@@ -143,7 +143,7 @@ class DummyZPT:
 class SizedTests(unittest.TestCase):
 
     def testInterface(self):
-        from zope.app.interfaces.size import ISized
+        from zope.app.size.interfaces import ISized
         self.failUnless(ISized.isImplementedByInstancesOf(Sized))
         self.failUnless(verifyClass(ISized, Sized))
 

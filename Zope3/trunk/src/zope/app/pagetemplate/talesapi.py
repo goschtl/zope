@@ -13,12 +13,11 @@
 ##############################################################################
 """Implementation of the Zope TALES API
 
-
-$Id: talesapi.py,v 1.8 2004/03/01 15:02:53 philikon Exp $
+$Id: talesapi.py,v 1.9 2004/03/03 11:04:01 philikon Exp $
 """
 from zope.app.interfaces.talesapi import IZopeTalesAPI
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.interfaces.size import ISized
+from zope.app.size.interfaces import ISized
 from zope.app import zapi
 from zope.interface import implements
 from zope.tales.interfaces import ITALESFunctionNamespace

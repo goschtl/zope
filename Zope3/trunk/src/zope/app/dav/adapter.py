@@ -13,14 +13,14 @@
 ##############################################################################
 """WebDAV Adapters
 
-$Id: adapter.py,v 1.5 2004/03/01 15:02:48 philikon Exp $
+$Id: adapter.py,v 1.6 2004/03/03 11:03:59 philikon Exp $
 """
 
 from xml.dom import minidom
 from zope.component import getAdapter, queryAdapter
 from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.interfaces.file import IReadDirectory
-from zope.app.interfaces.size import ISized
+from zope.app.size.interfaces import ISized
 from zope.app import zapi
 
 class DAVSchemaAdapter:

@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
+$Id: image.py,v 1.3 2004/03/03 11:03:59 philikon Exp $
 """
 import struct
 from cStringIO import StringIO
 
 from zope.interface import implements
 
-from zope.app.interfaces.size import ISized
+from zope.app.size.interfaces import ISized
 from zope.app.size import byteDisplay
 from zope.app.content_types import guess_content_type
 from zope.app.i18n import ZopeMessageIDFactory as _

@@ -13,13 +13,13 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.33 2004/03/03 10:52:01 philikon Exp $
+$Id: contents.py,v 1.34 2004/03/03 11:03:57 philikon Exp $
 """
 
 from zope.exceptions import NotFoundError
 
 from zope.app import zapi
-from zope.app.interfaces.size import ISized
+from zope.app.size.interfaces import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageIDFactory as _

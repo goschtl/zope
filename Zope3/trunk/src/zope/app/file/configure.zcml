@@ -99,7 +99,7 @@
 
   <adapter
       factory=".image.ImageSized"
-      provides="zope.app.interfaces.size.ISized"
+      provides="zope.app.size.interfaces.ISized"
       for=".interfaces.IImage"
       />
 
