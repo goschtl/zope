@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: z3.py,v 1.7 2002/11/25 17:07:32 jeremy Exp $
+$Id: z3.py,v 1.8 2002/11/25 17:08:02 jeremy Exp $
 """
 
 import os, sys
@@ -38,8 +38,8 @@ def run(argv=sys.argv):
     # setting python paths
     program = argv[0]
     here = os.path.join(os.getcwd(), os.path.split(program)[0])
-    libpython = os.path.join(here,'lib','python') 
-    sys.path=[libpython, here] + basepath
+    libpython = os.path.join(here, 'lib', 'python') 
+    sys.path = [libpython, here] + basepath
 
     # temp hack
     dir = os.getcwd()
