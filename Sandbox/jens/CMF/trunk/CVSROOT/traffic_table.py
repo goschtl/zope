@@ -73,13 +73,13 @@ def init_table():
         {'path': "Products3(/|$)",
          'addrs': ["zope3-checkins@zope.org"]},
 
-        {'path': "StandaloneZODB",
-         'addrs': ["zodb-checkins@zope.org"]},
         {'path': "ZODB3",
          'addrs': ["zodb-checkins@zope.org"]},
         {'path': "ZODB4",
          'addrs': ["zodb-checkins@zope.org"]},
-        
+        {'path': "ZEO",
+         'addrs': ['zodb-checkins@zope.org']},
+
         {'path': "CMF",
          'addrs': ['cmf-checkins@zope.org']},
 
@@ -100,9 +100,6 @@ def init_table():
 
         {'path': "Products/ParsedXML",
          'addrs': ["parsed-xml-dev@zope.org"]},
-
-        {'path': "ZEO",
-         'addrs': ['zodb-checkins@zope.org']},
 
         {'path': "ZopeDocs",
          'addrs': ['zopedocs-checkins@zope.org']},
