@@ -363,7 +363,7 @@
       permission="zope.ManageServices"
       />
 
-<!-- Persistent Modules --> <include package="./module" />
+<!-- Persistent Modules --> <include package=".module" />
 
 <!-- PageFolder -->
 
