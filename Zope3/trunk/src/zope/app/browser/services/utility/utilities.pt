@@ -32,10 +32,10 @@
               tal:replace="config/summary" />
       </td>
       <td>
-        <a href="."
+        (<a href="."
            tal:attributes="href config/configurl"
            i18n:translate=""
-           >(change registration)</a>
+           >change registration</a>)
       </td>
     </tr>
   </table>
