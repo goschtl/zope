@@ -18,7 +18,10 @@ $Id$
 
 from datetime import datetime
 
+import zope.event
+
 from zope.app import content_types
+from zope.app.event import objectevent
 from zope.app.file.file import File
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -111,6 +114,7 @@ class FileAdd(FileUpdateView):
 
     def update_object(self, data, contenttype):
         f = File(data, contenttype)
+        zope.event.notify(objectevent.ObjectCreatedEvent(f))
         self.context.add(f)
         self.request.response.redirect(self.context.nextURL())
         return ''
