@@ -1,0 +1,40 @@
+principal
+
+  File zope/app/security/meta.zcml, lines 11 - 15.
+
+  Handler: zope.app.security.metaconfigure.principal
+
+  Define a new principal.
+
+  Attributes
+
+    id -- Id (required)
+
+      Id
+
+      Id as which this object will be known and used.
+
+    title -- TextLine (required)
+
+      Title
+
+      Provides a title for the object.
+
+    description -- TextLine (optional, default=None)
+
+      Title
+
+      Provides a description for the object.
+
+    login -- TextLine (required)
+
+      Username/Login
+
+      Specifies the Principal's Username/Login.
+
+    password -- TextLine (required)
+
+      Password
+
+      Specifies the Principal's Password.
+
