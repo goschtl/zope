@@ -33,7 +33,7 @@
   <browser:page
       for="zope.app.interfaces.content.file.IFile"
       name="preview.html"
-      menu="zmi_views" title="Preview" 
+      menu="zmi_views" title="Preview"
       template="preview.pt"
       permission="zope.ManageContent"
       />
@@ -43,12 +43,12 @@
       name="index.html"
       permission="zope.View"
       class="zope.app.browser.content.file.FileView"
-      attribute="show" 
+      attribute="show"
       />
 
   <browser:menuItem menu="add_content"
       for="zope.app.interfaces.container.IAdding"
-      title="File" 
+      title="File"
       action="File"
       description="A file object, suitable for large data."
       />
@@ -59,7 +59,7 @@
       file="file_icon.gif"
       />
 
-  <help:register 
+  <help:register
       id="file_upload"
       title="File Upload Screen"
       parent="ui"
@@ -83,12 +83,12 @@
       class="zope.app.browser.content.i18n.I18nFileEdit">
 
       <browser:page
-          name="editForm.html" 
-          template="i18n_edit.pt" 
+          name="editForm.html"
+          template="i18n_edit.pt"
           />
       <browser:page
           name="edit.html"
-          attribute="action" 
+          attribute="action"
           />
 
   </browser:pages>
@@ -110,7 +110,7 @@
       for="zope.app.interfaces.container.IAdding"
       title="I18n File"
       action="zope.app.content.I18nFile"
-      description="A file that supports multiple locales." 
+      description="A file that supports multiple locales."
       />
 
 <!-- Image -->
@@ -130,29 +130,29 @@
       for="zope.app.content.image.IImage"
       permission="zope.View"
       allowed_attributes="__call__ tag"
-      class="zope.app.browser.content.image.ImageData" 
+      class="zope.app.browser.content.image.ImageData"
       />
 
   <browser:page
       for="zope.app.interfaces.content.image.IImage"
       name="preview.html"
-      menu="zmi_views" title="Preview" 
+      menu="zmi_views" title="Preview"
       template="preview.pt"
       permission="zope.ManageContent"
       />
 
-  <browser:icon 
-      name="zmi_icon" 
-      for="zope.app.content.image.IImage" 
-      file="image_icon.gif" 
+  <browser:icon
+      name="zmi_icon"
+      for="zope.app.content.image.IImage"
+      file="image_icon.gif"
       />
 
-  <browser:menuItem 
+  <browser:menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
-      title="Image" 
+      title="Image"
       action="Image"
-      description="This object helps you manage your images." 
+      description="This object helps you manage your images."
       />
 
 <!-- I18n Image -->
@@ -162,7 +162,7 @@
       for="zope.app.interfaces.content.i18nimage.II18nImage"
       permission="zope.View"
       allowed_attributes="__call__ tag"
-      class="zope.app.browser.content.i18nimage.I18nImageData" 
+      class="zope.app.browser.content.i18nimage.I18nImageData"
       />
 
   <browser:pages
@@ -175,8 +175,8 @@
 
       </browser:pages>
 
-  <browser:menuItems 
-      menu="zmi_views" 
+  <browser:menuItems
+      menu="zmi_views"
       for="zope.app.content.i18nimage.II18nImage"
       >
 
@@ -192,33 +192,33 @@
   <browser:menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
-      title="I18n Image" 
+      title="I18n Image"
       action="I18nImage"
-      description="A multi-locale version of an Image." 
+      description="A multi-locale version of an Image."
       />
 
 <!-- ZPT Page View Directives -->
 
   <browser:page
-      name="index.html" 
+      name="index.html"
       for="zope.app.content.zpt.IZPTPage"
       class="zope.app.browser.content.zpt.ZPTPageEval"
-      attribute="index" 
+      attribute="index"
       permission="zope.View"
       />
 
   <browser:page
-      name="source.html" 
+      name="source.html"
       for="zope.app.content.zpt.IZPTPage"
       class="zope.app.content.zpt.ZPTSourceView"
-      attribute="__call__" 
+      attribute="__call__"
       permission="zope.ManageContent"
       />
 
   <browser:editform
       schema="zope.app.content.zpt.IZPTPage"
       name="edit.html"
-      menu="zmi_views" 
+      menu="zmi_views"
       label="Edit a ZPT page"
       permission="zope.ManageContent"
       />
@@ -226,7 +226,7 @@
   <browser:page
       for="zope.app.content.zpt.IZPTPage"
       name="preview.html"
-      menu="zmi_views" title="Preview" 
+      menu="zmi_views" title="Preview"
       template="preview.pt"
       permission="zope.ManageContent"
       />
@@ -238,43 +238,43 @@
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="Templated Page" action="ZPTPage"
-      description="An object for dynamic content based on Page Templates." 
+      description="An object for dynamic content based on Page Templates."
       />
 
 <!-- Folder View Directives -->
   <browser:icon
-      name="zmi_icon" 
+      name="zmi_icon"
       for="zope.app.interfaces.content.folder.IFolder"
-      file="folder_icon.gif" 
+      file="folder_icon.gif"
       />
 
   <browser:menuItem menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="Folder" action="Folder"
-      description="A simple Folder." 
+      description="A simple Folder."
       />
 
   <browser:page
-      name="contents.html" 
+      name="contents.html"
       menu="zmi_views" title="Contents"
       for="zope.app.interfaces.content.folder.IFolder"
-      permission="zope.ManageContent" 
+      permission="zope.ManageContent"
       class="zope.app.browser.container.contents.Contents"
       attribute="contents"
       />
 
   <browser:page
-      name="index.html" 
+      name="index.html"
       for="zope.app.interfaces.content.folder.IFolder"
-      permission="zope.View" 
+      permission="zope.View"
       class="zope.app.browser.container.contents.Contents"
-      attribute="index" 
+      attribute="index"
       />
 
   <browser:page
       for="zope.app.interfaces.content.folder.IFolder"
       name="preview.html"
-      menu="zmi_views" title="Preview" 
+      menu="zmi_views" title="Preview"
       template="preview.pt"
       permission="zope.ManageContent"
       />
@@ -306,11 +306,11 @@
       class="zope.app.browser.content.sql.SQLScriptTest" >
 
     <browser:page
-        name="test.html" 
-        template="sqltest.pt" 
+        name="test.html"
+        template="sqltest.pt"
         />
     <browser:page
-        name="testResults.html" 
+        name="testResults.html"
         template="sqltestresults.pt" />
 
   </browser:pages>
@@ -327,7 +327,7 @@
       for="zope.app.interfaces.container.IAdding"
       title="SQLScript"
       action="SQLScript"
-      description="A content object getting its data from a RDB." 
+      description="A content object getting its data from a RDB."
       />
 
 <!-- DTML Page View Directives -->
@@ -337,7 +337,7 @@
       for="zope.app.content.dtmlpage.IDTMLPage"
       permission="zope.View"
       class="zope.app.browser.content.dtmlpageeval.DTMLPageEval"
-      attribute="index" 
+      attribute="index"
       />
 
   <browser:editform
@@ -351,39 +351,39 @@
   <browser:page
       for="zope.app.content.dtmlpage.IDTMLPage"
       name="preview.html"
-      menu="zmi_views" title="Preview" 
+      menu="zmi_views" title="Preview"
       template="preview.pt"
       permission="zope.ManageContent"
       />
 
-  <browser:icon 
+  <browser:icon
       name="zmi_icon"
-      for="zope.app.content.dtmlpage.IDTMLPage" 
-      file="dtml.gif" 
+      for="zope.app.content.dtmlpage.IDTMLPage"
+      file="dtml.gif"
       />
 
-  <browser:menuItem 
+  <browser:menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="DTML Page" action="DTMLPage"
-      description="An object for dynamic content based on Document Templates." 
+      description="An object for dynamic content based on Document Templates."
       />
 
 
 <!-- XML Document View Directives -->
 
   <browser:page
-      name="index.html" 
+      name="index.html"
       for="zope.app.content.xmldocument.IXMLDocument"
       class="zope.app.browser.content.xmldocument.XMLDocumentView"
-      attribute="show" 
+      attribute="show"
       permission="zope.View"
       />
 
   <browser:editform
       schema="zope.app.content.xmldocument.IXMLDocument"
       name="edit.html"
-      menu="zmi_views" 
+      menu="zmi_views"
       label="Edit an XML document"
       permission="zope.ManageContent"
       />
@@ -397,7 +397,7 @@
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="XML Document" action="XMLDocument"
-      description="An object storing XML text." 
+      description="An object storing XML text."
       />
 
   <!-- toFS.snarf and fromFS.snarf views, for new fssync tools -->
@@ -408,7 +408,7 @@
       name="toFS.snarf"
       permission="zope.ManageServices"
       class="zope.app.browser.content.fssync.SnarfFile"
-      attribute="show" 
+      attribute="show"
       />
 
   <!-- fssync commit -->

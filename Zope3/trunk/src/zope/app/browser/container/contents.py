@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.23 2003/06/18 16:03:32 jim Exp $
+Revision information: $Id: contents.py,v 1.24 2003/07/01 15:27:31 sidnei Exp $
 """
 
 from zope.app import zapi
@@ -110,7 +110,7 @@ class Contents(BrowserView):
         self.supportsRename = self.supportsCut and self.supportsPaste
 
         return info
-        
+
 
     def _extractContentInfo(self, item):
         request = self.request
@@ -123,10 +123,10 @@ class Contents(BrowserView):
         elif "rename_ids" in request:
             for rename_id in request.get('rename_ids', ()):
                 rename_ids[rename_id] = rename_id
-                
-        
+
+
         retitle_id = request.get('retitle_id')
-        
+
         id, obj = item
         info = {}
         info['id'] = info['cb_id'] = id
@@ -135,7 +135,7 @@ class Contents(BrowserView):
         info['url'] = id
         info['rename'] = rename_ids.get(id)
         info['retitle'] = id == retitle_id
-        
+
 
         zmi_icon = zapi.queryView(obj, 'zmi_icon', self.request)
         if zmi_icon is None:
@@ -147,7 +147,7 @@ class Contents(BrowserView):
         if dc is not None:
             info['retitleable'] = id != retitle_id
             info['plaintitle'] = 0
-            
+
             title = dc.title
             if title:
                 info['title'] = title
@@ -207,9 +207,9 @@ class Contents(BrowserView):
 
             adding.action(request['type_name'], new)
 
-            
 
-            
+
+
     def removeObjects(self):
         """Remove objects specified in a list of object ids"""
         request = self.request
@@ -217,7 +217,7 @@ class Contents(BrowserView):
         if not ids:
             self.error = _("You didn't specify any ids to remove.")
             return
-                 
+
         container = zapi.getAdapter(self.context, IZopeContainer)
         for id in ids:
             container.__delitem__(id)
@@ -229,7 +229,7 @@ class Contents(BrowserView):
         if not ids:
             self.error = _("You didn't specify any ids to copy.")
             return
-                 
+
         container_path = zapi.getPath(self.context)
 
         user = self.request.user
@@ -293,7 +293,7 @@ class Contents(BrowserView):
 
         annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        
+
         clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
 
         if clipboard.getContents():

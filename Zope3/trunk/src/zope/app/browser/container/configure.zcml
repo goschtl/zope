@@ -1,8 +1,8 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/browser'>
-   
+
    <view
        for="zope.app.interfaces.container.IContentContainer"
-       name="+" 
+       name="+"
        menu="zmi_actions" title="Add"
        class="zope.app.browser.container.adding.Adding"
        permission="zope.ManageContent"
@@ -11,21 +11,21 @@
 
        <page name="index.html"  template="add.pt" />
        <page name="action.html" attribute="action" />
-   
+
        </view>
 
   <page
       for="zope.app.interfaces.container.IReadContainer"
-      name="find.html" 
+      name="find.html"
       menu="zmi_actions"
       title="Find"
-      permission="zope.ManageContent" 
+      permission="zope.ManageContent"
       class="zope.app.browser.container.find.Find"
-      attribute="index" 
+      attribute="index"
       />
 
   <page for="zope.app.interfaces.container.IWriteContainer"
-      permission="zope.ManageContent" 
+      permission="zope.ManageContent"
       name="commonTasks"
       class="zope.app.browser.container.contents.Contents"
       template="commontasks.pt" />

@@ -22,14 +22,14 @@
              />
 
       <div class="page_error"
-           tal:condition="view/error" 
+           tal:condition="view/error"
            tal:content="view/error">
         Error message
       </div>
 
       <table id="sortable" class="listing" summary="Content listing">
-    
-        <thead> 
+
+        <thead>
           <tr>
             <th>&nbsp;</th>
             <th>Name</th>
@@ -53,7 +53,7 @@
         <metal:block tal:define="supportsRename view/supportsRename"
                      tal:repeat="item container_contents">
           <tr tal:define="oddrow repeat/item/odd; url item/url"
-              tal:attributes="class python:oddrow and 'even' or 'odd'" > 
+              tal:attributes="class python:oddrow and 'even' or 'odd'" >
             <td>
               <input type="checkbox" class="noborder" name="ids:list" id="#"
                      value="#"
@@ -61,25 +61,25 @@
                                      id item/cb_id;
                                      checked request/ids_checked|nothing;"/>
             </td>
-            <td><a href="#" 
-                 tal:attributes="href 
+            <td><a href="#"
+                 tal:attributes="href
                                  string:${url}/@@SelectedManagementView.html"
                  tal:content="structure item/icon|default">
                 </a
                 ><span tal:condition="item/rename"
-                   ><input name="new_value:list" 
+                   ><input name="new_value:list"
                      tal:attributes="value item/id"
                      /><input type="hidden" name="rename_ids:list" value=""
                               tal:attributes="value item/rename"
                      /></span
                 ><span tal:condition="not:item/rename">
-                  <a href="#" 
-                     tal:attributes="href 
+                  <a href="#"
+                     tal:attributes="href
                                  string:${url}/@@SelectedManagementView.html"
                      tal:content="item/id"
                      >foo</a
-                  ><a href="#" 
-                     tal:attributes="href 
+                  ><a href="#"
+                     tal:attributes="href
                          string:${request/URL}?rename_ids:list=${item/id}"
                      tal:condition="supportsRename"
                      >&nbsp;&nbsp;</a
@@ -90,16 +90,16 @@
                      tal:attributes="value item/title|nothing"
                      tal:condition="item/retitle"
                      />
-              <a href="#" 
-                 tal:attributes="href 
+              <a href="#"
+                 tal:attributes="href
                                  string:${request/URL}?retitle_id=${item/id}"
                  tal:condition="item/retitleable"
                  tal:content="item/title|default"
-                 >&nbsp;&nbsp;&nbsp;&nbsp;</a> 
-              <span 
+                 >&nbsp;&nbsp;&nbsp;&nbsp;</a>
+              <span
                  tal:condition="item/plaintitle"
                  tal:content="item/title|default"
-                 >&nbsp;&nbsp;&nbsp;&nbsp;</span> 
+                 >&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </td>
             <td><span tal:attributes="size item/size/sizeForSorting"
                       tal:content="item/size/sizeForDisplay">&nbsp;</span></td>
@@ -110,25 +110,25 @@
           </tr>
         </metal:block>
 
-        </tbody> 
+        </tbody>
       </table>
 
       <div tal:condition="view/normalButtons">
         <input type="submit" name="container_rename_button" value="Rename"
-               i18n:attributes="value container_rename_button" 
+               i18n:attributes="value container_rename_button"
                tal:condition="view/supportsRename"
                />
         <input type="submit" name="container_cut_button" value="Cut"
-               i18n:attributes="value container_cut_button" 
+               i18n:attributes="value container_cut_button"
                tal:condition="view/supportsCut"
                />
         <input type="submit" name="container_copy_button" value="Copy"
-               i18n:attributes="value container_copy_button" 
+               i18n:attributes="value container_copy_button"
                tal:condition="view/supportsCopy"
                />
         <input type="submit" name="container_paste_button" value="Paste"
-               tal:condition="view/hasClipboardContents" 
-               i18n:attributes="value container_paste_button" 
+               tal:condition="view/hasClipboardContents"
+               i18n:attributes="value container_paste_button"
                />
         <input type="submit" name="container_delete_button" value="Delete"
                i18n:attributes="value container_delete_button"
@@ -138,10 +138,10 @@
 
       <div tal:condition="view/specialButtons">
         <input type="submit" value="Apply"
-               i18n:attributes="value container_apply_button" 
+               i18n:attributes="value container_apply_button"
                />
         <input type="submit" name="container_cancel_button" value="Cancel"
-               i18n:attributes="value container_cancel_button" 
+               i18n:attributes="value container_cancel_button"
                />
       </div>
 
