@@ -496,7 +496,7 @@ def AddViewFactory(name, schema, label, permission, layer,
 
     s.provideView(for_, name, IBrowserRequest, class_, layer)
 
-class AddFormDirective(BaseFormDirective):
+class AddFormDirective(FiveFormDirective):
 
     view = AddView
     default_template = 'add.pt'

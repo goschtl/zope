@@ -324,6 +324,20 @@
      name="addsimplecontent.html"
      permission="zope2.Public"
      />
+     
+  <browser:addform
+     schema=".interfaces.IFieldSimpleContent"
+     content_factory=".simplecontent.FieldSimpleContent"
+     name="addwidgetoverride.html"
+     permission="zope2.Public">
+
+     <widget
+         field="description"
+         class="zope.app.form.browser.TextAreaWidget"
+         />
+         
+  </browser:addform>
+
 
   <!-- stuff that we'll override in overrides.zcml -->
 
