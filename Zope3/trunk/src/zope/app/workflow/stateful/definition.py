@@ -24,7 +24,7 @@ from zope.security.checker import CheckerPublic
 
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.contained import Contained, containedEvent
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectEvent, modified
 from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
@@ -118,7 +118,7 @@ class StatefulProcessDefinition(ProcessDefinition):
     def _publishModified(self, name, object):
         object, event = containedEvent(object, self, name)
         if event:
-            publish(self, event)
+            notify(event)
             modified(self)
 
     def getRelevantDataSchema(self):

@@ -15,21 +15,14 @@
 
 $Id$
 """
-from zope.app.servicenames import EventPublication
-from zope.app.event.interfaces import IPublisher, ISubscriber, IObjectEvent
-from zope.app.event.globalservice import eventPublisher
-from zope.app.event.objectevent import objectEventNotifierInstance
+
+from zope.app.event.interfaces import IObjectEvent
+from zope.app.event.objectevent import objectEventNotify
 from zope.interface import implements
 from zope.component import getGlobalServices
+from zope.app.tests import ztapi
 
 events = []
-
-class EventRecorderClass:
-    implements(ISubscriber)
-
-    notify = events.append
-
-EventRecorder = EventRecorderClass()
 
 def getEvents(event_type=None, filter=None):
     r = []
@@ -48,17 +41,9 @@ def clearEvents():
 class PlacelessSetup:
 
     def setUp(self):
-        sm = getGlobalServices()
-        defineService = sm.defineService
-        provideService = sm.provideService
-
-        defineService(EventPublication, IPublisher)
-        provideService(EventPublication, eventPublisher)
-
         clearEvents()
-        eventPublisher.globalSubscribe(EventRecorder)
-        eventPublisher.globalSubscribe(objectEventNotifierInstance,
-                                       IObjectEvent)
+        ztapi.handle([None], events.append)
+        ztapi.handle([IObjectEvent], objectEventNotify)
 
 import zope.testing.cleanup
 zope.testing.cleanup.addCleanUp(clearEvents)

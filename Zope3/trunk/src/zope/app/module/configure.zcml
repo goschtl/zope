@@ -1,7 +1,4 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:event="http://namespaces.zope.org/event"
-    >
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <content class=".Manager">
     <require
@@ -20,9 +17,9 @@
       />
 
   <!-- Enable import of persistent modules -->
-  <event:subscribe
-      subscriber=".installPersistentModuleImporter"
-      event_types="zope.app.appsetup.IProcessStartingEvent"
+  <subscriber
+      factory=".installPersistentModuleImporter"
+      for="zope.app.appsetup.IProcessStartingEvent"
       />
 
   <include package=".browser" />

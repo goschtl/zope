@@ -18,7 +18,6 @@ $Id$
 
 from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve
 from interfaces import ISchemaManager
-from zope.app.event.interfaces import ISubscriber
 import logging
 import os
 import zope.interface
@@ -352,18 +351,13 @@ def evolve(db, how=EVOLVE):
         conn.close()
 
 
-class EvolveSubscriber:
 
-    zope.interface.implements(ISubscriber)
+def evolveSubscriber(event):
+    evolve(event.database, EVOLVE)
 
-    def __init__(self, flag):
-        self.flag = flag
+def evolveNotSubscriber(event):
+    evolve(event.database, EVOLVENOT)
 
-    def notify(self, event):
-        evolve(event.database, self.flag)
-
-
-evolveSubscriber = EvolveSubscriber(EVOLVE)
-evolveNotSubscriber = EvolveSubscriber(EVOLVENOT)
-evolveMinimumSubscriber = EvolveSubscriber(EVOLVEMINIMUM)
+def evolveMinimumSubscriber(event):
+    evolve(event.database, EVOLVEMINIMUM)
 

@@ -26,27 +26,20 @@ from zope.proxy import removeAllProxies
 from zope.component.exceptions import ComponentLookupError
 
 from zope.app import zapi
-from zope.app.event.interfaces import ISubscriber
 from zope.app.traversing.api import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.folder import rootFolder
-from zope.app.servicenames import HubIds, PrincipalAnnotation
-from zope.app.servicenames import EventPublication, EventSubscription
+from zope.app.servicenames import PrincipalAnnotation
 from zope.app.servicenames import ErrorLogging, Utilities
 from zope.app.site.service import ServiceManager, ServiceRegistration
-from zope.app.event.localservice import EventService
 from zope.app.errorservice import RootErrorReportingService
-from zope.app.event import function
 from zope.app.container.interfaces import INameChooser
 from zope.app.utility import UtilityRegistration, LocalUtilityService
 
 # XXX It should be possible to remove each of these from the basic
-# bootstrap, at which point we can remove the zope.app.hub,
+# bootstrap, at which point we can remove the
 # zope.app.principalannotation, and zope.app.session packages from
 # zope.app.
-
-from zope.app.hub import ObjectHub, Registration
-from zope.app.hub.interfaces import ISubscriptionControl
 
 from zope.app.principalannotation import PrincipalAnnotationService
 
@@ -63,8 +56,6 @@ class BootstrapSubscriberBase:
     method.
     """
 
-    implements(ISubscriber)
-
     def doSetup(self):
         """Instantiate some service.
 
@@ -72,7 +63,7 @@ class BootstrapSubscriberBase:
         """
         pass
 
-    def notify(self, event):
+    def __call__(self, event):
 
         db = event.database
         connection = db.open()
@@ -167,29 +158,6 @@ class BootstrapInstance(BootstrapSubscriberBase):
         XXX This ought to be configurable.  For now, hardcode some
         services we know we all need.
         """
-        # The EventService class implements two services
-        name = self.ensureService(EventPublication, EventService)
-        if name:
-            configureService(self.root_folder, EventSubscription, name)
-        elif not self.service_manager.queryLocalService(EventSubscription):
-            pub = self.service_manager.queryLocalService(EventPublication)
-            name = zapi.getName(pub)
-            configureService(self.root_folder, EventSubscription, name)
-
-        # Add the HubIds service, which subscribes itself to the event service
-        name = self.ensureService(HubIds, ObjectHub)
-        # Add a Registration object so that the Hub has something to do.
-        name = self.ensureObject('Registration',
-                                 ISubscriptionControl, Registration)
-
-        if name:
-            package = getServiceManagerDefault(self.root_folder)
-            reg = package[name]
-            # It's possible that we would want to reindex all objects when
-            # this is added - this seems like a very site-specific decision,
-            # though.
-            reg.subscribe()
-
 
         # Sundry other services
         self.ensureService(ErrorLogging,

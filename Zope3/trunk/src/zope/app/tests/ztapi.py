@@ -74,6 +74,9 @@ def subscribe(required, provided, factory):
     s = zapi.getGlobalServices().getService(Adapters)
     s.subscribe(required, provided, factory)
 
+def handle(required, handler):
+    subscribe(required, None, handler)
+
 def provideUtility(provided, component, name=''):
     s = zapi.getGlobalServices().getService(Utilities)
     s.provideUtility(provided, component, name)

@@ -130,7 +130,6 @@
 <subscriber
    for="..interfaces.IProcessInstanceContainerAdaptable
         zope.app.event.objectevent.IObjectCreatedEvent"
-   provides="zope.app.event.interfaces.ISubscriber"
    factory=".contentworkflow.NewObjectProcessInstanceCreator"
    >
 

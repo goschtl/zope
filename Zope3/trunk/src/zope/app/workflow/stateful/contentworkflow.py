@@ -21,9 +21,8 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 
 from zope.app import zapi
-from zope.app.event.interfaces import ISubscriber
 from zope.app.event.interfaces import IObjectCreatedEvent
-from zope.app.servicenames import EventSubscription, Utilities
+from zope.app.servicenames import Utilities
 
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
@@ -33,41 +32,29 @@ from zope.interface import implements, providedBy
 from zope.app.container.contained import Contained
 
 
-class NewObjectProcessInstanceCreator(object):
-    implements(ISubscriber)
-    
-    __used_for__ = (IProcessInstanceContainerAdaptable, IObjectCreatedEvent)
+def NewObjectProcessInstanceCreator(obj, event):
+    #  used for: IProcessInstanceContainerAdaptable, IObjectCreatedEvent
 
-    __slots__ = ('event', )
+    pi_container = IProcessInstanceContainer(obj)
 
-    def __init__(self, obj, event):
-        self.event = event
+    for (ignored, cwf) in zapi.getUtilitiesFor(IContentWorkflowsManager):
+        # here we will lookup the configured processdefinitions
+        # for the newly created compoent. For every pd_name
+        # returned we will create a processinstance.
 
-    def notify(self, ignored_event):
-        """See zope.app.event.interfaces.ISubscriber"""
-        event = self.event
-        obj = event.object
+        # Note that we use getUtilitiesFor rather than getAllUtilitiesFor
+        # so that we don't use overridden content-workflow managers.
 
-        pi_container = IProcessInstanceContainer(obj)
+        for pd_name in cwf.getProcessDefinitionNamesForObject(obj):
 
-        for (ignored, cwf) in zapi.getUtilitiesFor(IContentWorkflowsManager):
-            # here we will lookup the configured processdefinitions
-            # for the newly created compoent. For every pd_name
-            # returned we will create a processinstance.
-
-            # Note that we use getUtilitiesFor rather than getAllUtilitiesFor
-            # so that we don't use overridden content-workflow managers.
-            
-            for pd_name in cwf.getProcessDefinitionNamesForObject(obj):
-
-                if pd_name in pi_container.keys():
-                    continue
-                try:
-                    pi = createProcessInstance(cwf, pd_name)
-                except KeyError:
-                    # No registered PD with that name..
-                    continue
-                pi_container[pd_name] = pi
+            if pd_name in pi_container.keys():
+                continue
+            try:
+                pi = createProcessInstance(cwf, pd_name)
+            except KeyError:
+                # No registered PD with that name..
+                continue
+            pi_container[pd_name] = pi
         
 
 class ContentWorkflowsManager(Persistent, Contained):

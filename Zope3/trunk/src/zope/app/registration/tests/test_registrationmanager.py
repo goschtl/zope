@@ -18,7 +18,8 @@ from unittest import TestSuite, TestCase, main, makeSuite
 from doctest import DocTestSuite
 from zope.app.registration.interfaces import IRegistrationManager
 from zope.app.registration.registration import RegistrationManager
-from zope.app.registration.registration import RegistrationManagerRemoveSubscriber
+from zope.app.registration.registration \
+     import RegistrationManagerRemoveSubscriber
 from zope.app.site.tests import placefulsetup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.api import traverse
@@ -354,18 +355,17 @@ class TestRegistrationManagerRemoveSubscriber:
         First create a dummy registration manager with some
         initial data.
         
-        >>> regmgr = DummyRM()
-        >>> regmgr['foo'] = 'bar'
+          >>> regmgr = DummyRM()
+          >>> regmgr['foo'] = 'bar'
 
-        Create an adapter for it.
-        >>> adapter = RegistrationManagerRemoveSubscriber(regmgr, None)
+        Notify:
 
-        Trigger the event.
-        >>> adapter.notify(None)
+          >>> RegistrationManagerRemoveSubscriber(regmgr, None)
 
         Check the results.
-        >>> regmgr
-        {}
+
+          >>> regmgr
+          {}
         
         """
 

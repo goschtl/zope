@@ -41,7 +41,6 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IContainer
-from zope.app.event.function import Subscriber
 from zope.app.registration.interfaces import IRegistry
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.api import getPath

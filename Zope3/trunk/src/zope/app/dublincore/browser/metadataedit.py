@@ -16,7 +16,7 @@
 $Id$
 """
 from datetime import datetime
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
@@ -35,7 +35,7 @@ class MetaDataEdit:
         if 'dctitle' in request:
             dc.title = request['dctitle']
             dc.description = request['dcdescription']
-            publish(self.context, ObjectAnnotationsModifiedEvent(self.context))
+            notify(ObjectAnnotationsModifiedEvent(self.context))
             message = _("Changed data ${datetime}")
             message.mapping = {'datetime': formatter.format(datetime.utcnow())}
 

@@ -24,10 +24,8 @@ from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.event.tests.placelesssetup import eventPublisher, EventRecorder
-from zope.app.event.tests.placelesssetup import clearEvents
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
-from zope.app.event.interfaces import IObjectCreatedEvent, ISubscriber
+from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.utility import UtilityRegistration
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.registration.interfaces import ActiveStatus
@@ -161,8 +159,7 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
 
         obj = TestObject2()
         event = ObjectCreatedEvent(obj)
-        subscriber = NewObjectProcessInstanceCreator(obj, event)
-        subscriber.notify(event)
+        NewObjectProcessInstanceCreator(obj, event)
         pi = obj.__annotations__['zope.app.worfklow.ProcessInstanceContainer']
         self.assertEqual(pi.keys(), ['definition2', 'definition1'])
 

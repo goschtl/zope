@@ -18,10 +18,9 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import IContainer
-from zope.app.event.interfaces import IEvent
 
 
-class IWorkflowEvent(IEvent):
+class IWorkflowEvent(Interface):
     """This event describes a generic event that is triggered by the workflow
     mechanism."""
 

@@ -23,7 +23,6 @@ from zope.component.presentation import IDefaultViewName
 from zope.component.presentation import PresentationRegistration
 
 import zope.app.container.contained
-import zope.app.event.interfaces
 import zope.app.registration.interfaces
 import zope.app.site.interfaces
 import zope.app.adapter
@@ -473,36 +472,20 @@ class PageRegistration(ViewRegistration):
 
     factory = property(factory)
 
-class PageRegistrationAddSubscriber(object):
-    implements(zope.app.event.interfaces.ISubscriber)
-
-    def __init__(self, page_registration, event):
-        self.page_registration = page_registration
-        self.event = event
-        
-    def notify(self, event):
-        self = self.page_registration
-        if self.template:
-            template = zapi.traverse(self.__parent__.__parent__,self.template)
-            dependents = IDependable(template)
-            objectpath = zapi.getPath(self)
-            dependents.addDependent(objectpath)
+def PageRegistrationAddSubscriber(self, event):
+    if self.template:
+        template = zapi.traverse(self.__parent__.__parent__,self.template)
+        dependents = IDependable(template)
+        objectpath = zapi.getPath(self)
+        dependents.addDependent(objectpath)
 
 
-class PageRegistrationRemoveSubscriber(object):
-    implements(zope.app.event.interfaces.ISubscriber)
-
-    def __init__(self, page_registration, event):
-        self.page_registration = page_registration
-        self.event = event
-
-    def notify(self, event):
-        self = self.page_registration
-        if self.template:
-            template = zapi.traverse(self.__parent__.__parent__,self.template)
-            dependents = IDependable(template)
-            objectpath = zapi.getPath(self)
-            dependents.removeDependent(objectpath)
+def PageRegistrationRemoveSubscriber(self, event):
+    if self.template:
+        template = zapi.traverse(self.__parent__.__parent__,self.template)
+        dependents = IDependable(template)
+        objectpath = zapi.getPath(self)
+        dependents.removeDependent(objectpath)
 
 #XXX can't make new-style class b/c of unpickling error...
 class TemplateViewFactory:

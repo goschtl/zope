@@ -20,7 +20,6 @@ $Id$
 import ZODB.broken
 import zope.interface
 import zope.app.location.interfaces
-import zope.app.event.function
 import zope.security.checker
 
 
@@ -127,5 +126,3 @@ def installBroken(event):
         return find_global(modulename, globalname, Broken_, type_)
 
     event.database.classFactory = classFactory
-
-installBrokenSubscriber = zope.app.event.function.Subscriber(installBroken)

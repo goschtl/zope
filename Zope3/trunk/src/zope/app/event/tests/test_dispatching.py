@@ -1,31 +1,29 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
-"""
+"""Test the event dispatching code
+
 $Id$
 """
+import unittest
+from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.event.interfaces import IEvent
-from globalservice import globalSubscribeMany
 
-directive_counter = 0
-def subscribe(_context, subscriber, event_types=[IEvent], filter=None):
-    global directive_counter
-    directive_counter += 1
+def test_suite():
+    return unittest.TestSuite((
+        DocTestSuite('zope.app.event.dispatching'),
+        ))
 
-    _context.action(
-        # subscriptions can never conflict
-        discriminator = ('subscribe', directive_counter),
-        callable = globalSubscribeMany,
-        args = (subscriber, event_types, filter)
-        )
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
+

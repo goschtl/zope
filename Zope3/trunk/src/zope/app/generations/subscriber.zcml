@@ -1,28 +1,28 @@
-<configure xmlns="http://namespaces.zope.org/event">
+<configure xmlns="http://namespaces.zope.org/zope">
 
 <!--
-<subscribe
-    subscriber=".generations.evolveSubscriber"
-    event_types="zope.app.appsetup.IDatabaseOpenedEvent" 
+<subscriber
+    factory=".generations.evolveSubscriber"
+    for="zope.app.appsetup.IDatabaseOpenedEvent" 
     >
     Evolve to current generation on startup
-</subscribe>
+</subscriber>
 -->
 
 <!--
-<subscribe
-    subscriber=".generations.evolveNotSubscriber"
-    event_types="zope.app.appsetup.IDatabaseOpenedEvent" 
+<subscriber
+    factory=".generations.evolveNotSubscriber"
+    for="zope.app.appsetup.IDatabaseOpenedEvent" 
     >
     Don't evolve, but check for minimum generations on startup
-</subscribe>
+</subscriber>
 -->
 
-<subscribe
-    subscriber=".generations.evolveMinimumSubscriber"
-    event_types="zope.app.appsetup.IDatabaseOpenedEvent" 
+<subscriber
+    factory=".generations.evolveMinimumSubscriber"
+    for="zope.app.appsetup.IDatabaseOpenedEvent" 
     >
     Only evolve to minimum generations on startup
-</subscribe>
+</subscriber>
 
 </configure>

@@ -43,8 +43,6 @@ class TestServices(unittest.TestCase):
         expected = [{'url': '', 'disabled': False, 'manageable': False,
                      'name': 'Adapters', 'parent': u'global'},
                     {'url': '', 'disabled': False, 'manageable': False,
-                     'name': 'EventPublication', 'parent': u'global'},
-                    {'url': '', 'disabled': False, 'manageable': False,
                      'name': 'Presentation', 'parent': u'global'},
                     {'url': '', 'disabled': False, 'manageable': False,
                      'name': 'Services', 'parent': u'global'},

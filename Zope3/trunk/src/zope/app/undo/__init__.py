@@ -19,7 +19,6 @@ from zope.interface import implements
 from zope.exceptions import NotFoundError
 
 from zope.app import zapi
-from zope.app.event import function
 from zope.app.undo.interfaces import IUndoManager, UndoError
 from zope.app.servicenames import Utilities
 from zope.app.traversing.interfaces import IPhysicallyLocatable
@@ -30,8 +29,6 @@ def undoSetup(event):
     # setup undo functionality
     svc = zapi.getGlobalService(Utilities)
     svc.provideUtility(IUndoManager, ZODBUndoManager(event.database))
-
-undoSetup = function.Subscriber(undoSetup)
 
 class Prefix(str):
     """A prefix is equal to any string it is a prefix of.

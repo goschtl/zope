@@ -24,7 +24,6 @@ from zope.schema import Text, BytesLine, Bool
 
 from zope.app.container.contained import Contained
 from zope.app.registration.interfaces import IRegisterable
-from zope.app.index.interfaces.text import ISearchableText
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
 from zope.fssync.server.interfaces import IObjectFile
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
@@ -104,31 +103,6 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
         namespace = self.pt_getContext(view, args=args, options=kw)
 
         return self.pt_render(namespace)
-
-# Adapter for ISearchableText
-
-tag = re.compile(r"<[^>]+>")
-class SearchableText:
-
-    implements(ISearchableText)
-    __used_for__ = IZPTTemplate
-
-    def __init__(self, page):
-        self.page = page
-
-    def getSearchableText(self):
-        text = self.page.source
-        if isinstance(text, str):
-            text = unicode(self.page.source, 'utf-8')
-        # else:
-        #   text was already Unicode, which happens, but unclear how it
-        #   gets converted to Unicode since the ZPTPage stores UTF-8 as
-        #   an 8-bit string.
-
-        if self.page.contentType.startswith('text/html'):
-            text = tag.sub('', text)
-
-        return [text]
 
 # Adapters for file-system emulation
 

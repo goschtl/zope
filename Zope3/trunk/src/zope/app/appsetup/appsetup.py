@@ -18,9 +18,8 @@ $Id$
 import zope.interface
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
-from zope.app.event.interfaces import IEvent
 
-class IDatabaseOpenedEvent(IEvent):
+class IDatabaseOpenedEvent(zope.interface.Interface):
     """The main database has been opened."""
 
     database = zope.interface.Attribute("The main database.")
@@ -31,7 +30,7 @@ class DatabaseOpened:
     def __init__(self, database):
         self.database = database
 
-class IProcessStartingEvent(IEvent):
+class IProcessStartingEvent(zope.interface.Interface):
     """The application server process is starting."""
 
 class ProcessStarting:
@@ -89,7 +88,7 @@ def database(db):
             db = DB(storage, cache_size=4000)
 
     # The following will fail unless the application has been configured.
-    from zope.app.event import publish
-    publish(None, DatabaseOpened(db))
+    from zope.event import notify
+    notify(DatabaseOpened(db))
 
     return db

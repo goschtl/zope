@@ -22,7 +22,6 @@ from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
-from zope.app.event.interfaces import ISubscriber
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.mail.interfaces import IMailDelivery
@@ -129,9 +128,6 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
         ztapi.provideUtility(IMailDelivery, delivery,
                              name='wiki-delivery')
 
-    def test_Interface(self):
-        self.failUnless(ISubscriber.providedBy(mailer))
-
     def test_getAllSubscribers(self):
         wiki = Wiki()
         wiki_sub = MailSubscriptions(wiki)
@@ -155,7 +151,7 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
         wiki['page1'] = page
         page.source = 'Hello World!'
         event = ObjectModifiedEvent(page)
-        mailer.notify(event)
+        mailer(event)
         self.assertEqual('wiki@zope3.org', 
                          mail_result[0][0])
         self.assertEqual(('blah@bar.com', 'foo@bar.com'), mail_result[0][1])

@@ -32,7 +32,7 @@ from zope.app.container.interfaces import IContainer
 from zope.app.traversing.api import traverseName, getName
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.container.contained import contained
@@ -359,7 +359,7 @@ class Committer(object):
                     except:
                         pass
                     else:
-                        publish(obj, ObjectModifiedEvent(obj))
+                        notify(ObjectModifiedEvent(obj))
 
     def create_object(self, container, name, entry, fspath, replace=False,
                       context=None):
@@ -428,7 +428,7 @@ def set_item(container, name, obj, replace=False):
     """Helper to set an item in a container or mapping."""
     if IContainer.providedBy(container):
         if not replace:
-            publish(container, ObjectCreatedEvent(obj))
+            notify(ObjectCreatedEvent(obj))
         if replace:
             del container[name]
 

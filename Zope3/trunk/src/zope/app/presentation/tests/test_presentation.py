@@ -26,7 +26,6 @@ from zope.interface.verify import verifyObject
 
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectRemovedEvent
-from zope.app.event.interfaces import ISubscriber
 from zope.app.folder import rootFolder
 from zope.app.presentation.zpt import IZPTTemplate
 from zope.app.site.service import ServiceManager
@@ -462,8 +461,8 @@ class TestPageRegistration(PlacefulSetup, TestCase):
     def test_registerAddSubscriber_template(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
                              PhonyPathAdapter)
-        ztapi.subscribe((IPageRegistration, IObjectAddedEvent), ISubscriber,
-                        PageRegistrationAddSubscriber)
+        ztapi.handle((IPageRegistration, IObjectAddedEvent),
+                     PageRegistrationAddSubscriber)
         registration = PageRegistration(I1, 'test', 'zope.View', "Foo.Bar.A",
                                         template='/++etc++site/default/t')
         
@@ -475,8 +474,8 @@ class TestPageRegistration(PlacefulSetup, TestCase):
     def test_registerRemoveSubscriber_template(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
                              PhonyPathAdapter)
-        ztapi.subscribe((IPageRegistration, IObjectRemovedEvent), ISubscriber,
-                        PageRegistrationRemoveSubscriber)
+        ztapi.handle((IPageRegistration, IObjectRemovedEvent),
+                     PageRegistrationRemoveSubscriber)
         registration = PageRegistration(I1, 'test', 'zope.View', "Foo.Bar.A",
                                         template='/++etc++site/default/t')
 

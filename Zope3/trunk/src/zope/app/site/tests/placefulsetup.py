@@ -75,14 +75,7 @@ class PlacefulSetup(PlacelessSetup):
     def createRootFolder(self):
         self.rootFolder = rootFolder()
 
-    # The following is a hook that some base classes might want to override.
-    def getObjectHub(self):
-        from zope.app.hub import ObjectHub
-        return ObjectHub()
-
     def createStandardServices(self):
         '''Create a bunch of standard placeful services'''
 
-        setup.createStandardServices(self.rootFolder,
-                                     hubids=self.getObjectHub())
-
+        setup.createStandardServices(self.rootFolder)

@@ -18,7 +18,7 @@ $Id$
 import sys
 
 from zope.app import zapi
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -103,7 +103,7 @@ class AddView(EditView):
         if errors:
             raise WidgetsError(*errors)
 
-        publish(self.context, ObjectCreatedEvent(content))
+        notify(ObjectCreatedEvent(content))
 
         content = self.add(content)
 

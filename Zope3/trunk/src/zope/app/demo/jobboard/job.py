@@ -47,7 +47,7 @@ class Job(Persistent):
 
 
 from persistent.dict import PersistentDict
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 
 class JobList(Persistent):

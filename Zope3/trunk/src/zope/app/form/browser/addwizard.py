@@ -18,7 +18,7 @@ $Id$
 import sys
 
 from zope.app import zapi
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import WidgetsError, IInputWidget
@@ -87,7 +87,7 @@ class AddWizardView(EditWizardView):
         if errors:
             raise WidgetsError(*errors)
 
-        publish(self.context, ObjectCreatedEvent(content))
+        notify(ObjectCreatedEvent(content))
 
         content = self.context.add(content)
 

@@ -16,7 +16,7 @@ $Id$
 from zope.app import zapi
 from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 
 class NullResource(object):
@@ -46,7 +46,7 @@ class NullResource(object):
 
         factory = IDirectoryFactory(container)
         newdir = factory(name)
-        publish(self.context, ObjectCreatedEvent(newdir))
+        notify(ObjectCreatedEvent(newdir))
         dir[name] = newdir
 
         request.response.setStatus(201)

@@ -22,7 +22,6 @@ from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 
 from zope.component.service import serviceManager
-from zope.app.event.tests.placelesssetup import eventPublisher, EventRecorder
 from zope.app.event.tests.placelesssetup import events, clearEvents
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
@@ -114,7 +113,6 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.pi = createProcessInstance(self.sm, 'definition1')
         # Let's also listen to the fired events
         clearEvents()
-        eventPublisher.globalSubscribe(EventRecorder)
 
 
     def testInterface(self):

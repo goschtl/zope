@@ -20,7 +20,6 @@ from zodbcode.module import PersistentModule, compileModule
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
 
-from zope.app.event import function
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.module.interfaces import IModuleManager
@@ -108,6 +107,3 @@ class ModuleFactory(object):
 def installPersistentModuleImporter(event):
     from zodbcode.module import PersistentModuleImporter
     PersistentModuleImporter().install()
-
-installPersistentModuleImporter = function.Subscriber(
-    installPersistentModuleImporter)

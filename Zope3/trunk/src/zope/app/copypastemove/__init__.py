@@ -20,7 +20,7 @@ from zope.proxy import removeAllProxies
 
 from zope.app import zapi
 from zope.app.container.sample import SampleContainer
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove.interfaces import IObjectCopier
@@ -374,7 +374,7 @@ class ObjectCopier:
         copy = removeAllProxies(obj)
         copy = locationCopy(copy)
         copy.__parent__ = copy.__name__ = None
-        publish(target, ObjectCopiedEvent(copy))
+        notify(ObjectCopiedEvent(copy))
 
         target[new_name] = copy
 
