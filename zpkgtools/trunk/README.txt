@@ -26,7 +26,6 @@ An online version of the documentation is available at:
   http://www.zope.org/Members/fdrake/zpkgtools/
 
 
-
 Running the unit tests
 ----------------------
 
@@ -39,6 +38,14 @@ found in the same directory as this README.txt file::
   ......................................................................
   ........................................
   ----------------------------------------------------------------------
-  Ran 180 tests in 0.931s
+  Ran 197 tests in 0.931s
 
   OK
+
+
+Reporting Bugs
+--------------
+
+Bugs in this package should be reported in the Zope 3 collector:
+
+  http://collector.zope.org/Zope3-dev/
