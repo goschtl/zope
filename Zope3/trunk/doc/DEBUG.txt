@@ -1,0 +1,44 @@
+Using the Zope Debugger
+
+  Introduction
+  
+    Zope3 includes a mechanism to debug an object publishing request, 
+    similiar to the Zope2 
+    "debug mechanism":http://www.zope.org/Members/mcdonc/HowTos/UsingTheZopeDebugger
+
+  Setting up Environment
+
+    Setup your PYTHONPATH environment variable to include
+    lib/python.. ie (unix bash syntax)::
+
+      cd Zope3
+      export PYTHONPATH=$PWD/lib/python:$PYTHONPATH
+    
+    To start interacting with the debugger you need to initialize the
+    zope application::
+
+      python2.2
+      >> from Zope.App import Application
+      >> app = Application('path/to/zodb/', 'path/to/site.zcml')
+            
+  Using the Debugger
+
+    Once you have the application object you can call its debug method
+    to debug a zope object publication.
+
+    the debug method takes several arguments, the more useful/common ones...
+
+      - path - the url path to debug
+
+      - basic - user:password used for http basic auth (it will be
+        base64 encoded by the debug method).
+
+      - pm - if this boolean flag is set, zope will not attempt to
+        catch exceptions so the post-mortem debugger can be employed.
+
+    So to debug publishing the root object with user foo::
+
+       >> app.debug(path='/', basic="foo:passwd")
+
+    Which will return the http response (including headers) to stdout.
+
