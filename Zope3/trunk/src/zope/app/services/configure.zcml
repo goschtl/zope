@@ -399,8 +399,9 @@
         permission='zope.ManageServices' />
     <require
         permission="zope.View"
-        attributes="notify lookupRuid lookupLocation getObject
-                    register unregister" />
+	attributes="notify getHubId getLocation getObject
+                    register unregister numRegistrations
+                    getRegistrations" />		   
     <require
         permission="zope.ManageServices"
         attributes="bound unbound subscribe unsubscribe subscribeOnBind
