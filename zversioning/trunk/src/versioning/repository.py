@@ -27,27 +27,6 @@ import unittest
 from zope.testing import doctest
 from zope.app.tests import ztapi
 
-"""Just here for historical reasons, may be removed later
-class DummyHistoryStorage:
-    
-    def __init__(self):
-        self._histories = {}
-    
-    def getTicket(self, obj):
-        return id(obj)
-    
-    def _getHistory(self, obj):
-        return self._histories.setdefault(id(obj), [])
-    
-    def save(self, obj):
-        import copy
-        obj_copy = copy.copy(obj)
-        self._getHistory(obj).append(obj_copy)
-        return self.getTicket(obj_copy)
-        
-    def load(self, obj, selector):
-        return self._histories[id(obj)][selector]
-"""
 
 class DummyCheckoutAware(object):
     """Just ignores checkin and checkout without generating exceptions.
@@ -138,15 +117,11 @@ class CopyModifyMergeRepository(object):
             (obj, self.histories), IVersionableAspects)
         versionable_state.updateAspects(specifier)
         
-    def getVersionHistory(self, obj, selector):
-        versionable_state = zapi.getMultiAdapter(
-            (obj, self.histories), IVersionableAspects)
-        return versionable_state.getApsectsHistory(specifier)
+    def getVersionHistory(self, obj):
+        return self.histories.getVersionHistory(obj)
         
     def getMetadataHistory(self, obj):
-        versionable_state = zapi.getMultiAdapter(
-            (obj, self.histories), IVersionableAspects)
-        return versionable_state.getMetadataHistory(specifier)
+        return self.histories.getMetadataHistory(obj)
         
 
 class CheckoutCheckinRepository(CopyModifyMergeRepository):

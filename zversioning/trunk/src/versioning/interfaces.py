@@ -232,10 +232,24 @@ class ITicket(Interface) :
       
     """
 
-class IVersionHistory(INameChooser) :
-    """ A version history of a single object should be able to
-        generate unique names for each version within the version history.
+class IVersionHistory(Interface) :
+    """ A version history of a single object. We choose an interface
+        that is provided by any zope folder or container, but can
+        also be easily adapted by any other sequence of objects.
     """
+    
+    def keys() :
+        """ Returns a sequence of unique ids that can be used as access
+            keys. 
+        """
+    
+    def values() :
+        """ Returns a sequence of versioned objects.
+        """
+        
+    def __getitem__(key) :
+        """ Returns the version that is specified by the key. """
+  
     
 
 # XXX 

@@ -37,10 +37,7 @@ class VersionableAspectsAdapter(object) :
     def __init__(self, versionable, histories) :
         """ An adapter for transfering versionable aspects of an object to and from the
             version history of an object.
-            
-            context must be IVersionable
-            histories must be IHistories a storage of multiple object histories
-            
+          
             >>> from storage import SimpleHistoryStorage
             >>> from zope.app.tests.setup import buildSampleFolderTree
             >>> sample = buildSampleFolderTree()
@@ -65,25 +62,64 @@ class VersionableAspectsAdapter(object) :
         
     def writeAspects(self) :
         """ 
-            Save the versionable aspects of an original object into the object history.
+            Save the versionable aspects of an original object into 
+            the object history.
         """   
         history = self.histories.getHistory(self.versionable)
         return IObjectCopier(self.versionable).copyTo(history)        
       
-              
     def updateAspects(self, version_specifier) :
-        """ Read back the specified versioned aspects from the objects history. """
+        """ 
+            Read back the specified versioned aspects from the 
+            objects history.
+        """
+        
         history = self.histories.getHistory(self.versionable)
         version = history[version_specifier]
-        parent = self.versionable.__parent__
-        name = self.versionable.__name__       
+        self.copy(version, self.versionable)
+              
+    def copy(self, source, target) :
+        """ The internal copy routine """
+        parent = target.__parent__
+        name = target.__name__       
         del parent[name]
         IObjectCopier(version).copyTo(parent, name)
 
 
+class ReplaceWithCopyPolicy(VersionableAspectsAdapter) :
+    """ 
+        A specific policy that updates the original
+        by a replacement with a copy of versioned data.
+        As long as the user has only access via traversal
+        paths this policy requires that external python 
+        references are updated if needed.
+    """
   
+     def copy(self, source, target) :
+        """ Replaces the original with a copied version. """
+         
+        parent = target.__parent__
+        name = target.__name__       
+        del parent[name]
+        IObjectCopier(version).copyTo(parent, name)
+ 
+ 
+class UpdateStatusPolicy(VersionableAspectsAdapter) :
+    """ Implements a more complex policy that leaves Python
+        references of the original content objects intact.
+        
+        It also assumes that we only version objects
+        that have been persistently stored (and thus have a _p_oid)
+        
+    """
+    
+    def copy(self, source, target) :
+        """ Copies the state of source to target. """
+        for key, value in source.__getstate__.items() :
+            if key not in ('__name__', '__parent__') :
+                setattr(target, key, value)
 
-
+       
 
 def test_suite():
     return unittest.TestSuite((

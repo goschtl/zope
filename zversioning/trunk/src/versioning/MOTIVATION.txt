@@ -5,7 +5,7 @@ Motivation for a new Versioning Scheme
 
 We start by testing some of the existing infrastructure from zope.app.versioncontrol
 and try to apply the existing versioning to sample data. We take a simple
-folder tree with the following structure :
+folder tree with the following structure as our sample :
 
   sample
     |--> a <--|
@@ -18,12 +18,9 @@ folder tree with the following structure :
   >>> from zope.app.versioncontrol.repository import declare_versioned
   >>> from versioning.tests.repository_setup import registerAdapter
   >>> from zope.app.folder import Folder, rootFolder
-  >>> from zope.app.tests.setup import setUpTraversal
   >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
   >>> from ZODB.tests import util
   >>> from zope.app.versioncontrol.interfaces import IVersioned
-  >>> registerAdapter()
-  >>> setUpTraversal()
   >>> class TestFolder(Folder) :
   ...   zope.interface.implements(IPhysicallyLocatable)
   ...   def getPath(self) :
@@ -159,7 +156,7 @@ managed by a multi adapter that implements a versioning policy, i.e. determines
 how and what is versioned. The implementation here uses zope.app.copypastemove 
 to save each version as a normal copy of the original content object.
     
-    >>> from versioning.policies import VersionableAspectsAdapter
+    >>> import versioning.policies
     >>> def saveAsVersion(obj, histories) :       # a helper method XXX remove later
     ...     adapter = VersionableAspectsAdapter(obj, histories)
     ...     return adapter.writeAspects()
@@ -191,19 +188,19 @@ Now let's update the original object with versioned data. This again is a matter
 of the policy. The simple implementation here replaces the original data
 with a copy of the versioned data. 
     
-    >>> def revertToVersion(obj, histories, selector) :
-    ...     adapter = VersionableAspectsAdapter(obj, histories)
+    >>> def revertToVersionCopy(obj, histories, selector) :
+    ...     adapter = versioning.policies.ReplaceWithCopyPolicy(obj, histories)
     ...     adapter.updateAspects(selector)
-    >>> revertToVersion(c, histories, '001')
+    >>> revertToVersionCopy(c, histories, '001')
 
 The fact that we used copies here requires 
-that we use new references that are established via traversal: 
+that we establish new references via traversal: 
 
     >>> new_c = b["c"]
     >>> new_c.text
     'First text version of c'
 
-When we get back a version the reference to an old and untouced items is still
+The reference to an old and untouched item is still
 intact :
     
     >>> new_c.refers_to == a
@@ -211,13 +208,46 @@ intact :
    
 The more interesting case arises if we update the refered object too :
    
-    >>> revertToVersion(a, histories, '001')
+    >>> revertToVersionCopy(a, histories, '001')
     >>> new_a = sample["a"]
     >>> new_c.refers_to == a
     True
     >>> new_c.refers_to == new_a
     False
 
-Depending on the use case this might be what you want. 
+Depending on the use case this might be what you want.
+
+
+A Second Implementation
+=======================
+
+A second policy uses the same copy routines to move objects into 
+the storage of object histories. Therefore we need not set up the 
+repository again. 
+
+What differs is the way how to revert
+the original object with versioned data. This implementation
+does not replace the original with a copy but updates only all fields
+with the versioned values.
+
+    >>> def revertToVersionState(obj, histories, selector) :
+    ...     adapter = versioning.policies.UpdateStatusPolicy(obj, histories)
+    ...     adapter.updateAspects(selector)
+    >>> a = new_a
+    >>> a.text
+    'First text version of a'
+    >>> revertToVersionState(new_a, histories, '002')
+    >>> a.text
+    'Second text version of a'
+    >>> a == new_a
+    True
+    
+
+
+
+
+
+
+
 
 

@@ -84,10 +84,21 @@ class SimpleHistoryStorage(Folder) :
         self[ticket] = history
         return ticket
         
-    def getHistory(self, obj):
-        """Internal: return a version history given a version history id."""
+    def getVersionHistory(self, obj):
+        """ Returns a version history given a version history id."""
         ticket = self.getTicket(obj)
         return self[ticket]
+        
+    def listVersions(self, obj) :
+        """ Returns the versions of an object. The versions are
+            returned sorted in the order of appearance. """
+        list = self.history.values()
+        list.sort()
+        return list
+        
+    def getMetadataHistory(self, obj) :
+        """ Returns a version history given a version history id."""
+        NotImplementedError("metadata support not implemented")
         
     def getVersion(self, obj, selector) :
         """ Returns the version of an object that is specified by selector. """
