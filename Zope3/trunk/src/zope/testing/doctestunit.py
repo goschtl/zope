@@ -14,9 +14,9 @@
 """Extension to use doctest tests as unit tests
 
 This module provides a DocTestSuite contructor for converting doctest
-tests to unit tests. 
+tests to unit tests.
 
-$Id: doctestunit.py,v 1.7 2004/01/06 19:50:43 jim Exp $
+$Id: doctestunit.py,v 1.8 2004/02/03 21:53:33 sidnei Exp $
 """
 
 from StringIO import StringIO
@@ -121,7 +121,7 @@ def DocTestSuite(module=None,
         suite.addTest(DocTestTestCase(
             tester, name, doc, filename, lineno,
             setUp, tearDown))
-                      
+
 
     return suite
 
@@ -131,7 +131,7 @@ def _normalizeModule(module):
         # Test the calling module
         module = sys._getframe(2).f_globals['__name__']
         module = sys.modules[module]
-        
+
     elif isinstance(module, (str, unicode)):
         module = __import__(module, globals(), locals(), ["*"])
 
@@ -141,7 +141,7 @@ def _doc(name, object, tests, prefix, filename='', lineno=''):
     doc = getattr(object, '__doc__', '')
     if doc and doc.find('>>>') >= 0:
         tests.append((prefix+name, doc, filename, lineno))
-    
+
 
 def _findTests(module, prefix=None):
     if prefix is None:
@@ -182,7 +182,7 @@ def _find(items, module, dict, tests, prefix, minlineno=0):
             if not (hasattr(object, '__dict__')
                     and hasattr(object, '__bases__')):
                 continue # not a class
-            
+
             lineno = _find(object.__dict__.items(), module, dict, tests,
                            prefix+name+".")
 
@@ -190,10 +190,10 @@ def _find(items, module, dict, tests, prefix, minlineno=0):
                  lineno="%s (or above)" % (lineno-3))
 
     return minlineno
-        
-                      
-    
-    
+
+
+
+
 ####################################################################
 # doctest debugger
 
@@ -210,7 +210,7 @@ def testsource(module, name):
     Provide the module (or dotted name of the module) containing the
     test to be debugged and the name (within the module) of the object
     with the doc string with tests to be debugged.
-    
+
     """
     module = _normalizeModule(module)
     tests = _findTests(module, "")
@@ -232,7 +232,7 @@ def debug(module, name, pm=False):
     Provide the module (or dotted name of the module) containing the
     test to be debugged and the name (within the module) of the object
     with the doc string with tests to be debugged.
-    
+
     """
     module = _normalizeModule(module)
     testsrc = testsource(module, name)

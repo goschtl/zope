@@ -1,16 +1,16 @@
-<zope:configure 
+<zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <page 
+  <page
       name="login.html"
       for="*"
       class=".auth.HTTPAuthenticationLogin"
       attribute="login"
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.publisher.http.ILogin" />
-  
-  <page 
+
+  <page
       name="logout.html"
       for="*"
       class=".auth.HTTPAuthenticationLogout"
