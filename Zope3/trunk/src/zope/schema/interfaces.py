@@ -13,8 +13,11 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: interfaces.py,v 1.2 2002/12/25 14:15:20 jim Exp $
+$Id: interfaces.py,v 1.3 2003/01/07 19:49:26 stevea Exp $
 """
+
+from zope.interface import Interface
+
 
 class StopValidation(Exception):
     """This exception is raised, if the validation is done for sure early.
@@ -62,15 +65,8 @@ class ConversionErrorsAll(ErrorContainer):
     during the conversion process."""
 
 
-
-"""These are the interfaces for the common fields.
-
-$Id: interfaces.py,v 1.2 2002/12/25 14:15:20 jim Exp $
-"""
-from zope.interface import Interface
-
-from zope.schema._bootstrapfields \
-     import Field, Text, TextLine, Bool, Int, Container, Iterable
+from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
+from zope.schema._bootstrapfields import Container, Iterable
 
 class IField(Interface):
     """Basic Schema Field Interface.
