@@ -39,9 +39,9 @@ class ILDAPAdapter(Interface):
         default=389,
         required=True,
         )
-    baseDN = TextLine(
-        title=_("Base DN"),
-        default=u'',
+    useSSL = Bool(
+        title=_("Use SSL"),
+        default=False,
         )
     bindDN = TextLine(
         title=_("Bind DN"),
@@ -51,10 +51,6 @@ class ILDAPAdapter(Interface):
         title=_("Bind password"),
         default=u'',
         )
-    useSSL = Bool(
-        title=_("Use SSL"),
-        default=False,
-        )
 
     def connect(dn, password=None):
         """Connect to the server.
@@ -63,16 +59,6 @@ class ILDAPAdapter(Interface):
         """
 
 class ILDAPAdapterManagement(Interface):
-    #serverURL = TextLine(
-    #    title=_("Server URL"),
-    #    description=_(
-    #        "Specify the LDAP URL of the server. Examples:\n"
-    #        "\n"
-    #        "ldap:///\n",
-    #        "ldaps://localhost:389/\n",
-    #        ),
-    #    default=u"ldap://localhost",
-    #    )
     serverURL = LDAPURI(
         title=_("Server URL"),
         description=_(
@@ -82,10 +68,6 @@ class ILDAPAdapterManagement(Interface):
             "ldaps://localhost:389/\n",
             ),
         default="ldap://localhost",
-        )
-    baseDN = TextLine(
-        title=_("Base DN"),
-        default=u'',
         )
     bindDN = TextLine(
         title=_("Bind DN"),
@@ -150,8 +132,10 @@ class ICheckLDAPAdapter(Interface):
     """A test adapter for to test the connection between Zope and LDAP."""
 
     def testConnection():
-        """Returns a report about connecting the LDAP server.
-        
+        """Test the LDAP connection.
+
+        Returns a report about connecting the LDAP server.
+
         Each step of connecting the server is reported as a string
         in a report (list).
         """
