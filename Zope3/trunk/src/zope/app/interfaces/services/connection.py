@@ -13,15 +13,21 @@
 ##############################################################################
 """A configuration for a database adapter.
 
-$Id: connection.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: connection.py,v 1.3 2003/03/21 21:04:44 jim Exp $
 """
+from zope.app.services.field import ComponentPath
+from zope.app.interfaces.services import configuration 
+from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 
-from zope.app.interfaces.services.configuration \
-     import INamedComponentConfiguration
-
-class IConnectionConfiguration(INamedComponentConfiguration):
+class IConnectionConfiguration(configuration.INamedComponentConfiguration):
     """Database Connection Configuration
 
     Connection configurations are dependent on the database adapters that they
     configure. They register themselves as component dependents.
     """
+    
+    componentPath = ComponentPath(
+        type=IZopeDatabaseAdapter,
+        title=u"Component path",
+        description=u"The physical path to the component",
+        required=True)
