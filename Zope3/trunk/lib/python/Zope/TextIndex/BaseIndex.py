@@ -92,7 +92,7 @@ class BaseIndex(Persistent):
 
     def documentCount(self):
         """Return the number of documents in the index."""
-        return len(self.index._docweight)
+        return len(self._docweight)
 
     def get_words(self, docid):
         """Return a list of the wordids for a given docid."""

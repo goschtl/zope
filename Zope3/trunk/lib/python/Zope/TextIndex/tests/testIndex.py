@@ -31,6 +31,9 @@ class IndexTest(TestCase):
         doc = "simple document contains five words"
         self.assert_(not self.index.has_doc(DOCID))
         self.index.index_doc(DOCID, doc)
+        self.assertEqual(self.index.documentCount(), 1)
+        self.assertEqual(self.index.wordCount(), 5)
+        self.assertEqual(self.lexicon.wordCount(), 5)
         self.assert_(self.index.has_doc(DOCID))
         self.assert_(self.index._docweight[DOCID])
         self.assertEqual(len(self.index._docweight), 1)
