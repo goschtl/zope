@@ -80,8 +80,8 @@ class DummyContent( PortalContent, Item ):
     def Title( self ):
         return self.title
 
-    def Creator( self ):
-        return self._safe_get('creator')
+    def listCreators(self):
+        return self._safe_get('creators')
 
     def Subject( self ):
         return self._safe_get('subject')
