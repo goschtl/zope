@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.3 2003/01/09 14:13:18 jim Exp $
+$Id: _bootstrapfields.py,v 1.4 2003/01/25 01:58:05 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -128,7 +128,7 @@ class Container(Field):
         if not hasattr(value, '__contains__'):
             try:
                 iter(value)
-            except:
+            except TypeError:
                 raise ValidationError(errornames.NotAContainer, value)
 
 
@@ -140,7 +140,7 @@ class Iterable(Container):
         # See if we can get an iterator for it
         try:
             iter(value)
-        except:
+        except TypeError:
             raise ValidationError(errornames.NotAnIterator, value)
 
 
