@@ -30,6 +30,8 @@ class TestCheckinFolder(unittest.TestCase):
         folder['msg2'] = Message(date=datetime(2005, 1, 5, 7, 8))
         folder['msg3'] = Message(date=datetime(2004, 7, 5, 7, 8))
         folder['msg4'] = Message(date=datetime(2004, 3, 5, 7, 8))
+        folder['bogus'] = "not a message"
+        folder['bogus2'] = 17
 
         self.assertEquals([msg.__name__ for msg in folder.messages],
                           ['msg2', 'msg3', 'msg4', 'msg1'])
@@ -40,6 +42,11 @@ class TestCheckinFolder(unittest.TestCase):
 
         # test delete index
         del folder['msg3']
+        self.assertEquals([msg.__name__ for msg in folder.messages],
+                          ['msg2', 'msg5', 'msg4', 'msg1'])
+
+        del folder['bogus']
+        del folder['bogus2']
         self.assertEquals([msg.__name__ for msg in folder.messages],
                           ['msg2', 'msg5', 'msg4', 'msg1'])
 
