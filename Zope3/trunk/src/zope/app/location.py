@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.8 2004/02/20 16:56:48 fdrake Exp $
+$Id: location.py,v 1.9 2004/03/02 14:25:21 srichter Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -43,7 +43,6 @@ def locate(object, parent, name=None):
 
     This method should only be called from trusted code, because it
     sets attributes that are normally unsettable.
-
     """
 
     object = removeAllProxies(object)
@@ -108,7 +107,6 @@ class LocationPhysicallyLocatable:
         ...
         TypeError: Maximim location depth exceeded, """ \
                 """probably due to a a location cycle.
-
         """
         context = self.context
         max = 9999

@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.17 2004/02/09 07:41:20 dunny Exp $
+$Id: __init__.py,v 1.18 2004/03/02 14:25:21 srichter Exp $
 """
-
 import sys
 import warnings
 from zope.interface import moduleProvides, Interface
