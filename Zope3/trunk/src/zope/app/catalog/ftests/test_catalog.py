@@ -55,11 +55,22 @@ class TestCatalogAdd(BrowserTestCase):
         self.assertEqual(response.getHeader('Location'),
                  'http://localhost/felix_the/@@contents.html')
 
+        # keyword index 
+        response = self.publish("/felix_the/+/AddKeywordIndexToCatalog=dccreator",
+                        basic='mgr:mgrpw', 
+                        form={'field.interface': 
+                              u'zope.app.interfaces.dublincore.IZopeDublinCore',
+                              'field.field_name':u'Creator', 
+                              'UPDATE_SUBMIT': u'Submit'})
+        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.getHeader('Location'),
+                 'http://localhost/felix_the/@@contents.html')
+
         # Check the indexes are there and visible
         response = self.publish('/felix_the/@@contents.html', basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
-        #self.assert_(response.getBody().find('dcdesc') != -1)
         self.assert_(response.getBody().find('dctitle') != -1)
+        self.assert_(response.getBody().find('dccreator') != -1)
         
         # Now add some content
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
@@ -157,6 +168,8 @@ class TestCatalogAdd(BrowserTestCase):
         self.assert_(len(res)==0)
         res = cat.searchResults(fulltext='sample', dctitle='Zeroth File')
         self.assert_(len(res)==0)
+        res = cat.searchResults(dccreator='mgr', dctitle='Third File')
+        self.assert_(len(res)==3)
 
 def test_suite():
     suite = unittest.TestSuite()

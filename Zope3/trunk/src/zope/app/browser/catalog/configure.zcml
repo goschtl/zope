@@ -73,6 +73,18 @@
   description="An index of a specific field"
 />
 
+<!-- KeywordIndex -->
+<browser:addform
+  name="AddKeywordIndexToCatalog"
+  menu="catalog_index_menu" title="Keyword Index"
+  schema="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
+  permission="zope.ManageServices"
+  content_factory="zope.app.index.keyword.index.KeywordCatalogIndex"
+  arguments="field_name"
+  keyword_arguments="interface"
+  description="A keyword index of a specific field"
+/>
+
 <!-- the Advanced tab of the Catalog -->
 <browser:pages
   for="zope.app.interfaces.catalog.catalog.ICatalog"

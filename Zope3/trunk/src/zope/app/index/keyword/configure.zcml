@@ -1,0 +1,24 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+
+<content class="zope.app.index.keyword.index.KeywordIndex">
+
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.index.keyword.IUIKeywordIndex"
+      />
+
+  <implements
+      interface="zope.app.interfaces.services.query.IQueryProcessable"
+      />
+
+</content>
+
+<!--
+<adapter
+    factory="zope.app.index.text.processors.BatchedRankedProcessor"
+    provides="zope.app.interfaces.services.query.IQueryProcessor"
+    for="zope.index.interfaces.IQuerying"
+    />
+-->
+
+</zopeConfigure>
