@@ -13,11 +13,11 @@
 ##############################################################################
 """Find View Class
 
-$Id: find.py,v 1.5 2003/08/17 06:05:35 philikon Exp $
+$Id: find.py,v 1.6 2003/09/05 18:43:20 jim Exp $
 """
 # XXX this needs to be looked up in a registry
 from zope.app.container.find import SimpleIdFindFilter
-from zope.app.interfaces.container.find import IFind
+from zope.app.interfaces.find import IFind
 from zope.app.traversing import getName
 from zope.component import getAdapter, getView
 from zope.publisher.browser import BrowserView
