@@ -13,7 +13,7 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.4 2003/09/21 17:32:20 jim Exp $
+$Id: container.py,v 1.5 2003/09/22 21:05:13 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute, implements
@@ -56,7 +56,7 @@ class IWriteContainer(Interface):
         Raises a ValueError if key is empty.
 
         The container might choose to add a different object than the
-        one passed to this method. 
+        one passed to this method.
 
         If the object doesn't implement IContained, then one of two
         things must be done:
@@ -87,7 +87,7 @@ class IWriteContainer(Interface):
         the container and the name, then no events are generated and
         no hooks.  This allows advanced clients to take over event
         generation.
-        
+
         """
 
     def __delitem__(name):
@@ -103,12 +103,12 @@ class IWriteContainer(Interface):
 
         Unless the object's __parent__ and __name__ attributes were
         initially None, generate an IObjectModifiedEvent for the
-        container. 
+        container.
 
         If the object's __parent__ and __name__ were already set to
         None, then no events are generated.  This allows advanced
         clients to take over event generation.
-        
+
         """
 
 class IItemWriteContainer(IWriteContainer, IItemContainer):
@@ -160,7 +160,7 @@ class IMoveNotifiable(Interface):
 
         This is called after the object has been added to the new
         location and before it has been deleted from the old.
-        
+
         """
 
 

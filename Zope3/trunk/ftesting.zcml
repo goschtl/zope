@@ -25,16 +25,18 @@
 
   <!-- Principals -->
 
-  <unauthenticatedPrincipal 
+  <unauthenticatedPrincipal
       id="anybody"
       title="Unauthenticated User" />
 
-  <principal 
+  <principal
       id="mgr"
       title="Manager"
       login="mgr"
       password="mgrpw" />
 
   <grant role="Manager" principal="mgr" />
+
+  <includeOverrides file="overrides.zcml" />
 
 </configure>
