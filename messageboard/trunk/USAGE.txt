@@ -2,18 +2,22 @@
 USAGE
 =====
 
-Each step package assumes that it is ``messageboard``. Therefore the best
-thing to do is to download this entire package under ``messageboard`` and then
-simply create a symbolic link::
+Each step package assumes that it is the ``book.messageboard`` package. 
 
-  ln -s messageboard/stepX Zope3/src/messagboard
+Therefore the best thing to do is to download this entire package under
+``messageboard`` and then simply create a symbolic link::
+
+  ln -s messageboard/stepX Zope3/src/book/messagboard
+
+Note: You have to create a ``book`` directory with an empty ``__init__.py``
+file, so that this path is recognized as a Python package.
 
 The highest step number should represent the most complete version. You then
 simply hook up the application by adding a file called
 ``messageboard-configure.zcml`` to ``Zope3/package-includes``. The file should
 contain a single line of the form::
 
-  <include package="messageboard" />
+  <include package="book.messageboard" />
 
 For detailed installation and setup instructions see the Content Components
 recipe at http://dev.zope.org/Zope3/DevelCookbook/NewContentObject.
