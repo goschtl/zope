@@ -106,6 +106,10 @@ class Application:
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
         self.generate_setup_cfg(self.destination, pkginfo)
         self.generate_package_setup(self.destination, self.resource_name)
+        deps_path = os.path.join(self.source, "DEPENDENCIES.cfg")
+        if os.path.isfile(deps_path):
+            shutil.copy(deps_path,
+                        os.path.join(self.destination, "DEPENDENCIES.cfg"))
 
     def build_application_distribution(self):
         packages, collections = self.assemble_collection()
@@ -123,6 +127,7 @@ class Application:
         remaining = deps - self.handled_resources
         collections = []
         packages = []
+        unhandled_resources = sets.Set()
         while remaining:
             resource = remaining.pop()
             type, name = resource.split(":", 1)
@@ -131,6 +136,7 @@ class Application:
                 # it's an external dependency, so we do nothing for now
                 self.logger.warn("ignoring resource %r (no source)"
                                  % resource)
+                unhandled_resources.add(resource)
                 # but we only want to warn about it once, so say we handled it
                 self.handled_resources.add(resource)
                 continue
@@ -140,7 +146,8 @@ class Application:
             elif type == "collection":
                 collections.append(name)
             else:
-                # must be an external dependency, 'cause we don't know abou it
+                # must be an external dependency, 'cause we don't know about it
+                unhandled_resources.add(resource)
                 continue
             #
             source = self.loader.load(self.locations[resource])
@@ -151,6 +158,17 @@ class Application:
                 i = name.rfind(".")
                 deps.add("package:" + name[:i])
             remaining |= (deps - self.handled_resources)
+        if unhandled_resources:
+            deps_path = os.path.join(self.destination, "DEPENDENCIES.cfg")
+            deps = list(unhandled_resources)
+            deps.sort()
+            f = open(deps_path, "w")
+            for dep in deps:
+                type, name = dep.split(":", 1)
+                if type == "package":
+                    dep = name
+                print >>f, dep
+            f.close()
         return packages, collections
 
     def add_component(self, type, name, source):
