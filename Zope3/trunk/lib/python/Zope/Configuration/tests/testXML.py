@@ -129,6 +129,8 @@ class Test(CleanUp, unittest.TestCase):
         from Zope.Configuration.xmlconfig import XMLConfig
         x = XMLConfig(name)
         x()
+        import os
+        os.remove(name)
 
     def testIncludeNoPackageAndIncluderNoPackage(self):
         from tempfile import mktemp
@@ -149,6 +151,9 @@ class Test(CleanUp, unittest.TestCase):
         from Zope.Configuration.xmlconfig import XMLConfig
         x = XMLConfig(full_name)
         x()
+        import os
+        os.remove(full_name)
+        os.remove(full_name1)
         
 
 def test_suite():

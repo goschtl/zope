@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testFTPServer.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: testFTPServer.py,v 1.3 2002/10/17 13:31:58 jim Exp $
 """
 
 import unittest
@@ -21,6 +21,7 @@ import tempfile
 import os
 from asyncore import socket_map, poll
 import socket
+import shutil
 from types import StringType
 from StringIO import StringIO
 
@@ -96,6 +97,8 @@ class Tests(unittest.TestCase):
                 break
             poll(0.1, socket_map)
 
+        if os.path.exists(self.root_dir):
+            shutil.rmtree(self.root_dir)
 
     def loop(self):
         while self.run_loop:

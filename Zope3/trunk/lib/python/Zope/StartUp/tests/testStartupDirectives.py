@@ -13,13 +13,15 @@
 ##############################################################################
 """
 
-$Id: testStartupDirectives.py,v 1.2 2002/06/10 23:29:43 jim Exp $
+$Id: testStartupDirectives.py,v 1.3 2002/10/17 13:31:58 jim Exp $
 """
 
-import unittest, sys, tempfile
+import unittest, sys, tempfile, os
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 from Zope.StartUp.metaConfigure import SiteDefinition
 from Zope.Configuration.name import resolve
+
+_fsname = tempfile.mktemp()+'.fs'
 
 class ContextStub:
 
@@ -29,6 +31,14 @@ class ContextStub:
 
 class Test(CleanUp, unittest.TestCase):
 
+    def tearDown(self):
+
+        CleanUp.tearDown(self)
+
+        for ext in '', '.lock', '.index', '.tmp':
+            try: os.remove(_fsname + ext)
+            except: pass
+        
 
     def _createBlankSiteDefinition(self):
         """ """
@@ -38,16 +48,10 @@ class Test(CleanUp, unittest.TestCase):
     def testStorageMethods(self):
         """ """
         sd = self._createBlankSiteDefinition()
-
-        self.assertEqual(sd.useFileStorage(ContextStub()), [])
-        self.assertEqual(sd._zodb._storage.__class__.__name__, 'FileStorage')
-        self.assertEqual(sd._zodb._storage._file_name, 'Data.fs')
-        sd._zodb.close()
         
-        filename = tempfile.mktemp()
-        self.assertEqual(sd.useFileStorage(ContextStub(), file=filename), [])
+        self.assertEqual(sd.useFileStorage(ContextStub(), file=_fsname), [])
         self.assertEqual(sd._zodb._storage.__class__.__name__, 'FileStorage')
-        self.assertEqual(sd._zodb._storage._file_name, filename)
+        self.assertEqual(sd._zodb._storage._file_name, _fsname)
         sd._zodb.close()
 
         self.assertEqual(sd.useMappingStorage(ContextStub()), [])
@@ -65,10 +69,9 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(sd.useLog(ContextStub()), [])
         self.assertEqual(_log_dest, sys.stderr)
 
-        filename = tempfile.mktemp()
-        self.assertEqual(sd.useLog(ContextStub(), filename), [])
+        self.assertEqual(sd.useLog(ContextStub(), _fsname), [])
         from zLOG.MinimalLogger import _log_dest
-        self.assertEqual(_log_dest.name, open(filename, 'w').name)
+        self.assertEqual(_log_dest.name, open(_fsname, 'w').name)
 
 
     def testAddServer(self):
@@ -97,8 +100,7 @@ class Test(CleanUp, unittest.TestCase):
         from Zope.App.OFS.Content.Folder.RootFolder import IRootFolder
         from Zope.App.ZopePublication.ZopePublication import ZopePublication
 
-        filename = tempfile.mktemp()
-        sd.useFileStorage(ContextStub(), file=filename)
+        sd.useFileStorage(ContextStub(), file=_fsname)
 
         connection = sd._zodb.open()
         root = connection.root()
