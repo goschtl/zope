@@ -50,6 +50,9 @@ table = [
 
     {'path': "test", 'addrs': "klm@digicool.com"},
 
+    {'path': "Operations", 'addrs': "support@digicool.com",
+     'remote': None},
+
     {'path': "Zope2", 'addrs': zopeaddr},
 
     {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
