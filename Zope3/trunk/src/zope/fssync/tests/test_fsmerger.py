@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.8 2003/05/28 19:09:22 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.9 2003/05/29 15:07:30 gvanrossum Exp $
 """
 
 import os
@@ -66,7 +66,7 @@ class TestFSMerger(TempFiles):
         # not None, entries are also synthesized for the directory
         # contents.
         path = join(dir, path)
-        if entry is not None:
+        if entry is not None and not callable(entry):
             self.addentry(path, entry)
         if isinstance(data, dict):
             self.ensuredir(path)
@@ -86,6 +86,8 @@ class TestFSMerger(TempFiles):
                 f.write(data)
             finally:
                 f.close()
+            if callable(entry):
+                self.addentry(path, entry(path))
         return path
 
     def addorigfile(self, dir, path, data):
@@ -277,10 +279,35 @@ class TestFSMerger(TempFiles):
                        self.make_conflict_entry, self.entry)
 
     def make_conflict_entry(self, local):
-        # Helper for test_merge_conflict
+        # Helper for test_*_conflict
         e = {"conflict": os.path.getmtime(local)}
         e.update(self.entry)
         return e
+
+    # Tests for sticky conflict reporting
+
+    def test_sticky_conflict(self):
+        conflict = "<<<<<<< foo\nl\n=======\nr\n>>>>>>> foo\n"
+        self.mergetest("foo", conflict, "r\n", "r\n",
+                       self.make_conflict_entry, self.entry,
+                       ["C %l"], conflict, "r\n", "r\n",
+                       self.make_conflict_entry, self.entry)
+
+    def test_unstuck_conflict(self):
+        conflict_entry = {"conflict": 12345}
+        conflict_entry.update(self.entry)
+        self.mergetest("foo", "resolved\n", "r\n", "r\n",
+                       conflict_entry, self.entry,
+                       ["M %l"], "resolved\n", "r\n", "r\n",
+                       self.entry, self.entry)
+
+    def test_cleared_conflict(self):
+        conflict_entry = {"conflict": 12345}
+        conflict_entry.update(self.entry)
+        self.mergetest("foo", "r\n", "r\n", "r\n",
+                       conflict_entry, self.entry,
+                       [], "r\n", "r\n", "r\n",
+                       self.entry, self.entry)
 
     # Tests for added files: local, remote, both
 

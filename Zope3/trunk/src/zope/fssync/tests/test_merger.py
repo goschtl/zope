@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.12 2003/05/28 20:24:03 gvanrossum Exp $
+$Id: test_merger.py,v 1.13 2003/05/29 15:07:30 gvanrossum Exp $
 """
 
 import os
@@ -198,10 +198,6 @@ class TestMerger(TempFiles):
         action, state = m.classify_files(local, orig, remote)
         self.assertEqual((action, state), ("Nothing", "Conflict"))
         self.assertEqual(lentry.get("conflict"), mtime)
-        lentry["conflict"] = mtime+100
-        action, state = m.classify_files(local, orig, remote)
-        self.assertEqual((action, state), ("Nothing", "Modified"))
-        self.assertEqual(lentry.get("conflict"), None)
 
     # XXX need test cases for anomalies, e.g. files missing or present
     # in spite of metadata, or directories instead of files, etc.

@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.10 2003/05/28 22:30:53 gvanrossum Exp $
+$Id: merger.py,v 1.11 2003/05/29 15:07:29 gvanrossum Exp $
 """
 
 import os
@@ -204,6 +204,10 @@ class Merger(object):
         lmeta = self.getentry(local)
         rmeta = self.getentry(remote)
 
+        # Special-case sticky conflict
+        if "conflict" in lmeta:
+            return ("Nothing", "Conflict")
+
         # Sort out cases involving additions or removals
 
         if not lmeta and not rmeta:
@@ -262,10 +266,6 @@ class Merger(object):
                 return ("Nothing", "Uptodate")
             else:
                 # Only local changes
-                if "conflict" in lmeta:
-                    if lmeta["conflict"] == os.path.getmtime(local):
-                        return ("Nothing", "Conflict")
-                    del lmeta["conflict"]
                 return ("Nothing", "Modified")
         else:
             # Some local changes; classify local changes
