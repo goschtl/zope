@@ -13,21 +13,17 @@
 ##############################################################################
 """
 
-$Id: request.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+$Id: request.py,v 1.3 2003/11/21 17:09:22 jim Exp $
 """
+
+import zope.interface
 
 class Request:
 
-    def __init__(self, iface, skin=''):
-        self._iface     = iface
-        self._skin      = skin
+    def __init__(self, type, skin=''):
+        self._skin = skin
+        zope.interface.directlyProvides(self, type)
 
     def getPresentationSkin(self):
-        '''See interface IPresentationRequest'''
-
         return self._skin
 
-    def getPresentationType(self):
-        '''See interface IPresentationRequest'''
-
-        return self._iface
