@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Fri Apr 16 19:23:44 2004\n"
+"POT-Creation-Date: Fri Apr 23 17:17:45 2004\n"
 "PO-Revision-Date: 2003-08-06 11:22-0500\n"
 "Last-Translator: Philipp von Weitershausen\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -14,6 +14,47 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Zope 3 0.1\n"
 "X-Generator: KBabel 1.0.1\n"
+
+#: src/zope/app/adapter/adapter.py:280
+#: src/zope/app/presentation/pagefolder.py:56
+#: src/zope/app/presentation/presentation.py:300
+msgid "For interface"
+msgstr "Para interfaz:"
+
+#: src/zope/app/adapter/adapter.py:281
+msgid "The interface of the objects being adapted"
+msgstr ""
+
+#: src/zope/app/adapter/adapter.py:287 src/zope/app/utility/interfaces.py:50
+msgid "Provided interface"
+msgstr ""
+
+#: src/zope/app/adapter/adapter.py:288
+#, fuzzy
+msgid "The interface provided"
+msgstr "Campo de Interfaz"
+
+#: src/zope/app/adapter/adapter.py:294 src/zope/app/site/interfaces.py:161
+#: src/zope/app/container/browser/contents.pt:32
+#: src/zope/app/container/browser/index.pt:26
+#: src/zope/app/schema/browser/schema_edit.pt:36
+#: src/zope/app/site/browser/tool.pt:40
+#: src/zope/app/workflow/browser/instancecontainer_index.pt:19
+#: src/zope/app/workflow/browser/instancecontainer_main.pt:18
+msgid "Name"
+msgstr "Nombre"
+
+#: src/zope/app/adapter/adapter.py:300
+msgid "The dotted name of a factory for creating the adapter"
+msgstr ""
+
+#: src/zope/app/adapter/adapter.py:306
+msgid "The permission required for use"
+msgstr ""
+
+#: src/zope/app/adapter/adapter.py:312
+msgid "Factory to be called to construct the component"
+msgstr ""
 
 #: src/zope/app/adapter/browser/configure.zcml:14
 msgid "Change adapter"
@@ -546,8 +587,8 @@ msgid "---select interface---"
 msgstr "---seleccione un interfaz---"
 
 #: src/zope/app/component/browser/interfacewidget.py:299
-#: src/zope/app/presentation/presentation.py:263
-#: src/zope/app/presentation/presentation.py:344
+#: src/zope/app/presentation/presentation.py:265
+#: src/zope/app/presentation/presentation.py:346
 msgid "any-interface"
 msgstr "Cualquiér interfaz:"
 
@@ -1842,9 +1883,25 @@ msgstr ""
 msgid "Action"
 msgstr "Acción"
 
+#: src/zope/app/menu/browser/menu_overview.pt:13
+msgid "Local Items"
+msgstr ""
+
+#: src/zope/app/menu/browser/menu_overview.pt:21
+msgid "Inherited Items"
+msgstr ""
+
 #: src/zope/app/menu/browser/menu_overview.pt:3
 msgid "Menu Service"
 msgstr "Servicio de menus"
+
+#: src/zope/app/menu/browser/menu_overview.pt:32
+msgid "Inherited Menus"
+msgstr ""
+
+#: src/zope/app/menu/browser/menu_overview.pt:8
+msgid "Local Menus"
+msgstr ""
 
 #: src/zope/app/menu/configure.zcml:20
 #: src/zope/app/menu/browser/configure.zcml:5
@@ -1873,6 +1930,14 @@ msgstr ""
 #: src/zope/app/menu/browser/configure.zcml:14
 msgid "Browser Menu Service"
 msgstr "Servicio de Menus Browser"
+
+#: src/zope/app/menu/interfaces.py:28
+msgid "Inherit Items"
+msgstr ""
+
+#: src/zope/app/menu/interfaces.py:29
+msgid "If true, this menu will inherit menu items from menushigher up."
+msgstr ""
 
 #: src/zope/app/menus.zcml:13
 msgid "Menu of caches to be added"
@@ -2096,37 +2161,98 @@ msgstr "Carpeta de páginas"
 msgid "Register a view ZPT"
 msgstr "Registrar una página vista ZPT"
 
+#: src/zope/app/presentation/pagefolder.py:57
+#: src/zope/app/presentation/presentation.py:301
+msgid "The interface of the objects being viewed"
+msgstr ""
+
+#: src/zope/app/presentation/pagefolder.py:62
+msgid "The dotted name of a factory for creating the view"
+msgstr ""
+
+#: src/zope/app/presentation/pagefolder.py:67
+#: src/zope/app/presentation/presentation.py:315
+msgid "Layer"
+msgstr ""
+
+#: src/zope/app/presentation/pagefolder.py:68
+#: src/zope/app/presentation/presentation.py:316
+#, fuzzy
+msgid "The skin layer the view is registered for"
+msgstr "El nombre que es registrado"
+
+#: src/zope/app/presentation/pagefolder.py:75
+#: src/zope/app/securitypolicy/browser/manage_access.pt:28
+#: src/zope/app/workflow/browser/stateful/addtransition.pt:46
+msgid "Permission"
+msgstr "Permisos"
+
+#: src/zope/app/presentation/pagefolder.py:76
+msgid "The permission required to use the view"
+msgstr ""
+
+#: src/zope/app/presentation/pagefolder.py:81
+#, fuzzy
+msgid "Apply changes to existing pages"
+msgstr "No hay cambios para guardar"
+
 #: src/zope/app/presentation/pagefolder.zcml:10
 msgid "View Folder"
 msgstr "Carpeta de vistas"
 
-#: src/zope/app/presentation/presentation.py:266
+#: src/zope/app/presentation/presentation.py:268
 msgid "${view_name} ${ptype} View for ${iface_name}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:268
+#: src/zope/app/presentation/presentation.py:270
 msgid "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:279
+#: src/zope/app/presentation/presentation.py:281
 msgid "Registered by ZCML"
 msgstr "Registrado por ZCML"
 
+#: src/zope/app/presentation/presentation.py:308
+msgid "Request type"
+msgstr ""
+
+#: src/zope/app/presentation/presentation.py:309
+msgid "The type of requests the view works with"
+msgstr ""
+
 # Default: "View"
-#: src/zope/app/presentation/presentation.py:330
+#: src/zope/app/presentation/presentation.py:332
 msgid "view-component"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:349
+#: src/zope/app/presentation/presentation.py:351
 msgid "${view_name} for ${pname} {what} {iface_name}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:351
+#: src/zope/app/presentation/presentation.py:353
 msgid "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
 msgstr ""
 
+#: src/zope/app/presentation/presentation.py:376
+#, fuzzy
+msgid "Page class"
+msgstr "Plantilla de página"
+
+#: src/zope/app/presentation/presentation.py:381
+#, fuzzy
+msgid "Page template"
+msgstr "Plantilla de página"
+
+#: src/zope/app/presentation/presentation.py:386
+msgid "Class attribute"
+msgstr ""
+
+#: src/zope/app/presentation/presentation.py:391
+msgid "Factory to be called to construct an adapter"
+msgstr ""
+
 # Default: "Page"
-#: src/zope/app/presentation/presentation.py:406
+#: src/zope/app/presentation/presentation.py:408
 msgid "page-component"
 msgstr ""
 
@@ -2465,34 +2591,34 @@ msgstr "Registrar"
 msgid "Registration Manager"
 msgstr "Administrador de registraciones"
 
-#: src/zope/app/registration/interfaces.py:130
-#: src/zope/app/utility/interfaces.py:56
+#: src/zope/app/registration/interfaces.py:131
+#: src/zope/app/utility/interfaces.py:57
 msgid "Component path"
 msgstr "Locación del componente"
 
-#: src/zope/app/registration/interfaces.py:131
+#: src/zope/app/registration/interfaces.py:132
 msgid ""
 "The path to the component; this may be absolute, or relative to the nearest "
 "site management folder"
 msgstr ""
 
-#: src/zope/app/registration/interfaces.py:136
+#: src/zope/app/registration/interfaces.py:137
 msgid "The permission needed to use the component"
 msgstr ""
 
-#: src/zope/app/registration/interfaces.py:30
+#: src/zope/app/registration/interfaces.py:31
 msgid "Unregistered"
 msgstr ""
 
-#: src/zope/app/registration/interfaces.py:31
+#: src/zope/app/registration/interfaces.py:32
 msgid "Registered"
 msgstr "Registrado"
 
-#: src/zope/app/registration/interfaces.py:32
+#: src/zope/app/registration/interfaces.py:33
 msgid "Active"
 msgstr "Activo"
 
-#: src/zope/app/registration/interfaces.py:79
+#: src/zope/app/registration/interfaces.py:80
 msgid "Registration status"
 msgstr "Estado de registraciones"
 
@@ -2742,16 +2868,16 @@ msgid "Edit Enumerated Date Field"
 msgstr "Editar Campo de Fecha Enumerado"
 
 #: src/zope/app/schema/fieldforms.zcml:33
+msgid "TextLine Field"
+msgstr ""
+
+#: src/zope/app/schema/fieldforms.zcml:33
 #, fuzzy
 msgid "A TextLine Field"
 msgstr "Añadir Campo de Texto"
 
 #: src/zope/app/schema/fieldforms.zcml:33
 msgid "Add TextLine Field"
-msgstr ""
-
-#: src/zope/app/schema/fieldforms.zcml:33
-msgid "TextLine Field"
 msgstr ""
 
 #: src/zope/app/schema/fieldforms.zcml:47
@@ -3191,11 +3317,6 @@ msgstr "Conceder permisos a roles"
 msgid "Grant roles to principals"
 msgstr "Conceder roles a principales"
 
-#: src/zope/app/securitypolicy/browser/manage_access.pt:28
-#: src/zope/app/workflow/browser/stateful/addtransition.pt:46
-msgid "Permission"
-msgstr "Permisos"
-
 #: src/zope/app/securitypolicy/browser/manage_access.pt:33
 msgid "Roles"
 msgstr "Roles"
@@ -3397,19 +3518,23 @@ msgstr ""
 msgid "Deleted: ${service_names}"
 msgstr "Borrado: ${service_names}"
 
-#: src/zope/app/site/browser/__init__.py:410
+#: src/zope/app/site/browser/__init__.py:330
+msgid "global"
+msgstr ""
+
+#: src/zope/app/site/browser/__init__.py:411
 msgid "Invalid service type specified"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:417
+#: src/zope/app/site/browser/__init__.py:418
 msgid "No change"
 msgstr "No hubieron cambios"
 
-#: src/zope/app/site/browser/__init__.py:421
+#: src/zope/app/site/browser/__init__.py:422
 msgid "Service deactivated"
 msgstr "El servicio ha sido desactivado"
 
-#: src/zope/app/site/browser/__init__.py:424
+#: src/zope/app/site/browser/__init__.py:425
 msgid "${active_services} activated"
 msgstr ""
 
@@ -3671,17 +3796,7 @@ msgstr "Registraciones activadas."
 msgid "Deactivated registrations."
 msgstr "Registraciones desactivadas"
 
-#: src/zope/app/site/interfaces.py:161
-#: src/zope/app/container/browser/contents.pt:32
-#: src/zope/app/container/browser/index.pt:26
-#: src/zope/app/schema/browser/schema_edit.pt:36
-#: src/zope/app/site/browser/tool.pt:40
-#: src/zope/app/workflow/browser/instancecontainer_index.pt:19
-#: src/zope/app/workflow/browser/instancecontainer_main.pt:18
-msgid "Name"
-msgstr "Nombre"
-
-#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:43
+#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:44
 msgid "The name that is registered"
 msgstr "El nombre que es registrado"
 
@@ -3964,19 +4079,15 @@ msgstr "cambiar registración"
 msgid "Utilities registered in this utility service"
 msgstr "Herramientas registradas en este servicio de Herramientas"
 
-#: src/zope/app/utility/interfaces.py:42
+#: src/zope/app/utility/interfaces.py:43
 msgid "Register As"
 msgstr "Registrar como"
 
-#: src/zope/app/utility/interfaces.py:49
-msgid "Provided interface"
-msgstr ""
-
-#: src/zope/app/utility/interfaces.py:50
+#: src/zope/app/utility/interfaces.py:51
 msgid "The interface provided by the adapter"
 msgstr ""
 
-#: src/zope/app/utility/interfaces.py:57
+#: src/zope/app/utility/interfaces.py:58
 msgid "The physical path to the component"
 msgstr "La localización física del componente"
 
@@ -4091,12 +4202,12 @@ msgid "Wiki Page"
 msgstr "Página Wiki"
 
 #: src/zope/app/wiki/configure.zcml:14
-msgid "The Wiki Editor can create and edit wikis."
-msgstr ""
-
-#: src/zope/app/wiki/configure.zcml:14
 msgid "Wiki Editor"
 msgstr "Editor de Wiki"
+
+#: src/zope/app/wiki/configure.zcml:14
+msgid "The Wiki Editor can create and edit wikis."
+msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:156
 msgid "A Wiki Page Comment"
@@ -4884,9 +4995,6 @@ msgstr "Descripción"
 
 #~ msgid "Deny"
 #~ msgstr "Negar"
-
-#~ msgid "For interface"
-#~ msgstr "Para interfaz:"
 
 #~ msgid "search-button"
 #~ msgstr "Buscar"
