@@ -86,7 +86,7 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      interface="zope.app.interfaces.container.IRemoveNotifiable"
       />
 </content>
 
