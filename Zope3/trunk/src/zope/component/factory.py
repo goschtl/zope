@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""factory service
+"""Global Factory Service
+
+$Id: factory.py,v 1.7 2004/03/02 14:26:16 srichter Exp $
 """
-
-
 from zope.interface.verify import verifyObject
 from zope.interface import implements
 from zope.component.interfaces import IFactory
@@ -48,7 +48,11 @@ class GlobalFactoryService:
 
     def provideFactory(self, name, factory, info=None):
         """See IGlobalFactoryService interface"""
-        verifyObject(IFactory, factory)
+        # XXX At this point the verify object code does not support variable
+        # arguments well. For example, I was not able to register any factory
+        # that requires constructor arguments! (SR) 
+        # verifyObject(IFactory, factory)
+        assert IFactory.isImplementedBy(factory)
         self.__factories[name] = factory
         if info is not None:
             self.__info[name] = info
@@ -87,7 +91,7 @@ class GlobalFactoryService:
     def queryFactoriesFor(self, iface, default=None):
         """See IFactoryService interface"""
         return [(n, f) for n, f in self.__factories.items() \
-                if iface in f.getInterfaces()] or default
+                if iface in tuple(f.getInterfaces())] or default
 
     def getFactoryInfo(self, name):
         return self.__info.get(name)
@@ -98,9 +102,7 @@ class GlobalFactoryService:
 factoryService = GlobalFactoryService()
 provideFactory = factoryService.provideFactory
 
-
-
-_clear         = factoryService._clear
+_clear = factoryService._clear
 
 # Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
 from zope.testing.cleanup import addCleanUp

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.20 2004/02/20 20:35:33 srichter Exp $
+$Id: interfaces.py,v 1.21 2004/03/02 14:26:16 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -284,7 +284,7 @@ class IFactory(Interface):
     #     This functionality is needed for making advanced factories that
     #     do what other factories do, and then mark the resultant object
     #     with an interface.
-    def __call__():
+    def __call__(*args, **kw):
         """Return an instance of the objects we're a factory for."""
 
 
