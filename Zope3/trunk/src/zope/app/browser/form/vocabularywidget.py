@@ -17,23 +17,23 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.61 2004/01/28 19:45:45 urbanape Exp $
+$Id: vocabularywidget.py,v 1.62 2004/01/28 20:55:42 fdrake Exp $
 """
 from xml.sax.saxutils import quoteattr
 
 from zope.interface import implements, implementedBy
+from zope.interface.declarations import directlyProvides
+from zope.publisher.browser import BrowserView
+from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.schema.interfaces import IIterableVocabularyQuery
+from zope.schema.interfaces import ValidationError
+
 from zope.app import zapi
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IVocabularyQueryView
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.services.servicenames import Translation
-from zope.interface.declarations import directlyProvides
-from zope.publisher.browser import BrowserView
-from zope.component import getView, getService
-from zope.security.proxy import trustedRemoveSecurityProxy
-from zope.schema.interfaces import IIterableVocabularyQuery
-from zope.schema.interfaces import ValidationError
 
 
 # These widget factories delegate to the vocabulary on the field.
@@ -86,7 +86,8 @@ def VocabularyUniqueListFieldEditWidget(field, request):
 # Helper functions for the factories:
 
 def _get_vocabulary_widget(field, request, viewname):
-    view = getView(field.vocabulary, "field-%s-widget" % viewname, request)
+    view = zapi.getView(field.vocabulary,
+                        "field-%s-widget" % viewname, request)
     view = trustedRemoveSecurityProxy(view)
     view.setField(field)
     return view
@@ -99,7 +100,7 @@ def _get_vocabulary_edit_widget(field, request, modifier=''):
     query = field.vocabulary.getQuery()
     if query is not None:
         queryname = "widget-query%s-helper" % modifier
-        queryview = getView(query, queryname, request)
+        queryview = zapi.getView(query, queryname, request)
         view.setQuery(query, queryview)
         queryview.setWidget(view)
     return view
