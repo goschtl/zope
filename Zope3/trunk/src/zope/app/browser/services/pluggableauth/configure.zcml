@@ -46,6 +46,7 @@
 
 <page
      name="contents.html" 
+     menu="zmi_views" title="Contents"
      for="zope.app.services.pluggableauth.IPrincipalSource"
      permission="zope.ManageServices" 
      class="zope.app.browser.container.contents.Contents"
