@@ -5,19 +5,25 @@
    package="zope.app.cache"
 >
 
-  <serviceType id="Caching" interface="zope.app.interfaces.cache.cache.ICachingService" />
+  <serviceType id="Caching"
+               interface="zope.app.interfaces.cache.cache.ICachingService" 
+               />
 
   <adapter factory="zope.app.cache.annotationcacheable.AnnotationCacheable"
            provides="zope.app.interfaces.cache.cache.ICacheable"
-           for="zope.app.interfaces.annotation.IAnnotatable" />
+           for="zope.app.interfaces.annotation.IAnnotatable" 
+           />
 
 
   <content class="zope.app.cache.ram.RAMCache">
     <factory id="zope.app.caching.RAMCache"
         permission="zope.Public" />
     <require permission="zope.Public" 
-        interface="zope.app.interfaces.cache.ram.IRAMCache" />
-    <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.interfaces.cache.ram.IRAMCache" 
+        />
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+        />
   </content>
 
 </zopeConfigure>

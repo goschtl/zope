@@ -242,7 +242,7 @@
 
   <content class="zope.app.services.configurationmanager.ConfigurationManager">
     <factory
-        id = "zope.app.services.service.ServiceManagerConfigurationManager"
+        id = "zope.app.services.ConfigurationManager"
         permission = "zope.ManageServices"
         title = "Configuration Manager" />
     <require

@@ -683,7 +683,7 @@
 
   <browser:menuItem menu="add_component"
         for="zope.app.interfaces.container.IAdding"
-        action="zope.app.services.service.ConfigurationManager"
+        action="zope.app.services.ConfigurationManager"
         title="Configuration"
         />
 
@@ -772,8 +772,9 @@
               action="@@DefaultConfiguration.html"/>
   </browser:menuItems>
 
-  <browser:menuItem menu="add_component" for="zope.app.interfaces.container.IAdding"
-     action="zope.app.services.viewpackage.ViewPackage" 
+  <browser:menuItem menu="add_component"
+     for="zope.app.interfaces.container.IAdding"
+     action="zope.app.services.ViewPackage" 
      title="View Sub-Package" />
 
 <!-- Session service -->

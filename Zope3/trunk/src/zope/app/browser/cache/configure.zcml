@@ -5,7 +5,7 @@
 
   <browser:menuItem menu="add_component"
       for="zope.app.interfaces.container.IAdding"
-      title="RAM Cache" action="RAMCache"
+      title="RAM Cache" action="zope.app.caching.RAMCache"
       description="RAM Cache"/>
 
   <browser:view for="zope.app.interfaces.cache.ram.IRAMCache"
