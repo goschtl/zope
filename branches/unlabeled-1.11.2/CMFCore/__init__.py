@@ -96,6 +96,7 @@ import FSZSQLMethod
 import CookieCrumbler
 import ContentTypeRegistry
 import utils
+import FSPageTemplate
 
 ADD_FOLDERS_PERMISSION = 'Add portal folders'
 
@@ -159,6 +160,8 @@ def initialize(context):
         icon = 'images/registry.gif'
         )
 
+    utils.registerIcon(FSPageTemplate.FSPageTemplate,
+                      'images/fspt.gif', globals())
     utils.registerIcon(FSDTMLMethod.FSDTMLMethod,
                        'images/fsdtml.gif', globals())
     utils.registerIcon(FSPythonScript.FSPythonScript,
