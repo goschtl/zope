@@ -13,12 +13,12 @@
 ##############################################################################
 """WebDAV Adapters
 
-$Id: adapter.py,v 1.4 2003/06/23 17:17:02 sidnei Exp $
+$Id: adapter.py,v 1.5 2004/03/01 15:02:48 philikon Exp $
 """
 
 from xml.dom import minidom
 from zope.component import getAdapter, queryAdapter
-from zope.app.interfaces.dublincore import IDCTimes
+from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.interfaces.file import IReadDirectory
 from zope.app.interfaces.size import ISized
 from zope.app import zapi

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_contents.py,v 1.6 2004/02/24 16:51:35 philikon Exp $
+$Id: test_contents.py,v 1.7 2004/03/01 15:02:45 philikon Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 
 class File(Persistent):
     implements(IAttributeAnnotatable)

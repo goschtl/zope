@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for catalog
 
-$Id: ftests.py,v 1.1 2004/03/01 11:46:22 philikon Exp $
+$Id: ftests.py,v 1.2 2004/03/01 15:02:48 philikon Exp $
 """
 import unittest
 
@@ -47,7 +47,7 @@ class TestCatalogAdd(BrowserTestCase):
         response = self.publish("/felix_the/+/AddFieldIndexToCatalog=dctitle",
                         basic='mgr:mgrpw', 
                         form={'field.interface': 
-                              u'zope.app.interfaces.dublincore.IZopeDublinCore',
+                              u'zope.app.dublincore.interfaces.IZopeDublinCore',
                               'field.field_name':u'Title', 
                               'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
@@ -79,7 +79,7 @@ class TestCatalogAdd(BrowserTestCase):
         response = self.publish("/felix_the/+/AddKeywordIndexToCatalog=dccreator",
                         basic='mgr:mgrpw', 
                         form={'field.interface': 
-                              u'zope.app.interfaces.dublincore.IZopeDublinCore',
+                              u'zope.app.dublincore.interfaces.IZopeDublinCore',
                               'field.field_name':u'Creator', 
                               'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)

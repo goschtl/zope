@@ -13,11 +13,11 @@
 ##############################################################################
 """Tales API Tests
 
-$Id: test_talesapi.py,v 1.7 2003/09/23 19:12:30 jim Exp $
+$Id: test_talesapi.py,v 1.8 2004/03/01 15:02:53 philikon Exp $
 """
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import implements
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from datetime import datetime

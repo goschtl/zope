@@ -13,14 +13,14 @@
 ##############################################################################
 """Functional tests for PROPFIND.
 
-$Id: test_propfind.py,v 1.3 2003/06/23 17:17:02 sidnei Exp $
+$Id: test_propfind.py,v 1.4 2004/03/01 15:02:49 philikon Exp $
 """
 
 import unittest
 from datetime import datetime
 from zope.app.dav.ftests.dav import DAVTestCase
 from zope.component import getAdapter
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.traversing import traverse
 from transaction import get_transaction
 from zope.pagetemplate.tests.util import normalize_xml

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for field index browser views
 
-$Id: test_control.py,v 1.2 2003/11/27 13:59:13 philikon Exp $
+$Id: test_control.py,v 1.3 2004/03/01 15:02:46 philikon Exp $
 """
 
 import unittest
@@ -23,18 +23,16 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
 from zope.app.services.servicenames import HubIds
 from zope.app.interfaces.services.hub import IObjectHub
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.exceptions import NotFoundError
 
 class DublinCoreStub:
-
     implements(IZopeDublinCore)
 
     def __init__(self, title):
         self.title = title
 
 class ObjectHubStub:
-
     implements(IObjectHub)
 
     def getPath(self, id):

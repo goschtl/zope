@@ -5,14 +5,14 @@
 
   <adapter
       factory=".annotatableadapter.ZDCAnnotatableAdapter"
-      provides="zope.app.interfaces.dublincore.IWriteZopeDublinCore"
+      provides="zope.app.dublincore.interfaces.IWriteZopeDublinCore"
       for="zope.app.interfaces.annotation.IAnnotatable"
       />
 
   <class class=".annotatableadapter.ZDCAnnotatableAdapter">
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.dublincore.IZopeDublinCore"
+        interface="zope.app.dublincore.interfaces.IZopeDublinCore"
         />
   </class>
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_ftpview.py,v 1.5 2003/11/27 13:59:20 philikon Exp $
+$Id: test_ftpview.py,v 1.6 2004/03/01 15:02:52 philikon Exp $
 """
 
 import datetime
@@ -25,7 +25,7 @@ import zope.server.ftp.tests.demofs as demofs
 from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.interfaces.file import IReadDirectory, IWriteDirectory
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.ftp import FTPView
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements

@@ -13,13 +13,13 @@
 ##############################################################################
 """Dublin Core Meta Data View
 
-$Id: metadataedit.py,v 1.1 2004/03/01 13:26:55 philikon Exp $
+$Id: metadataedit.py,v 1.2 2004/03/01 15:02:50 philikon Exp $
 """
 from datetime import datetime
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.component import getAdapter
 
 __metaclass__ = type

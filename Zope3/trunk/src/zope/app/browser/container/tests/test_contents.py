@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.30 2004/02/25 23:02:16 faassen Exp $
+$Id: test_contents.py,v 1.31 2004/03/01 15:02:45 philikon Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -95,7 +95,7 @@ class BaseTestContentsBrowserView(PlacefulSetup):
         container['document'] = document
 
         from datetime import datetime
-        from zope.app.interfaces.dublincore import IZopeDublinCore
+        from zope.app.dublincore.interfaces import IZopeDublinCore
         class FauxDCAdapter:
             implements(IZopeDublinCore)
 

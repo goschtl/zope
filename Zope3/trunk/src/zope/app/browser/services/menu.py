@@ -13,13 +13,13 @@
 ##############################################################################
 """Local Menu Service Views
 
-$Id: menu.py,v 1.7 2004/02/25 23:02:18 faassen Exp $
+$Id: menu.py,v 1.8 2004/03/01 15:02:47 philikon Exp $
 """
 
 from zope.app import zapi
 from zope.app.browser.container.contents import Contents
 from zope.app.component.nextservice import queryNextService
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.interfaces.services.menu import ILocalBrowserMenu
 from zope.app.services.servicenames import Utilities, BrowserMenu
 

@@ -13,13 +13,13 @@
 ##############################################################################
 """Browser View Components for Wikis
 
-$Id: wiki.py,v 1.1 2004/02/27 11:06:59 philikon Exp $
+$Id: wiki.py,v 1.2 2004/03/01 15:02:54 philikon Exp $
 """
 from datetime import datetime
 from zope.proxy import removeAllProxies
 
 from zope.app import zapi
-from zope.app.interfaces.dublincore import ICMFDublinCore
+from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.services.servicenames import HubIds
 from zope.app.traversing import getName, getPath
 from zope.app.browser.container.adding import Adding

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_zopedublincore.py,v 1.2 2002/12/25 14:12:50 jim Exp $
+$Id: test_zopedublincore.py,v 1.3 2004/03/01 15:02:50 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,7 @@ class Test(TestCase):
 
     def testImplementa(self):
         from zope.interface.verify import verifyObject
-        from zope.app.interfaces.dublincore import IZopeDublinCore
+        from zope.app.dublincore.interfaces import IZopeDublinCore
         verifyObject(IZopeDublinCore, self.dc)
 
     def _Test__new(self):

@@ -13,10 +13,10 @@
 ##############################################################################
 """Interfaces for apis to make available to TALES
 
-$Id: talesapi.py,v 1.3 2003/05/23 22:18:38 jim Exp $
+$Id: talesapi.py,v 1.4 2004/03/01 15:02:52 philikon Exp $
 """
-from zope.app.interfaces.dublincore import IDCDescriptiveProperties
-from zope.app.interfaces.dublincore import IDCTimes
+from zope.app.dublincore.interfaces import IDCDescriptiveProperties
+from zope.app.dublincore.interfaces import IDCTimes
 
 class IZopeTalesAPI(IDCDescriptiveProperties, IDCTimes):
 

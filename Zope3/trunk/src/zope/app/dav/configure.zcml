@@ -95,7 +95,7 @@
   
   <dav:provideInterface
       for="http://purl.org/dc/1.1"
-      interface="zope.app.interfaces.dublincore.IZopeDublinCore" />
+      interface="zope.app.dublincore.interfaces.IZopeDublinCore" />
   
   <dav:provideInterface
       for="DAV:"

@@ -14,22 +14,20 @@
 These views implement ftp commands using file-system representation
 and meta-data apis.
 
-$Id: __init__.py,v 1.5 2003/09/21 17:32:14 jim Exp $
+$Id: __init__.py,v 1.6 2004/03/01 15:02:51 philikon Exp $
 """
 __metaclass__ = type
 
 from zope.component import queryAdapter, getAdapter, queryNamedAdapter
+from zope.proxy import removeAllProxies
+
 from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.interfaces.file import IReadDirectory, IWriteDirectory
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
-
-from zope.app.interfaces.dublincore import IZopeDublinCore
-
-from zope.proxy import removeAllProxies
-
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.copypastemove import rename
 
 class FTPView:

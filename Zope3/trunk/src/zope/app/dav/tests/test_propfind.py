@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.12 2004/02/25 23:02:24 faassen Exp $
+$Id: test_propfind.py,v 1.13 2004/03/01 15:02:49 philikon Exp $
 """
 __metaclass__ = type
 
@@ -36,7 +36,7 @@ from zope.app.interfaces.file import IWriteFile
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.interfaces.container import IReadContainer
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations

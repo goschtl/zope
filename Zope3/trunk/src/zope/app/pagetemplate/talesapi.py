@@ -14,10 +14,10 @@
 """Implementation of the Zope TALES API
 
 
-$Id: talesapi.py,v 1.7 2003/09/16 22:11:26 srichter Exp $
+$Id: talesapi.py,v 1.8 2004/03/01 15:02:53 philikon Exp $
 """
 from zope.app.interfaces.talesapi import IZopeTalesAPI
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app import zapi
 from zope.interface import implements

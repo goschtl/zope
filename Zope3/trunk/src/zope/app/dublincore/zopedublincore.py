@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: zopedublincore.py,v 1.5 2003/10/06 22:08:52 sidnei Exp $
+$Id: zopedublincore.py,v 1.6 2004/03/01 15:02:49 philikon Exp $
 """
 
 __metaclass__ = type
 
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.datetimeutils import parseDatetimetz
 from datetime import datetime
 from zope.interface import implements

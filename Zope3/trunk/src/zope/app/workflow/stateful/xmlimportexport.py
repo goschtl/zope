@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.8 2004/02/27 16:50:40 philikon Exp $
+$Id: xmlimportexport.py,v 1.9 2004/03/01 15:02:55 philikon Exp $
 """
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
@@ -25,7 +25,7 @@ from zope.proxy import removeAllProxies
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import trustedRemoveSecurityProxy
 
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.workflow.interfaces.stateful \
      import IStatefulProcessDefinition
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler

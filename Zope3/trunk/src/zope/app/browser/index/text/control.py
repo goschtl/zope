@@ -13,7 +13,7 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.15 2003/11/05 03:08:24 jeremy Exp $
+$Id: control.py,v 1.16 2004/03/01 15:02:47 philikon Exp $
 """
 from zope.interface import implements
 from zope.component import getService, queryAdapter
@@ -22,11 +22,10 @@ from zope.exceptions import NotFoundError
 from zope.publisher.browser import BrowserView
 
 from zope.app.traversing import canonicalPath
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.interfaces.index.text import IQueryView
 
 class ControlView(BrowserView):
-
     implements(IQueryView)
 
     default_start = 0 # Don't change -- always start at first batch

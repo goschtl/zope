@@ -12,13 +12,12 @@
 #
 ##############################################################################
 """
-$Id: dublincore.py,v 1.8 2003/07/17 21:03:36 fdrake Exp $
+$Id: interfaces.py,v 1.1 2004/03/01 15:02:49 philikon Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Datetime, Sequence
-
 
 class IDublinCoreElementItem(Interface):
     """A qualified dublin core element"""
@@ -32,7 +31,6 @@ class IDublinCoreElementItem(Interface):
         title = u"Value",
         description = u"The element value",
         )
-
 
 class IGeneralDublinCore(Interface):
     """Dublin-core data access interface
@@ -210,8 +208,6 @@ class IWritableGeneralDublinCore(Interface):
 
         The argument must be a sequence of Rights IDublinCoreElementItem.
         """
-
-
 
 # XXX This will need to be filled out more.
 class IDCDescriptiveProperties(Interface):
