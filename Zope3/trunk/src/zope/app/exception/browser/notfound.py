@@ -15,10 +15,12 @@
 
 $Id$
 """
-class NotFound(object):
-    """NotFound Error View
+__docformat__ = 'restructuredtext'
 
-    NotFound errors should return 404 instead of 200.
+class NotFound(object):
+    """`NotFound` Error View
+
+    `NotFound` errors should return 404 instead of 200.
     """
 
     def __call__(self, *args, **kw):

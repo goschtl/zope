@@ -13,6 +13,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 class UserErrorView(object):
 
     def title(self):
