@@ -23,10 +23,11 @@ from Globals import InitializeClass, DTMLFile, MessageDialog, \
 from Acquisition import aq_base
 from AccessControl.User import nobody
 from AccessControl import ClassSecurityInfo
-from CMFCorePermissions import View
 from CMFCorePermissions import AccessContentsInformation
+from CMFCorePermissions import ListPortalMembers
 from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import SetOwnPassword
+from CMFCorePermissions import View
 from ActionProviderBase import ActionProviderBase
 
 from interfaces.portal_membership \
@@ -346,7 +347,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         '''
         return map(self.wrapUser, self.__getPUS().getUsers())
 
-    security.declareProtected(View, 'searchMembers')
+    security.declareProtected(ListPortalMembers, 'searchMembers')
     def searchMembers( self, search_param, search_term ):
         """ Search the membership """
         md = getToolByName( self, 'portal_memberdata' )
