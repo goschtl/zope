@@ -18,10 +18,14 @@ from zope.schema import Field
 from zope.schema import errornames
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
-from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
-from interfaces import IVocabulary, IVocabularyTokenized, ITokenizedTerm
+from zope.schema.interfaces import IVocabularyField
+from zope.schema.interfaces import IVocabularyBagField, IVocabularyListField
+from zope.schema.interfaces import IVocabularySetField
+from zope.schema.interfaces import IVocabularyUniqueListField
+from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
+from zope.schema.interfaces import ITokenizedTerm
 from zope.interface.declarations import directlyProvides
-from zope.schema import TextLine
+from zope.schema import MinMaxLen, TextLine
 
 try:
     basestring  # new in Python 2.3
@@ -68,12 +72,19 @@ class VocabularyField(Field):
         return clone
 
 
-class VocabularyMultiField(VocabularyField):
+class VocabularyMultiField(MinMaxLen, VocabularyField):
     """Field that adds support for use of an external vocabulary.
 
     The value is a collection of values from the vocabulary.
+
+    This class cannot be used directly; a subclass must be used to
+    specify concrete behavior.
     """
-    __implements__ = IVocabularyMultiField
+    def __init__(self, **kw):
+        if self.__class__ is VocabularyMultiField:
+            raise NotImplementedError(
+                "The VocabularyMultiField class cannot be used directly.")
+        super(VocabularyMultiField, self).__init__(**kw)
 
     def _validate(self, value):
         vocab = self.vocabulary
@@ -82,6 +93,34 @@ class VocabularyMultiField(VocabularyField):
         for v in value:
             if v not in vocab:
                 raise ValidationError(errornames.ConstraintNotSatisfied, v)
+
+class UniqueElements(object):
+    """Mix-in class that checks that each contained element is unique."""
+
+    def _validate(self, value):
+        d = {}
+        for v in value:
+            if v in d:
+                raise ValidationError()
+            d[v] = v
+        super(UniqueElements, self)._validate(value)
+
+class VocabularyBagField(VocabularyMultiField):
+    __implements__ = IVocabularyBagField
+    __doc__ = IVocabularyBagField.__doc__
+
+class VocabularyListField(VocabularyMultiField):
+    __implements__ = IVocabularyListField
+    __doc__ = IVocabularyListField.__doc__
+
+class VocabularySetField(UniqueElements, VocabularyMultiField):
+    __implements__ = IVocabularySetField
+    __doc__ = IVocabularySetField.__doc__
+
+class VocabularyUniqueListField(UniqueElements, VocabularyMultiField):
+    __implements__ = IVocabularyUniqueListField
+    __doc__ = IVocabularyUniqueListField.__doc__
+
 
 # simple vocabularies performing enumerated-like tasks
 

@@ -41,7 +41,7 @@ def VocabularyFieldDisplayWidget(field, request):
 
 def VocabularyFieldEditWidget(field, request):
     """Return a value-selection widget based on a vocabulary field."""
-    return _get_vocabulary_edit_widget(field, request, ismulti=False)
+    return _get_vocabulary_edit_widget(field, request)
 
 def VocabularyMultiFieldDisplayWidget(field, request):
     """Return a display widget based on a vocabulary field."""
@@ -49,7 +49,23 @@ def VocabularyMultiFieldDisplayWidget(field, request):
 
 def VocabularyMultiFieldEditWidget(field, request):
     """Return a value-selection widget based on a vocabulary field."""
-    return _get_vocabulary_edit_widget(field, request, ismulti=True)
+    return _get_vocabulary_edit_widget(field, request, "multi")
+
+def VocabularyBagFieldEditWidget(field, request):
+    """Return a value-selection widget based on a vocabulary field."""
+    return _get_vocabulary_edit_widget(field, request, "bag")
+
+def VocabularyListFieldEditWidget(field, request):
+    """Return a value-selection widget based on a vocabulary field."""
+    return _get_vocabulary_edit_widget(field, request, "list")
+
+def VocabularySetFieldEditWidget(field, request):
+    """Return a value-selection widget based on a vocabulary field."""
+    return _get_vocabulary_edit_widget(field, request, "set")
+
+def VocabularyUniqueListFieldEditWidget(field, request):
+    """Return a value-selection widget based on a vocabulary field."""
+    return _get_vocabulary_edit_widget(field, request, "unique-list")
 
 
 # Helper functions for the factories:
@@ -59,13 +75,11 @@ def _get_vocabulary_widget(field, request, viewname):
     view.setField(field)
     return view
 
-def _get_vocabulary_edit_widget(field, request, ismulti):
-    if ismulti:
-        viewname = "edit-multi"
-        queryname = "widget-query-multi-helper"
-    else:
-        viewname = "edit"
-        queryname = "widget-query-helper"
+def _get_vocabulary_edit_widget(field, request, modifier=''):
+    if modifier:
+        modifier = "-" + modifier
+    viewname = "edit" + modifier
+    queryname = "widget-query%s-helper" % modifier
     view = _get_vocabulary_widget(field, request, viewname)
     query = field.vocabulary.getQuery()
     if query is not None:

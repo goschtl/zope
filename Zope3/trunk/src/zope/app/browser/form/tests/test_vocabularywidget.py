@@ -368,7 +368,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
     """Test cases for basic multi-selection widgets."""
 
     defaultFieldValue = ["splat"]
-    fieldClass = vocabulary.VocabularyMultiField
+    fieldClass = vocabulary.VocabularyListField
 
     def test_display_without_value(self):
         bound = self.makeField(BasicVocabulary(["splat", "foobar", "frob"]),
@@ -540,7 +540,7 @@ class MultiSelectionQuerySupportTests(MultiSelectionViews,
     """Query support tests for multi-selection widgets."""
 
     defaultFieldValue = ["splat"]
-    fieldClass = vocabulary.VocabularyMultiField
+    fieldClass = vocabulary.VocabularyListField
     queryViewLabel = "multi"
 
     def registerViews(self):

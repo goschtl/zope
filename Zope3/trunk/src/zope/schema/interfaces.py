@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.19 2003/05/28 17:09:03 fdrake Exp $
+$Id: interfaces.py,v 1.20 2003/05/30 06:10:58 fdrake Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -398,27 +398,6 @@ class IDict(IMinMaxLen, IIterable, IContainer):
         )
 
 
-class IBaseVocabulary(Interface):
-    """Representation of a vocabulary.
-
-    At this most basic level, a vocabulary only need to support a test
-    for containment.  This can be implemented either by __contains__()
-    or by sequence __getitem__() (the later only being useful for
-    vocabularies which are intrinsically ordered).
-    """
-
-    def getQuery():
-        """Return an IVocabularyQuery object for this vocabulary.
-
-        Vocabularies which do not support query must return None.
-        """
-
-    def getTerm(value):
-        """Return the ITerm object for the term 'value'.
-
-        If 'value' is not a valid term, this method raises LookupError.
-        """
-
 class IVocabularyQuery(Interface):
     """Query object for a vocabulary.
 
@@ -459,18 +438,26 @@ class ITokenizedTerm(ITerm):
         """)
 
 
-class IVocabularyTokenized(Interface):
-    """Vocabulary that provides support for tokenized representation.
+class IBaseVocabulary(Interface):
+    """Representation of a vocabulary.
 
-    This interface must be used as a mix-in with IBaseVocabulary.
-
-    Terms returned from getTerm() and provided by iteration must
-    conform to ITokenizedTerm.
+    At this most basic level, a vocabulary only need to support a test
+    for containment.  This can be implemented either by __contains__()
+    or by sequence __getitem__() (the later only being useful for
+    vocabularies which are intrinsically ordered).
     """
 
-    def getTermByToken(token):
-        """Return an ITokenizedTerm for the passed-in token."""
+    def getQuery():
+        """Return an IVocabularyQuery object for this vocabulary.
 
+        Vocabularies which do not support query must return None.
+        """
+
+    def getTerm(value):
+        """Return the ITerm object for the term 'value'.
+
+        If 'value' is not a valid term, this method raises LookupError.
+        """
 
 class IIterableVocabulary(Interface):
     """Vocabulary which supports iteration over allowed values.
@@ -495,6 +482,19 @@ class ISubsetVocabulary(Interface):
 
 class IVocabulary(IIterableVocabulary, IBaseVocabulary):
     """Vocabulary which is iterable."""
+
+
+class IVocabularyTokenized(Interface):
+    """Vocabulary that provides support for tokenized representation.
+
+    This interface must be used as a mix-in with IBaseVocabulary.
+
+    Terms returned from getTerm() and provided by iteration must
+    conform to ITokenizedTerm.
+    """
+
+    def getTermByToken(token):
+        """Return an ITokenizedTerm for the passed-in token."""
 
 
 class IVocabularyFieldMixin(Interface):
@@ -526,11 +526,45 @@ class IVocabularyField(IVocabularyFieldMixin, IField):
     """
 
 
-class IVocabularyMultiField(IVocabularyFieldMixin, IField):
+class IVocabularyMultiField(IVocabularyFieldMixin, IMinMaxLen, IField):
+    # XXX This is really a base class used in the more specific
+    # IVocabulary*Field interfaces.
     """Field with a value containing selections from a vocabulary..
 
     The value for fields of this type need to support at least
     containment checks using 'in' and iteration.
+
+    The length constraint provided by IMinMaxLen constrains the number
+    of elements in the value.
+    """
+
+
+class IVocabularyBagField(IVocabularyMultiField):
+    """Field representing an unordered collection of values from a
+    vocabulary.
+
+    Specific values may be represented more than once.
+    """
+
+class IVocabularyListField(IVocabularyMultiField):
+    """Field representing an ordered collection of values from a
+    vocabulary.
+
+    Specific values may be represented more than once.
+    """
+
+class IVocabularySetField(IVocabularyMultiField):
+    """Field representing an unordered collection of values from a
+    vocabulary.
+
+    Specific values may be represented at most once.
+    """
+
+class IVocabularyUniqueListField(IVocabularyMultiField):
+    """Field representing an ordered collection of values from a
+    vocabulary.
+
+    Specific values may be represented at most once.
     """
 
 

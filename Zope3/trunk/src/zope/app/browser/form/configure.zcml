@@ -104,6 +104,8 @@
 
   <!-- Vocabulary fields share special widget factories that redirect
        to the vocabularies they reference. -->
+
+  <!-- Single selection -->
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
@@ -122,11 +124,12 @@
       factory=".vocabularywidget.VocabularyFieldEditWidget"
       />
 
+  <!-- Bags -->
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-      for="zope.schema.vocabulary.IVocabularyMultiField"
+      for="zope.schema.vocabulary.IVocabularyBagField"
       name="display"
       factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
       />
@@ -135,11 +138,69 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-      for="zope.schema.vocabulary.IVocabularyMultiField"
+      for="zope.schema.vocabulary.IVocabularyBagField"
       name="edit"
-      factory=".vocabularywidget.VocabularyMultiFieldEditWidget"
+      factory=".vocabularywidget.VocabularyBagFieldEditWidget"
       />
 
+  <!-- Lists -->
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.vocabulary.IVocabularyListField"
+      name="display"
+      factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
+      />
+
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.vocabulary.IVocabularyListField"
+      name="edit"
+      factory=".vocabularywidget.VocabularyListFieldEditWidget"
+      />
+
+  <!-- Sets -->
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.vocabulary.IVocabularySetField"
+      name="display"
+      factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
+      />
+
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.vocabulary.IVocabularySetField"
+      name="edit"
+      factory=".vocabularywidget.VocabularySetFieldEditWidget"
+      />
+
+  <!-- Unique lists -->
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.vocabulary.IVocabularyUniqueListField"
+      name="display"
+      factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
+      />
+
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.vocabulary.IVocabularyUniqueListField"
+      name="edit"
+      factory=".vocabularywidget.VocabularyUniqueListFieldEditWidget"
+      />
+
+  <!-- Query view helpers -->
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
