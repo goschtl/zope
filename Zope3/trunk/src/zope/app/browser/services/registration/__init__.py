@@ -13,21 +13,22 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.9 2003/08/17 06:05:52 philikon Exp $
+$Id: __init__.py,v 1.10 2003/09/21 17:30:57 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IBrowserWidget
-from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.registration import ActiveStatus, \
-     IComponentRegistration, UnregisteredStatus, IRegistered
+from zope.app.interfaces.container import INameChooser
+
+from zope.app.interfaces.services.registration import IRegistered
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import IComponentRegistration
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getName, traverse
 from zope.component import getView, getServiceManager, getAdapter
-from zope.context import getWrapperContainer
-from zope.app.context import ContextWrapper
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.interface import implements
@@ -270,18 +271,12 @@ class AddComponentRegistration(BrowserView):
         component = self.context
 
         # Get the registration manager for this folder
-        folder = getWrapperContainer(component)
-        configure = folder.getRegistrationManager()
+        folder = component.__parent__
+        rm = folder.getRegistrationManager()
 
-        # Adapt to IZopeContainer, which takes care of generating
-        # standard events and calling standard hooks
-        container = getAdapter(configure, IZopeContainer)
-
-        # Now add the item, saving the key, which is picked by the config
-        key = container.setObject("", registration)
-
-        # and return the config in context by fetching it from the container
-        return container[key]
+        name = getAdapter(rm, INameChooser).chooseName('', registration)
+        rm[name] = registration
+        return registration
 
     def nextURL(self):
         return "@@SelectedManagementView.html"
@@ -335,15 +330,14 @@ class EditRegistration(BrowserView):
 
     def remove_objects(self, key_list):
         """Remove the directives from the container."""
-        container = getAdapter(self.context, IZopeContainer)
-        for item in key_list:
-            del container[item]
+        container = self.context
+        for name in key_list:
+            del container[name]
 
     def configInfo(self):
         """Render View for each directives."""
         result = []
         for name, configobj in self.context.items():
-            configobj = ContextWrapper(configobj, self.context, name=name)
             url = str(getView(configobj, 'absolute_url', self.request))
             active = configobj.status == ActiveStatus
             summary1 = getattr(configobj, "usageSummary", None)
