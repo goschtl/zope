@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-#
 # Copyright 2001-2002 by Vinay Sajip. All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and its
@@ -15,12 +13,6 @@
 # ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
 # IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-#
-# For the change history, see README.txt in the distribution.
-#
-# This file is part of the Python logging distribution. See
-# http://www.red-dove.com/python_logging.html
-#
 
 """
 Logging package for Python. Based on PEP 282 and comments thereto in
@@ -48,7 +40,7 @@ DEFAULT_LOGGING_CONFIG_PORT = 9030
 #   _listener holds the server object doing the listening
 _listener = None
 
-def fileConfig(fname,defaults=None):
+def fileConfig(fname, defaults=None):
     """
     Read the logging configuration from a ConfigParser-format file.
 
@@ -259,7 +251,7 @@ def listen(port=DEFAULT_LOGGING_CONFIG_PORT):
         allow_reuse_address = 1
 
         def __init__(self, host='localhost', port=DEFAULT_LOGGING_CONFIG_PORT,
-                handler=None):
+                     handler=None):
             ThreadingTCPServer.__init__(self, (host, port), handler)
             logging._acquireLock()
             self.abort = 0
@@ -279,20 +271,23 @@ def listen(port=DEFAULT_LOGGING_CONFIG_PORT):
                 abort = self.abort
                 logging._releaseLock()
 
-    def serve(rcvr, hdlr):
-        server = rcvr(handler=hdlr)
+    def serve(rcvr, hdlr, port):
+        server = rcvr(port=port, handler=hdlr)
         global _listener
         logging._acquireLock()
         _listener = server
         logging._releaseLock()
         server.serve_until_stopped()
 
-    return threading.Thread(target=serve, args=(ConfigSocketReceiver, ConfigStreamHandler))
+    return threading.Thread(target=serve,
+                            args=(ConfigSocketReceiver,
+                                  ConfigStreamHandler, port))
 
 def stopListening():
     """
     Stop the listening server which was created with a call to listen().
     """
+    global _listener
     if _listener:
         logging._acquireLock()
         _listener.abort = 1

@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-#
 # Copyright 2001-2002 by Vinay Sajip. All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and its
@@ -15,12 +13,6 @@
 # ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
 # IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-#
-# For the change history, see README.txt in the distribution.
-#
-# This file is part of the Python logging distribution. See
-# http://www.red-dove.com/python_logging.html
-#
 
 """
 Logging package for Python. Based on PEP 282 and comments thereto in
@@ -108,7 +100,7 @@ class RotatingFileHandler(logging.FileHandler):
         """
         if self.maxBytes > 0:                   # are we rolling over?
             msg = "%s\n" % self.format(record)
-            #print msg
+            self.stream.seek(0, 2)  #due to non-posix-compliant Windows feature
             if self.stream.tell() + len(msg) >= self.maxBytes:
                 self.doRollover()
         logging.FileHandler.emit(self, record)
@@ -153,10 +145,7 @@ class SocketHandler(logging.Handler):
         This function allows for partial sends which can happen when the
         network is busy.
         """
-        try:
-            v = sys.version_info
-        except:
-            v = None
+        v = logging._verinfo
         if v and (v[0] >= 2) and (v[1] >= 2):
             self.sock.sendall(s)
         else:
@@ -178,7 +167,7 @@ class SocketHandler(logging.Handler):
         slen = struct.pack(">L", len(s))
         return slen + s
 
-    def handleError(self):
+    def handleError(self, record):
         """
         Handle an error during logging.
 
@@ -190,7 +179,7 @@ class SocketHandler(logging.Handler):
             self.sock.close()
             self.sock = None        #try to reconnect next time
         else:
-            logging.Handler.handleError(self)
+            logging.Handler.handleError(self, record)
 
     def emit(self, record):
         """
@@ -207,7 +196,7 @@ class SocketHandler(logging.Handler):
                 self.sock = self.makeSocket()
             self.send(s)
         except:
-            self.handleError()
+            self.handleError(record)
 
     def close(self):
         """
@@ -360,6 +349,12 @@ class SysLogHandler(logging.Handler):
         self.facility = facility
         if type(address) == types.StringType:
             self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+            # syslog may require either DGRAM or STREAM sockets
+            try:
+                self.socket.connect(address)
+            except socket.error:
+                self.socket.close()
+                self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.socket.connect(address)
             self.unixsocket = 1
         else:
@@ -416,7 +411,7 @@ class SysLogHandler(logging.Handler):
             else:
                 self.socket.sendto(msg, self.address)
         except:
-            self.handleError()
+            self.handleError(record)
 
 class SMTPHandler(logging.Handler):
     """
@@ -439,6 +434,8 @@ class SMTPHandler(logging.Handler):
             self.mailhost = mailhost
             self.mailport = None
         self.fromaddr = fromaddr
+        if type(toaddrs) == types.StringType:
+            toaddrs = [toaddrs]
         self.toaddrs = toaddrs
         self.subject = subject
 
@@ -472,7 +469,7 @@ class SMTPHandler(logging.Handler):
             smtp.sendmail(self.fromaddr, self.toaddrs, msg)
             smtp.quit()
         except:
-            self.handleError()
+            self.handleError(record)
 
 class NTEventLogHandler(logging.Handler):
     """
@@ -501,7 +498,7 @@ class NTEventLogHandler(logging.Handler):
             self.typemap = {
                 logging.DEBUG   : win32evtlog.EVENTLOG_INFORMATION_TYPE,
                 logging.INFO    : win32evtlog.EVENTLOG_INFORMATION_TYPE,
-                logging.WARN    : win32evtlog.EVENTLOG_WARNING_TYPE,
+                logging.WARNING : win32evtlog.EVENTLOG_WARNING_TYPE,
                 logging.ERROR   : win32evtlog.EVENTLOG_ERROR_TYPE,
                 logging.CRITICAL: win32evtlog.EVENTLOG_ERROR_TYPE,
          }
@@ -536,7 +533,7 @@ class NTEventLogHandler(logging.Handler):
         Override this if you want to specify your own types. This version does
         a mapping using the handler's typemap attribute, which is set up in
         __init__() to a dictionary which contains mappings for DEBUG, INFO,
-        WARN, ERROR and CRITICAL. If you are using your own levels you will
+        WARNING, ERROR and CRITICAL. If you are using your own levels you will
         either need to override this method or place a suitable dictionary in
         the handler's typemap attribute.
         """
@@ -557,7 +554,7 @@ class NTEventLogHandler(logging.Handler):
                 msg = self.format(record)
                 self._welu.ReportEvent(self.appname, id, cat, type, [msg])
             except:
-                self.handleError()
+                self.handleError(record)
 
     def close(self):
         """
@@ -615,7 +612,7 @@ class HTTPHandler(logging.Handler):
                 h.send(data)
             h.getreply()    #can't do anything with the result
         except:
-            self.handleError()
+            self.handleError(record)
 
 class BufferingHandler(logging.Handler):
     """

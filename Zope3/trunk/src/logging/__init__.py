@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-#
 # Copyright 2001-2002 by Vinay Sajip. All Rights Reserved.
 #
 # Permission to use, copy, modify, and distribute this software and its
@@ -15,59 +13,59 @@
 # ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
 # IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 # OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-#
-# For the change history, see README.txt in the distribution.
-#
-# This file is part of the Python logging distribution. See
-# http://www.red-dove.com/python_logging.html
-#
 
 """
 Logging package for Python. Based on PEP 282 and comments thereto in
 comp.lang.python, and influenced by Apache's log4j system.
 
 Should work under Python versions >= 1.5.2, except that source line
-information is not available unless 'inspect' is.
+information is not available unless 'sys._getframe()' is.
 
 Copyright (C) 2001-2002 Vinay Sajip. All Rights Reserved.
 
 To use, simply 'import logging' and log away!
 """
 
-import sys, os, types, time, string, struct, cPickle, cStringIO
+import sys, os, types, time, string, cStringIO
 
 try:
     import thread
     import threading
 except ImportError:
     thread = None
-try:
-    import inspect
-except ImportError:
-    inspect = None
 
 __author__  = "Vinay Sajip <vinay_sajip@red-dove.com>"
 __status__  = "alpha"
-__version__ = "0.4.7"
-__date__    = "15 November 2002"
+__version__ = "0.4.8"
+__date__    = "16 February 2003"
 
 #---------------------------------------------------------------------------
 #   Miscellaneous module data
 #---------------------------------------------------------------------------
 
 #
+# _verinfo is used for when behaviour needs to be adjusted to the version
+# of Python
+#
+
+_verinfo = getattr(sys, "version_info", None)
+
+#
 #_srcfile is used when walking the stack to check when we've got the first
 # caller stack frame.
-#If run as a script, __file__ is not bound.
 #
-if __name__ == "__main__":
-    _srcfile = None
+if string.lower(__file__[-4:]) in ['.pyc', '.pyo']:
+    _srcfile = __file__[:-4] + '.py'
 else:
-    if string.lower(__file__[-4:]) in ['.pyc', '.pyo']:
-        _srcfile = __file__[:-4] + '.py'
-    else:
-        _srcfile = __file__
-    _srcfile = os.path.normcase(_srcfile)
+    _srcfile = __file__
+_srcfile = os.path.normcase(_srcfile)
+
+# _srcfile is only used in conjunction with sys._getframe().
+# To provide compatibility with older versions of Python, set _srcfile
+# to None if _getframe() is not available; this value will prevent
+# findCaller() from being called.
+if not hasattr(sys, "_getframe"):
+    _srcfile = None
 
 #
 #_startTime is used as the base when calculating the relative time of events
@@ -79,7 +77,6 @@ _startTime = time.time()
 #propagated
 #
 raiseExceptions = 1
-
 
 #---------------------------------------------------------------------------
 #   Level related stuff
@@ -94,7 +91,8 @@ raiseExceptions = 1
 CRITICAL = 50
 FATAL = CRITICAL
 ERROR = 40
-WARN = 30
+WARNING = 30
+WARN = WARNING
 INFO = 20
 DEBUG = 10
 NOTSET = 0
@@ -102,13 +100,14 @@ NOTSET = 0
 _levelNames = {
     CRITICAL : 'CRITICAL',
     ERROR : 'ERROR',
-    WARN : 'WARN',
+    WARNING : 'WARNING',
     INFO : 'INFO',
     DEBUG : 'DEBUG',
     NOTSET : 'NOTSET',
     'CRITICAL' : CRITICAL,
     'ERROR' : ERROR,
-    'WARN' : WARN,
+    'WARN' : WARNING,
+    'WARNING' : WARNING,
     'INFO' : INFO,
     'DEBUG' : DEBUG,
     'NOTSET' : NOTSET,
@@ -118,7 +117,7 @@ def getLevelName(level):
     """
     Return the textual representation of logging level 'level'.
 
-    If the level is one of the predefined levels (CRITICAL, ERROR, WARN,
+    If the level is one of the predefined levels (CRITICAL, ERROR, WARNING,
     INFO, DEBUG) then you get the corresponding string. If you have
     associated levels with names using addLevelName then the name you have
     associated with 'level' is returned. Otherwise, the string
@@ -214,6 +213,10 @@ class LogRecord:
             self.thread = thread.get_ident()
         else:
             self.thread = None
+        if hasattr(os, 'getpid'):
+            self.process = os.getpid()
+        else:
+            self.process = None
 
     def __str__(self):
         return '<LogRecord: %s, %s, %s, %s, "%s">'%(self.name, self.levelno,
@@ -226,7 +229,13 @@ class LogRecord:
         Return the message for this LogRecord after merging any user-supplied
         arguments with the message.
         """
-        msg = str(self.msg)
+        if not hasattr(types, "UnicodeType"): #if no unicode support...
+            msg = str(self.msg)
+        else:
+            try:
+                msg = str(self.msg)
+            except UnicodeError:
+                msg = self.msg      #Defer encoding till later
         if self.args:
             msg = msg % self.args
         return msg
@@ -253,9 +262,9 @@ class Formatter:
 
     %(name)s            Name of the logger (logging channel)
     %(levelno)s         Numeric logging level for the message (DEBUG, INFO,
-                        WARN, ERROR, CRITICAL)
+                        WARNING, ERROR, CRITICAL)
     %(levelname)s       Text logging level for the message ("DEBUG", "INFO",
-                        "WARN", "ERROR", "CRITICAL")
+                        "WARNING", "ERROR", "CRITICAL")
     %(pathname)s        Full pathname of the source file where the logging
                         call was issued (if available)
     %(filename)s        Filename portion of pathname
@@ -270,6 +279,7 @@ class Formatter:
                         relative to the time the logging module was loaded
                         (typically at application startup time)
     %(thread)d          Thread ID (if available)
+    %(process)d         Process ID (if available)
     %(message)s         The result of record.getMessage(), computed just as
                         the record is emitted
     """
@@ -568,14 +578,17 @@ class Handler(Filterer):
 
         Emission depends on filters which may have been added to the handler.
         Wrap the actual emission of the record with acquisition/release of
-        the I/O thread lock.
+        the I/O thread lock. Returns whether the filter passed the record for
+        emission.
         """
-        if self.filter(record):
+        rv = self.filter(record)
+        if rv:
             self.acquire()
             try:
                 self.emit(record)
             finally:
                 self.release()
+        return rv
 
     def setFormatter(self, fmt):
         """
@@ -601,17 +614,17 @@ class Handler(Filterer):
         """
         pass
 
-    def handleError(self):
+    def handleError(self, record):
         """
         Handle errors which occur during an emit() call.
 
         This method should be called from handlers when an exception is
-        encountered during an emit() call. By default it does nothing,
-        because by default raiseExceptions is false, which means that
+        encountered during an emit() call. If raiseExceptions is false,
         exceptions get silently ignored. This is what is mostly wanted
         for a logging system - most users will not care about errors in
         the logging system, they are more interested in application errors.
         You could, however, replace this with a custom handler if you wish.
+        The record which was being processed is passed in to this method.
         """
         if raiseExceptions:
             import traceback
@@ -655,10 +668,16 @@ class StreamHandler(Handler):
         """
         try:
             msg = self.format(record)
-            self.stream.write("%s\n" % msg)
+            if not hasattr(types, "UnicodeType"): #if no unicode support...
+                self.stream.write("%s\n" % msg)
+            else:
+                try:
+                    self.stream.write("%s\n" % msg)
+                except UnicodeError:
+                    self.stream.write("%s\n" % msg.encode("UTF-8"))
             self.flush()
         except:
-            self.handleError()
+            self.handleError(record)
 
 class FileHandler(StreamHandler):
     """
@@ -726,11 +745,11 @@ class Manager:
     There is [under normal circumstances] just one Manager instance, which
     holds the hierarchy of loggers.
     """
-    def __init__(self, root):
+    def __init__(self, rootnode):
         """
         Initialize the manager with the root node of the logger hierarchy.
         """
-        self.root = root
+        self.root = rootnode
         self.disable = 0
         self.emittedNoHandlerWarning = 0
         self.loggerDict = {}
@@ -871,19 +890,21 @@ class Logger(Filterer):
         if INFO >= self.getEffectiveLevel():
             apply(self._log, (INFO, msg, args), kwargs)
 
-    def warn(self, msg, *args, **kwargs):
+    def warning(self, msg, *args, **kwargs):
         """
-        Log 'msg % args' with severity 'WARN'.
+        Log 'msg % args' with severity 'WARNING'.
 
         To pass exception information, use the keyword argument exc_info with
         a true value, e.g.
 
-        logger.warn("Houston, we have a %s", "bit of a problem", exc_info=1)
+        logger.warning("Houston, we have a %s", "bit of a problem", exc_info=1)
         """
-        if self.manager.disable >= WARN:
+        if self.manager.disable >= WARNING:
             return
-        if self.isEnabledFor(WARN):
-            apply(self._log, (WARN, msg, args), kwargs)
+        if self.isEnabledFor(WARNING):
+            apply(self._log, (WARNING, msg, args), kwargs)
+
+    warn = warning
 
     def error(self, msg, *args, **kwargs):
         """
@@ -940,19 +961,14 @@ class Logger(Filterer):
         Find the stack frame of the caller so that we can note the source
         file name and line number.
         """
-        rv = (None, None)
-        frame = inspect.currentframe().f_back
-        while frame:
-            sfn = inspect.getsourcefile(frame)
-            if sfn:
-                sfn = os.path.normcase(sfn)
-            if sfn != _srcfile:
-                #print frame.f_code.co_code
-                lineno = inspect.getlineno(frame)
-                rv = (sfn, lineno)
-                break
-            frame = frame.f_back
-        return rv
+        f = sys._getframe(1)
+        while 1:
+            co = f.f_code
+            filename = os.path.normcase(co.co_filename)
+            if filename == _srcfile:
+                f = f.f_back
+                continue
+            return filename, f.f_lineno
 
     def makeRecord(self, name, level, fn, lno, msg, args, exc_info):
         """
@@ -966,12 +982,8 @@ class Logger(Filterer):
         Low-level logging routine which creates a LogRecord and then calls
         all the handlers of this logger to handle the record.
         """
-        if inspect and _srcfile:
-            _acquireLock()
-            try:
-                fn, lno = self.findCaller()
-            finally:
-                _releaseLock()
+        if _srcfile:
+            fn, lno = self.findCaller()
         else:
             fn, lno = "<unknown file>", 0
         if exc_info:
@@ -1001,7 +1013,7 @@ class Logger(Filterer):
         Remove the specified handler from this logger.
         """
         if hdlr in self.handlers:
-            hdlr.close()
+            #hdlr.close()
             self.handlers.remove(hdlr)
 
     def callHandlers(self, record):
@@ -1066,7 +1078,7 @@ class RootLogger(Logger):
 
 _loggerClass = Logger
 
-root = RootLogger(WARN)
+root = RootLogger(WARNING)
 Logger.root = root
 Logger.manager = Manager(Logger.root)
 
@@ -1138,13 +1150,15 @@ def exception(msg, *args):
     """
     apply(error, (msg,)+args, {'exc_info': 1})
 
-def warn(msg, *args, **kwargs):
+def warning(msg, *args, **kwargs):
     """
-    Log a message with severity 'WARN' on the root logger.
+    Log a message with severity 'WARNING' on the root logger.
     """
     if len(root.handlers) == 0:
         basicConfig()
-    apply(root.warn, (msg,)+args, kwargs)
+    apply(root.warning, (msg,)+args, kwargs)
+
+warn = warning
 
 def info(msg, *args, **kwargs):
     """
@@ -1178,6 +1192,3 @@ def shutdown():
     for h in _handlers.keys():
         h.flush()
         h.close()
-
-if __name__ == "__main__":
-    print __doc__
