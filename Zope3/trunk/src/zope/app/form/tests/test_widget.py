@@ -90,11 +90,11 @@ class TestInputWidget:
         >>> from zope.app.form import InputWidget
         >>> from zope.app.form.interfaces import WidgetInputError
         >>> class TestInputWidget(InputWidget):
-        ... 	def getInputValue(self):
-        ...			if self.context.required:
-        ...				raise WidgetInputError('', '', None)
-        ...			else:
-        ...				return 'Foo Bar'
+        ...     def getInputValue(self):
+        ...         if self.context.required:
+        ...             raise WidgetInputError('', '', None)
+        ...         else:
+        ...             return 'Foo Bar'
 
     All widgets rely on a field and a request:
 
@@ -103,7 +103,7 @@ class TestInputWidget:
         >>> field = Field()
         >>> from zope.interface import Interface
         >>> class ITestRequest(Interface):
-        ... 	pass
+        ...     pass
         >>> widget = TestInputWidget(field, Request(ITestRequest))
 
     The default implementation of hasValidInput and validate both rely on
@@ -115,7 +115,7 @@ class TestInputWidget:
         >>> widget.getInputValue()
         Traceback (most recent call last):
         WidgetInputError: ('', '', None)
-        
+
     A call to validate, however, accomplishes the same thing with improved
     readability:
 
@@ -135,7 +135,7 @@ class TestInputWidget:
         >>> widget.getInputValue()
         'Foo Bar'
 
-    Corredpondingly, validate does not raise an error:
+    Correspondingly, validate does not raise an error:
 
         >>> widget.validate()
 
