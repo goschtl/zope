@@ -19,19 +19,22 @@ from types import StringType
 from utils import UniqueObject, _getAuthenticatedUser, _checkPermission
 from utils import getToolByName, _dtmldir
 from OFS.Folder import Folder
-from Globals import InitializeClass, DTMLFile, MessageDialog, \
-     PersistentMapping
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from AccessControl.User import nobody
 from AccessControl import ClassSecurityInfo
+from Globals import DTMLFile
+from Globals import InitializeClass
+from Globals import MessageDialog
+from Globals import PersistentMapping
+
+from ActionProviderBase import ActionProviderBase
 from CMFCorePermissions import AccessContentsInformation
 from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import ManageUsers
 from CMFCorePermissions import SetOwnPassword
 from CMFCorePermissions import View
-from ActionProviderBase import ActionProviderBase
 
 from interfaces.portal_membership \
         import portal_membership as IMembershipTool
@@ -395,12 +398,10 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
         return tuple( member_roles )
 
     security.declareProtected(View, 'setLocalRoles')
-    def setLocalRoles( self, obj, member_ids, member_role, reindex=1 ):
-        """ Set local roles on an item """
-        member = self.getAuthenticatedMember()
-        my_roles = member.getRolesInContext( obj )
-
-        if 'Manager' in my_roles or member_role in my_roles:
+    def setLocalRoles(self, obj, member_ids, member_role, reindex=1):
+        """ Add local roles on an item.
+        """
+        if _checkPermission(ManageUsers, obj):
             for member_id in member_ids:
                 roles = list(obj.get_local_roles_for_userid( userid=member_id ))
 
@@ -419,13 +420,16 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
         """ Delete local roles of specified members.
         """
         if _checkPermission(ManageUsers, obj):
-            obj.manage_delLocalRoles(userids=member_ids)
+            for member_id in member_ids:
+                if obj.get_local_roles_for_userid(userid=member_id):
+                    obj.manage_delLocalRoles(userids=member_ids)
+                    break
 
         if recursive and hasattr( aq_base(obj), 'contentValues' ):
             for subobj in obj.contentValues():
                 self.deleteLocalRoles(subobj, member_ids, 0, 1)
 
-        if reindex and hasattr( aq_base(obj), 'reindexObjectSecurity' ):
+        if reindex:
             # reindexObjectSecurity is always recursive
             obj.reindexObjectSecurity()
 
@@ -505,6 +509,5 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
         doesn't have the View permission on the folder.
         """
         return None
-
 
 InitializeClass(MembershipTool)

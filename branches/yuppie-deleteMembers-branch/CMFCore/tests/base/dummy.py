@@ -168,6 +168,8 @@ class DummyFolder( Implicit ):
     def getId(self):
         return self._id
 
+    def reindexObjectSecurity(self):
+        pass
 
 class DummySite(DummyFolder):
     """ A dummy portal folder.
