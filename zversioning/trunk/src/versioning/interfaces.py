@@ -39,6 +39,8 @@ import persistent, zope
 from zope.interface import Interface, Attribute
 
 from zope.app.container.interfaces import INameChooser
+from zope.app.uniqueid.interfaces import IReference
+
 
 class RepositoryError(Exception):
     pass
@@ -316,7 +318,7 @@ class IHistoryStorage(Interface) : # IHistoriesStorage?
         """Returns the whole metadata history of the objects aspects.
         """
 
-class IVersionable(persistent.interfaces.IPersistent):
+class IVersionable(IReference):
     """Version control is allowed for objects that provide this."""
 
    

@@ -28,7 +28,8 @@ class VersionableAspectsAdapter(object) :
         and the copied object of type IContained.
         
         It further assumes that we only version objects
-        that have been persistently stored (and thus have a _p_oid)
+        that have been persistently stored and thus are
+        able to be adapted to zope.app.uniqueid.IReference.
         
     """
     

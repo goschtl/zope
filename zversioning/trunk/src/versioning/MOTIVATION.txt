@@ -139,14 +139,12 @@ The versioning system that puts object under versioning control must register
 the object in the histories storage (this will be called later on by
 IVersionControl.applyVersionControl) :
 
-    >>> histories.register(sample)
-    '\x00\x00\x00\x00\x00\x00\x00\x01'
-    >>> histories.register(a)
-    '\x00\x00\x00\x00\x00\x00\x00\x03'
-    >>> histories.register(b)
-    '\x00\x00\x00\x00\x00\x00\x00\x04'
-    >>> histories.register(c)
-    '\x00\x00\x00\x00\x00\x00\x00\x06'
+    >>> for x in [sample, a, b, c] :
+    ...     histories.register(x) is not None
+    True
+    True
+    True
+    True
     >>> util.commit()
     >>> len(histories.values())
     4
@@ -168,8 +166,7 @@ to save each version as a normal copy of the original content object.
     '001'
     >>> saveAsVersion(c, histories)
     '001'
-    >>> version = histories[a._p_oid]['001']
-    >>> version.text
+    >>> histories.getVersion(a, '001').text
     'First text version of a'
     
 Add some additional content versions :
@@ -178,7 +175,7 @@ Add some additional content versions :
     >>> c.text = "Second text version of c"
     >>> saveAsVersion(a, histories)
     '002'
-    >>> version = histories[a._p_oid]['002']
+    >>> version = histories.getVersion(a, '002')
     >>> version.text
     'Second text version of a'
     >>> saveAsVersion(c, histories)

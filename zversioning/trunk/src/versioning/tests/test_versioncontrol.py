@@ -23,6 +23,8 @@ from zope.interface import implements
 from zope.app.container.sample import SampleContainer
 from zope.app.tests import placelesssetup
 from zope.app.tests import ztapi
+from persistent.interfaces import IPersistent
+
 
 # import basic test infrastructure from existing version control implementation
 from zope.app.versioncontrol.tests import setUp, tearDown, name
@@ -61,6 +63,11 @@ from zope.app.file.interfaces import IFile
 from zope.app.file.file import File
 from zope.app.folder.folder import Folder
 
+from zope.app.uniqueid.interfaces import IUniqueIdUtility
+from zope.app.uniqueid.interfaces import IReference
+from zope.app.uniqueid import UniqueIdUtility
+from zope.app.uniqueid import ReferenceToPersistent
+ 
 from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.copypastemove import ObjectCopier
 
@@ -103,6 +110,7 @@ def setUp(test, name) :
  
     classImplements(File, IAttributeAnnotatable)
     classImplements(Folder, IAttributeAnnotatable)
+    
 
     ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations, AttributeAnnotations)
     ztapi.provideAdapter(None, ITraverser, Traverser)
@@ -114,6 +122,8 @@ def setUp(test, name) :
     # for copy and moves
     ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
     ztapi.provideAdapter(IWriteContainer, INameChooser, NameChooser)
+    ztapi.provideUtility(IUniqueIdUtility, UniqueIdUtility())
+    ztapi.provideAdapter(IPersistent, IReference, ReferenceToPersistent)    
 
 
 def setUpReadMe(test) :

@@ -34,6 +34,32 @@ The pattern common to all implementation variants is roughly as follows:
         of the original with a saved copy is sufficient, sometimes references
         to the original objects must remain intact. These different variants
         are also defined in policies.py
+        
+Within this overall pattern the following components are pluggable :
+
+    1.  IHistoriesStorage. This is the main persistent storage that is used
+        to ensure that the changing versions can be accessed later on. 
+        We use the abstract term ticket to describe the fact that different
+        storages use quite different reference schemes, e.g. global unique ids,
+        paths and revision numbers, python pointers, the _p_oid in the ZODB etc.
+        to retrieve and access parts of the history of an object.
+        
+    2.  IVersionableAspects. 
+    
+   
+    3.  INameChooser.
+    
+    
+    4.  ICheckoutAware.
+    
+    XXX
+    
+    5.  IMergeStrategies 
+    
+    
+    
+        
+    
          
 
 General Setup Stuff
@@ -91,10 +117,23 @@ usually does for us):
 
   >>> from zope.app.tests import ztapi
   >>> from zope.app import zapi
+  >>> import persistent
   >>> from versioning import interfaces, repository, policies, storage
+
+  
+Configure a unique id utility. In this case we use the one provided by
+zope and enable this utility to adapt all persistent object into
+unique references:     
+
+  >>> ztapi.provideUtility(zope.app.uniqueid.interfaces.IUniqueIdUtility,
+  ...                           zope.app.uniqueid.UniqueIdUtility())
+  >>> ztapi.provideAdapter(persistent.interfaces.IPersistent, 
+  ...                           zope.app.uniqueid.interfaces.IReference,
+  ...                           zope.app.uniqueid.ReferenceToPersistent)    
 
 Configure the 'IHistoryStorage' utility being responsible for the storage 
 of the objects histories:
+
 
   >>> ztapi.provideUtility(interfaces.IHistoryStorage,
   ...                      storage.SimpleHistoryStorage())

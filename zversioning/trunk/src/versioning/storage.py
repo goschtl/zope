@@ -17,12 +17,15 @@ from datetime import datetime
 
 from zope.interface import implements
 from persistent.dict import PersistentDict
+
+from zope.app import zapi
 from zope.app.folder import Folder
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.exception.interfaces import UserError
 from zope.app.copypastemove.interfaces import IObjectCopier 
 from zope.app.container.interfaces import INameChooser
 from zope.app.annotation.interfaces import IAnnotations
+from zope.app.uniqueid.interfaces import IUniqueIdUtility
 
 from versioning.interfaces import IVersionHistory
 from versioning.interfaces import IHistoryStorage
@@ -61,7 +64,7 @@ class SimpleHistoryStorage(Folder) :
         Implements the probably most simple way of version control in Zope3.
         It uses the following existing Zope mechanisms :
             
-           the _p_oid as an identification ticket for objects and their versions
+           a unique id as an identification ticket for objects and their versions
            a Folder as a container for histories were each History is itself a Folder
            
         >>> from versioning.policies import VersionableAspectsAdapter
@@ -73,6 +76,12 @@ class SimpleHistoryStorage(Folder) :
     """
     
     implements(IHistoryStorage, IAnnotatable)
+    
+    
+    def __init__(self) :
+        super(SimpleHistoryStorage, self).__init__()
+        self.unique_ids = zapi.getUtility(IUniqueIdUtility)
+        
  
     def register(self, obj):
         """ Register an obj for version control.
@@ -83,12 +92,11 @@ class SimpleHistoryStorage(Folder) :
         return ticket
   
     def getTicket(self, obj) :
-        """ Returns the persistent oid of an object as
+        """ Returns a unique id of an object as
             a ticket that remains stable across time.
         """
-        if obj._p_oid is None :
-            raise RuntimeError("cannot version uncommited objects")
-        return str(obj._p_oid)
+        return str(self.unique_ids.register(obj))
+    
   
     def getVersion(self, obj, selector) :
         """ Returns the version of an object that is specified by selector. """
