@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests.
 
-$Id: doctestunit.py,v 1.8 2004/02/03 21:53:33 sidnei Exp $
+$Id: doctestunit.py,v 1.9 2004/03/15 20:41:39 jim Exp $
 """
 
 from StringIO import StringIO
@@ -26,6 +26,7 @@ import pdb
 import sys
 import tempfile
 import unittest
+
 
 class DocTestTestCase(unittest.TestCase):
     """A test case that wraps a test function.
@@ -51,6 +52,10 @@ class DocTestTestCase(unittest.TestCase):
     def tearDown(self):
         if self.__tearDown is not None:
             self.__tearDown()
+
+    def setDebugModeOn(self):
+        self.__tester.optionflags |= (
+            doctest.RUN_DEBUGGER_ON_UNEXPECTED_EXCEPTION)
 
     def runTest(self):
         old = sys.stdout
@@ -226,20 +231,27 @@ def testsource(module, name):
         ])
     return testsrc
 
-def debug(module, name, pm=False):
+def debug_src(src, pm=False):
     """Debug a single doctest test doc string
 
-    Provide the module (or dotted name of the module) containing the
-    test to be debugged and the name (within the module) of the object
-    with the doc string with tests to be debugged.
-
+    The string is provided directly
     """
-    module = _normalizeModule(module)
-    testsrc = testsource(module, name)
+    # XXX we rely on an internal doctest function:
+    examples = doctest._extract_examples(src)
+    src = '\n'.join([
+        "%s%s" % (source, _expect(expect))
+        for (source, expect, lineno) in examples
+        ])
+    debug_script(src, pm)
+
+def debug_script(src, pm=False, globs=None):
+    "Debug a test script"
     srcfilename = tempfile.mktemp("doctestdebug.py")
-    open(srcfilename, 'w').write(testsrc)
-    globs = {}
-    globs.update(module.__dict__)
+    open(srcfilename, 'w').write(src)
+    if globs:
+        globs = globs.copy()
+    else:
+        globs = {}
 
     try:
         if pm:
@@ -254,3 +266,15 @@ def debug(module, name, pm=False):
             pdb.run("execfile(%r)" % srcfilename, globs, globs)
     finally:
         os.remove(srcfilename)
+
+def debug(module, name, pm=False):
+    """Debug a single doctest test doc string
+
+    Provide the module (or dotted name of the module) containing the
+    test to be debugged and the name (within the module) of the object
+    with the doc string with tests to be debugged.
+
+    """
+    module = _normalizeModule(module)
+    testsrc = testsource(module, name)
+    debug_src(testsource, pm, module.__dict__)

@@ -348,6 +348,8 @@ class ImmediateTestRunner(unittest.TextTestRunner):
                                    count=self._count, progress=self._progress)
 
     def run(self, test):
+        if self._debug:
+            club_debug(test)
         self._count = test.countTestCases()
         if self._profile:
             prof = hotshot.Profile("tests_profile.prof")
@@ -359,6 +361,15 @@ class ImmediateTestRunner(unittest.TextTestRunner):
             stats.print_stats(50)
             return r
         return unittest.TextTestRunner.run(self, test)
+
+def club_debug(test):
+    # Beat a debug flag into debug-aware test cases
+    setDebugModeOn = getattr(test, 'setDebugModeOn', None)
+    if setDebugModeOn is not None:
+        setDebugModeOn()
+        
+    for subtest in getattr(test, '_tests', ()):
+        club_debug(subtest)
 
 # setup list of directories to put on the path
 class PathInit:
