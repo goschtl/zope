@@ -440,10 +440,12 @@ Zope Changes
           PrincipalLookupError.
 
       - Removed Browser Menu Service and implemented menus as subscriber
-        adapters. Menu Item Types (in other words, menus) are now utilities
-        that provide `IMenuItemType`.
+        adapters. Menus are utilities providing `IBrowserMenu`. The default
+        menu implementation looks up menu items as views on the provided
+        object. The view must provide `IMenuItemType`.
 
-        + Implemented sub-menus.
+        + Implemented sub-menus. Sub-menus keep track of the menu id that
+          provides the sub-entries.
 
         + Completes http://dev.zope.org/Zope3/AdaptersForMenuItems. New
           features such as sub-menus, icons, disabled entries and so on were

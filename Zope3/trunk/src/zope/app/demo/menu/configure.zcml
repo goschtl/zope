@@ -25,7 +25,7 @@
 
   <browser:page
       name="menudemo.html"
-      for="zope.interface.Interface"
+      for="zope.app.container.interfaces.IReadContainer"
       template="menudemo.pt"
       permission="zope.Public" />
 
@@ -73,30 +73,8 @@
 
   <browser:menu 
       id="openrecent"
-      title="Open Recent" />
-
-  <browser:menuItems 
-      menu="openrecent" 
-      for="zope.interface.Interface">
-
-    <browser:menuItem 
-        action="javascript:alert('Open myfile.txt')" 
-        title="myfile.txt"
-        permission="zope.Public"
-        />
-
-    <browser:menuItem 
-        action="javascript:alert('Open folderX')" 
-        title="folderX"
-        permission="zope.Public"
-        />
-
-    <browser:menuItem 
-        action="javascript:alert('Open picture.png')" 
-        title="picture.png" 
-        permission="zope.Public"/>
-
-  </browser:menuItems>
+      title="Open Recent" 
+      class=".menu.RecentlyOpened" />
 
   <browser:menu 
       id="save"
