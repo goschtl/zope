@@ -36,6 +36,9 @@ CMF 1.3
 
   Bug Fixes
 
+    - Made old ListCriterion instances forward-compatible across earlier
+      addition of 'operator' field.
+
     - Defaulted CMFCore.MembershipTool's createMemberArea flag to true,
       to preserve existing behavior:  member area should be created by
       default on first login (Collector #5).
