@@ -441,9 +441,14 @@ class PluggableAuthServiceTests( unittest.TestCase ):
     def test__extractUserIds_simple( self ):
 
         from Products.PluggableAuthService.interfaces.plugins \
-            import IExtractionPlugin, IAuthenticationPlugin
+            import IExtractionPlugin
+        from Products.PluggableAuthService.interfaces.plugins \
+            import IAuthenticationPlugin
+        from Products.PluggableAuthService.interfaces.plugins \
+            import ICredentialsInitializePlugin
 
-        PLUGIN_ID = 'login_plugin'
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'notified_plugin'
 
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
@@ -452,20 +457,35 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
-        zcuf._setObject( PLUGIN_ID, login )
+        zcuf._setObject( PLUGIN_ID_1, login )
+
+        notified = DummyPlugin()
+        directlyProvides( notified, ( ICredentialsInitializePlugin, ) )
+
+        def _initializeCredentials( request, response, new_creds ):
+            notified._credentials = new_creds
+
+        notified.initializeCredentials = _initializeCredentials
+        zcuf._setObject( PLUGIN_ID_2, notified )
 
         plugins = zcuf._getOb( 'plugins' )
-        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID )
-        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( ICredentialsInitializePlugin, PLUGIN_ID_2 )
 
-        request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
+        credentials = { 'login' : 'foo', 'password' : 'bar' }
+        request = FauxRequest( form=credentials )
 
         user_ids = zcuf._extractUserIds( request=request
                                        , plugins=zcuf.plugins
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], '%s__foo' % PLUGIN_ID )
+        self.assertEqual( user_ids[ 0 ][0], '%s__foo' % PLUGIN_ID_1 )
+        nc = notified._credentials
+        self.assertEqual( nc[ 'login' ], credentials[ 'login' ] )
+        self.assertEqual( nc[ 'password' ], credentials[ 'password' ] )
+        self.assertEqual( nc[ 'extractor' ], PLUGIN_ID_1 )
 
     def test__extractUserIds_one_extractor_two_authenticators( self ):
 
