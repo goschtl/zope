@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.3 $
+:Version: $Revision: 1.4 $
 
 .. contents::
 
@@ -252,7 +252,7 @@ form::
 The add form is named ``addRegistration.html``.  This is a standard
 name that a number of other views expect to be defined.  The form is
 registered for ``ILocalUtility``.  ``ILocalUtility`` is a marker
-interface thgat extends ``IRegisterable``.  We'll require that all
+interface that extends ``IRegisterable``.  We'll require that all
 local utilities implement this view.  Utility components should also
 implement IAttributeAnnotatable, unless they want to provide a
 different way to store annotations.
