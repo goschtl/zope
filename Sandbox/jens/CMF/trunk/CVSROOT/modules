@@ -43,3 +43,9 @@ zs Components/GreyThing \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
 
 pcgi Components/pcgi2 pcgi_publisher.py
+
+
+DCOraclePackage -d DCOracle DCOracle/DCOracle
+DCOracleSrc  -d src DCOracle/src
+
+ZDCOracleDA Packages/Products/ZDCOracleDA &DCOraclePackage &DCOracleSrc
