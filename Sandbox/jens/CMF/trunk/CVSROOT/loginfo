@@ -1,2 +1,2 @@
-^test ${CVSROOT}/CVSROOT/postcommit_actions --verbose --bg %{sVv}
-^CVSROOT ${CVSROOT}/CVSROOT/postcommit_actions --verbose --bg %{sVv}
+^test ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
+^CVSROOT ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
