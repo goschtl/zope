@@ -45,6 +45,8 @@ class Application:
         self.options = options
         self.resource = locationmap.normalizeResourceId(options.resource)
         self.resource_type, self.resource_name = self.resource.split(":", 1)
+        if not options.release_name:
+            options.release_name = self.resource_name
         # Create a new directory for all temporary files to go in:
         self.tmpdir = tempfile.mkdtemp(prefix=options.program + "-")
         tempfile.tempdir = self.tmpdir
@@ -298,8 +300,6 @@ class Application:
         """Load the primary resource and initialize internal metadata."""
         self.source = self.loader.load(self.resource_url)
         self.load_metadata()
-        if not self.options.release_name:
-            self.options.release_name = self.metadata.name.replace(" ", "-")
         release_name = self.options.release_name
         self.target_name = "%s-%s" % (release_name, self.options.version)
         self.target_file = self.target_name + ".tar.bz2"
