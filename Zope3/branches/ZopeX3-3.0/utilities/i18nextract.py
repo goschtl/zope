@@ -128,7 +128,7 @@ def main(argv=sys.argv):
     print "base path: %r\nsearch path: %r\ndomain: %r\noutput file: %r" \
         % (base_dir, path, domain, output_file)
 
-    from zope.app.translation_files.extract import POTMaker, \
+    from zope.app.locales.extract import POTMaker, \
          py_strings, tal_strings, zcml_strings
 
     maker = POTMaker(output_file, path)
