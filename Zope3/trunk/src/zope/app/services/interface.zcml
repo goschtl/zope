@@ -1,4 +1,4 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope">
 
 <content class=".interface.LocalInterfaceService">
   <factory
@@ -11,4 +11,4 @@
       />
 </content>
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
     xmlns='http://namespaces.zope.org/zope'
     xmlns:event='http://namespaces.zope.org/event'
     xmlns:fssync='http://namespaces.zope.org/fssync'
@@ -51,4 +51,4 @@
     factory=".pagefolder.PageFolderAdapter"
     />
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,4 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns='http://namespaces.zope.org/zope'>
 
 <content class=".put.NullResource">
   <allow interface="zope.app.interfaces.http.INullResource" />
@@ -60,4 +60,4 @@
 
 <include package=".exception" />
 
-</zopeConfigure>
+</configure>

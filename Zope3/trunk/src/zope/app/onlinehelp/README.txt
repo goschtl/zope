@@ -34,7 +34,7 @@ Online Help System
 
   Examples:
 
-    <zopeConfigure
+    <configure
         xmlns="http://namespaces.zope.org/zope"
         xmlns:help="http://namespaces.zope.org/help"
         >
@@ -56,4 +56,4 @@ Online Help System
         view = "zope.app.browser.onlinehelp.OnlineHelpTopicView"
         doc_path = "./help.txt" />
 
-    </zopeConfigure>
+    </configure>

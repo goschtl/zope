@@ -1099,14 +1099,14 @@ class ConfigurationTest(PlacelessSetup, unittest.TestCase):
 
     def test_load_zcml(self):
         xmlconfig.string("""\
-        <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+        <configure xmlns='http://namespaces.zope.org/zope'>
           <include package='zope.app.component' file='meta.zcml' />
           <include package='zope.app.event' file='meta.zcml' />
           <include package='zope.app.publisher.browser' file='meta.zcml' />
           <include package='zope.app.schema' file='meta.zcml' />
 
           <include package='zope.app.browser.form.complexsample' />
-        </zopeConfigure>
+        </configure>
         """)
 
 

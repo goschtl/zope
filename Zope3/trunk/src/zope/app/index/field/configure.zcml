@@ -1,4 +1,4 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope">
 
 <content class="zope.app.index.field.index.FieldIndex">
 
@@ -23,4 +23,4 @@
       />
 </content>
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,4 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope"
+<configure xmlns="http://namespaces.zope.org/zope"
                xmlns:browser="http://namespaces.zope.org/browser"
 >
 
@@ -35,4 +35,4 @@
            permission="zope.Public"/>
 </content>
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,4 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns='http://namespaces.zope.org/zope'>
 
 <view 
   for="zope.app.interfaces.container.IReadContainer"
@@ -126,4 +126,4 @@
   allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
   />
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
    xmlns:service="http://namespaces.zope.org/service"
@@ -53,4 +53,4 @@
 <gts:registerTranslations directory="./locale" />
 <gts:defaultLanguages languages="en" />
 
-</zopeConfigure>
+</configure>

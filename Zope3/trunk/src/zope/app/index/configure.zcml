@@ -1,4 +1,4 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <include package=".text" />
   <include package=".field" />
@@ -19,5 +19,5 @@
 />
 
 
-</zopeConfigure>
+</configure>
 

@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
 >
 
@@ -10,4 +10,4 @@
     serviceType='EventPublication'
     component='zope.app.event.globalservice.eventPublisher' />
 
-</zopeConfigure>
+</configure>

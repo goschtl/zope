@@ -1,4 +1,4 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope"
+<configure xmlns="http://namespaces.zope.org/zope"
                xmlns:meta="http://namespaces.zope.org/meta"
                xmlns:test="http://namespaces.zope.org/test"
   >
@@ -11,4 +11,4 @@
 
   <test:foo x="blah" y="0" />
 
-</zopeConfigure>
+</configure>

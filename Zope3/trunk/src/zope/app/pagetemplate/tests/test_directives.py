@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.5 2003/08/17 06:07:23 philikon Exp $
+$Id: test_directives.py,v 1.6 2003/08/22 20:02:19 faassen Exp $
 """
 
 import unittest
@@ -28,11 +28,11 @@ import zope.app.pagetemplate
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-template = """<zopeConfigure 
+template = """<configure 
    xmlns='http://namespaces.zope.org/zope'
    xmlns:tales='http://namespaces.zope.org/tales'>
    %s
-   </zopeConfigure>"""
+   </configure>"""
 
 
 def definePermissions():

@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.15 2003/08/17 06:08:49 philikon Exp $
+$Id: xmlconfig.py,v 1.16 2003/08/22 20:02:22 faassen Exp $
 """
 
 import errno
@@ -103,13 +103,13 @@ class ParserInfo:
 
     >>> print info
     File "tests//sample.zcml", line 1.0-7.0
-      <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+      <configure xmlns='http://namespaces.zope.org/zope'>
         <!-- zope.configure -->
         <directives namespace="http://namespaces.zope.org/zope">
           <directive name="hook" attributes="name implementation module"
              handler="zope.configuration.metaconfigure.hook" />
         </directives>
-      </zopeConfigure>
+      </configure>
 
 
     """
@@ -381,6 +381,7 @@ def registerCommonDirectives(context):
     config.defineSimpleDirective(
         context, "includeOverrides", IInclude, includeOverrides, namespace="*")
 
+    # XXX zopeConfigure is deprecated; use configure in new ZCML instead
     config.defineGroupingDirective(
         context,
         name="zopeConfigure",

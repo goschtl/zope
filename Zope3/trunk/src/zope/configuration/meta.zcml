@@ -1,4 +1,4 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure xmlns='http://namespaces.zope.org/zope'>
 
   <!-- zope.configure -->
   <directives namespace="http://namespaces.zope.org/zope">
@@ -6,4 +6,4 @@
        handler="zope.configuration.metaconfigure.hook" />
   </directives>
 
-</zopeConfigure>
+</configure>

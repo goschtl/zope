@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:service="http://namespaces.zope.org/service"
    xmlns:gts="http://namespaces.zope.org/gts"
@@ -29,4 +29,4 @@
     permission="zope.Public"
     component="zope.i18n.globaltranslationservice.translationService" />
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
 >
@@ -17,4 +17,4 @@
       for="zope.i18n.interfaces.ITranslationService" />
      
 
-</zopeConfigure>
+</configure>

@@ -1,2 +1,2 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope">
-</zopeConfigure>
+<configure xmlns="http://namespaces.zope.org/zope">
+</configure>

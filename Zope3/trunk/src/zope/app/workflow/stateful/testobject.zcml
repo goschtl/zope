@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope">
 
   <interface interface=".testobject.IWorkflowData"/>
@@ -24,4 +24,4 @@
 
   </content>
 
-</zopeConfigure>
+</configure>
