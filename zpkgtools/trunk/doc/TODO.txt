@@ -5,10 +5,6 @@ Things that need to be done
 - Need name + acronym to describe what gets built, not normal words
   (Jim sez).  Zope3-Dev seems to want to call them "packages".
 
-- Write a "Quick Start" document to show people how to get started.
-  This will include a prepared resource map for many of the packages
-  used with Zope X3.
-
 - Package assembler script to build sumo/combined distro (mostly done)
 
   - We should have some way to wildcard an entire hierarchy of packages
@@ -17,8 +13,9 @@ Things that need to be done
       zope.*  cvs://cvs.zope.org/cvs-repository:Zope3/src/zope/
 
     would make the resource map for Zope 3 much more concise.
-    I've started writing the tests and the implementation, but it's too
-    much for today given that it's not necessay.
+    I've started writing tests and an implementation, and Jim checked
+    in an alternate implementation (with different semantics), but the
+    issue needs to be re-visited.
 
   - The setuptools helper should only be included in distributions that
     actually need it.  This is currenly only needed when packages end up
@@ -70,7 +67,7 @@ Things that need to be done
     happen unless the use cases become clearer.
 
   - Consider looking for the configuration file in the current
-    directory before look in ~/.zpkg/.
+    directory before looking in ~/.zpkg/.
 
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
