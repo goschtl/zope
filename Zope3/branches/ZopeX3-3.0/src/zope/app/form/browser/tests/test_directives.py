@@ -112,7 +112,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             """)))
 
         v = zapi.queryView(ob, 'add.html', request)
-        # expect component lookup as standard macros are not configured
+        # expect to fail as standard macros are not configured
         self.assertRaises(NotFoundError, v)
 
     def testEditForm(self):
@@ -137,9 +137,8 @@ class Test(PlacelessSetup, unittest.TestCase):
             """)))
 
         v = zapi.queryView(ob, 'edit.html', request)
-        # expect component lookup as standard macros are not configured
-        self.assertRaises(ComponentLookupError, v)
-
+        # expect to fail as standard macros are not configured
+        self.assertRaises(NotFoundError, v)
 
     def testEditFormWithMenu(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),
@@ -166,9 +165,8 @@ class Test(PlacelessSetup, unittest.TestCase):
             ''')))
 
         v = zapi.queryView(ob, 'edit.html', request)
-        # expect component lookup as standard macros are not configured
-        self.assertRaises(ComponentLookupError, v)
-
+        # expect to fail as standard macros are not configured
+        self.assertRaises(NotFoundError, v)
 
     def testAddFormWithWidget(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),
