@@ -79,7 +79,7 @@ Test harness.
 
 -r
     Look for refcount problems.
-    This requires a debug build of Python.
+    This requires that Python was built --with-pydebug.
 
 -T
     Use the trace module from Python for code coverage.  XXX This only works
