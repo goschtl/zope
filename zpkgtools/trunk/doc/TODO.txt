@@ -97,9 +97,6 @@ Things that need to be done
   having to give up %defines and some of the nicer aspects of schemas
   (or having to re-implement them).
 
-- Expand the prototype section to the pre-proposal documenting the
-  current effort; this lets people respond and offer suggestions.
-
 - Write a new setup.py for Zope 3 to use in a checkout that uses the
   package metadata; this can happen after the ZopeX3 release.
 
