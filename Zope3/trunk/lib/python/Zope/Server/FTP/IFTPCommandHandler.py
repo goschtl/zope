@@ -35,7 +35,7 @@ class IFTPCommandHandler(Interface):
         """
 
     def cmd_list(args):
-        """Give list files in a directory.
+        """Give list files in a directory or displays the info of one file.
         """
 
     def cmd_mdtm(args):

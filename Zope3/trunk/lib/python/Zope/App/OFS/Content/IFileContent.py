@@ -12,14 +12,19 @@
 # 
 ##############################################################################
 """
-$Id: IFileContent.py,v 1.3 2002/07/19 13:12:30 srichter Exp $
+$Id: IFileContent.py,v 1.4 2002/12/20 09:25:38 srichter Exp $
 """
 from Interface import Interface
 
+
 class IFileContent(Interface):
-    """Marker interface for content that is managed as files
+    """Marker interface for content that can be managed as files.
 
     The default view for file content has effective URLs that don't end in
     /.  In particular, if the content included HTML, relative links in
     the HTML are relative to the container the content is in.
     """
+
+
+
+        

@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-    Define view component for folder contents.
+"""Define view component for folder contents.
+
+$Id: ContainerTraverser.py,v 1.6 2002/12/20 09:25:36 srichter Exp $
 """
 
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher

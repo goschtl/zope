@@ -4,11 +4,17 @@
 >
 
   <vfs:view
+      name="Folder"
+      for="Zope.App.OFS.Container.IAdding."
+      factory=".FolderAdd."
+      permission="Zope.ManageContent" />
+
+  <vfs:view
       name="vfs"
-      for="Zope.App.OFS.Container.IContainer."
+      for="Zope.App.OFS.Content.Folder.Folder.IFolder"
       permission="Zope.ManageContent" 
       allowed_interface="Zope.Publisher.VFS.IVFSDirectoryPublisher." 
-      factory="Zope.App.OFS.Container.Views.VFS.VFSContainerView." 
+      factory=".FolderView." 
       />
 
 </zopeConfigure>

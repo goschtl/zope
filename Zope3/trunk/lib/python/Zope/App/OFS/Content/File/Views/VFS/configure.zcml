@@ -4,9 +4,16 @@
 >
 
   <vfs:view name="vfs" 
-            for="Zope.App.OFS.Content.File.IFile."
-            permission="Zope.ManageContent" 
-            allowed_interface="Zope.Publisher.VFS.IVFSFilePublisher."
-            factory=".VFSFileView." />
+       for="Zope.App.OFS.Content.File.IFile."
+       permission="Zope.View" 
+       allowed_interface="Zope.Publisher.VFS.IVFSFilePublisher."
+       factory=".FileView." />
+
+  <!-- Generic File Adder -->
+  <vfs:view
+      name="."
+      for="Zope.App.OFS.Container.IAdding."
+      factory=".FileAdd."
+      permission="Zope.ManageContent" />
 
 </zopeConfigure>

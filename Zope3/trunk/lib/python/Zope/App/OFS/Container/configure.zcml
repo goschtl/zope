@@ -2,7 +2,6 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
    xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
-   xmlns:vfs='http://namespaces.zope.org/vfs'
    xmlns:event="http://namespaces.zope.org/event"
 >
 
@@ -28,20 +27,9 @@
       for=".IContainer.IReadContainer."
       factory=".ContainerTraverser." />
 
-  <vfs:view 
-      name="_traverse" 
-      for=".IContainer.IItemContainer."
-      factory=".ContainerTraverser." />
-
-  <vfs:view 
-      name="_traverse" 
-      for=".IContainer.IReadContainer"
-      factory=".ContainerTraverser." />
-
   <adapter factory=".ContainerTraversable."
            provides="Zope.App.Traversing.ITraversable."
            for=".IContainer.IReadContainer." />
-
 
   <adapter factory=".ZopeContainerAdapter."
            provides=".IZopeContainer."

@@ -11,14 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Filesystem implementation for a real (unix-like) OS filesystem.
 
-$Id: OSFileSystem.py,v 1.3 2002/11/11 14:36:04 stevea Exp $
+$Id: OSFileSystem.py,v 1.4 2002/12/20 09:25:45 srichter Exp $
 """
 import os
 import re
 import stat
+import datetime
 import fnmatch
+fromts = datetime.datetime.fromtimestamp
 
 from IPosixFileSystem import IPosixFileSystem
 
@@ -136,7 +138,8 @@ class OSFileSystem(object):
     def stat(self, path):
         'See Zope.Server.VFS.IReadFileSystem.IReadFileSystem'
         p = self.translate(path)
-        return os.stat(p)
+        stat = os.stat(p)
+        return stat[0:6], fromts(stat[7]), fromts(stat[8]), fromts(stat[9])
 
 
     ######################################
@@ -234,6 +237,7 @@ class OSFileSystem(object):
 
 def safe_stat(path):
     try:
-        return os.stat(path)
+        stat = os.stat(p)
+        return stat[0, 6], fromts(stat[7]), fromts(stat[8]), fromts(stat[9])
     except OSError:
         return None

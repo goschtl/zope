@@ -13,8 +13,7 @@
 ##############################################################################
 """
 
-Revision information:
-$Id: Publication.py,v 1.2 2002/06/10 23:29:21 jim Exp $
+$Id: Publication.py,v 1.3 2002/12/20 09:25:44 srichter Exp $
 """
 
 from Zope.App.ZopePublication.ZopePublication import ZopePublication

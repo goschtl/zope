@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FTPStatusMessages.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: FTPStatusMessages.py,v 1.3 2002/12/20 09:25:44 srichter Exp $
 """
 
 
@@ -54,9 +54,10 @@ status_msgs = {
                          "'%s' command",
     'LOGIN_REQUIRED'   : '530 Please log in with USER and PASS',
     'LOGIN_MISMATCH'   : '530 The username and password do not match.',
-    'ERR_NO_LIST'      : '550 Could not list directory: %s',
+    'ERR_NO_LIST'      : '550 Could not list directory or file: %s',
     'ERR_NO_DIR'       : '550 "%s": No such directory.',
     'ERR_NO_FILE'      : '550 "%s": No such file.',
+    'ERR_NO_DIR_FILE'  : '550 "%s": No such file or directory.',
     'ERR_IS_NOT_FILE'  : '550 "%s": Is not a file',
     'ERR_CREATE_FILE'  : '550 Error creating file.',
     'ERR_CREATE_DIR'   : '550 Error creating directory: %s',

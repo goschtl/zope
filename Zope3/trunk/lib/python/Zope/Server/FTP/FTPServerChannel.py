@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FTPServerChannel.py,v 1.4 2002/11/11 14:55:37 stevea Exp $
+$Id: FTPServerChannel.py,v 1.5 2002/12/20 09:25:44 srichter Exp $
 """
 
 import posixpath
@@ -124,8 +124,9 @@ class FTPServerChannel(LineServerChannel):
 
     def cmd_cwd(self, args):
         'See Zope.Server.FTP.IFTPCommandHandler.IFTPCommandHandler'
+        fs = self._getFilesystem()
         path = self._generatePath(args)
-        if self._getFilesystem().exists(path):
+        if fs.exists(path) and fs.isdir(path):
             self.cwd = path
             self.reply('SUCCESS_250', 'CWD')
         else:
@@ -156,9 +157,14 @@ class FTPServerChannel(LineServerChannel):
 
     def cmd_list(self, args, long=1):
         'See Zope.Server.FTP.IFTPCommandHandler.IFTPCommandHandler'
+        fs = self._getFilesystem()
+        path = self._generatePath(args)
+        if not fs.exists(path):
+            self.reply('ERR_NO_DIR_FILE', path)
+            return
         args = args.split()
         try:
-            s = self.getDirectoryList(args, long)
+            s = self.getList(args, long)
         except OSError, err:
             self.reply('ERR_NO_LIST', str(err))
             return
@@ -174,12 +180,13 @@ class FTPServerChannel(LineServerChannel):
 
     def cmd_mdtm(self, args):
         'See Zope.Server.FTP.IFTPCommandHandler.IFTPCommandHandler'
+        fs = self._getFilesystem()
         # We simply do not understand this non-standard extension to MDTM
         if len(args.split()) > 1:
             self.reply('ERR_ARGS')
             return
         path = self._generatePath(args)
-        if not self._getFilesystem().isfile(path):
+        if not fs.exists(path) or not fs.isfile(path):
             self.reply('ERR_IS_NOT_FILE', path)
         else:
             mtime = time.gmtime(
@@ -249,7 +256,6 @@ class FTPServerChannel(LineServerChannel):
 
     def cmd_port(self, args):
         'See Zope.Server.FTP.IFTPCommandHandler.IFTPCommandHandler'
-
         info = args.split(',')
         ip = '.'.join(info[:4])
         port = int(info[4])*256 + int(info[5])
@@ -274,11 +280,12 @@ class FTPServerChannel(LineServerChannel):
 
     def cmd_retr(self, args):
         'See Zope.Server.FTP.IFTPCommandHandler.IFTPCommandHandler'
+        fs = self._getFilesystem()
         if not args:
             self.reply('CMD_UNKNOWN', 'RETR')
         path = self._generatePath(args)
 
-        if not self._getFilesystem().isfile(path):
+        if not fs.exists(path) or not fs.isfile(path):
             self.reply('ERR_IS_NOT_FILE', path)
             return
 
@@ -295,8 +302,7 @@ class FTPServerChannel(LineServerChannel):
         outstream = ApplicationXmitStream(cdc)
 
         try:
-            self._getFilesystem().readfile(
-                path, mode, outstream, start)
+            fs.readfile(path, mode, outstream, start)
             cdc.close_when_done()
         except OSError, err:
             cdc.close('ERR_OPEN_READ', str(err))
@@ -357,7 +363,7 @@ class FTPServerChannel(LineServerChannel):
         'See Zope.Server.FTP.IFTPCommandHandler.IFTPCommandHandler'
         path = self._generatePath(args)
         fs = self._getFilesystem()
-        if not fs.isfile(path):
+        if not fs.exists(path) or not fs.isfile(path):
             self.reply('ERR_NO_FILE', path)
         else:
             self.reply('FILE_SIZE', fs.stat(path)[stat.ST_SIZE])
@@ -471,17 +477,9 @@ class FTPServerChannel(LineServerChannel):
         return self.passive_acceptor
 
 
-    def listdir(self, path, long=0):
-        """returns a string"""
-        path = self._generatePath(path)
-        file_list = self._getFilesystem().listdir(path, long)
-        if long:
-            file_list = map(ls_longify, file_list)
-        return ''.join(map(lambda line: line + '\r\n', file_list))
-
-
-    def getDirectoryList(self, args, long=0):
+    def getList(self, args, long=0):
         # we need to scan the command line for arguments to '/bin/ls'...
+        fs = self._getFilesystem()
         path_args = []
         for arg in args:
             if arg[0] != '-':
@@ -490,12 +488,20 @@ class FTPServerChannel(LineServerChannel):
                 # ignore arguments
                 pass
         if len(path_args) < 1:
-            dir = '.'
+            path = '.'
         else:
-            dir = path_args[0]
+            path = path_args[0]
 
-        dir = self._generatePath(dir)
-        return self.listdir(dir, long)
+        path = self._generatePath(path)
+        if fs.isdir(path):
+            file_list = fs.listdir(path, long)
+        else:
+            file_list = [ (posixpath.split(path)[1], fs.stat(path)) ]
+        # Make a pretty unix-like FTP output
+        if long:
+            file_list = map(ls_longify, file_list)
+        return ''.join(map(lambda line: line + '\r\n', file_list))
+
 
 
     def connectDataChannel(self, cdc):

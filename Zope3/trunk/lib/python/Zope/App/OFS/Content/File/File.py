@@ -13,17 +13,22 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.9 2002/12/04 20:49:38 gvanrossum Exp $
+$Id: File.py,v 1.10 2002/12/20 09:25:39 srichter Exp $
 """
 from types import StringType, UnicodeType, NoneType
+import datetime
+zerotime = datetime.datetime.fromtimestamp(0)
 
 from Persistence import Persistent
 from Transaction import get_transaction
 
-from Zope.App.OFS.Content.File.FileChunk import FileChunk
+from Zope.ComponentArchitecture import getAdapter
 from Zope.Publisher.Browser.BrowserRequest import FileUpload
 
+from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
+
+from Zope.App.OFS.Content.File.FileChunk import FileChunk
 from Zope.App.OFS.Content.File.IFile import IFile, IReadFile
 
 # set the size of the chunks

@@ -11,16 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""OS-Emulator Package
 
-$Id: OSEmulators.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+Simulates OS-level directory listing output for *nix and MS-DOS (including
+Windows NT).  
+
+$Id: OSEmulators.py,v 1.3 2002/12/20 09:25:44 srichter Exp $
 """
 
 import stat
-import time
-
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+import datetime
 
 mode_table = {
         '0':'---',
@@ -49,7 +49,7 @@ def ls_longify((filename, stat_info)):
         dirchar = 'd'
     else:
         dirchar = '-'
-    date = ls_date (long(time.time()), stat_info[stat.ST_MTIME])
+    date = ls_date(datetime.datetime.now(), stat_info[stat.ST_MTIME])
     return '%s%s %3d %-8s %-8s %8d %s %s' % (
             dirchar,
             mode,
@@ -62,7 +62,7 @@ def ls_longify((filename, stat_info)):
             )
 
 
-def ls_date (now, t):
+def ls_date(now, t):
     """Emulate the 'ls' command's date field.  It has two formats.
        If the date is more than 180 days in the past or future, then
        it's like this:
@@ -70,25 +70,10 @@ def ls_date (now, t):
        otherwise, it looks like this:
          Oct 19 17:33
     """
-    try:
-        info = time.localtime(t)
-    except:
-        info = time.localtime(0)
-
-    # 15,600,000 == 86,400 * 180
-    if abs((now - t) > 15600000):
-        return '%s %2d %5d' % (
-                months[info[1]-1],
-                info[2],
-                info[0]
-                )
+    if abs((now - t).days) > 180:
+        return t.strftime('%b %d, %Y')
     else:
-        return '%s %2d %02d:%02d' % (
-                months[info[1]-1],
-                info[2],
-                info[3],
-                info[4]
-                )
+        return t.strftime('%b %d %H:%M')
 
 
 def msdos_longify((file, stat_info)):
@@ -104,17 +89,7 @@ def msdos_longify((file, stat_info)):
 
 
 def msdos_date(t):
-    try:
-        info = time.gmtime(t)
-    except:
-        info = time.gmtime(0)
-
-    # year, month, day, hour, minute, second, ...
-    if info[3] > 11:
-        merid = 'PM'
-        info[3] = info[3] - 12
-    else:
-        merid = 'AM'
-
-    return '%02d-%02d-%02d  %02d:%02d%s' % (
-            info[1], info[2], info[0]%100, info[3], info[4], merid )
+    """Emulate MS-DOS 'dir' command. Example:
+         09-19-95 05:33PM
+    """
+    return t.strftime('%m-%d-%y %H:%M%p')

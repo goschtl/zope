@@ -1,6 +1,6 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
->
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:vfs="http://namespaces.zope.org/vfs">
 
   <include package=".File" />
   <include package=".Folder" />

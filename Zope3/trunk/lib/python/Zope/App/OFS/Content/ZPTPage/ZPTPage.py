@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.17 2002/12/07 16:52:19 zagy Exp $
+$Id: ZPTPage.py,v 1.18 2002/12/20 09:25:41 srichter Exp $
 """
 
 import re
@@ -26,7 +26,6 @@ from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import getWrapperContainer
 from Zope.Security.Proxy import ProxyFactory
 
-from Zope.App.OFS.Content.IFileContent import IFileContent
 from Zope.PageTemplate.PageTemplate import PageTemplate
 from Zope.App.PageTemplate.Engine import AppPT
 
@@ -69,8 +68,7 @@ class IRenderZPTPage(Interface):
 
 class ZPTPage(AppPT, PageTemplate, Persistent):
 
-    # XXX Putting IFileContent at the end gives an error!
-    __implements__ = IFileContent, IZPTPage, IRenderZPTPage
+    __implements__ = IZPTPage, IRenderZPTPage
 
     def getSource(self):
         '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
@@ -108,14 +106,14 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
     source = property(getSource, setSource, None,
                       """Source of the Page Template.""")
 
-# Adapter for ISearchableText
 
+# Adapter for ISearchableText
 from Zope.App.index.text.interfaces import ISearchableText
 
 class SearchableText:
 
-    __implements__ = ISearchableText
     __used_for__ = IZPTPage
+    __implements__ = ISearchableText
 
     def __init__(self, page):
         self.page = page

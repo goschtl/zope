@@ -9,6 +9,16 @@
       title="ZPT Page"
       description="A simple, content-based Page Template" />
 
+  <factory
+      id=".pt"
+      permission="Zope.ManageContent"
+      title="ZPT Page" />
+
+  <factory
+      id=".zpt"
+      permission="Zope.ManageContent"
+      title="ZPT Page" />
+
   <require
       permission="Zope.View"
       attributes="__call__" />

@@ -13,14 +13,15 @@
 ##############################################################################
 """
 
-$Id: testOSFileSystem.py,v 1.2 2002/06/10 23:29:37 jim Exp $
+$Id: testOSFileSystem.py,v 1.3 2002/12/20 09:25:46 srichter Exp $
 """
-
-
 import unittest
 import os
 import shutil
 import tempfile
+import datetime
+fromts = datetime.datetime.fromtimestamp
+
 from StringIO import StringIO
 
 from Zope.Server.VFS.OSFileSystem import OSFileSystem
@@ -95,6 +96,7 @@ class OSFileSystemTests(unittest.TestCase, WriteFilesystemTests):
 
     def testStat(self):
         stat = os.stat(joinToRoot(self.root, self.file_name))
+        stat = stat[0:6], fromts(stat[7]), fromts(stat[8]), fromts(stat[9]) 
         self.assertEqual(self.filesystem.stat(self.file_name), stat)
 
 

@@ -11,16 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""Basic File interfaces.
 
-$Id: IFile.py,v 1.9 2002/12/09 16:28:58 jim Exp $
+$Id: IFile.py,v 1.10 2002/12/20 09:25:39 srichter Exp $
 """
-
 from Interface import Interface
-from Zope.App.OFS.Content.IFileContent import IFileContent
 import Zope.Schema
 
-class IReadFile(IFileContent):
+class IReadFile(Interface):
     
     contentType = Zope.Schema.BytesLine(
         title = u'Content Type',
@@ -35,19 +33,14 @@ class IReadFile(IFileContent):
         )
 
     def getData():
-        """Returns the bits (data) of the File itself."""
-
+        """Return the contained data of the object."""
 
     def getContentType():
         """Returns the content type of the file using mime-types syntax."""
 
-
     def getSize():
-        """Return the size of the file.
+        """Return the byte-size of the data of the object."""
 
-        Note that only the file's content is counted and not the entire
-        Python object.
-        """
 
 class IWriteFile(Interface):
 
@@ -59,10 +52,8 @@ class IWriteFile(Interface):
            through the data, it is good to leave the argument optional.
         """
 
-
     def setData(data):
-        """Sets ONLY the data without changing the content type."""
-
+        """Rewrite the 'file'."""
 
     def setContentType(contentType):
         """Sets the content type of the file."""

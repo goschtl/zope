@@ -3,5 +3,6 @@
 >
 
   <include package=".Browser" />
+  <include package=".VFS" />
                        
 </zopeConfigure>
