@@ -297,14 +297,14 @@ and cats:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MA==.query.string">
-  <input type="submit" name="field.pet.MA==.query" value="Search">
+  <input name="field.pet.MA__.query.string">
+  <input type="submit" name="field.pet.MA__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MQ==.query.string">
-  <input type="submit" name="field.pet.MQ==.query" value="Search">
+  <input name="field.pet.MQ__.query.string">
+  <input type="submit" name="field.pet.MQ__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -313,8 +313,8 @@ and cats:
 As before, we can perform a search:
 
   >>> request.form['field.pet.displayed'] = u'y'
-  >>> request.form['field.pet.MQ==.query.string'] = u't'
-  >>> request.form['field.pet.MQ==.query'] = u'Search'
+  >>> request.form['field.pet.MQ__.query.string'] = u't'
+  >>> request.form['field.pet.MQ__.query'] = u'Search'
 
 In which case, we'll get some results:
 
@@ -326,23 +326,23 @@ In which case, we'll get some results:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MA==.query.string">
-  <input type="submit" name="field.pet.MA==.query" value="Search">
+  <input name="field.pet.MA__.query.string">
+  <input type="submit" name="field.pet.MA__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MQ==.query.string">
-  <input type="submit" name="field.pet.MQ==.query" value="Search">
+  <input name="field.pet.MQ__.query.string">
+  <input type="submit" name="field.pet.MQ__.query" value="Search">
         </div> <!-- queryinput -->
         <div class="queryresults">
-  <select name="field.pet.MQ==.selection">
+  <select name="field.pet.MQ__.selection">
   <option value="Ym9vdHM=">boots</option>
   <option value="dGFiYnk=">tabby</option>
   <option value="dGlnZXI=">tiger</option>
   <option value="dG9t">tom</option>
   </select>
-  <input type="submit" name="field.pet.MQ==.apply" value="Apply">
+  <input type="submit" name="field.pet.MQ__.apply" value="Apply">
         </div> <!-- queryresults -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -351,10 +351,10 @@ In which case, we'll get some results:
 from which we can choose:
 
   >>> request.form['field.pet.displayed'] = u'y'
-  >>> del request.form['field.pet.MQ==.query.string']
-  >>> del request.form['field.pet.MQ==.query']
-  >>> request.form['field.pet.MQ==.selection'] = u'dGFiYnk='
-  >>> request.form['field.pet.MQ==.apply'] = u'Apply'
+  >>> del request.form['field.pet.MQ__.query.string']
+  >>> del request.form['field.pet.MQ__.query']
+  >>> request.form['field.pet.MQ__.selection'] = u'dGFiYnk='
+  >>> request.form['field.pet.MQ__.apply'] = u'Apply'
 
 and get a selection:
 
@@ -367,14 +367,14 @@ and get a selection:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MA==.query.string">
-  <input type="submit" name="field.pet.MA==.query" value="Search">
+  <input name="field.pet.MA__.query.string">
+  <input type="submit" name="field.pet.MA__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MQ==.query.string">
-  <input type="submit" name="field.pet.MQ==.query" value="Search">
+  <input name="field.pet.MQ__.query.string">
+  <input type="submit" name="field.pet.MQ__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -424,14 +424,14 @@ If we render the widget:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA==.query.string">
-  <input type="submit" name="field.pets.MA==.query" value="Search">
+  <input name="field.pets.MA__.query.string">
+  <input type="submit" name="field.pets.MA__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ==.query.string">
-  <input type="submit" name="field.pets.MQ==.query" value="Search">
+  <input name="field.pets.MQ__.query.string">
+  <input type="submit" name="field.pets.MQ__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -445,8 +445,8 @@ selected values.)
 As before, we can search one of the sources:
 
   >>> request.form['field.pets.displayed'] = u'y'
-  >>> request.form['field.pets.MQ==.query.string'] = u't'
-  >>> request.form['field.pets.MQ==.query'] = u'Search'
+  >>> request.form['field.pets.MQ__.query.string'] = u't'
+  >>> request.form['field.pets.MQ__.query'] = u'Search'
 
 In which case, we'll get some results:
 
@@ -456,23 +456,23 @@ In which case, we'll get some results:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA==.query.string">
-  <input type="submit" name="field.pets.MA==.query" value="Search">
+  <input name="field.pets.MA__.query.string">
+  <input type="submit" name="field.pets.MA__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ==.query.string">
-  <input type="submit" name="field.pets.MQ==.query" value="Search">
+  <input name="field.pets.MQ__.query.string">
+  <input type="submit" name="field.pets.MQ__.query" value="Search">
         </div> <!-- queryinput -->
         <div class="queryresults">
-  <select name="field.pets.MQ==.selection:list" multiple>
+  <select name="field.pets.MQ__.selection:list" multiple>
   <option value="Ym9vdHM=">boots</option>
   <option value="dGFiYnk=">tabby</option>
   <option value="dGlnZXI=">tiger</option>
   <option value="dG9t">tom</option>
   </select>
-  <input type="submit" name="field.pets.MQ==.apply" value="Apply">
+  <input type="submit" name="field.pets.MQ__.apply" value="Apply">
         </div> <!-- queryresults -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -481,11 +481,11 @@ In which case, we'll get some results:
 from which we can select some values:
 
   >>> request.form['field.pets.displayed'] = u'y'
-  >>> del request.form['field.pets.MQ==.query.string']
-  >>> del request.form['field.pets.MQ==.query']
-  >>> request.form['field.pets.MQ==.selection'] = [
+  >>> del request.form['field.pets.MQ__.query.string']
+  >>> del request.form['field.pets.MQ__.query']
+  >>> request.form['field.pets.MQ__.selection'] = [
   ...     u'dGFiYnk=', u'dGlnZXI=', u'dG9t']
-  >>> request.form['field.pets.MQ==.apply'] = u'Apply'
+  >>> request.form['field.pets.MQ__.apply'] = u'Apply'
 
 Which then leads to the selections appearing as widget selections:
 
@@ -509,14 +509,14 @@ Which then leads to the selections appearing as widget selections:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA==.query.string">
-  <input type="submit" name="field.pets.MA==.query" value="Search">
+  <input name="field.pets.MA__.query.string">
+  <input type="submit" name="field.pets.MA__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ==.query.string">
-  <input type="submit" name="field.pets.MQ==.query" value="Search">
+  <input name="field.pets.MQ__.query.string">
+  <input type="submit" name="field.pets.MQ__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -532,8 +532,8 @@ buttons that allow is to remove selections:
 
   >>> request.form['field.pets.displayed'] = u'y'
   >>> request.form['field.pets'] = [u'dGFiYnk=', u'dGlnZXI=', u'dG9t']
-  >>> del request.form['field.pets.MQ==.selection']
-  >>> del request.form['field.pets.MQ==.apply']
+  >>> del request.form['field.pets.MQ__.selection']
+  >>> del request.form['field.pets.MQ__.apply']
   >>> request.form['field.pets.checked'] = [u'dGFiYnk=', u'dG9t']
   >>> request.form['field.pets.remove'] = u'Remove'
 
@@ -549,14 +549,14 @@ buttons that allow is to remove selections:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA==.query.string">
-  <input type="submit" name="field.pets.MA==.query" value="Search">
+  <input name="field.pets.MA__.query.string">
+  <input type="submit" name="field.pets.MA__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ==.query.string">
-  <input type="submit" name="field.pets.MQ==.query" value="Search">
+  <input name="field.pets.MQ__.query.string">
+  <input type="submit" name="field.pets.MQ__.query" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->

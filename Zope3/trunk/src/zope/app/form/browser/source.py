@@ -85,7 +85,9 @@ class SourceInputWidget(zope.app.form.InputWidget):
             queriables = ((self.name, source), )
         else:
             base = self.name+'.'
-            queriables = [(base + unicode(i).encode('base64').strip(), s)
+            queriables = [
+                (base +
+                 unicode(i).encode('base64').strip().replace('=', '_'), s)
                           for (i, s) in queriables.getQueriables()]
             
         self.queryviews = [

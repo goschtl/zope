@@ -47,7 +47,7 @@ Now we can ask the terms view for terms:
   >>> term.title
   'Stephan Richter'
   >>> term.token
-  'c3RlcGhhbg=='
+  'c3RlcGhhbg__'
 
 If we ask for a term that does not exist, we get a lookup error:
 
@@ -58,5 +58,5 @@ If we ask for a term that does not exist, we get a lookup error:
 
 If we have a token, we can get the principal id for it.
 
-  >>> terms.getValue('c3RlcGhhbg==')
+  >>> terms.getValue('c3RlcGhhbg__')
   'stephan'

@@ -48,7 +48,8 @@ class PrincipalTerms(object):
         if principal is None:
             raise LookupError, principal_id
 
-        return Term(principal_id.encode('base64').strip(), principal.title)
+        return Term(principal_id.encode('base64').strip().replace('=', '_'),
+                    principal.title)
 
     def getValue(self, token):
-        return token.decode('base64')
+        return token.replace('_', '=').decode('base64')
