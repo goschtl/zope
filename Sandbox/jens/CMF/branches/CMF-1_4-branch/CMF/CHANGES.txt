@@ -8,6 +8,9 @@ After CMF 1.4.6
 
   Bug Fixes
 
+    - CMFDefault.Image: When pasting an Image object the review state did not
+      revert to "private" (http://www.zope.org/Collectors/CMF/176)   
+
     - CMFTopic: Change topic_view template to show title and ID (it only
       showed title before; http://www.zope.org/Collectors/CMF/180)
 
