@@ -180,7 +180,7 @@ def parse(url):
     :raises ValueError: If the URL is not a valid Subversion URL.
     """
     if not is_subversion_url(url):
-        raise ValueError("not a Subversion URL")
+        raise ValueError("not a Subversion URL: %r" % url)
 
     parts = split_on_tag(url)
     if parts is None:

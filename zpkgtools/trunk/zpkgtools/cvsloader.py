@@ -59,7 +59,7 @@ def parse(cvsurl):
     if m is None:
         m = _repository_url_match(cvsurl)
         if m is None:
-            raise ValueError("not a valid CVS url")
+            raise ValueError("not a valid CVS url: %r" % cvsurl)
         return RepositoryUrl(m.group("path"), m.group("tag"))
     host = m.group("host")
     cvsroot = "/" + m.group("cvsroot")
