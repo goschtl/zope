@@ -61,7 +61,7 @@ OFFICIAL_SENDER = "cvs-admin@zope.org"
 
 # Ceiling on number of lines per file report (diff or "added"), at which point
 # we go to excerpts from the beginning and end:
-FILE_LINES_LIMIT = 1500
+FILE_LINES_LIMIT = 2000
 # Number of lines in beginning and end excerpts when FILE_LINES_LIMIT is hit:
 FILE_EXCERPTS_LINES = 200
 
