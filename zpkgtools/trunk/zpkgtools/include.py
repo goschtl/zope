@@ -251,8 +251,7 @@ class InclusionProcessor:
             spec = Specification(self.source)
         destination = os.path.abspath(destination)
         self.copyTree(spec.source, destination, spec.excludes)
-        for relpath, source in spec.includes.iteritems():
-            self.addSingleInclude(relpath, source, destination)
+        self.addIncludes(destination, spec)
 
     def copyTree(self, source, destination, excludes={}):
         """Populate the destination tree from the source tree.
@@ -350,6 +349,11 @@ class InclusionProcessor:
             if self.manifests[i][0] == prefix:
                 return self.manifests.pop(i)[1]
         raise ValueError("no manifest for %s" % destination)
+
+    def addIncludes(self, destination, spec):
+        """Process all the inclusion from a specification."""
+        for relpath, source in spec.includes.iteritems():
+            self.addSingleInclude(relpath, source, destination)
 
     def addSingleInclude(self, relpath, source, destination):
         """Process a single include specification line.
