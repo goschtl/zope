@@ -13,10 +13,8 @@
 ##############################################################################
 """Browser View Components for Wikis
 
-$Id: wiki.py,v 1.1 2003/12/16 10:05:53 nmurthy Exp $
+$Id: wiki.py,v 1.2 2004/02/15 13:04:25 philikon Exp $
 """
-from __future__ import generators
-
 from datetime import datetime
 from zope.component import \
      getAdapter, getService, getServiceManager, createObject

@@ -13,11 +13,9 @@
 ##############################################################################
 """Interface object implementation
 
-Revision information:
-$Id: interface.py,v 1.18 2004/01/23 16:59:01 poster Exp $
+$Id: interface.py,v 1.19 2004/02/15 13:04:26 philikon Exp $
 """
 
-from __future__ import generators
 import sys
 import weakref
 from types import FunctionType

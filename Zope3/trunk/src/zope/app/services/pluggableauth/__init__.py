@@ -13,9 +13,8 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.9 2004/02/15 03:11:14 srichter Exp $
+$Id: __init__.py,v 1.10 2004/02/15 13:04:27 philikon Exp $
 """
-from __future__ import generators
 import random
 import sys
 import time

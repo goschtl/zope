@@ -13,7 +13,7 @@
 ##############################################################################
 """Surrogate-specification registry implementation
 
-$Id: surrogate.py,v 1.4 2004/02/09 08:20:11 jim Exp $
+$Id: surrogate.py,v 1.5 2004/02/15 13:04:26 philikon Exp $
 """
 
 # Implementation notes
@@ -71,7 +71,6 @@ $Id: surrogate.py,v 1.4 2004/02/09 08:20:11 jim Exp $
 #      for multi-adapters.  
 
 
-from __future__ import generators
 import weakref
 from sets import Set
 from zope.interface.ro import ro
