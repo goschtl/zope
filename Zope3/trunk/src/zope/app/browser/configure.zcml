@@ -35,28 +35,29 @@
 
   <!-- Management view selector -->
   <!-- Get first accessable item from zmi_views menu -->
-  <view
+  <page
+     for="*"
      name="SelectedManagementView.html"
      permission="zope.Public"
-     factory=".managementviewselector.ManagementViewSelector" 
+     class=".managementviewselector.ManagementViewSelector" 
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-     allowed_attributes="__call__"
      />
 
   <!-- Make manage an alias for same -->
-  <view
+  <page
+     for="*"
      name="manage"
      permission="zope.Public"
-     factory=".managementviewselector.ManagementViewSelector" 
+     class=".managementviewselector.ManagementViewSelector" 
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-     allowed_attributes="__call__"
      />
 
   <!-- Menu access -->
-  <view
+  <page
+     for="*"
      name="view_get_menu"
      permission="zope.Public"
-     factory=".menu.MenuAccessView" 
+     class=".menu.MenuAccessView" 
      allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView"
      />
 
@@ -76,12 +77,12 @@
 <!-- Introspection -->
 
   <!-- XXX wrong perm  -->
-  <view
+  <page
       name="classBrowser.html"
       for = "zope.interface.Interface"
       permission="zope.View" 
       template="introspector.pt"
-      factory="zope.app.browser.introspector.IntrospectorView"
+      class="zope.app.browser.introspector.IntrospectorView"
       />
 
   <menuItem 
@@ -92,12 +93,12 @@
       />
 
 
-  <defaultView
+  <page
       name="interfaceBrowser.html"
       for="zope.interface.interfaces.IInterface"
       permission="zope.View"
       template="introspector.pt"
-      factory="zope.app.browser.introspector.IntrospectorView"
+      class="zope.app.browser.introspector.IntrospectorView"
       /> 
 
 <!-- Gadfly DA -->
@@ -122,7 +123,7 @@
 <!-- ZopeDatabaseAdapter default views -->
 
   <defaultView for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
-      name="editForm.html" />
+               name="editForm.html" />
 
   <menuItems menu="zmi_views"
          for="zope.app.interfaces.rdb.IZopeDatabaseAdapter">
@@ -163,32 +164,34 @@
 
 <!-- URLs and names -->
 
-<view
+<page
+    for="*"
     name="absolute_url"
-    factory=".absoluteurl.AbsoluteURL"
+    class=".absoluteurl.AbsoluteURL"
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
     />
 
-<view
+<page
     for="zope.app.interfaces.content.folder.IRootFolder"
     name="absolute_url"
-    factory=".absoluteurl.SiteAbsoluteURL"
+    class=".absoluteurl.SiteAbsoluteURL"
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
     />
 
-<view
+<page
+    for="*"
     name="object_name"
-    factory=".objectname.ObjectNameView"
+    class=".objectname.ObjectNameView"
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.traversing.IObjectName" 
     />
 
-<view
+<page
     for="zope.app.interfaces.content.folder.IRootFolder"
     name="object_name"
-    factory=".objectname.SiteObjectNameView"
+    class=".objectname.SiteObjectNameView"
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.traversing.IObjectName" 
     />

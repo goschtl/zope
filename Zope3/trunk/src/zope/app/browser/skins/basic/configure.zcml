@@ -5,33 +5,42 @@
 
   <browser:skin name="Basic" layers="default" />
   
-  <browser:view name="standard_macros"
-                permission="zope.View"
-                factory=".standardmacros.StandardMacros" 
-                allowed_interface="zope.interface.common.mapping.IItemMapping"
-                />
+  <browser:page 
+      name="standard_macros"
+      for="*"
+      class=".standardmacros.StandardMacros" 
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      permission="zope.Public"
+      />
 
-  <browser:view name="view_macros"
-                permission="zope.View"
-                template="www/view_macros.pt" 
-                />
+  <browser:page 
+      name="view_macros"
+      for="*"
+      permission="zope.View"
+      template="www/view_macros.pt" 
+      />
 
-  <browser:view name="dialog_macros"
-                permission="zope.View"
-                template="www/dialog_macros.pt" 
-                />
+  <browser:page 
+      name="dialog_macros"
+      for="*"
+      permission="zope.View"
+      template="www/dialog_macros.pt" 
+      />
 
-  <browser:resource name="zopetopBasic.css" 
-                    file="www/zopetopbasic.css"
-                    />
+  <browser:resource 
+      name="zopetopBasic.css" 
+      file="www/zopetopbasic.css" 
+      />
 
-  <browser:resource name="zopetopWidgets.css" 
-                    file="www/zopetopwidgets.css"
-                    />
+  <browser:resource 
+      name="zopetopWidgets.css" 
+      file="www/zopetopwidgets.css"
+      />
 
-  <browser:resource name="zopetopStructure.css" 
-                    file="www/zopetopstructure.css"
-                    />
+  <browser:resource 
+      name="zopetopStructure.css" 
+      file="www/zopetopstructure.css"
+      />
 
   <browser:resource name="arrowUp.gif" file="www/arrowup.gif"/>
 

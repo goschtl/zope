@@ -1,14 +1,18 @@
 <zopeConfigure xmlns="http://namespaces.zope.org/browser">
 
-  <view factory = ".permissionwidget.SinglePermissionWidget"
-	for = "zope.app.interfaces.security.IPermissionField"
-	name = "edit"
-        />
+  <page
+      for = "zope.app.interfaces.security.IPermissionField"
+      name = "edit"
+      class = ".permissionwidget.SinglePermissionWidget"
+      permission= "zope.Public"
+      />
 
-  <view factory = ".permissionwidget.DisplayWidget"
-	for = "zope.app.interfaces.security.IPermissionField"
-	name = "display"
-        />
+  <page 
+      for = "zope.app.interfaces.security.IPermissionField"
+      name = "display"
+      class = ".permissionwidget.DisplayWidget"
+      permission= "zope.Public"
+      />
 
   <include package=".grants" />
 

@@ -3,16 +3,18 @@
    xmlns:browser="http://namespaces.zope.org/browser"
 >
 
-<browser:view 
-	factory = ".interfacewidget.SingleInterfaceWidget"
+<browser:page 
+	class = ".interfacewidget.SingleInterfaceWidget"
 	for = "zope.app.interfaces.component.interfacefield.IInterfaceField"
 	name = "edit"
+        permission="zope.Public"
         />
 
-<browser:view 
-	factory = ".interfacewidget.DisplayWidget"
+<browser:page 
+	class = ".interfacewidget.DisplayWidget"
 	for = "zope.app.interfaces.component.interfacefield.IInterfaceField"
 	name = "display"
+        permission="zope.Public"
         />
 
 </zopeConfigure>

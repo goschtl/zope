@@ -16,19 +16,21 @@
    
        </browser:view>
 
-  <browser:view
-      for="zope.app.interfaces.container.IReadContainer"
-      permission="zope.ManageContent" 
-      factory="zope.app.browser.container.find.Find">
-
-     <browser:page name="find.html" attribute="index" />
-  </browser:view>
-
   <browser:menuItem
       for="zope.app.interfaces.container.IWriteContainer"
       menu="zmi_actions"
       title="Add"
       action="+"
+      />
+
+  <browser:page
+      for="zope.app.interfaces.container.IReadContainer"
+      name="find.html" 
+      menu="zmi_actions"
+      title="Find"
+      permission="zope.ManageContent" 
+      class="zope.app.browser.container.find.Find"
+      attribute="index" 
       />
 
 </zopeConfigure>

@@ -13,7 +13,7 @@
     for="zope.app.index.subscribers.ISubscriptionControl"
     name="control.html" />
 
-  <browser:view
+  <browser:page
     for="zope.app.index.subscribers.ISubscriptionControl"
     permission="zope.ManageServices"
     name="control.html"

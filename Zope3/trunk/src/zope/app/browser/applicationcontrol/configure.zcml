@@ -22,19 +22,14 @@
       title="Server control" 
       />
 
-  <browser:view 
+  <browser:page
       for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
-      factory="zope.app.browser.applicationcontrol.runtimeinfo.RuntimeInfoView" 
-      permission="zope.ManageApplication" >
-
-    <browser:page name="index.html" attribute="index" />
-  </browser:view> 
-
-  <browser:menuItem
-      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
+      name="index.html"
       menu="zmi_views"
-      action="index.html"
-      title="Runtime Information"
+      title="Runtime Information"       
+      attribute="index"
+      class="zope.app.browser.applicationcontrol.runtimeinfo.RuntimeInfoView" 
+      permission="zope.ManageApplication"
       />
 
 </zopeConfigure>

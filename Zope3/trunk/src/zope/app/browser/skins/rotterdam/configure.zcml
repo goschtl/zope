@@ -29,50 +29,53 @@
   <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
 </browser:view>
 
-<browser:view
+<browser:page
+    name="singleBranchTree.xml" 
     for="zope.interface.interface.Interface"
     permission="zope.View"
-    factory=".xmlobject.XmlObjectView">
-  <browser:page name="singleBranchTree.xml" attribute="singleBranchTree" />
-</browser:view>
+    class=".xmlobject.XmlObjectView"
+    attribute="singleBranchTree" 
+    />
 
 <!-- below overrides the standard_macros by Rotterdam Skin -->
-<browser:view
+<browser:page
+    for="*"
     name="standard_macros"
     permission="zope.View"
-    factory=".standardmacros.StandardMacros"
+    class=".standardmacros.StandardMacros"
     layer="rotterdam"
     allowed_interface="zope.interface.common.mapping.IItemMapping" 
     />
 
-<browser:view 
+<browser:page 
+    for="*"
     name="skin_macros"
     permission="zope.View"
     layer="rotterdam"
-    template="template.pt" />
+    template="template.pt" 
+    />
 
-<browser:view 
+<browser:page 
+    for="*"
     name="view_macros"
     permission="zope.View"
     layer="rotterdam"
     template="view_macros.pt" />
 
-<browser:view
+<browser:page
+    for="*"
     name="dialog_macros"
     permission="zope.View"
     layer="rotterdam"
     template="dialog_macros.pt" />
 
-<browser:view
+<browser:page
+    name="contents.html"
     for="zope.app.interfaces.content.folder.IFolder"
     permission="zope.ManageContent"
     layer="rotterdam"
-    factory="zope.app.browser.container.contents.Contents">
-
-  <browser:page name="contents.html"
-                 attribute="contents" template="folder_contents.pt" />
-
-</browser:view>
-
+    class="zope.app.browser.container.contents.Contents"
+    template="folder_contents.pt" 
+    />
 
 </zopeConfigure>

@@ -1,22 +1,110 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-  <directives namespace="http://namespaces.zope.org/form">
+  <directives namespace="http://namespaces.zope.org/browser">
+
+    <directive name="editform" handler=".editview.edit">
+
+      <description>
+      </description>
+
+      <attribute name="name" required="yes">
+        <description>
+        The name of the generated edit view.
+        </description>
+        </attribute>
+
+      <attribute name="schema" required="yes">
+        <description>
+        The schema from which the edir form is generated.
+
+        A schema is an interface that includes fields.
+        </description>
+        </attribute>
+
+      <attribute name="label" required="yes">
+        <description>
+        A label to be used as the heading for the form.
+        </description>
+        </attribute>
+
+      <attribute name="for" required="no">
+        <description>
+        The interface this page (view) applies to. 
+
+        The view will be for all objects that implement this
+
+        The schema is used if the for attribute is not specified.
+        interface. If the for attribute is specified, the given
+        interface must extend the schema.
+        </description>
+        </attribute>
+
+      <attribute name="layer" required="no">
+        <description>
+              The layer the view is in. 
+
+              A skin is composed of layers. It is common to put skin specific
+              views in a layer named after the skin. If the 'layer' attribute
+              is not supplied, it defaults to
+              'default'. 
+          </description>
+        </attribute>
+
+
+       <attribute name="permission" required="yes">
+        <description>
+              The permission needed to use the view. 
+
+              This attribute is required. 
+          
+          </description>
+        </attribute>
+
+      <attribute name="template" required="no">
+        <description>
+        An alternate template to use for the edit form.
+
+        XXX Need to document how to extend the default.
+        </description>
+        </attribute>
+
+      <attribute name="class" required="no">
+        <description>
+        A class to provide custom widget defineitions or methods to be
+        used by a custom template.
+        </description>
+        </attribute>
+
+
+      <attribute name="menu" required="no">
+        <description>
+          The browser menu to include the edit form in.
+
+          Many views are included in menus. It's convenient to name
+          the menu in the page directive, rather than having to give a
+          separate menuItem directive.          
+          </description>
+        </attribute>
+
+      <attribute name="title" required="no">
+        <description>
+          The browser menu label for the edit form
+
+          This attribute defaults to "Edit".
+          </description>
+        </attribute>
+
+      </directive>
 
     <directive
-       name="edit" 
-       attributes="name schema label for layer permission class template"
-       handler="zope.app.browser.form.editview.edit"
-       />
-
-    <directive
-       name="subedit" 
+       name="subeditform" 
        attributes="name schema label for layer permission class template
                    fulledit fulledit_label"
        handler="zope.app.browser.form.editview.subedit"
        />
 
     <directive
-       name="add" 
+       name="addform" 
        attributes="name schema label for layer permission class
                    template content_factory argument keyword_arguments
                    set_before_add set_after_add"

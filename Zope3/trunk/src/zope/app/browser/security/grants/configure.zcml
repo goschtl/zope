@@ -38,11 +38,12 @@
       action="@@grant.html"
       />
 
-  <browser:view 
+  <browser:page
     for="zope.app.interfaces.annotation.IAnnotatable"
     name="grant.html"
     permission="zope.Security"
-    template="grant.pt" />
+    template="grant.pt" 
+    />
 
 <!-- Principal Roles -->
 
@@ -64,10 +65,10 @@
 
 <!-- Principal Permission (not working) -->
 
-  <!-- browser:view
+  <!-- browser:page
       name="PrincipalPermissionsManagement"
       for="zope.app.interfaces.annotation.IAnnotatable"
-      factory=".principalpermissionview.PrincipalPermissionView" 
+      class=".principalpermissionview.PrincipalPermissionView" 
       permission="zope.Security"
       allow_attributes="index get_principal unsetPermissions denyPermissions
                         grantPermissions getUnsetPermissionsForPrincipal

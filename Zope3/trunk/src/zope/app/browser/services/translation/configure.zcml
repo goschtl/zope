@@ -2,8 +2,6 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
-<browser:defaultView for="zope.interfaces.i18n.ITranslationService" name="index.html" />
-
 <browser:view 
    permission="zope.ManageServices" 
    for="zope.interfaces.i18n.ITranslationService"
