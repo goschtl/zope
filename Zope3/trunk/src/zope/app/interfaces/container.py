@@ -13,9 +13,8 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.8 2003/12/17 21:27:32 sidnei Exp $
+$Id: container.py,v 1.9 2004/02/24 14:17:32 srichter Exp $
 """
-
 from zope.interface import Interface, Attribute, implements, Invalid
 from zope.component.interfaces import IView
 from zope.interface.common.mapping import IItemMapping

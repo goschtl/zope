@@ -13,9 +13,8 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.7 2003/12/07 11:31:13 zagy Exp $
+$Id: traversing.py,v 1.8 2004/02/24 14:20:43 srichter Exp $
 """
-
 from zope.interface import Interface
 
 class IContainmentRoot(Interface):
