@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSchema.py,v 1.3 2002/09/11 22:06:41 jim Exp $
+$Id: testSchema.py,v 1.4 2002/09/18 15:05:51 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Schema.Exceptions import StopValidation, ValidationError, \
@@ -26,19 +26,19 @@ class ISchemaTest(Interface):
         title=u"Title",
         description=u"Title",
         default="",
-        required=1)
+        required=True)
     
     description = Bytes(
         title=u"Description",
         description=u"Description",
         default="",
-        required=1)
+        required=True)
 
     spam = Bytes(
         title=u"Spam",
         description=u"Spam",
         default="",
-        required=1)
+        required=True)
 
 class SchemaTest(TestCase):
 

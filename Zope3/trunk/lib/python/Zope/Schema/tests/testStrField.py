@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testStrField.py,v 1.3 2002/09/11 22:06:41 jim Exp $
+$Id: testStrField.py,v 1.4 2002/09/18 15:05:51 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Bytes, Text, ErrorNames
@@ -24,7 +24,7 @@ class StrTest(FieldTestBase):
 
     def testValidate(self):
         field = self._Str(title=u'Str field', description=u'',
-                       readonly=0, required=0)
+                          readonly=False, required=False)
         field.validate(None)
         field.validate(self._convert('foo'))
         field.validate(self._convert(''))
@@ -35,7 +35,7 @@ class StrTest(FieldTestBase):
         # we need to set the min-length to 1.
         
         field = self._Str(title=u'Str field', description=u'',
-                          readonly=0, required=1, min_length=1)
+                          readonly=False, required=True, min_length=1)
         field.validate(self._convert('foo'))
 
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
@@ -45,7 +45,7 @@ class StrTest(FieldTestBase):
 
     def testAllowedValues(self):
         field = self._Str(title=u'Str field', description=u'',
-                          readonly=0, required=0,
+                          readonly=False, required=False,
                           allowed_values=(self._convert('foo'),
                                           self._convert('bar')))
         field.validate(None)
@@ -56,7 +56,7 @@ class StrTest(FieldTestBase):
 
     def testValidateMinLength(self):
         field = self._Str(title=u'Str field', description=u'',
-                       readonly=0, required=0, min_length=3)
+                          readonly=False, required=False, min_length=3)
         field.validate(None)
         field.validate(self._convert('333'))
         field.validate(self._convert('55555'))
@@ -70,7 +70,7 @@ class StrTest(FieldTestBase):
 
     def testValidateMaxLength(self):
         field = self._Str(title=u'Str field', description=u'',
-                       readonly=0, required=0, max_length=5)
+                          readonly=False, required=False, max_length=5)
         field.validate(None)
         field.validate(self._convert(''))
         field.validate(self._convert('333'))
@@ -83,7 +83,8 @@ class StrTest(FieldTestBase):
 
     def testValidateMinLengthAndMaxLength(self):
         field = self._Str(title=u'Str field', description=u'',
-                       readonly=0, required=0, min_length=3, max_length=5)
+                          readonly=False, required=False,
+                          min_length=3, max_length=5)
 
         field.validate(None)
         field.validate(self._convert('333'))

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFloatField.py,v 1.2 2002/09/11 22:06:41 jim Exp $
+$Id: testFloatField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Float, ErrorNames
@@ -23,7 +23,7 @@ class FloatTest(FieldTestBase):
 
     def testValidate(self):
         field = Float(title=u'Float field', description=u'',
-                        readonly=0, required=0)
+                        readonly=False, required=False)
         field.validate(None)
         field.validate(10.0)
         field.validate(0.93)
@@ -31,7 +31,7 @@ class FloatTest(FieldTestBase):
     
     def testValidateRequired(self):
         field = Float(title=u'Float field', description=u'',
-                        readonly=0, required=1)
+                        readonly=False, required=True)
         field.validate(10.0)
         field.validate(0.93)
         field.validate(1000.0003)
@@ -40,7 +40,8 @@ class FloatTest(FieldTestBase):
                                     field.validate, None)        
     def testAllowedValues(self):
         field = Float(title=u'Integer field', description=u'',
-                        readonly=0, required=0, allowed_values=(0.1, 2.6))
+                      readonly=False, required=False,
+                      allowed_values=(0.1, 2.6))
         field.validate(None)
         field.validate(2.6)
 
@@ -49,7 +50,7 @@ class FloatTest(FieldTestBase):
 
     def testValidateMin(self):
         field = Float(title=u'Float field', description=u'',
-                        readonly=0, required=0, min=10.5)
+                        readonly=False, required=False, min=10.5)
         field.validate(None)
         field.validate(10.6)
         field.validate(20.2)
@@ -59,7 +60,7 @@ class FloatTest(FieldTestBase):
 
     def testValidateMax(self):
         field = Float(title=u'Float field', description=u'',
-                        readonly=0, required=0, max=10.5)
+                        readonly=False, required=False, max=10.5)
         field.validate(None)
         field.validate(5.3)
         field.validate(-9.1)
@@ -69,7 +70,7 @@ class FloatTest(FieldTestBase):
 
     def testValidateMinAndMax(self):
         field = Float(title=u'Float field', description=u'',
-                        readonly=0, required=0, min=-0.6, max=10.1)
+                        readonly=False, required=False, min=-0.6, max=10.1)
         field.validate(None)
         field.validate(0.0)
         field.validate(-0.03)

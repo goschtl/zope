@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testBoolField.py,v 1.2 2002/09/11 22:06:41 jim Exp $
+$Id: testBoolField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Bool, ErrorNames
@@ -23,18 +23,16 @@ class BoolTest(FieldTestBase):
 
     def testValidate(self):
         field = Bool(title=u'Bool field', description=u'',
-                        readonly=0, required=0)        
+                     readonly=False, required=False)        
         field.validate(None)
-        field.validate(1)
-        field.validate(0)
-        field.validate(10)
-        field.validate(-10)
+        field.validate(True)
+        field.validate(False)
 
     def testValidateRequired(self):
         field = Bool(title=u'Bool field', description=u'',
-                        readonly=0, required=1)
-        field.validate(1)
-        field.validate(0)
+                     readonly=False, required=True)
+        field.validate(True)
+        field.validate(False)
 
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)

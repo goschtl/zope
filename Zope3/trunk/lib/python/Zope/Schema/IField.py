@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.3 2002/09/11 22:06:41 jim Exp $
+$Id: IField.py,v 1.4 2002/09/18 15:05:51 jim Exp $
 """
 from Interface import Interface
 
@@ -29,25 +29,26 @@ class IField(Interface):
         title=u"Title",
         description=u"A short summary or label",
         default=u"",
-        required=0,
+        required=False,
         )
     
     description = Text(
         title=u"Description",
         description=u"A description of the field",
         default=u"",
-        required=0,)
+        required=False,
+        )
     
     required = Bool(
         title=u"Required",
         description=(
         u"An indication of whether the field value must be provided"),
-        default=1)
+        default=True)
 
     readonly = Bool(
         title="uRead Only",
         description=u"Read-only.", # XXX what is this?
-        default=0)
+        default=False)
 
     default = Field(
         title=u"The default field value",
@@ -78,8 +79,8 @@ class IField(Interface):
 
         (Fields in separate threads could have the same order.)
         """,
-        required=1,
-        readonly=1,
+        required=True,
+        readonly=True,
         )
 
 class IContainer(IField):

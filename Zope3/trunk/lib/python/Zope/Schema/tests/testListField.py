@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testListField.py,v 1.2 2002/09/11 22:06:41 jim Exp $
+$Id: testListField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import List, Int, Float, ErrorNames
@@ -23,7 +23,7 @@ class ListTest(FieldTestBase):
 
     def testValidate(self):
         field = List(title=u'List field', description=u'',
-                        readonly=0, required=0)
+                     readonly=False, required=False)
         field.validate(None)
         field.validate([])
         field.validate([1, 2])
@@ -31,7 +31,7 @@ class ListTest(FieldTestBase):
         
     def testValidateRequired(self):
         field = List(title=u'List field', description=u'',
-                        readonly=0, required=1)
+                     readonly=False, required=True)
         field.validate([])
         field.validate([1, 2])
         field.validate([3,])
@@ -41,7 +41,7 @@ class ListTest(FieldTestBase):
 
     def testValidateMinValues(self):
         field = List(title=u'List field', description=u'',
-                        readonly=0, required=0, min_length=2)
+                     readonly=False, required=False, min_length=2)
         field.validate(None)
         field.validate([1, 2])
         field.validate([1, 2, 3])
@@ -53,7 +53,7 @@ class ListTest(FieldTestBase):
 
     def testValidateMaxValues(self):
         field = List(title=u'List field', description=u'',
-                        readonly=0, required=0, max_length=2)
+                     readonly=False, required=False, max_length=2)
         field.validate(None)
         field.validate([])
         field.validate([1, 2])
@@ -65,7 +65,8 @@ class ListTest(FieldTestBase):
 
     def testValidateMinValuesAndMaxValues(self):
         field = List(title=u'List field', description=u'',
-                        readonly=0, required=0, min_length=1, max_length=2)
+                     readonly=False, required=False,
+                     min_length=1, max_length=2)
         field.validate(None)
         field.validate([1, ])
         field.validate([1, 2])
@@ -77,7 +78,8 @@ class ListTest(FieldTestBase):
 
     def testValidateValueTypes(self):
         field = List(title=u'List field', description=u'',
-                        readonly=0, required=0, value_types=(Int(), Float()))
+                     readonly=False, required=False,
+                     value_types=(Int(), Float()))
         field.validate(None)
         field.validate([5.3,])
         field.validate([2, 2.3])

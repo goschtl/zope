@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testDictField.py,v 1.2 2002/09/11 22:06:41 jim Exp $
+$Id: testDictField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Dict, Int, Float, ErrorNames
@@ -23,7 +23,7 @@ class DictTest(FieldTestBase):
 
     def testValidate(self):
         field = Dict(title=u'Dict field',
-                     description=u'', readonly=0, required=0)
+                     description=u'', readonly=False, required=False)
         field.validate(None)
         field.validate({})
         field.validate({1: 'foo'})
@@ -31,7 +31,7 @@ class DictTest(FieldTestBase):
             
     def testValidateRequired(self):
         field = Dict(title=u'Dict field',
-                     description=u'', readonly=0, required=1)
+                     description=u'', readonly=False, required=True)
         field.validate({})
         field.validate({1: 'foo'})
         field.validate({'a': 1})
@@ -41,7 +41,7 @@ class DictTest(FieldTestBase):
 
     def testValidateMinValues(self):
         field = Dict(title=u'Dict field',
-                     description=u'', readonly=0, required=0,
+                     description=u'', readonly=False, required=False,
                      min_length=1)    
         field.validate(None)
         field.validate({1: 'a'})
@@ -52,7 +52,7 @@ class DictTest(FieldTestBase):
 
     def testValidateMaxValues(self):
         field = Dict(title=u'Dict field',
-                     description=u'', readonly=0, required=0,
+                     description=u'', readonly=False, required=False,
                      max_length=1)
         field.validate(None)
         field.validate({})
@@ -65,7 +65,7 @@ class DictTest(FieldTestBase):
 
     def testValidateMinValuesAndMaxValues(self):
         field = Dict(title=u'Dict field',
-                     description=u'', readonly=0, required=0,
+                     description=u'', readonly=False, required=False,
                      min_length=1, max_length=2)
         field.validate(None)
         field.validate({1: 'a'})
@@ -78,7 +78,7 @@ class DictTest(FieldTestBase):
 
     def testValidateValueTypes(self):
         field = Dict(title=u'Dict field',
-                     description=u'', readonly=0, required=0,
+                     description=u'', readonly=False, required=False,
                      value_types=(Int(), Float()))
         field.validate(None)
         field.validate({'a': 5.3})
@@ -91,7 +91,7 @@ class DictTest(FieldTestBase):
 
     def testValidateKeyTypes(self):
         field = Dict(title=u'Dict field',
-                     description=u'', readonly=0, required=0,
+                     description=u'', readonly=False, required=False,
                      key_types=(Int(), Float()))
         field.validate(None)
         field.validate({5.3: 'a'})

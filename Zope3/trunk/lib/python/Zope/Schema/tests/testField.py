@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testField.py,v 1.2 2002/09/11 22:06:41 jim Exp $
+$Id: testField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Schema import Field, Text, IField, ErrorNames
@@ -34,7 +34,7 @@ class FieldTest(FieldTestBase):
 
     def testValidate(self):
         field = Field(title=u'Not required field', description=u'',
-                      readonly=0, required=0)
+                      readonly=False, required=False)
         field.validate(None)
         field.validate('foo')
         field.validate(1)
@@ -43,7 +43,7 @@ class FieldTest(FieldTestBase):
     
     def testValidateRequired(self):
         field = Field(title=u'Required field', description=u'',
-                      readonly=0, required=1)
+                      readonly=False, required=True)
         field.validate('foo')
         field.validate(1)
         field.validate(0)

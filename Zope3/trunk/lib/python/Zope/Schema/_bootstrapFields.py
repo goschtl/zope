@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _bootstrapFields.py,v 1.1 2002/09/11 22:06:41 jim Exp $
+$Id: _bootstrapFields.py,v 1.2 2002/09/18 15:05:51 jim Exp $
 """
 __metaclass__ = type
 
@@ -45,7 +45,7 @@ class Field(Attribute):
     
     def __init__(self, __name__='', __doc__='',
                  title=u'', description=u'',
-                 required=0, readonly=0, constraint=None, default=None,
+                 required=False, readonly=False, constraint=None, default=None,
                  ):
         """Pass in field values as keyword parameters."""
 

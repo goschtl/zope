@@ -306,7 +306,10 @@ def main(module_filter, test_filter):
         runner(files, test_filter, debug)
 
 
-def process_args():
+def process_args(argv=None):
+    if argv is None:
+        argv = sys.argv
+        
     import getopt
     global module_filter
     global test_filter
@@ -328,11 +331,10 @@ def process_args():
     gcflags = []
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'vdLbhCumg:G:',
-                                   ['help'])
+        opts, args = getopt.getopt(argv[1:], 'vdLbhCumg:G:', ['help'])
     except getopt.error, msg:
         print msg
-        print "Try `python %s -h' for more information." % sys.argv[0]
+        print "Try `python %s -h' for more information." % argv[0]
         sys.exit(2)
 
     for k, v in opts:
