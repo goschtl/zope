@@ -5,6 +5,16 @@
   <!-- Backward compatability scripts                      -->
   <!-- We'll keep these around for two months              -->
 
+  <!-- Thu Nov 20 2003 -->
+  <event:subscribe
+      subscriber="zope.app.services.presentation.fixup"
+      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent" 
+      />
+  <event:subscribe
+      subscriber="zope.app.services.service.fixup"
+      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent" 
+      />
+
   <!-- Thu Aug 28 2003 -->
   <event:subscribe
       subscriber="zope.app.services.servicecontainer.fixup"
