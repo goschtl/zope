@@ -13,7 +13,7 @@
 ##############################################################################
 """Pagelet metadconfigure
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -28,7 +28,7 @@ from zope.security.checker import CheckerPublic, Checker
 
 from zope.configuration.exceptions import ConfigurationError
 
-from zope.publisher.interfaces.browser import IDefaultLayer
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 from zope.app import zapi
 from zope.app.component.metaconfigure import handler
@@ -84,7 +84,7 @@ class simplepagelet(object):
 
 
 def pagelet(_context, name, slot, permission, for_=Interface,
-            layer=IDefaultLayer, view=IView, weight=0, template=None):
+            layer=IDefaultBrowserLayer, view=IView, weight=0, template=None):
 
     required = {}
 

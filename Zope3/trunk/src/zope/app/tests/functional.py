@@ -51,7 +51,8 @@ from zope.app.publication.browser import BrowserPublication
 from zope.app.publication.xmlrpc import XMLRPCPublication
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
-from zope.publisher.interfaces.browser import IDefaultLayer, IDefaultSkin
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
+from zope.publisher.interfaces.browser import IDefaultSkin
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.component.hooks import setSite, getSite
 
@@ -91,7 +92,7 @@ def _getDefaultSkin():
     """Returns the current default skin as an interface."""
     adapters = zapi.getService(zapi.servicenames.Adapters)
     skin = adapters.lookup((IBrowserRequest,), IDefaultSkin, '')
-    return skin or IDefaultLayer
+    return skin or IDefaultBrowserLayer
 
 
 grant_request = (r"""

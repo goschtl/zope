@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
-from zope.publisher.interfaces.browser import IDefaultLayer
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.schema import getFieldNamesInOrder
 from zope.security.checker import defineChecker, NamesChecker
 
@@ -90,7 +90,7 @@ def DisplayViewFactory(name, schema, label, permission, layer,
                                permission))
 
     if layer is None:
-        layer = IDefaultLayer
+        layer = IDefaultBrowserLayer
 
     s = zapi.getGlobalService(zapi.servicenames.Adapters)
     s.register((for_, layer), Interface, name, class_)

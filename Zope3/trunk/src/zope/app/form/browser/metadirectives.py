@@ -21,8 +21,9 @@ from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
+from zope.app.component.fields import LayerField
 from zope.app.security.fields import Permission
-from zope.app.publisher.browser.fields import MenuField, LayerField
+from zope.app.publisher.browser.fields import MenuField
 
 class ICommonInformation(Interface):
     """

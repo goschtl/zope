@@ -11,20 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""`Rotterdam` skin package.
+"""Test fields.
 
 $Id$
 """
-__docformat__ = "reStructuredText"
+import unittest
+from zope.testing.doctestunit import DocTestSuite
+from zope.app.tests import placelesssetup
 
-from zope.publisher.interfaces.browser import ILayer, IDefaultBrowserLayer
+def test_suite():
+    return unittest.TestSuite((
+        DocTestSuite('zope.app.component.fields',
+                     setUp=placelesssetup.setUp,
+                     tearDown=placelesssetup.tearDown),
+        ))
 
-class rotterdam(ILayer):
-    """The `rotterdam` layer."""
-
-class Rotterdam(rotterdam, IDefaultBrowserLayer):
-    """The `Rotterdam` skin.
-
-    It is available via `++skin++zope.app.rotterdam.Rotterdam`.
-    """
-
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

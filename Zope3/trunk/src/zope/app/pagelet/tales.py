@@ -13,7 +13,7 @@
 ##############################################################################
 """Pagelet tales expression registrations
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -56,7 +56,7 @@ class TALESPageletsExpression(StringExpr):
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
         >>> from zope.publisher.browser import TestRequest
-        >>> from zope.publisher.interfaces.browser import IDefaultLayer
+        >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
         >>> from zope.component.interfaces import IView
         >>> from zope.app.publisher.browser import BrowserView
         >>> from zope.app.pagelet.interfaces import IPagelet
@@ -74,7 +74,7 @@ class TALESPageletsExpression(StringExpr):
         >>> defineChecker(pagelet_factory, testChecker)
         >>> adaptersrv = zope.component.getService('Adapters')
         >>> adaptersrv.register(
-        ...        (Interface, IDefaultLayer, IView, IPageletSlot)
+        ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IPagelet, name, pagelet_factory)
 
     Register slot interface:
@@ -87,7 +87,7 @@ class TALESPageletsExpression(StringExpr):
         >>> from zope.app.pagelet.collector import MacrosCollector
         >>> collector_factory = MacrosCollector
         >>> adaptersrv.register(
-        ...        (Interface, IDefaultLayer, IView, IPageletSlot)
+        ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IMacrosCollector, '', collector_factory)
 
     Register pagelets expression:
@@ -181,7 +181,7 @@ class TALESPageletExpression(StringExpr):
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
         >>> from zope.publisher.browser import TestRequest
-        >>> from zope.publisher.interfaces.browser import IDefaultLayer
+        >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
         >>> from zope.component.interfaces import IView
         >>> from zope.app.publisher.browser import BrowserView
         >>> from zope.app.pagelet.interfaces import IPagelet
@@ -199,7 +199,7 @@ class TALESPageletExpression(StringExpr):
         >>> defineChecker(pagelet_factory, testChecker)
         >>> adaptersrv = zope.component.getService('Adapters')
         >>> adaptersrv.register(
-        ...        (Interface, IDefaultLayer, IView, IPageletSlot)
+        ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IPagelet, name, pagelet_factory)
 
     Register slot interface:
@@ -212,7 +212,7 @@ class TALESPageletExpression(StringExpr):
         >>> from zope.app.pagelet.collector import MacroCollector
         >>> collector_factory = MacroCollector
         >>> adaptersrv.register(
-        ...        (Interface, IDefaultLayer, IView, IPageletSlot)
+        ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IMacroCollector, '', collector_factory)
 
     Register pagelets expression:
@@ -318,7 +318,7 @@ class TALESPageDataExpression(StringExpr):
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
         >>> from zope.publisher.browser import TestRequest
-        >>> from zope.publisher.interfaces.browser import IDefaultLayer
+        >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
         >>> from zope.component.interfaces import IView
         >>> from zope.app.publisher.browser import BrowserView
         >>> from zope.app.pagelet.interfaces import IPageletSlot
@@ -334,7 +334,7 @@ class TALESPageDataExpression(StringExpr):
         >>> defineChecker(factory, testChecker)
         >>> adaptersrv = zope.component.getService('Adapters')
         >>> adaptersrv.register(
-        ...        (Interface, IDefaultLayer, IView)
+        ...        (Interface, IDefaultBrowserLayer, IView)
         ...        , IPageData, '', factory)
 
     Register slot interface:
@@ -347,7 +347,7 @@ class TALESPageDataExpression(StringExpr):
         >>> from zope.app.pagelet.collector import MacroCollector
         >>> collector_factory = MacroCollector
         >>> adaptersrv.register(
-        ...        (Interface, IDefaultLayer, IView, IPageletSlot)
+        ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IMacroCollector, '', collector_factory)
 
     Register pagedata expression:

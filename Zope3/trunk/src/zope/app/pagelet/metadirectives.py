@@ -13,7 +13,7 @@
 ##############################################################################
 """Pagelet metadirective
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -23,8 +23,7 @@ from zope.schema import TextLine
 from zope.schema import Int
 
 from zope.app.security.fields import Permission
-
-from zope.app.publisher.browser.fields import LayerField
+from zope.app.component.fields import LayerField
 
 from zope.configuration.fields import GlobalObject
 

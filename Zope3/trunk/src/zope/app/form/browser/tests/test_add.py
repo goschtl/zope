@@ -19,7 +19,8 @@ import unittest
 
 from zope.app.tests import ztapi
 from zope.interface import Interface, implements
-from zope.publisher.interfaces.browser import IBrowserRequest, IDefaultLayer
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
 from zope.component import getView
@@ -156,7 +157,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         self.assertEqual(descriminator,
                          ('view', IAdding, 'addthis', IBrowserRequest, 
-                         IDefaultLayer))
+                         IDefaultBrowserLayer))
 
         self.assertEqual(callable, AddViewFactory)
 
@@ -169,7 +170,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(schema, I)
         self.assertEqual(label, 'Add this')
         self.assertEqual(permission, 'zope.Public')
-        self.assertEqual(layer, IDefaultLayer)
+        self.assertEqual(layer, IDefaultBrowserLayer)
         self.assertEqual(template, 'add.pt')
         self.assertEqual(default_template, 'add.pt')
         self.assertEqual(bases, (V, AddView, ))

@@ -17,7 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.publisher.interfaces.browser import IDefaultLayer
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.security.checker import defineChecker, NamesChecker
 
 from zope.app import zapi
@@ -231,7 +231,7 @@ def EditWizardViewFactory(name, schema, permission, layer,
         )
 
     if layer is None:
-        layer = IDefaultLayer
+        layer = IDefaultBrowserLayer
 
     s = zapi.getGlobalService(zapi.servicenames.Adapter)
     s.register((for_, layer), Interface, name, class_)

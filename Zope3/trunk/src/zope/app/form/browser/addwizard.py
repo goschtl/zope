@@ -26,7 +26,7 @@ from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import WidgetsError, IInputWidget
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.interfaces.browser import IDefaultLayer
+from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
 from editwizard import EditWizardView, WizardStorage
@@ -135,7 +135,7 @@ def AddWizardViewFactory(
                     )
                   )
     if layer is None:
-        layer = IDefaultLayer
+        layer = IDefaultBrowserLayer
 
     s = zapi.getGlobalService(zapi.servicenames.Adapter)
     s.register((for_, layer), Interface, name, class_)
