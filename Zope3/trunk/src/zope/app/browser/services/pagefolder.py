@@ -13,19 +13,19 @@
 ##############################################################################
 """
 
-Revision information: $Id: pagefolder.py,v 1.1 2003/03/23 16:45:43 jim Exp $
+Revision information: $Id: pagefolder.py,v 1.2 2003/07/02 22:10:59 jim Exp $
 """
-from zope.app.browser.container.contents import Contents
 from zope.app.interfaces.services.pagefolder import IPageFolder
-from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.app.services.zpt import ZPTTemplate
 
-class PageFolderContents(Contents):
+class PageFolderDefaultConfiguration:
 
-    __used_for__ = IPageFolder
+    def changed(self):
+        """Apply changes to existing configurations
+        """
+        __used_for__ = IPageFolder
 
-    index = ViewPageTemplateFile('pagefolder_contents.pt')
+        folder = self.context
+        if folder.apply:
+            folder.applyDefaults()
 
-    def add(self, name):
-        self.context.setObject(name, ZPTTemplate())
-        self.request.response.redirect('@@contents.html')
+            
