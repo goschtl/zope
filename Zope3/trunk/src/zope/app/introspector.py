@@ -127,7 +127,8 @@ class Introspector:
 
     def getExtends(self):
         """Returns all the class extended up to the top most level"""
-        bases = self._unpackTuple(removeAllProxies(self.currentclass).__bases__)
+        bases = self._unpackTuple(
+            removeAllProxies(self.currentclass).__bases__)
         return bases
 
     def getInterfaceRegistration(self):
@@ -189,7 +190,8 @@ def nameToInterface(context, name):
     if name == 'None':
         return None
     service = getService(context, Interfaces)
-    return service.getInterface(name)
+    iface = service.getInterface(name)
+    return iface
 
 def interfaceToName(context, interface):
     interface = removeAllProxies(interface)
@@ -200,6 +202,8 @@ def interfaceToName(context, interface):
     ids = [id for id, iface in items
            if iface == interface]
     if not ids:
-        raise ComponentLookupError, interface
+        # Not every interface must be registered with the interface service;
+        # However the lookup should not fail, since this is just a name
+        return interface.__module__ + '.' + interface.__name__
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids
     return ids[0]
