@@ -41,7 +41,6 @@
   <body tal:attributes="onload body_onload | nothing">
 
     <div id="global">
-      <!--div tal:content="usage"></div-->
       <div id="userDetails">
         <metal:block define-macro="logged_user">
           <span tal:omit-tag="" i18n:translate="">User:</span>
@@ -68,7 +67,7 @@
       <!-- Navigation tree box -->
       <metal:tree use-macro="context/@@standard_macros/navigation_tree_box" />
 
-      <tal:block condition="usage/objectview">
+      <tal:block condition="python: macroname == 'view'">
       
         <div class="box" id="commonTasks"
              tal:define="view context/@@commonTasks|nothing"
@@ -116,7 +115,7 @@
             breadcrumb item</a> / </tal:block>
       </div>
 
-      <div tal:condition="usage/objectview" class="itemViews"
+      <div tal:condition="python: macroname == 'view'" class="itemViews"
            metal:define-slot="tabs">
         <tal:block repeat="view context/@@view_get_menu/zmi_views">
           <a href=""
@@ -132,7 +131,7 @@
       <!-- OnlineHelp with popup support -->
       <!-- note, we reverse the actions list 'cos they're packed to the
            screen from the right -->
-      <div tal:condition="usage/objectview" id="actions"
+      <div tal:condition="python: macroname == 'view'" id="actions"
            tal:define="help_actions context/@@view_get_menu/help_actions;
                        actions context/@@view_get_menu/zmi_actions;
                        dummy python:actions.reverse()"
