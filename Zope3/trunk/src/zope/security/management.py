@@ -95,10 +95,14 @@ def endInteraction():
     """End the current interaction."""
 
     try:
-        del thread_local.interaction
+        thread_local.previous_interaction = thread_local.interaction
     except AttributeError:
         pass
+    else:
+        del thread_local.interaction
 
+def restoreInteraction():
+    thread_local.interaction = thread_local.previous_interaction
 
 def checkPermission(permission, object, interaction=None):
     """Return whether security policy allows permission on object.
