@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.35 2003/12/17 11:15:13 mukruthi Exp $
+$Id: adding.py,v 1.36 2003/12/17 11:22:03 mukruthi Exp $
 """
 __metaclass__ = type
 
@@ -90,13 +90,12 @@ class BasicAdding(BrowserView):
         button_label = translation.translate(button_label,
                                              context=self.request)
         if IContainerNamesContainer.isImplementedBy(container):
-            return "<input type='refresh' name='Refresh'><input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
+            return "<input type='submit' value='Refresh' i18n:attributes='value refresh-button'><input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
                    % button_label
         else:
             contentName = self.contentName or ''
             return (
-              "Name:&nbsp;<input type='text' name='add_input_name' value='%s'><hr>"
-                    "<input type='refresh' name='Refresh'>&nbsp;&nbsp;<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
+              "<b>Name:<b>&nbsp;<input type='text' name='add_input_name' value='%s'><hr>" "<input type='submit' value='Refresh' i18n:attributes='value refresh-button' >&nbsp;&nbsp;<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
                     % ( contentName, button_label))
 
     def publishTraverse(self, request, name):
