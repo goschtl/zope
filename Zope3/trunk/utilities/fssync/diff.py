@@ -41,7 +41,7 @@ def getdiff(targetfile, objpath, dbpath, siteconfpath, diffoption=None):
         os.path.join(os.path.abspath(os.path.dirname(targetfile)), '@@Zope')):
         return 'sync [diff aborted] : @@Zope administrative folder not found'
 
-    if os.path.basename(targetfile).find(' ') >= 0:
+    if ' ' in os.path.basename(targetfile):
         targetfile = os.path.join(os.path.dirname(targetfile),
                                   "'"+os.path.basename(targetfile)+"'")
 

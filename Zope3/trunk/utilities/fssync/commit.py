@@ -66,7 +66,7 @@ def commit(fspath, dbpath, siteconfpath, mode=None):
                     fmt_sandbox_path = ''
                     fmt_original_path = ''
                     for dir in sandbox_path.split(os.sep):
-                        if dir.find(' ') >= 0:
+                        if ' ' in dir:
                             fmt_sandbox_path = os.path.join(fmt_sandbox_path,
                                                             "'"+dir+"'")
                         else:
@@ -74,7 +74,7 @@ def commit(fspath, dbpath, siteconfpath, mode=None):
                                                             dir)
 
                     for dir in original_path.split(os.sep):
-                        if dir.find(' ') >= 0:
+                        if ' ' in dir:
                             fmt_original_path = os.path.join(fmt_original_path,
                                                              "'"+dir+"'")
                         else:
