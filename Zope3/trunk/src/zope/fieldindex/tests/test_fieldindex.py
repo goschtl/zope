@@ -18,7 +18,7 @@ from zodb.btrees.IIBTree import IISet
 from zope.fieldindex.fieldindex import FieldIndex
 from zope.interface.verify import verifyClass
 
-from zope.index.interfaces.index import IInjection, IQuerying, IStatistics, \
+from zope.index.interfaces.index import IInjection, ISimpleQuery, IStatistics, \
     IRangeQuerying
 
 
@@ -58,7 +58,7 @@ class FieldIndexTest(TestCase):
     def test_interface(self):
         verifyClass(IRangeQuerying, FieldIndex)
         verifyClass(IInjection, FieldIndex)
-        verifyClass(IQuerying, FieldIndex)
+        verifyClass(ISimpleQuery, FieldIndex)
         verifyClass(IStatistics, FieldIndex)
 
     def test_empty_index(self):

@@ -15,7 +15,7 @@
 
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
-$Id: test_catalog.py,v 1.4 2003/07/13 05:50:54 andyh Exp $
+$Id: test_catalog.py,v 1.5 2003/07/13 08:30:01 anthony Exp $
 """
 
 from __future__  import generators
@@ -27,7 +27,7 @@ from zope.app.interfaces.index.field import IUIFieldCatalogIndex
 from zope.app.interfaces.catalog.index import ICatalogIndex
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.services.hub import IObjectHub
-from zope.index.interfaces.index import IQuerying
+from zope.index.interfaces.index import ISimpleQuery
 
 from zope.app.catalog.catalog import Catalog
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -52,7 +52,7 @@ class CFakeObjectHub(FakeObjectHub):
         return gen(self.data.items())
 
 class StubIndex(object):
-    implements(IQuerying, ISubscriber, ICatalogIndex, IUIFieldCatalogIndex)
+    implements(ISimpleQuery, ISubscriber, ICatalogIndex, IUIFieldCatalogIndex)
 
     def __init__(self, field_name, interface=None):
 	self._field_name = field_name

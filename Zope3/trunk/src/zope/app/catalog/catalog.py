@@ -37,7 +37,6 @@ class ResultSet:
         return len(self.hubidset)
 
     def __iter__(self):
-        print self.hubidset, type(self.hubidset)
         for hubid in self.hubidset:
             obj = self.hub.getObject(hubid)
             yield obj

@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.12 2003/07/13 08:23:16 anthony Exp $
+$Id: index.py,v 1.13 2003/07/13 08:30:03 anthony Exp $
 """
 
 from zope.component import getService, queryAdapter
@@ -55,7 +55,6 @@ class TextCatalogIndex(TextIndexWrapper):
     notify = ContextMethod(notify)
 
     def _getTexts(wrapped_self, object):
-        print "Getting ISearchableText interface for object " + str(object)
         adapted = queryAdapter(object, ISearchableText, context=wrapped_self)
         if adapted is None:
             return None
