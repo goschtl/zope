@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.8 2003/03/08 01:51:38 gvanrossum Exp $
+$Id: service.py,v 1.9 2003/03/10 20:35:16 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -196,14 +196,8 @@ class ServiceSummary(BrowserView):
         for name in names:
             registry = self.context.queryConfigurations(name)
             assert registry
-            infos = registry.info()
-            assert infos
-            if infos[0]['active']:
-                # XXX This assumes if there is an active one it is the
-                # first one.  The implementation promises this, but
-                # the interface does not.  However Jim doesn't want
-                # the implementation changed so I guess the interface
-                # docs should be fixed.
+            infos = [info for info in registry.info() if info['active']]
+            if infos:
                 configobj = infos[0]['configuration']
                 component = configobj.getComponent()
                 url = str(getView(component, 'absolute_url', self.request))
@@ -245,7 +239,7 @@ class ServiceActivation(BrowserView):
             result.append(info)
         return result
 
-    def action(self):
+    def update(self):
         active = self.request.get("active")
         if not active:
             return ""
