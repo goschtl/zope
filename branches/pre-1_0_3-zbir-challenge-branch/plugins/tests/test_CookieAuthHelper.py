@@ -98,7 +98,7 @@ class CookieAuthHelperTests( unittest.TestCase
                          'password': 'bar',
                          'remote_host': '',
                          'remote_address': ''})
-        self.assertEqual(len(response.cookies), 1)
+        self.assertEqual(len(response.cookies), 0)
 
     def test_challenge( self ):
         from zExceptions import Unauthorized
