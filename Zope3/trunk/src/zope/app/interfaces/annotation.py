@@ -13,7 +13,7 @@
 ##############################################################################
 """Annotations store arbitrary application data under package-unique keys.
 
-$Id: annotation.py,v 1.3 2002/12/30 21:14:25 jeremy Exp $
+$Id: annotation.py,v 1.4 2003/03/13 20:39:14 jim Exp $
 """
 
 from zope.interface import Interface
@@ -32,7 +32,19 @@ class IAnnotatable(Interface):
     """
 
 class IAnnotations(IAnnotatable):
-    """Stores arbitrary application data under package-unique keys."""
+    """Stores arbitrary application data under package-unique keys.
+
+    By "package-unique keys", we mean keys that are are unique by
+    virtua of including the dotted name of a package as a prefex.  A
+    package name is used to limit the authority for picking names for
+    a package to the people using that package.
+
+    For example, when implementing annotations for storing Zope
+    Dublin-Core meta-data, we use the key::
+
+      "zope.app.dublincore.ZopeDublinCore"
+
+    """
 
     def __getitem__(key):
         """Return the annotation stored under key.
@@ -41,7 +53,8 @@ class IAnnotations(IAnnotatable):
         """
 
     def get(key, default=None):
-        """Return the annotation stored under key, or default if not found."""
+        """Return the annotation stored under key, or default if not found.
+        """
 
     def __setitem__(key, memento):
         """Store annotation under key.
@@ -57,7 +70,9 @@ class IAnnotations(IAnnotatable):
         """
 
 class IAttributeAnnotatable(IAnnotatable):
-    """
-    Marker interface giving permission for an IAnnotations adapter to store
-    data in an attribute named __annotations__.
+    """Marker indicating that annotations can be stored on an attribute
+    
+    This is a marker interface giving permission for an IAnnotations
+    adapter to store data in an attribute named __annotations__.
+
     """
