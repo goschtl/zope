@@ -174,3 +174,6 @@
 
 # ZopeProducts
 /zopeproducts                   /Products3
+
+# Functional testing framework
+/Packages/FunctionalTests/tcpwatch      /Packages/tcpwatch
