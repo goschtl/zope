@@ -32,6 +32,7 @@ class SetupContext:
 
     def __init__(self, pkgname, version, setup_file):
         self._working_dir = os.path.dirname(os.path.abspath(setup_file))
+        self._pkgname = pkgname
         self.version = version
         self.packages = []
         self.package_data = {}
@@ -41,15 +42,17 @@ class SetupContext:
         self.platforms = None
         self.classifiers = None
         self.data_files = []
+
+    def initialize(self):
         self.load_metadata(
-            os.path.join(self._working_dir, pkgname,
+            os.path.join(self._working_dir, self._pkgname,
                          publication.PUBLICATION_CONF))
-        pkgdir = os.path.join(self._working_dir, pkgname)
-        self.scan(pkgname, pkgdir, pkgname)
+        pkgdir = os.path.join(self._working_dir, self._pkgname)
+        self.scan(self._pkgname, pkgdir, self._pkgname)
         depsdir = os.path.join(self._working_dir, "Dependencies")
         if os.path.isdir(depsdir):
             depnames = os.listdir(depsdir)
-            suffix = "-%s-%s" % (pkgname, version)
+            suffix = "-%s-%s" % (self._pkgname, version)
             for name in depnames:
                 if name != "Includes" and not name.endswith(suffix):
                     # an unexpected name; we didn't put this here!

@@ -35,6 +35,7 @@ class SetupContextTestCase(unittest.TestCase):
         f.close()
         try:
             context = setup.SetupContext("package", "0.1.234", setupfile)
+            context.initialize()
             context.package_data["package"].sort()
             self.assertEqual(context.package_data,
                              {"package": ["PUBLICATION.cfg",
@@ -46,6 +47,7 @@ class SetupContextTestCase(unittest.TestCase):
         packagedir = os.path.join(here, "input", "package2")
         setupfile = os.path.join(here, "input", "setup.py")
         context = setup.SetupContext("package2", "0.1.234", setupfile)
+        context.initialize()
         context.package_data["package2"].sort()
         self.assertEqual(context.package_data,
                          {"package2": ["PUBLICATION.cfg", "SETUP.cfg"]})

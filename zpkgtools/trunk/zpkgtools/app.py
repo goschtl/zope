@@ -445,6 +445,7 @@ class Component:
         print >>f, "context = zpkgtools.setup.SetupContext("
         print >>f, "    %r, %r, __file__)" % (self.name, version)
         print >>f
+        print >>f, "context.initialize()"
         print >>f, "context.setup()"
         f.close()
 
