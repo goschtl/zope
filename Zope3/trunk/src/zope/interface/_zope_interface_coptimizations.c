@@ -19,7 +19,7 @@
 #define OBJECT(O) ((PyObject*)(O))
 #define CLASSIC(O) ((PyClassObject*)(O))
 
-static PyObject *str__dict__, *str__implements__, *strextends;
+static PyObject *str__dict__, *str__implemented__, *strextends;
 static PyObject *BuiltinImplementationSpecifications, *str__provides__;
 static PyObject *str__class__, *str__providedBy__, *strisOrExtends;
 static PyObject *empty, *fallback, *str_implied, *str_cls, *str_implements;
@@ -106,7 +106,7 @@ implementedBy(PyObject *ignored, PyObject *cls)
       return implementedByFallback(cls);
     }
 
-  spec = PyObject_GetItem(dict, str__implements__);
+  spec = PyObject_GetItem(dict, str__implemented__);
   Py_DECREF(dict);
   if (spec)
     {
@@ -509,7 +509,7 @@ init_zope_interface_coptimizations(void)
   if(! (str ## S = PyString_FromString(# S))) return
 
   DEFINE_STRING(__dict__);
-  DEFINE_STRING(__implements__);
+  DEFINE_STRING(__implemented__);
   DEFINE_STRING(__provides__);
   DEFINE_STRING(__class__);
   DEFINE_STRING(__providedBy__);

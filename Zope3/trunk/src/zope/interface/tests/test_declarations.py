@@ -39,7 +39,7 @@ class COnly(A, B):
     implementsOnly(I3)
 
 class COnly_old(A, B):
-    __implements__ = I3
+    __implemented__ = I3
     
 class D(COnly):
     implements(I5)
@@ -76,11 +76,11 @@ class Test(unittest.TestCase):
 
     def test_backward_compat(self):
 
-        class C1: __implements__ = I1
-        class C2(C1): __implements__ = I2, I5
-        class C3(C2): __implements__ = I3, C2.__implements__
+        class C1: __implemented__ = I1
+        class C2(C1): __implemented__ = I2, I5
+        class C3(C2): __implemented__ = I3, C2.__implemented__
 
-        self.assert_(C3.__implements__.__class__ is tuple)
+        self.assert_(C3.__implemented__.__class__ is tuple)
 
         self.assertEqual(
             [i.getName() for i in providedBy(C3())],
@@ -96,16 +96,16 @@ class Test(unittest.TestCase):
             )
 
         self.assertEqual(
-            [i.getName() for i in C4.__implements__],
+            [i.getName() for i in C4.__implemented__],
             ['I4', 'I3', 'I2', 'I5'],
             )
 
-        # Note that C3.__implements__ should now be a sequence of interfaces
+        # Note that C3.__implemented__ should now be a sequence of interfaces
         self.assertEqual(
-            [i.getName() for i in C3.__implements__],
+            [i.getName() for i in C3.__implemented__],
             ['I3', 'I2', 'I5'],
             )
-        self.failIf(C3.__implements__.__class__ is tuple)
+        self.failIf(C3.__implemented__.__class__ is tuple)
 
     def test_module(self):
         import zope.interface.tests.m1

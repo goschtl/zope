@@ -22,9 +22,10 @@ from transaction import get_transaction
 from ZODB.tests.util import DB
 from zodbcode.module import ManagedRegistry
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.app.interface import PersistentInterface
 
+# XXX for some reason changing this code to use implements() does not work
 code = """\
 from zope.interface import Interface
 
@@ -32,7 +33,7 @@ class IFoo(Interface):
     pass
 
 class Foo:
-    __implements__ = IFoo
+    __implemented__ = IFoo
 
 aFoo = Foo()
 """
@@ -54,7 +55,7 @@ class PersistentInterfaceTest(unittest.TestCase):
             pass
 
         class Foo:
-            __implements__ = IFoo
+            implements(IFoo)
 
         self.assert_(IFoo.providedBy(Foo()))
         self.assertEqual(IFoo._p_oid, None)
@@ -65,7 +66,7 @@ class PersistentInterfaceTest(unittest.TestCase):
         imodule = self.registry.findModule("imodule")
 
         # test for a pickling bug
-        self.assertEqual(imodule.Foo.__implements__, imodule.IFoo)
+        self.assertEqual(imodule.Foo.__implemented__, imodule.IFoo)
 
         self.assert_(imodule.IFoo.providedBy(imodule.aFoo))
         # the conversion should not affect Interface
