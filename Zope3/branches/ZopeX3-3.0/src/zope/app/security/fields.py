@@ -68,6 +68,14 @@ class Permission(schema.Id):
             self.context.action(
                 discriminator = None,
                 callable = checkPermission,
-                args = (None, value)
+                args = (None, value),
+
+                # Delay execution till end. This is an
+                # optimization. We don't want to intersperse utility
+                # lookup, done when checking permissions, with utility
+                # definitions. Utility lookup is expensive after
+                # utility definition, as extensive caches have to be
+                # rebuilt.                
+                order=9999999, 
                 )
         

@@ -165,7 +165,6 @@ class RolePermissionManager(SecurityMap):
 
         if check:
             checkRole(None, role_id)
-            checkPermission(None, permission_id)
 
         self.addCell(permission_id, role_id, Allow)
 
@@ -178,7 +177,6 @@ class RolePermissionManager(SecurityMap):
 
         if check:
             checkRole(None, role_id)
-            checkPermission(None, permission_id)
 
         self.addCell(permission_id, role_id, Deny)
 

@@ -393,10 +393,10 @@ def includeOverrides(_context, file, package=None):
     # and munge the includepath:
     newactions = []
     for action in config.resolveConflicts(_context.actions[nactions:]):
-        (discriminator, callable, args, kw, oldincludepath, info
+        (discriminator, callable, args, kw, oldincludepath, info, order
          ) = config.expand_action(*action)
         newactions.append(
-            (discriminator, callable, args, kw, includepath, info)
+            (discriminator, callable, args, kw, includepath, info, order)
             )
 
     # and replace the new actions with the munched new actions:

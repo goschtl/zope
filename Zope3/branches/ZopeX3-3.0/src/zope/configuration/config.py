@@ -325,7 +325,7 @@ class ConfigurationContext(object):
 
 
 
-    def action(self, discriminator, callable=None, args=(), kw={}):
+    def action(self, discriminator, callable=None, args=(), kw={}, order=0):
         """Add an action with the given discriminator, callable and arguments
 
         For testing purposes, the callable and arguments may be omitted.
@@ -363,10 +363,18 @@ class ConfigurationContext(object):
         >>> c.actions[-1]
         (None, None, (), {}, ('foo.zcml',), '?')
 
+        Finally, we can add an order argument to crudely control the order
+        of execution:
+        
+        >>> c.action(None, order=99999)
+        >>> c.actions[-1]
+        (None, None, (), {}, ('foo.zcml',), '?', 99999)
+
         """
         action = (discriminator, callable, args, kw,
                   getattr(self, 'includepath', ()),
                   getattr(self, 'info', ''),
+                  order,
                   )
 
         # remove trailing false items
@@ -569,7 +577,7 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
 
         """
         for action in resolveConflicts(self.actions):
-            (discriminator, callable, args, kw, includepath, info
+            (discriminator, callable, args, kw, includepath, info, order
              ) = expand_action(*action)
             if callable is None:
                 continue
@@ -1342,9 +1350,9 @@ def toargs(context, schema, data):
 # Conflict resolution
 
 def expand_action(discriminator, callable=None, args=(), kw={},
-                   includepath=(), info=''):
+                   includepath=(), info='', order=0):
     return (discriminator, callable, args, kw,
-            includepath, info)
+            includepath, info, order)
 
 def resolveConflicts(actions):
     """Resolve conflicting actions
@@ -1366,15 +1374,15 @@ def resolveConflicts(actions):
     ...    (1, f, (1,), {}, (), 'first'),
     ...    (1, f, (2,), {}, ('x',), 'second'),
     ...    (1, f, (3,), {}, ('y',), 'third'),
-    ...    (4, f, (4,), {}, ('y',)),
+    ...    (4, f, (4,), {}, ('y',), 'should be last', 99999),
     ...    (3, f, (3,), {}, ('y',)),
     ...    (None, f, (5,), {}, ('y',)),
     ... ]))
     [(None, f),
      (1, f, (1,), {}, (), 'first'),
-     (4, f, (4,), {}, ('y',)),
      (3, f, (3,), {}, ('y',)),
-     (None, f, (5,), {}, ('y',))]
+     (None, f, (5,), {}, ('y',)),
+     (4, f, (4,), {}, ('y',), 'should be last')]
 
     >>> try:
     ...     v = resolveConflicts([
@@ -1399,21 +1407,23 @@ def resolveConflicts(actions):
     unique = {}
     output = []
     for i in range(len(actions)):
-        (discriminator, callable, args, kw, includepath, info
+        (discriminator, callable, args, kw, includepath, info, order
          ) = expand_action(*(actions[i]))
+
+        order = order or i
         if discriminator is None:
             # The discriminator is None, so this directive can
             # never conflict. We can add it directly to the
             # configuration actions.
             output.append(
-                (i, discriminator, callable, args, kw, includepath, info)
+                (order, discriminator, callable, args, kw, includepath, info)
                 )
             continue
 
 
         a = unique.setdefault(discriminator, [])
         a.append(
-            (includepath, i, callable, args, kw, info)
+            (includepath, order, callable, args, kw, info)
             )
 
     # Check for conflicts

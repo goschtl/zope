@@ -51,14 +51,7 @@ def test_protectModule():
     Initially, there's no checker defined for the module:
 
     >>> moduleChecker(test_directives)
-    
-    Should get an error if a permission isn't defined before it's used:
-
-    >>> metaconfigure.protectModule(test_directives, 'foo', test_perm)
-    Traceback (most recent call last):
-    ...
-    ValueError: ('Undefined permission id', 'zope.app.security.metaconfigure.test')
-    
+        
     >>> perm = Permission(test_perm, '')
     >>> ztapi.provideUtility(IPermission, perm, test_perm)
     >>> metaconfigure.protectModule(test_directives, 'foo', test_perm)
