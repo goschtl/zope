@@ -1,6 +1,8 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<configure 
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
 
-  <defaultView name="index.html" />
+  <browser:defaultView name="index.html" />
   
   <include file="menus.zcml" />
   <include package=".applicationcontrol" />
