@@ -13,8 +13,13 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.7 2002/12/19 19:44:49 jim Exp $
+$Id: _app.py,v 1.8 2002/12/20 19:08:06 jim Exp $
 """
+
+import base64
+from StringIO import StringIO
+from Zope.Publisher.Publish import publish as _publish
+
 __metaclass__ = type
 
 _configured = 0
