@@ -57,7 +57,7 @@ class LocationMap(dict):
         r = dict.get(self, name)
         if r:
             return r
-        
+
         suffix = ''
         while 1:
             l = name.rfind('.')
@@ -69,7 +69,7 @@ class LocationMap(dict):
             r = dict.get(self, name)
             if r:
                 return r + suffix
-            
+
         return default
 
     __contains__ = get
@@ -108,7 +108,6 @@ class LocationMap(dict):
             return r
         raise KeyError, name
 
-        
 
 def load(f, base=None, mapping=None):
     cvsbase = None
@@ -163,8 +162,6 @@ def load(f, base=None, mapping=None):
 
 
 def fromPathOrUrl(path, mapping=None):
-    # XXX need to deal with cvs: URLs directly!
-    # still need to support Subversion here
     if os.path.isfile(path):
         # prefer a revision-control URL over a local path if possible:
         rcurl = loader.fromPath(path)
