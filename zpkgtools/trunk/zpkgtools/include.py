@@ -51,14 +51,10 @@ def filter_names(names):
     return names
 
 
-class InclusionProcessor:
-    """Handler for processing inclusion specifications.
+class Specification:
+    """Specification for files to include and exclude.
 
-    Methods are provided for both reading specifications and creating
-    the output tree.
-
-    The following attributes are filled in by loadSpecification().
-    These are exposed for use from the unit tests.
+    The following attributes are provided:
 
     excludes
       Iterable containing the absolute path names of the files in the
@@ -69,44 +65,13 @@ class InclusionProcessor:
       either an absolute path in the source directory or a URL.
 
     """
-    def __init__(self, source, destination, specfile=None):
-        if not os.path.exists(source):
-            raise InclusionError("source directory does not exist: %r"
-                                 % source)
-        self.source = os.path.abspath(source)
-        self.destination = os.path.abspath(destination)
-        prefix = os.path.commonprefix([self.source, self.destination])
-        if prefix == self.source:
-            raise InclusionError("destination directory may not be"
-                                 " contained in the source directory")
-        elif prefix == self.destination:
-            raise InclusionError("source directory may not be"
-                                 " contained in the destination directory")
+
+    def __init__(self, source):
         self.excludes = {}
         self.includes = {}
-        f = None
-        if specfile is None:
-            # Read source/INCLUDES.txt, if it exists.
-            specfile = os.path.join(source, "INCLUDES.txt")
-            if os.path.exists(specfile):
-                f = open(specfile, "rU")
-            contextdir = self.source
-        else:
-            # Read the specified file, without testing for existance.
-            f = open(specfile, "rU")
-            contextdir = os.path.dirname(os.path.abspath(specfile))
-        if f is not None:
-            try:
-                self.loadSpecification(f, specfile)
-            finally:
-                f.close()
-        if os.path.isdir(os.path.join(contextdir, "CVS")):
-            self.cvsurl = cvsloader.fromPath(contextdir)
-        else:
-            self.cvsurl = None
-        self.cvs_loader = None
+        self.source = source
 
-    def loadSpecification(self, f, filename):
+    def load(self, f, filename):
         lineno = 0
         for line in f:
             lineno += 1
@@ -161,17 +126,43 @@ class InclusionProcessor:
                 return path
         return self.normalizePath(path, type, filename, lineno)
 
-    def createDistributionTree(self):
+
+class InclusionProcessor:
+    """Handler for processing inclusion specifications.
+
+    Methods are provided for both reading specifications and creating
+    the output tree.
+
+    """
+    def __init__(self, source, destination):
+        if not os.path.exists(source):
+            raise InclusionError("source directory does not exist: %r"
+                                 % source)
+        self.source = os.path.abspath(source)
+        self.destination = os.path.abspath(destination)
+        prefix = os.path.commonprefix([self.source, self.destination])
+        if prefix == self.source:
+            raise InclusionError("destination directory may not be"
+                                 " contained in the source directory")
+        elif prefix == self.destination:
+            raise InclusionError("source directory may not be"
+                                 " contained in the destination directory")
+        self.cvsurl = None
+        self.cvs_loader = None
+
+    def createDistributionTree(self, spec=None):
         """Create the output tree according to the loaded specification.
 
         The destination directory will be created if it doesn't
         already exist.
         """
-        self.copyTree(self.source, self.destination)
-        for relpath, source in self.includes.iteritems():
+        if spec is None:
+            spec = Specification(self.source)
+        self.copyTree(self.source, self.destination, spec.excludes)
+        for relpath, source in spec.includes.iteritems():
             self.addSingleInclude(relpath, source)
 
-    def copyTree(self, source, destination):
+    def copyTree(self, source, destination, excludes={}):
         """Populate the destination tree from the source tree.
 
         Files and directories will be created with the same permission
@@ -189,7 +180,7 @@ class InclusionProcessor:
             # remove excluded directories:
             for dir in dirs[:]:
                 fullpath = os.path.join(dirname, dir)
-                if fullpath in self.excludes:
+                if fullpath in excludes:
                     dirs.remove(dir)
 
             # reldir is the name of the directory to write to,
@@ -202,7 +193,7 @@ class InclusionProcessor:
                 destdir = destination
             for file in files:
                 srcname = os.path.join(dirname, file)
-                if srcname in self.excludes:
+                if srcname in excludes:
                     continue
                 destname = os.path.join(destdir, file)
                 # Copy file data, permission bits, and stat info;
