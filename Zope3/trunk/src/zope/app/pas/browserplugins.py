@@ -26,7 +26,6 @@ from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app import zapi
 from zope.app.session.interfaces import ISession, IClientId
 import transaction 
-import transaction 
 from urllib import urlencode
 
 from zope.app.pas.interfaces import IExtractionPlugin, IChallengePlugin
@@ -99,11 +98,19 @@ class SessionExtractor(Persistent, Contained):
         {'login': 'scott', 'password': 'tiger'}
 
         After login the credentials are stored in the session.
-        (The sessionSetUp() method ensures that in this test the request
+        (The tests.sessionSetUp() method ensures that in this test the request
         always gets the same client id so we get the same session data.)
         >>> request = TestRequest()
         >>> se.extractCredentials(request)
         {'login': 'scott', 'password': 'tiger'}
+
+        We must be able to re-login with another username and password:
+        >>> request = TestRequest(login='harry', password='hirsch')
+        >>> se.extractCredentials(request)
+        {'login': 'harry', 'password': 'hirsch'}
+        >>> request = TestRequest()
+        >>> se.extractCredentials(request)
+        {'login': 'harry', 'password': 'hirsch'}
 
         Magic logout command in URL forces log out by deleting the
         credentials from the session.
@@ -117,17 +124,17 @@ class SessionExtractor(Persistent, Contained):
 
     def extractCredentials(self, request):
         """ return credentials from session, request or None """
+        #if not credentials:
+            # check for form data
         sessionData = ISession(request)['pas']
+        login = request.get('login', None)
+        password = request.get('password', None)
+        if login and password:
+            credentials = SessionCredentials(login, password)
+            sessionData['credentials'] = credentials
         credentials = sessionData.get('credentials', None)
         if not credentials:
-            # check for form data
-            login = request.get('login', None)
-            password = request.get('password', None)
-            if login and password:
-                credentials = SessionCredentials(login, password)
-                sessionData['credentials'] = credentials
-            else:
-                return None
+            return None
         authrequest = request.get('authrequest', None)
         if authrequest == 'logout':
             sessionData['credentials'] = None
