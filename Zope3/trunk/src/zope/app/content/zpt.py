@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.8 2003/04/10 09:10:35 paul Exp $
+$Id: zpt.py,v 1.9 2003/04/14 15:59:26 mgedmin Exp $
 """
 
 import re
@@ -21,6 +21,7 @@ from persistence import Persistent
 
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import getWrapperContainer
+from zope.proxy.introspection import removeAllProxies
 from zope.security.proxy import ProxyFactory
 
 from zope.pagetemplate.pagetemplate import PageTemplate
@@ -50,12 +51,16 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 
         self.pt_edit(text.encode('utf-8'), content_type)
 
-    def pt_getContext(self, instance, request, **_kw):
+    def pt_getContext(wrapped_self, instance, request, **_kw):
         # instance is a View component
+        self = removeAllProxies(wrapped_self)
         namespace = super(ZPTPage, self).pt_getContext(**_kw)
+        namespace['template'] = wrapped_self
         namespace['request'] = request
         namespace['context'] = instance
         return namespace
+
+    pt_getContext = ContextMethod(pt_getContext)
 
     def render(self, request, *args, **keywords):
         instance = getWrapperContainer(self)

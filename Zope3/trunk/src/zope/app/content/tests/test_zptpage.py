@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.8 2003/04/02 18:38:21 sidnei Exp $
+$Id: test_zptpage.py,v 1.9 2003/04/14 15:59:26 mgedmin Exp $
 """
 
 import unittest
@@ -29,7 +29,7 @@ from zope.app.interfaces.index.text import ISearchableText
 from zope.component import getAdapter, getView
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.publisher.browser import TestRequest
+from zope.publisher.browser import TestRequest, BrowserView
 
 # Wow, this is a lot of work. :(
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -37,7 +37,7 @@ from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.traversing import ITraversable
 from zope.component.adapter import provideAdapter
-from zope.proxy.context import Wrapper
+from zope.proxy.context import Wrapper, ContextWrapper, getInnerWrapperData
 from zope.security.checker import NamesChecker, defineChecker
 
 class Data(object):
@@ -53,6 +53,8 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         provideAdapter(None, ITraversable, DefaultTraversable)
         provideAdapter(IZPTPage, ISearchableText, SearchableText)
         defineChecker(Data, NamesChecker(['URL', 'name']))
+        defineChecker(TestRequest, NamesChecker(['getPresentationType',
+                                                 'getPresentationSkin']))
 
     def testSearchableText(self):
         page = ZPTPage()
@@ -106,6 +108,27 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
         self.assertRaises(Forbidden, page.render, Data())
 
+    def test_template_context_wrapping(self):
+
+        class AU(BrowserView):
+            def __str__(self):
+                dict = getInnerWrapperData(self.context)
+                return str(dict and dict.get('name') or None)
+
+        from zope.app.traversing.namespace import provideNamespaceHandler
+        from zope.app.traversing.namespace import view
+        provideNamespaceHandler('view', view)
+        provideView(IZPTPage, 'name', IBrowserPresentation, AU)
+
+        page = ZPTPage()
+        page.setSource(
+            u'<p tal:replace="template/@@name" />'
+            )
+        page = ContextWrapper(page, None, name='zpt')
+        request = TestRequest()
+        request.setViewType(IBrowserPresentation)
+        self.assertEquals(page.render(request), 'zpt\n')
+
 
 class DummyZPT:
 
@@ -134,12 +157,13 @@ class SizedTests(unittest.TestCase):
         s = Sized(DummyZPT('one line'))
         self.assertEqual(s.sizeForSorting(), ('line', 1))
         self.assertEqual(s.sizeForDisplay(), u'1 line')
-        
+
     def test_arbitrarySize(self):
         from zope.app.content.zpt import Sized
         s = Sized(DummyZPT('some line\n'*5))
         self.assertEqual(s.sizeForSorting(), ('line', 5))
         self.assertEqual(s.sizeForDisplay(), u'5 lines')
+
 
 class TestFileEmulation(unittest.TestCase):
 
@@ -162,7 +186,8 @@ class TestFileEmulation(unittest.TestCase):
         content = "<p></p>"
         page = zope.app.content.zpt.ZPTFactory(None)('foo', '', content)
         self.assertEqual(page.getSource(), content)
-    
+
+
 class ZPTSourceTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
