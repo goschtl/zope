@@ -19,7 +19,7 @@ import re
 import math
 import random
 
-from __builtin__ import str  # XXX needed for pickling (legacy)
+from __builtin__ import str  # needed for pickling (legacy)
 from types import ListType, StringType, TupleType
 
 from zope.documenttemplate.pdocumenttemplate import \
