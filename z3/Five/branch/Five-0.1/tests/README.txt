@@ -1,13 +1,16 @@
-How to run the tests:
+Five tests
+==========
 
-The tests need all products in the tests/products subdirectory installed
-in your Zope instance's Products directory. On unixy systems, this can
-be most simply done by a symlink::
+The tests need all products in the ``tests/products`` subdirectory
+installed in your Zope instance's Products directory. On unixy
+systems, this can be most simply done by a symlink::
 
   cd myinstance/Products
   ln -s Five/tests/products/FiveTest .
 
-and so on for each product in tests/products.
+and so on for each product in tests/products. On other platforms, you
+could manually copy these directories (though you'd need to do that
+each time you change the tests).
 
 The tests also require ZopeTestCase to be installed. ZopeTestCase can
 be downloaded from here:
@@ -18,11 +21,11 @@ it needs to be installed in your Zope software's lib/python/Testing
 directory.
 
 Finally, to run the tests you need to set the following environment
-variables:
+variables::
 
   export INSTANCE_HOME=/path/to/instance
   export SOFTWARE_HOME=/path/to/software/lib/python
 
-Then you should be able to run the tests by typing:
+Then you should be able to run the tests by typing::
 
   python2.3 test_five.py
