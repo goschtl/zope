@@ -19,6 +19,7 @@ import os
 import posixpath
 import sys
 
+from zpkgtools import include
 from zpkgtools import package
 from zpkgtools import publication
 
@@ -86,11 +87,9 @@ class SetupContext:
         self.add_package_dir(name, reldir)
 
         # scan the files in the directory:
-        files = os.listdir(directory)
+        files = include.filter_names(os.listdir(directory))
         for fn in files:
             fnbase, ext = os.path.splitext(fn)
-            if ext in (".py", ".pyc", ".pyo", ".so", ".sl", ".pyd"):
-                continue
             path = os.path.join(directory, fn)
             if os.path.isdir(path):
                 init_py = os.path.join(path, "__init__.py")
@@ -124,7 +123,8 @@ class SetupContext:
 
     def scan_directory(self, pkgname, directory, reldir):
         """Scan a data directory, adding files to package_data."""
-        for fn in os.listdir(directory):
+        files = include.filter_names(os.listdir(directory))
+        for fn in files:
             path = os.path.join(directory, fn)
             if os.path.isdir(path):
                 self.scan_directory(pkgname,
