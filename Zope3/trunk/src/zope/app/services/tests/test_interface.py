@@ -48,7 +48,7 @@ class PersistentInterfaceTest(unittest.TestCase):
 
     def tearDown(self):
         get_transaction().abort() # just in case
-    
+
     def test_creation(self):
         class IFoo(PersistentInterface):
             pass
@@ -66,11 +66,11 @@ class PersistentInterfaceTest(unittest.TestCase):
 
         # test for a pickling bug
         self.assertEqual(imodule.Foo.__implements__, imodule.IFoo)
-        
+
         self.assert_(imodule.IFoo.isImplementedBy(imodule.aFoo))
         # the conversion should not affect Interface
         self.assert_(imodule.Interface is Interface)
-        
+
 
 def test_suite():
     return unittest.makeSuite(PersistentInterfaceTest)

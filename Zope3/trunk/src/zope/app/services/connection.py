@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.12 2003/05/27 14:18:24 jim Exp $
+$Id: connection.py,v 1.13 2003/06/07 05:31:58 stevea Exp $
 """
 
 from persistence import Persistent
@@ -24,12 +24,13 @@ from zope.app.interfaces.services.service import ISimpleService
 
 from zope.app.component.nextservice import queryNextService
 from zope.app.services.configuration import NameComponentConfigurable
+from zope.interface import implements
 
 class ConnectionService(Persistent, NameComponentConfigurable):
 
     __doc__ = ILocalConnectionService.__doc__
 
-    __implements__ = ILocalConnectionService, ISimpleService
+    implements(ILocalConnectionService, ISimpleService)
 
     def getConnection(self, name):
         'See IConnectionService'
@@ -80,8 +81,7 @@ class ConnectionConfiguration(NamedComponentConfiguration):
 
     __doc__ = IConnectionConfiguration.__doc__
 
-    __implements__ = (IConnectionConfiguration,
-                      NamedComponentConfiguration.__implements__)
+    implements(IConnectionConfiguration)
 
     status = ConfigurationStatusProperty('SQLDatabaseConnections')
 

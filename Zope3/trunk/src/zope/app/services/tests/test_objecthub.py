@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.9 2003/05/01 19:35:35 faassen Exp $
+$Id: test_objecthub.py,v 1.10 2003/06/07 05:32:01 stevea Exp $
 """
 
 import unittest
@@ -40,6 +40,7 @@ from zope.app.services.hub \
 from zope.exceptions import NotFoundError
 
 from zope.app.traversing import canonicalPath
+from zope.interface import implements
 
 # while these tests don't really test much of the placeful aspect of the
 # object hub, they do at least test basic functionality.
@@ -209,7 +210,7 @@ class TestSearchRegistrations(BasicHubTest):
         from zope.app.interfaces.traversing import ITraverser
         from zope.app.traversing.adapters import Traverser
         class DummyTraverser(Traverser):
-            __implements__ = ITraverser
+            implements(ITraverser)
             def traverse(self, location, *args, **kw):
                 if location in TestSearchRegistrations.locations:
                     return fake_object_for_location(location)

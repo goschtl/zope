@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_principalannotation.py,v 1.7 2003/06/03 22:46:22 jim Exp $
+$Id: test_principalannotation.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.placefulsetup \
@@ -29,11 +29,12 @@ from zope.component import getAdapter
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.security import IPrincipal
 from zope.app.tests import setup
+from zope.interface import implements
 
 
 class Principal:
 
-    __implements__ = IPrincipal
+    implements(IPrincipal)
 
     def __init__(self, id):
         self.id = id

@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.10 2003/05/27 14:18:24 jim Exp $
+$Id: cache.py,v 1.11 2003/06/07 05:31:58 stevea Exp $
 """
 
 from persistence import Persistent
@@ -33,6 +33,7 @@ from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.services.configuration import NamedComponentConfiguration
 from zope.app.services.event import ServiceSubscriberEventChannel
+from zope.interface import implements
 
 class ILocalCachingService(ICachingService, IEventChannel,
                            INameComponentConfigurable):
@@ -41,9 +42,7 @@ class ILocalCachingService(ICachingService, IEventChannel,
 
 class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
 
-    __implements__ = (ILocalCachingService,
-                      ISimpleService,
-                      ServiceSubscriberEventChannel.__implements__)
+    implements(ILocalCachingService, ISimpleService)
 
     _subscribeToServiceInterface = IObjectModifiedEvent
 
@@ -94,8 +93,7 @@ class CacheConfiguration(NamedComponentConfiguration):
 
     __doc__ = ICacheConfiguration.__doc__
 
-    __implements__ = (ICacheConfiguration,
-                      NamedComponentConfiguration.__implements__)
+    implements(ICacheConfiguration)
 
     status = ConfigurationStatusProperty('Caching')
 

@@ -20,12 +20,13 @@ from zope.server.http.http_date import parse_http_date
 from zope.app.interfaces.services.session import ISessionService
 from zope.app.interfaces.services.session import ISessionDataManager
 from zope.app.services.session import CookieSessionService
+from zope.interface import implements
 
 import time
 
 class DummyDataManager:
 
-    __implements__ = ISessionDataManager
+    implements(ISessionDataManager)
 
     def __init__(self):
         self.data = {}

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.7 2003/06/03 21:43:00 jim Exp $
+$Id: test_utility.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.app.tests import setup
 from zope.app.services.tests import placefulsetup
 from zope.app.services import utility
 from zope.component.utility import utilityService as globalUtilityService
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
 from zope.app.traversing import traverse
@@ -47,7 +47,7 @@ class IBar(Interface): pass
 class Foo:
     # We implement IUseConfiguration and IDependable directly to
     # depend as little  as possible on other infrastructure.
-    __implements__ = IFoo, ILocalUtility, IUseConfiguration, IDependable
+    implements(IFoo, ILocalUtility, IUseConfiguration, IDependable)
 
     def __init__(self, name):
         self.name = name

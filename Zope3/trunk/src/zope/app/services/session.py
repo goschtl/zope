@@ -26,6 +26,7 @@ from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.server.http.http_date import build_http_date
 from zope.component import getService
+from zope.interface import implements
 
 # Sibling imports
 from zope.app.interfaces.services.session import ISessionService
@@ -43,8 +44,7 @@ def digestEncode(s):
 class CookieSessionService(Persistent):
     """Session service implemented using cookies."""
 
-    __implements__ = (Persistent.__implements__, ISessionService,
-                      IConfigureSessionService, ISimpleService)
+    implements(ISessionService, IConfigureSessionService, ISimpleService)
 
     def __init__(self):
         self.dataManagers = PersistentDict()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.7 2003/03/13 17:10:37 gvanrossum Exp $
+$Id: field.py,v 1.8 2003/06/07 05:31:58 stevea Exp $
 """
 __metaclass__ = type
 
@@ -25,10 +25,11 @@ from zope.app.interfaces.services.field import IComponentPath
 from zope.app.interfaces.services.field import IComponentLocation
 from zope.component import getServiceManager, getAdapter
 from zope.app.interfaces.services.module import IModuleService
+from zope.interface import implements
 
 class ComponentPath(Field):
 
-    __implements__ = IComponentPath
+    implements(IComponentPath)
 
     _type = unicode
 
@@ -52,7 +53,7 @@ class ComponentPath(Field):
 
 class ComponentLocation(Field):
 
-    __implements__ = IComponentLocation
+    implements(IComponentLocation)
 
     _type = unicode
 

@@ -13,13 +13,13 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.17 2003/06/03 22:46:22 jim Exp $
+$Id: test_adapter.py,v 1.18 2003/06/07 05:32:01 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.iconfigurable import TestingIConfigurable
 from zope.app.services.adapter import AdapterService
-from zope.interface import Interface, directlyProvides
+from zope.interface import Interface, directlyProvides, implements
 from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -109,7 +109,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
     def test_queryAdapter_no_adapter(self):
         service = self._service
         class O:
-            __implements__ = I1
+            implements(I1)
 
         o = O()
         self.assertEqual(service.queryAdapter(o, I2), None)
@@ -121,7 +121,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
     def test_getAdapter_no_adapter(self):
         service = self._service
         class O:
-            __implements__ = I1
+            implements(I1)
 
         o = O()
         self.assertRaises(ComponentLookupError, service.getAdapter, O(), I2)
@@ -138,7 +138,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         configuration = traverse(configure, '1')
 
         class O:
-            __implements__ = I1
+            implements(I1)
 
         configuration.factory = A
 
@@ -177,7 +177,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         configuration = traverse(configure, '1')
 
         class O:
-            __implements__ = I1
+            implements(I1)
 
         configuration.factory = A
 
@@ -226,7 +226,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         configuration = traverse(configure, '1')
 
         class O:
-            __implements__ = I1
+            implements(I1)
 
         configuration.factory = A
 
@@ -248,7 +248,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         service = self._service
 
         class O:
-            __implements__ = I1
+            implements(I1)
 
         o = O()
 
@@ -270,7 +270,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
 class PhonyServiceManager:
 
-    __implements__ = IServiceService
+    implements(IServiceService)
 
     def resolve(self, name):
         if name == 'Foo.Bar.A':
@@ -278,7 +278,6 @@ class PhonyServiceManager:
 
     def getService(self, name):
         return serviceManager.getService(name)
-        
 
 
 class TestAdapterConfiguration(PlacefulSetup, TestCase):

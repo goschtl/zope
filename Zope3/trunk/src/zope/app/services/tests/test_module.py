@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.8 2003/06/03 22:46:22 jim Exp $
+$Id: test_module.py,v 1.9 2003/06/07 05:32:01 stevea Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.app.services.module import Manager
@@ -32,7 +32,7 @@ class ITestService(Interface):
 
 class TestService:
 
-    __implements__ = ITestService
+    implements(ITestService)
 
 class ServiceManagerTests(PlacefulSetup, TestCase):
 

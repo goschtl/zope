@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.21 2003/06/01 15:59:36 jim Exp $
+$Id: view.py,v 1.22 2003/06/07 05:31:59 stevea Exp $
 """
 __metaclass__ = type
 
@@ -32,6 +32,7 @@ from zope.context import ContextMethod
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.component.nextservice import getNextService
 from zope.component import getSkin
+from zope.interface import implements
 
 from zope.security.checker import NamesChecker, ProxyFactory
 
@@ -47,7 +48,7 @@ from zope.app.interfaces.services.service import ISimpleService
 
 class ViewService(Persistent):
 
-    __implements__ = IViewService, IConfigurable, ISimpleService
+    implements(IViewService, IConfigurable, ISimpleService)
 
     def __init__(self):
         self._layers = PersistentDict()
@@ -216,7 +217,7 @@ class ViewService(Persistent):
 
 class ViewConfiguration(SimpleConfiguration):
 
-    __implements__ = IViewConfiguration, SimpleConfiguration.__implements__
+    implements(IViewConfiguration)
 
     status = ConfigurationStatusProperty('Views')
 
@@ -249,7 +250,7 @@ class ViewConfiguration(SimpleConfiguration):
 
 class PageConfiguration(ViewConfiguration):
 
-    __implements__ = IPageConfiguration, ViewConfiguration.__implements__
+    implements(IPageConfiguration)
 
     # We only care about browser pages
     presentationType = IBrowserPresentation

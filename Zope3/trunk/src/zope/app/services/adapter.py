@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.16 2003/06/01 15:59:36 jim Exp $
+$Id: adapter.py,v 1.17 2003/06/07 05:31:58 stevea Exp $
 """
 __metaclass__ = type
 
@@ -21,6 +21,7 @@ import sys
 from zope.interface.adapter import AdapterRegistry
 from persistence import Persistent
 from persistence.dict import PersistentDict
+from zope.interface import implements
 from zope.component.interfaces import IAdapterService
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getServiceManager
@@ -44,7 +45,7 @@ class PersistentAdapterRegistry(Persistent, AdapterRegistry):
 
 class AdapterService(Persistent):
 
-    __implements__ = IAdapterService, IConfigurable, ISimpleService
+    implements(IAdapterService, IConfigurable, ISimpleService)
 
     def __init__(self):
         self._byName = PersistentDict()
@@ -188,7 +189,7 @@ class AdapterService(Persistent):
 
 class AdapterConfiguration(SimpleConfiguration):
 
-    __implements__ = IAdapterConfiguration, SimpleConfiguration.__implements__
+    implements(IAdapterConfiguration)
 
     status = ConfigurationStatusProperty(Adapters)
 

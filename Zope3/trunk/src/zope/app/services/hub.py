@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.12 2003/05/28 15:46:11 jim Exp $
+$Id: hub.py,v 1.13 2003/06/07 05:31:58 stevea Exp $
 """
 
 from __future__ import generators
@@ -45,6 +45,7 @@ from zope.app.interfaces.services.hub import IObjectMovedHubEvent
 from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 class HubEvent:
     """Convenient mix-in for HubEvents"""
@@ -83,7 +84,7 @@ class HubEvent:
 class ObjectRegisteredHubEvent(HubEvent):
     """A hubid has been freshly created and mapped against an object."""
 
-    __implements__ = IObjectRegisteredHubEvent
+    implements(IObjectRegisteredHubEvent)
 
 
 class ObjectUnregisteredHubEvent:
@@ -103,7 +104,7 @@ class ObjectUnregisteredHubEvent:
         self.__object = object
         self.location = location
 
-    __implements__ = IObjectUnregisteredHubEvent
+    implements(IObjectUnregisteredHubEvent)
 
     def __getObject(self):
         obj = self.__object
@@ -118,7 +119,7 @@ class ObjectUnregisteredHubEvent:
 class ObjectModifiedHubEvent(HubEvent):
     """An object with a hubid has been modified."""
 
-    __implements__ = IObjectModifiedHubEvent
+    implements(IObjectModifiedHubEvent)
 
 
 class ObjectMovedHubEvent(HubEvent):
@@ -129,13 +130,13 @@ class ObjectMovedHubEvent(HubEvent):
         self.fromLocation = fromLocation
         HubEvent.__init__(self, hub, hubid, location, object)
 
-    __implements__ = IObjectMovedHubEvent
+    implements(IObjectMovedHubEvent)
 
 
 class ObjectRemovedHubEvent(ObjectUnregisteredHubEvent):
     """An object with a hubid has been removed."""
 
-    __implements__ = IObjectRemovedHubEvent
+    implements(IObjectRemovedHubEvent)
     # ...which is a subclass of IObjectUnregisteredHubEvent
 
     hub = None
@@ -171,10 +172,7 @@ class ObjectHub(ServiceSubscriberEventChannel):
     # concerned, and if it doesn't know how to do something, it won't
     # ask anything else to try.  Everything else is YAGNI for now.
 
-    __implements__ = (
-        IObjectHub,
-        ISimpleService,
-        ServiceSubscriberEventChannel.__implements__)
+    implements(IObjectHub, ISimpleService)
 
     def __init__(self):
         ServiceSubscriberEventChannel.__init__(self)

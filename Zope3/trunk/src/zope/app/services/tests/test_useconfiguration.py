@@ -12,22 +12,24 @@
 #
 ##############################################################################
 """
-$Id: test_useconfiguration.py,v 1.2 2003/03/03 23:16:14 gvanrossum Exp $
+$Id: test_useconfiguration.py,v 1.3 2003/06/07 05:32:01 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.configuration import UseConfiguration
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.interface import implements
 
 class C(dict):
-    __implements__ = IAnnotations
+    implements(IAnnotations)
 
 class TestUseConfiguration(PlacelessSetup, TestCase):
 
     def testVerifyInterface(self):
         from zope.interface.verify import verifyObject
-        from zope.app.interfaces.services.configuration import IUseConfiguration
+        from zope.app.interfaces.services.configuration import \
+            IUseConfiguration
         obj = UseConfiguration(C())
         verifyObject(IUseConfiguration, obj)
 

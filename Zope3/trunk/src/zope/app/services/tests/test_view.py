@@ -13,13 +13,13 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.15 2003/06/03 21:43:00 jim Exp $
+$Id: test_view.py,v 1.16 2003/06/07 05:32:01 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.iconfigurable import TestingIConfigurable
 from zope.app.services.view import ViewService
-from zope.interface import Interface, directlyProvides
+from zope.interface import Interface, directlyProvides, implements
 from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -69,7 +69,7 @@ class C: pass
 
 class PhonyTemplate:
 
-    __implements__ = IZPTTemplate
+    implements(IZPTTemplate)
 
 class A:
     def __init__(self, object, request):
@@ -103,7 +103,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
     def test_queryView_no_view(self):
         service = self._service
         class O:
-            __implements__ = I1
+            implements(I1)
 
         o = O()
         request = TestRequest()
@@ -113,7 +113,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
     def test_getView_no_view(self):
         service = self._service
         class O:
-            __implements__ = I1
+            implements(I1)
 
         o = O()
         request = TestRequest()
@@ -131,7 +131,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
         configuration = traverse(configure, '1')
 
         class O:
-            __implements__ = I1
+            implements(I1)
 
         configuration.factory = A
 
@@ -162,7 +162,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
         configuration = traverse(configure, '1')
 
         class O:
-            __implements__ = I1
+            implements(I1)
 
         o = O()
         request = TestRequest()
@@ -186,7 +186,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
 class PhonyServiceManager(ServiceManager):
 
-    __implements__ = IServiceService
+    implements(IServiceService)
 
     def resolve(self, name):
         if name == 'Foo.Bar.A':

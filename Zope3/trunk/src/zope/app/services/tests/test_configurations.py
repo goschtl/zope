@@ -13,12 +13,12 @@
 ##############################################################################
 """Unit tests for configuration classes
 
-$Id: test_configurations.py,v 1.7 2003/06/03 21:43:00 jim Exp $
+$Id: test_configurations.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.app.interfaces.services.configuration \
         import Active, Registered, Unregistered
 from zope.app.interfaces.dependable import DependencyError
@@ -36,7 +36,7 @@ class ITestComponent(Interface):
 
 class ComponentStub:
 
-    __implements__ = IDependable
+    implements(IDependable)
 
     _dependents = ()
 
@@ -54,7 +54,6 @@ class ComponentStub:
 
     def dependents(self):
         return self._dependents
-
 
 
 class TestSimpleConfiguration(TestCase):

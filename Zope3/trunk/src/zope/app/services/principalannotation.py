@@ -26,6 +26,7 @@ from zope.app.component.nextservice import queryNextService
 from zope.context import ContextMethod
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.annotation import IAnnotations
+from zope.interface import implements
 
 # Sibling imports
 from zope.app.interfaces.services.principalannotation \
@@ -38,8 +39,7 @@ class PrincipalAnnotationService(Persistent):
     The service ID is 'PrincipalAnnotation'.
     """
 
-    __implements__ = (IPrincipalAnnotationService, Persistent.__implements__,
-                      ISimpleService)
+    implements(IPrincipalAnnotationService, ISimpleService)
 
     def __init__(self):
         self.annotations = OOBTree()
@@ -54,7 +54,6 @@ class PrincipalAnnotationService(Persistent):
         """
 
         return self.getAnnotationsById(principal.getId())
-            
     getAnnotations = ContextMethod(getAnnotations)
 
     def getAnnotationsById(self, principalId):
@@ -68,7 +67,7 @@ class PrincipalAnnotationService(Persistent):
             annotations = Annotations(principalId, store=self.annotations)
 
         return ContextWrapper(annotations, self, name=principalId)
-            
+
     getAnnotationsById = ContextMethod(getAnnotationsById)
 
     def hasAnnotations(self, principal):
@@ -79,7 +78,7 @@ class PrincipalAnnotationService(Persistent):
 class Annotations(Persistent):
     """Stores annotations."""
 
-    __implements__ = IAnnotations, Persistent.__implements__
+    implements(IAnnotations)
 
     def __init__(self, principalId, store=None):
         self.principalId = principalId

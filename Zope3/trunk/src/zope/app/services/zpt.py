@@ -12,13 +12,14 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.12 2003/05/29 20:50:42 gvanrossum Exp $
+$Id: zpt.py,v 1.13 2003/06/07 05:31:59 stevea Exp $
 """
 
 import re
 
 from persistence import Persistent
 
+from zope.interface import implements
 from zope.security.proxy import ProxyFactory
 from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.app.pagetemplate.engine import AppPT
@@ -30,7 +31,7 @@ from zope.app.interfaces.fssync import IObjectFile
 
 class ZPTTemplate(AppPT, PageTemplate, Persistent):
 
-    __implements__ = IZPTTemplate
+    implements(IZPTTemplate)
 
     contentType = 'text/html'
     expand = False
@@ -73,7 +74,7 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent):
 tag = re.compile(r"<[^>]+>")
 class SearchableText:
 
-    __implements__ = ISearchableText
+    implements(ISearchableText)
     __used_for__ = IZPTTemplate
 
     def __init__(self, page):
@@ -97,7 +98,7 @@ class SearchableText:
 
 class ReadFile:
 
-    __implements__ = IReadFile
+    implements(IReadFile)
 
     def __init__(self, context):
         self.context = context
@@ -107,11 +108,11 @@ class ReadFile:
 
     def size(self):
         return len(self.context.source)
-        
+
 
 class WriteFile:
 
-    __implements__ = IWriteFile
+    implements(IWriteFile)
 
     def __init__(self, context):
         self.context = context
@@ -122,7 +123,7 @@ class WriteFile:
 
 class ZPTFactory:
 
-    __implements__ = IFileFactory
+    implements(IFileFactory)
 
     def __init__(self, context):
         self.context = context
@@ -136,7 +137,7 @@ class ZPTFactory:
 class ZPTPageAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for ZPTTemplate objects."""
 
-    __implements__ =  IObjectFile
+    implements(IObjectFile)
 
     def getBody(self):
         return self.context.source

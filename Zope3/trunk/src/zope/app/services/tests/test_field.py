@@ -13,20 +13,20 @@
 ##############################################################################
 """Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.7 2003/05/23 17:51:36 jim Exp $
+$Id: test_field.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.schema.interfaces import ValidationError
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.app.interfaces.services.module import IModuleService
 from zope.component.interfaces import IServiceService
 
 class ModuleService:
-    __implements__ = IModuleService, IServiceService
+    implements(IModuleService, IServiceService)
     # I'm lying about implementing IServiceService, but that is needed to get
     # a ModuleService as a service manager.  (See XXX comment in module.py.)
     def __init__(self, name=None, component=None):
@@ -45,7 +45,7 @@ class ModuleService:
 class I1(Interface):  pass
 
 class C:
-    __implements__ = I1
+    implements(I1)
 
 class D:
     pass

@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: errorr.py,v 1.9 2003/05/27 14:18:24 jim Exp $
+$Id: errorr.py,v 1.10 2003/06/07 05:31:58 stevea Exp $
 """
 
 import time
@@ -27,6 +27,7 @@ from zope.exceptions.exceptionformatter import format_exception
 from zope.context import ContextMethod
 from zope.app.interfaces.services.error import IErrorReportingService
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 
 #Restrict the rate at which errors are sent to the Event Log
@@ -49,7 +50,7 @@ cleanup_lock = allocate_lock()
 class ErrorReportingService(Persistent):
     """Error Reporting Service
     """
-    __implements__ = IErrorReportingService, ISimpleService
+    implements(IErrorReportingService, ISimpleService)
 
     keep_entries = 20
     copy_to_zlog = 0

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.30 2003/06/03 14:26:57 stevea Exp $
+$Id: configuration.py,v 1.31 2003/06/07 05:31:58 stevea Exp $
 """
 __metaclass__ = type
 
@@ -274,7 +274,7 @@ class SimpleConfiguration(Persistent):
 
     Classes that derive from this must make sure they implement
     IDeleteNotifiable either by implementing
-    SimpleConfiguration.__implements__ or explicitly implementing
+    implementedBy(SimpleConfiguration) or explicitly implementing
     IDeleteNotifiable.
     """
 

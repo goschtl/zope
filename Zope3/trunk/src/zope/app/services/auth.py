@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.18 2003/06/04 16:02:09 stevea Exp $
+$Id: auth.py,v 1.19 2003/06/07 05:31:58 stevea Exp $
 """
 
 from persistence import Persistent
@@ -35,6 +35,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.component.nextservice import getNextService
 from zope.context import ContextMethod
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 
 class DuplicateLogin(Exception):
@@ -46,7 +47,7 @@ class DuplicateId(Exception):
 
 class AuthenticationService(Persistent):
 
-    __implements__ = IAuthenticationService, IContainer, ISimpleService
+    implements(IAuthenticationService, IContainer, ISimpleService)
 
     def __init__(self):
         self._usersbylogin = OOBTree()
@@ -160,11 +161,10 @@ class AuthenticationService(Persistent):
         return key in self._usersbyid
 
 
-
 class User(Persistent):
     """A persistent implementation of the IUser interface """
 
-    __implements__ =  IAnnotatableUser
+    implements(IAnnotatableUser)
 
     def __init__(self, id, title, description, login, pw):
         self.__id = id

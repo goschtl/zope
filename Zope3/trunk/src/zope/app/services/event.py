@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.26 2003/05/28 15:46:11 jim Exp $
+$Id: event.py,v 1.27 2003/06/07 05:31:58 stevea Exp $
 """
 
 from __future__ import generators
@@ -33,6 +33,7 @@ from zope.app.component.nextservice import getNextService, queryNextService
 
 from zope.context import ContextMethod, ContextSuper
 from zope.proxy import removeAllProxies
+from zope.interface import implements
 
 from zope.app.event.subs import Subscribable, SubscriptionTracker
 
@@ -77,7 +78,7 @@ def iterSubscriptions(subscriber=None, event_type=None, local_only=False,
 
 class EventChannel(Subscribable):
 
-    __implements__ = IEventChannel
+    implements(IEventChannel)
 
     # needs __init__ from zope.app.event.subs.Subscribable
 
@@ -139,11 +140,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
     event service when bound, and unsubscribe when unbound.
     """
 
-    __implements__ = (
-        EventChannel.__implements__,
-        SubscriptionTracker.__implements__,
-        IBindingAware
-        )
+    implements(IBindingAware)
 
     def __init__(self):
         SubscriptionTracker.__init__(self)
@@ -241,8 +238,6 @@ class ServiceSubscribable(Subscribable):
       those of the next higher service.
     """
 
-    __implements__ = Subscribable.__implements__
-
     _serviceName = None # should be replaced; usually done in "bound"
                         # method of a subclass that is IBindingAware
 
@@ -318,13 +313,7 @@ from zope.app.interfaces.services.service import ISimpleService
 
 class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
 
-    __implements__ = (
-        IEventService,
-        ISubscriptionService,
-        ISimpleService,
-        ServiceSubscribable.__implements__,
-        ServiceSubscriberEventChannel.__implements__
-        )
+    implements(IEventService, ISubscriptionService, ISimpleService)
 
     def __init__(self):
         ServiceSubscriberEventChannel.__init__(self)

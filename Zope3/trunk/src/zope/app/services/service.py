@@ -23,13 +23,15 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.22 2003/06/02 14:34:40 gvanrossum Exp $
+$Id: service.py,v 1.23 2003/06/07 05:31:58 stevea Exp $
 """
 
 import sys
 
 from zodb.code.module import PersistentModule
 from zodb.code.module import PersistentModuleRegistry
+
+from zope.interface import implements
 
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
@@ -60,10 +62,7 @@ from zope.app.traversing import getPath
 
 class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
-    __implements__ = (IServiceManager, IContainer,
-                      PersistentModuleRegistry.__implements__,
-                      NameComponentConfigurable.__implements__,
-                      IModuleService)
+    implements(IServiceManager, IContainer, IModuleService)
 
     def __init__(self):
         super(ServiceManager, self).__init__()
@@ -299,8 +298,7 @@ class ServiceConfiguration(NamedComponentConfiguration):
 
     __doc__ = IServiceConfiguration.__doc__
 
-    __implements__ = (IServiceConfiguration,
-                      NamedComponentConfiguration.__implements__)
+    implements(IServiceConfiguration)
 
     status = ConfigurationStatusProperty('Services')
 

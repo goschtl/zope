@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatusproperty.py,v 1.7 2003/06/03 21:43:00 jim Exp $
+$Id: test_configurationstatusproperty.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,6 +30,8 @@ from zope.app.interfaces.services.configuration \
 from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.configuration import NoLocalServiceError
+from zope.interface import implements
+
 
 class TestingConfiguration(TestingConfiguration):
     status = ConfigurationStatusProperty("Services")
@@ -46,7 +48,7 @@ class TestingConfigurationRegistry(TestingConfigurationRegistry):
 
 class TestingServiceManager:
 
-    __implements__ = IServiceService # I lied
+    implements(IServiceService) # I lied
 
     registry = None
 
@@ -170,7 +172,7 @@ class Test(PlacefulSetup, TestCase):
             self.assertEqual(configa.status, Unregistered)
         else:
             self.fail("should complain about missing service")
-        
+
 
 def test_suite():
     return TestSuite((
