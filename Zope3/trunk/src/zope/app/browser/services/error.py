@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define view component for event service control.
 
-$Id: error.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: error.py,v 1.3 2003/03/10 20:30:12 jim Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -30,4 +30,4 @@ class EditErrorLog(BrowserView):
         if copy_to_zlog is None:
             copy_to_zlog = 0
         errorLog.setProperties(keep_entries, copy_to_zlog, ignored_exceptions)
-        return self.request.response.redirect('main.html')
+        return self.request.response.redirect('index.html')
