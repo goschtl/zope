@@ -20,7 +20,7 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.8 2003/08/12 04:39:22 fdrake Exp $
+$Id: metadata.py,v 1.9 2003/08/15 22:23:15 fdrake Exp $
 """
 
 import os
@@ -28,7 +28,7 @@ import copy
 
 from cStringIO import StringIO
 from os.path import exists, isdir, isfile, split, join, realpath, normcase
-from xml.sax import ContentHandler, parseString
+from xml.sax import ContentHandler, parse, parseString
 from xml.sax.saxutils import quoteattr
 
 case_insensitive = (normcase("ABC") == normcase("abc"))
@@ -85,12 +85,7 @@ class DirectoryManager:
         self.zdir = join(dir, "@@Zope")
         self.efile = join(self.zdir, "Entries.xml")
         if isfile(self.efile):
-            f = open(self.efile)
-            try:
-                data = f.read()
-            finally:
-                f.close()
-            self.entries = load_entries(data)
+            self.entries = load_entries_path(self.efile)
         else:
             self.entries = {}
         self.originals = copy.deepcopy(self.entries)
@@ -175,6 +170,29 @@ def load_entries(text):
         return loads(text)
     else:
         return ch.entries
+
+
+def load_entries_path(path):
+    f = open(path, 'rb')
+    ch = EntriesHandler()
+    try:
+        try:
+            parse(f, ch)
+        except FoundXMLPickle:
+            pass
+        else:
+            return ch.entries
+    finally:
+        f.close()
+
+    # found an XML pickle; load that instead
+    from zope.xmlpickle import loads
+    f = open(path, 'rb')
+    try:
+        return loads(f.read())
+    finally:
+        f.close()
+
 
 
 class EntriesHandler(ContentHandler):

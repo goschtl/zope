@@ -21,7 +21,7 @@ Command line syntax summary:
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: bundle.py,v 1.1 2003/08/12 22:08:34 fdrake Exp $
+$Id: bundle.py,v 1.2 2003/08/15 22:23:15 fdrake Exp $
 """
 
 import os
@@ -60,10 +60,15 @@ def create(opts, args):
             if type:
                 raise Usage("-t/--type can only be given once")
             type = arg
-    if len(args) != 1:
+    source = None
+    if len(args) == 1:
+        path = args[0]
+    elif len(args) == 2:
+        path, source = args
+    else:
         raise Usage("create requires exactly one path")
     fs = FSBundle()
-    fs.create(args[0], type, factory)
+    fs.create(path, type, factory, source)
 
 
 command_table = [
