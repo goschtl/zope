@@ -212,6 +212,11 @@ def _wrap_strftime(object, format, timetuple):
     newformat = "".join(newformat)
     return _time.strftime(newformat, timetuple)
 
+def _call_tzinfo_method(self, tzinfo, methname):
+    if tzinfo is None:
+        return None
+    return getattr(tzinfo, methname)(self)
+
 def _check_utc_offset(name, offset):
     if offset is None:
         return
@@ -1066,14 +1071,9 @@ class timetz(time):
     def utcoffset(self):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
-        tz = self.__tzinfo
-        if tz is None:
-            return None
-        else:
-            offset = tz.utcoffset(self)
-            _check_utc_offset("utcoffset", offset)
-            return offset
-
+        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        _check_utc_offset("utcoffset", offset)
+        return offset
 
     def tzname(self):
         """Return the timezone name.
@@ -1082,11 +1082,8 @@ class timetz(time):
         it mean anything in particular. For example, "GMT", "UTC", "-500",
         "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
         """
-        tz = self.__tzinfo
-        if tz is None:
-            return None
-        else:
-            return tz.tzname(self)
+        name = _call_tzinfo_method(self, self.__tzinfo, "tzname")
+        return name
 
     def dst(self):
         """Return 0 if DST is not in effect, or the DST offset (in minutes
@@ -1097,13 +1094,9 @@ class timetz(time):
         need to consult dst() unless you're interested in displaying the DST
         info.
         """
-        tz = self.__tzinfo
-        if tz is None:
-            return None
-        else:
-            offset = tz.dst(self)
-            _check_utc_offset("dst", offset)
-            return offset
+        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        _check_utc_offset("dst", offset)
+        return offset
 
     def __nonzero__(self):
         if self.second or self.microsecond:
@@ -1481,29 +1474,32 @@ class datetimetz(datetime):
     def utcoffset(self):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
-        tz = self.__tzinfo
-        if tz is None:
-            return None
-        else:
-            offset = tz.utcoffset(self)
-            _check_utc_offset("utcoffset", offset)
-            return offset
+        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        _check_utc_offset("utcoffset", offset)
+        return offset
 
     def tzname(self):
-        tz = self.__tzinfo
-        if tz is None:
-            return None
-        else:
-            return tz.tzname(self)
+        """Return the timezone name.
+
+        Note that the name is 100% informational -- there's no requirement that
+        it mean anything in particular. For example, "GMT", "UTC", "-500",
+        "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
+        """
+        name = _call_tzinfo_method(self, self.__tzinfo, "tzname")
+        return name
 
     def dst(self):
-        tz = self.__tzinfo
-        if tz is None:
-            return None
-        else:
-            offset = tz.dst(self)
-            _check_utc_offset("dst", offset)
-            return offset
+        """Return 0 if DST is not in effect, or the DST offset (in minutes
+        eastward) if DST is in effect.
+
+        This is purely informational; the DST offset has already been added to
+        the UTC offset returned by utcoffset() if applicable, so there's no
+        need to consult dst() unless you're interested in displaying the DST
+        info.
+        """
+        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        _check_utc_offset("dst", offset)
+        return offset
 
     def __add__(self, other):
         result = super(datetimetz, self).__add__(other)
@@ -1523,11 +1519,8 @@ class datetimetz(datetime):
             ottz = other.__tzinfo
         if mytz is ottz:
             return supersub(other)
-        myoff = otoff = None
-        if mytz is not None:
-            myoff = self.__tzinfo.utcoffset(self)
-        if ottz is not None:
-            otoff = other.__tzinfo.utcoffset(other)
+        myoff = self.utcoffset()
+        otoff = other.utcoffset()
         if myoff == otoff:
             return supersub(other)
         if myoff is None or otoff is None:
