@@ -13,12 +13,13 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.5 2004/03/14 01:11:39 srichter Exp $
+$Id: vocabulary.py,v 1.6 2004/03/17 21:56:39 srichter Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
+from zope.schema.vocabulary import getVocabularyRegistry
 from zope.component.interfaces import IFactory
 
 from zope.app import zapi
@@ -69,8 +70,8 @@ class SourceTypeEditWidget(DropdownListWidget):
 
     def __init__(self, field, request):
         self.request = request
-        vocabs = zapi.getService(field, "Vocabularies")
-        self.vocabulary = vocabs.get(field, "SourceTypes")
+        registry = getVocabularyRegistry()
+        self.vocabulary = registry.get(field, "SourceTypes")
         self.setField(field)
 
     def textForValue(self, term):
