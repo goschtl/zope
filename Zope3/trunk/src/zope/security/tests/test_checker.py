@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.4 2003/03/07 18:39:44 jim Exp $
+$Id: test_checker.py,v 1.5 2003/03/07 21:13:04 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,7 @@ from zope.security.interfaces import ISecurityPolicy
 from zope.exceptions import Forbidden, Unauthorized
 from zope.security.management import setSecurityPolicy
 from zope.security.proxy import getChecker, getObject
-from zope.security.checker import defineChecker
+from zope.security.checker import defineChecker, ProxyFactory
 import types, pickle
 
 class SecurityPolicy:
@@ -291,10 +291,13 @@ class Test(TestCase, CleanUp):
 
 class TestCheckerPublic(TestCase):
 
-    def test_that_pickling_retains_identity(self):
+    def test_that_pickling_CheckerPublic_retains_identity(self):
         self.assert_(pickle.loads(pickle.dumps(CheckerPublic))
                      is
-                     CheckerPublic)                                  
+                     CheckerPublic)
+
+    def test_that_CheckerPublic_identity_works_even_when_proxied(self):
+        self.assert_(ProxyFactory(CheckerPublic) is CheckerPublic)
 
 def test_suite():
     return TestSuite((

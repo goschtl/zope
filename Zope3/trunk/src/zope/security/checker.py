@@ -15,21 +15,6 @@ else:
     WATCH_CHECKERS = 0
 
 
-# Marker for public attributes
-
-class Global(object):
-
-    def __init__(self, name, module=None):
-        if module is None:
-            module = sys._getframe(1).f_locals['__name__']
-            
-        self.__name__ = name
-        self.__module__ = module
-
-    def __reduce__(self):
-        return self.__name__
-
-CheckerPublic = Global('CheckerPublic')
 
 def ProxyFactory(object, checker=None):
     """Factory function that creates a proxy for an object
@@ -176,6 +161,36 @@ class Checker:
                 return value
 
         return Proxy(value, checker)
+
+# Marker for public attributes
+
+# We want this to behave as a global, meaning it's pickled
+# by name, rather than value. We need to arrange that it has a suitable
+# __reduce__. 
+class Global(object):
+
+    def __init__(self, name, module=None):
+        if module is None:
+            module = sys._getframe(1).f_locals['__name__']
+            
+        self.__name__ = name
+        self.__module__ = module
+
+    def __reduce__(self):
+        return self.__name__
+
+CheckerPublic = Global('CheckerPublic')
+
+# Now we wrap it in a security proxy so that it retains it's
+# identity when it needs to be security proxied.  
+d={}
+CheckerPublic = Proxy(CheckerPublic, Checker(d))
+d['__reduce__'] = CheckerPublic
+del d
+
+# XXX It's a bit scary above that we can pickle a proxy if access is
+# granted to __reduce__. We might want to bother to prevent this in
+# general and only allow it in this specific case.
 
 def NamesChecker(names=(), permission_id=CheckerPublic, **__kw__):
     """Return a checker that grants access to a set of names.
