@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    i18n_domain='zope'
+    >
+
+<!-- Sample vocabulary support -->
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabulary"
+    name="field-display-widget"
+    factory=".complexsample.SampleDisplay"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabulary"
+    name="field-display-list-widget"
+    factory=".complexsample.SampleListDisplay"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabulary"
+    name="field-display-unique-list-widget"
+    factory=".complexsample.SampleListDisplay"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabulary"
+    name="field-edit-widget"
+    factory=".complexsample.SampleEdit"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabulary"
+    name="field-edit-list-widget"
+    factory=".complexsample.SampleListEdit"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabulary"
+    name="field-edit-unique-list-widget"
+    factory=".complexsample.SampleUniqueListEdit"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabularyQuery"
+    name="widget-query-helper"
+    factory=".complexsample.SampleQueryView"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabularyQuery"
+    name="widget-query-list-helper"
+    factory=".complexsample.SampleListQueryView"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.ISampleVocabularyQuery"
+    name="widget-query-unique-list-helper"
+    factory=".complexsample.SampleUniqueListQueryView"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.IFancySampleVocabularyQuery"
+    name="widget-query-helper"
+    factory=".complexsample.FancySampleQueryView"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.IFancySampleVocabularyQuery"
+    name="widget-query-list-helper"
+    factory=".complexsample.FancySampleListQueryView"
+    />
+
+<view
+    type="zope.publisher.interfaces.browser.IBrowserRequest"
+    for=".interfaces.IFancySampleVocabularyQuery"
+    name="widget-query-unique-list-helper"
+    factory=".complexsample.FancySampleUniqueListQueryView"
+    />
+
+</configure>

@@ -1,0 +1,177 @@
+<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="en"
+    lang="en"
+    i18n:domain="zope">
+
+  <head>
+    <title metal:define-slot="title" i18n:translate="">Z3 UI Onlinehelp</title>
+
+
+    <style type="text/css"
+           media="all"
+           tal:content=
+               "string: @import url(${context/++resource++onlinehelp.css});"
+           >
+      @import url(onlinehelp.css);
+    </style>
+
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=utf-8" />
+
+    <metal:block define-slot="headers" />
+    <metal:block define-slot="style_slot" />
+    <metal:block define-slot="ecmascript_slot" />
+    
+    <link rel="icon" type="image/png"
+          tal:attributes="href context/++resource++favicon.png" />
+  </head>
+
+  <body tal:define="rooturl request/getApplicationURL;
+                    thisbaseurl request/URL/-1;">
+          
+    <div id="global">
+      <img tal:attributes="src context/++resource++zope3onlinehelplogo.gif" />
+    </div>
+
+    <div id="navigators">
+
+      <!-- Tree of the help topics that appears on the help namespace -->
+      <div class="box" id="help"
+           tal:condition="not:python:request.getURL().find('++help++')==-1">
+        <h4 i18n:translate="">Online Help - TOC</h4>              
+        <div class="body">
+          <div tal:content="structure view/getTopicTree|nothing"
+               tal:omit-tag="">content of topicTree
+          </div>
+        </div>
+      </div>
+
+      <!-- Error message if you are not in the ++help++ namespace -->
+      <div class="box" id="help"
+           tal:condition="python:request.getURL().find('++help++')==-1">
+        <h4 i18n:translate="">Online Help - TOC</h4>              
+        <div class="body content"  i18n:translate="">
+          You are not in the ++help++ namespace.<br>
+          Add /++help++/ after your host address in the URL.<br>
+          And use the own help skin like:<br>
+          ../++help++/++skin++Onlinehelp/
+        </div>
+      </div>
+
+      <!-- Tools for a nicer navigation -->
+      <div class="box" id="help"
+           tal:condition="not:python:request.getURL().find('++help++')==-1">
+        <h4>Toolbox</h4>
+        <div class="body content">
+          <a href="javascript:close()" 
+             i18n:translate="">Close this window</a>
+          <br />
+          <a href="javascript:blur()" 
+             i18n:translate="">Blur</a>
+          <br />
+          <a href="javascript:resizeTo(780,580)" 
+             i18n:translate="">view 800x600</a>
+          <br />
+          <a href="javascript:resizeTo(980,740)"
+              i18n:translate="">view 1024x768</a>
+          <br />
+          <a href="javascript:print()"
+              i18n:translate="">Print</a>
+          <br />
+        </div>
+      </div>
+
+      <!-- bugfix; we have a box at the end of the navigation
+           with the last letter's of the box above -->
+      <div id="help">
+          &nbsp;
+      </div>
+          
+    </div>
+
+
+    <div id="workspace">
+
+      <!-- breadcrumb in the headline of the content -->
+      <div id="breadcrumbsBar" 
+           metal:define-slot="tabs">
+        <span i18n:translate="">Location:</span>
+        <tal:block
+           repeat="breadcrumb context/@@absolute_url/breadcrumbs"
+          ><a href=""
+                 tal:condition="not:repeat/breadcrumb/start"
+                 tal:content="string:${breadcrumb/name}"
+                 tal:attributes="
+                 href string:${breadcrumb/url}/"
+                  >breadcrumb item</a>/</tal:block>
+      </div>
+
+      <div id="viewspace">
+
+        <div metal:define-slot="message" id="message">
+        </div>
+
+        <div id="content">
+          <metal:block define-slot="body">
+            <table class="listing">
+              <thead>
+                <th>Test</th>
+                <th>Another</th>
+              </thead>
+              <tbody>
+                      <tr>
+                        <td>content</td>
+                        <td>thingy</td>
+                      </tr>
+                      <tr class="even">
+                        <td>more</td>
+                        <td>data</td>
+                      </tr>
+              </tbody>
+            </table>
+          </metal:block>
+        </div>
+
+<!-- We don't have pagetip's in the Onlinehelp itself.
+     I clean up this code later if I implement the 
+     link for the context sensitive HelpTopics
+     in the Rotteram skin.
+     
+        <div id="context_information">
+          <div id="helpers">
+            <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
+              <h4 i18n:translate="">Tip</h4>
+              <div class="body">
+                <div class="content odd">
+                  <metal:block define-slot="pagetip"
+                               tal:replace="pagetip">
+                    A short tip goes here
+                  </metal:block>
+                </div>
+              </div>
+            </div>
+            <div class="spacer">
+              &nbsp;
+            </div>
+          </div>
+        </div>
+-->
+        <div class="spacer">
+          &nbsp;
+        </div>
+
+      </div>
+    </div>
+
+    <div id="footer" metal:define-macro="footer" />
+
+    <div id="logger" />
+
+  </body>
+
+</html>
+
+</metal:block>
+

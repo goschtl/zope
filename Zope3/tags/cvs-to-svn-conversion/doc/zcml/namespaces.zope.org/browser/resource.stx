@@ -1,0 +1,54 @@
+resource
+
+  File zope/app/publisher/browser/meta.zcml, lines 76 - 80.
+
+  Handler: zope.app.publisher.browser.resourcemeta.resource
+
+  Defines a browser resource
+
+  Attributes
+
+    layer -- TextLine (optional, default=None)
+
+      The layer the resource should be found in
+
+      For information on layers, see the documentation for the skin directive.
+      Defaults to "default".
+
+    permission -- Permission (optional, default=None)
+
+      The permission needed to access the resource.
+
+      If a permission isn't specified, the resource will always be accessible.
+
+    name -- TextLine (required)
+
+      The name of the resource
+
+      This is the name used in resource urls. Resource urls are of the form
+      site/@@/resourcename, where site is the url of "site", a folder with a
+      service manager.
+
+      We make resource urls site-relative (as opposed to content-relative) so
+      as not to defeat caches.
+
+    file -- Path (optional, default=None)
+
+      File
+
+      The file containing the resource data.
+
+    image -- Path (optional, default=None)
+
+      Image
+
+      If the image attribute is used, then an image resource, rather than a
+      file resource will be created.
+
+    template -- Path (optional, default=None)
+
+      Template
+
+      If the image attribute is used, then a page template resource, rather
+      than a file resource will be created.
+

@@ -1,0 +1,36 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:event="http://namespaces.zope.org/event"
+    xmlns:fssync="http://namespaces.zope.org/fssync"
+    >
+
+  <content class=".Manager">
+    <require
+        permission="zope.ManageCode"
+        interface=".interfaces.IModuleManager"
+        set_schema=".interfaces.IModuleManager"
+        />
+  </content>
+
+  <fssync:adapter
+      class=".Manager"
+      factory=".ModuleAdapter"
+      />
+
+  <adapter
+      for="zope.app.site.interfaces.ISiteManagementFolder"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      name=".py"
+      factory=".ModuleFactory"
+      permission="zope.ManageContent"
+      />
+
+  <!-- Enable import of persistent modules -->
+  <event:subscribe
+      subscriber=".installPersistentModuleImporter"
+      event_types="zope.app.event.interfaces.IProcessStartingEvent"
+      />
+
+  <include package=".browser" />
+
+</configure>

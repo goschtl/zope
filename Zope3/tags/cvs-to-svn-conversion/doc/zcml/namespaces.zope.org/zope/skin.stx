@@ -1,0 +1,22 @@
+skin
+
+  File zope/app/component/meta.zcml, lines 56 - 60.
+
+  Handler: zope.app.component.metaconfigure.skin
+
+  Register a skin
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Skin name
+
+      Skin name
+
+    layers -- Tokens (required)
+
+      The layers it consists of.
+
+      
+

@@ -1,0 +1,28 @@
+subscribe
+
+  File zope/app/event/meta.zcml, lines 8 - 12.
+
+  Handler: zope.app.event.metaconfigure.subscribe
+
+  Subscribe to events
+
+  Attributes
+
+    subscriber -- GlobalObject (required)
+
+      Subscriber
+
+      
+
+    event_types -- Tokens (optional, default=None)
+
+      Events to subscribe to
+
+      Defaults to IEvent
+
+    filter -- GlobalObject (optional, default=None)
+
+      Filter
+
+      
+

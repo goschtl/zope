@@ -1,0 +1,149 @@
+<html metal:use-macro="views/standard_macros/view">
+<head>
+  <title metal:fill-slot="title" i18n:translate="">Bundle Information</title>
+</head>
+<body>
+<div metal:fill-slot="body" tal:define="message view/update">
+
+  <h1 i18n:translate="">Bundle Information</h1>
+
+  <tal:block define="serviceList view/listServices">
+    <h4 i18n:translate="">Services needed by this bundle</h4>
+
+    <ul tal:condition="serviceList">
+      <li tal:repeat="svc serviceList">
+        <span i18n:translate="">
+          <i tal:content="svc/service" i18n:name="service_name">Foo</i> service
+        </span>:
+        <span tal:condition="svc/insite" i18n:translate="">
+          present in site at
+          <a tal:content="svc/path" tal:attributes="href svc/path"
+             i18n:name="path">/path</a>
+        </span>
+        <span tal:condition="not:svc/insite">
+          <span tal:condition="svc/inbundle" i18n:translate="">
+            registered in bundle at
+            <a tal:content="svc/inbundle"
+               tal:attributes="href svc/inbundle" i18n:name="path">path</a>
+          </span>
+          <span tal:condition="not:svc/inbundle">
+            <font size="+1" color="red">
+              <b i18n:translate="">UNFULFILLED DEPENDENCY</b>
+            </font>
+            <br />
+            <b i18n:translate="">
+              (You must <a href="../default/AddService">add a
+              <i tal:content="svc/service" i18n:name="service_name">Foo</i>
+              service to this site</a> before you can activate this bundle)
+            </b>
+          </span>
+        </span>
+      </li>
+    </ul>
+    <p tal:condition="not:serviceList" i18n:translate="">
+      No services are required by this bundle.
+    </p>
+
+    <h4 i18n:translate="">Registrations in this bundle</h4>
+
+    <div class="message" tal:condition="message">
+      <span tal:replace="message">view/update message here</span>
+      <br /><br />
+      <i>
+        <a href="@@bundle.html" i18n:translate="">(click to clear message)</a>
+      </i>
+    </div>
+
+    <form action="@@bundle.html" method="get"
+          tal:define="registrationList view/listRegistrations">
+
+      <tal:block tal:repeat="svc serviceList">
+
+        <p i18n:translate="">For 
+          <i tal:content="svc/service" i18n:name="service_name">Foo</i> service
+        </p>
+
+        <ul>
+          <tal:block tal:repeat="cnf registrationList">
+            <li tal:condition="python: cnf['service'] == svc['service']"
+                tal:define="activate python:cnf['advice'] == 'Active'">
+              <a tal:attributes="href cnf/path" i18n:translate="">
+                <i tal:content="cnf/usage" i18n:name="usage_summary">Usage</i>
+                implemented by
+                <i tal:content="cnf/implementation" i18n:name="impl_summary">
+                  Implementation summary</i>
+              </a>
+              <span tal:condition="cnf/conflict">
+                <br />
+                <font color="red" tal:condition="not:activate"
+                      i18n:translate="">
+                  Conflicts with
+                </font>
+                <font color="green" tal:condition="activate" i18n:translate="">
+                  Overrides
+                </font>
+                <a tal:content="cnf/conflict"
+                   tal:attributes="href cnf/conflict">path</a>
+              </span>
+              <br />
+              <span tal:condition="python: cnf['advice'] == 'Active'">
+                <input type="radio" tal:attributes="name cnf/path"
+                       value="Registered" />
+                <span i18n:translate="">Register only</span>
+                <b>
+                  <input type="radio" tal:attributes="name cnf/path"
+                         value="Active" checked="checked" />
+                  <span i18n:translate="">Register and activate</span>
+                </b>
+              </span>
+              <span tal:condition="python: cnf['advice'] == 'Registered'">
+                <b>
+                  <input type="radio" tal:attributes="name cnf/path"
+                         value="Registered" checked="checked" />
+                  <span i18n:translate="">Register only</span>
+                </b>
+                <input type="radio" tal:attributes="name cnf/path"
+                       value="Active" />
+                <span i18n:translate="">Register and activate</span>
+              </span>
+              <span i18n:translate="">
+                (is: <span tal:replace="cnf/status"
+                           i18n:name="active_status">Active</span>)
+              </span>
+            </li>
+          </tal:block>
+        </ul>
+
+      </tal:block>
+
+      <p tal:condition="not:registrationList" i18n:translate="">
+        No registrations are provided by this bundle.
+      </p>
+
+      <p i18n:translate="">
+        Click "Activate bundle" to perform the above actions.
+      </p>
+
+      <p><input type="submit" value="Activate bundle" 
+                i18n:attributes="value activate-bundle-button"/></p>
+
+      <p><input type="reset" value="Reset form" 
+                i18n:attributes="value reset-button"/></p>
+    </form>
+  </tal:block>
+
+  <form action="@@bundle.html" method="get">
+
+    <p i18n:translate="">Click "Deactivate bundle" to unregister all 
+      registrations in this bundle.</p>
+
+    <p><input type="submit" value="Deactivate bundle"
+              i18n:attributes="value deactivate-bundle-button"/></p>
+              
+    <input type="hidden" name="allclear" value="1" />
+
+  </form>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+# identify the component configuration used to define the site:
+site-definition site.zcml
+
+# number of bytecode instructions to execute between checks for
+# interruptions (SIGINTR, thread switches):
+interrupt-check-interval 200
+
+<server>
+  type HTTP
+  address 8080
+</server>
+
+# For debugging purposes, you can use this publisher instead/as well
+# (obviously if it's as well, use a different port number). If there's
+# an exception, Zope will drop into pdb at the point of the exception.
+#<server>
+#  type PostmortemDebuggingHTTP
+#  address 8080
+#</server>
+
+<server>
+  type FTP
+  address 8021
+</server>
+
+# Standard Filestorage
+<zodb>
+  <filestorage>
+    path Data.fs
+  </filestorage>
+</zodb>
+
+# Alternate Full BerkeleyDB storage which stores all its data in the
+# ./Full directory, performs old revision cleanup once per hour, and
+# does a full gc pack once every day.  All other values are defaulted.
+#<zodb>
+#  <fullstorage>
+#    name Full
+#    frequency 1h
+#    gcpack 24
+#  </fullstorage>
+#</zodb>
+
+<eventlog>
+  # This sets up logging to both a file (z3.log) and to standard
+  # output (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path z3.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</eventlog>

@@ -1,0 +1,23 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include package=".text" />
+  <include package=".field" />
+  <include package=".keyword" />
+
+<adapter
+  factory=".adapters.SimpleQuery"
+  provides="zope.index.interfaces.ISimpleQuery"
+  for="zope.index.interfaces.IQuerying"
+  permission="zope.Public"
+/>
+
+<adapter
+  factory=".adapters.SimpleKeywordQuery"
+  provides="zope.index.interfaces.ISimpleQuery"
+  for="zope.index.interfaces.IKeywordQuerying"
+  permission="zope.Public"
+/>
+
+
+</configure>
+

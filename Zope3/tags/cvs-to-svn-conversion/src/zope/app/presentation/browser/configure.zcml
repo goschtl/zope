@@ -1,0 +1,34 @@
+<configure xmlns="http://namespaces.zope.org/browser">
+
+  <addMenuItem
+      class="...presentation.LocalPresentationService"
+      description=
+     "A Presentation Service allows you to register views, resources and skins"
+      title="Presentation Service"
+      permission="zope.ManageServices"
+      />
+
+  <editform
+    schema="...presentation.IPageRegistration"
+    name="index.html"
+    class=".PageRegistrationView"
+    menu="zmi_views"
+    label="Change page"
+    permission="zope.ManageServices" />
+
+  <addform
+      schema="..presentation.IPageRegistration"
+      name="PageRegistration"
+      content_factory="..presentation.PageRegistration"
+      keyword_arguments="required factoryName name permission 
+                         layer attribute"
+      set_before_add="template"
+      label="Register a view page"
+      permission="zope.ManageServices"
+      fields="required name template factoryName layer permission
+              status attribute" />
+
+<include file="pagefolder.zcml" />
+<include file="zpt.zcml" />
+
+</configure>

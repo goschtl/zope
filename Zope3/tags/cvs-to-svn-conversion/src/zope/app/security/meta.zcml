@@ -1,0 +1,54 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
+
+  <meta:directive
+      namespace="http://namespaces.zope.org/zope"
+      name="permission"
+      schema=".metadirectives.IDefinePermissionDirective"
+      handler=".metaconfigure.definePermission" />
+
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="principal" 
+      schema=".metadirectives.IDefinePrincipalDirective"
+      handler=".metaconfigure.principal" />
+
+  <meta:directive 
+      namespace="http://namespaces.zope.org/zope"
+      name="unauthenticatedPrincipal" 
+      schema=".metadirectives.IDefineUnauthenticatedPrincipalDirective"
+      handler=".metaconfigure.unauthenticatedPrincipal" />
+
+  <meta:directive
+      name="securityPolicy"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".metadirectives.ISecurityPolicyDirective"
+      handler=".metaconfigure.securityPolicy" 
+      />
+
+  <meta:groupingDirective
+      name="module"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".metadirectives.IModule"
+      handler="zope.configuration.config.GroupingContextDecorator" />
+
+  <meta:directive
+      name="allow"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".metadirectives.IAllow"
+      handler=".metaconfigure.allow" />
+
+  <meta:directive
+      name="require"
+      namespace="http://namespaces.zope.org/zope"
+      schema=".metadirectives.IRequire"
+      handler=".metaconfigure.require" />
+
+  <meta:directive
+      name="redefinePermission"
+      namespace="http://namespaces.zope.org/meta"
+      schema=".metadirectives.IRedefinePermission"
+      handler=".metaconfigure.redefinePermission" />
+
+</configure>

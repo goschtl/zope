@@ -1,0 +1,27 @@
+renderer
+
+  File zope/app/renderer/meta.zcml, lines 11 - 15.
+
+  Register a renderer for a paricular output interface, such as IBrowserView.
+
+  Attributes
+
+    sourceType -- GlobalObject (required)
+
+      Source Type Interface
+
+      Specifies an interface for of a particular source type.
+
+    for -- GlobalObject (required)
+
+      Interface of the output type
+
+      Specifies the interface of the output type (i.e. browser) for which this
+      view is being registered.
+
+    factory -- GlobalObject (required)
+
+      Factory
+
+      Specifies the factory that is used to create the view on the source.
+

@@ -1,0 +1,41 @@
+includeOverrides
+
+  Handler: zope.configuration.xmlconfig.includeOverrides
+
+  
+
+  Attributes
+
+    file -- BytesLine (optional, default=None)
+
+      Configuration file name
+
+      The name of a configuration file to be included, relative to the
+      directive containing the including configuration file.
+
+    files -- BytesLine (optional, default=None)
+
+      Configuration file name pattern
+
+      The names of multiple configuration files to be included, expressed as a
+      file-name pattern, relative to the directive containing the including
+      configuration file. The pattern can include:
+
+      ``*`` matches 0 or more characters
+
+      ``?`` matches a single character
+
+      [*seq*] matches any character in seq
+
+      [!*seq*] matches any character not in seq
+
+      The file names are included in sorted order, where sorting is without
+      regard to case.
+
+    package -- GlobalObject (optional, default=None)
+
+      Include package
+
+      Include the named file (or configure.zcml) from the directory of this
+      package.
+

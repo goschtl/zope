@@ -1,0 +1,25 @@
+exportHandler
+
+  File zope/app/workflow/meta.zcml, lines 11 - 15.
+
+  Handler: zope.app.workflow.metaconfigure.exportHandlerDirective
+
+  Register an Import/Export Handler, that is able to load/save a XML
+  Representation of a ProcessDefinition and create a persistent Instance for
+  it.
+
+  Attributes
+
+    interface -- GlobalObject (required)
+
+      Interface
+
+      The interface of the process definition this handler can handle (both
+      for either import or export).
+
+    factory -- GlobalObject (required)
+
+      Factory
+
+      The factory for the instance that implements the handler.
+

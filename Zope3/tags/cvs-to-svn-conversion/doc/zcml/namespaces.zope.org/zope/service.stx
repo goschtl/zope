@@ -1,0 +1,34 @@
+service
+
+  File zope/app/component/meta.zcml, lines 80 - 84.
+
+  Handler: zope.app.component.metaconfigure.service
+
+  Register a service
+
+  Attributes
+
+    component -- GlobalObject (optional, default=None)
+
+      Component to be used
+
+      
+
+    permission -- Permission (optional, default=None)
+
+      Permission
+
+      
+
+    factory -- GlobalObject (optional, default=None)
+
+      Factory
+
+      
+
+    serviceType -- TextLine (required)
+
+      ID of service type
+
+      
+

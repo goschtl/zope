@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Job Board Example\n"
+"POT-Creation-Date: Mon Apr 14 16:35:25 2003\n"
+"PO-Revision-Date: 2003-04-14 17:11-0400\n"
+"Last-Translator: Barry Warsaw <barry@python.org>\n"
+"Language-Team: English <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: JobCreateView.py:45
+msgid "Bad date string: $date"
+msgstr "Stringa della data difettosa: $date"
+
+#: review.pt:11
+msgid "Action"
+msgstr "Azione"
+
+#: review.pt:15
+msgid "Approve"
+msgstr "Approvi"
+
+#: preview.pt:41
+msgid "Contact:"
+msgstr "Contatto:"
+
+#: review.pt:14
+msgid "Defer"
+msgstr "Rinvii"
+
+#: review.pt:16
+msgid "Discard"
+msgstr "Scarto"
+
+#: preview.pt:78
+msgid "Edit"
+msgstr "Pubblichi"
+
+#: preview.pt:74
+msgid "Submit"
+msgstr "Presenti"
+
+#: review.pt:12
+msgid "Summary"
+msgstr "Sommario"
+
+#: JobListView.pt:24
+msgid "approve-submitted-jobs"
+msgstr "Approvi i lavori presentati"
+
+#: review.pt:3 review.pt:7
+msgid "approve-title"
+msgstr "Approvi i lavori presentati"
+
+#: thanks.pt:18
+msgid "back-to-job-board"
+msgstr "Di nuovo alla cartolina di lavoro"
+
+#: JobView.pt:33
+msgid "back-to-jobs"
+msgstr "Di nuovo ai lavori"
+
+#: thanks.pt:16
+msgid "back-to-site-home"
+msgstr "Di nuovo al luogo domestico"
+
+#: review.pt:39
+msgid "back-to-summary"
+msgstr "Di nuovo al sommario"
+
+#: edit.pt:29 JobView.pt:17
+msgid "contact"
+msgstr "Contatto (dove applicarsi)"
+
+#: edit.pt:13
+msgid "contributor-email"
+msgstr "Email del contributore:"
+
+#: edit.pt:3 edit.pt:6
+msgid "enter-new-job-data"
+msgstr "Digiti i nuovi dati di lavoro"
+
+#: edit.pt:23 JobView.pt:10
+msgid "full-description"
+msgstr "Descrizione completa (nessun HTML)"
+
+#: preview.pt:10
+msgid "instructions"
+msgstr ""
+"Ciò è che cosa il vostro lavoro osserverà come è approvato una volta\n"
+"dal responsabile del luogo. Ora per cambiare la vostra presentazione,\n"
+"utilizzi il tasto posteriore del vostro browser e ripresenti la\n"
+"forma. Ora per presentare, scatti sopra il tasto di presentazione qui\n"
+"sotto."
+
+#: JobListView.pt:3 JobListView.pt:6
+msgid "job-board-title"
+msgstr "Cartolina Di Lavoro"
+
+#: JobListView.pt:10
+msgid "job-listings"
+msgstr "Elenchi Di Lavoro"
+
+#: edit.pt:18
+msgid "one-line-summary"
+msgstr "Sommario della un-linea:"
+
+#: JobListView.pt:23
+msgid "other-operations"
+msgstr "Altri funzionamenti"
+
+#: preview.pt:3 preview.pt:8
+msgid "preview-new-job-data"
+msgstr "Nuovi dati di lavoro di previsione"
+
+#: edit.pt:34 JobView.pt:22 preview.pt:46
+msgid "salary"
+msgstr "Retribuzione:"
+
+#: edit.pt:40 JobView.pt:25 preview.pt:50
+msgid "startdate"
+msgstr "Inizi data:"
+
+#: thanks.pt:20
+msgid "submit-another"
+msgstr "Presenti un altro lavoro"
+
+#: JobListView.pt:8
+msgid "submit-new-job"
+msgstr "Presenti un nuovo lavoro"
+
+#: thanks.pt:3 thanks.pt:7
+msgid "thank-you-title"
+msgstr "Grazie per la vostra presentazione di lavoro"
+
+#: thanks.pt:9
+msgid "thank-you-wherenext"
+msgstr ""
+"Il nostro responsabile del luogo lo rivedrà presto e pubblicherà. Usi\n"
+"prego uno di seguenti collegamenti per continuare ad usare il nostro\n"
+"luogo:"
+
+#: preview.pt:17
+msgid "verify"
+msgstr ""
+"Il vostro email address del contatto è registrato come ${email}.\n"
+"Questo indirizzo non sarà pubblicato sul website, ma lo useremo per\n"
+"raggiungerlo se abbiamo domande circa la vostra presentazione.  I\n"
+"cercatori di lavoro si metteranno in contatto con l'indirizzo che\n"
+"fornite nel campo del contatto."
+
+#: edit.pt:8
+msgid "when-done"
+msgstr "Quando siete fatti, premi il tasto di previsione qui sotto."
+
+#~ msgid "Description:"
+#~ msgstr "Descrizione:"
+
+#~ msgid "Preview"
+#~ msgstr "Previsione"
+

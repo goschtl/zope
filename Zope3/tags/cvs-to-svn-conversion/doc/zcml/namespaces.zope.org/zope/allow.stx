@@ -1,0 +1,28 @@
+allow
+
+  File zope/app/security/meta.zcml, lines 36 - 40.
+
+  Handler: zope.app.security.metaconfigure.allow
+
+  Allow access to selected module attributes
+
+  Access is unconditionally allowed to any names provided directly in the
+  attributes attribute or to any names defined by interfaces listed in the
+  interface attribute.
+
+  Attributes
+
+    attributes -- Tokens (optional, default=None)
+
+      Attributes
+
+      The attributes to provide access to.
+
+    interface -- Tokens (optional, default=None)
+
+      Interface
+
+      Interfaces whos names to provide access to. Access will be provided to
+      all of the names defined by the interface(s). Multiple interfaces can be
+      supplied.
+

@@ -1,0 +1,34 @@
+tool
+
+  File zope/app/site/browser/meta.zcml, lines 5 - 9.
+
+  Handler: zope.app.site.browser.metaconfigure.tool
+
+  Directive for creating new utility-based tools.
+
+  Attributes
+
+    folder -- PythonIdentifier (optional, default=u'tools')
+
+      Destination Folder
+
+      Destination Folder in which the tool instances are placed.
+
+    title -- MessageID (optional, default=None)
+
+      Title
+
+      The title of the tool.
+
+    description -- MessageID (optional, default=None)
+
+      Description
+
+      Narrative description of what the tool represents.
+
+    interface -- GlobalObject (required)
+
+      Interface
+
+      Interface used to filter out the available entries in a tool
+

@@ -1,0 +1,24 @@
+configure
+
+  Handler: zope.configuration.zopeconfigure.ZopeConfigure
+
+  
+
+  Attributes
+
+    package -- GlobalObject (optional, default=None)
+
+      Package
+
+      The package to be used for evaluating relative imports and file names.
+
+    i18n_domain -- BytesLine (optional, default=None)
+
+      Internationalization domain
+
+      This is a name for the software project. It must be a legal file-system
+      name as it will be used to contruct names for directories containing
+      translation data.
+
+      The domain defines a namespace for the message ids used by a project.
+

@@ -1,0 +1,8 @@
+<configure 
+   xmlns="http://namespaces.zope.org/zope">
+
+  <include package=".text" />
+  <include package=".field" />
+  <include package=".keyword" />
+ 
+</configure>

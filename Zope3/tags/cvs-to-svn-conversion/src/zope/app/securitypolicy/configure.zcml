@@ -1,0 +1,101 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope"
+    >
+
+  <content class=".permissionroles.PermissionRoles">
+    <require permission="zope.Security"
+             attributes="roles rolesInfo id title description" />
+  </content>
+
+  <content class=".rolepermission.RolePermissions">
+    <require permission="zope.Security"
+             attributes="permissions permissionsInfo id title description" />
+  </content>
+
+  <adapter factory=".rolepermission.AnnotationRolePermissionManager"
+           provides=".interfaces.IRolePermissionManager"
+           for="zope.app.annotation.interfaces.IAnnotatable" />
+
+  <adapter factory=".principalrole.AnnotationPrincipalRoleManager"
+           provides=".interfaces.IPrincipalRoleManager"
+           for="zope.app.annotation.interfaces.IAnnotatable" />
+
+  <adapter factory=".principalpermission.AnnotationPrincipalPermissionManager"
+           provides=".interfaces.IPrincipalPermissionManager"
+           for="zope.app.annotation.interfaces.IAnnotatable" />
+
+
+  <!-- protect Roles and Permissions -->
+  <content class=".role.Role">
+    <allow interface=".interfaces.IRole" />
+  </content>
+
+  <content class=".role.PersistentRole">
+    <factory
+        id="zope.security.role.Role"
+        />
+    <implements
+        interface="zope.app.utility.interfaces.ILocalUtility" 
+        />
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+        />
+    <require 
+        permission="zope.Security"
+        interface=".interfaces.IRole"
+        />
+  </content>
+
+  <content class=".role.RoleRegistration">
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.utility.interfaces.IUtilityRegistration"
+      set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
+  </content>
+
+  <!-- Include browser package -->
+  <include package=".browser"/>
+
+
+  <securityPolicy
+      component=".zopepolicy.zopeSecurityPolicy"
+      />
+
+  <role id="zope.Anonymous" title="Everybody" 
+        description="All users have this role implicitly" />
+  <role id="zope.Manager" title="Site Manager" />
+  <role id="zope.Member" title="Site Member" />
+
+  <!-- Remove the following directive if you don't want public access -->
+  <grant permission="zope.View"                  role="zope.Anonymous" />
+
+  <grant permission="zope.ManageContent"         role="zope.Manager" />
+  <grant permission="zope.Security"              role="zope.Manager" />
+  <grant permission="zope.ManageCode"            role="zope.Manager" />
+  <grant permission="zope.ManageServices"        role="zope.Manager" />
+  <grant permission="zope.ManageApplication"     role="zope.Manager" />
+  <grant permission="zope.ManageBindings"        role="zope.Manager" />
+
+  <!-- zope.app.dublincore -->
+  <grant permission="zope.app.dublincore.view"   role="zope.Anonymous" />
+  <grant permission="zope.app.dublincore.change" role="zope.Manager" />
+
+  <!-- zope.app.mail -->
+  <grant permission="zope.SendMail"              role="zope.Manager" />
+
+  <!-- zope.app.undo -->
+  <grant permission="zope.UndoOwnTransactions"   role="zope.Member" />
+  <grant permission="zope.UndoOwnTransactions"   role="zope.Manager" />
+  <grant permission="zope.UndoAllTransactions"   role="zope.Manager" />
+
+  <!-- zope.app.workflow -->
+  <grant permission="zope.workflow.ManageProcessDefinitions"
+         role="zope.Manager" />
+  <grant permission="zope.workflow.CreateProcessInstances"
+         role="zope.Manager" />
+  <grant permission="zope.workflow.UseProcessInstances"
+         role="zope.Manager" />
+
+</configure>
+

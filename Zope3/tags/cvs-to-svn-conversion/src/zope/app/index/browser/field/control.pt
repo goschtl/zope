@@ -1,0 +1,117 @@
+<html metal:use-macro="views/standard_macros/view">
+<head>
+  <title metal:fill-slot="title" i18n:translate="">
+    FieldIndex Control Page
+  </title>
+</head>
+
+<body>
+<div metal:fill-slot="body">
+
+  <br />
+  <h1 i18n:translate="">FieldIndex</h1>
+
+  <p class="form-help" i18n:translate="">
+      This page lets you control a field index, which is used to
+      provide a single field searching facility.  The search box here is
+      only for debugging.  Subscription status: A "subscribed" index
+      will update itself whenever objects are added, deleted or
+      modified; an "unsubscribed" index will retain the indexing
+      information but not update itself further.
+  </p>
+
+  <!-- XXX: Too much logic for a template -->
+  <span tal:condition="request/callSubscribe|nothing" tal:omit-tag="">
+    <span tal:define="dummy context/subscribe" tal:omit-tag=""/>
+    <span i18n:translate="">Successfully subscribed.</span>
+  </span>
+
+  <span tal:condition="request/callUnsubscribe|nothing" tal:omit-tag="">
+    <span tal:define="dummy context/unsubscribe" tal:omit-tag=""/>
+    <span i18n:translate="">Successfully unsubscribed.</span>
+  </span>
+
+  <div tal:condition="context/interface" i18n:translate="">
+    Adapting objects to: 
+    <span tal:replace="view/interface_name" i18n:name="iface_name" />
+  </div>
+
+  <div i18n:translate="">
+    Indexing on attribute: 
+   <span tal:replace="context/field_name"  i18n:name="field_name"/>
+  </div>
+
+  <div i18n:translate="">
+    Documents: 
+    <span tal:replace="context/documentCount" i18n:name="doc_count"/>
+  </div>
+
+  <form method="POST">
+    <span tal:condition="context/isSubscribed" tal:omit-tag="">
+      <span i18n:translate="">Subscription state: ON</span>
+      <input type="submit" value="Unsubscribe" name="callUnsubscribe" 
+             i18n:attributes="value unsubscribe-button"/>
+     </span>
+     <span tal:condition="not:context/isSubscribed" tal:omit-tag="">
+       <span i18n:translate="">Subscription state: OFF</span>
+       <input type="submit" value="Subscribe" name="callSubscribe"
+              i18n:attributes="value subscribe-button"/>
+     </span>
+     <input type="hidden" name="queryText" value=""
+            tal:attributes="value request/queryText|nothing" />
+  </form>
+
+  <form method="GET">
+    <input type="text" name="queryText" value=""
+           tal:attributes="value request/queryText|nothing" />
+    <input type="submit" value="Query" />
+  </form>
+
+  <div tal:condition="request/queryText|nothing" tal:omit-tag="">
+    <div tal:define="result view/query" tal:omit-tag="">
+
+      <div tal:condition="not:result/total" i18n:translate="">
+        No hits.  Please try another query.
+      </div>
+
+      <div tal:condition="result/total">
+        <span tal:omit-tag="" i18n:translate="">
+          Hits 
+          <span tal:omit-tag="" tal:content="result/first" i18n:name="first"/>
+          -
+          <span tal:omit-tag="" tal:content="result/last" i18n:name="last"/>
+          of
+          <span tal:omit-tag="" tal:content="result/total" i18n:name="total"/>
+        </span>:
+
+        <div tal:repeat="info result/results" i18n:translate="">
+          title=<span tal:content="info/title" i18n:name="title"/>;
+          url=<a href="location"
+                 tal:attributes="href info/location"
+                 tal:content="info/location"
+                 i18n:name="title">url</a>
+        </div>
+      </div>
+
+      <span tal:condition="exists:result/prev">
+        <a href="next"
+            tal:attributes="href
+              string:?queryText=${request/queryText}&start=${view/prevBatch}"
+            i18n:translate="">
+          &lt;-- PREVIOUS BATCH
+        </a>
+      </span>
+      <span tal:condition="exists:result/next">
+        <a href="next"
+           tal:attributes="href
+             string:?queryText=${request/queryText}&start=${view/nextBatch}"
+           i18n:translate="">
+          NEXT BATCH --&gt;
+        </a>
+      </span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

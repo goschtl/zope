@@ -1,0 +1,28 @@
+permission
+
+  File zope/app/security/meta.zcml, lines 5 - 9.
+
+  Handler: zope.app.security.metaconfigure.definePermission
+
+  Define a new permission.
+
+  Attributes
+
+    id -- Id (required)
+
+      Id
+
+      Id as which this object will be known and used.
+
+    title -- MessageID (required)
+
+      Title
+
+      Provides a title for the object.
+
+    description -- MessageID (optional, default=None)
+
+      Description
+
+      Provides a description for the object.
+

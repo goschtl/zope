@@ -1,0 +1,183 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope">
+
+  <include package=".skin" />
+
+  <browser:addform
+      label="Add Wiki"
+      name="AddWiki.html"
+      schema="zope.app.wiki.interfaces.IWiki"
+      content_factory="zope.app.wiki.wiki.Wiki"
+      permission="zope.app.wiki.AddWikiPage"
+      class=".wiki.AddWiki"
+      template="wiki_add.pt" />
+
+  <browser:addMenuItem
+      class="zope.app.wiki.wiki.Wiki"
+      title="Wiki"
+      description="A Wiki"
+      permission="zope.ManageContent"
+      view="AddWiki.html" />
+
+  <browser:page
+      name="toc.html"
+      for="zope.app.wiki.interfaces.IWiki"
+      class=".wiki.TableOfContents"
+      template="wiki_toc.pt"
+      permission="zope.app.wiki.ViewWikiPage"
+      menu="zmi_views" title="TOC" />
+
+  <browser:page
+      name="search.html" 
+      for="zope.app.wiki.interfaces.IWiki"
+      class=".wiki.WikiSearch"
+      template="wiki_search.pt"
+      permission="zope.app.wiki.ViewWikiPage"
+      menu="zmi_views" title="Search" />
+
+  <browser:pages
+      for="zope.app.wiki.interfaces.IWiki"
+      class=".wikipage.MailSubscriptions"
+      permission="zope.app.wiki.EditWikiPage">
+      <browser:page name="subscriptions.html" template="subscriptions.pt"
+          menu="zmi_views" title="Subscriptions" />
+      <browser:page name="changeSubscriptions.html" attribute="change" />
+  </browser:pages>
+
+  <browser:defaultView
+      name="toc.html"
+      for="zope.app.wiki.interfaces.IWiki" />
+
+  <browser:icon
+      name="zmi_icon"
+      for="zope.app.wiki.interfaces.IWiki"
+      file="wiki_icon.gif" />
+
+  <!-- WikiPage browser configuration -->
+
+  <browser:addform
+      label="Add Wiki Page"
+      name="AddWikiPage.html"
+      schema="zope.app.wiki.interfaces.IWikiPage"
+      content_factory="zope.app.wiki.wikipage.WikiPage"
+      permission="zope.app.wiki.AddWikiPage"
+      fields="source type"
+      class=".wikipage.AddWikiPage" />
+
+  <browser:addMenuItem
+      class="zope.app.wiki.wikipage.WikiPage"
+      title="Wiki Page"
+      description="A Wiki Page"
+      permission="zope.app.wiki.AddWikiPage"
+      view="AddWikiPage.html" />
+
+  <browser:editform
+      schema="zope.app.wiki.interfaces.IWikiPage"
+      for="zope.app.wiki.interfaces.IWikiPage"
+      label="Change Wiki Page"
+      name="edit.html"
+      permission="zope.app.wiki.EditWikiPage"
+      fields="source type"
+      class=".wikipage.EditWikiPage"
+      menu="zmi_views" title="Edit" />
+
+  <browser:pages
+      for="zope.app.wiki.interfaces.IWikiPage"
+      class=".wikipage.GenericWikiPageViews"
+      permission="zope.app.wiki.ViewWikiPage">
+      <browser:page name="breadcrumbs" attribute="breadcrumbs" />
+      <browser:page name="author" attribute="author" />
+      <browser:page name="modified" attribute="modified" />
+      <browser:page name="jumpto.html" attribute="jumpTo" />
+      <browser:page name="toc.html" attribute="toc" />
+  </browser:pages>
+
+  <browser:pages
+      for="zope.app.wiki.interfaces.IWikiPage"
+      class=".wikipage.ViewWikiPage"
+      permission="zope.app.wiki.ViewWikiPage">
+      <browser:page name="view.html" template="view_page.pt"
+          menu="zmi_views" title="View" />
+  </browser:pages>
+
+  <browser:pages
+      for="zope.app.wiki.interfaces.IWikiPage"
+      class=".wikipage.EditWikiParents"
+      permission="zope.app.wiki.ReparentWikiPage">
+      <browser:page name="parents.html" template="parents_page.pt"
+          menu="zmi_views" title="Parents" />
+      <browser:page name="setParents.html" attribute="setParents" />
+  </browser:pages>
+
+  <browser:pages
+      for="zope.app.wiki.interfaces.IWikiPage"
+      class=".wikipage.MailSubscriptions"
+      permission="zope.app.wiki.EditWikiPage">
+      <browser:page name="subscriptions.html" template="subscriptions.pt"
+          menu="zmi_views" title="Subscriptions" />
+      <browser:page name="changeSubscriptions.html" attribute="change" />
+  </browser:pages>
+
+  <browser:defaultView
+      name="view.html"
+      for="zope.app.wiki.interfaces.IWikiPage"/>
+
+  <browser:icon
+      name="zmi_icon"
+      for="zope.app.wiki.interfaces.IWikiPage"
+      file="wikipage_icon.gif" />
+
+  <!-- Comment browser configuration -->
+
+  <browser:addform
+      label="Comment"
+      name="AddComment.html"
+      schema="zope.app.wiki.interfaces.IComment"
+      content_factory="zope.app.wiki.wikipage.Comment"
+      permission="zope.app.wiki.AddWikiPage"
+      fields="title source type"
+      class=".wikipage.AddComment" />
+
+  <browser:addMenuItem
+      class="zope.app.wiki.wikipage.Comment"
+      title="Comment"
+      description="A Comment"
+      permission="zope.app.wiki.AddWikiPage"
+      view="AddComment.html" />
+
+  <!-- Make a special WikiPage menu -->
+
+  <browser:menu 
+       id="wikipage_actions" 
+       title="Menu for Wiki Page related actions." />
+
+  <browser:menuItems menu="wikipage_actions" 
+      for="zope.app.wiki.interfaces.IWikiPage">
+    <browser:menuItem title="View" action="@@view.html"/>
+    <browser:menuItem title="Comment" action="./+/AddComment.html="/>
+    <browser:menuItem title="Edit" action="@@edit.html"/>
+    <browser:menuItem title="Parents" action="@@parents.html"/>
+    <browser:menuItem title="TOC" action="@@toc.html"/>
+    <browser:menuItem title="Subscriptions" action="@@subscriptions.html"/>
+  </browser:menuItems>
+
+  <browser:menuItems menu="wikipage_actions" 
+      for="zope.app.wiki.interfaces.IWiki">
+    <browser:menuItem title="Table of Contents" action="@@toc.html"/>
+    <browser:menuItem title="Search" action="@@search.html"/>
+    <browser:menuItem title="Subscriptions" action="@@subscriptions.html"/>
+  </browser:menuItems>
+
+  <!-- Register a browser-specific traverser --> 
+
+  <view
+      for="zope.app.wiki.interfaces.IWikiPage"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.publisher.interfaces.IPublishTraverse"
+      factory="zope.app.wiki.traversal.WikiPageTraverser"
+      permission="zope.Public"
+      />
+
+</configure>

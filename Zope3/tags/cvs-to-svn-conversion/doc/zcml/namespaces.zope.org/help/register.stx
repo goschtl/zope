@@ -1,0 +1,46 @@
+register
+
+  File zope/app/onlinehelp/meta.zcml, lines 5 - 9.
+
+  Handler: zope.app.onlinehelp.metaconfigure.register
+
+  Register directive for onlien help topics.
+
+  Attributes
+
+    id -- BytesLine (required)
+
+      Topic Id
+
+      Id of the topic as it will appear in the URL.
+
+    title -- MessageID (required)
+
+      Title
+
+      Provides a title for the online Help Topic.
+
+    parent -- BytesLine (optional, default='')
+
+      Parent Topic
+
+      Id of the parent topic.
+
+    for -- GlobalObject (optional, default=None)
+
+      Object Interface
+
+      Interface for which this Help Topic is registered.
+
+    view -- BytesLine (optional, default='')
+
+      View Name
+
+      The view name for which this Help Topic is registered.
+
+    doc_path -- Path (required)
+
+      Path to File
+
+      Path to the file that contains the Help Topic content.
+

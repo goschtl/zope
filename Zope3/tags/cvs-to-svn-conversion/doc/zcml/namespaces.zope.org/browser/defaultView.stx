@@ -1,0 +1,27 @@
+defaultView
+
+  File zope/app/publisher/browser/meta.zcml, lines 45 - 49.
+
+  Handler: zope.app.publisher.browser.metaconfigure.defaultView
+
+  The name of the view that should be the default.
+
+  This name refers to view that should be the view used by default (if no view
+  name is supplied explicitly).
+
+  Attributes
+
+    name -- TextLine (required)
+
+      The name of the view that should be the default.
+
+      This name refers to view that should be the view used by default (if no
+      view name is supplied explicitly).
+
+    for -- GlobalObject (optional, default=None)
+
+      The interface this view is the default for.
+
+      The view is the default view for the supplied interface. If this is not
+      supplied, the view applies to all objects (XXX this ought to change).
+

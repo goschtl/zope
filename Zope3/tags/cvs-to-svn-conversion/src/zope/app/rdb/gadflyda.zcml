@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <content class="zope.app.rdb.gadflyda.GadflyAdapter">
+    <factory
+        title="Gadfly Database Adapter" />
+    <require
+        permission="zope.Public"
+        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
+  </content>
+
+</configure>
