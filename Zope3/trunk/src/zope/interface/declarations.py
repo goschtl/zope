@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.15 2003/06/14 12:32:07 stevea Exp $
+$Id: declarations.py,v 1.16 2003/06/30 16:32:46 jeremy Exp $
 """
 
 import sys
@@ -1363,28 +1363,6 @@ def _getmro(C, r):
   for b in C.__bases__:
     _getmro(b, r)
   return r
-
-def _gatherSpecs(cls, result):
-    implements = _getImplements(cls)
-    if implements is not None:
-        try:
-            stop = implements.only
-        except AttributeError:
-            # Must be an old-style interface spec
-            implements = ImplementsOnlySpecification(
-                _flattenSpecs([implements], []))
-            stop = 1
-            _setImplements(cls, implements)
-
-        result.append(implements)
-    else:
-        stop = 0
-
-    if not stop:
-        for b in cls.__bases__:
-            _gatherSpecs(b, result)
-
-    return result
 
 def _gatherSpecs(cls, result):
     implements = _getImplements(cls)
