@@ -341,7 +341,7 @@ BasicTypes = {
     types.NoneType: NoProxy,
     str: NoProxy,
     unicode: NoProxy,
-    type(not 1): NoProxy, # Boolean, if available :)
+    type(True): NoProxy, # Boolean, if available :)
 }
 
 class _Sequence(object):
@@ -371,8 +371,8 @@ _default_checkers = {
     types.BuiltinMethodType: _callableChecker,
     type: _typeChecker,
     types.ModuleType: _moduleChecker,
-    type(iter([])): _iteratorChecker, # same types in Python 2.2.1,
-    type(iter(())): _iteratorChecker, # different in Python 2.3
+    type(iter([])): _iteratorChecker, # Same types in Python 2.2.1,
+    type(iter(())): _iteratorChecker, # different in Python 2.3.
     type(iter(_Sequence())): NamesChecker(['next']),
     type(Interface): _interfaceChecker,
     datetime.timedelta: NamesChecker(['__repr__', '__str__', '__add__',
