@@ -26,7 +26,6 @@
       template="detail.pt"
       class=".Detail"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Detail" 
       />
 
   <page
@@ -35,7 +34,6 @@
       template="method_detail.pt"
       class=".MethodDetail"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Method Details" 
       />
 
 </zope:configure>
