@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.3 2003/04/03 22:05:34 fdrake Exp $
+$Id: test_utility.py,v 1.4 2003/04/29 16:37:39 gvanrossum Exp $
 """
 
 import unittest
@@ -27,7 +27,8 @@ from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
 from zope.app.traversing import traverse, getPath
 from zope.app.interfaces.services.configuration import IConfigurationRegistry
-from zope.app.interfaces.services.configuration import Active, Registered
+from zope.app.interfaces.services.configuration \
+     import Active, Registered, Unregistered
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.dependable import IDependable
@@ -194,6 +195,12 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         self.assertEqual(r, [(IFoo, "", cr1), (IFoo, "bob", cr2)])
         self.assertEqual(getWrapperContainer(r[0][2]), utilities)
         self.assertEqual(getWrapperContainer(r[1][2]), utilities)
+        # Now test that an empty registry doesn't show up
+        for cd in cr1.info(): # Remove everything from cr1
+            cd['configuration'].status = Unregistered
+        self.assertEqual(bool(cr1), False)
+        r = list(utilities.getRegisteredMatching())
+        self.assertEqual(r, [(IFoo, "bob", cr2)])
 
 
 def test_suite():
