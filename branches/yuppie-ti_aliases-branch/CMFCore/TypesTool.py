@@ -55,10 +55,11 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
     _isTypeInformation = 1
 
     manage_options = ( SimpleItemWithProperties.manage_options[:1]
+                     + ( {'label':'Aliases',
+                          'action':'manage_aliases'}, )
                      + ActionProviderBase.manage_options
                      + SimpleItemWithProperties.manage_options[1:]
                      )
-
 
     security = ClassSecurityInfo()
 
@@ -153,6 +154,29 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
         else:
             self.setMethodAliases(aliases)
 
+    #
+    #   ZMI methods
+    #
+    security.declareProtected(ManagePortal, 'manage_aliases')
+    manage_aliases = PageTemplateFile( 'typeinfoAliases.zpt', _wwwdir )
+
+    security.declareProtected(ManagePortal, 'manage_setMethodAliases')
+    def manage_setMethodAliases(self, REQUEST):
+        """ Config method aliases.
+        """
+        form = REQUEST.form
+        aliases = {}
+        for k, v in form['aliases'].items():
+            v = v.strip()
+            if v:
+                aliases[k] = v
+        
+        dict = {}
+        for k, v in form['methods'].items():
+            if aliases.has_key(k):
+                dict[ aliases[k] ] = v
+        self.setMethodAliases(dict)
+        REQUEST.RESPONSE.redirect('%s/manage_aliases' % self.absolute_url())
 
     #
     #   Accessors
@@ -374,10 +398,17 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
         context = getActionContext(self)
         actions = self.listActions()
         ordered = []
-        viewmethod = ''
+        dict = {}
+
+        # order actions and search 'mkdir' action 
         for action in actions:
             if action.getId() == 'view':
                 ordered.insert(0, action)
+            elif action.getId() == 'mkdir':
+                mkdirmethod = action.action(context).strip()
+                if mkdirmethod.startswith('/'):
+                    mkdirmethod = mkdirmethod[1:]
+                dict['mkdir'] = mkdirmethod
             else:
                 ordered.append(action)
 
@@ -393,6 +424,7 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
                 break
         else:
             viewmethod = '(Default)'
+        dict['view'] = viewmethod
 
         # search default action
         for action in ordered:
@@ -402,9 +434,9 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
             if not defmethod:
                 break
         else:
-            defmethod = viewmethod
+            dict['(Default)'] = viewmethod
 
-        self.setMethodAliases( {'(Default)':defmethod, 'view':viewmethod} )
+        self.setMethodAliases(dict)
         return 1
 
 InitializeClass( TypeInformation )
