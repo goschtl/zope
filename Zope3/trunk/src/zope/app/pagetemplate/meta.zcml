@@ -1,33 +1,15 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:meta="http://namespaces.zope.org/meta"
+    >
 
-  <directives namespace="http://namespaces.zope.org/tales">
+  <meta:directives namespace="http://namespaces.zope.org/tales">
 
-    <directive name="namespace" handler=".metaconfigure.namespace" >
-       <description>Define a new tales namespace
-     
-       A namespace is defined by providing a prefix and an interface. A
-       handler for the namespace will be obtained by looking up an adapter for the
-       given interface.
-       </description>
+    <meta:directive name="namespace"
+        schema=".metadirectives.INamespaceDirective"
+        handler=".metaconfigure.namespace"
+        />
 
-       <attribute name="prefix" required="yes">
-         <description>The prefix used in tales expressions. 
+  </meta:directives>
 
-         For example, if the prefix is "dc", then a tales expression would
-         look like: ``foo/bar/dc:title``.
-         </description>
-       </attribute>
-
-       <attribute name="interface" required="yes">
-         <description>The namespace interface
-
-         This is an interface that the namespace must provide.
-         we'll get the namespace by getting an adapter for this interface.
-         </description>
-       </attribute>
-
-    </directive>
-
-  </directives>
-
-</zopeConfigure>
+</configure>

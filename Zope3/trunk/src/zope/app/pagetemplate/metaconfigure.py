@@ -11,23 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZCML configuration directives for configuring the default zope: namespace in TALES.
+"""ZCML configuration directives for configuring the default zope:
+namespace in TALES.
 
-$Id: metaconfigure.py,v 1.1 2003/04/15 18:52:57 matth Exp $
+$Id: metaconfigure.py,v 1.2 2003/08/03 20:43:35 philikon Exp $
 """
 
 from zope.app.pagetemplate.engine import Engine
 from zope.configuration.action import Action
-from zope.app.component.metaconfigure import resolveInterface
 from zope.testing.cleanup import addCleanUp
 from zope.component import getAdapter
 
 def namespace(_context, prefix, interface):
-    interface = resolveInterface(_context, interface)
-    return [Action(
+    _context.action(
         discriminator = ("tales:namespace", prefix),
         callable = Engine.registerFunctionNamespace,
         args = (prefix, lambda ob: getAdapter(ob, interface)),
-        )]
+        )
 
 addCleanUp(Engine.namespaces.clear)
