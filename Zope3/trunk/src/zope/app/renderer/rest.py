@@ -13,7 +13,7 @@
 ##############################################################################
 """ReStructured Text Renderer Classes
 
-$Id: rest.py,v 1.7 2004/03/19 20:26:32 srichter Exp $
+$Id: rest.py,v 1.8 2004/04/03 07:26:10 fdrake Exp $
 """
 import docutils.core, docutils.io
 from docutils import nodes, writers
@@ -94,6 +94,7 @@ class ZopeTranslator(HTMLTranslator):
         This is where we join the document parts that we want in
         the output.
         """
+        # use the title, subtitle, author, date, etc., plus the content
         body = self.body_pre_docinfo + self.docinfo + self.body
         return u"".join(body)
 
@@ -111,8 +112,8 @@ class ZopeTranslator(HTMLTranslator):
             self.section_level += (self.settings.base_section - 1)
             HTMLTranslator.visit_title(self, node)
             self.section_level -= (self.settings.base_section - 1)
-    
-    
+
+
 class ReStructuredTextToHTMLRenderer(BrowserView):
     r"""An Adapter to convert from Restructured Text to HTML.
 
