@@ -27,3 +27,20 @@ The Zope packaging utilities are the actual implementation of the
 
 class Error(Exception):
     """Base class for exceptions raised by zpkgtools."""
+
+
+class LoadingError(Error):
+    """Raised when there was some error loading from revision control.
+
+    :ivar url: Revision control URL.
+    :type url: str
+
+    :ivar exitcode: Return code of an external process.
+    :type exitcode: int
+    """
+
+    def __init__(self, url, exitcode):
+        self.exitcode = exitcode
+        self.url = url
+        Error.__init__(self, ("could not load from %s (exit code %d)"
+                              % (url, exitcode)))

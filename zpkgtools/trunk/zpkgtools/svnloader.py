@@ -23,22 +23,11 @@ import sys
 import urllib
 import urlparse
 
-from zpkgtools import Error
+from zpkgtools import LoadingError
 
 
-class SubversionLoadingError(Error):
-    """Raised when there was some error loading from Subversion.
-
-    :Ivariables:
-      - `url`: Subversion URL.
-      - `exitcode`: Return code of the Subversion process.
-    """
-
-    def __init__(self, url, exitcode):
-        self.url = cvsurl
-        self.exitcode = exitcode
-        Error.__init__(self, ("could not load from %s (svn exit code %d)"
-                              % (url, exitcode)))
+class SubversionLoadingError(LoadingError):
+    """Raised when there was some error loading from Subversion."""
 
 
 if sys.platform[:3].lower() == "win":

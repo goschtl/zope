@@ -25,7 +25,6 @@ import tempfile
 import zpkgtools
 
 from zpkgtools import config
-from zpkgtools import cvsloader
 from zpkgtools import dependencies
 from zpkgtools import include
 from zpkgtools import loader
@@ -116,7 +115,7 @@ class BuilderApplication(Application):
         specs.collection.cook()
         try:
             self.ip.createDistributionTree(pkgdest, specs.collection)
-        except cvsloader.CvsLoadingError, e:
+        except zpkgtools.LoadingError, e:
             self.error(str(e))
         self.ip.addIncludes(self.destination, specs.distribution)
         pkgdir = os.path.join(self.destination, pkgname)
@@ -270,7 +269,7 @@ class BuilderApplication(Application):
     def add_collection_component(self, name, destination, spec):
         try:
             self.ip.createDistributionTree(destination, spec)
-        except cvsloader.CvsLoadingError, e:
+        except zpkgtools.LoadingError, e:
             self.error(str(e))
         # load package information and generate setup.cfg
         pkginfo = package.loadCollectionInfo(destination)
@@ -281,7 +280,7 @@ class BuilderApplication(Application):
         pkgdest = os.path.join(destination, name)
         try:
             self.ip.createDistributionTree(pkgdest, spec)
-        except cvsloader.CvsLoadingError, e:
+        except zpkgtools.LoadingError, e:
             self.error(str(e))
         # load package information and generate setup.cfg
         pkginfo = package.loadPackageInfo(name, pkgdest, name)
@@ -521,7 +520,7 @@ class BuilderApplication(Application):
                 self.build_distribution()
                 if self.options.include_support_code:
                     self.include_support_code()
-            except cvsloader.CvsLoadingError, e:
+            except zpkgtools.LoadingError, e:
                 self.error(str(e), e.exitcode)
             self.create_manifest(self.destination)
             self.create_tarball()

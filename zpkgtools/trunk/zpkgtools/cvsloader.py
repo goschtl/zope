@@ -22,22 +22,19 @@ import tempfile
 import urllib
 import urlparse
 
-from zpkgtools import Error
+from zpkgtools import Error, LoadingError
 
 
-class CvsLoadingError(Error):
+class CvsLoadingError(LoadingError):
     """Raised when there was some error loading from CVS.
 
-    :Ivariables:
-      - `cvsurl`: Parsed cvs: URL object.
-      - `exitcode`: Return code of the CVS process.
+    :ivar cvsurl: Parsed ``cvs:`` URL object.
+    :type cvsurl: `CvsUrl`
     """
 
     def __init__(self, cvsurl, exitcode):
+        LoadingError.__init__(self, cvsurl.getUrl(), exitcode)
         self.cvsurl = cvsurl
-        self.exitcode = exitcode
-        Error.__init__(self, ("could not load from %s (cvs exit code %d)"
-                              % (cvsurl.getUrl(), exitcode)))
 
 
 _cvs_url_match = re.compile(
