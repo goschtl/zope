@@ -528,7 +528,7 @@ class TestFileFinder:
             return
         # ignore tests that aren't in packages
         if not "__init__.py" in files:
-            if not files or files == ["CVS"]:
+            if not files or files == ["CVS"] or files == [".svn"]:
                 return
             print "not a package", dir
             return
