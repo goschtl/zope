@@ -50,4 +50,3 @@ How to use Five
 
 Please see ``doc/manual.txt``.
 
-hrm
