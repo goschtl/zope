@@ -62,8 +62,15 @@ inconvenient, it is beneficial in that it provides a sort of sanity check
 on the target directories."""
 
 import sys, os, tempfile
-import re, string
+import string
 import getopt
+
+try:
+    import re
+    got_re = 1
+except ImportError:
+    import regex
+    got_re = 0
 
 import traffic_table
 
@@ -95,7 +102,10 @@ SYNCREPO = 0                            # '--syncrepo' option
 MSGFILENM = ""                          # '--msgfile' option (value of arg)
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
-sVv_re = re.compile("(.*),([^,]+),([^,]+)")
+if got_re:
+    sVv_re = re.compile("(.*),([^,]+),([^,]+)")
+else:
+    sVv_re = regex.compile("\\(.*\\),\\([^,]+\\),\\([^,]+\\)")
 
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
@@ -129,7 +139,8 @@ def main(args):
             complain("%s: FULL-DEPTH RECURSE mode...\n", SCRIPT)
         elif opt == "--wait":
             WAIT = 1
-            complain("%s: Not doing activities in background...\n", SCRIPT)
+            complain("%s: WAIT mode - not doing activities"
+                     " in background...\n", SCRIPT)
         elif opt == "--msgfile":
             MSGFILENM = val
         elif opt == "--syncrepo":
@@ -233,7 +244,11 @@ def find_entries(repo):
     trigger for repo."""
     entries = []
     for t in traffic_table.table:
-        if re.search(t['path'], repo):
+        if got_re:
+            is_match = re.search(t['path'], repo)
+        else:
+            is_match = (regex.search(t['path'], repo) != -1)
+        if is_match:
             if not t.has_key('excludes'):
                 t['excludes'] = []
             if not t.has_key('remote'):
@@ -265,7 +280,7 @@ def do_mail(name, repo, addrs, subjs, doing_directory=0, no_files=0):
         for fn, old, new in subjs:
             subject = subject + " %s:%s" % (fn, new)
     cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
-                                     (DRYRUN and "echo ") or "",
+                                     (DRYRUN and "echo Would do: ") or "",
                                      MAIL_CMD,
                                      (VERBOSE and "-v") or "",
                                      subject,
@@ -274,7 +289,8 @@ def do_mail(name, repo, addrs, subjs, doing_directory=0, no_files=0):
         cmd = cmd + "< %s" % MSGFILENM
 
     if VERBOSE:
-        complain("Doing mail cmd:\n\t%s\n", cmd)
+        complain("%sDoing mail cmd:\n\t%s\n",
+                 ((DRYRUN and "NOT ") or ""), cmd)
     result = os.system(cmd)
     if result:
         note_failure("*** Mail returned %s...", result)
@@ -357,14 +373,15 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
         trailing_slash_or_comma_v = "/"
 
     cmd = ("%s%s%s %s/%s%s %s:%s/%s%s" % ((VERBOSE and "set -x; ") or "",
-                                          (DRYRUN and "echo ") or "",
+                                          (DRYRUN and "echo Would do: ") or "",
                                           cmd,
                                           os.environ["CVSROOT"], repo,
                                           trailing_slash_or_comma_v,
                                           remote['host'], repodir, repo,
                                           trailing_slash_or_comma_v))
     if VERBOSE:
-        complain("Doing rsync cmd:\n\t%s\n", cmd)
+        complain("%sDoing rsync cmd:\n\t%s\n",
+                 ((DRYRUN and "NOT ") or ""), cmd)
 
     result = os.system(cmd)
     if result:
@@ -375,7 +392,7 @@ def do_chmod(subjs):
     if not fnames:
         fnames = ["."]
     cmd = ("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
-                                 (DRYRUN and "echo ") or "",
+                                 (DRYRUN and "echo would do: ") or "",
                                  string.join(fnames, " ")))
     if VERBOSE:
         complain("Reexecing, cmd:\n\t%s\n", cmd)
@@ -393,9 +410,15 @@ def loosen_file(fname):
 def grok_file(s):
     """Separate "file,old-version,new-version"."""
     m = sVv_re.match(s)
-    if not m:
-        raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
-    return m.groups()
+    if got_re:
+        if not m:
+            raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
+        return m.groups()
+    else:
+        # regex instead of re.
+        if m == -1:
+            raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
+        return sVv_re.group(1, 2, 3)
 
 failures = 0
 def note_failure(msg, *args):
