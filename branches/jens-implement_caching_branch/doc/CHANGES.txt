@@ -1,0 +1,73 @@
+PluggableAuthService changelog
+
+  PluggableAuthService 1.0.3 (2004/10/16)
+
+    Bugs Fixed
+
+      - Implemented support for issuing challenges via IChallengePlugins.
+
+        - three challenge styles in particular:
+
+          - HTTP Basic Auth
+
+          - CookieCrumbler-like redirection
+
+          - Inline authentication form
+
+      - Made unit tests pass when run with cAccessControl.
+
+      - plugins/ZODBRoleManager.py: don't claim authority for 'Authenticated'
+        or 'Anonymous' roles, which are managed by PAS.
+
+      - plugins/ZODBRoleManager.py: don't freak out if a previously assigned
+        principal goes away.
+
+      - plugins/ZODBGroupManager.py: don't freek out if a previously assigned
+        principal goes away.
+
+      - plugins/ZODBUserManager.py: plugin now uses AuthEncoding for its
+        password encryption so that we can more easily support migrating
+        existing UserFolders. Since PAS has been out for a while,
+        though, we still will authenticate against old credentials
+
+      - Repaired arrow images in two-list ZMI views.
+
+      - searchPrincipals will work for exact matches when a plugin supports
+        both 'enumerateUsers' and 'enumerateGroups'.
+
+      - 'Authenticated' Role is now added dynamically by the
+        PluggableAuthService, not by any role manager
+
+      - Added WARNING-level logs with tracebacks for all swallowed
+        plugin exceptions, so that you notice that there is something
+        wrong with the plugins.
+
+      - All authenticateCredentials() returned a single None when they
+        could not authenticate, although all calls expected a tuple.
+
+      - The user id in extract user now calls _verifyUser to get the ID
+        mangled by the enumeration plugin, instead of mangling it with the
+        authentication ID, thereby allowing the authentication and
+        enumeration plugins to be different plugins.
+
+
+  PluggableAuthService 1.0.2 (2004/07/15)
+
+    Bugs Fixed
+
+      - ZODBRoleManager and ZODBGroupManager needed the "two_lists" view,
+        and associated images, which migrated to the PluginRegsitry product
+        when they split;  restored them.
+
+  PluggableAuthService 1.0.1 (2004/05/18)
+
+    Bugs Fixed
+
+      - CookieAuth plugin didn't successfully set cookies (first, because
+        of a NameError, then, due to a glitch with long lines).
+
+      - Missing ZPL in most modules.
+
+  PluggableAuthService 1.0 (2004/04/29)
+
+    - Initial release
