@@ -13,12 +13,15 @@
 ##############################################################################
 """Test OnlineHelp
 
-$Id: test_onlinehelp.py,v 1.1 2003/01/07 12:27:52 srichter Exp $
+$Id: test_onlinehelp.py,v 1.2 2003/06/24 09:56:10 rogerineichen Exp $
 """
 import os
 from unittest import TestSuite, makeSuite
 from zope.interface import Interface
+from zope.interface.verify import verifyObject
 from zope.app.onlinehelp import OnlineHelp
+from zope.app.interfaces.onlinehelp import IOnlineHelp
+from zope.app.interfaces.traversing import IContainmentRoot
 from test_onlinehelptopic import TestOnlineHelpTopic, testdir
 
 class I1(Interface):
@@ -52,6 +55,11 @@ class TestOnlineHelp(TestOnlineHelpTopic):
         self.assertEqual(
             self.topic.getTopicsForInterfaceAndView(I1, View)[0].title,
             'Help 2')
+            
+    def test_interface(self):
+        verifyObject(IOnlineHelp, self.topic)
+        verifyObject(IContainmentRoot, self.topic)
+
 
 def test_suite():
     return TestSuite((

@@ -13,11 +13,13 @@
 ##############################################################################
 """Test OnlineHelpTopic
 
-$Id: test_onlinehelptopic.py,v 1.1 2003/01/07 12:27:52 srichter Exp $
+$Id: test_onlinehelptopic.py,v 1.2 2003/06/24 09:56:10 rogerineichen Exp $
 """
 import os
 from unittest import TestCase, TestSuite, makeSuite
+from zope.interface.verify import verifyObject
 from zope.app.onlinehelp import OnlineHelpTopic
+from zope.app.interfaces.onlinehelp import IOnlineHelpTopic
 
 def testdir():
     import zope.app.onlinehelp.tests
@@ -46,6 +48,10 @@ class TestOnlineHelpTopic(TestCase):
         self.topic.setContentPath(path, 'foo')
         self.assertEqual(self.topic.getContent(),
                          'This is a help!')
+                         
+    def test_interface(self):
+        verifyObject(IOnlineHelpTopic, self.topic)
+              
 
 def test_suite():
     return TestSuite((
