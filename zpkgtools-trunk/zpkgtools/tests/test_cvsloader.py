@@ -125,6 +125,35 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assertEqual(result.path, "project/module/relative/path")
         self.assertEqual(result.tag, "FOO")
 
+    def test_repository_join_without_path(self):
+        repo = cvsloader.RepositoryUrl(None)
+        cvsurl = cvsloader.CvsUrl("", "cvs.example.org", "/cvsroot",
+                                  "project/module")
+        result = repo.join(cvsurl)
+        self.assert_(not result.type)
+        self.assertEqual(result.host, "cvs.example.org")
+        self.assertEqual(result.cvsroot, "/cvsroot")
+        self.assertEqual(result.path, "project/module")
+        self.assert_(not result.tag)
+
+        cvsurl.tag = "TAG"
+        result = repo.join(cvsurl)
+        self.assert_(not result.type)
+        self.assertEqual(result.host, "cvs.example.org")
+        self.assertEqual(result.cvsroot, "/cvsroot")
+        self.assertEqual(result.path, "project/module")
+        self.assertEqual(result.tag, "TAG")
+
+        repo.tag = "FOO"
+        result = repo.join(cvsurl)
+        self.assertEqual(result.path, "project/module")
+        self.assertEqual(result.tag, "FOO")
+
+        cvsurl.tag = None
+        result = repo.join(cvsurl)
+        self.assertEqual(result.path, "project/module")
+        self.assertEqual(result.tag, "FOO")
+
     def test_parse_cvs(self):
         def check(url,
                   type, username, password, host, cvsroot, path, tag):
