@@ -84,3 +84,23 @@ Zope 2 content classes. Note however that these permissions will be
 ignored by views anyway, as they are trusted -- it only serves to
 protect directly exposed methods on content classes (the python
 scripts and the ZPublisher).
+
+Local Site Manager
+==================
+
+Five can support the concept of a Local Site Manager. The steps for
+creating one are:
+
+  - Register your Zope 2 class with the 'local site hook' using the
+    <five:localsitehook> directive. Doing that will mixin the FiveSite
+    class into your class by means of 'structured monkey patching'.
+
+  - Implement an ``IFiveSite`` adapter for your Zope 2 class. For the full
+    interface definition refer to
+    ``Products.Five.interfaces.IFiveSite``.
+
+  - To enable the Local Site Hook for an instance of your class, use::
+
+    from Products.Five.localsite import enableLocalSiteHook
+    enableLocalSiteHook(obj)
+

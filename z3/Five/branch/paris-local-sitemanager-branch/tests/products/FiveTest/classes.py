@@ -36,3 +36,4 @@ class OverrideAdapter:
 
     def method(self):
         return "Overridden"
+

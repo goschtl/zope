@@ -111,7 +111,7 @@
       />
 
   <adapter
-      factory=".adapter.serviceServiceAdapter"
+      factory=".localsite.serviceServiceAdapter"
       provides="zope.component.IServiceService"
       for="zope.interface.Interface"
       />

@@ -19,9 +19,10 @@ import warnings
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
+from zope.app.site.interfaces import IPossibleSite
 from viewable import Viewable
 from traversable import Traversable
-from traversable import FiveSite
+from localsite import FiveSite
 from bridge import fromZ2Interface
 from browserconfigure import page
 
@@ -212,4 +213,9 @@ def installFiveSiteHook(_context, class_):
         discriminator = None,
         callable = classFiveSiteHook,
         args=(class_,)
+        )
+    _context.action(
+        discriminator = None,
+        callable = classImplements,
+        args=(class_, IPossibleSite)
         )

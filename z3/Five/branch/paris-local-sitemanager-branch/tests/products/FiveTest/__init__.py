@@ -1,5 +1,6 @@
 import simplecontent
 import fancycontent
+import localsite
 
 def initialize(context):
 
@@ -32,5 +33,7 @@ def initialize(context):
                         simplecontent.manage_addFieldSimpleContent,)
         )
 
-
-
+    context.registerClass(
+        localsite.DummySite,
+        constructors = (localsite.manage_addDummySite,)
+        )

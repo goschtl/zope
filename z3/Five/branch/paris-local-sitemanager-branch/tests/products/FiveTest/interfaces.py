@@ -37,6 +37,9 @@ class IIndexSimpleContent(ISimpleContent):
 class IFancyContent(Interface):
     pass
 
+class IDummySite(Interface):
+    pass
+
 class IFieldSimpleContent(ISimpleContent):
     title = TextLine(
         title=u"Title",

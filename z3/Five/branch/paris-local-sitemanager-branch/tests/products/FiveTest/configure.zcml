@@ -295,7 +295,7 @@
       />
 
   <five:traversable class="OFS.ObjectManager.ObjectManager" />
-  
+
   <browser:addform
      schema=".interfaces.IFieldSimpleContent"
      content_factory=".simplecontent.FieldSimpleContent"
@@ -419,5 +419,15 @@
        can be imported -->
 
   <include package="zope.app.form.browser"/>
+
+  <adapter
+      for=".interfaces.IDummySite"
+      provides="Products.Five.interfaces.IFiveSite"
+      factory=".localsite.SimpleFiveSiteAdapter"
+      />
+
+  <five:localsitehook
+      class=".localsite.DummySite"
+      />
 
 </configure>
