@@ -13,16 +13,17 @@
 ##############################################################################
 """Widgets specific to WebDAV
 
-$Id: widget.py,v 1.3 2003/06/03 22:46:19 jim Exp $
+$Id: widget.py,v 1.4 2003/06/06 19:29:01 stevea Exp $
 """
 
 from zope.app.interfaces.dav import ISimpleDAVWidget
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
 from zope.app.form.widget import Widget
+from zope.interface import implements
 
 class SimpleDAVWidget(Widget):
-    __implements__ = (ISimpleDAVWidget, IWidget, IViewFactory)
+    implements(ISimpleDAVWidget, IWidget, IViewFactory)
 
     def haveData(self):
         return 1

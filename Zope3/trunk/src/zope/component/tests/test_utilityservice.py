@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utilityservice.py,v 1.5 2003/05/01 19:35:39 faassen Exp $
+$Id: test_utilityservice.py,v 1.6 2003/06/06 19:29:08 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -23,7 +23,7 @@ from zope.component import \
      getUtility, getService, queryUtility, getServiceManager
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
@@ -31,7 +31,7 @@ class IDummyService(Interface):
     pass
 
 class DummyService:
-    __implements__ = IDummyService
+    implements(IDummyService)
 
 dummyService = DummyService()
 

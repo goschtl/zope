@@ -14,7 +14,7 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.4 2003/06/03 22:46:23 jim Exp $
+$Id: service.py,v 1.5 2003/06/06 19:29:05 stevea Exp $
 """
 __metaclass__ = type
 
@@ -38,6 +38,7 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.workflow import IProcessDefinitionConfiguration
 from zope.app.interfaces.workflow import IProcessDefinition
 from zope.app.interfaces.workflow import IWorkflowService
+from zope.interface import implements
 
 
 class ILocalWorkflowService(IWorkflowService, INameComponentConfigurable):
@@ -49,8 +50,7 @@ class WorkflowService(Persistent, NameComponentConfigurable):
 
     __doc__ = IWorkflowService.__doc__
 
-    __implements__ = ILocalWorkflowService, ISimpleService 
-                     
+    implements(ILocalWorkflowService, ISimpleService)
 
     ############################################################
     # Implementation methods for interface
@@ -105,14 +105,11 @@ class WorkflowService(Persistent, NameComponentConfigurable):
     ############################################################
 
 
-
-
 class ProcessDefinitionConfiguration(NamedComponentConfiguration):
 
     __doc__ = IProcessDefinitionConfiguration.__doc__
 
-    __implements__ = (IProcessDefinitionConfiguration,
-                      NamedComponentConfiguration.__implements__)
+    implements(IProcessDefinitionConfiguration)
 
     status = ConfigurationStatusProperty('Workflows')
 
@@ -143,5 +140,5 @@ class ProcessDefinitionConfiguration(NamedComponentConfiguration):
         pd = configuration.getComponent()
         adapter = getAdapter(pd, IUseConfiguration)
         adapter.removeUsage(getPath(configuration))
-        super(ProcessDefinitionConfiguration, self).beforeDeleteHook(configuration,
-                                                                     container)
+        super(ProcessDefinitionConfiguration, self).beforeDeleteHook(
+            configuration, container)

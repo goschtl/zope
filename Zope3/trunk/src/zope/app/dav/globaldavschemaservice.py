@@ -12,15 +12,16 @@
 #
 ##############################################################################
 """
-$Id: globaldavschemaservice.py,v 1.2 2003/05/20 19:43:27 sidnei Exp $
+$Id: globaldavschemaservice.py,v 1.3 2003/06/06 19:29:01 stevea Exp $
 """
 
 from zope.component.exceptions import ComponentLookupError
 from zope.app.component.globalinterfaceservice import InterfaceService
 from zope.app.interfaces.component import IGlobalDAVSchemaService
+from zope.interface import implements
 
 class DAVSchemaService(InterfaceService):
-    __implements__ = IGlobalDAVSchemaService
+    implements(IGlobalDAVSchemaService)
 
     def __init__(self, data=None):
         if data is None:

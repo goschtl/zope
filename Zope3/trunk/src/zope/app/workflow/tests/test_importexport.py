@@ -19,18 +19,18 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.workflow import globalimportexport
 from zope.app.workflow.tests import directive_helpers
 
+from zope.interface import implements
+
 gIE = globalimportexport.globalImportExport
 dh = directive_helpers
 
 class PDA:
 
-    __implements__ = dh.ITestProcessDefinitionA
+    implements(dh.ITestProcessDefinitionA)
 
 class PDB:
 
-    __implements__ = dh.ITestProcessDefinitionB
-
-
+    implements(dh.ITestProcessDefinitionB)
 
 
 class Test(PlacelessSetup, unittest.TestCase):
@@ -60,9 +60,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                          'Exported A')
         self.assertEqual(gIE.exportProcessDefinition(None, PDB()),
                          'Exported B')
-        
 
-        
 
 def test_suite():
     loader=unittest.TestLoader()

@@ -13,15 +13,16 @@
 ##############################################################################
 """Collection of possible Mail Events.
 
-$Id: event.py,v 1.1 2003/04/16 13:45:43 srichter Exp $
+$Id: event.py,v 1.2 2003/06/06 19:29:03 stevea Exp $
 """
 from zope.app.interfaces.mail import IMailSentEvent
+from zope.interface import implements
 
 
 class MailSentEvent:
     __doc__ = IMailSentEvent.__doc__
 
-    __implements__ =  IMailSentEvent
+    implements(IMailSentEvent)
 
     def __init__(self, mailer):
         self.mailer = mailer 

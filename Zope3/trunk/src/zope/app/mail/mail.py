@@ -15,14 +15,15 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: mail.py,v 1.3 2003/06/03 22:46:20 jim Exp $
+$Id: mail.py,v 1.4 2003/06/06 19:29:03 stevea Exp $
 """
 from zope.app.interfaces.mail import IAsyncMailService
+from zope.interface import implements
 
 class AsyncMailService:
     __doc__ = IAsyncMailService.__doc__
 
-    __implements__ = IAsyncMailService
+    implements(IAsyncMailService)
 
 
     # See zope.app.interfaces.services.mail.IMailService

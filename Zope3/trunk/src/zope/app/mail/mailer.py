@@ -15,19 +15,20 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: mailer.py,v 1.3 2003/05/19 10:03:37 ryzaja Exp $
+$Id: mailer.py,v 1.4 2003/06/06 19:29:03 stevea Exp $
 """
 from smtplib import SMTP
 
 from zope.app.interfaces.mail import IMailer, IBatchMailer
 from zope.app.event import publish
 from zope.app.mail.event import MailSentEvent
+from zope.interface import implements
 
 
 class SimpleMailer:
     __doc__ = IMailer.__doc__
 
-    __implements__ = IMailer
+    implements(IMailer)
 
     def send(self, fromaddr, toaddrs, message,
              hostname, port, username, password):
@@ -44,7 +45,7 @@ class SimpleMailer:
 class BatchMailer:
     __doc__ = IBatchMailer.__doc__
 
-    __implements__ =  IBatchMailer
+    implements(IBatchMailer)
 
     # See zope.app.interfaces.mail.IBatchMailer
     batchDelay = 5000

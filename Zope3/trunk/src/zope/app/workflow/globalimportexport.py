@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition Import Export Utility
 
-$Id: globalimportexport.py,v 1.2 2003/05/28 15:46:13 jim Exp $
+$Id: globalimportexport.py,v 1.3 2003/06/06 19:29:05 stevea Exp $
 """
 __metaclass__ = type
 
@@ -22,22 +22,22 @@ from zope.interface._flatten import _flatten
 from zope.proxy import removeAllProxies
 from zope.app.interfaces.workflow import IProcessDefinition
 from zope.app.interfaces.workflow import IGlobalProcessDefinitionImportExport
+from zope.interface import implements, providedBy
 
 from StringIO import StringIO
 
 class ImportExportUtility:
 
-    __implements__ = IGlobalProcessDefinitionImportExport
-
+    implements(IGlobalProcessDefinitionImportExport)
 
     def __init__(self):
         self._importers = ImplementorRegistry()
         self._exporters = ImplementorRegistry()
-        
+
     _clear = __init__
 
     # IProcessDefinitionImportExport
-    
+
     def importProcessDefinition(self, context, data):
         """Import a Process Definition
         """
@@ -58,8 +58,8 @@ class ImportExportUtility:
         """Export a Process Definition
         """
         clean_pd = removeAllProxies(process_definition)
-        interfaces = filter(lambda x: x.extends(IProcessDefinition),
-                           _flatten(clean_pd.__implements__))
+        interfaces = [x for x in providedBy(clean_pd)
+                      if x.extends(IProcessDefinition)]
         for interface in interfaces:
             factory = self._exporters.get(interface)
             if factory is not None:
@@ -79,7 +79,6 @@ class ImportExportUtility:
         """
         self._exporters.register(interface, factory)
 
-    
 
 globalImportExport = ImportExportUtility()
 

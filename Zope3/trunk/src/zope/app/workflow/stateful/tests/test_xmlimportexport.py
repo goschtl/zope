@@ -15,7 +15,7 @@ import unittest
 from StringIO import StringIO
 
 from zope.interface.verify import verifyClass
-from zope.interface.implements import implements
+from zope.interface import implements, classImplements
 
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component.adapter import provideAdapter
@@ -42,8 +42,6 @@ from zope.app.workflow.stateful.xmlimportexport \
      import XMLImportHandler, XMLExportHandler
 
 
-
-
 xml_text = """<?xml version="1.0"?>
 <workflow type="StatefulWorkflow" title="TestPD">
 
@@ -57,7 +55,6 @@ xml_text = """<?xml version="1.0"?>
   </states>
 
   <transitions>
-     
       <transition sourceState="state2"
                   destinationState="INITIAL"
                   script="some.path.to.some.script"
@@ -65,16 +62,14 @@ xml_text = """<?xml version="1.0"?>
                   triggerMode="Manual"
                   title="State2toINITIAL"
                   name="state2_initial"/>
-    
-     
+
       <transition sourceState="INITIAL"
                   destinationState="state1"
                   permission="zope.Public"
                   triggerMode="Automatic"
                   title="INITIALtoState1"
                   name="initial_state1"/>
-    
-     
+
       <transition sourceState="state1"
                   destinationState="state2"
                   condition="python: 1==1"
@@ -82,22 +77,20 @@ xml_text = """<?xml version="1.0"?>
                   triggerMode="Manual"
                   title="State1toState2"
                   name="state1_state2"/>
-    
+
   </transitions>
-  
+
 </workflow>
 """
 
 
 class TestProcessDefinition(StatefulProcessDefinition):
-    __implements__ = IAttributeAnnotatable, IUseConfigurable, \
-                     StatefulProcessDefinition.__implements__
+    implements(IAttributeAnnotatable, IUseConfigurable)
 
 # need to patch this cause these classes are used directly
 # in the import/export classes
-implements(State, IAttributeAnnotatable)
-implements(Transition, IAttributeAnnotatable)
-
+classImplements(State, IAttributeAnnotatable)
+classImplements(Transition, IAttributeAnnotatable)
 
 
 class Test(PlacefulSetup, unittest.TestCase):
@@ -115,7 +108,7 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testImport(self):
         testpd = TestProcessDefinition()
         handler = XMLImportHandler()
-        
+
         self.assertEqual(handler.canImport(testpd, StringIO(xml_text)), True)
         self.assertEqual(handler.canImport(None, StringIO(xml_text)), False)
         self.assertEqual(
@@ -128,14 +121,14 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(testpd.getRelevantDataSchema(),
                          'Some.path.to.an.ISchemaClass')
         self.assertEqual(getAdapter(testpd, IZopeDublinCore).title, 'TestPD')
-        
+
         self.assertEqual(len(testpd.states), 3)
         self.assertEqual(len(testpd.transitions), 3)
 
         st = testpd.states['INITIAL']
         self.assert_(isinstance(st, State))
         self.assertEqual(getAdapter(st, IZopeDublinCore).title, 'initial')
-                           
+
         st = testpd.states['state1']
         self.assert_(isinstance(st, State))
         self.assertEqual(getAdapter(st, IZopeDublinCore).title, 'State1')
@@ -155,7 +148,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(tr.script, None)
         self.assertEqual(tr.permission, CheckerPublic)
         self.assertEqual(tr.triggerMode, 'Automatic')
-        
+
         tr = testpd.transitions['state1_state2']
         self.assert_(isinstance(tr, Transition))
         self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
@@ -166,7 +159,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(tr.script, None)
         self.assertEqual(tr.permission, CheckerPublic)
         self.assertEqual(tr.triggerMode, 'Manual')
-        
+
         tr = testpd.transitions['state2_initial']
         self.assert_(isinstance(tr, Transition))
         self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
@@ -181,9 +174,7 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testExport(self):
         # XXX TBD before Merge into HEAD !!!!
         pass
-        
 
-        
 
 def test_suite():
     loader=unittest.TestLoader()

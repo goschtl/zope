@@ -17,7 +17,7 @@ from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getView, getService, queryView
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Skins
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.component.tests.request import Request
 
 
@@ -28,13 +28,14 @@ class Test(PlacelessSetup, unittest.TestCase):
         class I2(Interface): pass
 
         class C1:
-            __implements__ = I2
+            implements(I2)
             __used_for__ = I1
             def __init__(self, o, request): self._context=o
         class C2(C1): pass
         class C3(C1): pass
 
-        class O: __implements__ = I1
+        class O:
+            implements(I1)
 
         getService(None, 'Views').provideView(I1, 'test', I2, [C1])
         self.assertEqual(getView(O(), 'test', Request(I2)).__class__, C1)
@@ -61,13 +62,14 @@ class Test(PlacelessSetup, unittest.TestCase):
         class I2(Interface): pass
 
         class C1:
-            __implements__ = I2
+            implements(I2)
             __used_for__ = I1
             def __init__(self, o, request): self._context=o
         class C2(C1): pass
         class C3(C1): pass
 
-        class O: __implements__ = I1
+        class O:
+            implements(I1)
 
 
         getService(None, 'Views').provideView(I1, 'test', I2, [C1])
@@ -97,7 +99,6 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         self.assertEqual(queryView(O(), 'test2',
                                    Request(I2, 'foo'), None), None)
-
 
 
 def test_suite():

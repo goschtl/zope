@@ -14,11 +14,11 @@
 
 """Stateful workflow process definition.
 
-$Id: test_definition.py,v 1.1 2003/05/08 17:27:20 jack-e Exp $
+$Id: test_definition.py,v 1.2 2003/06/06 19:29:07 stevea Exp $
 """
 import unittest
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 
@@ -30,14 +30,14 @@ class IDummyState(Interface):
     """A really dummy state"""
 
 class DummyState:
-    __implements__ = IDummyState
+    implements(IDummyState)
 
 
 class IDummyTransition(Interface):
     """A really dummy transition"""
 
 class DummyTransition:
-    __implements__ = IDummyTransition
+    implements(IDummyTransition)
 
 
 class IDummyDataSchema(Interface):

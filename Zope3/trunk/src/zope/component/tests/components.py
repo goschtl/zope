@@ -13,12 +13,11 @@
 ##############################################################################
 """
 
-$Id: components.py,v 1.4 2003/02/18 19:40:29 gvanrossum Exp $
+$Id: components.py,v 1.5 2003/06/06 19:29:08 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-from zope.interface import Interface
-from zope.interface import Attribute
+from zope.interface import Interface, Attribute, implements
 
 class RecordingAdapter:
 
@@ -49,11 +48,12 @@ class IApp(Interface):
 
 class IContent(Interface): pass
 
-class Content: __implements__ = IContent
+class Content:
+    implements(IContent)
 
 class Comp:
     __used_for__ = IContent
-    __implements__ = IApp
+    implements(IApp)
 
     def __init__(self, *args):
         # Ignore arguments passed to constructor

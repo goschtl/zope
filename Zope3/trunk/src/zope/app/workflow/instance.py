@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.5 2003/06/03 22:46:23 jim Exp $
+$Id: instance.py,v 1.6 2003/06/06 19:29:05 stevea Exp $
 """
 __metaclass__ = type
 
@@ -26,6 +26,7 @@ from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.interfaces.workflow \
      import IProcessInstance, IProcessInstanceContainer
 
+from zope.interface import implements
 from zope.component import getAdapter
 
 # XXX should an Instance be persistent by default ???
@@ -33,34 +34,24 @@ class ProcessInstance:
 
     __doc__ = IProcessInstance.__doc__
 
-    __implements__ =  IProcessInstance
+    implements(IProcessInstance)
 
     def __init__(self, pd_name):
         self._pd_name = pd_name
         self._status = None
-  
-    
+
     ############################################################
     # Implementation methods for interface
     # zope.app.interfaces.workflow.IProcessInstance
-
 
     processDefinitionName = property(lambda self: self._pd_name)
 
     status = property(lambda self: self._status)
 
-
     #
     ############################################################
 
-
     ## should probably have a method "getProcessDefinition"
-
-
-
-
-
-
 
 
 _marker = object()
@@ -69,7 +60,7 @@ WFKey = "zope.app.worfklow.ProcessInstanceContainer"
 
 class ProcessInstanceContainerAdapter:
 
-    __implements__ = IProcessInstanceContainer
+    implements(IProcessInstanceContainer)
 
     __used_for__ = IAnnotatable
 
@@ -86,7 +77,7 @@ class ProcessInstanceContainerAdapter:
         "See IProcessInstanceContainer"
         value = self.wfdata[key]
         return ContextWrapper(value, self.context, name=key)
- 
+
     def get(self, key, default=None):
         "See IProcessInstanceContainer"
         value = self.wfdata.get(key, _marker)
@@ -94,12 +85,11 @@ class ProcessInstanceContainerAdapter:
             return ContextWrapper(value, self.context, name=key)
         else:
             return default
- 
+
     def __contains__(self, key):
         "See IProcessInstanceContainer"
         return key in self.wfdata
- 
- 
+
     def values(self):
         "See IProcessInstanceContainer"
         container = self.wfdata
@@ -107,15 +97,15 @@ class ProcessInstanceContainerAdapter:
         for key, value in container.items():
             result.append(ContextWrapper(value, self.context, name=key))
         return result
- 
+
     def keys(self):
         "See IProcessInstanceContainer"
         return self.wfdata.keys()
- 
+
     def __len__(self):
         "See IProcessInstanceContainer"
         return len(self.wfdata)
- 
+
     def items(self):
         "See IProcessInstanceContainer"
         container = self.wfdata
@@ -123,20 +113,19 @@ class ProcessInstanceContainerAdapter:
         for key, value in container.items():
             result.append((key, ContextWrapper(value, self.context, name=key)))
         return result
-    
+
     def setObject(self, key, object):
         "See IProcessInstanceContainer"
- 
+
         if not isinstance(key, StringTypes):
             raise TypeError("Item name is not a string.")
- 
+
         container = self.wfdata
         object = removeAllProxies(object)
         container[key] = object
         # publish event ??
         return key
- 
- 
+
     def __delitem__(self, key):
         "See IZopeWriteContainer"
         container = self.wfdata

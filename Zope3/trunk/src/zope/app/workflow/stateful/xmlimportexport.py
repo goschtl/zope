@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.4 2003/06/03 22:46:23 jim Exp $
+$Id: xmlimportexport.py,v 1.5 2003/06/06 19:29:07 stevea Exp $
 """
 __metaclass__ = type
 
@@ -33,7 +33,7 @@ from xml.sax import parse
 from xml.sax.handler import ContentHandler
 
 from zope.app.workflow.stateful.definition import State, Transition
-
+from zope.interface import implements
 
 
 # basic implementation for a format-checker
@@ -49,18 +49,15 @@ class XMLFormatChecker(ContentHandler):
     def endElement(self, name):
         pass
 
-
     def isValid(self):
         return self.__valid
-
-
 
 
 class XMLStatefulImporter(ContentHandler):
     def __init__(self, context, encoding='latin-1'):
         self.context = context
         self.encoding = encoding
-    
+
     def startElement(self, name, attrs):
         handler = getattr(self, 'start' + name.title().replace('-', ''), None)
         if not handler:
@@ -76,7 +73,7 @@ class XMLStatefulImporter(ContentHandler):
     def noop(*args):
         pass
 
-    startStates      = noop
+    startStates = noop
     startTransitions = noop
 
     def startWorkflow(self, attrs):
@@ -106,21 +103,22 @@ class XMLStatefulImporter(ContentHandler):
         permission = attrs.get('permission', '').encode(encoding)
         if permission == 'zope.Public':
             permission = CheckerPublic
-        trans = Transition(source = attrs['sourceState'].encode(encoding),
-                           destination = attrs['destinationState'].encode(encoding),
-                           condition = attrs.get('condition', '').encode(encoding),
-                           script = attrs.get('script', '').encode(encoding),
-                           permission = permission,
-                           triggerMode = attrs['triggerMode'].encode(encoding))
+        trans = Transition(
+                source = attrs['sourceState'].encode(encoding),
+                destination = attrs['destinationState'].encode(encoding),
+                condition = attrs.get('condition', '').encode(encoding),
+                script = attrs.get('script', '').encode(encoding),
+                permission = permission,
+                triggerMode = attrs['triggerMode'].encode(encoding)
+                )
         dc = getAdapter(trans, IZopeDublinCore)
         dc.title = attrs.get('title', u'')
         self.context.addTransition(name, trans)
 
 
-        
 class XMLImportHandler:
 
-    __implements__ = IProcessDefinitionImportHandler
+    implements(IProcessDefinitionImportHandler)
 
     # XXX Implementation needs more work !!
     # check if xml-data can be imported and represents a StatefulPD
@@ -129,17 +127,16 @@ class XMLImportHandler:
         parse(data, checker)
         return bool(IStatefulProcessDefinition.isImplementedBy(context)) \
                and checker.isValid()
-    
 
     def doImport(self, context, data):
         # XXX Manually clean ProcessDefinition ??
         context.clear()
         parse(data, XMLStatefulImporter(context))
-    
+
 
 class XMLExportHandler:
 
-    __implements__ = IProcessDefinitionExportHandler
+    implements(IProcessDefinitionExportHandler)
 
     template = ViewPageTemplateFile('xmlexport_template.pt')
 

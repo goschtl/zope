@@ -15,14 +15,15 @@
 
 This module contains various implementations of MailServices.
 
-$Id: service.py,v 1.2 2003/05/19 10:03:37 ryzaja Exp $
+$Id: service.py,v 1.3 2003/06/06 19:29:03 stevea Exp $
 """
 from zope.app.interfaces.mail import IAsyncMailService
+from zope.interface import implements
 
 class AsyncMailService:
     __doc__ = IAsyncMailService.__doc__
 
-    __implements__ = IAsyncMailService
+    implements(IAsyncMailService)
 
     # See zope.app.interfaces.services.mail.IMailService
     hostname = u''

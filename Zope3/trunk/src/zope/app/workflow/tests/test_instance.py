@@ -23,10 +23,11 @@ from zope.app.workflow.instance import ProcessInstance
 
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.workflow.instance import ProcessInstanceContainerAdapter, WFKey
+from zope.interface import implements
 
 class TestAnnotations(dict):
 
-    __implements__ = IAnnotations
+    implements(IAnnotations)
 
 class DummyInstance:
     pass
@@ -36,7 +37,6 @@ class ProcessInstanceTests(unittest.TestCase):
 
     def testInterface(self):
         verifyClass(IProcessInstance, ProcessInstance)
-
 
 
 class ProcessInstanceContainerAdapterTests(PlacelessSetup, unittest.TestCase):
@@ -58,7 +58,7 @@ class ProcessInstanceContainerAdapterTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(pica.values(), [])
         self.assertEqual(pica.get('nothing', 1), 1)
         self.assertRaises(TypeError, pica.setObject, 123, None)
-        
+
         pica.setObject('dummy', di)
         self.assertEqual(len(pica), 1)
         self.assertEqual(pica.keys(), ['dummy'])
@@ -72,11 +72,6 @@ class ProcessInstanceContainerAdapterTests(PlacelessSetup, unittest.TestCase):
 
         self.assertEqual(len(pica), 0)
         self.failIf('dummy' in pica)
-        
-        
-
-
-
 
 
 def test_suite():

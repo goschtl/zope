@@ -17,7 +17,7 @@ __metaclass__ = type
 from zope.app.interfaces.workflow import IProcessDefinition
 from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
 from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
-
+from zope.interface import implements
 
 
 class ITestProcessDefinitionA(IProcessDefinition):
@@ -29,7 +29,7 @@ class ITestProcessDefinitionB(IProcessDefinition):
 
 class TestImportHandlerA:
 
-    __implements__ = IProcessDefinitionImportHandler
+    implements(IProcessDefinitionImportHandler)
 
     def canImport(self, context, data):
         return bool(data.read() == 'A')
@@ -40,7 +40,7 @@ class TestImportHandlerA:
 
 class TestImportHandlerB:
 
-    __implements__ = IProcessDefinitionImportHandler
+    implements(IProcessDefinitionImportHandler)
 
     def canImport(self, context, data):
         return bool(data.read() == 'B')
@@ -49,10 +49,9 @@ class TestImportHandlerB:
         return 'Imported B'
 
 
-
 class TestExportHandlerA:
 
-    __implements__ = IProcessDefinitionExportHandler
+    implements(IProcessDefinitionExportHandler)
 
     def doExport(self, context, process_definition):
         return 'Exported A'
@@ -60,7 +59,7 @@ class TestExportHandlerA:
 
 class TestExportHandlerB:
 
-    __implements__ = IProcessDefinitionExportHandler
+    implements(IProcessDefinitionExportHandler)
 
     def doExport(self, context, process_definition):
         return 'Exported B'

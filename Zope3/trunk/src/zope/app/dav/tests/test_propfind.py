@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.6 2003/06/03 22:46:19 jim Exp $
+$Id: test_propfind.py,v 1.7 2003/06/06 19:29:02 stevea Exp $
 """
 __metaclass__ = type
 
@@ -41,10 +41,11 @@ from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
+from zope.interface import implements
 
 class Folder:
 
-    __implements__ = IReadContainer
+    implements(IReadContainer)
 
     def __init__(self, name, level=0):
         self.name = name
@@ -61,7 +62,7 @@ class Folder:
 
 class File:
 
-    __implements__ = IWriteFile
+    implements(IWriteFile)
 
     def __init__(self, name, content_type, data):
         self.name = name
@@ -73,7 +74,7 @@ class File:
 
 class FooZPT:
 
-    __implements__ = (IAnnotatable, IZPTPage)
+    implements(IAnnotatable, IZPTPage)
 
     def getSource(self):
         return 'bla bla bla'

@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-Revision information: $Id: views.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+Revision information: $Id: views.py,v 1.3 2003/06/06 19:29:08 stevea Exp $
 """
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 
 class IV(Interface):
@@ -25,7 +25,7 @@ class IV(Interface):
 class IC(Interface): pass
 
 class V1:
-    __implements__ = IV
+    implements(IV)
 
     def __init__(self,context, request):
         self.context = context
@@ -47,7 +47,7 @@ class R1:
     def __init__(self, request):
         pass
 
-    __implements__ = IV
+    implements(IV)
 
 class RZMI(R1):
     pass

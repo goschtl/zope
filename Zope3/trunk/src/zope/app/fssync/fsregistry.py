@@ -15,11 +15,12 @@
 
 This acts as a global (placeless) service.
 
-$Id: fsregistry.py,v 1.3 2003/05/15 18:45:33 gvanrossum Exp $
+$Id: fsregistry.py,v 1.4 2003/06/06 19:29:02 stevea Exp $
 """
 
 from zope.app.interfaces.fssync import IGlobalFSSyncService
 from zope.exceptions import DuplicationError, NotFoundError
+from zope.interface import implements
 
 class FSRegistry(object):
     """Registry Wrapper class.
@@ -27,7 +28,7 @@ class FSRegistry(object):
     This is a maping from Class -> Serializer Factory Method.
     """
 
-    __implements__ = IGlobalFSSyncService
+    implements(IGlobalFSSyncService)
 
     def __init__(self):
         self._class_factory_reg = {}

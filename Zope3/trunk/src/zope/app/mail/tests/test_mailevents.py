@@ -15,15 +15,15 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_mailevents.py,v 1.1 2003/04/16 13:45:44 srichter Exp $
+$Id: test_mailevents.py,v 1.2 2003/06/06 19:29:04 stevea Exp $
 """
 from unittest import TestCase, TestSuite, makeSuite
 from zope.app.interfaces.mail import IMailer, IMailSentEvent
 from zope.app.mail.event import MailSentEvent
-
+from zope.interface import implements
 
 class MailerStub:
-    __implements__ = IMailer
+    implements(IMailer)
 
     def send(self, fromaddr, toaddrs, message,
              hostname, port, username, password):

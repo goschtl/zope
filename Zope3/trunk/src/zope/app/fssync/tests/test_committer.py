@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.14 2003/06/05 18:58:46 gvanrossum Exp $
+$Id: test_committer.py,v 1.15 2003/06/06 19:29:03 stevea Exp $
 """
 
 import os
@@ -43,14 +43,16 @@ from zope.app.fssync.classes import Default
 
 from zope.app.content.fssync import DirectoryAdapter
 
+from zope.interface import implements
+
 
 class Sample(object):
     pass
 
 
 class PretendContainer(object):
-    
-    __implements__ = IContainer, ITraversable, IZopeContainer
+
+    implements(IContainer, ITraversable, IZopeContainer)
 
     def __init__(self):
         self.holding = {}

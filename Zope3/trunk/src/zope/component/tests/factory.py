@@ -13,29 +13,29 @@
 ##############################################################################
 """
 
-$Id: factory.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+$Id: factory.py,v 1.3 2003/06/06 19:29:08 stevea Exp $
 """
 from zope.component.interfaces import IFactory
-from zope.interface import Interface
+from zope.interface import Interface, implements, implementedBy
 
 class IX(Interface):
     """the dummy interface which class X supposedly implements,
     according to the factory"""
 
 class X:
-    __implements__=IX
+    implements(IX)
     def __init__(self, *args, **kwargs):
         self.args=args
         self.kwargs=kwargs
 
 
 class ClassFactoryWrapper:
-    __implements__ = IFactory
+    implements(IFactory)
     def __init__(self, klass):
         self.__klass=klass
     def __call__(self, *args, **kwargs):
         return self.__klass(*args, **kwargs)
     def getInterfaces(self):
-        return getattr(self.__klass,'__implements__', None)
+        return implementedBy(self.__klass)
 
 f=ClassFactoryWrapper(X)

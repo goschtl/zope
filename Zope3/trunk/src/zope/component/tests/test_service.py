@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: test_service.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+$Id: test_service.py,v 1.3 2003/06/06 19:29:08 stevea Exp $
 """
 
 import unittest
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.exceptions import DuplicationError
 from zope.testing.cleanup import CleanUp
@@ -37,10 +37,10 @@ class ITwo(Interface):
     pass
 
 class ServiceOne:
-    __implements__ = IOne
+    implements(IOne)
 
 class ServiceTwo:
-    __implements__ = ITwo
+    implements(ITwo)
 
 class Test(CleanUp, unittest.TestCase):
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_resources.py,v 1.6 2003/05/01 19:35:39 faassen Exp $
+$Id: test_resources.py,v 1.7 2003/06/06 19:29:08 stevea Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getResource, queryResource
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Skins, Resources
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.component.tests.request import Request
 
 class Test(PlacelessSetup, unittest.TestCase):
@@ -32,7 +32,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         class I2(Interface): pass
         class C1:
             def __init__(self, request): pass
-            __implements__ = I2
+            implements(I2)
         class C2(C1): pass
 
         getService(None,Resources).provideResource('test', I2, C1)
@@ -52,7 +52,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         class C1:
             def __init__(self, request): pass
 
-            __implements__ = I2
+            implements(I2)
         class C2(C1): pass
 
 

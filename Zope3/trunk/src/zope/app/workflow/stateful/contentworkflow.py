@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.4 2003/06/03 22:46:23 jim Exp $
+$Id: contentworkflow.py,v 1.5 2003/06/06 19:29:07 stevea Exp $
 """
 __metaclass__ = type
 
@@ -30,12 +30,12 @@ from zope.app.services.servicenames import EventSubscription, Workflows
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.interfaces.workflow.stateful import IContentWorkflowsUtility
-
+from zope.interface import implements
 
 
 class ContentWorkflowsUtility(Persistent):
 
-    __implements__ = IContentWorkflowsUtility, ISubscriber
+    implements(IContentWorkflowsUtility, ISubscriber)
 
     def __init__(self):
         super(ContentWorkflowsUtility, self).__init__()
@@ -48,18 +48,18 @@ class ContentWorkflowsUtility(Persistent):
         obj = event.object
 
         # XXX Do i need to removeAllProxies somewhere in here ???
-        
+
         # check if it implements IProcessInstanceContainerAdaptable
         if not IProcessInstanceContainerAdaptable.isImplementedBy(obj):
             return
-        
+
         pi_container = queryAdapter(obj, IProcessInstanceContainer)
         # probably need to adapt to IZopeContainer to use pi_container with
         # context.
         if pi_container is None:
             # Object can't have associated PIs.
             return
-        
+
         if IObjectCreatedEvent.isImplementedBy(event):
             wfs = getService(self, Workflows)
 
@@ -67,7 +67,7 @@ class ContentWorkflowsUtility(Persistent):
             # for the newly created compoent. For every pd_name
             # returned we will create a processinstance.
             for pd_name in self._names:
-                
+
                 if pd_name in pi_container.keys():
                     continue
                 try:
@@ -77,7 +77,7 @@ class ContentWorkflowsUtility(Persistent):
                     # No registered PD with that name..
                     continue
                 pi_container.setObject(pd_name, pi)
-                
+
     notify = ContextMethod(notify)
 
     # IContentWorkflowsUtility

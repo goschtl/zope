@@ -20,23 +20,23 @@ from zope.component import getService
 from zope.component import getUtility, queryUtility
 from zope.component.servicenames import Adapters
 from zope.component.tests.request import Request
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 
 class I1(Interface): pass
 class I2(Interface): pass
 class I3(Interface): pass
 class Comp:
-    __implements__ = I2
+    implements(I2)
     def __init__(self, context, request=None): self.context = context
 class Comp2:
-    __implements__ = I3
+    implements(I3)
     def __init__(self, context, request=None): self.context = context
 
 comp = Comp(1)
 
 class Ob:
-    __implements__ = I1
+    implements(I1)
 
 ob = Ob()
 
@@ -105,7 +105,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         provideAdapter = adapterService.provideAdapter
         getAdapter = adapterService.getAdapter
         queryAdapter = adapterService.queryAdapter
-        
+
         ob = Conforming()
 
         # If an object implements the interface you want to adapt to,
