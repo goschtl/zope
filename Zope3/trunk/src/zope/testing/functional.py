@@ -2,12 +2,14 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.3 2003/04/14 15:08:59 mgedmin Exp $
+$Id: functional.py,v 1.4 2003/04/16 15:38:36 fdrake Exp $
 """
 
-import unittest
+import logging
 import sys
 import traceback
+import unittest
+
 from cStringIO import StringIO
 
 from transaction import get_transaction
@@ -19,7 +21,6 @@ from zope.app.publication.zopepublication import ZopePublication
 from zope.app.traversing import traverse
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.publish import publish
-import logging
 
 
 class ResponseWrapper:
