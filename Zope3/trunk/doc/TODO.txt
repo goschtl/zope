@@ -50,6 +50,13 @@ Miscellaneous
 
   o old pluggable authentication service should be deprecated
 
+- Create a new ZODB generation for the following objects:
+
+    - PersistentRole --> LocalRole
+
+    - RoleRegistration --> UtilityRegistration
+
+    - Registration (using paths) --> Registration (using objects)
 
 
 Bug Fixes
