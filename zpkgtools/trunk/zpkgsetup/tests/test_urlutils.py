@@ -47,13 +47,13 @@ class WindowsUrlutilsTestCase(unittest.TestCase):
 
     def test_pathname2url_with_drive_letter(self):
         self.assertEqual(urlutils.pathname2url("c:\\some\\file.txt"),
-                         "file:///C|/some/file.txt")
+                         "/C|/some/file.txt")
         self.assertEqual(urlutils.pathname2url("c:some\\file.txt"),
-                         "file:///C|/some/file.txt")
+                         "/C|/some/file.txt")
         self.assertEqual(urlutils.pathname2url("\\some\\folder"),
-                         "file:///some/folder")
+                         "/some/folder")
         self.assertEqual(urlutils.pathname2url("\\some\\folder\\"),
-                         "file:///some/folder")
+                         "/some/folder")
 
     def test_pathname2url_without_drive_letter(self):
         self.assertEqual(urlutils.pathname2url("\\some\\file.txt"),
