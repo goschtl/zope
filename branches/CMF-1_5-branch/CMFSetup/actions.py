@@ -72,22 +72,22 @@ def importActionProviders( context ):
         for provider_id in actions_tool.listActionProviders():
             actions_tool.deleteActionProvider( provider_id )
 
-    text = context.readDataFile( _FILENAME )
+    xml = context.readDataFile(_FILENAME)
+    if xml is None:
+        return 'Action providers: Nothing to import.'
 
-    if text is not None:
+    apc = ActionProvidersConfigurator(site, encoding)
+    tool_info = apc.parseXML(xml)
 
-        apc = ActionProvidersConfigurator( site, encoding )
-        tool_info = apc.parseXML( text )
+    for p_info in tool_info['providers']:
 
-        for p_info in tool_info[ 'providers' ]:
+        if p_info['id'] not in actions_tool.listActionProviders():
 
-            if p_info[ 'id' ] not in actions_tool.listActionProviders():
+            actions_tool.addActionProvider(p_info['id'])
 
-                actions_tool.addActionProvider( p_info[ 'id' ] )
-
-            provider = getToolByName( site, p_info[ 'id' ] )
-            provider._actions = [ ActionInformation(**a_info)
-                                  for a_info in p_info[ 'actions' ] ]
+        provider = getToolByName(site, p_info['id'])
+        provider._actions = [ ActionInformation(**a_info)
+                              for a_info in p_info[ 'actions' ] ]
 
     return 'Action providers imported.'
 
