@@ -26,6 +26,13 @@
 
     </content>
 
+    <!-- LDAP connection test adapter -->
+    <adapter
+        factory="ldapadapter.check.CheckLDAPAdapter"
+        provides="ldapadapter.interfaces.ICheckLDAPAdapter"
+        for="ldapadapter.interfaces.IManageableLDAPAdapter"
+        />
+
     <include package=".browser" />
 
     <!-- add onlinehelp text -->

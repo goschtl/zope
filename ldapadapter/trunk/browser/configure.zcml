@@ -39,4 +39,14 @@
         permission="zope.ManageContent"
         />
 
+    <!-- LDAPAdapter connetion test view -->
+    <page
+        for="ldapadapter.interfaces.IManageableLDAPAdapter"
+        name="checkLDAPAdapter.html"
+        attribute="check"
+        class=".check.CheckLDAPAdapterView"
+        menu="zmi_views" title="Test LDAP Adapter"
+        permission="zope.ManageServices"
+        />
+
 </configure>
