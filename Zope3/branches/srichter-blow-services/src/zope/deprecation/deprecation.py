@@ -79,13 +79,16 @@ def deprecated(specifier, message):
     """Deprecate the given names."""
 
     # We are inside a module
-    locals = sys._getframe(2).f_locals
-    if 'modname' in locals:
-        modname = locals['modname']
+    if isinstance(specifier, (str, unicode, list, tuple)):
+        locals = sys._getframe(1).f_locals
+        if '__name__' in locals:
+            modname = locals['__name__']
+            
         if not isinstance(sys.modules[modname], DeprecationProxy):
             sys.modules[modname] = DeprecationProxy(sys.modules[modname])
         sys.modules[modname].deprecate(specifier, message)
         
+
     # ... that means the specifier is a method or attribute of the class
     if isinstance(specifier, types.FunctionType):
         return DeprecatedMethod(specifier, message)
