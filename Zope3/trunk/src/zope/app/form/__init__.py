@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app.form.interfaces import IWidget, InputErrors
-from zope.component.interfaces import IViewFactory
+from zope.component.bbb.interfaces import IViewFactory
 from zope.interface import implements
 from zope.i18n import translate
 
