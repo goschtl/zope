@@ -209,12 +209,6 @@ ext_modules = [
     Extension("zodb._timestamp", ["src/zodb/_timestamp.c"]),
     Extension("zodb.storage._helper", ["src/zodb/storage/_helper.c"]),
 
-    Extension("zope.context.wrapper",
-              ["src/zope/context/wrapper.c"],
-              include_dirs = include_dirs,
-              depends = ["src/zope/context/wrapper.h",
-                         "src/zope/proxy/proxy.h"]),
-
     Extension("zope.proxy._zope_proxy_proxy",
               ["src/zope/proxy/_zope_proxy_proxy.c"],
               include_dirs = include_dirs,
