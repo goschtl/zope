@@ -41,7 +41,7 @@ class ZopeConnectionTests(TestCase):
         self.assertEqual(len(transaction.get_transaction()._resources), 1)
 
     def test_commit(self):
-        transaction.get_transaction().begin()
+        transaction.begin()
         zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         self._txn_registered = True
         zc.commit()

@@ -22,6 +22,7 @@ from interfaces import ISchemaManager
 import logging
 import os
 import zope.interface
+import transaction
 
 generations_key = 'zope.app.generations'
 
@@ -333,7 +334,7 @@ def evolve(db, how=EVOLVE):
             while generation < target:
                 generation += 1
                 try:
-                    get_transaction().begin()
+                    transaction.begin()
                     manager.evolve(context, generation)
                     generations[key] = generation
                     get_transaction().commit()
