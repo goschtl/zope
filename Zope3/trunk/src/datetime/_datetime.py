@@ -1056,12 +1056,6 @@ class timetz(time):
                             type(other).__name__)
         superself = super(timetz, self)
         supercmp = superself.__cmp__
-        mytz = self.__tzinfo
-        ottz = None
-        if isinstance(other, timetz):
-            ottz = other.__tzinfo
-        if mytz is ottz:
-            return supercmp(other)
         myoff = self._utcoffset()
         otoff = other._utcoffset()
         if myoff == otoff:
@@ -1672,12 +1666,10 @@ class datetimetz(datetime):
     def __sub__(self, other):
         supersub = super(datetimetz, self).__sub__
         if not isinstance(other, datetime):
-            return supersub(other) # XXX should set tzinfo on result
-        mytz = self.__tzinfo
-        ottz = None
-        if isinstance(other, datetimetz):
-            ottz = other.__tzinfo
-        if mytz is ottz:
+            # This manages to attach self.tzinfo to the result via a
+            # devious route:  self - timedelta is changed to
+            # self + (-timedelta) by datetime.__sub__, and the latter is
+            # handled by datetimetz.__add__.
             return supersub(other)
         myoff = self._utcoffset()
         otoff = other._utcoffset()
