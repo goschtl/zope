@@ -313,7 +313,7 @@ class CvsLoader:
 
     def openCvsRLog(self, cvsroot, path):
         return os.popen(
-            "cvs -f -d '%s' rlog -R -l '%s'" % (cvsroot, path), "r")
+            "cvs -f -q -d '%s' rlog -R -l '%s'" % (cvsroot, path), "r")
 
 
 class FileProxy(object):
