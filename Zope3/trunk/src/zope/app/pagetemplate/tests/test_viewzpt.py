@@ -116,8 +116,6 @@ class TestViewZPTContentType(unittest.TestCase):
 
         t = ViewPageTemplateFile('testxml.pt', content_type="text/plain")
         t._cook_check()
-        # XXX: This is arguable.  Should automatic content type detection
-        #      really override content type specified to the constructor?
         self.assertEquals(t.content_type, "text/xml")
 
 
