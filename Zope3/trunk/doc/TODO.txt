@@ -29,8 +29,6 @@ Features
 
 - Issue 295: Sort out defaultView 
 
-- Issue 297: Using class as localUtility 
-
 - Issue 309: <schemadisplay> should support <widget>
 
 

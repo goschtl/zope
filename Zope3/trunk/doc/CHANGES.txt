@@ -67,6 +67,10 @@ Zope Changes
         `ILocalUtility` and `IAttributeAnnotatable`. I also changed all the
         local utility declarations to use this new directive.
 
+        The directive now also makes sure that the class implements the
+        `IPersistent` and `ILocation` interfaces; without those a class cannot
+        be a local utility. This addresses issue 297.  
+
       - The `Attribute` and `Method` class of the `zope.interface` have now a
         new public `interface` attribute that stores the interface they are
         defined in.  

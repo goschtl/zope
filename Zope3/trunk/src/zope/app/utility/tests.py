@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 from StringIO import StringIO
+from persistent.interfaces import IPersistent
 
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
@@ -27,19 +28,20 @@ from zope.testing.doctestunit import DocTestSuite
 import zope.app.security
 import zope.app.utility
 from zope.app.tests import setup
-from zope.app.site.tests import placefulsetup
 from zope.app import utility, zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.dependable.interfaces import IDependable
+from zope.app.location.interfaces import ILocation
 from zope.app.traversing.api import traverse
 from zope.app.registration.interfaces import IRegistrationStack
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.registration.interfaces import IRegistered
-from zope.app.utility.interfaces import ILocalUtility
-from zope.app.dependable.interfaces import IDependable
+from zope.app.site.tests import placefulsetup
 from zope.app.tests import setup
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.utility.interfaces import ILocalUtility
 
 
 def configfile(s):
@@ -100,7 +102,7 @@ class Foo(object):
 
 
 class UtilityStub(object):
-    pass
+    implements(ILocation, IPersistent)
 
 
 class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
@@ -257,6 +259,7 @@ def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestUtilityService),
         unittest.makeSuite(TestLocalUtilityDirective),
+        DocTestSuite('zope.app.utility.metaconfigure'),
         DocTestSuite('zope.app.utility.vocabulary',
                      setUp=setup.placelessSetUp,
                      tearDown=setup.placelessTearDown)
