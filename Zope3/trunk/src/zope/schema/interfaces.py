@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.36 2004/01/05 11:31:08 philikon Exp $
+$Id: interfaces.py,v 1.37 2004/01/06 15:44:51 fdrake Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -124,12 +124,12 @@ class IField(Interface):
         )
 
     def constraint(value):
-        u"""Check a customized contraint on the value.
+        u"""Check a customized constraint on the value.
 
         You can implement this method with your Field to
         require a certain constraint.  This relaxes the need
-        to inherit/subclass a Field you to add a simple contraint.
-        Returns true if the given value is within the Field's contraint.
+        to inherit/subclass a Field you to add a simple constraint.
+        Returns true if the given value is within the Field's constraint.
         """
 
     def validate(value):
@@ -260,14 +260,14 @@ class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated will be removed in the future.
     u"""Field containing a byte string (like the python str).
 
-    The value might be contrained to be with length limits.
+    The value might be constrained to be with length limits.
     """
 
 class IASCII(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated will be removed in the future.
     u"""Field containing a byte string (like the python str).
 
-    The value might be contrained to be with length limits.
+    The value might be constrained to be with length limits.
     """
 
 class IBytesLine(IBytes):
