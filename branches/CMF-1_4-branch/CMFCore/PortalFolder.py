@@ -487,6 +487,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
     security.setPermissionDefault(AddPortalContent, ('Owner','Manager'))
     security.setPermissionDefault(AddPortalFolders, ('Owner','Manager'))
 
+    security.declareProtected(AddPortalFolders, 'manage_addFolder') 
     def manage_addFolder( self
                         , id
                         , title=''

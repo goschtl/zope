@@ -2,6 +2,11 @@ After CMF 1.4.6
 
   Bug Fixes
 
+    - CMFCore.PortalFolder: Unlike other content, only Managers were able
+      to create PortalFolders using mkdir in FTP. Fixed by inserting
+      missing security declaration for PortalFolder.manage_addFolder 
+      (http://www.zope.org/Collectors/CMF/167)
+
     - Default text format for NewsItems is now structured-text, just like
       it is for Documents, thus removing a spurious difference (see
       http://www.zope.org/Collectors/CMF/138).
