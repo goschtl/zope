@@ -124,12 +124,8 @@
   <!-- Broken-object support -->
   <include package="zope.app.broken" />
 
-  <!-- Backward compatability fixups -->
-  <include file="backward.zcml" />
 
   <!-- Process-configuration support -->
-  <!-- Do this after backward compatability to get fixups before
-       trying to do bootstrapping tasks --> 
   <include package="zope.app.process" />
 
 
