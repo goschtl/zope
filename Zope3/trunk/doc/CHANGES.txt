@@ -36,6 +36,19 @@ Zope Changes
         new public `interface` attribute that stores the interface they are
         defined in.  
 
+      - New Pluggable Authentication Service, which is similar in
+        philosophy to the Zope 2 PAS.  One of the main reasons for
+        this is to support principal groups.
+
+      - Added "sources", which are like vocabularies except that they
+        support very large collections of values that must be
+        searched, rather than browsed.
+
+      - Ported Zope Version Control
+
+      - Added an uption (-1) to the test runner to suppress doctest
+        errors after the first within each doctest.
+
       - If the adapter factory returns `None` as adapter instance, the default
         is returned instead of `None`. For benefits and the discussions see
         http://mail.zope.org/pipermail/interface-dev/2004-September/000070.html
@@ -45,6 +58,61 @@ Zope Changes
         every name will be only returned once.
 
       - When parsing a DSN, allow the host to be specified without a port.
+
+      - Added `apidoc:rootModule` directive, so that third-party products can
+        add their packages to the class browser documentation module.
+
+      - Separated the trusted and untrusted behaviors of page
+        templates in the application server.  File-system-based
+        templates are trusted, and database-based templates are
+        untrusted.
+
+      - Implemented rdb:gadflyRoot directive.    
+
+      - Schemas are now copied before they are appended to content type or
+        instance. This should probably become a policy later.
+
+      - Implemented ICacheable view's current_cache_url() method, so that a
+        link to the cache utility can be provided.
+
+      - Added ++debug++ traversal adapter that allows you to turn on debugging
+        flags in request.debug.  Currently the following flags are defined:
+
+        + "source" adds HTML comments to rendered page templates showing
+           where each code snippet came from.
+
+        + "tal" leaves TAL/METAL markup in rendered page templates allowing
+          you to see how it was generated.
+
+        + "errors" shows full tracebacks when a system error occurs.
+
+        Try e.g. http://localhost:8080/++debug++source,tal/@@contents.html
+        and view the source of the resulting page.
+
+      - Added 'url' adapter for IPathAdapter. It provides quoting mechanisms
+        to strings (and string-like objects) from within ZPT, e.g:
+
+        tal:attributes="href string:login.html?nextURL=${request/URL/url:quote}
+        
+        Other functions available are quote_plus, unquote, unquote_plus.
+
+      - Added basic cataloging functionality.
+
+      - Added functions (zope.app.container.constraints.contains and
+        zope.app.container.constraints.containers) that greatly simplify
+        expressing containment constraints.
+
+    Restructuring
+
+      - Replaced NotFoundError uses with more specific and meaningful
+        exceptions. Eventually, NotFoundError will be deprecated.
+
+        - Publishing traversal components noew raise NotFound
+
+        - Other traversal components raise TraversalError
+
+        - getPrincipal of IAuthenticationService now raises
+          PrincipalLookupError. 
 
       - Removed Browser Menu Service and implemented menus as subscriber
         adapters. Menu Item Types (in other words, menus) are now utilities
@@ -104,47 +172,19 @@ Zope Changes
           to a request. This effectively replaces the `setPresentationSkin()`
           method.
 
-      - Added `apidoc:rootModule` directive, so that third-party products can
-        add their packages to the class browser documentation module.
-
-      - Separated the trusted and untrusted behaviors of page
-        templates in the application server.  File-system-based
-        templates are trusted, and database-based templates are
-        untrusted.
-
-      - Implemented rdb:gadflyRoot directive.    
-
-      - Schemas are now copied before they are appended to content type or
-        instance. This should probably become a policy later.
-
-      - Implemented ICacheable view's current_cache_url() method, so that a
-        link to the cache utility can be provided.
-
-      - Added ++debug++ traversal adapter that allows you to turn on debugging
-        flags in request.debug.  Currently the following flags are defined:
-
-        + "source" adds HTML comments to rendered page templates showing
-           where each code snippet came from.
-
-        + "tal" leaves TAL/METAL markup in rendered page templates allowing
-          you to see how it was generated.
-
-        + "errors" shows full tracebacks when a system error occurs.
-
-        Try e.g. http://localhost:8080/++debug++source,tal/@@contents.html
-        and view the source of the resulting page.
-
-      - Added 'url' adapter for IPathAdapter. It provides quoting mechanisms
-        to strings (and string-like objects) from within ZPT, e.g:
-
-        tal:attributes="href string:login.html?nextURL=${request/URL/url:quote}
-        
-        Other functions available are quote_plus, unquote, unquote_plus.
-        
-    Restructuring
-
-
     Bug Fixes
+
+      - Fixed the page that reports "syste errors", errors that
+        represent a failure o the system, rather than the user, to set
+        the response status to 500.
+
+      - NotFound pages and stattus codes are now returned only when
+        something can't be found during publishing-path (e.g. URL)
+        traversal. Traversal errors within application code are no
+        longer treated as "Not Found" errors. 
+
+      - Added missing modification events when add forms modified
+        objects (assigned properties) after they were added.
 
       - Small but important fix to security map. It was not marking objects
         with modified permissions as changed, due to a missing assignment.
