@@ -13,9 +13,11 @@
 ##############################################################################
 """Utility for creating Python pickles in XML format.
 
-The XMLPickle module exports two functions:
+The zope.xmlpickle package exports two functions:
 
   dumps(object) -- Returns an XML pickle
 
   loads(xmlpickle) -- Returns an object loaded from the pickle.
 """
+
+from xmlpickle import dumps, loads

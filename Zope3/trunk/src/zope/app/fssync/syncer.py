@@ -13,13 +13,13 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.3 2003/05/05 19:51:28 gvanrossum Exp $
+$Id: syncer.py,v 1.4 2003/05/06 19:58:44 gvanrossum Exp $
 """
 
 import os
 
 from zope.component import queryAdapter, getService
-from zope.xmlpickle.xmlpickle import dumps, loads
+from zope.xmlpickle import dumps, loads
 from zope.app.interfaces.fssync \
      import IObjectEntry, IObjectDirectory, IObjectFile
 
