@@ -40,7 +40,8 @@ class LoaderTestBase(unittest.TestCase):
         return loader.Loader(tag)
 
 
-class LoaderTestCase(LoaderTestBase, test_svnloader.SubversionRepositoryBase):
+class LoaderTestCase(LoaderTestBase,
+                     test_svnloader.SubversionLocalRepositoryBase):
 
     def test_transform_url_with_default_tag(self):
         convert = loader.Loader("TAG").transform_url
