@@ -83,3 +83,12 @@ Things to do for the next release (in no particular order)
   - Have the adding provide a boolean saying whether a name should
     be collected. The add form takes over responsibility and sets
     contentName.
+
+- Replace the *used* names in schema.errornames to exceptions
+  in schema.interfaces.  Deprecate schema.errornames.
+
+- Sort out the dependency of zope.schema on zopei18nmessageid.
+  Do we really need to create messageids in zope.schema?
+  Maybe we do. Maybe i18n *is* that fundamental. 
+
+- Write a README.txt for zope.i18nmessageid.
