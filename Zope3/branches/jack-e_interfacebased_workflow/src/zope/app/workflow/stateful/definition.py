@@ -37,24 +37,57 @@ from zope.app.workflow.stateful.interfaces import IStatefulStatesContainer
 from zope.app.workflow.stateful.interfaces import IStatefulTransitionsContainer
 from zope.app.workflow.stateful.interfaces import MANUAL
 
+from persistent.dict import PersistentDict
+
 class State(Persistent, Contained):
     """State."""
     implements(IState,IStateContained)
 
     # see IState
     targetInterface = None
+    permissionRoles = PersistentDict()
 
     def __init__(self, targetInterface=None):
         self.targetInterface=targetInterface
 
+        # XXX use securitymap object instead
+        self.permissionRoles = PersistentDict()
 
+    def setPermissionsRolesMapping(self, mapping):
+        """Set the permissions roles mapping
+        """
+        self.permissionRoles = mapping
+
+    def getPermissionRolesMapping(self):
+        """Returns the permissions role mapping for this state
+        """
+        return self.permissionRoles
+
+    def getPermissionInfo(self, p):
+        """Returns the permission info given the permission
+        """
+        return self.getPermissionRolesMapping().get(p, [])
+
+    def getProcessDefinitionPermissions(self):
+        """Returns the relevant permissions in use within the process
+        definition.
+        """
+        # XXX dunno how to that more properly
+        states_container = self.__parent__
+        pdef = states_container.__parent__
+        return pdef.getAvailablePermissions()
+
+    def getRelevantRoles(self):
+        """returns all the roles subscribed in z3
+        """
+        # XXX hard coded for now.
+        # XXX I need Owner or something similar.
+        return ['Owner',
+                'Content Reviewer', 'Everybody', 'Site Member', 'Site Manager']
 
 class StatesContainer(ProcessDefinitionElementContainer):
     """Container that stores States."""
     implements(IStatefulStatesContainer)
-
-
-
 
 class StateNamesVocabulary(SimpleVocabulary):
     """Vocabulary providing the names of states in a local process definition.
@@ -103,8 +136,6 @@ class TransitionsContainer(ProcessDefinitionElementContainer):
     """Container that stores Transitions."""
     implements(IStatefulTransitionsContainer)
 
-
-
 class StatefulProcessDefinition(ProcessDefinition):
     """Stateful workflow process definition."""
 
@@ -121,6 +152,7 @@ class StatefulProcessDefinition(ProcessDefinition):
         self._publishModified('states', self.__states)
         # See workflow.stateful.IStatefulProcessDefinition
         self.schemaPermissions = PersistentDict()
+        self.processPermissions = PersistentDict()
 
     _clear = clear = __init__
 
@@ -203,7 +235,6 @@ class StatefulProcessDefinition(ProcessDefinition):
 
         return result
 
-
     def get(self, key, default=None):
         "See Interface.Common.Mapping.IReadMapping"
 
@@ -214,7 +245,6 @@ class StatefulProcessDefinition(ProcessDefinition):
             return self.transitions
 
         return default
-
 
     def __contains__(self, key):
         "See Interface.Common.Mapping.IReadMapping"
@@ -241,4 +271,27 @@ class StatefulProcessDefinition(ProcessDefinition):
         """See zope.app.container.interfaces.IReadContainer"""
         return 2
 
-#################################################################
+    ############################################################
+
+    def getProcessPermissions(self):
+        """Returns the process permissions
+        """
+        return self.processPermissions
+
+    def getAvailablePermissions(self):
+        """Returns the permissions we may within this process definition
+        """
+        # XXX hard coded in here
+        _list = ['View', 'Manage Content', 'Review Content']
+        return _list
+
+    def addProcessPermission(self, p):
+        """Add a permission to the mapping
+        """
+        self.processPermissions[p] = p
+
+    def delProcessPermission(self, p):
+        """del a permission to the mapping
+        """
+        if self.getProcessPermissions().has_key(p):
+            del self.processPermissions[p]
