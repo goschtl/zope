@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.6 2004/03/11 17:19:08 fdrake Exp $
+$Id: finddeps.py,v 1.7 2004/03/11 17:27:14 fdrake Exp $
 """
 import sys
 import getopt
@@ -48,6 +48,7 @@ import re
 # Get the Zope base path
 import zope
 ZOPESRC = os.path.dirname(os.path.dirname(zope.__file__))
+ZOPESRCPREFIX = os.path.join(ZOPESRC, "")
 
 # Matching expression for python files.
 pythonfile = re.compile(r'[a-zA-Z][a-zA-Z0-9_]*\.py')
@@ -55,6 +56,14 @@ zcmlfile = re.compile(r'[a-zA-Z][a-zA-Z0-9_]*\.zcml')
 
 # Matching expressions of dotted paths in XML
 dottedName = re.compile(r'"[a-zA-Z\.][a-zA-Z0-9_\.]*"')
+
+
+def stripZopePrefix(path):
+    """Remove the '.../src/' prefix from path, if present."""
+    if path.startswith(ZOPESRCPREFIX):
+        return path[len(ZOPESRCPREFIX):]
+    else:
+        return path
 
 
 class Dependency(object):
@@ -119,7 +128,7 @@ def getDependenciesOfPythonFile(path):
 
 def getDependenciesOfZCMLFile(path):
     """Get dependencies from ZCML file."""
-    localModule = os.path.dirname(path).replace(ZOPESRC+'/', '')
+    localModule = stripZopePrefix(os.path.dirname(path))
     localModule = localModule.replace('/', '.')
     deps = []
     lineno = 0
@@ -298,7 +307,7 @@ def showDependencies(path, zcml=False, long=False, all=False):
         if long:
             print '-'*len(dep.path)
             for file, lineno in dep.occurences:
-                file = file.replace(ZOPESRC+'/', '')
+                file = stripZopePrefix(file)
                 if len(file) >= 69:
                     file = '...' + file[:69-3]
                 print '  %s, Line %s' %(file, lineno)
