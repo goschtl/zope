@@ -13,20 +13,20 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: interfaces.py,v 1.4 2004/05/07 19:40:09 garrett Exp $
+$Id: interfaces.py,v 1.5 2004/05/11 11:14:09 garrett Exp $
 """
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
 from zope.interface import Attribute, Interface, implements
+from zope.schema import Bool
 from zope.app.exception.interfaces import UserError
 
 class IWidgetInputError(Interface):
     """Placeholder for a snippet View"""
-    pass
 
 class WidgetInputError(UserError):
-    """There were one or more user input errors
-    """
+    """One or more user input errors occurred."""
+    
     implements(IWidgetInputError)
 
     def __init__(self, field_name, widget_title, errors):
@@ -40,25 +40,21 @@ class WidgetInputError(UserError):
         self.errors = errors
 
 class MissingInputError(WidgetInputError):
-    """Required data was not supplied
-    """
+    """Required data was not supplied."""
 
 class ConversionError(WidgetInputError):
-    """If some conversion fails, this exception is raised.
-    """
+    """A conversion error occurred."""
 
     def __init__(self, error_name, original_exception=None):
         Exception.__init__(self, error_name, original_exception)
         self.error_name = error_name
         self.original_exception = original_exception
 
-
 InputErrors = WidgetInputError, ValidationError
 
 
 class ErrorContainer(Exception):
-    """A base error class for collecting multiple errors.
-    """
+    """A base error class for collecting multiple errors."""
 
     def append(self, error):
         self.args += (error, )
@@ -130,12 +126,19 @@ class IWidget(IView):
         The widget name is used to identify the widget's data within
         input data. For example, for HTTP forms, the widget name is
         used for the form key.
-    """
+        """
 
 class IInputWidget(IWidget):
     """A widget for editing a field value."""
 
-    required = Attribute("Flag indicating whether the field is required")
+    required = Bool(
+        title=u"Required",
+        description=u"""If True, widget should be displayed as requiring input.
+        
+        By default, this value is the field's 'required' attribute. This
+        field can be set to False for widgets that always provide input (e.g.
+        a checkbox) to avoid unnecessary 'required' UI notations.
+        """)
 
     def validate():
         """Validate the widget data.
