@@ -35,6 +35,31 @@ zope.testing          svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/testin
 zope.thread           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/thread
 zope.xmlpickle        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/xmlpickle
 
+zope.app.xmlrpc            svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/xmlrpc
+zope.app.translation_files svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/translation
+zope.app.tree              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/tree
+zope.app.dtmlpage          svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/dtmlpage
+zope.app.debugskin         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/debugskin
+zope.app.ftp               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/ftp
+zope.app.externaleditor    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/externaleditor
+zope.app.apidoc            svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/apidoc
+zope.app.generations       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/generations
+zope.documenttemplate      svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/zope
+zope.app.sqlexpr           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/sqlexpr
+zope.app.file              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/file
+zope.app.zptpage           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/zptpage
+zope.app.securitypolicy    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/securitypolicy
+zope.app.dav               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/dav
+zope.app.session           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/session
+zope.app.undo              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/undo
+zope.app.cache             svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/cache
+zope.app.onlinehelp        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/onlinehelp
+zope.app.introspector      svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/introspector
+zope.app.i18nfile          svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/i18nfile
+zope.app.rdb               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/rdb
+
+
+
 # These packages are copied from the ZConfig, zdaemon, and ZODB projects:
 #
 BTrees                svn://svn.zope.org/repos/main/Zope3/tags/*/src/BTrees
