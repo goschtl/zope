@@ -6,13 +6,13 @@
   <include file="permissions.zcml" />
   <include file="interfaces.zcml" />
 
-  <!-- do 'traditional' traversing for ZPT by default -->
-
+  <!-- do 'traditional' traversing by default; needed by ZPT -->
   <adapter
       for="*"
       factory="zope.app.traversing.adapters.DefaultTraversable"
       provides="zope.app.traversing.interfaces.ITraversable" />
 
+  <!-- make Zope 2's REQUEST implement the right thing -->
   <five:implements class="ZPublisher.HTTPRequest.HTTPRequest"
                    interface="zope.publisher.interfaces.browser.IBrowserRequest" />
 
