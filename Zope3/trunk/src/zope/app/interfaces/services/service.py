@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.15 2003/09/02 20:46:47 jim Exp $
+$Id: service.py,v 1.16 2003/12/05 14:15:27 jim Exp $
 """
 __metaclass__ = type
 
@@ -107,6 +107,13 @@ class IServiceManager(IServiceService, IComponentManager,
         A local service is one configured in the local service manager.
 
         The service must be returned in the context of the service manager.
+        """
+
+    def addSubsite(subsite):
+        """Add a subsite of the site
+
+        Local sites are connected in a tree. Each site knows about
+        it's containing sites anb it's subsites.
         """
 
 class IServiceRegistration(registration.INamedComponentRegistration):

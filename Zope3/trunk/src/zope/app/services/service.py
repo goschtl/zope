@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.31 2003/11/21 17:09:55 jim Exp $
+$Id: service.py,v 1.32 2003/12/05 14:15:27 jim Exp $
 """
 
 import sys
@@ -89,7 +89,7 @@ class SiteManager(BTreeContainer,
             if site is None:
                 raise TypeError("Not enough context information")
             if ISite.isImplementedBy(site):
-                self.next = site.getSiteManager()
+                self.next = removeAllProxies(site.getSiteManager())
                 self.next.addSubsite(self)
                 return
 
