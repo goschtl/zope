@@ -22,6 +22,7 @@
     <td tal:repeat="view views/standard_macros/getZMIViews">
     <a href="" tal:attributes="href view/action" tal:content="view/title">
 	label</a>
+    <tal:block condition="not: repeat/view/end">'</tal:block>
     </td>
    </tr></table>
 
