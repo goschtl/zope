@@ -20,7 +20,7 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.7 2003/08/06 21:34:41 fdrake Exp $
+$Id: metadata.py,v 1.8 2003/08/12 04:39:22 fdrake Exp $
 """
 
 import os
@@ -137,7 +137,7 @@ class DirectoryManager:
             # Look for a case-insensitive match -- expensive!
             # XXX There's no test case for this code!
             nbase = normcase(name)
-            matches = [b for b in entries if normcase(b) == nbase]
+            matches = [b for b in self.entries if normcase(b) == nbase]
             if matches:
                 if len(matches) > 1:
                     raise KeyError("multiple entries match %r" % nbase)
