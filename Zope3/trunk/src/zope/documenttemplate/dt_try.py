@@ -18,8 +18,9 @@ $Id$
 
 import sys, traceback
 from StringIO import StringIO
-from zope.documenttemplate.dt_util import ParseError, parse_params, render_blocks
-from zope.documenttemplate.dt_util import namespace, InstanceDict
+from zope.documenttemplate.dt_util \
+     import ParseError, parse_params, render_blocks
+from zope.documenttemplate.dt_util import InstanceDict
 from zope.documenttemplate.dt_return import DTReturn
 
 from types import StringType
@@ -95,7 +96,7 @@ class Try:
     finallyBlock = None
     elseBlock = None
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         tname, args, section = blocks[0]
 
         self.args = parse_params(args)
@@ -178,7 +179,7 @@ class Try:
                 f = StringIO()
                 traceback.print_exc(100,f)
                 error_tb = f.getvalue()
-                ns = namespace(md, error_type=errname, error_value=v,
+                ns = md.namespace(error_type=errname, error_value=v,
                     error_tb=error_tb)[0]
                 md._push(InstanceDict(ns,md))
                 return render_blocks(handler, md)

@@ -329,8 +329,8 @@ class InFactory:
     blockContinuations = ('else',)
     name = 'in'
 
-    def __call__(self, blocks):
-        i = InClass(blocks)
+    def __call__(self, context, blocks):
+        i = InClass(context, blocks)
         if i.batch:
             return i.renderwb
         else:
@@ -345,7 +345,7 @@ class InClass:
     reverse = None
     sort_expr = reverse_expr = None
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         tname, args, section = blocks[0]
         args=parse_params(args, name='', start='1',end='-1',size='10',
                           orphan='3',overlap='1',mapping=1,
@@ -360,10 +360,10 @@ class InClass:
             if sort=='sequence-item': self.sort=''
 
         if has_key('sort_expr'):
-            self.sort_expr = Eval(args['sort_expr'])
+            self.sort_expr = Eval(context, args['sort_expr'])
 
         if has_key('reverse_expr'):
-            self.reverse_expr = Eval(args['reverse_expr'])
+            self.reverse_expr = Eval(context, args['reverse_expr'])
 
         if has_key('reverse'):
             self.reverse = args['reverse']
@@ -393,7 +393,7 @@ class InClass:
                         ''.join(map(lambda c: "[%s]" % c, v))+
                         '=[0-9]+&+')
 
-        name, expr = name_param(args, 'in', 1)
+        name, expr = name_param(context, args, 'in', 1)
         if expr is not None:
             expr = expr.eval
         self.__name__, self.expr = name, expr
@@ -404,7 +404,7 @@ class InClass:
             tname, args, section = blocks[1]
             args=parse_params(args, name='')
             if args:
-                ename=name_param(args)
+                ename = name_param(context, args)
                 if ename != name:
                     raise ParseError, (
                         'name in else does not match in', 'in')

@@ -16,10 +16,7 @@
 $Id$
 """
 import re
-import math
-import random
 
-from __builtin__ import str  # needed for pickling (legacy)
 from types import ListType, StringType, TupleType
 
 from zope.documenttemplate.pdocumenttemplate import \
@@ -59,209 +56,12 @@ def int_param(params, md, name, default=0):
                 v = v.atoi()
     return v or 0
 
-_marker=[]
-
-def careful_getattr(md, inst, name, default=_marker):
-
-    if name[:1] != '_':
-
-        try:
-            v = getattr(inst, name)
-        except:
-            if default is not _marker:
-                return default
-            raise
-
-        validate = md.validate
-
-        if validate is None:
-            return v
-
-        if validate(inst, inst, name, v, md):
-            return v
-
-    raise ValidationError, name
-
-
-def careful_hasattr(md, inst, name):
-    v=getattr(inst, name, _marker)
-    if v is not _marker:
-        try:
-            if name[:1] != '_':
-                validate = md.validate
-                if validate is None:
-                    return 1
-
-                if validate(inst, inst, name, v, md):
-                    return 1
-        except:
-            pass
-    return 0
-
-
-def careful_getitem(md, mapping, key):
-    v = mapping[key]
-    if isinstance(v, StringType):
-        return v # Short-circuit common case
-
-    validate = md.validate
-    if validate is None or validate(mapping, mapping, None, v, md):
-        return v
-    raise ValidationError, key
-
-
-def careful_getslice(md, seq, *indexes):
-    v = len(indexes)
-    if v == 2:
-        v = seq[indexes[0]:indexes[1]]
-    elif v == 1:
-        v = seq[indexes[0]:]
-    else:
-        v = seq[:]
-
-    if isinstance(seq, StringType):
-        return v # Short-circuit common case
-
-    validate = md.validate
-    if validate is not None:
-        for e in v:
-            if not validate(seq,seq,None,e,md):
-                raise ValidationError, u'unauthorized access to slice member'
-
-    return v
-
-
-def careful_range(md, iFirst, *args):
-    # limited range function from Martijn Pieters
-    RANGELIMIT = 1000
-    if not len(args):
-        iStart, iEnd, iStep = 0, iFirst, 1
-    elif len(args) == 1:
-        iStart, iEnd, iStep = iFirst, args[0], 1
-    elif len(args) == 2:
-        iStart, iEnd, iStep = iFirst, args[0], args[1]
-    else:
-        raise AttributeError, u'range() requires 1-3 int arguments'
-    if iStep == 0:
-        raise ValueError, u'zero step for range()'
-    iLen = int((iEnd - iStart) / iStep)
-    if iLen < 0:
-        iLen = 0
-    if iLen >= RANGELIMIT:
-        raise ValueError, u'range() too large'
-    return range(iStart, iEnd, iStep)
-
-
-d = TemplateDict.__dict__
-for name in ('None', 'abs', 'chr', 'divmod', 'float', 'hash', 'hex', 'int',
-             'len', 'max', 'min', 'oct', 'ord', 'round', 'str'):
-    d[name] = __builtins__[name]
-
-d['math'] = math
-d['random'] = random
-
-def careful_pow(self, x, y, z):
-    if not z:
-        raise ValueError, 'pow(x, y, z) with z==0'
-    return pow(x,y,z)
-
-d['pow'] = careful_pow
-
-try:
-    import DateTime
-    d['DateTime']=DateTime.DateTime
-except:
-    pass
-
-
-def test(self, *args):
-    l = len(args)
-    for i in range(1, l, 2):
-        if args[i-1]:
-            return args[i]
-
-    if l%2:
-        return args[-1]
-
-d['test'] = test
-
-def obsolete_attr(self, inst, name, md):
-    return careful_getattr(md, inst, name)
-
-d['attr'] = obsolete_attr
-d['getattr'] = careful_getattr
-d['hasattr'] = careful_hasattr
-d['range'] = careful_range
-
-def namespace(self, **kw):
-    """Create a tuple consisting of a single instance whose attributes are
-    provided as keyword arguments."""
-    if getattr(self, '__class__', None) != TemplateDict:
-        raise TypeError,'''A call was made to DT_Util.namespace() with an
-        incorrect "self" argument.  It could be caused by a product which
-        is not yet compatible with this version of Zope.  The traceback
-        information may contain more details.)'''
-    return apply(self, (), kw)
-
-d['namespace'] = namespace
-
-def render(self, v):
-    "Render an object in the way done by the 'name' attribute"
-    if hasattr(v, '__render_with_namespace__'):
-        v = v.__render_with_namespace__(self)
-    else:
-        vbase = getattr(v, 'aq_base', v)
-        if callable(vbase):
-            v = v()
-    return v
-
-d['render'] = render
-
-def reorder(self, s, with=None, without=()):
-    if with is None:
-        with = s
-    d = {}
-    for i in s:
-        if isinstance(i, TupleType) and len(i) == 2:
-            k, v = i
-        else:
-            k = v = i
-        d[k] = v
-    r = []
-    a = r.append
-    h = d.has_key
-
-    for i in without:
-        if isinstance(i, TupleType) and len(i) == 2:
-            k, v = i
-        else:
-            k= v = i
-        if h(k):
-            del d[k]
-
-    for i in with:
-        if isinstance(i, TupleType) and len(i) == 2:
-            k, v = i
-        else:
-            k= v = i
-        if h(k):
-            a((k,d[k]))
-            del d[k]
-
-    return r
-
-d['reorder'] = reorder
-
-
 class Eval:
 
-    def __init__(self, expr):
+    def __init__(self, context, expr):
 
-        expr = expr.strip()
-        expr = expr.replace('\n', ' ')
-        expr = expr.replace('\r', ' ')
-        self.expr = expr
-        self.code = compile(expr,'<string>','eval')
+        self.expr = '('+expr.strip()+')'
+        self.code = context.compile_python_expresssion(self.expr)
 
 
     def eval(self, mapping):
@@ -279,7 +79,7 @@ class Eval:
                     # does need the name, a NameError will occur.
                     pass
 
-        return eval(code, {}, d)
+        return eval(code, {'__builtins__': None}, d)
 
 
     def __call__(self, **kw):
@@ -287,7 +87,8 @@ class Eval:
 
 
 
-def name_param(params,tag='',expr=0, attr='name', default_unnamed=1):
+def name_param(context, params, tag='', expr=0, attr='name',
+               default_unnamed=1):
     used = params.has_key
     __traceback_info__ = params, tag, expr, attr
 
@@ -307,7 +108,7 @@ def name_param(params,tag='',expr=0, attr='name', default_unnamed=1):
                     raise ParseError, (u'two exprs given', tag)
                 v = v[1:-1]
                 try:
-                    expr=Eval(v)
+                    expr=Eval(context, v)
                 except SyntaxError, v:
                     raise ParseError, (
                         u'<strong>Expression (Python) Syntax error</strong>:'
@@ -338,7 +139,7 @@ def name_param(params,tag='',expr=0, attr='name', default_unnamed=1):
         return params[attr]
     elif expr and used('expr'):
         name = params['expr']
-        expr = Eval(name)
+        expr = Eval(context, name)
         return name, expr
 
     raise ParseError, (u'No %s given' % attr, tag)

@@ -177,9 +177,9 @@ class String:
             else:
                 try:
                     if command is Var:
-                        r = command(args, self.varExtra(mo))
+                        r = command(self, args, self.varExtra(mo))
                     else:
-                        r = command(args)
+                        r = command(self, args)
                     if hasattr(r,'simple_form'):
                         r = r.simple_form
                     result.append(r)
@@ -248,7 +248,7 @@ class String:
                     sstart = start
                 else:
                     try:
-                        r = scommand(blocks)
+                        r = scommand(self, blocks)
                         if hasattr(r,'simple_form'):
                             r = r.simple_form
                         result.append(r)
@@ -503,3 +503,7 @@ class String:
             if k[:3] in _special: continue
             d[k] = v
         return d
+
+    def compile_python_expresssion(self, src):
+        return compile(src, getattr(self, '__name__', '<string>'), 'eval')
+    

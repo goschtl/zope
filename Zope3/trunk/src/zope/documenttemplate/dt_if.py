@@ -77,8 +77,7 @@
 
 $Id$
 """
-from zope.documenttemplate.dt_util import \
-     ParseError, parse_params, name_param
+from zope.documenttemplate.dt_util import ParseError, parse_params, name_param
 
 class If:
     blockContinuations = 'else', 'elif'
@@ -86,10 +85,10 @@ class If:
     elses = None
     expr = ''
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         tname, args, section = blocks[0]
         args = parse_params(args, name='', expr='')
-        name,expr = name_param(args,'if',1)
+        name,expr = name_param(context, args,'if',1)
         self.__name__ = name
         if expr is None:
             cond = name
@@ -102,7 +101,7 @@ class If:
             del blocks[-1]
             args = parse_params(args, name='')
             if args:
-                ename,expr=name_param(args,'else',1)
+                ename,expr=name_param(context, args,'else',1)
                 if ename != name:
                     raise ParseError, ('name in else does not match if', 'in')
             elses=section.blocks
@@ -113,7 +112,7 @@ class If:
                 raise ParseError, (
                     'more than one else tag for a single if tag', 'in')
             args = parse_params(args, name='', expr='')
-            name,expr = name_param(args, 'elif', 1)
+            name,expr = name_param(context, args, 'elif', 1)
             if expr is None:
                 cond = name
             else:
@@ -131,10 +130,10 @@ class Unless:
     name = 'unless'
     blockContinuations = ()
 
-    def __init__(self, blocks):
+    def __init__(self, context, blocks):
         tname, args, section = blocks[0]
         args=parse_params(args, name='', expr='')
-        name,expr=name_param(args, 'unless', 1)
+        name,expr=name_param(context, args, 'unless', 1)
         if expr is None:
             cond = name
         else:
