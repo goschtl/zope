@@ -12,15 +12,13 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.4 2003/08/03 17:49:03 philikon Exp $
+$Id: metadirectives.py,v 1.5 2003/08/04 14:54:19 philikon Exp $
 """
 
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
-
-from zope.app.component.metadirectives import IBasicViewInformation
 
 class ICommonInformation(Interface):
     """

@@ -16,20 +16,16 @@
 
 import unittest
 
-from xml.sax.saxutils import quoteattr
-
 from zope.app.browser.form.tests import support
 from zope.app.browser.form import vocabularywidget
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
 from zope.component.view import provideView
-from zope.configuration.xmlconfig import XMLConfig
 from zope.interface.declarations import \
      directlyProvides, providedBy, implements
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.schema.interfaces import IVocabularyQuery
 from zope.schema.interfaces import IVocabularyField
 from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema import vocabulary

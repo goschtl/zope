@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.43 2003/07/15 16:08:49 Zen Exp $
+$Id: widget.py,v 1.44 2003/08/04 14:54:19 philikon Exp $
 """
 
 __metaclass__ = type
@@ -22,15 +22,13 @@ import warnings
 from zope.app import zapi
 
 from zope.component import getService
-from zope.component.interfaces import IViewFactory
 
-from zope.interface import implements, directlyProvides
+from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.form.widget import Widget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
-from zope.app.form.utility import setUpWidget
 from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.app.interfaces.form import MissingInputError
 from zope.app.datetimeutils import parseDatetimetz

@@ -12,19 +12,18 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.2 2003/07/15 16:08:51 Zen Exp $
+$Id: test_objectwidget.py,v 1.3 2003/08/04 14:54:28 philikon Exp $
 """
 
 import unittest
 
 from zope.interface import Interface, implements
 from zope.component.view import provideView
-from zope.schema.interfaces import ITextLine, ValidationError
+from zope.schema.interfaces import ITextLine
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
 from zope.app.browser.form.widget import TextWidget, ObjectWidget
-from zope.app.component.metaconfigure import resolveInterface
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 

@@ -31,7 +31,6 @@ from zope.interface.declarations import directlyProvides
 from zope.publisher.browser import BrowserView
 from zope.component import getView
 from zope.security.proxy import trustedRemoveSecurityProxy 
-from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import ValidationError
 
