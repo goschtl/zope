@@ -1,0 +1,24 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:service='http://namespaces.zope.org/service'
+>
+  <serviceType
+      id="SessionService" 
+      interface=".ISessions.ISessionService" />
+
+  <content class=".CookieSessionService.">
+    <require
+        permission="Zope.Public"
+        interface=".ISessions.ISessionService." />
+    <factory
+        id="ISessionService"
+        permission="Zope.ManageServices" />
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." /> 
+  </content>
+
+  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding." 
+     action="ISessionService"  title='Cookie Session Service'
+     description='Simplistic session support using cookies' />
+
+</zopeConfigure>

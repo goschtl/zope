@@ -20,5 +20,6 @@
 <include package=".ErrorReportingService" />
 <include package=".Browser" />
 <include package=".PrincipalAnnotationService" />
+<include package=".SessionService" />
 
 </zopeConfigure>

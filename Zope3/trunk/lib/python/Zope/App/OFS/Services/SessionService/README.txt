@@ -1,0 +1,22 @@
+Sessions allow us to fake state over a stateless protocol - HTTP. We do this
+by having a unique identifier stored across multiple HTTP requests, be it
+a cookie or some id mangled into the URL.
+
+ISessionService provides this unique id. ISessionDataManagers attach data
+objects of some sort to a specific session id. This data object may be
+a Persistent ZODB object, or an object that stores data in a RDBMS using
+the session id as the key.
+
+ISessionDataManagers are registered with ISessionServices using a name,
+which ought to be unique for each application. Thus you can have multiple
+data objects registered with a single session.
+
+ISessionServices may choose to expire sessions. In this case they
+should notify all ISessionDataManagers registered with them and
+invalidate the attached data objects. Likewise ISessionDataManagers
+probably want to expire data.
+
+
+--
+$Id: README.txt,v 1.1 2002/12/04 21:46:16 itamar Exp $
+
