@@ -37,7 +37,7 @@ from zope.app.securitypolicy.grantinfo \
      import AnnotationGrantInfo
 from zope.security.management import endInteraction
 
-def setUp():
+def setUp(test):
     placelesssetup.setUp()
     endInteraction()
     ztapi.provideAdapter(
@@ -56,14 +56,12 @@ def setUp():
         IAnnotatable, IGrantInfo,
         AnnotationGrantInfo)
 
-def tearDown():
-    placelesssetup.tearDown()
 
 def test_suite():
     return unittest.TestSuite((
         DocFileSuite('zopepolicy.txt',
                      package='zope.app.securitypolicy',
-                     setUp=setUp, tearDown=tearDown),
+                     setUp=setUp, tearDown=placelesssetup.tearDown),
         ))
 
 if __name__ == '__main__':
