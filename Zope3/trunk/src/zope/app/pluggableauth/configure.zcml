@@ -36,13 +36,16 @@
 -->
     <require
         permission="zope.ManageServices"
-        interface="zope.app.container.interfaces.IAddNotifiable"
-        />
-    <require
-        permission="zope.ManageServices"
         interface="zope.app.site.interfaces.ISimpleService"
         />
   </content>
+
+  <subscriber
+        factory=".PluggableAuthenticationServiceAddSubscriber"
+        for=".interfaces.IPluggableAuthenticationService
+             zope.app.container.interfaces.IObjectAddedEvent"
+        provides="zope.app.event.interfaces.ISubscriber"
+        />
 
   <content class=".BTreePrincipalSource">
     <factory

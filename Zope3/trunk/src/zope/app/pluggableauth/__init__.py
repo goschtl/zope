@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.3 2004/03/13 23:55:11 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/23 00:23:08 maru Exp $
 """
 import random
 import sys
@@ -34,7 +34,7 @@ from zope.app import zapi
 from zope.app.location import locate
 from zope.app.traversing import getPath
 
-from zope.app.container.interfaces import IOrderedContainer, IAddNotifiable
+from zope.app.container.interfaces import IOrderedContainer
 from zope.app.container.interfaces import IContainerNamesContainer, INameChooser
 from zope.app.container.interfaces import IContained
 from zope.app.container.constraints import ItemTypePrecondition
@@ -59,7 +59,7 @@ def gen_key():
 class PluggableAuthenticationService(OrderedContainer):
 
     implements(IPluggableAuthenticationService, ISimpleService,
-               IOrderedContainer, IAddNotifiable)
+               IOrderedContainer)
 
     def __init__(self, earmark=None):
         self.earmark = earmark
@@ -73,16 +73,6 @@ class PluggableAuthenticationService(OrderedContainer):
         # does change, the system will not be able to dereference principal
         # references which embed the old earmark.
         OrderedContainer.__init__(self)
-
-    def addNotify(self, event):
-        """ See IAddNotifiable. """
-        if self.earmark is None:
-            # we manufacture what is intended to be a globally unique
-            # earmark if one is not provided in __init__
-            myname = zapi.name(self)
-            rand_id = gen_key()
-            t = int(time.time())
-            self.earmark = '%s-%s-%s' % (myname, rand_id, t)
 
     def authenticate(self, request):
         """ See IAuthenticationService. """
@@ -194,6 +184,63 @@ class PluggableAuthenticationService(OrderedContainer):
         """
 
         del self[id]
+
+
+class PluggableAuthenticationServiceAddSubscriber:
+
+    zope.interface.implements(zope.app.event.interfaces.ISubscriber)
+
+    def __init__(self, pluggable_auth_service, event):
+        self.pluggable_auth_service = pluggable_auth_service
+        self.event = event
+
+    def notify(self, event):
+        r"""Generates an earmark if one is not provided.
+
+        Define a stub for PluggableAuthenticationService
+
+        >>> from zope.app.traversing.interfaces \
+        ...     import IPhysicallyLocatable
+        >>> class PluggableAuthStub:
+        ...     implements(IPhysicallyLocatable)
+        ...     def __init__(self, earmark=None):
+        ...         self.earmark = earmark
+        ...     def getName(self):
+        ...         return 'PluggableAuthName'
+
+        The subscriber generates an earmark for the auth service if one is not
+        set in the init.
+
+        >>> stub = PluggableAuthStub()
+        >>> event = ''
+        >>> subscriber = \
+        ...     PluggableAuthenticationServiceAddSubscriber(stub,
+        ...                                                 event)
+        >>> subscriber.notify(event)
+        >>> stub.earmark is not None
+        True
+        
+        The subscriber does not modify an earmark for the auth service if one
+        exists already.
+
+        >>> earmark = 'my sample earmark'
+        >>> stub = PluggableAuthStub(earmark=earmark)
+        >>> event = ''
+        >>> subscriber = \
+        ...     PluggableAuthenticationServiceAddSubscriber(stub, event)
+        >>> subscriber.notify(event)
+        >>> stub.earmark == earmark
+        True
+        """
+        self = self.pluggable_auth_service
+        if self.earmark is None:
+            # we manufacture what is intended to be a globally unique
+            # earmark if one is not provided in __init__
+            myname = zapi.name(self)
+            rand_id = gen_key()
+            t = int(time.time())
+            self.earmark = '%s-%s-%s' % (myname, rand_id, t)
+                
 
 class IBTreePrincipalSource(
     ILoginPasswordPrincipalSource,
