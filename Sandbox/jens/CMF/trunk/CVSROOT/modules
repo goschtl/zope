@@ -87,11 +87,10 @@ pcgi -d pcgi Components/pcgi2
 utilities ZUtil
 ZopeHTTPServer Components/ZopeHTTPServer
 
-There's a bunch of stuff directly *in* lib/python in the new
-that's not the in the old (including Setup?)
+GreyThing -d lib/python Components/GreyThing
 
 Zope ZSrc &utilities &pcgi &ZopeHTTPServer \
-  Components/GreyThing \
+  &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate &lpHelpSys \
   &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay &lpSearchIndex \
