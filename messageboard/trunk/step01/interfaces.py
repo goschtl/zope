@@ -27,6 +27,9 @@ from zope.app.container.interfaces import IContainer
 class IMessage(IContainer):
     """A message object. It can contain its own responses."""
 
+    def __setitem__(name, object):
+        """Add a IMessage object."""
+
     title = TextLine(
         title=u"Title/Subject",
         description=u"Title and/or subject of the message.",
