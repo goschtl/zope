@@ -15,9 +15,11 @@
 
 $Id: test_templatedpage.py,v 1.1.1.1 2004/02/18 18:07:08 srichter Exp $
 """
+
+
+
 import time
 import unittest
-from xml.sax import saxutils
 
 from transaction import get_transaction
 from zope.app.tests.functional import BrowserTestCase
@@ -70,12 +72,13 @@ class TemplatedPageTests(BrowserTestCase):
         response = self.publish(
             "/zptpage/@@edit.html",
             basic='mgr:mgrpw', 
-            form={'add_input_name' : u'zptpage',
-                  'field.expand.used' : u'',
+            form={'field.expand.used' : u'',
                   'field.source' : self.template2,
                   'UPDATE_SUBMIT' : 'Change'})
         self.assertEqual(response.getStatus(), 200)
         self.assert_('&gt;time&lt;' in response.getBody())
+        zpt = self.getRootFolder()['zptpage']
+        self.assertEqual(zpt.getSource(), self.template2)
         self.checkForBrokenLinks(response.getBody(), response.getPath(),
                                  'mgr:mgrpw')
 
@@ -85,8 +88,6 @@ class TemplatedPageTests(BrowserTestCase):
         response = self.publish("/zptpage", basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         self.assert_(response.getBody().find('<h1>'+t+'</h1>') != -1)
-        self.checkForBrokenLinks(response.getBody(), response.getPath(),
-                                 'mgr:mgrpw')
 
 def test_suite():
     return unittest.TestSuite((
