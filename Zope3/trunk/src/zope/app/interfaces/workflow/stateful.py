@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.16 2003/07/30 00:00:19 srichter Exp $
+$Id: stateful.py,v 1.17 2003/07/30 15:24:06 srichter Exp $
 """
 
 import zope.schema
@@ -21,9 +21,65 @@ from zope.context import ContextProperty
 from zope.app.security.permission import PermissionField
 
 from zope.interface import Interface, Attribute
+from zope.app.interfaces.workflow import IWorkflowEvent
 from zope.app.interfaces.workflow import IProcessDefinition
 from zope.app.interfaces.workflow import IProcessInstance
 from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
+
+AUTOMATIC = u'Automatic'
+MANUAL = u'Manual'
+
+class ITransitionEvent(IWorkflowEvent):
+    """An event that signalizes a transition from one state to another."""
+
+    object = Attribute("""The content object whose status will be changed.""") 
+
+    process = Attribute("""The process instance that is doing the
+                           transition. Note that this object really represents
+                           the workflow.""")
+
+    transition = Attribute("""The transition that is being fired/executed. It
+                              contains all the specific information, such as
+                              source and destination state.""")
+
+
+class IBeforeTransitionEvent(ITransitionEvent):
+    """This event is published before a the specified transition occurs. This
+    allows other objects to veto the transition."""
+
+
+class IAfterTransitionEvent(ITransitionEvent):
+    """This event is published after the transition. This is important for
+    objects that might change permissions when changing the status."""
+
+
+class IRelevantDataChangeEvent(IWorkflowEvent):
+    """This event is fired, when the object's data changes and the data is
+    considered 'relevant' to the workflow. The attributes of interest are
+    usually defined by a so called Relevant Data Schema."""
+
+    process = Attribute("""The process instance that is doing the
+                           transition. Note that this object really represents
+                           the workflow.""")
+
+    schema = Attribute("""The schema that defines the relevant data
+                          attributes.""")
+
+    attributeName = Attribute("""Name of the attribute that is changed.""")
+
+    oldValue = Attribute("""The old value of the attribute.""")
+
+    newValue = Attribute("""The new value of the attribute.""")
+
+
+class IBeforeRelevantDataChangeEvent(IRelevantDataChangeEvent):
+    """This event is triggered before some of the workflow-relevant data is
+    being changed."""
+
+
+class IAfterRelevantDataChangeEvent(IRelevantDataChangeEvent):
+    """This event is triggered after some of the workflow-relevant data has
+    been changed."""
 
 
 class IState(Interface):
@@ -49,8 +105,7 @@ class TriggerModeField(zope.schema.TextLine):
     """Trigger Mode."""
 
     def __allowed(self):
-        # XXX Need to define Contants !!!
-        return [u'Manual', u'Automatic']
+        return [MANUAL, AUTOMATIC]
     
     allowed_values = ContextProperty(__allowed)
 
@@ -136,12 +191,8 @@ class ITransition(Interface):
         """Return the ProcessDefinition Object."""
 
 
-
-
 class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
     """Container that stores Transitions."""
-
-
 
 
 class IStatefulProcessDefinition(IProcessDefinition):
@@ -222,6 +273,9 @@ class IStatefulProcessInstance(IProcessInstance):
     def fireTransition(id):
         """Fire a outgoing transitions."""
 
+    def getProcessDefinition():
+        """Get the process definition for this instance."""
+        
 
 class IContentProcessRegistry(Interface):
     """Content Type <-> Process Definitions Registry

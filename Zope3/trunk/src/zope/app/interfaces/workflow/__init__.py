@@ -14,15 +14,22 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.16 2003/07/30 00:00:19 srichter Exp $
+$Id: __init__.py,v 1.17 2003/07/30 15:24:06 srichter Exp $
 """
 
 from zope.interface import Interface
 from zope.interface import Attribute
 from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.event import IEvent
 from zope.app.interfaces.services.registration \
      import INamedComponentRegistration
 from zope.app.interfaces.services.registration import ComponentPath
+
+
+class IWorkflowEvent(IEvent):
+    """This event describes a generic event that is triggered by the workflow
+    mechanism.""" 
+
 
 class IWorkflowService(Interface):
     """Workflow service.

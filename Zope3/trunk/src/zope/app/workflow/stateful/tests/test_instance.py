@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Process Difinition Instance Tests
 
-Revision information:
-$Id: test_instance.py,v 1.7 2003/06/21 21:22:17 jim Exp $
+$Id: test_instance.py,v 1.8 2003/07/30 15:24:12 srichter Exp $
 """
 
 import unittest
@@ -24,6 +23,8 @@ from zope.interface.verify import verifyClass
 from zope.schema import Text, Int
 
 from zope.component.service import serviceManager
+from zope.app.event.tests.placelesssetup import \
+     eventPublisher, EventRecorder, events, clearEvents
 from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.permissionregistry \
      import permissionRegistry
@@ -42,6 +43,11 @@ from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.service import ProcessDefinitionRegistration
 from zope.app.interfaces.workflow.stateful \
      import IStatefulProcessInstance
+from zope.app.interfaces.workflow.stateful import \
+     IBeforeTransitionEvent, IAfterTransitionEvent
+from zope.app.interfaces.workflow.stateful import IRelevantDataChangeEvent
+from zope.app.interfaces.workflow.stateful import \
+     IBeforeRelevantDataChangeEvent, IAfterRelevantDataChangeEvent
 from zope.app.workflow.stateful.definition \
      import StatefulProcessDefinition, State, Transition
 from zope.app.workflow.stateful.instance \
@@ -107,6 +113,10 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.pi = ContextWrapper(
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
+        # Let's also listen to the fired events
+        clearEvents()
+        eventPublisher.globalSubscribe(EventRecorder)
+
 
     def testInterface(self):
         verifyClass(IStatefulProcessInstance, StatefulProcessInstance)
@@ -121,7 +131,12 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.assertEqual(data.value, 1)
 
         data.text = 'another text'
+        self.assert_(IBeforeRelevantDataChangeEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterRelevantDataChangeEvent.isImplementedBy(events[-1])) 
+        clearEvents()
         data.value = 10
+        self.assert_(IBeforeRelevantDataChangeEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterRelevantDataChangeEvent.isImplementedBy(events[-1])) 
 
         self.assertEqual(data.text, 'another text')
         self.assertEqual(data.value, 10)
@@ -133,28 +148,46 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.assertEqual(pi.status, pd.getInitialStateName())
         self.assertEqual(pi.getOutgoingTransitions(), ['show'])
 
+        clearEvents()
         pi.fireTransition('show')
+        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
         self.assertEqual(pi.status, 'private')
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['publish_direct', 'submit_pending'])
 
+        clearEvents()
         pi.fireTransition('submit_pending')
+        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
         self.assertEqual(pi.status, 'pending')
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['publish_pending', 'retract_pending'])
 
+        clearEvents()
         pi.fireTransition('publish_pending')
+        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
         self.assertEqual(pi.status, 'published')
         self.assertEqual(sort(pi.getOutgoingTransitions()),
                          ['retract_published'])
 
+        clearEvents()
         pi.fireTransition('retract_published')
+        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
         self.assertEqual(pi.status, 'private')
 
+        clearEvents()
         pi.fireTransition('submit_pending')
+        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
         self.assertEqual(pi.status, 'pending')
 
+        clearEvents()
         pi.fireTransition('retract_pending')
+        self.assert_(IBeforeTransitionEvent.isImplementedBy(events[0])) 
+        self.assert_(IAfterTransitionEvent.isImplementedBy(events[-1])) 
         self.assertEqual(pi.status, 'private')
 
 
