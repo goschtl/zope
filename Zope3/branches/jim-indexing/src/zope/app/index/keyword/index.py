@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""This is a keyword index which can be subscribed to an event service.
+"""This is a keyword index
 
 $Id$
 """
@@ -20,7 +20,7 @@ from zope.interface import implements
 
 from zope.app.index.interfaces.keyword import IUIKeywordCatalogIndex
 from zope.app.catalog.interfaces.index import ICatalogIndex
-from zope.app.index import InterfaceIndexingSubscriber
+from zope.app.index.ifaceindex import InterfaceIndexingSubscriber
 
 class KeywordCatalogIndex(InterfaceIndexingSubscriber, KeywordIndex):
     implements(ICatalogIndex, IUIKeywordCatalogIndex)
