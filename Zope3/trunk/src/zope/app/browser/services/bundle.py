@@ -28,7 +28,7 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all configurations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.1 2003/06/16 16:00:37 gvanrossum Exp $
+$Id: bundle.py,v 1.2 2003/06/16 16:58:59 gvanrossum Exp $
 """
 
 from zope.app import zapi
@@ -83,10 +83,10 @@ class BundleView(BrowserView):
     def compareConfigurations(self, c1, c2):
         path1, obj1 = c1
         path2, obj2 = c2
-        t1 = (self.getServiceName(obj1),
+        t1 = (self.getAdjustedServiceName(obj1),
               obj1.usageSummary(),
               obj1.implementationSummary())
-        t2 = (self.getServiceName(obj2),
+        t2 = (self.getAdjustedServiceName(obj2),
               obj2.usageSummary(),
               obj2.implementationSummary())
         return cmp(t1, t2)
@@ -96,8 +96,22 @@ class BundleView(BrowserView):
         for path, obj in self.configurations:
             sd[self.getServiceName(obj)] = 1
         services = sd.keys()
-        services.sort()
+        services.sort(self.compareServiceNames)
         return services
+
+    def compareServiceNames(self, n1, n2):
+        return cmp(self.adjustServiceName(n1), self.adjustServiceName(n2))
+
+    def getAdjustedServiceName(self, configuration):
+        name = self.getServiceName(configuration)
+        return self.adjustServiceName(name)
+
+    def adjustServiceName(self, name):
+        # XXX Strange...  There's no synbol for it in servicenames.py
+        if name == "Services":
+            return ""
+        else:
+            return name
 
     def getServiceName(self, configuration):
         # Return the service associated with a configuration.
