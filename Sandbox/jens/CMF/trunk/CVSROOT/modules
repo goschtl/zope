@@ -39,7 +39,7 @@ z Components/GreyThing \
 
 zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
-  &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay \
+  &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay &SearchIndex \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
 
