@@ -436,8 +436,6 @@ class MakeSite(BrowserView):
     def addSiteManager(self):
         """Convert a possible site to a site
 
-        XXX we should also initialize some user-selected services.
-
         >>> from zope.app.traversing.interfaces import IContainmentRoot
         >>> from zope.interface import implements
 
@@ -592,8 +590,6 @@ class Detail:
         self.iface = getProxiedObject(iface)
         
         self.name = self.iface.__name__
-        # XXX the doc string needs some formatting for presentation
-        # XXX self.doc = self.iface.__doc__
         self.doc = getattr(self.iface, '__doc__', '')
         self.methods = []
         self.schema = []
