@@ -15,39 +15,28 @@
 """
 
 import unittest
-from Zope.StartUp.ServerTypeRegistry import getServerType
-
-from Zope.Configuration.xmlconfig import xmlconfig
 from cStringIO import StringIO
-
-
-template = """<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:startup='http://namespaces.zope.org/startup'>
-   %s
-   </zopeConfigure>"""
+from Zope.Configuration.xmlconfig import xmlconfig
+from Zope.Configuration.tests.BaseTestDirectivesXML import makeconfig
+from Zope.StartUp.ServerTypeRegistry import getServerType
 
 
 class Test( unittest.TestCase ):
 
-
     def testRegisterServerType(self):
-
-        xmlconfig(StringIO(template % (
-            '''<directive name="registerServerType"
-                 attributes="name publication request"
-                 handler="Zope.StartUp.metaConfigure.registerServerType"
-                 namespace="http://namespaces.zope.org/startup" />
-
-               <startup:registerServerType 
+        xmlconfig(makeconfig(
+            '''<directive
+                   name="registerServerType"
+                   attributes="name publication request"
+                   handler="Zope.StartUp.metaConfigure.registerServerType" />''',
+            '''<test:registerServerType 
                  name = "Browser"
                  factory = "Zope.Server.HTTP.PublisherHTTPServer."
                  requestFactory="BrowserRequestFactory"
                  logFactory = "Zope.Server.HTTP.CommonHitLogger."
                  defaultPort="8080"
-                 defaultVerbose="true" />
-            '''
-            )))
+                 defaultVerbose="true" />'''
+            ))
 
         from Zope.Server.HTTP.PublisherHTTPServer import PublisherHTTPServer
         from Zope.Server.HTTP.CommonHitLogger import CommonHitLogger

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testDirectives.py,v 1.4 2002/10/03 20:53:22 jim Exp $
+$Id: testDirectives.py,v 1.5 2002/11/08 18:53:36 rdmurray Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,12 +30,8 @@ from Zope.Event.ObjectEvent import ObjectModifiedEvent
 from testEventService import DummySubscriber, DummyFilter, DummyEvent
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getServiceManager, getService
+from Zope.Configuration.tests.BaseTestDirectivesXML import makeconfig
 
-template = """<zopeConfigure
-  xmlns='http://namespaces.zope.org/zope'
-  xmlns:event='http://namespaces.zope.org/event'>
-  %s
-  </zopeConfigure>"""
 
 class Test(PlacelessSetup, TestCase):
     
@@ -51,19 +47,18 @@ class Test(PlacelessSetup, TestCase):
         # This should fail, since we're not subscribed
         self.assertRaises(NotFoundError,unsubscribe,None,subscriber)
             
-        xmlconfig(StringIO(template % (
-            """
-            <directive name="subscribe"
-                       attributes="subscriber event_types filter"
-                       handler="Zope.Event.metaConfigure.subscribe"
-                       namespace="http://namespaces.zope.org/event"/>
-            <event:subscribe subscriber="Zope.Event.tests.subscriber.subscriber"
-                            
- event_types="Zope.Event.IObjectEvent.IObjectAddedEvent
-                                         
- Zope.Event.IObjectEvent.IObjectRemovedEvent"
-                             filter="Zope.Event.tests.subscriber.filter"/>
-            """)))
+        xmlconfig(makeconfig(
+            '''<directive
+                   name="subscribe"
+                   attributes="subscriber event_types filter"
+                   handler="Zope.Event.metaConfigure.subscribe" />''',
+            '''<test:subscribe
+                   subscriber="Zope.Event.tests.subscriber.subscriber"
+                   event_types=
+                       "Zope.Event.IObjectEvent.IObjectAddedEvent
+                        Zope.Event.IObjectEvent.IObjectRemovedEvent"
+                   filter="Zope.Event.tests.subscriber.filter" />'''
+            ))
 
         publishEvent(None,ObjectAddedEvent(None, 'foo'))
         self.assertEqual(subscriber.notified,1)

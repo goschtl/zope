@@ -13,41 +13,33 @@
 ##############################################################################
 """
 
-$Id: testRegisterRequestFactory.py,v 1.2 2002/06/10 23:29:43 jim Exp $
+$Id: testRegisterRequestFactory.py,v 1.3 2002/11/08 18:55:37 rdmurray Exp $
 """
 
 import unittest
-from Zope.StartUp.RequestFactoryRegistry import getRequestFactory
-
-from Zope.Configuration.xmlconfig import xmlconfig
 from cStringIO import StringIO
-
-
-template = """<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:startup='http://namespaces.zope.org/startup'>
-   %s
-   </zopeConfigure>"""
+from Zope.Configuration.xmlconfig import xmlconfig
+from Zope.Configuration.tests.BaseTestDirectivesXML import makeconfig
+from Zope.StartUp.RequestFactoryRegistry import getRequestFactory
 
 
 class Test( unittest.TestCase ):
 
-
     def testRegisterRequestFactory(self):
 
-        xmlconfig(StringIO(template % (
+        xmlconfig(makeconfig(
+            '''<directive
+                   name="registerRequestFactory"
+                   attributes="name publication request"
+                   handler=
+                     "Zope.StartUp.metaConfigure.registerRequestFactory" />''',
+            '''<test:registerRequestFactory
+                   name="BrowserRequestFactory"
+                   publication= 
+                   "Zope.App.ZopePublication.Browser.Publication.BrowserPublication"
+                   request = "Zope.Publisher.Browser.BrowserRequest." />
             '''
-            <directive name="registerRequestFactory"
-               attributes="name publication request"
-               handler="Zope.StartUp.metaConfigure.registerRequestFactory"
-               namespace="http://namespaces.zope.org/startup" />
-
-            <startup:registerRequestFactory name="BrowserRequestFactory"
-              publication = 
-              "Zope.App.ZopePublication.Browser.Publication.BrowserPublication"
-              request = "Zope.Publisher.Browser.BrowserRequest." />
-            '''
-            )))
+            ))
 
         from Zope.App.ZopePublication.Browser.Publication import \
              BrowserPublication
