@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: RolePermissions.py,v 1.1 2002/06/20 15:54:59 jim Exp $
+$Id: RolePermissions.py,v 1.2 2002/06/25 10:56:51 efge Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
 from Zope.App.Security.IRole import IRole
-from Zope.App.Security.Settings import Allow
+from Zope.App.Security.Settings import Unset
 
 class RolePermissions:
 
@@ -42,12 +42,11 @@ class RolePermissions:
     def permissionsInfo(self):
         prm = getAdapter(self._context, IRolePermissionManager)
         rperms = prm.getPermissionsForRole(self._role.getId())
-        rperms = [permission
-                  for permission,setting in rperms
-                  if setting==Allow]
+        settings = {}
+        for permission, setting in rperms:
+            settings[permission] = setting.getName()
+        nosetting = Unset.getName()
         return [{'id': permission.getId(),
                  'title': permission.getTitle(),
-                 'checked': ((permission.getId() in rperms) and '1' or None)}
-                for permission in self._permissions]        
-        
-    
+                 'setting': settings.get(permission.getId(), nosetting)}
+                for permission in self._permissions]

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PermissionRoles.py,v 1.2 2002/06/24 16:00:44 efge Exp $
+$Id: PermissionRoles.py,v 1.3 2002/06/25 10:56:51 efge Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
@@ -51,11 +51,3 @@ class PermissionRoles:
         nosetting = Unset.getName()
         return [settings.get(role.getId(), nosetting) for role in self._roles]
 
-    def rolesInfo(self):
-        prm = getAdapter(self._context, IRolePermissionManager)
-        proles = prm.getRolesForPermission(self._permission.getId())
-        proles = [role for role,setting in proles if setting==Allow]
-        return [{'id': role.getId(),
-                 'title': role.getTitle(),
-                 'checked': ((role.getId() in proles) and '1' or None)}
-                for role in self._roles]
