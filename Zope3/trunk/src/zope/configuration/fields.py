@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.9 2003/08/04 16:57:39 philikon Exp $
+$Id: fields.py,v 1.10 2003/08/04 17:17:20 philikon Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -294,16 +294,28 @@ class MessageID(schema.Text):
     >>> field = MessageID().bind(context)
 
     There is a fallback domain when no domain has been specified.
-    Suppress warnings so they won't show up when running unit tests.
+
+    Exchange the warn function so we can make test whether the warning
+    has been issued
+
+    >>> warned = None
+    >>> def fakewarn(*args, **kw):
+    ...     global warned
+    ...     warned = args
 
     >>> import warnings
-    >>> warnings.filterwarnings('ignore')
-
+    >>> realwarn = warnings.warn
+    >>> warnings.warn = fakewarn
+    
     >>> i = field.fromUnicode(u"Hello world!")
     >>> i
     u'Hello world!'
     >>> i.domain
     'untranslated'
+    >>> warned
+    ("You did not specify an i18n translation domain for the '' field in file location",)
+
+    >>> warnings.warn = realwarn
 
     With the domain specified:
 
@@ -344,7 +356,8 @@ class MessageID(schema.Text):
             domain = 'untranslated'
             warnings.warn(
                 "You did not specify an i18n translation domain for the "\
-                "'%s' field in %s" % (self.getName(), context.info ))
+                "'%s' field in %s" % (self.getName(), context.info )
+                )
         v = super(MessageID, self).fromUnicode(u)
 
         # Record the string we got for the domain
