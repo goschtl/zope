@@ -15,8 +15,9 @@ After CMF 1.4.6
     - CMFDefault.DiscussionItem: Replies were not sorted chronologically
       (http://www.zope.org/Collectors/CMF/211)
 
-    - CMFDefault.Image: When pasting an Image object the review state did not
-      revert to "private" (http://www.zope.org/Collectors/CMF/176)   
+    - CMFDefault.Image and CMFDefault.File: When copy/pasting Image and File
+      objects the review state did not revert to "private".
+      (http://www.zope.org/Collectors/CMF/176)
 
     - CMFTopic: Change topic_view template to show title and ID (it only
       showed title before; http://www.zope.org/Collectors/CMF/180)
