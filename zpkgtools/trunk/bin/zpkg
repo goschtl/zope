@@ -13,6 +13,7 @@
 #
 ##############################################################################
 
+import logging
 import optparse
 import os
 import shutil
@@ -236,6 +237,8 @@ def main(argv=None):
         return 2
     resource = args[0]
 
+    root_logger = logging.getLogger()
+    root_logger.addHandler(logging.StreamHandler())
     try:
         app = Application(options, resource, program)
         app.run()
