@@ -270,6 +270,7 @@ class IPrincipal(Interface):
     groups = List(
         title=_("Groups"),
         description=_("List of groups the principal belongs to"),
+        value_type=TextLine(),
         required=False)
 
                 
