@@ -12,43 +12,67 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.2 2004/03/18 14:31:49 philikon Exp $
+$Id: interfaces.py,v 1.3 2004/03/21 17:20:28 philikon Exp $
 """
 
 from zope.interface import Interface
 
-class IUndoManager(Interface):
-    """Interface for the Undo Manager"""
+class UndoError(Exception):
+    pass
 
-    def getUndoInfo(first=0, last=-20, user_name=None):
-        """
-        Gets some undo information. It skips the 'first' most
-        recent transactions; i.e. if first is N, then the first
-        transaction returned will be the Nth transaction.
+class IUndo(Interface):
+    """Undo functionality"""
+
+    def getTransactions(context=None, first=0, last=-20):
+        """Return a sequence of mapping objects describing
+        transactions, ordered by date, descending:
+
+        Keys of mapping objects:
+
+          id           -> internal id for zodb
+          principal    -> principal that invoked the transaction
+          datetime     -> datetime object of time
+          description  -> description/note (string)
+
+          Extended information (not necessarily available):
+          request_type -> type of request that caused transaction
+          request_info -> request information, e.g. URL, method
+          location     -> location of the object that was modified
+          undo         -> boolean value, indicated an undo transaction
+
+        If 'context' is None, all transactions will be listed,
+        otherwise only transactions for that location.
+
+        It skips the 'first' most recent transactions; i.e. if first
+        is N, then the first transaction returned will be the Nth
+        transaction.
 
         If last is less than zero, then its absolute value is the
         maximum number of transactions to return.  Otherwise if last
         is N, then only the N most recent transactions following start
         are considered.
-
-        If user_name is not None, only transactions from the given
-        user_name are returned.
-
-        Note: at the moment, doesnt care where called from
-
-        returns sequence of mapping objects by date desc
-
-        keys of mapping objects:
-          id          -> internal id for zodb
-          user_name   -> name of user that last accessed the file
-          time        -> unix timestamp of last access
-          datetime    -> datetime object of time
-          description -> transaction description
         """
 
-    def undoTransaction(id_list):
+    def undoTransactions(ids):
+        """Undo the transactions specified in the sequence 'ids'.
         """
-        id_list will be a list of transaction ids.
-        iterate over each id in list, and undo
-        the transaction item.
+
+class IPrincipalUndo(Interface):
+    """Undo functionality for one specific principal"""
+
+    def getPrincipalTransactions(principal, context=None, first=0, last=-20):
+        """Returns transactions invoked by the given principal.
+
+        See IUndo.getTransactions() for more information
         """
+
+    def undoPrincipalTransactions(principal, ids):
+        """Undo the transactions invoked by 'principal' with the given
+        'ids'. Raise UndoError if a transaction is listed among 'ids'
+        that does not belong to 'principal'.
+        """
+
+class IUndoManager(IUndo, IPrincipalUndo):
+    """Utility to provide both global and principal-specific undo
+    functionality
+    """

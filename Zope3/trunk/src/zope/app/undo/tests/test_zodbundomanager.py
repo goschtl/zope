@@ -12,32 +12,40 @@
 #
 ##############################################################################
 """
-$Id: test_zodbundomanager.py,v 1.3 2004/03/19 18:34:02 philikon Exp $
+$Id: test_zodbundomanager.py,v 1.4 2004/03/21 17:20:28 philikon Exp $
 """
 
 from time import time
 from unittest import TestCase, main, makeSuite
+from transaction import get_transaction
 
 from zope.testing.cleanup import CleanUp 
-from zope.app.undo import ZODBUndoManager
+from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import PlacelessSetup
 
-def dict(**kw): return kw
+from zope.app.undo import ZODBUndoManager
+from zope.app.undo.interfaces import UndoError
 
 testdata = [
-    dict(id='1', user_name='/ jim', time=time(), description='des 1'),
-    dict(id='2', user_name='/ jim', time=time(), description='des 2'),
-    dict(id='3', user_name='/ anthony', time=time(), description='des 3'),
-    dict(id='4', user_name='/ jim', time=time(), description='des 4'),
+    dict(id='1', user_name='/ jim', time=time(), description='des 1',
+         location='/spam/1'),
+    dict(id='2', user_name='/ jim', time=time(), description='des 2',
+         location='/parrot/2'),
+    dict(id='3', user_name='/ anthony', time=time(), description='des 3',
+         location='/spam/spam/3'),
+    dict(id='4', user_name='/ jim', time=time(), description='des 4',
+         location='/spam/parrot/4'),
     dict(id='5', user_name='/ anthony', time=time(), description='des 5'),
     dict(id='6', user_name='/ anthony', time=time(), description='des 6'),
-    dict(id='7', user_name='/ jim', time=time(), description='des 7'),
+    dict(id='7', user_name='/ jim', time=time(), description='des 7',
+         location='/spam/7'),
     dict(id='8', user_name='/ anthony', time=time(), description='des 8'),
     dict(id='9', user_name='/ jim', time=time(), description='des 9'),
     dict(id='10', user_name='/ jim', time=time(), description='des 10'),
     ]
 testdata.reverse()
 
-class StubDB:
+class StubDB(object):
 
     def __init__(self):
         self.data = list(testdata)
@@ -69,31 +77,84 @@ class StubDB:
     def undo(self, id):
         self.data = [d for d in self.data if d['id'] != id]
 
-class Test(CleanUp, TestCase):
+class Test(PlacelessSetup, TestCase):
 
-    def test(self):
-        um = ZODBUndoManager(StubDB())
+    def setUp(self):
+        super(Test, self).setUp()
 
-        self.assertEqual(list(um.getUndoInfo()), testdata)
+        # provide location adapter
+        from zope.app.location import LocationPhysicallyLocatable
+        from zope.app.location.interfaces import ILocation
+        from zope.app.traversing.interfaces import IPhysicallyLocatable
+        ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
+                             LocationPhysicallyLocatable)
 
-        txid = [d['id'] for d in um.getUndoInfo(first=0,last=-3)]
-        self.assertEqual(txid, ['10','9','8','7'])
-        txid = [d['id'] for d in um.getUndoInfo(first=0,last=3)]
-        self.assertEqual(txid, ['10','9','8'])
-        txid = [d['id'] 
-                for d in um.getUndoInfo(first=0, last=3, user_name='anthony')]
-        self.assertEqual(txid, ['8','6','5'])
-        txid = [d['id'] for d in um.getUndoInfo(user_name='anthony')]
-        self.assertEqual(txid, ['8','6','5','3'])
+        # define principals
+        from zope.app.security.principalregistry import principalRegistry
+        principalRegistry.definePrincipal('jim', 'Jim Fulton', login='jim')
+        principalRegistry.definePrincipal('anthony', 'Anthony Baxter',
+                                          login='anthony')
+        self.undo = ZODBUndoManager(StubDB())
+        self.data = list(testdata)
 
-        um.undoTransaction(('3','4','5'))
+    def testGetTransactions(self):
+        self.assertEqual(list(self.undo.getTransactions()), self.data)
 
-        expected = [d for d in testdata if (d['id'] not in ('3','4','5'))]
-        self.assertEqual(list(um.getUndoInfo()), expected)
+    def testGetPrincipalTransactions(self):
+        self.assertRaises(TypeError, self.undo.getPrincipalTransactions, None)
 
-        txid = [d['id'] for d in um.getUndoInfo(user_name='anthony')]
-        self.assertEqual(txid, ['8','6'])
+        from zope.app.security.principalregistry import principalRegistry
+        jim = principalRegistry.getPrincipal('jim')
+        expected = [dict for dict in self.data if dict['user_name'] == '/ jim']
+        self.assertEqual(list(self.undo.getPrincipalTransactions(jim)),
+                         expected)
 
+    def testGetTransactionsInLocation(self):
+        from zope.interface import directlyProvides
+        from zope.app.location import Location
+        from zope.app.traversing.interfaces import IContainmentRoot
+
+        root = Location()
+        spam = Location()
+        spam.__name__ = 'spam'
+        spam.__parent__ = root
+        directlyProvides(root, IContainmentRoot)
+
+        expected = [dict for dict in self.data if 'location' in dict
+                    and dict['location'].startswith('/spam')]
+        self.assertEqual(list(self.undo.getTransactions(spam)), expected)
+
+        # now test this with getPrincipalTransactions()
+        from zope.app.security.principalregistry import principalRegistry
+        jim = principalRegistry.getPrincipal('jim')
+        expected = [dict for dict in expected if dict['user_name'] == '/ jim']
+        self.assertEqual(list(self.undo.getPrincipalTransactions(jim, spam)),
+                         expected)
+
+    def testUndoTransactions(self):
+        ids = ('3','4','5')
+        self.undo.undoTransactions(ids)
+        expected = [d for d in testdata if (d['id'] not in ids)]
+        self.assertEqual(list(self.undo.getTransactions()), expected)
+
+        # assert that the transaction has been annotated
+        txn = get_transaction()
+        self.assert_(txn._extension.has_key('undo'))
+        self.assert_(txn._extension['undo'] is True)
+
+    def testUndoPrincipalTransactions(self):
+        self.assertRaises(TypeError, self.undo.undoPrincipalTransactions,
+                          None, [])
+        
+        from zope.app.security.principalregistry import principalRegistry
+        jim = principalRegistry.getPrincipal('jim')
+        self.assertRaises(UndoError, self.undo.undoPrincipalTransactions,
+                          jim, ('1','2','3'))
+
+        ids = ('1', '2', '4')
+        self.undo.undoPrincipalTransactions(jim, ids)
+        expected = [d for d in testdata if (d['id'] not in ids)]
+        self.assertEqual(list(self.undo.getTransactions()), expected)
 
 def test_suite():
     return makeSuite(Test)

@@ -13,25 +13,68 @@
 ##############################################################################
 """Undo view
 
-$Id: browser.py,v 1.1 2004/03/01 14:16:56 philikon Exp $
+$Id: browser.py,v 1.2 2004/03/21 17:20:28 philikon Exp $
 """
+from zope.exceptions import ForbiddenAttribute
+
 from zope.app import zapi
+from zope.app.publisher.browser import BrowserView
 from zope.app.undo.interfaces import IUndoManager
 
-class UndoView:
-    """Undo view
-    """
+class UndoView(BrowserView):
+    """Undo view"""
 
-    def action(self, id_list):
-        """processes undo form and redirects to form again (if possible)"""
-        utility = zapi.getUtility(self.context, IUndoManager)
-        utility.undoTransaction(id_list)
-        self.request.response.redirect('index.html')
+    def principalLastTransactionIsUndo(self):
+        """Return True if the authenticated principal's last
+        transaction is an undo transaction.
+        """
+        request = self.request
+        undo = zapi.getUtility(self.context, IUndoManager)
+        txn_info = undo.getPrincipalTransactions(request.user, first=0, last=1)
+        if txn_info:
+            return txn_info[0].get('undo', False)
+        return False
 
-    def getUndoInfo(self, first=0, last=-20, user_name=None):
-        utility = zapi.getUtility(self.context, IUndoManager)
-        info = utility.getUndoInfo(first, last, user_name)
-        formatter = self.request.locale.dates.getFormatter('dateTime', 'medium')
-        for entry in info:
-            entry['datetime'] = formatter.format(entry['datetime'])
-        return info
+    def undoPrincipalLastTransaction(self):
+        """Undo the authenticated principal's last transaction and
+        return where he/she came from"""
+        request = self.request
+        undo = zapi.getUtility(self.context, IUndoManager)
+        txn_info = undo.getPrincipalTransactions(request.user, first=0, last=1)
+        if txn_info:
+            id = txn_info[0]['id']
+            undo.undoPrincipalTransactions(request.user, [id])
+        target = request.get('HTTP_REFERER', '@@SelectedManagementView.html')
+        request.response.redirect(target)
+
+    def undoAllTransactions(self, ids):
+        """Undo transactions specified in 'ids'."""
+        undo = zapi.getUtility(self.context, IUndoManager)
+        undo.undoTransactions(ids)
+        self._redirect()
+
+    def undoPrincipalTransactions(self, ids):
+        """Undo transactions that were issued by the authenticated
+        user specified in 'ids'."""
+        undo = zapi.getUtility(self.context, IUndoManager)
+        undo.undoPrincipalTransactions(self.request.user, ids)
+        self._redirect()
+
+    def _redirect(self):
+        target = "@@SelectedManagementView.html"
+        self.request.response.redirect(target)
+
+    def getAllTransactions(self, first=0, last=-20, showall=False):
+        context = None
+        if not showall:
+            context = self.context
+        undo = zapi.getUtility(self.context, IUndoManager)
+        return undo.getTransactions(context, first, last)
+
+    def getPrincipalTransactions(self, first=0, last=-20, showall=False):
+        context = None
+        if not showall:
+            context = self.context
+        undo = zapi.getUtility(self.context, IUndoManager)
+        return undo.getPrincipalTransactions(self.request.user, context,
+                                             first, last)
