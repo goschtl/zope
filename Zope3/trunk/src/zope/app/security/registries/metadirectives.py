@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metadirectives.py,v 1.2 2003/08/03 19:08:39 philikon Exp $
+$Id: metadirectives.py,v 1.3 2003/08/04 11:11:45 jim Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, Text, Id
@@ -49,7 +49,24 @@ class IDefinePermissionDirective(IBaseDefineDirective):
 class IDefineRoleDirective(IBaseDefineDirective):
     """Define a new role."""
 
-class IDefinePrincipalDirective(IBaseDefineDirective):
+class IBasePrincipalDirective(Interface):
+    
+    id = TextLine(
+        title=u"Id",
+        description=u"Id as which this object will be known and used.",
+        required=True)
+
+    title = TextLine(
+        title=u"Title",
+        description=u"Provides a title for the object.",
+        required=True)
+
+    description = TextLine(
+        title=u"Title",
+        description=u"Provides a description for the object.",
+        required=False)
+
+class IDefinePrincipalDirective(IBasePrincipalDirective):
     """Define a new principal."""
 
     login = TextLine(
@@ -62,6 +79,6 @@ class IDefinePrincipalDirective(IBaseDefineDirective):
         description=u"Specifies the Principal's Password.",
         required=True)
 
-class IDefineUnauthenticatedPrincipalDirective(IBaseDefineDirective):
+class IDefineUnauthenticatedPrincipalDirective(IBasePrincipalDirective):
     """Define a new unauthenticated principal."""
 
