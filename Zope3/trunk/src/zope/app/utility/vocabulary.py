@@ -15,7 +15,7 @@
 
 This vocabulary provides terms for all utilities providing a given interface. 
 
-$Id: vocabulary.py,v 1.2 2004/04/26 23:58:41 srichter Exp $
+$Id: vocabulary.py,v 1.3 2004/05/07 23:21:13 garrett Exp $
 """
 from zope.interface import implements, Interface
 from zope.interface.interfaces import IInterface
@@ -25,6 +25,7 @@ from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import ITokenizedTerm
 
 from zope.app import zapi
+from zope.app.interface.vocabulary import ObjectInterfacesVocabulary
 
 
 class UtilityQuery(object):
@@ -232,3 +233,10 @@ class UtilityVocabulary(object):
     def __len__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
         return len(self._terms)
+        
+
+class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
+    
+    def __init__(self, registration):
+        super(UtilityComponentInterfacesVocabulary, self).__init__(
+            registration.getComponent())
