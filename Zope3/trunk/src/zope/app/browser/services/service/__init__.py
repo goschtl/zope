@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.3 2003/09/24 20:43:10 fdrake Exp $
+$Id: __init__.py,v 1.4 2003/10/23 04:39:13 fdrake Exp $
 """
 
 from zope.app import zapi
@@ -385,7 +385,5 @@ class MakeSite(BrowserView):
         if ISite.isImplementedBy(self.context):
             raise zapi.UserError('This is already a site')
         sm = ServiceManager(self.context)
-        self.context.setSite(sm)
+        self.context.setSiteManager(sm)
         self.request.response.redirect("++etc++site/")
-
-    
