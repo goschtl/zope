@@ -1,3 +1,4 @@
+from __future__ import nested_scopes
 from unittest import TestCase, TestSuite, makeSuite, main
 
 import Testing
