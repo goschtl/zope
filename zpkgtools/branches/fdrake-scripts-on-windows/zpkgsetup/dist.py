@@ -56,3 +56,6 @@ class ZPkgDistribution(distutils.dist.Distribution):
         if self.package_data and sys.version_info < (2, 4):
             from zpkgsetup.build_py import build_py
             self.cmdclass.setdefault('build_py', build_py)
+        # Always use our own build_scripts since it has custom behavior:
+        from zpkgsetup.build_scripts import build_scripts
+        self.cmdclass['build_scripts'] = build_scripts
