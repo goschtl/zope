@@ -1,13 +1,11 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <serviceType
-    id="FSRegistryService"
-    interface="zope.app.interfaces.fssync.IGlobalFSSyncService"
-    />
+      id="FSRegistryService"
+      interface="zope.app.interfaces.fssync.IGlobalFSSyncService"/>
   
   <service
-    serviceType="FSRegistryService"
-    component="zope.app.fssync.fsregistry.fsRegistry"
-    />
+      serviceType="FSRegistryService"
+      component="zope.app.fssync.fsregistry.fsRegistry"/>
 
-</zopeConfigure>
+</configure>

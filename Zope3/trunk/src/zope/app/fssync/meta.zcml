@@ -1,13 +1,11 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
  
-  <directives namespace="http://namespaces.zope.org/fssync">
-
-    <directive
+  <meta:directive
+      namespace="http://namespaces.zope.org/fssync"
       name="adapter"
-      attributes="class factory"
-      handler=".fsdirective.registerFSRegistry"
-      />
+      schema=".metadirectives.IAdapterDirective"
+      handler=".metaconfigure.registerFSRegistry"/>
 
-  </directives>
-
-</zopeConfigure>
+</configure>

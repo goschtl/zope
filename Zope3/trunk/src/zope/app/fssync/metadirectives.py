@@ -2,32 +2,32 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
-""" Register class directive.
+"""Fssync Directive Schemas
 
-$Id: fsdirective.py,v 1.2 2003/05/05 18:01:01 gvanrossum Exp $
+$Id: metadirectives.py,v 1.1 2003/08/01 23:31:46 srichter Exp $
 """
-from zope.app.fssync.fsregistry import provideSynchronizer
-from zope.configuration.action import Action
+from zope.configuration.fields import GlobalObject
+from zope.interface import Interface
 
-def registerFSRegistry(_context, class_=None, factory=None):
-    """registerFSRegistry method to register Class and Serializer factory
-    associated with it.
-    """
-    cls = None
-    if class_ is not None:
-       cls = _context.resolve(class_)
-    
-    fct = _context.resolve(factory)
+class IAdapterDirective(Interface):
 
-    return [Action(discriminator=('adapter', class_),
-                   callable=provideSynchronizer,
-                   args=(cls, fct))]
+    class_ = GlobalObject(
+        title=u"Class",
+        description=u"Specifies the class for which this adapter is " \
+                    u"registered.",
+        required=False)
+
+    factory = GlobalObject(
+        title=u"Factory",
+        description=u"Specifies the factory that will create the adapter.",
+        required=True)
+
