@@ -133,11 +133,11 @@ class SubversionUrl(SubversionUrlBase):
                                  " Subversion URL")
             parts = split_on_tag(relurl.path)
             if parts is None:
-                path = posixpath.join(tail, relurl.path)
+                path = posixpath.join(self.tail, relurl.path)
                 if path == ".." or path.startswith("../"):
                     raise ValueError("could not join with repository: URL")
                 prefix = self.prefix
-                tail = self.path
+                tail = path
             else:
                 prefix, tail, tag = parts
             if tag and relurl.tag and tag != relurl.tag:
