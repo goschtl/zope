@@ -403,6 +403,7 @@ def process_args(argv=None):
     VERBOSE = 0
     LOOP = 0
     GUI = 0
+    TRACE = 0
     debug = 0 # Don't collect test results; simply let tests crash
     debugger = 0
     build = 0
