@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: ContextWrapper.py,v 1.8 2002/12/16 12:34:02 stevea Exp $
+$Id: ContextWrapper.py,v 1.9 2002/12/17 19:01:37 stevea Exp $
 """
 
 from Zope.Security.Proxy import Proxy, getChecker, getObject
@@ -53,7 +53,7 @@ def getWrapperObject(_ob):
     """Remove a context wrapper around an object with data
 
     If the object is wrapped in a security proxy, then the object
-    is inserted inside an equivalent  security proxy.
+    is inserted inside an equivalent security proxy.
     """
     
     if type(_ob) in BasicTypes:
