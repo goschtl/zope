@@ -1,6 +1,7 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:event="http://namespaces.zope.org/event">
+   xmlns:event="http://namespaces.zope.org/event"
+   xmlns:fssync="http://namespaces.zope.org/fssync">
 
   <adapter
       factory=".annotatableadapter.ZDCAnnotatableAdapter"
@@ -14,20 +15,25 @@
              />
   </class>
 
-  <event:subscribe 
+  <event:subscribe
       subscriber = ".timeannotators.ModifiedAnnotator"
       event_types = "zope.app.interfaces.event.IObjectModifiedEvent"
       />
 
-  <event:subscribe 
+  <event:subscribe
       subscriber = ".timeannotators.CreatedAnnotator"
       event_types = "zope.app.interfaces.event.IObjectCreatedEvent"
       />
 
   <event:subscribe
     subscriber=".creatorannotator.CreatorAnnotator"
-    event_types="zope.app.interfaces.event.IObjectModifiedEvent 
+    event_types="zope.app.interfaces.event.IObjectModifiedEvent
                  zope.app.interfaces.event.IObjectCreatedEvent"
+    />
+
+  <fssync:adapter
+    class=".annotatableadapter.ZDCAnnotationData"
+    factory=".annotatableadapter.ZDCAnnotationDataAdapter"
     />
 
 </configure>
