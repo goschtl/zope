@@ -28,6 +28,7 @@ ZRDB             -d Shared/DC/ZRDB Packages/Shared/DC/ZRDB
 
 Products         Packages/Products  __init__.py
 OFSP           -d Products/OFSP Packages/Products/OFSP
+IMAPAdapter    -d lib/python/Products/IMAPAdapter Packages/Products/IMAPAdapter
 MailHost       -d Products/MailHost Packages/Products/MailHost
 ExternalMethod -d Products/ExternalMethod Packages/Products/ExternalMethod
 ZSQLMethods    -d Products/ZSQLMethods Packages/Products/ZSQLMethods
@@ -38,14 +39,16 @@ zsb Components/GreyThing \
   &ZClasses &webdav \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay &SearchIndex \
   &Shared &DC &ZRDB \
-  &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
+  &Products &OFSP &IMAPAdapter &MailHost &ExternalMethod \
+  &ZSQLMethods &ZGadflyDA
 
 zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZClasses &webdav \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay &SearchIndex \
   &Shared &DC &ZRDB \
-  &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
+  &Products &OFSP &IMAPAdapter &MailHost &ExternalMethod \
+  &ZSQLMethods &ZGadflyDA
 
 DCOraclePackage -d DCOracle DCOracle/DCOracle
 DCOracleSrc  -d src DCOracle/src
@@ -76,6 +79,7 @@ lpZRDB             -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
 
 lpProductsInit     -d lib/python/Products cvs-indirect/Zope/Products
 lpOFSP            -d lib/python/Products/OFSP Packages/Products/OFSP
+lpIMAPAdapter     -d lib/python/Products/IMAPAdapter Packages/Products/IMAPAdapter
 lpMailHost        -d lib/python/Products/MailHost Packages/Products/MailHost
 lpExternalMethod  -d lib/python/Products/ExternalMethod Packages/Products/ExternalMethod
 lpZSQLMethods     -d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMethods
@@ -104,7 +108,8 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay \
   &lpSearchIndex \
   &lpSharedInit &lpDCInit &lpProductsInit \
-  &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod &lpZSQLMethods &lpZGadflyDA
+  &lpZRDB &lpOFSP &lpIMAPAdapter &lpMailHost &lpExternalMethod \
+  &lpZSQLMethods &lpZGadflyDA
 
 ZServer Publishers/ZServer
 
