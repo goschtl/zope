@@ -10,6 +10,7 @@
 
 $Id$
 """
+from zExceptions import NotFound
 from zope.exceptions import NotFoundError
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
@@ -62,7 +63,8 @@ class Traversable:
         try:
             kw = dict(path=[name], request=REQUEST)
             return ITraverser(self).traverse(**kw).__of__(self)
-        except (ComponentLookupError, NotFoundError, AttributeError, KeyError):
+        except (ComponentLookupError, NotFoundError,
+                AttributeError, KeyError, NotFound):
             pass
         try:
             return getattr(self, name)
