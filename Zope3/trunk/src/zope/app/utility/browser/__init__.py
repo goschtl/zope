@@ -13,11 +13,11 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.3 2004/03/14 00:15:20 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/18 17:01:13 philikon Exp $
 """
 from zope.app.component.browser.interfacewidget import InterfaceWidget
 from zope.app.registration.browser import AddComponentRegistration
-from zope.app.form.widget import CustomWidgetFactory
+from zope.app.form import CustomWidgetFactory
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import UnregisteredStatus

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_add.py,v 1.3 2004/03/18 17:01:11 philikon Exp $
 """
 
 import unittest
@@ -28,7 +28,7 @@ from zope.component import getView
 from zope.app.form.browser.add import AddViewFactory, AddView
 from zope.app.form.browser.metaconfigure import AddFormDirective
 from zope.app.container.interfaces import IAdding
-from zope.app.form.widget import CustomWidgetFactory
+from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget as Text
 from zope.app.form.browser.submit import Update
 from zope.app.tests.placelesssetup import PlacelessSetup

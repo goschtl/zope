@@ -15,37 +15,26 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.21 2004/03/13 21:37:25 srichter Exp $
+$Id: test_utility.py,v 1.22 2004/03/18 17:01:12 philikon Exp $
 """
 import doctest
 
 from zope.interface import Interface, implements
-
-from zope.app.tests import ztapi
-
 from zope.component.interfaces import IViewFactory
 from zope.component.exceptions import ComponentLookupError
-
-from zope.publisher.browser import BrowserView
-from zope.publisher.browser import TestRequest
+from zope.publisher.browser import BrowserView, TestRequest
 
 from zope.schema import Field
 from zope.schema.interfaces import IField
 
-from zope.app.form.widget import Widget
+from zope.app.tests import ztapi
+from zope.app.form import Widget
+from zope.app.form.interfaces import IWidget, IInputWidget
+from zope.app.form.interfaces import IDisplayWidget, WidgetsError
 
-from zope.app.form.interfaces import IWidget
-from zope.app.form.interfaces import IInputWidget
-from zope.app.form.interfaces import IDisplayWidget
-from zope.app.form.interfaces import WidgetsError
-
-from zope.app.form.utility import no_value
-from zope.app.form.utility import setUpWidget
-from zope.app.form.utility import setUpWidgets
-from zope.app.form.utility import setUpEditWidgets
-from zope.app.form.utility import setUpDisplayWidgets
-from zope.app.form.utility import getWidgetsData
-from zope.app.form.utility import viewHasInput
+from zope.app.form.utility import no_value, setUpWidget, setUpWidgets
+from zope.app.form.utility import setUpEditWidgets, setUpDisplayWidgets
+from zope.app.form.utility import getWidgetsData, viewHasInput
 from zope.app.form.utility import applyWidgetsChanges
 
 from zope.app.tests import placelesssetup

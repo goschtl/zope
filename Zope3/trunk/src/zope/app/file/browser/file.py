@@ -13,10 +13,10 @@
 ##############################################################################
 """File views.
 
-$Id: file.py,v 1.4 2004/03/17 17:37:02 philikon Exp $
+$Id: file.py,v 1.5 2004/03/18 17:01:08 philikon Exp $
 """
 from zope.app.form.browser import BytesAreaWidget
-from zope.app.form.widget import CustomWidgetFactory
+from zope.app.form import CustomWidgetFactory
 
 __metaclass__ = type
 

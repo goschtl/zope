@@ -81,7 +81,7 @@ we need to pass in additional information. This is given in the
 
     from zope.app.form.browser.editview import EditView
     from zope.app.form.browser.add import AddView
-    from zope.app.form.widget import CustomWidgetFactory
+    from zope.app.form import CustomWidgetFactory
     from zope.app.form.browser import SequenceWidget, ObjectWidget
 
     from interfaces import IPoll

@@ -13,16 +13,18 @@
 ##############################################################################
 """Generic Widget Tests
 
-$Id: test_widget.py,v 1.8 2004/03/13 21:37:25 srichter Exp $
+$Id: test_widget.py,v 1.9 2004/03/18 17:01:12 philikon Exp $
 """
-from zope.testing.doctestunit import DocTestSuite
 from unittest import TestSuite, main, makeSuite
-from zope.app.form.widget import Widget, CustomWidgetFactory
-from zope.app.form.interfaces import IWidget
+from zope.testing.doctestunit import DocTestSuite
+
 from zope.interface.verify import verifyClass, verifyObject
-from zope.schema import Text
-from zope.publisher.browser import TestRequest
 from zope.component.interfaces import IViewFactory
+from zope.publisher.browser import TestRequest
+from zope.schema import Text
+
+from zope.app.form import Widget, CustomWidgetFactory
+from zope.app.form.interfaces import IWidget
 from zope.app.tests.placelesssetup import setUp, tearDown
 
 class TestContext:

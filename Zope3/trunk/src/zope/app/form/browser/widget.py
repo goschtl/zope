@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.2 2004/03/17 17:35:02 philikon Exp $
+$Id: widget.py,v 1.3 2004/03/18 17:01:10 philikon Exp $
 """
 import re, cgi
 import traceback
@@ -26,7 +26,7 @@ from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.form.widget import Widget
+from zope.app.form import Widget
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.interfaces import IBrowserWidget
 
