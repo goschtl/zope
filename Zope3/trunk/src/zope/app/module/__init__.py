@@ -54,7 +54,7 @@ class Manager(Persistent, Contained):
 
         folder = self.__parent__
 
-        # XXX
+        # TODO:
         # We are currently only supporting trusted code.
         # We don't want the folder to be proxied because, if it is, then
         # the modules will be proxied.
