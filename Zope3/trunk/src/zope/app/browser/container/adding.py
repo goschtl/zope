@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.32 2003/12/16 14:53:47 jim Exp $
+$Id: adding.py,v 1.33 2003/12/16 15:41:59 mchandra Exp $
 """
 __metaclass__ = type
 
@@ -66,7 +66,7 @@ class BasicAdding(BrowserView):
             chooser.checkName(name, container)
 
         container[name] = content
-
+        self.contentName = name #Set  the added object Name
         return container[name]
 
     contentName = None # usually set by Adding traverser

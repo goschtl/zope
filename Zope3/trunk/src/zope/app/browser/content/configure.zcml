@@ -289,6 +289,28 @@
 
   <!-- SQL Script View Directives -->
 
+  
+  <addform
+      schema="zope.app.interfaces.content.sql.ISQLScript"
+      label="Add a SQL Script"
+      content_factory="zope.app.content.sql.SQLScript"
+      keyword_arguments="connectionName source arguments"
+      name="zope.app.content.sql"
+      permission="zope.ManageContent"
+      template="sqladd.pt"
+      class=".sql.SQLScriptAdd"
+      /> 
+      
+   
+  <!-- <view name="zope.app.content.sql"
+	      for="zope.app.interfaces.container.IAdding"
+              class="zope.app.browser.content.sql.SQLScriptAdd"
+              permission="zope.ManageContent">
+
+    <page name="add.html" template="sqladd.pt" />
+    <page name="action.html" attribute="action" />
+  </view> -->
+
   <editform
       schema="zope.app.interfaces.content.sql.ISQLScript"
       name="edit.html"
@@ -307,6 +329,7 @@
 
   </pages>
 
+  <!-- XXXX
   <menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
@@ -314,7 +337,14 @@
       action="SQLScript"
       description="A content object getting its data from a RDB."
       permission="zope.ManageContent"
-      />
+      /> 
+   -->
+  
+  <addMenuItem
+      title="SQLScript"
+      class="zope.app.content.sql.SQLScript"
+      permission="zope.ManageContent"   
+      view="zope.app.content.sql" /> 
 
 <!-- DTML Page View Directives -->
 

@@ -298,12 +298,7 @@
 
 <content class="zope.app.content.sql.SQLScript">
 
-  <factory
-      id="SQLScript"
-      permission="zope.ManageContent"
-      title="SQL Script"
-      description="Dynamic SQL Script" />
-
+ 
   <require
       permission = "zope.ManageContent"
       interface = "zope.app.interfaces.content.sql.ISQLScript"

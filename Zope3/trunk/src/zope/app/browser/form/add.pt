@@ -57,6 +57,11 @@
               tal:replace="structure context/renderAddButton|default"/> 
         </div>
       </div>
+     
+      <div class="row" metal:define-slot="extra_buttons" tal:replace="nothing">
+      </div>
+
+
       <div class="separator"></div>
     </form>
   </div>

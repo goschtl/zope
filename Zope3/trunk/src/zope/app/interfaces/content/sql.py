@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.8 2003/09/21 17:31:56 jim Exp $
+$Id: sql.py,v 1.9 2003/12/16 15:42:02 mchandra Exp $
 """
 import zope.schema
 
@@ -50,15 +50,20 @@ class ISQLScript(ISQLCommand):
         title=_(u"Arguments"),
         description=_(u"A set of attributes that can be used during the SQL command "
                       u"rendering process to provide dynamic data."),
-        required=False)
+        required=False,
+        default='',
+        missing_value='')
 
     source = zope.schema.Bytes(
         title=_(u"Source"),
         description=_(u"The SQL command to be run."),
-        required=True)
+        required=False,
+        default='',
+        missing_value='')
 
     def getArguments():
         """Returns a set of arguments. Note that this is not a string!"""
 
     def getTemplate():
         """Get the SQL DTML Template object."""
+   
