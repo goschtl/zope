@@ -24,6 +24,8 @@ from zope.interface import providedBy
 from zope.security.proxy import removeSecurityProxy
 from zope.app.introspector import interfaceToName
 
+from zope.app.i18n import ZopeMessageIDFactory as _
+
 
 class AddRegistration(AddComponentRegistration):
     """View for adding a utility registration.
@@ -127,9 +129,7 @@ class Utilities(object):
             for info in registry.info():
                 conf = info['registration']
                 obj = conf.getComponent()
-                if first:
-                    done.append(conf.usageSummary())
-                    first = False
+                done.append(conf.usageSummary())
                 path = zapi.getPath(obj)
                 services[path] = obj
                 conf.status = UnregisteredStatus
@@ -144,7 +144,7 @@ class Utilities(object):
             del parent[name]
             
         s = _("Deleted: ${utility_names}")
-        s.mapping = {'utility_names': ", ".join(todo)}
+        s.mapping = {'utility_names': ", ".join(done)}
         return s
 
     def getConfigs(self):
