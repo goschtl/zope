@@ -184,16 +184,22 @@ class PrincipalSource(object):
         ...     def getQueriables(self):
         ...         return ('1', 1), ('2', 2), ('3', 3)
         >>> dummy2 = DummyService2()
-        
+
+        >>> class DummyService3(DummyService2):
+        ...     def getQueriables(self):
+        ...         return ('4', 4),
+        >>> dummy3 = DummyService3()
+
         >>> from zope.app.component.localservice import testingNextService
         >>> testingNextService(dummy1, dummy2, 'Authentication')
+        >>> testingNextService(dummy2, dummy3, 'Authentication')
         
         >>> temp = zapi.getService
         >>> zapi.getService = lambda name: dummy1
 
         >>> source = PrincipalSource()
         >>> list(source.getQueriables())
-        [(u'0', dummy1), (u'0.1', 1), (u'0.2', 2), (u'0.3', 3)]
+        [(u'0', dummy1), (u'1.1', 1), (u'1.2', 2), (u'1.3', 3), (u'2.4', 4)]
 
         >>> zapi.getService = temp
         """
@@ -209,3 +215,4 @@ class PrincipalSource(object):
             auth = queryNextService(auth, zapi.servicenames.Authentication)
             if auth is None:
                 break
+            i += 1
