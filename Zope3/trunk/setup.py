@@ -193,8 +193,8 @@ include_dirs = ['src']
 def BTreeExtension(flavor):
     key = flavor[0]
     value = flavor[1]
-    name = "zodb.btrees._%sBTree" % flavor
-    sources = ["src/zodb/btrees/_%sBTree.c" % flavor]
+    name = "zodb.btrees._zodb_btrees_%sBTree" % flavor
+    sources = ["src/zodb/btrees/_zodb_btrees_%sBTree.c" % flavor]
     kwargs = {"include_dirs": include_dirs}
     if flavor != "fs":
         kwargs["depends"] = (base_btrees_depends + [KEY_H % _flavors[key],
