@@ -12,25 +12,3 @@
 # 
 ##############################################################################
 """Local Object Hub"""
-
-from Zope.ComponentArchitecture import getService
-from Zope.Proxy.ContextWrapper import isWrapper
-from Zope.App.Traversing import getPhysicalPathString
-from Zope.App.Traversing import locationAsUnicode
-
-def normalizeToHubIds(context, *args):
-    """given a context and any number of hub ids, physical paths,
-    or wrapped objects, returns a normalized list of each item as hubid
-    using the ObjectHub closest to the context.
-    """
-    obHub = getService(context, "ObjectHub")
-    args = list(args)
-    for ix in len(args):
-        arg = args[ix]
-        if isinstance(arg, int):
-            pass
-        elif isinstance(arg, (str, tuple)):
-            args[ix] = obHub.getHubId(locationAsUnicode(arg))
-        elif isWrapper(arg):
-            args[ix] = getPhysicalPathString(arg)
-    return args
