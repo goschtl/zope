@@ -18,16 +18,35 @@ configurations to be saved.
 The following command line options are provided:
 
 -C FILE, --configuraion=FILE
-  Load the configuration file FILE instead of the default
-  configuration file.  FILE must exist.
+  Load the configuration file `FILE` instead of the default
+  configuration file.  `FILE` must exist.
 
 -f
   Don't load any configuration file, not even the default.
 
 -m MAP, --resource-map=MAP
-  Load the resource map MAP before loading any map files identified in
+  Load the resource map `MAP` before loading any map files identified in
   the configuration file.  Maps identified using **-m** take
   precedence over any identified inthe configuration file.
+
+-n NAME, --name=NAME
+  Use `NAME` as the unversioned name of the resulting distribution.
+  If not specified, the name portion of the resource being distributed
+  is used for the package name.
+
+-r TAG, --revision-tag=TAG
+  Generate the distribution using the CVS tag `TAG` instead of the
+  ``HEAD`` tag.
+
+-s
+  Include required support packages in the distribution.  This is the
+  default.
+
+-S
+  Don't include the required support packages in the distribution.
+  This can be used to generate smaller distributions when the
+  ``setuptools`` and ``zpkgtools`` packages are known to be available
+  on target systems.
 
 If neither **-C** nor **-f** is specified on the command line, a
 default configuration file is loaded if it exists.  This is
@@ -46,8 +65,18 @@ The configuration files used by **zpkg** use a subset of the
 Blank lines and comments (lines that start with ``#`` as the first
 non-blank character) are ignored.
 
-The only key currently defined for the configuration file is
-``resource-map``.  The value for this key is a path or URL (including
+Two keys are currently defined for the configuration file:
+``include-support-code`` and ``resource-map``.
+
+The ``include-support-code`` key is used to control whether **zpkg**
+bundles the support code along with the resulting distribution.  The
+value is a boolean, where the strings ``true`` and ``false`` can be
+used in the configuration file.  If true (the default), copies of the
+``zpkgtools`` and ``setuptools`` packages will be included in the
+distribution (less their test code).  If false, the packages will be
+assumed to be available for import on target systems.
+
+The value for ``resource-map`` is a path or URL (including
 ``cvs:`` URLs) for a file that defines the map.  Relative paths are
 interpreted as relative to the directory containing the configuration
 file.  The ``resource-map`` key may be given any number of times;
@@ -97,3 +126,28 @@ map itself is used as the base for resolving ``repository:`` URLs.
 
 
 .. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
+
+Support Packages
+----------------
+
+**zpkg** creates distributions which require some additional support
+packages to operate properly.  These packages are located in much the
+same way that other packages are located: the resource map is
+consulted to determine their location.  One difference is that if the
+resource map does not define the appropriate resources, alternate
+information is used to locate them.  For each of the packages,
+**zpkg** first attempts to import the package; if that succeeds, the
+imported version is used (the import for ``zpkgtools`` should always
+succeed!).  If the import fails, **zpkg** will attempt to use the CVS
+location for each package.
+
+If the ``setuptools`` package has not been explicitly configured or
+installed, retrieving it from CVS can be quite slow.  The easiest way
+to improve the load time is to have a copy available on the local
+system and add a resource entry for it using a ``file:`` URL::
+
+  setuptools  file:///home/fdrake/stuff/setuptools/setuptools
+
+(The path should identify the directory that contains the
+``setuptools`` package itself, not the directory that would be on
+``sys.path`` to allow it to be importable.)
