@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.6 2002/11/30 15:17:58 stevea Exp $
+$Id: _protections.py,v 1.7 2002/12/20 11:11:37 stevea Exp $
 """
 
 def protect():
@@ -101,4 +101,6 @@ def protect():
                         ]
                      )
                   )
-    
+    from Persistence import PersistentMetaClass
+    from Zope.Security.Checker import _typeChecker
+    defineChecker(PersistentMetaClass, _typeChecker)
