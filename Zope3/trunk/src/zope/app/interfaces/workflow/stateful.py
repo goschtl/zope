@@ -14,7 +14,7 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.4 2003/02/06 15:02:33 jack-e Exp $
+$Id: stateful.py,v 1.5 2003/02/06 21:54:13 jack-e Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.app.interfaces.workflow import IProcessDefinition
@@ -25,9 +25,6 @@ from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
 class IState(Interface):
     """Interface for state of a stateful workflow process definition.
     """
-
-    # more attributes/methods to come
-    # description = Attribute("Description of the State.")
 
 
 class IStatefulStatesContainer(IProcessDefinitionElementContainer):
@@ -46,9 +43,8 @@ class ITransition(Interface):
 
     condition = Attribute("""The condition that is evaluated to decide if \
                              the condition is fired or not.""")
-    # more attributes/methods to come
-    # permission = Attribute("Permission for this Transition.")
-    # description = Attribute("Description for this Transition.")
+
+    permission = Attribute("Permission for this Transition.")
 
 
 class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
