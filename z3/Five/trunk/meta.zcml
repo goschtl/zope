@@ -98,6 +98,12 @@
        />
 
     <meta:directive
+        name="defaultView"
+        schema="zope.app.publisher.browser.metadirectives.IDefaultViewDirective"
+        handler=".browserconfigure.defaultView"
+        />
+
+    <meta:directive
         name="page"
         schema="zope.app.publisher.browser.metadirectives.IPageDirective"
         handler=".browserconfigure.page"
@@ -115,6 +121,18 @@
           />
 
     </meta:complexDirective>
+
+    <meta:directive
+        name="resource"
+        schema="zope.app.publisher.browser.metadirectives.IResourceDirective"
+        handler=".browserconfigure.resource"
+        />
+
+    <meta:directive
+        name="resourceDirectory"
+        schema="zope.app.publisher.browser.metadirectives.IResourceDirectoryDirective"
+        handler=".browserconfigure.resourceDirectory"
+        />
 
   </meta:directives>
 
@@ -144,6 +162,12 @@
        name="viewable"
        schema=".fivedirectives.IViewableDirective"
        handler=".fiveconfigure.viewable"
+       />
+
+    <meta:directive
+       name="traversable"
+       schema=".fivedirectives.IViewableDirective"
+       handler=".fiveconfigure.traversable"
        />
 
   </meta:directives>

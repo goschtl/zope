@@ -12,7 +12,7 @@ from zope.configuration import xmlconfig
 from zope.component import getView
 from zope.testing.cleanup import CleanUp
 from Products.Five import zcml
-from Products.Five.viewable import FakeRequest
+from Products.Five.traversable import FakeRequest
 from Products.Five.security import clearSecurityInfo
 from Products.Five.tests.dummy import Dummy1, Dummy2
 from Globals import InitializeClass

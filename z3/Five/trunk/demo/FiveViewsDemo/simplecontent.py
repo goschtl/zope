@@ -2,12 +2,12 @@ from zope.interface import implements
 
 from OFS.SimpleItem import SimpleItem
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.Five.api import Viewable
+from Products.Five.api import Traversable
 
 from interfaces import ISimpleContent
 from helpers import add_and_edit
 
-class SimpleContent(SimpleItem, Viewable):
+class SimpleContent(SimpleItem, Traversable):
     """A Simple Content"""
 
     implements(ISimpleContent)

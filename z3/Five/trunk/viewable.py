@@ -6,59 +6,82 @@
 # License (ZPL) v2.1. See COPYING.txt for more information.
 #
 ##############################################################################
-"""Machinery for making things viewable through Five views
+"""Machinery for making things viewable
 
-$Id$
+$Id: traversable.py 5763 2004-07-28 20:15:11Z dreamcatcher $
 """
-from webdav.NullResource import NullResource
-from zope.component import getView, ComponentLookupError
+from zExceptions import NotFound
+from zope.exceptions import NotFoundError
+from zope.component import getView, getDefaultViewName, ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
-from monkey import DebugFlags
+from traversable import FakeRequest
+from interfaces import IBrowserDefault
 
-class FakeRequest:
-    implements(IBrowserRequest)
-
-    debug = DebugFlags()
-
-    def getPresentationSkin(self):
-        return None
+_marker = object
 
 class Viewable:
-    """A mixin to make an object viewable using the Zope 3 system.
+    """A mixin to make an object viewable.
     """
     __five_viewable__ = True
 
-    def __fallback_traverse__(self, REQUEST, name):
-        """Method hook for fallback traversal
+    def __fallback_default__(self, request):
+        """Try to dispatch to existing index_html or __call__"""
+        if getattr(self, 'index_html', None):
+            return self, ('index_html',)
+        if getattr(self, 'fallback_call__', None):
+            return self, ('fallback_call__',)
+        # XXX Should never get this far. But if it does?
 
-        This method is called by __bobo_traverse___ when Zope3-style
-        view lookup fails.  By default, we do what Zope 2 would do,
-        raise a NotFound error."""
+    def fallback_call__(self, *args, **kw):
+        """By default, return self"""
+        return self
+
+    # we have a default view, tell zpublisher to go there
+    def __browser_default__(self, request):
+        obj = self
+        path = None
         try:
-            REQUEST.RESPONSE.notFoundError("%s " % name)
-        except AttributeError:
-            raise KeyError, name
-
-    def __bobo_traverse__(self, REQUEST, name):
-        """Hook for Zope 2 traversal
-
-        This method is called by Zope 2's ZPublisher upon traversal.
-        It allows us to trick it into publishing Zope 3-style views.
-        """
-        if not IBrowserRequest.providedBy(REQUEST):
-            REQUEST = FakeRequest()
-        try:
-            return getView(self, name, REQUEST).__of__(self)
+            obj, path = IBrowserDefault(self).defaultView(request)
         except ComponentLookupError:
             pass
-        try:
-            return getattr(self, name)
-        except AttributeError:
-            pass
-        try:
-            return self[name]
-        except (AttributeError, KeyError):
-            pass
+        if path:
+            if len(path) == 1 and path[0] == '__call__':
+                return obj, ('fallback_call__',)
+            return obj, path
+        return self.__fallback_default__(request)
+    __browser_default__.__five_method__ = True
 
-        return self.__fallback_traverse__(REQUEST, name)
+    # this is technically not needed because ZPublisher finds our
+    # attribute through __browser_default__; but we also want to be
+    # able to call pages from python modules, PythonScripts or ZPT
+    def __call__(self, *args, **kw):
+        """ """
+        request = kw.get('REQUEST')
+        if not IBrowserRequest.providedBy(request):
+            request = getattr(self, 'REQUEST', None)
+            if not IBrowserRequest.providedBy(request):
+                request = FakeRequest()
+        obj, path = self.__browser_default__(request)
+        if path:
+            meth = obj.unrestrictedTraverse(path)
+            if meth is not None:
+                return meth(*args, **kw)
+        return self.fallback_call__(*args, **kw)
+    __call__.__five_method__ = True
+
+class BrowserDefault:
+
+    implements(IBrowserDefault)
+
+    def __init__(self, context):
+        self.context = context
+
+    def defaultView(self, request):
+        context = self.context
+        name = None
+        try:
+            name = getDefaultViewName(context, request)
+        except ComponentLookupError:
+            pass
+        return context, (name,)

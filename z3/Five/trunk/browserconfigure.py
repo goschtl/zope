@@ -20,15 +20,18 @@ from zope.component import getGlobalService, ComponentLookupError
 from zope.configuration.exceptions import ConfigurationError
 from zope.component.servicenames import Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile as VPT
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
 
-from viewable import Viewable
+from resource import FileResourceFactory, ImageResourceFactory
+from resource import PageTemplateResourceFactory
+from resource import DirectoryResourceFactory
 from api import BrowserView
 from metaclass import makeClass
-from security import getSecurityInfo, protectClass, initializeClass
+from security import getSecurityInfo, protectClass, protectName, initializeClass
+from Products.PageTemplates.Expressions import SecureModuleImporter
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
@@ -43,6 +46,12 @@ def page(_context, name, permission, for_,
 
     if not (class_ or template):
         raise ConfigurationError("Must specify a class or template")
+    if allowed_attributes is None:
+        allowed_attributes = []
+    if allowed_interface is not None:
+        for interface in allowed_interface:
+            attrs = [n for n, d in interface.namesAndDescriptions(1)]
+            allowed_attributes.extend(attrs)
 
     if attribute != '__call__':
         if template:
@@ -94,7 +103,7 @@ def page(_context, name, permission, for_,
             # some security declarations on it so we really shouldn't
             # modify the original.  So, instead we make a new class
             # with just one base class -- the original
-            new_class = makeClass(class_.__name__, (class_), cdict)
+            new_class = makeClass(class_.__name__, (class_,), cdict)
 
     else:
         # template
@@ -114,6 +123,13 @@ def page(_context, name, permission, for_,
         callable = protectClass,
         args = (new_class, permission)
         )
+    if allowed_attributes:
+        for attr in allowed_attributes:
+            _context.action(
+                discriminator = ('five:protectName', new_class, attr),
+                callable = protectName,
+                args = (new_class, attr, permission)
+                )
     _context.action(
         discriminator = ('five:initialize:class', new_class),
         callable = initializeClass,
@@ -131,12 +147,142 @@ class pages(zope_app_pages):
                     menu=menu, title=title,
                     **(self.opts))
 
+def defaultView(_context, name, for_=None):
+
+    type = IBrowserRequest
+
+    _context.action(
+        discriminator = ('defaultViewName', for_, type, name),
+        callable = handler,
+        args = (Presentation,
+                'setDefaultViewName', for_, type, name),
+        )
+
+    _handle_for(_context, for_)
+
 def _handle_for(_context, for_):
     if for_ is not None:
         _context.action(
             discriminator = None,
             callable = provideInterface,
             args = ('', for_)
+            )
+
+_factory_map = {'image':{'prefix':'ImageResource',
+                         'count':0,
+                         'factory':ImageResourceFactory},
+                'file':{'prefix':'FileResource',
+                        'count':0,
+                        'factory':FileResourceFactory},
+                'template':{'prefix':'PageTemplateResource',
+                            'count':0,
+                            'factory':PageTemplateResourceFactory}
+                }
+
+def resource(_context, name, layer='default', permission='zope.Public',
+             file=None, image=None, template=None):
+
+    if ((file and image) or (file and template) or
+        (image and template) or not (file or image or template)):
+        raise ConfigurationError(
+            "Must use exactly one of file or image or template"
+            "attributes for resource directives"
+            )
+
+    res = file or image or template
+    res_type = ((file and 'file') or
+                 (image and 'image') or
+                 (template and 'template'))
+    factory_info = _factory_map.get(res_type)
+    factory_info['count'] += 1
+    res_factory = factory_info['factory']
+    class_name = '%s%s' % (factory_info['prefix'], factory_info['count'])
+    new_class = makeClass(class_name, (res_factory.resource,), {})
+    factory = res_factory(name, res, resource_factory=new_class)
+
+    _context.action(
+        discriminator = ('resource', name, IBrowserRequest, layer),
+        callable = handler,
+        args = (Presentation, 'provideResource',
+                name, IBrowserRequest, factory, layer),
+        )
+    _context.action(
+        discriminator = ('five:protectClass', new_class),
+        callable = protectClass,
+        args = (new_class, permission)
+        )
+    _context.action(
+        discriminator = ('five:initialize:class', new_class),
+        callable = initializeClass,
+        args = (new_class,)
+        )
+
+_rd_map = {ImageResourceFactory:{'prefix':'DirContainedImageResource',
+                                 'count':0},
+           FileResourceFactory:{'prefix':'DirContainedFileResource',
+                                'count':0},
+           PageTemplateResourceFactory:{'prefix':'DirContainedPTResource',
+                                        'count':0},
+           DirectoryResourceFactory:{'prefix':'DirectoryResource',
+                                     'count':0}
+           }
+
+def resourceDirectory(_context, name, directory, layer='default',
+                      permission='zope.Public'):
+
+    if not os.path.isdir(directory):
+        raise ConfigurationError(
+            "Directory %s does not exist" % directory
+            )
+
+    resource = DirectoryResourceFactory.resource
+    f_cache = {}
+    resource_factories = dict(resource.resource_factories)
+    resource_factories['default'] = resource.default_factory
+    for ext, factory in resource_factories.items():
+        if f_cache.get(factory) is not None:
+            continue
+        factory_info = _rd_map.get(factory)
+        factory_info['count'] += 1
+        class_name = '%s%s' % (factory_info['prefix'], factory_info['count'])
+        factory_name = '%s%s' % (factory.__name__, factory_info['count'])
+        f_resource = makeClass(class_name, (factory.resource,), {})
+        f_cache[factory] = makeClass(factory_name, (factory,),
+                                     {'resource':f_resource})
+    for ext, factory in resource_factories.items():
+        resource_factories[ext] = f_cache[factory]
+    default_factory = resource_factories['default']
+    del resource_factories['default']
+
+    cdict = {'resource_factories':resource_factories,
+             'default_factory':default_factory}
+
+    factory_info = _rd_map.get(DirectoryResourceFactory)
+    factory_info['count'] += 1
+    class_name = '%s%s' % (factory_info['prefix'], factory_info['count'])
+    dir_factory = makeClass(class_name, (resource,), cdict)
+    factory = DirectoryResourceFactory(name, directory,
+                                       resource_factory=dir_factory)
+
+    new_classes = [dir_factory,
+                   ] + [f.resource for f in f_cache.values()]
+
+    _context.action(
+        discriminator = ('resource', name, IBrowserRequest, layer),
+        callable = handler,
+        args = (Presentation, 'provideResource',
+                name, IBrowserRequest, factory, layer),
+        )
+    for new_class in new_classes:
+        _context.action(
+            discriminator = ('five:protectClass', new_class),
+            callable = protectClass,
+            args = (new_class, permission)
+            )
+        _context.action(
+            discriminator = ('five:initialize:class', new_class),
+            callable = initializeClass,
+            args = (new_class,)
             )
 
 #
@@ -156,6 +302,14 @@ class ViewMixinForAttributes(BrowserView):
         attr = self.__page_attribute__
         meth = getattr(self, attr)
         return meth(*args, **kw)
+
+class ViewPageTemplateFile(VPT):
+
+    def pt_getContext(self, instance, request, **kw):
+        _super = super(ViewPageTemplateFile, self)
+        ns = _super.pt_getContext(instance, request, **kw)
+        ns['modules'] = SecureModuleImporter
+        return ns
 
 class ViewMixinForTemplates(BrowserView):
 

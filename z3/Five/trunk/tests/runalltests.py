@@ -25,5 +25,5 @@ for test in tests:
         suite.addTest(m.test_suite())
 
 if __name__ == '__main__':
-    TestRunner().run(suite)
+    TestRunner(descriptions=1, verbosity=2).run(suite)
 
