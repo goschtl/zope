@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: adapter.py,v 1.5 2003/05/21 17:26:39 sidnei Exp $
+$Id: adapter.py,v 1.6 2003/06/23 22:44:01 chrism Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -69,12 +69,13 @@ class AdapterRegistry:
 
 
     def register(self, require, provide, object):
+
         if require is not None and not IInterface.isImplementedBy(require):
             raise TypeError(
                 "The require argument must be an interface (or None)")
         if not IInterface.isImplementedBy(provide):
             raise TypeError(
-                "The provide argument must be an interface (or None)")
+                "The provide argument must be an interface")
 
         # Invalidate our cache
         self._v_cache = {}
