@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.9 2003/06/05 18:50:57 gvanrossum Exp $
+$Id: committer.py,v 1.10 2003/06/05 20:52:45 gvanrossum Exp $
 """
 
 import os
@@ -33,7 +33,7 @@ from zope.app.interfaces.fssync \
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.fssync.classes import Default
-from zope.app.traversing import getPath, traverseName
+from zope.app.traversing import getPath, traverseName, objectName
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
@@ -290,10 +290,15 @@ class Committer(object):
             if adapter.typeIdentifier() != entry.get("type"):
                 create_object(container, name, entry, fspath, replace=True)
             else:
-                curdata = adapter.getBody()
+                olddata = read_file(fsutil.getoriginal(fspath))
                 newdata = read_file(fspath)
-                if newdata != curdata:
-                    adapter.setBody(newdata)
+                if newdata != olddata:
+                    if not entry.get("factory"):
+                        # If there's no factory, we can't call setBody()
+                        create_object(container, name, entry, fspath, True)
+                        obj = traverseName(container, name)
+                    else:
+                        adapter.setBody(newdata)
                     # Now publish an event, but not for annotations or
                     # extras.  To know which case we have, see if
                     # objectName() works.  XXX This is a hack.
