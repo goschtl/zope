@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: CachingService.py,v 1.4 2002/12/12 15:28:16 mgedmin Exp $
+$Id: CachingService.py,v 1.5 2002/12/13 20:09:42 gvanrossum Exp $
 """
 from Persistence import Persistent
 from Zope.App.Caching.ICachingService import ICachingService
@@ -31,7 +31,7 @@ class ILocalCachingService(ICachingService, IEventChannel, INameConfigurable):
     """TTW manageable caching service"""
 
 
-class CachingService(Persistent, ProtoServiceEventChannel, NameConfigurable):
+class CachingService(ProtoServiceEventChannel, NameConfigurable):
 
     __implements__ = ILocalCachingService, ProtoServiceEventChannel.__implements__
 
