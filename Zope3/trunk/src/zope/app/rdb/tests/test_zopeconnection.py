@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_zopeconnection.py,v 1.4 2004/02/20 16:57:28 fdrake Exp $
+$Id: test_zopeconnection.py,v 1.5 2004/03/02 13:48:29 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from transaction import get_transaction
 from zope.app.rdb import ZopeConnection
-from zope.app.interfaces.rdb import IZopeCursor
+from zope.app.rdb.interfaces import IZopeCursor
 from zope.app.rdb.tests.stubs import ConnectionStub, TypeInfoStub
 
 class ZopeConnectionTests(TestCase):

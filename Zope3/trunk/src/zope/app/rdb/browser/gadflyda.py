@@ -13,9 +13,9 @@
 ##############################################################################
 """Gadfly DA View Classes
 
-$Id: gadflyda.py,v 1.3 2003/08/07 17:40:48 srichter Exp $
+$Id: gadflyda.py,v 1.1 2004/03/02 13:48:28 philikon Exp $
 """
-from zope.app.browser.rdb.rdb import AdapterAdd
+from zope.app.rdb.browser.rdb import AdapterAdd
 
 class GadflyDAAddView(AdapterAdd):
     """Provide a user interface for adding a Gadfly DA"""

@@ -13,11 +13,11 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: __init__.py,v 1.3 2004/02/25 23:02:18 faassen Exp $
+$Id: rdb.py,v 1.1 2004/03/02 13:48:28 philikon Exp $
 """
 from zope.proxy import removeAllProxies
 
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app.rdb import queryForResults
 
 class TestSQL:

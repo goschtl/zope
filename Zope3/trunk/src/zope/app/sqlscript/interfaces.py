@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.2 2004/02/24 16:50:36 philikon Exp $
+$Id: interfaces.py,v 1.3 2004/03/02 13:48:29 philikon Exp $
 """
 import zope.schema
 from zope.app import zapi
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter, ISQLCommand
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter, ISQLCommand
 from zope.component import getService, ComponentLookupError
 from zope.app.i18n import ZopeMessageIDFactory as _
 

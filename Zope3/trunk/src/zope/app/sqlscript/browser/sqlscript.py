@@ -13,12 +13,12 @@
 ##############################################################################
 """SQL Script Views
 
-$Id: sqlscript.py,v 1.2 2004/02/24 16:50:37 philikon Exp $
+$Id: sqlscript.py,v 1.3 2004/03/02 13:48:30 philikon Exp $
 """
 
 from zope.app.browser.form.add import AddView
 from zope.app.browser.form.submit import Update
-from zope.app.interfaces.rdb import DatabaseException
+from zope.app.rdb.interfaces import DatabaseException
 from zope.app.interfaces.container import IAdding
 from zope.app import zapi
 

@@ -13,10 +13,10 @@
 ##############################################################################
 """'rdb' ZCML Namespace Directive Handler
 
-$Id: metaconfigure.py,v 1.4 2003/12/19 16:53:17 mchandra Exp $
+$Id: metaconfigure.py,v 1.5 2004/03/02 13:48:27 philikon Exp $
 """
 from zope.app import zapi
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 
 
 def connectionhandler(_context, name, component, dsn):

@@ -14,7 +14,6 @@
   <include package=".utilities" />
   <include package=".skins" />
   <include package=".index" />
-  <include package=".rdb" />
   <include file="traversal.zcml" />
   <include file="auth.zcml" />
 

@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.23 2004/02/20 16:57:28 fdrake Exp $
+$Id: __init__.py,v 1.24 2004/03/02 13:48:27 philikon Exp $
 """
 __metaclass__ = type
 
@@ -34,11 +34,11 @@ from zope.security.checker import NamesChecker
 
 from zope.interface import implements
 from zope.app import zapi
-from zope.app.interfaces.rdb import DatabaseException
-from zope.app.interfaces.rdb import IResultSet
-from zope.app.interfaces.rdb import IZopeConnection, IZopeCursor
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter, ISQLCommand
-from zope.app.interfaces.rdb import IGlobalConnectionService
+from zope.app.rdb.interfaces import DatabaseException
+from zope.app.rdb.interfaces import IResultSet
+from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter, ISQLCommand
+from zope.app.rdb.interfaces import IGlobalConnectionService
 
 
 

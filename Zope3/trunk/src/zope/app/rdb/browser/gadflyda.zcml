@@ -4,7 +4,7 @@
 
   <addform
       name="AddGadflyDA"
-      schema="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      schema="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
       label="Add Gadfly Database Adapter"
       content_factory="zope.app.rdb.gadflyda.GadflyAdapter"
       arguments="dsn"

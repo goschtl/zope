@@ -13,9 +13,9 @@
 ##############################################################################
 """A registration for a database adapter.
 
-$Id: connection.py,v 1.12 2003/08/19 07:09:45 srichter Exp $
+$Id: connection.py,v 1.13 2004/03/02 13:48:26 philikon Exp $
 """
-from zope.app.interfaces.rdb import IConnectionService
+from zope.app.rdb.interfaces import IConnectionService
 
 class ILocalConnectionService(IConnectionService):
     """A local (placeful) connection service"""

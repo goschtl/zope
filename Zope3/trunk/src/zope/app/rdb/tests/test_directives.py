@@ -13,14 +13,14 @@
 ##############################################################################
 """Test 'rdb' ZCML Namespace Directives
 
-$Id: test_directives.py,v 1.3 2003/12/19 16:53:18 mchandra Exp $
+$Id: test_directives.py,v 1.4 2004/03/02 13:48:29 philikon Exp $
 """
 import unittest
 from zope.app import zapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getUtilitiesFor, queryUtility
 from zope.configuration import xmlconfig
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app.rdb.tests.test_zopedatabaseadapter import DAStub
 from zope.app.rdb import ZopeConnection
 import zope.app.rdb.tests

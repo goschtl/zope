@@ -13,7 +13,7 @@
 ##############################################################################
 """Relational Database Adapter interfaces.
 
-$Id: rdb.py,v 1.5 2003/08/19 23:10:59 srichter Exp $
+$Id: interfaces.py,v 1.1 2004/03/02 13:48:27 philikon Exp $
 """
 from zope.interface import Interface
 from zope.interface import Attribute

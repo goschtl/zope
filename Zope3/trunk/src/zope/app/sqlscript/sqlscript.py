@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sqlscript.py,v 1.2 2004/02/24 16:50:36 philikon Exp $
+$Id: sqlscript.py,v 1.3 2004/03/02 13:48:29 philikon Exp $
 """
 
 import re
@@ -28,7 +28,7 @@ from zope.app import zapi
 from zope.app.rdb import queryForResults
 from zope.app.container.contained import Contained
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
-from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app.file.interfaces import IFileContent
 
 from interfaces import ISQLScript
@@ -108,7 +108,7 @@ class SQLScript(Persistent, Contained):
         return connection()
 
     def __call__(self, **kw):
-        'See zope.app.interfaces.rdb'
+        """See zope.app.rdb.interfaces"""
 
         # Try to resolve arguments
         arg_values = {}

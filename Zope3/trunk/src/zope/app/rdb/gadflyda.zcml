@@ -6,7 +6,7 @@
         permission="zope.Public" />
     <require
         permission="zope.Public"
-        interface="zope.app.interfaces.rdb.IZopeDatabaseAdapter" />
+        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
   </content>
 
 </configure>

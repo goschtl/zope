@@ -13,30 +13,6 @@
   <include package="zope.app.event" />
   <include package="zope.app.mail" />
 
-  <content class="zope.app.rdb.ZopeConnection">
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.interfaces.rdb.IZopeConnection" />
-  </content>
-
-  <content class="zope.app.rdb.ZopeCursor">
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.interfaces.rdb.IZopeCursor" />
-  </content>
-
-  <content class="zope.app.rdb.ResultSet">
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.interfaces.rdb.IResultSet" />
-  </content>
-
-  <content class="zope.app.rdb.Row">
-    <require
-        permission="zope.ManageContent"
-        attributes="__getattr__" />
-  </content>
-
   <adapter
       factory="zope.app.attributeannotations.AttributeAnnotations"
       provides="zope.app.interfaces.annotation.IAnnotations"
@@ -82,7 +58,6 @@
 
   <include package="zope.app.i18n" />
   <include package="zope.app.publisher" />
-  <include package="zope.app.rdb" />
   <include package="zope.app.traversing" />
   <include package="zope.app.form" />
   <include package="zope.app.index" />
@@ -130,6 +105,7 @@
   <include package="zope.app.applicationcontrol" />
   <include package="zope.app.dublincore" />
   <include package="zope.app.cache" />
+  <include package="zope.app.rdb" />
   <include package="zope.app.workflow" />
   <include package="zope.app.catalog"/>
   <include package="zope.app.securitypolicy" />

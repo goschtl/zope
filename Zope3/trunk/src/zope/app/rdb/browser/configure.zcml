@@ -8,12 +8,12 @@
 
   <view
       name="+"
-      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
       class="zope.app.browser.container.adding.Adding" 
       permission="zope.ManageContent" />
 
   <pages
-      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
       permission="zope.View"
       class=".Connection">
 
@@ -26,7 +26,7 @@
   </pages>
 
   <pages
-      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
       permission="zope.View"
       class=".rdb.TestSQL">
     <page name="testForm.html" template="rdbtestsql.pt"
@@ -36,12 +36,12 @@
   </pages>
 
   <defaultView 
-      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
       name="editForm.html" />
 
   <addform
       label="Add Database Connection Registration"
-      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
       name="addRegistration.html"
       schema="zope.app.interfaces.services.utility.IUtilityRegistration"
       class="zope.app.browser.services.utility.AddRegistration"
