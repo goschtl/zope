@@ -309,7 +309,13 @@ class Component:
         self.source = self.ip.loader.load(self.url)
         specs = include.load(self.source, url=self.url)
         if specs.loads:
-            self.source = self.ip.loader.load_mutable_copy(self.url)
+            source = self.ip.loader.load_mutable_copy(self.url)
+            if source != self.source:
+                self.source = source
+                # we need to re-load the specs to get the .source
+                # attribute of the specification objects correct
+                # XXX need test!
+                specs = include.load(source, url=self.url)
             self.ip.addIncludes(self.source, specs.loads)
         specs.collection.cook()
         specs.distribution.cook()
