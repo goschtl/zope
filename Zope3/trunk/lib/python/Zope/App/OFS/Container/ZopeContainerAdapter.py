@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ZopeContainerAdapter.py,v 1.4 2002/12/01 10:32:28 jim Exp $
+$Id: ZopeContainerAdapter.py,v 1.5 2002/12/05 13:51:14 stevea Exp $
 """
 
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
@@ -103,6 +103,9 @@ class ZopeContainerAdapter:
         key = container.setObject(key, object)
 
         # Publish an added event
+        # We explicitly get the object back from the container with
+        # container[key], because some kinds of container may choose
+        # to store a different object than the exact one we added. 
         object = ContextWrapper(container[key], container, name=key)
         publish(container, ObjectAddedEvent(object))
 
