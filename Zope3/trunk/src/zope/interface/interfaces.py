@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.9 2003/03/13 18:49:14 alga Exp $
+$Id: interfaces.py,v 1.10 2003/03/18 12:07:42 jim Exp $
 """
 
 from zope.interface import Interface
@@ -42,10 +42,8 @@ class IElement(Interface):
         """Associates 'value' with 'key'."""
 
 
-
 class IAttribute(IElement):
     """Attribute descriptors"""
-
 
 
 class IMethod(IAttribute):
@@ -56,6 +54,7 @@ class IMethod(IAttribute):
     def getSignatureString():
         """Return a signature string suitable for inclusion in documentation.
         """
+
 
 class IInterface(IElement):
     """Interface objects
@@ -252,6 +251,7 @@ class IInterface(IElement):
         interface directly and indirectly by base interfaces.
         """
 
+
 class ITypeRegistry(Interface):
     """Type-specific registry
 
@@ -300,6 +300,7 @@ class ITypeRegistry(Interface):
         """Returns the number of distinct interfaces registered.
         """
 
+  
 class IAdapterRegistry(Interface):
     """Adapter-style registry
 
@@ -399,6 +400,7 @@ class IAdapterRegistry(Interface):
           (R1, P2, C)
         """
 
+
 class IImplementorRegistry(Interface):
     """Implementor registry
 
@@ -430,6 +432,7 @@ class IImplementorRegistry(Interface):
         interface that extends or equals the 'provides' argument.
 
         """
+
 
 class IImplements(Interface):
     """Functions for reasoning about implementation assertions
@@ -511,50 +514,386 @@ class IImplements(Interface):
         see if it obviously fails the assertion.
         """
 
-class INewImplements(Interface):
+
+class IInterfaceSpecification(Interface):
+
+    def __contains__(interface):
+        """Test whether an interface is in the specification
+
+        Return true if the given interface is one of the interfaces in
+        the specification and false otherwise.
+        """
+
+    def __iter__():
+        """Return an iterator for the interfaces in the specification
+        """
+
+    def flattened():
+        """Return an iterator of all included and extended interfaces
+
+        An iterator is returned for all interfaces either included in
+        or extended by interfaces included in the specifications
+        without duplicates. The interfaces are in "interface
+        resolution order". The interface resolution order is such that
+        base interfaces are listed after interfaces that extend them
+        and, otherwise, interfaces are included in the order that they
+        were defined in the specification.
+        """
+
+    def __sub__(interfaces):
+        """Create an interface specification with some interfaces excluded
+
+        The argument can be an interface or an interface
+        specifications.  The interface or interfaces given in a
+        specification are subtracted from the interface specification.
+
+        Removing an interface that is not in the specification does
+        not raise an error. Doing so has no effect.
+        """
+
+    def __add__(interfaces):
+        """Create an interface specification with some interfaces added
+
+        The argument can be an interface or an interface
+        specifications.  The interface or interfaces given in a
+        specification are added to the interface specification.
+
+        Adding an interface that is already in the specification does
+        not raise an error. Doing so has no effect.
+        """
+
+
+class IImplements(Interface):
+    """Declare and check the interfaces of objects
+
+    The functions defined in this interface are used to declare the
+    interfaces that objects provide and to query the interfaces that have
+    been declared.
+
+    Interfaces can be declared for objects in two ways:
+
+    - Interfaces are declared for instances of the object's class
+
+    - Interfaces are declared for the object directly.
+
+    The interfaces declared for an object are, therefore, the union of
+    interfaces declared for the object directly and the interfaces
+    declared for instances of the object's class.
+
+    Note that we say that a class implements the interfaces provided
+    by it's instances.  An instance can also provide interfaces
+    directly.  The interfaces provided by an object are the union of
+    the interfaces provided directly and the interfaces implemented by
+    the class.
+
     """
 
-    We say that a class implements.
+    def providedBy(ob):
+        """Return the interfaces provided by an object
 
-    We say that an object provides.
+        This is the union of the interfaces directly provided by an
+        object and interfaces implemented by it's class.
 
-    From types sig:
-       conforms to, indicates
+        """
+
+    def implementedBy(class_):
+        """Return the interfaces implemented for a class' instances
+
+        The value returned is an IInterfaceSpecification.
+
+        """
+        
+
+    def classImplements(class_, *interfaces):
+        """Declare additional interfaces implemented for instances of a class
+
+        The arguments after the class are one or more interfaces or
+        interface specifications (IInterfaceSpecification objects).
+
+        The interfaces given (including the interfaces in the
+        specifications) are added to any interfaces previously
+        declared.
+
+        Consider the following example::
+
+          class C(A, B):
+             ...
+             
+          classImplements(C, I1, I2)
 
 
-    From John Williams:
-       someinterface.bind(someclass)
+        Instances of ``C`` provide ``I1``, ``I2``, and whatever interfaces
+        instances of ``A`` and ``B`` provide.
+        
+        """
+        
+    def classImplementsOnly(class_, *interfaces):
+        """Declare the only interfaces implemented by instances of a class
 
-       someinterface(someobject) --> a proxy that exposes only methods
-           defined by the interface.
+        The arguments after the class are one or more interfaces or
+        interface specifications (IInterfaceSpecification objects).
 
-    """
+        The interfaces given (including the interfaces in the
+        specifications) replace any previous declarations.
+
+        Consider the following example::
+
+          class C(A, B):
+             ...
+             
+          classImplements(C, IA, IB. IC)
+          classImplementsOnly(C. I1, I2)
 
 
+        Instances of ``C`` provide only ``I1``, ``I2``, and regardless of
+        whatever interfaces instances of ``A`` and ``B`` implement.
+        
+        """
+        
+    def classUnimplements(class_, *interfaces):
+        """Declare the interfaces not implemented for instances of a class
+
+        The arguments after the class are one or more interfaces or
+        interface specifications (IInterfaceSpecification objects).
+
+        The interfaces given (including the interfaces in the
+        specifications) cancel previous declarations for the same
+        interfaces, including declarations made in base classes.
+
+        Consider the following example::
+
+          class C(A, B):
+             ...
+             
+          classImplements(C, I1)
+          classUnimplements(C, I1, I2)
+
+
+        Instances of ``C`` don't provide ``I1`` and ``I2`` even if
+        instances of ``A`` or ``B`` do.
+        
+        """
+
+    def directlyProvidedBy(object):
+        """Return the interfaces directly provided by the given object
+
+        The value returned may be an IInterfaceSpecification.
+        
+        """
+
+    def directlyProvides(object, *interfaces):
+        """Declare interfaces declared directly for an object
+
+        The arguments after the object are one or more interfaces or
+        interface specifications (IInterfaceSpecification objects).
+
+        The interfaces given (including the interfaces in the
+        specifications) replace interfaces previously
+        declared for the object.
+
+        Consider the following example::
+
+          class C(A, B):
+             ...
+             
+
+          ob = C()
+          directlyProvides(ob, I1, I2)
+
+        The object, ``ob`` provides ``I1``, ``I2``, and whatever interfaces
+        instances have been declared for instances of ``C``.
+
+        To remove directly provided interfaces, use ``directlyProvidedBy`` and
+        subtract the unwanted interfaces. For example::
+
+          directlyProvides(ob, directlyProvidedBy(ob)-I2)
+
+        removes I2 from the interfaces directly provided by
+        ``ob``. The object, ``ob`` no longer directly provides ``I2``,
+        although it might still provide ``I2`` if it's class
+        implements ``I2``.
+
+        To add directly provided interfaces, use ``directlyProvidedBy`` and
+        include additional interfaces.  For example::
+        
+          directlyProvides(ob, directlyProvidedBy(ob), I2)
+
+        adds I2 to the interfaces directly provided by ob.
+
+        """
+            
     def implements(*interfaces):
-        """Assert interfaces implemented by class
+        """Declare interfaces implemented by instances of a class
 
-        This function is normally called in a class definition. In
-        this case, it makes the assertion about the class being
-        defined.
+        This function is called in a class definition.
 
-        If a class is provided as the first argument, then the
-        assertion will be made bout that class.
+        The arguments are one or more interfaces or interface
+        specifications (IInterfaceSpecification objects).
+
+        The interfaces given (including the interfaces in the
+        specifications) are added to any interfaces previously
+        declared.
+
+        Previous declarations include declarations for base classes
+        unless implementsOnly was used.
+
+        This function is provided for convenience. It provides a more
+        convenient way to call classImplements. For example::
+        
+          implements(I1)
+        
+        is equivalent to calling::
+        
+          classImplements(C, I1)
+        
+        after the class has been created.
+
+        Consider the following example::
+
+          class C(A, B):
+            implements(I1, I2)
 
 
+        Instances of ``C`` implement ``I1``, ``I2``, and whatever interfaces
+        instances of ``A`` and ``B`` implement.
+        
+        """
+            
+    def implementsOnly(*interfaces):
+        """Declare the only interfaces implemented by instances of a class
+
+        This function is called in a class definition.
+
+        The arguments are one or more interfaces or interface
+        specifications (IInterfaceSpecification objects).
+
+        Previous declarations including declarations for base classes
+        are overridden.
+
+        This function is provided for convenience. It provides a more
+        convenient way to call classImplementsOnly. For example::
+        
+          implementsOnly(I1)
+        
+        is equivalent to calling::
+        
+          classImplementsOnly(I1)
+        
+        after the class has been created.
+
+        Consider the following example::
+
+          class C(A, B):
+            implementsOnly(I1, I2)
+
+
+        Instances of ``C`` implement ``I1``, ``I2``, regardless of what
+        instances of ``A`` and ``B`` implement.
+        
         """
 
-    def provides(object, *interfaces):
-        """Assert that an object provides the interfaces.
+            
+    def unimplements(*interfaces):
+        """Declare interfaces not implemented by instances of a class
 
-        XXX Modules?
+        This function is called in a class definition.
+
+        The arguments are one or more interfaces or interface
+        specifications (IInterfaceSpecification objects).
+
+        The interfaces given (including the interfaces in the
+        specifications) are removed from any interfaces previously
+        declared.
+
+        Previous declarations include declarations for base classes
+        unless implementsOnly was used.
+
+        This function is provided for convenience. It provides a more
+        convenient way to call classUnimplements. For example::
+        
+          unimplements(I1)
+        
+        is equivalent to calling::
+        
+          classUnimplements(I1)
+        
+        after the class has been created.
+
+        Consider the following example::
+
+          class C(A, B):
+            unimplements(I1, I2)
+
+
+        Instances of ``C`` don't implement ``I1``, ``I2``, even if
+        instances of ``A`` and ``B`` do.
+        
         """
 
+    def classProvides(*interfaces):
+        """Declare interfaces provided directly by a class
 
-    def implementsLike(class_):
-        ""
+        This function is called in a class definition.
 
-    # not classImplements (see provides)
+        The arguments are one or more interfaces or interface
+        specifications (IInterfaceSpecification objects).
 
-    def implementsAdditional(ob, ):
-        pass
+        The given interfaces (including the interfaces in the
+        specifications) are used to create the class's direct-object
+        interface specification.  An error will be raised if the module
+        class has an direct interface specification.  In other words, it is
+        an error to call this function more than once in a class
+        definition.
+
+        Note that the given interfaces have nothing to do with the
+        interfaces implemented by instances of the class.
+
+        This function is provided for convenience. It provides a more
+        convenient way to call directlyProvidedByProvides for a class. For
+        example::
+        
+          classProvides(I1)
+        
+        is equivalent to calling::
+        
+          directlyProvides(theclass, I1)
+        
+        after the class has been created.
+        
+        """
+
+    def moduleProvides(*interfaces):
+        """Declare interfaces provided by a module
+
+        This function is used in a module definition.
+
+        The arguments are one or more interfaces or interface
+        specifications (IInterfaceSpecification objects).
+        
+        The given interfaces (including the interfaces in the
+        specifications) are used to create the module's direct-object
+        interface specification.  An error will be raised if the module
+        already has an interface specification.  In other words, it is
+        an error to call this function more than once in a module
+        definition.
+
+        This function is provided for convenience. It provides a more
+        convenient way to call directlyProvides. For example::
+        
+          moduleImplements(I1)
+        
+        is equivalent to::
+        
+          directlyProvides(sys.modules[__name__], I1)
+
+        """
+        
+    def InterfaceSpecification(*interfaces):
+        """Create an interface specification
+
+        The arguments are one or more interfaces or interface
+        specifications (IInterfaceSpecification objects).
+        
+        A new interface specification (IInterfaceSpecification) with
+        the given interfaces is returned.
+        """
