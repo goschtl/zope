@@ -852,9 +852,6 @@ class TestGetWidgetsData:
     def test_widgetsErrorException(self):
         """Documents and tests WidgetsError.
         
-        XXX Move this test into zope.app.interfaces.tests.test_form when
-        that module is created.
-        
         WidgetsError wraps one or more errors, which are specified as a
         sequence in the 'errors' argument:
         

@@ -123,7 +123,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.i1, 1)
         self.assertEqual(object.i2, 2)
         self.assertEqual(object.i3, 3)
@@ -144,7 +143,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.i1, 1)
         self.assertEqual(object.i2, None) # None is default missing_value
         self.assertEqual(object.i3, 0)  # 0 is from i3.missing_value=0
@@ -181,7 +179,6 @@ class Test(BrowserTestCase):
 
         # confirm new value is -1 -- i1.missing_value
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.i1, -1)
 
 
@@ -256,7 +253,6 @@ class Test(BrowserTestCase):
 
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assert_(object.i1 is None)
         self.assert_(object.i2 is None)
         self.assertEqual(object.i3, 2)
@@ -271,9 +267,8 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.i1' : 'foo' })
         self.assertEqual(response.getStatus(), 200)
-        # XXX reinstate when widget errors are fixed
-        # self.assert_(validationErrorExists('i1', 'Invalid integer data',
-        #    response.getBody()))
+        self.assert_(validationErrorExists('i1', 'Invalid integer data',
+           response.getBody()))
 
 
 def test_suite():
