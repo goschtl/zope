@@ -15,6 +15,8 @@
 
 $Id$
 """
+
+from urllib import quote
 from zope.i18n.negotiator import negotiator
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -61,4 +63,4 @@ class I18nFileEdit:
             self.context.setData(data, language)
             self.context.contentType = contentType
         return self.request.response.redirect(self.request.URL[-1] +
-                      "/editForm.html?language=%s" %language)  # XXX url_quote
+                      "/editForm.html?language=%s" % quote(language, ''))
