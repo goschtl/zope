@@ -2,4 +2,4 @@
 
 # Actions executed (via commitinfo) at the start of a commit.
 
-echo '$0': $0, '$*':, $*
+echo precommit_actions: '$0': $0, '$*':, $*
