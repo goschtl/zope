@@ -327,3 +327,22 @@ def provideAdapter(factory, adapts=None, provides=None, name=''):
             raise TypeError("Missing 'adapts' argument")
             
     getGlobalSiteManager().provideAdapter(adapts, provides, name, factory)
+
+def provideSubscriptionAdapter(factory, adapts=None, provides=None):
+    if provides is None:
+        if IFactory.providedBy(factory):
+            provides = factory.getInterfaces()
+        else:
+            provides = list(implementedBy(factory))
+        if len(provides) == 1:
+            provides = provides[0]
+        else:
+            raise TypeError("Missing 'provides' argument")
+
+    if adapts is None:
+        try:
+            adapts = factory.__component_adapts__
+        except AttributeError:
+            raise TypeError("Missing 'adapts' argument")
+            
+    getGlobalSiteManager().subscribe(adapts, provides, factory)

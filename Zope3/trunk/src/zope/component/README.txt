@@ -12,14 +12,14 @@ Utilities are just components that provide an interface and that are
 looked up by an interface and a name.  Let's look at a trivial utility
 definition:
 
-    >>> import zope.interface
+    >>> from zope import interface
 
-    >>> class IGreeter(zope.interface.Interface):
+    >>> class IGreeter(interface.Interface):
     ...     def greet():
     ...         "say hello"
 
     >>> class Greeter:
-    ...     zope.interface.implements(IGreeter)
+    ...     interface.implements(IGreeter)
     ...
     ...     def __init__(self, other="world"):
     ...         self.other = other
@@ -29,26 +29,26 @@ definition:
 
 We can register an instance this class using `provideUtility` [1]_:
 
-    >>> import zope.component
+    >>> from zope import component
     >>> greet = Greeter('bob')
-    >>> zope.component.provideUtility(greet, IGreeter, 'robert')
+    >>> component.provideUtility(greet, IGreeter, 'robert')
 
 In this example we registered the utility as providing the `IGreeter`
 interface with a name of 'bob'. We can look the interface up with
 either `queryUtility` or `getUtility`:
 
-    >>> zope.component.queryUtility(IGreeter, 'robert').greet()
+    >>> component.queryUtility(IGreeter, 'robert').greet()
     Hello bob
 
-    >>> zope.component.getUtility(IGreeter, 'robert').greet()
+    >>> component.getUtility(IGreeter, 'robert').greet()
     Hello bob
 
 `queryUtility` and `getUtility` differ in how failed lookups are handled:
 
-    >>> zope.component.queryUtility(IGreeter, 'ted')
-    >>> zope.component.queryUtility(IGreeter, 'ted', 42)
+    >>> component.queryUtility(IGreeter, 'ted')
+    >>> component.queryUtility(IGreeter, 'ted', 42)
     42
-    >>> zope.component.getUtility(IGreeter, 'ted')
+    >>> component.getUtility(IGreeter, 'ted')
     ... # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
@@ -58,15 +58,15 @@ If a component provides only one interface, as in the example above,
 then we can omit the provided interface from the call to `provideUtility`:
 
     >>> ted = Greeter('ted')
-    >>> zope.component.provideUtility(ted, name='ted')
-    >>> zope.component.queryUtility(IGreeter, 'ted').greet()
+    >>> component.provideUtility(ted, name='ted')
+    >>> component.queryUtility(IGreeter, 'ted').greet()
     Hello ted
 
 The name defaults to an empty string:
 
     >>> world = Greeter()
-    >>> zope.component.provideUtility(world)
-    >>> zope.component.queryUtility(IGreeter).greet()
+    >>> component.provideUtility(world)
+    >>> component.queryUtility(IGreeter).greet()
     Hello world
 
 Adapters
@@ -78,13 +78,13 @@ objects, they are provided as factories, usually classes.  Here, we'll
 create a greeter for persons, so we can provide personalized greetings
 for different people:
 
-    >>> class IPerson(zope.interface.Interface):
-    ...     name = zope.interface.Attribute("Name")
+    >>> class IPerson(interface.Interface):
+    ...     name = interface.Attribute("Name")
 
     >>> class PersonGreeter:
     ...
-    ...     zope.component.adapts(IPerson)
-    ...     zope.interface.implements(IGreeter)
+    ...     component.adapts(IPerson)
+    ...     interface.implements(IGreeter)
     ...
     ...     def __init__(self, person):
     ...         self.person = person
@@ -95,15 +95,15 @@ for different people:
 The class defines a constructor that takes an argument for every
 object adapted.
 
-We used `zope.component.adapts` to declare what we adapt.  We can find
+We used `component.adapts` to declare what we adapt.  We can find
 out if an object declares that it adapts anything using adaptedBy:
 
-    >>> list(zope.component.adaptedBy(PersonGreeter)) == [IPerson]
+    >>> list(component.adaptedBy(PersonGreeter)) == [IPerson]
     True
 
 If an object makes no declaration, then None is returned:
 
-    >>> zope.component.adaptedBy(Greeter()) is None
+    >>> component.adaptedBy(Greeter()) is None
     True
 
 
@@ -111,14 +111,14 @@ If we declare the interfaces adapted and if we provide only one
 interface, as in the example above, then we can provide the adapter
 very simply [1]_:
 
-    >>> zope.component.provideAdapter(PersonGreeter)
+    >>> component.provideAdapter(PersonGreeter)
 
 For adapters that adapt a single interface to a single interface
 without a name, we can get the adapter by simply calling the
 interface:
 
     >>> class Person:
-    ...     zope.interface.implements(IPerson)
+    ...     interface.implements(IPerson)
     ...
     ...     def __init__(self, name):
     ...         self.name = name
@@ -134,7 +134,7 @@ how to register the adapter.
     ...     def greet(self):
     ...         print "Hello", self.person.name, "my name is", self.name
 
-    >>> zope.component.provideAdapter(
+    >>> component.provideAdapter(
     ...                        BobPersonGreeter, [IPerson], IGreeter, 'bob')
 
 The arguments can also be provided as keyword arguments:
@@ -142,25 +142,25 @@ The arguments can also be provided as keyword arguments:
     >>> class TedPersonGreeter(BobPersonGreeter):
     ...     name = "Ted"
 
-    >>> zope.component.provideAdapter(
+    >>> component.provideAdapter(
     ...     factory=TedPersonGreeter, adapts=[IPerson],
     ...     provides=IGreeter, name='ted')
 
 For named adapters, use `queryAdapter`, or `getAdapter`:
 
-    >>> zope.component.queryAdapter(Person("Sally"), IGreeter, 'bob').greet()
+    >>> component.queryAdapter(Person("Sally"), IGreeter, 'bob').greet()
     Hello Sally my name is Bob
 
-    >>> zope.component.getAdapter(Person("Sally"), IGreeter, 'ted').greet()
+    >>> component.getAdapter(Person("Sally"), IGreeter, 'ted').greet()
     Hello Sally my name is Ted
 
 If an adapter can't be found, `queryAdapter` returns a default value
 and `getAdapter` raises an error:
 
-    >>> zope.component.queryAdapter(Person("Sally"), IGreeter, 'frank')
-    >>> zope.component.queryAdapter(Person("Sally"), IGreeter, 'frank', 42)
+    >>> component.queryAdapter(Person("Sally"), IGreeter, 'frank')
+    >>> component.queryAdapter(Person("Sally"), IGreeter, 'frank', 42)
     42
-    >>> zope.component.getAdapter(Person("Sally"), IGreeter, 'frank')
+    >>> component.getAdapter(Person("Sally"), IGreeter, 'frank')
     ... # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
@@ -170,8 +170,8 @@ Adapters can adapt multiple objects:
 
     >>> class TwoPersonGreeter:
     ...
-    ...     zope.component.adapts(IPerson, IPerson)
-    ...     zope.interface.implements(IGreeter)
+    ...     component.adapts(IPerson, IPerson)
+    ...     interface.implements(IGreeter)
     ...
     ...     def __init__(self, person, greeter):
     ...         self.person = person
@@ -181,12 +181,12 @@ Adapters can adapt multiple objects:
     ...         print "Hello", self.person.name
     ...         print "my name is", self.greeter.name
 
-    >>> zope.component.provideAdapter(TwoPersonGreeter)
+    >>> component.provideAdapter(TwoPersonGreeter)
 
 To look up a multi-adapter, use either `queryMultiAdapter` or
 `getMultiAdapter`:
 
-    >>> zope.component.queryMultiAdapter((Person("Sally"), Person("Bob")),
+    >>> component.queryMultiAdapter((Person("Sally"), Person("Bob")),
     ...                                  IGreeter).greet()
     Hello Sally
     my name is Bob
@@ -195,21 +195,21 @@ Adapters need not be classes.  Any callable will do.  We use the
 adapter decorator (in the Python 2.4 decorator sense) to declare that
 a callable object adapts some interfaces (or classes):
 
-    >>> class IJob(zope.interface.Interface):
+    >>> class IJob(interface.Interface):
     ...     "A job"
 
     >>> class Job:
-    ...     zope.interface.implements(IJob)
+    ...     interface.implements(IJob)
 
     >>> def personJob(person):
     ...     return getattr(person, 'job', None)
-    >>> personJob = zope.interface.implementer(IJob)(personJob)
-    >>> personJob = zope.component.adapter(IPerson)(personJob)
+    >>> personJob = interface.implementer(IJob)(personJob)
+    >>> personJob = component.adapter(IPerson)(personJob)
 
 (In Python 2.4, the example can be written::
 
-    @zope.interface.implementer(IJob)
-    @zope.component.adapter(IPerson)
+    @interface.implementer(IJob)
+    @component.adapter(IPerson)
     def personJob(person):
         return getattr(person, 'job', None)
 
@@ -220,7 +220,7 @@ In this example, the personJob function simply returns the person's
 factory can return None to indicate that adaptation wasn't possible.
 Let's register this adapter and try it out:
 
-    >>> zope.component.provideAdapter(personJob)
+    >>> component.provideAdapter(personJob)
     >>> sally = Person("Sally")
     >>> IJob(sally) # doctest: +ELLIPSIS
     Traceback (most recent call last):
@@ -234,7 +234,94 @@ one:
     >>> sally.job = job
     >>> IJob(sally) is job
     True
- 
+
+Subscription Adapters
+*********************
+
+Unlike regular adapters, subscription adapters are used when we want
+all of the adapters that adapt an object to a particular adapter.
+
+Consider a validation problem.  We have objects and we want to assess
+whether they meet some sort of standards.  We define a validation
+interface:
+
+    >>> class IValidate(interface.Interface):
+    ...     def validate(ob):
+    ...         """Determine whether the object is valid
+    ...         
+    ...         Return a string describing a validation problem.
+    ...         An empty string is returned to indicate that the
+    ...         object is valid.
+    ...         """
+
+Perhaps we have documents:
+
+    >>> class IDocument(interface.Interface):
+    ...     summary = interface.Attribute("Document summary")
+    ...     body = interface.Attribute("Document text")
+
+    >>> class Document:
+    ...     interface.implements(IDocument)
+    ...     def __init__(self, summary, body):
+    ...         self.summary, self.body = summary, body
+
+Now, we may want to specify various validation rules for
+documents. For example, we might require that the summary be a single
+line:
+
+    >>> class SingleLineSummary:
+    ...     component.adapts(IDocument)
+    ...     interface.implements(IValidate)
+    ...
+    ...     def __init__(self, doc):
+    ...         self.doc = doc
+    ...
+    ...     def validate(self):
+    ...         if '\n' in self.doc.summary:
+    ...             return 'Summary should only have one line'
+    ...         else:
+    ...             return ''
+
+Or we might require the body to be at least 1000 characters in length:
+
+    >>> class AdequateLength:
+    ...     component.adapts(IDocument)
+    ...     interface.implements(IValidate)
+    ...
+    ...     def __init__(self, doc):
+    ...         self.doc = doc
+    ...
+    ...     def validate(self):
+    ...         if len(self.doc.body) < 1000:
+    ...             return 'too short'
+    ...         else:
+    ...             return ''
+
+We can register these as subscription adapters:
+
+    >>> component.provideSubscriptionAdapter(SingleLineSummary)
+    >>> component.provideSubscriptionAdapter(AdequateLength)
+
+We can then use the subscribers to validate objects:
+
+    >>> doc = Document("A\nDocument", "blah")
+    >>> [adapter.validate()
+    ...  for adapter in component.subscribers([doc], IValidate)
+    ...  if adapter.validate()]
+    ['Summary should only have one line', 'too short']
+
+    >>> doc = Document("A\nDocument", "blah" * 1000)
+    >>> [adapter.validate()
+    ...  for adapter in component.subscribers([doc], IValidate)
+    ...  if adapter.validate()]
+    ['Summary should only have one line']
+
+    >>> doc = Document("A Document", "blah")
+    >>> [adapter.validate()
+    ...  for adapter in component.subscribers([doc], IValidate)
+    ...  if adapter.validate()]
+    ['too short']
+
 
 .. [1] CAUTION: This API should only be used from test or
        application-setup code. This API shouldn't be used by regular
