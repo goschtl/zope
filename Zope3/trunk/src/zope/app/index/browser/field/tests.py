@@ -13,18 +13,20 @@
 ##############################################################################
 """Unit test for field index browser views
 
-$Id: test_control.py,v 1.3 2004/03/01 15:02:46 philikon Exp $
+$Id: tests.py,v 1.1 2004/03/02 14:40:05 philikon Exp $
 """
 
 import unittest
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
-from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
+from zope.exceptions import NotFoundError
+
+from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.services.servicenames import HubIds
 from zope.app.interfaces.services.hub import IObjectHub
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.exceptions import NotFoundError
+from zope.app.index.browser.field.control import ControlView
 
 class DublinCoreStub:
     implements(IZopeDublinCore)
@@ -59,7 +61,6 @@ class TestControlView(PlacelessSetup, unittest.TestCase):
         service_manager.provideService(HubIds, ObjectHubStub())
 
     def test_query(self):
-        from zope.app.browser.index.field.control import ControlView
         index = FieldIndexStub()
         request = TestRequest()
         view = ControlView(index, request)

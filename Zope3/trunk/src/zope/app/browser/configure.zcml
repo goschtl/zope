@@ -13,7 +13,6 @@
   <include package=".services" />
   <include package=".utilities" />
   <include package=".skins" />
-  <include package=".index" />
   <include file="traversal.zcml" />
   <include file="auth.zcml" />
 

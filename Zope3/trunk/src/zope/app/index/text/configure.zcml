@@ -4,7 +4,7 @@
 
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.index.text.IUITextIndex"
+      interface="zope.app.index.interfaces.text.IUITextIndex"
       attributes="query"
       />
 
@@ -22,12 +22,12 @@
 
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.index.text.IUITextCatalogIndex"
+      interface="zope.app.index.interfaces.text.IUITextCatalogIndex"
       attributes="query"
       />
   <require
       permission="zope.ManageContent"
-      set_schema="zope.app.interfaces.index.text.IUITextCatalogIndex"
+      set_schema="zope.app.index.interfaces.text.IUITextCatalogIndex"
       />
 
   <factory

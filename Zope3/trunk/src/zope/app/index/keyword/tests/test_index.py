@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for keyword index.
 
-$Id: test_index.py,v 1.3 2003/11/21 17:12:07 jim Exp $
+$Id: test_index.py,v 1.4 2004/03/02 14:40:11 philikon Exp $
 """
 
 import unittest
@@ -25,7 +25,7 @@ from zope.app.tests import ztapi
 from zope.app.services.hub import \
     ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, ObjectModifiedHubEvent
 from zope.app.index.keyword.index import KeywordCatalogIndex
-from zope.app.interfaces.index.keyword import IUIKeywordCatalogIndex
+from zope.app.index.interfaces.keyword import IUIKeywordCatalogIndex
 
 class ISomeInterface(Interface):
     someField = Attribute("")

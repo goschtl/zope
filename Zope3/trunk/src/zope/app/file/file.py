@@ -13,7 +13,7 @@
 ##############################################################################
 """File content component
 
-$Id: file.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
+$Id: file.py,v 1.3 2004/03/02 14:40:02 philikon Exp $
 """
 from persistent import Persistent
 from transaction import get_transaction
@@ -256,7 +256,7 @@ class File(Persistent):
 
 # Adapter for ISearchableText
 
-from zope.app.interfaces.index.text import ISearchableText
+from zope.app.index.interfaces.text import ISearchableText
 
 class SearchableText:
 

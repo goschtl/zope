@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.5 2003/09/21 17:31:54 jim Exp $
+$Id: __init__.py,v 1.6 2004/03/02 14:40:04 philikon Exp $
 """
 
 from zope.interface import implements
-from zope.app.interfaces.index import IInterfaceIndexer
+from zope.app.index.interfaces import IInterfaceIndexer
 from zope.app.interfaces.event import ISubscriber
 from zope.component import queryAdapter
 

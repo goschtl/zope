@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.18 2004/03/01 11:46:27 philikon Exp $
+$Id: index.py,v 1.19 2004/03/02 14:40:13 philikon Exp $
 """
 
 from zope.component import getService
@@ -28,8 +28,8 @@ from zope.index.text.textindexwrapper import TextIndexWrapper
 
 from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
-from zope.app.interfaces.index.text import ISearchableText
-from zope.app.interfaces.index.text import IUITextIndex, IUITextCatalogIndex
+from zope.app.index.interfaces.text import ISearchableText
+from zope.app.index.interfaces.text import IUITextIndex, IUITextCatalogIndex
 from zope.interface import implements
 from zope.app.index import InterfaceIndexingSubscriber
 from zope.app.catalog.interfaces.index import ICatalogIndex

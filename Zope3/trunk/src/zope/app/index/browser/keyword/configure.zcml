@@ -1,0 +1,13 @@
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+  <editform
+      name="edit.html"
+      schema="zope.app.index.interfaces.keyword.IUIKeywordCatalogIndex"
+      label="Edit Keyword Index"
+      permission="zope.ManageContent" 
+      menu="zmi_views" title="Edit"
+      />
+
+</zope:configure>

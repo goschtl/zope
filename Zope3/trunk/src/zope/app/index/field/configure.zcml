@@ -4,7 +4,7 @@
 
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.index.field.IUIFieldIndex"
+      interface="zope.app.index.interfaces.field.IUIFieldIndex"
       />
 
   <implements
@@ -15,11 +15,11 @@
 <content class="zope.app.index.field.index.FieldCatalogIndex">
   <require
       permission="zope.ManageContent"
-      interface="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
+      interface="zope.app.index.interfaces.field.IUIFieldCatalogIndex"
       />
   <require
       permission="zope.ManageContent"
-      set_schema="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
+      set_schema="zope.app.index.interfaces.field.IUIFieldCatalogIndex"
       />
 </content>
 

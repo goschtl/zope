@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.19 2004/02/20 16:57:30 fdrake Exp $
+$Id: zpt.py,v 1.20 2004/03/02 14:40:16 philikon Exp $
 """
 
 from zope.security.proxy import ProxyFactory
@@ -22,7 +22,7 @@ import zope.app.container.contained
 import zope.fssync.server.entryadapter
 import zope.fssync.server.interfaces
 import zope.app.interfaces.file
-import zope.app.interfaces.index.text
+import zope.app.index.interfaces.text
 import zope.app.interfaces.services.registration
 import zope.app.pagetemplate.engine
 import zope.interface
@@ -115,7 +115,7 @@ class ZPTTemplate(
 tag = re.compile(r"<[^>]+>")
 class SearchableText:
 
-    zope.interface.implements(zope.app.interfaces.index.text.ISearchableText)
+    zope.interface.implements(zope.app.index.interfaces.text.ISearchableText)
     __used_for__ = IZPTTemplate
 
     def __init__(self, page):

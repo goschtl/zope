@@ -4,11 +4,11 @@
 
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
+      interface="zope.app.index.interfaces.keyword.IUIKeywordCatalogIndex"
       />
   <require
       permission="zope.ManageContent"
-      set_schema="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
+      set_schema="zope.app.index.interfaces.keyword.IUIKeywordCatalogIndex"
       />
 
   <implements

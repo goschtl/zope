@@ -77,7 +77,7 @@
 
   <adapter
       for=".interfaces.IZPTPage"
-      provides="zope.app.interfaces.index.text.ISearchableText"
+      provides="zope.app.index.interfaces.text.ISearchableText"
       factory=".zptpage.SearchableText"
       />
 

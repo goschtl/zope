@@ -15,7 +15,7 @@
 
 Should be refactored (along with text and field)
 
-$Id: keyword.py,v 1.1 2003/08/03 05:41:16 anthony Exp $
+$Id: keyword.py,v 1.1 2004/03/02 14:40:10 philikon Exp $
 """
 
 from zope.interface import Interface

@@ -13,11 +13,11 @@
 ##############################################################################
 """Generic queries for indexes.
 
-$Id: queries.py,v 1.5 2003/06/07 06:37:26 stevea Exp $
+$Id: queries.py,v 1.6 2004/03/02 14:40:04 philikon Exp $
 """
 
-from zope.app.interfaces.index.interfaces import IBatchedResult
-from zope.app.interfaces.index.interfaces import IRankedHubIdList
+from zope.app.index.interfaces.interfaces import IBatchedResult
+from zope.app.index.interfaces.interfaces import IRankedHubIdList
 from zope.interface import implements
 
 class BatchedRankedResult:

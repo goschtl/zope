@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zptpage.py,v 1.2 2004/02/24 16:50:47 philikon Exp $
+$Id: zptpage.py,v 1.3 2004/03/02 14:40:16 philikon Exp $
 """
 import re
 
@@ -25,7 +25,7 @@ from zope.pagetemplate.pagetemplate import PageTemplate
 
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.index.text import ISearchableText
+from zope.app.index.interfaces.text import ISearchableText
 from zope.app.interfaces.size import ISized
 from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
 from zope.app.container.contained import Contained

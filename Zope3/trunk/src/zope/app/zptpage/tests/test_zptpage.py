@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.2 2004/02/24 16:50:48 philikon Exp $
+$Id: test_zptpage.py,v 1.3 2004/03/02 14:40:17 philikon Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.interface.verify import verifyClass
 from zope.exceptions import Forbidden
 
 from zope.app.tests import ztapi
-from zope.app.interfaces.index.text import ISearchableText
+from zope.app.index.interfaces.text import ISearchableText
 from zope.component import getAdapter, getView
 from zope.publisher.browser import TestRequest, BrowserView
 

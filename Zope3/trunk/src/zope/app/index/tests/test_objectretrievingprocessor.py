@@ -11,27 +11,26 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-
-$Id: test_objectretrievingprocessor.py,v 1.10 2003/06/07 06:37:26 stevea Exp $
+$Id: test_objectretrievingprocessor.py,v 1.11 2004/03/02 14:40:12 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
+from zope.interface import implements
+from zope.interface.verify import verifyObject
+
 from zope.component import getServiceManager
 from zope.app.services.servicenames import HubIds
 
-from zope.interface.verify import verifyObject
 from zope.app.tests.placelesssetup import PlacelessSetup
-
 from zope.app.interfaces.services.query import IQueryProcessor
 from zope.app.interfaces.services.hub import IObjectHub
 
-from zope.app.interfaces.index.interfaces import \
-    IRankedObjectIterator, IRankedObjectRecord
+from zope.app.index.interfaces.interfaces import \
+     IRankedObjectIterator, IRankedObjectRecord
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.index.processors import ObjectRetrievingProcessor
 from zope.app.index.processors import RankedObjectRecord, RankedObjectIterator
 from zope.app.index.queries import BatchedRankedResult
-from zope.interface import implements
 
 class FakeObjectHub:
 

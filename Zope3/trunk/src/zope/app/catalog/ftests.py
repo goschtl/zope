@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for catalog
 
-$Id: ftests.py,v 1.2 2004/03/01 15:02:48 philikon Exp $
+$Id: ftests.py,v 1.3 2004/03/02 14:40:00 philikon Exp $
 """
 import unittest
 
@@ -58,7 +58,7 @@ class TestCatalogAdd(BrowserTestCase):
         response = self.publish("/felix_the/+/AddTextIndexToCatalog=fulltext",
                         basic='mgr:mgrpw', 
                         form={'field.interface':
-                               'zope.app.interfaces.index.text.ISearchableText',
+                               'zope.app.index.interfaces.text.ISearchableText',
                               'field.field_name':'getSearchableText',
                               'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)

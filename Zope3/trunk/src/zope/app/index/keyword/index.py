@@ -13,13 +13,13 @@
 ##############################################################################
 """This is a keyword index which can be subscribed to an event service.
 
-$Id: index.py,v 1.4 2004/03/01 11:46:26 philikon Exp $
+$Id: index.py,v 1.5 2004/03/02 14:40:11 philikon Exp $
 """
 
 from zope.index.keyword.index import KeywordIndex 
 from zope.interface import implements
 
-from zope.app.interfaces.index.keyword import IUIKeywordCatalogIndex
+from zope.app.index.interfaces.keyword import IUIKeywordCatalogIndex
 from zope.app.catalog.interfaces.index import ICatalogIndex
 from zope.app.index import InterfaceIndexingSubscriber
 

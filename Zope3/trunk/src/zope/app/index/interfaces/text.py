@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: text.py,v 1.6 2004/02/20 20:33:37 srichter Exp $
+$Id: text.py,v 1.1 2004/03/02 14:40:10 philikon Exp $
 """
 from zope.interface import Interface
 from zope.schema import BytesLine

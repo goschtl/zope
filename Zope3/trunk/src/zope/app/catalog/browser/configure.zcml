@@ -55,7 +55,7 @@
   <addform
       name="AddTextIndexToCatalog"
       menu="catalog_index_menu" title="Text Index"
-      schema="zope.app.interfaces.index.text.IUITextCatalogIndex"
+      schema="zope.app.index.interfaces.text.IUITextCatalogIndex"
       permission="zope.ManageServices"
       content_factory="zope.app.index.text.index.TextCatalogIndex"
       arguments="field_name"
@@ -67,7 +67,7 @@
   <addform
       name="AddFieldIndexToCatalog"
       menu="catalog_index_menu" title="Field Index"
-      schema="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
+      schema="zope.app.index.interfaces.field.IUIFieldCatalogIndex"
       permission="zope.ManageServices"
       content_factory="zope.app.index.field.index.FieldCatalogIndex"
       arguments="field_name"
@@ -79,7 +79,7 @@
   <addform
       name="AddKeywordIndexToCatalog"
       menu="catalog_index_menu" title="Keyword Index"
-      schema="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
+      schema="zope.app.index.interfaces.keyword.IUIKeywordCatalogIndex"
       permission="zope.ManageServices"
       content_factory="zope.app.index.keyword.index.KeywordCatalogIndex"
       arguments="field_name"

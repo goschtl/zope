@@ -13,9 +13,9 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.12 2003/11/05 03:08:19 jeremy Exp $
+$Id: processors.py,v 1.13 2004/03/02 14:40:04 philikon Exp $
 """
-from zope.app.interfaces.index.interfaces import \
+from zope.app.index.interfaces.interfaces import \
     IRankedObjectIterator, IRankedObjectRecord, \
     IRankedHubIdList, IBatchedResult
 from zope.app.interfaces.services.query import IQueryProcessor

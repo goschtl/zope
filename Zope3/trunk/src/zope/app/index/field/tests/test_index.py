@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for field index.
 
-$Id: test_index.py,v 1.5 2003/11/21 17:12:07 jim Exp $
+$Id: test_index.py,v 1.6 2004/03/02 14:40:09 philikon Exp $
 """
 
 import unittest
@@ -30,7 +30,7 @@ from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
 from zope.app.services.hub import ObjectRegisteredHubEvent
 from zope.app.index.field.index import FieldIndex
-from zope.app.interfaces.index.field import IUIFieldIndex
+from zope.app.index.interfaces.field import IUIFieldIndex
 
 class ISomeInterface(Interface):
     someField = Attribute("")

@@ -16,13 +16,13 @@
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
 
-$Id: tests.py,v 1.1 2004/03/01 11:46:22 philikon Exp $
+$Id: tests.py,v 1.2 2004/03/02 14:40:00 philikon Exp $
 """
 
 import unittest
 
 from zope.interface import implements
-from zope.app.interfaces.index.field import IUIFieldCatalogIndex
+from zope.app.index.interfaces.field import IUIFieldCatalogIndex
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.services.hub import IObjectHub
 from zope.app.catalog.interfaces.index import ICatalogIndex
