@@ -13,7 +13,7 @@
 ##############################################################################
 """Mutable Schema (as Utility) Views
 
-$Id: schema.py,v 1.4 2003/09/21 17:31:11 jim Exp $
+$Id: schema.py,v 1.5 2003/11/12 18:46:30 sidnei Exp $
 """
 from zope.app import zapi
 from zope.app.browser.form.editview import EditView
@@ -45,14 +45,29 @@ class EditSchema(BrowserView):
     def update(self):
         status = ''
         container = zapi.getAdapter(self.context, IMutableSchema)
+        request = self.request
 
-        if 'DELETE' in self.request:
-            if not 'ids' in self.request:
+        if 'DELETE' in request:
+            if not 'ids' in request:
                 self.errors = (_("Must select a field to delete"),)
                 status = _("An error occured.")
-            for id in self.request.get('ids', []):
-                container.removeField(id)
-
+            for id in request.get('ids', []):
+                del container[id]
+        elif 'MOVE_UP' in request or 'MOVE_DOWN' in request:
+            up = request.get('MOVE_UP')
+            down = request.get('MOVE_DOWN')
+            name = up or down
+            delta = up and -1 or 1
+            names = self.fieldNames()
+            if name not in names:
+                self.errors = (_("Invalid field name: %s" % name),)
+                status = _("An error occured.")
+            p = names.index(name) + delta
+            try:
+                self.context.moveField(name, p)
+            except IndexError:
+                self.errors = (_("Invalid position: %s" % p),)
+                status = _("An error occured.")
         self.update_status = status
         return status
 

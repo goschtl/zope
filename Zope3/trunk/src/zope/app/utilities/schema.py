@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.10 2003/10/18 18:56:24 sidnei Exp $
+$Id: schema.py,v 1.11 2003/11/12 18:46:32 sidnei Exp $
 """
 from types import FunctionType
 
@@ -94,13 +94,11 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
             raise KeyError, "Field %s already exists." % name
         if not 0 <= position <= len(field_names):
             raise IndexError, "Position %s out of range." % position
-        if fields and position > 0:
-            field.order = fields[position-1].order + 1
-        else:
-            field.order = 1
+        fields.insert(position, field)
         self[name] = field
-        for field in fields[position:]:
-            field.order += 1
+        for p, f in enumerate(fields):
+            if not f.order == p:
+                f.order = p
 
     def moveField(self, name, position):
         """See zope.app.interfaces.utilities.IMutableSchema"""
@@ -112,10 +110,13 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
         if not 0 <= position <= len(field_names):
             raise IndexError, "Position %s out of range." % position
         index = field_names.index(name)
+        if index == position: return
         field = fields[index]
-        field.order = fields[position-1].order + 1
-        for field in fields[position:]:
-            field.order += 1
+        del fields[index]
+        fields.insert(position, field)
+        for p, f in enumerate(fields):
+            if not f.order == p:
+                f.order = p
 
     def __delitem__(self, name):
         uncontained(self._attrs[name], self, name)

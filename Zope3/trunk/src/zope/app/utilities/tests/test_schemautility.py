@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.5 2003/10/18 18:56:24 sidnei Exp $
+$Id: test_schemautility.py,v 1.6 2003/11/12 18:46:34 sidnei Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -143,6 +143,18 @@ class SchemaUtilityTests(TestCase):
         s.moveField(u'beta', 3)
         self.assertEquals(
             [u'alpha', u'gamma', u'beta'],
+            getFieldNamesInOrder(s))
+        s.moveField(u'beta', 2)
+        self.assertEquals(
+            [u'alpha', u'gamma', u'beta'],
+            getFieldNamesInOrder(s))
+        s.moveField(u'beta', 1)
+        self.assertEquals(
+            [u'alpha', u'beta', u'gamma'],
+            getFieldNamesInOrder(s))
+        s.moveField(u'beta', 0)
+        self.assertEquals(
+            [u'beta', u'alpha', u'gamma'],
             getFieldNamesInOrder(s))
 
     def test_moveFieldBeyondEnd(self):

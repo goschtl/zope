@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema Interfaces
 
-$Id: schema.py,v 1.4 2003/10/31 14:57:09 sidnei Exp $
+$Id: schema.py,v 1.5 2003/11/12 18:46:31 sidnei Exp $
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
@@ -67,6 +67,23 @@ class IWriteMutableSchema(Interface):
 
         If the position does not make sense, i.e. a negative number of a
         number larger than len(self), then an error is raised.
+        """
+
+    def moveField(name, position):
+        """Move a field (given by its name) to a particular position.
+
+        If the position does not make sense, i.e. a negative number of a
+        number larger than len(self), then an error is raised.
+        """
+
+    def __setitem__(name, object):
+        """Add the given object to the container under the given name.
+        """
+
+    def __delitem__(name):
+        """Delete the nameed object from the container.
+
+        Raises a KeyError if the object is not found.
         """
 
 class IMutableSchema(IReadMutableSchema, IWriteMutableSchema):
