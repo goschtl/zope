@@ -16,10 +16,11 @@
 import doctest
 import os.path
 import shutil
-import tempfile
 import unittest
 
 from StringIO import StringIO
+
+from zpkgsetup.tests import tempfileapi as tempfile
 
 from zpkgtools import cvsloader
 from zpkgtools import loader

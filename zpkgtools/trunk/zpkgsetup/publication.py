@@ -22,7 +22,7 @@ as the PUBLICATION.cfg files used by **zpkg**.
 """
 from distutils.dist import DistributionMetadata
 from distutils.util import rfc822_escape
-from email.Parser import Parser
+from email.Parser import HeaderParser
 from StringIO import StringIO
 
 
@@ -107,8 +107,8 @@ def load(f, versioninfo=False, metadata=None):
       `DistributionMetadata` instance will be used.
 
     """
-    parser = Parser()
-    msg = parser.parse(f, headersonly=True)
+    parser = HeaderParser()
+    msg = parser.parse(f)
     return _loadmsg(msg, versioninfo, metadata)
 
 
@@ -126,8 +126,8 @@ def loads(text, versioninfo=False, metadata=None):
       `DistributionMetadata` instance will be used.
 
     """
-    parser = Parser()
-    msg = parser.parsestr(text, headersonly=True)
+    parser = HeaderParser()
+    msg = parser.parsestr(text)
     return _loadmsg(msg, versioninfo, metadata)
 
 

@@ -16,9 +16,10 @@
 import filecmp
 import os
 import shutil
-import tempfile
 import unittest
 import urllib
+
+from zpkgsetup.tests import tempfileapi as tempfile
 
 from zpkgtools import loader
 from zpkgtools.tests import test_svnloader

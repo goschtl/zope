@@ -16,7 +16,6 @@
 import doctest
 import os.path
 import shutil
-import tempfile
 import unittest
 
 from distutils.core import Extension
@@ -24,6 +23,7 @@ from StringIO import StringIO
 
 from zpkgsetup import cfgparser
 from zpkgsetup import package
+from zpkgsetup.tests import tempfileapi as tempfile
 
 
 class PackageInfoTestCase(unittest.TestCase):
@@ -205,7 +205,10 @@ class PackageInfoTestCase(unittest.TestCase):
 
 
 def test_suite():
-    suite = doctest.DocTestSuite("zpkgsetup.package")
+    suite = unittest.TestSuite()
+    if hasattr(doctest, "DocTestSuite"):
+        # Python 2.2.x has no DocTestSuite
+        suite.addTest(doctest.DocTestSuite("zpkgsetup.package"))
     suite.addTest(unittest.makeSuite(PackageInfoTestCase))
     return suite
 

@@ -65,10 +65,10 @@ import posixpath
 import re
 import urllib
 
-from distutils.core import Extension
 from StringIO import StringIO
 
 from zpkgsetup import cfgparser
+from zpkgsetup import dist
 
 
 PACKAGE_CONF = "SETUP.cfg"
@@ -244,7 +244,7 @@ def create_extension(section, pkgname, reldir):
         kwargs["language"] = section.language[0]
     if reldir and reldir != ".":
         kwargs["include_dirs"] = [reldir]
-    return Extension(**kwargs)
+    return dist.ZPkgExtension(**kwargs)
 
 
 def expand_globs(directory, reldir, globlist):

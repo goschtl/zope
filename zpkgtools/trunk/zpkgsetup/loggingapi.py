@@ -26,7 +26,7 @@ try:
     from logging import getLogger
     from logging import CRITICAL, FATAL, ERROR, WARNING, WARN
     from logging import INFO, DEBUG, NOTSET
-    from logging import StreamHandler
+    from logging import Handler, StreamHandler
 
 except ImportError:
 
@@ -85,6 +85,12 @@ except ImportError:
                 msg = msg % kwargs
             msg = "%s(%s):%s" % (name, level, msg)
             print >>self._handler, msg
+
+
+    class Handler:
+
+        def __init__(self):
+            pass
 
 
     def StreamHandler():

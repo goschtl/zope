@@ -16,8 +16,9 @@
 import os
 import shutil
 import sys
-import tempfile
 import unittest
+
+from zpkgsetup.tests import tempfileapi as tempfile
 
 from zpkgtools import app
 
@@ -45,7 +46,7 @@ class AppsupportTestBase(unittest.TestCase):
         f = open(resource_map, "w")
         f.write("TestThing  file:///dev/null\n")
         f.close()
-        self.old_tempdir = tempfile.tempdir
+        self.old_tempdir = tempfile.gettempdir()
         self.options = app.parse_args(["foo/bar.py", "-f", "-m", resource_map,
                                        "-v", "0.1.0test1", "TestThing"])
         self.app = app.BuilderApplication(self.options)
@@ -53,7 +54,8 @@ class AppsupportTestBase(unittest.TestCase):
     def tearDown(self):
         self.app.cleanup()
         shutil.rmtree(self.tmpdir)
-        tempfile.tempdir = self.old_tempdir
+        # This assumes tempfile is really tempfileapi:
+        tempfile.tempfile.tempdir = self.old_tempdir
 
     def make_component(self):
         return Component("TestThing", self.publication_name)

@@ -15,8 +15,9 @@
 
 import os
 import shutil
-import tempfile
 import unittest
+
+from zpkgsetup.tests import tempfileapi as tempfile
 
 from zpkgtools import cvsloader
 from zpkgtools import svnloader

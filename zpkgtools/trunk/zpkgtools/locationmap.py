@@ -16,7 +16,6 @@
 import os.path
 import posixpath
 import re
-import sets
 import urllib
 import urllib2
 import urlparse
@@ -151,7 +150,7 @@ def load(f, base=None, mapping=None):
             pass
     if mapping is None:
         mapping = LocationMap()
-    local_entries = sets.Set()
+    local_entries = {}
     lineno = 0
     for line in f:
         lineno += 1
@@ -203,7 +202,7 @@ def load(f, base=None, mapping=None):
             # We only want to add it once, so that loading several
             # mappings causes the first defining a resource to "win":
             mapping[resource] = url
-        local_entries.add(resource)
+        local_entries[resource] = resource
 
     return mapping
 

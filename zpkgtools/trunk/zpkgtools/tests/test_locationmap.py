@@ -14,12 +14,13 @@
 """Tests for zpkgtools.cvsmap."""
 
 import doctest
-import logging
 import os.path
 import unittest
 import urllib
 
 from StringIO import StringIO
+
+from zpkgsetup import loggingapi as logging
 
 from zpkgtools import locationmap
 from zpkgtools.tests.test_cvsloader import CvsWorkingDirectoryBase
@@ -195,12 +196,12 @@ class LoadTestCase(unittest.TestCase):
         eq(map["foo.bar"], "svn://svn.example.org/proj/tags/*/path/bar")
 
 
-class CollectingHandler(logging.StreamHandler):
+class CollectingHandler(logging.Handler):
     """Log handler that simply collects emitted warning records."""
 
     def __init__(self, list):
         self.list = list
-        logging.StreamHandler.__init__(self)
+        logging.Handler.__init__(self)
 
     def emit(self, record):
         self.list.append(record)

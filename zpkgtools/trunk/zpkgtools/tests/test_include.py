@@ -16,7 +16,6 @@
 import filecmp
 import os
 import shutil
-import tempfile
 import unittest
 import urllib2
 
@@ -24,6 +23,7 @@ from os.path import join
 from StringIO import StringIO
 
 from zpkgsetup import cfgparser
+from zpkgsetup.tests import tempfileapi as tempfile
 
 from zpkgtools import include
 from zpkgtools import loader

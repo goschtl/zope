@@ -16,13 +16,13 @@
 import os
 import shutil
 import sys
-import tempfile
 import unittest
 import urllib
 
 from StringIO import StringIO
 
 from zpkgsetup import publication
+from zpkgsetup.tests import tempfileapi as tempfile
 
 import zpkgtools
 
