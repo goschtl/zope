@@ -13,7 +13,7 @@
 ##############################################################################
 """VFS Folder Add View
 
-$Id: folder.py,v 1.3 2002/12/30 14:03:20 stevea Exp $
+$Id: folder.py,v 1.4 2003/01/09 10:23:14 anthony Exp $
 """
 from zope.publisher.vfs import VFSView
 
@@ -39,7 +39,7 @@ class FolderAdd(VFSView):
 
 """VFS-View for IFolder
 
-$Id: folder.py,v 1.3 2002/12/30 14:03:20 stevea Exp $
+$Id: folder.py,v 1.4 2003/01/09 10:23:14 anthony Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -58,6 +58,8 @@ class FolderView(VFSContainerView):
 
     def _getServiceManagerStat(self):
         """Get the stat information of the local service manager."""
+        # XXX SteveA owes one test case for this. he promised, and I have the
+        # IRC logs to prove it.
         # XXX ServiceManager does not use the DublinCore to keep track of its
         # creation and modification times, so we use the data of the Folder
         # right now.
@@ -65,11 +67,15 @@ class FolderView(VFSContainerView):
         if dc is not None:
             created = dc.created
             modified = dc.modified
+            # Some objects don't have a created or a modified time. 
+            # DublinCore returns None for these.
+            if created is None:
+                created = zerotime
+            if modified is None:
+                modified = created
         else:
             created = zerotime
             modified = zerotime
-        if modified is None:
-            modified = created
         dir_mode = 16384 + 504
         uid = "nouser"
         gid = "nogroup"
