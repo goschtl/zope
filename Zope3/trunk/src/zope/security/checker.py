@@ -620,6 +620,9 @@ _default_checkers = {
     type(iter([])): _iteratorChecker, # Same types in Python 2.2.1,
     type(iter(())): _iteratorChecker, # different in Python 2.3.
     type(iter({})): _iteratorChecker,
+    type({}.iteritems()): _iteratorChecker,
+    type({}.iterkeys()): _iteratorChecker,
+    type({}.itervalues()): _iteratorChecker,
     type(iter(_Sequence())): _iteratorChecker,
     type(f()): _iteratorChecker,
     type(Interface): InterfaceChecker(
