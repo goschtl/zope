@@ -5,7 +5,7 @@
   <form action="request/URL"
      tal:attributes="action request/URL"
      tal:define="data view/edit"
-     method="POST"
+     method="post"
      >
 
     <p tal:condition="data/message"
