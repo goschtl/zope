@@ -76,10 +76,9 @@ def init_table():
          'addrs': ["digicool-cvs@zope.org"],
          'excludes': ["/history"]},
 
-##        {'path': "test",
-##         'remote': public_remote,
-##         'host': "cvs.zope.org",
-##         'addrs': "klm@digicool.com"},
+       {'path': "test",
+        'remote': None,
+        'addrs': "klm@digicool.com"},
 
         {'path': "Operations",
          'addrs': "support@digicool.com",
