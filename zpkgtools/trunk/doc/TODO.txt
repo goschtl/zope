@@ -11,6 +11,13 @@ Things that need to be done
     zope.*  cvs://cvs.zope.org/cvs-repository:Zope3/src/zope/
 
   would make the resource map for Zope 3 much more concise.
+  I've started writing the tests and the implementation, but it's too
+  much for today given that it's not necessay.
+
+- The zpkgtools.locationmap module still doesn't handle Subversion
+  URLs properly; revision control URLs need to be abstracted
+  separately from the specific revision control loaders (perhaps in
+  the zpkgtools.loader module).
 
 - The setuptools helper should only be included in distributions that
   actually need it.  This is currenly only needed when packages end up
