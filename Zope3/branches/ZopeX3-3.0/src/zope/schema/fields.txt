@@ -152,4 +152,4 @@ value_type field, and the vocabulary.  Further lookups may even be configured
 on the basis of uniqueness and other constraints.
 
 This level of indirection may be unnecessary for some applications, and can be
-disabled with simple zcml changes within zope.app.
+disabled with simple ZCML changes within `zope.app`.

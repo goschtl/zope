@@ -76,25 +76,21 @@ High-level registration concepts glossary
 
 There are several major concepts/terms that need to be understood
 
-- Registerables
-
+Registerables
   Registerables are objects that can be registered.  They implement the
-  ``IRegisterable'' interface.
+  `IRegisterable` interface.
 
-- Registries
-
+Registries
   Registeries are objects that registerables are registered with.
   Typically, these are component-management services like the adapter
   or utility service.
 
-- Registration objects
-
+Registration objects
   Registration objects store data about registrations.  They store
   registration data and represent the relationship between registries
   and registerables.
 
-- Registration managers
-
+Registration managers
   Registration managers are containers for managing registrations.
   Registrations are stored in registration managers.  All of the
   registrations for objects stored in a site-management folder are
@@ -103,15 +99,14 @@ There are several major concepts/terms that need to be understood
   this so that the registration manager is exposed as a folder tab
   rather than as an item.
 
-- Registration stack
-
+Registration stack
   Registries allow multiple registrations for the same set of
   registration parameters. At most one registration for a set of
   parameters can be active at one time, but multiple registrations are
   managed. 
 
-  Registries provide functions for looking up (``queryRegistrationsFor'')
-  or creating (``createRegistrationsFor'') registration stacks.  These
+  Registries provide functions for looking up (`queryRegistrationsFor()`)
+  or creating (`createRegistrationsFor()`) registration stacks.  These
   methods are passed registration objects whos attribute values are
   used to specify the desired registration stacks.
 
@@ -120,13 +115,12 @@ There are several major concepts/terms that need to be understood
   by the uttility, and the utility name.  For a given interface and
   name, the utility service may have multiple ustility
   registrations. It uses a registration stack to store these. We can
-  get the registration stack by calling ``queryRegistrationsFor'' with
+  get the registration stack by calling `queryRegistrationsFor()` with
   a registration object that has the desired interface and name.  The
   registration object passed need not be in in the stack. It is used
   soley to provide the parameters.  
 
-- Registered
-
-  The interface ``IRegistered'' provides storage and access to the
+Registered
+  The interface `IRegistered` provides storage and access to the
   registrations for a registerable.  When we make a registration, we
   refer to it in a registration stack and in the registered object.
