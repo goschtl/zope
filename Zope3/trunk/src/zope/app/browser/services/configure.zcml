@@ -50,10 +50,6 @@
       permission="zope.ManageServices"
       />
 
-<!-- Menu -->  
-  <zope:include file="menu.zcml" />
-
-
 <!-- ZPT Templates -->
   <include file="zpt.zcml" />
 

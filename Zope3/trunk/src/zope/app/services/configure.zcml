@@ -36,9 +36,6 @@
   factory="zope.app.services.registration.Registered"
   />
 
-<!-- Menu Service -->
-<include file="menu.zcml"/>
-
 <!-- Service Manager -->
 
   <content class="zope.app.services.service.SiteManager">

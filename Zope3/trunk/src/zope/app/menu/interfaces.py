@@ -13,7 +13,7 @@
 ##############################################################################
 """Locale Menu Service interfaces
 
-$Id: menu.py,v 1.4 2004/03/02 17:40:50 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 23:10:43 srichter Exp $
 """
 from zope.schema import Bool
 from zope.app.publisher.interfaces.browser import \
@@ -69,5 +69,3 @@ class ILocalBrowserMenuService(IBrowserMenuService):
         If canBeLocal is True, then it also looks locally for a matching
         menu. If no menu was ound, default is returned.
         """
-
-

@@ -4,8 +4,6 @@
 
   <browser:defaultView name="index.html" />
 
-  <include file="usages.zcml" />
-  <include file="menus.zcml" />
   <include package=".component" />
   <include package=".container" />
   <include package=".form" />

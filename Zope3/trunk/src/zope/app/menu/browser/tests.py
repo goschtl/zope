@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Browser Menu Browser Tests
 
-$Id: test_menu.py,v 1.12 2004/03/02 17:40:49 philikon Exp $
+$Id: tests.py,v 1.1 2004/03/10 23:10:44 srichter Exp $
 """
-
 import unittest
 
 from zope.app.tests import ztapi
@@ -24,7 +23,7 @@ from zope.interface import Interface, implements
 from zope.component import getServiceManager
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
-from zope.app.browser.menu import MenuAccessView
+from zope.app.menu.browser import MenuAccessView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.app.publisher.interfaces.browser import IBrowserMenuService

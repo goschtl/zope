@@ -12,14 +12,12 @@
 #
 ##############################################################################
 """
-$Id: menu.py,v 1.1 2004/03/02 18:27:38 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 23:10:44 srichter Exp $
 """
-
 from zope.interface import Interface
 
 class IMenuAccessView(Interface):
-    """View that provides access to menus
-    """
+    """View that provides access to menus"""
 
     def __getitem__(menu_id):
         """Get menu information
@@ -27,5 +25,3 @@ class IMenuAccessView(Interface):
         Return a sequence of dictionaries with labels and
         actions, where actions are relative URLs.
         """
-
-__doc__ = IMenuAccessView.__doc__ + __doc__

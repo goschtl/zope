@@ -13,35 +13,29 @@
 ##############################################################################
 """Selecting first available and allowed management view
 
-$Id: managementviewselector.py,v 1.4 2003/08/06 14:41:11 srichter Exp $
+$Id: managementviewselector.py,v 1.1 2004/03/10 23:10:44 srichter Exp $
 """
-__metaclass__ = type
-
 from zope.interface import implements
-from zope.component import getService
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.app import zapi
+from zope.app.services.servicenames import BrowserMenu
 
 class ManagementViewSelector(BrowserView):
     """View that selects the first available management view."""
-
     implements(IBrowserPublisher)
 
     def browserDefault(self, request):
         return self, ()
 
     def __call__(self):
-        context = self.context
-        request = self.request
-        browser_menu_service = getService(context, 'BrowserMenu')
+        browser_menu_service = zapi.getService(self.context, BrowserMenu)
         item = browser_menu_service.getFirstMenuItem(
-            'zmi_views', context, request)
+            'zmi_views', self.context, self.request)
+
         if item:
-            request.response.redirect(item['action'])
+            self.request.response.redirect(item['action'])
             return u''
 
-        request.response.redirect('.') # Redirect to content/
+        self.request.response.redirect('.') # Redirect to content/
         return u''
-
-
-__doc__ = ManagementViewSelector.__doc__ + __doc__
