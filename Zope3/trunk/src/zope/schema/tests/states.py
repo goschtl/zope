@@ -11,12 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Sample vocabulary supporting state abbreviations.
 
-"""Sample vocabulary supporting state abbreviations."""
-
-from zope.schema import interfaces
-from zope.schema import vocabulary
+$Id: states.py,v 1.5 2004/04/24 23:21:02 srichter Exp $
+"""
 from zope.interface import implements
+from zope.schema import interfaces
+from zope.schema import Choice
 
 # This table is based on information from the United States Postal Service:
 # http://www.usps.com/ncsc/lookups/abbreviations.html#states
@@ -122,7 +123,7 @@ class StateVocabulary(object):
         return _states[value]
 
 
-class StateSelectionField(vocabulary.VocabularyField):
+class StateSelectionField(Choice):
 
     vocabulary = StateVocabulary()
 
