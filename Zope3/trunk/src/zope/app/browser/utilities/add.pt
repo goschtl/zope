@@ -5,7 +5,7 @@
   <form action="action.html" method="post">
     <table class="TypeListing" cellpadding="3">
 
-      <caption i18n:translate="">Add Content</caption>
+      <caption i18n:translate="">Add Utility</caption>
 
       <tbody tal:define="infos view/addingInfo">
 
