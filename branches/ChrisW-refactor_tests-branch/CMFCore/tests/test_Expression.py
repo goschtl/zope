@@ -5,7 +5,7 @@ from Products.CMFCore.tests.base.testcase import \
      SecurityTest
 
 from Products.CMFCore.tests.base.dummy import \
-     DummyContent, DummyMembershipTool
+     DummyContent, DummyTool as DummyMembershipTool
 
 from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression, createExprContext

@@ -14,7 +14,7 @@ from Products.CMFCore.tests.base.testcase import \
 from Products.CMFCore.tests.base.security import \
      OmnipotentUser, UserWithRoles
 from Products.CMFCore.tests.base.dummy import \
-     DummyMethod, addDummy, DummyTypeInfo,\
+     DummyObject, addDummy, DummyTypeInfo,\
      DummyFolder, DummyFTI
 
 from AccessControl.SecurityManagement import newSecurityManager
@@ -45,9 +45,9 @@ class TypesToolTests( SecurityRequestTest ):
         dummy = portal._getOb( 'actions_dummy' )
 
         # so we can traverse to it:
-        dummy.view = DummyMethod("view")
-        dummy.view2 = DummyMethod("view2")
-        dummy.edit = DummyMethod("edit")
+        dummy.view = DummyObject("view")
+        dummy.view2 = DummyObject("view2")
+        dummy.edit = DummyObject("edit")
 
         default_view = dummy()
         custom_view = _getViewFor( dummy, view='view2' )()

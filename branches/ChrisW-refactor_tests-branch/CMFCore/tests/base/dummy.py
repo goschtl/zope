@@ -3,15 +3,19 @@ from OFS.SimpleItem import Item
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.TypesTool import TypeInformation
 from Products.CMFCore.TypesTool import FactoryTypeInformation
+from Products.CMFCore.ActionProviderBase import ActionProviderBase
 
-class DummyMethod:
+class DummyObject:
     """
-    A dummy callable method
+    A dummy callable object
     """
-    def __init__(self, name):
+    def __init__(self, name='dummy',**kw):
         self.name = name
+        self.__dict__.update( kw )
+        
     def __str__(self):
         return self.name
+    
     def __call__(self):
         return self.name
 
@@ -147,7 +151,17 @@ class DummyFolder( Implicit ):
     def _setObject(self,id,object):
         setattr(self,id,object)
 
-class DummyMembershipTool:
+class DummyTool(ActionProviderBase):
+    """
+    This is a Dummy Tool that behaves as both
+    a MemberShipTool and an Action Provider
+    """
+
+    _actions = [
+        DummyObject(),
+        DummyObject()
+        ]
+
     def __init__(self, anon=1):
         self.anon = anon 
 
