@@ -34,6 +34,10 @@
 
   Bug Fixes
 
+    - Added external method update_catalogIndexes.py to run as part of a upgrade
+      to CMFs migrating to Zope2.4+ from from CMF sites which were built using
+      Zope2.3 catalog
+
     - Made links emitted by 'topic_view' play nice with virtual hosting
       (Tracker #433).
 
