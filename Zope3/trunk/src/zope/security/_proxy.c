@@ -17,7 +17,7 @@ $Id: _proxy.c,v 1.6 2004/02/24 14:01:33 srichter Exp $
 */
 
 #include <Python.h>
-#include "zope/proxy/proxy.h"
+#include "proxy.h"
 
 static PyObject *__class__str = 0, *__name__str = 0, *__module__str = 0;
 

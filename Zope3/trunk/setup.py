@@ -181,8 +181,6 @@ _flavors = {"O": "object", "I": "int"}
 KEY_H = "src/BTrees/%skeymacros.h"
 VALUE_H = "src/BTrees/%svaluemacros.h"
 
-include_dirs = ['src']
-
 
 def BTreeExtension(flavor):
     key = flavor[0]
@@ -219,21 +217,19 @@ ext_modules = [
                          'src/persistent/ring.c']
               ),
     Extension(name = 'persistent.TimeStamp',
-              include_dirs = ['src/persistent'],
               sources= ['src/persistent/TimeStamp.c']
               ),
     Extension(name = 'ZODB.winlock',
-              include_dirs = ['src/persistent'],
               sources = ['src/ZODB/winlock.c']
               ),
 
     Extension("zope.proxy._zope_proxy_proxy",
               ["src/zope/proxy/_zope_proxy_proxy.c"],
-              include_dirs = include_dirs,
+              include_dirs = ["src/zope/proxy"],
               depends = ["src/zope/proxy/proxy.h"]),
 
     Extension("zope.security._proxy", ["src/zope/security/_proxy.c"],
-              include_dirs = include_dirs,
+              include_dirs = ["src/zope/proxy"],
               depends = ["src/zope/proxy/proxy.h"]),
 
     Extension("zope.interface._zope_interface_coptimizations",
@@ -242,10 +238,11 @@ ext_modules = [
     Extension("zope.hookable._zope_hookable",
               ["src/zope/hookable/_zope_hookable.c"]),
 
-
     Extension("zope.app.container._zope_app_container_contained",
               ["src/zope/app/container/_zope_app_container_contained.c"],
-              include_dirs = include_dirs,
+              include_dirs = ["src/persistent",
+                              "src/zope/proxy",
+                              "src/zope/app/container"],
               depends = [
                  "src/persistent/cPersistence.h",
                  "src/zope/proxy/_zope_proxy_proxy.c",
