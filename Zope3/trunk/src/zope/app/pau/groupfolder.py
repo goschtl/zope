@@ -63,7 +63,7 @@ class IGroupFolder(IContainer, IQuerySchemaSearch):
 
     prefix = zope.schema.TextLine(
         title=u"Group ID prefix",
-        description=u"Prefix added to is of groups in this folder",
+        description=u"Prefix added to IDs of groups in this folder",
         readonly=True,
         )
        
