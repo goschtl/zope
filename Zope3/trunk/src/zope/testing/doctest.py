@@ -350,9 +350,10 @@ class _OutputRedirectingPdb(pdb.Pdb):
         save_stdout = sys.stdout
         sys.stdout = self.__out
         # Call Pdb's trace dispatch method.
-        pdb.Pdb.trace_dispatch(self, *args)
+        result = pdb.Pdb.trace_dispatch(self, *args)
         # Restore stdout.
         sys.stdout = save_stdout
+        return result
 
 # [XX] Normalize with respect to os.path.pardir?
 def _module_relative_path(module, path):
@@ -1367,15 +1368,6 @@ class DocTestRunner:
         self.debugger = _OutputRedirectingPdb(save_stdout)
         self.debugger.reset()
         pdb.set_trace = self.debugger.set_trace
-
-        # hack over Ed's more elegent set_trace with one that works. ;)
-        def set_trace():
-            sys.stdout = save_stdout
-            pdb.set_trace = real_pdb_set_trace
-            real_pdb_set_trace()
-            
-        pdb.set_trace = set_trace
-
 
         # Patch linecache.getlines, so we can see the example's source
         # when we're inside the debugger.
