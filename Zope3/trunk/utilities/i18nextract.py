@@ -37,12 +37,10 @@ Options:
         Specifies a directory, relative to the package in which to put the
         output translation template.
 
-$Id: i18nextract.py,v 1.2 2003/12/17 14:06:54 philikon Exp $
+$Id: i18nextract.py,v 1.3 2004/03/23 09:11:16 hdima Exp $
 """
 
-import os, sys, fnmatch, getopt
-from zope.app.translation_files.extract import POTMaker, \
-     py_strings, tal_strings, zcml_strings
+import os, sys, getopt
 
 def usage(code, msg=''):
     # Python 2.1 required
@@ -59,16 +57,18 @@ def app_dir():
         # path
 
         # Get the path of the src
-        path = os.path.abspath(os.path.dirname(sys.argv[0]))
+        path = os.path.abspath(os.getcwd())
         while not path.endswith('src'):
             path = os.path.dirname(path)
         sys.path.insert(0, path)
 
-        import zope.app
+        try:
+            import zope.app
+        except ImportError:
+            usage(1, "Make sure the script has been executed "
+                     "inside Zope 3 source tree.")
 
-    dir = os.path.dirname(zope.app.__file__)
-
-    return dir
+    return os.path.dirname(zope.app.__file__)
 
 def main(argv=sys.argv):
     try:
@@ -105,7 +105,7 @@ def main(argv=sys.argv):
 
     # When generating the comments, we will not need the base directory info,
     # since it is specific to everyone's installation
-    src_start = path.find('src')
+    src_start = path.rfind('src')
     base_dir = path[:src_start]
 
     output_file = domain+'.pot'
@@ -115,6 +115,10 @@ def main(argv=sys.argv):
             os.mkdir(output_dir)
         output_file = os.path.join(output_dir, output_file)
 
+    print "base path: %r\nsearch path: %r\ndomain: %r\noutput file: %r" \
+        % (base_dir, path, domain, output_file)
+    from zope.app.translation_files.extract import POTMaker, \
+         py_strings, tal_strings, zcml_strings
     maker = POTMaker(output_file, path)
     maker.add(py_strings(path, domain), base_dir)
     maker.add(zcml_strings(path, domain), base_dir)
