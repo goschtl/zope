@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 from zope.app.introspector.interfaces import IIntrospector
 from zope.app.module.interfaces import IModuleService
@@ -142,21 +144,21 @@ class Introspector(object):
         return service
 
     def getDirectlyProvided(self):
-        """See IIntrospector"""
+        """See `IIntrospector`"""
         return directlyProvidedBy(removeAllProxies(self.context))
 
     def getDirectlyProvidedNames(self):
-        """See IIntrospector"""
+        """See `IIntrospector`"""
         return self.getInterfaceNames(self.getDirectlyProvided())
 
     def getMarkerInterfaceNames(self):
-        """See IIntrospector"""
+        """See `IIntrospector`"""
         result = list(self.getInterfaceNames(self.getMarkerInterfaces()))
         result.sort()
         return tuple(result)
 
     def getMarkerInterfaces(self):
-        """See IIntrospector"""
+        """See `IIntrospector`"""
 
         results = []
         todo = list(providedBy(removeAllProxies(self.context)))

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from StringIO import StringIO
 import sys
 
@@ -27,7 +29,7 @@ class PythonInterpreter(object):
     implements(IInterpreter)
 
     def evaluate(self, code, globals):
-        """See zope.app.interfaces.IInterpreter"""
+        """See `zope.app.interfaces.IInterpreter`"""
         tmp = StringIO()
         globals['untrusted_output'] = tmp
         if isinstance(code, basestring):
@@ -44,7 +46,7 @@ class PythonInterpreter(object):
         
 
     def evaluateRawCode(self, code, globals):
-        """See zope.app.interfaces.IInterpreter"""
+        """See `zope.app.interfaces.IInterpreter`"""
         # Removing probable comments
         if code.strip().startswith('<!--') and code.strip().endswith('-->'):
             code = code.strip()[4:-3]
