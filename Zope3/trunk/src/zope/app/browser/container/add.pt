@@ -33,11 +33,9 @@
 
       <tr>
         <td><br /></td>
-        <td>
-           <b>Name</b>&nbsp; <input type="text" name="id"
-                   tal:condition="view/namesAccepted"
+        <td> <input type="text" name="id"
+                   tal:condition="view/namesAccepted
                    tal:attributes="value request/id | nothing" />
-<hr>
             <input type="submit" name="add" value=" Add "
                    i18n:attributes="value add-button" />
         </td>

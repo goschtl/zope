@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.33 2003/12/16 15:41:59 mchandra Exp $
+$Id: adding.py,v 1.34 2003/12/17 11:08:57 mukruthi Exp $
 """
 __metaclass__ = type
 
@@ -94,9 +94,10 @@ class BasicAdding(BrowserView):
                    % button_label
         else:
             contentName = self.contentName or ''
-            return ("<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
-                    "<input type='text' name='add_input_name' value='%s'>"
-                    % (button_label, contentName))
+            return (
+              "Name:&nbsp;<input type='text' name='add_input_name' value='%s'><hr>"
+                    "<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
+                    % ( contentName, button_label))
 
     def publishTraverse(self, request, name):
         """See zope.app.interfaces.container.IAdding"""
