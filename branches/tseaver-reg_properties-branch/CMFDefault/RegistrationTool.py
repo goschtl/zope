@@ -136,8 +136,8 @@ class RegistrationTool(BaseTool, PropertyManager):
                 return 'You must enter a valid name.'
 
             if not self.isMemberIdAllowed(username):
-                raise ('The login name you selected is already '
-                       'in use or is not valid. Please choose another.')
+                return ('The login name you selected is already '
+                        'in use or is not valid. Please choose another.')
 
             if not props.get('email'):
                 return 'You must enter a valid email address.'
