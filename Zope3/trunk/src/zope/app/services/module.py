@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.15 2003/09/21 17:31:59 jim Exp $
+$Id: module.py,v 1.16 2003/10/13 16:03:46 fdrake Exp $
 """
 
 from persistence import Persistent
@@ -44,7 +44,7 @@ class Manager(Persistent, Contained):
         if manager is None:
             return Persistent.__setstate__(self, state)
 
-        # We need to conver an old-style manager
+        # We need to convert an old-style manager
         self._module = manager._module
         self.name = manager.name
         self._source = manager.source
