@@ -1,1 +1,3 @@
 ^cvsetc /cvs-repository/CVSROOT/precommit_actions
+
+DEFAULT echo try to ignore this!
