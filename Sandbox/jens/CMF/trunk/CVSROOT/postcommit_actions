@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Actions executed via loginfo, at the end of a commit.
+
+echo postcommit_actions: '$0': $0, '$*':, $*
