@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Custom DTML Tags for SQL Script
+
 $Id$
 """
 import sys

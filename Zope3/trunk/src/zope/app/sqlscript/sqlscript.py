@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""SQL Script content component implementation
+
 $Id$
 """
 import re

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Duplication Error
+
 $Id$
 """
 from zope.exceptions import ZopeError, IZopeError

@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""Hello content component interfaces
+
 $Id$
 """
-
 from zope.interface import Interface
 
 class IHello(Interface):

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Exception Views tests
+
 $Id$
 """
 import unittest
@@ -22,4 +23,5 @@ def test_suite():
         DocTestSuite('zope.app.form.browser.exception'),
         ))
 
-if __name__ == '__main__': unittest.main()
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

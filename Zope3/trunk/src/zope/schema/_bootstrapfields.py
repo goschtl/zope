@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Bootstrapping fields
+
 $Id$
 """
 from zope.interface import Attribute, providedBy, implements

@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Functional tests for the unique id utility.
+"""Functional tests for the unique id utility.
 
 $Id$
 """

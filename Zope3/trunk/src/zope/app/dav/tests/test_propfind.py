@@ -11,9 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""WebDAV ``PROPFIND`` HTTP verb implementation
+
 $Id$
 """
+__docformat__ = 'restructuredtext'
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Translation Domain 'Translate' screen.
+
 $Id$
 """
 import unittest

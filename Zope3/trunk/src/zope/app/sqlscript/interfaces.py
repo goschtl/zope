@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""SQL Script interfaces
+
 $Id$
 """
 import zope.schema

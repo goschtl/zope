@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Rotterdam utilities tests
+
 $Id$
 """
 import os

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Multi-Checkbox Widget Tests 
+
 $Id$
 """
 import unittest, doctest

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Tree Utilities (including Encoder)
+
 $Id$
 """
 

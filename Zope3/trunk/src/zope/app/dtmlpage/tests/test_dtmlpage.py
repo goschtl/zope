@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Basic tests for Page Templates used in content-space.
+"""Basic tests for Page Templates used in content-space.
 
 $Id$
 """
-
 import unittest
 
 from zope.security.checker import NamesChecker, defineChecker

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Introspector interfaces
+
 $Id$
 """
 from zope.interface import Interface

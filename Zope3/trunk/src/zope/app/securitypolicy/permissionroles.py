@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Permission to Roles Map implementation
+
 $Id$
 """
 from zope.interface import implements

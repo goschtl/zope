@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Persistent Schemas
+
 $Id$
 """
 from unittest import TestCase, makeSuite, TestSuite

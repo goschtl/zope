@@ -9,10 +9,10 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""
+"""External Editor Browser Package
+
 $Id$
 """
-
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile

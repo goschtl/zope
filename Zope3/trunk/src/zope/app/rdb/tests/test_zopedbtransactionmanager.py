@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Zope DB Transaction Manager tests.
+
 $Id$
 """
-
 from unittest import TestCase, main, makeSuite, TestSuite
 from transaction import get_transaction
 from transaction.tests.abstestIDataManager import IDataManagerTests

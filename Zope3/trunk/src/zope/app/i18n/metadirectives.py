@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""'i18n' ZCML namespace directive interfaces
+
 $Id$
 """
 from zope.interface import Interface

@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Zope Connection component
+
 $Id$
 """
-
 from unittest import TestCase, main, makeSuite
 from transaction import get_transaction
 from zope.app.rdb import ZopeConnection

@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""I18n-aware File and Image Package
+
 $Id$
 """
-
 from i18nfile import I18nFile
 from i18nimage import I18nImage

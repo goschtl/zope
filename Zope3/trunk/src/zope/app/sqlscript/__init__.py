@@ -11,8 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""SQL Script content type
+
 $Id$
 """
-
 from sqlscript import SQLScript

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Password Widget Tests
+
 $Id$
 """
 import unittest, doctest

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""DSN Parser tests
+
 $Id$
 """
 import unittest

@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Dependable framework interfaces
+
 $Id$
 """
-
 from zope.interface import Interface
 from zope.app.exception.interfaces import UserError
 
@@ -37,13 +37,6 @@ class IDependable(Interface):
     def dependents():
         """Return a sequence of dependent object locations.
         """
-
-__doc__ = IDependable.__doc__ + __doc__
-
-
-"""
-$Id$
-"""
 
 class DependencyError(UserError):
     """ This object is dependable"""

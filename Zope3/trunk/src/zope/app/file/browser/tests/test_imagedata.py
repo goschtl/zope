@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Image Data handling
 
 $Id$
 """
-
 import unittest
 
 from zope.app.file.image import Image

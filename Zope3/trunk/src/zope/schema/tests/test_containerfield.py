@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Container field tests
+
 $Id$
 """
 from UserDict import UserDict

@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""Test ZPT Page Evaluation 
+
 $Id$
 """
-
 from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 from zope.app.container.contained import contained

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""XML Navigation Tree Tests
+
 $Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner

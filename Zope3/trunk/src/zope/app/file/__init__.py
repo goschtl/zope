@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""File and Image content components
+
 $Id$
 """
-
 from file import File
 from image import Image

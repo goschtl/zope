@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Schema field tests
+
 $Id$
 """
 from unittest import TestCase, main, makeSuite

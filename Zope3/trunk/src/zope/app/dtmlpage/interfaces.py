@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""DTML Page content component interfaces
+
 $Id$
 """
 import zope.schema

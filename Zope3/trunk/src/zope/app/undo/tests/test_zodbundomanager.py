@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""ZODB Undo-manager tests
+
 $Id$
 """
-
 from time import time
 from unittest import TestCase, main, makeSuite
 from transaction import get_transaction

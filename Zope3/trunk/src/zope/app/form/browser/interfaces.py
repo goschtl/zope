@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Form and Widget Interfaces
+
 $Id$
 """
 from zope.interface import Interface

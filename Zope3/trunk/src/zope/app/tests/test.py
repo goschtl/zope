@@ -12,8 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-test.py [-abBcdDfFgGhklLmMPprstTuUv] [modfilter [testfilter...]]
+"""test.py [-abBcdDfFgGhklLmMPprstTuUv] [modfilter [testfilter...]]
 
 Find and run tests written using the unittest module.
 

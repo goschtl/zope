@@ -11,16 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test RDB implementation
+
 $Id$
 """
-
 import unittest
 from zope.testing.doctestunit import DocTestSuite
-import zope.app.rdb
 
 def test_suite():
-    return DocTestSuite(module=zope.app.rdb)
+    return DocTestSuite('zope.app.rdb')
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

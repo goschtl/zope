@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""Hello Content Component
+
 $Id$
 """
 from interfaces import IHello

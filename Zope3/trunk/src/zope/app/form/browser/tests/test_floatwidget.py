@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Float Widget tests
+
 $Id$
 """
 import unittest, doctest

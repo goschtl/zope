@@ -9,7 +9,8 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""
+"""External Editor interfaces
+
 $Id$
 """
 from zope.interface import Interface
