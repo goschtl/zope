@@ -29,7 +29,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.27 2003/08/08 21:45:39 fdrake Exp $
+$Id: main.py,v 1.28 2003/08/11 20:55:21 fdrake Exp $
 """
 
 import os
@@ -53,73 +53,26 @@ except ImportError:
     srcdir = join(rootdir, "src")
     sys.path.append(srcdir)
 
+from zope.fssync.command import Command, Usage
 from zope.fssync.fsutil import Error
 from zope.fssync.fssync import FSSync
 
-class Usage(Error):
-    """Subclass for usage error (command-line syntax).
 
-    You should return an exit status of 2 rather than 1 when catching this.
-    """
-
-def main(argv=None):
+def main():
     """Main program.
-
-    You can pass it an argument list (which must include the command
-    name as argv[0]); it defaults to sys.argv.
 
     The return value is the suggested sys.exit() status code:
     0 or None for success
     2 for command line syntax errors
     1 or other for later errors
     """
+    cmd = Command()
+    for func, aliases, short, long in command_table:
+        cmd.addCommand(func.__name__, func, short, long, aliases)
+
     try:
-        if argv is None:
-            argv = sys.argv
-
-        progname = os.path.basename(argv[0])
-
-        try:
-            opts, args = getopt.getopt(argv[1:], "h", ["help"])
-        except getopt.error, msg:
-            raise Usage("global option error: %s", msg)
-
-        for o, a in opts:
-            if o in ("-h", "--help"):
-                print __doc__ % {"program": progname}
-                return 0
-
-        if not args:
-            raise Usage("missing command argument")
-
-        command = args[0]
-        if command not in command_table:
-            hits = []
-            for c in command_table:
-                if c.startswith(command):
-                    hits.append(c)
-            if not hits:
-                raise Usage("unrecognized command", command)
-            if len(hits) > 1:
-                raise Usage("ambiguous command abbreviation %r (%s)",
-                            command, "|".join(hits))
-            command = hits[0]
-
-        short_opts, long_opts, handler = command_table[command]
-
-        try:
-            opts, args = getopt.getopt(args[1:],
-                                       "h"+short_opts,
-                                       ["help"] + long_opts)
-        except getopt.error, msg:
-            raise Usage("%s option error: %s", command, msg)
-
-        if ("-h", "") in opts or ("--help", "") in opts:
-            message = handler.__doc__ or "No help for %s" % handler.__name__
-            print message % {"program": progname}
-            return 0
-
-        return handler(opts, args)
+        cmd.realize()
+        cmd.run()
 
     except Usage, msg:
         print >>sys.stderr, msg
@@ -356,22 +309,20 @@ def extract_message(opts, cmd):
         raise Usage(cmd + " requires at most one of -F/--file or -m/--message")
     return message, L
 
-command_table = {
-    "checkout": ("", [], checkout),
-    "co":       ("", [], checkout),
-    "update":   ("", [], update),
-    "commit":   ("F:m:r", ["file=", "message=", "raise-on-conflicts"], commit),
-    "add":      ("f:t:", ["factory=", "type="], add),
-    "remove":   ("", [], remove),
-    "rm":       ("", [], remove),
-    "r":        ("", [], remove),
-    "diff":     ("bBcC:iNuU:", ["brief", "context=", "unified="], diff),
-    "status":   ("", [], status),
-    "checkin":  ("F:m:", ["file=", "message="], checkin),
-    "ci":       ("F:m:", ["file=", "message="], checkin),
-    "revert":   ("", [], revert),
-    "mkdir":    ("", [], mkdir),
-    }
+command_table = [
+    # name is taken from the function name
+    # function, aliases,  short opts,   long opts
+    (add,      "",        "f:t:",       "factory= type="),
+    (checkin,  "",        "F:m:",       "file= message="),
+    (checkout, "co",      "",           ""),
+    (commit,   "ci",      "F:m:r",      "file= message= raise-on-conflicts"),
+    (diff,     "di",      "bBcC:iNuU:", "brief context= unified="),
+    (mkdir,    "",        "",           ""),
+    (remove,   "del delete rm", "",     ""),
+    (revert,   "",        "",           ""),
+    (status,   "stat st", "",           ""),
+    (update,   "up",      "",           ""),
+    ]
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())
