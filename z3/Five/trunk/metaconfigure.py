@@ -1,34 +1,23 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
-# All Rights Reserved.
+# Copyright (c) 2004 Five Contributors. All rights reserved.
 #
-# This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
-# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE.
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
 #
 ##############################################################################
 """Generic Components ZCML Handlers
 
 $Id$
 """
-from zope.component import getService, getServices
-from zope.component.servicenames import Adapters
-from provideinterface import provideInterface
-from zope.app.security.permission import Permission
-from zope.app.security.interfaces import IPermission
 from types import ModuleType
+
+from provideinterface import provideInterface
 from zope.interface import classImplements
 from zope.configuration.exceptions import ConfigurationError
-from zope.app.security.interfaces import IPermission
 
-from security import CheckerPublic, CheckerPrivate
+from security import CheckerPublic
 from security import protectName, initializeClass
-
-from zope.app.component.metaconfigure import handler, managerHandler
 
 class ContentDirective:
 
