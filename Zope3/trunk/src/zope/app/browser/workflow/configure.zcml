@@ -93,12 +93,6 @@
      title="Contents"
      />
 
-<adapter factory="zope.app.container.zopecontainer.ZopeContainerAdapter"
-  provides="zope.app.interfaces.container.IZopeContainer"
-  for="zope.app.interfaces.workflow.IProcessDefinitionElementContainer"
-  />
-
-
 <!-- ProcessInstanceContainerAdaptable 
      XXX Commented Out .. is just a demo
 <browser:pages
