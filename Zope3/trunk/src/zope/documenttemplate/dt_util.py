@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: dt_util.py,v 1.3 2003/04/11 17:54:04 fdrake Exp $
+$Id: dt_util.py,v 1.4 2003/06/30 16:57:11 jeremy Exp $
 """
-import re, math
-import whrandom
+import re
+import math
+import random
 
 from __builtin__ import str  # XXX needed for pickling (legacy)
 from types import ListType, StringType, TupleType
@@ -165,7 +166,7 @@ for name in ('None', 'abs', 'chr', 'divmod', 'float', 'hash', 'hex', 'int',
     d[name] = __builtins__[name]
 
 d['math'] = math
-d['whrandom'] = whrandom
+d['random'] = random
 
 def careful_pow(self, x, y, z):
     if not z:
@@ -400,7 +401,7 @@ Python expression support
 
   - Special security-aware versions of 'getattr' and 'hasattr',
 
-  - The Python 'string', 'math', and 'whrandom' modules, and
+  - The Python 'string', 'math', and 'random' modules, and
 
   - A special function, 'test', that supports if-then expressions.
     The 'test' function accepts any number of arguments.  If the
