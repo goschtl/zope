@@ -1,0 +1,62 @@
+<html metal:use-macro="views/standard_macros/page">
+
+<tal:block
+    metal:fill-slot="headers"
+    tal:define="global pagetip string:
+
+    To activate a particular service implementation,
+    check its radio button and click Update.
+
+    "
+    />
+
+
+<div metal:fill-slot="body">
+
+  <h2>
+    <span tal:replace="request/type|string:No service type specified" />
+  </h2>
+
+  <p tal:content="view/action">Message from action() goes here</p>
+
+  <form action="@@serviceActivation.html" method="GET">
+    <table tal:define="registry view/listRegistry">
+
+      <thead>
+        <tr> <td></td> <td>service</td> <td>configure</td> </tr>
+      </thead>
+
+      <tbody>
+
+        <tr tal:repeat="config registry">
+          <td><input type="radio" name="active" value="default/configure/1"
+                     tal:attributes="value config/id;
+                                     checked config/active" /></td>
+          <td><a href="foo"
+                 tal:content="config/name"
+                 tal:attributes="href config/url">Implementation</a>
+          </td>
+          <td><a href="foo"
+                 tal:content="config/id"
+                 tal:attributes="href config/config">Configuration</a>
+          </td>
+        </tr>
+
+        <tr>
+          <td><input type="radio" name="active" value="None"
+                     tal:attributes="checked view/isDisabled"></td>
+          <td>Disable</td>
+        </tr>
+      
+      </tbody>
+  
+    </table>
+
+    <input type="hidden" name="type" value="Events"
+           tal:attributes="value request/type|nothing" />
+    <input type="submit" value="Update">
+
+  </form>
+
+</div>
+</html>

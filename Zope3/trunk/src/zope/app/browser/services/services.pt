@@ -1,12 +1,11 @@
 <html metal:use-macro="views/standard_macros/page">
 
-<tal:block  
-    metal:fill-slot="headers" 
+<tal:block
+    metal:fill-slot="headers"
     tal:define="global pagetip string:
 
-    To add a service, add a service component to a package and then
-    add an active configuration for it to the package's configuration
-    object.
+    To add a service, click on the Add Service link at the
+    top of this page.
 
     "
     />
@@ -14,27 +13,48 @@
 
 <div metal:fill-slot="body">
 
-  <div metal:use-macro="view/indexMacros/macros/body">
-
-  <h2 metal:fill-slot="heading">
-    Services configured in this service manager.
+  <h2>
+    Configured services in this service manager
   </h2>
 
-  <p metal:fill-slot="empty_text">No services have been configured</p>
+  <div tal:define="registries view/listConfiguredServices">
 
-  <div metal:fill-slot="extra_top">
+      <p tal:condition="not:registries">No services are configured.</p>
 
-    <p>For each service, the service name is given and all of the
-       components registered to provide the service are shown.  You
-       may select the component to provide the service or disable the
-       service.
-    </p>
+      <div tal:condition="registries">
+        <p>Unless a service is disabled, the service name
+           links to the active service.  The (configure) link allows
+           activating a different implementation or disabling the
+           service altogether.
+        </p>
 
-    <p>Select a service name or a component name to visit the service
-       or component.
-    </p>
-
-  </div>
+        <table>
+          <tbody>
+            <tr tal:repeat="reg registries">
+              <td>
+                <a href="(link to the active service)"
+                   tal:condition="reg/url"
+                   tal:attributes= "href
+                     string:${reg/url}/@@SelectedManagementView.html"
+                   tal:content="reg/name">
+                  Foobar (the service type)
+                </a>
+                <span tal:condition="not:reg/url">
+                  <span tal:content="reg/name" />
+                (disabled)</span>
+              </td>
+              <td>
+                <a href="xxx"
+                   tal:attributes=
+                   "href string:@@serviceActivation.html?type=${reg/name}"
+                   >
+                  (configure)
+                </a>
+              </td>
+            </tr>
+          <tbody>
+        </table>
+      </div>
 
   </div>
 </div>

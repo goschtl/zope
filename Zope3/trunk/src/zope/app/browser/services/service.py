@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Adding components for components and configuration
+"""View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.7 2003/03/03 23:16:04 gvanrossum Exp $
+$Id: service.py,v 1.8 2003/03/08 01:51:38 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -26,6 +26,7 @@ from zope.app.services.service import ServiceConfiguration
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
 from zope.app.traversing import traverse, getPhysicalPathString
+from zope.app.traversing import getPhysicalPath
 from zope.app.interfaces.services.interfaces import ILocalService
 from zope.proxy.context import getWrapperContainer
 from zope.app.interfaces.services.configuration \
@@ -34,8 +35,7 @@ from zope.app.interfaces.services.configuration \
 __metaclass__ = type
 
 class ComponentAdding(Adding):
-    """Adding component for components
-    """
+    """Adding subclass used for configurable components."""
 
     menu_id = "add_component"
 
@@ -65,7 +65,7 @@ class ComponentAdding(Adding):
 
 
 class ServiceAdding(ComponentAdding):
-    """Adding a service."""
+    """Adding subclass used for adding services."""
 
     menu_id = "add_service"
 
@@ -87,14 +87,13 @@ class ServiceAdding(ComponentAdding):
 
 
 class ConfigurationAdding(Adding):
-    """Adding component for configuration
-    """
+    """Adding subclass for adding configurations."""
 
     menu_id = "add_configuration"
 
+
 class EditConfiguration(BrowserView):
-    """Adding component for service containers
-    """
+    """Adding component for service containers."""
 
     menu_id = "add_component"
 
@@ -103,10 +102,7 @@ class EditConfiguration(BrowserView):
         self.context = context
 
     def action(self):
-        """Perform actions depending on user input.
-
-
-        """
+        """Perform actions depending on user input."""
         if 'add_submit' in self.request:
             self.request.response.redirect('+')
             return ''
@@ -137,15 +133,13 @@ class EditConfiguration(BrowserView):
         return ''
 
     def remove_objects(self, key_list):
-        """Remove the directives from the container.
-        """
+        """Remove the directives from the container."""
         container = getAdapter(self.context, IZopeContainer)
         for item in key_list:
             del container[item]
 
     def configInfo(self):
-        """Render View for each direcitves.
-        """
+        """Render View for each directives."""
         r = []
         for name, directive in self.context.items():
             d = ContextWrapper(directive, self.context, name = name)
@@ -155,8 +149,8 @@ class EditConfiguration(BrowserView):
         return r
 
 
-class AddServiceConfiguration:
-    """A mixin class."""
+class AddServiceConfiguration(BrowserView):
+    """A view on a service implementation, used by add_svc_config.py."""
 
     def listServiceTypes(self):
 
@@ -189,3 +183,88 @@ class AddServiceConfiguration:
                 sc.status = Registered
 
         self.request.response.redirect("@@useConfiguration.html")
+
+
+class ServiceSummary(BrowserView):
+    """A view on the service manager, used by services.pt."""
+
+    def listConfiguredServices(self):
+        names = list(self.context.listConfigurationNames())
+        names.sort()
+
+        items = []
+        for name in names:
+            registry = self.context.queryConfigurations(name)
+            assert registry
+            infos = registry.info()
+            assert infos
+            if infos[0]['active']:
+                # XXX This assumes if there is an active one it is the
+                # first one.  The implementation promises this, but
+                # the interface does not.  However Jim doesn't want
+                # the implementation changed so I guess the interface
+                # docs should be fixed.
+                configobj = infos[0]['configuration']
+                component = configobj.getComponent()
+                url = str(getView(component, 'absolute_url', self.request))
+            else:
+                url = ""
+            items.append({'name': name, 'url': url})
+
+        return items
+
+
+class ServiceActivation(BrowserView):
+    """A view on the service manager, used by serviceactivation.pt.
+
+    This really wants to be a view on a configuration registry
+    containing service configurations, but registries don't have names,
+    so we make it a view on the service manager; the request parameter
+    'type' determines which service is to be configured."""
+
+    def isDisabled(self):
+        sm = getServiceManager(self.context)
+        registry = sm.queryConfigurations(self.request.get('type'))
+        return not (registry and registry.active())
+
+    def listRegistry(self):
+        sm = getServiceManager(self.context)
+        registry = sm.queryConfigurations(self.request.get('type'))
+        if not registry:
+            return []
+
+        result = []
+        for info in registry.info():
+            configobj = info['configuration']
+            component = configobj.getComponent()
+            path = getPhysicalPath(component)
+            info['name'] = "/".join(path[-2:])
+            info['url'] = str(getView(component, 'absolute_url', self.request))
+            info['config'] = str(getView(configobj, 'absolute_url',
+                                         self.request))
+            result.append(info)
+        return result
+
+    def action(self):
+        active = self.request.get("active")
+        if not active:
+            return ""
+
+        sm = getServiceManager(self.context)
+        registry = sm.queryConfigurations(self.request.get('type'))
+        if not registry:
+            return "Invalid service type specified"
+        old_active = registry.active()
+        if active == "None":
+            new_active = None
+        else:
+            new_active = traverse(sm, "Packages/" + active)
+        if old_active == new_active:
+            return "No change"
+
+        if new_active is None:
+            old_active.status = Registered
+            return "Service deactivated"
+        else:
+            new_active.status = Active
+            return active + " activated"
