@@ -2,6 +2,9 @@ CMF 1.5.0rc1 (unreleased)
 
   New Features
 
+    - Portal: Added 'default_charset' property.
+      (http://collector.zope.org/CMF/261)
+
     - CMFDefault utils: Added 'toUnicode' function.
       (http://collector.zope.org/CMF/261)
 
