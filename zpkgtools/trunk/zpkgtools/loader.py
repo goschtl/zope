@@ -164,7 +164,15 @@ class Loader:
             methodname = "load_" + type.replace("+", "_")
             method = getattr(self, methodname, None)
             if method is None:
-                method = self.unknown_load
+                # This allows use to deal with any svn+* URLs;
+                # Subversion allows the svn+ namespace to be extended
+                # using configuration data, so we let Subversion tell
+                # us whether it knows what to do with it; it's pretty
+                # clear the user wants to use Subversion in this case.
+                if svnloader.is_subversion_url(url):
+                    method = self.load_svn
+                else:
+                    method = self.unknown_load
         else:
             raise ValueError("can only load from URLs, not path references")
         path = method(url)

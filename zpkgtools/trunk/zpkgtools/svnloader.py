@@ -43,7 +43,9 @@ def is_subversion_url(url):
     :rtype: bool
     """
     type, rest = urllib.splittype(url)
-    if type in ("svn", "svn+ssh"):
+    if not type:
+        return False
+    if type == "svn" or type.startswith("svn+"):
         return True
     if type == "file":
         if not url.startswith("file://"):

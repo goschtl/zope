@@ -108,6 +108,25 @@ class LoaderTestCase(LoaderTestBase,
         eq(convert("local/path/reference.conf"),
            "local/path/reference.conf")
 
+    def test_load_with_svn_special(self):
+        URL = ("svn+foo://svn.example.net/path/to/svnroot/"
+               "project/tags/*/file.txt")
+        class MyError(Exception):
+            def __init__(self, url):
+                self.url = url
+        def my_load(url):
+            raise MyError(url)
+        loader = self.createLoader(tag="SPLAT")
+        loader.load_svn = my_load
+        try:
+            loader.load(URL)
+        except MyError, e:
+            self.assertEqual(e.url,
+                             ("svn+foo://svn.example.net/path/to/svnroot/"
+                              "project/tags/SPLAT/file.txt"))
+        else:
+            self.fail("expected the general Subversion handler to be called")
+
     def test_load_with_file(self):
         filename = os.path.abspath(__file__)
         URL = "file://" + urllib.pathname2url(filename)

@@ -22,7 +22,8 @@ provides a way to spell a location relative to another in a CVS
 repository.  (It makes sense to 'join' a ``cvs:`` and a
 ``repository:`` URL to generate a new ``cvs:`` URL.)
 
-Subversion is supported using the ``svn:``, ``svn+ssh:``, and
+Subversion is supported using the ``svn:``, ``svn+ssh:`` (as well as
+Subversion's general ``svn+special:`` schemes), and
 ``file:`` schemes.  |zpkg|_ is able to determine whether a ``file:``
 URL refers to a Subversion repository or refers to a normal
 filesystem path and will handle either appropriately.

@@ -193,6 +193,12 @@ class SubversionSshUrlTestCase(SubversionUrlTestCase):
     TYPE = "svn+ssh"
 
 
+class SubversionPlusSpecialUrlTestCase(SubversionUrlTestCase):
+    """Test handling of svn+other://host/... URLs."""
+
+    TYPE = "svn+other"
+
+
 class SubversionFileUrlTestCase(SubversionLocalRepositoryBase,
                                 SubversionUrlTestCase):
     """Test handling of file:///... URLs."""
@@ -207,6 +213,7 @@ class SubversionLocalhostFileUrlTestCase(SubversionFileUrlTestCase):
 def test_suite():
     suite = unittest.makeSuite(SubversionUrlTestCase)
     suite.addTest(unittest.makeSuite(SubversionSshUrlTestCase))
+    suite.addTest(unittest.makeSuite(SubversionPlusSpecialUrlTestCase))
     suite.addTest(unittest.makeSuite(SubversionFileUrlTestCase))
     suite.addTest(unittest.makeSuite(SubversionLocalhostFileUrlTestCase))
     return suite
