@@ -1559,6 +1559,7 @@ src/zope/configuration/tests/test_multiplexml.py
 src/zope/configuration/tests/test_names.py
 src/zope/configuration/tests/test_xml.py
 src/zope/configuration/tests/contact/__init__.py
+src/zope/configuration/tests/contact/alternate.zcml.in
 src/zope/configuration/tests/contact/contact.py
 src/zope/configuration/tests/contact/contact.zcml
 src/zope/configuration/tests/contact/test_include.zcml
@@ -2178,7 +2179,6 @@ src/zope/server/http/tests/test_httpdate.py
 src/zope/server/http/tests/test_httprequestparser.py
 src/zope/server/http/tests/test_httpserver.py
 src/zope/server/http/tests/test_publisherserver.py
-src/zope/server/http/tests/xput.py
 src/zope/server/interfaces/__init__.py
 src/zope/server/interfaces/ftp.py
 src/zope/server/interfaces/logger.py
