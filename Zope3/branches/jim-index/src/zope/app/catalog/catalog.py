@@ -31,7 +31,7 @@ from zope.app.container.interfaces import IContainer
 ### import zope.app.hub as Hub
 from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.app.container.sample import SampleContainer
-from zope.app.catalog.interfaces.catalog import ICatalog
+from zope.app.catalog.interfaces import ICatalog
 
 class ResultSet:
     "Lazily accessed set of objects"

@@ -23,7 +23,6 @@ import doctest
 
 from zope.interface import implements
 from zope.app.index.interfaces.field import IUIFieldCatalogIndex
-from zope.app.catalog.interfaces.index import ICatalogIndex
 from zope.index.interfaces import IInjection, ISimpleQuery
 from zope.app.uniqueid.interfaces import IUniqueIdUtility
 from zope.app.site.interfaces import ISite
