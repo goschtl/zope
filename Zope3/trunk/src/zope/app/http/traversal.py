@@ -14,7 +14,7 @@
 For straight HTTP, we need to be able to create null resources.
 We also never traverse to views.
 
-$Id: traversal.py,v 1.2 2003/03/29 17:03:58 sidnei Exp $
+$Id: traversal.py,v 1.3 2003/06/06 20:55:09 stevea Exp $
 """
 __metaclass__ = type
 
@@ -22,10 +22,11 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.app.interfaces.container import ISimpleReadContainer, IItemContainer
 from zope.app.http.put import NullResource
 from zope.exceptions import NotFoundError
+from zope.interface import implements
 
 class ContainerTraverser:
-    
-    __implements__ = IPublishTraverse
+
+    implements(IPublishTraverse)
     __used_for__ = ISimpleReadContainer
 
     def __init__(self, container, request):

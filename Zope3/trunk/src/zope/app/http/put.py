@@ -13,7 +13,7 @@
 
 XXX longer description goes here.
 
-$Id: put.py,v 1.5 2003/05/21 20:29:11 jim Exp $
+$Id: put.py,v 1.6 2003/06/06 20:55:09 stevea Exp $
 """
 __metaclass__ = type
 
@@ -23,12 +23,13 @@ from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.interface import implements
 
 class NullResource:
     """Object representing objects to be created by a PUT.
     """
 
-    __implements__ = INullResource
+    implements(INullResource)
 
     def __init__(self, container, name):
         self.container = container

@@ -13,15 +13,16 @@
 ##############################################################################
 """
 
-$Id: notfound.py,v 1.1 2003/04/02 20:37:43 sidnei Exp $
+$Id: notfound.py,v 1.2 2003/06/06 20:55:09 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.app.interfaces.http import IHTTPException
+from zope.interface import implements
 
 class NotFound:
 
-    __implements__ = IHTTPException
+    implements(IHTTPException)
 
     def __init__(self, context, request):
         self.context = context

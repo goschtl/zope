@@ -13,15 +13,16 @@
 ##############################################################################
 """
 
-$Id: unauthorized.py,v 1.1 2003/03/29 17:03:59 sidnei Exp $
+$Id: unauthorized.py,v 1.2 2003/06/06 20:55:09 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.app.interfaces.http import IHTTPException
+from zope.interface import implements
 
 class Unauthorized:
 
-    __implements__ = IHTTPException
+    implements(IHTTPException)
 
     def __init__(self, context, request):
         self.context = context
