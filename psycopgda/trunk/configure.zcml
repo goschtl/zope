@@ -6,14 +6,18 @@
   <content class=".adapter.PsycopgAdapter">
     <factory id="zope.da.PsycopgDA" />
     <require
-        permission="zope.Public"
+        permission="zope.app.rdb.Use"
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
         />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
+        />
   </content>
-
+  
   <browser:addform
       name="AddPsycopgDA"
-      schema="zope.app.rdb.interfaces.IZopeDatabaseAdapterManagement"
+      schema="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
       label="Add Psycopg (PostGreSQL) Database Adapter"
       content_factory=".adapter.PsycopgAdapter"
       arguments="dsn"
