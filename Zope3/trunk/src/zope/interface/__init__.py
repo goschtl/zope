@@ -67,7 +67,7 @@ There is also a script, pyself.py in the package that can be used to
 create interface skeletins. Run it without arguments to get documentation.
 
 Revision information:
-$Id: __init__.py,v 1.7 2003/06/04 22:24:59 jim Exp $
+$Id: __init__.py,v 1.8 2003/06/13 14:52:11 stevea Exp $
 """
 
 from zope.interface.interface import Interface, _wire
@@ -77,11 +77,6 @@ _wire()
 del _wire
 
 from zope.interface.interface import Attribute
-
-import zope.interface.implements
-from zope.interface._callableimplements import hookup
-hookup()
-del hookup
 
 from zope.interface.declarations import providedBy, implementedBy
 from zope.interface.declarations import classImplements, classImplementsOnly
