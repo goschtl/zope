@@ -10,8 +10,18 @@
 
 $Id$
 """
+import os
+
 import Acquisition
+from Globals import INSTANCE_HOME
+
 import monkey
+import zcml
 
 # trigger monkey patches
 monkey.monkeyPatch()
+
+def initialize(context):
+    # load instance site configuration file
+    site_zcml = os.path.join(INSTANCE_HOME, "site.zcml")
+    zcml.process(site_zcml)
