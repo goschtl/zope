@@ -1,3 +1,10 @@
+After CMF 1.4.6
+
+  Bug Fixes
+
+    - Make Document render compliant XHTML when format is 'plain' (thanks to
+      Eric Brown for the patch).
+
 CMF 1.4.6 (2004/07/30)
 
   Bug Fixes
