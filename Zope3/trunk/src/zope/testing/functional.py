@@ -1,8 +1,21 @@
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 """Functional testing framework for Zope 3.
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.4 2003/04/16 15:38:36 fdrake Exp $
+$Id: functional.py,v 1.5 2003/04/25 19:28:41 jeremy Exp $
 """
 
 import logging
