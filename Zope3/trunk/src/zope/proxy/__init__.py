@@ -13,8 +13,10 @@
 ##############################################################################
 """More convenience functions for dealing with proxies.
 
-$Id: __init__.py,v 1.6 2003/05/28 15:49:11 jim Exp $
+$Id: __init__.py,v 1.7 2003/07/01 23:26:38 jim Exp $
 """
+
+from __future__ import generators
 
 from zope.interface import moduleProvides
 from zope.proxy.interfaces import IProxyIntrospection
@@ -59,3 +61,9 @@ def proxy_compatible_isinstance(obj, cls):
         if issubclass(oclass, bclass):
             return True
     return False
+
+def ProxyIterator(p):
+    yield p
+    while isProxy(p):
+        p = getProxiedObject(p)
+        yield p

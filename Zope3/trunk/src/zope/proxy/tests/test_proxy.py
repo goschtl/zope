@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.13 2003/06/07 00:15:03 fdrake Exp $
+$Id: test_proxy.py,v 1.14 2003/07/01 23:26:38 jim Exp $
 """
 import pickle
 import unittest
@@ -380,6 +380,21 @@ def test_getProxiedObject():
     >>> int(getProxiedObject(p2) is p)
     1
 
+    """
+
+def test_ProxyIterator():
+    """
+    >>> from zope.proxy import ProxyBase, ProxyIterator
+    >>> class C:
+    ...     pass
+    >>> c = C()
+    >>> p1 = ProxyBase(c)
+    >>> class P(ProxyBase):
+    ...     pass
+    >>> p2 = P(p1)
+    >>> p3 = ProxyBase(p2)
+    >>> list(ProxyIterator(p3)) == [p3, p2, p1, c]
+    1
     """
 
 def test_removeAllProxies():
