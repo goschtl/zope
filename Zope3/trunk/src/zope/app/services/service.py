@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.29 2003/07/04 10:59:16 ryzaja Exp $
+$Id: service.py,v 1.30 2003/09/21 17:33:00 jim Exp $
 """
 
 import sys
@@ -35,8 +35,6 @@ from zope.interface import implements
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
 
-from zope.context import ContextMethod
-from zope.app.context import ContextWrapper
 from zope.proxy import removeAllProxies
 
 from zope.app.component.nextservice import getNextService
@@ -49,19 +47,27 @@ from zope.app.interfaces.services.service import IServiceManager
 
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
-from zope.app.services.folder import SiteManagementFolders
+from zope.app.services.folder import SiteManagementFolder
 from zope.app.interfaces.services.service import ILocalService
 
 from zope.app.traversing import getPath
+from zope.app.container.contained import Contained
+from zope.app.container.btree import BTreeContainer
 
-class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
+class ServiceManager(BTreeContainer,
+                     PersistentModuleRegistry,
+                     NameComponentRegistry,
+                     ):
 
-    implements(IServiceManager, IContainer)
+    implements(IServiceManager)
 
-    def __init__(self):
+    def __init__(self, site):
+        self.__parent__ = site
+        self.__name__ = '++etc++site'
+        BTreeContainer.__init__(self)
         PersistentModuleRegistry.__init__(self)
         NameComponentRegistry.__init__(self)
-        self.Packages = SiteManagementFolders()
+        self['default'] = SiteManagementFolder()
 
     def getServiceDefinitions(wrapped_self):
         "See IServiceService"
@@ -74,7 +80,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
         else: serviceDefs = {}
 
         return serviceDefs
-    getServiceDefinitions = ContextMethod(getServiceDefinitions)
 
     def queryService(wrapped_self, name, default=None):
         "See IServiceService"
@@ -82,7 +87,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
             return wrapped_self.getService(name)
         except ComponentLookupError:
             return default
-    queryService = ContextMethod(queryService)
 
     def getService(wrapped_self, name):
         "See IServiceService"
@@ -108,7 +112,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
                 wrapped_self._v_calling = 0
 
         return getNextService(wrapped_self, name)
-    getService = ContextMethod(getService)
 
 
     def queryLocalService(wrapped_self, name, default=None):
@@ -137,7 +140,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
 
         return default
 
-    queryLocalService = ContextMethod(queryLocalService)
 
 
     def getInterfaceFor(wrapped_self, service_type):
@@ -147,22 +149,20 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
                 return interface
 
         raise NameError(service_type)
-    getInterfaceFor = ContextMethod(getInterfaceFor)
 
     def queryComponent(self, type=None, filter=None, all=0):
         local = []
         path = getPath(self)
         for pkg_name in self:
-            package = ContextWrapper(self[pkg_name], self, name=pkg_name)
+            package = self[pkg_name]
             for name in package:
                 component = package[name]
                 if type is not None and not type.isImplementedBy(component):
                     continue
                 if filter is not None and not filter(component):
                     continue
-                wrapper =  ContextWrapper(component, package, name=name)
                 local.append({'path': "%s/%s/%s" % (path, pkg_name, name),
-                              'component': wrapper,
+                              'component': component,
                               })
 
         if all:
@@ -173,60 +173,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
             local += list(all)
 
         return local
-
-    queryComponent = ContextMethod(queryComponent)
-
-    # We provide a mapping interface for traversal, but we only expose
-    # local services through the mapping interface.
-
-    def __getitem__(self, key):
-        "See Interface.Common.Mapping.IReadMapping"
-
-        result = self.get(key)
-        if result is None:
-            raise KeyError(key)
-
-        return result
-
-    def get(wrapped_self, key, default=None):
-        "See Interface.Common.Mapping.IReadMapping"
-
-        if key == 'Packages':
-            return wrapped_self.Packages
-
-        return wrapped_self.Packages.get(key, default)
-
-    get = ContextMethod(get)
-
-    def __contains__(self, key):
-        "See Interface.Common.Mapping.IReadMapping"
-
-        return self.get(key) is not None
-
-    def __iter__(self):
-        return iter(self.keys())
-
-    def keys(self):
-        return self.Packages.keys()
-
-    def values(self):
-        return map(self.get, self.keys())
-
-    values = ContextMethod(values)
-
-    def items(self):
-        return [(key, self.get(key)) for key in self.keys()]
-
-    items = ContextMethod(items)
-
-    def __len__(self):
-        return len(self.Packages)
-
-    def setObject(self, name, value):
-        return self.Packages.setObject(name, value)
-
-    def __delitem__(self, key):
-        return self.Packages.__delitem__(key)
 
     def findModule(wrapped_self, name):
         # override to pass call up to next service manager
@@ -244,7 +190,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
             # direct way to ask if sm is the global service manager.
             return None
         return findModule(name)
-    findModule = ContextMethod(findModule)
 
     def __import(wrapped_self, module_name):
 
@@ -255,7 +200,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
                 raise ImportError(module_name)
 
         return mod
-    __import = ContextMethod(__import)
 
 
 class ServiceRegistration(NamedComponentRegistration):
@@ -272,8 +216,8 @@ class ServiceRegistration(NamedComponentRegistration):
         super(ServiceRegistration, self).__init__(name, path)
         if context is not None:
             # Check that the object implements stuff we need
-            wrapped_self = ContextWrapper(self, context)
-            service = wrapped_self.getComponent()
+            self.__parent__ = context
+            service = self.getComponent()
             if not ILocalService.isImplementedBy(service):
                 raise TypeError("service %r doesn't implement ILocalService" %
                                 service)
@@ -283,21 +227,18 @@ class ServiceRegistration(NamedComponentRegistration):
         service_manager = getServiceManager(self)
         return service_manager.getInterfaceFor(self.name)
 
-    getInterface = ContextMethod(getInterface)
 
     def activated(self):
         service = self.getComponent()
         if IBindingAware.isImplementedBy(service):
             service.bound(self.name)
 
-    activated = ContextMethod(activated)
 
     def deactivated(self):
         service = self.getComponent()
         if IBindingAware.isImplementedBy(service):
             service.unbound(self.name)
 
-    deactivated = ContextMethod(deactivated)
 
     def usageSummary(self):
         return self.name + " Service"
