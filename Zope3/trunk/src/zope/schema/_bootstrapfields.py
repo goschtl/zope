@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.17 2003/05/19 20:24:09 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.18 2003/06/13 15:25:45 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -27,10 +27,10 @@ from zope.schema import errornames
 class ValidatedProperty:
 
     def __init__(self, name, check=None):
-        self.__info = name, check
+        self._info = name, check
 
     def __set__(self, inst, value):
-        name, check = self.__info
+        name, check = self._info
         if value is not None:
             if check is not None:
                 check(inst, value)
