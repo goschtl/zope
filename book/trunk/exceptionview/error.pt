@@ -1,0 +1,12 @@
+  <html metal:use-macro="context/@@standard_macros/dialog">
+    <body>
+      <div metal:fill-slot="body">
+
+        <h1>402 - Payment Required</h1>
+  
+        <p>Before you can use this feature of the site, you have to make a
+           payment to Stephan Richter.</p>
+
+      </div>
+    </body>
+  </html>

@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="exceptionview">
+
+  <page 
+      name="index.html"
+      template="error.pt"
+      for=".interfaces.IPaymentException"
+      class=".browser.PaymentExceptionView"
+      permission="zope.Public"
+      />
+
+  <page 
+      name="raiseError.html"
+      for="zope.app.folder.interfaces.IFolder"
+      class=".browser.RaiseExceptionView"
+      attribute="raisePaymentException"
+      permission="zope.View"
+      />
+
+</configure>
