@@ -229,7 +229,7 @@ def detach(args):
     doctored_args.append(MSGFILENM)
     for i in args[1:]:
         doctored_args.append('"%s"' % i)
-    cmd = (("( exec 1> %s 2>&1; " + string.join(doctored_args, " ") +  " &)")
+    cmd = (("( exec 1>>%s 2>&1; " + string.join(doctored_args, " ") +  " &)")
            % OUTPUT_LOG)
     
     if VERBOSE:
@@ -455,8 +455,8 @@ def handle_failures():
     return f.close()
 
 def usage():
-    complain("Usage: %s [options...] ", SCRIPT)
-    complain('"repo-path file,oldv,newv [f2,o2,n2 ...]"\n')
+    complain("Usage: %s [options] ", SCRIPT)
+    complain('"repopath file,oldv,newv [f2,o2,n2 ...]"\n')
     complain("(Note that repo-path and files must be"
              " quoted so they are a single token.)\n")
 
