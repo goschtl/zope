@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.4 2004/03/02 15:50:04 srichter Exp $
+$Id: __init__.py,v 1.5 2004/03/08 23:54:59 tim_one Exp $
 """
 import re
 from persistent import Persistent
@@ -25,9 +25,9 @@ from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-triple_quotes_start = re.compile('^[ \t]*("""|\'\'\')', re.MULTILINE) 
-single_triple_quotes_end = re.compile("'''") 
-double_triple_quotes_end = re.compile('"""') 
+triple_quotes_start = re.compile('^[ \t]*("""|\'\'\')', re.MULTILINE)
+single_triple_quotes_end = re.compile("'''")
+double_triple_quotes_end = re.compile('"""')
 
 class IPythonPage(Interface):
     """Python Page
@@ -101,6 +101,11 @@ class PythonPage(Contained, Persistent):
       ... except SyntaxError, err:
       ...     print err
       invalid syntax (pp, line 1)
+
+      XXX That last one fails on Windows.  The actual error msg there is
+      XXX    invalid syntax (/pp, line 1)
+      XXX The leading slash evidently comes from self.__filename(), but
+      XXX no idea which (there are many) "getPath()" function that's calling.
     """
 
     implements(IPythonPage)
@@ -117,14 +122,14 @@ class PythonPage(Contained, Persistent):
         else:
             filename = zapi.getPath(self)
         return filename
-        
+
     def setSource(self, source):
         r"""Set the source of the page and compile it.
 
         This method can raise a syntax error, if the source is not valid.
         """
         self.__source = source
-        
+
         source = source.encode('utf-8')
         start = 0
         match = triple_quotes_start.search(source, start)
@@ -133,7 +138,7 @@ class PythonPage(Contained, Persistent):
             source = source[:match.end()-3] + 'print u' + \
                      source[match.end()-3:]
             start = match.end() + 7
-            
+
             # Now let's find the end of the quote
             if match.group().endswith('"""'):
                 end = double_triple_quotes_end.search(source, start)
@@ -147,8 +152,8 @@ class PythonPage(Contained, Persistent):
                     'No matching closing quotes found.',
                     (self.__filename(), lineno, offset, match.group()))
 
-            start = end.end()    
-            match = triple_quotes_start.search(source, start)        
+            start = end.end()
+            match = triple_quotes_start.search(source, start)
 
         self.__prepared_source = source
 
@@ -159,7 +164,7 @@ class PythonPage(Contained, Persistent):
     def getSource(self):
         """Get the original source code."""
         return self.__source
-        
+
     # See IPage
     source = property(getSource, setSource)
 
