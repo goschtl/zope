@@ -14,24 +14,28 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.2 2002/06/10 23:28:10 jim Exp $
+$Id: LocalEventService.py,v 1.3 2002/07/18 16:03:17 jeremy Exp $
 """
 
-from Zope.Event.IEventService import IEventService
-from Zope.Event.ISubscriptionAware import ISubscriptionAware
-from Zope.Event.ISubscriber import ISubscriber
-from LocalServiceSubscribable import LocalServiceSubscribable
-from Zope.ComponentArchitecture import getNextService, getAdapter, getService
-from Zope.App.OFS.Services.ServiceManager.IBindingAware import IBindingAware
-from Zope.ContextWrapper import ContextMethod
-from Zope.Proxy.ProxyIntrospection import removeAllProxies
-from Zope.Proxy.ContextWrapper import ContextWrapper
-from PathSubscriber import PathSubscriber
-from Zope.App.Traversing.ITraverser import ITraverser
-from LocalSubscriptionAware import LocalSubscriptionAware
-from Interface.Attribute import Attribute
 from Zope.Event.GlobalEventService import eventService
 from Zope.Event.IEvent import IEvent
+from Zope.Event.IEventService import IEventService
+from Zope.Event.ISubscriber import ISubscriber
+from Zope.Event.ISubscriptionAware import ISubscriptionAware
+
+from Zope.App.OFS.Services.ServiceManager.IBindingAware import IBindingAware
+from Zope.App.Traversing.ITraverser import ITraverser
+from Zope.ComponentArchitecture import getNextService, getAdapter, getService
+from Zope.ContextWrapper import ContextMethod
+from Zope.Exceptions import NotFoundError
+from Zope.Proxy.ContextWrapper import ContextWrapper
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
+
+from PathSubscriber import PathSubscriber
+from LocalSubscriptionAware import LocalSubscriptionAware
+from LocalServiceSubscribable import LocalServiceSubscribable
+
+from Interface.Attribute import Attribute
 
 class ILocalEventService(
     IEventService, ISubscriber, IBindingAware, ISubscriptionAware):
