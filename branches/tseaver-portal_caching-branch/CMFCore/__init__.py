@@ -21,6 +21,7 @@ import DirectoryView, FSImage, FSPropertiesObject
 import FSDTMLMethod, FSPythonScript, FSSTXMethod
 import FSZSQLMethod
 import CookieCrumbler
+import CachingTool
 import ContentTypeRegistry
 import utils
 
@@ -91,6 +92,12 @@ def initialize(context):
     context.registerClass(
         ContentTypeRegistry.ContentTypeRegistry,
         constructors=( ContentTypeRegistry.manage_addRegistry, ),
+        icon = 'images/registry.gif'
+        )
+
+    context.registerClass(
+        CachingTool.CachingTool,
+        constructors=( CachingTool.manage_addCachingTool, ),
         icon = 'images/registry.gif'
         )
 

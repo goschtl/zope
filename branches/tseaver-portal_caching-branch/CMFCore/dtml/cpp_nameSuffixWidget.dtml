@@ -1,0 +1,14 @@
+<dtml-comment>
+   This snippet is designed to be included in a larger method;  it
+   provides input elements for a cache policy predicate which matches
+   the suffix of a skin method name.
+</dtml-comment>
+<strong> Suffix: </strong
+<input type="hidden"
+       name="predicate.id:record"
+       value="&dtml-getId;">
+<input type="text"
+       name="predicate.skin_name_suffix:record"
+       value="&dtml-getSkinNameSuffix;"
+       size="8">
+<em> Tests suffix of skin method name (blank matches nothing). </em>

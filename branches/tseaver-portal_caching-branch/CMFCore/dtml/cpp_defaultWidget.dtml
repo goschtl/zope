@@ -1,0 +1,9 @@
+<dtml-comment>
+   This snippet is designed to be included in a larger method;  it
+   provides input elements for a cache policy predicate which matches
+   the suffix of a skin method name.
+</dtml-comment>
+<input type="hidden"
+       name="predicate.id:record"
+       value="&dtml-getId;">
+<em> Default predicates have no properties. </em>
