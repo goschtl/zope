@@ -14,8 +14,10 @@ PrincipiaHelp    Packages/PrincipiaHelp
 Scheduler        Packages/Scheduler
 StructuredText   Packages/StructuredText
 TreeDisplay      Packages/TreeDisplay
-OFSP -d Products/OFSP Packages/Products/OFSP
-MailHost -d Products/MailHost Packages/Products/MailHost
+
+OFSP           -d Products/OFSP Packages/Products/OFSP
+MailHost       -d Products/MailHost Packages/Products/MailHost
+ExternalMethod -d Products/ExternalMethod Packages/Products/ExternalMethod
 
 z Components/GreyThing \
   &AccessControl &App &BoboPOS2 &DateTime &DocumentTemplate \
