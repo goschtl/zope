@@ -101,4 +101,16 @@ For these main components we coded very simplistic and basic implementations,
 that need a lot of additional refinement.
 
 
+user interface
+
+    another task was to provide a simple user interface to expose the version
+    control infrastructure to the user. At a first starting point we tries to
+    implement a user interface for the existing package (zope.app.versioncontrol)
+    
+    After realising a very basic ui, we had to decide to use the "old"
+    version system or jump to the schema described above. It seemed clear, that
+    the "new" version control infrastructure would be a better match for simple
+    use cases is more flexibel. So the work from "ui department" shifted to new
+    VC
+    
     
