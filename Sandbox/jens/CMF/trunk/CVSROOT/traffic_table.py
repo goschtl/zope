@@ -37,7 +37,6 @@ remote = {'host': "www.zope.org",
           'acct': "anonymous",
           'repodir': "/cvs-repository"}
 
-tmpaddr = ["klm@digicool.com"]
 zopeaddr = ["zope-checkins@zope.org"]
 
 table = [
@@ -75,6 +74,8 @@ table = [
     {'path': "Packages/Products/__init__.py", 'addrs': zopeaddr},
     {'path': "Packages/Products/OFSP", 'addrs': zopeaddr},
     {'path': "Packages/Products/IMAPAdapter", 'addrs': zopeaddr},
+    {'path': "Packages/Products/NotMail", 'addrs': zopeaddr},
+    {'path': "Packages/Products/MMRoster", 'addrs': "klm@digicool.com"},
     {'path': "Packages/Products/MailHost", 'addrs': zopeaddr},
     {'path': "Packages/Products/ExternalMethod", 'addrs': zopeaddr},
     {'path': "Packages/Products/ZSQLMethods", 'addrs': zopeaddr},
