@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_xmlconfig.py,v 1.2 2003/07/30 14:35:13 jim Exp $
+$Id: test_xmlconfig.py,v 1.3 2003/07/30 15:06:50 sidnei Exp $
 """
 
 import unittest
@@ -284,9 +284,9 @@ def clean_text_w_paths(error):
 
 def test_includeOverrides():
     """
-    When we have conflicting directives, we can resolve them if oe of
+    When we have conflicting directives, we can resolve them if one of
     the conflicting directives was from a file that included all of
-    tyhe others.  The problem with this is that this requires that all
+    the others.  The problem with this is that this requires that all
     of the overriding directives be in one file, typically the
     top-most including file. This isn't very convenient.  Fortunately,
     we can overcome this with the includeOverrides directive. Let's

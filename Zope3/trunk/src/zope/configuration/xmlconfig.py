@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.11 2003/07/30 14:35:00 jim Exp $
+$Id: xmlconfig.py,v 1.12 2003/07/30 15:06:48 sidnei Exp $
 """
 
 import errno
@@ -46,7 +46,7 @@ class ZopeXMLConfigurationError(ConfigurationError):
     >>> print v
     'blah'
         AttributeError: xxx
-        
+
     """
 
     def __init__(self, info, etype, evalue):
@@ -64,9 +64,9 @@ class ZopeSAXParseException(ConfigurationError):
     >>> v = ZopeSAXParseException("foo.xml:12:3:Not well formed")
     >>> print v
     File "foo.xml", line 12.3, Not well formed
-    
+
     """
-    
+
     def __init__(self, v):
         self._v = v
 
@@ -109,8 +109,8 @@ class ParserInfo:
              handler="zope.configuration.metaconfigure.hook" />
         </directives>
       </zopeConfigure>
-    
-    
+
+
     """
 
     text = u''
@@ -126,7 +126,7 @@ class ParserInfo:
         if (self.line, self.column) == (self.eline, self.ecolumn):
             return 'File "%s", line %s.%s' % (
                 self.file, self.line, self.column)
-            
+
         return 'File "%s", line %s.%s-%s.%s' % (
             self.file, self.line, self.column, self.eline, self.ecolumn)
 
@@ -140,7 +140,7 @@ class ParserInfo:
             # special case for testing
             file = os.path.join(os.path.split(__file__)[0],
                                 'tests', 'sample.zcml')
-        
+
         try:
             f = open(file)
         except IOError:
@@ -168,8 +168,8 @@ class ParserInfo:
 
     def characters(self, characters):
         self.text += characters
-        
-    
+
+
 class ConfigurationHandler(ContentHandler):
     """Interface toi the cml parser
 
@@ -187,7 +187,7 @@ class ConfigurationHandler(ContentHandler):
         self.context.getInfo().characters(text)
 
     def startElementNS(self, name, qname, attrs):
-        
+
         data = {}
         for (ns, aname), value in attrs.items():
             if ns is None:
@@ -210,7 +210,7 @@ class ConfigurationHandler(ContentHandler):
                 ), sys.exc_info()[2]
 
         self.context.setInfo(info)
-        
+
 
     def endElementNS(self, name, qname):
         info = self.context.getInfo()
@@ -218,7 +218,7 @@ class ConfigurationHandler(ContentHandler):
             self.locator.getLineNumber(),
             self.locator.getColumnNumber(),
             )
-        
+
         try:
             self.context.end()
         except:
@@ -236,7 +236,7 @@ class IZopeConfigure(Interface):
         The package to be used for evaluating relative imports and file names.
         """,
         required=False)
-    
+
     domain = schema.BytesLine(__doc__="""Internationalization domain
 
         This is a name for the software project. It must be a legal file-system
@@ -257,7 +257,7 @@ class ZopeConfigure(config.GroupingContextDecorator):
             # if we have a package, we want to also define basepath
             # so we don't acquire one
             self.basepath = os.path.split(self.package.__file__)[0]
-            
+
 
 def _register_configure(context):
 
@@ -277,7 +277,7 @@ def _register_configure(context):
         schema=IZopeConfigure,
         handler=ZopeConfigure,
         )
-    
+
 
 def processxmlfile(file, context, testing=0):
     """Process a configuration file
@@ -323,7 +323,7 @@ def openInOrPlain(filename):
     >>> f = openInOrPlain(path)
     >>> f.name[-11:]
     'foo.zcml.in'
-    
+
     """
     try:
         fp = open(filename)
@@ -345,7 +345,7 @@ class IInclude(Interface):
         The name of a configuration file to be included,
         relative to the directive containing the
         including configuration file.
-        
+
         """,
         default="configure.zcml",
         )
@@ -363,12 +363,12 @@ class IInclude(Interface):
 
 def include(_context, file, package=None):
     """Include a zcml file
-    
+
     See examples in tests/text_xmlconfig.py
     """
-    
+
     logger.debug("include %s" % file)
-        
+
     # This is a tad tricky. We want to behave a a grouping directive.
     context = config.GroupingContextDecorator(_context)
     if package is not None:
@@ -376,11 +376,11 @@ def include(_context, file, package=None):
         context.basepath = None
     path = context.path(file)
     f = openInOrPlain(path)
-    
+
     logger.debug("include %s" % f.name)
 
     context.basepath = os.path.split(path)[0]
-    context.includepath = _context.includepath + (f.name, ) 
+    context.includepath = _context.includepath + (f.name, )
     _context.stack.append(config.GroupingStackItem(context))
 
     processxmlfile(f, context)
@@ -426,7 +426,7 @@ def _registerIncludes(context):
         context, "include", IInclude, include, namespace="*")
     config.defineSimpleDirective(
         context, "includeOverrides", IInclude, includeOverrides, namespace="*")
-    
+
     _register_configure(context)
 
 def file(name, package=None, context=None, execute=True):
@@ -437,11 +437,11 @@ def file(name, package=None, context=None, execute=True):
         context = config.ConfigurationMachine()
         _registerIncludes(context)
         context.package = package
-        
+
     include(context, name, package)
     if execute:
         context.execute_actions()
-        
+
     return context
 
 def string(s, context=None, name="test.string", execute=True):
@@ -452,14 +452,14 @@ def string(s, context=None, name="test.string", execute=True):
     if context is None:
         context = config.ConfigurationMachine()
         _registerIncludes(context)
-        
+
     f = StringIO(s)
     f.name = name
     processxmlfile(f, context)
 
     if execute:
         context.execute_actions()
-        
+
     return context
 
 
@@ -472,7 +472,7 @@ def _clearContext():
     global _context
     _context = config.ConfigurationMachine()
     _registerIncludes(_context)
-    
+
 def _getContext():
     global _context
     if _context is None:
@@ -484,7 +484,7 @@ def _getContext():
 class XMLConfig:
     """Provide high-level handling of configuration files.
 
-    See examples in tests/text_xmlconfig.py    
+    See examples in tests/text_xmlconfig.py
     """
 
     def __init__(self, file_name, module=None):

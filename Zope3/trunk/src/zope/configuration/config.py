@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.5 2003/07/30 14:34:54 jim Exp $
+$Id: config.py,v 1.6 2003/07/30 15:06:47 sidnei Exp $
 """
 
 from keyword import iskeyword
@@ -82,7 +82,7 @@ class ConfigurationContext(object):
 
     For brevity, trailing items after the callable in the tuples are
     ommitted if they are empty.
-    
+
     """
 
     def resolve(self, dottedname):
@@ -113,16 +113,16 @@ class ConfigurationContext(object):
         >>> c.resolve('..interface') is zope.interface
         1
         """
-        
+
         name = dottedname.strip()
         if not name:
             raise ValueError("The given name is blank")
-        
+
         names = name.split('.')
         if not names[-1]:
             raise ValueError(
                 "Trailing dots are no longer supported in dotted names")
-        
+
         if not names[0]:
             # Got a relative name. Conver it to abs using package info
             if self.package is None:
@@ -152,7 +152,7 @@ class ConfigurationContext(object):
             # Just got a single name. Must me a module
             mname = oname
             oname = ''
-        
+
         try:
             mod = __import__(mname, *_import_chickens)
         except ImportError, v:
@@ -163,7 +163,7 @@ class ConfigurationContext(object):
         if not oname:
             # see not mname case above
             return mod
-        
+
 
         try:
             return getattr(mod, oname)
@@ -174,11 +174,11 @@ class ConfigurationContext(object):
             except ImportError:
                 raise ConfigurationError("Module %s has no global %s"
                                          % (mname, oname))
-            
+
     def path(self, filename):
         """
         Examples:
-        
+
         >>> c = ConfigurationContext()
         >>> c.path("/x/y/z") == os.path.normpath("/x/y/z")
         1
@@ -255,7 +255,7 @@ class ConfigurationContext(object):
         >>> c.action(None)
         >>> c.actions[-1]
         (None, None, (), {}, ('foo.zcml',), '?')
-        
+
         """
         action = (discriminator, callable, args, kw,
                   getattr(self, 'includepath', ()),
@@ -265,7 +265,7 @@ class ConfigurationContext(object):
         # remove trailing false items
         while (len(action) > 2) and not action[-1]:
             action = action[:-1]
-                  
+
         self.actions.append(action)
 
 class ConfigurationAdapterRegistry(object):
@@ -278,7 +278,7 @@ class ConfigurationAdapterRegistry(object):
     ...
     ConfigurationError: ('Unknown directive', 'http://www.zope.com', 'xxx')
     >>> from zope.configuration.interfaces import IConfigurationContext
-    >>> def f(): 
+    >>> def f():
     ...     pass
 
     >>> r.register(IConfigurationContext, ('http://www.zope.com', 'xxx'), f)
@@ -295,7 +295,7 @@ class ConfigurationAdapterRegistry(object):
 
 
     def __init__(self):
-        self._registry = {} 
+        self._registry = {}
 
     def register(self, interface, name, factory):
         r = self._registry.get(name)
@@ -313,13 +313,13 @@ class ConfigurationAdapterRegistry(object):
             r = self._registry.get(n)
             if r is None:
                 raise ConfigurationError("Unknown directive", ns, n)
-            
+
         f = r.getForObject(context, Interface)
         if f is None:
             raise ConfigurationError(
                 "The directive %s cannot ne used in this context" % (name, ))
         return f
-  
+
 class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
     """Configuration machine
 
@@ -351,13 +351,13 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
     basepath = None
     includepath = ()
     info = ''
-    
+
 
     def __init__(self):
         ConfigurationAdapterRegistry.__init__(self)
         self.actions = []
         self.stack = [RootStackItem(self)]
-        self.i18n_strings = {} 
+        self.i18n_strings = {}
         _bootstrap(self)
 
     def begin(self, __name, __data=None, __info=None, **kw):
@@ -425,11 +425,11 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
 
 
         Note that actions executed before the error still have an effect:
-        
+
         >>> output
         [('f', (1,), {}), ('f', (2,), {})]
-        
-        
+
+
         """
         for action in resolveConflicts(self.actions):
             (discriminator, callable, args, kw, includepath, info
@@ -448,7 +448,7 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
 
         if clear:
             del self.actions[:]
-            
+
 
 class ConfigurationExecutionError(ConfigurationError):
     """An error occurred during execution of a configuration action
@@ -468,7 +468,7 @@ class IStackItem(Interface):
 
     Stack items are created when a directive if being processed.
 
-    A stack item is created for each directive use.  
+    A stack item is created for each directive use.
     """
 
     def contained(name, data, info):
@@ -530,10 +530,10 @@ class RootStackItem(object):
 
     def contained(self, name, data, info):
         """Handle a contained directive
-        
+
         We have to compute a new stack item by getting a named adapter
         for the current context object.
-        
+
         """
         factory = self.context.factory(self.context, name)
         if factory is None:
@@ -564,7 +564,7 @@ class GroupingStackItem(RootStackItem):
 
     We need a callable to use in configuration actions.  We'll use a
     convenient one from the tests:
-    
+
     >>> from zope.configuration.tests.directives import f
 
     We need a handler for the grouping directive. This is a class
@@ -589,7 +589,7 @@ class GroupingStackItem(RootStackItem):
     Note that the keyword arguments are made attributes of the
     decorator.
 
-    Now we'll create the stack item.  
+    Now we'll create the stack item.
 
     >>> item = GroupingStackItem(dec)
 
@@ -618,7 +618,7 @@ class GroupingStackItem(RootStackItem):
 
     >>> item.contained((testns, 'simple'), {'z': 'zope'}, "someinfo")
     'someinfo'
-    
+
     we can verify thet the simple method was called by looking at the
     context actions:
 
@@ -640,7 +640,7 @@ class GroupingStackItem(RootStackItem):
 
 
     """
-    
+
     implements(IStackItem)
 
     def __init__(self, context):
@@ -674,12 +674,12 @@ class ComplexStackItem(object):
 
     We need a callable to use in configuration actions.  We'll use a
     convenient one from the tests:
-    
+
     >>> from zope.configuration.tests.directives import f
 
     We need a handler for the complex directive. This is a class
     with a method for each subdirective:
-    
+
     >>> class Handler:
     ...   def __init__(self, context, x, y):
     ...      self.context, self.x, self.y = context, x, y
@@ -734,7 +734,7 @@ class ComplexStackItem(object):
     The new stack item returned by contained is one that doesn't allow
     any more subdirectives,
 
-    When all of the subdirectives have been provided, the ``finish`` 
+    When all of the subdirectives have been provided, the ``finish``
     method is called:
 
     >>> item.finish()
@@ -745,8 +745,8 @@ class ComplexStackItem(object):
     [('init', f, (), {}, (), 'foo'),
      (('sub', u'av', u'bv'), f, (), {}, (), 'baz'),
      (('call', u'xv', u'yv'), f, (), {}, (), 'foo')]
-    
-    
+
+
     """
 
 
@@ -806,13 +806,13 @@ class GroupingContextDecorator(ConfigurationContext):
     """
 
     implements(IConfigurationContext)
-    
+
     def __init__(self, context, **kw):
         self.context = context
         for name, v in kw.items():
             setattr(self, name, v)
 
-        directlyProvides(self) 
+        directlyProvides(self)
 
     def __getattr__(self, name,
                     getattr=getattr, setattr=setattr):
@@ -826,7 +826,7 @@ class GroupingContextDecorator(ConfigurationContext):
 
     def after(self):
         pass
-    
+
 ##############################################################################
 # Directive-definition
 
@@ -857,7 +857,7 @@ class DirectivesHandler(GroupingContextDecorator):
 
     This is just a grouping directive that adds a namespace attribute
     to the normal directive context.
-    
+
     """
     implements(IDirectivesContext)
 
@@ -935,7 +935,7 @@ def defineSimpleDirective(context, name, schema, handler,
     >>> context.actions
     [(('s', u'vx', u'vy'), f)]
 
-    """ 
+    """
 
     namespace = namespace or context.namespace
     if namespace != '*':
@@ -966,7 +966,7 @@ def defineGroupingDirective(context, name, schema, handler,
     just use GroupingContextDecorator, which simple sets up a grouping
     context that has extra attributes defined by a schema:
 
-    >>> defineGroupingDirective(context, 'g', Ixy, 
+    >>> defineGroupingDirective(context, 'g', Ixy,
     ...                         GroupingContextDecorator, testns)
 
     >>> context.begin((testns, "g"), x=u"vx", y=u"vy")
@@ -981,7 +981,7 @@ def defineGroupingDirective(context, name, schema, handler,
     ConfigurationError: ('Unknown directive', 'http://www.zope.com/t1', 'g')
 
     >>> context = ConfigurationMachine()
-    >>> defineGroupingDirective(context, 'g', Ixy, 
+    >>> defineGroupingDirective(context, 'g', Ixy,
     ...                         GroupingContextDecorator, "*")
 
     >>> context.begin(('http://www.zope.com/t1', "g"), x=u"vx", y=u"vy")
@@ -989,7 +989,7 @@ def defineGroupingDirective(context, name, schema, handler,
     u'vx'
     >>> context.stack[-1].context.y
     u'vy'
-    
+
     """
 
     namespace = namespace or context.namespace
@@ -1003,7 +1003,7 @@ def defineGroupingDirective(context, name, schema, handler,
         return GroupingStackItem(newcontext)
 
     context.register(usedIn, name, factory)
-    
+
 
 class IComplexDirectiveContext(IFullInfo, IConfigurationContext):
     pass
@@ -1090,10 +1090,10 @@ def toargs(context, schema, data):
      'n': u'bob',
      'u': 'http://www.zope.org',
      'x': 'x.y.z'}
-    
+
 
     If we ommit required data we get an error telling us what was omitted:
-    
+
     >>> pprint(toargs(context, schema,
     ...        {'in': u'1', 'f': u'1.2', 'n': u'bob', 'x': u'x.y.z'}))
     Traceback (most recent call last):
@@ -1113,7 +1113,7 @@ def toargs(context, schema, data):
 
     And we can ommit required fields if they have valid defaults
     (defaults that are valid values):
-    
+
 
     >>> pprint(toargs(context, schema,
     ...        {'in': u'1', 'f': u'1.2',
@@ -1125,7 +1125,7 @@ def toargs(context, schema, data):
      'u': 'http://www.zope.org'}
 
     We also get an error if any data was invalid:
-    
+
     >>> pprint(toargs(context, schema,
     ...        {'in': u'0', 'f': u'1.2', 'n': u'bob', 'x': u'x.y.z',
     ...          'u': u'http://www.zope.org', 'a': u'1'}))
@@ -1161,7 +1161,7 @@ def toargs(context, schema, data):
             except zope.schema.ValidationError:
                 raise ConfigurationError("Missing parameter:", n)
             args[str(name)] = default
-          
+
     if data:
         # we had data left over
         try:
@@ -1230,7 +1230,7 @@ def resolveConflicts(actions):
       For: 1
         eek
         ack
-     
+
     """
 
     # organize actions by discriminators
@@ -1248,7 +1248,7 @@ def resolveConflicts(actions):
                 )
             continue
 
-        
+
         a = unique.setdefault(discriminator, [])
         a.append(
             (includepath, i, callable, args, kw, info)
@@ -1274,7 +1274,7 @@ def resolveConflicts(actions):
                 if discriminator not in conflicts:
                     conflicts[discriminator] = [baseinfo]
                 conflicts[discriminator].append(info)
-            
+
 
     if conflicts:
         raise ConfigurationConflictError(conflicts)
@@ -1287,7 +1287,7 @@ def resolveConflicts(actions):
         while len(action) > 2 and not action[-1]:
             action = action[:-1]
         r.append(action)
-        
+
     return r
 
 class ConfigurationConflictError(ConfigurationError):
@@ -1342,7 +1342,7 @@ def _bootstrap(context):
             handler="zope.configuration.config.DirectivesHandler",
             schema="zope.configuration.config.IDirectivesInfo"
             )
-    
+
     # directive and groupingDirective inside directives
     context((metans, 'directive'),
             name='directive',
@@ -1358,7 +1358,7 @@ def _bootstrap(context):
             handler="zope.configuration.config.defineGroupingDirective",
             schema="zope.configuration.config.IFullInfo"
             )
-                          
+
     # Setup complex directive directive, both standalone, and in
     # directives directive
     context((metans, 'groupingDirective'),
