@@ -13,9 +13,9 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.12 2004/03/08 12:06:25 srichter Exp $
+$Id: xmlimportexport.py,v 1.13 2004/04/16 11:51:55 srichter Exp $
 """
-from xml.sax import parse
+from xml.sax import parseString
 from xml.sax.handler import ContentHandler
 
 from zope.configuration.name import resolve
@@ -52,6 +52,7 @@ class XMLFormatChecker(ContentHandler):
 
 
 class XMLStatefulImporter(ContentHandler):
+
     def __init__(self, context, encoding='latin-1'):
         self.context = context
         self.encoding = encoding
@@ -136,19 +137,22 @@ class XMLStatefulImporter(ContentHandler):
 
 class XMLImportHandler(object):
     implements(IProcessDefinitionImportHandler)
+    
+    def __init__(self, context):
+        self.context = context
 
-    # XXX Implementation needs more work !!
-    # check if xml-data can be imported and represents a StatefulPD
-    def canImport(self, context, data):
+    def canImport(self, data):
+        # XXX Implementation needs more work !!
+        # check if xml-data can be imported and represents a StatefulPD
         checker = XMLFormatChecker()
-        parse(data, checker)
-        return (bool(IStatefulProcessDefinition.providedBy(context)) 
+        parseString(data, checker)
+        return (bool(IStatefulProcessDefinition.providedBy(self.context)) 
                 and checker.isValid())
 
-    def doImport(self, context, data):
-        # XXX Manually clean ProcessDefinition ??
-        context.clear()
-        parse(data, XMLStatefulImporter(context))
+    def doImport(self, data):
+        # Clear the process definition
+        self.context.clear()
+        parseString(data, XMLStatefulImporter(self.context))
 
 
 class XMLExportHandler(object):
@@ -156,15 +160,14 @@ class XMLExportHandler(object):
 
     template = ViewPageTemplateFile('xmlexport_template.pt')
 
-    def doExport(self, context, process_definition):
-        # XXX Not really nice to fake a BrowserView here ....
-        self.request = None
-        self.process_definition = process_definition
-        self.context = context
-        return self.template()
+    def __init__(self, context):
+        self.context = context    
 
-    def getDefinition(self):
-        return self.process_definition
+    def doExport(self):
+        # Unfortunately, the template expects its parent to have an attribute
+        # called request.
+        self.request = None
+        return self.template()
 
     def getDublinCore(self, obj):
         return IZopeDublinCore(obj)
@@ -180,7 +183,7 @@ class XMLExportHandler(object):
 
     def getSchemaPermissions(self):
         info = []
-        perms = self.getDefinition().schemaPermissions
+        perms = self.context.schemaPermissions
         for field, (getPerm, setPerm) in perms.items():
             info.append({'fieldName': field,
                          'type': 'get',
@@ -191,7 +194,7 @@ class XMLExportHandler(object):
         return info
 
     def relevantDataSchema(self):
-        schema = self.getDefinition().relevantDataSchema
+        schema = self.context.relevantDataSchema
         if schema is None:
             return 'None'
         return schema.__module__ + '.' + schema.getName()
