@@ -132,8 +132,12 @@ Views in Five
 
 This section will give a brief introduction on how to use the five
 view system. ``demo/FiveViewsDemo`` is a demo Product you can install
-and examine that has all the presented here tied together, please consult
-it for more details.
+and examine that has all the presented here tied together, please
+consult it for more details. ``tests/products/FiveTest`` actually
+contains a more detailed set of test views, trying a number of
+features. Finally, read up on the way Zope 3 does it. While Five is a
+subset of Zope 3 functionality and has been adapted to work with Zope
+2, much of Zope 3's documentation still works.
 
 Five enables you to create views for your own objects, or even built-in
 Zope objects, as long as two things are the case:
@@ -225,12 +229,20 @@ Zope 2 mechanisms such as ``PageTemplateFile``.
 
 Finally, we need to hook up the pages through ZCML::
 
-  <five:page 
+  <browser:page 
     for=".interfaces.IFolder"
     class=".browser.SimpleFolderView"
     attribute="eagle"
     name="eagle.txt"
+    permission="zope.ViewManagementScreens"
     />
+
+``browser`` in this refers to the XML namespace of Zope 3 for browser
+related things; it's
+``http://namespace.zope.org/browser``. ``permission`` declares the
+Zope 2 permission needs in order to access this view. The file
+``permissions.zcml`` in Five contains a mapping of Zope 2 permissions
+to their Zope 3 names.
 
 Interfaces in Zope 2 versus Zope 3
 ----------------------------------
