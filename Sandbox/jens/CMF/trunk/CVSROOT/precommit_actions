@@ -14,9 +14,3 @@ REPOSITORY="$1"; shift
 FILES="$@"
 
 #echo script: $SCRIPT repo: $REPOSITORY files: $FILES
-
-pwd
-set -x
-ls -l $FILES
-/bin/chmod g+w $FILES
-ls -l $FILES
