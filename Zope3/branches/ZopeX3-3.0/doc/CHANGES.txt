@@ -12,8 +12,11 @@ Zope Changes
 
     Bug fixes
 
-    - utilities/runurl.py hadn't been updated to relect recent changes
-      in the debugging support.
+      - A monkey patch to cope with weakref problems in Python 2.3.3
+        was removed, so Python 2.3.4 is required now.
+
+      - utilities/runurl.py hadn't been updated to relect recent
+        changes in the debugging support.
 
     Restructuring
 
