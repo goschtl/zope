@@ -13,7 +13,7 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.5 2003/01/10 18:46:26 stevea Exp $
+$Id: field.py,v 1.6 2003/01/17 16:32:18 stevea Exp $
 """
 __metaclass__ = type
 
@@ -66,7 +66,7 @@ class ComponentLocation(Field):
 
 
 def locateComponent(location, context, interface=None):
-    '''Located a component by traversal, or by a dotted module name.
+    '''Locate a component by traversal, or by a dotted module name.
 
     If 'interface' is given, check that the located componenent implements
     the given interface.
