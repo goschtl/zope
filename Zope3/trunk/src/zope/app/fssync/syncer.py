@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.27 2003/07/25 20:18:53 fdrake Exp $
+$Id: syncer.py,v 1.28 2003/08/04 21:37:28 fdrake Exp $
 """
 
 import os
@@ -121,13 +121,9 @@ def toFS(ob, name, location):
 
     # Handle data
     if IObjectFile.isImplementedBy(adapter):
-        assert not IObjectDirectory.isImplementedBy(adapter)
         # File
-        data = ''
-        # XXX shouldn't need this if
-        if not os.path.exists(path):
-            data = adapter.getBody()
-            writeFile(data, path)
+        assert not IObjectDirectory.isImplementedBy(adapter)
+        writeFile(adapter.getBody(), path)
     else:
         # Directory
         assert IObjectDirectory.isImplementedBy(adapter)
