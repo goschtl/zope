@@ -177,4 +177,8 @@ add_multipath(("Zope2/lib/Components/ExtensionClass",
               ("zodb-checkins@zope.org",),
               None)
 
+add_to_table({'path': "Packages/bsddb3Storage",
+              'addrs': ("zodb-checkins@zope.org",),
+              'remote': public_remote})
+
 init_table()
