@@ -13,7 +13,7 @@
 ##############################################################################
 """Basic File interfaces.
 
-$Id: file.py,v 1.5 2003/09/16 22:00:55 srichter Exp $
+$Id: file.py,v 1.6 2004/02/04 19:17:36 jim Exp $
 """
 import zope.schema
 from zope.interface import Interface
@@ -31,6 +31,8 @@ class IReadFile(Interface):
     data = zope.schema.Bytes(
         title = _(u'Data'),
         description = _(u'The actual content of the object.'),
+        default='',
+        required=False,
         )
 
     def getData():
