@@ -19,7 +19,6 @@ OnlineHelp in which all basic Zope-core help screens are registered.
 $Id$
 """
 import os
-#import os.path
 
 import zope.app
 from zope.app import zapi
@@ -93,9 +92,11 @@ class OnlineHelpTopic(SampleContainer):
 
         self.type = 'zope.source.plaintext'
         
-        if file_ext == ('rst' or 'rest') :
+        if file_ext in ('rst', 'rest') :
             self.type = 'zope.source.rest'
         elif file_ext == 'stx':
+            self.type = 'zope.source.stx'
+        elif file_ext in ('html', 'htm'):
             self.type = 'zope.source.stx'
         
         self.source = open(self.path).read()
