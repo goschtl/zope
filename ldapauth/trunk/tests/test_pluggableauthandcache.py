@@ -18,6 +18,7 @@ $Id$
 
 import sys
 from unittest import TestCase, TestSuite, makeSuite, main
+import base64
 
 # FakeLDAP taken from LDAPUserFolder of Jens Vagelpohl
 import FakeLDAP
@@ -41,11 +42,31 @@ from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.cache.caching import getCacheForObject
 
+from zope.app.security.interfaces import IPrincipal, ILoginPassword
+from zope.app.security.basicauthadapter import BasicAuthAdapter
+
+from zope.app.pluggableauth.interfaces import IPrincipalSource
 from zope.app.pluggableauth import PluggableAuthenticationService, \
         SimplePrincipal
+from zope.app.pluggableauth.browser.authentication import \
+    PrincipalAuthenticationView
+
+from zope.publisher.interfaces.http import IHTTPCredentials
+from zope.publisher.browser import TestRequest as Request
 
 from ldapauth.source import LDAPPrincipalSource
 from zope.exceptions import NotFoundError
+
+def stubRequest(login=None, password=None):
+    if login is None:
+        return Request()
+    if password is None:
+        password = ''
+    dict = {
+        'HTTP_AUTHORIZATION':
+            "Basic %s" % base64.encodestring('%s:%s' % (login, password))
+            }
+    return Request(**dict)
 
 # Cachin test idea shamefully taken from
 # zope.app.sqlscript.tests.test_sqlscript
@@ -77,6 +98,9 @@ class PluggableAuthAndCacheTest(placefulsetup.PlacefulSetup, TestCase):
 
         sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
 
+        ztapi.provideAdapter(IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
+        ztapi.browserView(IPrincipalSource, "login",
+                          PrincipalAuthenticationView)
         ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
                 AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, ICacheable, AnnotationCacheable)
@@ -125,7 +149,16 @@ class PluggableAuthAndCacheTest(placefulsetup.PlacefulSetup, TestCase):
         self.assertEquals(len(list(self._auth.getPrincipals('ta'))), 1)
 
     def test_authServiceAuthenticate(self):
-        pass
+        auth = self._auth
+        source = self._source
+        source_toto = source.getPrincipal('\t\ttoto_l')
+        auth_toto = auth.getPrincipal(source_toto.id)
+        self.assertEquals(
+                auth.authenticate(stubRequest('toto_l', 'toto_p')).login,
+                'toto_l')
+        self.failIf(auth.authenticate(stubRequest()))
+        self.failIf(auth.authenticate(stubRequest('toto_l')))
+        self.failIf(auth.authenticate(stubRequest('toto_l', 'tata')))
 
     def test_cache(self):
         auth = self._auth
