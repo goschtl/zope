@@ -45,11 +45,18 @@
 
   <browser:addform
       label="Add Python Page"
-      name="AddPythonPage"
+      name="AddPythonPage.html"
       schema=".IPythonPage"
       content_factory=".PythonPage"
       permission="zope.ManageContent"
-      menu="add_content" title="Python Page"
+      />
+
+  <browser:addMenuItem
+      class=".PythonPage"
+      title="Python Page"
+      description="An Python Page"
+      permission="zope.ManageContent"
+      view="AddPythonPage.html"
       />
 
   <browser:editform

@@ -226,13 +226,20 @@
   <!-- Directives to test the Content Component Instance -->
   <addform
       label="New Content Component Instance"
-      name="AddDirectContentComponent"
+      name="AddContentComponentInstance.html"
       schema="zope.app.interfaces.utilities.content.IContentComponentInstance"
       permission="zope.ManageContent"
       content_factory="zope.app.utilities.content.ContentComponentInstance"
       arguments="__name__ __schema__"
-      fields="__name__ __schema__"
-      menu="add_content" title="Schema-based Content"/>
+      fields="__name__ __schema__" />
+
+  <addMenuItem
+      class="zope.app.utilities.content.ContentComponentInstance"
+      title="Schema-based Content"
+      description="Schema-based Content Component Instance"
+      permission="zope.ManageContent"
+      view="AddContentComponentInstance.html"
+      />
 
   <zope:adapter
       factory=".traversal.SchemaFieldTraversable"
