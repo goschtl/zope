@@ -1,4 +1,3 @@
-
 ##############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
@@ -16,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testZopeContainerAdpter.py,v 1.2 2002/11/18 23:52:59 jim Exp $
+$Id: testZopeContainerAdpter.py,v 1.3 2002/11/19 19:10:06 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -40,16 +39,15 @@ class H:
     def manage_afterAdd(self, object, container):
         self.notified += 1
 
-class Test(PlacelessSetup, BaseTestIZopeItemContainer, \
-           BaseTestIZopeSimpleReadContainer, \
-           BaseTestIZopeReadContainer, BaseTestIZopeWriteContainer,\
+class Test(PlacelessSetup,
+           BaseTestIZopeSimpleReadContainer,
+           BaseTestIZopeReadContainer,
+           BaseTestIZopeWriteContainer,
            TestCase):
-
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        from Zope.App.OFS.Container.SampleContainer \
-            import SampleContainer
+        from Zope.App.OFS.Container.SampleContainer import SampleContainer
         self.__container = SampleContainer()
         
     def _sampleMapping(self):

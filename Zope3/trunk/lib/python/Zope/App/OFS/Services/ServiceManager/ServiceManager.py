@@ -17,9 +17,8 @@ In addition, a ServiceManager acts as a registry for persistent
 modules.  The Zope import hook uses the ServiceManager to search for
 modules.
 
-$Id: ServiceManager.py,v 1.8 2002/10/02 22:15:28 jeremy Exp $
+$Id: ServiceManager.py,v 1.9 2002/11/19 19:10:07 gvanrossum Exp $
 """
-from Persistence import Persistent
 
 from Zope.Exceptions import NotFoundError, ZopeError
 
@@ -46,8 +45,7 @@ from IServiceManager import IServiceManager
 
 from Persistence.Module import PersistentModuleRegistry
 
-class ServiceManager(Persistent,
-                     PersistentModuleRegistry):
+class ServiceManager(PersistentModuleRegistry):
 
     __implements__ = (IServiceManager, ISimpleReadContainer,
                       PersistentModuleRegistry.__implements__)
