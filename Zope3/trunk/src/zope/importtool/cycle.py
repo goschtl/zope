@@ -17,6 +17,7 @@ This
 
 $Id$
 """
+from zope.importtool import format
 from zope.importtool import reporter
 
 
@@ -78,3 +79,24 @@ class CycleReporter(reporter.Reporter):
 
     def display_report(self):
         pass
+
+
+class CycleCollector(CycleReporter):
+
+    def __init__(self):
+        CycleReporter.__init__(self)
+        self.cycles = {}
+
+    def report_cycle(self, stack):
+        t = tuple(stack)
+        self.cycles[t] = self.cycles.get(t, 0) + 1
+
+    def display_report(self):
+        if self.cycles:
+            cycles = self.cycles.keys()
+            items = [(cycle[-1], ", ".join(cycle[:-1])) for cycle in cycles]
+            items.sort()
+            format.two_column_report(items)
+        else:
+            print "--------------------"
+            print "No cycles to report."

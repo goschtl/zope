@@ -17,6 +17,7 @@ import optparse
 import os
 import sys
 
+from zope.importtool import format
 from zope.importtool import hook
 from zope.importtool import reporter
 
@@ -74,7 +75,7 @@ class Options:
         if self.reporter is not None:
             raise SystemExit(2)
         from zope.importtool import cycle
-        self.reporter = cycle.CycleReporter()
+        self.reporter = cycle.CycleCollector()
 
 
 class FirstImportReporter(reporter.Reporter):
@@ -96,11 +97,4 @@ class FirstImportReporter(reporter.Reporter):
             print "---------------------"
             print "No imports to report."
         else:
-            left_width = right_width = 0
-            for i, imported, importer in L:
-                left_width = max(left_width, len(imported))
-                right_width = max(right_width, len(importer))
-            width = left_width + 1 + right_width
-            print width * "-"
-            for i, imported, importer in L:
-                print imported.ljust(left_width), importer
+            format.two_column_report([entry[1:] for entry in L])
