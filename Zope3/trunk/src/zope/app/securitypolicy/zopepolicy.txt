@@ -35,7 +35,7 @@ and `groups` attributes:
   >>> principal = Principal('bob')
 
 Roles and permissions are also represented by objects, however, for
-the purposes of the scurity policy, only string `ids` are used.
+the purposes of the security policy, only string `ids` are used.
 
 The security policy provides a factory for creating interactions:
 
@@ -50,7 +50,7 @@ interactions normally occur when untrusted users store code on a
 system for later execution.  When untrusted code is executing, the
 authors of the code participate in the interaction.  An
 interaction has a permission on an object only if all of the
-principals participataing in the interaction have access to the object.
+principals participating in the interaction have access to the object.
 
 The `checkPermission` method on interactions is used to test whether
 an interaction has a permission for an object.  An interaction without
@@ -81,7 +81,7 @@ But CheckerPublic permission id always have a permission:
   >>> interaction.checkPermission(CheckerPublic, ob)
   True
 
-We make grants and denials on objects by adaping them to various
+We make grants and denials on objects by adapting them to various
 granting interfaces.  The objects returned from the adaptation are 
 object-specific manager objects:
 
@@ -220,7 +220,7 @@ We, of course, acquire global grants by default:
   >>> interaction.checkPermission('P3G', ob)
   True
 
-Local role-based grants do not override global prinicipal-specific denials:
+Local role-based grants do not override global principal-specific denials:
 
   >>> roleper.grantPermissionToRole('P1G', 'R1G')
   >>> prinrole.assignRoleToPrincipal('R1G', 'bob')
@@ -410,7 +410,7 @@ it will have whatever grants were made globally:
   >>> interaction.checkPermission('P3G', ob4)
   True
 
-We'll get the same result if we have a non-annotatble parent without a
+We'll get the same result if we have a non-annotatable parent without a
 parent:
 
   >>> ob3.__parent__ = C()
@@ -591,7 +591,7 @@ Principals can be in more than one group. Let's define a new group:
 
 Now, the principal has two groups. In one group, the permission 'gP2'
 is denied, but in the other, it is allowed.  In a case like this, the
-premission is allowed:
+permission is allowed:
 
   >>> interaction.checkPermission('gP2', ob2)
   True

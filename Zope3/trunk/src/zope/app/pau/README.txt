@@ -387,7 +387,7 @@ How challenges work in Zope 3
 -----------------------------
 
 To understand how the challenge plugins work, it's helpful to
-understand how the unauthorized method of authenticaton services 
+understand how the unauthorized method of authentication services 
 get called.
 
 If an 'Unauthorized' exception is raised and not caught by application
@@ -411,7 +411,7 @@ Protocols
 ---------
 
 Sometimes, we want multiple challengers to work together.  For
-example, the HTTP specification allows multiple challenges to be isued
+example, the HTTP specification allows multiple challenges to be issued
 in a response.  A challenge plugin can provide a `protocol`
 attribute.  If multiple challenge plugins have the same protocol,
 then, if any of them are called and return True, then they will all be
@@ -534,7 +534,7 @@ searching:
   view that provides
   `zope.app.form.browser.interfaces.ISourceQueryView`.
 
-PAU uses search plugins in a very simple way.  It mearly implements
+PAU uses search plugins in a very simple way.  It merely implements
 `zope.schema.interfaces.ISourceQueriables`:
 
   >>> [id for (id, queriable) in auth.getQueriables()]
