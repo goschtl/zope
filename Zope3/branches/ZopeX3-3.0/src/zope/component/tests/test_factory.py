@@ -25,6 +25,9 @@ from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
 from placelesssetup import PlacelessSetup
 
+class IFunction(Interface):
+    pass
+
 class IKlass(Interface):
     pass
 
@@ -41,6 +44,7 @@ class TestFactory(unittest.TestCase):
     def setUp(self):
         self._factory = Factory(Klass, 'Klass', 'Klassier')
         self._factory2 = Factory(lambda x: x, 'Func', 'Function')
+        self._factory3 = Factory(lambda x: x, 'Func', 'Function', (IFunction,))
 
     def testCall(self):
         kl = self._factory(3, foo=4)
@@ -48,17 +52,30 @@ class TestFactory(unittest.TestCase):
         self.assertEqual(kl.args, (3, ))
         self.assertEqual(kl.kw, {'foo': 4})
         self.assertEqual(self._factory2(3), 3)
+        self.assertEqual(self._factory3(3), 3)
 
     def testTitleDescription(self):
         self.assertEqual(self._factory.title, 'Klass')
         self.assertEqual(self._factory.description, 'Klassier')
+        self.assertEqual(self._factory2.title, 'Func')
+        self.assertEqual(self._factory2.description, 'Function')
+        self.assertEqual(self._factory3.title, 'Func')
+        self.assertEqual(self._factory3.description, 'Function')
 
     def testGetInterfaces(self):
         implemented = self._factory.getInterfaces()
         self.assert_(implemented.isOrExtends(IKlass))
         self.assertEqual(list(implemented), [IKlass])
+        self.assertEqual(implemented.__name__,
+                         'zope.component.tests.test_factory.Klass')
+
         implemented2 = self._factory2.getInterfaces()
         self.assertEqual(list(implemented2), [])
+        self.assertEqual(implemented2.__name__, '<lambda>')
+
+        implemented3 = self._factory3.getInterfaces()
+        self.assertEqual(list(implemented3), [IFunction])
+        self.assertEqual(implemented3.__name__, '<lambda>')
 
 
 class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):

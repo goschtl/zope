@@ -41,9 +41,6 @@ class IComponentArchitecture(Interface):
         this adapter is returned.
         """
 
-    def getServiceManager(context):
-        """Backwards compatibility for getServices()"""
-
     def getService(name, context=None):
         """Get a named service.
 
@@ -229,7 +226,8 @@ class IComponentArchitecture(Interface):
 
     # Factory service
 
-    # XXX:  Hard to make context a keyword, leaving as it is
+    # TODO: Hard to make context a keyword, leaving as it is. Maybe we should
+    #       at least move it to the second position.
     def createObject(context, name, *args, **kwargs):
         """Create an object using a factory
 
@@ -251,24 +249,6 @@ class IComponentArchitecture(Interface):
     def getFactoriesFor(interface, context=None):
         """Return a tuple (name, factory) of registered factories that
         create objects which implement the given interface.
-        """
-
-    # XXX: This method is deprecated, since factories are utiltities
-    def getFactory(context, name):
-        """Get a factory
-
-        Get the factory of the given name that is nearest to the
-        context.  If a matching factory cannot be found raises
-        ComponentLookupError
-        """
-
-    # XXX: This method is deprecated, since factories are utiltities
-    def queryFactory(context, name, default=None):
-        """Get a factory
-
-        Get the factory of the given name that is nearest to the
-        context.  If a matching factory cannot be found then the
-        default is returned.
         """
 
     # Presentation service

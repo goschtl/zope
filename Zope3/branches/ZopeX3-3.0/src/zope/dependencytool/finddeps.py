@@ -227,7 +227,9 @@ def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None,
                               packages=False):
     """Return a list of all cleaned dependencies in a path."""
     # zope and zope/app are too general to be considered.
-    # XXX why?  dependencies are dependencies.
+    # TODO: why?  dependencies are dependencies.
+    # Because otherwise it would just pick up zope as a dependency, but
+    # nothing else. We need a way to detect packages.
     if path.endswith('src/zope/') or path.endswith('src/zope/app/'):
         return deps
 
@@ -301,7 +303,9 @@ def parse_args(argv):
         elif opt in ('-d', '--dir'):
             cwd = os.getcwd()
             # This is for symlinks. Thanks to Fred for this trick.
-            # XXX wha????
+            # I often sym-link directories from other locations into the Zope
+            # source tree. This code is a bit Unix (or even bash) specific,
+            # but it is better than nothing. If you don't like it, ignore it.
             if os.environ.has_key('PWD'):
                 cwd = os.environ['PWD']
             options.path = os.path.normpath(os.path.join(cwd, arg))

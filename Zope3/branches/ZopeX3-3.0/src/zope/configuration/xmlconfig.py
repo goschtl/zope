@@ -419,15 +419,6 @@ def registerCommonDirectives(context):
     config.defineSimpleDirective(
         context, "includeOverrides", IInclude, includeOverrides, namespace="*")
 
-    # XXX zopeConfigure is deprecated; use configure in new ZCML instead
-    config.defineGroupingDirective(
-        context,
-        name="zopeConfigure",
-        namespace="*",
-        schema=IZopeConfigure,
-        handler=ZopeConfigure,
-        )
-
     config.defineGroupingDirective(
         context,
         name="configure",
