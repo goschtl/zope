@@ -10,9 +10,9 @@ Table of contents
      should you care?
 
      What does a Schema look like 
-     
+
      Where Schemas make sense: Providing views from Schemas 
-     
+
      Issues to be solved 
 
 
@@ -85,11 +85,12 @@ What is a schema, how does it compare to an interface?
                        constraint = re.compile("\d{5,5}(-\d{4,4})?$").match)
 
     'TextLine' is a field and expresses that an attribute is a single line
-    of unicode text.  'Text' expresses an arbitrary unicode ("text") object. 
-    The most interesting part is the last attribute specification. It constrains
-    the 'postalCode' attribute to only have values that are US postal codes.
-      
-    Now we want a class that aheres to the IContact Schema:
+    of unicode text.  'Text' expresses an arbitrary unicode ("text") object.
+    The most interesting part is the last attribute specification. It
+    constrains the 'postalCode' attribute to only have values that are US
+    postal codes.
+
+    Now we want a class that adheres to the IContact Schema:
 
     class Contact(Persistence.Persistent):
         __implements__ = IContact
@@ -108,24 +109,24 @@ What is a schema, how does it compare to an interface?
     someone = contact('Tim','Roberts', 'tim@roberts', '','')
     validateMapping(IContact, someone.__dict__)
 
-     
+
 Issues to be solved
 
-    These issues were written up at Rotterdam Sprint (12/4/2002). 
- 
- I18n 
- 
+    These issues were written up at Rotterdam Sprint (12/4/2002)
+
+ I18n
+
     How i18n interferes with Schemas is not thought out. In an non-english
-    context we probably want to have titles and descriptions easily 
-    translatable.  The best idea so far is to use an attribute name 
-    together with its surrounding namespace (Interface-name etc.) 
-    as the canonical unique id used for looking up translations. 
+    context we probably want to have titles and descriptions easily
+    translatable.  The best idea so far is to use an attribute name
+    together with its surrounding namespace (Interface-name etc.)
+    as the canonical unique id used for looking up translations.
 
     Example:
-  
+
     class book(Interface):
         author = ITextLine()
-     
+
     To get to the And in view, while the widget or widget's messages
     are constructed:
 
@@ -140,9 +141,9 @@ Issues to be solved
 
     Shouldn't the 'implements' function on the interface package be
     named setImplements as opposed to getImplements? This way if you write
-    
+
       setImplements(klass, interface) 
-    
+
     it is obvious what you mean (as opposed to implements(klass, interface)
     which could mean *asking* if the klass implements the interface.
 
@@ -150,11 +151,11 @@ Issues to be solved
 
     Some use cases are not easy to understand.  A lot of them look like 
     features rather than use cases.  The list of schema use cases 
-    needs to be cleaned up and be (sometimes) more detailed.  
+    needs to be cleaned up and be (sometimes) more detailed.
 
 References
 
- Use case list, 
+ Use case list,
    http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/Zope3SchemasUseCases
 
  documented interfaces, Zope/Schema/IField.py 
