@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for zope.app.mail.maildir module
 
-$Id: test_maildir.py,v 1.3 2003/06/30 22:44:38 jeremy Exp $
+$Id: test_maildir.py,v 1.4 2003/07/01 07:17:51 mgedmin Exp $
 """
 
 import unittest
@@ -177,8 +177,8 @@ class TestMaildir(unittest.TestCase):
         self.assertRaises(ValueError, Maildir, '/path/to/regularfile', True)
 
         # Case 4: it is a directory, but not a maildir
-        self.assertRaises(OSError, Maildir, '/path/to/emptydirectory', False)
-        self.assertRaises(OSError, Maildir, '/path/to/emptydirectory', True)
+        self.assertRaises(ValueError, Maildir, '/path/to/emptydirectory', False)
+        self.assertRaises(ValueError, Maildir, '/path/to/emptydirectory', True)
 
     def test_iteration(self):
         from zope.app.mail.maildir import Maildir
