@@ -46,21 +46,33 @@ class MailDataManager(object):
         self.args = args
         self.onAbort = onAbort
 
-    def prepare(self, transaction):
-        pass
-
-    def abort(self, transaction):
-        if self.onAbort:
-            self.onAbort()
-
     def commit(self, transaction):
         self.callable(*self.args)
 
-    def savepoint(self, transaction):
-        return NoSavepointSupportRollback(self)
+    def abort(self, transaction):
+         if self.onAbort:
+            self.onAbort()
 
     def sortKey(self):
         return id(self)
+
+    # No subtransaction support.
+    def abort_sub(self, transaction):
+        pass
+    commit_sub = abort_sub
+
+    def beforeCompletion(self, transaction):
+        pass
+
+    afterCompletion = beforeCompletion
+
+    def tpc_begin(self, transaction, subtransaction=False):
+        assert not subtransaction
+
+    def tpc_vote(self, transaction):
+        pass
+
+    tpc_finish = tpc_abort = tpc_vote
 
 class AbstractMailDelivery(object):
 
