@@ -89,7 +89,7 @@ def fromPath(path):
         # The tag may be overridden for specific files; check:
         entries = os.path.join(cvsdir, "Entries")
         if os.path.isfile(entries):
-            entries = open(entries, "rU")
+            entries = file(entries, "rU")
             for line in entries:
                 parts = line.split("/")
                 if (len(parts) >= 6 and
@@ -115,7 +115,7 @@ def fromPath(path):
 
 
 def _read_one_line(filename):
-    f = open(filename, "rU")
+    f = file(filename, "rU")
     try:
         line = f.readline()
     finally:
@@ -184,6 +184,19 @@ class RepositoryUrl:
         if self.tag:
             url = "%s:%s" % (url, self.tag)
         return url
+
+
+def open(url, mode="r"):
+    if mode[:1] != "r" or "+" in mode:
+        raise ValueError("CVS resources can only be opened in read-only mode")
+    loader = CvsLoader(None)
+    path = loader.load(url)
+    if os.path.isfile(path):
+        return FileProxy(path, mode)
+    # Only files and directories come from CVS, so no need to check
+    # for magical directory entries here:
+    loader.cleanup()
+    raise IOError(errno.EISDIR, "Is a directory", url)
 
 
 class CvsLoader:
@@ -301,3 +314,32 @@ class CvsLoader:
     def openCvsRLog(self, cvsroot, path):
         return os.popen(
             "cvs -f -d '%s' rlog -R -l '%s'" % (cvsroot, path), "r")
+
+
+class FileProxy(object):
+
+    def __init__(self, path, mode, loader):
+        self.name = path
+        self._file = file(path, mode)
+        self._cleanup = loader.cleanup
+
+    def __getattr__(self, name):
+        return getattr(self._file, name)
+
+    def close(self):
+        if not self._file.closed:
+            self._file.close()
+            self._cleanup()
+            self._cleanup = None
+
+    # We shouldn't ever actually need to deal with softspace since
+    # we're read-only, but... real files still behave this way, so we
+    # emulate it.
+
+    def _get_softspace(self):
+        return self._file.softspace
+
+    def _set_softspace(self, value):
+        self._file.softspace = value
+
+    softspace = property(_get_softspace, _set_softspace)
