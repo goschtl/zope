@@ -342,6 +342,23 @@ class FileProxy(object):
 #################################################################
 
 
+def fromPath(path):
+    """Get a revision-control URL from a working copy.
+
+    This can support either CVS or Subversion checkouts.
+
+    :param path: Path to a directory or file checked out from a
+      supported revision-control system.
+    :type path: path
+
+    :return: Parsed URL object, or `None`.
+    """
+    url = cvsloader.fromPath(path)
+    if url is None:
+        url = svnloader.fromPath(path)
+    return url
+
+
 def parse(url):
     """Parse a revision-control URL.
 
@@ -360,6 +377,7 @@ def parse(url):
         return cvsloader.parse(url)
     except ValueError:
         return svnloader.parse(url)
+
 
 def join(base, relurl):
     """Join a base and relative URL.
