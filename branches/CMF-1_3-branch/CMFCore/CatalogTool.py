@@ -260,7 +260,7 @@ class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
         if idxs != []:
             # Filter out invalid indexes.
             valid_indexes = self._catalog.indexes.keys()
-            idxs = [i for i in idxs if i in valid_indexes
+            idxs = [i for i in idxs if i in valid_indexes]
         self.catalog_object(object, url, idxs=idxs)
 
 InitializeClass(CatalogTool)
