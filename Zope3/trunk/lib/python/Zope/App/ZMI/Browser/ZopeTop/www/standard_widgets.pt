@@ -95,10 +95,10 @@
     </tbody>
   </table>
 
-  <table metal:define-macro="actions_box" align="center" class="box" width="150">
+  <table metal:define-macro="views_box" align="center" class="box" width="150">
     <thead>
       <tr> 
-	<th align="center">Actions</th>
+	  <th align="center">Views</th>
 	<th class="empty">&nbsp;</th>
       </tr>
       </thead>

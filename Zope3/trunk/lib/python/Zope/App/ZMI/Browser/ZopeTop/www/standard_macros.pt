@@ -67,7 +67,7 @@
 	    <span metal:use-macro="views/standard_widgets/explorer_box" />
             <img src="spacer3.gif" width="176" height="12"
                  tal:attributes="src context/++resource++spacer3.gif"/> 
-            <span metal:use-macro="views/standard_widgets/actions_box" />
+            <span metal:use-macro="views/standard_widgets/views_box" />
 
             <img src="spacer3.gif" width="176" height="12"
              tal:attributes="src context/++resource++spacer3.gif"/> </td>
