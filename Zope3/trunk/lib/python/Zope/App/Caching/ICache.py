@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ICache.py,v 1.1 2002/10/03 09:41:23 mgedmin Exp $
+$Id: ICache.py,v 1.2 2002/10/03 09:51:29 mgedmin Exp $
 """
 from Interface import Interface
 
@@ -28,7 +28,7 @@ class ICache(Interface):
         None, invalidates all entries for the object.
         """
 
-    def query(ob, view_name="", keywords=None, mtime_func=None, default=None)
+    def query(ob, view_name="", keywords=None, mtime_func=None, default=None):
         """Returns the cached data previously stored by set().
 
         ob is the content object from which the object ID, modification
@@ -42,4 +42,3 @@ class ICache(Interface):
 
     def set(data, ob, view_name="", keywords=None, mtime_func=None):
         """Stores the result of executing an operation."""
-
