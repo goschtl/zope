@@ -83,7 +83,7 @@ table = [
      'remote': None},
 
     {'path': "ZopePTK",
-     'addrs': 'zope-mozilla@zope.org',
+     'addrs': 'zope-ptk@zope.org',
      'remote': None},
 
     {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
