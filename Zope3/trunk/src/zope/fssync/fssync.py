@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.25 2003/05/25 06:10:03 gvanrossum Exp $
+$Id: fssync.py,v 1.26 2003/05/27 13:50:56 gvanrossum Exp $
 """
 
 import os
@@ -157,7 +157,7 @@ class Network(object):
         finally:
             f.close()
 
-    def httpreq(self, path, view, datafp=None,
+    def httpreq(self, path, view, datasource=None,
                 content_type="application/x-snarf"):
         """Issue an HTTP or HTTPS request.
 
@@ -165,12 +165,13 @@ class Network(object):
         that the requested path is constructed by concatenating the
         path and view arguments.
 
-        If the optional 'datafp' argument is not None, it should be a
-        seekable stream from which the input document for the request
-        is taken.  In this case, a POST request is issued, and the
-        content-type header is set to the 'content_type' argument,
-        defaulting to 'application/x-snarf'.  Otherwise (if datafp is
-        None), a GET request is issued and no input document is sent.
+        If the optional 'datasource' argument is not None, it should
+        be a callable with a stream argument which, when called,
+        writes data to the stream.  In this case, a POST request is
+        issued, and the content-type header is set to the
+        'content_type' argument, defaulting to 'application/x-snarf'.
+        Otherwise (if datasource is None), a GET request is issued and
+        no input document is sent.
 
         If the request succeeds and returns a document whose
         content-type is 'application/x-snarf', the return value is a tuple
@@ -195,42 +196,33 @@ class Network(object):
             path += "/"
         path += view
         if self.roottype == "https":
-            h = httplib.HTTPS(self.host_port)
+            conn = httplib.HTTPSConnection(self.host_port)
         else:
-            h = httplib.HTTP(self.host_port)
-        if datafp is None:
-            h.putrequest("GET", path)
-            filesize = 0   # for PyChecker
+            conn = httplib.HTTPConnection(self.host_port)
+        if datasource is None:
+            conn.putrequest("GET", path)
         else:
-            datafp.seek(0, 2)
-            filesize = datafp.tell()
-            datafp.seek(0)
-            h.putrequest("POST", path)
-            h.putheader("Content-type", content_type)
-            h.putheader("Content-length", str(filesize))
+            conn.putrequest("POST", path)
+            conn.putheader("Content-type", content_type)
+            conn.putheader("Transfer-encoding", "chunked")
         if self.user_passwd:
             auth = base64.encodestring(self.user_passwd).strip()
-            h.putheader('Authorization', 'Basic %s' % auth)
-        h.putheader("Host", self.host_port)
-        h.endheaders()
-        if datafp is not None:
-            nbytes = 0
-            while True:
-                buf = datafp.read(8192)
-                if not buf:
-                    break
-                nbytes += len(buf)
-                h.send(buf)
-            assert nbytes == filesize
-        errcode, errmsg, headers = h.getreply()
-        fp = h.getfile()
-        if errcode != 200:
+            conn.putheader('Authorization', 'Basic %s' % auth)
+        conn.putheader("Host", self.host_port)
+        conn.putheader("Connection", "close")
+        conn.endheaders()
+        if datasource is not None:
+            datasource(PretendStream(conn))
+            conn.send("0\r\n\r\n")
+        response = conn.getresponse()
+        if response.status != 200:
             raise Error("HTTP error %s (%s); error document:\n%s",
-                        errcode, errmsg,
-                        self.slurptext(fp, headers))
-        if headers["Content-type"] != "application/x-snarf":
-            raise Error(self.slurptext(fp, headers))
-        return fp, headers
+                        response.status, response.reason,
+                        self.slurptext(response.fp, response.msg))
+        elif response.msg["Content-type"] != "application/x-snarf":
+            raise Error(self.slurptext(response.fp, response.msg))
+        else:
+            return response.fp, response.msg
 
     def slurptext(self, fp, headers):
         """Helper to read the result document.
@@ -251,6 +243,17 @@ class Network(object):
         if ctype.startswith("text/"):
             return data.strip()
         return "Content-type: %s" % ctype
+
+class PretendStream(object):
+
+    """Helper class to turn writes into chunked sends."""
+
+    def __init__(self, conn):
+        self.conn = conn
+
+    def write(self, s):
+        self.conn.send("%x\r\n" % len(s))
+        self.conn.send(s)
 
 class FSSync(object):
 
@@ -306,19 +309,12 @@ class FSSync(object):
         snarffile = tempfile.mktemp(".snf")
         head, tail = split(realpath(target))
         try:
-            f = open(snarffile, "wb")
-            try:
+            view = "@@fromFS.snarf?note=%s" % urllib.quote(note)
+            def datasource(f):
                 snf = Snarfer(f)
                 snf.add(join(head, tail), tail)
                 snf.addtree(join(head, "@@Zope"), "@@Zope/")
-            finally:
-                f.close()
-            infp = open(snarffile, "rb")
-            view = "@@fromFS.snarf?note=%s" % urllib.quote(note)
-            try:
-                outfp, headers = self.network.httpreq(path, view, infp)
-            finally:
-                infp.close()
+            outfp, headers = self.network.httpreq(path, view, datasource)
         finally:
             pass
             if isfile(snarffile):
