@@ -11,20 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Dependable Framework.
+
 $Id$
 """
-
-__metaclass__ = type
-
 from interfaces import IDependable
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.traversing.api import getParent, canonicalPath, getPath
 from zope.interface import implements
 
 
-class PathSetAnnotation:
-
+class PathSetAnnotation(object):
     """Abstract base class for annotations that are sets of paths.
 
     To make this into a concrete class, a subclass must set the class
