@@ -30,6 +30,17 @@
        </span>
     </form>
 
+    <form method="GET">
+        <input type="text" name="queryText" value=""
+               tal:attributes="value request/queryText|nothing" />
+        <input type="submit" value="Query" name="callQuery" />
+    </form>
+
+    <div tal:condition="request/queryText|nothing" tal:omit-tag="">
+        Search results:
+        <span tal:replace="python:context.query(request['queryText'])[1]" />
+    </div>
+
   </body>
 
 </html>
