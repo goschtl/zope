@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for packages.
 
-$Id: folder.py,v 1.1 2003/03/23 16:45:44 jim Exp $
+$Id: folder.py,v 1.2 2003/03/23 17:13:42 jim Exp $
 """
 
 from zope.app.interfaces.container import IAdding, IContainer
@@ -29,6 +29,17 @@ class ISiteManagementFolders(IContainer, IComponentManager):
     well as package query and lookup.
     
     """
+
+    def getConfigurationManager():
+        """get a configuration manager
+
+        Find a configuration manager.  Clients can get the
+        configuration manager without knowing it's name. Normally,
+        folders have one configuration manager. If there is more than
+        one, this method willl return one; which one is undefined.
+
+        An error is raised if no configuration manager can be found.
+        """
 
 class ISiteManagementFolderAdding(IAdding):
     """A special package that is not content but is similar to a folder.

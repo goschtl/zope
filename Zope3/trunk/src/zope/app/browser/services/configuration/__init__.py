@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.1 2003/03/21 21:09:33 jim Exp $
+$Id: __init__.py,v 1.2 2003/03/23 17:13:41 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -23,7 +23,6 @@ from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration import Active, Registered
 from zope.app.interfaces.services.configuration import IComponentConfiguration
 from zope.app.interfaces.services.configuration import Unregistered
-from zope.app.interfaces.services.configuration import IConfigurationManager
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getPath, traverse
@@ -250,14 +249,7 @@ class AddComponentConfiguration(BrowserView):
         
         # Get the configuration manager for this folder
         folder = getWrapperContainer(component)
-        for name in folder:
-            item = folder[name]
-            if IConfigurationManager.isImplementedBy(item):
-                # We found one. Get it in context
-                configure = traverse(folder, name)
-                break
-        else:
-            raise SystemError("Couldn't find an configuration manager")
+        configure = folder.getConfigurationManager()
 
         # Adapt to IZopeContainer, which takes care of generating
         # standard events and calling standard hooks

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.14 2003/03/19 19:57:32 alga Exp $
+$Id: placefulsetup.py,v 1.15 2003/03/23 17:13:42 jim Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -226,3 +226,7 @@ class PlacefulSetup(PlacelessSetup):
         default['configure'].setObject("myHubIdsServiceDir", configuration)
         traverse(default, 'configure/3').status = Active
 
+
+def createServiceManager(folder):
+    folder.setServiceManager(ServiceManager())
+    return traverse(folder, "++etc++Services")

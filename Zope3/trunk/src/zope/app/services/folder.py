@@ -13,7 +13,7 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: folder.py,v 1.1 2003/03/23 16:45:44 jim Exp $
+$Id: folder.py,v 1.2 2003/03/23 17:13:42 jim Exp $
 """
 
 __metaclass__ = type
@@ -27,6 +27,7 @@ from zope.app.interfaces.services.service import IServiceManager
 from zope.app.services.configuration import ConfigurationManager
 from zope.app.traversing import getPath
 from zope.proxy.context import ContextMethod, ContextWrapper
+from zope.app.interfaces.services.configuration import IConfigurationManager
 
 class SiteManagementFolder(BTreeContainer):
     __implements__ = ISiteManagementFolder
@@ -34,6 +35,21 @@ class SiteManagementFolder(BTreeContainer):
     def __init__(self):
         super(SiteManagementFolder, self).__init__()
         self.setObject('configure', ConfigurationManager())
+
+    def getConfigurationManager(self):
+        """Get a configuration manager
+        """
+
+        # Get the configuration manager for this folder
+        for name in self:
+            item = self[name]
+            if IConfigurationManager.isImplementedBy(item):
+                # We found one. Get it in context
+                return ContextWrapper(item, self, name=name)
+        else:
+            raise SystemError("Couldn't find an configuration manager")
+    
+
 
 class SiteManagementFolders(BTreeContainer):
     __implements__ = ISiteManagementFolders
