@@ -11,10 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tools to deal with the mapping of resources to CVS URLs."""
+"""Tools to deal with the mapping of resources to URLs."""
 
+import logging
 import os.path
 import posixpath
+import sets
 import urllib
 import urllib2
 import urlparse
@@ -23,11 +25,15 @@ import UserDict
 from zpkgtools import cvsloader
 
 
+_logger = logging.getLogger(__name__)
+
+
 DEFAULT_TYPE = "package"
 
 
 class MapLoadingError(ValueError):
-    def __init__(self, message, lineno):
+    def __init__(self, message, filename, lineno):
+        self.filename = filename
         self.lineno = lineno
         ValueError.__init__(self, message)
 
@@ -69,6 +75,7 @@ def load(f, base=None, mapping=None):
             pass
     if mapping is None:
         mapping = LocationMap()
+    local_entries = sets.Set()
     lineno = 0
     for line in f:
         lineno += 1
@@ -78,7 +85,8 @@ def load(f, base=None, mapping=None):
 
         parts = line.split()
         if len(parts) != 2:
-            raise MapLoadingError("malformed package specification", lineno)
+            raise MapLoadingError("malformed package specification",
+                                  getattr(f, "name", "<unknown>"), lineno)
         resource, url = parts
         resource = normalizeResourceId(resource)
         try:
@@ -93,7 +101,7 @@ def load(f, base=None, mapping=None):
                     raise MapLoadingError(
                         "repository: URLs are not supported"
                         " without a cvs: base URL",
-                        lineno)
+                        getattr(f, "name", "<unknown>"), lineno)
                 cvsurl = cvsbase.join(cvsurl)
             url = cvsurl.getUrl()
 
@@ -101,6 +109,11 @@ def load(f, base=None, mapping=None):
         # mappings causes the first defining a resource to "win":
         if resource not in mapping:
             mapping[resource] = url
+        elif resource in local_entries:
+            _logger.warn(
+                "found duplicate entry for resource %r in %s at line %d",
+                resource, getattr(f, "name", "<unknown>"), lineno)
+        local_entries.add(resource)
         # else tell the user of the conflict?
 
     return mapping
