@@ -8,7 +8,7 @@ Attributes
 
   * name
   
-  * factory
+  * factory, a callable or list of callables that realizes the view
   
   * for, the interface this view applies to
   
