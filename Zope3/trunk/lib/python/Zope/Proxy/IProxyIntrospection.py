@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IProxyIntrospection.py,v 1.2 2002/06/10 23:29:31 jim Exp $
+$Id: IProxyIntrospection.py,v 1.3 2002/11/28 02:24:10 poster Exp $
 """
 
 from Interface import Interface
@@ -33,15 +33,15 @@ class IProxyIntrospection(Interface):
         """
 
     def removeAllProxies(obj):
-        """Get the proxied oject with no proxies
+        """Get the proxied object with no proxies
 
         If obj is not a proxied object, return obj.
 
-        The reurned object has no proxies.
+        The returned object has no proxies.
         """
 
     def isProxy(obj):
-        """Checkj whether the given object is a proxy
+        """Checks whether the given object is a proxy
         """
 
 
