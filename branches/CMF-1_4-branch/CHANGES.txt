@@ -2,6 +2,12 @@ CMF 1.4.1 (unreleased)
 
   Bug Fixes
 
+    - zpt skins (CMFDefault): Fixed some minor template issues.
+      (Collector #156 and other)
+
+    - zpt skins (CMFDefault and CMFCalendar): Fixed stylesheets.
+      (Collector #164)
+
     - MembershipTool (CMFCore and CMFDefault): Made sure 'createMemberarea()'
       always grants the right Ownership and Owner role for new member folders.
       This doesn't fix existing member folders with wrong Owner roles.
