@@ -18,18 +18,22 @@ fmt = '%Y-%m-%d %H:%M:%S %Z%z'
 
 NOTIME = timedelta(0)
 
+# GMT is a tzinfo.StaticTzInfo--the class we primarily want to test--while
+# UTC is reference implementation.  They both have the same timezone meaning.
 UTC = pytz.timezone('UTC')
-REF_UTC = reference.UTC
+GMT = pytz.timezone('GMT')
 
 class BasicTest(unittest.TestCase):
-    def testUTC(self):
-        now = datetime.now(tz=UTC)
+
+    def testGMT(self):
+        now = datetime.now(tz=GMT)
         self.failUnless(now.utcoffset() == NOTIME)
         self.failUnless(now.dst() == NOTIME)
         self.failUnless(now.timetuple() == now.utctimetuple())
+        self.failUnless(now==now.replace(tzinfo=UTC))
 
     def testReferenceUTC(self):
-        now = datetime.now(tz=REF_UTC)
+        now = datetime.now(tz=UTC)
         self.failUnless(now.utcoffset() == NOTIME)
         self.failUnless(now.dst() == NOTIME)
         self.failUnless(now.timetuple() == now.utctimetuple())

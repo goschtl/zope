@@ -91,6 +91,7 @@
 <schemadisplay
     name="index.html"
     schema="..text.ITextIndex"
+    fields="interface field_name field_callable"
     label="Text Index"
     permission="zope.ManageServices"
     menu="zmi_views" title="Configuration"

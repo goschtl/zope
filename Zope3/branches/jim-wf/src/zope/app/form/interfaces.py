@@ -45,7 +45,13 @@ class WidgetInputError(UserError):
         self.errors = errors
 
     def doc(self):
-        return self.errors.doc()
+        # XXX this duck typing is to get the code working.  See 
+        # collector issue 372
+        if isinstance(self.errors, basestring):
+            return self.errors
+        elif getattr(self.errors, 'doc', None) is not None:
+            return self.errors.doc()
+        return ''
 
 
 class MissingInputError(WidgetInputError):
