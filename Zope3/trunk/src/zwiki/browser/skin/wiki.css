@@ -120,3 +120,29 @@ div.row div.field {
     float: right;
     text-align: left;
 }
+
+
+/* The ReST->HTML generator uses these classes for figures.  */
+
+.figure
+    {
+    margin: 15px;
+    padding: 5px;
+    border-style: dotted;
+    border-width: 1px;
+    background: LightGray;
+    }
+
+img > .figure
+    {
+    text-align: center;  /* this doesn't seem to work */
+    margin: 5px;
+    padding-left: 10px;
+    }
+
+.caption
+    {
+    font-style: italic;
+    /* text-align: center; */
+    }
+
