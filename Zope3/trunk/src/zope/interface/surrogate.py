@@ -13,7 +13,7 @@
 ##############################################################################
 """Surrogate-specification registry implementation
 
-$Id: surrogate.py,v 1.5 2004/02/15 13:04:26 philikon Exp $
+$Id: surrogate.py,v 1.6 2004/03/02 22:56:54 klm Exp $
 """
 
 # Implementation notes
@@ -349,6 +349,75 @@ class SurrogateRegistry(object):
             for factory in factories:
                 ob = factory(ob)
             return ob
+
+        return default
+
+
+    def queryFactory(self, declaration, interface, default=None):
+        """Query for factory that adapts type-declaration things to interface.
+
+           This enables you to get an adapter, and/or check for the existence
+           of one, given just the type (interface) of a thing.
+
+           >>> import zope.interface
+           >>> from zope.interface import implementedBy
+           >>> class F0(zope.interface.Interface):
+           ...     pass
+           >>> class F1(F0):
+           ...     pass
+
+           >>> class C:
+           ...     zope.interface.implements(F1)
+           >>> c = C()
+
+           >>> registry = SurrogateRegistry()
+
+           Adapting to some other interface for which there is no
+           adapter returns the default:
+
+           >>> class B0(zope.interface.Interface):
+           ...     pass
+           >>> class B1(B0):
+           ...     pass
+
+           >>> registry.queryFactory(F1, B0)
+           >>> registry.queryFactory(F1, B0, 42)
+           42
+
+           Unless we define an adapter:
+
+           >>> def f1(ob):
+           ...     return 1
+
+           >>> registry.provideAdapter(F0, B1, [f1])
+           >>> registry.queryFactory(F1, B0) == [f1]
+           True
+
+           If we define a more specific adapter (for F1), we'll get that:
+
+           >>> def f2(ob):
+           ...     return 2
+
+           >>> registry.provideAdapter(F1, B1, [f2])
+           >>> registry.queryFactory(F1, B0) == [f2]
+           True
+
+           >>> def f3(ob):
+           ...     return 3
+
+           >>> registry.provideAdapter(F1, B0, [f3])
+           >>> registry.queryFactory(F1, B0) == [f3]
+           True
+           """
+
+        s = self.get(declaration)
+
+        factories = s.get((False, interface))
+        if factories is None:
+            factories = self._default.get((False, interface))
+
+        if factories is not None:
+            return factories
 
         return default
 
