@@ -10,6 +10,15 @@ Zope Changes
 
     New features
 
+      - Added `zope.security.canAccess` and `zope.security.canWrite`
+        convenience methods.  Often code wants to check if a certain option is 
+        open to a user before presenting it.  If the code relies on a certain
+        permission, the Zope 3 goal of keeping knowledge of security  
+        assertions out of the code and only in configuration is broken. 
+        Instead, ask if the current intreaction canAccess or canWrite some 
+        pertinent aspect of the object.  canAccess is used for both read 
+        access on an attribute and call access to methods.
+
       - Added lazy properties. (See zope/cachedescriptors/README.txt)
 
       - Added new `getNextUtility()`, `queryNextUtility()`, and
