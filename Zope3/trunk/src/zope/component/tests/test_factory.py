@@ -13,10 +13,11 @@
 ##############################################################################
 """Factory-related Tests
 
-$Id: test_factory.py,v 1.2 2004/03/09 12:40:07 srichter Exp $
+$Id: test_factory.py,v 1.3 2004/03/09 15:27:32 BjornT Exp $
 """
 import unittest
 from zope.interface import Interface, implements
+from zope.interface.interfaces import IDeclaration
 
 from zope.component import createObject, getFactoryInterfaces, getFactoriesFor
 from zope.component.interfaces import IFactory
@@ -51,7 +52,9 @@ class TestFactory(unittest.TestCase):
         self.assertEqual(self._factory.description, 'Klassier')
 
     def testGetInterfaces(self):
-        self.assertEqual(self._factory.getInterfaces(), [IKlass])
+        implemented = self._factory.getInterfaces()
+        self.assert_(implemented.isOrExtends(IKlass))
+        self.assertEqual([iface for iface in implemented], [IKlass])
         
     
 class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
@@ -68,7 +71,9 @@ class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
         self.assertEqual(kl.kw, {'foo': 4})
 
     def testGetFactoryInterfaces(self):
-        self.assertEqual(getFactoryInterfaces(None, 'klass'), [IKlass])
+        implemented = getFactoryInterfaces(None, 'klass')
+        self.assert_(implemented.isOrExtends(IKlass))
+        self.assertEqual([iface for iface in implemented], [IKlass])
 
     def testGetFactoriesFor(self):
         self.assertEqual(getFactoriesFor(None, IKlass),
