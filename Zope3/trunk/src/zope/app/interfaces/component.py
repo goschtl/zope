@@ -13,63 +13,12 @@
 ##############################################################################
 """Locale Component Architecuture interfaces
 
-$Id: component.py,v 1.6 2004/03/03 17:06:44 srichter Exp $
+$Id: component.py,v 1.7 2004/03/05 15:54:21 eddala Exp $
 """
 from zope.interface import Interface
 from zope.schema import Field
 from zope.schema.interfaces import IEnumerated, IField, ITuple
 
-
-class IInterfaceService(Interface):
-    """Service that keeps track of used interfaces
-    """
-
-    def getInterface(id):
-        """Return the interface registered for the given id
-
-        A ComponentLookupError is raised if the interface can't be found.
-        """
-
-    def queryInterface(id, default=None):
-        """Return the interface registered for the given id
-
-        The default is returned if the interface can't be found.
-        """
-
-    def searchInterface(search_string=None, base=None):
-        """Return the interfaces that match the search criteria
-
-        If a search string is given, only interfaces that contain the
-        string in their documentation will be returned.
-
-        If base is given, only interfaces that equal or extend base
-        will be returned.
-        """
-
-    def searchInterfaceIds(search_string=None, base=None):
-        """Return the ids of the interfaces that match the search criteria.
-
-        See searchInterface
-        """
-
-    def items(search_string=None, base=None):
-        """Return id, interface pairs for all items matching criteria.
-
-        See searchInterface for the meaning of search-string and base.
-        """
-
-class IGlobalInterfaceService(IInterfaceService):
-    """Global registry for Interface
-    """
-
-    def provideInterface(id, interface):
-        """Register an interface with a given id
-
-        The id is the full dotted name for the interface.
-
-        If the id is false, the id will be computed from the interface
-        module and name.
-        """
 
 class IInterfaceField(IEnumerated, IField):
     u"""A type of Field that has an Interfaces as its value."""
