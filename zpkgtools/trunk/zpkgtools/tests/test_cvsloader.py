@@ -491,6 +491,16 @@ class FileProxyTestCase(unittest.TestCase):
         expected = open(__file__, self.mode).read()
         self.assertEqual(text, expected)
 
+    def test_url_as_name(self):
+        # make sure the path is used by default:
+        self.assertEqual(self.fp.name, __file__)
+        # now 
+        fp = cvsloader.FileProxy(__file__, self.mode, self.loader, "fake:url")
+        try:
+            self.assertEqual(fp.name, "fake:url")
+        finally:
+            fp.close()
+
 
 def test_suite():
     suite = unittest.makeSuite(UrlUtilitiesTestCase)

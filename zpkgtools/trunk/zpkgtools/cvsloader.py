@@ -192,7 +192,7 @@ def open(url, mode="r"):
     loader = CvsLoader(None)
     path = loader.load(url)
     if os.path.isfile(path):
-        return FileProxy(path, mode)
+        return FileProxy(path, mode, loader, url)
     # Only files and directories come from CVS, so no need to check
     # for magical directory entries here:
     loader.cleanup()
@@ -318,8 +318,8 @@ class CvsLoader:
 
 class FileProxy(object):
 
-    def __init__(self, path, mode, loader):
-        self.name = path
+    def __init__(self, path, mode, loader, url=None):
+        self.name = url or path
         self._file = file(path, mode)
         self._cleanup = loader.cleanup
 
