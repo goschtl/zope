@@ -24,7 +24,8 @@ from zope.app.component import hooks
 from zope.app.container.contained import Contained
 from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app import zapi
-from zope.app.session.interfaces import ISession
+from zope.app.session.interfaces import ISession, IClientId
+import transaction 
 import transaction 
 from urllib import urlencode
 
@@ -67,6 +68,8 @@ class SessionCredentials:
 
     def getPassword(self): return self.password
 
+    def __str__(self): return self.getLogin() + ':' + self.getPassword()
+
 
 class SessionExtractor(Persistent, Contained):
     """ session-based credential extractor.
@@ -76,34 +79,35 @@ class SessionExtractor(Persistent, Contained):
 
         >>> from zope.app.session.session import RAMSessionDataContainer
         >>> from zope.app.session.session import Session
-        >>> from tests import sessionSetUp, createTestRequest
+        >>> from tests import sessionSetUp, TestRequest
 
         >>> sessionSetUp(RAMSessionDataContainer)
         >>> se = SessionExtractor()
 
-        No credentials available:
-        >>> request = createTestRequest()
+
+        Start: No credentials available
+        >>> request = TestRequest()
         >>> se.extractCredentials(request) is None
         True
 
+        Credentials provided by submitting login form:
         If the session does not contain the credentials check
-        the request for form variables.
-        >>> request = createTestRequest(login='scott', password='tiger')
+        the request for form variables and store the credentials in
+        the session.
+        >>> request = TestRequest(login='scott', password='tiger')
         >>> se.extractCredentials(request)
         {'login': 'scott', 'password': 'tiger'}
 
-        If there are credentials present use them.
-        >>> request = createTestRequest()
-        >>> sessionData = Session(request)['pas']
-        >>> sessionData['credentials'] = SessionCredentials('scott', 'tiger')
+        After login the credentials are stored in the session.
+        (The sessionSetUp() method ensures that in this test the request
+        always gets the same client id so we get the same session data.)
+        >>> request = TestRequest()
         >>> se.extractCredentials(request)
         {'login': 'scott', 'password': 'tiger'}
 
         Magic logout command in URL forces log out by deleting the
         credentials from the session.
-        >>> request = createTestRequest(authrequest='logout')
-        >>> sessionData = Session(request)['pas']
-        >>> sessionData['credentials'] = SessionCredentials('scott', 'tiger')
+        >>> request = TestRequest(authrequest='logout')
         >>> se.extractCredentials(request) is None
         True
         >>> Session(request)['pas']['credentials'] is None

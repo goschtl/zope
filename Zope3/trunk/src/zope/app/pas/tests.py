@@ -21,6 +21,8 @@ from zope.testing import doctest
 from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.tests.setup import placefulSetUp, placefulTearDown
+from zope.interface import implements
+from zope.app.zapi import getUtility
 
 from zope.app.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer, \
@@ -33,9 +35,15 @@ from zope.app.session.http import CookieClientIdManager
 from zope.publisher.interfaces import IRequest
 from zope.publisher.tests.httprequest import TestRequest
 
+class TestClientId(object):
+    implements(IClientId)
+    def __new__(cls, request):
+        #return str.__new__(cls, getUtility(IClientIdManager).getClientId(request))
+        return 'dummyclientidfortesting'
+
 def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     placelesssetup.setUp()
-    ztapi.provideAdapter(IRequest, IClientId, ClientId)
+    ztapi.provideAdapter(IRequest, IClientId, TestClientId)
     ztapi.provideAdapter(IRequest, ISession, Session)
     ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
     sdc = session_data_container_class()
@@ -46,9 +54,6 @@ def formAuthSetUp(self):
 
 def formAuthTearDown(self):
     placefulTearDown()
-
-def createTestRequest(**kw):
-    return TestRequest(**kw)
 
 def test_suite():
     return unittest.TestSuite((
