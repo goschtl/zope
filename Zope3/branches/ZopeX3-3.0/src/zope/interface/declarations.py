@@ -1323,8 +1323,6 @@ class ObjectSpecificationDescriptorPy(object):
 
 ObjectSpecificationDescriptor = ObjectSpecificationDescriptorPy
 
-objectSpecificationDescriptor = ObjectSpecificationDescriptor()
-
 ##############################################################################
 
 def _normalizeargs(sequence, output = None):
@@ -1357,3 +1355,6 @@ else:
     from _zope_interface_coptimizations import implementedBy, providedBy
     from _zope_interface_coptimizations import getObjectSpecification
     from _zope_interface_coptimizations import ObjectSpecificationDescriptor
+
+objectSpecificationDescriptor = ObjectSpecificationDescriptor()
+    
