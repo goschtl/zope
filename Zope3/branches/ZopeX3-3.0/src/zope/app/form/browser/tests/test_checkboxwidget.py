@@ -28,82 +28,98 @@ from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 
 class CheckBoxWidgetTest(SimpleInputWidgetTest):
     """Documents and tests thec checkbox widget.
-        
+
         >>> verifyClass(IInputWidget, CheckBoxWidget)
         True
-        
-    The rest of the this doctest was moved from widget.py to this test module
-    to keep widget.py free of detailed tests. XXX the tests below should be
-    more narrative to highlight the 'story' being told.
 
-    >>> field = Bool(__name__='foo', title=u'on')
-    >>> request = TestRequest(form={'field.foo.used': u'on',
-    ...                             'field.foo': u'on'})
-    >>> widget = CheckBoxWidget(field, request)
-    >>> widget.hasInput()
-    True
-    >>> widget.getInputValue()
-    True
+    The checkbox widget works with Bool fields:
 
-    >>> def normalize(s):
-    ...   return '\\n  '.join(s.split())
+        >>> field = Bool(__name__='foo', title=u'on')
+        >>> request = TestRequest()
+        >>> widget = CheckBoxWidget(field, request)
 
-    >>> print normalize( widget() )
-    <input
-      class="hiddenType"
-      id="field.foo.used"
-      name="field.foo.used"
-      type="hidden"
-      value=""
-      />
-      <input
-      class="checkboxType"
-      checked="checked"
-      id="field.foo"
-      name="field.foo"
-      type="checkbox"
-      />
+    hasInput returns True when the request contains the field.<name>.used
+    value:
 
-    >>> print normalize( widget.hidden() )
-    <input
-      class="hiddenType"
-      id="field.foo"
-      name="field.foo"
-      type="hidden"
-      value="on"
-      />
+        >>> 'field.foo.used' in request.form
+        False
+        >>> widget.hasInput()
+        False
+        >>> request.form['field.foo.used'] = ''
+        >>> widget.hasInput()
+        True
+
+    getInputValue returns True when field.<name> equals (and only equals) 'on':
+
+        >>> 'field.foo' in request.form
+        False
+        >>> widget.getInputValue()
+        False
+        >>> request.form['field.foo'] = 'true'
+        >>> widget.getInputValue()
+        False
+        >>> request.form['field.foo'] = 'on'
+        >>> widget.getInputValue()
+        True
+
+    Below is HTML output of rendered checkbox widgets. We will first define
+    a helper method condense the HTML output for display in this test:
+
+        >>> def normalize(s):
+        ...   return '\\n  '.join(s.split())
+
+    Default widget rendering:
+
+        >>> print normalize( widget() )
+        <input
+          class="hiddenType"
+          id="field.foo.used"
+          name="field.foo.used"
+          type="hidden"
+          value=""
+          />
+          <input
+          class="checkboxType"
+          checked="checked"
+          id="field.foo"
+          name="field.foo"
+          type="checkbox"
+          />
+
+    Hidden rendering:
+
+        >>> print normalize( widget.hidden() )
+        <input
+          class="hiddenType"
+          id="field.foo"
+          name="field.foo"
+          type="hidden"
+          value="on"
+          />
 
     Calling setRenderedValue will change what gets output:
 
-    >>> widget.setRenderedValue(False)
-    >>> print normalize( widget() )
-    <input
-      class="hiddenType"
-      id="field.foo.used"
-      name="field.foo.used"
-      type="hidden"
-      value=""
-      />
-      <input
-      class="checkboxType"
-      id="field.foo"
-      name="field.foo"
-      type="checkbox"
-      />
+        >>> widget.setRenderedValue(False)
+        >>> print normalize( widget() )
+        <input
+          class="hiddenType"
+          id="field.foo.used"
+          name="field.foo.used"
+          type="hidden"
+          value=""
+          />
+          <input
+          class="checkboxType"
+          id="field.foo"
+          name="field.foo"
+          type="checkbox"
+          />
 
-    When a checkbox is not 'checked', it's value is not
-    sent in the request, so we consider it 'False', which
-    means that 'required' for a boolean field doesn't make
-    much sense in the end.
+    The checkbox widget does not support None values, so a Bool required
+    constraint will always be met with checkbox input:
 
-    >>> field = Bool(__name__='foo', title=u'on', required=True)
-    >>> request = TestRequest(form={'field.foo.used': u''})
-    >>> widget = CheckBoxWidget(field, request)
-    >>> widget.hasInput()
-    True
-    >>> widget.validate()
-    >>> widget.getInputValue()
-    False
+        >>> field.required = True
+        >>> widget.validate()
     """
 
     _FieldFactory = Bool
@@ -140,7 +156,7 @@ class CheckBoxWidgetTest(SimpleInputWidgetTest):
         del self._widget.request.form['field.foo']
         self._widget.request.form['field.foo.used'] = ''
         self.assertEquals(self._widget.getInputValue(), False)
-        del self._widget.request.form['field.foo.used']        
+        del self._widget.request.form['field.foo.used']
         self.assertRaises(MissingInputError, self._widget.getInputValue)
 
 
