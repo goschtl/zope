@@ -443,15 +443,14 @@
      factory="zope.schema.tests.test_vocabulary.SampleVocabulary"
      />
 
-  <!-- as new style classes are ignored, zope.app.form.browser
-       can be imported -->
-
+  <!-- testing that products meta.zcml is taken care of. -->
   <five:parrot
       class=".metaconfigure.NorwegianBlue"
       name="Polly"
       />
       
-
+  <!-- as new style classes are ignored, zope.app.form.browser
+       can be imported -->
   <include package="zope.app.form.browser"/>
 
 </configure>
