@@ -1,6 +1,7 @@
 <zopeConfigure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:help="http://namespaces.zope.org/help"
    >
 
 <!-- File View Directives -->
@@ -56,6 +57,15 @@
      for="zope.app.interfaces.content.file.IFile"
      file="file_icon.gif"
      />
+
+<help:register 
+    id = "file_upload"
+    title = "File Upload Screen"
+    parent = "ui"
+    for = "zope.app.interfaces.content.file.IFile"
+    view = ".file.FileUpload."
+    doc_path = "./file_upload.hlp" />
+
 
 <!-- I18n File View Directives -->
 

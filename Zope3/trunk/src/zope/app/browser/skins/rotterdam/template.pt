@@ -244,7 +244,8 @@
              tal:repeat="info actions"
              >
             <div tal:define="oddrow repeat/info/odd"
-                tal:attributes="class python:oddrow and 'even' or 'odd'; value info/id|default"
+                tal:attributes="class python:oddrow and 'even' or 'odd'; 
+                                value info/id|default"
                  tal:content="info/title">Do something
             </div>
           </a>
@@ -252,6 +253,23 @@
         </div>
 
       </div>
+
+        <div class="box" id="help" 
+	     tal:define="results view/@@find_help_topics"
+             tal:condition="results">
+          <h4>Online Help</h4>
+          <div class="body">
+            <a href="#" 
+                tal:repeat="entry results"
+		tal:attributes="href entry/url">
+              <div tal:define="oddrow repeat/entry/odd"
+                  tal:attributes="class python:oddrow and 'even' or 'odd'"
+                  tal:content="entry/topic/title">Topic Title
+              </div>
+            </a>
+          </div>
+        </div>
+
 </div>
 
     </div>

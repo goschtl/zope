@@ -75,6 +75,34 @@
 <include package=".skins" />
 <include package=".index" />
 
+<!-- OnlineHelp -->
+
+  <page
+      for="*"
+      name="find_help_topics"
+      class=".onlinehelp.FindRelevantHelpTopics"
+      permission="zope.Public"
+      allowed_attributes="__call__" 
+      />
+
+  <!-- XXX: This sucks. You cannot define a content type without making
+            a '+' view, since some menu code will complain otherwise. -->    
+  <page
+      name="+"
+      for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
+      permission="zope.View"
+      template="onlinehelptopic.pt"
+      class="zope.app.browser.onlinehelp.OnlineHelpTopicView"
+      />
+
+  <page
+      name="index.html"
+      for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
+      permission="zope.View"
+      template="onlinehelptopic.pt"
+      class="zope.app.browser.onlinehelp.OnlineHelpTopicView"
+      /> 
+
 <!-- Introspection -->
 
   <!-- XXX wrong perm  -->

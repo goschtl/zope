@@ -76,6 +76,7 @@
   <include package="zope.app.startup" />
   <include package="zope.app.index" />
   <include package="zope.app.pagetemplate" />
+  <include package="zope.app.onlinehelp" />
 
 <!-- Views -->
 

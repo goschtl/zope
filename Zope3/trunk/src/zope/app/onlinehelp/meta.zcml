@@ -1,0 +1,13 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+  <directives namespace="http://namespaces.zope.org/help">
+
+    <directive name="register"
+      attributes="parent id title doc_path doc_type for view"
+      handler="zope.app.onlinehelp.metaconfigure.register" />
+
+    <directive name="unregister"
+      attributes="path"
+      handler="zope.app.onlinehelp.metaconfigure.unregister" />
+
+  </directives>
+</zopeConfigure>

@@ -1,0 +1,19 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+  <title metal:fill-slot="title" tal:content="context/getTitle">Title</title>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+<h1 tal:content="context/getTitle">Title of Help Topic</h1>
+
+<p tal:content="structure context/getContent">Content of Online Help.</p>
+
+</div>
+
+<div metal:fill-slot="commonTasks" 
+     tal:content="structure view/getTopicTree" />
+
+</body>
+</html>
+

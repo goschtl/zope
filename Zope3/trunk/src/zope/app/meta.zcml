@@ -13,5 +13,6 @@
 <include package="zope.app.i18n" file="meta.zcml" />
 <include package="zope.app.startup" file="meta.zcml" />
 <include package="zope.app.applicationcontrol" file="meta.zcml" />
+<include package="zope.app.onlinehelp" file="meta.zcml" />
 
 </zopeConfigure>

@@ -1,0 +1,37 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:service="http://namespaces.zope.org/service"
+   xmlns:help="http://namespaces.zope.org/help"
+   >
+
+  <content class="zope.app.onlinehelp.OnlineHelpTopic">
+    <require
+        permission="zope.View"
+        interface="zope.app.interfaces.onlinehelp.IOnlineHelpTopic" 
+	attributes="__iter__"
+    />
+  </content>
+
+<!-- Setup OnlineHelp as Service -->
+<serviceType id="OnlineHelp" 
+             interface="zope.app.interfaces.onlinehelp.IOnlineHelp" />
+
+<service serviceType="OnlineHelp"
+    permission="zope.Public"
+    component="zope.app.onlinehelp.help" />
+
+<!-- Register initial Help Topics -->
+<help:register 
+    id = "ui"
+    title = "Zope UI Help"
+    doc_path = "./ui.txt" />
+
+<help:register 
+    id = "welcome"
+    title = "Welcome"
+    parent = "ui"
+    for = "zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
+    view = "zope.app.browser.onlinehelp.OnlineHelpTopicView"
+    doc_path = "./help.txt" />
+
+</zopeConfigure>
