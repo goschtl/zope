@@ -29,6 +29,7 @@ $Id$
 """
 
 import __builtin__
+import sys
 
 __all__ = "install_reporter", "uninstall_reporter"
 
@@ -43,7 +44,9 @@ def install_reporter(reporter):
     if previous__import__ is not None:
         raise RuntimeError("import reporting hook already installed")
 
-    def importhook(name, globals, locals, fromlist):
+    def importhook(name, globals=None, locals=None, fromlist=None):
+        if globals is None:
+            globals = sys._getframe(1).f_globals
         importer = globals.get("__name__")
         reporter.request(importer, name, fromlist)
         v = previous__import__(name, globals, locals, fromlist)

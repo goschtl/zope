@@ -16,10 +16,12 @@
 $Id$
 """
 import __builtin__
+import sys
 import unittest
 
 from zope.importtool import hook
 from zope.importtool import reporter
+from zope.importtool.tests import sample
 
 
 real__import__ = __import__
@@ -124,6 +126,30 @@ class HookTestCase(unittest.TestCase):
             self.assertEqual(e[0], "found")
         else:
             self.fail("expected TestException")
+
+    def test_direct_calls(self):
+        # make sure the hook function can be called directly as well,
+        # and behave the way the default __import__() works
+        hook.install_reporter(self)
+        m = __import__("sys")
+        self.assertEqual(self.reports[-1],
+                         (__name__, "sys", "sys", None))
+        self.failUnless(m is sys)
+        m = __import__("sample")
+        self.assertEqual(self.reports[-1],
+                         (__name__, "zope.importtool.tests.sample", "sample",
+                          None))
+        self.failUnless(m is sample)
+        m = __import__("sys", {"__name__": "foo.bar"})
+        self.assertEqual(self.reports[-1],
+                         ("foo.bar", "sys", "sys", None))
+        self.failUnless(m is sys)
+        __import__("sys", {"__name__": "foo.bar"}, {}, ("splat", "splurt"))
+        self.assertEqual(self.reports[-1],
+                         ("foo.bar", "sys", "sys", ("splat", "splurt")))
+        m = __import__("zope.importtool.tests.sample", globals(), {},
+                       ("THE_ANSWER",))
+        self.failUnless(m is sample)
 
 
 def test_suite():
