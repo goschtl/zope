@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.5 2003/05/28 17:52:44 gvanrossum Exp $
+$Id: test_network.py,v 1.6 2003/05/28 22:22:37 gvanrossum Exp $
 """
 
 import os
@@ -43,13 +43,17 @@ class DummyServer(threading.Thread):
 
     """A server that can handle one HTTP request (returning a 404 error)."""
 
-    stopping = False
+    def __init__(self, ready):
+        self.ready = ready     # Event signaling we're listening
+        self.stopping = False
+        threading.Thread.__init__(self)
 
     def run(self):
         svr = socket.socket()
         svr.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         svr.bind((HOST, PORT))
         svr.listen(1)
+        self.ready.set()
         conn = None
         sent_response = False
         while not self.stopping:
@@ -153,8 +157,10 @@ class TestNetwork(TempFiles):
         self.assertEqual(new.rooturl, sample_rooturl)
 
     def test_httpreq(self):
-        svr = DummyServer()
+        ready = threading.Event()
+        svr = DummyServer(ready)
         svr.start()
+        ready.wait()
         try:
             self.network.setrooturl("http://%s:%s" % (HOST, PORT))
             self.assertRaises(Error, self.network.httpreq, "/xyzzy", "@@view")
