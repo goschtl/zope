@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.34 2003/06/20 06:40:12 stevea Exp $
+$Id: checker.py,v 1.35 2003/06/22 20:40:11 jeremy Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -21,6 +21,7 @@ Setting ZOPE_WATCH_CHECKERS to 1 will display messages about unauthorized or
 forbidden attribute access.  Setting it to a larger number will also display
 messages about granted attribute access.
 """
+from __future__ import generators
 
 import os
 import sys
@@ -698,6 +699,10 @@ class _Sequence(object):
 
 _InterfaceSpecification_checker = InterfaceChecker(IInterfaceSpecification)
 
+def f():
+    yield f
+    
+
 _default_checkers = {
     dict: NamesChecker(['__getitem__', '__len__', '__iter__',
                         'get', 'has_key', 'copy', '__str__', 'keys',
@@ -725,6 +730,7 @@ _default_checkers = {
     type(iter(())): _iteratorChecker, # different in Python 2.3.
     type(iter({})): _iteratorChecker,
     type(iter(_Sequence())): _iteratorChecker,
+    type(f()): _iteratorChecker,
     type(Interface): InterfaceChecker(IInterface, __str__=CheckerPublic),
     ObjectSpecification: _InterfaceSpecification_checker,
     ProvidesSpecification: _InterfaceSpecification_checker,
