@@ -2,14 +2,6 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <zope:view
-      for="zope.app.registration.interfaces.IRegistrationStatus"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".RegistrationStatusWidget"
-      permission="zope.ManageServices"
-      />
-
   <page
       for="zope.app.registration.interfaces.IRegistrationStack"
       name="ChangeRegistrations"

@@ -13,16 +13,15 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.7 2004/04/17 15:13:12 jim Exp $
+$Id: interfaces.py,v 1.8 2004/04/24 23:19:47 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.container.interfaces import IContained, IContainer
-from zope.app.security.permission import PermissionField
 from zope.interface import Interface, Attribute, implements
-from zope.schema import TextLine, Field
+from zope.schema import TextLine, Field, Choice
 from zope.schema.interfaces import ITextLine
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
@@ -31,19 +30,6 @@ import zope.component.interfaces
 UnregisteredStatus = _('Unregistered')
 RegisteredStatus = _('Registered')
 ActiveStatus = _('Active')
-
-class IRegistrationStatus(ITextLine):
-    """The status of a registration
-    """
-
-class RegistrationStatus(TextLine):
-    implements(IRegistrationStatus)
-
-    def __init__(self, *args, **kw):
-        super(RegistrationStatus, self).__init__(*args, **kw)
-        self.allowed_values = (UnregisteredStatus,
-                               RegisteredStatus,
-                               ActiveStatus)
 
 class INoLocalServiceError(Interface):
     """No local service to register with.
@@ -76,8 +62,10 @@ class IRegistration(Interface):
                             "this registration type")
     # A string; typically a class attribute
 
-    status = RegistrationStatus(
-        title=_("Registration status")
+    status = Choice(
+        title=_("Registration status"),
+        values=(UnregisteredStatus, RegisteredStatus, ActiveStatus),
+        default=UnregisteredStatus
         )
 
     def activated():
@@ -133,8 +121,9 @@ class IComponentRegistration(IRegistration):
                       "or relative to the nearest site management folder"),
         required=True)
 
-    permission = PermissionField(
+    permission = Choice(
         title=_("The permission needed to use the component"),
+        vocabulary="Permissions",
         required=False,
         )
 

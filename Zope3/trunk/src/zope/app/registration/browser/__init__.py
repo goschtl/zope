@@ -13,7 +13,7 @@
 ##############################################################################
 """General registry-related views
 
-$Id: __init__.py,v 1.6 2004/04/08 21:02:40 jim Exp $
+$Id: __init__.py,v 1.7 2004/04/24 23:19:47 srichter Exp $
 """
 from zope.app.container.browser.adding import Adding
 from zope.app.container.interfaces import INameChooser
@@ -154,16 +154,6 @@ class ChangeRegistrations(BrowserView):
         self.registrations = registrations
 
         self.message = message
-
-
-class RegistrationStatusWidget(RadioWidget):
-
-    def _getDefault(self):
-        return UnregisteredStatus
-
-    def __call__(self):
-        rendered_items = self.renderItems(self._showData())
-        return "&nbsp;&nbsp;".join(rendered_items)
 
 
 class ComponentPathWidget(BrowserWidget):
