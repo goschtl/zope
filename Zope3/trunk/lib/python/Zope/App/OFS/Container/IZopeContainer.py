@@ -12,14 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: IZopeContainer.py,v 1.2 2002/11/18 23:52:58 jim Exp $
+$Id: IZopeContainer.py,v 1.3 2002/11/19 14:45:54 jim Exp $
 """
 
+import IContainer
 
-from Interface import Interface
-from Interface.Common.Mapping import IReadMapping, IEnumerableMapping
-
-class IZopeItemContainer(Interface):
+class IZopeItemContainer(IContainer.IItemContainer):
 
     def __getitem__(key):
         """Return the content for the given key
@@ -31,7 +29,8 @@ class IZopeItemContainer(Interface):
         
 
 
-class IZopeSimpleReadContainer(IZopeItemContainer, IReadMapping):
+class IZopeSimpleReadContainer(IZopeItemContainer,
+                               IContainer.ISimpleReadContainer):
     """Readable content containers
     """
 
@@ -45,7 +44,7 @@ class IZopeSimpleReadContainer(IZopeItemContainer, IReadMapping):
         
     
 
-class IZopeReadContainer(IZopeSimpleReadContainer, IEnumerableMapping):
+class IZopeReadContainer(IZopeSimpleReadContainer, IContainer.IReadContainer):
     """Readable containers that can be enumerated.
     """
 
@@ -62,7 +61,7 @@ class IZopeReadContainer(IZopeSimpleReadContainer, IEnumerableMapping):
 
     
 
-class IZopeWriteContainer(Interface):
+class IZopeWriteContainer(IContainer.IWriteContainer):
     """An interface for the write aspects of a container."""
 
     def setObject(key, object):
@@ -101,6 +100,6 @@ class IZopeWriteContainer(Interface):
         is published. The event object will be the container.
         """
 
-class IZopeContainer(IZopeReadContainer, IZopeWriteContainer):
+class IZopeContainer(IZopeReadContainer, IContainer.IContainer):
     """Readable and writable content container."""
 
