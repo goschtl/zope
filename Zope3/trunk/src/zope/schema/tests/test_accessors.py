@@ -39,12 +39,15 @@ class Test(unittest.TestCase):
 
         class Good(object):
             implements(I)
+            
+            def __init__(self):
+                self.set = 0
 
             def getFoo(self):
                 return u"foo"
 
             def setFoo(self, v):
-                pass
+                self.set += 1
 
         names = I.names()
         names.sort()
@@ -71,9 +74,18 @@ class Test(unittest.TestCase):
 
         self.assertRaises(Exception, verifyClass, I, Bad)
         self.assertRaises(Exception, verifyObject, I, Bad())
+        
+        self.assertEquals(I['getFoo'].query(Bad(), 42), 42)
+        self.assertRaises(AttributeError, I['getFoo'].get, Bad())
 
         verifyClass(I, Good)
         verifyObject(I, Good())
+
+        self.assertEquals(I['getFoo'].query(Good(), 42), u'foo')
+        self.assertEquals(I['getFoo'].get(Good()), u'foo')
+        instance = Good()
+        I['getFoo'].set(instance, u'whatever')
+        self.assertEquals(instance.set, 1)
 
     def test_doc(self):
 

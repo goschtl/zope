@@ -71,7 +71,12 @@ class FieldReadAccessor(Method):
         return getattr(object, self.__name__)()
 
     def query(self, object, default=None):
-        return getattr(object, self.__name__)()
+        try:
+            f = getattr(object, self.__name__)
+        except AttributeError:
+            return default
+        else:
+            return f()
 
     def set(self, object, value):
         if self.readonly:
