@@ -23,31 +23,44 @@ Using the Zope Debugger
             
   Using the Debugger
 
-    There are several method you can call on the application object:
+    There are several method you can call on the application object
+    for testing purposes.
 
-      - the 'publish' method executes a request as the publisher would
-        and prints the response headers and body.
+    Publish 
 
-      - run executes a request with the publisher's normal error
-        handling disabled and without outputing anything.  This
-        is useful for use with Python's post-mortem. debugger
+      The 'publish' method executes a request as the publisher would
+      and prints the response headers and body::
 
-    Once you have the application object you can call its debug method
-    to debug a zope object publication.
+         >> app.publish(path='/folder/content_object')
 
-    the debug method takes several arguments, the more useful/common ones...
+    Run
+
+      The 'run' method executes a request with the publisher's normal 
+      error handling disabled and without outputing anything.  This is
+      useful for use with Python's post-mortem.
+
+         >> app.run(path='/folder/content_object')
+         # an exception is raised
+         >> import pdb; pdb.pm()
+         # enters the python post-mortem debugger
+
+    Debug
+      
+      The 'debug' method starts up the publisher in the python
+      debugger, with an extra convience break point, setup just before
+      the published object call::
+
+        >> app.debug(path='/folder/content_object')
+        * Type c<cr> to jump to published object call.
+        pdb> 
+      
+    Arguments
+
+      All of the application object's debug methods take optional
+      arguments, the more common/useful ones...
 
       - path - the url path to debug
 
       - basic - user:password used for http basic auth (it will be
         base64 encoded by the debug method).
-
-      - pm - if this boolean flag is set, zope will not attempt to
-        catch exceptions so the post-mortem debugger can be employed.
-
-    So to debug publishing the root object with user foo::
-
-       >> app.debug(path='/', basic="foo:passwd")
-
-    Which will return the http response (including headers) to stdout.
 
