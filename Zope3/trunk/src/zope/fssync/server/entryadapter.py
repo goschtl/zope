@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: entryadapter.py,v 1.1 2004/01/13 19:32:24 fdrake Exp $
+$Id: entryadapter.py,v 1.2 2004/01/13 22:28:47 fdrake Exp $
 """
 
 from zope.component import queryAdapter
@@ -23,7 +23,6 @@ from zope.proxy import removeAllProxies
 from zope.xmlpickle import toxml
 
 from zope.app.fssync import fspickle
-from zope.app.interfaces.annotation import IAnnotations
 
 class AttrMapping(object):
     """Convenience object implementing a mapping on selected object attributes
@@ -70,10 +69,6 @@ class ObjectEntryAdapter(object):
     def extra(self):
         "See IObjectEntry"
         return None
-
-    def annotations(self):
-        "See IObjectEntry"
-        return queryAdapter(self.context, IAnnotations)
 
     def typeIdentifier(self):
         "See IObjectEntry"

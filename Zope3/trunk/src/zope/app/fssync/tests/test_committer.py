@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.21 2004/01/13 19:32:22 fdrake Exp $
+$Id: test_committer.py,v 1.22 2004/01/13 22:28:47 fdrake Exp $
 """
 
 import os
@@ -39,7 +39,7 @@ from zope.app.interfaces.traversing import ITraversable, ITraverser
 from zope.app.location import Location
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.app.fssync import committer # The module
+from zope.app.fssync import committer, syncer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
 from zope.app.interfaces.fssync import IGlobalFSSyncService
@@ -150,12 +150,14 @@ def sort(lst):
     return lst
 
 
-class TestCommitterModule(TestBase):
+class TestSyncerModule(TestBase):
 
-    def test_get_adapter(self):
+    def test_getSerializer(self):
         obj = Sample()
-        adapter = committer.get_adapter(obj)
+        adapter = syncer.getSerializer(obj)
         self.assertEqual(adapter.__class__, DefaultFileAdpater)
+
+class TestCommitterModule(TestBase):
 
     def test_read_file(self):
         data = "12345\rabcde\n12345\r\nabcde"
@@ -184,6 +186,12 @@ class TestCommitterModule(TestBase):
         self.assertRaises(KeyError, committer.set_item,
                           container, "foo", 42, replace=True)
 
+    def create_object(self, *args, **kw):
+        # Helper for the create_object() tests.
+        c = Committer(syncer.getSerializer,
+                      getAnnotations=syncer.getAnnotations)
+        c.create_object(*args, **kw)
+
     def test_create_object_factory_file(self):
         provideSynchronizer(dict, DictAdapter)
         container = {}
@@ -191,7 +199,7 @@ class TestCommitterModule(TestBase):
         tfn = os.path.join(self.tempdir(), "foo")
         data = {"hello": "world"}
         self.writefile(dumps(data), tfn)
-        committer.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn)
         self.assertEqual(container, {"foo": data})
 
     def test_create_object_factory_directory(self):
@@ -200,7 +208,7 @@ class TestCommitterModule(TestBase):
         entry = {"flag": "added", "factory": PCname}
         tfn = os.path.join(self.tempdir(), "foo")
         os.mkdir(tfn)
-        committer.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.keys(), ["foo"])
         self.assertEqual(container["foo"].__class__, PretendContainer)
 
@@ -210,7 +218,7 @@ class TestCommitterModule(TestBase):
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
         self.writefile(dumps(data), tfn, "wb")
-        committer.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.items(), [("foo", ["hello", "world"])])
 
     def test_create_object_ifilefactory(self):
@@ -220,16 +228,17 @@ class TestCommitterModule(TestBase):
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
         self.writefile(dumps(data), tfn, "wb")
-        committer.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.holding, {"foo": ["hello", "world"]})
 
     def test_create_object_idirectoryfactory(self):
-        ztapi.provideAdapter(IContainer, IDirectoryFactory, directory_factory_maker)
+        ztapi.provideAdapter(IContainer, IDirectoryFactory,
+                             directory_factory_maker)
         container = PretendContainer()
         entry = {"flag": "added"}
         tfn = os.path.join(self.tempdir(), "foo")
         os.mkdir(tfn)
-        committer.create_object(container, "foo", entry, tfn)
+        self.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.holding["foo"].__class__, PretendContainer)
 
 
@@ -281,7 +290,8 @@ class TestCheckerClass(TestBase):
         self.fooentry["path"] = "/parent/child/foo"
 
         # Set up checker
-        self.checker = Checker(self.metadata)
+        self.checker = Checker(syncer.getSerializer, self.metadata,
+                               getAnnotations=syncer.getAnnotations)
 
     def check_errors(self, expected_errors):
         # Helper to call the checker and assert a given set of errors
@@ -504,7 +514,8 @@ class TestCommitterClass(TestCheckerClass):
 
     def setUp(self):
         TestCheckerClass.setUp(self)
-        self.committer = Committer(self.metadata)
+        self.committer = Committer(syncer.getSerializer, self.metadata,
+                                   getAnnotations=syncer.getAnnotations)
 
     def check_no_errors(self):
         TestCheckerClass.check_no_errors(self)
@@ -562,6 +573,7 @@ class TestCommitterClass(TestCheckerClass):
 
 def test_suite():
     s = unittest.TestSuite()
+    s.addTest(unittest.makeSuite(TestSyncerModule))
     s.addTest(unittest.makeSuite(TestCommitterModule))
     s.addTest(unittest.makeSuite(TestCheckerClass))
     s.addTest(unittest.makeSuite(TestCommitterClass))

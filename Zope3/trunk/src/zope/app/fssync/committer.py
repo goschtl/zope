@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.20 2004/01/13 19:32:20 fdrake Exp $
+$Id: committer.py,v 1.21 2004/01/13 22:28:46 fdrake Exp $
 """
 
 import os
@@ -46,13 +46,20 @@ class Checker(object):
     The public API consists of __init__(), check() and errors() only.
     """
 
-    def __init__(self, metadata=None, raise_on_conflicts=False):
+    def __init__(self,
+                 getSerializer,
+                 metadata=None,
+                 raise_on_conflicts=False,
+                 getAnnotations=lambda obj: None,
+                 ):
         """Constructor.  Optionally pass a metadata database."""
         if metadata is None:
             metadata = Metadata()
         self.metadata = metadata
         self.raise_on_conflicts = raise_on_conflicts
         self.conflicts = []
+        self.getSerializer = getSerializer
+        self.getAnnotations = getAnnotations
 
     def errors(self):
         """Return a list of errors (conflicts).
@@ -115,19 +122,19 @@ class Checker(object):
             except:
                 pass
             else:
-                adapter = get_adapter(obj)
+                adapter = self.getSerializer(obj)
                 extra = adapter.extra()
                 extrapath = fsutil.getextra(fspath)
                 if extra is not None and os.path.exists(extrapath):
                     self.check_dir(extra, extrapath)
-                ann = adapter.annotations()
+                ann = self.getAnnotations(obj)
                 annpath = fsutil.getannotations(fspath)
                 if ann is not None and os.path.exists(annpath):
                     self.check_dir(ann, annpath)
 
     def check_dir(self, container, fspath):
         """Helper to check a directory."""
-        adapter = get_adapter(container)
+        adapter = self.getSerializer(container)
         nameset = {}
         if IObjectDirectory.isImplementedBy(adapter):
             for name, obj in adapter.contents():
@@ -172,7 +179,7 @@ class Checker(object):
             if not os.path.exists(fspath):
                 self.conflict(fspath)
         obj = traverseName(container, name)
-        adapter = get_adapter(obj)
+        adapter = self.getSerializer(obj)
         if IObjectDirectory.isImplementedBy(adapter):
             if flag != "removed" or os.path.exists(fspath):
                 self.check_dir(obj, fspath)
@@ -198,8 +205,11 @@ class Committer(object):
     The public API consists of __init__() and synch() only.
     """
 
-    def __init__(self, metadata=None):
+    def __init__(self, getSerializer, metadata=None,
+                 getAnnotations=lambda obj: None):
         """Constructor.  Optionally pass a metadata database."""
+        self.getSerializer = getSerializer
+        self.getAnnotations = getAnnotations
         if metadata is None:
             metadata = Metadata()
         self.metadata = metadata
@@ -239,19 +249,19 @@ class Committer(object):
             except:
                 pass
             else:
-                adapter = get_adapter(obj)
+                adapter = self.getSerializer(obj)
                 extra = adapter.extra()
                 extrapath = fsutil.getextra(fspath)
                 if extra is not None and os.path.exists(extrapath):
                     self.synch_dir(extra, extrapath)
-                ann = adapter.annotations()
+                ann = self.getAnnotations(obj)
                 annpath = fsutil.getannotations(fspath)
                 if ann is not None and os.path.exists(annpath):
                     self.synch_dir(ann, annpath)
 
     def synch_dir(self, container, fspath):
         """Helper to synchronize a directory."""
-        adapter = get_adapter(container)
+        adapter = self.getSerializer(container)
         nameset = {} # name --> absolute path
         if IObjectDirectory.isImplementedBy(adapter):
             for name, obj in adapter.contents():
@@ -282,9 +292,9 @@ class Committer(object):
         """Helper to synchronize a new object."""
         entry = self.metadata.getentry(fspath)
         if entry:
-            create_object(container, name, entry, fspath)
+            self.create_object(container, name, entry, fspath)
             obj = traverseName(container, name)
-            adapter = get_adapter(obj)
+            adapter = self.getSerializer(obj)
             if IObjectDirectory.isImplementedBy(adapter):
                 self.synch_dir(obj, fspath)
 
@@ -298,12 +308,13 @@ class Committer(object):
             # This object was not included on the filesystem; skip it
             return
         obj = traverseName(container, name)
-        adapter = get_adapter(obj)
+        adapter = self.getSerializer(obj)
         if IObjectDirectory.isImplementedBy(adapter):
             self.synch_dir(obj, fspath)
         else:
             if adapter.typeIdentifier() != entry.get("type"):
-                create_object(container, name, entry, fspath, replace=True)
+                self.create_object(container, name, entry, fspath,
+                                   replace=True)
             else:
                 original_fn = fsutil.getoriginal(fspath)
                 if os.path.exists(original_fn):
@@ -320,7 +331,8 @@ class Committer(object):
                 if newdata != olddata:
                     if not entry.get("factory"):
                         # If there's no factory, we can't call setBody()
-                        create_object(container, name, entry, fspath, True)
+                        self.create_object(container, name, entry, fspath,
+                                           True)
                         obj = traverseName(container, name)
                     else:
                         adapter.setBody(newdata)
@@ -334,61 +346,61 @@ class Committer(object):
                     else:
                         publish(obj, ObjectModifiedEvent(obj))
 
+    def create_object(self, container, name, entry, fspath, replace=False):
+        """Helper to create an item in a container or mapping."""
+        factory_name = entry.get("factory")
+        if factory_name:
+            # A given factory overrides everything
+            factory = resolve(factory_name)
+            obj = factory()
+            obj = contained(obj, container, name=name)
+            adapter = self.getSerializer(obj)
+            if IObjectFile.isImplementedBy(adapter):
+                data = read_file(fspath)
+                adapter.setBody(data)
+        else:
+            # No factory; try using IFileFactory or IDirectoryFactory
+            as = getService(container, "Adapters")
+            isuffix = name.rfind(".")
+            if isuffix >= 0:
+                suffix = name[isuffix:]
+            else:
+                suffix = "."
+
+            if os.path.isdir(fspath):
+                iface = IDirectoryFactory
+            else:
+                iface = IFileFactory
+
+            factory = as.queryNamedAdapter(container, iface, suffix)
+            if factory is None:
+                factory = as.queryAdapter(container, iface)
+
+            if iface is IDirectoryFactory:
+                if factory:
+                    obj = factory(name)
+                    obj = removeAllProxies(obj)
+                else:
+                    raise SynchronizationError(
+                        "don't know how to create a directory",
+                        container,
+                        name)
+            else:
+                if factory:
+                    data = read_file(fspath)
+                    obj = factory(name, None, data)
+                    obj = removeAllProxies(obj)
+                else:
+                    # The file must contain an xml pickle, or we can't load it:
+                    s = read_file(fspath)
+                    s = fromxml(s)
+                    obj = fspickle.loads(s, container)
+
+        set_item(container, name, obj, replace)
+
 # Functions below this point are all helpers and not part of the
 # API offered by this module.  They can be functions because they
 # don't use the metadata database or add to the list of conflicts.
-
-def create_object(container, name, entry, fspath, replace=False):
-    """Helper to create an item in a container or mapping."""
-    factory_name = entry.get("factory")
-    if factory_name:
-        # A given factory overrides everything
-        factory = resolve(factory_name)
-        obj = factory()
-        obj = contained(obj, container, name=name)
-        adapter = get_adapter(obj)
-        if IObjectFile.isImplementedBy(adapter):
-            data = read_file(fspath)
-            adapter.setBody(data)
-    else:
-        # No factory; try using IFileFactory or IDirectoryFactory
-        as = getService(container, "Adapters")
-        isuffix = name.rfind(".")
-        if isuffix >= 0:
-            suffix = name[isuffix:]
-        else:
-            suffix = "."
-
-        if os.path.isdir(fspath):
-            iface = IDirectoryFactory
-        else:
-            iface = IFileFactory
-
-        factory = as.queryNamedAdapter(container, iface, suffix)
-        if factory is None:
-            factory = as.queryAdapter(container, iface)
-
-        if iface is IDirectoryFactory:
-            if factory:
-                obj = factory(name)
-                obj = removeAllProxies(obj)
-            else:
-                raise SynchronizationError(
-                    "don't know how to create a directory",
-                    container,
-                    name)
-        else:
-            if factory:
-                data = read_file(fspath)
-                obj = factory(name, None, data)
-                obj = removeAllProxies(obj)
-            else:
-                # The file must contain an xml pickle, or we can't load it:
-                s = read_file(fspath)
-                s = fromxml(s)
-                obj = fspickle.loads(s, container)
-
-    set_item(container, name, obj, replace)
 
 def set_item(container, name, obj, replace=False):
     """Helper to set an item in a container or mapping."""
@@ -412,8 +424,3 @@ def read_file(fspath):
     finally:
         f.close()
     return data
-
-def get_adapter(obj):
-    """Helper to get the special fssync adapter."""
-    syncService = getService(obj, 'FSRegistryService')
-    return syncService.getSynchronizer(obj)

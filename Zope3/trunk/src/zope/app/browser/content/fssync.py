@@ -13,7 +13,7 @@
 ##############################################################################
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.25 2003/09/21 17:30:22 jim Exp $
+$Id: fssync.py,v 1.26 2004/01/13 22:28:46 fdrake Exp $
 """
 import os
 import cgi
@@ -25,7 +25,7 @@ from transaction import get_transaction
 from zope.app.publisher.browser import BrowserView
 from zope.app.traversing import getName, getParent, getRoot
 from zope.fssync.snarf import Snarfer, Unsnarfer
-from zope.app.fssync.syncer import toFS
+from zope.app.fssync import syncer
 from zope.app.fssync.committer import Committer, Checker
 from zope.fssync.metadata import Metadata
 
@@ -50,7 +50,9 @@ class SnarfFile(BrowserView):
         dirname = tempfile.mktemp()
         try:
             os.mkdir(dirname)
-            toFS(self.context, getName(self.context) or "root", dirname)
+            syncer.toFS(self.context,
+                        getName(self.context) or "root",
+                        dirname)
             return snarf_dir(self.request.response, dirname)
         finally:
             if os.path.isdir(dirname):
@@ -129,7 +131,8 @@ class SnarfSubmission(BrowserView):
         uns.unsnarf(self.tempdir)
 
     def call_committer(self):
-        c = Committer(self.metadata)
+        c = Committer(syncer.getSerializer, self.metadata,
+                      getAnnotations=syncer.getAnnotations)
         c.synch(self.container, self.name, self.fspath)
 
 
@@ -193,11 +196,17 @@ class SnarfCommit(SnarfSubmission):
     def make_metadata(self):
         self.metadata = Metadata()
 
+    def get_checker(self, raise_on_conflicts=False):
+        return Checker(syncer.getSerializer,
+                       self.metadata,
+                       raise_on_conflicts,
+                       getAnnotations=syncer.getAnnotations)
+
     def call_checker(self):
         if self.get_arg("raise"):
-            c = Checker(self.metadata, True)
+            c = self.get_checker(True)
         else:
-            c = Checker(self.metadata)
+            c = self.get_checker()
         c.check(self.container, self.name, self.fspath)
         self.errors = c.errors()
 
@@ -214,7 +223,9 @@ class SnarfCommit(SnarfSubmission):
     def write_to_filesystem(self):
         shutil.rmtree(self.tempdir) # Start with clean slate
         os.mkdir(self.tempdir)
-        toFS(self.context, getName(self.context) or "root", self.tempdir)
+        syncer.toFS(self.context,
+                    getName(self.context) or "root",
+                    self.tempdir)
 
     def send_archive(self):
         return snarf_dir(self.request.response, self.tempdir)

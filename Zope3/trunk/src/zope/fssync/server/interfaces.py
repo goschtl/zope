@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for filesystem synchronization.
 
-$Id: interfaces.py,v 1.1 2004/01/13 19:32:24 fdrake Exp $
+$Id: interfaces.py,v 1.2 2004/01/13 22:28:47 fdrake Exp $
 """
 
 from zope.interface import Interface
@@ -28,13 +28,6 @@ class IObjectEntry(Interface):
         The data are returned as a mapping object that allows *both*
         data retrieval and setting.  The mapping is from names to
         objects that will be serialized to or from the file system.
-        """
-
-    def annotations():
-        """Returns annotations data for the entry.
-
-        This behaves similar to extra().  The default implementation
-        might return queryAdapter(obj, IAnnotations).
         """
 
     def typeIdentifier():
