@@ -32,6 +32,7 @@ from zope.app.annotation.attribute import AttributeAnnotations
 
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
+from zope.app.cache.caching import getCacheForObject
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.site.interfaces import ISimpleService
 
@@ -77,10 +78,10 @@ class ConnectionUtilityStub:
 
     def __init__(self):
         self.connection = ConnectionStub()
-        
+
     def __call__(self):
         return  self.connection
-        
+
 class ConnectionServiceStub:
     implements(IConnectionService, ISimpleService)
 
@@ -122,6 +123,32 @@ class LocatableStub:
         return str(id(self.obj))
 
 
+class SQLScriptNoICacheableTest(PlacelessSetup, unittest.TestCase):
+
+    def setUp(self):
+        super(SQLScriptNoICacheableTest, self).setUp()
+        classImplements(SQLScript, IAttributeAnnotatable)
+        self.connectionUtilityStub = ConnectionUtilityStub()
+        ztapi.provideUtility(IZopeDatabaseAdapter, self.connectionUtilityStub,
+                             'my_connection')
+        ztapi.provideAdapter(ISQLScript, IPhysicallyLocatable,
+                             LocatableStub)
+
+    def _getScript(self):
+        return SQLScript("my_connection",
+                         "SELECT name, counter FROM Table WHERE"
+                         " <dtml-sqltest id type=int>",
+                         'id')
+
+    def testConnectionName(self):
+        # Test that we can still set the connection name
+        # in the absence of a ICacheable adapter.
+        script = self._getScript()
+        self.assertEqual(getCacheForObject(script), None)
+        self.assertEqual('my_connection', script.connectionName)
+        script.connectionName = 'test_conn'
+        self.assertEqual('test_conn', script.connectionName)
+
 class SQLScriptTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -130,7 +157,7 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
         self.connectionUtilityStub = ConnectionUtilityStub()
         ztapi.provideUtility(IZopeDatabaseAdapter, self.connectionUtilityStub,
                              'my_connection')
-        
+
         ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
                              AttributeAnnotations)
         ztapi.provideAdapter(ISQLScript, IPhysicallyLocatable,
@@ -211,7 +238,10 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(SQLScriptTest)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(SQLScriptTest))
+    suite.addTest(unittest.makeSuite(SQLScriptNoICacheableTest))
+    return suite
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
