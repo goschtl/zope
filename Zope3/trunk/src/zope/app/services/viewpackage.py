@@ -13,7 +13,7 @@
 ##############################################################################
 """View package.
 
-$Id: viewpackage.py,v 1.4 2003/02/07 15:09:51 jim Exp $
+$Id: viewpackage.py,v 1.5 2003/02/07 15:52:21 jim Exp $
 """
 __metaclass__ = type
 
@@ -49,7 +49,7 @@ class ViewPackage(BTreeContainer):
 
     def setObject(self, name, object):
         if not IZPTTemplate.isImplementedBy(object):
-            raise TypeError("Can only add packages")
+            raise TypeError("Can only add templates", object)
 
         # super() does not work on a context wrapped instance
         base = removeAllProxies(self)

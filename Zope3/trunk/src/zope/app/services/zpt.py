@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.4 2003/02/03 20:57:47 jim Exp $
+$Id: zpt.py,v 1.5 2003/02/07 15:52:21 jim Exp $
 """
 
 import re
@@ -30,6 +30,7 @@ from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.interfaces.services.interfaces import IZPTTemplate
 from zope.app.interfaces.index.text import ISearchableText
+from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
 
 class ZPTTemplate(AppPT, PageTemplate, Persistent):
 
@@ -87,3 +88,42 @@ class SearchableText:
             text = tag.sub('', text)
 
         return [text]
+
+# Adapters for file-system emulation
+
+class ReadFile:
+
+    __implements__ = IReadFile
+
+    def __init__(self, context):
+        self.context = context
+
+    def read(self):
+        return self.context.source
+
+    def size(self):
+        return len(self.context.source)
+        
+
+class WriteFile:
+
+    __implements__ = IWriteFile
+
+    def __init__(self, context):
+        self.context = context
+
+    def write(self, data):
+        self.context.source = data
+
+
+class ZPTFactory:
+
+    __implements__ = IFileFactory
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name, content_type, data):
+        r = ZPTTemplate()
+        r.source = data
+        return r

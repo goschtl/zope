@@ -102,6 +102,27 @@
       />
 </content>
 
+<adapter 
+  for="zope.app.interfaces.services.interfaces.IZPTTemplate"
+  provides="zope.app.interfaces.file.IReadFile"
+  factory=".zpt.ReadFile"
+  permission="zope.ManageServices"
+  />
+
+<adapter 
+  for="zope.app.interfaces.services.interfaces.IZPTTemplate"
+  provides="zope.app.interfaces.file.IWriteFile"
+  factory=".zpt.WriteFile"
+  permission="zope.ManageServices"
+  />
+
+<adapter 
+  for="zope.app.interfaces.services.service.IViewPackage"
+  provides="zope.app.interfaces.file.IFileFactory"
+  factory=".zpt.ZPTFactory"
+  permission="zope.ManageServices"
+  />
+
 <!-- Role Templates -->
 
 <content class="zope.app.services.role.RoleService">
