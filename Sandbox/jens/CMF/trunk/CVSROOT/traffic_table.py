@@ -38,9 +38,11 @@ optional fields (optional fields have default values described)
    happening.)
 """
 
-remote = {'host': "cvs.zope.org",
-          'acct': "anonymous",
-          'repodir': "/cvs-repository"}
+# Default is *no* remote - people explicitly propagation if they want it.
+remote = None
+public_remote = {'host': "cvs.zope.org",
+                 'acct': "anonymous",
+                 'repodir': "/cvs-repository"}
 products_remote = {'host': "cvs.zope.org",
                    'acct': "anonymous",
                    'repodir': "/cvs-repository",
@@ -50,10 +52,13 @@ zopeaddr = ["zope-checkins@zope.org"]
 
 table = [
     {'path': "CVSROOT",
+     'remote': public_remote,
      'addrs': ["digicool-cvs@zope.org"],
      'excludes': ["/history"]},
 
     {'path': "test",
+     'remote': public_remote,
+     'host': "cvs.zope.org",
      'addrs': "klm@digicool.com"},
 
     {'path': "Operations",
@@ -65,7 +70,9 @@ table = [
                "karl@digicool.com"],
      'remote': None},
 
-    {'path': "Zope2", 'addrs': zopeaddr},
+    {'path': "Zope2",
+     'remote': public_remote,
+     'addrs': zopeaddr},
 
     {'path': "ZopeDocs",
      'addrs': 'zopedocs-checkins@zope.org',
