@@ -32,9 +32,8 @@ Things that need to be done
   http://www.python.org/sf/935117 for more info.)
 
 - Make directory inclusion through `PACKAGE.cfg` honor PACKAGE.cfg
-  files in included directories.  This shouldn't be hard, but opens up
-  a question: should the <load> section of the such `PACKAGE.cfg`
-  files be honored as well?
+  files in included directories.  The <load> section of the such
+  `PACKAGE.cfg` files should be honored as well.
 
 - Fix up finddeps.py to stop searching at defined boundaries.  How to
   define these boundaries is in flux at the moment.
