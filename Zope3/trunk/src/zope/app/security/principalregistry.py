@@ -13,8 +13,9 @@
 ##############################################################################
 """Global Authentication Service or Principal Registry
 
-$Id: principalregistry.py,v 1.2 2004/03/13 15:21:32 srichter Exp $
+$Id: principalregistry.py,v 1.3 2004/04/02 00:45:42 srichter Exp $
 """
+from warnings import warn
 from zope.interface import implements
 from zope.exceptions import NotFoundError
 from zope.app import zapi
