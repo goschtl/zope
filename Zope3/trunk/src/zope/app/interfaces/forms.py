@@ -13,9 +13,11 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: forms.py,v 1.2 2002/12/25 14:12:56 jim Exp $
+$Id: forms.py,v 1.3 2003/01/03 17:47:21 stevea Exp $
 """
 
+from zope.component.interfaces import IView
+from zope.interface import Attribute
 
 class WidgetInputError(Exception):
     """There were one or more user input errors
@@ -68,13 +70,6 @@ class ErrorContainer(Exception):
 class WidgetsError(ErrorContainer):
     """A collection of errors from widget processing.
     """
-
-
-"""
-$Id: forms.py,v 1.2 2002/12/25 14:12:56 jim Exp $
-"""
-from zope.component.interfaces import IView
-from zope.interface import Attribute
 
 class IWidget(IView):
     """Generically describes the behavior of a widget.
