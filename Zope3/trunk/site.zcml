@@ -10,7 +10,7 @@
 
 
 <!-- Remove the following directive if you don't want public access -->
-<grant permission="Zope.View" role="Anonymous" />
+<grant permission="zope.View" role="Anonymous" />
 
 <grant permission="zope.View"              role="Manager" />
 <grant permission="zope.ManageContent"     role="Manager" />
