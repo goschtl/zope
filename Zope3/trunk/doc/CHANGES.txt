@@ -41,6 +41,9 @@ Zope Changes
         
     Restructuring
 
+      - Implemented both, getCell and queryCell, for ISecurityMap. Also
+        updated the interface.
+
       - Removed CacheName field and replaced it by a 'Cache Names' vocabulary
         and a Choice field.
 
@@ -52,6 +55,12 @@ Zope Changes
         directive was moved to the browser namespace.
 
     Bug Fixes
+
+      - Removed 'grants' module from zope.app.security.interfaces
+        (ISecurityMap). It is (including implementation) available at
+        zope.app.securitypolicy.interfaces.
+
+      - Wrote tests for security map implementation.
 
   Zope X3.0.0 Beta 2
 
