@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.8 2003/08/17 06:09:00 philikon Exp $
+$Id: test_network.py,v 1.9 2003/09/22 20:32:35 fdrake Exp $
 """
 
 import os
@@ -166,6 +166,7 @@ class TestNetwork(TempFiles):
             self.assertRaises(Error, self.network.httpreq, "/xyzzy", "@@view")
         finally:
             svr.stop()
+            svr.join()
 
     def test_slurptext_html(self):
         fp = StringIO("<p>This is some\n\ntext.</p>\n")
