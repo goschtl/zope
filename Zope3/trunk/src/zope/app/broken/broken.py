@@ -15,7 +15,7 @@
 
 $Id$
 """
-
+__docformat__ = 'restructuredtext'
 
 import ZODB.broken
 import zope.interface
@@ -81,7 +81,7 @@ def installBroken(event):
       >>> installBroken(DatabaseOpened(db))
     
     If someone tries to load an object for which there is no class,
-    then they will get a Broken object. We can simulate that by
+    then they will get a `Broken` object. We can simulate that by
     calling the database's class factory directly with a connection
     (None will do for our purposes, since the class factory function
     we register ignores the connection argument), a non-existent
@@ -89,7 +89,7 @@ def installBroken(event):
 
       >>> cls = db.classFactory(None, 'ZODB.not.there', 'atall')
 
-    The class that comes back is a subclass of Broken::
+    The class that comes back is a subclass of `Broken`::
 
       >>> issubclass(cls, Broken)
       True
@@ -102,7 +102,7 @@ def installBroken(event):
       True
 
     and it has a security checker that is the same as the checker that
-    Broken has::
+    `Broken` has::
 
       >>> (cls.__Security_checker__ is
       ...     zope.security.checker.getCheckerForInstancesOf(Broken))
