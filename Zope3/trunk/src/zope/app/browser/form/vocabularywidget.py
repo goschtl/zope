@@ -67,7 +67,7 @@ def _get_vocabulary_edit_widget(field, request, ismulti):
     view = _get_vocabulary_widget(field, request, viewname)
     query = field.vocabulary.getQuery()
     if query is None and IIterableVocabulary.isImplementedBy(field.vocabulary):
-        query = IterableVocabularyQuery(vocabulary)
+        query = IterableVocabularyQuery(field.vocabulary)
     if query is not None:
         queryview = getView(query, queryname, request)
         view.setQuery(query, queryview)
