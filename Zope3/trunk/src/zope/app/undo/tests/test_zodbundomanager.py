@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_zodbundomanager.py,v 1.2 2004/03/18 14:33:22 philikon Exp $
+$Id: test_zodbundomanager.py,v 1.3 2004/03/19 18:34:02 philikon Exp $
 """
 
 from time import time
 from unittest import TestCase, main, makeSuite
 
 from zope.testing.cleanup import CleanUp 
-from zope.app.undo.undo import ZODBUndoManager
+from zope.app.undo import ZODBUndoManager
 
 def dict(**kw): return kw
 
