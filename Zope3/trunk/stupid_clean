@@ -1,6 +1,10 @@
 #! /bin/sh
 
-files=`find -name \*.o -o -name \*.so -o -name \*.py[co]`
+# XXX Note! this won't work for filenames that have spaces in them!
+#     Unfortunately find -print0 and xargs -0 don't exist on
+#     some platforms (Solaris for instance) so we can't use them...
+
+files=`find . -name \*.o -o -name \*.so -o -name \*.py[co]`
 if [ ! -z "$files" ] ; then
     rm $files
 fi
