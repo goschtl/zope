@@ -1,0 +1,39 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           xmlns:five="http://namespaces.zope.org/five">
+
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    attribute="eagle"
+    name="eagle.txt"
+    permission="zope2.ViewManagementScreens"
+    />
+
+  <five:traversable
+    class="OFS.Folder.Folder"
+    />
+
+  <browser:page
+    for="Products.Five.interfaces.IFolder"
+    class=".browser.SimpleFolderView"
+    attribute="eagle"
+    name="eagle.txt"
+    permission="zope2.Public"
+    />
+
+  <content class=".simplecontent.SimpleContent">
+
+    <allow interface=".interfaces.IPublicSimpleContent" />
+
+    <require permission="zope2.ViewManagementScreens"
+	     interface=".interfaces.IProtectedSimpleContent"
+	     />
+
+  </content>
+
+  <five:traversable 
+   class=".simplecontent.SimpleContent" 
+   />
+
+</configure>
