@@ -3,7 +3,7 @@ Things to do for the next release (sorted by importance)
 ============================================================
 
 - Distribution, packaging an installation system.  Fred is working on
-  a prototype. This will eventually inclide Zope-2 style installation,
+  a prototype. This will eventually include Zope-2 style installation,
   configuration and process management.
 
 - http://dev.zope.org/Zope3/NoMoreSchemaBinding
