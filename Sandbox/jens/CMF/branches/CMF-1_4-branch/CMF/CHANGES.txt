@@ -2,7 +2,13 @@ Next release
 
   Bug Fixes
 
-    - CMFCore.PortalFolder: checkIdAvailable failed to catch 
+    - CMFDefault.Document and CMFDefault.Link: PUT() caused improper
+      splitting of 'Contributors' metadata header.
+      Also see http://plone.org/collector/3217
+      
+    - CMFCore.utils: Introduced contributorsplitter() utility function.
+
+    - CMFCore.PortalFolder: checkIdAvailable() failed to catch 
       zExceptions.BadRequest.
 
 CMF 1.4.5 (2004/07/08)
