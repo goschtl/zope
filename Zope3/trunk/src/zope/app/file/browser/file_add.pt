@@ -5,7 +5,7 @@
   <form action="." tal:attributes="action request/URL"
         method="post" enctype="multipart/form-data">
 
-    <h3>Add a File</h3>
+    <h3 i18n:translate="">Add a File</h3>
 
     <div tal:define="errors view/errors" tal:content="errors" />
 
@@ -13,7 +13,7 @@
       <div class="label">
         <label for="field.contentType"
                title="The content type identifies the type of data."
-          >Content Type</label>
+               i18n:attributes="title" i18n:translate="">Content Type</label>
       </div>
       <div class="field">
         <input class="textType"
@@ -27,7 +27,8 @@
     <div class="row">
       <div class="label">
         <label for="field.data"
-               title="The actual content of the object.">Data</label>
+               title="The actual content of the object."
+               i18n:attributes="title" i18n:translate="">Data</label>
       </div>
       <div class="field">
         <input class="fileType"
@@ -40,12 +41,14 @@
     <div class="row">
       <div class="controls"><hr />
 
-        <input type="submit" value="Refresh" />
-        <input type="submit" value="Add" name="UPDATE_SUBMIT" />
+        <input type="submit" i18n:attributes="value refresh-button"
+            value="Refresh" />
+        <input type="submit" i18n:attributes="value add-button"
+            value="Add" name="UPDATE_SUBMIT" />
 
         &nbsp;&nbsp;<b i18n:translate="">Object Name</b>&nbsp;&nbsp;
         <input type="text" name="add_input_name" value="" />
-          
+
       </div>
     </div>
 
