@@ -16,7 +16,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Mar 31 17:27:07 2004\n"
+"POT-Creation-Date: Thu Apr  1 17:02:04 2004\n"
 "PO-Revision-Date: 2004-03-19 18:20+0000\n"
 "Last-Translator: Dmitry Vasiliev <dima@hlabs.spb.ru>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -536,8 +536,8 @@ msgstr "---выбрать интерфейс---"
 
 # Default: "Anything"
 #: src/zope/app/component/browser/interfacewidget.py:299
-#: src/zope/app/presentation/presentation.py:262
-#: src/zope/app/presentation/presentation.py:343
+#: src/zope/app/presentation/presentation.py:263
+#: src/zope/app/presentation/presentation.py:344
 msgid "any-interface"
 msgstr ""
 
@@ -1124,6 +1124,7 @@ msgstr ""
 #: src/zope/app/dublincore/browser/edit.pt:14
 #: src/zope/app/menu/browser/menu_contents.pt:31
 #: src/zope/app/schema/browser/schema_edit.pt:38
+#: src/zope/app/site/browser/interfacebrowse.pt:11
 msgid "Title"
 msgstr "Заголовок"
 
@@ -1421,6 +1422,7 @@ msgid "Message Id"
 msgstr "Идентификатор сообщения"
 
 #: src/zope/app/i18n/browser/synchronize.pt:89
+#: src/zope/app/site/browser/interfacedetail.pt:79
 msgid "Status"
 msgstr "Статус"
 
@@ -2105,33 +2107,33 @@ msgstr ""
 msgid "View Folder"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:265
+#: src/zope/app/presentation/presentation.py:266
 msgid "${view_name} ${ptype} View for ${iface_name}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:267
+#: src/zope/app/presentation/presentation.py:268
 msgid "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:278
+#: src/zope/app/presentation/presentation.py:279
 msgid "Registered by ZCML"
 msgstr "Зарегистрирован через ZCML"
 
 # Default: "View"
-#: src/zope/app/presentation/presentation.py:329
+#: src/zope/app/presentation/presentation.py:330
 msgid "view-component"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:348
+#: src/zope/app/presentation/presentation.py:349
 msgid "${view_name} for ${pname} {what} {iface_name}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:350
+#: src/zope/app/presentation/presentation.py:351
 msgid "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
 msgstr ""
 
 # Default: "Page"
-#: src/zope/app/presentation/presentation.py:405
+#: src/zope/app/presentation/presentation.py:406
 msgid "page-component"
 msgstr ""
 
@@ -2363,7 +2365,7 @@ msgid ""
 msgstr ""
 
 #: src/zope/app/registration/browser/__init__.py:115
-#: src/zope/app/registration/browser/changeregistrations.pt:19
+#: src/zope/app/site/browser/serviceactivation.pt:37
 msgid "Disabled"
 msgstr "Заблокирован"
 
@@ -2374,6 +2376,7 @@ msgstr ""
 #: src/zope/app/registration/browser/configure.zcml:40
 #: src/zope/app/registration/browser/configure.zcml:88
 #: src/zope/app/site/browser/serviceactivation.pt:27
+#: src/zope/app/site/browser/tool.pt:41
 msgid "Registration"
 msgstr "Регистрация"
 
@@ -2429,19 +2432,27 @@ msgstr "(изменить)"
 msgid "This object is currently active."
 msgstr "Данный объект в активном состоянии"
 
-#: src/zope/app/registration/browser/registration.pt:28
+# Default: "Deactivate"
+#: src/zope/app/registration/browser/registration.pt:25
+#: src/zope/app/site/browser/services.pt:68
+#: src/zope/app/site/browser/tool.pt:92
+#: src/zope/app/utility/browser/utilities.pt:44
+msgid "deactivate-button"
+msgstr "Деактивировать"
+
+#: src/zope/app/registration/browser/registration.pt:29
 msgid "This object is currently inactive."
 msgstr ""
 
-#: src/zope/app/registration/browser/registration.pt:34
+#: src/zope/app/registration/browser/registration.pt:35
 msgid "Advanced Options"
 msgstr "Расширенные опции"
 
-#: src/zope/app/registration/browser/registration.pt:41
+#: src/zope/app/registration/browser/registration.pt:42
 msgid "This object is not currently active."
 msgstr "Данный объект не активирован."
 
-#: src/zope/app/registration/browser/registration.pt:43
+#: src/zope/app/registration/browser/registration.pt:44
 msgid ""
 "This object won't actually be used unless it is registered to perform a "
 "specific function and is activated."
@@ -2588,6 +2599,7 @@ msgid "Edit Schema"
 msgstr "Редактировать схему"
 
 #: src/zope/app/schema/browser/schema_edit.pt:37
+#: src/zope/app/site/browser/interfacedetail.pt:47
 #: src/zope/app/sqlscript/browser/test.pt:15
 msgid "Type"
 msgstr "Тип"
@@ -3081,6 +3093,8 @@ msgstr ""
 #: src/zope/app/introspector/introspector.pt:52
 #: src/zope/app/introspector/introspector.pt:151
 #: src/zope/app/introspector/marker.pt:63
+#: src/zope/app/site/browser/interfacedetail.pt:21
+#: src/zope/app/site/browser/interfacedetail.pt:48
 msgid "Description"
 msgstr "Описание"
 
@@ -3299,54 +3313,54 @@ msgid ""
 "the cookie when the browser is quit. Set to 0 to never expire. "
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:105
+#: src/zope/app/site/browser/__init__.py:107
 msgid "Add Service"
 msgstr "Добавить сервис"
 
-#: src/zope/app/site/browser/__init__.py:142
+#: src/zope/app/site/browser/__init__.py:144
 #: src/zope/app/schema/browser/schema_add.pt:8
 msgid "Add Utility"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:233
+#: src/zope/app/site/browser/__init__.py:235
 msgid "Activated: ${activated_services}"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:237
+#: src/zope/app/site/browser/__init__.py:239
 msgid "All of the checked services were already active"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:248
+#: src/zope/app/site/browser/__init__.py:250
 msgid "Deactivated: ${deactivated_services}"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:252
+#: src/zope/app/site/browser/__init__.py:254
 msgid "None of the checked services were active"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:263
+#: src/zope/app/site/browser/__init__.py:265
 msgid ""
 "Can't delete active service(s): ${service_names}; use the Deactivate button "
 "to deactivate"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:297
+#: src/zope/app/site/browser/__init__.py:299
 msgid "Deleted: ${service_names}"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:414
+#: src/zope/app/site/browser/__init__.py:416
 msgid "Invalid service type specified"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:421
+#: src/zope/app/site/browser/__init__.py:423
 msgid "No change"
 msgstr ""
 
-#: src/zope/app/site/browser/__init__.py:425
+#: src/zope/app/site/browser/__init__.py:427
 msgid "Service deactivated"
-msgstr ""
+msgstr "Сервис деактивирован"
 
-#: src/zope/app/site/browser/__init__.py:428
+#: src/zope/app/site/browser/__init__.py:430
 msgid "${active_services} activated"
 msgstr ""
 
@@ -3393,7 +3407,7 @@ msgstr "Добавить сайт"
 
 #: src/zope/app/site/browser/configure.zcml:186
 msgid "Edit Service Registration"
-msgstr ""
+msgstr "Редактирование регистрации сервиса"
 
 #: src/zope/app/site/browser/configure.zcml:210
 msgid "Takes you to a menu of services to add"
@@ -3402,7 +3416,7 @@ msgstr ""
 #: src/zope/app/site/browser/configure.zcml:210
 #: src/zope/app/site/browser/serviceactivation.pt:26
 msgid "Service"
-msgstr ""
+msgstr "Сервис"
 
 #: src/zope/app/site/browser/configure.zcml:232
 msgid "Service Tools"
@@ -3439,13 +3453,29 @@ msgstr "Задачи"
 msgid "Services"
 msgstr "Сервисы"
 
+#: src/zope/app/site/browser/interfacebrowse.pt:10
+msgid "Interface Name"
+msgstr "Название интерфейса"
+
 #: src/zope/app/site/browser/interfacebrowse.pt:5
 msgid "Interfaces registered with the Utility service"
-msgstr ""
+msgstr "Интерфейсы зарегистрированные через сервис Утилит"
 
 #: src/zope/app/site/browser/interfacedetail.pt:11
 msgid "Documentation"
-msgstr ""
+msgstr "Документация"
+
+#: src/zope/app/site/browser/interfacedetail.pt:20
+msgid "Method Signature"
+msgstr "Определение метода"
+
+#: src/zope/app/site/browser/interfacedetail.pt:46
+msgid "Field Name"
+msgstr "Название поля"
+
+#: src/zope/app/site/browser/interfacedetail.pt:67
+msgid "* indicates required fields."
+msgstr "* - обязательные поля."
 
 #: src/zope/app/site/browser/interfacedetail.pt:7
 msgid "Interface ${iface_name}"
@@ -3454,6 +3484,15 @@ msgstr "Интерфейс ${iface_name}"
 #: src/zope/app/site/browser/interfacedetail.pt:72
 msgid "Registrations for ${service_name} service"
 msgstr "Регистрация для ${service_name} сервиса"
+
+#: src/zope/app/site/browser/interfacedetail.pt:80
+#, fuzzy
+msgid "Usage Summary"
+msgstr "Регистрации"
+
+#: src/zope/app/site/browser/interfacedetail.pt:81
+msgid "Implementation Summary"
+msgstr ""
 
 #: src/zope/app/site/browser/serviceactivation.pt:13
 msgid "Registrations for service ${service_type}"
@@ -3469,9 +3508,9 @@ msgid ""
 "The (change registration) link allows activating a different implementation "
 "or disabling the service altogether."
 msgstr ""
-"Если сервис не заблокирован - имя сервиса является ссылкой на активный сервис. "
-"Ссылка (изменить регистрацию) позволяет активировать другую реализацию сервиса или "
-"совсем запретить сервис."
+"Если сервис не заблокирован - имя сервиса является ссылкой на активный "
+"сервис. Ссылка (изменить регистрацию) позволяет активировать другую "
+"реализацию сервиса или совсем запретить сервис."
 
 #: src/zope/app/site/browser/services.pt:5
 msgid "Services registered in this site manager"
@@ -3480,13 +3519,6 @@ msgstr "Сервисы зарегистрированные для данной 
 #: src/zope/app/site/browser/services.pt:54
 msgid "(change registration)"
 msgstr "(изменить регистрацию)"
-
-# Default: "Deactivate"
-#: src/zope/app/site/browser/services.pt:68
-#: src/zope/app/site/browser/tool.pt:92
-#: src/zope/app/utility/browser/utilities.pt:44
-msgid "deactivate-button"
-msgstr "Деактивировать"
 
 #: src/zope/app/site/browser/tasks.pt:15
 msgid "label-tools"
@@ -3502,10 +3534,11 @@ msgid ""
 "tools)."
 msgstr ""
 "Иструментарий включает сервисы и утилиты. Сервисы регистрируют себя через "
-"Сервис Сервисов, утилиты через Сервис Утилит. Они могут выполнять следующие задачи: "
-"логгинг ошибок, переводы, аутентификацию и т.п. Вы можете конфигурировать сервисы и "
-"утилиты уже присутствующие для данного сайта или добавить новые сервисы и/или утилиты "
-"(которые могут взять на себя обязанности уже имеющегося инструментария)."
+"сервис Сервисов, утилиты через сервис Утилит. Они могут выполнять следующие "
+"задачи: логгинг ошибок, переводы, аутентификацию и т.п. Вы можете "
+"конфигурировать сервисы и утилиты уже присутствующие для данного сайта или "
+"добавить новые сервисы и/или утилиты (которые могут взять на себя "
+"обязанности уже имеющегося инструментария)."
 
 # Default: "Configure services"
 #: src/zope/app/site/browser/tasks.pt:30
@@ -3540,10 +3573,10 @@ msgid ""
 "The first step in creating a new software package is to create a new Site "
 "Management Folder to contain the software."
 msgstr ""
-"Вы может настроить поведение уже присутствующего программного обеспечения или "
-"определить новое. Первый шаг для создания нового пакета программного обеспечения - это "
-"создание новой папки управления сайтом которая будет содержать новое программное "
-"обеспечение."
+"Вы может настроить поведение уже присутствующего программного обеспечения "
+"или определить новое. Первый шаг для создания нового пакета программного "
+"обеспечения - это создание новой папки управления сайтом которая будет "
+"содержать новое программное обеспечение."
 
 # Default: "Customize the behavior of existing software"
 #: src/zope/app/site/browser/tasks.pt:68
@@ -3583,6 +3616,10 @@ msgstr ""
 "Если инструментарий не заблокирован имя инструментария ссылается на активный "
 "инструментарий..."
 
+#: src/zope/app/site/browser/tool.pt:42
+msgid "Parent"
+msgstr "Родитель"
+
 #: src/zope/app/site/browser/tool.pt:66
 msgid "active"
 msgstr "Активен"
@@ -3599,6 +3636,7 @@ msgstr "Доступный инструментарий"
 #: src/zope/app/container/browser/contents.pt:32
 #: src/zope/app/container/browser/index.pt:26
 #: src/zope/app/schema/browser/schema_edit.pt:36
+#: src/zope/app/site/browser/tool.pt:40
 #: src/zope/app/workflow/browser/instancecontainer_index.pt:19
 #: src/zope/app/workflow/browser/instancecontainer_main.pt:18
 msgid "Name"
