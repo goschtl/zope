@@ -13,13 +13,13 @@
 ##############################################################################
 """Common Schema Error Names
 
-$Id: ErrorNames.py,v 1.3 2002/07/14 13:32:53 srichter Exp $
+$Id: ErrorNames.py,v 1.4 2002/07/14 17:30:32 faassen Exp $
 """
 WrongType = "WrongType"
 
 RequiredMissing ='RequiredMissing'
 
-RequiredEmptyString = 'RequiredEmptyString'
+RequiredEmptyStr = 'RequiredEmptyString'
 
 TooBig = 'TooBig'
 

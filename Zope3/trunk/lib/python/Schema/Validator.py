@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Validator.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: Validator.py,v 1.2 2002/07/14 17:30:32 faassen Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
@@ -59,12 +59,12 @@ class RequiredValidator(Validator):
                 raise StopValidation
         return value
 
-class StringRequiredValidator(Validator):
-    """Empty Strings are not acceptable for a required field."""
+class StrRequiredValidator(Validator):
+    """Empty Str are not acceptable for a required field."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         if self.field.required and value == '':
-            raise ValidationError, ErrorNames.RequiredEmptyString
+            raise ValidationError, ErrorNames.RequiredEmptyStr
         return value
 
 class MinimumLengthValidator(Validator):
@@ -217,18 +217,18 @@ class SingleValueValidator(ContainerValidator):
     """Validator for Single Value Fields"""
     validators = ContainerValidator.validators + [AllowedValuesValidator] 
     
-class StringValidator(SingleValueValidator):
-    """Completely validates a String Field."""
-    validators = SingleValueValidator.validators + [StringRequiredValidator,
+class StrValidator(SingleValueValidator):
+    """Completely validates a Str Field."""
+    validators = SingleValueValidator.validators + [StrRequiredValidator,
                                                     WhitespaceValidator,
                                                     MinimumLengthValidator,
                                                     MaximumLengthValidator]
 
-class BooleanValidator(SingleValueValidator):
-    """Completely validates a Boolean Field."""
+class BoolValidator(SingleValueValidator):
+    """Completely validates a Bool Field."""
 
-class IntegerValidator(SingleValueValidator):
-    """Completely validates a Integer Field."""
+class IntValidator(SingleValueValidator):
+    """Completely validates a Int Field."""
     validators = SingleValueValidator.validators + [MinimumValueValidator,
                                                     MaximumValueValidator]
 
@@ -250,8 +250,8 @@ class TupleValidator(MultiValueValidator):
 class ListValidator(TupleValidator):
     """Completely validates a List Field."""
 
-class DictionaryValidator(MultiValueValidator):
-    """Completely validates a Dictionary Field."""
+class DictValidator(MultiValueValidator):
+    """Completely validates a Dict Field."""
     validators = ContainerValidator.validators + [
         DictKeyTypeValidator, DictValueTypeValidator,
         MinimumAmountOfItemsValidator, MaximumAmountOfItemsValidator] 

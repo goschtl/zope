@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.4 2002/07/14 13:32:53 srichter Exp $
+$Id: _Schema.py,v 1.5 2002/07/14 17:30:32 faassen Exp $
 """
 from Interface import Interface
 import Validator
@@ -62,20 +62,20 @@ def wire():
     implements(Field, IField, 0)
     Field.validator = Validator.RequiredValidator
 
-    from IField import IBoolean
-    from _Field import Boolean
-    implements(Boolean, IBoolean, 0)
-    Boolean.validator = Validator.BooleanValidator
+    from IField import IBool
+    from _Field import Bool
+    implements(Bool, IBool, 0)
+    Bool.validator = Validator.BoolValidator
 
-    from IField import IString
-    from _Field import String
-    implements(String, IString, 0)
-    String.validator = Validator.StringValidator
+    from IField import IStr
+    from _Field import Str
+    implements(Str, IStr, 0)
+    Str.validator = Validator.StrValidator
 
-    from IField import IInteger
-    from _Field import Integer
-    implements(Integer, IInteger, 0)
-    Integer.validator = Validator.IntegerValidator
+    from IField import IInt
+    from _Field import Int
+    implements(Int, IInt, 0)
+    Int.validator = Validator.IntValidator
 
     from IField import IFloat
     from _Field import Float
@@ -92,10 +92,10 @@ def wire():
     implements(List, IList, 0)
     List.validator = Validator.ListValidator
 
-    from IField import IDictionary
-    from _Field import Dictionary
-    implements(Dictionary, IDictionary, 0)
-    Dictionary.validator = Validator.DictionaryValidator
+    from IField import IDict
+    from _Field import Dict
+    implements(Dict, IDict, 0)
+    Dict.validator = Validator.DictValidator
 
 
 wire()

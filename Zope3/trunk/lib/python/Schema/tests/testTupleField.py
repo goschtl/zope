@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: testTupleField.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: testTupleField.py,v 1.2 2002/07/14 17:30:32 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from Schema import Tuple, Integer, Float, ErrorNames
+from Schema import Tuple, Int, Float, ErrorNames
 from testField import FieldTest
 
 class TupleTest(FieldTest):
@@ -73,7 +73,7 @@ class TupleTest(FieldTest):
 
     def testValidateValueTypes(self):
         field = Tuple(id="field", title='Tuple field', description='',
-                        readonly=0, required=0, value_types=(Integer, Float))
+                        readonly=0, required=0, value_types=(Int, Float))
         self.assertEqual(None, field.validate(None))
         self.assertEqual( (5.3,) , field.validate( (5.3,) ))
         self.assertEqual( (2, 2.3), field.validate( (2, 2.3) ))

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSchema.py,v 1.4 2002/07/14 13:32:53 srichter Exp $
+$Id: testSchema.py,v 1.5 2002/07/14 17:30:32 faassen Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Schema.Exceptions import StopValidation, ValidationError, \
@@ -21,19 +21,19 @@ from Schema import *
 
 
 class ISchemaTest(Schema):
-    title = String(id="title",
+    title = Str(id="title",
                    title="Title",
                    description="Title",
                    default="",
                    required=1)
 
-    description = String(id="description",
+    description = Str(id="description",
                          title="Description",
                          description="Description",
                          default="",
                          required=1)
 
-    spam = String(id="spam",
+    spam = Str(id="spam",
                   title="Spam",
                   description="Spam",
                   default="",

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.4 2002/07/14 13:32:53 srichter Exp $
+$Id: _Field.py,v 1.5 2002/07/14 17:30:32 faassen Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -44,18 +44,18 @@ class SingleValueField(Field):
     """A field that contains only one value."""
     allowed_values = []
 
-class String(SingleValueField):
-    """A field representing a String."""
+class Str(SingleValueField):
+    """A field representing a Str."""
     type = str
     min_length = None
     max_length = None
     whitespaces = "preserve"
 
-class Boolean(SingleValueField):
-    """A field representing a Boolean."""
+class Bool(SingleValueField):
+    """A field representing a Bool."""
     type = type(not 1) 
 
-class Integer(SingleValueField):
+class Int(SingleValueField):
     """A field representing a Integer."""
     type = int
     min = max = None
@@ -78,8 +78,8 @@ class List(Field):
     value_types = None
     min_values = max_values = None
 
-class Dictionary(Field):
-    """A field representing a Dictionary."""
+class Dict(Field):
+    """A field representing a Dict."""
     type = dict
     min_values = max_values = None
     key_types = value_types = None

@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.2 2002/07/14 13:32:53 srichter Exp $
+$Id: IField.py,v 1.3 2002/07/14 17:30:32 faassen Exp $
 """
 from Interface import Interface
 import _Field as Field
@@ -21,27 +21,27 @@ import _Field as Field
 class IField(Interface):
     """All fields conform to this schema. Note that the interpretation
     of 'required' is up to each field by itself. For some fields, such as
-    IBoolean, requiredness settings may make no difference.
+    IBool, requiredness settings may make no difference.
     """
 
-    title = Field.String(
+    title = Field.Str(
         title="Title",
         description="Title.",
         default=""
         )
     
-    description = Field.String(
+    description = Field.Str(
         title="Description",
         description="Description.",
         default="",
         required=0)
 
-    readonly = Field.Boolean(
+    readonly = Field.Bool(
         title="Read Only",
         description="Read-only.",
         default=0)
     
-    required = Field.Boolean(
+    required = Field.Bool(
         title="Required",
         description="Required.",
         default=1)
@@ -62,24 +62,24 @@ class ISingleValueField(IField):
         
 
     
-class IBoolean(ISingleValueField):
-    """Describes the footprint of a Boolean variable."""
+class IBool(ISingleValueField):
+    """Describes the footprint of a Bool variable."""
 
-    default = Field.Boolean(
+    default = Field.Bool(
         title="Default",
         description="Default.",
         default=0)
 
 
-class IString(ISingleValueField):
-    """Describes the footprint of a String variable."""
+class IStr(ISingleValueField):
+    """Describes the footprint of a Str variable."""
 
-    default = Field.String(
+    default = Field.Str(
         title="Default",
         description="Default.",
         default="")
     
-    whitespace = Field.String(
+    whitespace = Field.Str(
         title="Whitespace",
         description="preserve: whitespace is preserved."
                     "replace: all occurences of tab, line feed and "
@@ -91,7 +91,7 @@ class IString(ISingleValueField):
         allowed_values=("preserve", "replace", "collapse", "strip"),
         default="strip")
 
-    min_length = Field.Integer(
+    min_length = Field.Int(
         title="Minimum length",
         description=("Value after whitespace processing cannot have less than "
                      "min_length characters. If min_length is None, there is "
@@ -100,7 +100,7 @@ class IString(ISingleValueField):
         min=0, # needs to be a positive number
         default=0)
 
-    max_length = Field.Integer(
+    max_length = Field.Int(
         title="Maximum length",
         description=("Value after whitespace processing cannot have greater "
                      "or equal than max_length characters. If max_length is "
@@ -110,22 +110,22 @@ class IString(ISingleValueField):
         default=None)
 
     
-class IInteger(ISingleValueField):
-    """Describes the footprint of an Integer variable."""
+class IInt(ISingleValueField):
+    """Describes the footprint of an Int variable."""
 
-    default = Field.Integer(
+    default = Field.Int(
         title="Default",
         description="Default.",
         default=0)
     
-    min = Field.Integer(
+    min = Field.Int(
         title="Minimum",
         description="The minimal numerical value accepted. If min is None, "
                     "there is no minimum.",
         required=0,
         default=0)
 
-    max = Field.Integer(
+    max = Field.Int(
         title="Maximum",
         description="The masximal numerical value accepted. If min is None, "
                     "there is no minimum.",
@@ -155,7 +155,7 @@ class IFloat(ISingleValueField):
         required=0,
         default=None)
     
-    decimals = Field.Integer(
+    decimals = Field.Int(
         title="Decimal Places",
         description="Defines the amount of decimal places the floating point "
                     "can have. This value is also know as precision. If the "
@@ -175,7 +175,7 @@ class IMultipleValueField(IField):
         required=0,
         default=())
 
-    min_values = Field.Integer(
+    min_values = Field.Int(
         title="Minimum amount of values",
         description="The minimum amount of values in the list. If min_values "
                     "is None, there is no minimum.",
@@ -183,7 +183,7 @@ class IMultipleValueField(IField):
         required=0,
         default=0)
 
-    max_values = Field.Integer(
+    max_values = Field.Int(
         title="Maximum amount of values",
         description="The maximum amount of values in the list. If max_values "
                     "is None, there is no maximum.",
@@ -210,10 +210,10 @@ class IList(ITuple):
         default=[])
 
 
-class IDictionary(IMultipleValueField):
-    """Describes the footprint of a Dictionary variable."""
+class IDict(IMultipleValueField):
+    """Describes the footprint of a Dict variable."""
 
-    default = Field.Dictionary(
+    default = Field.Dict(
         title="Default",
         description="Default.",
         default={})    
