@@ -33,6 +33,10 @@
       interface="zope.app.interfaces.services.interfaces.IAdapterConfiguration"
       set_schema="zope.app.interfaces.services.configuration.IConfiguration"
       />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      />
 </content>    
 
 <!-- View Service -->

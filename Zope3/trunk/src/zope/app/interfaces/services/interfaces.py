@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.6 2003/01/15 15:15:17 alga Exp $
+$Id: interfaces.py,v 1.7 2003/01/16 11:59:59 alga Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -53,8 +53,7 @@ class IAdapterConfigurationInfo(Interface):
         )
 
 
-class IAdapterConfiguration(IConfiguration, IAdapterConfigurationInfo,
-                            IDeleteNotifiable):
+class IAdapterConfiguration(IConfiguration, IAdapterConfigurationInfo):
 
     def getAdapter(object):
         """Return an adapter for the object

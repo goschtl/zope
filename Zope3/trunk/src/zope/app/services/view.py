@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: view.py,v 1.3 2003/01/16 12:00:00 alga Exp $
 """
 __metaclass__ = type
 
@@ -210,7 +210,7 @@ class ViewService(Persistent):
 
 class ViewConfiguration(SimpleConfiguration):
 
-    __implements__ = IViewConfiguration
+    __implements__ = IViewConfiguration, SimpleConfiguration.__implements__
 
     status = ConfigurationStatusProperty('Views')
 
@@ -232,7 +232,7 @@ class ViewConfiguration(SimpleConfiguration):
 
 class PageConfiguration(ViewConfiguration):
 
-    __implements__ = IPageConfiguration
+    __implements__ = IPageConfiguration, ViewConfiguration.__implements__
 
     def __init__(self,
                  forInterface, viewName, presentationType,

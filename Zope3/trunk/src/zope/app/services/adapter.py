@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.5 2003/01/15 16:24:00 alga Exp $
+$Id: adapter.py,v 1.6 2003/01/16 12:00:00 alga Exp $
 """
 __metaclass__ = type
 
@@ -145,7 +145,7 @@ class AdapterService(Persistent):
 
 class AdapterConfiguration(SimpleConfiguration):
 
-    __implements__ = IAdapterConfiguration
+    __implements__ = IAdapterConfiguration, SimpleConfiguration.__implements__
 
     status = ConfigurationStatusProperty('Adapters')
 

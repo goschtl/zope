@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.5 2003/01/15 15:15:19 alga Exp $
+$Id: configuration.py,v 1.6 2003/01/16 12:00:00 alga Exp $
 """
 __metaclass__ = type
 
@@ -246,6 +246,11 @@ class ConfigurationRegistry(Persistent):
 
 class SimpleConfiguration(Persistent):
     """Configuration objects that just contain configuration data
+
+    Classes that derive from this must make sure they implement
+    IDeleteNotifiable either by implementing
+    SimpleConfiguration.__implements__ or explicitly implementing
+    IDeleteNotifiable.
     """
 
     __implements__ = IConfiguration, IDeleteNotifiable
