@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: metaConfigure.py,v 1.4 2002/06/18 14:16:49 jim Exp $
+$Id: metaConfigure.py,v 1.5 2002/06/25 14:30:08 mgedmin Exp $
 """
 
 from Zope.Configuration.Action import Action
@@ -24,6 +24,7 @@ from Zope.App.ComponentArchitecture.metaConfigure \
      import defaultView as _defaultView, skin as _skin, handler
 
 from ResourceMeta import resource
+from I18nResourceMeta import I18nResource
 from ViewMeta import view
 
 def skin(_context, **__kw):

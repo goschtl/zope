@@ -23,12 +23,20 @@
 
     <directive
         name="resource"
-        attributes="factory name layer
+        attributes="factory name layer file image
                     permission allowed_interface allowed_attributes"
         handler="Zope.App.Publisher.Browser.metaConfigure.resource">
        <subdirective name="page" 
                      attributes="name attribute permission layer" 
        /> 
+    </directive>
+
+    <directive
+        name="i18n-resource"
+        attributes="name default_language"
+        handler="Zope.App.Publisher.Browser.metaConfigure.I18nResource">
+        <subdirective name="translation"
+                      attributes="language file image" />
     </directive>
 
     <directive name="skin" attributes="name layers" 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileResource.py,v 1.3 2002/06/18 14:47:04 jim Exp $
+$Id: FileResource.py,v 1.4 2002/06/25 14:30:08 mgedmin Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -43,22 +43,28 @@ class FileResource(BrowserView, Resource):
         '''See interface IBrowserPublisher'''
         method = request.get('REQUEST_METHOD', 'GET').upper()
         return getattr(self, method), ()
-        
+
     #
     ############################################################
 
     # for unit tests
     def _testData(self):
+        file = self.chooseContext()
         f=open(self.context.path,'rb')
         data=f.read()
         f.close()
         return data
-        
+
+
+    def chooseContext(self):
+        """Choose the appropriate context"""
+        return self.context
+
 
     def GET(self):
         """Default document"""
 
-        file = self.context
+        file = self.chooseContext()
         request = self.request
         response = request.response
 
@@ -94,7 +100,8 @@ class FileResource(BrowserView, Resource):
         return data
 
     def HEAD(self):
-        file = self.context
+        file = self.chooseContext()
+        response = self.request.response
         response = self.request.response
         response.setHeader('Content-Type', file.content_type)
         response.setHeader('Last-Modified', file.lmh)

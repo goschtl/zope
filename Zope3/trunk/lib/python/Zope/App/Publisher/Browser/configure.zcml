@@ -23,6 +23,11 @@
   <allow attributes="GET HEAD __call__" />
 </content>
 
+<content class=".I18nFileResource.">
+  <allow interface="Zope.Publisher.Browser.IBrowserPublisher." />
+  <allow attributes="GET HEAD __call__" />
+</content>
+
 
 <browser:view name=""
               factory=".Resources."

@@ -28,6 +28,8 @@ from Zope.ComponentArchitecture.tests.Request import Request
 
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 
+from Zope.App.Publisher.Browser.I18nFileResource import I18nFileResource
+
 import Zope.App.Publisher.Browser
 
 tests_path = os.path.join(
@@ -102,7 +104,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                                  ), 'test')
                                  
       
-    def testSKinView(self):
+    def testSkinView(self):
         self.assertEqual(queryView(ob, 'test', request,
                                    None), None)
 
@@ -142,7 +144,31 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(
             queryResource(ob, 'test', request).__class__,
             R1)
-         
+
+    def testI18nResource(self):
+        self.assertEqual(queryResource(ob, 'test', request,
+                                       None),
+                         None)
+
+        path1 = os.path.join(tests_path, 'test.pt')
+        path2 = os.path.join(tests_path, 'test2.pt')
+
+        xmlconfig(StringIO(template % (
+            """
+            <browser:i18n-resource name="test" defaultLanguage="fr">
+              <browser:translation language="en" file="%s" />
+              <browser:translation language="fr" file="%s" />
+            </browser:i18n-resource>
+            """ % (path1, path2)
+            )))
+
+        v = getResource(ob, 'test', request)
+        self.assertEqual(
+            queryResource(ob, 'test', request).__class__,
+            I18nFileResource)
+        self.assertEqual(v._testData('en'), open(path1, 'rb').read())
+        self.assertEqual(v._testData('fr'), open(path2, 'rb').read())
+
     def testSkinResource(self):
         self.assertEqual(
             queryResource(ob, 'test', request, None),
