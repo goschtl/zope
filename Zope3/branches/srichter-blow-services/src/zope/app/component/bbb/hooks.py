@@ -18,7 +18,10 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 import zope.component
+from zope.component import getService
+from zope.component.interfaces import IServiceService
 from zope.app.site.interfaces import ISite
+from zope.component.service import serviceManager
 from zope.component.exceptions import ComponentLookupError
 from zope.security.proxy import removeSecurityProxy
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -29,35 +32,15 @@ from zope.component.servicenames import Adapters
 import warnings
 import zope.thread
 
-class read_property(object):
-    def __init__(self, func):
-        self.func = func
+def getServices_hook(context=None):
 
-    def __get__(self, inst, cls):
-        if inst is None:
-            return self
+    if context is None:
+        return siteinfo.services
 
-        return self.func(inst)
+    # Deprecated support for a context that isn't adaptable to
+    # IServiceService.  Return the default service manager.
+    try:
 
-class SiteInfo(zope.thread.local):
-    site = None
-    services = serviceManager
-
-    def adapter_hook(self):
-        services = self.services
-        adapters = services.getService(Adapters)
-        adapter_hook = adapters.adapter_hook
-        self.adapter_hook = adapter_hook
-        return adapter_hook
-    
-    adapter_hook = read_property(adapter_hook)
-
-siteinfo = SiteInfo()
-
-def setSite(site=None):
-    if site is None:
-        services = serviceManager
-    else:
 
         # We remove the security proxy because there's no way for
         # untrusted code to get at it without it being proxied again.
@@ -65,32 +48,31 @@ def setSite(site=None):
         # We should really look look at this again though, especially
         # once site managers do less.  There's probably no good reason why
         # they can't be proxied.  Well, except maybe for performance.
-        
-        site = removeSecurityProxy(site)
-        services = site.getSiteManager()
 
-    siteinfo.site = site
-    siteinfo.services = services
-    try:
-        del siteinfo.adapter_hook
-    except AttributeError:
-        pass
-    
-def getSite():
-    return siteinfo.site
 
-def adapter_hook(interface, object, name='', default=None):
-    try:
-        return siteinfo.adapter_hook(interface, object, name, default)
+        return removeSecurityProxy(IServiceService(context,
+                                                   serviceManager))
     except ComponentLookupError:
-        return default
+        return serviceManager
+    
+def queryView(object, name, request, default=None,
+              providing=Interface, context=None):
+    adapters = getService(Adapters, context)
+    view = adapters.queryMultiAdapter((object, request), providing,
+                                      name, default)
+    if ILocation.providedBy(view):
+        locate(view, object, name)
+
+    return view
 
 
 def setHooks():
     # Hook up a new implementation of looking up views.
-    zope.component.adapter_hook.sethook(adapter_hook)
+    zope.component.getServices.sethook(getServices_hook)
+    zope.component.queryView.sethook(queryView)
 
 def resetHooks():
     # Reset hookable functions to original implementation.
-    zope.component.adapter_hook.reset()
+    zope.component.getServices.reset()
+    zope.component.queryView.reset()
     
