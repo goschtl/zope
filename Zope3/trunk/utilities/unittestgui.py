@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.6 $"[11:-2]
+__version__ = "$Revision: 1.7 $"[11:-2]
 
 import linecache
 import unittest
@@ -50,6 +50,7 @@ import traceback
 
 import string
 import re
+import os
 tk = Tkinter # Alternative to the messy 'from Tkinter import *' often seen
 
 
@@ -491,6 +492,8 @@ class TkTestRunner(BaseGUITestRunner):
             text.config(height=len(tracebackLines) + 5)
         text.yview_pickplace(tk.END)
         text['state'] = tk.DISABLED
+        text['cursor'] = window['cursor']
+        self.attachEditorHotspots(text)
         text.pack(expand=1, fill=tk.BOTH)
         b = tk.Button(window, text="Close",
                       command=window.quit)
@@ -519,6 +522,52 @@ class TkTestRunner(BaseGUITestRunner):
         window.bind('<Key-Return>', lambda e, w=window: w.quit())
         window.mainloop()
         window.destroy()
+
+    def attachEditorHotspots(self, text,
+            fileLine=re.compile('(File "([^"]+)", line (\d+), in \w+)'),
+            methodLine=re.compile('^\s*(\S.*\S)\s*$')):
+        # Attach clickable regions to a traceback displayed in a Text widget.
+        tracebackLines = text.get('1.0', tk.END).splitlines(1)
+        currentFile = ()
+        tagname = ""
+        start, end = 0, 0
+        for i in range(len(tracebackLines)):
+            match = fileLine.search(tracebackLines[i])
+
+            # Filename, linenumber and function
+            if match:
+                file, line = match.group(2, 3)
+                start, end = match.span(1)
+                tagname = "ref%d" % i
+                currentFile = (file, line, tagname)
+            # Contents of that line; part of same region
+            elif currentFile:
+                file, line, tagname = currentFile
+                start, end = methodLine.search(tracebackLines[i]).span(1)
+                currentFile = ()
+            # Something else
+            else:
+                tagname = ""
+
+            if tagname:
+                text.tag_add(tagname,
+                             "%d.%d" % (i + 1, start), "%d.%d" % (i + 1, end))
+                text.tag_bind(tagname, "<Enter>",
+                              lambda e, n=tagname: 
+                                    e.widget.tag_config(n, underline=1))
+                text.tag_bind(tagname, "<Leave>",
+                              lambda e, n=tagname: 
+                                    e.widget.tag_config(n, underline=0))
+                text.tag_bind(tagname, "<Button-1>",
+                              lambda e, self=self, f=file, l=line: 
+                                    self.launchEditor(f, l))
+
+    def launchEditor(self, file, line):
+        editor = (os.environ['PYUNIT_EDITOR'] or
+                  os.environ['EDITOR_REMOTE'] or
+                  os.environ['EDITOR'])
+        if editor:
+            os.system("%s +%s %s" % (editor, line, file))
 
 
 class ProgressBar(tk.Frame):
