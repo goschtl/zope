@@ -28,7 +28,7 @@ from zope.app.component.interface import provideInterface
 from resource import FileResourceFactory, ImageResourceFactory
 from resource import PageTemplateResourceFactory
 from resource import DirectoryResourceFactory
-from api import BrowserView
+from browser import BrowserView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
 from Products.PageTemplates.Expressions import SecureModuleImporter

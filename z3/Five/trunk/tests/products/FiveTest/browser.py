@@ -1,5 +1,5 @@
-from Products.Five.api import BrowserView
-from Products.Five.api import StandardMacros as BaseMacros
+from Products.Five import BrowserView
+from Products.Five import StandardMacros as BaseMacros
 
 class SimpleContentView(BrowserView):
     """More docstring. Please Zope"""

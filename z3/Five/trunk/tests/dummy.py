@@ -1,6 +1,6 @@
 from zope.interface import Interface, implements
 
-from Products.Five.browser import BrowserView
+from Products.Five import BrowserView
 from AccessControl import ClassSecurityInfo
 
 class IDummy(Interface):
