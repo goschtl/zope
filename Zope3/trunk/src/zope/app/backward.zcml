@@ -1,0 +1,15 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:event="http://namespaces.zope.org/event"
+    >
+  <!-- Backward compatability scripts                      -->
+  <!-- We'll keep these around for two months              -->
+
+
+  <!-- Thu Aug 28 2003 -->
+  <event:subscribe
+      subscriber="zope.app.services.servicecontainer.fixup"
+      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent" 
+      />
+ 
+</configure>
