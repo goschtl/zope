@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: testAnnotationCacheable.py,v 1.1 2002/10/03 10:14:12 mgedmin Exp $
+$Id: testAnnotationCacheable.py,v 1.2 2002/10/03 10:37:50 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -31,7 +31,7 @@ class TestAnnotationCacheable(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        getService(None,"Adapters").provideAdapter(
+        getService(None, "Adapters").provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
 
