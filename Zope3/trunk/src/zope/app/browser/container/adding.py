@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.40 2003/12/17 21:27:31 sidnei Exp $
+$Id: adding.py,v 1.41 2004/01/23 04:11:50 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -100,7 +100,7 @@ class BasicAdding(BrowserView):
             contentName = self.contentName or ''
             return (
                "&nbsp;&nbsp;<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
-               "&nbsp;&nbsp;<b>%s:<b>&nbsp;"
+               "&nbsp;&nbsp;<b>%s:</b>&nbsp;"
                "<input type='text' name='add_input_name' value='%s'>"
                     % (add_button_value, add_button_label, contentName))
 
