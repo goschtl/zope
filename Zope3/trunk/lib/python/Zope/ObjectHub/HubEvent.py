@@ -14,18 +14,18 @@
 """
 
 Revision information:
-$Id: RuidObjectEvent.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: HubEvent.py,v 1.1 2002/08/22 17:05:24 gotcha Exp $
 """
 
-from IRuidObjectEvent import IRuidObjectRegisteredEvent
-from IRuidObjectEvent import IRuidObjectAddedEvent
-from IRuidObjectEvent import IRuidObjectUnregisteredEvent
-from IRuidObjectEvent import IRuidObjectModifiedEvent
-from IRuidObjectEvent import IRuidObjectContextChangedEvent
-from IRuidObjectEvent import IRuidObjectRemovedEvent
+from IHubEvent import IObjectRegisteredHubEvent
+from IHubEvent import IObjectAddedHubEvent
+from IHubEvent import IObjectUnregisteredHubEvent
+from IHubEvent import IObjectModifiedHubEvent
+from IHubEvent import IObjectMovedHubEvent
+from IHubEvent import IObjectRemovedHubEvent
 
-class RuidObjectEvent:
-    """Convenient mix-in for RuidObjectEvents"""
+class HubEvent:
+    """Convenient mix-in for HubEvents"""
     
     def __init__(self, objecthub, ruid, location):
         # we keep all three, to avoid unnecessary lookups
@@ -48,42 +48,42 @@ class RuidObjectEvent:
         return obj
 
 
-class RuidObjectRegisteredEvent(RuidObjectEvent):
+class ObjectRegisteredHubEvent(HubEvent):
     """An ruid has been freshly created and mapped against an object."""
 
-    __implements__ = IRuidObjectRegisteredEvent
+    __implements__ = IObjectRegisteredHubEvent
 
 
-class RuidObjectUnregisteredEvent(RuidObjectEvent):
+class ObjectUnregisteredHubEvent(HubEvent):
     """We are no longer interested in this object."""
 
-    __implements__ = IRuidObjectUnregisteredEvent
+    __implements__ = IObjectUnregisteredHubEvent
 
 
-class RuidObjectAddedEvent(RuidObjectEvent):
+class ObjectAddedHubEvent(HubEvent):
     """An ruid has been freshly created and mapped against an object.
        Also, implies the object has been newly added."""
     
-    __implements__ = IRuidObjectAddedEvent
+    __implements__ = IObjectAddedHubEvent
     
     
-class RuidObjectModifiedEvent(RuidObjectEvent):
+class ObjectModifiedHubEvent(HubEvent):
     """An object with an ruid has been modified."""
     
-    __implements__ = IRuidObjectModifiedEvent
+    __implements__ = IObjectModifiedHubEvent
     
     
-class RuidObjectContextChangedEvent(RuidObjectEvent):
+class ObjectMovedHubEvent(HubEvent):
     """An object with an ruid has had its context changed. Typically, this
        means that it has been moved."""
        
-    __implements__ = IRuidObjectContextChangedEvent
+    __implements__ = IObjectMovedHubEvent
 
 
-class RuidObjectRemovedEvent(RuidObjectEvent):
+class ObjectRemovedHubEvent(HubEvent):
     """An object with an ruid has been removed."""
 
-    __implements__ = IRuidObjectRemovedEvent
+    __implements__ = IObjectRemovedHubEvent
 
     def __init__(self, obj, ruid, location):
         self.__object = obj

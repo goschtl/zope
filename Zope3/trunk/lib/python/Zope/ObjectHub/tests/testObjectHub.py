@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testObjectHub.py,v 1.6 2002/07/07 20:32:32 stevea Exp $
+$Id: testObjectHub.py,v 1.7 2002/08/22 17:05:24 gotcha Exp $
 """
 
 import unittest, sys
@@ -26,14 +26,14 @@ from Zope.Event.ObjectEvent import ObjectRemovedEvent, ObjectMovedEvent
 from Zope.Event.ISubscriber import ISubscriber
 
 from Zope.ObjectHub.ObjectHub import ObjectHub, ObjectHubError
-from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectAddedEvent
-from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectRemovedEvent
-from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectModifiedEvent
-from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectContextChangedEvent
-from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectRegisteredEvent
-from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectUnregisteredEvent
+from Zope.ObjectHub.IHubEvent import IObjectAddedHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectRemovedHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectModifiedHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectMovedHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectRegisteredHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectUnregisteredHubEvent
 
-import Zope.ObjectHub.RuidObjectEvent as RuidObjectEvent
+import Zope.ObjectHub.HubEvent as RuidObjectEvent
 
 from Zope.Exceptions import NotFoundError
 from types import StringTypes
@@ -105,22 +105,22 @@ class RegistrationSubscriber(LoggingSubscriber):
             else:   
                 location = event.getLocation()
                 obj = event.getObject()
-                removeEvent = RuidObjectEvent.RuidObjectRemovedEvent(
+                removeEvent = RuidObjectEvent.ObjectRemovedHubEvent(
                     obj, ruid, location)
                 self.hub.notify(removeEvent)
                 self.hub.unregister(location)                  
 
-class TransmitRuidObjectEventTest(unittest.TestCase):
+class TransmitHubEventTest(unittest.TestCase):
     ruid = 23
     location = '/foo/bar'
-    # Don't test the RuidObjectEvent base class.
+    # Don't test the HubtEvent base class.
     # See below for testing subclasses / subinterfaces
-    # klass = RuidObjectEvent
-    # interface = IRuidObjectEvent
+    # klass = HubEvent
+    # interface = IHubEvent
     
     def setUp(self):
         self.object_hub = ObjectHub()
-        self.ruidobject_event = self.klass(self.object_hub,
+        self.hub_event = self.klass(self.object_hub,
                                            self.ruid, 
                                            self.location)
 
@@ -128,37 +128,37 @@ class TransmitRuidObjectEventTest(unittest.TestCase):
         self.object_hub.subscribe(self.subscriber)
 
     def testTransmittedEvent(self):
-        """Test that the RuidObjectEvents are transmitted by the notify method
+        """Test that the HubEvents are transmitted by the notify method
         """ 
-        self.object_hub.notify(self.ruidobject_event)
+        self.object_hub.notify(self.hub_event)
        
         self.subscriber.verifyEventsReceived(self, [
                 (self.interface, self.ruid, self.location)
             ])
    
-class TransmitRuidObjectAddedEventTest(TransmitRuidObjectEventTest):
-    interface = IRuidObjectAddedEvent
-    klass = RuidObjectEvent.RuidObjectAddedEvent
+class TransmitObjectAddedHubEventTest(TransmitHubEventTest):
+    interface = IObjectAddedHubEvent
+    klass = RuidObjectEvent.ObjectAddedHubEvent
 
-class TransmitRuidObjectRemovedEventTest(TransmitRuidObjectEventTest):
-    interface = IRuidObjectRemovedEvent
-    klass = RuidObjectEvent.RuidObjectRemovedEvent
+class TransmitObjectRemovedHubEventTest(TransmitHubEventTest):
+    interface = IObjectRemovedHubEvent
+    klass = RuidObjectEvent.ObjectRemovedHubEvent
 
-class TransmitRuidObjectModifiedEventTest(TransmitRuidObjectEventTest):
-    interface = IRuidObjectModifiedEvent
-    klass = RuidObjectEvent.RuidObjectModifiedEvent
+class TransmitObjectModifiedHubEventTest(TransmitHubEventTest):
+    interface = IObjectModifiedHubEvent
+    klass = RuidObjectEvent.ObjectModifiedHubEvent
 
-class TransmitRuidObjectContextChangedEventTest(TransmitRuidObjectEventTest):
-    interface = IRuidObjectContextChangedEvent
-    klass = RuidObjectEvent.RuidObjectContextChangedEvent
+class TransmitObjectMovedHubEventTest(TransmitHubEventTest):
+    interface = IObjectMovedHubEvent
+    klass = RuidObjectEvent.ObjectMovedHubEvent
 
-class TransmitRuidObjectRegisteredEventTest(TransmitRuidObjectEventTest):
-    interface = IRuidObjectRegisteredEvent
-    klass = RuidObjectEvent.RuidObjectRegisteredEvent
+class TransmitObjectRegisteredHubEventTest(TransmitHubEventTest):
+    interface = IObjectRegisteredHubEvent
+    klass = RuidObjectEvent.ObjectRegisteredHubEvent
 
-class TransmitRuidObjectUnregisteredEventTest(TransmitRuidObjectEventTest):
-    interface = IRuidObjectUnregisteredEvent
-    klass = RuidObjectEvent.RuidObjectUnregisteredEvent
+class TransmitObjectUnregisteredHubEventTest(TransmitHubEventTest):
+    interface = IObjectUnregisteredHubEvent
+    klass = RuidObjectEvent.ObjectUnregisteredHubEvent
     
 class BasicHubTest(unittest.TestCase):
 
@@ -171,7 +171,6 @@ class BasicHubTest(unittest.TestCase):
         self.setEvents()
         self.subscriber = LoggingSubscriber()
         self.object_hub.subscribe(self.subscriber)
-
 
     def setEvents(self):
         self.added_event = ObjectAddedEvent(self.location)
@@ -192,8 +191,8 @@ class TestRegistrationEvents(BasicHubTest):
         ruid2 = self.object_hub.register(self.new_location)
 
         self.subscriber.verifyEventsReceived(self, [
-                (IRuidObjectRegisteredEvent, ruid, self.location),
-                (IRuidObjectRegisteredEvent, ruid2, self.new_location)
+                (IObjectRegisteredHubEvent, ruid, self.location),
+                (IObjectRegisteredHubEvent, ruid2, self.new_location)
             ])
 
         # register again and check for error
@@ -204,12 +203,12 @@ class TestRegistrationEvents(BasicHubTest):
         # unregister first object by location
         self.object_hub.unregister(self.location)
         self.subscriber.verifyEventsReceived(self, [
-                (IRuidObjectUnregisteredEvent, ruid, self.location)
+                (IObjectUnregisteredHubEvent, ruid, self.location)
             ])
         # unregister second object by ruid
         self.object_hub.unregister(ruid2)
         self.subscriber.verifyEventsReceived(self, [
-                (IRuidObjectUnregisteredEvent, ruid2, self.new_location)
+                (IObjectUnregisteredHubEvent, ruid2, self.new_location)
             ])
 
     def testRegistrationRelativeLocation(self):
@@ -265,8 +264,8 @@ class TestObjectAddedEvent(BasicHubTest):
         
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectAddedEvent, location),
-                (IRuidObjectRegisteredEvent, ruid, location),
-                (IRuidObjectAddedEvent, ruid, location),
+                (IObjectRegisteredHubEvent, ruid, location),
+                (IObjectAddedHubEvent, ruid, location),
             ])
 
         
@@ -337,11 +336,11 @@ class TestObjectRemovedEvent(BasicHubTest):
         
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectAddedEvent, location),
-                (IRuidObjectRegisteredEvent, ruid, location),
-                (IRuidObjectAddedEvent, ruid, location),
+                (IObjectRegisteredHubEvent, ruid, location),
+                (IObjectAddedHubEvent, ruid, location),
                 (IObjectRemovedEvent, location),
-                (IRuidObjectRemovedEvent, ruid, location, obj),
-                (IRuidObjectUnregisteredEvent, ruid, location),
+                (IObjectRemovedHubEvent, ruid, location, obj),
+                (IObjectUnregisteredHubEvent, ruid, location),
             ])
         
         
@@ -398,10 +397,10 @@ class TestObjectModifiedEvent(BasicHubTest):
         
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectAddedEvent, location),
-                (IRuidObjectRegisteredEvent, ruid, location),
-                (IRuidObjectAddedEvent, ruid, location),
+                (IObjectRegisteredHubEvent, ruid, location),
+                (IObjectAddedHubEvent, ruid, location),
                 (IObjectModifiedEvent, location),
-                (IRuidObjectModifiedEvent, ruid, location)
+                (IObjectModifiedHubEvent, ruid, location)
             ])
 
         
@@ -457,10 +456,10 @@ class TestObjectMovedEvent(BasicHubTest):
         
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectAddedEvent, location),
-                (IRuidObjectRegisteredEvent, ruid, location),
-                (IRuidObjectAddedEvent, ruid, location),
+                (IObjectRegisteredHubEvent, ruid, location),
+                (IObjectAddedHubEvent, ruid, location),
                 (IObjectMovedEvent, new_location),
-                (IRuidObjectContextChangedEvent, ruid, new_location)
+                (IObjectMovedHubEvent, ruid, new_location)
             ])
 
 
@@ -502,22 +501,22 @@ class TestObjectMovedEvent(BasicHubTest):
         
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectAddedEvent, location),
-                (IRuidObjectRegisteredEvent, None, location),
-                (IRuidObjectAddedEvent, None, location),
+                (IObjectRegisteredHubEvent, None, location),
+                (IObjectAddedHubEvent, None, location),
                 (IObjectAddedEvent, new_location),
-                (IRuidObjectRegisteredEvent, None, new_location),
-                (IRuidObjectAddedEvent, None, new_location),
+                (IObjectRegisteredHubEvent, None, new_location),
+                (IObjectAddedHubEvent, None, new_location),
                 (IObjectMovedEvent, new_location),
             ])
         
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(TransmitRuidObjectAddedEventTest),
-        unittest.makeSuite(TransmitRuidObjectRemovedEventTest),
-        unittest.makeSuite(TransmitRuidObjectModifiedEventTest),
-        unittest.makeSuite(TransmitRuidObjectContextChangedEventTest),
-        unittest.makeSuite(TransmitRuidObjectRegisteredEventTest),
-        unittest.makeSuite(TransmitRuidObjectUnregisteredEventTest),
+        unittest.makeSuite(TransmitObjectAddedHubEventTest),
+        unittest.makeSuite(TransmitObjectRemovedHubEventTest),
+        unittest.makeSuite(TransmitObjectModifiedHubEventTest),
+        unittest.makeSuite(TransmitObjectMovedHubEventTest),
+        unittest.makeSuite(TransmitObjectRegisteredHubEventTest),
+        unittest.makeSuite(TransmitObjectUnregisteredHubEventTest),
         unittest.makeSuite(TestRegistrationEvents),
         unittest.makeSuite(TestNoRegistration),
         unittest.makeSuite(TestObjectAddedEvent),

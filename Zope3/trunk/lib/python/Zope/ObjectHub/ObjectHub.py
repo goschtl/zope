@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.7 2002/07/12 17:45:57 stevea Exp $
+$Id: ObjectHub.py,v 1.8 2002/08/22 17:05:24 gotcha Exp $
 """
 
 from IObjectHub import IObjectHub
@@ -23,13 +23,13 @@ from Zope.Event.IObjectEvent import \
 from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
 from Zope.Event.IEvent import IEvent
 from Zope.Event.EventChannel import EventChannel
-from RuidObjectEvent import RuidObjectRegisteredEvent
-from RuidObjectEvent import RuidObjectUnregisteredEvent
-from RuidObjectEvent import RuidObjectAddedEvent
-from RuidObjectEvent import RuidObjectModifiedEvent
-from RuidObjectEvent import RuidObjectContextChangedEvent
-from RuidObjectEvent import RuidObjectRemovedEvent
-from IRuidObjectEvent import IRuidObjectEvent
+from HubEvent import ObjectRegisteredHubEvent
+from HubEvent import ObjectUnregisteredHubEvent
+from HubEvent import ObjectAddedHubEvent
+from HubEvent import ObjectModifiedHubEvent
+from HubEvent import ObjectMovedHubEvent
+from HubEvent import ObjectRemovedHubEvent
+from IHubEvent import IHubEvent
 
 from Zope.Exceptions import NotFoundError
 from Persistence import Persistent
@@ -85,13 +85,15 @@ class ObjectHub(Persistent):
 
     def notify(self, event):
         '''See interface ISubscriber'''
-        if IRuidObjectEvent.isImplementedBy(event):
+        if IHubEvent.isImplementedBy(event):
             self.__eventchannel.notify(event)
             return
 
         if IObjectEvent.isImplementedBy(event):
             self.__eventchannel.notify(event)
-            
+
+            # generate NotificationHubEvents only if object is known
+            # ie registered  
             if IObjectMovedEvent.isImplementedBy(event):
                 canonical_location = locationAsUnicode(event.getFromLocation())
                 ruid = self._lookupRuid(canonical_location)
@@ -142,13 +144,6 @@ class ObjectHub(Persistent):
         if location[0] != u'/':
             raise ValueError, "Location must be absolute"
         ruid = self._registerObject(canonical_location)
-
-        # send out to plugins IRuidObjectRegisteredEvent
-        event = RuidObjectRegisteredEvent(
-            self, 
-            ruid,
-            canonical_location)
-        self.__eventchannel.notify(event)
         return ruid
 
     def unregister(self, ruid_or_location):
@@ -161,12 +156,7 @@ class ObjectHub(Persistent):
         if ruid is None:
             raise NotFoundError, 'location %s is not in object hub' % \
                 canonical_location
-        event = RuidObjectUnregisteredEvent(
-            self, 
-            ruid,
-            canonical_location)
-        self.__eventchannel.notify(event)
-        
+  
     #
     ############################################################
 
@@ -190,24 +180,30 @@ class ObjectHub(Persistent):
                 canonical_location
         ruid = self._generateRuid(canonical_location)
         location_to_ruid[canonical_location] = ruid
+
+        # send out IObjectRegisteredHubEvent to plugins
+        event = ObjectRegisteredHubEvent(
+            self, 
+            ruid,
+            canonical_location)
+        self.__eventchannel.notify(event)
         return ruid
 
     def _objectAdded(self, canonical_location, ruid):
-        # send out to plugins IRuidObjectAddedEvent
-        event = RuidObjectAddedEvent(
+        # send out IObjectAddedHubEvent to plugins
+        event = ObjectAddedHubEvent(
             self, 
             ruid,
             canonical_location)
         self.__eventchannel.notify(event)
     
     def _objectModified(self, canonical_location, ruid):
-        # send out to plugins IRuidObjectModifiedEvent
-        event = RuidObjectModifiedEvent(
+        # send out IObjectModifiedHubEvent to plugins
+        event = ObjectModifiedHubEvent(
             self, 
             ruid,
             canonical_location)
         self.__eventchannel.notify(event)
-        
     
     def _objectMoved(self, old_location, new_location):
         location_to_ruid = self.__location_to_ruid
@@ -218,17 +214,17 @@ class ObjectHub(Persistent):
                 'Cannot move to location %s, '
                 'as there is already something there'
                 % canonical_new_location)
-        if not location_to_ruid.has_key(canonical_location):
-            # we're not interested in this event
-            return
+        # already tested before calling _objectMoved
+##        if not location_to_ruid.has_key(canonical_location):
+##            # we're not interested in this event
+##            return
 
         ruid = location_to_ruid[canonical_location]
         del location_to_ruid[canonical_location]
         location_to_ruid[canonical_new_location] = ruid
         self.__ruid_to_location[ruid] = canonical_new_location
-        
-        # send out to plugins IRuidObjectContextChangedEvent
-        event = RuidObjectContextChangedEvent(
+        # send out IObjectMovedHubEvent to plugins
+        event = ObjectMovedHubEvent(
             self, 
             ruid,
             canonical_new_location)
@@ -246,13 +242,17 @@ class ObjectHub(Persistent):
         else:
             del ruid_to_location[ruid]
             del location_to_ruid[canonical_location]
+            # send out IObjectUnregisteredHubEvent to plugins
+            event = ObjectUnregisteredHubEvent(
+                self, 
+                ruid,
+                canonical_location)
+            self.__eventchannel.notify(event)
             return ruid
-        
-            
+
     def _objectRemoved(self, canonical_location, ruid, obj):
-            
-        # send out to plugins IRuidObjectRemovedEvent
-        event = RuidObjectRemovedEvent(
+        # send out IObjectRemovedHubEvent to plugins
+        event = ObjectRemovedHubEvent(
             obj,
             ruid,
             canonical_location)

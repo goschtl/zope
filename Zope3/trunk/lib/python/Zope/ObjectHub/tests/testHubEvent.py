@@ -14,17 +14,17 @@
 """
 
 Revision information:
-$Id: testRuidObjectEvent.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: testHubEvent.py,v 1.1 2002/08/22 17:05:24 gotcha Exp $
 """
 
 import unittest, sys
 
-from Zope.ObjectHub.RuidObjectEvent import RuidObjectRegisteredEvent
-from Zope.ObjectHub.RuidObjectEvent import RuidObjectUnregisteredEvent
-from Zope.ObjectHub.RuidObjectEvent import RuidObjectAddedEvent
-from Zope.ObjectHub.RuidObjectEvent import RuidObjectModifiedEvent
-from Zope.ObjectHub.RuidObjectEvent import RuidObjectContextChangedEvent
-from Zope.ObjectHub.RuidObjectEvent import RuidObjectRemovedEvent
+from Zope.ObjectHub.HubEvent import ObjectRegisteredHubEvent
+from Zope.ObjectHub.HubEvent import ObjectUnregisteredHubEvent
+from Zope.ObjectHub.HubEvent import ObjectAddedHubEvent
+from Zope.ObjectHub.HubEvent import ObjectModifiedHubEvent
+from Zope.ObjectHub.HubEvent import ObjectMovedHubEvent
+from Zope.ObjectHub.HubEvent import ObjectRemovedHubEvent
 
 from Zope.Exceptions import NotFoundError
 
@@ -41,12 +41,12 @@ class DummyObjectHub:
             
         raise NotFoundError
         
-class TestRuidObjectAddedEvent(unittest.TestCase):
+class TestObjectAddedHubEvent(unittest.TestCase):
     
     location = '/some/location'
     ruid = 23
     obj = object()
-    klass = RuidObjectAddedEvent
+    klass = ObjectAddedHubEvent
     
     def setUp(self):
         objecthub = DummyObjectHub(self.ruid, self.obj)
@@ -64,25 +64,25 @@ class TestRuidObjectAddedEvent(unittest.TestCase):
         "Test getObject method"
         self.assertEqual(self.event.getObject(), self.obj)
     
-class TestRuidObjectRegisteredEvent(TestRuidObjectAddedEvent):
+class TestObjectRegisteredHubEvent(TestObjectAddedHubEvent):
 
-    klass = RuidObjectRegisteredEvent
+    klass = ObjectRegisteredHubEvent
 
-class TestRuidObjectUnregisteredEvent(TestRuidObjectAddedEvent):
+class TestObjectUnregisteredHubEvent(TestObjectAddedHubEvent):
 
-    klass = RuidObjectUnregisteredEvent
+    klass = ObjectUnregisteredHubEvent
 
-class TestRuidObjectModifiedEvent(TestRuidObjectAddedEvent):
+class TestObjectModifiedHubEvent(TestObjectAddedHubEvent):
 
-    klass = RuidObjectModifiedEvent
+    klass = ObjectModifiedHubEvent
 
-class TestRuidObjectContextChangedEvent(TestRuidObjectAddedEvent):
+class TestObjectMovedHubEvent(TestObjectAddedHubEvent):
 
-    klass = RuidObjectContextChangedEvent
+    klass = ObjectMovedHubEvent
 
-class TestRuidObjectRemovedEvent(TestRuidObjectAddedEvent):
+class TestObjectRemovedHubEvent(TestObjectAddedHubEvent):
 
-    klass = RuidObjectRemovedEvent
+    klass = ObjectRemovedHubEvent
 
     def setUp(self):
         self.event = self.klass(self.obj, self.ruid, self.location)
@@ -91,12 +91,12 @@ class TestRuidObjectRemovedEvent(TestRuidObjectAddedEvent):
 
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(TestRuidObjectAddedEvent),
-        unittest.makeSuite(TestRuidObjectRegisteredEvent),
-        unittest.makeSuite(TestRuidObjectUnregisteredEvent),
-        unittest.makeSuite(TestRuidObjectModifiedEvent),
-        unittest.makeSuite(TestRuidObjectContextChangedEvent),
-        unittest.makeSuite(TestRuidObjectRemovedEvent),
+        unittest.makeSuite(TestObjectAddedHubEvent),
+        unittest.makeSuite(TestObjectRegisteredHubEvent),
+        unittest.makeSuite(TestObjectUnregisteredHubEvent),
+        unittest.makeSuite(TestObjectModifiedHubEvent),
+        unittest.makeSuite(TestObjectMovedHubEvent),
+        unittest.makeSuite(TestObjectRemovedHubEvent),
         ))
 
 if __name__=='__main__':

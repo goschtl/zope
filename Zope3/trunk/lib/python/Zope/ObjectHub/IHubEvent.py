@@ -14,49 +14,57 @@
 """
 
 Revision information:
-$Id: IRuidObjectEvent.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: IHubEvent.py,v 1.1 2002/08/22 17:05:24 gotcha Exp $
 """
 from Zope.Event.IEvent import IEvent
 
-class IRuidObjectEvent(IEvent):
-    """Something has happened to an object for which there is an ruid.
-       An ruid is a way or refering to an object independent of location.
+class IHubEvent(IEvent):
+    """Internal Object Hub Event : something has happened to an object for
+       which there is an ruid.
+       An ruid is a way of refering to an object independent of location.
     """
 
     def getRuid():
         """Returns the object's ruid."""
-        
+   
     def getLocation():
         """Returns the object's current location."""
-        
+   
     def getObject():
         """Returns the object."""
-        
+   
+
+class IRegistrationHubEvent(IHubEvent):
+    """Some work could be done on registration or deregistration of an object."""
 
 
-class IRuidObjectRegisteredEvent(IRuidObjectEvent):
+class IObjectRegisteredHubEvent(IRegistrationHubEvent):
     """An ruid has been freshly created and mapped against an object."""
 
 
-class IRuidObjectUnregisteredEvent(IRuidObjectEvent):
+class IObjectUnregisteredHubEvent(IRegistrationHubEvent):
     """We are no longer interested in this object."""
 
 
-class IRuidObjectAddedEvent(IRuidObjectRegisteredEvent):
+class INotificationHubEvent(IHubEvent):
+    """Some work has be done on a registrated object."""
+
+
+class IObjectAddedHubEvent(INotificationHubEvent):
     """An ruid has been freshly created and mapped against an object.
        Also, implies the object has been newly added."""
     
     
-class IRuidObjectModifiedEvent(IRuidObjectEvent):
+class IObjectModifiedHubEvent(INotificationHubEvent):
     """An object with an ruid has been modified."""
     
     
-class IRuidObjectContextChangedEvent(IRuidObjectEvent):
+class IObjectMovedHubEvent(INotificationHubEvent):
     """An object with an ruid has had its context changed. Typically, this
        means that it has been moved."""
 
-       
-class IRuidObjectRemovedEvent(IRuidObjectUnregisteredEvent):
+   
+class IObjectRemovedHubEvent(INotificationHubEvent):
     """An object with an ruid has been removed."""
 
     def getLocation():
