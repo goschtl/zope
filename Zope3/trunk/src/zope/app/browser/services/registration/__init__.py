@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.7 2003/08/16 00:43:02 srichter Exp $
+$Id: __init__.py,v 1.8 2003/08/16 19:17:08 srichter Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -232,14 +232,17 @@ class ComponentPathWidget(BrowserWidget):
         "See zope.app.interfaces.browser.form.IBrowserWidget"
         return ''
 
+    def hasInput(self):
+        "See zope.app.interfaces.form.IWidget"
+        return 1
+
     def getInputValue(self):
         "See zope.app.interfaces.form.IWidget"
         field = self.context
         context = field.context
         if IComponentRegistration.isImplementedBy(context):
             # It's a registration object. Just get the corresponding attr
-            # XXX this code has no unittests !!!
-            path = getattr(context, field.__name__)
+            path = getattr(context, field.getName())
         else:
             # It must be a component that is about to be configured.
             # Always return a relative path (just the component name)
