@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for the generic NameComponentConfigurable view mixin
 
-$Id: test_namecomponentconfigurableview.py,v 1.3 2002/12/28 14:13:22 stevea Exp $
+$Id: test_namecomponentconfigurableview.py,v 1.1 2003/03/21 21:09:34 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component.view import provideView
 from zope.publisher.browser import BrowserView
-from zope.app.browser.services.namecomponentconfigurableview \
+from zope.app.browser.services.configuration \
      import NameComponentConfigurableView
 from zope.app.interfaces.traversing import ITraversable
 

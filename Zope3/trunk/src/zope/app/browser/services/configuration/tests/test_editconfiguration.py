@@ -15,28 +15,28 @@
 
 XXX longer description goes here.
 
-$Id: test_editconfiguration.py,v 1.4 2003/03/10 22:46:32 gvanrossum Exp $
+$Id: test_editconfiguration.py,v 1.1 2003/03/21 21:09:34 jim Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.interface import Interface
-from zope.app.browser.services.service import EditConfiguration
-from zope.publisher.browser import TestRequest
-from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.component.view import provideView
-from zope.component.adapter import provideAdapter
-from zope.publisher.browser import BrowserView
+from zope.app.browser.services.configuration import EditConfiguration
+from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.event.tests.placelesssetup import getEvents
-from zope.app.interfaces.event import IObjectRemovedEvent
-from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.container.zopecontainer import ZopeContainerAdapter
+from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.interfaces.event import IObjectRemovedEvent
+from zope.app.interfaces.services.configuration import Unregistered
+from zope.app.interfaces.services.configuration import Registered, Active
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.services.configuration \
-     import Unregistered, Registered, Active
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.component.adapter import provideAdapter
+from zope.component.view import provideView
+from zope.interface import Interface
+from zope.publisher.browser import BrowserView
+from zope.publisher.browser import TestRequest
+from zope.publisher.interfaces.browser import IBrowserPresentation
 
 class Container(dict):
     __implements__ = IContainer, IContainmentRoot

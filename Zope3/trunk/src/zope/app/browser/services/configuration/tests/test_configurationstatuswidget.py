@@ -15,14 +15,13 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatuswidget.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: test_configurationstatuswidget.py,v 1.1 2003/03/21 21:09:34 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.services.configuration import ConfigurationStatus
-from zope.app.browser.services.configurationstatuswidget \
-     import ConfigurationStatusWidget
+from zope.app.browser.services.configuration import ConfigurationStatusWidget
 from zope.interface import Interface
 
 

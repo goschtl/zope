@@ -15,21 +15,20 @@
 
 XXX longer description goes here.
 
-$Id: test_changeconfigurations.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: test_changeconfigurations.py,v 1.1 2003/03/21 21:09:34 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.browser import TestRequest
 from zope.app.services.tests.configurationregistry \
      import TestingConfigurationRegistry
+from zope.app.browser.services.configuration import ChangeConfigurations
 
 class Test(TestCase):
 
     def test_applyUpdates_and_setPrefix(self):
         registry = TestingConfigurationRegistry('a', 'b', 'c')
         request = TestRequest()
-        from zope.app.browser.services.changeconfigurations \
-             import ChangeConfigurations
         view = ChangeConfigurations(registry, request)
         view.setPrefix("Roles")
 

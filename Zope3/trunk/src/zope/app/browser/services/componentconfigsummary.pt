@@ -1,3 +1,0 @@
-<a href='.'
-   tal:attributes="href view/componentURL"
-   tal:content="view/componentPath">foo/bar</a>

@@ -1,0 +1,80 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+
+<page
+    for="zope.app.interfaces.services.configuration.IConfigurationStatus"
+    name="edit"
+    class=".ConfigurationStatusWidget"
+    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+    permission="zope.ManageServices"
+    />
+
+<page
+    for="zope.app.interfaces.services.configuration.IConfigurationRegistry"
+    name="ChangeConfigurations"
+    template="changeconfigurations.pt"
+    class=".ChangeConfigurations"
+    allowed_interface="zope.app.interfaces.browser.form.IFormCollaborationView"
+    permission="zope.ManageServices"
+    />
+
+<editform
+    name="index.html"
+    schema=
+    "zope.app.interfaces.services.configuration.INamedComponentConfiguration."
+    menu="zmi_views"
+    label="Configuration"
+    permission="zope.ManageServices"
+    />
+
+<page
+    name="index.html" 
+    for="zope.app.interfaces.services.configuration.INameComponentConfigurable"
+    class=".NameComponentConfigurableView"
+    permission="zope.ManageServices"
+    attribute="index" 
+    />
+
+<page
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+    for="zope.app.interfaces.services.configuration.IComponentPath"
+    name="edit"
+    class=".ComponentPathWidget" 
+    />
+
+<page
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+    for="zope.app.interfaces.services.configuration.IComponentPath"
+    name="display"
+    class=".ComponentPathWidget" 
+    />
+
+<!-- ConfigurationManager -->
+
+  <page
+     name="index.html" 
+     for="zope.app.interfaces.services.configuration.IConfigurationManager"
+     menu="zmi_views" title="Configuration"
+     permission="zope.ManageServices"
+     class=".EditConfiguration"
+     template="editconfiguration.pt" 
+     />
+
+  <view
+     for="zope.app.interfaces.services.configuration.IConfigurationManager"
+     name="+"
+     permission="zope.ManageServices"
+     class=".ConfigurationAdding">
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+  </view>
+
+  <menuItem
+        menu="add_component"
+        for="zope.app.interfaces.container.IAdding"
+        action="zope.app.services.ConfigurationManager"
+        title="Configuration"
+        />
+
+</zopeConfigure>
