@@ -34,12 +34,15 @@ class FauxSettableRequest(FauxRequest):
 class FauxInlineResponse(FauxResponse):
 
     def __init__(self):
-        self.body = "Should never see this."
+        self.setBody("Should never see this.")
         self.status = '200'
         self.headers = {}
 
-    def write(self, data):
-        self.body = data
+    def setStatus(self, status, reason=None):
+        self.status = status
+
+    def setBody(self, body, *args, **kw):
+        self.body = body
 
 class InlineAuthHelperTests( unittest.TestCase
                            , ILoginPasswordHostExtractionPlugin_conformance
