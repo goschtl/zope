@@ -43,7 +43,11 @@ def dump(metadata, f):
     :param f: Open file object to write to.
 
     """
-    print >>f, "Metadata-Version: 1.0"
+    metadata_version = "1.0"
+    if (metadata.maintainer or metadata.maintainer_email
+        or metadata.url or metadata.get_classifiers()):
+        metadata_version = "1.1"
+    print >>f, "Metadata-Version:", metadata_version
     print >>f, "Name:", metadata.get_name()
     if metadata.version:
         print >>f, "Version:", metadata.get_version()
