@@ -26,41 +26,50 @@ IDENTITY_ACCT = "dccvs"
 IDENTITY_FILE = "/home/dccvs/cvsidentity"
 
 
-VERBOSE = 1
+RECURSE = 0                             # '--recurse' option
+DRYRUN = 0                              # '--dryrun' option
+VERBOSE = 0                             # '--verbose' option
 SCRIPT = "postcommit_actions"           # Changes to args[0], when obtained.
 
 import sys, os
 import re, string
+import getopt
 
 sVv_re = re.compile("(.*),([^,]+),([^,]+)")
 
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
 
-    global VERBOSE, SCRIPT
+    global SCRIPT, DRYRUN, VERBOSE, RECURSE
 
     orig_args = args[:]
 
-    if (len(args) < 2
-        or (args[1] == "--verbose" and (len(args) != 3))):
+    SCRIPT = args[0]
+    opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun", "recurse"])
+    if len(args) != 1:
         usage(); raise SystemExit, 1
-
-    # Identify all the args - see usage() for expected layout.
-    SCRIPT = args[0]; del args[0]
-    if args[0] == "--verbose":
-        VERBOSE = 1
-        del args[0]
-
+    for opt, val in opts:
+        if opt == "--verbose":
+            VERBOSE = 1
+            complain("%s: VERBOSE mode...\n", SCRIPT)
+        elif opt == "--dryrun":
+            DRYRUN = 1
+            complain("%s: DRYRUN mode...\n", SCRIPT)
+        elif opt == "--recurse":
+            RECURSE = 1
+            complain("%s: FULL-DEPTH RECURSE mode...\n", SCRIPT)
+        else:
+            complain("Unrecognize option '%s'\n", opt)
+            raise SystemExit, 1
     if VERBOSE:
         complain("Initial args: %s '%s'\n",
                  string.join(orig_args[:-1], " "),
                  orig_args[-1])
-
     # The %{sVv} args are passed in as a single token - have to split them.
-    args = string.split(args[0])
+    split_args = string.split(args[0])
 
-    repo = args[0]; del args[0]
-    subjs = map(grok_file, args)
+    repo = split_args[0]
+    subjs = map(grok_file, split_args[1:])
 
     if VERBOSE:
         complain("CWD: %s, Repo: %s, ", os.getcwd(), repo)
@@ -70,10 +79,9 @@ def main(args):
     for entry in got:
         (nm, expr, addrs, remote) = entry
         if addrs:
-            print "Addrs:", addrs
             do_mail(nm, repo, addrs, subjs)
         if remote:
-            do_sync(repo, remote, subjs)
+            do_sync(nm, repo, remote, subjs, recurse=RECURSE)
 
     do_chmod(subjs)
 
@@ -93,19 +101,32 @@ def do_mail(name, repo, addrs, subjs):
         complain("Notice to %s for %s / %s\n", addrs, repo, fnames)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS: %s %s" % (repo, fnames)
-    os.system("%s %s -s '%s' %s" % (MAIL_CMD,
-                                    (VERBOSE and "-v") or "",
-                                    subject,
-                                    string.join(addrs, ",")))
+    os.system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
+                                        (DRYRUN and "echo ") or "",
+                                        MAIL_CMD,
+                                        (VERBOSE and "-v") or "",
+                                        subject,
+                                        string.join(addrs, ",")))
 
-def do_sync(repo, remote, subjs=None):
-    """Instigate repository mirror synchronize."""
+def do_sync(name, repo, remote, subjs=None, recurse=0):
+    """Instigate repository mirror synchronize.
+
+    The repository directory containing the subjects is synced.  (In fact,
+    the actual setting of subjs doesn't matter.)  If recurse is set, then
+    the recursion extends to full depth below the repo dir (and the
+    activity is conducted in the foreground)."""
+
     if VERBOSE:
         fnames = string.join(map(lambda x: x[0], subjs), ",")
-        complain("Sync for %s of %s/ %s / %s\n",
-                 remote, os.environ["CVSROOT"], repo, fnames)
-    ssh_fragment = ('--rsh="/usr/bin/ssh -v -i %s -l %s"'
-                    % (IDENTITY_FILE, IDENTITY_ACCT))
+        complain("Sync for %s to %s; of %s/ %s / %s\n",
+                 name, remote, os.environ["CVSROOT"], repo, fnames)
+    try:
+        repodir = remote['repodir'] % name
+    except TypeError:
+        repodir = remote['repodir']
+
+    ssh_fragment = ('--rsh="/usr/bin/ssh %s -i %s -l %s"'
+                    % ((VERBOSE and "-v") or "", IDENTITY_FILE, IDENTITY_ACCT))
     cmd = (RSYNC_CMD
            + " %s " % ssh_fragment
            + " --update"                # Preserve newer files
@@ -119,20 +140,28 @@ def do_sync(repo, remote, subjs=None):
            + " --delete"                # keep remote directory in sync
            + " --compress"              # (more compression context than ssh)
            )
-    if subjs != None:
-        cmd = cmd + ' --exclude "/*/*"'
+    if VERBOSE:
+        cmd = cmd + " --verbose"
 
-    entire =("%s %s/%s %s:%s"
-             % (cmd,
-                os.environ["CVSROOT"], repo,
-                remote['host'], remote['repodir']))
-    print "The whole shebang:", entire
+    if recurse:
+        bg = 0
+    else:
+        cmd = cmd + ' --exclude "/*/*"'
+        bg = 1
+
+    os.system("%s%s%s %s/%s %s:%s %s"
+              % ((VERBOSE and "set -x; ") or "",
+                 (DRYRUN and "echo ") or "",
+                 cmd,
+                 os.environ["CVSROOT"], repo,
+                 remote['host'], repodir,
+                 (bg and " &") or ""))
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
-    if VERBOSE:
-        complain("Doing chmod on files: %s\n", fnames)
-    os.system("echo chmod g+w %s" % string.join(fnames, " "))
+    os.system("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
+                                    (DRYRUN and "echo ") or "",
+                                    string.join(fnames, " ")))
 
 def grok_file(s):
     """Separate "file,old-version,new-version"."""
