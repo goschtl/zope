@@ -1,6 +1,5 @@
 <configure
     xmlns='http://namespaces.zope.org/zope'
-    xmlns:fssync='http://namespaces.zope.org/fssync'
     i18n_domain='zope'
     >
 
@@ -59,11 +58,6 @@
       for=".interfaces.IZPTPage"
       provides="zope.app.size.interfaces.ISized"
       factory=".zptpage.Sized"
-      />
-
-  <fssync:adapter
-      class=".zptpage.ZPTPage"
-      factory=".fssync.ZPTPageAdapter"
       />
 
 

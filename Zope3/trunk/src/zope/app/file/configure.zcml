@@ -1,6 +1,5 @@
 <configure
     xmlns='http://namespaces.zope.org/zope'
-    xmlns:fssync='http://namespaces.zope.org/fssync'
     i18n_domain='zope'
     >
 
@@ -75,9 +74,6 @@
       for=".interfaces.IImage"
       />
 
-
-  <!-- fssync adapters -->
-
   <adapter 
       for=".interfaces.IFile"
       provides="zope.app.filerepresentation.interfaces.IReadFile"
@@ -92,21 +88,11 @@
       permission="zope.ManageContent"
       />
 
-  <fssync:adapter
-      class=".file.File"
-      factory=".fssync.FileAdapter"
-      />
-
   <adapter
       for="zope.app.folder.interfaces.IFolder"
       provides="zope.app.filerepresentation.interfaces.IFileFactory"
       factory=".image.FileFactory"
       permission="zope.ManageContent"
-      />
-
-  <fssync:adapter
-      class=".image.Image"
-      factory=".fssync.FileAdapter"
       />
 
 
