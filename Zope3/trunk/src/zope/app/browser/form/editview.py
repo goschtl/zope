@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.5 2003/01/09 14:13:04 jim Exp $
+$Id: editview.py,v 1.6 2003/01/26 12:05:18 stevea Exp $
 """
 
 from datetime import datetime
@@ -129,7 +129,7 @@ class EditView(BrowserView):
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None):
-
+    # XXX What about the __implements__ of the bases?
     class_  = SimpleViewClass(
         template,
         used_for = schema, bases = bases
@@ -168,6 +168,7 @@ def _normalize(_context, schema_, for_, class_, template, default_template,
     if class_ is None:
         bases = (view, )
     else:
+        # XXX What about class_.__implements__ ?
         bases = (_context.resolve(class_), view)
 
 
