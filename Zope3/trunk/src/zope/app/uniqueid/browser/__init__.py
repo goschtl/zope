@@ -17,13 +17,6 @@ $Id$
 """
 from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
-
-
-def saveGetPath(obj):
-    try:
-        return zapi.getPath(obj)
-    except:
-        return None
     
 
 class UniqueIdUtilityView(object):
@@ -38,4 +31,4 @@ class UniqueIdUtilityView(object):
         self.request.response.redirect('index.html')
 
     def items(self):  
-        return [(uid, saveGetPath(ref())) for uid, ref in self.context.items()]
+        return [(uid, zapi.getPath(ref())) for uid, ref in self.context.items()]
