@@ -297,7 +297,7 @@ Or we might require the body to be at least 1000 characters in length:
     ...         else:
     ...             return ''
 
-We can register these as subscription adapters:
+We can register these as subscription adapters [1]_:
 
     >>> component.provideSubscriptionAdapter(SingleLineSummary)
     >>> component.provideSubscriptionAdapter(AdequateLength)
@@ -321,6 +321,74 @@ We can then use the subscribers to validate objects:
     ...  for adapter in component.subscribers([doc], IValidate)
     ...  if adapter.validate()]
     ['too short']
+
+Handlers
+********
+
+Handlers are subscription adapter factories that don't produce
+anything.  They do all of their work when called.  Handlers
+are typically used to handle events.
+
+Event subscribers are different from other subscription adapters in
+that the caller of event subscribers doesn't expect to interact with
+them in any direct way.  For example, an event publisher doesn't
+expect to get any return value.  Because subscribers don't need to
+provide an API to their callers, it is more natural to define them
+with functions, rather than classes.  For example, in a
+document-management system, we might want to record creation times for
+documents:
+
+    >>> import datetime
+
+    >>> def documentCreated(event):
+    ...     event.doc.created = datetime.datetime.utcnow()
+
+In this example, we have a function that takes an event and performs
+some processing.  It doesn't actually return anything.  This is a
+special case of a subscription adapter that adapts an event to
+nothing.  All of the work is done when the adapter "factory" is
+called.  We call subscribers that don't actually create anything
+"handlers".  There are special APIs for registering and calling
+them.
+
+To register the subscriber above, we define a document-created event: 
+
+    >>> class IDocumentCreated(interface.Interface):
+    ...     doc = interface.Attribute("The document that was created")
+
+    >>> class DocumentCreated:
+    ...     interface.implements(IDocumentCreated)
+    ...
+    ...     def __init__(self, doc):
+    ...         self.doc = doc
+
+We'll also change our handler definition to:
+
+    >>> def documentCreated(event):
+    ...     event.doc.created = datetime.datetime.utcnow()
+
+    >>> documentCreated = component.adapter(IDocumentCreated)(documentCreated)
+
+(Note that in Python 2.4, this can be written:
+
+     @component.adapter(IDocumentCreated)
+     def documentCreated(event):
+         event.doc.created = datetime.datetime.utcnow()
+)
+
+This marks the handler as an adapter of `IDocumentCreated` events.
+
+Now we'll register the handler  [1]_:
+
+    >>> component.provideHandler(documentCreated)
+
+Now, if we can create an event and use the `handle` function to call
+handlers registered for the event:
+
+    >>> component.handle(DocumentCreated(doc))
+    >>> doc.created.__class__.__name__
+    'datetime'
+
 
 
 .. [1] CAUTION: This API should only be used from test or

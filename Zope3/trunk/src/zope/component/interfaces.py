@@ -225,6 +225,16 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
         and this adapter's 'Adapters' service is used.
         """
 
+    def handle(*objects):
+        """Call all of the handlers for the given objects
+
+        Handlers are subscription adapter factories that don't produce
+        anything.  They do all of their work when called.  Handlers
+        are typically used to handle events.
+        
+        """
+
+
     def adapts(*interfaces):
         """Declare that a class adapts the given interfaces.
 
@@ -351,7 +361,7 @@ class IComponentRegistrationConvenience(Interface):
         provided to provide a less specific interface.)
 
         CAUTION: This API should only be used from test or
-        application-setup code. This api shouldn't be used by regular
+        application-setup code. This API shouldn't be used by regular
         library modules, as component registration is a configuration
         activity. 
         
@@ -372,15 +382,15 @@ class IComponentRegistrationConvenience(Interface):
         adapts argument can be provided to override the declaration.)
 
         CAUTION: This API should only be used from test or
-        application-setup code. This api shouldn't be used by regular
+        application-setup code. This API shouldn't be used by regular
         library modules, as component registration is a configuration
         activity. 
         """
 
     def provideSubscriptionAdapter(factory, adapts=None, provides=None):
-        """Register an adapter globally
+        """Register a subscription adapter
 
-        An adapter is registered to provide an interface with a name
+        A subscription adapter is registered to provide an interface
         for some number of object types. If a factory implements only
         one interface, then the provides argument can be omitted and
         the provided interface will be used. (In this case, a provides
@@ -392,7 +402,24 @@ class IComponentRegistrationConvenience(Interface):
         adapts argument can be provided to override the declaration.)
 
         CAUTION: This API should only be used from test or
-        application-setup code. This api shouldn't be used by regular
+        application-setup code. This API shouldn't be used by regular
+        library modules, as component registration is a configuration
+        activity. 
+        """
+
+    def provideHandler(handler, adapts=None):
+        """Register a handler
+
+        Handlers are subscription adapter factories that don't produce
+        anything.  They do all of their work when called.  Handlers
+        are typically used to handle events.
+
+        If the handler has an adapts declaration, then the adapts
+        argument can be omitted and the declaration will be used.  (An
+        adapts argument can be provided to override the declaration.)
+
+        CAUTION: This API should only be used from test or
+        application-setup code. This API shouldn't be used by regular
         library modules, as component registration is a configuration
         activity. 
         """

@@ -180,6 +180,10 @@ def subscribers(objects, interface, context=None):
         return []
     return sitemanager.subscribers(objects, interface)
 
+def handle(*objects):
+    sitemanager = getSiteManager(None)
+    tuple(sitemanager.subscribers(objects, None))
+
 class _adapts_descr(object):
     def __init__(self, interfaces):
         self.interfaces = interfaces
@@ -211,7 +215,7 @@ def adapts(*interfaces):
     # until later on.
     if (locals is frame.f_globals) or (
         ('__module__' not in locals) and sys.version_info[:3] > (2, 2, 0)):
-        raise TypeError(name+" can be used only from a class definition.")
+        raise TypeError("adapts can be used only from a class definition.")
 
     if '__component_adapts__' in locals:
         raise TypeError("adapts can be used only once in a class definition.")
@@ -346,3 +350,13 @@ def provideSubscriptionAdapter(factory, adapts=None, provides=None):
             raise TypeError("Missing 'adapts' argument")
             
     getGlobalSiteManager().subscribe(adapts, provides, factory)
+
+def provideHandler(factory, adapts=None):
+
+    if adapts is None:
+        try:
+            adapts = factory.__component_adapts__
+        except AttributeError:
+            raise TypeError("Missing 'adapts' argument")
+            
+    getGlobalSiteManager().subscribe(adapts, None, factory)
