@@ -14,12 +14,12 @@
 """Support for handling package configuration files.
 
 :Variables:
-  - `PACKAGE_CONF`:  Default name of the package information file.
+  - `PACKAGE_CONF`:  Name of the package information file.
   - `SCHEMA`:  Schema for the package information file.
 
 :Groups:
-  - `Public interface`: loadPackageInfo
-  - `Helper functions`: create_extension expand_globs
+  - `Public interface`: loadCollectionInfo loadPackageInfo
+  - `Helper functions`: create_extension expand_globs read_package_info
   - `Datatype functions`: cpp_definition cpp_names path_ref extension
 
 """
@@ -42,25 +42,58 @@ PACKAGE_CONF = "INSTALL.cfg"
 # functions to be defined first.
 
 
-def loadPackageInfo(pkgname, directory, reldir, file=None):
-    pkginfo = read_package_info(directory, reldir, file)
+def loadPackageInfo(pkgname, directory, reldir):
+    """Load package information for a Python package.
+
+    :return: Package information object.
+
+    :Parameters:
+      - `pkgname`: Full name of the Python package to which the
+        information being read applies.  This is needed to construct
+        Extension objects properly.
+      - `directory`: Directory containing the package's __init__.py file.
+      - `reldir`: Relative directory path with which file names from
+        the information file will be joined.  This should be in POSIX
+        notation.  It will not be used to locate files.
+
+    """
+    pkginfo = read_package_info(directory, reldir)
     pkginfo.extensions = [create_extension(ext, pkgname, reldir)
                           for ext in pkginfo.extension]
     return pkginfo
 
 
-def loadCollectionInfo(directory, file=None):
-    pkginfo = read_package_info(directory, "", file)
+def loadCollectionInfo(directory):
+    """Load package information for a collection.
+
+    :return: Package information object.
+
+    :Parameters:
+      - `directory`: Directory containing the collection's files.
+
+    """
+    pkginfo = read_package_info(directory)
     if pkginfo.extension:
         raise ValueError("extensions cannot be defined in collections")
     pkginfo.extensions = []
     return pkginfo
 
 
-def read_package_info(directory, reldir, filename):
-    if not filename:
-        filename = PACKAGE_CONF
-    path = os.path.join(directory, filename)
+def read_package_info(directory, reldir=None):
+    """Read the package information file from a specified directory.
+
+    :return: Package information object.
+
+    :Parameters:
+      - `directory`: Directory containing the collection's files.
+      - `reldir`: Relative directory path with which file names from
+        the information file will be joined.  This should be in POSIX
+        notation.  It will not be used to locate files.  It may be
+        omitted; if so, filenames are no 'relocated' relative to where
+        they are found.
+
+    """
+    path = os.path.join(directory, PACKAGE_CONF)
     if os.path.exists(path):
         path = os.path.realpath(path)
         url = "file://" + urllib.pathname2url(path)
