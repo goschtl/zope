@@ -17,9 +17,9 @@ Using the Zope Debugger
     To start interacting with the debugger you need to initialize the
     zope application::
 
-      python2.2
-      >> from zope.app import Application
-      >> app = Application('path/to/zodb/', 'path/to/site.zcml')
+      $ python2.3
+      >>> from zope.app import Application
+      >>> app = Application('path/to/zodb/', 'path/to/site.zcml')
             
   Using the Debugger
 
@@ -31,7 +31,7 @@ Using the Zope Debugger
       The 'publish' method executes a request as the publisher would
       and prints the response headers and body::
 
-         >> app.publish(path='/folder/content_object')
+         >>> app.publish(path='/folder/content_object')
 
     Run
 
@@ -39,9 +39,9 @@ Using the Zope Debugger
       error handling disabled and without outputting anything.  This is
       useful for use with Python's post-mortem.
 
-         >> app.run(path='/folder/content_object')
+         >>> app.run(path='/folder/content_object')
          # an exception is raised
-         >> import pdb; pdb.pm()
+         >>> import pdb; pdb.pm()
          # enters the python post-mortem debugger
 
     Debug
@@ -50,7 +50,7 @@ Using the Zope Debugger
       debugger, with an extra convenience break point, setup just before
       the published object call::
 
-        >> app.debug(path='/folder/content_object')
+        >>> app.debug(path='/folder/content_object')
         * Type c<cr> to jump to published object call.
         pdb> 
       
