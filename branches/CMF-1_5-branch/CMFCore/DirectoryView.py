@@ -19,6 +19,7 @@ import re
 from os import path, listdir, stat
 from sys import exc_info
 from sys import platform
+from warnings import warn
 
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_inner, aq_parent
@@ -37,9 +38,19 @@ from FSObject import BadFile
 from permissions import AccessContentsInformation
 from permissions import ManagePortal
 from utils import _dtmldir
+from utils import expandpath as _new_expandpath
 from utils import minimalpath
 from utils import normalize
 
+
+def expandpath(p):
+    """ utils.expandpath() wrapper for backwards compatibility.
+    """
+    warn('expandpath() doesn\'t belong to DirectoryView anymore and will be '
+         'removed from that module in CMF 1.6. Please import expandpath from '
+         'the utils module.',
+         DeprecationWarning)
+    return _new_expandpath(p)
 
 __reload_module__ = 0
 
