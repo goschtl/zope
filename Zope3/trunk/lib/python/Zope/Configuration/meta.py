@@ -13,14 +13,14 @@
 ##############################################################################
 """Registration of registration directives
 
-See ConfigurationDirectiveInterfaces
+See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
+$Id: meta.py,v 1.4 2002/09/01 18:29:58 rdmurray Exp $
 """
 
-# 
 
-from ConfigurationDirectiveInterfaces import INonEmptyDirective
-from ConfigurationDirectiveInterfaces import ISubdirectiveHandler
+from INonEmptyDirective import INonEmptyDirective
+from ISubdirectiveHandler import ISubdirectiveHandler
 
 
 _directives = {}

@@ -14,15 +14,14 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.3 2002/07/18 22:26:46 jeremy Exp $
+$Id: SiteDefinition.py,v 1.4 2002/09/01 18:29:58 rdmurray Exp $
 """
 
 import sys
 
 # Import Configuration-related classes
 from Zope.Configuration.Action import Action
-from Zope.Configuration.ConfigurationDirectiveInterfaces \
-     import INonEmptyDirective
+from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
 
 from ServerTypeRegistry import getServerType
 

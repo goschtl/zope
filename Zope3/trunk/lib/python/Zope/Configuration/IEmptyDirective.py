@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Configuration directives
+"""Configuration directives that do not have subdirectives
 
-$Id: ConfigurationDirectiveInterfaces.py,v 1.2 2002/06/10 23:29:24 jim Exp $
+$Id: IEmptyDirective.py,v 1.1 2002/09/01 18:29:58 rdmurray Exp $
 """
 from Interface import Interface
 
@@ -38,22 +38,3 @@ class IEmptyDirective(Interface):
         The callable object will be called with the argument tuple and
         keyword arguments to perform the action.
         """
-
-class INonEmptyDirective(Interface):
-
-    def __call__(**kw):
-        """Compute complex directive handler
-
-        Return an IComplexDirectiveHandler
-        """
-
-class ISubdirectiveHandler(Interface):
-    """Handle subdirectives
-
-    Provide mehods for registered subdirectives.
-
-    Also provide a call that can provide additional configuration actions.
-    """
-
-    def __call__():
-        """Return a sequence of configuration actions."""
