@@ -17,14 +17,16 @@ $Id$
 """
 from zope.interface import Interface
 
-from zope.schema import TextLine, Int, List, Password
+from zope.schema import TextLine, Int, List, Password, Choice
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.pluggableauth.interfaces import IPrincipalSource
 
 
 
 class ILDAPBasedPrincipalSource(IPrincipalSource):
-    """Describe LDAP-based authentication sources."""
+    """Describe LDAP-based authentication sources.
+    
+    """
 
     host = TextLine(
             title = _(u'Hostname'),
@@ -51,6 +53,12 @@ class ILDAPBasedPrincipalSource(IPrincipalSource):
     manager_passwd = Password(
             title = _(u'Manager password'),
             description = _(u"Manager's password"))
+
+    search_scope = Choice(
+            title = _(u'Search Scope'),
+            description = _(u"Scope for the LDAP search"),
+            default= 1,
+            vocabulary = "LDAP_SEARCH_SCOPE")
 
 
 

@@ -45,6 +45,7 @@ class LDAPPrincipalSource(Contained, Persistent):
         self.login_attribute = login_attribute
         self.manager_dn = manager_dn
         self.manager_passwd = manager_passwd
+        self.search_scope = 1
         self.__cached = []
     
     ### IContainer-related methods
@@ -121,7 +122,7 @@ class LDAPPrincipalSource(Contained, Persistent):
     def __findInLDAP(self, login):
         l = self.__connect()
         l.simple_bind_s(self.manager_dn, self.manager_passwd)
-        lsearch = l.search_s(self.basedn, ldap.SCOPE_ONELEVEL,
+        lsearch = l.search_s(self.basedn, self.search_scope,
                 '(%s=%s)' % (self.login_attribute, login))
         if lsearch:
             uid_dn, uid_dict = lsearch[0]
@@ -149,7 +150,7 @@ class LDAPPrincipalSource(Contained, Persistent):
             search = '(%s=*%s*)' % (self.login_attribute, name)
         l = self.__connect()
         l.simple_bind_s(self.manager_dn, self.manager_passwd)
-        lsearch = l.search_s(self.basedn, ldap.SCOPE_ONELEVEL, search)
+        lsearch = l.search_s(self.basedn, self.search_scope, search)
         
         principals = []
         for node in lsearch:

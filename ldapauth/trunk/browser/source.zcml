@@ -48,7 +48,8 @@
         label="Edit LDAP-based Principal Source" 
         name="edit.html"        
         menu="zmi_views" title="Edit"
-        fields="host port basedn login_attribute manager_dn manager_passwd" 
+        fields="host port basedn login_attribute manager_dn manager_passwd
+                search_scope" 
         permission="zope.ManageContent" />
 
     <!-- connetion test view -->

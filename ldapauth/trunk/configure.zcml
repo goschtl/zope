@@ -33,6 +33,11 @@
 
     </content>
 
+    <!-- LDAP search scope vocabulary -->
+    <vocabulary
+        name="LDAP_SEARCH_SCOPE"
+        factory=".vocabulary.SearchScopeVocabulary" />
+
     <!-- Pluggable LDAP manager adapter -->
     <adapter
         factory="ldapauth.manager.LDAPManagerAdapter"
