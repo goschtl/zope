@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.5 2003/10/22 19:13:55 sidnei Exp $
+$Id: metaconfigure.py,v 1.6 2003/11/21 17:12:19 jim Exp $
 """
 
 __metaclass__ = type
@@ -23,7 +23,7 @@ from zope.configuration.exceptions import ConfigurationError
 
 from zope.schema import getFieldNamesInOrder
 from zope.app.interfaces.container import IAdding
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      menuItemDirective
 
@@ -93,7 +93,7 @@ class BaseFormDirective:
                 self.bases, self.for_, self.fields)
 
     def _discriminator(self):
-        return ('view', self.for_, self.name, IBrowserPresentation,
+        return ('view', self.for_, self.name, IBrowserRequest,
                 self.layer)
 
 class Pane:

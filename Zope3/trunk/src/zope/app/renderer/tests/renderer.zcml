@@ -10,7 +10,7 @@
 
   <renderer:renderer
       sourceType=".tests.test_directives.ITestSource"
-      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      for="zope.publisher.interfaces.browser.IBrowserRequest" 
       factory=".tests.test_directives.TestRenderer" />
  
 </configure>

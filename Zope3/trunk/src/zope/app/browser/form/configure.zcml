@@ -135,7 +135,7 @@
   <!-- Single selection -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyField"
       name="display"
@@ -144,7 +144,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyField"
       name="edit"
@@ -154,7 +154,7 @@
   <!-- Bags -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyBagField"
       name="display"
@@ -163,7 +163,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyBagField"
       name="edit"
@@ -173,7 +173,7 @@
   <!-- Lists -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyListField"
       name="display"
@@ -182,7 +182,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyListField"
       name="edit"
@@ -192,7 +192,7 @@
   <!-- Sets -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularySetField"
       name="display"
@@ -201,7 +201,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularySetField"
       name="edit"
@@ -211,7 +211,7 @@
   <!-- Unique lists -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyUniqueListField"
       name="display"
@@ -220,7 +220,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyUniqueListField"
       name="edit"
@@ -230,7 +230,7 @@
   <!-- Query view helpers -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IVocabularyQueryView"
       for="zope.schema.interfaces.IIterableVocabularyQuery"
       name="widget-query-helper"
@@ -239,7 +239,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       allowed_interface="zope.app.interfaces.browser.form.IVocabularyQueryView"
       for="zope.schema.interfaces.IIterableVocabularyQuery"
       name="widget-query-list-helper"
@@ -249,7 +249,7 @@
   <!-- Vocabulary field display widgets -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".vocabularywidget.VocabularyDisplayWidget"
       name="field-display-widget"
       for="zope.schema.interfaces.IVocabulary"
@@ -257,7 +257,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".vocabularywidget.VocabularyBagDisplayWidget"
       name="field-display-bag-widget"
       for="zope.schema.interfaces.IVocabulary"
@@ -265,7 +265,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".vocabularywidget.VocabularyListDisplayWidget"
       name="field-display-list-widget"
       for="zope.schema.interfaces.IVocabulary"
@@ -273,7 +273,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".vocabularywidget.VocabularyBagDisplayWidget"
       name="field-display-set-widget"
       for="zope.schema.interfaces.IVocabulary"
@@ -281,7 +281,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".vocabularywidget.VocabularyListDisplayWidget"
       name="field-display-unique-list-widget"
       for="zope.schema.interfaces.IVocabulary"
@@ -290,7 +290,7 @@
   <!-- Vocabulary edit widgets -->
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".vocabularywidget.VocabularyEditWidget"
       name="field-edit-widget"
       for="zope.schema.interfaces.IVocabulary"
@@ -298,7 +298,7 @@
 
   <view
       permission="zope.Public"
-      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".vocabularywidget.VocabularyMultiEditWidget"
       name="field-edit-list-widget"
       for="zope.schema.interfaces.IVocabulary"

@@ -34,7 +34,7 @@
       for="*"
       name="absolute_url"
       factory=".absoluteurl.AbsoluteURL"
-      type="zope.publisher.interfaces.http.IHTTPPresentation"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL"
       />
@@ -43,7 +43,7 @@
       for="zope.app.interfaces.traversing.IContainmentRoot"
       name="absolute_url"
       factory=".absoluteurl.SiteAbsoluteURL"
-      type="zope.publisher.interfaces.http.IHTTPPresentation"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL"
       />

@@ -39,7 +39,7 @@
 
   <renderer:renderer 
       sourceType="zope.app.interfaces.renderer.IPlainTextSource"
-      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      for="zope.publisher.interfaces.browser.IBrowserRequest" 
       factory=".plaintext.PlainTextToHTMLRenderer" />
 
 
@@ -52,7 +52,7 @@
 
   <!--renderer:renderer 
       sourceType="zope.app.interfaces.renderer.IStructuredTextSource"
-      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      for="zope.publisher.interfaces.browser.IBrowserRequest" 
       factory=".stx.StructuredTextToHTMLRenderer" /-->
 
 
@@ -65,7 +65,7 @@
 
   <renderer:renderer 
       sourceType="zope.app.interfaces.renderer.IReStructuredTextSource"
-      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      for="zope.publisher.interfaces.browser.IBrowserRequest" 
       factory=".rest.ReStructuredTextToHTMLRenderer" />
 
 

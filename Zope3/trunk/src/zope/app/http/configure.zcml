@@ -7,7 +7,7 @@
 <view
   for="zope.app.interfaces.container.ISimpleReadContainer"
   name="_traverse"
-  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".traversal.ContainerTraverser"
   permission="zope.Public"
   allowed_interface="zope.publisher.interfaces.IPublishTraverse"
@@ -16,7 +16,7 @@
 <view
   for="zope.app.interfaces.container.IItemContainer"
   name="_traverse"
-  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".traversal.ItemTraverser"
   permission="zope.Public"
   allowed_interface="zope.publisher.interfaces.IPublishTraverse"
@@ -25,7 +25,7 @@
 <view
   for="zope.app.interfaces.http.INullResource"
   name="PUT"
-  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".put.NullPUT"
   permission="zope.Public"
   allowed_attributes="PUT"
@@ -34,7 +34,7 @@
 <view
   for="*"
   name="PUT"
-  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".put.FilePUT"
   permission="zope.Public"
   allowed_attributes="PUT"
@@ -43,7 +43,7 @@
 <view
   for="*"
   name="DELETE"
-  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".delete.DELETE"
   permission="zope.Public"
   allowed_attributes="DELETE"
@@ -52,7 +52,7 @@
 <view
   for="*"
   name="OPTIONS"
-  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  type="zope.publisher.interfaces.http.IHTTPRequest"
   factory=".options.OPTIONS"
   permission="zope.ManageContent"
   allowed_attributes="OPTIONS"
