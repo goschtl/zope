@@ -2,6 +2,15 @@
 Things to do for the next release (in no particular order)
 ============================================================
 
+- http://dev.zope.org/Zope3/NoMoreSchemaBinding
+
+- http://dev.zope.org/Zope3/CleanupOfSchemaAndWidgets
+
+- http://dev.zope.org/Zope3/SupportingConstraintMaintainingSubscriptions
+
+  This is needed for a number of other tasks.  Nathan Yergler is
+  working on this.
+
 - Implement subscription adapter support in getRegisteredMatching() method of
   adapter registry. (zope/interface/adapter.py, line 623-628)
 
@@ -27,9 +36,13 @@ Things to do for the next release (in no particular order)
 
   http://dev.zope.org/Zope3/PartialAdapters
 
+  Maybe we can live without these.
+
 - Minor refactoring of security context
 
   http://dev.zope.org/Zope3/UnificationOfRequestsAndSecurityContextsThroughUse
+
+  Steve and Marius are working on this
 
 - Redo utility service
 
@@ -42,18 +55,11 @@ Things to do for the next release (in no particular order)
   See:
    http://dev.zope.org/Zope3/LocationRelatedEvents
 
-- Redo the way names input in add forms.  Rather than have adding
-  provide an add button, either:
+- Redo the way names input in add forms.
 
-  - Have it provide the name of an input field.  If the name
-    is false, then no name can be entered, otherwise, an input
-    with that name must be supplied by the form.
+  See: http://dev.zope.org/Zope3/AddingNameControl
 
-    or
-
-  - Have the adding provide a boolean saying whether a name should
-    be collected. The add form takes over responsibility and sets
-    contentName.
+  K. Narasimha Murthy is working on this.
 
 - Replace the *used* names in schema.errornames to exceptions
   in schema.interfaces.  Deprecate schema.errornames.
