@@ -342,7 +342,8 @@ def provideService(serviceType, component, permission):
 
     service_manager.provideService(serviceType, component)
     
-def service(_context, serviceType, component=None, permission=None, factory=None):
+def service(_context, serviceType, component=None, permission=None,
+            factory=None):
     if factory:
         if component:
             raise TypeError("Can't specify factory and component.")
