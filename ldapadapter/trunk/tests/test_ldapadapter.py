@@ -13,7 +13,7 @@
 ##############################################################################
 """LDAPAdapter tests
 
-$Id:$
+$Id$
 """
 __docformat__ = "reStructuredText"
 import unittest

@@ -14,3 +14,18 @@ Let's look at an example:
 
   >>> from ldapadapter.interfaces import ILDAPAdapter
   >>> from ldapadapter.interfaces import ILDAPConnection
+  >>> from ldapadapter.utility import LDAPAdapter
+  >>> from ldapadapter.utility import LDAPConnection
+  
+  >>> host = u'localhost'
+  >>> port = 389
+  >>> useSSL = False
+  >>> da = LDAPAdapter(host, port)
+  >>> da.host
+  u'localhost'
+  
+  >>> da.port
+  389
+  
+  >>> da.useSSL
+  False
