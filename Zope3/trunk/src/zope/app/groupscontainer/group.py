@@ -21,7 +21,7 @@ from zope.security.interfaces import IGroup
 from zope.app.pas.interfaces import IAuthenticatedPrincipalCreated
 from persistent import Persistent
 from zope.interface import implements, alsoProvides
-from zope.app.groupscontainer.interfaces import IGroupContained, IGroupsFolder
+from zope.app.groupscontainer.interfaces import IGroupContained, IGroupFolder
 from zope.security.interfaces import IGroupAwarePrincipal
 from types import StringTypes
 import zope.app.zapi
@@ -76,7 +76,7 @@ def setGroupsForPrincipal(event):
     principal = event.principal
     alsoProvides(principal, IGroupAwarePrincipal)
     principal.groups = []
-    groupfolders = zope.app.zapi.getUtilitiesFor(IGroupsFolder)
+    groupfolders = zope.app.zapi.getUtilitiesFor(IGroupFolder)
     for name, groupfolder in groupfolders:
         groups = groupfolder.getGroupsForPrincipal(principal.id)
         principal.groups.extend(groups)

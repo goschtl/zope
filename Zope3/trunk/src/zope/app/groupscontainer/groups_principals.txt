@@ -5,15 +5,15 @@ We import the needed modules
 
   >>> from zope.app.groupscontainer.group import Group
   >>> from zope.security.interfaces import IGroupAwarePrincipal
-  >>> from zope.app.groupscontainer.groupsfolder import GroupsFolder
-  >>> from zope.app.groupscontainer.interfaces import IGroupsFolder
+  >>> from zope.app.groupscontainer.groupfolder import GroupFolder
+  >>> from zope.app.groupscontainer.interfaces import IGroupFolder
   >>> from zope.app.pas.principalplugins import PrincipalFactory
   >>> from zope.publisher.tests.httprequest import TestRequest
   >>> import zope.app.zapi
 
 We first create a group folder and add some groups:
 
-  >>> name, groups = list(zope.app.zapi.getUtilitiesFor(IGroupsFolder))[0]
+  >>> name, groups = list(zope.app.zapi.getUtilitiesFor(IGroupFolder))[0]
   >>> geeks = Group(id='geeks', principalsids=['srichter','jim'])
   >>> newbies = Group(id='newbies', principalsids=['amos','claudia'])
   >>> sprinters = Group(id='sprinters', 

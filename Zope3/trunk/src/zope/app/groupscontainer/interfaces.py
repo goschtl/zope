@@ -22,7 +22,7 @@ from zope.security.interfaces import IGroup
 from zope.schema import Field, TextLine
 from zope.interface import Interface
 
-class IGroupsFolder(IContainer):
+class IGroupFolder(IContainer):
        
     def getGroupsForPrincipal(principalid):
         """Get groups the given principal belongs to"""
@@ -37,7 +37,7 @@ class IGroupsFolder(IContainer):
 
 class IGroupContained(IContained):
     __parent__ = Field(
-             constraint = ContainerTypesConstraint(IGroupsFolder))
+             constraint = ContainerTypesConstraint(IGroupFolder))
              
 
 class IGroupSearchCriteria(Interface):

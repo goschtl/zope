@@ -41,14 +41,14 @@
     />
   
 <browser:tool
-    interface=".interfaces.IGroupsFolder"
+    interface=".interfaces.IGroupFolder"
     title="Groups Folder"
     description="Groups Folder"
     />
 
-<localUtility class=".groupsfolder.GroupsFolder">
+<localUtility class=".groupfolder.GroupFolder">
   <implements
-      interface=".interfaces.IGroupsFolder" />
+      interface=".interfaces.IGroupFolder" />
   <implements
       interface="zope.app.annotation.IAttributeAnnotatable" />
   <require
@@ -59,12 +59,12 @@
 <browser:addMenuItem
     title="Groups Folder"
     description="A Groups folder"
-    class=".groupsfolder.GroupsFolder"
+    class=".groupfolder.GroupFolder"
     permission="zope.ManageServices"
     />
       
 <browser:containerViews
-     for=".interfaces.IGroupsFolder"
+     for=".interfaces.IGroupFolder"
      contents="zope.ManageContent"
      index="zope.View"
      add="zope.ManageContent"

@@ -1,11 +1,11 @@
 Groups Folder Implementation
 ============================
 
-The GroupsFolder class offers a groups container that mantains maps
+The GroupFolder class offers a groups container that mantains maps
 between groups and principals as well as maps from principals to
 groups.
 
-We test that we can add a Group to a GroupsFolder; we also check that
+We test that we can add a Group to a GroupFolder; we also check that
 it is possible to retrieve principals from a given group id and,
 vice-versa, get a list of groups a principal belongs to by providing
 its id.
@@ -14,8 +14,8 @@ its id.
   >>> from zope.security.interfaces import IGroupAwarePrincipal, IGroup
   >>> from zope.app.groupscontainer.group import Group
   >>> from zope.app.groupscontainer.interfaces import IGroupContained
-  >>> from zope.app.groupscontainer.interfaces import IGroupsFolder
-  >>> from zope.app.groupscontainer.groupsfolder import GroupsFolder
+  >>> from zope.app.groupscontainer.interfaces import IGroupFolder
+  >>> from zope.app.groupscontainer.groupfolder import GroupFolder
   >>> from zope.interface import implements
   >>> class GoldrakePrincipal:
   ...     implements(IGroupAwarePrincipal)
@@ -50,7 +50,7 @@ Then we create instances of our fake principal classes:
       
 A groups folder contains groups:
 
-  >>> notordinarypeople = GroupsFolder()
+  >>> notordinarypeople = GroupFolder()
   >>> notordinarypeople[superheroesgroup.id] = superheroesgroup
   >>> notordinarypeople[robotsgroup.id] = robotsgroup
 

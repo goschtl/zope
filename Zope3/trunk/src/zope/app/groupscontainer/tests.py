@@ -26,7 +26,7 @@ from zope.app.form.browser import TextWidget
 from zope.app.form.interfaces import IInputWidget
 
 import zope.app.groupscontainer.group
-import zope.app.groupscontainer.groupsfolder
+import zope.app.groupscontainer.groupfolder
 import zope.app.groupscontainer.interfaces
 import zope.app.pas.interfaces
 
@@ -41,13 +41,13 @@ def setUpGP(test):
     ztapi.subscribe([zope.app.pas.interfaces.IAuthenticatedPrincipalCreated],
                     None,
                     zope.app.groupscontainer.group.setGroupsForPrincipal)
-    groups = zope.app.groupscontainer.groupsfolder.GroupsFolder()
-    ztapi.provideUtility(zope.app.groupscontainer.interfaces.IGroupsFolder,
+    groups = zope.app.groupscontainer.groupfolder.GroupFolder()
+    ztapi.provideUtility(zope.app.groupscontainer.interfaces.IGroupFolder,
                          groups)
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('groupsfolder.txt',
+        doctest.DocFileSuite('groupfolder.txt',
                              setUp=setUp, tearDown=placelesssetup.tearDown),
         doctest.DocFileSuite('groups_principals.txt',
                              setUp=setUpGP, tearDown=placelesssetup.tearDown),

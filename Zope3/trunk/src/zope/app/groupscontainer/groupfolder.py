@@ -13,11 +13,12 @@
 ##############################################################################
 """Zope Groups Folder implementation
 
-$Id: groupsfolder.py 27237 2004-10-12 09:33:00 mriya3 $
+$Id: groupfolder.py 27237 2004-10-12 09:33:00 mriya3 $
 
 """
 
-from zope.app.groupscontainer.interfaces import IGroupsFolder, IGroupSearchCriteria
+from zope.app.groupscontainer.interfaces import IGroupSearchCriteria
+from zope.app.groupscontainer.interfaces import IGroupFolder
 from zope.app.pas.interfaces import IQuerySchemaSearch
 from zope.app.container.btree import BTreeContainer
 from zope.interface import implements
@@ -26,9 +27,9 @@ import zope.schema
 
 
 
-class GroupsFolder(BTreeContainer):
+class GroupFolder(BTreeContainer):
 
-    implements(IGroupsFolder, IQuerySchemaSearch)
+    implements(IGroupFolder, IQuerySchemaSearch)
     schema = (IGroupSearchCriteria)
     
     def __init__(self):
