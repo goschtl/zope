@@ -3,8 +3,8 @@
 
   <include package="Products.Five" />
 
-  <include files="package-includes/*-meta.zcml" />
-  <include files="package-includes/*-configure.zcml" />
+  <include files="../package-includes/*-meta.zcml" />
+  <include files="../package-includes/*-configure.zcml" />
 
   <five:loadProducts />
 
