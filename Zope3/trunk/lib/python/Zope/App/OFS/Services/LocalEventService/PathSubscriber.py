@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: PathSubscriber.py,v 1.4 2002/07/11 18:21:31 jim Exp $
+$Id: PathSubscriber.py,v 1.5 2002/12/12 21:05:48 poster Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
@@ -27,42 +27,44 @@ from Zope.App.Traversing import getPhysicalPathString, traverse
 
 from Zope.ContextWrapper import ContextMethod
 
-
-class PathSubscriber:
-    
-    __implements__=IPathSubscriber, ISubscriptionAware
-    
-    def __init__(self, wrapped_subscriber):
-        self.subscriber_path = getPhysicalPathString(wrapped_subscriber)
-        self.__alert_subscription=ISubscriptionAware.isImplementedBy(
-            removeAllProxies(wrapped_subscriber) )
-    
-    def __eq__(self, other):
-        return IPathSubscriber.isImplementedBy(other) and \
-               other.subscriber_path == self.subscriber_path
-    
-    def __getSubscriber(self, wrapped_self):
-        return traverse(wrapped_self, self.subscriber_path)
+class AbstractIndirectSubscriber:
     
     def notify(wrapped_self, event):
-        removeAllProxies(wrapped_self).__getSubscriber(
+        removeAllProxies(wrapped_self)._getSubscriber(
             wrapped_self).notify(event)
     
     notify=ContextMethod(notify)
     
     def subscribedTo(wrapped_self, subscribable, event_type, filter):
-        clean_self=removeAllProxies(wrapped_self)
-        if clean_self.__alert_subscription:
-            clean_self.__getSubscriber(wrapped_self).subscribedTo(
+        proxiedObj = removeAllProxies(
+            wrapped_self)._getSubscriber(wrapped_self)
+        if ISubscriptionAware.isImplementedBy(
+            removeAllProxies(proxiedObj)):
+            proxiedObj.subscribedTo(
                 subscribable, event_type, filter )
     
     subscribedTo=ContextMethod(subscribedTo)
     
     def unsubscribedFrom(wrapped_self, subscribable, event_type, filter):
-        clean_self=removeAllProxies(wrapped_self)
-        if clean_self.__alert_subscription:
-            clean_self.__getSubscriber(wrapped_self).unsubscribedFrom(
+        proxiedObj = removeAllProxies(
+            wrapped_self)._getSubscriber(wrapped_self)
+        if ISubscriptionAware.isImplementedBy(
+            removeAllProxies(proxiedObj)):
+            proxiedObj.unsubscribedFrom(
                 subscribable, event_type, filter )
     
     unsubscribedFrom=ContextMethod(unsubscribedFrom)
+
+class PathSubscriber(AbstractIndirectSubscriber):
     
+    __implements__ = IPathSubscriber, ISubscriptionAware
+    
+    def __init__(self, wrapped_subscriber):
+        self.subscriber_path = getPhysicalPathString(wrapped_subscriber)
+    
+    def __eq__(self, other):
+        return (IPathSubscriber.isImplementedBy(other) and 
+               other.subscriber_path == self.subscriber_path)
+    
+    def _getSubscriber(self, wrapped_self):
+        return traverse(wrapped_self, self.subscriber_path)
