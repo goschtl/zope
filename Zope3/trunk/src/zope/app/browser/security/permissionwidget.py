@@ -13,7 +13,7 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.7 2003/03/07 21:14:37 jim Exp $
+$Id: permissionwidget.py,v 1.8 2003/03/21 20:58:58 jim Exp $
 """
 
 from zope.app.interfaces.browser.form import IBrowserWidget
@@ -26,11 +26,17 @@ from zope.security.checker import CheckerPublic
 class BaseWidget:
 
     def _convert(self, permission_id):
+        if not permission_id:
+            # No permission selected
+            return None
+        
         if type(permission_id) is unicode:
             try:
                 permission_id = permission_id.encode('ascii')
             except UnicodeError, v:
                 raise ConversionError("Invalid textual data", v)
+
+            
 
         if permission_id == 'zope.Public':
             permission_id = CheckerPublic
