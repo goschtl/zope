@@ -85,6 +85,20 @@ Things to do for the next release (in no particular order)
 
 - http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions
 
+  - Add ZCML to create subscription adapters either by:
+
+    o Create a new directive (subscribe).  This is probably preferable
+      given that the subscribe adapter will not need a name (since all
+      subscribers get called).
+
+    o Extend the adapter directive.
+
+  - Convert INotifiable.
+
+  - Convert IDeleteNotifiable.
+
+  - Remove IXNotifiable interfaces and modify callers.
+
 - http://dev.zope.org/Zope3/LifeCycleEvents
 
 - Permission rationalization
