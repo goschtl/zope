@@ -157,6 +157,9 @@ CMF 1.3 beta2 (2002/07/07)
 
   Bugs Fixed
 
+    - Removed redundant block of code from CMFDefault/Link.py
+      (Collector #18).
+
     - Fixed PortalFolder's filtering so that it correctly restricts
       itself to the portal types allowed by the TypesTool (Tracker #483).
 
