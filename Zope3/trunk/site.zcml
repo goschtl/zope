@@ -8,6 +8,7 @@
   <!-- Provide local overrides of standard configurations-->
   <includeOverrides file="overrides.zcml" />
 
+  <include file="securitypolicy.zcml" />
   <include file="principals.zcml" />
 
 </configure>
