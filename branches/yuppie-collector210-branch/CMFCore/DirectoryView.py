@@ -375,7 +375,7 @@ def listFolderHierarchy(ob, path, rval, adding_meta_type=None):
 
 
 class DirectoryView (Persistent):
-    """ Directory views link to filesystem directories.
+    """ Directory views mount filesystem directories.
     """
     meta_type = 'Filesystem Directory View'
     _dirpath = None
@@ -509,10 +509,10 @@ def addDirectoryViews(ob, name, _prefix):
         entry_minimal_fp = '/'.join( (minimal_fp, entry) )
         createDirectoryView(ob, entry_minimal_fp, entry)
 
-def manage_addDirectoryView(self, minimal_fp, id=None, REQUEST=None):
+def manage_addDirectoryView(self, dirpath, id=None, REQUEST=None):
     """ Add either a DirectoryView or a derivative object.
     """
-    createDirectoryView(self, minimal_fp, id)
+    createDirectoryView(self, dirpath, id)
     if REQUEST is not None:
         return self.manage_main(self, REQUEST)
 
