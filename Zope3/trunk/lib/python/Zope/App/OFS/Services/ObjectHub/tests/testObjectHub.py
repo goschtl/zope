@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: testObjectHub.py,v 1.1 2002/10/30 03:47:48 poster Exp $
+$Id: testObjectHub.py,v 1.2 2002/11/26 19:02:49 stevea Exp $
 """
 
 import unittest, sys
@@ -37,7 +37,7 @@ import Zope.App.OFS.Services.ObjectHub.HubEvent as HubIdObjectEvent
 from Zope.Exceptions import NotFoundError
 from types import StringTypes
 
-from Zope.App.Traversing import locationAsUnicode
+from Zope.App.Traversing import locationAsUnicode, locationAsTuple
 
 from Zope.ComponentArchitecture import getService, getServiceManager
 
@@ -59,12 +59,6 @@ class LoggingSubscriber: # XXX Jim mentioned there is a new generic
     def notify(self, event):
         self.events_received.append(event)
 
-    # see ObjectHub._canonical
-    def _canonical(location):
-        return locationAsUnicode(location)
-
-    _canonical = staticmethod(_canonical)
-    
     def verifyEventsReceived(self, testcase, event_spec_list):
         # iterate through self.events_received and check
         # that each one implements the interface that is
@@ -82,7 +76,7 @@ class LoggingSubscriber: # XXX Jim mentioned there is a new generic
                 interface, location = spec
                 obj = None
                 hubid = None
-            location = self._canonical(location)
+            location = locationAsTuple(location)
             testcase.assert_(interface.isImplementedBy(event),
                              'Interface %s' % interface.getName())
             testcase.assertEqual(event.location, location)
@@ -110,7 +104,7 @@ class RegistrationSubscriber(LoggingSubscriber):
 
 class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
     hubid = 23
-    location = '/foo/bar'
+    location = locationAsTuple('/foo/bar')
     obj = object()
     # Don't test the HubEvent base class.
     # See below for testing subclasses / subinterfaces
@@ -129,8 +123,7 @@ class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
         self.object_hub.subscribe(self.subscriber)
 
     def testTransmittedEvent(self):
-        """Test that the HubEvents are transmitted by the notify method
-        """ 
+        # Test that the HubEvents are transmitted by the notify method
         self.object_hub.notify(self.hub_event)
        
         self.subscriber.verifyEventsReceived(self, [
@@ -152,12 +145,9 @@ class TransmitObjectMovedHubEventTest(TransmitHubEventTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, "ObjectHub")
-        self.hub_event = self.klass(self.object_hub,
-                                           self.hubid,
-                                           '/old/location',
-                                           self.location,
-                                           self.obj)
-
+        self.hub_event = self.klass(
+                self.object_hub, self.hubid,
+                locationAsTuple('/old/location'), self.location, self.obj)
         self.subscriber = LoggingSubscriber()
         self.object_hub.subscribe(self.subscriber)
 
@@ -168,11 +158,11 @@ class TransmitObjectRegisteredHubEventTest(TransmitHubEventTest):
 class TransmitObjectUnregisteredHubEventTest(TransmitHubEventTest):
     interface = IObjectUnregisteredHubEvent
     klass = HubIdObjectEvent.ObjectUnregisteredHubEvent
-class BasicHubTest(ObjectHubSetup, unittest.TestCase):
 
-    location = '/foo/bar'
+class BasicHubTest(ObjectHubSetup, unittest.TestCase):
+    location = locationAsTuple('/foo/bar')
     obj = object()
-    new_location = '/baz/spoo'
+    new_location = locationAsTuple('/baz/spoo')
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
@@ -225,13 +215,53 @@ class TestRegistrationEvents(BasicHubTest):
     def testRegistrationRelativeLocation(self):
         self.assertRaises(ValueError, self.object_hub.register, 'foo/bar')
 
+class TestSearchRegistrations(BasicHubTest):
+    locations = (
+        '/',
+        '/foo',
+        '/foo/baq',
+        '/foo/baq/baz',
+        '/foo/bar',
+        '/foo/bar/baz',
+        '/foo/bar2/baz',
+        '/foo/bar/baz2',
+        '/foo/bar/baz3',
+        '/foo/bas',
+        '/foo/bas/baz',
+        )
+    def testSearchAll(self):
+        object_hub = self.object_hub
+        location_hubid = [(locationAsTuple(location),
+                           object_hub.register(location))
+                          for location in self.locations]
+        location_hubid.sort()
+
+        r = list(object_hub.registrations())
+        self.assertEqual(r, location_hubid)
+
+    def testSearchSome(self):
+        object_hub = self.object_hub
+        location_hubid= [(locationAsTuple(location),
+                           object_hub.register(location))
+                          for location in self.locations
+                          if location.startswith('/foo/bar/')]
+        location_hubid.sort()
+
+        r = list(object_hub.registrations('/foo/bar'))
+        self.assertEqual(r, location_hubid)
+
+    def testDetectUnichrFFFF(self):
+        # this is an implementation wrinkle.
+        # the character \uffff is used as a sentinel in searching
+        # so, you're not allowed to register a location with a segment
+        # that starts with that character.
+        self.assertRaises(ValueError,
+                          self.object_hub.register, u'/foo/\uffffstuff')
+
 class TestNoRegistration(BasicHubTest):
             
     def testAddWithoutRegistration(self):
-        """Test that no HubIdEvents are generated
-        
-        if there is no registration
-        """
+        # Test that no HubIdEvents are generated if there is no registration
         hub = self.object_hub
         event = self.added_event
         location = self.location
@@ -252,13 +282,9 @@ class TestObjectAddedEvent(BasicHubTest):
         self.object_hub.subscribe(self.subscriber)
             
     def testLookingUpLocation(self):
-        """Test that the location is in the lookup
-        
-        Compare getHubIdForLocation and getLocationForHubId
-
-        Checks the sequence of events
-        
-        """
+        # Test that the location is in the lookup
+        # Compare getHubIdForLocation and getLocationForHubId
+        # Checks the sequence of events
         hub = self.object_hub
         event = self.added_event
         location = self.location
@@ -278,11 +304,8 @@ class TestObjectAddedEvent(BasicHubTest):
                 (IObjectRegisteredHubEvent, hubid, location),
             ])
 
-        
     def testLookupUpAbsentLocation(self):
-        """Test that we don't find an hub id for location
-           that we haven't added.
-        """
+        # Test that we don't find an hub id for location that we haven't added.
         hub = self.object_hub
         event = self.added_event
         location = self.location
@@ -294,12 +317,8 @@ class TestObjectAddedEvent(BasicHubTest):
 
         self.subscriber.verifyEventsReceived(self, [])
 
-
-        
     def testLookupUpAbsentHubId(self):
-        """Test that we don't find a location for an hub id
-           that isn't there.
-        """
+        # Test that we don't find a location for an hub id that isn't there.
         hub = self.object_hub
         event = self.added_event
         
@@ -313,8 +332,6 @@ class TestObjectAddedEvent(BasicHubTest):
         self.subscriber.verifyEventsReceived(self, [])
 
     
-
-
 class TestObjectRemovedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
@@ -324,9 +341,7 @@ class TestObjectRemovedEvent(BasicHubTest):
         self.object_hub.subscribe(self.subscriber)
           
     def testRemovedLocation(self):
-        """Test that a location that is added then removed is
-           actually gone.        
-        """
+        # Test that a location that is added then removed is actually gone. 
         hub = self.object_hub
         added_event = self.added_event
         removed_event = self.removed_event
@@ -354,8 +369,7 @@ class TestObjectRemovedEvent(BasicHubTest):
         
         
     def testRemovedAbsentLocation(self):
-        """Test that removing an absent location is silently ignored.
-        """
+        # Test that removing an absent location is silently ignored.
         hub = self.object_hub
         added_event = self.added_event
         removed_event = self.removed_event
@@ -380,9 +394,7 @@ class TestObjectModifiedEvent(BasicHubTest):
         self.object_hub.subscribe(self.subscriber)
 
     def testModifiedLocation(self):
-        """Test that lookup state does not change after an object
-        modify event.
-        """
+        # Test that lookup state does not change after an object modify event.
         hub = self.object_hub
         added_event = self.added_event
         modified_event = self.modified_event
@@ -414,10 +426,8 @@ class TestObjectModifiedEvent(BasicHubTest):
 
         
     def testModifiedAbsentLocation(self):
-        """Test that lookup state does not change after an object
-        modify event. In this case, modify of an absent location is
-        a noop.
-        """
+        # Test that lookup state does not change after an object modify event.
+        # In this case, modify of an absent location is a noop.
         hub = self.object_hub
         added_event = self.added_event
         modified_event = self.modified_event
@@ -443,8 +453,7 @@ class TestObjectMovedEvent(BasicHubTest):
         self.object_hub.subscribe(self.subscriber)
 
     def testMovedLocation(self):
-        """Test that the location does indeed change after a move.
-        """
+        # Test that the location does indeed change after a move.
         hub = self.object_hub
         added_event = self.added_event
         moved_event = self.moved_event
@@ -473,8 +482,7 @@ class TestObjectMovedEvent(BasicHubTest):
 
 
     def testMovedAbsentLocation(self):
-        """Test that moving an absent location is a no-op.
-        """
+        # Test that moving an absent location is a no-op.
         hub = self.object_hub
         added_event = self.added_event
         moved_event = self.moved_event
@@ -494,8 +502,7 @@ class TestObjectMovedEvent(BasicHubTest):
 
 
     def testMovedToExistingLocation(self):
-        """Test that moving to an existing location raises ObjectHubError.
-        """
+        # Test that moving to an existing location raises ObjectHubError.
         hub = self.object_hub
         added_event = self.added_event
         added_event2 = self.added_new_location_event
@@ -525,6 +532,7 @@ def test_suite():
         unittest.makeSuite(TransmitObjectUnregisteredHubEventTest),
         unittest.makeSuite(TestRegistrationEvents),
         unittest.makeSuite(TestNoRegistration),
+        unittest.makeSuite(TestSearchRegistrations),
         unittest.makeSuite(TestObjectAddedEvent),
         unittest.makeSuite(TestObjectRemovedEvent),
         unittest.makeSuite(TestObjectModifiedEvent),

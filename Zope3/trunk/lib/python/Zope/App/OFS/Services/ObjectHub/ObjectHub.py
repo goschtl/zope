@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.2 2002/11/11 08:35:28 stevea Exp $
+$Id: ObjectHub.py,v 1.3 2002/11/26 19:02:49 stevea Exp $
 """
 
 from Zope.App.OFS.Services.LocalEventService.ProtoServiceEventChannel \
@@ -38,8 +38,8 @@ from Persistence.BTrees.OIBTree import OIBTree
 from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import isWrapper
 from Zope.App.Traversing.ITraverser import ITraverser
-from Zope.App.Traversing import getPhysicalPathString
-from Zope.App.Traversing import locationAsUnicode
+from Zope.App.Traversing import getPhysicalPath
+from Zope.App.Traversing import locationAsTuple, locationAsUnicode
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getAdapter
@@ -67,7 +67,9 @@ class ObjectHub(ProtoServiceEventChannel):
 
     def __init__(self):
         ProtoServiceEventChannel.__init__(self)
+        # int --> tuple of unicodes
         self.__hubid_to_location = IOBTree()
+        # tuple of unicodes --> int
         self.__location_to_hubid = OIBTree()
     
     # XXX this is copied because of some context method problems
@@ -92,17 +94,17 @@ class ObjectHub(ProtoServiceEventChannel):
             # generate NotificationHubEvents only if object is known
             # ie registered
             if IObjectMovedEvent.isImplementedBy(event):
-                canonical_location = locationAsUnicode(event.fromLocation)
-                hubid = clean_self._lookupHubId(canonical_location)
+                canonical_location = locationAsTuple(event.fromLocation)
+                hubid = clean_self.__location_to_hubid.get(canonical_location)
                 if hubid is not None:
-                    canonical_new_location = locationAsUnicode(
+                    canonical_new_location = locationAsTuple(
                         event.location)
                     location_to_hubid = clean_self.__location_to_hubid
                     if location_to_hubid.has_key(canonical_new_location):
                         raise ObjectHubError(
                             'Cannot move to location %s, '
                             'as there is already something there'
-                            % canonical_new_location)
+                            % locationAsUnicode(canonical_new_location))
                     hubid = location_to_hubid[canonical_location]
                     del location_to_hubid[canonical_location]
                     location_to_hubid[canonical_new_location] = hubid
@@ -117,8 +119,8 @@ class ObjectHub(ProtoServiceEventChannel):
                         event.object)
                     clean_self._notify(wrapped_self, event)
             else: 
-                canonical_location = locationAsUnicode(event.location)
-                hubid = clean_self._lookupHubId(canonical_location)
+                canonical_location = locationAsTuple(event.location)
+                hubid = clean_self.__location_to_hubid.get(canonical_location)
                 if hubid is not None:
                     if IObjectModifiedEvent.isImplementedBy(event):
                         # send out IObjectModifiedHubEvent to plugins
@@ -138,14 +140,15 @@ class ObjectHub(ProtoServiceEventChannel):
                             canonical_location,
                             event.object)
                         clean_self._notify(wrapped_self, event)
-    
     notify = ContextMethod(notify)
 
     def getHubId(self, location):
         '''See interface ILocalObjectHub'''
         if isWrapper(location):
-            location = getPhysicalPathString(location)
-        hubid = self._lookupHubId(location)
+            location = getPhysicalPath(location)
+        else:
+            location = locationAsTuple(location)
+        hubid = self.__location_to_hubid.get(location)
         if hubid is None:
             raise NotFoundError(locationAsUnicode(location))
         else:
@@ -170,17 +173,25 @@ class ObjectHub(ProtoServiceEventChannel):
         clean_self = removeAllProxies(wrapped_self)
         if isWrapper(location):
             obj = location
-            location = getPhysicalPathString(location)
+            location = getPhysicalPath(location)
         else:
             obj = None
-        canonical_location = locationAsUnicode(location)
-        if not location.startswith(u'/'):
+        canonical_location = locationAsTuple(location)
+        if not canonical_location[0] == u'':
             raise ValueError("Location must be absolute")
+
+        # This is here to make sure the 'registrations' method won't
+        # trip up on using unichar ffff as a sentinel.
+        for segment in canonical_location:
+            if segment.startswith(u'\uffff'):
+                raise ValueError(
+                    "Location contains a segment starting with \\uffff")
+
         location_to_hubid = clean_self.__location_to_hubid
         if location_to_hubid.has_key(canonical_location):
             raise ObjectHubError(
                 'location %s already in object hub' % 
-                canonical_location)
+                locationAsUnicode(canonical_location))
         hubid = clean_self._generateHubId(canonical_location)
         location_to_hubid[canonical_location] = hubid
 
@@ -198,18 +209,18 @@ class ObjectHub(ProtoServiceEventChannel):
         '''See interface ILocalObjectHub'''
         clean_self = removeAllProxies(wrapped_self)
         if isWrapper(location):
-            location = getPhysicalPathString(location)
+            location = getPhysicalPath(location)
         elif isinstance(location, int):
             canonical_location = clean_self.getLocation(location)
         else:
-            canonical_location = locationAsUnicode(location)
+            canonical_location = locationAsTuple(location)
         location_to_hubid = clean_self.__location_to_hubid
         hubid_to_location = clean_self.__hubid_to_location
         try:
             hubid = location_to_hubid[canonical_location]
         except KeyError:
             raise NotFoundError('location %s is not in object hub' % 
-                canonical_location)
+                locationAsUnicode(canonical_location))
         else:
             del hubid_to_location[hubid]
             del location_to_hubid[canonical_location]
@@ -221,7 +232,31 @@ class ObjectHub(ProtoServiceEventChannel):
                 canonical_location)
             clean_self._notify(wrapped_self, event)
     unregister = ContextMethod(unregister)
-    
+   
+    def numRegistrations(self):
+        """See interface IObjectHub"""
+        # The hubid<-->location mappings should be the same size.
+        # The IOBTree of hubid-->location might be faster to find the
+        # size of, as the keys are ints. But, I haven't tested that.
+        # assert len(self.__hubid_to_location)==len(self.__location_to_hubid)
+        return len(self.__hubid_to_location)
+
+    def registrations(self, location=(u'',)):
+        """See interface IObjectHub"""
+        # Location can be an ascii string a unicode or a tuple of strings
+        # or unicodes. So, get a canonical location first of all.
+        location = locationAsTuple(location)
+        if location == (u'',):
+            # Optimisation when we're asked for all the registered objects.
+            # Returns an IOBTreeItems object.
+            return self.__location_to_hubid.items()
+        
+        # BTrees only support searches including the min and max.
+        # So, I need to add to the end of the location a string that will
+        # be larger than any other. I could also use a type that
+        # sorts after unicodes.
+        return self.__location_to_hubid.items(location, location+(u'\uffff',))
+
     ############################################################
 
     def _generateHubId(self, location):
@@ -234,6 +269,3 @@ class ObjectHub(ProtoServiceEventChannel):
         self._v_nextid = index + 1
         return index
 
-    def _lookupHubId(self, location):
-        canonical_location = locationAsUnicode(location) 
-        return self.__location_to_hubid.get(canonical_location, None)

@@ -14,13 +14,12 @@
 """
 
 Revision information:
-$Id: ObjectHubSetup.py,v 1.1 2002/10/30 03:47:48 poster Exp $
+$Id: ObjectHubSetup.py,v 1.2 2002/11/26 19:02:49 stevea Exp $
 """
-
 
 from Zope.App.OFS.Services.LocalEventService.tests.EventSetup import \
      EventSetup
-from Zope.ComponentArchitecture import getService, getServiceManager
+from Zope.ComponentArchitecture import getServiceManager
 from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
      import ServiceDirective
 from Zope.App.Traversing import getPhysicalPathString
@@ -33,18 +32,20 @@ class ObjectHubSetup(EventSetup):
         EventSetup.setUp(self)
         
         from Zope.App.OFS.Services.ObjectHub.IObjectHub import IObjectHub
-        globsm=getServiceManager(None)
-        globsm.defineService("ObjectHub", IObjectHub)
+        global_service_manager = getServiceManager(None)
+        global_service_manager.defineService("ObjectHub", IObjectHub)
         self.createObjectHub()
     
     def createObjectHub(self, folder=None):
-        if folder is None: folder=self.rootFolder
+        if folder is None:
+            folder = self.rootFolder
         if not folder.hasServiceManager():
             self.createServiceManager(folder)
-        sm=getServiceManager(folder) # wrapped now
-        sm.Packages['default'].setObject("myObjectHub",ObjectHub())
+        sm = getServiceManager(folder)  # wrapped now
+        sm.Packages['default'].setObject("myObjectHub", ObjectHub())
 
         path = "%s/Packages/default/myObjectHub" % getPhysicalPathString(sm)
         directive = ServiceDirective("ObjectHub", path)
         sm.Packages['default'].setObject("myObjectHubDir", directive)
         sm.bindService(directive)
+

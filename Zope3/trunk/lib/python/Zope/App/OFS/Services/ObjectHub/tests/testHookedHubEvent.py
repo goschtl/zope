@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testHookedHubEvent.py,v 1.1 2002/10/30 03:47:48 poster Exp $
+$Id: testHookedHubEvent.py,v 1.2 2002/11/26 19:02:49 stevea Exp $
 """
 
 # in this version of these tests, we are no longer using a fake
@@ -27,9 +27,8 @@ from Zope.App.OFS.Services.ObjectHub.HubEvent import \
      ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
      ObjectModifiedHubEvent, ObjectMovedHubEvent, \
      ObjectRemovedHubEvent
-from Zope.App.Traversing import getPhysicalPathString
+from Zope.App.Traversing import getPhysicalPath
 
-from Zope.Exceptions import NotFoundError
 from Zope.ComponentArchitecture import getService
         
 class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
@@ -41,7 +40,7 @@ class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
         self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPathString(self.obj)
+        self.location = getPhysicalPath(self.obj)
         self.event = self.klass(self.object_hub,
                                 self.hubid,
                                 self.location,
@@ -70,7 +69,7 @@ class TestEmptyObjectRegisteredHubEvent(TestObjectRegisteredHubEvent):
         self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPathString(self.obj)
+        self.location = getPhysicalPath(self.obj)
         self.event = self.klass(self.object_hub, self.hubid)
 
 class TestObjectUnregisteredHubEvent(AbstractTestHubEvent):
@@ -84,7 +83,7 @@ class TestEmptyObjectUnregisteredHubEvent(TestObjectUnregisteredHubEvent):
         self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPathString(self.obj)
+        self.location = getPhysicalPath(self.obj)
         self.event = self.klass(self.object_hub, self.hubid, self.location)
 
 class TestObjectModifiedHubEvent(AbstractTestHubEvent):
@@ -98,7 +97,7 @@ class TestEmptyObjectModifiedHubEvent(TestObjectModifiedHubEvent):
         self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPathString(self.obj)
+        self.location = getPhysicalPath(self.obj)
         self.event = self.klass(self.object_hub, self.hubid)
 
 class TestObjectMovedHubEvent(AbstractTestHubEvent):
@@ -110,7 +109,7 @@ class TestObjectMovedHubEvent(AbstractTestHubEvent):
         self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPathString(self.obj)
+        self.location = getPhysicalPath(self.obj)
         self.event = self.klass(self.object_hub,
                                 self.hubid,
                                 self.fromLocation,
@@ -130,7 +129,7 @@ class TestEmptyObjectMovedHubEvent(TestObjectMovedHubEvent):
         self.object_hub = getService(self.rootFolder, "ObjectHub")
         self.obj = self.folder1_2_1
         self.hubid = self.object_hub.register(self.obj)
-        self.location = getPhysicalPathString(self.obj)
+        self.location = getPhysicalPath(self.obj)
         self.event = self.klass(self.object_hub,
                                 self.hubid,
                                 self.fromLocation)

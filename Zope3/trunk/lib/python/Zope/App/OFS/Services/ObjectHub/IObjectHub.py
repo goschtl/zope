@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IObjectHub.py,v 1.2 2002/11/11 08:35:28 stevea Exp $
+$Id: IObjectHub.py,v 1.3 2002/11/26 19:02:49 stevea Exp $
 """
 
 from Zope.Event.IEventChannel import IEventChannel
@@ -100,18 +100,20 @@ class IObjectHub(IEventChannel):
         """Returns the hub id int that is mapped to the given location
         or wrapped object.
         
-        Location is either a string, or a sequence of strings.
-        It must be absolute, so if it is a string it must start with a '/',
-        and if it is a sequence, it must start with an empty string.
+        Location is either a unicode, or a tuple of unicodes, or an
+        ascii string, or a tuple of ascii strings.
+        (See Zope/App/Traversing/__init__.py)
+        It must be absolute, so if it is a string it must start with a u'/',
+        and if it is a tuple, it must start with an empty string.
         
-        ('','whatever','whatever2')
-        '/whatever/whatever2'
+        (u'',u'whatever',u'whatever2')
+        u'/whatever/whatever2'
         
         If there is no hub id, raise Zope.Exceptions.NotFoundError.
         """
         
     def getLocation(hubid):
-        """Returns a location as a string.
+        """Returns a location as a tuple of unicodes.
         
         If there is no location, raise Zope.Exceptions.NotFoundError.
         """
@@ -138,4 +140,16 @@ class IObjectHub(IEventChannel):
         It also emits a HubIdObjectUnregisteredEvent. 
         If the hub id or location wasn't registered a 
         Zope.Exceptions.NotFoundError is raised.
-        """ 
+        """
+
+    def numRegistrations():
+        """Returns the number of location<-->hubid registrations held.
+        """
+
+    def registrations(location='/'):
+        """Returns a sequence of the registrations at and within the
+        given location.
+
+        A registration a tuple (location, hib_id).
+        """
+
