@@ -9,4 +9,8 @@
     class=".browser.ExternalEditor"
     permission="zope.View" />
 
+  <content class="zope.app.content.file.File">
+    <implements interface="zope.products.externaleditor.interfaces.IExternallyEditable" />
+  </content>
+
 </configure>

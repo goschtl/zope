@@ -10,13 +10,14 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: __init__.py,v 1.1 2004/01/30 22:20:53 sidnei Exp $
+$Id: __init__.py,v 1.2 2004/01/30 22:43:49 sidnei Exp $
 """
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.content import queryContentType
+from zope.security.proxy import trustedRemoveSecurityProxy
 
 class ExternalEditor(BrowserView):
 
@@ -30,12 +31,18 @@ class ExternalEditor(BrowserView):
         r.append('url:%s' % url)
         adapted = zapi.getAdapter(context, IReadFile)
 
-        r.append('content_type:%s' % adapted.contentType)
+        if hasattr(adapted, 'contentType'):
+            # XXX Although IReadFile declares contentType,
+            # the default adapter for File doesn't seem
+            # to provide it.
+            r.append('content_type:%s' % adapted.contentType)
 
         # XXX There's no such thing as a meta_type
         # in Zope3, so we try to get as far as we can
         # using IContentType, which is a marker interface
-        meta_type = queryContentType(context)
+        # XXX Had to use trustedRemoveSecurityProxy because
+        # I was getting I was getting unauthorized on __iro__
+        meta_type = queryContentType(trustedRemoveSecurityProxy(context))
         if meta_type:
             r.append('meta_type:%s' % meta_type.__name__)
 
