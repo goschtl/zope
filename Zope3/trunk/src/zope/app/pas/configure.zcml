@@ -4,6 +4,73 @@
     i18n_domain="zope"
     >
 
+  <localService class=".LocalPAS">
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.site.interfaces.ISimpleService"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".pas.IPAS"
+        set_schema=".pas.IPAS"
+        />
+  </localService>
+
+  <browser:addMenuItem
+       class=".pas.LocalPAS"
+       title="Pluggable Authentication Service"
+       description="New-style pluggable authentication service"
+       permission="zope.ManageServices"
+       />
+
+  <browser:editform
+      schema=".pas.IPAS"
+      label="Edit Pluggable Authentication Service"
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageServices" />
+
+  <interface interface="zope.app.pas.interfaces.IExtractionPlugin" />
+  <interface interface="zope.app.pas.interfaces.IAuthenticationPlugin" />
+  <interface interface="zope.app.pas.interfaces.IChallengePlugin" />
+  <interface interface="zope.app.pas.interfaces.IPrincipalFactoryPlugin" />
+  <interface interface="zope.app.pas.interfaces.IPrincipalSearchPlugin" />
+
+  <vocabulary
+    name="ExtractionPlugins"
+    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    interface="zope.app.pas.interfaces.IExtractionPlugin" 
+    nameOnly="True"
+   />
+
+  <vocabulary
+    name="AuthenticationPlugins"
+    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    interface="zope.app.pas.interfaces.IAuthenticationPlugin" 
+    nameOnly="True"
+   />
+
+  <vocabulary
+    name="ChallengePlugins"
+    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    interface="zope.app.pas.interfaces.IChallengePlugin" 
+    nameOnly="True"
+   />
+
+  <vocabulary
+    name="PrincipalFactoryPlugins"
+    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    interface="zope.app.pas.interfaces.IPrincipalFactoryPlugin" 
+    nameOnly="True"
+   />
+
+  <vocabulary
+    name="PrincipalSearchPlugins"
+    factory="zope.app.utility.vocabulary.UtilityVocabulary"
+    interface="zope.app.pas.interfaces.IPrincipalSearchPlugin" 
+    nameOnly="True"
+   />
+
   <localUtility class=".httpplugin.HTTPBasicAuthExtractor">
 
     <implements

@@ -23,13 +23,14 @@ from persistent import Persistent
 
 from zope.app import zapi
 
+from zope.app.security.interfaces import IAuthenticationService
 from zope.app.servicenames import Authentication
 from zope.app.component.localservice import queryNextService
 from zope.app.container.contained import Contained
 from zope.app.site.interfaces import ISimpleService
 from zope.app.location.interfaces import ILocation
 
-from zope.app.pas import vocabularies, interfaces
+from zope.app.pas import interfaces
 from zope.app.pas.interfaces import IExtractionPlugin
 from zope.app.pas.interfaces import IAuthenticationPlugin
 from zope.app.pas.interfaces import IChallengePlugin
@@ -41,44 +42,39 @@ class IPAS(zope.interface.Interface):
     """Pluggable Authentication Service
     """
     
-    extractors = zope.schema.Tuple(
+    extractors = zope.schema.List(
         title=u"Credential Extractors",
-        value_type = zope.schema.Choice(
-            vocabulary = vocabularies.UtilityNames(IExtractionPlugin)),
-        default=(),
+        value_type = zope.schema.Choice(vocabulary='ExtractionPlugins'),
+        default=[],
         )
     
-    authenticators = zope.schema.Tuple(
+    authenticators = zope.schema.List(
         title=u"Authenticators",
-        value_type = zope.schema.Choice(
-            vocabulary = vocabularies.UtilityNames(IAuthenticationPlugin)),
-        default=(),
+        value_type = zope.schema.Choice(vocabulary='AuthenticationPlugins'),
+        default=[],
         )
     
-    challengers = zope.schema.Tuple(
+    challengers = zope.schema.List(
         title=u"Challengers",
-        value_type = zope.schema.Choice(
-            vocabulary = vocabularies.UtilityNames(IChallengePlugin)),
-        default=(),
+        value_type = zope.schema.Choice(vocabulary='ChallengePlugins'),
+        default=[],
         )
     
-    factories = zope.schema.Tuple(
+    factories = zope.schema.List(
         title=u"Principal Factories",
-        value_type = zope.schema.Choice(
-            vocabulary = vocabularies.UtilityNames(IPrincipalFactoryPlugin)),
-        default=(),
+        value_type = zope.schema.Choice(vocabulary='PrincipalFactoryPlugins'),
+        default=[],
         )
     
-    searchers = zope.schema.Tuple(
+    searchers = zope.schema.List(
         title=u"Search Plugins",
-        value_type = zope.schema.Choice(
-            vocabulary = vocabularies.UtilityNames(IPrincipalSearchPlugin)),
-        default=(),
+        value_type = zope.schema.Choice(vocabulary='PrincipalSearchPlugins'),
+        default=[],
         )
     
 class PAS:
 
-    zope.interface.implements(IPAS)
+    zope.interface.implements(IPAS, IAuthenticationService)
 
     authenticators = extractors = challengers = factories = search = ()
 
