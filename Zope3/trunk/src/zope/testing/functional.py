@@ -2,7 +2,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.1 2003/04/14 12:19:29 mgedmin Exp $
+$Id: functional.py,v 1.2 2003/04/14 13:24:10 mgedmin Exp $
 """
 
 import unittest
@@ -126,7 +126,7 @@ class FunctionalTestCase(unittest.TestCase):
         return FunctionalTestSetup().getRootFolder()
 
 
-class BrowserTestCase(unittest.TestCase):
+class BrowserTestCase(FunctionalTestCase):
     """Functional test case for Browser requests."""
 
     def makeRequest(self, path='', basic=None, form=None, env={},
