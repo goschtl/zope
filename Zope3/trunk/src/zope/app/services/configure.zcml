@@ -286,9 +286,10 @@
 
   <content class="zope.app.services.viewpackage.ViewPackage">
     <factory
-        id = "zope.app.services.ViewPackage" 
-    permission = "zope.ManageServices"
-    title = "View Package" />
+      id = "zope.app.services.ViewPackage" 
+      permission = "zope.ManageServices"
+      title = "View Package" 
+      />
     <require
         permission="zope.View"
         interface="zope.app.interfaces.container.IReadContainer" />
