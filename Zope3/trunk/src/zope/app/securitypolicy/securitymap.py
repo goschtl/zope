@@ -128,6 +128,7 @@ class PersistentSecurityMap(SecurityMap, Persistent):
 class AnnotationSecurityMap(SecurityMap):
 
     def __init__(self, context):
+        self.__parent__ = context
         self._context = context
         annotations = IAnnotations(self._context)
         map = annotations.get(self.key)
