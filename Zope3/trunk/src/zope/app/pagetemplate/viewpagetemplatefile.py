@@ -45,8 +45,12 @@ class ViewPageTemplateFile(TrustedAppPT, PageTemplateFile):
             request=instance.request,
             instance=instance, args=args, options=keywords)
         debug_flags = instance.request.debug
-        return self.pt_render(namespace, showtal=debug_flags.showTAL,
-                              sourceAnnotations=debug_flags.sourceAnnotations)
+        s = self.pt_render(namespace, showtal=debug_flags.showTAL,
+                           sourceAnnotations=debug_flags.sourceAnnotations)
+        response = instance.request.response
+        if not response.getHeader("Content-Type"):
+            response.setHeader("Content-Type", self.content_type)
+        return s
 
     def __get__(self, instance, type):
         return BoundPageTemplate(self, instance)
