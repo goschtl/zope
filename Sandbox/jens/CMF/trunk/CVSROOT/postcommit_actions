@@ -445,8 +445,8 @@ def create_diff(name, repo, file, old, new):
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[6:]
         file_handle.close()
-        insert_str = ("====== Updated %s/%s, %s => %s ======\n"
-                      % (str(name), str(file), old, new))
+        insert_str = ("====== Updated %s/%s, %s=>%s ======\n"
+                      % (str(repo), str(file), old, new))
         lines.insert(0, insert_str) 
 
     return string.join(lines, '')
