@@ -95,8 +95,8 @@ class ActionInfoTests(TestCase):
         from Products.CMFCore.ActionInformation import Action
 
         WANTED = {'allowed': True, 'available': True, 'category': '',
-                  'description': '', 'icon': '', 'id': 'foo',
-                  'permissions': (), 'title': '', 'url': '', 'visible': True}
+                  'description': '', 'icon': '', 'id': 'foo', 'title': '',
+                  'url': '', 'visible': True}
 
         action = Action(id='foo')
         ec = None
@@ -104,8 +104,8 @@ class ActionInfoTests(TestCase):
 
         self.assertEqual( ai['id'], WANTED['id'] )
         self.assertEqual( ai['title'], WANTED['title'] )
+        self.assertEqual( ai['description'], WANTED['description'] )
         self.assertEqual( ai['url'], WANTED['url'] )
-        self.assertEqual( ai['permissions'], WANTED['permissions'] )
         self.assertEqual( ai['category'], WANTED['category'] )
         self.assertEqual( ai['visible'], WANTED['visible'] )
         self.assertEqual( ai['available'], WANTED['available'] )
@@ -116,8 +116,8 @@ class ActionInfoTests(TestCase):
         from Products.CMFCore.ActionInformation import ActionInformation
 
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
-                  'id': 'foo', 'name': 'foo', 'permissions': (),
-                  'title': 'foo', 'url': '', 'visible': True}
+                  'description': '', 'id': 'foo', 'title': 'foo', 'url': '',
+                  'visible': True}
 
         action = ActionInformation(id='foo')
         ec = None
@@ -125,8 +125,8 @@ class ActionInfoTests(TestCase):
 
         self.assertEqual( ai['id'], WANTED['id'] )
         self.assertEqual( ai['title'], WANTED['title'] )
+        self.assertEqual( ai['description'], WANTED['description'] )
         self.assertEqual( ai['url'], WANTED['url'] )
-        self.assertEqual( ai['permissions'], WANTED['permissions'] )
         self.assertEqual( ai['category'], WANTED['category'] )
         self.assertEqual( ai['visible'], WANTED['visible'] )
         self.assertEqual( ai['available'], WANTED['available'] )
@@ -135,8 +135,7 @@ class ActionInfoTests(TestCase):
 
     def test_create_from_dict(self):
         WANTED = {'allowed': True, 'available': True, 'category': 'object',
-                  'id': 'foo', 'name': 'foo', 'permissions': (),
-                  'title': 'foo', 'url': '', 'visible': True}
+                  'id': 'foo', 'title': 'foo', 'url': '', 'visible': True}
 
         action = {'name': 'foo', 'url': ''}
         ec = None
@@ -145,7 +144,6 @@ class ActionInfoTests(TestCase):
         self.assertEqual( ai['id'], WANTED['id'] )
         self.assertEqual( ai['title'], WANTED['title'] )
         self.assertEqual( ai['url'], WANTED['url'] )
-        self.assertEqual( ai['permissions'], WANTED['permissions'] )
         self.assertEqual( ai['category'], WANTED['category'] )
         self.assertEqual( ai['visible'], WANTED['visible'] )
         self.assertEqual( ai['available'], WANTED['available'] )
@@ -170,6 +168,13 @@ class ActionInformationTests(TransactionalTest):
         from Products.CMFCore.ActionInformation import ActionInformation
 
         return ActionInformation(*args, **kw)
+
+    def test_interface(self):
+        from Products.CMFCore.interfaces.portal_actions \
+                import Action as IAction
+        from Products.CMFCore.ActionInformation import ActionInformation
+
+        verifyClass(IAction, ActionInformation)
 
     def test_basic_construction(self):
         ai = self._makeOne(id='view')
@@ -244,6 +249,27 @@ class ActionInformationTests(TransactionalTest):
 
         self.failUnless(ai.testCondition(ec))
 
+    def test_getInfoData_empty(self):
+        WANTED = ( {'available': True, 'category': 'object',
+                    'description': '', 'id': 'foo', 'permissions': (),
+                    'title': 'foo', 'url': '', 'visible': True}, [] )
+        a = self._makeOne('foo')
+        self.assertEqual( a.getInfoData(), WANTED )
+
+    def test_getInfoData_normal(self):
+        a = self._makeOne('foo',
+                          title='Foo Title',
+                          description='Foo description.',
+                          action='string:${object_url}/foo_url',
+                          condition='',
+                          permissions=('View',),
+                          visible=False)
+        WANTED = ( {'available': True, 'category': 'object',
+                    'description': 'Foo description.', 'id': 'foo',
+                    'permissions': ('View',), 'title': 'Foo Title',
+                    'url': a._getActionObject(), 'visible': False},
+                   ['url'] )
+        self.assertEqual( a.getInfoData(), WANTED )
 
 
 def test_suite():

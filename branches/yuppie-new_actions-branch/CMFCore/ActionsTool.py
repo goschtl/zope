@@ -24,7 +24,6 @@ from OFS.OrderedFolder import OrderedFolder
 from ActionInformation import ActionInformation
 from ActionProviderBase import ActionProviderBase
 from Expression import Expression
-from interfaces.portal_actions import Action as IAction
 from interfaces.portal_actions import ActionCategory as IActionCategory
 from interfaces.portal_actions import ActionProvider as IActionProvider
 from interfaces.portal_actions import portal_actions as IActionsTool

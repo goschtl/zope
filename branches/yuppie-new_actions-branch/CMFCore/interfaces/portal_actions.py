@@ -172,13 +172,7 @@ class ActionInfo(Interface):
 
       - available (boolean): the result of checking the condition
 
-      - allowed (boolean): the result of checking permissions
-
-    Deprecated keys:
-        
-      - name (string): use 'id' or 'title' instead
-
-      - permissions (tuple): use 'allowed' instead; The user must have at
-        least one of the listed permissions to access the action. If the list
-        is empty, the user is allowed.
+      - allowed (boolean): the result of checking permissions;
+        The user must have at least one of the listed permissions to access
+        the action. If the list is empty, the user is allowed.
     """

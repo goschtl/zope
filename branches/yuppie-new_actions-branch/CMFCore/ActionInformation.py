@@ -169,55 +169,38 @@ def manage_addAction(self, id, REQUEST=None):
 class ActionInfo(UserDict):
     """ A lazy dictionary for Action infos.
     """
+
     __implements__ = IActionInfo
+
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, action, ec):
-        lazy_keys = []
 
-        if IAction.isImplementedBy(action):
-            self._ec = ec
-            (lazy_map, lazy_keys) = action.getInfoData()
-            UserDict.__init__(self, lazy_map)
-
-        elif isinstance(action, dict):
+        if isinstance(action, dict):
+            lazy_keys = []
             UserDict.__init__(self, action)
-            self.data.setdefault( 'id', self.data['name'].lower() )
-            self.data.setdefault( 'title', self.data['name'] )
+            if 'name' in self.data:
+                self.data.setdefault( 'id', self.data['name'].lower() )
+                self.data.setdefault( 'title', self.data['name'] )
+                del self.data['name']
             self.data.setdefault( 'url', '' )
-            self.data.setdefault( 'permissions', () )
             self.data.setdefault( 'category', 'object' )
             self.data.setdefault( 'visible', True )
             self.data['available'] = True
-
         else:
-            self._action = action
-            self._ec = ec
-            UserDict.__init__( self, action.getMapping() )
-            self.data['name'] = self.data['title']
-            del self.data['description']
+            # if action isn't a dict, it has to implement IAction
+            (lazy_map, lazy_keys) = action.getInfoData()
+            UserDict.__init__(self, lazy_map)
 
-            if self.data['action']:
-                self.data['url'] = self._getURL
-                lazy_keys.append('url')
-            else:
-                self.data['url'] = ''
-            del self.data['action']
-
-            if self.data['condition']:
-                self.data['available'] = self._checkCondition
-                lazy_keys.append('available')
-            else:
-                self.data['available'] = True
-            del self.data['condition']
-
-        if self.data['permissions']:
+        self.data['allowed'] = True
+        permissions = self.data.pop( 'permissions', () )
+        if permissions:
             self.data['allowed'] = self._checkPermissions
             lazy_keys.append('allowed')
-        else:
-            self.data['allowed'] = True
 
+        self._ec = ec
         self._lazy_keys = lazy_keys
+        self._permissions = permissions
 
     def __getitem__(self, key):
         value = UserDict.__getitem__(self, key)
@@ -238,16 +221,6 @@ class ActionInfo(UserDict):
         else:
             return self.data == other
 
-    def _getURL(self, ec):
-        """ Get the result of the URL expression in the current context.
-        """
-        return self._action._getActionObject()(ec)
-
-    def _checkCondition(self, ec):
-        """ Check condition expression in the current context.
-        """
-        return self._action.testCondition(ec)
-
     def _checkPermissions(self, ec):
         """ Check permissions in the current context.
         """
@@ -263,7 +236,7 @@ class ActionInfo(UserDict):
             else:
                 context = ec.contexts['portal']
 
-        for permission in self['permissions']:
+        for permission in self._permissions:
             if _checkPermission(permission, context):
                 return True
         return False
@@ -276,6 +249,9 @@ class ActionInformation( SimpleItem ):
     Actions generate links to views of content, or to specific methods
     of the site.  They can be filtered via their conditions.
     """
+
+    __implements__ = IAction
+
     _isActionInformation = 1
     __allow_access_to_unprotected_subobjects__ = 1
 
@@ -462,6 +438,29 @@ class ActionInformation( SimpleItem ):
         """ Get a newly-created AI just like us.
         """
         return self.__class__( priority=self.priority, **self.getMapping() )
+
+    security.declarePrivate('getInfoData')
+    def getInfoData(self):
+        """ Get the data needed to create an ActionInfo.
+        """
+        lazy_keys = []
+        lazy_map = self.getMapping()
+
+        if lazy_map['action']:
+            lazy_map['url'] = self._getActionObject()
+            lazy_keys.append('url')
+        else:
+            lazy_map['url'] = ''
+        del lazy_map['action']
+
+        if lazy_map['condition']:
+            lazy_map['available'] = self.testCondition
+            lazy_keys.append('available')
+        else:
+            lazy_map['available'] = True
+        del lazy_map['condition']
+
+        return (lazy_map, lazy_keys)
 
 InitializeClass( ActionInformation )
 
