@@ -24,7 +24,9 @@ from Products.CMFCore.PortalContent import NoWL, ResourceLockedError
 from Products.CMFCore.CMFCorePermissions import View
 from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
 from Products.CMFCore.WorkflowCore import WorkflowAction
-from Products.CMFCore.utils import format_stx, keywordsplitter
+from Products.CMFCore.utils import format_stx
+from Products.CMFCore.utils import keywordsplitter
+from Products.CMFCore.utils import contributorsplitter
 from DublinCore import DefaultDublinCoreImpl
 from utils import parseHeadersBody, formatRFC822Headers
 from utils import SimpleHTMLParser, bodyfinder, _dtmldir
@@ -179,9 +181,11 @@ class Document(PortalContent, DefaultDublinCoreImpl):
         headers['Format'] = self.Format()
         new_subject = keywordsplitter(headers)
         headers['Subject'] = new_subject or self.Subject()
+        new_contrib = contributorsplitter(headers)
+        headers['Contributors'] = new_contrib or self.Contributors()
         haveheader = headers.has_key
         for key, value in self.getMetadataHeaders():
-            if key != 'Format' and not haveheader(key):
+            if not haveheader(key):
                 headers[key] = value
         self._editMetadata(title=headers['Title'],
                           subject=headers['Subject'],

@@ -26,6 +26,7 @@ from Products.CMFCore.PortalContent import PortalContent, NoWL
 from Products.CMFCore.PortalContent import ResourceLockedError
 from Products.CMFCore.WorkflowCore import WorkflowAction
 from Products.CMFCore.utils import keywordsplitter
+from Products.CMFCore.utils import contributorsplitter
 
 from DublinCore import DefaultDublinCoreImpl
 from utils import formatRFC822Headers, parseHeadersBody, _dtmldir
@@ -173,9 +174,11 @@ class Link( PortalContent
         headers['Format'] = self.URL_FORMAT
         new_subject = keywordsplitter(headers)
         headers['Subject'] = new_subject or self.Subject()
+        new_contrib = contributorsplitter(headers)
+        headers['Contributors'] = new_contrib or self.Contributors()
         haveheader = headers.has_key
         for key, value in self.getMetadataHeaders():
-            if key != 'Format' and not haveheader(key):
+            if not haveheader(key):
                 headers[key] = value
 
         self._editMetadata(title=headers['Title'],
