@@ -187,7 +187,6 @@ property_dealloc(PyObject *self)
     Py_XDECREF(gs->prop_del);
     Py_XDECREF(gs->prop_doc);
     ContextDescriptorType.tp_dealloc(self);
-    /* self->ob_type->tp_free(self); */
 }
 
 static PyObject *
@@ -360,7 +359,6 @@ cm_dealloc(ContextMethod *cm)
 {
     _PyObject_GC_UNTRACK((PyObject *)cm);
     Py_XDECREF(cm->cm_callable);
-    /* ((PyObject *)cm)->ob_type->tp_free((PyObject *)cm); */
     ContextDescriptorType.tp_dealloc((PyObject *)cm);
 }
 
