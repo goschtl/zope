@@ -7,7 +7,7 @@
   <!-- <browser:defaultSkin name="" /> -->
 
   <!-- To enable the logout link in the ZMI, uncomment this adapter
-       registration: ->
+       registration: -->
   <!-- <adapter factory="zope.app.security.LogoutSupported" /> -->
 
 </configure>
