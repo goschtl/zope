@@ -4,6 +4,9 @@
         tal:attributes="src menuitem/icon" />
    &nbsp;
    <span tal:content="menuitem/title" />
+
+   <img class="submenuhint" src="/++resource++submenuhint.png" 
+        tal:condition="menuitem/submenu"/>
 </metal:block>
 
 <metal:block define-macro="menuitem">

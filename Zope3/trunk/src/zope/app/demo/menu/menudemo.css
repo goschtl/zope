@@ -10,7 +10,6 @@ img#appicon {
 }
 
 img.itemicon {
-  //float: left;
   vertical-align: bottom;
 }
 
@@ -70,7 +69,7 @@ ul.topmenu li > a {
 
 ul.topmenu {
   width: 4em; /* Changes spacing between menus */
-  float: left;
+  float: left; /* allows all top menu entries to be aligned horizontally */
 }
 
 ul.topmenu ul {
@@ -96,4 +95,13 @@ ul.topmenu > li:hover > ul {
   width: 10em; 
   top: 1.5em; 
   left: -1px;
+}
+
+img.submenuhint {
+  float: right;
+  vertical-align: bottom;
+}
+
+ul.topmenu > li img.submenuhint {
+  display: none; 
 }

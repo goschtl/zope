@@ -65,6 +65,9 @@
       name="editpaste.png"
       image="editpaste.png" />
 
+  <browser:resource
+      name="submenuhint.png"
+      image="submenuhint.png" />
 
   <!-- Menus -->
 
