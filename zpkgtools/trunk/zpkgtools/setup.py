@@ -97,6 +97,21 @@ class SetupContext:
             else:
                 self.add_package_file(name, fn)
 
+        # We need to check that any files that were labelled as
+        # scripts aren't copied in as package data; they don't expect
+        # to be installed into the package itself.
+        #
+        # XXX I'm not sure whether documentation files should be
+        # removed from package_data or not, given that there's no spec
+        # for installing documentation other than for RPMs.
+        #
+        relbase = posixpath.join(reldir, "")
+        pkgfiles = self.package_data.get(reldir, [])
+        for script in pkginfo.script:
+            pkgdatapath = script[len(relbase):]
+            if pkgdatapath in pkgfiles:
+                pkgfiles.remove(pkgdatapath)
+
     def scan_directory(self, pkgname, directory, reldir):
         """Scan a data directory, adding files to package_data."""
         for fn in os.listdir(directory):
