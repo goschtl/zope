@@ -55,6 +55,39 @@ class DocResponseWrapperTestCase(unittest.TestCase):
         self.body_output.write(BODY)
         self.assertEqual(self.wrapper.getOutput(), BODY)
 
+class AuthHeaderTestCase(unittest.TestCase):
+
+    def test_auth_encoded(self):
+        auth_header = zope.app.tests.functional.auth_header
+        header = 'Basic Z2xvYmFsbWdyOmdsb2JhbG1ncnB3'
+        self.assertEquals(auth_header(header), header)
+
+    def test_auth_non_encoded(self):
+        auth_header = zope.app.tests.functional.auth_header
+        header = 'Basic globalmgr:globalmgrpw'
+        expected = 'Basic Z2xvYmFsbWdyOmdsb2JhbG1ncnB3'
+        self.assertEquals(auth_header(header), expected)
+
+    def test_auth_non_encoded_empty(self):
+        auth_header = zope.app.tests.functional.auth_header
+        header = 'Basic globalmgr:'
+        expected = 'Basic Z2xvYmFsbWdyOg=='
+        self.assertEquals(auth_header(header), expected)
+        header = 'Basic :pass'
+        expected = 'Basic OnBhc3M='
+        self.assertEquals(auth_header(header), expected)
+
+    def test_auth_non_encoded_colon(self):
+        auth_header = zope.app.tests.functional.auth_header
+        header = 'Basic globalmgr:pass:pass'
+        expected = 'Basic Z2xvYmFsbWdyOnBhc3M6cGFzcw=='
+        self.assertEquals(auth_header(header), expected)
 
 def test_suite():
-    return unittest.makeSuite(DocResponseWrapperTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(DocResponseWrapperTestCase))
+    suite.addTest(unittest.makeSuite(AuthHeaderTestCase))
+    return suite
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

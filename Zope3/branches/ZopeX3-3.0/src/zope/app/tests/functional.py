@@ -491,6 +491,10 @@ def http(request_string, handle_errors=True):
             name = 'HTTP_' + name
         environment[name] = value.rstrip()
 
+    auth_key = 'HTTP_AUTHORIZATION'
+    if environment.has_key(auth_key):
+        environment[auth_key] = auth_header(environment[auth_key])
+
     outstream = HTTPTaskStub()
 
 
@@ -531,6 +535,20 @@ def http(request_string, handle_errors=True):
 headerre = re.compile('(\S+): (.+)$')
 def split_header(header):
     return headerre.match(header).group(1, 2)
+
+basicre = re.compile('Basic (.+)?:(.+)?$')
+def auth_header(header):
+    match = basicre.match(header)
+    if match:
+        import base64
+        u, p = match.group(1, 2)
+        if u is None:
+            u = ''
+        if p is None:
+            p = ''
+        auth = base64.encodestring('%s:%s' % (u, p))
+        return 'Basic %s' % auth[:-1]
+    return header
 
 def getRootFolder():
     return FunctionalTestSetup().getRootFolder()
