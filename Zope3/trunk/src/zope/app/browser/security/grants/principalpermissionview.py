@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalpermissionview.py,v 1.5 2003/02/12 02:17:09 seanb Exp $
+$Id: principalpermissionview.py,v 1.6 2003/05/02 18:24:59 jim Exp $
 """
 import time
 
@@ -28,7 +28,7 @@ from zope.publisher.browser import BrowserView
 
 class PrincipalPermissionView(BrowserView):
 
-    index = ViewPageTemplateFile('pt/principal_permission_edit.pt')
+    index = ViewPageTemplateFile('principal_permission_edit.pt')
 
     def get_permission_service(self):
         return getService(self.context, Permissions)
