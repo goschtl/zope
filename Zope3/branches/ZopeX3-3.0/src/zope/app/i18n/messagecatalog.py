@@ -20,7 +20,6 @@ import time
 
 from BTrees.OOBTree import OOBTree
 from persistent import Persistent
-from zope.proxy import removeAllProxies
 from zope.component.interfaces import IFactory
 from zope.app.i18n.interfaces import ILocalMessageCatalog
 
@@ -41,11 +40,11 @@ class MessageCatalog(Persistent):
 
     def getMessage(self, id):
         'See IReadMessageCatalog'
-        return removeAllProxies(self._messages[id][0])
+        return self._messages[id][0]
 
     def queryMessage(self, id, default=None):
         'See IReadMessageCatalog'
-        result = removeAllProxies(self._messages.get(id))
+        result = self._messages.get(id)
         if result is not None:
             result = result[0]
         else:
@@ -58,7 +57,7 @@ class MessageCatalog(Persistent):
 
     def getFullMessage(self, msgid):
         'See IWriteMessageCatalog'
-        message = removeAllProxies(self._messages[msgid])
+        message = self._messages[msgid]
         return {'domain'   : self.domain,
                 'language' : self.language,
                 'msgid'    : msgid,

@@ -17,7 +17,6 @@ $Id$
 """
 from zope.interface import implements
 from zope.i18n import translate
-from zope.proxy import removeAllProxies
 from zope.schema.interfaces import ValidationError, InvalidValue
 from zope.schema.interfaces import ConstraintNotSatisfied, ITitledTokenizedTerm
 
