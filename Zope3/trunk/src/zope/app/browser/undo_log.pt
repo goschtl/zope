@@ -31,13 +31,8 @@ modified objects that were modified by a selected transaction.
 </span>
 <span tal:condition="not:all">
 <p>You are <span tal:replace="request/user/getId">username</span>, looking at your own transactions.  <a href="?all=yes">View everyone's transactions</a>.
-<!-- This nasty piece of work is needed because user IDs are written to
-     the transaction log with a (bogus?) "path" prepended to the username.
-     see zodb.ztransaction.Transaction.setUser
-     I can't see a way to reconstruct this path right now. I also can't see 
-     anywhere that calls setUser() with a path specified. -->
 <span tal:omit-tag=""
-    tal:define="global undoInfo python:view.getUndoInfo(first=first, user_name='/ '+request.user.getId())"/></p>
+    tal:define="global undoInfo python:view.getUndoInfo(first=first, user_name=request.user.getId())"/></p>
 </span>
 
 <p><a tal:attributes="href python:'?first=%s'%(first+20)">View 20 earlier transactions</a></p>
