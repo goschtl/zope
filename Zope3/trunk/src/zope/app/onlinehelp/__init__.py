@@ -62,6 +62,14 @@ class OnlineHelpTopic(SampleContainer):
     >>> topic.type
     'zope.source.stx'
 
+    HTML files are treated as structured text files
+    >>> path = os.path.join(testdir(), 'help.html')
+    >>> topic = OnlineHelpTopic('Help',path)
+
+    The type should still be structured text
+    >>> topic.type
+    'zope.source.stx'
+
     >>> path = os.path.join(testdir(), 'help.rst')
     >>> topic = OnlineHelpTopic('Help',path)
 
