@@ -41,7 +41,6 @@ def setUp(test):
 def tearDown(test):
     del sys.modules['ldap']
     if test.old_uldap is not None:
-        del sys.modules['_ldap']
         sys.modules['_ldap'] = test.old_uldap
     if test.old_ldap is not None:
         sys.modules['ldap'] = test.old_ldap
