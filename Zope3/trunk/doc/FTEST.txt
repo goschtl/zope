@@ -9,6 +9,9 @@ Zope 3 Functional Testing
   well, for example you can use "python test.py -fpv" to get a nice progress
   indicator.  For information about all options run "python test.py -h".
 
+  If your Zope 3 doesn't yet have a products.zcml, create one by
+  copying products.zcml.in to products.zcml.
+
  Zope Functional Testing
 
   Functional tests live in directories called "ftests" all over the source
