@@ -22,8 +22,10 @@ __docformat__ = 'restructuredtext'
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zodbcode.patch import registerWrapper, Wrapper
+
 from zope.interface.interface import InterfaceClass
 from zope.interface import Interface
+from zope.security.proxy import removeSecurityProxy
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
 
@@ -119,7 +121,10 @@ def queryType(object, interface):
     'I4'
 
     """
-    object_iro = providedBy(object).__iro__
+    # Remove the security proxy, so that we can introspect the type of the
+    # object's interfaces.
+    naked = removeSecurityProxy(object)
+    object_iro = providedBy(naked).__iro__
     for iface in object_iro:
         if interface.providedBy(iface):
             return iface
