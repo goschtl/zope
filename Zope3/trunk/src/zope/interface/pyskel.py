@@ -25,7 +25,7 @@ Example:
 The dotted name is the module name and interface object name connected
 with a dot.
 
-Revision information: $Id: pyskel.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+Revision information: $Id: pyskel.py,v 1.3 2003/06/05 21:53:28 srichter Exp $
 """
 
 import sys, os, re
@@ -55,11 +55,6 @@ def rskel(iface, top, print_iface=1):
                                   isinstance(ades[1], Attribute),
                                   namesAndDescriptions)
 
-    # if namesAndDescriptions and print_iface:
-    #     print
-    #     print "    ######################################"
-    #     print "    # from:", name
-
     for aname, ades in namesAndDescriptions:
         if isinstance(ades, Method):
             sig = ades.getSignatureString()[1:-1]
@@ -68,10 +63,6 @@ def rskel(iface, top, print_iface=1):
             print
             print "    def %s(%s):" % (aname, sig)
             print '        "See %s"' % name
-            # print
-            # print
-            # print "    %s.__doc__ = '%%s\\n\\n%%s' %% (%s['%s'].__doc__, %s.__doc__" % (
-            #     aname, top.__name__, aname, aname)
 
         elif isinstance(ades, Attribute):
             print
@@ -91,22 +82,16 @@ def skel(name):
     class_name = iface.__name__
     if class_name.startswith('I'):
         class_name = class_name[1:]
+    print "from zope.interface import implements"
     print "from %s import %s" % (iface.__module__, iface.__name__)
     print
     print "class %s:" %class_name
     print "    __doc__ = %s.__doc__" % iface.__name__
     print
-    print "    __implements__ = ", iface.__name__
+    print "    implements(%s)" %iface.__name__
     print
-    # print "    ############################################################"
-    # print "    # Implementation methods for interface"
-    # print "    #", name
 
     rskel(iface, iface, 0)
-
-    # print
-    # print "    #"
-    # print "    ############################################################"
 
 
 def resolve(name, _silly=('__doc__',), _globals={}):
