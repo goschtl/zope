@@ -27,7 +27,7 @@ from zope.i18n.negotiator import negotiator
 from zope.i18n.interfaces import INegotiator, ITranslationDomain
 from zope.i18n.simpletranslationdomain import SimpleTranslationDomain
 from zope.app.container.contained import Contained
-from zope.app.component.nextservice import getNextService
+from zope.app.component.localservice import getNextService
 from zope.component.servicenames import Utilities
 from zope.app.utility import UtilityRegistration
 
@@ -68,7 +68,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         if target_language is None and context is not None:
             avail_langs = self.getAvailableLanguages()
             # Let's negotiate the language to translate to. :)
-            negotiator = zapi.getUtility(self, INegotiator)
+            negotiator = zapi.getUtility(INegotiator, context=self)
             target_language = negotiator.getLanguage(avail_langs, context)
 
         # Get the translation. Default is the source text itself.
@@ -166,7 +166,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
     def addLanguage(self, language):
         'See IWriteTranslationService'
-        catalog = zapi.createObject(self, 'Message Catalog', language)
+        catalog = zapi.createObject(None, 'Message Catalog', language)
         self[language] = catalog
 
 

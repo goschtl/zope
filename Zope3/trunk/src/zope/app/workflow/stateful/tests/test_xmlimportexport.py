@@ -132,7 +132,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(
             testpd.schemaPermissions['title'],
-            (CheckerPublic, zapi.getUtility(None, IPermission, 'zope.View')))
+            (CheckerPublic, zapi.getUtility(IPermission, 'zope.View')))
 
         self.assertEqual(len(testpd.states), 3)
         self.assertEqual(len(testpd.transitions), 3)

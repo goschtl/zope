@@ -49,7 +49,7 @@ class LocalUtilityService(UtilityService, LocalAdapterService):
         # This method is deprecated and is temporarily provided for
         # backward compatability
         from zope.app import zapi
-        from zope.app.component.nextservice import getNextService
+        from zope.app.component.localservice import getNextService
         next = getNextService(self, zapi.servicenames.Utilities)
         next_utils = dict(next.getUtilitiesFor(interface))
         for name, util in self.getUtilitiesFor(interface):

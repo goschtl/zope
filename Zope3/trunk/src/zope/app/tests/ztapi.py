@@ -22,7 +22,7 @@ from zope.publisher.browser import IBrowserRequest
 from zope.app.traversing.interfaces import ITraversable
 
 def provideView(for_, type, providing, name, factory, layer="default"):
-    s = zapi.getService(None, Presentation)
+    s = zapi.getGlobalServices().getService(Presentation)
     return s.provideView(for_, name, type, factory, layer,
                          providing=providing)
     
@@ -33,7 +33,7 @@ def browserView(for_, name, factory, layer='default',
     """
     if isinstance(factory, (list, tuple)):
         raise ValueError("Factory cannot be a list or tuple")
-    s = zapi.getService(None, Presentation)
+    s = zapi.getGlobalServices().getService(Presentation)
     return s.provideView(for_, name, IBrowserRequest, factory, layer,
                          providing=providing)
 
@@ -49,37 +49,37 @@ def browserResource(name, factory, layer='default',
     """
     if isinstance(factory, (list, tuple)):
         raise ValueError("Factory cannot be a list or tuple")
-    s = zapi.getService(None, Presentation)
+    s = zapi.getGlobalServices().getService(Presentation)
     return s.provideResource(name, IBrowserRequest, factory, layer,
                              providing=providing)
 
 def setDefaultViewName(for_, name, layer='default'):
-    s = zapi.getService(None, Presentation)
+    s = zapi.getGlobalServices().getService(Presentation)
     s.setDefaultViewName(for_, IBrowserRequest, name, layer=layer)
 
 stypes = list, tuple
 def provideAdapter(required, provided, factory, name='', with=()):
     if isinstance(factory, (list, tuple)):
         raise ValueError("Factory cannot be a list or tuple")
-    s = zapi.getService(None, Adapters)
+    s = zapi.getGlobalServices().getService(Adapters)
 
     if with:
         required = (required, ) + tuple(with)
     elif not isinstance(required, stypes):
         required = [required]
-            
+
     s.register(required, provided, name, factory)
 
 def subscribe(required, provided, factory):
-    s = zapi.getService(None, Adapters)
+    s = zapi.getGlobalServices().getService(Adapters)
     s.subscribe(required, provided, factory)
-    
+
 def provideUtility(provided, component, name=''):
-    s = zapi.getService(None, Utilities)
+    s = zapi.getGlobalServices().getService(Utilities)
     s.provideUtility(provided, component, name)
-    
+
 def unprovideUtility(provided, name=''):
-    s = zapi.getService(None, Utilities)
+    s = zapi.getGlobalServices().getService(Utilities)
     s.register((), provided, name, None)
 
 def provideNamespaceHandler(name, handler):

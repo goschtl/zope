@@ -68,7 +68,7 @@ class DummyPrincipal:
     def __init__(self, id, title):
         self.id = id
         self.title = title
-        
+
 
 def defineRole(id, title=None, description=None):
     role = Role(id, title, description)
@@ -82,8 +82,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         PlacefulSetup.setUp(self)
 
         self._roles = [defineRole('qux', 'Qux'), defineRole('baz', 'Baz')]
-        
-        sm = zapi.getServiceManager(None)
+
+        sm = zapi.getGlobalServices()
 
         sm.defineService(Authentication, IAuthenticationService)
 

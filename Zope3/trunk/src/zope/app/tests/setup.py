@@ -79,28 +79,37 @@ def setUpRegistered():
     ztapi.provideAdapter(IAttributeRegisterable, IRegistered,
                          Registered)
 
+#------------------------------------------------------------------------
+# Service service lookup
+from zope.app.component.localservice import serviceServiceAdapter
+from zope.component.interfaces import IServiceService
+from zope.interface import Interface
+def setUpServiceService():
+    ztapi.provideAdapter(Interface, IServiceService, serviceServiceAdapter)
 
 #------------------------------------------------------------------------
 # Placeful setup
-from zope.app.component.hooks import getServiceManager_hook
+from zope.app.component.hooks import getServices_hook
 from zope.app.tests.placelesssetup import setUp as placelessSetUp
 from zope.app.tests.placelesssetup import tearDown as placelessTearDown
 def placefulSetUp(site=False):
     placelessSetUp()
-    zope.component.getServiceManager.sethook(getServiceManager_hook)
+    zope.component.getServices.sethook(getServices_hook)
     setUpAnnotations()
     setUpDependable()
     setUpTraversal()
     setUpRegistered()
+    setUpServiceService()
 
     if site:
         site = rootFolder()
-        createServiceManager(site)
+        createServiceManager(site, setsite=True)
         return site
 
 def placefulTearDown():
     placelessTearDown()
-    zope.component.getServiceManager.reset()
+    zope.component.getServices.reset()
+    thread_globals().site = None
 
 
 from zope.app.folder import Folder, rootFolder
@@ -132,10 +141,12 @@ def buildSampleFolderTree():
 
 from zope.app.site.service import ServiceManager
 from zope.app.site.interfaces import ISite
-def createServiceManager(folder):
+from zope.thread import thread_globals
+def createServiceManager(folder, setsite=False):
     if not ISite.providedBy(folder):
         folder.setSiteManager(ServiceManager(folder))
-
+    if setsite:
+        thread_globals().site = folder
     return zapi.traverse(folder, "++etc++site")
 
 from zope.app.site.service import ServiceRegistration
@@ -170,7 +181,6 @@ def addUtility(servicemanager, name, iface, utility, suffix=''):
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
     return zapi.traverse(servicemanager, path)
 
-from zope.component import getServiceManager
 from zope.app.hub.interfaces import IObjectHub
 from zope.app.event.interfaces import ISubscriptionService
 from zope.app.event.localservice import EventService
@@ -184,7 +194,7 @@ def createStandardServices(folder, hubids=None):
     Well, uh, 3
     '''
     sm = createServiceManager(folder)
-    defineService = getServiceManager(None).defineService
+    defineService = zapi.getGlobalServices().defineService
 
     defineService(EventSubscription, ISubscriptionService)
 

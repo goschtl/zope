@@ -40,7 +40,7 @@ class ObjectRetrievingProcessor(Contained):
         list = IRankedHubIdList(query)
         batch = IBatchedResult(query)
 
-        objectHub = getService(self, HubIds)
+        objectHub = getService(HubIds)
 
         # XXX do we need wrapping for the objects returned by the hub?
         iterator = RankedObjectIterator(

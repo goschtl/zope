@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.app.tests import setup
 from zope.interface import Interface, implements
 from zope.app.site.service import ServiceManager, ServiceRegistration
-from zope.component import getService, getServiceManager
+from zope.component import getService, getServices, getGlobalServices
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.app.registration.interfaces import UnregisteredStatus
@@ -124,7 +124,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
     def testUnbindService(self):
 
         root_ts = TestService()
-        gsm = getServiceManager(None)
+        gsm = getGlobalServices()
         gsm.provideService('test_service', root_ts)
 
         name = self.testGetService() # set up localservice
@@ -137,13 +137,13 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
     def testContextServiceLookup(self):
         self.testGetService() # set up localservice
-        sm = getServiceManager(self.rootFolder)
+        sm = getServices(self.rootFolder)
         self.assertEqual(getService(self.folder1_1, 'test_service'),
                          sm['default']['test_service1'])
 
     def testContextServiceLookupWithMultipleServiceManagers(self):
         self.testGetService() # set up root localservice
-        sm=getServiceManager(self.rootFolder)
+        sm = getServices(self.rootFolder)
 
         sm2 = self.makeSite('folder1')
 
@@ -156,7 +156,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         ts = TestService()
 
-        globsm=getServiceManager(None)
+        globsm = getGlobalServices()
         globsm.provideService('test_service', ts)
 
         service = getService(self.folder1, 'test_service')
@@ -182,7 +182,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         manager.execute()
 
         self.folder1.setSiteManager(ServiceManager(self.folder1))
-        sm2=getServiceManager(self.folder1)
+        sm2 = getServices(self.folder1)
         default = contained(sm2['default'], self.folder1, name='default')
         default['m1'] = Manager('zope.app.services.tests.sample1',
                                 'x = "folder1 m1 1"')

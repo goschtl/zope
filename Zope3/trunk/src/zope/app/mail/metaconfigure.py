@@ -45,7 +45,7 @@ def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
         utilities = zapi.getService(None, 'Utilities')
         handler('Utilities', 'provideUtility', IMailDelivery, delivery, name)
 
-        mailerObject = zapi.queryUtility(None, IMailer, name=mailer)
+        mailerObject = zapi.queryUtility(IMailer, name=mailer)
         if mailerObject is None:
             raise ConfigurationError("Mailer %r is not defined" %mailer)
 
@@ -64,7 +64,7 @@ def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
 def directDelivery(_context, permission, mailer, name="Mail"):
 
     def createDirectDelivery():
-        mailerObject = zapi.queryUtility(None, IMailer, name=mailer)
+        mailerObject = zapi.queryUtility(IMailer, name=mailer)
         if mailerObject is None:
             raise ConfigurationError("Mailer %r is not defined" %mailer)
 

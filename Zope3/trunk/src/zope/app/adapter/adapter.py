@@ -24,7 +24,7 @@ from zope.app.registration.registration import NotifyingRegistrationStack
 from zope.interface.adapter import adapterImplied, Default
 from zope.interface.adapter import Surrogate, AdapterRegistry
 import sys
-import zope.app.component.nextservice
+import zope.app.component.localservice
 import zope.app.container.contained
 import zope.app.registration.interfaces
 import zope.app.site.interfaces
@@ -214,8 +214,9 @@ class LocalAdapterBasedService(
         )
 
     def __updateNext(self, servicename):
-        next = zope.app.component.nextservice.getNextService(self, servicename)
-        global_ = zapi.getService(None, servicename)
+        next = zope.app.component.localservice.getNextService(
+            self, servicename)
+        global_ = zapi.getGlobalServices().getService(servicename)
         if next == global_:
             next = None
         self.setNext(next, global_)
@@ -226,11 +227,11 @@ class LocalAdapterBasedService(
         # Now, we need to notify any sub-site services. This is
         # a bit complicated because our immediate subsites might not have
         # the same service. Sigh
-        sm = zapi.getServiceManager(self)
+        sm = zapi.getServices(self)
         self.__notifySubs(sm.subSites, servicename)
 
     def unbound(self, servicename):
-        sm = zapi.getServiceManager(self)
+        sm = zapi.getServices(self)
         self.__notifySubs(sm.subSites, servicename)
 
     def __notifySubs(self, subs, servicename):

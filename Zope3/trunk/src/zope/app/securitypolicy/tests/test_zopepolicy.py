@@ -79,7 +79,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        services = zapi.getServiceManager(None)
+        services = zapi.getGlobalServices()
 
         services.defineService(Authentication, IAuthenticationService)
         services.provideService(Authentication, principalRegistry)

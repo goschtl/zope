@@ -94,7 +94,7 @@ class BuddyCityState:
     __used_for__ = IBuddy
 
     def __init__(self, buddy):
-        lookup = zapi.getUtility(buddy, IPostalLookup)
+        lookup = zapi.getUtility(IPostalLookup)
         info = lookup.lookup(buddy.postal_code)
         if info is None:
             self.city, self.state = '', ''

@@ -44,7 +44,7 @@ class PrincipalPermissionView(BrowserView):
         ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
-            permission = zapi.getUtility(self.context, IPermission, perm_id)
+            permission = zapi.getUtility(IPermission, perm_id)
             ppm.unsetPermissionForPrincipal(permission , principal)
 
         if REQUEST is not None:
@@ -57,7 +57,7 @@ class PrincipalPermissionView(BrowserView):
         ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
-            permission = zapi.getUtility(self.context, IPermission, perm_id)
+            permission = zapi.getUtility(IPermission, perm_id)
             ppm.grantPermissionToPrincipal(permission , principal)
         if REQUEST is not None:
             return self.index(message="Settings changed at %s"
@@ -69,7 +69,7 @@ class PrincipalPermissionView(BrowserView):
         ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
-            permission = zapi.getUtility(self.context, IPermission, perm_id)
+            permission = zapi.getUtility(IPermission, perm_id)
             ppm.denyPermissionToPrincipal(permission , principal)
         if REQUEST is not None:
             return self.index(message="Settings changed at %s"

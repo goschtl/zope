@@ -205,7 +205,7 @@ class PythonPage(Contained, Persistent):
         kw['script'] = self
         kw['context'] = zapi.getParent(self)
 
-        service = zapi.getService(self, Utilities)
+        service = zapi.getService(Utilities)
         interpreter = service.queryUtility(IInterpreter,
                                            name='text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)

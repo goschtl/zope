@@ -34,7 +34,7 @@ from zope.app.tests import setup
 from zope.app.schemacontent.content import \
      ContentComponentDefinition, ContentComponentDefinitionRegistration, \
      ContentComponentDefinitionMenuItem, ContentComponentInstance
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.app.tests import ztapi
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import Interface, classImplements
@@ -60,7 +60,7 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
                              ContentComponentDefinitionMenuItem)
 
         # Define Menu Service
-        sm=getServiceManager(None)
+        sm = getGlobalServices()
         sm.defineService(BrowserMenu, IBrowserMenuService)
         sm.provideService(BrowserMenu, GlobalBrowserMenuService())
         classImplements(LocalBrowserMenu, ILocalUtility)
@@ -120,7 +120,7 @@ class ContentComponentDefinitionMenuItemTests(unittest.TestCase):
                              IContentComponentMenuItem,
                              ContentComponentDefinitionMenuItem)
         
-        sm=getServiceManager(None)
+        sm = getGlobalServices()
         sm.defineService(BrowserMenu, IBrowserMenuService)
         sm.provideService(BrowserMenu, GlobalBrowserMenuService())
 

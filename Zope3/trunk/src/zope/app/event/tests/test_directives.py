@@ -27,7 +27,7 @@ from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.tests.test_eventpublisher import DummyEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.app.servicenames import EventPublication
 from zope.app.event.interfaces import IEvent
 
@@ -36,9 +36,9 @@ class Test(PlacelessSetup, TestCase):
     def setUp(self):
         super(Test, self).setUp()
         from zope.app.event.interfaces import IPublisher
-        getServiceManager(None).defineService(EventPublication, IPublisher)
+        getGlobalServices().defineService(EventPublication, IPublisher)
         from zope.app.event.globalservice import eventPublisher
-        getServiceManager(None).provideService(EventPublication, eventPublisher)
+        getGlobalServices().provideService(EventPublication, eventPublisher)
 
     def testSubscribe(self):
         from zope.app.event.tests.subscriber import subscriber

@@ -31,7 +31,7 @@ from zope.app.menu import \
 from zope.app.utility import LocalUtilityService, UtilityRegistration
 from zope.app.servicenames import BrowserMenu, Utilities
 from zope.app.tests import setup
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import Interface, implements, classImplements
 from zope.publisher.browser import TestRequest
@@ -89,7 +89,7 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
         self.rootFolder = setup.buildSampleFolderTree()
 
         # Define Menu Service
-        sm=getServiceManager(None)
+        sm = getGlobalServices()
         sm.defineService(BrowserMenu, IBrowserMenuService)
         sm.provideService(BrowserMenu, globalBrowserMenuService)
         classImplements(LocalBrowserMenu, ILocalUtility)

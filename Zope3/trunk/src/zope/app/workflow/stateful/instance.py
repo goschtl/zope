@@ -276,7 +276,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            sm = zapi.getServiceManager(self)
+            sm = zapi.getServices(self)
             script = sm.resolve(script)
         return script(contexts)
 

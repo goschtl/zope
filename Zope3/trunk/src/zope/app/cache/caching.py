@@ -25,7 +25,7 @@ def getCacheForObject(obj):
     cache_id = adapter.getCacheId()
     if not cache_id:
         return None
-    return zapi.getUtility(obj, ICache, cache_id)
+    return zapi.getUtility(ICache, cache_id)
 
 def getLocationForCache(obj):
     """Returns the location to be used for caching the object or None."""

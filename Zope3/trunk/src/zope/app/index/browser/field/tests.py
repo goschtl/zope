@@ -18,7 +18,7 @@ $Id$
 import unittest
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.exceptions import NotFoundError
 
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -55,7 +55,7 @@ class TestControlView(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(TestControlView, self).setUp()
-        service_manager = getServiceManager(None)
+        service_manager = getGlobalServices()
         service_manager.defineService(HubIds, IObjectHub)
         service_manager.provideService(HubIds, ObjectHubStub())
 

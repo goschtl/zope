@@ -17,7 +17,6 @@ $Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.component import getServiceManager
 from zope.app.principalannotation import \
      PrincipalAnnotationService, AnnotationsForPrincipal
 from interfaces import IPrincipalAnnotationService
@@ -26,7 +25,7 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.security.interfaces import IPrincipal
 from zope.app.tests import setup
 from zope.interface import implements
-
+from zope.app import zapi
 
 class Principal:
 
@@ -42,7 +41,7 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         sm = self.buildFolders(site='/')
 
-        root_sm = getServiceManager(None)
+        root_sm = zapi.getGlobalServices()
 
         svc = PrincipalAnnotationService()
 

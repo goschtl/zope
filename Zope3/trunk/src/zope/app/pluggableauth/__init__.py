@@ -45,7 +45,7 @@ from zope.app.container.ordered import OrderedContainer
 from zope.app.servicenames import Authentication
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.site.interfaces import ISimpleService
-from zope.app.component.nextservice import queryNextService
+from zope.app.component.localservice import queryNextService
 
 from interfaces import IUserSchemafied, IPluggableAuthenticationService
 from interfaces import \

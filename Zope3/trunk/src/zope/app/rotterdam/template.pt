@@ -48,12 +48,12 @@
             User
           </tal:block>
         </metal:block>
-          <a href="" 
+          <a href=""
             tal:attributes="href string:@@logout.html?nextURL=${request/URL}"
             tal:condition="python: hasattr(request.principal, 'getLogin')"
             i18n:translate="">
             [Logout]</a>
-          <a href="" 
+          <a href=""
             tal:attributes="href string:@@login.html?nextURL=${request/URL}"
             tal:condition="python: not hasattr(request.principal, 'getLogin')"
             i18n:translate="">
@@ -68,7 +68,7 @@
       <metal:tree use-macro="context/@@standard_macros/navigation_tree_box" />
 
       <tal:block condition="python: macroname == 'view'">
-      
+
         <div class="box" id="commonTasks"
              tal:define="view context/@@commonTasks|nothing"
              tal:condition="view/strip|nothing">
@@ -84,7 +84,7 @@
       <!-- Tree of the help topics that appears on the help namespace -->
       <div class="box" id="help"
            tal:condition="not:python:request.getURL().find('++help++')==-1">
-        <h4 i18n:translate="">Online Help - TOC</h4>              
+        <h4 i18n:translate="">Online Help - TOC</h4>
         <div class="body">
           <div tal:content="structure view/getTopicTree|nothing"
                tal:omit-tag="">content of topicTree</div>
@@ -152,7 +152,7 @@
                                            ,toolbar=yes
                                            ,menubar=yes'"
                tal:attributes="href python:'javascript:popup('
-                                           + url + ',' 
+                                           + url + ','
                                            + name + ','
                                            + settings +')'"
                tal:content="help_info/title"

@@ -382,7 +382,7 @@ class Committer(object):
                 location = context
                 parent = None
             # No factory; try using IFileFactory or IDirectoryFactory
-            as = getService(location, "Adapters")
+            as = getService("Adapters")
             isuffix = name.rfind(".")
             if isuffix >= 0:
                 suffix = name[isuffix:]

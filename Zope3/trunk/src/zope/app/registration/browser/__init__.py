@@ -28,7 +28,7 @@ from zope.app.registration.interfaces import IRegistration
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.traversing import getName, traverse
-from zope.component import getView, getServiceManager
+from zope.component import getView, getServices
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 
@@ -123,9 +123,8 @@ class ChangeRegistrations(BrowserView):
 
         message = self.applyUpdates()
 
-        self.configBase = str(getView(getServiceManager(self.context),
-                                      'absolute_url', self.request)
-                              )
+        self.configBase = str(getView(getServices(self.context), 'absolute_url',
+                                      self.request))
 
         registrations = self.context.info()
 
@@ -142,7 +141,7 @@ class ChangeRegistrations(BrowserView):
             reg = info['registration']
             info['summary'] = reg.implementationSummary()
             info['id'] = zpi.getPath(reg)
-            
+
         # Add a dummy registration since the stack removes trailing None.
         registrations.append({"active": False,
                               "id": "disable",

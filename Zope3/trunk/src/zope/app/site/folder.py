@@ -16,7 +16,6 @@
 $Id$
 """
 from zope.interface import implements
-from zope.app.component.nextservice import getNextServiceManager
 from zope.app.container.btree import BTreeContainer
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.registration.registration import RegisterableContainer

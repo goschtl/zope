@@ -27,12 +27,14 @@ from zope.app.event.interfaces import ISubscriber
 from zope.app.hub.interfaces import IObjectHub
 from zope.app.catalog.interfaces.index import ICatalogIndex
 from zope.index.interfaces import ISimpleQuery
+from zope.app.site.interfaces import ISite
+from zope.app import zapi
 
 from zope.app.catalog.catalog import Catalog
 from zope.app.catalog.catalog import CatalogBaseAddSubscriber
 from zope.app.catalog.catalog import CatalogBaseRemoveSubscriber
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.app.servicenames import HubIds
 from BTrees.IIBTree import IISet
 
@@ -51,6 +53,7 @@ class CFakeObjectHub(FakeObjectHub):
                 loc = "/%s"%hubid
                 yield loc,hubid,obj
         return gen(self.data.items())
+
 
 class StubIndex(object):
     implements(ISimpleQuery, ISubscriber, ICatalogIndex, IUIFieldCatalogIndex)
@@ -176,7 +179,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def _frob_objecthub(self, ints=1, apes=1):
         hub = CFakeObjectHub()
-        service_manager = getServiceManager(None)
+        service_manager = getGlobalServices()
         service_manager.defineService(HubIds, IObjectHub)
         service_manager.provideService(HubIds, hub)
         # whack some objects in our little objecthub
@@ -247,4 +250,4 @@ def test_suite():
 
 if __name__ == "__main__":
     unittest.main()
-        
+

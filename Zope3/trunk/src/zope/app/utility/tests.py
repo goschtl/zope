@@ -207,10 +207,10 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         setup.addUtility(sm2, 'u2', IFoo, Foo('u22'))
 
         # Make sure we acquire:
-        self.assertEqual(zapi.getUtility(sm2, IFoo, 'u1').name, 'u1')
+        self.assertEqual(zapi.getUtility(IFoo, 'u1', context=sm2).name, 'u1')
 
         # Make sure we override:
-        self.assertEqual(zapi.getUtility(sm2, IFoo, 'u2').name, 'u22')
+        self.assertEqual(zapi.getUtility(IFoo, 'u2', context=sm2).name, 'u22')
 
 
 def test_suite():

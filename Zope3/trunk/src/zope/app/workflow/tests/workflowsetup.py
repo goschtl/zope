@@ -31,7 +31,7 @@ from zope.app.tests import setup
 class WorkflowSetup(PlacefulSetup):
 
     def setUp(self):
-        self.root_sm = zapi.getServiceManager(None)
+        self.root_sm = zapi.getGlobalServices()
 
         self.sm = PlacefulSetup.setUp(self, site=True)
         setup.addService(self.sm, Utilities, LocalUtilityService())

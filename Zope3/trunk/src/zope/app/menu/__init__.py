@@ -20,7 +20,7 @@ from zope.interface import implements, providedBy
 from zope.component.exceptions import ComponentLookupError
 
 from zope.app import zapi
-from zope.app.component.nextservice import getNextService
+from zope.app.component.localservice import getNextService
 from zope.app.container.ordered import OrderedContainer
 from interfaces import ILocalBrowserMenu, ILocalBrowserMenuService
 from zope.app.publisher.interfaces.browser import \

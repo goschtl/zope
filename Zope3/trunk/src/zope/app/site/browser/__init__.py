@@ -29,7 +29,7 @@ from zope.app.site.service import ServiceRegistration
 from zope.app.publisher.browser import BrowserView
 from zope.app.site.interfaces import ISite, ISiteManager
 from zope.app.site.service import SiteManager
-from zope.app.component.nextservice import getNextServiceManager
+from zope.app.component.localservice import getLocalServices
 from zope.component.service import IGlobalServiceManager
 from zope.component.interfaces import IFactory
 from zope.interface.interfaces import IMethod
@@ -117,7 +117,7 @@ class ServiceAdding(ComponentAdding):
         content = super(ServiceAdding, self).add(content)
 
         # figure out the interfaces that this service implements
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         implements = []
         for type_name, interface in sm.getServiceDefinitions():
             if interface.providedBy(content):
@@ -169,7 +169,7 @@ class AddServiceRegistration(BrowserView):
     def listServiceTypes(self):
 
         # Collect all defined services interfaces that it implements.
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         lst = []
         for servicename, interface in sm.getServiceDefinitions():
             if interface.providedBy(self.context):
@@ -317,7 +317,7 @@ def gatherConfiguredServices(sm, request, items=None):
         # don't want the "change registration" link for parent services
         manageable = False
 
-    if IGlobalServiceManager.providedBy(sm):
+    if IGlobalServiceService.providedBy(sm):
         # global service manager
         names = []
         for type_name, interface in sm.getServiceDefinitions():
@@ -350,7 +350,7 @@ def gatherConfiguredServices(sm, request, items=None):
             'disabled': not url, 'manageable': manageable}
 
     # look for more
-    gatherConfiguredServices(getNextServiceManager(sm), request, items)
+    gatherConfiguredServices(getLocalService(sm), request, items)
 
     # make it a list and sort by name
     items = items.values()
@@ -366,12 +366,12 @@ class ServiceActivation(BrowserView):
     'type' determines which service is to be configured."""
 
     def isDisabled(self):
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         registry = sm.queryRegistrations(self.request.get('type'))
         return not (registry and registry.active())
 
     def listRegistry(self):
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         registry = sm.queryRegistrations(self.request.get('type'))
         if not registry:
             return []
@@ -405,7 +405,7 @@ class ServiceActivation(BrowserView):
         if not active:
             return ""
 
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         registry = sm.queryRegistrations(self.request.get('type'))
         if not registry:
             return _("Invalid service type specified")
@@ -449,7 +449,7 @@ class MakeSite(BrowserView):
 
         >>> from zope.publisher.browser import TestRequest
         >>> request = TestRequest()
-        
+
         Now we'll make our folder a site:
 
         >>> MakeSite(folder, request).addSiteManager()
@@ -609,7 +609,7 @@ class Detail:
         where the service dicts contains keys "name" and "registrations."
         registrations is a list of IRegistrations.
         """
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         for name, iface in sm.getServiceDefinitions():
             service = sm.queryService(name)
             if service is None:

@@ -31,14 +31,13 @@ from zodbcode.module import PersistentModuleRegistry
 
 import zope.interface
 from zope.component.exceptions import ComponentLookupError
-from zope.component import getServiceManager
 from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
 from zope.proxy import removeAllProxies
 
 import zope.app.registration.interfaces
 from zope.app import zapi
-from zope.app.component.nextservice import getNextService
-from zope.app.component.nextservice import getNextServiceManager
+from zope.app.component.localservice import getNextService
+from zope.app.component.localservice import getNextServices
 from zope.app.container.btree import BTreeContainer
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.contained import Contained
@@ -92,7 +91,7 @@ class SiteManager(
         while True:
             if IContainmentRoot.providedBy(site):
                 # we're the root site, use the global sm
-                self.next = zapi.getServiceManager(None)
+                self.next = zapi.getGlobalServices()
                 return
             site = site.__parent__
             if site is None:
@@ -152,27 +151,28 @@ class SiteManager(
                 return registration.getComponent()
         return default
 
-    def getServiceDefinitions(wrapped_self):
+    def getServiceDefinitions(self):
         """See IServiceService
         """
         # Get the services defined here and above us, if any (as held
         # in a ServiceInterfaceService, presumably)
-        sm = getNextServiceManager(wrapped_self)
+        sm = self.next
         if sm is not None:
             serviceDefs = sm.getServiceDefinitions()
-        else: serviceDefs = {}
+        else:
+            serviceDefs = {}
 
         return serviceDefs
 
-    def queryService(wrapped_self, name, default=None):
+    def queryService(self, name, default=None):
         """See IServiceService
         """
         try:
-            return wrapped_self.getService(name)
+            return self.getService(name)
         except ComponentLookupError:
             return default
 
-    def getService(wrapped_self, name):
+    def getService(self, name):
         """See IServiceService
         """
 
@@ -180,26 +180,26 @@ class SiteManager(
         # the use of other services, like the adapter service.  We
         # need to be careful not to get into an infinate recursion by
         # getting out getService to be called while looking up
-        # services, so we'll
+        # services, so we'll use _v_calling to prevent recursive
+        # getService calls.
 
         if name == 'Services':
-            return wrapped_self # We are the service service
+            return self # We are the service service
 
-        if not getattr(wrapped_self, '_v_calling', 0):
+        if not getattr(self, '_v_calling', 0):
 
-            wrapped_self._v_calling = 1
+            self._v_calling = 1
             try:
-                service = wrapped_self.queryActiveComponent(name)
+                service = self.queryActiveComponent(name)
                 if service is not None:
                     return service
 
             finally:
-                wrapped_self._v_calling = 0
+                self._v_calling = 0
 
-        return getNextService(wrapped_self, name)
+        return getNextService(self, name)
 
-
-    def queryLocalService(wrapped_self, name, default=None):
+    def queryLocalService(self, name, default=None):
         """See ISiteManager
         """
 
@@ -211,25 +211,25 @@ class SiteManager(
         # getService calls.
 
         if name == 'Services':
-            return wrapped_self # We are the service service
+            return self # We are the service service
 
-        if not getattr(wrapped_self, '_v_calling', 0):
+        if not getattr(self, '_v_calling', 0):
 
-            wrapped_self._v_calling = 1
+            self._v_calling = 1
             try:
-                service = wrapped_self.queryActiveComponent(name)
+                service = self.queryActiveComponent(name)
                 if service is not None:
                     return service
 
             finally:
-                wrapped_self._v_calling = 0
+                self._v_calling = 0
 
         return default
 
-    def getInterfaceFor(wrapped_self, service_type):
+    def getInterfaceFor(self, service_type):
         """See IServiceService
         """
-        for type, interface in wrapped_self.getServiceDefinitions():
+        for type, interface in self.getServiceDefinitions():
             if type == service_type:
                 return interface
 
@@ -251,7 +251,7 @@ class SiteManager(
                               })
 
         if all:
-            next_service_manager = getNextServiceManager(self)
+            next_service_manager = self.next
             if IComponentManager.providedBy(next_service_manager):
                 next_service_manager.queryComponent(type, filter, all)
 
@@ -259,14 +259,13 @@ class SiteManager(
 
         return local
 
-    def findModule(wrapped_self, name):
+    def findModule(self, name):
         # override to pass call up to next service manager
-        mod = super(ServiceManager,
-                    removeAllProxies(wrapped_self)).findModule(name)
+        mod = super(ServiceManager, removeAllProxies(self)).findModule(name)
         if mod is not None:
             return mod
 
-        sm = getNextServiceManager(wrapped_self)
+        sm = self.next
         try:
             findModule = sm.findModule
         except AttributeError:
@@ -276,9 +275,8 @@ class SiteManager(
             return None
         return findModule(name)
 
-    def __import(wrapped_self, module_name):
-
-        mod = wrapped_self.findModule(module_name)
+    def __import(self, module_name):
+        mod = self.findModule(module_name)
         if mod is None:
             mod = sys.modules.get(module_name)
             if mod is None:
@@ -313,7 +311,7 @@ class ServiceRegistration(ComponentRegistration):
         # Else, this must be a hopeful test invocation
 
     def getInterface(self):
-        service_manager = getServiceManager(self)
+        service_manager = zapi.getServices(self)
         return service_manager.getInterfaceFor(self.name)
 
 

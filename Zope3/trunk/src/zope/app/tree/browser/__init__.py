@@ -31,7 +31,7 @@ class StatefulTreeView(BrowserView):
             root = self.context
         expanded_nodes = []
         if tree_state is not None:
-            encoder = zapi.getUtility(root, ITreeStateEncoder)
+            encoder = zapi.getUtility(ITreeStateEncoder)
             expanded_nodes = encoder.decodeTreeState(tree_state)
         node = Node(root, expanded_nodes, filter)
         node.expand()

@@ -31,7 +31,7 @@ class ControlView(BrowserView):
 
     def __init__(self, context, request):
         super(ControlView, self).__init__(context, request)
-        self.hub = getService(context, HubIds)
+        self.hub = getService(HubIds)
 
     def interface_name(self):
         return interfaceToName(self.context, self.context.interface)

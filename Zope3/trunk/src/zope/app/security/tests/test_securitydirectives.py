@@ -34,7 +34,7 @@ class TestBase(PlacelessSetup):
 
     def setUp(self):
         super(TestBase, self).setUp()
-        services = zapi.getServiceManager(None)
+        services = zapi.getGlobalServices()
 
         services.defineService(Authentication, IAuthenticationService)
         services.provideService(Authentication, principalRegistry)
@@ -62,7 +62,7 @@ class TestPermissionDirective(TestBase, unittest.TestCase):
 
     def testRegister(self):
         context = xmlconfig.file("perm.zcml", zope.app.security.tests)
-        perm = zapi.getUtility(None, IPermission, "Can.Do.It")
+        perm = zapi.getUtility(IPermission, "Can.Do.It")
         self.failUnless(perm.id.endswith('Can.Do.It'))
         self.assertEqual(perm.title, 'A Permissive Permission')
         self.assertEqual(perm.description,

@@ -116,7 +116,7 @@ class Node:
         nodes = []
         if row_state is None:
             row_state = []
-        encoder = zapi.getUtility(self.context, ITreeStateEncoder)
+        encoder = zapi.getUtility(ITreeStateEncoder)
 
         if self.hasChildren() and len(row_state) > maxdepth:
             maxdepth = len(row_state)

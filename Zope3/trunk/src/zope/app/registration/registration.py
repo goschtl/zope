@@ -90,7 +90,7 @@ class RegistrationStatusProperty(object):
     def _get_service(self, registration):
         # how we get the service is factored out so subclasses can
         # approach this differently
-        sm = zapi.getServiceManager(registration)
+        sm = zapi.getServices(registration)
         return sm.queryLocalService(registration.serviceType)
 
 
@@ -380,7 +380,7 @@ class RegistrationStack(Persistent, Contained):
         # on construction.
 
         data = []
-        sm = zapi.getServiceManager(self)
+        sm = zapi.getServices(self)
         for path in self._data:
             if isinstance(path, basestring):
                 try:
@@ -583,7 +583,7 @@ class ComponentRegistration(SimpleRegistration):
         return self.componentPath
 
     def getComponent(self):
-        service_manager = zapi.getServiceManager(self)
+        service_manager = zapi.getServices(self)
 
         # The user of the registration object may not have permission
         # to traverse to the component.  Yet they should be able to

@@ -39,7 +39,7 @@ class AnnotationCacheable:
         # Remove object from old cache
         old_cache_id = self.getCacheId()
         if old_cache_id and old_cache_id != id:
-            cache = zapi.getUtility(self._context, ICache, old_cache_id)
+            cache = zapi.getUtility(ICache, old_cache_id)
             cache.invalidate(self._context)
         annotations = IAnnotations(self._context)
         annotations[annotation_key] = id

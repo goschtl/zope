@@ -122,7 +122,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        sm = zapi.getServiceManager(None)
+        sm = zapi.getGlobalServices()
         self._permissions = []
         self._permissions.append(DummyPermission('qux', 'Qux'))
         self._permissions.append(DummyPermission('baz', 'Baz'))

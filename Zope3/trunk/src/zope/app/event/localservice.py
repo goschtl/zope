@@ -27,7 +27,7 @@ from zope.app.site.interfaces import IBindingAware
 
 from zope.component import ComponentLookupError
 from zope.app.servicenames import HubIds, EventPublication, EventSubscription
-from zope.app.component.nextservice import getNextService, queryNextService
+from zope.app.component.localservice import getNextService, queryNextService
 
 from zope.proxy import removeAllProxies
 from zope.interface import implements

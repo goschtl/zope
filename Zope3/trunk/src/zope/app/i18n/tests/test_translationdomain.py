@@ -229,7 +229,7 @@ class TestTranslationDomainInAction(unittest.TestCase):
     def setUp(self):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()
-        sm = zapi.getServiceManager(None)
+        sm = zapi.getGlobalServices()
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo!', 10)
 

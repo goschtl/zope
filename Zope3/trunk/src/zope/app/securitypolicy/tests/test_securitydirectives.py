@@ -52,8 +52,8 @@ class TestBase(PlacelessSetup):
 
     def setUp(self):
         super(TestBase, self).setUp()
-        services = zapi.getServiceManager(None)
-    
+        services = zapi.getGlobalServices()
+
         services.defineService(Authentication, IAuthenticationService)
         services.provideService(Authentication, principalRegistry)
 
@@ -64,7 +64,7 @@ class TestRoleDirective(TestBase, unittest.TestCase):
         context = xmlconfig.file("role.zcml",
                                  zope.app.securitypolicy.tests)
 
-        role = zapi.getUtility(None, IRole, name="zope.Everyperson")
+        role = zapi.getUtility(IRole, name="zope.Everyperson")
         self.failUnless(role.id.endswith('Everyperson'))
         self.assertEqual(role.title, 'Tout le monde')
         self.assertEqual(role.description,

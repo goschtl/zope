@@ -97,7 +97,7 @@ class ZopeContext(Context):
         # XXX This is only needed when self.evaluateInlineCode is true,
         # so should only be needed for zope.app.pythonpage.
         from zope.app.interpreter.interfaces import IInterpreter
-        interpreter = zapi.queryUtility(self.context, IInterpreter, name=lang)
+        interpreter = zapi.queryUtility(IInterpreter, name=lang)
         if interpreter is None:
             error = _('No interpreter named "${lang_name}" was found.')
             error.mapping = {'lang_name': lang}

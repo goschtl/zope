@@ -27,7 +27,7 @@ def getObjectId(obj):
     return str(getPath(obj))
 
 def getSerializer(obj):
-    syncService = getService(obj, 'FSRegistryService')
+    syncService = getService('FSRegistryService')
     return syncService.getSynchronizer(obj)
 
 def getAnnotations(obj):

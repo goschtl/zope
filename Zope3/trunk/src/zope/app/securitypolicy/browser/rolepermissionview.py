@@ -64,12 +64,12 @@ class RolePermissionView:
 
     def permissionForID(self, pid):
         roles = self.roles()
-        perm = zapi.getUtility(self.context, IPermission, pid)
+        perm = zapi.getUtility(IPermission, pid)
         return PermissionRoles(perm, self.context, roles)
 
     def roleForID(self, rid):
         permissions = self.permissions()
-        role = zapi.getUtility(self.context, IRole, name=rid)
+        role = zapi.getUtility(IRole, name=rid)
         return RolePermissions(role, self.context, permissions)
 
 

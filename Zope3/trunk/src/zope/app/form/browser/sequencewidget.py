@@ -102,8 +102,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
         if self.subwidget:
             widget = self.subwidget(field, self.request)
         else:
-            widget = zapi.getViewProviding(field, IInputWidget, self.request,
-                                           context=self.context)
+            widget = zapi.getViewProviding(field, IInputWidget, self.request)
         widget.setPrefix('%s.%d.'%(self.name, i))
         return widget
 

@@ -19,8 +19,9 @@ from zope.app.servicenames import EventPublication
 from zope.app.event.interfaces import IEvent
 from zope.app.event.globalservice import eventPublisher
 
+# XXX convert these as well
 def getEventService(context): # the "publish" service
-    return getService(context, EventPublication)
+    return getService(EventPublication, context=context)
 
 def publish(context, event):
     return getEventService(context).publish(event)

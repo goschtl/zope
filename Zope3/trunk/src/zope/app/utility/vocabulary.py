@@ -200,7 +200,7 @@ class UtilityVocabulary(object):
         if nameOnly is not False:
             nameOnly = True
         if isinstance(interface, (str, unicode)):
-            interface = zapi.getUtility(context, IInterface, interface)
+            interface = zapi.getUtility(IInterface, interface)
         utils = zapi.getUtilitiesFor(context, interface)
         self._terms = dict([(name, UtilityTerm(nameOnly and name or util, name))
                             for name, util in utils])

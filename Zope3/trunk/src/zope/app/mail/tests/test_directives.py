@@ -81,21 +81,21 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         shutil.rmtree(self.mailbox, True)
 
     def testQueuedDelivery(self):
-        delivery = zapi.getUtility(None, IMailDelivery, "Mail")
+        delivery = zapi.getUtility(IMailDelivery, "Mail")
         self.assertEqual('QueuedMailDelivery', delivery.__class__.__name__)
         self.assertEqual(self.mailbox, delivery.queuePath)
 
     def testDirectDelivery(self):
-        delivery = zapi.getUtility(None, IMailDelivery, "Mail2")
+        delivery = zapi.getUtility(IMailDelivery, "Mail2")
         self.assertEqual('DirectMailDelivery', delivery.__class__.__name__)
         self.assert_(self.testMailer is delivery.mailer)
 
     def testSendmailMailer(self):
-        mailer = zapi.getUtility(None, IMailer, "Sendmail")
+        mailer = zapi.getUtility(IMailer, "Sendmail")
         self.assert_(ISendmailMailer.providedBy(mailer))
 
     def testSMTPMailer(self):
-        mailer = zapi.getUtility(None, IMailer, "smtp")
+        mailer = zapi.getUtility(IMailer, "smtp")
         self.assert_(ISMTPMailer.providedBy(mailer))
 
 

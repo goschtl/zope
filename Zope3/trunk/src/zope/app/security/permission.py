@@ -50,7 +50,7 @@ def checkPermission(context, permission_id):
     """
     if permission_id == CheckerPublic:
         return
-    if not zapi.queryUtility(context, IPermission, name=permission_id):
+    if not zapi.queryUtility(IPermission, name=permission_id, context=context):
         raise ValueError("Undefined permission id", permission_id)
 
 def allPermissions(context):

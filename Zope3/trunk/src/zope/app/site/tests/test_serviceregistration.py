@@ -20,7 +20,6 @@ from unittest import TestCase, main, makeSuite
 
 from zope.interface import Interface, implements
 
-from zope.component import getServiceManager
 from zope.app.traversing import traverse, getPath
 from zope.app.site.service import ServiceRegistration
 from zope.app.site.tests.placefulsetup import PlacefulSetup

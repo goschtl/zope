@@ -95,7 +95,7 @@ class XMLStatefulImporter(ContentHandler):
         elif perm_id == '':
             perm = None
         else:
-            perm = zapi.getUtility(None, IPermission, perm_id)
+            perm = zapi.getUtility(IPermission, perm_id)
         if not fieldName in perms.keys():
             perms[fieldName] = (CheckerPublic, CheckerPublic)
         if type == u'get':

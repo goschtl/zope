@@ -15,12 +15,12 @@
 
 $Id$
 """
-from zope.component import getServiceManager
 from zope.app.servicenames import EventPublication
 from zope.app.event.interfaces import IPublisher, ISubscriber, IObjectEvent
 from zope.app.event.globalservice import eventPublisher
 from zope.app.event.objectevent import objectEventNotifierInstance
 from zope.interface import implements
+from zope.component import getGlobalServices
 
 events = []
 
@@ -48,7 +48,7 @@ def clearEvents():
 class PlacelessSetup:
 
     def setUp(self):
-        sm = getServiceManager(None)
+        sm = getGlobalServices()
         defineService = sm.defineService
         provideService = sm.provideService
 

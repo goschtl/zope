@@ -17,7 +17,7 @@ from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.app.servicenames import HubIds
 
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -71,7 +71,7 @@ class Test(PlacelessSetup, TestCase):
 
         # Register the objecthub as a service
         hub = FakeObjectHub()
-        service_manager = getServiceManager(None)
+        service_manager = getGlobalServices()
         service_manager.defineService(HubIds, IObjectHub)
         service_manager.provideService(HubIds, hub)
 

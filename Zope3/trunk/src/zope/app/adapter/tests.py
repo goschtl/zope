@@ -630,7 +630,7 @@ def test_LocalAdapterBasedService():
 
     Define the service
 
-    >>> gsm = zapi.getServiceManager(None)
+    >>> gsm = zapi.getGlobalServices()
     >>> gsm.defineService('F', IF1)
 
     Create the global service

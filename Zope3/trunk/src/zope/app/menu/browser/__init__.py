@@ -19,7 +19,7 @@ from zope.interface import implements
 from zope.app.publisher.browser import BrowserView
 from zope.app import zapi
 from zope.app.container.browser.contents import Contents
-from zope.app.component.nextservice import queryNextService
+from zope.app.component.localservice import queryNextService
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.menu.interfaces import ILocalBrowserMenu
 from zope.app.servicenames import Utilities, BrowserMenu

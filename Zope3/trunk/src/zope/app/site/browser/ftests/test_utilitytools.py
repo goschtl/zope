@@ -103,7 +103,8 @@ class TestUtilityTool(BrowserTestCase):
                   'APPLY_RENAME': 'Rename'})
 
         root = self.getRootFolder()
-        util = zapi.queryUtility(root, ITranslationDomain, name='newzope')
+        util = zapi.queryUtility(ITranslationDomain, name='newzope',
+                                 context=root)
         self.assert_(util is not None)
 
     def testDeactivate(self):

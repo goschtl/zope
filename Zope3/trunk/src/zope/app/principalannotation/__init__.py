@@ -24,7 +24,7 @@ $Id$
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from BTrees.OOBTree import OOBTree
-from zope.app.component.nextservice import queryNextService
+from zope.app.component.localservice import queryNextService
 from zope.app.annotation.interfaces import IAnnotations
 from zope.interface import implements
 
@@ -84,20 +84,18 @@ class Annotations(Persistent, Location):
         # be saved in if we ever change
         self._v_store = store
 
-    def __getitem__(wrapped_self, key):
+    def __getitem__(self, key):
         try:
-            return wrapped_self.data[key]
+            return self.data[key]
         except KeyError:
             # We failed locally: delegate to a higher-level service.
-            service = queryNextService(wrapped_self, 'PrincipalAnnotation')
+            service = queryNextService(self, 'PrincipalAnnotation')
             if service is not None:
-                annotations = service.getAnnotationsById(
-                    wrapped_self.principalId)
+                annotations = service.getAnnotationsById(self.principalId)
                 return annotations[key]
             raise
 
     def __setitem__(self, key, value):
-
         if getattr(self, '_v_store', None) is not None:
             # _v_store is used to remember a mapping object that we should
             # be saved in if we ever change

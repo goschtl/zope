@@ -38,7 +38,7 @@ class ZopeVocabularyRegistry(object):
 
     def get(self, context, name):
         """See zope.schema.interfaces.IVocabularyRegistry"""
-        factory = zapi.getUtility(context, IVocabularyFactory, name)
+        factory = zapi.getUtility(IVocabularyFactory, name)
         return factory(context)
 
 def _clear():

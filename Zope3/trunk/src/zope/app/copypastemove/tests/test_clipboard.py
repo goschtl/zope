@@ -36,14 +36,11 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
 
         ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
                              PrincipalClipboard)
-        root_sm = zapi.getServiceManager(None)
+        root_sm = zapi.getGlobalServices()
         svc = PrincipalAnnotationService()
         root_sm.defineService("PrincipalAnnotation", \
             IPrincipalAnnotationService)
         root_sm.provideService("PrincipalAnnotation", svc)
-        sm = zapi.getServiceManager(self.rootFolder)
-        sm.PrincipalAnnotation = svc
-        self.svc = zapi.getService(self.rootFolder, "PrincipalAnnotation")
 
     def testAddItems(self):
         user = self._auth['one']['srichter']

@@ -19,7 +19,7 @@ import unittest
 import logging
 
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.app.servicenames import EventPublication
 
 from zope.app.event import globalSubscribe, globalUnsubscribe, publish
@@ -42,8 +42,8 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
 
     def setUp(self):
         super(TestLogger1, self).setUp()
-        getServiceManager(None).defineService(EventPublication, IPublisher)
-        getServiceManager(None).provideService(EventPublication, eventPublisher)
+        getGlobalServices().defineService(EventPublication, IPublisher)
+        getGlobalServices().provideService(EventPublication, eventPublisher)
         # futz a handler in for testing
         self.logger = logging.getLogger("Event.Logger")
         self.oldlevel = self.logger.level

@@ -87,7 +87,7 @@ class AddView(EditView):
                     kw[str(name)] = data[name]
 
         content = self.create(*args, **kw)
-        adapted = getAdapter(content, self.schema, context=self.context)
+        adapted = getAdapter(content, self.schema)
 
         errors = []
 

@@ -17,7 +17,6 @@ $Id$
 """
 import unittest
 
-from zope.component import getServiceManager
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 
@@ -90,7 +89,7 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
 
     def setUp(self):
         WorkflowSetup.setUp(self)
-        sm = getServiceManager(None)
+        sm = zapi.getGlobalServices()
         sm.defineService(EventSubscription, ISubscriptionService)
         self.events = EventService()
         setup.addService(self.sm, EventSubscription, self.events)

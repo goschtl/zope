@@ -82,7 +82,7 @@ class ToolsOverview:
 
 class ToolsBacklink:
     def getLink(self):
-        service = zapi.getService(self.context, Services)
+        service = zapi.getService(Services)
         iface = zapi.queryType(self.context, IToolType)
         url = '%s/manage%sTool.html' %(zapi.getPath(service), iface.getName())
 

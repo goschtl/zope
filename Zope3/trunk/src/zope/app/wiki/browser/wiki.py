@@ -34,7 +34,7 @@ class AddWiki(object):
         content = super(AddWiki, self).createAndAdd(data)
         if self.request.get('textindex'):
             # Get the environment
-            sm = zapi.getServiceManager(content)
+            sm = zapi.getServices()
             pkg = sm['default']
             # Create, subscribe and add a Registration object.
             if 'WikiReg' not in pkg: 

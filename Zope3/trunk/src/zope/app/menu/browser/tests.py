@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.interface import Interface, implements
-from zope.component import getServiceManager
+from zope.component import getServices, getGlobalServices
 
 from zope.security.management import newInteraction
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
@@ -82,8 +82,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        defineService = getServiceManager(None).defineService
-        provideService = getServiceManager(None).provideService
+        defineService = getGlobalServices().defineService
+        provideService = getGlobalServices().provideService
 
 
         defineService('BrowserMenu', IBrowserMenuService)

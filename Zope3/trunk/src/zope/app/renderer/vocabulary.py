@@ -23,4 +23,4 @@ from zope.app.renderer.interfaces import ISource
 def SourceTypeVocabulary(context):
     return SimpleVocabulary(
         [SimpleTerm(name, title=factory.title) for name, factory in 
-         zapi.getFactoriesFor(None, ISource)])
+         zapi.getFactoriesFor(ISource)])

@@ -260,8 +260,7 @@ class WikiMailer:
         if not emails:
             return
         msg = 'Subject: %s\n\n\n%s' %(subject, body)
-        mail_delivery = zapi.getUtility(None,
-                                       IMailDelivery,
+        mail_delivery = zapi.getUtility(IMailDelivery,
                                        'wiki-delivery')
         mail_delivery.send('wiki@zope3.org' , emails, msg)
 

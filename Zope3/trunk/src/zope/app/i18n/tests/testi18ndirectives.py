@@ -41,7 +41,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def testRegisterTranslations(self):
         eq = self.assertEqual
-        eq(zapi.queryUtility(None, ITranslationDomain), None)
+        eq(zapi.queryUtility(ITranslationDomain), None)
         xmlconfig.string(
             template % '''
             <configure package="zope.i18n.tests">
@@ -51,7 +51,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         path = os.path.join(os.path.dirname(zope.i18n.tests.__file__),
                             'locale', 'en',
                             'LC_MESSAGES', 'zope-i18n.mo')
-        util = zapi.getUtility(None, ITranslationDomain, name='zope-i18n')
+        util = zapi.getUtility(ITranslationDomain, name='zope-i18n')
         eq(util._catalogs, {'en': [unicode(path)]})
 
 

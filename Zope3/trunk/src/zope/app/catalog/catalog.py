@@ -55,7 +55,7 @@ class CatalogBaseAddSubscriber:
 
     def __init__(self, catalog, event):
         self.catalog = catalog
-    
+
     def notify(self, event):
         """Receive notification of add events."""
         self.catalog.subscribeEvents(update=False)
@@ -81,7 +81,7 @@ class CatalogBase(Persistent, SampleContainer):
     def _newContainerData(self):
         return PersistentDict()
 
-    def getSubscribed(self): 
+    def getSubscribed(self):
         return self._subscribed
 
     def clearIndexes(self):
@@ -90,7 +90,7 @@ class CatalogBase(Persistent, SampleContainer):
 
     def updateIndexes(self):
         eventF = Hub.ObjectRegisteredHubEvent
-        objectHub = getService(self, HubIds) 
+        objectHub = getService(HubIds)
         allobj = objectHub.iterObjectRegistrations()
         for location, hubid, wrapped_object in allobj:
             evt = eventF(objectHub, hubid, location, wrapped_object)
@@ -98,20 +98,20 @@ class CatalogBase(Persistent, SampleContainer):
                 index.notify(evt)
 
     def subscribeEvents(self, update=True):
-        if self._subscribed: 
+        if self._subscribed:
             raise ValueError, "Already subscribed"
         self._subscribed = True
-        objectHub = getService(self, HubIds) 
+        objectHub = getService(HubIds)
         objectHub.subscribe(self, IHub.IRegistrationHubEvent)
         objectHub.subscribe(self, IHub.IObjectModifiedHubEvent)
         if update:
             self.updateIndexes()
 
     def unsubscribeEvents(self):
-        if not self._subscribed: 
+        if not self._subscribed:
             raise ValueError, "Already unsubscribed"
         self._subscribed = False
-        objectHub = getService(self, HubIds) 
+        objectHub = getService(HubIds)
         try:
             objectHub.unsubscribe(self, IHub.IRegistrationHubEvent)
             objectHub.unsubscribe(self, IHub.IObjectModifiedHubEvent)
@@ -134,7 +134,7 @@ class CatalogBase(Persistent, SampleContainer):
         pendingResults = None
         for key, value in searchterms.items():
             index = self.get(key)
-            if not index: 
+            if not index:
                 raise ValueError, "no such index %s"%(key)
             index = ISimpleQuery(index)
             results = index.query(value)
@@ -150,18 +150,18 @@ class CatalogBase(Persistent, SampleContainer):
                 # nothing left, short-circuit
                 break
         # Next we turn the IISet of hubids into a generator of objects
-        objectHub = getService(self, HubIds) 
+        objectHub = getService(HubIds)
         results = ResultSet(pendingResults, objectHub)
         return results
 
 class CatalogUtility(CatalogBase):
     "A Catalog in service-space"
-    # Utilities will default to implementing the most specific 
+    # Utilities will default to implementing the most specific
     # interface. This piece of delightfulness is needed because
     # the interface resolution order machinery implements (no
     # pun intended) the old-style Python resolution order machinery.
     implements(ILocalUtility)
 
-class Catalog(CatalogBase): 
+class Catalog(CatalogBase):
     "A content-space Catalog"
     pass

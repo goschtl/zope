@@ -91,7 +91,7 @@ class ContentComponentDefinitionMenuItem(object):
         """Create a browser menu service for the menu item."""
         # Get the local service manager; not that we know it must exist,
         # otherwise this object would not be called.
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         # Get the default package and add a menu service called 'Menus-1'
         default = zapi.traverse(sm, 'default')
         default['Menus-1'] = LocalBrowserMenuService()
@@ -108,7 +108,7 @@ class ContentComponentDefinitionMenuItem(object):
         """Create a menu."""
         # Create a menu and add it to the default package
         menu = LocalBrowserMenu()
-        sm = zapi.getServiceManager(self.context)
+        sm = zapi.getServices(self.context)
         default = zapi.traverse(sm, 'default')
         default[self.menuId] = menu
         # Register th emenu as a utility and activate it.
@@ -126,7 +126,7 @@ class ContentComponentDefinitionMenuItem(object):
         # locally
         if self.create:
             # Get the servicem manager and the default package
-            sm = zapi.getServiceManager(self.context)
+            sm = zapi.getServices(self.context)
             default = zapi.traverse(sm, 'default')
             service = sm.queryService(BrowserMenu)
             # Check whether the service really exists locally; if not, create

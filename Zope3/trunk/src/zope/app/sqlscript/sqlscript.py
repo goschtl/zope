@@ -103,7 +103,7 @@ class SQLScript(Persistent, Contained):
 
     def getConnection(self):
         name = self.connectionName
-        connection = zapi.getUtility(self, IZopeDatabaseAdapter, name)
+        connection = zapi.getUtility(IZopeDatabaseAdapter, name)
         return connection()
 
     def __call__(self, **kw):

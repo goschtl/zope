@@ -171,7 +171,7 @@ class BundleView(BrowserView):
         name = self.getServiceName(obj)
         advice = ActiveStatus
         conflict = ""
-        sm = zapi.getServiceManager(obj)
+        sm = zapi.getServices(obj)
         service = sm.queryLocalService(name)
         if service:
             registry = service.queryRegistrationsFor(obj)

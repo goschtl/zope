@@ -24,7 +24,7 @@ from zope.app.rdb.interfaces import IConnectionService, IZopeDatabaseAdapter
 from zope.app.rdb.interfaces import IZopeConnection
 from zope.app.rdb.interfaces import IZopeCursor
 from zope.app.servicenames import Adapters
-from zope.app.component import nextservice
+from zope.app.component import localservice
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
@@ -41,7 +41,7 @@ from zope.app.sqlscript.interfaces import ISQLScript
 
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties
-def getNextServiceManager(context):
+def getLocalServices(context):
     return sm
 
 class CursorStub:
@@ -141,8 +141,8 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
 
     def tearDown(self):
         pass
-        
-        #nextservice.getNextServiceManager = self._old_getNextServiceManager
+        # XXX Why?
+        ##localservice.getLocalServices = self._old_getLocalServices
 
     def _getScript(self):
         return SQLScript("my_connection",

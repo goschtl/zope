@@ -31,11 +31,11 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
         conns = list(zapi.getUtilitiesFor(None, IZopeDatabaseAdapter))
         self.assertEqual(conns, [])
-        connectionstub = queryUtility(None,IZopeDatabaseAdapter, None, 'stub')
+        connectionstub = queryUtility(IZopeDatabaseAdapter, None, 'stub')
         self.assertEqual(connectionstub, None)
 
         self.context = xmlconfig.file("rdb.zcml", zope.app.rdb.tests)
-        connectionstub = queryUtility(None,IZopeDatabaseAdapter, None, 'stub')
+        connectionstub = queryUtility(IZopeDatabaseAdapter, None, 'stub')
         connection = connectionstub()
         self.assertEqual(connectionstub.__class__, DAStub)
         conns = zapi.getUtilitiesFor(None, IZopeDatabaseAdapter)

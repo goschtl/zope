@@ -22,7 +22,6 @@ from zope.security.checker import NamesChecker, ProxyFactory
 from zope.component.presentation import IDefaultViewName
 from zope.component.presentation import PresentationRegistration
 
-import zope.app.component.nextservice
 import zope.app.container.contained
 import zope.app.event.interfaces
 import zope.app.registration.interfaces
@@ -451,7 +450,7 @@ class PageRegistration(ViewRegistration):
 
     def factory(self):
         self.validate()
-        sm = zapi.getServiceManager(self)
+        sm = zapi.getServices(self)
 
         if self.factoryName:
             folder = self.__parent__.__parent__

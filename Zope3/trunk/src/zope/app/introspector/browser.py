@@ -58,7 +58,7 @@ class IntrospectorView(BrowserView):
 
     def getServicesFor(self):
         services = []
-        #sm = getServiceManager(self.context)
+        #sm = getServices()
         #for stype, interface in sm.getServiceDefinitions():
         #    try:
         #        service = getService(self.context, stype)

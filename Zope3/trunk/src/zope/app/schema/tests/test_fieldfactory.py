@@ -46,21 +46,21 @@ class TestFieldFactory(PlacelessSetup, unittest.TestCase):
                                  zope.app.schema)
 
     def testRegisterFields(self):
-        factory = zapi.getUtility(None, IFactory,
+        factory = zapi.getUtility(IFactory,
                                   'zope.schema._bootstrapfields.Text')
         self.assertEquals(factory.title, "Text Field")
         self.assertEquals(factory.description, "Text Field")
 
     def testGetFactoriesForIField(self):
-        factories = list(zapi.getFactoriesFor(None, IField))
+        factories = list(zapi.getFactoriesFor(IField))
         self.assertEqual(len(factories), 3)
 
     def testGetFactoriesForIText(self):
-        factories = list(zapi.getFactoriesFor(None, IText))
+        factories = list(zapi.getFactoriesFor(IText))
         self.assertEqual(len(factories), 2)
 
     def testGetFactoriesUnregistered(self):
-        factories = list(zapi.getFactoriesFor(None, IFoo))
+        factories = list(zapi.getFactoriesFor(IFoo))
         self.assertEqual(len(factories), 0)
 
 

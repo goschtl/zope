@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 import zope.schema
 from zope.component.interfaces import IServiceService
 from zope.app.container.interfaces import IContainer
@@ -124,7 +124,6 @@ class ISiteManager(IServiceService, IComponentManager,
         """Return a list of all registered registration names.
         """
 
-
     def queryActiveComponent(name, default=None):
         """Finds the registration registry for a given name, checks if it has
         an active registration, and if so, returns its component.  Otherwise
@@ -145,6 +144,8 @@ class ISiteManager(IServiceService, IComponentManager,
         Local sites are connected in a tree. Each site knows about
         its containing sites and its subsites.
         """
+
+    next = Attribute('The site that this site is a subsite of.')
 
 
 class IServiceRegistration(registration.IComponentRegistration):
