@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.7 2003/08/02 16:35:58 srichter Exp $
+$Id: fields.py,v 1.8 2003/08/04 11:12:06 jim Exp $
 """
 import os, re
 from zope import schema
@@ -287,7 +287,8 @@ class MessageID(schema.Text):
     recorded in the context.
 
     >>> class FauxContext:
-    ...     i18n_strings = {} 
+    ...     i18n_strings = {}
+    ...     info = 'file location'
 
     >>> context = FauxContext()
     >>> field = MessageID().bind(context)
@@ -314,12 +315,16 @@ class MessageID(schema.Text):
     In addition, the string has been registered with the context:
 
     >>> context.i18n_strings
-    {'testing': {u'Hello world!': 1}}
+    {'testing': {u'Hello world!': ["'file location'"]}}
 
     >>> i = field.fromUnicode(u"Foo Bar")
     >>> i = field.fromUnicode(u"Hello world!")
-    >>> context.i18n_strings
-    {'testing': {u'Foo Bar': 1, u'Hello world!': 1}}
+    >>> from pprint import PrettyPrinter
+    >>> pprint=PrettyPrinter(width=70).pprint
+    >>> pprint(context.i18n_strings)
+    {'testing': {u'Foo Bar': ["'file location'"],
+                 u'Hello world!': ["'file location'",
+                                   "'file location'"]}}
     """
 
     implements(IFromUnicode)
@@ -327,18 +332,20 @@ class MessageID(schema.Text):
     __factories = {}
 
     def fromUnicode(self, u):
-        domain = getattr(self.context, 'i18n_domain', '')
+        context = self.context
+        domain = getattr(context, 'i18n_domain', '')
         if not domain:
             raise ConfigurationError(
                 "You must specify a an i18n translation domain")
         v = super(MessageID, self).fromUnicode(u)
 
         # Record the string we got for the domain
-        i18n_strings = self.context.i18n_strings
+        i18n_strings = context.i18n_strings
         strings = i18n_strings.get(domain)
         if strings is None:
             strings = i18n_strings[domain] = {}
-        strings[v] = 1
+        locations = strings.setdefault(v, [])
+        locations.append(`context.info`)
 
         # Convert to a message id, importing the factory, if necessary
         factory = self.__factories.get(domain)
