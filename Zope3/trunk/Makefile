@@ -1,4 +1,4 @@
-PYTHON=python2.2
+PYTHON=Python
 TESTOPTS=
 
 # XXX What should the default be?

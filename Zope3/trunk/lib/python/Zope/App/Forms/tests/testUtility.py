@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testUtility.py,v 1.8 2002/12/19 19:51:43 jim Exp $
+$Id: testUtility.py,v 1.9 2002/12/22 21:25:12 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -347,13 +347,15 @@ class Test(PlacelessSetup, TestCase):
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
         self.assertEqual(getWidgetsData(view, I, required=0), {})
 
-        self.assertRaises(MissingInputError, getWidgetsData, view, I)
+        self.assertRaises(MissingInputError, getWidgetsData, view, I2)
+        self.assertEqual(getWidgetsData(view, I), {})
 
         request.form['field.description'] = u'fd'
-        self.assertEqual(getWidgetsData(view, I, required=0),
+        self.assertEqual(getWidgetsData(view, I2, required=0),
                          {'description': u'fd'})
 
-        self.assertRaises(MissingInputError, getWidgetsData, view, I)
+        self.assertRaises(MissingInputError, getWidgetsData, view, I2)
+        self.assertEqual(getWidgetsData(view, I), {'description': u'fd'})
 
     def test_getWidgetsDataForContent(self):
         c = C()

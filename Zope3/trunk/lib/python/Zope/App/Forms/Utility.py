@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: Utility.py,v 1.8 2002/12/19 19:50:00 jim Exp $
+$Id: Utility.py,v 1.9 2002/12/22 21:25:11 jim Exp $
 """
 __metaclass__ = type
 
@@ -169,8 +169,9 @@ def getWidgetsData(view, schema, required=1, names=None):
     The data are returned in a mapping from field name to value.
 
     If the required argument is true, then all of the data defined by
-    the schema will be returned. If some data are missing from the
-    input, an error will be raised.
+    the schema will be returned. If some required data are missing
+    from the input, an error will be raised.
+
     """
 
     result = {}
@@ -186,7 +187,7 @@ def getWidgetsData(view, schema, required=1, names=None):
                     result[name] = widget.getData()
                 except Exception, v:
                     errors.append(v)
-            elif required:
+            elif required and field.required:
                 raise MissingInputError(
                     widget.name, widget.title, name)
 
@@ -205,8 +206,10 @@ def getWidgetsDataForContent(view, schema, content=None, required=0,
     The data are assigned to the given content object.
 
     If the required argument is true, then all of the data defined by
-    the schema will be set. If some data are missing from the
-    input, an error will be raised.
+    the schema will be set, at least for required fields. If some data
+    for required fields are missing from the input, an error will be
+    raised.
+    
     """
     
     data = getWidgetsData(view, schema, required, names)
