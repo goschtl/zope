@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.24 2004/03/15 20:42:21 jim Exp $
+$Id: __init__.py,v 1.25 2004/03/18 12:19:26 jim Exp $
 """
 import sys
 import warnings
@@ -204,6 +204,13 @@ def queryView(object, name, request,
                        default=default, providing=providing)
 
 queryView = hookable(queryView)
+
+def queryMultiView(objects, name, request, providing=Interface,
+                   default=None, context=None):
+    if context is None:
+        context = objects[0]
+    s = getService(context, Presentation)
+    return s.queryMultiView(objects, name, request, providing, default)
 
 def getViewProviding(object, providing, request, context=None):
     return getView(object, '', request, context, providing)

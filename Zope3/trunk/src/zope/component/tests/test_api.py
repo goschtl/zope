@@ -266,6 +266,37 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
+    def testMultiView(self):
+        from zope.component import queryMultiView, getService
+        from zope.component.exceptions import ComponentLookupError
+
+        class Ob2:
+            implements(I2)
+
+        ob2 = Ob2()
+
+        class IRequest(Interface):
+            pass
+
+        request = Request(IRequest)
+
+        class MV:
+            implements(I3)
+            def __init__(self, context, other, request):
+               self.context, self.other, self.request = context, other, request
+
+        self.assertEquals(
+            queryMultiView((ob, ob2), 'foo', request, I3, 42), 42)
+
+        getService(None, servicenames.Presentation).provideAdapter(
+            IRequest, MV, 'foo', (I1, I2), I3)
+
+        view = queryMultiView((ob, ob2), 'foo', request, I3)
+        self.assertEquals(view.__class__, MV)
+        self.assertEquals(view.context, ob)
+        self.assertEquals(view.other, ob2)
+        self.assertEquals(view.request, request)
+
     def test_viewProvidingFunctions(self):        
         # Confirm that a call to getViewProving/queryViewProviding simply 
         # passes its arguments through to getView/queryView - here we hack

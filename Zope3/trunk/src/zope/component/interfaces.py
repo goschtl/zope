@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.26 2004/03/15 20:42:25 jim Exp $
+$Id: interfaces.py,v 1.27 2004/03/18 12:19:26 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -226,6 +226,18 @@ class IComponentArchitecture(Interface):
 
         If context is not specified, attempts to use 
         object to specify a context.
+        """
+
+    def queryMultiView(objects, name, request, providing=Interface,
+                       default=None, context=None):
+        """Look for a multi-view for given objects
+
+        The request must implement IPresentationRequest: it provides the view
+        type and the skin name.  The nearest one to the object is
+        found. If a matching view cannot be found, returns default.
+
+        If context is not specified, attempts to use 
+        the first object to specify a context.
         """
         
     def getViewProviding(object, providing, request, context=None):
