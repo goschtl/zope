@@ -17,12 +17,14 @@ from weakref import ref
 
 import logging
 
+from zope.interface import implements
+
 from persistence.interfaces import ICache
 from persistence._persistence import GHOST
 
 class Cache(object):
 
-    __implements__ = ICache
+    implements(ICache)
 
     def __init__(self, size=500, inactive=300):
         self._ghosts = {}

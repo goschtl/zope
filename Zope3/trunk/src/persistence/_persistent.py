@@ -13,6 +13,7 @@
 ##############################################################################
 from time import time
 from persistence.interfaces import IPersistent
+from zope.interface import implements
 
 
 def _p_get_changed(self):
@@ -58,7 +59,7 @@ class Persistent(object):
     """Mix-in class providing IPersistent support
     """
 
-    __implements__ = IPersistent
+    implements(IPersistent)
 
     _p_changed = property(_p_get_changed, _p_set_changed, _p_del_changed,
                           "set _p_changed to 1 to indicate a change")
