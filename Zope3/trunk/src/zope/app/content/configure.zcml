@@ -50,13 +50,6 @@
    />
 
 <adapter
-   for="zope.app.interfaces.content.folder.IRootFolder"
-   provides="zope.app.interfaces.file.IDirectoryFactory"
-   factory="zope.app.content.folder.RootDirectoryFactory"
-   permission="zope.ManageContent"
-   />
-
-<adapter
    for="zope.app.interfaces.content.folder.IFolder"
    provides="zope.app.interfaces.file.IFileFactory"
    factory="zope.app.content.image.FileFactory"
@@ -75,55 +68,6 @@
 <!-- We declare only for folders at this point because we don't yet
      properly handle copy/cut/paste accross container types
   -->
-
-<adapter
-   provides="zope.app.interfaces.container.ICopySource"
-   for="zope.app.interfaces.content.folder.IFolder"
-   permission="zope.ManageContent"
-   factory="zope.app.container.copypastemove.CopySource"
-   />
-
-<adapter
-   provides="zope.app.interfaces.container.INoChildrenCopySource"
-   for="zope.app.interfaces.content.folder.IFolder"
-   permission="zope.ManageContent"
-   factory="zope.app.container.copypastemove.NoChildrenCopySource"
-   />
-
-<adapter
-   provides="zope.app.interfaces.container.IMoveSource"
-   for="zope.app.interfaces.content.folder.IFolder"
-   permission="zope.ManageContent"
-   factory="zope.app.container.copypastemove.MoveSource"
-   />
-
-<adapter
-   provides="zope.app.interfaces.container.IPasteTarget"
-   for="zope.app.interfaces.content.folder.IFolder"
-   permission="zope.ManageContent"
-   factory="zope.app.container.copypastemove.PasteTarget"
-   />
-
-<adapter
-   provides="zope.app.interfaces.container.IPasteNamesChooser"
-   for="zope.app.interfaces.content.folder.IFolder"
-   permission="zope.ManageContent"
-   factory="zope.app.container.copypastemove.PasteNamesChooser"
-   />
-
-<!-- XXX Do we really need RootFolder? -->
-
-<content class="zope.app.content.folder.RootFolder">
-
-  <implements interface="zope.app.interfaces.container.IContentContainer" />
-
-  <require like_class="zope.app.content.folder.Folder" />
-
-  <implements
-     interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-     />
-
-</content>
 
 <permission
     id="zope.AddImages"
@@ -427,8 +371,6 @@
 <fssync:adapter class=".image.Image" factory=".fssync.FileAdapter" />
 
 <fssync:adapter class=".folder.Folder" factory=".folder.FolderAdapter" />
-
-<fssync:adapter class=".folder.RootFolder" factory=".folder.FolderAdapter" />
 
 <fssync:adapter class=".zpt.ZPTPage" factory=".fssync.ZPTPageAdapter" />
 
