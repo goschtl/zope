@@ -13,23 +13,30 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.7 2003/01/20 16:23:38 mgedmin Exp $
+$Id: test_browserwidget.py,v 1.8 2003/03/25 20:39:46 jim Exp $
 """
-import unittest
+
 from zope.app.browser.form.widget import BrowserWidget
-from zope.publisher.browser import TestRequest
-from zope.schema import Text
 from zope.app.interfaces.form import ConversionError
 from zope.app.interfaces.form import WidgetInputError, MissingInputError
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
+from zope.i18n.globaltranslationservice import translationService
+from zope.publisher.browser import TestRequest
+from zope.schema import Text
+import os
+import unittest
+import zope.app.browser.form.tests
 
-class BrowserWidgetTest(unittest.TestCase):
+class BrowserWidgetTest(PlacelessSetup, unittest.TestCase):
 
     _FieldFactory = Text
     _WidgetFactory = BrowserWidget
 
     def setUp(self):
-        field = self._FieldFactory(__name__ = 'foo', title = u"Foo Title")
-        request = TestRequest()
+        PlacelessSetup.setUp(self)
+        field = self._FieldFactory(__name__ = 'foo', title = _(u"Foo Title"))
+        request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)
 
@@ -69,6 +76,16 @@ class BrowserWidgetTest(unittest.TestCase):
     def testLabel(self):
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label, '<label for="field.foo">Foo Title</label>')
+
+    def testTranslatedLabel(self):
+        path = os.path.dirname(zope.app.browser.form.tests.__file__)
+        catalog = GettextMessageCatalog(
+            'pl', 'zope',
+            os.path.join(path, 'testlabeltranslation.mo'))
+        translationService.addCatalog(catalog)
+        
+        label = ' '.join(self._widget.label().strip().split())
+        self.assertEqual(label, '<label for="field.foo">oofay itletay</label>')
 
     def testRow(self):
         self._widget.request.form.clear()

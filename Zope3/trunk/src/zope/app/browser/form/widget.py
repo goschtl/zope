@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.22 2003/03/20 15:05:44 mgedmin Exp $
+$Id: widget.py,v 1.23 2003/03/25 20:39:45 jim Exp $
 """
 
 __metaclass__ = type
@@ -27,6 +27,7 @@ from zope.app.form.widget import Widget
 from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.app.interfaces.form import MissingInputError
 from zope.schema.interfaces import ValidationError
+from zope.component import getService
 
 
 class BrowserWidget(Widget, BrowserView):
@@ -120,9 +121,11 @@ class BrowserWidget(Widget, BrowserView):
         return self.hidden()
 
     def label(self):
+        ts = getService(self.context.context, "Translation")
+        title = ts.translate("zope", self.title, context=self.request)
         return '<label for="%s">%s</label>' % (
             self.name,
-            self.title,
+            title,
             )
 
     def row(self):
