@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.9 2004/03/14 04:03:31 srichter Exp $
+$Id: presentation.py,v 1.10 2004/03/15 20:41:44 jim Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -30,6 +30,7 @@ import zope.app.adapter
 import zope.app.interface.interfaces
 import zope.app.adapter
 import zope.component.interfaces
+import zope.component.presentation
 import zope.configuration.exceptions
 import zope.interface
 import zope.proxy
@@ -179,7 +180,8 @@ class LocalPresentationService(
                 layer = self.delegate.queryLayer(layername)
             if layer is None:
                 raise ValueError("Bad layer", layer)
-            r = layer.queryMultiAdapter(objects, IDefaultViewName, raw=True)
+            r = layer.lookup(map(zope.interface.providedBy, objects),
+                             IDefaultViewName)
             if r is not None:
                 return r
         return default
@@ -278,6 +280,7 @@ class GlobalViewRegistration:
 
 class LocalLayer(
     zope.app.adapter.LocalAdapterRegistry,
+    zope.component.presentation.Layer,
     zope.app.container.contained.Contained,
     ):
 
@@ -359,10 +362,10 @@ class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
         return (self.requestType, )
     with = property(with)
 
-    def factories(self):
+    def factory(self):
         folder = self.__parent__.__parent__
-        return (folder.resolve(self.factoryName), )
-    factories = property(factories)
+        return folder.resolve(self.factoryName)
+    factory = property(factory)
 
 class IPageRegistration(IViewRegistration):
 
@@ -381,8 +384,8 @@ class IPageRegistration(IViewRegistration):
         required = False,
         )
 
-    factories = zope.interface.Attribute(
-        "A sequence of factories to be called to construct an adapter"
+    factory = zope.interface.Attribute(
+        "Factory to be called to construct an adapter"
         )
 
     def validate(self):
@@ -452,7 +455,7 @@ class PageRegistration(ViewRegistration):
                 "Cannot have an 'attribute' without a 'factoryName'." %
                 (self.required, self.name))
 
-    def factories(self):
+    def factory(self):
 
         self.validate()
 
@@ -467,7 +470,7 @@ class PageRegistration(ViewRegistration):
 
 
         if self.attribute:
-            return (AttrViewFactory(class_, self.attribute), )
+            return AttrViewFactory(class_, self.attribute)
 
         else:
 
@@ -479,9 +482,9 @@ class PageRegistration(ViewRegistration):
             else:
                 template = zapi.traverse(self.__parent__.__parent__,
                                          self.template)
-            return (TemplateViewFactory(class_, template, self.permission), )
+            return TemplateViewFactory(class_, template, self.permission)
 
-    factories = property(factories)
+    factory = property(factory)
 
 
     def addNotify(self, event):

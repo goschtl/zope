@@ -13,8 +13,9 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.7 2004/03/13 23:55:12 srichter Exp $
+$Id: test_presentation.py,v 1.8 2004/03/15 20:41:45 jim Exp $
 """
+
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -196,7 +197,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
             def __init__(self, x, y, request):
                 self.x, self.y, self.request = x, y, request
                 
-        globalService.provideAdapter(IBrowserRequest, [MV], 'foo.html',
+        globalService.provideAdapter(IBrowserRequest, MV, 'foo.html',
                                      contexts=(I1, I3))
         v = self._service.queryMultiView((x, y), 'foo.html', r)
         self.assertEqual(v.__class__, MV)
@@ -370,7 +371,7 @@ class TestViewRegistration(PlacefulSetup, TestCase):
         self.assertEqual(registration.required, I1)
         self.assertEqual(registration.requestType, I2)
 
-        factory, = registration.factories
+        factory = registration.factory
         self.assertEqual(factory, A)
 
 
@@ -397,7 +398,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
 
         c = C()
         request = TestRequest()
-        factory, = registration.factories
+        factory = registration.factory
         view = factory(c, request)
         self.assertEqual(view.__class__, BoundTemplate)
         self.assertEqual(removeAllProxies(view).template, self.__template)
@@ -417,7 +418,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
             )
         c = C()
         request = TestRequest()
-        factory, = registration.factories
+        factory = registration.factory
         view = factory(c, request)
         self.assertEquals(view, A.run)
 
@@ -428,10 +429,10 @@ class TestPageRegistration(PlacefulSetup, TestCase):
             )
         c = C()
         request = TestRequest()
-        self.assertRaises(ConfigurationError, lambda: registration.factories)
+        self.assertRaises(ConfigurationError, lambda: registration.factory)
         registration.template = '/++etc++site/default/t'
         registration.attribute = 'run'
-        self.assertRaises(ConfigurationError, lambda: registration.factories)
+        self.assertRaises(ConfigurationError, lambda: registration.factory)
 
     def test_addremoveNotify_template(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
