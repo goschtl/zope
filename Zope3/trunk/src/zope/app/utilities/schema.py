@@ -13,10 +13,11 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.11 2003/11/12 18:46:32 sidnei Exp $
+$Id: schema.py,v 1.12 2003/11/21 17:09:34 jim Exp $
 """
 from types import FunctionType
 
+from persistence import Persistent
 from persistence.dict import PersistentDict
 
 from zope.security.proxy import trustedRemoveSecurityProxy
@@ -132,7 +133,10 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
                 attrs[name] = fromFunction(value, name, name=name)
             else:
                 raise InvalidInterface("Concrete attribute, %s" % name)
-        value = Struct(value)
+
+        if not isinstance(value, Persistent):
+            value = Struct(value)
+
         setitem(self, self._attrs.__setitem__, name, value)
 
     # Methods copied from zope.interface.interface.InterfaceClass,
