@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.17 2003/10/13 16:12:34 fdrake Exp $
+$Id: module.py,v 1.18 2003/10/16 21:43:11 fdrake Exp $
 """
 
 from persistence import Persistent
@@ -64,7 +64,7 @@ class Manager(Persistent, Contained):
         # When we do support untrusted code, we're going to have to do
         # something different.
         folder = trustedRemoveSecurityProxy(folder)
-            
+
         compileModule(mod, folder, self.source)
         self._recompile = False
 
