@@ -1,4 +1,14 @@
 <configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Views for -->
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"     
+      for="zope.app.form.interfaces.IWidgetInputError"
+      provides="zope.app.form.browser.interfaces.IWidgetInputErrorView"
+      factory="zope.app.form.browser.exception.WidgetInputErrorView"
+      permission="zope.Public"
+      />
    
   <!-- Core display widgets -->
 

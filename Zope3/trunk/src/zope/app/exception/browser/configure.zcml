@@ -26,14 +26,6 @@
       />
 
   <page
-      for="zope.app.form.interfaces.IWidgetInputError"
-      name="snippet"
-      permission="zope.Public"
-      class=".form.WidgetInputErrorView"
-      attribute="snippet" 
-      />
-
-  <page
       for="zope.publisher.interfaces.NotFound"
       name="index.html"
       permission="zope.Public"

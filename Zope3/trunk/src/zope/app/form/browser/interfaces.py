@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/04/11 12:31:48 philikon Exp $
 """
 from zope.interface import Interface
 from zope.app.form.interfaces import IWidget
@@ -189,3 +189,9 @@ class IVocabularyQueryView(Interface):
 
         'value' is the current value represented by the widget.
         """
+
+class IWidgetInputErrorView(Interface):
+    """Display an input error as a snippet of text."""
+
+    def snippet():
+        """Convert a widget input error to an html snippet."""

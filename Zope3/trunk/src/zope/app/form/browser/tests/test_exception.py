@@ -11,16 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
-
-$Id: test_form.py,v 1.1 2004/03/14 04:44:52 srichter Exp $
+"""
+$Id: test_exception.py,v 1.1 2004/04/11 12:31:49 philikon Exp $
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.exception.browser.form'),
+        DocTestSuite('zope.app.form.browser.exception'),
         ))
 
 if __name__ == '__main__': unittest.main()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.6 2004/04/11 10:34:40 srichter Exp $
+$Id: widget.py,v 1.7 2004/04/11 12:31:48 philikon Exp $
 """
 import re, cgi
 import traceback
@@ -29,6 +29,7 @@ from zope.app.tests import ztapi
 from zope.app.form import Widget
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.interfaces import IBrowserWidget
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class BrowserWidget(Widget, BrowserView):
     """A field widget that knows how to display itself as HTML.
@@ -43,10 +44,12 @@ class BrowserWidget(Widget, BrowserView):
     >>> from zope.app.publisher.browser import BrowserView
     >>> from cgi import escape
     >>> class SnippetErrorView(BrowserView):
-    ...     def __call__(self):
+    ...     implements(IWidgetInputErrorView)
+    ...     def snippet(self):
     ...         return escape(self.context.errors[0])
     ...
-    >>> ztapi.browserView(IWidgetInputError, 'snippet', SnippetErrorView)
+    >>> ztapi.browserViewProviding(IWidgetInputError, SnippetErrorView,
+    ...                            IWidgetInputErrorView)
     >>> from zope.publisher.browser import TestRequest
 
     And now the tests proper...
@@ -286,7 +289,8 @@ class BrowserWidget(Widget, BrowserView):
 
     def error(self):
         if self._error:
-            return zapi.getView(self._error, 'snippet', self.request)()
+            return zapi.getViewProviding(self._error, IWidgetInputErrorView,
+                                         self.request).snippet()
         return ""
 
     def labelClass(self):
