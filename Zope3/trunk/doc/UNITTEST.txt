@@ -1,4 +1,12 @@
-Zope Unit Testing
+Zope 3 Unit Testing
+
+ How to run Zope 3 unit tests
+
+  In the toplevel directory, run "python test.py".  This runs all unit
+  tests silently (unless errors occur).  It is possible to run the
+  tests more verbosely or to be more selective about which tests to
+  run.  There are also other options.  For information about all this,
+  run "python test.py -h" which prints an extensive usage message.
 
  Zope Testing
 
@@ -157,9 +165,8 @@ Zope Unit Testing
   any more of this.  :-) The rules for writing tests for Zope core
   code are simple:
 
-   - The testing code should make use of PyUnit
-     (/lib/python/unittest.py).  Instructions for using PyUnit are
-     available at http://pyunit.sourceforge.net.
+   - The testing code should make use of the standard Python unittest
+     module.  See the Python docs for usage information.
 
    - Tests must be placed in a "tests" subdirectory of the package or
      directory in which the core code you're testing lives.
@@ -173,11 +180,9 @@ Zope Unit Testing
 
  Writing Unit Tests For Applications Based On Zope
 
-  Zope uses the PyUnit unit testing framework, the documentation for
-  which is available at http://pyunit.sourceforge.net.  The
-  lib/python/unittest.py module is the framework.  You should
-  establish your own conventions for naming and placement of test
-  modules.
+  Zope uses the standard Python unittest module.  See the Python docs
+  for usage information.  You should establish your own conventions
+  for naming and placement of test modules.
 
   Writing unit tests against applications based on Zope can be
   difficult.  Zope is a collection of related modules, some with
@@ -210,78 +215,10 @@ Zope Unit Testing
   you're heavy in to unit testing, as it really speeds things up.
   It's not strictly required, however.
 
-  Making Zope itself into a test fixture is straightforward.  Your
-  test code must:
-
-   - add the 'lib/python' directory of your Zope installation to the
-     PYTHONPATH (via sys.path.insert())
-
-   - 'import ZODB' (may not be required, but just put it in for good measure)
-
-   - 'import Zope'
-
-   - 'app = Zope.app()'
-
-   - operate on the Zope instance space by calling methods from the
-     root object (bound to 'app'), e.g.:
-
-     app.acl_users.manage_addUser(<parameters>)
-
-   - a transaction will not be committed to the Zope object database
-     until you call the global function "get_transaction().commit()",
-     so changes made to the ZODB are not visible to succeeding tests
-     unless that function is called explicitly.
-
-   - As a part of your tearDown, make sure to call
-     "app._p_jar.close()".  This closes the database connection
-     cleanly.
-
-  For more information on operating on Zope programatically by
-  "importing" it, see Michel Pelletier's "The Debugger Is Your
-  Friend" at
-  http://www.zope.org/Members/michel/HowTos/TheDebuggerIsYourFriend
-
-  Sometimes, just importing Zope isn't enough.  For example, it's
-  often not possible to obtain the results of a DTML or Python method
-  by simply calling it from your running code without doing lots of
-  trickery by establishing fake REQUEST object to pass in to it, as
-  Zope expects a REQUEST object to exist in the context of a web
-  request (which a DTML method is somewhat logically designed to
-  serve).
-
-  If you find yourself getting bogged down while writing unit tests by
-  Zope's refusal to run certain methods due to missing state (like
-  REQUEST), it's useful to know about the "debug" method of the Zope
-  package.  This method allows you to simulate a web request, which
-  generally provides all the state necessary to run methods which
-  depend on web requests, and returns the results of the web request
-  as it would be seen in by a web browser.  To use the Zope debug
-  method, do the following:
-
-   - add the lib/python path to your PYTHONPATH (via sys.path.insert())
-
-   - 'import ZODB'
-
-   - 'import Zope'
-  
-   - 'Zope.debug('/a/url/representing/a/method?with=a?couple=arguments',
-                 u='username:password', s='silent', e={'some':'environment',
-                 'variable':'settings'})
-
-  The "silent" option causes Zope not to print anything.  You can set
-  your python's stdout to a file or a file-like object to capture the
-  output if you do not set the silent flag.
-
-  In Zope versions before 2.2.2, all calls to Zope.debug commit the
-  transaction represented by the call to Zope.debug by default.  This
-  can pose problems for unit testing, as the state of the environment
-  should not be effected by prior tests.  A solution should be
-  available by the release of Zope 2.3.
-
  Administrivia
 
-  Unit test scripts found in the Zope source code currently make use
-  of the PyUnit unit testing framework, available from
+  Unit test scripts found in the Zope source code is based on
+  the PyUnit unit testing framework, available from
   http://pyunit.sourceforge.net, written by Stephen Purcell (thanks
   Stephen!).  PyUnit is based on the JUnit testing framework for Java
   (written by Kent Beck and Erich Gamma), which in turn was based on a
@@ -297,8 +234,3 @@ Zope Unit Testing
   Programming methodologies in its software development process, we've
   found unit tests a way to speed development and produce
   higher-quality code.
-
-  There is a testing support package in lib/python/Testing that might
-  be useful to you for writing unit tests. See the README.txt in that 
-  directory for details.
-
