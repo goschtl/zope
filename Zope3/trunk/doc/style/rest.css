@@ -1,7 +1,7 @@
 /*
 :Author: Fred L. Drake, Jr.
-:date: $Date: 2003/09/30 20:57:26 $
-:version: $Revision: 1.6 $
+:date: $Date: 2004/03/31 22:31:05 $
+:version: $Revision: 1.7 $
 
 This stylesheet combines some ideas from the two stylesheets
 distributed with docutils and enhances them for Zope 3 documentation.
@@ -27,8 +27,11 @@ div.section h1 {
   background-color: rgb(230,230,230);
   margin-left: -2em;
   padding: 0.2em;
+  padding-left: 0.35em;
+  padding-top: 0.35em;
   /* This grey underline make this more visually distinctive on LCD
      monitors, which often don't have enough contrast. */
+  border-right: thin solid rgb(180,180,180);
   border-bottom: thin solid rgb(180,180,180); }
 
 div.section div.section div.section h3 {
