@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.14 2003/12/03 05:40:49 jim Exp $
+$Id: test_adding.py,v 1.15 2003/12/09 07:35:36 sraju Exp $
 """
 
 import unittest
@@ -216,10 +216,12 @@ def test_constraint_driven_adding():
     ...         raise zope.interface.Invalid()
     >>> pre.factory = prefactory
 
+
     >>> class IContainer(zope.interface.Interface):
     ...     def __setitem__(name, object):
     ...         pass
     ...     __setitem__.precondition = pre
+
 
     >>> class Container:
     ...     zope.interface.implements(IContainer)
@@ -247,9 +249,28 @@ def test_constraint_driven_adding():
     'item2'
     >>> items[2]['title']
     'item3'
+    >>> tearDown()    
+    """
 
+def test_renderAddButton():
+    """
+    Test for renderAddButton in adding.py 
     
-    >>> tearDown()
+    >>> from zope.app.browser.container.adding import Adding
+    >>> from zope.app.interfaces.container import IContainerNamesContainer
+    >>> class FakeContainer:
+    ...    zope.interface.implements(IContainerNamesContainer)
+
+    >>> class Fake:
+    ...    pass
+
+    >>> adding = Adding(FakeContainer(),TestRequest())
+    >>> adding.renderAddButton()
+    "<input type='submit' value=' Add '>"
+    >>> adding = Adding(Fake(),TestRequest())
+    >>> adding.renderAddButton()
+    "<input type='submit' value=' Add '><input type='text' name='add_input_name' value=''>"
+
     """
 
 

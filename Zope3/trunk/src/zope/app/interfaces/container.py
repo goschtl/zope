@@ -13,7 +13,7 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.6 2003/12/01 16:19:23 jim Exp $
+$Id: container.py,v 1.7 2003/12/09 07:35:37 sraju Exp $
 """
 
 from zope.interface import Interface, Attribute, implements, Invalid
@@ -230,6 +230,10 @@ class IAdding(IView):
         It is the adder's responsibility, not the creation view's to
         decide what page to display after content is added.
         """
+
+    def renderAddButton():
+        """It will add Add button"""
+        
 
 class INameChooser(Interface):
 
