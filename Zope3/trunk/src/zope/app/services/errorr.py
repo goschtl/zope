@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: errorr.py,v 1.4 2003/01/07 12:18:35 srichter Exp $
+$Id: errorr.py,v 1.5 2003/02/06 21:07:05 stevea Exp $
 """
 
 import time
@@ -163,13 +163,17 @@ class ErrorReportingService(Persistent):
 
     def _do_copy_to_zlog(self, now, strtype, url, info):
         # XXX info is unused; logging.exception() will call sys.exc_info()
+        # work around this with an evil hack
         when = _rate_restrict_pool.get(strtype,0)
         if now > when:
             next_when = max(when,
                             now - _rate_restrict_burst*_rate_restrict_period)
             next_when += _rate_restrict_period
             _rate_restrict_pool[strtype] = next_when
-            logging.getLogger('SiteError').exception(str(url))
+            try:
+                raise info[0], info[1], info[2]
+            except:
+                logging.getLogger('SiteError').exception(str(url))
 
     def getProperties(self):
         return {
