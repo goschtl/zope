@@ -90,6 +90,9 @@ The order that items are listed here is not significant.
 
 - zcml directives for module security
 
+- zcml directive for layers and corresponding checks that a resource is 
+  registered in a registered layer
+
 - local module service. This provides support for local imports
   as well as a place to manage security configuration for
   persistent modules.
