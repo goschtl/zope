@@ -38,6 +38,10 @@ from zope.interface import Interface
 
 logger = logging.getLogger("config")
 
+ZCML_NAMESPACE = "http://namespaces.zope.org/zcml"
+ZCML_CONDITION = (ZCML_NAMESPACE, u"condition")
+
+
 class ZopeXMLConfigurationError(ConfigurationError):
     """Zope XML Configuration error
 
@@ -181,6 +185,7 @@ class ConfigurationHandler(ContentHandler):
     def __init__(self, context, testing=0):
         self.context = context
         self.testing = testing
+        self.ignore_depth = 0
 
     def setDocumentLocator(self, locator):
         self.locator = locator
@@ -189,12 +194,22 @@ class ConfigurationHandler(ContentHandler):
         self.context.getInfo().characters(text)
 
     def startElementNS(self, name, qname, attrs):
+        if self.ignore_depth:
+            self.ignore_depth += 1
+            return
 
         data = {}
         for (ns, aname), value in attrs.items():
             if ns is None:
                 aname = str(aname)
                 data[aname] = value
+            if (ns, aname) == ZCML_CONDITION:
+                # need to process the expression to determine if we
+                # use this element and it's descendents
+                use = self.evaluateCondition(value)
+                if not use:
+                    self.ignore_depth = 1
+                    return
 
         info = ParserInfo(
             self.locator.getSystemId(),
@@ -213,8 +228,58 @@ class ConfigurationHandler(ContentHandler):
 
         self.context.setInfo(info)
 
+    def evaluateCondition(self, expression):
+        """Evaluate a ZCML condition.
+
+        `expression` is a string of the form "verb arguments".
+
+        Currently the only supported verb is 'have'.  It takes one argument:
+        the name of a feature.
+
+        >>> from zope.configuration.config import ConfigurationContext
+        >>> context = ConfigurationContext()
+        >>> context.provideFeature('apidoc')
+        >>> c = ConfigurationHandler(context, testing=True)
+        >>> c.evaluateCondition("have apidoc")
+        True
+        >>> c.evaluateCondition("have onlinehelp")
+        False
+
+        Ill-formed expressions raise an error
+
+        >>> c.evaluateCondition("want apidoc")
+        Traceback (most recent call last):
+          ...
+        ValueError: Invalid ZCML condition: 'want apidoc'
+
+        >>> c.evaluateCondition("have x y")
+        Traceback (most recent call last):
+          ...
+        ValueError: Only one feature allowed: 'have x y'
+
+        >>> c.evaluateCondition("have")
+        Traceback (most recent call last):
+          ...
+        ValueError: Feature name missing: 'have'
+        """
+        arguments = expression.split(None)
+        verb = arguments.pop(0)
+        if verb == 'have':
+            if not arguments:
+                raise ValueError("Feature name missing: %r" % expression)
+            if len(arguments) > 1:
+                raise ValueError("Only one feature allowed: %r" % expression)
+            return self.context.hasFeature(arguments[0])
+        else:
+            raise ValueError("Invalid ZCML condition: %r" % expression)
 
     def endElementNS(self, name, qname):
+        # If ignore_depth is set, this element will be ignored, even
+        # if this this decrements ignore_depth to 0.
+        if self.ignore_depth:
+            self.ignore_depth -= 1
+            return
+
         info = self.context.getInfo()
         info.end(
             self.locator.getLineNumber(),

@@ -86,6 +86,13 @@ class IConfigurationContext(Interface):
         other actions.
         """
 
+    def provideFeature(name):
+        """Record that a named feature is available in this context."""
+
+    def hasFeature(name):
+        """Check whether a named feature is available in this context."""
+
+
 class IGroupingContext(Interface):
 
     def before():

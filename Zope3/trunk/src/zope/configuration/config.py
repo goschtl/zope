@@ -93,6 +93,7 @@ class ConfigurationContext(object):
     def __init__(self):
         super(ConfigurationContext, self).__init__()
         self._seen_files = sets.Set()
+        self._features = sets.Set()
 
     def resolve(self, dottedname):
         """Resolve a dotted name to an object
@@ -328,8 +329,6 @@ class ConfigurationContext(object):
         self._seen_files.add(path)
         return True
 
-
-
     def action(self, discriminator, callable=None, args=(), kw={}, order=0):
         """Add an action with the given discriminator, callable and arguments
 
@@ -387,6 +386,35 @@ class ConfigurationContext(object):
             action = action[:-1]
 
         self.actions.append(action)
+
+    def hasFeature(self, feature):
+        """Check whether a named feature has been provided.
+
+        Initially no features are provided
+
+        >>> c = ConfigurationContext()
+        >>> c.hasFeature('onlinehelp')
+        False
+
+        You can declare that a feature is provided
+
+        >>> c.provideFeature('onlinehelp')
+
+        and it becomes available
+
+        >>> c.hasFeature('onlinehelp')
+        True
+
+        """
+        return feature in self._features
+
+    def provideFeature(self, feature):
+        """Declare thata named feature has been provided.
+
+        See `hasFeature` for examples.
+        """
+        self._features.add(feature)
+
 
 class ConfigurationAdapterRegistry(object):
     """Simple adapter registry that manages directives as adapters
@@ -1195,6 +1223,44 @@ def subdirective(context, name, schema):
                      context.info, context.context)
     context.context[name] = schema, context.info
 
+##############################################################################
+# Features
+
+class IProvidesDirectiveInfo(Interface):
+    """Information for a <meta:provides> directive"""
+
+    feature = zope.schema.TextLine(
+        title = u"Feature name",
+        description = u"""The name of the feature being provided
+
+        You can test available features with zcml:condition="have featurename".
+        """,
+        )
+
+def provides(context, feature):
+    """Declare that a feature is provided in context.
+
+    >>> c = ConfigurationContext()
+    >>> provides(c, 'apidoc')
+    >>> c.hasFeature('apidoc')
+    True
+
+    Spaces are not allowed in feature names (this is reserved for providing
+    many features with a single directive in the futute).
+
+    >>> provides(c, 'apidoc onlinehelp')
+    Traceback (most recent call last):
+      ...
+    ValueError: Only one feature name allowed
+
+    >>> c.hasFeature('apidoc onlinehelp')
+    False
+
+    """
+    if len(feature.split()) > 1:
+        raise ValueError("Only one feature name allowed")
+    context.provideFeature(feature)
+
 
 ##############################################################################
 # Argument conversion
@@ -1566,3 +1632,13 @@ def _bootstrap(context):
             handler="zope.configuration.config.subdirective",
             schema="zope.configuration.config.IDirectiveInfo"
             )
+
+    # meta:provides
+    context((metans, 'directive'),
+            info,
+            name='provides',
+            namespace=metans,
+            handler="zope.configuration.config.provides",
+            schema="zope.configuration.config.IProvidesDirectiveInfo"
+            )
+
