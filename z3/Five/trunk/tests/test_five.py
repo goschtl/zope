@@ -14,7 +14,10 @@ from Testing.ZopeTestCase.functional import Functional
 ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 
+import zope
 from zope.component import getViewProviding
+from zope.schema import Choice, TextLine
+from zope.app.form.interfaces import IInputWidget
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
 
 from Products.FiveTest.classes import Adaptable, Origin
@@ -221,6 +224,21 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             view = self.folder.unrestrictedTraverse(base % macro)
         self.failUnless(view)
 
+    def test_ignore_new_style_class(self):
+        view = self.folder.unrestrictedTraverse('testoid/@@invalid_page')
+        self.assertEquals(view, None)
+
+    def test_get_widgets_for_schema_fields(self):
+        salutation = Choice(title=u'Salutation', values=("Mr.", "Mrs.", "Captain", "Don"))
+        contactname = TextLine(title=u'Name')
+        request = FakeRequest()
+        salutation = salutation.bind(request)
+        contactname = contactname.bind(request)
+        view1 = getViewProviding(contactname, IInputWidget, request)
+        self.assertEquals(view1.__class__, zope.app.form.browser.textwidgets.TextWidget)
+        view2 = getViewProviding(salutation, IInputWidget, request)
+        self.assertEquals(view2.__class__, zope.app.form.browser.itemswidgets.DropdownWidget)
+
     def test_existing_call(self):
         view = self.folder.unrestrictedTraverse('testcall')
         self.assertEquals("Default __call__ called", view())
@@ -281,6 +299,7 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     def test_default_view(self):
         response = self.publish('/test_folder_1_/testoid', basic='manager:r00t')
         self.assertEquals("The eagle has landed", response.getBody())
+
 
 def test_suite():
     suite = unittest.TestSuite()

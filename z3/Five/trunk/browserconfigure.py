@@ -68,6 +68,10 @@ def page(_context, name, permission, for_,
             raise ConfigurationError("No such file", template)
 
     if class_:
+        # new-style classes do not work with Five. As we want to import
+        # packages from z3 directly, we ignore new-style classes for now.
+        if type(class_) == type:
+            return
         if attribute != '__call__':
             if not hasattr(class_, attribute):
                 raise ConfigurationError(

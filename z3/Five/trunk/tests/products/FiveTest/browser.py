@@ -35,6 +35,21 @@ class NoDocstringView(BrowserView):
 
     object = CallableNoDocstring()
 
+class NewStyleClass(object):
+    """
+    This is a testclass to verify that new style classes are ignored
+    in browser:page
+    """
+
+    def __init__(self, context, request):
+        """Docstring"""
+        self.context = context
+        self.request = request
+
+    def method(self):
+        """Docstring"""
+        return
+
 class StandardMacros(BaseMacros):
 
     macro_pages = ('bird_macros', 'dog_macros')

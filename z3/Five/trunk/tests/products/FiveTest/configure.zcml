@@ -283,4 +283,19 @@
       factory=".classes.OriginalAdapter"
       />
 
+  <!-- browser:page directives with new style classes are ignored -->
+
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.NewStyleClass"
+    name="invalid_page"
+    attribute="method"
+    permission="zope2.Public"
+    />
+
+  <!-- as new style classes are ignored, zope.app.form.browser
+       can be imported -->
+
+  <include package="zope.app.form.browser"/>
+
 </configure>
