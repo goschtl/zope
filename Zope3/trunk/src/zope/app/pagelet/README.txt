@@ -184,16 +184,9 @@ Define a pagelet in a ZCML directive pagelet like:
   weight="0"
   />
 
+Setup a test pagelet:
+
   >>> name = 'testpagelet'
-  >>> layer = IBrowserRequest
-  >>> slot = IPageletSlot
-  >>> template = u'src/zope/app/pagelet/tests/testfiles/test_pagelet.pt'
-  >>> for_ = Interface
-  >>> permission = 'zope.View'
-  >>> weight = 0
-
-Register the pagelet:
-
   >>> pagelet_factory = TestPagelet
   >>> defineChecker(pagelet_factory, testChecker)
   >>> adaptersrv.register(
@@ -220,7 +213,11 @@ Setup a view page template called 'index':
   >>> path = os.path.join(os.path.dirname(__file__), 'tests', 'testfiles')
   >>> index = ViewPageTemplateFile('index_pagelets.pt', path)
 
-Call the 'index' (view) on the browser view instance:
+Call the 'index' (view) on the browser view instance the sample pagelet
+'index_pagelets.pt' calls pagelets registred for the slot
+'zope.app.pagelet.interfaces.IPageletSlot'. We registred the 
+'test_pagelet' for this slot in the TestPagelet class. For more info 
+take a look at the index_pagelets.pt' file in the tests/testfiles folder:
 
   >>> html = index(view, request)
 
