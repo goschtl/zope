@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.18 2003/07/04 13:33:35 sidnei Exp $
+$Id: __init__.py,v 1.19 2003/07/04 13:52:27 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -253,6 +253,8 @@ class ZopeCursor:
 
     def fetchone(self):
         results = self.cursor.fetchone()
+        if results is None:
+            return None
         return self._convertTypes([results])[0]
 
     def fetchmany(self, *args, **kw):
