@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.5 2004/03/08 23:54:59 tim_one Exp $
+$Id: __init__.py,v 1.6 2004/03/25 14:37:09 hdima Exp $
 """
 import re
 from persistent import Persistent
@@ -74,7 +74,7 @@ class PythonPage(Contained, Persistent):
       >>> pp(request)
       u'<html>...</html>\n'
 
-      >>> pp.setSource(u"if 1 == 1:\n   '''<html>...</html>'''")
+      >>> pp.setSource(u"if 1 == 1:\r\r\n\n   '''<html>...</html>'''")
       >>> pp(request)
       u'<html>...</html>\n'
 
@@ -131,6 +131,9 @@ class PythonPage(Contained, Persistent):
         self.__source = source
 
         source = source.encode('utf-8')
+        # compile() don't accept '\r' altogether
+        source = source.replace("\r\n", "\n")
+        source = source.replace("\r", "\n")
         start = 0
         match = triple_quotes_start.search(source, start)
         while match:

@@ -1137,7 +1137,7 @@ msgstr ""
 
 #: src/zope/app/form/browser/editview.py:115
 msgid "Updated on ${date_time}"
-msgstr ""
+msgstr "Обновлено ${date_time}"
 
 #: src/zope/app/form/browser/editwizard.py:149
 msgid "No changes to save"
@@ -2237,7 +2237,7 @@ msgstr ""
 
 #: src/zope/app/pythonpage/browser.py:43
 msgid "A syntax error occured."
-msgstr ""
+msgstr "Ошибка синтаксиса."
 
 #: src/zope/app/pythonpage/configure.zcml:12
 msgid "A simple, content-based Python Page"
@@ -2246,23 +2246,23 @@ msgstr ""
 #: src/zope/app/pythonpage/configure.zcml:12
 #: src/zope/app/pythonpage/configure.zcml:49
 msgid "Python Page"
-msgstr ""
+msgstr "Python-страница"
 
 #: src/zope/app/pythonpage/configure.zcml:41
 msgid "Add Python Page"
-msgstr ""
+msgstr "Добавить Python-страницу"
 
 #: src/zope/app/pythonpage/configure.zcml:49
 msgid "An Python Page"
-msgstr ""
+msgstr "Python-страница"
 
 #: src/zope/app/pythonpage/configure.zcml:57
 msgid "Edit Python Page"
-msgstr ""
+msgstr "Редактировать Python-страницу"
 
 #: src/zope/app/pythonpage/edit.pt:31
 msgid "Syntax Error: ${msg}"
-msgstr ""
+msgstr "Ошибка синтаксиса: ${msg}"
 
 #: src/zope/app/pythonpage/edit.pt:39
 msgid "File \"${filename}\", line ${lineno}, offset ${offset}"
