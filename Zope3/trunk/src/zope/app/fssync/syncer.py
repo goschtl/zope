@@ -13,16 +13,16 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.30 2003/08/17 06:06:34 philikon Exp $
+$Id: syncer.py,v 1.31 2004/01/13 19:32:20 fdrake Exp $
 """
 
 import os
 
 from zope.component import getService
-from zope.app.interfaces.fssync import IObjectDirectory, IObjectFile
+from zope.fssync import metadata
+from zope.fssync.server.interfaces import IObjectDirectory, IObjectFile
 
 from zope.app.traversing import getPath
-from zope.fssync import metadata
 
 
 def writeFile(data, path, mode="wb"):

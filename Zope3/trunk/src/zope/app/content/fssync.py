@@ -13,11 +13,11 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.12 2003/09/21 17:31:52 jim Exp $
+$Id: fssync.py,v 1.13 2004/01/13 19:32:18 fdrake Exp $
 """
 
-from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
-from zope.app.interfaces.fssync import IObjectFile, IContentDirectory
+from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
+from zope.fssync.server.interfaces import IObjectFile, IContentDirectory
 from zope.interface import implements
 
 class FileAdapter(ObjectEntryAdapter):

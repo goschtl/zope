@@ -12,18 +12,18 @@
 #
 ##############################################################################
 """
-$Id: annotatableadapter.py,v 1.4 2003/08/19 19:01:52 fdrake Exp $
+$Id: annotatableadapter.py,v 1.5 2004/01/13 19:32:19 fdrake Exp $
 """
 
 __metaclass__ = type
 
 from zope.component import getAdapter
+from zope.fssync.server.entryadapter import ObjectEntryAdapter
+from zope.fssync.server.interfaces import IObjectFile
 from zope.interface import implements
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.fssync import IObjectFile
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
-from zope.app.fssync.classes import ObjectEntryAdapter
 from zope.xmlpickle import dumps, loads
 from persistence.dict import PersistentDict
 

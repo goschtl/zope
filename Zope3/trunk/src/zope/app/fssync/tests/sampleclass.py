@@ -13,10 +13,10 @@
 ##############################################################################
 """Test SampleClass for testing File-system synchronization services
 
-$Id: sampleclass.py,v 1.3 2003/06/06 19:28:21 stevea Exp $
+$Id: sampleclass.py,v 1.4 2004/01/13 19:32:22 fdrake Exp $
 """
 
-from zope.app.interfaces.fssync import IObjectDirectory, IObjectFile
+from zope.fssync.server.interfaces import IObjectDirectory, IObjectFile
 from zope.interface import implements
 
 class C1: "C1 Doc"

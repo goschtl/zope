@@ -13,16 +13,17 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.16 2004/01/13 16:59:30 fdrake Exp $
+$Id: entryadapter.py,v 1.1 2004/01/13 19:32:24 fdrake Exp $
 """
 
-from zope.app.fssync import fspickle
-from zope.app.interfaces.fssync import IObjectFile
-from zope.app.interfaces.annotation import IAnnotations
 from zope.component import queryAdapter
-from zope.xmlpickle import toxml
-from zope.proxy import removeAllProxies
+from zope.fssync.server.interfaces import IObjectFile
 from zope.interface import implements
+from zope.proxy import removeAllProxies
+from zope.xmlpickle import toxml
+
+from zope.app.fssync import fspickle
+from zope.app.interfaces.annotation import IAnnotations
 
 class AttrMapping(object):
     """Convenience object implementing a mapping on selected object attributes

@@ -16,12 +16,12 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.16 2003/11/21 17:10:01 jim Exp $
+$Id: pagefolder.py,v 1.17 2004/01/13 19:32:23 fdrake Exp $
 """
 __metaclass__ = type
 
 from zope.app.container.btree import BTreeContainer
-from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
+from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import IRegistrationManager
 from zope.app.interfaces.services.registration import RegisteredStatus
@@ -39,7 +39,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import zope.app.component.interfacefield
 import zope.app.interfaces.container
 import zope.app.interfaces.file
-import zope.app.interfaces.fssync
+import zope.fssync.server.interfaces
 import zope.app.interfaces.services.registration
 import zope.app.security.permission
 import zope.interface
@@ -172,7 +172,7 @@ _attrNames = (
 class PageFolderAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for PageFolder objects."""
 
-    zope.interface.implements(zope.app.interfaces.fssync.IObjectDirectory)
+    zope.interface.implements(zope.fssync.server.interfaces.IObjectDirectory)
 
     def contents(self):
         return self.context.items()

@@ -12,16 +12,16 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.16 2003/12/15 14:59:13 jim Exp $
+$Id: zpt.py,v 1.17 2004/01/13 19:32:23 fdrake Exp $
 """
 
 from zope.security.proxy import ProxyFactory
 import persistence
 import re
 import zope.app.container.contained
-import zope.app.fssync.classes
+import zope.fssync.server.entryadapter
+import zope.fssync.server.interfaces
 import zope.app.interfaces.file
-import zope.app.interfaces.fssync
 import zope.app.interfaces.index.text
 import zope.app.interfaces.services.registration
 import zope.app.pagetemplate.engine
@@ -169,10 +169,10 @@ class ZPTFactory:
         return r
 
 
-class ZPTPageAdapter(zope.app.fssync.classes.ObjectEntryAdapter):
+class ZPTPageAdapter(zope.fssync.server.entryadapter.ObjectEntryAdapter):
     """ObjectFile adapter for ZPTTemplate objects."""
 
-    zope.interface.implements(zope.app.interfaces.fssync.IObjectFile)
+    zope.interface.implements(zope.fssync.server.entryadapter.IObjectFile)
 
     def getBody(self):
         return self.context.source
@@ -184,5 +184,5 @@ class ZPTPageAdapter(zope.app.fssync.classes.ObjectEntryAdapter):
         self.context.source = unicode(data)
 
     def extra(self):
-        return zope.app.fssync.classes.AttrMapping(
+        return zope.fssync.server.entryadapter.AttrMapping(
             self.context, ('contentType', 'expand'))

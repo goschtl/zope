@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.20 2004/01/13 16:59:31 fdrake Exp $
+$Id: test_committer.py,v 1.21 2004/01/13 19:32:22 fdrake Exp $
 """
 
 import os
@@ -27,13 +27,13 @@ from zope.interface import implements
 
 from zope.xmlpickle import loads, dumps
 from zope.fssync import fsutil
+from zope.fssync.server.entryadapter import DefaultFileAdpater
 from zope.fssync.tests.mockmetadata import MockMetadata
 from zope.fssync.tests.tempfiles import TempFiles
 
 from zope.app.content.fssync import DirectoryAdapter
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
-from zope.app.interfaces.fssync import IGlobalFSSyncService
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.traversing import ITraversable, ITraverser
 from zope.app.location import Location
@@ -42,7 +42,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.fssync import committer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
-from zope.app.fssync.classes import DefaultFileAdpater
+from zope.app.interfaces.fssync import IGlobalFSSyncService
 
 
 class Sample(object):

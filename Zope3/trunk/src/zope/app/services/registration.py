@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.19 2003/11/21 17:09:56 jim Exp $
+$Id: registration.py,v 1.20 2004/01/13 19:32:23 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -21,18 +21,22 @@ from zope.app import zapi
 
 from persistence import Persistent
 from zope.interface import implements
+from zope.fssync.server.interfaces import IObjectFile
+from zope.fssync.server.entryadapter import ObjectEntryAdapter
+from zope.proxy import removeAllProxies, getProxiedObject
+from zope.security.checker import InterfaceChecker, CheckerPublic
+from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
+from zope.exceptions import DuplicationError
+from zope.xmlpickle import dumps, loads
+
+from zope.app.container.contained import Contained
+from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import IAddNotifiable, IRemoveNotifiable
 from zope.app.interfaces.dependable import IDependable, DependencyError
 from zope.app.interfaces.services import registration as interfaces
 from zope.app.interfaces.services.module import IModuleManager
-from zope.proxy import removeAllProxies
-from zope.security.checker import InterfaceChecker, CheckerPublic
-from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
-from zope.proxy import getProxiedObject
-from zope.app.container.contained import Contained
-from zope.app.container.contained import setitem, contained, uncontained
-from zope.exceptions import DuplicationError
+
 
 class RegistrationStatusProperty(object):
 
@@ -752,11 +756,6 @@ class RegistrationManagerContainer(object):
         mod = self.findModule(name[:l])
         return getattr(mod, name[l+1:])
 
-
-
-from zope.xmlpickle import dumps, loads
-from zope.app.interfaces.fssync import IObjectFile
-from zope.app.fssync.classes import ObjectEntryAdapter
 
 class ComponentRegistrationAdapter(ObjectEntryAdapter):
 

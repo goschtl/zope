@@ -23,26 +23,35 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.35 2004/01/12 22:53:00 fdrake Exp $
+$Id: service.py,v 1.36 2004/01/13 19:32:23 fdrake Exp $
 """
 
 import sys
 
-from zope.app import zapi
+from transaction import get_transaction
 from zodb.code.module import PersistentModuleRegistry
 
 import zope.interface
-import zope.app.interfaces.services.registration
 
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
-
+from zope.fssync.server.entryadapter import AttrMapping
 from zope.proxy import removeAllProxies
+
+
+import zope.app.interfaces.services.registration
+
+from zope.app import zapi
+
+from zope.app.event.function import Subscriber
+from zope.app.interfaces.services.service import IPossibleSite
 
 from zope.app.component.nextservice import getNextService
 from zope.app.component.nextservice import getNextServiceManager
 
 from zope.app.container.constraints import ItemTypePrecondition
+
+from zope.app.content.fssync import DirectoryAdapter
 
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IBindingAware
@@ -61,6 +70,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.services.service import ISite
 from zope.app.location import inside
+
 
 class IRegistrationManagerContainerContainer(zope.interface.Interface):
 
@@ -307,9 +317,6 @@ ServiceConfiguration = ServiceRegistration
 
 # Fssync stuff
 
-from zope.app.fssync.classes import AttrMapping
-from zope.app.content.fssync import DirectoryAdapter
-
 _smattrs = (
     '_modules',                         # PersistentModuleRegistry
     '_bindings',                        # NameComponentRegistry
@@ -323,12 +330,6 @@ class ServiceManagerAdapter(DirectoryAdapter):
 
 #BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
-
-
-from zope.app.event.function import Subscriber
-from transaction import get_transaction
-from zope.component.exceptions import ComponentLookupError
-from zope.app.interfaces.services.service import IPossibleSite
 
 def fixup(event):
     database = event.database
