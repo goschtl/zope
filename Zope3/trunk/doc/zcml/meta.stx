@@ -12,7 +12,7 @@ The Meta Configuration System
     meta-configuration for the Zope StartUp system to explain the
     concepts::
 
-      <ZopeConfigure xmlns='http://namespaces.zope.org/zope">
+      <ZopeConfigure xmlns="http://namespaces.zope.org/zope">
       <directives namespace="http://namespaces.zope.org/startup">
         <directive
             name="registerRequestFactory"
@@ -46,8 +46,8 @@ The Meta Configuration System
     would look something like this when used::
 
       <ZopeConfigure
-          xmlns='http://namespaces.zope.org/zope"
-          xmlns:startup='http://namespaces.zope.org/startup"
+          xmlns="http://namespaces.zope.org/zope"
+          xmlns:startup="http://namespaces.zope.org/startup"
       >
       <startup:registerRequestFactory ....>
       </ZopeConfigure>
@@ -63,8 +63,8 @@ The Meta Configuration System
     when used::
 
       <ZopeConfigure
-          xmlns='http://namespaces.zope.org/zope"
-          xmlns:startup='http://namespaces.zope.org/startup"
+          xmlns="http://namespaces.zope.org/zope"
+          xmlns:startup="http://namespaces.zope.org/startup"
       >
       <startup:registerRequestFactory
           name="VFSRequestFactory"
@@ -99,8 +99,8 @@ The Meta Configuration System
     subdirective that would look something like this when used::
 
       <ZopeConfigure
-          xmlns='http://namespaces.zope.org/zope"
-          xmlns:startup='http://namespaces.zope.org/startup"
+          xmlns="http://namespaces.zope.org/zope"
+          xmlns:startup="http://namespaces.zope.org/startup"
       >
       <startup:defineSite name="Zope 3 Default" threads="4">
         <startup:useFileStorage file="Data.fs">
