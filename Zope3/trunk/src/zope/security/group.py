@@ -43,6 +43,7 @@ class Group(Persistent):
             if not principalId in self.__principals:
                 tmpNewList.append(principalId)
         self.setPrincipals(tmpNewList)
+        self.__parent__.updateMappingForPrincipals(*principalIds)
 
     def removePrincipals(self, *principalIds):
         tmpNewList = self.__principals
@@ -50,6 +51,7 @@ class Group(Persistent):
             if principalId in tmpNewList:
                 tmpNewList.remove(principalId)
         self.setPrincipals(tmpNewList)
+        self.__parent__.updateMappingForPrincipals(*principalIds)
         
     def containsPrincipal(self, principalId):
         return principalId in self.__principals

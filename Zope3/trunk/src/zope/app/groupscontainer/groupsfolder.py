@@ -42,6 +42,10 @@ class GroupsFolder(BTreeContainer):
             groupListForPrincipal = self.__inverseMapping[principal]
             if name in groupListForPrincipal:
                 groupListForPrincipal.remove(name)
+        for principal in self.__inverseMapping.keys():
+            groupListForPrincipal = self.__inverseMapping[principal]
+            if len(groupListForPrincipal) == 0:
+                del self.__inverseMapping[principal]
         super(BTreeContainer,self).__delitem__(name)
                 
     def __setitem__(self, name, object):
@@ -69,6 +73,33 @@ class GroupsFolder(BTreeContainer):
             return self.__getitem__(groupid).principals
         else:
             return []
+            
+    def removePrincipalFromAllGroups(self, principalId):
+        """Removes a principal from all the groups"""
+        groupsItIsIn = self.getGroupsForPrincipal(principalId)
+        for groupid in groupsItIsIn:
+            self.__getitem__(groupid).removePrincipals(principalId)
+                
+    def getAllMappedPrincipals(self):
+        """Returns all mapped principals"""
+        return list(self.__inverseMapping.keys())
+        
+    def updateMappingForPrincipals(self, *principalsIds):
+        for principalId in principalsIds:
+            self.updateMappingForPrincipal(principalId)
+        
+    def updateMappingForPrincipal(self, principalId):
+        """Updates inverse mapping for principalId -> group"""
+        tmpNewGroupList = []
+        # Search in all groups and add to inverse mapping if the principalId is in 
+        for groupid in self.keys():
+            if self.__getitem__(groupid).containsPrincipal(principalId):
+                tmpNewGroupList.append(groupid)
+        # If the principal disappears from all groups just remove it
+        if len(tmpNewGroupList) == 0:
+            del self.__inverseMapping[principalId]
+        else:
+            self.__inverseMapping[principalId] = tmpNewGroupList
 
     def search(self, query, start=None, batch_size=None):
         """ Search for groups"""

@@ -74,7 +74,6 @@ a principal belongs to by providing its id.
       >>> notordinarypeople.getGroupsForPrincipal('2')
       []
       
-      
     Now we test the search capabilities, as in IQuerySchemaSearch example:
     
     We're trying to search groups in the notordinarypeople class, so first we get a view:
@@ -121,4 +120,16 @@ a principal belongs to by providing its id.
       >>> view.results('test')
       [u'robots']
       >>> request.form['test.field.search'] = 'eek'
+      
+      We can also remove a principal from all the groups:
+      >>> notordinarypeople.removePrincipalFromAllGroups('1')
+      >>> notordinarypeople.getGroupsForPrincipal('1')
+      []
+      >>> notordinarypeople.getAllMappedPrincipals()
+      ['0']
+      
+      If we remove the last group there will be no principal mapped anymore:
+      >>> del notordinarypeople['robots']
+      >>> notordinarypeople.getAllMappedPrincipals()
+      []
     
