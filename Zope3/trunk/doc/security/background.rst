@@ -5,6 +5,11 @@ This document doesn't describe the high-level security model.
 Rather, it provides the background for understanding the high-level
 security model described in highlevel.rst.
 
+This document should not contain detail about particular services such as
+the session service or the authentication service. That's for services.rst.
+Nor should this document contain very much about principals, roles,
+permissions and so on. That's for highlevel.rst.
+
 Introduction
 ------------
 
