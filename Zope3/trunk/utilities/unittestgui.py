@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.9 $"[11:-2]
+__version__ = "$Revision: 1.10 $"[11:-2]
 
 import linecache
 import unittest
@@ -531,7 +531,7 @@ class TkTestRunner(BaseGUITestRunner):
         window.destroy()
 
     def attachEditorHotspots(self, text,
-            fileLine=re.compile('(File "([^"]+)", line (\d+), in \w+)'),
+            fileLine=re.compile('(File "([^"]+)", line (\d+)(?:, in \w+)?)'),
             methodLine=re.compile('^\s*(\S.*\S)\s*$')):
         # Attach clickable regions to a traceback displayed in a Text widget.
         tracebackLines = text.get('1.0', tk.END).splitlines(1)
