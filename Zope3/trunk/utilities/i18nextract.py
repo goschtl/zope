@@ -24,6 +24,10 @@ Note: The Python Code extraction tool does not support domain
       registration, so that all message strings are returned for
       Python code.
 
+Note: The script expects to be executed either from inside the Zope 3 source tree
+      or with the Zope 3 source tree on the Python path.
+      Execution from a symlinked directory inside the Zope 3 source tree will not work.
+
 Usage: i18nextract.py [options]
 Options:
     -h / --help
@@ -37,7 +41,7 @@ Options:
         Specifies a directory, relative to the package in which to put the
         output translation template.
 
-$Id: i18nextract.py,v 1.5 2004/04/15 13:54:30 hdima Exp $
+$Id: i18nextract.py,v 1.6 2004/04/21 10:02:14 eckart Exp $
 """
 
 import os, sys, getopt
@@ -58,7 +62,11 @@ def app_dir():
         # Get the path of the src
         path = os.path.abspath(os.getcwd())
         while not path.endswith('src'):
-            path = os.path.dirname(path)
+            parentdir = os.path.dirname(path)
+            if path == parentdir:
+                # root directory reached
+                break
+            path = parentdir
         sys.path.insert(0, path)
 
         try:
