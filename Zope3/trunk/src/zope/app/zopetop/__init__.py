@@ -17,16 +17,16 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from zope.publisher.interfaces.browser import ILayer
+from zope.interface import Interface
 from zope.app.rotterdam import Rotterdam
 
-class templates(ILayer):
+class templates(Interface):
     """Layer to store all templates."""
 
-class images(ILayer):
+class images(Interface):
     """Layer to store all images."""
 
-class css(ILayer):
+class css(Interface):
     """Layer to store all stylesheets."""
 
 class ZopeTop(templates, images, css, Rotterdam):

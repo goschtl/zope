@@ -15,13 +15,11 @@
 
 $Id$
 """
-
-from zope.publisher.interfaces.browser import ILayer
+from zope.interface import Interface
 from zope.app.rotterdam import Rotterdam
 
 
-
-class layer(ILayer):
+class layer(Interface):
     """A clean ILayer called `zope.app.css.layer` used in `CSS` skin."""
 
 
