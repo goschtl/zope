@@ -22,6 +22,7 @@ from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
 from zope.app.services.servicenames import Interfaces
+from zope.component.exceptions import ComponentLookupError
 
 class Introspector:
     """Introspects an object"""
@@ -69,7 +70,7 @@ class Introspector:
 
     def getClass(self):
         """Returns the class name"""
-        return (self.currentclass).__name__
+        return removeAllProxies(self.currentclass).__name__
 
     def getBaseClassNames(self):
         """Returns the names of the classes"""
@@ -81,7 +82,7 @@ class Introspector:
 
     def getModule(self):
         """Returns the module name of the class"""
-        return (self.currentclass).__module__
+        return removeAllProxies(self.currentclass).__module__
 
     def getDocString(self):
         """Returns the description of the class"""
@@ -96,14 +97,14 @@ class Introspector:
             interfaces = self.getInterfaces()
         names = []
         for intObj in interfaces:
-            names.append(intObj.__module__ + '.' + intObj.__name__)
+            names.append(interfaceToName(self.context, intObj))
         names.sort()
         return names
 
     def getInterfaceDetails(self):
         """Returns the entire documentation in the interface"""
         interface = self.context
-        Iname = interface.__name__
+        Iname = interfaceToName(self.context, interface).split('.')[-1]
         bases = []
         desc = ''
         methods = []
@@ -126,7 +127,7 @@ class Introspector:
 
     def getExtends(self):
         """Returns all the class extended up to the top most level"""
-        bases = self._unpackTuple((self.currentclass).__bases__)
+        bases = self._unpackTuple(removeAllProxies(self.currentclass).__bases__)
         return bases
 
     def getInterfaceRegistration(self):
@@ -179,7 +180,26 @@ class Introspector:
         results = []
         iservice = getService(self.context, Interfaces)
         for id, interface in iservice.items(base=base):
-            if interface.__bases__ == (base,) and not interface.names():
+            if base in interface.getBases() and not interface.names():
                 results.append(interface)
         results.sort()
         return tuple(results)
+
+def nameToInterface(context, name):
+    if name == 'None':
+        return None
+    service = getService(context, Interfaces)
+    return service.getInterface(name)
+
+def interfaceToName(context, interface):
+    interface = removeAllProxies(interface)
+    if interface is None:
+        return 'None'
+    service = getService(context, Interfaces)
+    items = service.items(base=interface)
+    ids = [id for id, iface in items
+           if iface == interface]
+    if not ids:
+        raise ComponentLookupError, interface
+    assert len(ids) == 1, "Ambiguous interface names: %s" % ids
+    return ids[0]
