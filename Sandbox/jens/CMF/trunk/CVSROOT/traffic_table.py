@@ -107,7 +107,7 @@ def init_table():
          'addrs': ["pythonlabs@zope.com"]},
 
         {'path': "Products/DCOracle2",
-         'addrs': ["zope-db@zope.org"]},
+         'addrs': ["zope-checkins@zope.org"]},
     ])
 
 init_table()
