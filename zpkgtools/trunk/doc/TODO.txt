@@ -17,15 +17,16 @@ Things that need to be done
     in an alternate implementation (with different semantics), but the
     issue needs to be re-visited.
 
-  - Re-visit the abstrations for parsed revision control URLs; they're
-    actually pretty painful to work with, and require too much
-    awareness of what kind of URL is being handled.
+  - Re-visit the abstrations for parsed revision control URLs:
 
-  - It would be really nice to be able to build a distribution from a
-    Subversion branch as well as a tag for the purpose of testing the
-    generated distribution, instead of having alternate resource maps
-    to work from a checkout to access the branch.  See also the
-    previous item.
+    - The current abstraction is pretty painful to work with, and
+      requires too much awareness of what kind of URL is being
+      handled.
+
+    - It would be really nice to be able to build a distribution from
+      a Subversion branch as well as a tag for the purpose of testing
+      the generated distribution, instead of having alternate resource
+      maps to work from a checkout to access the branch.
 
   - The setuptools helper should only be included in distributions that
     actually need it.  This is currenly only needed when packages end up
