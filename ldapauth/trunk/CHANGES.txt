@@ -7,6 +7,16 @@ CHANGES
 
     - Added contents view class and contents view 
 
-    - Split configure.zcml, and move view related stuff to .browser/configure.zcml  
+    - Split configure.zcml, and move view related stuff to
+      .browser/configure.zcml  
 
     - Added initial test page for to test the given connection
+  
+  
+  Principal caching, nicoe, 12.07.2004
+
+    - Corrected the recursion errors by using __getitem__ to return only
+      cached results.
+
+    - Added tests for caching and the pluggable authentication integration.
+

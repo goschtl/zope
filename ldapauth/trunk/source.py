@@ -18,7 +18,7 @@ $Id:
 
 import ldap
 from persistent import Persistent
-from zope.app.container.contained import Contained, setitem
+from zope.app.container.contained import DuplicationError, Contained, setitem
 from zope.app.pluggableauth.interfaces import \
         ILoginPasswordPrincipalSource, IContainerPrincipalSource
 from zope.app.location import locate
@@ -46,6 +46,7 @@ class LDAPPrincipalSource(Contained, Persistent):
         self.login_attribute = login_attribute
         self.manager_dn = manager_dn
         self.manager_passwd = manager_passwd
+        self.__cached = []
     
     ### IContainer-related methods
 
@@ -53,60 +54,74 @@ class LDAPPrincipalSource(Contained, Persistent):
         cache = getCacheForObject(self)
         location = getLocationForCache(self)
         if cache and location:
-            cache.invalidate(location, login)
+            cache.invalidate(location, {'login' : login})
 
     ### This is the stuff needed to add the Principal to the cache and to
     ### make it containment friendly.
     ### TODO: add the principal to the ldap server if it is a new one.
     def __setitem__(self, login, obj):
         obj.id = login
-        setitem(self, self._setitem, login, obj)
+        try:
+            setitem(self, self._setitem, login, obj)
+            if login not in self.__cached:
+                self.__cached.append(login)
+        except DuplicationError, msg:
+            pass
 
     def _setitem(self, key, obj):
         cache = getCacheForObject(self)
         location = getLocationForCache(self)
         if cache and location:
-            principal = cache.query(location, key)
+            principal = cache.query(location, {'login' : key})
             if principal is None:
-                cache.set(obj, location, key)
+                cache.set(obj, location, {'login' : key})
 
+    ### TODO: returns the list of logins in the cache
     def keys(self):
         logins = []
-        l = self.__connect()
-        l.simple_bind_s(self.manager_dn, self.manager_passwd)
-        lsearch = l.search_s(self.basedn, ldap.SCOPE_ONELEVEL, '(%s=*)' %
-                self.login_attribute)
-        for node in lsearch:
-            node_dn, node_dict = node
-            logins.append(node_dict[self.login_attribute][0])
+        for login in self.__cached :
+            if self[login]:
+                logins.append(login)
         return logins
 
     def __iter__(self):
         return self.keys()
 
+    ### return a cached principal, if the principal is not in the cache
+    ### then return None
     def __getitem__(self, key):
+        principal = None
         cache = getCacheForObject(self)
         location = getLocationForCache(self)
         if cache and location:
-            principal = cache.query(location, key)
-            if principal is None:
-                principal = self.__findInLDAP(key)
-            
-                #XXX 
-                # RuntimeError: maximum recursion depth exceeded
-                # this is calling __setitem__ if we call authenticate --> __setitem__ --> __getitem__ --> ...
-
-                #self[principal.login] = principal
-        else:
-            principal = self.__findInLDAP(key)
-            
-            #XXX 
-            # RuntimeError: maximum recursion depth exceeded
-            # this is calling __setitem__ if we call authenticate --> __setitem__ --> __getitem__ --> ...
-            
-            #self[principal.login] = principal
+            principal = cache.query(location, {'login' : key})
         return principal
 
+    def get(self, key, default=None):
+        return self[key]
+
+    def values(self):
+        principals = []
+        for login in self.keys():
+            if self[login]:
+                principals.append((login, self[login]))
+        return principals
+
+    def __len__(self):
+        return len(self.keys())
+    
+    def items(self):
+        principals = []
+        for login in self.keys():
+            if self[login]:
+                principals.append(self[login])
+        return principals
+
+    def __contains__(self, key):
+        return key in self.keys()
+    
+    ### IPrincipalSource methods
+    
     def __findInLDAP(self, login):
         l = self.__connect()
         l.simple_bind_s(self.manager_dn, self.manager_passwd)
@@ -119,29 +134,16 @@ class LDAPPrincipalSource(Contained, Persistent):
                     password = uid_dict['userPassword'][0])
             return principal
 
-    def get(self, key, default=None):
-        return self[key]
-
-    def values(self):
-        pass
-
-    def __len__(self):
-        pass
-    
-    def items(self):
-        pass
-
-    def __contains__(self, key):
-        pass
-    
-    ### IPrincipalSource methods
-    
     def getPrincipal(self, id):
         uid = id.split('\t')[2]
         principal = self[uid]
         if principal:
             return principal
         else:
+            principal = self.__findInLDAP(uid)
+            if principal:
+                self[principal.login] = principal
+                return principal
             raise NotFoundError, id
 
     def getPrincipals(self, name):
@@ -187,4 +189,4 @@ class LDAPPrincipalSource(Contained, Persistent):
             return connection
         else:
             return conn
-            
+ 
