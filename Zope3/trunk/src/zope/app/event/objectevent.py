@@ -13,19 +13,19 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.6 2003/06/07 07:23:51 stevea Exp $
+$Id: objectevent.py,v 1.7 2003/09/21 17:32:06 jim Exp $
 """
 
 __metaclass__ = type
 
 from zope.app.interfaces.event import IObjectEvent, IObjectCreatedEvent
-from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
-from zope.app.interfaces.event import IObjectRemovedEvent, IObjectMovedEvent
+from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.event import IObjectCopiedEvent
 from zope.app.interfaces.event import IObjectAnnotationsModifiedEvent
 from zope.app.interfaces.event import IObjectContentModifiedEvent
 from zope.app.traversing import getPath
 from zope.interface import implements
+from zope.app.event import publish
 
 _marker = object()
 
@@ -34,21 +34,8 @@ class ObjectEvent:
 
     implements(IObjectEvent)
 
-    def _getLocation(self):
-        if self.__location is not _marker:
-            return self.__location
-        return getPath(self.object)
-
-    location = property(_getLocation)
-
-    def __init__(self, object, location=_marker):
+    def __init__(self, object):
         self.object = object
-        self.__location = location
-
-class ObjectAddedEvent(ObjectEvent):
-    """An object has been added to a container"""
-
-    implements(IObjectAddedEvent)
 
 class ObjectCreatedEvent(ObjectEvent):
     """An object has been created"""
@@ -60,39 +47,26 @@ class ObjectModifiedEvent(ObjectEvent):
 
     implements(IObjectModifiedEvent)
 
+def modified(object):
+    publish(object, ObjectModifiedEvent(object))
+
 class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
     """An object's annotations have been modified"""
 
     implements(IObjectAnnotationsModifiedEvent)
+
+def annotationModified(object):
+    publish(object, ObjectAnnotationModifiedEvent(object))
 
 class ObjectContentModifiedEvent(ObjectModifiedEvent):
     """An object's content has been modified"""
 
     implements(IObjectContentModifiedEvent)
 
-class ObjectRemovedEvent(ObjectEvent):
-    """An object has been removed from a container"""
+def contentModified(object):
+    publish(object, ObjectContentModifiedEvent(object))
 
-    implements(IObjectRemovedEvent)
-
-class ObjectMovedEvent(ObjectAddedEvent):
-    """An object has been moved"""
-
-    implements(IObjectMovedEvent)
-
-    fromLocation = None
-
-    def __init__(self, object, from_location, to_location):
-        super(ObjectMovedEvent, self).__init__(object, to_location)
-        self.fromLocation = from_location
-
-class ObjectCopiedEvent(ObjectAddedEvent):
+class ObjectCopiedEvent(ObjectCreatedEvent):
     """An object has been copied"""
 
     implements(IObjectCopiedEvent)
-
-    fromLocation = None
-
-    def __init__(self, object, from_location, to_location):
-        super(ObjectCopiedEvent, self).__init__(object, to_location)
-        self.fromLocation = from_location
