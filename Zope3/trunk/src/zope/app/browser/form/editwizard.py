@@ -12,9 +12,10 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.2 2003/07/13 00:36:15 Zen Exp $
+$Id: editwizard.py,v 1.3 2003/07/13 04:05:58 Zen Exp $
 """
 
+import logging
 from UserDict import UserDict
 from zope.interface import implements, classProvides
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -34,6 +35,7 @@ from zope.app.form.utility import setUpEditWidgets, getWidgetsData
 from zope.app.interfaces.form import WidgetInputError
 from submit import Next, Previous, Update
 from zope.app.interfaces.form import WidgetsError
+from zope.i18n import MessageIDFactory
 
 PaneNumber = 'CURRENT_PANE_IDX'
 
@@ -41,8 +43,9 @@ PaneNumber = 'CURRENT_PANE_IDX'
 class WizardStorage(dict):
     def __init__(self, fields, content):
         super(WizardStorage, self).__init__(self)
-        for k in fields:
-            self[k] = getattr(content,k)
+        if content:
+            for k in fields:
+                self[k] = getattr(content,k)
 
     def __getattr__(self, key):
         try:
@@ -54,7 +57,7 @@ class WizardStorage(dict):
         self[key] = value
 
 
-class WizardEditView(EditView):
+class EditWizardView(EditView):
 
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
@@ -85,6 +88,9 @@ class WizardEditView(EditView):
         return self.panes[self._current_pane_idx]
 
     _update_called = 0
+
+    # Message rendered at the top of the form, probably set by update()
+    feedback = u'' 
 
     def update(self):
         '''
@@ -136,7 +142,10 @@ class WizardEditView(EditView):
                 self._current_pane_idx -= 1
                 assert self._current_pane_idx >= 0
             elif Update in self.request:
-                self.apply_update(self.storage)
+                if self.apply_update(self.storage):
+                    self.feedback = _(u'No changes to save')
+                else:
+                    self.feedback = _(u'Changes saved')
 
         # Set last_pane flag - last_pane always gets a submit button
         if self._current_pane_idx == len(self.panes) - 1:
@@ -158,7 +167,7 @@ class WizardEditView(EditView):
         try:
             for k in self.fieldNames:
                 if k not in self.currentPane().names:
-                    getattr(self, k).getData(1)
+                    debug = getattr(self, k).getData(1)
             self.show_submit = 1 
         except WidgetInputError,x:
             self.show_submit = 0
@@ -194,6 +203,9 @@ class WizardEditView(EditView):
                     widget = getattr(self, k)
                     out(widget.hidden())
             return ''.join(olist)
+
+    def done(self):
+        ''' Called after changes have been saved '''
 
 
 class Pane:
@@ -233,7 +245,7 @@ class EditWizardDirective:
 
         schema, for_, bases, template, fields = normalize(
             _context, schema, for_, class_, template, 'editwizard.pt', 
-            fields=None, omit=None, view=WizardEditView
+            fields=None, omit=None, view=EditWizardView
             )
 
         self.schema = schema
