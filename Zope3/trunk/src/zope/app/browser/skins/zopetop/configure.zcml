@@ -3,7 +3,7 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-  <browser:skin name="ZopeTop" layers="templates images css default" />
+  <browser:skin name="ZopeTop" layers="templates images css rotterdam default" />
 
   <browser:page
       for="*"
@@ -37,6 +37,15 @@
       template="www/dialog_macros.pt"
       layer="templates" 
       />
+
+  <browser:page
+    name="contents.html"
+    for="zope.app.interfaces.content.folder.IFolder"
+    permission="zope.ManageContent"
+    layer="templates"
+    class="zope.app.browser.container.contents.Contents"
+    template="www/folder_contents.pt" 
+    />
 
   <browser:resource  
       name="pdlib.js" 

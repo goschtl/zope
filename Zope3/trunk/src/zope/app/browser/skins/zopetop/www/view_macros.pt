@@ -11,6 +11,8 @@
         tal:attributes="href context/++resource++zopetop.css" />
 <script type="text/javascript" src="pdlib.js"
         tal:attributes="src context/++resource++pdlib.js"></script>
+<script type="text/javascript" src="xmltree.js" 
+        tal:attributes="src string:${context/++resource++xmltree.js}"></script>
 
 <style type="text/css">
 </style>
@@ -20,7 +22,11 @@
 
 
 </head>
-<body>
+<body onload="loadtree('');"
+      tal:define="rooturl     request/URL/1;
+                  thisbaseurl request/URL/-1"
+        tal:attributes="onload string:loadtree('${rooturl}/', '${thisbaseurl}/')">
+
 <div class="top">
   <img src="zope3logo.jpg" width="366" height="37" 
                    alt="Zope 3 Logo"
@@ -32,42 +38,17 @@
 <table class="columns">
    <tr>
      <td class="left">
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-                 tal:attributes="src context/++resource++spacer3.gif" /> 
-	    <span metal:use-macro="views/standard_macros/explorer_box" />
-            </div>
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-                 tal:attributes="src context/++resource++spacer3.gif" /> 
-            <span metal:use-macro="views/standard_macros/search_box" />
-            </div>
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
+            <span metal:use-macro="views/standard_macros/navigation_box" />
+            <span metal:use-macro="views/standard_macros/commontasks_box" />
      </td>
      <td class="main">
          <span metal:use-macro="views/standard_macros/content_header_bar" />
          <span metal:define-slot="body"></span>
      </td>
      <td class="right">
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
             <span metal:use-macro="views/standard_macros/metadata_box" />
-            </div>
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
             <span metal:use-macro="views/standard_macros/views_box" />
-            </div>
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
             <span metal:use-macro="views/standard_macros/services_box" />
-            </div>
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
-
      </td>
    </tr>
 </table>

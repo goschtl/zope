@@ -13,40 +13,55 @@
    >Logged in as <span tal:replace="request/user/getTitle"
    >dtremea</span></div>
 
+<div class="box" id="navigationTree" metal:define-macro="navigation_box">
 
-<table metal:define-macro="services_box" align="center" class="box"
-       width="150">
-    <thead>
-      <tr> 
-        <th align="center" class="boxtop">Services</th>
-	<th class="empty">&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-	<td colspan="2" nowrap="nowrap" class="highlightable">
+  <h5>Navigation</h5>
 
-    <img src="user_accounts.gif" width="22" height="28"
+  <div xmlns="http://www.zope.org/zope3xmltree"
+       id="navtreecontents" 
+       class="body" 
+       onclick="treeclicked(event);">Loading...
+  </div>
+
+</div>
+
+<div class="box" id="commonTasks" 
+       tal:define="view context/@@commonTasks|nothing"
+       tal:condition="view"
+       metal:define-macro="commontasks_box">
+
+  <h5>Common Tasks</h5>
+
+  <div class="body" tal:content="structure view">
+      CommonTasks
+  </div>
+</div>
+
+<div class="box" metal:define-macro="services_box">
+  <h5>Services</h5>
+   <div class="body">
+   <div class="content even">
+   <img src="user_accounts.gif" width="22" height="28"
       tal:attributes="src context/++resource++user_accounts.gif" />
     User Accounts
-    <br />
+   </div>
+   <div class="content odd">
     <img src="control_panels.gif" width="24" height="28"
       tal:attributes="src context/++resource++control_panels.gif" />
     Control Panels
-    <br />
+   </div>
+   <div class="content even">
     <img src="system_security.gif" width="23" height="28"
       tal:attributes="src context/++resource++system_security.gif" />
     System Security
-    <br />
+   </div>
+   <div class="content odd">
     <img src="add_more.gif" width="26" height="28"
       tal:attributes="src context/++resource++add_more.gif" />
     Add More
-
-	</td>
-      </tr>
-    </tbody>
-</table>
-
+   </div>
+  </div>
+</div>
 
 <table metal:define-macro="explorer_box" align="center" class="box" width="150">
   <thead>
@@ -85,25 +100,6 @@
     </tbody>
   </table>
 
-  <table metal:define-macro="views_box" align="center" class="box" width="150">
-    <thead>
-      <tr> 
-        <th align="center" class="boxtop">Views</th>
-	<th class="empty">&nbsp;</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr tal:repeat="view context/@@view_get_menu/zmi_views"> 
-	<td colspan="2"> <a href="" 
-	  tal:attributes="href view/action">
-	  <span style="color: #E9A90F; font-size: 15px;
-	  font-weight: bold;">&raquo;</span> 
-                    <span tal:content="view/title">Contents</span></a>
-	</td>
-      </tr>
-      </tbody>
-    </table>
-
   <table metal:define-macro="search_box" align="center" class="box"
          width="150">
     <thead>
@@ -124,53 +120,36 @@
     </tbody>
   </table>
 
-  <table metal:define-macro="metadata_box" align="center" class="box"
-         width="150">
-    <thead>
-      <tr> 
-        <th align="center" class="boxtop">Metadata</th>
-	<th class="empty">&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-	<td colspan="2" nowrap="nowrap">
+  <div class="box"
+       tal:define="views context/@@view_get_menu/zmi_views|nothing"
+       tal:condition="views"
+       metal:define-macro="views_box">
 
-    <form name="metadata">
-    <table border="0" cellspacing="0" cellpadding="0">
-      <tr>
+  <h5>Views</h5>
 
-        <td>Title</td>
-        <td><input type="edit" size="10" name="title:string"
-                   value=""></td>
-      </tr>
-      <tr>
-        <td>Creator</td>
-        <td>mowgli</td>
-      </tr>
+  <div class="body">
+     <div class="content" tal:repeat="view views">
+       <a href="" tal:attributes="href view/action"
+                  tal:content="view/title">
+          View
+       </a>
+     </div>
+  </div>
+  </div>
 
-      <tr>
-        <td>Last Modified</td>
-        <td>09-06</td>
-      </tr>
-      <tr>
-        <td>Keywords</td>
-        <td>Many</td>
+  <div class="box"
+       tal:define="view context/@@MetaDataBox|nothing"
+       tal:condition="view"
+       metal:define-macro="metadata_box">
 
-      </tr>
-      <tr>
-        <td colspan="2">
-          <input type="submit" name="save" value="Save Changes">
-        </td>
-      </tr>
-    </table>
-    </form>
+  <h5>Metadata</h5>
 
-	</td>
-      </tr>
-    </tbody>
-  </table>
-
+  <div class="body">
+     <div class="content" tal:content="structure view">
+      Some metadata
+     </div>
+  </div>
+  </div>
 
 <div class="breadcrumbs" metal:define-macro="content_header_bar">
   <span class="help">

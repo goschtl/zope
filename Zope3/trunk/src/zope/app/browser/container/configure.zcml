@@ -30,4 +30,10 @@
       attribute="index" 
       />
 
+  <page for="zope.app.interfaces.container.IWriteContainer"
+      permission="zope.ManageContent" 
+      name="commonTasks"
+      class="zope.app.browser.container.contents.Contents"
+      template="commontasks.pt" />
+
 </zopeConfigure>

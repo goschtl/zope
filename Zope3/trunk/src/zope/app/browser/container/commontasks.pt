@@ -1,0 +1,12 @@
+<div class="content even"><strong>Add new content</strong></div>
+
+  <tal:block repeat="info context/@@+/addingInfo">
+  <div tal:define="oddrow repeat/info/odd" class="even"
+         tal:attributes="class python:oddrow and 'content even' or 'content odd'">
+      <a href="#"
+         tal:attributes="href string:${request/getURL}?type_name=${info/action};
+                       class info/selected"
+                       tal:content="info/title">Folder
+      </a>
+  </div>
+</tal:block>
