@@ -49,7 +49,9 @@ class UtilityViewTestCase(functional.BrowserTestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(UtilityViewTestCase)
+    suite = unittest.makeSuite(UtilityViewTestCase)
+    suite.addTest(functional.FunctionalDocFileSuite("utilities.txt"))
+    return suite
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")
