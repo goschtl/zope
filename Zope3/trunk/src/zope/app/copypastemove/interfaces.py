@@ -20,23 +20,23 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Interface
 
 class IObjectMover(Interface):
-    '''Use `IObjectMover(obj)` to move an object somewhere.'''
+    """Use `IObjectMover(obj)` to move an object somewhere."""
 
     def moveTo(target, new_name=None):
-        '''Move this object to the target given.
+        """Move this object to the target given.
 
         Returns the new name within the target.
-        Typically, the target is adapted to `IPasteTarget`.'''
+        Typically, the target is adapted to `IPasteTarget`."""
 
     def moveable():
-        '''Returns ``True`` if the object is moveable, otherwise ``False``.'''
+        """Returns ``True`` if the object is moveable, otherwise ``False``."""
 
     def moveableTo(target, name=None):
-        '''Say whether the object can be moved to the given `target`.
+        """Say whether the object can be moved to the given `target`.
 
         Returns ``True`` if it can be moved there. Otherwise, returns
         ``False``.
-        '''
+        """
 
 class IObjectCopier(Interface):
 
@@ -52,31 +52,41 @@ class IObjectCopier(Interface):
         """
 
     def copyable():
-        '''Returns ``True`` if the object is copyable, otherwise ``False``.'''
+        """Returns ``True`` if the object is copyable, otherwise ``False``."""
 
     def copyableTo(target, name=None):
-        '''Say whether the object can be copied to the given `target`.
+        """Say whether the object can be copied to the given `target`.
 
         Returns ``True`` if it can be copied there. Otherwise, returns
         ``False``.
-        '''
+        """
+
+class IContainerItemRenamer(Interface):
+
+    def renameItem(oldName, newName):
+        """Renames an object in the container from oldName to newName.
+
+        Raises NotFoundError if oldName doesn't exist in the container.
+
+        Raises DuplicationError if newName is already used in the container.
+        """
 
 class IPrincipalClipboard(Interface):
-    '''Interface for adapters that store/retrieve clipboard information
+    """Interface for adapters that store/retrieve clipboard information
     for a principal.
 
     Clipboard information consists on tuples of
       ``{'action':action, 'target':target}``.
-    '''
+    """
 
     def clearContents():
-        '''Clear the contents of the clipboard'''
+        """Clear the contents of the clipboard"""
 
     def addItems(action, targets):
-        '''Add new items to the clipboard'''
+        """Add new items to the clipboard"""
 
     def setContents(clipboard):
-        '''Replace the contents of the clipboard by the given value'''
+        """Replace the contents of the clipboard by the given value"""
 
     def getContents():
-        '''Return the contents of the clipboard'''
+        """Return the contents of the clipboard"""

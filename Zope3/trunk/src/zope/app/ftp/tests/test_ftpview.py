@@ -19,7 +19,12 @@ $Id$
 import datetime
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
+
+from zope.interface import implements
+
 import zope.server.ftp.tests.demofs as demofs
+
+from zope.app.tests import ztapi
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.filerepresentation.interfaces import IWriteDirectory
@@ -28,14 +33,17 @@ from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.ftp import FTPView
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.interface import implements
 from zope.app.copypastemove.interfaces import IObjectMover
+from zope.app.copypastemove.interfaces import IContainerItemRenamer
+from zope.app.copypastemove import ContainerItemRenamer
 from zope.app.container.contained import setitem, Contained
+from zope.app.container.interfaces import IContainer
 
 class Directory(demofs.Directory, Contained):
 
     implements(IReadDirectory, IWriteDirectory, IFileFactory,
-               IDirectoryFactory, IZopeDublinCore, IObjectMover)
+               IDirectoryFactory, IZopeDublinCore, IObjectMover,
+               IContainer)
 
     modified = datetime.datetime(1990, 1,1)
 
@@ -54,7 +62,7 @@ class Directory(demofs.Directory, Contained):
 
     def moveableTo(self, target, name=None):
         return True
-    
+
     def __call__(self, name, content_type='', data=None):
         if data:
             r = File()
@@ -111,6 +119,8 @@ class Test(PlacelessSetup, TestCase):
         root['f'] = File('contents of\nf')
         root['g'] = File('contents of\ng')
         self.__view = FTPView(root, None)
+        ztapi.provideAdapter(IContainer, IContainerItemRenamer,
+            ContainerItemRenamer)
 
     def test_type(self):
         self.assertEqual(self.__view.type('test'), 'd')

@@ -31,7 +31,8 @@ from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.copypastemove import rename
+from zope.app.copypastemove.interfaces import IContainerItemRenamer
+from zope.app.container.interfaces import IContainer
 
 class FTPView(object):
     implements(IFTPPublisher)
@@ -154,8 +155,8 @@ class FTPView(object):
         self.remove(name)
 
     def rename(self, old, new):
-        dir = IWriteDirectory(self.context, None)
-        rename(dir, old, new)
+        dir = IContainer(self.context, None)
+        IContainerItemRenamer(dir).renameItem(old, new)
 
     def _overwrite(self, name, instream, start=None, end=None, append=False):
         file = self._dir[name]
