@@ -19,3 +19,9 @@ from persistence._persistence import simple_new
 
 import copy_reg
 copy_reg.constructor(simple_new)
+
+# Make an interface declaration for Persistent
+from zope.interface import classImplements
+from persistence.interfaces import IPersistent
+
+classImplements(Persistent, IPersistent)
