@@ -9,7 +9,7 @@
      tal:define="s_tool here/portal_syndication;
                  s_site_allowed s_tool/isSiteSyndicationAllowed;
                  s_here_allowed python:s_tool.isSyndicationAllowed(here);
-                 s_allowed: python:s_site_allowed and s_here_allowed;
+                 s_allowed python:s_site_allowed and s_here_allowed;
                 ">
 
 <h2>Default Syndication Properties</h2>
@@ -145,7 +145,7 @@
 
 </div><!--  s_allowed -->
 
-<div tal:condition="python: here.s_site_allowed not(s_here_allowed)">
+<div tal:condition="python: s_site_allowed and not(s_here_allowed)">
 
  <form action="enableSyndication" method="post"
        tal:attributes="action string:${here/absolute_url}/enableSyndication"

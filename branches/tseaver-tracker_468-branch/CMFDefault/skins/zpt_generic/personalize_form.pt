@@ -5,7 +5,7 @@
 
 <div metal:fill-slot="main">
 
- <div tal:define="mtool: here/portal_membership;
+ <div tal:define="mtool here/portal_membership;
                   member mtool/getAuthenticatedMember;
                  ">
 
@@ -54,7 +54,7 @@
 
         <input type="radio" name="listed" 
                tal:attributes="checked python:( hasattr(member,'listed')
-                                      and not(member.getProperty( 'listed' ) )"
+                                  and not(member.getProperty( 'listed' ) ) )"
                value="" id="cb_unlisted" />
        <label for="cb_unlisted">Unlisted</label>
         <dl class="FieldHelp">

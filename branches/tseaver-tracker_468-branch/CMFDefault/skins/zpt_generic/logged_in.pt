@@ -37,9 +37,10 @@
   </div><!-- isAnon -->
 
   <div tal:condition="not: isAnon"
-       tal:define="first_time python:( member.login_time == never
+       tal:define="first_time python:(
+                    member.getProperty( 'login_time', None ) == never
                                        and p_props.validate_email )">
-  >
+  
 
    <div tal:condition="first_time">
     <div tal:define="dum_reg python:member.setProperties(
@@ -100,13 +101,14 @@
     <div tal:define="d_reg python:member.setProperties(
                                             last_login_time=member.login_time); 
                      ereg python:member.setProperties(
-                                            login_time=here.ZopeTime())" />
+                                            login_time=here.ZopeTime());
+                    " />
 
-    <div tal:condition="request/came_from | nothing "
-    >
+    <div tal:condition="request/came_from | nothing ">
       <div tal:define="came_from python:request.get('came_from');
-                       respose: request/RESPONSE;
-                       dredirect python: response.redirect(came_from)" />
+                       response request/RESPONSE;
+                       dredirect python: response.redirect(came_from);
+                      " />
     </div>
 
     <h1 class="DesktopTitle">Login success</h1>

@@ -29,7 +29,7 @@
               ">
 
   <form action="undo" method="POST"
-        tal:attributes="action string:${here/portal_url}/undo"
+        tal:attributes="action_xxx string:${here/absolute_url}/undo"
   >
 
    <p> This application's transactional feature allows you to easily
