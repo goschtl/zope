@@ -25,6 +25,11 @@
          usage="addingdialog"
          />
 
+   <menu id="add_utility"
+         title="Menu of utilities to be added"
+         usage="addingdialog"
+         />
+
    <menu id="add_configuration"
          title="Menu of addable configuration objects"
          usage="addingdialog"

@@ -663,6 +663,20 @@
 
   </view>
 
+<!-- "Add Utility" menu -->
+
+  <view
+    name="AddUtility"
+     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+     permission="zope.ManageServices"
+     class="zope.app.browser.services.service.UtilityAdding">
+
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+
+  </view>
+    
+
 <!-- Translation Service Views -->
 <include package=".translation" />
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.19 2003/04/24 17:22:12 gvanrossum Exp $
+$Id: service.py,v 1.20 2003/04/28 20:42:27 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -25,6 +25,7 @@ from zope.app.interfaces.services.configuration import Registered, Active
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.service import ILocalService
 from zope.app.interfaces.services.service import IServiceManager
+from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.services.folder import SiteManagementFolder
 from zope.app.services.service import ServiceConfiguration
@@ -89,6 +90,18 @@ class ServiceAdding(ComponentAdding):
             raise TypeError("%s is not a local service" % content)
 
         return ContextSuper(ServiceAdding, self).add(content)
+
+class UtilityAdding(ComponentAdding):
+    """Adding subclass used for adding utilities."""
+
+    menu_id = "add_utility"
+
+    def add(self, content):
+        # Override so as to check the type of the new object.
+        # XXX This wants to be generalized!
+        if not ILocalUtility.isImplementedBy(content):
+            raise TypeError("%s is not a local utility" % content)
+        return ContextSuper(UtilityAdding, self).add(content)
 
 
 class AddServiceConfiguration(BrowserView):
