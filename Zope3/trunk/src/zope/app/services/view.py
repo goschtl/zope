@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.16 2003/04/30 17:51:34 gvanrossum Exp $
+$Id: view.py,v 1.17 2003/04/30 21:57:14 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -200,8 +200,8 @@ class ViewService(Persistent):
             else:
                 viewNames = (viewName, )
 
-            for viewName in viewNames:
-                registry = names_dict.get(viewName)
+            for vn in viewNames:
+                registry = names_dict.get(vn)
 
                 if registry is None:
                     continue
@@ -210,7 +210,7 @@ class ViewService(Persistent):
                     required_interfaces,
                     presentation_type):
 
-                    result.append(match + (layer, viewName))
+                    result.append(match + (layer, vn))
 
         return result
 
