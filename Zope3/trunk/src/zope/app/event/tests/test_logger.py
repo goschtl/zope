@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_logger.py,v 1.12 2003/11/27 13:59:18 philikon Exp $
+$Id: test_logger.py,v 1.13 2004/03/02 18:50:59 philikon Exp $
 """
 
 import unittest
@@ -24,7 +24,8 @@ from zope.app.services.servicenames import EventPublication
 
 from zope.app.event import globalSubscribe, globalUnsubscribe, publish
 from zope.app.container.contained import ObjectAddedEvent
-from zope.app.event.globalservice import Logger
+from zope.app.event.globalservice import Logger, eventPublisher
+from zope.app.event.interfaces import IPublisher
 
 class DopeyHandler(logging.Handler):
 
@@ -41,9 +42,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
 
     def setUp(self):
         super(TestLogger1, self).setUp()
-        from zope.app.interfaces.event import IPublisher
         getServiceManager(None).defineService(EventPublication, IPublisher)
-        from zope.app.event.globalservice import eventPublisher
         getServiceManager(None).provideService(EventPublication, eventPublisher)
         # futz a handler in for testing
         self.logger = logging.getLogger("Event.Logger")

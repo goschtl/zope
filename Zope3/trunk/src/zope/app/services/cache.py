@@ -13,13 +13,13 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.21 2004/03/01 10:57:39 philikon Exp $
+$Id: cache.py,v 1.22 2004/03/02 18:51:03 philikon Exp $
 """
 from persistent import Persistent
 from zope.interface import implements
 
 from zope.app import zapi
-from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.interfaces.services.cache import ILocalCachingService
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.cache.interfaces import ICache

@@ -12,38 +12,38 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_eventservice.py,v 1.31 2004/02/09 09:07:44 dunny Exp $
+$Id: test_eventservice.py,v 1.32 2004/03/02 18:51:04 philikon Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
+
+import zope.interface
 from zope.interface import Interface, implements
+from zope.exceptions import NotFoundError
+from zope.component.tests.components import RecordingAdapter
+
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.event import EventService
-from zope.app.traversing import getPath, traverse
-from zope.exceptions import NotFoundError
 from zope.app.services.event import subscribe, unsubscribe, unsubscribeAll
 from zope.app.services.event import getSubscriptionService
+
 from zope.app.event import publish
 from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter
-from zope.app.interfaces.event import IObjectEvent, IObjectModifiedEvent
+from zope.app.event.interfaces import IObjectEvent, IObjectModifiedEvent
+from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribingAware
+
+from zope.app.traversing import getPath, traverse
+from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.container import IObjectAddedEvent
 from zope.app.interfaces.container import IObjectRemovedEvent
-from zope.app.interfaces.event import ISubscriber
-from zope.app.container.contained import ObjectAddedEvent
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.app.interfaces.event import IEvent, ISubscribingAware
+from zope.app.container.contained import ObjectAddedEvent, Contained
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.services.tests.eventsetup import EventSetup
-from zope.component.tests.components import RecordingAdapter
 from zope.app.tests import ztapi
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.services.event import EventService
 from zope.app.tests import setup
-from zope.app.container.contained import Contained
-from zope.app.interfaces.traversing import IContainmentRoot
-import zope.interface
 
 class Folder(Contained):
     pass

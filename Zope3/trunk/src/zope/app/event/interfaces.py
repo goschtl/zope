@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: event.py,v 1.11 2003/09/21 17:32:23 jim Exp $
+$Id: interfaces.py,v 1.1 2004/03/02 18:50:59 philikon Exp $
 """
 
 from zope.interface import Interface, Attribute

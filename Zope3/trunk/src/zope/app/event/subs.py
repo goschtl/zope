@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.23 2004/02/20 22:02:29 fdrake Exp $
+$Id: subs.py,v 1.24 2004/03/02 18:50:59 philikon Exp $
 """
 from zope.exceptions import NotFoundError
 from persistent import Persistent
@@ -25,8 +25,8 @@ from zope.proxy import removeAllProxies
 
 from zope.app.traversing import getPath
 from zope.app.traversing import canonicalPath, traverse
-from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
-from zope.app.interfaces.event import ISubscribingAware
+from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribable
+from zope.app.event.interfaces import ISubscribingAware
 
 from zope.component import getService, queryService, getAdapter, queryAdapter
 from zope.app.services.servicenames import HubIds

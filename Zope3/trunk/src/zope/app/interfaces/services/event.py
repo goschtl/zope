@@ -13,10 +13,10 @@
 ##############################################################################
 """Event Interfaces
 
-$Id: event.py,v 1.7 2003/08/18 18:48:30 srichter Exp $
+$Id: event.py,v 1.8 2004/03/02 18:51:01 philikon Exp $
 """
-from zope.app.interfaces.event import ISubscribable, ISubscriber, IPublisher
-from zope.app.interfaces.event import IEvent
+from zope.app.event.interfaces import ISubscribable, ISubscriber, IPublisher
+from zope.app.event.interfaces import IEvent
 
 class ISubscriptionService(ISubscribable):
     """A Subscribable that implements the Subscription service."""

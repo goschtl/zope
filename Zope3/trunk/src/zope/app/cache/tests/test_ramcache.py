@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_ramcache.py,v 1.12 2004/03/01 10:57:36 philikon Exp $
+$Id: test_ramcache.py,v 1.13 2004/03/02 18:50:56 philikon Exp $
 """
 from time import time
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,7 +25,7 @@ from zope.app.cache.ram import RAMCache
 from zope.app.cache.tests.test_icache import BaseICacheTest
 from zope.app.cache.interfaces import ICache
 from zope.app.cache.interfaces.ram import IRAMCache
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.tests.placelesssetup import PlacelessSetup
 
@@ -207,7 +207,7 @@ class TestRAMCache(PlacelessSetup,
     def test_notify(self):
         from zope.app.cache.ram import RAMCache
         from zope.app.event.objectevent import ObjectModifiedEvent, ObjectEvent
-        from zope.app.interfaces.event import IEvent
+        from zope.app.event.interfaces import IEvent
 
         class DummyEvent:
             implements(IEvent)

@@ -15,11 +15,9 @@
 This contains some dummy stuff to do with subscribing to event channels
 that's useful in several test modules.
 
-Revision information:
-$Id: subscriber.py,v 1.3 2003/06/07 06:37:25 stevea Exp $
+$Id: subscriber.py,v 1.4 2004/03/02 18:50:59 philikon Exp $
 """
-
-from zope.app.interfaces.event import IFilter, ISubscriber
+from zope.app.event.interfaces import IFilter, ISubscriber
 from zope.interface import implements
 
 class DummySubscriber:

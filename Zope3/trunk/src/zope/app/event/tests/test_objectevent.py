@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_objectevent.py,v 1.5 2004/02/09 09:07:44 dunny Exp $
+$Id: test_objectevent.py,v 1.6 2004/03/02 18:50:59 philikon Exp $
 """
 
 import unittest
@@ -26,7 +26,7 @@ from zope.app.event import objectevent
 from zope.app.container.contained import Contained, ObjectRemovedEvent
 from zope.app.interfaces.container import IContained, IObjectRemovedEvent
 from zope.app.interfaces.container import IObjectEvent
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.app.container.sample import SampleContainer
 from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.services.servicenames import Adapters, EventPublication

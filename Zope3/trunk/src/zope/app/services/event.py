@@ -13,14 +13,14 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.36 2003/11/05 03:08:16 jeremy Exp $
+$Id: event.py,v 1.37 2004/03/02 18:51:03 philikon Exp $
 """
 from zope.app import zapi
 
 from zope.exceptions import NotFoundError
 
 from zope.component import queryService
-from zope.app.interfaces.event import IEvent, ISubscriber
+from zope.app.event.interfaces import IEvent, ISubscriber
 from zope.app.interfaces.services.event import ISubscriptionService
 from zope.app.interfaces.services.event import IEventChannel, IEventService
 from zope.app.interfaces.services.service import IBindingAware

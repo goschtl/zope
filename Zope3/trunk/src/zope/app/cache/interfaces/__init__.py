@@ -13,14 +13,14 @@
 ##############################################################################
 """Interfaces for cache manager.
 
-$Id: __init__.py,v 1.2 2004/03/02 14:24:30 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/02 18:50:55 philikon Exp $
 """
 from zope.component.exceptions import ComponentLookupError  
 from zope.interface import Interface
 from zope.schema import TextLine
 
 from zope.app import zapi
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.app.services.servicenames import Caching
 
 class CacheName(TextLine):

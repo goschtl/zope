@@ -12,22 +12,19 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_eventpublisher.py,v 1.8 2004/02/09 09:07:44 dunny Exp $
+$Id: test_eventpublisher.py,v 1.9 2004/03/02 18:50:59 philikon Exp $
 """
-
 import unittest
 
-from zope.app.interfaces.event import IObjectEvent
+from zope.app.event.interfaces import IObjectEvent
 from zope.app.interfaces.container import IObjectAddedEvent
 from zope.app.interfaces.container import IObjectRemovedEvent
-from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.container.contained import ObjectAddedEvent
 from zope.app.event.globalservice import GlobalEventPublisher
 from zope.exceptions import NotFoundError
-from zope.app.interfaces.event import IEvent
+from zope.app.event.interfaces import IEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
 
 from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter

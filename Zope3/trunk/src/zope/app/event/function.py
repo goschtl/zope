@@ -13,11 +13,11 @@
 ##############################################################################
 """Class to create an event subscriber from a simple function.
 
-$Id: function.py,v 1.2 2003/06/25 15:19:07 fdrake Exp $
+$Id: function.py,v 1.3 2004/03/02 18:50:59 philikon Exp $
 """
 
 from zope.interface import implements
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 
 
 class Subscriber:
@@ -38,7 +38,7 @@ class Subscriber:
 
         <event:subscribe
             subscriber='.module.startupEventHandler'
-            event_types='zope.app.interfaces.event.IProcessStartingEvent'
+            event_types='zope.app.event.interfaces.IProcessStartingEvent'
             />
     """
     implements(ISubscriber)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.2 2004/03/02 14:25:00 srichter Exp $
+$Id: wikipage.py,v 1.3 2004/03/02 18:51:05 philikon Exp $
 """
 import smtplib
 from persistent import Persistent
@@ -25,9 +25,9 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.event import ISubscriber
-from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
-from zope.app.interfaces.event import IObjectRemovedEvent, IObjectMovedEvent
+from zope.app.event.interfaces import ISubscriber, IObjectModifiedEvent
+from zope.app.interfaces.container import \
+     IObjectAddedEvent, IObjectRemovedEvent, IObjectMovedEvent
 
 from zope.app.wiki.interfaces import IWiki, IWikiPage, IComment
 from zope.app.wiki.interfaces import IWikiContained, IWikiPageContained
@@ -215,7 +215,7 @@ class WikiMailer:
         self.port = port
 
     def notify(self, event):
-        """See zope.app.interfaces.event.ISubscriber"""
+        """See zope.app.event.interfaces.ISubscriber"""
         if IWikiPage.isImplementedBy(event.object):
             if IObjectAddedEvent.isImplementedBy(event):
                 self.handleAdded(event.object)

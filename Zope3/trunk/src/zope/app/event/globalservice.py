@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: globalservice.py,v 1.12 2003/08/03 21:56:10 philikon Exp $
+$Id: globalservice.py,v 1.13 2004/03/02 18:50:59 philikon Exp $
 """
 
 __metaclass__ = type
@@ -23,8 +23,8 @@ from zope.component import queryAdapter
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
 
-from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribingAware
-from zope.app.interfaces.event import IGlobalSubscribable, IPublisher
+from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribingAware
+from zope.app.event.interfaces import IGlobalSubscribable, IPublisher
 
 import logging
 import pprint

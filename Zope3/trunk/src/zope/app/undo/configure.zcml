@@ -6,7 +6,7 @@
 
   <event:subscribe
       subscriber=".undo.undoSetup"
-      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent"
+      event_types="zope.app.event.interfaces.IDatabaseOpenedEvent"
       />
 
 

@@ -5,7 +5,7 @@
 
 <serviceType
     id='EventPublication' 
-    interface='zope.app.interfaces.event.IPublisher' />
+    interface='zope.app.event.interfaces.IPublisher' />
 
 <service
     serviceType='EventPublication'
@@ -13,6 +13,6 @@
 
 <event:subscribe
     subscriber=".objectevent.objectEventNotifierInstance"
-    event_types="zope.app.interfaces.event.IObjectEvent" />
+    event_types="zope.app.event.interfaces.IObjectEvent" />
 
 </configure>

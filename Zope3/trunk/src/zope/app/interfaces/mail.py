@@ -53,13 +53,13 @@ Email sending from Zope 3 applications works as follows:
   If mail delivery fails, no exceptions are raised, but an IMailErrorEvent is
   dispatched by the mailer.
 
-$Id: mail.py,v 1.4 2003/06/23 15:45:39 alga Exp $
+$Id: mail.py,v 1.5 2004/03/02 18:51:00 philikon Exp $
 """
 
 from zope.interface import Interface, Attribute
 import zope.schema
 
-from zope.app.interfaces.event import IEvent
+from zope.app.event.interfaces import IEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 

@@ -13,19 +13,18 @@
 ##############################################################################
 """Process-lifetime related events.
 
-$Id: event.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
+$Id: event.py,v 1.3 2004/03/02 18:51:02 philikon Exp $
 """
 
-from zope.app.interfaces import event
 from zope.interface import implements
-
+from zope.app.event.interfaces import \
+     IDatabaseOpenedEvent, IProcessStartingEvent
 
 class DatabaseOpened:
-    implements(event.IDatabaseOpenedEvent)
+    implements(IDatabaseOpenedEvent)
 
     def __init__(self, database):
         self.database = database
 
-
 class ProcessStarting:
-    implements(event.IProcessStartingEvent)
+    implements(IProcessStartingEvent)

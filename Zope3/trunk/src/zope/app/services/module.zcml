@@ -27,8 +27,8 @@
 
 <!-- Enable import of persistent modules -->
 <event:subscribe
-  subscriber=".module.installPersistentModuleImporter"
-  event_types="zope.app.interfaces.event.IProcessStartingEvent"
-  />
+    subscriber=".module.installPersistentModuleImporter"
+    event_types="zope.app.event.interfaces.IProcessStartingEvent"
+    />
 
 </configure>

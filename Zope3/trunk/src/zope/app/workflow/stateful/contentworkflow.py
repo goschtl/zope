@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.10 2004/02/27 16:50:40 philikon Exp $
+$Id: contentworkflow.py,v 1.11 2004/03/02 18:51:07 philikon Exp $
 """
 __metaclass__ = type
 
@@ -23,8 +23,8 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.component import getService, queryAdapter
 
-from zope.app.interfaces.event import ISubscriber
-from zope.app.interfaces.event import IObjectCreatedEvent
+from zope.app.event.interfaces import ISubscriber
+from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.services.servicenames import EventSubscription, Workflows
 
 from zope.app.workflow.interfaces import IProcessInstanceContainer
@@ -45,7 +45,7 @@ class ContentWorkflowsManager(Persistent, Contained):
         self._registry = PersistentDict()
 
     def notify(self, event):
-        """See zope.app.interfaces.event.ISubscriber"""
+        """See zope.app.event.interfaces.ISubscriber"""
         obj = event.object
 
         # check if it implements IProcessInstanceContainerAdaptable

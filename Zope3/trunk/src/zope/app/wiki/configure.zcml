@@ -200,10 +200,11 @@
   <!-- Register event listener for change mails -->
   <event:subscribe
       subscriber=".wikipage.mailer"
-      event_types="zope.app.interfaces.event.IObjectAddedEvent
-                   zope.app.interfaces.event.IObjectModifiedEvent
-                   zope.app.interfaces.event.IObjectRemovedEvent
-                   zope.app.interfaces.event.IObjectMovedEvent" />
+      event_types="zope.app.interfaces.container.IObjectAddedEvent
+                   zope.app.event.interfaces.IObjectModifiedEvent
+                   zope.app.interfaces.container.IObjectRemovedEvent
+                   zope.app.interfaces.container.IObjectMovedEvent"
+      />
 
 
   <!-- Register various browser related components, including all views -->

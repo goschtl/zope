@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.6 2004/03/02 14:40:04 philikon Exp $
+$Id: __init__.py,v 1.7 2004/03/02 18:51:00 philikon Exp $
 """
 
 from zope.interface import implements
 from zope.app.index.interfaces import IInterfaceIndexer
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.component import queryAdapter
 
 from zope.app.interfaces.services.hub import \

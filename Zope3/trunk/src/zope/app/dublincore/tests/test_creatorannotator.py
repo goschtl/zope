@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.8 2004/03/01 15:02:50 philikon Exp $
+$Id: test_creatorannotator.py,v 1.9 2004/03/02 18:50:58 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,7 @@ from zope.app.tests import ztapi
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.interfaces.security import IPrincipal
-from zope.app.interfaces.event import IEvent
+from zope.app.event.interfaces import IEvent
 from zope.security.management import noSecurityManager, newSecurityManager
 
 class IDummyContent(Interface):

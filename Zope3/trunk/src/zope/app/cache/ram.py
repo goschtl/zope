@@ -13,17 +13,18 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.13 2004/03/01 10:57:35 philikon Exp $
+$Id: ram.py,v 1.14 2004/03/02 18:50:55 philikon Exp $
 """
 from time import time
 from thread import allocate_lock
 from pickle import dumps
 from persistent import Persistent
+
+from zope.interface import implements
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.cache.interfaces.ram import IRAMCache
-from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.interface import implements
+from zope.app.event.interfaces import IObjectModifiedEvent
 
 # A global caches dictionary shared between threads
 caches = {}

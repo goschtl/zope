@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikimail.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id: test_wikimail.py,v 1.2 2004/03/02 18:51:06 philikon Exp $
 """
 import unittest
 
@@ -22,7 +22,7 @@ from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.app.attributeannotations import AttributeAnnotations
 
 from zope.app.wiki.interfaces import IWikiPage, IWiki, IMailSubscriptions

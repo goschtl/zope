@@ -13,13 +13,11 @@
 ##############################################################################
 """Unit test logic for setting up and tearing down basic infrastructure
 
-
-$Id: placelesssetup.py,v 1.13 2004/02/09 09:07:44 dunny Exp $
+$Id: placelesssetup.py,v 1.14 2004/03/02 18:50:59 philikon Exp $
 """
-
 from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication
-from zope.app.interfaces.event import IPublisher, ISubscriber, IObjectEvent
+from zope.app.event.interfaces import IPublisher, ISubscriber, IObjectEvent
 from zope.app.event.globalservice import eventPublisher
 from zope.app.event.objectevent import objectEventNotifierInstance
 from zope.interface import implements

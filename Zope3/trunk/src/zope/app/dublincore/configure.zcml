@@ -18,18 +18,18 @@
 
   <event:subscribe
       subscriber=".timeannotators.ModifiedAnnotator"
-      event_types="zope.app.interfaces.event.IObjectModifiedEvent"
+      event_types="zope.app.event.interfaces.IObjectModifiedEvent"
       />
 
   <event:subscribe
       subscriber=".timeannotators.CreatedAnnotator"
-      event_types="zope.app.interfaces.event.IObjectCreatedEvent"
+      event_types="zope.app.event.interfaces.IObjectCreatedEvent"
       />
 
   <event:subscribe
       subscriber=".creatorannotator.CreatorAnnotator"
-      event_types="zope.app.interfaces.event.IObjectModifiedEvent
-                   zope.app.interfaces.event.IObjectCreatedEvent"
+      event_types="zope.app.event.interfaces.IObjectModifiedEvent
+                   zope.app.event.interfaces.IObjectCreatedEvent"
     />
 
   <fssync:adapter

@@ -13,12 +13,12 @@
 ##############################################################################
 """RAM cache interface.
 
-$Id: ram.py,v 1.1 2004/03/01 10:57:36 philikon Exp $
+$Id: ram.py,v 1.2 2004/03/02 18:50:55 philikon Exp $
 """
 from zope.interface import Attribute
 
 from zope.app.cache.interfaces import ICache
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.app.interfaces.services.registration import IRegisterable
 
 class IRAMCache(ICache, ISubscriber, IRegisterable):

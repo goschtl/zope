@@ -13,13 +13,13 @@
 ##############################################################################
 """Object that takes care of annotating the dublin core creator field.
 
-$Id: creatorannotator.py,v 1.6 2004/03/01 15:02:49 philikon Exp $
+$Id: creatorannotator.py,v 1.7 2004/03/02 18:50:58 philikon Exp $
 """
 __metaclass__ = type
 
 from zope.component import queryAdapter
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.security.management import getSecurityManager
 from zope.interface import implements
 

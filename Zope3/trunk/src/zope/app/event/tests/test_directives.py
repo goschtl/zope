@@ -12,11 +12,8 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: test_directives.py,v 1.13 2003/11/27 13:59:18 philikon Exp $
+$Id: test_directives.py,v 1.14 2004/03/02 18:50:59 philikon Exp $
 """
-
 from unittest import TestCase, main, makeSuite
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
@@ -32,13 +29,13 @@ from zope.app.event.tests.test_eventpublisher import DummyEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication
-from zope.app.interfaces.event import IEvent
+from zope.app.event.interfaces import IEvent
 
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        from zope.app.interfaces.event import IPublisher
+        from zope.app.event.interfaces import IPublisher
         getServiceManager(None).defineService(EventPublication, IPublisher)
         from zope.app.event.globalservice import eventPublisher
         getServiceManager(None).provideService(EventPublication, eventPublisher)

@@ -12,10 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.4 2003/08/03 21:56:10 philikon Exp $
+$Id: metaconfigure.py,v 1.5 2004/03/02 18:50:59 philikon Exp $
 """
 
-from zope.app.interfaces.event import IEvent
+from zope.app.event.interfaces import IEvent
 from globalservice import globalSubscribeMany
 
 directive_counter = 0

@@ -13,34 +13,35 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.10 2004/02/27 16:50:40 philikon Exp $
+$Id: test_contentworkflow.py,v 1.11 2004/03/02 18:51:08 philikon Exp $
 """
 import unittest
+
+from zope.component import getServiceManager
+from zope.interface import Interface, implements
+from zope.interface.verify import verifyClass
 
 from zope.app import zapi
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.tests.placelesssetup import \
      eventPublisher, EventRecorder, clearEvents
 from zope.app.interfaces.annotation import IAnnotatable, IAttributeAnnotatable
-from zope.app.interfaces.event import IObjectCreatedEvent
+from zope.app.event.interfaces import IObjectCreatedEvent
+from zope.app.services.event import EventService
+from zope.app.services.servicenames import EventSubscription
 from zope.app.interfaces.services.event import ISubscriptionService
 from zope.app.interfaces.services.registration import ActiveStatus
+
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces.stateful import IContentWorkflowsManager
-from zope.app.services.event import EventService
 from zope.app.workflow.instance import ProcessInstanceContainerAdapter
 from zope.app.workflow.service import ProcessDefinitionRegistration
-from zope.app.services.servicenames import EventSubscription
 from zope.app.workflow.stateful.contentworkflow import ContentWorkflowsManager
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.tests.test_service import DummyProcessDefinition
-from zope.component import getServiceManager
-from zope.app.tests import ztapi
-from zope.interface import Interface, implements
-from zope.interface.verify import verifyClass
 
-from zope.app.tests import setup
+from zope.app.tests import ztapi, setup
 
 
 class IFace1(Interface):

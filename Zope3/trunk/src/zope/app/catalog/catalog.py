@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog
 
-$Id: catalog.py,v 1.18 2004/03/01 11:46:22 philikon Exp $
+$Id: catalog.py,v 1.19 2004/03/02 18:50:56 philikon Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -24,7 +24,7 @@ from zope.index.interfaces import ISimpleQuery
 
 from zope.app.zapi import getService, getAdapter
 from zope.app.services.servicenames import HubIds
-from zope.app.interfaces.event import ISubscriber
+from zope.app.event.interfaces import ISubscriber
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.container import IRemoveNotifiable, IAddNotifiable

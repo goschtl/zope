@@ -13,13 +13,13 @@
 ##############################################################################
 """Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.1 2004/02/27 16:50:39 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/02 18:51:07 philikon Exp $
 """
 from zope.interface import Interface
 from zope.interface import Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.event import IEvent
+from zope.app.event.interfaces import IEvent
 from zope.app.interfaces.services.registration \
      import INamedComponentRegistration
 from zope.app.interfaces.services.registration import ComponentPath

@@ -13,14 +13,14 @@
 ##############################################################################
 """A functional GlobalEventChannel test.
 
-$Id: test_globaleventchannel.py,v 1.5 2003/11/27 13:59:18 philikon Exp $
+$Id: test_globaleventchannel.py,v 1.6 2004/03/02 18:50:59 philikon Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.interfaces.event import IEvent, ISubscribingAware, ISubscriber
+
 from zope.interface import Interface, implements
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component.tests.components import RecordingAdapter
+from zope.app.event.interfaces import IEvent, ISubscribingAware, ISubscriber
 from zope.app.tests import ztapi
 
 class ISomeEvent(IEvent):

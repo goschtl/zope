@@ -65,10 +65,12 @@
 
   <event:subscribe
       subscriber=".bootstrap.bootstrapInstance"
-      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent" />
+      event_types="zope.app.event.interfaces.IDatabaseOpenedEvent"
+      />
 
   <event:subscribe
       subscriber=".bootstrap.createInterfaceService"
-      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent" />
+      event_types="zope.app.event.interfaces.IDatabaseOpenedEvent"
+      />
 
 </configure>
