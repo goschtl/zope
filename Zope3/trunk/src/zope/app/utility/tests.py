@@ -13,9 +13,10 @@
 ##############################################################################
 """Utility service tests
 
-$Id: tests.py,v 1.7 2004/04/17 14:33:46 srichter Exp $
+$Id: tests.py,v 1.8 2004/04/24 23:20:26 srichter Exp $
 """
 import unittest
+from zope.testing.doctestunit import DocTestSuite
 from zope.app.tests import setup
 from zope.app.site.tests import placefulsetup
 from zope.app import utility, zapi
@@ -211,9 +212,14 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         # Make sure we override:
         self.assertEqual(zapi.getUtility(sm2, IFoo, 'u2').name, 'u22')
 
-def test_suite():
-    return unittest.makeSuite(TestUtilityService)
 
+def test_suite():
+    return unittest.TestSuite((
+        unittest.makeSuite(TestUtilityService),
+        DocTestSuite('zope.app.utility.vocabulary',
+                     setUp=setup.placelessSetUp,
+                     tearDown=setup.placelessTearDown)
+        ))
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(default='test_suite')
