@@ -10,9 +10,9 @@ import sys, os, types
 import datetime
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
-    WATCH_CHECKERS = 1
+    WATCH_CHECKERS = True
 else:
-    WATCH_CHECKERS = 0
+    WATCH_CHECKERS = False
 
 
 def ProxyFactory(object, checker=None):
