@@ -11,7 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Support for handling package configuration files."""
+"""Support for handling package configuration files.
+
+:Variables:
+  - `PACKAGE_CONF`:  Default name of the package information file.
+  - `SCHEMA`:  Schema for the package information file.
+
+:Groups:
+  - `Public interface`: loadPackageInfo
+  - `Helper functions`: create_extension expand_globs
+  - `Datatype functions`: cpp_definition cpp_names path_ref extension
+
+:undocumented: _cpp_ident_match
+"""
 
 import glob
 import os
@@ -49,7 +61,7 @@ def loadPackageInfo(pkgname, directory, reldir, file=None):
         pkginfo = p.load()
     finally:
         f.close()
-    pkginfo.extensions = [create_extension(ext, pkgname, directory, reldir)
+    pkginfo.extensions = [create_extension(ext, pkgname, reldir)
                           for ext in pkginfo.extension]
     if reldir:
         pkginfo.documentation = expand_globs(directory, reldir,
@@ -58,7 +70,61 @@ def loadPackageInfo(pkgname, directory, reldir, file=None):
     return pkginfo
 
 
+def create_extension(section, pkgname, reldir):
+    """Create an `Extension` instance from a configuration section.
+
+    :Parameters:
+      - `section`: Section object from the configuration file.
+      - `pkgname`: Full name of the containing package.  This should
+        be an empty string or ``None`` if the extension is not in a
+        package.
+      - `reldir`: Directory in which the extension lives, relative to
+        the top of the distribution, given in POSIX notation.
+
+    """
+    kwargs = {}
+    if pkgname:
+        kwargs["name"] = "%s.%s" % (pkgname, section.name)
+    else:
+        kwargs["name"] = section.name
+    kwargs["sources"] = [posixpath.join(reldir, fn)
+                         for fn in section.source]
+    if section.define:
+        kwargs["define_macros"] = section.define
+    if section.undefine:
+        kwargs["undef_macros"] = undefs = []
+        for L in section.undefine:
+            undefs.extend(L)
+    if section.depends_on:
+        kwargs["depends"] = [posixpath.join(reldir, fn)
+                             for fn in section.depends_on]
+    if section.language:
+        kwargs["language"] = section.language[0]
+    return Extension(**kwargs)
+
+
 def expand_globs(directory, reldir, globlist):
+    """Expand glob patterns for directory.
+
+    :Parameters:
+      - `directory`: The path to the directory to which the glob
+        patterns are relative to.
+      - `reldir`: Base directory to use for returning glob expansions.
+        This should be a relative path in POSIX notation.  This is not
+        used for locating files.
+      - `globlist`: List of glob patterns in POSIX notation.  The
+        patterns may refer to child directories of `directory`.
+
+    :return: List of expansions in POSIX notation, using `reldir` as
+      the base directory.
+
+    Note that `directory` and `reldir` are two different names for the
+    same directory.
+
+    :warning: This function is not thread safe, as it changes the
+      current working directory while it is running.
+
+    """
     results = []
     pwd = os.getcwd()
     os.chdir(directory)
@@ -76,8 +142,12 @@ def expand_globs(directory, reldir, globlist):
     return results
 
 
+# datatype functions referenced by the schema:
+
 def cpp_definition(s):
     r"""Return a 2-tuple representing a CPP #define.
+
+    :rtype: (str, str or None)
 
     The first element of the tuple is the name to define, and the
     second is the value to use as the replacement text.  In the input,
@@ -122,6 +192,8 @@ def cpp_definition(s):
 def cpp_names(s):
     r"""Return a list of CPP symbols from a string.
 
+    :rtype: [str, ...]
+
     >>> cpp_names('NAME')
     ['NAME']
     >>> cpp_names('NAME1 NAME_2 A_B_C A123')
@@ -151,6 +223,11 @@ _cpp_ident_match = re.compile("[A-Za-z_][A-Za-z_0-9]*$").match
 
 
 def extension(section):
+    """Transform `section`, checking several fields for valid values.
+
+    :param section: Configuration section.
+    :return: Modified section.
+    """
     section.name = section.getSectionName()
     if not section.name:
         raise ValueError("extensions must be named")
@@ -161,30 +238,10 @@ def extension(section):
     return section
 
 
-def create_extension(section, pkgname, directory, reldir):
-    kwargs = {}
-    if pkgname:
-        kwargs["name"] = "%s.%s" % (pkgname, section.name)
-    else:
-        kwargs["name"] = section.name
-    kwargs["sources"] = [posixpath.join(reldir, fn)
-                         for fn in section.source]
-    if section.define:
-        kwargs["define_macros"] = section.define
-    if section.undefine:
-        kwargs["undef_macros"] = undefs = []
-        for L in section.undefine:
-            undefs.extend(L)
-    if section.depends_on:
-        kwargs["depends"] = [posixpath.join(reldir, fn)
-                             for fn in section.depends_on]
-    if section.language:
-        kwargs["language"] = section.language[0]
-    return Extension(**kwargs)
-
-
 def path_ref(s):
     """Datatype for a local path reference.
+
+    :rtype: str
 
     >>> path_ref('README.txt')
     'README.txt'
