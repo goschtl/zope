@@ -15,7 +15,7 @@
         permission="zope.ManageContent" />
 
     <!-- provide a own Contents view without add and delete functions 
-         Perhaps we enhance this view later. At this time we use thos view
+         Perhaps we enhance this view later. At this time we use this view
          instead of the inherited Contents view from the ocntainer. -->
     <page
         for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
@@ -23,6 +23,15 @@
         attribute="contents"
         class=".source.PrincipalSource"
         menu="zmi_views" title="Contents"
+        permission="zope.ManageContent"/>
+
+    <!-- provide a own Contents view with add and delete functions. -->
+    <page
+        for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
+        name="manager.html"
+        attribute="manager"
+        class=".source.PrincipalSourceManager"
+        menu="zmi_views" title="Manager"
         permission="zope.ManageContent"/>
 
     <editform 

@@ -3,6 +3,11 @@
     xmlns="http://namespaces.zope.org/browser">
 
     <!-- LDAP principal manager -->
+    <icon
+        name="zmi_icon"
+        for="zope.app.pluggableauth.interfaces.IPrincipal"
+        file="principal.gif"
+        />
 
 
 </configure>

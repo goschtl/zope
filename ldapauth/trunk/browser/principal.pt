@@ -13,21 +13,17 @@
         </tr>
       </thead>
       <tbody>
-        <metal:block tal:repeat="info python:view.getUserInfos()">
-					<tr tal:define="oddrow repeat/info/odd"
-              tal:attributes="class python:oddrow and 'even' or 'odd'" >
-						<td>
-							<span tal:content="structure info/icon|default"></span>
-              <span tal:content="python:info['login']">login</span>
-						</td>
-						<td>
-							<span tal:content="python:info['title']">title</span>
-						</td>
-						<td>
-							<span tal:content="python:info['description']">description</span>
-						</td>
-					</tr>
-        </metal:block>
+        <tr tal:repeat="info python:view.getUserInfos()" >
+          <td>
+					  <span tal:content="python:info['login']">login</span>
+          </td>
+          <td>
+					  <span tal:content="python:info['title']">title</span>
+          </td>
+          <td>
+					  <span tal:content="python:info['description']">description</span>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>

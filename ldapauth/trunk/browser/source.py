@@ -46,7 +46,12 @@ class PrincipalSource(BrowserView):
         
         for principal in principals:
             info = trustedRemoveSecurityProxy(principal)
+            zmi_icon = zapi.queryView(info, 'zmi_icon', request)
             entry = {}
+            if zmi_icon is None:
+                entry['icon'] = None
+            else:
+                entry['icon'] = zmi_icon()
             entry['login'] = info.getLogin()
             entry['title'] = info.title
             entry['description'] = info.description
@@ -64,3 +69,40 @@ class PrincipalSource(BrowserView):
 
 
     contents = ViewPageTemplateFile('source.pt')
+
+
+
+class PrincipalSourceManager(PrincipalSource):
+
+    __used_for__ = ILDAPBasedPrincipalSource
+
+    error = ""
+
+    def getUserInfos(self):
+        context = self.context
+        request = self.request
+        infoList = []
+        try:
+            principals = self.context.getPrincipals(name='')
+        except :
+            principals = []
+            self.error = _("Error, No LDAP server or connection found")
+        
+        for principal in principals:
+            info = trustedRemoveSecurityProxy(principal)
+            zmi_icon = zapi.queryView(info, 'zmi_icon', request)
+            entry = {}
+            if zmi_icon is None:
+                entry['icon'] = None
+            else:
+                entry['icon'] = zmi_icon()
+            entry['url'] = info.id
+            entry['login'] = info.getLogin()
+            entry['title'] = info.title
+            entry['description'] = info.description
+            infoList.append(entry)
+        
+        return infoList
+
+
+    manager = ViewPageTemplateFile('manager.pt')
