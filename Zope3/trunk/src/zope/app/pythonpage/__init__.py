@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.9 2004/04/09 14:06:23 hdima Exp $
+$Id: __init__.py,v 1.10 2004/04/12 10:37:14 hdima Exp $
 """
 import re
 from persistent import Persistent
@@ -25,8 +25,6 @@ from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-triple_quotes_start = re.compile('^[ \t]*([uU]?[rR]?)("""|\'\'\')',
-                                 re.MULTILINE)
 
 class IPythonPage(Interface):
     """Python Page
@@ -93,6 +91,18 @@ class PythonPage(Contained, Persistent):
       >>> pp(request)
       u'<html>...</html>\n'
 
+      Make sure that unicode strings work as expected.
+
+      >>> pp.setSource(u"u'''\u0442\u0435\u0441\u0442'''")
+      >>> pp(request)
+      u'\u0442\u0435\u0441\u0442\n'
+
+      Make sure that multi-line strings work.
+
+      >>> pp.setSource(u"u'''test\ntest\ntest'''")
+      >>> pp(request)
+      u'test\ntest\ntest\n'
+
       Here you can see a simple Python command...
 
       >>> pp.setSource(u"print u'<html>...</html>'")
@@ -113,22 +123,25 @@ class PythonPage(Contained, Persistent):
 
       Make sure that faulty syntax is interpreted correctly.
 
-      >>> try:
-      ...     pp.setSource(u"'''<html>...</html>") #'''"
-      ... except SyntaxError, err:
-      ...     print err
-      No matching closing quotes found. (line 1)
-
       # XXX: Note: We cannot just print the error directly, since there is a
       # bug in the Linux version of Python that does not display the filename
       # of the source correctly. So we construct an information string by hand.
 
+      >>> def print_err(err):
+      ...     print ('%(msg)s, %(filename)s, line %(lineno)i, offset %(offset)i'
+      ...           % err.__dict__)
+      ...
+      >>> try:
+      ...     pp.setSource(u"'''<html>...</html>") #'''"
+      ... except SyntaxError, err:
+      ...     print_err(err)
+      EOF while scanning triple-quoted string, /pp, line 1, offset 19
+
       >>> try:
       ...     pp.setSource(u"prin 'hello'")
       ... except SyntaxError, err:
-      ...     err_dict = err.__dict__
-      ...     print '%(filename)s, line %(lineno)i, offset %(offset)i' %err_dict
-      /pp, line 1, offset 12
+      ...     print_err(err)
+      invalid syntax, /pp, line 1, offset 12
     """
 
     implements(IPythonPage)
@@ -155,8 +168,6 @@ class PythonPage(Contained, Persistent):
         # Make sure the code and the source are synchronized
         if hasattr(self, '_v_compiled'):
             del self._v_compiled
-        if hasattr(self, '_PythonPage__prepared_source'):
-            del self.__prepared_source
 
         self.__prepared_source = self.prepareSource(source)
 
@@ -164,39 +175,15 @@ class PythonPage(Contained, Persistent):
         self._v_compiled = compile(self.__prepared_source,
                                    self.__filename(), 'exec')
 
+    _tripleQuotedString = re.compile(
+        r"^([ \t]*)[uU]?([rR]?)(('''|\"\"\").*?\4)", re.MULTILINE | re.DOTALL)
+
     def prepareSource(self, source):
         """Prepare source."""
-        source = source.encode('utf-8')
         # compile() don't accept '\r' altogether
         source = source.replace("\r\n", "\n")
         source = source.replace("\r", "\n")
-
-        start = 0
-        length = len(source)
-        while start < length:
-            match = triple_quotes_start.search(source, start)
-            if match is None:
-                break
-
-            if "r" in match.group(1).lower():
-                prt = "print ur"
-            else:
-                prt = "print u"
-            source = source[:match.start(1)] + prt + source[match.start(2):]
-            start = match.start(1) + len(prt) + 3
-
-            # Now let's find the end of the quote
-            end = source.find(match.group(2), start)
-
-            if end < 0:
-                lineno = source.count("\n", 0, start) + 1
-                offset = match.end() - match.start()
-                raise SyntaxError('No matching closing quotes found.',
-                    (self.__filename(), lineno, offset, match.group()))
-
-            start = end + 3
-
-        return source
+        return self._tripleQuotedString.sub(r"\1print u\2\3", source)
 
     def getSource(self):
         """Get the original source code."""
@@ -209,8 +196,6 @@ class PythonPage(Contained, Persistent):
     def __call__(self, request, **kw):
         """See IPythonPage"""
 
-        if not hasattr(self, '_PythonPage__prepared_source'):
-            self.__prepared_source = self.prepareSource(self.__source)
         # Compile objects cannot be pickled
         if not hasattr(self, '_v_compiled'):
             self._v_compiled = compile(self.__prepared_source,
