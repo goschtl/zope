@@ -36,7 +36,8 @@ from zpkgsetup import publication
 
 
 # Names that are exluded from globbing results:
-EXCLUDE_NAMES = ["CVS", ".cvsignore", "RCS", "SCCS", ".svn"]
+EXCLUDE_NAMES = ["{arch}", "CVS", ".cvsignore", "_darcs",
+                 "RCS", "SCCS", ".svn"]
 EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]", ".#*", "*~"]
 
 def filter_names(names):
