@@ -1617,31 +1617,6 @@ class datetimetz(datetime):
         raise ValueError("astimezone():  tz.utcoffset() gave "
                          "inconsistent results; cannot convert")
 
-    def _finish_astimezone(self, other, otoff):
-        # If this is the first hour of DST, it may be a local time that
-        # doesn't make sense on the local clock, in which case the naive
-        # hour before it (in standard time) is equivalent and does make
-        # sense on the local clock.  So force that.
-        alt = other - _HOUR
-        altoff = alt.utcoffset()
-        if altoff is None:
-            self._inconsistent_utcoffset_error()
-        # Are alt and other really the same time?  alt == other iff
-        # alt - altoff == other - otoff, iff
-        # (other - _HOUR) - altoff = other - otoff, iff
-        # otoff - altoff == _HOUR
-        diff = otoff - altoff
-        if diff == _HOUR:
-            return alt      # use the local time that makes sense
-
-        # There's still a problem with the unspellable (in local time)
-        # hour after DST ends.
-        if self == other:
-            return other
-        # Else there's no way to spell self in zone other.tz.
-        raise ValueError("astimezone():  the source datetimetz can't be "
-                         "expressed in the target timezone's local time")
-
     def astimezone(self, tz):
         _check_tzinfo_arg(tz)
         # This is somewhat convoluted because we can only call
@@ -1678,7 +1653,31 @@ class datetimetz(datetime):
             otoff = other.utcoffset()
             if otoff is None:
                 self._inconsistent_utcoffset_error()
-        return self._finish_astimezone(other, otoff)
+
+        # If this is the first hour of DST, it may be a local time that
+        # doesn't make sense on the local clock, in which case the naive
+        # hour before it (in standard time) is equivalent and does make
+        # sense on the local clock.  So force that.
+        alt = other - _HOUR
+        altoff = alt.utcoffset()
+        if altoff is None:
+            self._inconsistent_utcoffset_error()
+        # Are alt and other really the same time?  alt == other iff
+        # alt - altoff == other - otoff, iff
+        # (other - _HOUR) - altoff = other - otoff, iff
+        # otoff - altoff == _HOUR
+        diff = otoff - altoff
+        if diff == _HOUR:
+            return alt      # use the local time that makes sense
+
+        # There's still a problem with the unspellable (in local time)
+        # hour after DST ends.
+        if self == other:
+            return other
+        # Else there's no way to spell self in zone other.tz.
+        raise ValueError("astimezone():  the source datetimetz can't be "
+                         "expressed in the target timezone's local time")
+
 
     def isoformat(self, sep='T'):
         s = super(datetimetz, self).isoformat(sep)

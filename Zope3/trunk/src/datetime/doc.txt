@@ -2,8 +2,6 @@ TODO/OPEN
 =========
 - The Python implementation is missing docstrings in many places.
 
-- LaTeXize the docs.
-
 
 CLOSED
 ======
@@ -833,9 +831,6 @@ dt.tzinfo is the same object as self.  tzinfo methods can rely on this,
 unless user code calls tzinfo methods directly.  The intent is that the
 tzinfo methods interpret dt as being in local time, and not need to worry
 about objects in other timezones.
-XXX That isn't always true yet:  datetimetz.astimezone(tz) can pass
-XXX a datetimetz with a "foreign" tzinfo to a self.tzinfo method.  This
-XXX needs to be repaired.
 
 Example tzinfo classes:
 
@@ -1160,11 +1155,11 @@ Instance methods:
     any conversion of date or time fields.  If self is aware and
     tz.utcoffset(self) does not return None, the date and time fields
     are adjusted so that the result is local time in timezone tz,
-    representing the same UTC time as self.  self.astimezone(tz) is then
-    equivalent to
-        (self - (self.utcoffset() - tz.utcoffset(self)).replace(tzinfo=tz)
-    where the result of tz.uctcoffset(self) is coerced to a timedelta if
-    needed.
+    representing the same UTC time as self.
+    XXX The treatment of endcases remains unclear:  for DST-aware
+    XXX classes, one hour per year has two spellings in local time, and
+    XXX another hour has no spelling in local time.
+    
 
   - timetuple()
     Like datetime.timetuple(), but sets the tm_isdst flag according to
