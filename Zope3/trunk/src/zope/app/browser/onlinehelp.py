@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.11 2003/07/15 14:46:04 srichter Exp $
+$Id: onlinehelp.py,v 1.12 2003/07/30 01:06:05 rogerineichen Exp $
 """
 from zope.interface import providedBy
 
@@ -72,7 +72,7 @@ class FindRelevantHelpTopics(BrowserView):
                     path = map(getName, [topic]+parents[:-1]) 
                     path.reverse()
                     url = getView(obj, 'absolute_url', self.request)()
-                    url += '/++help++/'+'/'.join(path)
+                    url += '/++help++/++skin++Onlinehelp/'+'/'.join(path)
                     topics.append(FindResult(url, topic))
         
         return topics
