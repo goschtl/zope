@@ -13,39 +13,39 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.15 2003/03/21 15:29:09 alga Exp $
+$Id: configuration.py,v 1.16 2003/03/21 21:05:58 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
-
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-
-from zope.component \
-     import getAdapter, getService, queryService, getServiceManager
-
-from zope.proxy.context import ContextMethod, ContextWrapper
-from zope.proxy.introspection import removeAllProxies
-
-from zope.security.checker import InterfaceChecker
-from zope.security.proxy import Proxy
-
 from zope.app.interfaces.annotation import IAnnotations
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
+from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.interfaces.dependable import IDependable, DependencyError
-
+from zope.app.interfaces.services.configuration import IConfigurationManager
 from zope.app.interfaces.services.configuration import IConfigurationRegistry
 from zope.app.interfaces.services.configuration \
-     import INameComponentConfigurable, INamedConfiguration, IConfiguration
+     import INameComponentConfigurable
+from zope.app.interfaces.services.configuration import INamedConfiguration
+from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.interfaces.services.configuration \
-     import INamedComponentConfiguration, INameConfigurable
+     import INamedComponentConfiguration
+from zope.app.interfaces.services.configuration import INameConfigurable
+from zope.app.interfaces.services.configuration \
+     import INamedComponentConfiguration, IComponentConfiguration
 from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.interfaces.services.configuration \
-     import Unregistered, Registered, Active
 
-from zope.app.traversing \
-     import getRoot, getPath, traverse, canonicalPath
-
+from zope.app.interfaces.services.configuration import Unregistered
+from zope.app.interfaces.services.configuration import Registered, Active
+from zope.app.traversing import getRoot, getPath, traverse
+from zope.app.traversing import canonicalPath
+from zope.component import getAdapter
+from zope.component import getService, queryService, getServiceManager
+from zope.proxy.context import ContextMethod, ContextWrapper
+from zope.proxy.introspection import removeAllProxies
+from zope.security.checker import InterfaceChecker
+from zope.security.proxy import Proxy
 
 class ConfigurationStatusProperty:
 
@@ -61,6 +61,9 @@ class ConfigurationStatusProperty:
 
         configuration = inst
         service = queryService(configuration, self.service)
+        # XXX The following may fail; there's a subtle bug here when
+        # the returned service isn't in the same service manager as
+        # the one owning the configuration.
         registry = service and service.queryConfigurationsFor(configuration)
 
         if registry:
@@ -307,29 +310,28 @@ class NamedConfiguration(SimpleConfiguration):
 
     def __init__(self, name):
         self.name = name
-        super(NamedConfiguration, self).__init__()
 
     def usageSummary(self):
         return "%s %s" % (self.name, self.__class__.__name__)
 
 
-class NamedComponentConfiguration(NamedConfiguration):
-    """Named component configuration
+class ComponentConfiguration(SimpleConfiguration):
+    """Component configuration.
 
     Subclasses should define a getInterface() method returning the interface
     of the component.
     """
 
-    # NamedConfiguration.__implements__ includes IDeleteNotifiable
-    __implements__ = (INamedComponentConfiguration,
-                      NamedConfiguration.__implements__, IAddNotifiable)
+    # SimpleConfiguration.__implements__ includes IDeleteNotifiable
+    __implements__ = (IComponentConfiguration,
+                      SimpleConfiguration.__implements__,
+                      IAddNotifiable)
 
-    def __init__(self, name, component_path, permission=None):
+    def __init__(self, component_path, permission=None):
         self.componentPath = component_path
         if permission == 'zope.Public':
             permission = CheckerPublic
         self.permission = permission
-        super(NamedComponentConfiguration, self).__init__(name)
 
     def implementationSummary(self):
         return canonicalPath(self.componentPath)
@@ -375,12 +377,27 @@ class NamedComponentConfiguration(NamedConfiguration):
 
     def beforeDeleteHook(self, configuration, container):
         "See IDeleteNotifiable"
-        super(NamedComponentConfiguration, self
-              ).beforeDeleteHook(configuration, container)
+        super(ComponentConfiguration, self).beforeDeleteHook(configuration,
+                                                             container)
         component = configuration.getComponent()
         dependents = getAdapter(component, IDependable)
         objectpath = getPath(configuration)
         dependents.removeDependent(objectpath)
+
+
+class NamedComponentConfiguration(NamedConfiguration, ComponentConfiguration):
+    """Configurations for named components.
+
+    This configures components that live in folders, by name.
+    """
+
+    __implements__ = (INamedComponentConfiguration,
+                      NamedConfiguration.__implements__,
+                      ComponentConfiguration.__implements__)
+
+    def __init__(self, name, component_path, permission=None):
+        NamedConfiguration.__init__(self, name)
+        ComponentConfiguration.__init__(self, component_path, permission)
 
 
 class NameConfigurable:
@@ -466,3 +483,133 @@ class UseConfiguration:
     def usages(self):
         annotations = getAdapter(self.context, IAnnotations)
         return annotations.get(USE_CONFIG_KEY, ())
+
+class ConfigurationManager(Persistent):
+    """Configuration manager
+
+    Manages configurations within a package.
+    """
+
+    __implements__ = IConfigurationManager, IDeleteNotifiable
+
+    def __init__(self):
+        self._data = ()
+        self._next = 0
+
+    def __getitem__(self, key):
+        "See IItemContainer"
+        v = self.get(key)
+        if v is None:
+            raise KeyError, key
+        return v
+
+    def get(self, key, default=None):
+        "See Interface.Common.Mapping.IReadMapping"
+        for k, v in self._data:
+            if k == key:
+                return v
+        return default
+
+    def __contains__(self, key):
+        "See Interface.Common.Mapping.IReadMapping"
+        return self.get(key) is not None
+
+
+    def keys(self):
+        "See Interface.Common.Mapping.IEnumerableMapping"
+        return [k for k, v in self._data]
+
+    def __iter__(self):
+        return iter(self.keys())
+
+    def values(self):
+        "See Interface.Common.Mapping.IEnumerableMapping"
+        return [v for k, v in self._data]
+
+    def items(self):
+        "See Interface.Common.Mapping.IEnumerableMapping"
+        return self._data
+
+    def __len__(self):
+        "See Interface.Common.Mapping.IEnumerableMapping"
+        return len(self._data)
+
+    def setObject(self, key, object):
+        "See IWriteContainer"
+        self._next += 1
+        key = str(self._next)
+        self._data += ((key, object), )
+        return key
+
+    def __delitem__(self, key):
+        "See IWriteContainer"
+        if key not in self:
+            raise KeyError, key
+        self._data = tuple(
+            [item
+             for item in self._data
+             if item[0] != key]
+            )
+
+    def moveTop(self, names):
+        self._data = tuple(
+            [item for item in self._data if (item[0] in names)]
+            +
+            [item for item in self._data if (item[0] not in names)]
+            )
+
+    def moveBottom(self, names):
+        self._data = tuple(
+            [item for item in self._data if (item[0] not in names)]
+            +
+            [item for item in self._data if (item[0] in names)]
+            )
+
+    def _moveUpOrDown(self, names, direction):
+        # Move each named item by one position. Note that this
+        # might require moving some unnamed objects by more than
+        # one position.
+
+        indexes = {}
+
+        # Copy named items to positions one less than they currently have
+        i = -1
+        for item in self._data:
+            i += 1
+            if item[0] in names:
+                j = max(i + direction, 0)
+                while j in indexes:
+                    j += 1
+
+                indexes[j] = item
+
+        # Fill in the rest where there's room.
+        i = 0
+        for item in self._data:
+            if item[0] not in names:
+                while i in indexes:
+                    i += 1
+                indexes[i] = item
+
+        items = indexes.items()
+        items.sort()
+
+        self._data = tuple([item[1] for item in items])
+
+    def moveUp(self, names):
+        self._moveUpOrDown(names, -1)
+
+    def moveDown(self, names):
+        self._moveUpOrDown(names, 1)
+
+    def beforeDeleteHook(self, object, container):
+        assert object == self
+        container = getAdapter(object, IZopeWriteContainer)
+        for k, v in self._data:
+            del container[k]
+
+
+# XXX Backward Compatibility for pickles
+import sys
+sys.modules['zope.app.services.configurationmanager'
+            ] = sys.modules['zope.app.services.configuration']

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for configuration classes
 
-$Id: test_configurations.py,v 1.3 2003/02/26 16:11:37 gvanrossum Exp $
+$Id: test_configurations.py,v 1.4 2003/03/21 21:05:59 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.app.interfaces.services.configuration \
         import Active, Registered, Unregistered
 from zope.app.interfaces.dependable import DependencyError
 from zope.app.services.configuration import SimpleConfiguration
-from zope.app.services.configuration import NamedComponentConfiguration
+from zope.app.services.configuration import ComponentConfiguration
 from zope.app.services.tests.placefulsetup \
         import PlacefulSetup
 from zope.app.services.tests.servicemanager \
@@ -78,7 +78,7 @@ class TestSimpleConfiguration(TestCase):
         self.assertEquals(cfg.status, Unregistered)
 
 
-class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
+class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
@@ -92,7 +92,7 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         path, component = 'foo', object()
         self.rootFolder.setObject(path, component)
         # set up a configuration
-        cfg = NamedComponentConfiguration(self.name, path)
+        cfg = ComponentConfiguration(path)
         cfg = ContextWrapper(cfg, self.rootFolder)
         # check that getComponent finds the configuration
         self.assertEquals(cfg.getComponent(), component)
@@ -102,7 +102,7 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         path, component = 'foo', object()
         self.rootFolder.setObject(path, component)
         # set up a configuration
-        cfg = NamedComponentConfiguration(self.name, path, 'zope.TopSecret')
+        cfg = ComponentConfiguration(path, 'zope.TopSecret')
         cfg.getInterface = lambda: ITestComponent
         cfg = ContextWrapper(cfg, self.rootFolder)
         # check that getComponent finds the configuration
@@ -115,7 +115,7 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         path, component = 'foo', ComponentStub()
         self.rootFolder.setObject(path, component)
         # set up a configuration
-        cfg = NamedComponentConfiguration(self.name, path)
+        cfg = ComponentConfiguration(path)
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
         # simulate IAddNotifiable
@@ -129,7 +129,7 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         self.rootFolder.setObject(path, component)
         component.addDependent('/cfg')
         # set up a configuration
-        cfg = NamedComponentConfiguration(self.name, path)
+        cfg = ComponentConfiguration(path)
         cfg.status = Unregistered
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
@@ -145,7 +145,7 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
 def test_suite():
     return TestSuite((
         makeSuite(TestSimpleConfiguration),
-        makeSuite(TestNamedComponentConfiguration),
+        makeSuite(TestComponentConfiguration),
         ))
 
 if __name__=='__main__':
