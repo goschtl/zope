@@ -3,7 +3,7 @@ Python code for z3checkins product.
 
 Checkin message folder handling.
 
-$Id: folder.py,v 1.5 2004/03/14 10:56:48 gintautasm Exp $
+$Id$
 """
 
 from zope.interface import implements
@@ -11,12 +11,58 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.size.interfaces import ISized
-from interfaces import ICheckinFolder
+from z3checkins.interfaces import ICheckinFolder, IMessage
+
 
 class CheckinFolder(BTreeContainer):
-    """A message folder."""
+    """A message folder.
+
+    The attribute `messages` is a list of Messages sorted by date in
+    reverse order.  It was introduced for performance reasons.
+    """
 
     implements(ICheckinFolder, IContainerNamesContainer)
+
+    description = None
+    archive_url = None
+    icons = None
+
+    def __init__(self):
+        BTreeContainer.__init__(self)
+        self.messages = []
+
+    def __setitem__(self, key, message):
+        if not hasattr(self, 'messages'): self.rebuildIndex() # BBB 2005-01-05
+        BTreeContainer.__setitem__(self, key, message)
+        if IMessage.providedBy(message):
+            for ind, oldmsg in enumerate(self.messages):
+                if message.date > oldmsg.date:
+                    self.messages.insert(ind, message)
+                    break
+            else:
+                self.messages.append(message)
+
+    def __delitem__(self, key):
+        message = self.get(key)
+        if IMessage.providedBy(message):
+            for ind, oldmsg in enumerate(self.messages):
+                if oldmsg is message:
+                    self.messages.pop(ind)
+                    break
+        BTreeContainer.__delitem__(self, key)
+
+    def __setstate__(self, state):
+        """Rebuild the internal message date index.
+
+        This method is for backwards compatibility, so that data does
+        not need to be reimported into existing z3checkins instances.
+        """
+        # BBB 2004-01-05
+        BTreeContainer.__setstate__(self, state)
+        if not hasattr(self, 'messages'):
+            self.messages = [msg for msg in self.values()
+                             if IMessage.providedBy(msg)]
+            self.messages.sort(lambda msg1, msg2: cmp(msg2.date, msg1.date))
 
 
 class MessageNameChooser:
@@ -36,6 +82,7 @@ class MessageNameChooser:
 
 class MessageSized:
     """An adapter to calculate size of a message."""
+
     implements(ISized)
 
     def __init__(self, message):

@@ -1,7 +1,7 @@
 """
 Interfaces for the z3checkins product.
 
-$Id: interfaces.py,v 1.14 2004/05/15 13:23:57 gintautasm Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute
@@ -9,7 +9,7 @@ from zope.app.folder.interfaces import IFolder
 from zope.app.container.interfaces import IContainer, IContained
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
-from zope.schema import Field, Text, TextLine
+from zope.schema import Field, Text, TextLine, List, Object
 
 
 class IMessageUpload(Interface):
@@ -69,13 +69,20 @@ class ICheckinFolderSchema(Interface):
     icons = Text(title=u"Icon definitions", required=False)
 
 
-class ICheckinFolder(IFolder, ICheckinFolderSchema):
+class ICheckinFolder(IContainer, ICheckinFolderSchema):
     """A marker interface for the checkins folder."""
 
     def __setitem__(name, object):
         """Add a message"""
 
     __setitem__.precondition = ItemTypePrecondition(IMessageUpload)
+
+    messages = List(title=u"Messages",
+                    description=u"""
+                    Messages in this container, sorted by date in
+                    descending order.
+                    """,
+                    value_type=Object(title=u"A message", schema=IMessage))
 
 
 class IMessageContained(IContained):

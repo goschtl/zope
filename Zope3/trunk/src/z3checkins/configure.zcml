@@ -1,8 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain='z3checkins'
-    >
+    i18n_domain='z3checkins'>
 
 <!-- CheckinMessage content object -->
 
@@ -40,6 +39,9 @@
      <require permission="zope.View"
               interface=".interfaces.ICheckinFolderSchema" />
 
+     <require permission="zope.View"
+              attributes="messages" />
+
      <factory id="z3checkins.CheckinFolder"
               title="Checkin Folder"
               description="A checkin folder" />
@@ -50,11 +52,6 @@
   </content>
 
 <!-- Utilities -->
-
-  <adapter for="zope.app.container.interfaces.IReadContainer"
-           factory=".message.MessageContainerAdapter"
-           permission="zope.View"
-           provides=".interfaces.IMessageArchive" />
 
   <adapter for=".interfaces.ICheckinFolder"
            factory=".folder.MessageNameChooser"
@@ -135,7 +132,7 @@
 
   <browser:editform
     name="EditFolder"
-    schema=".interfaces.ICheckinFolder"
+    schema=".interfaces.ICheckinFolderSchema"
     label="Change properties of a checkin message folder"
     menu="zmi_views" title="Edit"
     permission="zope.ManageContent" />

@@ -4,7 +4,7 @@ Python code for z3checkins product.
 # This module could be split into three: timeutils.py, message.py and views.py
 # but it is small enough IMHO.
 
-$Id: message.py,v 1.40 2004/05/14 19:56:05 gintautasm Exp $
+$Id$
 """
 
 import re
@@ -298,42 +298,6 @@ class CheckinMessageParser:
         return "\n".join(log_message).strip(), branch
 
 
-class MessageContainerAdapter:
-    """Adapts a container to a message archive."""
-
-    implements(IMessageArchive)
-    __used_for__ = IReadContainer
-
-    def __init__(self, context):
-        self.context = context
-        items = []
-        for key, item in self.context.items():
-            if IMessage.providedBy(item):
-                items.append((item.date, key, item))
-        items.sort()
-        self.messages = []
-        for date, key, item in items:
-            # TODO: is this nice?
-            #item.__parent__ = self.context
-            #item.__name__ = key
-            self.messages.append(item)
-
-    def __len__(self):
-        return len(self.messages)
-
-    def __getitem__(self, index):
-        return self.messages[index]
-
-    def __getslice__(self, start, stop):
-        return self.messages[start:stop]
-
-    def __iter__(self):
-        return iter(self.messages)
-
-    def index(self, message):
-        return self.messages.index(message)
-
-
 class Bookmark:
 
     implements(IBookmark)
@@ -417,17 +381,15 @@ class ContainerView:
         """Place a new bookmark after the latest message in a cookie."""
         if int(self.request.get('start', 0)) > 0:
             return # The user can't see the newest checkins
-        if not hasattr(self, '_archive'):
-            self._archive = IMessageArchive(self.context)
-        if not self._archive:
+        if not self.context.messages:
             return # No messages -- no bookmarks
         bookmarks = self.bookmarks()
         bookmarks.sort()
         # Do not insert a bookmark if there were no checkins since the last
         # bookmark
-        if (bookmarks and bookmarks[-1] >= self._archive[-1].date):
+        if (bookmarks and bookmarks[-1] >= self.context.messages[0].date):
             return
-        bookmarks.append(self._archive[-1].date)
+        bookmarks.append(self.context.messages[0].date)
         if len(bookmarks) > self.max_bookmarks:
             del bookmarks[:-self.max_bookmarks]
         cookie = " ".join([dt.isoformat() for dt in bookmarks])
@@ -440,36 +402,36 @@ class ContainerView:
         Returns the last 'size' checkin messages in self.context, newest
         first, skipping the first 'start' messages.
         """
-        if start is None: start = int(self.request.get('start', 0))
-        if size is None: size = int(self.request.get('size', 20))
-        if not hasattr(self, '_archive'):
-            self._archive = IMessageArchive(self.context)
-        idx = len(self._archive) - start
-        items = self._archive[max(0, idx-size):idx]
+        if start is None:
+            start = int(self.request.get('start', 0))
+        if size is None:
+            size = int(self.request.get('size', 20))
+        last = start + size
+        items = self.context.messages[start:last]
         items = removeAllProxies(items)
+
         # insert bookmarks
+
         def bookmarkBetween(msg1, msg2, bookmarks=self.bookmarks()):
             for b in bookmarks:
-                if msg1.date <= b < msg2.date:
+                if msg1.date > b >= msg2.date:
                     return True
             return False
-        n = 1
-        while n < len(items):
-            if bookmarkBetween(items[n-1], items[n]):
-                items.insert(n, Bookmark())
-                n += 2
-            else:
+
+        n = 0
+        while n < len(items) - 1:
+            if bookmarkBetween(items[n], items[n+1]):
+                items.insert(n+1, Bookmark())
                 n += 1
-        # insert bookmarks before the first/after the last batch item
+            n += 1
+        # insert bookmarks before the first / after the last batch item
         if items:
-            before = self._archive[max(0, idx-size-1):max(0, idx-size)]
+            before = self.context.messages[:1]
             if before and bookmarkBetween(before[0], items[0]):
                 items.insert(0, Bookmark())
-            after = self._archive[idx:idx+1]
+            after = self.context.messages[-1:]
             if after and bookmarkBetween(items[-1], after[0]):
-                items.insert(len(items), Bookmark())
-        # reverse order to present newest checkins first
-        items.reverse()
+                items.append(Bookmark())
         return items
 
     def renderCheckins(self, start=None, size=None):
@@ -491,9 +453,7 @@ class ContainerView:
 
     def count(self):
         """Return the number of checkin messages in the archive."""
-        if not hasattr(self, '_archive'):
-            self._archive = IMessageArchive(self.context)
-        return len(self._archive)
+        return len(self.context.messages)
 
 
 class MessageRSSView(BrowserView):
@@ -508,41 +468,46 @@ class MessageRSSView(BrowserView):
 class MessageView:
     """View mixin for messages."""
 
-    def _calc_index(self):
-        if not hasattr(self, '_archive'):
-            container = self.context.__parent__
-            self._archive = container and IMessageArchive(container, None)
-        if not self._archive:
-            self._index = None
-        elif not hasattr(self, '_index'):
-            self._index = self._archive.index(self.context)
+    _archive = None
+    _index = None
 
-    def next(self):
-        """Return the next message in archive."""
+    def _calc_index(self):
+
+        if not self.context.__parent__:
+            return
+
+        self._archive = self.context.__parent__.messages
+        try:
+            self._index = self._archive.index(self.context)
+        except ValueError:
+            pass
+
+    def previous(self):
+        """Return the previous message in archive."""
         self._calc_index()
         if self._index is not None and self._index < len(self._archive) - 1:
             return self._archive[self._index + 1]
         else:
             return None
 
-    def previous(self):
-        """Return the previous message in archive."""
+    def next(self):
+        """Return the next message in archive."""
         self._calc_index()
         if self._index is not None and self._index > 0:
             return self._archive[self._index - 1]
         else:
             return None
 
-    def first(self):
-        """Return the first message in archive."""
+    def last(self):
+        """Return the last message in archive."""
         self._calc_index()
         if self._archive:
             return self._archive[0]
         else:
             return None
 
-    def last(self):
-        """Return the last message in archive."""
+    def first(self):
+        """Return the first message in archive."""
         self._calc_index()
         if self._archive:
             return self._archive[-1]
@@ -634,7 +599,7 @@ class CheckinMessageView(MessageView):
                 log_idx += len('\nLog:\n')
             else:
                 log_idx = text.find('Log message')
-                # XXX: Zope3 checkin-specific
+                # XXX: Specific to Zope3 checkins
                 if log_idx != -1:
                     log_idx = text.find('\n', log_idx) + 1
                     # XXX: This is yucky...

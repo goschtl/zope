@@ -297,68 +297,6 @@ class MessageStub:
         self.message_id = message_id
 
 
-class TestMessageContainerAdapter(unittest.TestCase):
-
-    def test_interface(self):
-        from z3checkins.message import MessageContainerAdapter
-        verifyObject(IMessageArchive, MessageContainerAdapter({}))
-
-    def test_len(self):
-        from z3checkins.message import MessageContainerAdapter
-        a = MessageContainerAdapter({})
-        self.assertEquals(len(a), 0)
-        a = MessageContainerAdapter({'1': 2, '3': 'abc'})
-        self.assertEquals(len(a), 0)
-        a = MessageContainerAdapter({'1': 2, '3': 'abc', 4: MessageStub()})
-        self.assertEquals(len(a), 1)
-
-    def test_getitem(self):
-        from z3checkins.message import MessageContainerAdapter
-        a = MessageContainerAdapter({'1': 2, '3': 'abc',
-                                     '4': MessageStub(date=1, message_id='1'),
-                                     '5': MessageStub(date=4, message_id='2'),
-                                     '6': MessageStub(date=3, message_id='3'),
-                                     '7': MessageStub(date=2, message_id='4')})
-        self.assertEquals(a[0].message_id, '1')
-        self.assertEquals(a[1].message_id, '4')
-        self.assertEquals(a[2].message_id, '3')
-        self.assertEquals(a[3].message_id, '2')
-        self.assertEquals(a[-1].message_id, '2')
-        self.assertRaises(IndexError, a.__getitem__, 4)
-        self.assertRaises(IndexError, a.__getitem__, -5)
-        self.assertRaises(TypeError, a.__getitem__, 'xyzzy')
-        self.assertRaises(TypeError, a.__getitem__, None)
-        self.assertEquals(len(a[1:3]), 2)
-        self.assertEquals(len(a[1:-1]), 2)
-        self.assertEquals(len(a[3:1]), 0)
-
-    def test_iter(self):
-        from z3checkins.message import MessageContainerAdapter
-        a = MessageContainerAdapter({'1': 2, '3': 'abc',
-                                     '4': MessageStub(date=1, message_id='1'),
-                                     '5': MessageStub(date=4, message_id='2'),
-                                     '6': MessageStub(date=3, message_id='3'),
-                                     '7': MessageStub(date=2, message_id='4')})
-        b = [x.message_id for x in a]
-        self.assertEquals(b, ['1', '4', '3', '2'])
-        self.assert_(MessageStub(message_id='5') not in a)
-        self.assert_(a.context['6'] in a)
-
-    def test_index(self):
-        from z3checkins.message import MessageContainerAdapter
-        m1 = MessageStub(date=1, message_id='1')
-        m2 = MessageStub(date=4, message_id='2')
-        m3 = MessageStub(date=3, message_id='3')
-        m4 = MessageStub(date=2, message_id='4')
-        a = MessageContainerAdapter({'1': 2, '3': 'abc',
-                                     '4': m1, '5': m2, '6': m3, '7': m4})
-        self.assertEquals(a.index(m1), 0)
-        self.assertEquals(a.index(m4), 1)
-        self.assertEquals(a.index(m3), 2)
-        self.assertEquals(a.index(m2), 3)
-        self.assertRaises(ValueError, a.index, MessageStub)
-
-
 class ParserStub:
 
     implements(IMessageParser)
@@ -379,15 +317,16 @@ class ParserStub:
 class AddingStub:
 
     def __init__(self):
-        self.added = []
+        from z3checkins.folder import CheckinFolder
+        self.added = CheckinFolder()
 
     def add(self, obj):
         # ignore duplicates happening with default messages
         if obj.message_id != "message@id":
-            for message in self.added:
+            for message in self.added.values():
                 if message.message_id == obj.message_id:
                     raise DuplicationError()
-        self.added.append(obj)
+        self.added[obj.message_id] = obj
 
 class TestMessageUpload(PlacelessSetup, unittest.TestCase):
 
@@ -405,6 +344,7 @@ class TestMessageUpload(PlacelessSetup, unittest.TestCase):
         view.createAndAdd({})
         self.assertEquals(len(added), 0)
         view.createAndAdd({'data': 'Ipsum suum'})
+        added = list(added.values())
         self.assertEquals(len(added), 1)
         self.assertEquals(added[0].__class__, MessageStub)
         self.assertEquals(added[0].message_id, "message@id")
@@ -415,10 +355,10 @@ class TestMessageUpload(PlacelessSetup, unittest.TestCase):
         view = MessageUpload()
         view.context = AddingStub()
         view.add = view.context.add
-        added = view.context.added
         data = open_test_data('mbox.txt').read()
-        self.assertEquals(len(added), 0)
+        self.assertEquals(len(view.context.added), 0)
         view.createAndAdd({'data': data})
+        added = list(view.context.added.values())
         self.assertEquals(len(added), 4)
         for message in added:
             self.assertEquals(message.__class__, MessageStub)
@@ -432,10 +372,10 @@ class TestMessageUpload(PlacelessSetup, unittest.TestCase):
         view = MessageUpload()
         view.context = AddingStub()
         view.add = view.context.add
-        added = view.context.added
         data = open_test_data('mbox_with_dupes.txt').read()
-        self.assertEquals(len(added), 0)
+        self.assertEquals(len(view.context.added), 0)
         view.createAndAdd({'data': data})
+        added = list(view.context.added.values())
         self.assertEquals(len(added), 2)
         for message in added:
             self.assertEquals(message.__class__, MessageStub)
@@ -479,16 +419,12 @@ class RequestStub(dict):
 
 class TestContainerView(PlacelessSetup, unittest.TestCase):
 
-    def setUp(self):
-        from z3checkins.message import MessageContainerAdapter
-        PlacelessSetup.setUp(self)
-        ztapi.provideAdapter(None, IMessageArchive, MessageContainerAdapter)
-
     def test_checkins(self):
         from z3checkins.message import ContainerView
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(), 'z': MessageStub(date=1),
-                        'a': MessageStub(date=2), 'c': MessageStub(date=3)}
+        view.context = create_checkin_folder(
+                 {'x': 123, 'y': object(), 'z': MessageStub(date=1),
+                  'a': MessageStub(date=2), 'c': MessageStub(date=3)})
         view.request = {}
         res = view.checkins()
         self.assertEquals(len(res), 3)
@@ -500,8 +436,9 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
     def test_checkins_limited(self):
         from z3checkins.message import ContainerView
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(), 'z': MessageStub(date=1),
-                        'a': MessageStub(date=2), 'c': MessageStub(date=3)}
+        view.context = create_checkin_folder(
+                 {'x': 123, 'y': object(), 'z': MessageStub(date=1),
+                  'a': MessageStub(date=2), 'c': MessageStub(date=3)})
         view.request = {}
         res = view.checkins(size=2)
         self.assertEquals(len(res), 2)
@@ -516,8 +453,9 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
     def test_checkins_bookmarks(self):
         from z3checkins.message import ContainerView
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(), 'z': MessageStub(date=1),
-                        'a': MessageStub(date=2), 'c': MessageStub(date=4)}
+        view.context = create_checkin_folder(
+                 {'x': 123, 'y': object(), 'z': MessageStub(date=1),
+                  'a': MessageStub(date=2), 'c': MessageStub(date=4)})
         view.request = {}
         view.bookmarks = lambda: [3]
         res = view.checkins()
@@ -551,8 +489,7 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
         self.assert_(IBookmark.providedBy(res[2]))
 
     def test_bookmarks(self):
-        from z3checkins.message import ContainerView
-        from z3checkins.message import FixedTimezone
+        from z3checkins.message import ContainerView, FixedTimezone
         view = ContainerView()
         view.request = {}
         self.assertEquals(view.bookmarks(), [])
@@ -574,21 +511,20 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
                                     tzinfo=FixedTimezone(2*60))])
 
     def test_placeBookmark_empty_archive(self):
-        from z3checkins.message import ContainerView
-        from z3checkins.message import FixedTimezone
+        from z3checkins.message import ContainerView, FixedTimezone
         view = ContainerView()
-        view.context = {}
+        view.context = create_checkin_folder({})
         view.request = RequestStub()
         view.placeBookmark()
         self.assertEquals(view.request._cookies, ())
 
     def test_placeBookmark_empty_bookmarks(self):
-        from z3checkins.message import ContainerView
-        from z3checkins.message import FixedTimezone
+        from z3checkins.message import ContainerView, FixedTimezone
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(),
+        view.context = create_checkin_folder(
+                       {'x': 123, 'y': object(),
                         'z': MessageStub(date=datetime(2003, 1, 4, 21, 33, 4,
-                                                tzinfo=FixedTimezone(-5*60)))}
+                                                tzinfo=FixedTimezone(-5*60)))})
         view.request = RequestStub()
         view.placeBookmark()
         self.assertEquals(view.request._cookies,
@@ -610,9 +546,10 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
         from z3checkins.message import ContainerView
         from z3checkins.message import FixedTimezone
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(),
-                        'z': MessageStub(date=datetime(2003, 1, 4, 21, 33, 4,
-                                                tzinfo=FixedTimezone(-5*60)))}
+        view.context = create_checkin_folder(
+                {'x': 123, 'y': object(),
+                 'z': MessageStub(date=datetime(2003, 1, 4, 21, 33, 4,
+                                                tzinfo=FixedTimezone(-5*60)))})
         view.request = RequestStub(bookmarks='2003-01-04T21:33:04-05:00 '
                                              'errors are ignored '
                                              '2002-02-02T02:02:02+02:00')
@@ -620,9 +557,10 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
         self.assertEquals(view.request._cookies, ())
 
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(),
+        view.context = create_checkin_folder(
+                       {'x': 123, 'y': object(),
                         'z': MessageStub(date=datetime(2003, 1, 4, 21, 33, 4,
-                                                tzinfo=FixedTimezone(-5*60)))}
+                                                tzinfo=FixedTimezone(-5*60)))})
         view.request = RequestStub(bookmarks='2004-01-04T21:33:04-05:00 '
                                              'errors are ignored '
                                              '2002-02-02T02:02:02+02:00')
@@ -633,11 +571,12 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
         from z3checkins.message import ContainerView
         from z3checkins.message import FixedTimezone
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(),
+        view.context = create_checkin_folder(
+                       {'x': 123, 'y': object(),
                         'z': MessageStub(date=datetime(2003, 1, 4, 21, 33, 4,
                                                 tzinfo=FixedTimezone(-5*60))),
                         'w': MessageStub(date=datetime(2003, 1, 6, 22, 33, 44,
-                                                tzinfo=FixedTimezone(+3*60)))}
+                                                tzinfo=FixedTimezone(+3*60)))})
         view.request = RequestStub(bookmarks='2003-01-04T21:33:04-05:00 '
                                              'errors are ignored '
                                              '2002-02-02T02:02:02+02:00')
@@ -652,11 +591,12 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
         from z3checkins.message import ContainerView
         from z3checkins.message import FixedTimezone
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(),
+        view.context = create_checkin_folder(
+                       {'x': 123, 'y': object(),
                         'z': MessageStub(date=datetime(2003, 1, 4, 21, 33, 4,
                                                 tzinfo=FixedTimezone(-5*60))),
                         'w': MessageStub(date=datetime(2003, 1, 6, 22, 33, 44,
-                                                tzinfo=FixedTimezone(+3*60)))}
+                                                tzinfo=FixedTimezone(+3*60)))})
         view.request = RequestStub(bookmarks='2003-01-04T21:33:04-05:00 '
                                              'errors are ignored '
                                              '2002-01-01T02:02:02+02:00 '
@@ -676,10 +616,11 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
     def test_renderCheckins(self):
         from z3checkins.message import ContainerView
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(),
+        view.context = create_checkin_folder(
+                       {'x': 123, 'y': object(),
                         'z': MessageStub(date=1, log_message='xxx'),
                         'a': MessageStub(date=2, log_message='xxx'),
-                        'c': MessageStub(date=3, log_message='yyy')}
+                        'c': MessageStub(date=3, log_message='yyy')})
         view.request = TestRequest()
         view.index = view
         ztapi.browserView(ICheckinMessage, 'html', MessageTestView)
@@ -692,10 +633,11 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
     def test_renderCheckins_with_bookmarks(self):
         from z3checkins.message import ContainerView
         view = ContainerView()
-        view.context = {'x': 123, 'y': object(),
+        view.context = create_checkin_folder(
+                       {'x': 123, 'y': object(),
                         'z': MessageStub(date=1, log_message='xxx'),
                         'a': MessageStub(date=2, log_message='xxx'),
-                        'c': MessageStub(date=3, log_message='yyy')}
+                        'c': MessageStub(date=3, log_message='yyy')})
         view.request = TestRequest()
         view.index = view
         view.bookmarks = lambda: [1]
@@ -706,9 +648,16 @@ class TestContainerView(PlacelessSetup, unittest.TestCase):
         self.assertEquals(res, 'msg3\nmsg2\n-\nmsg1*\n')
 
 
-def diff(a, b):
-    "Compare the differences of two sequences of strings"
+def create_checkin_folder(values):
+    from z3checkins.folder import CheckinFolder
+    folder = CheckinFolder()
+    for key, value in values.items():
+        folder[key] = value
+    return folder
 
+
+def diff(a, b):
+    """Outline the differences of two sequences of strings."""
     if isinstance(a, (str, unicode)): a = a.splitlines()
     if isinstance(b, (str, unicode)): b = b.splitlines()
 
@@ -732,12 +681,7 @@ def diff(a, b):
             raise ValueError, 'unknown tag ' + `tag`
     return "\n".join(diff)
 
-class TestCheckinMessageView(PlacelessSetup, unittest.TestCase):
-
-    def setUp(self):
-        PlacelessSetup.setUp(self)
-        from z3checkins.message import MessageContainerAdapter
-        ztapi.provideAdapter(None, IMessageArchive, MessageContainerAdapter)
+class TestCheckinMessageView(unittest.TestCase):
 
     def test_body_strange(self):
         from z3checkins.message import CheckinMessageView
@@ -1027,7 +971,7 @@ Added: trunk/schooltool/schooltool/ftests/__init__.py
         from z3checkins.message import CheckinMessageView
         view = CheckinMessageView()
         view.context = MessageStub()
-        view.context.__parent__ = {'1': 2}
+        view.context.__parent__ = create_checkin_folder({'1': 2})
         self.assertEquals(view.first(), None)
         self.assertEquals(view.last(), None)
         self.assertEquals(view.next(), None)
@@ -1040,7 +984,8 @@ Added: trunk/schooltool/schooltool/ftests/__init__.py
         m3 = MessageStub(date=3, message_id='3')
         m4 = MessageStub(date=4, message_id='4')
 
-        folder = {'1': 2, '3': 'abc', '4': m1, '5': m2, '6': m3, '7': m4}
+        folder = create_checkin_folder(
+                    {'1': 2, '3': 'abc', '4': m1, '5': m2, '6': m3, '7': m4})
         view = CheckinMessageView()
         view.context = m3
         m3.__parent__ = folder
@@ -1124,7 +1069,6 @@ def test_suite():
     suite.addTest(unittest.makeSuite(TestISODateTimeFormatter))
     suite.addTest(unittest.makeSuite(TestCheckinMessage))
     suite.addTest(unittest.makeSuite(TestCheckinMessageParser))
-    suite.addTest(unittest.makeSuite(TestMessageContainerAdapter))
     suite.addTest(unittest.makeSuite(TestMessageUpload))
     suite.addTest(unittest.makeSuite(TestContainerView))
     suite.addTest(unittest.makeSuite(TestCheckinMessageView))
