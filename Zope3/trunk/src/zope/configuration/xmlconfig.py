@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.19 2004/02/24 14:07:58 srichter Exp $
+$Id: xmlconfig.py,v 1.20 2004/03/01 13:25:47 mgedmin Exp $
 """
 import errno
 import os
@@ -319,12 +319,13 @@ def include(_context, file, package=None):
 
     logger.debug("include %s" % file)
 
-    # This is a tad tricky. We want to behave a a grouping directive.
+    # This is a tad tricky. We want to behave as a grouping directive.
     context = config.GroupingContextDecorator(_context)
     if package is not None:
         context.package = package
         context.basepath = None
     path = context.path(file)
+    context.checkDuplicate(path)
     f = openInOrPlain(path)
 
     logger.debug("include %s" % f.name)

@@ -15,11 +15,12 @@
 
 See README.txt.
 
-$Id: config.py,v 1.15 2004/01/23 16:59:38 poster Exp $
+$Id: config.py,v 1.16 2004/03/01 13:25:47 mgedmin Exp $
 """
 
 import os.path
 import sys
+import sets
 
 import zope.schema
 
@@ -87,6 +88,10 @@ class ConfigurationContext(object):
     ommitted if they are empty.
 
     """
+
+    def __init__(self):
+        super(ConfigurationContext, self).__init__()
+        self._seen_files = sets.Set()
 
     def resolve(self, dottedname):
         """Resolve a dotted name to an object
@@ -237,6 +242,39 @@ class ConfigurationContext(object):
 
         return os.path.join(basepath, filename)
 
+    def checkDuplicate(self, filename):
+        """Check for duplicate imports of the same file.
+
+        Raises an exception if this file had been processed before.  This
+        is better than an unlimited number of conflict errors.
+
+        >>> c = ConfigurationContext()
+        >>> c.checkDuplicate('/foo.zcml')
+        >>> c.checkDuplicate('/foo.zcml')
+        Traceback (most recent call last):
+        ...
+        ConfigurationError: '/foo.zcml' included more than once
+
+        You may use different ways to refer to the same file:
+
+        >>> import zope.configuration
+        >>> c.package = zope.configuration
+        >>> import os
+        >>> d = os.path.split(zope.configuration.__file__)[0]
+        >>> c.checkDuplicate('bar.zcml')
+        >>> try:
+        ...   c.checkDuplicate(d + os.path.normpath('/bar.zcml'))
+        ... except ConfigurationError, e:
+        ...   str(e).endswith("bar.zcml' included more than once")
+        ...
+        True
+
+        """
+        path = self.path(filename)
+        if path in self._seen_files:
+            raise ConfigurationError('%r included more than once' % path)
+        self._seen_files.add(path)
+
     def action(self, discriminator, callable=None, args=(), kw={}):
         """Add an action with the given discriminator, callable and arguments
 
@@ -333,6 +371,7 @@ class ConfigurationAdapterRegistry(object):
 
 
     def __init__(self):
+        super(ConfigurationAdapterRegistry, self).__init__()
         self._registry = {}
         # Stores tuples of form: (namespace, name), schema, usedIn, info, parent
         self._docRegistry = []

@@ -60,6 +60,13 @@ class IConfigurationContext(Interface):
         file name is returned.
         """
 
+    def checkDuplicate(filename):
+        """Check for duplicate imports of the same file.
+
+        Raises an exception if this file had been processed before.  This
+        is better than an unlimited number of conflict errors.
+        """
+
     def action(self, discriminator, callable, args=(), kw={}):
         """Record a configuration action
 

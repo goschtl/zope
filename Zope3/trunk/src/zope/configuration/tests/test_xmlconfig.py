@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_xmlconfig.py,v 1.4 2003/07/31 14:57:01 jim Exp $
+$Id: test_xmlconfig.py,v 1.5 2004/03/01 13:25:48 mgedmin Exp $
 """
 
 import unittest
@@ -228,6 +228,15 @@ def test_include_by_package():
 
     >>> [clean_path(p) for p in data.includepath]
     ['tests/samplepackage/configure.zcml']
+
+    Including the same file more than once produces an error:
+
+    >>> try:
+    ...   xmlconfig.include(context, 'configure.zcml', package)
+    ... except xmlconfig.ConfigurationError, e:
+    ...   'OK'
+    ...
+    'OK'
 
     """
 
@@ -473,6 +482,10 @@ def test_XMLConfig():
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
     
+    Finally, clean up.
+
+    >>> from zope.testing.cleanup import CleanUp
+    >>> CleanUp().cleanUp()
     """
 
 def test_XMLConfig_w_module():
@@ -513,6 +526,10 @@ def test_XMLConfig_w_module():
     >>> print clean_info_path(`data.info`)
     File "tests/samplepackage/bar2.zcml", line 6.2-6.24
     
+    Finally, clean up.
+
+    >>> from zope.testing.cleanup import CleanUp
+    >>> CleanUp().cleanUp()
     """
     
 
