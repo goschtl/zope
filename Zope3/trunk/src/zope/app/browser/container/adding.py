@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.38 2003/12/17 12:15:09 mukruthi Exp $
+$Id: adding.py,v 1.39 2003/12/17 12:40:29 mukruthi Exp $
 """
 __metaclass__ = type
 
@@ -84,25 +84,25 @@ class BasicAdding(BrowserView):
     def renderAddButton(self):
         """To Render Add button with or without Inputbox"""
         container = self.context
-        button_label = _('add-button', 'Add')
-        object_name = _('object-name','Object Name')
+        add_button_value = _('add-button', 'Add')
+        add_button_label = _('add-button-label','Object Name')
         
         translation = zapi.getService(self.context,
                                       zapi.servicenames.Translation)
-        button_label = translation.translate(button_label,
+        add_button_value = translation.translate(add_button_value,
                                              context=self.request)
-        object_name = translation.translate(object_name,
+        add_button_label = translation.translate(add_button_label,
                                              context=self.request)
         if IContainerNamesContainer.isImplementedBy(container):
             return " <input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
-                   % button_label
+                   % add_button_value
         else:
             contentName = self.contentName or ''
             return (
                "&nbsp;&nbsp;<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
                "&nbsp;&nbsp;<b>%s:<b>&nbsp;"
                "<input type='text' name='add_input_name' value='%s'>"
-                    % (button_label, object_name, contentName))
+                    % (add_button_value, add_button_label, contentName))
 
     def publishTraverse(self, request, name):
         """See zope.app.interfaces.container.IAdding"""
