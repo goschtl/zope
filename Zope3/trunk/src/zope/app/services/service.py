@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.23 2003/06/07 05:31:58 stevea Exp $
+$Id: service.py,v 1.24 2003/06/11 19:33:06 gvanrossum Exp $
 """
 
 import sys
@@ -49,7 +49,8 @@ from zope.app.interfaces.services.module import IModuleService
 from zope.app.interfaces.services.service import IServiceConfiguration
 from zope.app.interfaces.services.service import IServiceManager
 
-# XXX This makes no sense?
+# Declare a tuple of all types we consider to be modules
+# (used as 2nd argument to isinstance() in method resolve() below)
 ModuleType = type(IModuleService), PersistentModule
 
 from zope.app.services.configuration import ConfigurationStatusProperty
@@ -65,7 +66,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
     implements(IServiceManager, IContainer, IModuleService)
 
     def __init__(self):
-        super(ServiceManager, self).__init__()
+        PersistentModuleRegistry.__init__(self)
         NameComponentConfigurable.__init__(self)
         self.Packages = SiteManagementFolders()
 
@@ -337,3 +338,20 @@ class ServiceConfiguration(NamedComponentConfiguration):
 
     def usageSummary(self):
         return self.name + " Service"
+
+
+# Fssync stuff
+
+from zope.app.fssync.classes import AttrMapping
+from zope.app.content.fssync import DirectoryAdapter
+
+_smattrs = (
+    '_modules',                         # PersistentModuleRegistry
+    '_bindings',                        # NameComponentConfigurable
+)
+
+class ServiceManagerAdapter(DirectoryAdapter):
+
+    def extra(self):
+        obj = removeAllProxies(self.context)
+        return AttrMapping(obj, _smattrs)

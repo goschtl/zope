@@ -498,7 +498,7 @@
 
 <fssync:adapter
     class=".service.ServiceManager"
-    factory="zope.app.content.fssync.DirectoryAdapter"
+    factory=".service.ServiceManagerAdapter"
     />
 
 <fssync:adapter
