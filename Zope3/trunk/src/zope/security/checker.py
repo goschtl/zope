@@ -184,7 +184,7 @@ class Checker(TrustedCheckerBase):
         return Proxy(value, checker)
 
 
-class CombinedChecker(TrustedCheckerBase):
+class CombinedChecker(Checker):
     """A checker that combines two other checkers in a logical-or fashion.
 
     The following table describes the result of a combined checker in detail.
@@ -204,13 +204,15 @@ class CombinedChecker(TrustedCheckerBase):
 
     def __init__(self, checker1, checker2):
         """Create a combined checker."""
-        self._checker1 = checker1
+        Checker.__init__(self,
+                         checker1.get_permissions,
+                         checker1.set_permissions)
         self._checker2 = checker2
 
     def check(self, object, name):
         'See IChecker'
         try:
-            self._checker1.check(object, name)
+            Checker.check(self, object, name)
         except ForbiddenAttribute:
             self._checker2.check(object, name)
         except Unauthorized, unauthorized_exception:
@@ -221,7 +223,7 @@ class CombinedChecker(TrustedCheckerBase):
     def check_getattr(self, object, name):
         'See IChecker'
         try:
-            self._checker1.check_getattr(object, name)
+            Checker.check_getattr(self, object, name)
         except ForbiddenAttribute:
             self._checker2.check_getattr(object, name)
         except Unauthorized, unauthorized_exception:
@@ -232,23 +234,13 @@ class CombinedChecker(TrustedCheckerBase):
     def check_setattr(self, object, name):
         'See IChecker'
         try:
-            self._checker1.check_setattr(object, name)
+            Checker.check_setattr(self, object, name)
         except ForbiddenAttribute:
             self._checker2.check_setattr(object, name)
         except Unauthorized, unauthorized_exception:
             try: self._checker2.check_setattr(object, name)
             except ForbiddenAttribute:
                 raise unauthorized_exception
-
-    def proxy(self, value):
-        'See IChecker'
-        checker = getattr(value, '__Security_checker__', None)
-        if checker is None:
-            checker = selectChecker(value)
-            if checker is None:
-                return value
-
-        return Proxy(value, checker)
 
 class CheckerLoggingMixin:
     """Debugging mixin for checkers.
