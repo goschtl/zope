@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: __init__.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: __init__.py,v 1.3 2002/10/09 06:19:06 jim Exp $
 """
 
 from Zope.ComponentArchitecture import getService
@@ -26,6 +26,8 @@ def getEventService(context):
 
 def publishEvent(context, event):
     return getEventService(context).publishEvent(event)
+
+publish = publishEvent
 
 def subscribe(subscriber, event_type=IEvent, filter=None, context=None):
     if context is None: context=subscriber
