@@ -32,8 +32,44 @@ class Permission(object):
 
 
 def checkPermission(context, permission_id):
-    """Check whether a given permission exists in the provided context."""
+    """Check whether a given permission exists in the provided context.
+
+    >>> from zope.app.tests.placelesssetup import setUp, tearDown
+    >>> setUp()
+
+    >>> from zope.app.tests.ztapi import provideUtility
+    >>> provideUtility(IPermission, Permission('x'), 'x')
+
+    >>> checkPermission(None, 'x')
+    >>> checkPermission(None, 'y')
+    Traceback (most recent call last):
+    ...
+    ValueError: ('Undefined permission id', 'y')
+
+    >>> tearDown()
+    """
     if permission_id == CheckerPublic:
         return
     if not zapi.queryUtility(context, IPermission, name=permission_id):
         raise ValueError("Undefined permission id", permission_id)
+
+def allPermissions(context):
+    """Get the ids of all defined permissions
+
+    >>> from zope.app.tests.placelesssetup import setUp, tearDown
+    >>> setUp()
+
+    >>> from zope.app.tests.ztapi import provideUtility
+    >>> provideUtility(IPermission, Permission('x'), 'x')
+    >>> provideUtility(IPermission, Permission('y'), 'y')
+
+    >>> ids = list(allPermissions(None))
+    >>> ids.sort()
+    >>> ids
+    [u'x', u'y']
+
+    >>> tearDown()
+    """
+    for id, permission in zapi.getUtilitiesFor(context, IPermission):
+        if id != u'zope.Public':
+            yield id
