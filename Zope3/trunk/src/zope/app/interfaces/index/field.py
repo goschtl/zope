@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to field indexing and searching.
 
-$Id: field.py,v 1.4 2003/07/13 03:36:03 anthony Exp $
+$Id: field.py,v 1.5 2003/07/14 09:56:04 anthony Exp $
 """
 
 from zope.interface import Interface
@@ -25,14 +25,13 @@ class IUIFieldCatalogIndex(Interface):
     """Interface for creating a FieldIndex in a catalog from the ZMI."""
 
     interface = InterfaceField(
-                    title=u"Interface",
-                    description=u"Interface to adapts objects to before"
-                                u" indexing",
-                    required=False)
+		title=u"Interface",
+		description=u"Objects will be adapted to this interface",
+		required=False)
 
     field_name = BytesLine(
-                    title=u"Field Name",
-                    description=u"Name of the field to index")
+		title=u"Field Name",
+		description=u"Name of the field to index")
 
 class IUIFieldIndex(IUIFieldCatalogIndex):
     """Interface for creating a FieldIndex from the ZMI (not in a catalog)."""
