@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Wizard View Classes
 
-$Id: addwizard.py,v 1.10 2003/08/12 12:47:55 Zen Exp $
+$Id: addwizard.py,v 1.11 2003/10/22 19:17:09 sidnei Exp $
 """
 import sys
 
@@ -61,7 +61,7 @@ class AddWizardView(EditWizardView):
         """
 
         # This code originally from add.py's createAndAdd method
-        
+
         args = []
         for name in self._arguments:
             args.append(data[name])

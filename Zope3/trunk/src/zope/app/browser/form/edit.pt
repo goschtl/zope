@@ -42,12 +42,13 @@
             <div class="label">Name</div>
             <div class="field"><input type="text" style="width:100%" /></div>
         </div>
+        <div class="separator"></div>
         <div class="row"
              metal:define-slot="extra_bottom" tal:replace="nothing">
             <div class="label">Extra bottom</div>
             <div class="field"><input type="text" style="width:100%" /></div>
         </div>
-
+        <div class="separator"></div>
       </div>
 
       <div class="row">
@@ -58,6 +59,7 @@
               i18n:attributes="value submit-button"/>
         </div>
       </div>
+      <div class="separator"></div>
 
     </form>
 
