@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""An implementation of things that can be registered in a Registry."""
+"""An implementation of things that can be registered in a Registry.
+
+$Id: registeredobject.py,v 1.4 2004/03/05 18:37:52 srichter Exp $
+"""
 
 from zope.app.interfaces.security import IRegisteredObject
 from zope.interface import implements
