@@ -13,15 +13,14 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_pagefolder.py,v 1.7 2003/07/02 22:11:08 jim Exp $
+$Id: test_pagefolder.py,v 1.8 2003/09/21 17:32:56 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import setup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.pagefolder import PageFolder, PageFolderContextDecorator
+from zope.app.services.pagefolder import PageFolder
 from zope.app.interfaces.services.pagefolder import IPageFolder
-from zope.app.interfaces.context import IZopeContextWrapper
 from zope.app.traversing import traverse
 from zope.app.services.zpt import ZPTTemplate
 from zope.app.services.view import ViewService
@@ -42,11 +41,9 @@ class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
 
     def setUp(self):
         sm = PlacefulSetup.setUp(self, site=True)
-        provideAdapter(IPageFolder, IZopeContextWrapper,
-                       PageFolderContextDecorator)
         setup.addService(sm, 'Views', ViewService(), suffix='service')
         default = traverse(self.rootFolder, '++etc++site/default')
-        default.setObject('Views', PageFolder())
+        default['Views'] = PageFolder()
         views = traverse(default, 'Views')
         views.forInterface = I
         views.factoryName = None
@@ -54,13 +51,15 @@ class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
 
         self.__views = views
 
-    def test_setObject(self):
+    def test___setitem__(self):
 
         views = self.__views
 
-        views.setObject('foo.html', ZPTTemplate())
+        views['foo.html'] = ZPTTemplate()
 
-        registration = traverse(views.getRegistrationManager(), '1')
+        rm = views.getRegistrationManager()
+        name = rm.keys()[-1]
+        registration = traverse(views.getRegistrationManager(), name)
         self.assertEqual(registration.status, ActiveStatus)
         self.assertEqual(registration.forInterface, I)
         self.assertEqual(registration.presentationType, IBrowserPresentation)
@@ -71,15 +70,17 @@ class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
         self.assertEqual(registration.attribute, None)
 
         self.assertRaises(TypeError,
-                          views.setObject, 'bar.html', PageFolder())
+                          views.__setitem__, 'bar.html', PageFolder())
 
     def test_applyDefaults(self):
 
         views = self.__views
 
-        views.setObject('foo.html', ZPTTemplate())
+        views['foo.html'] = ZPTTemplate()
 
-        registration = traverse(views.getRegistrationManager(), '1')
+        rm = views.getRegistrationManager()
+        name = rm.keys()[-1]
+        registration = traverse(views.getRegistrationManager(), name)
         self.assertEqual(registration.status, ActiveStatus)
         self.assertEqual(registration.forInterface, I)
         self.assertEqual(registration.presentationType, IBrowserPresentation)
@@ -92,10 +93,10 @@ class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
         views.forInterface = I2
         views.permission = 'zope.ManageContent'
         views.layer = 'debug'
-    
+
         views.applyDefaults()
 
-        registration = traverse(views.getRegistrationManager(), '1')
+        registration = traverse(views.getRegistrationManager(), name)
         self.assertEqual(registration.status, ActiveStatus)
         self.assertEqual(registration.forInterface, I2)
         self.assertEqual(registration.presentationType, IBrowserPresentation)
