@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+    - Implemented http://dev.zope.org/Zope3/Use303RedirectsByDefault
+      Browsers which support HTTP/1.1 will now receive 303 redirects.
+
     - The ZCML zope:adapter and zope:view directives now support
       multiple for interfaces, thus defining multi-adapters and
       multi-views.
