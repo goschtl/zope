@@ -102,8 +102,18 @@ Platform Notes
 To Do
 -----
 
+- Implement bundle commands via a new command-line utility to convert
+  a checkout of a site-management folder to a bundle (in progress).
+
+  * Need a way to turn site-management folders into bundles, and
+    vice-versa, using the command-line **zbundle** utility or more
+    directly through the ZMI (the tool can currently create a "raw"
+    bundle; conversion should be a simple step forward).
+
+  * Bundles should be read-only.
+
 - New command-line utility to convert a checkout of a site-management
-  folder to a bundle.
+  folder to a bundle (in progress).
 
 - Documentation for the zsync command line tool (in progress)
 
@@ -117,6 +127,10 @@ To Do
   data).  An XML data format is probably a better idea than switching
   to ZConfig for this file, primarily to make it easier to support
   additional data.
+
+  The format for the RegistrationManager, on the other hand, may well
+  do well as a ZConfig format, since each entry is very much like a
+  dictionary.
 
 - Figure out how to write meaningful adapter tests.
 
@@ -135,14 +149,6 @@ To Do
   object's state in a reliable way to implement this feature
   automatically.  The only way to always do the right thing is to
   define an appropriate adapter.
-
-- Implement bundle commands.
-
-  * Need a way to turn site-management folders into bundles, and
-    vice-versa; could be from command-line/zsync or more directly
-    through the ZMI.
-
-  * Once something is "marked" as a bundle, it should be read-only.
 
 - Work out security details (before beta).
 
@@ -164,8 +170,8 @@ To Do
 
     -3 diffs between original and remote
 
-  * Something akin to **cvs -n** update, which shows what update would
-    do without actually doing it.
+  * Something akin to **cvs -n update** or **svn status -u**, which
+    shows what update would do without actually doing it.
 
   * Add support for HTTP proxies.
 
@@ -173,12 +179,12 @@ To Do
 
 - Code maintenance:
 
-  * Unit tests for the **zsync** utility.
+  * Unit tests for the **zsync** and **zbundle** utilities.
 
   * Add unit tests for ``zope.app.fssync.syncer``.
 
   * More refactoring and cleanup of the **zsync** utility (the
-    ``zope.fssync.main`` module; partially done)
+    ``zope.fssync.main`` module; mostly done)
 
   * Use camelCase for public method names.
 
