@@ -53,6 +53,11 @@ class FakeLDAPObject(object):
 
     def simple_bind_s(self, dn, password):
         if dn.find('Manager') >= 0:
+            # Fake authentified connection.
+            return 1
+
+        if dn == '' and password == '':
+            # Fake anonymous connection.
             return 1
 
         results = self.search_s(dn)
@@ -130,21 +135,21 @@ class FakeLDAPObject(object):
             if fval == '*' or match_all:
                 ok = 1
             elif fval[0] == '*' and fval[-1] == '*':
-                fval = fval[1:-1]
+                f = fval[1:-1]
                 for v in values:
-                    if fval in v:
+                    if f in v:
                         ok = 1
                         break
             elif fval[0] == '*':
-                fval = fval[1:]
+                f = fval[1:]
                 for v in values:
-                    if v.endswith(fval):
+                    if v.endswith(f):
                         ok = 1
                         break
             elif fval[-1] == '*':
-                fval = fval[:-1]
+                f = fval[:-1]
                 for v in values:
-                    if v.startswith(fval):
+                    if v.startswith(f):
                         ok = 1
                         break
             else:
@@ -155,7 +160,14 @@ class FakeLDAPObject(object):
             if not ok:
                 continue
             dn = ','.join(dnl)
-            res.append((dn, deepcopy(entry)))
+            if attrs:
+                res_entry = {}
+                for attr in attrs:
+                    if entry.has_key(attr):
+                        res_entry[attr] = deepcopy(entry[attr])
+            else:
+                res_entry = deepcopy(entry)
+            res.append((dn, res_entry))
         return res
 
     def modify_s(self, dn, mod_list):

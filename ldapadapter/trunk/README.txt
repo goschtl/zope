@@ -1,54 +1,143 @@
 ===========
-LDAPAdapter 
+LDAPAdapter
 ===========
 
-The LDAPAdapter provides a mechanism for to connect to a LDAP server.
+The LDAPAdapter provides a mechanism to connect to an LDAP server and
+send commands to it.
 
 LDAPAdapter
 ===========
 
-The primary job of an ldap adapter is to store the settings of
-a LDAP server connection.
+An LDAP adapter stores the settings to use to connect to an LDAP server.
+You get an LDAP adapter by calling LDAPAdapter, which implements
+ILDAPAdapter:
 
-Let's look at an example:
-
-  >>> from ldapadapter.interfaces import ILDAPAdapter
-  >>> from ldapadapter.interfaces import ILDAPConnection
+  >>> from pprint import PrettyPrinter
+  >>> pprint = PrettyPrinter(width=60).pprint
   >>> from ldapadapter.utility import LDAPAdapter
+  >>> from ldapadapter.interfaces import ILDAPAdapter
+  >>> from zope.interface.verify import verifyClass, verifyObject
+  >>> verifyClass(ILDAPAdapter, LDAPAdapter)
+  True
 
-  >>> host = u'localhost'
-  >>> port = 389
-  >>> useSSL = False
-  >>> da = LDAPAdapter(host, port)
+The adapter is set up by giving it a host name and a port.
+
+  >>> da = LDAPAdapter('localhost', 389)
+  >>> verifyObject(ILDAPAdapter, da)
+  True
   >>> (da.host, da.port, da.useSSL)
-  (u'localhost', 389, False)
+  ('localhost', 389, False)
 
-  >>> dn = 'Manager'
-  >>> pw = ''
-  >>> conn = da.connect(dn, pw)
+If you want, you can request an SSL connection:
 
-  >>> conn.add('cn=yo,o=test,dc=org', {'cn': ['yo']})
+  >>> da = LDAPAdapter('localhost', 389, useSSL=True)
+  >>> (da.host, da.port, da.useSSL)
+  ('localhost', 389, True)
 
-The fake implementation of ldap used for the tests returns a simpler
-result than a real server would:
+You can also provide a default bind DN and password to use by default
+for future connections:
 
-  >>> conn.search('cn=yo,o=test,dc=org', 'sub')
-  [(u'cn=yo,o=test,dc=org', {'cn': [u'yo']})]
+  >>> da = LDAPAdapter('localhost', 389,
+  ...                  bindDN='cn=Manager', bindPassword='secret')
+  >>> (da.host, da.port, da.bindDN)
+  ('localhost', 389, 'cn=Manager')
 
-Modify it.
+LDAPConnection
+==============
 
-  >>> conn.modify('cn=yo,o=test,dc=org', {'givenName': ['bob']})
-  >>> conn.search('cn=yo,o=test,dc=org', 'sub')[0][1]['givenName']
-  [u'bob']
-  >>> conn.modify('cn=yo,o=test,dc=org', {'givenName': ['bob', 'john']})
-  >>> conn.search('cn=yo,o=test,dc=org', 'sub')[0][1]['givenName']
-  [u'bob', u'john']
-  >>> conn.modify('cn=yo,o=test,dc=org', {'givenName': []})
-  >>> conn.search('cn=yo,o=test,dc=org', 'sub')
-  [(u'cn=yo,o=test,dc=org', {'cn': [u'yo']})]
+Once you have an LDAP adapter, you can get an LDAP connection by calling
+connect() on the database adapter.
 
-Delete it.
+You can either use the default bind DN and password if these have been
+specified in the adapter:
 
-  >>> conn.delete('cn=yo,o=test,dc=org')
-  >>> conn.search('cn=yo,o=test,dc=org', 'sub')
+  >>> conn = da.connect()
+
+Or you can provide specific binding parameters:
+
+  >>> conn = da.connect('cn=Manager,dc=org', 'supersecret')
+
+You can bind anonymously by using an empty DN and password:
+
+  >>> conn = da.connect('', '')
+
+The connection object that is returned implements ILDAPConnection:
+
+  >>> from ldapadapter.interfaces import ILDAPConnection
+  >>> verifyObject(ILDAPConnection, conn)
+  True
+
+Commands
+========
+
+Once you have an LDAP connection, you can start sending commands using
+it. (The fake implementation of the ldap module used for the tests
+returns simpler results than a real server would.)
+
+Add
+---
+
+Let's add a few simple entries (simplified in this test setting):
+
+  >>> conn.add('dc=test', {'dc': ['test']})
+  >>> conn.add('cn=foo,dc=test', {'cn': ['foo'], 'givenName': ['John']})
+  >>> conn.add('cn=bar,dc=test', {'cn': ['bar'], 'givenName': ['Joey']})
+  >>> conn.add('cn=baz,dc=test', {'cn': ['baz'], 'givenName': ['Raoul']})
+
+Search
+------
+
+Let's now search for entries. The scope argument controls what kind of
+search is done. You can choose to return a subset of the attributes.
+
+  >>> conn.search('dc=test', scope='base')
+  [(u'dc=test', {'dc': [u'test']})]
+
+  >>> res = conn.search('dc=test', scope='one', attrs=['cn'])
+  >>> pprint(res)
+  [(u'cn=foo,dc=test', {'cn': [u'foo']}),
+   (u'cn=bar,dc=test', {'cn': [u'bar']}),
+   (u'cn=baz,dc=test', {'cn': [u'baz']})]
+
+  >>> res = conn.search('dc=test', scope='sub', attrs=['givenName'])
+  >>> pprint(res)
+  [(u'dc=test', {}),
+   (u'cn=foo,dc=test', {'givenName': [u'John']}),
+   (u'cn=bar,dc=test', {'givenName': [u'Joey']}),
+   (u'cn=baz,dc=test', {'givenName': [u'Raoul']})]
+
+You can use a search filter to filter the entries returned:
+
+  >>> res = conn.search('dc=test', scope='sub', filter='(cn=ba*)',
+  ...                   attrs=['cn'])
+  >>> pprint(res)
+  [(u'cn=bar,dc=test', {'cn': [u'bar']}),
+   (u'cn=baz,dc=test', {'cn': [u'baz']})]
+
+Modify
+------
+
+When modifying an entry, you pass new values for some attributes:
+
+  >>> conn.modify('cn=foo,dc=test', {'givenName': ['Pete']})
+  >>> conn.search('cn=foo,dc=test', attrs=['givenName'])
+  [(u'cn=foo,dc=test', {'givenName': [u'Pete']})]
+
+  >>> conn.modify('cn=foo,dc=test', {'givenName': ['Bob', 'Robert']})
+  >>> conn.search('cn=foo,dc=test', attrs=['givenName'])
+  [(u'cn=foo,dc=test', {'givenName': [u'Bob', u'Robert']})]
+
+Passing an empty value for an attribute remove it from the entry:
+
+  >>> conn.modify('cn=foo,dc=test', {'givenName': []})
+  >>> conn.search('cn=foo,dc=test')
+  [(u'cn=foo,dc=test', {'cn': [u'foo']})]
+
+Delete
+------
+
+You delete an entry.
+
+  >>> conn.delete('cn=foo,dc=test')
+  >>> conn.search('cn=foo,dc=test', 'sub')
   []

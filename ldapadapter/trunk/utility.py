@@ -125,8 +125,10 @@ class LDAPConnection(object):
 
     def modify(self, dn, entry):
         # Get current entry
-        cur_dn, cur_entry = self.search(dn, 'base')[0]
-        # TODO nice exception if missing entry
+        res = self.search(dn, 'base')
+        if not res:
+            raise Exception("No such entry") # FIXME use proper exception
+        cur_dn, cur_entry = res[0]
 
         mod_list = []
         for key, values in entry.items():
