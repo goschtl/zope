@@ -259,6 +259,13 @@ proxy_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
                                    "OO:_Proxy.__new__", kwlist,
                                    &object, &checker))
     return NULL;
+
+  if (checker == Py_None)
+    {
+      PyErr_SetString(PyExc_ValueError, "None passed as checker proxy");
+      return NULL;
+    }
+
   self = (SecurityProxy *)type->tp_alloc(type, 0);
   if (self == NULL)
     return NULL;
