@@ -29,16 +29,12 @@ Overview
 Related Links
 -------------
 
-`PEP 241 <http://www.python.org/peps/pep-0241.html>`_
-  `Distribution metadata`
-
+`PEP 241: Distribution metadata`__
   This PEP describes a mechanism for adding metadata to Python
   packages.  It includes specifics of the field names, and their
   semantics and usage.
 
-`PEP 262 <http://www.python.org/peps/pep-0241.html>`_
-  `A Database of Installed Python Packages`
-
+`PEP 262: A Database of Installed Python Packages`__
   This PEP describes a mechanism for adding metadata to Python
   packages.  It includes specifics of the field names, and their
   semantics and usage.
@@ -48,4 +44,6 @@ Related Links
   as well as uninstallation.
 
 
+.. __: http://www.python.org/peps/pep-0241.html
+.. __: http://www.python.org/peps/pep-0262.html
 .. include:: links.rst
