@@ -17,6 +17,6 @@ skin
       A list of names of layers.
 
       This should be in order of lookup. Usually one of the layers has the
-      name as the skin, and the last skin should be 'default', unless you
-      to completely override all views.
+      same name as the skin, and the last skin should be 'default', unless you
+      want to completely override all views.
 

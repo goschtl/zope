@@ -16,7 +16,7 @@ renderer
 
       Interface of the output type
 
-      Specifies the interface of the output type (i.e. browser) for which
+      Specifies the interface of the output type (i.e. browser) for which this
       view is being registered.
 
     factory -- GlobalObject (required)

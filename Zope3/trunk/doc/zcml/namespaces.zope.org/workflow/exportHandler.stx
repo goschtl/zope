@@ -3,7 +3,8 @@ exportHandler
   File zope/app/workflow/meta.zcml, lines 11 - 15.
 
   Register an Import/Export Handler, that is able to load/save a XML
-  of a ProcessDefinition and create a persistent Instance for it.
+  Representation of a ProcessDefinition and create a persistent Instance for
+  it.
 
   Attributes
 
@@ -12,7 +13,7 @@ exportHandler
       Interface
 
       The interface of the process definition this handler can handle (both
-      either import or export).
+      for either import or export).
 
     factory -- GlobalObject (required)
 

@@ -11,8 +11,8 @@ view
       The interface this view applies to.
 
       The view will be for all objects that implement this interface. If this
-      not supplied, the view applies to all objects (XXX this ought to
-      
+      is not supplied, the view applies to all objects (XXX this ought to
+      change).
 
     permission -- Id (optional, default=None)
 
@@ -30,17 +30,17 @@ view
 
       The layer the view is in.
 
-      A skin is composed of layers. It is common to put skin specific views
+      A skin is composed of layers. It is common to put skin specific views in
       a layer named after the skin. If the 'layer' attribute is not supplied,
-      defaults to 'default'.
+      it defaults to 'default'.
 
     allowed_interface -- Tokens (optional, default=None)
 
       Interface that is also allowed if user has permission.
 
       By default, 'permission' only applies to viewing the view and any
-      sub views. By specifying this attribute, you can make the permission
-      apply to everything described in the supplied interface.
+      possible sub views. By specifying this attribute, you can make the
+      permission also apply to everything described in the supplied interface.
 
       Multiple interfaces can be provided, separated by whitespace.
 
@@ -49,8 +49,8 @@ view
       View attributes that are also allowed if user has permission.
 
       By default, 'permission' only applies to viewing the view and any
-      sub views. By specifying 'allowed_attributes', you can make the
-      also apply to the extra attributes on the view object.
+      possible sub views. By specifying 'allowed_attributes', you can make the
+      permission also apply to the extra attributes on the view object.
 
     name -- TextLine (required)
 
@@ -58,12 +58,12 @@ view
 
       The name shows up in URLs/paths. For example 'foo'.
 
-    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b1ec>)
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b20c>)
 
       The interface this component provides.
 
       A view can provide an interface. This would be used for views that
-      other views.
+      support other views.
 
     type -- GlobalObject (required)
 

@@ -17,5 +17,5 @@ sendmailMailer
       Command
 
       A template command for sending out mail, containing %(from)s and %(to)s
-      respective addresses.
+      for respective addresses.
 

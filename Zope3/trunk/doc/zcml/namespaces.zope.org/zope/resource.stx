@@ -30,12 +30,12 @@ resource
 
       The name shows up in URLs/paths. For example 'foo'.
 
-    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b1ec>)
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b20c>)
 
       The interface this component provides.
 
       A view can provide an interface. This would be used for views that
-      other views.
+      support other views.
 
     type -- GlobalObject (required)
 

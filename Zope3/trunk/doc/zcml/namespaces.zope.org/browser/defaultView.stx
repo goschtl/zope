@@ -4,7 +4,7 @@ defaultView
 
   The name of the view that should be the default.
 
-  This name refers to view that should be the view used by default (if no
+  This name refers to view that should be the view used by default (if no view
   name is supplied explicitly).
 
   Attributes
@@ -14,12 +14,12 @@ defaultView
       The name of the view that should be the default.
 
       This name refers to view that should be the view used by default (if no
-      name is supplied explicitly).
+      view name is supplied explicitly).
 
     for -- GlobalObject (optional, default=None)
 
       The interface this view is the default for.
 
       The view is the default view for the supplied interface. If this is not
-      the view applies to all objects (XXX this ought to change).
+      supplied, the view applies to all objects (XXX this ought to change).
 

@@ -5,11 +5,12 @@ addwizard
   Define an automatically generated add wizard (multi-page form)
 
   The addwizard directive creates and registers a view for adding an object
-  on a schema.
+  based on a schema.
 
   Adding an object is a bit trickier than editing an object, because the
-  the schema applies to isn't available when forms are being rendered. The
-  directive provides an customization interface to overcome this difficulty.
+  object the schema applies to isn't available when forms are being rendered.
+  The addwizard directive provides an customization interface to overcome this
+  difficulty.
 
   See zope.app.interfaces.browser.form.IAddFormCustomization.
 
@@ -20,10 +21,10 @@ addwizard
       The template usage top-level variable
 
       See the usage documentation in the README.txt in the
-      directory. If this view is associated with a menu item, this attribute
-      not be supplied as the view will get its usage from the menu the menu
-      is registered to. This attribute is available for views not associated
-      a menu item.
+      zope/app/browser/skins directory. If this view is associated with a menu
+      item, this attribute should not be supplied as the view will get its
+      usage from the menu the menu item is registered to. This attribute is
+      available for views not associated with a menu item.
 
     name -- TextLine (required)
 
@@ -44,9 +45,9 @@ addwizard
       The interface this page (view) applies to.
 
       The view will be for all objects that implement this interface. The
-      is used if the for attribute is not specified.
+      schema is used if the for attribute is not specified.
 
-      If the for attribute is specified, then the objects views must
+      If the for attribute is specified, then the objects views must implement
       or be adaptable to the schema.
 
     permission -- Id (required)
@@ -72,18 +73,18 @@ addwizard
       Class
 
       A class to provide custom widget definitions or methods to be used by a
-      template.
+      custom template.
 
       This class is used as a mix-in class. As a result, it needn't subclass
-      special classes, such as BrowserView.
+      any special classes, such as BrowserView.
 
     menu -- TextLine (optional, default=None)
 
       The browser menu to include the form in.
 
       Many views are included in menus. It's convenient to name the menu in
-      page directive, rather than having to give a separate menuItem
-      
+      the page directive, rather than having to give a separate menuItem
+      directive.
 
     title -- MessageID (optional, default=None)
 
@@ -95,7 +96,7 @@ addwizard
 
       A longer description of the add form.
 
-      A UI may display this with the item or display it when the user
+      A UI may display this with the item or display it when the user requests
       more assistance.
 
     use_session -- Bool (optional, default=None)
@@ -103,7 +104,8 @@ addwizard
       Use session
 
       If 'no', hidden input controls are used to maintain state between panes
-      the wizard. Only simple data types can be propagated with this method.
+      in the wizard. Only simple data types can be propagated with this
+      method.
 
       Defaults to 'yes'.
 
@@ -114,7 +116,7 @@ addwizard
       An object to call to create new content objects.
 
       This attribute isn't used if a class is specified that implements
-      
+      createAndAdd.
 
     arguments -- Tokens (optional, default=None)
 
@@ -132,7 +134,7 @@ addwizard
 
       Set before add
 
-      A list of fields to be assigned to the newly created object before it
+      A list of fields to be assigned to the newly created object before it is
       added.
 
     set_after_add -- Tokens (optional, default=None)
@@ -140,7 +142,7 @@ addwizard
       Set after add
 
       A list of fields to be assigned to the newly created object after it is
-      
+      added.
 
 
   Subdirectives

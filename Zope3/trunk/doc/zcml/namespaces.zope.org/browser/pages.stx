@@ -5,8 +5,8 @@ pages
   Define multiple pages without repeating all of the parameters.
 
   The pages directive allows multiple page views to be defined without
-  the 'for', 'permission', 'class', 'layer', 'allowed_attributes', and
-  attributes.
+  repeating the 'for', 'permission', 'class', 'layer', 'allowed_attributes',
+  and 'allowed_interface' attributes.
 
   Attributes
 
@@ -15,8 +15,8 @@ pages
       The interface this view applies to.
 
       The view will be for all objects that implement this interface. If this
-      not supplied, the view applies to all objects (XXX this ought to
-      
+      is not supplied, the view applies to all objects (XXX this ought to
+      change).
 
     permission -- Id (optional, default=None)
 
@@ -34,17 +34,17 @@ pages
 
       The layer the view is in.
 
-      A skin is composed of layers. It is common to put skin specific views
+      A skin is composed of layers. It is common to put skin specific views in
       a layer named after the skin. If the 'layer' attribute is not supplied,
-      defaults to 'default'.
+      it defaults to 'default'.
 
     allowed_interface -- Tokens (optional, default=None)
 
       Interface that is also allowed if user has permission.
 
       By default, 'permission' only applies to viewing the view and any
-      sub views. By specifying this attribute, you can make the permission
-      apply to everything described in the supplied interface.
+      possible sub views. By specifying this attribute, you can make the
+      permission also apply to everything described in the supplied interface.
 
       Multiple interfaces can be provided, separated by whitespace.
 
@@ -53,18 +53,18 @@ pages
       View attributes that are also allowed if user has permission.
 
       By default, 'permission' only applies to viewing the view and any
-      sub views. By specifying 'allowed_attributes', you can make the
-      also apply to the extra attributes on the view object.
+      possible sub views. By specifying 'allowed_attributes', you can make the
+      permission also apply to the extra attributes on the view object.
 
     usage -- TextLine (optional, default=u'')
 
       The template usage top-level variable
 
       See the usage documentation in the README.txt in the
-      directory. If this view is associated with a menu item, this attribute
-      not be supplied as the view will get its usage from the menu the menu
-      is registered to. This attribute is available for views not associated
-      a menu item.
+      zope/app/browser/skins directory. If this view is associated with a menu
+      item, this attribute should not be supplied as the view will get its
+      usage from the menu the menu item is registered to. This attribute is
+      available for views not associated with a menu item.
 
 
   Subdirectives
@@ -82,26 +82,27 @@ pages
           The name of the page (view)
 
           The name shows up in URLs/paths. For example 'foo' or 'foo.html'.
-          attribute is required unless you use the subdirective 'page' to
-          sub views. If you do not have sub pages, it is common to use an
-          for the view name such as '.html'. If you do have sub pages and you
-          to provide a view name, you shouldn't use extensions.
+          This attribute is required unless you use the subdirective 'page' to
+          create sub views. If you do not have sub pages, it is common to use
+          an extension for the view name such as '.html'. If you do have sub
+          pages and you want to provide a view name, you shouldn't use
+          extensions.
 
         template -- TextLine (optional, default=None)
 
           The name of a page template.
 
           Refers to a file containing a page template (must end in extension
-          
+          '.pt').
 
         attribute -- PythonIdentifier (optional, default=None)
 
           The name of an attribute to publish.
 
-          This is used to publish an attribute provided by a class, instead
+          This is used to publish an attribute provided by a class, instead of
           a template.
 
-          This is the attribute, usually a method, to be published as the
+          This is the attribute, usually a method, to be published as the page
           (view). The default is "__call__".
 
         menu -- TextLine (optional, default=None)
@@ -109,8 +110,8 @@ pages
           The browser menu to include the page (view) in.
 
           Many views are included in menus. It's convenient to name the menu
-          the page directive, rather than having to give a separate menuItem
-          
+          in the page directive, rather than having to give a separate
+          menuItem directive.
 
         title -- MessageID (optional, default=None)
 

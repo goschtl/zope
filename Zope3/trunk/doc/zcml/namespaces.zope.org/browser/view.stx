@@ -5,7 +5,7 @@ view
   The view directive defines a view that has subpages.
 
   The pages provided by the defined view are accessed by first traversing to
-  view name and then traversing to the page name.
+  the view name and then traversing to the page name.
 
   Attributes
 
@@ -14,8 +14,8 @@ view
       The interface this view applies to.
 
       The view will be for all objects that implement this interface. If this
-      not supplied, the view applies to all objects (XXX this ought to
-      
+      is not supplied, the view applies to all objects (XXX this ought to
+      change).
 
     permission -- Id (optional, default=None)
 
@@ -33,17 +33,17 @@ view
 
       The layer the view is in.
 
-      A skin is composed of layers. It is common to put skin specific views
+      A skin is composed of layers. It is common to put skin specific views in
       a layer named after the skin. If the 'layer' attribute is not supplied,
-      defaults to 'default'.
+      it defaults to 'default'.
 
     allowed_interface -- Tokens (optional, default=None)
 
       Interface that is also allowed if user has permission.
 
       By default, 'permission' only applies to viewing the view and any
-      sub views. By specifying this attribute, you can make the permission
-      apply to everything described in the supplied interface.
+      possible sub views. By specifying this attribute, you can make the
+      permission also apply to everything described in the supplied interface.
 
       Multiple interfaces can be provided, separated by whitespace.
 
@@ -52,18 +52,18 @@ view
       View attributes that are also allowed if user has permission.
 
       By default, 'permission' only applies to viewing the view and any
-      sub views. By specifying 'allowed_attributes', you can make the
-      also apply to the extra attributes on the view object.
+      possible sub views. By specifying 'allowed_attributes', you can make the
+      permission also apply to the extra attributes on the view object.
 
     usage -- TextLine (optional, default=u'')
 
       The template usage top-level variable
 
       See the usage documentation in the README.txt in the
-      directory. If this view is associated with a menu item, this attribute
-      not be supplied as the view will get its usage from the menu the menu
-      is registered to. This attribute is available for views not associated
-      a menu item.
+      zope/app/browser/skins directory. If this view is associated with a menu
+      item, this attribute should not be supplied as the view will get its
+      usage from the menu the menu item is registered to. This attribute is
+      available for views not associated with a menu item.
 
     name -- TextLine (optional, default=u'')
 
@@ -76,8 +76,8 @@ view
       The browser menu to include the page (view) in.
 
       Many views are included in menus. It's convenient to name the menu in
-      page directive, rather than having to give a separate menuItem
-      </description>
+      the page directive, rather than having to give a separate menuItem
+      directive. </description>
 
     title -- MessageID (optional, default=None)
 
@@ -85,12 +85,12 @@ view
 
       This attribute must be supplied if a menu attribute is supplied.
 
-    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b1ec>)
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b20c>)
 
       The interface this view provides.
 
       A view can provide an interface. This would be used for views that
-      other views.
+      support other views.
 
 
   Subdirectives
@@ -108,21 +108,21 @@ view
           The name of a sub page of a view.
 
           The name attribute is always required for the 'page' directive. It
-          common to use an extension for the name, such as '.html'.
+          is common to use an extension for the name, such as '.html'.
 
         attribute -- PythonIdentifier (optional, default=None)
 
           The name of the view attribute implementing the page.
 
           This refers to the attribute (method) on the view that is
-          a specific sub page.
+          implementing a specific sub page.
 
         template -- Path (optional, default=None)
 
           The name of a template that implements the page.
 
           Refers to a file containing a page template (must end in extension
-          
+          '.pt').
 
 
 
@@ -139,6 +139,6 @@ view
           The name of the page that is the default.
 
           The named page will be used as the default if no name is specified
-          in the path. If no defaultPage directive is supplied, the default
-          will be the first page listed.
+          explicitly in the path. If no defaultPage directive is supplied, the
+          default page will be the first page listed.
 

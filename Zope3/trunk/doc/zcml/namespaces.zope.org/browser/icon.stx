@@ -40,6 +40,6 @@ icon
 
       The layer the icon should be found in
 
-      For information on layers, see the documentation for the skin
+      For information on layers, see the documentation for the skin directive.
       Defaults to "default".
 

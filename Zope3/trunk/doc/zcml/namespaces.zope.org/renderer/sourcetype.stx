@@ -3,8 +3,8 @@ sourcetype
   File zope/app/renderer/meta.zcml, lines 5 - 9.
 
   The renderers directive specifies how a particular source text can be
-  for various view types. It also generates a registry of available source
-  
+  rendered for various view types. It also generates a registry of available
+  source types.
 
   Attributes
 

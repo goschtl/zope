@@ -10,15 +10,13 @@ adapter
 
       Adapter factory/factories
 
-      A list of factories (usually just one) that create the adapter
-      
+      A list of factories (usually just one) that create the adapter instance.
 
     provides -- GlobalObject (required)
 
       Interface the component provides
 
-      This attribute specifes the interface the adapter instance must
-      
+      This attribute specifes the interface the adapter instance must provide.
 
     for -- GlobalObject (required)
 
@@ -37,5 +35,5 @@ adapter
       Name
 
       Adapters can have names. This attribute allows you to specify the name
-      this adapter.
+      for this adapter.
 

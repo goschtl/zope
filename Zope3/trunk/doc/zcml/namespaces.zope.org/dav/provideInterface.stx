@@ -3,7 +3,7 @@ provideInterface
   File zope/app/dav/meta.zcml, lines 5 - 9.
 
   This directive assigns a new interface to a component. This interface will
-  available via WebDAV for this particular component.
+  be available via WebDAV for this particular component.
 
   Attributes
 

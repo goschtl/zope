@@ -41,7 +41,7 @@ addMenuItem
       A condition for displaying the menu item
 
       The condition is given as a TALES expression. The expression has access
-      the variables:
+      to the variables:
 
       context -- The object the menu is being displayed for
 
@@ -50,7 +50,7 @@ addMenuItem
       nothing -- None
 
       The menu item will not be displayed if there is a filter and the filter
-      to a false value.
+      evaluates to a false value.
 
     view -- TextLine (optional, default=None)
 

@@ -17,12 +17,12 @@ provideConnection
       Component
 
       Specifies the component that provides the connection. This component
-      one particular RDBMS.
+      handles one particular RDBMS.
 
     dsn -- TextLine (required)
 
       DSN
 
       The DSN contains all the connection information. Thesyntax looks as
-      dbi://username:password@host:port/dbname;param1=value...
+      follows: dbi://username:password@host:port/dbname;param1=value...
 

@@ -20,7 +20,7 @@ class
       File zope/app/component/meta.zcml, lines 85 - 88.
 
       Declare that the class given by the content directive's class attribute
-      a given interface
+      implements a given interface
 
       Attributes
 
@@ -37,7 +37,7 @@ class
       File zope/app/component/meta.zcml, lines 90 - 93.
 
       Indicate that the a specified list of names or the names in a given
-      require a given permission for access.
+      Interface require a given permission for access.
 
       Attributes
 
@@ -46,7 +46,7 @@ class
           Permission
 
           Specifies the permission by id that will be required to access or
-          the attributes and methods specified.
+          mutate the attributes and methods specified.
 
         attributes -- Tokens (optional, default=None)
 
@@ -77,8 +77,8 @@ class
           Configure like this class
 
           This argument says that this content class should be configured in
-          same way the specified class' security is. If this argument is
-          no other argument can be used.
+          the same way the specified class' security is. If this argument is
+          specifed, no other argument can be used.
 
 
 
@@ -87,8 +87,8 @@ class
       File zope/app/component/meta.zcml, lines 95 - 98.
 
       Declare a part of the class to be publicly viewable (that is, requires
-      zope.Public permission). Only one of the following two attributes may
-      used.
+      the zope.Public permission). Only one of the following two attributes
+      may be used.
 
       Attributes
 
@@ -119,22 +119,22 @@ class
           ID
 
           the identifier for this factory in the ZMI factory identification
-          If not given, defaults to the literal string given as the content
-          'class' attribute.
+          scheme. If not given, defaults to the literal string given as the
+          content directive's 'class' attribute.
 
         permission -- Id (optional, default=None)
 
           Permission
 
           permission id required to use this factory. Although optional, this
-          should normally be specified.
+          attribute should normally be specified.
 
         title -- MessageID (optional, default=None)
 
           Title
 
           text suitable for use in the 'add content' menu of a management
-          
+          interface
 
         description -- MessageID (optional, default=None)
 

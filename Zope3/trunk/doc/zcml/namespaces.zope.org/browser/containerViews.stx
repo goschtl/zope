@@ -11,7 +11,7 @@ containerViews
       The interface this containerViews are for.
 
       The containerViews will be for all objects that implement this
-      
+      interface.
 
     contents -- Id (optional, default=None)
 

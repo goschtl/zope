@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper Utility to wrap a text to a set width of characters
 
-$Id: docutils.py,v 1.1 2004/01/22 23:53:15 srichter Exp $
+$Id: docutils.py,v 1.2 2004/01/23 17:00:31 srichter Exp $
 """
 import re
 
@@ -21,7 +21,23 @@ para_sep = re.compile('\n{2,}')
 whitespace=re.compile('[ \t\n\r]+')
 
 def wrap(text, width=78, indent=0):
-    """ """
+    """Makes sure that we keep a line length of a certain width.
+
+    Examples:
+
+    >>> print wrap('foo bar')[:-2]
+    foo bar
+    >>> print wrap('foo bar', indent=2)[:-2]
+      foo bar
+    >>> print wrap('foo bar, more foo bar', 10)[:-2]
+    foo bar,
+    more foo
+    bar
+    >>> print wrap('foo bar, more foo bar', 10, 2)[:-2]
+      foo bar,
+      more foo
+      bar
+    """
     paras = para_sep.split(text.strip())
 
     new_paras = []
@@ -32,13 +48,13 @@ def wrap(text, width=78, indent=0):
         line = []
         length = indent
         for word in words:
-            if length + len(word) + 1 <= width:
+            if length + len(word) <= width:
                 line.append(word)
                 length += len(word) + 1
             else:
                 lines.append(' '*indent + ' '.join(line))
-                line = []
-                length = indent
+                line = [word]
+                length = len(word) + 1 + indent
 
         lines.append(' '*indent + ' '.join(line))
         
@@ -48,7 +64,16 @@ def wrap(text, width=78, indent=0):
 
 
 def makeDocStructures(context):
-    """ """
+    """Creates two structures that provide a friendly format for
+    documentation.
+
+    'namespaces' is a dictionary that maps namespaces to a directives
+    dictionary with the key being the name of the directive and the value is a
+    tuple: (schema, info).
+
+    'subdirs' maps a (namespace, name) pair to a list of subdirectives that
+    have the form (namespace, name, schema, info).
+    """
     namespaces = {}
     subdirs = {}
     for (namespace, name), schema, usedIn, info, parent in context._docRegistry:

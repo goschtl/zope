@@ -10,25 +10,25 @@ resource
 
       The layer the resource should be found in
 
-      For information on layers, see the documentation for the skin
+      For information on layers, see the documentation for the skin directive.
       Defaults to "default".
 
     permission -- Id (optional, default=None)
 
       The permission needed to access the resource.
 
-      If a permission isn't specified, the resource will always be
-      
+      If a permission isn't specified, the resource will always be accessible.
 
     name -- TextLine (required)
 
       The name of the resource
 
       This is the name used in resource urls. Resource urls are of the form
-      where site is the url of "site", a folder with a service manager.
+      site/@@/resourcename, where site is the url of "site", a folder with a
+      service manager.
 
       We make resource urls site-relative (as opposed to content-relative) so
-      not to defeat caches.
+      as not to defeat caches.
 
     file -- Path (optional, default=None)
 
@@ -41,12 +41,12 @@ resource
       Image
 
       If the image attribute is used, then an image resource, rather than a
-      resource will be created.
+      file resource will be created.
 
     template -- Path (optional, default=None)
 
       Template
 
       If the image attribute is used, then a page template resource, rather
-      a file resource will be created.
+      than a file resource will be created.
 

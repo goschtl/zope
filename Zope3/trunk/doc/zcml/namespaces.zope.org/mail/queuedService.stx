@@ -2,7 +2,7 @@ queuedService
 
   File zope/app/mail/meta.zcml, lines 5 - 9.
 
-  This directive creates and registers a global queued mail service. It
+  This directive creates and registers a global queued mail service. It should
   be only called once during startup.
 
   Attributes

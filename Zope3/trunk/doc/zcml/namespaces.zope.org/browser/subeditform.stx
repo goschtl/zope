@@ -11,10 +11,10 @@ subeditform
       The template usage top-level variable
 
       See the usage documentation in the README.txt in the
-      directory. If this view is associated with a menu item, this attribute
-      not be supplied as the view will get its usage from the menu the menu
-      is registered to. This attribute is available for views not associated
-      a menu item.
+      zope/app/browser/skins directory. If this view is associated with a menu
+      item, this attribute should not be supplied as the view will get its
+      usage from the menu the menu item is registered to. This attribute is
+      available for views not associated with a menu item.
 
     name -- TextLine (required)
 
@@ -35,9 +35,9 @@ subeditform
       The interface this page (view) applies to.
 
       The view will be for all objects that implement this interface. The
-      is used if the for attribute is not specified.
+      schema is used if the for attribute is not specified.
 
-      If the for attribute is specified, then the objects views must
+      If the for attribute is specified, then the objects views must implement
       or be adaptable to the schema.
 
     permission -- Id (required)
@@ -63,10 +63,10 @@ subeditform
       Class
 
       A class to provide custom widget definitions or methods to be used by a
-      template.
+      custom template.
 
       This class is used as a mix-in class. As a result, it needn't subclass
-      special classes, such as BrowserView.
+      any special classes, such as BrowserView.
 
     label -- TextLine (optional, default=None)
 

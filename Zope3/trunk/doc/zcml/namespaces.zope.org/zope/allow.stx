@@ -17,6 +17,6 @@ allow
       Interface
 
       Interfaces whos names to provide access to. Access will be provided to
-      of the names defined by the interface(s). Multiple interfaces can be
-      
+      all of the names defined by the interface(s). Multiple interfaces can be
+      supplied.
 

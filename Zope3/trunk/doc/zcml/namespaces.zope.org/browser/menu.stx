@@ -11,10 +11,10 @@ menu
       The template usage top-level variable
 
       See the usage documentation in the README.txt in the
-      directory. If this view is associated with a menu item, this attribute
-      not be supplied as the view will get its usage from the menu the menu
-      is registered to. This attribute is available for views not associated
-      a menu item.
+      zope/app/browser/skins directory. If this view is associated with a menu
+      item, this attribute should not be supplied as the view will get its
+      usage from the menu the menu item is registered to. This attribute is
+      available for views not associated with a menu item.
 
     id -- TextLine (required)
 
