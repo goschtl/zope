@@ -1671,7 +1671,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf._setObject( 'dancer', dancer )
 
         rudolph = self._makeChallengePlugin('rudolph', DummyReindeerChallenger)
-        rudolph.protocol = ("They wouldn't let poor Rudolph..."
+        rudolph.protocol = ("They never let poor Rudolph..."
                             " join in any Reindeer Games")
         zcuf._setObject( 'rudolph', rudolph )
 
@@ -1686,12 +1686,15 @@ class PluggableAuthServiceTests( unittest.TestCase ):
 
         # First call the userfolders before_traverse hook, to set things up:
         zcuf(self, request)
+
         # Call unauthorized to make sure Unauthorized is raised.
         self.failUnlessRaises( Unauthorized, response.unauthorized)
-        # Since we have one challenger in play, we end up calling
-        # PluggableAuthService._unauthorized(), which allows the
-        # challengers to play. DummyChallenger sets '.challenger' on
-        # response
+
+        # Since we have multiple challengers in play, we end up
+        # calling PluggableAuthService._unauthorized(), which allows
+        # the challengers to play. However, because of the ordering of
+        # the plugins, only "Reindeer Games Participant" challengers
+        # will play
         self.assertEqual(response.reindeer_games, ['dasher', 'dancer'])
 
 
