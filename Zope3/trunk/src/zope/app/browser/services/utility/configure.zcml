@@ -2,8 +2,9 @@
 
 <!-- Browser directives for the utility service -->
 
-  <!-- "Add service" menu entry to add a utility service -->
-  <!-- XXX AFAIK the 'action' value is unused, but must be given -->
+  <!-- "Add service" menu entry to add a utility service.
+       The action attribute matches a factory name defined in
+       zope/app/services/utility.zcml. -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
       menu="add_service" title="Utility Service"
