@@ -2,16 +2,16 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
-""" Generic three dimensional array type """
+""" Generic two-dimensional array type """
 
 from Zope.App.Security.Grants.ILocalSecurityMap import ILocalSecurityMap
 
@@ -26,11 +26,16 @@ class LocalSecurityMap(object):
         self._byrow = {}
         self._bycol = {}
 
+    def _empty_mapping(self):
+        return {}
+
     def addCell(self, rowentry, colentry, value):
-        row = self._byrow.setdefault(rowentry, {})
+        # setdefault may get expensive if an empty mapping is
+        # expensive to create, for PersistentMapping for instance.
+        row = self._byrow.setdefault(rowentry, self._empty_mapping())
         row[colentry] = value
 
-        col = self._bycol.setdefault(colentry, {})
+        col = self._bycol.setdefault(colentry, self._empty_mapping())
         col[rowentry] = value
 
     def delCell(self, rowentry, colentry):

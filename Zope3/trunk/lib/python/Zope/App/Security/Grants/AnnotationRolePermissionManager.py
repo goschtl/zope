@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: AnnotationRolePermissionManager.py,v 1.1 2002/06/20 15:54:59 jim Exp $
+$Id: AnnotationRolePermissionManager.py,v 1.2 2002/06/24 11:17:58 efge Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
 from Zope.App.OFS.Annotation.IAnnotations import IAnnotations
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
-from Zope.App.Security.Grants.LocalSecurityMap import LocalSecurityMap
+from Zope.App.Security.Grants.PersistentLocalSecurityMap import \
+     PersistentLocalSecurityMap
 from Zope.App.Security.Settings import Allow, Deny, Unset
 
 annotation_key = 'Zope.App.Security.AnnotationRolePermissionManager'
@@ -105,7 +106,7 @@ class AnnotationRolePermissionManager:
             return annotations[annotation_key]
         except KeyError:
             if create:
-                rp = annotations[annotation_key] = LocalSecurityMap()
+                rp = annotations[annotation_key] = PersistentLocalSecurityMap()
                 return rp
         return None
 
