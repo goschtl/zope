@@ -2,6 +2,10 @@ Post CMF 1.4.7
 
   Bug Fixes
 
+    - DiscussionTool.getResponseFor was not checkin for the
+      DiscussionResponse interface before acquiring, which could result
+      in the wrong object being returned in some environments.
+
     - The MemberDataTool was storing a ImplicitAcquirerWrapper on
       registerMemberData.
 
