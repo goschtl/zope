@@ -12,16 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: Adding.py,v 1.2 2002/07/11 18:21:32 jim Exp $
+$Id: IContainmentRoot.py,v 1.1 2002/07/11 18:21:34 jim Exp $
 """
 
-from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
+from Interface import Interface
 
-
-class ComponentAdding(ContentAdding):
-    """Adding component for service containers
+class IContainmentRoot(Interface):
+    """Marker interface to designate root objects
     """
-    
-    menu_id = "add_component"
 
-__doc__ = ComponentAdding.__doc__ + __doc__
+__doc__ = IContainmentRoot.__doc__ + __doc__

@@ -2,17 +2,44 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
 >
+
   <content class=".ServiceManager.">
     <require
-        permission="Zope.Public"
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IContainer.ISimpleReadContainer" />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Services.ServiceManager.IServiceManager." />
+  </content>
+
+  <content class=".Packages.">
+    <require
+        permission="Zope.View"
         interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
     <require
         permission="Zope.ManageServices"
-        interface="Zope.App.OFS.Services.ServiceManager.IServiceManager." />
+        interface=".IComponentManager." />
   </content>
+
+  <content class=".Package.">
+    <require
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
+  </content>
+
+  <content class=".ServiceDirective.">
+    <require
+        permission="Zope.ManageServices"
+        interface=".IServiceDirective." />
+  </content>
+
+
 
   <include package="Zope.App.OFS.Services.ServiceManager.Views" />
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testNextService.py,v 1.1 2002/07/03 13:20:02 jim Exp $
+$Id: testNextService.py,v 1.2 2002/07/11 18:21:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,10 +26,10 @@ from Zope.ContextWrapper import Wrapper
 from Zope.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
 
-from Zope.ComponentArchitecture.IServiceManager import IServiceManager
+from Zope.ComponentArchitecture.IServiceService import IServiceService
 
 class ServiceManager:
-    __implements__ =  IServiceManager
+    __implements__ =  IServiceService
         
 class Folder:
     __implements__ =  IServiceManagerContainer

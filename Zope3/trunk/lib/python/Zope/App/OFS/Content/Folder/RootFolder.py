@@ -12,9 +12,9 @@
 # 
 ##############################################################################
 from Folder import IFolder, Folder
+from Zope.App.Traversing.IContainmentRoot import IContainmentRoot
 
-
-class IRootFolder(IFolder):
+class IRootFolder(IFolder, IContainmentRoot):
     """The standard Zope root Folder object interface."""
 
 
@@ -22,7 +22,3 @@ class RootFolder(Folder):
     """The standard Zope root Folder implementation."""
 
     __implements__ = Folder.__implements__, IRootFolder
-
-    def __call__(self):
-        return 'You have reached the wrong number (but the right ' \
-               'object!). Please try again later.'

@@ -11,6 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"$Id"
+
+__metaclass__ = type
+
+
 from Zope.Publisher.Exceptions import Unauthorized, NotFound, DebugError
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.XMLRPC.IXMLRPCPublisher import IXMLRPCPublisher
@@ -23,18 +28,19 @@ class SimpleComponentTraverser:
     """
     __implements__ = IBrowserPublisher, IXMLRPCPublisher
 
-    def __init__(self, target, request):
-        self.target = target
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
     def browserDefault(self, request):
-        ob = self.target
+        ob = self.context
         
         view_name = getDefaultViewName(ob, request)
 
         return ob, (view_name,)
 
     def publishTraverse(self, request, name):
-        ob = self.target
+        ob = self.context
         from Zope.ComponentArchitecture.GlobalViewService import viewService
         try:
             return getView(ob, name, request)
@@ -53,7 +59,7 @@ class FileContentTraverser(SimpleComponentTraverser):
     """
 
     def browserDefault(self, request):
-        ob = self.target
+        ob = self.context
         
         view_name = getDefaultViewName(ob, request)
         view = self.publishTraverse(request, view_name)
@@ -72,11 +78,11 @@ class TestTraverser:
 
     __implements__ = IBrowserPublisher
 
-    def __init__(self, target, request):
-        self.target = target
+    def __init__(self, context, request):
+        self.context = context
 
     def browserDefault(self, request):
-        ob = self.target
+        ob = self.context
 
         if hasattr(ob, '__implements__'):
         
@@ -87,7 +93,7 @@ class TestTraverser:
         return ob, ()
 
     def publishTraverse(self, request, name):
-        ob = self.target
+        ob = self.context
         if name.startswith('@@'):
             return getView(ob, name[6:], request)
             

@@ -11,17 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-$Id: Adding.py,v 1.2 2002/07/11 18:21:32 jim Exp $
-"""
 
-from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
+from Zope.App.OFS.Container.IContainer import IContainer
+from Zope.App.OFS.Services.ServiceManager.IComponentManager import IComponentManager
 
+class IPackages(IContainer, IComponentManager):
+    """Packages objects contain database packages
 
-class ComponentAdding(ContentAdding):
-    """Adding component for service containers
+    They support simple containment as well as package query and lookup.
     """
-    
-    menu_id = "add_component"
 
-__doc__ = ComponentAdding.__doc__ + __doc__
+doc = IPackages.__doc__ + """
+$Id: IPackages.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+"""
+    

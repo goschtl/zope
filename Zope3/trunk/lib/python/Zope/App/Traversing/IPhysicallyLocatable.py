@@ -12,13 +12,21 @@
 # 
 ##############################################################################
 """
-
-$Id: ServiceAdding.py,v 1.1 2002/06/22 17:16:13 poster Exp $
+$Id: IPhysicallyLocatable.py,v 1.1 2002/07/11 18:21:34 jim Exp $
 """
 
-from Zope.App.OFS.Container.Views.Browser.Adding import Adding
-from Zope.App.OFS.Services.ServiceManager.IServiceAdding import IServiceAdding
+from Interface import Interface
 
-class ServiceAdding(Adding):
-    
-    __implements__ = IServiceAdding
+class IPhysicallyLocatable(Interface):
+    """Objects that have a physical location in a containment hierarchy.
+    """
+
+    def getPhysicalRoot():
+        """Return the physical root object
+        """
+
+    def getPhysicalPath():
+        """Return the physical path to the object as a sequence of names.
+        """
+
+__doc__ = IPhysicallyLocatable.__doc__ + __doc__

@@ -16,13 +16,13 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: ContextWrapper.py,v 1.3 2002/06/15 20:38:19 stevea Exp $
+$Id: ContextWrapper.py,v 1.4 2002/07/11 18:21:37 jim Exp $
 """
 
 from Zope.Security.Proxy import Proxy, getChecker, getObject
 from Zope.ContextWrapper import Wrapper as _Wrapper
 from Zope.ContextWrapper import wrapperTypes, getobject, getdict
-from Zope.ContextWrapper import getcontext, getinnercontext
+from Zope.ContextWrapper import getcontext, getinnercontext, getinnerwrapper
 from Zope.Security.Checker import defineChecker, selectChecker, BasicTypes
 
 from IContextWrapper import IContextWrapper
@@ -58,6 +58,11 @@ def getWrapperData(_ob):
     if type(_ob) is Proxy:
         _ob = getObject(_ob)
     return getdict(_ob)
+
+def getInnerWrapperData(_ob):
+    if type(_ob) is Proxy:
+        _ob = getObject(_ob)
+    return getdict(getinnerwrapper(_ob))
 
 def getWrapperContainer(_ob):
     if type(_ob) is Proxy:

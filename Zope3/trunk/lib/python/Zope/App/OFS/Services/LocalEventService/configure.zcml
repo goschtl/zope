@@ -18,6 +18,10 @@
         attributes="bound unbound subscribe unsubscribe subscribeOnBind
                     unsubscribedFrom subscribedTo" />
   </content>
+
+  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+     action="Events"  title='Events'
+     description='An event service: use sparingly' />
   
   <browser:icon name="zmi_icon" for=".LocalEventService.ILocalEventService" 
                 file="./event_service.gif" />

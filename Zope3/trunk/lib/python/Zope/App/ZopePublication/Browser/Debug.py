@@ -15,7 +15,7 @@
 
 This is the first preliminary (add weasle words) cut at a zope debugger.
 
-$Id: Debug.py,v 1.2 2002/06/10 23:29:20 jim Exp $
+$Id: Debug.py,v 1.3 2002/07/11 18:21:35 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -28,8 +28,8 @@ from Zope.Configuration.xmlconfig import XMLConfig
 from cStringIO import StringIO
 import base64
 
-XMLConfig('../../site.zcml')()
-db= DB(FileStorage('../../Data.fs'))
+XMLConfig('site.zcml')()
+db= DB(FileStorage('Data.fs'))
 pub = BrowserPublication(db)
 
 def publish(path='/', stdin='', basic=None, **kw):

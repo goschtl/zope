@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: LocalSubscriptionAware.py,v 1.2 2002/06/10 23:28:10 jim Exp $
+$Id: LocalSubscriptionAware.py,v 1.3 2002/07/11 18:21:31 jim Exp $
 """
+
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
-from Zope.ComponentArchitecture import getAdapter
-from Zope.App.Traversing.ITraverser import ITraverser
+from Zope.App.Traversing import getPhysicalPathString
 
 
 class LocalSubscriptionAware:
@@ -31,19 +31,12 @@ class LocalSubscriptionAware:
         self._subscriptions=()
     
     def subscribedTo(self, subscribable, event_type, filter):
-        #subscribable_path=getAdapter(
-         #   subscribable, ITraverser).getPhysicalPath()
-        subscribable_path="/%s" % "/".join(getAdapter(
-            subscribable, ITraverser).getPhysicalPath())
-        # XXX right now the conversion to a string is necessary because
-        # the tuple path returned by the Traverser does not include an
-        # empty initial space to represent the root
+        subscribable_path = getPhysicalPathString(subscribable)
         if (subscribable_path, event_type, filter) not in self._subscriptions:
             self._subscriptions+=((subscribable_path,event_type, filter),)
     
     def unsubscribedFrom(self, subscribable, event_type, filter):
-        subscribable_path="/%s" % "/".join(getAdapter(
-            subscribable, ITraverser).getPhysicalPath())
+        subscribable_path = getPhysicalPathString(subscribable)
         sub=list(self._subscriptions)
         sub.remove((subscribable_path, event_type, filter))
         self._subscriptions=tuple(sub)

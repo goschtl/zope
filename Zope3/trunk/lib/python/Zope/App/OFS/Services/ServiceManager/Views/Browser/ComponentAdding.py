@@ -12,16 +12,14 @@
 # 
 ##############################################################################
 """
-$Id: Adding.py,v 1.2 2002/07/11 18:21:32 jim Exp $
+
+$Id: ComponentAdding.py,v 1.1 2002/07/11 18:21:32 jim Exp $
 """
 
-from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
+from Zope.App.OFS.Container.Views.Browser.Adding import Adding
+from Zope.App.OFS.Services.ServiceManager.IServiceAdding import IServiceAdding
 
-
-class ComponentAdding(ContentAdding):
-    """Adding component for service containers
-    """
+class ServiceAdding(Adding):
     
-    menu_id = "add_component"
+    __implements__ = IServiceAdding
 
-__doc__ = ComponentAdding.__doc__ + __doc__

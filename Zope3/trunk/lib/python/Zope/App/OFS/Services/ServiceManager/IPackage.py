@@ -11,17 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""XXX short summary goes here.
+
+XXX longer description goes here.
+
+$Id: IPackage.py,v 1.1 2002/07/11 18:21:32 jim Exp $
 """
-$Id: Adding.py,v 1.2 2002/07/11 18:21:32 jim Exp $
-"""
 
-from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
+from Zope.App.OFS.Container.IContainer import IContainer 
 
-
-class ComponentAdding(ContentAdding):
-    """Adding component for service containers
+class IPackage(IContainer):
+    """Component and component configuration containers.
     """
     
-    menu_id = "add_component"
 
-__doc__ = ComponentAdding.__doc__ + __doc__

@@ -1,58 +1,91 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
+<zope:zopeConfigure
+   xmlns:zope='http://namespaces.zope.org/zope'
+   xmlns='http://namespaces.zope.org/browser'
+   package="Zope.App.OFS.Services.ServiceManager"
 >
 
-  <browser:defaultView 
-     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+  <defaultView 
+     for=".IServiceManager."
      name="index.html"
      />
-
-  <browser:view 
-     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+ 
+  <view 
      permission="Zope.ManageServices" 
-     factory=".Contents."
-     >
+     for=".IServiceManager."
+     factory=".Views.Browser.Bindings." >
 
-    <browser:page name="index.html"
-                  attribute="index"
-                  />
-    <browser:page name="addServiceManager.html"
-                  attribute="addServiceManager"
-                  />
-
-  </browser:view> 
-
-  <browser:view 
-     name="+"
-     permission="Zope.ManageServices" 
-     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
-     factory=".Adding.ServiceAdding">
-
-    <browser:page name="index.html"  attribute="index"  />
-    <browser:page name="action.html" attribute="action" />
-
-  </browser:view> 
-  
-  <browser:view 
-     permission="Zope.ManageServices" 
-     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
-     factory=".Bindings." >
-
-    <browser:page name="bindings.html"
-                  attribute="index"
-                  />
-    <browser:page name="changeBindings.html"
+    <page name="index.html"
                   attribute="action"
                   />
 
-  </browser:view> 
+  </view> 
+
+  <menuItems menu="zmi_views" for=".IServiceManager.">
+    <menuItem title="Services" action="@@index.html"/>
+    <menuItem title="Packages" action="Packages/@@index.html"/>
+    <menuItem title="Default Package" action="Packages/default/@@index.html"/>
+  </menuItems>
 
 
-  <browser:menuItems menu="zmi_views" 
-    for="Zope.App.OFS.Services.ServiceManager.ServiceManager.IServiceManager.">
-    <browser:menuItem title="Contents" action="@@index.html"/>
-    <browser:menuItem title="Bindings" action="@@bindings.html"/>
-  </browser:menuItems>
+  <defaultView for=".IPackages." name="index.html" />
 
-</zopeConfigure>
+  <view
+      for=".IPackages."
+      permission="Zope.ManageServices" 
+      factory=".Views.Browser.PackagesContents.">
+
+    <page name="index.html"
+                  attribute="index"
+                  />
+    <page name="addPackage.html"
+                  attribute="addPackage"
+                  />
+    <page name="removeObjects"
+                  attribute="removeObjects"
+                  />
+  </view>
+
+  <defaultView for=".IPackage." name="index.html" />
+
+
+  <view 
+     for=".IPackage."
+     permission="Zope.ManageServices"
+     factory="Zope.App.OFS.Container.Views.Browser.Contents."
+     >
+
+    <page name="index.html" attribute="index" />
+    <page name="removeObjects.html" attribute="removeObjects" />
+   </view>
+
+
+   <menu id="add_component" 
+                 title="Menu of objects to be added to service managers"
+                 />
+
+
+  <view 
+     name="+"
+     permission="Zope.ManageServices" 
+     for=".IPackage."
+     factory=".Views.Browser.Adding.ComponentAdding">
+
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+
+  </view> 
+
+  <view for="Zope.App.OFS.Container.IAdding."
+                name="ServiceDirective"
+                factory=".Views.Browser.AddServiceDirective."
+                >
+      <page name="step1.html" template="Views/Browser/add_service_1.pt" />
+      <page name="step2.html" template="Views/Browser/add_service_2.pt" />
+      <page name="finish.html" attribute="action" />
+  </view>
+
+  <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+     action="ServiceDirective"  title="Service Directive" />
+
+</zope:zopeConfigure>
+

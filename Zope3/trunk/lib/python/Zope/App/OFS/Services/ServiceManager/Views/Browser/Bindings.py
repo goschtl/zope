@@ -13,11 +13,12 @@
 ##############################################################################
 """
 
-$Id: Bindings.py,v 1.2 2002/06/10 23:28:13 jim Exp $
+$Id: Bindings.py,v 1.3 2002/07/11 18:21:32 jim Exp $
 """
 
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.ComponentArchitecture import getView
 from Zope.ComponentArchitecture.ContextDependent import ContextDependent
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
@@ -27,63 +28,84 @@ class Bindings(BrowserView):
     index = ViewPageTemplateFile('services_bindings.pt')
 
     def getServicesTable(self):
-        """
-        """
-        context = self.context
-        allServices = removeAllProxies(context.getServiceDefinitions())
-        localServices = removeAllProxies(context.items())
-        services = []
-        for serviceName, service in allServices:
-            serviceMap={}
-            availableServices = []
+        service_types = list(self.context.getBoundServiceTypes())
+        service_types.sort()
 
-            acquiredOrNone = 'None'
-            bound = context.getBoundService(serviceName)
+        table = []
+
+        for service_type in service_types:
+            directives = self.context.getDirectives(service_type)
+
+            if directives and directives[0] is None:
+                active = None
+                inactive = 1
+            else:
+                active = 1
+                inactive = None
+
+            directive_data = []
+            for directive in directives:
+                if directive is None:
+                    continue
+
+                service = directive.getService(self.context)
+                service_url = str(
+                    getView(service, 'absolute_url', self.request))
+                sm_url = '/'.join(service_url.split('/')[:-2])
+
+                component_path = directive.component_path
+                l = component_path.find('/++etc++Services')
+                sm_path = component_path[:l]
+                componen_path = component_path[l+17:]
+
+                directive_data.append({
+                    'sm_url': sm_url,
+                    'sm_path': sm_path,
+                    'component_url': service_url,
+                    'component_path': component_path,
+                    })
+                    
             
-            if bound is None:
-                try:
-                    acquired = context.getService(serviceName)
-                    acquiredOrNone = 'Acquired'
-                except ComponentLookupError:
-                    pass
-                bound = acquiredOrNone
-                                
-            availableServices.append(acquiredOrNone)
+            table.append({
+                'name': service_type,
+                'directives': directive_data,
+                'active': active,
+                'inactive': inactive,
+            })
 
+
+        return table
+
+    def _bound_status(self, service_type):
+        directives = self.context.getDirectives(service_type)
+        if directives and directives[0] is not None:
+            return '0'
+        return 'disabled'
             
-            for localServiceName, localService in localServices:
-                if service.isImplementedBy(localService):
-                    availableServices.append(localServiceName)
-
-            serviceMap['name'] = serviceName
-            serviceMap['services'] = availableServices
-            serviceMap['bound'] = bound
-            services.append(serviceMap)
-        return services
-    
-    def action(self, boundService, REQUEST):
-        # boundService is a dict service_name:bound_name
-        # the bound_names Acquired and None are special
+    def action(self):
+        if self.request.get('REQUEST_METHOD') != 'POST':
+            return self.index()
         
-        context = self.context
         
+        # Update the binding data based on informatioin in the request
+        service_types = self.context.getBoundServiceTypes()
         change_count = 0
-        
-        for service_name, new_bound_name in boundService.items():
-            # check to see if the bound name has changed
-            current_bound_name = context.getBoundService(service_name)
-            if new_bound_name in ('Acquired', 'None'):
-                new_bound_name = None
-            if current_bound_name != new_bound_name:
-                change_count += 1
 
-                if new_bound_name is None:
-                    context.unbindService(service_name)
-                else:
-                    context.bindService(service_name, new_bound_name)
+        for service_type in service_types:
+            setting = self.request.get("service %s" % service_type)
+            if setting is not None:
+                current = self._bound_status(service_type)
+                if current is not setting:
+                    change_count += 1
+                    if setting == 'disable':
+                        self.context.disableService(service_type)
+                    else:
+                        self.context.enableService(service_type, int(setting))
+                        
         if change_count:
-            message = "bindings changed"
+            message = "%s bindings changed" % change_count
         else:
             message = "no bindings changed"
-        return self.index(REQUEST=REQUEST, message=message)
+
+        return self.index(message=message)
     

@@ -1,0 +1,18 @@
+<html metal:use-macro="views/standard_macros/page">
+<head><title>Add a service component</title></head>
+<body>
+<div metal:fill-slot="body">
+
+<p>Select a service type:</p>
+
+<form action="step2.html">
+<select name="service_type">
+  <option tal:repeat="service view/services"
+          tal:attributes="value service"
+          tal:content="service">service</option>
+</select>
+<br>
+<input type=submit value="Continue"/>
+</form>
+
+</div></body></html>

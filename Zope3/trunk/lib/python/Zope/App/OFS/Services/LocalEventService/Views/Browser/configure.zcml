@@ -12,7 +12,7 @@
   <browser:menuItem title="Control" action="@@control.html" />
 </browser:menuItems>
 
-<browser:menuItem menu="add_service" 
+<browser:menuItem menu="add_component" 
     for="Zope.App.OFS.Container.IAdding."
     action="Events"  title="Event Service"
     description="An event service: use sparingly" />

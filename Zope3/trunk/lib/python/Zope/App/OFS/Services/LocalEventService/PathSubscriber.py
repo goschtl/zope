@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: PathSubscriber.py,v 1.3 2002/07/02 23:44:12 jim Exp $
+$Id: PathSubscriber.py,v 1.4 2002/07/11 18:21:31 jim Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
@@ -23,6 +23,7 @@ from Zope.Event.ISubscriptionAware import ISubscriptionAware
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from IPathSubscriber import IPathSubscriber
 from Interface import Attribute
+from Zope.App.Traversing import getPhysicalPathString, traverse
 
 from Zope.ContextWrapper import ContextMethod
 
@@ -32,21 +33,16 @@ class PathSubscriber:
     __implements__=IPathSubscriber, ISubscriptionAware
     
     def __init__(self, wrapped_subscriber):
-        self.subscriber_path="/%s" % "/".join(getAdapter(
-            wrapped_subscriber, ITraverser).getPhysicalPath())
-        # XXX right now the conversion to a string is necessary because
-        # the tuple path returned by the Traverser does not include an
-        # empty initial space to represent the root
+        self.subscriber_path = getPhysicalPathString(wrapped_subscriber)
         self.__alert_subscription=ISubscriptionAware.isImplementedBy(
             removeAllProxies(wrapped_subscriber) )
     
     def __eq__(self, other):
         return IPathSubscriber.isImplementedBy(other) and \
-               other.subscriber_path==self.subscriber_path
+               other.subscriber_path == self.subscriber_path
     
     def __getSubscriber(self, wrapped_self):
-        traverser = getAdapter(wrapped_self, ITraverser)
-        return traverser.traverse(self.subscriber_path)
+        return traverse(wrapped_self, self.subscriber_path)
     
     def notify(wrapped_self, event):
         removeAllProxies(wrapped_self).__getSubscriber(

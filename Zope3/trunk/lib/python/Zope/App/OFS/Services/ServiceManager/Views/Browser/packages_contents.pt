@@ -1,16 +1,6 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
 <style metal:fill-slot="headers" type="text/css">
-<!--
-
-.ContentIcon {
-    width: 20px;
-}
-
-.ContentTitle {
-    text-align: left;
-}
--->
 </style>
 </head>
 <body>
@@ -19,7 +9,7 @@
 <form action="." method="get">
   <table class="ContentListing">
   
-    <caption>Folder Contents <a href="+"> Add... </a> </caption>
+    <caption>Package Contents</caption>
   
     <tbody>
   
@@ -27,15 +17,6 @@
 	<td class="ContentIcon"><br /> </td>
 	<th class="ContentTitle">Title</th>
       </tr>
-  
-      <!--
-	** listContentInfo returns a sequence of mappings, containing:
-	**   'id'    : the ID of the contained within the container
-	**   'url'   : the absolute URL of the contained object
-	**   'title' : the title of the contained object
-	**   'icon'  : the absolute URL of the icon, for the contained object
-		       (may be None)
-	-->
       <tr tal:repeat="info view/listContentInfo">
   
 	<td class="ContentSelect">
@@ -70,15 +51,13 @@
   
   </table>
   <br />
-
-  <input type="submit" name="@@removeObjects.html:method" value="Delete"
-         i18nXXX:attributes="value string:menu_delete_button"> 
+    <input type="text" name="name" />
+    <input type="submit" name="@@addPackage.html:method" value="Add"
+           i18nXXX:attributes="value string:menu_add_button" />
+    <input type="submit" name="@@removeObjects.html:method" value="Delete"
+           i18nXXX:attributes="value string:menu_delete_button" /> 
 </form>
 
 </div>
 </body>
 </html>
-
-
-
-

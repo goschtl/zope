@@ -13,12 +13,8 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.5 2002/06/22 17:16:11 poster Exp $
+Revision information: $Id: Contents.py,v 1.6 2002/07/11 18:21:29 jim Exp $
 """
-
-
-import os
-
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.OFS.Container.IContainer import IContainer

@@ -12,16 +12,22 @@
 # 
 ##############################################################################
 """
-$Id: Adding.py,v 1.2 2002/07/11 18:21:32 jim Exp $
+$Id: IServiceDirective.py,v 1.1 2002/07/11 18:21:32 jim Exp $
 """
 
-from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
+from Interface import Interface
+from Interface.Attribute import Attribute
 
-
-class ComponentAdding(ContentAdding):
-    """Adding component for service containers
+class IServiceDirective(Interface):
+    """Service Configuration Directives
     """
-    
-    menu_id = "add_component"
 
-__doc__ = ComponentAdding.__doc__ + __doc__
+    service_type = Attribute("The service type id")
+    component_path = Attribute("The physical path to the component")
+
+    def getService(service_manager):
+        """Return the service component named in the directive.
+        """
+
+__doc__ = IServiceDirective.__doc__ + __doc__
+

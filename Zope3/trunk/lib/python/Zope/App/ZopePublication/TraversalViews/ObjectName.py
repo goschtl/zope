@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: ObjectName.py,v 1.2 2002/06/15 20:38:18 stevea Exp $
+$Id: ObjectName.py,v 1.3 2002/07/11 18:21:36 jim Exp $
 """
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
-from Zope.Proxy.ContextWrapper import getWrapperData
+from Zope.Proxy.ContextWrapper import getInnerWrapperData
 from Zope.App.Traversing.ObjectName \
     import IObjectName, ObjectName, SiteObjectName
 

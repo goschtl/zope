@@ -13,26 +13,24 @@
 ##############################################################################
 """
 
-$Id: ITraverser.py,v 1.3 2002/07/11 18:21:34 jim Exp $
+$Id: IComponentManager.py,v 1.1 2002/07/11 18:21:32 jim Exp $
 """
+from Interface import Interface
 
-import Interface
-
-_RAISE_KEYERROR=[]
-
-class ITraverser(Interface.Base):
-    """Provide traverse features"""
+class IComponentManager(Interface):
     
-    def traverse(path, default=_RAISE_KEYERROR):
-        """
-        Return an object given a path.
+
+    def queryComponent(type=None, filter=None, all=0):
+        """Return all components that match the given type and filter
+
+        The objects are returned a sequence of mapping objects with keys:
+
+        path -- The component path
+
+        component -- The component
+
+        all -- A flag indicating whether all component managers in
+               this place should be queried, or just the local one.
         
-        Path is either an immutable sequence of strings or a slash ('/')
-        delimited string.
-
-        If the first string in the path sequence is an empty string,
-        or the path begins with a '/', start at the root. Otherwise the path
-        is relative to the current context.
-
-        If the object is not found, return 'default' argument.
         """
+    

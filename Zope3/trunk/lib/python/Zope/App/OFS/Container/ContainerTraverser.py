@@ -20,7 +20,7 @@ import os
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.XMLRPC.IXMLRPCPublisher import IXMLRPCPublisher
 from Zope.Publisher.Exceptions import NotFound
-from IContainer import IReadContainer, IItemContainer
+from IContainer import ISimpleReadContainer, IItemContainer
 from Zope.ComponentArchitecture import queryView
 from Zope.ComponentArchitecture import getDefaultViewName
 
@@ -28,10 +28,11 @@ from Zope.ComponentArchitecture import getDefaultViewName
 class ContainerTraverser:
 
     __implements__ = IBrowserPublisher, IXMLRPCPublisher
-    __used_for__ = IReadContainer
+    __used_for__ = ISimpleReadContainer
 
     def __init__(self, container, request):
         self.context = container
+        self.request = request
 
     def publishTraverse(self, request, name):
         c = self.context

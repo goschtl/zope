@@ -1,16 +1,16 @@
 <zopeConfigure
      xmlns='http://namespaces.zope.org/zope'>
 
-<content class=".ConnectionService.">
-  <factory id="ConnectionService" permission="Zope.ManageServices" />
-    <require
-        permission="Zope.View"
-        interface="Zope.App.RDB.IConnectionService." />
-    <require
-        permission="Zope.ManageServices"
-        interface="Zope.App.OFS.Container.IContainer." />
-</content>
+  <content class=".ConnectionService.">
+    <factory id="ConnectionService" permission="Zope.ManageServices" />
+      <require
+          permission="Zope.View"
+          interface="Zope.App.RDB.IConnectionService." />
+      <require
+          permission="Zope.ManageServices"
+          interface="Zope.App.OFS.Container.IContainer." />
+  </content>
 
-<include package=".Views" />
+  <include package=".Views" />
 
 </zopeConfigure>

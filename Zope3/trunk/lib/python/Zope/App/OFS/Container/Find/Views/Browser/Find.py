@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Find.py,v 1.2 2002/06/10 23:27:55 jim Exp $
+$Id: Find.py,v 1.3 2002/07/11 18:21:29 jim Exp $
 """
 
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -46,11 +46,11 @@ class Find(BrowserView):
             result.append({ 'id': id, 'url': url})
         return result
     
-from Zope.Proxy.ContextWrapper import getWrapperData
+from Zope.Proxy.ContextWrapper import getInnerWrapperData
 
 # XXX get the id of an object (should be imported from somewhere)
 def getId(object):
-    dict = getWrapperData(object)
+    dict = getInnerWrapperData(object)
     if dict:
         return dict.get('name')
     return None

@@ -14,31 +14,53 @@
 """
 
 Revision information:
-$Id: EventSetup.py,v 1.2 2002/06/10 23:28:11 jim Exp $
+$Id: EventSetup.py,v 1.3 2002/07/11 18:21:31 jim Exp $
 """
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
   import PlacefulSetup
 from Zope.ComponentArchitecture import getService, getServiceManager
+
 from Zope.App.Traversing.Traverser import Traverser
 from Zope.App.Traversing.ITraverser import ITraverser
 from Zope.App.Traversing.DefaultTraversable import DefaultTraversable
 from Zope.App.Traversing.ITraversable import ITraversable
+
+
+from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
+from Zope.App.Traversing.IContainmentRoot import IContainmentRoot
+from Zope.App.Traversing.PhysicalLocationAdapters \
+     import WrapperPhysicallyLocatable, RootPhysicallyLocatable
+
+
 from Zope.App.OFS.Container.ContainerTraversable import ContainerTraversable
-from Zope.App.OFS.Container.IContainer import IReadContainer
-from Zope.App.OFS.Services.LocalEventService.LocalEventService import LocalEventService
+from Zope.App.OFS.Container.IContainer import ISimpleReadContainer
+
+
+
+from Zope.App.OFS.Services.LocalEventService.LocalEventService \
+     import LocalEventService
+from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
+     import ServiceDirective
+from Zope.App.Traversing import getPhysicalPathString
 
 class EventSetup(PlacefulSetup):
     
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.buildFolders()
-        adapterService=getService(None, "Adapters")
+        adapterService = getService(None, "Adapters")
         adapterService.provideAdapter(
             None, ITraverser, Traverser)
         adapterService.provideAdapter(
             None, ITraversable, DefaultTraversable)
         adapterService.provideAdapter(
-            IReadContainer, ITraversable, ContainerTraversable)
+            ISimpleReadContainer, ITraversable, ContainerTraversable)
+
+        adapterService.provideAdapter(
+              None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
+        adapterService.provideAdapter(
+              IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
+        
         from Zope.Event.IEventService import IEventService
         from Zope.Event.GlobalEventService import eventService
         globsm=getServiceManager(None)
@@ -51,7 +73,12 @@ class EventSetup(PlacefulSetup):
         if not folder.hasServiceManager():
             self.createServiceManager(folder)
         sm=getServiceManager(folder) # wrapped now
-        sm.setObject("myEventService",LocalEventService())
-        sm.bindService("Events","myEventService")
+        sm.Packages['default'].setObject("myEventService",LocalEventService())
+
+        path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
+        directive = ServiceDirective("Events", path)
+        sm.Packages['default'].setObject("myEventServiceDir", directive)
+        sm.bindService(directive)
+
         
     

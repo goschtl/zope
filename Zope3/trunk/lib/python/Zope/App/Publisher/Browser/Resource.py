@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: Resource.py,v 1.1 2002/06/13 23:15:43 jim Exp $
+$Id: Resource.py,v 1.2 2002/07/11 18:21:34 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 from Zope.ComponentArchitecture import queryView
-from Zope.Proxy.ContextWrapper import getWrapperContainer, getWrapperData
+from Zope.Proxy.ContextWrapper import getWrapperContainer, getInnerWrapperData
 from Zope.ContextWrapper import ContextMethod
 
 class Resource:
@@ -27,7 +27,7 @@ class Resource:
         self.request = request
 
     def __call__(self):
-        name = getWrapperData(self)['name']
+        name = getInnerWrapperData(self)['name']
         if name.startswith('++resource++'):
             name = name[12:]
 

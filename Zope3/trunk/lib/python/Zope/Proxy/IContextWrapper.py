@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IContextWrapper.py,v 1.3 2002/06/15 20:38:19 stevea Exp $
+$Id: IContextWrapper.py,v 1.4 2002/07/11 18:21:37 jim Exp $
 """
 from Interface import Interface
 
@@ -37,6 +37,10 @@ class IContextWrapper(Interface):
 
     def getWrapperData(ob):
         """Get the context wrapper data for an object
+        """
+
+    def getInnerWrapperData(ob):
+        """Get the inner (container) context wrapper data for an object
         """
 
     def getWrapperContainer(ob):

@@ -13,9 +13,9 @@
 ##############################################################################
 """
 
-$Id: hooks.py,v 1.1 2002/07/02 23:44:12 jim Exp $
+$Id: hooks.py,v 1.2 2002/07/11 18:21:28 jim Exp $
 """
-from Zope.ComponentArchitecture.IServiceManager import IServiceManager
+from Zope.ComponentArchitecture.IServiceService import IServiceService
 from Zope.ComponentArchitecture.IServiceManagerContainer \
      import IServiceManagerContainer
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
@@ -35,7 +35,7 @@ def getServiceManager_hook(context):
         clean_context = removeAllProxies(context)
 
         # if the context is actually a service or service manager...
-        if IServiceManager.isImplementedBy(clean_context):
+        if IServiceService.isImplementedBy(clean_context):
             return trustedRemoveSecurityProxy(context)
         
         if (IServiceManagerContainer.isImplementedBy(clean_context) and

@@ -64,7 +64,7 @@
   <browser:menuItem title="Synchronize" action="@@synchronizeForm.html"/>
 </browser:menuItems>
 
-<browser:menuItem menu="add_service" for="Zope.App.OFS.Container.IAdding."
+<browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
      action="TranslationService"  title="Translation Service"
      description="A Persistent Translation Service for TTW development" />
 

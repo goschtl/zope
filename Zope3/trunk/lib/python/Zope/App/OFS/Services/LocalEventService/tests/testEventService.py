@@ -14,29 +14,37 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.2 2002/06/10 23:28:11 jim Exp $
+$Id: testEventService.py,v 1.3 2002/07/11 18:21:31 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
-from EventSetup import EventSetup
-from Zope.ComponentArchitecture import getService, getServiceManager
-from Zope.App.OFS.Services.LocalEventService.LocalEventService import \
-  LocalEventService
-from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
-from Zope.Event.ObjectEvent import ObjectAddedEvent
-from Zope.Event import subscribe, unsubscribe, listSubscriptions, publishEvent
 
+from Zope.ComponentArchitecture import getService, getServiceManager
+
+from Zope.Proxy.ContextWrapper import ContextWrapper
+
+from Zope.Exceptions import NotFoundError
+
+from Zope.App.OFS.Services.LocalEventService.LocalEventService \
+     import LocalEventService
+
+from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
+     import ServiceDirective
+
+from Zope.App.Traversing import getPhysicalPathString
+
+from Zope.Event import subscribe, unsubscribe, listSubscriptions, publishEvent
+from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
 from Zope.Event.IObjectEvent import IObjectEvent
 from Zope.Event.IObjectEvent import IObjectAddedEvent
 from Zope.Event.IObjectEvent import IObjectRemovedEvent
 from Zope.Event.IObjectEvent import IObjectModifiedEvent
 from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
+from Zope.Event.ObjectEvent import ObjectAddedEvent
 from Zope.Event.GlobalEventService import GlobalEventService
-from Zope.Exceptions import NotFoundError
 from Zope.Event.IEvent import IEvent
-from Zope.Proxy.ContextWrapper import ContextWrapper
 
-from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
+from EventSetup import EventSetup
 
 class UnpromotingLocalEventService(LocalEventService):
     
@@ -366,8 +374,13 @@ class EventServiceTests(EventSetup, TestCase):
         if not self.folder2.hasServiceManager():
             self.createServiceManager(self.folder2)
         sm=getServiceManager(self.folder2) # wrapped now
-        sm.setObject("myEventService",service) # this is the change
-        sm.bindService("Events","myEventService")
+        sm.Packages['default'].setObject("myEventService", service)
+
+        path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
+        directive = ServiceDirective("Events", path)
+        sm.Packages['default'].setObject("myEventServiceDir", directive)
+        sm.bindService(directive)
+
         subscribe(
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
@@ -411,7 +424,8 @@ class EventServiceTests(EventSetup, TestCase):
             event_type=IObjectAddedEvent
             )
         sm=getServiceManager(self.folder1)
-        sm.unbindService("Events")
+        directive = sm.getDirectives("Events")[0]
+        sm.unbindService(directive)
         publishEvent(self.rootFolder, ObjectAddedEvent('/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 0)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
@@ -426,7 +440,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.folder2Subscriber.notified, 0)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
         sm=getServiceManager(self.folder2)
-        sm.unbindService("Events") # make sure it doesn't raise any errors
+        directive = sm.getDirectives("Events")[0]
+        sm.unbindService(directive) # make sure it doesn't raise any errors
         
 
         

@@ -11,25 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-""" Define view component for service manager contents.
-
-$Id: Contents.py,v 1.2 2002/06/10 23:28:13 jim Exp $
 """
 
+Revision information: $Id: PackagesContents.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+"""
 from Zope.App.OFS.Container.Views.Browser.Contents import Contents
-from Zope.App.OFS.Content.Folder.Views.Browser.FolderContents import FolderContents
-from Interface.Implements import flattenInterfaces, objectImplements
+from Zope.App.OFS.Services.ServiceManager.IServiceManager \
+     import IServiceManager
+from Zope.App.OFS.Services.ServiceManager.Package import Package
 
-class ServiceManagerContents(Contents):
 
-    def _extractContentInfo( self, item ):
-        info = Contents._extractContentInfo(self, item)
-        implements = objectImplements(info['object'])
-        interfaces = flattenInterfaces(implements)
 
-        interface_names = [ x.getName() for x in interfaces
-                                         if x.getName() != 'Interface' ]
-        info['interfaces'] = interface_names
+from Zope.Publisher.Browser.BrowserView import BrowserView
 
-        return info
+from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.App.OFS.Container.IContainer import IContainer
+from Zope.ComponentArchitecture import queryView, getView
 
+class PackagesContents(Contents):
+
+    __used_for__ = IServiceManager
+
+    index = ViewPageTemplateFile('packages_contents.pt')
+
+    def addPackage(self, name):
+        self.context.setObject(name, Package())
+        self.request.response.redirect('.')

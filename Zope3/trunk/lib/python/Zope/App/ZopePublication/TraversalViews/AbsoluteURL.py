@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: AbsoluteURL.py,v 1.1 2002/06/13 16:20:09 stevea Exp $
+$Id: AbsoluteURL.py,v 1.2 2002/07/11 18:21:36 jim Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.Proxy.ContextWrapper import getWrapperContainer, getWrapperData
+from Zope.Proxy.ContextWrapper import getWrapperContainer, getInnerWrapperData
 from Zope.ComponentArchitecture import getView
 
 from Interface import Interface
@@ -40,7 +40,7 @@ class AbsoluteURL(BrowserView):
 
     def __str__(self):
         context = self.context
-        dict = getWrapperData(context)
+        dict = getInnerWrapperData(context)
         name = dict and dict.get('name') or None
         container = getWrapperContainer(context)
         if name is None or container is None:

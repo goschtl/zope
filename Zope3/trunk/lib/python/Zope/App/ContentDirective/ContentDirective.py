@@ -13,14 +13,15 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.5 2002/06/23 17:03:40 jim Exp $
+$Id: ContentDirective.py,v 1.6 2002/07/11 18:21:29 jim Exp $
 """
+from types import ModuleType
+from Interface.Implements import implements
 from Zope.Configuration.ConfigurationDirectiveInterfaces \
      import INonEmptyDirective
 from Zope.ComponentArchitecture import getService
 from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.Configuration.Action import Action
-import Interface
 from Zope.App.ComponentArchitecture.ClassFactory import ClassFactory
 from Zope.App.Security.protectClass \
     import protectLikeUnto, protectName, checkPermission
@@ -38,8 +39,10 @@ class ContentDirective:
     __implements__ = INonEmptyDirective
 
     def __init__(self, _context, class_):
-        self.__id = class_
+        self.__id = class_        
         self.__class = _context.resolve(class_)
+        if isinstance(self.__class, ModuleType):
+            raise ConfigurationError('Content class attribute must be a class')
         # not used yet
         #self.__name = class_
         #self.__normalized_name = _context.getNormalizedName(class_)
@@ -50,7 +53,7 @@ class ContentDirective:
         return [
             Action(
                 discriminator = ('ContentDirective', self.__class, object()),
-                callable = Interface.Implements.implements,
+                callable = implements,
                 # the last argument is check=1, which causes implements
                 # to verify that the class does implement the interface
                 args = (self.__class, resolved_interface, 1),

@@ -3,22 +3,134 @@
     <style metal:fill-slot="headers" type="text/css"> </style>
   </head>
   <body metal:fill-slot="body" >
-    <form action="changeBindings.html" method="post">
+
+    <tal:span tal:define="global services_table view/getServicesTable" />
+
+    <div tal:condition="services_table">
+    <p>Services configured in this service manager.</p>
+
+    <p>For each service, the service name is given and all of the
+       components registered to provide the service are shown.  You
+       map select the component to provide the service or disable the
+       service.
+    </p>
+
+    <p>Select a service name or a component name to visit the service
+       or component. </p>
+    </div>
+
+    <p tal:condition="not:services_table">
+       No services have been
+       configured
+    </p>
+
+    <p>To configure a service, add a service component to a
+       <em>package</em> in <a href="Packages">Packages</a> or to
+       the <a href="Packages/default">default package</a>. After the
+       component is added, add a service directive that configures the
+       component to provide a service.
+    </p>
+
+    <form action="@@index.html" method="post" tal:condition="services_table">
+
     <table>
-    <tr><th>Name</th><th>boundService</th></tr>
-     <tr tal:repeat="service view/getServicesTable">
-       <td tal:content="service/name">Name</td>
-       <td>
-         <select tal:attributes="name string:boundService.${service/name}:record">
-           <option tal:repeat="available service/services"
-                   tal:attributes="value available;
-                                   selected python:service['bound'] == available or None"
-                   tal:content="available">Service</option>
-         </select>
-       </td>
-     </tr>
+
+       <tr tal:repeat="service services_table">
+         <td valign="top" align="right">
+            <a href="Roles"
+               tal:content="service/name"
+               tal:attributes="href service/name"
+               tal:condition="service/active"
+               >Roles</a>
+            <span tal:replace="service/name" 
+                  tal:condition="service/inactive" />
+         </td>
+         <td>
+
+           <table>
+             <tr tal:repeat="directive service/directives">          
+                <td><input type="radio" name="Roles" value="0"
+                        tal:attributes="
+                          name string:service ${service/name};
+                          value repeat/directive/index;
+                          checked service/active;
+                          " />
+                </td>
+                <td><a href="."
+                       tal:attributes="href directive/sm_url"
+                       tal:content="directive/sm_path"
+                       >/</a></td>
+                <td><a href="."
+                       tal:attributes="href directive/component_url"
+                       tal:content="directive/component_path"
+                    >default/RS</a></td>
+             </tr>
+             <tr tal:replace="nothing">
+                <td><input type="radio" name="Roles" value="1" />
+                </td>
+                <td><a href=".">/</a></td>
+                <td><a href=".">acme/RoleService</a></td>
+             </tr>
+             <tr tal:replace="nothing">
+                <td><input type="radio" name="Roles" value="2" />
+                </td>
+                <td><a href=".">/ZopeCorp/Engineering</a></td>
+                <td><a href=".">default/roles</a></td>
+             </tr>
+             <tr>
+                <td><input type="radio" name="Roles" value="disable"
+                           tal:attributes="
+                              name string:service ${service/name};
+                              checked service/inactive;
+                              "
+                           /></td>
+                <td colspan="2"><em>Disable this service</em></td>
+             </tr>
+             <tr><td><br /></td></tr>
+           </table>
+
+         </td>
+       </tr>
+
+       <tr tal:replace="nothing">
+         <td valign="top" align="right">
+             <a href="Views">Views</a>
+         </td>
+         <td>
+
+           <table>
+             <tr>          
+                <td><input type="radio" name="Views" value="0" checked/>
+                </td>
+                <td><a href=".">/</a></td>
+                <td><a href=".">default/views</a></td>
+             </tr>
+             <tr>
+                <td><input type="radio" name="Views" value="1" />
+                </td>
+                <td><a href=".">/</a></td>
+                <td><a href=".">default/altViews</a></td>
+             </tr>
+             <tr>
+                <td><input type="radio" name="Views" value="2" />
+                </td>
+                <td><a href=".">/ZopeCorp</a></td>
+                <td><a href=".">default/views</a></td>
+             </tr>
+             <tr>
+                <td><input type="radio" name="Views" value="disable" /></td>
+                <td colspan="2"><em>Disable this service</em></td>
+             </tr>
+             <tr><td><br /></td></tr>
+           </table>
+
+         </td>
+       </tr>
+
     </table>
-    <input type=submit value="change bindings">
+
+    <input type=submit value="Change"><br>
+
     </form>
   </body>
 </html>
