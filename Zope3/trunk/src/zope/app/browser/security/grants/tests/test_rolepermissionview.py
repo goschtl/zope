@@ -11,18 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Role-Permission View Tests
+
+$Id: test_rolepermissionview.py,v 1.6 2003/08/07 17:41:00 srichter Exp $
+"""
 import unittest
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
-from zope.component import getServiceManager
 from zope.app.services.servicenames import Roles, Permissions
 from zope.app.interfaces.security import IRoleService
 from zope.app.browser.security.grants.tests.roleservice import RoleService
-from zope.app.browser.security.grants.tests.permissionservice import PermissionService
-from zope.app.browser.security.grants.tests.rolepermissionmanager import RolePermissionManager
+from zope.app.browser.security.grants.tests.permissionservice import \
+     PermissionService
+from zope.app.browser.security.grants.tests.rolepermissionmanager import \
+     RolePermissionManager
 from zope.app.browser.security.grants.rolepermissionview \
      import RolePermissionView
 from zope.app.interfaces.security import IPermissionService
+from zope.component import getServiceManager
+from zope.publisher.browser import BrowserView, TestRequest
+
+class RolePermissionView(RolePermissionView, BrowserView):
+    """Adding BrowserView to Utilities; this is usually done by ZCML."""
+
 
 class Test(PlacefulSetup, unittest.TestCase):
 
@@ -67,14 +78,15 @@ class Test(PlacefulSetup, unittest.TestCase):
         #         manager  member
         # read       +
         # write      .       -
-        REQ = {
+        env = {
             'p0': 'read', 'p1': 'write',
             'r0': 'manager', 'r1': 'member',
             'p0r0': 'Allow',
             'p1r0': 'Unset', 'p1r1': 'Deny',
+            'SUBMIT': 1
             }
-        self.view.request = REQ # XXX yuck
-        self.view.action(testing=1)
+        self.view.request = TestRequest(environ=env)        
+        self.view.update()
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
             permissionRole = permissionRoles[ip]
@@ -93,14 +105,15 @@ class Test(PlacefulSetup, unittest.TestCase):
         #         manager  member
         # read       -
         # write      +
-        REQ = {
+        env = {
             'p0': 'read', 'p1': 'write',
             'r0': 'manager', 'r1': 'member',
             'p0r0': 'Deny',
-            'p1r0': 'Allow', 'p1r1': 'Unset'
+            'p1r0': 'Allow', 'p1r1': 'Unset',
+            'SUBMIT': 1
             }
-        self.view.request = REQ # XXX yuck
-        self.view.action(testing=1)
+        self.view.request = TestRequest(environ=env)        
+        self.view.update()
         permissionRoles = self.view.permissionRoles()
         for ip in range(len(permissionRoles)):
             permissionRole = permissionRoles[ip]
@@ -117,33 +130,38 @@ class Test(PlacefulSetup, unittest.TestCase):
                     self.failUnless(setting == 'Unset')
 
     def testPermissionRoles(self):
-        self.view.update_permission(permission_id='write',
-                                    settings=['Allow', 'Unset'],
-                                    testing=1)
+        env={'permission_id': 'write',
+             'settings': ['Allow', 'Unset'],
+             'SUBMIT_PERMS': 1}
+        self.view.request = TestRequest(environ=env)        
+        self.view.update()
         permission = self.view.permissionForID('write')
         settings = permission.roleSettings()
         self.assertEquals(settings, ['Allow', 'Unset'])
 
 
-        self.view.update_permission(permission_id='write',
-                                    settings=['Unset', 'Deny'],
-                                    testing=1)
+        env={'permission_id': 'write',
+             'settings': ['Unset', 'Deny'],
+             'SUBMIT_PERMS': 1}
+        self.view.request = TestRequest(environ=env)        
+        self.view.update()
         permission = self.view.permissionForID('write')
         settings = permission.roleSettings()
         self.assertEquals(settings, ['Unset', 'Deny'])
 
-        self.assertRaises(ValueError,
-                          self.view.update_permission,
-                          permission_id='write',
-                          settings=['Unset', 'foo'],
-                          testing=1)
+        env={'permission_id': 'write',
+             'settings': ['Unset', 'foo'],
+             'SUBMIT_PERMS': 1}
+        self.view.request = TestRequest(environ=env)        
+        self.assertRaises(ValueError, self.view.update)
 
     def testRolePermissions(self):
-        REQ={'Allow': ['read'],
-             'Deny': ['write']}
-        self.view.request = REQ # XXX yuck
-        self.view.update_role(role_id='member',
-                              testing=1)
+        env={'Allow': ['read'],
+             'Deny': ['write'],
+             'SUBMIT_ROLE': 1,
+             'role_id': 'member'}
+        self.view.request = TestRequest(environ=env)
+        self.view.update(1)
         role = self.view.roleForID('member')
         pinfos = role.permissionsInfo()
         for pinfo in pinfos:
@@ -153,11 +171,12 @@ class Test(PlacefulSetup, unittest.TestCase):
             if pid == 'write':
                 self.assertEquals(pinfo['setting'], 'Deny')
 
-        REQ={'Allow': [],
-             'Deny': ['read']}
-        self.view.request = REQ # XXX yuck
-        self.view.update_role(role_id='member',
-                              testing=1)
+        env={'Allow': [],
+             'Deny': ['read'],
+             'SUBMIT_ROLE': 1,
+             'role_id': 'member'}
+        self.view.request = TestRequest(environ=env)
+        self.view.update()
         role = self.view.roleForID('member')
         pinfos = role.permissionsInfo()
         for pinfo in pinfos:

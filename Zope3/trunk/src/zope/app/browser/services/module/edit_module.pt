@@ -1,16 +1,20 @@
 <html metal:use-macro="views/standard_macros/page">
-<head><title>Add a module</title></head>
+<head>
+  <title metal:fill-slot="title" i18n:translate="">Edit a Module</title>
+</head>
 <body>
 <div metal:fill-slot="body">
 
-<p>Enter the absolute module name and source code.</p>
+  <p i18n:translate="">Enter the absolute module name and source code.</p>
 
-<form action="edit.html">
-<span tal:replace="view/update"></span>
-<textarea name="source:text" cols="65" rows="25"
-          tal:content="context/source"
-></textarea>
-<input type="submit" value="Edit"/>
-</form>
+  <form action="edit.html">
+    <span tal:replace="view/update"></span>
+    <textarea name="source:text" cols="65" rows="25"
+              tal:content="context/source"></textarea>
+    <input type="submit" value="Edit"
+           i18n:attributes="value edit-button"/>
+  </form>
 
-</div></body></html>
+</div>
+</body>
+</html>

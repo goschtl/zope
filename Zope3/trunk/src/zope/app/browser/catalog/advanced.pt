@@ -1,6 +1,7 @@
 <html metal:use-macro="context/@@standard_macros/page">
 <body>
 <div metal:fill-slot="body">
+
   <table border="0">
     <caption i18n:translate="">Advanced Catalog Thingies</caption>
     <tbody>
@@ -54,6 +55,7 @@
       </tr>
     </tbody>
   </table>
+
 </div>
 </body>
 </html>

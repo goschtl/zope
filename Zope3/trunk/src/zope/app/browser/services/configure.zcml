@@ -1,7 +1,4 @@
-<configure
-    xmlns='http://namespaces.zope.org/browser'
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
 <!-- For services, just treat @@manage as @@index.html by default -->
 
@@ -11,10 +8,10 @@
      name="index.html"
      permission="zope.ManageServices"
      class="zope.app.browser.managementviewselector.ManagementViewSelector"
-     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-     />
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
 
-<!-- General registration views --> <include package=".registration" />
+<!-- General registration views --> 
+  <include package=".registration" />
 
 <!--Error Logging Service -->
 
@@ -23,33 +20,26 @@
     permission="zope.Public"
     class="zope.app.browser.services.error.EditErrorLog">
 
-    <page name="index.html" template="error.pt" />
+    <page name="index.html" template="error.pt"
+          menu="zmi_views" title="Errors" />
     <page name="edit.html" attribute="updateProperties" />
     <page name="showEntry.html" template="errorentry.pt"/>
-    <page name="showTextTBEntry.html"
-       template="texttbentry.pt"/>
-    </pages>
+    <page name="showTextTBEntry.html" template="texttbentry.pt"/>
+  </pages>
 
   <menuItem
      menu="add_service"
      for="zope.app.interfaces.container.IAdding"
      action="ErrorLogging"
      title="Error Logging Service"
-     description="Error Reporting Service for Logging Errors"
-     />
+     description="Error Reporting Service for Logging Errors" />
 
   <icon name="zmi_icon"
       for="zope.app.interfaces.services.error.IErrorReportingService"
       file="error_service.gif" />
 
-  <menuItem
-      for="zope.app.interfaces.services.error.IErrorReportingService"
-      menu="zmi_views"
-      title="Errors"
-      action="index.html"
-      />
-
-<!-- CachingService --> <include file="cache.zcml" />
+<!-- CachingService --> 
+  <include file="cache.zcml" />
 
 <!-- Event Service -->
 
@@ -59,22 +49,19 @@
       menu="zmi_views" title="Control"
       permission="zope.ManageServices" 
       class="zope.app.browser.services.event.Control"
-      attribute="index" 
-      />
+      template="eventcontrol.pt" />
 
   <menuItem
       menu="add_service" 
       for="zope.app.interfaces.container.IAdding"
       action="Events"  title="Event Service"
       description=
-      "An event service. One of these in the root is usually enough"
-      />
+      "An event service. One of these in the root is usually enough" />
 
   <icon
       name="zmi_icon"
       for="zope.app.interfaces.services.event.IEventService" 
-      file="event_service.gif"
-      />
+      file="event_service.gif" />
 
 <!-- Role Service -->
 
@@ -94,7 +81,8 @@
      for="zope.app.services.role.IRoleService"
      class="zope.app.browser.services.role.Contents">
 
-     <page name="index.html" attribute="contents" />
+     <page name="index.html" attribute="contents"
+           menu="zmi_views" title="Contents" />
      <page name="removeObjects.html" attribute="removeObjects" />
 
   </pages>
@@ -102,24 +90,19 @@
   <pages 
      permission="zope.ManageServices" 
      for="zope.app.services.role.IRoleService"
-     class="zope.app.browser.services.role.Add"
-     >
+     class="zope.app.browser.services.role.Add">
 
-    <page name="+"           template="addrole.pt" 
-          menu="zmi_actions" title="Add"
-    />
+    <page name="+" template="addrole.pt" 
+          menu="zmi_actions" title="Add" />
     <page name="action.html" attribute="action" />
 
     </pages>
 
-  <menuItems
-           menu="zmi_views"
-           for="zope.app.services.role.IRoleService">
-    <menuItem title="Contents" action="@@index.html"/>
-    </menuItems>
+<!-- Deprecated Simple Authentication Service --> 
+  <include file="auth.zcml" />
 
-<!-- Deprecated Simple Authentication Service --> <include file="auth.zcml" />
-<!-- Pluggable Authentication Service --> <include package=".pluggableauth" />
+<!-- Pluggable Authentication Service --> 
+  <include package=".pluggableauth" />
 
 <!-- Component Location widget -->
 
@@ -130,16 +113,14 @@
     name="edit"
     class="zope.app.browser.services.field.ComponentPathWidget"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    permission="zope.ManageServices"
-    />
+    permission="zope.ManageServices" />
 
   <page
     for="zope.app.services.field.IComponentPath"
     name="display"
     class="zope.app.browser.services.field.ComponentPathDisplayWidget"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    permission="zope.ManageServices"
-    />
+    permission="zope.ManageServices" />
 
 <!-- Adapters -->
 
@@ -152,40 +133,31 @@
     />
 
   <page
-     for = "zope.component.interfaces.IAdapterService"
-     name = "index.html"
-     template = "adapter_search.pt"
+     for="zope.component.interfaces.IAdapterService"
+     name="index.html"
+     template="adapter_search.pt"
      permission="zope.ManageServices"
-     class="zope.app.browser.services.adapter.AdapterServiceView"
-     />
+     class="zope.app.browser.services.adapter.AdapterServiceView" />
 
   <view
-     for = "zope.app.interfaces.container.IAdding"
+     for="zope.app.interfaces.container.IAdding"
      name="AdapterRegistration"
      permission="zope.ManageServices" 
      class="zope.app.browser.services.adapter.AdapterRegistrationAdd"
-     >
-    <page
-      name="index.html"
-      template="add_adapter_config.pt"
-      />
-  </view>
+     menu="add_registration" title="Adapter">
 
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_registration"
-      action="AdapterRegistration"
-      title="Adapter"
-      />
+    <page name="index.html" template="add_adapter_config.pt" />
+
+  </view>
 
   <menuItem
       for="zope.app.interfaces.container.IAdding"
       menu="add_service"
       action="zope.app.services.AdapterService"
-      title="Adapter Service"
-      />
+      title="Adapter Service" />
 
-<!-- Views -->  <include file="view.zcml" />
+<!-- Views -->  
+  <include file="view.zcml" />
 
 <!-- ZPT Templates -->
 
@@ -193,23 +165,20 @@
     for="zope.app.interfaces.services.view.IZPTTemplate"
     name="index.html"
     class=".zpt.Source"
-    permission="zope.ManageServices"
-    />
+    permission="zope.ManageServices" />
 
   <editform
     schema="zope.app.interfaces.services.view.IZPTTemplate"
     name="edit.html"
     menu="zmi_views"
     label="ZPT Template"
-    permission="zope.ManageServices"
-    />
+    permission="zope.ManageServices" />
 
   <menuItem
     for="zope.app.interfaces.container.IAdding"
     menu="add_component"
     action="zope.app.services.zpt.template"
-    title="ZPT Template"
-    />
+    title="ZPT Template" />
 
 <!-- Service Manager navigation action -->
 
@@ -218,26 +187,26 @@
     for="zope.app.interfaces.services.service.IServiceManagerContainer"
     permission="zope.ManageServices" 
     class="zope.app.browser.services.addservicemanager.AddServiceManager"
-    attribute="addServiceManager" 
-    />
+    attribute="addServiceManager" />
 
-  <menuItems menu="zmi_actions"
-    for="zope.app.interfaces.services.service.IServiceManagerContainer"
-    >
+  <menuItems 
+      menu="zmi_actions"
+      for="zope.app.interfaces.services.service.IServiceManagerContainer">
 
-    <menuItem title="Manage Local Services"
-            action="++etc++site/@@SelectedManagementView.html"
-            filter="context/hasServiceManager"
-            />
+    <menuItem 
+        title="Manage Local Services"
+        action="++etc++site/@@SelectedManagementView.html"
+        filter="context/hasServiceManager" />
 
-    <menuItem title="Turn On Local Service Manager"
-            action="@@addServiceManager.html"
-            filter="not:context/hasServiceManager"
-             />
+    <menuItem 
+        title="Turn On Local Service Manager"
+        action="@@addServiceManager.html"
+        filter="not:context/hasServiceManager" />
 
   </menuItems>
 
-<!-- ConnectionService --> <include file="connection.zcml" />
+<!-- ConnectionService --> 
+  <include file="connection.zcml" />
 
 <!-- ServiceManager -->
 
@@ -247,16 +216,14 @@
      menu="zmi_views" title="Services"
      template="services.pt"
      class=".service.ServiceSummary"
-     permission="zope.ManageServices"
-     />
+     permission="zope.ManageServices" />
 
   <page
      for="zope.app.interfaces.services.service.IServiceManager"
      name="serviceActivation.html"
      template="serviceactivation.pt"
      class=".service.ServiceActivation"
-     permission="zope.ManageServices"
-     />
+     permission="zope.ManageServices" />
 
   <icon
       name="zmi_icon"
@@ -265,18 +232,17 @@
 
   <menuItems
       menu="zmi_actions"
-      for="zope.app.interfaces.services.service.IServiceManager"
-      >
+      for="zope.app.interfaces.services.service.IServiceManager">
+
     <menuItem
         title="Visit default package"
         action="default/@@SelectedManagementView.html"
-        permission="zope.ManageServices"
-        />
+        permission="zope.ManageServices" />
     <menuItem
         title="Add service"
         action="default/AddService"
-        permission="zope.ManageServices"
-        />
+        permission="zope.ManageServices" />
+
   </menuItems>
 
   <page
@@ -285,8 +251,7 @@
       menu="zmi_views" title="Contents"
       permission="zope.ManageServices"
       class="zope.app.browser.container.contents.Contents"
-      attribute="contents"
-      />
+      attribute="contents" />
 
   <!-- Override the add action with a link to add a page folder -->
   <menuItem
@@ -295,8 +260,7 @@
       title="Add"
       action=
       "@@contents.html?type_name=zope.app.services.folder.SiteManagementFolder"
-      permission="zope.ManageServices"
-      />
+      permission="zope.ManageServices"/>
 
   <pages
       for="zope.app.interfaces.services.service.IServiceManager"
@@ -313,8 +277,7 @@
     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
     permission="zope.ManageServices" 
     class="zope.app.browser.container.contents.JustContents"
-    name="index.html" attribute="index" 
-    />
+    name="index.html" attribute="index" />
 
   <page
      name="contents.html"
@@ -322,8 +285,7 @@
      menu="zmi_views" title="Contents"
      permission="zope.ManageServices"
      class="zope.app.browser.container.contents.Contents"
-     attribute="contents"
-     />
+     attribute="contents" />
 
   <view
      name="+"
@@ -345,8 +307,7 @@
       template="registration/registered.pt"
       class=".registration.NameRegistered"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Registrations"
-      />
+      menu="zmi_views" title="Registrations" />
 
 <!-- ServiceRegistration -->
 
@@ -355,28 +316,28 @@
       for="zope.app.interfaces.services.service.ILocalService"
       template="add_svc_config.pt"
       class=".service.AddServiceRegistration"
-      permission="zope.ManageServices"
-      />
+      permission="zope.ManageServices" />
 
   <page
       name="add_svc_config.html"
       for="zope.app.interfaces.services.service.ILocalService"
       attribute="action"
       class=".service.AddServiceRegistration"
-      permission="zope.ManageServices"
-      />
+      permission="zope.ManageServices" />
 
-<!-- Persistent Modules --> <include package=".module" />
+<!-- Persistent Modules --> 
+  <include package=".module" />
 
-<!-- PageFolder --> <include file="pagefolder.zcml" />
+<!-- PageFolder --> 
+  <include file="pagefolder.zcml" />
 
 <!-- Session service -->
 
   <menuItem
      menu="add_service"
      for="zope.app.interfaces.container.IAdding"
-     action="ISessionService"  title='Cookie Session Service'
-     description='Simplistic session support using cookies' />
+     action="ISessionService" title="Cookie Session Service"
+     description="Simplistic session support using cookies" />
 
 <!-- Principal annotations (user data) service -->
 
@@ -385,8 +346,7 @@
      for="zope.app.interfaces.container.IAdding"
      action="IPrincipalAnnotationService"
      title="Principal Annotation Service"
-     description="Stores Annotations for Principals"
-     />
+     description="Stores Annotations for Principals" />
 
 
 <!-- Object Hub -->
@@ -397,8 +357,7 @@
     permission="zope.ManageServices" 
     for="zope.app.interfaces.services.hub.IObjectHub"
     class="zope.app.browser.services.hub.Control"
-    attribute="index"
-    />
+    template="hubcontrol.pt" />
 
   <menuItem
       menu="add_service"
@@ -406,8 +365,7 @@
       action="HubIds"
       title="HubIds Service"
       description="An object hub, for cataloging, unique object ids, and
-                   more: use sparingly"
-      />
+                   more: use sparingly" />
 
   <icon
       name="zmi_icon"
@@ -430,10 +388,10 @@
     name="index.html"
     menu="zmi_views"
     title="Control"
-    template="subscription_control.pt"
-    />
+    template="subscription_control.pt" />
 
-<!-- Utility Service --> <include package=".utility" />
+<!-- Utility Service --> 
+  <include package=".utility" />
 
 <!-- "Add Service" menu -->
 
@@ -443,8 +401,7 @@
     action="../AddService"
     title="Service"
     description="Takes you to a menu of services to add"
-    permission="zope.ManageServices"
-    />
+    permission="zope.ManageServices" />
 
   <view
      name="AddService"
@@ -505,14 +462,13 @@
       menu="zmi_views" title="Bundle"
       permission="zope.ManageServices"
       class=".bundle.BundleView"
-      template="bundle.pt"
-      />
+      template="bundle.pt" />
 
 
 <!-- Translation Service Views -->
-<include package=".translation" />
+  <include package=".translation" />
 
 <!-- Local Interface Service -->
-<include package=".interface" />
+  <include package=".interface" />
 
 </configure>

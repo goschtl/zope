@@ -11,26 +11,26 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: add.py,v 1.28 2003/08/04 14:52:45 philikon Exp $
-"""
+"""Add Form View class
 
+$Id: add.py,v 1.29 2003/08/07 17:40:28 srichter Exp $
+"""
 import sys
 
-from zope.schema.interfaces import ValidationError
-
+from zope.app.browser.form.editview import EditView
+from zope.app.browser.form.submit import Update
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.form import WidgetsError
+from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-from zope.app.browser.form.submit import Update
-from zope.app.browser.form.editview import EditView
+from zope.schema.interfaces import ValidationError
+from zope.security.checker import defineChecker, NamesChecker
 
 class AddView(EditView):
     """Simple edit-view base class.
@@ -59,7 +59,7 @@ class AddView(EditView):
                 content = self.createAndAdd(data)
             except WidgetsError, errors:
                 self.errors = errors
-                self.update_status = u"An error occured."
+                self.update_status = _("An error occured.")
                 return self.update_status
 
             self.request.response.redirect(self.nextURL())
@@ -67,8 +67,7 @@ class AddView(EditView):
         return self.update_status
 
     def create(self, *args, **kw):
-        """Do the actual instantiation.
-        """
+        """Do the actual instantiation."""
         return self._factory(*args, **kw)
 
     def createAndAdd(self, data):

@@ -13,12 +13,11 @@
 ##############################################################################
 """Message Export/Import View
 
-$Id: exportimport.py,v 1.4 2003/07/18 16:40:12 srichter Exp $
+$Id: exportimport.py,v 1.5 2003/08/07 17:41:34 srichter Exp $
 """
+from zope.app.browser.services.translation import BaseView
 from zope.component import getAdapter
 from zope.i18n.interfaces import IMessageExportFilter, IMessageImportFilter
-
-from zope.app.browser.services.translation import BaseView
 
 
 class ExportImport(BaseView):

@@ -1,11 +1,25 @@
-from zope.publisher.browser import BrowserView
-from zope.app.services.role import Role
-from zope.app.services.role import ILocalRoleService
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+""" Define view component for service manager contents.
 
+$Id: role.py,v 1.3 2003/08/07 17:41:03 srichter Exp $
+"""
+from zope.app.browser.container.contents import Contents
+from zope.app.services.role import Role, ILocalRoleService
 
-class Add(BrowserView):
+class Add:
     "Provide a user interface for adding a contact"
-
     __used_for__ = ILocalRoleService
 
     def action(self, id, title, description):
@@ -15,13 +29,6 @@ class Add(BrowserView):
         self.request.response.redirect('.')
 
 
-
-""" Define view component for service manager contents.
-
-$Id: role.py,v 1.2 2002/12/25 14:12:36 jim Exp $
-"""
-
-from zope.app.browser.container.contents import Contents
-
 class Contents(Contents):
+    # XXX: What the heck is that? I guess another dead chicken.
     pass

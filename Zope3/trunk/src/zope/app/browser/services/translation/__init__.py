@@ -13,11 +13,13 @@
 ##############################################################################
 """Translation Service Views
 
-$Id: __init__.py,v 1.3 2003/07/18 16:40:12 srichter Exp $
+$Id: __init__.py,v 1.4 2003/08/07 17:41:34 srichter Exp $
 """
 from zope.i18n.interfaces import ITranslationService
 
-class BaseView(object):
+__metaclass__ = type
+
+class BaseView:
 
     __used_for__ = ITranslationService
 

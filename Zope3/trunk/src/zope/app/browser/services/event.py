@@ -11,20 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Define view component for event service control.
+"""Define view component for event service control.
 
-$Id: event.py,v 1.3 2002/12/30 14:02:54 stevea Exp $
+$Id: event.py,v 1.4 2003/08/07 17:41:03 srichter Exp $
 """
-
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.interfaces.services.event import IEventService
-from zope.publisher.browser import BrowserView
 
-
-class Control(BrowserView):
+class Control:
     __used_for__ = IEventService
 
-    def index(self):
-        return self.__control()
+    # XXX: Really needed? Currently it does nothing (obviously). I guess it is
+    # just a placeholder for later functionality.
 
-    __control = ViewPageTemplateFile("eventcontrol.pt")
+    # This view should be responsible to display all the objects that are
+    # subscribed to it and maybe even a log of the last events it handeled.

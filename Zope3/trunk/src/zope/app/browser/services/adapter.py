@@ -21,7 +21,7 @@
 
   AdapterRegistrationAdd
 
-$Id: adapter.py,v 1.11 2003/06/21 21:50:15 jim Exp $
+$Id: adapter.py,v 1.12 2003/08/07 17:41:03 srichter Exp $
 """
 __metaclass__ = type
 
@@ -33,6 +33,7 @@ from zope.component import getView
 from zope.publisher.browser import BrowserView
 from zope.app.context import ContextWrapper
 
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.services.adapter import IAdapterRegistration
 from zope.app.interfaces.services.adapter import IAdapterRegistrationInfo
 from zope.app.interfaces.services.registration import IRegistration
@@ -45,12 +46,13 @@ from zope.app.component.interfacefield import InterfaceField
 
 class IAdapterSearch(Interface):
 
-    forInterface = InterfaceField(title=u"For interface",
-                                  required=False,
-                                  )
-    providedInterface = InterfaceField(title=u"Provided interface",
-                                       required=False,
-                                       )
+    forInterface = InterfaceField(
+        title=_("For interface"),
+        required=False)
+    
+    providedInterface = InterfaceField(
+        title=_("Provided interface"),
+        required=False)
 
 
 class AdapterServiceView(BrowserView):

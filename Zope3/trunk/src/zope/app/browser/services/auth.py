@@ -13,20 +13,20 @@
 ##############################################################################
 """Connection Management GUI
 
-$Id: auth.py,v 1.3 2003/03/25 11:44:10 tseaver Exp $
+$Id: auth.py,v 1.4 2003/08/07 17:41:03 srichter Exp $
 """
-from zope.publisher.browser import BrowserView
 from zope.app.services.auth import User
+from zope.app.services.servicenames import Roles
 from zope.component import getService
 
-class AddUser(BrowserView):
+class AddUser:
 
     def action(self, id, title, description, login, password, roles):
         user = User(id, title, description, login, password)
         self.context.setObject(id, user)
         return self.request.response.redirect(self.request.URL[-2])
 
-class EditUser(BrowserView):
+class EditUser:
 
     def action(self, title, description, login, password, roles):
         user = self.context
@@ -39,5 +39,5 @@ class EditUser(BrowserView):
         return self.request.response.redirect(self.request.URL[-1])
 
     def getAvailableRoles(self):
-        service = getService(self.context, "Roles")
+        service = getService(self.context, Roles)
         return service.getRoles()

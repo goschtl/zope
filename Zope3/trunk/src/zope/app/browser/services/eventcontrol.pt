@@ -1,24 +1,9 @@
 <html metal:use-macro="views/standard_macros/page">
-<head>
-<style metal:fill-slot="headers" type="text/css">
-<!--
-.ContentListing {
-    width: 100%;
-}
-
-.ContentIcon {
-    width: 20px;
-}
-
-.ContentTitle {
-    text-align: left;
-}
--->
-</style>
-</head>
 <body>
 <div metal:fill-slot="body">
-<p>This is an event service.</p>
+
+  <p i18n:translate="">This is an event service.</p>
+
 </div>
 </body>
 </html>

@@ -13,9 +13,8 @@
 ##############################################################################
 """Interfaces for stateful workflow.
 
-$Id: interfaces.py,v 1.1 2003/05/08 17:27:18 jack-e Exp $
+$Id: interfaces.py,v 1.2 2003/08/07 17:41:51 srichter Exp $
 """
-
 from zope.interface import Interface
 
 class IContentFilterAdapter(Interface):

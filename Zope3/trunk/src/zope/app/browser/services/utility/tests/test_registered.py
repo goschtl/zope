@@ -78,6 +78,10 @@ class StubLocalUtilityService:
             ]
 
 
+class UtilitiesView(Utilities, BrowserView):
+    """Adding BrowserView to Utilities; this is usually done by ZCML."""
+
+
 class RegisteredTest(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def test_utility(self):
@@ -87,7 +91,7 @@ class RegisteredTest(placelesssetup.PlacelessSetup, unittest.TestCase):
                     StubAbsoluteURL)
         utilityservice = StubLocalUtilityService()
         request = TestRequest()
-        utilities = Utilities(utilityservice, request)
+        utilities = UtilitiesView(utilityservice, request)
         ifname1 = __name__ + ".IFoo"
         ifname2 = __name__ + ".IBar"
         def confurl(ifname, name):

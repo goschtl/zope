@@ -6,8 +6,7 @@
   <div metal:define-macro="body">
 
     <form action="." tal:attributes="action request/URL" method="POST"
-          enctype="multipart/form-data"
-          >
+          enctype="multipart/form-data">
 
       <div metal:define-macro="formbody">
 
@@ -20,10 +19,9 @@
            tal:condition="status"
            tal:content="status" />
 
-         <p tal:condition="view/errors">
-           <span i18n:translate="">There are</span> 
-           <strong tal:content="python:len(view.errors)">6</strong>
-           <span i18n:translate="">input errors.</span>
+         <p tal:condition="view/errors" i18n:translate="">
+           There are  <strong tal:content="python:len(view.errors)"
+                              i18n:name="num_errors">6</strong> input errors.
         </p>
 
         <div metal:define-slot="extra_info" tal:replace="nothing">

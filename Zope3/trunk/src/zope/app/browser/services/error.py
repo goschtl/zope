@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Define view component for event service control.
+"""Define view component for event service control.
 
-$Id: error.py,v 1.5 2003/06/22 14:01:43 jim Exp $
+$Id: error.py,v 1.6 2003/08/07 17:41:03 srichter Exp $
 """
-
-from zope.publisher.browser import BrowserView
 from zope.app.services.error import ILocalErrorReportingService
 
-class EditErrorLog(BrowserView):
+class EditErrorLog:
     __used_for__ = ILocalErrorReportingService
 
     def updateProperties(self, keep_entries, copy_to_zlog=None,

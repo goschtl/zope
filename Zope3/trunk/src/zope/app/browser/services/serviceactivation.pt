@@ -3,18 +3,15 @@
 <tal:block
     metal:fill-slot="headers"
     tal:define="global pagetip string:
-
     To activate a particular service implementation,
     check its radio button and click Update.
-
-    "
-    />
-
+    "/>
 
 <div metal:fill-slot="body">
 
-  <h2>Registrations for service
-    <i tal:content="request/type|default">No service type specified</i>
+  <h2 i18n:translate="">Registrations for service
+    <i tal:content="request/type|default" i18n:name="service_type"
+       i18n:translate="">No service type specified</i>
   </h2>
 
   <p tal:content="view/update">Message from update() goes here</p>
@@ -24,9 +21,10 @@
     <table tal:define="registry view/listRegistry">
 
       <thead>
-        <tr> <td></td> 
-             <th align="left">Service</th> 
-             <th align="left">Registration</th>
+        <tr> 
+          <td></td> 
+          <th align="left" i18n:translate="">Service</th> 
+          <th align="left" i18n:translate="">Registration</th>
         </tr>
       </thead>
 
@@ -53,7 +51,8 @@
 
     <input type="hidden" name="type" value="Events"
            tal:attributes="value request/type|nothing" />
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" 
+           i18n:attributes="value submit-button" />
 
   </form>
 

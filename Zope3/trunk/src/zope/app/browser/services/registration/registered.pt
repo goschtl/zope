@@ -1,25 +1,24 @@
 <html metal:use-macro="context/@@standard_macros/page">
-  <body>
-    <div metal:fill-slot="body">
+<body>
+<div metal:fill-slot="body">
 
-      <p>Registrations for this object:</p>
+  <p i18n:translate="">Registrations for this object:</p>
 
-      <ul>
+  <ul>
+    <li tal:repeat="use view/uses">
 
-        <li tal:repeat="use view/uses">
+      <a href="http://."
+         tal:attributes="href use/url"
+         tal:content="use/description">Description</a>
+      (<span tal:replace="use/status">Active</span>)
 
-          <a href="http://."
-             tal:attributes="href use/url"
-             tal:content="use/description">Description</a>
-          (<span tal:replace="use/status">Active</span>)
+    </li>
+  </ul>
 
-        </li>
-      </ul>
+  <p><a href="addRegistration.html" i18n:translate="">
+    Add a registration for this object
+  </a></p>
 
-      <p><a href="addRegistration.html">
-        Add a registration for this object
-      </a></p>
-
-    </div>
-  </body>
+</div>
+</body>
 </html>

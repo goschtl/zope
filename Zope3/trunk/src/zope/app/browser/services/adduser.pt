@@ -1,62 +1,64 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
-  <title>Add User</title>
+  <title metal:fill-slot="title" i18n:translate="">Add User</title>
 </head>
 <body>
 
   <div metal:fill-slot="body">
-
     <form action="." method="post" enctype="multipart/form-data">
     
-      <table>      
-            <tbody>   
-            
-              <tr>
-                <th>Id:</th>
-                <td>
-              <input type="text" name="id" size="40" value="" />
-            </td>
-              </tr>
-              <tr>
-                <th>Title:</th>
-                <td>
-              <input type="text" name="title" size="40" value="" />
-            </td>
-              </tr>
-              <tr>
-                <th>Description:</th>
-                <td>
-              <input type="text" name="description" size="40" value="" />
-            </td>
-              </tr>
-              <tr>
-                <th>Login:</th>
-                <td>
-              <input type="text" name="login" size="40" value="" />
-            </td>
-              </tr>
-              <tr>
-                <th>Password:</th>
-                <td>
-              <input type="password" name="password" size="40" value="" />
-            </td>
-              </tr>
-              <tr>
-                <th>Roles:</th>
-                <td>
-              <select name="roles:list">
-                <option value="Manager">Manager</option>
-              </select>
-            </td>
-              </tr>
-                        
-            </tbody>     
-      </table>
+      <div class="row">
+        <div class="label" i18n:translate="">Id</div>
+        <div class="field">
+          <input type="text" name="id" size="40" value="" />
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="label" i18n:translate="">Title</div>
+        <div class="field">
+          <input type="text" name="title" size="60" value="" />
+        </div>
+      </div>
+  
+      <div class="row">
+        <div class="label" i18n:translate="">Description</div>
+        <div class="field">
+          <textarea name="description" rows="10" cols="60" />
+        </div>
+      </div>
 
-      <input type="submit" name="action.html:method" value="Add" />
+      <div class="row">
+        <div class="label" i18n:translate="">Login</div>
+        <div class="field">
+          <input type="text" name="login" size="40" value="" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label" i18n:translate="">Password</div>
+        <div class="field">
+          <input type="password" name="password" size="40" value="" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label" i18n:translate="">Roles</div>
+        <div class="field">
+          <select name="roles:list">
+            <option value="Manager">Manager</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="controls">
+          <input type="submit" name="action.html:method" value="Add"
+              i18n:attributes="value add-button"/>
+        </div>
+      </div>
 
     </form> 
-
   </div>
 
 </body>

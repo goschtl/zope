@@ -1,20 +1,15 @@
-<configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <browser:addform
+  <addform
     name="AddFieldIndex"
     menu="add_component" title="Field Index"
     schema="zope.app.interfaces.index.field.IUIFieldIndex"
     permission="zope.ManageServices"
     content_factory="zope.app.index.field.index.FieldIndex"
     arguments="field_name"
-    keyword_arguments="interface"
-    />
+    keyword_arguments="interface" />
 
-  <browser:page
+  <page
     for="zope.app.interfaces.index.field.IUIFieldIndex"
     name="index.html" 
     menu="zmi_views"
@@ -23,17 +18,11 @@
     class=".control.ControlView"
     template="control.pt" />
 
-  <browser:editform
+  <editform
     name="edit.html"
     schema="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
     label="Edit Field Index"
     permission="zope.ManageContent"
-  />
-
-  <browser:menuItems menu="zmi_views"
-         for="zope.app.interfaces.index.field.IUIFieldCatalogIndex">
-    <menuItem title="Edit" action="edit.html"/>
-  </browser:menuItems>
-
+    menu="zmi_views" title="Edit" />
 
 </configure>

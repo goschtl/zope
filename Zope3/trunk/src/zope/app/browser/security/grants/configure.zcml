@@ -1,63 +1,35 @@
-<configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
 <!-- Role Permissions -->
 
-  <browser:pages
+  <pages
       for="zope.app.interfaces.annotation.IAnnotatable"
       permission="zope.Security"
       class=".rolepermissionview.RolePermissionView">
 
-    <browser:page name="AllRolePermissions.html"
-                  attribute="index" />
-    <browser:page name="ChangeAllRolePermissions.html"
-                  attribute="action" />
-    <browser:page name="RolePermissions.html"
-                  attribute="manage_roleForm" />
-    <browser:page name="ChangeRolePermissions.html"
-                  attribute="update_role" />
-    <browser:page name="RolesWithPermission.html"
-                  attribute="manage_permissionForm" />
-    <browser:page name="ChangeRolesWithPermission.html"
-                  attribute="update_permission" />
-  </browser:pages>
+    <page name="AllRolePermissions.html" template="manage_access.pt" />
+          <!-- menu="zmi_actions" title="Role Permissions" / -->
+    <page name="RolePermissions.html" template="manage_roleform.pt" />
+    <page name="RolesWithPermission.html" template="manage_permissionform.pt"/>
 
-  <!--browser:menuItem
-      for="zope.app.interfaces.annotation.IAnnotatable"
-      menu="zmi_actions"
-      title="Role Permissions"
-      action="@@AllRolePermissions.html"
-      /-->
+  </pages>
 
-  <browser:page
+  <page
     for="zope.app.interfaces.annotation.IAnnotatable"
     name="grant.html"
     permission="zope.Security"
     template="grant.pt" 
-    menu="zmi_actions"
-    title="Grant"
-    />
+    menu="zmi_actions" title="Grant" />
 
 <!-- Principal Roles -->
 
-  <browser:pages for="zope.app.interfaces.annotation.IAnnotatable"
-                permission="zope.Security"
-                class=".principalroleview.PrincipalRoleView">
-    <browser:page name="PrincipalRoles.html"
-                  attribute="index" />
-    <browser:page name="ChangePrincipalRoles.html"
-                  attribute="action" />
-    </browser:pages>
-
-  <!--browser:menuItem
+  <page
+      name="PrincipalRoles.html" 
       for="zope.app.interfaces.annotation.IAnnotatable"
-      menu="zmi_actions"
-      title="Principal Roles"
-      action="@@PrincipalRoles.html"
-      /-->
+      permission="zope.Security"
+      class=".principalroleview.PrincipalRoleView"
+      template="principal_role_association.pt" />
+      <!-- menu="zmi_actions" title="Principal Roles" / -->
 
 <!-- Principal Permission (not working) -->
 

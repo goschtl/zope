@@ -1,34 +1,26 @@
-<configure
-    xmlns="http://namespaces.zope.org/browser"
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-<menuItem 
-    menu="add_service"
-    for="zope.app.interfaces.container.IAdding"
-    action="zope.app.services.LocalInterfaceService"
-    title="Local Interface Service"
-    permission="zope.ManageServices"
-    />
-
-<page
-    for="zope.app.interfaces.component.IInterfaceService"
-    name="browse.html"
-    template="browse.pt"
-    class=".Interfaces"
-    permission="zope.ManageServices"
-    menu="zmi_views"
-    title="Browse"
-    />
-
-<page
-    for="zope.app.interfaces.component.IInterfaceService"
-    name="detail.html"
-    template="detail.pt"
-    class=".Detail"
-    permission="zope.ManageServices"
-    menu="zmi_views"
-    title="Detail"
-    />
+  <menuItem 
+      menu="add_service"
+      for="zope.app.interfaces.container.IAdding"
+      action="zope.app.services.LocalInterfaceService"
+      title="Local Interface Service"
+      permission="zope.ManageServices" />
+  
+  <page
+      for="zope.app.interfaces.component.IInterfaceService"
+      name="browse.html"
+      template="browse.pt"
+      class=".Interfaces"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Browse" />
+  
+  <page
+      for="zope.app.interfaces.component.IInterfaceService"
+      name="detail.html"
+      template="detail.pt"
+      class=".Detail"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Detail" />
 
 </configure>

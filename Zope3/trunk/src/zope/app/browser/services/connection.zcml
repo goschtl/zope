@@ -1,7 +1,4 @@
-<configure
-    xmlns='http://namespaces.zope.org/browser'
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
 <!-- Browser directives for the connection service -->
 
@@ -23,8 +20,7 @@
       template="connections.pt"
       class=".connection.Connections"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Connections"
-      />
+      menu="zmi_views" title="Connections" />
 
 <!-- Browser directives for registering individual connection objects -->
 
@@ -41,8 +37,7 @@
       name="configureConnection.html"
       template="configureConnection.pt"
       class=".connection.ConfigureConnection"
-      permission="zope.ManageServices"
-      />
+      permission="zope.ManageServices" />
 
   <!-- When creating a new connection object, you are taken to this
        form to register it.  The form lets you define the connection
@@ -58,8 +53,7 @@
       content_factory="zope.app.services.connection.ConnectionRegistration"
       arguments="name componentPath"
       set_after_add="status"
-      fields="name componentPath permission status"
-      />
+      fields="name componentPath permission status" />
 
   <!-- When editing the registration of an existing connection object,
        you are taken to this form.  It is similar to the above add
@@ -71,7 +65,6 @@
       name="index.html"
       schema="zope.app.interfaces.services.connection.IConnectionRegistration"
       permission="zope.ManageServices"
-      fields="name componentPath permission status"
-      />
+      fields="name componentPath permission status" />
 
 </configure>

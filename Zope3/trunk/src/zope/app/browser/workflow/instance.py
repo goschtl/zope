@@ -13,21 +13,19 @@
 ##############################################################################
 """ProcessInstance views
  
-$Id: instance.py,v 1.3 2003/06/07 06:37:20 stevea Exp $
+$Id: instance.py,v 1.4 2003/08/07 17:41:45 srichter Exp $
 """
-__metaclass__ = type
-
-from zope.schema import getFieldNames
-from zope.component import getAdapter
-from zope.publisher.browser import BrowserView
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-
 from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.component import getAdapter
+from zope.schema import getFieldNames
+
+__metaclass__ = type
 
 
-class InstanceContainerView(BrowserView):
+class InstanceContainerView:
 
     __used_for__ = IProcessInstanceContainerAdaptable
 

@@ -13,11 +13,12 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.33 2003/06/21 21:45:03 jeremy Exp $
+$Id: service.py,v 1.34 2003/08/07 17:41:03 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.container.contents import Contents
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
@@ -184,9 +185,11 @@ class ServiceSummary(BrowserView):
                 obj.status = ActiveStatus
                 done.append(name)
         if done:
-            return "Activated: " + ", ".join(done)
+            s = _("Activated: ${activated_services}")
+            s.mapping = {'activated_services': ", ".join(done)}
+            return s
         else:
-            return "All of the checked services were already active"
+            return _("All of the checked services were already active")
 
     def _deactivate(self, todo):
         done = []
@@ -197,9 +200,11 @@ class ServiceSummary(BrowserView):
                 obj.status = RegisteredStatus
                 done.append(name)
         if done:
-            return "Deactivated: " + ", ".join(done)
+            s = _("Deactivated: ${deactivated_services}")
+            s.mapping = {'deactivated_services': ", ".join(done)}
+            return s
         else:
-            return "None of the checked services were active"
+            return _("None of the checked services were active")
 
     def _delete(self, todo):
         errors = []
@@ -210,9 +215,10 @@ class ServiceSummary(BrowserView):
                 errors.append(name)
                 continue
         if errors:
-            return ("Can't delete active service%s: %s; "
-                    "use the Deactivate button to deactivate" %
-                    (len(errors) != 1 and "s" or "", ", ".join(errors)))
+            s = _("Can't delete active service(s): ${service_names}; "
+                  "use the Deactivate button to deactivate")
+            s.mapping = {'service_names': ", ".join(errors)}
+            return s
 
         # 1) Delete the registrations
         services = {}
@@ -245,7 +251,9 @@ class ServiceSummary(BrowserView):
             container = zapi.getAdapter(parent, IZopeContainer)
             del container[name]
 
-        return "Deleted: %s" % ", ".join(todo)
+        s = _("Deleted: ${service_names}")
+        s.mapping = {'service_names': ", ".join(todo)}
+        return s
 
     def listConfiguredServices(self):
         names = list(self.context.listRegistrationNames())
@@ -325,19 +333,20 @@ class ServiceActivation(BrowserView):
         sm = zapi.getServiceManager(self.context)
         registry = sm.queryRegistrations(self.request.get('type'))
         if not registry:
-            return "Invalid service type specified"
+            return _("Invalid service type specified")
         old_active = registry.active()
         if active == "None":
             new_active = None
         else:
             new_active = zapi.traverse(sm, active)
         if old_active == new_active:
-            return "No change"
+            return _("No change")
 
         if new_active is None:
             registry.activate(None)
-            return "Service deactivated"
+            return _("Service deactivated")
         else:
             new_active.status = ActiveStatus
-            return active + " activated"
-
+            s = "${active_services} activated"
+            s.mapping = {'active_services': active}
+            return s

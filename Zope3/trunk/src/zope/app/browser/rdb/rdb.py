@@ -13,11 +13,10 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: rdb.py,v 1.3 2003/05/28 15:46:01 jim Exp $
+$Id: rdb.py,v 1.4 2003/08/07 17:40:48 srichter Exp $
 """
 from zope.component import getFactory
 from zope.proxy import removeAllProxies
-from zope.publisher.browser import BrowserView
 
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
@@ -25,7 +24,7 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.rdb import queryForResults
 
 
-class TestSQL(BrowserView):
+class TestSQL:
 
     __used_for__ = IZopeDatabaseAdapter
 
@@ -36,8 +35,7 @@ class TestSQL(BrowserView):
         return result
 
 
-class Connection(BrowserView):
-
+class Connection:
     __used_for__ = IZopeDatabaseAdapter
 
     def edit(self, dsn):
@@ -52,12 +50,11 @@ class Connection(BrowserView):
         self.context.disconnect()
         return self.request.response.redirect(self.request.URL[-1])
 
-class AdapterAdd(BrowserView):
+class AdapterAdd:
     """A base class for Zope database adapter adding views.
 
     Subclasses need to override _adapter_factory_id.
     """
-
     __used_for__ = IAdding
 
     # This needs to be overridden by the actual implementation

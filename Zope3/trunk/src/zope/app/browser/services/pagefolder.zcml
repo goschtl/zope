@@ -1,26 +1,20 @@
-<configure
-    xmlns='http://namespaces.zope.org/browser'
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
 <!-- PageFolder -->
 
-  <page name="index.html" 
-
-        for="zope.app.interfaces.services.pagefolder.IPageFolder"
-        permission="zope.ManageServices" 
-        class="zope.app.browser.container.contents.JustContents"
-        attribute="index" 
-        />
+  <page 
+      name="index.html" 
+      for="zope.app.interfaces.services.pagefolder.IPageFolder"
+      permission="zope.ManageServices" 
+      class="zope.app.browser.container.contents.JustContents"
+      attribute="index" />
 
   <page name="contents.html"
         for="zope.app.interfaces.services.pagefolder.IPageFolder"
         permission="zope.ManageServices" 
         class="zope.app.browser.container.contents.Contents"
-        menu="zmi_views"
-        title="Contents"
-        attribute="contents"
-        />
+        menu="zmi_views" title="Contents"
+        attribute="contents" />
 
   <editform
         name="DefaultRegistration.html"
@@ -28,8 +22,7 @@
         schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo"
         menu="zmi_views" title="Default Registration"
         permission="zope.ManageServices"
-        class=".pagefolder.PageFolderDefaultConfiguration"
-        />
+        class=".pagefolder.PageFolderDefaultConfiguration" />
 
   
   <!-- Override the add action with a link to add a template -->
@@ -38,8 +31,7 @@
      for="zope.app.interfaces.services.pagefolder.IPageFolder"
      title="Add"
      action="contents.html?type_name=zope.app.services.zpt.template"
-     permission="zope.ManageServices"
-     />
+     permission="zope.ManageServices" />
 
   <menuItem
      menu="add_component"

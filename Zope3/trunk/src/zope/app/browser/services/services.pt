@@ -1,74 +1,78 @@
 <html metal:use-macro="views/standard_macros/page">
-
-<tal:block metal:fill-slot="headers" />
-
+<body>
 <div metal:fill-slot="body">
 
-  <h2>
+  <h2 i18n:translate="">
     Services registered in this service manager
   </h2>
 
   <div tal:define="message view/update;
                    registries view/listConfiguredServices">
 
-      <div class="message" tal:condition="message">
-         <span tal:replace="message">view/update message here</span>
-         <br /><br /><i><a href="">(click to clear message)</a></i>
-      </div>
+    <div class="message" tal:condition="message">
+       <span tal:replace="message">view/update message here</span>
+       <br /><br />
+       <i><a href="" i18n:translate="">(click to clear message)</a></i>
+    </div>
+    
+    <p tal:condition="not:registries" i18n:translate="">
+      No services are registered.
+    </p>
+    
+    <div tal:condition="registries">
+      <p i18n:translate="">
+         Unless a service is disabled, the service name
+         links to the active service.  The (change registration)
+         link allows activating a different implementation or
+         disabling the service altogether.
+      </p>
+    
+      <form method="POST" action="services.html">
+    
+        <table>
+          <tr tal:repeat="reg registries">
+            <td><input type="checkbox" name="selected:list"
+                       tal:attributes="value reg/name" /></td>
+            <td>
+              <a href="(link to the active service)"
+                 tal:condition="reg/url"
+                 tal:attributes= "href reg/url"
+                 tal:content="reg/name">
+                Foobar (the service type)
+              </a>
+              <span tal:condition="not:reg/url">
+                <span tal:content="reg/name" />(disabled)</span>
+            </td>
+            <td>
+              <a href="xxx"
+                 tal:attributes=
+                 "href string:@@serviceActivation.html?type=${reg/name}"
+                 i18n:translate="">
+                (change registration)
+              </a>
+            </td>
+          </tr>
+        </table>
 
-      <p tal:condition="not:registries">No services are registered.</p>
+        <input type="submit" name="Activate" value="Activate" 
+               i18n:attributes="value activate-button"/>
+        <input type="submit" name="Deactivate" value="Deactivate"
+               i18n:attributes="value deactivate-button"/>
+        &nbsp;
+        <input type="submit" name="Delete" value="Delete"
+               i18n:attributes="value delete-button"/>
+        &nbsp;
+        <input type="submit" name="Refresh" value="Refresh"
+               i18n:attributes="value refresh-button"/>
 
-      <div tal:condition="registries">
-        <p>Unless a service is disabled, the service name
-           links to the active service.  The (change registration)
-           link allows activating a different implementation or
-           disabling the service altogether.
-        </p>
+      </form>
 
-        <form method="POST" action="services.html">
+      <p><a href="default/AddService" i18n:translate="">
+        Add a service to this service manager</a></p>
 
-          <table>
-            <tr tal:repeat="reg registries">
-              <td><input type="checkbox" name="selected:list"
-                         tal:attributes="value reg/name" /></td>
-              <td>
-                <a href="(link to the active service)"
-                   tal:condition="reg/url"
-                   tal:attributes= "href reg/url"
-                   tal:content="reg/name">
-                  Foobar (the service type)
-                </a>
-                <span tal:condition="not:reg/url">
-                  <span tal:content="reg/name" />
-                (disabled)</span>
-              </td>
-              <td>
-                <a href="xxx"
-                   tal:attributes=
-                   "href string:@@serviceActivation.html?type=${reg/name}"
-                   >
-                  (change registration)
-                </a>
-              </td>
-            </tr>
-          </table>
-
-          <input type="submit" name="Activate" value="Activate" />
-          <input type="submit" name="Deactivate" value="Deactivate" />
-          &nbsp;
-          <input type="submit" name="Delete" value="Delete" />
-          &nbsp;
-          <input type="submit" name="Refresh" value="Refresh" />
-
-        </form>
-
-        <p><a href="default/AddService">Add a service to this service
-           manager</a></p>
-
-      </div>
-
+    </div>
   </div>
 
 </div>
-
+</body>
 </html>

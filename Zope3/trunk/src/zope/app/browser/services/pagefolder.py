@@ -13,15 +13,14 @@
 ##############################################################################
 """
 
-Revision information: $Id: pagefolder.py,v 1.2 2003/07/02 22:10:59 jim Exp $
+$Id: pagefolder.py,v 1.3 2003/08/07 17:41:03 srichter Exp $
 """
 from zope.app.interfaces.services.pagefolder import IPageFolder
 
 class PageFolderDefaultConfiguration:
 
     def changed(self):
-        """Apply changes to existing configurations
-        """
+        """Apply changes to existing configurations"""
         __used_for__ = IPageFolder
 
         folder = self.context

@@ -13,23 +13,19 @@
 ##############################################################################
 """Control view for the text index.
 
-XXX longer description goes here.
-
-$Id: control.py,v 1.2 2003/06/23 16:44:38 mgedmin Exp $
+$Id: control.py,v 1.3 2003/08/07 17:40:38 srichter Exp $
 """
-
 from __future__ import generators
 
-from zope.interface import implements
-from zope.component import getService, queryAdapter
-from zope.app.services.servicenames import HubIds
-from zope.exceptions import NotFoundError
-from zope.publisher.browser import BrowserView
-
-from zope.app.traversing import canonicalPath
+from zope.app.browser.component.interfacewidget import interfaceToName
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.index.text import IQueryView
-from zope.app.browser.component.interfacewidget import interfaceToName
+from zope.app.services.servicenames import HubIds
+from zope.app.traversing import canonicalPath
+from zope.component import getService, queryAdapter
+from zope.exceptions import NotFoundError
+from zope.interface import implements
+from zope.publisher.browser import BrowserView
 
 class ControlView(BrowserView):
 

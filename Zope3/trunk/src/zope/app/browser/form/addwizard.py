@@ -11,23 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: addwizard.py,v 1.8 2003/08/04 14:52:45 philikon Exp $
-"""
+"""Add Wizard View Classes
 
+$Id: addwizard.py,v 1.9 2003/08/07 17:40:28 srichter Exp $
+"""
 import sys
 
-from zope.schema.interfaces import ValidationError
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidgets
+from zope.app.interfaces.form import WidgetsError
+from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+from zope.schema.interfaces import ValidationError
+from zope.security.checker import defineChecker, NamesChecker
 from editwizard import EditWizardView, WizardStorage
 
 class AddWizardView(EditWizardView):
@@ -47,8 +47,7 @@ class AddWizardView(EditWizardView):
         setUpWidgets(self, self.schema, names=self.fieldNames)
 
     def create(self, *args, **kw):
-        """Do the actual instantiation.
-        """
+        """Do the actual instantiation."""
         return self._factory(*args, **kw)
 
     def apply_update(self, data):

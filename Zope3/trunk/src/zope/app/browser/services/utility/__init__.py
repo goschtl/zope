@@ -13,9 +13,8 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.7 2003/07/02 17:52:41 fdrake Exp $
+$Id: __init__.py,v 1.8 2003/08/07 17:41:39 srichter Exp $
 """
-
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.services.registration import AddComponentRegistration
 from zope.app.form.widget import CustomWidget
@@ -26,7 +25,6 @@ from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app import zapi
 from zope.interface import providedBy
 from zope.proxy import removeAllProxies
-from zope.publisher.browser import BrowserView
 
 
 class UtilityInterfaceWidget(InterfaceWidget):
@@ -55,11 +53,10 @@ class AddRegistration(AddComponentRegistration):
     This is a view on a local utility, configured by an <addform>
     directive.
     """
-
     interface_widget = CustomWidget(UtilityInterfaceWidget)
 
 
-class Utilities(BrowserView):
+class Utilities:
 
     # self.context is the local utility service
 
@@ -74,7 +71,7 @@ class Utilities(BrowserView):
         doDelete = self.request.get("Delete")
         if not selected:
             if doActivate or doDeactivate or doDelete:
-                return "Please select at least one checkbox"
+                return _("Please select at least one checkbox")
             return None
         folder = zapi.getParent(self.context)
         todo = []
@@ -100,9 +97,11 @@ class Utilities(BrowserView):
                 obj.status = ActiveStatus
                 done.append(obj.usageSummary())
         if done:
-            return "Activated: " + ", ".join(done)
+            s = _("Activated: ${activated_utilities}")
+            s.mapping = {'activated_utilities': ", ".join(done)}
+            return s
         else:
-            return "All of the checked utilities were already active"
+            return _("All of the checked utilities were already active")
 
     def _deactivate(self, todo):
         done = []
@@ -113,9 +112,11 @@ class Utilities(BrowserView):
                 obj.status = RegisteredStatus
                 done.append(obj.usageSummary())
         if done:
-            return "Deactivated: " + ", ".join(done)
+            s = _("Deactivated: ${deactivated_utilities}")
+            s.mapping = {'deactivated_utilities': ", ".join(done)}
+            return s
         else:
-            return "None of the checked utilities were active"
+            return _("None of the checked utilities were active")
 
     def _delete(self, todo):
         errors = []
@@ -127,9 +128,10 @@ class Utilities(BrowserView):
                 errors.append(obj.usageSummary())
                 continue
         if errors:
-            return ("Can't delete active utilit%s: %s; "
-                    "use the Deactivate button to deactivate" %
-                    (len(errors) != 1 and "ies" or "y", ", ".join(errors)))
+            s = _("Can't delete active utility/utilites: ${utility_names}; "
+                  "use the Deactivate button to deactivate")
+            s.mapping = {'utility_names': ", ".join(errors)}
+            return s
 
         # 1) Delete the registrations
         services = {}
@@ -160,7 +162,9 @@ class Utilities(BrowserView):
             container = zapi.getAdapter(parent, IZopeContainer)
             del container[name]
 
-        return "Deleted: %s" % ", ".join(done)
+        s = _("Deleted: ${utility_names}")
+        s.mapping = {'utility_names': ", ".join(todo)}
+        return s
 
     def getConfigs(self):
         L = []
@@ -185,7 +189,7 @@ class Utilities(BrowserView):
         return [d for ifname, name, d in L]
 
 
-class ConfigureUtility(BrowserView):
+class ConfigureUtility:
     def update(self):
         folder = zapi.getParent(self.context)
         iface = folder.resolve(self.request['interface'])

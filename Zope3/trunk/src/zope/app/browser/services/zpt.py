@@ -11,17 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""ZPT View Classes
 
-XXX longer description goes here.
-
-$Id: zpt.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: zpt.py,v 1.3 2003/08/07 17:41:03 srichter Exp $
 """
-from zope.publisher.browser import BrowserView
-
 __metaclass__ = type
 
-class Source(BrowserView):
+class Source:
 
     def __call__(self):
         self.request.response.setHeader('content-type',

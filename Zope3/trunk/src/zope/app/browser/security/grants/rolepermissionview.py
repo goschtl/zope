@@ -11,27 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Role Permission View Classes
 
-$Id: rolepermissionview.py,v 1.6 2003/02/12 02:17:09 seanb Exp $
+$Id: rolepermissionview.py,v 1.7 2003/08/07 17:40:56 srichter Exp $
 """
-import time
+from datetime import datetime
 
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.security import IRolePermissionManager
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.grants.permissionroles import PermissionRoles
 from zope.app.security.grants.rolepermission import RolePermissions
 from zope.app.security.settings import Unset, Allow, Deny
-from zope.component import getService, getAdapter
 from zope.app.services.servicenames import Roles, Permissions
-from zope.publisher.browser import BrowserView
+from zope.component import getService, getAdapter
 
-
-class RolePermissionView(BrowserView):
-
-    index = ViewPageTemplateFile('manage_access.pt')
-    manage_permissionForm = ViewPageTemplateFile('manage_permissionform.pt')
-    manage_roleForm = ViewPageTemplateFile('manage_roleform.pt')
+class RolePermissionView:
 
     def roles(self):
         roles = getattr(self, '_roles', None)
@@ -50,9 +44,9 @@ class RolePermissionView(BrowserView):
         return permissions
 
     def availableSettings(self, noacquire=0):
-        aq = {'id': Unset.getName(), 'shorttitle': ' ', 'title': 'Acquire'}
-        rest = [{'id': Allow.getName(), 'shorttitle': '+', 'title': 'Allow'},
-                {'id': Deny.getName(), 'shorttitle': '-', 'title': 'Deny'},
+        aq = {'id': Unset.getName(), 'shorttitle': ' ', 'title': _('Acquire')}
+        rest = [{'id': Allow.getName(), 'shorttitle': '+', 'title': _('Allow')},
+                {'id': Deny.getName(), 'shorttitle': '-', 'title': _('Deny')},
                 ]
         if noacquire:
             return rest
@@ -79,72 +73,72 @@ class RolePermissionView(BrowserView):
                           ).getRole(rid)
         return RolePermissions(role, context, permissions)
 
-    def action(self, testing=None):
-        request = self.request
-        roles       = [r.getId() for r in self.roles()]
-        permissions = [p.getId() for p in self.permissions()]
-        prm         = getAdapter(self.context, IRolePermissionManager)
-        for ip in range(len(permissions)):
-            rperm = request.get("p%s" % ip)
-            if rperm not in permissions: continue
+
+    def update(self, testing=None):
+        status = ''
+        changed = False
+
+        if 'SUBMIT' in self.request:
+            roles       = [r.getId() for r in self.roles()]
+            permissions = [p.getId() for p in self.permissions()]
+            prm         = getAdapter(self.context, IRolePermissionManager)
+            for ip in range(len(permissions)):
+                rperm = self.request.get("p%s" % ip)
+                if rperm not in permissions: continue
+                for ir in range(len(roles)):
+                    rrole = self.request.get("r%s" % ir)
+                    if rrole not in roles: continue
+                    setting = self.request.get("p%sr%s" % (ip, ir), None)
+                    if setting is not None:
+                        if setting == Unset.getName():
+                            prm.unsetPermissionFromRole(rperm, rrole)
+                        elif setting == Allow.getName():
+                            prm.grantPermissionToRole(rperm, rrole)
+                        elif setting == Deny.getName():
+                            prm.denyPermissionToRole(rperm, rrole)
+                        else:
+                            raise ValueError("Incorrect setting: %s" % setting)
+            changed = True
+
+        if 'SUBMIT_PERMS' in self.request:
+            prm = getAdapter(self.context, IRolePermissionManager)
+            roles = self.roles()
+            rperm = self.request.get('permission_id')
+            settings = self.request.get('settings', ())
             for ir in range(len(roles)):
-                rrole = request.get("r%s" % ir)
-                if rrole not in roles: continue
-                setting = request.get("p%sr%s" % (ip, ir), None)
-                if setting is not None:
-                    if setting == Unset.getName():
-                        prm.unsetPermissionFromRole(rperm, rrole)
-                    elif setting == Allow.getName():
-                        prm.grantPermissionToRole(rperm, rrole)
-                    elif setting == Deny.getName():
-                        prm.denyPermissionToRole(rperm, rrole)
-                    else:
-                        raise ValueError("Incorrect setting: %s" % setting)
+                rrole = roles[ir].getId()
+                setting = settings[ir]
+                if setting == Unset.getName():
+                    prm.unsetPermissionFromRole(rperm, rrole)
+                elif setting == Allow.getName():
+                    prm.grantPermissionToRole(rperm, rrole)
+                elif setting == Deny.getName():
+                    prm.denyPermissionToRole(rperm, rrole)
+                else:
+                    raise ValueError("Incorrect setting: %s" % setting)
+            changed = True
 
-        if not testing:
-            return self.index(
-                message="Settings changed at %s" % time.ctime(time.time())
-                )
+        if 'SUBMIT_ROLE' in self.request:
+            role_id = self.request.get('role_id')
+            prm = getAdapter(self.context, IRolePermissionManager)
+            allowed = self.request.get(Allow.getName(), ())
+            denied = self.request.get(Deny.getName(), ())
+            for permission in self.permissions():
+                rperm = permission.getId()
+                if rperm in allowed and rperm in denied:
+                    raise ValueError("Incorrect setting for %s" % rperm)
+                if rperm in allowed:
+                    prm.grantPermissionToRole(rperm, role_id)
+                elif rperm in denied:
+                    prm.denyPermissionToRole(rperm, role_id)
+                else:
+                    prm.unsetPermissionFromRole(rperm, role_id)
+            changed = True
 
-    def update_permission(self, permission_id,
-                          settings=(), testing=None):
-        prm = getAdapter(self.context, IRolePermissionManager)
-        roles = self.roles()
-        rperm = permission_id
-        for ir in range(len(roles)):
-            rrole = roles[ir].getId()
-            setting = settings[ir]
-            if setting == Unset.getName():
-                prm.unsetPermissionFromRole(rperm, rrole)
-            elif setting == Allow.getName():
-                prm.grantPermissionToRole(rperm, rrole)
-            elif setting == Deny.getName():
-                prm.denyPermissionToRole(rperm, rrole)
-            else:
-                raise ValueError("Incorrect setting: %s" % setting)
+        if changed:
+            formatter = self.request.locale.getDateTimeFormatter('medium')
+            status = _("Settings changed at ${date_time}")
+            status.mapping = {'date_time': formatter.format(datetime.utcnow())}
 
-        if not testing:
-            return self.index(message="Settings changed at %s"
-                              % time.ctime(time.time())
-                              )
+        return status
 
-    def update_role(self, role_id, testing=None):
-        request = self.request
-        prm = getAdapter(self.context, IRolePermissionManager)
-        allowed = request.get(Allow.getName(), ())
-        denied = request.get(Deny.getName(), ())
-        for permission in self.permissions():
-            rperm = permission.getId()
-            if rperm in allowed and rperm in denied:
-                raise ValueError("Incorrect setting for %s" % rperm)
-            if rperm in allowed:
-                prm.grantPermissionToRole(rperm, role_id)
-            elif rperm in denied:
-                prm.denyPermissionToRole(rperm, role_id)
-            else:
-                prm.unsetPermissionFromRole(rperm, role_id)
-
-        if not testing:
-            return self.index(message="Settings changed at %s"
-                              % time.ctime(time.time())
-                              )

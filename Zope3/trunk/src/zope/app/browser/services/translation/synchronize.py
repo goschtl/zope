@@ -13,21 +13,21 @@
 ##############################################################################
 """Synchronize with Foreign Translation Services
 
-$Id: synchronize.py,v 1.4 2003/07/18 16:40:12 srichter Exp $
+$Id: synchronize.py,v 1.5 2003/08/07 17:41:34 srichter Exp $
 """
 import httplib
 import urllib
 import xmlrpclib
-
 from base64 import encodestring
 
 from zope.app.browser.services.translation import BaseView
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 
 class Synchronize(BaseView):
 
-    messageStatus = ['Up to Date', 'New Remote', 'Out of Date', 'Newer Local',
-                     'Does not exist']
+    messageStatus = [_('Up to Date'), _('New Remote'), _('Out of Date'),
+                     _('Newer Local'), _('Does not exist')]
 
     def __init__(self, context, request):
         super(Synchronize, self).__init__(context, request)

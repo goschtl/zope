@@ -11,25 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Management view component for principal-role management (Zope2's
-    "local roles").
+"""Management view component for principal-role management (Zope2's
+"local roles").
 
-$Id: principalroleview.py,v 1.7 2003/05/01 19:35:03 faassen Exp $
+$Id: principalroleview.py,v 1.8 2003/08/07 17:40:56 srichter Exp $
 """
-import time
+from datetime import datetime
 
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.security import IPrincipalRoleManager
 from zope.app.interfaces.security import IPrincipalRoleMap
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.settings import Unset, Deny, Allow
-from zope.component import getService, getAdapter
 from zope.app.services.servicenames import Authentication, Roles
-from zope.publisher.browser import BrowserView
+from zope.component import getService, getAdapter
 
 
-class PrincipalRoleView(BrowserView):
-
-    index = ViewPageTemplateFile('principal_role_association.pt')
+class PrincipalRoleView:
 
     def getAllPrincipals(self):
         principals = getattr(self, '_principals', None)
@@ -70,25 +67,31 @@ class PrincipalRoleView(BrowserView):
 
         return PrincipalRoleGrid(principals, roles, self.context)
 
-    def action(self, principals, roles, testing=None):
-        prm = getAdapter(self.context, IPrincipalRoleManager)
-        for role in roles:
-            for principal in principals:
-                name = 'grid.%s.%s' % (role, principal)
-                setting = self.request.get(name, 'Unset')
-                if setting == 'Unset':
-                    prm.unsetRoleForPrincipal(role, principal)
-                elif setting == 'Allow':
-                    prm.assignRoleToPrincipal(role, principal)
-                elif setting == 'Deny':
-                    prm.removeRoleFromPrincipal(role, principal)
-                else:
-                    raise ValueError("Incorrect setting %s" % setting)
+    def update(self, testing=None):
+        status = ''
 
-        if not testing:
-            return self.index(
-                message="Settings changed at %s" % time.ctime(time.time())
-                )
+        if 'APPLY' in self.request:
+            principals = self.request.get('principals')
+            roles = self.request.get('roles')
+            prm = getAdapter(self.context, IPrincipalRoleManager)
+            for role in roles:
+                for principal in principals:
+                    name = 'grid.%s.%s' % (role, principal)
+                    setting = self.request.get(name, 'Unset')
+                    if setting == 'Unset':
+                        prm.unsetRoleForPrincipal(role, principal)
+                    elif setting == 'Allow':
+                        prm.assignRoleToPrincipal(role, principal)
+                    elif setting == 'Deny':
+                        prm.removeRoleFromPrincipal(role, principal)
+                    else:
+                        raise ValueError("Incorrect setting %s" % setting)
+
+            formatter = self.request.locale.getDateTimeFormatter('medium')
+            status = _("Settings changed at ${date_time}")
+            status.mapping = {'date_time': formatter.format(datetime.utcnow())}
+
+        return status
 
 
 class PrincipalRoleGrid:

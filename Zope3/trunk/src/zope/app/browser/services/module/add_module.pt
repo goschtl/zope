@@ -1,13 +1,18 @@
 <html metal:use-macro="views/standard_macros/page">
-<head><title>Add a module</title></head>
+<head>
+  <title metal:fill-slot="title" i18n:translate="">Add a Module</title>
+</head>
 <body>
-<div metal:fill-slot="body">
+  <div metal:fill-slot="body">
 
-<p>Enter the module source code.</p>
+  <p i18n:translate="">Enter the module source code.</p>
 
-<form action="action.html">
-  <textarea name="source:text" cols="65" rows="25"></textarea>
-  <input type="submit" value="Add module" />
-</form>
+  <form action="action.html">
+    <textarea name="source:text" cols="65" rows="25"></textarea>
+    <input type="submit" value="Add module" 
+           i18n:attributes="value add-module-button"/>
+  </form>
 
-</div></body></html>
+</div>
+</body>
+</html>

@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: gadflyda.py,v 1.2 2003/04/30 23:37:53 faassen Exp $
+"""Gadfly DA View Classes
+
+$Id: gadflyda.py,v 1.3 2003/08/07 17:40:48 srichter Exp $
 """
 from zope.app.browser.rdb.rdb import AdapterAdd
 

@@ -28,12 +28,13 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all registrations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.9 2003/06/21 21:21:59 jim Exp $
+$Id: bundle.py,v 1.10 2003/08/07 17:41:03 srichter Exp $
 """
-
 import re
 from transaction import get_transaction
+
 from zope.app import zapi
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IReadContainer
 from zope.app.interfaces.services.registration import IRegistration
 from zope.app.interfaces.services.registration import IRegistrationManager
@@ -86,7 +87,9 @@ class BundleView(BrowserView):
                     count += 1
             if count:
                 get_transaction().note("deactivate bundle")
-            return "unregistered %d registrations" % count
+            status = _("unregistered ${count} registrations")
+            status.mapping = {'count': str(count)}
+            return status
         activated = []
         registered = []
         for key, value in self.request.form.items():
@@ -109,12 +112,19 @@ class BundleView(BrowserView):
                     registered.append(path)
                     obj.status = RegisteredStatus
         s = ""
+        mapping = {}
         if activated:
-            s += "Activated: %s.\n" % (", ".join(activated))
+            s += _("Activated: ${activated}.\n")
+            mapping['activated'] = ", ".join(activated)
         if registered:
-            s += "Registered: %s.\n" % (", ".join(registered))
+            s += _("Registered: ${registered}.\n")
+            mapping['registered'] = ", ".join(registered)
         if s:
             get_transaction().note("activate bundle")
+        # We have to do that again, since the adding to a message id makes it
+        # a unicode string again.
+        s = _(s)
+        s.mapping = mapping
         return s
 
     def listServices(self):

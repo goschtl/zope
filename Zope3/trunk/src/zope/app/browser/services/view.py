@@ -13,47 +13,49 @@
 ##############################################################################
 """Helper classes for local view registry.
 
-$Id: view.py,v 1.21 2003/06/21 21:50:15 jim Exp $
+$Id: view.py,v 1.22 2003/08/07 17:41:03 srichter Exp $
 """
-__metaclass__ = type
-
 import md5
 
-from zope.interface import Interface
-from zope.schema import TextLine, BytesLine
-from zope.component.interfaces import IPresentation
-from zope.component import getAdapter, getServiceManager, getView
-from zope.app.context import ContextWrapper
-from zope.publisher.browser import BrowserView
 
 from zope.app.component.interfacefield import InterfaceField
+from zope.app.context import ContextWrapper
 from zope.app.form.utility import setUpWidgets
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.traversing import getPath, getParent, getName
+from zope.component import getAdapter, getServiceManager, getView
+from zope.component.interfaces import IPresentation
+from zope.interface import Interface
+from zope.schema import TextLine, BytesLine
+
+__metaclass__ = type
+
 
 class IViewSearch(Interface):
 
-    forInterface = InterfaceField(title=u"For interface",
-                                  required=False,
-                                  )
-    presentationType = InterfaceField(title=u"Presentation interface",
-                                      required=False,
-                                      basetype=IPresentation
-                                      )
+    forInterface = InterfaceField(
+        title=u"For interface",
+        required=False)
 
-    viewName = TextLine(title=u'View name',
-                        required=False,
-                        )
+    presentationType = InterfaceField(
+        title=u"Presentation interface",
+        required=False,
+        basetype=IPresentation)
 
-    layer = BytesLine(title=u'Layer',
-                      required=False,
-                      )
+    viewName = TextLine(
+        title=u'View name',
+        required=False)
+
+    layer = BytesLine(
+        title=u'Layer',
+        required=False)
 
 
-class _SharedBase(BrowserView):
+class _SharedBase:
 
     def _getRegistryFromKey(self, key):
         values = key.split(":")
@@ -124,9 +126,11 @@ class ViewServiceView(_SharedBase):
                 obj.status = ActiveStatus
                 done.append(self._getSummaryFromRegistry(registry))
         if done:
-            return "Activated: " + ", ".join(done)
+            s = _("Activated: ${activated_views}")
+            s.mapping = {'activated_views': ", ".join(done)}
+            return s
         else:
-            return "All of the checked views were already active"
+            return _("All of the checked views were already active")
 
     def _deactivate(self, todo):
         done = []
@@ -137,9 +141,11 @@ class ViewServiceView(_SharedBase):
                 obj.status = RegisteredStatus
                 done.append(self._getSummaryFromRegistry(registry))
         if done:
-            return "Deactivated: " + ", ".join(done)
+            s = _("Deactivated: ${deactivated_views}")
+            s.mapping = {'deactivated_views': ", ".join(done)}
+            return s
         else:
-            return "None of the checked views were active"
+            return _("None of the checked views were active")
 
     def _delete(self, todo):
         errors = []
@@ -153,9 +159,10 @@ class ViewServiceView(_SharedBase):
                 continue
             registries.append(registry)
         if errors:
-            return ("Can't delete active page%s: %s; "
-                    "use the Deactivate button to deactivate" %
-                    (len(errors) != 1 and "s" or "", ", ".join(errors)))
+            s = _("Can't delete active view(s): ${view_names}; "
+                  "use the Deactivate button to deactivate")
+            s.mapping = {'view_names': ", ".join(errors)}
+            return s
 
         # Now delete the registrations
         done = []
@@ -171,7 +178,9 @@ class ViewServiceView(_SharedBase):
                 container = getAdapter(parent, IZopeContainer)
                 del container[name]
 
-        return "Deleted: %s" % ", ".join(done)
+        s = _("Deleted: ${cache_names}")
+        s.mapping = {'cache_names': ", ".join(todo)}
+        return s
 
     def configInfo(self):
         """Do a search, or (by default) return all view pages."""
@@ -236,8 +245,7 @@ class ViewServiceView(_SharedBase):
 
         return result
 
-class PageRegistrationView(BrowserView):
-
+class PageRegistrationView:
     """Helper class for the page edit form."""
 
     def update(self):

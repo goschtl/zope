@@ -13,12 +13,11 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.6 2003/07/31 15:01:27 srichter Exp $
+$Id: instance.py,v 1.7 2003/08/07 17:41:51 srichter Exp $
 """
-__metaclass__ = type
-
 from zope.app.browser.form.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
@@ -30,6 +29,9 @@ from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.schema import getFields
+
+__metaclass__ = type
+
  
 class ManagementView(BrowserView):
 
@@ -45,7 +47,6 @@ class ManagementView(BrowserView):
             setUpWidget(self, name, field,
                         value=getattr(workflow.data, name))
         
-
     def _extractContentInfo(self, item):
         id, processInstance = item
         info = {}
@@ -141,6 +142,6 @@ class ManagementView(BrowserView):
                 self, workflow.data, schema, names=getFields(schema).keys(),
                 exclude_readonly=True)
             if changed:
-                status = u'Updated Workflow Data.'
+                status = _('Updated Workflow Data.')
 
         return status

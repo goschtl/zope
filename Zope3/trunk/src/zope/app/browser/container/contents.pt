@@ -138,7 +138,7 @@
 
       <div tal:condition="view/specialButtons">
         <input type="submit" value="Apply"
-               i18n:attributes="value container_apply_button"
+               i18n:attributes="value container-apply-button"
                />
         <input type="submit" name="container_cancel_button" value="Cancel"
                i18n:attributes="value container-cancel-button"

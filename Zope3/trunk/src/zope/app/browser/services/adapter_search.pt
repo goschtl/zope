@@ -1,27 +1,26 @@
 <html metal:use-macro="views/standard_macros/page">
-<head><title></title></head>
 <body>
 <div metal:fill-slot="body">
 
-<form action="." method="get"
-      tal:attributes="action request/URL"
-      >
+  <form action="." method="get"
+      tal:attributes="action request/URL">
     <div class="row" tal:content="structure view/forInterface/row" />
     <div class="row" tal:content="structure view/providedInterface/row" />
       <div class="controls"> 
-         <input type="submit" value="Refresh" />
-         <input type="submit" value="Search" name="SEARCH" />
+         <input type="submit" value="Refresh" 
+                i18n:attributes="value refresh-button" />
+         <input type="submit" value="Search" name="SEARCH"
+                i18n:attributes="value search-button" />
       </div>
-</form>
+  </form>
 
-<form action="." method="post"
+  <form action="." method="post"
       tal:attributes="action request/URL"
-      tal:condition="request/SEARCH|nothing"
-      >
+      tal:condition="request/SEARCH|nothing">
   <table>
     <tr>
-       <th>For/<br />Provided</th>
-       <th>Configuration</th>
+       <th i18n:translate="">For/<br />Provided</th>
+       <th i18n:translate="">Configuration</th>
     </tr>
 
     <tr tal:repeat="config view/configInfo">
@@ -34,7 +33,8 @@
       <td></td>
       <td></td>
       <td> 
-         <input type="submit" value="Update" name="UPDATE_SUBMIT" />
+        <input type="submit" value="Update" name="UPDATE_SUBMIT" />
+               i18n:attributes="value update-button" />
       </td>
     </tr>
   </table>

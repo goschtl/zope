@@ -13,15 +13,16 @@
 ##############################################################################
 """filtering view for ProcessInstances of a stateful workflow
  
-$Id: filteradapter.py,v 1.2 2003/06/06 21:35:20 philikon Exp $
+$Id: filteradapter.py,v 1.3 2003/08/07 17:41:51 srichter Exp $
 """
-__metaclass__ = type
-
 from zope.interface import implements
 from zope.component import queryAdapter 
 from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from interfaces import IContentFilterAdapter
+
+__metaclass__ = type
+
 
 class FilterAdapter:
     

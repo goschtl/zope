@@ -1,48 +1,47 @@
-<html metal:use-macro="context/@@standard_macros/page"
-      i18n:domain="zope">
+<html metal:use-macro="context/@@standard_macros/page">
 <body>
 <div metal:fill-slot="body" tal:define="ignored view/setup">
 
-<h2 i18n:translate="">Interface
-<span tal:content="view/name">name</span>
-</h2>
+  <h2 i18n:translate="">
+    Interface
+    <span tal:content="view/name" i18n:name="iface_name">name</span>
+  </h2>
 
-<div tal:condition="view/doc">
-    <h3>Documentation</h3>
+  <div tal:condition="view/doc">
+    <h3 i18n:translate="">Documentation</h3>
     <div tal:content="view/doc">This is a doc string.</div>
-</div>
+  </div>
 
-<div tal:condition="view/methods">
-    <h3>Methods</h3> 
+  <div tal:condition="view/methods">
+    <h3 i18n:translate="">Methods</h3> 
     <ul>
-    <li tal:repeat="method view/methods"
-        tal:content="method/__name__">Method name</li>
+      <li tal:repeat="method view/methods"
+          tal:content="method/__name__">Method name</li>
     </ul>
-</div>
+  </div>
 
-<div tal:condition="view/schema">
-    <h3>Schema</h3>
+  <div tal:condition="view/schema">
+    <h3 i18n:translate="">Schema</h3>
     <ul>
-    <li tal:repeat="field view/schema"
-        tal:content="field/__name__">Field name</li>
+      <li tal:repeat="field view/schema"
+          tal:content="field/__name__">Field name</li>
     </ul>
-</div>
+  </div>
 
-<div tal:repeat="service view/getServices">
+  <div tal:repeat="service view/getServices">
     <h3 i18n:translate="">Registrations for 
-        <span tal:content="service/name" i18n:name="name">Name</span> 
-        service
+      <span tal:content="service/name" i18n:name="service_name">Name</span> 
+       service
     </h3>
 
     <ul>
-    <li tal:repeat="reg service/registrations">
+      <li tal:repeat="reg service/registrations">
         <em tal:content="reg/status">status</em>
         <strong tal:content="reg/usageSummary">usage</strong><br />
         <span tal:content="reg/implementationSummary">impl</span>
-    </li>
+      </li>
     </ul>
-
-</div>
+  </div>
 
 </div>
 </body>

@@ -1,27 +1,16 @@
-<configure
-    xmlns='http://namespaces.zope.org/browser'
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
 <!-- ZopeDatabaseAdapter default views -->
 
   <!-- XXX need an index.html that gives the source and is the def view -->
-  <defaultView for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
-               name="editForm.html" />
-
-  <menuItems menu="zmi_views"
-         for="zope.app.interfaces.rdb.IZopeDatabaseAdapter">
-    <menuItem title="Edit" action="editForm.html"/>
-    <menuItem title="Test" action="testForm.html"/>
-  </menuItems>
 
   <pages
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       permission="zope.View"
       class=".rdb.Connection"
       >
-    <page name="editForm.html"
-        template="rdbconnection.pt" />
+    <page name="editForm.html" template="rdbconnection.pt" 
+          menu="zmi_views" title="Edit"/>
     <page name="edit.html" attribute="edit" />
     <page name="connect.html" attribute="connect" />
     <page name="disconnect.html" attribute="disconnect" />
@@ -31,12 +20,16 @@
   <pages
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       permission="zope.View"
-      class=".rdb.TestSQL"
-      >
-    <page name="testForm.html" template="rdbtestsql.pt" />
+      class=".rdb.TestSQL">
+    <page name="testForm.html" template="rdbtestsql.pt"
+          menu="zmi_views" title="Test"/>
     <page name="test.html" template="rdbtestresults.pt" />
 
   </pages>
+
+  <defaultView 
+      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      name="editForm.html" />
 
 <!-- Gadfly DA -->
 
@@ -49,7 +42,7 @@
     <page name="+" attribute="add" />
     <page name="action.html" attribute="action" />
 
-    </view>
+  </view>
 
   <!-- Menu entry for "add component" menu -->
   <menuItem
@@ -57,8 +50,7 @@
       for="zope.app.interfaces.container.IAdding"
       title="Gadfly DA" 
       description="A DA for the built-in 100% Pure Python Gadfly Database"
-      action="zope.app.rdb.gadflyda.GadflyAdapter"
-      />
+      action="zope.app.rdb.gadflyda.GadflyAdapter" />
 
   <!-- Menu entry for "add connection" menu -->
   <menuItem
@@ -66,7 +58,6 @@
       for="zope.app.interfaces.container.IAdding"
       title="Gadfly DA" 
       description="A DA for the built-in 100% Pure Python Gadfly Database"
-      action="zope.app.rdb.gadflyda.GadflyAdapter"
-      />
+      action="zope.app.rdb.gadflyda.GadflyAdapter" />
 
 </configure>

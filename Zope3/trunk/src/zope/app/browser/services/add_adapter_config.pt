@@ -1,20 +1,34 @@
 <html metal:use-macro="views/standard_macros/dialog">
-<head><title></title></head>
+<head>
+  <title metal:fill-slot="title" i18n:translate="">
+    Add Adapter Configuration
+  </title>
+</head>
 <body>
 <div metal:fill-slot="body">
 
-<form action="." method="post"
-      tal:attributes="action request/URL"
-      tal:condition="view/refresh"
-      >
-     <div class="row"
-         tal:repeat="widget view/getWidgets"
-         tal:content="structure widget/row">
-       <div class="label">Label</div>
-       <div class="field">Roles</div>
-     </div>
-  <input type="submit" value="Refresh" />
-  <input type="submit" name="FINISH" value="Finish" />
-</form>
+  <form action="." method="post"
+        tal:attributes="action request/URL"
+        tal:condition="view/refresh">
 
-</div></body></html>
+    <div class="row"
+        tal:repeat="widget view/getWidgets"
+        tal:content="structure widget/row">
+      <div class="label">Label</div>
+      <div class="field">Roles</div>
+    </div>
+
+    <div class="row">
+      <div class="controls">
+        <input type="submit" value="Refresh"
+               i18n:attributes="value refresh-button" />
+        <input type="submit" name="FINISH" value="Finish"
+               i18n:attributes="value finnish-button" />
+      </div>
+    </div>
+
+  </form>
+
+</div>
+</body>
+</html>

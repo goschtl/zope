@@ -13,13 +13,13 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.9 2003/04/30 23:37:54 faassen Exp $
+$Id: permissionwidget.py,v 1.10 2003/08/07 17:40:53 srichter Exp $
 """
-
 from zope.app.browser.form import widget
 from zope.component import getService
-from zope.app.services.servicenames import Permissions
+from zope.app.services.servicenames import Permissions, Translation
 from zope.security.checker import CheckerPublic
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 
 class BaseWidget:
@@ -34,9 +34,7 @@ class BaseWidget:
                 permission_id = permission_id.encode('ascii')
             except UnicodeError, v:
                 raise ConversionError("Invalid textual data", v)
-
             
-
         if permission_id == 'zope.Public':
             permission_id = CheckerPublic
 
@@ -64,7 +62,11 @@ class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
         select_name = self.name
         selected = self._showData()
 
-        options = ['<option value=\"\">---select permission---</option>']
+        ts = getService(self.context.context, Translation)
+        sel_perm = _('---select permission---')
+        sel_perm = ts.translate(sel_perm, "zope")
+        
+        options = ['<option value=\"\">'+sel_perm+'</option>']
         for permission in permissions:
             options.append('<option value="%s"%s>%s</option>'
                            % (permission,

@@ -1,57 +1,63 @@
 <html metal:use-macro="context/@@standard_macros/page">
-
+<body>
 <div metal:fill-slot="body"
-     tal:define="message view/update; configs view/configInfo"
-     >
+     tal:define="message view/update; configs view/configInfo">
 
-<h2>Pages registered in this views service:</h2>
+  <h2 i18n:translate="">Pages registered in this views service:</h2>
 
-      <div class="message" tal:condition="message">
-         <span tal:replace="message">view/update message here</span>
-         <br /><br /><i><a href="">(click to clear message)</a></i>
-      </div>
+  <div class="message" tal:condition="message">
+    <span tal:replace="message">view/update message here</span>
+    <br /><br />
+    <i><a href="" i18n:translate="">(click to clear message)</a></i>
+  </div>
 
-<p tal:condition="not:configs">None</p>
+  <p tal:condition="not:configs">None</p>
 
-<form method="POST" action="index.html" tal:condition="configs">
+  <form method="POST" action="index.html" tal:condition="configs">
 
-  <table>
-    <tbody>
-      <tr tal:repeat="config configs">
-        <td>
-          <input type="checkbox" name="selected:list"
-                 tal:attributes="value config/key" />
-          <br />
-        </td>
-        <td>
-          <a tal:condition="config/url" tal:attributes="href config/url">
-            <span tal:replace="config/summary" />
-          </a>
-          <span tal:condition="not:config/url" tal:replace="config/summary" />
-        </td>
-        <td>
-          <a href="." tal:attributes="href config/configurl">
-            (change registration)</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+    <table>
+      <tbody>
+        <tr tal:repeat="config configs">
+          <td>
+            <input type="checkbox" name="selected:list"
+                   tal:attributes="value config/key" />
+            <br />
+          </td>
+          <td>
+            <a tal:condition="config/url" tal:attributes="href config/url">
+              <span tal:replace="config/summary" />
+            </a>
+            <span tal:condition="not:config/url" tal:replace="config/summary" />
+          </td>
+          <td>
+            <a href="." tal:attributes="href config/configurl"
+               i18n:translate="">
+              (change registration)</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-  <input type="submit" name="Activate" value="Activate" />
-  <input type="submit" name="Deactivate" value="Deactivate" />
-  &nbsp;
-  <input type="submit" name="Delete" value="Delete" />
-  &nbsp;
-  <input type="submit" name="Refresh" value="Refresh" />
+    <input type="submit" name="Activate" value="Activate" 
+           i18n:attributes="value activate-button"/>
+    <input type="submit" name="Deactivate" value="Deactivate"
+           i18n:attributes="value deactivate-button"/>
+    &nbsp;
+    <input type="submit" name="Delete" value="Delete"
+           i18n:attributes="value delete-button"/>
+    &nbsp;
+    <input type="submit" name="Refresh" value="Refresh"
+           i18n:attributes="value refresh-button"/>
 
-</form>
+  </form>
 
-<p><a href="../RegistrationManager/@@+/PageRegistration=">
-Add a page to this views service</a></p>
+  <p>
+    <a href="../RegistrationManager/@@+/PageRegistration=" i18n:translate="">
+    Add a page to this views service</a></p>
 
-<h3>Search filter:</h3>
+  <h3 i18n:translate="">Search filter:</h3>
 
-<form action="." method="GET">
+  <form action="." method="GET">
     <div class="row" 
          tal:content="structure view/forInterface_widget/row" 
          />
@@ -62,12 +68,14 @@ Add a page to this views service</a></p>
          />
     -->
     <div class="row">
-    <div class="controls"> 
-         <input type="submit" value="Refresh" />
-         <input type="submit" value="Search" name="SEARCH" />
-     </div>
+      <div class="controls"> 
+        <input type="submit" value="Refresh"
+               i18n:attributes="value refresh-button"/>
+        <input type="submit" value="Search" name="SEARCH"
+               i18n:attributes="value search-button"/>
+      </div>
     </div>
-</form>
+  </form>
 
 </div>
 

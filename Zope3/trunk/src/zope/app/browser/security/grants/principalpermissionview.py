@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Principal Permission View Classes
 
-$Id: principalpermissionview.py,v 1.6 2003/05/02 18:24:59 jim Exp $
+$Id: principalpermissionview.py,v 1.7 2003/08/07 17:40:56 srichter Exp $
 """
 import time
 

@@ -1,21 +1,16 @@
-<configure
-    xmlns="http://namespaces.zope.org/browser"
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
   <page
       for="zope.app.interfaces.security.IPermissionField"
       name="edit"
       class=".permissionwidget.SinglePermissionWidget"
-      permission="zope.Public"
-      />
+      permission="zope.Public" />
 
   <page 
       for="zope.app.interfaces.security.IPermissionField"
       name="display"
       class=".permissionwidget.DisplayWidget"
-      permission="zope.Public"
-      />
+      permission="zope.Public" />
 
   <include package=".grants" />
 

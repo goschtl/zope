@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: addservicemanager.py,v 1.3 2003/03/23 22:35:36 jim Exp $
-"""
+"""Add Service Manager View Class
 
-from zope.publisher.browser import BrowserView
+$Id: addservicemanager.py,v 1.4 2003/08/07 17:41:03 srichter Exp $
+"""
 from zope.app.services.service import ServiceManager
 
-
-class AddServiceManager(BrowserView):
+class AddServiceManager:
 
     def addServiceManager(self):
         sm = ServiceManager()

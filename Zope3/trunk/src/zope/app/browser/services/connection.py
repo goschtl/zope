@@ -13,20 +13,19 @@
 ##############################################################################
 """Connection registry support classes.
 
-$Id: connection.py,v 1.13 2003/06/21 21:21:59 jim Exp $
+$Id: connection.py,v 1.14 2003/08/07 17:41:03 srichter Exp $
 """
-
 from zope.app.browser.services.registration import AddComponentRegistration
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import IRegistered
-from zope.component import getAdapter, getView
-from zope.publisher.browser import BrowserView
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.traversing import traverse, getPath, getParent, getName
+from zope.component import getAdapter, getView
 
-class Connections(BrowserView):
+class Connections:
 
     # self.context is the local connection service
 
@@ -41,7 +40,7 @@ class Connections(BrowserView):
         doDelete = self.request.get("Delete")
         if not todo:
             if doDeactivate or doDelete:
-                return "Please select at least one checkbox"
+                return _("Please select at least one checkbox")
             return None
         if doActivate:
             return self._activate(todo)
@@ -61,9 +60,11 @@ class Connections(BrowserView):
                 obj.status = ActiveStatus
                 done.append(name)
         if done:
-            return "Activated: " + ", ".join(done)
+            s = _("Activated: ${activated_connections}")
+            s.mapping = {'activated_connections': ", ".join(done)}
+            return s
         else:
-            return "All of the checked connections were already active"
+            return _("All of the checked connections were already active")
 
     def _deactivate(self, todo):
         done = []
@@ -74,9 +75,11 @@ class Connections(BrowserView):
                 obj.status = RegisteredStatus
                 done.append(name)
         if done:
-            return "Deactivated: " + ", ".join(done)
+            s = _("Deactivated: ${deactivated_connections}")
+            s.mapping = {'deactivated_connections': ", ".join(done)}
+            return s
         else:
-            return "None of the checked connections were active"
+            return _("None of the checked connections were active")
 
     def _delete(self, todo):
         errors = []
@@ -87,9 +90,10 @@ class Connections(BrowserView):
                 errors.append(name)
                 continue
         if errors:
-            return ("Can't delete active connection%s: %s; "
-                    "use the Deactivate button to deactivate" %
-                    (len(errors) != 1 and "s" or "", ", ".join(errors)))
+            s = _("Can't delete active connection(s): ${connection_names}; "
+                  "use the Deactivate button to deactivate")
+            s.mapping = {'connection_names': ", ".join(errors)}
+            return s
 
         # 1) Delete the registrations
         connections = {}
@@ -115,7 +119,9 @@ class Connections(BrowserView):
             container = getAdapter(parent, IZopeContainer)
             del container[name]
 
-        return "Deleted: %s" % ", ".join(todo)
+        s = _("Deleted: ${connection_names}")
+        s.mapping = {'connection_names': ", ".join(todo)}
+        return s
 
     def getConfigs(self):
         L = []
@@ -134,7 +140,7 @@ class Connections(BrowserView):
         L.sort()
         return [d for name, d in L]
 
-class ConfigureConnection(BrowserView):
+class ConfigureConnection:
 
     def update(self):
         cr = self.context.queryRegistrations(self.request['name'])
@@ -142,8 +148,7 @@ class ConfigureConnection(BrowserView):
         form.update()
         return form
 
-class Registered(BrowserView):
-
+class Registered:
     """View for displaying the registrations for a connection."""
 
     def uses(self):
@@ -162,5 +167,4 @@ class Registered(BrowserView):
         return result
 
 class AddConnectionRegistration(AddComponentRegistration):
-
     pass

@@ -11,15 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ContentWorkflow Utility views
+"""ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.3 2003/07/30 00:00:16 srichter Exp $
+$Id: contentworkflow.py,v 1.4 2003/08/07 17:41:51 srichter Exp $
 """
-__metaclass__ = type
- 
 from zope.app.browser.component.interfacewidget import \
      interfaceToName, nameToInterface
 from zope.app.component.interfacefield import InterfaceField
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.utility import setUpWidgets
 from zope.app.services.servicenames import Workflows
 from zope.component import getService
@@ -28,7 +27,10 @@ from zope.publisher.browser import BrowserView
 from zope.schema.vocabulary import VocabularyListField
 from zope.security.proxy import trustedRemoveSecurityProxy 
 
-class ContentWorkflowsManagerView(BrowserView):
+__metaclass__ = type
+ 
+
+class ContentWorkflowsManagerView:
  
     def getName(self):
         return """I'm a ContentWorkflows Utility"""
@@ -57,7 +59,6 @@ class ManageContentProcessRegistry(BrowserView):
         super(ManageContentProcessRegistry, self).__init__(*args)
         setUpWidgets(self, IContentProcessMapping)
         self.process_based = int(self.request.get('process_based', '1'))
-        print self.request
 
     def getProcessInterfacesMapping(self):
         mapping = []
@@ -82,7 +83,7 @@ class ManageContentProcessRegistry(BrowserView):
         if 'ADD' in self.request:
             for name in self.name_widget.getData():
                 self.context.register(self.iface_widget.getData(), name)
-            status = 'Mapping(s) added.'
+            status = _('Mapping(s) added.')
         elif 'REMOVE' in self.request:
             mappings = self.request.get('mappings', [])
             for entry in mappings:
@@ -90,7 +91,7 @@ class ManageContentProcessRegistry(BrowserView):
                 name = entry[:split]
                 iface = nameToInterface(self.context, entry[split+1:])
                 self.context.unregister(iface, name)
-            status = 'Mapping(s) removed.'
+            status = _('Mapping(s) removed.')
         elif 'SWITCH' in self.request:
             self.request.response.setCookie('process_based',
                                             self.request.get('other_view'))

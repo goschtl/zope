@@ -15,7 +15,7 @@
 
 XXX Incomplete.
 
-$Id: test_bundle.py,v 1.2 2003/06/21 21:22:04 jim Exp $
+$Id: test_bundle.py,v 1.3 2003/08/07 17:41:31 srichter Exp $
 """
 
 # standard library modules
@@ -24,7 +24,6 @@ import unittest
 # Zope modules
 from zope.interface import Interface, implements
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.publisher.browser import BrowserView
 
 # Zope test support modules
 from zope.app.tests.placelesssetup import PlacelessSetup

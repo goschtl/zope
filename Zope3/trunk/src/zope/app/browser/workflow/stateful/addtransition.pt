@@ -1,65 +1,64 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
-  <title>Add Transition</title>
+  <title metal:fill-slot="title" i18n:translate="">Add Transition</title>
 </head>
+
 <body>
+<div metal:fill-slot="body">
  
-  <div metal:fill-slot="body">
- 
-    <form action="." method="post" enctype="multipart/form-data">
- 
-      <table>
-        <tbody tal:define="states view/getStateNames">
- 
-          <tr>
-            <th>Id:</th>
-            <td>
-              <input type="text" name="id" size="40" value="" />
-            </td>
-          </tr>
+  <form action="." method="post" enctype="multipart/form-data">
 
-          <tr>
-            <th>Source State:</th>
-            <td>
-              <select name="source">
-                <option tal:repeat="state states"
-                        tal:content="state" />
-              </select>
-            </td>
-          </tr>
- 
-          <tr>
-            <th>Destination State:</th>
-            <td>
-              <select name="destination">
-                <option tal:repeat="state states"
-                        tal:content="state" />
-              </select>
-            </td>
-          </tr>
+    <div class="row">
+      <div class="label" i18n:translate="">Id</div>
+      <div class="field">
+        <input type="text" name="id" size="40" value="" />
+      </div>
+    </div>
 
-          <tr>
-            <th>Condition:</th>
-            <td>
-              <input type="text" name="condition" size="40" value="" />
-            </td>
-          </tr>
+    <div class="row">
+      <div class="label" i18n:translate="">Source Satte</div>
+      <div class="field">
+        <select name="source">
+          <option tal:repeat="state states"
+                  tal:content="state" />
+        </select>
+      </div>
+    </div>
 
-          <tr>
-            <th>Permission:</th>
-            <td>
-              <input type="text" name="permission" size="40" value="" />
-            </td>
-          </tr>
+    <div class="row">
+      <div class="label" i18n:translate="">Destination Satte</div>
+      <div class="field">
+        <select name="destination">
+          <option tal:repeat="state states"
+                  tal:content="state" />
+        </select>
+      </div>
+    </div>
 
-        </tbody>
-      </table>
+    <div class="row">
+      <div class="label" i18n:translate="">Condition</div>
+      <div class="field">
+        <input type="text" name="condition" size="40" value="" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="label" i18n:translate="">Permission</div>
+      <div class="field">
+        <!-- XXX: This should be really a Permission widget --> 
+        <input type="text" name="permission" size="40" value="" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="controls">
+        <input type="submit" name="action.html:method" value="Add"
+            i18n:attributes="value add-button"/>
+      </div>
+    </div>
+
+  </form>
  
-      <input type="submit" name="action.html:method" value="Add" />
- 
-    </form>
- 
-  </div>
- 
+</div> 
 </body>
 </html>

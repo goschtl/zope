@@ -13,25 +13,21 @@
 ##############################################################################
 """ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.2 2003/06/21 21:22:07 jim Exp $
+$Id: definition.py,v 1.3 2003/08/07 17:41:45 srichter Exp $
 """
 __metaclass__ = type
  
 from zope.component import getAdapter, getView, getUtility
-from zope.publisher.browser import BrowserView
 from zope.app.traversing import traverse
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.workflow import IProcessDefinitionImportExport
 
 
-
-class Registered(BrowserView):
-    """View for displaying the registrations for a process definition
-    """
+class Registered:
+    """View for displaying the registrations for a process definition"""
 
     def uses(self):
-        """Get a sequence of registration summaries
-        """
+        """Get a sequence of registration summaries"""
         component = self.context
         useconfig = getAdapter(component, IRegistered)
         result = []
@@ -46,13 +42,13 @@ class Registered(BrowserView):
         return result
 
 
-class ProcessDefinitionView(BrowserView):
+class ProcessDefinitionView:
  
     def getName(self):
         return """I'm a dummy ProcessInstance"""
 
 
-class ImportExportView(BrowserView):
+class ImportExportView:
 
     def doExport(self):
         return self._getUtil().exportProcessDefinition(self.context,

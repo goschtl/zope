@@ -2,27 +2,23 @@
 <body>
 <div metal:fill-slot="body">
 
-<h2>View registrations for
-    <i tal:content="view/summary">key</i></h2>
+  <h2 i18n:translate="">View registrations for
+    <i tal:content="view/summary" i18n:name="key_name">key</i>
+  </h2>
 
-<form method="post"
-      action="."
-      tal:attributes="action request/URL"
-      tal:define="form view/update"
-      >
-  <input type="hidden"
-         name="key"
-         tal:attributes="value request/key"
-         />
+  <form action="." method="post"
+        tal:attributes="action request/URL"
+        tal:define="form view/update" >
 
-  <div tal:replace="structure form" />
+    <input type="hidden" name="key"
+           tal:attributes="value request/key" />
 
-  <input type="submit"
-         name="submit_update"
-         value="Update"
-         />
+    <div tal:replace="structure form" />
 
-</form>
+    <input type="submit" name="submit_update" value="Update"
+           i18n:attributes="value update-button" />
+
+  </form>
 
 </div>
 </body>

@@ -1,98 +1,88 @@
-<configure
-    xmlns='http://namespaces.zope.org/browser'
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-<page
-    for="zope.app.interfaces.services.registration.IRegistrationStatus"
-    name="edit"
-    class=".RegistrationStatusWidget"
-    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    permission="zope.ManageServices"
-    />
+  <page
+      for="zope.app.interfaces.services.registration.IRegistrationStatus"
+      name="edit"
+      class=".RegistrationStatusWidget"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      permission="zope.ManageServices" />
 
-<page
-    for="zope.app.interfaces.services.registration.IRegistrationStack"
-    name="ChangeRegistrations"
-    template="changeregistrations.pt"
-    class=".ChangeRegistrations"
-    allowed_interface="zope.app.interfaces.browser.form.IFormCollaborationView"
-    permission="zope.ManageServices"
-    />
+  <page
+      for="zope.app.interfaces.services.registration.IRegistrationStack"
+      name="ChangeRegistrations"
+      template="changeregistrations.pt"
+      class=".ChangeRegistrations"
+      allowed_interface=
+                   "zope.app.interfaces.browser.form.IFormCollaborationView"
+      permission="zope.ManageServices" />
 
-<editform
-    name="index.html"
-    schema=
-    "zope.app.interfaces.services.registration.INamedComponentRegistration"
-    menu="zmi_views"
-    label="Edit Registration"
-    permission="zope.ManageServices"
-    fields="name componentPath permission status"
-    />
+  <editform
+      name="index.html"
+      schema=
+        "zope.app.interfaces.services.registration.INamedComponentRegistration"
+      menu="zmi_views"
+      label="Edit Registration"
+      permission="zope.ManageServices"
+      fields="name componentPath permission status" />
 
-<page
-    name="index.html" 
-    for="zope.app.interfaces.services.registration.INameComponentRegistry"
-    class=".NameComponentRegistryView"
-    permission="zope.ManageServices"
-    attribute="index" 
-    />
+  <page
+      name="index.html" 
+      for="zope.app.interfaces.services.registration.INameComponentRegistry"
+      class=".NameComponentRegistryView"
+      permission="zope.ManageServices"
+      attribute="index" />
 
-<page
-    permission="zope.Public"
-    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    for="zope.app.interfaces.services.registration.IComponentPath"
-    name="edit"
-    class=".ComponentPathWidget" 
-    />
+  <page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.app.interfaces.services.registration.IComponentPath"
+      name="edit"
+      class=".ComponentPathWidget" />
 
-<page
-    permission="zope.Public"
-    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    for="zope.app.interfaces.services.registration.IComponentPath"
-    name="display"
-    class=".ComponentPathWidget" 
-    />
+  <page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.app.interfaces.services.registration.IComponentPath"
+      name="display"
+      class=".ComponentPathWidget" />
 
 <!-- RegistrationManager -->
 
-<page
-   name="index.html" 
-   for="zope.app.interfaces.services.registration.IRegistrationManager"
-   menu="zmi_views" title="Registration"
-   permission="zope.ManageServices"
-   class=".EditRegistration"
-   template="editregistration.pt" 
-   />
+  <page
+     name="index.html" 
+     for="zope.app.interfaces.services.registration.IRegistrationManager"
+     menu="zmi_views" title="Registration"
+     permission="zope.ManageServices"
+     class=".EditRegistration"
+     template="editregistration.pt" />
 
 <!-- For now, we'll allow CMs to be added, but we won't include them
      in the add_component menu. -->
-<view
-   for="zope.app.interfaces.services.registration.IRegistrationManager"
-   name="+"
-   menu="zmi_actions" title="Add"
-   permission="zope.ManageServices"
-   class=".RegistrationAdding">
-  <page name="index.html"  attribute="index"  />
-  <page name="action.html" attribute="action" />
-</view>
+  <view
+       for="zope.app.interfaces.services.registration.IRegistrationManager"
+       name="+"
+       menu="zmi_actions" title="Add"
+       permission="zope.ManageServices"
+       class=".RegistrationAdding">
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+  </view>
 
 <!-- Error views -->
 
-<page
-    for="
-    zope.app.interfaces.services.registration.INoRegistrationManagerError"
-    name="index.html"
-    permission="zope.Public"
-    template="../../exception/user.pt"
-    class="zope.app.browser.exception.user.UserErrorView"
-    />
-<page
-    for="zope.app.interfaces.services.registration.INoLocalServiceError"
-    name="index.html"
-    permission="zope.Public"
-    template="../../exception/user.pt"
-    class="zope.app.browser.exception.user.UserErrorView"
-    />
+  <page
+      for="
+      zope.app.interfaces.services.registration.INoRegistrationManagerError"
+      name="index.html"
+      permission="zope.Public"
+      template="../../exception/user.pt"
+      class="zope.app.browser.exception.user.UserErrorView" />
+
+  <page
+      for="zope.app.interfaces.services.registration.INoLocalServiceError"
+      name="index.html"
+      permission="zope.Public"
+      template="../../exception/user.pt"
+      class="zope.app.browser.exception.user.UserErrorView" />
 
 </configure>

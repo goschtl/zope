@@ -1,20 +1,10 @@
-<configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <browser:editform
+  <editform
     name="edit.html"
     schema="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
     label="Edit Keyword Index"
-    permission="zope.ManageContent"
-  />
-
-  <browser:menuItems menu="zmi_views"
-         for="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex">
-    <menuItem title="Edit" action="edit.html"/>
-  </browser:menuItems>
-
+    permission="zope.ManageContent" 
+    menu="zmi_views" title="Edit" />
 
 </configure>

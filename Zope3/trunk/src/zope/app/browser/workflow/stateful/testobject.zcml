@@ -1,10 +1,6 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <browser:addform
+  <addform
       label="Add Test Object"
       name="AddTestObject"
       schema="zope.app.workflow.stateful.testobject.ITestObject"
@@ -12,7 +8,7 @@
       permission="zope.ManageContent"
       menu="add_content" title="Test Object"/>
 
-  <browser:editform
+  <editform
       schema="zope.app.workflow.stateful.testobject.ITestObject"
       for="zope.app.workflow.stateful.testobject.ITestObject"
       label="Change Test Object"

@@ -1,8 +1,6 @@
 <configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- Form Widget View Directives -->
   <browser:defaultView for="zope.schema.interfaces.IField" name="edit" />

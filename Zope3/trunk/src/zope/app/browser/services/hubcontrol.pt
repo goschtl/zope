@@ -1,32 +1,26 @@
 <html metal:use-macro="views/standard_macros/page">
-<head>
-<style metal:fill-slot="headers" type="text/css">
-<!--
-.ContentListing {
-    width: 100%;
-}
-
-.ContentIcon {
-    width: 20px;
-}
-
-.ContentTitle {
-    text-align: left;
-}
--->
-</style>
-</head>
 <body>
 <div metal:fill-slot="body">
-<div class="message" tal:condition="request/unregister_missing|nothing">
-  <span tal:replace="context/unregisterMissingObjects">5</span> object(s) unregistered.
-</div>
-<p>This is an object hub. There are <span tal:replace="context/numRegistrations">
-(some number of)</span> objects registered.
-</p>
-<form>
-<input type="submit" name="unregister_missing" value="Unregister Missing Objects" />
-</form>
+
+  <div class="message" tal:condition="request/unregister_missing|nothing"
+       i18n:translate="">
+    <span tal:replace="context/unregisterMissingObjects"
+          i18n:name="missing_num">5</span> object(s) unregistered.
+  </div>
+
+  <p i18n:translate="">
+    This is an object hub.  There are 
+    <span tal:replace="context/numRegistrations" 
+          i18n:name="num_objects">42</span>
+    objects registered.
+  </p>
+
+  <form>
+    <input type="submit" name="unregister_missing" 
+           value="Unregister Missing Objects" 
+           i18n:attributes="value"/>
+  </form>
+
 </div>
 </body>
 </html>

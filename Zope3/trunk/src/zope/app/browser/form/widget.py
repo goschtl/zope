@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: widget.py,v 1.45 2003/08/05 20:25:03 poster Exp $
+"""Browser Widget Definitions
+
+$Id: widget.py,v 1.46 2003/08/07 17:40:28 srichter Exp $
 """
 
 __metaclass__ = type
@@ -216,6 +217,8 @@ class BrowserWidget(Widget, BrowserView):
 
     def label(self):
         ts = getService(self.context, "Translation")
+        # Note that the domain is not that important here, since the title
+        # is most likely a message id carrying the domain anyways.
         title = ts.translate(self.title, "zope", context=self.request)
         if title is None:
             title = self.title

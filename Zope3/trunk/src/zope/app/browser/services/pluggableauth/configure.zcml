@@ -1,92 +1,81 @@
-<configure
-    xmlns="http://namespaces.zope.org/browser"
-    xmlns:global_translation="http://namespaces.zope.org/gts"
-    i18n_domain='zope'
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
 <!-- Pluggable Authentication Service -->
 
-<menuItem
-     menu="add_service"
-     for="zope.app.interfaces.container.IAdding"
-     action="zope.app.services.PluggableAuthenticationService"
-     title="Authentication Service"
-     description="A Pluggable Authentication Service
+  <menuItem
+       menu="add_service"
+       for="zope.app.interfaces.container.IAdding"
+       action="zope.app.services.PluggableAuthenticationService"
+       title="Authentication Service"
+       description="A Pluggable Authentication Service
 
-                  Uses plug-in principal sources."
-     />
+                    Uses plug-in principal sources." />
 
-<page
-     name="contents.html"
-     for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
-     permission="zope.ManageServices"
-     class="zope.app.browser.container.contents.Contents"
-     attribute="contents"
-     />
+  <page
+       name="contents.html"
+       for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
+       permission="zope.ManageServices"
+       class="zope.app.browser.container.contents.Contents"
+       attribute="contents" />
 
-<view
-     name="+"
-     menu="zmi_actions" title="Add Source"
-     for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
-     permission="zope.ManageContent"
-     class="zope.app.browser.services.pluggableauth.PrincipalSourceAdding" >
+  <view
+       name="+"
+       menu="zmi_actions" title="Add Source"
+       for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
+       permission="zope.ManageContent"
+       class="zope.app.browser.services.pluggableauth.PrincipalSourceAdding" >
 
-    <page name="index.html" attribute="index"/>
-    <page name="action.html" attribute="action"/>
+      <page name="index.html" attribute="index"/>
+      <page name="action.html" attribute="action"/>
 
-</view>
+  </view>
 
-<menu id="add_principal_source"
-    title="Menu for adding new PrincipalSource."/>
+  <menu id="add_principal_source"
+      title="Menu for adding new PrincipalSource."/>
 
 <!-- Principal Source -->
 
-<menuItem
-    menu="add_principal_source"
-    for="zope.app.interfaces.container.IAdding"
-    action="zope.app.principalsources.BTreePrincipalSource"
-    title="BTree Principal Source"
-    description="BTree Principal Source"
-    />
+  <menuItem
+      menu="add_principal_source"
+      for="zope.app.interfaces.container.IAdding"
+      action="zope.app.principalsources.BTreePrincipalSource"
+      title="BTree Principal Source"
+      description="BTree Principal Source" />
 
-<page
-     name="contents.html"
-     menu="zmi_views" title="Contents"
-     for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-     permission="zope.ManageServices"
-     class="zope.app.browser.container.contents.Contents"
-     attribute="contents"
-     />
+  <page
+       name="contents.html"
+       menu="zmi_views" title="Contents"
+       for="zope.app.services.pluggableauth.IContainerPrincipalSource"
+       permission="zope.ManageServices"
+       class="zope.app.browser.container.contents.Contents"
+       attribute="contents" />
 
-<view
-    name="+"
-    for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-    permission="zope.ManageContent"
-    class="zope.app.browser.container.adding.Adding"/>
+  <view
+      name="+"
+      for="zope.app.services.pluggableauth.IContainerPrincipalSource"
+      permission="zope.ManageContent"
+      class="zope.app.browser.container.adding.Adding" />
 
-<menuItem
-    menu="zmi_actions" title="Add Principal"
-    for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-    action="+/AddPrincipalForm"
-    />
+  <menuItem
+      menu="zmi_actions" title="Add Principal"
+      for="zope.app.services.pluggableauth.IContainerPrincipalSource"
+      action="+/AddPrincipalForm" />
 
-<addform
-    schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
-    label="Add Simple User with details"
-    content_factory="zope.app.services.pluggableauth.SimplePrincipal"
-    arguments="login password title description"
-    fields="login password title description"
-    name="AddPrincipalForm"
-    permission="zope.ManageContent" />
+  <addform
+      schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+      label="Add Simple User with details"
+      content_factory="zope.app.services.pluggableauth.SimplePrincipal"
+      arguments="login password title description"
+      fields="login password title description"
+      name="AddPrincipalForm"
+      permission="zope.ManageContent" />
 
-<editform
-    schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
-    label="Edit User Information"
-    fields="login password title description"
-    name="edit.html"
-    menu="zmi_views" title="Edit"
-    permission="zope.ManageContent" />
-
-<!-- Principals -->
+  <editform
+      schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
+      label="Edit User Information"
+      fields="login password title description"
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent" />
 
 </configure>

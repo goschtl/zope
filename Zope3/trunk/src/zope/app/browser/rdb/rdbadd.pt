@@ -1,33 +1,36 @@
 <html metal:use-macro="context/@@standard_macros/dialog">
 <head>
-  <title>Add Relational Database Adapter</title>
+  <title metal:fill-slot="title" i18n:translate="">
+    Add Relational Database Adapter
+  </title>
 </head>
+
 <body>
+<div metal:fill-slot="body">
 
-  <div metal:fill-slot="body">
+  <form action="action.html" method="post" enctype="multipart/form-data">
 
-    <form action="action.html" method="post" enctype="multipart/form-data">
+    <div class="row">
+      <div class="label" i18n:translate="">Connection URI:</div>
+      <div class="field">
+        <span i18n:translate="">
+          Template:
+          dbi://username:password@host:port/dbname;param1=value...
+        </span>
+        <br />
+        <input type="text" name="dsn" size="40" value="dbi://dbname" />
+      </div>
+    </div>
 
-      <table>
-        <tbody>
+    <div class="row">
+      <div class="controls">
+        <input type="submit" name="add" value="Add" 
+               i18n:attributes="value add-button"/>
+      </div>
+    </div>
 
-          <tr>
-            <th>Connection URI:</th>
-            <td>
-              Template:
-              dbi://username:password@host:port/dbname;param1=value...<br />
-              <input type="text" name="dsn" size="40" value="dbi://dbname" />
-            </td>
-          </tr>
+  </form>
 
-        </tbody>
-      </table>
-
-      <input type="submit" name="add" value="Add" />
-
-    </form>
-
-  </div>
-
+</div>
 </body>
 </html>

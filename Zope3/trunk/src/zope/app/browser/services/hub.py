@@ -11,20 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Define view component for object hub.
+"""Define view component for object hub.
 
-$Id: hub.py,v 1.3 2002/12/30 14:02:54 stevea Exp $
+$Id: hub.py,v 1.4 2003/08/07 17:41:03 srichter Exp $
 """
-
 from zope.app.interfaces.services.hub import IObjectHub
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.browser import BrowserView
 
-
-class Control(BrowserView):
+class Control:
     __used_for__ = IObjectHub
 
-    def index(self):
-        return self.__control()
-
-    __control = ViewPageTemplateFile("hubcontrol.pt")
+    # XXX: Another dead chicken. Guys, this view could do soo much, like aehm,
+    # display the cataloged objects with a nice filter function?

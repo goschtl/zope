@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: editwizard.py,v 1.11 2003/08/04 14:52:45 philikon Exp $
-"""
+"""Edit Wizard View Classes
 
+$Id: editwizard.py,v 1.12 2003/08/07 17:40:28 srichter Exp $
+"""
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component import getAdapter
 from zope.app.publisher.browser.globalbrowsermenuservice import \
@@ -90,8 +90,7 @@ class EditWizardView(EditView):
     feedback = u'' 
 
     def update(self):
-        '''
-        Called before rendering each pane. It is responsible
+        '''Called before rendering each pane. It is responsible
         for extracting data into temporary storage, and selecting
         which pane should be rendered.
         '''

@@ -13,23 +13,24 @@
 ##############################################################################
 """
 
-$Id: test_principalroleview.py,v 1.9 2003/06/06 20:44:27 stevea Exp $
+$Id: test_principalroleview.py,v 1.10 2003/08/07 17:41:00 srichter Exp $
 """
 
 import unittest
 
-from zope.app.services.tests.placefulsetup\
-           import PlacefulSetup
-from zope.component import getServiceManager
-from zope.app.services.servicenames import Roles, Authentication
-
-from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
-
 from zope.app.interfaces.security import IPrincipalRoleManager
-from zope.publisher.browser import TestRequest
+from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.services.service import ISimpleService
+from zope.app.browser.security.grants.principalroleview import PrincipalRoleView
+from zope.app.services.servicenames import Roles, Authentication
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.component import getServiceManager
 from zope.interface import implements
+from zope.publisher.browser import BrowserView, TestRequest
+
+class PrincipalRoleView(PrincipalRoleView, BrowserView):
+    """Adding BrowserView to Utilities; this is usually done by ZCML."""
 
 class DummySetting:
     def __init__(self, name):
@@ -99,8 +100,6 @@ class Test(PlacefulSetup, unittest.TestCase):
             DummyAuthenticationService(principals = self._principals))
 
     def _makeOne(self):
-        from zope.app.browser.security.grants.principalroleview \
-             import PrincipalRoleView
         return PrincipalRoleView(DummyManager(), TestRequest())
 
     def testRoles(self):

@@ -13,11 +13,8 @@
 ##############################################################################
 """Control view for the text index.
 
-XXX longer description goes here.
-
-$Id: control.py,v 1.13 2003/06/22 16:09:46 mgedmin Exp $
+$Id: control.py,v 1.14 2003/08/07 17:40:45 srichter Exp $
 """
-
 from __future__ import generators
 
 from zope.interface import implements

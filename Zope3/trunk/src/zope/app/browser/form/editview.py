@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: editview.py,v 1.33 2003/08/04 14:52:45 philikon Exp $
-"""
+"""Edit View Classes
 
+$Id: editview.py,v 1.34 2003/08/07 17:40:28 srichter Exp $
+"""
 from datetime import datetime
 
 from zope.schema import getFieldNamesInOrder
@@ -25,6 +25,7 @@ from zope.component.view import provideView
 from zope.component import getAdapter
 
 from zope.app.context import ContextWrapper
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.browser.form.submit import Update
@@ -93,15 +94,20 @@ class EditView(BrowserView):
                     publish(content, ObjectModifiedEvent(content))
             except WidgetsError, errors:
                 self.errors = errors
-                status = u"An error occured."
+                status = _("An error occured.")
             else:
                 setUpEditWidgets(self, self.schema, force=1,
                                  names=self.fieldNames)
                 if changed:
-                    status = "Updated %s" % datetime.utcnow()
+                    formatter = self.request.locale.getDateTimeFormatter(
+                        'medium')
+                    status = _("Updated on ${date_time}")
+                    status.mapping = {'date_time': formatter.format(
+                        datetime.utcnow())}
 
         self.update_status = status
         return status
+
 
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,

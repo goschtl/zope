@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""\
-Support for display-only pages based on schema.
+"""Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.9 2003/08/04 14:52:45 philikon Exp $
+$Id: schemadisplay.py,v 1.10 2003/08/07 17:40:28 srichter Exp $
 """
-
 from zope.schema import getFieldNamesInOrder
 
 from zope.app.context import ContextWrapper

@@ -11,15 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Vocabulary widget support.
 
 This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
+$Id: vocabularywidget.py,v 1.50 2003/08/07 17:40:28 srichter Exp $
 """
-
 from xml.sax.saxutils import quoteattr
 
 from zope.interface import implements, implementedBy

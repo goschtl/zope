@@ -13,21 +13,19 @@
 ##############################################################################
 """Cache registry support classes.
 
-$Id: cache.py,v 1.11 2003/06/21 21:21:59 jim Exp $
+$Id: cache.py,v 1.12 2003/08/07 17:41:03 srichter Exp $
 """
-
 from zope.app.browser.services.registration import AddComponentRegistration
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import IRegistered
-from zope.component import getAdapter, getView
-from zope.publisher.browser import BrowserView
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.traversing import traverse, getPath, getParent, getName
+from zope.component import getAdapter, getView
 
-class Caches(BrowserView):
-
+class Caches:
     # self.context is the local caching service
 
     def update(self):
@@ -41,7 +39,7 @@ class Caches(BrowserView):
         doDelete = self.request.get("Delete")
         if not todo:
             if doActivate or doDeactivate or doDelete:
-                return "Please select at least one checkbox"
+                return _("Please select at least one checkbox")
             return None
         if doActivate:
             return self._activate(todo)
@@ -61,9 +59,11 @@ class Caches(BrowserView):
                 obj.status = ActiveStatus
                 done.append(name)
         if done:
-            return "Activated: " + ", ".join(done)
+            s = _("Activated: ${activated_caches}")
+            s.mapping = {'activated_caches': ", ".join(done)}
+            return s
         else:
-            return "All of the checked caches were already active"
+            return _("All of the checked caches were already active")
 
     def _deactivate(self, todo):
         done = []
@@ -74,9 +74,11 @@ class Caches(BrowserView):
                 obj.status = RegisteredStatus
                 done.append(name)
         if done:
-            return "Deactivated: " + ", ".join(done)
+            s = _("Deactivated: ${deactivated_caches}")
+            s.mapping = {'deactivated_caches': ", ".join(done)}
+            return s
         else:
-            return "None of the checked caches were active"
+            return _("None of the checked caches were active")
 
     def _delete(self, todo):
         errors = []
@@ -87,9 +89,10 @@ class Caches(BrowserView):
                 errors.append(name)
                 continue
         if errors:
-            return ("Can't delete active cache%s: %s; "
-                    "use the Deactivate button to deactivate" %
-                    (len(errors) != 1 and "s" or "", ", ".join(errors)))
+            s = _("Can't delete active cache(s): ${cache_names}; "
+                  "use the Deactivate button to deactivate")
+            s.mapping = {'cache_names': ", ".join(errors)}
+            return s
 
         # 1) Delete the registrations
         caches = {}
@@ -115,7 +118,9 @@ class Caches(BrowserView):
             container = getAdapter(parent, IZopeContainer)
             del container[name]
 
-        return "Deleted: %s" % ", ".join(todo)
+        s = _("Deleted: ${cache_names}")
+        s.mapping = {'cache_names': ", ".join(todo)}
+        return s
 
     def getConfigs(self):
         L = []
@@ -134,7 +139,7 @@ class Caches(BrowserView):
         L.sort()
         return [d for name, d in L]
 
-class ConfigureCache(BrowserView):
+class ConfigureCache:
 
     def update(self):
         cr = self.context.queryRegistrations(self.request['name'])
@@ -142,8 +147,7 @@ class ConfigureCache(BrowserView):
         form.update()
         return form
 
-class Registered(BrowserView):
-
+class Registered:
     """View for displaying the registrations for a cache."""
 
     def uses(self):
@@ -162,5 +166,4 @@ class Registered(BrowserView):
         return result
 
 class AddCacheRegistration(AddComponentRegistration):
-
     pass
