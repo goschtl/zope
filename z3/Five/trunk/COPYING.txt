@@ -11,7 +11,7 @@ Copyright (C) 2004 Five Contributors:
   - Philipp von Weitershausen (philikon@philikon.de)
 
 
-Five contains source derived from:
+Five contains source code derived from:
 
   - Zope 3, copyright (C) 2001-2004 by Zope Corporation.  Code that
     falls under this copyright is prefixed with the following header:
