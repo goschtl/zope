@@ -77,6 +77,18 @@
         </div>
       </div>
 
+      <!-- Tree of the help topics that appears on the help namespace -->
+      <div class="box" id="help"
+           tal:condition="not:python:request.getURL().find('++help++')==-1">
+        <h4>Online Help</h4>              
+        <div class="body">
+          <div tal:content="structure view/getTopicTree|nothing"
+               tal:omit-tag="">content of topicTree</div>
+          <br>
+        </div>
+          
+      </div>
+
     </div>
 
 
@@ -164,17 +176,6 @@
                     A short tip goes here
                   </metal:block>
                 </div>
-              </div>
-            </div>
-
-            <!-- Tree of the help topics that appears on the help namespace -->
-            <div class="box" id="help"
-                 tal:define="tree view/getTopicTree|nothing"
-                 tal:condition="tree">
-              <h4>Online Help</h4>              
-              <div class="body">
-                <div tal:content="structure tree"
-                     tal:omit-tag="">content of topicTree</div>
               </div>
             </div>
 
