@@ -2,6 +2,8 @@ CMF 1.5.0beta2 (unreleased)
 
   New Features
 
+    - PortalFolder: New 'Folderish' Interface defines the 'content*' methods.
+
     - PortalFolder: Improved WebDAV folder listings.
       Hidden sub-objects like tools are now filtered out. To see all
       sub-objects, you need the 'Manage portal' permission.
@@ -10,6 +12,10 @@ CMF 1.5.0beta2 (unreleased)
       TypeInformation objects.
 
   Bug Fixes
+
+    - PortalFolder: Public 'content*' methods or no longer publishable.
+      This prevents expensive anonymous calls to contentItems(), contentIds()
+      and contentValues(). They still can be used in TTW code.
 
     - ZPT skin: Added missing mail_password_template.
 
