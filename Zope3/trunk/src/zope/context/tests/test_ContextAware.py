@@ -15,11 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: test_ContextAware.py,v 1.4 2003/06/01 15:59:40 jim Exp $
+$Id: test_ContextAware.py,v 1.5 2003/06/02 11:06:25 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.context import Wrapper
+from zope.app.context import ContextWrapper
 from zope.context import ContextAware, getWrapperContainer
 
 def setter(self, v):
@@ -72,7 +72,7 @@ class Test(TestCase):
         self.assertEqual(b.v, (None, 1))
 
         # Check wrapper case
-        b = Wrapper(b, 42)
+        b = ContextWrapper(b, 42)
         self.assertEqual(b.p1B, 42)
         self.assertEqual(b.p2B, 42)
         self.assertEqual(b.fB(), 42)
