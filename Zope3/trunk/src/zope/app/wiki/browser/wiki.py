@@ -49,7 +49,7 @@ class WikiSearch(object):
     """Search Wiki Pages"""
 
     def query(self):
-        # XXX: Should use indices once they are back in Zope 3
+        # Should use indices once they are back in Zope 3
         queryText = self.request.get('queryText', '')
         results = []
         for name, page in self.context.items():

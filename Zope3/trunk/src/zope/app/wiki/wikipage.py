@@ -23,6 +23,7 @@ from zope.schema.vocabulary import getVocabularyRegistry
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
+from zope.app.container.contained import Contained
 from zope.app.filerepresentation.interfaces import IReadFile
 from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.filerepresentation.interfaces import IReadDirectory
@@ -43,13 +44,10 @@ HierarchyKey = 'http://www.zope.org/zwiki#1.0/PageHierarchy/parents'
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
 
 
-class WikiPage(BTreeContainer):
+class WikiPage(BTreeContainer, Contained):
     """A persistent Wiki Page implementation."""
 
     implements(IWikiPage, IWikiContained)
-
-    # See zope.app.container.interfaces.IContained
-    __parent__ = __name__ = None
 
     def __init__(self, source=u''):
         super(WikiPage, self).__init__()
@@ -96,7 +94,6 @@ class WikiPageHierarchyAdapter(object):
 
     def path(self):
         "See zope.app.wiki.interfaces.IWikiPageHierarchy"
-        # XXX: Allow for multpile parents
         if not self.getParents():
             return [self.context]
         wiki = zapi.getParent(self.context)
@@ -318,7 +315,6 @@ class MailSubscriptions:
         "See zope.app.wiki.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
         for email in emails:
-            # XXX: Make sure these are actually E-mail addresses.
             if email not in subscribers:
                 subscribers.append(email.strip())
         self._annotations[SubscriberKey] = tuple(subscribers)
@@ -337,7 +333,6 @@ class WikiMailer:
     """Class to handle all outgoing mail."""
 
     def __call__(self, event):
-        # XXX event handling should be separated from mailing
         if IWikiPage.providedBy(event.object):
             if IObjectAddedEvent.providedBy(event):
                 self.handleAdded(event.object)

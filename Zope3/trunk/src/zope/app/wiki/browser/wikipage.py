@@ -242,9 +242,6 @@ class ViewWikiPage:
             # local page found - search for "RemoteWikiUrl: url"
             m = re.search(remotewikiurl, str(localpage))
             if m is not None:
-                # NB: pages are stored html-quoted XXX eh ? they are ?
-                # something's not right somewhere..  I have lost my grip on
-                # this whole quoting issue.
                 remoteurl = html_unquote(m.group(1))
 
                 # we have a valid inter-wiki link

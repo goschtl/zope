@@ -19,6 +19,7 @@ from persistent import Persistent
 
 from zope.interface import implements
 from zope.schema.vocabulary import getVocabularyRegistry
+from zope.app.container.contained import Contained
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 
@@ -26,7 +27,7 @@ from zope.app.wiki.interfaces import IComment
 from zope.app.wiki.interfaces import IWikiPageContained
 
 
-class Comment(Persistent):
+class Comment(Persistent, Contained):
     r"""A simple persistent comment implementation.
 
     The comment is really a primitive object, since it only declares a couple
@@ -65,9 +66,6 @@ class Comment(Persistent):
     """
     implements(IComment, IWikiPageContained)
     
-    # See zope.app.container.interfaces.IContained
-    __parent__ = __name__ = None
-
     # See zope.app.wiki.interfaces.IComment
     source = u''
     

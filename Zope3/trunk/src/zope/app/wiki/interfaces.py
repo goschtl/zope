@@ -111,10 +111,6 @@ class IWikiPageHierarchy(Interface):
 
         The return value for this method should be a list of wiki objects
         describing the path.
-
-        XXX: Wiki Pages can have several parents, so that we should be able to
-        have multiple paths; but let's not worry about that right now. At some
-        point this needs to be done though.
         """
 
     def findChildren(recursive=True):

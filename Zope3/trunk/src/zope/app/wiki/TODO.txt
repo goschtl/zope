@@ -37,3 +37,8 @@ Other Features
     Differ.
 
   - Update POT and translations
+
+  - Allow for multiple parents. The WikiPageHierarchyAdapter.path() method
+    only returns the path of a wiki and not all the possible paths it has.
+
+  - Make use of indices in search, once they are back in the core again.

@@ -19,10 +19,11 @@ from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces import IPublishTraverse
 from zope.exceptions import NotFoundError
 
+from zope.app import zapi
 from zope.app.traversing.api import getParent
 from zope.app.traversing.namespace import UnexpectedParameters
 from zope.app.traversing.interfaces import ITraversable
-from zope.app.wiki.interfaces import IWikiPage
+from zope.app.wiki.interfaces import IWikiPage, IWikiPageHierarchy
 
 class WikiPageTraverser:
     implements(IPublishTraverse)
@@ -34,10 +35,11 @@ class WikiPageTraverser:
         self.request = request
 
     def publishTraverse(self, request, name):
-        subob = self.wiki.get(name, None)
-
-        # XXX: Check that subobj has self.context as parent!
-        if subob is None:
+        page = self.wiki.get(name, None)
+        
+        # Check that page has self.context as parent
+        if page is None or \
+           not zapi.getName(self.context) in IWikiPageHierarchy(page).parents:
 
             view = queryView(self.context, name, request)
             if view is not None:
@@ -45,7 +47,8 @@ class WikiPageTraverser:
 
             raise NotFoundError(self.context, name, request)
 
-        return removeAllProxies(subob)
+
+        return removeAllProxies(page)
 
     def browserDefault(self, request):
         c = self.context

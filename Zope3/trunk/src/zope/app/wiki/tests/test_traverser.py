@@ -11,23 +11,28 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test wiki page traverser
 
 $Id$
 """
-
 import unittest, sys
+
 from zope.component.tests.request import Request
-from zope.component import getService
-from zope.app.servicenames import Presentation
-from zope.interface import Interface
+from zope.interface import Interface, classImplements
 from zope.exceptions import NotFoundError
-from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.proxy import removeAllProxies
 
-from zope.app.wiki.interfaces import IWikiPage
+from zope.app import zapi
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
+from zope.app.location.interfaces import ILocation
+from zope.app.location.traversing import LocationPhysicallyLocatable
+from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.wiki.interfaces import IWikiPage, IWikiPageHierarchy
 from zope.app.wiki.wiki import Wiki
-from zope.app.wiki.wikipage import WikiPage
+from zope.app.wiki.wikipage import WikiPage, WikiPageHierarchyAdapter
 from zope.app.wiki.traversal import WikiPageTraverser
 
 class I(Interface):
@@ -43,15 +48,23 @@ class View:
 
 class TestTraverser(PlacelessSetup, unittest.TestCase):
 
+    def setUp(self):
+        super(TestTraverser, self).setUp()
+        classImplements(WikiPage, IAttributeAnnotatable)
+        ztapi.provideAdapter(IWikiPage, IWikiPageHierarchy,
+                             WikiPageHierarchyAdapter)
+        ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
+                             AttributeAnnotations)
+        ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
+                             LocationPhysicallyLocatable)
+
     def testAttr(self):
         wiki = Wiki()
         page1 = WikiPage()
-        page2 = WikiPage()
         wiki['FrontPage'] = page1
+        page2 = WikiPage()
         wiki['FooBar'] = page2
-        # get the items again so they'll be wrapped in ContainedProxy
-        page1 = wiki['FrontPage']
-        page2 = wiki['FooBar']
+        IWikiPageHierarchy(page2).parents = ('FrontPage',)
         request = Request(I, '')
 
         T = WikiPageTraverser(page1, request)
@@ -63,16 +76,15 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
     def testView(self):
         wiki = Wiki()
         page1 = WikiPage()
-        page2 = WikiPage()
         wiki['FrontPage'] = page1
+        page2 = WikiPage()
         wiki['FooBar'] = page2
-        # get the items again so they'll be wrapped in ContainedProxy
-        page1 = wiki['FrontPage']
-        page2 = wiki['FooBar']
+        IWikiPageHierarchy(page2).parents = ('FrontPage',)
         request = Request(I, '')
 
         T = WikiPageTraverser(page1, request)
-        getService(Presentation).provideView(IWikiPage, 'viewfoo', I, View)
+        zapi.getService(zapi.servicenames.Presentation).provideView(
+            IWikiPage, 'viewfoo', I, View)
 
         self.failUnless(
             T.publishTraverse(request, 'viewfoo').__class__ is View )
