@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.3 2003/01/03 17:46:10 stevea Exp $
+$Id: connection.py,v 1.4 2003/01/17 16:33:13 stevea Exp $
 """
 
 from persistence import Persistent
@@ -34,14 +34,11 @@ class ConnectionService(Persistent, NameComponentConfigurable):
 
     __implements__ = ILocalConnectionService
 
-    def __init__(self):
-        super(ConnectionService, self).__init__()
-
     def getConnection(self, name):
         'See IConnectionService'
-        adapter = self.queryActiveComponent(name)
-        if adapter is not None:
-            return adapter()
+        dbadapter = self.queryActiveComponent(name)
+        if dbadapter is not None:
+            return dbadapter()
         service = queryNextService(self, "SQLDatabaseConnections")
         if service is not None:
             return service.getConnection(name)
@@ -67,6 +64,10 @@ class ConnectionService(Persistent, NameComponentConfigurable):
                 connections[name] = 0
         service = queryNextService(self, "SQLDatabaseConnections")
         if service is not None:
+            # Note that this works because we're only interested in the names
+            # of connections. If we wanted other data about connections, we'd
+            # have to be careful not to override this service's connections
+            # with higher-up connections.
             for name in service.getAvailableConnections():
                 connections[name] = 0
         return connections.keys()
