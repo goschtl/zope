@@ -12,42 +12,38 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.6 2003/03/23 22:35:42 jim Exp $
+$Id: test_connectionservice.py,v 1.7 2003/04/24 00:20:44 gvanrossum Exp $
 """
 
 import unittest
-from zope.app.traversing import traverse
+
+from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.container.zopecontainer import ZopeContainerAdapter
+from zope.app.dependable import Dependable
+from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.interfaces.annotation import IAnnotations
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.dependable import IDependable
+from zope.app.interfaces.dependable import IDependable
+from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.rdb import IZopeConnection
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.interfaces.rdb import \
-     IConnectionService
-from zope.app.container.zopecontainer import ZopeContainerAdapter
-from zope.app.services.connection import \
-     ConnectionService
-from zope.app.services.service \
-     import ServiceManager
-from zope.app.services.service \
-     import ServiceConfiguration
-from zope.app.interfaces.dependable import IDependable
-from zope.app.services.tests.placefulsetup \
-     import PlacefulSetup
-from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.dependable import IDependable
-from zope.app.dependable import Dependable
-from zope.component.adapter import provideAdapter
+from zope.app.interfaces.services.configuration import Active, Registered
 from zope.app.interfaces.services.configuration \
-     import Active, Unregistered, Registered
-from zope.app.services.connection \
-     import ConnectionConfiguration
-from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
-
+     import IAttributeUseConfigurable, IUseConfiguration
+from zope.app.services.configuration import UseConfiguration
+from zope.app.services.connection import ConnectionConfiguration
+from zope.app.services.connection import ConnectionService
+from zope.app.services.service import ServiceConfiguration
+from zope.app.services.service import ServiceManager
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.traversing import traverse
+from zope.component.adapter import provideAdapter
 
 class ConnectionServiceForTests(ConnectionService):
 
-    __implements__ = ConnectionService.__implements__, IAttributeUseConfigurable
+    __implements__ = (ConnectionService.__implements__,
+                      IAttributeUseConfigurable)
 
 class DAStub:
 
@@ -73,6 +69,8 @@ class TestConnectionService(unittest.TestCase, PlacefulSetup):
         provideAdapter(IAttributeAnnotatable,
                        IAnnotations, AttributeAnnotations)
         provideAdapter(IAnnotatable, IDependable, Dependable)
+        provideAdapter(IAttributeAnnotatable, IUseConfiguration,
+                       UseConfiguration)
 
         # Set up a local connection service
         self.buildFolders()
@@ -99,7 +97,8 @@ class TestConnectionService(unittest.TestCase, PlacefulSetup):
         traverse(self.default.getConfigurationManager(), '3').status = Active
         self.cm.setObject('', ConnectionConfiguration('conn3',
                                 '/++etc++site/default/da1'))
-        traverse(self.default.getConfigurationManager(), '4').status = Registered
+        traverse(self.default.getConfigurationManager(),
+                 '4').status = Registered
         # Now self.service has conn1 and conn2 available and knows about conn3
 
         # Set up a more local connection service
