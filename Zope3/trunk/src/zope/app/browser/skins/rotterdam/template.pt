@@ -74,7 +74,8 @@
              tal:define="view context/@@commonTasks|nothing"
              tal:condition="view/strip|nothing">
 
-          <h4 i18n:translate="">Common Tasks</h4>
+
+          <h4 i18n:translate="">Add:</h4>
           <div class="body">
             <span tal:replace="structure view" />
           </div>

@@ -1,10 +1,6 @@
 <tal:block define="addingInfo context/@@+/addingInfo|nothing"
            condition="addingInfo" i18n:domain="zope">
 
-  <div class="content even">
-    <strong i18n:translate="">Add new content</strong>
-  </div>
-
   <tal:block repeat="info addingInfo" 
 	define="namesRequired context/@@+/namesAccepted">
     <div tal:define="oddrow repeat/info/odd; 
