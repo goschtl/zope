@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testPrincipalRoleView.py,v 1.1 2002/06/20 15:55:01 jim Exp $
+$Id: testPrincipalRoleView.py,v 1.2 2002/06/25 15:27:52 efge Exp $
 """
 
 import unittest
@@ -28,12 +28,18 @@ from Zope.App.Security.IAuthenticationService import IAuthenticationService
 from Zope.App.Security.IPrincipalRoleManager import IPrincipalRoleManager
 from Zope.App.Security.IPrincipalRoleMap import IPrincipalRoleMap
 
+class DummySetting:
+    def __init__(self, name):
+        self._name = name
+    def getName(self):
+        return self._name
+
 class DummyManager:
 
     __implements__ = IPrincipalRoleManager
 
     def getSetting(self, role, principal):
-        return '%r:%r' % (role, principal)
+        return DummySetting('%r:%r' % (role, principal))
 
 class DummyRoleService:
 
@@ -63,7 +69,7 @@ class DummyAuthenticationService:
     def __init__(self, principals):
         self._principals = principals
 
-    def getPrincipals(self):
+    def getPrincipals(self, name):
         return self._principals
 
 class Test(PlacefulSetup, unittest.TestCase):
@@ -100,11 +106,9 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(len(roles), 2)
 
         ids = map(lambda x: x.getId(), self._roles)
-        titles = map(lambda x: x.getTitle(), self._roles)
 
         for role in roles:
-            self.failUnless(role.getId() in ids)
-            self.failUnless(role.getTitle() in titles)
+            self.failUnless(role in ids)
 
     def testPrincipals(self):
         view = self._makeOne()
@@ -112,38 +116,36 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(len(principals), 2)
 
         ids = map(lambda x: x.getId(), self._principals)
-        titles = map(lambda x: x.getTitle(), self._principals)
 
         for principal in principals:
-            self.failUnless(principal.getId() in ids)
-            self.failUnless(principal.getTitle() in titles)
+            self.failUnless(principal in ids)
 
     def testPrincipalRoleGrid(self):
         view = self._makeOne()
 
         grid = view.createGrid()
-        
+
         p_ids = [p.getId() for p in view.getAllPrincipals()]
         r_ids = [r.getId() for r in view.getAllRoles()]
 
-        self.failUnless(grid.listAvailableValues()) 
+        self.failUnless(grid.listAvailableValues())
 
-        for id in [p.getId() for p in grid.principals()]:
+        for id in grid.principals():
             self.failUnless(id in p_ids)
 
-        for id in [r.getId() for r in grid.roles()]: 
+        for id in grid.roles():
             self.failUnless(id in r_ids)
 
         map = DummyManager()
-        
-        grid_entries = [(r, p, map.getSetting(r, p))
+
+        grid_entries = [(r, p, map.getSetting(r, p).getName())
             for r in grid.roles()
             for p in grid.principals()]
-        
-        for r, p, setting in grid_entries:
-            self.assertEquals(setting, grid.getValue(r, p))
 
-        
+        for r, p, setting in grid_entries:
+            self.assertEquals(setting, grid.getValue(p, r))
+
+
 def test_suite():
     loader=unittest.TestLoader()
     return loader.loadTestsFromTestCase(Test)

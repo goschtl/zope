@@ -7,14 +7,14 @@
   <include package=".Grants.Views" />
 
   <content class=".Grants.PermissionRoles.">
-    <require   
+    <require
         permission="Zope.Security"
         attributes="roles rolesInfo"
         interface="Zope.App.Security.IRegisteredObject." />
   </content>
 
   <content class=".Grants.RolePermissions.">
-    <require   
+    <require
         permission="Zope.Security"
         attributes="permissions permissionsInfo"
         interface="Zope.App.Security.IRegisteredObject." />
@@ -24,10 +24,13 @@
            provides=".IRolePermissionManager."
            for="Zope.App.OFS.Annotation.IAnnotatable." />
 
+  <adapter factory=".Grants.AnnotationPrincipalRoleManager."
+           provides=".IPrincipalRoleManager."
+           for="Zope.App.OFS.Annotation.IAnnotatable." />
 
   <adapter factory=".Grants.AnnotationPrincipalPermissionManager."
            provides=".IPrincipalPermissionManager."
            for="Zope.App.OFS.Annotation.IAnnotatable." />
-  
+
 </zopeConfigure>
 

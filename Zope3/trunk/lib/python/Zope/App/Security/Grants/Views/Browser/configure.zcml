@@ -23,6 +23,17 @@
                   attribute="update_permission" />
   </browser:view>
 
+
+  <browser:view for="Zope.App.OFS.Annotation.IAnnotatable."
+                permission="Zope.Security"
+                factory=".PrincipalRoleView.">
+    <browser:page name="PrincipalRoles.html"
+                  attribute="index" />
+    <browser:page name="ChangePrincipalRoles.html"
+                  attribute="action" />
+  </browser:view>
+
+
   <content class=".PrincipalPermissionView.">
     <require
         permission="Zope.Security"

@@ -14,7 +14,7 @@
 """ Management view component for principal-role management (Zope2's
     "local roles").
 
-$Id: PrincipalRoleView.py,v 1.1 2002/06/20 15:55:00 jim Exp $
+$Id: PrincipalRoleView.py,v 1.2 2002/06/25 15:27:52 efge Exp $
 """
 
 import time
@@ -29,77 +29,82 @@ from Zope.App.Security.IPrincipalRoleMap import IPrincipalRoleMap
 from Zope.App.Security.IPermission import IPermission
 from Zope.App.Security.IRole import IRole
 
+from Zope.App.Security.Settings import Unset
+
+
 class PrincipalRoleView(BrowserView):
 
     index = ViewPageTemplateFile('principal_role_association.pt')
 
     def getAllPrincipals(self):
-
         principals = getattr(self, '_principals', None)
-
         if principals is None:
             principals = self._principals = getService(
                 self.context, 'AuthenticationService'
-                ).getPrincipals()
-
+                ).getPrincipals('')
+            principals = [p.getId() for p in principals]
         return principals
-    
+
     def getAllRoles(self):
-
         roles = getattr(self, '_roles', None)
-
         if roles is None:
             roles = self._roles = getService(self.context, 'RoleService'
                 ).getRoles()
-
+            roles = [r.getId() for r in roles]
         return roles
 
-    def createGrid( self, principals=None, roles=None ):
-
+    def createGrid(self, principals=None, roles=None):
         if not principals:
             principals = self.getAllPrincipals()
-
         if not roles:
             roles = self.getAllRoles()
+        return PrincipalRoleGrid(principals, roles, self.context)
 
-        return PrincipalRoleGrid( principals, roles, self.context )
-        
-    def action(self, principals, roles, mapping, testing=None):
-
-        for row in mapping:
-            pid = row.permission_id
-            roles = row.role_ids
+    def action(self, principals, roles, testing=None):
+        prm = getAdapter(self.context, IPrincipalRoleManager)
+        for role in roles:
+            for principal in principals:
+                name = 'grid.%s.%s' % (role, principal)
+                setting = self.request.get(name, 'Unset')
+                if setting == 'Unset':
+                    prm.unsetRoleForPrincipal(role, principal)
+                elif setting == 'Assign':
+                    prm.assignRoleToPrincipal(role, principal)
+                elif setting == 'Remove':
+                    prm.removeRoleFromPrincipal(role, principal)
+                else:
+                    raise ValueError("Incorrect setting %s" % setting)
 
         if not testing:
-            return self.index( 
+            return self.index(
                 message="Settings changed at %s" % time.ctime(time.time())
                 )
 
 
 class PrincipalRoleGrid:
 
-    def __init__( self, principals, roles, context ):    
-
+    def __init__(self, principals, roles, context):
         self._principals = principals
         self._roles = roles
         self._grid = {}
 
-        map = getAdapter( context, IPrincipalRoleMap )
+        map = getAdapter(context, IPrincipalRoleMap)
 
         for role in roles:
             for principal in principals:
-                setting = map.getSetting( role, principal )
-                self._grid[ ( role, principal ) ] = setting
+                setting = map.getSetting(role, principal)
+                self._grid[(principal, role)] = setting.getName()
 
-    def principals( self ):
+    def principals(self):
         return self._principals
 
-    def roles( self ):
+    def roles(self):
         return self._roles
 
-    def getValue( self, role, principal ):
-        return self._grid[ ( role, principal ) ]
+    def getValue(self, principal, role):
+        return self._grid[(principal, role)]
 
-    def listAvailableValues( self ):
-        return ( 'Unset', 'Assigned', 'Removed' )
+    def listAvailableValues(self):
+        # XXX rather use Assign.getName() & co
+        return ('Unset', 'Assign', 'Remove')
 

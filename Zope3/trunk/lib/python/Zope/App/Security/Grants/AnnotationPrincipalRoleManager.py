@@ -17,7 +17,8 @@ from Zope.ComponentArchitecture import getAdapter
 from Zope.App.OFS.Annotation.IAnnotations import IAnnotations
 from Zope.App.Security.IPrincipalRoleManager \
      import IPrincipalRoleManager
-from Zope.App.Security.Grants.LocalSecurityMap import LocalSecurityMap
+from Zope.App.Security.Grants.PersistentLocalSecurityMap import \
+     PersistentLocalSecurityMap
 from Zope.App.Security.Settings import Assign, Remove, Unset
 
 annotation_key = 'Zope.App.Security.AnnotationPrincipalRoleManager'
@@ -34,13 +35,11 @@ class AnnotationPrincipalRoleManager:
         ''' See the interface IPrincipalRoleManager '''
         pp = self._getPrincipalRoles(create=1)
         pp.addCell(role_id, principal_id, Assign)
-        self._context._p_changed = 1
 
     def removeRoleFromPrincipal(self, role_id, principal_id):
         ''' See the interface IPrincipalRoleManager '''
         pp = self._getPrincipalRoles(create=1)
         pp.addCell(role_id, principal_id, Remove)
-        self._context._p_changed = 1
 
     def unsetRoleForPrincipal(self, role_id, principal_id):
         ''' See the interface IPrincipalRoleManager '''
@@ -48,7 +47,6 @@ class AnnotationPrincipalRoleManager:
         # Only unset if there is a security map, otherwise, we're done
         if pp:
             pp.delCell(role_id, principal_id)
-            self._context._p_changed = 1
 
     def getPrincipalsForRole(self, role_id):
         ''' See the interface IPrincipalRoleManager '''
@@ -88,6 +86,6 @@ class AnnotationPrincipalRoleManager:
             return annotations[annotation_key]
         except KeyError:
             if create:
-                rp = annotations[annotation_key] = LocalSecurityMap()
+                rp = annotations[annotation_key] = PersistentLocalSecurityMap()
                 return rp
         return None

@@ -24,6 +24,8 @@
     <browser:menuItem title="Contents" action="@@index.html"/>
     <browser:menuItem title="Role Permissions" 
              action="@@AllRolePermissions.html"/>
+    <browser:menuItem title="Principal Roles" 
+             action="@@PrincipalRoles.html"/>
   </browser:menuItems>
 
   <browser:menuItem menu="add_content"
