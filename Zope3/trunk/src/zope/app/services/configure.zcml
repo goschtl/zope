@@ -1,5 +1,6 @@
 <zopeConfigure
     xmlns='http://namespaces.zope.org/zope'
+    xmlns:event='http://namespaces.zope.org/event'
     xmlns:fssync='http://namespaces.zope.org/fssync'
     >
 
@@ -545,5 +546,11 @@
 
 <!-- Local Interface Service -->
 <include file="interface.zcml" />
+
+<!-- Enable import of persistent modules -->
+<event:subscribe
+  subscriber=".module.installPersistentModuleImporter"
+  event_types="zope.app.interfaces.event.IProcessStartingEvent"
+  />
 
 </zopeConfigure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.10 2003/06/02 17:45:10 gvanrossum Exp $
+$Id: module.py,v 1.11 2003/06/26 19:11:49 fdrake Exp $
 """
 
 from persistence import Persistent
@@ -27,6 +27,7 @@ from zope.context import ContextMethod
 
 from zope.interface import implements
 
+from zope.app.event import function
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.file import IFileFactory
@@ -140,3 +141,13 @@ class ModuleFactory(object):
         m = ContextWrapper(m, self.context)
         m.new(name, data)
         return m
+
+
+# Installer function that can be called from ZCML:
+
+def installPersistentModuleImporter(event):
+    from zodb.code.module import PersistentModuleImporter
+    PersistentModuleImporter().install()
+
+installPersistentModuleImporter = function.Subscriber(
+    installPersistentModuleImporter)
