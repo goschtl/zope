@@ -36,6 +36,13 @@
       </description>
     </attribute>
 
+    <attribute name="*" required="no">
+      <description>
+        Arbitrary keys and values are allowed to be passed to the vocabulary
+        source.
+      </description>
+    </attribute>
+
     <attribute name="filter" />
     <attribute name="another" />
 
