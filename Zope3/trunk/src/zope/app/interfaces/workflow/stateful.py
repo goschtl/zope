@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.13 2003/05/27 14:18:19 jim Exp $
+$Id: stateful.py,v 1.14 2003/06/24 18:59:49 jeremy Exp $
 """
+
 import zope.schema
 from zope.context import ContextProperty
 from zope.app.security.permission import PermissionField
