@@ -285,19 +285,14 @@ def PageRegistrationRemoveSubscriber(self, event):
         objectpath = zapi.getPath(self)
         dependents.removeDependent(objectpath)
 
-# TODO: Make this a new-style class. This is not easily possible
-# because existing databases apparently contain references to
-# instances of this class; probably because of a difference in the
-# pickling protocol, we get an UnpicklingError if we simply make this
-# a newstyle class.
 class TemplateViewFactory(object):
 
     def __init__(self, cls, template, permission):
         self.cls, self.template, self.permission = cls, template, permission
 
-        # XXX Trap code that uses 'Permissions' vocabulary instead of
-        #     'Permission Ids'.  This check should go away once the mess
-        #     with permissions is straigthened up.
+        # TODO Trap code that uses 'Permissions' vocabulary instead of
+        #      'Permission Ids'.  This check should go away once the mess
+        #      with permissions is straigthened up.
         from zope.app.security.permission import Permission
         if isinstance(permission, Permission):
             raise TypeError('permission should be a string or CheckerPublic,'
