@@ -2,6 +2,10 @@ After 1.3
 
   Bug Fixes
 
+    - FSPageTemplates overwrote a user-generated 'Content-Type' header.
+      We now check to make sure a Content-Type header is not already set
+      before allowing a page template to set its own.
+
     - Fixed bugs around 'addActionProvider' in ActionsTool (Collector #42).
 
     - Fixed race condition in lazy initialization of filesystem-based skin
