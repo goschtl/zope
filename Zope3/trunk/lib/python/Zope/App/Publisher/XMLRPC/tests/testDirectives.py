@@ -13,13 +13,12 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.2 2002/06/17 19:34:05 stevea Exp $
+$Id: testDirectives.py,v 1.3 2002/06/20 15:54:58 jim Exp $
 """
-import os
-import unittest
-import sys
 
-from Zope.Configuration.xmlconfig import xmlconfig
+import unittest
+
+from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.ComponentArchitecture.tests.TestViews import IC, V1, VZMI, R1, RZMI
 from Zope.ComponentArchitecture import getView, queryView
@@ -34,13 +33,8 @@ from Zope.Publisher.XMLRPC.IXMLRPCPresentation import IXMLRPCPresentation
 
 import Zope.App.Publisher.XMLRPC
 
-defs_path = os.path.join(
-    os.path.split(Zope.App.Publisher.XMLRPC.__file__)[0],
-    'meta.zcml')
-
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'>
    %s
    </zopeConfigure>"""
@@ -56,7 +50,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Publisher.XMLRPC)()
 
     def testView(self):
         self.assertEqual(queryView(ob, 'test', request),
@@ -232,13 +226,14 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         xmlconfig(StringIO(template %
             """
-            <directives namespace="http://namespaces.zope.org/security">
+            <directives namespace="http://namespaces.zope.org/zope">
               <directive name="permission"
                  attributes="id title description"
-                 handler="Zope.App.Security.metaConfigure.definePermission" />
+                 handler="
+               Zope.App.Security.Registries.metaConfigure.definePermission" />
             </directives>
 
-            <security:permission id="XXX" title="xxx" />
+            <permission id="XXX" title="xxx" />
 
             <xmlrpc:view
                   factory="Zope.ComponentArchitecture.tests.TestViews.V1"

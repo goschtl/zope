@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: testZSP.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+Revision information: $Id: testZSP.py,v 1.3 2002/06/20 15:55:03 jim Exp $
 """
 
 
@@ -24,24 +24,26 @@ from Interface import Interface
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getService
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
-from Zope.App.Security.PermissionRegistry import permissionRegistry 
-from Zope.App.Security.PrincipalRegistry import principalRegistry 
-from Zope.App.Security.RoleRegistry import roleRegistry
-from Zope.App.Security.PrincipalPermissionManager \
+from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry 
+from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry 
+from Zope.App.Security.Registries.RoleRegistry import roleRegistry
+from Zope.App.Security.Grants.Global.PrincipalPermissionManager \
      import principalPermissionManager 
-from Zope.App.Security.RolePermissionManager import rolePermissionManager 
-from Zope.App.Security.PrincipalRoleManager import principalRoleManager 
-from Zope.App.Security.AnnotationPrincipalPermissionManager \
+from Zope.App.Security.Grants.Global.RolePermissionManager \
+     import rolePermissionManager 
+from Zope.App.Security.Grants.Global.PrincipalRoleManager \
+     import principalRoleManager 
+from Zope.App.Security.Grants.AnnotationPrincipalPermissionManager \
     import AnnotationPrincipalPermissionManager 
-from Zope.App.Security.PrincipalPermissionManager \
+from Zope.App.Security.Grants.Global.PrincipalPermissionManager \
     import PrincipalPermissionManager 
 from Zope.App.Security.IPrincipalPermissionManager \
     import IPrincipalPermissionManager 
-from Zope.App.Security.AnnotationPrincipalRoleManager \
+from Zope.App.Security.Grants.AnnotationPrincipalRoleManager \
     import AnnotationPrincipalRoleManager 
-from Zope.App.Security.PrincipalRoleManager \
+from Zope.App.Security.Grants.Global.PrincipalRoleManager \
     import PrincipalRoleManager 
-from Zope.App.Security.AnnotationRolePermissionManager \
+from Zope.App.Security.Grants.AnnotationRolePermissionManager \
     import AnnotationRolePermissionManager 
 from Zope.App.Security.IPrincipalRoleManager import IPrincipalRoleManager 
 from Zope.Exceptions import Unauthorized, Forbidden

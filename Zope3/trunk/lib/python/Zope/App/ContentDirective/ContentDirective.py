@@ -13,10 +13,11 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.2 2002/06/10 23:27:46 jim Exp $
+$Id: ContentDirective.py,v 1.3 2002/06/20 15:54:46 jim Exp $
 """
 from Zope.Configuration.ConfigurationDirectiveInterfaces \
      import INonEmptyDirective
+from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.Configuration.Action import Action
 import Interface
 
@@ -56,28 +57,37 @@ class ContentDirective:
             ]
 
     def require(self, _context,
-                permission, attributes=None, interface=None):
+                permission=None, attributes=None, interface=None,
+                like_class=None):
         """Require a the permission to access a specific aspect"""
 
-        r = []
+        if like_class:
+            r = self.__mimic(_context, like_class)
+        else:
+            r = []
 
         if not (interface or attributes):
-            # XXX: perhaps raise an error here, as no interface or attributes
-            #      were given
-            return r
+            if r:
+                return r
+            raise ConfigurationError("Nothing required")
+
+        if not permission:
+            raise ConfigurationError("No permission specified")
+            
 
         if interface:
             self.__protectByInterface(interface, permission, r)
         if attributes:
             self.__protectNames(attributes, permission, r)
 
+
         return r
         
-    def mimic(self, _context, class_):
+    def __mimic(self, _context, class_):
         """Base security requirements on those of the given class"""
         class_to_mimic = _context.resolve(class_)
         return [
-            Action(discriminator=('security:mimic', self.__class, object()),
+            Action(discriminator=('mimic', self.__class, object()),
                    callable=protectLikeUnto,
                    args=(self.__class, class_to_mimic),
                    )
@@ -128,7 +138,7 @@ class ContentDirective:
     def __protectName(self, name, permission_id, r):
         "Set a permission on a particular name."
         r.append((
-            ('security:protectName', self.__class, name),
+            ('protectName', self.__class, name),
             protectName, (self.__class, name, permission_id)))
             
     def __protectNames(self, names, permission_id, r):

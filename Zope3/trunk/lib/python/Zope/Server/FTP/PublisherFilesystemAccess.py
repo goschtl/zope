@@ -13,12 +13,12 @@
 ##############################################################################
 """Implementation of IFilesystemAccess intended only for testing.
 
-$Id: PublisherFilesystemAccess.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: PublisherFilesystemAccess.py,v 1.3 2002/06/20 15:55:09 jim Exp $
 """
 
 from cStringIO import StringIO
 from Zope.Exceptions import Unauthorized
-from Zope.App.Security.PrincipalRegistry import principalRegistry
+from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry
 
 from Zope.Server.VFS.PublisherFileSystem import PublisherFileSystem
 from Zope.Server.VFS.IFilesystemAccess import IFilesystemAccess

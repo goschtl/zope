@@ -1,0 +1,40 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+<!-- Role-Permission management view -->
+  
+  <browser:view for="Zope.App.OFS.Annotation.IAnnotatable."
+                permission="Zope.Security"
+                factory=".RolePermissionView.">
+
+    <browser:page name="AllRolePermissions.html" 
+                  attribute="index" />
+    <browser:page name="ChangeAllRolePermissions.html" 
+                  attribute="action" />
+    <browser:page name="RolePermissions.html" 
+                  attribute="manage_RoleForm" />
+    <browser:page name="ChangeRolePermissions.html" 
+                  attribute="update_role" />
+    <browser:page name="RolesWithPermission.html" 
+                  attribute="manage_permissionForm" />
+    <browser:page name="ChangeRolesWithPermission.html" 
+                  attribute="update_permission" />
+  </browser:view>
+
+  <content class=".PrincipalPermissionView.">
+    <require
+        permission="Zope.Security"
+        attributes="index get_principal unsetPermissions denyPermissions
+                    grantPermissions getUnsetPermissionsForPrincipal
+                    getPermissionsForPrincipal" />
+  </content>
+
+  <browser:view
+      name="PrincipalPermissionsManagement"
+      for="Zope.App.OFS.Annotation.IAnnotatable."
+      factory=".PrincipalPermissionView." />
+  
+</zopeConfigure>

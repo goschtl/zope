@@ -1,12 +1,11 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:zmi='http://namespaces.zope.org/zmi'
 >
 
   <!-- NaiveFile Directives -->
 
-  <security:permission id="Zope.AddNaiveFiles" 
+  <permission id="Zope.AddNaiveFiles" 
                        title="Add Naive Files" />
 
   <content class=".NaiveFile.">
@@ -15,14 +14,12 @@
         permission="Zope.AddNaiveFiles"
         title="Naive File"
         description="This is a simple file" />
-    <security:require
-        permission="Zope.View" />
   </content>
 
 
   <!-- File Directives -->
 
-  <security:permission id="Zope.AddFiles" title="Add Files" />
+  <permission id="Zope.AddFiles" title="Add Files" />
 
   <content class=".File.">
     <zmi:factory
@@ -30,12 +27,10 @@
         permission="Zope.ManageContent"
         title="File"
         description="A File" />
-    <security:require
-        permission="Zope.View" />
-    <security:require
+    <require
         permission="Zope.View"
         interface=".IFile.IReadFile" />
-    <security:require
+    <require
         permission="Zope.ManageContent"
         interface=".IFile.IWriteFile" />
   </content>

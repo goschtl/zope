@@ -1,6 +1,5 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:zmi='http://namespaces.zope.org/zmi'
    xmlns:browser='http://namespaces.zope.org/browser'
 >
@@ -16,32 +15,32 @@
 
 <!-- Standard Permissions -->
 
-<security:permission id="Zope.View"
+<permission id="Zope.View"
                      title="View"
                      />
 
-<security:permission id="Zope.Security"
+<permission id="Zope.Security"
                      title="Change security settings"
                      />
 
-<security:permission id="Zope.ManageContent" 
+<permission id="Zope.ManageContent" 
                      title="Manage Content"
                      />
 
-<security:permission id="Zope.ManageBindings" 
+<permission id="Zope.ManageBindings" 
                      title="Manage Service Bindings"
                      />
 
-<security:permission id="Zope.ManageServices" 
+<permission id="Zope.ManageServices" 
                      title="Manage Services"
                       />
 
-<security:permission id="Zope.ManageApplication" 
+<permission id="Zope.ManageApplication" 
                      title="Manage Application"
                      />
 
 <!-- XXX What is this for? -->
-<security:permission id="Zope.I18n" 
+<permission id="Zope.I18n" 
                      title="Manage Application"
                      />
 

@@ -1,10 +1,9 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:zmi='http://namespaces.zope.org/zmi'
    xmlns:browser='http://namespaces.zope.org/browser'
 >
-  <security:permission id="Zope.AddImages" title="Add Images" />
+  <permission id="Zope.AddImages" title="Add Images" />
   
   <content class=".Image.">
     <zmi:factory
@@ -12,13 +11,13 @@
         permission="Zope.ManageContent"
         title="Image"
         description="An Image" />
-    <security:require
+    <require
         permission="Zope.View"
         interface="Zope.App.OFS.Content.File.IFile.IReadFile" />
-    <security:require
+    <require
         permission="Zope.View"
         interface=".Image.IImage" />
-    <security:require
+    <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Content.File.IFile.IWriteFile" />
   </content>

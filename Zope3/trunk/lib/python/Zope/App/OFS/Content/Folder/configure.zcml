@@ -1,6 +1,5 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:zmi='http://namespaces.zope.org/zmi'
 >
 
@@ -12,26 +11,24 @@
         permission="Zope.ManageContent"
         title="Folder"
         description="Minimal folder" />
-    <security:require
-        permission="Zope.View" />
-    <security:allow
+    <allow
         interface="Zope.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" 
         />
-    <security:require
+    <require
         permission="Zope.ManageServices"
         interface="Zope.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" 
         />
-    <security:require
+    <require
         permission="Zope.View"
         interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
-    <security:require
+    <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
   </content>
 
   <!-- XXX Do we really need RootFolder? -->
   <content class=".RootFolder.">
-    <security:mimic class=".Folder." />
+    <require like_class=".Folder." />
   </content>
 
   <!-- Loaded Folder Directives -->
@@ -42,36 +39,40 @@
         title="Loaded Folder"
         description="A Folder having all the goodies." />
 
-    <security:require
-        permission="Zope.View" />
-    <security:allow
-        interface="Zope.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" 
+    <allow
+        interface="
+Zope.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer
+         " 
         />
-    <security:require
+    <require
         permission="Zope.ManageServices"
-        interface="Zope.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" 
+        interface="
+Zope.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer
+        " 
         />
-    <security:require
+    <require
         permission="Zope.View"
         interface="Zope.App.OFS.Container.IContainer.IReadContainer"
         />
-    <security:require
+    <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer"
         />
-    <security:require
+    <require
         permission="Zope.View"
-        interface="Zope.App.OFS.Container.IOrderedContainer.IReadOrderedContainer"
+        interface="
+               Zope.App.OFS.Container.IOrderedContainer.IReadOrderedContainer"
          />
-    <security:require
+    <require
         permission="Zope.ManageContent"
-        interface="Zope.App.OFS.Container.IOrderedContainer.IWriteOrderedContainer"
+        interface="
+        Zope.App.OFS.Container.IOrderedContainer.IWriteOrderedContainer"
         />
-    <security:require
+    <require
         permission="Zope.View"
         interface="Zope.App.OFS.Container.IContainerLimit.IReadContainerLimit"
         />
-    <security:require
+    <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Container.IContainerLimit.IWriteContainerLimit"
         />

@@ -1,7 +1,4 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
->
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
   <include package="Zope.App.Formulator" file="meta.zcml" />
 
@@ -14,13 +11,13 @@
            for="Zope.App.Formulator.IField." />
 
   <content class=".Field.">
-    <security:require
+    <require
         permission="Zope.View" 
         interface=".IField." />
   </content>
   
   <content class=".Form.">
-    <security:require
+    <require
         permission="Zope.View" 
         attributes="index action getFieldViews getContext" />
   </content>

@@ -1,6 +1,5 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:browser='http://namespaces.zope.org/browser'
    xmlns:zmi='http://namespaces.zope.org/zmi'
 >
@@ -11,12 +10,12 @@
         permission="Zope.ManageContent"
         title="ZPT Page"
         description="A simple, content-based Page Template" />
-    <security:require permission="Zope.View"
+    <require permission="Zope.View"
                       attributes="content_type __call__" />
 
-    <security:require permission="Zope.ManageContent"
+    <require permission="Zope.ManageContent"
                       interface=".ZPTPage.IZPTPage" />
-    <security:require permission="Zope.View"
+    <require permission="Zope.View"
                       interface=".ZPTPage.IRenderZPTPage" />
   </content>
 

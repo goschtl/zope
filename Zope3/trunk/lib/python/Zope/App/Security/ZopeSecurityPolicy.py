@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: ZopeSecurityPolicy.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+$Id: ZopeSecurityPolicy.py,v 1.3 2002/06/20 15:54:59 jim Exp $
 """
-__version__='$Revision: 1.2 $'[11:-2]
+__version__='$Revision: 1.3 $'[11:-2]
 
 from Zope.ComponentArchitecture import queryAdapter
 from Zope.Proxy.ContextWrapper import ContainmentIterator
@@ -27,13 +27,15 @@ from Zope.App.Security.IPrincipalPermissionManager \
 from Zope.App.Security.IPrincipalRoleManager \
     import IPrincipalRoleManager
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
-from Zope.App.Security.PermissionRegistry import permissionRegistry 
-from Zope.App.Security.PrincipalRegistry import principalRegistry 
-from Zope.App.Security.RoleRegistry import roleRegistry
-from Zope.App.Security.PrincipalPermissionManager \
+from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry 
+from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry 
+from Zope.App.Security.Registries.RoleRegistry import roleRegistry
+from Zope.App.Security.Grants.Global.PrincipalPermissionManager \
      import principalPermissionManager 
-from Zope.App.Security.RolePermissionManager import rolePermissionManager 
-from Zope.App.Security.PrincipalRoleManager import principalRoleManager
+from Zope.App.Security.Grants.Global.RolePermissionManager \
+     import rolePermissionManager 
+from Zope.App.Security.Grants.Global.PrincipalRoleManager \
+     import principalRoleManager
 from Zope.App.Security.Settings import Allow, Deny, Assign, Remove, Unset
 
 from types import StringType, StringTypes, TupleType, ListType, IntType, MethodType, NoneType

@@ -1,28 +1,11 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-  <!-- Zope.App.Security -->
-  <directives namespace="http://namespaces.zope.org/security">
-    <directive name="permission"
-               attributes="id title description"
-               handler="Zope.App.Security.metaConfigure.definePermission" />
-    <directive name="role"
-               attributes="id title description"
-               handler="Zope.App.Security.metaConfigure.defineRole" />
-    <directive name="defaultPolicy" attributes="name"
-       handler="Zope.App.Security.metaConfigure.defaultPolicy" />
-    <directive name="principal" attributes="id title description"
-       handler="Zope.App.Security.metaConfigure.principal" />
-    <directive name="defaultPrincipal" 
-               attributes="principal title description"
-       handler="Zope.App.Security.metaConfigure.defaultPrincipal" />
-    <directive name="grantPermissionToRole" attributes="permission role"
-       handler="Zope.App.Security.metaConfigure.grantPermissionToRole" />
-    <directive
-       name="grantPermissionToPrincipal"
-       attributes="permission principal"
-       handler="Zope.App.Security.metaConfigure.grantPermissionToPrincipal" />
-    <directive name="assignRoleToPrincipal" attributes="role principal"
-       handler="Zope.App.Security.metaConfigure.assignRoleToPrincipal" />
+  <include package=".Registries" file="meta.zcml" />
+  <include package=".Grants.Global" file="meta.zcml" />
+
+  <directives namespace="http://namespaces.zope.org/zope">
+    <directive name="securityPolicy" attributes="name"
+       handler="Zope.App.Security.metaConfigure.securityPolicy" />
   </directives>
 
 </zopeConfigure>

@@ -1,7 +1,6 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:formulator='http://namespaces.zope.org/formulator'
-   xmlns:security='http://namespaces.zope.org/security'
 >
 
   <!-- formulator:registerField name="DateTimeField"
@@ -20,7 +19,7 @@
     field="Zope.App.Formulator.Fields.Generic.IntegerField." />
 
   <content class=".Generic.IntegerField.">
-    <security:require
+    <require
         permission="Zope.ManageContent" 
         attributes="getValue" />
   </content>

@@ -1,32 +1,21 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
->
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
 <include package="Zope" />
 
-<security:role id="Manager" title="Site Manager" />
-<security:role id="Member" title="Site Member" />
+<role id="Manager" title="Site Manager" />
+<role id="Member" title="Site Member" />
 
 <include file="principals.zcml" />
 
 
 <!-- Remove the following directive if you don't want public access -->
-<security:grantPermissionToRole permission="Zope.View" 
-                                role="Anonymous" />
+<grant permission="Zope.View" role="Anonymous" />
 
-<security:grantPermissionToRole permission="Zope.View" 
-                                role="Manager" />
-<security:grantPermissionToRole permission="Zope.ManageContent"
-                                role="Manager" />
-<security:grantPermissionToRole permission="Zope.Security" 
-                                role="Manager" />
-
-<security:grantPermissionToRole permission="Zope.ManageServices" 
-                                role="Manager" />
-
-<security:grantPermissionToRole permission="Zope.ManageApplication" 
-                                role="Manager" />
+<grant permission="Zope.View"              role="Manager" />
+<grant permission="Zope.ManageContent"     role="Manager" />
+<grant permission="Zope.Security"          role="Manager" />
+<grant permission="Zope.ManageServices"    role="Manager" />
+<grant permission="Zope.ManageApplication" role="Manager" />
 
 <include file="products.zcml" />
 

@@ -1,6 +1,5 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:zmi='http://namespaces.zope.org/zmi'
    xmlns:browser='http://namespaces.zope.org/browser'
 >
@@ -28,7 +27,7 @@
   <browser:resource name="arrowUp.gif" file="www/arrowUp.gif"/>
   
   <content class=".IGenericCreatorMarker.">
-    <security:require  
+    <require  
         permission="Zope.ManageContent"
         interface=".IGenericCreatorMarker." />
   </content>

@@ -15,21 +15,18 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.1 2002/06/18 19:34:57 jim Exp $
+$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.2 2002/06/20 15:54:58 jim Exp $
 """
 
-import os
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.Configuration.xmlconfig import xmlconfig
+
+from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 
 import Zope.App.Publisher.Browser
-defs_path = os.path.join(
-    os.path.split(Zope.App.Publisher.Browser.__file__)[0],
-    'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
@@ -41,7 +38,7 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Publisher.Browser)()
         
     def test(self):
         from Zope.App.Publisher.Browser.GlobalBrowserMenuService \

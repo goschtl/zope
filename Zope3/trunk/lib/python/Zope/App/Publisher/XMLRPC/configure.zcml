@@ -1,17 +1,16 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
 >
 
 <content class="Zope.Publisher.Browser.BrowserRequest.">
-  <security:allow
+  <allow
       interface="Zope.ComponentArchitecture.IPresentationRequest." />
 </content>
 
 <content class=".FileResource.">
-  <security:allow interface="Zope.Publisher.Browser.IBrowserPublisher." />
-  <security:allow attributes="GET HEAD __call__" />
+  <allow interface="Zope.Publisher.Browser.IBrowserPublisher." />
+  <allow attributes="GET HEAD __call__" />
 </content>
 
 

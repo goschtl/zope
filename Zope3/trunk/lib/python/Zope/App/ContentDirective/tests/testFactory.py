@@ -13,33 +13,29 @@
 ##############################################################################
 """ Test handler for 'factory' subdirective of 'content' directive """
 
-import unittest, sys, os
-
+import unittest
+import sys
+import os
 from cStringIO import StringIO
+
 from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
+from Zope.Configuration.xmlconfig import XMLConfig
+
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
+
+import Zope.App.Security
 from Zope.App.Security.Exceptions import UndefinedPermissionError
+
 from Zope.App.OFS.Services.AddableService.tests.AddableSetup \
     import AddableSetup
 
+import Zope.App.ContentDirective
 from Zope.App.ContentDirective.tests.ExampleClass \
     import ExampleClass, IExample, IExampleContainer
-
-import Zope.App.ContentDirective
-defs_path = os.path.join(
-    os.path.split(Zope.App.ContentDirective.__file__)[0],
-    'meta.zcml')
-
-import Zope.App.Security
-security_defs_path = os.path.join(
-    os.path.split(Zope.App.Security.__file__)[0],
-    'meta.zcml')
-
 
 def configfile(s):
     return StringIO("""<zopeConfigure
       xmlns='http://namespaces.zope.org/zope'
-      xmlns:security='http://namespaces.zope.org/security'
       xmlns:zmi='http://namespaces.zope.org/zmi'>
       %s
       </zopeConfigure>
@@ -48,15 +44,15 @@ def configfile(s):
 class Test(AddableSetup, CleanUp, unittest.TestCase):
     def setUp(self):
         AddableSetup.setUp(self)
-        xmlconfig(open(defs_path))
-        xmlconfig(open(security_defs_path))
+        XMLConfig('meta.zcml', Zope.App.ContentDirective)()
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
 
     def testFactory(self):
         from Zope.ComponentArchitecture import getService
         from Zope.Proxy.ProxyIntrospection import removeAllProxies
         f = configfile("""
-<security:permission id="Zope.Foo" title="Zope Foo Permission" />
+<permission id="Zope.Foo" title="Zope Foo Permission" />
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
     <zmi:factory 
       id="Example" 
@@ -77,7 +73,7 @@ class Test(AddableSetup, CleanUp, unittest.TestCase):
         from Zope.ComponentArchitecture import getService
         from Zope.Proxy.ProxyIntrospection import removeAllProxies
         f = configfile("""
-<security:permission id="Zope.Foo" title="Zope Foo Permission" />
+<permission id="Zope.Foo" title="Zope Foo Permission" />
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
     <zmi:factory 
       permission="Zope.Foo"

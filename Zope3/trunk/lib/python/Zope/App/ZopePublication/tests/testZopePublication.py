@@ -38,8 +38,9 @@ from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 
-from Zope.App.Security.PrincipalRegistry import principalRegistry
-from Zope.App.Security.PrincipalRoleManager import principalRoleManager
+from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry
+from Zope.App.Security.Grants.Global.PrincipalRoleManager \
+     import principalRoleManager
 
 from Zope.App.ZopePublication.ZopePublication import ZopePublication
 from Zope.App.ZopePublication.Browser.Publication import BrowserPublication

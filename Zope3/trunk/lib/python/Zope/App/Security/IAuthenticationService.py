@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IAuthenticationService.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+$Id: IAuthenticationService.py,v 1.3 2002/06/20 15:54:59 jim Exp $
 """
 
 from Interface import Interface
@@ -68,10 +68,10 @@ class IAuthenticationService(Interface):
         requests are placeless.
         """
 
-    def defaultPrincipal():
+    def unauthenticatedPrincipal():
         """
-        Return the id of the default principal, if one is defined;
-        return None if no default principal is defined.
+        Return the id of the unauthenticated principal, if one is defined;
+        return None if no unauthenticated principal is defined.
         """
         
     def unauthorized(id, request):

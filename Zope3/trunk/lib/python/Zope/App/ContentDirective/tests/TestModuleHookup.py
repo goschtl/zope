@@ -38,7 +38,6 @@ TestModule.I = I
 TestModule.I2 = I2
 
 template_bracket = """<zopeConfigure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:security='http://namespaces.zope.org/security'>
+   xmlns="http://namespaces.zope.org/zope">
    %s
 </zopeConfigure>"""

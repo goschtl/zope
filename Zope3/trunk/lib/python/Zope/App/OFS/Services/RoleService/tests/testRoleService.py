@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testRoleService.py,v 1.2 2002/06/10 23:28:12 jim Exp $
+$Id: testRoleService.py,v 1.3 2002/06/20 15:54:56 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
@@ -30,7 +30,7 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         self.buildFolders()
         from Zope.App.Security.IRoleService import IRoleService
-        from Zope.App.Security.RoleRegistry import roleRegistry
+        from Zope.App.Security.Registries.RoleRegistry import roleRegistry
         sm=getServiceManager(None)
         defineService=sm.defineService
         provideService=sm.provideService

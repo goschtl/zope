@@ -14,13 +14,13 @@
 """Test proper protection of inherited methods
 
 Revision information:
-$Id: testProtectSubClass.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+$Id: testProtectSubClass.py,v 1.3 2002/06/20 15:55:03 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 from Zope.App.Security.protectClass import protectName
-from Zope.App.Security.PermissionRegistry import permissionRegistry
+from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry
 from Zope.Security.Checker import selectChecker
 
 class Test(CleanUp, TestCase):

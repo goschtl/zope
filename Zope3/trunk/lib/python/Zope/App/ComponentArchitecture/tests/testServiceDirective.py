@@ -17,30 +17,26 @@ import sys
 import os
 from cStringIO import StringIO
 
-from Zope.Configuration.xmlconfig import testxmlconfig as xmlconfig
+from Zope.Exceptions import Forbidden, Unauthorized
+
+from Zope.Configuration.xmlconfig import testxmlconfig as xmlconfig, XMLConfig
 from Zope.Configuration.Exceptions import ConfigurationError
 
-from Zope.Security.Proxy import getTestProxyItems, getObject as proxiedObject, ProxyFactory
+from Zope.Security.Proxy \
+     import getTestProxyItems, getObject as proxiedObject, ProxyFactory
 
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
-
-from Zope.Exceptions import Forbidden, Unauthorized
 
 from Zope.App.ComponentArchitecture.tests.TestService \
      import IFooService, FooService
 
+import Zope.App.ComponentArchitecture
 from Zope.ComponentArchitecture import getService
-
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 
-import Zope.App.ComponentArchitecture
-defs_path = os.path.join(
-    os.path.split(Zope.App.ComponentArchitecture.__file__)[0],
-    'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'>
    xmlns:test='http://www.zope.org/NS/Zope3/test'>
    %s
    </zopeConfigure>"""
@@ -52,7 +48,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.ComponentArchitecture)()
 
     def testServiceConfigNoType(self):
         from Zope.ComponentArchitecture.GlobalServiceManager \
@@ -168,13 +164,14 @@ class Test(PlacelessSetup, unittest.TestCase):
         
         xmlconfig(StringIO(template % (
             """
-            <directives namespace="http://namespaces.zope.org/security">
+            <directives namespace="http://namespaces.zope.org/zope">
               <directive name="permission"
                  attributes="id title description"
-                 handler="Zope.App.Security.metaConfigure.definePermission" />
+                 handler="
+              Zope.App.Security.Registries.metaConfigure.definePermission" />
             </directives>
 
-            <security:permission id="XXX" title="xxx" />
+            <permission id="XXX" title="xxx" />
 
             <serviceType id="Foo"
                          interface="

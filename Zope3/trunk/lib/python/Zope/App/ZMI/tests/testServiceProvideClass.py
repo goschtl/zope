@@ -13,24 +13,24 @@
 ##############################################################################
 """ ZMI unit tests
 
-$Id: testServiceProvideClass.py,v 1.3 2002/06/17 19:12:32 bwarsaw Exp $
+$Id: testServiceProvideClass.py,v 1.4 2002/06/20 15:55:05 jim Exp $
 """
 
 
 import unittest, sys, Interface, os
-from Zope.App.ZMI import provideClass
 
 from StringIO import StringIO
-from Zope.Configuration.xmlconfig import xmlconfig
-from Zope.App.OFS.Services.AddableService.tests.AddableSetup \
-     import AddableSetup
-from Zope.Configuration.xmlconfig import ZopeXMLConfigurationError
+
 from Zope.ComponentArchitecture import getService
 
+from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
+from Zope.Configuration.xmlconfig import ZopeXMLConfigurationError
+
+from Zope.App.OFS.Services.AddableService.tests.AddableSetup \
+     import AddableSetup
+
 import Zope.App.ZMI
-defs_path = os.path.join(
-    os.path.split(Zope.App.ZMI.__file__)[0],
-    'meta.zcml')
+from Zope.App.ZMI import provideClass
 
 
 class MyAddableService:
@@ -40,7 +40,7 @@ class ServiceProvideClassTest(AddableSetup, unittest.TestCase):
 
     def setUp(self):
         AddableSetup.setUp(self)
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.ZMI)()
 
     def testServiceProvideClassDirective(self):
         serviceName = (

@@ -3,7 +3,6 @@
    xmlns:browser='http://namespaces.zope.org/browser'
    xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
    xmlns:vfs='http://namespaces.zope.org/vfs'
-   xmlns:security='http://namespaces.zope.org/security'
 >
 
   <browser:view

@@ -1,6 +1,5 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
@@ -12,7 +11,7 @@
       factory=".Main." />
 
   <content class=".Main."
-    <security:require
+    <require
         permission="Zope.ManageContent"
         attributes="index menu" />
   </content>
@@ -23,7 +22,7 @@
       factory=".Tree." />
 
   <content class=".Tree."
-    <security:require
+    <require
         permission="Zope.ManageContent"
         attributes="getRDFTree" />
   </content>
@@ -34,7 +33,7 @@
       factory=".SetLimit."/>
 
   <content class=".SetLimit."
-    <security:require
+    <require
         permission="Zope.ManageContent"
         attributes="index action action_js" />
   </content>

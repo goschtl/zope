@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: Role.py,v 1.2 2002/06/10 23:28:11 jim Exp $
+$Id: Role.py,v 1.3 2002/06/20 15:54:55 jim Exp $
 """
 
 from Zope.App.Security.IRole import IRole
 from Zope.ComponentArchitecture.IFactory import IFactory
-from Zope.App.Security.RegisteredObject import RegisteredObject
+from Zope.App.Security.Registries.RegisteredObject import RegisteredObject
 from Persistence import Persistent
 
 class Role(RegisteredObject, Persistent):

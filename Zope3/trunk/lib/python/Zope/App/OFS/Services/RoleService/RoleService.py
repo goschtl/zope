@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: RoleService.py,v 1.2 2002/06/10 23:28:11 jim Exp $
+$Id: RoleService.py,v 1.3 2002/06/20 15:54:55 jim Exp $
 """
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.App.Security.IRoleService import IRoleService
 from Zope.App.OFS.Container.IContainer import IContainer
-from Zope.App.Security.RoleRegistry import roleRegistry
+from Zope.App.Security.Registries.RoleRegistry import roleRegistry
 from Zope.ContextWrapper import ContextMethod
 from Zope.ComponentArchitecture import getNextService
 

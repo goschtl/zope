@@ -13,51 +13,48 @@
 ##############################################################################
 """
 
-$Id: testSecurityDirectives.py,v 1.3 2002/06/17 19:11:30 bwarsaw Exp $
+$Id: testSecurityDirectives.py,v 1.4 2002/06/20 15:55:03 jim Exp $
 """
 
-import unittest, sys, os
-
-from Zope.Configuration.xmlconfig import xmlconfig
+import unittest
 from StringIO import StringIO
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
-from Zope.Configuration.xmlconfig import ZopeXMLConfigurationError
-from Zope.App.Security.PrincipalRegistry import principalRegistry
-from Zope.App.Security.PermissionRegistry \
-        import permissionRegistry as pregistry
-from Zope.App.Security.RoleRegistry import roleRegistry as rregistry
-from Zope.App.Security.RolePermissionManager \
-        import rolePermissionManager as role_perm_mgr
-from Zope.App.Security.PrincipalPermissionManager \
-    import principalPermissionManager as principal_perm_mgr
-from Zope.App.Security.PrincipalRoleManager \
-    import principalRoleManager as principal_role_mgr
-from Zope.App.Security.Settings import Allow, Deny, Unset, Remove, Assign
 
+from Zope.Configuration.xmlconfig import ZopeXMLConfigurationError
+from Zope.Configuration.xmlconfig import XMLConfig, xmlconfig
+
+from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
 import Zope.App.Security
-defs_path = os.path.join(
-    os.path.split(Zope.App.Security.__file__)[0],
-    'meta.zcml')
+from Zope.App.Security.Settings import Allow, Deny, Unset, Remove, Assign
+from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry
+from Zope.App.Security.Registries.PermissionRegistry \
+        import permissionRegistry as pregistry
+from Zope.App.Security.Registries.RoleRegistry import roleRegistry as rregistry
+from Zope.App.Security.Grants.Global.RolePermissionManager \
+        import rolePermissionManager as role_perm_mgr
+from Zope.App.Security.Grants.Global.PrincipalPermissionManager \
+    import principalPermissionManager as principal_perm_mgr
+from Zope.App.Security.Grants.Global.PrincipalRoleManager \
+    import principalRoleManager as principal_role_mgr
+
 
 def configfile(s):
     return StringIO("""<zopeConfigure
-      xmlns='http://namespaces.zope.org/zope'
-      xmlns:security='http://namespaces.zope.org/security'>
+      xmlns='http://namespaces.zope.org/zope'>
       %s
       </zopeConfigure>
       """ % s)
 
 class TestPrincipalDirective(CleanUp, unittest.TestCase):
     def setUp(self):
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testRegister(self):
-        f = configfile("""<security:principal id="1"
+        f = configfile("""<principal id="1"
                              title="Sir Tim Peters"
                              description="Tim Peters"
                              login="tim" password="123" />
-                          <security:principal id="2"
+                          <principal id="2"
                              title="Sir Jim Fulton"
                              description="Jim Fulton"
                              login="jim" password="123" />""")
@@ -79,11 +76,11 @@ class TestPrincipalDirective(CleanUp, unittest.TestCase):
 
 class TestPermissionDirective(CleanUp, unittest.TestCase):
     def setUp(self):
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testRegister(self):
         f = configfile("""
- <security:permission
+ <permission
      id="Can Do It"
      title="A Permissive Permission"
      description="This permission lets you do anything" />""")
@@ -98,12 +95,12 @@ class TestPermissionDirective(CleanUp, unittest.TestCase):
 
     def testDuplicationRegistration(self):
         f = configfile("""
- <security:permission
+ <permission
      id="Can Do It"
      title="A Permissive Permission"
      description="This permission lets you do anything" />
 
- <security:permission
+ <permission
      id="Can Do It"
      title="A Permissive Permission"
      description="This permission lets you do anything" />
@@ -114,11 +111,11 @@ class TestPermissionDirective(CleanUp, unittest.TestCase):
         
 class TestRoleDirective(CleanUp, unittest.TestCase):
     def setUp(self):
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testRegister(self):
         f = configfile("""
- <security:role
+ <role
      id="Everyperson"
      title="Tout le monde"
      description="The common man, woman, person, or thing" />
@@ -134,12 +131,12 @@ class TestRoleDirective(CleanUp, unittest.TestCase):
         
     def testDuplicationRegistration(self):
         f = configfile("""
- <security:role
+ <role
      id="Everyperson"
      title="Tout le monde"
      description="The common man, woman, person, or thing" />
 
- <security:role
+ <role
      id="Everyperson"
      title="Tout le monde"
      description="The common man, woman, person, or thing" />
@@ -151,11 +148,11 @@ class TestRoleDirective(CleanUp, unittest.TestCase):
 class TestRolePermission(CleanUp, unittest.TestCase):
 
     def setUp( self ):
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testMap( self ):
         f = configfile("""
- <security:grantPermissionToRole
+ <grant
      permission="Foo"
      role="Bar" />
      """)
@@ -174,11 +171,11 @@ class TestRolePermission(CleanUp, unittest.TestCase):
 class TestPrincipalPermission(CleanUp, unittest.TestCase):
 
     def setUp( self ):
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testMap( self ):
         f = configfile("""
- <security:grantPermissionToPrincipal
+ <grant
      permission="Foo"
      principal="Bar" />
      """)
@@ -197,11 +194,11 @@ class TestPrincipalPermission(CleanUp, unittest.TestCase):
 class TestPrincipalRole(CleanUp, unittest.TestCase):
 
     def setUp( self ):
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testMap( self ):
         f = configfile("""
- <security:assignRoleToPrincipal
+ <grant
      role="Foo"
      principal="Bar" />
      """)

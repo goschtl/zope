@@ -1,0 +1,34 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   package="Zope.App.Security"
+>
+
+  <include package=".Grants.Views" />
+
+  <content class=".Grants.PermissionRoles.">
+    <require   
+        permission="Zope.Security"
+        attributes="roles rolesInfo"
+        interface="Zope.App.Security.IRegisteredObject." />
+  </content>
+
+  <content class=".Grants.RolePermissions.">
+    <require   
+        permission="Zope.Security"
+        attributes="permissions permissionsInfo"
+        interface="Zope.App.Security.IRegisteredObject." />
+  </content>
+
+  <adapter factory=".Grants.AnnotationRolePermissionManager."
+           provides=".IRolePermissionManager."
+           for="Zope.App.OFS.Annotation.IAnnotatable." />
+
+
+  <adapter factory=".Grants.AnnotationPrincipalPermissionManager."
+           provides=".IPrincipalPermissionManager."
+           for="Zope.App.OFS.Annotation.IAnnotatable." />
+  
+</zopeConfigure>
+

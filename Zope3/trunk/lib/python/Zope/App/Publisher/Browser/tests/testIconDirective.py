@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.1 2002/06/18 20:33:33 jim Exp $
+$Id: testIconDirective.py,v 1.2 2002/06/20 15:54:58 jim Exp $
 """
 import os
 from StringIO import StringIO
@@ -23,15 +23,14 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Exceptions import Forbidden
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
-from Zope.Configuration.xmlconfig import xmlconfig
+from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.ComponentArchitecture.tests.Request import Request
 from Zope.ComponentArchitecture.tests.TestViews import IC
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.ComponentArchitecture import queryView, getView, getResource
 from Zope.Security.Proxy import ProxyFactory
 
-import Zope.App.Publisher.Browser as p
-defs_path = os.path.join(os.path.split(p.__file__)[0], 'meta.zcml')
+import Zope.App.Publisher.Browser
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
@@ -52,13 +51,14 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Publisher.Browser)()
 
     def test(self):
         self.assertEqual(queryView(ob, 'zmi_icon', request), None)
 
-        package_directory = os.path.split(defs_path)[0]
-        path = os.path.join(package_directory, "tests", 'test.gif')
+        import Zope.App.Publisher.Browser.tests as p
+        path = os.path.split(p.__file__)[0]
+        path = os.path.join(path, 'test.gif')
         
         xmlconfig(StringIO(template % (
             """

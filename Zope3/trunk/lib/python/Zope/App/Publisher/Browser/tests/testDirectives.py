@@ -14,9 +14,8 @@
 
 import os
 import unittest
-import sys
 
-from Zope.Configuration.xmlconfig import xmlconfig
+from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.ComponentArchitecture.tests.TestViews import IC, V1, VZMI, R1, RZMI
 from Zope.ComponentArchitecture import getView, queryView, queryResource
@@ -30,13 +29,13 @@ from Zope.ComponentArchitecture.tests.Request import Request
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 
 import Zope.App.Publisher.Browser
-defs_path = os.path.join(
+
+tests_path = os.path.join(
     os.path.split(Zope.App.Publisher.Browser.__file__)[0],
-    'meta.zcml')
+    'tests')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:browser='http://namespaces.zope.org/browser'>
    %s
    </zopeConfigure>"""
@@ -59,7 +58,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.Publisher.Browser)()
 
         from Zope.ComponentArchitecture.GlobalAdapterService \
              import provideAdapter
@@ -253,9 +252,8 @@ class Test(PlacelessSetup, unittest.TestCase):
 
 
     def testPageViews(self):
-        self.assertEqual(queryView(ob, 'test', request),
-                         None)
-        test3 = os.path.join(os.path.split(defs_path)[0], 'tests', 'test3.pt')
+        self.assertEqual(queryView(ob, 'test', request), None)
+        test3 = os.path.join(tests_path, 'test3.pt')
 
         xmlconfig(StringIO(template %
             """
@@ -306,9 +304,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v, 42)
 
     def testNamedViewPageViewsNoDefault(self):
-        self.assertEqual(queryView(ob, 'test', request),
-                         None)
-        test3 = os.path.join(os.path.split(defs_path)[0], 'tests', 'test3.pt')
+        self.assertEqual(queryView(ob, 'test', request), None)
+        test3 = os.path.join(tests_path, 'test3.pt')
 
         xmlconfig(StringIO(template %
             """
@@ -336,9 +333,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
 
     def testNamedViewPageViewsWithDefault(self):
-        self.assertEqual(queryView(ob, 'test', request),
-                         None)
-        test3 = os.path.join(os.path.split(defs_path)[0], 'tests', 'test3.pt')
+        self.assertEqual(queryView(ob, 'test', request), None)
+        test3 = os.path.join(tests_path, 'test3.pt')
 
         xmlconfig(StringIO(template %
             """
@@ -372,13 +368,14 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         xmlconfig(StringIO(template %
             """
-            <directives namespace="http://namespaces.zope.org/security">
+            <directives namespace="http://namespaces.zope.org/zope">
               <directive name="permission"
                  attributes="id title description"
-                 handler="Zope.App.Security.metaConfigure.definePermission" />
+                 handler="
+             Zope.App.Security.Registries.metaConfigure.definePermission" />
             </directives>
 
-            <security:permission id="XXX" title="xxx" />
+            <permission id="XXX" title="xxx" />
 
             <browser:view
                   factory="Zope.ComponentArchitecture.tests.TestViews.V1"
@@ -444,7 +441,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
 
     def testFile(self):
-        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
+        path = os.path.join(tests_path, 'test.pt')
         
         self.assertEqual(queryResource(ob, 'test', request),
                          None)
@@ -463,7 +460,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
 
     def testtemplate(self):
-        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
+        path = os.path.join(tests_path, 'test.pt')
         
         self.assertEqual(queryView(ob, 'index.html', request),
                          None)
@@ -481,7 +478,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v().strip(), '<html><body><p>test</p></body></html>')
 
     def testtemplateWClass(self):
-        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test2.pt')
+        path = os.path.join(tests_path, 'test2.pt')
         
         self.assertEqual(queryView(ob, 'index.html', request),
                          None)
@@ -500,20 +497,21 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v().strip(), '<html><body><p>42</p></body></html>')
 
     def testProtectedtemplate(self):
-        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
+        path = os.path.join(tests_path, 'test.pt')
         
         self.assertEqual(queryView(ob, 'test', request),
                          None)
 
         xmlconfig(StringIO(template %
             """
-            <directives namespace="http://namespaces.zope.org/security">
+            <directives namespace="http://namespaces.zope.org/zope">
               <directive name="permission"
                  attributes="id title description"
-                 handler="Zope.App.Security.metaConfigure.definePermission" />
+                 handler="
+               Zope.App.Security.Registries.metaConfigure.definePermission" />
             </directives>
 
-            <security:permission id="XXX" title="xxx" />
+            <permission id="XXX" title="xxx" />
 
             <browser:view
                   name="xxx.html"
@@ -547,7 +545,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         
 
     def testtemplateNoName(self):
-        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
+        path = os.path.join(tests_path, 'test.pt')
         self.assertRaises(
             ConfigurationError,
             xmlconfig,
@@ -561,7 +559,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))
 
     def testtemplateAndPage(self):
-        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
+        path = os.path.join(tests_path, 'test.pt')
         self.assertRaises(
             ConfigurationError,
             xmlconfig,

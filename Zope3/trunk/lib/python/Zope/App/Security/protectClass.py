@@ -15,7 +15,7 @@
 """
 
 from Exceptions import UndefinedPermissionError
-from PermissionRegistry import permissionRegistry
+from Registries.PermissionRegistry import permissionRegistry
 
 from Zope.Security.Checker import defineChecker, getCheckerForInstancesOf
 from Zope.Security.Checker import Checker, CheckerPublic

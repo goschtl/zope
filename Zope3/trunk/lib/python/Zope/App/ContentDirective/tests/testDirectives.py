@@ -13,35 +13,30 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.3 2002/06/17 19:33:46 stevea Exp $
+$Id: testDirectives.py,v 1.4 2002/06/20 15:54:46 jim Exp $
 """
 
-import unittest, sys, os
-
-from Zope.Configuration.xmlconfig import xmlconfig
+import unittest
+import sys
+import os
 from StringIO import StringIO
+
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
+from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.xmlconfig import ZopeXMLConfigurationError
+
+import Zope.App.Security
+
+import Zope.App.ContentDirective
 
 # explicitly import ExampleClass and IExample using full paths
 # so that they are the same objects as resolve will get.
 from Zope.App.ContentDirective.tests.ExampleClass import ExampleClass, IExample
 
-import Zope.App.ContentDirective
-defs_path = os.path.join(
-    os.path.split(Zope.App.ContentDirective.__file__)[0],
-    'meta.zcml')
-
-import Zope.App.Security
-security_defs_path = os.path.join(
-    os.path.split(Zope.App.Security.__file__)[0],
-    'meta.zcml')
-
 
 def configfile(s):
     return StringIO("""<zopeConfigure
       xmlns='http://namespaces.zope.org/zope'
-      xmlns:security='http://namespaces.zope.org/security'
       xmlns:zmi='http://namespaces.zope.org/zmi'>
       %s
       </zopeConfigure>
@@ -49,8 +44,8 @@ def configfile(s):
 
 class TestContentDirective(CleanUp, unittest.TestCase):
     def setUp(self):
-        xmlconfig(open(defs_path))
-        xmlconfig(open(security_defs_path))
+        XMLConfig('meta.zcml', Zope.App.ContentDirective)()
+        XMLConfig('meta.zcml', Zope.App.Security)()
         
         try:
             del ExampleClass.__implements__
@@ -77,9 +72,9 @@ class TestContentDirective(CleanUp, unittest.TestCase):
         
     def testRequire(self):
         f = configfile("""
-<security:permission id="Zope.View" title="Zope view permission" />
+<permission id="Zope.View" title="Zope view permission" />
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
-    <security:require permission="Zope.View"
+    <require permission="Zope.View"
                       attributes="anAttribute anotherAttribute" />
 </content>
                        """)
@@ -88,7 +83,7 @@ class TestContentDirective(CleanUp, unittest.TestCase):
     def testAllow(self):
         f = configfile("""
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
-    <security:allow attributes="anAttribute anotherAttribute" />
+    <allow attributes="anAttribute anotherAttribute" />
 </content>
                        """)
         xmlconfig(f)
@@ -96,7 +91,7 @@ class TestContentDirective(CleanUp, unittest.TestCase):
     def testMimic(self):
         f = configfile("""
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
-    <security:mimic class="Zope.App.ContentDirective.tests.ExampleClass." />
+    <require like_class="Zope.App.ContentDirective.tests.ExampleClass." />
 </content>
                        """)
         xmlconfig(f)
@@ -108,12 +103,12 @@ from Zope.App.OFS.Services.AddableService.tests.AddableSetup \
 class TestFactorySubdirective(AddableSetup, CleanUp, unittest.TestCase):
     def setUp(self):
         AddableSetup.setUp(self)
-        xmlconfig(open(defs_path))
-        xmlconfig(open(security_defs_path))
+        XMLConfig('meta.zcml', Zope.App.ContentDirective)()
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testFactory(self):
         f = configfile("""
-<security:permission id="Zope.Foo" title="Zope Foo Permission" />
+<permission id="Zope.Foo" title="Zope Foo Permission" />
 
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
     <zmi:factory 

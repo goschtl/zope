@@ -1,22 +1,21 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
    xmlns:zmi='http://namespaces.zope.org/zmi'
    xmlns:browser='http://namespaces.zope.org/browser'
 
    xmlns:service='http://namespaces.zope.org/service'
 >
   <content class=".RoleService.">
-    <security:require
+    <require
         permission="Zope.Security"
         interface="Zope.App.Security.IRoleService." />
-    <security:require
+    <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IContainer." />
   </content>
   
   <content class=".Role.">
-    <security:require
+    <require
         permission="Zope.Security"
         interface="Zope.App.Security.IRole." />
   </content>

@@ -17,11 +17,12 @@ import sys
 import os
 from cStringIO import StringIO
 
-from Zope.Configuration.xmlconfig import xmlconfig
+from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.Exceptions import ConfigurationError
 
 from Zope.Security.Proxy import getTestProxyItems, getObject as proxiedObject
 
+import Zope.App.ComponentArchitecture
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from Zope.ComponentArchitecture \
      import getView, queryView, getResource, queryResource, createObject
@@ -32,14 +33,9 @@ from Zope.ComponentArchitecture.tests.TestViews import \
      IV, IC, V1, VZMI, R1, RZMI
 from Zope.ComponentArchitecture.tests.Request import Request
 
-import Zope.App.ComponentArchitecture
-defs_path = os.path.join(
-    os.path.split(Zope.App.ComponentArchitecture.__file__)[0],
-    'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'>
    xmlns:test='http://www.zope.org/NS/Zope3/test'>
    %s
    </zopeConfigure>"""
@@ -53,7 +49,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        xmlconfig(open(defs_path))
+        XMLConfig('meta.zcml', Zope.App.ComponentArchitecture)()
 
     def testAdapter(self):
         from Zope.ComponentArchitecture import getAdapter, queryAdapter

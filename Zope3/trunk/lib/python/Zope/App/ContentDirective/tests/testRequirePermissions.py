@@ -13,36 +13,30 @@
 ##############################################################################
 """ Test handler for 'require' subdirective of 'content' directive """
 
-import unittest, sys, os
-
-from Zope.App.Security import protectClass
-
-# So we can use config parser to exercise protectClass stuff.
+import unittest
 from cStringIO import StringIO
-from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
-from TestModuleHookup import *
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
-from Zope.App.Security.Exceptions import UndefinedPermissionError
-
-
-import Zope.App.ContentDirective
-defs_path = os.path.join(
-    os.path.split(Zope.App.ContentDirective.__file__)[0],
-    'meta.zcml')
 
 import Zope.App.Security
-security_defs_path = os.path.join(
-    os.path.split(Zope.App.Security.__file__)[0],
-    'meta.zcml')
+from Zope.App.Security import protectClass
+from Zope.App.Security.Exceptions import UndefinedPermissionError
+
+# So we can use config parser to exercise protectClass stuff.
+from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
+from Zope.Configuration.xmlconfig import XMLConfig
+
+from TestModuleHookup import * # XXX I hate this!
+
+from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
+
+import Zope.App.ContentDirective
 
 def defineDirectives():
-    xmlconfig(open(defs_path))
-    xmlconfig(open(security_defs_path))
+    XMLConfig('meta.zcml', Zope.App.ContentDirective)()
+    XMLConfig('meta.zcml', Zope.App.Security)()
     xmlconfig(StringIO("""<zopeConfigure
-        xmlns='http://namespaces.zope.org/zope' 
-        xmlns:security='http://namespaces.zope.org/security'>
-       <security:permission id="extravagant" title="extravagant" />
-       <security:permission id="paltry" title="paltry" />
+        xmlns='http://namespaces.zope.org/zope' >
+       <permission id="extravagant" title="extravagant" />
+       <permission id="paltry" title="paltry" />
     </zopeConfigure>"""))
 
 NOTSET = []
@@ -74,8 +68,7 @@ class Test(CleanUp, unittest.TestCase):
         CleanUp.tearDown(self)
         TestModule.test_class = None
 
-    def assertState(self, instP=NOTSET,
-                    m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
+    def assertState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
         "Verify that class, instance, and methods have expected permissions."
 
         from Zope.Security.Checker import selectChecker
@@ -90,37 +83,27 @@ class Test(CleanUp, unittest.TestCase):
         apply_declaration(template_bracket % declaration)
         self.assertState(**state)
 
-    def testClass(self):
-        declaration = ("""<content class="%s">
-                            <security:require permission="%s" />
-                          </content>"""
-                       % (PREFIX+"test_class", P1))
-        self.assertDeclaration(declaration,
-                               instP=P1)
-
     # "testSimple*" exercises tags that do NOT have children.  This mode
     # inherently sets the instances as well as the class attributes.
 
     def testSimpleMethodsPlural(self):
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 permission="%s" 
                                 attributes="m1 m3"/>
                           </content>"""
                        % (PREFIX+"test_class", P1))
-        self.assertDeclaration(declaration,
-                               instP=P1, m1P=P1, m3P=P1)
+        self.assertDeclaration(declaration, m1P=P1, m3P=P1)
 
     def testSimpleInterface(self):
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 permission="%s" 
                                 interface="%s"/>
                           </content>"""
                        % (PREFIX+"test_class", P1, PREFIX+"I"))
         # m1 and m2 are in the interface, so should be set, and m3 should not:
-        self.assertDeclaration(declaration,
-                               instP=P1, m1P=P1, m2P=P1)
+        self.assertDeclaration(declaration, m1P=P1, m2P=P1)
 
     # "testComposite*" exercises tags that DO have children.
     # "testComposite*TopPerm" exercises tags with permission in containing tag.
@@ -129,7 +112,7 @@ class Test(CleanUp, unittest.TestCase):
     def testCompositeNoPerm(self):
         # Establish rejection of declarations lacking a permission spec.
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 attributes="m1"/>
                           </content>"""
                        % (PREFIX+"test_class"))
@@ -141,7 +124,7 @@ class Test(CleanUp, unittest.TestCase):
 
     def testCompositeMethodsPluralElementPerm(self):
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 permission="%s"
                                 attributes="m1 m3"/>
                           </content>"""
@@ -151,7 +134,7 @@ class Test(CleanUp, unittest.TestCase):
 
     def testCompositeInterfaceTopPerm(self):
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 permission="%s"
                                 interface="%s"/>
                           </content>"""
@@ -162,24 +145,23 @@ class Test(CleanUp, unittest.TestCase):
 
     def testSubInterfaces(self):
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 permission="%s"
                                 interface="%s"/>
                           </content>"""
                        % (PREFIX+"test_class", P1, PREFIX+"I2"))
         # m1 and m2 are in the interface, so should be set, and m3 should not:
-        self.assertDeclaration(declaration,
-                               instP=P1, m1P=P1, m2P=P1)
+        self.assertDeclaration(declaration, m1P=P1, m2P=P1)
 
 
     def testMimicOnly(self):
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 permission="%s"
                                 attributes="m1 m2"/>
                           </content>
                           <content class="%s">
-                            <security:mimic class="%s" />
+                            <require like_class="%s" />
                           </content>
                           """ % (PREFIX+"test_base", P1,
                 PREFIX+"test_class", PREFIX+"test_base"))
@@ -190,13 +172,13 @@ class Test(CleanUp, unittest.TestCase):
 
     def testMimicAsDefault(self):
         declaration = ("""<content class="%s">
-                            <security:require
+                            <require
                                 permission="%s"
                                 attributes="m1 m2"/>
                           </content>
                           <content class="%s">
-                            <security:mimic class="%s" />
-                            <security:require
+                            <require like_class="%s" />
+                            <require
                                 permission="%s"
                                 attributes="m2 m3"/>
                           </content>

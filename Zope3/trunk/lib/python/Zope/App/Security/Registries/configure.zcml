@@ -1,0 +1,40 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   package="Zope.App.Security"
+>
+
+  <serviceType
+      id="RoleService" 
+      interface=".IRoleService." />
+  <service
+      serviceType="RoleService" 
+      component=".Registries.RoleRegistry.roleRegistry" />
+
+  <serviceType
+      id="PermissionService" 
+      interface=".IPermissionService." />
+  <service
+      serviceType="PermissionService" 
+      component=".Registries.PermissionRegistry.permissionRegistry" />
+
+  <serviceType
+      id="AuthenticationService" 
+      interface=".IAuthenticationService." />
+  <service
+      serviceType="AuthenticationService" 
+      component=".Registries.PrincipalRegistry.principalRegistry" />
+
+  <!-- protect Roles and Permissions -->
+  <content class=".Registries.RoleRegistry.Role">
+    <allow
+        interface="Zope.App.Security.IRegisteredObject." />
+  </content>
+  <content class=".Registries.PermissionRegistry.Permission">
+    <allow
+        interface="Zope.App.Security.IRegisteredObject." />
+  </content>
+  
+</zopeConfigure>
+

@@ -20,7 +20,8 @@ from Zope.Publisher.mapply import mapply
 from Zope.Publisher.Exceptions import Retry
 from Zope.Security.SecurityManagement import getSecurityManager
 from Zope.Security.SecurityManagement import newSecurityManager
-from Zope.App.Security.PrincipalRegistry import principalRegistry as prin_reg
+from Zope.App.Security.Registries.PrincipalRegistry \
+     import principalRegistry as prin_reg
 from Zope.Exceptions import Unauthorized
 
 from ZODB.POSException import ConflictError
@@ -62,7 +63,7 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
     def beforeTraversal(self, request):
         id = prin_reg.authenticate(request)
         if id is None:
-            id = prin_reg.defaultPrincipal()
+            id = prin_reg.unauthenticatedPrincipal()
             if id is None:
                 raise Unauthorized # If there's no default principal
         newSecurityManager(id)

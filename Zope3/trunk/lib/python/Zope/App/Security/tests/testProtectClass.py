@@ -16,7 +16,7 @@
 import unittest
 
 from TestModuleHookup import *
-from Zope.App.Security.PermissionRegistry import permissionRegistry
+from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 from Zope.App.Security.protectClass import protectName, protectLikeUnto
 

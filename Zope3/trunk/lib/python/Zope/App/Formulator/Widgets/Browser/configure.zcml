@@ -1,20 +1,17 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
->
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
   <content class=".FileWidget.">
-    <security:require
+    <require
         permission="Zope.ManageContent" 
         attributes="render getContext" />
   </content>
   <content class=".TextAreaWidget.">
-    <security:require 
+    <require 
           permission="Zope.ManageContent" 
           attributes="render getContext" />
   </content>
   <content class=".TextWidget.">
-    <security:require
+    <require
           permission="Zope.ManageContent" 
           attributes="render getContext" />
   </content>
