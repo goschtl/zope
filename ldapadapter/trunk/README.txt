@@ -12,4 +12,5 @@ a LDAP server connection.
 
 Let's look at an example:
 
-  >>> from ldapadapter.interfaces import LDAPAdapter
+  >>> from ldapadapter.interfaces import ILDAPAdapter
+  >>> from ldapadapter.interfaces import ILDAPConnection
