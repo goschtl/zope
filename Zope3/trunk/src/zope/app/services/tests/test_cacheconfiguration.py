@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.9 2003/05/27 14:18:25 jim Exp $
+$Id: test_cacheconfiguration.py,v 1.10 2003/06/01 15:59:36 jim Exp $
 """
 __metaclass__ = type
 from unittest import TestCase, main, makeSuite
@@ -31,7 +31,7 @@ from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.service import ServiceConfiguration
 from zope.context import ContextMethod
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.app.interfaces.event import IObjectModifiedEvent
 
 

@@ -11,15 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Testing the interaction of Wrapper, ContextWrapper, ContextMethod etc.
+"""Testing the interaction of Wrapper, ContextMethod etc.
 
 Testing the Wrapper type's interaction with ContextDescriptors such as
-ContextMethod and ContextProperty, and the ContextWrapper factory function
-that creates a wrapper object, and checks for misuse of ContextDescriptors
+ContextMethod and ContextProperty, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.5 2003/05/27 14:18:30 jim Exp $
+$Id: test_wrapperinteraction.py,v 1.6 2003/06/01 15:59:40 jim Exp $
 """
 import sys
 import unittest
@@ -472,39 +471,12 @@ class TestWrapperOnObjectsWithDifferentSlots(unittest.TestCase):
         self.assertEqual(wrapped[0], 23)
         self.assertEqual(wrapped.__getitem__(0), 23)
 
-class TestContextWrapperFactory(unittest.TestCase):
-
-    pass
-
-# XXX commented this test out because of Jim's change in
-# src/zope/context/__init__.py
-
-##     def testClassicClassWarning(self):
-##         from types import ClassType
-##         class Classic:
-##             __metaclass__ = ClassType
-##             def foo(self):
-##                 pass
-
-##         class BadClassic:
-##             __metaclass__ = ClassType
-##             def foo(self):
-##                 pass
-##             foo = ContextMethod(foo)
-
-##         # ok if there are no ContextDescriptors 
-##         w = ContextWrapper(Classic(), None)
-
-##         # raises if there is a ContextDescriptor
-##         self.assertRaises(TypeError, ContextWrapper, BadClassic(), None)
-
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestNewStyleClass),
         unittest.makeSuite(TestNewStyleClassWithSlots),
         unittest.makeSuite(TestClassicClass),
         unittest.makeSuite(TestWrapperOnObjectsWithDifferentSlots),
-        unittest.makeSuite(TestContextWrapperFactory),
         ))
 
 

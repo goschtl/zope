@@ -13,14 +13,14 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.5 2003/05/28 15:45:59 jim Exp $
+$Id: onlinehelp.py,v 1.6 2003/06/01 15:59:25 jim Exp $
 """
 from zope.interface.implements import flattenInterfaces
 
 from zope.component import getService, getView
 from zope.publisher.browser import BrowserView
 from zope.app.traversing import getRoot
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.app.traversing import getParents, objectName
 from zope.proxy import removeAllProxies
 

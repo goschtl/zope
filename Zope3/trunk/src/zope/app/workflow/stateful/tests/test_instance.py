@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_instance.py,v 1.2 2003/05/27 14:18:29 jim Exp $
+$Id: test_instance.py,v 1.3 2003/06/01 15:59:39 jim Exp $
 """
 
 import unittest
@@ -32,7 +32,7 @@ from zope.security.checker import CheckerPublic
 from zope.security.management import newSecurityManager
 from zope.security.management import system_user
 
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.app.traversing import traverse
 
 from zope.app.container.zopecontainer import ZopeContainerAdapter
@@ -110,8 +110,9 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(self.service.createProcessInstance('definition1'),
-                                 self.rootFolder)
+        self.pi = ContextWrapper(
+            self.service.createProcessInstance('definition1'),
+            self.rootFolder)
 
 
     def testInterface(self):
@@ -187,12 +188,14 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         pd.transitions.setObject('initial_state2',
                                  Transition('INITIAL', 'state2',
                                             condition='not: data/value'))
-        pd.transitions.setObject('state1_state2',
-                                 Transition('state1', 'state2',
-                                            condition='python: data.text == "some text"'))
-        pd.transitions.setObject('state2_state1',
-                                 Transition('state2', 'state1',
-                                            condition='python: data.text == "no text"'))
+        pd.transitions.setObject(
+            'state1_state2',
+            Transition('state1', 'state2',
+                       condition='python: data.text == "some text"'))
+        pd.transitions.setObject(
+            'state2_state1',
+            Transition('state2', 'state1',
+                       condition='python: data.text == "no text"'))
         pd.transitions.setObject('state1_initial',
                                  Transition('state1', 'INITIAL'))
         pd.transitions.setObject('state2_initial',
@@ -206,8 +209,9 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(self.service.createProcessInstance('definition1'),
-                                 self.rootFolder)
+        self.pi = ContextWrapper(
+            self.service.createProcessInstance('definition1'),
+            self.rootFolder)
 
 
 
@@ -279,9 +283,10 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         pd.transitions.setObject('initial_state1',
                                  Transition('INITIAL', 'state1',
                                             script=lambda c: c['data'].value))
-        pd.transitions.setObject('initial_state2',
-                                 Transition('INITIAL', 'state2',
-                                            script=lambda c: not c['data'].value))
+        pd.transitions.setObject(
+            'initial_state2',
+            Transition('INITIAL', 'state2',
+                       script=lambda c: not c['data'].value))
         pd.transitions.setObject('state1_state2',
                                  Transition('state1', 'state2',
                                             script=transition_script1))
@@ -301,8 +306,9 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(self.service.createProcessInstance('definition1'),
-                                 self.rootFolder)
+        self.pi = ContextWrapper(
+            self.service.createProcessInstance('definition1'),
+            self.rootFolder)
 
 
 
@@ -371,17 +377,22 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         pd.states.setObject('state2', State())
         
         pd.transitions.setObject('initial_state1',
-                                 Transition('INITIAL', 'state1', permission=CheckerPublic))
+                                 Transition('INITIAL', 'state1',
+                                            permission=CheckerPublic))
         pd.transitions.setObject('initial_state2',
-                                 Transition('INITIAL', 'state2', permission='deny'))
+                                 Transition('INITIAL', 'state2',
+                                            permission='deny'))
         pd.transitions.setObject('state1_state2',
-                                 Transition('state1', 'state2', permission=CheckerPublic))
+                                 Transition('state1', 'state2',
+                                            permission=CheckerPublic))
         pd.transitions.setObject('state2_state1',
                                  Transition('state2', 'state1'))
         pd.transitions.setObject('state1_initial',
-                                 Transition('state1', 'INITIAL', permission='deny'))
+                                 Transition('state1', 'INITIAL',
+                                            permission='deny'))
         pd.transitions.setObject('state2_initial',
-                                 Transition('state2', 'INITIAL', permission=CheckerPublic))
+                                 Transition('state2', 'INITIAL',
+                                            permission=CheckerPublic))
 
         self.default.setObject('pd1', pd )
 
@@ -391,8 +402,9 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(self.service.createProcessInstance('definition1'),
-                                 self.rootFolder)
+        self.pi = ContextWrapper(
+            self.service.createProcessInstance('definition1'),
+            self.rootFolder)
 
 
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.9 2003/05/27 14:18:25 jim Exp $
+$Id: test_servicemanager.py,v 1.10 2003/06/01 15:59:36 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -171,7 +171,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.assertEqual(service, ts)
 
     def test_resolve(self):
-        from zope.context import ContextWrapper as cw
+        from zope.app.context import ContextWrapper as cw
         from zope.app.services.module import Manager
         import zope.app.services.tests.sample1
         import zope.app.services.tests.sample2

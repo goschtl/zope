@@ -14,13 +14,13 @@
 """\
 Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.3 2003/05/27 14:18:09 jim Exp $
+$Id: schemadisplay.py,v 1.4 2003/06/01 15:59:27 jim Exp $
 """
 
 from zope.schema import getFieldNamesInOrder
 
 from zope.configuration.action import Action
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker

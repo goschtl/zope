@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.4 2003/05/27 14:18:08 jim Exp $
+$Id: test_unauthorized.py,v 1.5 2003/06/01 15:59:27 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 
 class DummyPrincipal:

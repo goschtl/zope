@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.20 2003/05/30 06:10:58 fdrake Exp $
+$Id: interfaces.py,v 1.21 2003/06/01 15:59:41 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -62,35 +62,10 @@ class IField(Interface):
     containing a field. For example, when validating a value to be
     set as an object attribute, it may be necessary for the field to
     introspect the object's state. This means that the field needs to
-    have access to the object when performing validation.
-
-    We haven't really decided on the best way to approach providing
-    access to objects in field methods and properties. We've thought
-    of three approaches:
-
-    1. Always pass the object:
-
-         field.validate(value, object)
-
-    2. Bind the field to the object with a context wrapper:
-
-         field = ContextWrapper(field, object)
-         field.validate(value)
-
-    3. Provide a specialized binding protocol:
+    have access to the object when performing validation::
 
          bound = field.bind(object)
          bound.validate(value)
-
-    Options 2 and 3 allow us to use properties, but require an extra
-    binding step.
-
-    Option 1 and 3 will require a significant refactoring.
-
-    Option 2 requires us to make field methods, or at least the
-    validate method into ContextMethods, which is a bit intrusive.
-
-    For now, we will use option 3.
 
     """
 

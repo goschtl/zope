@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.21 2003/05/27 14:18:25 jim Exp $
+$Id: placefulsetup.py,v 1.22 2003/06/01 15:59:36 jim Exp $
 """
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
@@ -99,7 +99,7 @@ class PlacefulSetup(PlacelessSetup):
         #   |           \            |            |
         # folder1_1_1 folder1_1_2  folder1_2_1  folder2_1_1
         from zope.app.content.folder import Folder
-        from zope.context import ContextWrapper
+        from zope.app.context import ContextWrapper
         # top
         self.createRootFolder()
         # level 1

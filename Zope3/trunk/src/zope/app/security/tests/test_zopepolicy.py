@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.10 2003/05/27 14:18:24 jim Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.11 2003/06/01 15:59:35 jim Exp $
 """
 
 import unittest
@@ -25,7 +25,7 @@ from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
 
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.component import getService
 from zope.app.services.servicenames import Roles, Permissions, Adapters
 from zope.app.services.servicenames import Authentication

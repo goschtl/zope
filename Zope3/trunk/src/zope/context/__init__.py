@@ -16,57 +16,24 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.18 2003/05/28 23:15:26 jim Exp $
+$Id: __init__.py,v 1.19 2003/06/01 15:59:40 jim Exp $
 """
 from __future__ import generators
 
 __metaclass__ = type
 
-
 from zope.interface import moduleProvides
-from zope.security.proxy import Proxy, getChecker
 from zope.context.wrapper import getdict, getdictcreate
 from zope.context.wrapper import getcontext, getinnercontext
 from zope.context.wrapper import getinnerwrapper, getbaseobject
 from zope.context.wrapper import ContextDescriptor, ContextAware
 from zope.context.wrapper import ContextMethod, ContextProperty
 from zope.context.wrapper import Wrapper
-from zope.security.checker import defineChecker, selectChecker, BasicTypes
 from zope.proxy import queryProxy, queryInnerProxy, isProxy, getProxiedObject
-from zope.context.interfaces import IContextWrapper
-from zope.hookable import hookable
+from zope.context.interfaces import IWrapperIntrospection
 
-moduleProvides(IContextWrapper)
-__all__ = tuple(IContextWrapper)
-
-def ContextWrapper(_ob, _parent, **kw):
-    
-    if type(_ob) in BasicTypes:
-        # Don't wrap basic objects
-        return _ob
-
-    wrapper = queryProxy(_ob, Wrapper, kw)
-    if wrapper is not kw: # using kw as marker
-        if _parent is getcontext(wrapper):
-            # This would be a redundant wrapper. We'll just use the
-            # one we've got.
-
-            # But we want tp make sure we have the same data
-            if kw:
-                dict = getdictcreate(wrapper)
-                dict.update(kw)
-            return _ob
-
-    if type(_ob) is Proxy:
-        # insert into proxies
-        checker = getChecker(_ob)
-        _ob = getProxiedObject(_ob)
-        _ob = Proxy(Wrapper(_ob, _parent, **kw), checker)
-    else:
-        _ob = Wrapper(_ob, _parent, **kw)
-
-    return _ob
-ContextWrapper = hookable(ContextWrapper)
+moduleProvides(IWrapperIntrospection)
+__all__ = tuple(IWrapperIntrospection)
 
 def getWrapperData(_ob, create=False):
     wrapper = queryProxy(_ob, Wrapper)
@@ -123,26 +90,6 @@ def ContextIterator(obj):
         wrapper = queryProxy(obj, Wrapper)
 
     yield obj
-
-def getItem(collection, name):
-    return ContextWrapper(collection[name], collection, name=name)
-
-def getAttr(collection, name):
-    return ContextWrapper(getattr(collection, name), collection, name=name)
-
-def queryItem(collection, name, default=None):
-    return ContextWrapper(collection.get(name, default),
-                          collection, name=name)
-
-def queryAttr(collection, name, default=None):
-    return ContextWrapper(getattr(collection, name, default),
-                          collection, name=name)
-
-
-# XXX Do I actually need these?
-def _contextWrapperChecker(ob):
-    return selectChecker(getProxiedObject(ob))
-defineChecker(Wrapper, _contextWrapperChecker)
 
 class ContextSuper:
 

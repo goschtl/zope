@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_objectname.py,v 1.8 2003/05/27 14:18:10 jim Exp $
+$Id: test_objectname.py,v 1.9 2003/06/01 15:59:28 jim Exp $
 """
 from unittest import TestCase, main, makeSuite
 from zope.interface import Interface
@@ -30,7 +30,7 @@ from zope.publisher.tests.httprequest import TestRequest
 from zope.publisher.http import IHTTPRequest
 from zope.publisher.http import HTTPCharsets
 
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 
 from zope.app.browser.objectname \
     import ObjectNameView, SiteObjectNameView

@@ -13,14 +13,16 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.3 2003/05/28 13:16:08 stevea Exp $
+$Id: zapi.py,v 1.4 2003/06/01 15:59:33 jim Exp $
 """
 from zope.component.interfaces import IComponentArchitecture
-from zope.context.interfaces import IContextWrapper
+from zope.app.interfaces.context import IContextWrapper
+from zope.context.interfaces import IWrapperIntrospection
 
 class IZAPI(
     IComponentArchitecture,
     IContextWrapper,
+    IWrapperIntrospection,
     ):
     """Convenience API for use with Zope applications.
     """

@@ -13,14 +13,14 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.13 2003/05/28 15:46:11 jim Exp $
+$Id: test_view.py,v 1.14 2003/06/01 15:59:36 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.iconfigurable import TestingIConfigurable
 from zope.app.services.view import ViewService
 from zope.interface import Interface, directlyProvides
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager

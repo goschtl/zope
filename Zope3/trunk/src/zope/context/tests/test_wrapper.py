@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.17 2003/05/29 18:53:44 jim Exp $
+$Id: test_wrapper.py,v 1.18 2003/06/01 15:59:40 jim Exp $
 """
 import pickle
 import unittest
 
 from zope.proxy import getProxiedObject
-from zope.context import ContextWrapper, wrapper
+from zope.context import Wrapper, wrapper
 from zope.context import ContextMethod, ContextProperty, ContextAware
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
@@ -200,7 +200,7 @@ class WrapperTestCase(ProxyTestCase):
 
     def test_ContextAware_doesnt_mess_up___class__(self):
         class C(ContextAware): pass
-        self.assertEqual(ContextWrapper(C(), None).__class__, C)
+        self.assertEqual(Wrapper(C(), None).__class__, C)
 
     def test_ContextMethod_getattr(self):
         class Z(object):

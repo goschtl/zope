@@ -14,13 +14,14 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.2 2003/05/27 14:18:28 jim Exp $
+$Id: service.py,v 1.3 2003/06/01 15:59:38 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 
-from zope.context import ContextMethod, ContextWrapper
+from zope.app.context import ContextWrapper
+from zope.context import ContextMethod
 
 from zope.component import getAdapter
 from zope.app.component.nextservice import queryNextService

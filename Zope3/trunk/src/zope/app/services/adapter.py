@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.15 2003/05/27 14:18:24 jim Exp $
+$Id: adapter.py,v 1.16 2003/06/01 15:59:36 jim Exp $
 """
 __metaclass__ = type
 
@@ -28,7 +28,7 @@ from zope.app.services.servicenames import Adapters
 from zope.app.interfaces.services.configuration import IConfigurable
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.configuration import SimpleConfiguration
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.context import ContextMethod
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.component.nextservice import getNextService

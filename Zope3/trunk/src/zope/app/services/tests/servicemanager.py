@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: servicemanager.py,v 1.4 2003/05/27 14:18:25 jim Exp $
+$Id: servicemanager.py,v 1.5 2003/06/01 15:59:36 jim Exp $
 """
 
 __metaclass__ = type
 
 from zope.component.interfaces import IServiceService
 from zope.app.component.nextservice import getNextServiceManager
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.app.interfaces.services.service import IBindingAware
 from zope.context import ContextMethod
 

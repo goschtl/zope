@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.8 2003/05/28 15:46:02 jim Exp $
+$Id: __init__.py,v 1.9 2003/06/01 15:59:28 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -27,7 +27,8 @@ from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getPath, traverse
 from zope.component import getView, getServiceManager, getAdapter
-from zope.context import getWrapperContainer, ContextWrapper
+from zope.context import getWrapperContainer
+from zope.app.context import ContextWrapper
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 

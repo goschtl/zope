@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.28 2003/05/28 15:46:11 jim Exp $
+$Id: configuration.py,v 1.29 2003/06/01 15:59:36 jim Exp $
 """
 __metaclass__ = type
 
@@ -46,8 +46,8 @@ from zope.app.traversing import getRoot, getPath, traverse
 from zope.app.traversing import canonicalPath
 from zope.component import getAdapter, queryAdapter
 from zope.component import getServiceManager
-from zope.context import ContextMethod, ContextWrapper
-from zope.context import ContextDescriptor
+from zope.app.context import ContextWrapper
+from zope.context import ContextMethod, ContextDescriptor
 from zope.proxy import removeAllProxies
 from zope.security.checker import InterfaceChecker
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy

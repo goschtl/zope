@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for configuration classes
 
-$Id: test_configurations.py,v 1.5 2003/05/27 14:18:25 jim Exp $
+$Id: test_configurations.py,v 1.6 2003/06/01 15:59:36 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,7 +28,7 @@ from zope.app.services.tests.placefulsetup \
         import PlacefulSetup
 from zope.app.services.tests.servicemanager \
         import TestingServiceManager
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.app.interfaces.dependable import IDependable
 from zope.app.traversing import traverse
 from zope.security.proxy import Proxy

@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.7 2003/05/29 21:53:31 gvanrossum Exp $
+$Id: module.py,v 1.8 2003/06/01 15:59:36 jim Exp $
 """
 
 from persistence import Persistent
@@ -30,7 +30,7 @@ from zope.interface import implements
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.file import IFileFactory
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 
 
 class Registry:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper classes for local view configuration.
 
-$Id: view.py,v 1.16 2003/05/27 14:18:09 jim Exp $
+$Id: view.py,v 1.17 2003/06/01 15:59:27 jim Exp $
 """
 __metaclass__ = type
 
@@ -23,7 +23,7 @@ from zope.interface import Interface
 from zope.schema import TextLine, BytesLine
 from zope.component.interfaces import IPresentation
 from zope.component import getAdapter, getServiceManager, getView
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.publisher.browser import BrowserView
 
 from zope.app.component.interfacefield import InterfaceField

@@ -13,14 +13,14 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.13 2003/05/27 14:18:25 jim Exp $
+$Id: test_adapter.py,v 1.14 2003/06/01 15:59:36 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.iconfigurable import TestingIConfigurable
 from zope.app.services.adapter import AdapterService
 from zope.interface import Interface, directlyProvides
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager

@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.11 2003/05/27 14:18:14 jim Exp $
+$Id: test_zptpage.py,v 1.12 2003/06/01 15:59:30 jim Exp $
 """
 
 import unittest
@@ -37,7 +37,8 @@ from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.traversing import ITraversable
 from zope.component.adapter import provideAdapter
-from zope.context import Wrapper, ContextWrapper, getInnerWrapperData
+from zope.app.context import ContextWrapper
+from zope.context import Wrapper, getInnerWrapperData
 from zope.security.checker import NamesChecker, defineChecker
 
 class Data(object):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.11 2003/05/28 15:47:48 jim Exp $
+$Id: interfaces.py,v 1.12 2003/06/01 15:59:40 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -118,22 +118,8 @@ class IWrapper(Interface):
         """Raises AttributeError if called (to prevent pickling)"""
 
 
-class IContextWrapper(Interface):
+class IWrapperIntrospection(Interface):
     """Wrapper API provided to applications."""
-
-    def ContextWrapper(object, parent, **data):
-        """Create a context wrapper for object in parent
-
-        If the object is in a security proxy, then result will be
-        a security proxy for the unproxied object in context.
-
-        Consider an object, o1, in a proxy p1 with a checker c1.
-
-        If we call ContextWrapper(p1, parent, name='foo'), then we'll
-        get::
-
-          Proxy(Wrapper(o1, parent, name='foo'), c1)
-        """
 
     def getWrapperData(ob):
         """Get the context wrapper data for an object"""

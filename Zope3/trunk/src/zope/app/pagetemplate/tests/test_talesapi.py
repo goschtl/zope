@@ -13,7 +13,7 @@
 ##############################################################################
 """Tales API Tests
 
-$Id: test_talesapi.py,v 1.3 2003/05/27 14:18:20 jim Exp $
+$Id: test_talesapi.py,v 1.4 2003/06/01 15:59:34 jim Exp $
 """
 
 from zope.testing.doctestunit import DocTestSuite
@@ -22,7 +22,7 @@ from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from datetime import datetime
 from zope.app.pagetemplate.talesapi import ZopeTalesAPI
-from zope.context import ContextWrapper
+from zope.app.context import ContextWrapper
 
 class TestObject(object):
 
