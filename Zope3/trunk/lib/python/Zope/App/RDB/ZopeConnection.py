@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZopeConnection.py,v 1.3 2002/07/24 23:17:04 jeremy Exp $
+$Id: ZopeConnection.py,v 1.4 2002/08/10 15:58:53 alga Exp $
 """
 from IZopeConnection import IZopeConnection
 from IZopeCursor import IZopeCursor
@@ -31,7 +31,7 @@ class ZopeConnection:
 
     def __getattr__(self, key):
         # The IDBIConnection interface is hereby implemented
-        return self.__dict__.get(key, getattr(self.conn, key))
+        return getattr(self.conn, key)
 
     ############################################################
     # Implementation methods for interface
