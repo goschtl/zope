@@ -93,4 +93,20 @@ class DynamicType:
     security.declarePublic('icon')
     icon = getIcon  # For the ZMI
 
+    def __before_publishing_traverse__(self, arg1, arg2=None):
+        """ Pre-traversal hook.
+        """
+        # XXX hack around a bug(?) in BeforeTraverse.MultiHook
+        REQUEST = arg2 or arg1
+
+        stack = REQUEST['TraversalRequestNameStack']
+        key = stack and stack[-1] or '(Default)'
+        alias = self.getTypeInfo().getAlias(key)
+        if alias:
+            if key is not '(Default)':
+                stack.pop()
+            for id in alias:
+                if id is not '(Default)':
+                    stack.append(id)
+
 InitializeClass(DynamicType)

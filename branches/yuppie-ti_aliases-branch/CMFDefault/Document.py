@@ -44,20 +44,24 @@ They may also contain HTML, or "plain" text.
   , 'immediate_view' : 'metadata_edit_form'
   , 'actions'        : ( { 'id'            : 'view' 
                          , 'name'          : 'View'
-                         , 'action': 'string:${object_url}/document_view'
+                         , 'action': 'string:${object_url}/view'
                          , 'permissions'   : (View,)
                          }
                        , { 'id'            : 'edit'
                          , 'name'          : 'Edit'
-                         , 'action': 'string:${object_url}/document_edit_form'
+                         , 'action': 'string:${object_url}/edit'
                          , 'permissions'   : (ModifyPortalContent,)
                          }
                        , { 'id'            : 'metadata'
                          , 'name'          : 'Metadata'
-                         , 'action': 'string:${object_url}/metadata_edit_form'
+                         , 'action': 'string:${object_url}/metadata'
                          , 'permissions'   : (ModifyPortalContent,)
                          }
                        )
+  , 'aliases'        : {'(Default)':'document_view',
+                        'view':'document_view',
+                        'edit':'document_edit_form',
+                        'metadata':'metadata_edit_form'}
   }
 ,
 )

@@ -49,7 +49,7 @@ factory_type_information = (
                          }
                        , { 'id'            : 'edit'
                          , 'name'          : 'Edit'
-                         , 'action': 'string:${object_url}/folder_edit_form'
+                         , 'action': 'string:${object_url}/edit'
                          , 'permissions'   : (ManageProperties,)
                          , 'category'      : 'folder'
                          }
@@ -61,6 +61,10 @@ factory_type_information = (
                          , 'category'      : 'folder'
                          }
                        )
+  , 'aliases'        : {'(Default)':'index_html',
+                        'view':'index_html',
+                        'index.html':'index_html',
+                        'edit':'folder_edit_form'}
   }
 ,
 )

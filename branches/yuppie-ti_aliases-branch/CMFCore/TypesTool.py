@@ -25,6 +25,7 @@ from Acquisition import aq_base
 from Acquisition import aq_get
 from zLOG import LOG, WARNING, ERROR
 from OFS.Folder import Folder
+from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 import Products
 
 from interfaces.portal_types import ContentTypeInformation as ITypeInformation
@@ -40,6 +41,7 @@ from utils import UniqueObject
 from utils import SimpleItemWithProperties
 from utils import _dtmldir
 from utils import _checkPermission
+from utils import _wwwdir
 from utils import cookString
 from utils import getActionContext
 
@@ -145,7 +147,9 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
                           , visible=action.get( 'visible', 1 )
                           )
 
-        
+        aliases = kw.get( 'aliases', {} )
+        self.setAliases(aliases)
+
 
     #
     #   Accessors
@@ -311,6 +315,48 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
             ob.notifyWorkflowCreated()
 
         return ob
+
+    security.declareProtected(ManagePortal, 'getAliases')
+    def getAliases(self):
+        """ Get aliases dict.
+        """
+        return getattr( self, 'aliases', {} )
+
+    security.declareProtected(ManagePortal, 'setAliases')
+    def setAliases(self, aliases):
+        """ Set aliases dict.
+        """
+        dict = {}
+        for k, v in aliases.items():
+            v = v.strip()
+            if v:
+                path = v.split('/')
+                path.reverse()
+                dict[ k.strip() ] = tuple(path)
+        if not self.getAliases() == dict:
+            self.aliases = dict
+            return 1
+        else:
+            return 0
+
+    security.declarePublic('getAlias')
+    def getAlias(self, key):
+        """ Get alias path for key in reverse order.
+        
+        Returns -- Tuple of IDs
+        """
+        aliases = getattr( self, 'aliases', {} )
+        return aliases.get( key, () )
+
+    security.declarePublic('getAliasURL')
+    def getAliasURL(self, key):
+        """ Get alias for key.
+        
+        Returns -- Slash-separated string
+        """
+        path = list( self.getAlias(key) )
+        path.reverse()
+        return '/'.join(path)
 
 InitializeClass( TypeInformation )
 
@@ -508,17 +554,23 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( Folder.manage_options +
-                      ActionProviderBase.manage_options +
-                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     , 
-                     ))
+    manage_options = ( Folder.manage_options[:1]
+                     + ( {'label':'Aliases',
+                          'action':'manage_aliases'}, )
+                     + ActionProviderBase.manage_options
+                     + ( {'label':'Overview',
+                          'action':'manage_overview'}, )
+                     + Folder.manage_options[1:]
+                     )
 
     #
     #   ZMI methods
     #
     security.declareProtected(ManagePortal, 'manage_overview')
     manage_overview = DTMLFile( 'explainTypesTool', _dtmldir )
+
+    security.declareProtected(ManagePortal, 'manage_aliases')
+    manage_aliases = PageTemplateFile( 'typesAliases.zpt', _wwwdir )
 
     def all_meta_types(self):
         """Adds TypesTool-specific meta types."""
@@ -617,6 +669,25 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
         self._setObject(id, ob)
         if RESPONSE is not None:
             RESPONSE.redirect('%s/manage_main' % self.absolute_url())
+
+    security.declareProtected(ManagePortal, 'manage_setTIAliases')
+    def manage_setTIAliases(self, REQUEST):
+        """ Config aliases.
+        """
+        form = REQUEST.form
+        aliases = {}
+        for k, v in form['aliases'].items():
+            v = v.strip()
+            if v:
+                aliases[k] = v
+        
+        for ti in self.listTypeInfo():
+            dict = {}
+            for k, v in form[ ti.getId() ].items():
+                if aliases.has_key(k):
+                    dict[ aliases[k] ] = v
+            ti.setAliases(dict)
+        REQUEST.RESPONSE.redirect('%s/manage_aliases' % self.absolute_url())
 
     security.declareProtected(AccessContentsInformation, 'getTypeInfo')
     def getTypeInfo( self, contentType ):
@@ -737,5 +808,18 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
                 actions.extend( type_info.listActions( info ) )
 
         return actions
+
+    security.declareProtected(ManagePortal, 'listAliasKeys')
+    def listAliasKeys(self):
+        """ List defined aliases.
+        """
+        dict = {}
+        for ti in self.listTypeInfo():
+            aliases = ti.getAliases()
+            for alias, v in aliases.items():
+                dict[alias] = 1
+        rval = dict.keys()
+        rval.sort()
+        return rval
 
 InitializeClass( TypesTool )
