@@ -72,7 +72,7 @@ class simplepagelet(object):
         self.view = view
 
     def __getitem__(self, name):
-        """Get the macro by name."""
+        """Get the zpt code defined in 'define-macro' by name."""
         return self._template.macros[name]
 
     def _getWeight (self):
@@ -89,7 +89,7 @@ def pagelet(_context, name, slot, permission, for_=Interface,
     required = {}
 
     # set permission checker
-    permission = _handle_permission(_context, permission)
+    permission = _handle_permission(permission)
 
     if not name:
         raise ConfigurationError("Must specify name.")
@@ -104,12 +104,10 @@ def pagelet(_context, name, slot, permission, for_=Interface,
     if not os.path.isfile(template):
         raise ConfigurationError("No such file", template)
 
-    required['__getitem__'] = permission
-
     new_class = PageletClass(template, weight, bases=(simplepagelet, ))
 
     # set permissions
-    for n in ('__getitem__', '__call__', 'weight'):
+    for n in ('__getitem__', 'weight'):
         required[n] = permission
 
     #register interface
@@ -148,7 +146,7 @@ def _handle_check_interface(_context, iface, baseIface):
             args = (iface, baseIface)
             )
 
-def _handle_permission(_context, permission):
+def _handle_permission(permission):
     if permission == 'zope.Public':
         permission = CheckerPublic
     return permission

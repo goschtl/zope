@@ -17,6 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import sys
 from zope.interface import Interface, implements
 
 from zope.security.checker import NamesChecker
@@ -44,7 +45,8 @@ class TestPagelet(object):
 
     implements(IPagelet)
 
-    _template = ViewPageTemplateFile('testfiles/test_pagelet.pt')
+    frame = sys._getframe(1).f_globals
+    _template = ViewPageTemplateFile('testfiles/test_pagelet.pt', frame)
     _weight = 0
 
     def __init__(self, context, request, view, ignored):
@@ -81,4 +83,4 @@ class TestClass(object):
         return "A demo string."
 
 
-testChecker = NamesChecker(('__getitem__', 'request', 'weight'))
+testChecker = NamesChecker(['__getitem__', '__call__', 'weight'])
