@@ -149,7 +149,7 @@
     />
 
   <page
-     for = "zope.component.interfaces.IAdapterService."
+     for = "zope.component.interfaces.IAdapterService"
      name = "index.html"
      template = "adapter_search.pt"
      permission="zope.ManageServices"

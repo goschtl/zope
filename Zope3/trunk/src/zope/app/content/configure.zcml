@@ -355,8 +355,8 @@
 
   <require
       permission = "zope.ManageContent"
-      interface = "zope.app.interfaces.content.sql.ISQLScript."
-      set_schema = "zope.app.interfaces.content.sql.ISQLScript."
+      interface = "zope.app.interfaces.content.sql.ISQLScript"
+      set_schema = "zope.app.interfaces.content.sql.ISQLScript"
       />
 
   <require

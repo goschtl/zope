@@ -27,7 +27,7 @@
       schema="zope.app.interfaces.content.file.IFile"
       label="Upload a file"
       permission="zope.ManageContent"
-      class=".file.FileUpload."
+      class=".file.FileUpload"
       />
 
   <browser:page
@@ -121,7 +121,7 @@
       menu="zmi_views" title="Upload"
       label="Upload an image"
       permission="zope.ManageContent"
-      class=".image.ImageUpload."
+      class=".image.ImageUpload"
       template="imageedit.pt"
       />
 
