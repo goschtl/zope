@@ -251,119 +251,6 @@ class CombinedChecker(TrustedCheckerBase):
 
         return Proxy(value, checker)
 
-
-class DecoratedChecker(TrustedCheckerBase):
-    """A checker using further permissions relative to an original checker.
-    """
-    implements(IChecker)
-
-    def __init__(self, original_checker, permission_func,
-                 setattr_permission_func=lambda name: None
-                 ):
-        """Create a decorated checker
-
-        A dictionary or a callable must be provided for computing permissions
-        for names. The callable will be called with attribute names and must
-        return a permission id, None, or the special marker, CheckerPublic. If
-        None is returned, then access to the name is decided by
-        original_checker. If CheckerPublic is returned, then access will be
-        granted without checking a permission.
-
-        An optional setattr permission function or dictionary may be
-        provided for checking set attribute access.
-        """
-        self._original_checker = original_checker
-
-        if type(permission_func) is dict:
-            permission_func = permission_func.get
-        self._permission_func = permission_func
-
-        if type(setattr_permission_func) is dict:
-            setattr_permission_func = setattr_permission_func.get
-        self._setattr_permission_func = setattr_permission_func
-
-        if INameBasedChecker.providedBy(original_checker):
-            directlyProvides(self, INameBasedChecker)
-
-    def permission_id(self, name):
-        'See INameBasedChecker'
-        permission = self._permission_func(name)
-        if permission is None:
-            permission = self._original_checker.permission_id(name)
-        return permission
-
-    def setattr_permission_id(self, name):
-        'See INameBasedChecker'
-        permission = self._setattr_permission_func(name)
-        if permission is None:
-            permission = self._original_checker.setattr_permission_id(name)
-        return permission
-
-    def check(self, object, name):
-        'See IChecker'
-        permission = self._permission_func(name)
-        if permission is not None:
-            if permission is CheckerPublic:
-                return # Public
-            policy = getSecurityPolicy()
-            interaction = queryInteraction()
-            if policy.checkPermission(permission, object, interaction):
-                return
-            else:
-                __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized, name
-        else:
-            # let the original checker decide
-            self._original_checker.check(object, name)
-            return
-
-    def check_getattr(self, object, name):
-        'See IChecker'
-        permission = self._permission_func(name)
-        if permission is not None:
-            if permission is CheckerPublic:
-                return # Public
-            policy = getSecurityPolicy()
-            interaction = queryInteraction()
-            if policy.checkPermission(permission, object, interaction):
-                return
-            else:
-                __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized, name
-        else:
-            # let the original checker decide
-            self._original_checker.check_getattr(object, name)
-            return
-
-    def check_setattr(self, object, name):
-        'See IChecker'
-        permission = self._setattr_permission_func(name)
-        if permission is not None:
-            if permission is CheckerPublic:
-                return # Public
-            policy = getSecurityPolicy()
-            interaction = queryInteraction()
-            if policy.checkPermission(permission, object, interaction):
-                return
-            else:
-                __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized, name
-        else:
-            # let the original checker decide
-            self._original_checker.check_setattr(object, name)
-            return
-
-    def proxy(self, value):
-        'See IChecker'
-        checker = getattr(value, '__Security_checker__', None)
-        if checker is None:
-            checker = selectChecker(value)
-            if checker is None:
-                return value
-
-        return Proxy(value, checker)
-
-
 class CheckerLoggingMixin:
     """Debugging mixin for checkers.
 
@@ -436,8 +323,6 @@ if WATCH_CHECKERS:
     class Checker(CheckerLoggingMixin, Checker):
         verbosity = WATCH_CHECKERS
     class CombinedChecker(CheckerLoggingMixin, CombinedChecker):
-        verbosity = WATCH_CHECKERS
-    class DecoratedChecker(CheckerLoggingMixin, DecoratedChecker):
         verbosity = WATCH_CHECKERS
 
 

@@ -427,29 +427,6 @@ class TestMixinDecoratedChecker(TestCase):
 
     overridingChecker = Checker(decorationGetMap, decorationSetMap)
 
-class TestDecoratedChecker(TestMixinDecoratedChecker, TestCase):
-
-    def setUp(self):
-        TestCase.setUp(self)
-        self.decoratedSetUp()
-
-    def tearDown(self):
-        self.decoratedTearDown()
-        TestCase.tearDown(self)
-
-    def test_checking(self):
-        from zope.security.checker import DecoratedChecker
-        dc = DecoratedChecker(self.originalChecker,
-                              self.decorationGetMap, self.decorationSetMap)
-        self.check_checking_impl(dc)
-
-    def test_interface(self):
-        from zope.security.checker import DecoratedChecker
-        from zope.security.interfaces import IChecker
-        c = self.originalChecker
-        dc = DecoratedChecker(c, {}, {})
-        verifyObject(IChecker, dc)
-
 class TestCombinedChecker(TestMixinDecoratedChecker, TestCase):
 
     def setUp(self):
@@ -489,7 +466,6 @@ def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(TestCheckerPublic),
-        makeSuite(TestDecoratedChecker),
         makeSuite(TestCombinedChecker),
         ))
 
