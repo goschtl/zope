@@ -15,10 +15,11 @@
 This test suite tests all **registered** fields. The other fields are there
 for historical reasons and may or may not make it into Zope 3.
 
-$Id: testGenericFields.py,v 1.2 2002/06/10 23:27:48 jim Exp $
+$Id: testGenericFields.py,v 1.3 2002/07/17 23:12:01 jeremy Exp $
 """
 
 import unittest
+
 from Zope.App.Formulator.Fields.Generic.DateTimeField import DateTimeField
 from Zope.App.Formulator.Fields.Generic.EmailField import EmailField
 from Zope.App.Formulator.Fields.Generic.FileField import FileField
@@ -29,9 +30,14 @@ from Zope.App.Formulator.Fields.Generic.PasswordField import PasswordField
 from Zope.App.Formulator.Fields.Generic.PatternField import PatternField
 from Zope.App.Formulator.Fields.Generic.StringField import StringField
 
+from Zope.App.Formulator.Fields.Generic.DateTimeField \
+     import create_datetime_text_sub_form, create_datetime_list_sub_form
 
-class Test( unittest.TestCase ):
+class Test(unittest.TestCase):
 
+    def testBroken(self):
+        create_datetime_text_sub_form()
+        create_datetime_list_sub_form()
 
     def testDateTimeField(self):
         field = DateTimeField(id='some',
@@ -162,9 +168,7 @@ class Test( unittest.TestCase ):
 
 
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
-
+    return unittest.makeSuite(Test)
 
 if __name__=='__main__':
     unittest.TextTestRunner().run( test_suite() )
