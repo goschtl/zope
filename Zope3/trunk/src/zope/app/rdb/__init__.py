@@ -17,8 +17,10 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.13 2003/06/09 15:02:45 stevea Exp $
+$Id: __init__.py,v 1.14 2003/06/09 15:31:57 stevea Exp $
 """
+__metaclass__ = type
+
 from types import StringTypes
 
 from persistence import Persistent
@@ -26,7 +28,7 @@ from persistence import Persistent
 from transaction import get_transaction
 from transaction.interfaces import IDataManager
 
-from zope.security import checker
+from zope.security.checker import NamesChecker
 
 from zope.interface import implements
 
@@ -259,8 +261,9 @@ class ZopeCursor:
         converters = [getConverter(col_info[1])
                       for col_info in self.cursor.description]
 ## A possible optimization -- need benchmarks to check if it is worth it
-##      if filter(lambda x: x is not ZopeDatabaseAdapter.identity, converters):
+##      if [x for x in converters if x is not ZopeDatabaseAdapter.identity]:
 ##          return results  # optimize away
+
         def convertRow(row):
             return map(lambda converter, value: converter(value),
                        converters, row)
@@ -296,7 +299,6 @@ class ZopeConnection:
         self._txn_registered = False
         self.conn.commit()
 
-
     def rollback(self):
         'See IDBIConnection'
         self._txn_registered = False
@@ -315,7 +317,7 @@ def queryForResults(conn, query):
 
     try:
         cursor.execute(query)
-    except Exception, error:
+    except Exception, error:  # XXX This looks a bit yucky.
         raise DatabaseException(str(error))
 
     if cursor.description is not None:
@@ -374,21 +376,28 @@ class Row(object):
                 return c
         return 0
 
+class InstanceOnlyDescriptor:
+    __marker = object()
+    def __init__(self, value=__marker):
+        if value is not self.__marker:
+            self.value = value
+
+    def __get__(self, inst, cls=None):
+        if inst is None:
+            raise AttributeError
+        return self.value
+
+    def __set__(self, inst, value):
+        self.value = value
+
+    def __delete__(self, inst):
+        del self.value
 
 def RowClassFactory(columns):
     """Creates a Row object"""
     klass_namespace = {}
-
-    #XXX +['__bases__'] is described below
-    #
-    #<SteveA> the class is supposed to provide the attributes for the instancesa
-    #<SteveA> but, either the checker selection thing needs to ignore it for types
-    #<SteveA> (which is ropey when you're working with metatypes)
-    #<SteveA> or, it really should be a descriptor that doesn't @#$% with the value on the class
-    #
-    #unit tests indicate columns will be tupled
-    #queryForResults indicate columns will be a list - so we cast to tuple
-    klass_namespace['__Security_checker__'] = checker.NamesChecker(tuple(columns)+('__bases__',))
+    klass_namespace['__Security_checker__'] = InstanceOnlyDescriptor(
+        NamesChecker(columns))
     klass_namespace['__slots__'] = tuple(columns)
 
     return type('GeneratedRowClass', (Row,), klass_namespace)
