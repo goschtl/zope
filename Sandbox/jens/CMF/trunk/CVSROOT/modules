@@ -3,6 +3,24 @@ embedded -a Components/principia Components/ExtensionClass Components/cPickle \
   Packages/Aqueduct Packages/DocumentTemplate Packages/SearchIndex
 
 
-BoboPOS2 Packages/BoboPOS2
-z Components/GreyThing &BoboPOS2
+AccessControl    Packages/AccessControl
+App              Packages/App
+BoboPOS2         Packages/BoboPOS2
+DateTime         Packages/DateTime
+DocumentTemplate Packages/DocumentTemplate
+HTTP_ORB         Packages/HTTP_ORB
+OFS              Packages/OFS
+PrincipiaHelp    Packages/PrincipiaHelp
+Scheduler        Packages/Scheduler
+StructuredText   Packages/StructuredText
+TreeDisplay      Packages/TreeDisplay
+OFSP -d Products/OFSP Packages/Products/OFSP
+MailHost -d Products/MailHost Packages/Products/MailHost
+
+z Components/GreyThing \
+  &AccessControl &App &BoboPOS2 &DateTime &DocumentTemplate \
+  &HTTP_ORB &OFS &PrincipiaHelp &StructuredText &TreeDisplay \
+  &OFSP &MailHost
+
+
 
