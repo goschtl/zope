@@ -115,16 +115,17 @@ class Test(TestCase):
         self.assertEqual(wids, [2])
         
     def testSplitterLocaleAwareness(self):
-        if sys.platform == 'darwin':
-            return # This test doesn't work on Mac OSX :-(
         from Zope.TextIndex.HTMLSplitter import HTMLWordSplitter
         import locale
         loc = locale.setlocale(locale.LC_ALL) # get current locale
          # set German locale
-        if sys.platform != 'win32':
-            locale.setlocale(locale.LC_ALL, 'de_DE.ISO8859-1')
-        else:
-            locale.setlocale(locale.LC_ALL, 'German_Germany.1252')
+        try:
+            if sys.platform != 'win32':
+                locale.setlocale(locale.LC_ALL, 'de_DE.ISO8859-1')
+            else:
+                locale.setlocale(locale.LC_ALL, 'German_Germany.1252')
+        except locale.Error:
+            return # This test doesn't work here :-(
         words = ['mülltonne waschbär behörde überflieger']
         words = Splitter().process(words)
         self.assertEqual(
