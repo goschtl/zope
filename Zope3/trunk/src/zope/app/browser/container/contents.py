@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.25 2003/08/06 14:41:36 srichter Exp $
+$Id: contents.py,v 1.26 2003/09/19 15:18:50 gotcha Exp $
 """
 
 from zope.app import zapi
@@ -84,6 +84,9 @@ class Contents(BrowserView):
             # Only redirect if nothing else has
             request.response.redirect(request.URL)
         return ()
+
+    def normalListContentInfo(self):
+        return self._normalListContentsInfo()
 
     def _normalListContentsInfo(self):
         request = self.request
