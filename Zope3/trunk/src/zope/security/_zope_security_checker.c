@@ -94,8 +94,12 @@ checkPermission(PyObject *permission, PyObject *object, PyObject *name)
         return 0;
 /*             else: */
 /*                 __traceback_supplement__ = (TracebackSupplement, object) */
-/*                 raise Unauthorized, name */
-      PyErr_SetObject(Unauthorized, name);
+/*                 raise Unauthorized(name, permission) */
+      r = Py_BuildValue("OO", name, permission);
+      if (r == NULL)
+        return -1;
+      PyErr_SetObject(Unauthorized, r);
+      Py_DECREF(r);
       return -1;
 }
 
