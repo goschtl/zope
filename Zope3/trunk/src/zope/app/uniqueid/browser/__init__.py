@@ -16,6 +16,7 @@ Unique id utility views.
 
 $Id$
 """
+
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app import zapi
 
