@@ -1,0 +1,49 @@
+==========================
+Packaging Tool Quick Start
+==========================
+
+This is a very brief "getting started" guide to using the Zope 3
+package tool, |zpkg|_.  We'll start with simple instructions for
+building the ZopeX3 distribution.  These instructions only apply to
+Unix systems.
+
+Do the following things to build a ZopeX3 distribution:
+
+1.  Retrieve the ``zpkgtools`` code from CVS::
+
+      cvs -d :pserver:anonymous@cvs.zope.org:/cvs-repository \
+          checkout -d zpkgtools Packages/zpkgtools
+
+    It can be convenient to either add *zpkgtools/bin/* to your PATH
+    or add a symlink to *zpkgtools/bin/zpkg* to a directory already on
+    your PATH; either allows you to simply type ``zpkg`` at the
+    command line to run the packager.
+
+2.  You'll need at least a minimal |zpkg|_ configuration to identify
+    the necessary resource maps.  These can be identified from the
+    command line, but that's generally hard to work with.  Create a
+    directory *.zpkg* in your home directory, and add this text in the
+    configuration file *zpkg.conf*::
+
+      resource-map svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zope3.map
+      resource-map cvs://cvs.zope.org/cvs-repository:Releases/packages.map:HEAD
+
+    The map from svn.zope.org is used to locate the Zope 3
+    implementation components.  The map from cvs.zope.org is used to
+    locate the actual release information and support code added to
+    the generated distribution package.
+
+    Read more about resource maps in |zpkg|_, and about how resource
+    locations are specified in `Resource Locations
+    <resources.html>`_.
+
+3.  Make sure you have lots of disk space in */tmp/* and enough to
+    hold the finished tarball in the current directory.
+
+4.  Run |zpkg|_ using this command:"
+
+      zpkg -av1.0.0a1 ZopeX3
+
+    After listening to a good CD, or perhaps having some Thai food,
+    you should find a very large tarball named *ZopeX3-1.0.0a1.tgz* in
+    the current directory.
