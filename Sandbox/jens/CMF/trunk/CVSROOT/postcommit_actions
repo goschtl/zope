@@ -358,7 +358,7 @@ def do_mail(name, remote, repo, addrs, subjs,
                        % (repo, name))
             diff_msg = diff_msg + new_msg + '\n'
     else:
-        subject = subject + " -"
+        subject = subject + "-"
         for fn, old, new in subjs:
             subject = subject + " %s:%s" % (fn, new)
             if new == 'NONE':
