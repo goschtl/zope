@@ -203,7 +203,7 @@ class SingleDataHelper:
                     raise MissingInputError(self.context.__name__,
                                             self.title,
                                             "required field not present")
-                data = self.context.default
+                data = self._getDefault()
             else:
                 self.setData(data)
         return data
@@ -227,7 +227,7 @@ class MultiDataHelper:
                     raise MissingInputError(self.context.__name__,
                                             self.title,
                                             "required field not present")
-                data = self.context.default
+                data = self._getDefault()
             else:
                 data = []
                 self.setData(data)
