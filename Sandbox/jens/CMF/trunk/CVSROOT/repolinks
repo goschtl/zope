@@ -115,8 +115,8 @@
 /ZODB/src/ZopeUndo	    /Packages/ZopeUndo
 /ZODB/src/ZConfig           /Packages/ZConfig
 /ZODB/src/zLOG              /Packages/zLOG
-/ZODB/doc		    /ZODB3/Doc
 /ZODB/src/persistent	    /ZODB3/persistent
+/ZODB/src/scripts	    /ZODB3/Tools
 
 /ZODB3/ZODB              /Packages/ZODB
 /ZODB3/ZEO               /Packages/ZEO
