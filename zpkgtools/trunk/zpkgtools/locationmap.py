@@ -20,7 +20,6 @@ import sets
 import urllib
 import urllib2
 import urlparse
-import UserDict
 
 from zpkgtools import cvsloader
 from zpkgtools import loader
@@ -35,10 +34,81 @@ class MapLoadingError(ValueError):
         self.lineno = lineno
         ValueError.__init__(self, message)
 
+class LocationMap(dict):
 
-def LocationMap():
-    return {}
+    def get(self, name, default=None):
+        """Look up an entry froma map
 
+        If an entry isn't found directly, check for a prefix
+
+          >>> map = LocationMap({'foo': 'svn://spam.com/repos/foo'})
+          >>> map.get('foo')
+          'svn://spam.com/repos/foo'
+          >>> map.get('foo.bar')
+          'svn://spam.com/repos/foo/bar'
+          >>> map.get('foo.bar.baz')
+          'svn://spam.com/repos/foo/bar/baz'
+          >>> map.get('z')
+          >>> map.get('z.x')
+          >>> map.get('z.x.y')
+
+        """
+
+        r = dict.get(self, name)
+        if r:
+            return r
+        
+        suffix = ''
+        while 1:
+            l = name.rfind('.')
+            if l > 0:
+                suffix = '/'+ name[l+1:] + suffix
+                name = name[:l]
+            else:
+                break
+            r = dict.get(self, name)
+            if r:
+                return r + suffix
+            
+        return default
+
+    __contains__ = get
+
+    def __getitem__(self, name):
+        """Look up an entry froma map
+
+        If an entry isn't found directly, check for a prefix
+
+          >>> map = LocationMap({'foo': 'svn://spam.com/repos/foo'})
+          >>> map['foo']
+          'svn://spam.com/repos/foo'
+          >>> map['foo.bar']
+          'svn://spam.com/repos/foo/bar'
+          >>> map['foo.bar.baz']
+          'svn://spam.com/repos/foo/bar/baz'
+
+          >>> map['z']
+          Traceback (most recent call last):
+          ...
+          KeyError: 'z'
+
+          >>> map['z.x']
+          Traceback (most recent call last):
+          ...
+          KeyError: 'z.x'
+
+          >>> map['z.x.y']
+          Traceback (most recent call last):
+          ...
+          KeyError: 'z.x.y'
+
+        """
+        r = self.get(name)
+        if r:
+            return r
+        raise KeyError, name
+
+        
 
 def load(f, base=None, mapping=None):
     cvsbase = None

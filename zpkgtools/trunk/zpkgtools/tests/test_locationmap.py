@@ -176,6 +176,7 @@ class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
 def test_suite():
     suite = unittest.makeSuite(LoadTestCase)
     suite.addTest(unittest.makeSuite(CvsWorkingDirectoryTestCase))
+    suite.addTest(doctest.DocTestSuite('zpkgtools.locationmap'))
     return suite
 
 if __name__ == "__main__":
