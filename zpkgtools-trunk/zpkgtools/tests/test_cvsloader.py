@@ -464,6 +464,9 @@ class FileProxyTestCase(unittest.TestCase):
         self.mode = "rU"
         self.fp = cvsloader.FileProxy(__file__, self.mode, self.loader)
 
+    def tearDown(self):
+        self.fp.close()
+
     def test_close(self):
         self.fp.close()
         self.assertEqual(self.loader.cleanup_called, 1)
