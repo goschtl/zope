@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase
+from zope.app.tests.functional import FunctionalDocFileSuite
 
 class CookieFunctionalTest(BrowserTestCase):
 
@@ -120,6 +121,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SampleFunctionalTest))
     suite.addTest(unittest.makeSuite(CookieFunctionalTest))
+    suite.addTest(FunctionalDocFileSuite('doctest.txt'))
     return suite
 
 
