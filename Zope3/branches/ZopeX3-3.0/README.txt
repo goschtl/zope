@@ -90,6 +90,8 @@ patient or help out. Some resources to start with:
 - To keep up with the latest changes, the commits mailing list
   http://lists.zope.org/mailman/listinfo/zope3-checkins
 
+- Watch for books to become available soon!
+
 Acknowledgements
 ----------------
 
