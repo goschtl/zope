@@ -106,7 +106,6 @@
   <include package="zope.app.renderer" />
   <include package="zope.app.onlinehelp" />
   <include package="zope.app.workflow" />
-  <include package="zope.app.xml" />
 
   <!-- Views -->
   <include package="zope.app.browser" />

@@ -337,29 +337,6 @@
       attributes="__call__" />
 </content>
 
-
-<!-- XML Document Directives-->
-
-<content class="zope.app.content.xmldocument.XMLDocument">
-  <factory
-      id="XMLDocument"
-      permission="zope.ManageContent"
-      title="XML Document"
-      description="A simple XML Document" />
-
-  <require
-      permission="zope.View"
-      attributes="source" />
-
-  <require
-      permission="zope.ManageContent"
-      set_attributes="source" />
-
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-
-</content>
-
 <!-- Filesystem Synchronization -->
 
   <!-- fssync:adapter directives -->
@@ -375,11 +352,6 @@
 <fssync:adapter class=".zpt.ZPTPage" factory=".fssync.ZPTPageAdapter" />
 
 <fssync:adapter class=".dtmlpage.DTMLPage" factory=".fssync.DTMLPageAdapter" />
-
-<fssync:adapter
-    class=".xmldocument.XMLDocument"
-    factory=".xmldocument.XMLDocumentAdapter"
-    />
 
 <!-- Further Directives -->
 
