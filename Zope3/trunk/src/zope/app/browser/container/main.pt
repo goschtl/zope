@@ -66,9 +66,23 @@
       </table>
       <br />
 
+      <input type="submit" name="@@rename.html:method" value="Rename"
+             i18n:attributes="value container_rename_button" 
+             />
+      <input type="submit" name="@@cutObjects.html:method" value="Cut"
+             i18n:attributes="value container_cut_button" 
+             />
+      <input type="submit" name="@@copyObjects.html:method" value="Copy"
+             i18n:attributes="value container_copy_button" 
+             />
+      <input type="submit" name="@@pasteObjects.html:method" value="Paste"
+             tal:condition="view/hasClipboardContents" 
+             i18n:attributes="value container_paste_button" 
+             />
       <input type="submit" name="@@removeObjects.html:method" value="Delete"
-             tal:attributes="value string:menu_delete_button"
-             i18n:attributes="value" /> 
+             i18n:attributes="value container_delete_button"
+             i18n:domain="zope"
+             />
 
   </form>
 
