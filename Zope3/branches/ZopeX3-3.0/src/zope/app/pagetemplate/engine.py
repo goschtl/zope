@@ -182,7 +182,6 @@ class ZopeEngine(ExpressionEngine):
             context.request = namespace['request']
 
         # Put context into context so path traversal can find it
-        # XXX: Change to container once the renaming has been done!
         if 'context' in namespace:
             context.context = namespace['context']
 
@@ -204,9 +203,6 @@ def _Engine(engine=None):
 Engine = _Engine()
 
 class AppPT(object):
-
-    # Use our special engine
-    pt_getEngineContext = Engine.getContext
 
     def pt_getEngine(self):
         return Engine

@@ -47,7 +47,7 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile):
             instance=instance, args=args, options=keywords)
         return self.pt_render(namespace)
 
-    def __get__(self, instance, type=None):
+    def __get__(self, instance, type):
         return BoundPageTemplate(self, instance)
 
 class ViewMapper:
@@ -64,14 +64,19 @@ class BoundPageTemplate:
         object.__setattr__(self, 'im_func', pt)
         object.__setattr__(self, 'im_self', ob)
 
-    def __call__(self, **kw):
-        return self.im_func(self.im_self, **kw)
+    macros = property(lambda self: self.im_func.macros)
+    filename = property(lambda self: self.im_func.filename)
 
-    def __getattr__(self, name):
-        return getattr(self.im_func, name)
+    def __call__(self, *args, **kw):
+        if self.im_self is None:
+            im_self, args = args[0], args[1:]
+        else:
+            im_self = self.im_self
+        return self.im_func(im_self, *args, **kw)
 
     def __setattr__(self, name, v):
         raise AttributeError("Can't set attribute", name)
 
     def __repr__(self):
         return "<BoundPageTemplateFile of %r>" % self.im_self
+

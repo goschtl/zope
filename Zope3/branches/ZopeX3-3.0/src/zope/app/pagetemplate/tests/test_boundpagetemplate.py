@@ -23,11 +23,9 @@ class Test(unittest.TestCase):
 
         from zope.app.pagetemplate.tests.sample import C
 
-        self.assertRaises(AttributeError, setattr, C.index, 'foo', 1)
-        self.assertRaises(AttributeError, setattr, C().index, 'foo', 1)
-
         C.index.im_func.foo = 1
-        self.assertEqual(C.index.foo, 1)
+        self.assertEqual(C.index.macros, C.index.im_func.macros)
+        self.assertEqual(C.index.filename, C.index.im_func.filename)
 
 
 
