@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.19 2003/06/07 05:31:58 stevea Exp $
+$Id: auth.py,v 1.20 2003/09/21 17:32:46 jim Exp $
 """
 
 from persistence import Persistent
@@ -33,9 +33,9 @@ from zope.app.interfaces.services.auth import IAnnotatableUser
 from zope.proxy import removeAllProxies
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.component.nextservice import getNextService
-from zope.context import ContextMethod
 from zope.app.interfaces.services.service import ISimpleService
 from zope.interface import implements
+from zope.app.container.contained import Contained, setitem, uncontained
 
 
 class DuplicateLogin(Exception):
@@ -45,7 +45,7 @@ class DuplicateId(Exception):
     pass
 
 
-class AuthenticationService(Persistent):
+class AuthenticationService(Persistent, Contained):
 
     implements(IAuthenticationService, IContainer, ISimpleService)
 
@@ -78,8 +78,6 @@ class AuthenticationService(Persistent):
         next = getNextService(self, Authentication)
         return next.authenticate(request)
 
-    authenticate = ContextMethod(authenticate)
-
     def unauthenticatedPrincipal(self):
         'See IAuthenticationService'
         return None
@@ -99,8 +97,6 @@ class AuthenticationService(Persistent):
             next = getNextService(self, Authentication)
             return next.getPrincipal(id)
 
-    getPrincipal = ContextMethod(getPrincipal)
-
     def getPrincipals(self, name):
         'See IAuthenticationService'
         name = name.lower()
@@ -112,7 +108,10 @@ class AuthenticationService(Persistent):
         'see IItemContainer'
         return self._usersbyid[id]
 
-    def setObject(self, key, object):
+    def __setitem__(self, key, object):
+        setitem(self, self.__setitem, key, object)
+
+    def __setitem(self, key, object):
         'See IWriteContainer'
         # XXX I think this should generate an id if blank is passed. (RDM)
         if not isinstance(key, (str, unicode)):

@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.13 2003/08/20 19:19:40 srichter Exp $
+$Id: translationservice.py,v 1.14 2003/09/21 17:33:27 jim Exp $
 """
 import re
 from zodb.btrees.OOBTree import OOBTree
@@ -27,9 +27,10 @@ from zope.app.services.servicenames import Translation
 from zope.i18n.negotiator import negotiator
 from zope.i18n.simpletranslationservice import SimpleTranslationService
 from zope.interface import implements
+from zope.app.container.contained import Contained
 
 
-class TranslationService(BTreeContainer, SimpleTranslationService):
+class TranslationService(BTreeContainer, SimpleTranslationService, Contained):
 
     implements(ILocalTranslationService, ISimpleService)
 
@@ -46,17 +47,15 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         mc = self._catalogs[(language, domain)]
         mc.append(catalog_name)
 
-
     def _unregisterMessageCatalog(self, language, domain, catalog_name):
         self._catalogs[(language, domain)].remove(catalog_name)
 
 
-    def setObject(self, name, object):
+    def __setitem__(self, name, object):
         'See IWriteContainer'
-        super(TranslationService, self).setObject(name, object)
+        super(TranslationService, self).__setitem__(name, object)
         self._registerMessageCatalog(object.getLanguage(), object.getDomain(),
                                      name)
-        return name
 
     def __delitem__(self, name):
         'See IWriteContainer'
@@ -81,8 +80,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         catalog_names = self._catalogs.get((target_language, domain), [])
 
         for name in catalog_names:
-            catalog = zapi.ContextSuper(
-                TranslationService, self).__getitem__(name)
+            catalog = super(TranslationService, self).__getitem__(name)
             text = catalog.queryMessage(msgid)
             if text is not None:
                 break
@@ -95,7 +93,6 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
 
         # Now we need to do the interpolation
         return self.interpolate(text, mapping)
-    translate = zapi.ContextMethod(translate)
 
     def getMessageIdsOfDomain(self, domain, filter='%'):
         'See IWriteTranslationService'
@@ -199,7 +196,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         for domain in domains:
             catalog = zapi.createObject(self, 'Message Catalog',
                                         language, domain)
-            self.setObject('%s-%s' %(domain, language), catalog)
+            self['%s-%s' % (domain, language)] = catalog
 
 
     def addDomain(self, domain):
@@ -211,7 +208,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         for language in languages:
             catalog = zapi.createObject(self, 'Message Catalog',
                                         language, domain)
-            self.setObject('%s-%s' %(domain, language), catalog)
+            self['%s-%s' % (domain, language)] = catalog
 
 
     def deleteLanguage(self, language):

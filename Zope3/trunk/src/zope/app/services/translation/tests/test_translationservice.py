@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.12 2003/08/20 00:46:07 srichter Exp $
+$Id: test_translationservice.py,v 1.13 2003/09/21 17:33:27 jim Exp $
 """
 import unittest
 
@@ -256,8 +256,8 @@ class TestTranslationService(unittest.TestCase,
         en_catalog.setMessage('greeting', 'Hello $name, how are you?', 0)
         de_catalog.setMessage('greeting', 'Hallo $name, wie geht es Dir?', 0)
 
-        service.setObject('en-default-1', en_catalog)
-        service.setObject('de-default-1', de_catalog)
+        service['en-default-1'] = en_catalog
+        service['de-default-1'] = de_catalog
 
         return service
 
@@ -292,7 +292,7 @@ class TestTranslationServiceInAction(unittest.TestCase):
         ts = TranslationService('default')
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo Welt!', 10)
-        ts.setObject('de-default-1', de_catalog)
+        ts['de-default-1'] = de_catalog
         self.trans1 = setup.addService(mgr, Translation, ts)
 
     def tearDown(self):
