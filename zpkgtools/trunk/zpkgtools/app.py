@@ -298,8 +298,8 @@ class BuilderApplication(Application):
     def load_metadata(self):
         metadata_file = os.path.join(self.source, publication.PUBLICATION_CONF)
         if not os.path.isfile(metadata_file):
-            self.error("source-dir does not contain required"
-                       " publication data file")
+            self.error("source-dir (%r) does not contain required"
+                       " publication data file" % self.source)
         f = open(metadata_file)
         try:
             self.metadata = publication.load(f)
