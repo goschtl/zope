@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.6 2004/04/24 23:17:57 srichter Exp $
+$Id: pagefolder.py,v 1.7 2004/05/06 10:14:12 philikon Exp $
 """
 from zope.interface import Interface, implements
 from zope.schema import BytesLine, Bool, Field, Choice
@@ -198,9 +198,6 @@ class PageFolderFactory:
     def __call__(self, name):
         return PageFolder()
 
-
-# XXX Backward compatibility. This is needed to support old pickles.
-ViewPackage = PageFolder
 import sys
 sys.modules['zope.app.services.viewpackage'
             ] = sys.modules['zope.app.presentation.pagefolder']
