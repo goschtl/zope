@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.2 2003/02/21 17:52:19 stevea Exp $
+$Id: form.py,v 1.3 2003/05/22 22:49:29 jim Exp $
 """
 
 from zope.schema.interfaces import ValidationError
@@ -90,7 +90,7 @@ class IWidget(IView):
                                  defined for the widget.""")
 
     def getValue(name):
-        """Look up a Widget setting (value) by name."""
+        """Look up a Widget configuration setting by name."""
 
     def getData():
         """Return converted and validated widget data.
@@ -125,4 +125,12 @@ class IWidget(IView):
 
         The given value should be used even if the user has entered
         data.
+        """
+
+    def setPrefix(prefix):
+        """Set the name prefix used for the widget
+
+        The widget name is used to identify the widget's data within
+        input data. For example, for HTTP forms, the widget name is
+        used for the form key.
         """
