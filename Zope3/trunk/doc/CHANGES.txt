@@ -34,10 +34,9 @@ Zope Changes
 
       o Create back-links from utilities and services to the tools screens.
 
-  http://dev.zope.org/Zope3/TheBrowserToolDirective
+      o Implement tool management screen. We need an overview, add, delete,
+        rename.
 
-  o Implement tool management screen. We need an overview, add, delete,
-    rename.
     - Write generic get/queryType(object, type) that returns the interface of
       the 'object' that provides 'type'.
       
@@ -339,7 +338,7 @@ Zope Changes
       Philipp von Weitershausen, Steve Alexander, Andreas Jung, Anthony
       Baxter, Kevin Littlejohn, Stuart Bishop, Christian Theune, Adam Summers,
       Stephan Richter, Chris McDonough, Garrett Smith, Roger Ineichen, Gary
-      Poster, Martijn Faassen, Dominik Huber, Bjorn Tillenius
+      Poster, Martijn Faassen, Dominik Huber, Bjorn Tillenius, Nathan Yergler
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.

@@ -51,11 +51,6 @@ Things to do for the next release (in no particular order)
 
   - Query
 
-- Implement tools:
-
-
-  Mark, Nathan and Stephan are working on this.
-
 - Finish "process control", specifically shutting down and restarting
   via the web.  The main issue here is plumbing.  How to get the
   signal from the UI to the server logic. The way to do this is via
