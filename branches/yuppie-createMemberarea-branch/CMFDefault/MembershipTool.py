@@ -150,7 +150,7 @@ class MembershipTool( BaseTool ):
     security.declareProtected( ListPortalMembers, 'getRoster' )
     def getRoster(self):
         """ Return a list of mappings for 'listed' members.
-        
+
         If Manager, return a list of all usernames.  The mapping
         contains the id and listed variables.
         """
@@ -178,7 +178,7 @@ class MembershipTool( BaseTool ):
 
     security.declarePublic('createMemberarea')
     def createMemberarea(self, member_id=''):
-        """ Create a member area for 'member_id'.
+        """ Create a member area for 'member_id' or authenticated user.
         """
         if not self.getMemberareaCreationFlag():
             return None
@@ -200,7 +200,7 @@ class MembershipTool( BaseTool ):
                 if member:
                     member = member.__of__(self.acl_users)
                 else:
-                    return None
+                    raise ValueError, 'Member %s does not exist' % member_id
             else:
                 return None
         if hasattr( aq_base(members), member_id ):

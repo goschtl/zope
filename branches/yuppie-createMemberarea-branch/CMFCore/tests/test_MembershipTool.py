@@ -11,6 +11,7 @@ try:
 except ImportError:
     # for Zope versions before 2.6.0
     from Interface import verify_class_implementation as verifyClass
+from AccessControl.SecurityManagement import newSecurityManager
 
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.tests.base.dummy import DummyFolder as DummyFolderBase
@@ -55,8 +56,22 @@ class MembershipToolSecurityTests(SecurityTest):
         members = self.site._setObject( 'Members', PortalFolder('Members') )
         acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
         wtool = self.site._setObject( 'portal_workflow', DummyTool() )
-        mtool.createMemberarea('user_foo')
 
+        # permission
+        mtool.createMemberarea('user_foo')
+        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        newSecurityManager(None, acl_users.user_bar)
+        mtool.createMemberarea('user_foo')
+        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        newSecurityManager(None, acl_users.user_foo)
+        mtool.setMemberareaCreationFlag()
+        mtool.createMemberarea('user_foo')
+        self.failIf( hasattr(members.aq_self, 'user_foo') )
+        mtool.setMemberareaCreationFlag()
+        mtool.createMemberarea('user_foo')
+        self.failUnless( hasattr(members.aq_self, 'user_foo') )
+
+        # default content
         f = members.user_foo
         ownership = acl_users.user_foo
         localroles = ( ( 'user_foo', ('Owner',) ), )
