@@ -25,7 +25,7 @@ run:
 
 clean:
 	find . -name '*.o' -o -name '*.so' -o -name '*.py[co]' | xargs rm -f
-	rm -f build
+	rm -rf build
 
 realclean: clean
 	rm -f TAGS
