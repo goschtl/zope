@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.4 2003/03/19 19:57:27 alga Exp $
+$Id: objectevent.py,v 1.5 2003/06/07 06:36:51 stevea Exp $
 """
 
 __metaclass__ = type
@@ -25,13 +25,14 @@ from zope.app.interfaces.event import IObjectCopiedEvent
 from zope.app.interfaces.event import IObjectAnnotationsModifiedEvent
 from zope.app.interfaces.event import IObjectContentModifiedEvent
 from zope.app.traversing import getPath
+from zope.interface import implements, implementsOnly
 
 _marker = object()
 
 class ObjectEvent:
     """Something has happened to an object"""
 
-    __implements__ = IObjectEvent
+    implements(IObjectEvent)
 
     def _getLocation(self):
         if self.__location is not _marker:
@@ -47,37 +48,38 @@ class ObjectEvent:
 class ObjectAddedEvent(ObjectEvent):
     """An object has been added to a container"""
 
-    __implements__ = IObjectAddedEvent
+    implements(IObjectAddedEvent)
 
 class ObjectCreatedEvent(ObjectEvent):
     """An object has been created"""
 
-    __implements__ = IObjectCreatedEvent
+    implements(IObjectCreatedEvent)
 
 class ObjectModifiedEvent(ObjectEvent):
     """An object has been modified"""
 
-    __implements__ = IObjectModifiedEvent
+    implements(IObjectModifiedEvent)
 
 class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
     """An object's annotations have been modified"""
 
-    __implements__ = IObjectAnnotationsModifiedEvent
+    implements(IObjectAnnotationsModifiedEvent)
 
 class ObjectContentModifiedEvent(ObjectModifiedEvent):
     """An object's content has been modified"""
 
-    __implements__ = IObjectContentModifiedEvent
+    implements(IObjectContentModifiedEvent)
 
 class ObjectRemovedEvent(ObjectEvent):
     """An object has been removed from a container"""
 
-    __implements__ = IObjectRemovedEvent
+    implements(IObjectRemovedEvent)
 
 class ObjectMovedEvent(ObjectAddedEvent):
     """An object has been moved"""
 
-    __implements__ = IObjectMovedEvent
+    # XXX IObjectMovedEvent should derive from IObjectAddedEvent
+    implementsOnly(IObjectMovedEvent)
 
     fromLocation = None
 
@@ -88,7 +90,7 @@ class ObjectMovedEvent(ObjectAddedEvent):
 class ObjectCopiedEvent(ObjectAddedEvent):
     """An object has been copied"""
 
-    __implements__ = IObjectCopiedEvent
+    implements(IObjectCopiedEvent)
 
     fromLocation = None
 
