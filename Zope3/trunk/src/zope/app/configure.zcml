@@ -1,6 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:global_translation="http://namespaces.zope.org/gts"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
     i18n_domain="zope"
     >
 
@@ -30,7 +30,6 @@
   <include package="zope.app.services" />
   <include package="zope.app.schema" />
 
-  <include package="zope.app.i18n" />
   <include package="zope.app.publisher" />
   <include package="zope.app.traversing" />
   <include package="zope.app.form" />
@@ -46,7 +45,10 @@
   <include package="zope.app.http" />
 
   <!-- Translations -->
-  <global_translation:registerTranslations directory="translation_files" />
+  <i18n:registerTranslations directory="translation_files" />
+
+  <include package="zope.app.i18n" />
+
 
   <!-- Filesystem synchronization -->
   <include package="zope.app.fssync" />
@@ -111,6 +113,5 @@
   <!-- Module aliases -->
 
   <include file="zodbaliases.zcml" />
-
 
 </configure>
