@@ -14,28 +14,14 @@
             set_schema=".interfaces.ILDAPBasedPrincipalSource"/>
     </content>
 
-    <browser:addMenuItem
-        title="Add LDAP Principal Source"
-        class=".LDAPPrincipalSource"
-        permission="zope.ManageServices" />
-
-    <browser:addform
-        schema=".interfaces.ILDAPBasedPrincipalSource" 
-        label="Add LDAP-based Principal Source" 
-        name="AddLDAPPrincipalSourceForm" 
-        permission="zope.ManageContent" /> 
-
-    <browser:editform 
-        schema=".interfaces.ILDAPBasedPrincipalSource" 
-        label="Edit LDAP-based Principal Source" 
-        name="edit.html"        
-        menu="zmi_views" title="Edit" 
-        permission="zope.ManageContent" /> 
+    <!-- add browser views -->
+    <include package=".browser" />
 
     <!-- add onlinehelp text -->
     <help:register
         id="ldapauth"
         title="LDAP Auth"
         doc_path="./help/ldapauth.stx" />
+
 
 </configure>

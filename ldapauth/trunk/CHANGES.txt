@@ -1,0 +1,12 @@
+CHANGES
+
+
+  Principal/Contents and initial connection test view, roger.ineichen, 06.07.2004
+
+    - Added browser package
+
+    - Added contents view class and contents view 
+
+    - Split configure.zcml, and move view related stuff to .browser/configure.zcml  
+
+    - Added initial test page for to test the given connection
