@@ -13,13 +13,14 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.7 2003/02/12 02:17:11 seanb Exp $
+$Id: test_permissionwidget.py,v 1.8 2003/03/07 21:14:41 jim Exp $
 """
 
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.cleanup import CleanUp
+from zope.security.checker import CheckerPublic
 from zope.app.security.permission import PermissionField
 from zope.app.browser.security.permissionwidget import SinglePermissionWidget
 from zope.publisher.browser import TestRequest
@@ -144,6 +145,61 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
 
         '</select>'
         )
+        self.assertEqual(widget(), out)
+
+    def testPermissionWidget_w_public(self):
+        defineService(Permissions, IPermissionService)
+        serviceManager.provideService(Permissions, permissionRegistry)
+
+        permissionRegistry.definePermission('read', 'Read', 'Read something')
+        read_permission = permissionRegistry.getPermission('read')
+        permissionRegistry.definePermission('reread', 'ReRead',
+                                            'ReRead something')
+        reread_permission = permissionRegistry.getPermission('reread')
+        request = TestRequest()
+
+        permissionField = PermissionField(__name__ = 'TestName',
+                                          title = u"This is a test",
+                                          required=False)
+
+        widget = SinglePermissionWidget(permissionField, request)
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="">'
+        '<select name="field.TestName">'
+        '<option value="">---select permission---</option>'
+
+        '<option value="'
+        'read'
+        '">'
+        'read'
+        '</option>'
+
+        '<option value="'
+        'reread'
+        '">'
+        'reread'
+        '</option>'
+
+        '<option value="'
+        'zope.Public'
+        '" selected>'
+        'zope.Public'
+        '</option>'
+
+        '</select>'
+        )
+
+        self.assertEqual(widget.render(CheckerPublic), out)
+
+        self.assertEqual(widget.getData(), None)
+
+        widget = SinglePermissionWidget(permissionField, request)
+
+        request.form["field.TestName"] = 'zope.Public'
+
+        self.assertEqual(widget.getData(), CheckerPublic)
+
         self.assertEqual(widget(), out)
 
 
