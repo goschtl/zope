@@ -13,12 +13,12 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: CacheableView.py,v 1.2 2002/11/11 20:57:20 jim Exp $
+$Id: CacheableView.py,v 1.3 2002/12/03 08:55:53 ryzaja Exp $
 """
 
 from Zope.App.Caching.ICacheable import ICacheable
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
-from Zope.App.Caching.Caching import getCacheForObj
+from Zope.App.Caching.Caching import getCacheForObj, getLocationForCache
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.Forms.Widget import CustomWidget
@@ -45,8 +45,9 @@ class CacheableView(BrowserView):
         "Invalidate the current cached value."
 
         cache = getCacheForObj(self.context)
-        if cache:
-            cache.invalidate(self.context)
+        location = getLocationForCache(self.context)
+        if cache and location:
+            cache.invalidate(location)
             return self.form(message="Invalidated.")
         else:
             return self.form(message="No cache associated with object.")
