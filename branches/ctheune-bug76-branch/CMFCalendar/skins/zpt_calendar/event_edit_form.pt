@@ -221,7 +221,7 @@
                        tal:attributes="value bt;
             selected python:(bt <= stTimeString[0]) and (not 
             repeat['bt'].end and bts[repeat['bt'].index+1] >= stTimeString[0])"
-                       tal:content="bt">Start Time</option>
+                       tal:content="bt">End Time</option>
                                 </select>&nbsp;
                                 <input type="radio"
         name="stopAMPM" value="am"
