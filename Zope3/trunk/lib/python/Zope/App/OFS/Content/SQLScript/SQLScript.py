@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: SQLScript.py,v 1.6 2002/08/08 11:05:54 ersab Exp $
+$Id: SQLScript.py,v 1.7 2002/08/08 15:05:59 ersab Exp $
 """
 from types import StringTypes
 
@@ -33,6 +33,11 @@ from DT_SQLVar import SQLVar
 from DT_SQLTest import SQLTest
 from DT_SQLGroup import SQLGroup
 
+from time import time
+
+try: from Persistence.BTrees.IOBTree import IOBucket as Bucket
+except: Bucket = lambda:{}
+
 
 class SQLDTML(HTML):
     __name__ = 'SQLDTML'
@@ -52,11 +57,14 @@ class SQLScript(SQLCommand, Persistent):
 
     __implements__ = ISQLScript, IFileContent
 
-    def __init__(self, connectionName='', source='', arguments=''):
+    def __init__(self, connectionName='', source='', arguments='',
+                 maxCache=0, cacheTime=0):
         self.template = SQLDTML(source)
         self.setConnectionName(connectionName)
         # In our case arguments should be a string that is parsed
         self.setArguments(arguments)
+        self.setMaxCache(maxCache)
+        self.setCacheTime(cacheTime)
 
     def setArguments(self, arguments):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
@@ -88,10 +96,29 @@ class SQLScript(SQLCommand, Persistent):
     def setConnectionName(self, name):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
         self._connectionName = name
+        self._clearCache()
 
     def getConnectionName(self):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
         return self._connectionName
+
+    def setMaxCache(self, maxCache):
+        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
+        self._maxCache = maxCache
+        self._clearCache()
+
+    def getMaxCache(self):
+        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
+        return self._maxCache
+
+    def setCacheTime(self, cacheTime):
+        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
+        self._cacheTime = cacheTime
+        self._clearCache()
+
+    def getCacheTime(self):
+        'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
+        return self._cacheTime
 
     def getConnection(self):
         'See Zope.App.RDB.ISQLCommand.ISQLCommand'
@@ -138,9 +165,47 @@ class SQLScript(SQLCommand, Persistent):
 
         query = apply(self.template, (), arg_values)
 
-        return queryForResults(connection, query)
+        if self._maxCache > 0 and self._cacheTime > 0:
+            return self._cachedResult(connection, query)
+        else:
+            return queryForResults(connection, query)
 
     __call__ = ContextMethod(__call__)
+
+
+    def _clearCache(self):
+        'Clear the cache'
+        self._v_cache = {}, Bucket()
+
+    def _cachedResult(self, connection, query):
+        'Try to fetch query result from cache'
+        if not hasattr(self, '_v_cache'):
+            self._clearCache()
+        cache, tcache = self._v_cache
+        max_cache = self._maxCache
+        now = time()
+        t = now - self._cacheTime
+        if len(cache) > max_cache / 2:
+            keys = tcache.keys()
+            keys.reverse()
+            while keys and (len(keys) > max_cache or keys[-1] < t):
+                key = keys[-1]
+                q = tcache[key]
+                del tcache[key]
+                if int(cache[q][0]) == key:
+                    del cache[q]
+                del keys[-1]
+
+        if cache.has_key(query):
+            k, r = cache[query]
+            if k > t: return r
+
+        result = queryForResults(connection, query)
+        if self._cacheTime > 0:
+            tcache[int(now)] = query
+            cache[query] = now, result
+
+        return result
 
 
     # See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript
@@ -150,4 +215,8 @@ class SQLScript(SQLCommand, Persistent):
                       "Set the SQL template source.")
     connectionName = property(getConnectionName, setConnectionName, None,
                               "Connection Name for the SQL scripts.")
+    maxCache = property(getMaxCache, setMaxCache, None,
+                        "Set the size of the SQL Script cache.")
+    cacheTime = property(getCacheTime, setCacheTime, None,
+                         "Set the time in seconds that results are cached.")
 

@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """
-$Id: SQLScriptEdit.py,v 1.5 2002/08/08 11:05:54 ersab Exp $
+$Id: SQLScriptEdit.py,v 1.6 2002/08/08 15:05:59 ersab Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.Forms.Views.Browser import Widget
 from Zope.App.Forms.Widget import CustomWidget
 from Zope.App.Forms.Views.Browser.FormView import FormView
+from Schema.Converter import StrToIntConverter
 
 class SQLScriptEdit(FormView):
     form = ViewPageTemplateFile('edit.pt')
@@ -26,8 +27,13 @@ class SQLScriptEdit(FormView):
                       'arguments': CustomWidget(Widget.TextAreaWidget,
                                                 height=3, width=40),
                       'source': CustomWidget(Widget.TextAreaWidget,
-                                             height=10, width=80)}
-    fields_order = ('connectionName', 'arguments', 'source')
+                                             height=10, width=80),
+                      'maxCache': CustomWidget(Widget.TextWidget,
+                                         converter=StrToIntConverter()),
+                      'cacheTime': CustomWidget(Widget.TextWidget,
+                                         converter=StrToIntConverter()) }
+    fields_order = ('connectionName', 'arguments', 'source',
+                    'maxCache', 'cacheTime')
 
     def getAllConnections(self):
         parent = getParent(self.context)

@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testSQLScript.py,v 1.3 2002/08/01 18:42:10 jim Exp $
+$Id: testSQLScript.py,v 1.4 2002/08/08 15:05:59 ersab Exp $
 """
 
 import unittest
@@ -36,11 +36,18 @@ class CursorStub:
 
     __implements__ = IZopeCursor
 
-    description = (('name', 'string'),)
+    description = (('name', 'string'), ('counter', 'int'))
+    count = 0
 
     def execute(self, operation, parameters=None):
-        self.result = {"SELECT name FROM Table WHERE id = 1":
-                       (('stephan',),)}[operation]
+        CursorStub.count += 1
+        self.result = {"SELECT name, counter FROM Table WHERE id = 1":
+                       (('stephan', CursorStub.count),),
+                       "SELECT name, counter FROM Table WHERE id = 2":
+                       (('marius', CursorStub.count),),
+                       "SELECT name, counter FROM Table WHERE id = 3":
+                       (('erik', CursorStub.count),)
+                      }[operation]
 
     def fetchall(self):
         return self.result
@@ -74,7 +81,7 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def _getScript(self):
         return SQLScript("my_connection",
-                   "SELECT name FROM Table WHERE <dtml-sqltest id type=int>",
+                   "SELECT name, counter FROM Table WHERE <dtml-sqltest id type=int>",
                          'id')
 
 
@@ -103,7 +110,7 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def testGetSource(self):
         self.assertEqual(
-            "SELECT name FROM Table WHERE <dtml-sqltest id type=int>",
+            "SELECT name, counter FROM Table WHERE <dtml-sqltest id type=int>",
             self._getScript().getSource())
 
 
@@ -116,12 +123,31 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
     def testGetConnectionName(self):
         self.assertEqual('my_connection',
                          self._getScript().getConnectionName())
-        
+
 
     def testSQLScript(self):
         result = self._getScript()(id=1)
-        self.assertEqual(result.names, ('name',))
+        self.assertEqual(result.names, ('name','counter'))
         self.assertEqual(result[0].name, 'stephan')
+
+    def testSQLScriptCaching(self):
+        script = self._getScript()
+        CursorStub.count = 0
+        # turn off caching and check that the counter grows
+        script.setCacheTime(0)
+        result = script(id=1)
+        self.assertEqual(result[0].counter, 1)
+        result = script(id=1)
+        self.assertEqual(result[0].counter, 2)
+        # turn on caching and check that the counter stays still
+        script.setCacheTime(100000)
+        script.setMaxCache(100)
+        result = script(id=1)
+        self.assertEqual(result[0].counter, 3)
+        result = script(id=1)
+        self.assertEqual(result[0].counter, 3)
+        result = script(id=2)
+        self.assertEqual(result[0].counter, 4)
 
 
 def test_suite():

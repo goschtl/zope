@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.4 2002/08/08 11:10:23 ersab Exp $
+$Id: ISQLScript.py,v 1.5 2002/08/08 15:05:59 ersab Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -37,31 +37,44 @@ class ISQLScript(ISQLCommand):
     connectionName = SQLConnectionName(
         id="connectionName",
         title="Connection Name",
-        description="""The Connection Name for the connection to be used.""",
+        description="The Connection Name for the connection to be used.",
         required=1)
 
     arguments = Schema.Str(
         id="arguments",
         title="Arguments",
-        description='A set of attributes that can be used during the DTML '
-                    'rendering process to provide dynamic data.',
+        description="A set of attributes that can be used during the DTML "
+                    "rendering process to provide dynamic data.",
         required=0)
 
     source = Schema.Str(
         id="source",
         title="Source",
-        description="""The source of the page template.""",
+        description="The source of the page template.",
+        required=1)
+
+    maxCache = Schema.Int(
+        id="maxCache",
+        title="Maximum results to cache",
+        description="The size of the SQL script cache.",
+        min=0,
+        required=1)
+
+    cacheTime = Schema.Int(
+        id="cacheTime",
+        title="Maximum time (sec) to cache",
+        description="The time in seconds that results are cached. "
+                    "Setting to zero disables caching.",
+        min=0,
         required=1)
 
     def setArguments(arguments):
         """Processes the arguments (which could be a dict, string or whatever)
         to arguments as they are needed for the rendering process."""
 
-
     def getArguments():
         """Get the arguments. A method is preferred here, since some argument
         evaluation might be done."""
-
 
     def getArgumentsString():
         """This method returns the arguments string."""
@@ -80,3 +93,15 @@ class ISQLScript(ISQLCommand):
 
     def getConnectionName():
         """Get the connection name for this SQL Script."""
+
+    def setMaxCache(maxCache):
+        """Set the size of the SQL script cache."""
+
+    def getMaxCache():
+        """Get the size of the SQL script cache."""
+
+    def setCacheTime(cacheTime):
+        """Set the time in seconds that results are cached."""
+
+    def getCacheTime():
+        """Get the time in seconds that results are cached."""
