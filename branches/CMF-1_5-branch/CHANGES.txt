@@ -1,15 +1,15 @@
-Post-CMF 1.5.0
+CMF 1.5.1beta (unreleased)
 
   New Features
 
     - RegistrationTool: The regular expression that limits what people
       can put in as a valid member ID is now configurable TTW in the
-      portal_registration tool (http://www.zope.org/Collectors/CMF/117)
+      portal_registration tool (http://collector.zope.org/CMF/117)
 
   Bug Fixes
 
     - FSDTMLMethod: Small code cleanup to remove duplicate variable
-      definition (http://www.zope.org/Collectors/CMF/291) 
+      definition (http://collector.zope.org/CMF/291)
 
     - Portal: Fixed 'setupDefaultProperties'.
       Backwards compatibility was broken and the 'default_charset' argument
@@ -18,15 +18,15 @@ Post-CMF 1.5.0
     - Document/NewsItem: If the "plain text" format is selected the
       content will no longer be tested for HTML and reduced to text
       between opening and closing "body" tags
-      (http://www.zope.org/Collectors/CMF/214)
+      (http://collector.zope.org/CMF/214)
 
     - Document/NewsItem: A call to setFormat will now re-cook the
       document content if the format has been changed (arising from
-      discussion about http://www.zope.org/Collectors/CMF/214)
+      discussion about http://collector.zope.org/CMF/214)
 
     - DirectoryViews/FSMetadata: Corrected some erroneous docstrings
       about proxy role handling using .metadata files
-      (http://www.zope.org/Collectors/CMF/177)
+      (http://collector.zope.org/CMF/177)
 
 CMF 1.5.0 (2004/10/21)
 
@@ -44,7 +44,7 @@ CMF 1.5.0 (2004/10/21)
       Values are now converted to unicode, using 'default_charset'.
       (http://collector.zope.org/CMF/261)
 
-    - DublinCore: Added 'setCreators' method.  Note that 
+    - DublinCore: Added 'setCreators' method.  Note that
       'notifyModified' also modifies creators. If the current user
       should not be added to creators, make sure notifyModified() is not
       called after setCreators().  (http://collector.zope.org/CMF/61)
