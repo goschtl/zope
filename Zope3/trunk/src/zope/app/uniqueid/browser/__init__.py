@@ -18,6 +18,14 @@ $Id$
 from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
 
+
+def saveGetPath(obj):
+    try:
+        return zapi.getPath(obj)
+    except:
+        return None
+    
+
 class UniqueIdUtilityView(object):
 
     def len(self):
@@ -29,6 +37,5 @@ class UniqueIdUtilityView(object):
         self.context.register(zapi.traverse(self.context, "/++etc++site"))
         self.request.response.redirect('index.html')
 
-    def items(self):
-        return [(uid, zapi.getPath(ref())) for uid, ref in self.context.items()]
-
+    def items(self):  
+        return [(uid, saveGetPath(ref())) for uid, ref in self.context.items()]
