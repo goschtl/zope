@@ -12,7 +12,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
-      Stephan Richter, Dmitry Vasiliev, Scott Pascoe
+      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
@@ -27,6 +27,9 @@ Zope Changes
         functions. 
 
     Bug fixes
+
+      - Fixed so that a UnicodeDecodeError isn't produced when Internet
+        Explorer requests a page containing non-ISO-8859-1 characters.
 
     Restructuring
 
