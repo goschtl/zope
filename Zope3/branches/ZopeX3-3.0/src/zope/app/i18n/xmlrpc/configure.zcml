@@ -6,15 +6,11 @@
   <!-- Translation Domain View Directives -->
 
   <xmlrpc:view
-      name="methods"
       for="zope.i18n.interfaces.ITranslationDomain"
       permission="zope.ManageContent" 
-      allowed_attributes="getAllLanguages getMessagesFor"
-      class=".methods.Methods" />
+      methods="getAllLanguages getMessagesFor"
+      class=".methods.Methods" 
+      />
       
-  <xmlrpc:defaultView
-      name="methods"
-      for="zope.i18n.interfaces.ITranslationDomain" />
-     
 
 </configure>
