@@ -15,8 +15,10 @@
 
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
-$Id: test_catalog.py,v 1.2 2003/07/13 03:35:55 anthony Exp $
+$Id: test_catalog.py,v 1.3 2003/07/13 04:17:54 anthony Exp $
 """
+
+from __future__  import generators
 
 import unittest
 
