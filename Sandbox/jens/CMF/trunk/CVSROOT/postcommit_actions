@@ -54,6 +54,7 @@ import socket, whrandom, getpass
 
 CVSROOT = os.path.split(SCRIPT_DIR)[0]
 CVSROOT_ABS = os.path.abspath('..')
+USE_LDAP = 1
 LDAP_PORT = 389
 LDAP_HOST = "10.0.11.6"
 OFFICIAL_SENDER = "cvs-admin@zope.org"
@@ -411,7 +412,7 @@ def send_mail(addrs, text, subject):
     user = getuser()
     fullname = email = ''
     if user:
-        fullname, email = get_user_ldap_info(user)
+        fullname, email = get_user_info(user)
         if '.' in fullname or ',' in fullname:
             fullname = '"' + fullname + '"'
     else:
@@ -487,7 +488,7 @@ def getuser():
     try: return getpass.getuser()
     except: return None
 
-def get_user_ldap_info(user):
+def get_user_info(user):
     """Obtain some aproximation to user's (fullname, email).
 
     We prefer to get the info out of ldap.
@@ -506,29 +507,32 @@ def get_user_ldap_info(user):
     except KeyError:
         fullname = ''
 
-    try:
-        import _ldap; ldap_mod = _ldap
-    except ImportError:
+    if USE_LDAP:
         try:
             import ldap; ldap_mod = ldap
         except ImportError:
-            return (fullname, email)
-    try:
-        c = ldap_mod.open(LDAP_HOST, LDAP_PORT)
-        c.simple_bind_s('', '')
-        # ('sn' for "surname")
-        record = c.search_s('ou=people,dc=zope,dc=org', ldap_mod.SCOPE_SUBTREE,
-                            'cn=%s' % user, ['mail', 'sn', 'givenName'])
-        if record:
-            d = record[0][1]
-            email = d.get('mail', [email])[0]
-            first = d.get('givenName', [''])[0]
-            last = d.get('sn', [''])[0]
-            if first or last:
-                if first: first = first + " "
-                fullname = "%s%s" % (first, last)
-    except ldap_mod.LDAPError:
-        pass
+            try:
+                import _ldap; ldap_mod = _ldap
+            except ImportError:
+                print "Failed to get any LDAP module, punting on ldap."
+                return (fullname, email)
+        try:
+            c = ldap_mod.open(LDAP_HOST, LDAP_PORT)
+            c.simple_bind_s('', '')
+            # ('sn' for "surname")
+            record = c.search_s('ou=people,dc=zope,dc=org',
+                                ldap_mod.SCOPE_SUBTREE,
+                                'cn=%s' % user, ['mail', 'sn', 'givenName'])
+            if record:
+                d = record[0][1]
+                email = d.get('mail', [email])[0]
+                first = d.get('givenName', [''])[0]
+                last = d.get('sn', [''])[0]
+                if first or last:
+                    if first: first = first + " "
+                    fullname = "%s%s" % (first, last)
+        except ldap_mod.LDAPError:
+            pass
 
     return (fullname, email)
 
