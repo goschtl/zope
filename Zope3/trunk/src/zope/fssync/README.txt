@@ -49,3 +49,25 @@ User stories
 * Commands that are reasonable to do offline (e.g. add, remove,
   status, and the simplest form of diff) must be performed entirely
   offline.
+
+
+TO DO LIST
+----------
+
+* after committing an added or removed file, the flag doesn't get
+  cleared in the entry
+
+* unit tests for the fssync core functionality
+
+* refactoring more of the fssync core functionality
+
+* allow adding files of different types based on the file suffix or an
+  explicit -t argument
+
+* a 'status' command showing careful status
+
+* more diff options:
+  -2 diffs between local and remote
+  -3 diffs between original and remote
+  -N shows diffs for added/removed files as diffs with /dev/null
+  more GNU diff options?  e.g. --ignore-space-change etc.
