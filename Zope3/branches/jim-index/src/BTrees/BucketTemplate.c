@@ -1647,7 +1647,8 @@ bucket_repr(Bucket *self)
 static PyTypeObject BucketType = {
     PyObject_HEAD_INIT(NULL) /* PyPersist_Type */
     0,					/* ob_size */
-    MODULE_NAME MOD_NAME_PREFIX "Bucket",/* tp_name */
+    "BTrees." MOD_NAME_PREFIX "BTree."
+    MOD_NAME_PREFIX "Bucket",/* tp_name */
     sizeof(Bucket),			/* tp_basicsize */
     0,					/* tp_itemsize */
     (destructor)bucket_dealloc,		/* tp_dealloc */

@@ -203,7 +203,8 @@ TreeSet_init(PyObject *self, PyObject *args, PyObject *kwds)
 static PyTypeObject TreeSetType = {
     PyObject_HEAD_INIT(NULL) /* PyPersist_Type */
     0,					/* ob_size */
-    MODULE_NAME MOD_NAME_PREFIX "TreeSet",/* tp_name */
+    "BTrees." MOD_NAME_PREFIX "BTree."
+    MOD_NAME_PREFIX "TreeSet",/* tp_name */
     sizeof(BTree),			/* tp_basicsize */
     0,					/* tp_itemsize */
     (destructor)BTree_dealloc,		/* tp_dealloc */

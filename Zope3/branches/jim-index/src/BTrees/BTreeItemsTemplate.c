@@ -408,7 +408,8 @@ static PyNumberMethods BTreeItems_as_number_for_nonzero = {
 static PyTypeObject BTreeItemsType = {
   PyObject_HEAD_INIT(NULL)
   0,					/*ob_size*/
-  MOD_NAME_PREFIX "BTreeItems",	        /*tp_name*/
+  "BTrees." MOD_NAME_PREFIX "BTree."
+  MOD_NAME_PREFIX "TreeItems",	        /*tp_name*/
   sizeof(BTreeItems),		        /*tp_basicsize*/
   0,					/*tp_itemsize*/
   /* methods */
@@ -661,7 +662,8 @@ BTreeIter_getiter(PyObject *it)
 static PyTypeObject BTreeIter_Type = {
         PyObject_HEAD_INIT(NULL)
 	0,					/* ob_size */
-	MOD_NAME_PREFIX "-iterator",		/* tp_name */
+	"BTrees." MOD_NAME_PREFIX "BTree." 
+        MOD_NAME_PREFIX "TreeIterator",		/* tp_name */
 	sizeof(BTreeIter),			/* tp_basicsize */
 	0,					/* tp_itemsize */
 	/* methods */

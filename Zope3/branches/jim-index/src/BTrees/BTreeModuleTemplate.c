@@ -485,6 +485,9 @@ INITMODULE (void)
     if (PyDict_SetItemString(d, MOD_NAME_PREFIX "TreeSet",
 			     (PyObject *)&TreeSetType) < 0)
 	return;
+    if (PyDict_SetItemString(d, MOD_NAME_PREFIX "TreeItems",
+			     (PyObject *)&BTreeItemsType) < 0)
+	return;
     if (PyDict_SetItemString(d, MOD_NAME_PREFIX "TreeIterator",
 			     (PyObject *)&BTreeIter_Type) < 0)
 	return;
