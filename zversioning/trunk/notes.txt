@@ -1,0 +1,24 @@
+
+20041010_1100/gregweb
+---------------------
+
+Our default policy what is considered part of versioned object is:
+
+  - all attributes that are defined in the schema declarations 
+    at the time of writing to the repository (including the 
+    directly provided ones) are considered to be part of the object
+    by default.
+    
+    The existing mechanism to specify exception of this rule can be
+    found in INonVersionedData
+    
+    XXX How to handle annotations? The current implementation only
+    handles attributes.
+    
+  - Attributes that are not part of a schema declaration are not
+    considered being part of the object all by default
+    
+    There will be an mechanism to specify what attributes shall be
+    included.
+    
+    
