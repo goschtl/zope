@@ -20,9 +20,11 @@ from zope.interface import implements, Interface
 
 
 class IPrefixQuery(IVocabularyQuery):
+    """Interface for prefix queries."""
     
     def queryForPrefix(prefix):
-        """Return a vocabulary that contains terms beginning with prefix."""
+        """Return a vocabulary that contains terms beginning with
+        prefix."""
 
 
 class Term:
@@ -32,30 +34,21 @@ class Term:
         self.value = value
 
 
-class TermIterator:
-    def __init__(self, values):
-        self._next = iter(values).next
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        return Term(self._next())
-
-
 class CompletionVocabulary(object):
     implements(IVocabulary)
 
     def __init__(self, values):
         # In practice, something more dynamic could be used to
         # get the list possible completions.
-        self._values = tuple(values)
+        # We force a _values to be a list so we can use .index().
+        self._values = list(values)
+        self._terms = map(Term, self._values)
 
     def __contains__(self, value):
         return value in self._values
 
     def __iter__(self):
-        return TermIterator(self._values)
+        return iter(self._terms)
 
     def __len__(self):
         return len(self._values)
@@ -65,7 +58,7 @@ class CompletionVocabulary(object):
 
     def getTerm(self, value):
         if value in self._values:
-            return Term(value)
+            return self._terms[self._values.index(value)]
         raise LookupError(value)
 
 
