@@ -93,3 +93,7 @@ Things to do for the next release (in no particular order)
   events. The UI should generate some sort of ShutdownRequest event
   and code in the server should be subscribed. Care needs to be taken
   to assure that only privileged users can generate these events.
+
+- Sort out "usage". The basic idea is very simple, but the 
+  implementation is too implicit and complex.
+
