@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IDBIConnection.py,v 1.1 2002/06/24 11:14:17 srichter Exp $
+$Id: IDBIConnection.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
 """
 
 from Interface import Interface
@@ -50,3 +50,10 @@ class IDBIConnection(Interface):
         Error (or subclass) exception will be raised if any operation is
         attempted with the connection. The same applies to all cursor objects
         trying to use the connection.  """
+
+
+
+
+
+
+

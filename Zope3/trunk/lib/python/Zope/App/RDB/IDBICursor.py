@@ -13,10 +13,13 @@
 ##############################################################################
 """
 Revision information:
-$Id: IDBICursor.py,v 1.1 2002/06/24 11:14:17 srichter Exp $
+$Id: IDBICursor.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
 """
 
-from Interface import Interface, Attribute
+from Interface import Interface
+from Interface.Attribute import Attribute
+
+arraysize=1 # default constant, symbolic
 
 class IDBICursor(Interface):
     """DB API ICursor interface"""
@@ -98,7 +101,7 @@ class IDBICursor(Interface):
         executeXXX() did not produce any result set or no call was issued yet.
         """
 
-    def fetchmany(size=ICursor.arraysize):
+    def fetchmany(size=arraysize):
         """Fetch the next set of rows of a query result, returning a sequence of
         sequences (e.g. a list of tuples). An empty sequence is returned when
         no more rows are available.

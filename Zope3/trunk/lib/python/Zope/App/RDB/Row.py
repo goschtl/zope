@@ -15,26 +15,24 @@
 
 XXX longer description goes here.
 
-$Id: IZopeCursor.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: Row.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
 """
+from Zope.Security import Checker
 
-from IDBICursor import IDBICursor
+class row(object):
 
-class IZopeCursor(IDBICursor):
+    def __init__(self, data):
+        for k, v in zip(self.__slots__, data):
+            setattr(self, k, v)
 
-    """An ICursor that integrates with Zope's transactions"""
+def row_class_factory(columns):
 
-    def execute(operation, parameters=None):
-        """Executes an operation, registering the underlying connection with
-        the transaction system.
+    klass_namespace = {}
+    
+    klass_namespace['__Security_checker__']=Checker.NamesChecker(columns)
+    klass_namespace['__slots__']=tuple(columns)
 
-        See ICursor for more detailed execute information.
-        """
+    return type('row class', (row,), klass_namespace)
 
-    def executemany(operation, seq_of_parameters=None):
-        """Executes an operation, registering the underlying connection with
-        the transaction system.
 
-        See ICursor for more detailed executemany information.
-        """
-        
+

@@ -13,11 +13,12 @@
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.1 2002/06/24 16:13:44 srichter Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
 """
 
 from Zope.Configuration.name import resolve
-
+from Persistence import Persistent
+from Zope.App.RDB.IZopeDatabaseAdapter import IZopeDatabaseAdapter
 class ZopeDatabaseAdapter(Persistent):
 
     __implements__ = IZopeDatabaseAdapter
@@ -44,4 +45,5 @@ class ZopeDatabaseAdapter(Persistent):
                                      database=self.database)
         return self._v_connection
 
-    
+
+

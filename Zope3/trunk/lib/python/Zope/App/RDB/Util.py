@@ -11,24 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
+"""XXX short summary goes her
 
 XXX longer description goes here.
 
-$Id: IResultSet.py,v 1.3 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: Util.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
 """
 
+import Row
+import ResultSet
 
-from Interface import Interface
+def query_for_results(conn, query):
 
-class IResultSet(Interface):
-    """ holds results, and allows iteration """
+    # need to typing
+    cursor = conn.cursor()
+    cursor.execute(query)
 
-    def __getitem__(index):
-        "return a brain row for index"
+    columns = [c[0] for c in cursor.description]
 
-
-
-
-
+    row_klass = Row.row_class_factory(columns)
     
+    return ResultSet(columns,
+                     cursor.fetchall(),
+                     row_klass)
+
+
+

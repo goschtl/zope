@@ -11,24 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: IResultSet.py,v 1.3 2002/06/25 15:41:45 k_vertigo Exp $
 """
+$Id: ZopeCursor.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
+"""
+from IZopeCursor import IZopeCursor
 
+class ZopeCursor:
+    __implements__ = IZopeCursor
 
-from Interface import Interface
+    def __init__(self, cursor, connection):
+        self.cursor = cursor
+        self.connection = connection
 
-class IResultSet(Interface):
-    """ holds results, and allows iteration """
+    def execute(self, operation, parameters=None):
+        """Executes an operation, registering the underlying
+        connection with the transaction system.  """
 
-    def __getitem__(index):
-        "return a brain row for index"
+        self.connection.registerForTxn()
+        return self.cursor.execute(operation, parameters)
 
-
-
-
-
-    
+    def __getattr__(self, key):
+        return getattr(self.cursor, key)

@@ -7,5 +7,5 @@ class IZopeDatabaseAdapter(Interface):
     This object is internal to the connection service."""
 
     def __call__():
-        """return an Iconnection object"""
+        """return an IZopeConnection object"""
 

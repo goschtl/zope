@@ -11,24 +11,34 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
+"""Stubs for Zope RDB unit tests.
 
-XXX longer description goes here.
-
-$Id: IResultSet.py,v 1.3 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: Stubs.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
 """
 
+class ConnectionStub:
 
-from Interface import Interface
+    def __init__(self):
+        self._called={}
+    
+    def cursor(self):
+        return CursorStub()
 
-class IResultSet(Interface):
-    """ holds results, and allows iteration """
+    def answer(self):
+        return 42
 
-    def __getitem__(index):
-        "return a brain row for index"
+    def commit(self, *ignored):
+        v = self._called.setdefault('commit',0)
+        v+=1
+        self._called['commit']=v        
+    def rollback(self, *ignored):
+        v = self._called.setdefault('rollback',0)
+        v+=1
+        self._called['rollback']=v
 
-
-
+class CursorStub:
+    def execute(*args, **kw):
+        pass
 
 
     

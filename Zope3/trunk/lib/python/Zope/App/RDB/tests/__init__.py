@@ -11,24 +11,3 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: IResultSet.py,v 1.3 2002/06/25 15:41:45 k_vertigo Exp $
-"""
-
-
-from Interface import Interface
-
-class IResultSet(Interface):
-    """ holds results, and allows iteration """
-
-    def __getitem__(index):
-        "return a brain row for index"
-
-
-
-
-
-    

@@ -14,19 +14,32 @@
 """
 
 Revision information:
-$Id: IZopeConnection.py,v 1.1 2002/06/24 11:14:17 srichter Exp $
+$Id: IZopeConnection.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
 """
 
 from IDBIConnection import IDBIConnection
 from IDBITypeInfoProvider import IDBITypeInfoProvider
-from Transactions.IDataManager import IDataManager
 
-class IZopeConnection(IDBIConnection, IDataManager, IDBITypeInfoProvider):
+
+class IZopeConnection(IDBIConnection,  IDBITypeInfoProvider):
 
     def cursor():
-        """
-        return a ZopeCursor object
-        """
-    
+        """Return an IZopeCursor object"""
+        
+    def registerForTxn():
+        """Registers the Connection with the Zope Transaction
+        framework.
+
+        This method should only be inovoked by the Zope/DB transaction
+        manager."""
+
+    def unregisterFromTxn():
+        """Unregister the connection from the Zope transaction.
+
+        This method should only be inovoked by the Zope/DB transaction
+        manager!!!."""
+
 
         
+
+

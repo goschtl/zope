@@ -15,26 +15,19 @@
 
 XXX longer description goes here.
 
-$Id: IZopeCursor.py,v 1.2 2002/06/25 15:41:45 k_vertigo Exp $
+$Id: ResultSet.py,v 1.1 2002/06/25 15:41:45 k_vertigo Exp $
 """
 
-from IDBICursor import IDBICursor
+class ResultSet(list): 
 
-class IZopeCursor(IDBICursor):
+    def __init__(self, names, data, row_klass):
+        self.names = names
+        self.row_klass = row_klass
+        super(ResultSet).__init__(self, data)
 
-    """An ICursor that integrates with Zope's transactions"""
+    def __getitem__(self, idx):
+        return self.row_klass(list.__getitem__(idx))
+    
+    
 
-    def execute(operation, parameters=None):
-        """Executes an operation, registering the underlying connection with
-        the transaction system.
 
-        See ICursor for more detailed execute information.
-        """
-
-    def executemany(operation, seq_of_parameters=None):
-        """Executes an operation, registering the underlying connection with
-        the transaction system.
-
-        See ICursor for more detailed executemany information.
-        """
-        
