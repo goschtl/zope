@@ -17,6 +17,8 @@ from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
 from Interface import Interface
 
+from Products.PluggableAuthService.utils import providedBy
+
 class IFaux( Interface ):
 
     def faux_method():
@@ -54,7 +56,7 @@ class ScriptablePluginTests( unittest.TestCase ):
     def test_empty( self ):
 
         scriptable_plugin = self._makeOne()
-        self.assertEqual( len(scriptable_plugin.__implements__), 2 )
+        self.assertEqual( len( list( scriptable_plugin.__implements__ ) ), 2 )
 
     def test_withTwo( self ):
 
@@ -71,7 +73,9 @@ class ScriptablePluginTests( unittest.TestCase ):
 
         scriptable_plugin.manage_updateInterfaces( ['IFaux', 'IFauxTwo'] )
 
-        self.assertEqual( len(scriptable_plugin.__implements__), 4 )
+        provided = providedBy( scriptable_plugin )
+        self.failUnless( IFaux in provided )
+        self.failUnless( IFauxTwo in provided )
 
     def test_withTwoOnlyOneWired( self ):
 
@@ -88,7 +92,9 @@ class ScriptablePluginTests( unittest.TestCase ):
 
         scriptable_plugin.manage_updateInterfaces( ['IFaux',] )
 
-        self.assertEqual( len(scriptable_plugin.__implements__), 3 )
+        provided = providedBy( scriptable_plugin )
+        self.failUnless( IFaux in provided )
+        self.failIf( IFauxTwo in provided )
 
     def test_withTwoMinusOne( self ):
 
@@ -107,7 +113,9 @@ class ScriptablePluginTests( unittest.TestCase ):
 
         scriptable_plugin._delObject( 'two_method' )
 
-        self.assertEqual( len(scriptable_plugin.__implements__), 3 )
+        provided = providedBy( scriptable_plugin )
+        self.failUnless( IFaux in provided )
+        self.failIf( IFauxTwo in provided )
 
 
 if __name__ == '__main__':

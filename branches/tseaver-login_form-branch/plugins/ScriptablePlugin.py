@@ -24,6 +24,8 @@ from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from BasePlugin import BasePlugin
 from Products.PluggableAuthService.utils import directlyProvides
+from Products.PluggableAuthService.utils import providedBy
+from Products.PluggableAuthService.utils import implementedBy
 
 import Products
 
@@ -101,12 +103,13 @@ class ScriptablePlugin(Folder, BasePlugin):
         pas_instance = self._getPAS()
         plugins = pas_instance._getOb( 'plugins' )
 
-        del_interfaces = filter( lambda x: id in x.names()
-                               , self.__implements__ )
+        provided_interfaces = list( providedBy( self ) )
+        del_interfaces = filter(lambda x: id in x.names(), provided_interfaces)
 
-        trimmed_interfaces = [ x for x in self.__implements__ if
-                               x not in ( del_interfaces +
-                                          self.__class__.__implements__ ) ]
+        klass_interfaces = list( implementedBy( self.__class__ ) )
+
+        trimmed_interfaces = [ x for x in provided_interfaces if
+                               x not in ( del_interfaces + klass_interfaces ) ]
 
         for interface in del_interfaces:
             if myId in plugins.listPluginIds( interface ):
