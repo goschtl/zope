@@ -9,6 +9,8 @@ from Testing import ZopeTestCase
 from Testing.ZopeTestCase.functional import Functional
 from AccessControl import Unauthorized
 
+# we need to install FiveTest *before* Five as Five processes zcml
+# in all the products it can find.
 ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 ZopeTestCase.installProduct('PythonScripts')

@@ -7,6 +7,8 @@ import unittest
 from Testing import ZopeTestCase
 from Testing.ZopeTestCase.functional import Functional
 
+# we need to install FiveTest *before* Five as Five
+# looks up zcml files in the products it can find.
 ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 
