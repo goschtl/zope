@@ -2,7 +2,7 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser">
 
-    <include file="source.zcml" />
-    <include file="principal.zcml" />
+    <!-- LDAP principal manager -->
+
 
 </configure>

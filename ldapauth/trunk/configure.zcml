@@ -10,22 +10,41 @@
         <factory
             id="ldapauth.source.LDAPPrincipalSource" />
 
-        <allow 
-            interface=".interfaces.ILDAPBasedPrincipalSource" />
-
         <implements
             interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
+        <implements
+            interface="zope.app.container.interfaces.IContainer" />
+
+        <allow
+            interface=".interfaces.ILDAPBasedPrincipalSource" />
+
         <require
             permission="zope.ManageContent"
+            interface="zope.app.container.interfaces.IReadContainer" />
+
+        <require
+            permission="zope.ManageServices"
+            interface="zope.app.container.interfaces.IWriteContainer" />
+
+        <require
+            permission="zope.ManageServices" 
             set_schema=".interfaces.ILDAPBasedPrincipalSource" />
 
     </content>
 
+    <!-- Pluggable LDAP manager adapter -->
+    <adapter
+        factory="ldapauth.manager.LDAPManagerAdapter"
+        provides="ldapauth.interfaces.ILDAPManager"
+        for=".interfaces.ILDAPBasedPrincipalSource"
+        />
+
+    <!-- LDAP connection test adapter -->
     <adapter
         factory="ldapauth.check.CheckLDAPAdapter"
         provides="ldapauth.interfaces.ICheckLDAPAdapter"
-        for="*"
+        for=".interfaces.ILDAPBasedPrincipalSource"
         />
 
     <!-- add browser views -->

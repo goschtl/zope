@@ -1,0 +1,67 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser">
+
+    <!-- LDAPPrincipalSource -->
+    <addMenuItem
+        title="Add LDAP Principal Source"
+        class="ldapauth.source.LDAPPrincipalSource"
+        permission="zope.ManageServices" />
+
+    <addform
+        schema="ldapauth.interfaces.ILDAPBasedPrincipalSource" 
+        label="Add LDAP-based Principal Source" 
+        name="AddLDAPPrincipalSourceForm" 
+        permission="zope.ManageContent" />
+
+    <!-- provide a own Contents view without add and delete functions 
+         Perhaps we enhance this view later. At this time we use thos view
+         instead of the inherited Contents view from the ocntainer. -->
+    <page
+        for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
+        name="principals.html"
+        attribute="principals"
+        class=".principals.Principals"
+        menu="zmi_views" title="Contents"
+        permission="zope.ManageContent"/>
+
+    <editform 
+        schema="ldapauth.interfaces.ILDAPBasedPrincipalSource" 
+        label="Edit LDAP-based Principal Source" 
+        name="edit.html"        
+        menu="zmi_views" title="Edit"
+        fields="host port basedn login_attribute manager_dn manager_passwd" 
+        permission="zope.ManageContent" />
+
+    <!-- connetion test view -->
+    <page
+        for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
+        name="check.html"
+        attribute="check"
+        class=".check.CheckLDAPView"
+        menu="zmi_views" title="Test"
+        permission="zope.ManageServices"/>
+
+    <pages
+        for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
+        permission="zope.ManageBindings"
+        class="zope.app.cache.browser.cacheable.CacheableView"
+        >
+
+    <page
+        name="Caching.html"
+        attribute="form"  
+        menu="zmi_views" title="Caching"
+        />
+    <page
+        name="ChangeCaching.html"
+        attribute="action"
+        />
+    <page
+        name="InvalidateCache.html"
+        attribute="invalidate"
+        />
+
+    </pages>
+
+</configure>

@@ -21,6 +21,8 @@ from zope.schema import TextLine, Int, List, Password
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.pluggableauth.interfaces import IPrincipalSource
 
+
+
 class ILDAPBasedPrincipalSource(IPrincipalSource):
     """Describe LDAP-based authentication sources."""
 
@@ -49,6 +51,20 @@ class ILDAPBasedPrincipalSource(IPrincipalSource):
     manager_passwd = Password(
             title = _(u'Manager password'),
             description = _(u"Manager's password"))
+
+
+
+class ILDAPManager(Interface):
+    """A LDAP server manager."""
+
+    def addPrincipal(login_attribute, ldap_principal):
+        """Add a principal to the LDAP server."""
+
+    def editPrincipal(login_attribute, ldap_principal):
+        """Edit a principal to the LDAP server."""
+
+    def deletePrincipal(login_attribute):
+        """Delete a principal to the LDAP server."""
 
 
 
