@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: add.py,v 1.3 2002/12/26 22:26:27 jim Exp $
 """
 
 import sys
@@ -155,7 +155,7 @@ def add(_context, name, schema, label, content_factory,
 
     (schema, for_, bases, template, fields,
      ) = _normalize(
-        _context, schema, for_, class_, template, 'edit.pt', fields, omit,
+        _context, schema, for_, class_, template, 'add.pt', fields, omit,
         AddView)
 
     leftover = fields
@@ -205,7 +205,7 @@ def add(_context, name, schema, label, content_factory,
         Action(
         discriminator = ('http://namespaces.zope.org/form/add', name, layer),
         callable = AddViewFactory,
-        args = (name, schema, label, permission, layer, template, 'edit.pt',
+        args = (name, schema, label, permission, layer, template, 'add.pt',
                 bases,
                 IAdding, fields, content_factory, arguments,
                 keyword_arguments, set_before_add, set_after_add),
