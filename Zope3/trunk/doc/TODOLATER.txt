@@ -2,6 +2,13 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- http://dev.zope.org/Zope3/TALESPathExpressionAdapters
+
+- I think the session api needs a little more work.  Among other
+  things, it needs to get tied into zpt.
+
+- http://dev.zope.org/Zope3/NoMoreSchemaBinding
+
 - http://dev.zope.org/Zope3/ActionPlans
 
 
