@@ -131,11 +131,25 @@ def _read_one_line(filename):
 
 
 class UrlBase:
+    """Base class for parsed-URL objects."""
 
-    def __str__(self):
+    def __repr__(self):
+        """Indicate the URL represented by the instance.
+
+        This requires the derived class to implement `getUrl()`.
+
+        :rtype: str
+        """
         return "<%s.%s: %s>" % (self.__class__.__module__,
                                 self.__class__.__name__,
                                 self.getUrl())
+
+    def getUrl(self):
+        """Return the URL represented by the instance as a simple string.
+
+        :rtype: str
+        """
+        raise NotImplementedError
 
 
 class CvsUrl(UrlBase):
