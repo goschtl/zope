@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.26 2003/05/27 13:50:56 gvanrossum Exp $
+$Id: fssync.py,v 1.27 2003/05/27 20:36:48 gvanrossum Exp $
 """
 
 import os
@@ -36,6 +36,8 @@ from StringIO import StringIO
 from os.path import exists, isfile, isdir, islink
 from os.path import dirname, basename, split, join
 from os.path import realpath, normcase, normpath
+
+from zope.xmlpickle import dumps
 
 from zope.fssync.metadata import Metadata
 from zope.fssync.fsmerger import FSMerger
@@ -406,6 +408,17 @@ class FSSync(object):
         if isdir(path):
             entry["type"] = entry["factory"] = "zope.app.content.folder.Folder"
         self.metadata.flush()
+        if isdir(path):
+            # Force Entries.xml to exist, even if it wouldn't normally
+            zopedir = join(path, "@@Zope")
+            efile = join(zopedir, "Entries.xml")
+            if not exists(efile):
+                if not exists(zopedir):
+                    os.makedirs(zopedir)
+                    self.network.writefile(dumps({}), efile)
+            print "A", join(path, "")
+        else:
+            print "A", path
 
     def remove(self, path):
         if exists(path):
@@ -421,6 +434,7 @@ class FSSync(object):
         else:
             entry["flag"] = "removed"
         self.metadata.flush()
+        print "R", path
 
     def status(self, target, descend_only=False):
         entry = self.metadata.getentry(target)
