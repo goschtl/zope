@@ -34,7 +34,7 @@ run: inplace
 	$(PYTHON) z3.py
 
 clean:
-	find . -name '*.o' -o -name '*.so' -o -name '*.py[co]' -o -name '*.dll' -exec rm {} \;
+	find . \( -name '*.o' -o -name '*.so' -o -name '*.py[co]' -o -name '*.dll' \) -exec rm {} \;
 	rm -rf build
 
 realclean: clean
