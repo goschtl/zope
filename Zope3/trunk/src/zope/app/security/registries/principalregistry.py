@@ -13,17 +13,15 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.3 2002/12/28 01:37:13 rdmurray Exp $
+$Id: principalregistry.py,v 1.4 2002/12/31 18:39:07 jeremy Exp $
 """
 __metaclass__ = type
 
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.security import ILoginPassword
 from zope.component import getAdapter, queryAdapter
-from zope.app.interfaces.security import IAuthenticationService
-from zope.app.interfaces.security import IPrincipal
 from zope.app.interfaces.security \
-     import IUnauthenticatedPrincipal
+     import IAuthenticationService, IPrincipal, IUnauthenticatedPrincipal
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
@@ -89,7 +87,7 @@ class PrincipalRegistry:
     # Management methods
 
     def __init__(self):
-        self.__principalsById={}
+        self.__principalsById = {}
         self.__principalsByLogin = {}
 
     def definePrincipal(self, principal, title, description='',
