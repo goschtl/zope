@@ -56,4 +56,16 @@
       permission="zope.ManageServices"
       />
 
+  <localUtility class=".browserplugins.FormChallenger">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+        
+    <require
+        permission="zope.ManageServices"
+        interface=".browserplugins.IFormChallengerLoginPageName"
+        set_schema=".browserplugins.IFormChallengerLoginPageName" />
+
+  </localUtility>
+  
 </configure>

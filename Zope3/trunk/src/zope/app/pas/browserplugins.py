@@ -17,15 +17,18 @@
 $Id$
 """
 
-from zope.interface import implements
+from zope.interface import implements, Interface
+from zope.schema import TextLine  
 from persistent import Persistent
 from zope.app.component import hooks
 from zope.app.container.contained import Contained
 from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app import zapi
 from zope.app.session.interfaces import ISession
+from urllib import urlencode
 
 from zope.app.pas.interfaces import IExtractionPlugin, IChallengePlugin
+
 
 class SessionExtractor(Persistent, Contained):
     """ session-based credential extractor.
@@ -47,17 +50,17 @@ class SessionExtractor(Persistent, Contained):
 
         If the session does not contain the credentials check
         the request for form variables.
-        >>> request = createTestRequest(username='scott', password='tiger')
+        >>> request = createTestRequest(login='scott', password='tiger')
 
         >>> se.extractCredentials(request)
-        {'username': 'scott', 'password': 'tiger'}
+        {'login': 'scott', 'password': 'tiger'}
 
         >>> request = createTestRequest()
         >>> sessionData = Session(request)['pas_credentials']
-        >>> sessionData['username'] = 'scott'
+        >>> sessionData['login'] = 'scott'
         >>> sessionData['password'] = 'tiger'
         >>> se.extractCredentials(request)
-        {'username': 'scott', 'password': 'tiger'}
+        {'login': 'scott', 'password': 'tiger'}
      """
     implements(IExtractionPlugin)
 
@@ -66,15 +69,29 @@ class SessionExtractor(Persistent, Contained):
         sessionData = ISession(request)['pas_credentials']
         if not sessionData:
             # check for form data
-            un = request.get('username', None)
-            pw = request.get('password', None)
-            if un and pw:
-                sessionData['username'] = un
-                sessionData['password'] = pw
+            login = request.get('login', None)
+            password = request.get('password', None)
+            if login and password:
+                sessionData['login'] = login
+                sessionData['password'] = password
             else:
                 return None
-        return {'username': sessionData['username'],
+        return {'login': sessionData['login'],
                 'password': sessionData['password']}
+
+
+
+class IFormChallengerLoginPageName(Interface):
+    """HTTP Basic Auth Realm
+
+    Represents the realm string that is used during basic HTTP authentication
+    """
+
+    loginpagename = TextLine(title=u'loginpagename',
+                     description=u'Name of the login form used by challenger',
+                     required=True,
+                     default=u'/@@loginForm.html')
+
 
 class FormChallenger(Persistent, Contained):
     """ Query the user for credentials using a browser form.
@@ -97,15 +114,13 @@ class FormChallenger(Persistent, Contained):
         The response's headers should now contain the URL to redirect to.
         >>> headers = response.getHeaders()
         >>> headers['Location']
-        'http://127.0.0.1/login.html?REFERER=http://127.0.0.1'
+        'http://127.0.0.1/@@loginForm.html?camefrom=http%3A%2F%2F127.0.0.1'
 
     """
 
-    implements(IChallengePlugin)
+    implements(IChallengePlugin, IFormChallengerLoginPageName)
     
-    def getLoginPage(self):
-        """ return configurable login page """
-        return '/@@loginForm.html'
+    loginpagename = '/@@loginForm.html'
 
     def challenge(self, request, response):
         """ Response shuold redirect to login page cause Credebtials
@@ -116,7 +131,7 @@ class FormChallenger(Persistent, Contained):
         camefrom = request.getURL()
 
         url = absoluteURL(site, request)
-        url += self.getLoginPage() + '?REFERER=' + camefrom
+        url += self.loginpagename + '?' + urlencode({'camefrom' :camefrom})
         response.redirect(url)
 
         return True

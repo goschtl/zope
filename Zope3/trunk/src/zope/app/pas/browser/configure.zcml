@@ -27,4 +27,10 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Edit" />
 
+  <editform
+      schema="..browserplugins.IFormChallengerLoginPageName"
+      label="Change login page name"
+      name="edit.html"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Edit" />
 </zope:configure>

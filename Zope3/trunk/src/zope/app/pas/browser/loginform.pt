@@ -6,14 +6,13 @@
 </head>
 <body><div metal:fill-slot="body"> 
     <p i18n:translate="">Please provide Login Information</p>
-    <h1 tal:content="request/REFERER" />
     <form action="" method="post" 
-        tal:attributes="action request/REFERER"
+        tal:attributes="action request/camefrom"
     >
       <div class="row">
        <div class="label" i18n:translate="">User Name</div>
        <div class="field">
-        <input type="text" name="username"/>
+        <input type="text" name="login"/>
        </div>
       </div>
 
