@@ -99,6 +99,22 @@ class PageRegistration(zope.app.component.site.AdapterRegistration):
     component = property(component)
 
 
+class Registered(object):
+    """An adapter from IRegisterable to IRegistered."""
+    implements(zope.app.component.interfaces.registration.IRegistered)
+    __used_for__ = zope.app.component.interfaces.registration.IRegisterable
+
+    def __init__(self, registerable):
+        self.registerable = registerable
+
+    def registrations(self):
+        rm = zapi.getParent(self.registerable).registrationManager
+        ICR = zope.app.component.interfaces.registration.IComponentRegistration
+        return [reg for reg in rm.values()
+                if (ICR.providedBy(reg) and
+                    reg.template is self.registerable)]
+
+
 def PageRegistrationAddSubscriber(registration, event):
     if registration.template is not None:
         # XXX: Needs investigating

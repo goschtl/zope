@@ -16,6 +16,7 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+from zope.app import zapi
 
 class PageFolderDefaultConfiguration(object):
     "Make sure to update all page template registrations, when info changed"
@@ -43,3 +44,19 @@ class PageRegistrationView(object):
         super(PageRegistrationView, self).update()
         if "UPDATE_SUBMIT" in self.request:
             self.context.validate()
+
+class PageRegistrationDetails(object):
+
+    def required(self):
+        required = self.context.required
+        return required.__module__ + '.' + required.__name__
+
+    def name(self):
+        return self.context.name or '<no name>'
+
+    def template(self):
+        url = zapi.getMultiAdapter(
+            (self.context.template, self.request), name='absolute_url')
+        name = zapi.name(self.context.template)
+        return {'url': url, 'name': name}
+    

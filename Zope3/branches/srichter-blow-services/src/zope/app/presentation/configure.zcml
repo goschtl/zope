@@ -12,6 +12,17 @@
         />
   </content>
   
+  <class class=".registration.Registered">
+    <allow attributes="registrations" />
+  </class>
+
+  <adapter
+      for=".interfaces.IZPTTemplate"
+      provides="..component.interfaces.registration.IRegistered"
+      factory=".registration.Registered"
+      trusted="true"
+      />
+
   <subscriber
       factory=".registration.PageRegistrationAddSubscriber"
       for=".interfaces.IPageRegistration 
