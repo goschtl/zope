@@ -6,6 +6,9 @@ class ObjectMover:
 
     __implements__ = IObjectMover
 
+    def __init__(self, container):
+        self.context = container
+
     def moveTo(target, name=None):
         '''Move this object to the target given.
         
@@ -31,6 +34,9 @@ class ObjectMover:
 class ObjectCopier:
 
     __implements__ = IObjectCopier
+
+    def __init__(self, container):
+        self.context = container
 
     def copyTo(target, name=None):
         """Copy this object to the target given.
