@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.17 2004/03/06 17:48:48 jim Exp $
+$Id: propfind.py,v 1.18 2004/05/06 15:36:45 fdrake Exp $
 """
 from xml.dom import minidom
 from zope.proxy import removeAllProxies
@@ -31,7 +31,14 @@ class PROPFIND(object):
         self.context = context
         self.request = request
         self.setDepth(request.getHeader('depth', 'infinity'))
-        self.content_type = request.getHeader('content-type', 'text/xml')
+        ct = request.getHeader('content-type', 'text/xml')
+        if ';' in ct:
+            parts = ct.split(';', 1)
+            self.content_type = parts[0].strip().lower()
+            self.content_type_params = parts[1].strip()
+        else:
+            self.content_type = ct.lower()
+            self.content_type_params = None
         self.default_ns = 'DAV:'
 
     def getDepth(self):
@@ -50,7 +57,7 @@ class PROPFIND(object):
         response = ''
         body = ''
 
-        if self.content_type.lower() not in ['text/xml', 'application/xml']:
+        if self.content_type not in ['text/xml', 'application/xml']:
             request.response.setStatus(400)
             return body
 
