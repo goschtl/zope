@@ -183,7 +183,7 @@ def NamesChecker(names=(), permission_id=CheckerPublic, **__kw__):
     return Checker(data.get)
 
 def InterfaceChecker(interface, permission_id=CheckerPublic):
-    return NamesChecker(interface.names(1), permission_id)
+    return NamesChecker(interface.names(all=True), permission_id)
 
 def MultiChecker(specs):
     """Create a checker from a sequence of specifications
@@ -208,7 +208,7 @@ def MultiChecker(specs):
         if type(spec) is tuple:
             names, permission_id = spec
             if IInterface.isImplementedBy(names):
-                names = names.names(1)
+                names = names.names(all=True)
             for name in names:
                 if data.get(name, permission_id) is not permission_id:
                     raise DuplicationError(name)

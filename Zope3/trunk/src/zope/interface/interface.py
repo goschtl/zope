@@ -14,14 +14,14 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.4 2003/01/20 20:02:29 jim Exp $
+$Id: interface.py,v 1.5 2003/01/25 05:13:44 rdmurray Exp $
 """
 
 
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.4 2003/01/20 20:02:29 jim Exp $
+$Id: interface.py,v 1.5 2003/01/25 05:13:44 rdmurray Exp $
 """
 
 from inspect import currentframe
@@ -195,7 +195,7 @@ class InterfaceClass(Element):
         return r.keys()
 
     def __iter__(self):
-        return iter(self.names(1))
+        return iter(self.names(all=True))
 
     def namesAndDescriptions(self, all=0):
         """Return attribute names and descriptions defined by interface."""

@@ -97,7 +97,7 @@ class InterfaceTests(unittest.TestCase):
     def test_names(self):
         names = list(_I2.names()); names.sort()
         self.assertEqual(names, ['f21', 'f22', 'f23'])
-        names = list(_I2.names(1)); names.sort()
+        names = list(_I2.names(all=True)); names.sort()
         self.assertEqual(names, ['a1', 'f11', 'f12', 'f21', 'f22', 'f23'])
 
     def test_namesAndDescriptions(self):

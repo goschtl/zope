@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _schema.py,v 1.3 2003/01/09 14:13:18 jim Exp $
+$Id: _schema.py,v 1.4 2003/01/25 05:13:48 rdmurray Exp $
 """
 from zope.interface import Interface
 from zope.schema.interfaces import ValidationError
@@ -22,7 +22,7 @@ def getFields(schema):
     """
     from zope.schema.interfaces import IField
     fields = {}
-    for name in schema.names(1):
+    for name in schema.names(all=True):
         attr = schema.getDescriptionFor(name)
         if IField.isImplementedBy(attr):
             fields[name] = attr
