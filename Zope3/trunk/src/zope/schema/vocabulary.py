@@ -49,12 +49,8 @@ class ContainerValidatedProperty(ValidatedProperty):
         return value
 
 
-class VocabularyField(Field):
-    """Field that adds support for use of an external vocabulary.
+class BaseVocabularyField(Field):
 
-    The value is a single value from the vocabulary.
-    """
-    implements(IVocabularyField)
 
     def __init__(self, vocabulary=None, **kw):
         # set up the vocabulary:
@@ -66,7 +62,23 @@ class VocabularyField(Field):
             self.vocabulary = vocabulary
             self.vocabularyName = None
         # call the base initializer
-        super(VocabularyField, self).__init__(**kw)
+        super(BaseVocabularyField, self).__init__(**kw)
+
+    def bind(self, object):
+        clone = super(BaseVocabularyField, self).bind(object)
+        # get registered vocabulary/presentation if needed:
+        if clone.vocabulary is None:
+            vr = getVocabularyRegistry()
+            clone.vocabulary = vr.get(object, self.vocabularyName)
+        return clone
+
+
+class VocabularyField(BaseVocabularyField):
+    """Field that adds support for use of an external vocabulary.
+
+    The value is a single value from the vocabulary.
+    """
+    implements(IVocabularyField)
 
     def _validate(self, value):
         if self.vocabulary is None:
@@ -79,16 +91,8 @@ class VocabularyField(Field):
             raise ValidationError(errornames.ConstraintNotSatisfied,
                                   value)
 
-    def bind(self, object):
-        clone = super(VocabularyField, self).bind(object)
-        # get registered vocabulary/presentation if needed:
-        if clone.vocabulary is None:
-            vr = getVocabularyRegistry()
-            clone.vocabulary = vr.get(object, self.vocabularyName)
-        return clone
 
-
-class VocabularyMultiField(MinMaxLen, VocabularyField):
+class VocabularyMultiField(MinMaxLen, BaseVocabularyField):
     """Field that adds support for use of an external vocabulary.
 
     The value is a collection of values from the vocabulary.
@@ -103,19 +107,19 @@ class VocabularyMultiField(MinMaxLen, VocabularyField):
         if self.__class__ is VocabularyMultiField:
             raise NotImplementedError(
                 "The VocabularyMultiField class cannot be used directly.")
-        if "default" not in kw:
+        if "default" not in kw and not kw.get("min_length"):
             kw["default"] = []
         super(VocabularyMultiField, self).__init__(**kw)
 
     def _validate(self, value):
         vocab = self.vocabulary
-        if not value:
-            return
-        if vocab is None:
-            raise ValueError("can't validate value without vocabulary")
-        for v in value:
-            if v not in vocab:
-                raise ValidationError(errornames.ConstraintNotSatisfied, v)
+        if value:
+            if vocab is None:
+                raise ValueError("can't validate value without vocabulary")
+            for v in value:
+                if v not in vocab:
+                    raise ValidationError(errornames.ConstraintNotSatisfied, v)
+        super(VocabularyMultiField, self)._validate(value)
 
 class UniqueElements(object):
     """Mix-in class that checks that each contained element is unique."""

@@ -154,6 +154,56 @@ class VocabularyFieldTests(BaseTest):
         self.check_constructed_vocabulary_multi_default(
             vocabulary.VocabularyUniqueListField)
 
+    def check_min_length_ok(self, v, cls):
+        field = cls(vocabulary=v, min_length=1)
+        self.assertEqual(field.min_length, 1)
+        field.validate([0])
+
+    def test_min_length_ok(self):
+        v = SampleVocabulary()
+        self.check_min_length_ok(v, vocabulary.VocabularyBagField)
+        self.check_min_length_ok(v, vocabulary.VocabularyListField)
+        self.check_min_length_ok(v, vocabulary.VocabularySetField)
+        self.check_min_length_ok(v, vocabulary.VocabularyUniqueListField)
+
+    def check_min_length_short(self, v, cls):
+        field = cls(vocabulary=v, min_length=1)
+        self.assertEqual(field.min_length, 1)
+        self.assertRaises(interfaces.ValidationError,
+                          field.validate, [])
+
+    def test_min_length_short(self):
+        v = SampleVocabulary()
+        self.check_min_length_short(v, vocabulary.VocabularyBagField)
+        self.check_min_length_short(v, vocabulary.VocabularyListField)
+        self.check_min_length_short(v, vocabulary.VocabularySetField)
+        self.check_min_length_short(v, vocabulary.VocabularyUniqueListField)
+
+    def check_max_length_ok(self, v, cls):
+        field = cls(vocabulary=v, min_length=2)
+        self.assertEqual(field.min_length, 2)
+        field.validate([0, 1])
+
+    def test_max_length_ok(self):
+        v = SampleVocabulary()
+        self.check_max_length_ok(v, vocabulary.VocabularyBagField)
+        self.check_max_length_ok(v, vocabulary.VocabularyListField)
+        self.check_max_length_ok(v, vocabulary.VocabularySetField)
+        self.check_max_length_ok(v, vocabulary.VocabularyUniqueListField)
+
+    def check_max_length_long(self, v, cls):
+        field = cls(vocabulary=v, max_length=2)
+        self.assertEqual(field.max_length, 2)
+        self.assertRaises(interfaces.ValidationError,
+                          field.validate, [0, 1, 2])
+
+    def test_max_length_long(self):
+        v = SampleVocabulary()
+        self.check_max_length_long(v, vocabulary.VocabularyBagField)
+        self.check_max_length_long(v, vocabulary.VocabularyListField)
+        self.check_max_length_long(v, vocabulary.VocabularySetField)
+        self.check_max_length_long(v, vocabulary.VocabularyUniqueListField)
+
 
 class SimpleVocabularyTests(unittest.TestCase):
 
