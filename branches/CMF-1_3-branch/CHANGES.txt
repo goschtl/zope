@@ -43,6 +43,9 @@ CMF 1.3
 
   Bug Fixes
 
+    - Fixed WorkflowTool so that it doesn't pretend to workflow non-CMF
+      objects (Collector #19).
+
     - Removed redundant block of code from CMFDefault/Link.py (Collector
       #18).
 
