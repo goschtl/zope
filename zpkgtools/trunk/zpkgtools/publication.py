@@ -23,6 +23,9 @@ from email.Parser import Parser
 from StringIO import StringIO
 
 
+PUBLICATION_CONF = "PUBLICATION.cfg"
+
+
 # XXX The dump() and dumps() methods are very similar to the
 # DistributionMetadata.write_pkg_info() method, but don't constrain
 # where the data is written.  Much of this can be discarded if

@@ -35,6 +35,7 @@ import urllib2
 from zpkgtools import Error
 
 from zpkgtools import cvsloader
+from zpkgtools import publication
 
 
 # Names that are exluded from globbing results:
@@ -229,8 +230,10 @@ class InclusionProcessor:
         """
         if not os.path.exists(destination):
             os.mkdir(destination)
+            shutil.copymode(source, destination)
+            shutil.copystat(source, destination)
         prefix = os.path.join(source, "")
-        for dirname, dirs, files in os.walk(source):
+        for dirname, dirs, files in os.walk(source, topdown=True):
             dirs[:] = filter_names(dirs)
             files = filter_names(files)
 
@@ -257,9 +260,12 @@ class InclusionProcessor:
                 # owner/group are not copied.
                 self.copy_file(srcname, destname)
 
-            for dir in dirs:
+            for dir in dirs[:]:
                 srcname = os.path.join(dirname, dir)
                 destname = os.path.join(destdir, dir)
+                if publication.PUBLICATION_CONF in os.listdir(srcname):
+                    dirs.remove(dir)
+                    continue
                 # Create the directory, copying over the permission
                 # bits and stat info.
                 os.mkdir(destname)

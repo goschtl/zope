@@ -1,7 +1,5 @@
 # This is the resource map for the test packages.
 
-collection:application   application/
-
 collection:collection-1  collection-1/
 collection:collection-2  collection-2/
 

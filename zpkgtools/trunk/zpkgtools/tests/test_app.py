@@ -13,11 +13,14 @@
 ##############################################################################
 """Tests for zpkgtools.app."""
 
-import os.path
+import os
+import shutil
+import tempfile
 import unittest
 import urllib
 
 from zpkgtools import app
+from zpkgtools import publication
 
 
 CMD = "./foo/bar.py"
@@ -137,10 +140,24 @@ class CommandLineTestCase(unittest.TestCase):
 
 class ApplicationSupportTestCase(unittest.TestCase):
 
-    here = os.path.dirname(os.path.abspath(__file__))
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp(prefix="test_app_")
+        appdir = os.path.join(self.tmpdir, "app")
+        pkgmap = os.path.join(self.tmpdir, "packages.map")
+        self.mapfile = "file://" + urllib.pathname2url(pkgmap)
+        f = open(pkgmap, "w")
+        print >>f, ("collection:application  file://"
+                    + urllib.pathname2url(appdir))
+        f.close()
+        os.mkdir(appdir)
+        f = open(os.path.join(appdir, publication.PUBLICATION_CONF), "w")
+        print >>f, "Metadata-Version: 1.0"
+        print >>f, "Name: sample application"
+        print >>f, "Installation-type: Application"
+        f.close()
 
-    mapfile = os.path.join(here, "input", "packages.map")
-    mapfile = "file://" + urllib.pathname2url(mapfile)
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir)
 
     def test_load_metadata(self):
         # Check that when the metadata for an application distribution
