@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.6 2003/03/13 17:10:37 gvanrossum Exp $
+$Id: test_field.py,v 1.7 2003/05/23 17:51:36 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -126,6 +126,11 @@ class TestLocateComponent(PlacefulSetup, TestCase):
         some_class = self.__class__
         resolver = ModuleService(dotted_name, some_class)
         self.rootFolder.setServiceManager(resolver)
+
+        # We have to re-traverse to get new wrappers, since the old
+        # wrappers have stale caches.
+        folder2 = traverse(self.rootFolder, 'folder2')
+
         self.assertEqual(locateComponent(dotted_name, folder2),
                          some_class
                          )
