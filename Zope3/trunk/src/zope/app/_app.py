@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.11 2003/05/22 13:58:52 sidnei Exp $
+$Id: _app.py,v 1.12 2003/06/26 14:42:34 fdrake Exp $
 """
 
 import base64, time
@@ -67,11 +67,10 @@ def database(db):
             storage = FileStorage(db)
             db = DB(storage, cache_size=4000)
 
-    # XXX When bootstrapping a new database, the following will fail
-    #     while trying to add services when no config_file was passed
-    #     to Application() below.  So, don't do that. :-)
-    from zope.app.startup import bootstrap
-    bootstrap.bootstrapInstance(db)
+    # The following will fail unless the application has been configured.
+    from zope.app.process import event
+    from zope.app.event import publish
+    publish(None, event.DatabaseOpened(db))
 
     return db
 
