@@ -134,10 +134,11 @@ class BuilderApplication(Application):
                 component.write_setup_cfg()
                 component.write_manifest()
         if self.options.build_type == "application":
-            top.write_setup_py(filename="install.py")
+            top.write_setup_py(filename="install.py",
+                               version=self.options.version)
             self.write_application_support(top)
         else:
-            top.write_setup_py()
+            top.write_setup_py(version=self.options.version)
         top.write_setup_cfg()
         top.write_manifest()
 
