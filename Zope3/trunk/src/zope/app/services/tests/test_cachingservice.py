@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.3 2002/12/30 14:03:17 stevea Exp $
+$Id: test_cachingservice.py,v 1.4 2003/02/03 15:59:17 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -42,6 +42,8 @@ class CacheStub:
     def __repr__(self):
         return "CacheStub(%r)" % self.name
 
+    def notify(self, event):
+        pass
 
 class CachingServiceSetup(EventSetup):
 
@@ -54,7 +56,7 @@ class CachingServiceSetup(EventSetup):
 
         if not folder.hasServiceManager():
             self.createServiceManager(folder)
-        
+
         default = traverse(folder, '++etc++Services/Packages/default')
         key = default.setObject("myCachingService", CachingService())
         service = traverse(default, key)
@@ -68,8 +70,10 @@ class CachingServiceSetup(EventSetup):
         return service
 
     def addCache(self, name, cache=None, cname=None, status=Active, folder=''):
-        if not cache: cache = CacheStub("%s/%s" % (folder, name))
-        if not cname: cname = name
+        if not cache:
+            cache = CacheStub("%s/%s" % (folder, name))
+        if not cname:
+            cname = name
         default = traverse(self.rootFolder,
                            folder +'/++etc++Services/Packages/default')
         key = default.setObject(cname, cache)
@@ -94,8 +98,7 @@ class TestCachingService(CachingServiceSetup, TestCase):
         self.cache4_f1 = self.addCache('cache4', folder='folder1')
 
     def test_interface(self):
-        from zope.app.services.cache \
-             import ILocalCachingService
+        from zope.app.services.cache import ILocalCachingService
         verifyObject(ILocalCachingService, self.service)
         verifyObject(ICachingService, self.service)
 
