@@ -1,0 +1,13 @@
+CMF 1.5alpha
+
+  New Features
+
+    - 
+
+  Bug Fixes
+
+    - 
+
+CMF 1.4x
+
+  see CHANGES.txt of CMF-1_4-branch
