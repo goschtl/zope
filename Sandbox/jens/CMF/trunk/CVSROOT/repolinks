@@ -135,6 +135,7 @@
 /ZODB3/ZEO-NEWS.txt,v	 /ZEO/CHANGES.txt,v
 /ZODB3/ZopeUndo		 /Packages/ZopeUndo
 /ZODB3/ZConfig           /Packages/ZConfig
+/ZODB3/zLOG              /Packages/zLOG
 /ZODB3/logging           /Packages/logging
 
 /ZODB4/log.ini,v         /Zope3/log.ini,v
