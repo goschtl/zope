@@ -22,8 +22,10 @@ This functionality can be used in cataloging.
 $Id$
 """
 import random
+from persistent import Persistent
 from zope.app.uniqueid.interfaces import IUniqueIdUtility, IReference
 from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
+from zope.app.uniqueid.interfaces import UniqueIdAddedEvent
 from zope.interface import implements
 from ZODB.interfaces import IConnection
 from BTrees import OIBTree, IOBTree
@@ -32,7 +34,7 @@ from zope.app.location.interfaces import ILocation
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.event import notify
 
-class UniqueIdUtility:
+class UniqueIdUtility(Persistent):
     """This utility provides a two way mapping between objects and
     integer ids.
 
@@ -152,3 +154,13 @@ def removeUniqueIdSubscriber(event):
         except KeyError:
             pass
 
+def addUniqueIdSubscriber(event):
+    """A subscriber to ObjectAddedEvent
+
+    Registers the object added in all unique id utilities and fires
+    an event for the catalogs.
+    """
+    for utility in zapi.getAllUtilitiesRegisteredFor(IUniqueIdUtility):
+        utility.register(event.object)
+
+    notify(UniqueIdAddedEvent(event))

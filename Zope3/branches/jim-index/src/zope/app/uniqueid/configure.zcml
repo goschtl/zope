@@ -53,6 +53,11 @@
       for="zope.app.container.interfaces.IObjectRemovedEvent"
       />
 
+  <subscriber
+      factory=".addUniqueIdSubscriber"
+      for="zope.app.container.interfaces.IObjectAddedEvent"
+      />
+
   <!-- Views -->
   <include package=".browser" />
 

@@ -192,7 +192,7 @@ class TestConnectionOfPersistent(unittest.TestCase):
         self.assertRaises(ValueError, connectionOfPersistent, object())
 
 
-class TestRemoveSubscriber(ReferenceSetupMixin, unittest.TestCase):
+class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def setUp(self):
         from zope.app.uniqueid.interfaces import IUniqueIdUtility
@@ -216,7 +216,7 @@ class TestRemoveSubscriber(ReferenceSetupMixin, unittest.TestCase):
         self.utility1 = setup.addUtility(sm1_1, '2', IUniqueIdUtility,
                                          UniqueIdUtility())
 
-    def test(self):
+    def test_removeUniqueIdSubscriber(self):
         from zope.app.uniqueid import removeUniqueIdSubscriber
         from zope.app.container.contained import ObjectRemovedEvent
         from zope.app.uniqueid.interfaces import IUniqueIdRemovedEvent
@@ -240,13 +240,34 @@ class TestRemoveSubscriber(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(len(events), 1)
         self.assertEquals(events[0].original_event.object, folder)
 
+    def test_addUniqueIdSubscriber(self):
+        from zope.app.uniqueid import addUniqueIdSubscriber
+        from zope.app.container.contained import ObjectAddedEvent
+        from zope.app.uniqueid.interfaces import IUniqueIdAddedEvent
+        folder = self.root['folder1']['folder1_1']['folder1_1_1']
+        setSite(self.folder1_1)
+
+        events = []
+        ztapi.handle([IUniqueIdAddedEvent], events.append)
+
+        # This should unregister the object in all utilities, not just the
+        # nearest one.
+        addUniqueIdSubscriber(ObjectAddedEvent(folder))
+
+        # Check that the folder got registered
+        id = self.utility.getId(folder)
+        id1 = self.utility1.getId(folder)
+
+        self.assertEquals(len(events), 1)
+        self.assertEquals(events[0].original_event.object, folder)
+
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestUniqueIdUtility))
     suite.addTest(unittest.makeSuite(TestReferenceToPersistent))
     suite.addTest(unittest.makeSuite(TestConnectionOfPersistent))
-    suite.addTest(unittest.makeSuite(TestRemoveSubscriber))
+    suite.addTest(unittest.makeSuite(TestSubscribers))
     return suite
 
 if __name__ == '__main__':
