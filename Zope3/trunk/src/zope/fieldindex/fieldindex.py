@@ -54,6 +54,9 @@ class FieldIndex(Persistent):
 
     def index_doc(self, docid, value):
 
+        if self.has_doc(docid):       # unindex doc if present
+            self.unindex_doc(docid)
+
         if not self._fwd_index.has_key(value):
             self._fwd_index[value] = IITreeSet()
 
@@ -67,7 +70,7 @@ class FieldIndex(Persistent):
             value = self._rev_index[docid]
         except KeyError: 
             return
-
+        
         del self._rev_index[docid]
 
         try:
