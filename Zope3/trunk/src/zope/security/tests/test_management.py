@@ -68,9 +68,6 @@ class Test(CleanUp, unittest.TestCase):
         permission = 'zope.Test'
         obj = object()
 
-        class InteractionStub(object):
-            pass
-
         class PolicyStub(object):
 
             def checkPermission(s, p, o,):
@@ -83,6 +80,25 @@ class Test(CleanUp, unittest.TestCase):
         newInteraction()
         interaction = queryInteraction()
         self.assertEquals(checkPermission(permission, obj), True)
+
+    def test_checkPublicPermission(self):
+        from zope.security import checkPermission
+        from zope.security.checker import CheckerPublic
+        from zope.security.management import setSecurityPolicy
+        from zope.security.management import newInteraction
+
+        obj = object()
+
+        class ForbiddenPolicyStub(object):
+
+            def checkPermission(s, p, o):
+                return False
+
+        setSecurityPolicy(ForbiddenPolicyStub)
+        newInteraction()
+        self.assertEquals(checkPermission('zope.Test', obj), False)
+        self.assertEquals(checkPermission(None, obj), True)
+        self.assertEquals(checkPermission(CheckerPublic, obj), True)
 
 
 def test_suite():

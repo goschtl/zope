@@ -117,6 +117,8 @@ def checkPermission(permission, object, interaction=None):
     checkPermission is guaranteed to return True if permission is
     CheckerPublic or None.
     """
+    if permission is CheckerPublic or permission is None:
+        return True
     if interaction is None:
         interaction = thread_local.interaction
     return interaction.checkPermission(permission, object)
@@ -126,5 +128,6 @@ addCleanUp(endInteraction)
 
 # circular imports are not fun
 
+from zope.security.checker import CheckerPublic
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 _defaultPolicy = ParanoidSecurityPolicy
