@@ -122,12 +122,12 @@
       <description>
         Define an automatically generated add form
 
-        The addForm directive creates and register's a view for
+        The addform directive creates and register's a view for
         adding an object based on a schema.
 
         Adding an object is a bit trickier than editing an object,
         because the object the schema applies to isn't available when
-        forms are being rendered.  The addForm directive provides an
+        forms are being rendered.  The addform directive provides an
         customization interface to overcome this difficulty.
 
         See zope.app.interfaces.browser.form.IAddFormCustomization.
