@@ -1,0 +1,35 @@
+<configure
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser"
+  i18n_domain="ldapadapter">
+
+    <!-- LDAPAdapter -->
+    <tool
+        interface="ldapadapter.interfaces.ILDAPAdapter"
+        title="LDAP Adapter"
+        description="A LDAP adapter."
+        />
+
+    <addform
+        label="LDAP Adapter"
+        for= "ldapadapter.interfaces.ILDAPAdapter"
+        name="addLDAPAdapter.html"
+        schema="zope.app.utility.interfaces.IUtilityRegistration"
+        class="zope.app.utility.browser.AddRegistration"
+        permission="zope.ManageServices"
+        content_factory=
+            "ldapadapter.LDAPAdapter"
+        arguments="name interface"
+        set_after_add="status"
+        fields="name interface permission status"
+        />
+
+    <!-- Menu entry for "Add Utility" menu -->
+    <addMenuItem
+        class="ldapadapter.LDAPAdapter"
+        title="LDAP Adapter"
+        description="A LDAP adapter"
+        permission="zope.ManageServices"
+        />
+
+</configure>

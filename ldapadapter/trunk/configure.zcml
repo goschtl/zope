@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:help="http://namespaces.zope.org/help"
+    i18n_domain="ldapadapter"
+    >
+
+    <content class="ldapadapter.LDAPAdapter">
+
+        <factory
+            id="ldapadapter.LDAPAdapter" />
+   
+        <implements
+            interface="zope.app.utility.interfaces.ILocalUtility" />
+
+        <implements
+            interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+        <implements
+            interface="ldapadapter.interfaces.ILDAPAdapter" />
+
+        <require
+            permission="zope.ManageServices"
+            interface="ldapadapter.interfaces.ILDAPAdapter" />
+
+        <require
+            permission="zope.ManageServices" 
+            set_schema="ldapadapter.interfaces.ILDAPAdapter" />
+
+    </content>
+
+    <include package=".browser" />
+
+    <!-- add onlinehelp text -->
+    <help:register
+        id="ldapadapter"
+        title="LDAP Adapter"
+        doc_path="./help/ldapadapter.stx" />
+
+
+</configure>
