@@ -20,6 +20,7 @@ import unittest
 from zope.testing import doctest
 from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
+from zope.app.tests.setup import placefulSetUp, placefulTearDown
 
 from zope.app.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer, \
@@ -40,6 +41,12 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     sdc = session_data_container_class()
     ztapi.provideUtility(ISessionDataContainer, sdc, 'pas_credentials')
 
+def formAuthSetUp(self):
+    placefulSetUp(site=True)
+
+def formAuthTearDown(self):
+    placefulTearDown()
+
 def createTestRequest(**kw):
     return TestRequest(**kw)
 
@@ -52,7 +59,9 @@ def test_suite():
                              globs={'provideUtility': ztapi.provideUtility,
                                     'getEvents': getEvents,
                                     }),
-        doctest.DocTestSuite('zope.app.pas.browserplugins'),
+        doctest.DocTestSuite('zope.app.pas.browserplugins',
+                             setUp=formAuthSetUp,
+                             tearDown=formAuthTearDown),
         ))
 
 if __name__ == '__main__':
