@@ -65,6 +65,10 @@ Things that need to be done
 
   It's not clear these remaining issues are particularly important.
 
+- Use delayed loading of resource maps, especially those that need to
+  be retrieved from remote systems.  The basic model of the resource
+  map allows this strategy to be employed effectively.  Low priority.
+
 - Support use of http: and https: for access to Subversion
   repositories.  Very low priority since we're using svn: and svn+ssh:
   for svn.zope.org.
