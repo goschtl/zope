@@ -38,12 +38,21 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.processor = include.InclusionProcessor(self.loader)
         self.source = os.path.abspath(self.source)
         self.files_written = []
+        self.dirs_created = []
+        # now create from various revision control systems
+        self.create_dir("{arch}")
+        self.create_dir("CVS")
+        self.create_dir("_darcs")
+        self.create_dir(".svn")
 
     def tearDown(self):
         shutil.rmtree(self.destination)
         for path in self.files_written:
             if os.path.exists(path):
                 os.unlink(path)
+        for path in self.dirs_created:
+            if os.path.exists(path):
+                os.rmdir(path)
 
     def write_file(self, name, text):
         path = join(self.source, name)
@@ -53,6 +62,12 @@ class InclusionProcessorTestCase(unittest.TestCase):
         f.write(text)
         f.close()
         self.files_written.append(path)
+
+    def create_dir(self, name, *rest):
+        path = join(self.source, name, *rest)
+        if not os.path.isdir(path):
+            self.dirs_created.insert(0, path)
+            os.mkdir(path)
 
     def test_simple_includespec(self):
         self.write_file(include.PACKAGE_CONF, """\
@@ -276,6 +291,9 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.check_file("somescript.py")
         self.assert_(not os.path.exists(join(self.destination, "CVS")))
         self.assert_(not os.path.exists(join(self.destination, ".cvsignore")))
+        self.assert_(not os.path.exists(join(self.destination, "{arch}")))
+        self.assert_(not os.path.exists(join(self.destination, "_darcs")))
+        self.assert_(not os.path.exists(join(self.destination, ".svn")))
 
     def test_createDistributionTree_excludes_file(self):
         self.write_file(include.PACKAGE_CONF, """\
