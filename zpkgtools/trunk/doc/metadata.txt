@@ -6,7 +6,8 @@ Overview
 --------
 
 Distributions will be described using a collection of files that
-contain different aspects of the relevant metadata.
+contain different aspects of the relevant metadata.  Each of these
+files is optional if the information in that file is not needed.
 
 `DEPENDENCIES.cfg`
   A list of dependencies for this distribution.  This is currently
@@ -27,6 +28,9 @@ contain different aspects of the relevant metadata.
   what the distribution contains, while dependencies serve as
   constraints on any software included in the distribution.
 
+  For packages which only depend on the Python standard library, this
+  file need not be provided.
+
 `PACKAGE.cfg`
   Control over the files that are included in the distribution when it
   is constructed.  See `Package Construction Information`_ for
@@ -39,7 +43,9 @@ contain different aspects of the relevant metadata.
   classification.  Version information should not be included; it will
   be ignored if present (perhaps should be an error?).  This is the
   information distutils normally pushes into the generated `PKG-INFO`
-  file; this file has the same format as `PKG-INFO`.
+  file; this file has the same format as `PKG-INFO`.  This file is
+  required to create a distribution for which the component is the
+  primary component.
 
   One additional field is defined for this file: ``Installation-type``.
   This field can be set to ``application`` for collection
