@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 from zope import schema
 from zope.interface import implements
 from zope.schema.interfaces import IFromUnicode
