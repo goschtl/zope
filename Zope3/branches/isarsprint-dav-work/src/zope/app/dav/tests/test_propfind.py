@@ -44,7 +44,7 @@ from zope.app.dav.interfaces import IDAVNamespace
 from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 
-from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
+from unitfixtures import File, Folder, FooZPT
 
 import zope.app.location
 
