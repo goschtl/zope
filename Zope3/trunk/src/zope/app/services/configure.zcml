@@ -63,30 +63,6 @@
 <!-- Menu Service -->
 <include file="menu.zcml"/>
 
-<!-- Role Templates -->
-
-<content class="zope.app.services.role.RoleService">
-  <factory
-      id="RoleService"
-      permission="zope.ManageServices"
-      />
-  <require
-      permission="zope.Security"
-      interface="zope.app.interfaces.security.IRoleService"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IContainer"
-      />
-</content>
-
-<content class="zope.app.services.role.Role">
-  <factory />
-  <require
-      permission="zope.Security"
-      interface="zope.app.interfaces.security.IRole"
-      />
-</content>
 
 <!-- Session Templates -->
 

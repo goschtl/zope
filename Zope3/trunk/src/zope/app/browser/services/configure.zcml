@@ -58,40 +58,6 @@
       for="zope.app.interfaces.services.event.IEventService" 
       file="event_service.gif" />
 
-<!-- Role Service -->
-
-  <menuItem
-     menu="add_service"
-     for="zope.app.interfaces.container.IAdding"
-     action="RoleService"
-     title="Role Service" />
-
-  <icon
-      name="zmi_icon" 
-      for="zope.app.services.role.ILocalRoleService"
-      file="role_service.gif" />
-
-  <pages 
-     permission="zope.ManageServices" 
-     for="zope.app.services.role.IRoleService"
-     class="zope.app.browser.services.role.Contents">
-
-     <page name="index.html" attribute="contents"
-           menu="zmi_views" title="Contents" />
-     <page name="removeObjects.html" attribute="removeObjects" />
-
-  </pages>
-
-  <pages 
-     permission="zope.ManageServices" 
-     for="zope.app.services.role.IRoleService"
-     class="zope.app.browser.services.role.Add">
-
-    <page name="+" template="addrole.pt" 
-          menu="zmi_actions" title="Add" />
-    <page name="action.html" attribute="action" />
-
-    </pages>
 
 <!-- Pluggable Authentication Service --> 
   <zope:include package=".pluggableauth" />

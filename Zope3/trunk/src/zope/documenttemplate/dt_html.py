@@ -13,7 +13,7 @@
 ##############################################################################
 """HTML formated DocumentTemplates
 
-$Id: dt_html.py,v 1.3 2003/05/01 19:35:40 faassen Exp $
+$Id: dt_html.py,v 1.4 2004/01/14 22:55:30 chrism Exp $
 """
 import re
 from zope.documenttemplate.dt_string import String
@@ -192,13 +192,14 @@ class HTML(String):
                        (("<"), '&lt;' ),
                        ((">"), '&gt;' ),
                        (('"'), '&quot;'))): #"
-        if text is None: text=self.read_raw()
-        for re,name in character_entities:
-            if text.find(re) >= 0: text=name.join(text.split(re))
+        if text is None:
+            text=self.read_raw()
+        for re, name in character_entities:
+            if text.find(re) >= 0:
+                text = name.join(text.split(re))
         return text
 
-    errQuote__roles__=()
-    errQuote=quotedHTML
+    errQuote = quotedHTML
 
     def __str__(self):
         return self.quotedHTML()

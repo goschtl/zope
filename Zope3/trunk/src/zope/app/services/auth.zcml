@@ -1,7 +1,4 @@
-<configure
-    xmlns='http://namespaces.zope.org/zope'
-    xmlns:fssync='http://namespaces.zope.org/fssync'
-    >
+<configure xmlns='http://namespaces.zope.org/zope'>
 
 <!-- Note that the simmple auth ios only being kept around
      for some backward comptability. We will eventually remove it.
@@ -9,29 +6,10 @@
      XXX We really need to conversion scheme.
   -->
 
-  <content class="zope.app.services.auth.AuthenticationService">
-
-    <require
-        permission="zope.View"
-        interface="zope.app.interfaces.security.IAuthenticationService" />
-    <require
-        permission="zope.View"
-        attributes="getAllUsers" />
-
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IContainer" />
-
-    </content>
-
   <content class="zope.app.services.auth.User">
-    <factory id="User" permission="zope.ManageServices" />
       <require
           permission="zope.View"
           interface="zope.app.interfaces.services.auth.IReadUser" />
-      <require
-          permission="zope.ManageContent"
-          interface="zope.app.interfaces.services.auth.IWriteUser" />
       <implements
           interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>

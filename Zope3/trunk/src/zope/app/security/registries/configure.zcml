@@ -3,14 +3,6 @@
    package="zope.app.security">
 
   <serviceType
-      id="Roles" 
-      interface="zope.app.interfaces.security.IRoleService" />
-
-  <service
-      serviceType="Roles" 
-      component=".registries.roleregistry.roleRegistry" />
-
-  <serviceType
       id="Permissions" 
       interface="zope.app.interfaces.security.IPermissionService" />
 
@@ -25,11 +17,6 @@
   <service
       serviceType="Authentication" 
       component=".registries.principalregistry.principalRegistry" />
-
-  <!-- protect Roles and Permissions -->
-  <content class=".registries.roleregistry.Role">
-    <allow interface="zope.app.interfaces.security.IRegisteredObject" />
-  </content>
 
   <content class=".registries.permissionregistry.Permission">
     <allow interface="zope.app.interfaces.security.IRegisteredObject" />

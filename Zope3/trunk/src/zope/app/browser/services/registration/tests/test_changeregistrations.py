@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_changeregistrations.py,v 1.1 2003/06/21 21:22:03 jim Exp $
+$Id: test_changeregistrations.py,v 1.2 2004/01/14 22:55:20 chrism Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,23 +30,22 @@ class Test(TestCase):
         registry = TestingRegistrationStack('a', 'b', 'c')
         request = TestRequest()
         view = ChangeRegistrations(registry, request)
-        view.setPrefix("Roles")
+        view.setPrefix("Pigs")
 
         # Make sure we don't apply updates unless asked to
-        request.form = {'Roles.active': 'disable'}
+        request.form = {'Pigs.active': 'disable'}
         view.applyUpdates()
         self.assertEqual(registry._data, ('a', 'b', 'c'))
 
         # Now test disabling
-        request.form = {'submit_update': '', 'Roles.active': 'disable'}
+        request.form = {'submit_update': '', 'Pigs.active': 'disable'}
         view.applyUpdates()
         self.assertEqual(registry._data, (None, 'a', 'b', 'c'))
 
         # Now test enabling c
-        request.form = {'submit_update': '', 'Roles.active': 'c'}
+        request.form = {'submit_update': '', 'Pigs.active': 'c'}
         view.applyUpdates()
         self.assertEqual(registry._data, ('c', 'a', 'b'))
-
 
 
 def test_suite():

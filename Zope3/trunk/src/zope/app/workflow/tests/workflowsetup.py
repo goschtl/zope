@@ -14,15 +14,14 @@
 """
 Setup for Placeful Worfklow Tests
 Revision information:
-$Id: workflowsetup.py,v 1.6 2003/06/21 21:22:17 jim Exp $
+$Id: workflowsetup.py,v 1.7 2004/01/14 22:55:29 chrism Exp $
 """
 
 from zope.component import getService, getServiceManager
-from zope.app.services.servicenames import Roles, Permissions
+from zope.app.services.servicenames import Permissions
 from zope.app.services.servicenames import Authentication, Workflows
 
 from zope.app.interfaces.security import IAuthenticationService
-from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.principalregistry import principalRegistry
 from zope.app.security.registries.permissionregistry import permissionRegistry
@@ -64,11 +63,6 @@ class WorkflowSetup(PlacefulSetup):
         self.root_sm.defineService(Authentication, IAuthenticationService)
         self.root_sm.provideService(Authentication, principalRegistry)
         return getService(self.rootFolder, Authentication)
-
-    def setupRoleService(self):
-        self.root_sm.defineService(Roles, IRoleService)
-        self.root_sm.provideService(Roles, roleRegistry)
-        return getService(self.rootFolder, Roles)
 
     def setupPermissionService(self):
         self.root_sm.defineService(Permissions, IPermissionService)

@@ -32,11 +32,11 @@ Cleanup routines for global data should be registered by passing them to
 addCleanup::
 
 
-  addCleanUp(roleRegistry._clear)
+  addCleanUp(pigRegistry._clear)
 
 
 Revision information:
-$Id: cleanup.py,v 1.3 2004/01/10 11:01:15 philikon Exp $
+$Id: cleanup.py,v 1.4 2004/01/14 22:55:36 chrism Exp $
 """
 
 __metaclass__ = type

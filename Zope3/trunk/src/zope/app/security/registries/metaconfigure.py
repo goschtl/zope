@@ -13,11 +13,10 @@
 ##############################################################################
 """ Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.5 2003/08/02 20:05:39 srichter Exp $
+$Id: metaconfigure.py,v 1.6 2004/01/14 22:55:26 chrism Exp $
 """
 from zope.app.security.registries.permissionregistry import \
      permissionRegistry as perm_reg
-from zope.app.security.registries.roleregistry import roleRegistry as role_reg
 from zope.app.security.registries.principalregistry import principalRegistry
 
 def definePermission(_context, id, title, description=''):
@@ -25,12 +24,6 @@ def definePermission(_context, id, title, description=''):
         discriminator = ('definePermission', id),
         callable = perm_reg.definePermission,
         args = (id, title, description) )
-
-def defineRole(_context, id, title, description=''):
-    _context.action(
-            discriminator = ('defineRole', id),
-            callable = role_reg.defineRole,
-            args = (id, title, description) )
 
 def principal(_context, id, title, login, password, description=''):
     _context.action(

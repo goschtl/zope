@@ -63,4 +63,4 @@ Deny = PermissionSetting('Deny',
     'Explicit deny setting for permissions')
 
 Unset = PermissionSetting('Unset',
-    'Unset constant that denotes no setting for permission and role')
+    'Unset constant that denotes no setting for permission')

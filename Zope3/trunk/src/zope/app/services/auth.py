@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.21 2004/01/13 19:05:12 chrism Exp $
+$Id: auth.py,v 1.22 2004/01/14 22:55:28 chrism Exp $
 """
 
 from persistence import Persistent
@@ -65,7 +65,7 @@ class AuthenticationService(Persistent, Contained):
     def authenticate(self, request):
         'See IAuthenticationService'
         import warnings
-        warnings.warn('The Simple Authentication Service is deprecated and'
+        warnings.warn('The Simple Authentication Service is deprecated and '
                       'will be removed in a future revision of Zope 3',
                       DeprecationWarning)
         a = queryAdapter(request, ILoginPassword, None)

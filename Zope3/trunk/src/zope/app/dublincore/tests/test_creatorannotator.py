@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.6 2003/11/21 17:12:03 jim Exp $
+$Id: test_creatorannotator.py,v 1.7 2004/01/14 22:55:22 chrism Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -76,7 +76,7 @@ class Test(PlacefulSetup, TestCase, CleanUp):
         PlacefulSetup.setUp(self)
         ztapi.provideAdapter(IDummyContent, IZopeDublinCore, DummyDCAdapter)
         noSecurityManager()
-        
+
     def tearDown(self):
         noSecurityManager()
         PlacefulSetup.tearDown(self)
@@ -92,13 +92,11 @@ class Test(PlacefulSetup, TestCase, CleanUp):
         good_author._id = 'goodauthor'
         good_author._title = 'the good author'
         good_author._description = 'this is a very good author'
-        good_author._roles = []
 
         bad_author = DummyPrincipal()
         bad_author._id = 'badauthor'
         bad_author._title = 'the bad author'
         bad_author._description = 'this is a very bad author'
-        bad_author._roles = []
 
         # Check what happens if no user is there
         noSecurityManager()

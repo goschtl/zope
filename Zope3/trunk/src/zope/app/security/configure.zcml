@@ -49,11 +49,6 @@
                    packing the ZODB." 
       />
 
-  <include package=".grants" />
-
-  <securityPolicy 
-      component="zope.app.security.zopepolicy.zopeSecurityPolicy" 
-      />
 
   <adapter 
       factory="zope.app.security.basicauthadapter.BasicAuthAdapter"

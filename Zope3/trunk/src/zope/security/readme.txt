@@ -12,20 +12,13 @@ Zope3 Security
 
     Principal
 
-     A generalization of a concept of a user.  A principal may be
-     associated with different roles and permissions.
+     A generalization of a concept of a user.
 
     Permission
 
      A kind of access, i.e. permission to READ vs. permission to
      WRITE.  Fundamentally the whole security framework is organized
      around checking permissions on objects.
-
-    Roles
-
-     Represents a responsibility of a user in the context of an
-     object.  Roles are associated with the permissions necessary to
-     fulfill the user's responsibility.
 
   Purpose
 
@@ -303,11 +296,10 @@ Zope3 Security
 
       A Zope3 programmer will never commonly need to interact with the
       low level security framework.  Zope3 defines a second security
-      package over top the low level framework that implements concepts
-      of roles, and authentication sources and checkers are handled
-      via zcml registration.  Still those developing Zope3 will
-      hopefully find this useful as an introduction into the
-      underpinnings of the security framework.
+      package over top the low level framework and authentication
+      sources and checkers are handled via zcml registration.  Still
+      those developing Zope3 will hopefully find this useful as an
+      introduction into the underpinnings of the security framework.
 
     Code
 

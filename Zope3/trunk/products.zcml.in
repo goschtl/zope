@@ -2,6 +2,11 @@
 
 <!-- add include directives for products here -->
 
+<!-- The default security policy, including roles
+     stuff.
+  -->
+<include package="zope.products.securitypolicy"/>
+
 <!-- Example:
 <include package="zopeproducts.demo.jobboard" />
 -->

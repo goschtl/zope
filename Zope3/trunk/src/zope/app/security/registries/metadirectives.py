@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metadirectives.py,v 1.5 2003/12/14 08:25:34 srichter Exp $
+$Id: metadirectives.py,v 1.6 2004/01/14 22:55:26 chrism Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, Id
@@ -33,16 +33,13 @@ class IBaseDefineDirective(Interface):
         required=True)
 
     description = MessageID(
-        title=u"Title",
+        title=u"Description",
         description=u"Provides a description for the object.",
         required=False)
 
 
 class IDefinePermissionDirective(IBaseDefineDirective):
     """Define a new permission."""
-
-class IDefineRoleDirective(IBaseDefineDirective):
-    """Define a new role."""
 
 class IBasePrincipalDirective(Interface):
     

@@ -14,6 +14,4 @@
       class=".permissionwidget.DisplayWidget"
       permission="zope.Public" />
 
-  <zope:include package=".grants" />
-
 </zope:configure>

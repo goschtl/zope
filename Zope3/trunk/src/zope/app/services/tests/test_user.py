@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_user.py,v 1.3 2003/05/01 19:35:35 faassen Exp $
+$Id: test_user.py,v 1.4 2004/01/14 22:55:29 chrism Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.app.services.auth import User
 
+# XXX This is a test of a deprecated class. It will be going away.
 class UserTest(TestCase):
 
     def setUp(self):

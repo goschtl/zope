@@ -13,8 +13,6 @@
   <include package="zope.app.event" />
   <include package="zope.app.mail" />
 
-  
-
   <content class="zope.app.rdb.ZopeConnection">
     <require
         permission="zope.ManageContent"

@@ -4,6 +4,7 @@
 
 <include package="zope.app" />
 
+<include file="products.zcml" />
 <configure i18n_domain="zope">
   <role id="zope.Manager" title="Site Manager" />
   <role id="zope.Member" title="Site Member" />
@@ -32,7 +33,6 @@
     permission="zope.workflow.UseProcessInstances" 
     role="zope.Manager" />
 
-<include file="products.zcml" />
 
 <!-- Provide local overrides of standard configurations-->
 

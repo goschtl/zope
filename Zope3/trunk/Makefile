@@ -33,6 +33,11 @@ ftest: ftest_inplace
 run: inplace
 	$(PYTHON) z3.py
 
+debug: principals.zcml
+	PYTHONPATH=`pwd`/src:$(PYTHONPATH) $(PYTHON) -i -c \
+            "from zope.app import Application;\
+             app = Application('Data.fs', 'site.zcml')()"
+
 clean:
 	find . \( -name '*.o' -o -name '*.so' -o -name '*.py[co]' -o -name '*.dll' \) -exec rm -f {} \;
 	rm -rf build

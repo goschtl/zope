@@ -1,0 +1,84 @@
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+<!-- Role Service -->
+
+  <menuItem
+     menu="add_service"
+     for="zope.app.interfaces.container.IAdding"
+     action="RoleService"
+     title="Role Service" />
+
+  <icon
+      name="zmi_icon" 
+      for="zope.products.securitypolicy.role.ILocalRoleService"
+      file="role_service.gif" />
+
+  <pages 
+     permission="zope.ManageServices" 
+     for="zope.products.securitypolicy.role.IRoleService"
+     class=".Contents">
+
+     <page name="index.html" attribute="contents"
+           menu="zmi_views" title="Contents" />
+     <page name="removeObjects.html" attribute="removeObjects" />
+
+  </pages>
+
+  <pages 
+     permission="zope.ManageServices" 
+     for="zope.products.securitypolicy.role.IRoleService"
+     class=".Add">
+
+    <page name="+" template="addrole.pt" 
+          menu="zmi_actions" title="Add" />
+    <page name="action.html" attribute="action" />
+
+  </pages>
+
+
+<!-- Role Permissions -->
+
+  <pages
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      permission="zope.Security"
+      class=".rolepermissionview.RolePermissionView">
+
+    <page name="AllRolePermissions.html" template="manage_access.pt" />
+          <!-- menu="zmi_actions" title="Role Permissions" / -->
+    <page name="RolePermissions.html" template="manage_roleform.pt" />
+    <page name="RolesWithPermission.html" template="manage_permissionform.pt"/>
+
+  </pages>
+
+  <page
+    for="zope.app.interfaces.annotation.IAnnotatable"
+    name="grant.html"
+    permission="zope.Security"
+    template="grant.pt" 
+    menu="zmi_actions" title="Grant" />
+
+<!-- Principal Roles -->
+
+  <page
+      name="PrincipalRoles.html" 
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      permission="zope.Security"
+      class=".principalroleview.PrincipalRoleView"
+      template="principal_role_association.pt" />
+      <!-- menu="zmi_actions" title="Principal Roles" / -->
+
+<!-- Principal Permission (not working) -->
+
+  <!-- browser:page
+      name="PrincipalPermissionsManagement"
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      class=".principalpermissionview.PrincipalPermissionView" 
+      permission="zope.Security"
+      allow_attributes="index get_principal unsetPermissions denyPermissions
+                        grantPermissions getUnsetPermissionsForPrincipal
+                        getPermissionsForPrincipal" 
+      /  -->
+
+</zope:configure>

@@ -3,7 +3,6 @@
     xmlns:meta="http://namespaces.zope.org/meta">
 
   <include package=".registries" file="meta.zcml" />
-  <include package=".grants" file="meta.zcml" />
 
   <meta:directive
       name="securityPolicy"

@@ -7,6 +7,7 @@
 
   <include package="zope.app" />
 
+  <include file="products.zcml" />
   <role id="zope.Manager" title="Site Manager" />
   <role id="zope.Member" title="Site Member" />
 
@@ -21,7 +22,6 @@
   <grant permission="zope.ManageApplication" role="zope.Manager" />
   <grant permission="zope.ManageBindings"    role="zope.Manager" />
 
-  <include file="products.zcml" />
 
   <!-- Principals -->
 
