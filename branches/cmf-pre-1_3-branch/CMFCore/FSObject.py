@@ -46,9 +46,9 @@ class FSObject(Acquisition.Implicit, Item):
             # Since props come from the filesystem, this should be
             # safe.
             self.__dict__.update(properties)
+            if fullname and properties.get('keep_extension', 0):
+                id = fullname
 
-        if fullname and properties.get('keep_extension', 0):
-            id = fullname
         self.id = id
         self.__name__ = id # __name__ is used in traceback reporting
         self._filepath = filepath
