@@ -13,7 +13,7 @@
 
 XXX longer description goes here.
 
-$Id: put.py,v 1.2 2003/02/28 22:33:45 jim Exp $
+$Id: put.py,v 1.3 2003/03/01 11:25:52 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -50,7 +50,7 @@ class NullPUT:
 
         for name in request:
             if name.startswith('HTTP_CONTENT_'):
-                # Inimplemented cotent header
+                # Unimplemented content header
                 request.response.setStatus(501)
                 return ''
 
@@ -101,7 +101,7 @@ class FilePUT:
 
         for name in request:
             if name.startswith('HTTP_CONTENT_'):
-                # Inimplemented cotent header
+                # Unimplemented content header
                 request.response.setStatus(501)
                 return ''
 
