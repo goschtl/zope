@@ -79,7 +79,7 @@
   <br />
 
   <input type="submit" name="removeObjects:method" value="Delete"
-         i18n:attributes="value string:menu_delete_button"> 
+         i18nXXX:attributes="value string:menu_delete_button"> 
 </form>
 
 <p><a href="./++etc++Services/"

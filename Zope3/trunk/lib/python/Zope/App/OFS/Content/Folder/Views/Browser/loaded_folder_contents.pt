@@ -88,7 +88,7 @@
   <br />
 
   <input type="submit" name="removeObjects:method" value="Delete"
-         i18n:attributes="value string:menu_delete_button">&nbsp;
+         i18nXXX:attributes="value string:menu_delete_button">&nbsp;
   <input type="submit" name="moveObjectsUp:method" value="Move Up" />&nbsp;
   <input type="submit" name="moveObjectsDown:method" value="Move Down" />&nbsp;
   <input type="submit" name="moveObjectsToTop:method" value="Move To Top" />&nbsp;
