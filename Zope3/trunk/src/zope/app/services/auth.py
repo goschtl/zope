@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: auth.py,v 1.4 2002/12/26 23:21:47 rdmurray Exp $
+$Id: auth.py,v 1.5 2002/12/27 18:42:09 rdmurray Exp $
 """
 from types import TupleType
 from persistence import Persistent
@@ -46,7 +46,6 @@ class AuthenticationService(Persistent):
     def __init__(self):
         self._usersbylogin = OOBTree()
         self._usersbyid = OOBTree()
-        self._next = 1
 
     def getPrincipalByLogin(self, login):
         try: return self._usersbylogin[login]
@@ -97,9 +96,11 @@ class AuthenticationService(Persistent):
 
     def setObject(self, key, object):
         'See IWriteContainer'
-        if key.strip()=='':
-            self._next += 1
-            key = self._next
+        # XXX I think this should generate an id if blank is passed. (RDM)
+        if not isinstance(key, (str, unicode)): raise TypeError(key)
+        try: unicode(key)
+        except UnicodeDecodeError: raise TypeError(key)
+        if not key: raise ValueError(key)
         self._usersbyid[key] = object
         self._usersbylogin[object.getLogin()] = object
 
