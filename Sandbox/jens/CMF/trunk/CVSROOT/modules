@@ -32,13 +32,13 @@ ZGadflyDA      -d Products/ZGadflyDA Packages/Products/ZGadflyDA
 
 z Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
-  &ZPublisher &OFS &PrincipiaHelp &Scheduler &StructuredText &TreeDisplay \
+  &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
 
 zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
-  &ZPublisher &OFS &PrincipiaHelp &Scheduler &StructuredText &TreeDisplay \
+  &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay \
   &Shared &DC \
   &Products &OFSP &MailHost &ExternalMethod 
 
