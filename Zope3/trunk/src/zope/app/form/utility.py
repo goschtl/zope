@@ -30,13 +30,13 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.9 2003/01/28 04:48:08 rdmurray Exp $
+$Id: utility.py,v 1.10 2003/01/28 04:51:17 rdmurray Exp $
 """
 __metaclass__ = type
 
 from zope.component import getView, getDefaultViewName
 from zope.schema import getFieldNamesInOrder, getFieldsInOrder
-from zope.schema.interfaces import ValidationError, IField
+from zope.schema.interfaces import ValidationError
 from zope.app.interfaces.form import IWidget
 from zope.app.interfaces.form import WidgetsError, MissingInputError
 from zope.app.interfaces.form import InputErrors
@@ -201,7 +201,6 @@ def getWidgetsDataForContent(view, schema, content=None, required=0,
     errors = []
 
     for name in data:
-        # OK, we really got a field
         try:
             setattr(content, name, data[name])
         except ValidationError, v:
