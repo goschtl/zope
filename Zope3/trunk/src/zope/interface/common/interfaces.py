@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for standard python exceptions
 
-$Id: interfaces.py,v 1.2 2003/02/11 16:00:07 sidnei Exp $
+$Id: interfaces.py,v 1.3 2003/04/25 10:39:51 ryzaja Exp $
 """
 from zope.interface import Interface
 from zope.interface.implements import implements
@@ -57,7 +57,6 @@ class IUnicodeError(IValueError): pass
 class IUserWarning(IWarning): pass
 class IZeroDivisionError(IArithmeticError): pass
 
-implements(ArithmeticError, IArithmeticError)
 implements(ArithmeticError, IArithmeticError)
 implements(AssertionError, IAssertionError)
 implements(AttributeError, IAttributeError)
