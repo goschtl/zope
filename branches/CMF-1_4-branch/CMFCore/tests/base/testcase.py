@@ -1,5 +1,8 @@
 import Zope
-Zope.startup()
+try:
+    Zope.startup()
+except AttributeError:
+    pass
 from unittest import TestCase
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
