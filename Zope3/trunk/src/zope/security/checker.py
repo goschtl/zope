@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.18 2003/04/23 17:38:49 stevea Exp $
+$Id: checker.py,v 1.19 2003/04/23 18:18:02 stevea Exp $
 """
 
 import os
@@ -449,7 +449,7 @@ _default_checkers = {
                          '__str__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
-    types.ClassType: _typeChecker,  # XXX Check that this is right.
+    types.ClassType: _classChecker,
     types.FunctionType: _callableChecker,
     types.MethodType: _callableChecker,
     types.BuiltinFunctionType: _callableChecker,
