@@ -448,9 +448,9 @@ class CachingPolicyManager( SimpleItem ):
     #   'portal_caching' interface methods
     #
     security.declareProtected( View, 'getHTTPCachingHeaders' )
-    def getHTTPCachingHeaders( self, REQUEST, content, view_method, keywords ):
+    def getHTTPCachingHeaders( self, content, view_method, keywords ):
         """
-            Update HTTP caching headers in REQUEST based on 'content',
+            Return a list of HTTP caching headers based on 'content',
             'view_method', and 'keywords'.
         """
         context = createCPContext( content, view_method, keywords )

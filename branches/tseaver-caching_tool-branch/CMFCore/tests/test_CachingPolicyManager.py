@@ -200,13 +200,22 @@ class CachingPolicyManagerTests( unittest.TestCase ):
         from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
         return CachingPolicyManager()
 
+    def test_interface( self ):
+        from Products.CMFCore.CachingPolicyManager import CachingPolicyManager
+        from Products.CMFCore.interfaces.CachingPolicyManager \
+                import CachingPolicyManager as ICachingPolicyManager
+
+        from Interface import verify_class_implementation
+
+        verify_class_implementation( ICachingPolicyManager
+                                   , CachingPolicyManager )
+
     def test_empty( self ):
 
         mgr = self._makeOne()
 
         self.assertEqual( len( mgr.listPolicies() ), 0 )
-        headers = mgr.getHTTPCachingHeaders( REQUEST={}
-                                           , content=DummyContent()
+        headers = mgr.getHTTPCachingHeaders( content=DummyContent()
                                            , view_method='foo_view'
                                            , keywords={}
                                            )
@@ -221,8 +230,7 @@ class CachingPolicyManagerTests( unittest.TestCase ):
 
         mgr = self._makeOne()
         mgr._addPolicy( 'first', 'python:1', None, 0, 0, 0, 0 )
-        headers = mgr.getHTTPCachingHeaders( REQUEST={}
-                                           , content=DummyContent()
+        headers = mgr.getHTTPCachingHeaders( content=DummyContent()
                                            , view_method='foo_view'
                                            , keywords={}
                                            )
@@ -273,8 +281,7 @@ class CachingPolicyManagerTests( unittest.TestCase ):
     def test_lookupNoMatch( self ):
 
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( REQUEST={}
-                                           , content=DummyContent()
+        headers = mgr.getHTTPCachingHeaders( content=DummyContent()
                                            , view_method='foo_view'
                                            , keywords={}
                                            )
@@ -283,8 +290,7 @@ class CachingPolicyManagerTests( unittest.TestCase ):
     def test_lookupMatchFoo( self ):
 
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( REQUEST={}
-                                           , content=DummyContent()
+        headers = mgr.getHTTPCachingHeaders( content=DummyContent()
                                            , view_method='foo_view'
                                            , keywords={ 'foo' : 1 }
                                            )
@@ -296,8 +302,7 @@ class CachingPolicyManagerTests( unittest.TestCase ):
     def test_lookupMatchBar( self ):
 
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( REQUEST={}
-                                           , content=DummyContent()
+        headers = mgr.getHTTPCachingHeaders( content=DummyContent()
                                            , view_method='foo_view'
                                            , keywords={ 'bar' : 1 }
                                            )
@@ -313,8 +318,7 @@ class CachingPolicyManagerTests( unittest.TestCase ):
     def test_lookupMatchBaz( self ):
 
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( REQUEST={}
-                                           , content=DummyContent()
+        headers = mgr.getHTTPCachingHeaders( content=DummyContent()
                                            , view_method='foo_view'
                                            , keywords={ 'baz' : 1 }
                                            )
@@ -330,8 +334,7 @@ class CachingPolicyManagerTests( unittest.TestCase ):
     def test_lookupMatchQux( self ):
 
         mgr = self._makeOneWithPolicies()
-        headers = mgr.getHTTPCachingHeaders( REQUEST={}
-                                           , content=DummyContent()
+        headers = mgr.getHTTPCachingHeaders( content=DummyContent()
                                            , view_method='foo_view'
                                            , keywords={ 'qux' : 1 }
                                            )

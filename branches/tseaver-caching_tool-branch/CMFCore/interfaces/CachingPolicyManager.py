@@ -22,9 +22,9 @@ class CachingPolicyManager( Base ):
     """
         Manage HTTP cache policies for skin methods.
     """
-    id = Attribute( 'id', 'Must be set to "CachingPolicyManager"' )
+    id = Attribute( 'id', 'Must be set to "caching_policy_manager"' )
 
-    def setHTTPCacheHeaders( REQUEST, content, view_method, keywords ):
+    def getHTTPCachingHeaders( content, view_method, keywords ):
         """
             Update HTTP caching headers in REQUEST based on 'content',
             'view_method', and 'keywords'.
