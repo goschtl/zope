@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.7 2003/03/31 15:55:19 stevea Exp $
+$Id: test_cacheconfiguration.py,v 1.8 2003/04/24 21:10:19 gvanrossum Exp $
 """
 __metaclass__ = type
 from unittest import TestCase, main, makeSuite
@@ -51,7 +51,7 @@ class DependableStub:
 
 class TestCache(DependableStub):
 
-    __implements__ = ICache, IDependable
+    __implements__ = ICache, IDependable, IAttributeUseConfigurable
 
     def invalidateAll(self):
         self.invalidated = True
