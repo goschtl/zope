@@ -266,7 +266,7 @@ class CachingPolicyManager( SimpleItem ):
                  , no_cache         # boolean (def. 0)
                  , no_store         # boolean (def. 0)
                  , must_revalidate  # boolean (def. 0)
-                 , REQUEST
+                 , REQUEST=None
                  ):
         """
             Add a caching policy.
@@ -279,10 +279,12 @@ class CachingPolicyManager( SimpleItem ):
                        , no_store
                        , must_revalidate
                        )
-        REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                              + '/manage_cachingPolicies'
-                              + '?manage_tabs_message=Policy+added.'
-                              )
+        if REQUEST is not None: 
+            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
+                                          + '/manage_cachingPolicies'
+                                          + '?manage_tabs_message='
+                                          + 'Policy+added.'
+                                          )
 
     security.declareProtected( ManagePortal, 'updatePolicy' )
     def updatePolicy( self
@@ -293,7 +295,8 @@ class CachingPolicyManager( SimpleItem ):
                     , no_cache          # boolean (def. 0)
                     , no_store          # boolean (def. 0)
                     , must_revalidate   # boolean (def. 0)
-                    , REQUEST ):
+                    , REQUEST=None
+                    ):
         """
             Update a caching policy.
         """
@@ -305,13 +308,15 @@ class CachingPolicyManager( SimpleItem ):
                           , no_store
                           , must_revalidate
                           )
-        REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
-                              + '/manage_cachingPolicies'
-                              + '?manage_tabs_message=Policy+updated.'
-                              )
+        if REQUEST is not None: 
+            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
+                                          + '/manage_cachingPolicies'
+                                          + '?manage_tabs_message='
+                                          + 'Policy+updated.'
+                                          )
 
     security.declareProtected( ManagePortal, 'movePolicyUp' )
-    def movePolicyUp( self, policy_id, REQUEST ):
+    def movePolicyUp( self, policy_id, REQUEST=None ):
         """
             Move a caching policy up in the list.
         """
@@ -322,13 +327,14 @@ class CachingPolicyManager( SimpleItem ):
         else:
             self._reorderPolicy( predicate_id, ndx - 1 )
             msg = "Policy+moved."
-        REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
+        if REQUEST is not None:
+            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
                               + '/manage_cachingPolicies'
                               + '?manage_tabs_message=%s' % msg
                               )
 
     security.declareProtected( ManagePortal, 'movePolicyDown' )
-    def movePolicyDown( self, policy_id, REQUEST ):
+    def movePolicyDown( self, policy_id, REQUEST=None ):
         """
             Move a caching policy down in the list.
         """
@@ -339,18 +345,20 @@ class CachingPolicyManager( SimpleItem ):
         else:
             self._reorderPolicy( policy_id, ndx + 1 )
             msg = "Policy+moved."
-        REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
+        if REQUEST is not None:
+            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
                               + '/manage_cachingPolicies'
                               + '?manage_tabs_message=%s' % msg
                               )
 
     security.declareProtected( ManagePortal, 'removePolicy' )
-    def removePolicy( self, policy_id, REQUEST ):
+    def removePolicy( self, policy_id, REQUEST=None ):
         """
             Remove a caching policy.
         """
         self._removePolicy( policy_id )
-        REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
+        if REQUEST is not None:
+            REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
                               + '/manage_cachingPolicies'
                               + '?manage_tabs_message=Policy+removed.'
                               )
