@@ -49,7 +49,8 @@ are some limitations:
   alternatively, using the ``five:viewable`` directive in ZCML.
 
 * At the the time of writing, special constructs using ``@@`` or
-``++`` do not yet work in URLs. Views with subviews also do not work.
+  ``++`` do not yet work in URLs. Views with subviews also do not
+  work.
 
 You can use ``five:viewable`` on any Zope 2 class, unless it declares
 its own ``__bobo_traverse__``. We plan to lift the ``bobo_traverse``
