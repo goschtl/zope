@@ -2,11 +2,11 @@
 <body>
 <div metal:fill-slot="body">
 
-  <form action="action.html" method="post"
-    tal:attributes="action view/actionName">
+  <form action="action.html" method="post" action="action.html">
     <table class="TypeListing" cellpadding="3">
 
-      <caption tal:content="view/title">Add Content</caption>
+      <caption>Add Content</caption>
+      <!--caption tal:content="view/title">Add Content</caption-->
 
       <tbody tal:define="infos view/addingInfo">
 
@@ -37,8 +37,8 @@
             <input type="text" name="id"
                    tal:condition="view/namesAccepted"
                    tal:attributes="value request/id | nothing" />
-            <input type="submit" name="add" value=" Add " 
-                   tal:attributes="value view/addValue" />
+            <input type="submit" name="add" value=" Add "
+                   i18n:attributes="value add-button" />
         </td>
       </tr>
 

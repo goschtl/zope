@@ -16,53 +16,45 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.29 2003/12/14 09:38:17 srichter Exp $
+$Id: adding.py,v 1.30 2003/12/15 11:01:39 philikon Exp $
 """
 __metaclass__ = type
 
-from zope.app import zapi
+import zope.security.checker
+from zope.interface import implements
+from zope.publisher.interfaces import IPublishTraverse
+from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.exceptions import UserError
-
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.container import IContainerNamesContainer
 from zope.app.interfaces.container import INameChooser
 
+from zope.app import zapi
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.event import publish
 from zope.app.publisher.browser import BrowserView
-from zope.publisher.interfaces import IPublishTraverse
 
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.interface import implements
-
 from zope.app.location import LocationProxy
-import zope.security.checker
-
-from zope.proxy import removeAllProxies
-
 from zope.app.container.constraints import checkFactory
 
 
 class BasicAdding(BrowserView):
-
     implements(IAdding, IPublishTraverse)
 
     def add(self, content):
-        """See zope.app.interfaces.container.IAdding"""
-
+        """See zope.app.interfaces.container.IAdding
+        """
         container = self.context
         name = self.contentName
-
-
         chooser = zapi.getAdapter(container, INameChooser)
         
         if IContainerNamesContainer.isImplementedBy(container):
             # The container pick's it's own names.
             # We need to ask it to pick one.
             name = chooser.chooseName(self.contentName or '', content)
-            
         else:
             request = self.request           
             name = request.get('add_input_name',name)
@@ -92,13 +84,15 @@ class BasicAdding(BrowserView):
     def renderAddButton(self):
         """To Render Add button with or without Inputbox"""
         container = self.context
+        button_label = _('add-button', 'Add')
         if IContainerNamesContainer.isImplementedBy(container):
-            return "<input type='submit' name='UPDATE_SUBMIT' value=' Add '>"
+            return "<input type='submit' name='UPDATE_SUBMIT' value=' %s '>" \
+                   % button_label
         else:
             contentName = self.contentName or ''
-            return ("<input type='submit' name='UPDATE_SUBMIT' value=' Add '>"
-                    "<input type='text' name='add_input_name' value='%s'>"
-                    % contentName)
+            return ("<input type='submit' name='UPDATE_SUBMIT' value=' %s '>"
+                    "<input type='text' name='add_input_name' value=' %s '>"
+                    % (button_label, contentName))
 
     def publishTraverse(self, request, name):
         """See zope.app.interfaces.container.IAdding"""
