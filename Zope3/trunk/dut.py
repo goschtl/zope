@@ -13,10 +13,10 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: dut.py,v 1.1 2003/12/17 13:30:17 jim Exp $
+$Id: dut.py,v 1.2 2003/12/18 09:55:08 jim Exp $
 """
 import unittest
-from doctest import DocTestSuite
+from zope.testing.doctestunit import DocTestSuite
 
 def test_xxx():
     """
