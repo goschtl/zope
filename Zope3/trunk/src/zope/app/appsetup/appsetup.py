@@ -46,6 +46,8 @@ _configured = False
 def config(file, execute=True):
     """Configure site globals"""
     global _configured
+    global __config_source
+    __config_source = file
 
     if _configured:
         return
@@ -92,3 +94,8 @@ def database(db):
     notify(DatabaseOpened(db))
 
     return db
+
+
+__config_source = None
+def getConfigSource():
+    return __config_source
