@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.42 2003/08/17 06:08:56 philikon Exp $
+$Id: fssync.py,v 1.43 2003/08/26 18:49:27 fdrake Exp $
 """
 
 import os
@@ -218,6 +218,11 @@ class Network(object):
             conn.putheader("Content-type", content_type)
             conn.putheader("Transfer-encoding", "chunked")
         if self.user_passwd:
+            if ":" not in self.user_passwd:
+                import getpass
+                pw = getpass.getpass("Password for %s @ %s: "
+                                     % (self.user_passwd, self.host_port))
+                self.user_passwd = "%s:%s" % (self.user_passwd, pw)
             auth = base64.encodestring(self.user_passwd).strip()
             conn.putheader('Authorization', 'Basic %s' % auth)
         conn.putheader("Host", self.host_port)
