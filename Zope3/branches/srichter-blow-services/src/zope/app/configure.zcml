@@ -58,7 +58,7 @@
   <include package="zope.app.keyreference" />
 
   <!-- Misc. Service Manager objects -->
-  <!-- XXX: include package="zope.app.module" /-->
+  <include package="zope.app.module" />
 
   <!-- Broken-object support -->
   <include package="zope.app.broken" />

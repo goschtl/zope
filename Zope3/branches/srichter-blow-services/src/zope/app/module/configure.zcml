@@ -1,6 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <localUtility class=".ModuleManager">
+  <localUtility class=".manager.ModuleManager">
     <require
         permission="zope.ManageCode"
         interface=".interfaces.IModuleManager"
@@ -19,10 +19,10 @@
      />
 
   <adapter
-      for="zope.app.site.interfaces.ISiteManagementFolder"
+      for="zope.app.component.interfaces.ISiteManagementFolder"
       provides="zope.app.filerepresentation.interfaces.IFileFactory"
       name=".py"
-      factory=".ModuleFactory"
+      factory=".manager.ModuleFactory"
       permission="zope.ManageContent"
       />
 

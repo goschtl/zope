@@ -18,6 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 import sys
 import zodbcode.interfaces
+import zodbcode.module
 
 from zope.interface import implements
 from zope.app import zapi
@@ -30,7 +31,7 @@ class ZopeModuleRegistry(object):
 
     def findModule(self, name):
         """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
-        return zapi.getUtility(IModuleManager, name)
+        return zapi.queryUtility(IModuleManager, name)
 
     def modules(self):
         """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
@@ -55,7 +56,11 @@ def resolve(name, context=None):
 
 # Installer function that can be called from ZCML.
 # This installs an import hook necessary to support persistent modules.
+importer = zodbcode.module.PersistentModuleImporter()
 
 def installPersistentModuleImporter(event):
-    from zodbcode.module import PersistentModuleImporter
-    PersistentModuleImporter().install()
+    importer.install()
+
+def uninstallPersistentModuleImporter(event):
+    importer.uninstall()
+
