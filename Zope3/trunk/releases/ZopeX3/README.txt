@@ -137,8 +137,6 @@ can be run using the command:
   Running UNIT tests at level 1
   Running UNIT tests from C:\ZopeX3-3.0.0\build\lib.win32-2.3
   [...lots of dots, one per test...]
-  diff3 doesn't work, diff3 tests disabled
-  [...more dots...]
   ----------------------------------------------------------------------
   Ran 4500 tests in 501.389s
 
