@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.37 2003/08/08 14:36:47 fdrake Exp $
+$Id: fssync.py,v 1.38 2003/08/08 21:45:01 fdrake Exp $
 """
 
 import os
@@ -519,6 +519,9 @@ class FSSync(object):
                 raise Error("%r is not a directory" % dir)
         else:
             dir = os.curdir
+        entry = self.metadata.getentry(dir)
+        if not entry:
+            raise Error("know nothing about container for %r" % path)
         if exists(path):
             raise Error("%r already exists" % path)
         os.mkdir(path)
