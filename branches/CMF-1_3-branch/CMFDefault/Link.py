@@ -147,7 +147,6 @@ class Link( PortalContent
         self.remote_url = url
 
     security.declareProtected( CMFCorePermissions.ModifyPortalContent, 'edit' )
-
     def edit(self, remote_url ):
         """ Update and reindex. """
         self._edit( remote_url )
