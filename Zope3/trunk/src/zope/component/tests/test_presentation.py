@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_presentation.py,v 1.4 2004/03/31 23:26:26 jim Exp $
+$Id: test_presentation.py,v 1.5 2004/04/09 11:36:14 jim Exp $
 """
 import unittest
 from doctest import DocTestSuite
@@ -86,7 +86,8 @@ def test_multi_views():
     >>> request = Request()
 
     >>> s.provideAdapter(IRequest, ContactInCompanyView,
-    ...                  contexts=[IContact, ICompany], name='foo')
+    ...                  contexts=[IContact, ICompany], name='foo',
+    ...                  info='test 1')
 
     >>> bob = Contact()
     >>> acme = Company()
@@ -102,7 +103,8 @@ def test_multi_views():
     True
 
     >>> s.provideAdapter(IRequest, ContactInFamilyView,
-    ...                  contexts=[IContact, IFamily], name='foo')
+    ...                  contexts=[IContact, IFamily], name='foo',
+    ...                  info='test 2')
     
     >>> smith = Family()
     >>> v = s.queryMultiView((bob, smith), request, name='foo')
@@ -114,6 +116,19 @@ def test_multi_views():
     True
     >>> v.request is request
     True
+
+    Provided adapters (views and resources) are recorded as registrations:
+
+    >>> registrations = map(str, s.registrations())
+    >>> registrations.sort()
+    >>> for r in registrations:
+    ...     print r
+    zope.component.presentation.PresentationRegistration(""" \
+       """default, ('IContact', 'ICompany', 'IRequest'), """ \
+       """'Interface', 'foo', 'ContactInCompanyView', 'test 1')
+    zope.component.presentation.PresentationRegistration(""" \
+       """default, ('IContact', 'IFamily', 'IRequest'), """ \
+       """'Interface', 'foo', 'ContactInFamilyView', 'test 2')
     
     """
 

@@ -15,11 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.11 2004/03/31 23:26:25 jim Exp $
+$Id: presentation.py,v 1.12 2004/04/09 11:36:14 jim Exp $
 """
 
 from types import ClassType
-from zope.component.interfaces import IPresentationService
+from zope.component.interfaces import IPresentationService, IComponentRegistry
 from zope.component.service import GlobalService
 from zope.component.servicenames import Presentation
 from zope.interface import providedBy
@@ -216,15 +216,22 @@ class GlobalPresentationService(GlobalService):
 
        """
 
-    zope.interface.implements(IPresentationService, IGlobalPresentationService)
+    zope.interface.implements(IPresentationService,
+                              IGlobalPresentationService,
+                              IComponentRegistry,
+                              )
     
     def __init__(self):
         self._layers = {'default': GlobalLayer(self, 'default')}
         self._skins = {'default': [self._layers['default']]}
         self.skins = {'default': ('default', )}
         self.defaultSkin = 'default'
+        self._registrations = {}
 
-    def defineSkin(self, name, layers):
+    def registrations(self):
+        return self._registrations.itervalues()
+
+    def defineSkin(self, name, layers, info=''):
         """Define a skin
 
         A skin is defined for a request type.  It consists of a
@@ -250,12 +257,22 @@ class GlobalPresentationService(GlobalService):
 
 
         >>> s.defineLayer('custom')
-        >>> s.defineSkin('custom', ['custom', 'default'])
+        >>> s.defineSkin('custom', ['custom', 'default'], 'custom doc')
 
         >>> skins = s.skins.items()
         >>> skins.sort()
         >>> skins
         [('custom', ('custom', 'default')), ('default', ('default',))]
+
+        A skin registration is also recorded for each registered skin.
+
+        >>> registrations = map(str, s.registrations())
+        >>> registrations.sort()
+        >>> for r in registrations:
+        ...     print r
+        zope.component.presentation.LayerRegistration('custom', '')
+        zope.component.presentation.SkinRegistration('custom', """ \
+                              """['custom', 'default'], 'custom doc')
         """
 
         if name in self._skins:
@@ -267,6 +284,8 @@ class GlobalPresentationService(GlobalService):
 
         self._skins[name] = [self._layers[layer] for layer in layers]
         self.skins[name] = tuple(layers)
+        self._registrations[('skin', name)
+                            ] = SkinRegistration(name, layers, info)
 
     def querySkin(self, name):
         return self.skins.get(name)
@@ -274,7 +293,7 @@ class GlobalPresentationService(GlobalService):
     def queryLayer(self, name):
         return self._layers.get(name)
 
-    def setDefaultSkin(self, name):
+    def setDefaultSkin(self, name, info=''):
         """Set the default skin for a request type
 
         If not set, it defaults to the "default" skin.
@@ -290,10 +309,21 @@ class GlobalPresentationService(GlobalService):
 
         >>> s.defineLayer('custom')
         >>> s.defineSkin('custom', ['custom', 'default'])
-        >>> s.setDefaultSkin('custom')
+        >>> s.setDefaultSkin('custom', 'yawn')
         >>> s.defaultSkin
         'custom'
 
+        A default skin registration is also recorded for each
+        registered default skin.
+
+        >>> registrations = map(str, s.registrations())
+        >>> registrations.sort()
+        >>> for r in registrations:
+        ...     print r
+        zope.component.presentation.DefaultSkinRegistration('custom', 'yawn')
+        zope.component.presentation.LayerRegistration('custom', '')
+        zope.component.presentation.SkinRegistration('custom', """ \
+                       """['custom', 'default'], '')
         """
 
         # Make sure we are refering to a defined skin
@@ -301,12 +331,14 @@ class GlobalPresentationService(GlobalService):
             raise ValueError, ("Undefined skin", name)
 
         self.defaultSkin = name
+        self._registrations['defaultSkin'
+                            ] = DefaultSkinRegistration(name, info)
 
-    def defineLayer(self, name):
+    def defineLayer(self, name, info=''):
         """Define a layer
 
         >>> s = GlobalPresentationService()
-        >>> s.defineLayer('custom')
+        >>> s.defineLayer('custom', 'blah')
 
         You can't define a layer that's already defined:
         
@@ -315,15 +347,21 @@ class GlobalPresentationService(GlobalService):
         ...
         ValueError: ("Can\'t redefine layer", 'custom')
 
+        A layer registration is also recorded for each registered layer.
+
+        >>> list(s.registrations())
+        [zope.component.presentation.LayerRegistration('custom', 'blah')]
         """
 
         if name in self._layers:
             raise ValueError("Can\'t redefine layer", name)
 
         self._layers[name] = GlobalLayer(self, name)
+        self._registrations['layer'] = LayerRegistration(name, info)
 
     def provideAdapter(self, request_type, factory, name=u'', contexts=(), 
-                       providing=zope.interface.Interface, layer='default'):
+                       providing=zope.interface.Interface, layer='default',
+                       info=''):
         """Provide a presentation adapter
 
         This is a fairly low-level interface that supports both
@@ -341,10 +379,18 @@ class GlobalPresentationService(GlobalService):
             ifaces.append(context)
             
         ifaces.append(request_type)
+        ifaces = tuple(ifaces)
         
         reg = self._layers[layer]
         
         reg.register(ifaces, providing, name, factory)
+
+        self._registrations[
+            (layer, ifaces, providing, name)
+            ] = PresentationRegistration(layer, ifaces, providing, name,
+                                         factory, info)
+
+        
 
     def queryResource(self, name, request, default=None,
                       providing=zope.interface.Interface):
@@ -498,4 +544,54 @@ class GlobalLayer(Layer):
 
     def __reduce__(self):
         return GL, (self.__parent__, self.__name__)
+
+class SkinRegistration(object):
+
+    def __init__(self, skin, layers, info):
+        self.skin, self.layers, self.doc = skin, layers, info
+
+    def __repr__(self):
+        "For testing"
+        return '%s.%s(%r, %r, %r)' % (
+            self.__class__.__module__, self.__class__.__name__,
+            self.skin, self.layers, self.doc) 
+
+class LayerRegistration(object):
+
+    def __init__(self, layer, info):
+        self.layer, self.doc = layer, info
+
+    def __repr__(self):
+        "For testing"
+        return '%s.%s(%r, %r)' % (
+            self.__class__.__module__, self.__class__.__name__,
+            self.layer, self.doc) 
+
+class DefaultSkinRegistration(object):
+
+    def __init__(self, skin, info):
+        self.skin, self.doc = skin, info
+
+    def __repr__(self):
+        "For testing"
+        return '%s.%s(%r, %r)' % (
+            self.__class__.__module__, self.__class__.__name__,
+            self.skin, self.doc) 
+
+class PresentationRegistration(object):
+
+    def __init__(self, layer, required, provided, name, factory, info):
+        (self.layer, self.required, self.provided, self.name,
+         self.factory, self.info
+         ) = layer, required, provided, name, factory, info
+
+    def __repr__(self):
+        "For testing"
+        return '%s.%s(%s, %r, %r, %r, %r, %r)' % (
+            self.__class__.__module__, self.__class__.__name__,
+            self.layer,
+            tuple([getattr(s, '__name__', None) for s in self.required]),
+            self.provided.__name__,
+            self.name, getattr(self.factory, '__name__', self.factory),
+            self.info)
 

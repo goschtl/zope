@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.11 2004/03/31 23:26:24 jim Exp $
+$Id: test_presentation.py,v 1.12 2004/04/09 11:36:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -90,6 +90,9 @@ class Registration:
 
     def activated(self): pass
     def deactivated(self): pass
+
+    def __repr__(self):
+        return 'Registration(%s)' % self.factory.__name__
 
 class C: pass
 
@@ -291,6 +294,25 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         self.assertEqual(view.__class__, A2)
         self.assertEqual(view.context, o)
         self.assertEqual(view.request, request)
+
+    def test_registrations(self):
+        self.test_queryView()
+        registrations = map(str, self._service.registrations())
+        registrations.sort()
+        self.assertEqual(
+            registrations,
+
+            ['Registration(A)',
+
+             # These were set up by PlacefulSetup:
+             "zope.component.presentation.PresentationRegistration("
+               "default, ('IContainmentRoot', 'IBrowserRequest'), "
+               "'Interface', 'absolute_url', 'SiteAbsoluteURL', '')",
+             "zope.component.presentation.PresentationRegistration("
+               "default, (None, 'IBrowserRequest'), 'Interface', "
+               "'absolute_url', 'AbsoluteURL', '')"
+             ]
+            )
 
     def test_getRegistrationsForInterface(self):
         self.test_queryView()
