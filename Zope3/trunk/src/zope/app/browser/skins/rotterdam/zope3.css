@@ -511,6 +511,15 @@ div.message a {
     text-decoration: underline;
 }
 
+/* Style for page error divs.  Use this for displaying errors for a
+   page as a whole.
+ */
+div.page_error { 
+    background: #FFCE7B; 
+    font: bold 80% Verdana, Helvetica, Arial, sans-serif; 
+    padding: 0.5em 1em; 
+    vertical-align: middle; 
+}
 
 
 
