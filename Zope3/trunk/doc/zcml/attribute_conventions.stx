@@ -41,5 +41,5 @@ The attributes used in zcml usually follow this convention
     The first callable listed must accept the normal calling sequence
     for the type of object being contructed.  The remaining callables
     must be Adapters.  In other words, if the value of the factory
-    attribute is "a b c", then the composite factory is built by
-    doing c(b(a(<factory-argument-list>))).
+    attribute is '"a b c"', then the composite factory is built by
+    doing 'c(b(a(<factory-argument-list>)))'.
