@@ -144,6 +144,9 @@ class DummyFolder( Implicit ):
     def _getOb( self, id ):
         return self._objects[id]
 
+    def _setObject(self,id,object):
+        setattr(self,id,object)
+
 class DummyMembershipTool:
     def __init__(self, anon=1):
         self.anon = anon 
