@@ -14,7 +14,7 @@
 """Zope configure directive
 
 This file contains the implementation of the Zope configure directive.
-It is beoken out in a separate file to provide an example of a grouping
+It is broken out in a separate file to provide an example of a grouping
 directive.
 
 The zope configuration directive is a pure grouping directive.  It
@@ -23,7 +23,7 @@ to be specified, affecting the interpretation of relative dotted names
 and file paths. It also allows an i18n domain to be specified.  The
 information collected is used by subdirectives.
 
-To define a grouping directive, we need to do 3 things:
+To define a grouping directive, we need to do three things:
 
 - Define a schema for the parameters passed to the directive
 
@@ -31,11 +31,11 @@ To define a grouping directive, we need to do 3 things:
 
 - Register the class
 
-The parameter schema is given by IZopeConfigure. It specified a
+The parameter schema is given by IZopeConfigure. It specifies a
 package parameter and an i18n_domain paramter.  The package parameter
 is specified as a ``GlobalObject``. This means it must be given as a
 dotted name that can be resolved through import.  The i18n domain is
-just a plan (not unicode) string.
+just a plain (not unicode) string.
 
 The handler class has a constructor that takes a context to be adapted
 and zero or more arguments (depending on the paramter schema).  The
@@ -43,7 +43,7 @@ handler class must implement
 ``zope.configuration.interfaces.IGroupingContext``, which defines
 hooks ``before`` and ``after``, that are called with no arguments
 before and after nested directives are processed.  If a grouping
-directibe handler creates any actions, or does any computation, this
+directive handler creates any actions, or does any computation, this
 is normally done in either the ``before`` or ``after`` hooks.
 Grouping handlers are normally decorators.
 
@@ -89,15 +89,15 @@ meta-configuration directive like::
   </meta:groupingDirective>
 
 We use the groupingDirective meta-directive to register a grouping
-directive. The parameters are self explanitory.  The textual contents
-of the directive provides documentation text, exclusing parameter
+directive. The parameters are self explanatory.  The textual contents
+of the directive provide documentation text, excluding parameter
 documentation, which is provided by the schema.
 
 (The Zope ``configuration`` directive is actually registered using a
 lower-level Python API because it is registered for all namespaces,
 which isn't supported using the meta-configuration directives.)
 
-$Id: zopeconfigure.py,v 1.2 2003/08/17 06:08:49 philikon Exp $
+$Id: zopeconfigure.py,v 1.3 2004/01/23 16:59:38 poster Exp $
 """
 
 import os

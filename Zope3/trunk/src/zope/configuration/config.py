@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.14 2004/01/22 23:53:15 srichter Exp $
+$Id: config.py,v 1.15 2004/01/23 16:59:38 poster Exp $
 """
 
 import os.path
@@ -240,7 +240,7 @@ class ConfigurationContext(object):
     def action(self, discriminator, callable=None, args=(), kw={}):
         """Add an action with the given discriminator, callable and arguments
 
-        For testing purposes, the callable and arguments may be ommitted.
+        For testing purposes, the callable and arguments may be omitted.
         In that case, a default noop callable is used.
 
         The discriminator must be given, but it can be None, to indicate that
@@ -909,7 +909,7 @@ class IDirectivesInfo(Interface):
 
     namespace = zope.schema.URI(
         title=u"Namespace",
-        description=u"The namespace that directives' names will be defined in",
+        description=u"The namespace in which directives' names will be defined",
         )
 
 class IDirectivesContext(IDirectivesInfo, IConfigurationContext):
@@ -1027,7 +1027,7 @@ def defineGroupingDirective(context, name, schema, handler,
     ...    y = zope.schema.TextLine()
 
     We won't bother creating a special grouping directive class. We'll
-    just use GroupingContextDecorator, which simple sets up a grouping
+    just use GroupingContextDecorator, which simply sets up a grouping
     context that has extra attributes defined by a schema:
 
     >>> defineGroupingDirective(context, 'g', Ixy,

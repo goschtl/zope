@@ -33,9 +33,9 @@ directives.
 
 This file shows you how to handle the second case above. In this case,
 we have grouping directives that are meant to collaborate with
-specisific contained directives.  To do this, you have the grouping
+specific contained directives.  To do this, you have the grouping
 directives declare a more specific (or alternate) interface to
-``IConfigurationContext``. Directive's designed to work with those
+``IConfigurationContext``. Directives designed to work with those
 grouping directives are registered for the new interface.
 
 Let's look at example. Suppose we wanted to be able to define schema
@@ -54,8 +54,8 @@ nested field directives will use to store the fields they define.
 
 The class, ``Schema``, provides the handler for the schema directive. (If
 you haven't read the documentation in ``zopeconfigure.py``, you need
-to do so now.)  The constructor saves it's arguments as attributes
-and initializes it's ``fields`` attribute.
+to do so now.)  The constructor saves its arguments as attributes
+and initializes its ``fields`` attribute.
 
 The ``after`` method of the ``Schema`` class creates a schema and
 computes an action to register the schema in the schema registry.  The
@@ -63,8 +63,8 @@ discriminator prevents two schema directives from registering the same
 schema.
 
 It's important to note that when we call the ``action`` method on
-``self``, rather than on ``self.conntext``.  This is because, in a
-grouping directive handler, the handler instance is, itself a context.
+``self``, rather than on ``self.context``.  This is because, in a
+grouping directive handler, the handler instance is itself a context.
 When we call the ``action`` method, the method stores additional meta
 data associated with the context it was called on. This meta data
 includes an include path, used when resolving conflicting actions,
@@ -181,7 +181,7 @@ Let's see what happens if we declare duplicate fields:
 File "<string>", line 5.7-5.24
     ValueError: ('Duplicate field', 'x')
 
-$Id: test_nested.py,v 1.1 2003/08/02 12:45:53 jim Exp $
+$Id: test_nested.py,v 1.2 2004/01/23 16:59:39 poster Exp $
 """
 
 import unittest

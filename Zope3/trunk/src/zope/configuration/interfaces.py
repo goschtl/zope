@@ -46,7 +46,7 @@ class IConfigurationContext(Interface):
         is in the foo package, then the dotted name foo.bar.spam can
         be shortened to .bar.spam.
 
-        If the current package is multiple levels deel, multiple
+        If the current package is multiple levels deep, multiple
         leading dots can be used to refer to higher-level modules.
         For example, if the current package is x.y.z, the dotted
         object name ..foo refers to x.y.foo.
