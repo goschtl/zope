@@ -45,6 +45,9 @@
  - Extend TypesTool to deal appropriately with DTML factory methods
    (e.g., for ZClasses).
 
+ - Fixed "Ever" entry in 'search_form' to use a value safe in timezones
+   east of GMT (Tracker issue #236).
+
 1.0 final (2001/03/29)
 
  - Removed embedded spaces in 'portal_status_message' strings
