@@ -263,8 +263,21 @@ def getAllUtilitiesRegisteredFor(interface, context=None):
 
 # Factories
 
-def createObject(context, name, *args, **kwargs):
-    return getUtility(IFactory, name, context)(*args, **kwargs)
+def createObject(__factory_name, *args, **kwargs):
+    # BBB
+    if not isinstance(__factory_name, basestring):
+        import warnings
+        warnings.warn(
+            "Passing a context as a first argument to createObject is "
+            "deprecated.  It will be unsupported in Zope X3.3.  Use a "
+            "context keyword argument instead.",
+            DeprecationWarning, 2)
+        context = __factory_name
+        __factory_name, args = args[0], args[1:]
+    else:
+        context = kwargs.pop('context', None)
+    
+    return getUtility(IFactory, __factory_name, context)(*args, **kwargs)
 
 def getFactoryInterfaces(name, context=None):
     return getUtility(IFactory, name, context).getInterfaces()

@@ -514,7 +514,7 @@ By the way, this is equivalent to
 
 Of course you can also just create an object:
 
-  >>> panel = capi.createObject(None, 'SolarPanel')
+  >>> panel = capi.createObject('SolarPanel')
   >>> panel.__class__ is SolarPanel
   True
 

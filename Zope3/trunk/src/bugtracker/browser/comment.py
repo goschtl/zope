@@ -53,7 +53,7 @@ class CommentViewBase(object):
     def body(self):
         ttype = getattr(self.context.body, 'ttype', None)
         if ttype is not None:
-            source = zapi.createObject(None, self.context.body.ttype,
+            source = zapi.createObject(self.context.body.ttype,
                                        self.context.body)
             view = zapi.getMultiAdapter(
                 (removeAllProxies(source), self.request))

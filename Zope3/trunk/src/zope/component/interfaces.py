@@ -235,16 +235,17 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
 
     # Factory service
 
-    # TODO: Hard to make context a keyword, leaving as it is. Maybe we should
-    #       at least move it to the second position.
-    def createObject(context, name, *args, **kwargs):
+    def createObject(factory_name, *args, **kwargs):
         """Create an object using a factory
 
-        Finds the factory of the given name that is nearest to the
-        context, and passes the other given arguments to the factory
-        to create a new instance. Returns a reference to the new
-        object.  If a matching factory cannot be found raises
-        ComponentLookupError
+        Finds the named factory in the current site and calls it with
+        the given arguments.  If a matching factory cannot be found
+        raises ComponentLookupError.  Returns the created object.
+
+        A context keyword argument can be provided to cause the
+        factory to be looked up in a location other than the current
+        site.  (Of course, this means that it is impossible to pass a
+        keyword argument named "context" to the factory.
         """
 
     def getFactoryInterfaces(name, context=None):

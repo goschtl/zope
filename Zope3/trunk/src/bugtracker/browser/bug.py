@@ -72,7 +72,7 @@ class BugBaseView(object):
     def getDescription(self):
         ttype = getattr(self.context.description, 'ttype', None)
         if ttype is not None:
-            source = zapi.createObject(None, self.context.description.ttype,
+            source = zapi.createObject(self.context.description.ttype,
                                        self.context.description)
             view = zapi.getMultiAdapter(
                 (removeAllProxies(source), self.request))

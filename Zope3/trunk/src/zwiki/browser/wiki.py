@@ -33,7 +33,7 @@ class AddWiki(object):
 
         if self.request.get('frontpage'):
             page = removeAllProxies(
-                zapi.createObject(None, 'zwiki.WikiPage'))
+                zapi.createObject('zwiki.WikiPage'))
             page.type = u'zope.source.rest'
             page.source = u'This is the FrontPage of the Wiki.'
             dc = ICMFDublinCore(page)

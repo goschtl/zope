@@ -45,7 +45,7 @@ class SQLExpr(StringExpr):
             rdb = econtext.vars['rdb']
             dsn = econtext.vars['dsn']
             try:
-                adapter = zapi.createObject(None, rdb, dsn)
+                adapter = zapi.createObject(rdb, dsn)
             except ComponentLookupError:
                 raise ConnectionError, \
                       ("The factory id, '%s', you specified in the `rdb` "

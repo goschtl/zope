@@ -36,8 +36,7 @@ class OnlineHelpTopicView(BrowserView):
 
     def topicContent(self):
         """ render the source of the help topic """
-        source = zapi.createObject(None,
-                                   self.context.type,
+        source = zapi.createObject(self.context.type,
                                    self.context.source)
         view = zapi.getMultiAdapter((source, self.request))
         html = view.render()

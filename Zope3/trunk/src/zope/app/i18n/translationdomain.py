@@ -165,7 +165,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
     def addLanguage(self, language):
         'See `IWriteTranslationDomain`'
-        catalog = zapi.createObject(None, u'zope.app.MessageCatalog',
+        catalog = zapi.createObject(u'zope.app.MessageCatalog',
                                     language)
         self[language] = catalog
 
