@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: ZMIViewUtility.py,v 1.4 2002/10/22 12:11:12 stevea Exp $
+$Id: ZMIViewUtility.py,v 1.5 2002/10/22 19:16:32 stevea Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -32,6 +32,8 @@ class IZMIViewUtility(Interface):
 
 
 class ZMIViewUtility(BrowserView):
+
+    __implements__ = IZMIViewUtility
 
     def getZMIViews(self):
 
