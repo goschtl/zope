@@ -44,10 +44,11 @@ Options:
 
 $Id$
 """
-import sys
+import errno
 import getopt
 import os
 import re
+import sys
 
 import zope
 
@@ -323,8 +324,16 @@ def parse_args(argv):
 
 
 def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-    options = parse_args(argv)
-    showDependencies(options.path, options.zcml, options.long,
-                     options.all, options.packages)
+    try:
+        if argv is None:
+            argv = sys.argv
+        options = parse_args(argv)
+        showDependencies(options.path, options.zcml, options.long,
+                         options.all, options.packages)
+    except IOError, e:
+        # Ignore EPIPE since that really only indicates some
+        # application on the other end of piped output exited early.
+        if e.errno != errno.EPIPE:
+            raise
+    except KeyboardInterrupt:
+        sys.exit(1)
