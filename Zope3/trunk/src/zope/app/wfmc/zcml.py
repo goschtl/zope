@@ -1,7 +1,4 @@
-"""ZCML directives for defining privileges.
-
-$Id: $
-"""
+"""ZCML directives for defining privileges."""
 
 import zope.interface
 import zope.schema
@@ -14,38 +11,33 @@ from zope.wfmc import xpdl
 
 class IdefineXpdl(zope.interface.Interface):
 
-    file = zope.configuration.fields.MessageID(
+    file = zope.configuration.fields.Path(
         title=u"File Name",
         description=u"The name of the xpdl file to read.",
         )
 
-    process = zope.configuration.fields.MessageID(
+    process = zope.schema.TextLine(
         title=u"Process Name",
         description=u"The name of the process to read.",
         )
 
-    id = zope.configuration.fields.MessageID(
+    id = zope.schema.Id(
         title=u"ID",
         description=(u"The identifier to use for the process.  "
                      u"Defaults to the process name."),
-        required=False,
         )
 
-def createUtility(file, process, id, info=None):
-    # XXX should I use info for something?
+def createUtility(file, process, id):
     package = xpdl.read(open(file))
     definition = package[process]
     definition.id = id
 
     zapi.getGlobalService('Utilities').provideUtility(
-            wfmc.interfaces.IProcessDefinition, definition, definition.id)
+            wfmc.interfaces.IProcessDefinition, definition, id)
 
-def defineXpdl(_context, file, process, id=None):
-    if not id:
-        id = process
-
+def defineXpdl(_context, file, process, id):
     _context.action(
         discriminator=('intranet:xpdl', id),
         callable=createUtility, 
-        args=(file, process, id, _context.info),
+        args=(file, process, id),
         )

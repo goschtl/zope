@@ -12,8 +12,12 @@ XPDL can be loaded in zcml files with the ``xpdl`` tag::
     ...        i18n_domain="test"
     ...        >
     ...
-    ...      <wfmc:xpdl file="%(file_name)s" process="Publication" />
-    ...      <wfmc:xpdl file="%(file_name)s" process="Publication" id="Pub"/>
+    ...         <wfmc:xpdl 
+    ...             file="%(file_name)s" 
+    ...             process="Publication"
+    ...             id="example.publication"
+    ...             />
+    ...
     ...    </configure>
     ... """ % locals())
 
@@ -21,7 +25,5 @@ Lets verify that they were configured::
 
     >>> from zope.wfmc.interfaces import IProcessDefinition
     >>> import zope.component
-    >>> zope.component.getUtility(IProcessDefinition, 'Publication')
-    ProcessDefinition(u'Publication')
-    >>> zope.component.getUtility(IProcessDefinition, 'Pub')
-    ProcessDefinition(u'Pub')
+    >>> zope.component.getUtility(IProcessDefinition, 'example.publication')
+    ProcessDefinition('example.publication')
