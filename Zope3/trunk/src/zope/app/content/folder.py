@@ -14,9 +14,11 @@
 
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
+from zope.app.content.fssync import DirectoryAdapter
 from zope.app.interfaces.content.folder import IFolder, IRootFolder, \
      ICloneWithoutChildren
 from zope.app.services.servicecontainer import ServiceManagerContainer
+from zope.app.zapi import ContextWrapper
 from zope.exceptions import DuplicationError
 from zope.interface import implements
 
@@ -161,3 +163,14 @@ class ReadDirectory:
     def __contains__(self, key):
         return self.get(key) is not None
 
+# Adapter to provide an fssync interpretation of folders
+
+class FolderAdapter(DirectoryAdapter):
+
+    def contents(self):
+        result = super(FolderAdapter, self).contents()
+        if self.context.hasServiceManager():
+            sm = self.context.getServiceManager()
+            w = ContextWrapper(sm, self.context, name='++etc++site')
+            result.append(('++etc++site', w))
+        return result

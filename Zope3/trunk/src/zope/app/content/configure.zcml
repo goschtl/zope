@@ -420,12 +420,9 @@
 
 <fssync:adapter class=".image.Image" factory=".fssync.FileAdapter" />
 
-<fssync:adapter class=".folder.Folder" factory=".fssync.DirectoryAdapter" />
+<fssync:adapter class=".folder.Folder" factory=".folder.FolderAdapter" />
 
-<fssync:adapter
-    class=".folder.RootFolder"
-    factory=".fssync.DirectoryAdapter"
-    />
+<fssync:adapter class=".folder.RootFolder" factory=".folder.FolderAdapter" />
 
 <fssync:adapter class=".zpt.ZPTPage" factory=".fssync.ZPTPageAdapter" />
 
