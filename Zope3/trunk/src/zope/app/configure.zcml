@@ -23,6 +23,10 @@
       provides="zope.app.interfaces.dependable.IDependable"
       for="zope.app.interfaces.annotation.IAnnotatable" />
 
+  <!-- Usages and Menus -->
+  <include package=".browser" file="usages.zcml" />
+  <include file="menus.zcml" />
+
   <include package="zope.app.copypastemove" />
   <include package="zope.app.size" />
   <include package="zope.app.location" />
@@ -56,6 +60,7 @@
   <include package="zope.app.dav" />
 
   <!-- Services -->
+  <include package="zope.app.menu" />  
   <include package="zope.app.errorservice" />  
   <include package="zope.app.pluggableauth" />  
 
