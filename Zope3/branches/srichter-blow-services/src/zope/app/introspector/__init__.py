@@ -19,7 +19,6 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.app.introspector.interfaces import IIntrospector
-from zope.app.module.interfaces import IModuleService
 from zope.component import getService, getServiceDefinitions, getServices
 from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy

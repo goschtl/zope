@@ -16,12 +16,14 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
+import sys
 from persistent import Persistent
 from zodbcode.module import PersistentModule, compileModule
+
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 
+from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.module.interfaces import IModuleManager
@@ -82,11 +84,6 @@ class Manager(Persistent, Contained):
     source = property(_get_source, _set_source)
 
 
-# Hack to allow unpickling of old Managers to get far enough for __setstate__
-# to do it's magic:
-Registry = Manager
-
-
 class ModuleFactory(object):
 
     implements(IFileFactory)
@@ -109,3 +106,17 @@ class ModuleFactory(object):
 def installPersistentModuleImporter(event):
     from zodbcode.module import PersistentModuleImporter
     PersistentModuleImporter().install()
+
+
+def findModule(name, context=None):
+    util = zapi.queryUtility(IModuleManager, name, context=context)
+    if util is not None:
+        return util.getModule()
+    return sys.modules.get(name)
+
+
+def resolve(name, context=None):
+    pos = name.rfind('.')
+    mod = findModule(name[:pos], context)
+    return getattr(mod, name[pos+1:])
+    
