@@ -35,7 +35,7 @@ class IModuleManager(Interface):
         this method.
         """
 
-    
+
     name = BytesLine(title=u"The module's name.", readonly=True)
 
     source = ASCII(title=u"The module's source code.")

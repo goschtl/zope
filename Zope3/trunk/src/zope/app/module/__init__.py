@@ -26,7 +26,7 @@ from zope.app.module.interfaces import IModuleManager
 
 
 class ZopeModuleRegistry(object):
-    """ """
+    """TODO: who am I?"""
     implements(zodbcode.interfaces.IPersistentModuleImportRegistry)
 
     def findModule(self, name):
@@ -52,7 +52,7 @@ def resolve(name, context=None):
     """Resolve a dotted name to a Python object."""
     pos = name.rfind('.')
     mod = findModule(name[:pos], context)
-    return getattr(mod, name[pos+1:])
+    return getattr(mod, name[pos+1:], None)
 
 
 # Installer function that can be called from ZCML.
