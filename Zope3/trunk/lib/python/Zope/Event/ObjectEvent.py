@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectEvent.py,v 1.3 2002/10/03 20:53:22 jim Exp $
+$Id: ObjectEvent.py,v 1.4 2002/10/04 18:02:15 jim Exp $
 """
 
 __metaclass__ = type
@@ -39,6 +39,11 @@ class ObjectAddedEvent(ObjectEvent):
     """An object has been added"""
 
     __implements__ = IObjectAddedEvent
+
+class ObjectCreatedEvent(ObjectEvent):
+    """An object has been added"""
+
+    __implements__ = IObjectCreatedEvent
 
 class ObjectModifiedEvent(ObjectEvent):
     """An object has been modified"""
