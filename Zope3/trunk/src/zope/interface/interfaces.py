@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.13 2003/05/03 16:36:36 jim Exp $
+$Id: interfaces.py,v 1.14 2003/06/02 11:08:13 jim Exp $
 """
 
 from zope.interface import Interface
@@ -506,6 +506,10 @@ class IInterfaceSpecification(Interface):
 
         Adding an interface that is already in the specification does
         not raise an error. Doing so has no effect.
+        """
+
+    def __nonzero__():
+        """Return a true value of the interface specification is non-empty
         """
 
     __signature__ = Attribute("""A specification signature
