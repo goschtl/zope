@@ -27,7 +27,7 @@
     <metal:block define-slot="style_slot" />
     <metal:block define-slot="ecmascript_slot" />
 
-    <!-- Popup sript for the OnlineHelp -->
+    <!-- Popup script for the OnlineHelp -->
     <script type="text/javascript" src="onlinehelp.js"
             tal:attributes="src string:${context/++resource++onlinehelp.js}" >
     </script>
