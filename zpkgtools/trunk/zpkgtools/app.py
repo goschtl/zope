@@ -131,6 +131,7 @@ class BuilderApplication(Application):
         if os.path.isfile(deps_path):
             shutil.copy(deps_path,
                         os.path.join(self.destination, "DEPENDENCIES.cfg"))
+        self.ensure_publication_info()
 
     def build_application_distribution(self):
         packages, collections = self.assemble_collection()
@@ -265,6 +266,7 @@ class BuilderApplication(Application):
 
         if distribution:
             self.ip.addIncludes(self.destination, specs.distribution)
+            self.ensure_publication_info()
 
         self.create_manifest(destination)
         deps_file = os.path.join(source, "DEPENDENCIES.cfg")
@@ -297,6 +299,15 @@ class BuilderApplication(Application):
         pkginfo = package.loadPackageInfo(name, pkgdest, name)
         self.generate_setup_cfg(destination, pkginfo)
         self.generate_package_setup(destination, name)
+
+    def ensure_publication_info(self):
+        pubinfo_dest = os.path.join(self.destination, self.resource_name,
+                                    publication.PUBLICATION_CONF)
+        if not os.path.exists(pubinfo_dest):
+            shutil.copy2(os.path.join(self.source,
+                                      publication.PUBLICATION_CONF),
+                         pubinfo_dest)
+            self.ip.add_output(pubinfo_dest)
 
     def load_metadata(self):
         metadata_file = os.path.join(self.source, publication.PUBLICATION_CONF)
