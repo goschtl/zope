@@ -90,6 +90,8 @@ Others
 
 * 373: Adding objects requires permission zope.app.dublincore.change 
 
+* 380: Local Utility don't get correct removed  
+
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.
 
