@@ -4,9 +4,16 @@
 >
 
   <adapter
-      factory="zope.app.dublincore.annotatableadapter.ZDCAnnotatableAdapter"
-      provides="zope.app.interfaces.dublincore.IZopeDublinCore"
-      for="zope.app.interfaces.annotation.IAnnotatable" />
+      factory=".annotatableadapter.ZDCAnnotatableAdapter"
+      provides="zope.app.interfaces.dublincore.IWriteZopeDublinCore"
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      />
+
+  <class class=".annotatableadapter.ZDCAnnotatableAdapter">
+    <require permission="zope.View"
+             interface="zope.app.interfaces.dublincore.IZopeDublinCore"
+             />
+  </class>
 
   <event:subscribe 
       subscriber = ".timeannotators.ModifiedAnnotator"
@@ -20,6 +27,8 @@
 
   <event:subscribe
     subscriber=".creatorannotator.CreatorAnnotator"
-    event_types="zope.app.interfaces.event.IObjectModifiedEvent zope.app.interfaces.event.IObjectCreatedEvent"/>
+    event_types="zope.app.interfaces.event.IObjectModifiedEvent 
+                 zope.app.interfaces.event.IObjectCreatedEvent"
+    />
 
 </zopeConfigure>
