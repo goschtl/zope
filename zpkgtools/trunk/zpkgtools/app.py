@@ -72,10 +72,13 @@ class Application:
         # the source directory.
         os.mkdir(self.destination)
         self.ip = include.InclusionProcessor(self.source, loader=self.loader)
-        name = "build_%s_distribution" % self.resource_type
+        self.type_dispatch("build_%s_distribution")
+        self.type_dispatch("generate_%s_setup")
+
+    def type_dispatch(self, template, *args, **kw):
+        name = template % self.resource_type
         method = getattr(self, name)
-        method()
-        self.generate_setup()
+        method(*args, **kw)
 
     def build_package_distribution(self):
         pkgname = self.metadata.name
@@ -137,13 +140,19 @@ class Application:
         self.target_file = self.target_name + ".tar.bz2"
         self.destination = os.path.join(self.tmpdir, self.target_name)
 
-    def generate_setup(self):
+    def generate_collection_setup(self):
+        self.generate_setup("Collection")
+
+    def generate_package_setup(self):
+        self.generate_setup("Package")
+
+    def generate_setup(self, typename):
         setup_py = os.path.join(self.destination, "setup.py")
         self.ip.add_output(setup_py)
         type = self.resource_type
         f = open(setup_py, "w")
         print >>f, SETUP_HEADER
-        print >>f, "context = zpkgtools.setup.%sContext(" % type.capitalize()
+        print >>f, "context = zpkgtools.setup.%sContext(" % typename
         print >>f, "    %r, %r, __file__)" % (self.resource_name,
                                               self.options.version)
         print >>f
