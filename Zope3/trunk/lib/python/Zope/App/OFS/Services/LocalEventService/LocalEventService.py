@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.8 2002/11/28 02:45:47 poster Exp $
+$Id: LocalEventService.py,v 1.9 2002/11/28 15:31:14 poster Exp $
 """
 
 from Zope.Event.GlobalEventService import eventService
@@ -106,8 +106,7 @@ class LocalEventService(ProtoServiceEventChannel):
     def unbound(wrapped_self, name):
         "see IBindingAware"
         clean_self = removeAllProxies(wrapped_self)
-        clean_self._v_unbinding = True # [XXX not thread-safe; ok?  it
-        # seems unlikely to cause problems in real-life usage]
+        clean_self._v_unbinding = True
         # this flag is used by the unsubscribedFrom method (below) to
         # determine that it doesn't need to further unsubscribe beyond
         # what we're already doing.
