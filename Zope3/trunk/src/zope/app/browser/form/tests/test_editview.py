@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.3 2003/02/21 14:53:34 alga Exp $
+"""$Id: test_editview.py,v 1.4 2003/03/02 03:34:05 tseaver Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -38,11 +38,15 @@ class EV(EditView):
     schema = I
 
 class C:
+    __implements__ = ( I, )
     foo = u"c foo"
     bar = u"c bar"
     a   = u"c a"
     b   = u"c b"
     baz = u"c baz"
+
+class NonConforming( C ):
+    __implements__ = ()
 
 class Test(PlacelessSetup, TestCase):
 
@@ -77,6 +81,24 @@ class Test(PlacelessSetup, TestCase):
 
     def test_apply_update(self):
         c = C()
+        request = TestRequest()
+        v = EV(c, request)
+        d = {}
+        d['foo'] = u'd foo'
+        d['bar'] = u'd bar'
+        d['baz'] = u'd baz'
+        self.failIf(v.apply_update(d))
+        self.assertEqual(c.foo, u'd foo')
+        self.assertEqual(c.bar, u'd bar')
+        self.assertEqual(c.a  , u'c a')
+        self.assertEqual(c.b  , u'c b')
+        self.assertEqual(c.baz, u'd baz')
+        self.failUnless(getEvents(filter=lambda event: event.object == c))
+
+    def test_apply_update_w_non_conforming_context(self):
+        # XXX   This feels bogus:  why should we be used to edit a context
+        #       which doesn't implement our schema?
+        c = NonConforming()
         request = TestRequest()
         v = EV(c, request)
         d = {}

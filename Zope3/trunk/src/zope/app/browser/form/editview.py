@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.11 2003/02/21 14:53:35 alga Exp $
+$Id: editview.py,v 1.12 2003/03/02 03:34:04 tseaver Exp $
 """
 
 from datetime import datetime
@@ -25,6 +25,7 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component.view import provideView
+from zope.component import queryAdapter
 
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, getWidgetsData
@@ -52,8 +53,23 @@ class EditView(BrowserView):
     fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
 
     def __init__(self, context, request):
+        # XXX   This feels like it should be 'getAdapter';  it won't really
+        #       be sensible to use an EditView against an object which
+        #       doesn't implement our schema.  The AddView subclass, however,
+        #       expects its context to be an IAdding, and doesn't use the
+        #       schema attributes to set values.
+        #
+        #       I originally had EditView declare an '_adaptContextToSchema'
+        #       method, which used 'getAdapter', and then overrode it in
+        #       AddView to just return the context.  That felt icky, too,
+        #       and was more complex, so I backed that out in favor of
+        #       just using 'queryAdapter'.
+        adapted = queryAdapter(context, self.schema)
+        if adapted is not None:
+            context = adapted
         super(EditView, self).__init__(context, request)
         self._setUpWidgets()
+
 
     def _setUpWidgets(self):
         setUpEditWidgets(self, self.schema, names=self.fieldNames)

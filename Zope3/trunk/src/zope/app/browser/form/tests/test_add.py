@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.5 2003/02/11 15:59:33 sidnei Exp $
+$Id: test_add.py,v 1.6 2003/03/02 03:34:05 tseaver Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -45,6 +45,8 @@ class I(Interface):
     extra2 = TextLine()
 
 class C:
+
+    __implements__ = ( I, )
 
     def __init__(self, *args, **kw):
         self.args = args
