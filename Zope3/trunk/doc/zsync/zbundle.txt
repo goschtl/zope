@@ -7,37 +7,23 @@ Name
 Synopsis
 --------
 
-**zbundle** [*general-options*...] *command* [*command-options*...] [*args*]
+**zbundle** *command* [*command-options*...] [*args*]
 
 
 Description
 -----------
 
 The **zbundle** command is used to manage site management bundles
-within a **zsync** checkout.
+within a |zsync|_ checkout.
 
 **create**
-  Create a bundle and schedule it for addition to Zope via **zsync**.
+  Create a bundle and schedule it for addition to Zope via |zsync|_.
 
 **help**
   Display help text.
 
-There are general options which apply to all **zbundle** commands, and
-specific options which apply to individual commands.  General options
-must be specified between the **zbundle** command name and the specific
-command, while options for specific commands must be supplied after
-the name of the specific command.
-
-
-General Options
-~~~~~~~~~~~~~~~
-
-The following general options are supported.  These must be specified
-between the name **zbundle** and the name of the specific command being
-run.
-
--h, --help
-  Display help text
+Options for specific commands must be supplied after the name of the
+specific command.
 
 
 The **zbundle create** Command
@@ -46,12 +32,19 @@ The **zbundle create** Command
 Synopsis
 ++++++++
 
-**create** PATH [SOURCE]
+**create** [**-f** *factory*] [**-t** *type*] *bundle* *source*
 
 Description
 +++++++++++
 
-XXX
+Create a bundle from a site management folder or another bundle.  The
+bundle will only be created if the container is a site management
+folder.  *bundle* must be a valid bundle name.
+
+The contents of *source* are copied into the newly created bundle, and
+are scheduled for addition to the database.  The new bundle can be
+manipulated using **zsync add** and **zsync revert** (as well as just
+editing the contents) as needed before committing it to the database.
 
 Options
 +++++++
@@ -64,8 +57,8 @@ Options
   to be specified.
 
 
-The **zsync help** Command
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+The **zbundle help** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Synopsis
 ++++++++
@@ -75,26 +68,25 @@ Synopsis
 Description
 +++++++++++
 
-When used with specifying *command*, this displays general help on
-using **zsync**.  When *command* is given, information about each
-command list is presented.
+When used without specifying *command*, this displays general help on
+using **zbundle**.  When *command* is given, information about each
+command listed is presented.
 
 
 Security Notes
 --------------
 
-- The ``@@Zope/Root`` file contains the username and password with
-  which the checkout was made.  Since this will typically allow access
-  with content management priviledges, this file should not be shared
-  carelessly.
+**zbundle** does not introduce any new security issues beyond those
+inherent in |zsync|_.  Refer to the |zsync|_ documentation for
+details on security issues.
 
 
 Files
 -----
 
 **zbundle** does not create any supplemental files beyond what
-**zsync** produces.  Refer to the **zsync** documentation for details
-on those files.
+|zsync|_ produces.  Refer to the |zsync|_ documentation for details on
+those files.
 
 
 Reporting Bugs
@@ -111,8 +103,13 @@ our bug-tracking system.
 See Also
 --------
 
+If you're interested in using **zbundle**, you should be familiar with
+|zsync|_.
+
 There are two interesting and directly relevant articles in the `Zope 3
-wiki`:
+wiki`__:
+
+.. __: http://dev.zope.org/Zope3/
 
 * The |FSSYNC|_ is the initial proposal for a way to synchronize
   copies of a Zope-based website between a filesystem-based
@@ -123,9 +120,11 @@ wiki`:
 
 .. |FSSYNC| replace::   Filesystem Synchronization Proposal
 .. |TTWSITE| replace::  Through the Web Site Development
+.. |zsync| replace::    **zsync**
 
 .. _FSSYNC:   http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
 .. _TTWSITE:  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
+.. _zsync:    zsync.html
 
 
 Copyright
