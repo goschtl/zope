@@ -13,148 +13,70 @@
 ##############################################################################
 import sys, unittest
 from cStringIO import StringIO
-from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
+try: from tempfile import NamedTemporaryFile
+except ImportError:
+    # 2.2 backward compatability
+    from tempfile import mktemp
+    from os import remove
+    class NamedTemporaryFile:
+        def __init__(self):
+            self.file = open(mktemp(),'w')
+        def write(self,buffer): self.file.write(buffer)
+        def _name(self): return self.file.name
+        name = property(_name)
+        def flush(self): self.file.flush()
+        def close(self):
+            self.file.close()
+            remove(self.file.name)
+
+from Zope.Configuration.xmlconfig import xmlconfig
 from Zope.Configuration.xmlconfig import testxmlconfig
 from Zope.Configuration.meta import InvalidDirective, BrokenDirective
-from Zope.Configuration.tests.Directives import protections, done
-from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
-
-template = """<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:test='http://www.zope.org/NS/Zope3/test'>
-   %s
-   %s
-   </zopeConfigure>"""
-
-
-ns='http://www.zope.org/NS/Zope3/test'
+from Zope.Testing.CleanUp import CleanUp
 
 class Test(CleanUp, unittest.TestCase):
         
-    def testDirective(self):
-        xmlconfig(StringIO(
-            template % (
-            '''<directive name="doit" namespace="%s"
-                          handler="Zope.Configuration.tests.Directives.doit" />
-                          ''' % ns,
-            '<test:doit name="splat" />'
-            )))
-
-        self.assertEqual(done, ['splat'])
-        
-    def testSimpleComplexDirective(self):
-        xmlconfig(StringIO(
-            template % (
-            '''<directive name="protectClass" namespace="%s"
-            handler="Zope.Configuration.tests.Directives.protectClass">
-                  <subdirective name="protect" namespace="%s" />
-               </directive>
-                          ''' % (ns, ns),
-            '''<test:protectClass
-              name=".Contact" permission="splat" names="update"
-              />'''
-            )))
-
-        self.assertEquals(protections, [(".Contact", "splat", 'update')])
-        
-    def testComplexDirective(self):
-        xmlconfig(StringIO(
-            template % (
-            '''<directive name="protectClass" namespace="%s"
-            handler="Zope.Configuration.tests.Directives.protectClass">
-                  <subdirective name="protect" namespace="%s" />
-               </directive>
-                          ''' % (ns, ns),
-            '''<test:protectClass name=".Contact">
-              <test:protect permission="edit" names='update' />
-              <test:protect permission="view" names='name email' />
-            </test:protectClass>'''
-            )))
-
-        self.assertEquals(protections, [
-            (".Contact", "edit", 'update'),
-            (".Contact", "view", 'name email'),
-            ])
-        
-    def testBadNoPrefixComplexDirective(self):
-
-        self.assertRaises(
-            InvalidDirective,
-            testxmlconfig,
-            StringIO(
-            template % (
-            '''<directive name="protectClass" namespace="%s"
-                   handler="Zope.Configuration.tests.Directives.protectClass">
-                  <subdirective name="protect" namespace="%s" />
-               </directive>
-                          ''' % (ns, ns),
-
-            '''<test:protectClass name=".Contact">
-              <test:protect permission="edit" names='update' />
-              <protect permission="view" names='name email' />
-              </test:protectClass>'''
-            )))
-        
-    def testBadPrefixComplexDirective(self):
-
-        try:
-            testxmlconfig(
-                StringIO(
-                template % (
-            '''<directive name="protectClass" namespace="%s"
-                   handler="Zope.Configuration.tests.Directives.protectClass">
-                  <subdirective name="protect" namespace="%s" />
-               </directive>
-                          ''' % (ns, ns),
-
-                '''<test:protectClass name=".Contact">
-                <test2:protect permission="edit" names='update' />
-                </test:protectClass>'''
-                )))
-        except InvalidDirective, v:
-            self.assertEqual(str(v), "(None, u'test2:protect')")
-        else:
-            self.fail('Should have raised ZopeXMLConfigurationError')
-
-
     def testInclude(self):
-        from tempfile import mktemp
-        name = mktemp()
-        open(name, 'w').write(
+        file = NamedTemporaryFile()
+        name = file.name
+        file.write(
             """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-            <include package="Zope.Configuration.tests.Contact"
+                 <include
+                     package="Zope.Configuration.tests.Contact"
                      file="contact.zcml" />
-            </zopeConfigure>""")
-
+               </zopeConfigure>""")
+        file.flush()
         from Zope.Configuration.xmlconfig import XMLConfig
         x = XMLConfig(name)
         x()
-        import os
-        os.remove(name)
+        file.close()
 
     def testIncludeNoPackageAndIncluderNoPackage(self):
-        from tempfile import mktemp
         from os.path import split
-        full_name = mktemp()
-        full_name1 = mktemp()
+        file = NamedTemporaryFile()
+        full_name = file.name
+        file1 = NamedTemporaryFile()
+        full_name1 = file1.name
         name1 = split(full_name1)[-1]
         
-        open(full_name, 'w').write(
+        file.write(
             """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-            <include file="%s" />
-            </zopeConfigure>""" % name1)
-        open(full_name1, 'w').write(
+                 <include file="%s" />
+               </zopeConfigure>""" % name1)
+        file.flush()
+        file1.write(
             """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-            <include package="Zope.Configuration.tests.Contact"
+                 <include
+                     package="Zope.Configuration.tests.Contact"
                      file="contact.zcml" />
-            </zopeConfigure>""")
+               </zopeConfigure>""")
+        file1.flush()
         from Zope.Configuration.xmlconfig import XMLConfig
         x = XMLConfig(full_name)
         x()
-        import os
-        os.remove(full_name)
-        os.remove(full_name1)
-        
+
+        file.close()
+        file1.close()
 
 def test_suite():
     loader=unittest.TestLoader()
