@@ -15,8 +15,16 @@
 
 $Id$
 """
+import warnings
 import zope.interface
 
+from zope.component import bbb
+
+if bbb.tests.__warn__:
+    warnings.warn(
+        "`zope.component.tests.request` is deprecated, since the component "
+        "architecture does not support presentation components anymore.",
+        DeprecationWarning, 2)
 
 class Request(object):
 

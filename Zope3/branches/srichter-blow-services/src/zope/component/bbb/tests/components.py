@@ -15,7 +15,17 @@
 
 $Id$
 """
+import warnings
 from zope.interface import Interface, Attribute, implements
+
+from zope.component import bbb
+
+if bbb.tests.__warn__:
+    warnings.warn(
+        "`zope.component.tests.components` has been deprecated, since the "
+        " contained helper objects were very simple and did not add much "
+        "value.",
+        DeprecationWarning, 2)
 
 class RecordingAdapter(object):
 

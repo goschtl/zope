@@ -15,20 +15,12 @@
 
 $Id$
 """
-from zope.testing import cleanup
+import warnings
+from zope.component.testing import *
+from zope.component import bbb
 
-# A mix-in class inheriting from CleanUp that also connects the CA services
-class PlacelessSetup(cleanup.CleanUp):
-
-    def setUp(self):
-        super(PlacelessSetup, self).setUp()
-
-    def tearDown(self):
-        super(PlacelessSetup, self).tearDown()
-
-
-def setUp(test):
-    cleanup.setUp()
-
-def tearDown(test):
-    cleanup.tearDown()
+if bbb.tests.__warn__:
+    warnings.warn(
+        "`zope.component.tests.placelesssetup` is superceded by "
+        "`zope.component.testing`.",
+        DeprecationWarning, 2)
