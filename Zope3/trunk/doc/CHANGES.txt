@@ -177,7 +177,7 @@ Zope Changes
       Philipp von Weitershausen, Steve Alexander, Andreas Jung, Anthony
       Baxter, Kevin Littlejohn, Stuart Bishop, Christian Theune, Adam Summers,
       Stephan Richter, Chris McDonough, Garrett Smith, Roger Ineichen, Gary
-      Poster, Martijn Faassen, Dominik Huber
+      Poster, Martijn Faassen, Dominik Huber, Bjorn Tillenius
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
