@@ -13,9 +13,8 @@
 ##############################################################################
 """Annotations store arbitrary application data under package-unique keys.
 
-$Id: annotation.py,v 1.6 2003/08/19 17:53:18 fdrake Exp $
+$Id: annotation.py,v 1.7 2004/02/13 22:11:02 srichter Exp $
 """
-
 from zope.interface import Interface
 
 class IAnnotatable(Interface):
@@ -55,7 +54,7 @@ class IAnnotations(IAnnotatable):
         """Return the annotation stored under key, or default if not found.
         """
 
-    def __setitem__(key, memento):
+    def __setitem__(key, value):
         """Store annotation under key.
 
         In order to avoid key collisions, users of this interface must
