@@ -139,6 +139,18 @@ class Application:
         print >>f, "context.setup()"
         f.close()
 
+    def includeSupportCode(self):
+        zpkgtools_dest = os.path.join(self.destination, "zpkgtools")
+        # Since we might actually be including zpkgtools as an
+        # installable package, we only do this if we need to:
+        if not os.path.exists(zpkgtools_dest):
+            self.ip.copyTree(zpkgtools.__path__[0], zpkgtools_dest)
+            tests_dir = os.path.join(zpkgtools_dest, "tests")
+            # but we don't need the tests if this was only added to
+            # support the setup.py script:
+            if os.path.isdir(tests_dir):
+                shutil.rmtree(tests_dir)
+
     def createTarball(self):
         pwd = os.getcwd()
         os.chdir(self.tmpdir)
@@ -163,6 +175,8 @@ class Application:
         try:
             self.loadResource()
             self.buildDistribution()
+            if self.options.include_support_code:
+                self.includeSupportCode()
             self.createTarball()
             self.cleanup()
         except:
@@ -206,6 +220,10 @@ def main(argv=None):
         "-r", "--revision-tag", dest="revision_tag",
         help="default CVS tag to use (default: HEAD)", metavar="TAG",
         default="HEAD")
+    parser.add_option(
+        "-S", dest="include_support_code", action="store_false",
+        help="don't include copies of the zpkgtools support code",
+        default=True)
     parser.add_option(
         "-v", dest="version",
         help="version label for the new distribution",
