@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: folder.py,v 1.5 2003/09/02 20:46:47 jim Exp $
+$Id: folder.py,v 1.6 2003/09/21 17:32:01 jim Exp $
 """
 
 from zope.app.interfaces.container import IAdding
@@ -31,12 +31,4 @@ class IRootFolder(IFolder, IContainmentRoot):
 
 class IFolderAdding(IAdding):
     pass
-
-class ICloneWithoutChildren(Interface):
-
-    def cloneWithoutChildren(self):
-        """Returns a clone of this folder-like object, without any
-        subobjects. Can raise NotImplementedError if this is not
-        available."""
-
 
