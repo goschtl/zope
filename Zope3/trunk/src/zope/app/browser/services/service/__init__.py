@@ -13,13 +13,13 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.1 2003/09/02 20:45:56 jim Exp $
+$Id: __init__.py,v 1.2 2003/09/21 17:31:01 jim Exp $
 """
 
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.container import IZopeContainer
+from zope.app.interfaces.container import INameChooser
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
@@ -37,8 +37,7 @@ class ComponentAdding(Adding):
 
     def add(self, content):
         # Override so as to save a reference to the added object
-        self.added_object = zapi.ContextSuper(
-            ComponentAdding, self).add(content)
+        self.added_object = super(ComponentAdding, self).add(content)
         return self.added_object
 
     def nextURL(self):
@@ -49,7 +48,7 @@ class ComponentAdding(Adding):
                 zapi.getView(self.added_object, 'absolute_url', self.request))
             return url + "/@@addRegistration.html"
 
-        return zapi.ContextSuper(ComponentAdding, self).nextURL()
+        return super(ComponentAdding, self).nextURL()
 
     def action(self, type_name, id):
         # For special case of that we want to redirect to another adding view
@@ -75,10 +74,7 @@ class ComponentAdding(Adding):
 
         # Call the superclass action() method.
         # As a side effect, self.added_object is set by add() above.
-        zapi.ContextSuper(ComponentAdding, self).action(type_name, id)
-
-    action = zapi.ContextMethod(action)
-
+        super(ComponentAdding, self).action(type_name, id)
 
 class ServiceAdding(ComponentAdding):
     """Adding subclass used for adding services."""
@@ -91,7 +87,7 @@ class ServiceAdding(ComponentAdding):
         if not ILocalService.isImplementedBy(content):
             raise TypeError("%s is not a local service" % content)
 
-        return zapi.ContextSuper(ServiceAdding, self).add(content)
+        return super(ServiceAdding, self).add(content)
 
 
 class UtilityAdding(ComponentAdding):
@@ -104,7 +100,7 @@ class UtilityAdding(ComponentAdding):
         # XXX This wants to be generalized!
         if not ILocalUtility.isImplementedBy(content):
             raise TypeError("%s is not a local utility" % content)
-        return zapi.ContextSuper(UtilityAdding, self).add(content)
+        return super(UtilityAdding, self).add(content)
     
 
 class AddServiceRegistration(BrowserView):
@@ -127,14 +123,13 @@ class AddServiceRegistration(BrowserView):
 
     def action(self, name=[], active=[]):
         path = zapi.name(self.context)
-        configure = zapi.getWrapperContainer(
-            self.context).getRegistrationManager()
-        container = zapi.getAdapter(configure, IZopeContainer)
+        rm = self.context.__parent__.getRegistrationManager()
+        chooser = zapi.getAdapter(rm, INameChooser)
 
         for nm in name:
             sc = ServiceRegistration(nm, path, self.context)
-            name = container.setObject("", sc)
-            sc = container[name]
+            name = chooser.chooseName(nm, sc)
+            rm[name] = sc
             if nm in active:
                 sc.status = ActiveStatus
             else:
@@ -226,8 +221,7 @@ class ServiceSummary(BrowserView):
                 conf.status = UnregisteredStatus
                 parent = zapi.getParent(conf)
                 name = zapi.name(conf)
-                container = zapi.getAdapter(parent, IZopeContainer)
-                del container[name]
+                del parent[name]
 
         # 2) Delete the service objects
         # XXX Jim doesn't like this very much; he thinks it's too much
@@ -240,8 +234,7 @@ class ServiceSummary(BrowserView):
         for path, obj in services.items():
             parent = zapi.getParent(obj)
             name = zapi.name(obj)
-            container = zapi.getAdapter(parent, IZopeContainer)
-            del container[name]
+            del parent[name]
 
         s = _("Deleted: ${service_names}")
         s.mapping = {'service_names': ", ".join(todo)}
@@ -391,7 +384,7 @@ class MakeSite(BrowserView):
         """
         if ISite.isImplementedBy(self.context):
             raise zapi.UserError('This is already a site')
-        sm = ServiceManager()
+        sm = ServiceManager(self.context)
         self.context.setSite(sm)
         self.request.response.redirect("++etc++site/")
 
