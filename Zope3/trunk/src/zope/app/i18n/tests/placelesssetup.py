@@ -14,14 +14,14 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.1 2003/03/25 20:42:41 jim Exp $
+$Id: placelesssetup.py,v 1.2 2003/03/25 23:26:11 bwarsaw Exp $
 """
 
 from zope.app.services.servicenames import Translation
 from zope.component.adapter import provideAdapter
 from zope.component import getServiceManager
 from zope.i18n.globaltranslationservice import translationService
-from zope.i18n.interfaces import IReadTranslationService as ITranslationService
+from zope.i18n.interfaces import ITranslationService
 from zope.i18n.interfaces import IUserPreferredCharsets
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.publisher.browser import BrowserLanguages
