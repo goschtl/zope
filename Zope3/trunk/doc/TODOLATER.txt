@@ -17,11 +17,7 @@ Things to do After the next release (in no particular order)
 - Write documentation on how to develop principal sources for the
   pluggable auth service.
 
-- Reimplement roles as utilities
-
 - Local role definitions
-
-- Reimplement permissions as utilities
 
 - Local permission definitions
 
@@ -66,8 +62,6 @@ Things to do After the next release (in no particular order)
     file).
 
   * Work out security details
-
-  Guido is working on this. 
 
 - Software bundles.
 
