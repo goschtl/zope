@@ -157,7 +157,7 @@ class Topic(PortalFolder):
 
     security.declareProtected(CMFCorePermissions.View, 'icon')
     def icon(self):
-        """ For the ZMI and Catalog """
+        """ For the ZMI """
         return self.getIcon()
     
     def _index_html(self):
