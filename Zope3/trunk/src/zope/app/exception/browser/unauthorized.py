@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unautorized Exception View Class
+"""Unauthorized Exception View Class
 
 $Id$
 """
