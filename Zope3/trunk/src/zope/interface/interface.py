@@ -14,14 +14,7 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.6 2003/01/28 11:25:22 stevea Exp $
-"""
-
-
-"""Interface object implementation
-
-Revision information:
-$Id: interface.py,v 1.6 2003/01/28 11:25:22 stevea Exp $
+$Id: interface.py,v 1.7 2003/03/06 20:46:53 jeremy Exp $
 """
 
 from inspect import currentframe
