@@ -7,5 +7,5 @@
                handler=".metaConfigure.registerView" />
   </directives>
 
-  <include package=".ServerControl" file="server-control-meta.zcml" />
+  <include package=".ServerControl" file="meta.zcml" />
 </zopeConfigure>

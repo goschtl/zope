@@ -4,6 +4,6 @@
    xmlns:zmi='http://namespaces.zope.org/zmi'
    xmlns:browser='http://namespaces.zope.org/browser'
 >
-<include package=".ApplicationControl" file="application-control-meta.zcml" />
+<include package=".ApplicationControl" file="meta.zcml" />
 
 </zopeConfigure>

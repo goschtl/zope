@@ -3,7 +3,7 @@
    xmlns:security='http://namespaces.zope.org/security'
 >
 
-  <include package="Zope.App.Formulator" file="formulator-meta.zcml" />
+  <include package="Zope.App.Formulator" file="meta.zcml" />
 
   <include package="Zope.App.Formulator.Fields" file="fields.zcml" />
   <include package="Zope.App.Formulator.Validators" file="validators.zcml" />

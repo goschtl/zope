@@ -6,12 +6,12 @@
 >
   
 <!-- Standard configuration directives -->
-<include package=".Configuration" file="configuration-meta.zcml" />
-<include package=".App" file="app-meta.zcml" />
-<include package=".I18n" file="i18n-meta.zcml" />
-<include package=".Publisher" file="publisher-meta.zcml" />
-<include package=".Event" file="event-meta.zcml" />
-<include package=".StartUp" file="startup-meta.zcml" />
+<include package=".Configuration" file="meta.zcml" />
+<include package=".App" file="meta.zcml" />
+<include package=".I18n" file="meta.zcml" />
+<include package=".Publisher" file="meta.zcml" />
+<include package=".Event" file="meta.zcml" />
+<include package=".StartUp" file="meta.zcml" />
 
 
 <!-- Standard Permissions -->
