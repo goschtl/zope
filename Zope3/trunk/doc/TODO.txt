@@ -70,3 +70,16 @@ Things to do for the next release (in no particular order)
 
 - Sort out "usage". The basic idea is very simple, but the 
   implementation is too implicit and complex.
+
+- Redo the way names input in add forms.  Rather than have adding
+  provide an add button, either:
+
+  - Have it provide the name of an input field.  If the name
+    is false, then no name can be entered, otherwise, an input
+    with that name must be supplied by the form.
+
+    or
+
+  - Have the adding provide a boolean saying whether a name should
+    be collected. The add form takes over responsibility and sets
+    contentName.
