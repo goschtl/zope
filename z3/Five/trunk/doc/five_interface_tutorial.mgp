@@ -97,7 +97,7 @@ class AfricanElephant:
 Interfaces
 
 
-	Interfaces are about the how, not the what
+	Interfaces are about the what, not the how 
 
 	Interfaces don't do anything, they just describe
 
@@ -163,9 +163,10 @@ Adapters, example continued
 
 
 %size 4, fore "blue"
-elephant = AfricanElephant()
-noise_maker = ElephantNoiseMaker(elephant)
-print noise_maker.makeNoise()
+>>> elephant = AfricanElephant()
+>>> noise_maker = ElephantNoiseMaker(elephant)
+>>> print noise_maker.makeNoise()
+'A terrible racket'
 
 %page
 
@@ -210,9 +211,9 @@ Adapter lookup, example
 
 
 %size 4, fore "blue"
-for animal in animal_farm:
-    noise_maker = INoiseMaker(animal)
-    print noise_maker.makeNoise()
+>>> for animal in animal_farm:
+...    noise_maker = INoiseMaker(animal)
+...    print noise_maker.makeNoise()
 
 %page
 
