@@ -11,31 +11,30 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Global Authentication Service or Principal Registry
 
-$Id: principalregistry.py,v 1.12 2004/03/06 17:48:52 jim Exp $
+$Id: principalregistry.py,v 1.1 2004/03/08 12:08:08 srichter Exp $
 """
-__metaclass__ = type
-
-from zope.exceptions import NotFoundError
-from zope.app.interfaces.security import ILoginPassword
-from zope.app.interfaces.security import IAuthenticationService, IPrincipal
-from zope.app.interfaces.security import IUnauthenticatedPrincipal
-from zope.app.interfaces.services.service import ISimpleService
 from zope.interface import implements
+from zope.exceptions import NotFoundError
+from zope.app import zapi
+from zope.app.security.interfaces import ILoginPassword
+from zope.app.security.interfaces import IAuthenticationService, IPrincipal
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
+from zope.app.interfaces.services.service import ISimpleService
 from zope.app.container.contained import Contained, contained
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
 
-class PrincipalRegistry:
+class PrincipalRegistry(object):
 
     implements(IAuthenticationService, ISimpleService)
 
     # Methods implementing IAuthenticationService
 
     def authenticate(self, request):
-        a = ILoginPassword(request, None)
+        a = zapi.queryAdapter(request, ILoginPassword, None)
         if a is not None:
             login = a.getLogin()
             if login is not None:
@@ -64,7 +63,7 @@ class PrincipalRegistry:
     def unauthorized(self, id, request):
         # XXX This is a mess. request has no place here!
         if id is None or id is self.__defaultid:
-            a = ILoginPassword(request)
+            a = zapi.getAdapter(request, ILoginPassword)
             a.needLogin(realm="zope")
 
     def getPrincipal(self, id):
@@ -83,7 +82,7 @@ class PrincipalRegistry:
     def getPrincipals(self, name):
         name = name.lower()
         return [p for p in self.__principalsById.itervalues()
-                  if p.getTitle().lower().startswith(name) or
+                  if p.title.lower().startswith(name) or
                      p.getLogin().lower().startswith(name)]
 
     # Management methods
@@ -104,8 +103,8 @@ class PrincipalRegistry:
         p = Principal(id, title, description, login, password)
         p = contained(p, self, id)
 
-        self.__principalsByLogin[login]=p
-        self.__principalsById[id]=p
+        self.__principalsByLogin[login] = p
+        self.__principalsById[id] = p
 
         return p
 
@@ -122,18 +121,19 @@ del addCleanUp
 class PrincipalBase(Contained):
 
     def __init__(self, id, title, description):
-        self.__id = id
-        self.__title = title
-        self.__description = description
-
-    def getId(self):
-        return self.__id
+        self.id = id
+        self.title = title
+        self.description = description
 
     def getTitle(self):
-        return self.__title
+        warn("Use principal.title instead of principal.getTitle().",
+             DeprecationWarning, 2)
+        return self.title
 
     def getDescription(self):
-        return self.__description
+        warn("Use principal.description instead of principal.getDescription().",
+             DeprecationWarning, 2)
+        return self.description
 
 
 class Principal(PrincipalBase):

@@ -11,17 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest
+"""Global Authentication Serive or Principal Registry Tests
 
-from zope.app.security.registries.principalregistry import PrincipalRegistry
-from zope.app.security.registries.principalregistry import DuplicateLogin
-from zope.app.security.registries.principalregistry import DuplicateId
+$Id: test_principalregistry.py,v 1.1 2004/03/08 12:08:09 srichter Exp $
+"""
+import unittest
+from zope.interface import implements
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.servicenames import Adapters
-from zope.interface import implements
+
+from zope.app import zapi
 from zope.app.tests import ztapi
+from zope.app.services.servicenames import Adapters
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+
+from zope.app.security.basicauthadapter import BasicAuthAdapter
+from zope.app.security.interfaces import ILoginPassword
+from zope.app.security.principalregistry import PrincipalRegistry
+from zope.app.security.principalregistry import DuplicateLogin, DuplicateId
+
 
 class Request:
 
@@ -43,9 +51,6 @@ class Test(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
 
-        from zope.component import getService
-        from zope.app.security.basicauthadapter import BasicAuthAdapter
-        from zope.app.interfaces.security import ILoginPassword
         ztapi.provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
@@ -58,13 +63,13 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testRegistered(self):
         p = self.reg.getPrincipal('1')
-        self.assertEqual(p.getId(), '1')
-        self.assertEqual(p.getTitle(), 'Tim Peters')
-        self.assertEqual(p.getDescription(), 'Sir Tim Peters')
+        self.assertEqual(p.id, '1')
+        self.assertEqual(p.title, 'Tim Peters')
+        self.assertEqual(p.description, 'Sir Tim Peters')
         p = self.reg.getPrincipal('2')
-        self.assertEqual(p.getId(), '2')
-        self.assertEqual(p.getTitle(), 'Jim Fulton')
-        self.assertEqual(p.getDescription(), 'Sir Jim Fulton')
+        self.assertEqual(p.id, '2')
+        self.assertEqual(p.title, 'Jim Fulton')
+        self.assertEqual(p.description, 'Sir Jim Fulton')
 
         self.assertEqual(len(self.reg.getPrincipals('')), 2)
 
@@ -106,7 +111,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testAuthenticate(self):
         req = Request(('tim', '123'))
-        pid = self.reg.authenticate(req).getId()
+        pid = self.reg.authenticate(req).id
         self.assertEquals(pid, '1')
         req = Request(('tim', '1234'))
         p = self.reg.authenticate(req)
@@ -131,20 +136,22 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertRaises(DuplicateId, self.reg.defineDefaultPrincipal,
                           "1", "tim")
         self.reg.defineDefaultPrincipal("everybody", "Default Principal")
-        self.assertEquals(self.reg.unauthenticatedPrincipal().getId(), "everybody")
+        self.assertEquals(self.reg.unauthenticatedPrincipal().id, "everybody")
         self.reg.defineDefaultPrincipal("anybody", "Default Principal",
                                         "This is the default headmaster")
-        self.assertEquals(self.reg.unauthenticatedPrincipal().getId(), "anybody")
+        self.assertEquals(self.reg.unauthenticatedPrincipal().id, "anybody")
         self.assertRaises(NotFoundError, self.reg.getPrincipal, "everybody")
         p = self.reg.getPrincipal("anybody")
-        self.assertEquals(p.getId(), "anybody")
-        self.assertEquals(p.getTitle(), "Default Principal")
+        self.assertEquals(p.id, "anybody")
+        self.assertEquals(p.title, "Default Principal")
         self.assertRaises(DuplicateId, self.reg.definePrincipal,
                           "anybody", "title")
 
+
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        ))
 
 if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+    unittest.main(defaultTest='test_suite')
