@@ -58,7 +58,7 @@ David Goodger and others.
 
 We are rereleasing it under the terms of the Zope Public License 2.0.
 
-Excaprions to this are the following files within the docutils package:
+Exceptions to this are the following files within the docutils package:
 
   optparse.py, by Gregory Ward. This module is included in the
   standard Python distribution starting in Python 2.3.
