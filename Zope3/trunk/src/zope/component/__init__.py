@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.9 2003/05/21 20:30:05 jim Exp $
+$Id: __init__.py,v 1.10 2003/05/23 17:52:12 jim Exp $
 """
 
 import sys
@@ -33,6 +33,31 @@ except ImportError:
         return ob
 
 moduleProvides(IComponentArchitecture)
+
+__all__ = (
+    "queryServiceManager", 
+    "getServiceManager", 
+    "getService", 
+    "queryService", 
+    "getServiceDefinitions", 
+    "getUtility", 
+    "queryUtility", 
+    "getAdapter", 
+    "queryAdapter", 
+    "getNamedAdapter", 
+    "queryNamedAdapter", 
+    "createObject", 
+    "getFactory", 
+    "queryFactory", 
+    "getFactoryInterfaces", 
+    "getSkin", 
+    "getView", 
+    "queryView", 
+    "getDefaultViewName", 
+    "queryDefaultViewName", 
+    "getResource", 
+    "queryResource",
+    )
 
 def queryServiceManager(context, default=None):
     try:
@@ -68,7 +93,7 @@ def queryUtility(context, interface, default=None, name=''):
 # Adapter service
 
 def getAdapter(object, interface, name='', context=None):
-    adapter = queryAdapter(object, interface, name=name, context=context)
+    adapter = queryAdapter(object, interface, None, name, context)
     if adapter is None:
         raise ComponentLookupError(object, interface)
     return adapter
@@ -103,15 +128,8 @@ def queryAdapter(object, interface, default=None, name='', context=None):
     if interface.isImplementedBy(object):
         return object
 
-    if context is None:
-        context = object
-    try:
-        adapters = getService(context, Adapters)
-    except ComponentLookupError:
-        # Oh blast, no adapter service. We're probably just running from a test
-        return default
+    return queryNamedAdapter(object, interface, name, default, context)
 
-    return adapters.queryNamedAdapter(object, interface, name, default)
 
 def getNamedAdapter(object, interface, name, context=None):
     adapter = queryNamedAdapter(object, interface, name, context=context)
@@ -129,6 +147,8 @@ def queryNamedAdapter(object, interface, name, default=None, context=None):
         return default
 
     return adapters.queryNamedAdapter(object, interface, name, default)
+
+queryNamedAdapter = hookable(queryNamedAdapter)
 
 # Factory service
 
@@ -190,4 +210,3 @@ def queryResource(wrapped_object, name, request, default=None):
     return getService(wrapped_object,
                       Resources).queryResource(
         wrapped_object, name, request, default)
-
