@@ -4,5 +4,5 @@ embedded -a Components/principia Components/ExtensionClass Components/cPickle \
 
 
 BoboPOS2 Packages/BoboPOS2
-z Components/GreyThing &zBoboPOS2
+z Components/GreyThing &BoboPOS2
 
