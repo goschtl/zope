@@ -274,11 +274,23 @@ class IBytes(IMinMaxLen, IIterable, IField):
     The value might be constrained to be with length limits.
     """
 
-class IMime(IBytes):
+class IMime(IField):
+    u"""Field describing the subwidgets of IMime used in IFile."""
+
+# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
+class IMimeData(IBytes):
     u"""Field holding a byte string (in an efficient data structure).
 
     The type of the data is described by it's mime type.
     """
+
+# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
+class IMimeDataEncoding(IBytes):
+    u"""Field containing the encoding used for text-based files."""
+
+# TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
+class IMimeType(IBytes):
+    u"""Field containing the mime-type for a file."""
     
 class IASCII(IBytes):
     u"""Field containing a 7-bit ASCII string. No characters > DEL

@@ -28,7 +28,8 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
-from zope.schema.interfaces import IBytes, IMime, IASCII, IBytesLine
+from zope.schema.interfaces import IBytes, IASCII, IBytesLine
+from zope.schema.interfaces import IMime, IMimeData, IMimeDataEncoding, IMimeType
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate
@@ -101,7 +102,28 @@ class Mime(Field):
     __doc__ = IMime.__doc__
     implements(IMime)
 
-    _type = str # Is this needed for the WrongType exception?
+    # TODO: this is just a copy paste form Object field below
+    def __init__(self, **kw):
+            
+        self.schema = IMime
+        super(Mime, self).__init__(**kw)
+        
+    def _validate(self, value):
+        super(Mime, self)._validate(value)
+        
+        # schema has to be provided by value
+        if not self.schema.providedBy(value):
+            raise SchemaNotProvided
+            
+        # check the value against schema
+        errors = _validate_fields(self.schema, value)
+        if errors:
+            raise WrongContainedType(errors)
+
+
+class MimeData(Field):
+    __doc__ = IMimeData.__doc__
+    implements(IMimeData)
 
     def set(self, obj, value):
         """
@@ -152,6 +174,20 @@ class Mime(Field):
             return fid
         else:
             return ''
+
+
+class MimeDataEncoding(Field):
+    __doc__ = IMimeDataEncoding.__doc__
+    implements(IMimeDataEncoding)
+
+    _type = str
+
+
+class MimeType(Field):
+    __doc__ = IMimeType.__doc__
+    implements(IMimeType)
+
+    _type = str
 
 
 class ASCII(Bytes):
