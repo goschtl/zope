@@ -25,9 +25,9 @@ from zope.app.tests import ztapi
 from zope.app.form.browser import TextWidget
 from zope.app.form.interfaces import IInputWidget
 
-import zope.app.groupscontainer.group
-import zope.app.groupscontainer.groupfolder
-import zope.app.groupscontainer.interfaces
+import zope.app.groupfolder.group
+import zope.app.groupfolder.groupfolder
+import zope.app.groupfolder.interfaces
 import zope.app.pas.interfaces
 
 
@@ -40,9 +40,9 @@ def setUpGP(test):
     placelesssetup.setUp(test)
     ztapi.subscribe([zope.app.pas.interfaces.IAuthenticatedPrincipalCreated],
                     None,
-                    zope.app.groupscontainer.group.setGroupsForPrincipal)
-    groups = zope.app.groupscontainer.groupfolder.GroupFolder()
-    ztapi.provideUtility(zope.app.groupscontainer.interfaces.IGroupFolder,
+                    zope.app.groupfolder.group.setGroupsForPrincipal)
+    groups = zope.app.groupfolder.groupfolder.GroupFolder()
+    ztapi.provideUtility(zope.app.groupfolder.interfaces.IGroupFolder,
                          groups)
 
 def test_suite():

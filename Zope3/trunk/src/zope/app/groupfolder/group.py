@@ -21,7 +21,7 @@ from zope.security.interfaces import IGroup
 from zope.app.pas.interfaces import IAuthenticatedPrincipalCreated
 from persistent import Persistent
 from zope.interface import implements, alsoProvides
-from zope.app.groupscontainer.interfaces import IGroupContained, IGroupFolder
+from zope.app.groupfolder.interfaces import IGroupContained, IGroupFolder
 from zope.security.interfaces import IGroupAwarePrincipal
 from types import StringTypes
 import zope.app.zapi

@@ -3,10 +3,10 @@ Groups & Principals
 
 We import the needed modules
 
-  >>> from zope.app.groupscontainer.group import Group
+  >>> from zope.app.groupfolder.group import Group
   >>> from zope.security.interfaces import IGroupAwarePrincipal
-  >>> from zope.app.groupscontainer.groupfolder import GroupFolder
-  >>> from zope.app.groupscontainer.interfaces import IGroupFolder
+  >>> from zope.app.groupfolder.groupfolder import GroupFolder
+  >>> from zope.app.groupfolder.interfaces import IGroupFolder
   >>> from zope.app.pas.principalplugins import PrincipalFactory
   >>> from zope.publisher.tests.httprequest import TestRequest
   >>> import zope.app.zapi

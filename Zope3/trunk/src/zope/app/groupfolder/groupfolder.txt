@@ -12,10 +12,10 @@ its id.
 
   >>> import zope.interface
   >>> from zope.security.interfaces import IGroupAwarePrincipal, IGroup
-  >>> from zope.app.groupscontainer.group import Group
-  >>> from zope.app.groupscontainer.interfaces import IGroupContained
-  >>> from zope.app.groupscontainer.interfaces import IGroupFolder
-  >>> from zope.app.groupscontainer.groupfolder import GroupFolder
+  >>> from zope.app.groupfolder.group import Group
+  >>> from zope.app.groupfolder.interfaces import IGroupContained
+  >>> from zope.app.groupfolder.interfaces import IGroupFolder
+  >>> from zope.app.groupfolder.groupfolder import GroupFolder
   >>> from zope.interface import implements
   >>> class GoldrakePrincipal:
   ...     implements(IGroupAwarePrincipal)

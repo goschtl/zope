@@ -1,0 +1,139 @@
+Groups Folder Implementation
+============================
+
+The GroupsFolder class offers a groups container that mantains maps between groups and principals as 
+well as maps from principals to groups.
+
+We test that we can add a Group to a GroupsFolder;
+we also check that it is possible to retrieve principals
+from a given group id and, vice-versa, get a list of groups
+a principal belongs to by providing its id.
+   
+      >>> import zope.interface
+      >>> from zope.security.interfaces import IGroupAwarePrincipal, IGroup
+      >>> from zope.security.group import Group
+      >>> from zope.app.groupscontainer.interfaces import IGroupsFolder, IGroupContained
+      >>> from zope.app.groupscontainer.groupsfolder import GroupsFolder
+      >>> from zope.interface import implements
+      >>> class GoldrakePrincipal:
+      ...     implements(IGroupAwarePrincipal)
+      ...     id = '0'
+      ...     title = 'Goldrake'
+      ...     description = 'Ufo robot'
+      ...     groups = ['superheroes', 'robots']
+      >>> class MazingaPrincipal:
+      ...     implements(IGroupAwarePrincipal)
+      ...     id = '1'
+      ...     title = 'Mazinga'
+      ...     description = 'Mazinga Z'
+      ...     groups = ['superheroes', 'robots']
+      >>> class CaptainAmericaPrincipal:
+      ...     implements(IGroupAwarePrincipal)
+      ...     id = '2'
+      ...     title = 'CaptainAmerica'
+      ...     description = 'Captain America'
+      ...     groups = ['superheroes']
+      
+      Then we create instances of our fake principal classes:
+      
+      >>> goldrake = GoldrakePrincipal()
+      >>> mazinga = MazingaPrincipal()
+      >>> captainamerica = CaptainAmericaPrincipal()
+      >>> superheroesgroup = Group(id='superheroes', title='Superheroes group', description='The best superheroes', principalsids=['0', '1', '2'])
+      >>> robotsgroup = Group(id='robots', title='Robots group', description='The best robots', principalsids=['0', '1'])
+      
+      A groups folder contains groups:
+      
+      >>> notordinarypeople = GroupsFolder()
+      >>> notordinarypeople[superheroesgroup.id] = superheroesgroup
+      >>> notordinarypeople[robotsgroup.id] = robotsgroup
+      
+      We test that 'getGroupsForPrincipal' returns the groups the provided principal id belongs to:
+      
+      >>> notordinarypeople.getGroupsForPrincipal('1')
+      ['superheroes', 'robots']
+      >>> notordinarypeople.getGroupsForPrincipal('2')
+      ['superheroes']
+      >>> notordinarypeople.getGroupsForPrincipal('99')
+      []
+      
+      The 'getPrincipalsForGroup' returns the principals id contained in a group:
+      
+      >>> notordinarypeople.getPrincipalsForGroup('superheroes')
+      ['0', '1', '2']
+      >>> notordinarypeople.getPrincipalsForGroup('users')
+      []
+      
+      We also test removing a group:
+      
+      >>> del notordinarypeople['superheroes']
+      >>> print list(notordinarypeople.keys())
+      [u'robots']
+      >>> notordinarypeople.getGroupsForPrincipal('1')
+      ['robots']
+      >>> mazinga.groups
+      ['superheroes', 'robots']
+      >>> notordinarypeople.getGroupsForPrincipal('2')
+      []
+      >>> captainamerica.groups
+      ['superheroes']
+      
+    Now we test the search capabilities, as in IQuerySchemaSearch example:
+    
+    We're trying to search groups in the notordinarypeople class, so first we get a view:
+      
+      >>> import zope.schema
+      >>> from zope.app.pas.browser.schemasearch import QuerySchemaSearchView 
+      >>> from zope.publisher.browser import TestRequest
+      >>> request = TestRequest()
+      >>> view = QuerySchemaSearchView(notordinarypeople, request)
+    
+    This allows us to render a search form.
+    
+      >>> print view.render('test') 
+      <div class="row">
+      <div class="label">
+      <label for="test.field.search" title="">
+      Group Search String
+      </label>
+      </div>
+      <div class="field">
+      <input class="textType" id="test.field.search" name="test.field.search" size="20" type="text" value=""  />
+      </div>
+      </div>
+      <br /><input type="submit" name="test.search" value="Search" />
+
+    If we ask for results:
+    
+      >>> view.results('test')
+    
+    We don't get any, since we did not provide any. But if we give input:
+    
+      >>> request.form['test.field.search'] = 'bo'
+    
+    we still don't get any:
+    
+      >>> view.results('test')
+    
+    because we did not press the button. So let's press the button:
+    
+      >>> request.form['test.search'] = 'Search'
+    
+    so that we now get results (!):
+    
+      >>> list(view.results('test'))
+      [u'robots']
+      >>> request.form['test.field.search'] = 'eek'
+      
+      We can also remove a principal from all the groups:
+      >>> notordinarypeople.removePrincipalFromAllGroups('1')
+      >>> notordinarypeople.getGroupsForPrincipal('1')
+      []
+      >>> notordinarypeople.getAllMappedPrincipals()
+      ['0']
+      
+      If we remove the last group there will be no principal mapped anymore:
+      >>> del notordinarypeople['robots']
+      >>> notordinarypeople.getAllMappedPrincipals()
+      []
+    
