@@ -42,6 +42,13 @@ Test harness.
     Unfortunately, the debug harness doesn't print the name of the
     test, so Use With Care.
 
+--dir directory 
+    Option to limit where tests are searched for. This is
+    important when you *really* want to limit the code that gets run.
+    For example, if refactoring interfaces, you don't want to see the way
+    you have broken setups for tests in other packages. You *just* want to
+    run the interface tests.
+
 -D
     Works like -d, except that it loads pdb when an exception occurs.
 
@@ -63,6 +70,9 @@ Test harness.
     Search for tests starting in the specified start directory
     (useful for testing components being developed outside the main
     "src" or "build" trees).
+
+--keepbytecode
+    Do not delete all stale bytecode before running tests
 
 -L
     Keep running the selected tests in a loop.  You may experience
@@ -541,9 +551,13 @@ def remove_stale_bytecode(arg, dirname, names):
                 os.unlink(fullname)
 
 def main(module_filter, test_filter, libdir):
+    if not keepStaleBytecode:
+        os.path.walk(os.curdir, remove_stale_bytecode, None)
+
+    
     global pathinit
 
-    os.path.walk(os.curdir, remove_stale_bytecode, None)
+
 
     # Get the log.ini file from the current directory instead of possibly
     # buried in the build directory.  XXX This isn't perfect because if
@@ -553,6 +567,7 @@ def main(module_filter, test_filter, libdir):
 
     # Initialize the path and cwd
     pathinit = PathInit(build, build_inplace, libdir)
+
 
     # Initialize the logging module.
     import logging.config
@@ -606,6 +621,7 @@ def process_args(argv=None):
     global timetests
     global progress
     global build_inplace
+    global keepStaleBytecode
     global functional
     global test_dir
 
@@ -631,13 +647,14 @@ def process_args(argv=None):
     progress = False
     timesfn = None
     timetests = 0
+    keepStaleBytecode = 0
     functional = False
     test_dir = None
 
     try:
         opts, args = getopt.getopt(argv[1:], "a:bBcdDfg:G:hLmprtTuv",
                                    ["all", "help", "libdir=", "times=",
-                                    "dir="])
+                                    "keepbytecode", "dir="])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -674,6 +691,8 @@ def process_args(argv=None):
                 print "-G argument must be DEBUG_ flag, not", repr(v)
                 sys.exit(1)
             gcflags.append(v)
+        elif k == '--keepbytecode':
+            keepStaleBytecode = 1
         elif k == '--libdir':
             libdir = v
         elif k == "-L":
