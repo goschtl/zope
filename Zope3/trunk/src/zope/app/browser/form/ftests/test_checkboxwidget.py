@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_checkboxwidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
+$Id: test_checkboxwidget.py,v 1.4 2004/01/19 12:31:56 sidnei Exp $
 """
 
 import unittest
@@ -92,11 +92,11 @@ class Test(BrowserTestCase):
             'field.b2' : 'on' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.b1, False) 
+        self.assertEqual(object.b1, False)
         self.assertEqual(object.b2, True)
 
 
@@ -118,7 +118,7 @@ class Test(BrowserTestCase):
         # values other than 'on' should be treated as False
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.b1, False) 
+        self.assertEqual(object.b1, False)
         self.assertEqual(object.b2, False)
 
 
@@ -139,7 +139,7 @@ class Test(BrowserTestCase):
             'field.b1' : CheckBoxWidget._missing })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # confirm b1 is not missing
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()

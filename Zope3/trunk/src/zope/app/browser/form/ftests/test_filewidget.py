@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_filewidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
+$Id: test_filewidget.py,v 1.4 2004/01/19 12:31:56 sidnei Exp $
 """
 
 import unittest
@@ -110,7 +110,7 @@ class Test(BrowserTestCase):
             'field.f2' : self.sampleTextFile })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
@@ -130,7 +130,7 @@ class Test(BrowserTestCase):
 
         print response.getBody()
 
-        self.assert_(validationErrorExists('f1', 
+        self.assert_(validationErrorExists('f1',
             'Value is not a file object', response.getBody()))
 
 
@@ -150,7 +150,6 @@ class Test(BrowserTestCase):
         self.assert_(not missingInputErrorExists('s2', response.getBody()))
 
 
-
     def test_empty_file(self):
         self.getRootFolder()['test'] = FileTest()
         get_transaction().commit()
@@ -161,7 +160,7 @@ class Test(BrowserTestCase):
             'field.f2' : self.emptyFile })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # new value for f1 should be field.missing_value (i.e, None)
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_datetimewidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
+$Id: test_datetimewidget.py,v 1.4 2004/01/19 12:31:56 sidnei Exp $
 """
 
 import unittest
@@ -48,7 +48,7 @@ class IDatetimeTest(Interface):
     d3 = EnumeratedDatetime(
         required=False,
         allowed_values=(
-            datetime(2003, 9, 15, tzinfo=tzinfo(0)), 
+            datetime(2003, 9, 15, tzinfo=tzinfo(0)),
             datetime(2003, 10, 15, tzinfo=tzinfo(0))),
         missing_value=datetime(2000, 1, 1, tzinfo=tzinfo(0)))
 
@@ -69,7 +69,7 @@ defineSecurity(DatetimeTest, IDatetimeTest)
 
 def getDateForField(field, source):
     """Returns a datetime object for the specified field in source.
-    
+
     Returns None if the field value cannot be converted to date.
     """
 
@@ -125,12 +125,12 @@ class Test(BrowserTestCase):
             'field.d3' : str(d3) })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
 
-        self.assertEqual(object.d1, d1) 
+        self.assertEqual(object.d1, d1)
         self.assertEqual(object.d2, d2)
         self.assertEqual(object.d3, d3)
 
@@ -146,7 +146,7 @@ class Test(BrowserTestCase):
             'field.d3' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
@@ -173,7 +173,7 @@ class Test(BrowserTestCase):
         self.assert_(not missingInputErrorExists('d3', response.getBody()))
 
 
-    def test_inalid_value(self):
+    def test_invalid_value(self):
         self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
 
@@ -194,7 +194,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.d1' : str(datetime(2002, 12, 31, tzinfo=tzinfo(0))) })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('d1', 'Too small', 
+        self.assert_(validationErrorExists('d1', 'Too small',
             response.getBody()))
 
         # submit value for i1 that is too high
@@ -202,7 +202,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.d1' : str(datetime(2021, 1, 1, tzinfo=tzinfo(0))) })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('d1', 'Too big', 
+        self.assert_(validationErrorExists('d1', 'Too big',
             response.getBody()))
 
 
@@ -224,7 +224,7 @@ class Test(BrowserTestCase):
             'field.d2' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()

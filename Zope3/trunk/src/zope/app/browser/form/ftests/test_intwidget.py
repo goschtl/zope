@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_intwidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
+$Id: test_intwidget.py,v 1.4 2004/01/19 12:31:56 sidnei Exp $
 """
 
 import unittest
@@ -121,11 +121,11 @@ class Test(BrowserTestCase):
             'field.i3' : '3' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.i1, 1) 
+        self.assertEqual(object.i1, 1)
         self.assertEqual(object.i2, 2)
         self.assertEqual(object.i3, 3)
 
@@ -142,11 +142,11 @@ class Test(BrowserTestCase):
             'field.i3' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.i1, 1) 
+        self.assertEqual(object.i1, 1)
         self.assertEqual(object.i2, None) # None is default missing_value
         self.assertEqual(object.i3, 0)  # 0 is from i3.missing_value=0
 
@@ -155,7 +155,7 @@ class Test(BrowserTestCase):
         """Tests the addition of an empty value at the top of the dropdown
         that, when selected, updates the field with field.missing_value.
         """
-    
+
         self.getRootFolder()['test'] = IntTest2() # note alt. class
         get_transaction().commit()
 
@@ -178,11 +178,11 @@ class Test(BrowserTestCase):
 
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # confirm new value is -1 -- i1.missing_value
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.i1, -1) 
+        self.assertEqual(object.i1, -1)
 
 
     def test_required_validation(self):
@@ -224,7 +224,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.i1' : '-1' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('i1', 'Too small', 
+        self.assert_(validationErrorExists('i1', 'Too small',
             response.getBody()))
 
         # submit value for i1 that is too high
@@ -232,7 +232,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.i1' : '11' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('i1', 'Too big', 
+        self.assert_(validationErrorExists('i1', 'Too big',
             response.getBody()))
 
 
@@ -253,11 +253,11 @@ class Test(BrowserTestCase):
             'field.i2' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assert_(object.i1 is None) 
+        self.assert_(object.i1 is None)
         self.assert_(object.i2 is None)
         self.assertEqual(object.i3, 2)
 
@@ -272,7 +272,7 @@ class Test(BrowserTestCase):
             'field.i1' : 'foo' })
         self.assertEqual(response.getStatus(), 200)
         # XXX reinstate when widget errors are fixed
-        # self.assert_(validationErrorExists('i1', 'Invalid integer data', 
+        # self.assert_(validationErrorExists('i1', 'Invalid integer data',
         #    response.getBody()))
 
 

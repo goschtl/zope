@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_textwidget.py,v 1.4 2004/01/16 13:38:18 philikon Exp $
+$Id: test_textwidget.py,v 1.5 2004/01/19 12:31:56 sidnei Exp $
 """
 
 import unittest
@@ -97,16 +97,16 @@ class Test(BrowserTestCase):
             'field.s3' : u'Uncle' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.s1, u'foo') 
+        self.assertEqual(object.s1, u'foo')
         self.assertEqual(object.s2, u'bar')
         self.assertEqual(object.s3, u'Uncle')
 
 
-    def test_inalid_type(self):
+    def test_invalid_type(self):
         self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
@@ -132,7 +132,7 @@ class Test(BrowserTestCase):
             'field.s3' : u'' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
@@ -188,7 +188,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.s1' : u'12345678901' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('s1', 'Too long', 
+        self.assert_(validationErrorExists('s1', 'Too long',
             response.getBody()))
 
 
@@ -209,7 +209,7 @@ class Test(BrowserTestCase):
             'field.s2' : u'bar' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()

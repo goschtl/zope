@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: support.py,v 1.2 2003/08/13 21:27:57 garrett Exp $
+$Id: support.py,v 1.3 2004/01/19 12:31:56 sidnei Exp $
 """
 
 import re
@@ -38,8 +38,8 @@ def defineSecurity(class_, schema):
         <configure xmlns="http://namespaces.zope.org/zope">
           <include package="zope.app.component" file="meta.zcml" />
           <class class="%s">
-            <require 
-              permission="zope.Public" 
+            <require
+              permission="zope.Public"
               interface="%s"
               set_schema="%s" />
           </class>
@@ -48,7 +48,6 @@ def defineSecurity(class_, schema):
 
 
 def defineWidgetView(name, field_interface, widget_class):
-
     field_interface = field_interface.__identifier__
     widget_class = '%s.%s' % (widget_class.__module__, widget_class.__name__)
     xmlconfig.string("""
@@ -65,29 +64,24 @@ def defineWidgetView(name, field_interface, widget_class):
 
 
 def patternExists(pattern, source, flags=0):
-
     return re.search(pattern, source, flags) is not None
 
 
 def validationErrorExists(field, error_msg, source):
-
     return patternExists(
         'name="field.%s".*%s' % (field, error_msg), source)
 
 
 def missingInputErrorExists(field, source):
-
     return validationErrorExists(field, 'Input is required', source)
 
 
 def invalidValueErrorExists(field, source):
-
     # assumes this error is displayed for select elements
     return patternExists(
-        'name="field.%s".*</select>.*Invalid value' % field, 
+        'name="field.%s".*</select>.*Invalid value' % field,
         source, re.DOTALL)
 
 
 def updatedMsgExists(source):
-    
     return patternExists('<p>Updated .*</p>', source)

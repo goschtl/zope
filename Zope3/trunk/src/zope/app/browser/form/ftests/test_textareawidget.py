@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_textareawidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
+$Id: test_textareawidget.py,v 1.4 2004/01/19 12:31:56 sidnei Exp $
 """
 
 import unittest
@@ -73,13 +73,13 @@ class Test(BrowserTestCase):
 
         # all fields should be displayed in text fields
         self.assert_(patternExists(
-            '<textarea .* name="field.s1".*></textarea>', 
+            '<textarea .* name="field.s1".*></textarea>',
             response.getBody()))
         self.assert_(patternExists(
-            '<textarea .* name="field.s2".*>foo</textarea>', 
+            '<textarea .* name="field.s2".*>foo</textarea>',
             response.getBody()))
         self.assert_(patternExists(
-            '<textarea .* name="field.s3".*></textarea>', 
+            '<textarea .* name="field.s3".*></textarea>',
             response.getBody()))
 
 
@@ -95,16 +95,16 @@ class Test(BrowserTestCase):
             'field.s3' : u'baz' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.s1, u'foo') 
+        self.assertEqual(object.s1, u'foo')
         self.assertEqual(object.s2, u'bar')
         self.assertEqual(object.s3, u'baz')
 
 
-    def test_inalid_type(self):
+    def test_invalid_type(self):
         self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
@@ -130,11 +130,11 @@ class Test(BrowserTestCase):
             'field.s3' : '' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
-        self.assertEqual(object.s1, u'foo') 
+        self.assertEqual(object.s1, u'foo')
         self.assertEqual(object.s2, u'')   # default missing_value
         self.assertEqual(object.s3, None)  # None is s3's missing_value
 
@@ -174,7 +174,7 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.s1' : u'12345678901' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('s1', 'Too long', 
+        self.assert_(validationErrorExists('s1', 'Too long',
             response.getBody()))
 
 
@@ -195,7 +195,7 @@ class Test(BrowserTestCase):
             'field.s2' : u'bar' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
-        
+
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
         object._p_jar.sync()
