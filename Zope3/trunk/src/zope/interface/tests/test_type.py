@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_type.py,v 1.4 2003/01/30 13:38:43 stevea Exp $
+$Id: test_type.py,v 1.5 2003/01/31 16:22:03 stevea Exp $
 """
 
 import unittest, sys
@@ -42,8 +42,10 @@ class TestTypeRegistry(unittest.TestCase):
         class I3(I2): pass
 
         reg = self.new_instance()
+        self.assertEqual(len(reg), 0)
 
         reg.register(I2, 2)
+        self.assertEqual(len(reg), 1)
         self.assertEqual(getTypesMatching(reg, None), [I2])
         self.assertEqual(getTypesMatching(reg, Interface), [I2])
         self.assertEqual(getTypesMatching(reg, I1), [I2])
@@ -65,6 +67,7 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertEqual(reg.get(I3), None)
 
         reg.register(I1, 1)
+        self.assertEqual(len(reg), 2)
         self.assertEqual(getTypesMatching(reg, None), [I1, I2])
         self.assertEqual(getTypesMatching(reg, Interface), [I1, I2])
         self.assertEqual(getTypesMatching(reg, I1), [I1, I2])
@@ -81,6 +84,7 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertEqual(reg.get(I3), None)
 
         reg.register(I3, 3)
+        self.assertEqual(len(reg), 3)
         self.assertEqual(getTypesMatching(reg, None), [I1, I2, I3])
         self.assertEqual(getTypesMatching(reg, Interface), [I1, I2, I3])
         self.assertEqual(getTypesMatching(reg, I1), [I1, I2, I3])
@@ -97,6 +101,7 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertEqual(reg.get(I3), 3)
 
         reg.unregister(I3)
+        self.assertEqual(len(reg), 2)
         self.assertEqual(getTypesMatching(reg, None), [I1, I2])
         self.assertEqual(getTypesMatching(reg, Interface), [I1, I2])
         self.assertEqual(getTypesMatching(reg, I1), [I1, I2])

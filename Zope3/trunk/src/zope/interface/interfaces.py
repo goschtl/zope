@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.6 2003/01/30 13:38:41 stevea Exp $
+$Id: interfaces.py,v 1.7 2003/01/31 16:22:01 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -294,6 +294,10 @@ class ITypeRegistry(Interface):
 
         Returns a sequence of all interfaces registered that extend
         or are equal to the given interface.
+        """
+
+    def __len__():
+        """Returns the number of distinct interfaces registered.
         """
 
 class IAdapterRegistry(Interface):

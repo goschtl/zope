@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.5 2003/01/30 13:38:41 stevea Exp $
+$Id: type.py,v 1.6 2003/01/31 16:22:01 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -101,3 +101,5 @@ class TypeRegistry:
                 result.append(k)
         return result
 
+    def __len__(self):
+        return len(self._reg)
