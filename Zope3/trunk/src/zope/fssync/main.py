@@ -25,7 +25,7 @@ fssync [global_options] status [options] [TARGET ...]
 For now, the only global option is -h/--help; there are no local
 options yet.
 
-$Id: main.py,v 1.5 2003/05/13 20:05:17 gvanrossum Exp $
+$Id: main.py,v 1.6 2003/05/13 20:28:01 gvanrossum Exp $
 """
 
 import os
@@ -147,6 +147,29 @@ def remove(opts, args):
     for a in args:
         fs.remove(a)
 
+diffflags = ["-b", "-B", "--brief", "-c", "-C", "--context=",
+             "-i", "-u", "-U", "--unified"]
+def diff(opts, args):
+    diffopts = []
+    mode = 1
+    for o, a in opts:
+        if o == '-1':
+            mode = 1
+        elif o == '-2':
+            mode = 2
+        elif o == '-3':
+            mode = 3
+        elif o in diffflags:
+            if a:
+                diffopts.append(o + " " + a)
+            else:
+                diffopts.append(o)
+    diffopts = " ".join(diffopts)
+    fs = FSSync()
+    def calldiff(arg):
+        fs.diff(arg, mode, diffopts)
+    fs.multiple(args, calldiff)
+
 command_table = {
     "checkout": ("", [], checkout),
     "co":       ("", [], checkout),
@@ -156,6 +179,7 @@ command_table = {
     "remove":   ("", [], remove),
     "rm":       ("", [], remove),
     "r":        ("", [], remove),
+    "diff":     ("bBcC:iuU:", ["brief", "context=", "unified="], diff),
     }
 
 if __name__ == "__main__":

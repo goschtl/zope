@@ -13,10 +13,11 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.11 2003/05/13 20:05:17 gvanrossum Exp $
+$Id: fssync.py,v 1.12 2003/05/13 20:28:01 gvanrossum Exp $
 """
 
 import os
+import sys
 import base64
 import shutil
 import urllib
@@ -394,6 +395,17 @@ class FSSync(object):
         finally:
             if isfile(zipfile):
                 os.remove(zipfile)
+
+    def diff(self, target, mode=1, diffopts=""):
+        assert mode == 1, "modes 2 and 3 are not yet supported"
+        if isdir(target):
+            raise Error("recursive diff not yet supported")
+        head, tail = self.split(target)
+        orig = join(head, "@@Zope", "Original", tail)
+        print "Index:", target
+        sys.stdout.flush()
+        os.system("diff %s %s %s" %
+                  (diffopts, commands.mkarg(orig), commands.mkarg(target)))
 
     def add(self, path):
         if not exists(path):
