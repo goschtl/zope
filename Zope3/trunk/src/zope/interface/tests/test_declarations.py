@@ -14,7 +14,7 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.4 2003/05/18 17:53:06 jim Exp $
+$Id: test_declarations.py,v 1.5 2003/06/02 11:08:29 jim Exp $
 """
 
 import unittest
@@ -152,11 +152,28 @@ class Test(unittest.TestCase):
                          [])
         
 
+def test_signature_w_no_class_interfaces():
+    """
+    >>> from zope.interface import *
+    >>> class C:
+    ...     pass
+    >>> c = C()
+    >>> providedBy(c).__signature__
+    ''
+    
+    >>> class I(Interface):
+    ...    pass
+    >>> directlyProvides(c, I)
+    >>> int(providedBy(c).__signature__
+    ...     == directlyProvidedBy(c).__signature__)
+    1
+    """
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
     suite.addTest(DocTestSuite("zope.interface.declarations"))
+    suite.addTest(DocTestSuite())
     
     return suite
 
