@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: widget.py,v 1.3 2002/12/30 19:39:48 alga Exp $
 """
 
 __metaclass__ = type
@@ -55,7 +55,9 @@ class BrowserWidget(Widget, BrowserView):
         if value is self:
             # No user input
             if field.required and not optional:
-                raise MissingInputError(field.__name__)
+                # XXX this code path is not tested
+                raise MissingInputError(field.__name__, field.title,
+                                        'the field is required')
             return field.default
 
         try:
@@ -166,6 +168,19 @@ class CheckBoxWidget(BrowserWidget):
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
+
+    def _convert(self, value):
+        return value == 'on'
+
+    def haveData(self):
+        return True
+
+    def getData(self, optional=0):
+        # When it's checked, its value is 'on'.
+        # When a checkbox is unchecked, it does not appear in the form data.
+        field = self.context
+        value = self.request.form.get(self.name, 'off')
+        return value == 'on'
 
 class PossiblyEmptyMeansMissing:
 

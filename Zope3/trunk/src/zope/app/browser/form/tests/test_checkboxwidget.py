@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_checkboxwidget.py,v 1.3 2002/12/30 19:39:48 alga Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import CheckBoxWidget
@@ -45,6 +45,19 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
         self._widget.extra = 'style="color: red"'
         self._verifyResult(self._widget.renderHidden(value), check_list)
 
+    def test_haveData(self):
+        # Checkbox always has data
+        self.failUnless(self._widget.haveData())
+        del self._widget.request.form['field.foo']
+        self.failUnless(self._widget.haveData())
+
+    def test_getData(self):
+        self._widget.request.form['field.foo'] = 'on'
+        self.assertEqual(self._widget.getData(), True)
+        self._widget.request.form['field.foo'] = 'positive'
+        self.assertEqual(self._widget.getData(), False)
+        del self._widget.request.form['field.foo']
+        self.assertEqual(self._widget.getData(), False)
 
 
 def test_suite():

@@ -13,12 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_browserwidget.py,v 1.3 2002/12/30 19:39:48 alga Exp $
 """
 import unittest
 from zope.app.browser.form.widget import BrowserWidget
 from zope.publisher.browser import TestRequest
 from zope.schema import Text
+from zope.app.interfaces.forms import ConversionError, WidgetInputError, MissingInputError
 
 class BrowserWidgetTest(unittest.TestCase):
 
@@ -73,9 +74,12 @@ class BrowserWidgetTest(unittest.TestCase):
         row = ''.join(self._widget.row().strip().split())
         self.assertEqual(row, '<td>%s</td><td>%s</td>' % (label, value))
 
+
 class TestWidget(BrowserWidget):
 
     def _convert(self, v):
+        if v == u'barf!':
+            raise "SomethingTerribleHappenedError"
         return v or None
 
 class Test(BrowserWidgetTest):
@@ -101,6 +105,25 @@ class Test(BrowserWidgetTest):
 
         w.setData('Xfoo')
         self.assertEqual(w._showData(), 'foo')
+
+    def test_getData(self):
+        self.assertEqual(self._widget.getData(), u'Foo Value')
+
+        self._widget.request.form['field.foo'] = (1, 2)
+        self.assertRaises(WidgetInputError, self._widget.getData)
+
+        self._widget.request.form['field.foo'] = u'barf!'
+        self.assertRaises(ConversionError, self._widget.getData)
+
+        del self._widget.request.form['field.foo']        
+        self._widget.context.required = True
+        self.assertEqual(self._widget.getData(optional=1), None)
+        self.assertRaises(MissingInputError, self._widget.getData)
+
+        self._widget.context.required = False
+        self.assertEqual(self._widget.getData(optional=1), None)
+        self.assertEqual(self._widget.getData(), None)
+
 
     def test_haveData(self):
         self.failUnless(self._widget.haveData())
