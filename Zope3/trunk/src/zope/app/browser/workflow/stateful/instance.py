@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.8 2003/08/17 06:06:06 philikon Exp $
+$Id: instance.py,v 1.9 2003/08/21 20:10:30 srichter Exp $
 """
 from zope.app.browser.form.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
@@ -24,6 +24,7 @@ from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.services.servicenames import Workflows
 from zope.component import getAdapter, getService
 from zope.context import getWrapperData
+from zope.interface import Interface
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
@@ -39,6 +40,8 @@ class ManagementView(BrowserView):
     def __init__(self, context, request):
         super(ManagementView, self).__init__(context, request)
         workflow = self._getSelWorkflow() 
+        if workflow.data is None:
+            return
         schema = workflow.data.getSchema()
         for name, field in getFields(schema).items():
             # setUpWidget() does not mutate the field, so it is ok.
@@ -126,6 +129,8 @@ class ManagementView(BrowserView):
 
 
     def widgets(self):
+        if self._getSelWorkflow().data is None:
+            return []
         schema = self._getSelWorkflow().data.getSchema()
         return [getattr(self, name+'_widget')
                 for name in getFields(schema).keys()]
@@ -133,9 +138,9 @@ class ManagementView(BrowserView):
     
     def update(self):
         status = ''
+        workflow = self._getSelWorkflow() 
 
-        if Update in self.request:
-            workflow = self._getSelWorkflow() 
+        if Update in self.request and workflow.data is not None:
             schema = trustedRemoveSecurityProxy(workflow.data.getSchema())
             changed = applyWidgetsChanges(
                 self, workflow.data, schema, names=getFields(schema).keys(),

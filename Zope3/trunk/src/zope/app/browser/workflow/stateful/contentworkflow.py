@@ -13,7 +13,7 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.6 2003/08/13 21:28:28 garrett Exp $
+$Id: contentworkflow.py,v 1.7 2003/08/21 20:10:30 srichter Exp $
 """
 from zope.app.introspector import interfaceToName, nameToInterface
 from zope.app.component.interfacefield import InterfaceField
@@ -64,7 +64,7 @@ class ManageContentProcessRegistry(BrowserView):
         wf = getService(self.context, Workflows)
         for name in wf.getProcessDefinitionNames():
             ifaces = self.context.getInterfacesForProcessName(name)
-            ifaces = map(interfaceToName, ifaces)
+            ifaces = map(lambda i: interfaceToName(self.context, i), ifaces)
             if ifaces:
                 mapping.append({'name': name, 'ifaces': ifaces})
         return mapping
@@ -74,7 +74,8 @@ class ManageContentProcessRegistry(BrowserView):
         # Nothing bad here; we just read the registry data
         registry = trustedRemoveSecurityProxy(self.context)._registry
         for iface, names in registry.items(): 
-            mapping.append({'iface': interfaceToName(iface), 'names': names})
+            mapping.append({'iface': interfaceToName(self.context, iface),
+                            'names': names})
         return mapping
 
     def update(self):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.10 2003/08/16 00:44:34 srichter Exp $
+$Id: instance.py,v 1.11 2003/08/21 20:10:30 srichter Exp $
 """
 __metaclass__ = type
 
@@ -162,6 +162,8 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
     implements(IStatefulProcessInstance)
 
     def getData(self):
+        if self._data is None:
+            return None
         # Always give out the data attribute as proxied object.
         data = Proxy(self._data, self._data.getChecker())
         return ContextWrapper(data, self, name="data")
