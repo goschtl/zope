@@ -13,7 +13,7 @@
 ##############################################################################
 """View ZPT Tests
 
-$Id: test_viewzpt.py,v 1.10 2003/11/21 17:11:07 jim Exp $
+$Id: test_viewzpt.py,v 1.11 2004/03/04 02:07:04 philikon Exp $
 """
 import unittest
 
@@ -37,13 +37,13 @@ class InstanceWithContext:
 class InstanceWithoutContext:
     pass
 
+
 class TestViewZPT(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
+        super(TestViewZPT, self).setUp()
         self.t = ViewPageTemplateFile('test.pt')
         self.context = C1()
-
 
     def testNamespaceContextAvailable(self):
         context = self.context
@@ -53,14 +53,12 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         self.failUnless(namespace['context'] is context)
         self.failUnless('views' in namespace)
 
-
     def testNamespaceHereNotAvailable(self):
         request = None
         self.assertRaises(AttributeError, self.t.pt_getContext,
                           InstanceWithoutContext(), request)
 
     def testViewMapper(self):
-
         the_view = "This is the view"
         the_view_name = "some view name"
         def ViewMaker(*args, **kw):
@@ -90,7 +88,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
 class TestViewZPTUsage(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacefulSetup.setUp(self)
+        super(TestViewZPTUsage, self).setUp()
         self.context = C1()
         self.request = None
 
