@@ -13,9 +13,11 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.6 2003/03/04 16:28:48 tim_one Exp $
+$Id: adding.py,v 1.7 2003/03/07 12:10:22 jim Exp $
 """
 __metaclass__ = type
+
+from zope.app.interfaces.exceptions import UserError
 
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.container import IContainerNamesContainer
@@ -101,7 +103,10 @@ class Adding(BrowserView):
         return result
     addingInfo = ContextMethod(addingInfo)
 
-    def action(self, type_name, id=''):
+    def action(self, type_name='', id=''):
+        if not type_name:
+            raise UserError("You must select the type of object to add.")
+        
         if type_name.startswith('@@'):
             type_name = type_name[2:]
 
