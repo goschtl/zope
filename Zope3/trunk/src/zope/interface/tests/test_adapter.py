@@ -13,10 +13,10 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_adapter.py,v 1.3 2004/03/08 17:26:57 jim Exp $
+$Id: test_adapter.py,v 1.4 2004/03/15 20:41:55 jim Exp $
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite
+import unittest, doctest
+import zope.interface
 from zope.interface.adapter import AdapterRegistry
 import zope.interface
 
@@ -24,9 +24,6 @@ class IF0(zope.interface.Interface):
     pass
 class IF1(IF0):
     pass
-
-class F1:
-    zope.interface.implements(IF1)
 
 class IB0(zope.interface.Interface):
     pass
@@ -38,169 +35,112 @@ class IR0(zope.interface.Interface):
 class IR1(IR0):
     pass
 
-class R1:
-    zope.interface.implements(IR1)
-
-class Adapter:
-    def __init__(self, *args):
-        self.args = args
-
-class A1(Adapter):
-    pass
-
-class A2(Adapter):
-    pass
-
 def test_multi_adapter_w_default():
     """
-    >>> c = F1()
-    >>> r = R1()
-
     >>> registry = AdapterRegistry()
     
-    >>> registry.provideAdapter(None, IB1, [A1], name='bob', with=[IR0])
+    >>> registry.register([None, IR0], IB1, 'bob', 'A1')
 
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__ is A1
-    True
-    >>> a.args == (c, r)
-    True
+    >>> registry.lookup((IF1, IR1), IB0, 'bob')
+    'A1'
     
-    >>> registry.queryMultiAdapter((c, r), IB0, 'bruce')
+    >>> registry.lookup((IF1, IR1), IB0, 'bruce')
 
-    >>> registry.provideAdapter(None, IB1, [A2], name='bob', with=[IR1])
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__ is A2
-    True
-    >>> a.args == (c, r)
-    True
-    
+    >>> registry.register([None, IR1], IB1, 'bob', 'A2')
+    >>> registry.lookup((IF1, IR1), IB0, 'bob')
+    'A2'
     """
 
 def test_multi_adapter_w_inherited_and_multiple_registrations():
     """
-    >>> c = F1()
-    >>> r = R1()
-
     >>> registry = AdapterRegistry()
 
     >>> class IX(zope.interface.Interface):
     ...    pass
 
-    >>> class AX(Adapter):
-    ...     pass
-    
-    >>> registry.provideAdapter(IF0, IB1, [A1], name='bob', with=[IR0])
-    >>> registry.provideAdapter(IF1, IB1, [AX], name='bob', with=[IX])
+    >>> registry.register([IF0, IR0], IB1, 'bob', 'A1')
+    >>> registry.register([IF1, IX], IB1, 'bob', 'AX')
 
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__ is A1
-    True
-    >>> a.args == (c, r)
-    True
+    >>> registry.lookup((IF1, IR1), IB0, 'bob')
+    'A1'
     """
 
 def test_named_adapter_with_default():
     """Query a named simple adapter
-
-    >>> import zope.interface
-
-    >>> c = F1()
 
     >>> registry = AdapterRegistry()
 
     If we ask for a named adapter, we won't get a result unless there
     is a named adapter, even if the object implements the interface:
 
-    >>> registry.queryNamedAdapter(c, IF0, 'bob')
+    >>> registry.lookup([IF1], IF0, 'bob')
 
-    >>> registry.provideAdapter(None, IB1, [A1], name='bob')
-    >>> a = registry.queryNamedAdapter(c, IB0, 'bob')
-    >>> a.__class__ is A1
-    True
-    >>> a.args == (c, )
-    True
+    >>> registry.register([None], IB1, 'bob', 'A1')
+    >>> registry.lookup([IF1], IB0, 'bob')
+    'A1'
 
-    >>> registry.queryNamedAdapter(c, IB0, 'bruce')
+    >>> registry.lookup([IF1], IB0, 'bruce')
 
-    >>> registry.provideAdapter(None, IB0, [A2], name='bob')
-    >>> a = registry.queryNamedAdapter(c, IB0, 'bob')
-    >>> a.__class__ is A2
-    True
-    >>> a.args == (c, )
-    True
-
-
+    >>> registry.register([None], IB0, 'bob', 'A2')
+    >>> registry.lookup([IF1], IB0, 'bob')
+    'A2'
     """
 
 def test_multi_adapter_gets_closest_provided():
     """
-    >>> c = F1()
-    >>> r = R1()
+    >>> registry = AdapterRegistry()
+    >>> registry.register([IF1, IR0], IB0, 'bob', 'A1')
+    >>> registry.register((IF1, IR0), IB1, 'bob', 'A2')
+    >>> registry.lookup((IF1, IR1), IB0, 'bob')
+    'A1'
 
     >>> registry = AdapterRegistry()
-    >>> registry.provideAdapter(IF1, IB0, [A1], name='bob', with=[IR0])
-    >>> registry.provideAdapter(IF1, IB1, [A2], name='bob', with=[IR0])
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__ is A1
-    True
+    >>> registry.register([IF1, IR0], IB1, 'bob', 'A2')
+    >>> registry.register([IF1, IR0], IB0, 'bob', 'A1')
+    >>> registry.lookup([IF1, IR0], IB0, 'bob')
+    'A1'
 
     >>> registry = AdapterRegistry()
-    >>> registry.provideAdapter(IF1, IB1, [A2], name='bob', with=[IR0])
-    >>> registry.provideAdapter(IF1, IB0, [A1], name='bob', with=[IR0])
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__ is A1
-    True
+    >>> registry.register([IF1, IR0], IB0, 'bob', 'A1')
+    >>> registry.register([IF1, IR1], IB1, 'bob', 'A2')
+    >>> registry.lookup([IF1, IR1], IB0, 'bob')
+    'A2'
 
     >>> registry = AdapterRegistry()
-    >>> registry.provideAdapter(IF1, IB0, [A1], name='bob', with=[IR0])
-    >>> registry.provideAdapter(IF1, IB1, [A2], name='bob', with=[IR1])
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__ is A2
-    True
-
-    >>> registry = AdapterRegistry()
-    >>> registry.provideAdapter(IF1, IB1, [A2], name='bob', with=[IR1])
-    >>> registry.provideAdapter(IF1, IB0, [A1], name='bob', with=[IR0])
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__ is A2
-    True
-
+    >>> registry.register([IF1, IR1], IB1, 'bob', 2)
+    >>> registry.register([IF1, IR0], IB0, 'bob', 1)
+    >>> registry.lookup([IF1, IR1], IB0, 'bob')
+    2
     """
 
 def test_multi_adapter_check_non_default_dont_hide_default():
     """
-    >>> c = F1()
-    >>> r = R1()
-
     >>> registry = AdapterRegistry()
 
     >>> class IX(zope.interface.Interface):
     ...     pass
 
     
-    >>> registry.provideAdapter(None, IB0, [A1], name='bob', with=[IR0])
-    >>> registry.provideAdapter(IF1,  IB0, [A2], name='bob', with=[IX])
-    >>> a = registry.queryMultiAdapter((c, r), IB0, 'bob')
-    >>> a.__class__.__name__
-    'A1'
-
+    >>> registry.register([None, IR0], IB0, 'bob', 1)
+    >>> registry.register([IF1,   IX], IB0, 'bob', 2)
+    >>> registry.lookup([IF1, IR1], IB0, 'bob')
+    1
     """
 
 
 def test_getRegisteredMatching_with_with():
     """
     >>> registry = AdapterRegistry()
-    >>> registry.provideAdapter(None, IB0, '_0')
-    >>> registry.provideAdapter(IF0, IB0, '00')
-    >>> registry.provideAdapter(IF1, IB0, '10')
-    >>> registry.provideAdapter(IF1, IB1, '11')
-    >>> registry.provideAdapter(IF0, IB0, '000', with=(IR0,))
-    >>> registry.provideAdapter(IF1, IB0, '100', with=(IR0,))
-    >>> registry.provideAdapter(IF1, IB1, '110', with=(IR0,))
-    >>> registry.provideAdapter(IF0, IB0, '001', with=(IR1,))
-    >>> registry.provideAdapter(IF1, IB0, '101', with=(IR1,))
-    >>> registry.provideAdapter(IF1, IB1, '111', with=(IR1,))
+    >>> registry.register([None], IB0, '', '_0')
+    >>> registry.register([IF0], IB0, '', '00')
+    >>> registry.register([IF1], IB0, '', '10')
+    >>> registry.register([IF1], IB1, '', '11')
+    >>> registry.register((IF0, IR0), IB0, '', '000')
+    >>> registry.register((IF1, IR0), IB0, '', '100')
+    >>> registry.register((IF1, IR0), IB1, '', '110')
+    >>> registry.register((IF0, IR1), IB0, '', '001')
+    >>> registry.register((IF1, IR1), IB0, '', '101')
+    >>> registry.register((IF1, IR1), IB1, '', '111')
 
     >>> from pprint import PrettyPrinter
     >>> pprint = PrettyPrinter(width=60).pprint
@@ -258,11 +198,34 @@ def test_getRegisteredMatching_with_with():
 
 
 
+def DocFileSuite(*paths):
+    # It's not entirely obvious how to connection this single string
+    # with unittest.  For now, re-use the _utest() function that comes
+    # standard with doctest in Python 2.3.  One problem is that the
+    # error indicator doesn't point to the line of the doctest file
+    # that failed.
+    import os, doctest, new
+    t = doctest.Tester(globs={})
+    suite = unittest.TestSuite()
+    dir = os.path.split(__file__)[0]
+    for path in paths:
+        path = os.path.join(dir, path)
+        source = open(path).read()
+        def runit(path=path, source=source):
+            doctest._utest(t, path, source, path, 0)
+        runit = new.function(runit.func_code, runit.func_globals, path,
+                             runit.func_defaults, runit.func_closure)
+        f = unittest.FunctionTestCase(runit,
+                                      description="doctest from %s" % path)
+        suite.addTest(f)
+    return suite
+
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.interface.adapter'),
-        DocTestSuite(),
+        DocFileSuite('../adapter.txt', 'foodforthought.txt'),
+        doctest.DocTestSuite('zope.interface.adapter'),
+        doctest.DocTestSuite(),
         ))
 
 if __name__ == '__main__': unittest.main()

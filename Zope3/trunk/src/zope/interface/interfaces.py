@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.22 2004/03/08 17:26:56 jim Exp $
+$Id: interfaces.py,v 1.23 2004/03/15 20:41:55 jim Exp $
 """
 
 from zope.interface import Interface
@@ -687,69 +687,51 @@ class IInterfaceDeclaration(Interface):
         the given interfaces is returned.
         """
 
-class IInterfaceDeclarationYAGNI(Interface):
-    """YAGNI interface declaration API
+class IAdapterRegistry(Interface):
+    """Provide an interface-based registry for adapters
 
-    The functions in this interface are functions that might be
-    provided later, but that introduce difficulties that we choose to
-    avoid now.
+    This registry registers objects that are in some sense "from" a
+    sequence of specification to an interface and a name.
+
+    No specific semantics are assumed for the registered objects,
+    however, the most common application will be to register factories
+    that adapt objects providing required specifications to a provided
+    interface. 
+    
     """
 
-    def unimplements(*interfaces):
-        """Declare interfaces not implemented by instances of a class
+    def register(required, provided, name, value):
+        """Register a value
 
-        This function is called in a class definition.
-
-        The arguments are one or more interfaces or interface
-        specifications (IDeclaration objects).
-
-        The interfaces given (including the interfaces in the
-        specifications) are removed from any interfaces previously
-        declared.
-
-        Previous declarations include declarations for base classes
-        unless implementsOnly was used.
-
-        This function is provided for convenience. It provides a more
-        convenient way to call classUnimplements. For example::
-
-          unimplements(I1)
-
-        is equivalent to calling::
-
-          classUnimplements(I1)
-
-        after the class has been created.
-
-        Consider the following example::
-
-          class C(A, B):
-            unimplements(I1, I2)
-
-
-        Instances of ``C`` don't implement ``I1``, ``I2``, even if
-        instances of ``A`` and ``B`` do.
+        A value is registered for a *sequence* of required specifications, a
+        provided interface, and a name.
         """
 
-    def classUnimplements(class_, *interfaces):
-        """Declare the interfaces not implemented for instances of a class
+    def lookup(required, provided, name, default=None):
+        """Lookup a value
 
-        The arguments after the class are one or more interfaces or
-        interface specifications (IDeclaration objects).
-
-        The interfaces given (including the interfaces in the
-        specifications) cancel previous declarations for the same
-        interfaces, including declarations made in base classes.
-
-        Consider the following example::
-
-          class C(A, B):
-             ...
-
-          classImplements(C, I1)
-          classUnimplements(C, I1, I2)
-
-
-        Instances of ``C`` don't provide ``I1`` and ``I2`` even if
-        instances of ``A`` or ``B`` do.
+        A value is looked up based on a *sequence* of required
+        specifications, a provided interface, and a name.
         """
+
+    def names(required, provided):
+        """Return the names for which there are registered objects
+        """
+
+    def subscribe(required, provided, subscriber):
+        """Register a subscriber
+
+        A subscriber is registered for a *sequence* of required
+        specifications, a provided interface, and a name.
+
+        Multiple subscribers may be registered for the same (or
+        equivalent) interfaces.
+        """
+
+    def subscriptions(required, provided):
+        """Get a sequence of subscribers
+
+        Subscribers for a *sequence* of required interfaces, and a provided
+        interface are returned.
+        """
+    
