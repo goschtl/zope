@@ -46,6 +46,11 @@ parentheses are aliases supported for convenience:
   object database, those changes must be merged into the local
   representation before the local changes can be committed.
 
+**copy** (cp)
+  Copy objects within a checkout (or across separate checkouts if the
+  servers are configured similarly enough), or copy a file tree into a
+  checkout.  The new objects will be scheduled for addition.
+
 **update** (up)
   Retrieve updates from the object database.
 
@@ -144,11 +149,11 @@ Options
 
 -F file, --file file
   Set the message used for the transaction note to the contents of the
-  file *file* (similar to the ``-F`` option for **cvs commit**).
+  file *file* (similar to the **-F** option for **cvs commit**).
 
 -m msg, --message msg
   Set the message used for the transaction note to *msg* (similar to
-  the ``-m`` option for **cvs commit**).
+  the **-m** option for **cvs commit**).
 
 
 The **zsync checkout** Command
@@ -197,15 +202,48 @@ Options
 
 -F file, --file file
   Set the message used for the transaction note to the contents of the
-  file *file* (similar to the ``-F`` option for **cvs commit**).
+  file *file* (similar to the **-F** option for **cvs commit**).
 
 -m msg, --message msg
-  Set the message used for the transaction note (similar to the ``-m``
+  Set the message used for the transaction note (similar to the **-m**
   option for **cvs commit**).
 
 -r, --raise-on-conflicts
   Tell **zsync** to raise an exception on conflicts instead of simply
   reporting a list of paths for which conflicts are detected.
+
+
+The **zsync copy** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**copy** [**-l** | **-R**] *source* [*dest*]
+
+Description
++++++++++++
+
+This command is used to copy objects in the database, and can also be
+used to copy files into the database.  When *source* is an object in
+the database, the copy includes all the type, extra, and annotation
+data stored in the ``@@Zope/`` administrative directory.  The files
+containing the body of the data (for files), and the extra and
+annotations data, may be modified before committing the objects to the
+database.  This may be of particular interest for information stored
+in Dublin Core metadata annotations.
+
+Options
++++++++
+
+-l, --local
+  If *source* is a directory, only copy the directory itself, not it's
+  contents.  This option cannot be combined with the **-R** option.
+
+-R, --recursive
+  If *source* is a directory, copy the contents of the directory
+  recursively.  (This is the default.)  This option cannot be combined
+  with the **-l** option.
 
 
 The **zsync delete** Command
