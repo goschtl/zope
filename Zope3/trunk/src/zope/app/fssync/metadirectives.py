@@ -15,10 +15,16 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 
 class IAdapterDirective(Interface):
+    """Define a FS Sync adapter.
+
+    Define an adapter for an object that is used to create filesystem
+    representation of the component.
+    """
 
     class_ = GlobalObject(
         title=u"Class",
