@@ -3,7 +3,7 @@
 <!--
 <subscriber
     handler=".generations.evolveSubscriber"
-    for="zope.app.appsetup.IDatabaseOpenedEvent" 
+    for="zope.app.appsetup.IDatabaseOpenedWithRootEvent" 
     >
     Evolve to current generation on startup
 </subscriber>
@@ -12,7 +12,7 @@
 <!--
 <subscriber
     handler=".generations.evolveNotSubscriber"
-    for="zope.app.appsetup.IDatabaseOpenedEvent" 
+    for="zope.app.appsetup.IDatabaseOpenedWithRootEvent" 
     >
     Don't evolve, but check for minimum generations on startup
 </subscriber>
