@@ -92,21 +92,6 @@ class AuthenticatedPrincipalCreated:
         self.info = info
         self.request = request
 
-class IUnauthenticatedPrincipalCreated(IPrincipalCreated):
-    """An authenticated principal object has been created
-
-    This event is generated when a principal has been created by
-    authenticating a request.
-    """
-
-class UnauthenticatedPrincipalCreated:
-
-    zope.interface.implements(IUnauthenticatedPrincipalCreated)
-
-    def __init__(self, principal):
-        self.principal = principal
-        self.info = {}
-
 class IFoundPrincipalCreated(IPrincipalCreated):
     """Event indicating that a principal was created based on a search
     """
@@ -208,14 +193,6 @@ class IPrincipalFactoryPlugin(IPlugin):
         principal is created, return None.
         """
 
-class IUnauthenticatedPrincipalFactoryPlugin(IPlugin):
-    """Create an unauthenticated principal
-    """
-
-    def createUnauthenticatedPrincipal():
-        """Create an unauthenticated principal
-        """
- 
 class IPrincipalSearchPlugin(IPrincipalIdAwarePlugin):
     """Find principals.
 

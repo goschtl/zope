@@ -42,32 +42,34 @@ corresponding interface declarations.
 Let's look at an example. We create a simple plugin that provides credential
 extraction:
 
-  >>> from zope import interface, component
+  >>> import zope.interface
   >>> from zope.app.authentication import interfaces
 
   >>> class MyExtractor:
   ...
-  ...     interface.implements(interfaces.IExtractionPlugin)
+  ...     zope.interface.implements(interfaces.IExtractionPlugin)
   ...
   ...     def extractCredentials(self, request):
   ...         return request.get('credentials')
 
 We need to register this as a utility. Normally, we'd do this in ZCML. For the
-example here, we'll use the `provideUtility()`:
+example here, we'll use the `provideUtility()` function from
+`zope.app.tests.ztapi`:
 
-  >>> component.provideUtility(MyExtractor(), name='emy')
+  >>> from zope.app.tests.ztapi import provideUtility
+  >>> provideUtility(interfaces.IExtractionPlugin, MyExtractor(), name='emy')
 
 Now we also create an authenticator plugin that knows about object 42:
 
   >>> class Auth42:
   ...
-  ...     interface.implements(interfaces.IAuthenticationPlugin)
+  ...     zope.interface.implements(interfaces.IAuthenticationPlugin)
   ...
   ...     def authenticateCredentials(self, credentials):
   ...         if credentials == 42:
   ...             return '42', {'domain': 42}
 
-  >>> component.provideUtility(Auth42(), name='a42')
+  >>> provideUtility(interfaces.IAuthenticationPlugin, Auth42(), name='a42')
 
 We provide a principal factory plugin:
 
@@ -79,13 +81,12 @@ We provide a principal factory plugin:
   ...         self.id = id
   ...
   ...     def __repr__(self):
-  ...         return '%s(%r, %r)' % (self.__class__.__name__, 
-  ...                                self.id, self.title)
+  ...         return 'Principal(%r, %r)' % (self.id, self.title)
 
   >>> from zope.event import notify
   >>> class PrincipalFactory:
   ...
-  ...     interface.implements(interfaces.IPrincipalFactoryPlugin)
+  ...     zope.interface.implements(interfaces.IPrincipalFactoryPlugin)
   ...
   ...     def createAuthenticatedPrincipal(self, id, info, request):
   ...         principal = Principal(id)
@@ -98,7 +99,8 @@ We provide a principal factory plugin:
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
 
-  >>> component.provideUtility(PrincipalFactory(), name='pf')
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(),
+  ...                name='pf')
 
 Finally, we create a pluggable-authentication utility instance:
 
@@ -164,13 +166,13 @@ authentication plugin:
 
   >>> class AuthInt:
   ...
-  ...     interface.implements(interfaces.IAuthenticationPlugin)
+  ...     zope.interface.implements(interfaces.IAuthenticationPlugin)
   ...
   ...     def authenticateCredentials(self, credentials):
   ...         if isinstance(credentials, int):
   ...             return str(credentials), {'int': credentials}
 
-  >>> component.provideUtility(AuthInt(), name='aint')
+  >>> provideUtility(interfaces.IAuthenticationPlugin, AuthInt(), name='aint')
 
 If we put it before the original authenticator:
 
@@ -197,14 +199,14 @@ As with with authenticators, we can specify multiple extractors:
 
   >>> class OddExtractor:
   ...
-  ...     interface.implements(interfaces.IExtractionPlugin)
+  ...     zope.interface.implements(interfaces.IExtractionPlugin)
   ...
   ...     def extractCredentials(self, request):
   ...         credentials = request.get('credentials')
   ...         if isinstance(credentials, int) and (credentials%2):
   ...             return 1
 
-  >>> component.provideUtility(OddExtractor(), name='eodd')
+  >>> provideUtility(interfaces.IExtractionPlugin, OddExtractor(), name='eodd')
   >>> auth.extractors = 'eodd', 'emy'
 
   >>> request = TestRequest(credentials=41)
@@ -224,7 +226,7 @@ And we can specify multiple factories:
 
   >>> class OddFactory:
   ...
-  ...     interface.implements(interfaces.IPrincipalFactoryPlugin)
+  ...     zope.interface.implements(interfaces.IPrincipalFactoryPlugin)
   ...
   ...     def createAuthenticatedPrincipal(self, id, info, request):
   ...         i = info.get('int')
@@ -244,7 +246,8 @@ And we can specify multiple factories:
   ...                     principal, info))
   ...         return principal
 
-  >>> component.provideUtility(OddFactory(), name='oddf')
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(),
+  ...                name='oddf')
 
   >>> auth.factories = 'oddf', 'pf'
 
@@ -274,17 +277,18 @@ plugins:
 
   >>> class Search42:
   ...
-  ...     interface.implements(interfaces.IPrincipalSearchPlugin)
+  ...     zope.interface.implements(interfaces.IPrincipalSearchPlugin)
   ...
   ...     def principalInfo(self, principal_id):
   ...         if principal_id == '42':
   ...             return {'domain': 42}
 
-  >>> component.provideUtility(Search42(), name='s42')
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(),
+  ...                name='s42')
 
   >>> class IntSearch:
   ...
-  ...     interface.implements(interfaces.IPrincipalSearchPlugin)
+  ...     zope.interface.implements(interfaces.IPrincipalSearchPlugin)
   ...
   ...     def principalInfo(self, principal_id):
   ...         try:
@@ -294,7 +298,8 @@ plugins:
   ...         if (i >= 0 and i < 100):
   ...             return {'int': i}
 
-  >>> component.provideUtility(IntSearch(), name='sint')
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(),
+  ...                name='sint')
 
   >>> auth.searchers = 's42', 'sint'
 
@@ -323,7 +328,7 @@ sure that it's delegated, we put in place a fake utility.
 
   >>> class FakeAuthUtility:
   ...
-  ...     interface.implements(IAuthentication)
+  ...     zope.interface.implements(IAuthentication)
   ...
   ...     lastGetPrincipalCall = lastUnauthorizedCall = None
   ...
@@ -363,13 +368,13 @@ create a plugin that sets a response header:
 
   >>> class Challenge:
   ...
-  ...     interface.implements(interfaces.IChallengePlugin)
+  ...     zope.interface.implements(interfaces.IChallengePlugin)
   ...
   ...     def challenge(self, requests, response):
   ...         response.setHeader('X-Unauthorized', 'True')
   ...         return True
 
-  >>> component.provideUtility(Challenge(), name='c')
+  >>> provideUtility(interfaces.IChallengePlugin, Challenge(), name='c')
   >>> auth.challengers = ('c', )
 
 Now if we call unauthorized:
@@ -417,7 +422,7 @@ called.  Let's look at an example.  We'll define two challengers that
 add challenges to a X-Challenges headers:
 
   >>> class ColorChallenge:
-  ...     interface.implements(interfaces.IChallengePlugin)
+  ...     zope.interface.implements(interfaces.IChallengePlugin)
   ...
   ...     protocol = 'bridge'
   ...
@@ -427,11 +432,11 @@ add challenges to a X-Challenges headers:
   ...                            challenge + 'favorite color? ')
   ...         return True
 
-  >>> component.provideUtility(ColorChallenge(), name='cc')
+  >>> provideUtility(interfaces.IChallengePlugin, ColorChallenge(), name='cc')
   >>> auth.challengers = 'cc, ', 'c'
 
   >>> class BirdChallenge:
-  ...     interface.implements(interfaces.IChallengePlugin)
+  ...     zope.interface.implements(interfaces.IChallengePlugin)
   ...
   ...     protocol = 'bridge'
   ...
@@ -441,7 +446,7 @@ add challenges to a X-Challenges headers:
   ...                            challenge + 'swallow air speed? ')
   ...         return True
 
-  >>> component.provideUtility(BirdChallenge(), name='bc')
+  >>> provideUtility(interfaces.IChallengePlugin, BirdChallenge(), name='bc')
   >>> auth.challengers = 'cc', 'c', 'bc'
 
 Now if we call unauthorized:
@@ -544,43 +549,6 @@ way.  They merely implements
   >>> [queriable.__class__.__name__
   ...  for (id, queriable) in auth.getQueriables()]
   ['Search42', 'IntSearch']
-
-Unauthenticated principals
-==========================
-
-Normally, the pluggable-authentication utility returns None when asked
-for an unauthenticated principal:
-
-  >>> auth.unauthenticatedPrincipal()
-
-However, if an IUnauthenticatedPrincipalFactoryPlugin utility is
-defined. then it will be used to create an IUnauthenticatedPrincipal:
-
-  >>> import zope.app.security.interfaces
-  >>> class UnauthenticatedPrincipal(Principal):
-  ...     interface.implements(
-  ...         zope.app.security.interfaces.IUnauthenticatedPrincipal)
-
-  >>> class UnauthenticatedPrincipalFactoryPlugin:
-  ...     interface.implements(
-  ...         interfaces.IUnauthenticatedPrincipalFactoryPlugin)
-  ...
-  ...     def createUnauthenticatedPrincipal(self):
-  ...         principal = UnauthenticatedPrincipal('u')
-  ...         notify(interfaces.UnauthenticatedPrincipalCreated(principal))
-  ...         return principal
-  
-  >>> component.provideUtility(UnauthenticatedPrincipalFactoryPlugin())
-
-  >>> clearEvents()
-  >>> prin = auth.unauthenticatedPrincipal()
-  >>> prin
-  UnauthenticatedPrincipal('u', '{}')
-
-  >>> [event] = getEvents(interfaces.IUnauthenticatedPrincipalCreated)
-  >>> event.principal is prin
-  True
-
 
 Design Notes
 ============
