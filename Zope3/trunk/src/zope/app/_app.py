@@ -13,12 +13,14 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.4 2002/12/31 03:35:06 jim Exp $
+$Id: _app.py,v 1.5 2003/02/07 15:30:46 jim Exp $
 """
 
 import base64
 from StringIO import StringIO
-from zope.publisher.publish import publish as _publish
+from zope.publisher.publish import publish as _publish, debug_call
+from zope.publisher.browser import TestRequest
+from zope.app.publication.browser import BrowserPublication
 
 __metaclass__ = type
 
@@ -85,16 +87,20 @@ class Application:
         self.db = database(db)
 
     def __call__(self):
+        """Get the top-level application object
+
+        The object returned is connected to an open database connection.
+        """
+        
         from zope.app.publication.zopepublication import ZopePublication
         return self.db.open().root()[ZopePublication.root_name]
 
-    __browser_pub = None
-    __TestRequest = None
-
     def _request(self,
                  path='/', stdin='', stdout=None, basic=None,
-                 environment = None, form=None):
-
+                 environment = None, form=None,
+                 request=TestRequest, publication=BrowserPublication):
+        """Create a request
+        """
 
         env = {}
 
@@ -118,21 +124,11 @@ class Application:
         if basic:
             env['HTTP_AUTHORIZATION']="Basic %s" % base64.encodestring(basic)
 
-        if self.__TestRequest is None:
-            from zope.publisher.browser import TestRequest
-            from zope.app.publication.browser \
-                 import BrowserPublication
-            from zope.app.publication.zopepublication \
-                 import DebugPublication
 
-            class BrowserPublication(DebugPublication, BrowserPublication):
-                pass
+        pub = publication(self.db)
 
-            self.__TestRequest = TestRequest
-            self.__browser_pub = BrowserPublication(self.db)
-
-        request = self.__TestRequest(stdin, stdout, env)
-        request.setPublication(self.__browser_pub)
+        request = request(stdin, stdout, env)
+        request.setPublication(pub)
         if form:
             request.update(form)
 
@@ -175,19 +171,9 @@ class Application:
 
         db=Pdb()
 
-        def fbreak(db, meth):
-            try:
-                meth = meth.im_func
-            except AttributeError:
-                pass
-            code = meth.func_code
-            lineno = getlineno(code)
-            filename = code.co_filename
-            db.set_break(filename,lineno)
-
         request = self._request(*args, **kw)
         fbreak(db, _publish)
-        fbreak(db, request.publication.call_wrapper.__call__)
+        fbreak(db, debug_call)
 
 ##         dbdata = {'breakpoints':(), 'env':env, 'extra': extra}
 ##         b=''
@@ -206,6 +192,19 @@ class Application:
 
         print '* Type c<cr> to jump to published object call.'
         db.runcall(_publish, request)
+
+
+def fbreak(db, meth):
+    try:
+        meth = meth.im_func
+    except AttributeError:
+        pass
+    code = meth.func_code
+    lineno = getlineno(code)
+    filename = code.co_filename
+    db.set_break(filename,lineno)
+
+
 
 try:
     from codehack import getlineno
