@@ -72,7 +72,7 @@ class ICursor(Interface):
         describing one result column: (name, type_code, display_size,
         internal_size, precision, scale, null_ok). This attribute will be None
         for operations that do not return rows or if the cursor has not had an
-        operation invoked via the executeXXX() method yet.
+        operation invoked via the executeZZZ() method yet.
 
         The type_code can be interpreted by comparing it to the Type Objects
         specified in the section below. """)
@@ -141,7 +141,7 @@ class ICursor(Interface):
         sequence, or None when no more data is available.
 
         An Error (or subclass) exception is raised if the previous call to
-        executeXXX() did not produce any result set or no call was issued yet.
+        executeZZZ() did not produce any result set or no call was issued yet.
         """
 
     def fetchmany(size=arraysize):
@@ -157,7 +157,7 @@ class ICursor(Interface):
         returned.
 
         An Error (or subclass) exception is raised if the previous call to
-        executeXXX() did not produce any result set or no call was issued yet.
+        executeZZZ() did not produce any result set or no call was issued yet.
 
         Note there are performance considerations involved with the size
         parameter. For optimal performance, it is usually best to use the
@@ -171,7 +171,7 @@ class ICursor(Interface):
         arraysize attribute can affect the performance of this operation.
 
         An Error (or subclass) exception is raised if the previous call to
-        executeXXX() did not produce any result set or no call was issued yet.
+        executeZZZ() did not produce any result set or no call was issued yet.
         """
 
 
@@ -203,7 +203,7 @@ class IDBICursor(Interface):
         describing one result column: (name, type_code, display_size,
         internal_size, precision, scale, null_ok). This attribute will be None
         for operations that do not return rows or if the cursor has not had an
-        operation invoked via the executeXXX() method yet.
+        operation invoked via the executeZZZ() method yet.
 
         The type_code can be interpreted by comparing it to the Type Objects
         specified in the section below. """)
@@ -272,7 +272,7 @@ class IDBICursor(Interface):
         sequence, or None when no more data is available. [6]
 
         An Error (or subclass) exception is raised if the previous call to
-        executeXXX() did not produce any result set or no call was issued yet.
+        executeZZZ() did not produce any result set or no call was issued yet.
         """
 
     def fetchmany(size=arraysize):
@@ -288,7 +288,7 @@ class IDBICursor(Interface):
         returned.
 
         An Error (or subclass) exception is raised if the previous call to
-        executeXXX() did not produce any result set or no call was issued yet.
+        executeZZZ() did not produce any result set or no call was issued yet.
 
         Note there are performance considerations involved with the size
         parameter. For optimal performance, it is usually best to use the
@@ -302,7 +302,7 @@ class IDBICursor(Interface):
         arraysize attribute can affect the performance of this operation.
 
         An Error (or subclass) exception is raised if the previous call to
-        executeXXX() did not produce any result set or no call was issued yet.
+        executeZZZ() did not produce any result set or no call was issued yet.
         """
 
 
@@ -416,12 +416,10 @@ class IZopeDatabaseAdapter(IDBITypeInfo):
 
 class IZopeConnection(IDBIConnection, IDBITypeInfoProvider):
 
-    # XXX What does the next paragraph mean?
-
     # An implementation of this object will be exposed to the
     # user. Therefore the Zope connection represents a connection in
     # the Zope sense, meaning that the object might not be actually
-    # connected to a database.
+    # connected to a real relational database.
 
     def cursor():
         """Return an IZopeCursor object."""

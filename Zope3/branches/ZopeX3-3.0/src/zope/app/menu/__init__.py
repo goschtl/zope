@@ -55,7 +55,6 @@ class LocalBrowserMenuItem(Persistent):
     # See zope.app.publisher.interfaces.browser.IBrowserMenuItem
     filter_string = u''
 
-    # XXX the filter should probably be some kind of descriptor.
     # There's nothing here to hook this up.
     filter = None
 

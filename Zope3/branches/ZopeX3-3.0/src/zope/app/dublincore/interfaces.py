@@ -209,7 +209,6 @@ class IWritableGeneralDublinCore(Interface):
         The argument must be a sequence of Rights IDublinCoreElementItem.
         """
 
-# XXX This will need to be filled out more.
 class IDCDescriptiveProperties(Interface):
     """Basic descriptive meta-data properties
     """

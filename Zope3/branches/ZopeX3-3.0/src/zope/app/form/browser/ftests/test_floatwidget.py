@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import unittest
 from persistent import Persistent
 from transaction import get_transaction
@@ -212,7 +211,8 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.f1' : 'foo' })
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists('f1',
+        self.assert_(validationErrorExists(
+            'f1',
             'Invalid floating point data', response.getBody()))
 
 

@@ -268,10 +268,7 @@ class IRegistry(zope.component.interfaces.IRegistry):
 
 
 class IOrderedContainer(Interface):
-    """Containers whose items can be reorderd.
-
-    XXX This is likely to go.
-    """
+    """Containers whose items can be reorderd."""
 
     def moveTop(names):
         """Move the objects corresponding to the given names to the top.
@@ -301,7 +298,7 @@ class IRegisterableContainer(IContainer):
     The container allows clients to access the registration manager
     without knowing it's name.
 
-    XXX at this point, it doesn't really make sense for regsitration
+    TODO: At this point, it doesn't really make sense for regsitration
     managers to be items.  It would probably be better to expose the
     registrations as a separate tab.
 
@@ -309,7 +306,8 @@ class IRegisterableContainer(IContainer):
 
     The container may allow more than one registration manager. If it
     has more than one, the one returned from an unnamed access is
-    undefined. XXX the container should allow one and only one.
+    undefined.
+    TODO: The container should allow one and only one.
 
     The registration manager container *also* supports local-module
     lookup.
@@ -344,7 +342,7 @@ class IRegisterableContainer(IContainer):
         A dotted object name is a dotted module name and an object
         name within the module.
 
-        XXX We really should switch to using some other character than
+        TODO: We really should switch to using some other character than
         a dot for the delimiter between the module and the object
         name.
 

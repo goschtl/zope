@@ -184,8 +184,48 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(tr.triggerMode, 'Manual')
 
     def testExport(self):
-        # XXX TBD before Merge into HEAD !!!!
-        pass
+        testpd = TestProcessDefinition()
+        handler = XMLImportHandler(testpd)
+        handler.doImport(xml_text)
+        handler = XMLExportHandler(testpd)
+        xml = handler.doExport()
+        self.assert_(
+            '<?xml version="1.0"?>' in xml)
+        self.assert_(
+            '<workflow type="StatefulWorkflow" title="TestPD">' in xml)
+        self.assert_(
+            '<schema name="zope.app.workflow.stateful.tests.'
+            'test_xmlimportexport.ISchema">' in xml)
+        self.assert_(
+            '<permission for="title" type="get" id="zope.Public"/>' in xml)
+        self.assert_(
+            '<permission for="title" type="set" id="zope.View"/>' in xml)
+        self.assert_('<state title="State2" name="state2"/>' in xml)
+        self.assert_('<state title="State1" name="state1"/>' in xml)
+        self.assert_('<state title="initial" name="INITIAL"/>' in xml)
+
+        self.assert_('<transition sourceState="state2"' in xml)
+        self.assert_('destinationState="state1"' in xml)
+        self.assert_('script="some.path.to.some.script"' in xml)
+        self.assert_('permission="zope.View"' in xml)
+        self.assert_('triggerMode="Manual"' in xml)
+        self.assert_('title="State2toINITIAL"' in xml)
+        self.assert_('name="state2_initial"/>' in xml)
+
+        self.assert_('<transition sourceState="INITIAL"' in xml)
+        self.assert_('destinationState="state1"' in xml)
+        self.assert_('permission="zope.Public"' in xml)
+        self.assert_('triggerMode="Automatic"' in xml)
+        self.assert_('title="INITIALtoState1"' in xml)
+        self.assert_('name="initial_state1"/>' in xml)
+
+        self.assert_('<transition sourceState="state1"' in xml)
+        self.assert_('destinationState="state2"' in xml)
+        self.assert_('condition="python: 1==1"' in xml)
+        self.assert_('permission="zope.Public"' in xml)
+        self.assert_('triggerMode="Manual"' in xml)
+        self.assert_('title="State1toState2"' in xml)
+        self.assert_('name="state1_state2"/>' in xml)
 
 
 def test_suite():

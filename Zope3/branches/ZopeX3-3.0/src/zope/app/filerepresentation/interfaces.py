@@ -106,7 +106,7 @@ class IWriteFile(Interface):
         """Update the file data
         """
 
-# XXX We will add ILargeReadFile and ILargeWriteFile to efficiently
+# TODO: We will add ILargeReadFile and ILargeWriteFile to efficiently
 # handle large data.
 
 class IReadDirectory(IReadContainer):
@@ -139,5 +139,5 @@ class IFileFactory(Interface):
         create the object.
         """
 
-# XXX we will add additional interfaces for WebDAV and File-system
+# TODO: we will add additional interfaces for WebDAV and File-system
 # synchronization.

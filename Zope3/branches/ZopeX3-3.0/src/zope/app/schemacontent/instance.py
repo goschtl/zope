@@ -47,9 +47,8 @@ class ContentComponentInstance(Persistent):
         # Save the name of the object
         self.__name__ = name
 
-        # XXX: We really should make a copy of the schema first, so that it
-        #      cannot be changed.
-        self.__schema = schema
+        self.__schema = object.__new__(schema.__class__)
+        self.__schema.__dict__.update(schema.__dict__)
         # Add the new attributes, if there was a schema passed in
         if schema is not None:
             for name, field in getFields(schema).items():

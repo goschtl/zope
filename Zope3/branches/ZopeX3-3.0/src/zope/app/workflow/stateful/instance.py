@@ -218,7 +218,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         """Get the ProcessDefinition object from WorkflowService."""
         return zapi.getUtility(IProcessDefinition, self.processDefinitionName)
 
-    # XXX this is not entirely tested
     def _getContext(self):
         ctx = {}
         # data should be readonly for condition-evaluation
@@ -228,18 +227,18 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if interaction is not None:
             principals = [p.principal for p in interaction.participations]
             if principals:
-                # XXX There can be more than one principal
+                # There can be more than one principal
                 assert len(principals) == 1
                 ctx['principal'] = principals[0]
 
-        # XXX This needs to be discussed:
+        # TODO This needs to be discussed:
         # how can we know if this ProcessInstance is annotated
         # to a Content-Object and provide secure ***READONLY***
         # Access to it for evaluating Transition Conditions ???
 
         #content = self.__parent__
 
-        # XXX How can i make sure that nobody modifies content
+        # TODO: How can i make sure that nobody modifies content
         # while the condition scripts/conditions are evaluated ????
         # this hack only prevents from directly setting an attribute
         # using a setter-method directly is not protected :((

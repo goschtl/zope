@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="zope">
 
   <adapter 
       for="zope.app.annotation.interfaces.IAnnotatable"
@@ -28,6 +30,12 @@
         interface="zope.app.cache.interfaces.ram.IRAMCache"
         />
   </content>
+
+  <vocabulary
+      name="Cache Names"
+      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      interface="zope.app.cache.interfaces.ICache"
+      nameOnly="True" />
 
 
   <!-- Include browser package -->

@@ -2,6 +2,19 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- Write tests for the Dublin Core Structured Value support, especially errors
+  and createMapping(). See zope.app.dublincore.dcsv.
+
+- Revisit getInterface() method of ComponentRegistration
+  (i.e. UtilityRegistration) component. It can probably be just a simple
+  attribute. The change should be trivial as well.
+
+- The mapping from file endings to mime types is handled through configuration
+  in Zope 2 now.  Perhaps we can do the same for Zope 3.
+
+- When converting a possible site to a site, prompt the user for services that
+  should be added right away. See zope/app/site/browser/__init__.py
+
 - http://dev.zope.org/Zope3/TALESPathExpressionAdapters
 
 - I think the session api needs a little more work.  Among other

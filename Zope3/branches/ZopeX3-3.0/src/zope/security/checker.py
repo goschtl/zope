@@ -78,12 +78,7 @@ def ProxyFactory(object, checker=None):
             checker = selectChecker(object)
             if checker is None:
                 return object
-    else:
-        c = getattr(object, '__Security_checker__', None)
-        if c is not None:
-            pass
-            # XXX This is odd. We're being asked to use a checker that is
-            #     not the "natural" one for this object.
+
     return Proxy(object, checker)
 
 directlyProvides(ProxyFactory, ISecurityProxyFactory)

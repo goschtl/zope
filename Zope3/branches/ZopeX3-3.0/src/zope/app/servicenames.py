@@ -16,9 +16,6 @@
 
 $Id$
 """
-
-# XXX should check that all of the names are still used
-
 from zope.component.servicenames import *
 
 Authentication = 'Authentication'

@@ -57,22 +57,15 @@ class TestImage(unittest.TestCase):
         self.assertEqual(file.data, 'Data')
 
     def testMutators(self):
-        # XXX What's the point of this test? Does it test that data
-        # contents override content-type? Or not? If the former, then
-        # real image data should be used.
+        image = self._makeImage()
 
-        file = self._makeImage()
+        image.contentType = 'image/jpeg'
+        self.assertEqual(image.contentType, 'image/jpeg')
 
-        file.contentType = 'text/plain'
-        self.assertEqual(file.contentType, 'text/plain')
-
-        file._setData('Foobar')
-        self.assertEqual(file.data, 'Foobar')
-
-        file.data = 'Blah'
-        file.contentType = 'text/html'
-        self.assertEqual(file.contentType, 'text/html')
-        self.assertEqual(file.data, 'Blah')
+        image._setData(zptlogo)
+        self.assertEqual(image.data, zptlogo)
+        self.assertEqual(image.contentType, 'image/gif')
+        self.assertEqual(image.getImageSize(), (16, 16))
 
     def testInterface(self):
         self.failUnless(IImage.implementedBy(Image))

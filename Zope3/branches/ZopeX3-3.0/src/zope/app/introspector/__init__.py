@@ -191,6 +191,8 @@ class Introspector(object):
         return tuple(results)
     
 
+# TODO: This method should go away and only registered interface utilities
+# should be used.
 def interfaceToName(context, interface):
     interface = removeAllProxies(interface)
     if interface is None:
@@ -201,9 +203,9 @@ def interfaceToName(context, interface):
            if iface == interface]
     
     if not ids:
-        # XXX Do not fail badly, instead resort to the standard
+        # Do not fail badly, instead resort to the standard
         # way of getting the interface name, cause not all interfaces
-        # may be registered.
+        # may be registered as utilities.
         return interface.__module__ + '.' + interface.getName()
 
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids

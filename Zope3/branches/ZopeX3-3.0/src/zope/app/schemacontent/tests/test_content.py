@@ -217,7 +217,8 @@ class ContentComponentInstanceTests(unittest.TestCase):
         
     def test_getSchema(self):
         doc = ContentComponentInstance('Document', IDocument)
-        self.assertEqual(doc.getSchema(), IDocument)
+        self.assertEqual(doc.getSchema().__class__, IDocument.__class__)
+        self.assertEqual(doc.getSchema().__dict__, IDocument.__dict__)
 
 def test_suite():
     return unittest.TestSuite((

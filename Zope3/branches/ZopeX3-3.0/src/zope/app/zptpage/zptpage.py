@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""ZPT Page (content object) implementation
+
 $Id$
 """
-
 from persistent import Persistent
 
 from zope.proxy import removeAllProxies
@@ -130,8 +130,9 @@ class ZPTWriteFile:
         self.context = context
 
     def write(self, data):
-        # XXX Hm, how does one figure out an ftp encoding. Waaa.
-        self.context.setSource(unicode(data), None)
+        # We cannot communicate an encoding via FTP. Zope's default is UTF-8,
+        # so use it.
+        self.context.setSource(data.decode('UTF-8'), None)
 
 class ZPTFactory:
 
@@ -142,10 +143,11 @@ class ZPTFactory:
         self.context = context
 
     def __call__(self, name, content_type, data):
-        r = ZPTPage()
-        # XXX Hm, how does one figure out an ftp encoding. Waaa.
-        r.setSource(unicode(data), content_type or 'text/html')
-        return r
+        page = ZPTPage()
+        # We cannot communicate an encoding via FTP. Zope's default is UTF-8,
+        # so use it.
+        page.setSource(data.decode('UTF-8'), content_type or 'text/html')
+        return page
 
 class ZPTSourceView:
 

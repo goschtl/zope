@@ -72,8 +72,8 @@ class SQLExpr:
             vvals.append(v)
 
         if econtext.vars.has_key('sql_conn'):
-            # XXX: It is hard set that the connection name variable is called
-            # 'sql_conn'
+            # TODO: It is hard-coded that the connection name variable is called
+            # 'sql_conn'. We should find a better solution.
             conn_name = econtext.vars['sql_conn']
             connection_service = getService("SQLDatabaseConnections",
                                             econtext.context)

@@ -72,7 +72,7 @@ class NullPUT(object):
         if factory is None:
             factory = IFileFactory(container)
 
-        # XXX Need to add support for large files
+        # TODO: Need to add support for large files
         data = body.read()
 
         newfile = factory(name, request.getHeader('content-type', ''), data)
@@ -104,7 +104,7 @@ class FilePUT(object):
         file = self.context
         adapter = IWriteFile(file)
 
-        # XXX Need to add support for large files
+        # TODO: Need to add support for large files
         data = body.read()
 
         adapter.write(data)

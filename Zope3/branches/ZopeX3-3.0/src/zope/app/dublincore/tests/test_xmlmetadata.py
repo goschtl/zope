@@ -15,14 +15,10 @@
 
 $Id$
 """
-
 import unittest
 
 from zope.app.dublincore import dcterms
 from zope.app.dublincore.xmlmetadata import dumpString, parseString
-
-
-# XXX still need tests for the serializer
 
 
 class XMLDublinCoreLoadingTests(unittest.TestCase):

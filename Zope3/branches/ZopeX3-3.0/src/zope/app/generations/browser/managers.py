@@ -30,7 +30,7 @@ class Managers:
         self.request = request
 
     def _getdb(self):
-        # XXX There needs to be a better api for this
+        # TODO: There needs to be a better api for this
         return self.request.publication.db
 
     def evolve(self):

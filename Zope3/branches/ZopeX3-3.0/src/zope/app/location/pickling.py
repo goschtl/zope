@@ -70,7 +70,7 @@ def locationCopy(loc):
     persistent = CopyPersistent(loc)
 
     # Pickle the object to a temporary file
-    pickler = cPickle.Pickler(tmp, 1) # XXX disable until Python 2.3.4 
+    pickler = cPickle.Pickler(tmp, 1)
     pickler.persistent_id = persistent.id
     pickler.dump(loc)
 

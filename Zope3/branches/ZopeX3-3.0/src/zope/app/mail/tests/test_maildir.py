@@ -212,7 +212,7 @@ class TestMaildir(unittest.TestCase):
         writer = MaildirMessageWriter(filename1, filename2)
         # writer._fd should be a FakeFile instance because we stubbed open()
         self.assertEquals(writer._fd._filename, filename1)
-        self.assertEquals(writer._fd._mode, 'w')  # XXX or 'wb'?
+        self.assertEquals(writer._fd._mode, 'w')  # TODO or 'wb'?
         print >> writer, 'fee',
         writer.write(' fie')
         writer.writelines([' foe', ' foo'])

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Local ZPT Templates.
+
 $Id$
 """
 from unittest import TestCase, TestSuite, makeSuite
@@ -22,7 +23,7 @@ from zope.app.publisher.browser import BrowserView
 
 class Test(TestCase):
 
-    # XXX We need tests for the template class itself and for the
+    # TODO: We need tests for the template class itself and for the
     # SearchableText adapter.
 
     def test_ReadFile(self):

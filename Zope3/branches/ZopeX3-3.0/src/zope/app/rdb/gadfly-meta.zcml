@@ -4,10 +4,8 @@
 
   <meta:directive 
       namespace="http://namespaces.zope.org/rdb"
-      name="provideConnection" 
-      schema=".metadirectives.IProvideConnectionDirective"
-      handler=".metaconfigure.connectionhandler" />
-
-  <include file="gadfly-meta.zcml" />
+      name="gadflyRoot" 
+      schema=".gadflymeta.IGadflyRoot"
+      handler=".gadflymeta.gadflyRootHandler" />
 
 </configure>

@@ -522,13 +522,13 @@ init_zope_interface_coptimizations(void)
   
         
   /* Initialize types: */
-  SpecType.tp_new = PyType_GenericNew;
+  SpecType.tp_new = PyBaseObject_Type.tp_new;
   if (PyType_Ready(&SpecType) < 0)
     return;
-  OSDType.tp_new = PyType_GenericNew;
+  OSDType.tp_new = PyBaseObject_Type.tp_new;
   if (PyType_Ready(&OSDType) < 0)
     return;
-  CPBType.tp_new = PyType_GenericNew;
+  CPBType.tp_new = PyBaseObject_Type.tp_new;
   if (PyType_Ready(&CPBType) < 0)
     return;
   

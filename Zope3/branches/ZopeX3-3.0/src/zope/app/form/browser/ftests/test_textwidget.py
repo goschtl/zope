@@ -113,11 +113,14 @@ class Test(BrowserTestCase):
         # submit invalud type for text line
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.s1' : 123 }) # not unicode
+            'field.s1' : '' }) # not unicode (but automatically converted to it.
         self.assertEqual(response.getStatus(), 200)
-        
-        object = traverse(self.getRootFolder(), 'test')
-        self.assert_(object.s1, u'123')
+
+        # We don't have a invalid field value
+        #since we convert the value to unicode
+        self.assert_(not validationErrorExists(
+            's1', 'Object is of wrong type.', response.getBody()))
+
 
     def test_missing_value(self):
         self.getRootFolder()['test'] = TextLineTest()

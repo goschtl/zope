@@ -85,7 +85,7 @@ class IAfterRelevantDataChangeEvent(IRelevantDataChangeEvent):
 
 class IState(Interface):
     """Interface for state of a stateful workflow process definition."""
-    # XXX Should at least have a title, if not a value as well
+    # TODO: Should at least have a title, if not a value as well
 
 class IStatefulStatesContainer(IProcessDefinitionElementContainer):
     """Container that stores States."""
@@ -189,7 +189,6 @@ class IStatefulProcessDefinition(IProcessDefinition):
     def getTransitionNames():
         """Get the transition names."""
 
-    # XXX Temporarily till we find a better solution
     def clear():
         """Clear the whole ProcessDefinition."""
 

@@ -162,55 +162,6 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         service = getService('test_service', self.folder1)
         self.assertEqual(service, ts)
 
-    def donttest_resolve(self):
-        # XXX This test expects that the local module implementation
-        # (the Manager class) to register itself.  This is no longer
-        # intentional behavior; the right tests need to be determined.
-        from zope.app.services.module import Manager
-        import zope.app.services.tests.sample1
-        import zope.app.services.tests.sample2
-
-        sm = self.makeSite()
-
-        default = contained(sm['default'], self.rootFolder, name='default')
-        default['m1'] = Manager('zope.app.services.tests.sample1',
-                                'x = "root m1"\n')
-        manager = contained(default['m1'], default, name='m1')
-        manager.execute()
-        default['m2'] = Manager('XXX.ZZZ', 'x = "root m2"\nZZZ = 42\n')
-        manager = contained(default['m2'], default, name='m2')
-        manager.execute()
-
-        self.folder1.setSiteManager(ServiceManager(self.folder1))
-        sm2 = getServices(self.folder1)
-        default = contained(sm2['default'], self.folder1, name='default')
-        default['m1'] = Manager('zope.app.services.tests.sample1',
-                                'x = "folder1 m1 1"')
-        manager = contained(default['m1'], default, name='m1')
-        manager.execute()
-
-        self.assertEqual(
-          sm2.resolve("zope.app.services.tests.sample1.x"),
-          "folder1 m1 1")
-        self.assertEqual(
-          sm.resolve("zope.app.services.tests.sample1.x"),
-          "root m1")
-
-        self.assertEqual(
-          sm2.resolve("zope.app.services.tests.sample2.y"),
-          "sample 2")
-        self.assertEqual(
-          sm.resolve("zope.app.services.tests.sample2.y"),
-          "sample 2")
-
-        self.assertEqual(sm.resolve("XXX.ZZZ.ZZZ"), 42)
-        self.assertEqual(sm.resolve("XXX.ZZZ."), 42)
-        self.assertEqual(sm.resolve("XXX.ZZZ.x"), "root m2")
-
-        self.assertEqual(sm2.resolve("XXX.ZZZ.ZZZ"), 42)
-        self.assertEqual(sm2.resolve("XXX.ZZZ."), 42)
-        self.assertEqual(sm2.resolve("XXX.ZZZ.x"), "root m2")
-
     def test_site_manager_connections(self):
         root = self.rootFolder
         mr = root.getSiteManager()

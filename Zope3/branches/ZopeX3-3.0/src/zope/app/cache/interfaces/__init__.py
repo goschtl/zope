@@ -15,31 +15,17 @@
 
 $Id$
 """
-from zope.component.exceptions import ComponentLookupError  
 from zope.interface import Interface
-from zope.schema import TextLine
-
-from zope.app import zapi
-
-class CacheName(TextLine):
-    """Cache Name"""
-
-    def __allowed(self):
-        """Note that this method works only if the Field is context wrapped.
-        """
-        names = [name for name, util in zapi.getUtilitiesFor(ICache)]
-        return names + ['']
-
-    allowed_values = property(__allowed)
-
+from zope.schema import Choice
 
 class ICacheable(Interface):
     """Object that can be associated with a cache manager."""
 
-    cacheId = CacheName(
+    cacheId = Choice(
         title=u"Cache Name",
         description=u"The name of the cache used for this object.",
-        required=True)
+        required=True,
+        vocabulary="Cache Names")
 
     def getCacheId():
         """Gets the associated cache manager ID."""

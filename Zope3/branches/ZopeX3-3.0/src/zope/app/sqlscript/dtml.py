@@ -90,7 +90,7 @@ class SQLTest:
         for v in v:
             if not v and isinstance(v, StringTypes) and t != 'string':
                 continue
-            # XXX Ahh, the code from DT_SQLVar is duplicated here!!!
+            # TODO: Ahh, the code from DT_SQLVar is duplicated here!!!
             if t == 'int':
                 try:
                     if isinstance(v, StringTypes):
@@ -229,7 +229,7 @@ class SQLVar:
                 raise
             raise MissingInput, 'Missing input variable, **%s**' %name
 
-        # XXX Shrug, should these tyoes be really hard coded? What about
+        # TODO: Shrug, should these tyoes be really hard coded? What about
         # Dates and other types a DB supports; I think we should make this
         # a plugin.
         if t == 'int':

@@ -188,7 +188,7 @@ class DublinCoreHandler(PrefixManager, xml.sax.handler.ContentHandler):
 
     def startElementNS(self, name, qname, attrs):
         self.buffer = u""
-        # XXX need convert element to metadata element name
+        # TODO: need convert element to metadata element name
         dcelem = validator = None
         if name in dcterms.element_to_name:
             dcelem = dcterms.element_to_name[name]

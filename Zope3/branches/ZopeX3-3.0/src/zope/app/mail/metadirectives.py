@@ -17,7 +17,7 @@ $Id$
 """
 from zope.configuration.fields import Path
 from zope.interface import Interface
-from zope.schema import TextLine, Bytes, ASCII, BytesLine, Int
+from zope.schema import TextLine, ASCII, BytesLine, Int
 from zope.app.security.fields import Permission
 
 class IDeliveryDirective(Interface):

@@ -132,14 +132,14 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
                                          LocalPresentationService())
 
     def test_defaultSkin(self):
-        # XXX we don't let people set the default skin locally yet.
+        # We don't let people set the default skin locally yet.
         # So just test that we can get the default from the global service
         zapi.getGlobalService(Presentation).defineSkin('bob', ['default'])
         zapi.getGlobalService(Presentation).setDefaultSkin('bob')
         self.assertEqual(self._service.defaultSkin, 'bob')
 
     def test_querySkin(self):
-        # XXX we don't let people define skins locally yet.
+        # We don't let people define skins locally yet.
         # So just test that we can get the defs from the global service
         globalService = zapi.getGlobalService(Presentation)
         globalService.defineLayer('bob')
@@ -147,7 +147,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         self.assertEqual(self._service.querySkin('bob'), ('bob', 'default'))
         
     def test_queryLayer(self):
-        # XXX we don't let people define layers locally yet.
+        # We don't let people define layers locally yet.
         # So just test that we can get the them from the global service
         globalService = zapi.getGlobalService(Presentation)
         layer = self._service.queryLayer('default')
@@ -157,7 +157,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         self.assertEqual(layer.__parent__, self._service)
 
     def test_queryDefaultViewName(self):
-        # XXX we don't let people define the default view name locally
+        # We don't let people define the default view name locally
         # yet.  So just test that we can get it from the global
         # service
         class O:
@@ -172,7 +172,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
                          'foo.html')
 
     def test_queryMultiView(self):
-        # XXX that we don't let people define multiviews locally yet.
+        # We don't let people define multiviews locally yet.
         # So just test that we can get them from the global service
         class X:
             implements(I1)
@@ -200,7 +200,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         
 
     def test_queryResource(self):
-        # XXX that we don't let people define resources locally yet.
+        # We don't let people define resources locally yet.
         # So just test that we can get them from the global service
 
         r = TestRequest()

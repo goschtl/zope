@@ -11,7 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Stateful workflow process definition.
 
 $Id$
@@ -45,7 +44,7 @@ class IDummyDataSchema(Interface):
     text = TextLine(title=u'a text', default=u'no text')
     
 
-# XXX Tests missing for:
+# TODO: Tests missing for:
 # State Class/Interface
 # Transition Class/Interface
 

@@ -324,12 +324,12 @@ class AdapterRegistration(
 
     serviceType = zapi.servicenames.Adapters
 
-    with = () # XXX Don't support multi-adapters yet
+    with = () # Don't support multi-adapters yet
 
-    # XXX These should be positional arguments, except that required
-    #     isn't passed in if it is omitted. To fix this, we need a
-    #     required=False,explicitly_unrequired=True in the schema field
-    #     so None will get passed in.
+    # TODO: These should be positional arguments, except that required
+    #       isn't passed in if it is omitted. To fix this, we need a
+    #       required=False,explicitly_unrequired=True in the schema field
+    #       so None will get passed in.
     def __init__(self, provided, factoryName,
                  name='', required=None, permission=None):
         self.required = required

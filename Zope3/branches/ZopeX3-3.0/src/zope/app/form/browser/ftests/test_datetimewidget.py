@@ -126,7 +126,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
 
         self.assertEqual(object.d1, d1)
         self.assertEqual(object.d2, d2)
@@ -147,7 +146,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assert_(object.d2 is None) # default missing_value for dates
         # 2000-1-1 is missing_value for d3
         self.assertEqual(object.d3, datetime(2000, 1, 1, tzinfo=tzinfo(0)))
@@ -225,7 +223,6 @@ class Test(BrowserTestCase):
 
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.d1, d1)
         self.assert_(object.d2 is None)
         self.assertEqual(object.d3, d3)

@@ -332,12 +332,13 @@ class ZopeConnection:
 def queryForResults(conn, query):
     """Convenience function to quickly execute a query."""
 
-    # XXX need to do typing
     cursor = conn.cursor()
 
     try:
         cursor.execute(query)
-    except Exception, error:  # XXX This looks a bit yucky.
+    except Exception, error:
+        # Just catch the exception, so that we can convert it to a database
+        # exception.
         raise DatabaseException(str(error))
 
     if cursor.description is not None:
