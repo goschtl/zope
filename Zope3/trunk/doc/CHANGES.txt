@@ -10,6 +10,19 @@ Zope Changes
 
     New features
 
+      - Added pagelet concept. Pagelets are responsible for a piece 
+        of content in a view. They can be used to render additionaly 
+        provided information into a pagetemplate.
+
+        + Added tal expression 'pagelet'
+
+        + Added tal expression 'pagelets'
+
+        + Added tal expression 'pagedata'
+        
+      - Added pagelet chooser for store pagelet name in the annotation
+        of a object.
+
       - Allow the <widget> subdirective to be used without specifying
         a "class" attribute.  This allows overriding some attributes
         for the default widget implementation without having to
@@ -197,7 +210,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
-      Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider
+      Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.

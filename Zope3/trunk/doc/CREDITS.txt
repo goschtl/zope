@@ -555,8 +555,10 @@ Contributors
 
   Made improvements to and helped create documentation for the on-line
   help system.
-  
+
   Bug fixes on widget and views.
+
+  Added the pagelet framework
 
 - Benjamin Saller
 
