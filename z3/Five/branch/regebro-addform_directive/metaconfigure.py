@@ -14,6 +14,8 @@ from types import ModuleType
 
 from zope.interface import classImplements
 from zope.configuration.exceptions import ConfigurationError
+from zope.component.factory import Factory
+from zope.app.component.metaconfigure import factory
 
 from security import CheckerPublic
 from security import protectName, initializeClass
@@ -80,3 +82,16 @@ class ContentDirective:
             callable = initializeClass,
             args = (self.__class,)
             )
+
+    def factory(self, _context, id=None, title="", description=''):
+        """Register a zmi factory for this class"""
+
+        id = id or self.__id
+        factoryObj = Factory(self.__class, title, description)
+
+        # note factories are all in one pile, services and content,
+        # so addable names must also act as if they were all in the
+        # same namespace, despite the service/content division
+        factory(_context, factoryObj, id, title, description)
+
+

@@ -13,7 +13,7 @@ namespace in ZCML known from zope.app.
 
 $Id$
 """
-import os
+import os, sys
 
 from zope.interface import Interface
 from zope.component import getGlobalService, ComponentLookupError
@@ -25,12 +25,13 @@ from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
+from zope.app.container.interfaces import IAdding
 from zope.app.form.browser.metaconfigure import BaseFormDirective
 
 from resource import FileResourceFactory, ImageResourceFactory
 from resource import PageTemplateResourceFactory
 from resource import DirectoryResourceFactory
-from browser import BrowserView, EditView
+from browser import BrowserView, EditView, AddView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
 from globalbrowsermenuservice import menuItemDirective
@@ -373,6 +374,129 @@ class EditFormDirective(BaseFormDirective):
             args=self._args(),
             kw={'menu': self.menu},
         )
+
+
+def AddViewFactory(name, schema, label, permission, layer,
+                   template, default_template, bases, for_,
+                   fields, content_factory, arguments,
+                   keyword_arguments, set_before_add, set_after_add,
+                   menu=u''):
+
+    s = getGlobalService(Presentation)
+    class_ = makeClassForTemplate(template, used_for=schema, bases=bases)
+
+    class_.schema = schema
+    class_.label = label
+    class_.fieldNames = fields
+    class_._factory = content_factory
+    class_._arguments = arguments
+    class_._keyword_arguments = keyword_arguments
+    class_._set_before_add = set_before_add
+    class_._set_after_add = set_after_add
+
+    class_.generated_form = ViewPageTemplateFile(default_template)
+
+#     defineChecker(class_,
+#                   NamesChecker(
+#                     ("__call__", "__getitem__",
+#                      "browserDefault", "publishTraverse"),
+#                     permission,
+#                     )
+#                   )
+
+    s.provideView(for_, name, IBrowserRequest, class_, layer)
+
+class AddFormDirective(BaseFormDirective):
+
+    view = AddView
+    default_template = 'add.pt'
+    for_ = IAdding
+
+    # default add form information
+    description = None
+    content_factory = None
+    arguments = None
+    keyword_arguments = None
+    set_before_add = None
+    set_after_add = None
+
+    def _handle_menu(self):
+        if self.menu or self.title:
+            if (not self.menu) or (not self.title):
+                raise ValueError("If either menu or title are specified, "
+                                 "they must both be specified")
+            # Add forms are really for IAdding components, so do not use
+            # for=self.schema.
+            menuItemDirective(
+                self._context, self.menu, self.for_, '@@' + self.name,
+                self.title, permission=self.permission,
+                description=self.description)
+
+    def _handle_arguments(self, leftover=None):
+        schema = self.schema
+        fields = self.fields
+        arguments = self.arguments
+        keyword_arguments = self.keyword_arguments
+        set_before_add = self.set_before_add
+        set_after_add = self.set_after_add
+
+        if leftover is None:
+            leftover = fields
+
+        if arguments:
+            missing = [n for n in arguments if n not in fields]
+            if missing:
+                raise ValueError("Some arguments are not included in the form",
+                                 missing)
+            optional = [n for n in arguments if not schema[n].required]
+            if optional:
+                raise ValueError("Some arguments are optional, use"
+                                 " keyword_arguments for them",
+                                 optional)
+            leftover = [n for n in leftover if n not in arguments]
+
+        if keyword_arguments:
+            missing = [n for n in keyword_arguments if n not in fields]
+            if missing:
+                raise ValueError(
+                    "Some keyword_arguments are not included in the form",
+                    missing)
+            leftover = [n for n in leftover if n not in keyword_arguments]
+
+        if set_before_add:
+            missing = [n for n in set_before_add if n not in fields]
+            if missing:
+                raise ValueError(
+                    "Some set_before_add are not included in the form",
+                    missing)
+            leftover = [n for n in leftover if n not in set_before_add]
+
+        if set_after_add:
+            missing = [n for n in set_after_add if n not in fields]
+            if missing:
+                raise ValueError(
+                    "Some set_after_add are not included in the form",
+                    missing)
+            leftover = [n for n in leftover if n not in set_after_add]
+
+            self.set_after_add += leftover
+
+        else:
+            self.set_after_add = leftover
+
+    def __call__(self):
+        self._processWidgets()
+        self._handle_menu()
+        self._handle_arguments()
+
+        self._context.action(
+            discriminator=self._discriminator(),
+            callable=AddViewFactory,
+            args=self._args()+(self.content_factory, self.arguments,
+                                 self.keyword_arguments,
+                                 self.set_before_add, self.set_after_add),
+            kw={'menu': self.menu},
+            )
 
 #
 # mixin classes / class factories

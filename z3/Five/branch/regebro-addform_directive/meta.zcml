@@ -79,7 +79,18 @@
           schema="zope.app.component.metadirectives.IAllowSubdirective"
           />
 
+      <meta:subdirective
+          name="factory"
+          schema="zope.app.component.metadirectives.IFactorySubdirective"
+          />
+
     </meta:complexDirective>
+
+    <meta:directive
+        name="factory"
+        schema="zope.app.component.metadirectives.IFactoryDirective"
+        handler="zope.app.component.metaconfigure.factory"
+        />
 
   </meta:directives>
 
@@ -170,6 +181,19 @@
         name="editform"
         schema="zope.app.form.browser.metadirectives.IEditFormDirective"
         handler=".browserconfigure.EditFormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
+    <meta:complexDirective
+        name="addform"
+        schema="zope.app.form.browser.metadirectives.IAddFormDirective"
+        handler=".browserconfigure.AddFormDirective"
         >
 
       <meta:subdirective

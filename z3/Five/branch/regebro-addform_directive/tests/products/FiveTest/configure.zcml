@@ -293,6 +293,12 @@
       permission="zope2.Public"
       />
 
+  <browser:addform
+      schema=".interfaces.IFieldSimpleContent"
+      for=".interfaces.IFieldSimpleContent"
+      name="add.html"
+      permission="zope2.Public"
+      />
   <!-- stuff that we'll override in overrides.zcml -->
 
   <browser:page
