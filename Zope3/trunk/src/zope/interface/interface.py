@@ -14,7 +14,7 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.16 2003/12/01 16:19:33 jim Exp $
+$Id: interface.py,v 1.17 2004/01/20 21:17:41 poster Exp $
 """
 
 from __future__ import generators
@@ -22,9 +22,21 @@ import sys
 import weakref
 from types import FunctionType
 from ro import ro
+from zope.interface.exceptions import Invalid
 
 CO_VARARGS = 4
 CO_VARKEYWORDS = 8
+TAGGED_DATA = '__interface_tagged_values__'
+
+def invariant(call):
+    f_locals = sys._getframe(1).f_locals
+    tags = f_locals.get(TAGGED_DATA)
+    if tags is None:
+        tags = f_locals[TAGGED_DATA] = {}
+    invariants = tags.get('invariants')
+    if invariants is None:
+        invariants = tags['invariants'] = []
+    invariants.append(call)
 
 class Element(object):
 
@@ -369,6 +381,11 @@ class InterfaceClass(Element, Specification):
             __doc__ = ''
 
         Element.__init__(self, name, __doc__)
+        
+        tagged_data = attrs.pop(TAGGED_DATA, None)
+        if tagged_data is not None:
+            for key, val in tagged_data.items():
+                self.setTaggedValue(key, val)
 
         for b in bases:
             if not isinstance(b, InterfaceClass):
@@ -490,6 +507,21 @@ class InterfaceClass(Element, Specification):
         self._deferred=klass
 
         return klass
+
+    def validateInvariants(self, obj, errors=None):
+        """validate object to defined invariants."""
+        for call in self.queryTaggedValue('invariants', []):
+            try:
+                call(obj)
+            except Invalid, e:
+                if errors is None:
+                    raise
+                else:
+                    errors.append(e)
+        for base in self.__bases__:
+            base.validateInvariants(obj, errors)
+        if errors:
+            raise Invalid(errors)
 
     def _getInterface(self, ob, name):
         """Retrieve a named interface."""

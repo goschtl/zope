@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.19 2004/01/05 08:07:28 philikon Exp $
+$Id: interfaces.py,v 1.20 2004/01/20 21:17:41 poster Exp $
 """
 
 from zope.interface import Interface
@@ -246,6 +246,12 @@ class IInterface(ISpecification, IElement):
         If the named attribute is not defined, the default is
         returned.
         """
+    
+    def validateInvariants(obj, errors=None):
+        """validate object to defined invariants.  If errors is None,
+        raises first Invalid error; if errors is a list, appends all errors
+        to list, then raises Invalid with the errors as the first element
+        of the "args" tuple."""
 
     def get(name, default=None):
         """Look up the description for a name
