@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+    - The ZCML zope:adapter and zope:view directives now support
+      multiple for interfaces, thus defining multi-adapters and
+      multi-views.
+
     - Added broken-object support.  If an object can't be loaded from
       the database because it's class has been removed or moved, then
       a placeholder "broken" object is loaded instead.  This allows
@@ -210,6 +214,21 @@ Zope Changes
       'utilities' directory
 
     - Moved placefulsetup to zope.app.site.tests.
+
+    - Changed the way that adapters and views are registered:
+
+      o Simplified adapter registries with a simpler, more general api
+        and without factory semantics.
+
+      o Updated the adapter and presentation service registration apis
+        based on changes in the adapter registries.
+
+      o The adapter service and presentation services no longer take
+        sequences of factories.  ZCML directives are now responsible
+        for supporting multiple factories (chained adapters) in the
+        rare cases when they are used by computing composite
+        factories.
+
 
     Miscellaneous
 
