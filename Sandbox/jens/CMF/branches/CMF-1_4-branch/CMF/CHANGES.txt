@@ -2,6 +2,9 @@ Post CMF 1.4.7
 
   Bug Fixes
 
+    - DCWorkflow.DCWorkflow:  include transition ID in the dict for
+      workflow actions (http://zope.org/Collectors/CMF/308).
+
     - CMFCore.CatalogTool: Take into account query restrictions on
       'effective' or 'expires' attributes during a search.
       (http://zope.org/Collectors/CMF/120)
