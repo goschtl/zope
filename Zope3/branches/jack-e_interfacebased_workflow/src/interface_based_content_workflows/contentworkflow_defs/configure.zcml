@@ -1,0 +1,43 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+  <!-- content workflow -->
+
+  <adapter
+      factory="zope.app.workflow.stateful.instance.StatefulPIAdapter"
+      provides="zope.app.workflow.stateful.interfaces.IStatefulPIAdapter"
+      for=".interfaces.IContentWorkflowDefinition"
+      trusted="true"
+      permission="zope.Public"
+   />
+
+
+  <interface
+      interface=".interfaces.IContentWorkflowDefinition"
+      />
+
+  <!-- content workflow states -->
+
+  <interface
+      interface=".interfaces.IStateContentWorkflowPrivate"
+      />
+
+  <interface
+      interface=".interfaces.IStateContentWorkflowPending"
+      />
+
+  <interface
+      interface=".interfaces.IStateContentWorkflowPublished"
+      />
+
+<!--
+  <include package=".setup" />
+
+-->
+
+ <include package=".browser" />
+
+</configure>

@@ -1,0 +1,35 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+<!-- Roles -->
+
+<role
+    id="workflow.Reviewer"
+    title="Content Reviewer"
+    description="Users that actually can review content"
+    />
+
+<!-- Permissions -->
+
+<permission
+    id="workflow.ReviewContent"
+    title="Review content"
+    description="Reviewing content allows to publish content"
+    />
+
+<permission
+    id="workflow.RetractContent"
+    title="Retract content"
+    description="Retract content allows to retract content"
+    />
+
+<grant
+    permission="workflow.ReviewContent"
+    role="workflow.Reviewer"
+    />
+
+<include package=".contentworkflow_defs" />
+
+</configure>

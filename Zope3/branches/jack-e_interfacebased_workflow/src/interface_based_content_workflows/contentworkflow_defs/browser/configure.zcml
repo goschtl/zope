@@ -1,0 +1,88 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+   <!-- Private state actions -->
+   <browser:page
+       name="wf_submit.html"
+       for="..interfaces.IStateContentWorkflowPrivate"
+       template="content_wf_submit.pt"
+       menu="zmi_views" title="Make public"
+       permission="zope.View"
+       />
+
+   <!-- Pending state actions -->
+
+   <browser:page
+       name="wf_retract.html"
+       for="..interfaces.IStateContentWorkflowPending"
+       template="content_wf_retract.pt"
+       menu="zmi_views" title="Retract"
+       permission="zope.View"
+       />
+
+   <browser:page
+       name="wf_publish.html"
+       for="..interfaces.IStateContentWorkflowPending"
+       template="content_wf_publish.pt"
+       menu="zmi_views" title="Publish"
+       permission="zope.ManageContent"
+       />
+
+   <browser:page
+       name="wf_reject.html"
+       for="..interfaces.IStateContentWorkflowPending"
+       template="content_wf_reject.pt"
+       menu="zmi_views" title="Reject"
+       permission="zope.ManageContent"
+       />
+
+   <!-- Publish actions -->
+
+   <browser:page
+       name="wf_unpublish.html"
+       for="..interfaces.IStateContentWorkflowPublished"
+       template="content_wf_unpublish.pt"
+       menu="zmi_views" title="Un Publish"
+       permission="zope.ManageContent"
+       />
+
+   <!-- Transition change -->
+
+   <browser:page
+       name="transition_change.py"
+       for="..interfaces.IContentWorkflowDefinition"
+       class="zope.app.workflow.stateful.browser.transitionchangeform.TransitionChangeForm"
+       attribute="sendTransitionUserTriggeredEvent"
+       permission="zope.View"
+       />
+
+   <!-- Status -->
+
+   <browser:page
+       name="content_status.html"
+       for="..interfaces.IStateContentWorkflowPublished"
+       template="content_wf_status.pt"
+       menu="zmi_views" title="Status"
+       permission="zope.View"
+       />
+
+   <browser:page
+       name="content_status.html"
+       for="..interfaces.IStateContentWorkflowPending"
+       template="content_wf_status.pt"
+       menu="zmi_views" title="Status"
+       permission="zope.View"
+       />
+
+   <browser:page
+       name="content_status.html"
+       for="..interfaces.IStateContentWorkflowPrivate"
+       template="content_wf_status.pt"
+       menu="zmi_views" title="Status"
+       permission="zope.View"
+       />
+
+</configure>

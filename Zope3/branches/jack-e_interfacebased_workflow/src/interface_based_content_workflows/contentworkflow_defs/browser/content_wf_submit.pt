@@ -1,0 +1,28 @@
+<html metal:use-macro='context/@@standard_macros/view'
+      i18n:domain='zope'>
+<body>
+<div metal:fill-slot='body'>
+<h1>Publish your content</h1>
+<form action='transition_change.py' method='POST'>
+<table>
+ <tr>
+  <td i18n:translate=''>
+    Comments :
+  </td>
+  <td>
+    <textarea name="comment"></textarea>
+  </td>
+ </tr>
+ <tr>
+  <td colspan='2'>
+    <input type="hidden" name="transition" value="submit" />
+    <input type='submit' value='Submit'/>
+  </td>
+ </tr>
+</table>
+</form>
+
+<br/>
+</div>
+</body>
+</html>
