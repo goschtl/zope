@@ -1,83 +1,81 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   package="Zope.App.OFS.Content.File"
->
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Content.File">
 
-  <!-- File View Directives -->
+<!-- File View Directives -->
 
-  <browser:view
-      name="view"
-      for=".IFile."
-      permission="Zope.View"
-      factory=".Views.Browser.FileView." />
+<browser:defaultView for=".IFile." name="view" />
 
-  <browser:defaultView
-      for=".IFile."
-      name="view" />
+<browser:view
+    name="view"
+    for=".IFile."
+    permission="Zope.View"
+    factory=".Views.Browser.FileView." />
 
-  <browser:view
-      for=".IFile."
-      permission="Zope.View"
-      factory=".Views.Browser.FileEdit.">
+<browser:view
+    for=".IFile."
+    permission="Zope.View"
+    factory=".Views.Browser.FileEdit.">
 
-    <browser:page name="editForm.html" attribute="index" />
-    <browser:page name="edit.html" attribute="action" />
-  </browser:view>
+  <browser:page name="editForm.html" attribute="index" />
+  <browser:page name="edit.html" attribute="action" />
 
-  <browser:view
-      name="view"
-      for=".I18nFile.II18nFile."
-      permission="Zope.View"
-      factory=".Views.Browser.I18nFileView." />
+</browser:view>
 
-  <browser:view
-      for="Zope.App.OFS.Content.File.I18nFile.II18nFile."
-      permission="Zope.View"
-      factory=".Views.Browser.I18nFileEdit.">
+<browser:view
+    name="view"
+    for=".I18nFile.II18nFile."
+    permission="Zope.View"
+    factory=".Views.Browser.I18nFileView." />
 
-    <browser:page name="editForm.html" template="Views/Browser/i18n_edit.pt" />
-    <browser:page name="edit.html" attribute="action" />
-  </browser:view>
+<browser:view
+    for="Zope.App.OFS.Content.File.I18nFile.II18nFile."
+    permission="Zope.View"
+    factory=".Views.Browser.I18nFileEdit.">
 
+  <browser:page name="editForm.html" template="Views/Browser/i18n_edit.pt" />
+  <browser:page name="edit.html" attribute="action" />
 
-  <!-- Registering all the field views for the browser -->
-
-  <browser:view
-      name="DataFieldView"
-      for=".IFile."
-      factory=".FileFields.DataField. 
-               Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
-
-  <browser:view
-      name="ContentTypeFieldView"
-      for=".IFile."
-      factory=".FileFields.ContentTypeField. 
-               Zope.App.Formulator.Widgets.Browser.TextWidget." />
-
-  <browser:menuItems menu="zmi_views" for=".IFile.">
-    <browser:menuItem title="View" action="."/>
-    <browser:menuItem title="Edit" action="editForm.html"/>
-    <!-- <browser:menuItem title="Role Permissions" 
-             action="AllRolePermissions.html"/> -->
-  </browser:menuItems>
-
-  <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Container.IAdding."
-                    title="File" action="File"
-		    description="A file object, suitable for large data." />
-
-  <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Container.IAdding."
-                    title="I18n File" action="I18nFile"
-		    description="A file that supports multiple locales." />
- 
-  <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Container.IAdding."
-                    title="Naive File" action="NaiveFile" 
-		    description="A simple, non-scalable file." />
+</browser:view>
 
 
-  <browser:icon name="zmi_icon" for=".IFile." file="File_icon.gif" />
+<!-- Registering all the field views for the browser -->
+
+<browser:view
+    name="DataFieldView"
+    for=".IFile."
+    factory=".FileFields.DataField. 
+             Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
+
+<browser:view
+    name="ContentTypeFieldView"
+    for=".IFile."
+    factory=".FileFields.ContentTypeField. 
+             Zope.App.Formulator.Widgets.Browser.TextWidget." />
+
+<browser:menuItems menu="zmi_views" for=".IFile.">
+  <browser:menuItem title="View" action="."/>
+  <browser:menuItem title="Edit" action="editForm.html"/>
+  <!-- <browser:menuItem title="Role Permissions" 
+           action="AllRolePermissions.html"/> -->
+</browser:menuItems>
+
+<browser:menuItem menu="add_content"
+  for="Zope.App.OFS.Container.IAdding."
+  title="File" action="File"
+  description="A file object, suitable for large data." />
+
+<browser:menuItem menu="add_content"
+  for="Zope.App.OFS.Container.IAdding."
+  title="I18n File" action="I18nFile"
+  description="A file that supports multiple locales." />
+
+<browser:menuItem menu="add_content"
+  for="Zope.App.OFS.Container.IAdding."
+  title="Naive File" action="NaiveFile" 
+  description="A simple, non-scalable file." />
+
+<browser:icon name="zmi_icon" for=".IFile." file="File_icon.gif" />
 
 </zopeConfigure>

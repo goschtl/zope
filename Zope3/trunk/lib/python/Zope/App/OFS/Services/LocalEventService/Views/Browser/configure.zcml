@@ -1,23 +1,21 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
->
-  <browser:defaultView 
-      name="control.html"
-      for="Zope.Event.IEventService+"
-      permission="Zope.ManageServices" 
-      factory=".Control." />
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
 
-  <browser:menuItems menu="zmi_views" for="Zope.Event.IEventService+">
-    <browser:menuItem title="Control" action="@@control.html" />
-  </browser:menuItems>
+<browser:defaultView 
+    name="control.html"
+    for="Zope.Event.IEventService+"
+    permission="Zope.ManageServices" 
+    factory=".Control." />
 
-  <browser:menuItem menu="add_content"
-                for="Zope.App.OFS.Services.ServiceManager.IServiceAdding."
-                title="Events" action="EventService"
-                description="Capture events from all the contents of this folder
-                and its entire nested folder structure"
-                    />
+<browser:menuItems menu="zmi_views" for="Zope.Event.IEventService+">
+  <browser:menuItem title="Control" action="@@control.html" />
+</browser:menuItems>
+
+<browser:menuItem menu="add_service" 
+    for="Zope.App.OFS.Container.IAdding."
+    action="Events"  title="Event Service"
+    description="An event service: use sparingly" />
 
 </zopeConfigure>
 

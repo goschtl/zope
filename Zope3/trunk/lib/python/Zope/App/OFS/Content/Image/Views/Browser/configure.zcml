@@ -1,94 +1,85 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   package="Zope.App.OFS.Content.Image"
->
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Content.Image">
 
-  <!-- Image View Directives -->
+<!-- Image View Directives -->
 
-  <browser:view
-      name="data"
-      for=".Image.IImage."
-      permission="Zope.View"
-      allowed_attributes="__call__ tag"
-      factory=".Views.Browser.ImageData." />
+<browser:view
+    name="data"
+    for=".Image.IImage."
+    permission="Zope.View"
+    allowed_attributes="__call__ tag"
+    factory=".Views.Browser.ImageData." />
 
-  <browser:defaultView
-      for=".Image.IImage."
-      name="data" />
+<browser:defaultView for=".Image.IImage." name="data" />
 
-  <browser:view
-      for=".Image.IImage."
-      permission="Zope.ManageContent"
-      factory=".Views.Browser.ImageEdit.">
+<browser:view
+    for=".Image.IImage."
+    permission="Zope.ManageContent"
+    factory=".Views.Browser.ImageEdit.">
 
-    <browser:page
-        name="editForm.html"
-        attribute="index" />
-    <browser:page
-        name="edit.html"
-        attribute="action" />
-  </browser:view>
+  <browser:page name="editForm.html" attribute="index" />
+  <browser:page name="edit.html" attribute="action" />
 
-  <!-- Formulator directives -->
+</browser:view>
 
-  <browser:view
-      name="DataFieldView"
-      for=".Image.IImage."
-      factory=".ImageFields.DataField.
-               Zope.App.Formulator.Widgets.Browser.FileWidget." />
+<!-- Formulator directives -->
 
-  <browser:view
-      name="ContentTypeFieldView"
-      for=".Image.IImage."
-      factory=".ImageFields.ContentTypeField.
-               Zope.App.Formulator.Widgets.Browser.TextWidget." />
+<browser:view
+    name="DataFieldView"
+    for=".Image.IImage."
+    factory=".ImageFields.DataField.
+             Zope.App.Formulator.Widgets.Browser.FileWidget." />
 
-  <!-- I18n Image View Directives -->
+<browser:view
+    name="ContentTypeFieldView"
+    for=".Image.IImage."
+    factory=".ImageFields.ContentTypeField.
+             Zope.App.Formulator.Widgets.Browser.TextWidget." />
 
-  <browser:view
-      name="data"
-      for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
-      permission="Zope.View"
-      allowed_attributes="__call__ tag"
-      factory=".Views.Browser.I18nImageData." />
+<!-- I18n Image View Directives -->
 
-  <browser:defaultView
-      for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
-      name="data" />
+<browser:view
+    name="data"
+    for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+    permission="Zope.View"
+    allowed_attributes="__call__ tag"
+    factory=".Views.Browser.I18nImageData." />
 
-  <browser:view
-      for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
-      permission="Zope.ManageContent"
-      factory=".Views.Browser.I18nImageEdit.">
+<browser:defaultView
+    for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+    name="data" />
 
-    <browser:page
-        name="editForm.html"
-        template="Views/Browser/i18n_edit.pt" />
-    <browser:page
-        name="edit.html"
-        attribute="action" />
-  </browser:view>
+<browser:view
+    for="Zope.App.OFS.Content.Image.I18nImage.II18nImage"
+    permission="Zope.ManageContent"
+    factory=".Views.Browser.I18nImageEdit.">
 
-  <!-- tabs for image -->
+  <browser:page name="editForm.html" template="Views/Browser/i18n_edit.pt" />
+  <browser:page name="edit.html" attribute="action" />
 
-  <browser:menuItems menu="zmi_views" for=".Image.IImage.">
-    <browser:menuItem title="Edit" action="editForm.html"/>
-    <browser:menuItem title="View" action="."/>
-    <browser:menuItem title="Role Permissions"
-             action="AllRolePermissions.html"/>
-  </browser:menuItems>
+</browser:view>
 
-  <browser:icon name="zmi_icon" for=".Image.IImage." file="Image_icon.gif" />
+<!-- tabs for image -->
 
-  <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Container.IAdding."
-                    title="Image" action="Image"
-		    description="This object helps you manage your images." />
+<browser:menuItems menu="zmi_views" for=".Image.IImage.">
+  <browser:menuItem title="Edit" action="editForm.html"/>
+  <browser:menuItem title="View" action="."/>
+  <browser:menuItem title="Role Permissions"
+           action="AllRolePermissions.html"/>
+</browser:menuItems>
 
-  <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Container.IAdding."
-                    title="I18n Image" action="I18nImage"
-		    description="A multi-locale version of an Image." />
+<browser:icon name="zmi_icon" for=".Image.IImage." file="Image_icon.gif" />
+
+<browser:menuItem menu="add_content"
+  for="Zope.App.OFS.Container.IAdding."
+  title="Image" action="Image"
+  description="This object helps you manage your images." />
+
+<browser:menuItem menu="add_content"
+  for="Zope.App.OFS.Container.IAdding."
+  title="I18n Image" action="I18nImage"
+  description="A multi-locale version of an Image." />
 
 </zopeConfigure>

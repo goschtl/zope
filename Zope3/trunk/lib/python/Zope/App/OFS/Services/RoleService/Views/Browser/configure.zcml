@@ -3,42 +3,38 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-  <browser:defaultView 
-     for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
-     name="index.html"
-     />
+<browser:defaultView 
+   for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
+   name="index.html" />
 
-  <browser:view 
-     permission="Zope.ManageServices" 
-     for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
-     factory="Zope.App.OFS.Services.RoleService.Views.Browser.Contents.">
+<browser:view 
+    permission="Zope.ManageServices" 
+    for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
+    factory="Zope.App.OFS.Services.RoleService.Views.Browser.Contents.">
 
-     <browser:page name="index.html" attribute="index" />
+  <browser:page name="index.html" attribute="index" />
 
-  </browser:view>
+</browser:view>
 
-  <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Services.ServiceManager.IServiceAdding."
-                    title="Roles" action="RoleService"
-                    description="Add and manage roles specifically
-                    for this folder and all its contents"
-                    />
+<browser:menuItem menu="add_service"
+    for="Zope.App.OFS.Container.IAdding."
+    title="Role Service" action="RoleService"
+    description="Add and manage roles locally to this folder and its subtree." 
+/>
 
-  <browser:view 
-     permission="Zope.ManageServices" 
-     for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
-     factory="Zope.App.OFS.Services.RoleService.Views.Browser.Add."
-     >
+<browser:view 
+    permission="Zope.ManageServices" 
+    for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
+    factory="Zope.App.OFS.Services.RoleService.Views.Browser.Add.">
 
-    <browser:page name="+"        template="add.pt" />
-    <browser:page name="action.html" attribute="action" />
+  <browser:page name="+" template="add.pt" />
+  <browser:page name="action.html" attribute="action" />
 
-  </browser:view>
+</browser:view>
 
-  <browser:menuItems
-           menu="zmi_views"
-           for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService.">
-    <browser:menuItem title="Contents" action="@@index.html"/>
-  </browser:menuItems>
+<browser:menuItems menu="zmi_views"
+    for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService.">
+  <browser:menuItem title="Contents" action="@@index.html"/>
+</browser:menuItems>
 
 </zopeConfigure>

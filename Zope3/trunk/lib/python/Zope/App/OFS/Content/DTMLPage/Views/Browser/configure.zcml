@@ -1,59 +1,56 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   package="Zope.App.OFS.Content.DTMLPage"
->
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Content.DTMLPage">
 
-  <!-- DTML Page View Directives -->
+<!-- DTML Page View Directives -->
 
-  <browser:defaultView
-      name="index.html"
-      for=".DTMLPage.IDTMLPage."
-      />
+<browser:defaultView
+    name="index.html"
+    for=".DTMLPage.IDTMLPage." />
 
-  <browser:view
-      permission="Zope.View"
-      for=".DTMLPage.IDTMLPage."
-      factory=".Views.Browser.DTMLPageEval.">
-      
-      <browser:page name="index.html" attribute="index" />
-  </browser:view>
+<browser:view
+    permission="Zope.View"
+    for=".DTMLPage.IDTMLPage."
+    factory=".Views.Browser.DTMLPageEval.">
+    
+  <browser:page name="index.html" attribute="index" />
+</browser:view>
 
-  <browser:view
-      permission="Zope.ManageContent"
-      for=".DTMLPage.IDTMLPage."
-      factory=".Views.Browser.DTMLPageEdit." >
+<browser:view
+    permission="Zope.ManageContent"
+    for=".DTMLPage.IDTMLPage."
+    factory=".Views.Browser.DTMLPageEdit." >
 
-      <browser:page name="editForm.html" attribute="index" />
-      <browser:page name="edit.html" attribute="action" />
+  <browser:page name="editForm.html" attribute="index" />
+  <browser:page name="edit.html" attribute="action" />
 
-  </browser:view>
+</browser:view>
 
-  <!-- Registering all the field views for the browser -->
+<!-- Registering all the field views for the browser -->
 
-  <browser:view
-      name="SourceFieldView"
-      for=".DTMLPage.IDTMLPage."
-      factory=".DTMLPageFields.SourceField. 
-               Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
+<browser:view
+    name="SourceFieldView"
+    for=".DTMLPage.IDTMLPage."
+    factory=".DTMLPageFields.SourceField. 
+             Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
 
-  <!-- tabs for DTML Page -->
+<!-- tabs for DTML Page -->
 
-  <browser:menuItems menu="zmi_views" for=".DTMLPage.IDTMLPage.">
-    <browser:menuItem title="Edit" action="editForm.html"/>
-    <browser:menuItem title="View" action="."/>
-    <!-- XXX This isn't working
-    <browser:menuItem title="Role Permissions"
-             action="AllRolePermissions.html"/>
-    -->
-  </browser:menuItems>
+<browser:menuItems menu="zmi_views" for=".DTMLPage.IDTMLPage.">
+  <browser:menuItem title="Edit" action="editForm.html"/>
+  <browser:menuItem title="View" action="."/>
+  <!-- XXX This isn't working
+  <browser:menuItem title="Role Permissions"
+           action="AllRolePermissions.html"/>
+  -->
+</browser:menuItems>
 
-  <browser:icon name="zmi_icon" for=".DTMLPage.IDTMLPage." file="dtml.gif" />
+<browser:icon name="zmi_icon" for=".DTMLPage.IDTMLPage." file="dtml.gif" />
 
-  <browser:menuItem menu="add_content"
-      for="Zope.App.OFS.Container.IAdding."
-      title="DTML Page" action="DTMLPage"
-      description="An object for dynamic content based on Document Templates."
-  />
+<browser:menuItem menu="add_content"
+    for="Zope.App.OFS.Container.IAdding."
+    title="DTML Page" action="DTMLPage"
+    description="An object for dynamic content based on Document Templates." />
 
 </zopeConfigure>

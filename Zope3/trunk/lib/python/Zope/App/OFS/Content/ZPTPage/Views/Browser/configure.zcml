@@ -1,58 +1,57 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   package="Zope.App.OFS.Content.ZPTPage"
->
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Content.ZPTPage">
 
-  <!-- ZPT Page View Directives -->
+<!-- ZPT Page View Directives -->
 
-  <browser:defaultView
-      name="index.html"
-      for=".ZPTPage.IZPTPage."
-      />
+<browser:defaultView
+    name="index.html"
+    for=".ZPTPage.IZPTPage."
+    />
 
-  <browser:view
-      permission="Zope.View"
-      for=".ZPTPage.IZPTPage."
-      factory=".Views.Browser.ZPTPageEval.">
-      
-      <browser:page name="index.html" attribute="index" />
-  </browser:view>
+<browser:view
+    permission="Zope.View"
+    for=".ZPTPage.IZPTPage."
+    factory=".Views.Browser.ZPTPageEval.">
+    
+  <browser:page name="index.html" attribute="index" />
+</browser:view>
 
-  <browser:view
-      permission="Zope.ManageContent"
-      for=".ZPTPage.IZPTPage."
-      factory=".Views.Browser.ZPTPageEdit." >
+<browser:view
+    permission="Zope.ManageContent"
+    for=".ZPTPage.IZPTPage."
+    factory=".Views.Browser.ZPTPageEdit." >
 
-      <browser:page name="editForm.html" attribute="index" />
-      <browser:page name="edit.html" attribute="action" />
+  <browser:page name="editForm.html" attribute="index" />
+  <browser:page name="edit.html" attribute="action" />
 
-  </browser:view>
+</browser:view>
 
-  <!-- Registering all the field views for the browser -->
+<!-- Registering all the field views for the browser -->
 
-  <browser:view
-      name="SourceFieldView"
-      for=".ZPTPage.IZPTPage."
-      factory=".ZPTPageFields.SourceField. 
-               Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
+<browser:view
+    name="SourceFieldView"
+    for=".ZPTPage.IZPTPage."
+    factory=".ZPTPageFields.SourceField. 
+             Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
 
-  <!-- tabs for ZPT Page -->
+<!-- tabs for ZPT Page -->
 
-  <browser:menuItems menu="zmi_views" for=".ZPTPage.IZPTPage.">
-    <browser:menuItem title="Edit" action="editForm.html"/>
-    <browser:menuItem title="View" action="."/>
-    <!-- XXX This isn't working
-    <browser:menuItem title="Role Permissions"
-             action="AllRolePermissions.html"/>
-    -->
-  </browser:menuItems>
+<browser:menuItems menu="zmi_views" for=".ZPTPage.IZPTPage.">
+  <browser:menuItem title="Edit" action="editForm.html"/>
+  <browser:menuItem title="View" action="."/>
+  <!-- XXX This isn't working
+  <browser:menuItem title="Role Permissions"
+           action="AllRolePermissions.html"/>
+  -->
+</browser:menuItems>
 
-  <browser:icon name="zmi_icon" for=".ZPTPage.IZPTPage." file="zpt.gif" />
+<browser:icon name="zmi_icon" for=".ZPTPage.IZPTPage." file="zpt.gif" />
 
-  <browser:menuItem menu="add_content"
-      for="Zope.App.OFS.Container.IAdding."
-      title="Zope Page Template Page" action="ZPTPage"
-      description="An object for dynamic content based on Page Templates." />
+<browser:menuItem menu="add_content"
+    for="Zope.App.OFS.Container.IAdding."
+    title="Zope Page Template Page" action="ZPTPage"
+    description="An object for dynamic content based on Page Templates." />
 
 </zopeConfigure>

@@ -1,38 +1,31 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:service='http://namespaces.zope.org/service'>
 
-   xmlns:service='http://namespaces.zope.org/service'
->
-  <content class=".RoleService.">
+<content class=".RoleService.">
+  <factory
+      id="RoleService"
+      permission="Zope.ManageServices"
+      />
+  <require
+      permission="Zope.Security"
+      interface="Zope.App.Security.IRoleService." />
+  <require
+      permission="Zope.ManageServices"
+      interface="Zope.App.OFS.Container.IContainer." />
+</content>
 
-    <factory
-        id="RoleService"
-        permission="Zope.ManageServices"
-        />
+<content class=".Role.">
+  <factory />
+  <require
+      permission="Zope.Security"
+      interface="Zope.App.Security.IRole." />
+</content>
 
-    <require
-        permission="Zope.Security"
-        interface="Zope.App.Security.IRoleService." />
-    <require
-        permission="Zope.ManageServices"
-        interface="Zope.App.OFS.Container.IContainer." />
+<browser:icon name="zmi_icon" for=".RoleService.ILocalRoleService"
+    file="role_service.gif" />
 
-  </content>
-
-  <browser:menuItem menu="add_service" for="Zope.App.OFS.Container.IAdding."
-     action="RoleService"  title="Role Service" />
-  
-  <content class=".Role.">
-    <factory />
-    <require
-        permission="Zope.Security"
-        interface="Zope.App.Security.IRole." />
-  </content>
-
-  <include package=".Views" />
-
-  <browser:icon name="zmi_icon" for=".RoleService.ILocalRoleService"
-                file="role_service.gif" />
+<include package=".Views" />
 
 </zopeConfigure>
