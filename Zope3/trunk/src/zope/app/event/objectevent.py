@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.12 2004/03/15 20:41:42 jim Exp $
+$Id: objectevent.py,v 1.13 2004/03/30 14:13:24 nathan Exp $
 """
 
 __metaclass__ = type
@@ -24,6 +24,7 @@ from zope.app.event.interfaces import IObjectCopiedEvent
 from zope.app.event.interfaces import IObjectAnnotationsModifiedEvent
 from zope.app.event.interfaces import IObjectContentModifiedEvent
 from zope.app.event.interfaces import ISubscriber
+from zope.app.observable.interfaces import IObservable
 from zope.interface import implements
 from zope.app.event import publish
 from zope.app import zapi
@@ -85,6 +86,17 @@ class ObjectEventNotifier:
 
 objectEventNotifierInstance = ObjectEventNotifier()
 
+class ObserverEventNotifier:
+
+    implements(ISubscriber)
+
+    def notify (self, event):
+        adapter = IObservable(event.object, None)
+
+        if adapter is not None:
+            adapter.notify(event, ISubscriber)
+
+observerEventNotifierInstance = ObserverEventNotifier()
 
 def objectEventCallbackHelper(callback):
     """Build a factory implementing ISubscriber that just calls a callback

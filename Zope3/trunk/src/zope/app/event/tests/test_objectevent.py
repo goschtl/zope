@@ -14,11 +14,13 @@
 """
 
 Revision information:
-$Id: test_objectevent.py,v 1.9 2004/03/15 20:41:43 jim Exp $
+$Id: test_objectevent.py,v 1.10 2004/03/30 14:13:24 nathan Exp $
 """
 
 import unittest
+import doctest
 
+from zope.interface import implements
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.event.objectevent import ObjectContentModifiedEvent
@@ -31,7 +33,7 @@ from zope.app.container.sample import SampleContainer
 from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.servicenames import Adapters, EventPublication
 from zope.component import getService
-
+from zope.app.observable.interfaces import IObservable
 
 class TestObjectModifiedEvent(unittest.TestCase):
 
@@ -50,6 +52,62 @@ class TestObjectAnnotationsModifiedEvent(TestObjectModifiedEvent):
 
 class TestObjectContentModifiedEvent(TestObjectModifiedEvent):
     klass = ObjectContentModifiedEvent
+
+class DummyObservable:
+    implements(IObservable)
+
+    def __init__(self):
+        self.flag = False
+
+    def notify(self, event, provided):
+        self.flag = True
+
+class DummyNotObservable:
+    
+    def __init__(self):
+        self.flag = False
+        
+    def notify(self, event, provided):
+        self.flag = True
+
+class DummyObservableEvent:
+    implements(IObjectRemovedEvent, IObservable)
+
+    def __init__(self):
+        self.object = DummyObservable()
+
+class DummyNotObservableEvent:
+    implements(IObjectRemovedEvent)
+    
+    def __init__(self):
+        self.object = DummyNotObservable()
+
+class TestObserverEventNotifications:
+
+    def testObservableEvents(self):
+        """
+        When an object that has subscriptions change, the
+        subscribers are notified.
+        
+        >>> event = DummyObservableEvent()
+        >>> notifier = objectevent.ObserverEventNotifier()
+        >>> notifier.notify(event)
+        >>> event.object.flag
+        True
+        """
+
+    def testNotObservableEvents(self):
+        """
+        
+        When an object that has no subscriptions changes, the
+        ObserverEventNotifier doesn't do anything to it.
+
+        >>> event = DummyNotObservableEvent()
+        >>> notifier = objectevent.ObserverEventNotifier()
+        >>> notifier.notify(event)
+        >>> event.object.flag
+        False
+        """
 
 class TestObjectEventNotifications(unittest.TestCase):
     def setUp(self):
@@ -115,6 +173,7 @@ def test_suite():
         unittest.makeSuite(TestObjectAnnotationsModifiedEvent),
         unittest.makeSuite(TestObjectContentModifiedEvent),
         unittest.makeSuite(TestObjectEventNotifications),
+        doctest.DocTestSuite(),
         ))
 
 if __name__=='__main__':
