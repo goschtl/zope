@@ -36,6 +36,10 @@ Download
 
 http://codespeak.net/z3/five/release/Five-0.2b.tgz
 
+And changes here:
+
+http://codespeak.net/z3/five/CHANGES.html
+
 2004-07-30 -- We have released Five 0.1! Download it here:
 
 http://codespeak.net/z3/five/release/Five-0.1.tgz
