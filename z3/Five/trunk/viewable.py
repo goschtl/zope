@@ -1,0 +1,42 @@
+from zope.component import getView, ComponentLookupError
+from zope.interface import implements
+from zope.publisher.interfaces.browser import IBrowserRequest
+
+class FakeRequest:
+    implements(IBrowserRequest)
+    
+    def getPresentationSkin(self):
+        return None
+    
+class Viewable:
+    """A mixin to make an object viewable using the Zope 3 system.
+    """
+    def __bobo_traverse__(self, REQUEST, name):
+        try:
+            if not IBrowserRequest.providedBy(REQUEST):
+                REQUEST = FakeRequest()
+            try:
+                return getView(self, name, REQUEST).__of__(self)
+            except ComponentLookupError:
+                pass
+            try:
+                return getattr(self, name)
+            except AttributeError:
+                pass
+            try:
+                return self[name]
+            except (AttributeError, KeyError):
+                pass
+            method = REQUEST.get('REQUEST_METHOD', 'GET')
+            if not method in ('GET', 'POST'):
+                return NullResource(self, name, REQUEST).__of__(self)
+
+            # Waaa. See Application.py
+            try:
+                REQUEST.RESPONSE.notFoundError("%sn%s" % (name, method))
+            except AttributeError:
+                raise KeyError, name
+        except:
+            import traceback
+            traceback.print_exc()
+            raise

@@ -1,0 +1,22 @@
+Part of this software is derived from Zope 3. These parts are licensed under
+the Zope Public License, contained ZopePublicLicense.txt.
+
+The parts directly derived from Zope 3 source code are marked by the
+following block.
+
+"""
+Copyright (c) 2001, 2002, 2003 Zope Corporation and Contributors.
+All Rights Reserved.
+
+This software is subject to the provisions of the Zope Public License,
+Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+FOR A PARTICULAR PURPOSE.
+"""
+
+The rest of the software falls under the BSD license and is copyright
+Infrae. This license is listed in BSD.txt.
+
+

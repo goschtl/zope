@@ -1,0 +1,27 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five">
+
+  <five:page 
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    attribute="eagle"
+    name="eagle.txt"
+    />
+
+  <five:implements
+    class="OFS.Folder.Folder"
+    interface=".interfaces.IFolder"
+    />
+
+  <five:viewable
+    class="OFS.Folder.Folder" 
+    />
+
+  <five:page
+    for=".interfaces.IFolder"
+    class=".browser.SimpleFolderView"
+    attribute="eagle"
+    name="eagle.txt"
+    />
+  
+</configure>
