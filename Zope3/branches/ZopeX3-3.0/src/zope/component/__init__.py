@@ -67,12 +67,12 @@ def getServices(context=None):
         # to avoid the recursion implied by using a local getAdapter call.
 
         # We should be using the line of code below.
-        ## return getAdapter(context, IServiceService, context=None)
+        ## return IServiceService(context)
         #
         # Instead, we need to support code that has passed in an object
         # as context, at least until the whole component API is fixed up.
         # XXX try ripping this code out.
-        sm = queryAdapter(context, IServiceService, context=None)
+        sm = IServiceService(context, None)
         if sm is None:
             # Deprecated support for a context that isn't adaptable to
             # IServiceService.  Return the default service manager.
@@ -135,13 +135,13 @@ def getAllUtilitiesRegisteredFor(interface, context=None):
 
 # Adapter service
 
-def getAdapter(object, interface, name='', context=None):
-    adapter = queryAdapter(object, interface, name, None, context)
+def getAdapterInContext(object, interface, context):
+    adapter = queryAdapterInContext(object, interface, context)
     if adapter is None:
         raise ComponentLookupError(object, interface)
     return adapter
 
-def queryAdapter(object, interface, name='', default=None, context=None):
+def queryAdapterInContext(object, interface, context, default=None):
     conform = getattr(object, '__conform__', None)
     if conform is not None:
         try:
@@ -166,6 +166,16 @@ def queryAdapter(object, interface, name='', default=None, context=None):
     if interface.providedBy(object):
         return object
 
+    adapters = getService(Adapters, context)
+    return adapters.queryAdapter(object, interface, '', default)
+
+def getAdapter(object, interface, name, context=None):
+    adapter = queryAdapter(object, interface, name, None, context)
+    if adapter is None:
+        raise ComponentLookupError(object, interface)
+    return adapter
+
+def queryAdapter(object, interface, name, default=None, context=None):
     adapters = getService(Adapters, context)
     return adapters.queryAdapter(object, interface, name, default)
 

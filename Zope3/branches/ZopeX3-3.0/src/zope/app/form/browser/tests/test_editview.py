@@ -117,7 +117,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def test_fail_wo_adapter(self):
         c = Foo()
         request = TestRequest()
-        self.assertRaises(ComponentLookupError, EV, c, request)
+        self.assertRaises(TypeError, EV, c, request)
 
     def test_update_no_update(self):
         c = C()

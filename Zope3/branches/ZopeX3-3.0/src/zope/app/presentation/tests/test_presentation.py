@@ -468,7 +468,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         
         # Test add event
         self.folder['test'] = registration
-        dependents = zapi.getAdapter(self.__template, IDependable)
+        dependents = IDependable(self.__template)
         self.assert_('test' in dependents.dependents())
 
     def test_registerRemoveSubscriber_template(self):
@@ -482,7 +482,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         # Test remove event
         self.folder['test'] = registration
         uncontained(registration, self.folder, 'test')
-        dependents = zapi.getAdapter(self.__template, IDependable)
+        dependents = IDependable(self.__template)
         self.assert_('test' not in dependents.dependents())
         
     def test_addremoveNotify_attribute(self):

@@ -18,7 +18,6 @@ $Id$
 
 import os
 
-from zope.component import getService
 from zope.configuration.name import resolve
 from zope.fssync import fsutil
 from zope.fssync.metadata import Metadata
@@ -26,6 +25,7 @@ from zope.fssync.server.interfaces import IObjectDirectory, IObjectFile
 from zope.proxy import removeAllProxies
 from zope.xmlpickle import fromxml
 
+from zope.app import zapi
 from zope.app.fssync import fspickle
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IContainer
@@ -381,8 +381,8 @@ class Committer(object):
             else:
                 location = context
                 parent = None
+
             # No factory; try using IFileFactory or IDirectoryFactory
-            as = getService("Adapters")
             isuffix = name.rfind(".")
             if isuffix >= 0:
                 suffix = name[isuffix:]
@@ -394,9 +394,9 @@ class Committer(object):
             else:
                 iface = IFileFactory
 
-            factory = as.queryAdapter(location, iface, suffix)
+            factory = zapi.queryAdapter(location, iface, suffix)
             if factory is None:
-                factory = as.queryAdapter(location, iface)
+                factory = iface(location, None)
 
             if iface is IDirectoryFactory:
                 if factory:

@@ -16,7 +16,6 @@
 $Id$
 """
 
-from zope.component import getAdapter
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.security.checker import defineChecker, NamesChecker
 
@@ -63,7 +62,7 @@ class WizardStorage(dict):
 class EditWizardView(EditView):
 
     def _setUpWidgets(self):
-        adapted = getAdapter(self.context, self.schema)
+        adapted = self.schema(self.context)
         if adapted is not self.context:
             if not ILocation.providedBy(adapted):
                 adapted = LocationProxy(adapted)

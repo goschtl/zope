@@ -106,8 +106,8 @@ class IComponentArchitecture(Interface):
 
     # Adapter service
 
-    def getAdapter(object, interface, context=None):
-        """Get an adapter to an interface for an object
+    def getAdapter(object, interface, name, context=''):
+        """Get a named adapter to an interface for an object
 
         Returns an adapter that can adapt object to interface.  If a matching
         adapter cannot be found, raises ComponentLookupError.
@@ -117,6 +117,22 @@ class IComponentArchitecture(Interface):
 
         If 'context' is not None, context is adapted to IServiceService,
         and this adapter's 'Adapters' service is used.
+        """
+
+    def getAdapterInContext(object, interface, context):
+        """Get a special adapter to an interface for an object
+
+        NOTE: This method should only be used if a custom context
+        needs to be provided to provide custom component
+        lookup. Otherwise, call the interface, as in::
+
+           interface(object)
+
+        Returns an adapter that can adapt object to interface.  If a matching
+        adapter cannot be found, raises ComponentLookupError.
+
+        Context is adapted to IServiceService, and this adapter's
+        'Adapters' service is used.
 
         If the object has a __conform__ method, this method will be
         called with the requested interface.  If the method returns a
@@ -142,8 +158,8 @@ class IComponentArchitecture(Interface):
         named adapter methods with an empty string for a name.
         """
 
-    def queryAdapter(object, interface, default=None, context=None):
-        """Look for an adapter to an interface for an object
+    def queryAdapter(object, interface, name, default=None, context=None):
+        """Look for a named adapter to an interface for an object
 
         Returns an adapter that can adapt object to interface.  If a matching
         adapter cannot be found, returns the default.
@@ -153,6 +169,22 @@ class IComponentArchitecture(Interface):
 
         If 'context' is not None, context is adapted to IServiceService,
         and this adapter's 'Adapters' service is used.
+        """
+
+    def queryAdapterInContext(object, interface, context, default=None):
+        """Look for a special adapter to an interface for an object
+
+        NOTE: This method should only be used if a custom context
+        needs to be provided to provide custom component
+        lookup. Otherwise, call the interface, as in::
+
+           interface(object, default)
+
+        Returns an adapter that can adapt object to interface.  If a matching
+        adapter cannot be found, returns the default.
+
+        Context is adapted to IServiceService, and this adapter's
+        'Adapters' service is used.
 
         If the object has a __conform__ method, this method will be
         called with the requested interface.  If the method returns a
@@ -451,7 +483,7 @@ class IContextDependent(Interface):
 class IAdapterService(Interface):
     """A service to manage Adapters."""
 
-    def queryAdapter(object, interface, name='', default=None):
+    def queryAdapter(object, interface, name, default=None):
         """Look for a named adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.
@@ -461,7 +493,7 @@ class IAdapterService(Interface):
         named adapter methods with an empty string for a name.
         """
 
-    def queryMultiAdapter(objects, interface, name='', default=None):
+    def queryMultiAdapter(objects, interface, name, default=None):
         """Look for a multi-adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.

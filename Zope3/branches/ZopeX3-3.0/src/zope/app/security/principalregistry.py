@@ -36,7 +36,7 @@ class PrincipalRegistry(object):
     # Methods implementing IAuthenticationService
 
     def authenticate(self, request):
-        a = zapi.queryAdapter(request, ILoginPassword)
+        a = ILoginPassword(request, None)
         if a is not None:
             login = a.getLogin()
             if login is not None:
@@ -63,9 +63,8 @@ class PrincipalRegistry(object):
         return self.__defaultObject
 
     def unauthorized(self, id, request):
-        # XXX This is a mess. request has no place here!
         if id is None or id is self.__defaultid:
-            a = zapi.getAdapter(request, ILoginPassword)
+            a = ILoginPassword(request)
             a.needLogin(realm="zope")
 
     def getPrincipal(self, id):

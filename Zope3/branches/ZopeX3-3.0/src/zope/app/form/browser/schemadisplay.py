@@ -24,7 +24,6 @@ from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
 from zope.app.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
-from zope.component import getAdapter
 
 from zope.app.form.utility import setUpDisplayWidgets
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -49,7 +48,7 @@ class DisplayView(BrowserView):
         self._setUpWidgets()
 
     def _setUpWidgets(self):
-        adapted = getAdapter(self.context, self.schema)
+        adapted = self.schema(self.context)
         if adapted is not self.context:
             if not ILocation.providedBy(adapted):
                 adapted = LocationProxy(adapted)
