@@ -1,6 +1,6 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
-  <title>Add Relational Database Adapter</title>
+  <title>Edit Relational Database Adapter</title>
 </head>
 <body>
 
