@@ -54,9 +54,6 @@ User stories
 BUGS
 ----
 
-* After update or commit for a single file, the other files and
-  directories in the same directory are silently removed!!!!
-
 * After committing an added or removed dict, the flag doesn't get
   cleared in the entry.
 
@@ -64,9 +61,11 @@ BUGS
 TO DO
 -----
 
+* more unit tests for fsmerge
+
 * unit tests for the fssync core functionality
 
-* refactoring more of the fssync core functionality
+* more refactoring and cleanup of the fssync core functionality
 
 * allow adding files of different types based on the file suffix or an
   explicit -t argument
