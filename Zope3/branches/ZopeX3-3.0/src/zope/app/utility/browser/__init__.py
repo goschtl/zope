@@ -21,7 +21,7 @@ from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app import zapi
 from zope.interface import providedBy
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 from zope.app.introspector import interfaceToName
 
 
@@ -173,7 +173,7 @@ class ConfigureUtility(object):
         folder = zapi.getParent(self.context)
         iface = folder.resolve(self.request['interface'])
         name = self.request['name']
-        iface = trustedRemoveSecurityProxy(iface)
+        iface = removeSecurityProxy(iface)
         regstack = self.context.queryRegistrations(name, iface)
         form = zapi.getView(regstack, "ChangeRegistrations", self.request)
         form.update()

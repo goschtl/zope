@@ -16,31 +16,33 @@
 $Id$
 """
 
+from warnings import warn
+
 from zope.security._proxy import getChecker, getObject
 from zope.security._proxy import _Proxy as Proxy
-from zope.security.checker import TrustedCheckerBase
 
-getProxiedObject = getObject
 removeSecurityProxy = getObject
 
 # This import represents part of the API for this module
 from zope.security.checker import ProxyFactory
 
 def trustedRemoveSecurityProxy(object):
-    """Remove a security proxy if its checker came from a trusted source.
+    """Deprecated, use removeSecurityProxy instead"""
+    warn("trustedRemoveSecurityProxy is deprecated."
+         " It will disappear in Zope X3.1. "
+         " Use removeSecurityProxy instead",
+         DeprecationWarning, 2)
 
-    The rationale is that it is OK to do this since the caller is
-    trusted and the proxy can always be recreated by calling the
-    proxy factory and getting back a proxy with the same checker.
+    return removeSecurityProxy(object)
 
-    TODO: More thought needs to be given to assuring this contract.
-    """
-    if ((type(object) is Proxy) and
-        isinstance(getChecker(object), TrustedCheckerBase)
-        ):
-        return getProxiedObject(object)
+def getProxiedObject(object):
+    """Deprecated, use removeSecurityProxy instead"""
+    warn("getProxiedObject is deprecated."
+         " It will disappear in Zope X3.1. "
+         " Use removeSecurityProxy instead",
+         DeprecationWarning, 2)
 
-    return object
+    return removeSecurityProxy(object)
 
 def getTestProxyItems(proxy):
     """Try to get checker names and permissions for testing
