@@ -15,10 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: testAddServiceDirective.py,v 1.2 2002/07/17 16:54:18 jeremy Exp $
+$Id: testAddServiceDirective.py,v 1.3 2002/11/18 13:35:43 stevea Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
      import PlacefulSetup
 from Zope.ComponentArchitecture.GlobalServiceManager \
@@ -151,11 +151,12 @@ class Test(PlacefulSetup, TestCase):
         service = C()
         packages['default'].setObject('cd1', service)
 
-        view = AddServiceDirective(
-            ComponentAdding(ContextWrapper(packages['default'], packages,
-                                           name='default'),
-                            request),
-            request)
+        component_adding = ComponentAdding(
+                ContextWrapper(packages['default'], packages, name='default'),
+                request)
+        # simulate the important side-effect of traversing component_adding
+        component_adding.contentName = 'new_name'
+        view = AddServiceDirective(component_adding, request)
 
         view.action('s1',
                     '/folder1/folder1_1/++etc++Services/Packages/default/cd1',
@@ -170,11 +171,12 @@ class Test(PlacefulSetup, TestCase):
         service = C()
         packages['default'].setObject('cd1', service)
 
-        view = AddServiceDirective(
-            ComponentAdding(ContextWrapper(packages['default'], packages,
-                                           name='default'),
-                            request),
-            request)
+        component_adding = ComponentAdding(
+                ContextWrapper(packages['default'], packages, name='default'),
+                request)
+        # simulate the important side-effect of traversing component_adding
+        component_adding.contentName = 'new_name'
+        view = AddServiceDirective(component_adding, request)
 
         view.action('s1',
                     '/folder1/folder1_1/++etc++Services/Packages/default/cd1',
@@ -188,11 +190,12 @@ class Test(PlacefulSetup, TestCase):
         service = C()
         packages['default'].setObject('cd1', service)
 
-        view = AddServiceDirective(
-            ComponentAdding(ContextWrapper(packages['default'], packages,
-                                           name='default'),
-                            request),
-            request)
+        component_adding = ComponentAdding(
+                ContextWrapper(packages['default'], packages, name='default'),
+                request)
+        # simulate the important side-effect of traversing component_adding
+        component_adding.contentName = 'new_name'
+        view = AddServiceDirective(component_adding, request)
 
         view.action('s1',
                     '/folder1/folder1_1/++etc++Services/Packages/default/cd1',
