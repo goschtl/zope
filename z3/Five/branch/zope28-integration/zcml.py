@@ -10,53 +10,27 @@
 
 $Id$
 """
+import os
 from zope.configuration import xmlconfig
-import Products
 
 _initialized = False
-_global_context = None
-def initialize(execute=True):
-    """This gets called once to initialize ZCML enough.
-    """
-    global _initialized, _global_context
-    if _initialized:
-        return _global_context
-    _initialized = True
-    return _global_context
-
-def reset():
-    global _initialized, _global_context
-    _initialized = False
-    _global_context = None
-
-def process(file, execute=True, package=None):
-    """Process a ZCML file.
-
-    Note that this can be called multiple times, unlike in Zope 3. This
-    is needed because in Zope 2 we don't (yet) have a master ZCML file
-    which can include all the others.
-    """
-    context = initialize()
-    return xmlconfig.file(file, context=context, execute=execute,
-                          package=package)
-
-def string(s, execute=True):
-    """Process a ZCML string.
-
-    Note that this can be called multiple times, unlike in Zope 3. This
-    is needed because in Zope 2 we don't (yet) have a master ZCML file
-    which can include all the others.
-    """
-    context = initialize()
-    return xmlconfig.string(s, context=context, execute=execute)
-
-import os
 
 def load_site():
+    """Load the appropriate ZCML file.
+
+    Note that this can be called multiple times, unlike in Zope 3. This
+    is needed because in Zope 2 we don't (yet) have a master ZCML file
+    which can include all the others.
+    """
+    global _initialized
+    if _initialized:
+        return
+    _initialized = True
+
     # load instance site configuration file
     site_zcml = os.path.join(INSTANCE_HOME, "etc", "site.zcml")
     if os.path.exists(site_zcml):
-        process(site_zcml)
+        file = site_zcml
     else:
-        fallback = os.path.join(os.path.dirname(__file__), "skel", "site.zcml")
-        process(fallback)
+        file = os.path.join(os.path.dirname(__file__), "skel", "site.zcml")
+    xmlconfig.file(file)
