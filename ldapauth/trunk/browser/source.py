@@ -28,7 +28,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from ldapauth.interfaces import ILDAPBasedPrincipalSource
 
 
-class Principals(BrowserView):
+class PrincipalSource(BrowserView):
 
     __used_for__ = ILDAPBasedPrincipalSource
 
@@ -63,4 +63,4 @@ class Principals(BrowserView):
             return "Lookup Error"
 
 
-    principals = ViewPageTemplateFile('principals.pt')
+    contents = ViewPageTemplateFile('source.pt')

@@ -19,9 +19,9 @@
          instead of the inherited Contents view from the ocntainer. -->
     <page
         for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
-        name="principals.html"
-        attribute="principals"
-        class=".principals.Principals"
+        name="contents.html"
+        attribute="contents"
+        class=".source.PrincipalSource"
         menu="zmi_views" title="Contents"
         permission="zope.ManageContent"/>
 
