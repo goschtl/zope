@@ -19,15 +19,15 @@ configuration.py.
 The functions here may create invalid objects; a subsequent setBody()
 call to the adapter's setBody() method will make the object valid.
 
-$Id: factories.py,v 1.1 2003/06/11 17:25:02 gvanrossum Exp $
+$Id: factories.py,v 1.2 2003/06/16 16:47:51 gvanrossum Exp $
 """
 
 def CacheConfiguration():
-    from zope.app.service.cache import CacheConfiguration
+    from zope.app.services.cache import CacheConfiguration
     return CacheConfiguration("", "") # name, componentPath
 
 def ConnectionConfiguration():
-    from zope.app.service.connection import ConnectionConfiguration
+    from zope.app.services.connection import ConnectionConfiguration
     return ConnectionConfiguration("", "") # name, componentPath
 
 def ServiceConfiguration():
