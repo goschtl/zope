@@ -1,0 +1,84 @@
+menuItems
+
+  File zope/app/publisher/browser/meta.zcml, lines 110 - 121.
+
+  Handler:
+  zope.app.publisher.browser.globalbrowsermenuservice.menuItemsDirective
+
+  Define a group of browser menu items
+
+  This directive is useful when many menu items are defined for the same
+  interface and menu.
+
+  Attributes
+
+    menu -- TextLine (required)
+
+      Menu name
+
+      The (name of the) menu the items are defined for
+
+    for -- GlobalObject (optional, default=None)
+
+      Interface
+
+      The interface the menu items are defined for
+
+
+  Subdirectives
+
+    menuItem
+
+      File zope/app/publisher/browser/meta.zcml, lines 116 - 119.
+
+      Handler: zope.app.publisher.browser.globalbrowsermenuservice.menuItem
+
+      Define a menu item within a group of menu items
+
+      Attributes
+
+        title -- MessageID (required)
+
+          Title
+
+          The text to be displayed for the menu item
+
+        description -- MessageID (optional, default=None)
+
+          A longer explanation of the menu item
+
+          A UI may display this with the item or display it when the user
+          requests more assistance.
+
+        permission -- Id (optional, default=None)
+
+          The permission needed access the item
+
+          This can usually be inferred by the system, however, doing so may be
+          expensive. When displaying a menu, the system tries to traverse to
+          the URLs given in each action to determine whether the url is
+          accessible to the current user. This can be avoided if the
+          permission is given explicitly.
+
+        filter -- TextLine (optional, default=None)
+
+          A condition for displaying the menu item
+
+          The condition is given as a TALES expression. The expression has
+          access to the variables:
+
+          context -- The object the menu is being displayed for
+
+          request -- The browser request
+
+          nothing -- None
+
+          The menu item will not be displayed if there is a filter and the
+          filter evaluates to a false value.
+
+        action -- TextLine (required)
+
+          The relative url to use if the item is selected
+
+          The url is relative to the object the menu is being displayed for.
+

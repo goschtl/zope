@@ -1,0 +1,23 @@
+sendmailMailer
+
+  File zope/app/mail/meta.zcml, lines 17 - 21.
+
+  Handler: zope.app.mail.metaconfigure.sendmailMailer
+
+  Registers a new Sendmail mailer.
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Name
+
+      Name of the Mailer.
+
+    command -- ASCII (optional, default=None)
+
+      Command
+
+      A template command for sending out mail, containing %(from)s and %(to)s
+      for respective addresses.
+

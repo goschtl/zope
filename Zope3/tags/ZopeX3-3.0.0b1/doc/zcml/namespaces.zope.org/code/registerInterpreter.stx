@@ -1,0 +1,20 @@
+registerInterpreter
+
+  File zope/app/interpreter/meta.zcml, lines 7 - 10.
+
+  
+
+  Attributes
+
+    type -- TextLine (required)
+
+      Type
+
+      Type/name of the language in content type format.
+
+    component -- GlobalObject (required)
+
+      Interpreter Component
+
+      Path to the interpreter instance.
+
