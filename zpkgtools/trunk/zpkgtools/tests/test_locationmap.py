@@ -59,6 +59,12 @@ EXPECTED_OUTPUT = {
 
 class LoadTestCase(unittest.TestCase):
 
+    def test_subversion_urls_dont_lose_templateness(self):
+        url = "svn://svn.example.org/svnroot/proj/tags/*/file.txt"
+        sio = StringIO("pkg %s \n" % url)
+        mapping = locationmap.load(sio)
+        self.assertEqual(mapping["pkg"], url)
+
     def test_load_without_base(self):
         sio = StringIO(SAMPLE_INPUT_WITHOUT_REPOSITORY_URLS)
         mapping = locationmap.load(sio)

@@ -23,6 +23,7 @@ import urlparse
 
 from zpkgtools import cvsloader
 from zpkgtools import loader
+from zpkgtools import svnloader
 
 
 _logger = logging.getLogger(__name__)
@@ -142,10 +143,21 @@ def load(f, base=None, mapping=None):
                 if cvsbase is None:
                     raise MapLoadingError(
                         "repository: URLs are not supported"
-                        " without a cvs: base URL",
+                        " without a cvs: or Subversion base URL",
                         getattr(f, "name", "<unknown>"), lineno)
                 cvsurl = cvsbase.join(cvsurl)
-            url = cvsurl.getUrl()
+
+                # XXX We need to distinguish between the tag being
+                # unspecified at times and the tag being specified at
+                # others; the Subversion URL classes get these
+                # confused, because the abstract model for the URLs
+                # isn't sufficient.  For now, this avoids losing the
+                # "templateness" of /tags/*/ in Subversion URLs.
+                if (isinstance(cvsurl, svnloader.SubversionUrlBase)
+                    and not cvsurl.tag):
+                    cvsurl.tag = "*"
+
+                url = cvsurl.getUrl()
 
         # We only want to add it once, so that loading several
         # mappings causes the first defining a resource to "win":
