@@ -1,7 +1,9 @@
 <zopeConfigure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
-   package="Zope.App.OFS.Content.DTMLPage">
+   xmlns:form="http://namespaces.zope.org/form"
+   package="Zope.App.OFS.Content.DTMLPage"
+   >
 
 <!-- DTML Page View Directives -->
 
@@ -17,20 +19,18 @@
   <browser:page name="index.html" attribute="index" />
 </browser:view>
 
-<browser:view
-    permission="Zope.ManageContent"
-    for=".DTMLPage.IDTMLPage."
-    factory=".Views.Browser.DTMLPageEdit." >
 
-  <browser:page name="editForm.html" attribute="form" />
-  <browser:page name="edit.html" attribute="action" />
-
-</browser:view>
+<form:edit
+    schema = ".DTMLPage.IDTMLPage."
+    name = "edit.html"
+    label = "Edit a DTML page"
+    permission = "Zope.ManageContent"
+    />
 
 <!-- tabs for DTML Page -->
 
 <browser:menuItems menu="zmi_views" for=".DTMLPage.IDTMLPage.">
-  <browser:menuItem title="Edit" action="editForm.html"/>
+  <browser:menuItem title="Edit" action="edit.html"/>
   <browser:menuItem title="View" action="."/>
   <browser:menuItem title="Role Permissions"
            action="AllRolePermissions.html"/>
