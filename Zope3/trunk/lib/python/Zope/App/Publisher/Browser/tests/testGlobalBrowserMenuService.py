@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuService.py,v 1.3 2002/10/04 18:37:23 jim Exp $
+$Id: testGlobalBrowserMenuService.py,v 1.4 2002/11/11 20:20:27 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -63,6 +63,32 @@ class Test(PlacelessSetup, TestCase):
         r.menu('test_id', 'test menu')
         r.menuItem('test_id', Interface, 'a1', 't1', 'd1')
         r.menuItem('test_id', I1, 'a2', 't2', 'd2')
+        r.menuItem('test_id', I11, 'a3', 't3', 'd3', 'context')
+        r.menuItem('test_id', I11, 'a4', 't4', 'd4', 'not:context')
+        r.menuItem('test_id', I111, 'a5', 't5', 'd5')
+        r.menuItem('test_id', I111, 'a6', 't6', 'd6')
+        r.menuItem('test_id', I111, 'f7', 't7', 'd7')
+        r.menuItem('test_id', I111, 'u8', 't8', 'd8')
+        r.menuItem('test_id', I12, 'a9', 't9', 'd9')
+
+        menu = r.getMenu('test_id', X(), TestRequest())
+
+        def d(n):
+            return {'action': "a%s" % n,
+                    'title':  "t%s" % n,
+                    'description':  "d%s" % n,
+                    }
+        
+        self.assertEqual(list(menu), [d(5), d(6), d(3), d(2), d(1)])
+        
+    def test_no_dups(self):
+        r = self.__reg()
+        r.menu('test_id', 'test menu')
+        r.menuItem('test_id', Interface, 'a1', 't1', 'd1')
+        r.menuItem('test_id', Interface, 'a12', 't2', 'd12')
+        r.menuItem('test_id', I1, 'a2', 't2', 'd2')
+        r.menuItem('test_id', I1, 'a23', 't3', 'd23')
+        r.menuItem('test_id', I1, 'a24', 't4', 'd24')
         r.menuItem('test_id', I11, 'a3', 't3', 'd3', 'context')
         r.menuItem('test_id', I11, 'a4', 't4', 'd4', 'not:context')
         r.menuItem('test_id', I111, 'a5', 't5', 'd5')

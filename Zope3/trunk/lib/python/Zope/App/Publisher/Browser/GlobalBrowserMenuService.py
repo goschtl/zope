@@ -60,9 +60,16 @@ class GlobalBrowserMenuService:
         traverser = PublicationTraverser()
 
         result = []
+        seen = {}
         
         for items in registry.getAllForObject(object):
             for action, title, description, filter in items:
+
+                # Make sure we don't repeat a specification for a given title
+                if title in seen:
+                    continue
+                seen[title] = 1
+                
                 if filter is not None:
                     
                     try:
@@ -150,5 +157,5 @@ del addCleanUp
 
 __doc__ = GlobalBrowserMenuService.__doc__ + """
 
-$Id: GlobalBrowserMenuService.py,v 1.6 2002/11/06 22:30:21 rdmurray Exp $
+$Id: GlobalBrowserMenuService.py,v 1.7 2002/11/11 20:20:27 jim Exp $
 """
