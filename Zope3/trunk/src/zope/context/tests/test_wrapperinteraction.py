@@ -18,7 +18,7 @@ ContextMethod and ContextProperty, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.9 2003/06/14 12:53:28 stevea Exp $
+$Id: test_wrapperinteraction.py,v 1.10 2003/06/19 17:25:19 stevea Exp $
 """
 import sys
 import unittest
@@ -590,6 +590,22 @@ class Test_contextAwareDescriptors(unittest.TestCase):
         # We've established that our descriptor is behind the context
         # descriptor. The rest is covered by the ContextAware(Data)Descriptor
         # unit tests.
+
+    def test_implementsInSubclassInteraction(self):
+        from zope.interface import implements
+        from zope.context import ContextAwareDescriptors
+
+        class Bar:
+            implements()
+            ContextAwareDescriptors()
+
+        # If __providedBy__ is made context-aware, this will fail with a
+        # TypeError.
+        # If __implements__ is made context-aware, this will fail with a
+        # BadImplements error.
+        class Foo(Bar):
+            implements()
+
 
 def test_suite():
     return unittest.TestSuite((
