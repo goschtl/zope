@@ -38,7 +38,7 @@ from zope.exceptions import Unauthorized
 from zope.interface import directlyProvides, implements
 from zope.proxy import removeAllProxies
 from zope.schema import getFields
-from zope.security.management import getInteraction
+from zope.security.management import queryInteraction
 from zope.security.checker import CheckerPublic, Checker
 from zope.security.proxy import Proxy
 from zope.security import checkPermission
@@ -226,9 +226,9 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         # data should be readonly for condition-evaluation
         ctx['data'] = self.data
         ctx['principal'] = None
-        interaction = getInteraction()
+        interaction = queryInteraction()
         if interaction is not None:
-            principals = [p.principal for p in getInteraction().participations]
+            principals = [p.principal for p in interaction.participations]
             if principals:
                 # XXX There can be more than one principal
                 assert len(principals) == 1

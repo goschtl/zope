@@ -17,7 +17,7 @@ $Id: creatorannotator.py,v 1.9 2004/03/08 12:05:56 srichter Exp $
 """
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.event.interfaces import ISubscriber
-from zope.security.management import getInteraction
+from zope.security.management import queryInteraction
 from zope.interface import implements
 
 class CreatorAnnotatorClass(object):
@@ -32,7 +32,7 @@ class CreatorAnnotatorClass(object):
         # Try to find a principal for that one. If there
         # is no principal then we don't touch the list
         # of creators.
-        interaction = getInteraction()
+        interaction = queryInteraction()
         if interaction is not None:
             for participation in interaction.participations:
                 principalid = participation.principal.id

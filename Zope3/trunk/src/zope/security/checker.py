@@ -37,7 +37,7 @@ from zope.interface.declarations import Implements
 from zope.interface.declarations import Declaration
 from zope.security.interfaces import IChecker, INameBasedChecker
 from zope.security.interfaces import ISecurityProxyFactory
-from zope.security.management import getSecurityPolicy, getInteraction
+from zope.security.management import getSecurityPolicy, queryInteraction
 from zope.security._proxy import _Proxy as Proxy, getChecker
 from zope.exceptions import Unauthorized, ForbiddenAttribute, DuplicationError
 
@@ -144,7 +144,7 @@ class Checker(TrustedCheckerBase):
             if permission is CheckerPublic:
                 return # Public
             policy = getSecurityPolicy()
-            interaction = getInteraction()
+            interaction = queryInteraction()
             if policy.checkPermission(permission, object, interaction):
                 return
             else:
@@ -161,7 +161,7 @@ class Checker(TrustedCheckerBase):
             if permission is CheckerPublic:
                 return # Public
             policy = getSecurityPolicy()
-            interaction = getInteraction()
+            interaction = queryInteraction()
             if policy.checkPermission(permission, object, interaction):
                 return
             else:
@@ -306,7 +306,7 @@ class DecoratedChecker(TrustedCheckerBase):
             if permission is CheckerPublic:
                 return # Public
             policy = getSecurityPolicy()
-            interaction = getInteraction()
+            interaction = queryInteraction()
             if policy.checkPermission(permission, object, interaction):
                 return
             else:
@@ -324,7 +324,7 @@ class DecoratedChecker(TrustedCheckerBase):
             if permission is CheckerPublic:
                 return # Public
             policy = getSecurityPolicy()
-            interaction = getInteraction()
+            interaction = queryInteraction()
             if policy.checkPermission(permission, object, interaction):
                 return
             else:
@@ -342,7 +342,7 @@ class DecoratedChecker(TrustedCheckerBase):
             if permission is CheckerPublic:
                 return # Public
             policy = getSecurityPolicy()
-            interaction = getInteraction()
+            interaction = queryInteraction()
             if policy.checkPermission(permission, object, interaction):
                 return
             else:

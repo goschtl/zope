@@ -7,7 +7,7 @@
 import zope.proxy
 
 from zope.security.checker import CheckerPublic as _CheckerPublic
-from zope.security.management import getInteraction as _getInteraction
+from zope.security.management import queryInteraction as _queryInteraction
 from zope.security.management import getSecurityPolicy as _getSecurityPolicy
 
 def checkPermission(permission, object, interaction=None):
@@ -26,7 +26,7 @@ def checkPermission(permission, object, interaction=None):
     if permission is None or permission is _CheckerPublic:
         return True
     if interaction is None:
-        interaction = _getInteraction()
+        interaction = _queryInteraction()
     policy = _getSecurityPolicy()
     return policy.checkPermission(permission, object, interaction)
 

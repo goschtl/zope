@@ -63,14 +63,14 @@ def setSecurityPolicy(aSecurityPolicy):
 #   IInteractionManagement implementation
 #
 
-def getInteraction(_thread=None):
+def queryInteraction(_thread=None):
     """Get the current interaction."""
     return thread_globals(_thread).interaction
 
 def newInteraction(participation=None, _thread=None, _policy=None):
     """Start a new interaction."""
-    if getInteraction(_thread) is not None:
-        stack = getInteraction(_thread)._newInteraction_called_from
+    if queryInteraction(_thread) is not None:
+        stack = queryInteraction(_thread)._newInteraction_called_from
         raise AssertionError("newInteraction called"
                              " while another interaction is active:\n%s"
                              % "".join(traceback.format_list(stack)))

@@ -166,11 +166,10 @@ class IInteractionManagement(Interface):
         Raises an error if the calling thread already has an interaction.
         """
 
-    def getInteraction():
+    def queryInteraction():
         """Return the current interaction.
 
-        Returns None if called outside newInteraction/endInteraction pair.
-        XXX should it raise an exception instead?
+        Returns None if there is no interaction.
         """
 
     def endInteraction():

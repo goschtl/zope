@@ -41,9 +41,9 @@ class Test(CleanUp, unittest.TestCase):
         setSecurityPolicy(policy)
         self.assert_(getSecurityPolicy() is policy)
 
-    def test_getInteraction(self):
+    def test_queryInteraction(self):
         # XXX this test is a bit obfuscated
-        from zope.security.management import getInteraction
+        from zope.security.management import queryInteraction
 
         marker = object()
         class ThreadVars:
@@ -51,7 +51,7 @@ class Test(CleanUp, unittest.TestCase):
         class ThreadStub:
             __zope3_thread_globals__ = ThreadVars()
 
-        self.assert_(getInteraction(_thread=ThreadStub()) is marker)
+        self.assert_(queryInteraction(_thread=ThreadStub()) is marker)
 
     def test_newInteraction(self):
         # XXX this test is a bit obfuscated
@@ -90,7 +90,7 @@ class Test(CleanUp, unittest.TestCase):
     def test_checkPermission(self):
         from zope.security import checkPermission
         from zope.security.management import setSecurityPolicy
-        from zope.security.management import getInteraction
+        from zope.security.management import queryInteraction
         from zope.security.management import newInteraction
 
         permission = 'zope.Test'
@@ -107,7 +107,7 @@ class Test(CleanUp, unittest.TestCase):
             def checkPermission(s, p, o, i):
                 self.assert_(p is permission)
                 self.assert_(o is obj)
-                self.assert_(i is getInteraction() or i is interaction)
+                self.assert_(i is queryInteraction() or i is interaction)
                 return i is interaction
 
         setSecurityPolicy(PolicyStub())
