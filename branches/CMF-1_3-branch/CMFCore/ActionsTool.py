@@ -14,23 +14,27 @@
 
 $Id$
 """
-
-import OFS
-from utils import UniqueObject, SimpleItemWithProperties, _getAuthenticatedUser, _checkPermission
-from utils import getToolByName, _dtmldir, cookString
-import CMFCorePermissions
-from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass, DTMLFile, package_home
-from urllib import quote
 from Acquisition import aq_base, aq_inner, aq_parent
 from AccessControl import ClassSecurityInfo
-from string import join
+from OFS.Folder import Folder
+from OFS.SimpleItem import SimpleItem
+
+import CMFCorePermissions
 from Expression import Expression, createExprContext
 from ActionInformation import ActionInformation, oai
 from ActionProviderBase import ActionProviderBase
 from TypesTool import TypeInformation
 
-class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
+from utils import UniqueObject
+from utils import SimpleItemWithProperties
+from utils import _getAuthenticatedUser
+from utils import _checkPermission
+from utils import getToolByName
+from utils import _dtmldir
+from utils import cookString
+
+class ActionsTool(UniqueObject, Folder, ActionProviderBase):
     """
         Weave together the various sources of "actions" which are apropos
         to the current user and context.
@@ -74,7 +78,7 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
                       ({'label' : 'Action Providers', 'action' : 'manage_actionProviders'}
                      ,   { 'label' : 'Overview', 'action' : 'manage_overview' }
                      ,
-                     ) + OFS.Folder.Folder.manage_options
+                     ) + Folder.manage_options
                      ) 
 
     #
