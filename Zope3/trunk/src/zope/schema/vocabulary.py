@@ -13,150 +13,13 @@
 ##############################################################################
 """Vocabulary support for schema.
 
-$Id: vocabulary.py,v 1.21 2004/04/11 10:35:04 srichter Exp $
+$Id: vocabulary.py,v 1.22 2004/04/24 23:20:57 srichter Exp $
 """
-import copy
-
 from zope.interface.declarations import directlyProvides, implements
-from zope.schema import Field
-from zope.schema import MinMaxLen
-from zope.schema._bootstrapfields import ValidatedProperty
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
-from zope.schema.interfaces import IVocabularyField
-from zope.schema.interfaces import IVocabularyBagField, IVocabularyListField
-from zope.schema.interfaces import IVocabularySetField
-from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm
-from zope.schema.interfaces import IFromUnicode
-
-from zope.schema.interfaces import ConstraintNotSatisfied
-
-class ContainerValidatedProperty(ValidatedProperty):
-
-    def __get__(self, inst, type=None):
-        name, check = self._info
-        try:
-            value = inst.__dict__[name]
-        except KeyError:
-            raise AttributeError, name
-        if value is not None:
-            value = copy.copy(value)
-        return value
-
-
-class BaseVocabularyField(Field):
-
-
-    def __init__(self, vocabulary=None, **kw):
-        # set up the vocabulary:
-        if isinstance(vocabulary, basestring):
-            self.vocabulary = None
-            self.vocabularyName = vocabulary
-        else:
-            assert vocabulary is not None
-            self.vocabulary = vocabulary
-            self.vocabularyName = None
-        # call the base initializer
-        super(BaseVocabularyField, self).__init__(**kw)
-
-    def bind(self, object):
-        clone = super(BaseVocabularyField, self).bind(object)
-        # get registered vocabulary/presentation if needed:
-        if clone.vocabulary is None:
-            vr = getVocabularyRegistry()
-            clone.vocabulary = vr.get(object, self.vocabularyName)
-        return clone
-
-
-class VocabularyField(BaseVocabularyField):
-    """Field that adds support for use of an external vocabulary.
-
-    The value is a single value from the vocabulary.
-    """
-    implements(IVocabularyField, IFromUnicode)
-
-    def _validate(self, value):
-        if self.vocabulary is None:
-            if self.context is not None:
-                raise ValueError("can't validate value without vocabulary")
-            # XXX can't validate without vocabulary, and can't get
-            # vocabulary without context
-            return
-        if value not in self.vocabulary:
-            raise ConstraintNotSatisfied, value
-    
-    def fromUnicode(self, str):
-        """
-        >>> t = VocabularyField(
-        ...     vocabulary=SimpleVocabulary.fromValues([u'foo',u'bar']))
-        >>> t.fromUnicode(u"baz")
-        Traceback (most recent call last):
-        ...
-        ConstraintNotSatisfied: baz
-        >>> t.fromUnicode(u"foo")
-        u'foo'
-        """
-        self.validate(str)
-        return str
-
-class VocabularyMultiField(MinMaxLen, BaseVocabularyField):
-    """Field that adds support for use of an external vocabulary.
-
-    The value is a collection of values from the vocabulary.
-
-    This class cannot be used directly; a subclass must be used to
-    specify concrete behavior.
-    """
-
-    default = ContainerValidatedProperty("default")
-
-    def __init__(self, **kw):
-        if self.__class__ is VocabularyMultiField:
-            raise NotImplementedError(
-                "The VocabularyMultiField class cannot be used directly.")
-        if "default" not in kw and not kw.get("min_length"):
-            kw["default"] = []
-        super(VocabularyMultiField, self).__init__(**kw)
-
-    def _validate(self, value):
-        vocab = self.vocabulary
-        if value:
-            if vocab is None:
-                raise ValueError("can't validate value without vocabulary")
-            for v in value:
-                if v not in vocab:
-                    raise ConstraintNotSatisfied, v
-        super(VocabularyMultiField, self)._validate(value)
-
-class UniqueElements(object):
-    """Mix-in class that checks that each contained element is unique."""
-
-    def _validate(self, value):
-        d = {}
-        for v in value:
-            if v in d:
-                raise ValidationError()
-            d[v] = v
-        super(UniqueElements, self)._validate(value)
-
-class VocabularyBagField(VocabularyMultiField):
-    implements(IVocabularyBagField)
-    __doc__ = IVocabularyBagField.__doc__
-
-class VocabularyListField(VocabularyMultiField):
-    implements(IVocabularyListField)
-    __doc__ = IVocabularyListField.__doc__
-
-class VocabularySetField(UniqueElements, VocabularyMultiField):
-    implements(IVocabularySetField)
-    __doc__ = IVocabularySetField.__doc__
-
-class VocabularyUniqueListField(UniqueElements, VocabularyMultiField):
-    implements(IVocabularyUniqueListField)
-    __doc__ = IVocabularyUniqueListField.__doc__
-
 
 # simple vocabularies performing enumerated-like tasks
 
@@ -243,7 +106,11 @@ class SimpleVocabulary(object):
 
     def __contains__(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
-        return value in self.by_value
+        try:
+            return value in self.by_value
+        except TypeError:
+            # sometimes values are not hashable
+            return False
 
     def getQuery(self):
         """See zope.schema.interfaces.IBaseVocabulary"""
@@ -270,6 +137,7 @@ class SimpleVocabulary(object):
     def __len__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
         return len(self.by_value)
+
 
 # registry code
 
