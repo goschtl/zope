@@ -127,6 +127,10 @@ the test runner script (see the list of global variables in process_args().).
     Keep running the selected tests in a loop.  You may experience
     memory leakage.
 
+-N n
+--repeat n
+    Run the selected tests n times.
+
 -m
 -M  minimal GUI. See -U.
 
@@ -776,12 +780,19 @@ def main(module_filter, test_filter, libdir):
         if REFCOUNT:
             rc = sys.gettotalrefcount()
             track = TrackRefs()
-        while True:
+
+        n = LOOP
+        i = 1
+        while i <= n:
+            print
+            print "Run %s:" % i
+            i += 1;
             runner(files, test_filter, DEBUG)
             gc.collect()
             if gc.garbage:
                 print "GARBAGE:", len(gc.garbage), gc.garbage
                 return
+
             if REFCOUNT:
                 prev = rc
                 rc = sys.gettotalrefcount()
@@ -860,7 +871,7 @@ def process_args(argv=None):
     MODULE_FILTER = None
     TEST_FILTER = None
     VERBOSE = 0
-    LOOP = False
+    LOOP = 0
     GUI = False
     TRACE = False
     REFCOUNT = False
@@ -891,7 +902,8 @@ def process_args(argv=None):
 
 
     try:
-        opts, args = getopt.getopt(argv[1:], "a:bBcdDfFg:G:hkl:LmMPprs:tTuUv",
+        opts, args = getopt.getopt(argv[1:],
+                                   "a:bBcdDfFg:G:hkl:LmMPprs:tTuUvN:",
                                    ["all", "help", "libdir=", "times=",
                                     "keepbytecode", "dir=", "build",
                                     "build-inplace",
@@ -900,7 +912,7 @@ def process_args(argv=None):
                                     "gc-threshold=", "gc-option=",
                                     "loop", "gui", "minimal-gui",
                                     "profile", "progress", "refcount", "trace",
-                                    "top-fifty", "verbose",
+                                    "top-fifty", "verbose", "repeat="
                                     ])
     # fixme: add the long names
     # fixme: add the extra documentation
@@ -951,7 +963,9 @@ def process_args(argv=None):
         elif k in ('-l', '--libdir'):
             LIBDIR = v
         elif k in ("-L", "--loop"):
-            LOOP = 1
+            LOOP = 1000000000
+        elif k in ("-N", "--repeat"):
+            LOOP = int(v)
         elif k == "-m":
             GUI = "minimal"
             msg = "Use -M or --minimal-gui instead of -m."
