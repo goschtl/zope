@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_introspector.py,v 1.5 2003/07/02 15:23:06 alga Exp $
+$Id: test_introspector.py,v 1.6 2003/08/11 16:55:51 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,6 +28,10 @@ from zope.app.services.servicenames import Interfaces
 from zope.app.services.interface import LocalInterfaceService
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.component.globalinterfaceservice import provideInterface
+from zope.app.component.metaconfigure import provideService
+from zope.app.component.globalinterfaceservice import InterfaceService
+from zope.app.interfaces.component import IInterfaceService
+from zope.component.service import serviceManager, defineService
 
 class ITestClass(Interface):
     def drool():
@@ -67,6 +71,22 @@ class WeirdClass:
 
 class TestIntrospector(CleanUp, TestCase):
     """Test Introspector."""
+
+    def setUp(self):
+        service = InterfaceService()
+        defineService(Interfaces, IInterfaceService)
+        serviceManager.provideService(Interfaces, service)
+        provideInterface = service.provideInterface
+        provideInterface('zope.app.tests.test_introspector.I', I)
+        provideInterface('zope.app.tests.test_introspector.I2', I2)
+        provideInterface('zope.app.tests.test_introspector.I3', I3)
+        provideInterface('zope.app.tests.test_introspector.I4', I4)
+        provideInterface('zope.app.tests.test_introspector.M1', M1)
+        provideInterface('zope.app.tests.test_introspector.M2', M2)
+        provideInterface('zope.app.tests.test_introspector.M3', M3)
+        provideInterface('zope.app.tests.test_introspector.M4', M4)
+        provideInterface('zope.app.tests.test_introspector.ITestClass',
+                         ITestClass)
 
     def test_isInterface(self):
         ints = Introspector(ITestClass)
