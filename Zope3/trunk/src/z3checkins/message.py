@@ -159,7 +159,7 @@ class CheckinMessage(Message):
     def __init__(self, message_id=None, author_name=None,
                  author_email=None, subject=None, date=None, full_text=None,
                  directory=None, log_message=None, branch=None):
-        super(CheckinMessage, self).__init__(message_id=message_id,
+        Message.__init__(self, message_id=message_id,
             author_name=author_name, author_email=author_email,
             subject=subject, date=date, full_text=full_text)
         self.directory = directory
@@ -554,7 +554,7 @@ class MessageView:
                 'title': 'Email message'}
 
     def body(self):
-        """Colorizes message body."""
+        """Colorizes the body of a checkin message."""
 
         text = self.context.body.replace('\r', '')\
                                 .replace('&', '&amp;') \
