@@ -12,9 +12,11 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.7 2003/04/10 09:34:30 paul Exp $
+$Id: _field.py,v 1.8 2003/04/14 16:13:42 fdrake Exp $
 """
 __metaclass__ = type
+
+import warnings
 
 from zope.interface.implements import implements
 
@@ -27,10 +29,13 @@ from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
 from zope.schema.interfaces import IPassword
+from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
+from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
 from zope.schema._bootstrapfields import MinMaxLen, ValueSet
 from zope.schema._bootstrapfields import Text, TextLine, Bool, Int, Password
+from zope.schema._bootstrapfields import EnumeratedTextLine, EnumeratedInt
 from zope.schema.fieldproperty import FieldProperty
 from datetime import datetime
 
@@ -42,21 +47,16 @@ Field.readonly    = FieldProperty(IField['readonly'])
 # Default is already taken care of
 implements(Field, IField)
 
-implements(Container, IContainer)
-implements(Iterable, IIterable)
-implements(Orderable, IOrderable)
-
 MinMaxLen.min_length = FieldProperty(IMinMaxLen['min_length'])
 MinMaxLen.max_length = FieldProperty(IMinMaxLen['max_length'])
-implements(MinMaxLen, IMinMaxLen)
-
-implements(ValueSet, IValueSet)
 
 implements(Text, IText)
 implements(TextLine, ITextLine)
 implements(Password, IPassword)
 implements(Bool, IBool)
 implements(Int, IInt)
+implements(EnumeratedInt, IEnumeratedInt)
+implements(EnumeratedTextLine, IEnumeratedTextLine)
 
 class SourceText(Text):
     __doc__ = ISourceText.__doc__
@@ -84,10 +84,36 @@ class Float(ValueSet, Orderable):
     __implements__ = IFloat
     _type = float
 
+    def __init__(self, *args, **kw):
+        if (  kw.get("allowed_values") is not None
+              and self.__class__ is Float):
+            clsname = self.__class__.__name__
+            warnings.warn("Support for allowed_values will be removed from %s;"
+                          " use Enumerated%s instead" % (clsname, clsname),
+                          DeprecationWarning, stacklevel=2)
+        super(Float, self).__init__(*args, **kw)
+
+class EnumeratedFloat(ValueSet, Float):
+    __doc__ = IEnumeratedFloat.__doc__
+    __implements__ = IEnumeratedFloat
+
 class Datetime(ValueSet, Orderable):
     __doc__ = IDatetime.__doc__
     __implements__ = IDatetime
     _type = datetime
+
+    def __init__(self, *args, **kw):
+        if (  kw.get("allowed_values") is not None
+              and self.__class__ is Datetime):
+            clsname = self.__class__.__name__
+            warnings.warn("Support for allowed_values will be removed from %s;"
+                          " use Enumerated%s instead" % (clsname, clsname),
+                          DeprecationWarning, stacklevel=2)
+        super(Datetime, self).__init__(*args, **kw)
+
+class EnumeratedDatetime(ValueSet, Datetime):
+    __doc__ = IEnumeratedDatetime.__doc__
+    __implements__ = IEnumeratedDatetime
 
 def _validate_sequence(value_types, value, errors=None):
     if errors is None:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.7 2003/04/14 08:21:16 jim Exp $
+$Id: interfaces.py,v 1.8 2003/04/14 16:13:42 fdrake Exp $
 """
 from zope.interface import Interface
 
@@ -263,16 +263,18 @@ class IBool(IField):
     u"""a Boolean Field."""
 
 class IBytes(IMinMaxLen, IValueSet, IIterable):
+    # XXX IValueSet will be removed in the future.
     u"""a Field containing a byte string (like the python str).
 
-    The value might be contrained to be with length limits, or
-    be within a set of values.
+    The value might be contrained to be with length limits.
     """
 
 class IBytesLine(IBytes):
     u"""a Field containing a byte string without newlines."""
 
 class IText(IMinMaxLen, IValueSet, IIterable):
+    # XXX IValueSet doesn't make sense for multi-line strings, so will
+    # be removed in the future.
     u"""a Field containing a unicode string."""
 
 class ISourceText(IText):
@@ -281,17 +283,47 @@ class ISourceText(IText):
 class ITextLine(IText):
     u"""a Field containing a unicode string without newlines."""
 
+class IEnumeratedTextLine(ITextLine, IValueSet):
+    u"""a Field containing a unicode string without newlines.
+
+    The value may be constrained to an element of a specified list.
+    """
+
 class IPassword(ITextLine):
     u"""a Field containing a unicode string without newlines that is a password."""
 
 class IInt(IMinMax, IValueSet):
+    # XXX IValueSet will be removed; use IEnumeratedInt instead if you
+    # need the IValueSet interface.
     u"""a Field containing an Integer Value."""
 
+class IEnumeratedInt(IInt, IValueSet):
+    u"""a Field containing an Integer Value.
+
+    The value may be constrained to an element of a specified list.
+    """
+
 class IFloat(IMinMax, IValueSet):
+    # XXX IValueSet will be removed; use IEnumeratedFloat instead if you
+    # need the IValueSet interface.
     u"""a Field containing a Float."""
 
+class IEnumeratedFloat(IFloat, IValueSet):
+    u"""a Field containing a Float.
+
+    The value may be constrained to an element of a specified list.
+    """
+
 class IDatetime(IMinMax, IValueSet):
+    # XXX IValueSet will be removed; use IEnumeratedDatetime instead
+    # if you need the IValueSet interface.
     u"""a Field containing a DateTime."""
+
+class IEnumeratedDatetime(IDatetime, IValueSet):
+    u"""a Field containing a DateTime.
+
+    The value may be constrained to an element of a specified list.
+    """
 
 def _fields(values):
     for value in values:
@@ -349,4 +381,3 @@ class IDict(IMinMaxLen, IIterable):
         constraint=_fields,
         required=False,
         )
-

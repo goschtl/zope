@@ -12,9 +12,11 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.9 2003/04/14 08:21:16 jim Exp $
+$Id: _bootstrapfields.py,v 1.10 2003/04/14 16:13:42 fdrake Exp $
 """
 __metaclass__ = type
+
+import warnings
 
 from zope.interface import Attribute
 from zope.interface.implements import visitImplements
@@ -218,6 +220,18 @@ class MinMaxLen(Field):
 
 class ValueSet(Field):
 
+    def __init__(self, allowed_values=None, default=None, **kw):
+        # Set allowed_values to None so that we can validate if
+        # one of the super methods invoke validation.
+        self.__dict__['allowed_values'] = None
+        super(ValueSet, self).__init__(**kw)
+        if allowed_values is not None:
+            self.allowed_values = allowed_values
+
+        # We've taken over setting default so it can be limited by min
+        # and max.
+        self.default = default
+
     def allowed_values(self, values):
         # This method checks that each of the given allowed values
         # are valid potential values.
@@ -239,22 +253,8 @@ class ValueSet(Field):
 
     allowed_values = ValidatedProperty('allowed_values', allowed_values)
 
-    def __init__(self, allowed_values=None, default=None, **kw):
-
-        # Set allowed_values to None so that we can validate if
-        # one of the super methods invoke validation.
-        self.__dict__['allowed_values'] = None
-        super(ValueSet, self).__init__(**kw)
-        if allowed_values is not None:
-            self.allowed_values = allowed_values
-
-        # We've taken over setting default so it can be limited by min
-        # and max.
-        self.default = default
-
     def _validate(self, value):
         super(ValueSet, self)._validate(value)
-
         if self.allowed_values:
             if not value in self.allowed_values:
                 raise ValidationError(errornames.InvalidValue, value,
@@ -265,13 +265,23 @@ class Text(MinMaxLen, ValueSet):
     """A field containing text used for human discourse."""
     _type = unicode
 
+    def __init__(self, *args, **kw):
+        if (  kw.get("allowed_values") is not None
+              and self.__class__ in (Text, TextLine)):
+            clsname = self.__class__.__name__
+            warnings.warn("Support for allowed_values will be removed from %s;"
+                          " use Enumerated%s instead" % (clsname, clsname),
+                          DeprecationWarning, stacklevel=2)
+        super(Text, self).__init__(*args, **kw)
 
 class TextLine(Text):
     """A text field with no newlines."""
 
     def constraint(self, value):
-        # XXX we should probably use a more general definition of newlines
-        return '\n' not in value
+        return '\n' not in value and '\r' not in value
+
+class EnumeratedTextLine(ValueSet, TextLine):
+    """TextLine with a value from a list of allowed values."""
 
 class Password(TextLine):
     """A text field containing a text used as a password."""
@@ -284,3 +294,14 @@ class Int(ValueSet, Orderable):
     """A field representing an Integer."""
     _type = int, long
 
+    def __init__(self, *args, **kw):
+        if (  kw.get("allowed_values") is not None
+              and self.__class__ is Int):
+            clsname = self.__class__.__name__
+            warnings.warn("Support for allowed_values will be removed from %s;"
+                          " use Enumerated%s instead" % (clsname, clsname),
+                          DeprecationWarning, stacklevel=2)
+        super(Int, self).__init__(*args, **kw)
+
+class EnumeratedInt(ValueSet, Int):
+    """A field representing one of a selected set of Integers."""

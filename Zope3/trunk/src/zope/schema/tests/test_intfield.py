@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_intfield.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: test_intfield.py,v 1.3 2003/04/14 16:13:43 fdrake Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from zope.schema import Int
+from zope.schema import Int, EnumeratedInt
 from zope.schema import errornames
 from zope.schema.tests.test_field import FieldTestBase
 
@@ -25,16 +25,16 @@ class IntTest(FieldTestBase):
     _Field_Factory = Int
 
     def testValidate(self):
-        field = Int(title=u'Int field', description=u'',
-                        readonly=False, required=False)
+        field = self._Field_Factory(title=u'Int field', description=u'',
+                                    readonly=False, required=False)
         field.validate(None)
         field.validate(10)
         field.validate(0)
         field.validate(-1)
 
     def testValidateRequired(self):
-        field = Int(title=u'Int field', description=u'',
-                    readonly=False, required=True)
+        field = self._Field_Factory(title=u'Int field', description=u'',
+                                    readonly=False, required=True)
         field.validate(10)
         field.validate(0)
         field.validate(-1)
@@ -42,18 +42,9 @@ class IntTest(FieldTestBase):
         self.assertRaisesErrorNames(errornames.RequiredMissing,
                                     field.validate, None)
 
-    def testAllowedValues(self):
-        field = Int(title=u'Int field', description=u'',
-                        readonly=False, required=False, allowed_values=(-1, 2))
-        field.validate(None)
-        field.validate(2)
-
-        self.assertRaisesErrorNames(errornames.InvalidValue,
-                                    field.validate, 4)
-
     def testValidateMin(self):
-        field = Int(title=u'Int field', description=u'',
-                        readonly=False, required=False, min=10)
+        field = self._Field_Factory(title=u'Int field', description=u'',
+                                    readonly=False, required=False, min=10)
         field.validate(None)
         field.validate(10)
         field.validate(20)
@@ -62,8 +53,8 @@ class IntTest(FieldTestBase):
         self.assertRaisesErrorNames(errornames.TooSmall, field.validate, -10)
 
     def testValidateMax(self):
-        field = Int(title=u'Int field', description=u'',
-                        readonly=False, required=False, max=10)
+        field = self._Field_Factory(title=u'Int field', description=u'',
+                                    readonly=False, required=False, max=10)
         field.validate(None)
         field.validate(5)
         field.validate(9)
@@ -72,8 +63,9 @@ class IntTest(FieldTestBase):
         self.assertRaisesErrorNames(errornames.TooBig, field.validate, 20)
 
     def testValidateMinAndMax(self):
-        field = Int(title=u'Int field', description=u'',
-                        readonly=False, required=False, min=0, max=10)
+        field = self._Field_Factory(title=u'Int field', description=u'',
+                                    readonly=False, required=False,
+                                    min=0, max=10)
         field.validate(None)
         field.validate(0)
         field.validate(5)
@@ -85,8 +77,25 @@ class IntTest(FieldTestBase):
         self.assertRaisesErrorNames(errornames.TooBig, field.validate, 20)
 
 
+class EnumeratedIntTest(IntTest):
+    """Test the EnumeratedInt field type."""
+
+    _Field_Factory = EnumeratedInt
+
+    def testAllowedValues(self):
+        field = self._Field_Factory(title=u'Int field', description=u'',
+                                    readonly=False, required=False,
+                                    allowed_values=(-1, 2))
+        field.validate(None)
+        field.validate(2)
+        self.assertRaisesErrorNames(errornames.InvalidValue,
+                                    field.validate, 4)
+
+
 def test_suite():
-    return makeSuite(IntTest)
+    suite = makeSuite(IntTest)
+    suite.addTest(makeSuite(EnumeratedIntTest))
+    return suite
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_strfield.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: test_strfield.py,v 1.3 2003/04/14 16:13:43 fdrake Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from zope.schema import Bytes, BytesLine, Text, TextLine
+from zope.schema import Bytes, BytesLine, Text, TextLine, EnumeratedTextLine
 from zope.schema import errornames
 from zope.schema.interfaces import ValidationError
 from zope.schema.tests.test_field import FieldTestBase
@@ -44,18 +44,6 @@ class StrTest(FieldTestBase):
                                     field.validate, None)
         self.assertRaisesErrorNames(errornames.TooShort,
                                     field.validate, self._convert(''))
-
-    def testAllowedValues(self):
-        field = self._Field_Factory(
-            title=u'Str field', description=u'',
-            readonly=False, required=False,
-            allowed_values=(self._convert('foo'),
-                            self._convert('bar')))
-        field.validate(None)
-        field.validate(self._convert('foo'))
-
-        self.assertRaisesErrorNames(errornames.InvalidValue,
-                                    field.validate, self._convert('blah'))
 
     def testValidateMinLength(self):
         field = self._Field_Factory(
@@ -146,6 +134,21 @@ class LineTest(SingleLine, BytesTest):
 class TextLineTest(SingleLine, TextTest):
     _Field_Factory = TextLine
 
+class EnumeratedTextLineTest(TextLineTest):
+    _Field_Factory = EnumeratedTextLine
+
+    def testAllowedValues(self):
+        field = self._Field_Factory(
+            title=u'Str field', description=u'',
+            readonly=False, required=False,
+            allowed_values=(self._convert('foo'),
+                            self._convert('bar')))
+        field.validate(None)
+        field.validate(self._convert('foo'))
+
+        self.assertRaisesErrorNames(errornames.InvalidValue,
+                                    field.validate, self._convert('blah'))
+
 
 def test_suite():
     return TestSuite((
@@ -153,6 +156,7 @@ def test_suite():
         makeSuite(TextTest),
         makeSuite(LineTest),
         makeSuite(TextLineTest),
+        makeSuite(EnumeratedTextLineTest),
         ))
 
 if __name__ == '__main__':
