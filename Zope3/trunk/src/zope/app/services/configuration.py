@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.23 2003/04/28 17:08:39 gvanrossum Exp $
+$Id: configuration.py,v 1.24 2003/04/28 19:31:32 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -498,9 +498,14 @@ class UseConfiguration:
 
     def removeUsage(self, location):
         annotations = getAdapter(self.context, IAnnotations)
-        locs = [loc for loc in annotations.get(USE_CONFIG_KEY, ())
-                    if loc != location]
-        annotations[USE_CONFIG_KEY] = tuple(locs)
+        locations = annotations.get(USE_CONFIG_KEY, ())
+        if locations:
+            locs = tuple([loc for loc in locations if loc != location])
+            if locs != locations:
+                if locs:
+                    annotations[USE_CONFIG_KEY] = locs
+                else:
+                    del annotations[USE_CONFIG_KEY]
 
     def usages(self):
         annotations = getAdapter(self.context, IAnnotations)
