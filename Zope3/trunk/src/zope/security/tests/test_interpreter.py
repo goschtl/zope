@@ -52,6 +52,19 @@ class RITests(unittest.TestCase, CleanUp):
                 )
         self.rinterp.ri_exec(code)
 
+    def testGlobalVersusLocal(self):
+        code = ("global x\n"
+                "x = 1\n"
+                "y = 2\n")
+        self.rinterp.ri_exec(code)
+        self.assert_('x' in self.rinterp.globals)
+        self.assert_('y' not in self.rinterp.globals)
+        self.assertEqual(self.rinterp.globals['x'], 1)
+        self.assert_('x' not in self.rinterp.locals)
+        self.assert_('y' in self.rinterp.locals)
+        self.assertEqual(self.rinterp.locals['y'], 2)
+
+
 def test_suite():
     return unittest.makeSuite(RITests)
 
