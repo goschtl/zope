@@ -22,6 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import Bool
 from zope.interface.verify import verifyClass
 
+from zope.app.form.interfaces import MissingInputError
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 
 
@@ -137,7 +138,10 @@ class CheckBoxWidgetTest(SimpleInputWidgetTest):
         self._widget.request.form['field.foo'] = 'positive'
         self.assertEqual(self._widget.getInputValue(), False)
         del self._widget.request.form['field.foo']
-        self.assertEqual(self._widget.getInputValue(), False)
+        self._widget.request.form['field.foo.used'] = ''
+        self.assertEquals(self._widget.getInputValue(), False)
+        del self._widget.request.form['field.foo.used']        
+        self.assertRaises(MissingInputError, self._widget.getInputValue)
 
 
 def test_suite():
