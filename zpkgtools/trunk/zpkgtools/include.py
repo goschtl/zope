@@ -11,7 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Processor for inclusions when building a release."""
+"""Processor for inclusions when building a release.
+
+:Variables:
+  - `EXCLUDE_NAMES`: Names of files and directories that will be
+    excluded from copying.  These are generally related to source
+    management systems, but don't need to be.
+
+  - `EXCLUDE_PATTERNS`: Glob patterns used to filter the set of files
+    that are copied.  Any file with a name matching these patterns
+    will be ignored.
+
+"""
 
 import fnmatch
 import glob
@@ -43,6 +54,8 @@ class InclusionSpecificationError(ValueError, InclusionError):
 
 
 def filter_names(names):
+    """Given a list of file names, return those names that should be copied.
+    """
     names = [n for n in names
              if n not in EXCLUDE_NAMES]
     # This is needed when building a distro from a working
@@ -56,15 +69,14 @@ def filter_names(names):
 class Specification:
     """Specification for files to include and exclude.
 
-    The following attributes are provided:
+    :Ivariables:
+      - `excludes`: Iterable containing the absolute path names of the
+        files in the source tree that should not be part of the
+        destination.
 
-    excludes
-      Iterable containing the absolute path names of the files in the
-      source tree that should not be part of the destination.
-
-    includes
-      Mapping from relative path (relative to the destination) to
-      either an absolute path in the source directory or a URL.
+      - `includes`: Mapping from relative path (relative to the
+        destination) to either an absolute path in the source
+        directory or a URL.
 
     """
 
@@ -162,6 +174,17 @@ class InclusionProcessor:
     def copyTree(self, source, destination, excludes={}):
         """Populate the destination tree from the source tree.
 
+        :Parameters:
+          - `source`: Absolute path to a directory to copy into the
+            destination tree.
+
+          - `destination`: Absolute path to a directory that
+            corresponds to the `source` tree.  It will be created if
+            it doesn't exist.
+
+          - `excludes`: Container for paths that should not be copied
+            from the `source` tree.  This should be an absolute path.
+
         Files and directories will be created with the same permission
         bits and stat info as the source tree.
 
@@ -207,11 +230,12 @@ class InclusionProcessor:
                 shutil.copystat(srcname, destname)
 
     def copy_file(self, source, destination):
+        """Copy a single file into the output tree."""
         shutil.copy2(source, destination)
         self.add_output(destination)
 
     def add_output(self, path):
-        """Add 'path' to each of the relevant manifests."""
+        """Add `path` to each of the relevant manifests."""
         for prefix, manifest in self.manifests:
             if path.startswith(prefix):
                 relpath = path[len(prefix):]
@@ -243,6 +267,19 @@ class InclusionProcessor:
         raise ValueError("no manifest for %s" % destination)
 
     def addSingleInclude(self, relpath, source, destination):
+        """Process a single include specification line.
+
+        :Parameters:
+          - `relpath`: Path relative to the destination directory, as
+            taken from the specification.  This should use the path
+            notation of the host operating system.
+
+          - `source`: Path or URL to the input file or directory.
+
+          - `destination`: Top-level destination directory; this is
+            used as a base directory for `relpath`.
+
+        """
         dirname, basename = os.path.split(relpath)
         if dirname:
             destdir = os.path.join(destination, dirname)
