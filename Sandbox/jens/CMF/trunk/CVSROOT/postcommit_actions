@@ -399,7 +399,7 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
         cmd = cmd + " --verbose"
 
     if not recurse:
-        cmd = cmd + ' --exclude "/*/*"'
+        cmd = cmd + ' --exclude "/*/*/*"'
 
     reposubdir = string.join(string.split(repo, '/')[1:], '/')
     # XXX BOGUS - this twisted condition is because i haven't thought through
