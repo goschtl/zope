@@ -617,9 +617,6 @@ class timedelta(object):
     def __getstate__(self):
         return (self.__days, self.__seconds, self.__microseconds)
 
-    def __setstate__(self, tup):
-        self.__days, self.__seconds, self.__microseconds = tup
-
     def __reduce__(self):
         return (self.__class__, self.__getstate__())
 
@@ -667,7 +664,7 @@ class date(object):
         if isinstance(year, str):
             # Pickle support
             self = object.__new__(cls)
-            self.__setstate__((year,))
+            self.__setstate((year,))
             return self
         _check_date_fields(year, month, day)
         self = object.__new__(cls)
@@ -859,7 +856,7 @@ class date(object):
         yhi, ylo = divmod(self.__year, 256)
         return ("%c%c%c%c" % (yhi, ylo, self.__month, self.__day), )
 
-    def __setstate__(self, t):
+    def __setstate(self, t):
         assert isinstance(t, tuple) and len(t) == 1, `t`
         string = t[0]
         assert len(string) == 4
@@ -985,7 +982,7 @@ class time(object):
         self = object.__new__(cls)
         if isinstance(hour, str):
             # Pickle support
-            self.__setstate__((hour, minute or None))
+            self.__setstate((hour, minute or None))
             return self
         _check_tzinfo_arg(tzinfo)
         _check_time_fields(hour, minute, second, microsecond)
@@ -1189,12 +1186,9 @@ class time(object):
         else:
             return (basestate, self._tzinfo)
 
-    def __setstate__(self, state):
-        if not isinstance(state, tuple):
-            raise TypeError("time.__setstate__() requires a tuple arg")
-        if not 1 <= len(state) <= 2:
-            raise TypeError("time.__setstate__() requires a 1-tuple or "
-                            "2-tuple argument")
+    def __setstate(self, state):
+        assert isinstance(state, tuple)
+        assert 1 <= len(state) <= 2
         string = state[0]
         assert len(string) == 6
         self.__hour, self.__minute, self.__second, us1, us2, us3 = \
@@ -1224,7 +1218,7 @@ class datetime(date):
         if isinstance(year, str):
             # Pickle support
             self = date.__new__(cls, 1, 1, 1)
-            self.__setstate__((year, month))
+            self.__setstate((year, month))
             return self
         _check_tzinfo_arg(tzinfo)
         _check_time_fields(hour, minute, second, microsecond)
@@ -1587,12 +1581,9 @@ class datetime(date):
         else:
             return (basestate, self._tzinfo)
 
-    def __setstate__(self, state):
-        if not isinstance(state, tuple):
-            raise TypeError("datetime.__setstate__() requires a tuple arg")
-        if not 1 <= len(state) <= 2:
-            raise TypeError("datetime.__setstate__() requires a 1-tuple or "
-                            "2-tuple argument")
+    def __setstate(self, state):
+        assert isinstance(state, tuple)
+        assert 1 <= len(state) <= 2
         string = state[0]
         assert len(string) == 10
         (yhi, ylo, self.__month, self.__day, self.__hour,
