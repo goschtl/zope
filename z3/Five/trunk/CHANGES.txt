@@ -26,10 +26,6 @@ Five 0.2 (in development)
 
 * registered absolute_url view and IAbsoluteURL adapter for *
 
-* by default, OFS.SimpleItem.Item and OFS.ObjectManager.Manager are
-  five:traversable. XXX should we do this by default? Could lead to
-  compatibility issues.
-
 * zope.app.traversing is registered by default, to make special
   namespaces available (eg: @@, ++resource++)
 
