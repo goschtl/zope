@@ -14,7 +14,7 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.10 2003/03/26 16:58:30 jack-e Exp $
+$Id: __init__.py,v 1.11 2003/03/27 16:32:21 icemac Exp $
 """
 
 from zope.interface import Interface
@@ -74,6 +74,9 @@ class IProcessDefinition(Interface):
 
     name = Attribute("""The name of the ProcessDefinition""")
 
+    def clear():
+        """Clear the whole ProcessDefinition.
+        """
 
     def createProcessInstance():
         """Create a new process instance for this process definition.
