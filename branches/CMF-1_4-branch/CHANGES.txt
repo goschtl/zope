@@ -10,6 +10,8 @@ Post CMF 1,4.2
       port. Eliminates additional user challenges for browser-based DAV 
       clients like MS WebFolders.
 
+    - CMFCore.MembershipTool: Don't swallow ConflictError during wrapUser.
+
 CMF 1.4.2 (2003/10/27)
 
   Bug Fixes
