@@ -13,22 +13,22 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.10 2002/11/18 13:34:19 stevea Exp $
+$Id: Adding.py,v 1.11 2002/11/18 23:52:59 jim Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
-from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Publisher.IPublishTraverse import IPublishTraverse
 from Zope.ComponentArchitecture \
-     import getView, getService, createObject, queryFactory, queryView
+     import getView, getService, createObject, \
+            queryFactory, queryView, getAdapter
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.ContextWrapper import ContextMethod, getbaseobject
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Event import publishEvent
 from Zope.Event.ObjectEvent \
      import ObjectCreatedEvent, ObjectModifiedEvent, ObjectAddedEvent
-
+from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
 class Adding(BrowserView):
 
     __implements__ =  IAdding, IPublishTraverse
@@ -41,12 +41,11 @@ class Adding(BrowserView):
 
     def add(self, content):
         'See Zope.App.OFS.Container.IAdding.IAdding'
-        content = removeAllProxies(content) # XXX We need to think about this
-        name = self.context.setObject(self.contentName, content)
-        content = ContextWrapper(self.context[name], self.context, name=name)
-        publishEvent(self.context, ObjectAddedEvent(content))
-        publishEvent(self.context, ObjectModifiedEvent(self.context))
-        return content
+        container = self.context
+        container = getAdapter(container, IZopeContainer)
+        name = container.setObject(self.contentName, content)
+        return container[name]
+
     
     # See Zope.App.OFS.Container.Views.Browser.IAdding.IAdding
     contentName = None # usually set by Adding traverser

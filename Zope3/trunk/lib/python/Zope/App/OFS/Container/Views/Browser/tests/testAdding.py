@@ -13,11 +13,11 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: testAdding.py,v 1.5 2002/11/18 13:40:38 stevea Exp $
+$Id: testAdding.py,v 1.6 2002/11/18 23:52:59 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
-
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
 from Zope.App.OFS.Container.Views.Browser.Adding import Adding
 from Zope.App.OFS.Container.IAdding import IAdding
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
@@ -30,7 +30,16 @@ from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.Event.tests.PlacelessSetup import getEvents
 from Zope.Event.IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 
+from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
+from Zope.App.OFS.Container.IContainer import IContainer
+from Zope.App.OFS.Container.ZopeContainerAdapter import ZopeContainerAdapter
+
+
+
 class Container:
+
+    __implements__ = IContainer
+    
     def __init__(self):
         self._data = {}
 
@@ -48,14 +57,17 @@ class CreationView(BrowserView):
 
 class Test(PlacelessSetup, TestCase):
 
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)    
+
     def test(self):
         container = Container()
         request = TestRequest()
         adding = Adding(container, request)
         provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
-        
         self.assertEqual(adding.contentName, None)
-        view = adding.publishTraverse(request, 'Thing=foo') 
+        view = adding.publishTraverse(request, 'Thing=foo')
         self.assertEqual(view.action(), 'been there, done that')
         self.assertEqual(adding.contentName, 'foo')
 
@@ -65,7 +77,7 @@ class Test(PlacelessSetup, TestCase):
 
         o = Container() # any old instance will do
         result = adding.add(o)
-
+        
         # Make sure the right events were generated:
         self.failUnless(
             getEvents(IObjectAddedEvent,

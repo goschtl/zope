@@ -14,17 +14,17 @@
 """
 
 Revision information:
-$Id: testContents.py,v 1.6 2002/10/04 19:52:25 jim Exp $
+$Id: testContents.py,v 1.7 2002/11/18 23:52:59 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
 
-from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
+from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
+from Zope.App.OFS.Container.IContainer import IContainer
+from Zope.App.OFS.Container.ZopeContainerAdapter import ZopeContainerAdapter
 
-from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
-from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
 from Zope.Event.tests.PlacelessSetup import getEvents
 from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectModifiedEvent
 from Interface import Interface
@@ -43,7 +43,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)
+        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)    
         
 
     def testInfo(self):

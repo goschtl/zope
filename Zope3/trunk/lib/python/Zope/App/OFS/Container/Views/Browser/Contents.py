@@ -13,16 +13,17 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.8 2002/10/04 19:55:17 jim Exp $
+Revision information: $Id: Contents.py,v 1.9 2002/11/18 23:52:59 jim Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.OFS.Container.IContainer import IContainer
-from Zope.ComponentArchitecture import queryView, getView, queryAdapter
+from Zope.ComponentArchitecture \
+     import queryView, getView, queryAdapter,  getAdapter
 from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
 from Zope.Event import publishEvent
-from Zope.Event.ObjectEvent import ObjectModifiedEvent, ObjectRemovedEvent
 from Zope.Proxy.ContextWrapper import ContextWrapper
+from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
 
 class Contents(BrowserView):
 
@@ -60,24 +61,13 @@ class Contents(BrowserView):
 
     def removeObjects(self, ids):
         """Remove objects specified in a list of object ids"""
+        container = self.context
         for id in ids:
-            self._remove(id)
-
-        publishEvent(self.context, ObjectModifiedEvent(self.context))
+            container = getAdapter(container, IZopeContainer)
+            container.__delitem__(id)
 
         self.request.response.redirect('@@contents.html')
         
-
-    def _remove(self, name):
-        """
-            Remove the object stored under 'name', or raise a KeyError
-            if no such object.
-        """
-        content = ContextWrapper(self.context[name], self.context,
-                                 name=name)
-        del self.context[name]
-        publishEvent(self.context, ObjectRemovedEvent(content))
-
     def listContentInfo(self):
         return map(self._extractContentInfo, self.context.items())
 
