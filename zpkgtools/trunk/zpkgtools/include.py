@@ -33,12 +33,10 @@ import os
 import posixpath
 import shutil
 import urllib
-import urllib2
 
 from zpkgtools import Error
 
 from zpkgtools import cfgparser
-from zpkgtools import loader
 from zpkgtools import publication
 
 
