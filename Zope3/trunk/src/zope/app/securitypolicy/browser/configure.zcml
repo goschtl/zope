@@ -110,4 +110,15 @@
                         getPermissionsForPrincipal" 
       /  -->
 
+<!-- Granting Roles and Permissions to Principals -->
+
+  <page
+    for="zope.app.annotation.interfaces.IAnnotatable"
+    name="granting.html"
+    permission="zope.Security"
+    template="granting.pt" 
+    class=".granting.Granting"
+    menu="zmi_actions" title="Granting" />
+
+
 </zope:configure>
