@@ -526,7 +526,7 @@ criteria.  There are two approaches a plugin can use to support
 searching: 
 
 - A plugin can provide IQuerySchemaSearch, in addition to
-  `IPrincipalSearchPlugin`.  In this case, the plugin provises a search
+  `IPrincipalSearchPlugin`.  In this case, the plugin provides a search
   method and a schema that describes the input to be provided to the
   search method.
 

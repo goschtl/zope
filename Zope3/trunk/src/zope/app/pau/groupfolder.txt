@@ -16,8 +16,8 @@ information.  We create group information using the `GroupInformation` class:
   >>> groups['g1'] = g1
 
 Groups are defined with respect to an authentication service.  Groups
-must be accessable via an authentication service and can contain
-principals accessable via an authentication service.
+must be accessible via an authentication service and can contain
+principals accessible via an authentication service.
 
 To illustrate the group interaction with the authentication service,
 we'll create a sample authentication service:
@@ -56,7 +56,7 @@ we'll create a sample authentication service:
   ...         setGroupsForPrincipal(PrincipalCreatedEvent(principal))
   ...         return principal
 
-This class doesn't really implement the fill `IAuthenticationService`
+This class doesn't really implement the full `IAuthenticationService`
 interface, but it implements the `getPrincipal` method used by groups.
 It works very much like PAU.  It creates principals on demand.  It
 calls `setGroupsForPrincipal`, which is normally called as an event
@@ -85,7 +85,7 @@ This allows us to look up groups for the principals:
   >>> groups.getGroupsForPrincipal('p1')
   (u'group.g1',)
 
-Note that the group id is a concatination of the group-folder prefix
+Note that the group id is a concatenation of the group-folder prefix
 and the name of the group-information object within the folder.
 
 If we delete a group:
