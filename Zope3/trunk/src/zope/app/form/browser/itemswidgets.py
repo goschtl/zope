@@ -309,8 +309,7 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         contents.append(self._div('value', self.renderValue(value)))
         contents.append(self._emptyMarker())
 
-        return self._div(self.cssClass, "\n".join(contents),
-                         id=self.name)
+        return self._div(self.cssClass, "\n".join(contents))
 
 
     def _div(self, cssClass, contents, **kw):

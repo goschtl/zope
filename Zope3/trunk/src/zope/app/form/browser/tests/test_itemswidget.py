@@ -224,7 +224,7 @@ class SelectWidgetTest(ItemsEditWidgetBaseTest):
         widget.context.required = False
         self.assertEqual(
             widget(),
-            '<div id="field.choice">\n'
+            '<div>\n'
             '<div class="value">\n'
             '<select name="field.choice" size="%i" >\n'
             '<option value="">(no value)</option>\n'
