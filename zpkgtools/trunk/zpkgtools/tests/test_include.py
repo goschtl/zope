@@ -83,11 +83,15 @@ class InclusionProcessorTestCase(unittest.TestCase):
           """)
         specs = include.load(self.source)
         specs.collection.cook()
+        specs.distribution.cook()
         includes = specs.collection.includes
         self.assertEqual(len(includes), 3)
         self.assert_("newname1.txt" in includes)
         self.assert_("newname2.txt" in includes)
         self.assert_("runtests.py" in includes)
+        self.assert_(specs.loads)
+        self.assert_(specs.collection)
+        self.assert_(specs.distribution)
         self.assertEqual(specs.collection.includes["newname1.txt"],
                          "ignorethis.txt")
         self.assertEqual(specs.loads.includes["repository:doc/whatzit.txt"],
@@ -110,8 +114,12 @@ class InclusionProcessorTestCase(unittest.TestCase):
             """)
         specs = include.load(self.source)
         specs.collection.cook()
+        specs.distribution.cook()
         self.assertEqual(len(specs.collection.includes), 1)
         self.assert_("ignorethis.txt" in specs.collection.includes)
+        self.assert_(not specs.loads)
+        self.assert_(specs.collection)
+        self.assert_(not specs.distribution)
 
     def test_disallow_external_reference_in_collection_spec(self):
         self.check_disallow_external_reference_in_spec("collection")

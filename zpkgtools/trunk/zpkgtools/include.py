@@ -247,6 +247,9 @@ class Specification:
         self.filename = filename
         self.group = group
 
+    def __nonzero__(self):
+        return bool(self.includes)
+
     def cook(self):
         patterns = self.includes.pop(None, [])
         source = os.path.normpath(self.source)
