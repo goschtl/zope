@@ -12,21 +12,15 @@
              "
              />
      </td>
-     <td><a href="."
+     <td tal:condition="python: registration['id'] != 'disable'"><a href="."
             tal:attributes="href string:${view/configBase}/${registration/id}"
             tal:content="registration/id"
          >foo/bar</a></td>
+     <td tal:condition="python: registration['id'] == 'disable'"
+         i18n:translate="">
+         Disabled</td>
      <td tal:content="structure registration/summary">
          Registration summary
      </td>
-  </tr>
-  <tr>
-     <td><input type="radio" name="Roles" value="disable"
-                tal:attributes="
-                   name view/name;
-                   checked view/inactive;
-                   "
-                /></td>
-     <td><em>Disable</em></td>
   </tr>
 </table>

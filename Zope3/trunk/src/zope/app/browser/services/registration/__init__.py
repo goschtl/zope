@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.2 2003/06/30 22:44:14 jeremy Exp $
+$Id: __init__.py,v 1.3 2003/07/02 19:15:01 fdrake Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -126,19 +126,19 @@ class ChangeRegistrations(BrowserView):
     def applyUpdates(self):
         message = ''
         if 'submit_update' in self.request.form:
-            active = self.request.form.get(self.name)
-            if active == "disable":
+            id = self.request.form.get(self.name)
+            if id == "disable":
                 active = self.context.active()
                 if active is not None:
-                    self.context.deactivate(active)
+                    self.context.activate(None)
                     message = "Disabled"
             else:
                 for info in self.context.info():
-                    if info['id'] == active:
-                        if not info['active']:
-                            self.context.activate(info['registration'])
-                            message = "Updated"
-
+                    if info['id'] == id and not info['active']:
+                        self.context.activate(info['registration'])
+                        message = "Updated"
+                        break
+                            
         return message
 
     def update(self):
@@ -149,19 +149,32 @@ class ChangeRegistrations(BrowserView):
                                       'absolute_url', self.request)
                               )
 
-        registrations = self.context.info()
+        registrations = self.context.info(True)
 
         # This is OK because registrations is just a list of dicts
         registrations = removeAllProxies(registrations)
 
         inactive = 1
+        have_none = False
         for info in registrations:
             if info['active']:
                 inactive = None
             else:
                 info['active'] = None
 
-            info['summary'] = info['registration'].implementationSummary()
+            reg = info['registration']
+            if reg is not None:
+                info['summary'] = reg.implementationSummary()
+            else:
+                info['summary'] = ""
+                info['id'] = 'disable'
+                have_none = True
+
+        if not have_none:
+            # Add a dummy registration since the stack removes trailing None.
+            registrations.append({"active": False,
+                                  "id": "disable",
+                                  "summary": ""})
 
         self.inactive = inactive
         self.registrations = registrations

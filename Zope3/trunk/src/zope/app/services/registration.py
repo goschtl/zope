@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.5 2003/07/01 22:05:42 fdrake Exp $
+$Id: registration.py,v 1.6 2003/07/02 19:14:58 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -268,18 +268,21 @@ class RegistrationStack(Persistent):
         sm = zapi.getServiceManager(wrapped_self)
 
         data = wrapped_self._data
-        if not data and keep_dummy:
+        if None not in data:
             data += (None,)
 
         result = [{'id': path or "",
                    'active': False,
                    'registration': (path and zapi.traverse(sm, path))
                   }
-                  for path in data if path or keep_dummy
+                  for path in data
                  ]
 
-        if keep_dummy or (result and result[0]['registration'] is not None):
-            result[0]['active'] = True
+        result[0]['active'] = True
+
+        if not keep_dummy:
+            # Throw away dummy:
+            result = [x for x in result if x['id']]
 
         return result
     info = zapi.ContextMethod(info)

@@ -265,7 +265,7 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.container.IWriteContainer"
-        attributes="getRegistrationManager" 
+        attributes="getRegistrationManager resolve" 
         />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
