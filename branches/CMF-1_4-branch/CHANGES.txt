@@ -5,6 +5,16 @@ After CMF 1.4.8
     - Fixed Creator() to not call a potentially costly method on the
       user folder. (http://zope.org/Collectors/CMF/300)
 
+    - CMFCatalogAware: When reindexing security, all subobjects must be
+      reindexed even if they are not visible by the current user.
+
+  New Features
+
+    - CatalogTool.CatalogTool now has a private 'unrestrictedSearchResults'
+      method bypassing the effective and expiry date and roles. The new
+      method has to be used with care to not expose security holes in
+      applications using the CatalogTool.
+
 CMF 1.4.8 (2005/03/18)
 
   Bug Fixes
