@@ -2,24 +2,24 @@
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.15 2003/08/17 06:08:56 philikon Exp $
+$Id: fsmerger.py,v 1.16 2003/08/28 15:38:47 fdrake Exp $
 """
 
 import os
 import shutil
 
-from os.path import exists, isfile, isdir, join
+from os.path import basename, exists, isfile, isdir, join
 from os.path import realpath, normcase, normpath
 
 from zope.xmlpickle import dumps
@@ -254,6 +254,8 @@ class FSMerger(object):
         This adds a separator (e.g. '/') to the end of the pathname to
         signal that it is a directory.
         """
+        if letter == "?" and self.ignore(localdir):
+            letter = "*"
         self.reporter("%s %s" % (letter, join(localdir, "")))
 
     def reportaction(self, action, state, local):
@@ -297,4 +299,6 @@ class FSMerger(object):
     def ignore(self, path):
         # XXX This should have a larger set of default patterns to
         # ignore, and honor .cvsignore
-        return path.endswith("~")
+        fn = basename(path)
+        return (fn.endswith("~")
+                or fn in (".cvsignore", "CVS", "RCS", "SCCS", ".svn"))
