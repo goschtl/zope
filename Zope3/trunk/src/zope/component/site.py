@@ -289,6 +289,9 @@ class AdapterRegistration(object):
             self.value, self.doc,
             )
 
+    def __cmp__(self, other):
+        return cmp(self.__repr__(), other.__repr__())
+
 
 class SubscriptionRegistration(object):
     """Registration for a subscription adapter."""
@@ -304,6 +307,10 @@ class SubscriptionRegistration(object):
             self.provided.__name__, self.value, self.doc,
             )
 
+    def __cmp__(self, other):
+        return cmp(self.__repr__(), other.__repr__())
+
+
 class UtilityRegistration(object):
 
     def __init__(self, provided, name, component, doc):
@@ -317,4 +324,6 @@ class UtilityRegistration(object):
             getattr(self.component, '__name__', self.component), self.doc,
             )
 
+    def __cmp__(self, other):
+        return cmp(self.__repr__(), other.__repr__())
 

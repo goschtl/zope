@@ -42,3 +42,6 @@ class Factory(object):
             spec.__name__ = getattr(self._callable, '__name__', '[callable]')
             return spec
         return implementedBy(self._callable)
+
+    def __repr__(self):
+        return '<%s for %s>' %(self.__class__.__name__, `self._callable`)
