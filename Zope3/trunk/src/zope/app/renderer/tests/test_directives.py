@@ -13,17 +13,14 @@
 ##############################################################################
 """Test the wiki ZCML namespace directives.
 
-$Id: test_directives.py,v 1.1 2003/07/31 17:59:41 srichter Exp $
+$Id: test_directives.py,v 1.2 2003/08/02 11:20:09 srichter Exp $
 """
-import os
 import unittest
-
-from cStringIO import StringIO
 
 from zope.interface import Interface, implements
 from zope.component import getView
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.configuration import xmlconfig, tests
+from zope.configuration import xmlconfig
 from zope.publisher.browser import BrowserView, TestRequest
 
 import zope.app.renderer
@@ -42,10 +39,6 @@ class TestRenderer(BrowserView):
 
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
-
-    def setUp(self):
-        PlacelessSetup.setUp(self)
-        self.context = xmlconfig.file("simple.zcml", tests)
 
     def test_sourcetype(self):
         self.assertEqual(SourceTypes.getAllTitles(), [])

@@ -1,4 +1,4 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:renderer="http://namespaces.zope.org/renderer">
 
@@ -69,4 +69,4 @@
       factory=".rest.ReStructuredTextToHTMLRenderer" />
 
 
-</zopeConfigure>
+</configure>

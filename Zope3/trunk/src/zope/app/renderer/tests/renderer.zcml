@@ -1,5 +1,4 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:meta="http://namespaces.zope.org/meta"
            xmlns:renderer="http://namespaces.zope.org/renderer">
 
   <include package="zope.app.renderer" file="meta.zcml"/>
@@ -14,7 +13,4 @@
       for="zope.publisher.interfaces.browser.IBrowserPresentation" 
       factory=".tests.test_directives.TestRenderer" />
  
-
 </configure>
-
-  
