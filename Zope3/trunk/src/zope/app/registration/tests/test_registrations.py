@@ -35,7 +35,10 @@ from zope.app.tests import ztapi
 from zope.app.registration.interfaces import IRegistration
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.event.interfaces import ISubscriber
-from zope.app.registration.registration import SimpleRegistrationRemoveSubscriber, ComponentRegistrationRemoveSubscriber, ComponentRegistrationAddSubscriber
+from zope.app.registration.registration import \
+    SimpleRegistrationRemoveSubscriber, \
+    ComponentRegistrationRemoveSubscriber, \
+    ComponentRegistrationAddSubscriber
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 
 class ITestComponent(Interface):
