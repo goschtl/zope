@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testStartupDirectives.py,v 1.4 2002/12/19 23:05:22 gvanrossum Exp $
+$Id: testStartupDirectives.py,v 1.5 2002/12/20 19:46:46 jeremy Exp $
 """
 
 import unittest, sys, tempfile, os
@@ -95,7 +95,6 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(server_info['port'], 8081)
         self.assertEqual(server_info['verbose'], 1)
 
-
     def testInitDB(self):
         sd = self._createBlankSiteDefinition()
 
@@ -112,12 +111,14 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         sd._initDB()
 
-        connection = sd._zodb.open()
-        root = connection.root()
-        app = root.get(ZopePublication.root_name, None)
-        connection.close()
-        self.failUnless(IRootFolder.isImplementedBy(app))
-
+        try:
+            connection = sd._zodb.open()
+            root = connection.root()
+            app = root.get(ZopePublication.root_name, None)
+            connection.close()
+            self.failUnless(IRootFolder.isImplementedBy(app))
+        finally:
+            sd.close()
 
 def test_suite():
     loader=unittest.TestLoader()
