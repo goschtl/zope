@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.3 2003/03/25 20:46:13 jim Exp $
+$Id: zpt.py,v 1.4 2003/04/10 09:34:29 paul Exp $
 """
 
 import zope.schema
@@ -36,7 +36,7 @@ class IZPTPage(Interface):
     def getSource():
         """Get the source of the page template."""
 
-    source = zope.schema.Text(
+    source = zope.schema.SourceText(
         title=_(u"Source"),
         description=_(u"""The source of the page template."""),
         required=True)

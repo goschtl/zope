@@ -25,6 +25,14 @@
   <browser:page
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.ISourceText"
+      name="edit"
+      class="zope.app.browser.form.widget.TextAreaWidget" 
+      />
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.interfaces.IBytesLine"
       name="edit"
       class="zope.app.browser.form.widget.BytesWidget" 

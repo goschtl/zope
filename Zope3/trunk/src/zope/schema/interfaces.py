@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.5 2003/03/25 11:47:56 tseaver Exp $
+$Id: interfaces.py,v 1.6 2003/04/10 09:34:30 paul Exp $
 """
 from zope.interface import Interface
 
@@ -260,6 +260,9 @@ class IBytesLine(IBytes):
 class IText(IMinMaxLen, IValueSet, IIterable):
     u"""a Field containing a unicode string."""
 
+class ISourceText(IText):
+    u"""Field for source text of object."""
+
 class ITextLine(IText):
     u"""a Field containing a unicode string without newlines."""
 
@@ -331,3 +334,4 @@ class IDict(IMinMaxLen, IIterable):
         constraint=_fields,
         required=False,
         )
+

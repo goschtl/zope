@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.6 2003/03/25 11:47:56 tseaver Exp $
+$Id: _field.py,v 1.7 2003/04/10 09:34:30 paul Exp $
 """
 __metaclass__ = type
 
@@ -23,6 +23,7 @@ from zope.schema.errornames import WrongContainedType
 
 from zope.schema.interfaces import IField, IContainer, IIterable, IOrderable
 from zope.schema.interfaces import IMinMaxLen, IValueSet, IText, ITextLine
+from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
 from zope.schema.interfaces import IPassword
@@ -56,6 +57,11 @@ implements(TextLine, ITextLine)
 implements(Password, IPassword)
 implements(Bool, IBool)
 implements(Int, IInt)
+
+class SourceText(Text):
+    __doc__ = ISourceText.__doc__
+    __implements__ = ISourceText
+    _type = unicode
 
 class Bytes(MinMaxLen, ValueSet):
     __doc__ = IBytes.__doc__

@@ -42,19 +42,15 @@
           onload string:loadtree('${rooturl}/', '${thisbaseurl}/');">
 
     <div id="global">
-      <img tal:attributes="src context/++resource++zope3logo.gif" />
-    </div>
-
-    <div id="personal">
       <div id="userDetails">
         <metal:block define-macro="logged_user">
           User:
-          <tal:block replace="request/user/getTitle">
+	  <tal:block replace="request/user/getTitle">
             User
           </tal:block>
         </metal:block>  
       </div>
-      [Personalized Elements]
+      <img tal:attributes="src context/++resource++zope3logo.gif" />
     </div>
 
     <div id="navigators">
@@ -151,6 +147,7 @@
             </table>
           </metal:block>
         </div>
+
 
         <div id="context_information">
      

@@ -84,4 +84,14 @@
     template="folder_contents.pt" 
     />
 
+<browser:page
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+    for="zope.schema.interfaces.ISourceText"
+    name="edit"
+    layer="rotterdam"
+    class="zope.app.browser.skins.rotterdam.editingwidgets.SimpleEditingWidget" 
+    />
+
+
 </zopeConfigure>
