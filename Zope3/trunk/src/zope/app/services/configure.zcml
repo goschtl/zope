@@ -214,7 +214,7 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.services.service.IServiceConfiguration"
-        set_attributes="serviceType componentPath"
+        set_attributes="serviceType componentPath permission"
         set_schema=
             "zope.app.interfaces.services.configuration.IConfiguration"
         />
