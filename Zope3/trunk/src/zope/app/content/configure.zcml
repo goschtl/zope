@@ -365,6 +365,11 @@
 
 <fssync:adapter class=".folder.Folder" factory=".fssync.DirectoryAdapter" />
 
+<fssync:adapter
+    class=".folder.RootFolder"
+    factory=".fssync.DirectoryAdapter"
+    />
+
 <fssync:adapter class=".zpt.ZPTPage" factory=".fssync.ZPTPageAdapter" />
 
 <fssync:adapter class=".dtmlpage.DTMLPage" factory=".fssync.DTMLPageAdapter" />
