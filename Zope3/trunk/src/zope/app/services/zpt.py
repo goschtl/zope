@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.17 2004/01/13 19:32:23 fdrake Exp $
+$Id: zpt.py,v 1.18 2004/02/06 04:13:31 jim Exp $
 """
 
 from zope.security.proxy import ProxyFactory
@@ -29,8 +29,8 @@ import zope.interface
 import zope.pagetemplate.pagetemplate
 import zope.schema
 
-class IZPTTemplate(zope.app.interfaces.services.registration.IRegisterable):
-    """ZPT Templates for use in views
+class IZPTInfo(zope.interface.Interface):
+    """ZPT Template configuration information
     """
 
     contentType = zope.schema.BytesLine(
@@ -47,6 +47,12 @@ class IZPTTemplate(zope.app.interfaces.services.registration.IRegisterable):
     expand = zope.schema.Bool(
         title=u"Expand macros",
         )
+
+class IZPTTemplate(
+    IZPTInfo,
+    zope.app.interfaces.services.registration.IRegisterable):
+    """ZPT Templates for use in views
+    """
 
     def render(context, request, *args, **kw):
         """Render the page template.

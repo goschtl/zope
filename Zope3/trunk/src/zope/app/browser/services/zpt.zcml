@@ -11,11 +11,12 @@
     permission="zope.ManageServices" />
 
   <editform
-    schema="zope.app.services.zpt.IZPTTemplate"
+    schema="zope.app.services.zpt.IZPTInfo"
     name="edit.html"
     menu="zmi_views"
     label="ZPT Template"
-    permission="zope.ManageServices" />
+    permission="zope.ManageServices" 
+    />
 
   <addMenuItem
     permission="zope.ManageServices"
