@@ -87,7 +87,8 @@ explanation.  The process has the following steps:
    If the ``<collection>`` section is not present or is empty, all
    files in the workspace are copied; directories are copied
    recursively.  Files named `.cvsignore` and directories with names
-   of `CVS`, `RCS`, or `SCCS` are excluded.
+   of `{arch}`, `CVS`, `_darcs`, `RCS`, `SCCS`, or `.svn` are
+   excluded.
 
    A copy of a file with a new name can be generated in the
    distribution tree using a line like this in `PACKAGE.cfg`:
