@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.9 2003/01/16 19:50:28 stevea Exp $
+$Id: widget.py,v 1.10 2003/01/20 16:23:37 mgedmin Exp $
 """
 
 __metaclass__ = type
@@ -182,13 +182,13 @@ class PossiblyEmptyMeansMissing:
         v = self.request.form.get(self.name)
         if v is None:
             return 0
-        if not v and self.context.min_length > 0:
+        if not v and getattr(self.context, 'min_length', 1) > 0:
             return 0
         return 1
 
     def _convert(self, value):
         v = self.request.form.get(self.name)
-        if not v and self.context.min_length > 0:
+        if not v and getattr(self.context, 'min_length', 1) > 0:
             return None
         return v
 

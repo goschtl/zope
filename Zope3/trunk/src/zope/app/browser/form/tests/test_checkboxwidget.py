@@ -12,16 +12,18 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.4 2003/01/15 15:44:33 ryzaja Exp $
+$Id: test_checkboxwidget.py,v 1.5 2003/01/20 16:23:38 mgedmin Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import CheckBoxWidget
+from zope.schema import Bool
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 
 class CheckBoxWidgetTest(BrowserWidgetTest):
 
+    _FieldFactory = Bool
     _WidgetFactory = CheckBoxWidget
 
     def testProperties(self):

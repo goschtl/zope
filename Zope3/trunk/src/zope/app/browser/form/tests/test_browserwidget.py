@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.6 2003/01/16 19:50:30 stevea Exp $
+$Id: test_browserwidget.py,v 1.7 2003/01/20 16:23:38 mgedmin Exp $
 """
 import unittest
 from zope.app.browser.form.widget import BrowserWidget
@@ -24,10 +24,11 @@ from zope.app.interfaces.form import WidgetInputError, MissingInputError
 
 class BrowserWidgetTest(unittest.TestCase):
 
+    _FieldFactory = Text
     _WidgetFactory = BrowserWidget
 
     def setUp(self):
-        field = Text(__name__ = 'foo', title = u"Foo Title")
+        field = self._FieldFactory(__name__ = 'foo', title = u"Foo Title")
         request = TestRequest()
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)
