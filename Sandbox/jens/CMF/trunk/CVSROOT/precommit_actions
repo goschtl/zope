@@ -13,6 +13,6 @@ SCRIPT="$0"
 REPOSITORY="$1"; shift
 FILES="$@"
 
-echo script: $SCRIPT repo: $REPOSITORY files: $FILES
+#echo script: $SCRIPT repo: $REPOSITORY files: $FILES
 
-#/bin/chmod g+w $FILES
+/bin/chmod g+w $FILES
