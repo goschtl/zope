@@ -21,7 +21,7 @@ from zope.interface import implements
 from persistent import Persistent
 from zope.app.component import hooks
 from zope.app.container.contained import Contained
-from zope.app.traversing.browser.interfaces import IAbsoluteURL
+from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app import zapi
 from zope.app.session.interfaces import ISession
 
@@ -42,7 +42,8 @@ class SessionExtractor(Persistent, Contained):
 
         No credentials available:
         >>> request = createTestRequest()
-        >>> se.extractCredentials(request)
+        >>> se.extractCredentials(request) is None
+        True
 
         If the session does not contain the credentials check
         the request for form variables.
@@ -61,8 +62,10 @@ class SessionExtractor(Persistent, Contained):
     implements(IExtractionPlugin)
 
     def extractCredentials(self, request):
+        """ return credentials from session, request or None """
         sessionData = ISession(request)['pas_credentials']
         if not sessionData:
+            # check for form data
             un = request.get('username', None)
             pw = request.get('password', None)
             if un and pw:
@@ -78,7 +81,11 @@ class FormChallenger(Persistent, Contained):
     """ Query the user for credentials using a browser form.
 
         First we need a request and a response.
+        
+        >>> from zope.app.tests.setup import placefulSetUp
+        >>> site = placefulSetUp(True)
 
+        
         >>> from zope.publisher.browser import TestRequest
         >>> request = TestRequest()
         >>> response = request.response
@@ -91,20 +98,26 @@ class FormChallenger(Persistent, Contained):
         The response's headers should now contain the URL to redirect to.
         >>> headers = response.getHeaders()
         >>> headers['Location']
-        'http://127.0.0.1'
+        'http://127.0.0.1/login.html?REFERER=http://127.0.0.1'
 
     """
 
     implements(IChallengePlugin)
+    
+    def getLoginPage(self):
+        """ return configurable login page """
+        return '/login.html'
 
     def challenge(self, request, response):
         """ Response shuold redirect to login page cause Credebtials
             could not have been extracted.
         """
         site = hooks.getSite()
-        #url = zapi.getView(site, zapi.name(site), request, providing=IAbsoluteURL,
-        #                   context=site)
-        url = request.getApplicationURL()
+        
+        camefrom = request.getURL()
+
+        url = absoluteURL(site, request)
+        url += self.getLoginPage() + '?REFERER=' + camefrom
         response.redirect(url)
 
         return True
