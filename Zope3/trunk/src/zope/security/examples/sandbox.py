@@ -15,7 +15,7 @@
 
 $Id$
 """
-import time, whrandom
+import time, random
 
 from zope.interface import Interface, implements
 
@@ -263,7 +263,7 @@ class TimeGenerator(object):
 
 def WanderLust(agent):
     """ is agent ready to move """
-    if int(whrandom.random()*100) <= 30:
+    if int(random.random()*100) <= 30:
         return 1
 
 def GreenerPastures(agent):
@@ -271,7 +271,7 @@ def GreenerPastures(agent):
     global _homes
     possible_homes = _homes.keys()
     possible_homes.remove(agent.getHome().getId())
-    return _homes.get(whrandom.choice(possible_homes))
+    return _homes.get(random.choice(possible_homes))
 
 
 # boot strap initial setup.

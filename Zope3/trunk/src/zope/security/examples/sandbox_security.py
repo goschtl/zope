@@ -189,11 +189,11 @@ def wire_security():
 
     def GreenerPastures(agent):
         """ where do they want to go today """
-        import whrandom
+        import random
         _homes = sandbox._homes
         possible_homes = _homes.keys()
         possible_homes.remove(agent.getHome().getId())
-        new_home =  _homes.get(whrandom.choice(possible_homes))
+        new_home =  _homes.get(random.choice(possible_homes))
         return checker.selectChecker(new_home).proxy(new_home)
 
     sandbox.GreenerPastures = GreenerPastures
