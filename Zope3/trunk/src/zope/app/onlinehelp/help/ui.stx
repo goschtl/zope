@@ -13,7 +13,7 @@ Zope Management Interface (ZMI)
     The upper box has the title **Navigation**. This box contains 
     a tree view on the contens of your site.
     The lower box contains a list of content types that can
-    be added to the current location. Some location have constraints
+    be added to the current location. Some locations have constraints
     on the content types that can be added, so the content of this box 
     is dependend on where you are.
 
