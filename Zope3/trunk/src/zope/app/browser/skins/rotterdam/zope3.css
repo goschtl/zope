@@ -332,36 +332,27 @@ pre {
 }
 
 div.row {
-    display: table-row;
     clear: both;
     padding-top: 10px;
 }
-
+/* XXX: div.row div.field doesn't appear to be selecting. div.row div
+        is a workaround */
 div.row div {
-    margin: 0.4em;
-    padding-bottom: 0.4em;
-    vertical-align: top;
+    float: left;
 }
-
 div.row div.label {
-    display: table-cell;
-    width: 100px;
     text-align: right;
-    padding-right: 0.8em;
-    padding-top: 0.8em;
+    width: 100px;
+    margin-right: 0.8em;
     font-weight: bold;
 }
-# XXX someone please come and do this properly
-div.row div.field {
-    display: table-cell;
-    text-align: left;
-}
 div.row div.error {
-    display: table-cell;
-    text-align: left;
+    float: left;
     color: red;
-    padding-left: 0.8em;
-    padding-top: 0.8em;
+    margin-left: 0.8em;
+}
+div.row div.error:before {
+    content: "\2190  "; /* Left pointing arrow */
 }
 
 div.box {
