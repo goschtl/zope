@@ -1,4 +1,4 @@
-Installing CMF 1.4.1
+Installing CMF 1.4.2
 
   Requirements
 
@@ -16,11 +16,11 @@ Installing CMF 1.4.1
 
   Procedure
 
-    1. Unpack the CMF-1.4.1.tar.gz tarball into a working
+    1. Unpack the CMF-1.4.2.tar.gz tarball into a working
        directory. For instance::
 
         $ cd /usr/local/zope
-        $ tar xzf /tmp/CMF-1.4.1.tar.gz
+        $ tar xzf /tmp/CMF-1.4.2.tar.gz
 
        Note for Windows users:  if you are using WinZip to unpack
           the file, be *sure* to disable the "TAR file smart CR/LF
@@ -33,16 +33,16 @@ Installing CMF 1.4.1
        For instance::
 
         $ cd /var/zope/Products  # /var/zope is INSTANCE_HOME
-        $ ln -s /usr/local/zope/CMF-1.4.1/CMFCore .
-        $ ln -s /usr/local/zope/CMF-1.4.1/CMFDefault .
-        $ ln -s /usr/local/zope/CMF-1.4.1/CMFTopic .
-        $ ln -s /usr/local/zope/CMF-1.4.1/CMFCalendar .
-        $ ln -s /usr/local/zope/CMF-1.4.1/DCWorkflow .
+        $ ln -s /usr/local/zope/CMF-1.4.2/CMFCore .
+        $ ln -s /usr/local/zope/CMF-1.4.2/CMFDefault .
+        $ ln -s /usr/local/zope/CMF-1.4.2/CMFTopic .
+        $ ln -s /usr/local/zope/CMF-1.4.2/CMFCalendar .
+        $ ln -s /usr/local/zope/CMF-1.4.2/DCWorkflow .
         
        or, as a shortcut::
 
-        $ ln -s /usr/local/zope/CMF-1.4.1/CMF* .
-        $ ln -s /usr/local/zope/CMF-1.4.1/DCWorkflow .
+        $ ln -s /usr/local/zope/CMF-1.4.2/CMF* .
+        $ ln -s /usr/local/zope/CMF-1.4.2/DCWorkflow .
 
        Since linking doesn't apply on Windows, you will need
        to cut or copy the files from the place where you unpacked
