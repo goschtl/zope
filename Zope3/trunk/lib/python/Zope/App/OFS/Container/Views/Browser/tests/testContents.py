@@ -14,17 +14,21 @@
 """
 
 Revision information:
-$Id: testContents.py,v 1.5 2002/07/17 16:54:17 jeremy Exp $
+$Id: testContents.py,v 1.6 2002/10/04 19:52:25 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
 
 from Zope.I18n.IUserPreferredCharsets import IUserPreferredCharsets
 
 from Zope.Publisher.HTTP.HTTPRequest import IHTTPRequest
 from Zope.Publisher.HTTP.HTTPCharsets import HTTPCharsets
+from Zope.Event.tests.PlacelessSetup import getEvents
+from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectModifiedEvent
+from Interface import Interface
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
 
 class BaseTestContentsBrowserView(PlacelessSetup):
@@ -61,24 +65,71 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         objects = map( lambda x: x['object'], info_list )
         self.assert_( subcontainer in objects )
 
-        titles = map( lambda x: x['title'], info_list )
-        self.assert_( 'subcontainer' in titles )
-
         urls = map( lambda x: x['url'], info_list )
         self.assert_( 'subcontainer' in urls )
 
         self.failIf( filter( None, map( lambda x: x['icon'], info_list ) ) )
 
+    def testInfoWDublinCore(self):
+        container = self._TestView__newContext()
+        document = Document()
+        container.setObject( 'document', document )
+
+        from datetime import datetime
+        from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
+
+        class FauxDCAdapter:
+            __implements__ = IZopeDublinCore
+            
+            def __init__(self, context):
+                pass
+            title = 'faux title'
+            created = datetime(2001, 1, 1, 1, 1, 1)
+            modified = datetime(2002, 2, 2, 2, 2, 2)
+
+        from Zope.ComponentArchitecture.GlobalAdapterService \
+             import provideAdapter
+        provideAdapter(IDocument, IZopeDublinCore, FauxDCAdapter)
+        
+        fc = self._TestView__newView( container )
+        info = fc.listContentInfo()[0]
+
+        self.assertEqual(info['id'], 'document')
+        self.assertEqual(info['url'], 'document')
+        self.assertEqual(info['object'], document)
+        self.assertEqual(info['title'], 'faux title')
+        self.assertEqual(info['created'], FauxDCAdapter.created)
+        self.assertEqual(info['modified'], FauxDCAdapter.modified)
+
     def testRemove( self ):
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()
-        container.setObject( 'subcontainer', subcontainer )
+        container.setObject('subcontainer', subcontainer)
         document = Document()
-        container.setObject( 'document', document )
-        container.setObject( 'document2', Document() )
+        container.setObject('document', document)
+        document2 = Document()
+        container.setObject('document2', document2)
 
         fc = self._TestView__newView( container )
-        fc.remove( name='document2' )
+
+        self.failIf(getEvents(IObjectModifiedEvent))
+        self.failIf(getEvents(IObjectRemovedEvent))
+
+        fc.removeObjects(['document2'])
+
+        self.failUnless(
+            getEvents(IObjectRemovedEvent,
+                      filter =
+                      lambda event:
+                      removeAllProxies(event.object) == document2)
+            )
+        self.failUnless(
+            getEvents(IObjectModifiedEvent,
+                      filter =
+                      lambda event:
+                      removeAllProxies(event.object) == container)
+            )
+        
         info_list = fc.listContentInfo()
 
         self.assertEquals( len( info_list ), 2 )
@@ -89,19 +140,15 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         objects = map( lambda x: x['object'], info_list )
         self.assert_( subcontainer in objects )
 
-        titles = map( lambda x: x['title'], info_list )
-        self.assert_( 'subcontainer' in titles )
-
         urls = map( lambda x: x['url'], info_list )
         self.assert_( 'subcontainer' in urls )
 
-        self.assertRaises( KeyError, fc.remove, 'document3' )
 
-        fc.remove( 'document3', 1 )
-
+class IDocument(Interface):
+    pass
 
 class Document:
-    pass
+    __implements__ = IDocument
 
 
 class Test(BaseTestContentsBrowserView, TestCase):
