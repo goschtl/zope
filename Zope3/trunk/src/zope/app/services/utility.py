@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.4 2003/04/28 15:21:08 gvanrossum Exp $
+$Id: utility.py,v 1.5 2003/04/29 16:25:25 gvanrossum Exp $
 """
 
 from persistence.dict import PersistentDict
@@ -97,6 +97,8 @@ class LocalUtilityService(Persistent, ContextAware):
         L = []
         for name in self._utilities:
             for iface, cr in self._utilities[name].getRegisteredMatching():
+                if not cr:
+                    continue
                 L.append((iface, name, ContextWrapper(cr, self)))
         return L
 
