@@ -23,10 +23,20 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.5 2004/04/17 15:13:13 jim Exp $
+$Id: service.py,v 1.6 2004/05/05 08:42:06 philikon Exp $
 """
+import sys
 from transaction import get_transaction
 from zodbcode.module import PersistentModuleRegistry
+
+import zope.interface
+from zope.component.exceptions import ComponentLookupError
+from zope.component import getServiceManager
+from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
+from zope.proxy import removeAllProxies
+
+import zope.app.registration.interfaces
+from zope.app import zapi
 from zope.app.component.nextservice import getNextService
 from zope.app.component.nextservice import getNextServiceManager
 from zope.app.container.btree import BTreeContainer
@@ -34,24 +44,17 @@ from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IContainer
 from zope.app.event.function import Subscriber
-from zope.app import zapi
-from interfaces import IBindingAware, ILocalService, IServiceRegistration
-from interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.registration.interfaces import IRegistry
 from zope.app.traversing.interfaces import IContainmentRoot
+from zope.app.traversing import getPath
 from zope.app.location import inside
 from zope.app.site.folder import SiteManagementFolder
-from zope.app.registration.registration import \
-     ComponentRegistration, RegistrationStack
-from zope.app.traversing import getPath
-from zope.component.exceptions import ComponentLookupError
-from zope.component import getServiceManager
-from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
-from zope.proxy import removeAllProxies
-import sys
-import zope.app.registration.interfaces
-import zope.interface
+from zope.app.registration.registration import ComponentRegistration
+from zope.app.registration.registration import RegistrationStack
 
+from zope.app.site.interfaces import IBindingAware, ILocalService
+from zope.app.site.interfaces import IPossibleSite, ISite, ISiteManager
+from zope.app.site.interfaces import IServiceRegistration
 
 class IRegisterableContainerContainer(zope.interface.Interface):
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.2 2004/03/14 04:03:31 srichter Exp $
+$Id: servicecontainer.py,v 1.3 2004/05/05 08:42:06 philikon Exp $
 """
 
 import zope.interface
@@ -27,13 +27,11 @@ from zope.component.interfaces import IServiceService
 from zope.interface import implements
 
 class ServiceManagerContainer(Contained):
-
     """Implement access to the service manager (++etc++site).
 
     This is a mix-in that implements the IPossibleSite
     interface; for example, it is used by the Folder implementation.
     """
-
     zope.interface.implements(IPossibleSite)
 
     __sm = None
@@ -56,6 +54,5 @@ class ServiceManagerContainer(Contained):
             raise ValueError('setSiteManager requires an IServiceService')
 
         zope.interface.directlyProvides(
-            self,
-            ISite,
+            self, ISite,
             zope.interface.directlyProvidedBy(self))
