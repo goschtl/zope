@@ -13,7 +13,7 @@ Installation
 
      (a) the static tree product is registered using::
 
-         <include package="zope.products.apidoc"/>
+         <include package="zope.products.statictree"/>
 
      (b) you register this product using::
 
