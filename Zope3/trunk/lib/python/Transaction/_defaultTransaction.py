@@ -13,12 +13,12 @@
 ##############################################################################
 """Transaction management
 
-$Id: _defaultTransaction.py,v 1.3 2002/06/21 20:35:03 jeremy Exp $
+$Id: _defaultTransaction.py,v 1.4 2002/06/21 20:39:05 jeremy Exp $
 """
 import sys
 
 from Transaction.Exceptions import ConflictError, TransactionError
-from zLOG import LOG, ERROR, PANIC
+from zLOG import LOG, ERROR, PANIC, PROBLEM, DEBUG
 
 # Flag indicating whether certain errors have occurred.
 hosed = 0
@@ -229,7 +229,13 @@ class Transaction:
         try:
             for o in objects:
                 j = getattr(o, '_p_jar', o)
-                if j is not None:
+                if j is None:
+                    LOG("Transaction", PROBLEM,
+                        "Ignoring object %s because it has no jar" % repr(o))
+                else:
+                    if __debug__:
+                        LOG("Transaction", DEBUG,
+                            "Committing %s with jar %s" % (repr(o), j))
                     i = id(j)
                     if i not in jars:
                         jars[i] = j
