@@ -14,14 +14,13 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.9 2003/07/30 00:00:22 srichter Exp $
+$Id: service.py,v 1.10 2003/09/21 17:33:55 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from zope.component import getService
 from zope.app.component.nextservice import queryNextService
-from zope.app.context import ContextWrapper
 from zope.app.interfaces.services.registration import INameComponentRegistry
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.services.service import ISimpleService
@@ -33,7 +32,7 @@ from zope.app.services.registration import NamedComponentRegistration
 from zope.app.services.servicenames import Workflows
 from zope.app.traversing import getPath
 from zope.component import getAdapter
-from zope.context import ContextMethod
+from zope.app.container.contained import Contained
 from zope.interface import implements
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
@@ -44,7 +43,7 @@ class ILocalWorkflowService(IWorkflowService, INameComponentRegistry):
     """
 
 
-class WorkflowService(Persistent, NameComponentRegistry):
+class WorkflowService(Persistent, NameComponentRegistry, Contained):
 
     __doc__ = IWorkflowService.__doc__
 
@@ -67,7 +66,6 @@ class WorkflowService(Persistent, NameComponentRegistry):
                 definition_names[name] = 0
         return definition_names.keys()
 
-    getProcessDefinitionNames = ContextMethod(getProcessDefinitionNames)
 
 
 
@@ -75,13 +73,12 @@ class WorkflowService(Persistent, NameComponentRegistry):
         'See IWorkflowService'
         pd = self.queryActiveComponent(name)
         if pd is not None:
-            return ContextWrapper(pd, self, name=name)
+            return pd
         service = queryNextService(self, Workflows)
         if service is not None:
             return service.getProcessDefinition(name)
         raise KeyError, name
 
-    getProcessDefinition = ContextMethod(getProcessDefinition)
 
 
     def queryProcessDefinition(self, name, default=None):
@@ -91,14 +88,12 @@ class WorkflowService(Persistent, NameComponentRegistry):
         except KeyError:
             return default
 
-    queryProcessDefinition = ContextMethod(queryProcessDefinition)
 
 
     def createProcessInstance(self, definition_name):
         pd = self.getProcessDefinition(definition_name)
         return pd.createProcessInstance(definition_name)
 
-    createProcessInstance = ContextMethod(createProcessInstance)
 
     #
     ############################################################
@@ -116,30 +111,28 @@ class ProcessDefinitionRegistration(NamedComponentRegistration):
         return IProcessDefinition
 
     # The following hooks are called only if we implement
-    # IAddNotifiable and IDeleteNotifiable.
+    # IAddNotifiable and IRemoveNotifiable.
 
-    def afterAddHook(self, registration, container):
+    def addNotify(self, event):
         """Hook method will call after an object is added to container.
 
         Defined in IAddNotifiable.
         """
-        super(ProcessDefinitionRegistration, self).afterAddHook(registration,
-                                                                 container)
-        pd = registration.getComponent()
+        super(ProcessDefinitionRegistration, self).addNotify(event)
+        pd = self.getComponent()
         adapter = getAdapter(pd, IRegistered)
-        adapter.addUsage(getPath(registration))
+        adapter.addUsage(getPath(self))
 
 
-    def beforeDeleteHook(self, registration, container):
+    def removeNotify(self, event):
         """Hook method will call before object is removed from container.
 
-        Defined in IDeleteNotifiable.
+        Defined in IRemoveNotifiable.
         """
-        pd = registration.getComponent()
+        pd = self.getComponent()
         adapter = getAdapter(pd, IRegistered)
-        adapter.removeUsage(getPath(registration))
-        super(ProcessDefinitionRegistration, self).beforeDeleteHook(
-            registration, container)
+        adapter.removeUsage(getPath(self))
+        super(ProcessDefinitionRegistration, self).removeNotify(event)
 
 
 class ProcessDefinitionTerm:
