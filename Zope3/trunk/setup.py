@@ -220,7 +220,7 @@ ext_modules = [
               include_dirs = include_dirs,
               depends = ["src/zope/context/wrapper.h",
                          "src/zope/proxy/proxy.h"]),
-    
+
     Extension("zope.proxy._zope_proxy_proxy",
               ["src/zope/proxy/_zope_proxy_proxy.c"],
               include_dirs = include_dirs,
