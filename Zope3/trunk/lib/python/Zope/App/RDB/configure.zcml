@@ -27,4 +27,5 @@
       attributes="__getattr__" />
 </content>
 
+<include package=".GadflyDA" />
 </zopeConfigure>

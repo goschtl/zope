@@ -1,0 +1,22 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+<browser:view
+    name="Zope.App.RDB.GadflyDA"
+    for="Zope.App.OFS.Container.IAdding."
+    factory=".GadflyDAAddView."
+    permission="Zope.ManageServices">
+
+  <browser:page name="+" attribute="add" />
+  <browser:page name="action.html" attribute="action" />
+</browser:view>
+
+<browser:menuItem menu="add_connection"
+    for="Zope.App.OFS.Container.IAdding."
+    title="Gadfly DA" 
+    action="Zope.App.RDB.GadflyDA"
+    description="A Gadfly Database Adapter"/>
+
+</zopeConfigure>

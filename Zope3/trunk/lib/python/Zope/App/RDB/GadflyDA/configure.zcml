@@ -1,0 +1,14 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+>
+
+<content class=".Adapter.GadflyAdapter">
+  <factory id="GadflyDA"
+      permission="Zope.Public" />
+  <require permission="Zope.Public" 
+      interface="Zope.App.RDB.IZopeDatabaseAdapter." />
+</content>
+
+<include package=".Views" />
+
+</zopeConfigure>
