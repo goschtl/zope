@@ -107,7 +107,6 @@
 /ZODB/src/ZODB		    /Packages/ZODB
 /ZODB/src/ZEO		    /Packages/ZEO
 /ZODB/src/BTrees	    /Packages/BTrees
-/ZODB/src/BDBStorage	    /Packages/bsddb3Storage/bsddb3Storage
 /ZODB/src/zdaemon	    /Packages/zdaemon
 /ZODB/src/Persistence	    /Packages/Persistence
 /ZODB/src/ThreadedAsync	    /Packages/ThreadedAsync
