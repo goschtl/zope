@@ -2,6 +2,8 @@ CMF 1.5.0rc1 (unreleased)
 
   Bug Fixes
 
+    - FSPageTemplate: Don't hide sub-tracebacks in development mode.
+
     - TypesTool: Removed again the "add properties from the ZMI" feature.
       That feature existed only in 1.5.0beta2.
 
