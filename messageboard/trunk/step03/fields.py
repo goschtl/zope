@@ -21,7 +21,7 @@ from zope.schema import Text
 from zope.schema.interfaces import ValidationError
 
 forbidden_regex = r'</?(?:%s).*?/?>'
-allowed_regex = r'</??(?!%s)[a-zA-Z0-9]*? ?(?:[a-z0-9]*?=?".*?")*/??>'
+allowed_regex = r'</??(?!%s(?: |/))[a-zA-Z0-9]*? ?(?:[a-z0-9]*?=?".*?")*/??>'
 
 class ForbiddenTags(ValidationError):
     __doc__ = u"""Forbidden HTML Tags used."""
@@ -46,7 +46,7 @@ class HTML(Text):
                 raise ForbiddenTags(value, self.forbidden_tags)
 
         if self.allowed_tags:
-            regex = allowed_regex %'|'.join(self.allowed_tags)
+            regex = allowed_regex %'(?: |/)|'.join(self.allowed_tags)
             if re.findall(regex, value):
                 raise ForbiddenTags(value, self.allowed_tags)
 
