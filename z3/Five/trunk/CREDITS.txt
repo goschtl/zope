@@ -13,6 +13,8 @@ Five contributors
 
 - Stuart Bishop (stuart@stuartbishop.net)
 
+- Simon Eisenmann (simon@struktur.de)
+
 Thank you
 ---------
 

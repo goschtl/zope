@@ -28,7 +28,7 @@ def findProducts():
     products = []
     for name in dir(Products):
         product = getattr(Products, name)
-        if isinstance(product, ModuleType):
+        if isinstance(product, ModuleType) and hasattr(product, '__file__'):
             products.append(product)
     return products
 
