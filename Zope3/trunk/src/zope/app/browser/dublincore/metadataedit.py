@@ -12,12 +12,15 @@
 #
 ##############################################################################
 """
-$Id: metadataedit.py,v 1.4 2003/03/27 12:51:46 ctheune Exp $
+$Id: metadataedit.py,v 1.5 2003/08/02 08:46:24 anthony Exp $
 """
 
 from zope.component import getAdapter
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from datetime import datetime
+from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
+from zope.app.event import publish
+
 
 __metaclass__ = type
 
@@ -36,6 +39,7 @@ class MetaDataEdit:
         if 'dctitle' in request:
             dc.title = request['dctitle']
             dc.description = request['dcdescription']
+            publish(self.context, ObjectAnnotationsModifiedEvent(self.context))
             message = "Changed data %s" % datetime.utcnow()
 
         return {
