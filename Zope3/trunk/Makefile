@@ -7,5 +7,8 @@ all:
 test: all
 	$(PYTHON) test.py -v $(TESTOPTS)
 
+run:
+	$(PYTHON) z3.py
+
 clean:
 	./stupid_clean
