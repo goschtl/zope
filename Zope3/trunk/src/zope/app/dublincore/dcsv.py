@@ -18,7 +18,7 @@ labelled values in a text string', at:
 
 http://dublincore.org/documents/dcmi-dcsv/
 
-$Id: dcsv.py,v 1.2 2003/08/21 04:52:51 fdrake Exp $
+$Id: dcsv.py,v 1.3 2003/08/22 13:08:40 fdrake Exp $
 """
 
 import re
@@ -41,23 +41,26 @@ def encode(items):
     L = []
     for item in items:
         if isinstance(item, basestring):
-            L.append(_encode_string(item) + ";")
+            L.append(_encode_string(item, "values") + ";")
         else:
             k, v = item
             if not isinstance(v, basestring):
                 raise TypeError("values must be strings; found %r" % v)
-            v = _encode_string(v)
+            v = _encode_string(v, "values")
             if k:
                 if not isinstance(k, basestring):
                     raise TypeError("labels must be strings; found %r" % k)
-                k = _encode_string(k)
+                k = _encode_string(k, "labels")
                 s = "%s=%s;" % (k, v)
             else:
                 s = v + ";"
             L.append(s)
     return " ".join(L)
 
-def _encode_string(s):
+def _encode_string(s, what):
+    if s.strip() != s:
+        raise ValueError("%s may not include leading or trailing spaces: %r"
+                         % (what, s))
     return s.replace("\\", r"\\").replace(";", r"\;").replace("=", r"\=")
 
 
@@ -89,13 +92,13 @@ def decode(text):
             break
     return items
 
-_prefix = r"((?:[^;\\=]|\\[;\\=])*)"
+_prefix = r"((?:[^;\\=]|\\.)*)"
 _find_interesting = re.compile(_prefix + "([;=])").match
 _find_value = re.compile(_prefix + ";").match
 
 def _decode_string(s):
     if "\\" not in s:
-        return s
+        return s.rstrip()
     r = ""
     while s:
         c1 = s[0]
@@ -108,4 +111,27 @@ def _decode_string(s):
         else:
             r += c1
             s = s[1:]
-    return r
+    return r.rstrip()
+
+
+def createMapping(items, allow_duplicates=False):
+    mapping = {}
+    for item in items:
+        if isinstance(item, basestring):
+            raise ValueError("can't create mapping with unlabelled data")
+        k, v = item
+        if not isinstance(k, basestring):
+            raise TypeError("labels must be strings; found %r" % k)
+        if not isinstance(v, basestring):
+            raise TypeError("values must be strings; found %r" % v)
+        if k in mapping:
+            if allow_duplicates:
+                mapping[k].append(v)
+            else:
+                raise ValueError("labels may not have more than one value")
+        else:
+            if allow_duplicates:
+                mapping[k] = [v]
+            else:
+                mapping[k] = v
+    return mapping
