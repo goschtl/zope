@@ -53,7 +53,7 @@ clean:
 	rm -rf build
 
 realclean: clean
-	rm -f TAGS
+	rm -f TAGS tags
 	$(PYTHON) setup.py clean -a
 
 zcmldocs:
