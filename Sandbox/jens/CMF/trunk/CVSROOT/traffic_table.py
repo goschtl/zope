@@ -150,10 +150,6 @@ def init_table():
         {'path': "Packages/Products/PageTemplates",
          'addrs': ["zpt@mail.zope.org"],
          'remote': products_remote},
-
-        {'path': "Packages/bsddb3Storage",
-         'addrs': ("zodb-checkins@zope.org",),
-         'remote': None},
     ])
 
 # Support for the StandaloneZODB module (defined in CVSROOT/modules)
@@ -169,8 +165,10 @@ add_multipath(("Zope2/lib/Components/ExtensionClass",
                "Zope2/lib/python/ThreadedAsync.py",
                "Zope2/lib/python/zLOG.py",
                "Zope2/lib/python/zdaemon.py",
+               "Packages/StorageGC",
+               "Packages/bsddb3Storage",
                ),
-              ("zodb-checkins@zope.org"),
+              ("zodb-checkins@zope.org",),
               None)
 
 init_table()
