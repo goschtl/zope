@@ -31,14 +31,14 @@
 <subscriber
     factory=".catalog.CatalogBaseRemoveSubscriber"
     provides="zope.app.event.interfaces.ISubscriber"
-    for=".interfaces.ICatalog
+    for=".interfaces.catalog.ICatalog
          zope.app.container.interfaces.IObjectRemovedEvent"
     />
 
 <subscriber
     factory=".catalog.CatalogBaseAddSubscriber"
     provides="zope.app.event.interfaces.ISubscriber"
-    for=".interfaces.ICatalog
+    for=".interfaces.catalog.ICatalog
          zope.app.container.interfaces.IObjectAddedEvent"
     />
 
