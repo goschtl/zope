@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.8 2003/05/12 15:44:41 mgedmin Exp $
+$Id: test_decorator.py,v 1.9 2003/05/12 16:17:40 mgedmin Exp $
 """
 import unittest
 
@@ -351,12 +351,7 @@ class DecoratorTestCase(WrapperTestCase):
         t = tuple(self.proxy_class(obj, None, factory, names))
         self.assertEquals(t, (1, 2, 3))
 
-    def XXXtest_iteration_using_decorator(self):
-        # XXX This test is taken from test_iteration_using_proxy in
-        # test_proxy.py. It doesn't work when adapted for decoration.
-        # This needs looking at, but it is something of an edge case, and
-        # so isn't a priority.
-
+    def test_iteration_using_decorator(self):
         # Wrap an iterator within the iteration protocol, expecting it
         # still to work.  PyObject_GetIter() will not be called on the
         # proxy, so the tp_iter slot won't unwrap it.

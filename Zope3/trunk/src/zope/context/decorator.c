@@ -663,7 +663,7 @@ decorate_iternext(PyObject *self)
         Py_DECREF(descriptor);
         return retval;
     }
-    return PyIter_Next(Proxy_GET_OBJECT(self));
+    return PyIter_Next(wrapped);
 }
 
 /* __contains__
