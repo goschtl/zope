@@ -19,6 +19,7 @@
       filter="python:context.contentType.startswith('text/')"
       permission="zope.ManageContent" />
 
+
   <editform
       name="upload.html"
       menu="zmi_views" title="Upload"
@@ -41,13 +42,22 @@
       class="zope.app.browser.content.file.FileView"
       attribute="show" />
 
-  <menuItem 
-      menu="add_content"
-      for="zope.app.interfaces.container.IAdding"
+
+  <addMenuItem
+      class="zope.app.content.file.File"
       title="File"
-      action="File"
       permission="zope.ManageContent"
-      description="A file object, suitable for large data." />
+      view="zope.app.content.file.File"
+      />
+
+  <addform
+      schema="zope.app.interfaces.content.file.IFile"
+      label="Add a File"
+      content_factory="zope.app.content.file.File"
+      name="zope.app.content.file.File"
+      permission="zope.ManageContent"
+      />
+
 
   <icon
       name="zmi_icon"
@@ -134,14 +144,21 @@
       file="image_icon.gif"
       />
 
-  <menuItem
-      menu="add_content"
-      for="zope.app.interfaces.container.IAdding"
+  <addMenuItem
+      class="zope.app.content.image.Image"
       title="Image"
-      action="Image"
-      description="This object helps you manage your images."
+      permission="zope.ManageContent"
+      view="zope.app.content.image.Image"
+      />
+
+  <addform
+      schema="zope.app.interfaces.content.image.IImage"
+      label="Add a Image"
+      content_factory="zope.app.content.image.Image"
+      name="zope.app.content.image.Image"
       permission="zope.ManageContent"
       />
+
 
 <!-- I18n Image -->
 
@@ -202,6 +219,21 @@
       attribute="__call__"
       permission="zope.ManageContent" />
 
+  <addMenuItem
+      class="zope.app.content.zpt.ZPTPage"
+      title="Templated Page"
+      permission="zope.ManageContent"
+      view="zope.app.content.zpt.ZPTPage"
+      />
+
+  <addform
+      schema="zope.app.interfaces.content.zpt.IZPTPage"
+      label="Add a ZPT Page"
+      content_factory="zope.app.content.zpt.ZPTPage"
+      name="zope.app.content.zpt.ZPTPage"
+      permission="zope.ManageContent"
+      />
+
   <editform
       for="zope.app.content.zpt.IZPTPage"
       schema="zope.app.content.zpt.IZPTPage"
@@ -233,14 +265,6 @@
       for="zope.app.content.zpt.IZPTPage" 
       file="zpt.gif" />
 
-  <menuItem
-      menu="add_content"
-      for="zope.app.interfaces.container.IAdding"
-      action="ZPTPage"
-      title="Templated Page"
-      description="An object for dynamic content based on Page Templates." 
-      permission="zope.ManageContent"
-      />
 
 <!-- Folder View Directives -->
   <icon
@@ -248,14 +272,23 @@
       for="zope.app.interfaces.content.folder.IFolder"
       file="folder_icon.gif" />
 
-  <menuItem 
-      menu="add_content"
-      for="zope.app.interfaces.container.IAdding"
-      action="Folder"
-      title="Folder" 
-      description="A simple Folder." 
+  <addMenuItem
+      class="zope.app.content.folder.Folder"
+      title="Folder"
+      view="zope.app.content.folder.Folder"
       permission="zope.ManageContent"
       />
+
+
+  <addform
+      schema="zope.app.interfaces.content.folder.IFolder"
+      label="Add a ZPT Page"
+      content_factory="zope.app.content.folder.Folder"
+      name="zope.app.content.folder.Folder"
+      permission="zope.ManageContent"
+      />
+
+
 
   <page
       name="contents.html"
@@ -374,14 +407,23 @@
       for="zope.app.content.dtmlpage.IDTMLPage"
       file="dtml.gif" />
 
-  <menuItem
-      menu="add_content"
-      for="zope.app.interfaces.container.IAdding"
-      action="DTMLPage"
-      title="DTML Page"
-      description="An object for dynamic content based on Document Templates."
+
+  <addform
+      schema="zope.app.interfaces.content.dtmlpage.IDTMLPage"
+      label="Add a DTML Page"
+      content_factory="zope.app.content.dtmlpage.DTMLPage"
+      name="zope.app.content.dtmlpage.DTMLPage"
       permission="zope.ManageContent"
       />
+
+
+  <addMenuItem
+      class="zope.app.content.dtmlpage.DTMLPage"
+      title="DTML Page"
+      view="zope.app.content.dtmlpage.DTMLPage"
+      permission="zope.ManageContent"
+      />
+
 
   <!-- toFS.snarf and fromFS.snarf views, for new fssync tools -->
 

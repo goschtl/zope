@@ -54,6 +54,14 @@
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.interfaces.IBytes"
       name="edit"
+      class="zope.app.browser.form.widget.FileWidget"
+      />
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IASCII"
+      name="edit"
       class="zope.app.browser.form.widget.BytesAreaWidget"
       />
 

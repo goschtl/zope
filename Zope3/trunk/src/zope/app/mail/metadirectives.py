@@ -13,11 +13,11 @@
 ##############################################################################
 """'mail' ZCML Namespaces Schemas
 
-$Id: metadirectives.py,v 1.2 2003/08/17 06:07:13 philikon Exp $
+$Id: metadirectives.py,v 1.3 2003/12/17 10:20:49 mukruthi Exp $
 """
 from zope.configuration.fields import Path
 from zope.interface import Interface
-from zope.schema import TextLine, Bytes, BytesLine, Int
+from zope.schema import TextLine, Bytes, ASCII, BytesLine, Int
 
 class IServiceDirective(Interface):
     """This abstract directive describes a generic mail service
@@ -68,7 +68,7 @@ class IMailerDirective(Interface):
 class ISendmailMailerDirective(IMailerDirective):
     """Registers a new Sendmail mailer."""
 
-    command = Bytes(
+    command = ASCII(
         title=u"Command",
         description=u"A template command for sending out mail, containing "\
                     u"%(from)s and %(to)s for respective addresses.",

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.9 2003/12/16 15:42:02 mchandra Exp $
+$Id: sql.py,v 1.10 2003/12/17 10:20:48 mukruthi Exp $
 """
 import zope.schema
 
@@ -54,7 +54,7 @@ class ISQLScript(ISQLCommand):
         default='',
         missing_value='')
 
-    source = zope.schema.Bytes(
+    source = zope.schema.ASCII(
         title=_(u"Source"),
         description=_(u"The SQL command to be run."),
         required=False,

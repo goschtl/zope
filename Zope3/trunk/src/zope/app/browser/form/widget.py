@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.57 2003/11/21 17:11:55 jim Exp $
+$Id: widget.py,v 1.58 2003/12/17 10:20:47 mukruthi Exp $
 """
 __metaclass__ = type
 
@@ -600,6 +600,15 @@ class BytesWidget(Bytes, TextWidget):
     >>> widget.getInputValue()
     'Bob'
 
+    """
+class ASCII(Bytes):
+    """ ASCII
+    """
+
+class ASCIIWidget(BytesWidget):
+    """ASCII widget.
+
+    Single-line data (string) input
     """
 
 class IntWidget(TextWidget):

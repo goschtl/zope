@@ -16,11 +16,11 @@
 XXX There is no module service yet; instead, the service manager
 currently implements it.  This should change.
 
-$Id: module.py,v 1.3 2003/08/17 06:07:07 philikon Exp $
+$Id: module.py,v 1.4 2003/12/17 10:20:48 mukruthi Exp $
 """
 
 from zope.interface import Interface
-from zope.schema import Bytes, BytesLine
+from zope.schema import Bytes, ASCII, BytesLine
 
 
 class IModuleManager(Interface):
@@ -39,7 +39,7 @@ class IModuleManager(Interface):
 
     name = BytesLine(title=u"The module's name.", readonly=True)
 
-    source = Bytes(title=u"The module's source code.")
+    source = ASCII(title=u"The module's source code.")
 
 
 class IModuleService(Interface):
