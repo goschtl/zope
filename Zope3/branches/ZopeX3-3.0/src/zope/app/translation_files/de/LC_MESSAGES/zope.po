@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Wed Jun  9 12:49:12 2004\n"
+"POT-Creation-Date: Fri Jun 18 17:40:55 2004\n"
 "PO-Revision-Date: 2004-06-02 06:40-0400\n"
 "Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
 "Language-Team: German <zope3-dev@zope.org>\n"
@@ -951,7 +951,7 @@ msgstr "Inhalt"
 msgid "Add"
 msgstr "Hinzufügen"
 
-#: src/zope/app/container/constraints.py:187
+#: src/zope/app/container/constraints.py:185
 msgid "Container is not a valid Zope container."
 msgstr "Behälter ist kein gültiger Zope-Behälter."
 
@@ -1266,13 +1266,13 @@ msgstr "Inhaltstyp"
 msgid "The content type identifies the type of data."
 msgstr "Der Inhaltstyp identifiziert den Typ der Daten."
 
-#: src/zope/app/file/interfaces.py:32
+#: src/zope/app/file/interfaces.py:33
 #: src/zope/app/i18nfile/browser/file_edit.pt:78
 #: src/zope/app/i18nfile/browser/image_edit.pt:79
 msgid "Data"
 msgstr "Daten"
 
-#: src/zope/app/file/interfaces.py:33
+#: src/zope/app/file/interfaces.py:34
 msgid "The actual content of the object."
 msgstr "Der eigentliche Inhalt des Objekts."
 
@@ -1301,22 +1301,22 @@ msgid "Object Name"
 msgstr "Objektname"
 
 #: src/zope/app/form/browser/add.py:61
-#: src/zope/app/form/browser/editview.py:106
+#: src/zope/app/form/browser/editview.py:109
 #: src/zope/app/schema/browser/__init__.py:53
 #: src/zope/app/schema/browser/__init__.py:64
 #: src/zope/app/schema/browser/__init__.py:70
 msgid "An error occured."
 msgstr "Ein Fehler ist aufgetreten."
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "off"
 msgstr "aus"
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "on"
 msgstr "an"
 
@@ -1400,7 +1400,7 @@ msgstr "Einfacher Wert fehlt"
 msgid "widget-missing-multiple-value"
 msgstr "Mehrere Werte fehlen"
 
-#: src/zope/app/form/browser/editview.py:115
+#: src/zope/app/form/browser/editview.py:118
 msgid "Updated on ${date_time}"
 msgstr "Daten am ${date_time} geändert"
 
@@ -1749,7 +1749,8 @@ msgid "Edit Form"
 msgstr "Bearbeitungsformular"
 
 #: src/zope/app/i18nfile/browser/i18nfile.py:46
-msgid "This edit form allows you to make changes to the properties of this file."
+msgid ""
+"This edit form allows you to make changes to the properties of this file."
 msgstr ""
 "Dieses Berarbeitungsformular erlaubt es Ihnen, Änderungen an den "
 "Einstellungen ihrer Datei vorzunehmen."
@@ -1952,6 +1953,7 @@ msgstr "Browsermenü-Eintrag hinzufügen"
 #: src/zope/app/schema/browser/schema_edit.pt:30
 #: src/zope/app/container/browser/contents.pt:26
 #: src/zope/app/container/browser/index.pt:18
+#: src/zope/app/uniqueid/browser/registrations.pt:7
 msgid "Content listing"
 msgstr "Inhaltsauflistung"
 
@@ -3398,6 +3400,11 @@ msgstr "Prinzipal Erlaubnisse gewähren"
 msgid "Roles"
 msgstr "Rollen"
 
+#: src/zope/app/securitypolicy/browser/manage_access.pt:89
+#, fuzzy
+msgid "Save Changes"
+msgstr "Änderungen gespeichert."
+
 #: src/zope/app/securitypolicy/browser/manage_permissionform.pt:24
 msgid "Helpful message."
 msgstr "Hiflreiche Nachricht"
@@ -4248,6 +4255,34 @@ msgstr ""
 "rückgängig zu machen. Sie betrachten gerade die Transaktionen, die von Ihnen "
 "ausgegangen sind."
 
+#: src/zope/app/uniqueid/browser/configure.zcml:12
+#, fuzzy
+msgid "Registered Objects"
+msgstr "Registriert"
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+msgid "A utility that provides unique ids to objects"
+msgstr ""
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+#, fuzzy
+msgid "Unique Id Utility"
+msgstr "Werkzeug hinzufügen"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:5
+#, fuzzy
+msgid "objects"
+msgstr "Kaputtes Objekt"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+#, fuzzy
+msgid "Object"
+msgstr "Objektname"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+msgid "ID"
+msgstr ""
+
 #: src/zope/app/utility/browser/__init__.py:100
 msgid "Deactivated: ${deactivated_utilities}"
 msgstr "Deaktiviert: ${deactivated_utilities}"
@@ -4826,7 +4861,9 @@ msgstr "Bedingung"
 msgid ""
 "The condition that is evaluated to decide if the\n"
 "                        transition can be fired or not."
-msgstr "Die Kondition die evaluiert wird um zu entscheiden ob ein Übergang möglich ist oder nicht."
+msgstr ""
+"Die Kondition die evaluiert wird um zu entscheiden ob ein Übergang möglich "
+"ist oder nicht."
 
 #: src/zope/app/workflow/stateful/interfaces.py:117
 msgid "Script"
@@ -4836,7 +4873,9 @@ msgstr "Skript"
 msgid ""
 "The script that is evaluated to decide if the\n"
 "                        transition can be fired or not."
-msgstr "Das Skript das evaluiert wird um zu entscheiden ob ein Übergang möglich ist oder nicht."
+msgstr ""
+"Das Skript das evaluiert wird um zu entscheiden ob ein Übergang möglich ist "
+"oder nicht."
 
 #: src/zope/app/workflow/stateful/interfaces.py:123
 msgid "The permission needed to fire the Transition."
@@ -4858,7 +4897,9 @@ msgstr "Arbeitsablauf-relevantes Datenschema"
 msgid ""
 "Specifies the schema that characterizes the workflow relevant data of a "
 "process instance, found in pd.data."
-msgstr "Gibt das Schema an, welches die Arbeitsablauf-relevanten Daten einer Prozessinstanz charakterisiert."
+msgstr ""
+"Gibt das Schema an, welches die Arbeitsablauf-relevanten Daten einer "
+"Prozessinstanz charakterisiert."
 
 #: src/zope/app/workflow/stateful/interfaces.py:99
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:19
@@ -4964,15 +5005,15 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr "Es gab ${num_errors} Eingabefehler."
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
-#: src/zope/app/zptpage/configure.zcml:12
-msgid "ZPT Page"
-msgstr "ZPT-Seite"
-
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
 msgid "A simple, content-based Page Template"
 msgstr "Eine einfache, auf Inhalt basierte Page Template"
+
+#: src/zope/app/zptpage/configure.zcml:12
+#: src/zope/app/zptpage/browser/configure.zcml:23
+msgid "ZPT Page"
+msgstr "ZPT-Seite"
 
 #: src/zope/app/zptpage/interfaces.py:37
 msgid "The source of the page template."
@@ -4998,11 +5039,11 @@ msgstr ""
 "Codeschnipsel in TAL ausführen. Wir raten Entwicklern normalerweise von der "
 "Benutzung dieser Funktion ab."
 
-#: src/zope/app/zptpage/zptpage.py:105
+#: src/zope/app/zptpage/zptpage.py:114
 msgid "1 line"
 msgstr "1 Zeile"
 
-#: src/zope/app/zptpage/zptpage.py:106
+#: src/zope/app/zptpage/zptpage.py:115
 msgid "${lines} lines"
 msgstr "${lines} Zeilen"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Jun  9 12:49:12 2004\n"
+"POT-Creation-Date: Fri Jun 18 17:40:55 2004\n"
 "PO-Revision-Date: 2003-08-07 19:51-0400\n"
 "Last-Translator: Godefroid Chapelle <gotcha@swing.be>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope3.org>\n"
@@ -958,7 +958,7 @@ msgstr "Contenu"
 msgid "Add"
 msgstr "Ajouter"
 
-#: src/zope/app/container/constraints.py:187
+#: src/zope/app/container/constraints.py:185
 msgid "Container is not a valid Zope container."
 msgstr "Le Conteneur n'est pas un Conteneur Zope valide."
 
@@ -1275,13 +1275,13 @@ msgstr "Type De Contenu"
 msgid "The content type identifies the type of data."
 msgstr "Le type de contenu identifie le type de données."
 
-#: src/zope/app/file/interfaces.py:32
+#: src/zope/app/file/interfaces.py:33
 #: src/zope/app/i18nfile/browser/file_edit.pt:78
 #: src/zope/app/i18nfile/browser/image_edit.pt:79
 msgid "Data"
 msgstr "Données"
 
-#: src/zope/app/file/interfaces.py:33
+#: src/zope/app/file/interfaces.py:34
 msgid "The actual content of the object."
 msgstr "Le contenu de l'objet."
 
@@ -1310,22 +1310,22 @@ msgid "Object Name"
 msgstr "Nom de l'objet"
 
 #: src/zope/app/form/browser/add.py:61
-#: src/zope/app/form/browser/editview.py:106
+#: src/zope/app/form/browser/editview.py:109
 #: src/zope/app/schema/browser/__init__.py:53
 #: src/zope/app/schema/browser/__init__.py:64
 #: src/zope/app/schema/browser/__init__.py:70
 msgid "An error occured."
 msgstr "Une erreur s'est produite."
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "off"
 msgstr "désactivé"
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "on"
 msgstr "activé"
 
@@ -1409,7 +1409,7 @@ msgstr "Valeur simple manquante"
 msgid "widget-missing-multiple-value"
 msgstr "Valeur multiple manquante"
 
-#: src/zope/app/form/browser/editview.py:115
+#: src/zope/app/form/browser/editview.py:118
 msgid "Updated on ${date_time}"
 msgstr "Mis à jour le ${date_time}"
 
@@ -1965,6 +1965,7 @@ msgstr "Ajouter Un Elément De Menu De Navigation"
 #: src/zope/app/schema/browser/schema_edit.pt:30
 #: src/zope/app/container/browser/contents.pt:26
 #: src/zope/app/container/browser/index.pt:18
+#: src/zope/app/uniqueid/browser/registrations.pt:7
 msgid "Content listing"
 msgstr "Liste de contenu"
 
@@ -3414,6 +3415,11 @@ msgstr "Accorder des Rôles aux Principales"
 msgid "Roles"
 msgstr "Rôles"
 
+#: src/zope/app/securitypolicy/browser/manage_access.pt:89
+#, fuzzy
+msgid "Save Changes"
+msgstr "Changements enregistrés."
+
 #: src/zope/app/securitypolicy/browser/manage_permissionform.pt:24
 msgid "Helpful message."
 msgstr "Message d'aide."
@@ -4276,6 +4282,34 @@ msgstr ""
 "Ce formulaire vous permet d'annuler vos dernières transactions. Vous ne "
 "visualisez que les transactions que vous avez initiées."
 
+#: src/zope/app/uniqueid/browser/configure.zcml:12
+#, fuzzy
+msgid "Registered Objects"
+msgstr "Enregistrer Des Objets Existants."
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+msgid "A utility that provides unique ids to objects"
+msgstr ""
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+#, fuzzy
+msgid "Unique Id Utility"
+msgstr "Ajouter un Utilitaire"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:5
+#, fuzzy
+msgid "objects"
+msgstr "Identificateur D'Objet"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+#, fuzzy
+msgid "Object"
+msgstr "Identificateur D'Objet"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+msgid "ID"
+msgstr ""
+
 #: src/zope/app/utility/browser/__init__.py:100
 msgid "Deactivated: ${deactivated_utilities}"
 msgstr "Désactivé: ${deactivated_utilities}"
@@ -4994,15 +5028,15 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr "Il y a ${num_errors} erreurs d'encodage."
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
-#: src/zope/app/zptpage/configure.zcml:12
-msgid "ZPT Page"
-msgstr "Page ZPT"
-
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
 msgid "A simple, content-based Page Template"
 msgstr "Un simple Page Formatée de type contenu"
+
+#: src/zope/app/zptpage/configure.zcml:12
+#: src/zope/app/zptpage/browser/configure.zcml:23
+msgid "ZPT Page"
+msgstr "Page ZPT"
 
 #: src/zope/app/zptpage/interfaces.py:37
 msgid "The source of the page template."
@@ -5028,11 +5062,11 @@ msgstr ""
 "Evaluer des portions de code en TAL.  Généralement nous décourageons l'usage "
 "de cette fonction."
 
-#: src/zope/app/zptpage/zptpage.py:105
+#: src/zope/app/zptpage/zptpage.py:114
 msgid "1 line"
 msgstr "1 ligne"
 
-#: src/zope/app/zptpage/zptpage.py:106
+#: src/zope/app/zptpage/zptpage.py:115
 msgid "${lines} lines"
 msgstr "${lines} lignes"
 
@@ -5301,6 +5335,10 @@ msgstr "Barre"
 msgid "Bar description"
 msgstr "Description de barre"
 
+#, fuzzy
+#~ msgid "Unset"
+#~ msgstr "Utilisateur"
+
 #~ msgid "Translation Domain Control"
 #~ msgstr "Contrôleur De Domaine De Traduction"
 
@@ -5403,9 +5441,6 @@ msgstr "Description de barre"
 #~ msgid "Hide Object Registrations"
 #~ msgstr "Ne pas afficher les Enregistrements D'Objet"
 
-#~ msgid "Object ID"
-#~ msgstr "Identificateur D'Objet"
-
 #~ msgid "Unregister Missing Objects"
 #~ msgstr "Ne pas enregistrer Des Objets Manquants"
 
@@ -5423,9 +5458,6 @@ msgstr "Description de barre"
 
 #~ msgid "subscribe-button"
 #~ msgstr "Souscrire"
-
-#~ msgid "Register Existing Objects"
-#~ msgstr "Enregistrer Des Objets Existants."
 
 #~ msgid "NEXT BATCH --&gt;"
 #~ msgstr "GROUPE SUIVANT --&gt;"
