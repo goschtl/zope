@@ -125,7 +125,15 @@ def _read_one_line(filename):
     return line.rstrip()
 
 
-class CvsUrl:
+class UrlBase:
+
+    def __str__(self):
+        return "<%s.%s: %s>" % (self.__class__.__module__,
+                                self.__class__.__name__,
+                                self.getUrl())
+
+
+class CvsUrl(UrlBase):
     def __init__(self, type, host, cvsroot, path,
                  tag=None, username=None, password=None):
         assert cvsroot.startswith("/")
@@ -176,7 +184,8 @@ class CvsUrl:
         return cvsurl
 
 
-class RepositoryUrl:
+class RepositoryUrl(UrlBase):
+
     def __init__(self, path, tag=None):
         self.path = path or None
         self.tag = tag or None
@@ -203,8 +212,7 @@ def open(url, mode="r"):
 
 class CvsLoader:
 
-    def __init__(self, cvsurl=None, tag=None):
-        self.cvsurl = cvsurl
+    def __init__(self, tag=None):
         self.tag = tag or None
         self.workdirs = {}  # URL -> (directory, path)
 
@@ -220,33 +228,32 @@ class CvsLoader:
 
         Returns the location of the resource once loaded.
         """
-        if isinstance(url, basestring):
-            key = url
-            try:
-                url = parse(url)
-            except ValueError:
-                # XXX Hack to make this support file: URLs to ease
-                # testing with filesystem-based resources.  There
-                # really should be some sort of dispatch mechanism,
-                # but we won't do that right now.
-                parts = urlparse.urlparse(url)
-                if parts[0] == "file" and not parts[1]:
-                    fn = urllib.url2pathname(parts[2])
-                    if os.path.exists(fn):
-                        return fn
-                    raise ValueError(
-                        "file: URL refers to non-existant resource")
-                raise TypeError(
-                    "load() requires a cvs or repository URL; received %r"
-                    % url)
+        key = url
+        try:
+            url = parse(url)
+        except ValueError:
+            # XXX Hack to make this support file: URLs to ease
+            # testing with filesystem-based resources.  There
+            # really should be some sort of dispatch mechanism,
+            # but we won't do that right now.
+            parts = urlparse.urlparse(url)
+            if parts[0] == "file" and not parts[1]:
+                fn = urllib.url2pathname(parts[2])
+                if os.path.exists(fn):
+                    return fn
+                raise ValueError(
+                    "file: URL refers to non-existant resource")
+            raise TypeError(
+                "load() requires a cvs or repository URL; received %r"
+                % url)
         if isinstance(url, RepositoryUrl):
-            cvsurl = self.cvsurl.join(url)
-            key = cvsurl.getUrl()
+            raise ValueError("repository: URLs must be joined with the"
+                             " appropriate cvs: base URL")
         elif isinstance(url, CvsUrl):
             cvsurl = copy.copy(url)
             key = cvsurl.getUrl()
         else:
-            raise TypeError("load() requires a cvs or repository URL")
+            raise TypeError("load() requires a cvs: URL")
         if not cvsurl.tag:
             cvsurl.tag = self.tag
             key = cvsurl.getUrl()
@@ -319,8 +326,6 @@ class CvsLoader:
     # the path from the cvs: URL.
 
     def isFileResource(self, cvsurl):
-        if isinstance(cvsurl, RepositoryUrl):
-            cvsurl = self.cvsurl.join(cvsurl)
         if not cvsurl.path:
             # The whole repository is always a directory
             return False
