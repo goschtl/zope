@@ -267,6 +267,8 @@ def organizeAction(action, portal, folder, object, expr_context):
         category = action.get('category', 'object')
         permissions = action.get('permissions', None)
         # context will be one of object, folder, or portal
+        # startswith() is used so that we can have several different
+        # categories that are checked in the object or folder context.
         if (object is not None and
             (category.startswith('object') or
              category.startswith('workflow'))):
