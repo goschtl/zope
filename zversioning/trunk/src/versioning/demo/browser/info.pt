@@ -1,22 +1,30 @@
 <html metal:use-macro="context/@@standard_macros/view"
       i18n:domain="buddydemo">
 <body><div metal:fill-slot="body">
-<h1>Proposal</h1>
-<!-- * -->
+
+  <h1 tal:content="context/title">Versionable Proposal</h1>
+
   <table>
-    <caption tal:content="context/title">Versionable Proposal</caption>
     <tr><th i18n:translate="">Use Cases</th>
-        <td tal:content="context/usecase">What Situations we will solve</td>
+        <td tal:content="structure context/usecase | nothing">
+           What Situations we will solve
+        </td>
         </tr>
     <tr><th i18n:translate="">Concept</th>
-        <td tal:content="context/concept | nothing">Technical Concept</td>
+        <td tal:content="structure context/concept | nothing">
+           Technical Concept
+        </td>
         </tr>
     <tr><th i18n:translate="">Todo</th>
-        <td tal:content="context/todo | nothing">Steps to go</td>
+        <td tal:content="structure context/todo | nothing">
+           Steps to go
+        </td>
         </tr>
     <tr><th i18n:translate="">Issues</th>
-        <td tal:content="context/issues | nothing">Open Issues</td>
+        <td tal:content="structure context/issues | nothing">
+           Open Issues
+        </td>
         </tr>
   </table>
-<!-- * -->
+
 </div></body></html>
