@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.17 2003/12/19 16:53:20 mchandra Exp $
+$Id: interfaces.py,v 1.18 2003/12/22 15:10:34 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -394,7 +394,7 @@ class IAdapterService(Interface):
         """
 
     def queryMultiAdapter(objects, interface, name, default=None):
-        """Look for a named adapter to an interface for an object
+        """Look for a multi-adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.
 
