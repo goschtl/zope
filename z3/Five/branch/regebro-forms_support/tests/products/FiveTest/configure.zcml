@@ -275,6 +275,21 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <!-- browser forms -->
+  
+  <browser:editform
+      schema=".interfaces.ISimpleContent"
+      for=".interfaces.ISimpleContent"
+      name="edit2.html"
+      permission="zope2.Public"
+      />
+<!--
+      class=".wikipage.WikiPageFormView"
+      label="Change Schema Page"
+      fields="title description"
+      menu="zmi_views" title="Edit" />
+-->
+  
   <!-- stuff that we'll override in overrides.zcml -->
 
   <browser:page
