@@ -94,6 +94,7 @@ class LDAPConnection(object):
     def add(self, dn, entry):
         attrs_list = []
         for key, values in entry.items():
+            key = str(key)
             attrs_list.append((key, valuesToUTF8(values)))
         self.conn.add_s(dn.encode('utf-8'), attrs_list)
 
@@ -109,6 +110,7 @@ class LDAPConnection(object):
 
         mod_list = []
         for key, values in entry.items():
+            key = str(key)
             if cur_entry.has_key(key):
                 if values == []:
                     # TODO fail on rdn removal
@@ -127,10 +129,12 @@ class LDAPConnection(object):
 
     def search(self, base, scope='sub', filter='(objectClass=*)',
                attrs=None):
-        # Convert from unicode to utf-8.
+        # Convert from unicode to UTF-8, and attrs must be ASCII strings.
         base = base.encode('utf-8')
         scope = convertScope(scope)
-        # XXX convert filter to utf-8
+        filter = filter.encode('utf-8')
+        if attrs is not None:
+            attrs = [str(attr) for attr in attrs]
         try:
             ldap_entries = self.conn.search_s(base, scope, filter, attrs)
         except ldap.NO_SUCH_OBJECT:
