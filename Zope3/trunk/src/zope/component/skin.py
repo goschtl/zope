@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: skin.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: skin.py,v 1.3 2003/04/29 17:24:11 gvanrossum Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
@@ -55,6 +55,9 @@ class GlobalSkinService:
             if layers is not None:
                 return layers
 
+        # XXX Jim thinks that this should raise an exception instead.
+        #     But that's A Project, because there are unit tests
+        #     that insist on the current behavior.
         return _default
 
     _clear = __init__
