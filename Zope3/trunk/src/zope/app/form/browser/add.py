@@ -21,7 +21,8 @@ import sys
 
 from zope.app import zapi
 from zope.event import notify
-from zope.app.event.objectevent import ObjectCreatedEvent
+
+from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.interfaces import IInputWidget, WidgetsError
@@ -118,6 +119,10 @@ class AddView(EditView):
                         field.set(adapted, data[name])
                     except ValidationError:
                         errors.append(sys.exc_info()[1])
+
+            # We've modified the object, so we need to pubish an
+            # object-modified event:
+            notify(ObjectModifiedEvent(content))
 
         if errors:
             raise WidgetsError(*errors)

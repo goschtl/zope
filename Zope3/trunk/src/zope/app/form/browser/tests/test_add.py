@@ -25,6 +25,8 @@ from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
 from zope.component import getView
 
+from zope.app.event.tests.placelesssetup import getEvents
+from zope.app.event.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
 from zope.app.form.browser.add import AddViewFactory, AddView
 from zope.app.form.browser.metaconfigure import AddFormDirective
 from zope.app.container.interfaces import IAdding
@@ -129,13 +131,23 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_add_error_handling(self):
         # cannot use a field in arguments if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first email getfoo extra1".split())
-        # cannot use a field in keyword_arguments if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first last getfoo extra1".split())
+        self.assertRaises(ValueError, self._invoke_add,
+                          fields="first email getfoo extra1".split())
+
+        # cannot use a field in keyword_arguments if it is not
+        # mentioned in fields
+
+        self.assertRaises(ValueError, self._invoke_add,
+                          fields="first last getfoo extra1".split())
+
         # cannot use a field in set_before_add if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first last email extra1".split())
+        self.assertRaises(ValueError, self._invoke_add,
+                          fields="first last email extra1".split())
+
         # cannot use a field in set_after_add if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first last email getfoo".split())
+        self.assertRaises(ValueError, self._invoke_add,
+                          fields="first last email getfoo".split())
+
         # cannot use an optional field in arguments
         self.assertRaises(ValueError, self._invoke_add, arguments=["extra2"])
 
@@ -243,6 +255,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(adding.ob.extra2, "extra2")
         self.assertEqual(adding.ob.name, "foo")
         self.assertEqual(adding.ob.address, "aa")
+        self.assertEqual(len(getEvents(IObjectCreatedEvent)), 1)
+        self.assertEqual(len(getEvents(IObjectModifiedEvent)), 1)
 
     def test_createAndAdd_w_adapter(self):
 
