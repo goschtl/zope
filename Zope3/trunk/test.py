@@ -476,15 +476,6 @@ def main(module_filter, test_filter, libdir):
     elif LOOP:
         while True:
             runner(files, test_filter, debug)
-    elif TRACE:
-        coverdir = os.path.join(os.getcwd(), "coverage")
-        import trace
-        tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],
-                             trace=0, count=1)
-        tracer.runctx("runner(files, test_filter, debug)",
-                      globals=globals(), locals=vars())
-        r = tracer.results()
-        r.write_results(show_missing=True, summary=True, coverdir=coverdir)
     else:
         runner(files, test_filter, debug)
 
@@ -631,9 +622,22 @@ def process_args(argv=None):
             test_filter = args[1]
         module_filter = args[0]
     try:
-        bad = main(module_filter, test_filter, libdir)
-        if bad:
-            sys.exit(1)
+        if TRACE:
+            # if the trace module is used, then we don't exit with
+            # status if on a false return value from main.
+            coverdir = os.path.join(os.getcwd(), "coverage")
+            import trace
+            tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],
+                                 trace=0, count=1)
+
+            tracer.runctx("main(module_filter, test_filter, libdir)",
+                          globals=globals(), locals=vars())
+            r = tracer.results()
+            r.write_results(show_missing=True, summary=True, coverdir=coverdir)
+        else:
+            bad = main(module_filter, test_filter, libdir)
+            if bad:
+                sys.exit(1)
     except ImportError, err:
         print err
         print sys.path
