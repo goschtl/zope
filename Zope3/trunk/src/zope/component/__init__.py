@@ -134,7 +134,7 @@ def queryAdapterInContext(object, interface, context, default=None):
 def getAdapter(object, interface, name, context=None):
     adapter = queryAdapter(object, interface, name, None, context)
     if adapter is None:
-        raise ComponentLookupError(object, interface)
+        raise ComponentLookupError(object, interface, name)
     return adapter
 
 def adapter_hook(interface, object, name='', default=None):
@@ -159,7 +159,7 @@ def queryAdapter(object, interface, name, default=None, context=None):
 def getMultiAdapter(objects, interface, name=u'', context=None):
     adapter = queryMultiAdapter(objects, interface, name, context=context)
     if adapter is None:
-        raise ComponentLookupError(objects, interface)
+        raise ComponentLookupError(objects, interface, name)
     return adapter
 
 def queryMultiAdapter(objects, interface, name=u'', default=None,

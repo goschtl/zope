@@ -152,7 +152,7 @@ and `getAdapter` raises an error:
     ... # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
-    ComponentLookupError: (...Person...>, <...IGreeter>)
+    ComponentLookupError: (...Person...>, <...IGreeter>, 'frank')
 
 Adapters can adapt multiple objects:
 
