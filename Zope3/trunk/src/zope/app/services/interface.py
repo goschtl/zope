@@ -15,6 +15,8 @@
 
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
+
+$Id: interface.py,v 1.10 2003/07/02 15:23:05 alga Exp $
 """
 
 from persistence import Persistent
@@ -50,7 +52,7 @@ registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
 
 
 class LocalInterfaceService(object):
-    """I need a doc string."""
+    """A local interface service."""
     
     implements(IInterfaceService,
                ISimpleService)

@@ -137,7 +137,7 @@ th.introspector {
         </td>
     </tr>
     <tr>
-        <th class="introspector">Interface:</th>
+        <th class="introspector">Interfaces from Class:</th>
         <td>
             <div tal:repeat="interface introspector/getInterfaceNames">
 	       <div tal:define="url python: view.getInterfaceURL(interface)">
@@ -149,6 +149,27 @@ th.introspector {
                         tal:content="interface" />
                </div>
             </div>
+        </td>
+    </tr>
+    <tr>
+        <th class="introspector">Interfaces from Object:</th>
+        <td>
+            <div tal:repeat="interface introspector/getDirectlyProvidedNames"
+                 tal:condition="introspector/getDirectlyProvided">
+	       <div tal:define="url python: view.getInterfaceURL(interface)">
+                  <a href=""
+                     tal:attributes="href url"
+                     tal:content="interface"
+		     tal:condition="url">Interface</a>
+                  <span tal:condition="python: not url"
+                        tal:content="interface" />
+               </div>
+            </div>
+            <form tal:attributes="
+               action string:${request/URL/-1}/@@objectMarker.html"
+               method="POST">
+               <input type="submit" value="Modify" />
+            </form>
         </td>
     </tr>
 </table>

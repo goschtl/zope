@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector view tests
 
-$Id: test_introspector.py,v 1.1 2003/07/02 11:02:16 alga Exp $
+$Id: test_introspector.py,v 1.2 2003/07/02 15:23:02 alga Exp $
 """
 
 import unittest
@@ -22,26 +22,41 @@ from zope.app.services.interface import LocalInterfaceService
 from zope.app.services.servicenames import Interfaces
 from zope.publisher.browser import TestRequest
 from zope.app.tests import setup
-from zope.interface import Interface
+from zope.interface import Interface, directlyProvidedBy
+from zope.interface import directlyProvides, implements
 from zope.app.component.globalinterfaceservice import provideInterface
+from zope.component.adapter import provideAdapter
+from zope.app.interfaces.introspector import IIntrospector
+from zope.app.introspector import Introspector
 
 class I1(Interface):
     pass
 
+id = 'zope.app.browser.tests.test_introspector.I1'
+
+class I2(Interface):
+    pass
+
+id2 = 'zope.app.browser.tests.test_introspector.I2'
+
 class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
 
-    def test_getInterfaceURL(self):
-        id = 'zope.app.browser.tests.test_introspector.I1'
-        rootFolder = setup.buildSampleFolderTree()
-        mgr = setup.createServiceManager(rootFolder)
+    def setUp(self):
+        PlacefulSetup.setUp(self)
+        self.rootFolder = setup.buildSampleFolderTree()
+        mgr = setup.createServiceManager(self.rootFolder)
         service = setup.addService(mgr, Interfaces, LocalInterfaceService())
 
         provideInterface(id, I1)
+        provideInterface(id2, I2)
+        provideAdapter(None, IIntrospector, Introspector)
 
+
+    def test_getInterfaceURL(self):
         from zope.app.browser.introspector import IntrospectorView
 
         request = TestRequest()
-        view = IntrospectorView(rootFolder, request)
+        view = IntrospectorView(self.rootFolder, request)
 
         self.assertEqual(
             view.getInterfaceURL(id),
@@ -50,6 +65,32 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(view.getInterfaceURL('zope.app.INonexistent'),
                          '')
+
+    def test_update(self):
+        from zope.app.browser.introspector import IntrospectorView
+
+        class Context:
+            implements(Interface)
+
+        context = Context()
+        request = TestRequest()
+        request.form['ADD']= ''
+        request.form['add_%s' % id] = 'on'
+        request.form['add_%s' % id2] = 'on'
+        view = IntrospectorView(context, request)
+        view.update()
+        self.assert_(I1 in directlyProvidedBy(context))
+        self.assert_(I2 in directlyProvidedBy(context))
+
+        context = Context()
+        directlyProvides(context, I1)
+        request = TestRequest()
+        request.form['REMOVE']= ''
+        request.form['rem_%s' % id] = 'on'
+        view = IntrospectorView(context, request)
+        view.update()
+        self.assertEqual(tuple(directlyProvidedBy(context)), ())
+
 
 def test_suite():
     suite = unittest.TestSuite()

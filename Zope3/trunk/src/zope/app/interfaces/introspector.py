@@ -38,7 +38,14 @@ class IIntrospector(Interface):
         """Returns interfaces implemented by this class"""
 
     def getInterfaceNames():
-        """Returns the name of the interface"""
+        """Returns the names of the interfaces implemented by this class"""
+
+    def getDirectlyProvided():
+        """Returns interfaces directly implemented by an object"""
+
+    def getDirectlyProvidedNames():
+        """Returns the names of the interfaces directly implemented by
+        an object"""
 
     def getInterfaceDetails():
         """Returns the entire documentation in the interface"""
@@ -48,3 +55,9 @@ class IIntrospector(Interface):
 
     def getInterfaceRegistration():
         """Returns details for a interface configuration"""
+
+    def getMarkerInterfaces():
+        """Returns a list of marker interfaces available for this object"""
+
+    def getMarkerInterfaceNames():
+        """Returns a list of names of marker interfaces available for this object"""

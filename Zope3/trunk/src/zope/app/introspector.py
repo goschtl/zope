@@ -16,10 +16,12 @@ from zope.interface import Interface
 
 from zope.app.interfaces.introspector import IIntrospector
 from zope.app.interfaces.services.module import IModuleService
-from zope.component import getServiceManager, getAdapter, getServiceDefinitions
+from zope.component import getService, getAdapter, getServiceDefinitions
 from zope.proxy import removeAllProxies
 from zope.interface import implements, implementedBy
-
+from zope.interface import directlyProvides, directlyProvidedBy, providedBy
+from zope.interface.interfaces import IInterface
+from zope.app.services.servicenames import Interfaces
 
 class Introspector:
     """Introspects an object"""
@@ -33,11 +35,7 @@ class Introspector:
 
     def isInterface(self):
         "Checks if the context is class or interface"
-        try:
-            self.context.namesAndDescriptions()
-            return True
-        except: # XXX
-            return False
+        return IInterface.isImplementedBy(self.context)
 
     def setRequest(self, request):
         """sets the request"""
@@ -93,16 +91,14 @@ class Introspector:
         """Returns interfaces implemented by this class"""
         return tuple(implementedBy(removeAllProxies(self.currentclass)))
 
-    def getInterfaceNames(self):
+    def getInterfaceNames(self, interfaces=None):
+        if interfaces is None:
+            interfaces = self.getInterfaces()
         names = []
-        try:
-            for intObj in self.getInterfaces():
-                names.append(intObj.__module__ + '.' + intObj.__name__)
-        except:
-            return []
-        else:
-            names.sort()
-            return names
+        for intObj in interfaces:
+            names.append(intObj.__module__ + '.' + intObj.__name__)
+        names.sort()
+        return names
 
     def getInterfaceDetails(self):
         """Returns the entire documentation in the interface"""
@@ -116,10 +112,6 @@ class Introspector:
             namesAndDescriptions = list(interface.namesAndDescriptions())
             namesAndDescriptions.sort()
             for name, desc in namesAndDescriptions:
-                # XXX According to Jim, Introspector is going away soon
-                # to be replaced with something else, so just add
-                # 'removeAllProxies' for now
-                #desc = removeAllProxies(desc)
                 if hasattr(desc, 'getSignatureString'):
                     methods.append((desc.getName(),
                                     desc.getSignatureString(),
@@ -145,3 +137,49 @@ class Introspector:
             if self.context.extends(interface):
                 service.append(str(name))
         return service
+
+    def getDirectlyProvided(self):
+        """See IIntrospector"""
+        return directlyProvidedBy(removeAllProxies(self.context))
+
+    def getDirectlyProvidedNames(self):
+        """See IIntrospector"""
+        return self.getInterfaceNames(self.getDirectlyProvided())
+
+    def getMarkerInterfaceNames(self):
+        """See IIntrospector"""
+        result = list(self.getInterfaceNames(self.getMarkerInterfaces()))
+        result.sort()
+        return tuple(result)
+
+    def getMarkerInterfaces(self):
+        """See IIntrospector"""
+        results = []
+        iservice = getService(self.context, Interfaces)
+        todo = list(providedBy(removeAllProxies(self.context)))
+        done = []
+
+        while todo:
+            interface = todo.pop()
+            done.append(interface)
+            for base in interface.__bases__:
+                if base not in todo and base not in done:
+                    todo.append(base)
+            markers = self.getDirectMarkersOf(interface)
+            for interface in markers:
+                if (interface not in results
+                    and not interface.isImplementedBy(self.context)):
+                    results.append(interface)
+            todo += markers
+        results.sort()
+        return tuple(results)
+
+    def getDirectMarkersOf(self, base):
+        """Returns empty interfaces directly inheriting from the given one"""
+        results = []
+        iservice = getService(self.context, Interfaces)
+        for id, interface in iservice.items(base=base):
+            if interface.__bases__ == (base,) and not interface.names():
+                results.append(interface)
+        results.sort()
+        return tuple(results)

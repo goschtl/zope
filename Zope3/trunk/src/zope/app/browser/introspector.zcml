@@ -14,10 +14,15 @@
       for = "zope.interface.Interface"
       permission="zope.ManageServices"
       class="zope.app.browser.introspector.IntrospectorView" >
+
       <page name="classBrowser.html"
             title="Introspector"
             template="introspector.pt"
             menu="zmi_views"
+      />
+
+      <page name="objectMarker.html"
+            template="marker.pt"
       />
     </pages>
 

@@ -17,6 +17,8 @@ from zope.component import getAdapter
 from zope.app import zapi
 from zope.app.services.servicenames import Interfaces
 from zope.component.exceptions import ComponentLookupError
+from zope.interface import directlyProvides, directlyProvidedBy
+from zope.proxy import removeAllProxies
 # XXX only used for commented-out section below
 # from zope.component import getServiceManager, getServiceDefinitions, \
 #      queryAdapter, getService
@@ -37,6 +39,23 @@ class IntrospectorView(BrowserView):
             return "%s/detail.html?id=%s" % (url, name)
         except ComponentLookupError:
             return ""
+
+    def update(self):
+        if 'ADD' in self.request:
+            for interface in self.getIntrospector().getMarkerInterfaceNames():
+                if "add_%s" % interface in self.request:
+                    interfaces = zapi.getService(self.context, Interfaces)
+                    interface = interfaces.getInterface(interface)
+                    ob = removeAllProxies(self.context)
+                    directlyProvides(ob, directlyProvidedBy(ob), interface)
+
+        if 'REMOVE' in self.request:
+            for interface in self.getIntrospector().getDirectlyProvidedNames():
+                if "rem_%s" % interface in self.request:
+                    interfaces = zapi.getService(self.context, Interfaces)
+                    interface = interfaces.getInterface(interface)
+                    ob = removeAllProxies(self.context)
+                    directlyProvides(ob, directlyProvidedBy(ob)-interface)
 
     def getServicesFor(self):
         services = []

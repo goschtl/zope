@@ -14,14 +14,20 @@
 """
 
 Revision information:
-$Id: test_introspector.py,v 1.4 2003/07/02 11:02:18 alga Exp $
+$Id: test_introspector.py,v 1.5 2003/07/02 15:23:06 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.cleanup import CleanUp
 from zope.app.introspector import Introspector
-from zope.interface import Interface, Attribute, implements
-
+from zope.app.interfaces.introspector import IIntrospector
+from zope.interface import Interface, Attribute, implements, directlyProvides
+from zope.interface.verify import verifyObject
+from zope.app.process.bootstrap import addConfigureService
+from zope.app.services.servicenames import Interfaces
+from zope.app.services.interface import LocalInterfaceService
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.component.globalinterfaceservice import provideInterface
 
 class ITestClass(Interface):
     def drool():
@@ -55,8 +61,11 @@ class I3(I, I2):
     def two(param1, param2):
         """method two"""
 
+class WeirdClass:
+    def namesAndDescriptions(self):
+        return "indeed"
 
-class Test(CleanUp, TestCase):
+class TestIntrospector(CleanUp, TestCase):
     """Test Introspector."""
 
     def test_isInterface(self):
@@ -65,6 +74,11 @@ class Test(CleanUp, TestCase):
 
         ints = Introspector(TestClass())
         self.assertEqual(ints.isInterface(), 0)
+
+        ints = Introspector(WeirdClass())
+        self.assertEqual(ints.isInterface(), 0)
+
+        verifyObject(IIntrospector, ints)
 
     def test_getClass(self):
         ints = Introspector(TestClass())
@@ -129,10 +143,80 @@ class Test(CleanUp, TestCase):
         details = [Iname, bases, desc, methods, attributes]
         self.assertEqual(ints.getInterfaceDetails(), details)
 
+    def test_getDirectlyProvided(self):
+        ob = TestClass()
+        ints = Introspector(ob)
+        self.assertEqual(tuple(ints.getDirectlyProvided()), ())
+        directlyProvides(ob, I, I2)
+        ints = Introspector(ob)
+        self.assertEqual(tuple(ints.getDirectlyProvided()), (I, I2))
+
+    def test_getDirectlyProvidedNames(self):
+        ob = TestClass()
+        ints = Introspector(ob)
+        self.assertEqual(tuple(ints.getDirectlyProvidedNames()), ())
+        directlyProvides(ob, I, I2)
+        ints = Introspector(ob)
+        self.assertEqual(tuple(ints.getDirectlyProvidedNames()),
+                         ('zope.app.tests.test_introspector.I',
+                          'zope.app.tests.test_introspector.I2'))
+
+
+class I4(I3):
+    foo = Attribute("Not a marker")
+
+class M1(Interface): pass
+
+class M2(I2): pass
+
+class M3(I3): pass
+
+class M4(I4): pass
+
+class Content:
+    implements(I3)
+
+    def one(self, a): pass
+    def two(self, a, b): pass
+
+class TestMarkerInterfaces(PlacefulSetup, TestCase):
+
+    def setUp(self):
+        PlacefulSetup.setUp(self)
+        self.createStandardServices()
+        addConfigureService(self.rootFolder, Interfaces, LocalInterfaceService)
+        provideInterface('zope.app.tests.test_introspector.I', I)
+        provideInterface('zope.app.tests.test_introspector.I2', I2)
+        provideInterface('zope.app.tests.test_introspector.I3', I3)
+        provideInterface('zope.app.tests.test_introspector.I4', I4)
+        provideInterface('zope.app.tests.test_introspector.M1', M1)
+        provideInterface('zope.app.tests.test_introspector.M2', M2)
+        provideInterface('zope.app.tests.test_introspector.M3', M3)
+        provideInterface('zope.app.tests.test_introspector.M4', M4)
+
+    def test_getMarkerInterfaces(self):
+        ints = Introspector(Content())
+        expected = [M1, M2, M3]
+        expected.sort()
+        self.assertEqual(ints.getMarkerInterfaces(), tuple(expected))
+
+    def test_getMarkerInterfaceNames(self):
+        ints = Introspector(Content())
+        expected = ['zope.app.tests.test_introspector.M1',
+                    'zope.app.tests.test_introspector.M2',
+                    'zope.app.tests.test_introspector.M3']
+        expected.sort()
+        self.assertEqual(ints.getMarkerInterfaceNames(), tuple(expected))
+
+
+    def test_getDirectMarkers(self):
+        ints = Introspector(Content())
+        self.assertEqual(ints.getDirectMarkersOf(I3), (M3,))
 
 def test_suite():
     suite = TestSuite()
-    suite.addTest(makeSuite(Test))
+    suite.addTest(makeSuite(TestIntrospector))
+    suite.addTest(makeSuite(TestMarkerInterfaces))
     return suite
 
 
