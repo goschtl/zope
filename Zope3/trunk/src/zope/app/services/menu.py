@@ -13,8 +13,10 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.2 2003/08/16 00:44:08 srichter Exp $
+$Id: menu.py,v 1.3 2003/08/16 15:32:40 srichter Exp $
 """
+__metaclass__ = type 
+
 from persistence import Persistent
 from zope.app import zapi
 from zope.app.component.nextservice import getNextService
@@ -189,14 +191,14 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
 
     def getMenu(self, menu_id, object, request, max=999999):
         """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
-        return super(LocalBrowserMenuService,
+        return zapi.ContextSuper(LocalBrowserMenuService,
                      self).getMenu(menu_id, object, request, max)
     getMenu = ContextMethod(getMenu)
 
 
     def getFirstMenuItem(self, menu_id, object, request):
         """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
-        return super(LocalBrowserMenuService,
+        return zapi.ContextSuper(LocalBrowserMenuService,
                      self).getFirstMenuItem(menu_id, object, request)
     getFirstMenuItem = ContextMethod(getFirstMenuItem)
 
