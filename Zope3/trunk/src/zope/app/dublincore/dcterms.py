@@ -13,7 +13,7 @@
 ##############################################################################
 """Support information for qualified Dublin Core metadata.
 
-$Id: dcterms.py,v 1.2 2003/08/21 04:53:49 fdrake Exp $
+$Id: dcterms.py,v 1.3 2003/08/21 05:20:40 fdrake Exp $
 """
 
 from zope.app.dublincore import dcsv
@@ -22,6 +22,8 @@ from zope.app.dublincore import dcsv
 DC_NS = "http://purl.org/dc/elements/1.1/"
 DCTERMS_NS = "http://purl.org/dc/terms/"
 XSI_NS = "http://www.w3.org/2001/XMLSchema-instance"
+
+W3CDTF = "W3CDTF"
 
 
 def splitEncoding(name):
@@ -89,7 +91,7 @@ def check_period(value):
         if k in d:
             raise ValueError("duplicate field label %r" % k)
         d[k] = v
-    if d.get("scheme", "w3cdtf").lower() == "w3cdtf":
+    if d.get("scheme", W3CDTF).upper() == W3CDTF:
         if "start" in d:
             check_w3cdtf(d["start"])
         if "end" in d:
@@ -118,7 +120,7 @@ encodings = {
     "Box":      (("Coverage.Spatial",), check_box),
     "TGN":      (("Coverage.Spatial",), check_tgn),
     "Period":   (("Coverage.Temporal",), check_period),
-    "W3CDTF":   (("Coverage.Temporal", "Date",), check_w3cdtf),
+    W3CDTF:     (("Coverage.Temporal", "Date",), check_w3cdtf),
     "RFC3066":  (("Language",), check_rfc3066),
     }
 
@@ -131,7 +133,7 @@ name_to_element = {
     "Description":   ("dc:description",   ""),
     "Publisher":     ("dc:publisher",     ""),
     "Contributor":   ("dc:contributor",   ""),
-    "Date":          ("dc:date",          "dcterms:W3CDTF"),
+    "Date":          ("dc:date",          "dcterms:"+W3CDTF),
     "Type":          ("dc:type",          ""),
     "Format":        ("dc:format",        ""),
     "Identifier":    ("dc:identifier",    ""),
@@ -142,8 +144,8 @@ name_to_element = {
     "Rights":        ("dc:rights",        ""),
 
     # qualified DCMES 1.1 (directly handled by Zope)
-    "Date.Created":  ("dcterms:created",  "dcterms:W3CDTF"),
-    "Date.Modified": ("dcterms:modified", "dcterms:W3CDTF"),
+    "Date.Created":  ("dcterms:created",  "dcterms:"+W3CDTF),
+    "Date.Modified": ("dcterms:modified", "dcterms:"+W3CDTF),
 
     # qualified DCMES 1.1 (not used by Zope)
     "Audience":                      ("dcterms:audience", ""),
@@ -151,12 +153,12 @@ name_to_element = {
     "Audience.Mediator":             ("dcterms:mediator", ""),
     "Coverage.Spatial":              ("dcterms:spatial", ""),
     "Coverage.Temporal":             ("dcterms:temporal", ""),
-    "Date.Accepted":                 ("dcterms:accepted", "dcterms:W3CDTF"),
-    "Date.Available":                ("dcterms:available", "dcterms:W3CDTF"),
-    "Date.Copyrighted":              ("dcterms:copyrighted", "dcterms:W3CDTF"),
-    "Date.Issued":                   ("dcterms:issued", "dcterms:W3CDTF"),
-    "Date.Submitted":                ("dcterms:submitted", "dcterms:W3CDTF"),
-    "Date.Valid":                    ("dcterms:valid", "dcterms:W3CDTF"),
+    "Date.Accepted":                 ("dcterms:accepted", "dcterms:"+W3CDTF),
+    "Date.Available":                ("dcterms:available", "dcterms:"+W3CDTF),
+    "Date.Copyrighted":              ("dcterms:copyrighted","dcterms:"+W3CDTF),
+    "Date.Issued":                   ("dcterms:issued", "dcterms:"+W3CDTF),
+    "Date.Submitted":                ("dcterms:submitted", "dcterms:"+W3CDTF),
+    "Date.Valid":                    ("dcterms:valid", "dcterms:"+W3CDTF),
     "Description.Abstract":          ("dcterms:abstract", ""),
     "Description.Table Of Contents": ("dcterms:tableOfContents", ""),
     "Format":                        ("dc:format", ""),
