@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector view tests
 
-$Id: test_introspectorview.py,v 1.3 2004/03/13 15:21:22 srichter Exp $
+$Id: test_introspectorview.py,v 1.4 2004/04/08 13:09:35 hdima Exp $
 """
 
 import unittest
@@ -56,7 +56,7 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(
             view.getInterfaceURL(id),
-            'http://127.0.0.1/++etc++site/detail.html?id=%s'
+            'http://127.0.0.1/++etc++site/interfacedetail.html?id=%s'
             % id)
 
         self.assertEqual(view.getInterfaceURL('zope.app.INonexistent'),

@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector View class
 
-$Id: browser.py,v 1.5 2004/03/13 23:55:09 srichter Exp $
+$Id: browser.py,v 1.6 2004/04/08 13:09:35 hdima Exp $
 """
 from zope.app.publisher.browser import BrowserView
 from zope.app.introspector.interfaces import IIntrospector
@@ -37,9 +37,9 @@ class IntrospectorView(BrowserView):
         try:
             getInterface(self.context, name)
             url = zapi.getView(services, 'absolute_url', self.request)
-            return "%s/detail.html?id=%s" % (url, name)
         except ComponentLookupError:
             return ""
+        return "%s/interfacedetail.html?id=%s" % (url, name)
 
     def update(self):
         if 'ADD' in self.request:
