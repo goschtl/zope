@@ -10,7 +10,7 @@ img#appicon {
 }
 
 img.itemicon {
-  float: left;
+  //float: left;
   vertical-align: bottom;
 }
 
@@ -30,26 +30,20 @@ div.titlebar {
 
 div.menubar {
   background: #EEE;
-  padding: 6px;
-  padding-left: 10px;
+  margin: 0;
+  padding: 0px 0px 7px 1px;
 }
-
-div.menubar span {
-  margin-right: 15px;
-}
-
 
 ul {
   padding: 0; 
   margin: 0; 
+  background: #EEE;
 }
 
 ul li {
   list-style-type: none;
   position: relative; 
   margin: 0; 
-  padding: 2px;
-  background: #EEE;
 }
 
 ul ul {
@@ -66,12 +60,16 @@ ul li:hover > ul {
 
 li a {
   display: block; 
-  padding: 1px; 
+  padding: 2px; 
   text-decoration: none;
 }
 
+ul.topmenu li > a {
+  padding: 1px; 
+}
+
 ul.topmenu {
-  width: 6em;
+  width: 4em; /* Changes spacing between menus */
   float: left;
 }
 
@@ -79,10 +77,13 @@ ul.topmenu ul {
   border: 1px solid #BBB;
 }
 
-ul.topmenu > li:hover {
+ul.topmenu > li { /* properties of top menu items */
   bottom: -2px;
-  padding-bottom: 1px;
-  padding: 0px;
+  border: 1px solid #EEE;
+}
+
+
+ul.topmenu > li:hover { /* properties of top menu items */
   border: 1px solid #BBB;
   background: #DDD;
 }
@@ -96,5 +97,3 @@ ul.topmenu > li:hover > ul {
   top: 1.5em; 
   left: -1px;
 }
-
-

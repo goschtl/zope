@@ -11,7 +11,6 @@
      tal:attributes="href menuitem/action;">
     <metal:block use-macro="context/@@menudemo_macros/itemdisplay" />
   </a>
-
   <ul tal:condition="menuitem/submenu">
     <li tal:repeat="subitem menuitem/submenu">
       <tal:block define="menuitem subitem">
