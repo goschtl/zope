@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.64 2004/02/04 19:17:29 jim Exp $
+$Id: widget.py,v 1.65 2004/03/02 18:27:36 philikon Exp $
 """
 __metaclass__ = type
 
@@ -31,7 +31,7 @@ from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.interfaces.browser.form import IBrowserWidget
+from zope.app.browser.interfaces.form import IBrowserWidget
 from zope.app.form.widget import Widget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.interfaces.form import ConversionError, WidgetInputError

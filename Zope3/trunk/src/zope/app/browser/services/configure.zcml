@@ -68,18 +68,20 @@
 <!-- XXX we are phasing these widgets out -->
 
   <page
-    for="zope.app.services.field.IComponentPath"
-    name="edit"
-    class="zope.app.browser.services.field.ComponentPathWidget"
-    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    permission="zope.ManageServices" />
+      for="zope.app.services.field.IComponentPath"
+      name="edit"
+      class="zope.app.browser.services.field.ComponentPathWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
+      permission="zope.ManageServices"
+      />
 
   <page
-    for="zope.app.services.field.IComponentPath"
-    name="display"
-    class="zope.app.browser.services.field.ComponentPathDisplayWidget"
-    allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    permission="zope.ManageServices" />
+      for="zope.app.services.field.IComponentPath"
+      name="display"
+      class="zope.app.browser.services.field.ComponentPathDisplayWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
+      permission="zope.ManageServices"
+      />
 
 <!-- Adapters -->
   <zope:include package=".adapter" />

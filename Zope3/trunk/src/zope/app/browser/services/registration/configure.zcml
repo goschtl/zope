@@ -6,7 +6,7 @@
       for="zope.app.interfaces.services.registration.IRegistrationStatus"
       name="edit"
       class=".RegistrationStatusWidget"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       permission="zope.ManageServices" />
 
   <page
@@ -15,7 +15,7 @@
       template="changeregistrations.pt"
       class=".ChangeRegistrations"
       allowed_interface=
-                   "zope.app.interfaces.browser.form.IFormCollaborationView"
+                   "zope.app.browser.interfaces.form.IFormCollaborationView"
       permission="zope.ManageServices" />
 
   <editform
@@ -36,14 +36,14 @@
 
   <page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.app.interfaces.services.registration.IComponentPath"
       name="edit"
       class=".ComponentPathWidget" />
 
   <page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.app.interfaces.services.registration.IComponentPath"
       name="display"
       class=".ComponentPathWidget" />

@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.7 $
+:Version: $Revision: 1.8 $
 
 .. contents::
 
@@ -273,7 +273,7 @@ class.  This class needs some explanation.
 The <addform> directive uses the AddRegistration class as a mix-in
 class.  It may override various methods to customize the add form; the
 set of methods that can be customized is described by the
-``zope.app.interfaces.browser.form.IAddFormCustomization`` interface.
+``zope.app.browser.interfaces.form.IAddFormCustomization`` interface.
 In this particular case, we must override ``add`` and ``nextURL``
 because their default implementations only work when the add form is a
 view on an `IAdding` view.  That is the normal way to use add forms, but

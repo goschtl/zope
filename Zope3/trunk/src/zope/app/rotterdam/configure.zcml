@@ -92,7 +92,7 @@
  
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.ISourceText"
       name="edit"
       layer="rotterdam"

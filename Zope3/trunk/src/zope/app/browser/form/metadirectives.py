@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.9 2004/03/02 17:40:48 philikon Exp $
+$Id: metadirectives.py,v 1.10 2004/03/02 18:27:36 philikon Exp $
 """
 
 from zope.interface import Interface
@@ -220,7 +220,7 @@ class IAddWizardDirective(ICommonWizardInformation, ICommonAddInformation):
     being rendered.  The addwizard directive provides an customization
     interface to overcome this difficulty.
 
-    See zope.app.interfaces.browser.form.IAddFormCustomization.
+    See zope.app.browser.interfaces.form.IAddFormCustomization.
     """
 
 class IEditWizardDirective(ICommonWizardInformation):
@@ -296,7 +296,7 @@ class IAddFormDirective(ICommonFormInformation, ICommonAddInformation):
     being rendered.  The addform directive provides an customization
     interface to overcome this difficulty.
 
-    See zope.app.interfaces.browser.form.IAddFormCustomization.
+    See zope.app.browser.interfaces.form.IAddFormCustomization.
     """
 
     description = Text(

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: support.py,v 1.3 2004/01/19 12:31:56 sidnei Exp $
+$Id: support.py,v 1.4 2004/03/02 18:27:37 philikon Exp $
 """
 
 import re
@@ -56,7 +56,7 @@ def defineWidgetView(name, field_interface, widget_class):
           <page
             name="%s"
             permission="zope.Public"
-            allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+            allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
             for="%s"
             class="%s" />
         </configure>

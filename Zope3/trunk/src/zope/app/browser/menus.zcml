@@ -65,6 +65,7 @@
       name="view_get_menu"
       permission="zope.Public"
       class=".menu.MenuAccessView"
-      allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView" />
+      allowed_interface="zope.app.browser.interfaces.menu.IMenuAccessView"
+      />
 
 </zope:configure>

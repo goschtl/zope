@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.15 2003/09/26 19:53:35 poster Exp $
+$Id: form.py,v 1.1 2004/03/02 18:27:38 philikon Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.form import IWidget

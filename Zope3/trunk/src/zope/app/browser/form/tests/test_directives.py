@@ -92,7 +92,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             """
               <browser:page
                   permission="zope.Public"
-                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
                   for="zope.schema.interfaces.ITextLine"
                   name="edit"
                   class="zope.app.browser.form.widget.TextWidget"
@@ -120,7 +120,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               <browser:menu id="test_menu" title="Test menu" usage="objectview"/>
               <browser:page
                   permission="zope.Public"
-                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
                   for="zope.schema.interfaces.ITextLine"
                   name="edit"
                   class="zope.app.browser.form.widget.TextWidget"
@@ -150,7 +150,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             """
               <browser:page
                   permission="zope.Public"
-                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
                   for="zope.schema.interfaces.ITextLine"
                   name="edit"
                   class="zope.app.browser.form.widget.TextWidget"
@@ -181,7 +181,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               <browser:menu id="test_menu" title="Test menu" usage="overridden"/>
               <browser:page
                   permission="zope.Public"
-                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
                   for="zope.schema.interfaces.ITextLine"
                   name="edit"
                   class="zope.app.browser.form.widget.TextWidget"

@@ -11,7 +11,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IField"
       name="edit"
       class="zope.app.browser.form.widget.BrowserWidget"
@@ -19,7 +19,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.ITextLine"
       name="edit"
       class="zope.app.browser.form.widget.TextWidget"
@@ -27,7 +27,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IText"
       name="edit"
       class="zope.app.browser.form.widget.TextAreaWidget"
@@ -35,7 +35,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.ISourceText"
       name="edit"
       class="zope.app.browser.form.widget.TextAreaWidget"
@@ -43,7 +43,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IBytesLine"
       name="edit"
       class="zope.app.browser.form.widget.BytesWidget"
@@ -51,7 +51,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IBytes"
       name="edit"
       class="zope.app.browser.form.widget.FileWidget"
@@ -59,7 +59,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IASCII"
       name="edit"
       class="zope.app.browser.form.widget.BytesAreaWidget"
@@ -67,7 +67,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IInt"
       name="edit"
       class="zope.app.browser.form.widget.IntWidget"
@@ -75,7 +75,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IFloat"
       name="edit"
       class="zope.app.browser.form.widget.FloatWidget"
@@ -83,7 +83,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IDatetime"
       name="edit"
       class="zope.app.browser.form.widget.DatetimeWidget"
@@ -91,7 +91,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IDate"
       name="edit"
       class="zope.app.browser.form.widget.DateWidget"
@@ -99,7 +99,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IBool"
       name="edit"
       class="zope.app.browser.form.widget.CheckBoxWidget"
@@ -107,7 +107,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.ITuple"
       name="edit"
       class="zope.app.browser.form.widget.TupleSequenceWidget"
@@ -115,7 +115,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IList"
       name="edit"
       class="zope.app.browser.form.widget.ListSequenceWidget"
@@ -123,7 +123,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IObject"
       name="edit"
       class="zope.app.browser.form.widget.ObjectWidget"
@@ -131,7 +131,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IPassword"
       name="edit"
       class="zope.app.browser.form.widget.PasswordWidget"
@@ -141,7 +141,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IEnumeratedTextLine"
       name="edit"
       class=".enumerated.EnumeratedTextWidget"
@@ -149,7 +149,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IEnumeratedInt"
       name="edit"
       class=".enumerated.EnumeratedIntWidget"
@@ -157,7 +157,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IEnumeratedFloat"
       name="edit"
       class=".enumerated.EnumeratedFloatWidget"
@@ -165,7 +165,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IEnumeratedDatetime"
       name="edit"
       class=".enumerated.EnumeratedDatetimeWidget"
@@ -173,7 +173,7 @@
 
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IEnumeratedDate"
       name="edit"
       class=".enumerated.EnumeratedDateWidget"
@@ -186,7 +186,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyField"
       name="display"
       factory=".vocabularywidget.VocabularyFieldDisplayWidget"
@@ -195,7 +195,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyField"
       name="edit"
       factory=".vocabularywidget.VocabularyFieldEditWidget"
@@ -205,7 +205,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyBagField"
       name="display"
       factory=".vocabularywidget.VocabularyBagFieldDisplayWidget"
@@ -214,7 +214,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyBagField"
       name="edit"
       factory=".vocabularywidget.VocabularyBagFieldEditWidget"
@@ -224,7 +224,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyListField"
       name="display"
       factory=".vocabularywidget.VocabularyListFieldDisplayWidget"
@@ -233,7 +233,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyListField"
       name="edit"
       factory=".vocabularywidget.VocabularyListFieldEditWidget"
@@ -243,7 +243,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularySetField"
       name="display"
       factory=".vocabularywidget.VocabularySetFieldDisplayWidget"
@@ -252,7 +252,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularySetField"
       name="edit"
       factory=".vocabularywidget.VocabularySetFieldEditWidget"
@@ -262,7 +262,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyUniqueListField"
       name="display"
       factory=".vocabularywidget.VocabularyUniqueListFieldDisplayWidget"
@@ -271,7 +271,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyUniqueListField"
       name="edit"
       factory=".vocabularywidget.VocabularyUniqueListFieldEditWidget"
@@ -281,7 +281,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IVocabularyQueryView"
+      allowed_interface="zope.app.browser.interfaces.form.IVocabularyQueryView"
       for="zope.schema.interfaces.IIterableVocabularyQuery"
       name="widget-query-helper"
       factory=".vocabularywidget.IterableVocabularyQueryView"
@@ -290,7 +290,7 @@
   <view
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      allowed_interface="zope.app.interfaces.browser.form.IVocabularyQueryView"
+      allowed_interface="zope.app.browser.interfaces.form.IVocabularyQueryView"
       for="zope.schema.interfaces.IIterableVocabularyQuery"
       name="widget-query-list-helper"
       factory=".vocabularywidget.IterableVocabularyQueryMultiView"
@@ -357,7 +357,7 @@
   <!-- Default simple display view -->
   <browser:page
       permission="zope.Public"
-      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      allowed_interface="zope.app.browser.interfaces.form.IBrowserWidget"
       for="zope.schema.interfaces.IField"
       name="display"
       class="zope.app.browser.form.widget.DisplayWidget"

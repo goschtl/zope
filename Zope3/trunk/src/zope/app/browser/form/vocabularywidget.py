@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.63 2004/02/05 14:55:46 poster Exp $
+$Id: vocabularywidget.py,v 1.64 2004/03/02 18:27:36 philikon Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -31,7 +31,7 @@ from zope.schema.interfaces import ValidationError
 from zope.app import zapi
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.browser.form import IVocabularyQueryView
+from zope.app.browser.interfaces.form import IVocabularyQueryView
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.services.servicenames import Translation
 

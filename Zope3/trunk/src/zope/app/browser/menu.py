@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: menu.py,v 1.4 2003/06/30 22:44:13 jeremy Exp $
+$Id: menu.py,v 1.5 2004/03/02 18:27:36 philikon Exp $
 """
 
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.browser.menu import IMenuAccessView
+from zope.app.browser.interfaces.menu import IMenuAccessView
 from zope.component import getService
 
 class MenuAccessView(BrowserView):

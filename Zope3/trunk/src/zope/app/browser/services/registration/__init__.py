@@ -13,13 +13,13 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.13 2003/12/18 06:09:43 sraju Exp $
+$Id: __init__.py,v 1.14 2004/03/02 18:27:39 philikon Exp $
 """
 
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.browser.form import IBrowserWidget
+from zope.app.browser.interfaces.form import IBrowserWidget
 from zope.app.interfaces.container import INameChooser
 
 from zope.app.interfaces.services.registration import IRegistration
@@ -240,7 +240,7 @@ class ComponentPathWidget(BrowserWidget):
     implements(IBrowserWidget)
 
     def __call__(self):
-        "See zope.app.interfaces.browser.form.IBrowserWidget"
+        """See zope.app.browser.interfaces.form.IBrowserWidget"""
         # Render as a link to the component
         field = self.context
         context = field.context
@@ -263,15 +263,15 @@ class ComponentPathWidget(BrowserWidget):
                 % (url, path))
 
     def hidden(self):
-        "See zope.app.interfaces.browser.form.IBrowserWidget"
+        """See zope.app.browser.interfaces.form.IBrowserWidget"""
         return ''
 
     def hasInput(self):
-        "See zope.app.interfaces.form.IWidget"
+        """See zope.app.interfaces.form.IWidget"""
         return 1
 
     def getInputValue(self):
-        "See zope.app.interfaces.form.IWidget"
+        """See zope.app.interfaces.form.IWidget"""
         field = self.context
         context = field.context
         if IRegistration.isImplementedBy(context):

@@ -11,16 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Tests of the vocabulary field widget machinery.
 
-"""Tests of the vocabulary field widget machinery."""
+$Id: test_vocabularywidget.py,v 1.29 2004/03/02 18:27:38 philikon Exp $
+"""
 
 import unittest
 
 from zope.app.tests import ztapi
 from zope.app.browser.form import vocabularywidget
 from zope.app.browser.form.tests import support
-from zope.app.interfaces.browser.form import IBrowserWidget
-from zope.app.interfaces.browser.form import IVocabularyQueryView
+from zope.app.browser.interfaces.form import IBrowserWidget
+from zope.app.browser.interfaces.form import IVocabularyQueryView
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
 from zope.interface.declarations import implements
