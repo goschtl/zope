@@ -87,7 +87,7 @@
 
   <view
       name="+"
-      menu="zmi_actions" title="Add"
+      menu="zmi_actions" title="Add Site Management Folder"
       for="zope.app.interfaces.services.service.ISiteManager"
       permission="zope.ManageServices"
       class="zope.app.browser.container.adding.Adding" 
