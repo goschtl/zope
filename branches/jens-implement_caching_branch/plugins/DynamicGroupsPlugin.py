@@ -420,6 +420,7 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
                      + Folder.manage_options[:1]
                      + BasePlugin.manage_options[:1]
                      + Folder.manage_options[1:]
+                     + Cacheable.manage_options
                      )
 
     manage_groups = PageTemplateFile( 'www/dgpGroups'
