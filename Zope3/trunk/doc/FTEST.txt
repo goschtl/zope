@@ -52,7 +52,7 @@ Zope 3 Functional Testing
 
    - Browser requests can be emulated by inheriting from BrowserTestCase and
      calling self.publish().  See the docstring in
-     src/zope/testing/functional.py for detailed information.  Here are a
+     src/zope/app/tests/functional.py for detailed information.  Here are a
      couple of simple examples::
 
         response = self.publish('/folder/object')
