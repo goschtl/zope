@@ -10,44 +10,52 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
+""" Type registration tool.
 
+$Id$
 """
-    Type registration tool.
-    $Id$
-"""
-__version__='$Revision$'[11:-2]
-
-import OFS
 from Globals import InitializeClass, DTMLFile
-from utils import UniqueObject, SimpleItemWithProperties, tuplize
-from utils import _dtmldir, _checkPermission, cookString, getToolByName
-import string
-from AccessControl import getSecurityManager, ClassSecurityInfo, Unauthorized
+from AccessControl import getSecurityManager
+from AccessControl import ClassSecurityInfo
+from AccessControl import Unauthorized
 from Acquisition import aq_base
-import Products, CMFCorePermissions
+from zLOG import LOG, WARNING
+
+from OFS.Folder import Folder
+import Products
+
+
 from ActionProviderBase import ActionProviderBase
 from ActionInformation import ActionInformation
 from Expression import Expression
-from zLOG import LOG, WARNING
-
-from CMFCorePermissions import View, ManagePortal, AccessContentsInformation
+from CMFCorePermissions import View
+from CMFCorePermissions import ManagePortal
+from CMFCorePermissions import AccessContentsInformation
+from utils import UniqueObject
+from utils import SimpleItemWithProperties
+from utils import tuplize
+from utils import _dtmldir
+from utils import _checkPermission
+from utils import cookString
+from utils import getToolByName
+from utils import getActionContext
 
 _marker = []  # Create a new marker.
 
-class TypeInformation (SimpleItemWithProperties):
+class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
     """
     Base class for information about a content type.
     """
     _isTypeInformation = 1
 
-    manage_options = (SimpleItemWithProperties.manage_options[:1] +
-                      ({'label':'Actions',
-                        'action':'manage_editActionsForm'},) +
-                      SimpleItemWithProperties.manage_options[1:])
+    manage_options = ( SimpleItemWithProperties.manage_options[:1]
+                     + ActionProviderBase.manage_options
+                     + SimpleItemWithProperties.manage_options[1:]
+                     )
 
 
     security = ClassSecurityInfo()
-    security.declareProtected(CMFCorePermissions.ManagePortal,
+    security.declareProtected(ManagePortal,
                               'manage_editProperties',
                               'manage_changeProperties',
                               'manage_propertiesForm',
@@ -92,31 +100,50 @@ class TypeInformation (SimpleItemWithProperties):
     allowed_content_types = ()
     allow_discussion = 0
     global_allow = 1
-    _actions = ()
 
     def __init__(self, id, **kw):
+
         self.id = id
+
+        kw = kw.copy()  # Get a modifiable dict.
+
         if kw:
-            kw = kw.copy()  # Get a modifiable dict.
+
             if (not kw.has_key('content_meta_type')
                 and kw.has_key('meta_type')):
                 kw['content_meta_type'] = kw['meta_type']
+
             if (not kw.has_key('content_icon')
                 and kw.has_key('icon')):
                 kw['content_icon'] = kw['icon']
+
             apply(self.manage_changeProperties, (), kw)
-            if kw.has_key('actions'):
-                aa = kw['actions']
-                actions = []
-                for action in aa:
-                    action = action.copy()
-                    # Some backward compatibility stuff.
-                    if not action.has_key('id'):
-                        action['id'] = cookString(action['name'])
-                    if not action.has_key('category'):
-                        action['category'] = 'object'
-                    actions.append(action)
-                self._actions = tuple(actions)
+
+        aa = kw.get( 'actions', () )
+
+        for action in aa:
+
+            action = action.copy()
+
+            # Some backward compatibility stuff.
+            if not action.has_key('id'):
+                action['id'] = cookString(action['name'])
+
+            if not action.has_key('name'):
+                action['name'] = action['id'].capitalize()
+
+            # XXX:  historically, action['action'] is simple string
+
+            self.addAction( id=action['id']
+                          , name=action['name']
+                          , action=action.get( 'action' )
+                          , condition=action.get( 'condition' )
+                          , permission=action.get('permissions', () )
+                          , category=action.get( 'category', 'object' )
+                          , visible=action.get( 'visible', 1 )
+                          )
+
+        
 
     #
     #   Accessors
@@ -194,14 +221,6 @@ class TypeInformation (SimpleItemWithProperties):
         """
         return self.allow_discussion
 
-    security.declarePrivate('getActions')
-    def getActions(self):
-        """
-        Returns the customizable user actions.
-        """
-        # Private because this returns the actual structure.
-        return self._actions
-
     security.declarePublic('globalAllow')
     def globalAllow(self):
         """
@@ -214,15 +233,15 @@ class TypeInformation (SimpleItemWithProperties):
         """
             Return the URL of the action whose ID is id.
         """
-        for action in self.getActions():
+        context = getActionContext( self )
+        for action in self.listActions() or ():
 
-            if action.has_key('id'):
-                if action['id'] == id:
-                    return action['action']
+            if action.getId() == id:
+                return action.action( context )
             else:
                 # Temporary backward compatibility.
-                if string.lower(action['name']) == id:
-                    return action['action']
+                if action.Title().lower() == id:
+                    return action.action( context )
 
         if default is _marker:
             raise TypeError, ( 'No action "%s" for type "%s"'
@@ -231,180 +250,44 @@ class TypeInformation (SimpleItemWithProperties):
         else:
             return default
 
-    #
-    #  Action editing interface
-    #
-    _actions_form = DTMLFile( 'editActions', _dtmldir )
-    
-    security.declareProtected(ManagePortal, 'manage_editActionsForm')
-    def manage_editActionsForm(self, REQUEST, manage_tabs_message=None):
+    security.declarePrivate( '_convertActions' )
+    def _convertActions( self ):
         """
-        Shows the 'Actions' management tab.
+            Upgrade dictionary-based actions.
         """
-        actions = []
-        for a in self.getActions():
-            a = a.copy()
-            p = a['permissions']
-            if p:
-                a['permission'] = p[0]
-            else:
-                a['permission'] = ''
-            if not a.has_key('category'):
-                a['category'] = 'object'
-            if not a.has_key('id'):
-                a['id'] = cookString(a['name'])
-            if not a.has_key( 'visible' ):
-                a['visible'] = 1
-            actions.append(a)
-        # possible_permissions is in AccessControl.Role.RoleManager.
-        pp = self.possible_permissions()
-        return self._actions_form(self, REQUEST,
-                                  actions=actions,
-                                  possible_permissions=pp,
-                                  management_view='Actions',
-                                  manage_tabs_message=manage_tabs_message)
+        if not self._actions:
+            return
 
-    security.declareProtected(ManagePortal, 'addAction')
-    def addAction( self
-                 , id
-                 , name
-                 , action
-                 , permission
-                 , category
-                 , visible=1
-                 , REQUEST=None
-                 ):
-        """
-        Adds an action to the list.
-        """
-        if not name:
-            raise ValueError('A name is required.')
+        if type( self._actions[0] ) == type( {} ):
 
-        new_actions = self._cloneActions()
+            aa, self._actions = self._actions, ()
 
-        new_actions.append( { 'id'          : str(id)
-                            , 'name'        : str(name)
-                            , 'action'      : str(action)
-                            , 'permissions' : (str(permission),)
-                            , 'category'    : str(category)
-                            , 'visible'     : int(visible) 
-                            } )
+            for action in aa:
 
-        self._actions = tuple( new_actions )
+                # XXX:  historically, action['action'] is simple string
 
-        if REQUEST is not None:
-            return self.manage_editActionsForm(
-                REQUEST, manage_tabs_message='Added.')
-    
-    security.declareProtected(ManagePortal, 'changeActions')
-    def changeActions(self, properties=None, REQUEST=None):
-        """
-        Changes the _actions.
-        """
-        if properties is None:
-            properties = REQUEST
-        actions = []
-        for idx in range(len(self._actions)):
-            s_idx = str(idx)
-            action = {
-                'id': str(properties.get('id_' + s_idx, '')),
-                'name': str(properties.get('name_' + s_idx, '')),
-                'action': str(properties.get('action_' + s_idx, '')),
-                'permissions':
-                (properties.get('permission_' + s_idx, ()),),
-                'category': str(properties.get('category_' + s_idx, '')),
-                'visible': not not properties.get('visible_' + s_idx, 0),
-                }
-            if not action['name']:
-                raise ValueError('A name is required.')
-            actions.append(action)
-        self._actions = tuple(actions)
-        if REQUEST is not None:
-            return self.manage_editActionsForm(REQUEST, manage_tabs_message=
-                                               'Actions changed.')
+                self.addAction( id=action['id']
+                            , name=action['name']
+                            , action=action.get( 'action' )
+                            , condition=action.get( 'condition' )
+                            , permission=action.get('permissions', () )
+                            , category=action.get( 'category', 'object' )
+                            , visible=action.get( 'visible', 1 )
+                            )
+        else:
 
-    security.declareProtected(ManagePortal, 'deleteActions')
-    def deleteActions(self, selections=(), REQUEST=None):
-        """
-        Deletes actions.
-        """
-        sels = list(map(int, selections))  # Convert to a list of integers.
-        sels.sort()
-        sels.reverse()
+            new_actions = []
+            for clone in self._cloneActions():
 
-        new_actions = self._cloneActions()
+                a_expr = clone.getActionExpression()
 
-        for idx in sels:
-            del new_actions[idx]
+                # XXX heuristic, may miss
+                if a_expr and ':' not in a_expr and '/' not in a_expr:
+                    clone.action = Expression( 'string:%s' % a_expr )
 
-        self._actions = tuple(new_actions)
+                new_actions.append( clone )
 
-        if REQUEST is not None:
-            return self.manage_editActionsForm(
-                REQUEST, manage_tabs_message=(
-                'Deleted %d action(s).' % len(sels)))
-
-    security.declareProtected(ManagePortal, 'moveUpActions')
-    def moveUpActions(self, selections=(), REQUEST=None):
-        """
-        Moves the specified actions up one slot.
-        """
-        sels = list(map(int, selections))  # Convert to a list of integers.
-        sels.sort()
-
-        new_actions = self._cloneActions()
-
-        for idx in sels:
-            idx2 = idx - 1
-            if idx2 < 0:
-                # Wrap to the bottom.
-                idx2 = len(new_actions) - 1
-            # Swap.
-            a = new_actions[idx2]
-            new_actions[idx2] = new_actions[idx]
-            new_actions[idx] = a
-
-        self._actions = tuple(new_actions)
-
-        if REQUEST is not None:
-            return self.manage_editActionsForm(
-                REQUEST, manage_tabs_message=(
-                'Moved up %d action(s).' % len(sels)))
-
-    security.declareProtected(ManagePortal, 'moveDownActions')
-    def moveDownActions(self, selections=(), REQUEST=None):
-        """
-        Moves the specified actions down one slot.
-        """
-        sels = list(map(int, selections))  # Convert to a list of integers.
-        sels.sort()
-        sels.reverse()
-
-        new_actions = self._cloneActions()
-
-        for idx in sels:
-            idx2 = idx + 1
-            if idx2 >= len(new_actions):
-                # Wrap to the top.
-                idx2 = 0
-            # Swap.
-            a = new_actions[idx2]
-            new_actions[idx2] = new_actions[idx]
-            new_actions[idx] = a
-
-        self._actions = tuple(new_actions)
-
-        if REQUEST is not None:
-            return self.manage_editActionsForm(
-                REQUEST, manage_tabs_message=(
-                'Moved down %d action(s).' % len(sels)))
-
-    security.declarePrivate( '_cloneActions' )
-    def _cloneActions( self ):
-        """
-            Return a "deep copy" of our list of actions.
-        """
-        return map( lambda x: x.copy(), list( self._actions ) )
+            self._actions = tuple( new_actions )
 
 InitializeClass( TypeInformation )
 
@@ -575,17 +458,16 @@ allowedTypes = [
     ]
 
 
-class TypesTool( UniqueObject, OFS.Folder.Folder, ActionProviderBase ):
+class TypesTool( UniqueObject, Folder, ActionProviderBase ):
     """
         Provides a configurable registry of portal content types.
     """
     id = 'portal_types'
     meta_type = 'CMF Types Tool'
-    _actions = []
 
     security = ClassSecurityInfo()
 
-    manage_options = ( OFS.Folder.Folder.manage_options +
+    manage_options = ( Folder.manage_options +
                       ActionProviderBase.manage_options +
                       ({ 'label' : 'Overview', 'action' : 'manage_overview' }
                      , 
@@ -594,17 +476,9 @@ class TypesTool( UniqueObject, OFS.Folder.Folder, ActionProviderBase ):
     #
     #   ZMI methods
     #
-    security.declareProtected( CMFCorePermissions.ManagePortal
+    security.declareProtected( ManagePortal
                              , 'manage_overview' )
     manage_overview = DTMLFile( 'explainTypesTool', _dtmldir )
-
-    security.declarePrivate('listActions')
-    def listActions(self, info=None):
-        """
-        Return a list of action information instances
-        for actions provided via tool
-        """
-        return self._actions
 
     def all_meta_types(self):
         """Adds TypesTool-specific meta types."""
@@ -809,5 +683,21 @@ class TypesTool( UniqueObject, OFS.Folder.Folder, ActionProviderBase ):
             immediate_url = '%s/%s' % ( ob.absolute_url()
                                       , info.immediate_view )
             RESPONSE.redirect( immediate_url )
+
+    security.declarePrivate( 'listActions' )
+    def listActions( self, info=None ):
+        """
+            List type-related actions.
+        """
+        actions = list( self._actions )
+
+        if info is not None:
+
+            type_info = self.getTypeInfo( info.content )
+
+            if type_info is not None:
+                actions.extend( type_info.listActions( info ) )
+
+        return actions
 
 InitializeClass( TypesTool )

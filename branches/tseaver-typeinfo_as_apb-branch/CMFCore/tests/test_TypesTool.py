@@ -1,28 +1,29 @@
+import unittest
 import Zope
-from unittest import TestCase, TestSuite, makeSuite, main
 
-from Products.CMFCore.TypesTool import\
-     FactoryTypeInformation as FTI,\
-     ScriptableTypeInformation as STI,\
-     TypesTool,Unauthorized
+from Acquisition import aq_base
+from AccessControl.SecurityManagement import newSecurityManager
+from AccessControl.SecurityManagement import noSecurityManager
+from webdav.NullResource import NullResource
+
+from Products.PythonScripts.standard import url_quote
+
+from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
+from Products.CMFCore.TypesTool import ScriptableTypeInformation as STI
+from Products.CMFCore.TypesTool import TypesTool
+from Products.CMFCore.TypesTool import Unauthorized
 
 from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.utils import _getViewFor
 
-from Products.CMFCore.tests.base.testcase import \
-     SecurityRequestTest
-from Products.CMFCore.tests.base.security import \
-     OmnipotentUser, UserWithRoles
-from Products.CMFCore.tests.base.dummy import \
-     DummyObject, addDummy, DummyTypeInfo,\
-     DummyFolder, DummyFTI
-
-from AccessControl.SecurityManagement import newSecurityManager
-from AccessControl.SecurityManagement import noSecurityManager
-
-from Products.PythonScripts.standard import url_quote
-from webdav.NullResource import NullResource
-from Acquisition import aq_base
+from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Products.CMFCore.tests.base.security import OmnipotentUser
+from Products.CMFCore.tests.base.security import UserWithRoles
+from Products.CMFCore.tests.base.dummy import DummyObject
+from Products.CMFCore.tests.base.dummy import addDummy
+from Products.CMFCore.tests.base.dummy import DummyTypeInfo
+from Products.CMFCore.tests.base.dummy import DummyFolder
+from Products.CMFCore.tests.base.dummy import DummyFTI
 
 class TypesToolTests( SecurityRequestTest ):
 
@@ -71,13 +72,14 @@ class TypesToolTests( SecurityRequestTest ):
             meta_types[factype['name']]=1
             # The url_quote below is necessary 'cos of the one in
             # main.dtml. Could be removed once that is gone.
-            self.failIf(type(aq_base(tool.unrestrictedTraverse(url_quote(factype['action'])))) is NullResource)
+            act = tool.unrestrictedTraverse(url_quote(factype['action']))
+            self.failIf(type(aq_base(act)) is NullResource)
 
         # Check the ones we're expecting are there
         self.failUnless(meta_types.has_key('Scriptable Type Information'))
         self.failUnless(meta_types.has_key('Factory-based Type Information'))
 
-class TypeInfoTests( TestCase ):
+class TypeInfoTests( unittest.TestCase ):
     
     def test_construction( self ):
         ti = self._makeInstance( 'Foo'
@@ -148,60 +150,53 @@ class TypeInfoTests( TestCase ):
     ACTION_LIST = \
     ( { 'id'            : 'view'
       , 'name'          : 'View'
-      , 'action'        : 'foo_view'
+      , 'action'        : 'string:foo_view'
       , 'permissions'   : ( 'View', )
       , 'category'      : 'object'
       , 'visible'       : 1
       }
     , { 'name'          : 'Edit'                # Note: No ID passed
-      , 'action'        : 'foo_edit'
+      , 'action'        : 'string:foo_edit'
       , 'permissions'   : ( 'Modify', )
       , 'category'      : 'object'
       , 'visible'       : 1
       }
     , { 'name'          : 'Object Properties'   # Note: No ID passed
-      , 'action'        : 'foo_properties'
+      , 'action'        : 'string:foo_properties'
       , 'permissions'   : ( 'Modify', )
       , 'category'      : 'object'
       , 'visible'       : 1
       }
     , { 'id'            : 'slot'
-      , 'action'        : 'foo_slot'
+      , 'action'        : 'string:foo_slot'
       , 'category'      : 'object'
       , 'visible'       : 0
       }
     )
 
-    def _ripActionValues( self, key, actions ):
-        return filter( None, map( lambda x, key=key: x.get( key, None )
-                                , actions
-                                ) )
-
     def test_listActions( self ):
         ti = self._makeInstance( 'Foo' )
-        self.failIf( ti.getActions() )
+        self.failIf( ti.listActions() )
 
         ti = self._makeInstance( 'Foo', actions=self.ACTION_LIST )
 
-        actions = ti.getActions()
+        actions = ti.listActions()
         self.failUnless( actions )
 
-        ids = self._ripActionValues( 'id', actions )
+        ids = [ x.getId() for x in actions ]
         self.failUnless( 'view' in ids )
         self.failUnless( 'edit' in ids )
         self.failUnless( 'objectproperties' in ids )
         self.failUnless( 'slot' in ids )
 
-        names = self._ripActionValues( 'name', actions )
+        names = [ x.Title() for x in actions ]
         self.failUnless( 'View' in names )
         self.failUnless( 'Edit' in names )
         self.failUnless( 'Object Properties' in names )
         self.failIf( 'slot' in names )
-        self.failIf( 'Slot' in names )
+        self.failUnless( 'Slot' in names )
         
-        visible = filter( None, map( lambda x:
-                                        x.get( 'visible', 0 ) and x['id']
-                                   , actions ) )
+        visible = [ x.getId() for x in actions if x.getVisibility() ]
         self.failUnless( 'view' in visible )
         self.failUnless( 'edit' in visible )
         self.failUnless( 'objectproperties' in visible )
@@ -268,7 +263,7 @@ class STIDataTests( TypeInfoTests ):
         self.assertEqual( ti.permission, 'Add Foos' )
         self.assertEqual( ti.constructor_path, 'foo_add' )
 
-class FTIConstructionTests( TestCase ):
+class FTIConstructionTests( unittest.TestCase ):
 
     def setUp( self ):
         noSecurityManager()
@@ -319,7 +314,7 @@ class FTIConstructionTests( TestCase ):
         self.assertRaises( Unauthorized, ti.isConstructionAllowed
                          , folder, raise_exc=1 )
 
-class FTIConstructionTests_w_Roles( TestCase ):
+class FTIConstructionTests_w_Roles( unittest.TestCase ):
 
     def tearDown( self ):
         noSecurityManager()
@@ -415,13 +410,13 @@ class FTIConstructionTests_w_Roles( TestCase ):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TypesToolTests),
-        makeSuite(FTIDataTests),
-        makeSuite(STIDataTests),
-        makeSuite(FTIConstructionTests),
-        makeSuite(FTIConstructionTests_w_Roles),
+    return unittest.TestSuite((
+        unittest.makeSuite(TypesToolTests),
+        unittest.makeSuite(FTIDataTests),
+        unittest.makeSuite(STIDataTests),
+        unittest.makeSuite(FTIConstructionTests),
+        unittest.makeSuite(FTIConstructionTests_w_Roles),
         ))
 
 if __name__ == '__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

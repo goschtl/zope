@@ -191,6 +191,7 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
         actions = []
         append = actions.append
         info = oai(self, folder, object)
+
         # Include actions from specific tools.
         for provider_name in self.listActionProviders():
             provider = getattr(self, provider_name)
@@ -199,27 +200,6 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
         # Include actions from object.
         if object is not None:
             base = aq_base(object)
-            types_tool = getToolByName( self, 'portal_types' )
-            ti = types_tool.getTypeInfo( object )
-            if ti is not None:
-                defs = ti.getActions()
-                if defs:
-                    c_url = object.absolute_url()
-                    for d in defs:
-                        a = d['action']
-                        if a:
-                            url = c_url + '/' + a
-                        else:
-                            url = c_url
-                        actions.append({
-                            'id': d.get('id', None),
-                            'name': d['name'],
-                            'action': d['action'],
-                            'url': url,
-                            'permissions': d['permissions'],
-                            'category': d.get('category', 'object'),
-                            'visible': d.get('visible', 1),
-                            })                
             if hasattr(base, 'listActions'):
                 self._listActions(append,object,info,ec)
                 

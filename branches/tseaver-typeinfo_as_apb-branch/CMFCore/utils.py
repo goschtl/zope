@@ -11,22 +11,32 @@
 # 
 ##############################################################################
 
+import os
+import re
 from types import StringType
 
+from Globals import package_home
+from Globals import HTMLFile
+from Globals import ImageFile
+from Globals import InitializeClass
+from Globals import MessageDialog
+
 from ExtensionClass import Base
-from AccessControl import ClassSecurityInfo, getSecurityManager
+from Acquisition import aq_get, aq_inner, aq_parent
+
+from AccessControl import ClassSecurityInfo
+from AccessControl import getSecurityManager
 from AccessControl.Permission import Permission
 from AccessControl.PermissionRole import rolesForPermissionOn
 from AccessControl.Role import gather_permissions
-import Globals
-from Acquisition import aq_get, aq_inner, aq_parent
-from string import split
-import os, re
-from Globals import package_home
-from string import lower
 
-try: from OFS.ObjectManager import UNIQUE
-except ImportError: UNIQUE = 2
+from Products.PageTemplates.Expressions import getEngine
+from Products.PageTemplates.Expressions import SecureModuleImporter
+
+try:
+    from OFS.ObjectManager import UNIQUE
+except ImportError:
+    UNIQUE = 2
 
 
 _dtmldir = os.path.join( package_home( globals() ), 'dtml' )
@@ -54,10 +64,10 @@ def getToolByName(obj, name, default=_marker):
 class ImmutableId (Base):
     def _setId(self, id):
         if id != self.getId():
-            raise Globals.MessageDialog(
-                title='Invalid Id',
-                message='Cannot change the id of this object',
-                action ='./manage_main',)
+            raise MessageDialog( title='Invalid Id'
+                               , message='Cannot change the id of this object'
+                               , action ='./manage_main'
+                               )
 
 
 class UniqueObject (ImmutableId):
@@ -71,13 +81,13 @@ def cookString(text):
     friendly id.
     """
     rgx = re.compile(r'(^_|[^a-zA-Z0-9-_~\,\.])')
-    cooked = string.lower(re.sub(rgx, "",text))
+    cooked = re.sub(rgx, "",text).lower()
     return cooked
 
 def tuplize( valueName, value ):
     if type(value) == type(()): return value
     if type(value) == type([]): return tuple( value )
-    if type(value) == type(''): return tuple( split( value ) )
+    if type(value) == type(''): return tuple( value.split() )
     raise ValueError, "%s of unsupported type" % valueName
 
 def _getAuthenticatedUser( self ):
@@ -91,8 +101,22 @@ def _checkPermission(permission, obj, StringType = type('')):
         return 1
     return 0
 
+def getActionContext( self ):
+    data = { 'object_url'   : ''
+           , 'folder_url'   : ''
+           , 'portal_url'   : ''
+           , 'object'       : None
+           , 'folder'       : None
+           , 'portal'       : None
+           , 'nothing'      : None
+           , 'request'      : getattr( self, 'REQUEST', None )
+           , 'modules'      : SecureModuleImporter
+           , 'member'       : None
+           }
+    return getEngine().getContext( data )
+
 def _verifyActionPermissions(obj, action):
-    pp = action.get('permissions', ())
+    pp = action.getPermissions()
     if not pp:
         return 1
     for p in pp:
@@ -102,17 +126,24 @@ def _verifyActionPermissions(obj, action):
 
 def _getViewFor(obj, view='view'):
     ti = obj.getTypeInfo()
+
     if ti is not None:
-        actions = ti.getActions()
+
+        context = getActionContext( obj )
+        actions = ti.listActions()
+
         for action in actions:
-            if action.get('id', None) == view:
-                if _verifyActionPermissions(obj, action):
-                    return obj.restrictedTraverse(action['action'])
+
+            if action.getId() == view:
+                if _verifyActionPermissions( obj, action ):
+                    return obj.restrictedTraverse( action.action( context ) )
+
         # "view" action is not present or not allowed.
         # Find something that's allowed.
         for action in actions:
             if _verifyActionPermissions(obj, action):
-                return obj.restrictedTraverse(action['action'])
+                return obj.restrictedTraverse( action.action( context ) )
+
         raise 'Unauthorized', ('No accessible views available for %s' %
                                string.join(obj.getPhysicalPath(), '/'))
     else:
@@ -219,8 +250,6 @@ def modifyPermissionMappings(ob, map):
     return something_changed
 
 
-from Globals import HTMLFile
-
 addInstanceForm = HTMLFile('dtml/addInstance', globals())
 
 
@@ -257,7 +286,7 @@ class ToolInit:
             tool.icon = 'misc_/%s/%s' % (self.product_name, self.icon)
 
 
-Globals.InitializeClass( ToolInit )
+InitializeClass( ToolInit )
 
 def manage_addToolForm(self, REQUEST):
     '''
@@ -337,7 +366,7 @@ class ContentInit:
         for ct in self.content_types:
             ct.__factory_meta_type__ = self.meta_type
 
-Globals.InitializeClass( ContentInit )
+InitializeClass( ContentInit )
 
 def manage_addContentForm(self, REQUEST):
     '''
@@ -411,7 +440,7 @@ class SimpleItemWithProperties (PropertyManager, SimpleItem):
         return id
 
 
-Globals.InitializeClass( SimpleItemWithProperties )
+InitializeClass( SimpleItemWithProperties )
 
 
 import OFS
@@ -448,10 +477,10 @@ def initializeBasesPhase2(zclasses, context):
 
 def registerIcon(klass, iconspec, _prefix=None):
     modname = klass.__module__
-    pid = split(modname, '.')[1]
+    pid = modname.split('.')[1]
     name = path.split(iconspec)[1]
     klass.icon = 'misc_/%s/%s' % (pid, name)
-    icon = Globals.ImageFile(iconspec, _prefix)
+    icon = ImageFile(iconspec, _prefix)
     icon.__roles__=None
     if not hasattr(OFS.misc_.misc_, pid):
         setattr(OFS.misc_.misc_, pid, OFS.misc_.Misc_(pid, {}))
@@ -567,75 +596,3 @@ def minimalpath(p):
     while p[:1] in separators:
         p = p[1:]
     return p
-
-if 0:
-    # Hopefully we can use this.
-
-    from Globals import Persistent
-
-    class NotifyOnModify (Persistent):
-        '''
-        This base class allows instances to be notified when there are
-        changes that would affect persistence.
-        '''
-
-        __ready = 0
-
-        def _setNotifyModified(self):
-            self.__ready = 1
-
-        def __doNotify(self):
-            if self.__ready:
-                dict = self.__dict__
-                if not dict.has_key('__notified_on_modify__'):
-                    dict['__notified_on_modify__'] = 1
-                    self.notifyModified()
-
-        def __setattr__(self, name, val):
-            self.__dict__[name] = val
-            self._p_changed = 1
-            self.__doNotify()
-
-        def __delattr__(self, name):
-            del self.__dict__[name]
-            self._p_changed = 1
-            self.__doNotify()
-
-        def notifyModified(self):
-            # To be overridden.
-            pass
-
-
-if 0:
-  # Prototype for a "UniqueId" base ZClass.
-  import OFS
-
-  class UniqueSheet(OFS.PropertySheets.PropertySheet,
-                  OFS.PropertySheets.View):
-    'Manage id of unique objects'
-
-    manage = Globals.HTMLFile('uniqueid', globals())
-
-    def getId(self):
-        return self.getClassAttr('id')
-
-    def manage_edit(self, id, REQUEST=None):
-        self.setClassAttr('id', id)
-        if REQUEST is not None:
-            return self.manage(self, REQUEST)
-
-
-  class ZUniqueObjectPropertySheets(OFS.PropertySheets.PropertySheets):
-
-    unique = UniqueSheet('unique')
-
-  class ZUniqueObject:
-    '''Mix-in for unique zclass instances.'''
-
-    _zclass_ = UniqueObject
-
-    propertysheets = ZUniqueObjectPropertySheets()
-
-    manage_options = (
-        {'label': 'Id', 'action':'propertysheets/unique/manage'},
-        )
