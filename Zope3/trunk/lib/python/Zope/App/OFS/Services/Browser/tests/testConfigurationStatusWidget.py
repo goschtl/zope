@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testConfigurationStatusWidget.py,v 1.3 2002/12/01 10:30:33 jim Exp $
+$Id: testConfigurationStatusWidget.py,v 1.4 2002/12/12 15:16:39 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -37,48 +37,52 @@ class Test(TestCase):
         text = ' '.join(widget().split())
         self.assertEqual(
             text,
-            '<input type="radio" name="f.status" value="Unregistered" checked>'
-            '&nbsp;Unregistered '
-            '<input type="radio" name="f.status" value="Registered">'
-            '&nbsp;Registered '
-            '<input type="radio" name="f.status" value="Active">'
-            '&nbsp;Active'
+            '<label><input type="radio" name="f.status" value="Unregistered"'
+            ' checked>'
+            '&nbsp;Unregistered</label> '
+            '<label><input type="radio" name="f.status" value="Registered">'
+            '&nbsp;Registered</label> '
+            '<label><input type="radio" name="f.status" value="Active">'
+            '&nbsp;Active</label>'
             )
-        
+
         request.form['f.status'] = u'Registered'
         text = ' '.join(widget().split())
         self.assertEqual(
             text,
-            '<input type="radio" name="f.status" value="Unregistered">'
-            '&nbsp;Unregistered '
-            '<input type="radio" name="f.status" value="Registered" checked>'
-            '&nbsp;Registered '
-            '<input type="radio" name="f.status" value="Active">'
-            '&nbsp;Active'
+            '<label><input type="radio" name="f.status" value="Unregistered">'
+            '&nbsp;Unregistered</label> '
+            '<label><input type="radio" name="f.status" value="Registered"'
+            ' checked>'
+            '&nbsp;Registered</label> '
+            '<label><input type="radio" name="f.status" value="Active">'
+            '&nbsp;Active</label>'
             )
 
         widget.setData(u"Active")
         text = ' '.join(widget().split())
         self.assertEqual(
             text,
-            '<input type="radio" name="f.status" value="Unregistered">'
-            '&nbsp;Unregistered '
-            '<input type="radio" name="f.status" value="Registered">'
-            '&nbsp;Registered '
-            '<input type="radio" name="f.status" value="Active" checked>'
-            '&nbsp;Active'
+            '<label><input type="radio" name="f.status" value="Unregistered">'
+            '&nbsp;Unregistered</label> '
+            '<label><input type="radio" name="f.status" value="Registered">'
+            '&nbsp;Registered</label> '
+            '<label><input type="radio" name="f.status" value="Active"'
+            ' checked>'
+            '&nbsp;Active</label>'
             )
 
         widget.setData(u"Unregistered")
         text = ' '.join(widget().split())
         self.assertEqual(
             text,
-            '<input type="radio" name="f.status" value="Unregistered" checked>'
-            '&nbsp;Unregistered '
-            '<input type="radio" name="f.status" value="Registered">'
-            '&nbsp;Registered '
-            '<input type="radio" name="f.status" value="Active">'
-            '&nbsp;Active'
+            '<label><input type="radio" name="f.status" value="Unregistered"'
+            ' checked>'
+            '&nbsp;Unregistered</label> '
+            '<label><input type="radio" name="f.status" value="Registered">'
+            '&nbsp;Registered</label> '
+            '<label><input type="radio" name="f.status" value="Active">'
+            '&nbsp;Active</label>'
             )
 
 
