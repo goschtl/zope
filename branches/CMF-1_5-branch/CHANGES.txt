@@ -6,7 +6,8 @@ CMF 1.5.0beta2 (unreleased)
       Cookies set on an HTTPS connection are now marked as secure, meaning
       they will not be transmitted over HTTP.
 
-    - PortalFolder: New 'Folderish' Interface defines the 'content*' methods.
+    - PortalFolder: New 'Folderish' Interface defines the 'content*'
+      methods.
 
     - PortalFolder: Improved WebDAV folder listings.
       Hidden sub-objects like tools are now filtered out. To see all
@@ -17,20 +18,25 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - CMFDefault/Document:  store / return size of "raw" source text for
+      'get_size'.
+
     - ZPT skin: Refactored registered_notify_template.
       For security reasons, it no longer adds the password to the login URL.
 
     - PortalFolder: Fixed '_checkId' policy.
-      In a subfolder, members without 'Manage portal' permission were not able
-      to overwrite content items of the portal root.
+      In a subfolder, members without 'Manage portal' permission were not
+      able to create content items whose names clashed with content items
+      in the portal root.
 
     - CookieCrumbler: Improved 'came_from' URL.
-      Problems in connection with stack manipulation on traversal or usage of
-      'traverse_subpath' should be fixed now.
+      Problems in connection with stack manipulation on traversal or usage
+      of 'traverse_subpath' should be fixed now.
 
     - PortalFolder: Public 'content*' methods or no longer publishable.
-      This prevents expensive anonymous calls to contentItems(), contentIds()
-      and contentValues(). They still can be used in TTW code.
+      This prevents expensive anonymous calls to contentItems(),
+      contentIds() and contentValues() via URLs. They still can be used
+      in TTW code.
 
     - ZPT skin: Added missing mail_password_template.
 
