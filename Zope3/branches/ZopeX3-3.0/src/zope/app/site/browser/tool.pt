@@ -14,26 +14,25 @@
                    registries view/getComponents;
                    rename_list view/renameList">
 
-    
-    <p class="message"
-       tal:condition="message"
-       tal:content="message"
-       i18n:translate="">
-      Message
-    </p>
+
+    <div class="message" tal:condition="message">
+       <span tal:replace="message">view/update message here</span>
+       <br /><br />
+       <i><a href="" i18n:translate="">(click to clear message)</a></i>
+    </div>
 
     <p tal:condition="not:registries" i18n:translate="">
       No tools are registered.
     </p>
-    
+
     <div>
       <p i18n:translate="">
          Unless a tool is disabled the tool name links to the
          active tool. ...
       </p>
-    
+
       <form method="POST">
-    
+
         <table width="100%" tal:condition="registries">
           <tr>
             <th width="5%"> </th>

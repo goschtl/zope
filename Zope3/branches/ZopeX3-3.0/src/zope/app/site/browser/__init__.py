@@ -210,8 +210,8 @@ class ServiceSummary(BrowserView):
         doDeactivate = self.request.get("Deactivate")
         doDelete = self.request.get("Delete")
         if not todo:
-            if doDeactivate or doDelete:
-                return "Please select at least one checkbox"
+            if doActivate or doDeactivate or doDelete:
+                return _("Please select at least one checkbox")
             return None
         if doActivate:
             return self._activate(todo)
