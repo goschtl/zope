@@ -2,13 +2,13 @@ SOAP Support
 ============
 
 This SOAP implementation allows you provide SOAP views for objects. The 
-SOAP layer is based on ZSI (see: http://pywebsvcs.sourceforge.net/). 
+SOAP layer is based on `ZSI <http://pywebsvcs.sourceforge.net/>`__.
 
-The package requires ZSI 1.5 or better (which in turn requires that 
-PyXML 0.6.6 or better is installed).
+The package requires ZSI 1.5 or better (which in turn requires that
+`PyXML <http://pyxml.sourceforge.net/>`__ 0.6.6 or better is installed).
 
-SOAP support is implemented in a way very similar to the standard Z3 
-XML-RPC support. To call methods via SOAP, you need to create and 
+SOAP support is implemented in a way very similar to the standard Zope 3
+XML-RPC support.  To call methods via SOAP, you need to create and
 register SOAP views.
 
 Let's write a simple SOAP view that echoes various types of input:
@@ -273,7 +273,7 @@ demonstrate the use of primitive SOAP-defined types:
   ...1...2...3...4...
 
 
-  Note that floats dont seem to work for some reason:
+Note that floats dont seem to work for some reason:
 
   >>> print http(r"""
   ... POST / HTTP/1.0
@@ -303,7 +303,7 @@ demonstrate the use of primitive SOAP-defined types:
   ...Fault...
 
 
-  Nor do float arrays:
+Nor do float arrays:
 
   >>> print http(r"""
   ... POST / HTTP/1.0
@@ -368,8 +368,8 @@ demonstrate the use of primitive SOAP-defined types:
   >>> assert(result.find('last 1') > -1)
 
 
-  Note that arrays of structs (at least per the interop suite) do not 
-  seem to work:
+Note that arrays of structs (at least per the interop suite) do not 
+seem to work:
 
   >>> print http(r"""
   ... POST / HTTP/1.0
@@ -463,7 +463,7 @@ demonstrate the use of primitive SOAP-defined types:
   ...AAECAwQF...
 
 
-  Datetimes do not appear to work, after trying several approaches:
+Datetimes do not appear to work, after trying several approaches:
 
   >>> print http(r"""
   ... POST / HTTP/1.0
@@ -560,7 +560,6 @@ be accessible through an instance via the attribute name 'typecode' to
 be automatically marshalled.
 
 
-
 Faults
 ------
 
@@ -594,5 +593,3 @@ directly. Either case causes a fault response to be returned:
   Content-Type: text/xml...
   <BLANKLINE>
   ...Missing argument to echoInteger(): value...
-
-
