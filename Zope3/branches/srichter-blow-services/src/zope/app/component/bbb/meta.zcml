@@ -54,15 +54,27 @@
         />
 
     <meta:directive
+        name="serviceType"
+        schema=".metadirectives.IServiceTypeDirective"
+        handler="zope.app.component.metaconfigure.serviceType"
+        />
+
+    <meta:directive
         name="defaultLayer"
         schema=".metadirectives.IDefaultLayerDirective"
         handler="zope.app.component.metaconfigure.defaultLayer"
         />
 
+    <meta:directive
+        name="service" 
+        schema=".metadirectives.IServiceDirective"
+        handler="zope.app.component.metaconfigure.service"
+        />
+
     <meta:complexDirective
         name="class"
         schema=".metadirectives.IClassDirective"
-        handler=".contentdirective.ContentDirective"
+        handler="zope.app.component.contentdirective.ContentDirective"
         >
 
       <meta:subdirective
@@ -90,7 +102,7 @@
     <meta:complexDirective
         name="content"
         schema=".metadirectives.IClassDirective"
-        handler=".contentdirective.ContentDirective"
+        handler="zope.app.component.contentdirective.ContentDirective"
         >
 
       <meta:subdirective

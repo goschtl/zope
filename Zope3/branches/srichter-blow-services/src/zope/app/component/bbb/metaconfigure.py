@@ -16,12 +16,11 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-from persistent.interfaces import IPersistent
 
 from zope.component.interfaces import IDefaultViewName, IFactory
 from zope.component.service import UndefinedService
 from zope.configuration.exceptions import ConfigurationError
-from zope.interface import Interface, classImplements
+from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 
 from zope.security.checker import InterfaceChecker, CheckerPublic
@@ -29,13 +28,8 @@ from zope.security.checker import Checker, NamesChecker
 from zope.security.proxy import Proxy, ProxyFactory
 
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.component.contentdirective import ContentDirective
 from zope.app.component.interface import queryInterface
-from zope.app.component.interfaces import ILocalUtility
-from zope.app.location.interfaces import ILocation
 from zope.app.security.adapter import TrustedAdapterFactory
-
 
 PublicPermission = 'zope.Public'
 
@@ -390,6 +384,61 @@ def defaultView(_context, type, name, for_):
         args = ('', for_)
         )
 
+def serviceType(_context, id, interface):
+    _context.action(
+        discriminator = ('serviceType', id),
+        callable = managerHandler,
+        args = ('defineService', id, interface),
+        )
+
+    if interface.__name__ not in ['IUtilityService']:
+        _context.action(
+            discriminator = None,
+             callable = provideInterface,
+             args = (interface.__module__+'.'+interface.getName(),
+                     interface)
+             )
+
+def provideService(serviceType, component, permission):
+    # This is needed so we can add a security proxy.
+    # We have to wait till execution time so we can find out the interface.
+    # Waaaa.
+
+    service_manager = zapi.getGlobalServices()
+
+    if permission:
+        for stype, interface in service_manager.getServiceDefinitions():
+            if stype == serviceType:
+                break
+        else:
+            raise UndefinedService(serviceType)
+
+        if permission == PublicPermission:
+            permission = CheckerPublic
+
+        checker = InterfaceChecker(interface, permission)
+
+        try:
+            component.__Security_checker__ = checker
+        except: # too bad exceptions aren't more predictable
+            component = proxify(component, checker)
+
+    service_manager.provideService(serviceType, component)
+
+def service(_context, serviceType, component=None, permission=None,
+            factory=None):
+    if factory:
+        if component:
+            raise TypeError("Can't specify factory and component.")
+
+        component = factory()
+
+    _context.action(
+        discriminator = ('service', serviceType),
+        callable = provideService,
+        args = (serviceType, component, permission),
+        )
+
 def defaultLayer(_context, type, layer):
     _context.action(
         discriminator=('defaultLayer', type, layer),
@@ -398,59 +447,3 @@ def defaultLayer(_context, type, layer):
                (type,), IInterface, 'defaultLayer',
                lambda request: layer, _context.info)
         )
-
-
-class LocalUtilityDirective(ContentDirective):
-    r"""localUtility directive handler.
-
-    Examples:
-
-      >>> from zope.interface import implements
-      >>> class LU1(object):
-      ...     pass
-
-      >>> class LU2(LU1):
-      ...     implements(ILocation)
-
-      >>> class LU3(LU1):
-      ...     __parent__ = None
-
-      >>> class LU4(LU2):
-      ...     implements(IPersistent)
-
-      >>> dir = LocalUtilityDirective(None, LU4)
-      >>> IAttributeAnnotatable.implementedBy(LU4)
-      True
-      >>> ILocalUtility.implementedBy(LU4)
-      True
-
-      >>> LocalUtilityDirective(None, LU3)
-      Traceback (most recent call last):
-      ...
-      ConfigurationError: Class `LU3` does not implement `IPersistent`.
-
-      >>> LocalUtilityDirective(None, LU2)
-      Traceback (most recent call last):
-      ...
-      ConfigurationError: Class `LU2` does not implement `IPersistent`.
-
-      >>> LocalUtilityDirective(None, LU1)
-      Traceback (most recent call last):
-      ...
-      ConfigurationError: Class `LU1` does not implement `ILocation`.
-    """
-
-    def __init__(self, _context, class_):
-        if not ILocation.implementedBy(class_) and \
-               not hasattr(class_, '__parent__'):
-            raise ConfigurationError, \
-                  'Class `%s` does not implement `ILocation`.' %class_.__name__
-
-        if not IPersistent.implementedBy(class_):
-            raise ConfigurationError, \
-                 'Class `%s` does not implement `IPersistent`.' %class_.__name__
-
-        classImplements(class_, IAttributeAnnotatable)
-        classImplements(class_, ILocalUtility)
-
-        super(LocalUtilityDirective, self).__init__(_context, class_)
