@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.20 2003/01/17 16:31:32 stevea Exp $
+$Id: interfacewidget.py,v 1.21 2003/01/20 14:36:12 stevea Exp $
 """
 
 import sys
@@ -193,6 +193,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
         if base == Interface:
             base = None
 
+        first_is_blank = False
         if self._data is None:  # no data has been set with Widget.setData(),
                                 # so use the data in the form
 
@@ -213,7 +214,6 @@ class MultiInterfaceWidget(Widget, BrowserView):
                     selection = selections.setdefault(index, ['', ''])
                     selection[0] = v.strip()
 
-            first_is_blank = False
             # remove all of the selections that have no search and no value
             for k,(s,v) in selections.items():
                 if s == v == '':
