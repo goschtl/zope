@@ -175,8 +175,7 @@ class ConfigureUtility:
         folder = zapi.getParent(self.context)
         iface = folder.resolve(self.request['interface'])
         name = self.request['name']
-        # XXX should this be trustedRemoveSecurityProxy?
-        iface = removeAllProxies(iface)
+        iface = trustedRemoveSecurityProxy(iface)
         regstack = self.context.queryRegistrations(name, iface)
         form = zapi.getView(regstack, "ChangeRegistrations", self.request)
         form.update()
