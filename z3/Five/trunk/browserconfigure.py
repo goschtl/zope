@@ -46,8 +46,8 @@ class FivePageTemplateFile(ViewPageTemplateFile):
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
-         attribute='__call__', menu=None, title=None,
          allowed_interface=None, allowed_attributes=None,
+         attribute='__call__', menu=None, title=None,
          ):
 
     try:
