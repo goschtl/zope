@@ -75,6 +75,17 @@ class Dependency(object):
     """Object representing a dependency."""
 
     def __init__(self, path, file, lineno):
+        """Initialize a Dependency instance.
+
+        path -- dotted name of the module
+
+        file -- full path of a source file that depends on the module
+        named by path
+
+        lineno -- line number within file where the dependency was
+        identified (import or ZCML reference)
+
+        """
         self.path = path
         self.occurences = [(file, lineno)]
 
@@ -94,7 +105,7 @@ class Dependency(object):
         return False
 
     def __cmp__(self, other):
-        """Compare dependecies by path."""
+        """Compare dependecies by module name."""
         return cmp(self.path, other.path)
 
 
@@ -106,15 +117,14 @@ def usage(code, msg=''):
     sys.exit(code)
 
 
-def makePythonPath(path):
+def makeDottedName(path):
     """Convert a path to a dotted module name, using sys.path."""
     syspaths = sys.path[1:]
     syspaths.append(os.getcwd())
     for syspath in syspaths:
+        syspath = os.path.join(syspath, '')
         if path.startswith(syspath):
-            cutPath = path.replace(syspath+os.sep, '')
-            dottedPath = dotjoin(cutPath.split(os.sep))
-            return dottedPath
+            return path[len(syspath):].replace(os.sep, ".")
 
     raise ValueError, 'Cannot create dotted name.'
 
@@ -347,10 +357,10 @@ def filterLocalModules(deps, path):
     deps = filteredDeps
 
     # Filter absolute imports
-    dottedPath = makePythonPath(path)
+    dottedName = makeDottedName(path)
     filteredDeps = []
     for dep in deps:
-        if not dep.path.startswith(dottedPath):
+        if not dep.path.startswith(dottedName):
             filteredDeps.append(dep)
 
     return filteredDeps
