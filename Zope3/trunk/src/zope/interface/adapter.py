@@ -13,9 +13,9 @@
 ############################################################################
 """Adapter-style interface registry
 
-This implementationb is based on a notion of "surrogate" interfaces.
+This implementation is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.19 2004/04/30 17:37:10 itamar Exp $
+$Id: adapter.py,v 1.20 2004/05/01 14:35:32 philikon Exp $
 """
 
 # Implementation notes
