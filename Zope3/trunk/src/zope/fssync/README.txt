@@ -77,6 +77,9 @@ BUGS
 * Removing an object with annotations doesn't always remove the
   @@Zope/Annotations/<name>/ directory.  Probably the same for Extra.
 
+* When doing an update, somehow the absolute pathnames of all files
+  are reported rather than the nice relative names.
+
 
 TO DO
 -----
