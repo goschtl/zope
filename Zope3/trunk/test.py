@@ -13,7 +13,7 @@
 #
 ##############################################################################
 """
-test.py [-aBbcdDgGhLmprtTuv] [modfilter [testfilter]]
+test.py [-aBbcdDfgGhLmprtTuv] [modfilter [testfilter]]
 
 Test harness.
 
@@ -44,6 +44,9 @@ Test harness.
 
 -D
     Works like -d, except that it loads pdb when an exception occurs.
+
+-f
+    Run functional tests instead of unit tests.
 
 -g threshold
     Set the garbage collector generation0 threshold.  This can be used to
@@ -325,13 +328,24 @@ class PathInit:
         self.cwd = os.getcwd()
         sys.path.insert(0, os.path.join(self.cwd, self.libdir))
         # Hack again for external products.
+        global functional
+        kind = functional and "functional" or "unit"
         if libdir:
             extra = os.path.join(org_cwd, libdir)
-            print "Running tests from", extra
+            print "Running %s tests from %s" % (kind, extra)
             self.libdir = extra
             sys.path.insert(0, extra)
         else:
-            print "Running tests from", self.cwd
+            print "Running %s tests from %s" % (kind, self.cwd)
+        # Make sure functional tests find ftesting.zcml
+        if functional:
+            config_file = 'ftesting.zcml'
+            if not self.inplace:
+                # We chdired into build, so ftesting.zcml is in the parent directory
+                config_file = os.path.join('..', 'ftesting.zcml')
+            print "Parsing %s" % config_file
+            from zope.testing.functional import FunctionalTestSetup
+            FunctionalTestSetup(config_file)
 
 def match(rx, s):
     if not rx:
@@ -346,9 +360,14 @@ class TestFileFinder:
         self.files = []
         # XXX will break if prefix ends with a slash
         self._plen = len(prefix)+1
+        global functional
+        if functional:
+            self.dirname = "ftests"
+        else:
+            self.dirname = "tests"
 
     def visit(self, rx, dir, files):
-        if dir[-5:] != "tests":
+        if os.path.split(dir)[1] != self.dirname:
             return
         # ignore tests that aren't in packages
         if not "__init__.py" in files:
@@ -432,7 +451,7 @@ def gui_runner(files, test_filter):
     if build_inplace:
         utildir = os.path.join(os.getcwd(), "utilities")
     else:
-        utildir = os.path.join(os.getcwd(), "../utilities")
+        utildir = os.path.join(os.getcwd(), "..", "utilities")
     sys.path.append(utildir)
     import unittestgui
     suites = []
@@ -578,6 +597,7 @@ def process_args(argv=None):
     global timetests
     global progress
     global build_inplace
+    global functional
 
     if argv is None:
         argv = sys.argv
@@ -601,9 +621,10 @@ def process_args(argv=None):
     progress = False
     timesfn = None
     timetests = 0
+    functional = False
 
     try:
-        opts, args = getopt.getopt(argv[1:], "a:bBcdDg:G:hLmprtTuv",
+        opts, args = getopt.getopt(argv[1:], "a:bBcdDfg:G:hLmprtTuv",
                                    ["all", "help", "libdir=", "times="])
     except getopt.error, msg:
         print msg
@@ -629,6 +650,8 @@ def process_args(argv=None):
         elif k == "-D":
             debug = True
             debugger = True
+        elif k == "-f":
+            functional = True
         elif k in ("-h", "--help"):
             print __doc__
             sys.exit(0)
@@ -707,10 +730,11 @@ def process_args(argv=None):
             sys.exit(1)
 
     if VERBOSE:
+        kind = functional and "functional" or "unit"
         if level == 0:
-            print "Running tests at all levels"
+            print "Running %s tests at all levels" % kind
         else:
-            print "Running tests at level", level
+            print "Running %s tests at level %d" % (kind, level)
 
     if args:
         if len(args) > 1:
