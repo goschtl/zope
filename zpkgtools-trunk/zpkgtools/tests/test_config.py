@@ -33,7 +33,8 @@ class ConfigTestCase(unittest.TestCase):
 
     def test_constructor(self):
         path = os.path.join(here, "zpkg-ok.conf")
-        cf = config.Configuration(path)
+        cf = config.Configuration()
+        cf.loadPath(path)
         self.assertEqual(
             cf.location_maps,
             ["cvs://cvs.example.org/cvsroot:module/package/PACKAGES.txt",
@@ -42,17 +43,20 @@ class ConfigTestCase(unittest.TestCase):
     def test_constructor_bad_config_setting(self):
         # unknown option:
         path = os.path.join(here, "zpkg-error-1.conf")
+        cf = config.Configuration()
         self.assertRaises(cfgparser.ConfigurationError,
-                          config.Configuration, path)
+                          cf.loadPath, path)
 
         # repository-map without path
         path = os.path.join(here, "zpkg-error-2.conf")
+        cf = config.Configuration()
         self.assertRaises(cfgparser.ConfigurationError,
-                          config.Configuration, path)
+                          cf.loadPath, path)
 
     def test_constructor_no_such_file(self):
         path = os.path.join(here, "no-such-file")
-        self.assertRaises(IOError, config.Configuration, path)
+        cf = config.Configuration()
+        self.assertRaises(IOError, cf.loadPath, path)
 
 
 def test_suite():
