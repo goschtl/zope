@@ -15,12 +15,10 @@
 
 This exists to implement IInjection and IQuerying.
 
-$Id: TextIndexWrapper.py,v 1.2 2002/12/04 10:25:41 gvanrossum Exp $
+$Id: TextIndexWrapper.py,v 1.3 2002/12/04 17:11:01 gvanrossum Exp $
 """
 
 from Persistence import Persistent
-
-from TextIndexInterfaces import IInjection, IQuerying
 
 from Zope.TextIndex.OkapiIndex import OkapiIndex
 from Zope.TextIndex.Lexicon import Lexicon
@@ -28,9 +26,12 @@ from Zope.TextIndex.Lexicon import Splitter, CaseNormalizer, StopWordRemover
 from Zope.TextIndex.QueryParser import QueryParser
 from Zope.TextIndex.NBest import NBest
 
+from Zope.TextIndex.TextIndexInterfaces import \
+     IInjection, IQuerying, IStatistics
+
 class TextIndexWrapper(Persistent):
 
-    __implements__ = (IInjection, IQuerying)
+    __implements__ = (IInjection, IQuerying, IStatistics)
 
     def __init__(self, lexicon=None, index=None):
         """Provisional constructor.
@@ -70,3 +71,12 @@ class TextIndexWrapper(Persistent):
         qw = 1.0 * self.index.query_weight(tree.terms())
         batch = [(docid, score/qw) for docid, score in batch]
         return batch, len(results)
+
+    # Methods implementing IStatistics
+
+    def documentCount(self):
+        # Use _docweight because it is (relatively) small
+        return len(self.index._docweight)
+
+    def wordCount(self):
+        return self.index.length()

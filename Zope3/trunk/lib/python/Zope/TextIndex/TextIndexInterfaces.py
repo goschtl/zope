@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for a text index.
 
-$Id: TextIndexInterfaces.py,v 1.2 2002/12/04 10:25:41 gvanrossum Exp $
+$Id: TextIndexInterfaces.py,v 1.3 2002/12/04 17:11:01 gvanrossum Exp $
 """
 
 from Interface import Interface
@@ -58,3 +58,11 @@ class IQuerying(Interface):
         The matches list represents the requested batch.  The ranks
         are floats between 0 and 1 (inclusive).
         """
+
+class IStatistics(Interface):
+
+    def documentCount():
+        """Return the number of documents currently indexed."""
+
+    def wordCount():
+        """Return the number of words currently indexed."""
