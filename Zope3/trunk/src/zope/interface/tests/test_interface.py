@@ -146,6 +146,23 @@ class InterfaceTests(unittest.TestCase):
         meth = _I1['f12']
         self.assertEqual(meth.getTaggedValue('optional'), 1)
 
+    def test___doc___element(self):
+        class I(Interface):
+            "xxx"
+
+        self.assertEqual(I.__doc__, "xxx")
+        self.assertEqual(list(I), [])
+
+        class I(Interface):
+            "xxx"
+
+            __doc__ = Attribute('the doc')
+
+        self.assertEqual(I.__doc__, "")
+        self.assertEqual(list(I), ['__doc__'])
+            
+        
+
 class _I1(Interface):
 
     a1 = Attribute("This is an attribute")

@@ -14,7 +14,7 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.10 2003/06/03 22:46:25 jim Exp $
+$Id: interface.py,v 1.11 2003/06/24 19:04:40 jim Exp $
 """
 
 import sys
@@ -101,15 +101,16 @@ class InterfaceClass(Element):
 
         if attrs is None:
             attrs = {}
-        if '__doc__' in attrs:
-            if __doc__ is None:
-                __doc__ = attrs['__doc__']
-            del attrs['__doc__']
 
-        if __doc__ is not None:
-            self.__doc__ = __doc__
-        else:
-            self.__doc__ = ""
+        d = attrs.get('__doc__')
+        if d is not None:
+            if not isinstance(d, Attribute):
+                if __doc__ is None:
+                    __doc__ = d
+                del attrs['__doc__']
+
+        if __doc__ is None:
+            __doc__ = ''
 
         Element.__init__(self, name, __doc__)
 
