@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: rolepermissionview.py,v 1.2 2002/12/25 14:12:34 jim Exp $
+$Id: rolepermissionview.py,v 1.3 2002/12/26 18:50:45 jim Exp $
 """
 import time
 
 from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.security.grants.permissionroles import PermissionRoles
-from zope.app.security.grants.rolepermissions import RolePermissions
+from zope.app.security.grants.rolepermission import RolePermissions
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.component import getService, getAdapter
 from zope.publisher.browser import BrowserView

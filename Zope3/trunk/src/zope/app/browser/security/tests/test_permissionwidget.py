@@ -13,14 +13,14 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: test_permissionwidget.py,v 1.3 2002/12/26 18:50:46 jim Exp $
 """
 
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.cleanup import CleanUp
-from zope.app.security.permissionfield import PermissionField
+from zope.app.security.permission import PermissionField
 from zope.app.browser.security.permissionwidget import SinglePermissionWidget
 from zope.publisher.browser import TestRequest
 from zope.component.service \

@@ -13,13 +13,13 @@
 ##############################################################################
 """Test IRolePermissionManager class that has no context.
 
-$Id: rolepermissionmanager.py,v 1.2 2002/12/25 14:12:35 jim Exp $
+$Id: rolepermissionmanager.py,v 1.3 2002/12/26 18:50:45 jim Exp $
 """
 
 from zope.component import getAdapter
 from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.interfaces.security import IRolePermissionMap
-from zope.app.security.grants.localsecuritymap import LocalSecurityMap
+from zope.app.security.grants.securitymap import SecurityMap
 from zope.app.security.settings import Allow, Deny, Unset
 
 class RolePermissionManager:
@@ -30,7 +30,7 @@ class RolePermissionManager:
     __implements__ = IRolePermissionManager, IRolePermissionMap
 
     def __init__(self):
-        self._rp = LocalSecurityMap()
+        self._rp = SecurityMap()
 
     def grantPermissionToRole(self, permission_id, role_id):
         ''' See the interface IRolePermissionManager '''
