@@ -1,14 +1,15 @@
 ##############################################################################
 #
-# Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+# Copyright (c) 2001-2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Basic textual content object, supporting both HTML and STX.
 
@@ -210,9 +211,7 @@ class Document(PortalContent, DefaultDublinCoreImpl):
             headers.update(parser.metatags)
             if parser.title:
                 headers['Title'] = parser.title
-            bodyfound = bodyfinder(text)
-            if bodyfound:
-                body = bodyfound
+            body = bodyfinder(text)
         else:
             headers, body = parseHeadersBody(text, headers)
             self._stx_level = level
@@ -346,15 +345,16 @@ class Document(PortalContent, DefaultDublinCoreImpl):
             self.dav__init(REQUEST, RESPONSE)
             self.dav__simpleifhandler(REQUEST, RESPONSE, refresh=1)
         body = REQUEST.get('BODY', '')
-        guessedformat = REQUEST.get_header('Content-Type', 'text/plain')
-        ishtml = (guessedformat == 'text/html') or utils.html_headcheck(body)
-
-        if ishtml: self.setFormat('text/html')
-        else: self.setFormat('text/plain')
+        if REQUEST.get_header('Content-Type', '') == 'text/html':
+            text_format = 'html'
+        else:
+            text_format = None
 
         try:
-            headers, body, format = self.handleText(text=body)
-            safety_belt = headers.get('SafetyBelt', '') 
+            headers, body, text_format = self.handleText(text=body,
+                                                         format=text_format)
+            safety_belt = headers.get('SafetyBelt', '')
+            self.setFormat(value=text_format)
             self.setMetadata(headers)
             self._edit(text=body, safety_belt=safety_belt)
         except 'EditingConflict', msg:
