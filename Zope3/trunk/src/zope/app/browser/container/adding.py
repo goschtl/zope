@@ -13,8 +13,10 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.4 2002/12/31 20:11:01 jim Exp $
+$Id: adding.py,v 1.5 2003/02/03 16:34:40 stevea Exp $
 """
+__metaclass__ = type
+
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.container import IContainerNamesContainer
 from zope.app.interfaces.container import IZopeContainer
@@ -27,7 +29,6 @@ from zope.app.event import publish
 from zope.proxy.context import ContextSuper, ContextMethod
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse
-
 
 class Adding(BrowserView):
 
