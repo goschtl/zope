@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.24 2003/04/28 19:31:32 gvanrossum Exp $
+$Id: configuration.py,v 1.25 2003/04/30 18:20:45 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -50,7 +50,7 @@ from zope.proxy.context import ContextMethod, ContextWrapper
 from zope.proxy.context import ContextDescriptor
 from zope.proxy.introspection import removeAllProxies
 from zope.security.checker import InterfaceChecker
-from zope.security.proxy import Proxy
+from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 
 class ConfigurationStatusProperty(ContextDescriptor):
 
@@ -372,7 +372,7 @@ class ComponentConfiguration(SimpleConfiguration):
                 # There should be at most one security Proxy around an object.
                 # So, if we're going to add a new security proxy, we need to
                 # remove any existing one.
-                component = removeSecurityProxy(component)
+                component = trustedRemoveSecurityProxy(component)
 
             interface = wrapped_self.getInterface()
 
