@@ -57,6 +57,22 @@ User stories
   status, and the simplest form of diff) must be performed entirely
   offline.
 
+* An interesting possibility: you could couple your filesystem copy to
+  a revision control system like CVS or Subversion, to have an
+  auditable revision history of a site.  Typically, you'd do a cvs
+  commit after each sync update and after each sync commit, after
+  verifying that the state committed to Zope actually works.  It would
+  be handy if files added to or removed from Zope are automatically
+  added or removed from CVS.  The "binary" flag for CVS might be set
+  automatically based on the Zope object type.
+
+* Another possibility: export and import (a la Zope 2 export/import)
+  should be easily implemented on top of this.  Export would be done
+  with checkout; import could be a new "checkin" command.
+
+* And last but not least, this will form the basis of bundles; see the
+  ThroughTheWebSiteDevelopment reference above.
+
 
 BUGS
 ----
@@ -66,15 +82,17 @@ BUGS
   tries to send the request to a view of the corresponding object,
   which doesn't exist yet.
 
-* Removing an object with annotations doesn't always remove the
-  @@Zope/Annotations/<name>/ directory.  Probably the same for Extra.
-
 * When doing an update, somehow the absolute pathnames of all files
   are reported rather than the nice relative names.
 
 
 TO DO
 -----
+
+- Implement checkin, the reverse of checkout (uploading a tree to a
+  different Zope instance, where it didn't exist before).
+
+- Implement bundle commands.
 
 - On the server side:
 
