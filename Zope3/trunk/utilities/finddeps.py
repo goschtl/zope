@@ -41,7 +41,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.15 2004/03/25 13:47:53 philikon Exp $
+$Id: finddeps.py,v 1.16 2004/04/07 17:27:14 fdrake Exp $
 """
 import sys
 import getopt
@@ -410,6 +410,10 @@ def getDependencies(path, zcml=False):
             print >>sys.stderr, ("dependencies can only be"
                                  " extracted from Python and ZCML files")
             sys.exit(1)
+
+    else:
+        print >>sys.stderr, path, "does not exist"
+        sys.exit(1)
 
     return deps
 
