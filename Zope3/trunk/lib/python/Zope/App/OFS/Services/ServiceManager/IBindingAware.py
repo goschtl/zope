@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IBindingAware.py,v 1.3 2002/07/11 18:21:32 jim Exp $
+$Id: IBindingAware.py,v 1.4 2002/11/11 08:36:08 stevea Exp $
 """
 
 from Interface import Interface
@@ -26,7 +26,6 @@ class IBindingAware(Interface):
 
         Called when an immediately-containing service manager binds
         this object to perform the named service.
-
         """
     
     def unbound(name):
@@ -34,5 +33,4 @@ class IBindingAware(Interface):
 
         Called when an immediately-containing service manager unbinds
         this object from performing the named service.
-
         """
