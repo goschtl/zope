@@ -45,6 +45,7 @@
       for="zope.app.interfaces.container.IAdding"
       title="File"
       action="File"
+      permission="zope.ManageContent"
       description="A file object, suitable for large data." />
 
   <icon
@@ -95,6 +96,7 @@
       title="I18n File"
       action="zope.app.content.I18nFile"
       description="A file that supports multiple locales."
+      permission="zope.ManageContent"
       />
 
 <!-- Image -->
@@ -137,6 +139,7 @@
       title="Image"
       action="Image"
       description="This object helps you manage your images."
+      permission="zope.ManageContent"
       />
 
 <!-- I18n Image -->
@@ -178,7 +181,9 @@
       for="zope.app.interfaces.container.IAdding"
       title="I18n Image"
       action="I18nImage"
-      description="A multi-locale version of an Image." />
+      description="A multi-locale version of an Image." 
+      permission="zope.ManageContent"
+      />
 
 <!-- ZPT Page View Directives -->
 
@@ -232,7 +237,9 @@
       for="zope.app.interfaces.container.IAdding"
       action="ZPTPage"
       title="Templated Page"
-      description="An object for dynamic content based on Page Templates." />
+      description="An object for dynamic content based on Page Templates." 
+      permission="zope.ManageContent"
+      />
 
 <!-- Folder View Directives -->
   <icon
@@ -245,7 +252,9 @@
       for="zope.app.interfaces.container.IAdding"
       action="Folder"
       title="Folder" 
-      description="A simple Folder." />
+      description="A simple Folder." 
+      permission="zope.ManageContent"
+      />
 
   <page
       name="contents.html"
@@ -303,6 +312,7 @@
       title="SQLScript"
       action="SQLScript"
       description="A content object getting its data from a RDB."
+      permission="zope.ManageContent"
       />
 
 <!-- DTML Page View Directives -->
@@ -339,6 +349,7 @@
       action="DTMLPage"
       title="DTML Page"
       description="An object for dynamic content based on Document Templates."
+      permission="zope.ManageContent"
       />
 
 
@@ -367,7 +378,9 @@
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="XML Document" action="XMLDocument"
-      description="An object storing XML text." />
+      description="An object storing XML text." 
+      permission="zope.ManageContent"
+      />
 
   <!-- toFS.snarf and fromFS.snarf views, for new fssync tools -->
 
