@@ -24,7 +24,7 @@ def report_command(cmd):
     :param cmd:  The command line we're going to run.
 
     """
-    logger = get_logger()
+    logger = _get_logger()
     #
     # XXX Using two log entries isn't really the right way to do this,
     # but makes things easier to debug for now.  Not sure how well the
@@ -40,11 +40,11 @@ def report_exit_code(rc):
     :param rc:  The return code of the process.
 
     """
-    logger = get_logger()
+    logger = _get_logger()
     logger.debug("exit code: %s", rc)
 
 
-def get_logger():
+def _get_logger():
     """Return the logger to report with.
 
     :rtype: logging.Logger
