@@ -29,8 +29,8 @@
   <caption>Add Content</caption>
 
     <!--
-      ** listAddableInfo returns a sequence of mappings, containing:
-      **   'id'    : the ID of the addable type
+      ** addingInfo returns a sequence of mappings, containing:
+      **   'id'    : the id of the addable type
       **   'title' : the title of the addable type
       **   'description'  : the description of the addable type
       -->
