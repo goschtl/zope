@@ -156,18 +156,24 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         view = self.folder.unrestrictedTraverse('testoid/seagull.html')
         self.assertEquals('<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n', view())
 
-    # this doesn't work; it looks like Zope 3 security gets involved,
-    # but I do not yet understand where this could be.
-##     def test_repeat_iterator(self):
-##         view = self.folder.unrestrictedTraverse('testoid/ostrich2.html')
-##         expected = """\
-## <ul>
-## <li>0</li>
-## <li>1</li>
-## <li>2</li>
-## </ul>
-## """
-##         self.assertEquals(expected, view())
+    def test_repeat_iterator(self):
+        view = self.folder.unrestrictedTraverse('testoid/ostrich2.html')
+        expected = """\
+<ul>
+<li>0</li>
+<li>1</li>
+<li>2</li>
+</ul>
+"""
+        self.assertEquals(expected, view())
+
+    def test_tales_traversal(self):
+        view = self.folder.unrestrictedTraverse('testoid/tales_traversal.html')
+        expected = """\
+<p>testoid</p>
+<p>test_folder_1_</p>
+"""
+        self.assertEquals(expected, view())
 
     def test_template_resource(self):
         resource = self.folder.unrestrictedTraverse('testoid/++resource++cockatiel.html')
