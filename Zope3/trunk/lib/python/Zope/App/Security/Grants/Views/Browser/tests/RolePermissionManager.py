@@ -13,7 +13,7 @@
 ##############################################################################
 """Test IRolePermissionManager class that has no context.
 
-$Id: RolePermissionManager.py,v 1.2 2002/06/24 16:00:44 efge Exp $
+$Id: RolePermissionManager.py,v 1.3 2002/07/18 15:10:59 jeremy Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
@@ -69,7 +69,7 @@ class RolePermissionManager:
         '''See interface IRolePermissionMap'''
         rp = self._getRolePermissions()
         if rp:
-            return rp.getAllCells(role_id)
+            return rp.getAllCells()
         else:
             return []
 
