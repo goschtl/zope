@@ -78,7 +78,7 @@ def _directiveDocs(name, schema, handler, info, indent_offset=0):
         if field.required:
             opt = 'required'
         else:
-            opt = 'optional, default=%s' %field.default.__repr__()
+            opt = 'optional, default=%s' %repr(field.default)
         text += ' '*indent_offset
         text += '    %s -- %s (%s)\n\n' %(name, field.__class__.__name__, opt)
 
