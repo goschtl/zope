@@ -171,8 +171,10 @@ def parseDSN(dsn):
 
        dbi://dbname
        dbi://dbname;param1=value...
+       dbi://user/dbname
        dbi://user:passwd/dbname
        dbi://user:passwd/dbname;param1=value...
+       dbi://user@host/dbname
        dbi://user:passwd@host/dbname
        dbi://user:passwd@host:port/dbname
        dbi://user:passwd@host:port/dbname;param1=value...
@@ -216,12 +218,10 @@ def parseDSN(dsn):
     # Get host and port from DSN
     if dsn and dsn.find('@') > 0:
         dsn, host_port = dsn.split('@')
-        host_port = host_port.split(':')
-        if len(host_port) == 2:
-            host, port = host_port
+        if host_port.find(':') > 0:
+            host, port = host_port.split(':')
         else:
-            host = host_port[0]
-            port = ''
+            host, port = host_port, ''
     else:
         host, port = '', ''
 
@@ -230,7 +230,10 @@ def parseDSN(dsn):
 
     # Get username and password from DSN
     if dsn:
-        username, password = dsn.split(':', 1)
+        if dsn.find(':') > 0:
+            username, password = dsn.split(':', 1)
+        else:
+             username, password = dsn, ''
     else:
         username, password = '', ''
 
