@@ -1,13 +1,25 @@
-/* Copyright (c) 2003 Zope Corporation and Contributors.
-   All Rights Reserved.
+/*############################################################################
+ #
+ #  Copyright (c) 2003 Zope Corporation and Contributors.
+ #  All Rights Reserved.
+ #
+ #  This software is subject to the provisions of the Zope Public License,
+ #  Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+ #  THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+ #  WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ #  WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+ #  FOR A PARTICULAR PURPOSE.
+ #
+ ############################################################################*/
 
-   This software is subject to the provisions of the Zope Public License,
-   Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
-   THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
-   WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-   WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-   FOR A PARTICULAR PURPOSE.
-*/
+#define _ZOPE_HOOKABLE_C "$Id: _zope_hookable.c,v 1.3 2004/05/03 20:27:16 spascoe Exp $\n"
+
+/* _zope_hookable.c
+
+   Provide an efficient implementation for hookable objects
+
+ */
+
 #include "Python.h"
 #include "structmember.h"
 
