@@ -167,7 +167,7 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
                     append(ai.getAction(ec))
         else:
             for i in a:
-                actions.append(i)
+                append(i)
         
     security.declarePublic('listFilteredActionsFor')
     def listFilteredActionsFor(self, object=None):
@@ -221,6 +221,7 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
                             })                
             if hasattr(base, 'listActions'):
                 self._listActions(append,object,info,ec)
+                
 
         # Reorganize the actions by category,
         # filtering out disallowed actions.
