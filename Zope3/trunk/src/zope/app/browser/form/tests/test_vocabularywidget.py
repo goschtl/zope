@@ -90,7 +90,7 @@ class SampleDisplayWidget(vocabularywidget.VocabularyWidgetBase):
     """
     __implements__ = IBrowserWidget
 
-    def render(self, value):
+    def __call__(self):
         return "foo"
 
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.5 2003/04/08 21:34:22 fdrake Exp $
+$Id: test_multicheckboxwidget.py,v 1.6 2003/05/22 22:50:09 jim Exp $
 """
 import unittest
 
@@ -56,17 +56,18 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'bar'
+        self._widget.setData(value)
         check_list = ('type="checkbox"', 'id="field.foo"',
                       'name="field.foo"', 'value="bar"', 'bar',
                       'value="foo"', 'foo', 'checked="checked"')
-        self._verifyResult(self._widget.render(value), check_list)
+        self._verifyResult(self._widget(), check_list)
 
         check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
                       'value="bar"')
-        self._verifyResult(self._widget.renderHidden(value), check_list)
+        self._verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.renderHidden(value), check_list)
+        self._verifyResult(self._widget.hidden(), check_list)
 
 
 def test_suite():

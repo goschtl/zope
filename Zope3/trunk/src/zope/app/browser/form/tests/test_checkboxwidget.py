@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.6 2003/04/08 21:34:22 fdrake Exp $
+$Id: test_checkboxwidget.py,v 1.7 2003/05/22 22:50:09 jim Exp $
 """
 import unittest
 
@@ -36,23 +36,19 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 1
+        self._widget.setData(value)
         check_list = ('type="checkbox"', 'id="field.foo"',
                       'name="field.foo"', 'checked="checked"')
-        self._verifyResult(self._widget.render(value), check_list)
+        self._verifyResult(self._widget(), check_list)
         value = 0
+        self._widget.setData(value)
         check_list = check_list[:-1]
-        self._verifyResult(self._widget.render(value), check_list)
+        self._verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
-        self._verifyResult(self._widget.renderHidden(value), check_list)
+        self._verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.renderHidden(value), check_list)
-
-    def test_haveData(self):
-        # Checkbox always has data
-        self.failUnless(self._widget.haveData())
-        del self._widget.request.form['field.foo']
-        self.failUnless(self._widget.haveData())
+        self._verifyResult(self._widget.hidden(), check_list)
 
     def test_getData(self):
         self._widget.request.form['field.foo'] = 'on'

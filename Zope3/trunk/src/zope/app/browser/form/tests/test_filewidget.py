@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_filewidget.py,v 1.4 2003/04/08 21:34:22 fdrake Exp $
+$Id: test_filewidget.py,v 1.5 2003/05/22 22:50:09 jim Exp $
 """
 import unittest
 
@@ -43,14 +43,16 @@ class FileWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'Foo Value'
+        self._widget.setData(value)
         check_list = ('type="file"', 'id="field.foo"', 'name="field.foo"',
                       'size="20"')
-        self._verifyResult(self._widget.render(value), check_list)
+
+        self._verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
-        self._verifyResult(self._widget.renderHidden(value), check_list)
+        self._verifyResult(self._widget.hidden(), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.renderHidden(value), check_list)
+        self._verifyResult(self._widget.hidden(), check_list)
 
 
 
