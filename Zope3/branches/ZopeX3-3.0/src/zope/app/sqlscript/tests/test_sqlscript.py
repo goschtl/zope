@@ -175,12 +175,6 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
                          'id')
 
     def testGetArguments(self):
-        assert isinstance(arguments, StringTypes), \
-               '"arguments" argument of setArguments() must be a string'
-        self._arg_string = arguments
-        self.arguments = parseArguments(arguments)
-
-    def testGetArguments(self):
         result = Arguments({'id': {}})
         args = self._getScript().getArguments()
         self.assertEqual(args, result)
