@@ -5,6 +5,10 @@ Things that need to be done
 - Need name + acronym to describe what gets built, not normal words
   (Jim sez).  Zope3-Dev seems to want to call them "packages".
 
+- Write a "Quick Start" document to show people how to get started.
+  This will include a prepared resource map for many of the packages
+  used with Zope X3.
+
 - Package assembler script to build sumo/combined distro (mostly done)
 
   - The zpkgtools.locationmap module still doesn't handle Subversion
@@ -26,7 +30,7 @@ Things that need to be done
     defining package data (common in Zope, but not for everyone).  Low
     priority.
 
-  - Make directory inclusion through `PACKAGE.cfg` honor PACKAGE.cfg
+  - Make directory inclusion through `PACKAGE.cfg` honor `PACKAGE.cfg`
     files in included directories.  The <load> section of the such
     `PACKAGE.cfg` files should be honored as well.
 
@@ -62,16 +66,16 @@ Things that need to be done
   library does not provide an acceptable solution due to a bug: see
   http://www.python.org/sf/935117 for more info.)
 
-  (We're currently dealing with them by saying "use --home when
-  installing".)
+  (We're currently dealing with them by saying "use **--home** when
+  installing".  This may be sufficient.)
 
 - Fix up finddeps.py to stop searching at defined boundaries.  How to
   define these boundaries is in flux at the moment.
 
 - Find a way to use ZConfig itself instead of the half-way
-  re-implementation in zpkgtools.cfgparser; it's a real pain having to
-  give up %defines and some of the nicer aspects of schemas (or having
-  to re-implement them).
+  re-implementation in ``zpkgtools.cfgparser``; it's a real pain
+  having to give up %defines and some of the nicer aspects of schemas
+  (or having to re-implement them).
 
 - Expand the prototype section to the pre-proposal documenting the
   current effort; this lets people respond and offer suggestions.
