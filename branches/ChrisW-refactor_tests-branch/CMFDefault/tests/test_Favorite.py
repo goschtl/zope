@@ -16,7 +16,7 @@
 $Id$
 """
 __version__ = "$Revision$"[11:-2]
-
+import Zope
 from unittest import TestCase, TestSuite, makeSuite, main
 
 from Products.CMFCore.tests.base.dummy import \
