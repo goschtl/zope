@@ -1,6 +1,6 @@
 #! /bin/sh
 
-files=`find -name \*.o -o -name \*.so -o -name \*.pyc`
+files=`find -name \*.o -o -name \*.so -o -name \*.py[co]`
 if [ ! -z "$files" ] ; then
     rm $files
 fi
