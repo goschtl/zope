@@ -13,10 +13,10 @@
 ##############################################################################
 """Introspector funcional tests
 
-$Id: test_introspector.py,v 1.2 2004/02/14 02:57:18 srichter Exp $
+$Id: test_introspector.py,v 1.3 2004/04/06 20:58:09 jim Exp $
 """
 import unittest
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 
 class TestIntrospector(BrowserTestCase):

@@ -13,10 +13,10 @@
 ##############################################################################
 """Functional tests for the case-insensitive traverser and folder.
 
-$Id: ftests.py,v 1.2 2004/03/19 03:17:14 srichter Exp $
+$Id: ftests.py,v 1.3 2004/04/06 20:58:07 jim Exp $
 """
 import unittest
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 from zope.publisher.interfaces import NotFound
 
 class TestCaseInsensitiveFolder(BrowserTestCase):

@@ -13,12 +13,12 @@
 ##############################################################################
 """Base class for DAV functional tests.
 
-$Id: dav.py,v 1.5 2004/03/13 23:00:48 srichter Exp $
+$Id: dav.py,v 1.6 2004/04/06 20:58:06 jim Exp $
 """
 from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
-from zope.testing.functional import HTTPTestCase
+from zope.app.tests.functional import HTTPTestCase
 
 from zope.app.folder import Folder
 from zope.app.annotation.interfaces import IAttributeAnnotatable

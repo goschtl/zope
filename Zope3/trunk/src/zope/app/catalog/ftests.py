@@ -13,11 +13,11 @@
 ##############################################################################
 """Functional tests for catalog
 
-$Id: ftests.py,v 1.5 2004/03/19 03:17:13 srichter Exp $
+$Id: ftests.py,v 1.6 2004/04/06 20:58:04 jim Exp $
 """
 import unittest
 
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 class TestCatalogAdd(BrowserTestCase):
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_intwidget.py,v 1.1 2004/03/14 01:11:36 srichter Exp $
+$Id: test_intwidget.py,v 1.2 2004/04/06 20:58:08 jim Exp $
 """
 
 import unittest
@@ -30,7 +30,7 @@ from zope.schema import EnumeratedInt
 
 from zope.app.traversing import traverse
 
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 
 class IIntTest(Interface):

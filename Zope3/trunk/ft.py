@@ -15,11 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: ft.py,v 1.1 2003/06/24 11:23:18 mgedmin Exp $
+$Id: ft.py,v 1.2 2004/04/06 20:57:58 jim Exp $
 """
 
 import unittest
-from zope.testing.functional import FunctionalTestCase
+from zope.app.tests.functional import FunctionalTestCase
 
 # If you are writing a functional test that simulates browser requests, use
 # BrowserTestCase instead of FunctionalTestCase
@@ -60,7 +60,7 @@ class TestSomething(FunctionalTestCase):
         #
         # There are helper methods in FunctionalTestCase and BrowserTestCase
         # for accessing the ZODB and emulating publication requests.  See the
-        # docstrings in zope.testing.functional module.
+        # docstrings in zope.app.tests.functional module.
         pass
 
 

@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: ftests.py,v 1.2 2004/03/17 17:59:30 srichter Exp $
+"""$Id: ftests.py,v 1.3 2004/04/06 20:58:10 jim Exp $
 """
 import unittest
 from xml.dom import minidom
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 class TestNavTree(BrowserTestCase):
 

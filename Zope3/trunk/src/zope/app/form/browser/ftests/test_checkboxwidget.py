@@ -13,7 +13,7 @@
 ##############################################################################
 """Checkbox Widget tests
 
-$Id: test_checkboxwidget.py,v 1.3 2004/03/17 17:59:35 srichter Exp $
+$Id: test_checkboxwidget.py,v 1.4 2004/04/06 20:58:08 jim Exp $
 """
 import unittest
 from persistence import Persistent
@@ -28,7 +28,7 @@ from zope.app.form.browser import CheckBoxWidget
 from support import *
 from zope.app.traversing import traverse
 
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 
 class IBoolTest(Interface):

@@ -13,7 +13,7 @@
 ##############################################################################
 """TextWidget Tests
 
-$Id: test_textwidget.py,v 1.1 2004/03/14 01:11:36 srichter Exp $
+$Id: test_textwidget.py,v 1.2 2004/04/06 20:58:08 jim Exp $
 """
 import unittest
 from persistence import Persistent
@@ -25,7 +25,7 @@ from zope.schema import TextLine, EnumeratedTextLine
 from support import *
 from zope.app.traversing import traverse
 
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 
 class ITextLineTest(Interface):

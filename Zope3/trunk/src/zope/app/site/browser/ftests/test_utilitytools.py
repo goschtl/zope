@@ -13,14 +13,14 @@
 ##############################################################################
 """Utility Tools Functional Tests
 
-$Id: test_utilitytools.py,v 1.1 2004/03/22 00:52:10 srichter Exp $
+$Id: test_utilitytools.py,v 1.2 2004/04/06 20:58:11 jim Exp $
 """
 import unittest
 
 from zope.app import zapi
 from zope.i18n.interfaces import ITranslationDomain
 from zope.app.registration.interfaces import ActiveStatus, RegisteredStatus
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 class TestUtilityTool(BrowserTestCase):
 

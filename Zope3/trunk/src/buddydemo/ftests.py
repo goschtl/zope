@@ -1,6 +1,6 @@
 import unittest
 from buddydemo.buddy import Buddy
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 
 class Test(BrowserTestCase):
 

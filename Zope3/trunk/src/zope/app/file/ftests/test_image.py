@@ -13,13 +13,13 @@
 ##############################################################################
 """File Functional Tests
 
-$Id: test_image.py,v 1.1 2004/03/19 03:17:34 srichter Exp $
+$Id: test_image.py,v 1.2 2004/04/06 20:58:07 jim Exp $
 """
 import unittest
 import cgi
 from cStringIO import StringIO
 from transaction import get_transaction
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 from zope.publisher.browser import FileUpload
 
 from zope.app.file.image import Image

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_filewidget.py,v 1.2 2004/03/17 17:37:05 philikon Exp $
+$Id: test_filewidget.py,v 1.3 2004/04/06 20:58:08 jim Exp $
 """
 
 import unittest
@@ -32,7 +32,7 @@ from zope.app.form.browser.textwidgets import FileWidget
 from support import *
 from zope.app.traversing import traverse
 
-from zope.testing.functional import BrowserTestCase
+from zope.app.tests.functional import BrowserTestCase
 from zope.app.form.interfaces import IInputWidget
 
 class IFileField(IEnumerated, IField):

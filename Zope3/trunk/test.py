@@ -436,7 +436,7 @@ class PathInit:
                 # parent directory
                 config_file = os.path.join('..', 'ftesting.zcml')
             print "Parsing %s" % config_file
-            from zope.testing.functional import FunctionalTestSetup
+            from zope.app.tests.functional import FunctionalTestSetup
             FunctionalTestSetup(config_file)
 
 def match(rx, s):
