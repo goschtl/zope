@@ -84,12 +84,20 @@ def fromPath(path):
     if os.path.isdir(path):
         dirname = path
         basename = ""
-    else:
+    elif os.path.isfile(path):
         dirname, basename = os.path.split(path)
+    else:
+        # does not exist, or not a normal file or directory
+        return None
     cvsdir = os.path.join(dirname, "CVS")
     tagfile = os.path.join(cvsdir, "Tag")
     if os.path.isfile(tagfile):
-        tag = _read_one_line(tagfile)[1:]
+        line = _read_one_line(tagfile)
+        if line[:1] == "D":
+            # This is a date-based checkout, not a tag or branch checkout
+            tag = None
+        else:
+            tag = line[1:]
     else:
         tag = None
     if basename:
@@ -101,10 +109,20 @@ def fromPath(path):
                 parts = line.split("/")
                 if (len(parts) >= 6 and
                     os.path.normcase(parts[1]) == os.path.normcase(basename)):
-                    tag = parts[5][1:].rstrip() or tag
+                    localtag = parts[5].rstrip()
+                    if localtag[:1] == "D":
+                        # date-based pseudo-tag
+                        localtag = None
+                    else:
+                        localtag = localtag[1:]
+                    tag = localtag or tag
                     break
-    modpath = _read_one_line(os.path.join(cvsdir, "Repository"))
-    repo = _read_one_line(os.path.join(cvsdir, "Root"))
+    try:
+        modpath = _read_one_line(os.path.join(cvsdir, "Repository"))
+        repo = _read_one_line(os.path.join(cvsdir, "Root"))
+    except IOError:
+        # not under CVS control
+        return None
     host = ""
     type = username = None
     if repo[:1] == ":":

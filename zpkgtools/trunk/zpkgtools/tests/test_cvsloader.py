@@ -255,7 +255,8 @@ class CvsWorkingDirectoryBase(LoaderTestBase):
         self.writeCvsFile("Root", root + "\n")
         self.writeCvsFile("Repository", repository + "\n")
         if tag:
-            self.writeCvsFile("Tag", "T%s\n" % tag)
+            # `tag` should include the D, N, or T prefix letter
+            self.writeCvsFile("Tag", tag + "\n")
 
     def writeCvsFile(self, name, content):
         f = open(os.path.join(self.cvsdir, name), "w")
@@ -296,10 +297,23 @@ class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
                    "ext", None, None, "cvs.example.org", "/cvsroot",
                    "module/package/file.txt", None)
 
-    def test_with_tag(self):
+    def test_with_branch_tag(self):
         self.initialize(":ext:cvs.example.org:/cvsroot",
                         "module/package",
-                        "TAG")
+                        "TTAG")
+        # Check the directory itself:
+        self.check(self.workingdir,
+                   "ext", None, None, "cvs.example.org", "/cvsroot",
+                   "module/package/", "TAG")
+        # And for a contained file:
+        self.check(self.filename,
+                   "ext", None, None, "cvs.example.org", "/cvsroot",
+                   "module/package/file.txt", "TAG")
+
+    def test_with_nonbranch_tag(self):
+        self.initialize(":ext:cvs.example.org:/cvsroot",
+                        "module/package",
+                        "NTAG")
         # Check the directory itself:
         self.check(self.workingdir,
                    "ext", None, None, "cvs.example.org", "/cvsroot",
@@ -316,7 +330,8 @@ class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
                    "ext", "myuser", None, "cvs.example.org", "/cvsroot",
                    "module/package/", None)
 
-    def test_with_entries_override(self):
+    def test_with_entries_branch(self):
+        # Test with a branch tag override for one file.
         self.initialize(":ext:cvs.example.org:/cvsroot",
                         "module/package")
         self.writeCvsFile(
@@ -328,16 +343,59 @@ class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
                    "module/package/file.txt", "new-tag")
 
     def test_with_entries_tag(self):
+        # Test with a non-branch tag override for one file.
         self.initialize(":ext:cvs.example.org:/cvsroot",
                         "module/package",
-                        "TAG")
+                        "NTAG")
         self.writeCvsFile(
             "Entries",
-            "/file.txt/1.2.2.8/Mon Mar  1 23:00:24 2004/-kk/Tnew-tag\n")
+            "/file.txt/1.2.2.8/Mon Mar  1 23:00:24 2004/-kk/Nnew-tag\n")
 
         self.check(self.filename,
                    "ext", None, None, "cvs.example.org", "/cvsroot",
                    "module/package/file.txt", "new-tag")
+
+    def test_with_date_and_entries_tag(self):
+        # Test with a non-branch tag override for one file.
+        self.initialize(":ext:cvs.example.org:/cvsroot",
+                        "module/package",
+                        "D2004.02.28.04.00.00")
+        self.writeCvsFile(
+            "Entries",
+            "/file.txt/1.2.2.8/Mon Mar  1 23:00:24 2004/-kk/Nnew-tag\n")
+
+        self.check(self.filename,
+                   "ext", None, None, "cvs.example.org", "/cvsroot",
+                   "module/package/file.txt", "new-tag")
+
+    def test_with_tag_and_entries_date(self):
+        self.initialize(":ext:cvs.example.org:/cvsroot",
+                        "module/package",
+                        "TTAG")
+        self.writeCvsFile("Entries",
+                          ("/file.txt/1.2.2.8/Mon Mar  1 23:00:24 2004/-kk/"
+                           "D2004.02.28.04.00.00\n"))
+
+        self.check(self.filename,
+                   "ext", None, None, "cvs.example.org", "/cvsroot",
+                   "module/package/file.txt", "TAG")
+
+    def test_with_entries_date(self):
+        self.initialize(":ext:cvs.example.org:/cvsroot",
+                        "module/package")
+        self.writeCvsFile("Entries",
+                          ("/file.txt/1.1/Mon Mar  1 23:00:24 2004/-kk/"
+                           "D2004.02.28.04.00.00\n"))
+
+        self.check(self.filename,
+                   "ext", None, None, "cvs.example.org", "/cvsroot",
+                   "module/package/file.txt", None)
+
+    def test_without_cvs_info(self):
+        # make sure fromPath() returns None if there's no CVS metadata
+        os.rmdir(self.cvsdir)
+        cvsurl = cvsloader.fromPath(self.filename)
+        self.assert_(cvsurl is None)
 
 
 class CvsLoaderTestCase(unittest.TestCase):
