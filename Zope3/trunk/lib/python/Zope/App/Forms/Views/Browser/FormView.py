@@ -12,12 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.10 2002/09/04 13:44:23 faassen Exp $
+$Id: FormView.py,v 1.11 2002/09/05 18:55:01 jim Exp $
 """
-from Schema.IField import IField
-from Schema.Exceptions import StopValidation, ValidationError, \
+from Zope.Schema.IField import IField
+from Zope.Schema.Exceptions import StopValidation, ValidationError, \
      ConversionError, ValidationErrorsAll, ConversionErrorsAll
-from Schema import getFields, validateMappingAll
+from Zope.Schema import getFields, validateMappingAll
 #from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getView
 from Zope.Proxy.ProxyIntrospection import removeAllProxies

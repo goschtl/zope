@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: testBoolField.py,v 1.3 2002/07/17 16:54:15 jeremy Exp $
+$Id: testBoolField.py,v 1.1 2002/09/05 18:55:04 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from Schema import Bool, ErrorNames
+from Zope.Schema import Bool, ErrorNames
 from testField import FieldTest
 
 class BoolTest(FieldTest):

@@ -12,24 +12,17 @@
 # 
 ##############################################################################
 """
-$Id: IValidator.py,v 1.2 2002/07/14 18:51:27 faassen Exp $
+$Id: IConverter.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
 from Interface import Interface
 
-class IValidator(Interface):
-    """Validates a particular value against the specifed field. Each
-    Validator just does one check, like check for the max value or the
-    min value!
+class IConverter(Interface):
+    """A converter can convert a value from one type to another."""
 
-    Note that the responsibility of Validator is not to change the
-    value, only to raise an exception in case the value was incorrect.
-    Converters are used to change values.
+    def convert(value):
+        """Call an IConverter with a value, and it will try to convert to
+        another value and return the result. If conversion cannot take
+        place, the convertor will raise a ConversionError. (or a
+        ValidationError in case of Converters using Schemas inside?)
+        """
     
-    It should be always implemented as an adapter.
-    """
-
-    def validate(value):
-        """Validate the the value.
-
-        This should not return anything, only raise an exception in case
-        of an invalid value.""" 

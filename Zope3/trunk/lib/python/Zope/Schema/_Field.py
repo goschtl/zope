@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.11 2002/09/04 13:44:22 faassen Exp $
+$Id: _Field.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -85,5 +85,3 @@ class Dict(Field):
     type = dict
     min_values = max_values = None
     key_types = value_types = None
-
-

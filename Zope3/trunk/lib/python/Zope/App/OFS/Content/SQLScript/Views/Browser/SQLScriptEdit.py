@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: SQLScriptEdit.py,v 1.7 2002/09/04 13:44:29 faassen Exp $
+$Id: SQLScriptEdit.py,v 1.8 2002/09/05 18:55:03 jim Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.Forms.Views.Browser import Widget
 from Zope.App.Forms.Widget import CustomWidget
 from Zope.App.Forms.Views.Browser.FormView import FormView
-from Schema.Converter import StrToIntConverter
+from Zope.Schema.Converter import StrToIntConverter
 from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
 
 class SQLScriptEdit(FormView):

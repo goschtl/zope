@@ -12,11 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.7 2002/09/04 13:44:24 faassen Exp $
+$Id: SchemaTestObject.py,v 1.8 2002/09/05 18:55:01 jim Exp $
 """
 from Interface import Interface
-import Schema
-from Schema.Converter import StrToIntConverter
+import Zope.Schema
+from Zope.Schema.Converter import StrToIntConverter
 
 from Zope.Publisher.HTTP.tests.TestRequest import TestRequest
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
@@ -38,7 +38,7 @@ class TestBrowserRequest(TestRequest):
         return IBrowserView
 
 
-class Email(Schema.Str):
+class Email(Zope.Schema.Str):
     """A simple customized field."""
     pass
 
@@ -46,15 +46,15 @@ class Email(Schema.Str):
 class ITestObject(Interface):
     """A simple Schema."""
 
-    id = Schema.Int(
+    id = Zope.Schema.Int(
         title="Id",
         required=1)
     
-    title = Schema.Str(
+    title = Zope.Schema.Str(
         title="Title",
         required=0)
     
-    data = Schema.Str(
+    data = Zope.Schema.Str(
         title="Data",
         description="Data stored by the object",
         required=0)

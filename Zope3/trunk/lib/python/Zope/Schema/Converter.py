@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Converter.py,v 1.5 2002/07/24 10:53:48 srichter Exp $
+$Id: Converter.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
 from IConverter import IConverter
 from Exceptions import ConversionError

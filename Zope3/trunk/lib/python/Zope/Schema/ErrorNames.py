@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -11,25 +11,30 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""Common Schema Error Names
+
+$Id: ErrorNames.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
+WrongType = "WrongType"
 
-$Id: FileFields.py,v 1.3 2002/07/19 13:12:31 srichter Exp $
-"""
-import Schema
+RequiredMissing ='RequiredMissing'
 
+RequiredEmptyStr = 'RequiredEmptyString'
 
-class SFile(Schema):
+TooBig = 'TooBig'
 
-    contentType = Schema.Str(
-        id = 'contentType',
-        title = 'Content Type',
-        description = 'The content type identifies the type of data.',
-        default = 'text/plain',
-        )
+TooSmall = 'TooSmall'
 
+TooLong = 'TooLong'
 
-    data = Schema.Str(
-        id = 'data',
-        title = 'Data',
-        description = 'The actual content of the object.',
-        )
+TooShort = 'TooShort'
+
+InvalidValue = 'InvalidValue'
+
+TooManyDecimals = 'TooManyDecimals'
+
+WrongContainedType = "WrongContainedType"
+
+NotEnoughElements = 'NotEnoughElements'
+
+TooManyElements = 'TooManyElements'

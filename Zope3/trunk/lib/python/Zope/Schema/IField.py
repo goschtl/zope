@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.4 2002/07/14 18:51:27 faassen Exp $
+$Id: IField.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
 from Interface import Interface
 import _Field as Field

@@ -13,12 +13,12 @@
 ##############################################################################
 """Test conversion functionality of schema.
 
-$Id: testConverter.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
+$Id: testConverter.py,v 1.1 2002/09/05 18:55:04 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from Schema.Exceptions import ConversionError
-from Schema.Converter import NullConverter, StrToIntConverter,\
+from Zope.Schema.Exceptions import ConversionError
+from Zope.Schema.Converter import NullConverter, StrToIntConverter,\
      IntToStrConverter, CombinedConverter, StrToFloatConverter,\
      FloatToStrConverter
 

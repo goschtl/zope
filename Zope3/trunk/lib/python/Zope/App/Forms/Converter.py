@@ -12,13 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: Converter.py,v 1.4 2002/07/24 10:53:48 srichter Exp $
+$Id: Converter.py,v 1.5 2002/09/05 18:55:01 jim Exp $
 """
 from types import TupleType, ListType
 ListTypes = (TupleType, ListType)
-from Schema.IConverter import IConverter
-from Schema.Converter import NullConverter
-from Schema.IField import *
+from Zope.Schema.IConverter import IConverter
+from Zope.Schema.Converter import NullConverter
+from Zope.Schema.IField import IField
 
 
 class RawToHomogeneousListConverter(NullConverter):

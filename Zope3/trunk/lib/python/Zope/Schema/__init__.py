@@ -11,30 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Common Schema Error Names
+"""Schema package constructor
 
-$Id: ErrorNames.py,v 1.4 2002/07/14 17:30:32 faassen Exp $
+$Id: __init__.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
-WrongType = "WrongType"
-
-RequiredMissing ='RequiredMissing'
-
-RequiredEmptyStr = 'RequiredEmptyString'
-
-TooBig = 'TooBig'
-
-TooSmall = 'TooSmall'
-
-TooLong = 'TooLong'
-
-TooShort = 'TooShort'
-
-InvalidValue = 'InvalidValue'
-
-TooManyDecimals = 'TooManyDecimals'
-
-WrongContainedType = "WrongContainedType"
-
-NotEnoughElements = 'NotEnoughElements'
-
-TooManyElements = 'TooManyElements'
+from _Field import Field, Str, Bool, Int, Float, Tuple, List, Dict
+from _Schema import validateMapping, validateMappingAll, getFields

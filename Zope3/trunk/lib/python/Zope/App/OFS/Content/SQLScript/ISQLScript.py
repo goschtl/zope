@@ -12,15 +12,15 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.6 2002/09/04 13:44:29 faassen Exp $
+$Id: ISQLScript.py,v 1.7 2002/09/05 18:55:02 jim Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
 from Zope.ComponentArchitecture import getService
 from Zope.ContextWrapper import ContextMethod
-import Schema
+import Zope.Schema
 
-class SQLConnectionName(Schema.Str):
+class SQLConnectionName(Zope.Schema.Str):
     """SQL Connection Name"""
 
     def items(self):
@@ -39,24 +39,24 @@ class ISQLScript(ISQLCommand):
         description="The Connection Name for the connection to be used.",
         required=1)
 
-    arguments = Schema.Str(
+    arguments = Zope.Schema.Str(
         title="Arguments",
         description="A set of attributes that can be used during the DTML "
                     "rendering process to provide dynamic data.",
         required=0)
 
-    source = Schema.Str(
+    source = Zope.Schema.Str(
         title="Source",
         description="The source of the page template.",
         required=1)
 
-    maxCache = Schema.Int(
+    maxCache = Zope.Schema.Int(
         title="Maximum results to cache",
         description="The size of the SQL script cache.",
         min=0,
         required=1)
 
-    cacheTime = Schema.Int(
+    cacheTime = Zope.Schema.Int(
         title="Maximum time (sec) to cache",
         description="The time in seconds that results are cached. "
                     "Setting to zero disables caching.",

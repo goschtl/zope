@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.7 2002/07/17 18:43:41 srichter Exp $
+$Id: Exceptions.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
 
 class StopValidation(Exception):

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: testTupleField.py,v 1.6 2002/07/17 16:54:15 jeremy Exp $
+$Id: testTupleField.py,v 1.1 2002/09/05 18:55:04 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from Schema import Tuple, Int, Float, ErrorNames
+from Zope.Schema import Tuple, Int, Float, ErrorNames
 from testField import FieldTest
 
 class TupleTest(FieldTest):

@@ -12,11 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: DTMLPage.py,v 1.4 2002/09/04 13:44:24 faassen Exp $
+$Id: DTMLPage.py,v 1.5 2002/09/05 18:55:02 jim Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
-import Schema
+import Zope.Schema
 from Persistence import Persistent
 
 from Zope.ContextWrapper import ContextMethod
@@ -38,7 +38,7 @@ class IDTMLPage(Interface):
     def getSource():
         """Get the source of the page template."""
 
-    source = Schema.Str(
+    source = Zope.Schema.Str(
         title="Source",
         description="""The source od the page template.""",
         required=1)

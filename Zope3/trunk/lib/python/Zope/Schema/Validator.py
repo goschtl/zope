@@ -12,15 +12,15 @@
 # 
 ##############################################################################
 """
-$Id: Validator.py,v 1.4 2002/07/14 20:00:56 faassen Exp $
+$Id: Validator.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
-from Schema.IValidator import IValidator
-from Schema.IField import *
-from Schema._Field import *
+from Zope.Schema.IValidator import IValidator
+#from Zope.Schema.IField import *
+from Zope.Schema._Field import List
 
-from Schema.Exceptions import StopValidation, ValidationError
+from Zope.Schema.Exceptions import StopValidation, ValidationError
 import ErrorNames
 
 class Validator:
@@ -34,14 +34,14 @@ class Validator:
         return self.__doc__
 
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         pass
 
 
 class TypeValidator(Validator):
     """Check whether the value is of the correct type."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         t = self.field.type
         if t is not None and value is not None and not isinstance(value, t):
             raise ValidationError, ErrorNames.WrongType
@@ -49,7 +49,7 @@ class TypeValidator(Validator):
 class RequiredValidator(Validator):
     """If no value was passed, check whether the field was required."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         if value is None:
             if self.field.required:
                 raise ValidationError, ErrorNames.RequiredMissing
@@ -60,14 +60,14 @@ class RequiredValidator(Validator):
 class StrRequiredValidator(Validator):
     """Don't accept empty strings for a required field."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         if self.field.required and value == '':
             raise ValidationError, ErrorNames.RequiredEmptyStr
 
 class MinimumLengthValidator(Validator):
     """Check that the length is larger than the minimum."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         length = len(value)
         if self.field.min_length is not None and \
                length < self.field.min_length:
@@ -76,7 +76,7 @@ class MinimumLengthValidator(Validator):
 class MaximumLengthValidator(Validator):
     """Check that the length is smaller than the maximum."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         length = len(value)
         if self.field.max_length is not None and \
                length > self.field.max_length:
@@ -85,21 +85,21 @@ class MaximumLengthValidator(Validator):
 class MinimumValueValidator(Validator):
     """Check that the value is larger than the minimum."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         if self.field.min is not None and value < self.field.min:
             raise ValidationError, ErrorNames.TooSmall
 
 class MaximumValueValidator(Validator):
     """Check that the value is smaller than the maximum."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         if self.field.max is not None and value > self.field.max:
             raise ValidationError, ErrorNames.TooBig
 
 class AllowedValuesValidator(Validator):
     """Check whether the value is one of the allowed values."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         allowed = self.field.allowed_values
         if len(allowed) > 0 and value not in allowed:
             raise ValidationError, ErrorNames.InvalidValue
@@ -107,7 +107,7 @@ class AllowedValuesValidator(Validator):
 class DecimalsValidator(Validator):
     """Check that the float value has the right precision."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         value_str = str(value)
         try:
             decimals = len(value_str.split('.')[1])
@@ -128,7 +128,7 @@ def _flatten(list):
 class ListValueTypeValidator(Validator):
     """Check that all list elements have the right type."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         if self.field.value_types:
             types = map(lambda field: field.type, self.field.value_types)
             types = tuple(_flatten(types))
@@ -139,7 +139,7 @@ class ListValueTypeValidator(Validator):
 class MinimumAmountOfItemsValidator(Validator):
     """Check whether the list contains enough items."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         if self.field.min_values and value is not None and \
                len(value) < self.field.min_values:
             raise ValidationError, ErrorNames.NotEnoughElements
@@ -147,14 +147,14 @@ class MinimumAmountOfItemsValidator(Validator):
 class MaximumAmountOfItemsValidator(Validator):
     """Check whether the list contains not too many items."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         if self.field.max_values and len(value) > self.field.max_values:
             raise ValidationError, ErrorNames.TooManyElements
 
 class DictKeyTypeValidator(Validator):
     """Check that the values in the value have the right type."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         keys = value.keys()
         field = List(id='temp', title='temp',
                      value_types=self.field.key_types)
@@ -164,7 +164,7 @@ class DictKeyTypeValidator(Validator):
 class DictValueTypeValidator(Validator):
     """Check that the values in the value have the right type."""
     def validate(self, value):
-        'See Schema.IValidator.IValidator'
+        'See Zope.Schema.IValidator.IValidator'
         values = value.values()
         field = List(id='temp', title='temp',
                      value_types=self.field.value_types)
@@ -176,7 +176,7 @@ class CombinedValidator(Validator):
     validators = []
 
     def validate(self, value):
-        'See Schema.IValidator.IValidator'        
+        'See Zope.Schema.IValidator.IValidator'        
         for validator in self.validators:
             try:
                 validator(self.field).validate(value)

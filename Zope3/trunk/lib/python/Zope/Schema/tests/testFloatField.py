@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: testFloatField.py,v 1.4 2002/07/17 16:54:15 jeremy Exp $
+$Id: testFloatField.py,v 1.1 2002/09/05 18:55:04 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from Schema import Float, ErrorNames
+from Zope.Schema import Float, ErrorNames
 from testField import FieldTest
 
 class FloatTest(FieldTest):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.12 2002/09/04 13:44:24 faassen Exp $
+$Id: testFormView.py,v 1.13 2002/09/05 18:55:01 jim Exp $
 """
 from cStringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,7 @@ from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Zope.App.Forms.Views.Browser.FormView import FormView
 
-from Schema.IField import IStr
+from Zope.Schema.IField import IStr
 from Zope.App.Forms.Views.Browser.Widget import TextWidget, FileWidget
 
 import SchemaTestObject

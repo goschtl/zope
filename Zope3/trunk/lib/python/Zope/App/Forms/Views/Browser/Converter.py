@@ -12,11 +12,9 @@
 # 
 ##############################################################################
 """
-$Id: Converter.py,v 1.3 2002/07/24 10:53:48 srichter Exp $
+$Id: Converter.py,v 1.4 2002/09/05 18:55:01 jim Exp $
 """
-from Zope.App.Forms.Converter import *
-from Schema.IField import *
-
+from Zope.App.Forms.Converter import Converter
 
 class NoneToEmptyListConverter(Converter):
     """Converts None object to an empty list."""

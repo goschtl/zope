@@ -12,11 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.7 2002/09/04 13:44:23 faassen Exp $
+$Id: Widget.py,v 1.8 2002/09/05 18:55:01 jim Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
-from Schema import Converter
+from Zope.Schema import Converter
 from Zope.ComponentArchitecture import getAdapter
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView

@@ -12,19 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.9 2002/09/04 13:44:22 faassen Exp $
+$Id: _Schema.py,v 1.1 2002/09/05 18:55:03 jim Exp $
 """
 from Interface import Interface
 import Validator
-from Schema.Exceptions import \
+from Zope.Schema.Exceptions import \
      StopValidation, ValidationError, ValidationErrorsAll
-
-
-class Schema(Interface):
-    """This is really just a marker class, but it seems more userfriendly
-    this way."""
     
-
 def getFields(schema):
     """Get all fields on a schema.
     """
