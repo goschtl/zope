@@ -42,30 +42,4 @@
       title="Menu of addable configuration objects"
       usage="addingdialog" />
 
-  <!-- Management view selector -->
-  <!-- Get first accessable item from zmi_views menu -->
-  <page
-      for="*"
-      name="SelectedManagementView.html"
-      permission="zope.Public"
-      class=".managementviewselector.ManagementViewSelector"
-      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
-
-  <!-- Make manage an alias for same -->
-  <page
-      for="*"
-      name="manage"
-      permission="zope.ManageContent"
-      class=".managementviewselector.ManagementViewSelector"
-      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
-
-  <!-- Menu access -->
-  <page
-      for="*"
-      name="view_get_menu"
-      permission="zope.Public"
-      class=".menu.MenuAccessView"
-      allowed_interface="zope.app.browser.interfaces.menu.IMenuAccessView"
-      />
-
 </zope:configure>
