@@ -1,5 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
+<!--
 <utility
     name="zope.app" 
     provides=".interfaces.ISchemaManager"
@@ -14,6 +15,7 @@
     a manager instance with the necessary parameters and a package of
     evolution scripts.
 </utility>
+-->
 
 <include package=".browser" />
 
