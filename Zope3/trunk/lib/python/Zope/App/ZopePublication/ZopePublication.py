@@ -12,13 +12,11 @@
 # 
 ##############################################################################
 import sys
-from types import StringType, ClassType
 from zLOG import LOG, ERROR, INFO
 
 from Zope.ComponentArchitecture import getService
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from ZODB.POSException import ConflictError
-from Zope.ComponentArchitecture import getService
 
 from Zope.Publisher.DefaultPublication import DefaultPublication
 from Zope.Publisher.mapply import mapply
@@ -41,16 +39,12 @@ from Zope.App.Security.Registries.PrincipalRegistry \
 from Zope.App.Security.IUnauthenticatedPrincipal \
      import IUnauthenticatedPrincipal
 
-from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
-
 from PublicationTraverse import PublicationTraverse
 
 from Zope.Proxy.ContextWrapper import ContextWrapper
 
 # XXX Should this be imported here?
 from Transaction import get_transaction
-
-from Zope.App.ComponentArchitecture.NextService import queryNextService
 
 class RequestContainer:
     # TODO: add security assertion declaring access to REQUEST
@@ -182,9 +176,28 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
 
             try:
                 errService = getService(object,'ErrorReportingService')
-                errService.raising(exc_info, request)
             except ComponentLookupError:
                 pass
+            else:
+                try:
+                    errService.raising(exc_info, request)
+                # It is important that an error in errService.raising
+                # does not propagate outside of here. Otherwise, nothing
+                # meaningful will be returned to the user.
+                #
+                # The error reporting service should not be doing database
+                # stuff, so we shouldn't get a conflict error.
+                # Even if we do, it is more important that we log this
+                # error, and proceed with the normal course of events.
+                # We should probably (somehow!) append to the standard
+                # error handling that this error occurred while using
+                # the ErrorReportingService, and that it will be in
+                # the zope log.
+                except:
+                    LOG('SiteError', ERROR,
+                        'Error while reporting an error to the '
+                        'ErrorReportingService', 
+                        error=sys.exc_info())
 
             # Delegate Unauthorized errors to the authentication service
             # XXX Is this the right way to handle Unauthorized?  We need

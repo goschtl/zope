@@ -14,15 +14,14 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.9 2002/11/11 13:13:07 stevea Exp $
+$Id: ErrorReportingService.py,v 1.10 2002/11/11 14:15:44 stevea Exp $
 """
 
-import sys
 import time
 from random import random
 from thread import allocate_lock
 from Persistence import Persistent
-from types import StringType, UnicodeType
+from types import StringTypes
 from zLOG import LOG, ERROR
 from Zope.Exceptions.ExceptionFormatter import format_exception
 from Zope.ContextWrapper import ContextMethod
@@ -75,76 +74,77 @@ class ErrorReportingService(Persistent):
         """
         now = time.time()
         try:
-            try:
-                tb_text = None
-                tb_html = None
+            tb_text = None
+            tb_html = None
 
-                strtype = str(getattr(info[0], '__name__', info[0]))
-                if strtype in self._ignored_exceptions:
-                    return
-                
-                if not isinstance(info[2], StringType) and not isinstance(
-                    info[2], UnicodeType):
-                    tb_text = ''.join(
-                            format_exception(*info, **{'as_html': 0}))
-                    tb_html = ''.join(
-                        format_exception(*info, **{'as_html': 1}))
-                else:
-                    tb_text = info[2]
-                    
-                url = None
-                username = None
-                req_html = None
-                if request:
-                    url = request.URL
-                    try:
-                       username = ','.join(request.user.getLogin(),
-                                           request.user.getId(),
-                                           request.user.getTitle(),
-                                           request.user.getDescription()
-                                           )
-                    # When there's an unauthorized access, request.user is
-                    # not set, so we get an AttributeError
-                    except AttributeError:
-                        pass
-
-                    req_html = ''.join(['%s : %s<br>' % item
-                                        for item in request.items()])
-                try:
-                    strv = str(info[1])
-                # XXX bare except clause. Why is this here?
-                except:
-                    strv = '<unprintable %s object>' % (
-                            str(type(info[1]).__name__)
-                            )
-
-                log = self._getLog()
-                entry_id = str(now) + str(random()) # Low chance of collision
-
-                log.append({
-                    'type': strtype,
-                    'value': strv,
-                    'time': time.ctime(now),
-                    'id': entry_id,
-                    'tb_text': tb_text,
-                    'tb_html': tb_html,
-                    'username': username,
-                    'url': url,
-                    'req_html': req_html,
-                    })
-                cleanup_lock.acquire()
-                try:
-                    if len(log) >= self.keep_entries:
-                        del log[:-self.keep_entries]
-                finally:
-                    cleanup_lock.release()
-            # XXX bare except clause. Why is this here?
-            except:
-                 LOG('SiteError', ERROR, 'Error while logging', 
-                     error=sys.exc_info())
+            strtype = str(getattr(info[0], '__name__', info[0]))
+            if strtype in self._ignored_exceptions:
+                return
+            
+            if not isinstance(info[2], StringTypes):
+                tb_text = ''.join(
+                        format_exception(*info, **{'as_html': 0}))
+                tb_html = ''.join(
+                    format_exception(*info, **{'as_html': 1}))
             else:
-                if self.copy_to_zlog:
-                    self._do_copy_to_zlog(now, strtype, str(url), info)
+                tb_text = info[2]
+                
+            url = None
+            username = None
+            req_html = None
+            if request:
+                url = request.URL
+                try:
+                   username = ', '.join((request.user.getLogin(),
+                                         request.user.getId(),
+                                         request.user.getTitle(),
+                                         request.user.getDescription()
+                                        ))
+                # When there's an unauthorized access, request.user is
+                # not set, so we get an AttributeError
+                # XXX is this right? Surely request.user should be set!
+                except AttributeError:
+                    pass
+
+                req_html = ''.join(['%s : %s<br>' % item
+                                    for item in request.items()])
+            try:
+                strv = str(info[1])
+            # A call to str(obj) could raise anything at all.
+            # We'll ignore these errors, and print something
+            # useful instead, but also log the error.
+            except:
+                LOG('SiteError', ERROR,
+                    'Error in ErrorReportingService while getting a str '
+                    'representation of an object ',
+                    error=sys.exc_info())
+                strv = '<unprintable %s object>' % (
+                        str(type(info[1]).__name__)
+                        )
+
+            log = self._getLog()
+            entry_id = str(now) + str(random()) # Low chance of collision
+
+            log.append({
+                'type': strtype,
+                'value': strv,
+                'time': time.ctime(now),
+                'id': entry_id,
+                'tb_text': tb_text,
+                'tb_html': tb_html,
+                'username': username,
+                'url': url,
+                'req_html': req_html,
+                })
+            cleanup_lock.acquire()
+            try:
+                if len(log) >= self.keep_entries:
+                    del log[:-self.keep_entries]
+            finally:
+                cleanup_lock.release()
+
+            if self.copy_to_zlog:
+                self._do_copy_to_zlog(now, strtype, str(url), info)
         finally:
             info = None
     raising = ContextMethod(raising)
