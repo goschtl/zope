@@ -16,18 +16,26 @@
 $Id$
 """
 import unittest
-from zope.interface.verify import verifyObject
+
 from persistent import Persistent
 from persistent.interfaces import IPersistent
+from ZODB.interfaces import IConnection
+
+from zope.interface import implements
+from zope.interface.verify import verifyObject
+
 from zope.app.testing import setup, ztapi
 from zope.app import zapi
-from zope.interface import implements
-from ZODB.interfaces import IConnection
 from zope.app.location.interfaces import ILocation
+from zope.app.location.interfaces import ITransientLocation
 from zope.app.component.hooks import setSite
 
 class P(Persistent):
     implements(ILocation)
+
+
+class T(object):
+    implements(ITransientLocation)
 
 
 class ConnectionStub(object):
@@ -66,10 +74,18 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
         u = IntIds()
         obj = P()
+        t_obj = T()
+        
         obj._p_jar = ConnectionStub()
+
+        self.assertRaises(KeyError, u.getId, obj)
+        self.assertRaises(KeyError, u.getId, t_obj)
+        self.assertRaises(TypeError, u.getId, object())
 
         self.assert_(u.queryId(obj) is None)
         self.assert_(u.queryId(obj, 42) is 42)
+        self.assert_(u.queryId(t_obj) is None)
+        self.assertRaises(TypeError, u.queryId, object())
         self.assert_(u.queryObject(42) is None)
         self.assert_(u.queryObject(42, obj) is obj)
 
@@ -176,6 +192,11 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         events = []
         ztapi.handle([IIntIdRemovedEvent], events.append)
 
+        # Transient locations should not be unregistered.
+        t = T()
+        removeIntIdSubscriber(t, ObjectRemovedEvent(parent_folder))
+        self.assertEquals(len(events), 0)
+
         # This should unregister the object in all utilities, not just the
         # nearest one.
         removeIntIdSubscriber(folder, ObjectRemovedEvent(parent_folder))
@@ -198,7 +219,12 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         events = []
         ztapi.handle([IIntIdAddedEvent], events.append)
 
-        # This should unregister the object in all utilities, not just the
+        # Transient locations should not be registered at all.
+        t = T()
+        addIntIdSubscriber(t, ObjectAddedEvent(parent_folder))
+        self.assertEquals(len(events), 0)
+
+        # This should register the object in all utilities, not just the
         # nearest one.
         addIntIdSubscriber(folder, ObjectAddedEvent(parent_folder))
 

@@ -30,14 +30,15 @@ from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
-
 from zope.app.container.contained import Contained
 from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.location.interfaces import ILocation
+from zope.app.location.interfaces import ITransientLocation
 
 from zope.app.intid.interfaces import IIntIds
 from zope.app.intid.interfaces import IntIdRemovedEvent
 from zope.app.intid.interfaces import IntIdAddedEvent
+
 
 class IntIds(Persistent, Contained):
     """This utility provides a two way mapping between objects and
@@ -72,12 +73,17 @@ class IntIds(Persistent, Contained):
         return default
 
     def getId(self, ob):
-        ref = IKeyReference(ob)
-        return self.ids[ref]
+        if not ITransientLocation.providedBy(ob):
+            ref = IKeyReference(ob)
+            return self.ids[ref]
+        else:
+            raise KeyError(ob)
 
     def queryId(self, ob, default=None):
-        ref = IKeyReference(ob)
-        return self.ids.get(ref, default)
+        try:
+            return self.getId(ob)
+        except KeyError:
+            return default
 
     def _generateId(self):
         """Generate an id which is not yet taken.
@@ -112,6 +118,7 @@ class IntIds(Persistent, Contained):
         del self.refs[uid]
         del self.ids[ref]
 
+
 def removeIntIdSubscriber(ob, event):
     """A subscriber to ObjectRemovedEvent
 
@@ -119,14 +126,16 @@ def removeIntIdSubscriber(ob, event):
     id utilities.
     """
 
-    # Notify the catalogs that this object is about to be removed.
-    notify(IntIdRemovedEvent(ob, event))
+    if not ITransientLocation.providedBy(ob): # do not unregister transient locations
+        # Notify the catalogs that this object is about to be removed.
+        notify(IntIdRemovedEvent(ob, event))
+    
+        for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
+            try:
+                utility.unregister(ob)
+            except KeyError:
+                pass
 
-    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
-        try:
-            utility.unregister(ob)
-        except KeyError:
-            pass
 
 def addIntIdSubscriber(ob, event):
     """A subscriber to ObjectAddedEvent
@@ -134,10 +143,13 @@ def addIntIdSubscriber(ob, event):
     Registers the object added in all unique id utilities and fires
     an event for the catalogs.
     """
-    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
-        utility.register(ob)
+    if not ITransientLocation.providedBy(ob): # do not register transient locations
+        for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
+            utility.register(ob)
+    
+        # Notify the catalogs that this object was added.
+        notify(IntIdAddedEvent(ob, event))
 
-    notify(IntIdAddedEvent(ob, event))
 
 # BBB
 UniqueIdUtility = IntIds
