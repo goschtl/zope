@@ -126,7 +126,7 @@ class BootstrapSubscriberBase(object):
             self, interface, utility_type, utility_factory, name='', **kw):
         """Add a utility to the top Utility Service
         
-        Returns the name added or None if nothing was added.
+        Returns the name added or ``None`` if nothing was added.
         """
         utility_manager = zapi.getService(Utilities, self.root_folder)
         utility = utility_manager.queryUtility(interface, name)
