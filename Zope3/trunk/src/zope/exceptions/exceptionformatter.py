@@ -14,7 +14,7 @@
 """An exception formatter that shows traceback supplements and traceback info,
 optionally in HTML.
 
-$Id: exceptionformatter.py,v 1.4 2003/04/21 19:51:10 gvanrossum Exp $
+$Id: exceptionformatter.py,v 1.5 2003/04/21 20:06:13 gvanrossum Exp $
 """
 import sys
 import cgi
@@ -99,7 +99,7 @@ class TextExceptionFormatter:
             try:
                 extra = getInfo()
                 if extra:
-                    result.append(extra)
+                    result.append(self.escape(extra))
             except:
                 if DEBUG_EXCEPTION_FORMATTER:
                     import traceback
