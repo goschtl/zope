@@ -78,7 +78,7 @@ There are several major concepts/terms that need to be understood
 
 - Registerables
 
-  Registerables are objects that can be registered.  The implement the
+  Registerables are objects that can be registered.  They implement the
   ``IRegisterable'' interface.
 
 - Registries
