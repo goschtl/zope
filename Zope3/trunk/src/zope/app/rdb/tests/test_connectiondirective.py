@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_connectiondirective.py,v 1.2 2003/07/07 18:06:08 sidnei Exp $
+$Id: test_connectiondirective.py,v 1.3 2003/07/28 22:20:09 jim Exp $
 """
 
 import unittest
@@ -40,7 +40,6 @@ class TestConnectionDirective(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         newSecurityManager(system_user)
-        XMLConfig('metameta.zcml', zope.configuration)()
         XMLConfig('meta.zcml', zope.app.component)()
         XMLConfig('meta.zcml', zope.app.rdb)()
         XMLConfig('service.zcml', zope.app.rdb)()

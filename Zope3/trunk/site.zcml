@@ -2,7 +2,6 @@
                xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-<include package="zope.configuration" file="metameta.zcml" />
 <include package="zope.app" />
 
 <role id="Manager" title="Site Manager" />

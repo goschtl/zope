@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.3 2003/06/06 20:44:31 stevea Exp $
+$Id: test_directives.py,v 1.4 2003/07/28 22:20:04 jim Exp $
 """
 
 import unittest
@@ -60,7 +60,6 @@ class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         import zope.configuration
         PlacelessSetup.setUp(self)
-        XMLConfig('metameta.zcml', zope.configuration)()
         XMLConfig('meta.zcml', zope.app.pagetemplate)()
 
     def testTalesAPI1(self):

@@ -39,17 +39,18 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        XMLConfig('metameta.zcml', zope.configuration)()
         XMLConfig('meta.zcml', zope.app.workflow)()
 
     def testImportHandler(self):
 
         xmlconfig(StringIO(template % (
             """
-            <test:importHandler
-             interface="zope.app.workflow.tests.directive_helpers.ITestProcessDefinitionA"
-             factory="zope.app.workflow.tests.directive_helpers.TestImportHandlerA"
-            />
+            <configure package="zope.app.workflow.tests.directive_helpers">
+              <test:importHandler
+                 interface=".ITestProcessDefinitionA"
+                 factory=".TestImportHandlerA"
+                 />
+            </configure>
             """
             )))
 
@@ -60,10 +61,12 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         xmlconfig(StringIO(template % (
             """
-            <test:exportHandler
-             interface="zope.app.workflow.tests.directive_helpers.ITestProcessDefinitionA"
-             factory="zope.app.workflow.tests.directive_helpers.TestExportHandlerA"
-            />
+            <configure package="zope.app.workflow.tests.directive_helpers">
+              <test:exportHandler
+                  interface=".ITestProcessDefinitionA"
+                  factory=".TestExportHandlerA"
+                  />
+            </configure>
             """
             )))
 
