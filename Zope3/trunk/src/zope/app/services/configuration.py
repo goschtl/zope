@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.22 2003/04/28 15:21:08 gvanrossum Exp $
+$Id: configuration.py,v 1.23 2003/04/28 17:08:39 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -637,7 +637,7 @@ class ConfigurationManagerContainer(object):
 
     def __init__(self):
         super(ConfigurationManagerContainer, self).__init__()
-        self.setObject('ConfigurationManager', ConfigurationManager())
+        self.setObject('RegistrationManager', ConfigurationManager())
 
     def __delitem__(self, name):
         """Delete an item, but not if it's the last configuration manager

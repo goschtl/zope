@@ -56,7 +56,7 @@
 <page
    name="index.html" 
    for="zope.app.interfaces.services.configuration.IConfigurationManager"
-   menu="zmi_views" title="Configuration"
+   menu="zmi_views" title="Registration"
    permission="zope.ManageServices"
    class=".EditConfiguration"
    template="editconfiguration.pt" 
