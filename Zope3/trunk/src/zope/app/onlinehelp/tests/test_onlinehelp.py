@@ -18,7 +18,7 @@ $Id$
 import os
 import unittest
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.tests import ztapi
 from zope.app.tests import placelesssetup
@@ -29,6 +29,9 @@ from zope.app.location.traversing import LocationPhysicallyLocatable
 
 class I1(Interface):
     pass
+
+class Dummy1:
+    implements(I1)
 
 def testdir():
     import zope.app.onlinehelp.tests
@@ -44,7 +47,8 @@ def setUp():
 
 def test_suite():
       return unittest.TestSuite((
-          DocTestSuite('zope.app.onlinehelp', setUp=setUp),
+          DocTestSuite('zope.app.onlinehelp.onlinehelptopic', setUp=setUp),
+          DocTestSuite('zope.app.onlinehelp.onlinehelp', setUp=setUp),
           ))
   
 if __name__ == '__main__':

@@ -11,6 +11,7 @@
       title = "Help"
       for = ".test_helpdirectives.I1"
       view = "view.html"
-      doc_path = "help.txt" />
+      doc_path = "help.txt" 
+      resources = "test1.png"/>
 
 </configure>

@@ -17,7 +17,6 @@ $Id$
 """
 import os
 import unittest
-import re
 
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.file import File

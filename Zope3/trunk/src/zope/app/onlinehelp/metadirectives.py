@@ -15,9 +15,9 @@
 
 $Id$
 """
-from zope.configuration.fields import GlobalObject, Path, MessageID
+from zope.configuration.fields import GlobalObject, Path, MessageID, Tokens
 from zope.interface import Interface
-from zope.schema import BytesLine
+from zope.schema import BytesLine, TextLine
 
 class IRegisterDirective(Interface):
     """Register directive for onlien help topics."""
@@ -54,3 +54,14 @@ class IRegisterDirective(Interface):
         title=u"Path to File",
         description=u"Path to the file that contains the Help Topic content.",
         required=True)
+
+    resources = Tokens(
+        title=u"A list of resources.",
+        description=u"""
+        A list of resources which shall be user for the Help Topic.
+        The resources must be located in the same directory as
+        the Help Topic definition.
+        """,
+        value_type=TextLine(),
+        required=False
+        )

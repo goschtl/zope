@@ -16,11 +16,12 @@
 $Id$
 """
 from zope.proxy import removeAllProxies
-from zope.interface import providedBy
-from zope.app.publisher.interfaces.browser import IBrowserView
+
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.onlinehelp.interfaces import IOnlineHelpTopic
+from zope.app.publisher.interfaces.browser import IBrowserView
+
+from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, IOnlineHelp
 
 class TopicTreeView(object):
 
@@ -35,23 +36,24 @@ class TopicTreeView(object):
         # set up the root values
         if self.base_url == '':
             self.base_url = '/++help++'
-        self.treecontext = zapi.getService("OnlineHelp")
+        self.treecontext = zapi.getUtility(IOnlineHelp,"OnlineHelp")
         return self.subtopics()
 
     def listHelpItems(self):
         """ recurse through the help topic tree"""
         children=[]
         for name, helpitem in self.treecontext.items():
-            info={}
-            info['title'] = helpitem.title
-            info['path'] = self.base_url+'/'+name
-            topic = TopicTreeView(
-                helpitem,
-                self.request,
-                self.base_url+'/'+name)
-
-            info['topics']=topic.subtopics()
-            children.append(info)
+            if IOnlineHelpTopic.providedBy(helpitem):
+                info={}
+                info['title'] = helpitem.title
+                info['path'] = self.base_url+'/'+name
+                topic = TopicTreeView(
+                    helpitem,
+                    self.request,
+                    self.base_url+'/'+name)
+                
+                info['topics']=topic.subtopics()
+                children.append(info)
 
         return children
 
@@ -111,44 +113,22 @@ class ContextHelpView(TopicTreeView):
         if self.topic is not None:
             return self.topic
 
-        onlinehelp = zapi.getService("OnlineHelp")
+        onlinehelp = removeAllProxies(self.context)
         help_context = onlinehelp.context
         self.topic = self.context
         if IBrowserView.providedBy(help_context):
             # called from a view
-            for iface in providedBy(zapi.getParent(help_context)):
-                # try for interface and view match
-                topics = onlinehelp.getTopicsForInterfaceAndView(
-                    iface,
-                    zapi.getName(help_context)
-                    )
-                if len(topics)>0:
-                    self.topic = topics[0]
-                    break
+            self.topic = onlinehelp.getTopicForObjectAndView(
+                zapi.getParent(help_context),
+                zapi.getName(help_context)
+                )
             if self.topic == self.context:
                 # nothing found for view try iface only
-                for iface in providedBy(zapi.getParent(help_context)):
-                    topics = onlinehelp.getTopicsForInterfaceAndView(
-                        iface,
-                        None
-                        )
-                    if len(topics)>0:
-                        self.topic = topics[0]
-                        break
+                self.topic = onlinehelp.getTopicForObjectAndView(
+                    zapi.getParent(help_context)
+                    )
         else:
             # called without view
-            for iface in providedBy(help_context):
-                topics = onlinehelp.getTopicsForInterfaceAndView(
-                    iface,
-                    None
-                    )
-                if len(topics)>0:
-                    self.topic = topics[0]
-                    break
+            self.topic = onlinehelp.getTopicForObjectAndView(help_context)
 
-        # XXX returns only the first of the matching topics.
-        #     The page template only processes one topic
         return self.topic
-
-
-

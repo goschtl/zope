@@ -20,6 +20,7 @@ $Id$
 from zope.schema import TextLine, SourceText, Choice
 from zope.app.container.interfaces import IContainer
 from zope.i18n import MessageIDFactory
+from zope.app.file.interfaces import IFile, IFileContent
 
 _ = MessageIDFactory('messageboard')
 
@@ -48,7 +49,8 @@ class IOnlineHelpTopic(IContainer):
         title=_(u"Source Text"),
         description=_(u"Renderable source text of the topic."),
         default=u"",
-        required=True)
+        required=True,
+        readonly=True)
 
     path = TextLine(
         title = _(u"Path to the Topic"),
@@ -63,13 +65,21 @@ class IOnlineHelpTopic(IContainer):
         required = True,
         vocabulary = "SourceTypes")
 
+    def addResources(resources):
+        """ Add resources to this Help Topic.
+        The resources must be located in the same directory
+        as the Help Topic itself."""
 
 class IOnlineHelp(IOnlineHelpTopic):
     """This service manages all the HelpTopics."""
 
-    def getTopicsForInterfaceAndView(interface=None, view=None):
+    def getTopicsForInterfaceAndView(interface, view=None):
         """Returns a list of Topics that were registered to be
         applicable to a particular view of an interface."""
+
+    def getTopicForObjectAndView(obj, view=None):
+        """Returns the first matching help topic for
+        the interfaces provided by obj."""
 
     def registerHelpTopic(parent_path, id, title, doc_path,  
                           interface=None, view=None):
@@ -94,3 +104,13 @@ class IOnlineHelp(IOnlineHelpTopic):
            this topic is registered. Note that this attribute is also
            optional.
         """
+
+class IOnlineHelpResource(IFile, IFileContent):
+    """A resource, which can be used in a help topic """
+
+    path = TextLine(
+        title = _(u"Path to the Resource"),
+        description = _(u"The Path to the Resource, assumed to be "
+                        "in the same directory as the Help Topic"),
+        default = u"",
+        required = True)
