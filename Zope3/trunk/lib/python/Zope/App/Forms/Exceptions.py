@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: Exceptions.py,v 1.4 2002/11/11 20:26:26 jim Exp $
+$Id: Exceptions.py,v 1.5 2002/11/30 18:32:58 jim Exp $
 """
 
 
@@ -58,7 +58,10 @@ class ErrorContainer(Exception):
         return self.args[i]
 
     def __str__(self):
-        return "\n".join(map(str, self.args))
+        return "\n".join(
+            ["%s: %s" % (error.__class__.__name__, error)
+             for error in self.args]
+            )
 
     __repr__ = __str__
 
