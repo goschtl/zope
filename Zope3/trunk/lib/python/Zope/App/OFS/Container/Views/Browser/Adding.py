@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.8 2002/10/04 19:48:30 jim Exp $
+$Id: Adding.py,v 1.9 2002/10/26 15:51:19 stevea Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -49,7 +49,7 @@ class Adding(BrowserView):
         return content
     
     # See Zope.App.OFS.Container.Views.Browser.IAdding.IAdding
-    contentName=None # usually set by Adding traverser
+    contentName = None # usually set by Adding traverser
 
     def nextURL(self):
         'See Zope.App.OFS.Container.IAdding.IAdding'
@@ -73,7 +73,7 @@ class Adding(BrowserView):
 
     def publishTraverse(self, request, name):
         if '=' in name:            
-            view_name, content_name =name.split("=",1)
+            view_name, content_name = name.split("=", 1)
             if content_name:
                 self.contentName = content_name
 
