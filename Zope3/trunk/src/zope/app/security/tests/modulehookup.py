@@ -20,10 +20,7 @@ modules, themselves."""
 
 from zope.interface import Interface
 
-PREFIX = "zope.app.security.tests.module."
-import zope.app.security.tests.module
 from zope.app.security.tests import module as TestModule
-TestModule.test_class = None
 
 class I(Interface):
     def m1():
@@ -31,15 +28,3 @@ class I(Interface):
     def m2():
         pass
 
-class I2(I):
-    def m4():
-        pass
-
-
-TestModule.I = I
-TestModule.I2 = I2
-
-template_bracket = """<zopeConfigure
-   xmlns="http://namespaces.zope.org/zope" >
-   %s
-</zopeConfigure>"""
