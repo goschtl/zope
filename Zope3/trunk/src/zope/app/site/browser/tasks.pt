@@ -2,51 +2,96 @@
 <body>
 <div metal:fill-slot="body">
 
-  <h2 i18n:translate="">
+  <h2 i18n:translate="heading-common-site-management-tasks">
     Common Site Management Tasks
   </h2>
 
-      <p i18n:translate="">
-         The site management interface allows you to do stuff.
-         Some of this stuff is good.
-      </p>
+  <p i18n:translate="">
+    The site management interface allows you to setup and configure
+    software for this site.
+  </p>
 
   <dl>
+    <dt><tal:text i18n:translate="label-tools">Tools</tal:text>:</dt>
+    <dd>
 
-    <dt i18n:translate=""> Tools: </dt>
-    <dd i18n:translate="">
- 	    Tools consist of
-        <span title="Services register themselves with the ServiceService">Services</span>
- and <span title="Utilities register themselves with the UtilityService">Utilities</span>. These perform tasks like
-        error logging, translation, authentication and so on.
-        Your site may provide
-        <a href="default/AddService" i18n:translate="">new services</a> or
-        <a href="default/AddUtility" i18n:translate="">new utilities</a>
-        (which may override existing tools). You may also configure the
-        <a href="@@services.html" i18n:translate="">services</a> and
-        <a href="default/Utilities/@@utilities.html"
-          i18n:translate="">utilities</a> already present in this site.
+      <tal:text i18n:translate="">
+        Tools consist of Services and Utilities. Services register
+        themselves with the Service Service while utilities register
+        themselves with the Utility Service. They perform tasks like
+        error logging, translation, authentication and so on. You may
+        configure the services and utilities already present in this
+        site or provide new serivces and utilities (which may override
+        existing tools).
+      </tal:text>
+
+      <ul>
+        <li>
+          <a href="@@services.html" i18n:translate="label-configure-services">
+            Configure services
+          </a>
+        </li>
+
+        <li>
+          <a href="default/Utilities/@@utilities.html"
+             i18n:translate="label-configure-services">
+            Configure utilities
+          </a>
+        </li>
+
+        <li>
+          <a href="default/AddService" i18n:translate="label-add-service">
+            Add a service
+          </a>
+        </li>
+
+        <li>
+          <a href="default/AddUtility" i18n:translate="label-add-utility">
+            Add a utility
+          </a>
+        </li>
+      </ul>
     </dd>
-    <dt i18n:translate=""> Software: </dt>
-    <dd i18n:translate="">
-       The site may <a href="@@contents.html" i18n:translate="">customise
-        the behaviour of existing software</a>, or define its own.
-        The first step in creating a new software package is to
-        <a href="@@+">create a new Site Management Folder</a> to 
-        contain the software.
-        If you've already added your own software, you may 
-        <a href="@@contents.html" i18n:translate="">edit it</a>.
-   </dd>
+
+    <dt><tal:text i18n:translate="label-software">Software</tal:text>:</dt>
+
+    <dd>
+      <tal:text i18n:translate="">
+        The site may customize the behavior of existing software or
+        define its own. The first step in creating a new software
+        package is to create a new Site Management Folder to contain
+        the software.
+      </tal:text>
+
+      <ul>
+        <li>
+          <a href="@@contents.html"
+             i18n:translate="label-customize-existing-software">
+            Customize the behavior of existing software
+          </a>
+        </li>
+
+        <li>
+          <a href="@@+" i18n:translate="label-create-new-site-management-folder">
+            Create a new Site Management Folder
+          </a>
+        </li>
+      </ul>
+    </dd>
 
     <!-- When software bundles are more than a wiki page, revisit this.
-     <dt i18n:translate=""> Software Bundles: </dt><dd i18n:translate="">
-        Installing,
-        Removing
+     <dt>
+       <tal:text i18n:translate="label-software-bundles">
+         Software Bundles
+       </tal:text>:
+     </dt>
+     <dd i18n:translate="">
+      Installing,
+      Removing,
+      etc.
      </dd>
     -->
 
-
-    
 </div>
 </body>
 </html>
