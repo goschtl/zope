@@ -85,6 +85,9 @@ class Application:
 
         self.ip = include.InclusionProcessor(
             self.source, os.path.join(self.destination, pkgname))
+        # XXX Ouch!  Need a better way to deal with this.  The
+        # InclusionProcessor API doesn't smell right.
+        self.ip.manifest_prefix = os.path.join(self.destination, "")
         try:
             self.ip.createDistributionTree()
         except cvsloader.CvsLoadingError, e:
@@ -112,6 +115,15 @@ class Application:
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
+        deps_file = os.path.join(self.source, "DEPENDENCIES.txt")
+        if os.path.isfile(deps_file):
+            for dep in dependencies.load(open(deps_file)):
+                if dep in self.locations:
+                    # we can get this
+                    pass
+                else:
+                    # external dependency
+                    pass
 
     def loadMetadata(self):
         metadata_file = os.path.join(self.source, "PUBLICATION.txt")
@@ -150,10 +162,8 @@ class Application:
         if not os.path.exists(zpkgtools_dest):
             self.ip.copyTree(zpkgtools.__path__[0], zpkgtools_dest)
             tests_dir = os.path.join(zpkgtools_dest, "tests")
-            # but we don't need the tests if this was only added to
-            # support the setup.py script:
-            if os.path.isdir(tests_dir):
-                shutil.rmtree(tests_dir)
+            # XXX We could toss the tests, but that would screw up the
+            # manifest, so we'll leave them in for now.
         # now we need to find setuptools:
         setuptools_dest = os.path.join(self.destination, "setuptools")
         if os.path.exists(setuptools_dest):
@@ -175,10 +185,17 @@ class Application:
             source = os.path.abspath(setuptools.__path__[0])
         self.ip.copyTree(source, setuptools_dest)
         tests_dir = os.path.join(setuptools_dest, "tests")
-        # but we don't need the tests if this was only added to
-        # support the setup.py script:
-        if os.path.isdir(tests_dir):
-            shutil.rmtree(tests_dir)
+        # XXX We could toss the tests, but that would screw up the
+        # manifest, so we'll leave them in for now.
+
+    def createManifest(self):
+        if self.ip is None:
+            return
+        manifest_path = os.path.join(self.destination, "MANIFEST")
+        f = file(manifest_path, "w")
+        for name in self.ip.manifest:
+            print >>f, name
+        f.close()
 
     def createTarball(self):
         pwd = os.getcwd()
@@ -210,6 +227,7 @@ class Application:
             except cvsloader.CvsLoadingError, e:
                 print >>sys.stderr, e
                 sys.exit(e.exitcode)
+            self.createManifest()
             self.createTarball()
             self.cleanup()
         except:

@@ -142,6 +142,8 @@ class InclusionProcessor:
                                  % source)
         self.source = os.path.abspath(source)
         self.destination = os.path.abspath(destination)
+        self.manifest = []
+        self.manifest_prefix = os.path.join(self.destination, "")
         prefix = os.path.commonprefix([self.source, self.destination])
         if prefix == self.source:
             raise InclusionError("destination directory may not be"
@@ -217,7 +219,13 @@ class InclusionProcessor:
 
     def add_output(self, path):
         # we're going to build the manifest here
-        pass
+        assert path.startswith(self.manifest_prefix)
+        relpath = path[len(self.manifest_prefix):]
+        parts = relpath.split(os.sep)
+        if len(parts) == 1:
+            self.manifest.append(parts[0])
+        else:
+            self.manifest.append(posixpath.join(*parts))
 
     def addSingleInclude(self, relpath, source):
         dirname, basename = os.path.split(relpath)
