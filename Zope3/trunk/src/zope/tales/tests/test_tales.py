@@ -15,7 +15,7 @@ import os
 import sys
 import unittest
 
-from zope.pagetemplate import tales
+from zope.tales import tales
 
 
 class TALESTests(unittest.TestCase):

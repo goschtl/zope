@@ -13,16 +13,18 @@
 ##############################################################################
 """Basic Page Template expression types.
 
-$Id: expressions.py,v 1.3 2003/02/11 16:33:04 jeremy Exp $
+$Id: expressions.py,v 1.1 2003/04/14 12:15:51 matth Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 import re, sys
 from types import StringTypes
 
-from zope.pagetemplate.tales import ExpressionEngine, CompilerError, \
-     RegistrationError, _valid_name, _parse_expr, NAME_RE, Undefined 
-from zope.pagetemplate.pythonexpr import PythonExpr
+from zope.tales.tales import ExpressionEngine
+from zope.tales.tales import CompilerError
+from zope.tales.tales import RegistrationError
+from zope.tales.tales import _valid_name, _parse_expr, NAME_RE, Undefined 
+from zope.tales.pythonexpr import PythonExpr
 
 Undefs = (Undefined, AttributeError, KeyError, TypeError, IndexError)
 

@@ -15,17 +15,20 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.9 2003/04/03 19:55:20 fdrake Exp $
+$Id: engine.py,v 1.10 2003/04/14 12:15:50 matth Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 import sys
 
-from zope.pagetemplate.expressions \
-     import PathExpr, StringExpr, NotExpr, DeferExpr
-from zope.pagetemplate.pythonexpr import PythonExpr
-from zope.pagetemplate.tales \
-     import ExpressionEngine, RegistrationError, Context
+from zope.tales.expressions import PathExpr
+from zope.tales.expressions import StringExpr
+from zope.tales.expressions import NotExpr
+from zope.tales.expressions import DeferExpr
+from zope.tales.pythonexpr import PythonExpr
+from zope.tales.tales import ExpressionEngine
+from zope.tales.tales import RegistrationError
+from zope.tales.tales import Context
 
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.traversing.adapters import Traverser

@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic Python Expression Handler"""
 
-__version__ = '$Revision: 1.2 $'[11:-2]
+__version__ = '$Revision: 1.1 $'[11:-2]
 
 class PythonExpr:
     def __init__(self, name, expr, engine):

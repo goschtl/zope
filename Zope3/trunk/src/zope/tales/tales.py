@@ -17,7 +17,7 @@ An implementation of a generic TALES engine
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-__version__ = '$Revision: 1.2 $'[11:-2]
+__version__ = '$Revision: 1.1 $'[11:-2]
 
 import re
 import sys
