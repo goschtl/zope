@@ -13,7 +13,7 @@
 ##############################################################################
 """Service for storing IAnnotations for principals.
 
-$Id: principalannotation.py,v 1.6 2004/02/24 14:24:12 srichter Exp $
+$Id: interfaces.py,v 1.1 2004/03/13 18:44:48 srichter Exp $
 """
 from zope.interface import Interface
 

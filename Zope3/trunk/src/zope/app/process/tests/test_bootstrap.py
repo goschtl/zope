@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.16 2004/03/13 15:21:28 srichter Exp $
+$Id: test_bootstrap.py,v 1.17 2004/03/13 18:44:50 srichter Exp $
 """
 import unittest
 from transaction import get_transaction
@@ -23,8 +23,7 @@ from zope.exceptions import NotFoundError
 from zope.app.folder import rootFolder
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.errorservice.interfaces import IErrorReportingService
-from zope.app.interfaces.services.principalannotation \
-     import IPrincipalAnnotationService
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
 from zope.app.event.interfaces import IEventService
 from zope.app.hub.interfaces import IObjectHub
 from zope.app.publication.zopepublication import ZopePublication

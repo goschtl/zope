@@ -22,12 +22,4 @@
       permission="zope.ManageServices"
       />
 
-<!-- Principal annotations (user data) service -->
-
-  <addMenuItem
-     class="zope.app.services.principalannotation.PrincipalAnnotationService"
-     permission="zope.ManageServices"
-     title="Principal Annotation Service"
-     description="Stores Annotations for Principals" />
-
 </zope:configure>

@@ -32,7 +32,6 @@
   <include package="zope.app.size" />
   <include package="zope.app.location" />
   <include package="zope.app.container" />
-  <include package="zope.app.services" />
 
   <include package="zope.app.publisher" />
   <include package="zope.app.traversing" />
@@ -71,6 +70,7 @@
   <include package="zope.app.pluggableauth" />  
   <include package="zope.app.site" />  
   <include package="zope.app.utility" />  
+  <include package="zope.app.principalannotation" />  
 
   <!-- Utilities -->
   <include package="zope.app.session" />

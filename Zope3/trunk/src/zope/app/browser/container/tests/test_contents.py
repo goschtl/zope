@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.35 2004/03/13 15:21:08 srichter Exp $
+$Id: test_contents.py,v 1.36 2004/03/13 18:44:47 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -32,9 +32,8 @@ from zope.interface import Interface, implements
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
 from zope.component import getServiceManager
-from zope.app.services.principalannotation import PrincipalAnnotationService
-from zope.app.interfaces.services.principalannotation \
-    import IPrincipalAnnotationService
+from zope.app.principalannotation import PrincipalAnnotationService
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.container.contained import contained
 

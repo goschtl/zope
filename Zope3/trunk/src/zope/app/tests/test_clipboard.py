@@ -13,15 +13,14 @@
 ##############################################################################
 """Clipboard tests
 
-$Id: test_clipboard.py,v 1.11 2004/03/10 17:56:41 srichter Exp $
+$Id: test_clipboard.py,v 1.12 2004/03/13 18:44:53 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.services.principalannotation import PrincipalAnnotationService
-from zope.app.interfaces.services.principalannotation \
-    import IPrincipalAnnotationService
+from zope.app.principalannotation import PrincipalAnnotationService
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
 from zope.app.interfaces.annotation import IAnnotations
 
 from zope.app.copypastemove.interfaces import IPrincipalClipboard

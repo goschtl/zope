@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of IPrincipalAnnotationService.
 
-$Id: principalannotation.py,v 1.15 2004/03/13 15:21:34 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/13 18:44:48 srichter Exp $
 """
 
 # TODO: register service as adapter for IAnnotations on service activation
@@ -29,8 +29,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.interface import implements
 
 # Sibling imports
-from zope.app.interfaces.services.principalannotation \
-     import IPrincipalAnnotationService
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
 from zope.app.site.interfaces import ISimpleService
 from zope.app.container.contained import Contained
 from zope.app.location import Location
