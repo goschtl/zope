@@ -13,14 +13,14 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.10 2004/03/02 17:51:52 philikon Exp $
+$Id: container.py,v 1.11 2004/03/02 18:49:46 philikon Exp $
 """
 from zope.interface import Interface, Attribute, implements, Invalid
 from zope.component.interfaces import IView
 from zope.interface.common.mapping import IItemMapping
 from zope.interface.common.mapping import IReadMapping, IEnumerableMapping
 from zope.app.location.interfaces import ILocation
-from zope.app.interfaces.event import IObjectEvent
+from zope.app.event.interfaces import IObjectEvent
 
 class DuplicateIDError(KeyError):
     pass
@@ -262,11 +262,3 @@ class IRemoveNotifiable(Interface):
 
     def removeNotify(object, container):
         """Hook method will call before object is removed from container."""
-
-##############################################################################
-# Backward compatability
-from zope.app.interfaces import event
-event.IObjectMovedEvent = IObjectMovedEvent
-event.IObjectAddedEvent = IObjectAddedEvent
-event.IObjectRemovedEvent = IObjectRemovedEvent
-
