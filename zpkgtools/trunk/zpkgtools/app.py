@@ -42,6 +42,7 @@ class Application:
         tempfile.tempdir = self.tmpdir
         self.loader = cvsloader.CvsLoader()
         cf = config.Configuration()
+        cf.location_maps.extend(options.location_maps)
         path = options.configfile
         if path is None:
             path = config.defaultConfigurationPath()
@@ -50,8 +51,6 @@ class Application:
         elif path:
             cf.loadPath(path)
 
-        if options.location_maps:
-            cf.location_maps[:0] = options.location_maps
         cf.finalize()
         self.locations = cf.locations
         if options.include_support_code is None:
@@ -242,10 +241,7 @@ import zpkgtools.setup
 """
 
 
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv
-    program = os.path.basename(argv[0])
+def parse_args(args):
     parser = optparse.OptionParser(
         usage="usage: %prog [options] resource",
         version="%prog 0.1")
@@ -258,7 +254,7 @@ def main(argv=None):
         help="don't read a configuration file")
     parser.add_option(
         "-m", "--resource-map", dest="location_maps",
-        action="append",
+        action="append", default=[],
         help=("specify an additional location map to load before"
               " maps specified in the configuration"), metavar="MAP")
     parser.add_option(
@@ -278,13 +274,20 @@ def main(argv=None):
         "-v", dest="version",
         help="version label for the new distribution",
         default="0.0.0")
-    options, args = parser.parse_args(argv[1:])
+    return parser.parse_args(args)
+
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    options, args = parse_args(argv[1:])
 
     # figure out what to read from:
     if len(args) != 1:
         print >>sys.stderr, "wrong number of arguments"
         return 2
     resource = args[0]
+    program = os.path.basename(argv[0])
 
     try:
         app = Application(options, resource, program)
