@@ -99,6 +99,19 @@ PLATFORM NOTES
 TO DO
 -----
 
+- Visible command line tool ("zsync"?) with better documentation
+
+- Explicit import/export facilities, similar to the functionality
+  found in Zope 2
+
+  * Should produce a single file (.zip or .tgz maybe)
+
+- Improve some common data file formats (for example, simplify the
+  Entries.xml file, possibly using ZConfig instead of XML).
+
+- More adapters.  Should make sure that an XML Pickle will always work
+  as a serialization, even if an adapter gets added.
+
 - Implement bundle commands.
 
   * Need a way to turn site-management folders into bundles, and
@@ -107,7 +120,18 @@ TO DO
 
   * Once something is "marked" as a bundle, it should be read-only.
 
-- In the sync application:
+- Work out security details (before beta).
+
+  * A commit unpickles user-provided data.  Unpickling is not a safe
+    operation.  Possible solution: have an unpickler that finds globals
+    in a secure way.  Use an import on a security proxy for sys.modules.
+
+  * The adapters returned by the fs registry should optionally have a
+    permission associated with them.  If you have an adapter that
+    calls removeAllProxies or trustedRemoveSecurityProxy, the adapter
+    should require a permission.
+
+- In the sync application (nice-to-haves):
 
   * Implement diff using difflib.  (is this really needed?)
 
@@ -126,44 +150,24 @@ TO DO
 
 - Code maintenance:
 
-  * Rewrite toFS() to use the Metadata class, and add unit tests.
-
   * Unit tests for the fssync utility.
+
+  * Rewrite toFS() to use the Metadata class, and add unit tests.
 
   * More refactoring and cleanup of the fssync utility.
 
   * Use camelCase for public method names.
 
-
-TO DO LATER
------------
-
-* Work out security details.
-
-  * A commit unpickles user-provided data.  Unpickling is not a safe
-    operation.  Possible solution: have an unpickler that finds globals
-    in a secure way.  Use an import on a security proxy for sys.modules.
-
-  * The adapters returned by the fs registry should optionally have
-    a permission associated with them.  If you have an adapter that
-    calls removeAllProxies, the adapter should require a permission.
-
-* Refine the fssync adapter protocol or implementation to leverage the
+- Refine the fssync adapter protocol or implementation to leverage the
   file-system representation (== FTP, WebDAV) protocol.
 
-* In common case where extra data are simple values, store extra data
+  * look in: zope.app.interface.file
+
+- In common case where extra data are simple values, store extra data
   in the entries file to simplify representation and updates.  Maybe
-  do something similar w annotations.
+  do something similar w/ annotations.
 
-* Maybe leverage adaptable storage (APE) ideas to assure losslessness.
-
-* Export and import as a special case.
-
-* Improve some common data file formats (e.g. simplify entries file).
-
-* Commit to multiple Zope instances?
-
-* Diff/merge multiple working sets (a la bitkeeper)?
+- Maybe leverage adaptable storage (APE) ideas to assure losslessness.
 
 
 Working with bundles
