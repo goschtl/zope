@@ -11,5 +11,6 @@
   <include files="package-includes/*-configure.zcml" />
 
   <five:loadProducts />
+  <five:loadProductsOverrides />
 
 </configure>

@@ -8,5 +8,6 @@
   <redefinePermission from="zope2.Public" to="zope.Public" />
 
   <five:loadProducts />
+  <five:loadProductsOverrides />
 
 </configure>
