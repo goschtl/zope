@@ -1,5 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
-	   i18n_domain="Five">
+           i18n_domain="Five">
 
   <!-- Give common Zope2 and CMF permissions a permission ID
        The title of the permission is what Zope 2 knows it under -->
@@ -77,7 +77,7 @@
   <permission
     id="zope2.View"
     title="View"
-    />			
+    />
 
   <permission
     id="zope2.ViewHistory"
@@ -93,7 +93,7 @@
     id="zope2.WebDAVLock"
     title="WebDAV Lock items"
     />
-		
+
   <permission
     id="zope2.WebDAVUnlock"
     title="WebDAV Unlock items"
