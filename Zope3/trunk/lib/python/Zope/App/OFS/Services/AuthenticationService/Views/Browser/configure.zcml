@@ -10,14 +10,14 @@
 
   <browser:defaultView 
      for=".AuthenticationService.ILocalAuthenticationService"
-     name="index.html" />
+     name="contents.html" />
 
   <browser:view 
      permission="Zope.ManageServices" 
      for=".AuthenticationService.ILocalAuthenticationService"
      factory="Zope.App.OFS.Container.Views.Browser.Contents.">
 
-     <browser:page name="index.html" attribute="index" />
+     <browser:page name="contents.html" attribute="contents" />
 
   </browser:view>
 
