@@ -13,7 +13,7 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.9 2004/04/23 11:38:57 jim Exp $
+$Id: ztapi.py,v 1.10 2004/04/23 19:39:31 jim Exp $
 """
 from zope.app import zapi
 import zope.interface
@@ -77,6 +77,10 @@ def subscribe(required, provided, factory):
 def provideUtility(provided, component, name=''):
     s = zapi.getService(None, Utilities)
     s.provideUtility(provided, component, name)
+    
+def unprovideUtility(provided, name=''):
+    s = zapi.getService(None, Utilities)
+    s.register((), provided, name, None)
 
 def provideNamespaceHandler(name, handler):
     provideAdapter(None, ITraversable, handler, name=name)
