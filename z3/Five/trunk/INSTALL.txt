@@ -33,7 +33,9 @@ Installing Five is relatively straightforward.
   Zope X3.0 and typing ``make`` to produce it in-place.
 
 * You need to make your Zope 2.7 instance aware of Zope 3 so it can
-  import packages from it. To do this, go to the etc/zope.conf of your
+  import the ``zope``, ``persistent`` and ``transaction`` packages from it.
+
+  In non-ZEO setups, you can simply go to the ``etc/zope.conf`` of your
   Zope 2.7 instance and add a ``path`` entry. If you used the released
   version of Zope X3.0.0, use something like the following::
 
@@ -42,6 +44,12 @@ Installing Five is relatively straightforward.
   If you are instead using the subversion version, use::
 
     path /path/to/Zope3/src
+
+  However, in ZEO setups Zope 3's ZEO packages will then interfere with
+  Zope 2's. In this case you can create a new directory, symlink the
+  ``zope``, ``persistent`` and ``transaction`` packages in it and use this
+  directory for the ``path`` entry in the ``etc/zope.conf`` of your Zope
+  2.7 instance.
 
 * Next, install the Five product into your Zope 2.7 instance as a
   product and restart Zope. Five should now be installed.
