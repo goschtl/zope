@@ -16,6 +16,7 @@
 This handles tag insertion and URL type dispatch.
 """
 
+import errno
 import os
 import posixpath
 import shutil
@@ -29,6 +30,24 @@ from zpkgtools import svnloader
 
 
 def open(url, mode="r"):
+    """Return a file-like object representing the resource at `url`.
+
+    :return: A `FileProxy` instance representing the resource.
+
+    :param url: The URL for the resource.
+
+    :param mode: The mode in which the resource should be opened; the
+      mode must indicate read-only access.
+
+    :raises ValueError: If `mode` indicates anything other than
+      read-only.
+
+    :raises IOError: If `url` refers to a directory resource.  The
+      ``errno`` member will be `errno.EISDIR`, and the ``filename``
+      field will be `url`.
+
+    The resource must be a file; it cannot be a directory.
+    """
     if mode[:1] != "r" or "+" in mode:
         raise ValueError("external resources must be opened in read-only mode")
     loader = Loader()
@@ -42,18 +61,41 @@ def open(url, mode="r"):
 
 
 class Loader:
+    """General-purpose resource loader.
+
+
+    """
 
     def __init__(self, tag=None):
+        """Initialize the loader.
+
+        :param tag: The revision tag that should be used for resources
+          under revision control.
+        """
         self.tag = tag or None
         self.workdirs = {}  # URL -> (tmp.directory, path, istemporary)
         self.cvsloader = None
         self.svnloader = None
 
     def add_working_dir(self, url, directory, path, istemporary):
+        """Add a cache entry for `url`.
+
+        :param directory: A directory which serves as a container for
+          the resource.  If the copy is temporary, this is the
+          directory which should be deleted.
+
+        :param path: The path of the copy of the resource.  If
+          `directory` is not ``None``, this path will be inside the
+          hierarchy rooted at `directory`.
+
+        :param istemporary: Boolean flag indicating whether this entry
+          references a temporary copy (which is therefore mutable) or
+          a non-temporary copy.
+        """
         self.workdirs[url] = (directory, path, istemporary)
 
     def cleanup(self):
-        """Remove all checkouts that are present."""
+        """Remove all temporary copies created by the loader."""
         while self.workdirs:
             url, (directory, path, istemporary) = self.workdirs.popitem()
             if istemporary:
@@ -65,7 +107,9 @@ class Loader:
     def transform_url(self, url):
         """Transform a URL to encode the tag passed to the constructor.
 
-        :param url:  URL that may not be associated with a particular tag.
+        :param url:  URL that might not be associated with a particular tag.
+
+        :return: The transformed URL.
 
         If `url` can be modified to encode the tag associated with the
         loader, a modified URL that does so is returned.  If not, the
@@ -83,6 +127,15 @@ class Loader:
         return url
 
     def load(self, url):
+        """Load the resource referenced by `url`.
+
+        :param url: URL of the resource to load.
+
+        :return: A local filesystem path containing the resource.
+
+        If the resource has already been loaded, that copy will be
+        used again.
+        """
         url = self.transform_url(url)
         if url in self.workdirs:
             return self.workdirs[url][1]
@@ -103,6 +156,11 @@ class Loader:
         """Load the resource referenced by `url` so the application
         can modify it.
 
+        :param url: URL of the resource to load.
+
+        :return: A local filesystem path containing a mutable copy of
+          the resource.
+
         If the copy provided by the `load()` method isn't 'owned' by
         the application (because it's a temporary copy), a copy will
         be made and used instead.
@@ -121,6 +179,14 @@ class Loader:
 
     def create_copy(self, url, path):
         """Create a copy of the tree rooted at `path`.
+
+        :param url: URL of the resource that's being copied.
+
+        :param path: Local filesystem path containing an immutable
+          copy of the resource loaded from `url`.
+
+        :return: A local filesystem path containing a mutable copy of
+          the resource.
 
         The copy must be 'owned' by the application, and can be
         mutated freely without affecting the original.
@@ -175,6 +241,15 @@ class Loader:
         return self.load_svn(url)
 
     def unknown_load(self, url):
+        """Load a URL type that isn't handled specially.
+
+        :param url: URL of the resource to load.
+
+        :return: Local filesystem path containing the resource.
+
+        This method simply dispatches to the `urllib2.urlopen()`
+        function, so it's not able to load directory resources.
+        """
         # XXX This could end up being called with an http: or https:
         # URL for a Subversion repository; it probably won't deal with
         # that properly.  (It definately won't if it needs to
@@ -196,6 +271,11 @@ class Loader:
 
 
 class FileProxy(object):
+    """Proxy object for a file handled by a private loader.
+
+    When this file object is closed, the loader is cleaned up as well,
+    removing any temporary copies from the filesystem.
+    """
 
     def __init__(self, path, mode, loader, url=None):
         self.name = url or path
@@ -221,4 +301,7 @@ class FileProxy(object):
     def _set_softspace(self, value):
         self._file.softspace = value
 
-    softspace = property(_get_softspace, _set_softspace)
+    softspace = property(_get_softspace, _set_softspace,
+                         doc="Boolean that indicates whether a space"
+                         " character needs to be printed before another"
+                         " value when using the ``print`` statement.")
