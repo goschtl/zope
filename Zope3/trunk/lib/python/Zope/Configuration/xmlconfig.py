@@ -13,11 +13,12 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.8 2002/09/05 20:25:09 jeremy Exp $
+$Id: xmlconfig.py,v 1.9 2002/10/24 15:37:02 jim Exp $
 """
 
 import os
 import name
+from os.path import abspath
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 from xml.sax.handler import ContentHandler, feature_namespaces
@@ -261,7 +262,7 @@ class XMLConfig:
 
     def __init__(self, file_name, module=_NO_MODULE_GIVEN):
         if module is not None and module is not _NO_MODULE_GIVEN:
-            module_dir = os.path.split(module.__file__)[0]
+            module_dir = abspath(os.path.split(module.__file__)[0])
             file_name = os.path.join(module_dir, file_name)
 
         

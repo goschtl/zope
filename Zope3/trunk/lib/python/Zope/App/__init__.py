@@ -15,3 +15,6 @@
 Zope application.
 """
 
+from _app import config, Application
+
+

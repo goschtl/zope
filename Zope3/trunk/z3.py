@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: z3.py,v 1.4 2002/08/13 17:46:12 jim Exp $
+$Id: z3.py,v 1.5 2002/10/24 15:37:02 jim Exp $
 """
 
 import os, sys, asyncore
@@ -43,22 +43,13 @@ def run(argv=sys.argv):
     # temp hack
     dir = os.getcwd()
 
-    from Zope.Configuration.xmlconfig import XMLConfig
-
-    # Set user to system_user, so we can do anything we want
-    from Zope.Security.SecurityManagement import system_user
-    from Zope.Security.SecurityManagement import newSecurityManager
-    newSecurityManager(system_user)
-
-    # Load server-independent site config
-    XMLConfig(os.path.join(dir, 'site.zcml'))()
+    # Do global software config
+    from Zope.App import config
+    config('site.zcml')
     
     # Load server config
+    from Zope.Configuration.xmlconfig import XMLConfig
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
-
-    # Reset user
-    from Zope.Security.SecurityManagement import noSecurityManager
-    noSecurityManager()
 
     try:
         asyncore.loop()
