@@ -16,6 +16,8 @@
 from zope.component import getAdapter
 from zope.interface import implements
 
+from zope.security.proxy import trustedRemoveSecurityProxy
+
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.security import IPrincipalRoleManager
 from zope.app.interfaces.security import IPrincipalRoleMap
@@ -89,7 +91,7 @@ class AnnotationPrincipalRoleManager:
             creating one if necessary """
         annotations = getAdapter(self._context, IAnnotations)
         try:
-            return annotations[annotation_key]
+            return trustedRemoveSecurityProxy(annotations)[annotation_key]
         except KeyError:
             if create:
                 rp = annotations[annotation_key] = PersistentSecurityMap()
