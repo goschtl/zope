@@ -28,7 +28,7 @@ Import Order:-
     entire directory .
 
 -D / --display
-   Displays Import oder for all .py files in the specified path. 
+   Displays Import order for all .py files in the specified path.
 
 -f / --file
    It will order all imported python packages in a file.
@@ -40,7 +40,7 @@ Import Order:-
 
 -t / --test
    It Displays Import order for all py files in the specified path and
-   doesn't write importorder into .py file. 
+   doesn't write importorder into .py file.
 
 $Id$
 """
@@ -105,10 +105,10 @@ def importOrderProcessing(path, display=None, write=None, split=None):
             print import_order
         if write:
             writeFormatedContent(file, import_order, non_import_order)
-        
-        
+
+
     print '*****************************************************************'
-        
+
 
 def getFileImportOrder(file, split=None):
     """returns formatted imported packages content"""
@@ -156,14 +156,13 @@ def getFileImportOrder(file, split=None):
     non_import_block_fmt = string.strip(non_import_block_fmt)
     if len(non_import_block_fmt) > 0:
         non_import_block_fmt += '\n\n'
-        
+
     fmt_content = format_import_content + non_import_block_fmt
 
     return {'import_order':fmt_content,
             'non_import_order':import_content}
 
 
-        
 def getFileImportContent(file):
     """returns the imports content available at the top in the .py file"""
     import_list = []
@@ -175,7 +174,7 @@ def getFileImportContent(file):
         type, string, start, end, line = t
         line_no = start[0]
         line_len = len(line)
-        
+
         if line_no not in lines:
             lines.append(line_no)
             index += line_len
@@ -218,7 +217,7 @@ def concatinateBreakImports(import_list):
             concate_item.append(concate_litem + item_list_fitem)
             concate_list = concate_list[:-1] + concate_item + item_list[1:]
         indx += 1
-        
+
     return concate_list
 
 
@@ -246,14 +245,14 @@ def individualImportLines(import_list):
             new_import_list += new_list
         else:
             new_import_list.append(item)
-            
+
     return new_import_list
 
 
 def removeList(list, rem_list):
     return [item for item in list
             if item not in rem_list]
-    
+
 def mergeAllBlocks(global_imp_list, zope_imp_list, zope_app_imp_list,
                    global_from_list, zope_from_list, zope_app_from_list):
     """merges global, zope and zope.app imports """
@@ -267,7 +266,7 @@ def mergeAllBlocks(global_imp_list, zope_imp_list, zope_app_imp_list,
 
     import_block += formatsFromAndImportBlock(global_imp_block,
                                               global_from_block)
-    
+
     import_block += formatsFromAndImportBlock(zope_imp_block,
                                               zope_from_block)
 
@@ -286,7 +285,7 @@ def formatsFromAndImportBlock(imp_block, from_block):
         import_block += '\n'
     return import_block
 
-            
+
 def formateBlock(imp_list):
     """formats import blocks"""
     import_block = ''
@@ -302,7 +301,7 @@ def formatingLargerImports(import_content):
     """formates if imports greater than 80 character"""
     formatted_line = ''
     import_fline = import_content[:NO_CHARACTERS]
-    
+
     dot_indx = import_fline.rfind('.')
     blank_space_indx = import_fline.rfind(' ')
 
@@ -315,7 +314,7 @@ def formatingLargerImports(import_content):
         split_line_indx = blank_space_indx
         if dot_indx > -1 and dot_indx < blank_space_indx:
             split_line_indx = blank_space_indx
-        
+
     split_line_indx += 1
 
     formatted_line += import_content[:split_line_indx] +'\\\n'
@@ -325,18 +324,17 @@ def formatingLargerImports(import_content):
     elif import_content.startswith(FROMIMPORT):
         formatted_line += ('     ' +
                            import_content[split_line_indx:] + '\n')
-        
+
     return formatted_line
-                
 
 
 def writeFormatedContent(file, fmt_content, non_fmt_content):
     """writes formatted content into the file"""
-    
+
     fp = open(file, 'r')
     file_content = fp.read()
     fp.close()
-    
+
     fp = open(file, 'w')
     rep_content = string.replace(file_content, non_fmt_content,
                                  fmt_content)
@@ -344,7 +342,9 @@ def writeFormatedContent(file, fmt_content, non_fmt_content):
     fp.close()
 
 
-if __name__ == "__main__":
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
     try:
         opts, args = getopt.getopt(sys.argv[1:], "dDfhst",
                                    ["help", "dir", "file", "display",
@@ -352,13 +352,12 @@ if __name__ == "__main__":
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
-        sys.exit(2)
-        
+        return 2
+
     path = None
     display = None
     write = True
     split = None
-    opts.sort()
 
     for k, v in opts:
         if k in ("-h", "--help"):
@@ -380,8 +379,4 @@ if __name__ == "__main__":
             write = False
 
     importOrderProcessing(path, display, write, split)
-
-
-        
-
-            
+    return 0
