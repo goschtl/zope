@@ -15,10 +15,11 @@
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.service import IServiceManagerContainer  
 from zope.component.interfaces import IServiceService
+from zope.interface import implements
 
 class ServiceManagerContainer:
 
-    __implements__ =  IServiceManagerContainer
+    implements(IServiceManagerContainer)
 
     def hasServiceManager(self):
         '''See interface IReadServiceManagerContainer'''

@@ -13,14 +13,14 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.13 2003/05/01 19:35:22 faassen Exp $
+$Id: configuration.py,v 1.14 2003/06/03 14:28:50 stevea Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container  import IContainerNamesContainer, IContainer
 from zope.app.security.permission import PermissionField
-from zope.interface import Interface, Attribute
+from zope.interface import Interface, Attribute, implements
 from zope.schema import TextLine
 from zope.schema.interfaces import ITextLine
 
@@ -33,7 +33,7 @@ class IConfigurationStatus(ITextLine):
     """
 
 class ConfigurationStatus(TextLine):
-    __implements__ = IConfigurationStatus
+    implements(IConfigurationStatus)
     allowed_values = Unregistered, Registered, Active
 
 class INoLocalServiceError(Interface):
@@ -47,7 +47,7 @@ class NoLocalServiceError(Exception):
     no local service.
     """
 
-    __implements__ = INoLocalServiceError
+    implements(INoLocalServiceError)
 
 class IConfiguration(Interface):
     """Configuration object
@@ -110,7 +110,7 @@ class ComponentPath(TextLine):
     Values of the field are absolute unicode path strings that can be
     traversed to get an object.
     """
-    __implements__ = IComponentPath
+    implements(IComponentPath)
 
 
 class IComponentConfiguration(IConfiguration):
@@ -355,7 +355,6 @@ class IConfigurationManager(IContainerNamesContainer, IOrderedContainer):
 class INoConfigurationManagerError(Interface):
     """No configuration manager error
     """
-    
 
 class NoConfigurationManagerError(Exception):
     """No configuration manager
@@ -365,8 +364,7 @@ class NoConfigurationManagerError(Exception):
     site-management folder.
 
     """
-
-    __implements__ = INoConfigurationManagerError
+    implements(INoConfigurationManagerError)
 
 class IConfigurationManagerContainer(IContainer):
     """Containers with configuration managers

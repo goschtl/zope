@@ -13,11 +13,12 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.29 2003/06/01 15:59:36 jim Exp $
+$Id: configuration.py,v 1.30 2003/06/03 14:26:57 stevea Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
+from zope.interface import implements
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
@@ -116,7 +117,7 @@ class ConfigurationStatusProperty(ContextDescriptor):
 
 class ConfigurationRegistry(Persistent):
 
-    __implements__ = IConfigurationRegistry
+    implements(IConfigurationRegistry)
 
     _data = ()
 
@@ -277,7 +278,7 @@ class SimpleConfiguration(Persistent):
     IDeleteNotifiable.
     """
 
-    __implements__ = (IConfiguration, IDeleteNotifiable,
+    implements(IConfiguration, IDeleteNotifiable,
                       # We are including this here because we want all of the
                       # subclasses to get it and we don't really need to be
                       # flexible about the policy here. At least we don't
@@ -321,7 +322,7 @@ class NamedConfiguration(SimpleConfiguration):
     """Named configuration
     """
 
-    __implements__ = INamedConfiguration, SimpleConfiguration.__implements__
+    implements(INamedConfiguration)
 
     def __init__(self, name):
         self.name = name
@@ -338,9 +339,7 @@ class ComponentConfiguration(SimpleConfiguration):
     """
 
     # SimpleConfiguration.__implements__ includes IDeleteNotifiable
-    __implements__ = (IComponentConfiguration,
-                      SimpleConfiguration.__implements__,
-                      IAddNotifiable)
+    implements(IComponentConfiguration, IAddNotifiable)
 
     def __init__(self, component_path, permission=None):
         self.componentPath = component_path
@@ -412,10 +411,7 @@ class NamedComponentConfiguration(NamedConfiguration, ComponentConfiguration):
 
     This configures components that live in folders, by name.
     """
-
-    __implements__ = (INamedComponentConfiguration,
-                      NamedConfiguration.__implements__,
-                      ComponentConfiguration.__implements__)
+    implements(INamedComponentConfiguration)
 
     def __init__(self, name, component_path, permission=None):
         NamedConfiguration.__init__(self, name)
@@ -425,8 +421,7 @@ class NamedComponentConfiguration(NamedConfiguration, ComponentConfiguration):
 class NameConfigurable:
     """Mixin for implementing INameConfigurable
     """
-
-    __implements__ = INameConfigurable
+    implements(INameConfigurable)
 
     def __init__(self, *args, **kw):
         self._bindings = {}
@@ -467,8 +462,7 @@ class NameConfigurable:
 class NameComponentConfigurable(NameConfigurable):
     """Mixin for implementing INameComponentConfigurable
     """
-
-    __implements__ = INameComponentConfigurable
+    implements(INameComponentConfigurable)
 
     def queryActiveComponent(wrapped_self, name, default=None):
         """See INameComponentConfigurable"""
@@ -486,7 +480,7 @@ USE_CONFIG_KEY = 'zope.app.services.configuration.UseConfiguration'
 class UseConfiguration:
     """An adapter."""
 
-    __implements__ = IUseConfiguration
+    implements(IUseConfiguration)
 
     def __init__(self, context):
         self.context = context
@@ -517,7 +511,7 @@ class ConfigurationManager(Persistent):
     Manages configurations within a package.
     """
 
-    __implements__ = IConfigurationManager, IDeleteNotifiable
+    implements(IConfigurationManager, IDeleteNotifiable)
 
     def __init__(self):
         self._data = ()
@@ -647,7 +641,6 @@ class ConfigurationManagerContainer(object):
     def __delitem__(self, name):
         """Delete an item, but not if it's the last configuration manager
         """
-
         item = self[name]
         if IConfigurationManager.isImplementedBy(item):
             # Check to make sure it's not the last one
@@ -660,7 +653,6 @@ class ConfigurationManagerContainer(object):
     def getConfigurationManager(self):
         """Get a configuration manager
         """
-
         # Get the configuration manager for this folder
         for name in self:
             item = self[name]
@@ -670,9 +662,8 @@ class ConfigurationManagerContainer(object):
         else:
             raise NoConfigurationManagerError(
                 "Couldn't find an configuration manager")
-    
     getConfigurationManager = ContextMethod(getConfigurationManager)
-    
+
 
 # XXX Backward Compatibility for pickles
 import sys
