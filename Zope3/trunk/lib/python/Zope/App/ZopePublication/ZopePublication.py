@@ -131,7 +131,7 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
                 sm = getSecurityManager()
                 id = sm.getPrincipal()
                 prin_reg.unauthorized(id, request) # May issue challenge
-                request.getResponse().handleException(exc_info)
+                request.response.handleException(exc_info)
                 return
 
 
@@ -158,7 +158,7 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
 
             # Let the response handle it as best it can.
             # XXX Is this what we want in the long term?
-            response = request.getResponse()
+            response = request.response
             response.handleException(exc_info)
             return
         finally:

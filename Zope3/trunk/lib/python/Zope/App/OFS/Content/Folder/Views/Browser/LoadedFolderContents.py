@@ -14,7 +14,7 @@
 """
     Define view component for loaded folder contents.
 
-$Id: LoadedFolderContents.py,v 1.2 2002/06/10 23:28:00 jim Exp $
+$Id: LoadedFolderContents.py,v 1.3 2002/06/18 14:47:03 jim Exp $
 """
 
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -34,7 +34,7 @@ class LoadedFolderContents( FolderContents ):
 
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.getURL(1))
+            REQUEST.response.redirect(REQUEST.getURL(1))
 
 
     def moveObjectsDown(self, ids, REQUEST = None):
@@ -43,7 +43,7 @@ class LoadedFolderContents( FolderContents ):
 
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.getURL(1))
+            REQUEST.response.redirect(REQUEST.getURL(1))
 
 
     def moveObjectsToTop(self, ids, REQUEST = None):
@@ -52,7 +52,7 @@ class LoadedFolderContents( FolderContents ):
 
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.getURL(1))
+            REQUEST.response.redirect(REQUEST.getURL(1))
 
 
     def moveObjectsToBottom(self, ids, REQUEST = None):
@@ -61,6 +61,6 @@ class LoadedFolderContents( FolderContents ):
 
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.getURL(1))
+            REQUEST.response.redirect(REQUEST.getURL(1))
 
 

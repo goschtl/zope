@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PublisherHTTPServer.py,v 1.3 2002/06/13 23:15:46 jim Exp $
+$Id: PublisherHTTPServer.py,v 1.4 2002/06/18 14:47:07 jim Exp $
 """
 
 from HTTPServer import HTTPServer
@@ -44,6 +44,6 @@ class PublisherHTTPServer(HTTPServer):
         instream = task.request_data.getBodyStream()
 
         request = self.request_factory(instream, task, env)
-        response = request.getResponse()
+        response = request.response
         response.setHeaderOutput(task)
         publish(request)

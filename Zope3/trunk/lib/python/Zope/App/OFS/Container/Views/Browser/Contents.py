@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.3 2002/06/13 23:15:40 jim Exp $
+Revision information: $Id: Contents.py,v 1.4 2002/06/18 14:47:02 jim Exp $
 """
 
 
@@ -54,7 +54,7 @@ class Contents(BrowserView):
         #       we have a way to compute absolute URLs.
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.URL['-1'])
+            REQUEST.response.redirect(REQUEST.URL['-1'])
         return self.confirmRemoved()
     
 

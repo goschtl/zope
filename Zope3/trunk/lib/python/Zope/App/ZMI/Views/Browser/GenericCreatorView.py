@@ -43,7 +43,7 @@ class GenericCreatorView(BrowserView):
 
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.URL[-3])
+            REQUEST.response.redirect(REQUEST.URL[-3])
 
         return self.confirmed( type_name=addable.id, id=name )
 

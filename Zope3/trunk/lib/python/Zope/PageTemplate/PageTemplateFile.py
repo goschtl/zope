@@ -18,7 +18,7 @@ Zope object encapsulating a Page Template from the filesystem.
 
 __metatype__ = type
 
-__version__ = '$Revision: 1.2 $'[11:-2]
+__version__ = '$Revision: 1.3 $'[11:-2]
 
 import os, sys
 from zLOG import LOG, ERROR, INFO
@@ -63,7 +63,7 @@ class PageTemplateFile(PageTemplate):
         """Return expanded document source."""
 
         if REQUEST is not None:
-            REQUEST.getResponse().setHeader('Content-Type', self.content_type)
+            REQUEST.response.setHeader('Content-Type', self.content_type)
         return self.read()
 
     def pt_source_file(self):

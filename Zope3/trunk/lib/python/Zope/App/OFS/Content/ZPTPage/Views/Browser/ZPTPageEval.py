@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for ZPT page eval results.
 
-$Id: ZPTPageEval.py,v 1.2 2002/06/10 23:28:06 jim Exp $
+$Id: ZPTPageEval.py,v 1.3 2002/06/18 14:47:03 jim Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -27,8 +27,8 @@ class ZPTPageEval(BrowserView):
         template = self.context
 
         if REQUEST is not None:
-            REQUEST.getResponse().setHeader('content-type',
-                                            template.content_type)
+            REQUEST.response.setHeader('content-type',
+                                       template.content_type)
 
         return template.render(REQUEST, **kw)
 

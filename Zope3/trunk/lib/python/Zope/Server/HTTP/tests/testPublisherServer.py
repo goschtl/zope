@@ -11,7 +11,7 @@
 ##############################################################################
 """
 
-$Id: testPublisherServer.py,v 1.3 2002/06/14 16:50:22 srichter Exp $
+$Id: testPublisherServer.py,v 1.4 2002/06/18 14:47:08 jim Exp $
 """
 
 import unittest
@@ -71,7 +71,7 @@ class tested_object:
 
     def redirect_method(self, REQUEST):
         "Generates a redirect using the redirect() method."
-        REQUEST.getResponse().redirect("http://somewhere.com/redirect")
+        REQUEST.response.redirect("http://somewhere.com/redirect")
 
     def redirect_exception(self):
         "Generates a redirect using an exception."

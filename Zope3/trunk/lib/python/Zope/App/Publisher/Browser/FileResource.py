@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileResource.py,v 1.2 2002/06/14 07:39:00 srichter Exp $
+$Id: FileResource.py,v 1.3 2002/06/18 14:47:04 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -60,7 +60,7 @@ class FileResource(BrowserView, Resource):
 
         file = self.context
         request = self.request
-        response = request.getResponse()
+        response = request.response
 
         # HTTP If-Modified-Since header handling. This is duplicated
         # from OFS.Image.Image - it really should be consolidated
@@ -95,7 +95,7 @@ class FileResource(BrowserView, Resource):
 
     def HEAD(self):
         file = self.context
-        response = self.request.getResponse()
+        response = self.request.response
         response.setHeader('Content-Type', file.content_type)
         response.setHeader('Last-Modified', file.lmh)
         return ''

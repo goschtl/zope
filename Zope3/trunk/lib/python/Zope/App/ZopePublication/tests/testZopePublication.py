@@ -187,7 +187,7 @@ class BrowserDefaultTests(BasePublicationTests):
         defineChecker(app.__class__, NamesChecker(somepath='xxx'))
 
         req = self._createRequest(url, pub)
-        response = req.getResponse()
+        response = req.response
 
         publish(req, handle_errors=0)
             

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testZPTPageEval.py,v 1.2 2002/06/10 23:28:06 jim Exp $
+$Id: testZPTPageEval.py,v 1.3 2002/06/18 14:47:04 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -38,9 +38,12 @@ class Test(CleanUp, TestCase):
         class Folder: name='zope'
         folder = Folder()
         
-        class Request:
-            def getResponse(self):
+        class Request(object):
+            def _getResponse(self):
                 return self
+
+            response = property(_getResponse)
+            
             def setHeader(self, name, value):
                 setattr(self, name, value)
                            

@@ -13,7 +13,7 @@
 ##############################################################################
 """Define adder component for folders.
 
-$Id: Adder.py,v 1.2 2002/06/10 23:27:56 jim Exp $
+$Id: Adder.py,v 1.3 2002/06/18 14:47:02 jim Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -59,7 +59,7 @@ class ContainerAdder(BrowserView):
 
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.URL[-1])
+            REQUEST.response.redirect(REQUEST.URL[-1])
 
         return self.confirmed( type_name=type_name, id=id )
 

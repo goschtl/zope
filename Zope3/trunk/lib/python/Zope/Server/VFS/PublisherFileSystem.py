@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PublisherFileSystem.py,v 1.2 2002/06/10 23:29:37 jim Exp $
+$Id: PublisherFileSystem.py,v 1.3 2002/06/18 14:47:08 jim Exp $
 """
 
 import re
@@ -66,7 +66,7 @@ class PublisherFileSystem:
         request = self.request_factory(StringIO(''), NoOutput(), env)
         # Note that publish() calls close() on request, which deletes the
         # response from the request, so that we need to keep track of it.
-        response = request.getResponse()
+        response = request.response
         publish(request)
         return response.getResult()
 

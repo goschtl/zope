@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileView.py,v 1.2 2002/06/10 23:27:58 jim Exp $
+$Id: FileView.py,v 1.3 2002/06/18 14:47:02 jim Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -25,9 +25,9 @@ class FileView(BrowserView):
         """Call the File"""
         request = self.request
         if request is not None:
-            request.getResponse().setHeader('Content-Type',
+            request.response.setHeader('Content-Type',
                                        self.context.getContentType())
-            request.getResponse().setHeader('Content-Length',
+            request.response.setHeader('Content-Length',
                                        self.context.getSize())
 
         return self.context.getData()

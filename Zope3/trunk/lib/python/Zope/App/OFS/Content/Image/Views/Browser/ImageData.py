@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define view component for naive file editing.
 
-$Id: ImageData.py,v 1.2 2002/06/10 23:28:04 jim Exp $
+$Id: ImageData.py,v 1.3 2002/06/18 14:47:03 jim Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -24,7 +24,7 @@ class ImageData(BrowserView):
     def __call__(self):        
         image = self.context
         if self.request is not None:
-            self.request.getResponse().setHeader('content-type',
+            self.request.response.setHeader('content-type',
                                                  image.getContentType()) 
         return image.getData()
 

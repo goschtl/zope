@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testFileResource.py,v 1.2 2002/06/14 16:50:19 srichter Exp $
+$Id: testFileResource.py,v 1.3 2002/06/18 14:47:04 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -64,7 +64,7 @@ class Test(PlacelessSetup, TestCase):
 
         self.assertEqual(resource.GET(), open(path, 'rb').read())
 
-        response = resource.request.getResponse()
+        response = resource.request.response
         self.assertEqual(response.getHeader('Content-Type'), 'text/plain')
 
     def testFileHEAD(self):
@@ -74,7 +74,7 @@ class Test(PlacelessSetup, TestCase):
 
         self.assertEqual(resource.HEAD(), '')
 
-        response = resource.request.getResponse()
+        response = resource.request.response
         self.assertEqual(response.getHeader('Content-Type'), 'text/plain')
 
     def testImageGET(self):
@@ -85,7 +85,7 @@ class Test(PlacelessSetup, TestCase):
 
         self.assertEqual(resource.GET(), open(path, 'rb').read())
 
-        response = resource.request.getResponse()
+        response = resource.request.response
         self.assertEqual(response.getHeader('Content-Type'), 'image/gif')
 
     def testImageHEAD(self):
@@ -95,7 +95,7 @@ class Test(PlacelessSetup, TestCase):
 
         self.assertEqual(resource.HEAD(), '')
 
-        response = resource.request.getResponse()
+        response = resource.request.response
         self.assertEqual(response.getHeader('Content-Type'), 'image/gif')
                          
         

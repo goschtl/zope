@@ -42,7 +42,7 @@ class Adder(ContainerAdder):
 
         if REQUEST is not None:
             # for unit tests
-            REQUEST.getResponse().redirect(REQUEST.URL['-2'])
+            REQUEST.response.redirect(REQUEST.URL['-2'])
 
         return self.confirmed( type_name="Role", id=id )
 
