@@ -26,7 +26,7 @@ IDENTITY_ACCT = "dccvs"
 IDENTITY_FILE = "/home/dccvs/cvsidentity"
 
 
-RSYNC_IN_BACKGROUND = 0                 # Set this when done debugging.
+RSYNC_IN_BACKGROUND = 1                 # Don't wait...
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
@@ -47,7 +47,7 @@ def main(args):
 
     SCRIPT = args[0]
     opts, args = getopt.getopt(args[1:], "",
-                               ["verbose", "dryrun", "recurse", "bg"])
+                               ["verbose", "dryrun", "recurse", "bg", "nobg"])
     if len(args) != 1:
         usage(); raise SystemExit, 1
     for opt, val in opts:
@@ -62,7 +62,10 @@ def main(args):
             complain("%s: FULL-DEPTH RECURSE mode...\n", SCRIPT)
         elif opt == "--bg":
             RSYNC_IN_BACKGROUND = 1
-            complain("%s: BACKGROUNDING RSYNC mode...\n", SCRIPT)
+            complain("%s: Backgrounding rsync mode...\n", SCRIPT)
+        elif opt == "--nobg":
+            RSYNC_IN_BACKGROUND = 0
+            complain("%s: NOT backgrounding-rsync mode...\n", SCRIPT)
         else:
             complain("Unrecognize option '%s'\n", opt)
             raise SystemExit, 1
