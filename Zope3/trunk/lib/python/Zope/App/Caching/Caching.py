@@ -33,5 +33,5 @@ def getLocationForCache(obj):
     try:
         locatable = getAdapter(obj, IPhysicallyLocatable)
         return "/".join(locatable.getPhysicalPath())
-    except ComponentLookupError:
+    except (ComponentLookupError, TypeError):
         return None
