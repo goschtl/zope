@@ -21,7 +21,7 @@ import new
 def SafeBuiltins():
 
     builtins = {}
-    
+
     from zope.security.checker import NamesChecker
     import __builtin__
 
@@ -65,12 +65,16 @@ def SafeBuiltins():
         #dir,
         ]:
 
-        value = getattr(__builtin__, name)
-        if isinstance(value, type):
-            value = ProxyFactory(value, _builtinTypeChecker)
+        try:
+            value = getattr(__builtin__, name)
+        except AttributeError:
+            pass
         else:
-            value = ProxyFactory(value)
-        builtins[name] = value
+            if isinstance(value, type):
+                value = ProxyFactory(value, _builtinTypeChecker)
+            else:
+                value = ProxyFactory(value)
+            builtins[name] = value
 
     from sys import modules
 
