@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testFile.py,v 1.2 2002/06/10 23:28:00 jim Exp $
+$Id: testFile.py,v 1.3 2002/11/11 21:05:16 jim Exp $
 """
 
 import unittest, ZODB
@@ -102,6 +102,13 @@ class Test( unittest.TestCase ):
         self.failUnless(IFile.isImplementedByInstancesOf(File))
         self.failUnless(verifyClass(IFile, File))        
         
+
+    def testEdit(self):
+        file = self._makeFile()
+
+        file.edit('Data', 'text/plain')
+        self.assertEqual(file.getContentType(), 'text/plain')
+        self.assertEqual(file.getData(), 'Data')
 
 
 def test_suite():

@@ -14,7 +14,9 @@
 
   <require
       permission="Zope.ManageContent"
-      interface=".IFile.IWriteFile" />
+      interface=".IFile.IWriteFile"
+      set_schema=".IFile.IReadFile"
+      />
 
   <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 
