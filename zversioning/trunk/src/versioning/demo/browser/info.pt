@@ -4,27 +4,26 @@
 
   <h1 tal:content="context/title">Versionable Proposal</h1>
 
-  <table>
-    <tr><th i18n:translate="">Use Cases</th>
-        <td tal:content="structure context/usecase | nothing">
+    <div><h3 i18n:translate="">Use Cases</h3>
+        <div tal:content="structure context/usecase | nothing">
            What Situations we will solve
-        </td>
-        </tr>
-    <tr><th i18n:translate="">Concept</th>
-        <td tal:content="structure context/concept | nothing">
+        </div><a href="./@@EditUseCase.html" i18n:translate="">Edit</a>
+        </div>
+    <div><h3 i18n:translate="">Concept</h3>
+        <div tal:content="structure context/concept | nothing">
            Technical Concept
-        </td>
-        </tr>
-    <tr><th i18n:translate="">Todo</th>
-        <td tal:content="structure context/todo | nothing">
+        </div><a href="./@@EditConcept.html" i18n:translate="">Edit</a>
+        </div>
+    <div><h3 i18n:translate="">Todo</h3>
+        <div tal:content="structure context/todo | nothing">
            Steps to go
-        </td>
-        </tr>
-    <tr><th i18n:translate="">Issues</th>
-        <td tal:content="structure context/issues | nothing">
+        </div><a href="./@@EditTodo.html" i18n:translate="">Edit</a>
+        </div>
+    <div><h3 i18n:translate="">Issues</h3>
+        <div tal:content="structure context/issues | nothing">
            Open Issues
-        </td>
-        </tr>
-  </table>
+        </div><a href="./@@EditIssues.html" i18n:translate="">Edit</a>
+        </div>
+
 
 </div></body></html>

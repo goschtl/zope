@@ -16,13 +16,15 @@ class VProposal(persistent.Persistent):
         self.issues = issues
         
     def setTitle(self, title):
-        """Set bug title."""
+        """Set proposal title in Dublin Core."""
         dc = IZopeDublinCore(self)
         dc.title = unicode(title)
 
     def getTitle(self):
-        """Get bug title."""
+        """Get proposal title in Dublin Core."""
         dc = IZopeDublinCore(self)
         return dc.title
         
     title=property(getTitle,setTitle)        
+
+        

@@ -23,9 +23,10 @@
     permission="zope.ManageContent"
     />
 
+
 <browser:editform
     schema="..interfaces.IVProposal"
-    label="Edit the Proposal"
+    label="Edit Proposal"
     name="EditProposal.html"
     menu="zmi_views"
     title="Edit"
@@ -59,6 +60,42 @@
 
 </browser:editform>
 
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit UseCase"
+    name="EditUseCase.html"
+    title="Edit Use Case"
+    fields = "usecase"
+    permission="zope.ManageContent"
+    />
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit Concept"
+    name="EditConcept.html"
+    title="Edit Concept"
+    fields = "concept"
+    permission="zope.ManageContent"
+    />
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit Todo"
+    name="EditTodo.html"
+    title="Edit Todo"
+    fields = "todo"
+    permission="zope.ManageContent"
+    />
+
+<browser:editform
+    schema="..interfaces.IVProposal"
+    label="Edit Issues"
+    name="EditIssues.html"
+    title="Edit Issues"
+    fields = "issues"
+    permission="zope.ManageContent"
+    />
 
 <browser:addMenuItem
     class="..vproposal.VProposal"
