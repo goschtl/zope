@@ -60,6 +60,7 @@
 /Zope/lib/python/ZLogger                        /Packages/ZLogger
 /Zope/lib/python/ZODB                           /Packages/ZODB
 /Zope/lib/python/ZEO                            /Packages/ZEO
+/Zope/lib/python/ZopeUndo                       /Packages/ZopeUndo
 /Zope/lib/python/ZPublisher                     /Packages/ZPublisher
 /Zope/lib/python/Zope                           /Packages/Zope
 /Zope/lib/python/webdav                         /Packages/webdav
@@ -115,6 +116,7 @@
 /ZODB3/zLOG              /Packages/zLOG
 /ZODB3/Doc/ZEO		 /ZEO/docs
 /ZODB3/ZEO-NEWS.txt,v	 /ZEO/CHANGES.txt,v
+/ZODB3/ZopeUndo		 /Packages/ZopeUndo
 
 /ZODB4/ZODB		 /Packages3/ZODB
 #/ZODB4/ZEO		 /Packages3/ZEO
