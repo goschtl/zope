@@ -14,39 +14,39 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.17 2003/03/23 22:35:42 jim Exp $
+$Id: placefulsetup.py,v 1.18 2003/03/31 18:58:21 jim Exp $
 """
-from zope import component as CA
-from zope.component.adapter import provideAdapter
-from zope.component.view import provideView
-from zope.app.services.servicenames import HubIds, EventPublication, EventSubscription
-from zope.publisher.interfaces.browser import IBrowserPresentation
-
+from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
 from zope.app.component import hooks
 from zope.app.container.traversal import ContainerTraversable
+from zope.app.dependable import Dependable
+from zope.app.interfaces.annotation import IAnnotations
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import ISimpleReadContainer
 from zope.app.interfaces.content.folder import IRootFolder
-from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.traversing import ITraverser, ITraversable
-from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.traversing.namespace import etc, provideNamespaceHandler
-from zope.app.traversing.adapters import DefaultTraversable
-from zope.app.traversing.adapters import WrapperPhysicallyLocatable
-from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
-from zope.app.traversing import traverse, getPath
-from zope.app.services.service import ServiceManager, ServiceConfiguration
+from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
 from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.services.configuration import UseConfiguration
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.dependable import Dependable
+from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.interfaces.traversing import ITraverser, ITraversable
+from zope.app.services.configuration import UseConfiguration
+from zope.app.services.service import ServiceManager, ServiceConfiguration
+from zope.app.services.servicenames import EventPublication, EventSubscription
+from zope.app.services.servicenames import HubIds
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.traversing.adapters import DefaultTraversable
+from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
+from zope.app.traversing.adapters import WrapperPhysicallyLocatable
+from zope.app.traversing import traverse, getPath
+from zope.app.traversing.namespace import etc, provideNamespaceHandler
+from zope.component.adapter import provideAdapter
+from zope.component.view import provideView
+from zope import component as CA
+from zope.publisher.interfaces.browser import IBrowserPresentation
 
 class PlacefulSetup(PlacelessSetup):
 
@@ -211,8 +211,10 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject("myObjectHub", self.getObjectHub())
 
         path = "%s/default/myEventService" % getPath(sm)
-        configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
-        default.getConfigurationManager().setObject("myEventServiceDir", configuration)
+        configuration = ServiceConfiguration(EventPublication, path,
+                                             self.rootFolder)
+        default.getConfigurationManager().setObject(
+            "myEventServiceDir", configuration)
         traverse(default.getConfigurationManager(), '1').status = Active
 
         configuration = ServiceConfiguration(EventSubscription, path,
@@ -223,9 +225,18 @@ class PlacefulSetup(PlacelessSetup):
 
         path = "%s/default/myObjectHub" % getPath(sm)
         configuration = ServiceConfiguration(HubIds, path, self.rootFolder)
-        default.getConfigurationManager().setObject("myHubIdsServiceDir", configuration)
+        default.getConfigurationManager().setObject("myHubIdsServiceDir",
+                                                    configuration)
         traverse(default.getConfigurationManager(), '3').status = Active
 
+def addService(servicemanager, name, service):
+    default = traverse(servicemanager, 'default')
+    default.setObject(name, service)
+    path = "%s/default/%s" % (getPath(servicemanager), name)
+    configuration = ServiceConfiguration(name, path, servicemanager)
+    default.getConfigurationManager().setObject("", configuration)
+    traverse(default.getConfigurationManager(), '1').status = Active
+    
 
 def createServiceManager(folder):
     folder.setServiceManager(ServiceManager())
