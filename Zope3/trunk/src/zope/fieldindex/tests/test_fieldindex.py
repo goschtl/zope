@@ -16,6 +16,8 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from zodb.btrees.IIBTree import IISet
 from zope.fieldindex.fieldindex import FieldIndex
+from zope.fieldindex.ifieldindex import IFieldIndex
+from zope.interface.verify import verifyClass
 
 class FieldIndexTest(TestCase):
 
@@ -39,6 +41,10 @@ class FieldIndexTest(TestCase):
         # to be implemented for BTrees
 
         self.assertEqual(results.keys(), expected.keys())
+
+
+    def test_interface(self):
+        verifyClass(IFieldIndex, FieldIndex)
 
 
     def test_empty_index(self):
