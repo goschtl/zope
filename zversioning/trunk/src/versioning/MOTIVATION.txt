@@ -166,7 +166,7 @@ to save each version as a normal copy of the original content object.
     '001'
     >>> saveAsVersion(c, histories)
     '001'
-    >>> histories.getVersion(a, '001').text
+    >>> histories.getVersion(a, '001').data.text
     'First text version of a'
     
 Add some additional content versions :
@@ -176,15 +176,15 @@ Add some additional content versions :
     >>> saveAsVersion(a, histories)
     '002'
     >>> version = histories.getVersion(a, '002')
-    >>> version.text
+    >>> version.data.text
     'Second text version of a'
     >>> saveAsVersion(c, histories)
     '002'
     >>> a001 = histories.getVersion(a, '001')
-    >>> a001.text
+    >>> a001.data.text
     'First text version of a'
     >>> a002 = histories.getVersion(a, '002')
-    >>> a002.text
+    >>> a002.data.text
     'Second text version of a'
     
     Note that after the copy process original and versions

@@ -75,6 +75,10 @@ from zope.app.container.interfaces import IWriteContainer, INameChooser
 from zope.app.container.contained import NameChooser
 from zope.component.tests.placelesssetup import PlacelessSetup
 
+from versioning.interfaces import IVersion
+from versioning.storage import Version
+
+
 class FakeModule:
     def __init__(self, dict):
         self.__dict = dict
@@ -123,7 +127,9 @@ def setUp(test, name) :
     ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
     ztapi.provideAdapter(IWriteContainer, INameChooser, NameChooser)
     ztapi.provideUtility(IUniqueIdUtility, UniqueIdUtility())
-    ztapi.provideAdapter(IPersistent, IReference, ReferenceToPersistent)    
+    ztapi.provideAdapter(IPersistent, IReference, ReferenceToPersistent) 
+    ztapi.provideAdapter(None, IVersion, Version)
+   
 
 
 def setUpReadMe(test) :

@@ -78,14 +78,14 @@ class VersionableAspectsAdapter(object) :
         
         history = self.histories.getVersionHistory(self.versionable)
         version = history[version_specifier]
-        self.copy(version, self.versionable)
+        self.copyVersionedData(version, self.versionable)
               
-    def copy(self, source, target) :
+    def copyVersionedData(self, source, target) :
         """ The internal copy routine """
         parent = target.__parent__
         name = target.__name__       
         del parent[name]
-        IObjectCopier(source).copyTo(parent, name)
+        IObjectCopier(source.data).copyTo(parent, name)
 
 
 class ReplaceWithCopyPolicy(VersionableAspectsAdapter) :
@@ -97,13 +97,13 @@ class ReplaceWithCopyPolicy(VersionableAspectsAdapter) :
         references are updated if needed.
     """
     
-    def copy(self, source, target) :
+    def copyVersionedData(self, source, target) :
         """ Replaces the original with a copied version. """
          
         parent = target.__parent__
         name = target.__name__       
         del parent[name]
-        IObjectCopier(source).copyTo(parent, name)
+        IObjectCopier(source.data).copyTo(parent, name)
  
  
 class UpdateStatusPolicy(VersionableAspectsAdapter) :
@@ -115,9 +115,9 @@ class UpdateStatusPolicy(VersionableAspectsAdapter) :
         
     """
     
-    def copy(self, source, target) :
+    def copyVersionedData(self, source, target) :
         """ Copies the state of source to target. """
-        for key, value in source.__getstate__().items() :
+        for key, value in source.data.__getstate__().items() :
             if key not in ('__name__', '__parent__') :
                 setattr(target, key, value)
 
