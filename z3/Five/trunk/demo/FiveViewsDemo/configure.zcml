@@ -1,7 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:five="http://namespaces.zope.org/five">
 
-  <five:page
+  <browser:page
     for=".interfaces.ISimpleContent"
     class=".browser.SimpleContentView"
     attribute="eagle"
@@ -18,7 +19,7 @@
     class="OFS.Folder.Folder"
     />
 
-  <five:page
+  <browser:page
     for=".interfaces.IFolder"
     class=".browser.SimpleFolderView"
     attribute="eagle"
@@ -26,16 +27,14 @@
     permission="zope.Public"
     />
 
-  <five:content class=".simplecontent.SimpleContent">
+  <content class=".simplecontent.SimpleContent">
 
     <allow interface=".interfaces.IPublicSimpleContent" />
-
-    <deny interface=".interfaces.IPrivateSimpleContent" />
 
     <require permission="zope.ViewManagementScreens"
 	     interface=".interfaces.IProtectedSimpleContent"
 	     />
 
-  </five:content>
+  </content>
 
 </configure>

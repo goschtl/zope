@@ -6,98 +6,93 @@
 
     <meta:directive
         name="permission"
-        schema=".metadirectives.IDefinePermissionDirective"
+        schema="zope.app.security.metadirectives.IDefinePermissionDirective"
         handler=".metaconfigure.definePermission" />
 
     <meta:directive
         name="interface"
-        schema=".metadirectives.IInterfaceDirective"
+        schema="zope.app.component.metadirectives.IInterfaceDirective"
         handler=".metaconfigure.interface"
         />
 
     <meta:directive
         name="adapter"
-        schema=".metadirectives.IAdapterDirective"
+        schema="zope.app.component.metadirectives.IAdapterDirective"
         handler=".metaconfigure.adapter"
         />
 
     <meta:directive
         name="utility"
-        schema=".metadirectives.IUtilityDirective"
+        schema="zope.app.component.metadirectives.IUtilityDirective"
         handler=".metaconfigure.utility"
         />
 
     <meta:directive
         name="serviceType"
-        schema=".metadirectives.IServiceTypeDirective"
+        schema="zope.app.component.metadirectives.IServiceTypeDirective"
         handler=".metaconfigure.serviceType"
         />
 
     <meta:directive
         name="service"
-        schema=".metadirectives.IServiceDirective"
+        schema="zope.app.component.metadirectives.IServiceDirective"
         handler=".metaconfigure.service"
         />
 
-  </meta:directives>
-
-  <meta:directives namespace="http://namespaces.zope.org/five">
-
-    <meta:directive
-        name="page"
-        schema=".fivedirectives.IPageDirective"
-        handler=".fiveconfigure.page"
-        />
-
-    <meta:directive
-       name="layer"
-       schema=".fivedirectives.ILayerDirective"
-       handler=".fiveconfigure.layer"
-       />
-
-     <meta:directive
-       name="skin"
-       schema=".fivedirectives.ISkinDirective"
-       handler=".fiveconfigure.skin"
-       />
-
-     <meta:directive
-       name="defaultSkin"
-       schema=".fivedirectives.IDefaultSkinDirective"
-       handler=".fiveconfigure.defaultSkin"
-       />
-
-
-     <!-- This is a simplified version of z3's content directive,        -->
-     <!-- to accomodate the fact that z2's security is not as powerful -->
-
     <meta:complexDirective
         name="content"
-        schema=".directives.content.IContentDirective"
+        schema="zope.app.component.metadirectives.IClassDirective"
         handler=".handlers.content.ContentDirective"
         >
 
       <meta:subdirective
           name="implements"
-          schema=".directives.content.IImplementsSubdirective"
+          schema="zope.app.component.metadirectives.IImplementsSubdirective"
           />
 
       <meta:subdirective
           name="require"
-          schema=".directives.content.IRequireSubdirective"
+          schema="zope.app.component.metadirectives.IRequireSubdirective"
           />
 
       <meta:subdirective
           name="allow"
-          schema=".directives.content.IAllowSubdirective"
-          />
-
-      <meta:subdirective
-          name="deny"
-          schema=".directives.content.IDenySubdirective"
+          schema="zope.app.component.metadirectives.IAllowSubdirective"
           />
 
     </meta:complexDirective>
+
+    <meta:directive
+       name="layer"
+       schema="zope.app.component.metadirectives.ILayerDirective"
+       handler=".fiveconfigure.layer"
+       />
+
+     <meta:directive
+       name="skin"
+       schema="zope.app.component.metadirectives.ISkinDirective"
+       handler=".fiveconfigure.skin"
+       />
+
+     <meta:directive
+       name="defaultSkin"
+       schema="zope.app.component.metadirectives.IDefaultSkinDirective"
+       handler=".fiveconfigure.defaultSkin"
+       />
+
+  </meta:directives>
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+    
+    <meta:directive
+        name="page"
+        schema="zope.app.publisher.browser.metadirectives.IPageDirective"
+        handler=".fiveconfigure.page"
+        />
+
+  </meta:directives>
+
+  <meta:directives namespace="http://namespaces.zope.org/five">
 
     <!-- specific to Five -->
     <meta:directive

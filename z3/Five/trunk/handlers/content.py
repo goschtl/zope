@@ -24,7 +24,7 @@ from zope.component import getUtility
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 from Products.Five.metaconfigure import interface as provideInterface
-from Products.Five.security.interfaces import IPermission
+from zope.app.security.interfaces import IPermission
 from Products.Five.security.permission import CheckerPublic, CheckerPrivate
 
 def dottedName(klass):
