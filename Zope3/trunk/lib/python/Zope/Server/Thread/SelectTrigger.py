@@ -13,7 +13,7 @@
 ##############################################################################
 # -*- Mode: Python; tab-width: 4 -*-
 
-VERSION_STRING = "$Id: SelectTrigger.py,v 1.3 2002/10/02 19:29:46 gvanrossum Exp $"
+VERSION_STRING = "$Id: SelectTrigger.py,v 1.4 2002/12/20 22:28:41 jeremy Exp $"
 
 import asyncore
 import asynchat
@@ -22,6 +22,7 @@ import os
 import socket
 import string
 import thread
+import traceback
 
 if os.name == 'posix':
 
@@ -57,131 +58,151 @@ if os.name == 'posix':
         # new data onto a channel's outgoing data queue at the same time that
         # the main thread is trying to remove some]
 
-        def __init__ (self):
-            r, w = os.pipe()
+        def __init__(self):
+            r, w = self._fds = os.pipe()
             self.trigger = w
-            asyncore.file_dispatcher.__init__ (self, r)
+            asyncore.file_dispatcher.__init__(self, r)
             self.lock = thread.allocate_lock()
             self.thunks = []
+            self._closed = 0
 
-        def __repr__ (self):
+        # Override the asyncore close() method, because it seems that
+        # it would only close the r file descriptor and not w.  The
+        # constructor calls file_dispatcher.__init__ and passes r,
+        # which would get stored in a file_wrapper and get closed by
+        # the default close.  But that would leave w open...
+
+        def close(self):
+            if not self._closed:
+                self._closed = 1
+                self.del_channel()
+                for fd in self._fds:
+                    os.close(fd)
+                self._fds = []
+
+        def __repr__(self):
             return '<select-trigger (pipe) at %x>' % id(self)
 
-        def readable (self):
+        def readable(self):
             return 1
 
-        def writable (self):
+        def writable(self):
             return 0
 
-        def handle_connect (self):
+        def handle_connect(self):
             pass
 
-        def pull_trigger (self, thunk=None):
-                # print 'PULL_TRIGGER: ', len(self.thunks)
+        def pull_trigger(self, thunk=None):
             if thunk:
+                self.lock.acquire()
                 try:
-                    self.lock.acquire()
-                    self.thunks.append (thunk)
+                    self.thunks.append(thunk)
                 finally:
                     self.lock.release()
-            os.write (self.trigger, 'x')
+            os.write(self.trigger, 'x')
 
-        def handle_read (self):
-            self.recv (8192)
+        def handle_read(self):
             try:
-                self.lock.acquire()
+                self.recv(8192)
+            except socket.error:
+                return
+            self.lock.acquire()
+            try:
                 for thunk in self.thunks:
                     try:
                         thunk()
                     except:
-                        (file, fun, line), t, v, tbinfo = \
-                               asyncore.compact_traceback()
-                        print 'exception in trigger thunk: (%s:%s %s)' % (
-                            t, v, tbinfo)
+                        L = traceback.format_exception(*sys.exc_info())
+                        print 'exception in trigger thunk:\n%s' % "".join(L)
                 self.thunks = []
             finally:
                 self.lock.release()
 
 else:
-
+    # XXX Should define a base class that has the common methods and
+    # then put the platform-specific in a subclass named trigger.
 
     # win32-safe version
 
-    # XXX The corresponding ZEO2 code (ZEO/zrpc/trigger.py) has a fix
-    # for Win98 hangs here.  Those changes should probably be applied
-    # here too.
+    HOST = '127.0.0.1'
+    MINPORT = 19950
+    NPORTS = 50
 
-    class Trigger (asyncore.dispatcher):
+    class trigger(asyncore.dispatcher):
 
-        address = ('127.9.9.9', 19999)
+        portoffset = 0
 
-        def __init__ (self):
-            a = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
-            w = socket.socket (socket.AF_INET, socket.SOCK_STREAM)
+        def __init__(self):
+            a = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            w = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             # set TCP_NODELAY to true to avoid buffering
             w.setsockopt(socket.IPPROTO_TCP, 1, 1)
 
             # tricky: get a pair of connected sockets
-            host='127.0.0.1'
-            port=19999
-            while 1:
+            for i in range(NPORTS):
+                trigger.portoffset = (trigger.portoffset + 1) % NPORTS
+                port = MINPORT + trigger.portoffset
+                address = (HOST, port)
                 try:
-                    self.address=(host, port)
-                    a.bind(self.address)
+                    a.bind(address)
+                except socket.error:
+                    continue
+                else:
                     break
-                except:
-                    if port <= 19950:
-                        raise 'Bind Error', 'Cannot bind trigger!'
-                    port=port - 1
+            else:
+                raise RuntimeError, 'Cannot bind trigger!'
 
-            a.listen (1)
-            w.setblocking (0)
+            a.listen(1)
+            w.setblocking(0)
             try:
-                w.connect (self.address)
+                w.connect(address)
             except:
                 pass
             r, addr = a.accept()
             a.close()
-            w.setblocking (1)
+            w.setblocking(1)
             self.trigger = w
 
-            asyncore.dispatcher.__init__ (self, r)
+            asyncore.dispatcher.__init__(self, r)
             self.lock = thread.allocate_lock()
             self.thunks = []
             self._trigger_connected = 0
 
-        def __repr__ (self):
+        def __repr__(self):
             return '<select-trigger (loopback) at %x>' % id(self)
 
-        def readable (self):
+        def readable(self):
             return 1
 
-        def writable (self):
+        def writable(self):
             return 0
 
-        def handle_connect (self):
+        def handle_connect(self):
             pass
 
-        def pull_trigger (self, thunk=None):
+        def pull_trigger(self, thunk=None):
             if thunk:
+                self.lock.acquire()
                 try:
-                    self.lock.acquire()
-                    self.thunks.append (thunk)
+                    self.thunks.append(thunk)
                 finally:
                     self.lock.release()
-            self.trigger.send ('x')
+            self.trigger.send('x')
 
-        def handle_read (self):
-            self.recv (8192)
+        def handle_read(self):
             try:
-                self.lock.acquire()
+                self.recv(8192)
+            except socket.error:
+                return
+            self.lock.acquire()
+            try:
                 for thunk in self.thunks:
                     try:
                         thunk()
                     except:
-                        (file, fun, line), t, v, tbinfo = asyncore.compact_traceback()
-                        print 'exception in trigger thunk: (%s:%s %s)' % (t, v, tbinfo)
+                        L = traceback.format_exception(*sys.exc_info())
+                        print 'exception in trigger thunk:\n%s' % "".join(L)
                 self.thunks = []
             finally:
                 self.lock.release()
@@ -210,37 +231,28 @@ class TriggerFile:
                     )
 
     def writeline (self, line):
-        self.write (line+'\r\n')
+        self.write(line + '\r\n')
 
     def writelines (self, lines):
-        self.write (
-                string.joinfields (
-                        lines,
-                        '\r\n'
-                        ) + '\r\n'
-                )
+        self.write("\r\n".join(lines) + "\r\n")
 
     def flush (self):
         if self.buffer:
             d, self.buffer = self.buffer, ''
-            the_trigger.pull_trigger (
-                    lambda p=self.parent,d=d: p.push (d)
-                    )
+            the_trigger.pull_trigger(lambda: self.parent.push(d))
 
     def softspace (self, *args):
         pass
 
     def close (self):
-            # in a derived class, you may want to call trigger_close() instead.
+        # in a derived class, you may want to call trigger_close() instead.
         self.flush()
         self.parent = None
 
     def trigger_close (self):
         d, self.buffer = self.buffer, ''
         p, self.parent = self.parent, None
-        the_trigger.pull_trigger (
-                lambda p=p,d=d: (p.push(d), p.close_when_done())
-                )
+        the_trigger.pull_trigger(lambda: (p.push(d), p.close_when_done()))
 
 if __name__ == '__main__':
 
