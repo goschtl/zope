@@ -13,15 +13,15 @@
 ##############################################################################
 """Image Upload Test
 
-$Id: test_imageupload.py,v 1.4 2004/03/13 21:37:24 srichter Exp $
+$Id: test_imageupload.py,v 1.5 2004/03/14 01:11:33 srichter Exp $
 """
 
 import os
 import unittest
 
 from zope.app.tests import ztapi
-from zope.app.browser.form.editview import EditView
-from zope.app.browser.form.widget import BytesWidget, BytesAreaWidget
+from zope.app.form.browser.editview import EditView
+from zope.app.form.browser.widget import BytesWidget, BytesAreaWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.browser import TestRequest

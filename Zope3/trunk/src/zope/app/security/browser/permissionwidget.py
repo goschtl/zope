@@ -13,13 +13,13 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.4 2004/03/13 21:37:28 srichter Exp $
+$Id: permissionwidget.py,v 1.5 2004/03/14 01:11:41 srichter Exp $
 """
 from zope.interface import implements
 from zope.i18n import translate 
 
 from zope.app import zapi
-from zope.app.browser.form import widget
+from zope.app.form.browser import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.interfaces import IPermission
 from zope.security.checker import CheckerPublic

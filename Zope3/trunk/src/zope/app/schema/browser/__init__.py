@@ -13,10 +13,10 @@
 ##############################################################################
 """Mutable Schema (as Utility) Views
 
-$Id: __init__.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/14 01:11:40 srichter Exp $
 """
 from zope.app import zapi
-from zope.app.browser.form.editview import EditView
+from zope.app.form.browser.editview import EditView
 from zope.app.form.utility import setUpEditWidgets
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.schema.interfaces import IMutableSchema

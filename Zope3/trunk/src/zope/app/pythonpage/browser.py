@@ -13,9 +13,9 @@
 ##############################################################################
 """Python Page Browser Views 
 
-$Id: browser.py,v 1.2 2004/02/24 16:50:28 philikon Exp $
+$Id: browser.py,v 1.3 2004/03/14 01:11:38 srichter Exp $
 """
-from zope.app.browser.form.editview import EditView
+from zope.app.form.browser.editview import EditView
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class PythonPageEval:

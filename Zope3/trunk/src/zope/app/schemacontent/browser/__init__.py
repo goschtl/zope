@@ -13,13 +13,13 @@
 ##############################################################################
 """Content Component Views
 
-$Id: __init__.py,v 1.3 2004/03/13 23:55:22 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/14 01:11:41 srichter Exp $
 """
 import copy
 from zope.app import zapi
-from zope.app.browser.form.add import AddView
-from zope.app.browser.form.editview import EditView
-from zope.app.browser.form.submit import Update
+from zope.app.form.browser.add import AddView
+from zope.app.form.browser.editview import EditView
+from zope.app.form.browser.submit import Update
 from zope.app.form.utility import setUpWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.schemacontent.interfaces import IContentComponentDefinition

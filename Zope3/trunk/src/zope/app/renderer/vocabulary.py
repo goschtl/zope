@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.4 2004/03/09 12:39:08 srichter Exp $
+$Id: vocabulary.py,v 1.5 2004/03/14 01:11:39 srichter Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -22,7 +22,7 @@ from zope.schema.interfaces import \
 from zope.component.interfaces import IFactory
 
 from zope.app import zapi
-from zope.app.browser.form.vocabularywidget import DropdownListWidget
+from zope.app.form.browser.vocabularywidget import DropdownListWidget
 from zope.app.renderer.interfaces import ISource
 
 class SourceTypeTerm:

@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: editingwidgets.py,v 1.3 2004/03/13 21:37:27 srichter Exp $
+$Id: editingwidgets.py,v 1.4 2004/03/14 01:11:39 srichter Exp $
 """
 __metaclass__ = type
 
 from zope.interface import implements
 from zope.app.form.interfaces import IInputWidget
-from zope.app.browser.form.widget import BrowserWidget, renderElement
+from zope.app.form.browser.widget import BrowserWidget, renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 class SimpleEditingWidget(BrowserWidget):

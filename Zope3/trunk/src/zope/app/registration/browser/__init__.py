@@ -13,12 +13,12 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.2 2004/03/13 21:37:26 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/14 01:11:38 srichter Exp $
 """
 from zope.app.browser.container.adding import Adding
-from zope.app.browser.form.widget import RadioWidget, BrowserWidget
+from zope.app.form.browser.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.browser.interfaces.form import IBrowserWidget
+from zope.app.form.browser.interfaces import IBrowserWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.container.interfaces import INameChooser
 

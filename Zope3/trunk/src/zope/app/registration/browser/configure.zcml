@@ -16,7 +16,7 @@
       template="changeregistrations.pt"
       class=".ChangeRegistrations"
       allowed_interface=
-                   "zope.app.browser.interfaces.form.IFormCollaborationView"
+                   "zope.app.form.browser.interfaces.IFormCollaborationView"
       permission="zope.ManageServices" />
 
   <zope:view
