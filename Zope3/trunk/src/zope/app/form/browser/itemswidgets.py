@@ -110,7 +110,7 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
         is returned here since it's the only thing known to be a string, or
         str()able."""
         if ITitledTokenizedTerm.providedBy(term):
-            return term.title
+            return self.translate(term.title)
         return term.token
 
     def convertTokensToValues(self, tokens):
