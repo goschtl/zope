@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.4 2003/05/07 09:33:00 stevea Exp $
+$Id: interfaces.py,v 1.5 2003/05/07 16:33:36 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -29,6 +29,15 @@ class IWrapperFuncs(Interface):
 
         Wrapper data may be passed as keyword arguments. The data are
         added to the context dictionary.
+
+        Note that the object and context must be passed as positional
+        arguments. All keyword arguments, even those called 'object' and
+        'context' are taken as part of data.
+        A less informative but more accurate function signature would be
+
+          def Wrapper(*args, **data):
+
+        Where args is either (object,) or (object, context).
         """
 
     def getobject(obj):
@@ -142,6 +151,10 @@ class IDecoratorFuncs(Interface):
 
         Wrapper data may be passed as keyword arguments. The data are added
         to the context dictionary.
+
+        Note that the arguments object, context, mixinafactory, names,
+        and provides must be given as positional arguments. All keyword
+        arguments are taken to be part of **data.
         """
 
     def getmixin(obj):
