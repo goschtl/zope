@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.58 2003/09/25 21:43:12 poster Exp $
+$Id: vocabularywidget.py,v 1.59 2003/09/29 20:13:12 fdrake Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -265,9 +265,20 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         raise NotImplementedError(
             "vocabulary-based widgets don't use the _unconvert() method")
 
-class SingleDataHelper(object):
 
-    _msg_no_value = message(_("vocabulary-no-value"), "(no value)")
+
+
+_msg_missing_single_value_display = message(
+    _("vocabulary-missing-single-value-for-display"),   "")
+_msg_missing_multiple_value_display = message(
+    _("vocabulary-missing-multiple-value-for-display"), "")
+
+_msg_missing_single_value_edit = message(
+    _("vocabulary-missing-single-value-for-edit"),   "(no value)")
+_msg_missing_multiple_value_edit = message(
+    _("vocabulary-missing-multiple-value-for-edit"), "(no values)")
+
+class SingleDataHelper(object):
 
     def _compute_data(self):
         token = self.request.form.get(self.name)
@@ -297,6 +308,8 @@ class MultiDataHelper(object):
 class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
+    _msg_no_value = _msg_missing_single_value_display
+
     def render(self, value):
         if value is None:
             return self.translate(self._msg_no_value)
@@ -324,13 +337,7 @@ class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
                                         contents="\n".join(rendered_items),
                                         extra=self.getValue('extra'))
         else:
-            return widget.renderElement('span',
-                                        type=self.getValue('type'),
-                                        name=self.name,
-                                        id=self.name,
-                                        cssClass=self.getValue('cssClass'),
-                                        contents=_("(no values)"),
-                                        extra=self.getValue('extra'))
+            return self.translate(_msg_missing_multiple_value_display)
 
     def renderItems(self, value):
         L = []
@@ -501,6 +508,8 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
     propertyNames = VocabularyEditWidgetBase.propertyNames + ['firstItem']
     firstItem = False
 
+    _msg_no_value = _msg_missing_single_value_edit
+
     def renderValue(self, value):
         rendered_items = self.renderItems(value)
         contents = "\n%s\n" % "\n".join(rendered_items)
@@ -539,6 +548,8 @@ class DropdownListWidget(SelectListWidget):
 
 class VocabularyMultiEditWidget(MultiDataHelper, VocabularyEditWidgetBase):
     """Vocabulary-backed widget supporting multiple selections."""
+
+    _msg_no_value = _msg_missing_multiple_value_edit
 
     def renderItems(self, value):
         if value == self.context.missing_value:

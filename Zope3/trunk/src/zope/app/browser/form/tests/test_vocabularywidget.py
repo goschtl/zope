@@ -358,12 +358,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         del bound.context.f
         w = getView(bound, "display", self.makeRequest())
         self.assert_(not w.hasInput())
-        self.verifyResult(w(), [
-            '<span',
-            'id="field.f"',
-            'name="field.f"',
-            '</span>',
-            ])
+        self.assertEqual(w(), "")
 
     def test_display_with_value(self):
         bound = self.makeField(value=["foobar", "frob"])
