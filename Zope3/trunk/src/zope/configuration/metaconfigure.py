@@ -12,41 +12,22 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.2 2002/12/25 14:13:33 jim Exp $
+$Id: metaconfigure.py,v 1.3 2003/05/18 18:06:44 jim Exp $
 """
 from zope.configuration.action import Action
-from zope.configuration.hookregistry import HookRegistry
 
-# one could make hookRegistry a service and
-# theoretically use it TTW, but that doesn't immediately seem like a
-# great idea
-hookRegistry = HookRegistry()
-
-addHookable = hookRegistry.addHookable
-addHook = hookRegistry.addHook
-
-def provideHookable(_context, name, module=None):
+def hook(_context, name, implementation, module=None):
     if module:
         name = "%s.%s" % (module, name)
-    name = _context.getNormalizedName(name)
+    hook = _context.resolve(name)
+    sethook = getattr(hook, 'sethook', None)
+    if sethook is None:
+        raise TypeError(name,'is not hookable')
+    implementation = _context.resolve(implementation)
     return [
         Action(
-            discriminator=('addHookable', name),
-            callable=addHookable,
-            args=(name,)
-            )
-        ]
-
-
-def provideHook(_context, name, implementation, module=None):
-    if module:
-        name = "%s.%s" % (module, name)
-    name = _context.getNormalizedName(name)
-    implementation = _context.getNormalizedName(implementation)
-    return [
-        Action(
-            discriminator=('addHook', name),
-            callable=addHook,
-            args=(name, implementation)
+            discriminator=('http://namespaces.zope.org/zope/hook', name),
+            callable=sethook,
+            args=(implementation, )
             )
         ]

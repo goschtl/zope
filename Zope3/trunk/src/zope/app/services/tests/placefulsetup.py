@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.19 2003/05/01 19:35:35 faassen Exp $
+$Id: placefulsetup.py,v 1.20 2003/05/18 18:06:43 jim Exp $
 """
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
@@ -52,8 +52,7 @@ class PlacefulSetup(PlacelessSetup):
     def setUp(self):
         PlacelessSetup.setUp(self)
         # set up placeful hooks, saving originals for tearDown
-        self.__old_getServiceManager_hook = CA.getServiceManager_hook
-        CA.getServiceManager_hook = hooks.getServiceManager_hook
+        CA.getServiceManager.sethook(hooks.getServiceManager_hook)
         self.setUpTraversal()
 
     def setUpTraversal(self):
@@ -86,7 +85,7 @@ class PlacefulSetup(PlacelessSetup):
 
     def tearDown(self):
         # clean up folders and placeful service managers and services too?
-        CA.getServiceManager_hook = self.__old_getServiceManager_hook
+        CA.getServiceManager.reset()
         PlacelessSetup.tearDown(self)
 
     def buildFolders(self):

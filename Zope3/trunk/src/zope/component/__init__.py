@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.7 2003/04/18 22:12:30 jim Exp $
+$Id: __init__.py,v 1.8 2003/05/18 18:06:44 jim Exp $
 """
 
 from zope.interface import moduleProvides
@@ -23,10 +23,14 @@ from zope.component.service import serviceManager
 from zope.component.servicenames import Adapters, Skins, Resources
 from zope.component.servicenames import Factories
 
-moduleProvides(IComponentArchitecture)
+# Try to be hookable. Do so in a try/except to avoid a hard dependence
+try:
+    from zope.hookable import hookable
+except ImportError:
+    def hookable(ob):
+        return ob
 
-def getServiceManager(context): # hookable
-    return getServiceManager_hook(context)
+moduleProvides(IComponentArchitecture)
 
 def queryServiceManager(context, default=None):
     try:
@@ -34,8 +38,9 @@ def queryServiceManager(context, default=None):
     except ComponentLookupError:
         return default
 
-def getServiceManager_hook(context): # default hook
+def getServiceManager(context):
     return serviceManager
+getServiceManager = hookable(getServiceManager)
 
 def getService(context, name):
     return getServiceManager(context).getService(name)

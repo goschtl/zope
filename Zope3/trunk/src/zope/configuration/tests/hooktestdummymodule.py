@@ -13,14 +13,13 @@
 ##############################################################################
 """Hook test dummy module
 
-$Id: hooktestdummymodule.py,v 1.2 2002/12/25 14:13:34 jim Exp $
+$Id: hooktestdummymodule.py,v 1.3 2003/05/18 18:06:45 jim Exp $
 """
+from zope.hookable import hookable
 
 def dummyHookable():
-    return dummyHookable_hook()
-
-def dummyHookable_hook():
     return "original implementation"
+dummyHookable = hookable(dummyHookable)
 
 def associatedDummy():
     return dummyHookable()
