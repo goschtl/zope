@@ -54,34 +54,32 @@ User stories
 BUGS
 ----
 
-* Sometimes when committing additions or removals, the Entries.xml
-  file doesn't get updated properly.
+* See TO DO below.
 
 
 TO DO
 -----
 
-* more unit tests for fsmerge, to check that entries are handled
-  correctly in all cases (including addition/deletion/change of
-  type).
+* Unit tests for the fssync core functionality.
 
-* unit tests for the fssync core functionality
+* More refactoring and cleanup of the fssync core functionality.
 
-* more refactoring and cleanup of the fssync core functionality
+* Implement diff using difflib.
 
-* more diff options:
+* More diff options:
   -2 diffs between local and remote
   -3 diffs between original and remote
   -N shows diffs for added/removed files as diffs with /dev/null
-  more GNU diff options?  e.g. --ignore-space-change etc.
 
-* something akin to cvs -n update, which shows what update would do
-  without actually doing it
+* More GNU diff options?  e.g. --ignore-space-change etc.
 
-* refine the adapter protocol or implementation to leverage the
-  file-system representation protocol
+* Something akin to cvs -n update, which shows what update would do
+  without actually doing it.
 
-* use camelCase for method names
+* Refine the adapter protocol or implementation to leverage the
+  file-system representation protocol.
+
+* Use camelCase for method names.
 
 
 TO DO LATER
@@ -94,7 +92,7 @@ TO DO LATER
   do something similar w annotations.
 
 * Maybe do some more xmlpickle refinement with an eye toward
-  impproving the usability of simple dictionary pickles.
+  improving the usability of simple dictionary pickles.
 
 * Maybe leverage adaptable storage ideas to assure losslessness.
 
