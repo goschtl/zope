@@ -15,6 +15,7 @@
 
 $Id$
 """
+from xml.sax import saxutils
 from zope.interface import implements
 
 from zope.app.form.interfaces import IInputWidget, ConversionError
@@ -22,6 +23,17 @@ from zope.app.form.browser.interfaces import ITextBrowserWidget
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
+
+
+def escape(str):
+    if str is not None:
+        str = saxutils.escape(str)
+    return str
+
+def unescape(str):
+    if str is not None:
+        str = saxutils.unescape(str)
+    return str
 
 
 class TextWidget(SimpleInputWidget):
@@ -141,7 +153,7 @@ class TextWidget(SimpleInputWidget):
                 value = unicode(input)
             except ValueError, v:
                 raise ConversionError("Invalid text data", v)
-        return decode_html(value)
+        return unescape(value)
 
 
 class Bytes(SimpleInputWidget):
@@ -262,7 +274,7 @@ class TextAreaWidget(SimpleInputWidget):
             except ValueError, v:
                 raise ConversionError("Invalid unicode data", v)
             else:
-                value = decode_html(value)
+                value = unescape(value)
                 value = value.replace("\r\n", "\n")                
         return value
 
@@ -270,7 +282,7 @@ class TextAreaWidget(SimpleInputWidget):
         value = super(TextAreaWidget, self)._toFormValue(value)
         if value:
             value = value.replace("\n", "\r\n")
-            value = encode_html(value)
+            value = escape(value)
         return value
 
     def __call__(self):
@@ -430,21 +442,3 @@ class DateWidget(TextWidget):
                 return parseDatetimetz(input).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
-
-
-def encode_html(text):
-    if text:
-        text = text.replace('&', '&amp;')
-        text = text.replace('<', '&lt;')
-        text = text.replace('>', '&gt;')
-        text = text.replace('"', '&quot;')
-    return text
-
-
-def decode_html(text):
-    if text:
-        text = text.replace('&amp;', '&')
-        text = text.replace('&lt;', '<')
-        text = text.replace('&gt;', '>')
-        text = text.replace('&quot;', '"')
-    return text
