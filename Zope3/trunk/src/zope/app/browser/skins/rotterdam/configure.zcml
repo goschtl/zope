@@ -19,6 +19,9 @@
     name="xmltree.js" file="xmltree.js" layer="rotterdam" />
 
 <browser:resource
+    name="zope3logo.gif" file="zope3logo.gif" layer="rotterdam" />
+
+<browser:resource
     name="logo.gif" file="logo.gif" layer="rotterdam" />
 
 <browser:resource 

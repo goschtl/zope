@@ -37,7 +37,7 @@
         >
 
     <div id="global">
-      Global elements
+        <img tal:attributes="src context/++resource++zope3logo.gif" />
     </div>
 
     <div id="personal">
