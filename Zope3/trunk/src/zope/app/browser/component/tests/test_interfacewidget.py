@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.26 2003/08/20 18:37:59 philikon Exp $
+$Id: test_interfacewidget.py,v 1.27 2003/10/03 20:40:47 sidnei Exp $
 """
 
 __metaclass__ = type
@@ -30,6 +30,7 @@ from zope.publisher.browser import TestRequest
 from zope.component.service import serviceManager, defineService
 from zope.app.services.servicenames import Interfaces
 from zope.app.interfaces.form import ConversionError, WidgetInputError
+from zope.app.tests import setup
 
 class I(Interface):
     """bah blah
@@ -48,12 +49,11 @@ class I3(Interface):
     def two():
         """method two"""
 
-class BaseInterfaceWidgetTest(CleanUp, TestCase):
+class BaseInterfaceWidgetTest(TestCase):
 
     def setUp(self):
-        service = InterfaceService()
-        defineService(Interfaces, IInterfaceService)
-        serviceManager.provideService(Interfaces, service)
+        setup.placefulSetUp()
+        service = serviceManager.getService(Interfaces)
         service.provideInterface(
             'zope.app.browser.component.tests.test_interfacewidget.I', I)
         service.provideInterface(
@@ -64,6 +64,8 @@ class BaseInterfaceWidgetTest(CleanUp, TestCase):
 
         self.request = request
 
+    def tearDown(self):
+        setup.placefulTearDown()
 
 class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
