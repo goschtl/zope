@@ -21,7 +21,6 @@ from zope.schema import TextLine
 
 from zope.app import zapi
 
-# XXX: EEEEEEEEK, should be done using a vocabulary and the vocabulary field. :(
 class CacheName(TextLine):
     """Cache Name"""
 

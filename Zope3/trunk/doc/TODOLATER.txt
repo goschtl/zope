@@ -242,3 +242,5 @@ Things to do After the next release (in no particular order)
   relationships among components.
 
   Add checking and better spelling of __used_for__.
+
+- Replace the CacheName field/widget with a vocabulary
