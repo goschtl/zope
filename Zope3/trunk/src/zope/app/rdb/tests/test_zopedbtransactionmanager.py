@@ -80,7 +80,7 @@ def test_suite():
     return TestSuite((
         DocTestSuite('zope.app.rdb'),
         makeSuite(TxnMgrTest),
-        makeSuite(TwoTxnMgrTest),
+        makeSuite(TwoTxnMgrSortKeyTest),
         ))
 
 if __name__=='__main__':
