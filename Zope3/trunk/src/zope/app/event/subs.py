@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.16 2003/06/07 06:37:24 stevea Exp $
+$Id: subs.py,v 1.17 2003/06/08 16:22:03 stevea Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -105,8 +105,9 @@ class Subscribable(Persistent):
         subscribers = clean_self._registry.get(ev_type)
         if subscribers is None:
             subscribers = []
-            clean_self._registry.register(ev_type, subscribers)
         subscribers.append((token, filter))
+        # Ensure that type registry is triggered for persistence
+        clean_self._registry.register(ev_type, subscribers)
 
         # increment the subscription count for this subscriber
         if reftype is int:
