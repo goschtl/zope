@@ -31,6 +31,7 @@ from zope.component.servicenames import Adapters
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component.tests.request import Request
 from zope.component.interfaces import IComponentArchitecture, IServiceService
+from zope.component.interfaces import IDefaultViewName
 
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyObject
@@ -326,8 +327,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getView, ob, 'foo', Request(I2))
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test), Test)
 
-        getService(servicenames.Presentation).provideView(
-            I1, 'foo', I2, Comp)
+        getService(Adapters).register([I1, I2], Interface, 'foo', Comp)
         c = getView(ob, 'foo', Request(I2))
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -352,8 +352,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             queryView(ob, 'foo', Request(I2), Test, providing=I3),
             Test)
 
-        getService(servicenames.Presentation).provideView(
-            I1, 'foo', I2, Comp)
+        getService(Adapters).register([I1, I2], Interface, 'foo', Comp)
 
         self.assertRaises(ComponentLookupError,
                           getView, ob, 'foo', Request(I1), providing=I3)
@@ -363,9 +362,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             queryView(ob, 'foo', Request(I2), Test, providing=I3),
             Test)
 
-
-        getService(servicenames.Presentation).provideView(
-            I1, 'foo', I2, Comp, providing=I3)
+        getService(Adapters).register([I1, I2], I3, 'foo', Comp)
 
         c = getView(ob, 'foo', Request(I2), providing=I3)
         self.assertEquals(c.__class__, Comp)
@@ -393,8 +390,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(
             queryMultiView((ob, ob2), request, I3, 'foo', 42), 42)
 
-        getService(servicenames.Presentation).provideAdapter(
-            IRequest, MV, 'foo', (I1, I2), I3)
+        getService(Adapters).register((I1, I2, IRequest), I3, 'foo', MV)
 
         view = queryMultiView((ob, ob2), request, I3, 'foo')
         self.assertEquals(view.__class__, MV)
@@ -427,7 +423,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         savedQueryView = zope.component.queryView
         zope.component.queryView = queryView
 
-        # confirm pass through of args to queryView by way of queryViewProviding 
+        # confirm pass through of args to queryView by way of queryViewProviding
         zope.component.queryViewProviding(
             object='object', providing='providing', request='request', 
             default='default', context='context')
@@ -449,8 +445,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ComponentLookupError, getResource, 'foo', r2)
         self.assertEquals(queryResource('foo', r2, Test), Test)
 
-        getService(servicenames.Presentation).provideResource(
-            'foo', I2, Comp)
+        getService(Adapters).register((I2,), Interface, 'foo', Comp)
         c = getResource('foo', r2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, r2)
@@ -475,8 +470,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryResource('foo', r2, Test, providing=I3),
                           Test)
 
-        getService(servicenames.Presentation).provideResource(
-            'foo', I2, Comp)
+        getService(Adapters).register((I2,), Interface, 'foo', Comp)
 
         self.assertRaises(ComponentLookupError,
                           getResource, 'foo', r1, providing=I3)
@@ -485,9 +479,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryResource('foo', r2, Test, providing=I3),
                           Test)
 
-
-        getService(servicenames.Presentation).provideResource(
-            'foo', I2, Comp, providing=I3)
+        getService(Adapters).register((I2,), I3, 'foo', Comp)
 
         c = getResource('foo', r2, providing=I3)
         self.assertEquals(c.__class__, Comp)
@@ -507,8 +499,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test, context=ob),
                           Test)
 
-        getService(servicenames.Presentation).provideView(
-            I1, 'foo', I2, Comp)
+        getService(Adapters, ob).register((I1, I2), Interface, 'foo', Comp)
+
         c = getView(ob, 'foo', Request(I2), context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -528,11 +520,11 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testDefaultViewName(self):
         from zope.component import getService
         from zope.exceptions import NotFoundError
-        viewService = getService(servicenames.Presentation)
+        getService(Adapters).register((I1, I2), IDefaultViewName,
+                                      '', 'sample_name')
         self.assertRaises(NotFoundError,
                           getDefaultViewName,
                           ob, Request(I1))
-        viewService.setDefaultViewName(I1, I2, 'sample_name')
         self.assertEquals(getDefaultViewName(ob, Request(I2)),
                           'sample_name')
         self.assertRaises(NotFoundError,

@@ -17,13 +17,14 @@ $Id$
 """
 import sys
 import warnings
-from zope.interface import moduleProvides, Interface
+from zope.interface import moduleProvides, Interface, providedBy
 from zope.interface.interfaces import IInterface
 from zope.component.interfaces import IComponentArchitecture, IFactory
 from zope.component.interfaces import IServiceService
+from zope.component.interfaces import IDefaultViewName
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
-from zope.component.servicenames import Adapters, Presentation, Utilities
+from zope.component.servicenames import Adapters, Utilities
 
 # Try to be hookable. Do so in a try/except to avoid a hard dependency.
 try:
@@ -200,7 +201,7 @@ def getFactoriesFor(interface, context=None):
                     break
 
 
-# Presentation service
+# Presentation API
 
 def getView(object, name, request, providing=Interface, context=None):
     view = queryView(object, name, request, context=context,
@@ -213,9 +214,8 @@ def getView(object, name, request, providing=Interface, context=None):
 
 def queryView(object, name, request,
               default=None, providing=Interface, context=None):
-    s = getService(Presentation, context=context)
-    return s.queryView(object, name, request,
-                       default=default, providing=providing)
+    return queryMultiAdapter((object, request), providing, name,
+                             default, context)
 
 queryView = hookable(queryView)
 
@@ -229,8 +229,8 @@ def getMultiView(objects, request, providing=Interface, name='', context=None):
 
 def queryMultiView(objects, request, providing=Interface, name='',
                    default=None, context=None):
-    s = getService(Presentation, context)
-    return s.queryMultiView(objects, request, providing, name, default)
+    return queryMultiAdapter(objects+(request,), providing, name,
+                             default, context)
 
 def getViewProviding(object, providing, request, context=None):
     return getView(object, '', request, providing, context)
@@ -248,8 +248,16 @@ def getDefaultViewName(object, request, context=None):
                                context, request)
 
 def queryDefaultViewName(object, request, default=None, context=None):
-    s = getService(Presentation, context)
-    return s.queryDefaultViewName(object, request, default)
+    try:
+        adapters = getService(Adapters, context)
+    except ComponentLookupError:
+        # Oh blast, no adapter service. We're probably just running from a test
+        return default
+
+    name = adapters.lookup(map(providedBy, (object, request)), IDefaultViewName)
+    if name is not None:
+        return name
+    return default
 
 def getResource(name, request, providing=Interface, context=None):
     view = queryResource(name, request, providing=providing, context=context)
@@ -260,5 +268,4 @@ def getResource(name, request, providing=Interface, context=None):
 
 def queryResource(name, request, default=None, providing=Interface,
                   context=None):
-    s = getService(Presentation, context)
-    return s.queryResource(name, request, default=default, providing=providing)
+    return queryAdapter(request, providing, name, default, context)
