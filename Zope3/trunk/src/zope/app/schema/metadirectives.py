@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metadirectives.py,v 1.1 2003/08/01 21:48:34 srichter Exp $
+$Id: metadirectives.py,v 1.2 2003/10/29 20:26:59 sidnei Exp $
 """
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
@@ -21,7 +21,7 @@ from zope.schema import TextLine
 
 class IVocabularyDirective(Interface):
     '''Define a named vocabulary.
-    
+
     This associates a vocabulary name in the global vocabulary service with a
     factory.  Each name may only be defined once.
 

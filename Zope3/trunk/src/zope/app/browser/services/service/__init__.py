@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.5 2003/10/23 18:39:43 fdrake Exp $
+$Id: __init__.py,v 1.6 2003/10/29 20:33:08 sidnei Exp $
 """
 
 from zope.app import zapi
@@ -101,7 +101,7 @@ class UtilityAdding(ComponentAdding):
         if not ILocalUtility.isImplementedBy(content):
             raise TypeError("%s is not a local utility" % content)
         return super(UtilityAdding, self).add(content)
-    
+
 
 class AddServiceRegistration(BrowserView):
     """A view on a service implementation, used by add_svc_config.py."""
@@ -350,12 +350,12 @@ class MakeSite(BrowserView):
         ...         from zope.interface import directlyProvides
         ...         directlyProvides(self, ISite)
 
-        
+
         >>> folder = PossibleSite()
 
         >>> from zope.publisher.browser import TestRequest
         >>> request = TestRequest()
-        
+
         Now we'll make out folder a site:
 
         >>> MakeSite(folder, request).addSiteManager()
@@ -379,8 +379,8 @@ class MakeSite(BrowserView):
         Traceback (most recent call last):
         ...
         UserError: This is already a site
-                
-        
+
+
         """
         if ISite.isImplementedBy(self.context):
             raise zapi.UserError('This is already a site')

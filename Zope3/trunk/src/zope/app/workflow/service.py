@@ -14,7 +14,7 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.10 2003/09/21 17:33:55 jim Exp $
+$Id: service.py,v 1.11 2003/10/29 20:28:50 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -150,21 +150,21 @@ class ProcessDefinitionVocabulary(object):
 
     def __init__(self, context):
         self.workflows = getService(context, Workflows)
-    
+
     def __contains__(self, value):
         return value in self.workflows.getProcessDefinitionNames()
-    
+
     def __iter__(self):
         terms = map(lambda p: ProcessDefinitionTerm(p),
                     self.workflows.getProcessDefinitionNames())
         return iter(terms)
-    
+
     def __len__(self):
         return len(self.workflows.getProcessDefinitionNames())
-    
+
     def getQuery(self):
         return None
-    
+
     def getTerm(self, value):
         return ProcessDefinitionTerm(value)
 

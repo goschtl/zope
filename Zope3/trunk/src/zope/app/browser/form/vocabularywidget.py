@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.59 2003/09/29 20:13:12 fdrake Exp $
+$Id: vocabularywidget.py,v 1.60 2003/10/29 20:24:17 sidnei Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -29,7 +29,7 @@ from zope.app.interfaces.form import WidgetInputError
 from zope.interface.declarations import directlyProvides
 from zope.publisher.browser import BrowserView
 from zope.component import getView
-from zope.security.proxy import trustedRemoveSecurityProxy 
+from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import ValidationError
 
@@ -218,7 +218,7 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
 
     _have_field_data = False
 
-    def getInputValue(self):        
+    def getInputValue(self):
         value = self._compute_data()
         field = self.context
 

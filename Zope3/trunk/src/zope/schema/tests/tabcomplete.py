@@ -21,7 +21,7 @@ from zope.interface import implements
 
 class IPrefixQuery(IVocabularyQuery):
     """Interface for prefix queries."""
-    
+
     def queryForPrefix(prefix):
         """Return a vocabulary that contains terms beginning with
         prefix."""

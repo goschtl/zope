@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for the global vocabulary service and ZCML integration.
 
-$Id: test_vocabulary.py,v 1.4 2003/08/01 21:48:38 srichter Exp $
+$Id: test_vocabulary.py,v 1.5 2003/10/29 20:28:50 sidnei Exp $
 """
 import unittest
 from zope.app.schema.metaconfigure import \
@@ -31,7 +31,7 @@ class MyContext:
         self.callable = callable
         self.args = args or ()
         self.kw = kw or {}
-        
+
 
 class MyFactory:
     def __init__(self, context, **kw):

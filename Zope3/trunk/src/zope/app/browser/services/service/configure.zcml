@@ -1,4 +1,4 @@
-<zope:configure 
+<zope:configure
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
@@ -10,34 +10,34 @@
      name="index.html"
      permission="zope.ManageServices"
      class="zope.app.browser.managementviewselector.ManagementViewSelector"
-     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" 
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
      />
 
 <!-- Service Manager navigation action -->
 
   <page
       for="zope.app.interfaces.services.service.IPossibleSite"
-      name="addServiceManager.html" 
-      permission="zope.ManageServices" 
+      name="addServiceManager.html"
+      permission="zope.ManageServices"
       class=".MakeSite"
-      attribute="addSiteManager" 
+      attribute="addSiteManager"
       />
 
-  <menuItem 
+  <menuItem
       menu="zmi_actions" title="Make a site"
       for="zope.app.interfaces.services.service.IPossibleSite"
-      action="addServiceManager.html" 
+      action="addServiceManager.html"
       filter="python:not modules['zope.app.interfaces.services.service'
                   ].ISite.isImplementedBy(context)"
-      permission="zope.ManageServices" 
+      permission="zope.ManageServices"
       />
 
-  <menuItem 
+  <menuItem
       menu="zmi_actions"
       title="Manage Site"
       for="zope.app.interfaces.services.service.ISite"
       action="++etc++site/@@SelectedManagementView.html"
-      permission="zope.ManageServices" 
+      permission="zope.ManageServices"
       />
 
 <!-- ServiceManager -->
@@ -59,7 +59,7 @@
 
   <icon
       name="zmi_icon"
-      for="zope.app.interfaces.services.service.IServiceManager" 
+      for="zope.app.interfaces.services.service.IServiceManager"
       file="service_manager.gif" />
 
   <menuItems
