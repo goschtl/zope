@@ -1,0 +1,11 @@
+<html>
+<body>
+
+	<h1 i18n:translate="">PageletContent View</h1>
+
+  <div class="row">
+		<tal:block metal:use-macro="pagelet:zope.interface.Interface/testpagelet" />
+	</div>
+
+</body>
+</html>

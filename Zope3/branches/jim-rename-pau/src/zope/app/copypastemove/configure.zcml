@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:global_translation="http://namespaces.zope.org/gts"
+    i18n_domain="zope"
+    >
+
+  <adapter
+      factory="zope.app.copypastemove.ObjectMover"
+      provides="zope.app.copypastemove.interfaces.IObjectMover"
+      permission="zope.ManageContent"
+      for="*"
+      trusted="y"
+      />
+
+  <adapter
+      factory="zope.app.copypastemove.ObjectCopier"
+      provides="zope.app.copypastemove.interfaces.IObjectCopier"
+      permission="zope.ManageContent"
+      for="*"
+      trusted="y"
+      />
+
+  <adapter
+      factory="zope.app.copypastemove.PrincipalClipboard"
+      provides="zope.app.copypastemove.interfaces.IPrincipalClipboard"
+      for="zope.app.annotation.interfaces.IAnnotations"
+      />
+
+</configure>
