@@ -31,6 +31,15 @@ def load_compat(modname, globals):
         all = mod.__all__
     except AttributeError:
         all = [name for name in dir(mod) if not name.startswith('_')]
+    else:
+        # If the original had __all__, the exported version should as
+        # well, since there's no checking that it's the same as what
+        # would be auto-generated from the resulting module.
+        globals["__all__"] = mod.__all__
 
     for attr in all:
         globals[attr] = getattr(mod, attr)
+
+    # Add the module docstring if the shim module doesn't provide one.
+    if getattr(mod, "__doc__", None) and "__doc__" not in globals:
+        globals["__doc__"] = mod.__doc__
