@@ -43,9 +43,6 @@
   <include package="zope.app.i18n" />
 
 
-  <!-- Filesystem synchronization -->
-  <include package="zope.app.fssync" />
-
   <!-- Local Component Registration -->
   <include package="zope.app.registration" />  
 
