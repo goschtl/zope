@@ -49,9 +49,13 @@
   <serviceType id='Interfaces'
                interface='Zope.App.ComponentArchitecture.IInterfaceService.' />
 	   
-  <service serviceType='Interfaces'
-           permission='Zope.Public'
-           component='Zope.App.ComponentArchitecture.InterfaceService.interfaceService' />
+  <service 
+     serviceType='Interfaces'
+     permission='Zope.Public'
+     component=
+        'Zope.App.ComponentArchitecture.InterfaceService.interfaceService' />
+
+  <include package="Zope.App.ComponentArchitecture.Browser" />
 
 </zopeConfigure>
 

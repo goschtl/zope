@@ -1,0 +1,14 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+>
+
+<browser:view 
+	factory = ".InterfaceWidget.SingleInterfaceWidget"
+	for = "Zope.App.ComponentArchitecture.InterfaceField.IInterfaceField"
+	name = "single"
+/>
+
+<browser:defaultView for="Zope.App.ComponentArchitecture.InterfaceField.IInterfaceField" name="single" />
+
+</zopeConfigure>

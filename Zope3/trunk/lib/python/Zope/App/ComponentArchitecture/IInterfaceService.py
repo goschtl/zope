@@ -12,13 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: IInterfaceService.py,v 1.2 2002/11/19 23:15:14 jim Exp $
+$Id: IInterfaceService.py,v 1.3 2002/12/04 09:54:04 jim Exp $
 """
 
 from Interface import Interface
 
 class IInterfaceService(Interface):
-    """
+    """Service that keeps track of used interfaces
     """
 
     def getInterface(id):
