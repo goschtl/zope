@@ -1,5 +1,13 @@
 CMF 1.3
 
+  New Features
+
+    - Improved the ActionsTool so that permission checking for actions
+      is done in the context of the object for all categories that start
+      with 'object' or 'workflow', in the context of the folder for
+      those that start with 'folder', and in the context of the portal
+      otherwise. This is useful for admin-defined additional categories.
+
   Bug Fixes
 
     - Made WorkflowTool.updateRoleMappings update security-related
