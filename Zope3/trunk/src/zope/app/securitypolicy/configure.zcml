@@ -19,8 +19,12 @@
            trusted="true" />
 
   <class class=".rolepermission.AnnotationRolePermissionManager">
-    <require permission="zope.Security"
-             interface=".interfaces.IRolePermissionManager" />
+    <require 
+        permission="zope.Security"
+        attributes="grantPermissionToRole denyPermissionToRole
+                    unsetPermissionFromRole" />
+    <allow 
+        interface=".interfaces.IRolePermissionMap" />
   </class>       
 
   <adapter factory=".principalrole.AnnotationPrincipalRoleManager"
@@ -29,8 +33,12 @@
            trusted="true" />
 
   <class class=".principalrole.AnnotationPrincipalRoleManager">
-    <require permission="zope.Security"
-             interface=".interfaces.IPrincipalRoleManager" />
+    <require 
+        permission="zope.Security"
+        attributes="assignRoleToPrincipal removeRoleFromPrincipal
+                    unsetRoleForPrincipal" />
+    <allow 
+        interface=".interfaces.IPrincipalRoleMap" />
   </class>
 
   <adapter factory=".principalpermission.AnnotationPrincipalPermissionManager"
@@ -39,8 +47,12 @@
            trusted="true"/>
 
   <class class=".principalpermission.AnnotationPrincipalPermissionManager">
-    <require permission="zope.Security"
-             interface=".interfaces.IPrincipalPermissionManager" />
+    <require 
+        permission="zope.Security"
+        attributes="grantPermissionToRole denyPermissionToRole
+                    unsetPermissionFromRole" />
+    <allow 
+        interface=".interfaces.IPrincipalPermissionMap" />
   </class>
 
   <!-- protect Roles and Permissions -->
