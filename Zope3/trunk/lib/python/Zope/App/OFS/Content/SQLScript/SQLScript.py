@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: SQLScript.py,v 1.10 2002/12/02 20:03:48 alga Exp $
+$Id: SQLScript.py,v 1.11 2002/12/04 17:57:16 alga Exp $
 """
 from types import StringTypes
 
@@ -107,7 +107,7 @@ class SQLScript(SQLCommand, Persistent):
 
     def getConnection(self):
         'See Zope.App.RDB.ISQLCommand.ISQLCommand'
-        connection_service = getService(self, "Connections")
+        connection_service = getService(self, "SQLDatabaseConnections")
         connection = connection_service.getConnection(self.connectionName)
         return connection
 

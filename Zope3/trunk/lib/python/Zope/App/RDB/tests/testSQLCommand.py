@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSQLCommand.py,v 1.6 2002/12/02 20:03:50 alga Exp $
+$Id: testSQLCommand.py,v 1.7 2002/12/04 17:57:18 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -65,8 +65,8 @@ class Test(TestCase, PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        sm.defineService('Connections', IConnectionService)
-        sm.provideService('Connections', ConnectionServiceStub())
+        sm.defineService('SQLDatabaseConnections', IConnectionService)
+        sm.provideService('SQLDatabaseConnections', ConnectionServiceStub())
         self._old_getNextServiceManager = NextService.getNextServiceManager
         NextService.getNextServiceManager = getNextServiceManager
 

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: SQLCommand.py,v 1.3 2002/08/01 18:42:16 jim Exp $
+$Id: SQLCommand.py,v 1.4 2002/12/04 17:57:18 alga Exp $
 """
 from Zope.App.ComponentArchitecture.NextService import getNextService
 
@@ -35,7 +35,7 @@ class SQLCommand:
 
     def getConnection(self):
         'See Zope.App.RDB.ISQLCommand.ISQLCommand'
-        connection_service = getNextService(self, "Connections")
+        connection_service = getNextService(self, "SQLDatabaseConnections")
         connection = connection_service.getConnection(self.connectionName)
         return connection
 

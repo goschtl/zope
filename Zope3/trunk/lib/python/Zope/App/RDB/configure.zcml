@@ -1,7 +1,7 @@
 <zopeConfigure
      xmlns='http://namespaces.zope.org/zope'>
 
-<serviceType id="Connections" interface=".IConnectionService." />
+<serviceType id="SQLDatabaseConnections" interface=".IConnectionService." />
 
 <content class=".ZopeConnection.">
   <require

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.13 2002/11/11 21:10:35 jim Exp $
+$Id: ISQLScript.py,v 1.14 2002/12/04 17:57:16 alga Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -25,7 +25,7 @@ class SQLConnectionName(Zope.Schema.TextLine):
 
     def __allowed(self):
         """Note that this method works only if the Field is context wrapped."""
-        connection_service = getService(self.context, "Connections")
+        connection_service = getService(self.context, "SQLDatabaseConnections")
         connections = connection_service.getAvailableConnections()
         return connections
 

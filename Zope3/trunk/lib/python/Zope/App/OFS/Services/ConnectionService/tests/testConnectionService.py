@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testConnectionService.py,v 1.3 2002/10/04 18:37:19 jim Exp $
+$Id: testConnectionService.py,v 1.4 2002/12/04 17:57:17 alga Exp $
 """
 
 import unittest
@@ -48,8 +48,8 @@ class TestConnectionService(unittest.TestCase, PlacelessSetup):
         self.service = ConnectionService()
         self.service.setObject('conn1', DAStub())
         self.service.setObject('conn2', DAStub())
-        sm.defineService('Connections', IConnectionService)
-        sm.provideService('Connections', self.service)
+        sm.defineService('SQLDatabaseConnections', IConnectionService)
+        sm.provideService('SQLDatabaseConnections', self.service)
 
     def testGetConnection(self):
         self.assertEqual('Connection',

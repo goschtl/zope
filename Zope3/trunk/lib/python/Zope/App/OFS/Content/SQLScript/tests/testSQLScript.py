@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testSQLScript.py,v 1.8 2002/12/02 20:03:49 alga Exp $
+$Id: testSQLScript.py,v 1.9 2002/12/04 17:57:17 alga Exp $
 """
 
 import unittest
@@ -127,8 +127,8 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        sm.defineService('Connections', IConnectionService)
-        sm.provideService('Connections', ConnectionServiceStub())
+        sm.defineService('SQLDatabaseConnections', IConnectionService)
+        sm.provideService('SQLDatabaseConnections', ConnectionServiceStub())
         self._old_getNextServiceManager = NextService.getNextServiceManager
         NextService.getNextServiceManager = getNextServiceManager
         self.caching_service = CachingServiceStub()

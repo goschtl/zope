@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ConnectionService.py,v 1.4 2002/08/01 18:42:11 jim Exp $
+$Id: ConnectionService.py,v 1.5 2002/12/04 17:57:17 alga Exp $
 """
 from types import TupleType
 
@@ -55,7 +55,7 @@ class ConnectionService(BTreeContainer):
     def getAvailableConnections(self):
         'See Zope.App.RDB.IConnectionService.IConnectionService'
         connections = list(self.keys())
-        service = queryNextService(self, "Connections")
+        service = queryNextService(self, "SQLDatabaseConnections")
         if service is not None:
             connections.append(service.getAvailableConnections())
         return connections
