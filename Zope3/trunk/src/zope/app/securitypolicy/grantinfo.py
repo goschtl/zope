@@ -15,6 +15,7 @@
 
 $Id$
 """
+from zope.app.security.settings import Unset
 
 from zope.app.securitypolicy.interfaces import IGrantInfo
 
@@ -34,6 +35,7 @@ from zope.app.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager
 rolepermkey = AnnotationRolePermissionManager.key
 del AnnotationRolePermissionManager
+
 
 
 class AnnotationGrantInfo(object):
@@ -64,6 +66,7 @@ class AnnotationGrantInfo(object):
         prinper = self.prinper.get(principal)
         if prinper:
             return prinper.get(permission)
+        return Unset
 
     def getRolesForPermission(self, permission):
         permrole = self.permrole.get(permission)
