@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.1
+#!/usr/bin/env python
 
 """Adjust symlinks in the repository according to the repolinks recipe file.
 
