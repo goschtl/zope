@@ -13,6 +13,7 @@
   <include package=".generations" file="subscriber.zcml" />
 
   <!-- Ordinary Application (non-view) configuration) -->
+  <include package="zope.app.adapter" />
   <include package="zope.app.component" />
   <include package="zope.app.interface" />
   <include package="zope.app.security" />
@@ -100,7 +101,6 @@
   <include package="zope.app.catalog"/>
   <include package="zope.app.tree" />
   <include package="zope.app.introspector" />
-  <include package="zope.app.apidoc" />
 
 
   <!-- Content types -->
