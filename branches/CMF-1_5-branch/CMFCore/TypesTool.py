@@ -25,7 +25,6 @@ from Acquisition import aq_get
 from Globals import DTMLFile
 from Globals import InitializeClass
 from OFS.Folder import Folder
-from OFS.PropertyManager import PropertyManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zLOG import LOG, ERROR
 import Products
@@ -70,11 +69,6 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
     security.declareProtected(ManagePortal, 'manage_editProperties')
     security.declareProtected(ManagePortal, 'manage_changeProperties')
     security.declareProtected(ManagePortal, 'manage_propertiesForm')
-
-    # Overload the schema freezing of SimpleItemWithProperties
-    security.declareProtected(ManagePortal, 'manage_addProperty')
-    security.declareProtected(ManagePortal, 'manage_delProperties')
-    manage_propertiesForm = PropertyManager.manage_propertiesForm
 
     _basic_properties = (
         {'id':'title', 'type': 'string', 'mode':'w',
@@ -518,6 +512,7 @@ class FactoryTypeInformation (TypeInformation):
         if not self.product or not self.factory or container is None:
             return default
 
+        # In case we aren't wrapped.
         dispatcher = getattr(container, 'manage_addProduct', None)
 
         if dispatcher is None:
@@ -529,7 +524,9 @@ class FactoryTypeInformation (TypeInformation):
             LOG('Types Tool', ERROR, '_queryFactoryMethod raised an exception',
                 error=exc_info())
             return default
+
         m = getattr(p, self.factory, None)
+
         if m:
             try:
                 # validate() can either raise Unauthorized or return 0 to
@@ -538,6 +535,7 @@ class FactoryTypeInformation (TypeInformation):
                     return m
             except zExceptions_Unauthorized:  # Catch *all* Unauths!
                 pass
+
         return default
 
     security.declarePublic('isConstructionAllowed')
@@ -886,7 +884,6 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
         result = typenames.keys()
         result.sort()
         return result
-
 
     security.declarePublic('constructContent')
     def constructContent( self
