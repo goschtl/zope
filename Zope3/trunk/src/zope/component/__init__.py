@@ -13,9 +13,11 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.8 2003/05/18 18:06:44 jim Exp $
+$Id: __init__.py,v 1.9 2003/05/21 20:30:05 jim Exp $
 """
 
+import sys
+import warnings
 from zope.interface import moduleProvides
 from zope.component.interfaces import IComponentArchitecture
 from zope.component.exceptions import ComponentLookupError
@@ -66,12 +68,41 @@ def queryUtility(context, interface, default=None, name=''):
 # Adapter service
 
 def getAdapter(object, interface, name='', context=None):
-    if context is None:
-        context = object
-    return getService(context, Adapters).getAdapter(
-        object, interface, name)
+    adapter = queryAdapter(object, interface, name=name, context=context)
+    if adapter is None:
+        raise ComponentLookupError(object, interface)
+    return adapter
 
 def queryAdapter(object, interface, default=None, name='', context=None):
+    if name:
+        warnings.warn("The name argument to queryAdapter is deprecated",
+                      DeprecationWarning, 2)
+        return queryNamedAdapter(object, interface, name, default, context)
+    
+    conform = getattr(object, '__conform__', None)
+    if conform is not None:
+        try:
+            adapter = conform(interface)
+        except TypeError:
+            # We got a TypeError. It might be an error raised by
+            # the __conform__ implementation, or *we* may have
+            # made the TypeError by calling an unbound method
+            # (object is a class).  In the later case, we behave
+            # as though there is no __conform__ method. We can
+            # detect this case by checking whether there is more
+            # than one traceback object in the traceback chain:
+            if sys.exc_info()[2].tb_next is not None:
+                # There is more than one entry in the chain, so
+                # reraise the error:
+                raise
+            # This clever trick is from Phillip Eby
+        else:
+            if adapter is not None:
+                return adapter
+
+    if interface.isImplementedBy(object):
+        return object
+
     if context is None:
         context = object
     try:
@@ -80,8 +111,24 @@ def queryAdapter(object, interface, default=None, name='', context=None):
         # Oh blast, no adapter service. We're probably just running from a test
         return default
 
-    return adapters.queryAdapter(
-        object, interface, default, name)
+    return adapters.queryNamedAdapter(object, interface, name, default)
+
+def getNamedAdapter(object, interface, name, context=None):
+    adapter = queryNamedAdapter(object, interface, name, context=context)
+    if adapter is None:
+        raise ComponentLookupError(object, interface)
+    return adapter
+
+def queryNamedAdapter(object, interface, name, default=None, context=None):
+    if context is None:
+        context = object
+    try:
+        adapters = getService(context, Adapters)
+    except ComponentLookupError:
+        # Oh blast, no adapter service. We're probably just running from a test
+        return default
+
+    return adapters.queryNamedAdapter(object, interface, name, default)
 
 # Factory service
 
@@ -144,9 +191,3 @@ def queryResource(wrapped_object, name, request, default=None):
                       Resources).queryResource(
         wrapped_object, name, request, default)
 
-
-#def _clear():
-#    from Service import _clear;     _clear()
-#    from ViewService import _clear; _clear()
-#    from Resources import _clear; _clear()
-#    from SkinService import _clear; _clear()

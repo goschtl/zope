@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.3 2003/01/10 18:44:23 stevea Exp $
+$Id: interfaces.py,v 1.4 2003/05/21 20:30:05 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -60,23 +60,65 @@ class IComponentArchitecture(Interface):
 
     # Adapter service
 
-    def getAdapter(object, interface, name='', context=None):
-        """Get adapter to interface for object
+    def getAdapter(object, interface, context=None):
+        """Get an adapter to an interface for an object
 
         Returns the nearest adapter to the context that can adapt
         object to interface.  If context is not specified, attempts to
         use wrapping around object to specify a context.  If a
         matching adapter cannot be found, raises ComponentLookupError.
 
+        If the object has a __conform__ method, this method will be
+        called with the requested interface.  If the method returns a
+        non-None value, that value will be returned. Otherwise, if the
+        object already implements the interface, the object will be
+        returned. 
+
         """
 
-    def queryAdapter(object, interface, default=None, name='', context=None):
-        """Look for adapter to interface for object
+    def getNamedAdapter(object, interface, name, context=None):
+        """Get a named adapter to an interface for an object
+
+        Returns the nearest named adapter to the context that can adapt
+        object to interface.  If context is not specified, attempts to
+        use wrapping around object to specify a context.  If a
+        matching adapter cannot be found, raises ComponentLookupError.
+
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+
+        """
+
+    def queryAdapter(object, interface, default=None, context=None):
+        """Look for an adapter to an interface for an object
 
         Returns the nearest adapter to the context that can adapt
         object to interface.  If context is not specified, attempts to
         use wrapping around object to specify a context.  If a matching
-        adapter cannot be found, returns default."""
+        adapter cannot be found, returns the default.
+
+        If the object has a __conform__ method, this method will be
+        called with the requested interface.  If the method returns a
+        non-None value, that value will be returned. Otherwise, if the
+        object already implements the interface, the object will be
+        returned. 
+
+        """
+
+    def queryNamedAdapter(object, interface, name, default=None, context=None):
+        """Look for a named adapter to an interface for an object
+
+        Returns the nearest named adapter to the context that can adapt
+        object to interface.  If context is not specified, attempts to
+        use wrapping around object to specify a context.  If a matching
+        adapter cannot be found, returns the default.
+
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+
+        """
 
     # Factory service
 
@@ -268,23 +310,54 @@ class IContextDependent(Interface):
 
 class IAdapterService(Interface):
 
-    def getAdapter(object, interface, name=''):
-        """Look up an adapter that provides an interface for an object
+    def getAdapter(object, interface):
+        """Get an adapter to an interface for an object
 
-        If name is empty and the object already implements the
-        interface, then the object will be returned.
+        If the object has a __conform__ method, this method will be
+        called with the requested interface.  If the method returns a
+        non-None value, that value will be returned. Otherwise, if the
+        object already implements the interface, the object will be
+        returned. 
 
-        A ComponentLookupError will be
-        raised if the component can't be found.
+        If a matching adapter cannot be found, raises
+        ComponentLookupError.
+
         """
 
-    def queryAdapter(object, interface, default=None, name=''):
-        """Look up an adapter that provides an interface for an object
+    def getNamedAdapter(object, interface, name):
+        """Get a named adapter to an interface for an object
 
-        If name is empty and the object already implements the
-        interface, then the object will be returned.
+        If a matching adapter cannot be found, raises
+        ComponentLookupError.
 
-        The default will be returned if the component can't be found.
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+
+        """
+
+    def queryAdapter(object, interface, default=None):
+        """Look for an adapter to an interface for an object
+
+        If the object has a __conform__ method, this method will be
+        called with the requested interface.  If the method returns a
+        non-None value, that value will be returned. Otherwise, if the
+        object already implements the interface, the object will be
+        returned. 
+
+        If a matching adapter cannot be found, returns the default.
+
+        """
+
+    def queryNamedAdapter(object, interface, name, default=None):
+        """Look for a named adapter to an interface for an object
+
+        If a matching adapter cannot be found, returns the default.
+
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+
         """
 
     # XXX need to add name support
@@ -306,6 +379,38 @@ class IAdapterService(Interface):
         - the object registered specifically for the required and
           provided interfaces.
 
+        """
+
+class IGlobalAdapterService(IAdapterService):
+
+    def provideAdapter(forInterface, providedInterface, maker, name=''):
+        """Provide an adapter
+
+        An adapter provides an interface for objects that have another
+        interface.
+
+        Arguments:
+
+        forInterface -- The interface the adapter provides an interface for.
+
+        providedInterface -- The provided interface
+
+        maker -- a callable object that gets an adapter component for
+        a context component.
+        """
+    def getRegisteredMatching(for_interface=None, provide_interface=None,
+                              name=None):
+        """Return information about registered data
+
+        A four-tuple is returned containing:
+
+          - registered name,
+
+          - registered for interface
+
+          - registered provided interface, and
+
+          - registered data
         """
 
 class IPresentation(Interface):

@@ -13,10 +13,11 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.13 2003/03/29 00:42:12 sidnei Exp $
+$Id: adapter.py,v 1.14 2003/05/21 20:30:04 jim Exp $
 """
 __metaclass__ = type
 
+import sys
 from zope.interface.adapter import AdapterRegistry
 from persistence import Persistent
 from persistence.dict import PersistentDict
@@ -101,18 +102,58 @@ class AdapterService(Persistent):
 
     def getAdapter(self, object, interface, name=''):
         "See IAdapterService"
-        adapter = self.queryAdapter(object, interface, None, name)
+        adapter = self.queryAdapter(object, interface, name=name)
         if adapter is None:
             raise ComponentLookupError(object, interface)
         return adapter
 
     getAdapter = ContextMethod(getAdapter)
 
-    def queryAdapter(self, object, interface, default=None, name=''):
+    def getNamedAdapter(self, object, interface, name):
         "See IAdapterService"
-        if not name and interface.isImplementedBy(object):
+        adapter = self.queryNamedAdapter(object, interface, name)
+        if adapter is None:
+            raise ComponentLookupError(object, interface)
+        return adapter
+
+    getNamedAdapter = ContextMethod(getNamedAdapter)
+
+    def queryAdapter(self, object, interface, default=None, name=''):
+        """see IAdapterService interface"""
+        if name:
+            warnings.warn("The name argument to queryAdapter is deprecated",
+                          DeprecationWarning, 2)
+            return queryNamedAdapter(object, interface, name, default, context)
+    
+        conform = getattr(object, '__conform__', None)
+        if conform is not None:
+            try:
+                adapter = conform(interface)
+            except TypeError:
+                # We got a TypeError. It might be an error raised by
+                # the __conform__ implementation, or *we* may have
+                # made the TypeError by calling an unbound method
+                # (object is a class).  In the later case, we behave
+                # as though there is no __conform__ method. We can
+                # detect this case by checking whether there is more
+                # than one traceback object in the traceback chain:
+                if sys.exc_info()[2].tb_next is not None:
+                    # There is more than one entry in the chain, so
+                    # reraise the error:
+                    raise
+                # This clever trick is from Phillip Eby
+            else:
+                if adapter is not None:
+                    return adapter
+
+        if interface.isImplementedBy(object):
             return object
 
+        return self.queryNamedAdapter(object, interface, name, default)
+
+    queryAdapter = ContextMethod(queryAdapter)
+
+    def queryNamedAdapter(self, object, interface, name, default=None):
         adapters = self._byName.get(name)
 
         if adapters:
@@ -129,9 +170,9 @@ class AdapterService(Persistent):
 
         adapters = getNextService(self, Adapters)
 
-        return adapters.queryAdapter(object, interface, default, name)
+        return adapters.queryNamedAdapter(object, interface, name, default)
 
-    queryAdapter = ContextMethod(queryAdapter)
+    queryNamedAdapter = ContextMethod(queryNamedAdapter)
 
     # XXX need to add name support
     def getRegisteredMatching(self,

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.11 2003/05/01 19:35:35 faassen Exp $
+$Id: test_adapter.py,v 1.12 2003/05/21 20:30:05 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -86,6 +86,27 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
     def createTestingConfiguration(self):
         return Configuration()
+
+    def test_conforms(self):
+        service = self._service
+        class Conforms:
+            def __conform__(self, i):
+                if i is I1:
+                    return A(self)
+
+        o = Conforms()
+        self.assertEqual(service.queryAdapter(o, I2), None)
+        self.assertRaises(ComponentLookupError, service.getAdapter, o, I2)
+        self.assertEqual(service.queryAdapter(Conforms, I2), None)
+        self.assertEqual(service.queryAdapter(Conforms, I1), None)
+
+        a = service.queryAdapter(o, I1)
+        self.assertEqual(a.__class__, A)
+        self.assertEqual(a.context, o)
+
+        a = service.getAdapter(o, I1)
+        self.assertEqual(a.__class__, A)
+        self.assertEqual(a.context, o)
 
     def test_queryAdapter_no_adapter(self):
         service = self._service
@@ -173,11 +194,11 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
                 o = O()
                 directlyProvides(o, r)
 
-                adapter = service.getAdapter(o, p, u"Yatta!")
+                adapter = service.getNamedAdapter(o, p, u"Yatta!")
                 self.assertEqual(adapter.__class__, A)
                 self.assertEqual(adapter.context, o)
 
-        self.assertRaises(ComponentLookupError, service.getAdapter,
+        self.assertRaises(ComponentLookupError, service.getNamedAdapter,
                           o, I1, u"Yatta!")
 
         for r in I1, I1E:
@@ -185,16 +206,16 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
                 o = O()
                 directlyProvides(o, r)
 
-                adapter = service.queryAdapter(o, p, None, u"Yatta!")
+                adapter = service.queryNamedAdapter(o, p, u"Yatta!")
                 self.assertEqual(adapter.__class__, A)
                 self.assertEqual(adapter.context, o)
 
-        self.assertEqual(service.queryAdapter(o, I1, None, u"Yatta!"), None)
+        self.assertEqual(service.queryNamedAdapter(o, I1, u"Yatta!"), None)
 
-        self.assertRaises(ComponentLookupError, service.getAdapter,
+        self.assertRaises(ComponentLookupError, service.getNamedAdapter,
                           O(), I3, "Yatta!")
-        self.assertEqual(service.queryAdapter(o, I3, name=u"Yatta!"), None)
-        self.assertEqual(service.queryAdapter(o, I3, 42, u"Yatta!"), 42)
+        self.assertEqual(service.queryNamedAdapter(o, I3, u"Yatta!"), None)
+        self.assertEqual(service.queryNamedAdapter(o, I3, u"Yatta!", 42), 42)
 
     def test_queryAdapter_delegation(self):
         service = self._service

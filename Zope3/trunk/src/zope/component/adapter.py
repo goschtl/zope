@@ -14,45 +14,16 @@
 """adapter service
 """
 
+import sys
+from zope.interface import implements
 from zope.interface.adapter import AdapterRegistry
 from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IAdapterService
+from zope.component.interfaces import IGlobalAdapterService
+import warnings
 
-class IGlobalAdapterService(IAdapterService):
+class GlobalAdapterService(object):
 
-    def provideAdapter(forInterface, providedInterface, maker, name=''):
-        """Provide an adapter
-
-        An adapter provides an interface for objects that have another
-        interface.
-
-        Arguments:
-
-        forInterface -- The interface the adapter provides an interface for.
-
-        providedInterface -- The provided interface
-
-        maker -- a callable object that gets an adapter component for
-        a context component.
-        """
-    def getRegisteredMatching(for_interface=None, provide_interface=None,
-                              name=None):
-        """Return information about registered data
-
-        A four-tuple is returned containing:
-
-          - registered name,
-
-          - registered for interface
-
-          - registered provided interface, and
-
-          - registered data
-        """
-
-class GlobalAdapterService:
-
-    __implements__ = IGlobalAdapterService
+    implements(IGlobalAdapterService)
 
     def __init__(self):
         self.__adapters = {}
@@ -78,7 +49,15 @@ class GlobalAdapterService:
 
     def getAdapter(self, object, interface, name=''):
         """see IAdapterService interface"""
-        result = self.queryAdapter(object, interface, None, name)
+        result = self.queryAdapter(object, interface, name=name)
+        if result is None:
+            raise ComponentLookupError(object, interface)
+
+        return result
+
+    def getNamedAdapter(self, object, interface, name):
+        """see IAdapterService interface"""
+        result = self.queryNamedAdapter(object, interface, name)
         if result is None:
             raise ComponentLookupError(object, interface)
 
@@ -87,9 +66,39 @@ class GlobalAdapterService:
 
     def queryAdapter(self, object, interface, default=None, name=''):
         """see IAdapterService interface"""
-        if (not name) and interface.isImplementedBy(object):
+        if name:
+            warnings.warn("The name argument to queryAdapter is deprecated",
+                          DeprecationWarning, 2)
+            return self.queryNamedAdapter(object, interface, name, default)
+    
+        conform = getattr(object, '__conform__', None)
+        if conform is not None:
+            try:
+                adapter = conform(interface)
+            except TypeError:
+                # We got a TypeError. It might be an error raised by
+                # the __conform__ implementation, or *we* may have
+                # made the TypeError by calling an unbound method
+                # (object is a class).  In the later case, we behave
+                # as though there is no __conform__ method. We can
+                # detect this case by checking whether there is more
+                # than one traceback object in the traceback chain:
+                if sys.exc_info()[2].tb_next is not None:
+                    # There is more than one entry in the chain, so
+                    # reraise the error:
+                    raise
+                # This clever trick is from Phillip Eby
+            else:
+                if adapter is not None:
+                    return adapter
+
+        if interface.isImplementedBy(object):
             return object
 
+        return self.queryNamedAdapter(object, interface, name, default)
+
+    def queryNamedAdapter(self, object, interface, name, default=None):
+        """see IAdapterService interface"""
         registry = self.__adapters.get(name)
         if registry is None:
             return default
@@ -135,11 +144,13 @@ class GlobalAdapterService:
 adapterService = GlobalAdapterService()
 provideAdapter = adapterService.provideAdapter
 
-
-
 _clear = adapterService._clear
 
 # Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(_clear)
-del addCleanUp
+try:
+    from zope.testing.cleanup import addCleanUp
+except ImportError:
+    pass
+else:
+    addCleanUp(_clear)
+    del addCleanUp
