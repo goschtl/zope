@@ -13,10 +13,10 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: testAdding.py,v 1.4 2002/10/04 19:48:31 jim Exp $
+$Id: testAdding.py,v 1.5 2002/11/18 13:40:38 stevea Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 from Zope.App.OFS.Container.Views.Browser.Adding import Adding
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -85,6 +85,17 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(getWrapperContainer(result), container)
         self.assertEqual(getWrapperObject(result), o)
         self.assertEqual(getWrapperData(result)["name"], "foo")
+
+    def testNoNameGiven(self):
+        container = Container()
+        request = TestRequest()
+        adding = Adding(container, request)
+        provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
+        
+        self.assertEqual(adding.contentName, None)
+        view = adding.publishTraverse(request, 'Thing=') 
+        self.assertEqual(adding.contentName, '')
+
 
 def test_suite():
     return makeSuite(Test)
