@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: I18nFile.py,v 1.3 2002/06/25 11:27:50 mgedmin Exp $
+$Id: I18nFile.py,v 1.4 2002/11/11 18:24:47 jim Exp $
 """
 
 import Persistence
@@ -99,6 +99,8 @@ class I18nFile(Persistence.Persistent):
         return self._contentType
 
 
+    contentType = property(getContentType, setContentType)
+
     def edit(self, data, contentType=None, language=None):
         '''See interface IFile'''
 
@@ -123,6 +125,7 @@ class I18nFile(Persistence.Persistent):
         '''See interface IFile'''
         self._get_or_add(language).setData(data)
 
+    data = property(getData, setData)
 
     def getSize(self, language=None):
         '''See interface IFile'''
