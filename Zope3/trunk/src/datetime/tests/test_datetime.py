@@ -898,8 +898,9 @@ class TestDate(unittest.TestCase):
         self.assertRaises(TypeError, cmp, our, their)
         self.assertEqual(cmp(their, our), 0)
 
-        # But date and datetime comparison aise NotImplemented instead if the
-        # other object has a timetuple attr.
+        # But date and datetime comparison return NotImplemented instead if the
+        # other object has a timetuple attr.  This gives the other object a
+        # chance to do the comparison.
         class Comparable(AnotherDateTimeClass):
             def timetuple(self):
                 return ()
