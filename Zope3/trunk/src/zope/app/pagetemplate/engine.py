@@ -15,21 +15,18 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.22 2004/02/27 22:25:24 srichter Exp $
+$Id: engine.py,v 1.23 2004/03/02 14:24:31 srichter Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 import sys
 from types import StringTypes
 
-from zope.tales.expressions import PathExpr
-from zope.tales.expressions import StringExpr
-from zope.tales.expressions import NotExpr
-from zope.tales.expressions import DeferExpr
+from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
 from zope.tales.pythonexpr import PythonExpr
-from zope.tales.tales import ExpressionEngine
-from zope.tales.tales import Context
+from zope.tales.tales import ExpressionEngine, Context
 
+from zope.component.exceptions import ComponentLookupError
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
@@ -99,8 +96,9 @@ class ZopeContext(Context):
                   _('Inline Code Evaluation is deactivated, which means that '
                     'you cannot have inline code snippets in your Page '
                     'Template. Activate Inline Code Evaluation and try again.')
-        service = zapi.queryService(self.context, 'Interpreter')
-        if service is None:
+        try:
+            service = zapi.getService(self.context, 'Interpreter')
+        except ComponentLookupError, err:
             raise InlineCodeError, \
                   _('No interpreter service was found. This should never '
                     'happen, since Zope defines a global interpreter service.')

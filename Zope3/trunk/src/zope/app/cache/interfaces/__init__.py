@@ -13,13 +13,15 @@
 ##############################################################################
 """Interfaces for cache manager.
 
-$Id: __init__.py,v 1.1 2004/03/01 10:57:36 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/02 14:24:30 srichter Exp $
 """
+from zope.component.exceptions import ComponentLookupError  
+from zope.interface import Interface
+from zope.schema import TextLine
+
 from zope.app import zapi
 from zope.app.interfaces.event import ISubscriber
 from zope.app.services.servicenames import Caching
-from zope.interface import Interface
-from zope.schema import TextLine
 
 class CacheName(TextLine):
     """Cache Name"""
@@ -27,8 +29,9 @@ class CacheName(TextLine):
     def __allowed(self):
         """Note that this method works only if the Field is context wrapped.
         """
-        service = zapi.queryService(self.context, Caching)
-        if service is None:
+        try:
+            service = zapi.getService(self.context, Caching)
+        except ComponentLookupError, err:
             return ['']
         else:
             return [''] + list(service.getAvailableCaches())

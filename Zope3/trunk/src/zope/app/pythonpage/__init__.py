@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.2 2004/02/24 16:50:28 philikon Exp $
+$Id: __init__.py,v 1.3 2004/03/02 14:24:30 srichter Exp $
 """
 import re
 from persistent import Persistent
@@ -177,6 +177,6 @@ class PythonPage(Contained, Persistent):
         kw['script'] = self
         kw['context'] = zapi.getParent(self)
 
-        service = zapi.queryService(self, 'Interpreter')
+        service = zapi.getService(self, 'Interpreter')
         interpreter = service.queryInterpreter('text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)

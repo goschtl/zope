@@ -15,7 +15,7 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.12 2003/11/21 17:10:48 jim Exp $
+$Id: zapi.py,v 1.13 2004/03/02 14:24:29 srichter Exp $
 """
 
 from zope.app.interfaces.zapi import IZAPI
@@ -26,12 +26,6 @@ moduleProvides(IZAPI)
 __all__ = tuple(IZAPI)
 
 from zope.component import *
-
-# XXX: 'queryService' is not part of IComponentArchitecture;
-# XXX: Jim says you shouldn't need it anyway.
-# YYY: So why is it here?
-
-from zope.component import queryService
 
 from zope.app.traversing import *
 from zope.app.interfaces.exceptions import UserError
