@@ -18,6 +18,7 @@ $Id$
 import unittest
 
 from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -66,16 +67,11 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
 
         from zope.component.interfaces import IPresentationRequest
 
-        zapi.getGlobalService(zapi.servicenames.Presentation).provideView(
-            I1,
-            name=the_view_name,
-            type=IPresentationRequest,
-            maker=ViewMaker)
+        ztapi.provideView(I1, IPresentationRequest, Interface,
+                          the_view_name, ViewMaker)
 
         class MyRequest(object):
             implements(IPresentationRequest)
-            def getPresentationSkin(self):
-                return '' # default
 
         request = MyRequest()
 
