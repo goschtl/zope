@@ -18,6 +18,7 @@
        for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
        permission="zope.ManageServices"
        class="zope.app.browser.container.contents.Contents"
+       menu="zmi_views" title="Principal Sources"
        attribute="contents" />
 
    <view
