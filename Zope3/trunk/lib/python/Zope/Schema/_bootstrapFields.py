@@ -12,13 +12,16 @@
 # 
 ##############################################################################
 """
-$Id: _bootstrapFields.py,v 1.5 2002/12/05 13:27:06 dannu Exp $
+$Id: _bootstrapFields.py,v 1.6 2002/12/11 14:49:06 faassen Exp $
 """
 __metaclass__ = type
 
 from Interface.Attribute import Attribute
+from Interface.Implements import visitImplements
+
 from Exceptions import StopValidation, ValidationError
 import ErrorNames
+from _Schema import getFields
 
 class ValidatedProperty:
 
@@ -38,7 +41,7 @@ class Field(Attribute):
 
     # Type restrictions, if any
     _type = None
-    order = 0l
+    order = 0
     context = None
 
     constraint = None
@@ -88,7 +91,26 @@ class Field(Attribute):
                 self._validate(value)
             except StopValidation:
                 pass
-        
+
+    def __eq__(self, other):
+        # should be the same type
+        if type(self) != type(other):
+            return False
+        # should have the same properties
+        names = {} # used as set of property names, ignoring values
+        visitImplements(self.__implements__, self,
+                        lambda interface: names.update(getFields(interface)))
+        # order will be different always, don't compare it
+        if 'order' in names:
+            del names['order']
+        for name in names:
+            if getattr(self, name) != getattr(other, name):
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+    
     def _validate(self, value):
 
         if self._type is not None and not isinstance(value, self._type):
