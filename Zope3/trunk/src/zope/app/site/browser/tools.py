@@ -13,7 +13,7 @@
 ##############################################################################
 """Tools View
 
-$Id: tools.py,v 1.1 2004/03/21 16:02:24 srichter Exp $
+$Id: tools.py,v 1.2 2004/03/21 17:09:41 srichter Exp $
 """
 from zope.interface import implements, Attribute
 from zope.interface.interfaces import IInterface
@@ -23,19 +23,8 @@ from zope.app.publisher.interfaces.browser import IBrowserView
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.site.folder import SiteManagementFolder 
+from zope.app.servicenames import Services
 
-class ToolsOverview:
-    def getTools(self):
-        tools = []
-        for n, iface in zapi.getUtilitiesFor(None, IToolType):
-            name = iface.getName()
-            view = zapi.getView(self.context, 'manage%sTool.html' % name,
-                                self.request)
-            tools.append({'title':view.title,
-                          'description':view.description,
-                          'action':'./@@manage%sTool.html' % name })
-        return tools
-                          
 class IToolType(IInterface):
     """Interfaces implementing the tool type are considered tools."""
 
@@ -66,6 +55,27 @@ class IUtilityToolsView(IToolsView):
     interface = Attribute("Interface the utility provides.")
 
 
+class ToolsOverview:
+    def getTools(self):
+        tools = []
+        for n, iface in zapi.getUtilitiesFor(None, IToolType):
+            name = iface.getName()
+            view = zapi.getView(self.context, 'manage%sTool.html' % name,
+                                self.request)
+            tools.append({'title':view.title,
+                          'description':view.description,
+                          'action':'./@@manage%sTool.html' % name })
+        return tools
+
+class ToolsBacklink:
+    def getLink(self):
+        service = zapi.getService(self.context, Services)
+        iface = zapi.queryType(self.context, IToolType)
+        url = '%s/manage%sTool.html' %(zapi.getPath(service), iface.getName())
+
+        return self.request.response.redirect(url)
+
+        
 class UtilityToolsView(SimpleView):
     """Tools view for utilities."""
 
