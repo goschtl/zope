@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.8 2003/03/21 20:57:12 jim Exp $
+$Id: test_add.py,v 1.9 2003/03/25 12:21:11 tseaver Exp $
 """
 
 import sys
@@ -85,32 +85,30 @@ class SampleData:
 
 class Test(PlacelessSetup, TestCase):
 
+    def _invoke_add(self, schema="I", name="addthis", permission="zope.Public",
+                    label="Add this", content_factory="C", class_="V",
+                    arguments="first last", keyword_arguments="email",
+                    set_before_add="foo", set_after_add="extra1",
+                    fields=None):
+        """ Call the 'add' factory to process arguments into 'args'."""
+        return add(Context(),
+                   schema=schema,
+                   name=name,
+                   permission=permission,
+                   label=label,
+                   content_factory=content_factory,
+                   class_=class_,
+                   arguments=arguments,
+                   keyword_arguments=keyword_arguments,
+                   set_before_add=set_before_add,
+                   set_after_add=set_after_add,
+                   fields=fields
+                   )
+
     def test_add_no_fields(self):
 
-        result1 = add(
-            Context(),
-            schema="I",
-            name="addthis",
-            permission="zope.Public",
-            label="Add this",
-            content_factory="C",
-            arguments="first last",
-            keyword_arguments="email",
-            set_before_add="foo",
-            set_after_add="extra1",
-            )
-
-        result2 = add(
-            Context(),
-            schema="I",
-            name="addthis",
-            permission="zope.Public",
-            label="Add this",
-            content_factory="C",
-            arguments="first last",
-            keyword_arguments="email",
-            set_before_add="foo",
-            set_after_add="extra1",
+        result1 = self._invoke_add()
+        result2 = self._invoke_add(
             fields="name_ first last email address foo extra1 extra2",
             )
 
@@ -118,20 +116,7 @@ class Test(PlacelessSetup, TestCase):
 
     def test_add(self, args=None):
 
-        [(descriminator, callable, args, kw)] = add(
-            Context(),
-            schema="I",
-            name="addthis",
-            permission="zope.Public",
-            label="Add this",
-            content_factory="C",
-            class_="V",
-            arguments="first last",
-            keyword_arguments="email",
-            set_before_add="foo",
-            set_after_add="extra1",
-            )
-
+        [(descriminator, callable, args, kw)] = self._invoke_add()
 
         self.assertEqual(descriminator,
                          ('view', IAdding, "addthis", IBrowserPresentation,
@@ -167,6 +152,38 @@ class Test(PlacelessSetup, TestCase):
 
         return args
 
+    def test_create(self):
+
+        class Adding:
+
+            __implements__ = IAdding
+
+            def __init__(self, test):
+                self.test = test
+
+            def add(self, ob):
+                self.ob = ob
+                self.test.assertEqual(
+                    ob.__dict__,
+                    {'args': ("bar", "baz"),
+                     'kw': {'email': 'baz@dot.com'},
+                     'foo': 'foo',
+                    })
+                return ob
+            def nextURL(self):
+                return "."
+
+        adding = Adding(self)
+        [(descriminator, callable, args, kw)] = self._invoke_add()
+        factory = AddViewFactory(*args)
+        request = TestRequest()
+        view = getView(adding, 'addthis', request)
+        content = view.create('a',0,abc='def')
+
+        self.failUnless(isinstance(content, C))
+        self.assertEqual(content.args, ('a', 0))
+        self.assertEqual(content.kw, {'abc':'def'})
+
     def test_createAndAdd(self):
 
         class Adding:
@@ -189,7 +206,7 @@ class Test(PlacelessSetup, TestCase):
                 return "."
 
         adding = Adding(self)
-        args = self.test_add()
+        [(descriminator, callable, args, kw)] = self._invoke_add()
         factory = AddViewFactory(*args)
         request = TestRequest()
         view = getView(adding, 'addthis', request)
@@ -207,7 +224,7 @@ class Test(PlacelessSetup, TestCase):
 
 
         adding = Adding()
-        args = self.test_add()
+        [(descriminator, callable, args, kw)] = self._invoke_add()
         factory = AddViewFactory(*args)
         request = TestRequest()
         

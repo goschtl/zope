@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.11 2003/03/22 19:11:24 jim Exp $
+$Id: add.py,v 1.12 2003/03/25 12:21:09 tseaver Exp $
 """
 
 import sys
@@ -68,6 +68,11 @@ class AddView(EditView):
 
         return self.update_status
 
+    def create(self, *args, **kw):
+        """Do the actual instantiation.
+        """
+        return self._factory(*args, **kw)
+
     def createAndAdd(self, data):
         """Add the desired object using the data in the data argument.
 
@@ -83,7 +88,7 @@ class AddView(EditView):
             if name in data:
                 kw[str(name)] = data[name]
 
-        content = self._factory(*args, **kw)
+        content = self.create(*args, **kw)
 
         errors = []
 
