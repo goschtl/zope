@@ -65,6 +65,10 @@ Zope Changes
     - Removed session-specific mapping interfaces. The two that were not yet
       available in zope.interface.common.mapping were added there.
 
+    - Converting Service-managed compoents to utilities:
+
+      o Code Interpreter
+
     - Rearranged the package hierarchy below zope.app.
 
       o Moved content types, including their interfaces and browser

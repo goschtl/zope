@@ -76,8 +76,6 @@ Things to do for the next release (in no particular order)
 
   - Workflow definitions
 
-  - Interpreter types
-
   - Mail
 
 - Implement tools:
