@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.23 2004/01/14 18:33:32 fdrake Exp $
+$Id: test_committer.py,v 1.24 2004/01/14 21:50:30 fdrake Exp $
 """
 
 import os
@@ -24,7 +24,7 @@ import unittest
 from zope.component.service import serviceManager
 from zope.app.tests import ztapi
 from zope.exceptions import NotFoundError
-from zope.interface import implements
+from zope.interface import implements, directlyProvides
 
 from zope.xmlpickle import loads, dumps
 from zope.fssync import fsutil
@@ -206,6 +206,30 @@ class TestCommitterModule(TestBase):
         c = Committer(syncer.getSerializer,
                       getAnnotations=syncer.getAnnotations)
         c.create_object(*args, **kw)
+
+    def test_create_object_extra(self):
+        class TestContainer:
+            # simulate AttrMapping
+            def __setitem__(self, name, value):
+                self.name = name
+                self.value = value
+        class TestRoot:
+            implements(IContainmentRoot, ITraverser)
+            def traverse(self, *args):
+                pass
+        fspath = tempfile.mktemp()
+        f = open(fspath, 'w')
+        f.write('<pickle> <string>text/plain</string> </pickle>')
+        f.close()
+        container = TestContainer()
+        name = "contentType"
+        root = TestRoot()
+        try:
+            self.create_object(container, name, {}, fspath, context=root)
+        finally:
+            os.remove(fspath)
+        self.assertEqual(container.name, name)
+        self.assertEqual(container.value, "text/plain")
 
     def test_create_object_factory_file(self):
         provideSynchronizer(dict, DictAdapter)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.21 2004/01/13 22:28:46 fdrake Exp $
+$Id: committer.py,v 1.22 2004/01/14 21:50:30 fdrake Exp $
 """
 
 import os
@@ -214,7 +214,21 @@ class Committer(object):
             metadata = Metadata()
         self.metadata = metadata
 
-    def synch(self, container, name, fspath):
+    # The Extra and Annotations directories of a zsync need to be
+    # treated specially to allow create_object() to use the the
+    # innermost object 'o' from which the root is reachable via
+    # __parent__ references to perform location-sensitive operations.
+    # This is the only way these objects can perform adapter looks or
+    # resolve persistent references to objects in the tree.  They will
+    # (still) not be able to resolve "parent" references because the
+    # extra and annotation values for object 'o' have no parent.
+    #
+    # This passes around a context object once traversal has entered
+    # the extra and annotation areas of the data area.  This object is
+    # used to provide location if not None; it is only checked by
+    # create_object().
+
+    def synch(self, container, name, fspath, context=None):
         """Synchronize an object or object tree from the filesystem.
 
         SynchronizationError is raised for errors that can't be
@@ -234,14 +248,14 @@ class Committer(object):
             raise SynchronizationError("invalid separator in name %r" % name)
 
         if not name:
-            self.synch_dir(container, fspath)
+            self.synch_dir(container, fspath, context)
         else:
             try:
                 traverseName(container, name)
             except:
-                self.synch_new(container, name, fspath)
+                self.synch_new(container, name, fspath, context)
             else:
-                self.synch_old(container, name, fspath)
+                self.synch_old(container, name, fspath, context)
 
             # Now update extra and annotations
             try:
@@ -253,13 +267,13 @@ class Committer(object):
                 extra = adapter.extra()
                 extrapath = fsutil.getextra(fspath)
                 if extra is not None and os.path.exists(extrapath):
-                    self.synch_dir(extra, extrapath)
+                    self.synch_dir(extra, extrapath, obj)
                 ann = self.getAnnotations(obj)
                 annpath = fsutil.getannotations(fspath)
                 if ann is not None and os.path.exists(annpath):
-                    self.synch_dir(ann, annpath)
+                    self.synch_dir(ann, annpath, obj)
 
-    def synch_dir(self, container, fspath):
+    def synch_dir(self, container, fspath, context=None):
         """Helper to synchronize a directory."""
         adapter = self.getSerializer(container)
         nameset = {} # name --> absolute path
@@ -283,22 +297,23 @@ class Committer(object):
             if os.path.isdir(path):
                 subdirs.append((name, path))
             else:
-                self.synch(container, name, path)
+                self.synch(container, name, path, context)
         # Now do the directories
         for name, path in subdirs:
-            self.synch(container, name, path)
+            self.synch(container, name, path, context)
 
-    def synch_new(self, container, name, fspath):
+    def synch_new(self, container, name, fspath, context=None):
         """Helper to synchronize a new object."""
         entry = self.metadata.getentry(fspath)
         if entry:
-            self.create_object(container, name, entry, fspath)
+            self.create_object(container, name, entry, fspath,
+                               context=context)
             obj = traverseName(container, name)
             adapter = self.getSerializer(obj)
             if IObjectDirectory.isImplementedBy(adapter):
-                self.synch_dir(obj, fspath)
+                self.synch_dir(obj, fspath, context)
 
-    def synch_old(self, container, name, fspath):
+    def synch_old(self, container, name, fspath, context=None):
         """Helper to synchronize an existing object."""
         entry = self.metadata.getentry(fspath)
         if entry.get("flag") == "removed":
@@ -310,11 +325,11 @@ class Committer(object):
         obj = traverseName(container, name)
         adapter = self.getSerializer(obj)
         if IObjectDirectory.isImplementedBy(adapter):
-            self.synch_dir(obj, fspath)
+            self.synch_dir(obj, fspath, context)
         else:
             if adapter.typeIdentifier() != entry.get("type"):
                 self.create_object(container, name, entry, fspath,
-                                   replace=True)
+                                   replace=True, context=context)
             else:
                 original_fn = fsutil.getoriginal(fspath)
                 if os.path.exists(original_fn):
@@ -332,7 +347,7 @@ class Committer(object):
                     if not entry.get("factory"):
                         # If there's no factory, we can't call setBody()
                         self.create_object(container, name, entry, fspath,
-                                           True)
+                                           True, context=context)
                         obj = traverseName(container, name)
                     else:
                         adapter.setBody(newdata)
@@ -346,7 +361,8 @@ class Committer(object):
                     else:
                         publish(obj, ObjectModifiedEvent(obj))
 
-    def create_object(self, container, name, entry, fspath, replace=False):
+    def create_object(self, container, name, entry, fspath, replace=False,
+                      context=None):
         """Helper to create an item in a container or mapping."""
         factory_name = entry.get("factory")
         if factory_name:
@@ -359,8 +375,14 @@ class Committer(object):
                 data = read_file(fspath)
                 adapter.setBody(data)
         else:
+            if context is None:
+                location = container
+                parent = container
+            else:
+                location = context
+                parent = None
             # No factory; try using IFileFactory or IDirectoryFactory
-            as = getService(container, "Adapters")
+            as = getService(location, "Adapters")
             isuffix = name.rfind(".")
             if isuffix >= 0:
                 suffix = name[isuffix:]
@@ -372,9 +394,9 @@ class Committer(object):
             else:
                 iface = IFileFactory
 
-            factory = as.queryNamedAdapter(container, iface, suffix)
+            factory = as.queryNamedAdapter(location, iface, suffix)
             if factory is None:
-                factory = as.queryAdapter(container, iface)
+                factory = as.queryAdapter(location, iface)
 
             if iface is IDirectoryFactory:
                 if factory:
@@ -394,7 +416,7 @@ class Committer(object):
                     # The file must contain an xml pickle, or we can't load it:
                     s = read_file(fspath)
                     s = fromxml(s)
-                    obj = fspickle.loads(s, container)
+                    obj = fspickle.loads(s, location, parent)
 
         set_item(container, name, obj, replace)
 

@@ -34,7 +34,7 @@ the pickle unless it is stored in the object.
 >>> o1.foo = o2
 
 >>> s = dumps(o1)
->>> c1 = loads(s, o1.__parent__)
+>>> c1 = loads(s, o1.__parent__, o1.__parent__)
 >>> c1 is not o1
 1
 >>> c1.data == o1.data
@@ -58,7 +58,7 @@ the pickle unless it is stored in the object.
 >>> c4.__parent__ is c3
 1
 
-$Id: fspickle.py,v 1.2 2003/09/21 17:32:11 jim Exp $
+$Id: fspickle.py,v 1.3 2004/01/14 21:50:30 fdrake Exp $
 """
 
 import cPickle
@@ -93,11 +93,12 @@ def dumps(ob):
     data = sio.getvalue()
     return data
 
-def loads(data, parent=None):
-    if parent is None:
-        return cPickle.loads(data)
+def loads(data, location, parent=None):
     sio = StringIO(data)
-    persistent = ParentPersistentLoader(parent)
+    if parent is None:
+        persistent = PersistentLoader(location)
+    else:
+        persistent = ParentPersistentLoader(location, parent)
     u = cPickle.Unpickler(sio)
     u.persistent_load = persistent.load
     return u.load()
@@ -151,32 +152,12 @@ class ParentPersistentIdGenerator:
             return None
 
 
-class ParentPersistentLoader:
-    """
-    >>> from zope.app.location import TLocation
-    >>> root = TLocation()
-    >>> zope.interface.directlyProvides(root, IContainmentRoot)
-    >>> o1 = TLocation(); o1.__parent__ = root; o1.__name__ = 'o1'
-    >>> o2 = TLocation(); o2.__parent__ = root; o2.__name__ = 'o2'
-    >>> o3 = TLocation(); o3.__parent__ = o1; o3.__name__ = 'o3'
-    >>> root.o1 = o1
-    >>> root.o2 = o2
-    >>> o1.foo = o2
-    >>> o1.o3 = o3
+class PersistentLoader:
 
-    >>> loader = ParentPersistentLoader(o1)
-    >>> loader.load(PARENT_MARKER) is o1
-    1
-    >>> loader.load('/') is root
-    1
-    >>> loader.load('/o2') is o2
-    1
-
-    """
-
-    def __init__(self, parent):
-        self.parent = parent
-        self.root = location.LocationPhysicallyLocatable(parent).getRoot()
+    def __init__(self, context):
+        locatable = location.LocationPhysicallyLocatable(context)
+        __traceback_info__ = (context, locatable),
+        self.root = locatable.getRoot()
         self.traverse = zapi.getAdapter(self.root, ITraverser).traverse
 
     def load(self, path):
@@ -186,9 +167,20 @@ class ParentPersistentLoader:
                 return self.root
             else:
                 return self.traverse(path[1:])
-        elif path == PARENT_MARKER:
-            return self.parent
         raise ValueError("unknown persistent object reference: %r" % path)
+
+
+class ParentPersistentLoader(PersistentLoader):
+
+    def __init__(self, context, parent):
+        self.parent = parent
+        PersistentLoader.__init__(self, context)
+
+    def load(self, path):
+        if path == PARENT_MARKER:
+            return self.parent
+        else:
+            return PersistentLoader.load(self, path)
 
 
 class DataLocation(location.TLocation):
