@@ -542,7 +542,7 @@ def classImplements(cls, *interfaces):
                 seen[b] = 1
                 bases.append(b)
         
-    spec.__bases__ = bases
+    spec.__bases__ = tuple(bases)
 
 def _implements_advice(cls):
     interfaces, classImplements = cls.__dict__['__implements_advice_data__']
