@@ -1,6 +1,10 @@
 CMF 1.3
 
   Bug Fixes
+  
+    - Fixed CMFCalendar's "day view" to accomodate the removal of 'title'
+      metadata from catalog in favor of 'Title' (thanks to Dieter Maurer
+      for pointing this out).
 
     - Corrected a skins performance optimization (the version as released
       in the beta did not take effect).
