@@ -33,6 +33,7 @@ from zope.app.container.contained import Contained
 
 from interfaces import ILDAPAdapter
 from interfaces import ILDAPConnection
+from interfaces import IManageableLDAPAdapter
 
 SCOPES = {'base': SCOPE_BASE,
           'one': SCOPE_ONELEVEL,
@@ -130,3 +131,13 @@ class LDAPConnection(object):
             results.append((dn, entry))
         return results
 
+
+
+class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
+    """LDAP adapter utility
+    
+    """
+
+    implements(IManageableLDAPAdapter)
+
+    serverURL = u"ldap://localhost"

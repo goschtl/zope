@@ -5,10 +5,10 @@
     i18n_domain="ldapadapter"
     >
 
-    <content class="ldapadapter.LDAPAdapter">
+    <content class="ldapadapter.ManageableLDAPAdapter">
 
         <factory
-            id="ldapadapter.LDAPAdapter" />
+            id="ldapadapter.ManageableLDAPAdapter" />
    
         <implements
             interface="zope.app.utility.interfaces.ILocalUtility" />
@@ -16,16 +16,13 @@
         <implements
             interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
-        <implements
-            interface="ldapadapter.interfaces.ILDAPAdapter" />
-
         <require
             permission="zope.ManageServices"
-            interface="ldapadapter.interfaces.ILDAPAdapter" />
+            interface="ldapadapter.interfaces.IManageableLDAPAdapter" />
 
         <require
             permission="zope.ManageServices" 
-            set_schema="ldapadapter.interfaces.ILDAPAdapter" />
+            set_schema="ldapadapter.interfaces.IManageableLDAPAdapter" />
 
     </content>
 

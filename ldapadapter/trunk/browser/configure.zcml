@@ -5,14 +5,14 @@
 
     <!-- LDAPAdapter -->
     <tool
-        interface="ldapadapter.interfaces.ILDAPAdapter"
+        interface="ldapadapter.interfaces.IManageableLDAPAdapter"
         title="LDAP Adapter"
         description="A LDAP adapter."
         />
 
     <addform
         label="LDAP Adapter"
-        for= "ldapadapter.interfaces.ILDAPAdapter"
+        for= "ldapadapter.interfaces.ILDAPAdapterManagement"
         name="addLDAPAdapter.html"
         schema="zope.app.utility.interfaces.IUtilityRegistration"
         class="zope.app.utility.browser.AddRegistration"
@@ -24,12 +24,19 @@
         fields="name interface permission status"
         />
 
-    <!-- Menu entry for "Add Utility" menu -->
     <addMenuItem
-        class="ldapadapter.LDAPAdapter"
+        class="ldapadapter.ManageableLDAPAdapter"
         title="LDAP Adapter"
         description="A LDAP adapter"
         permission="zope.ManageServices"
+        />
+
+    <editform
+        for="ldapadapter.interfaces.IManageableLDAPAdapter"
+        schema="ldapadapter.interfaces.ILDAPAdapterManagement"
+        name="edit.html"
+        menu="zmi_views" title="Edit"
+        permission="zope.ManageContent"
         />
 
 </configure>
