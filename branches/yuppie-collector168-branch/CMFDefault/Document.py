@@ -377,34 +377,13 @@ class Document(PortalContent, DefaultDublinCoreImpl):
         self.reindexObject()
         return RESPONSE
 
-    _htmlsrc = (
-        '<html>\n <head>\n'
-        ' <title>%(title)s</title>\n'
-       '%(metatags)s\n'
-        ' </head>\n'
-        ' <body>\n%(body)s\n </body>\n'
-        '</html>\n'
-        )
-
     security.declareProtected(View, 'manage_FTPget')
     def manage_FTPget(self):
         "Get the document body for FTP download (also used for the WebDAV SRC)"
-        hdrlist = self.getMetadataHeaders()
         if self.Format() == 'text/html':
-            hdrtext = ''
-            for name, content in hdrlist:
-                if name.lower() == 'title':
-                    continue
-                else:
-                    hdrtext = '%s\n <meta name="%s" content="%s" />' % (
-                        hdrtext, name, content)
-
-            bodytext = self._htmlsrc % {
-                'title': self.Title(),
-                'metatags': hdrtext,
-                'body': self.EditableBody(),
-                }
+            bodytext = self.source_html(self)
         else:
+            hdrlist = self.getMetadataHeaders()
             hdrtext = formatRFC822Headers( hdrlist )
             bodytext = '%s\r\n\r\n%s' % ( hdrtext, self.text )
 

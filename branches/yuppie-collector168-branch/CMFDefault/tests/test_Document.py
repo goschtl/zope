@@ -1,16 +1,25 @@
 from unittest import TestSuite, makeSuite, main
 
+import Zope
+try:
+    Zope.startup()
+except AttributeError:
+    # for Zope versions before 2.6.1
+    pass
 try:
     from Interface.Verify import verifyClass
 except ImportError:
     # for Zope versions before 2.6.0
     from Interface import verify_class_implementation as verifyClass
 
-from StringIO import StringIO
+from os.path import dirname
+from os.path import join
 from re import compile
+from StringIO import StringIO
 
-from Products.CMFCore.tests.base.testcase import RequestTest
+from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
+from Products import CMFDefault
 from Products.CMFCore.tests.base.content import DOCTYPE
 from Products.CMFCore.tests.base.content import HTML_TEMPLATE
 from Products.CMFCore.tests.base.content import BASIC_HTML
@@ -23,8 +32,10 @@ from Products.CMFCore.tests.base.content import STX_NO_HEADERS_BUT_COLON
 from Products.CMFCore.tests.base.content import SIMPLE_STRUCTUREDTEXT
 from Products.CMFCore.tests.base.content import SIMPLE_HTML
 from Products.CMFCore.tests.base.content import SIMPLE_XHTML
-
+from Products.CMFCore.tests.base.dummy import DummySite
+from Products.CMFCore.tests.base.testcase import RequestTest
 from Products.CMFDefault.Document import Document
+
 
 class DocumentTests(RequestTest):
 
@@ -302,7 +313,17 @@ class DocumentFTPGetTests(RequestTest):
 
     def testHTML( self ):
         self.REQUEST['BODY']=BASIC_HTML
-        d = Document( 'foo' )
+
+        site = DummySite('site').__of__(self.root)
+
+        zpt = site._setObject( 'source_html',
+                               ZopePageTemplate('source_html') )
+        dir = dirname(CMFDefault.__file__)
+        file = join(dir, 'skins', 'zpt_content', 'source_html.pt')
+        data = open(file, 'r').read()
+        zpt.write(data)
+
+        d = site._setObject( 'foo', Document('foo') )
         d.PUT(self.REQUEST, self.RESPONSE)
 
         rnlinesplit = compile( r'\r?\n?' )
