@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed May 12 16:39:19 2004\n"
+"POT-Creation-Date: Tue May 18 15:12:46 2004\n"
 "PO-Revision-Date: 2003-08-06 11:22-0500\n"
 "Last-Translator: Philipp von Weitershausen\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -15,26 +15,26 @@ msgstr ""
 "Generated-By: Zope 3 0.1\n"
 "X-Generator: KBabel 1.0.1\n"
 
-#: src/zope/app/adapter/adapter.py:278
+#: src/zope/app/adapter/adapter.py:279
 #: src/zope/app/presentation/pagefolder.py:54
 #: src/zope/app/presentation/presentation.py:293
 msgid "For interface"
 msgstr "Para interfaz:"
 
-#: src/zope/app/adapter/adapter.py:279
+#: src/zope/app/adapter/adapter.py:280
 msgid "The interface of the objects being adapted"
 msgstr ""
 
-#: src/zope/app/adapter/adapter.py:284 src/zope/app/utility/interfaces.py:48
+#: src/zope/app/adapter/adapter.py:285 src/zope/app/utility/interfaces.py:48
 msgid "Provided interface"
 msgstr ""
 
-#: src/zope/app/adapter/adapter.py:285
+#: src/zope/app/adapter/adapter.py:286
 #, fuzzy
 msgid "The interface provided"
 msgstr "Campo de Interfaz"
 
-#: src/zope/app/adapter/adapter.py:291 src/zope/app/site/interfaces.py:161
+#: src/zope/app/adapter/adapter.py:292 src/zope/app/site/interfaces.py:161
 #: src/zope/app/site/browser/tool.pt:40
 #: src/zope/app/schema/browser/schema_edit.pt:36
 #: src/zope/app/workflow/browser/instancecontainer_index.pt:19
@@ -44,15 +44,15 @@ msgstr "Campo de Interfaz"
 msgid "Name"
 msgstr "Nombre"
 
-#: src/zope/app/adapter/adapter.py:297
+#: src/zope/app/adapter/adapter.py:298
 msgid "The dotted name of a factory for creating the adapter"
 msgstr ""
 
-#: src/zope/app/adapter/adapter.py:303
+#: src/zope/app/adapter/adapter.py:304
 msgid "The permission required for use"
 msgstr ""
 
-#: src/zope/app/adapter/adapter.py:310
+#: src/zope/app/adapter/adapter.py:311
 msgid "Factory to be called to construct the component"
 msgstr ""
 
@@ -390,26 +390,6 @@ msgstr "En esta ficha puede asociar un caché con este objeto."
 msgid "Currently there is no cache associated with the object."
 msgstr "Actualmente no hay ningún caché asociado con el objeto."
 
-#: src/zope/app/cache/browser/configure.zcml:12
-msgid "RAM Cache"
-msgstr "Caché RAM"
-
-#: src/zope/app/cache/browser/configure.zcml:12
-msgid "A RAM cache is a volatile (in memory) cache"
-msgstr ""
-
-#: src/zope/app/cache/browser/configure.zcml:26
-msgid "Statistics"
-msgstr "Statisticas"
-
-#: src/zope/app/cache/browser/configure.zcml:6
-msgid "Caches"
-msgstr "Cachés"
-
-#: src/zope/app/cache/browser/configure.zcml:6
-msgid "Caches can be used to make your site run faster."
-msgstr ""
-
 #: src/zope/app/cache/browser/ramedit.pt:20
 msgid "Maximum cached entries"
 msgstr ""
@@ -492,12 +472,12 @@ msgid "Field Index"
 msgstr "Índice de Campo"
 
 #: src/zope/app/catalog/browser/configure.zcml:79
-msgid "Keyword Index"
-msgstr "Índice de palabras claves"
-
-#: src/zope/app/catalog/browser/configure.zcml:79
 msgid "A keyword index of a specific field"
 msgstr ""
+
+#: src/zope/app/catalog/browser/configure.zcml:79
+msgid "Keyword Index"
+msgstr "Índice de palabras claves"
 
 #: src/zope/app/catalog/browser/configure.zcml:8
 msgid "Catalog"
@@ -566,21 +546,21 @@ msgstr "Buscar"
 
 #: src/zope/app/container/browser/metaconfigure.py:62
 #: src/zope/app/menu/browser/configure.zcml:63
-#: src/zope/app/bundle/browser/configure.zcml:11
-#: src/zope/app/workflow/browser/configure.zcml:35
 #: src/zope/app/folder/browser/configure.zcml:20
 #: src/zope/app/site/browser/configure.zcml:19
+#: src/zope/app/bundle/browser/configure.zcml:11
+#: src/zope/app/workflow/browser/configure.zcml:35
 msgid "Contents"
 msgstr "Contenido"
 
 #: src/zope/app/container/browser/metaconfigure.py:70
 #: src/zope/app/schema/browser/configure.zcml:15
-#: src/zope/app/workflow/stateful/browser/configure.zcml:48
-#: src/zope/app/workflow/stateful/browser/configure.zcml:85
-#: src/zope/app/catalog/browser/configure.zcml:40
 #: src/zope/app/container/browser/configure.zcml:5
 #: src/zope/app/registration/browser/configure.zcml:42
 #: src/zope/app/site/browser/configure.zcml:27
+#: src/zope/app/workflow/stateful/browser/configure.zcml:48
+#: src/zope/app/workflow/stateful/browser/configure.zcml:85
+#: src/zope/app/catalog/browser/configure.zcml:40
 msgid "Add"
 msgstr "Añadir"
 
@@ -839,34 +819,30 @@ msgstr ""
 msgid "The page that you are trying to access is not available"
 msgstr ""
 
-#: src/zope/app/file/browser/configure.zcml:120
+#: src/zope/app/file/browser/configure.zcml:109
 msgid "Add a Image"
 msgstr "Añadir un imagen"
 
-#: src/zope/app/file/browser/configure.zcml:17
+#: src/zope/app/file/browser/configure.zcml:16
 msgid "Change a file"
 msgstr "Cambiar archivo"
 
-#: src/zope/app/file/browser/configure.zcml:38
+#: src/zope/app/file/browser/configure.zcml:37
 msgid "Upload a file"
 msgstr "Subir un archivo"
 
-#: src/zope/app/file/browser/configure.zcml:38
-#: src/zope/app/file/browser/configure.zcml:88
+#: src/zope/app/file/browser/configure.zcml:37
+#: src/zope/app/file/browser/configure.zcml:77
 #: src/zope/app/i18nfile/browser/configure.zcml:34
 #: src/zope/app/i18nfile/browser/configure.zcml:76
 msgid "Upload"
 msgstr "Subir"
 
-#: src/zope/app/file/browser/configure.zcml:62
+#: src/zope/app/file/browser/configure.zcml:61
 msgid "Add a File"
 msgstr "Añadir un archivo"
 
-#: src/zope/app/file/browser/configure.zcml:76
-msgid "File Upload Screen"
-msgstr "Bajar una imagen"
-
-#: src/zope/app/file/browser/configure.zcml:88
+#: src/zope/app/file/browser/configure.zcml:77
 msgid "Upload an image"
 msgstr "Subir una imagen"
 
@@ -881,22 +857,22 @@ msgid "add-images-permission"
 msgstr ""
 
 #: src/zope/app/file/configure.zcml:29
-#: src/zope/app/file/browser/configure.zcml:54
+#: src/zope/app/file/browser/configure.zcml:53
 msgid "File"
 msgstr "Archivo"
 
 #: src/zope/app/file/configure.zcml:29
-#: src/zope/app/file/browser/configure.zcml:54
+#: src/zope/app/file/browser/configure.zcml:53
 msgid "A File"
 msgstr "Un archivo"
 
 #: src/zope/app/file/configure.zcml:51
-#: src/zope/app/file/browser/configure.zcml:112
+#: src/zope/app/file/browser/configure.zcml:101
 msgid "An Image"
 msgstr "Un imagen"
 
 #: src/zope/app/file/configure.zcml:51
-#: src/zope/app/file/browser/configure.zcml:112
+#: src/zope/app/file/browser/configure.zcml:101
 msgid "Image"
 msgstr "Imagen"
 
@@ -925,11 +901,11 @@ msgid "The actual content of the object."
 msgstr "El contenido real de este objeto."
 
 #: src/zope/app/folder/browser/configure.zcml:40
-#: src/zope/app/file/browser/configure.zcml:133
-#: src/zope/app/file/browser/configure.zcml:141
-#: src/zope/app/zptpage/browser/configure.zcml:70
-#: src/zope/app/pythonpage/configure.zcml:72
 #: src/zope/app/dtmlpage/configure.zcml:99
+#: src/zope/app/file/browser/configure.zcml:122
+#: src/zope/app/file/browser/configure.zcml:130
+#: src/zope/app/pythonpage/configure.zcml:72
+#: src/zope/app/zptpage/browser/configure.zcml:70
 msgid "Preview"
 msgstr "Previsión"
 
@@ -1209,12 +1185,12 @@ msgid "HubIds Service"
 msgstr ""
 
 #: src/zope/app/hub/browser/configure.zcml:27
-msgid "An event subscriber that registers content with the objecthub"
-msgstr ""
-
-#: src/zope/app/hub/browser/configure.zcml:27
 msgid "Registration subscriber"
 msgstr "Subscriptor de la registración"
+
+#: src/zope/app/hub/browser/configure.zcml:27
+msgid "An event subscriber that registers content with the objecthub"
+msgstr ""
 
 #: src/zope/app/hub/browser/configure.zcml:5
 #: src/zope/app/hub/browser/configure.zcml:36
@@ -1747,19 +1723,18 @@ msgstr "Editar menu browser"
 #: src/zope/app/schema/fieldforms.zcml:125
 #: src/zope/app/schema/fieldforms.zcml:151
 #: src/zope/app/module/browser/configure.zcml:6
-#: src/zope/app/schemacontent/browser/configure.zcml:46
-#: src/zope/app/schemacontent/browser/configure.zcml:88
-#: src/zope/app/cache/browser/configure.zcml:24
-#: src/zope/app/rdb/browser/configure.zcml:27
-#: src/zope/app/securitypolicy/browser/configure.zcml:25
-#: src/zope/app/file/browser/configure.zcml:30
+#: src/zope/app/utility/browser/configure.zcml:85
+#: src/zope/app/file/browser/configure.zcml:29
 #: src/zope/app/i18nfile/browser/configure.zcml:31
 #: src/zope/app/i18nfile/browser/configure.zcml:73
-#: src/zope/app/zptpage/browser/configure.zcml:39
 #: src/zope/app/pythonpage/configure.zcml:57
-#: src/zope/app/utility/browser/configure.zcml:85
+#: src/zope/app/rdb/browser/configure.zcml:27
+#: src/zope/app/schemacontent/browser/configure.zcml:46
+#: src/zope/app/schemacontent/browser/configure.zcml:88
 #: src/zope/app/wiki/browser/configure.zcml:76
 #: src/zope/app/wiki/browser/configure.zcml:160
+#: src/zope/app/zptpage/browser/configure.zcml:39
+#: src/zope/app/securitypolicy/browser/configure.zcml:25
 msgid "Edit"
 msgstr "Editar"
 
@@ -1980,15 +1955,15 @@ msgstr ""
 msgid "Powered by Zope"
 msgstr ""
 
-#: src/zope/app/onlinehelp/configure.zcml:22
+#: src/zope/app/onlinehelp/configure.zcml:26
 msgid "Zope UI Help"
 msgstr ""
 
-#: src/zope/app/onlinehelp/configure.zcml:27
+#: src/zope/app/onlinehelp/configure.zcml:32
 msgid "Welcome"
 msgstr "Bienvenidos"
 
-#: src/zope/app/onlinehelp/configure.zcml:33
+#: src/zope/app/onlinehelp/configure.zcml:39
 msgid "Online help system"
 msgstr ""
 
@@ -2519,27 +2494,27 @@ msgstr "Activo"
 msgid "Registration status"
 msgstr "Estado de registraciones"
 
-#: src/zope/app/renderer/configure.zcml:13
+#: src/zope/app/renderer/configure.zcml:14
 msgid "Plain Text Source"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:13
+#: src/zope/app/renderer/configure.zcml:14
 msgid "Plain Text"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:27
+#: src/zope/app/renderer/configure.zcml:28
 msgid "Structured Text (STX)"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:27
+#: src/zope/app/renderer/configure.zcml:28
 msgid "Structured Text (STX) Source"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:41
+#: src/zope/app/renderer/configure.zcml:42
 msgid "ReStructured Text (ReST)"
 msgstr ""
 
-#: src/zope/app/renderer/configure.zcml:41
+#: src/zope/app/renderer/configure.zcml:42
 msgid "ReStructured Text (ReST) Source"
 msgstr ""
 
@@ -2844,22 +2819,22 @@ msgid "New Content Component Instance"
 msgstr ""
 
 #: src/zope/app/schemacontent/browser/permission_edit.pt:14
-#: src/zope/app/workflow/stateful/browser/definition_edit.pt:32
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:33
 msgid "Map permissions to Schema fields"
 msgstr ""
 
 #: src/zope/app/schemacontent/browser/permission_edit.pt:35
-#: src/zope/app/workflow/stateful/browser/definition_edit.pt:52
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:53
 msgid "change-button"
 msgstr "Cambiar"
 
-#: src/zope/app/schemacontent/configure.zcml:9
+#: src/zope/app/schemacontent/configure.zcml:10
 #: src/zope/app/schemacontent/browser/configure.zcml:29
 #: src/zope/app/schemacontent/browser/configure.zcml:39
 msgid "A Persistent Content Component Definition"
 msgstr ""
 
-#: src/zope/app/schemacontent/configure.zcml:9
+#: src/zope/app/schemacontent/configure.zcml:10
 #: src/zope/app/schemacontent/browser/configure.zcml:5
 #: src/zope/app/schemacontent/browser/configure.zcml:29
 #: src/zope/app/schemacontent/browser/configure.zcml:39
@@ -3579,7 +3554,7 @@ msgstr "Renombrar"
 #: src/zope/app/schemacontent/browser/permission_edit.pt:33
 #: src/zope/app/errorservice/browser/error.pt:52
 #: src/zope/app/workflow/stateful/browser/definition_edit.pt:24
-#: src/zope/app/workflow/stateful/browser/definition_edit.pt:50
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:51
 #: src/zope/app/workflow/stateful/browser/instance_manage.pt:74
 #: src/zope/app/pythonpage/edit.pt:69 src/zope/app/form/browser/add.pt:50
 #: src/zope/app/form/browser/edit.pt:50
@@ -4197,7 +4172,7 @@ msgid "Wiki Page Parents"
 msgstr ""
 
 #: src/zope/app/wiki/interfaces.py:96
-msgid "Parents of a a Wiki"
+msgid "Parents of a Wiki"
 msgstr ""
 
 #: src/zope/app/wiki/interfaces.py:97
@@ -4280,12 +4255,14 @@ msgid "Add State"
 msgstr "Añadir estado"
 
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:19
-msgid "Source Satte"
-msgstr ""
+#, fuzzy
+msgid "Source State"
+msgstr "Tipo de Fuente"
 
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:29
-msgid "Destination Satte"
-msgstr ""
+#, fuzzy
+msgid "Destination State"
+msgstr "Estados de la definición de procesos"
 
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:3
 msgid "Add Transition"
@@ -4352,12 +4329,12 @@ msgstr ""
 msgid "Stateful State"
 msgstr ""
 
-#: src/zope/app/workflow/stateful/browser/contentworkflow.py:87
-msgid "Mapping(s) added."
+#: src/zope/app/workflow/stateful/browser/contentworkflow.py:100
+msgid "Mapping(s) removed."
 msgstr ""
 
-#: src/zope/app/workflow/stateful/browser/contentworkflow.py:95
-msgid "Mapping(s) removed."
+#: src/zope/app/workflow/stateful/browser/contentworkflow.py:92
+msgid "Mapping(s) added."
 msgstr ""
 
 #: src/zope/app/workflow/stateful/browser/contentworkflow_index.pt:11
@@ -4423,6 +4400,15 @@ msgstr ""
 #: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:67
 msgid "add-mappings-button"
 msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:16
+msgid "Set Workflow-Relevant Data Schema"
+msgstr ""
+
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:26
+#, fuzzy
+msgid "set-schema-button"
+msgstr "Buscar"
 
 #: src/zope/app/workflow/stateful/browser/definition_index.pt:13
 msgid "Process Definition: ${name}"
@@ -4855,6 +4841,18 @@ msgstr ""
 msgid "Bar description"
 msgstr "Descripción"
 
+#~ msgid "RAM Cache"
+#~ msgstr "Caché RAM"
+
+#~ msgid "Statistics"
+#~ msgstr "Statisticas"
+
+#~ msgid "Caches"
+#~ msgstr "Cachés"
+
+#~ msgid "File Upload Screen"
+#~ msgstr "Bajar una imagen"
+
 #~ msgid "Use refresh to enter more interfaces"
 #~ msgstr "Use reiniciar para entrar más interfaces"
 
@@ -4999,9 +4997,6 @@ msgstr "Descripción"
 
 #~ msgid "Deny"
 #~ msgstr "Negar"
-
-#~ msgid "search-button"
-#~ msgstr "Buscar"
 
 #~ msgid "finnish-button"
 #~ msgstr "Terminar"
