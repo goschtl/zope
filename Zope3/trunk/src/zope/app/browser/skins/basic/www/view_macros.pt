@@ -36,7 +36,7 @@
 
   <div metal:define-macro="footer">
   <p>Powered by Zope</p>
-  </div</a>>
+  </div>
 
 </body>
 </html>

@@ -1,4 +1,6 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'
+               xmlns:global_translation="http://namespaces.zope.org/gts"
+               >
 
 <!-- Meta configuration (new directives) -->
 
@@ -109,8 +111,8 @@
   <include package="zope.app.xmlrpc" />
   <include package="zope.app.http" />
 
-<!-- Interfaces, mainly to get their translations configured -->
-  <include package=".interfaces" />
+<!-- Translations -->
+  <global_translation:registerTranslations directory="translation_files" />
 
 
 </zopeConfigure>

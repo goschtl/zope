@@ -1,4 +1,0 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'
-               xmlns:global_translation="http://namespaces.zope.org/gts">
-  <global_translation:registerTranslations directory="./locales" />
-</zopeConfigure>
