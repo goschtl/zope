@@ -16,7 +16,7 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.3 2003/03/23 22:03:28 jim Exp $
+$Id: pagefolder.py,v 1.4 2003/04/28 13:17:01 mgedmin Exp $
 """
 __metaclass__ = type
 
@@ -51,7 +51,7 @@ class PageFolder(ConfigurationManagerContainer, BTreeContainer):
         if IConfigurationManager.isImplementedBy(object):
             # We allow configuration managers as well as templates
             return super(PageFolder, self).setObject(name, object)
-            
+
         if not IZPTTemplate.isImplementedBy(object):
             raise TypeError("Can only add templates", object)
 
@@ -88,7 +88,7 @@ class PageFolder(ConfigurationManagerContainer, BTreeContainer):
     def deactivated(self):
         "See IConfiguration"
 
-# XXX Backward compatability. This is needed to support old pickles.
+# XXX Backward compatibility. This is needed to support old pickles.
 ViewPackage = PageFolder
 import sys
 sys.modules['zope.app.services.viewpackage'
