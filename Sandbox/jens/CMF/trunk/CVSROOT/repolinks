@@ -146,7 +146,7 @@
 /ZODB4/src/zope/interface /Zope3/src/zope/interface
 /ZODB4/src/zope/testing  /Zope3/src/zope/testing
 /ZODB4/src/ThreadedAsync /Packages/ThreadedAsync
-/ZODB4/src/zdaemon       /Packages3/zdaemon
+/ZODB4/src/zdaemon       /Packages/zdaemon
 /ZODB4/src/ZConfig	 /Packages/ZConfig
 /ZODB4/src/logging       /Zope3/src/logging
 
