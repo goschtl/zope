@@ -3,14 +3,14 @@
     >
 
   <!-- Registration registries -->
-  
+
   <content class=".registration.RegistrationStack">
     <require
         permission="zope.ManageServices"
         interface=".interfaces.IRegistrationStack"
         />
   </content>
-  
+
   <adapter
       for=".interfaces.IRegisterable"
       provides=".interfaces.IRegistered"
@@ -22,9 +22,9 @@
     <require 
         permission="zope.ManageContent"
         attributes="addUsage removeUsage" />
-    <allow attributes="usages registrations" />      
+    <allow attributes="usages registrations" />
   </class>
-    
+
   <adapter
       for=".interfaces.IRegisterable"
       provides="zope.app.copypastemove.interfaces.IObjectCopier"
