@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""adapter service
-"""
+"""Global Adapter Service
 
+$Id: adapter.py,v 1.11 2004/04/15 13:26:09 srichter Exp $
+"""
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService, IComponentRegistry
 from zope.component.service import GlobalService
@@ -34,6 +35,7 @@ class IGlobalAdapterService(IAdapterService, IComponentRegistry):
           - `provided`: The interface provided by the adapter
           - `name`: The adapter name
           - `factory`: The object used to compute the adapter
+          - `info`: Provide some info about this particular adapter.
         """
 
     def subscribe(required, provided, factory, info=''):
@@ -45,26 +47,15 @@ class IGlobalAdapterService(IAdapterService, IComponentRegistry):
           - `provided`: The interface provided by the adapter
           - `name`: The adapter name
           - `factory`: The object used to compute the subscriber
-        """
-
-    def getRegisteredMatching(required=None,
-                              provided=None,
-                              name=None,
-                              with=None):
-        """Return information about registered data
-
-        A five-tuple is returned containing:
-
-          - registered name,
-
-          - registered for interface
-
-          - registered provided interface, and
-
-          - registered data
+          - `info`: Provide some info about this particular adapter.
         """
 
 class AdapterService(AdapterRegistry):
+    """Base implementation of an adapter service, implementing only the
+    'IAdapterService' interface.
+
+    No write-methods were implemented.
+    """
 
     implements(IAdapterService)
 
@@ -90,6 +81,7 @@ class AdapterService(AdapterRegistry):
         return [subscription(*objects) for subscription in subscriptions]
 
 class GlobalAdapterService(AdapterService, GlobalService):
+    """Global Adapter Service implementation."""
 
     implements(IGlobalAdapterService)
 
@@ -178,14 +170,13 @@ class GlobalAdapterService(AdapterService, GlobalService):
             else:
                 yield registration
 
-class AdapterRegistration(object):
 
-    def __init__(self, required, provided, name, value, doc):
-        self.required = required
-        self.provided = provided
-        self.name = name
-        self.value = value
-        self.doc = doc
+class AdapterRegistration(object):
+    """Registration for a simple adapter."""
+    
+    def __init__(self, required, provided, name, value, doc=''):
+        (self.required, self.provided, self.name, self.value, self.doc
+         ) = required, provided, name, value, doc
 
     def __repr__(self):
         return '%s(%r, %r, %r, %r, %r)' % (
@@ -195,13 +186,13 @@ class AdapterRegistration(object):
             self.value, self.doc,
             )
 
+
 class SubscriptionRegistration(object):
+    """Registration for a subscription adapter."""
 
     def __init__(self, required, provided, value, doc):
-        self.required = required
-        self.provided = provided
-        self.value = value
-        self.doc = doc
+        (self.required, self.provided, self.value, self.doc
+         ) = required, provided, value, doc
 
     def __repr__(self):
         return '%s(%r, %r, %r, %r)' % (
