@@ -281,6 +281,7 @@ class Component:
         self.ip = ip
         self.dependencies = None
         self.destination = None
+        self.pkginfo = None
         self.pubinfo = None
         self.source = self.ip.loader.load(self.url)
         specs = include.load(self.source, url=self.url)
@@ -326,11 +327,15 @@ class Component:
         return self.dependencies
 
     def get_package_info(self):
-        destdir = os.path.join(self.destination, self.name)
-        if self.is_python_package():
-            return package.loadPackageInfo(self.name, destdir, self.name)
-        else:
-            return package.loadCollectionInfo(destdir, self.name)
+        if self.pkginfo is None:
+            destdir = os.path.join(self.destination, self.name)
+            if self.is_python_package():
+                pkginfo = package.loadPackageInfo(self.name, destdir,
+                                                  self.name)
+            else:
+                pkginfo = package.loadCollectionInfo(destdir, self.name)
+            self.pkginfo = pkginfo
+        return self.pkginfo
 
     def get_publication_info(self):
         if self.pubinfo is None:
