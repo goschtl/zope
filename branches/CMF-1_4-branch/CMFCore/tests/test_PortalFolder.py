@@ -758,7 +758,7 @@ class _SensitiveSecurityPolicy:
 
     def validate( self, *args, **kw ):
         if self._lambdas[ 0 ]( *args, **kw ):
-            return True
+            return 1
         raise Unauthorized
 
     def checkPermission( self, *args, **kw ) :
