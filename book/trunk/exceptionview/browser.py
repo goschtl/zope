@@ -29,4 +29,4 @@ class RaiseExceptionView(object):
     """The view that raises the exception"""
 
     def raisePaymentException(self):
-        raise PaymentException, 'An application error occured'
+        raise PaymentException, 'You are required to pay.'
