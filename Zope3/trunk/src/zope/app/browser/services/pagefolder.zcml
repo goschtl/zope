@@ -6,13 +6,13 @@
 
   <page 
       name="index.html" 
-      for="zope.app.interfaces.services.pagefolder.IPageFolder"
+      for="zope.app.services.pagefolder.IPageFolder"
       permission="zope.ManageServices" 
       class="zope.app.browser.container.contents.JustContents"
       attribute="index" />
 
   <page name="contents.html"
-        for="zope.app.interfaces.services.pagefolder.IPageFolder"
+        for="zope.app.services.pagefolder.IPageFolder"
         permission="zope.ManageServices" 
         class="zope.app.browser.container.contents.Contents"
         menu="zmi_views" title="Contents"
@@ -21,18 +21,19 @@
   <editform
         name="DefaultRegistration.html"
         label="Default registration parameters"
-        schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo"
+        schema="zope.app.services.pagefolder.IPageFolderInfo"
         menu="zmi_views" title="Default Registration"
         permission="zope.ManageServices"
-        class=".pagefolder.PageFolderDefaultConfiguration" />
+        class=".pagefolder.PageFolderDefaultConfiguration" 
+        />
 
   
   <!-- Override the add action with a link to add a template -->
   <menuItem
      menu="zmi_actions"
-     for="zope.app.interfaces.services.pagefolder.IPageFolder"
+     for="zope.app.services.pagefolder.IPageFolder"
      title="Add"
-     action="contents.html?type_name=zope.app.services.zpt.template"
+     action="contents.html?type_name=zope.app.services.zpt.ZPTTemplate"
      permission="zope.ManageServices" />
 
   <menuItem

@@ -13,9 +13,9 @@
 ##############################################################################
 """
 
-$Id: pagefolder.py,v 1.3 2003/08/07 17:41:03 srichter Exp $
+$Id: pagefolder.py,v 1.4 2003/11/21 17:11:15 jim Exp $
 """
-from zope.app.interfaces.services.pagefolder import IPageFolder
+from zope.app.services.pagefolder import IPageFolder
 
 class PageFolderDefaultConfiguration:
 
