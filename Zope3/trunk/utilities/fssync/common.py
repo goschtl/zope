@@ -154,19 +154,6 @@ def createTempfile(ob
     fo.close()
     return temp_file
 
-def checkFSPath(pathlist):
-    """Checks the file system path.
-    """
-    for path in pathlist:
-        if not os.path.exists(path):
-            err = "Invalid file system path --- "+str(path)
-        elif not os.access(path,2):
-            err = "Permission denied on --- "+str(path)
-        else:
-            err = None
-        if err is not None:
-            return err
-
 def mapFS(mappings
           , root
           , objectroot
