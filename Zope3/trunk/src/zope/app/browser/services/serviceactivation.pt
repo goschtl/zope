@@ -19,7 +19,7 @@
 
   <p tal:content="view/action">Message from action() goes here</p>
 
-  <form action="@@serviceActivation.html" method="GET">
+  <form action="@@serviceActivation.html" method="POST">
     <table tal:define="registry view/listRegistry">
 
       <thead>
