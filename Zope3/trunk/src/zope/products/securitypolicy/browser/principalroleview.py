@@ -14,7 +14,7 @@
 """Management view component for principal-role management (Zope2's
 "local roles").
 
-$Id: principalroleview.py,v 1.2 2004/01/14 22:55:33 chrism Exp $
+$Id: principalroleview.py,v 1.3 2004/01/15 23:25:22 stevea Exp $
 """
 from datetime import datetime
 
@@ -60,7 +60,8 @@ class PrincipalRoleView:
                 roles = self.getAllRoles()
             else:
                 # Ugh, we have ids, but we want objects
-                role_service = getService(self.context, Roles)
+                # XXX This code path needs a test
+                role_service = getService(self.context, 'Roles')
                 roles = [role_service.getRole(role)
                          for role in roles]
 
