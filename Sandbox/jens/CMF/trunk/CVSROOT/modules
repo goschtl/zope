@@ -14,6 +14,7 @@ PrincipiaHelp    Packages/PrincipiaHelp
 Scheduler        Packages/Scheduler
 StructuredText   Packages/StructuredText
 TreeDisplay      Packages/TreeDisplay
+Products         Packages/Products  __init__.py
 
 OFSP           -d Products/OFSP Packages/Products/OFSP
 MailHost       -d Products/MailHost Packages/Products/MailHost
@@ -22,6 +23,6 @@ ExternalMethod -d Products/ExternalMethod Packages/Products/ExternalMethod
 z Components/GreyThing \
   &AccessControl &App &BoboPOS2 &DateTime &DocumentTemplate \
   &HTTP_ORB &OFS &PrincipiaHelp &Scheduler &StructuredText &TreeDisplay \
-  &OFSP &MailHost
+  &Products &OFSP &MailHost &ExternalMethod
 
 pcgi Components/pcgi2 pcgi_publisher.py
