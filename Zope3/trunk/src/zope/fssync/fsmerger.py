@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.1 2003/05/14 22:16:09 gvanrossum Exp $
+$Id: fsmerger.py,v 1.2 2003/05/15 15:32:23 gvanrossum Exp $
 """
 
 import os
@@ -138,9 +138,8 @@ class FSMerger(object):
         names = {}
         names.update(lnames)
         names.update(rnames)
-        nczope = normcase("@@Zope")
-        if nczope in names:
-            del names[nczope]
+        if fsutil.nczope in names:
+            del names[fsutil.nczope]
 
         ncnames = names.keys()
         ncnames.sort()

@@ -20,6 +20,7 @@ fssync [global_options] checkout [local_options] URL [TARGETDIR]
 fssync [global_options] update [local_options] [TARGET ...]
 fssync [global_options] commit [local_options] [TARGET ...]
 fssync [global_options] diff [local_options] [TARGET ...]
+fssync [global_options] status [local_options] [TARGET ...]
 fssync [global_options] add [local_options] TARGET ...
 fssync [global_options] remove [local_options] TARGET ...
 
@@ -29,8 +30,9 @@ subset of the options of GNU diff as local options.
 
 ``fssync -h'' prints the global help (this message)
 ``fssync command -h'' prints the local help for the command
-
-$Id: main.py,v 1.13 2003/05/15 01:13:49 gvanrossum Exp $
+"""
+"""
+$Id: main.py,v 1.14 2003/05/15 15:32:23 gvanrossum Exp $
 """
 
 import os
@@ -243,6 +245,14 @@ def diff(opts, args):
         fs.diff(arg, mode, diffopts)
     fs.multiple(args, calldiff)
 
+def status(opts, args):
+    """fssync status [TARGET ...]
+
+    Print brief (local) status for each target, without changing any files.
+    """
+    fs = FSSync()
+    fs.multiple(args, fs.status)
+
 command_table = {
     "checkout": ("", [], checkout),
     "co":       ("", [], checkout),
@@ -253,6 +263,7 @@ command_table = {
     "rm":       ("", [], remove),
     "r":        ("", [], remove),
     "diff":     ("bBcC:iuU:", ["brief", "context=", "unified="], diff),
+    "status":   ("", [], status),
     }
 
 if __name__ == "__main__":

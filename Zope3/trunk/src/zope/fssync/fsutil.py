@@ -25,9 +25,10 @@ Functions:
 - ensuredir(dir)
 
 Variables:
-- unwanted -- a sequence containing the pseudo path components "", ".", ".."
+- unwanted -- the tuple ("", os.curdir, os.pardir)
+- nczope   -- the string os.path.normcase("@@Zope")
 
-$Id: fsutil.py,v 1.1 2003/05/14 22:16:09 gvanrossum Exp $
+$Id: fsutil.py,v 1.2 2003/05/15 15:32:23 gvanrossum Exp $
 """
 
 import os
@@ -74,6 +75,8 @@ class Error(Exception):
         return "%s%r" % (self.__class__.__name__, (self.msg,)+self.args)
 
 unwanted = ("", os.curdir, os.pardir)
+
+nczope = os.path.normcase("@@Zope")
 
 def getoriginal(path):
     """Return the path of the Original file corresponding to path."""

@@ -11,9 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Support classes for fssync.
+"""Highest-level classes to support filesystem synchronization:
 
-$Id: fssync.py,v 1.18 2003/05/15 01:58:01 gvanrossum Exp $
+class Network -- handle network connection
+class FSSync  -- implement various commands (checkout, commit etc.)
+
+$Id: fssync.py,v 1.19 2003/05/15 15:32:23 gvanrossum Exp $
 """
 
 import os
@@ -436,3 +439,70 @@ class FSSync(object):
         else:
             entry["flag"] = "removed"
         self.metadata.flush()
+
+    def status(self, target, descend_only=False):
+        entry = self.metadata.getentry(target)
+        flag = entry.get("flag")
+        if isfile(target):
+            if not entry:
+                print "?", target
+            elif flag == "added":
+                print "A", target
+            elif flag == "removed":
+                print "R(reborn)", target
+            else:
+                original = fsutil.getoriginal(target)
+                if isfile(original):
+                    if filecmp.cmp(target, original):
+                        print "=", target
+                    else:
+                        print "M", target
+                else:
+                    print "M(lost-original)", target
+        elif isdir(target):
+            pname = join(target, "")
+            if not entry:
+                if not descend_only:
+                    print "?", pname
+            elif flag == "added":
+                print "A", pname
+            elif flag == "removed":
+                print "R(reborn)", pname
+            else:
+                print "/", pname
+            if entry:
+                # Recurse down the directory
+                namesdir = {}
+                for name in os.listdir(target):
+                    ncname = normcase(name)
+                    if ncname != fsutil.nczope:
+                        namesdir[ncname] = name
+                for name in self.metadata.getnames(target):
+                    ncname = normcase(name)
+                    namesdir[ncname] = name
+                ncnames = namesdir.keys()
+                ncnames.sort()
+                for ncname in ncnames:
+                    self.status(join(target, namesdir[ncname]))
+        elif exists(target):
+            if not entry:
+                print "?", target
+            elif flag:
+                print flag[0].upper() + "(unrecognized)", target
+            else:
+                print "M(unrecognized)", target
+        else:
+            if not entry:
+                print "nonexistent", target
+            elif flag == "removed":
+                print "R", target
+            elif flag == "added":
+                print "A(lost)", target
+            else:
+                print "lost", target
+        annotations = fsutil.getannotations(target)
+        if isdir(annotations):
+            self.status(annotations, True)
+        extra = fsutil.getextra(target)
+        if isdir(extra):
+            self.status(extra, True)
