@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: __init__.py,v 1.3 2002/12/30 14:03:02 stevea Exp $
+$Id: __init__.py,v 1.4 2003/01/27 18:16:20 stevea Exp $
 """
 
 from zope.component import getService
@@ -40,4 +40,4 @@ def globalUnsubscribe(subscriber, event_type=None, filter=None):
 
 def globalListSubscriptions(subscriber, event_type=None):
     return eventPublisher.listSubscriptions(subscriber, event_type)
-        
+

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: event.py,v 1.3 2002/12/30 14:03:14 stevea Exp $
+$Id: event.py,v 1.4 2003/01/27 18:16:17 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -28,7 +28,7 @@ class IEventChannel(ISubscribable, ISubscriber):
 
 class IEventService(ISubscriptionService, IPublisher):
     """Local event service implementation.
-    
+
     Offers the Events and Subscription services.
     """
-    
+

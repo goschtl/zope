@@ -14,12 +14,13 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.1 2002/12/30 14:03:02 stevea Exp $
+$Id: globalservice.py,v 1.2 2003/01/27 18:16:20 stevea Exp $
 """
 
 __metaclass__ = type
 
 from zope.interface.type import TypeRegistry
+from zope.component import getAdapter, queryAdapter
 from zope.exceptions import NotFoundError
 from zope.proxy.introspection import removeAllProxies
 
@@ -93,25 +94,26 @@ class Logger:
 
 class GlobalSubscribable:
     """A global mix-in"""
-    
+
     __implements__ = IGlobalSubscribable
 
     def __init__(self):
         self._registry = TypeRegistry()
         self._subscribers = [] # use dict?
-        
+
     _clear = __init__
 
     def globalSubscribe(self, subscriber, event_type=IEvent, filter=None):
         checkEventType(event_type)
         clean_subscriber = removeAllProxies(subscriber)
-        
-        if ISubscribingAware.isImplementedBy(subscriber):
-            subscriber.subscribedTo(self, event_type, filter)
-        
+
+        subscribingaware = queryAdapter(subscriber, ISubscribingAware)
+        if subscribingaware is not None:
+            subscribingaware.subscribedTo(self, event_type, filter)
+
         if event_type is IEvent:
             event_type = None # optimization
-        
+
         subscribers = self._registry.setdefault(event_type, [])
         subscribers.append((clean_subscriber, filter))
 
@@ -124,15 +126,15 @@ class GlobalSubscribable:
                 break
         else:
             self._subscribers.append((clean_subscriber, {event_type: 1}))
-            
+
         # Trigger persistence, if pertinent
         # self._registry = self._registry
-        
-    
+
+
     def unsubscribe(self, subscriber, event_type=None, filter=None):
         checkEventType(event_type, allow_none=True)
         clean_subscriber = removeAllProxies(subscriber)
-        
+
         for subscriber_index in range(len(self._subscribers)):
             sub = self._subscribers[subscriber_index]
             if sub[0] == clean_subscriber:
@@ -145,9 +147,9 @@ class GlobalSubscribable:
                 # this was a generic unsubscribe all request; work may have
                 # been done by a local service
                 return
-        
-        do_alert = ISubscribingAware.isImplementedBy(clean_subscriber)
-        
+
+        subscribingaware = queryAdapter(subscriber, ISubscribingAware)
+
         if event_type:
             ev_type = event_type
             if event_type is IEvent:
@@ -161,12 +163,12 @@ class GlobalSubscribable:
                 subscriptions.remove((clean_subscriber, filter))
             except ValueError:
                 raise NotFoundError(subscriber, event_type, filter)
-            if do_alert:
-                subscriber.unsubscribedFrom(self, event_type, filter)
+            if subscribingaware is not None:
+                subscribingaware.unsubscribedFrom(self, event_type, filter)
             ev_set[ev_type] -= 1
             if ev_set[ev_type] < 1:
-                for sub in subscriptions:
-                    if sub[0] == clean_subscriber:
+                for asubscriber, afilter in subscriptions:
+                    if asubscriber == clean_subscriber:
                         break
                 else:
                     if len(ev_set) > 1:
@@ -180,11 +182,14 @@ class GlobalSubscribable:
                     ev_type = IEvent
                 subs = subscriptions[:]
                 subscriptions[:] = []
-                for sub in subs:
-                    if sub[0] == clean_subscriber: # deleted (not added back)
-                        if do_alert:
-                            subscriber.unsubscribedFrom(self, ev_type, sub[1])
-                    else:  # kept (added back)
+                for asubscriber, afilter in subs:
+                    if asubscriber == clean_subscriber:
+                        # deleted (not added back)
+                        if subscribingaware is not None:
+                            subscribingaware.unsubscribedFrom(
+                                    self, ev_type, afilter)
+                    else:
+                        # kept (added back)
                         subscriptions.append(sub)
             del self._subscribers[subscriber_index]
         # Trigger persistence, if pertinent
@@ -193,7 +198,7 @@ class GlobalSubscribable:
     def listSubscriptions(self, subscriber, event_type=None):
         checkEventType(event_type, allow_none=True)
         subscriber = removeAllProxies(subscriber)
-        
+
         result = []
         if event_type:
             ev_type = event_type
@@ -223,31 +228,29 @@ class GlobalSubscribable:
         return result
 
 
+def globalNotifyOrPublish(self, event):
+    assert IEvent.isImplementedBy(event)
+    subscriptionsForEvent = self._registry.getAllForObject(event)
+    for subscriptions in subscriptionsForEvent:
+        for subscriber, filter in subscriptions:
+            if filter is not None and not filter(event):
+                continue
+            getAdapter(subscriber, ISubscriber).notify(event)
+
+
 class GlobalEventChannel(GlobalSubscribable):
-    
+
     __implements__ = IGlobalSubscribable, ISubscriber
-        
-    def notify(self, event):
-        subscriptionsForEvent = self._registry.getAllForObject(event)
-        for subscriptions in subscriptionsForEvent:
-            for subscriber, filter in subscriptions:
-                if filter is not None and not filter(event):
-                    continue
-                subscriber.notify(event)
+
+    notify = globalNotifyOrPublish
 
 
 class GlobalEventPublisher(GlobalSubscribable):
-    
+
     __implements__ = IGlobalSubscribable, IPublisher
 
-    def publish(self, event):
-        assert IEvent.isImplementedBy(event)
-        subscriptionsForEvent = self._registry.getAllForObject(event)
-        for subscriptions in subscriptionsForEvent:
-            for subscriber, filter in subscriptions:
-                if filter is not None and not filter(event):
-                    continue
-                subscriber.notify(event)
+    publish = globalNotifyOrPublish
+
 
 # Repeated here, and in zope/app/event/__init__.py to avoid circular import.
 def globalSubscribeMany(subscriber, event_types=(IEvent,), filter=None):
@@ -263,4 +266,4 @@ _clear = eventPublisher._clear
 from zope.testing.cleanup import addCleanUp
 addCleanUp(_clear)
 del addCleanUp
-    
+
