@@ -1,108 +1,104 @@
-This file contains short descriptions of projects or tasks that need
-to get done by the first Zope X3 beta release.
+============================================================
+Things to do for the next release (in no particular order)
+============================================================
 
-The order that items are listed here is not significant.
+- Zope-2 style installation, configuration and process management.
 
-- Finish cache framework:
+- ZODB 3.3 in Zope 3
 
-  http://dev.zope.org/Zope3/Zope.App.Caching
+  See: http://zope.org/Wikis/ZODB/PersistentCodeImplementationPlan
 
-- Write documentation on how to develop principal sources for the
-  pluggable auth service.
+- Persistent interfaces
 
-- Redo local Role service to use configurations
+  These were broken (I think) by recent interface and adapter
+  refactoring.
 
-- Implement a local permission service (using configurations)
+- Reorganize software into a much flatter package structure.
 
-- Rethink the organization of the security software to reflect the
-  fact that people will likely plug in different grant and ownership
-  systems for different security policies.
+- Redo event service
 
-  * Document the relationship between the security policy and the
-    grants
+  o Simplify publication/registration framework
 
-- Untrusted modules.  Also implement a way of specifying policies for
-  trusted and untrusted modules.  At a minimum:
+  o Subscribe directly, rather than by path
 
-  * Say globally whether or not modules are trusted or
-    untrusted.
+- Change the way components are looked up locally:
 
-  * Say globally whether modules are editable through the web.
+  http://dev.zope.org/Zope3/FixedDefaultComponentLookup
 
-  A slight variation on this is to have two kinds of modules and say
-  under what circumstances they are editable through the web (or
-  otherwise).
+- Partial adapters
 
-- File-system synchronization
+  http://dev.zope.org/Zope3/PartialAdapters
 
-  * Client command-line tool w HTTP-based interface to server that
-    provided CVS-like interface and features. Including:
+- Minor refactoring of security context
 
-    + checkout and commit
+  http://dev.zope.org/Zope3/UnificationOfRequestsAndSecurityContextsThroughUse
 
-    + update including merge and offline version
+- Fix up presentation-component franeworks to use presentation
+  components registered by interface.
 
-    + diff and offline diff
+- Redo object hub (?)
 
-  * Refine the adapter protocol or implementation to leverage the
-    file-system representation protocol.
+- Catalogs (?)
 
-  * Maybe leverage adaptable storage ideas to assure losslessness.
+- Minor refactoring of adapter service to make it fast to find 
+  all names for adapters from/to a given interface
 
-  * In common case where extra data are simple values, store extra
-    data in the entries file to simplify representation and updates.
-    Maybe do something similar w annotations.
+- Redo utility service
 
-  * Maybe do some more xmlpickle refinement with an eye toward
-    improving the usability of simple dictionary pickles.
+- Restructure registration framework to use direct references rather
+  than paths.
 
-  * export and import as a special case
+- Finish location-relevent event work;
+  specifically, handling events on containers.  
 
-  * Improve some common data file formats (e.g. simplify entries
-    file).
+  See:
+   http://dev.zope.org/Zope3/LocationRelatedEvents
 
-  * Work out security details
+- Finish http://dev.zope.org/Zope3/ComponentArchitectureSimplification
 
-  Guido is working on this. 
+  What remains is the section "Utilities everywhere".
 
-- Software bundles.
+  - Language negotiation
 
-- ZCML directive for layers and corresponding checks that a resource
-  is registered in a registered layer
+  - Translation (?)  Note that if these were utilities, you could
+    have independent utilities prt domain
 
-  * Typos can cause new layers to be defined unintentionally
+  - Caching (Naveen is working on this)
 
-- Local/persistent modules:
+  - SQL Database connections (Mostly done, but Madhavi and Mohan
+    working on new UI).
 
-  * Output to stderr/stdout should be captured, saved to be viewed
-    after import
+  - DAV schema
 
-- ZCML directives for module security
+  - Interface (Murthy and Suresh are working on these)
 
-  * Fix the ++module++ namespace to honor security assertions; instead
-    of ++module++pkg.mod.Thing, we should use ++module++pkg.mod/Thing
+  - Vocabularies (warn Gary and Casey :)
 
-- Local module service. This provides support for local imports as
-  well as a place to manage security configuration for persistent
-  modules.
+  - Roles
 
-  Provide support for within package access to persistent modules
-  without the need to register them.
+  - Permissions
 
-  * Change import mechanism:
+  - Session data managers
 
-    + only import from other modules and registrations in the same
-      folder by default
+  - Workflow definitions
 
-    + importing from elsewhere should require explicit registration
+  - Rendered source types
 
-  * Registrations that allow module security assertions
+  - Interpreter types
 
-  * Name of the module within the folder must match the module name
+  - Mail
+
+  - HubIDs
+
+- Implement tools:
+
+  http://dev.zope.org/Zope3/TheBrowserToolDirective
+
+- Finish/cleanup XML-RPC (?)
 
 - Rework undo
 
-  Simplify the undo model. To kinds of undo:
+  Simplify the undo model. Two kinds of undo:
 
   * Undo my changes
 
@@ -114,44 +110,12 @@ The order that items are listed here is not significant.
 
   Make sure we handle multiple undos properly.
 
-- Implement interface types, and thus content types.
-
-  * Categories?  (Not inheritable.)
-
-- Local Interface service
-
-  This service should support:
-
-  * Local interface registration
-
-  * Interface browsing
-
-    + by type
-
-      By default, you'll browse content types. IOW, the default usage
-      will be as a content-type service.
-
-  * Central point for configuration by content type.
-
-    You can walk up to the interface service and see the content types
-    defined for the system.  You can select a type and see all of the
-    configuration for that type.
-
-- Fix a number of bugs and rough edges in page folders
-
-- Finish WebDAV
-
 - Finish "process control", specifically shutting down and restarting
   via the web.  The main issue here is plumbing.  How to get the
   signal from the UI to the server logic. The way to do this is via
   events. The UI should generate some sort of ShutdownRequest event
   and code in the server should be subscribed. Care needs to be taken
   to assure that only privileged users can generate these events.
-
-- Help System?
-
-  There is one, but I don't know what state it's in or how to write
-  help for it.
 
 - Broken-object support
 
@@ -161,31 +125,8 @@ The order that items are listed here is not significant.
   See http://collector.zope.org/Zope3-dev/109
   This requires a hook in the ZODB that Zope can override.
 
-- Python scripts
-
-  What form should these take? Should they be like Zope 2 Python
-  scripts? or should they by like Python modules.
-
-- Supply a generic property mechanism?
-
-  In Zope 2, folders and many other objects could have arbitrary
-  properties.  This was very useful to storing little bits of content.
-  What form should this take in Zope 3?
-
 - UI
 
-  * Get rid of "common tasks".
-
-  * Make the add menu a pull-down menu
-
-  * Add nested menus.
-
-  * Make it easier to get to the error logging service.
-
-  * Get the html titles a lot righter than they are now.
-
-- Schema fields
-
-  Some kind of field that can contain objects that conform to a
-  particular schema. And, widgets for this field.
+  * Rename "common tasks" to "Add". Eventually (after next release)
+    replace with a pull-down add menu
 
