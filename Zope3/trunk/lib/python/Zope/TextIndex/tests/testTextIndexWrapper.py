@@ -13,21 +13,22 @@
 ##############################################################################
 """Unit tests for TextIndexWrapper.
 
-$Id: testTextIndexWrapper.py,v 1.1 2002/12/03 16:45:23 gvanrossum Exp $
+$Id: testTextIndexWrapper.py,v 1.2 2002/12/04 08:32:19 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from Zope.TextIndex.TextIndexWrapper import TextIndexWrapper
+from Zope.TextIndex import ParseTree
 
 class Test(TestCase):
 
     def setUp(self):
         w = TextIndexWrapper()
-        doc1 = u"the quick brown fox jumps over the lazy dog"
-        doc2 = u"the brown fox and the yellow fox don't need the retriever"
-        w.index_doc(1000, [doc1])
-        w.index_doc(1001, [doc2])
+        doc = u"the quick brown fox jumps over the lazy dog"
+        w.index_doc(1000, [doc])
+        doc = u"the brown fox and the yellow fox don't need the retriever"
+        w.index_doc(1001, [doc])
         self.wrapper = w
 
     def testOne(self):
@@ -35,6 +36,43 @@ class Test(TestCase):
         self.assertEqual(total, 1)
         [(docid, rank)] = matches # if this fails there's a problem
         self.assertEqual(docid, 1000)
+
+    def testLatin1(self):
+        w = self.wrapper
+        doc = u"Fran\xe7ois"
+        w.index_doc(1002, [doc])
+        matches, total = self.wrapper.query(doc, 0, 10)
+        self.assertEqual(total, 1)
+        [(docid, rank)] = matches # if this fails there's a problem
+        self.assertEqual(docid, 1002)
+
+    def testUnicode(self):
+        w = self.wrapper
+        # Verbose, but easy to debug
+        delta  = u"\N{GREEK SMALL LETTER DELTA}"
+        delta += u"\N{GREEK SMALL LETTER EPSILON}"
+        delta += u"\N{GREEK SMALL LETTER LAMDA}"
+        delta += u"\N{GREEK SMALL LETTER TAU}"
+        delta += u"\N{GREEK SMALL LETTER ALPHA}"
+        assert delta.islower()
+        emdash = u"\N{EM DASH}"
+        assert not emdash.isalnum()
+        alpha  = u"\N{GREEK SMALL LETTER ALPHA}"
+        assert alpha.islower()
+        lamda  = u"\N{GREEK SMALL LETTER LAMDA}"
+        lamda += u"\N{GREEK SMALL LETTER ALPHA}"
+        assert lamda.islower()
+        doc = delta + emdash + alpha
+        w.index_doc(1002, [doc])
+        for word in delta, alpha:
+            matches, total = self.wrapper.query(word, 0, 10)
+            self.assertEqual(total, 1)
+            [(docid, rank)] = matches # if this fails there's a problem
+            self.assertEqual(docid, 1002)
+        self.assertRaises(ParseTree.ParseError,
+                          self.wrapper.query, emdash, 0, 10)
+        matches, total = self.wrapper.query(lamda, 0, 10)
+        self.assertEqual(total, 0)
 
     def testNone(self):
         matches, total = self.wrapper.query(u"dalmatian", 0, 10)
