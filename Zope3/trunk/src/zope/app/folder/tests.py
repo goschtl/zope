@@ -54,9 +54,13 @@ class FolderMetaDataTest(PlacefulSetup, TestCase):
         ztapi.provideAdapter(IFolder, IZopeDublinCore, ZDCAnnotatableAdapter)
 
 def test_suite():
+    from zope.testing.doctestunit import DocTestSuite
+    from zope.app.tests.placelesssetup import setUp, tearDown
     return TestSuite((
         makeSuite(Test),
         makeSuite(FolderMetaDataTest),
+        DocTestSuite('zope.app.folder.folder',
+                     setUp=setUp, tearDown=tearDown),
         ))    
 
 if __name__=='__main__':

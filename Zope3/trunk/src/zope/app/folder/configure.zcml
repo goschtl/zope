@@ -45,6 +45,11 @@
       permission="zope.View"
       />
 
+  <adapter
+      provides="zope.app.location.interfaces.ISublocations"
+      for=".interfaces.IFolder"
+      factory=".folder.FolderSublocations"
+      />
 
   <!-- include browser package -->
 
