@@ -12,7 +12,7 @@
         id="zope.app.PrincipalAnnotationService"
         />
     <require
-        permission="zope.Public"
+        permission="zope.View"
         interface=".interfaces.IPrincipalAnnotationService"
         />
     </content>

@@ -11,7 +11,7 @@
 
   <pages
       for="zope.app.onlinehelp.interfaces.IOnlineHelpTopic"
-      permission="zope.Public"
+      permission="zope.View"
       class=".OnlineHelpTopicView"
       >
 
@@ -22,7 +22,7 @@
 
   <page
       for="zope.app.onlinehelp.interfaces.IOnlineHelp"
-      permission="zope.Public"
+      permission="zope.View"
       class=".ContextHelpView"
       name="contexthelp.html" 
       template="contexthelp.pt" />

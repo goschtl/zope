@@ -19,7 +19,7 @@
   <pages
       for="zope.app.cache.interfaces.ram.IRAMCache"
       class="zope.app.cache.browser.ram.RAMCacheView"
-      permission="zope.Public">
+      permission="zope.ManageServices">
     <page name="editAction.html" attribute="action" />
     <page name="index.html" template="ramedit.pt" 
           menu="zmi_views" title="Edit"/>

@@ -21,7 +21,7 @@
   <!-- Setup OnlineHelp Root as a Utility -->
   <utility
       provides=".interfaces.IOnlineHelp"
-      permission="zope.Public"
+      permission="zope.View"
       component="zope.app.onlinehelp.help"
       name="OnlineHelp" />
 

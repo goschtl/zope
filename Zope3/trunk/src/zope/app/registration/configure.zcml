@@ -39,7 +39,7 @@
         id="zope.app.services.RegistrationManager"
         title="Registration Manager" />
     <require
-        permission="zope.View"
+        permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"

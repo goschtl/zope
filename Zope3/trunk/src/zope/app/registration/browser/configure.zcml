@@ -55,14 +55,14 @@
       for="
       zope.app.registration.interfaces.INoRegistrationManagerError"
       name="index.html"
-      permission="zope.Public"
+      permission="zope.ManageServices"
       template="../../exception/browser/user.pt"
       class="zope.app.exception.browser.user.UserErrorView" />
 
   <page
       for="zope.app.registration.interfaces.INoLocalServiceError"
       name="index.html"
-      permission="zope.Public"
+      permission="zope.ManageServices"
       template="../../exception/browser/user.pt"
       class="zope.app.exception.browser.user.UserErrorView" />
 

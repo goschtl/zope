@@ -20,7 +20,7 @@
 
   <pages
       for="zope.app.errorservice.interfaces.IErrorReportingService"
-      permission="zope.Public"
+      permission="zope.ManageServices"
       class=".EditErrorLog">
 
     <page name="index.html" template="error.pt"

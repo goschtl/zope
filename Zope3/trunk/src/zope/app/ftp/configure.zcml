@@ -1,5 +1,13 @@
 <configure xmlns='http://namespaces.zope.org/zope'>
 
+  <!-- Note that the views ehere are public because
+
+       - They are generic
+
+       - Protection is provided by the security proxies around their contexts.
+
+    -->
+  
   <view 
       for="zope.app.container.interfaces.IReadContainer"
       type="zope.publisher.interfaces.ftp.IFTPRequest"

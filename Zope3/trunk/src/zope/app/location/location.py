@@ -19,7 +19,6 @@ __docformat__ = 'restructuredtext'
 
 import zope.interface
 from zope.app.location.interfaces import ILocation
-from zope.proxy import removeAllProxies
 from zope.proxy import ProxyBase, getProxiedObject
 from zope.app.decorator import DecoratorSpecificationDescriptor
 from zope.app.decorator import DecoratedSecurityCheckerDescriptor
@@ -68,7 +67,6 @@ def locate(object, parent, name=None):
     sets attributes that are normally unsettable.
     """
 
-    object = removeAllProxies(object)
     object.__parent__ = parent
     object.__name__ = name
 

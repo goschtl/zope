@@ -15,24 +15,21 @@
 
 $Id$
 """
-from zope.proxy import removeAllProxies
-
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
+from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
 from zope.app.rdb import queryForResults
 
 class TestSQL(object):
 
-    __used_for__ = IZopeDatabaseAdapter
+    __used_for__ = IManageableZopeDatabaseAdapter
 
     def getTestResults(self):
         sql = self.request.form['sql']
-        adapter = removeAllProxies(self.context)
-        result = queryForResults(adapter(), sql)
+        result = queryForResults(self.context(), sql)
         return result
 
 
 class Connection(object):
-    __used_for__ = IZopeDatabaseAdapter
+    __used_for__ = IManageableZopeDatabaseAdapter
 
     def edit(self, dsn):
         self.context.setDSN(dsn)

@@ -17,12 +17,12 @@
       name="+"
       for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
       class="zope.app.container.browser.adding.Adding" 
-      permission="zope.ManageContent" />
+      permission="zope.ManageServices" />
 
   <pages
-      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
-      permission="zope.View"
-      class=".Connection">
+      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      permission="zope.ManageServices"
+      class=".rdb.Connection">
 
     <page name="editForm.html" template="rdbconnection.pt" 
           menu="zmi_views" title="Edit"/>
@@ -33,8 +33,8 @@
   </pages>
 
   <pages
-      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
-      permission="zope.View"
+      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
+      permission="zope.ManageServices"
       class=".rdb.TestSQL">
     <page name="testForm.html" template="rdbtestsql.pt"
           menu="zmi_views" title="[test-page-title] Test"/>
@@ -43,12 +43,12 @@
   </pages>
 
   <defaultView 
-      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
       name="editForm.html" />
 
   <addform
       label="Add Database Connection Registration"
-      for="zope.app.rdb.interfaces.IZopeDatabaseAdapter"
+      for="zope.app.rdb.interfaces.IManageableZopeDatabaseAdapter"
       name="addRegistration.html"
       schema="zope.app.utility.interfaces.IUtilityRegistration"
       class="zope.app.utility.browser.AddRegistration"

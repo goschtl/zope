@@ -21,7 +21,6 @@ from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app import zapi
 from zope.interface import providedBy
-from zope.proxy import removeAllProxies
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.introspector import interfaceToName
 
@@ -42,7 +41,6 @@ class AddRegistration(AddComponentRegistration):
 
 
 class Utilities(object):
-
     # self.context is the local utility service
 
     def update(self):
@@ -150,7 +148,7 @@ class Utilities(object):
         return s
 
     def getConfigs(self):
-        utils = removeAllProxies(self.context)
+        utils = self.context
         L = []
         for registration in utils.registrations(localOnly=True):
             ifname = interfaceToName(self.context, registration.provided)

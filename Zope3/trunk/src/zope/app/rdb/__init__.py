@@ -36,7 +36,9 @@ from zope.app.container.contained import Contained
 from zope.app.rdb.interfaces import DatabaseException
 from zope.app.rdb.interfaces import IResultSet
 from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter, ISQLCommand
+from zope.app.rdb.interfaces import ISQLCommand
+from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app.rdb.interfaces import IGlobalConnectionService
 
 
@@ -108,7 +110,7 @@ class DatabaseAdapterError(Exception):
 
 class ZopeDatabaseAdapter(Persistent, Contained):
 
-    implements(IZopeDatabaseAdapter)
+    implements(IManageableZopeDatabaseAdapter)
     _v_connection =  None
 
     def __init__(self, dsn):
@@ -119,16 +121,13 @@ class ZopeDatabaseAdapter(Persistent, Contained):
         conn_info = parseDSN(self.dsn)
 
     def setDSN(self, dsn):
-        'See IZopeDatabaseAdapter'
         assert dsn.startswith('dbi://'), "The DSN has to start with 'dbi://'"
         self.dsn = dsn
 
     def getDSN(self):
-        'See IZopeDatabaseAdapter'
         return self.dsn
 
     def connect(self):
-        'See IZopeDatabaseAdapter'
         if not self.isConnected():
             try:
                 self._v_connection = ZopeConnection(
@@ -142,18 +141,15 @@ class ZopeDatabaseAdapter(Persistent, Contained):
 
 
     def disconnect(self):
-        'See IZopeDatabaseAdapter'
         if self.isConnected():
             self._v_connection.close()
             self._v_connection = None
 
     def isConnected(self):
-        'See IZopeDatabaseAdapter'
         return hasattr(self, '_v_connection') and \
                self._v_connection is not None
 
     def __call__(self):
-        'See IZopeDatabaseAdapter'
         self.connect()
         return self._v_connection
 

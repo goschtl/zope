@@ -3,10 +3,21 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     >
 
+  <permission
+      id="zope.app.introspector.Introspect"
+      title=
+  "[zope.app.introspector.Introspect] Introspect Object Classes and Interfaces"
+      description="
+      Use the object-introspection facility to discover
+      and browse interfaces and classes.
+      "
+      />
+
+
   <adapter
       for='*'
       factory="zope.app.introspector.Introspector"
-      permission="zope.View"
+      permission="zope.app.introspector.Introspect"
       provides="zope.app.introspector.interfaces.IIntrospector"
       />
 
@@ -24,7 +35,7 @@
 
   <browser:pages
       for="zope.interface.Interface"
-      permission="zope.ManageServices"
+      permission="zope.app.introspector.Introspect"
       class="zope.app.introspector.browser.IntrospectorView"
       >
 
@@ -42,7 +53,7 @@
   <browser:page
       name="index.html"
       for="zope.interface.interfaces.IInterface"
-      permission="zope.View"
+      permission="zope.app.introspector.Introspect"
       template="introspector.pt"
       class="zope.app.introspector.browser.IntrospectorView"
       />

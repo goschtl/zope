@@ -379,6 +379,15 @@ class IZopeDatabaseAdapter(IDBITypeInfo):
 
     This object is internal to the connection service."""
 
+    def isConnected():
+        """Check whether the Zope Connection is actually connected to the
+        database."""
+
+    def __call__():
+        """Return an IZopeConnection object"""
+
+class IZopeDatabaseAdapterManagement(Interface):
+
     def setDSN(dsn):
         """Set the DSN for the Adapter instance"""
 
@@ -406,12 +415,10 @@ class IZopeDatabaseAdapter(IDBITypeInfo):
     def disconnect():
         """Disconnect from the database."""
 
-    def isConnected():
-        """Check whether the Zope Connection is actually connected to the
-        database."""
-
-    def __call__():
-        """Return an IZopeConnection object"""
+class IManageableZopeDatabaseAdapter(IZopeDatabaseAdapter,
+                                     IZopeDatabaseAdapterManagement):
+    """Database adapters with management functions
+    """
 
 
 class IZopeConnection(IDBIConnection, IDBITypeInfoProvider):
