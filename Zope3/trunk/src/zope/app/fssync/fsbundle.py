@@ -13,7 +13,7 @@
 ##############################################################################
 """High-level class to support bundle management on an fssync checkout.
 
-$Id: fsbundle.py,v 1.2 2003/10/06 14:15:18 fdrake Exp $
+$Id: fsbundle.py,v 1.3 2003/10/06 20:04:32 fdrake Exp $
 """
 
 import os
@@ -128,22 +128,23 @@ class FSBundle(object):
         self.check_version(version)
 
     def check_version(self, s):
-        self.parse_version(s)
+        parseBundleVersion(s)
 
-    def parse_version(self, s):
-        parts = s.split(".")
-        if len(parts) not in (3, 4):
-            raise Error("%r is not a valid bundle version", s)
-        try:
-            n0 = int(parts[0])
-            n1 = int(parts[1])
-            n2 = int(parts[2])
-        except ValueError:
-            raise Error("%r is not a valid bundle version", s)
-        try:
-            p3 = int(parts[3])
-        except IndexError:
-            p3 = None
-        except ValueError:
-            p3 = parts[3]
-        return (n0, n1, n2, p3)
+
+def parseBundleVersion(s):
+    parts = s.split(".")
+    if len(parts) not in (3, 4):
+        raise Error("%r is not a valid bundle version", s)
+    try:
+        n0 = int(parts[0])
+        n1 = int(parts[1])
+        n2 = int(parts[2])
+    except ValueError:
+        raise Error("%r is not a valid bundle version", s)
+    try:
+        p3 = int(parts[3])
+    except IndexError:
+        p3 = None
+    except ValueError:
+        p3 = parts[3]
+    return (n0, n1, n2, p3)
