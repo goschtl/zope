@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.26 2003/06/05 20:13:07 jim Exp $
+$Id: editview.py,v 1.27 2003/07/02 22:10:37 jim Exp $
 """
 
 import os
@@ -115,6 +115,11 @@ class EditView(BrowserView):
             except ValidationError, v:
                 errors.append(v)
 
+        if not unchanged:
+            # XXX need better error handling here. We should catch
+            # and display errors for which there are views.
+            self.changed()
+
         if errors:
             raise WidgetsError(*errors)
 
@@ -124,6 +129,11 @@ class EditView(BrowserView):
             publish(content, ObjectModifiedEvent(content))
 
         return unchanged
+
+    def changed(self):
+        # This method is overridden to execute logic *after* changes
+        # have been made.
+        pass
 
     def update(self):
         if self.update_status is not None:
@@ -148,7 +158,9 @@ class EditView(BrowserView):
             else:
                 setUpEditWidgets(self, self.schema, force=1,
                                  names=self.fieldNames)
+
                 if not unchanged:
+                    
                     status = "Updated %s" % datetime.utcnow()
 
         self.update_status = status

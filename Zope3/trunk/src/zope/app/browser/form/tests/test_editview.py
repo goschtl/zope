@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.9 2003/06/06 21:35:17 philikon Exp $
+"""$Id: test_editview.py,v 1.10 2003/07/02 22:10:39 jim Exp $
 """
 import unittest
 
@@ -123,6 +123,33 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(c.b  , u'c b')
         self.assertEqual(c.getbaz(), u'd baz')
         self.failUnless(getEvents(filter=lambda event: event.object == c))
+
+    def test_apply_update_changed(self):
+        class EVc(EV):
+            _changed = 0
+            def changed(self):
+                self._changed += 1
+        
+        c = C()
+        request = TestRequest()
+        v = EVc(c, request)
+        oldchanged = v._changed
+        d = {}
+        d['foo'] = u'd foo'
+        d['bar'] = u'd bar'
+        d['getbaz'] = u'd baz'
+        self.failIf(v.apply_update(d))
+        self.assertEqual(c.foo, u'd foo')
+        self.assertEqual(c.bar, u'd bar')
+        self.assertEqual(c.a  , u'c a')
+        self.assertEqual(c.b  , u'c b')
+        self.assertEqual(c.getbaz(), u'd baz')
+        self.failUnless(getEvents(filter=lambda event: event.object == c))
+
+        # make sure that changed was called
+        self.assertEqual(v._changed, oldchanged + 1)
+        self.failUnless(v.apply_update(d))
+        self.assertEqual(v._changed, oldchanged + 1)
 
     def test_apply_update_w_adapter(self):
         c = Foo()
