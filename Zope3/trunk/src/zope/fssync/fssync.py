@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.35 2003/08/07 19:06:33 fdrake Exp $
+$Id: fssync.py,v 1.36 2003/08/07 22:08:39 fdrake Exp $
 """
 
 import os
@@ -397,6 +397,41 @@ class FSSync(object):
         finally:
             if isdir(tmpdir):
                 shutil.rmtree(tmpdir)
+
+    def revert(self, target):
+        entry = self.metadata.getentry(target)
+        if not entry:
+            raise Error("nothing known about", target)
+        flag = entry.get("flag")
+        orig = fsutil.getoriginal(target)
+        if flag == "added":
+            entry.clear()
+        elif flag == "removed":
+            if exists(orig):
+                shutil.copyfile(orig, target)
+            del entry["flag"]
+        elif "conflict" in entry:
+            if exists(orig):
+                shutil.copyfile(orig, target)
+            del entry["conflict"]
+        elif isfile(orig):
+            if filecmp.cmp(target, orig, shallow=False):
+                return
+            shutil.copyfile(orig, target)
+        elif isdir(target):
+            # XXX how to recurse?
+            self.dirrevert(target)
+        self.metadata.flush()
+        self.reporter("Reverted " + target)
+
+    def dirrevert(self, target):
+        assert isdir(target)
+        names = self.metadata.getnames(target)
+        for name in names:
+            t = join(target, name)
+            e = self.metadata.getentry(t)
+            if e:
+                self.revert(t)
 
     def reporter(self, msg):
         if msg[0] not in "/*":

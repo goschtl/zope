@@ -57,6 +57,9 @@ parentheses are aliases supported for convenience:
   not made to the object database itself until the next **zsync
   commit**.
 
+**revert**
+  Restore targets to their unmodified state.
+
 **status** (stat)
   Show the current status of the target material; whether it has been
   changed in the local representation, has been removed or added, or
@@ -254,6 +257,24 @@ Description
 
 The **remove** command has no specific options.  It requires at least
 one *path* argument.
+
+
+The **zsync revert** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**revert** [*path* ...]
+
+Description
++++++++++++
+
+Restore targets to their unmodified state.  Files which have been
+modified are overwritten by pristine copies of the data from
+``@@Zope/Original/`` and scheduled additions and deletions are
+de-scheduled.  Additions that are de-scheduled do not cause the
+working copy of the file to be removed.
 
 
 The **zsync status** Command

@@ -29,7 +29,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.24 2003/08/07 20:38:02 fdrake Exp $
+$Id: main.py,v 1.25 2003/08/07 22:08:39 fdrake Exp $
 """
 
 import os
@@ -312,6 +312,17 @@ def checkin(opts, args):
     fs = FSSync(rooturl=rooturl)
     fs.checkin(target, message)
 
+def revert(opts, args):
+    """%(program)s revert [TARGET ...]
+
+    Revert changes to targets.  Modified files are overwritten by the
+    unmodified copy cached in @@Zope/Original/ and scheduled additions
+    and deletions are de-scheduled.  Additions that are de-scheduled
+    do not cause the working copy of the file to be removed.
+    """
+    fs = FSSync()
+    fs.multiple(args, fs.revert)
+
 def extract_message(opts, cmd):
     L = []
     message = None
@@ -349,6 +360,7 @@ command_table = {
     "status":   ("", [], status),
     "checkin":  ("F:m:", ["file=", "message="], checkin),
     "ci":       ("F:m:", ["file=", "message="], checkin),
+    "revert":   ("", [], revert),
     }
 
 if __name__ == "__main__":
