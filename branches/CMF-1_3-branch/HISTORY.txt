@@ -1,5 +1,5 @@
 
-1.2 beta (2001/12/07)
+CMF 1.2 beta (2001/12/07)
 
  New features
 
@@ -290,7 +290,7 @@
       'unittest' module from Python 2.1 (it no longer has
       'JUnitTestTextRunner' class).
 
-1.1 final (2001/06/20)
+CMF 1.1 final (2001/06/20)
 
  New features
 
@@ -426,7 +426,7 @@
   - Removed debugging / "paranoia" print statements (thanks to
     Chris Withers for the patches).
 
-1.1 beta (2001/06/01)
+CMF 1.1 beta (2001/06/01)
 
  New features
 
@@ -652,7 +652,7 @@
     header is not needed when using the absolute URL of the
     object, and causes certain browsers to misbehave.
 
-1.0 final (2001/03/29)
+CMF 1.0 final (2001/03/29)
 
  - Removed embedded spaces in 'portal_status_message' strings
    (thanks to Dieter Maurer for pointing this out)
@@ -745,7 +745,7 @@
  - Trimmed over-long item IDs in actions box (Tracker issue #
    234;  thanks to Jeff Sasmor and Steve Alexandar for the patch).
 
-1.0 beta (2001/03/05)
+CMF 1.0 beta (2001/03/05)
 
  * Migrated from old PTK repository on cvs.zope.org.
 
