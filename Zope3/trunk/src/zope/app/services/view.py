@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.15 2003/04/30 17:09:16 gvanrossum Exp $
+$Id: view.py,v 1.16 2003/04/30 17:51:34 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -240,8 +240,8 @@ class ViewConfiguration(SimpleConfiguration):
     getView = ContextMethod(getView)
 
     def usageSummary(self):
-        s = "%s %s for %s" % (self.viewName, self._what,
-                              getattr(self.forInterface, '__name__', "(none)"))
+        ifname = getattr(self.forInterface, '__name__', "(Anything)")
+        s = "%s %s for %s" % (self.viewName, self._what, ifname)
         if self.layer and self.layer != "default":
             s = "%s in layer %s" % (s, self.layer)
         return s
