@@ -800,7 +800,7 @@ msgstr ""
 
 #: src/zope/app/errorservice/browser/error.pt:10
 msgid "This page lists the exceptions that have occurred in this site recently."
-msgstr "Ошибки недавно произошедшие для этого сайта"
+msgstr "Ошибки, недавно произошедшие для данного сайта"
 
 #: src/zope/app/errorservice/browser/error.pt:15
 msgid "No exceptions logged."
@@ -867,7 +867,7 @@ msgstr "Тип ошибки"
 
 #: src/zope/app/errorservice/browser/errorentry.pt:40
 msgid "Exception Value"
-msgstr "Вспомогательное значение для ошибки"
+msgstr "Параметр ошибки"
 
 #: src/zope/app/errorservice/browser/errorentry.pt:45
 msgid "Traceback"
