@@ -35,6 +35,8 @@ class BindingTestCase(PlacelessSetup, unittest.TestCase):
     def test_binding(self):
         comp = PTComponent(Content())
         self.assertEqual(comp.index(), "42\n")
+        self.assertEqual(comp.nothing(), "\n")
+        self.assertEqual(comp.default(), "<span>42</span>\n")
 
 def test_suite():
     return unittest.makeSuite(BindingTestCase)

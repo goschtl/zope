@@ -25,3 +25,5 @@ class PTComponent(object):
         self.request = request
 
     index = ViewPageTemplateFile("view.pt")
+    default = ViewPageTemplateFile("default.pt")
+    nothing = ViewPageTemplateFile("nothing.pt")

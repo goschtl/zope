@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.17 2003/06/30 22:47:37 bwarsaw Exp $
+$Id: engine.py,v 1.18 2003/07/01 17:30:59 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -38,8 +38,6 @@ from zope.security.builtins import RestrictedBuiltins
 from zope.i18n.translate import Translator
 
 from zope.app.traversing.adapters import Traverser
-
-_default = object()
 
 
 def zopeTraverser(object, path_items, econtext):
@@ -70,7 +68,7 @@ class ZopeContext(Context):
 
     def evaluateText(self, expr):
         text = self.evaluate(expr)
-        if text is _default or text is None:
+        if text is self.getDefault() or text is None:
             return text
         if isinstance_ex(text, StringTypes):
             # text could be a proxied/wrapped object
