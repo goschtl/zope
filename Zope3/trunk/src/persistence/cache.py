@@ -15,21 +15,20 @@ from time import time
 from sys import getrefcount
 from weakref import ref
 
-import traceback
-
 import logging
 
 from persistence.interfaces import ICache
+from persistence._persistence import GHOST
 
 class Cache(object):
 
     __implements__ = ICache
 
     def __init__(self, size=500, inactive=300):
-        self.__ghosts = {}
-        self.__gget = self.__ghosts.get
-        self.__active = {}
-        self.__aget = self.__active.get
+        self._ghosts = {}
+        self.__gget = self._ghosts.get
+        self._active = {}
+        self.__aget = self._active.get
         self._size = size
         self._inactive = inactive
         self._logger = logging.getLogger("persistence.cache")
@@ -37,7 +36,7 @@ class Cache(object):
     def get(self, oid, default=None):
         o = self.__gget(oid, None)
         if o is None:
-            o = self.__active.get(oid, None)
+            o = self._active.get(oid, None)
             if o is None:
                 return default
         o = o()
@@ -49,31 +48,31 @@ class Cache(object):
     def set(self, oid, obj):
         if obj._p_changed is None:
             # ghost
-            self.__ghosts[oid] = ref(obj, _dictdel(oid, self.__ghosts))
+            self._ghosts[oid] = ref(obj, _dictdel(oid, self._ghosts))
         else:
-            self.__active[oid] = ref(obj, _dictdel(oid, self.__active))
+            self._active[oid] = ref(obj, _dictdel(oid, self._active))
 
     def remove(self, oid):
         # XXX The oid should always be in one of these dicts, else
         # there would be no need to remove it.
-        if oid in self.__ghosts:
-            del self.__ghosts[oid]
+        if oid in self._ghosts:
+            del self._ghosts[oid]
         else:
-            del self.__active[oid]
+            del self._active[oid]
 
     def __len__(self):
-        return len(self.__ghosts) + len(self.__active)
+        return len(self._ghosts) + len(self._active)
 
     def activate(self, oid):
-        wref = self.__ghosts.get(oid)
+        wref = self._ghosts.get(oid)
         if wref is None:
-            assert oid in self.__active
+            assert oid in self._active
             return
-        del self.__ghosts[oid]
-        self.__active[oid] = ref(wref(), _dictdel(oid, self.__active))
+        del self._ghosts[oid]
+        self._active[oid] = ref(wref(), _dictdel(oid, self._active))
 
     def shrink(self):
-        na = len(self.__active)
+        na = len(self._active)
         if na < 1:
             return
 
@@ -87,7 +86,7 @@ class Cache(object):
         # weakrefs, if garbage collection happens to occur, __active
         # can change size.
         L = []
-        for oid, ob in self.__active.items():
+        for oid, ob in self._active.items():
             if ob is not None:
                 ob = ob()
             if ob is None:
@@ -122,34 +121,35 @@ class Cache(object):
             self._ghostify(oid, ob)
 
         self._logger.debug("incrgc reduced size from %d to %d",
-                           na, len(self.__active))
+                           na, len(self._active))
 
     def _ghostify(self, oid, ob):
         ob._p_deactivate()
         if ob._p_changed == None:
-            del self.__active[oid]
-            self.__ghosts[oid] = ref(ob, _dictdel(oid, self.__ghosts))
+            del self._active[oid]
+            self._ghosts[oid] = ref(ob, _dictdel(oid, self._ghosts))
 
     def _invalidate(self, oid):
         ob = self.__aget(oid)
         if ob is None:
             return
         ob = ob()
-        del ob._p_changed
-        del self.__active[oid]
-        self.__ghosts[oid] = ref(ob, _dictdel(oid, self.__ghosts))
+        ob._p_deactivate(force=True)
+        assert ob._p_state == GHOST
+        del self._active[oid]
+        self._ghosts[oid] = ref(ob, _dictdel(oid, self._ghosts))
 
     def invalidate(self, oids):
         for oid in oids:
             self._invalidate(oid)
 
     def clear(self):
-        self.invalidate(self.__active.keys())
+        self.invalidate(self._active.keys())
 
     def statistics(self):
         return {
-            'ghosts': len(self.__ghosts),
-            'active': len(self.__active),
+            'ghosts': len(self._ghosts),
+            'active': len(self._active),
             }
 
 class _dictdel(object):
