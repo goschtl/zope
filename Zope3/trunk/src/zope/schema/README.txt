@@ -12,7 +12,7 @@ public fields of an object.  A *Field* roughly corresponds to an
 attribute of a python object.  But a Field provides space for a title
 and a description.  It can also constrain its value and provide a
 validation method.  Besides you can optionally specify characteristics
-such as its value beeing readonly or not required.
+such as its value being read-only or not required.
 
 Zope 3 schemas were born when Jim Fulton and Martijn Faassen thought
 about Formulator for Zope 3 and PropertySets while at the `Zope 3
@@ -85,7 +85,7 @@ down example from the programmer's tutorial (chapter two)::
                                   "\d{5,5}(-\d{4,4})?$").match)
 
 ``TextLine`` is a field and expresses that an attribute is a single line
-of unicode text.  ``Text`` expresses an arbitrary unicode ("text")
+of Unicode text.  ``Text`` expresses an arbitrary Unicode ("text")
 object.  The most interesting part is the last attribute
 specification.  It constrains the ``postalCode`` attribute to only have
 values that are US postal codes.
@@ -110,7 +110,7 @@ schema::
     validateMapping(IContact, someone.__dict__)
 
 
-Data Modelling Concepts
+Data Modeling Concepts
 -----------------------
 
 XXX much more is needed here!
@@ -133,7 +133,7 @@ Selection issues; field type can specify:
   schema evolution.
 
   This is done by mixing-in the IEnumerated interface into the field
-  type, and the Enumerated mixin for the implementation (or emulating
+  type, and the Enumerated mix-in for the implementation (or emulating
   it in a concrete class).
 
 - Value from selection list (options provided by an object)
@@ -146,39 +146,39 @@ Selection issues; field type can specify:
   schema evolution.
 
   There is not currently a spelling of this, but it could be
-  facilitated using alternate mixins similar to IEnumerated and
+  facilitated using alternate mix-ins similar to IEnumerated and
   Enumerated.
-  
+
 - Whether or not the field is read-only
 
   If a field value is read-only, it cannot be changed once the object is
   created.
-  
+
 - Whether or not the field is required
 
   If a field is designated as required, assigned field values must always
-  be non-missing. See the next section for a descriptiom of missing values.
-  
+  be non-missing. See the next section for a description of missing values.
+
 - A value designated as 'missing'
 
   Missing values, when assigned to an object, indicate that there is 'no
   data' for that field. Missing values are analogous to null values in
   relational databases. For example, a boolean value can be True, False, or
   missing, in which case its value is unknown.
-  
+
   While Python's None is the most likely value to signify 'missing', some
   fields may use different values. For example, it is common for text fields
   to use the empty string ('') to signify that a value is missing. Numeric
   fields may use 0 or -1 instead of None as their missing value.
-  
-  A field that is 'required' signfies that missing values are invalid and
+
+  A field that is 'required' signifies that missing values are invalid and
   should not be assigned.
-  
+
 - A default value
 
   Default field values are assigned to objects when they are first created.
-  
-  
+
+
 Fields and Widgets
 ------------------
 Widgets are components that display field values and, in the case of
@@ -188,21 +188,21 @@ Widgets:
 
 - Display current field values, either in a read-only format, or in a
   format that lets the user change the field value.
-  
+
 - Update their corresponding field values based on values provided by users.
-  
+
 - Manage the relationships between their representation of a field value
   and the object's field value. For example, a widget responsible for
   editing a number will likely represent that number internally as a string.
   For this reason, widgets must be able to convert between the two value
   formats. In the case of the number-editing widget, string values typed
   by the user need to be converted to numbers such as int or float.
-  
+
 - Support the ability to assign a missing value to a field. For example,
   a widget may present a "None" option for selection that, when selected,
-  indicates thet the object should be updated with the field's 'missing' 
+  indicates that the object should be updated with the field's 'missing'
   value.
-  
+
 
 Issues to be solved
 -------------------
@@ -235,7 +235,7 @@ Integration with Interfaces
 ***************************
 
 How closely are Interfaces and Schema related?  Should they be
-refactored into one package? Are Schemas Zope-Specific?
+refactored into one package? Are Schemas Zope-specific?
 
 Clarify and clean up use cases
 ******************************
