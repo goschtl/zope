@@ -17,8 +17,16 @@ test_build: build
 test_inplace: inplace
 	$(PYTHON) test.py -p -v $(TESTOPTS)
 
+ftest_build: build
+	$(PYTHON) test.py -f -p -v $(TESTOPTS)
+
+ftest_inplace: inplace
+	$(PYTHON) test.py -f -p -v $(TESTOPTS)
+
 # XXX What should the default be?
 test: test_inplace
+
+ftest: ftest_inplace
 
 run:
 	$(PYTHON) z3.py
