@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.8 2003/11/21 17:12:14 jim Exp $
+$Id: setup.py,v 1.9 2004/02/02 20:48:01 sidnei Exp $
 """
 
 import zope.component
@@ -152,6 +152,20 @@ def addService(servicemanager, name, service, suffix=''):
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
     return zapi.traverse(servicemanager, path)
 
+from zope.app.services.utility import UtilityRegistration
+
+def addUtility(servicemanager, name, iface, utility, suffix=''):
+    """Add a utility to a service manager
+
+    This utility is useful for tests that need to set up utilities.
+    """
+    default = zapi.traverse(servicemanager, 'default')
+    default[name+suffix] = utility
+    path = "%s/default/%s" % (zapi.getPath(servicemanager), name+suffix)
+    registration = UtilityRegistration(name, iface, path)
+    key = default.getRegistrationManager().addRegistration(registration)
+    zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
+    return zapi.traverse(servicemanager, path)
 
 from zope.component import getServiceManager
 from zope.app.interfaces.services.hub import IObjectHub
