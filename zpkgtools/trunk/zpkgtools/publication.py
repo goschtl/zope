@@ -180,3 +180,22 @@ def _get_single_header(msg, name, default=None):
             return v
     else:
         return default
+
+
+
+ALPHA  = "Development Status :: 3 - Alpha"
+BETA   = "Development Status :: 4 - Beta"
+STABLE = "Development Status :: 5 - Production/Stable"
+
+def set_development_status(metadata, status):
+    if not metadata.classifiers:
+        metadata.classifiers = [status]
+        return
+    for i in range(len(metadata.classifiers)):
+        classifier = metadata.classifiers[i]
+        parts = [s.strip() for s in classifier.lower().split("::")]
+        if parts[0] == "development status":
+            metadata.classifiers[i] = status
+            break
+    else:
+        metadata.classifiers.append(status)

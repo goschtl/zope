@@ -16,6 +16,7 @@
 import errno
 import os
 import posixpath
+import re
 import sys
 
 from zpkgtools import include
@@ -103,6 +104,16 @@ class SetupContext:
         publication.load(f, metadata=self)
         if self.platforms:
             self.platforms = ", ".join(self.platforms)
+        m = re.match(r"\d+\.\d+(\.\d+)?(?:(?P<status>[ab])\d*)?$",
+                     self.version)
+        if m is not None:
+            devstatus = publication.STABLE
+            status = m.group("status")
+            if status == "a":
+                devstatus = publication.ALPHA
+            elif status == "b":
+                devstatus = publication.BETA
+            publication.set_development_status(self, devstatus)
 
     def scan(self, name, directory, reldir):
         init_py = os.path.join(directory, "__init__.py")
