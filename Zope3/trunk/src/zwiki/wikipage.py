@@ -87,7 +87,12 @@ class WikiPageHierarchyAdapter(object):
         self.setParents(parents)
 
     def setParents(self, parents):
-        self._annotations[HierarchyKey] = tuple(parents)
+        res = []
+        for p in parents:
+            if p != zapi.name(self.context):
+                #don't store myself as a parent
+                res.append(p)
+        self._annotations[HierarchyKey] = tuple(res)
 
     def getParents(self):
         return self._annotations[HierarchyKey]
