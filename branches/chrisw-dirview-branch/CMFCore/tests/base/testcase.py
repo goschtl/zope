@@ -85,7 +85,7 @@ class FSDVTest( TestCase ):
         # also make sure the skin folder mod time ahs changed
         thePath = join(self.skin_path_name,filename)
         try:
-            mtime1 = stat(thePath)[8], stat(self.skin_path_name)[8]
+            mtime1 = stat(thePath)[8]
         except:
             mtime1 = 0
         mtime2 = mtime1
@@ -93,7 +93,7 @@ class FSDVTest( TestCase ):
             f = open(thePath,'w')
             f.write(stuff)
             f.close()
-            mtime2 = stat(thePath)[8], stat(self.skin_path_name)[8]
+            mtime2 = stat(thePath)[8]
 
     def _deleteFile(self,filename):
         remove(join(self.skin_path_name,filename))
