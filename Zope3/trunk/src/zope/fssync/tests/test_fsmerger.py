@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the FSMerger class.
 
-$Id: test_fsmerger.py,v 1.4 2003/05/28 14:40:04 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.5 2003/05/28 14:53:41 gvanrossum Exp $
 """
 
 import os
@@ -52,11 +52,6 @@ class TestFSMerger(TempFiles):
         output = pipe.read()
         sts = pipe.close()
         return output == "b" and not sts
-
-    def ensuredir(self, dir):
-        # Ensure that a given directory exists
-        if not isdir(dir):
-            os.makedirs(dir)
 
     def addfile(self, dir, path, data, entry=None):
         # Create a file or directory and write some data to it.  If

@@ -13,7 +13,7 @@
 ##############################################################################
 """Handy mixin for test case classes to manipulate temporary files.
 
-$Id: tempfiles.py,v 1.2 2003/05/28 14:47:57 gvanrossum Exp $
+$Id: tempfiles.py,v 1.3 2003/05/28 14:53:41 gvanrossum Exp $
 """
 
 import os
@@ -70,11 +70,14 @@ class TempFiles(unittest.TestCase):
     def writefile(self, data, fn, mode="w"):
         """Write data to a given file."""
         assert mode in ("w", "wb")
-        dn = os.path.dirname(fn)
-        if not os.path.exists(dn):
-            os.makedirs(dn)
+        self.ensuredir(os.path.dirname(fn))
         f = open(fn, mode)
         try:
             f.write(data)
         finally:
             f.close()
+
+    def ensuredir(self, dn):
+        """Ensure that a given directory exists."""
+        if not os.path.exists(dn):
+            os.makedirs(dn)
