@@ -14,7 +14,7 @@
 """
     Define view component for folder contents.
 
-$Id: FolderContents.py,v 1.3 2002/10/01 12:49:07 jim Exp $
+$Id: FolderContents.py,v 1.4 2002/10/02 18:51:46 jim Exp $
 """
 
 import os
@@ -34,6 +34,6 @@ class FolderContents(Contents):
                   'This folder already contains a service manager')
         self.context.setServiceManager(sm)
         if REQUEST is not None:
-            return self.index(REQUEST)
+            return self.contents()
 
     contents = ViewPageTemplateFile('contents.pt')
