@@ -134,6 +134,12 @@ def getUtilitiesFor(interface, context=None):
                         " component API change.")
     return getService(Utilities, context).getUtilitiesFor(interface)
 
+
+def getAllUtilitiesRegisteredFor(interface, context=None):
+    return getService(Utilities, context
+                      ).getAllUtilitiesRegisteredFor(interface)
+
+
 # Adapter service
 
 def getAdapter(object, interface, name='', context=None):

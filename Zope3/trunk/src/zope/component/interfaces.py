@@ -95,6 +95,15 @@ class IComponentArchitecture(Interface):
         An iterable of utility name-value pairs is returned.
         """
 
+    def getAllUtilitiesRegisteredFor(interface, context=None):
+        """Return all registered utilities for an interface
+
+        This includes overwridden utilities.
+
+        An iterable of utility instances is returned.  No names are
+        returned.
+        """
+
     # Adapter service
 
     def getAdapter(object, interface, context=None):
@@ -454,6 +463,15 @@ class IUtilityService(Interface):
         """Look up the registered utilities that provide an interface.
 
         Returns an iterable of name-utility pairs.
+        """
+
+    def getAllUtilitiesRegisteredFor(interface):
+        """Return all registered utilities for an interface
+
+        This includes overwridden utilities.
+
+        An iterable of utility instances is returned.  No names are
+        returned.
         """
 
 

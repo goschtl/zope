@@ -14,6 +14,7 @@
 
 import unittest
 
+from zope import component
 from zope.component import servicenames
 from zope.component import getAdapter, queryAdapter
 from zope.component import getNamedAdapter, queryNamedAdapter
@@ -303,6 +304,32 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         getService(None, 'Utilities').provideUtility(I2, comp, 'test')
         self.assertEquals(id(getUtility(I2, 'test', ob)), id(comp))
+
+    def test_getAllUtilitiesRegisteredFor(self):
+        class I21(I2):
+            pass
+        class Comp21(Comp):
+            implements(I21)
+        
+        compbob = Comp('bob')
+        comp21 = Comp21('21')
+        comp21bob = Comp21('21bob')
+        
+        getService(None, 'Utilities').provideUtility(I2, comp)
+        getService(None, 'Utilities').provideUtility(I21, comp21)
+        getService(None, 'Utilities').provideUtility(I2, compbob, 'bob')
+        getService(None, 'Utilities').provideUtility(I21, comp21bob, 'bob')
+
+        comps = [comp, compbob, comp21, comp21bob]
+        comps.sort()
+
+        uts = list(component.getUtilitiesFor(I2))
+        uts.sort()
+        self.assertEqual(uts, [('', comp), ('bob', compbob)])
+
+        uts = list(component.getAllUtilitiesRegisteredFor(I2))
+        uts.sort()
+        self.assertEqual(uts, comps)        
 
     def testView(self):
         from zope.component import getView, queryView, getService

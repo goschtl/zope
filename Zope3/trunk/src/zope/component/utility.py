@@ -58,6 +58,8 @@ class UtilityService(AdapterRegistry):
             for item in byname.iteritems():
                 yield item
 
+    def getAllUtilitiesRegisteredFor(self, interface):
+        return iter(self._null.get(('s', interface), ()))
 
 class GlobalUtilityService(UtilityService, GlobalService):
 
@@ -74,6 +76,9 @@ class GlobalUtilityService(UtilityService, GlobalService):
                           "the promised interface.")
 
         self.register((), providedInterface, name, component)
+
+        # Also subscribe to support getAllUtilitiesRegisteredFor:
+        self.subscribe((), providedInterface, component)
 
         self._registrations[(providedInterface, name)] = UtilityRegistration(
             providedInterface, name, component, info)

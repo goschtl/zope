@@ -23,6 +23,7 @@ from zope.app.registration.registration import ComponentRegistration
 from zope.app.utility.interfaces import ILocalUtilityService
 from zope.app.utility.interfaces import IUtilityRegistration
 from zope.component.utility import UtilityService
+from zope.proxy import removeAllProxies
 import zope.app.site.interfaces
 import zope.interface
 import zope.interface.adapter
@@ -55,6 +56,22 @@ class LocalUtilityService(UtilityService, LocalAdapterService):
         for name, util in self.getUtilitiesFor(interface):
             if next_utils.get(name) != util:
                 yield name, util
+
+
+    def _updateAdaptersFromLocalData(self, adapters):
+        LocalAdapterService._updateAdaptersFromLocalData(self, adapters)
+        
+        for required, stacks in self.stacks.iteritems():
+            if required is None:
+                required = Default
+            radapters = adapters.get(required)
+
+            for key, stack in stacks.iteritems():
+                registration = stack.active()
+                if registration is not None:
+                    key = True, key[1], '', key[3]
+                    radapters[key] = radapters.get(key, ()) + (
+                        removeAllProxies(registration.factory), )
 
 
 

@@ -23,6 +23,7 @@ from zope.app import zapi
 from zope.app.registration.registration import NotifyingRegistrationStack
 from zope.interface.adapter import adapterImplied, Default
 from zope.interface.adapter import Surrogate, AdapterRegistry
+from zope.proxy import removeAllProxies
 import sys
 import zope.app.component.localservice
 import zope.app.container.contained
@@ -143,13 +144,8 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
 
         return stack
 
-    def adaptersChanged(self, *args):
 
-        adapters = {}
-        if self.next is not None:
-            for required, radapters in self.next.adapters.iteritems():
-                adapters[required] = radapters.copy()
-        
+    def _updateAdaptersFromLocalData(self, adapters):
         for required, stacks in self.stacks.iteritems():
             if required is None:
                 required = Default
@@ -161,9 +157,16 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
             for key, stack in stacks.iteritems():
                 registration = stack.active()
                 if registration is not None:
-                    from zope.proxy import removeAllProxies
                     radapters[key] = removeAllProxies(registration.factory)
 
+    def adaptersChanged(self, *args):
+
+        adapters = {}
+        if self.next is not None:
+            for required, radapters in self.next.adapters.iteritems():
+                adapters[required] = radapters.copy()
+        
+        self._updateAdaptersFromLocalData(adapters)
 
         if adapters != self.adapters:
             self.adapters = adapters

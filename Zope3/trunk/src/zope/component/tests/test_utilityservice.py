@@ -28,6 +28,9 @@ from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 class IDummyUtility(Interface):
     pass
 
+class IDummerUtility(IDummyUtility):
+    pass
+
 class DummyUtility:
     __name__ = 'DummyUtility'
     implements(IDummyUtility)
@@ -39,7 +42,13 @@ class DummyUtility2:
     def __len__(self):
         return 0
 
+class DummerUtility:
+    __name__ = 'DummerUtility'
+    implements(IDummerUtility)
+
+
 dummyUtility = DummyUtility()
+dummerUtility = DummerUtility()
 dummyUtility2 = DummyUtility2()
 
 class Test(TestCase, CleanUp):
@@ -83,6 +92,58 @@ class Test(TestCase, CleanUp):
             map(str, us.registrations()),
             ["UtilityRegistration('IDummyUtility', '', 'DummyUtility', '')"])
 
+    def testOverrides(self):
+        us = getService(None, Utilities)
+
+        # fail if nothing registered:
+        self.assertRaises(
+            ComponentLookupError, getUtility, IDummyUtility)
+
+        # set and retiev dummy
+        us.provideUtility(IDummyUtility, dummyUtility)
+        self.assertEqual(getUtility(IDummyUtility), dummyUtility)
+
+        # dummer overrides
+        us.provideUtility(IDummerUtility, dummerUtility)
+        self.assertEqual(getUtility(IDummerUtility), dummerUtility)
+
+        # But not if we ask for dummy
+        self.assertEqual(getUtility(IDummyUtility), dummyUtility)
+
+        # same for named:
+        self.assertRaises(
+            ComponentLookupError, getUtility, IDummyUtility, 'bob')
+        us.provideUtility(IDummyUtility, dummyUtility, 'bob')
+        self.assertEqual(getUtility(IDummyUtility), dummyUtility, 'bob')
+        us.provideUtility(IDummerUtility, dummerUtility, 'bob')
+        self.assertEqual(getUtility(IDummerUtility), dummerUtility, 'bob')
+        self.assertEqual(getUtility(IDummyUtility), dummyUtility, 'bob')
+
+        # getUtilitiesFor doesn the right thing:
+        uts = list(us.getUtilitiesFor(IDummyUtility))
+        uts.sort()
+        self.assertEqual(uts, [('', dummyUtility), ('bob', dummyUtility)])
+        uts = list(us.getUtilitiesFor(IDummerUtility))
+        uts.sort()
+        self.assertEqual(uts, [('', dummerUtility), ('bob', dummerUtility)])
+
+        return us
+
+    def test_getAllUtilitiesRegisteredFor(self):
+        us = self.testOverrides()
+
+        # getAllUtilitiesRegisteredFor includes overridden
+
+        uts = list(us.getAllUtilitiesRegisteredFor(IDummerUtility))
+        self.assertEqual(uts, [dummerUtility, dummerUtility])
+
+        uts = list(us.getAllUtilitiesRegisteredFor(IDummyUtility))
+        uts.remove(dummyUtility)
+        uts.remove(dummyUtility)
+        uts.remove(dummerUtility)
+        uts.remove(dummerUtility)
+        self.assertEqual(uts, [])
+        
 
 def test_suite():
     return makeSuite(Test)
