@@ -14,13 +14,13 @@
 """
 
 Revision information:
-$Id: eventsetup.py,v 1.8 2003/06/03 21:43:00 jim Exp $
+$Id: eventsetup.py,v 1.9 2004/02/20 09:21:14 philikon Exp $
 """
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
 class EventSetup(PlacefulSetup):
 
     def setUp(self):
-        PlacefulSetup.setUp(self, site=True)
+        super(EventSetup, self).setUp(site=True)
         self.createStandardServices()
 
