@@ -9,3 +9,6 @@ from _datetime import MINYEAR, MAXYEAR
 from _datetime import timedelta
 from _datetime import time, timetz
 from _datetime import date, datetime, datetimetz
+# XXX Temporary, to allow the tests to pass.  This will be replaced by the
+# XXX C datetime code (and much larger test suite) soon, where it isn't needed.
+from _datetime import _ymd2ord, _ord2ymd, tmxxx

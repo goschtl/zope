@@ -7,7 +7,7 @@ import sys
 import unittest
 
 from datetime import date, time, timetz, datetime, datetimetz, timedelta
-from _datetime import MINYEAR, MAXYEAR
+from datetime import MINYEAR, MAXYEAR
 
 
 class TestDate(unittest.TestCase):
@@ -17,7 +17,7 @@ class TestDate(unittest.TestCase):
     # All the other tests here have been moved into test_both.  This one
     # relies on stuff only the Python version implements.
     def test_ordinal_conversions(self):
-        from _datetime import _ymd2ord, _ord2ymd
+        from datetime import _ymd2ord, _ord2ymd
 
         # Check some fixed values.
         for y, m, d, n in [(1, 1, 1, 1),      # calendar origin
@@ -215,7 +215,7 @@ class TestDateTime(TestDate):
     theclass = datetime
 
     def test_tmxxx(self):
-        from _datetime import tmxxx
+        from datetime import tmxxx
         for timestamp in 123456789.0, 987654321.0:
             dt = self.theclass.utcfromtimestamp(timestamp)
             # Mangles the fields, but in such a way that normalization should
