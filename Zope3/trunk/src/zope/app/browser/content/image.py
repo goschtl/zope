@@ -13,13 +13,13 @@
 ##############################################################################
 """Define view component for naive file editing.
 
-$Id: image.py,v 1.5 2003/08/06 14:41:41 srichter Exp $
+$Id: image.py,v 1.6 2003/09/21 17:30:22 jim Exp $
 """
 from zope.app.browser.content.file import FileUpload
 from zope.app.size import byteDisplay
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event import publish
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 class ImageData(BrowserView):
 

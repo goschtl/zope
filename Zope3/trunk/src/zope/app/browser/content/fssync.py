@@ -13,7 +13,7 @@
 ##############################################################################
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.24 2003/08/17 06:05:41 philikon Exp $
+$Id: fssync.py,v 1.25 2003/09/21 17:30:22 jim Exp $
 """
 import os
 import cgi
@@ -22,7 +22,7 @@ import tempfile
 
 from transaction import get_transaction
 
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.traversing import getName, getParent, getRoot
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.app.fssync.syncer import toFS

@@ -13,7 +13,7 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.9 2003/08/20 18:21:02 philikon Exp $
+$Id: cacheable.py,v 1.10 2003/09/21 17:30:21 jim Exp $
 """
 from zope.app import zapi
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
@@ -23,7 +23,7 @@ from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.cache import ICacheable
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 class CacheableView(BrowserView):
 

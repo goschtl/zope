@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.14 2003/08/17 06:05:23 philikon Exp $
+$Id: onlinehelp.py,v 1.15 2003/09/21 17:30:20 jim Exp $
 """
 from zope.interface import providedBy
 
@@ -21,9 +21,8 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.component import getService, getView
 from zope.component.view import viewService
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.traversing import getRoot
-from zope.app.context import ContextWrapper
 from zope.app.traversing import getParents, getName
 
 class OnlineHelpTopicView(BrowserView):
@@ -32,7 +31,6 @@ class OnlineHelpTopicView(BrowserView):
     def _makeSubTree(self, topic):
         html = '<ul>\n'
         for entry in topic.items():
-            entry = ContextWrapper(entry[1], topic, name=entry[0]) 
             html += '  <li><a href="%s">%s</a></li>\n' %(
                 getView(entry, 'absolute_url', self.request)(),
                 entry.getTitle())

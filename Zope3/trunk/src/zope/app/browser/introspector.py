@@ -13,9 +13,9 @@
 ##############################################################################
 """Introspector View class
 
-$Id: introspector.py,v 1.7 2003/08/06 14:41:11 srichter Exp $
+$Id: introspector.py,v 1.8 2003/09/21 17:30:20 jim Exp $
 """
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.interfaces.introspector import IIntrospector
 from zope.component import getAdapter
 from zope.app import zapi

@@ -13,9 +13,9 @@
 ##############################################################################
 """RAMCache view
 
-$Id: ram.py,v 1.3 2003/08/19 17:33:56 srichter Exp $
+$Id: ram.py,v 1.4 2003/09/21 17:30:21 jim Exp $
 """
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.interfaces.cache.ram import IRAMCache
 
 class RAMCacheView(BrowserView):
