@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.21 2003/06/07 19:05:20 stevea Exp $
+$Id: __init__.py,v 1.22 2003/06/10 12:53:14 stevea Exp $
 """
 from __future__ import generators
 
@@ -121,30 +121,23 @@ class ContextAwareDataDescriptor(ContextAwareDescriptor):
     def __delete__(self, inst):
         self.descriptor.__delete__(inst)
 
-
+ContextAware = None # this will be replaced a few lines down
 class ContextAwareMetaClass(type):
 
     def __init__(self, name, bases, namespace):
-        # stub
+        if ContextAware in bases:
+            for name, obj in namespace.items():
+                if not isinstance(obj, ContextDescriptor):
+                    if getattr(obj, '__set__', None) is not None:
+                        d = ContextAwareDataDescriptor(obj)
+                        setattr(self, name, d)
+                        namespace[name] = d
+                    elif getattr(obj, '__get__', None) is not None:
+                        m = ContextAwareDescriptor(obj)
+                        setattr(self, name, m)
+                        namespace[name] = m
         super(ContextAwareMetaClass, self).__init__(name, bases, namespace)
-
 
 class ContextAware:
     __metaclass__ = ContextAwareMetaClass
 
-
-def init_method(self, name, bases, namespace):
-    if ContextAware in bases:
-        for name, obj in namespace.items():
-            if not isinstance(obj, ContextDescriptor):
-                if getattr(obj, '__set__', None) is not None:
-                    d = ContextAwareDataDescriptor(obj)
-                    setattr(self, name, d)
-                    namespace[name] = d
-                elif getattr(obj, '__get__', None) is not None:
-                    m = ContextAwareDescriptor(obj)
-                    setattr(self, name, m)
-                    namespace[name] = m
-    super(ContextAwareMetaClass, self).__init__(name, bases, namespace)
-ContextAwareMetaClass.__init__ = init_method
-del init_method
