@@ -23,10 +23,10 @@ Trunk
   five:pagesFromDirectory.  This adds one page for each .pt file in a
   directory to the specified interface. This is useful for Five
   integration with CMF and other systems that have Page Templates
-  macroes that need to be shared between Zope2 and Five.
+  macros that need to be shared between Zope2 and Five.
 
 * Five.security.checkPermission has been changed from a (unused)
-  method for checking the existance of permissions. Use
+  method for checking the existence of permissions. Use
   zope.app.security.permission.checkPermission if you need that
   functionality.
 
