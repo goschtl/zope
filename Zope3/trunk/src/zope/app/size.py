@@ -1,4 +1,3 @@
-
 ##############################################################################
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
@@ -14,7 +13,7 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: size.py,v 1.3 2002/12/27 19:19:09 stevea Exp $
+$Id: size.py,v 1.4 2003/01/17 00:02:06 efge Exp $
 """
 
 from zope.app.interfaces.size import ISized
@@ -42,9 +41,10 @@ class DefaultSized:
         units, size = self._sortingSize
         if units == 'byte':
             return byteDisplay(size)
-        return u'n/a'
+        return u'n/a' # XXX this should be localizable
 
 def byteDisplay(size):
+    # XXX this should be localizable
     if size == 0:
         return '0 KB'
     if size < 1024:
