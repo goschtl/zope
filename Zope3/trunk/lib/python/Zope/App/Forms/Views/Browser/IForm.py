@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IForm.py,v 1.1 2002/07/16 15:15:54 srichter Exp $
+$Id: IForm.py,v 1.2 2002/07/16 22:36:41 jim Exp $
 """
 from Zope.Publisher.Browser import IBrowserView 
 from Interface.Attribute import Attribute
@@ -45,3 +45,4 @@ class IWriteForm(IBrowserView):
 
 
 class IForm(IReadForm, IWriteForm):
+    pass
