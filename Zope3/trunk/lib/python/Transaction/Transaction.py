@@ -41,7 +41,7 @@ class Transaction:
         """
         assert self._manager is not None
         if parent is not None:
-            t = Transaction(self.manager, self)
+            t = Transaction(self._manager, self)
             return t
 
     def commit(self):
