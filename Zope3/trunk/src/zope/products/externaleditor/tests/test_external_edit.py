@@ -1,21 +1,33 @@
+##############################################################################
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+##############################################################################
 """
-$Id: test_external_edit.py,v 1.1 2004/01/30 22:20:55 sidnei Exp $
+$Id: test_external_edit.py,v 1.2 2004/02/24 16:51:43 philikon Exp $
 """
 
 import unittest
 from base64 import encodestring
-from zope.app import zapi
+
 from zope.interface import implements, Interface, directlyProvides
-from zope.app.content.file import File
 from zope.products.externaleditor.interfaces import IExternallyEditable
 from zope.products.externaleditor.browser import ExternalEditor
-from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.publisher.browser import TestRequest
+
+from zope.app import zapi
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import ztapi
-from zope.app.content.file import FileReadFile
-from zope.app.interfaces.file import IReadFile
 from zope.app.container.contained import contained
 from zope.app.interfaces.content import IContentType
+from zope.app.interfaces.file import IReadFile
+from zope.app.file.file import File, FileReadFile
 
 class IEditableFile(Interface): pass
 
