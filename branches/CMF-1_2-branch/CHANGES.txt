@@ -11,6 +11,9 @@
 
  Bugs Fixed
 
+  - Ensure that Favorites display the correct, absolute URL to their
+    target, without needing to have <base> tag set (Tracker #419).
+
   - Worked around Opera's strange insistence on selecting an option,
     even for multi-select lists (Tracker #332).
 
