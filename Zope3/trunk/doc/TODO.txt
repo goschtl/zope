@@ -61,9 +61,6 @@ Things to do for the next release (in no particular order)
 
   K. Narasimha Murthy is working on this.
 
-- Replace the *used* names in schema.errornames to exceptions
-  in schema.interfaces.  Deprecate schema.errornames.
-
 - http://dev.zope.org/Zope3/LifeCycleEvents
 
 - Permission rationalization

@@ -214,6 +214,11 @@ Zope Changes
 
     Restructuring
 
+    - Replaced the *used* names in schema.errornames to exceptions in
+      schema.interfaces. Deprecated schema.errornames. The doc strings of the
+      exceptions/errors is now used for user output. Eventually we should
+      write custom views for all of them.
+
     - The application control has been cleanup to mostly use views and not do
       the adapter redirection. Only the runtime info control still uses an
       adapter, since its information might be otherwise useful.
