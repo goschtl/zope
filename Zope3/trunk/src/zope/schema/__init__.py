@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.12 2003/07/13 06:47:28 richard Exp $
+$Id: __init__.py,v 1.13 2003/07/28 22:22:08 jim Exp $
 """
 
 from zope.schema._field import Field, Container, Iterable, Orderable
@@ -21,13 +21,14 @@ from zope.schema._field import MinMaxLen, Enumerated, Sequence
 from zope.schema._field import Bytes, BytesLine
 from zope.schema._field import Text, TextLine, Bool, Int, Float, Tuple, List
 from zope.schema._field import Password, Dict, Datetime, SourceText
-from zope.schema._field import Object
+from zope.schema._field import Object, URI, Id
 from zope.schema._field import EnumeratedTextLine, EnumeratedInt
 from zope.schema._field import EnumeratedDatetime, EnumeratedFloat
 from zope.schema._field import InterfaceField
 from zope.schema._schema import getFields, getFieldsInOrder
 from zope.schema._schema import getFieldNames, getFieldNamesInOrder
 from zope.schema.accessors import accessors
+from zope.schema.interfaces import ValidationError
 
 # XXX backward compatibility; to be removed within a week
 ValueSet = Enumerated
