@@ -16,32 +16,86 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.15 2003/11/04 04:04:25 jeremy Exp $
+$Id: pagefolder.py,v 1.16 2003/11/21 17:10:01 jim Exp $
 """
 __metaclass__ = type
 
 from zope.app.container.btree import BTreeContainer
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
-from zope.app.interfaces.file import IDirectoryFactory
-from zope.app.interfaces.fssync import IObjectDirectory
-from zope.app.interfaces.services.pagefolder import IPageFolder
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import IRegistrationManager
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.view import IZPTTemplate
+from zope.app.services.presentation import PageRegistration
 from zope.app.services.registration import RegistrationManagerContainer
-from zope.app.services.view import PageRegistration
+from zope.app.services.zpt import IZPTTemplate
+from zope.app.traversing import getPath
 from zope.app.traversing import getPath
 from zope.interface import implements
 from zope.proxy import removeAllProxies
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.proxy import removeAllProxies
+from zope.publisher.interfaces.browser import IBrowserRequest
+
+import zope.app.component.interfacefield
+import zope.app.interfaces.container
+import zope.app.interfaces.file
+import zope.app.interfaces.fssync
+import zope.app.interfaces.services.registration
+import zope.app.security.permission
+import zope.interface
+import zope.schema
+
+class IPageFolderInfo(zope.interface.Interface):
+    """Default registration information for page folders
+
+    This information is used to configure the pages in the folder.
+    """
+
+    required = zope.app.component.interfacefield.InterfaceField(
+        title = u"For interface",
+        description = u"The interface of the objects being viewed",
+        required = True,
+        )
+
+    factoryName = zope.schema.BytesLine(
+        title=u"The dotted name of a factory for creating the view",
+        required = False,
+        )
+
+    layer = zope.schema.BytesLine(
+        title = u"Layer",
+        description = u"The skin layer the view is registered for",
+        required = False,
+        min_length = 1,
+        default = "default",
+        )
+
+    permission = zope.app.security.permission.PermissionField(
+        title=u"Permission",
+        description=u"The permission required to use the view",
+        required = True,
+        )
+
+    apply = zope.schema.Bool(
+        title=u"Apply changes to existing pages",
+        required = True,
+        )
+
+class IPageFolder(
+    IPageFolderInfo,
+    zope.app.interfaces.container.IContainer,
+    zope.app.interfaces.services.registration.IRegistrationManagerContainer,
+    ):
+
+    def applyDefaults(self):
+        """Apply the default configuration to the already-registered pages. 
+        """
 
 class PageFolder(RegistrationManagerContainer, BTreeContainer):
 
-    implements(IPageFolder)
+    zope.interface.implements(IPageFolder)
 
-    presentationType = IBrowserPresentation
+    requestType = IBrowserRequest
     layer = "default"
     description = ''
     title = ''
@@ -69,10 +123,10 @@ class PageFolder(RegistrationManagerContainer, BTreeContainer):
             template = self[name]
             template = getPath(template)
             registration = PageRegistration(
-                forInterface=self.forInterface,
-                viewName=name,
+                required=self.required,
+                name=name,
                 permission=self.permission,
-                class_=self.factoryName,
+                factoryName=self.factoryName,
                 template=template,
                 layer=self.layer,
                 )
@@ -94,11 +148,11 @@ class PageFolder(RegistrationManagerContainer, BTreeContainer):
                 registration.status = RegisteredStatus
             registration.status = UnregisteredStatus
 
-            # Cheat and set forInterface and layer even though they're
+            # Cheat and set required and layer even though they're
             # read-only.  This is ok since the registration is now not
             # registered.
 
-            registration.forInterface = removeAllProxies(self.forInterface)
+            registration.required = removeAllProxies(self.required)
             registration.factoryName = self.factoryName
             registration.layer = self.layer
             registration.permission = self.permission
@@ -110,7 +164,7 @@ class PageFolder(RegistrationManagerContainer, BTreeContainer):
 
 _attrNames = (
     'factoryName',
-    'forInterface',
+    'required',
     'layer',
     'permission',
     )
@@ -118,7 +172,7 @@ _attrNames = (
 class PageFolderAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for PageFolder objects."""
 
-    implements(IObjectDirectory)
+    zope.interface.implements(zope.app.interfaces.fssync.IObjectDirectory)
 
     def contents(self):
         return self.context.items()
@@ -129,7 +183,7 @@ class PageFolderAdapter(ObjectEntryAdapter):
 
 class PageFolderFactory:
 
-    implements(IDirectoryFactory)
+    zope.interface.implements(zope.app.interfaces.file.IDirectoryFactory)
 
     def __init__(self, context):
         self.context = context

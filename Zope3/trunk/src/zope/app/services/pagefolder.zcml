@@ -18,8 +18,8 @@
   <require
       permission="zope.ManageServices"
       interface="zope.app.interfaces.container.IWriteContainer
-                 zope.app.interfaces.services.pagefolder.IPageFolderInfo"
-      set_schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo"
+                 zope.app.services.pagefolder.IPageFolderInfo"
+      set_schema="zope.app.services.pagefolder.IPageFolderInfo"
       attributes="getRegistrationManager applyDefaults" 
       />
   <implements
@@ -27,7 +27,7 @@
 </content>
 
 <adapter
-  for="zope.app.interfaces.services.pagefolder.IPageFolder"
+  for="zope.app.services.pagefolder.IPageFolder"
   provides="zope.app.interfaces.file.IFileFactory"
   factory=".zpt.ZPTFactory"
   permission="zope.ManageServices"
