@@ -2,9 +2,6 @@
 Fields
 ======
 
-.. contents::
-
-
 This document highlights unusual and subtle aspects of various fields and
 field classes, and is not intended to be a general introduction to schema
 fields.  Please see README.txt for a more general introduction.
@@ -17,7 +14,7 @@ look at the standard zope.app approach to using these fields to find views
 ("widgets").
 
 Collections
-===========
+-----------
 
 Normal fields typically describe the API of the attribute -- does it behave as a
 Python Int, or a Float, or a Bool -- and various constraints to the model, such
@@ -68,7 +65,7 @@ behavior.  Notice the behavior of the Set field in zope.schema._field: this
 would also be necessary to implement a Bag.
 
 Choices and Vocabularies
-========================
+------------------------
 
 Choice fields are the schema way of spelling enumerated fields and more.  By
 providing a dynamically generated vocabulary, the choices available to a
@@ -119,7 +116,7 @@ The vocabulary interface is simple enough that writing a custom vocabulary is
 not too difficult itself.
 
 Choices and Collections
-=======================
+-----------------------
 
 Choices are a field type and can be used as a value_type for collections.  Just
 as a collection of an "Int" value_type constrains members to integers, so a
@@ -129,7 +126,7 @@ only for the collection and the choice field but also for the vocabulary on
 which the choice is based.
 
 Using Choice and Collection Fields within a Widget Framework
-============================================================
+------------------------------------------------------------
 
 While fields support several use cases, including code documentation and data
 description and even casting, a significant use case influencing their design is
