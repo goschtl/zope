@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: Packages.py,v 1.4 2002/09/05 20:48:13 jeremy Exp $
+$Id: Packages.py,v 1.5 2002/11/30 18:40:57 jim Exp $
 """
 __metaclass__ = type
 
@@ -32,9 +32,14 @@ from Zope.App.OFS.Services.ServiceManager.IComponentManager \
 
 from IPackages import IPackages
 from IPackage import IPackage
+from Package import Package
 
 class Packages(BTreeContainer):
     __implements__ = IPackages
+
+    def __init__(self):
+        super(Packages, self).__init__()
+        self.setObject('default', Package())
 
     def queryComponent(self, type=None, filter=None, all=0):
 
