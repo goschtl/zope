@@ -13,10 +13,11 @@
 ##############################################################################
 """Test SampleClass for testing File-system synchronization services
 
-$Id: sampleclass.py,v 1.2 2003/05/05 18:01:02 gvanrossum Exp $
+$Id: sampleclass.py,v 1.3 2003/06/06 19:28:21 stevea Exp $
 """
 
 from zope.app.interfaces.fssync import IObjectDirectory, IObjectFile
+from zope.interface import implements
 
 class C1: "C1 Doc"
 class C2: "C2 Doc"
@@ -25,7 +26,7 @@ class C2: "C2 Doc"
 class CDefaultAdapter:
     """Default File-system representation for object
     """
-    __implements__ =  IObjectFile
+    implements(IObjectFile)
 
     def __init__(self, object):
          self.context = object
@@ -41,16 +42,16 @@ class CDefaultAdapter:
 
     def getBody(self):
          return self.context.__doc__
-     
+
     def setBody(self):
          pass
-                                                        
+
 class CDirAdapter:
     """Directory Adapter
     """
 
-    __implements__ = IObjectDirectory
-    	
+    implements(IObjectDirectory)
+
     def __init__(self, object):
         self.context = object
 
@@ -64,18 +65,18 @@ class CDirAdapter:
         return "Folder Factory"
 
     def contents(self):
-    	return []
+        return []
 
 class CFileAdapter:
     """File Adapter
     """
 
-    __implements__ = IObjectFile
+    implements(IObjectFile)
 
     def __init__(self, object):
         self.context = object
 
-    def extra(self):    
+    def extra(self):
         pass
 
     def typeIdentifier(self):
@@ -83,7 +84,7 @@ class CFileAdapter:
 
     def factory(self):
         return "File Factory"
-    
+
     def getBody(self):
         return self.context.__doc__
 
