@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: IPrincipal.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+$Id: IPrincipal.py,v 1.3 2002/12/05 10:41:25 itamar Exp $
 """
 
 from Interface import Interface
+
 
 class IPrincipal(Interface):
     """Provide information about principals.
@@ -27,12 +28,11 @@ class IPrincipal(Interface):
     provided for principals might extend IPrincipal and register a
     view for the extended interface that displays the extended
     information. We'll probably want to define a standard view
-    name (e.g.  "inline_summary") for this purpose.
+    name (e.g.  'inline_summary') for this purpose.
     """
 
     def getId():
-        """Return a unique id string for the principal.
-        """
+        """Return a unique id string for the principal."""
 
     def getTitle():
         """Return a label for the principal
@@ -41,5 +41,6 @@ class IPrincipal(Interface):
         security assertions (e.g. role or permission
         assignments) about principals.
         """
+    
     def getDescription():
         """Return a description of the principal."""

@@ -13,15 +13,26 @@
 ##############################################################################
 from Interface import Interface
 
-class ILoginPassword(Interface):
 
+class ILoginPassword(Interface):
+    """A password based login.
+
+    An IAuthenticationService would use this (adapting a request),
+    to discover the login/password passed from the user, or to
+    indicate that a login is required.
+    """
+    
     def getLogin():
         """Return login name, or None if no login name found."""
 
     def getPassword():
         """Return password, or None if no login name found.
-        If there's a login but no password, return empty string."""
+        
+        If there's a login but no password, return empty string.
+        """
 
     def needLogin(realm):
-        """Indicate that a login is needed.  The realm argument
-        is the name of the principal registry."""
+        """Indicate that a login is needed.
+
+        The realm argument is the name of the principal registry.
+        """

@@ -13,21 +13,22 @@
 ##############################################################################
 """
 
-$Id: IAuthenticationService.py,v 1.4 2002/07/15 22:01:10 jim Exp $
+$Id: IAuthenticationService.py,v 1.5 2002/12/05 10:41:25 itamar Exp $
 """
 
 from Interface import Interface
 
+
 class IAuthenticationService(Interface):
-    """
-    Provide support for establishing principals for requests and for
-    performing protocol-specific actions, such as issuing challenges
-    or providing login interfaces.
+    """Provide support for establishing principals for requests.
+
+    This is implemented by performing protocol-specific actions,
+    such as issuing challenges or providing login interfaces.
     
     IAuthenticationService objects are used to implement
     authentication services. Because they implement services, they are
     expected to collaborate with services in other contexts. Client
-    code doesn't sarch a context and call multiple services. Instead,
+    code doesn't search a context and call multiple services. Instead,
     client code will call the most specific service in a place and
     rely on the service to delegate to other services as necessary.
     
@@ -38,9 +39,7 @@ class IAuthenticationService(Interface):
     """    
 
     def authenticate(request):
-        """
-        
-        Indentify a principal for a request
+        """Identify a principal for a request.
 
         If a principal can be identified, then return the
         principal id. Otherwise, return None.
@@ -77,8 +76,7 @@ class IAuthenticationService(Interface):
         """
         
     def unauthorized(id, request):
-        """
-        Signal an authorization failure
+        """Signal an authorization failure.
         
         This method is called when an auhorization problem
         occurs. It can perform a variety of actions, such
@@ -96,11 +94,10 @@ class IAuthenticationService(Interface):
         """
 
     def getPrincipal(id):
-        """
-        Get principal meta-data
+        """Get principal meta-data.
 
         Returns an object of type IPrincipal for the given principal
-        id. A NotFoundErrorx is raised if the principal cannot be
+        id. A NotFoundError is raised if the principal cannot be
         found.
 
         Note that the authentication service nearest to the requested
@@ -110,10 +107,8 @@ class IAuthenticationService(Interface):
         """
 
     def getPrincipals(name):
-        """
-        Get principals with matching names.
+        """Get principals with matching names.
 
         Get a iterable object with the principals with names that are
         similar to (e.g. contain) the given name.
         """
-
