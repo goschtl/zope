@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.14 2003/06/24 18:59:49 jeremy Exp $
+$Id: stateful.py,v 1.15 2003/06/24 19:01:36 jeremy Exp $
 """
 
 import zope.schema
@@ -27,19 +27,16 @@ from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
 
 
 class IState(Interface):
-    """Interface for state of a stateful workflow process definition.
-    """
+    """Interface for state of a stateful workflow process definition."""
 
 
 class IStatefulStatesContainer(IProcessDefinitionElementContainer):
-    """Container that stores States.
-    """
+    """Container that stores States."""
 
 
 
 class AvailableStatesField(zope.schema.TextLine):
-    """Available States.
-    """
+    """Available States."""
 
     def __allowed(self):
         pd = self.context.getProcessDefinition()
@@ -49,8 +46,7 @@ class AvailableStatesField(zope.schema.TextLine):
 
 
 class TriggerModeField(zope.schema.TextLine):
-    """Trigger Mode.
-    """
+    """Trigger Mode."""
 
     def __allowed(self):
         # XXX Need to define Contants !!!
@@ -60,8 +56,7 @@ class TriggerModeField(zope.schema.TextLine):
 
 
 class ITransition(Interface):
-    """Stateful workflow transition.
-    """
+    """Stateful workflow transition."""
 
     sourceState = AvailableStatesField(
         title=u"Source State",
@@ -100,7 +95,6 @@ class ITransition(Interface):
         description=u"How the Transition is triggered (Automatic/Manual)",
         default=u"Manual")
         
-    
 
     def getSourceState():
         """Get Source State."""
@@ -133,30 +127,25 @@ class ITransition(Interface):
         """Set Permission."""
 
     def getTriggerMode():
-        """Return the TriggerMode.
-        """
+        """Return the TriggerMode."""
 
     def setTriggerMode():
-        """Set TriggerMode.
-        """
+        """Set TriggerMode."""
         
     def getProcessDefinition():
-        """Return the ProcessDefinition Object.
-        """
+        """Return the ProcessDefinition Object."""
 
 
 
 
 class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
-    """Container that stores Transitions.
-    """
+    """Container that stores Transitions."""
 
 
 
 
 class IStatefulProcessDefinition(IProcessDefinition):
-    """Interface for stateful workflow process definition.
-    """
+    """Interface for stateful workflow process definition."""
 
     # XXX How to specify permissions for RelevantData ??
 
@@ -167,26 +156,20 @@ class IStatefulProcessDefinition(IProcessDefinition):
 
 
     def setRelevantDataSchema(schema):
-        """Set the Schema for RelevantData.
-        """
+        """Set the Schema for RelevantData."""
 
     def getRelevantDataSchema():
-        """Return the Schema for RelevantData.
-        """
-
-
+        """Return the Schema for RelevantData."""
 
     states = Attribute("State objects container.")
 
     transitions = Attribute("Transition objects container.")
 
     def addState(name, state):
-        """Add a IState to the process definition.
-        """
+        """Add a IState to the process definition."""
     
     def getState(name):
-        """Get the named state.
-        """
+        """Get the named state."""
     
     def removeState(name):
         """Remove a state from the process definition
@@ -195,34 +178,26 @@ class IStatefulProcessDefinition(IProcessDefinition):
         """
     
     def getStateNames():
-        """Get the state names.
-        """
+        """Get the state names."""
     
     def getInitialStateName():
-        """Get the name of the initial state.
-        """
+        """Get the name of the initial state."""
     
     def addTransition(name, transition):
-        """Add a ITransition to the process definition.
-        """
+        """Add a ITransition to the process definition."""
     
     def getTransition(name):
-        """Get the named transition.
-        """
+        """Get the named transition."""
     
     def removeTransition(name):
-        """Remove a transition from the process definition.
-        """
+        """Remove a transition from the process definition."""
     
     def getTransitionNames():
-        """Get the transition names.
-        """
+        """Get the transition names."""
 
     # XXX Temporarily till we find a better solution
     def clear():
-        """Clear the whole ProcessDefinition.
-        """
-
+        """Clear the whole ProcessDefinition."""
 
 
 
@@ -242,12 +217,10 @@ class IStatefulProcessInstance(IProcessInstance):
         """
 
     def getOutgoingTransitions():
-        """Get the outgoing transitions.
-        """
+        """Get the outgoing transitions."""
 
     def fireTransition(id):
-        """Fire a outgoing transitions.
-        """
+        """Fire a outgoing transitions."""
 
 
 
@@ -258,21 +231,16 @@ class IContentWorkflowsUtility(Interface):
     """
 
     def subscribe():
-        """Subscribe to the prevailing object hub service.
-        """
+        """Subscribe to the prevailing object hub service."""
 
     def unsubscribe():
-        """Unsubscribe from the object hub service.
-        """
+        """Unsubscribe from the object hub service."""
 
     def isSubscribed():
-        """Return whether we are currently subscribed.
-        """
+        """Return whether we are currently subscribed."""
 
     def getProcessDefinitionNames():
-        """Get the process definition names.
-        """
+        """Get the process definition names."""
 
     def setProcessDefinitionNames(names):
-        """Set the process definition names.
-        """
+        """Set the process definition names."""
