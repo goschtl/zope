@@ -353,7 +353,7 @@ def create_diff(repo, file, old, new):
         header = ("=== %s/%s %s => %s ==="
                   % (str(repo), str(file), old, new))
 
-    if expands_as_binary("%s/%s/%s,v" % (CVSROOT_ABS, repo, file)):
+    if expands_as_binary(get_rcs_filename(repo, file)):
         return "%s\n  <Binary-ish file>" % header
     else:
         total = len(lines)
@@ -369,6 +369,14 @@ def create_diff(repo, file, old, new):
             header = header + " (%s/%s lines abridged)" % (omitted, total)
         lines.insert(0, header + "\n")
         return string.join(lines, '')
+
+def get_rcs_filename(repodir, filename):
+    repofn = filename + ',v'
+    repodir = os.path.join(CVSROOT_ABS, repodir)
+    fn = os.path.join(repodir, repofn)
+    if not os.path.isfile(fn):
+        fn = os.path.join(repodir, "Attic", repofn)
+    return fn
 
 def do_special(trigger, action, addrs):
     """Do special action - a script, to be invoked from the CVSROOT dir.
