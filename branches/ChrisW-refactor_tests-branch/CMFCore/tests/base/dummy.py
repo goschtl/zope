@@ -69,7 +69,7 @@ class DummyContent( PortalContent, Item ):
         return self._safe_get('subject')
 
     def Description( self ):
-        return self.description
+        return self._safe_get('description')
 
     def created( self ):
         return self._safe_get('created_date')
