@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.5 2003/05/14 19:00:16 gvanrossum Exp $
+$Id: merger.py,v 1.6 2003/05/14 19:20:20 gvanrossum Exp $
 """
 
 import os
@@ -158,11 +158,12 @@ class Merger(object):
         pipe = os.popen(cmd, "r")
         output = pipe.read()
         sts = pipe.close()
-        f = open(local, "wb")
-        try:
-            f.write(output)
-        finally:
-            f.close()
+        if output or not sts:
+            f = open(local, "wb")
+            try:
+                f.write(output)
+            finally:
+                f.close()
         shutil.copy(remote, original)
         self.getentry(local).update(self.getentry(remote))
         self.clearflag(local)
