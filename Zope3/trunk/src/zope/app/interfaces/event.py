@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: event.py,v 1.6 2003/02/11 15:59:49 sidnei Exp $
+$Id: event.py,v 1.7 2003/05/20 16:57:52 alga Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -179,7 +179,7 @@ class ISubscribable(Interface):
         """
 
     def unsubscribe(reference, event_type, filter=None):
-        '''Removes just one subscription.
+        """Removes just one subscription.
 
         This is in parity with subscribe providing just one subscription.
 
@@ -208,10 +208,10 @@ class ISubscribable(Interface):
         If a path or hubId is given that no longer resolves to an object,
         and such a subscription exists, then that subscription will be
         removed and a warning logged.
-        '''
+        """
 
     def unsubscribeAll(reference, event_type=IEvent):
-        '''Removes all subscriptions for subscriber that match event_type.
+        """Removes all subscriptions for subscriber that match event_type.
 
         The subscriber is determined from the reference as described in
         the docstring of the 'unsubscribe' method.
@@ -224,7 +224,7 @@ class ISubscribable(Interface):
         is event_type, or extends event_type.
 
         Returns the number of subscriptions removed.
-        '''
+        """
 
     def resubscribeByHubId(reference):
         """Change all subscriptions for reference by path into subscriptions
