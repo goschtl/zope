@@ -74,8 +74,11 @@
 /Zope/lib/python/Products/PageTemplates         /Products/PageTemplates
 /Zope/lib/python/Products/PluginIndexes         /Products/PluginIndexes
 /Zope/lib/python/Products/PythonScripts         /Products/PythonScripts
+/Zope/lib/python/Products/TemporaryFolder	/Products/TemporaryFolder
+/Zope/lib/python/Products/Transience		/Products/Transience
 /Zope/lib/python/Products/STXDocument           /Products/STXDocument
 /Zope/lib/python/Products/SiteAccess            /Products/SiteAccess
+/Zope/lib/python/Products/Sessions		/Products/Sessions
 /Zope/lib/python/Products/StandardCacheManagers /Products/StandardCacheManagers
 /Zope/lib/python/Products/ZCatalog              /Products/ZCatalog
 /Zope/lib/python/Products/ZGadflyDA             /Products/ZGadflyDA
