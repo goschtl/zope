@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.4 2003/05/06 19:58:44 gvanrossum Exp $
+$Id: syncer.py,v 1.5 2003/05/06 22:04:06 gvanrossum Exp $
 """
 
 import os
@@ -38,6 +38,8 @@ def toFS(ob, name, location, mode=None, objpath=None):
     name -- The name of the object
 
     location -- The directory on the file system where the object will go
+
+    XXX what are mode and objpath?
     """
     objectPath = ''
     # Look for location admin dir
@@ -231,7 +233,14 @@ def fromFS(container, name, location, mode=None):
                     # Nope, we have to replace.
                     _setItem(container, name, newOb, old=1)
                 else:
+                    # XXX Hack: __setstate__ wipes out _p_serial,
+                    # so for now we must save+restore it.
+                    # But really, Persistent.__setstate__ should
+                    # preserve _p_serial.
+                    oldserial = getattr(oldOb, "_p_serial", None)
                     oldOb.__setstate__(getstate())
+                    if oldserial is not None:
+                        oldOb._p_serial = oldserial
                     oldOb._p_changed = 1
 
 
