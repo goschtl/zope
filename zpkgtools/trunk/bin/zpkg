@@ -169,20 +169,23 @@ class Application:
         if os.path.exists(setuptools_dest):
             # already have it
             return
-        try:
-            import setuptools
-        except ImportError:
-            if "setuptools" in self.locations:
-                url = self.locations["setuptools"]
-            else:
+        source = None
+        if "setuptools" in self.locations:
+            url = self.locations["setuptools"]
+        else:
+            try:
+                import setuptools
+            except ImportError:
                 # last resort
                 url = ("cvs://cvs.python.sourceforge.net/cvsroot/python"
                        ":python/nondist/sandbox/setuptools/setuptools")
                 self.logger.info("resource package:setuptools not configured;"
                                  " using bootstrap URL")
+            else:
+                source = os.path.abspath(setuptools.__path__[0])
+        if source is None:
             source = self.loader.load(url)
-        else:
-            source = os.path.abspath(setuptools.__path__[0])
+
         self.ip.copyTree(source, setuptools_dest)
         tests_dir = os.path.join(setuptools_dest, "tests")
         # XXX We could toss the tests, but that would screw up the
