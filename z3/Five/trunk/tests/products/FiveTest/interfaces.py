@@ -6,7 +6,7 @@ class IAdaptable(Interface):
     def method(self):
         """This method will be adapted
         """
-        
+
 class IAdapted(Interface):
     """The interface we adapt to.
     """

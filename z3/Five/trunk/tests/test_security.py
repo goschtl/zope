@@ -131,8 +131,8 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
           <deny attributes="baz" />
 
           <require attributes="bar keg"
-	      permission="zope.ViewManagementScreens"
-	      />
+              permission="zope.ViewManagementScreens"
+              />
 
         </five:content>
         </configure>
@@ -176,4 +176,3 @@ def test_suite():
 
 if __name__ == '__main__':
     framework()
-

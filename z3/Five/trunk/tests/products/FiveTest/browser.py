@@ -10,6 +10,5 @@ class SimpleContentView(BrowserView):
     def eagle(self):
         """Docstring"""
         return "The eagle has landed"
-    
-InitializeClass(SimpleContentView)
 
+InitializeClass(SimpleContentView)

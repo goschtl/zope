@@ -10,14 +10,14 @@ from interfaces import ISimpleContent
 class SimpleContent(SimpleItem, Viewable):
 
     implements(ISimpleContent)
-    
+
     meta_type = 'TestSimpleContent'
     security = ClassSecurityInfo()
 
     def __init__(self, id, title):
         self.id = id
         self.title = title
-        
+
     security.declarePublic('mymethod')
     def mymethod(self):
         return "Hello world"
@@ -27,7 +27,7 @@ class SimpleContent(SimpleItem, Viewable):
         """Should be able to traverse directly to this as there is no view.
         """
         return "Direct traversal worked"
-    
+
 InitializeClass(SimpleContent)
 
 manage_addSimpleContentForm = PageTemplateFile(

@@ -90,4 +90,3 @@ def metaFromBases(bases):
     meta = tuple([getattr(b,'__class__',type(b)) for b in bases])
     if meta==bases: raise TypeError("Incompatible root metatypes",bases)
     return derivedMeta(meta)
-

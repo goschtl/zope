@@ -33,6 +33,6 @@ def provideInterface(id, interface, iface_type=None):
         directlyProvides(interface, iface_type)
     else:
         iface_type = IInterface
-        
+
     utilityService = getService(servicenames.Utilities)
     utilityService.provideUtility(iface_type, interface, name=id)

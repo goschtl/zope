@@ -139,4 +139,3 @@ class IBaseDefineDirective(Interface):
 
 class IDefinePermissionDirective(IBaseDefineDirective):
     """Define a new permission."""
-
