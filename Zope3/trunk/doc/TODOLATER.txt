@@ -133,10 +133,12 @@ Things to do After the next release (in no particular order)
   It's sometimes hard to tell where the pieces that make up a
   page come from.  We'll investigate:
 
-  - Leaving TAL and METAL markup in the output, and
+  - Leaving TAL and METAL markup in the output (this is done already), and
 
   - Including special source attributes that record locations
-    of objects used in expressions.
+    of objects used in expressions (this is partially done -- you can
+    add HTML comments, but there were also plans to add XML attributes that
+    are more accessible from Javascript etc.).
 
 - DTML2
 
