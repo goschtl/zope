@@ -105,8 +105,7 @@
               tal:condition="repeat/breadcrumb/start"
               tal:attributes="
               href string:${breadcrumb/url}/@@SelectedManagementView.html"
-              i18n:translate="">[top]
-          </a>
+              i18n:translate="">[top]</a>
           <a href=""
              tal:condition="not:repeat/breadcrumb/start"
              tal:content="string:${breadcrumb/name}"
