@@ -13,20 +13,13 @@
 ##############################################################################
 """'tool' directive for 'browser' namespace
 
-$Id: metadirectives.py,v 1.1 2004/03/21 16:02:18 srichter Exp $
+$Id: metadirectives.py,v 1.2 2004/03/22 00:52:23 srichter Exp $
 """
 from zope.configuration.fields import GlobalObject, PythonIdentifier, MessageID
 from zope.interface import Interface
 
-class IUtilityToolDirective(Interface):
-    """Directive for creating new utility-based tools."""
-
-    interface = GlobalObject(
-        title=u"Interface",
-        description=u"Interface used to filter out the available entries in a \
-                      tool",
-        required=True)
-    
+class IToolDirective(Interface):
+    """Directive implementing basic tool support."""
     folder = PythonIdentifier(
         title=u"Destination Folder",
         description=u"""Destination Folder in which the tool instances are
@@ -45,3 +38,15 @@ class IUtilityToolDirective(Interface):
         description=u"Narrative description of what the tool represents.",
         required=False
         )
+    
+class IUtilityToolDirective(IToolDirective):
+    """Directive for creating new utility-based tools."""
+
+    interface = GlobalObject(
+        title=u"Interface",
+        description=u"Interface used to filter out the available entries in a \
+                      tool",
+        required=True)
+    
+class IServiceToolDirective(IToolDirective):
+    """Directive for specifying service-based tools."""
