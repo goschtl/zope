@@ -66,6 +66,10 @@ Zope Changes
 
     Bug fixes
     
+    - BTreeContainer's '__contains__()' and 'has_key()' methods return 'True'
+      and 'False' now instead 0 or a positive integer. Added tests for
+      BTreeContainer.
+
     - All IContainer objects are tree items now by default. 
 
     - Fixed Issue 126. HTML entities and elements are now correctly escaped
