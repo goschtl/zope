@@ -21,9 +21,11 @@ Options:
 
  --wait - do not fork into the background (and leave output in stdout/stderr)
 
- --syncrepo - only do the recursive repository setup (good for initting the
-              remote copy or rectifying gaps that crept in).  The rsync
-              will be verbose when doing --syncrepo.
+ --syncrepo - syncronize the mirror, don't do other activities - good for
+              initting the remote copy or rectifying gaps that crept in.
+              The rsync will be verbose when doing --syncrepo.
+
+ --syncall - do --syncrepo for all entries in the traffic table.
 
  --msgfile MSGFILENM - internal - get log message from MSGFILENM (and delete)
 
@@ -122,15 +124,16 @@ def main(args):
     try:
         opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun",
                                                   "recurse", "wait",
-                                                  "msgfile=", "syncrepo"])
+                                                  "msgfile=", "syncrepo",
+                                                  "syncall",
+                                                  ])
     except getopt.error, err:
         complain("%s\n", err)
         raise SystemExit, 1
 
-    only_repo = 0
+    only_sync = 0
+    sync_all = 0
 
-    if len(args) != 1:
-        usage(); raise SystemExit, 1
     for opt, val in opts:
         if opt == "--verbose":
             VERBOSE = 1
@@ -151,7 +154,13 @@ def main(args):
             SYNCREPO = 1
             RECURSE = 1
             WAIT = 1
-            only_repo = 1
+            only_sync = 1
+        elif opt == "--syncall":
+            SYNCREPO = 1
+            RECURSE = 1
+            WAIT = 1
+            only_sync = 1
+            sync_all = 1
         else:
             complain("Unrecognized option '%s'\n", opt)
             raise SystemExit, 1
@@ -159,33 +168,42 @@ def main(args):
         complain("Initial args: %s '%s'\n",
                  string.join(orig_args[:-1], " "),
                  orig_args[-1])
-    # The %{sVv} args are passed in as a single token - have to split them.
-    split_args = string.split(args[0])
 
-    repo = split_args[0]
+    if not sync_all and len(args) != 1:
+        usage(); raise SystemExit, 1
+
     doing_directory = 0
     no_files = 1
-    if len(split_args) == 0:
-        subjs = ["<no files>", "", ""]
-    elif len(split_args) == 1:
-        subjs = split_args + ["", ""]
-    elif split_args[1] == "-":
-        subjs = split_args
-        doing_directory = 1
+    if sync_all:
+        entries = all_entries()
+        repo = "DEBUG"
+        subjs = "<everything>"
     else:
-        no_files = 0
-        subjs = map(grok_file, split_args[1:])
+        # The %{sVv} args are passed in as a single token - have to split them.
+        split_args = string.split(args[0])
+        repo = split_args[0]
 
-    if VERBOSE:
-        complain("CWD: %s, Repo: %s, ", os.getcwd(), repo)
-        complain("Subjects: %s\n", subjs)
+        if len(split_args) == 0:
+            subjs = ["<no files>", "", ""]
+        elif len(split_args) == 1:
+            subjs = split_args + ["", ""]
+        elif split_args[1] == "-":
+            subjs = split_args
+            doing_directory = 1
+        else:
+            no_files = 0
+            subjs = map(grok_file, split_args[1:])
 
-    if not WAIT:
-        detach(orig_args)
+        if VERBOSE:
+            complain("CWD: %s, Repo: %s, ", os.getcwd(), repo)
+            complain("Subjects: %s\n", subjs)
 
-    entries = find_entries(repo)
+        if not WAIT:
+            detach(orig_args)
 
-    if CHMOD_GW and not only_repo:
+        entries = find_entries(repo)
+
+    if CHMOD_GW and not only_sync:
         if doing_directory:
             do_chmod(['.'])
         elif not no_files:
@@ -194,13 +212,13 @@ def main(args):
     for entry in entries:
         path, addrs = entry['path'], entry['addrs']
         excludes, remote = entry['excludes'], entry['remote']
-        if addrs and not only_repo:
+        if addrs and not only_sync:
                 do_mail(path, repo, addrs, subjs,
                         doing_directory=doing_directory, no_files=no_files)
         if remote:
             do_sync(path, repo, remote, subjs, excludes, recurse=RECURSE,
                     doing_directory=doing_directory, no_files=no_files)
-    if not entries and only_repo:
+    if not entries and only_sync:
             note_failure("*** --syncrepo invalid - no repository"
                          " for %s in config file.\n",
                          repo)
@@ -243,12 +261,18 @@ def detach(args):
 
     os._exit(0)
 
-def find_entries(repo):
-    """Return a filled-in dictionary for all traffic_table entries that
-    trigger for repo."""
+def all_entries():
+    return find_entries(all=1)
+
+def find_entries(repo=None, all=None):
+    """Return dictionary of traffic_table entries qualified by repo regexp.
+
+    all == 1 means return all entries, regardless of repo arg."""
     entries = []
     for t in traffic_table.table:
-        if got_re:
+        if all:
+            is_match = 1
+        elif got_re:
             is_match = re.search(t['path'], repo)
         else:
             is_match = (regex.search(t['path'], repo) != -1)
@@ -302,9 +326,9 @@ def do_mail(name, repo, addrs, subjs, doing_directory=0, no_files=0):
     if MSGFILENM:
         os.unlink(MSGFILENM)
 
-def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
+def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
             doing_directory=0, no_files=0):
-    """Instigate repository mirror synchronize.
+    """Syncronize repository to mirror.
 
     The repository directory containing the subjects is synced.  (In fact,
     the actual setting of subjs doesn't matter.)  If recurse is set, then
@@ -328,7 +352,7 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
         else:
             fnames = string.join(map(lambda x: x[0], subjs), ",")
         complain("Sync for %s to %s; of %s/ %s / %s\n",
-                 name, remote, os.environ["CVSROOT"], repo, fnames)
+                 path, remote, os.environ["CVSROOT"], repo, fnames)
 
     ssh_fragment = ('--rsh="%s -o UserKnownHostsFile=%s %s -i %s -l %s"'
                     % (SSH_EXE, KNOWN_HOSTS_FILE, (VERBOSE and "-v") or "",
@@ -364,12 +388,12 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
         cmd = cmd + ' --exclude "/*/*"'
 
     try:
-        repodir = remote['repodir'] % name
+        repodir = remote['repodir'] % path
     except TypeError:
         repodir = remote['repodir']
 
     # Special case for individual file targets:
-    if os.path.isfile("%s/%s,v" % (os.environ["CVSROOT"], repo)):
+    if os.path.isfile("%s/%s,v" % (os.environ["CVSROOT"], path)):
         trailing_slash_or_comma_v = ",v"
     elif doing_directory:
         trailing_slash_or_comma_v = ""
@@ -379,13 +403,16 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0,
     cmd = ("%s%s%s %s/%s%s %s:%s/%s%s" % ((VERBOSE and "set -x; ") or "",
                                           (DRYRUN and "echo Would do: ") or "",
                                           cmd,
-                                          os.environ["CVSROOT"], repo,
+                                          os.environ["CVSROOT"], path,
                                           trailing_slash_or_comma_v,
-                                          remote['host'], repodir, repo,
+                                          remote['host'], repodir, path,
                                           trailing_slash_or_comma_v))
     if VERBOSE:
         complain("%sDoing rsync cmd:\n\t%s\n",
                  ((DRYRUN and "NOT ") or ""), cmd)
+    elif SYNCREPO:
+        complain("%sDoing syncrepo rsync of %s\n", 
+                 ((DRYRUN and "NOT ") or ""), path)
 
     result = os.system(cmd)
     if result:
