@@ -2,6 +2,10 @@ After CMF-1.5.1beta
 
   Bug Fixes
 
+    - CMFCore.utils: Added 'transaction' for backwards compatibility.
+      CMF now uses the Zope 2.8 transaction API und uses utils.transaction as
+      fallback in Zope 2.7.
+
     - CMFCore.TypesTool: Added backwards compatibility code to the fix for
       collector issue 49 (http://collector.zope.org/CMF/49)
 
