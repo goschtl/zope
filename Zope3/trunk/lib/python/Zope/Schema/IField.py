@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.8 2002/10/10 22:05:08 jeremy Exp $
+$Id: IField.py,v 1.9 2002/10/10 22:17:57 jeremy Exp $
 """
 from Interface import Interface
 
@@ -176,7 +176,6 @@ class IDatetime(IEnumeratable, IOrderable):
 def _fields(values):
     for value in values:
         if not IField.isImplementedBy(value):
-            IField.isImplementedBy(value)
             return False
     return True
 
