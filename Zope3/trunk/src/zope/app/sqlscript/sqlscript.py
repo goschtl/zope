@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sqlscript.py,v 1.3 2004/03/02 13:48:29 philikon Exp $
+$Id: sqlscript.py,v 1.4 2004/03/02 18:06:11 philikon Exp $
 """
 
 import re
@@ -66,13 +66,13 @@ class SQLScript(Persistent, Contained):
         self._arguments = parseArguments(arguments)
 
     def getArguments(self):
-        'See zope.app.interfaces.content.sql.ISQLScript'
+        """See zope.app.sqlscript.interfaces.ISQLScript"""
         return self._arguments
 
     def getArgumentsString(self):
         return self._arg_string
 
-    # See zope.app.interfaces.content.sql.ISQLScript
+    # See zope.app.sqlscript.interfaces.ISQLScript
     arguments = property(getArgumentsString, setArguments)
 
     def setSource(self, source):
@@ -81,11 +81,11 @@ class SQLScript(Persistent, Contained):
     def getSource(self):
         return self.template.read_raw()
 
-    # See zope.app.interfaces.content.sql.ISQLScript
+    # See zope.app.sqlscript.interfaces.ISQLScript
     source = property(getSource, setSource)
 
     def getTemplate(self):
-        'See zope.app.interfaces.content.sql.ISQLScript'
+        """See zope.app.sqlscript.interfaces.ISQLScript"""
         return self.template
 
     def _setConnectionName(self, name):
@@ -99,7 +99,7 @@ class SQLScript(Persistent, Contained):
     def _getConnectionName(self):
         return self._connectionName
 
-    # See zope.app.interfaces.content.sql.ISQLScript
+    # See zope.app.sqlscript.interfaces.ISQLScript
     connectionName = property(_getConnectionName, _setConnectionName)
 
     def getConnection(self):

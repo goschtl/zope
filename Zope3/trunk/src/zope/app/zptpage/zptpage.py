@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zptpage.py,v 1.3 2004/03/02 14:40:16 philikon Exp $
+$Id: zptpage.py,v 1.4 2004/03/02 18:04:50 philikon Exp $
 """
 import re
 
@@ -38,23 +38,23 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
     implements(IZPTPage, IRenderZPTPage)
 
-    # See zope.app.interfaces.content.zpt.IZPTPage
+    # See zope.app.zptpage.interfaces.IZPTPage
     expand = False
 
-    # See zope.app.interfaces.content.zpt.IZPTPage
+    # See zope.app.zptpage.interfaces.IZPTPage
     evaluateInlineCode = False
 
     def getSource(self):
-        '''See zope.app.interfaces.content.zpt.IZPTPage'''
+        """See zope.app.zptpage.interfaces.IZPTPage"""
         return self.read()
 
     def setSource(self, text, content_type='text/html'):
-        '''See zope.app.interfaces.content.zpt.IZPTPage'''
+        """See zope.app.zptpage.interfaces.IZPTPage"""
         if not isinstance(text, unicode):
             raise TypeError("source text must be Unicode" , text)
         self.pt_edit(text.encode('utf-8'), content_type)
 
-    # See zope.app.interfaces.content.zpt.IZPTPage
+    # See zope.app.zptpage.interfaces.IZPTPage
     source = property(getSource, setSource, None,
                       """Source of the Page Template.""")
 
