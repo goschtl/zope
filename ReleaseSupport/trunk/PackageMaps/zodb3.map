@@ -18,6 +18,13 @@ ZEO             svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZEO
 ZODB            svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZODB
 ZopeUndo        svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZopeUndo
 
+# These are copied in from the Zope3 project; they are needed for ZODB
+# 3.4 and newer:
+#
+zope            svn://svn.zope.org/repos/main/ZODB/tags/*/src/zope
+zope.interface  svn://svn.zope.org/repos/main/ZODB/tags/*/src/zope/interface
+zope.testing    svn://svn.zope.org/repos/main/ZODB/tags/*/src/zope/testing
+
 # These are copied in from the ZConfig and zdaemon projects:
 #
 ZConfig         svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZConfig
