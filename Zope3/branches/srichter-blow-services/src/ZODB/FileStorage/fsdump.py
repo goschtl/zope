@@ -11,7 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import md5
 import struct
 
 from ZODB.FileStorage import FileIterator
@@ -22,44 +21,40 @@ from ZODB.utils import u64, get_pickle_metadata
 from ZODB.tests.StorageTestBase import zodb_unpickle
 
 def fsdump(path, file=None, with_offset=1):
-    i = 0
     iter = FileIterator(path)
-    for trans in iter:
+    for i, trans in enumerate(iter):
         if with_offset:
             print >> file, "Trans #%05d tid=%016x time=%s offset=%d" % \
-                  (i, u64(trans.tid), str(TimeStamp(trans.tid)), trans._pos)
+                  (i, u64(trans.tid), TimeStamp(trans.tid), trans._pos)
         else:
             print >> file, "Trans #%05d tid=%016x time=%s" % \
-                  (i, u64(trans.tid), str(TimeStamp(trans.tid)))
-        print >> file, "\tstatus=%s user=%s description=%s" % \
-              (`trans.status`, trans.user, trans.description)
-        j = 0
-        for rec in trans:
+                  (i, u64(trans.tid), TimeStamp(trans.tid))
+        print >> file, "    status=%r user=%r description=%r" % \
+              (trans.status, trans.user, trans.description)
+
+        for j, rec in enumerate(trans):
             if rec.data is None:
                 fullclass = "undo or abort of object creation"
+                size = ""
             else:
                 modname, classname = get_pickle_metadata(rec.data)
-                dig = md5.new(rec.data).hexdigest()
+                size = " size=%d" % len(rec.data)
                 fullclass = "%s.%s" % (modname, classname)
-            # special case for testing purposes
-            if fullclass == "ZODB.tests.MinPO.MinPO":
-                obj = zodb_unpickle(rec.data)
-                fullclass = "%s %s" % (fullclass, obj.value)
+
             if rec.version:
-                version = "version=%s " % rec.version
+                version = " version=%r" % rec.version
             else:
-                version = ''
+                version = ""
+
             if rec.data_txn:
                 # XXX It would be nice to print the transaction number
                 # (i) but it would be too expensive to keep track of.
-                bp = "bp=%016x" % u64(rec.data_txn)
+                bp = " bp=%016x" % u64(rec.data_txn)
             else:
                 bp = ""
-            print >> file, "  data #%05d oid=%016x %sclass=%s %s" % \
-                  (j, u64(rec.oid), version, fullclass, bp)
-            j += 1
-        print >> file
-        i += 1
+
+            print >> file, "  data #%05d oid=%016x%s%s class=%s%s" % \
+                  (j, u64(rec.oid), version, size, fullclass, bp)
     iter.close()
 
 def fmt(p64):

@@ -19,15 +19,24 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import implements, Invalid
 from zope.exceptions import NotFoundError, DuplicationError
-
-from zope.app.container.sample import SampleContainer
+from zope.component import adapts
 from zope.event import notify
+
+from zope.app.annotation.interfaces import IAnnotations
+from zope.app.container.sample import SampleContainer
 from zope.app.event.objectevent import ObjectCopiedEvent
-from zope.app.copypastemove.interfaces import IObjectMover
-from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.location.pickling import locationCopy
+from zope.app.container.interfaces import IContainer, IOrderedContainer
+from zope.app.container.interfaces import IContained
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.constraints import checkObject
+
+from zope.app.copypastemove.interfaces import IObjectMover
+from zope.app.copypastemove.interfaces import IObjectCopier
+from zope.app.copypastemove.interfaces import IContainerItemRenamer
+from zope.app.copypastemove.interfaces import IPrincipalClipboard
+
+import warnings # BBB (remove in 3.3)
 
 class ObjectMover(object):
     """Adapter for moving objects between containers
@@ -159,6 +168,8 @@ class ObjectMover(object):
 
     """
 
+    adapts(IContained)
+
     implements(IObjectMover)
 
     def __init__(self, object):
@@ -166,10 +177,10 @@ class ObjectMover(object):
         self.__parent__ = object # TODO: see if we can automate this
 
     def moveTo(self, target, new_name=None):
-        '''Move this object to the `target` given.
+        """Move this object to the `target` given.
 
         Returns the new name within the `target`
-        Typically, the `target` is adapted to `IPasteTarget`.'''
+        Typically, the `target` is adapted to `IPasteTarget`."""
 
         obj = self.context
         container = obj.__parent__
@@ -192,15 +203,15 @@ class ObjectMover(object):
         return new_name
 
     def moveable(self):
-        '''Returns ``True`` if the object is moveable, otherwise ``False``.'''
+        """Returns ``True`` if the object is moveable, otherwise ``False``."""
         return True
 
     def moveableTo(self, target, name=None):
-        '''Say whether the object can be moved to the given target.
+        """Say whether the object can be moved to the given target.
 
         Returns ``True`` if it can be moved there. Otherwise, returns
         ``False``.
-        '''
+        """
         if name is None:
             name = self.context.__name__
         try:
@@ -349,6 +360,8 @@ class ObjectCopier(object):
 
     """
 
+    adapts(IContained)
+
     implements(IObjectCopier)
 
     def __init__(self, object):
@@ -359,7 +372,7 @@ class ObjectCopier(object):
         """Copy this object to the `target` given.
 
         Returns the new name within the `target`.
-        
+
         Typically, the `target` is adapted to `IPasteTarget`.
         After the copy is added to the `target` container, publish
         an `IObjectCopied` event in the context of the target container.
@@ -387,26 +400,26 @@ class ObjectCopier(object):
 
     def _configureCopy(self, copy, target, new_name):
         """Configures the copied object before it is added to `target`.
-        
+
         `target` and `new_name` are provided as additional information.
-        
+
         By default, `copy.__parent__` and `copy.__name__` are set to ``None``.
-        
+
         Subclasses may override this method to perform additional
         configuration of the copied object.
         """
         copy.__parent__ = copy.__name__ = None
 
     def copyable(self):
-        '''Returns True if the object is copyable, otherwise False.'''
+        """Returns True if the object is copyable, otherwise False."""
         return True
 
     def copyableTo(self, target, name=None):
-        '''Say whether the object can be copied to the given `target`.
+        """Say whether the object can be copied to the given `target`.
 
         Returns ``True`` if it can be copied there. Otherwise, returns
         ``False``.
-        '''
+        """
         if name is None:
             name = self.context.__name__
         try:
@@ -416,22 +429,161 @@ class ObjectCopier(object):
         return True
 
 
+class ContainerItemRenamer(object):
+    """An IContainerItemRenamer adapter for containers.
+
+    This adapter uses IObjectMover to move an item within the same container
+    to a different name. We need to first setup an adapter for IObjectMover:
+
+      >>> from zope.app.tests import ztapi
+      >>> from zope.app.container.interfaces import IContained
+      >>> ztapi.provideAdapter(IContained, IObjectMover, ObjectMover)
+
+    To rename an item in a container, instantiate a ContainerItemRenamer
+    with the container:
+
+      >>> container = SampleContainer()
+      >>> renamer = ContainerItemRenamer(container)
+
+    For this example, we'll rename an item 'foo':
+
+      >>> from zope.app.container.contained import Contained
+      >>> foo = Contained()
+      >>> container['foo'] = foo
+      >>> container['foo'] is foo
+      True
+
+    to 'bar':
+
+      >>> renamer.renameItem('foo', 'bar')
+      >>> container['foo'] is foo
+      Traceback (most recent call last):
+      KeyError: 'foo'
+      >>> container['bar'] is foo
+      True
+
+    If the item being renamed isn't in the container, a NotFoundError is raised:
+
+      >>> renamer.renameItem('foo', 'bar') # doctest:+ELLIPSIS
+      Traceback (most recent call last):
+      NotFoundError: (<...SampleContainer...>, 'foo')
+
+    If the new item name already exists, a DuplicationError is raised:
+
+      >>> renamer.renameItem('bar', 'bar')
+      Traceback (most recent call last):
+      DuplicationError: bar is already in use
+
+    """
+
+    adapts(IContainer)
+
+    implements(IContainerItemRenamer)
+
+    def __init__(self, container):
+        self.container = container
+
+    def renameItem(self, oldName, newName):
+        object = self.container.get(oldName)
+        if object is None:
+            raise NotFoundError(self.container, oldName)
+        mover = IObjectMover(object)
+
+        if newName in self.container:
+            raise DuplicationError("%s is already in use" % newName)
+
+        mover.moveTo(self.container, newName)
+
+
+class OrderedContainerItemRenamer(ContainerItemRenamer):
+    """Renames items within an ordered container.
+
+    This renamer preserves the original order of the contained items.
+
+    To illustrate, we need to setup an IObjectMover, which is used in the
+    renaming:
+
+      >>> from zope.app.tests import ztapi
+      >>> from zope.app.container.interfaces import IContained
+      >>> ztapi.provideAdapter(IContained, IObjectMover, ObjectMover)
+
+    To rename an item in an ordered container, we instantiate a
+    OrderedContainerItemRenamer with the container:
+
+      >>> from zope.app.container.ordered import OrderedContainer
+      >>> container = OrderedContainer()
+      >>> renamer = OrderedContainerItemRenamer(container)
+
+    We'll add three items to the container:
+
+      >>> container['1'] = 'Item 1'
+      >>> container['2'] = 'Item 2'
+      >>> container['3'] = 'Item 3'
+      >>> container.items()
+      [('1', 'Item 1'), ('2', 'Item 2'), ('3', 'Item 3')]
+
+    When we rename one of the items:
+
+      >>> renamer.renameItem('1', 'I')
+
+    the order is preserved:
+
+      >>> container.items()
+      [('I', 'Item 1'), ('2', 'Item 2'), ('3', 'Item 3')]
+
+    Renaming the other two items also preserves the origina order:
+
+      >>> renamer.renameItem('2', 'II')
+      >>> renamer.renameItem('3', 'III')
+      >>> container.items()
+      [('I', 'Item 1'), ('II', 'Item 2'), ('III', 'Item 3')]
+
+    As with the standard renamer, trying to rename a non-existent item raises
+    an error:
+
+      >>> renamer.renameItem('IV', '4') # doctest:+ELLIPSIS
+      Traceback (most recent call last):
+      NotFoundError: (<...OrderedContainer...>, 'IV')
+
+    And if the new item name already exists, a DuplicationError is raised:
+
+      >>> renamer.renameItem('III', 'I')
+      Traceback (most recent call last):
+      DuplicationError: I is already in use
+
+    """
+
+    adapts(IOrderedContainer)
+
+    implements(IContainerItemRenamer)
+
+    def renameItem(self, oldName, newName):
+        order = list(self.container.keys())
+        super(OrderedContainerItemRenamer, self).renameItem(oldName, newName)
+        order[order.index(oldName)] = newName
+        self.container.updateOrder(order)
+
+
 class PrincipalClipboard(object):
-    '''Principal clipboard
+    """Principal clipboard
 
     Clipboard information consists on tuples of
     ``{'action':action, 'target':target}``.
-    '''
+    """
+
+    adapts(IAnnotations)
+
+    implements(IPrincipalClipboard)
 
     def __init__(self, annotation):
         self.context = annotation
 
     def clearContents(self):
-        '''Clear the contents of the clipboard'''
+        """Clear the contents of the clipboard"""
         self.context['clipboard'] = ()
 
     def addItems(self, action, targets):
-        '''Add new items to the clipboard'''
+        """Add new items to the clipboard"""
         contents = self.getContents()
         actions = []
         for target in targets:
@@ -439,25 +591,26 @@ class PrincipalClipboard(object):
         self.context['clipboard'] = contents + tuple(actions)
 
     def setContents(self, clipboard):
-        '''Replace the contents of the clipboard by the given value'''
+        """Replace the contents of the clipboard by the given value"""
         self.context['clipboard'] = clipboard
 
     def getContents(self):
-        '''Return the contents of the clipboard'''
+        """Return the contents of the clipboard"""
         return self.context.get('clipboard', ())
 
 
 def rename(container, oldid, newid):
-    object = container.get(oldid)
-    if object is None:
-        raise NotFoundError(container, oldid)
-    mover = IObjectMover(object)
+    """Renames an item with oldid in the container to newid.
 
-    if newid in container:
-        raise DuplicationError("name, %s, is already in use" % newid)
+    This function is deprecated. Use IContainerItemRenamer instead.
+    """
+    # BBB (remove in 3.3)
+    warnings.warn(
+        "rename is deprecated and will not be supported starting in "
+        "ZopeX3 3.3. Use IContainerItemRenamer(container).renameItem "
+        "instead.", DeprecationWarning)
+    IContainerItemRenamer(container).renameItem(oldid, newid)
 
-    if mover.moveable() and mover.moveableTo(container, newid):
-        mover.moveTo(container, newid)
 
 class ExampleContainer(SampleContainer):
     # Sample container used for examples in doc stringss in this module

@@ -41,9 +41,4 @@ class Factory(object):
             spec = Implements(*self._interfaces)
             spec.__name__ = getattr(self._callable, '__name__', '[callable]')
             return spec
-        try:
-            return implementedBy(self._callable)
-        except TypeError:
-            spec = Implements()
-            spec.__name__ = getattr(self._callable, '__name__', '[callable]')
-            return spec
+        return implementedBy(self._callable)

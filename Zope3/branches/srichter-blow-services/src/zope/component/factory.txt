@@ -83,20 +83,14 @@ Provided Interfaces
   True
   >>> list(implemented)
   [<InterfaceClass __builtin__.IKlass>]
-  >>> implemented.__name__
-  '__builtin__.Klass'
   
   >>> implemented2 = factory2.getInterfaces()
   >>> list(implemented2)
   []
-  >>> implemented2.__name__
-  '<lambda>'
   
   >>> implemented3 = factory3.getInterfaces()
   >>> list(implemented3)
   [<InterfaceClass __builtin__.IFunction>]
-  >>> implemented3.__name__
-  '<lambda>'
 
 
 The Componant Architecture Factory API

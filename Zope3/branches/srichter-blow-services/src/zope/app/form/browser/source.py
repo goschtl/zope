@@ -23,7 +23,8 @@ import zope.app.form.interfaces
 import zope.app.form.browser.widget
 import zope.app.form.browser.interfaces
 from zope.app.i18n import ZopeMessageIDFactory as _
-
+from zope.app.form.interfaces import WidgetInputError, MissingInputError
+from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class SourceDisplayWidget(zope.app.form.Widget):
 
@@ -64,6 +65,34 @@ class SourceDisplayWidget(zope.app.form.Widget):
                 value = cgi.escape(term.title)
 
         return value
+
+class SourceSequenceDisplayWidget(SourceDisplayWidget):
+
+    def __call__(self):
+
+        if self._renderedValueSet():
+            seq = self._data
+        else:
+            seq = self.context.default
+
+        terms = zapi.getMultiAdapter(
+            (self.source, self.request),
+            zope.app.form.browser.interfaces.ITerms,
+            )
+        result = []
+        for value in seq:
+            try:
+                term = terms.getTerm(value)
+            except LookupError:
+                value = self._translate(_("SourceDisplayWidget-invalid",
+                                          default="Invalid value"))
+            else:
+                value = cgi.escape(term.title)
+
+            result.append(value)
+
+        return '<br />\n'.join(result)
+    
 
 class SourceInputWidget(zope.app.form.InputWidget):
 
@@ -137,6 +166,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
     def error(self):
         if self._error:
+            # XXX This code path is untested.
             return zapi.getMultiAdapter((self._error, self.request),
                                         IWidgetInputErrorView).snippet()
         return ""
@@ -240,6 +270,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
         if token is None:
             if field.required:
+                # XXX This code path is untested.
                 raise zope.app.form.interfaces.MissingInputError(
                     field.__name__, self.label,
                     )
@@ -248,6 +279,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         try:
             value = self.terms.getValue(str(token))
         except LookupError:
+            # XXX This code path is untested.
             err = zope.schema.interfaces.ValidationError(
                 "Invalid value id", token)
             raise WidgetInputError(field.__name__, self.label, err)
@@ -258,6 +290,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
         try:
             field.validate(value)
         except ValidationError, err:
+            # XXX This code path is untested.
             self._error = WidgetInputError(field.__name__, self.label, err)
             raise self._error
 
@@ -425,9 +458,11 @@ class SourceListInputWidget(SourceInputWidget):
         # Remaining code copied from SimpleInputWidget
 
         # value must be valid per the field constraints
+        field = self.context
         try:
-            self.context.validate(value)
+            field.validate(value)
         except ValidationError, err:
+            # XXX This code path is untested.
             self._error = WidgetInputError(field.__name__, self.label, err)
             raise self._error
 

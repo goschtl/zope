@@ -5,25 +5,22 @@
     >
 
   <adapter
-      factory="zope.app.copypastemove.ObjectMover"
-      provides="zope.app.copypastemove.interfaces.IObjectMover"
+      factory=".ObjectMover"
       permission="zope.ManageContent"
-      for="*"
       trusted="y"
       />
 
   <adapter
-      factory="zope.app.copypastemove.ObjectCopier"
-      provides="zope.app.copypastemove.interfaces.IObjectCopier"
+      factory=".ObjectCopier"
       permission="zope.ManageContent"
-      for="*"
       trusted="y"
       />
 
-  <adapter
-      factory="zope.app.copypastemove.PrincipalClipboard"
-      provides="zope.app.copypastemove.interfaces.IPrincipalClipboard"
-      for="zope.app.annotation.interfaces.IAnnotations"
-      />
+  <adapter factory=".ContainerItemRenamer" />
+
+  <adapter factory=".OrderedContainerItemRenamer" />
+
+  <adapter factory=".PrincipalClipboard" />
+
 
 </configure>

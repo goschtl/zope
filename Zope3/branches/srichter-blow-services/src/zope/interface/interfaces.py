@@ -418,6 +418,14 @@ class IInterfaceDeclaration(Interface):
         instances of ``A`` and ``B`` provide.
         """
 
+    def implementer(*interfaces):
+        """Create a decorator for declaring interfaces implemented by a facory
+
+        A callable is returned that makes an implements declaration on
+        objects passed to it.
+        
+        """
+
     def classImplementsOnly(class_, *interfaces):
         """Declare the only interfaces implemented by instances of a class
 

@@ -15,60 +15,16 @@
 
 $Id$
 """
-from unittest import TestCase, main, makeSuite
+import unittest
 
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.testing.placelesssetup import setUp, tearDown
-from zope.app.testing import ztapi
-
-from zope.exceptions import NotFoundError, DuplicationError
-from zope.app.traversing.api import traverse
-from zope.app.component.testing import PlacefulSetup
-from zope.app.copypastemove.interfaces import IObjectMover
-from zope.app.copypastemove import ObjectMover
-from zope.app.copypastemove import rename
-
-class File(object):
-    pass
-
-class RenameTest(PlacefulSetup, TestCase):
-
-    def setUp(self):
-        PlacefulSetup.setUp(self)
-        PlacefulSetup.buildFolders(self)
-        ztapi.provideAdapter(None, IObjectMover, ObjectMover)
-
-    def test_simplerename(self):
-        root = self.rootFolder
-        folder1 = traverse(root, 'folder1')
-        self.failIf('file1' in folder1)
-        folder1['file1'] = File()
-        rename(folder1, 'file1', 'my_file1')
-        self.failIf('file1' in folder1)
-        self.failUnless('my_file1' in folder1)
-
-    def test_renamenonexisting(self):
-        root = self.rootFolder
-        folder1 = traverse(root, 'folder1')
-        self.failIf('a_test_file' in folder1)
-        self.assertRaises(NotFoundError, rename, folder1, 'file1', 'my_file1')
-
-    def test_renamesamename(self):
-        root = self.rootFolder
-        folder1 = traverse(root, 'folder1')
-        self.failIf('file1' in folder1)
-        self.failIf('file2' in folder1)
-        folder1['file1'] = File()
-        folder1['file2'] = File()
-        self.assertRaises(DuplicationError, rename, folder1, 'file1', 'file2')
 
 def test_suite():
-    suite = makeSuite(RenameTest)
-    suite.addTest(
+    return unittest.TestSuite((
         DocTestSuite('zope.app.copypastemove',
                      setUp=setUp, tearDown=tearDown),
-        )
-    return suite
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

@@ -117,6 +117,9 @@ def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
 
     `view` is the view that will be configured with widgets. 
 
+    `viewType` is the type of widgets to create (e.g. IInputWidget or
+    IDisplayWidget).
+
     `schema` is an interface containing the fields that widgets will be
     created for.
 
