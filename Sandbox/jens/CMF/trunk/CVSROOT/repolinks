@@ -84,6 +84,8 @@
 /Zope/lib/python/Products/ZGadflyDA             /Products/ZGadflyDA
 /Zope/lib/python/Products/ZSQLMethods           /Products/ZSQLMethods
 /Zope/lib/python/Products/ZopeTutorial          /Products/ZopeTutorial
+/Zope/utilities/ZODBTools                       /StandaloneZODB/Tools
+
 
 /StandaloneZODB/ZODB              /Packages/ZODB
 /StandaloneZODB/ZEO               /Packages/ZEO
