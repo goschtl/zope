@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.13 2003/08/21 22:06:24 fdrake Exp $
+$Id: registration.py,v 1.14 2003/08/21 22:33:58 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -730,7 +730,11 @@ class RegistrationManagerContainer(object):
             return c.findModule(name)
 
         # Use sys.modules in lieu of module service:
-        return sys.modules.get(name)
+        module = sys.modules.get(name)
+        if module is not None:
+            return module
+
+        raise ImportError(name)
 
     findModule = zapi.ContextMethod(findModule)
 
