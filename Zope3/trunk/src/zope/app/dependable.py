@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dependable.py,v 1.5 2003/06/12 19:28:08 gvanrossum Exp $
+$Id: dependable.py,v 1.6 2003/09/21 17:30:12 jim Exp $
 """
 
 __metaclass__ = type
@@ -36,11 +36,15 @@ class PathSetAnnotation:
     def __init__(self, context):
         self.context = context
         try:
-            pp = getPath(getParent(self.context))
+            parent = getParent(self.context)
+        except TypeError:
+            parent = None
+        if parent is not None:
+            pp = getPath(parent)
             if not pp.endswith("/"):
                 pp += "/"
             self.pp = pp # parentpath
-        except TypeError:
+        else:
             self.pp = ""
         self.pplen = len(self.pp)
 
