@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: interfaces.py,v 1.3 2002/12/04 20:00:52 gvanrossum Exp $
+$Id: interfaces.py,v 1.4 2002/12/05 09:52:07 bcsaller Exp $
 """
 
 from Interface import Interface
@@ -28,6 +28,8 @@ class ISearchableText(Interface):
         Each unicode string in the returned sequence will be run
         through the splitter pipeline; the combined stream of words
         coming out of the pipeline will be indexed.
+
+        returning None indicates the object should not be indexed
         """
 
 from Zope.TextIndex.TextIndexInterfaces import IStatistics
