@@ -21,15 +21,15 @@ from persistent import Persistent
 import zope.cachedescriptors.property
 from zope.interface import implements
 from zope.exceptions import DuplicationError
-from zope.proxy import removeAllProxies, getProxiedObject
 from zope.security.checker import InterfaceChecker, CheckerPublic
-from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
+from zope.security.proxy import Proxy, removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.copypastemove import ObjectCopier
+from zope.app.dependable import PathSetAnnotation
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.component.localservice import getLocalServices
 from zope.app.location import inside
@@ -588,34 +588,24 @@ class ComponentRegistration(SimpleRegistration):
         # to traverse to the component.  Yet they should be able to
         # get it by calling getComponent() on a registration object
         # for which they do have permission.  What they get will be
-        # wrapped in a security proxy of course.  Hence:
-
-        # We have to be clever here. We need to do an honest to
-        # god unrestricted traveral, which means we have to
-        # traverse from an unproxied object. But, it's not enough
-        # for the service manager to be unproxied, because the
-        # path is an absolute path. When absolute paths are
-        # traversed, the traverser finds the physical root and
-        # traverses from there, so we need to make sure the
-        # physical root isn't proxied.
+        # wrapped in a security proxy of course.
 
         path = self.componentPath
-        # Get the root and unproxy it
+        # Get the root
         if path.startswith("/"):
             # Absolute path
-            root = removeAllProxies(zapi.getRoot(service_manager))
-            component = zapi.traverse(root, path)
+            ancestor = zapi.getRoot(service_manager)
         else:
             # Relative path.
             ancestor = self.__parent__.__parent__
-            component = zapi.traverse(ancestor, path)
+        component = zapi.traverse(ancestor, path)
 
         if self.permission:
             if type(component) is Proxy:
                 # There should be at most one security Proxy around an object.
                 # So, if we're going to add a new security proxy, we need to
                 # remove any existing one.
-                component = trustedRemoveSecurityProxy(component)
+                component = removeSecurityProxy(component)
 
             interface = self.getInterface()
 
@@ -659,8 +649,6 @@ def RegisterableMoveSubscriber(registerable, event):
         else:
             raise DependencyError(
                 "Can't move a registered component from its container.")
-
-from zope.app.dependable import PathSetAnnotation
 
 class Registered(PathSetAnnotation):
     """An adapter from IRegisterable to IRegistered.
