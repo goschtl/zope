@@ -66,10 +66,6 @@ Things to do After the next release (in no particular order)
 
   http://dev.zope.org/Zope3/Zope.App.Caching
 
-- Local role definitions
-
-- Local permission definitions
-
 - Untrusted modules.  Also implement a way of specifying policies for
   trusted and untrusted modules.  At a minimum:
 
