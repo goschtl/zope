@@ -85,7 +85,9 @@ class ManageContentProcessRegistry(BrowserView):
         status = ''
         if 'ADD' in self.request:
             for name in self.name_widget.getInputValue():
-                self.context.register(self.iface_widget.getInputValue(), name)
+                for iface in self.iface_widget.getInputValue():
+                    self.context.register(iface,
+                                          name)
             status = _('Mapping(s) added.')
         elif 'REMOVE' in self.request:
             mappings = self.request.get('mappings', [])
