@@ -213,6 +213,7 @@ class CvsLoader:
         cvsroot = cvsurl.getCvsRoot()
         tag = cvsurl.tag or "HEAD"
         path = cvsurl.path or "."
+        path = posixpath.normpath(path)
 
         rc = self.runCvsExport(cvsroot, workdir, tag, path)
         if rc:
@@ -231,7 +232,7 @@ class CvsLoader:
         # cvs -f -Q -z6 -d CVSROOT export -kk -d WORKDIR -r TAG PATH
         # separated out from load() to ease testing the rest of load()
         # XXX not sure of a good way to test this method!
-        wf = posixpath.basename(posixpath.normpath(path))
+        wf = posixpath.basename(path)
         pwd = os.getcwd()
         os.chdir(workdir)
         cmdline = ("cvs", "-f", "-Q", "-z6", "-d", cvsroot,
