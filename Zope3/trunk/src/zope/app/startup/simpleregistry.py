@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.2 2002/12/25 14:13:24 jim Exp $
+$Id: simpleregistry.py,v 1.3 2003/02/07 15:59:45 jim Exp $
 """
 from zope.configuration.name import resolve
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
@@ -64,6 +64,8 @@ class SimpleRegistry:
         self.objects = {}
         self.interface = interface
 
+    def _clear(self):
+        self.objects.clear()
 
     def register(self, name, object):
         '''See ISimpleRegistry'''
@@ -71,17 +73,8 @@ class SimpleRegistry:
         if name in self.objects.keys():
             raise ZopeDuplicateRegistryEntryError(name)
 
-        # XXX Find the right Interface tools to do that; unfortunately,
-        #     I have not found them
-        # Check whether the object implements the right interface.
-        # Note, that we do *not* know whether the object is an instance
-        # or a class (or worse a Persistent class)
-        if hasattr(object, '__implements__') and \
-               ( self.interface == object.__implements__ or \
-                 ( type(object.__implements__) in ListTypes and
-                   self.interface in object.__implements__ ) ):
+        if self.interface.isImplementedBy(object):
             self.objects[name] = object
-
         else:
             raise ZopeIllegalInterfaceError(name, self.interface)
 

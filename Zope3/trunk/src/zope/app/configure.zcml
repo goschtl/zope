@@ -80,7 +80,6 @@
   <include package="zope.app.publisher" />
   <include package="zope.app.rdb" />
   <include package="zope.app.traversing" />
-  <include package="zope.app.publication" />
   <include package="zope.app.form" />
   <include package="zope.app.cache" />
   <include package="zope.app.dublincore" />
@@ -93,5 +92,7 @@
 
   <include package="zope.app.browser" />
   <include package="zope.app.ftp" />
+  <include package="zope.app.xmlrpc" />
+  <include package="zope.app.http" />
 
 </zopeConfigure>

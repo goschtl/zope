@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: requestfactoryregistry.py,v 1.2 2002/12/25 14:13:24 jim Exp $
+$Id: requestfactoryregistry.py,v 1.3 2003/02/07 15:59:45 jim Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
 from zope.app.startup.simpleregistry import SimpleRegistry
-from zope.app.startup.requestfactory import IRequestFactory
+from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
 
 
 class IRequestFactoryRegistry(ISimpleRegistry):
@@ -32,9 +32,16 @@ class IRequestFactoryRegistry(ISimpleRegistry):
 
 
 class RequestFactoryRegistry(SimpleRegistry):
-    __implements__ =  (IRequestFactoryRegistry,)
+    __implements__ =  IRequestFactoryRegistry
 
 
-RequestFactoryRegistry = RequestFactoryRegistry(IRequestFactory)
+RequestFactoryRegistry = RequestFactoryRegistry(
+    IPublicationRequestFactoryFactory)
+
 registerRequestFactory = RequestFactoryRegistry.register
 getRequestFactory = RequestFactoryRegistry.get
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(RequestFactoryRegistry._clear)
+del addCleanUp

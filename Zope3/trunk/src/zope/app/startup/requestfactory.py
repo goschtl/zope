@@ -14,28 +14,8 @@
 """ctory.py,v 1.1.2.2 2002/04/02 02:20:40 srichter Exp $
 """
 
-from zope.interface import Interface
 import copy
-
-
-class IRequestFactory(Interface):
-    """This is a pure read-only interface, since the values are set through
-       a ZCML directive and we shouldn't be able to change them.
-    """
-
-    def realize(db):
-        """Realize the factory by initalizing the publication.
-
-           The method returns the realized object.
-        """
-
-
-    def __call__(input_stream, output_steam, env):
-        """Call the Request Factory"""
-
-
-
-
+from zope.app.interfaces.startup import IRequestFactory
 
 class RequestFactory:
     """This class will generically create RequestFactories. This way I do

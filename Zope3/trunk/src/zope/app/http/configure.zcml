@@ -1,0 +1,43 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<content class=".put.NullResource">
+  <allow interface="zope.app.interfaces.http.INullResource" />
+</content>
+
+<view 
+  for="zope.app.interfaces.container.ISimpleReadContainer"
+  name="_traverse"
+  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  factory=".traversal.ContainerTraverser"
+  permission="zope.Public"
+  allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+  />
+
+<view 
+  for="zope.app.interfaces.container.IItemContainer"
+  name="_traverse"
+  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  factory=".traversal.ItemTraverser"
+  permission="zope.Public"
+  allowed_interface="zope.publisher.interfaces.IPublishTraverse"
+  />
+
+<view 
+  for="zope.app.interfaces.http.INullResource"
+  name="PUT"
+  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  factory=".put.NullPUT"
+  permission="zope.Public"
+  allowed_attributes="PUT"
+  />
+
+<view 
+  for="*"
+  name="PUT"
+  type="zope.publisher.interfaces.http.IHTTPPresentation"
+  factory=".put.FilePUT"
+  permission="zope.Public"
+  allowed_attributes="PUT"
+  />
+
+</zopeConfigure>

@@ -1,0 +1,24 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
+   >
+
+<xmlrpc:view 
+    name="_traverse" 
+    for="zope.interface.Interface"
+    factory="zope.app.publication.traversers.SimpleComponentTraverser" 
+    />
+
+<xmlrpc:view
+    name="_traverse" 
+    for="zope.app.interfaces.container.IItemContainer"
+    factory="zope.app.container.traversal.ItemTraverser" 
+    />
+
+<xmlrpc:view
+    name="_traverse" 
+    for="zope.app.interfaces.container.IReadContainer"
+    factory="zope.app.container.traversal.ContainerTraverser" 
+    />
+
+</zopeConfigure>

@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: metaconfigure.py,v 1.2 2002/12/25 14:13:24 jim Exp $
+$Id: metaconfigure.py,v 1.3 2003/02/07 15:59:45 jim Exp $
 """
 
 from zope.app.startup.sitedefinition import SiteDefinition
@@ -27,10 +27,20 @@ from zope.app.startup.servertype import ServerType
 defineSite = SiteDefinition
 
 
-def registerRequestFactory(_context, name, publication, request):
-    publication = _context.resolve(publication)
-    request = _context.resolve(request)
-    request_factory = RequestFactory(publication, request)
+def registerRequestFactory(_context, name, request=None, publication=None,
+                           factory=None):
+
+    if factory:
+        if request or publication:
+            raise ValuesError(
+                """Can't provide a request or publication (factory) if you
+                provide a (request) factory""")
+        request_factory = _context.resolve(factory)
+
+    else:
+        publication = _context.resolve(publication)
+        request = _context.resolve(request)
+        request_factory = RequestFactory(publication, request)
 
     return [
         Action(

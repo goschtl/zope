@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_registerrequestfactory.py,v 1.2 2002/12/25 14:13:25 jim Exp $
+$Id: test_registerrequestfactory.py,v 1.3 2003/02/07 15:59:46 jim Exp $
 """
 
 import unittest
@@ -21,9 +21,16 @@ from cStringIO import StringIO
 from zope.configuration.xmlconfig import xmlconfig
 from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.startup.requestfactoryregistry import getRequestFactory
+from zope.testing.cleanup import CleanUp
+from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
 
+class TF:
+    "test request factory"
+    __implements__ = IPublicationRequestFactoryFactory
 
-class Test( unittest.TestCase ):
+tf = TF()
+
+class Test(CleanUp, unittest.TestCase):
 
     def testRegisterRequestFactory(self):
 
@@ -52,6 +59,32 @@ class Test( unittest.TestCase ):
         self.assertEqual(
             getRequestFactory('BrowserRequestFactory')._request,
             BrowserRequest)
+
+
+    def testRegisterRequestFactory_w_factory(self):
+
+        xmlconfig(makeconfig(
+            '''<directive
+                   name="registerRequestFactory"
+                   attributes="name publication request"
+                   handler=
+                   "zope.app.startup.metaconfigure.registerRequestFactory"
+                   />''',
+            '''<test:registerRequestFactory
+                   name="BrowserRequestFactory"
+                   factory="
+                   zope.app.startup.tests.test_registerrequestfactory.tf"
+                   />
+            '''
+            ))
+
+        import zope.app.startup.tests.test_registerrequestfactory
+
+        self.assertEqual(
+            getRequestFactory('BrowserRequestFactory'),
+            zope.app.startup.tests.test_registerrequestfactory.tf
+            )
+
 
 
 
