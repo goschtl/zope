@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testAddServiceDirective.py,v 1.3 2002/11/18 13:35:43 stevea Exp $
+$Id: testAddServiceDirective.py,v 1.4 2002/11/18 23:54:38 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -60,6 +60,20 @@ from Zope.App.ZopePublication.TraversalViews.AbsoluteURL \
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.App.OFS.Content.Folder.RootFolder import IRootFolder
 
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
+
+from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
+from Zope.App.OFS.Container.IContainer import IContainer
+from Zope.App.OFS.Container.ZopeContainerAdapter import ZopeContainerAdapter
+
+from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
+from Zope.App.OFS.Annotation.IAttributeAnnotatable \
+     import IAttributeAnnotatable
+from Zope.App.OFS.Annotation.AttributeAnnotations import AttributeAnnotations
+from Zope.App.OFS.Annotation.IAnnotations import IAnnotations
+from Zope.App.DependencyFramework.IDependable import IDependable
+from Zope.App.DependencyFramework.Dependable import Dependable
+
 class I1(Interface): pass
 class C: __implements__ = I1
 
@@ -67,6 +81,12 @@ class Test(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
+
+        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
+        provideAdapter(IAttributeAnnotatable,
+                       IAnnotations, AttributeAnnotations)
+        provideAdapter(IAnnotatable, IDependable, Dependable)
+
         self.buildFolders()
 
         adapterService = getService(None, "Adapters")
