@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.12 2003/03/23 22:35:39 jim Exp $
+$Id: subscribers.py,v 1.13 2003/04/10 12:53:52 jack-e Exp $
 """
 __metaclass__ = type
 
@@ -38,6 +38,7 @@ from zope.app.interfaces.content.folder import IFolder
 from zope.proxy.context import ContextMethod
 from zope.component import getService, queryAdapter
 from zope.app.services.servicenames import HubIds
+from zope.app.services.servicenames import EventSubscription
 
 from zope.app.traversing import traverse, traverseName, getPath, getRoot
 from zope.app.interfaces.services.hub import ObjectHubError
@@ -72,7 +73,7 @@ class Registration(Persistent):
             raise RuntimeError, "already subscribed; please unsubscribe first"
         # we subscribe to the HubIds service so that we're
         # guaranteed to get exactly the events *that* service receives.
-        events = getService(wrapped_self, HubIds)
+        events = getService(wrapped_self, EventSubscription)
         events.subscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = True
     subscribe = ContextMethod(subscribe)
@@ -80,7 +81,7 @@ class Registration(Persistent):
     def unsubscribe(wrapped_self):
         if not wrapped_self.currentlySubscribed:
             raise RuntimeError, "not subscribed; please subscribe first"
-        events = getService(wrapped_self, HubIds)
+        events = getService(wrapped_self, EventSubscription)
         events.unsubscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = False
     unsubscribe = ContextMethod(unsubscribe)
