@@ -66,7 +66,7 @@
       name="firstlevelmacronames"
       factory="zope.app.pageletchooser.vocabulary.PageletNamesVocabulary"
       layer="zope.publisher.interfaces.browser.IBrowserRequest"
-      view="zope.component.interfaces.IView"
+      view="zope.component.bbb.interfaces.IView"
       slot="zope.app.demo.pageletchooser.interfaces.IFirstLevelPagelets"
       />
 

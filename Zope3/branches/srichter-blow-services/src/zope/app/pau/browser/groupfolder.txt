@@ -15,48 +15,80 @@ Let's walk through an example.
 
 First, we'll create a principal folder:
 
-  (The first request is a bit weird.  It is part of the current
-   tools UI.  It arranges for a tools site-management folder to be
-   created.  We really need to rethink how we manage TTW utilities.)
-
   >>> print http(r"""
-  ... GET /++etc++site/AddISearchableAuthenticationPluginTool HTTP/1.1
+  ... POST /++etc++site/default/+/AddPrincipalFolder.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/@@manageISearchableAuthenticationPluginTool.html
-  ... """)
-  HTTP/1.1 200 Ok
-  ...
-
-  >>> print http(r"""
-  ... POST /++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html%3D HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 434
-  ... Content-Type: multipart/form-data; boundary=---------------------------190685539214643056941988788830
-  ... Referer: http://localhost:8081/++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html=
+  ... Referer: http://localhost:8081/++etc++site/default/+/
+  ... Content-Type: multipart/form-data; boundary=----------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... 
-  ... -----------------------------190685539214643056941988788830
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... Content-Disposition: form-data; name="field.prefix"
   ... 
   ... users.
-  ... -----------------------------190685539214643056941988788830
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
   ... 
   ... Add
-  ... -----------------------------190685539214643056941988788830
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... Content-Disposition: form-data; name="add_input_name"
   ... 
   ... users
-  ... -----------------------------190685539214643056941988788830--
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C--  
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: ../@@manageISearchableAuthenticationPluginTool.html
+  Location: http://localhost/++etc++site/default/users/@@registration.html
   ...
 
-Next we'l add some users:
+  >>> print http(r"""
+  ... POST /++etc++site/default/users/addRegistration.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/++etc++site/default/users/
+  ... Content-Type: multipart/form-data; boundary=----------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... 
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.name"
+  ... 
+  ... users
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.provided"
+  ... 
+  ... zope.app.pau.interfaces.ISearchableAuthenticationPlugin
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
+  ... 
+  ... 1
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.permission"
+  ... 
+  ... 
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... 
+  ... 1
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF--
+  ... """)
+  HTTP/1.1 303 See Other
+  ...
+  Location: @@SelectedManagementView.html
+  ...
+
+Next we'll add some users:
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 784
   ... Content-Type: multipart/form-data; boundary=---------------------------62010169718836874861388307181
@@ -89,11 +121,11 @@ Next we'l add some users:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 779
   ... Content-Type: multipart/form-data; boundary=---------------------------1501629520183211901834390790
@@ -126,11 +158,11 @@ Next we'l add some users:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 781
   ... Content-Type: multipart/form-data; boundary=---------------------------3362827831346173768318792608
@@ -163,11 +195,11 @@ Next we'l add some users:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 781
   ... Content-Type: multipart/form-data; boundary=---------------------------1771586876978613244952985501
@@ -200,11 +232,11 @@ Next we'l add some users:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 783
   ... Content-Type: multipart/form-data; boundary=---------------------------6406512534224572322062554722
@@ -237,11 +269,11 @@ Next we'l add some users:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 779
   ... Content-Type: multipart/form-data; boundary=---------------------------1596878616204415667781266350
@@ -274,11 +306,11 @@ Next we'l add some users:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 793
   ... Content-Type: multipart/form-data; boundary=---------------------------160587971417390263241080578782
@@ -311,34 +343,79 @@ Next we'l add some users:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
-Next, we'll add out groups folder:
+Next, we'll add our groups folder:
 
   >>> print http(r"""
-  ... POST /++etc++site/AddIPrincipalSearchPluginTool/AddGroupFolder.html%3D HTTP/1.1
+  ... POST /++etc++site/default/+/AddGroupFolder.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 432
-  ... Content-Type: multipart/form-data; boundary=---------------------------18984415031531709165482618952
+  ... Referer: http://localhost:8081/++etc++site/default/+/AddGroupFolder.html=
+  ... Content-Type: multipart/form-data; boundary=----------HR0o47BKrDUFNq9E3ALh84RAhH2NErKTGLHLQRdGe6VzwcDxmYcva23
   ... 
-  ... -----------------------------18984415031531709165482618952
+  ... ------------HR0o47BKrDUFNq9E3ALh84RAhH2NErKTGLHLQRdGe6VzwcDxmYcva23
   ... Content-Disposition: form-data; name="field.prefix"
   ... 
   ... groups.
-  ... -----------------------------18984415031531709165482618952
+  ... ------------HR0o47BKrDUFNq9E3ALh84RAhH2NErKTGLHLQRdGe6VzwcDxmYcva23
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
   ... 
   ... Add
-  ... -----------------------------18984415031531709165482618952
+  ... ------------HR0o47BKrDUFNq9E3ALh84RAhH2NErKTGLHLQRdGe6VzwcDxmYcva23
   ... Content-Disposition: form-data; name="add_input_name"
   ... 
   ... groups
-  ... -----------------------------18984415031531709165482618952--
+  ... ------------HR0o47BKrDUFNq9E3ALh84RAhH2NErKTGLHLQRdGe6VzwcDxmYcva23--
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: ../@@manageIPrincipalSearchPluginTool.html
+  Location: http://localhost/++etc++site/default/groups/@@registration.html
+  ...
+
+  >>> print http(r"""
+  ... POST /++etc++site/default/groups/addRegistration.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/++etc++site/default/groups/
+  ... Content-Type: multipart/form-data; boundary=----------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... 
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="field.name"
+  ... 
+  ... groups
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="field.provided"
+  ... 
+  ... zope.app.pau.groupfolder.IGroupFolder
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
+  ... 
+  ... 1
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="field.permission"
+  ... 
+  ... 
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... 
+  ... 1
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... ------------BGTUKtsean7c7LiNseTnrHwOhb3mhCwsSPKkGDPqyUS5p8QgktRb8Ny--
+  ... """)
+  HTTP/1.1 303 See Other
+  ...
+  Location: @@SelectedManagementView.html
   ...
 
 Now, before we can define any groups, we have to add and register a PAU:
@@ -357,35 +434,41 @@ Now, before we can define any groups, we have to add and register a PAU:
   >>> print http(r"""
   ... POST /++etc++site/default/LocalPAU/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 852
-  ... Content-Type: multipart/form-data; boundary=---------------------------1649392783947785437368129046
-  ... Referer: http://localhost:8081/++etc++site/default/LocalPAU/
+  ... Content-Type: multipart/form-data; boundary=----------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... 
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.name"
   ... 
   ... 
-  ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface"
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.provided"
   ... 
   ... zope.app.security.interfaces.IAuthenticationUtility
-  ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
   ... 1
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.permission"
   ... 
   ... 
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.permission-empty-marker"
   ... 
   ... 1
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
   ... 
   ... Add
-  ... -----------------------------1649392783947785437368129046--
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq--
   ... """)
   HTTP/1.1 303 See Other
   ...
@@ -469,7 +552,7 @@ Now, we can define some groups.  Let's start with a group named
 "Admin":
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/groups/+/AddGroupInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/groups/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 540
   ... Content-Type: multipart/form-data; boundary=---------------------------5412502961004181070544094984
@@ -494,17 +577,17 @@ Now, we can define some groups.  Let's start with a group named
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/groups/@@contents.html
+  Location: http://localhost/++etc++site/default/groups/@@contents.html
   ...
 
 That includes Betty, Mary and Mike:
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/groups/1/@@edit.html HTTP/1.1
+  ... POST /++etc++site/default/groups/1/@@edit.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 1426
   ... Content-Type: multipart/form-data; boundary=---------------------------67523504021030130962010243745
-  ... Referer: http://localhost:8081/++etc++site/tools/groups/1/@@edit.html
+  ... Referer: http://localhost:8081/++etc++site/default/groups/1/@@edit.html
   ... 
   ... -----------------------------67523504021030130962010243745
   ... Content-Disposition: form-data; name="field.title"
@@ -554,7 +637,7 @@ That includes Betty, Mary and Mike:
 and a group "Power Users":
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/groups/+/AddGroupInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/groups/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 556
   ... Content-Type: multipart/form-data; boundary=---------------------------14430301351028860873795053640
@@ -579,13 +662,13 @@ and a group "Power Users":
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/groups/@@contents.html
+  Location: http://localhost/++etc++site/default/groups/@@contents.html
   ...
 
 with users Betty, Bill, Bob, George, and Mary:
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/groups/power/@@edit.html HTTP/1.1
+  ... POST /++etc++site/default/groups/power/@@edit.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 1708
   ... Content-Type: multipart/form-data; boundary=---------------------------46600477014278930691159535998

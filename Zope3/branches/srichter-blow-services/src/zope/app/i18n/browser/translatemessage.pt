@@ -1,7 +1,7 @@
 <html metal:use-macro="context/@@standard_macros/page">
 <head>
   <title metal:fill-slot="title" i18n:translate="">
-    Translation Service - Translate
+    Translation Domain - Translate
   </title>
 </head>
 

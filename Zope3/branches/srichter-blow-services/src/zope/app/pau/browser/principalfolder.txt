@@ -17,43 +17,74 @@ fail:
 
 To allow Bob to log in, we'll start by adding a principal folder:
 
-
-(The following request is a bit weird.  It is part of the current
- tools UI.  It arranges for a tools site-management folder to be
- created.  We really need to rethink how we manage TTW utilities.)
-
   >>> print http(r"""
-  ... GET /++etc++site/AddISearchableAuthenticationPluginTool HTTP/1.1
+  ... POST /++etc++site/default/+/AddPrincipalFolder.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Referer: http://localhost:8081/++etc++site/@@manageISearchableAuthenticationPluginTool.html
-  ... """)
-  HTTP/1.1 200 Ok
-  ...
-
-  >>> print http(r"""
-  ... POST /++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html%3D HTTP/1.1
-  ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 434
-  ... Content-Type: multipart/form-data; boundary=---------------------------190685539214643056941988788830
-  ... Referer: http://localhost:8081/++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html=
+  ... Referer: http://localhost:8081/++etc++site/default/+/
+  ... Content-Type: multipart/form-data; boundary=----------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... 
-  ... -----------------------------190685539214643056941988788830
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... Content-Disposition: form-data; name="field.prefix"
   ... 
   ... users.
-  ... -----------------------------190685539214643056941988788830
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
   ... 
   ... Add
-  ... -----------------------------190685539214643056941988788830
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C
   ... Content-Disposition: form-data; name="add_input_name"
   ... 
   ... users
-  ... -----------------------------190685539214643056941988788830--
+  ... ------------GYJj1mdiN891D9tNwXr91fhfZ3uDCujQQ39Rnk88qF94M1PGYEPXt5C--  
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: ../@@manageISearchableAuthenticationPluginTool.html
+  Location: http://localhost/++etc++site/default/users/@@registration.html
+  ...
+
+  >>> print http(r"""
+  ... POST /++etc++site/default/users/addRegistration.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/++etc++site/default/users/
+  ... Content-Type: multipart/form-data; boundary=----------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... 
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.name"
+  ... 
+  ... users
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.provided"
+  ... 
+  ... zope.app.pau.interfaces.ISearchableAuthenticationPlugin
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
+  ... 
+  ... 1
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.permission"
+  ... 
+  ... 
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="field.permission-empty-marker"
+  ... 
+  ... 1
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... ------------A0RQoKkMr657cHGA0FBBfto7FJSXB3IJ3jkq2UCtaF1BUFLTVWeAPQF--
+  ... """)
+  HTTP/1.1 303 See Other
+  ...
+  Location: @@SelectedManagementView.html
   ...
 
 We specify a prefix, `users.`.  This is used to make sure that ids
@@ -64,7 +95,7 @@ the pluggable authentiaction service.
 Next we'll view the contents page of the principal folder:
 
   >>> print http(r"""
-  ... GET /++etc++site/tools/users/@@contents.html HTTP/1.1
+  ... GET /++etc++site/default/users/@@contents.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/++etc++site/@@manageISearchableAuthenticationPluginTool.html
   ... """)
@@ -74,11 +105,11 @@ Next we'll view the contents page of the principal folder:
 And we'll add a principal, Bob:
 
   >>> print http(r"""
-  ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
+  ... POST /++etc++site/default/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 777
   ... Content-Type: multipart/form-data; boundary=---------------------------7243003661505678908829226317
-  ... Referer: http://localhost:8081/++etc++site/tools/users/+/AddPrincipalInformation.html=
+  ... Referer: http://localhost:8081/++etc++site/default/users/+/AddPrincipalInformation.html=
   ... 
   ... -----------------------------7243003661505678908829226317
   ... Content-Disposition: form-data; name="field.login"
@@ -108,7 +139,7 @@ And we'll add a principal, Bob:
   ... """)
   HTTP/1.1 303 See Other
   ...
-  Location: http://localhost/++etc++site/tools/users/@@contents.html
+  Location: http://localhost/++etc++site/default/users/@@contents.html
   ...
 
 Note that we didn't pick a name.  The name, together with the folder
@@ -131,35 +162,41 @@ register a pluggable authentication utility:
   >>> print http(r"""
   ... POST /++etc++site/default/LocalPAU/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 852
-  ... Content-Type: multipart/form-data; boundary=---------------------------1649392783947785437368129046
-  ... Referer: http://localhost:8081/++etc++site/default/LocalPAU/
+  ... Content-Type: multipart/form-data; boundary=----------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... 
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.name"
   ... 
   ... 
-  ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface"
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.provided"
   ... 
   ... zope.app.security.interfaces.IAuthenticationUtility
-  ... -----------------------------1649392783947785437368129046
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
   ... 1
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
+  ... Content-Disposition: form-data; name="field.status-empty-marker"
+  ... 
+  ... 1
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.permission"
   ... 
   ... 
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.permission-empty-marker"
   ... 
   ... 1
-  ... -----------------------------1649392783947785437368129046
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
   ... 
   ... Add
-  ... -----------------------------1649392783947785437368129046--
+  ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq--
   ... """)
   HTTP/1.1 303 See Other
   ...
