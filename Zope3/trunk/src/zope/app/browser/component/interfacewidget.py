@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.3 2003/01/05 18:56:52 stevea Exp $
+$Id: interfacewidget.py,v 1.4 2003/01/06 14:49:12 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -208,24 +208,16 @@ class MultiInterfaceWidget(Widget, BrowserView):
                     for interface in data]
         return ''.join(elements)
        
-
-    # --- deprecated methods of IBrowserWidget
-    #def label(self):
-    #    'See IBrowserWidget'
-    #    raise NotImplementedError
-        
     def label(self):
         return '<label for="%s">%s</label>' % (
             self.name,
             self.title,
             )
 
-    #def row(self):
-    #    'See IBrowserWidget'
-    #    raise NotImplementedError
-
     def row(self):
         return "<td>%s</td><td>%s</td>" % (self.label(), self())
+
+    # --- deprecated methods of IBrowserWidget
 
     def renderHidden(self, value):
         'See IBrowserWidget'

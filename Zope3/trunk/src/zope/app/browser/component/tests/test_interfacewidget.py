@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.3 2003/01/05 18:56:50 stevea Exp $
+$Id: test_interfacewidget.py,v 1.4 2003/01/06 14:49:09 stevea Exp $
 """
 
 __metaclass__ = type
@@ -229,6 +229,12 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '</select>'
         )
         self.assertEqual(widget(), out)
+        label = '<label for="field.TestName">This is a test</label>'
+        self.assertEqual(widget.label(), label)
+        self.assertEqual(widget.row(),
+                         '<td>%s</td><td>%s</td>' % (label, out)
+                         )
+
 
 
 class TestInterfaceWidget(BaseInterfaceWidgetTest):
