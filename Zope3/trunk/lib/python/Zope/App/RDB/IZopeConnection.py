@@ -12,35 +12,27 @@
 # 
 ##############################################################################
 """
-$Id: IZopeConnection.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+$Id: IZopeConnection.py,v 1.4 2002/07/24 23:17:04 jeremy Exp $
 """
+
 from IDBIConnection import IDBIConnection
 from IDBITypeInfoProvider import IDBITypeInfoProvider
 
-
 class IZopeConnection(IDBIConnection, IDBITypeInfoProvider):
-    """An implementation of this object will be exposed to the user. Therefore
-    the Zope connection represents a conenction in the Zope sense, meaning
-    that the object might not be actually connected to a database.
-    """
+
+    # XXX What does the next paragraph mean?
+    
+    # An implementation of this object will be exposed to the
+    # user. Therefore the Zope connection represents a connection in
+    # the Zope sense, meaning that the object might not be actually
+    # connected to a database.
 
     def cursor():
-        """Return an IZopeCursor object"""
+        """Return an IZopeCursor object."""
         
     def registerForTxn():
-        """Registers the Connection with the Zope Transaction
-        framework.
+        """Join the current transaction.
 
         This method should only be inovoked by the Zope/DB transaction
-        manager."""
-
-    def unregisterFromTxn():
-        """Unregister the connection from the Zope transaction.
-
-        This method should only be inovoked by the Zope/DB transaction
-        manager!!!"""
-
-
-        
-
-
+        manager.
+        """

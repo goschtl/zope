@@ -14,11 +14,10 @@
 """ Zope RDBMS Transaction Integration.
 
 Provides a proxy for interaction between the zope transaction
-framework and the db-api connection. Databases which
-want to support sub transactions need to implement their own
-proxy. 
+framework and the db-api connection. Databases which want to support
+sub transactions need to implement their own proxy.
 
-$Id: ZopeDBTransactionManager.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: ZopeDBTransactionManager.py,v 1.3 2002/07/24 23:17:04 jeremy Exp $
 """
 from Transaction.IDataManager import IDataManager
 
@@ -27,45 +26,19 @@ class ZopeDBTransactionManager:
     __implements__ =  IDataManager
 
     def __init__(self, dbconn):
-        """Callback is a function invoked when the transaction is finished.
-        """
-        self.dbconn = dbconn
-        self._vote = 0
+        self._dbconn = dbconn
 
-    ############################################################
-    # Implementation methods for interface
-    # Zope.Transaction.IDataManager.
+    # XXX Do any of the Python DB-API implementations support
+    # two-phase commit?
 
-    def abort(self, *ignored):
-        'See Transaction.IDataManager.IDataManager'
-        try:
-            self.dbconn.rollback()
-        finally:
-            self.dbconn.unregisterFromTxn()
+    def prepare(self, txn):
+        return True
 
-    def commit(self, *ignored):
-        'See Transaction.IDataManager.IDataManager'
+    def abort(self, txn):
+        self._dbconn.rollback()
 
-    def tpc_vote(self, *ignored):
-        'See Transaction.IDataManager.IDataManager'
-        self._vote = 1
-        
-    def tpc_begin(self, *ignored):
-        'See Transaction.IDataManager.IDataManager'
+    def commit(self, txn):
+        self._dbconn.commit()
 
-    def tpc_finish(self, *ignored):
-        'See Transaction.IDataManager.IDataManager'
-        if self._vote:
-            try:
-                self.dbconn.commit()
-            finally:
-                self.dbconn.unregisterFromTxn()
-        
-    tpc_abort = abort
-    
-    #
-    ############################################################
-
-
-
-
+    def savepoint(self, txn):
+        pass

@@ -11,55 +11,37 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: testZopeDBTransactionManager.py,v 1.2 2002/07/17 16:54:19 jeremy Exp $
+"""
+$Id: testZopeDBTransactionManager.py,v 1.3 2002/07/24 23:17:04 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Transaction import get_transaction
+from Transaction.tests.abstestIDataManager import IDataManagerTests
 from Zope.App.RDB.ZopeDBTransactionManager import ZopeDBTransactionManager
 from Zope.App.RDB.ZopeConnection import ZopeConnection
 from Stubs import *
 
-class TxnMgrTest(TestCase):
-    """
-    test txn integration.
-    """
+class TxnMgrTest(IDataManagerTests, TestCase):
+
+    def setUp(self):
+        self.conn = ConnectionStub()
+        zc = ZopeConnection(self.conn)
+        self.datamgr = ZopeDBTransactionManager(zc)
+        zc.registerForTxn()
+        self.txn_factory = get_transaction
 
     def tearDown(self):
         """ make sure the global env is clean"""
         get_transaction().abort()
 
     def test_abort(self):
-	
-        conn = ConnectionStub()
-        zc = ZopeConnection(conn)
-        tm = ZopeDBTransactionManager(zc)
-
-        zc.registerForTxn()
-        
-        t = get_transaction()
-        t.abort()
-
-        self.failUnless(conn._called.get('rollback')==1,
-                        """ abort failed """)
+        get_transaction().abort()
+        self.assertEqual(self.conn._called.get('rollback'), 1)
 
     def test_commit(self):
-        
-        conn = ConnectionStub()
-        zc = ZopeConnection(conn)
-        tm = ZopeDBTransactionManager(zc)
-
-        zc.registerForTxn()
-        
-        t = get_transaction()
-        t.commit()
-
-        self.failUnless(conn._called.get('commit')==1,
-                        """ commit failed """)
+        get_transaction().commit()
+        self.assertEqual(self.conn._called.get('commit'), 1)
 
 def test_suite():
     return makeSuite(TxnMgrTest)

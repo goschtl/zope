@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testZopeConnection.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
+$Id: testZopeConnection.py,v 1.4 2002/07/24 23:17:04 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,6 @@ from Stubs import *
 class ZopeConnectionTests(TestCase):
 
     def test_cursor(self):
-        "ZopeConnection.cursor() should return an IZopeCursor"
         zc = ZopeConnection(ConnectionStub())
         cursor = zc.cursor()
         
@@ -32,28 +31,21 @@ class ZopeConnectionTests(TestCase):
                         "cursor is not what we expected")
 
     def test_connection_txn_registration(self):
-
         t = get_transaction()
         t.begin()
 
         zc = ZopeConnection(ConnectionStub())
         cursor = zc.cursor()
         cursor.execute('select * from blah')
-        
-        self.failUnless(zc._txn_registered == 1,
-                        """connection was not registered for txn (conn)""")
 
-        self.failUnless(len(t._objects) == 1,
-                        """connection was not registered for txn (txn) """)
+        self.assertEqual(zc._txn_registered, True)
+        self.assertEqual(len(t._resources), 1)
 
     def test_getattr(self):
-        "ZopeConnection must reveal Connection's methods"
-
         zc = ZopeConnection(ConnectionStub())
         cursor = zc.cursor()
 
-        self.failUnless(zc.answer() == 42, "Cannot see the connection")
-
+        self.assertEqual(zc.answer(), 42)
 
     def tearDown(self):
         "Abort the transaction"

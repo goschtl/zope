@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZopeConnection.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: ZopeConnection.py,v 1.3 2002/07/24 23:17:04 jeremy Exp $
 """
 from IZopeConnection import IZopeConnection
 from IZopeCursor import IZopeCursor
@@ -27,8 +27,7 @@ class ZopeConnection:
 
     def __init__(self, conn):
         self.conn = conn
-        # flag for txn registration status
-        self._txn_registered = 0
+        self._txn_registered = False
 
     def __getattr__(self, key):
         # The IDBIConnection interface is hereby implemented
@@ -46,13 +45,8 @@ class ZopeConnection:
         'See Zope.App.RDB.IZopeConnection.IZopeConnection'
         if not self._txn_registered:
             tm = ZopeDBTransactionManager(self)
-            t = get_transaction()
-            t.register(tm)
-            self._txn_registered = 1
-
-    def unregisterFromTxn(self):
-        'See Zope.App.RDB.IZopeConnection.IZopeConnection'
-        self._txn_registered = 0
+            get_transaction().join(tm)
+            self._txn_registered = True
 
     ######################################
     # from: Zope.App.RDB.IDBITypeInfoProvider.IDBITypeInfoProvider
