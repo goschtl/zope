@@ -434,3 +434,25 @@ def print_tb_last():
 if __name__ == "__main__":
     process_args()
 
+# The following method is for debugging unit tests from a Python prompt:
+def debug(args=""):
+    """Debug your unit tests with the post mortem debugger.
+
+    Just run the debug function with a string containing command-line
+    arguments. (The function uses a cheesy parser, aka split. ;)
+
+    For example, to debug the tests in package Zope.App.DublinCore::
+
+      import test
+      test.debug('Zope.App.DublinCore')
+
+    At the first failure or error, an exception will be raised. At
+    that point, you can use pdb's post-mortem debugger::
+
+      import pdb
+      pdb.pm()
+
+    """    
+    
+    process_args(["", "-d"] + args.split())
+    
