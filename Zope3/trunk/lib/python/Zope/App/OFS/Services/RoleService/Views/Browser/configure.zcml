@@ -33,7 +33,7 @@
      factory=".Views.Browser.Add."
      >
 
-    <browser:page name="+"        template="add.pt" />
+    <browser:page name="+"           template="Views/Browser/add.pt" />
     <browser:page name="action.html" attribute="action" />
 
   </browser:view>
