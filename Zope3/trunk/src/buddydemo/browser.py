@@ -1,6 +1,6 @@
 import zope.interface
 from buddydemo.interfaces import IBuddy, IPostalInfo
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 
 class BuddyInfo:
@@ -27,7 +27,7 @@ class BuddyRename:
     def update(self, first, last):
         self.context.first = first
         self.context.last = last
-        publish(self.context, ObjectModifiedEvent(self.context))
+        notify(ObjectModifiedEvent(self.context))
         self.request.response.redirect("rename.html")
 
         
