@@ -257,7 +257,6 @@ class ImmediateTestRunner(unittest.TextTestRunner):
             del kwarg["progress"]
         self.__super_init(**kwarg)
         self._debug = debug
-        print "test runner", progress
         self._progress = progress
 
     def _makeResult(self):
