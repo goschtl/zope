@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.9 2003/05/13 19:16:58 gvanrossum Exp $
+$Id: fssync.py,v 1.10 2003/05/13 19:28:56 gvanrossum Exp $
 """
 
 import os
@@ -365,7 +365,14 @@ class FSSync(object):
         if not entry:
             raise Error("nothing known about", target)
         self.network.loadrooturl(target)
-        head, tail = split(realpath(target))
+        head, tail = split(target)
+        if tail in unwanted:
+            target = realpath(target)
+            head, tail = split(target)
+            if head == target or tail in unwanted:
+                raise Error("target '%s' is the filesystem root", target)
+        if not head:
+            head = os.curdir
         path = entry["path"]
         fp, headers = self.network.httpreq(path, "@@toFS.zip")
         try:
@@ -402,11 +409,13 @@ class FSSync(object):
         if entry:
             raise Error("path '%s' is already registered", path)
         head, tail = split(path)
-        if tail in unwanted or not head:
+        if tail in unwanted:
             path = realpath(path)
             head, tail = split(path)
             if head == path or tail in unwanted:
-                raise Error("can't add '%s': it is the system root directory")
+                raise Error("can't add '%s': it is the filesystem root", path)
+        if not head:
+            head = os.curdir
         pentry = self.metadata.getentry(head)
         if not pentry:
             raise Error("can't add '%s': its parent is not registered", path)
