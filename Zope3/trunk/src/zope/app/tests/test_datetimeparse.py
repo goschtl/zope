@@ -67,6 +67,7 @@ class Test(unittest.TestCase):
 
     def testBad(self):
         from zope.app.datetimeutils import time, DateTimeError
+        self.assertRaises(DateTimeError, parse, '1999')
         self.assertRaises(DateTimeError, parse, '1999-31-12 1:2:63.456')
         self.assertRaises(DateTimeError, parse, '1999-31-13 1:2:3.456')
         self.assertRaises(DateTimeError, parse, '1999-2-30 1:2:3.456')

@@ -15,10 +15,10 @@
 
 Encapsulation of date/time values
 
-$Id: datetimeutils.py,v 1.8 2003/04/24 17:43:22 gvanrossum Exp $
+$Id: datetimeutils.py,v 1.9 2003/09/24 00:16:26 garrett Exp $
 """
 
-__version__='$Revision: 1.8 $'[11:-2]
+__version__='$Revision: 1.9 $'[11:-2]
 
 import math
 import re
@@ -529,7 +529,7 @@ class DateTimeParser:
         if not arg:
             raise SyntaxError(arg)
 
-        if arg.find(' ')==-1 and arg[4]=='-':
+        if arg.find(' ')==-1 and len(arg) >= 5 and arg[4]=='-':
             yr,mo,dy,hr,mn,sc,tz=self._parse_iso8601(arg)
         else:
             yr,mo,dy,hr,mn,sc,tz=self._parse(arg, local)
