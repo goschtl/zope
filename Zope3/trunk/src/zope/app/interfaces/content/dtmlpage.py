@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.1 2003/01/06 15:46:27 srichter Exp $
+$Id: dtmlpage.py,v 1.2 2003/03/25 18:37:45 jim Exp $
 """
 import zope.schema
-
 from zope.interface import Interface, Attribute
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IDTMLPage(Interface):
     """DTML Pages are a persistent implementation of DTML."""
@@ -28,8 +28,8 @@ class IDTMLPage(Interface):
         """Get the source of the page template."""
 
     source = zope.schema.Text(
-        title=u"Source",
-        description=u"""The source od the page template.""",
+        title=_(u"Source"),
+        description=_(u"""The source of the dtml page."""),
         required=True)
 
 
