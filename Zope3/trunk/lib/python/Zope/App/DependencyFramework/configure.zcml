@@ -1,0 +1,9 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <adapter
+      factory=".Dependable."
+      provides=".IDependable."
+      for="Zope.App.OFS.Annotation.IAnnotatable." />
+
+
+</zopeConfigure>

@@ -12,26 +12,29 @@
 # 
 ##############################################################################
 """
-$Id: IDependable.py,v 1.2 2002/10/15 07:26:02 jim Exp $
+$Id: IDependable.py,v 1.3 2002/11/18 22:25:16 jim Exp $
 """
 
 from Interface import Interface
 
 class IDependable(Interface):
    """Objects that other objects depend on.
+   
+   Note that IDependable will normally be implemented by an adapter.
    """
 
    def addDependent(location):
        """Add a dependency to a dependent object by location
 
-       The location is the physical path to the object.
+       The location is the physical path to the dependent object.
        """
    def removeDependent(location):
        """Remove a dependency with a dependent object by location.
 
-       The location is the physical path to the object.
+       The location is the physical path to the dependent object.
        """
    def dependents():
        """Return a sequence of dependent object locations.
        """
+       
 __doc__ = IDependable.__doc__ + __doc__

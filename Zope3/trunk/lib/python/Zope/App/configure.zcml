@@ -12,5 +12,6 @@
   <include package=".Forms" />
   <include package=".Caching" />
   <include package=".DublinCore" />
+  <include package=".DependencyFramework" />
 
 </zopeConfigure>

@@ -12,32 +12,40 @@
 # 
 ##############################################################################
 """
-$Id: Dependable.py,v 1.1 2002/10/14 11:51:05 jim Exp $
+$Id: Dependable.py,v 1.2 2002/11/18 22:25:16 jim Exp $
 """
 
 __metaclass__ = type
 
-from Persistence import Persistent
 from Zope.App.DependencyFramework.IDependable import IDependable
+from Zope.App.OFS.Annotation.IAnnotations \
+     import IAnnotations
+from Zope.ComponentArchitecture import getAdapter
+
+key = 'Zope.App.DependencyFramework.Dependents'
 
 class Dependable:
     __doc__ = IDependable.__doc__
 
     __implements__ =  IDependable
 
-    def __init__(self):
-        self.__dependents = {}
+    def __init__(self, context):
+        self.context = context
+        
 
     def addDependent(self, location):
         "See Zope.App.DependencyFramework.IDependable.IDependable"
-        self.__dependents[location] = 1
-        self._p_changed = 1
+        annotations = getAdapter(self.context, IAnnotations)
+        annotations [key] = annotations.get(key, ()) + (location, )
 
     def removeDependent(self, location):
         "See Zope.App.DependencyFramework.IDependable.IDependable"
-        del self.__dependents[location]
-        self._p_changed = 1
+        annotations = getAdapter(self.context, IAnnotations)
+        annotations[key] = tuple([loc
+                                  for loc in annotations.get(key, ())
+                                  if loc != location])
 
     def dependents(self):
         "See Zope.App.DependencyFramework.IDependable.IDependable"
-        return list(self.__dependents)
+        annotations = getAdapter(self.context, IAnnotations)
+        return annotations.get(key, ())
