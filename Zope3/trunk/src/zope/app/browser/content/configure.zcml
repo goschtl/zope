@@ -424,7 +424,7 @@
       description="An object storing XML text." 
       />
 
-  <!-- toFS.zip view, for new fssync tools -->
+  <!-- toFS.zip and fromFS.html views, for new fssync tools -->
 
   <browser:page
       for="zope.interface.Interface"
@@ -432,6 +432,14 @@
       permission="zope.ManageServices"
       class="zope.app.browser.content.fssync.ZipFile"
       attribute="show" 
+      />
+
+  <browser:page
+      for="zope.interface.Interface"
+      name="fromFS.html"
+      permission="zope.ManageServices"
+      class="zope.app.browser.content.fssync.Commit"
+      template="fromFS.pt"
       />
 
 </zopeConfigure>

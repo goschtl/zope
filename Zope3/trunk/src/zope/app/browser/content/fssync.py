@@ -12,9 +12,9 @@
 # 
 ##############################################################################
 
-"""Code for the toFS.zip view.
+"""Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.2 2003/05/08 15:32:21 gvanrossum Exp $
+$Id: fssync.py,v 1.3 2003/05/08 19:52:10 gvanrossum Exp $
 """
 
 import os
@@ -22,8 +22,10 @@ import shutil
 import tempfile
 
 from zope.publisher.browser import BrowserView
-from zope.app.fssync.syncer import toFS
-from zope.app.traversing import objectName
+from zope.app.fssync.syncer import toFS, fromFS
+from zope.app.fssync.compare import checkUptodate
+from zope.app.traversing import objectName, getParent
+from zope.app.interfaces.exceptions import UserError
 
 class ZipFile(BrowserView):
 
@@ -44,7 +46,7 @@ class ZipFile(BrowserView):
         f = open(zipfilename, "rb")
         data = f.read()
         f.close()
-        os.unlink(zipfilename)
+        os.remove(zipfilename)
         response = self.request.response
         response.setHeader("Content-Type", "application/zip")
         # XXX This can return a lot of data; should figure out how to
@@ -103,5 +105,55 @@ def writeZipFile(obj, writeOriginals=False):
     finally:
         shutil.rmtree(dirname)
 
-# XXX Still to do: the reverse operation, fromFS.  This should
-# probably be an HTML form with the zipfile as an uploaded file
+# And here is the inverse operation, fromFS.html (an HTML form).
+
+class Commit(BrowserView):
+
+    """View for committing changes.
+
+    For now, this is an HTML form where you can upload a zipfile.
+    """
+
+    def update(self):
+        zipfile = self.request.get("zipfile")
+        if zipfile is None:
+            return # Not updating -- must be presenting a blank form
+        zipfiledata = zipfile.read()
+        # 00) Allocate temporary names
+        topdir = tempfile.mktemp()
+        zipfilename = os.path.join(topdir, zipfile.filename)
+        working = os.path.join(topdir, "working")
+        current = os.path.join(topdir, "current")
+        try:
+            # 0) Create the top directory
+            os.mkdir(topdir)
+            # 1) Write the zipfile data to disk
+            f = open(zipfilename, "wb")
+            f.write(zipfiledata)
+            f.close()
+            # 2) Unzip it into a working directory
+            os.mkdir(working)
+            os.system("cd %s; unzip -q %s" % (working, zipfilename))
+            # 3) Save the current state of the object to disk
+            os.mkdir(current)
+            toFS(self.context, objectName(self.context) or "root", current,
+                 writeOriginals=False)
+            # 4) Check that the working originals are up-to-date
+            errors = checkUptodate(working, current)
+            if errors:
+                # Make the messages nicer by editing out topdir
+                errors = [x.replace(os.path.join(topdir, ""), "")
+                          for x in errors]
+                errors.insert(0, "Uptodate check failed:")
+                raise UserError(*errors)
+            # 5) Now call fromFS()
+            name = objectName(self.context)
+            container = getParent(self.context)
+            fromFS(container, name, working)
+            # 6) Return success message
+            return "Changes committed successfully."
+        finally:
+            try:
+                shutil.rmtree(topdir)
+            except os.error:
+                pass

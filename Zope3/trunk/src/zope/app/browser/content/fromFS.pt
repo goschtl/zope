@@ -1,0 +1,26 @@
+<html metal:use-macro="views/standard_macros/page">
+<body>
+<div metal:fill-slot="body">
+
+<h1>Commit Action</h1>
+
+<div tal:define="status view/update"
+     tal:condition="status">
+Commit results:
+<pre tal:content="status">
+Status from update method goes here.
+</pre>
+</div>
+
+<p>Upload a zipfile in the following form</p>
+
+<form method="POST" action="@@fromFS.html" enctype="multipart/form-data">
+
+  <input type="file" name="zipfile" size="40" />
+  <input type="submit">
+
+</form>
+
+</div>
+</body>
+</html>
