@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.4 2002/12/28 17:49:25 stevea Exp $
+$Id: zpt.py,v 1.5 2002/12/30 16:41:21 alga Exp $
 """
 
 import re
@@ -34,6 +34,8 @@ __metaclass__ = type
 class ZPTPage(AppPT, PageTemplate, Persistent):
 
     __implements__ = IZPTPage, IRenderZPTPage
+
+    expand = False
 
     def getSource(self):
         '''See IZPTPage'''

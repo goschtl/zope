@@ -134,7 +134,7 @@
 
   <require
       permission="zope.View"
-      attributes="__call__" />
+      attributes="__call__ macros" />
 
   <require
       permission="zope.ManageContent"
