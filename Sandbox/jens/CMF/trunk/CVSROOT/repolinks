@@ -104,6 +104,10 @@
 /Zope/lib/python/Products/SiteErrorLog          /Products/SiteErrorLog
 /Zope/utilities/ZODBTools                       /ZODB3/Tools
 
+/ZODB/src/ZODB		 /Packages/ZODB
+/ZODB/src/ZEO		 /Packages/ZEO
+/ZODB/src/BTrees	 /Packages/BTrees
+
 /ZODB3/ZODB              /Packages/ZODB
 /ZODB3/ZEO               /Packages/ZEO
 /ZODB3/ZEO1              /Packages/ZEO1
