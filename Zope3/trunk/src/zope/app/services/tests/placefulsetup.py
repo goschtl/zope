@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.24 2003/06/03 22:46:22 jim Exp $
+$Id: placefulsetup.py,v 1.25 2003/06/05 10:26:54 mgedmin Exp $
 """
 
 from zope.app import zapi
@@ -32,8 +32,10 @@ class Place(object):
         if inst is None:
             return self
 
-        try: root = inst.rootFolder
-        except AttributeError:
+        try:
+            # Use __dict__ directly to avoid infinite recursion
+            root = inst.__dict__['rootFolder']
+        except KeyError:
             root = inst.rootFolder = setup.buildSampleFolderTree()
 
         root = ContextWrapper(root, None)
@@ -43,7 +45,7 @@ class PlacefulSetup(PlacelessSetup):
 
     # Places :)
     rootFolder  = Place('')
-    
+
     folder1     = Place('folder1')
     folder1_1   = Place('folder1/folder1_1')
     folder1_1_1 = Place('folder1/folder1_1/folder1_1_1')
@@ -54,7 +56,7 @@ class PlacefulSetup(PlacelessSetup):
     folder2     = Place('folder2')
     folder2_1   = Place('folder2/folder2_1')
     folder2_1_1 = Place('folder2/folder2_1/folder2_1_1')
-    
+
 
     def setUp(self, folders=False, site=False):
         setup.placefullSetUp()
@@ -73,9 +75,8 @@ class PlacefulSetup(PlacelessSetup):
     def makeSite(self, path='/'):
         folder = zapi.traverse(self.rootFolder, path)
         return setup.createServiceManager(folder)
-        
+
     def createRootFolder(self):
-        self.rootFolder 
         self.rootFolder = RootFolder()
 
     # The following is a hook that some base classes might want to override.
@@ -88,4 +89,4 @@ class PlacefulSetup(PlacelessSetup):
 
         setup.createStandardServices(self.rootFolder,
                                      hubids=self.getObjectHub())
-    
+
