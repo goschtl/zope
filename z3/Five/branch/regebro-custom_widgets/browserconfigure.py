@@ -36,6 +36,7 @@ from security import getSecurityInfo, protectClass, protectName,\
      initializeClass
 from pagetemplatefile import ZopeTwoPageTemplateFile
 
+import ExtensionClass
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,

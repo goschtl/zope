@@ -293,7 +293,22 @@
       name="edit.html"
       permission="zope2.Public"
       />
-
+      
+  <!-- With a widget override -->
+  <browser:editform
+      schema=".interfaces.IFieldSimpleContent"
+      for=".interfaces.IFieldSimpleContent"
+      name="widgetoverride.html"
+      permission="zope2.Public"
+      >
+      
+      <widget
+         field="description"
+         class="zope.app.form.browser.TextAreaWidget"
+         />
+         
+  </browser:editform>
+      
   <!-- stuff that we'll override in overrides.zcml -->
 
   <browser:page
