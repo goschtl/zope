@@ -12,12 +12,11 @@
 #
 ##############################################################################
 """
-$Id: componentconfigurl.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: componentconfigurl.py,v 1.3 2002/12/31 13:16:15 stevea Exp $
 """
 
 from zope.component import getView
 from zope.app.traversing import traverse, locationAsUnicode
-from zope.proxy.introspection import removeAllProxies
 
 __metaclass__ = type
 
