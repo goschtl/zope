@@ -15,10 +15,11 @@
 #include "structmember.h"
 #include "persistence.h"
 
+
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.9 2003/04/02 23:07:00 bwarsaw Exp $\n";
+"$Id: persistence.c,v 1.10 2003/04/04 00:00:20 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -84,6 +85,7 @@ _PyPersist_Load(PyPersistObject *self)
     meth = PyObject_GetAttr((PyObject *)self->po_dm, s_setstate);
     if (meth == NULL)
 	return 0;
+
     arg = PyTuple_New(1);
     if (arg == NULL) {
 	Py_DECREF(meth);
@@ -91,9 +93,12 @@ _PyPersist_Load(PyPersistObject *self)
     }
     Py_INCREF(self);
     PyTuple_SET_ITEM(arg, 0, (PyObject *)self);
+
     result = PyObject_Call(meth, arg, NULL);
+
     Py_DECREF(arg);
     Py_DECREF(meth);
+
     if (result) {
 	Py_DECREF(result);
 	return 1;
@@ -367,10 +372,48 @@ convert_name(PyObject *name)
    tp_setattr hooks, which allow the persistence machinery to
    automatically detect changes to and accesses of the object's state.
 
+   In general, if getattr() is called on a ghost, the data manager
+   must load the ghost's state before calling PyObject_GenericGetAttr().
+   There are several special attributes that ignore this rule.
+
    The current implemenation probably isn't right, because it doesn't
    even attempt to deal with a persistent classes that defines its own
    __getattr__ or __getattribute__.  
 */
+
+/* Returns true if the object requires unghostification.
+
+   Don't unghostify for any attribute starting with _p_.  The Python
+   special names __del__, __dict__, and __class__ are also exempt.
+*/
+
+static int
+persist_checkattr(const char *s)
+{
+    if (*s++ != '_')
+	return 1;
+    if (*s == 'p') {
+	s++;
+	if (*s == '_')  
+	    return 0; /* _p_ */
+	else
+	    return 1; 
+    }
+    else if (*s == '_') {
+	s++;
+	if (*s == 'd') {
+	    s++;
+	    if (!strncmp(s, "ict__", 5))
+		return 0; /* __dict__ */
+	    if (!strncmp(s, "el__", 4))
+		return 0; /* __del__ */
+	    return 1;
+	}
+	else if (!strncmp(s, "class__", 7))
+	    return 0; /* __class__ */
+    }
+    return 1;
+}
 
 static PyObject *
 persist_getattro(PyPersistObject *self, PyObject *name)
@@ -392,10 +435,7 @@ persist_getattro(PyPersistObject *self, PyObject *name)
        XXX Don't revive a ghost just to get its __class__.
     */
 
-    if ((s_name[0] != '_') ||
-	((strncmp(s_name, "_p_", 3) != 0) &&
-	 (strcmp(s_name, "__dict__") != 0) &&
-	 (strcmp(s_name, "__class__") != 0))) {
+    if (persist_checkattr(s_name)) {
 	if (self->po_state == GHOST) {
 	    /* Prevent the object from being registered as changed.
 
@@ -514,6 +554,7 @@ persist_setattro(PyPersistObject *self, PyObject *name, PyObject *value)
     }
     r = PyObject_GenericSetAttr((PyObject *)self, name, value);
     Py_DECREF(name);
+
     return r;
 }
 
