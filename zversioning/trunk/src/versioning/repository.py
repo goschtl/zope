@@ -19,44 +19,68 @@ A simple repository beeing able to handle linear histories.
 import zope.interface
 from zope.interface import Interface
 from zope.app import zapi
+from zope.app.annotation.interfaces import IAnnotations
 
 from versioning import interfaces
+from datetime import datetime
 
 # doc tests import
 import unittest
 from zope.testing import doctest
 from zope.app.tests import ztapi
+from persistent.dict import PersistentDict
 
 
-class DummyCheckoutAware(object):
+class DefaultCheckoutAware(object):
     """Just ignores checkin and checkout without generating exceptions.
     
     Use this for IHistoryStorage components beeing unable to store checkin
     and checkout information.
     
-    XXX Should 'DummyCheckoutAware' live here?
+    XXX Should 'DefaultCheckoutAware' live here?
+    
+    XXX CAUTION! If currently a checked out object gets deleted
+    the counter doesn't get decremented! We should
+    
+    Asserts IContained (the same object can not live in different
+    locations).
     """
     
     zope.interface.implements(interfaces.ICheckoutAware)
     __used_for__ = interfaces.IHistoryStorage
     
+    namespace_key = 'versioning.interfaces.ICheckoutAware'
+    
+    def getCheckedOutList(self):
+        return self.annotations.get(self.namespace_key)
+    
+    checkedOutDict = property(getCheckedOutList)
+    
     def __init__(self, histories):
         self.histories = histories
+        self.annotations = anno = IAnnotations(histories)
+        data = self.getCheckedOutList()
+        if data is None:
+            anno[self.namespace_key] = PersistentDict()
     
-    def markAsCheckedIn(self, obj):
-        """Fake checkin mark doing anything.
-        """
-        pass
-        
     def markAsCheckedOut(self, obj):
-        """Fake checkout mark doing anything.
+        """See versioning.interfaces.ICheckoutAware
         """
-        pass
+        ticket = self.histories.getTicket(obj)
+        self.checkedOutDict[ticket] = datetime.now()
+        
+    def markAsCheckedIn(self, obj):
+        """See versioning.interfaces.ICheckoutAware
+        """
+        ticket = self.histories.getTicket(obj)
+        del self.checkedOutDict[ticket]
         
     def isCheckedOut(self, obj):
-        """Fake check
+        """See versioning.interfaces.ICheckoutAware
         """
-        return False
+        ticket = self.histories.getTicket(obj)
+        return self.checkedOutDict.has_key(ticket)
+
 
 class CopyModifyMergeRepository(object):
     """The repository handles simple linear histories.

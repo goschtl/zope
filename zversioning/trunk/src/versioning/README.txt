@@ -14,6 +14,7 @@ as an example :
          |--> c
      
   >>> import zope.app.versioncontrol.interfaces
+  >>> from zope.app.annotation.interfaces import IAnnotatable
   >>> from zope.interface import directlyProvides
   >>> from zope.app.folder import Folder, rootFolder
   >>> from zope.app.tests.setup import setUpTraversal
@@ -81,7 +82,11 @@ handles the checkout/checkin status for the repository.
 
   >>> ztapi.provideAdapter(interfaces.IHistoryStorage,
   ...                      interfaces.ICheckoutAware,
-  ...                      repository.DummyCheckoutAware)
+  ...                      repository.DefaultCheckoutAware)
+
+Our 'ICheckoutAware' adapter XXX
+
+  >>> directlyProvides(histories_storage, IAnnotatable)
 
 In this implementation the repository is simply a adapter to a 
 'IHistoryStorage'. This ensures that several versioning strategies 
@@ -90,6 +95,7 @@ can be used with the same storage:
   >>> ztapi.provideAdapter(interfaces.IHistoryStorage,
   ...                      interfaces.ICopyModifyMergeRepository,
   ...                      repository.CheckoutCheckinRepository)
+
 
 Now we adapt our history storage to the chosen repository strategy:
 
@@ -130,14 +136,14 @@ Now let's put our example data under version control:
 
 The example data must be now in checked in state:
 
-  #>>> repo.isCheckedOut(sample)
+  >>> repo.isCheckedOut(sample)
   False
   
 Let's have a look how 'checkout', 'checkin' and 'isCheckedOut' work 
 together:
 
-  #>>> #repo.checkout(sample)
-  #>>> #repo.isCheckedOut(sample)
+  >>> repo.checkout(sample)
+  >>> repo.isCheckedOut(sample)
   True
 
 The text shall be unchanged:
