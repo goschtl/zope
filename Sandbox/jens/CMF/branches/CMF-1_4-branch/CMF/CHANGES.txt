@@ -2,6 +2,10 @@ Post CMF 1.4.7
 
   Bug Fixes
 
+    - CMFCore.FSPageTemplate:  Smoothed an incompatibility with Zope 2.8
+      due to inappropriate borrowing of an unbound method from
+      ZopePageTemplate.
+
     - CMFDefault.DiscussionItem: Workflow did not get notified when a 
       DiscussionItem was added to content.
       (http://zope.org/Collectors/CMF/280)
