@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_configurationmanager.py,v 1.3 2003/02/26 16:11:37 gvanrossum Exp $
 """
 
 from zope.app.services.configurationmanager \
@@ -34,7 +34,7 @@ class Undeletable:
 
     __implements__ = IDeleteNotifiable
 
-    def manage_beforeDelete(self, object, container):
+    def beforeDeleteHook(self, object, container):
         self.was_called = 1
 
 
@@ -339,7 +339,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         manager = ConfigurationManager()
         thingy = Undeletable()
         manager.setObject('xyzzy', thingy)
-        manager.manage_beforeDelete(manager, container)
+        manager.beforeDeleteHook(manager, container)
         self.failUnless(thingy.was_called)
 
 

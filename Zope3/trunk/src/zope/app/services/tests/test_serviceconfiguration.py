@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_serviceconfiguration.py,v 1.3 2003/02/26 16:11:37 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -112,11 +112,11 @@ class Test(PlacefulSetup, TestCase):
     def test_getComponent(self):
         self.assertEqual(self.__config.getComponent(), self.__c)
 
-    def test_manage_afterAdd(self):
+    def test_afterAddHook(self):
         self.assertEqual(self.__c._dependents,
                          ('/++etc++Services/Packages/default/configure/1', ))
 
-    def test_manage_beforeDelete_and_unregistered(self):
+    def test_beforeDeleteHook_and_unregistered(self):
         self.__config.status = Registered
 
         sm = getServiceManager(self.__default)

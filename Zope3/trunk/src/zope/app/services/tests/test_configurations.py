@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for configuration classes
 
-$Id: test_configurations.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_configurations.py,v 1.3 2003/02/26 16:11:37 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -62,19 +62,19 @@ class ComponentStub:
 
 class TestSimpleConfiguration(TestCase):
 
-    def test_manage_beforeDelete(self):
+    def test_beforeDeleteHook(self):
         container = object()
         cfg = SimpleConfiguration()
 
         # cannot delete an active configuration
         cfg.status = Active
-        self.assertRaises(DependencyError, cfg.manage_beforeDelete, cfg,
+        self.assertRaises(DependencyError, cfg.beforeDeleteHook, cfg,
                           container)
 
         # deletion of a registered configuration causes it to become
         # unregistered
         cfg.status = Registered
-        cfg.manage_beforeDelete(cfg, container)
+        cfg.beforeDeleteHook(cfg, container)
         self.assertEquals(cfg.status, Unregistered)
 
 
@@ -110,7 +110,7 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         self.assertEquals(result, component)
         self.failUnless(type(result) is Proxy)
 
-    def test_manage_afterAdd(self):
+    def test_afterAddHook(self):
         # set up a component
         path, component = 'foo', ComponentStub()
         self.rootFolder.setObject(path, component)
@@ -119,11 +119,11 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
         # simulate IAddNotifiable
-        cfg.manage_afterAdd(cfg, self.rootFolder)
+        cfg.afterAddHook(cfg, self.rootFolder)
         # check that the dependency tracking works
         self.assertEquals(component.dependents(), ('/cfg',))
 
-    def test_manage_beforeDelete_dependents(self):
+    def test_beforeDeleteHook_dependents(self):
         # set up a component
         path, component = 'foo', ComponentStub()
         self.rootFolder.setObject(path, component)
@@ -134,7 +134,7 @@ class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
         # simulate IDeleteNotifiable
-        cfg.manage_beforeDelete(cfg, self.rootFolder)
+        cfg.beforeDeleteHook(cfg, self.rootFolder)
         # check that the dependency tracking works
         self.assertEquals(component.dependents(), ())
 

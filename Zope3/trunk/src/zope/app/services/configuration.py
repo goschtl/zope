@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.6 2003/01/16 12:00:00 alga Exp $
+$Id: configuration.py,v 1.7 2003/02/26 16:11:36 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -263,7 +263,7 @@ class SimpleConfiguration(Persistent):
     def deactivated(self):
         pass
 
-    def manage_beforeDelete(self, configuration, container):
+    def beforeDeleteHook(self, configuration, container):
         "See IDeleteNotifiable"
 
         objectstatus = configuration.status
@@ -342,17 +342,17 @@ class NamedComponentConfiguration(NamedConfiguration):
         return component
     getComponent = ContextMethod(getComponent)
 
-    def manage_afterAdd(self, configuration, container):
+    def afterAddHook(self, configuration, container):
         "See IAddNotifiable"
         component = configuration.getComponent()
         dependents = getAdapter(component, IDependable)
         objectpath = getPhysicalPathString(configuration)
         dependents.addDependent(objectpath)
 
-    def manage_beforeDelete(self, configuration, container):
+    def beforeDeleteHook(self, configuration, container):
         "See IDeleteNotifiable"
         super(NamedComponentConfiguration, self
-              ).manage_beforeDelete(configuration, container)
+              ).beforeDeleteHook(configuration, container)
         component = configuration.getComponent()
         dependents = getAdapter(component, IDependable)
         objectpath = getPhysicalPathString(configuration)

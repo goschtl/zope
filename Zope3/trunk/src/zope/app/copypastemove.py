@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.1 2003/02/17 15:10:38 sidnei Exp $
+$Id: copypastemove.py,v 1.2 2003/02/26 16:11:35 gvanrossum Exp $
 """
 
 from zope.app.traversing import getParent, objectName
@@ -62,22 +62,22 @@ class ObjectMover:
         source_path = physicalsource.getPhysicalPath()
         
         if queryAdapter(obj, IMoveNotifiable):
-            getAdapter(obj, IMoveNotifiable).manage_beforeDelete(obj, container, \
+            getAdapter(obj, IMoveNotifiable).beforeDeleteHook(obj, container, \
                                     movingTo=target_path)
         elif queryAdapter(obj, IDeleteNotifiable):
-            getAdapter(obj, IDeleteNotifiable).manage_beforeDelete(obj, container)
+            getAdapter(obj, IDeleteNotifiable).beforeDeleteHook(obj, container)
 
         new_obj = movesource.removeObject(orig_name, target)
         pastetarget = getAdapter(target, IPasteTarget)
         # publish an ObjectCreatedEvent (perhaps...?)
         new_name = pastetarget.pasteObject(name,new_obj)
 
-        # call manage_afterAdd hook
+        # call afterAddHook
         if queryAdapter(new_obj, IMoveNotifiable):
-            getAdapter(new_obj, IMoveNotifiable).manage_afterAdd(new_obj, container, \
+            getAdapter(new_obj, IMoveNotifiable).afterAddHook(new_obj, container, \
                                 movedFrom=source_path)
         elif queryAdapter(new_obj, IAddNotifiable):
-            getAdapter(new_obj, IAddNotifiable).manage_afterAdd(new_obj, container)
+            getAdapter(new_obj, IAddNotifiable).afterAddHook(new_obj, container)
 
         # publish ObjectMovedEvent
         publish(container, ObjectMovedEvent(container, source_path, target_path))
@@ -136,12 +136,12 @@ class ObjectCopier:
         # publish an ObjectCreatedEvent (perhaps...?)
         new_name = pastetarget.pasteObject(name, obj)
 
-        # call manage_afterAdd hook
+        # call afterAddHook
         if queryAdapter(obj, ICopyNotifiable):
-            getAdapter(obj, ICopyNotifiable).manage_afterAdd(obj, container, \
+            getAdapter(obj, ICopyNotifiable).afterAddHook(obj, container, \
                                 copiedFrom=source_path)
         elif queryAdapter(obj, IAddNotifiable):
-            getAdapter(obj, IAddNotifiable).manage_afterAdd(obj, container)
+            getAdapter(obj, IAddNotifiable).afterAddHook(obj, container)
 
         # publish ObjectCopiedEvent
         publish(container, ObjectCopiedEvent(container, source_path, target_path))

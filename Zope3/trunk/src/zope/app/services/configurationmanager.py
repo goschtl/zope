@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: configurationmanager.py,v 1.3 2003/02/03 14:53:38 jim Exp $
+$Id: configurationmanager.py,v 1.4 2003/02/26 16:11:36 gvanrossum Exp $
 """
 
 __metaclass__ = type
@@ -143,7 +143,7 @@ class ConfigurationManager(Persistent):
     def moveDown(self, names):
         self._moveUpOrDown(names, 1)
 
-    def manage_beforeDelete(self, object, container):
+    def beforeDeleteHook(self, object, container):
         assert object == self
         container = getAdapter(object, IZopeWriteContainer)
         for k, v in self._data:

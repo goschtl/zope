@@ -152,11 +152,11 @@ class IZopeWriteContainer(IWriteContainer):
 
         Returns the key used, which might be different than the given key.
 
-        If the object has an adpter to IAddNotifiable then the manageAfterAdd
+        If the object has an adpter to IAddNotifiable then the afterAddHook
         method on the adpter will be called after the object is added.
 
         An IObjectAddedEvent will be published after the object is added and
-        after manageAfterAdd is called. The event object will be the added
+        after afterAddHook is called. The event object will be the added
         object in the context of the container
 
         An IObjectModifiedEvent will be published after the IObjectAddedEvent
@@ -169,11 +169,11 @@ class IZopeWriteContainer(IWriteContainer):
         Raises a KeyError if the object is not found.
 
         If the object has an adpter to IDeleteNotifiable then the
-        manageBeforeDeleteObject method on the adpter will be called before
+        beforeDeleteHook method on the adpter will be called before
         the object is removed.
 
         An IObjectRemovedEvent will be published before the object is
-        removed and before  manageBeforeDeleteObject is called.
+        removed and before beforeDeleteHook method is called.
         The event object will be the removed from the context of the container
 
         An IObjectModifiedEvent will be published after the
@@ -187,19 +187,19 @@ class IZopeContainer(IZopeReadContainer, IZopeWriteContainer, IContainer):
 class IAddNotifiable(Interface):
     """Interface for notification of being added."""
 
-    def manage_afterAdd(object, container):
+    def afterAddHook(object, container):
         """Hook method will call after an object is added to container."""
 
 class IDeleteNotifiable(Interface):
     """Interface for notification of being deleted."""
 
-    def manage_beforeDelete(object, container):
+    def beforeDeleteHook(object, container):
         """Hook method will call before object is removed from container."""
 
 class IMoveNotifiable(IDeleteNotifiable, IAddNotifiable):
     """Interface for notification of being deleted, added, or moved."""
 
-    def manage_beforeDelete(object, container, movingTo=None):
+    def beforeDeleteHook(object, container, movingTo=None):
         """Hook method will call before object is removed from container.
 
         If the object is being moved, 'movingTo' will be the unicode path
@@ -208,7 +208,7 @@ class IMoveNotifiable(IDeleteNotifiable, IAddNotifiable):
         will be None.
         """
 
-    def manage_afterAdd(object, container, movedFrom=None):
+    def afterAddHook(object, container, movedFrom=None):
         """Hook method will call after an object is added to container.
 
         If the object is being moved, 'movedFrom' will be the unicode path
@@ -219,7 +219,7 @@ class IMoveNotifiable(IDeleteNotifiable, IAddNotifiable):
 
 class ICopyNotifiable(IAddNotifiable):
 
-    def manage_afterAdd(object, container, copiedFrom=None):
+    def afterAddHook(object, container, copiedFrom=None):
         """Hook method. Will be called after an object is added to a
         container.
 
@@ -254,7 +254,7 @@ class IPasteTarget(Interface):
         given key.
         
         This method must not issue an IObjectAddedEvent, nor must it
-        call the manage_afterAdd hook of the object.
+        call the afterAddHook hook of the object.
         However, it must publish an IObjectModified event for the
         container.
         '''
@@ -267,7 +267,7 @@ class IMoveSource(Interface):
 
         movingTo is the unicode path for where the move is to.
         This method should not publish an IObjectRemovedEvent, nor should  
-        it call the manage_afterDelete method of the object.
+        it call the afterDeleteHook method of the object.
         However, it must publish an IObjectModified event for the container.
         '''
 
