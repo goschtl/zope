@@ -156,6 +156,21 @@ class ILoginPassword(Interface):
         """
 
 
+class ILogout(Interface):
+    """A simple logout interface."""
+
+    def logout():
+        """Logout the user.
+
+        This can mean different things. For example, when dealing with
+        cookie-based logins (browser), then it simply means deleting the
+        cookie. If we deal with HTTP Authentication, we just want to send
+        another challenge.
+
+        This also means that this method must have access to the request
+        object."""
+
+
 class IRegisteredObject(Interface):
 
     def getId():
