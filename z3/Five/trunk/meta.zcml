@@ -10,6 +10,11 @@
         handler="zope.app.security.metaconfigure.definePermission" />
 
     <meta:directive
+        name="redefinePermission"
+        schema="zope.app.security.metadirectives.IRedefinePermission"
+        handler="zope.app.security.metaconfigure.redefinePermission" />
+
+    <meta:directive
         name="interface"
         schema="zope.app.component.metadirectives.IInterfaceDirective"
         handler="zope.app.component.metaconfigure.interface"
