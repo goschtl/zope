@@ -158,6 +158,13 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
             for key, stack in stacks.iteritems():
                 registration = stack.active()
                 if registration is not None:
+
+                    # Needs more thought:
+                    # We have to remove the proxy because we're
+                    # storing the value amd we can't store proxies.
+                    # (Why can't we?)  we need to think more about
+                    # why/if this is truly safe
+                    
                     radapters[key] = removeAllProxies(registration.factory)
 
     def adaptersChanged(self, *args):
