@@ -323,7 +323,7 @@
       for="zope.app.interfaces.content.sql.ISQLScript"
       permission="zope.View"
       class="zope.app.browser.content.sql.SQLScriptTest" >
-      
+
     <browser:page
         name="test.html" 
         template="sqltest.pt" 
