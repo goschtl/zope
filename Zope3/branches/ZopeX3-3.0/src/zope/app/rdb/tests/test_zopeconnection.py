@@ -16,7 +16,7 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite
-from transaction import get_transaction
+import transaction
 from zope.app.rdb import ZopeConnection
 from zope.app.rdb.interfaces import IZopeCursor
 from zope.app.rdb.tests.stubs import ConnectionStub, TypeInfoStub
@@ -31,19 +31,17 @@ class ZopeConnectionTests(TestCase):
                         "cursor is not what we expected")
 
     def test_connection_txn_registration(self):
-        t = get_transaction()
-        t.begin()
+        transaction.begin()
 
         zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         cursor = zc.cursor()
         cursor.execute('select * from blah')
 
         self.assertEqual(zc._txn_registered, True)
-        self.assertEqual(len(t._resources), 1)
+        self.assertEqual(len(transaction.get_transaction()._resources), 1)
 
     def test_commit(self):
-        t = get_transaction()
-        t.begin()
+        transaction.get_transaction().begin()
         zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         self._txn_registered = True
         zc.commit()
@@ -51,8 +49,7 @@ class ZopeConnectionTests(TestCase):
                          "did not forget the transaction")
 
     def test_rollback(self):
-        t = get_transaction()
-        t.begin()
+        transaction.begin()
         zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
         self._txn_registered = True
         zc.rollback()
@@ -67,7 +64,7 @@ class ZopeConnectionTests(TestCase):
 
     def tearDown(self):
         "Abort the transaction"
-        get_transaction().abort()
+        transaction.abort()
 
 def test_suite():
     return makeSuite(ZopeConnectionTests)
