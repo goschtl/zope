@@ -1,0 +1,54 @@
+$Id: README.txt,v 1.1 2002/12/06 14:48:10 itamar Exp $
+
+The current implementation will be replaced. Following is design
+I came up with together with Jim Fulton.
+   -- itamar
+
+
+Design notes for new AuthenticationService
+==========================================
+
+The service contains a list of user sources. They implement interfaces,
+starting with:
+
+
+ class IUserPassUserSource:
+     """Authenticate using username and password."""
+     def authenticate(username, password):
+         "Returns boolean saying if such username/password pair exists"
+
+
+ class IDigestSupportingUserSource(IUserPassUserSource):
+     """Allow fetching password, which is required by digest auth methods"""
+     def getPassword(username):
+         "Return password for username"
+
+
+etc.. Probably there will be others as well, for dealing with certificate
+authentication and what not. Probably we need to expand above interfaces
+to deal with principal titles and descriptions, and so on.
+
+A login method - cookie auth, HTTP basic auth, digest auth, FTP auth,
+is registered as a view on one of the above interfaces. 
+
+
+  class ILoginMethodView:
+        def authenticate():
+             """Return principal for request, or None."""
+        def unauthorized():
+             """Tell request that a login is required."""
+
+
+The authentication service is then implemented something like this:
+
+
+ class AuthenticationService:
+     def authenticate(self, request):
+         for us in self.userSources:
+              loginView = getView(self, us, "login", request)
+              principal = loginView.authenticate()
+              if principal is not None:
+                  return principal
+     def unauthorized(self, request):
+         loginView = getView(self, self.userSources[0], request)
+         loginView.unauthorized()
