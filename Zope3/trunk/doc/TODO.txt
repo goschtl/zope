@@ -11,11 +11,6 @@ Things to do for the next release (in no particular order)
   a prototype. This will eventually inclide Zope-2 style installation,
   configuration and process management.
 
-- Persistent interfaces
-
-  These were broken (I think) by recent interface and adapter
-  refactoring.
-
 - Redo event service
 
   o Simplify publication/registration framework
