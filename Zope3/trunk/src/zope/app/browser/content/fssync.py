@@ -14,12 +14,14 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.9 2003/05/15 17:32:45 gvanrossum Exp $
+$Id: fssync.py,v 1.10 2003/05/15 22:10:50 gvanrossum Exp $
 """
 
 import os
 import shutil
 import tempfile
+
+from transaction import get_transaction
 
 from zope.fssync.compare import checkUptodate
 
@@ -141,6 +143,10 @@ class Commit(ZipFile):
             return "\n".join(errors)
 
     def do_commit(self, zipdata):
+        # 000) Set transaction note
+        note = self.request.get("note") or "fssync"
+        if note:
+            get_transaction().note(note)
         # 00) Allocate temporary names
         topdir = tempfile.mktemp()
         zipfilename = os.path.join(topdir, "working.zip")
