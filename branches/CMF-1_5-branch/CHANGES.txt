@@ -11,6 +11,12 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - TypesTool: Changed the way available factory_type_informations are
+      presented on the dropdown list when adding a new type from a 
+      filesystem FTI to the Types Tool. The new representation includes
+      the "id" as set in the FTI instead of just the product name and the
+      meta_type. (http://www.zope.org/Collectors/CMF/49)
+
     - CMFSetup: Fixed import of workflow bindings.
       The 'workflow' import step has to be run after the 'typeinfo' step.
       (http://collector.zope.org/CMF/265)
