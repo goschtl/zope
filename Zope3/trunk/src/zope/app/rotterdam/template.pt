@@ -139,9 +139,10 @@
       <!-- note, we reverse the actions list 'cos they're packed to the
            screen from the right -->
       <div tal:condition="python: macroname == 'view'" id="actions"
-           tal:define="help_actions context/@@view_get_menu/help_actions;
-                       actions context/@@view_get_menu/zmi_actions;
-                       dummy python:actions.reverse()">
+           tal:define="
+               help_actions context/@@view_get_menu/help_actions|nothing;
+               actions context/@@view_get_menu/zmi_actions;
+               dummy python:actions.reverse()">
 
         <span tal:condition="help_actions"
               tal:repeat="help_info help_actions"
