@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.6 2003/05/28 15:16:19 gvanrossum Exp $
+$Id: test_committer.py,v 1.7 2003/05/29 16:19:47 gvanrossum Exp $
 """
 
 import os
@@ -31,7 +31,7 @@ from zope.fssync.tests.mockmetadata import MockMetadata
 from zope.fssync.tests.tempfiles import TempFiles
 
 from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.file import IFileFactory
+from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.interfaces.fssync import IGlobalFSSyncService
 
 from zope.app.fssync.committer import Committer, SynchronizationError
@@ -249,6 +249,21 @@ class TestCommitter(TempFiles, PlacelessSetup):
         self.com.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.holding, {"foo": ["hello", "world"]})
         self.assertEqual(entry, {"factory": None, "type": "__builtin__.list"})
+
+    def test_create_object_idirectoryfactory(self):
+        def factory_maker(container):
+            def factory(name):
+                return PretendContainer()
+            return factory
+        provideSynchronizer(PretendContainer, DirectoryAdapter)
+        provideAdapter(IContainer, IDirectoryFactory, factory_maker)
+        container = PretendContainer()
+        entry = {"flag": "added"}
+        tfn = os.path.join(self.tempdir(), "foo")
+        os.mkdir(tfn)
+        self.com.create_object(container, "foo", entry, tfn)
+        self.assertEqual(container.holding["foo"].__class__, PretendContainer)
+        self.assertEqual(entry, {"factory": PCname, "type": PCname})
 
     def test_synch(self):
         # This is a big-ass test that tests various aspects of
