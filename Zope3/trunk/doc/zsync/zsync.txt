@@ -7,7 +7,7 @@ Name
 Synopsis
 --------
 
-**zsync** [*general-options*...] *command* [*command-options*...] [*args*]
+**zsync** *command* [*command-options*...] [*args*]
 
 
 Description
@@ -85,22 +85,8 @@ parentheses are aliases supported for convenience:
   changed in the local representation, has been removed or added, or
   is unchanged.
 
-There are general options which apply to all **zsync** commands, and
-specific options which apply to individual commands.  General options
-must be specified between the **zsync** command name and the specific
-command, while options for specific commands must be supplied after
-the name of the specific command.
-
-
-General Options
-~~~~~~~~~~~~~~~
-
-The following general options are supported.  These must be specified
-between the name **zsync** and the name of the specific command being
-run.
-
--h, --help
-  Display help text
+Options for specific commands must be supplied after the name of the
+specific command.
 
 
 The **zsync add** Command
@@ -535,9 +521,10 @@ One additional file is used if the **zsync login** command is used:
   requests directly, but are not stored in a secure manner.  You
   should be careful about the permissions on this file: it should be
   readable and writable by the owner, and not be anyone else.  The
-  file is created with the correct permissions by **zsync**, but
+  file is created with the correct permissions by **zsync login**, but
   **zsync** will not complain or ignore the file if the permissions
-  are more permissive than necessary.
+  are more permissive than necessary.  **zsync** will *only* create
+  this file if the **zsync login** command is used.
 
 
 Reporting Bugs
@@ -555,7 +542,9 @@ See Also
 --------
 
 There are two interesting and directly relevant articles in the `Zope 3
-wiki`:
+wiki`__:
+
+.. __: http://dev.zope.org/Zope3/
 
 * The |FSSYNC|_ is the initial proposal for a way to synchronize
   copies of a Zope-based website between a filesystem-based
@@ -564,11 +553,16 @@ wiki`:
 * Bundles are discussed in |TTWSITE|_; this gives more information on
   the motivation and goals surrounding this work.
 
+The |zbundle|_ documentation provides support for managing bundles
+using a **zsync** checkout.
+
 .. |FSSYNC| replace::   Filesystem Synchronization Proposal
 .. |TTWSITE| replace::  Through the Web Site Development
+.. |zbundle| replace::  **zbundle**
 
 .. _FSSYNC:   http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
 .. _TTWSITE:  http://dev.zope.org/Zope3/ThroughTheWebSiteDevelopment
+.. _zbundle: zbundle.html
 
 
 Copyright
