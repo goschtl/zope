@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testDT_SQLTest.py,v 1.1 2002/07/11 00:03:19 srichter Exp $
+$Id: testDT_SQLTest.py,v 1.2 2002/07/17 22:59:15 jeremy Exp $
 """
 
 import unittest
@@ -49,7 +49,7 @@ class TestDT_SQLTest(unittest.TestCase):
         self.assertEqual(html(column='3'), "column = 3")
         self.assertEqual(html(column='3.1'), result)
         self.assertEqual(html(column=3.1), result)
-
+        self.assertEqual(html(column=0.0), "column = 0.0")
 
     def testStringTypeAndEscaping(self):
         html = self.doc_class("<dtml-sqltest column type=nb>")

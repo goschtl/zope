@@ -55,11 +55,11 @@
     with the appropriate boolean operator, as indicated by use of an
     'and' or 'or' tag, otherwise, no text is inserted.
 
-$Id: DT_SQLTest.py,v 1.1 2002/07/11 00:03:18 srichter Exp $
+$Id: DT_SQLTest.py,v 1.2 2002/07/17 22:59:15 jeremy Exp $
 """
 import sys
 from Zope.DocumentTemplate.DT_Util import ParseError, parse_params, name_param
-from types import ListType, TupleType, StringTypes
+from types import ListType, TupleType, StringTypes, StringType
 
 
 class SQLTest: 
