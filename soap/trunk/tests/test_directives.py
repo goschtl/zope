@@ -20,13 +20,13 @@ $Id: $
 from zope.configuration import xmlconfig
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.tests.views import IC, V1
-from zope.component import getView, queryView, getDefaultViewName
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.component import getMultiAdapter, queryMultiAdapter
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.security.proxy import ProxyFactory
 from zope.component.tests.request import Request
 from soap.interfaces import ISOAPRequest
 from zope.interface import implements
-import unittest, soap, soap.tests
+import unittest, soap.tests
 
 
 request = Request(ISOAPRequest)
@@ -39,33 +39,35 @@ ob = Ob()
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def testView(self):
-        self.assertEqual(queryView(ob, 'test', request), None)
+        self.assertEqual(
+            queryMultiAdapter((ob, request), name='test'), None)
         xmlconfig.file("soap.zcml", soap.tests)
-        self.assertEqual(queryView(ob, 'test', request).__class__, V1)
+        self.assertEqual(
+            queryMultiAdapter((ob, request), name='test').__class__, V1)
 
     def testInterfaceProtectedView(self):
         xmlconfig.file("soap.zcml", soap.tests)
-        v = getView(ob, 'test2', request)
+        v = getMultiAdapter((ob, request), name='test2')
         v = ProxyFactory(v)
         self.assertEqual(v.index(), 'V1 here')
         self.assertRaises(Exception, getattr, v, 'action')
 
     def testAttributeProtectedView(self):
         xmlconfig.file("soap.zcml", soap.tests)
-        v = getView(ob, 'test3', request)
+        v = getMultiAdapter((ob, request), name='test3')
         v = ProxyFactory(v)
         self.assertEqual(v.action(), 'done')
         self.assertRaises(Exception, getattr, v, 'index')
 
     def testInterfaceAndAttributeProtectedView(self):
         xmlconfig.file("soap.zcml", soap.tests)
-        v = getView(ob, 'test4', request)
+        v = getMultiAdapter((ob, request), name='test4')
         self.assertEqual(v.index(), 'V1 here')
         self.assertEqual(v.action(), 'done')
 
     def testDuplicatedInterfaceAndAttributeProtectedView(self):
         xmlconfig.file("soap.zcml", soap.tests)
-        v = getView(ob, 'test5', request)
+        v = getMultiAdapter((ob, request), name='test5')
         self.assertEqual(v.index(), 'V1 here')
         self.assertEqual(v.action(), 'done')
 
@@ -75,9 +77,9 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_no_name(self):
         xmlconfig.file("soap.zcml", soap.tests)
-        v = getView(ob, 'index', request)
+        v = getMultiAdapter((ob, request), name='index')
         self.assertEqual(v(), 'V1 here')
-        v = getView(ob, 'action', request)
+        v = getMultiAdapter((ob, request), name='action')
         self.assertEqual(v(), 'done')
 
         

@@ -70,7 +70,7 @@ def tearDown(test):
     del sys.modules[name]
 
 def test_suite():
-    from zope.app.tests.functional import FunctionalDocFileSuite
+    from zope.app.testing.functional import FunctionalDocFileSuite
     return FunctionalDocFileSuite(
         'README.txt',
         setUp=setUp, tearDown=tearDown, globs=globs)
