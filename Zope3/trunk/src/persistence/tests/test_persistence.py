@@ -63,7 +63,6 @@ class Test(unittest.TestCase):
         self.assertEqual(p._p_changed, 0)
         self.assertEqual(p._p_jar, None)
         self.assertEqual(p._p_oid, None)
-        self.assertEqual(p._p_serial, None)
         p.inc()
         p.inc()
         self.assertEqual(p.x, 2)

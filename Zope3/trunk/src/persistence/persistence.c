@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.13 2003/04/17 18:38:53 pje Exp $\n";
+"$Id: persistence.c,v 1.14 2003/04/25 19:02:35 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -621,7 +621,6 @@ persist_dealloc(PyPersistObject *self)
 {
     Py_XDECREF(self->po_dm);
     Py_XDECREF(self->po_oid);
-    Py_XDECREF(self->po_serial);
     PyObject_GC_Del(self);
 }
 
@@ -638,7 +637,6 @@ persist_traverse(PyPersistObject *self, visitproc visit, void *arg)
     }
     VISIT(self->po_dm);
     VISIT(self->po_oid);
-    VISIT(self->po_serial);
 #undef VISIT
     return 0;
 }
@@ -648,10 +646,8 @@ persist_clear(PyPersistObject *self)
 {
     Py_XDECREF(self->po_dm);
     Py_XDECREF(self->po_oid);
-    Py_XDECREF(self->po_serial);
     self->po_dm = NULL;
     self->po_oid = NULL;
-    self->po_serial = NULL;
     return 0;
 }
 
@@ -722,7 +718,6 @@ static PyGetSetDef persist_getsets[] = {
 static PyMemberDef persist_members[] = {
     {"_p_jar", T_OBJECT, offsetof(PyPersistObject, po_dm)},
     {"_p_oid", T_OBJECT, offsetof(PyPersistObject, po_oid)},
-    {"_p_serial", T_OBJECT, offsetof(PyPersistObject, po_serial)},
     {"_p_atime", T_INT, offsetof(PyPersistObject, po_atime)},
     {"_p_state", T_INT, offsetof(PyPersistObject, po_state), RO},
     {NULL}

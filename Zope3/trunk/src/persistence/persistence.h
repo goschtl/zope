@@ -35,7 +35,6 @@ enum PyPersist_State { UPTODATE, CHANGED, STICKY, GHOST };
     PyObject_HEAD \
     PyObject *po_dm; \
     PyObject *po_oid; \
-    PyObject *po_serial; \
     int po_atime; \
     enum PyPersist_State po_state;
 
