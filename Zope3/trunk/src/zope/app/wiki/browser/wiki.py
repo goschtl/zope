@@ -21,7 +21,7 @@ from zope.proxy import removeAllProxies
 from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.servicenames import HubIds
-from zope.app.traversing import getName, getPath
+from zope.app.traversing.api import getName, getPath
 from zope.app.container.browser.adding import Adding
 from zope.app.hub import Registration
 

@@ -20,7 +20,7 @@ from zope.component import getService
 from zope.fssync.server.syncer import Syncer
 
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.traversing import getPath
+from zope.app.traversing.api import getPath
 
 
 def getObjectId(obj):

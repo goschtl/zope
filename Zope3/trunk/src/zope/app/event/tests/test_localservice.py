@@ -32,7 +32,7 @@ from zope.app.event.interfaces import IObjectEvent, IObjectModifiedEvent
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribingAware
 
-from zope.app.traversing import getPath, traverse
+from zope.app.traversing.api import getPath, traverse
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.container.contained import ObjectAddedEvent, Contained

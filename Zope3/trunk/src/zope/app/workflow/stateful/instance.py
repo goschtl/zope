@@ -30,7 +30,7 @@ from zope.app.workflow.stateful.interfaces import ITransitionEvent
 from zope.app.workflow.stateful.interfaces import IBeforeRelevantDataChangeEvent
 from zope.app.workflow.stateful.interfaces import IAfterRelevantDataChangeEvent
 from zope.app.servicenames import Utilities
-from zope.app.traversing import getParent
+from zope.app.traversing.api import getParent
 from zope.app.workflow.instance import ProcessInstance
 from zope.app.container.contained import Contained
 

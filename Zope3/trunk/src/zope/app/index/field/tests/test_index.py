@@ -21,7 +21,7 @@ from zope.interface import Interface, Attribute, implements
 from zope.interface.verify import verifyObject
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.component import getService
 from zope.app.tests import ztapi
 from zope.app.servicenames import HubIds

@@ -23,8 +23,8 @@ from BTrees.IOBTree import IOBTree
 
 from zope.proxy import removeAllProxies
 
-from zope.app.traversing import getPath
-from zope.app.traversing import canonicalPath, traverse
+from zope.app.traversing.api import getPath
+from zope.app.traversing.api import canonicalPath, traverse
 from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribable
 from zope.app.event.interfaces import ISubscribingAware
 

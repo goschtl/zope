@@ -30,7 +30,7 @@ from zope.app.publication.zopepublication import ZopePublication
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.errorservice import ErrorReportingService
 from zope.app.servicenames import ErrorLogging
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.app.site.service import ServiceManager
 
 class EventStub(object):

@@ -18,7 +18,7 @@ from unittest import makeSuite, main, TestCase
 from zope.app import zapi
 from zope.app.hub import Registration
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse, canonicalPath
+from zope.app.traversing.api import traverse, canonicalPath
 from zope.app.container.contained import ObjectAddedEvent
 from zope.component import getService
 from zope.app.servicenames import EventPublication, HubIds

@@ -26,7 +26,7 @@ from zope.schema import Bool
 from zope.app.form.browser import CheckBoxWidget
 
 from support import *
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 
 from zope.app.tests.functional import BrowserTestCase
 

@@ -28,7 +28,7 @@ __all__ = tuple(IZAPI)
 
 from zope.component import *
 
-from zope.app.traversing import *
+from zope.app.traversing.api import *
 from zope.app.traversing.browser.absoluteurl import absoluteURL
 from zope.app.exception.interfaces import UserError
 

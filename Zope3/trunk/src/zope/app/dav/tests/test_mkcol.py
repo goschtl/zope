@@ -19,7 +19,7 @@ __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.container.interfaces import IWriteContainer

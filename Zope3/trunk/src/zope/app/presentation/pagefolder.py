@@ -34,7 +34,7 @@ from zope.app.presentation import PageRegistration
 from zope.app.registration.registration import RegisterableContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zpt import IZPTTemplate
-from zope.app.traversing import getPath
+from zope.app.traversing.api import getPath
 from zope.proxy import removeAllProxies
 from zope.publisher.interfaces.browser import IBrowserRequest
 

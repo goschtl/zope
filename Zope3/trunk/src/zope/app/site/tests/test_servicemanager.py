@@ -23,7 +23,7 @@ from zope.interface import Interface, implements
 from zope.app.site.service import ServiceManager, ServiceRegistration
 from zope.component import getService, getServices, getGlobalServices
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.registration.interfaces import RegisteredStatus

@@ -19,7 +19,7 @@ from zope.interface import implements
 from zope.app.container.btree import BTreeContainer
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.registration.registration import RegisterableContainer
-from zope.app.traversing import getPath
+from zope.app.traversing.api import getPath
 from zope.app.container.contained import setitem
 
 from zope.app.site.interfaces import ISiteManagementFolders

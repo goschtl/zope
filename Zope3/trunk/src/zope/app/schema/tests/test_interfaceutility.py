@@ -26,7 +26,7 @@ from zope.interface import Interface, implements
 from zope.app.container.contained import Contained
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.app.registration.interfaces import IRegistrationStack
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import RegisteredStatus

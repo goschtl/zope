@@ -24,7 +24,7 @@ import zope.app
 from zope.app import zapi
 from zope.app.container.sample import SampleContainer
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, IOnlineHelp
 from zope.interface import implements

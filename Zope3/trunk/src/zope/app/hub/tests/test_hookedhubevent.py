@@ -23,7 +23,7 @@ from zope.app.hub.tests.objecthubsetup import ObjectHubSetup
 from zope.app.hub import \
      ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
      ObjectModifiedHubEvent, ObjectMovedHubEvent, ObjectRemovedHubEvent
-from zope.app.traversing import getPath
+from zope.app.traversing.api import getPath
 
 class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
 

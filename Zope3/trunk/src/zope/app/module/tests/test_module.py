@@ -19,7 +19,7 @@ import unittest
 
 from zope.interface import Interface, implements
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.app.module import Manager
 from ZODB.tests.util import DB
 from transaction import get_transaction

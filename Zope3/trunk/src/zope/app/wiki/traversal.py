@@ -19,7 +19,7 @@ from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces import IPublishTraverse
 from zope.exceptions import NotFoundError
 
-from zope.app.traversing import getParent
+from zope.app.traversing.api import getParent
 from zope.app.traversing.namespace import UnexpectedParameters
 from zope.app.traversing.interfaces import ITraversable
 from zope.app.wiki.interfaces import IWikiPage

@@ -19,7 +19,7 @@ $Id$
 from zope.app.publisher.browser import BrowserView
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
-from zope.app.traversing import getParents, getParent, traverse
+from zope.app.traversing.api import getParents, getParent, traverse
 from zope.interface import Interface
 from rfc822 import formatdate, time
 from xml.sax.saxutils import quoteattr

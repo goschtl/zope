@@ -45,7 +45,7 @@ from zope.app.container.interfaces import IContainer
 from zope.app.event.function import Subscriber
 from zope.app.registration.interfaces import IRegistry
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing import getPath
+from zope.app.traversing.api import getPath
 from zope.app.location import inside
 from zope.app.site.folder import SiteManagementFolder
 from zope.app.registration.registration import ComponentRegistration

@@ -23,7 +23,7 @@ from zope.interface import Interface, implements
 from zope.schema import TextLine, Choice
 
 from support import *
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 
 from zope.app.tests.functional import BrowserTestCase
 

@@ -50,7 +50,7 @@ from zope.interface import implements
 from zope.app.event.localservice import ServiceSubscriberEventChannel
 from zope.app.servicenames import HubIds
 
-from zope.app.traversing \
+from zope.app.traversing.api \
      import getPath, canonicalPath, traverse, traverseName, getRoot
 from persistent import Persistent
 from zope.app.container.contained import Contained

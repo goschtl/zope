@@ -46,7 +46,7 @@ from zope.app.location import Location
 
 from zope.exceptions import NotFoundError
 
-from zope.app.traversing import canonicalPath, traverse
+from zope.app.traversing.api import canonicalPath, traverse
 
 from zope.interface import implements, directlyProvides
 

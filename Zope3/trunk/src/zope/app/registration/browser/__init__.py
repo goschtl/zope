@@ -27,7 +27,7 @@ from zope.app.registration.interfaces import IRegistered
 from zope.app.registration.interfaces import IRegistration
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import UnregisteredStatus
-from zope.app.traversing import getName, traverse
+from zope.app.traversing.api import getName, traverse
 from zope.component import getView, getServices
 from zope.interface import implements
 from zope.proxy import removeAllProxies

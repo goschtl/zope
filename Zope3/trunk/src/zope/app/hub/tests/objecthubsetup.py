@@ -17,7 +17,7 @@ $Id$
 from zope.app import zapi
 from zope.app.event.tests.eventsetup import EventSetup
 from zope.app.servicenames import HubIds
-from zope.app.traversing import traverse, canonicalPath
+from zope.app.traversing.api import traverse, canonicalPath
 
 from zope.app.container.interfaces import IObjectAddedEvent, IObjectMovedEvent
 from zope.app.event.interfaces import ISubscriber

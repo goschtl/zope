@@ -28,7 +28,7 @@ from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 from zope.app import zapi
 from zope.app.tests import ztapi
 
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.publisher.browser import TestRequest
 from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.site.tests.placefulsetup import PlacefulSetup

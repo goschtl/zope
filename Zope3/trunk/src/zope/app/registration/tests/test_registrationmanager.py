@@ -21,7 +21,7 @@ from zope.app.registration.registration import RegistrationManager
 from zope.app.registration.registration import RegistrationManagerRemoveSubscriber
 from zope.app.site.tests import placefulsetup
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.interface.common.tests.basemapping import BaseTestIEnumerableMapping
 from zope.interface.verify import verifyObject
 from zope.interface import implements

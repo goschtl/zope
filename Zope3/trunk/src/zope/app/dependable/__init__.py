@@ -19,7 +19,7 @@ __metaclass__ = type
 
 from interfaces import IDependable
 from zope.app.annotation.interfaces import IAnnotations
-from zope.app.traversing import getParent, canonicalPath, getPath
+from zope.app.traversing.api import getParent, canonicalPath, getPath
 from zope.interface import implements
 
 

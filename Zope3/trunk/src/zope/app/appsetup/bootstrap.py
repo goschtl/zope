@@ -27,7 +27,7 @@ from zope.component.exceptions import ComponentLookupError
 
 from zope.app import zapi
 from zope.app.event.interfaces import ISubscriber
-from zope.app.traversing import traverse, traverseName
+from zope.app.traversing.api import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.folder import rootFolder
 from zope.app.servicenames import HubIds, PrincipalAnnotation

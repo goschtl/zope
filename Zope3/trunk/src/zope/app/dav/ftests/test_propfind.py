@@ -23,7 +23,7 @@ from zope.pagetemplate.tests.util import normalize_xml
 from zope.app import zapi
 from zope.app.dav.ftests.dav import DAVTestCase
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 
 class TestPROPFIND(DAVTestCase):
 

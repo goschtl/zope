@@ -21,7 +21,7 @@ from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.tests import ztapi
 
 from zope.exceptions import NotFoundError, DuplicationError
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.container.interfaces import IContainer
 from zope.app.copypastemove.interfaces import IObjectMover

@@ -21,7 +21,7 @@ from zope.app.servicenames import HubIds
 from zope.exceptions import NotFoundError
 from zope.app.publisher.browser import BrowserView
 
-from zope.app.traversing import canonicalPath
+from zope.app.traversing.api import canonicalPath
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.index.interfaces.text import IQueryView
 

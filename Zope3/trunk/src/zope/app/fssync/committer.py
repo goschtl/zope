@@ -29,7 +29,7 @@ from zope.xmlpickle import fromxml
 from zope.app.fssync import fspickle
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IContainer
-from zope.app.traversing import traverseName, getName
+from zope.app.traversing.api import traverseName, getName
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.event import publish

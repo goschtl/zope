@@ -28,7 +28,7 @@ from zope.app.registration.registration import \
      SimpleRegistration, ComponentRegistration
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.dependable.interfaces import IDependable
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.security.proxy import Proxy
 from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.tests import ztapi

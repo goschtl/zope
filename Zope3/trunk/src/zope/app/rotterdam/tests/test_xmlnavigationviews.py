@@ -22,7 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 from zope.app.tests import ztapi
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.app.event.tests.eventsetup import EventSetup
 from zope.app.container.interfaces import IReadContainer
 

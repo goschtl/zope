@@ -23,7 +23,7 @@ import tempfile
 from transaction import get_transaction
 
 from zope.app.publisher.browser import BrowserView
-from zope.app.traversing import getName, getParent, getRoot
+from zope.app.traversing.api import getName, getParent, getRoot
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.app.fssync import syncer
 from zope.app.fssync.committer import Committer, Checker

@@ -18,7 +18,7 @@ $Id$
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.registration.registration import RegistrationStack
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 
 class Registration:
 

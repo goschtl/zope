@@ -20,7 +20,7 @@ import unittest
 
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 from zope.component import getService
 from zope.app.servicenames import HubIds
 from zope.app.hub.interfaces import \

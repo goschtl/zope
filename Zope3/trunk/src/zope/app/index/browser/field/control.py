@@ -19,7 +19,7 @@ from zope.app.introspector import interfaceToName
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.index.interfaces.text import IQueryView
 from zope.app.servicenames import HubIds
-from zope.app.traversing import canonicalPath
+from zope.app.traversing.api import canonicalPath
 from zope.component import getService, queryAdapter
 from zope.exceptions import NotFoundError
 from zope.interface import implements

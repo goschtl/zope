@@ -41,7 +41,7 @@ from zope.app.presentation.presentation import IPageRegistration
 from zope.app.presentation.presentation import PageRegistrationAddSubscriber
 from zope.app.presentation.presentation import PageRegistrationRemoveSubscriber
 from zope.app.tests import setup
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService

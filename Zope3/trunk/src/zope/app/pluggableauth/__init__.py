@@ -32,7 +32,7 @@ from zope.exceptions import NotFoundError
 
 from zope.app import zapi
 from zope.app.location import locate
-from zope.app.traversing import getPath
+from zope.app.traversing.api import getPath
 
 from zope.app.container.interfaces import IOrderedContainer
 from zope.app.container.interfaces import IContainerNamesContainer, INameChooser

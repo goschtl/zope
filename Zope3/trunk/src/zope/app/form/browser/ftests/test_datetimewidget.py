@@ -28,7 +28,7 @@ from zope.interface import implements
 from zope.schema import Datetime, Choice
 
 from support import *
-from zope.app.traversing import traverse
+from zope.app.traversing.api import traverse
 
 from zope.app.tests.functional import BrowserTestCase
 
