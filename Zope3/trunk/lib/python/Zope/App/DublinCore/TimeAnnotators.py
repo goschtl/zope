@@ -13,18 +13,20 @@
 ##############################################################################
 """Objects that take care of annotating dublin core meta data times
 
-$Id: TimeAnnotators.py,v 1.2 2002/10/04 19:05:50 jim Exp $
+$Id: TimeAnnotators.py,v 1.3 2002/11/18 22:37:30 jim Exp $
 """
 __metaclass__ = type
 
 from datetime import datetime
 from Zope.ComponentArchitecture import queryAdapter
 from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
+from Zope.Event.ISubscriber import ISubscriber
 
 class DCTimeAnnotatorClass:
     """Update Dublin-Core time property
     """
-
+    __implements__ = ISubscriber
+    
     def __init__(self, property):
         self.property = property
 
