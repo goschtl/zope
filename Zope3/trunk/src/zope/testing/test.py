@@ -248,6 +248,8 @@ import traceback
 import unittest
 import warnings
 
+FTESTING = "ftesting.zcml"
+
 def set_trace_doctest(stdin=sys.stdin, stdout=sys.stdout, trace=pdb.set_trace):
     sys.stdin = stdin
     sys.stdout = stdout
@@ -488,11 +490,11 @@ class PathInit:
             print "Running %s tests from %s" % (kind, self.cwd)
         # Make sure functional tests find ftesting.zcml
         if functional:
-            config_file = 'ftesting.zcml'
+            config_file = FTESTING
             if not self.inplace:
                 # We chdired into build, so ftesting.zcml is in the
                 # parent directory
-                config_file = os.path.join('..', 'ftesting.zcml')
+                config_file = os.path.join('..', FTESTING)
             print "Parsing %s" % config_file
             from zope.app.tests.functional import FunctionalTestSetup
             FunctionalTestSetup(config_file)

@@ -1,0 +1,35 @@
+#!/bin/env python2.3
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Test script to run the unit and functional tests in a Zope installation.
+
+$Id$
+"""
+import sys, os
+
+here = os.path.dirname(os.path.realpath(__file__))
+here = os.path.dirname(here)
+lib = os.path.join(here, "lib", "python")
+print lib
+sys.path.append(lib)
+
+ftesting = os.path.join(here, "skel", "etc", "ftesting.zcml")
+
+import zope.testing.test
+
+zope.testing.test.FTESTING = ftesting
+
+if __name__ == '__main__':
+    args = sys.argv[:1] + ["-l", lib] + sys.argv[1:]
+    zope.testing.test.process_args(args)
