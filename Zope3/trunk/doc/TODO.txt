@@ -10,10 +10,6 @@ The order that items are listed here is not significant.
 - Write documentation on how to develop principal sources for the
   pluggable auth service.
 
-- Fill out an authentication service based on the architecture
-  that Itamar came up with in Rotterdam. See
-  src/zope/app/services/auth.txt. 
-
 - Redo local Role service to use configurations
 
 - Implement a local permission service (using configurations)
@@ -21,6 +17,9 @@ The order that items are listed here is not significant.
 - Rethink the organization of the security software to reflect
   the fact that people will likley plug in different grant and
   owndership systems for different security policies.
+
+  o Document the relationship between the security policy and the
+    grants
 
 - Untrusted modules.  Also implement a way of
   specifying policies for trusted and untrusted modules.
@@ -70,17 +69,21 @@ The order that items are listed here is not significant.
 
 - Software bundles.
 
-- zcml directives for module security
+- ZCML directives for module security
 
-- zcml directive for layers and corresponding checks that a resource is 
+  o Fix the ++module++ namespace to honor security assertions
+
+- ZCML directive for layers and corresponding checks that a resource is 
   registered in a registered layer
 
-- local module service. This provides support for local imports
-  as well as a place to manage security configuration for
-  persistent modules.
+  o Typos can cause new layers to be defined unintentionally
 
-  Provide support for within package access to persistent
-  modules without the need to register them.
+- Local module service. This provides support for local imports as
+  well as a place to manage security configuration for persistent
+  modules.
+
+  Provide support for within package access to persistent modules
+  without the need to register them.
 
 - Rework undo
 
@@ -97,6 +100,8 @@ The order that items are listed here is not significant.
   Make sure we handle multiple undos properly.
 
 - Implement interface types, and thus content types.
+
+  o Categories?  (Not inheritable.)
 
 - Local Interface service
 
@@ -145,7 +150,7 @@ The order that items are listed here is not significant.
 
 - Broken-object support
 
-  When an object cannot beunpickled because it's class can't be found, 
+  When an object cannot be unpickled because it's class can't be found, 
   it should be converted to a special kind of immutable object.  
 
   See http://collector.zope.org/Zope3-dev/109
@@ -155,7 +160,6 @@ The order that items are listed here is not significant.
 
   What form should these take? Should they be like Zope 2 Python
   scipts? or should they by like Python modules.
-
 
 - Supply a generic property mechanism?
 
