@@ -60,15 +60,6 @@ We are rereleasing it under the terms of the Zope Public License 2.0.
 
 Exceptions to this are the following files within the docutils package:
 
-  optparse.py, by Gregory Ward. This module is included in the
-  standard Python distribution starting in Python 2.3.
-
-  textwrap.py, by Gregory Ward. This module is included in the
-  standard Python distribution starting in Python 2.3.
-
-    Copyright (C) 1999-2001 Gregory P. Ward.
-    Copyright (C) 2002, 2003 Python Software Foundation.
-
   roman.py, by Mark Pilgrim:
 
     This program is free software; you can redistribute it and/or modify
