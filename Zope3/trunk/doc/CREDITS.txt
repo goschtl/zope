@@ -314,13 +314,13 @@ CVS Contributors
 
   Much work on Zope 3 XML support.
 
-  Much work during and after interfacegeddon and zcmlgeddon
+  Much work during and after interfacegeddon, zcmlgeddon, packagegeddon
 
   Translated (with Stephan Richter) Zope3 to German
 
   Created (with Christian Theune) the initial process controller UI.
 
-  Kept many zopeproducts up-to-date with geddons
+  Kept many Zope add-on packages up-to-date with geddons
 
   Many bug fixes and cleanups.
 
