@@ -179,15 +179,19 @@ class ImmediateTestResult(unittest._TextTestResult):
             self.dots = False
             self._progressWithNames = True
             self._lastWidth = 0
+            self._maxWidth = 80
             try:
                 import curses
             except ImportError:
-                self._maxWidth = 80
+                pass
             else:
                 import curses.wrapper
                 def get_max_width(scr, self=self):
                     self._maxWidth = scr.getmaxyx()[1]
-                curses.wrapper(get_max_width)
+                try:
+                    curses.wrapper(get_max_width)
+                except curses.error:
+                    pass
             self._maxWidth -= len("xxxx/xxxx (xxx.x%): ") + 1
 
     def stopTest(self, test):
