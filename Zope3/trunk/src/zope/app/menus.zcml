@@ -21,6 +21,7 @@
   <menu
       id="zope.app.container.add"
       title="Menu for objects to be added according to containment constraints"
+      interface="zope.app.publisher.interfaces.browser.AddMenu"
       />
 
   <menu
