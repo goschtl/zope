@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: __init__.py,v 1.2 2004/01/30 22:43:49 sidnei Exp $
+$Id: __init__.py,v 1.1 2004/02/27 14:23:17 philikon Exp $
 """
 
 from zope.app import zapi

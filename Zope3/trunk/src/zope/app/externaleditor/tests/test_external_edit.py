@@ -10,15 +10,13 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_external_edit.py,v 1.2 2004/02/24 16:51:43 philikon Exp $
+$Id: test_external_edit.py,v 1.1 2004/02/27 14:23:17 philikon Exp $
 """
 
 import unittest
 from base64 import encodestring
 
 from zope.interface import implements, Interface, directlyProvides
-from zope.products.externaleditor.interfaces import IExternallyEditable
-from zope.products.externaleditor.browser import ExternalEditor
 from zope.publisher.browser import TestRequest
 
 from zope.app import zapi
@@ -28,6 +26,9 @@ from zope.app.container.contained import contained
 from zope.app.interfaces.content import IContentType
 from zope.app.interfaces.file import IReadFile
 from zope.app.file.file import File, FileReadFile
+
+from zope.app.externaleditor.interfaces import IExternallyEditable
+from zope.app.externaleditor.browser import ExternalEditor
 
 class IEditableFile(Interface): pass
 
