@@ -11,17 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Query framework definitions and support interfaces
+
+$Id: query.py,v 1.12 2004/03/09 17:11:55 jim Exp $
 """
 
-$Id: query.py,v 1.11 2004/03/06 20:06:34 jim Exp $
-"""
-
-import zope.schema
-from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.interface import Interface, Attribute
-from zope.app.security.permission import PermissionField
-from zope.app.interfaces.services.registration import IRegistration
-from zope.app.component.interfacefield import InterfacesField
 from zope.schema.interfaces import ITuple
 # There's another import further down
 
@@ -47,53 +42,5 @@ class IQueryProcessor(IQueryProcessable):
            output_interface.
         """
 
-class IQueryService(Interface):
-
-    def listQueries():
-        '''Returns a list of query registrations.
-
-        Each element of the list is an IQueryListItem.'''
-
-    def processQuery(query_id, input):
-        '''Processes the input, using the query registered with query_id.
-
-        The input must be adaptable to the input interfaces registered for
-        the query_id.'''
-
-class IQueryListItem(Interface):
-
-    id = Attribute('The id of this query.')
-    permission = PermissionField(title=u'Required permission',
-                                 required=False)
-
-    inputInterfaces = InterfacesField(title=u'Input interfaces',
-                                      basetype=None)
-    outputInterfaces = InterfacesField(title=u'Output interfaces',
-                                       basetype=None)
-
 # The import is here to avoid circular imports
 from zope.app.services.queryfield import QueryProcessorsField
-
-class IQueryRegistration(IRegistration):
-
-    name = zope.schema.TextLine(
-        title=_("Name"),
-        description=_("The name that is registered"),
-        readonly=True,
-        # Don't allow empty or missing name:
-        required=True,
-        min_length=1,
-        )
-
-    permission = PermissionField(title=u'Required permission',
-                                 required=False)
-    inputInterfaces = InterfacesField(title=u'Input interfaces',
-                                      basetype=None)
-    outputInterfaces = InterfacesField(title=u'Output interfaces',
-                                       basetype=None)
-    processors = QueryProcessorsField(title=u'Query processors',
-                                      required=False)
-
-    def getProcessors():
-        'Returns a sequence of query processor objects.'
-
