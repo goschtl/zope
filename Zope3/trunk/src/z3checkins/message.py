@@ -338,7 +338,7 @@ class MessageUpload:
     def createAndAdd(self, data):
         if data.has_key('data'): # XXX should we bark if no data is given?
             msg_raw = data['data']
-            parser = getUtility(self.context, IMessageParser)
+            parser = getUtility(IMessageParser, context=self.context)
             if msg_raw.startswith("From "):
                 # detected an mbox file
                 mbox = StringIO(msg_raw)
