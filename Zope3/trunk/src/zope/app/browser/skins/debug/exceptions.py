@@ -13,7 +13,7 @@
 ##############################################################################
 """View that renders a traceback for exceptions.
 
-$Id: exceptions.py,v 1.2 2003/03/12 10:06:19 stevea Exp $
+$Id: exceptions.py,v 1.3 2003/03/12 14:24:25 tseaver Exp $
 """
 __metaclass__ = type
 
@@ -23,18 +23,17 @@ import traceback
 from zope.interface.common.interfaces import IException
 
 class ExceptionDebugView:
-
     """ Render exceptions for debugging.
     """
-    __used_for__ = ( IException, )
+    __used_for__ = (IException,)
 
-    def __init__( self, context, request ):
+    def __init__(self, context, request):
 
         self.context = context
         self.request = request
 
         self.error_type, self.error_object, tb = sys.exc_info()
         try:
-            self.traceback_lines = traceback.format_tb( tb )
+            self.traceback_lines = traceback.format_tb(tb)
         finally:
             del tb
