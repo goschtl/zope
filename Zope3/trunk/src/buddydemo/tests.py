@@ -1,5 +1,5 @@
 import unittest
-from doctest import DocTestSuite
+from zope.testing.doctest import DocFileSuite, DocTestSuite
 
 def test_BuddyInfo():
     """
@@ -94,6 +94,7 @@ def test_BuddyRename():
 
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(DocFileSuite('buddy.txt'))
     suite.addTest(DocTestSuite('buddydemo.buddy'))
     suite.addTest(DocTestSuite('buddydemo.stubpostal'))
     suite.addTest(DocTestSuite())

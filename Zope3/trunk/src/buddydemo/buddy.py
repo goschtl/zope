@@ -7,22 +7,6 @@ from zope.app import zapi
 
 class Buddy(persistent.Persistent):
     """Buddy information
-
-    >>> bud = Buddy('Bob', 'Smith', 'bob@smith.org',
-    ...             '513 Princess Ann Street', '22401')
-    >>> bud.first, bud.last, bud.email
-    ('Bob', 'Smith', 'bob@smith.org')
-    >>> bud.address, bud.postal_code
-    ('513 Princess Ann Street', '22401')
-
-    Any data not passed to the class are initialized to
-    empty strings:
-
-    >>> bud = Buddy()
-    >>> bud.first, bud.last, bud.email
-    ('', '', '')
-    >>> bud.address, bud.postal_code
-    ('', '')
     """
 
     zope.interface.implements(IBuddy, IBuddyContained)
@@ -36,12 +20,6 @@ class Buddy(persistent.Persistent):
         self.address, self.postal_code = address, pc
 
     def name(self):
-        """Get the full name of a buddy
-
-        >>> bud = Buddy('Bob', 'Smith')
-        >>> bud.name()
-        'Bob Smith'
-        """
         return "%s %s" % (self.first, self.last)
 
 from zope.app.container.btree import BTreeContainer
