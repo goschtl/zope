@@ -402,9 +402,9 @@ class timedelta(object):
     felt like it.
     """
 
-    def __init__(self, days=0, seconds=0, microseconds=0,
-                 # XXX The following should only be used as keyword args:
-                 milliseconds=0, minutes=0, hours=0, weeks=0):
+    def __new__(cls, days=0, seconds=0, microseconds=0,
+                # XXX The following should only be used as keyword args:
+                milliseconds=0, minutes=0, hours=0, weeks=0):
         # Doing this efficiently and accurately in C is going to be difficult
         # and error-prone, due to ubiquitous overflow possibilities, and that
         # C double doesn't have enough bits of precision to represent
@@ -505,11 +505,16 @@ class timedelta(object):
         assert isinstance(d, (int, long))
         assert isinstance(s, int) and 0 <= s < 24*3600
         assert isinstance(us, int) and 0 <= us < 1000000
+
+        self = object.__new__(cls)
+
         self.__days = d
         self.__seconds = s
         self.__microseconds = us
         if abs(d) > 999999999:
             raise OverflowError("timedelta # of days is too large: %d" % d)
+
+        return self
 
     def __repr__(self):
         if self.__microseconds:
@@ -606,18 +611,17 @@ class timedelta(object):
                 self.__microseconds != 0)
 
     # Pickle support.
-    # This magic class attr is necessary for pickle compatibility with the
-    # C implementation.
-    __safe_for_unpickling__ = True
 
-    def __reduce__(self):
-        return type(self), (), self.__getstate__()
+    __safe_for_unpickling__ = True      # For Python 2.2
 
     def __getstate__(self):
         return (self.__days, self.__seconds, self.__microseconds)
 
     def __setstate__(self, tup):
         self.__days, self.__seconds, self.__microseconds = tup
+
+    def __reduce__(self):
+        return (self.__class__, self.__getstate__())
 
 timedelta.min = timedelta(-999999999)
 timedelta.max = timedelta(days=999999999, hours=23, minutes=59, seconds=59,
@@ -629,7 +633,7 @@ class date(object):
 
     Constructors:
 
-    __init__()
+    __new__()
     fromtimestamp()
     today()
     fromordinal()
@@ -653,17 +657,24 @@ class date(object):
     year, month, day
     """
 
-    def __init__(self, year, month, day):
+    def __new__(cls, year, month=None, day=None):
         """Constructor.
 
         Arguments:
 
         year, month, day (required, base 1)
         """
+        if isinstance(year, str):
+            # Pickle support
+            self = object.__new__(cls)
+            self.__setstate__((year,))
+            return self
         _check_date_fields(year, month, day)
+        self = object.__new__(cls)
         self.__year = year
         self.__month = month
         self.__day = day
+        return self
 
     # Additional constructors
 
@@ -842,14 +853,21 @@ class date(object):
 
     # Pickle support.
 
+    __safe_for_unpickling__ = True      # For Python 2.2
+
     def __getstate__(self):
         yhi, ylo = divmod(self.__year, 256)
-        return "%c%c%c%c" % (yhi, ylo, self.__month, self.__day)
+        return ("%c%c%c%c" % (yhi, ylo, self.__month, self.__day), )
 
-    def __setstate__(self, string):
+    def __setstate__(self, t):
+        assert isinstance(t, tuple) and len(t) == 1, `t`
+        string = t[0]
         assert len(string) == 4
         yhi, ylo, self.__month, self.__day = map(ord, string)
         self.__year = yhi * 256 + ylo
+
+    def __reduce__(self):
+        return (self.__class__, self.__getstate__())
 
 _date_class = date  # so functions w/ args named "date" can get at the class
 
@@ -909,19 +927,34 @@ class tzinfo(object):
         else:
             return dt
 
-    # pickle support
+    # Pickle support.
 
-    __safe_for_unpickling__ = True
+    __safe_for_unpickling__ = True      # For Python 2.2
 
     def __reduce__(self):
-        return type(self), (), self.__dict__
+        getinitargs = getattr(self, "__getinitargs__", None)
+        if getinitargs:
+            args = getinitargs()
+        else:
+            args = ()
+        getstate = getattr(self, "__getstate__", None)
+        if getstate:
+            state = getstate()
+        else:
+            state = getattr(self, "__dict__", None) or None
+        if state is None:
+            return (self.__class__, args)
+        else:
+            return (self.__class__, args, state)
+
+_tzinfo_class = tzinfo   # so functions w/ args named "tinfo" can get at it
 
 class time(object):
     """Time with time zone.
 
     Constructors:
 
-    __init__()
+    __new__()
 
     Operators:
 
@@ -940,7 +973,7 @@ class time(object):
     hour, minute, second, microsecond, tzinfo
     """
 
-    def __init__(self, hour=0, minute=0, second=0, microsecond=0, tzinfo=None):
+    def __new__(cls, hour=0, minute=0, second=0, microsecond=0, tzinfo=None):
         """Constructor.
 
         Arguments:
@@ -949,6 +982,11 @@ class time(object):
         second, microsecond (default to zero)
         tzinfo (default to None)
         """
+        self = object.__new__(cls)
+        if isinstance(hour, str):
+            # Pickle support
+            self.__setstate__((hour, minute or None))
+            return self
         _check_tzinfo_arg(tzinfo)
         _check_time_fields(hour, minute, second, microsecond)
         self.__hour = hour
@@ -956,6 +994,7 @@ class time(object):
         self.__second = second
         self.__microsecond = microsecond
         self._tzinfo = tzinfo
+        return self
 
     # Read-only field accessors
     hour = property(lambda self: self.__hour, doc="hour (0-23)")
@@ -1138,6 +1177,8 @@ class time(object):
 
     # Pickle support.
 
+    __safe_for_unpickling__ = True      # For Python 2.2
+
     def __getstate__(self):
         us2, us3 = divmod(self.__microsecond, 256)
         us1, us2 = divmod(us2, 256)
@@ -1164,6 +1205,9 @@ class time(object):
         else:
             self._tzinfo = state[1]
 
+    def __reduce__(self):
+        return (self.__class__, self.__getstate__())
+
 _time_class = time  # so functions w/ args named "time" can get at the class
 
 time.min = time(0, 0, 0)
@@ -1175,11 +1219,16 @@ class datetime(date):
     # XXX needs docstrings
     # See http://www.zope.org/Members/fdrake/DateTimeWiki/TimeZoneInfo
 
-    def __init__(self, year, month, day, hour=0, minute=0, second=0,
-                 microsecond=0, tzinfo=None):
+    def __new__(cls, year, month=None, day=None, hour=0, minute=0, second=0,
+                microsecond=0, tzinfo=None):
+        if isinstance(year, str):
+            # Pickle support
+            self = date.__new__(cls, 1, 1, 1)
+            self.__setstate__((year, month))
+            return self
         _check_tzinfo_arg(tzinfo)
         _check_time_fields(hour, minute, second, microsecond)
-        date.__init__(self, year, month, day)
+        self = date.__new__(cls, year, month, day)
         # XXX This duplicates __year, __month, __day for convenience :-(
         self.__year = year
         self.__month = month
@@ -1189,6 +1238,7 @@ class datetime(date):
         self.__second = second
         self.__microsecond = microsecond
         self._tzinfo = tzinfo
+        return self
 
     # Read-only field accessors
     hour = property(lambda self: self.__hour, doc="hour (0-23)")
@@ -1521,6 +1571,10 @@ class datetime(date):
         seconds = self.hour * 3600 + (self.minute - tzoff) * 60 + self.second
         return hash(timedelta(days, seconds, self.microsecond))
 
+    # Pickle support.
+
+    __safe_for_unpickling__ = True      # For Python 2.2
+
     def __getstate__(self):
         yhi, ylo = divmod(self.__year, 256)
         us2, us3 = divmod(self.__microsecond, 256)
@@ -1550,6 +1604,9 @@ class datetime(date):
         else:
             self._tzinfo = state[1]
 
+    def __reduce__(self):
+        return (self.__class__, self.__getstate__())
+
 
 datetime.min = datetime(1, 1, 1)
 datetime.max = datetime(9999, 12, 31, 23, 59, 59, 999999)
@@ -1566,54 +1623,6 @@ def _isoweek1monday(year):
     if firstweekday > THURSDAY:
         week1monday += 7
     return week1monday
-
-# Pickle support.  __getstate__ and __setstate__ work fine on their own,
-# but only because the classes here are implemented in Python.  The C
-# implementation had to get much trickier, and the code following emulates
-# what the C code had to do, so that pickles produced by the Python
-# implementation can be read by the C implementation, and vice versa.
-
-def _date_pickler(date):
-    state = date.__getstate__()
-    return _date_unpickler, (state,)
-
-def _date_unpickler(state):
-    self = date(1, 1, 1)
-    self.__setstate__(state)
-    return self
-
-def _tzinfo_pickler(tz):
-    return _tzinfo_unpickler, ()
-
-def _tzinfo_unpickler():
-    self = tzinfo()
-    return self
-
-def _time_pickler(tz):
-    state = tz.__getstate__()
-    return _time_unpickler, (state,)
-
-def _time_unpickler(state):
-    self = time()
-    self.__setstate__(state)
-    return self
-
-def _datetime_pickler(dtz):
-    state = dtz.__getstate__()
-    return _datetime_unpickler, (state,)
-
-def _datetime_unpickler(state):
-    self = datetime(1, 1, 1)
-    self.__setstate__(state)
-    return self
-
-# Register pickle/unpickle functions.
-from copy_reg import pickle
-pickle(date, _date_pickler, _date_unpickler)
-pickle(tzinfo, _tzinfo_pickler, _tzinfo_unpickler)
-pickle(time, _time_pickler, _time_unpickler)
-pickle(datetime, _datetime_pickler, _datetime_unpickler)
-del pickle
 
 """
 Some time zone algebra.  For a datetime x, let
