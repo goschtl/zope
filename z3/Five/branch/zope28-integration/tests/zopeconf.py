@@ -1,5 +1,5 @@
 import os
-from os.path import join, abspath, dirname, split
+from os.path import join, abspath, dirname, split, exists
 
 
 def process():
@@ -19,5 +19,8 @@ def process():
             _prefix = abspath(dirname(__file__))
         _prefix = join(_prefix, '..', '..', '..')
 
-    from Zope2 import configure
-    configure(join(_prefix, 'etc', 'zope.conf'))
+    _config = join(_prefix, 'etc', 'zope.conf')
+
+    if exists(_config):
+        from Zope2 import configure
+        configure(_config)
