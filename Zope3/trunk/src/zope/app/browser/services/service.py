@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.24 2003/04/30 23:37:56 faassen Exp $
+$Id: service.py,v 1.25 2003/05/01 16:28:28 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -155,17 +155,35 @@ class ServiceSummary(BrowserView):
 
         In that case, issue a message.
         """
-        deletes = self.request.get("delete")
+        todo = self.request.get("selected")
+        doActivate = self.request.get("Activate")
         doDeactivate = self.request.get("Deactivate")
         doDelete = self.request.get("Delete")
-        if not deletes:
+        if not todo:
             if doDeactivate or doDelete:
                 return "Please select at least one checkbox"
             return None
+        if doActivate:
+            return self._activate(todo)
         if doDeactivate:
-            return self._deactivate(deletes)
+            return self._deactivate(todo)
         if doDelete:
-            return self._delete(deletes)
+            return self._delete(todo)
+
+    def _activate(self, todo):
+        done = []
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            obj = registry.active()
+            if obj is None:
+                # Activate the first registered configuration
+                obj = registry.info()[0]['configuration']
+                obj.status = Active
+                done.append(name)
+        if done:
+            return "Activated: " + ", ".join(done)
+        else:
+            return "All of the checked services were alrady active"
 
     def _deactivate(self, todo):
         done = []

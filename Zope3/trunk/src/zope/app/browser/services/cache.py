@@ -13,7 +13,7 @@
 ##############################################################################
 """Cache configuration support classes.
 
-$Id: cache.py,v 1.8 2003/04/30 23:37:56 faassen Exp $
+$Id: cache.py,v 1.9 2003/05/01 16:28:28 gvanrossum Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
@@ -21,7 +21,8 @@ from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.component import getAdapter, getView
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.services.configuration import Unregistered, Registered
+from zope.app.interfaces.services.configuration \
+     import Unregistered, Registered, Active
 from zope.app.traversing import traverse, getPath, getParent, objectName
 
 class Caches(BrowserView):
@@ -34,16 +35,34 @@ class Caches(BrowserView):
         In that case, issue a message.
         """
         todo = self.request.get("selected")
+        doActivate = self.request.get("Activate")
         doDeactivate = self.request.get("Deactivate")
         doDelete = self.request.get("Delete")
         if not todo:
-            if doDeactivate or doDelete:
+            if doActivate or doDeactivate or doDelete:
                 return "Please select at least one checkbox"
             return None
+        if doActivate:
+            return self._activate(todo)
         if doDeactivate:
             return self._deactivate(todo)
         if doDelete:
             return self._delete(todo)
+
+    def _activate(self, todo):
+        done = []
+        for name in todo:
+            registry = self.context.queryConfigurations(name)
+            obj = registry.active()
+            if obj is None:
+                # Activate the first registered configuration
+                obj = registry.info()[0]['configuration']
+                obj.status = Active
+                done.append(name)
+        if done:
+            return "Activated: " + ", ".join(done)
+        else:
+            return "All of the checked caches were already active"
 
     def _deactivate(self, todo):
         done = []

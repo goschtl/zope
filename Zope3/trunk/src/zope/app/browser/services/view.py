@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper classes for local view configuration.
 
-$Id: view.py,v 1.13 2003/05/01 15:51:24 gvanrossum Exp $
+$Id: view.py,v 1.14 2003/05/01 16:28:28 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -133,7 +133,7 @@ class ViewServiceView(_SharedBase):
         if done:
             return "Activated: " + ", ".join(done)
         else:
-            return "None of the checked utilities were inactive"
+            return "All of the checked views were already active"
 
     def _deactivate(self, todo):
         done = []
@@ -146,7 +146,7 @@ class ViewServiceView(_SharedBase):
         if done:
             return "Deactivated: " + ", ".join(done)
         else:
-            return "None of the checked utilities were active"
+            return "None of the checked views were active"
 
     def _delete(self, todo):
         errors = []

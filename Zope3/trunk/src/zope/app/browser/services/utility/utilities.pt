@@ -23,22 +23,13 @@
                  "value string:${config/name}:${config/interface}" />
       </td>
       <td>
-
         <a href="."
            tal:condition="config/url"
            tal:attributes=
-	       "href string:${config/url}/@@SelectedManagementView.html" >
-          <span tal:replace="string:${config/name}:${config/interface}" />
-        </a>
-
-        <span tal:condition="not:config/url">
-          <span tal:replace="config/interface" />
-          <span tal:condition="config/name" i18n:translate="">
-            named <span tal:replace="config/name" i18n:name="utility_name" />
-          </span>
-          <span i18n:translate="">(inactive)</span>
-        </span>
-
+	       "href string:${config/url}/@@SelectedManagementView.html"
+           tal:content="config/summary" />
+        <span tal:condition="not:config/url"
+              tal:replace="config/summary" />
       </td>
       <td>
         <a href="."
@@ -49,8 +40,11 @@
     </tr>
   </table>
 
+  <input type="submit" name="Activate" value="Activate" />
   <input type="submit" name="Deactivate" value="Deactivate" />
+  &nbsp;
   <input type="submit" name="Delete" value="Delete" />
+  &nbsp;
   <input type="submit" name="Refresh" value="Refresh" />
 
 </form>

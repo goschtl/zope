@@ -29,7 +29,7 @@
 
           <table>
             <tr tal:repeat="reg registries">
-              <td><input type="checkbox" name="delete:list"
+              <td><input type="checkbox" name="selected:list"
                          tal:attributes="value reg/name" /></td>
               <td>
                 <a href="(link to the active service)"
@@ -53,8 +53,11 @@
             </tr>
           </table>
 
+          <input type="submit" name="Activate" value="Activate" />
           <input type="submit" name="Deactivate" value="Deactivate" />
+	  &nbsp;
           <input type="submit" name="Delete" value="Delete" />
+	  &nbsp;
           <input type="submit" name="Refresh" value="Refresh" />
 
 	</form>

@@ -49,8 +49,11 @@
     </tr>
   </table>
 
+  <input type="submit" name="Activate" value="Activate" />
   <input type="submit" name="Deactivate" value="Deactivate" />
+  &nbsp;
   <input type="submit" name="Delete" value="Delete" />
+  &nbsp;
   <input type="submit" name="Refresh" value="Refresh" />
 
 </form>
