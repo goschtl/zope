@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.29 2003/06/02 17:09:19 gvanrossum Exp $
+$Id: fssync.py,v 1.30 2003/06/04 21:48:28 gvanrossum Exp $
 """
 
 import os
@@ -257,6 +257,19 @@ class PretendStream(object):
         self.conn.send("%x\r\n" % len(s))
         self.conn.send(s)
 
+class DataSource(object):
+
+    """Helper class to provide a data source for httpreq."""
+
+    def __init__(self, head, tail):
+        self.head = head
+        self.tail = tail
+
+    def __call__(self, f):
+        snf = Snarfer(f)
+        snf.add(join(self.head, self.tail), self.tail)
+        snf.addtree(join(self.head, "@@Zope"), "@@Zope/")
+
 class FSSync(object):
 
     def __init__(self, metadata=None, network=None, rooturl=None):
@@ -308,20 +321,14 @@ class FSSync(object):
             raise Error("nothing known about", target)
         self.network.loadrooturl(target)
         path = entry["path"]
+        view = "@@fromFS.snarf?note=%s" % urllib.quote(note)
         head, tail = split(realpath(target))
+        data = DataSource(head, tail)
+        fp, headers = self.network.httpreq(path, view, data)
         try:
-            view = "@@fromFS.snarf?note=%s" % urllib.quote(note)
-            def datasource(f):
-                snf = Snarfer(f)
-                snf.add(join(head, tail), tail)
-                snf.addtree(join(head, "@@Zope"), "@@Zope/")
-            outfp, headers = self.network.httpreq(path, view, datasource)
+            self.merge_snarffile(fp, head, tail)
         finally:
-            pass
-        try:
-            self.merge_snarffile(outfp, head, tail)
-        finally:
-            outfp.close()
+            fp.close()
 
     def update(self, target):
         entry = self.metadata.getentry(target)
