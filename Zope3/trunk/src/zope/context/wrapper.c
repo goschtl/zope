@@ -17,7 +17,6 @@
         (((WrapperObject *)wrapper)->wrap_dict)
 
 static PyTypeObject WrapperType;
-static PyTypeObject ContextAwareType;
 
 static PyObject *empty_tuple = NULL;
 
@@ -37,63 +36,6 @@ static PyObject *SlotStrings[10];
 #define CALL_IDX 8
 #define STR_IDX 9
 
-
-/* ContextAware type
- *
- * This is a 'marker' type with no methods or members.
- * It is used to mark types that should have all of their binding descriptors
- * rebound to have the self argument be the wrapper instead.
- */
-
-typedef struct {
-    PyObject_HEAD
-} ContextAwareObject;
-
-statichere PyTypeObject
-ContextAwareType = {
-    PyObject_HEAD_INIT(NULL)
-    0,
-    "wrapper.ContextAware",
-    sizeof(ContextAwareObject),
-    0,
-    0,						/* tp_dealloc */
-    0,						/* tp_print */
-    0,						/* tp_getattr */
-    0,						/* tp_setattr */
-    0,						/* tp_compare */
-    0,						/* tp_repr */
-    0,						/* tp_as_number */
-    0,						/* tp_as_sequence */
-    0,						/* tp_as_mapping */
-    0,						/* tp_hash */
-    0,						/* tp_call */
-    0,						/* tp_str */
-    0,						/* tp_getattro */
-    0,						/* tp_setattro */
-    0,						/* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,	/* tp_flags */
-    "ContextAware marker class",		/* tp_doc */
-    0,						/* tp_traverse */
-    0,						/* tp_clear */
-    0,						/* tp_richcompare */
-    0,						/* tp_weaklistoffset */
-    0,						/* tp_iter */
-    0,						/* tp_iternext */
-    0,						/* tp_methods */
-    0,						/* tp_members */
-    0,						/* tp_getset */
-    0,						/* tp_base */
-    0,						/* tp_dict */
-    0,						/* tp_descr_get */
-    0,						/* tp_descr_set */
-    0,						/* tp_dictoffset */
-    0,						/* tp_init */
-    0,						/* tp_alloc */
-    0,/*PyType_GenericNew,*/				/* tp_new */
-    0,						/* tp_free */
-};
-
-/* End of ContextAware. */
 
 /* ContextDescriptor type
  *
@@ -619,9 +561,8 @@ wrap_dealloc(PyObject *self)
 }
 
 /* Provide tp_getattro and tp_setattro implementations that check to see
- * if the wrapped object's class is ContextAware or the descriptor that
- * implements the attribute is a ContextDescriptor. If either of these
- * holds true, then the descriptor is used with the wrapper's self instead
+ * if the descriptor that implements the attribute is a ContextDescriptor.
+ * If it is, then the descriptor is used with the wrapper's self instead
  * of the object's self.
  *
  * We use _PyType_Lookup to get descriptors directly from the class.
@@ -670,7 +611,6 @@ WrapperType_Lookup(PyTypeObject *type, PyObject *name)
             ((PyTypeObject *)base) != &ProxyType 
             &&
             ((PyTypeObject *)base) != &WrapperType
-            
             ) {
             if (PyClass_Check(base))
                 dict = ((PyClassObject *)base)->cl_dict;
@@ -749,9 +689,8 @@ wrap_getattro(PyObject *self, PyObject *name)
         if (descriptor != NULL &&
             PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
             descriptor->ob_type->tp_descr_get != NULL &&
-            (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
-             PyObject_TypeCheck(wrapped, &ContextAwareType)
-            )) {
+            PyObject_TypeCheck(descriptor, &ContextDescriptorType)
+            ) {
             wrapped_type = (PyObject *)wrapped->ob_type;
             if (wrapped_type == NULL)
                 goto finally;
@@ -816,8 +755,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
     descriptor = _PyType_Lookup(wrapped->ob_type, name);
     if (descriptor != NULL &&
         PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
-        (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
-         PyObject_TypeCheck(wrapped, &ContextAwareType)) &&
+        PyObject_TypeCheck(descriptor, &ContextDescriptorType) &&
         descriptor->ob_type->tp_descr_set != NULL
         )
         res = descriptor->ob_type->tp_descr_set(descriptor, self, value);
@@ -847,8 +785,7 @@ finally:
     if (descriptor != NULL && \
         PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) && \
         descriptor->ob_type->tp_descr_get != NULL && \
-        (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
-            PyObject_TypeCheck(wrapped, &ContextAwareType))\
+        PyObject_TypeCheck(descriptor, &ContextDescriptorType) \
         ) { \
         wrapped_type = (PyObject *) wrapped->ob_type; \
         if (wrapped_type == NULL) \
@@ -1399,7 +1336,6 @@ static WrapperInterface
 wrapper_capi = {
     &WrapperType,
     &ContextDescriptorType,
-    &ContextAwareType,
     api_check,
     api_create,
     api_getobject,
@@ -1636,7 +1572,6 @@ void
 initwrapper(void)
 {
     PyObject *m;
-    
 
     if (Proxy_Import() < 0)
         return;
@@ -1664,12 +1599,6 @@ initwrapper(void)
 
     Py_INCREF(&WrapperType);
     PyModule_AddObject(m, "Wrapper", (PyObject *)&WrapperType);
-
-    ContextAwareType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&ContextAwareType) < 0)
-        return;
-    Py_INCREF(&ContextAwareType);
-    PyModule_AddObject(m, "ContextAware", (PyObject *)&ContextAwareType);
 
     ContextDescriptorType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&ContextDescriptorType) < 0)

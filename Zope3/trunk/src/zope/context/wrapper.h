@@ -23,7 +23,6 @@ typedef struct {
 typedef struct {
     PyTypeObject *wrappertype;
     PyTypeObject *contextdescriptortype;
-    PyTypeObject *contextawaretype;
     int (*check)(PyObject *obj);
     PyObject *(*create)(PyObject *object, PyObject *context);
     PyObject *(*getobject)(PyObject *wrapper);
@@ -69,8 +68,6 @@ Wrapper_Import(void)
         (*_wrapper_api->wrappertype)
 #define ContextDescriptorType             \
         (*_wrapper_api->contextdescriptortype)
-#define ContextAwareType                  \
-        (*_wrapper_api->contextawaretype)
 #define Wrapper_Check(obj)                   \
         (_wrapper_api->check((obj)))
 #define Wrapper_New(object, context)         \
