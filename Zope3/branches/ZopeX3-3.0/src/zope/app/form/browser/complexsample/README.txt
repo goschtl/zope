@@ -20,7 +20,7 @@ vocabulary.py
     kind of query behaviors the sample widget expects.
 
 widgetapi.py
-    Alternate base implementation of the IBrowserWidget interface.
+    Alternate base implementation of the `IBrowserWidget` interface.
     This completely bypasses the implementation from the
-    zope.app.form.browser.widget module, and is really designed for
+    `zope.app.form.browser.widget` module, and is really designed for
     use with widgets of the sort demonstrated in this package.

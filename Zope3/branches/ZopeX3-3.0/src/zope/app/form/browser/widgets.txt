@@ -5,14 +5,14 @@ The following implements a Poll product (add it as
 zope/app/demo/poll) which has poll options defined as:
 
 label
-  A TextLine holding the label of the option
+  A `TextLine` holding the label of the option
 description
-  Another TextLine holding the description of the option
+  Another `TextLine` holding the description of the option
 
 Simple stuff.
 
-Our Poll product holds an editable list of the PollOption instances. This
-is shown in the ``poll.py`` source below::
+Our Poll product holds an editable list of the `PollOption` instances.
+This is shown in the ``poll.py`` source below::
 
     from persistent import Persistent
     from interfaces import IPoll, IPollOption
@@ -42,7 +42,7 @@ is shown in the ``poll.py`` source below::
 
         options = property(get_options, set_options, None, 'fiddle options')
 
-And the Schemas are define in the ``interfaces.py`` file below::
+And the Schemas are defined in the ``interfaces.py`` file below::
 
     from zope.interface import Interface
     from zope.schema import Object, Tuple, TextLine
@@ -63,10 +63,11 @@ And the Schemas are define in the ``interfaces.py`` file below::
 
         def choose(option): 'user chooses an option'
 
-Note the use of the Tuple and Object schema fields above. The Tuple
-could optionally have restrictions on the min or max number of items -
-these will be enforce by the SequenceWidget form handling code. The Object
-must specify the schema that is used to generate its data.
+Note the use of the `Tuple` and `Object` schema fields above.  The
+`Tuple` could optionally have restrictions on the min or max number of
+items - these will be enforced by the `SequenceWidget` form handling
+code. The `Object` must specify the schema that is used to generate its
+data.
 
 Now we have to specify the actual add and edit views. We use the existing
 AddView and EditView, but we pre-define the widget for the sequence because
@@ -107,20 +108,20 @@ we need to pass in additional information. This is given in the
 
         options_widget = sw
 
-Note the creation of the widget via a CustomWidgetFactory. So,
+Note the creation of the widget via a `CustomWidgetFactory`.  So,
 whenever the options_widget is used, a new
 ``SequenceWidget(subwidget=CustomWidgetFactory(ObjectWidget,
 PollOption))`` is created. The subwidget argument indicates that each
 item in the sequence should be represented by the indicated widget
 instead of their default. If the contents of the sequence were just
-Text Fields, then the default would be just fine - the only odd cases
+`Text` fields, then the default would be just fine - the only odd cases
 are Sequence and Object Widgets because they need additional arguments
 when they're created.
 
 Each item in the sequence will be represented by a
 ``CustomWidgetFactory(ObjectWidget, PollOption)`` - thus a new
 ``ObjectWidget(context, request, PollOption)`` is created for each
-one. The PollOption class ("factory") is used to create new instances
+one. The `PollOption` class ("factory") is used to create new instances
 when new data is created in add forms (or edit forms when we're adding
 new items to a Sequence).
 
@@ -190,10 +191,10 @@ Tying all this together is the ``configure.zcml``::
 
     </configure>
 
-Note the use of the "class" argument to the addform and editform
-directives. Otherwise, nothing much exciting here.
+Note the use of the ``class`` attribute on the ``addform`` and
+``editform`` elements.  Otherwise, nothing much exciting here.
 
-Finally, we have some additiona views...
+Finally, we have some additional views...
 
 ``results.zpt``::
 
