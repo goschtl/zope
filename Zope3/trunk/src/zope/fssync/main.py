@@ -16,20 +16,20 @@
 
 Command line syntax summary:
 
-fssync [global_options] checkout [local_options] URL [TARGETDIR]
-fssync [global_options] update [local_options] [TARGET ...]
-fssync [global_options] commit [local_options] [TARGET ...]
-fssync [global_options] diff [local_options] [TARGET ...]
-fssync [global_options] status [local_options] [TARGET ...]
-fssync [global_options] add [local_options] TARGET ...
-fssync [global_options] remove [local_options] TARGET ...
-fssync [global_options] checkin [local_options] URL [TARGETDIR]
+%(program)s [global_options] checkout [local_options] URL [TARGETDIR]
+%(program)s [global_options] update [local_options] [TARGET ...]
+%(program)s [global_options] commit [local_options] [TARGET ...]
+%(program)s [global_options] diff [local_options] [TARGET ...]
+%(program)s [global_options] status [local_options] [TARGET ...]
+%(program)s [global_options] add [local_options] TARGET ...
+%(program)s [global_options] remove [local_options] TARGET ...
+%(program)s [global_options] checkin [local_options] URL [TARGETDIR]
 
-``fssync -h'' prints the global help (this message)
-``fssync command -h'' prints the local help for the command
+``%(program)s -h'' prints the global help (this message)
+``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.21 2003/07/25 08:11:21 mgedmin Exp $
+$Id: main.py,v 1.22 2003/07/25 15:09:26 fdrake Exp $
 """
 
 import os
@@ -77,7 +77,7 @@ def main(argv=None):
         if argv is None:
             argv = sys.argv
 
-        progname = os.path.split(argv[0])[1]
+        progname = os.path.basename(argv[0])
 
         try:
             opts, args = getopt.getopt(argv[1:], "h", ["help"])
@@ -86,7 +86,7 @@ def main(argv=None):
 
         for o, a in opts:
             if o in ("-h", "--help"):
-                print __doc__.replace("fssync ", progname + " ")
+                print __doc__ % {"program": progname}
                 return 0
 
         if not args:
@@ -116,7 +116,7 @@ def main(argv=None):
 
         if ("-h", "") in opts or ("--help", "") in opts:
             message = handler.__doc__ or "No help for %s" % handler.__name__
-            print message.replace("fssync ", progname + " ")
+            print message % {"program": progname}
             return 0
 
         return handler(opts, args)
@@ -134,7 +134,7 @@ def main(argv=None):
         return None
 
 def checkout(opts, args):
-    """fssync checkout URL [TARGETDIR]
+    """%(program)s checkout URL [TARGETDIR]
 
     URL should be of the form ``http://user:password@host:port/path''.
     Only http and https are supported (and https only where Python has
@@ -162,7 +162,7 @@ def checkout(opts, args):
     fs.checkout(target)
 
 def commit(opts, args):
-    """fssync commit [-m message] [-r] [TARGET ...]
+    """%(program)s commit [-m message] [-r] [TARGET ...]
 
     Commit the TARGET files or directories to the Zope 3 server
     identified by the checkout command.  TARGET defaults to the
@@ -186,7 +186,7 @@ def commit(opts, args):
     fs.multiple(args, fs.commit, message, raise_on_conflicts)
 
 def update(opts, args):
-    """fssync update [TARGET ...]
+    """%(program)s update [TARGET ...]
 
     Bring the TARGET files or directories in sync with the
     corresponding objects on the Zope 3 server identified by the
@@ -200,7 +200,7 @@ def update(opts, args):
     fs.multiple(args, fs.update)
 
 def add(opts, args):
-    """fssync add [-t TYPE] [-f FACTORY] TARGET ...
+    """%(program)s add [-t TYPE] [-f FACTORY] TARGET ...
 
     Add the TARGET files or directories to the set of registered
     objects.  Each TARGET must exist.  The next commit will add them
@@ -231,7 +231,7 @@ def add(opts, args):
         fs.add(a, type, factory)
 
 def remove(opts, args):
-    """fssync remove TARGET ...
+    """%(program)s remove TARGET ...
 
     Remove the TARGET files or directories from the set of registered
     objects.  No TARGET must exist.  The next commit will remove them
@@ -246,7 +246,7 @@ def remove(opts, args):
 diffflags = ["-b", "-B", "--brief", "-c", "-C", "--context",
              "-i", "-u", "-U", "--unified"]
 def diff(opts, args):
-    """fssync diff [diff_options] [TARGET ...]
+    """%(program)s diff [diff_options] [TARGET ...]
 
     Write a diff listing for the TARGET files or directories to
     standard output.  This shows the differences between the working
@@ -276,7 +276,7 @@ def diff(opts, args):
     fs.multiple(args, fs.diff, mode, diffopts)
 
 def status(opts, args):
-    """fssync status [TARGET ...]
+    """%(program)s status [TARGET ...]
 
     Print brief (local) status for each target, without changing any files.
     """
@@ -284,7 +284,7 @@ def status(opts, args):
     fs.multiple(args, fs.status)
 
 def checkin(opts, args):
-    """fssync checkin [-m message] URL [TARGETDIR]
+    """%(program)s checkin [-m message] URL [TARGETDIR]
 
     URL should be of the form ``http://user:password@host:port/path''.
     Only http and https are supported (and https only where Python has
