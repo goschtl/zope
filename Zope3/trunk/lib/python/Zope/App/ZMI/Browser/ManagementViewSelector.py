@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ManagementViewSelector.py,v 1.3 2002/10/21 14:13:36 stevea Exp $
+$Id: ManagementViewSelector.py,v 1.4 2002/10/21 15:51:20 stevea Exp $
 """
 
 __metaclass__ = type
@@ -38,10 +38,10 @@ class ManagementViewSelector(BrowserView):
             'zmi_views', context, request)
         if item:
             request.response.redirect(item['action'])
-            return ''
+            return u''
 
         request.response.redirect('.') # Redirect to content/
-        
+        return u''
         
 
 __doc__ = ManagementViewSelector.__doc__ + __doc__
