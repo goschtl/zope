@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.13 2002/12/05 13:27:04 dannu Exp $
+$Id: Widget.py,v 1.14 2002/12/11 13:52:48 jim Exp $
 """
 
 __metaclass__ = type
@@ -46,13 +46,13 @@ class BrowserWidget(Widget, BrowserView):
     def haveData(self):
         return (self.name) in self.request.form
 
-    def getData(self):
+    def getData(self, optional=0):
         field = self.context
         value = self.request.form.get(self.name,
                                       self)
         if value is self:
             # No user input
-            if field.required:
+            if field.required and not optional:
                 raise MissingInputError(field.__name__)
             return field.default
 
@@ -66,10 +66,13 @@ class BrowserWidget(Widget, BrowserView):
             exc = ConversionError(sys.exc_info()[1])
             raise ConversionError, exc, sys.exc_info()[2]
 
-        try:
-            field.validate(value)
-        except ValidationError, v:
-            raise WidgetInputError(self.context.__name__, self.title, str(v))
+        if value is not None or not optional:
+
+            try:
+                field.validate(value)
+            except ValidationError, v:
+                raise WidgetInputError(self.context.__name__,
+                                       self.title, str(v))
 
         return value
 
@@ -85,7 +88,7 @@ class BrowserWidget(Widget, BrowserView):
 
     def _showData(self):
         if (self._data is None) and self.haveData():
-            data = self.getData()
+            data = self.getData(1)
         else:
             data = self._data
 
@@ -131,6 +134,11 @@ class BrowserWidget(Widget, BrowserView):
 
     def row(self):
         return "<td>%s</td><td>%s</td>" % (self.label(), self())
+
+class DisplayWidget(BrowserWidget):
+
+    def __call__(self):
+        return self._showData()
 
 class CheckBoxWidget(BrowserWidget):
     """Checkbox widget"""

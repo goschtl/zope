@@ -70,5 +70,12 @@
       name="edit"
       factory=".Widget.TextAreaWidget." />
 
+  <!-- Default simple display view -->
+  <browser:view
+      permission="Zope.Public"
+      allowed_interface=".IBrowserWidget."
+      for="Zope.Schema.IField.IField"
+      name="display"
+      factory=".Widget.DisplayWidget" />
   
 </zopeConfigure>
