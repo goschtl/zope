@@ -13,16 +13,13 @@
 ##############################################################################
 """Sequence variables support
 
-$Id: dt_insv.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: dt_insv.py,v 1.3 2002/12/27 20:06:53 gvanrossum Exp $
 """
 
 from math import sqrt
 from types import IntType, TupleType
 
-try:
-    import Missing
-    mv = Missing.Value
-except: mv = None
+mv = None # Missing value
 
 
 class sequence_variables:

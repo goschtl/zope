@@ -297,8 +297,7 @@
         standard-deviation-n -- The standard deviation of numeric
           values computed with a degrees of freedom equal to the count.
 
-      Missing values are either 'None' or the attribute 'Value'
-      of the module 'Missing', if present.
+      Missing values are 'None'.
 
     'else' continuation tag within in
 
@@ -313,7 +312,7 @@
         - The 'next' attribute was used and their are no
           next batches, or
 
-$Id: dt_in.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: dt_in.py,v 1.3 2002/12/27 20:06:53 gvanrossum Exp $
 """
 
 from zope.documenttemplate.dt_util import ParseError, parse_params, name_param, str

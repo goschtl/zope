@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_var.py,v 1.2 2002/12/25 14:13:37 jim Exp $
+$Id: testdt_var.py,v 1.3 2002/12/27 20:06:54 gvanrossum Exp $
 """
 
 # XXX Don't normalize whitespace in this file -- the tests depend on the
@@ -33,7 +33,6 @@ class TestDT_Var(DTMLTestBase):
         self.assertEqual(html(spam=None), 'spam%eggs!|')
 
     def testDefaultFmt(self):
-        #import Missing
         html = self.doc_class (
             """
                       <dtml-var spam >
