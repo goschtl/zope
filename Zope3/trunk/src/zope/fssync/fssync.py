@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.22 2003/05/15 19:48:02 gvanrossum Exp $
+$Id: fssync.py,v 1.23 2003/05/15 22:22:24 gvanrossum Exp $
 """
 
 import os
@@ -282,21 +282,21 @@ class FSSync(object):
             fp.close()
         self.network.saverooturl(target)
 
-    def multiple(self, args, method):
+    def multiple(self, args, method, *more):
         if not args:
             args = [os.curdir]
         for target in args:
             if self.metadata.getentry(target):
-                method(target)
+                method(target, *more)
             else:
                 names = self.metadata.getnames(target)
                 if not names:
                     method(target) # Will raise an exception
                 else:
                     for name in names:
-                        method(join(target, name))
+                        method(join(target, name), *more)
 
-    def commit(self, target):
+    def commit(self, target, note="fssync"):
         entry = self.metadata.getentry(target)
         if not entry:
             raise Error("nothing known about", target)
@@ -312,10 +312,9 @@ class FSSync(object):
             if sts:
                 raise Error("zip command failed")
             infp = open(zipfile, "rb")
+            view = "@@fromFS.zip?note=%s" % urllib.quote(note)
             try:
-                outfp, headers = self.network.httpreq(path,
-                                                      "@@fromFS.zip",
-                                                      infp)
+                outfp, headers = self.network.httpreq(path, view, infp)
             finally:
                 infp.close()
         finally:

@@ -24,15 +24,11 @@ fssync [global_options] status [local_options] [TARGET ...]
 fssync [global_options] add [local_options] TARGET ...
 fssync [global_options] remove [local_options] TARGET ...
 
-For now, the only option (local as well as global) is -h or --help;
-there are no other options yet except for diff, which supports a small
-subset of the options of GNU diff as local options.
-
 ``fssync -h'' prints the global help (this message)
 ``fssync command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.14 2003/05/15 15:32:23 gvanrossum Exp $
+$Id: main.py,v 1.15 2003/05/15 22:22:58 gvanrossum Exp $
 """
 
 import os
@@ -162,7 +158,7 @@ def checkout(opts, args):
     fs.checkout(target)
 
 def commit(opts, args):
-    """fssync commit [TARGET ...]
+    """fssync commit [-m message] [TARGET ...]
 
     Commit the TARGET files or directories to the Zope 3 server
     identified by the checkout command.  TARGET defaults to the
@@ -171,9 +167,16 @@ def commit(opts, args):
     3 server; if not, a detailed error message will be printed, and
     you should use the update command to bring your working directory
     in sync with the server.
+
+    The -m option specifies a message to label the transaction.
+    The default message is 'fssync'.
     """
+    message = "fssync"
+    for o, a in opts:
+        if o in ("-m", "--message"):
+            message = a
     fs = FSSync()
-    fs.multiple(args, fs.commit)
+    fs.multiple(args, fs.commit, message)
 
 def update(opts, args):
     """fssync update [TARGET ...]
@@ -241,9 +244,7 @@ def diff(opts, args):
                 diffopts.append(o)
     diffopts = " ".join(diffopts)
     fs = FSSync()
-    def calldiff(arg):
-        fs.diff(arg, mode, diffopts)
-    fs.multiple(args, calldiff)
+    fs.multiple(args, fs.diff, mode, diffopts)
 
 def status(opts, args):
     """fssync status [TARGET ...]
@@ -257,7 +258,7 @@ command_table = {
     "checkout": ("", [], checkout),
     "co":       ("", [], checkout),
     "update":   ("", [], update),
-    "commit":   ("", [], commit),
+    "commit":   ("m:", ["message="], commit),
     "add":      ("", [], add),
     "remove":   ("", [], remove),
     "rm":       ("", [], remove),
