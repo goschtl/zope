@@ -21,22 +21,29 @@ class Struct(Persistent):
   made through external attribute assignments.
   """
 
+  # XXX to do this right and expose both IPersistent and the
+  # underlying object's interfaces, we'd need to use a specialized
+  # descriptor.  This would create to great a dependency on
+  # zope.interface.
+
+  __class__ = property(lambda self: self.__proxied__.__class__)
+
   def __init__(self, o):
     self.__proxied__ = o
 
   def __getattr__(self, name):
     if name.startswith('_p_') or name in ['__proxied__']:
-      return object.__getattribute__(self, name)
+      return super(Struct, self).__getattr__(name)
     return getattr(self.__proxied__, name)
 
   def __setattr__(self, name, v):
     if name.startswith('_p_') or name in ['__proxied__']:
-      return Persistent.__setattr__(self, name, v)
+      return super(Struct, self).__setattr__(name, v)
     setattr(self.__proxied__, name, v)
     self._p_changed = 1
 
   def __delattr__(self, name):
     if name.startswith('_p_') or name in ['__proxied__']:
-      return Persistent.__delattr__(self, name)
+      return super(Struct, self).__delattr__(name)
     delattr(self.__proxied__, name, v)
     self._p_changed = 1

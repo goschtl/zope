@@ -14,7 +14,6 @@
 import unittest
 
 from persistence import Persistent, PersistentMetaClass
-from persistence.interfaces import IPersistent
 from persistence.wrapper import Struct
 from persistence.tests.test_persistence import DM as BaseDM, BrokenDM
 
@@ -195,18 +194,25 @@ class Test(unittest.TestCase):
         self.assertEqual(p._p_state, 0)
         self.assertEqual(p.x, 42)
 
-    def testInterface(self):
-        self.assert_(IPersistent.isImplementedByInstancesOf(Persistent),
-                     "%s does not implement IPersistent" % Persistent)
-        p = Persistent()
-        self.assert_(IPersistent.isImplementedBy(p),
-                     "%s does not implement IPersistent" % p)
 
-        self.assert_(IPersistent.isImplementedByInstancesOf(Struct),
-                     "%s does not implement IPersistent" % Struct)
-        p = self.klass()
-        self.assert_(IPersistent.isImplementedBy(p),
-                     "%s does not implement IPersistent" % p)
+# XXX to do this right and expose both IPersistent and the
+# underlying object's interfaces, we'd need to use a specialized
+# descriptor.  This would create to great a dependency on
+# zope.interface.
+#
+##     def testInterface(self):
+##         from persistence.interfaces import IPersistent
+##         self.assert_(IPersistent.isImplementedByInstancesOf(Persistent),
+##                      "%s does not implement IPersistent" % Persistent)
+##         p = Persistent()
+##         self.assert_(IPersistent.isImplementedBy(p),
+##                      "%s does not implement IPersistent" % p)
+
+##         self.assert_(IPersistent.isImplementedByInstancesOf(Struct),
+##                      "%s does not implement IPersistent" % Struct)
+##         p = self.klass()
+##         self.assert_(IPersistent.isImplementedBy(p),
+##                      "%s does not implement IPersistent" % p)
 
     def testDataManagerAndAttributes(self):
         # Test to cover an odd bug where the instance __dict__ was

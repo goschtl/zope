@@ -334,8 +334,17 @@ class PersistentTest(Test):
         p = self.klass()
         p.inc()
         p2 = pickle.loads(pickle.dumps(p))
-        self.assertEqual(p2.__class__, self.klass);
-        self.assertEqual(p2.__dict__, p.__dict__)
+        self.assertEqual(p2.__class__, self.klass)
+
+        # verify that the inc is reflected:
+        self.assertEqual(p2.x, p.x)
+        
+        # This assertion would be invalid.  Interfaces
+        # are compared by identity and copying doesn't
+        # preserve identity. We would get false negatives due
+        # to the differing identities of the original and copied
+        # PersistentInterface:
+        # self.assertEqual(p2.__dict__, p.__dict__)
 
     def testPicklableWCustomState(self):
         import pickle
