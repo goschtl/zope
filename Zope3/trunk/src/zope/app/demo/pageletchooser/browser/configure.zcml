@@ -59,13 +59,14 @@
       permission="zope.View"
       />
 
+  <!-- This pagelet is just visible with zope.ManageContent permission -->
   <pagelet
       name="firstlevel_macro_30"
       layer="zope.publisher.interfaces.browser.IBrowserRequest"
       slot="zope.app.demo.pageletchooser.interfaces.IFirstLevelPagelets"
       template="firstlevel_pagelet_2.pt"
       for="..interfaces.IPageletChooserContent"
-      permission="zope.View"
+      permission="zope.ManageContent"
       />
 
 
