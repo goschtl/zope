@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.3 $"[11:-2]
+__version__ = "$Revision: 1.4 $"[11:-2]
 
 import linecache
 import unittest
@@ -65,6 +65,7 @@ class BaseGUITestRunner:
     """
     def __init__(self, *args, **kwargs):
         self.currentResult = None
+        self.totalTests = 0
         self.running = 0
         self.__rollbackImporter = None
         apply(self.initGUI, args, kwargs)
@@ -215,6 +216,12 @@ TestCase or TestSuite. Click 'start', and the test thus produced will be run.
 Double click on an error in the listbox to see more information about it,\
 including the stack trace.
 
+Double click on the progress bar has the same effect as clicking 'start'. \
+Clicking the arrow button next to the progress bar will minimize to show \
+the progress bar and arrow button *only*, making it easier to keep the \
+window around during development or refactoring. Starting the GUI with the \
+-m option will open the window in minimized mode by default.
+
 For more information, visit
 http://pyunit.sourceforge.net/
 or see the bundled documentation
@@ -238,8 +245,8 @@ class TkTestRunner(BaseGUITestRunner):
         self.failCountVar = tk.IntVar()
         self.errorCountVar = tk.IntVar()
         self.remainingCountVar = tk.IntVar()
-        self.top = tk.Frame()
-        self.top.pack(fill=tk.BOTH, expand=1)
+        self.toggleVar = tk.StringVar()
+        self.toggleVar.set(minimal and '>' or '<')
         self.createWidgets()
 
     def createWidgets(self):
@@ -248,96 +255,136 @@ class TkTestRunner(BaseGUITestRunner):
         Why is it that GUI code always ends up looking a mess, despite all the
         best intentions to keep it tidy? Answers on a postcard, please.
         """
+
+        self.packWidgets = []
+        add = self.packWidgets.append
+
+        self.top = tk.Frame()
+        add((self.top, {'fill': tk.BOTH, 'expand': 1}, 0))
+        
         # Status bar
         statusFrame = tk.Frame(self.top, relief=tk.SUNKEN, borderwidth=2)
-        if not self.minimal:
-            statusFrame.pack(anchor=tk.SW, fill=tk.X, side=tk.BOTTOM)
-        tk.Label(statusFrame, textvariable=self.statusVar).pack(side=tk.LEFT)
+        add((statusFrame,
+             {'anchor': tk.SW, 'fill': tk.X, 'side': tk.BOTTOM}, 1))
+        add((tk.Label(statusFrame, textvariable=self.statusVar),
+             {'side': tk.LEFT}, 0))
 
         # Area to enter name of test to run
         leftFrame = tk.Frame(self.top, borderwidth=3)
-        leftFrame.pack(fill=tk.BOTH, side=tk.LEFT, anchor=tk.NW, expand=1)
+        add((leftFrame, {'fill': tk.BOTH, 'side': tk.LEFT, 'anchor': tk.NW,
+                         'expand': 1}, 0))
         suiteNameFrame = tk.Frame(leftFrame, borderwidth=3)
-        if not self.minimal:
-            suiteNameFrame.pack(fill=tk.X)
-        tk.Label(suiteNameFrame, text="Enter test name:").pack(side=tk.LEFT)
+        add((suiteNameFrame, {'fill': tk.X}, 1))
+        add((tk.Label(suiteNameFrame, text="Enter test name:"),
+             {'side': tk.LEFT}, 0))
         e = tk.Entry(suiteNameFrame, textvariable=self.suiteNameVar, width=80)
-        e.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        add((e, {'side': tk.LEFT, 'fill': tk.X, 'expand': 1}, 0))
         e.focus_set()
         e.bind('<Key-Return>', lambda e, self=self: self.runClicked())
 
         # Progress bar
         progressFrame = tk.Frame(leftFrame, relief=tk.GROOVE, borderwidth=2)
-        progressFrame.pack(fill=tk.X, expand=0, anchor=tk.NW)
-        if not self.minimal:
-            tk.Label(progressFrame, text="Progress:").pack(anchor=tk.W)
-        self.progressBar = ProgressBar(progressFrame, relief=tk.SUNKEN,
-                                       borderwidth=2)
+        add((progressFrame, {'fill': tk.X, 'expand': 0, 'anchor': tk.NW}, 0))
+
+        add((tk.Label(progressFrame, text="Progress:"), {'anchor': tk.W}, 1))
+        tb = self.toggleButton = tk.Button(progressFrame, padx=0,
+                                           relief=tk.GROOVE, 
+                                           textvariable=self.toggleVar,
+                                           command=self.toggleMinimal)
+        
+        add((self.toggleButton, {'side': tk.LEFT, 'anchor': tk.NW}, 0))
+        pb = self.progressBar = ProgressBar(progressFrame, relief=tk.SUNKEN,
+                                            borderwidth=2)
         if self.minimal:
-            self.progressBar.setProgressFraction(0.0, '0/0')
-        self.progressBar.pack(fill=tk.X, expand=1)
-        self.progressBar.bind('<Double-Button-1>',
-            lambda e, self=self: self.runClicked())
+            pb.setProgressFraction(0.0, '0/0')
+        add((pb, {'fill': tk.X, 'expand': 1}, 0))
+        pb.bind('<Double-Button-1>', lambda e, self=self: self.runClicked())
 
         # Area with buttons to start/stop tests and quit
         buttonFrame = tk.Frame(self.top, borderwidth=3)
-        if not self.minimal:
-            buttonFrame.pack(side=tk.LEFT, anchor=tk.NW, fill=tk.Y)
+        add((buttonFrame, {'side': tk.LEFT, 'anchor': tk.NW, 'fill': tk.Y}, 1))
         self.stopGoButton = tk.Button(buttonFrame, text="Start",
                                       command=self.runClicked)
-        self.stopGoButton.pack(fill=tk.X)
-        tk.Button(buttonFrame, text="Close",
-                  command=self.top.quit).pack(side=tk.BOTTOM, fill=tk.X)
-        tk.Button(buttonFrame, text="About",
-                  command=self.showAboutDialog).pack(side=tk.BOTTOM, fill=tk.X)
-        tk.Button(buttonFrame, text="Help",
-                  command=self.showHelpDialog).pack(side=tk.BOTTOM, fill=tk.X)
+        add((self.stopGoButton, {'fill': tk.X}, 0))
+        add((tk.Button(buttonFrame, text="Close", command=self.top.quit),
+             {'side': tk.BOTTOM, 'fill': tk.X}, 0))
+        add((tk.Button(buttonFrame, text="About", command=self.showAboutDialog),             {'side': tk.BOTTOM, 'fill': tk.X}, 0))
+        add((tk.Button(buttonFrame, text="Help", command=self.showHelpDialog),
+             {'side': tk.BOTTOM, 'fill': tk.X}, 0))
 
         # Area with labels reporting results
-        if not self.minimal:
-            for label, var in (('Run:', self.runCountVar),
-                            ('Failures:', self.failCountVar),
-                            ('Errors:', self.errorCountVar),
-                            ('Remaining:', self.remainingCountVar)):
-                tk.Label(progressFrame, text=label).pack(side=tk.LEFT)
-                tk.Label(progressFrame, textvariable=var,
-                        foreground="blue").pack(side=tk.LEFT, fill=tk.X,
-                                                expand=1, anchor=tk.W)
+        for label, var in (('Run:', self.runCountVar),
+                        ('Failures:', self.failCountVar),
+                        ('Errors:', self.errorCountVar),
+                        ('Remaining:', self.remainingCountVar)):
+            add((tk.Label(progressFrame, text=label), {'side': tk.LEFT}, 1))
+            
+            add((tk.Label(progressFrame, textvariable=var, foreground="blue"),
+                 {'side': tk.LEFT, 'fill': tk.X, 'expand': 1, 'anchor': tk.W},
+                 1))
 
         # List box showing errors and failures
-        if not self.minimal:
-            tk.Label(leftFrame, text="Failures and errors:").pack(anchor=tk.W)
+        add((tk.Label(leftFrame, text="Failures and errors:"),
+             {'anchor': tk.W}, 1))
         listFrame = tk.Frame(leftFrame, relief=tk.SUNKEN, borderwidth=2)
-        if not self.minimal:
-            listFrame.pack(fill=tk.BOTH, anchor=tk.NW, expand=1)
+        add((listFrame, {'fill': tk.BOTH, 'anchor': tk.NW, 'expand': 1}, 1))
         self.errorListbox = tk.Listbox(listFrame, foreground='red',
                                        selectmode=tk.SINGLE,
                                        selectborderwidth=0)
-        self.errorListbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=1,
-                               anchor=tk.NW)
+        add((self.errorListbox, {'side': tk.LEFT, 'fill': tk.BOTH, 'expand': 1,
+                                 'anchor': tk.NW}, 0))
         listScroll = tk.Scrollbar(listFrame, command=self.errorListbox.yview)
-        listScroll.pack(side=tk.LEFT, fill=tk.Y, anchor=tk.N)
+        add((listScroll, {'side': tk.LEFT, 'fill': tk.Y, 'anchor': tk.N}, 0))
         self.errorListbox.bind("<Double-1>",
                                lambda e, self=self: self.showSelectedError())
         self.errorListbox.configure(yscrollcommand=listScroll.set)
 
         # List box showing warnings
-        if not self.minimal:
-            tk.Label(leftFrame, text="Warnings:").pack(anchor=tk.W)
+        
+        add((tk.Label(leftFrame, text="Warnings:"), {'anchor': tk.W}, 1))
         warnFrame = tk.Frame(leftFrame, relief=tk.SUNKEN, borderwidth=2)
-        if not self.minimal:
-            warnFrame.pack(fill=tk.BOTH, anchor=tk.NW, expand=1)
+        add((warnFrame, {'fill': tk.BOTH, 'anchor': tk.NW, 'expand': 1}, 1))
         self.warningListbox = tk.Listbox(warnFrame, foreground='black',
                                        selectmode=tk.SINGLE,
                                        selectborderwidth=0)
-        self.warningListbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=1,
-                               anchor=tk.NW)
+        add((self.warningListbox, {'side': tk.LEFT, 'fill': tk.BOTH,
+                                   'expand': 1,
+                             'anchor': tk.NW}, 0))
         wListScroll = tk.Scrollbar(warnFrame, command=self.warningListbox.yview)
-        wListScroll.pack(side=tk.LEFT, fill=tk.Y, anchor=tk.N)
+        add((wListScroll, {'side': tk.LEFT, 'fill': tk.Y, 'anchor': tk.N}, 0))
         self.warningListbox.bind("<Double-1>",
                                lambda e, self=self: self.showSelectedWarning())
         self.warningListbox.configure(yscrollcommand=wListScroll.set)
 
+        self.rePack()
+
+    def toggleMinimal(self):
+        minimal = self.minimal = not self.minimal
+        self.toggleVar.set(minimal and '>' or '<')
+        pb = self.progressBar
+        progressText = ''
+        if self.minimal:
+            progressText = '%d/%d' % (self.runCountVar.get(), self.totalTests)
+            if self.failCountVar.get():
+                progressText += ' %dF' % self.failCountVar.get()
+            if self.errorCountVar.get():
+                progressText += ' %dE' % self.errorCountVar.get()
+            if self.warningListbox.size():
+                progressText += ' %dW' % self.warningListbox.size()
+        pb.setProgressFraction(pb.fraction, progressText, pb.color)
+        self.rePack()
+
+    def rePack(self, minimal=None):
+        if minimal is None:
+            minimal = self.minimal
+        for widget, layoutattr, do_hide in self.packWidgets:
+            if minimal and do_hide:
+                widget.pack_forget()
+            else:
+                if not do_hide:
+                    widget.pack_forget()
+                apply(widget.pack, (), layoutattr)
+        self.root.geometry("")
 
     def getSelectedTestName(self):
         return self.suiteNameVar.get()
@@ -405,10 +452,12 @@ class TkTestRunner(BaseGUITestRunner):
         progressText = ''
         if self.minimal:
             progressText = '%d/%d' % (run, self.totalTests)
-        if self.failCountVar.get():
-            progressText += ' (F: %d)' % self.failCountVar.get()
-        if self.errorCountVar.get():
-            progressText += ' (E: %d)' % self.errorCountVar.get()
+            if self.failCountVar.get():
+                progressText += ' %dF' % self.failCountVar.get()
+            if self.errorCountVar.get():
+                progressText += ' %dE' % self.errorCountVar.get()
+            if self.warningListbox.size():
+                progressText += ' %dW' % self.warningListbox.size()
         fillColor = len(self.errorInfo) and "red" or "green"
         self.progressBar.setProgressFraction(fractionDone, progressText,
             fillColor)
