@@ -43,6 +43,9 @@ CMF 1.3
 
   Bug Fixes
 
+    - Fixed discussion tree display not to embed entire HTML document
+      (Collector #17, thanks to Jeffrey Shell for the inspiration).
+
     - Fixed CookieCrumbler to emit "Basic" and not "basic" auth as per
       HTTP spec (Collector #14, thanks to Simon Eisenmann for the
       report). This fixes some WebDAV locking problems with (rightfully)
