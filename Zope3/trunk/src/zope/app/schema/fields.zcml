@@ -304,7 +304,6 @@
   </content>
 
   <content class="zope.schema.vocabulary.SimpleVocabulary">
-    <allow interface="zope.schema.interfaces.IVocabulary" />
     <allow interface="zope.schema.interfaces.IVocabularyTokenized" />
   </content>
 

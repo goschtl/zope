@@ -110,7 +110,6 @@
      factory=".vocabulary.UserVocabulary" />
 
   <content class=".vocabulary.ManagableVocabulary">
-    <allow interface="zope.schema.interfaces.IVocabulary"/>
     <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
     <allow attributes="default title"/>
     <require
@@ -141,7 +140,6 @@
   </content>
 
   <content class=".vocabulary.UserVocabulary">
-    <allow interface="zope.schema.interfaces.IVocabulary"/>
     <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
   </content>
 

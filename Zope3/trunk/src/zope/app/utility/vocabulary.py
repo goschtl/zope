@@ -21,7 +21,6 @@ from zope.interface import implements, Interface
 from zope.interface.interfaces import IInterface
 from zope.interface.verify import verifyObject
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
-from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import ITokenizedTerm
 
 from zope.app import zapi
@@ -29,25 +28,6 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interface.vocabulary import ObjectInterfacesVocabulary
 
 from interfaces import IUtilityRegistration
-
-
-class UtilityQuery(object):
-    """Query object for utilities.
-
-    >>> vocab = UtilityVocabulary(None, IInterface)
-    >>> query = UtilityQuery(vocab)
-    >>> verifyObject(IIterableVocabularyQuery, query)
-    True
-
-    >>> query.vocabulary is vocab
-    True
-    """
-    implements(IIterableVocabularyQuery)
-
-    vocabulary = None
-
-    def __init__(self, vocabulary):
-        self.vocabulary = vocabulary
 
 
 class UtilityTerm(object):
@@ -143,11 +123,8 @@ class UtilityVocabulary(object):
     3
 
     Next we are looking at some of the more vocabulary-characteristic API
-    methods. First, there is always a query available for the vocabulary:
-
-    >>> vocab.getQuery().__class__.__name__
-    'UtilityQuery'
-
+    methods.
+    
     One can get a term for a given value using getTerm():
 
     >>> vocab.getTerm(object1)
@@ -210,10 +187,6 @@ class UtilityVocabulary(object):
     def __contains__(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""
         return value in [term.value for term in self._terms.values()]
-
-    def getQuery(self):
-        """See zope.schema.interfaces.IBaseVocabulary"""
-        return UtilityQuery(self)
 
     def getTerm(self, value):
         """See zope.schema.interfaces.IBaseVocabulary"""

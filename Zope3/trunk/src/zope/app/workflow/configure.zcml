@@ -51,7 +51,6 @@
      />
 
   <content class=".definition.ProcessDefinitionVocabulary">
-      <allow interface="zope.schema.interfaces.IVocabulary"/>
       <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
   </content>
 

@@ -66,9 +66,6 @@ class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
     def test_len(self):
         self.assertEqual(len(self.vocab), 2)
 
-    def test_getQuery(self):
-        self.assertEqual(self.vocab.getQuery(), None)
-
     def test_getTerm(self):
         self.assertEqual(self.vocab.getTerm('zope.source.Foo').title, 'Foo')
         self.assertRaises(

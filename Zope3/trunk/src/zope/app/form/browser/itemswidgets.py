@@ -25,7 +25,6 @@ from zope.schema.interfaces import ConstraintNotSatisfied, ITitledTokenizedTerm
 
 from zope.app import zapi
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
-from zope.app.form.browser.interfaces import IVocabularyQueryView
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError
 
@@ -287,20 +286,6 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         """Initialize the widget."""
         super(ItemsEditWidgetBase, self).__init__(field, vocabulary, request)
 
-        # Queries are used in items widgets to reduce the amount of choices,
-        # since some vocabularies could literally provide an infinite number
-        # of terms.
-        self.queryview = None
-        query = vocabulary.getQuery()
-        if query is not None:
-            view = zapi.queryMultiView((query, field), request,
-                                       IVocabularyQueryView)
-            if view is not None:
-                self.queryview = view
-                self.queryview.setWidget(self)
-                self.queryview.setName(self.name + "-query")
-
-
     def setPrefix(self, prefix):
         """Set the prefix of the input name.
 
@@ -308,8 +293,6 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         field and the postfix '-query' for the associated query view.
         """
         super(ItemsEditWidgetBase, self).setPrefix(prefix)
-        if self.queryview is not None:
-            self.queryview.setName(self.name + "-query")
 
 
     def __call__(self):
@@ -318,22 +301,8 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         contents = []
         have_results = False
 
-        # If a query view was specified, provide the necessary UI
-        if self.queryview is not None:
-            html = self.queryview.renderResults(value)
-            if html:
-                contents.append(self._div('queryresults', html))
-                html = self.queryview.renderInput()
-                contents.append(self._div('queryinput', html))
-                have_results = True
-
         contents.append(self._div('value', self.renderValue(value)))
         contents.append(self._emptyMarker())
-
-        if self.queryview is not None and not have_results:
-            html = self.queryview.renderInput()
-            if html:
-                contents.append(self._div('queryinput', html))
 
         return self._div(self.cssClass, "\n".join(contents),
                          id=self.name)

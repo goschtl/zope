@@ -270,7 +270,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IChoice
-           zope.schema.interfaces.IIterableVocabulary"
+           zope.schema.interfaces.IVocabularyTokenized"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".ItemDisplayWidget"
       permission="zope.Public"
@@ -279,7 +279,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IChoice
-           zope.schema.interfaces.IIterableVocabulary"
+           zope.schema.interfaces.IVocabularyTokenized"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".DropdownWidget"
       permission="zope.Public"
@@ -290,7 +290,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IList
-           zope.schema.interfaces.IIterableVocabulary"
+           zope.schema.interfaces.IVocabularyTokenized"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".MultiSelectWidget"
       permission="zope.Public"
@@ -299,29 +299,9 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IList
-           zope.schema.interfaces.IIterableVocabulary"
+           zope.schema.interfaces.IVocabularyTokenized"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".SetDisplayWidget"
-      permission="zope.Public"
-      />
-
-  <!-- Register a couple of default vocabulary query views. -->
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyQuery
-           zope.schema.interfaces.IChoice"
-      provides="zope.app.form.browser.interfaces.IVocabularyQueryView"
-      factory=".vocabularyquery.IterableVocabularyQueryView"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IVocabularyQuery
-           zope.schema.interfaces.ICollection"
-      provides="zope.app.form.browser.interfaces.IVocabularyQueryView"
-      factory=".vocabularyquery.IterableVocabularyQueryMultiView"
       permission="zope.Public"
       />
 

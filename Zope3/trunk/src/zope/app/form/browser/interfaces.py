@@ -151,61 +151,6 @@ class IAddFormCustomization(Interface):
         The default implementation returns `self.context.nextURL()`,
         i.e. it delegates to the `IAdding` view.
         """
-class IVocabularyQueryView(Interface):
-    """View support for `IVocabularyQuery` objects.
-
-    Implementations of this interface are used by vocabulary field
-    edit widgets to support query and result presentations.
-    """
-
-    def __init__(query, field, request):
-        """This is a multiview, which is looked up for (query, field) pairs."""
-
-    def setName(name):
-        """Set the name used to compute the form field names.
-
-        Form field names should be the given name, or additional name
-        components separated by dots may be appended if multiple form
-        fields are needed.
-
-        This method will be called after the `IVocabularyQueryView` has
-        been created and before `performAction()` is called.
-        """
-
-
-    def setWidget(widget):
-        """Set the widget using this query view.
-
-        This allows the query view to take advantage of rendering
-        helper methods made available by the widget.
-
-        This method will be called after the `IVocabularyQueryView` has
-        been created and before `performAction()` is called.
-        """
-
-    def performAction(value):
-        """Perform any action indicated by any submit buttons in the
-        sub-widget.
-
-        `value` is the current value of the field.  Submit actions may
-        cause the value to be modified.  If so, the new value should
-        be returned; otherwise the old value should be returned.
-
-        Actions should only be performed if a submit button provided
-        by the view was selected.
-
-        This method will be called after `setName()` and `setWidget()` and
-        before `renderInput()` or `renderResults()`.
-        """
-
-    def renderInput():
-        """Return a rendering of the input portion of the widget."""
-
-    def renderResults(value):
-        """Return a rendering of the results portion of the widget.
-
-        `value` is the current value represented by the widget.
-        """
 
 class IWidgetInputErrorView(Interface):
     """Display an input error as a snippet of text."""
