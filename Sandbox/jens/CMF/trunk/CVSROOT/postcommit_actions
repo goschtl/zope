@@ -393,7 +393,7 @@ def do_mail(name, remote, repo, addrs, subjs,
     mf.close()
     mf = open(msgfilenm, 'w')
     mf.write("Subject: %s\nTo: %s\n\n%s %s"
-             % (subject, addrs, oldcontents, diff_msg))
+             % (subject, string.join(addrs, ","), oldcontents, diff_msg))
     mf.close()
     cmd = cmd + "< %s" % msgfilenm
 
