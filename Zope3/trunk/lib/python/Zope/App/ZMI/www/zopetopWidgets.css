@@ -1,0 +1,359 @@
+
+
+
+
+
+/*
+ * Plone Widgets CSS v1
+ *
+ * Zope CMF style sheet by Alexander Limi (http://limi.net)
+ * 
+ * Special thanks to Geir Baekholt (http://elvix.com) and 
+ * Stian Soiland (http://stain.portveien.to) for invaluable 
+ * input and code examples. You guys rock! :)
+ *
+ * I've tried to comment everything as concisely as possible. If there's anything
+ * that you find confusing or just plain wrong, contact me and I'll fix it before the
+ * next release.
+ *
+ * TODO: table.listing, 
+ *       table.box
+ *
+ */
+
+input.standalone {
+    background: #DEE7EC url(linkOpaque.gif) left no-repeat;
+    color: Black;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 1px 1px 1px 15px;
+    text-transform: lowercase;
+}
+
+input.context {
+    background: White url(linkTransparent.gif) left no-repeat;
+    color: Black;
+    cursor: pointer;
+    font-weight: normal;
+    padding: 1px 1px 1px 15px;
+    text-transform: lowercase;
+}
+
+input.noborder {
+    /* radiobuttons and checkmarks, different behaviour in Moz and IE. 
+       Border necessary in Moz, not in IE */
+    border: none;
+    margin: 0;
+    background-color: transparent;
+}
+
+div.row {
+    clear: both;
+    min-height: 4em;
+    margin-top: 1em;
+}
+
+.group {
+    border: 1px solid #8cacbb;
+    margin: 2em 0em 1em 0em;
+    width: 94%;
+    padding: 1em 0em;
+}
+.legend {
+    position : relative;
+    top: -1.8em;
+    left: 1em;
+    background: White;
+    padding: 0.5em;
+}
+
+span.label {
+    float: left;
+    font-weight: bold;
+    text-align: right;
+    width: 15%;
+    position : relative;
+    left: -1em;
+}
+
+span.field {
+    float: left;
+    text-align: left;
+    width: 55%;
+}
+
+span.info {
+    background-color: transparent;
+    float: right;
+    text-align: left;
+    width: 28%;
+}
+
+.error {
+    /* Class for error indication in forms */
+    background: #FFCE7B;
+    border: 1px solid #FFA500;
+    margin: 1em;
+}
+
+.required {
+    /* Used in addition to class "label" on required elements */
+    background: url(required.gif) 2em no-repeat;
+}
+
+span.card {
+    background: #DEE7EC;
+    border-color: #8CACBB;
+    border-width: 1px;
+    border-style: solid;
+    float: left;
+    margin: 1em;
+    padding: 1em;
+    text-align: center;
+    width: 15%;
+}
+
+table.listing {
+    /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
+    border-collapse: collapse;
+    border-left: 1px solid #336699;
+    border-bottom: 1px solid #336699;
+    margin: 1em 0em 1em 0em;
+}
+
+table.listing th {
+    background: #CCCCCC;
+    border-top: 1px solid #336699;
+    border-bottom: 1px solid #336699;
+    border-right: 1px solid #336699;
+    color: Black;
+    font-weight: normal;
+    padding: 0em 1em 0em 1em;
+    text-transform: lowercase;
+}
+
+table.listing tr.odd {
+    /*every second line should be shaded */
+    background: transparent;
+}
+
+table.listing tr.even {
+    background: #ECFAFF;
+}
+
+table.listing td {
+    border-right: 1px solid #336699;
+    padding: 0em 1em;
+}
+
+table.listing a:hover {
+    text-decoration: underline;
+}
+
+table.listing img{
+	vertical-align: middle;
+}
+
+table.box {
+    /* The Plone Box(tm) (Navigation, Related etc) */
+    background: transparent;
+    border-collapse: collapse;
+    border-bottom: 1px solid #8CACBB;
+    border-left: 1px solid #8CACBB;
+    margin: 0;
+    margin-bottom: 2em;
+}
+
+table.box th {
+    background: #DEE7EC;
+    border-top: 1px solid #8CACBB;
+    border-bottom: 1px solid #8CACBB;
+    border-right: 1px solid #8CACBB;
+    color: Black;
+    font-weight: normal;
+    padding: 0em 1em;
+    text-align: left;
+    text-transform: lowercase;
+}
+
+table.box th.empty {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #8CACBB;
+}
+
+table.box tr.odd {
+    /*every second line should be shaded */
+    background: transparent;
+}
+
+table.box tr.even {
+    background-color: #99CCFF;
+}
+
+table.box td {
+    border-right: 1px solid #8CACBB;
+    padding: 1em;
+}
+
+table.box img{
+	vertical-align: middle;
+}
+
+div.boxDetails {
+    /*the line that contains the date for news and other info */
+    text-align: right;
+}
+
+table.box a {
+}
+
+table.box a.comment {
+    /* special link for comments - default behavior is to display the discussion icon next to the link */
+    background-image: url(http://www.x3ng.com.br:8080/ZopeOrg/discussionitem_icon.gif); 
+    background-repeat: no-repeat;
+    background-position: 0px -2px;
+    padding: 0em 0em 0.5em 2em;
+    margin: 0;
+    display: block;
+}
+
+table.box a.marker {
+    /* special format for links inside boxes - adds link image and displays the link as a block (which in this case means the text will not float under the link image, plus the whole thing is clickable) */
+    background: url(linkTransparent.gif) -0.5em 0px no-repeat;
+    display: block;
+    padding: 0em 0em 0em 1.5em;
+    vertical-align: top;
+}
+
+span.folderName {
+    /* The folder name in folder_contents */
+    font-size: 150%;
+    font-weight: bold;
+}
+
+div.category {
+	float: left;
+    margin-right: 1em;
+    margin-bottom: 2em;
+    width: 20em;
+}
+
+div.category a.heading {
+    display: block;
+    padding: 0em 0em 0.5em 0em;
+    font-size: 1.1em;
+    text-decoration: underline;
+}
+
+div.category a {
+    text-decoration: underline;
+}
+
+div.box {
+	float: left;
+    margin-right: 1em;
+    margin-bottom: 2em;
+    width: 20em;
+    background: transparent;
+    border-collapse: collapse;
+    border: 1px solid #8CACBB;
+}
+
+div.box div.heading {
+    background: #DEE7EC;
+    border-bottom: 1px solid #8CACBB;
+    color: Black;
+    font-weight: normal;
+    padding: 0em 0em 0em 1em;
+    text-align: left;
+    text-transform: lowercase;
+}
+
+div.box a.close {
+	float: right;
+    text-transform: none;
+    border-left: 1px solid #8CACBB;
+    padding: 0em 0.2em;
+}
+
+div.box div.odd {
+    background: transparent;
+    padding: 1em;
+}
+
+div.box div.even {
+    background-color: #99CCFF;
+    padding: 1em;
+}
+
+
+
+
+div.spacer {
+	margin: 3em;
+}
+
+.private {
+    color: Black;
+}
+
+.published {
+    color: #74AE0B;
+}
+
+.pending {
+    color: #FFA500;
+}
+
+.syndicated {
+    color: #008000;
+}
+
+.expired {
+    color: Red;
+}
+
+
+div.listingBar {
+    background: #DEE7EC;
+    border-color: #8CACBB;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0em 1em;
+    text-align: right;
+    text-transform: lowercase;
+    height: 1em;
+    clear: both;
+}
+
+div.listingBar span.previous {
+    text-align: left;
+    float: left;
+}
+
+div.listingBar span.next {
+    text-align: right;
+    float: right;
+}
+
+div.workspace {
+}
+
+div.workspace span.small {
+    float: left;
+    height: 30em;
+    width: 20em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+
+div.workspace span.big {
+    float: left;
+    height: 40em;
+    width: 40em;	
+    margin-right: 1em;
+    margin-bottom: 1em;
+}
+
+

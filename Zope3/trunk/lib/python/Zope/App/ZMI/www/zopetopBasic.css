@@ -1,0 +1,202 @@
+
+
+
+
+
+
+/*
+ * Plone Basic CSS v1
+ *
+ * Zope CMF style sheet by Alexander Limi (http://limi.net)
+ * 
+ * Special thanks to Geir Baekholt (http://elvix.com) and 
+ * Stian Soiland (http://stain.portveien.to) for invaluable 
+ * input and code examples. You guys rock! :)
+ *
+ * I've tried to comment everything as concisely as possible. If there's anything
+ * that you find confusing or just plain wrong, contact me and I'll fix it before the
+ * next release.
+ *
+ */
+ 
+
+
+body {
+    font: 0.8em Tahoma, Helvetica, Arial, sans-serif;
+    background: White;
+    color: Black;
+    margin: 0;
+    padding: 0;
+
+    scrollbar-base-color: #DEE7EC;
+    scrollbar-highlight-color: #DEE7EC;
+    scrollbar-track-color: #F7F9FA;
+    scrollbar-darkshadow-color: #F7F9FA;
+    scrollbar-3dlight-color: #8CACBB;
+    scrollbar-shadow-color: #8CACBB;
+    scrollbar-arrow-color: #436976;
+}
+
+
+a {
+	text-decoration: none;
+    color: #336699;
+    background-color: transparent;
+}
+
+table {
+    font: 1em Verdana, Helvetica, Arial, sans-serif;
+}
+
+
+img {
+/* turn off image borders. */
+    border: none;
+}
+
+p {
+/* Default paragraph style*/
+    font: 1em Verdana, Helvetica, Arial, sans-serif;
+    margin: 1em 0em;
+    text-align: justify;
+}
+
+p a {
+    text-decoration: underline;
+}
+
+p a:visited {
+	color: Purple;
+    background-color: transparent;
+}
+
+p a:active {
+	color: Red;
+    background-color: transparent;
+}
+
+p img {
+    border: 1px solid Black;
+    margin: 1em;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #8CACBB;
+    background-color: transparent;
+}
+
+
+h1, h2, h3, h4, h5, h6 {	/* Style for the headlines */
+    color: Black;
+    font: 1em Tahoma, Helvetica, Arial, sans-serif;
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 1.1em;
+}
+
+h2 {
+    font-size: 1em;
+}
+
+h3 {
+    font-size: 0.95em;
+}
+
+h4 {
+    font-size: 0.9em;
+}
+
+h5 {
+    font-size: 0.85em;
+}
+
+h6 {
+    font-size: 0.80em;
+}
+
+ul { 
+    list-style-image: url("bullet.gif"); 
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 2em;
+    padding:0;
+}
+
+/* we advise you to use the div.group and span.legend elements instead of these, 
+    as the only browser showing legends correctly is IE. They are just included here 
+    for completeness */
+fieldset {
+    border: 1px solid #8cacbb;
+    margin: 2em 0em 1em 0em;
+    padding: 1em 0em;
+}
+
+legend {
+    background: White;
+    padding: 0.5em;
+}
+
+
+form {
+    border: none;
+}
+
+textarea {
+/* Small cosmetic hack which makes textarea gadgets look nicer.*/
+    font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
+    border: 1px solid #8cacbb;  
+    width: 100%;
+    color: Black;
+    background-color: white;
+}
+
+input {
+/* Small cosmetic fix which makes input gadgets look nicer. */
+    font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
+    border: 1px solid #8cacbb;  
+    color: Black;
+    background-color: white;
+    margin: 0em 0em 1em 0em;
+}
+
+select {
+    font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
+    border: 1px solid #8cacbb;  
+    margin: 0em 0em 1em 0em;
+}
+
+abbr, acronym, .explain {
+/* Help classes */
+    border-bottom: 1px dotted Black;
+    color: Black;
+    background-color: transparent;
+    cursor: help;
+}
+
+
+
+code {
+    font-size: 120%;
+    color: Black;
+    background-color: #dee7ec;
+}
+
+pre {
+    font-size: 120%;
+    padding: 1em;
+    border: 1px solid #8cacbb;
+    color: Black;
+    background-color: #dee7ec;
+}
+
+.netscape4 {
+/* This hides elements necessary for getting Netscape 4.x to look better. Mostly strategically placed hr tags and &middot;'s */
+    display: none;
+}
+
+

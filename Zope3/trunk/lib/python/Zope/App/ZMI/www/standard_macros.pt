@@ -7,6 +7,16 @@
    tal:content="options/getTitle|view/getTitle|context/getTitle|default"
    >Zope</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link href="zopetopBasic.css"
+        tal:attributes="href string:zopetopBasic"
+        rel="stylesheet" type="text/css" />
+  <link href="zopetopWidgets.css"
+        tal:attributes="href string:zopetopWidgets"
+        rel="stylesheet" type="text/css" />
+  <link href="zopetopStructure.css"
+        tal:attributes="href string:zopetopStructure"
+        rel="stylesheet" type="text/css" />
+
   <div metal:define-slot="headers">
   </div>
 </head>
