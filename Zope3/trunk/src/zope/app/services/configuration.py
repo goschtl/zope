@@ -13,9 +13,15 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.32 2003/06/07 06:37:28 stevea Exp $
+$Id: configuration.py,v 1.33 2003/06/11 17:25:02 gvanrossum Exp $
 """
 __metaclass__ = type
+
+
+# XXX Backward Compatibility for pickles
+import sys
+sys.modules['zope.app.services.configurationmanager'
+            ] = sys.modules['zope.app.services.configuration']
 
 from persistence import Persistent
 from zope.interface import implements
@@ -526,40 +532,54 @@ class ConfigurationManager(Persistent):
         return v
 
     def get(self, key, default=None):
-        "See Interface.Common.Mapping.IReadMapping"
+        "See IReadMapping"
         for k, v in self._data:
             if k == key:
                 return v
         return default
 
     def __contains__(self, key):
-        "See Interface.Common.Mapping.IReadMapping"
+        "See IReadMapping"
         return self.get(key) is not None
 
 
     def keys(self):
-        "See Interface.Common.Mapping.IEnumerableMapping"
+        "See IEnumerableMapping"
         return [k for k, v in self._data]
 
     def __iter__(self):
         return iter(self.keys())
 
     def values(self):
-        "See Interface.Common.Mapping.IEnumerableMapping"
+        "See IEnumerableMapping"
         return [v for k, v in self._data]
 
     def items(self):
-        "See Interface.Common.Mapping.IEnumerableMapping"
+        "See IEnumerableMapping"
         return self._data
 
     def __len__(self):
-        "See Interface.Common.Mapping.IEnumerableMapping"
+        "See IEnumerableMapping"
         return len(self._data)
 
     def setObject(self, key, object):
         "See IWriteContainer"
         self._next += 1
-        key = str(self._next)
+        if key:
+            if key in self:
+                raise DuplicationError("key is already registered", key)
+            try:
+                n = int(key)
+            except ValueError:
+                pass
+            else:
+                if n > self._next:
+                    self._next = n
+        else:
+            key = str(self._next)
+            while key in self:
+                self._next += 1
+                key = str(self._next)
         self._data += ((key, object), )
         return key
 
@@ -666,7 +686,89 @@ class ConfigurationManagerContainer(object):
     getConfigurationManager = ContextMethod(getConfigurationManager)
 
 
-# XXX Backward Compatibility for pickles
-import sys
-sys.modules['zope.app.services.configurationmanager'
-            ] = sys.modules['zope.app.services.configuration']
+from zope.xmlpickle import dumps, loads
+from zope.app.interfaces.fssync import IObjectFile
+from zope.app.fssync.classes import ObjectEntryAdapter
+
+class ComponentConfigurationAdapter(ObjectEntryAdapter):
+
+    """Fssync adapter for ComponentConfiguration objects and subclasses.
+
+    This is fairly generic -- it should apply to most subclasses of
+    ComponentConfiguration.  But in order for it to work for a
+    specific subclass (say, UtilityConfiguration), you have to (a) add
+    an entry to configure.zcml, like this:
+
+        <fssync:adapter
+            class=".utility.UtilityConfiguration"
+            factory=".configuration.ComponentConfigurationAdapter"
+            />
+
+    and (b) add a function to factories.py, like this:
+
+        def UtilityConfiguration():
+            from zope.app.services.utility import UtilityConfiguration
+            return UtilityConfiguration("", None, "")
+
+    The file representation of a configuration object is an XML pickle
+    for a modified version of the instance dict.  In this version of
+    the instance dict, the componentPath attribute is converted to a
+    path relative to the highest level site management folder
+    containing the configuration object, and the __annotations__
+    attribute is omitted, because annotations are already stored on
+    the filesystem in a different way (in @@Zope/Annotations/<file>).
+    """
+
+    implements(IObjectFile)
+
+    def factory(self):
+        """See IObjectEntry."""
+        name = self.context.__class__.__name__
+        return "zope.app.services.factories." + name
+
+    def getBody(self):
+        """See IObjectEntry."""
+        obj = removeAllProxies(self.context)
+        ivars = {}
+        ivars.update(obj.__getstate__())
+        cpname = "componentPath"
+        if cpname in ivars:
+            ivars[cpname] = self._make_relative_path(ivars[cpname])
+        aname = "__annotations__"
+        if aname in ivars:
+            del ivars[aname]
+        return dumps(ivars)
+
+    def setBody(self, body):
+        """See IObjectEntry."""
+        obj = removeAllProxies(self.context)
+        ivars = loads(body)
+        cpname = "componentPath"
+        if cpname in ivars:
+            ivars[cpname] = self._make_absolute_path(ivars[cpname])
+        obj.__setstate__(ivars)
+
+    def _make_relative_path(self, apath):
+        if apath.startswith("/"):
+            prefix = self._get_prefix()
+            if prefix and apath.startswith(prefix):
+                apath = apath[len(prefix):]
+                while apath.startswith("/"):
+                    apath = apath[1:]
+        return apath
+
+    def _make_absolute_path(self, rpath):
+        if not rpath.startswith("/"):
+            prefix = self._get_prefix()
+            if prefix:
+                rpath = prefix + rpath
+        return rpath
+
+    def _get_prefix(self):
+        parts = getPath(self.context).split("/")
+        try:
+            i = parts.index("++etc++site")
+        except ValueError:
+            return None
+        else:
+            return "/".join(parts[:i+2]) + "/"

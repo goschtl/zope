@@ -516,6 +516,26 @@
     factory=".module.ModuleAdapter"
     />
 
+<fssync:adapter
+    class=".cache.CacheConfiguration"
+    factory=".configuration.ComponentConfigurationAdapter"
+    />
+
+<fssync:adapter
+    class=".connection.ConnectionConfiguration"
+    factory=".configuration.ComponentConfigurationAdapter"
+    />
+
+<fssync:adapter
+    class=".service.ServiceConfiguration"
+    factory=".configuration.ComponentConfigurationAdapter"
+    />
+
+<fssync:adapter
+    class=".utility.UtilityConfiguration"
+    factory=".configuration.ComponentConfigurationAdapter"
+    />
+
 <adapter 
   for="zope.app.interfaces.services.service.IServiceManager"
   provides="zope.app.interfaces.file.IDirectoryFactory"
