@@ -49,8 +49,10 @@ if not "depends" in Extension.__init__.func_code.co_varnames:
 
 # We have to snoop for file types that distutils doesn't copy correctly when
 # doing a non-build-in-place.
-EXTS = ['.zcml', '.pt', '.gif', '.xml', '.html', '.png',
-        '.css', '.js', '.conf', '.mo']
+EXTS = ['.conf', '.css', '.gif', '.html',
+        '.js',   '.mo',  '.png', '.pt',
+        '.txt',  '.xml', '.zcml',
+        ]
 
 
 class Finder:
