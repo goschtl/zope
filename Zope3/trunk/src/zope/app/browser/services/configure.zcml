@@ -864,6 +864,15 @@
 <!-- "Add Service" menu -->
 
 <menuItem
+    menu="zmi_actions"
+    for="zope.app.interfaces.services.package.IPackage"
+    action="AddService"
+    title="Add Service"
+    permission="zope.ManageServices"
+    />
+
+<!-- XXX do we still need this one? -->
+<menuItem
     menu="add_component"
     for="zope.app.interfaces.container.IAdding"
     action="../AddService"
