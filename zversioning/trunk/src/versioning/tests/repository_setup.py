@@ -1,3 +1,5 @@
+"""Some setup stuff not being intresting for doc tests
+"""
 
 import persistent
 import zope.interface
@@ -6,7 +8,7 @@ import zope.app.annotation.interfaces
 import zope.app.traversing.interfaces
 from zope.app.versioncontrol import interfaces
 
-def buildRoot():
+def buildDatabaseRoot():
     """Opens a connection to a test database and returns the root object
     """
     from zope.app.tests import ztapi
@@ -60,3 +62,5 @@ def buildOldStyleRepository():
     # Finally, we can create the interaction:
     import zope.security.management
     zope.security.management.newInteraction(participation)
+
+    return repository
