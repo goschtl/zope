@@ -68,7 +68,9 @@ _addtypes = (
     ('.m1v', 'video/mpeg'),
     ('.mpa', 'video/mpeg'),
     ('.vcf', 'text/x-vcard'),
+    ('.wsdl', 'application/xml'),  # Python 2.5
     ('.xml', 'text/xml'),
+    ('.xpdl', 'application/xml'),  # Python 2.5
     ('.xsl', 'text/xml'),
     ('.xul', 'application/vnd.mozilla.xul+xml'),
     ('.swf', 'application/x-shockwave-flash'),
