@@ -13,7 +13,7 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: __init__.py,v 1.5 2003/12/17 09:15:41 nmurthy Exp $
+$Id: __init__.py,v 1.6 2003/12/29 16:45:04 sidnei Exp $
 """
 
 from zope.app.services.module import Manager
@@ -48,11 +48,11 @@ class EditModule(BrowserView):
             return u""
 
 class ViewModule(BrowserView):
-       
+
     def getModuleName(self):
         module = removeAllProxies(self.context.getModule())
         remove_keys = ['__name__', '__builtins__', '_p_serial']
- 
+
         L = [(getattr(obj, '__name__', id),
               getattr(obj, '__doc__', ''),
               type(obj).__name__
@@ -67,4 +67,3 @@ class ViewModule(BrowserView):
                 if dic['objtype'].find('Class') != -1: dic['objtype'] = 'Class'
                 if dic['objtype'].find('Function') != -1: dic['objtype'] = 'Function'
         return l_dict
-        
