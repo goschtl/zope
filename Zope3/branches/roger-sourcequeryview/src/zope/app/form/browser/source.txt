@@ -127,8 +127,11 @@ nothing) and a form elements for seaching for values:
 
   >>> print widget()
   <div class="value">
-    Nothing
-    <br>
+    <div class="row">
+      <div class="field">
+       Nothing
+      </div>
+    </div>
     <input type="hidden" name="field.dog.displayed" value="y">
     <div class="queries">
       <div class="query">
@@ -181,8 +184,11 @@ Now if we render the widget, we'll see the search results:
 
   >>> print widget()
   <div class="value">
-    Nothing
-    <br>
+    <div class="row">
+      <div class="field">
+       Nothing
+      </div>
+    </div>
     <input type="hidden" name="field.dog.displayed" value="y">
     <div class="queries">
       <div class="query">
@@ -213,9 +219,12 @@ Then we'll show the newly selected value:
 
   >>> print widget()
   <div class="value">
-    spot
+    <div class="row">
+      <div class="field">
+       spot
+      </div>
+    </div>
     <input type="hidden" name="field.dog" value="c3BvdA==">
-    <br>
     <input type="hidden" name="field.dog.displayed" value="y">
     <div class="queries">
       <div class="query">
@@ -291,8 +300,11 @@ and cats:
 
   >>> print widget()
   <div class="value">
-    Nothing
-    <br>
+    <div class="row">
+      <div class="field">
+       Nothing
+      </div>
+    </div>
     <input type="hidden" name="field.pet.displayed" value="y">
     <div class="queries">
       <div class="query">
@@ -320,8 +332,11 @@ In which case, we'll get some results:
 
   >>> print widget() # doctest:
   <div class="value">
-    Nothing
-    <br>
+    <div class="row">
+      <div class="field">
+       Nothing
+      </div>
+    </div>
     <input type="hidden" name="field.pet.displayed" value="y">
     <div class="queries">
       <div class="query">
@@ -360,9 +375,12 @@ and get a selection:
 
   >>> print widget()
   <div class="value">
-    tabby
+    <div class="row">
+      <div class="field">
+       tabby
+      </div>
+    </div>
     <input type="hidden" name="field.pet" value="dGFiYnk=">
-    <br>
     <input type="hidden" name="field.pet.displayed" value="y">
     <div class="queries">
       <div class="query">
