@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for the case-insensitive traverser and folder.
 
-$Id: ftests.py,v 1.1 2004/02/13 23:28:45 srichter Exp $
+$Id: ftests.py,v 1.2 2004/02/14 23:24:19 srichter Exp $
 """
 import unittest
 from zope.testing.functional import BrowserTestCase
@@ -47,9 +47,9 @@ class TestCaseInsensitiveFolder(BrowserTestCase):
                           
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestCaseInsensitiveFolder))
-    return suite
+    return unittest.TestSuite((
+        unittest.makeSuite(TestCaseInsensitiveFolder),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
