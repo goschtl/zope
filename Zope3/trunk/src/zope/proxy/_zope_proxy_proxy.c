@@ -119,21 +119,163 @@ wrap_dealloc(PyObject *self)
     self->ob_type->tp_free(self);
 }
 
+/* A variant of _PyType_Lookup that doesn't look in ProxyType.
+ *
+ * If argument search_wrappertype is nonzero, we can look in WrapperType.
+ */
+PyObject *
+WrapperType_Lookup(PyTypeObject *type, PyObject *name)
+{
+    int i, n;
+    PyObject *mro, *res, *base, *dict;
+
+    /* Look in tp_dict of types in MRO */
+    mro = type->tp_mro;
+
+    /* If mro is NULL, the type is either not yet initialized
+       by PyType_Ready(), or already cleared by type_clear().
+       Either way the safest thing to do is to return NULL. */
+    if (mro == NULL)
+        return NULL;
+
+    assert(PyTuple_Check(mro));
+
+    n = PyTuple_GET_SIZE(mro) 
+      - 1; /* We don't want to look at the last item, which is object. */
+
+    for (i = 0; i < n; i++) {
+        base = PyTuple_GET_ITEM(mro, i);
+
+        if (((PyTypeObject *)base) != &ProxyType) {
+            if (PyClass_Check(base))
+                dict = ((PyClassObject *)base)->cl_dict;
+            else {
+                assert(PyType_Check(base));
+                dict = ((PyTypeObject *)base)->tp_dict;
+            }
+            assert(dict && PyDict_Check(dict));
+            res = PyDict_GetItem(dict, name);
+            if (res != NULL)
+                return res;
+        }
+    }
+    return NULL;
+}
+
+
 static PyObject *
 wrap_getattro(PyObject *self, PyObject *name)
 {
-  return PyObject_GetAttr(Proxy_GET_OBJECT(self), name);
+    PyObject *wrapped;
+    PyObject *descriptor;
+    PyObject *res = NULL;
+    char *name_as_string;
+    int maybe_special_name;
+
+#ifdef Py_USING_UNICODE
+    /* The Unicode to string conversion is done here because the
+       existing tp_getattro slots expect a string object as name
+       and we wouldn't want to break those. */
+    if (PyUnicode_Check(name)) {
+        name = PyUnicode_AsEncodedString(name, NULL, NULL);
+        if (name == NULL)
+            return NULL;
+    }
+    else
+#endif
+    if (!PyString_Check(name)){
+        PyErr_SetString(PyExc_TypeError, "attribute name must be string");
+        return NULL;
+    }
+    else
+        Py_INCREF(name);
+
+    name_as_string = PyString_AS_STRING(name);
+    wrapped = Proxy_GET_OBJECT(self);
+    if (wrapped == NULL) {
+        PyErr_Format(PyExc_RuntimeError,
+            "object is NULL; requested to get attribute '%s'",
+            name_as_string);
+        goto finally;
+    }
+
+    maybe_special_name = name_as_string[0] == '_' && name_as_string[1] == '_';
+
+    if (!(maybe_special_name && strcmp(name_as_string, "__class__") == 0)) {
+
+        descriptor = WrapperType_Lookup(self->ob_type, name);
+
+        if (descriptor != NULL) {
+            if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
+                && descriptor->ob_type->tp_descr_get != NULL) {
+                res = descriptor->ob_type->tp_descr_get(
+                        descriptor,
+                        self,
+                        (PyObject *)self->ob_type);
+            } else {
+                Py_INCREF(descriptor);
+                res = descriptor;
+            }
+            goto finally;
+        }
+    }
+    res = PyObject_GetAttr(wrapped, name);
+
+finally:
+    Py_DECREF(name);
+    return res;
 }
 
 static int
 wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 {
-    if (Proxy_GET_OBJECT(self) != NULL)
-        return PyObject_SetAttr(Proxy_GET_OBJECT(self), name, value);
-    PyErr_Format(PyExc_RuntimeError,
-                 "object is NULL; requested to set attribute '%s'",
-                 PyString_AS_STRING(name));
-    return -1;
+    PyObject *wrapped;
+    PyObject *descriptor;
+    int res = -1;
+
+#ifdef Py_USING_UNICODE
+    /* The Unicode to string conversion is done here because the
+       existing tp_setattro slots expect a string object as name
+       and we wouldn't want to break those. */
+    if (PyUnicode_Check(name)) {
+        name = PyUnicode_AsEncodedString(name, NULL, NULL);
+        if (name == NULL)
+            return -1;
+    }
+    else
+#endif
+    if (!PyString_Check(name)){
+        PyErr_SetString(PyExc_TypeError, "attribute name must be string");
+        return -1;
+    }
+    else
+        Py_INCREF(name);
+
+    descriptor = WrapperType_Lookup(self->ob_type, name);
+    if (descriptor != NULL) {
+        if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
+            descriptor->ob_type->tp_descr_set != NULL) {
+            res = descriptor->ob_type->tp_descr_set(descriptor, self, value);
+        } else {
+            PyErr_Format(PyExc_TypeError,
+                "Tried to set attribute '%s' on wrapper, but it is not"
+                " a data descriptor", PyString_AS_STRING(name));
+        }
+        goto finally;
+    }
+
+    wrapped = Proxy_GET_OBJECT(self);
+    if (wrapped == NULL) {
+        PyErr_Format(PyExc_RuntimeError,
+            "object is NULL; requested to set attribute '%s'",
+            PyString_AS_STRING(name));
+        goto finally;
+    }
+    res = PyObject_SetAttr(wrapped, name, value);
+
+finally:
+    Py_DECREF(name);
+    return res;
 }
 
 static int

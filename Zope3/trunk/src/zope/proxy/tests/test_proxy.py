@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.14 2003/07/01 23:26:38 jim Exp $
+$Id: test_proxy.py,v 1.15 2003/09/21 17:34:26 jim Exp $
 """
 import pickle
 import unittest
@@ -511,6 +511,43 @@ def test_sameProxiedObjects():
     0
     >>> int(sameProxiedObjects(c1, ProxyBase(ProxyBase(c2))))
     0
+    """
+
+def test_subclassing_proxies():
+    """You can subclass ProxyBase
+
+    If you subclass a proxy, instances of the subclass have access to
+    data defined in the class, including descriptors.
+
+    Your subclass instances don't get instance dictionaries, but they
+    can have slots.
+
+    >>> class MyProxy(ProxyBase):
+    ...    __slots__ = 'x', 'y'
+    ...
+    ...    def f(self):
+    ...        return self.x
+
+    >>> l = [1, 2, 3]
+    >>> p = MyProxy(l)
+
+    I can use attributes defined by the class, including slots:
+    
+    >>> p.x = 'x'
+    >>> p.x
+    'x'
+    >>> p.f()
+    'x'
+
+    I can also use attributes of the proxied object:
+    
+    >>> p
+    [1, 2, 3]
+    >>> p.pop()
+    3
+    >>> p
+    [1, 2]
+    
     """
 
 
