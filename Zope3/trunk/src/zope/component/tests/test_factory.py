@@ -66,16 +66,12 @@ class TestFactory(unittest.TestCase):
         implemented = self._factory.getInterfaces()
         self.assert_(implemented.isOrExtends(IKlass))
         self.assertEqual(list(implemented), [IKlass])
-        self.assertEqual(implemented.__name__,
-                         'zope.component.tests.test_factory.Klass')
 
         implemented2 = self._factory2.getInterfaces()
         self.assertEqual(list(implemented2), [])
-        self.assertEqual(implemented2.__name__, '<lambda>')
 
         implemented3 = self._factory3.getInterfaces()
         self.assertEqual(list(implemented3), [IFunction])
-        self.assertEqual(implemented3.__name__, '<lambda>')
 
 
 class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):

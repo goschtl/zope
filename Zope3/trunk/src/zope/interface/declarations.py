@@ -346,7 +346,9 @@ def implementedByFallback(cls):
         try:
             bases = cls.__bases__
         except AttributeError:
-            raise TypeError("ImplementedBy called for non-type", cls)
+            if not callable(cls):
+                raise TypeError("ImplementedBy called for non-factory", cls)
+            bases = ()
 
         spec = Implements(*[implementedBy(c) for c in bases])
         spec.inherit = cls
@@ -484,6 +486,23 @@ def _implements_advice(cls):
     del cls.__implements_advice_data__
     classImplements(cls, *interfaces)
     return cls
+
+
+class implementer:
+
+    def __init__(self, *interfaces):
+        self.interfaces = interfaces
+
+    def __call__(self, ob):
+        if isinstance(ob, DescriptorAwareMetaClasses):
+            raise TypeError("Can't use implementer with classes.  Use one of "
+                            "the class-declaration functions instead."
+                            )
+        spec = Implements(*self.interfaces)
+        try:
+            ob.__implemented__ = spec
+        except AttributeError:
+            raise TypeError("Can't declare implements", ob)
 
 def _implements(name, interfaces, classImplements):
     frame = sys._getframe(2)

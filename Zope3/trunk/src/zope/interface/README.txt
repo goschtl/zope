@@ -147,8 +147,15 @@ them.  Before we describe the details, lets define some some terms:
    It is important to note that classes don't usually provide the
    interfaces that the implement.
 
+   We can generalize this to factories.  For any callable object we
+   can declare that it produces objects that provides some interfaces
+   by saying that the factory implements the interfaces.
+
 Now that we've defined these terms, we can talk about the API for
 declaring interfaces.
+
+Declaring implemented interfaces
+--------------------------------
 
 The most common way to declare interfaces is using the implements
 function in a class statement::
@@ -190,17 +197,18 @@ We can also ask what interfaces are implemented by an object::
   >>> list(zope.interface.implementedBy(Foo))
   [<InterfaceClass __main__.IFoo>]
 
-It's an error to ask for interfaces implemented by a non-class::
+It's an error to ask for interfaces implemented by a non-callable
+object::
 
   >>> IFoo.implementedBy(foo)
   Traceback (most recent call last):
   ...
-  TypeError: ('ImplementedBy called for non-type', Foo(None))
+  TypeError: ('ImplementedBy called for non-factory', Foo(None))
 
   >>> list(zope.interface.implementedBy(foo))
   Traceback (most recent call last):
   ...
-  TypeError: ('ImplementedBy called for non-type', Foo(None))
+  TypeError: ('ImplementedBy called for non-factory', Foo(None))
 
 Similarly, we can ask what interfaces are provided by an object::
 
@@ -208,6 +216,36 @@ Similarly, we can ask what interfaces are provided by an object::
   [<InterfaceClass __main__.IFoo>]
   >>> list(zope.interface.providedBy(Foo))
   []
+
+We can declare interfaces implemented by other factories (besides
+classes).  We do this using a Python-2.4-style decorator named
+`implementer`.  In versions of Python before 2.4, this looks like:
+
+
+  >>> def yfoo(y):
+  ...     foo = Foo()
+  ...     foo.y = y
+  ...     return foo
+  >>> zope.interface.implementer(IFoo)(yfoo)
+
+  >>> list(zope.interface.implementedBy(yfoo))
+  [<InterfaceClass __main__.IFoo>]
+
+Note that the implementer decorator may modify it's argument. Callers
+should not assume that a new object is created.
+
+Also note that, at least for now, implementer cannt be used with
+classes:
+
+  >>> zope.interface.implementer(IFoo)(Foo)
+  ... # doctest: +NORMALIZE_WHITESPACE
+  Traceback (most recent call last):
+    ...
+  TypeError: Can't use implementer with classes.  
+  Use one of the class-declaration functions instead.
+
+Declaring provided interfaces
+-----------------------------
 
 We can declare interfaces directly provided by objects.  Suppose that
 we want to document what the `__init__` method of the `Foo` class
