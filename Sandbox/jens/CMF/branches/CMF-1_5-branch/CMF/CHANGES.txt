@@ -1,3 +1,12 @@
+CMF 1.5.0beta2 (unreleased)
+
+  Bug Fixes
+
+    - DirectoryView: Readded expandpath() for backwards compatibility.
+      Some products still import expandpath from DirectoryView because it was
+      once defined there. Note that importing expandpath from DirectoryView is
+      deprecated and doesn't work with CMF HEAD / 1.6.
+
 CMF 1.5.0beta (2004/08/12)
 
   New Features
