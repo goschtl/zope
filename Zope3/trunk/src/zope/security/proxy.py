@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: proxy.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: proxy.py,v 1.3 2002/12/26 18:11:48 stevea Exp $
 """
 
 from zope.security._proxy import getObject, getChecker
 from zope.security._proxy import _Proxy as Proxy
-from zope.security.checker import ProxyFactory, Checker as _trustedChecker
+from zope.security.checker import Checker as _trustedChecker
 
 def trustedRemoveSecurityProxy(object):
     if ((type(object) is Proxy) and
@@ -33,7 +33,7 @@ def getTestProxyItems(proxy):
     """Try to get checker names and permissions for testing
 
     If this succeeds, a sorted sequence of items is returned,
-    otherwise, None is retirned.
+    otherwise, None is returned.
     """
     checker = getChecker(proxy)
     func = checker.getPermission_func()
