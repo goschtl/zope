@@ -40,6 +40,9 @@ Zope Changes
 
             http://localhost:8080/++preferences++/zmi
 
+        * Provided a demo that demonstrates how preferences can be used to
+          select the user's skin.
+
       - Added virtual host support in xml and static tree. The tree will
         switch the root to the virtualhost base.
 
