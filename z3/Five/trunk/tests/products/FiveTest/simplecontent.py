@@ -10,7 +10,7 @@ from interfaces import ISimpleContent, ICallableSimpleContent,\
 class SimpleContent(SimpleItem):
     implements(ISimpleContent)
 
-    meta_type = 'TestSimpleContent'
+    meta_type = 'Five SimpleContent'
     security = ClassSecurityInfo()
 
     def __init__(self, id, title):
@@ -33,6 +33,8 @@ class CallableSimpleContent(SimpleItem):
     """A Viewable piece of content"""
     implements(ICallableSimpleContent)
 
+    meta_type = "Five CallableSimpleContent"
+
     def __call__(self, *args, **kw):
         """ """
         return "Default __call__ called"
@@ -40,6 +42,8 @@ class CallableSimpleContent(SimpleItem):
 class IndexSimpleContent(SimpleItem):
     """A Viewable piece of content"""
     implements(IIndexSimpleContent)
+
+    meta_type = 'Five IndexSimpleContent'
 
     def index_html(self, *args, **kw):
         """ """
