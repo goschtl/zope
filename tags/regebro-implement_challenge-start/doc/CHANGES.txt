@@ -1,0 +1,33 @@
+PluggableAuthService changelog
+
+  HEAD
+  
+    Bugs Fixed
+    
+      - Added WARNING-level logs with tracebacks for all swallowed
+        plugin exceptions, so that you notice that there is something
+        wrong with the plugins.
+
+      - All authenticateCredentials() returned a single None when they
+        could not authenticate, although all calls expected a tuple.
+        
+  Version 1.0.2 (2004/07/15)
+
+    Bugs Fixed
+
+      - ZODBRoleManager and ZODBGroupManager needed the "two_lists" view,
+        and associated images, which migrated to the PluginRegsitry product
+        when they split;  restored them.
+
+  Version 1.0.1 (2004/05/18)
+
+    Bugs Fixed
+    
+      - CookieAuth plugin didn't successfully set cookies (first, because
+        of a NameError, then, due to a glitch with long lines).
+
+      - Missing ZPL in most modules.
+
+  Version 1.0 (2004/04/29)
+
+    - Initial release
