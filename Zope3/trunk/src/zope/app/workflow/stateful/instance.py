@@ -13,14 +13,14 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.5 2003/06/03 22:46:23 jim Exp $
+$Id: instance.py,v 1.6 2003/06/06 16:34:53 stevea Exp $
 """
 __metaclass__ = type
 
 from types import StringTypes
 from persistence import Persistent
 from zope.schema import getFields
-from zope.interface import directlyProvides
+from zope.interface import directlyProvides, implements
 
 from zope.exceptions import Unauthorized
 
@@ -46,8 +46,7 @@ from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
 from zope.app.workflow.instance import ProcessInstance
 
 
-
-class RelevantData(ContextAware):
+class RelevantData:
     pass
 
 # XXX Example of how Changes to Workflow Relevant Data would send out Events
@@ -96,17 +95,15 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
     """Stateful Workflow ProcessInstance.
     """
 
-    __implements__ = IStatefulProcessInstance
+    implements(IStatefulProcessInstance)
 
 
     ############################################################
     # Implementation methods for interface
     # zope.app.interfaces.workflow.IStatefulProcessInstance
 
-
-
     data = property(lambda self: ContextWrapper(self._data, self))
-    
+
     # XXX this is not entirely tested nor finished
     #def _getData(self):
     #    """getter for Workflow Relevant Data."""
@@ -132,7 +129,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
     #
     #data = property(lambda self: ContextWrapper(self._getData(), self))
 
-    
     def initialize(self):
         pd = self._getProcessDefinition()
         clean_pd = removeAllProxies(pd)
@@ -150,18 +146,16 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         else:
             self._data = None
         # setup permission on data
-        
+
         # check for Automatic Transitions
         self._checkAndFireAuto(clean_pd)
     initialize = ContextMethod(initialize)
-        
 
     def getOutgoingTransitions(self):
         pd = self._getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         return self._outgoingTransitions(clean_pd)
     getOutgoingTransitions = ContextMethod(getOutgoingTransitions)
-
 
     def fireTransition(self, id):
         pd = self._getProcessDefinition()
@@ -175,7 +169,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         # send StatusChangingWorkflowEvent
         #print "send StatusChangingWorkflowEvent(old:%s, new:%s) here" \
         #      % (self._status, trans.destinationState)
-        
+
         # change status
         self._status = trans.destinationState
 
@@ -190,7 +184,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
     #
     ############################################################
-    
+
     # XXX expose this method in the interface (without _) ???
     def _getProcessDefinition(self):
         """Get the ProcessDefinition object from WorkflowService.
@@ -198,8 +192,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         svc =  getService(self, "Workflows")
         return svc.getProcessDefinition(self.processDefinitionName)
     _getProcessDefinition = ContextMethod(_getProcessDefinition)
-
-
 
     # XXX this is not entirely tested
     def _getContext(self):
@@ -212,7 +204,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         # how can we know if this ProcessInstance is annotated
         # to a Content-Object and provide secure ***READONLY***
         # Access to it for evaluating Transition Conditions ???
-        
+
         #content = getWrapperContainer(self)
 
         # XXX How can i make shure that nobody modifies content
@@ -229,9 +221,8 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         #    content = Proxy(content, checker)
 
         #ctx['content'] = content
-        
-        return ctx
 
+        return ctx
     _getContext = ContextMethod(_getContext)
 
 
@@ -239,7 +230,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         ctx['state_change'] = StateChangeInfo(transition)
         return ctx
 
-    
     def _evaluateCondition(self, transition, contexts):
         """Evaluate a condition in context of relevant-data.
         """
@@ -247,7 +237,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             return True
         expr = Engine.compile(transition.condition)
         return expr(Engine.getContext( contexts=contexts ))
-
 
     def _evaluateScript(self, transition, contexts):
         script = transition.script
@@ -258,7 +247,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             script =  sm.resolve(script)
         return script(contexts)
     _evaluateScript = ContextMethod(_evaluateScript)
-
 
     def _buildRelevantData(self, schema):
         """Create a new data object and initialize with Schema defaults.
@@ -271,12 +259,11 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
                 setattr(data, name, field.default)
         return data
 
-
     def _outgoingTransitions(self, clean_pd):
         sm = getSecurityManager()
         ret = []
         contexts = self._getContext()
-        
+
         for name, trans in clean_pd.transitions.items():
             if self.status == trans.sourceState:
                 # check permissions
@@ -297,7 +284,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
                         include = 0
                     if not include:
                         continue
-                    
+
                 if trans.script is not None:
                     try:
                         include = self._evaluateScript(trans, ctx)
@@ -305,12 +292,11 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
                         include = 0
                     if not include:
                         continue
-                    
+
                 # append transition name
                 ret.append(name)
         return ret
     _outgoingTransitions = ContextMethod(_outgoingTransitions)
-        
 
     def _checkAndFireAuto(self, clean_pd):
         outgoing_transitions = self.getOutgoingTransitions()
@@ -321,4 +307,3 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
                 self.fireTransition(name)
                 return
     _checkAndFireAuto = ContextMethod(_checkAndFireAuto)
-

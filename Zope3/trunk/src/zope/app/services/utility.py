@@ -14,9 +14,10 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.8 2003/06/01 15:59:36 jim Exp $
+$Id: utility.py,v 1.9 2003/06/06 16:34:53 stevea Exp $
 """
 
+from zope.interface import implements
 from persistence.dict import PersistentDict
 from persistence import Persistent
 from zope.app.component.nextservice import getNextService
@@ -29,12 +30,12 @@ from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import ComponentConfiguration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface.implementor import ImplementorRegistry
-from zope.context import ContextAware
+from zope.context import ContextMethod
 from zope.app.context import ContextWrapper
 
-class LocalUtilityService(Persistent, ContextAware):
+class LocalUtilityService(Persistent):
 
-    __implements__ = ILocalUtilityService, IConfigurable, ISimpleService
+    implements(ILocalUtilityService, IConfigurable, ISimpleService)
 
     def __init__(self):
         self._utilities = PersistentDict()
@@ -44,6 +45,7 @@ class LocalUtilityService(Persistent, ContextAware):
         if utility is None:
             raise ComponentLookupError("utility", interface, name)
         return utility
+    getUtility = ContextMethod(getUtility)
 
     def queryUtility(self, interface, default=None, name=''):
         registry = self.queryConfigurations(name, interface)
@@ -54,11 +56,13 @@ class LocalUtilityService(Persistent, ContextAware):
 
         next = getNextService(self, "Utilities")
         return next.queryUtility(interface, default, name)
+    queryUtility = ContextMethod(queryUtility)
 
     def queryConfigurationsFor(self, configuration, default=None):
         return self.queryConfigurations(configuration.name,
                                         configuration.interface,
                                         default)
+    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
 
     def queryConfigurations(self, name, interface, default=None):
         utilities = self._utilities.get(name)
@@ -69,10 +73,13 @@ class LocalUtilityService(Persistent, ContextAware):
             return default
 
         return ContextWrapper(registry, self)
+    queryConfigurations = ContextMethod(queryConfigurations)
 
     def createConfigurationsFor(self, configuration):
         return self.createConfigurations(configuration.name,
                                          configuration.interface)
+
+    createConfigurationsFor = ContextMethod(createConfigurationsFor)
 
     def createConfigurations(self, name, interface):
         utilities = self._utilities.get(name)
@@ -86,6 +93,7 @@ class LocalUtilityService(Persistent, ContextAware):
             utilities.register(interface, registry)
 
         return ContextWrapper(registry, self)
+    createConfigurations = ContextMethod(createConfigurations)
 
     def getRegisteredMatching(self):
         L = []
@@ -95,6 +103,7 @@ class LocalUtilityService(Persistent, ContextAware):
                     continue
                 L.append((iface, name, ContextWrapper(cr, self)))
         return L
+    getRegisteredMatching = ContextMethod(getRegisteredMatching)
 
 
 class UtilityConfiguration(ComponentConfiguration):
@@ -107,8 +116,7 @@ class UtilityConfiguration(ComponentConfiguration):
 
     status = ConfigurationStatusProperty('Utilities')
 
-    __implements__ = (IUtilityConfiguration,
-                      ComponentConfiguration.__implements__)
+    implements(IUtilityConfiguration)
 
     def __init__(self, name, interface, component_path, permission=None):
         ComponentConfiguration.__init__(self, component_path, permission)
