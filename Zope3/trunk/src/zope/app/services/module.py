@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.9 2003/06/02 16:24:33 gvanrossum Exp $
+$Id: module.py,v 1.10 2003/06/02 17:45:10 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -30,10 +30,11 @@ from zope.interface import implements
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.file import IFileFactory
+from zope.app.interfaces.container import IDeleteNotifiable
 from zope.app.context import ContextWrapper
 
 
-class Registry:
+class Registry(Persistent):
 
     # This is a wrapper around the module service, which is actually
     # the service manager.  The service manager is found via context,
@@ -69,7 +70,7 @@ class Registry:
 
 class Manager(Persistent):
 
-    implements(IPersistentModuleManager)
+    implements(IPersistentModuleManager, IDeleteNotifiable)
 
     # The registry for the manager is the ServiceManager.
     # The association between this manager and the registry
@@ -105,6 +106,10 @@ class Manager(Persistent):
 
     name = property(lambda self: self._manager.name)
     source = property(lambda self: self._manager.source)
+
+    def beforeDeleteHook(self, obj, container):
+        obj.remove()
+    beforeDeleteHook = ContextMethod(beforeDeleteHook)
 
 
 class ModuleAdapter(ObjectEntryAdapter):
