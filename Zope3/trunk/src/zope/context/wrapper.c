@@ -137,7 +137,7 @@ property_dealloc(PyObject *self)
 {
     propertyobject *gs = (propertyobject *)self;
 
-    _PyObject_GC_UNTRACK(self);
+    PyObject_GC_UnTrack(self);
     Py_XDECREF(gs->prop_get);
     Py_XDECREF(gs->prop_set);
     Py_XDECREF(gs->prop_del);
@@ -313,7 +313,7 @@ typedef struct {
 static void
 cm_dealloc(ContextMethod *cm)
 {
-    _PyObject_GC_UNTRACK((PyObject *)cm);
+    PyObject_GC_UnTrack((PyObject *)cm);
     Py_XDECREF(cm->cm_callable);
     ContextDescriptorType.tp_dealloc((PyObject *)cm);
 }
@@ -620,14 +620,14 @@ WrapperType_Lookup(PyTypeObject *type, PyObject *name)
 
     assert(PyTuple_Check(mro));
 
-    n = PyTuple_GET_SIZE(mro) 
+    n = PyTuple_GET_SIZE(mro)
       - 1; /* We don't want to look at the last item, which is object. */
 
     for (i = 0; i < n; i++) {
         base = PyTuple_GET_ITEM(mro, i);
 
         if (
-            ((PyTypeObject *)base) != &ProxyType 
+            ((PyTypeObject *)base) != &ProxyType
             &&
             ((PyTypeObject *)base) != &WrapperType
             ) {
