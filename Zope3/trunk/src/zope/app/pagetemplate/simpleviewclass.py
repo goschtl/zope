@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: simpleviewclass.py,v 1.2 2002/12/25 14:13:06 jim Exp $
+$Id: simpleviewclass.py,v 1.3 2003/01/31 10:46:18 alga Exp $
 """
 
 import sys
@@ -21,8 +21,9 @@ from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
+from zope.proxy.context import ContextAware
 
-class simple(BrowserView):
+class simple(ContextAware, BrowserView):
 
     __implements__ = IBrowserPublisher, BrowserView.__implements__
 
