@@ -30,150 +30,101 @@
 
    Now, if we declare an adapter globally:
 
-   >>> G.provideAdapter(IF1, IB1, [A11G])
+   >>> G.register([IF1], IB1, '', 'A11G')
 
    we can query it locally:
 
-   >>> f2 = F2()
-
-   >>> a = L1.queryAdapter(f2, IB1)
-   >>> a.__class__.__name__
+   >>> L1.lookup([IF2], IB1)
    'A11G'
-   >>> a.args == (f2, )
-   True
-
-   >>> a = L2.queryAdapter(f2, IB1)
-   >>> a.__class__.__name__
+   
+   >>> L2.lookup([IF2], IB1)
    'A11G'
-   >>> a.args == (f2, )
-   True
 
    We can add local definitions:
 
-   >>> ra011 = Registration(required = IF0, provided=IB1, factory=A011)
+   >>> ra011 = Registration(required = IF0, provided=IB1, factory='A011')
    >>> L1.createRegistrationsFor(ra011).activate(ra011)
 
    and use it:
 
-   >>> f0 = F0()
-
-   >>> a = L1.queryAdapter(f0, IB1)
-   >>> a.__class__.__name__
+   >>> L1.lookup([IF0], IB1)
    'A011'
-   >>> a.args == (f0, )
-   True
-
-   >>> a = L2.queryAdapter(f0, IB1)
-   >>> a.__class__.__name__
+   
+   >>> L2.lookup([IF0], IB1)
    'A011'
-   >>> a.args == (f0, )
-   True
-
+   
    but not outside L1:
 
-   >>> G.queryAdapter(f0, IB1)
+   >>> G.lookup([IF0], IB1)
 
    Note that it doesn't override the non-local adapter:
 
-   >>> a = L1.queryAdapter(f2, IB1)
-   >>> a.__class__.__name__
+   >>> L1.lookup([IF2], IB1)
    'A11G'
-   >>> a.args == (f2, )
-   True
-
-   >>> a = L2.queryAdapter(f2, IB1)
-   >>> a.__class__.__name__
+   
+   >>> L2.lookup([IF2], IB1)
    'A11G'
-   >>> a.args == (f2, )
-   True
-
+   
    because it was more specific.
 
    Let's override the adapter in L2:
 
-   >>> ra112 = Registration(required = IF1, provided=IB1, factory=A112)
+   >>> ra112 = Registration(required = IF1, provided=IB1, factory='A112')
    >>> L2.createRegistrationsFor(ra112).activate(ra112)
 
    Now, in L2, we get the new adapter, because it's as specific and more
    local than the one from G:
 
-   >>> a = L2.queryAdapter(f2, IB1)
-   >>> a.__class__.__name__
+   >>> L2.lookup([IF2], IB1)
    'A112'
-   >>> a.args == (f2, )
-   True
+   
+   But we still get the old one in L1
 
-   But we still get thye old one in L1
-
-   >>> a = L1.queryAdapter(f2, IB1)
-   >>> a.__class__.__name__
+   >>> L1.lookup([IF2], IB1)
    'A11G'
-   >>> a.args == (f2, )
-   True
-
+   
    Note that we can ask for less specific interfaces and still get the adapter:
 
-   >>> a = L2.queryAdapter(f2, IB0)
-   >>> a.__class__.__name__
+   >>> L2.lookup([IF2], IB0)
    'A112'
-   >>> a.args == (f2, )
-   True
 
-   >>> a = L1.queryAdapter(f2, IB0)
-   >>> a.__class__.__name__
+   >>> L1.lookup([IF2], IB0)
    'A11G'
-   >>> a.args == (f2, )
-   True
 
    We get the more specific adapter even if there is a less-specific
    adapter to B0:
 
-   >>> G.provideAdapter(IF1, IB1, [A10G])
+   >>> G.register([IF1], IB1, '', 'A10G')
 
-   >>> a = L2.queryAdapter(f2, IB0)
-   >>> a.__class__.__name__
+   >>> L2.lookup([IF2], IB0)
    'A112'
-   >>> a.args == (f2, )
-   True
 
    But if we have an equally specific and equally local adapter to B0, it
    will win:
 
-   >>> ra102 = Registration(required = IF1, provided=IB0, factory=A102)
+   >>> ra102 = Registration(required = IF1, provided=IB0, factory='A102')
    >>> L2.createRegistrationsFor(ra102).activate(ra102)
 
-   >>> a = L2.queryAdapter(f2, IB0)
-   >>> a.__class__.__name__
+   >>> L2.lookup([IF2], IB0)
    'A102'
-   >>> a.args == (f2, )
-   True
 
    We can deactivate registrations, which has the effect of deleting adapters:
 
 
    >>> L2.queryRegistrationsFor(ra112).deactivate(ra112)
 
-   >>> a = L2.queryAdapter(f2, IB0)
-   >>> a.__class__.__name__
+   >>> L2.lookup([IF2], IB0)
    'A102'
-   >>> a.args == (f2, )
-   True
 
-   >>> a = L2.queryAdapter(f2, IB1)
-   >>> a.__class__.__name__
+   >>> L2.lookup([IF2], IB1)
    'A10G'
-   >>> a.args == (f2, )
-   True
 
    >>> L2.queryRegistrationsFor(ra102).deactivate(ra102)
 
-   >>> a = L2.queryAdapter(f2, IB0)
-   >>> a.__class__.__name__
+   >>> L2.lookup([IF2], IB0)
    'A10G'
-   >>> a.args == (f2, )
-   True
 
-   $Id: tests.py,v 1.3 2004/03/13 18:01:03 srichter Exp $
+   $Id: tests.py,v 1.4 2004/03/15 20:42:24 jim Exp $
    """
 
 def test_named_adapters():
@@ -192,166 +143,117 @@ def test_named_adapters():
 
     Now, if we declare an adapter globally:
 
-    >>> G.provideAdapter(IF1, IB1, [A11G], name='bob')
+    >>> G.register([IF1], IB1, 'bob', 'A11G')
 
     we can query it locally:
 
-    >>> f2 = F2()
-
-    >>> L1.queryAdapter(f2, IB1)
-    >>> a = L1.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2], IB1)
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
-    >>> L2.queryAdapter(f2, IB1)
-    >>> a = L2.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB1)
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
     We can add local definitions:
 
-    >>> ra011 = Registration(required = IF0, provided=IB1, factory=A011,
+    >>> ra011 = Registration(required = IF0, provided=IB1, factory='A011',
     ...                      name='bob')
     >>> L1.createRegistrationsFor(ra011).activate(ra011)
     
     and use it:
 
-    >>> f0 = F0()
-
-    >>> L1.queryAdapter(f0, IB1)
-    >>> a = L1.queryNamedAdapter(f0, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF0], IB1)
+    >>> L1.lookup([IF0], IB1, 'bob')
     'A011'
-    >>> a.args == (f0, )
-    True
 
-    >>> L2.queryAdapter(f0, IB1)
-    >>> a = L2.queryNamedAdapter(f0, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF0], IB1)
+    >>> L2.lookup([IF0], IB1, 'bob')
     'A011'
-    >>> a.args == (f0, )
-    True
 
     but not outside L1:
 
-    >>> G.queryNamedAdapter(f0, IB1, 'bob')
+    >>> G.lookup([IF0], IB1, 'bob')
 
     Note that it doesn't override the non-local adapter:
 
-    >>> L1.queryAdapter(f2, IB1)
-    >>> a = L1.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2], IB1)
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
-    >>> L2.queryAdapter(f2, IB1)
-    >>> a = L2.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB1)
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
     because it was more specific.
 
     Let's override the adapter in L2:
 
-    >>> ra112 = Registration(required = IF1, provided=IB1, factory=A112,
+    >>> ra112 = Registration(required = IF1, provided=IB1, factory='A112',
     ...                      name='bob')
     >>> L2.createRegistrationsFor(ra112).activate(ra112)
 
     Now, in L2, we get the new adapter, because it's as specific and more
     local than the one from G:
 
-    >>> L2.queryAdapter(f2, IB1)
-    >>> a = L2.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB1)
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A112'
-    >>> a.args == (f2, )
-    True
 
     But we still get thye old one in L1
 
-    >>> L1.queryAdapter(f2, IB1)
-    >>> a = L1.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2], IB1)
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
     Note that we can ask for less specific interfaces and still get the adapter:
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A112'
-    >>> a.args == (f2, )
-    True
 
-    >>> L1.queryAdapter(f2, IB0)
-    >>> a = L1.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2], IB0)
+    >>> L1.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
     We get the more specific adapter even if there is a less-specific
     adapter to B0:
 
-    >>> G.provideAdapter(IF1, IB1, [A10G], name='bob')
+    >>> G.register([IF1], IB1, 'bob', 'A10G')
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A112'
-    >>> a.args == (f2, )
-    True
 
     But if we have an equally specific and equally local adapter to B0, it
     will win:
 
-    >>> ra102 = Registration(required = IF1, provided=IB0, factory=A102,
+    >>> ra102 = Registration(required = IF1, provided=IB0, factory='A102',
     ...                      name='bob')
     >>> L2.createRegistrationsFor(ra102).activate(ra102)
     
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A102'
-    >>> a.args == (f2, )
-    True
 
     We can deactivate registrations, which has the effect of deleting adapters:
 
 
     >>> L2.queryRegistrationsFor(ra112).deactivate(ra112)
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A102'
-    >>> a.args == (f2, )
-    True
 
-    >>> L2.queryAdapter(f2, IB1)
-    >>> a = L2.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB1)
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A10G'
-    >>> a.args == (f2, )
-    True
 
     >>> L2.queryRegistrationsFor(ra102).deactivate(ra102)
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A10G'
-    >>> a.args == (f2, )
-    True
     """
 
 def test_multi_adapters():
@@ -370,153 +272,103 @@ def test_multi_adapters():
 
     Now, if we declare an adapter globally:
 
-    >>> G.provideAdapter(IF1, IB1, [A11G], name='bob', with=(IR0,))
+    >>> G.register([IF1, IR0], IB1, 'bob', 'A11G')
 
     we can query it locally:
 
-    >>> f2 = F2()
-    >>> r = R1()
-
-    >>> a = L1.queryMultiAdapter((f2, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2, IR1], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, r)
-    True
 
-    >>> a = L2.queryMultiAdapter((f2, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2, IR1], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, r)
-    True
 
     We can add local definitions:
 
-    >>> ra011 = Registration(required = IF0, provided=IB1, factory=A011,
+    >>> ra011 = Registration(required = IF0, provided=IB1, factory='A011',
     ...                      name='bob', with=(IR0,))
     >>> L1.createRegistrationsFor(ra011).activate(ra011)
     
     and use it:
 
-    >>> f0 = F0()
-
-    >>> a = L1.queryMultiAdapter((f0, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF0, IR1], IB1, 'bob')
     'A011'
-    >>> a.args == (f0, r)
-    True
 
-    >>> a = L2.queryMultiAdapter((f0, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF0, IR1], IB1, 'bob')
     'A011'
-    >>> a.args == (f0, r)
-    True
 
     but not outside L1:
 
-    >>> G.queryMultiAdapter((f0, r), IB1, 'bob')
+    >>> G.lookup((IF0, IR1), IB1, 'bob')
 
     Note that it doesn't override the non-local adapter:
 
-    >>> a = L1.queryMultiAdapter((f2, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2, IR1], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, r)
-    True
 
-    >>> a = L2.queryMultiAdapter((f2, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup((IF2, IR1), IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, r)
-    True
 
     because it was more specific.
 
     Let's override the adapter in L2:
 
-    >>> ra112 = Registration(required = IF1, provided=IB1, factory=A112,
+    >>> ra112 = Registration(required = IF1, provided=IB1, factory='A112',
     ...                      name='bob', with=(IR0,))
     >>> L2.createRegistrationsFor(ra112).activate(ra112)
 
     Now, in L2, we get the new adapter, because it's as specific and more
     local than the one from G:
 
-    >>> a = L2.queryMultiAdapter((f2, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup((IF2, IR1), IB1, 'bob')
     'A112'
-    >>> a.args == (f2, r)
-    True
 
     But we still get the old one in L1
 
-    >>> a = L1.queryMultiAdapter((f2, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup((IF2, IR1), IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, r)
-    True
 
     Note that we can ask for less specific interfaces and still get
     the adapter:
 
-    >>> a = L2.queryMultiAdapter((f2, r), IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup((IF2, IR1), IB0, 'bob')
     'A112'
-    >>> a.args == (f2, r)
-    True
 
-    >>> a = L1.queryMultiAdapter((f2, r), IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup((IF2, IR1), IB0, 'bob')
     'A11G'
-    >>> a.args == (f2, r)
-    True
 
     We get the more specific adapter even if there is a less-specific
     adapter to B0:
 
-    >>> G.provideAdapter(IF1, IB1, [A10G], name='bob', with=(IR0,))
+    >>> G.register([IF1, IR0], IB1, 'bob', 'A10G')
 
-    >>> a = L2.queryMultiAdapter((f2, r), IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup((IF2, IR1), IB0, 'bob')
     'A112'
-    >>> a.args == (f2, r)
-    True
 
     But if we have an equally specific and equally local adapter to B0, it
     will win:
 
-    >>> ra102 = Registration(required = IF1, provided=IB0, factory=A102,
+    >>> ra102 = Registration(required = IF1, provided=IB0, factory='A102',
     ...                      name='bob', with=(IR0,))
     >>> L2.createRegistrationsFor(ra102).activate(ra102)
     
-    >>> a = L2.queryMultiAdapter((f2, r), IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup((IF2, IR1), IB0, 'bob')
     'A102'
-    >>> a.args == (f2, r)
-    True
 
     We can deactivate registrations, which has the effect of deleting adapters:
 
     >>> L2.queryRegistrationsFor(ra112).deactivate(ra112)
 
-    >>> a = L2.queryMultiAdapter((f2, r), IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup((IF2, IR1), IB0, 'bob')
     'A102'
-    >>> a.args == (f2, r)
-    True
 
-    >>> a = L2.queryMultiAdapter((f2, r), IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup((IF2, IR1), IB1, 'bob')
     'A10G'
-    >>> a.args == (f2, r)
-    True
 
     >>> L2.queryRegistrationsFor(ra102).deactivate(ra102)
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryMultiAdapter((f2, r), IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup((IF2, IR1), IB0, 'bob')
     'A10G'
-    >>> a.args == (f2, r)
-    True
     """
 
 def test_persistence():
@@ -531,142 +383,104 @@ def test_persistence():
     >>> conn1.root()['L1'] = L1
     >>> conn1.root()['L2'] = L2
     
-    >>> G.provideAdapter(IF1, IB1, [A11G], name='bob')
-    >>> f2 = F2()
-    >>> L1.queryAdapter(f2, IB1)
-    >>> a = L1.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> G.register([IF1], IB1, 'bob', 'A11G')
+    >>> L1.lookup([IF2], IB1)
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
-    >>> L2.queryAdapter(f2, IB1)
-    >>> a = L2.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB1)
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
     We can add local definitions:
 
-    >>> ra011 = Registration(required = IF0, provided=IB1, factory=A011,
+    >>> ra011 = Registration(required = IF0, provided=IB1, factory='A011',
     ...                      name='bob')
     >>> L1.createRegistrationsFor(ra011).activate(ra011)
 
     and use it:
 
-    >>> f0 = F0()
-
-    >>> L1.queryAdapter(f0, IB1)
-    >>> a = L1.queryNamedAdapter(f0, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF0], IB1)
+    >>> L1.lookup([IF0], IB1, 'bob')
     'A011'
-    >>> a.args == (f0, )
-    True
 
-    >>> L2.queryAdapter(f0, IB1)
-    >>> a = L2.queryNamedAdapter(f0, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF0], IB1)
+    >>> L2.lookup([IF0], IB1, 'bob')
     'A011'
-    >>> a.args == (f0, )
-    True
 
     but not outside L1:
 
-    >>> G.queryAdapter(f0, IB1)
+    >>> G.lookup([IF0], IB1)
 
     Note that it doesn't override the non-local adapter:
 
-    >>> L1.queryAdapter(f2, IB1)
-    >>> a = L1.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2], IB1)
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
-    >>> L2.queryAdapter(f2, IB1)
-    >>> a = L2.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB1)
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
     because it was more specific.
 
     Let's override the adapter in L2:
 
-    >>> ra112 = Registration(required = IF1, provided=IB1, factory=A112,
+    >>> ra112 = Registration(required = IF1, provided=IB1, factory='A112',
     ...                      name='bob')
     >>> L2.createRegistrationsFor(ra112).activate(ra112)
 
     Now, in L2, we get the new adapter, because it's as specific and more
     local than the one from G:
 
-    >>> L2.queryAdapter(f2, IB1)
-    >>> a = L2.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB1)
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A112'
-    >>> a.args == (f2, )
-    True
 
     But we still get the old one in L1
 
-    >>> L1.queryAdapter(f2, IB1)
-    >>> a = L1.queryNamedAdapter(f2, IB1, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2], IB1)
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
-    Note that we can ask for less specific interfaces and still get the adapter:
+    Note that we can ask for less specific interfaces and still get
+    the adapter:
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A112'
-    >>> a.args == (f2, )
-    True
 
-    >>> L1.queryAdapter(f2, IB0)
-    >>> a = L1.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L1.lookup([IF2], IB0)
+    >>> L1.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> a.args == (f2, )
-    True
 
     We get the more specific adapter even if there is a less-specific
     adapter to B0:
 
-    >>> G.provideAdapter(IF0, IB0, [A00G], name='bob')
+    >>> G.register([IF0], IB0, 'bob', 'A00G')
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A112'
-    >>> a.args == (f2, )
-    True
 
     But if we have an equally specific and equally local adapter to B0, it
     will win:
 
-    >>> ra102 = Registration(required = IF1, provided=IB0, factory=A102,
+    >>> ra102 = Registration(required = IF1, provided=IB0, factory='A102',
     ...                      name='bob')
     >>> L2.createRegistrationsFor(ra102).activate(ra102)
 
-    >>> L2.queryAdapter(f2, IB0)
-    >>> a = L2.queryNamedAdapter(f2, IB0, 'bob')
-    >>> a.__class__.__name__
+    >>> L2.lookup([IF2], IB0)
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A102'
-    >>> a.args == (f2, )
-    True
 
-    >>> L1.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> L1.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> L2.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A102'
-    >>> L2.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A112'
 
     >>> get_transaction().commit()
@@ -680,13 +494,13 @@ def test_persistence():
 
     We should get the same outputs:
 
-    >>> L1.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> L1.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> L2.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A102'
-    >>> L2.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A112'
     
     We can deactivate registrations, which has the effect of deleting adapters:
@@ -694,13 +508,13 @@ def test_persistence():
     >>> L2.queryRegistrationsFor(ra112).deactivate(ra112)
     >>> L2.queryRegistrationsFor(ra102).deactivate(ra102)
 
-    >>> L1.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> L1.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> L2.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> L2.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A11G'
 
     >>> get_transaction().commit()
@@ -713,13 +527,13 @@ def test_persistence():
 
     We should see the result of the deactivations:
     
-    >>> L1.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> L1.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L1.lookup([IF2], IB1, 'bob')
     'A11G'
-    >>> L2.queryNamedAdapter(f2, IB0, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB0, 'bob')
     'A11G'
-    >>> L2.queryNamedAdapter(f2, IB1, 'bob').__class__.__name__
+    >>> L2.lookup([IF2], IB1, 'bob')
     'A11G'
 
     Cleanup:
@@ -732,10 +546,9 @@ def test_local_default():
     """
     >>> G = AdapterRegistry()
     >>> L1 = LocalAdapterRegistry(G)
-    >>> r = Registration(required = None, provided=IB1, factory=Adapter)
+    >>> r = Registration(required = None, provided=IB1, factory='Adapter')
     >>> L1.createRegistrationsFor(r).activate(r)
-    >>> f2 = F2()
-    >>> L1.queryAdapter(f2, IB1).__class__.__name__
+    >>> L1.lookup([IF2], IB1)
     'Adapter'
     """
 
@@ -747,19 +560,16 @@ def test_changing_next():
     >>> L2 = LocalAdapterRegistry(G, L1)
     >>> f2 = F2()
 
-    >>> L2.queryAdapter(f2, IB1).__class__.__name__
-    'NoneType'
+    >>> L2.lookup([IF2], IB1)
 
-    >>> G.provideAdapter(IF1, IB1, [A11G])
-    >>> L2.queryAdapter(f2, IB1).__class__.__name__
+    >>> G.register([IF1], IB1, '', 'A11G')
+    >>> L2.lookup([IF2], IB1)
     'A11G'
 
 
-    >>> class A111(Adapter):
-    ...     pass
-    >>> ra111 = Registration(required = IF1, provided=IB1, factory=A111)
+    >>> ra111 = Registration(required = IF1, provided=IB1, factory='A111')
     >>> L1.createRegistrationsFor(ra111).activate(ra111)
-    >>> L2.queryAdapter(f2, IB1).__class__.__name__
+    >>> L2.lookup([IF2], IB1)
     'A111'
 
     >>> L1.next
@@ -778,12 +588,10 @@ def test_changing_next():
     >>> L3.subs == (L2,)
     True
 
-    >>> class A113(Adapter):
-    ...     pass
-    >>> ra113 = Registration(required = IF1, provided=IB1, factory=A113)
+    >>> ra113 = Registration(required = IF1, provided=IB1, factory='A113')
     >>> L3.createRegistrationsFor(ra113).activate(ra113)
 
-    >>> L2.queryAdapter(f2, IB1).__class__.__name__
+    >>> L2.lookup([IF2], IB1)
     'A113'
     >>> L2.setNext(L1)
     >>> L2.next == L1
@@ -794,7 +602,7 @@ def test_changing_next():
     True
     >>> L3.subs == ()
     True
-    >>> L2.queryAdapter(f2, IB1).__class__.__name__
+    >>> L2.lookup([IF2], IB1)
     'A111'
 
     """
@@ -921,28 +729,6 @@ class F0:
 
 class F2:
     zope.interface.implements(IF2)
-
-class Adapter:
-    def __init__(self, *args):
-        self.args = args
-
-class A00G(Adapter):
-    pass
-
-class A11G(Adapter):
-    pass
-
-class A112(Adapter):
-    pass
-
-class A10G(Adapter):
-    pass
-
-class A102(Adapter):
-    pass
-
-class A011(Adapter):
-    pass
 
 class Registration:
     name=u''

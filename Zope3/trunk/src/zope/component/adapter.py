@@ -16,7 +16,7 @@
 
 __metaclass__ = type
 import sys
-from zope.interface import implements
+from zope.interface import implements, providedBy
 from zope.interface.adapter import AdapterRegistry
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService
@@ -25,22 +25,26 @@ import warnings
 
 class IGlobalAdapterService(IAdapterService):
 
-    def provideAdapter(required, provided, factories, name='', with=()):
-        """Provide an adapter
+    def register(required, provided, name, factory):
+        """Register an adapter factory
 
-        An adapter provides an interface for objects that have another
-        interface.
+        :Parameters:
+          - `required`: a sequence of specifications for objects to be
+             adapted. 
+          - `provided`: The interface provided by the adapter
+          - `name`: The adapter name
+          - `factory`: The object used to compute the adapter
+        """
 
-        XXX: Arguments must be updated.
-        Arguments:
-
-        forInterface -- The interface the adapter provides an interface for.
-
-        providedInterface -- The provided interface
-
-        maker -- a sequence of factories that are used to create the adapter.
-        The first factory is called with the object to be adapted, subsequent
-        factories are called with the results of the previous factory.
+    def subscribe(required, provided, factory):
+        """Register a subscriber factory
+        
+        :Parameters:
+          - `required`: a sequence of specifications for objects to be
+             adapted. 
+          - `provided`: The interface provided by the adapter
+          - `name`: The adapter name
+          - `factory`: The object used to compute the subscriber
         """
 
     def getRegisteredMatching(required=None,
@@ -60,7 +64,32 @@ class IGlobalAdapterService(IAdapterService):
           - registered data
         """
 
-class GlobalAdapterService(AdapterRegistry, GlobalService):
+class AdapterService(AdapterRegistry):
+
+    implements(IAdapterService)
+
+    def queryAdapter(self, object, interface, default=None):
+        return self.queryNamedAdapter(object, interface, '', default)
+
+    def queryNamedAdapter(self, object, interface, name='', default=None):
+        factory = self.lookup1(providedBy(object), interface, name)
+        if factory is not None:
+            return factory(object)
+        
+        return default
+
+    def queryMultiAdapter(self, objects, interface, name='', default=None):
+        factory = self.lookup(map(providedBy, objects), interface, name)
+        if factory is not None:
+            return factory(*objects)
+
+        return default
+
+    def subscribers(self, objects, interface):
+        subscriptions = self.subscriptions(map(providedBy, objects), interface)
+        return [subscription(*objects) for subscription in subscriptions]
+    
+
+class GlobalAdapterService(AdapterService, GlobalService):
 
     implements(IGlobalAdapterService)
-

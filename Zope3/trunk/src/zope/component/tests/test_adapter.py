@@ -37,9 +37,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
     def getRegistry(self):
         registry = GlobalAdapterService()
 
-        registry.provideAdapter(None, P3, [default_P3])
-        registry.provideAdapter(Interface, P3, [any_P3])
-        registry.provideAdapter(R2, P3, [R2_P3])
+        registry.register([None], P3, '', default_P3)
+        registry.register([Interface], P3, '', any_P3)
+        registry.register([R2], P3, '', R2_P3)
 
         return registry
     
@@ -49,9 +49,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
         got = list(registry.getRegisteredMatching())
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (R2, P3, (), u'', [R2_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (R2, P3, (), u'', R2_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -64,8 +64,8 @@ class GlobalAdapterServiceTests(unittest.TestCase):
             ))
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -78,9 +78,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
             ))
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (R2, P3, (), u'', [R2_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (R2, P3, (), u'', R2_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -94,9 +94,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
 
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (R2, P3, (), u'', [R2_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (R2, P3, (), u'', R2_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -109,9 +109,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
             ))
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (R2, P3, (), u'', [R2_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (R2, P3, (), u'', R2_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -125,9 +125,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
             ))
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (R2, P3, (), u'', [R2_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (R2, P3, (), u'', R2_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -141,9 +141,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
             ))
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (R2, P3, (), u'', [R2_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (R2, P3, (), u'', R2_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)
@@ -157,9 +157,9 @@ class GlobalAdapterServiceTests(unittest.TestCase):
             ))
         got.sort()
         expect = [
-            (Interface, P3, (), u'', [any_P3]),
-            (R2, P3, (), u'', [R2_P3]),
-            (None, P3, (), u'', [default_P3]),
+            (Interface, P3, (), u'', any_P3),
+            (R2, P3, (), u'', R2_P3),
+            (None, P3, (), u'', default_P3),
             ]
         expect.sort()
         self.assertEqual(got, expect)

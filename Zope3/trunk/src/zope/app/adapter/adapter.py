@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.3 2004/03/13 18:01:03 srichter Exp $
+$Id: adapter.py,v 1.4 2004/03/15 20:42:24 jim Exp $
 """
 __metaclass__ = type
 
@@ -32,6 +32,7 @@ import zope.app.site.interfaces
 import zope.app.security.permission
 import zope.app.registration
 import zope.component.interfaces
+import zope.component.adapter
 import zope.interface
 import zope.schema
 
@@ -99,6 +100,7 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
         state = Persistent.__getstate__(self).copy()
         del state['_surrogates']
         del state['_default']
+        del state['_null']
         del state['_remove']
         return state
 
@@ -127,7 +129,8 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
             stacks = PersistentDict()
             self.stacks[registration.required] = stacks
 
-        key = False, registration.with, registration.name, registration.provided
+        key = (False, registration.with, registration.name,
+               registration.provided)
         stack = stacks.get(key)
         if stack is None:
             stack = self._stackType(self)
@@ -153,7 +156,7 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
             for key, stack in stacks.iteritems():
                 registration = stack.active()
                 if registration is not None:
-                    radapters[key] = registration.factories
+                    radapters[key] = registration.factory
 
 
         if adapters != self.adapters:
@@ -214,7 +217,9 @@ class LocalAdapterBasedService(
                 self.__notifySubs(sub.subSites, servicename)
 
 
-class LocalAdapterService(LocalAdapterRegistry, LocalAdapterBasedService):
+class LocalAdapterService(LocalAdapterRegistry,
+                          LocalAdapterBasedService,
+                          zope.component.adapter.AdapterService):
 
     zope.interface.implements(
         zope.component.interfaces.IAdapterService,
@@ -262,8 +267,8 @@ class IAdapterRegistration(
         required=False,
         )
         
-    factories = zope.interface.Attribute(
-        "A sequence of factories to be called to construct the component"
+    factory = zope.interface.Attribute(
+        "Factory to be called to construct the component"
         )
 
 class AdapterRegistration(
@@ -287,11 +292,11 @@ class AdapterRegistration(
         self.factoryName = factoryName
         self.permission = permission
 
-    def factories(self):
+    def factory(self):
         folder = self.__parent__.__parent__
         factory = folder.resolve(self.factoryName)
-        return factory,
-    factories = property(factories)
+        return factory
+    factory = property(factory)
 
 # XXX Pickle backward compatability
 AdapterConfiguration = AdapterRegistration
