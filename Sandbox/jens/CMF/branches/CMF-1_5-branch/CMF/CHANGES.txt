@@ -2,6 +2,9 @@ CMF 1.5.0rc1 (unreleased)
 
   Bug Fixes
 
+    - TypesTool: Removed again the "add properties from the ZMI" feature.
+      That feature existed only in 1.5.0beta2.
+
     - ActionProviderBase: Modified exceptions raised by getActionInfo().
       Now Unauthorized is raised if at least one Action was found but the user
       is not allowed to access any of them.
