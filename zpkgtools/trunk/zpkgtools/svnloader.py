@@ -25,6 +25,7 @@ import urlparse
 
 from zpkgtools import LoadingError
 from zpkgtools import runlog
+from zpkgtools import cvsloader
 
 
 class SubversionLoadingError(LoadingError):
@@ -103,7 +104,7 @@ def is_repository(path):
     return True
 
 
-class SubversionUrl:
+class SubversionUrl(cvsloader.UrlBase):
     """Parsed representation for a Subversion URL that appears to use the
     'standard' trunk/tags tree structure.
     """
@@ -144,7 +145,7 @@ class SubversionUrl:
         return SubversionUrl(prefix, tail, tag)
 
 
-class TaglessSubversionUrl:
+class TaglessSubversionUrl(cvsloader.UrlBase):
     """Parsed representation for a Subversion URL that does not appear
     to use the 'standard' trunk/tags tree structure.
 
