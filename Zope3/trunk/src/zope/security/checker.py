@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.15 2003/04/16 19:21:39 bwarsaw Exp $
+$Id: checker.py,v 1.16 2003/04/21 21:04:37 gvanrossum Exp $
 """
 
 import os
@@ -25,6 +25,7 @@ from zope.security.interfaces import IChecker
 from zope.exceptions \
      import Unauthorized, ForbiddenAttribute, Forbidden, DuplicationError
 from zope.interface.interfaces import IInterface
+from zope.interface.implements import flattenInterfaces
 from zope.interface import Interface
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.interfaces import ISecurityProxyFactory
@@ -131,11 +132,13 @@ class Checker:
             else:
                 if WATCH_CHECKERS:
                     print >> sys.stderr, 'Unauthorized.'
+                __traceback_supplement__ = (TracebackSupplement, object)
                 raise Unauthorized(name=name)
 
         if WATCH_CHECKERS:
             print >> sys.stderr, 'Forbidden.'
 
+        __traceback_supplement__ = (TracebackSupplement, object)
         raise ForbiddenAttribute(name)
 
     def check(self, object, name):
@@ -159,6 +162,7 @@ class Checker:
             else:
                 if WATCH_CHECKERS:
                     print >> sys.stderr, 'Unauthorized.'
+                __traceback_supplement__ = (TracebackSupplement, object)
                 raise Unauthorized(name=name)
         elif name in _always_available:
             if WATCH_CHECKERS:
@@ -168,6 +172,7 @@ class Checker:
         if WATCH_CHECKERS:
             print >> sys.stderr, 'Forbidden.'
 
+        __traceback_supplement__ = (TracebackSupplement, object)
         raise ForbiddenAttribute(name)
 
     def proxy(self, value):
@@ -181,6 +186,29 @@ class Checker:
                 return value
 
         return Proxy(value, checker)
+
+# Helper class for __traceback_supplement__
+class TracebackSupplement:
+
+    def __init__(self, obj):
+        self.obj = obj
+
+    def getInfo(self):
+        result = []
+        try:
+            cls = self.obj.__class__
+        except:
+            cls = type(self.obj)
+        try:
+            if hasattr(cls, "__module__"):
+                s = "%s.%s" % (cls.__module__, cls.__name__)
+            else:
+                s = str(cls.__name__)
+            result.append("   - class: " + s)
+        except:
+            pass
+        return "\n".join(result)
+
 
 # Marker for public attributes
 
