@@ -27,7 +27,7 @@ Pathnames are always relative and always use '/' for delimiters, and
 should not use '.' or '..' or '' as components.  All files are read
 and written in binary mode.
 
-$Id: snarf.py,v 1.2 2003/05/27 14:03:04 gvanrossum Exp $
+$Id: snarf.py,v 1.3 2003/05/27 14:45:36 gvanrossum Exp $
 """
 
 import os
@@ -57,6 +57,7 @@ class Snarfer(object):
             def filter(fspath):
                 return True
         names = os.listdir(root)
+        names.sort()
         for name in names:
             fspath = os.path.join(root, name)
             if not filter(fspath):
