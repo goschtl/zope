@@ -19,14 +19,10 @@
 #  -k		expansion mode		value: b, o, kkv, &c
 #
 #  and value is a single-quote delimited value.
-# For example:
-#*.gif -k 'b'
+#
 *.gif -k 'b'
 *.jpg -k 'b'
 *.png -k 'b'
 *.so  -k 'b'
 *.dll -k 'b'
 *.pyd -k 'b'
-
-# *.mif -f 'python /cvs-repository/CVSROOT/fixfm.py f %s' -t 'python /cvs-repository/CVSROOT/fixfm.py t %s %s' 
-#* -f 'chmod g+w %s' 
