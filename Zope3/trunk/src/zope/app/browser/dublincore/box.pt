@@ -1,0 +1,10 @@
+<tal:block define = "data view/edit">
+<div tal:condition="data/dctitle"><span class="label">Title:</span> <span tal:replace="data/dctitle" /></div>
+             
+      <div tal:condition="data/dcdescription"><span class="label">Description:</span> <span tal:replace="data/dcdescription" /></div>
+      <!-- XXX TODO localize time format -->     
+      <div tal:condition="data/created"><span class="label">Created:</span> <span tal:replace="python: data['created'].strftime('%m/%d/%Y')">2000-01-01 01:01:01</span></div>
+          
+      <div tal:condition="data/modified"><span class="label">Modified:</span> <span tal:replace="python: data['modified'].strftime('%m/%d/%Y')">2000-01-01 01:01:01</span></div>
+      </tal:block>
+

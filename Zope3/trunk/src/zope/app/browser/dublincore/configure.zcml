@@ -11,6 +11,9 @@
     <browser:page name="EditMetaData.html"
                   template="edit.pt" />
 
+    <browser:page name="MetaDataBox"
+                  template="box.pt" />
+
     </browser:view>
 
 
