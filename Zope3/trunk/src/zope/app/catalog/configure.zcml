@@ -31,4 +31,9 @@
            permission="zope.ManageContent"/>
 </content>
 
+<content class=".catalog.ResultSet">
+  <require attributes="__iter__ __len__"
+           permission="zope.Public"/>
+</content>
+
 </zopeConfigure>
