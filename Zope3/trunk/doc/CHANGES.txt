@@ -74,6 +74,9 @@ Zope Changes
 
     Bug fixes
     
+    - Fixed issue 159. barryp sent in a patch concerning timezone handling in
+      the HTTP server date utility. 
+
     - Fixed issue 154. Page Template code entered TTW is now stored as
       unicode, which had no side effect whatsoever. We only had to allow in
       the general page template code for the source to be unicode.
