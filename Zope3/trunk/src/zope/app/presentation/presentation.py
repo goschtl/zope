@@ -13,14 +13,14 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.18 2004/04/24 23:17:57 srichter Exp $
+$Id: presentation.py,v 1.19 2004/05/10 06:44:48 philikon Exp $
 """
 import persistent.dict
-from zope.app import zapi
-from zope.app.i18n import ZopeMessageIDFactory as _
+
+from zope.interface import implements, providedBy, Interface, Attribute
+from zope.security.checker import NamesChecker, ProxyFactory
 from zope.component.presentation import IDefaultViewName
 from zope.component.presentation import PresentationRegistration
-from zope.security.checker import NamesChecker, ProxyFactory
 
 import zope.app.component.nextservice
 import zope.app.container.contained
@@ -29,14 +29,15 @@ import zope.app.registration.interfaces
 import zope.app.site.interfaces
 import zope.app.adapter
 import zope.app.interface.interfaces
-import zope.app.adapter
 import zope.component.interfaces
 import zope.component.presentation
 import zope.configuration.exceptions
-import zope.interface
 import zope.proxy
 import zope.publisher.interfaces.browser
 import zope.schema
+
+from zope.app import zapi
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.registration.interfaces import IRegistered
 
@@ -48,7 +49,7 @@ class LocalPresentationService(
     zope.app.adapter.LocalAdapterBasedService,
     ):
 
-    zope.interface.implements(
+    implements(
         zope.component.interfaces.IPresentationService,
         zope.app.site.interfaces.ISimpleService,
         zope.app.registration.interfaces.IRegistry,
@@ -88,7 +89,7 @@ class LocalPresentationService(
         return self.delegate.queryLayer(name)
 
     def queryView(self, object, name, request,
-                  providing=zope.interface.Interface, default=None):
+                  providing=Interface, default=None):
         """Look for a named view for a given object and request
 
         The request must implement IPresentationRequest.
@@ -113,8 +114,7 @@ class LocalPresentationService(
                 return r
         return default
 
-
-    def queryResource(self, name, request, providing=zope.interface.Interface,
+    def queryResource(self, name, request, providing=Interface,
                       default=None):
         """Look up a named resource for a given request
         
@@ -142,7 +142,7 @@ class LocalPresentationService(
         return default
 
     def queryMultiView(self, objects, request,
-                       providing=zope.interface.Interface, name='',
+                       providing=Interface, name='',
                        default=None):
         """Adapt the given objects and request
 
@@ -181,12 +181,11 @@ class LocalPresentationService(
                 layer = self.delegate.queryLayer(layername)
             if layer is None:
                 raise ValueError("Bad layer", layer)
-            r = layer.lookup(map(zope.interface.providedBy, objects),
+            r = layer.lookup(map(providedBy, objects),
                              IDefaultViewName)
             if r is not None:
                 return r
         return default
-
 
     def queryRegistrationsFor(self, registration, default=None):
         layername = registration.layer
@@ -238,15 +237,12 @@ class LocalPresentationService(
                 if registration.required[0] in iro:
                     # Not using an adapter here, since it would be just
                     # overhead.
-                    yield GlobalViewRegistration(registration)
-                    
-                
+                    yield GlobalViewRegistration(registration)                
 
-class GlobalViewRegistration:
+class GlobalViewRegistration(object):
     """Registrations representing global view service thingies."""
 
-    zope.interface.implements(
-        zope.app.registration.interfaces.IRegistration)
+    implements(zope.app.registration.interfaces.IRegistration)
 
     serviceType = zapi.servicenames.Presentation
     status = zope.app.registration.interfaces.ActiveStatus
@@ -279,7 +275,6 @@ class GlobalViewRegistration:
         # XXX This should report the ZCML that it came from.
         return _("Registered by ZCML")
 
-
 class LocalLayer(
     zope.app.adapter.LocalAdapterRegistry,
     zope.component.presentation.Layer,
@@ -291,7 +286,6 @@ class LocalLayer(
             self, base, next)
         self.__parent__ = parent
         self.__name__ = name
-
 
 class IViewRegistration(zope.app.adapter.IAdapterRegistration):
 
@@ -321,12 +315,10 @@ class IViewRegistration(zope.app.adapter.IAdapterRegistration):
         )
 
 class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
-
-    zope.interface.implements(IViewRegistration)
+    implements(IViewRegistration)
 
     serviceType = zapi.servicenames.Presentation
-
-    provided = zope.interface.Interface
+    provided = Interface
 
     # For usageSummary(); subclass may override
     _what = _("view-component", 'View')
@@ -348,7 +340,7 @@ class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
             ifname = self.required.getName()
 
         pname = self.requestType.getName()
-        summary = _("${view_name} for ${pname} {what} {iface_name}")
+        summary = _("${view_name} for ${pname} ${what} ${iface_name}")
         if self.layer and self.layer != "default":
             summary = _(
                 "${view_name} for ${pname} ${what} ${iface_name}"
@@ -387,7 +379,7 @@ class IPageRegistration(IViewRegistration):
         required = False,
         )
 
-    factory = zope.interface.Attribute(
+    factory = Attribute(
         _("Factory to be called to construct an adapter")
         )
 
@@ -398,8 +390,7 @@ class IPageRegistration(IViewRegistration):
         """
 
 class PageRegistration(ViewRegistration):
-
-    zope.interface.implements(IPageRegistration)
+    implements(IPageRegistration)
 
     # We only care about browser pages
     requestType = zope.publisher.interfaces.browser.IBrowserRequest
@@ -459,9 +450,7 @@ class PageRegistration(ViewRegistration):
                 (self.required, self.name))
 
     def factory(self):
-
         self.validate()
-
         sm = zapi.getServiceManager(self)
 
         if self.factoryName:
@@ -470,13 +459,9 @@ class PageRegistration(ViewRegistration):
         else:
             class_  = DefaultClass
 
-
-
         if self.attribute:
             return AttrViewFactory(class_, self.attribute)
-
         else:
-
             if self.template[0]=='/':
                 # This is needed because we need to do an unrestricted zapi.
                 # traverse
@@ -489,10 +474,8 @@ class PageRegistration(ViewRegistration):
 
     factory = property(factory)
 
-
-class PageRegistrationAddSubscriber:
-
-    zope.interface.implements(zope.app.event.interfaces.ISubscriber)
+class PageRegistrationAddSubscriber(object):
+    implements(zope.app.event.interfaces.ISubscriber)
 
     def __init__(self, page_registration, event):
         self.page_registration = page_registration
@@ -507,9 +490,8 @@ class PageRegistrationAddSubscriber:
             dependents.addDependent(objectpath)
 
 
-class PageRegistrationRemoveSubscriber:
-
-    zope.interface.implements(zope.app.event.interfaces.ISubscriber)
+class PageRegistrationRemoveSubscriber(object):
+    implements(zope.app.event.interfaces.ISubscriber)
 
     def __init__(self, page_registration, event):
         self.page_registration = page_registration
@@ -523,7 +505,7 @@ class PageRegistrationRemoveSubscriber:
             objectpath = zapi.getPath(self)
             dependents.removeDependent(objectpath)
 
-
+#XXX can't make new-style class b/c of unpickling error...
 class TemplateViewFactory:
 
     def __init__(self, cls, template, permission):
@@ -534,7 +516,7 @@ class TemplateViewFactory:
         template = BoundTemplate(self.template, self.cls(object, request))
         return ProxyFactory(template, checker)
 
-class AttrViewFactory:
+class AttrViewFactory(object):
 
     def __init__(self, cls, attr):
         self.cls, self.attr = cls, attr
@@ -543,13 +525,13 @@ class AttrViewFactory:
         attr = getattr(self.cls(object, request), self.attr)
         return ProxyFactory(attr)
 
-class DefaultClass:
+class DefaultClass(object):
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-class BoundTemplate:
+class BoundTemplate(object):
 
     def __init__(self, template, view):
         self.template = template
