@@ -1,25 +1,25 @@
-<configure 
+<configure
   xmlns="http://namespaces.zope.org/zope"
   xmlns:browser="http://namespaces.zope.org/browser">
-  
+
   <!-- Form Macros -->
-  
+
   <browser:page
       for="*"
       name="form_macros"
       permission="zope.Public"
       class=".macros.FormMacros"
-      allowed_interface="zope.interface.common.mapping.IItemMapping" 
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
       />
-      
-  <browser:page 
+
+  <browser:page
       for="*"
       name="widget_macros"
       permission="zope.Public"
       template="widget_macros.pt"
       />
 
-  <browser:page 
+  <browser:page
       for="*"
       name="addform_macros"
       permission="zope.Public"
@@ -29,25 +29,25 @@
   <!-- Views for Widget Errors -->
 
   <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"     
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.app.form.interfaces.IWidgetInputError"
       provides="zope.app.form.browser.interfaces.IWidgetInputErrorView"
       factory="zope.app.form.browser.exception.WidgetInputErrorView"
       permission="zope.Public"
       />
-   
+
   <!-- Core display widgets -->
 
   <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"     
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IField"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".DisplayWidget"
       permission="zope.Public"
       />
-      
+
   <!-- Core edit widgets -->
-   
+
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ITextLine"
