@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <workflow type="StatefulWorkflow"
   xmlns:tal="http://xml.zope.org/namespaces/tal"
-  tal:define="wf view/getDefinition"
+  tal:define="wf context"
   tal:attributes="title python:view.getDublinCore(wf).Title()">
 
   <schema 
