@@ -5,7 +5,7 @@ The Zope Packaging Tools
 Overview
 --------
 
-`Running the |zpkg|_ tool <zpkg.html>`_
+`Running the zpkg tool <zpkg.html>`_
   Essentially a man page for |zpkg|_.  This describes command line
   options and configuration of the tool.
 
