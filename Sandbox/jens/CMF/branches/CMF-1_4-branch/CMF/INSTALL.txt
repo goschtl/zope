@@ -1,4 +1,4 @@
-Installing CMF 1.4.4
+Installing CMF 1.4.5
 
   Requirements
 
@@ -12,15 +12,15 @@ Installing CMF 1.4.4
     - New installation
 
     - Zope configured using INSTANCE_HOME, /var/zope, and
-      SOFTWARE_HOME, /usr/local/zope/Zope-2.6.1
+      SOFTWARE_HOME, /usr/local/zope/Zope-2.7.1
 
   Procedure
 
-    1. Unpack the CMF-1.4.4.tar.gz tarball into a working
+    1. Unpack the CMF-1.4.5.tar.gz tarball into a working
        directory. For instance::
 
         $ cd /usr/local/zope
-        $ tar xzf /tmp/CMF-1.4.4.tar.gz
+        $ tar xzf /tmp/CMF-1.4.5.tar.gz
 
        Note for Windows users:  if you are using WinZip to unpack
           the file, be *sure* to disable the "TAR file smart CR/LF
@@ -33,16 +33,16 @@ Installing CMF 1.4.4
        For instance::
 
         $ cd /var/zope/Products  # /var/zope is INSTANCE_HOME
-        $ ln -s /usr/local/zope/CMF-1.4.4/CMFCore .
-        $ ln -s /usr/local/zope/CMF-1.4.4/CMFDefault .
-        $ ln -s /usr/local/zope/CMF-1.4.4/CMFTopic .
-        $ ln -s /usr/local/zope/CMF-1.4.4/CMFCalendar .
-        $ ln -s /usr/local/zope/CMF-1.4.4/DCWorkflow .
+        $ ln -s /usr/local/zope/CMF-1.4.5/CMFCore .
+        $ ln -s /usr/local/zope/CMF-1.4.5/CMFDefault .
+        $ ln -s /usr/local/zope/CMF-1.4.5/CMFTopic .
+        $ ln -s /usr/local/zope/CMF-1.4.5/CMFCalendar .
+        $ ln -s /usr/local/zope/CMF-1.4.5/DCWorkflow .
         
        or, as a shortcut::
 
-        $ ln -s /usr/local/zope/CMF-1.4.4/CMF* .
-        $ ln -s /usr/local/zope/CMF-1.4.4/DCWorkflow .
+        $ ln -s /usr/local/zope/CMF-1.4.5/CMF* .
+        $ ln -s /usr/local/zope/CMF-1.4.5/DCWorkflow .
 
        Since linking doesn't apply on Windows, you will need
        to cut or copy the files from the place where you unpacked
@@ -97,7 +97,7 @@ Upgrading from Earlier Versions
 
   Install the New Software.
 
-    0. "Download":CMF-1.4.4.tar.gz the tarball.
+    0. "Download":CMF-1.4.5.tar.gz the tarball.
 
     1. Copy your "working" products off to one side (in case
        you need / choose to revert).

@@ -1,6 +1,10 @@
-After CMF 1.4.4 (unreleased)
+CMF 1.4.5 (2004/07/08)
 
   Bug Fixes
+
+    - When someone customises something twice, rather than raise an error,
+      show them a nice message and takes them to the already customised
+      object.
 
     - FSImage didn't recognize '.bmp' files (Collector #245).
 
