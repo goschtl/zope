@@ -20,6 +20,7 @@
   <include package="zope.app.observable" />
   <include package="zope.app.annotation" />
   <include package="zope.app.dependable" />
+  <include package="zope.app.content" />
   
   <include file="menus.zcml" />
 
