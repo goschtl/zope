@@ -21,11 +21,12 @@ Command line syntax summary:
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: bundle.py,v 1.4 2003/08/28 18:11:06 fdrake Exp $
+$Id: main.py,v 1.1 2003/09/05 21:13:15 fdrake Exp $
 """
 
 from zope.fssync.command import Command, Usage
-from zope.fssync.fsbundle import FSBundle
+
+from zope.app.fssync.fsbundle import FSBundle
 
 
 def main():
@@ -78,8 +79,27 @@ def create(opts, args):
     fs.create(path, type, factory, source)
 
 
+def unpack(opts, args):
+    """%(program)s unpack bundle [dest]
+
+    
+    """
+    if len(args) < 1:
+        raise Usage("unpack requires a bundle")
+    if len(args) > 2:
+        raise Usage("unpack allows at most two args")
+    source = args[0]
+    if len(args) == 1:
+        target = os.curdir
+    else:
+        target = args[1]
+    fs = FSBundle()
+    fs.unpack(source, target)
+
+
 command_table = [
     # name is taken from the function name
     # function, aliases,  short opts,   long opts
     (create,    "",       "f:t:",       "factory= type="),
+    (unpack,    "",       "",           ""),
     ]

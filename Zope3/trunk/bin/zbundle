@@ -15,7 +15,7 @@
 
 """Command line script to drive the bundle manager.
 
-$Id: zbundle,v 1.1 2003/08/12 22:08:31 fdrake Exp $
+$Id: zbundle,v 1.2 2003/09/05 21:13:14 fdrake Exp $
 """
 
 import os
@@ -27,6 +27,6 @@ srcdir = os.path.join(os.path.dirname(here), "src")
 if srcdir not in sys.path:
     sys.path.insert(0, srcdir)
 
-from zope.fssync.bundle import main
+from zope.app.fssync.main import main
 
 sys.exit(main())

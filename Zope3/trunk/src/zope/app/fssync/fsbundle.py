@@ -13,13 +13,14 @@
 ##############################################################################
 """High-level class to support bundle management on an fssync checkout.
 
-$Id: fsbundle.py,v 1.3 2003/08/28 17:22:30 fdrake Exp $
+$Id: fsbundle.py,v 1.1 2003/09/05 21:13:15 fdrake Exp $
 """
 
 import os
 import posixpath
 import shutil
 
+from zope.fssync.copier import ObjectCopier
 from zope.fssync.fssync import FSSync
 from zope.fssync.fsutil import Error
 from zope.fssync.metadata import Metadata
@@ -44,9 +45,9 @@ class FSBundle(object):
         self.check_directory(dir)
         self.check_directory_known(dir)
         if source is not None:
-            self.check_source(source)
+            self.check_source(source, BUNDLE_TYPE, FOLDER_TYPE)
             if type is None and factory is None:
-                srctype, srcfactory = self.get_typeinfo(source)
+                srctype, srcfactory = self.metadata.gettypeinfo(source)
                 if srctype == FOLDER_TYPE:
                     factory = type = BUNDLE_TYPE
                 else:
@@ -55,38 +56,39 @@ class FSBundle(object):
                     factory = srcfactory
         elif factory is None and type is None:
             factory = type = BUNDLE_TYPE
-        self.sync.mkdir(path)
-        entry = self.metadata.getentry(path)
-        assert entry.get("flag") == "added"
-        if factory:
-            entry["factory"] = factory
-        if type:
-            entry["type"] = type
-        self.copychildren(source, path, entry["path"])
-        self.metadata.flush()
+        if source is None:
+            self.sync.mkdir(path)
+        else:
+            copier = ObjectCopier(self.sync)
+            copier.copy(source, path, children=True)
+        self.settypeinfo(path, type, factory)
+
+    def unpack(self, source, target):
+        # source identifies the bundle to unpack
+        # target identifies a location to unpack to
+        if os.path.exists(target):
+            target_dir = target
+            # compute target name from prefix of source
+            pass
+            target = os.path.join(target_dir, target_name)
+        else:
+            target_dir, target_name = os.path.split(target)
+        self.check_source(source, BUNDLE_TYPE)
+        self.check_directory_known(target_dir)
+        # ...
+        self.settypeinfo(target, FOLDER_TYPE, FOLDER_TYPE)
 
     # helper methods
 
-    def copy(self, src, dst, name, path):
-        # Copy src to dst, including relevant metadata, Extra, and
-        # Annotations components.
-        type, factory = self.get_typeinfo(src)
-        if os.path.isdir(src):
-            os.mkdir(dst)
-            self.sync.add(dst, type, factory)
-            self.copychildren(src, dst, path)
-        else:
-            shutil.copyfile(src, dst)
-            self.sync.add(dst, type, factory)
+    def settypeinfo(self, path, type, factory):
+        entry = self.metadata.getentry(path)
+        assert entry.get("flag") == "added"
+        # override any existing type and factory
+        entry["factory"] = factory
+        entry["type"] = type
+        self.metadata.flush()
 
-    def copychildren(self, src, dst, path):
-        for name in self.metadata.getnames(src):
-            self.copy(os.path.join(src, name),
-                      os.path.join(dst, name),
-                      name,
-                      posixpath.join(path, name))
-
-    def check_source(self, source):
+    def check_source(self, source, *allowed_types):
         # make sure the source is a site-management folder or a bundle
         if not os.path.exists(source):
             raise Error("%r does not exist", source)
@@ -94,7 +96,8 @@ class FSBundle(object):
             raise Error("%r must be a directory", source)
         self.check_directory_known(os.path.dirname(source))
         self.check_directory_known(source)
-        type, factory = self.get_typeinfo(source)
+        type, factory = self.metadata.gettypeinfo(source)
+        if type not in allowed_types:
         if type == BUNDLE_TYPE:
             pass
         elif type == FOLDER_TYPE:
@@ -145,7 +148,3 @@ class FSBundle(object):
         except ValueError:
             p3 = parts[3]
         return (n0, n1, n2, p3)
-
-    def get_typeinfo(self, path):
-        entry = self.metadata.getentry(path)
-        return entry.get("type"), entry.get("factory")
