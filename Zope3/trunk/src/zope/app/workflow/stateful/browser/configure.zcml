@@ -118,12 +118,12 @@
 
 
 <!-- ContentWorkflowsUtility -->
-  <menuItem
-      menu="add_component"
-      for="zope.app.container.interfaces.IAdding"
-      action="ContentWorkflowsManager"
+  <addMenuItem
       title="Content Workflows Manager"
-      description="An utility to manage content and workflow interaction." />
+      description="An utility to manage content and workflow interaction."
+      class="zope.app.workflow.stateful.interfaces.IContentWorkflowsManager"
+      permission="zope.ManageServices"
+      />
 
   <page
       name="index.html"
