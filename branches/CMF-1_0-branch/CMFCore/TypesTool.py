@@ -470,7 +470,11 @@ class FactoryTypeInformation (TypeInformation):
         if m is None:
             raise 'Unauthorized', ('Cannot create %s' % self.id)
         id = str(id)
-        apply(m, (id,) + args, kw)
+        if getattr( m, 'isDocTemp', 0 ):
+            kw[ 'id' ] = id
+            apply( m, ( m.aq_parent, self.REQUEST ) + args, kw )
+        else:
+            apply(m, (id,) + args, kw)
         ob = container._getOb(id)
         if hasattr(ob, '_setPortalTypeName'):
             ob._setPortalTypeName(self.id)
