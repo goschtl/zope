@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.23 2003/01/25 18:26:23 stevea Exp $
+$Id: interfacewidget.py,v 1.24 2003/02/03 19:00:21 jim Exp $
 """
 
 import sys
@@ -69,8 +69,6 @@ class InterfaceWidget(Widget, BrowserView):
         search_name = name + ".search"
         search_string = self.request.form.get(search_name, '')
 
-        value = self.request.form.get(self.name, self) # self used as marker
-
         field = self.context
         service = getService(field.context, "Interfaces")
         base = field.basetype
@@ -92,15 +90,16 @@ class InterfaceWidget(Widget, BrowserView):
         if include_none and not search_string:
             interfaces = ['None'] + interfaces
 
+        marker = self
+        selected = marker
         if self._data is None:
-            selected = self.getData(1)
+            value = self.request.form.get(self.name, marker)
+            if value is not marker:
+                selected = self.getData(1)
         else:
             selected = self._data
 
-        # if nothing selected in the form...
-        if value is self:
-            selected = None
-        else:
+        if selected is not marker:
             selected = interfaceToName(selected)
 
         return renderInterfaceSelect(
