@@ -41,10 +41,10 @@ class ActionInformation( SimpleItem ):
     security = ClassSecurityInfo()
     _action_info = None
 
-    def __init__( self, id, **kw):
-        """ Set up an instance.
-        """
-        kw['id'] = id
+    def __init__( self, **kw):
+        """ """
+        if not kw.has_key('id'):
+            raise ValueError, 'argument must include id'
         self.updateActionInfoDict(kw)
 
     security.declareProtected( View, 'Title' )
@@ -143,9 +143,7 @@ class ActionInformation( SimpleItem ):
         """ Return a newly-created AI just like us.
         """
         kw = self._action_info.copy()
-        id = kw['id']
-        del kw['id']
-        return apply(self.__class__, (id,), kw)
+        return apply(self.__class__, (), kw)
 
     security.declarePrivate('getActionInfo')
     def getActionInfoDict( self ):

@@ -169,8 +169,8 @@ class DummyTool(Implicit,ActionProviderBase):
     """
 
     _actions = [
-        ActionInformation('a'),
-        ActionInformation('b'),
+        ActionInformation(id='a'),
+        ActionInformation(id='b'),
         ]
 
     root = 'DummyTool'

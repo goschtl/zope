@@ -109,23 +109,26 @@ class ActionProviderBase:
         if type( permission ) != type( () ):
             permission = permission and (str(permission),) or ()
 
-        new_actions = self._cloneActions()
-
-        new_action = ActionInformation( id=str(id)
-                                      , title=str(name)
-                                      , action=a_expr
-                                      , condition=c_expr
-                                      , permissions=permission
-                                      , category=str(category)
-                                      , visible=int(visible)
-                                      )
-
-        new_actions.append( new_action )
-        self._actions = tuple( new_actions )
+        self._addAction( id=str(id)
+                         , title=str(name)
+                         , action=a_expr
+                         , condition=c_expr
+                         , permissions=permission
+                         , category=str(category)
+                         , visible=int(visible)
+                         )
 
         if REQUEST is not None:
             return self.manage_editActionsForm(
                 REQUEST, manage_tabs_message='Added.')
+
+    def _addAction(self, **kw):
+        """ Adds an action with the key-value pairs in kw as its
+        elements """
+        new_actions = self._cloneActions()
+        new_action = apply(ActionInformation, (), kw)
+        new_actions.append( new_action )
+        self._actions = tuple( new_actions )
 
     security.declareProtected( ManagePortal, 'changeActions' )
     def changeActions( self, properties=None, REQUEST=None ):
