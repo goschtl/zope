@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: ContextWrapper.py,v 1.6 2002/11/30 18:41:33 jim Exp $
+$Id: ContextWrapper.py,v 1.7 2002/12/13 23:07:44 jeremy Exp $
 """
 
 from Zope.Security.Proxy import Proxy, getChecker, getObject
@@ -70,6 +70,7 @@ def getWrapperObject(_ob):
     return _ob
 
 def _contextWrapperChecker(ob):
+    # XXX Should the checker be returned?
     checker = selectChecker(getobject(ob))
 
 defineChecker(_Wrapper, _contextWrapperChecker)
