@@ -28,3 +28,12 @@ class UserError(Exception):
     they are handled.
     """
     implements(IUserError)
+
+class ISystemErrorView(Interface):
+    """Error views that can classify their contexts as system errors
+    """
+
+    def isSystemError():
+        """Return a boolean indicating whether the error is a system errror
+        """
+    

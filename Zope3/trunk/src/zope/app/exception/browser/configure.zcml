@@ -5,7 +5,8 @@
   <page 
       for="zope.interface.common.interfaces.IException"
       name="index.html"
-      template="default.pt"
+      template="systemerror.pt"
+      class="..systemerror.SystemErrorView"
       permission="zope.Public"
       />
 
