@@ -10,5 +10,6 @@
 # 
 ##############################################################################
 """
-$Id: ErrorReportingService.py,v 1.1 2002/10/17 17:07:26 rakesh Exp $
+$Id: ErrorReportingService.py,v 1.2 2002/10/17 17:54:14 rakesh Exp $
 """
+
