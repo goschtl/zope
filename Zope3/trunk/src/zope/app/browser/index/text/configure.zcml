@@ -11,19 +11,13 @@
     description="An index to support full-text search"
     />
 
-  <browser:defaultView
+  <browser:page
     for="zope.textindex.textindexinterfaces.IStatistics"
-    name="control.html" />
-
-  <browser:view
-    for="zope.textindex.textindexinterfaces.IStatistics"
+    name="index.html" 
+    menu="zmi_views"
+    title="Control"
     permission="zope.ManageServices"
-    name="control.html"
     class=".control.ControlView"
-    >
-
-    <browser:page name="index.html" template="control.pt" />
-
-  </browser:view>
+    template="control.pt" />
 
 </zopeConfigure>
