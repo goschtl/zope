@@ -24,6 +24,13 @@ Zope Changes
         Try e.g. http://localhost:8080/++debug++source,tal/@@contents.html
         and view the source of the resulting page.
 
+      - Added 'url' adapter for IPathAdapter. It provides quoting mechanisms
+        to strings (and string-like objects) from within ZPT, e.g:
+
+        tal:attributes="href string:login.html?nextURL=${request/URL/url:quote}
+        
+        Other functions available are quote_plus, unquote, unquote_plus.
+        
     Restructuring
 
       - Templated Pages are now called ZPT Pages.

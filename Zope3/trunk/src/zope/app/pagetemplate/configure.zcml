@@ -18,6 +18,12 @@
       name="zope" 
       />
 
+  <adapter
+      for="*"
+      provides="zope.app.traversing.interfaces.IPathAdapter"
+      factory=".urlquote.URLQuote"
+      name="url"/> 
+
  <content class="zope.tales.tales.Iterator">
     <allow interface="zope.tales.interfaces.ITALESIterator" />
  </content>

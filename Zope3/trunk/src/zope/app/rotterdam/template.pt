@@ -49,12 +49,12 @@
           </tal:block>
         </metal:block>
           <a href=""
-            tal:attributes="href string:@@logout.html?nextURL=${request/URL}"
+            tal:attributes="href string:@@logout.html?nextURL=${request/URL/url:quote}"
             tal:condition="python: hasattr(request.principal, 'getLogin')"
             i18n:translate="">
             [Logout]</a>
           <a href=""
-            tal:attributes="href string:@@login.html?nextURL=${request/URL}"
+            tal:attributes="href string:@@login.html?nextURL=${request/URL/url:quote}"
             tal:condition="python: not hasattr(request.principal, 'getLogin')"
             i18n:translate="">
             [Login]</a>

@@ -17,6 +17,7 @@ $Id$
 """
 from zope.app.dublincore.interfaces import IDCDescriptiveProperties
 from zope.app.dublincore.interfaces import IDCTimes
+from zope.interface import Interface
 
 class IZopeTalesAPI(IDCDescriptiveProperties, IDCTimes):
 
@@ -39,3 +40,17 @@ class IZopeTalesAPI(IDCDescriptiveProperties, IDCTimes):
         (e.g. the object has no size), an empty string is returned.
         """
     
+class IURLQuote(Interface):
+
+    def quote():
+        """Return the objects URL quote representation."""
+
+    def quote_plus():
+        """Return the objects URL quote_plus representation."""
+
+    def unquote():
+        """Return the objects URL unquote representation."""
+
+    def unquote_plus():
+        """Return the objects URL unquote_plus  representation."""
+
