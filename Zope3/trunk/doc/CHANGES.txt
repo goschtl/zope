@@ -39,8 +39,8 @@ Zope Changes
 
     Backward compatibility notes
 
-    - If you have any add-on prodycts that used the old context-wrapper or
-      "context awareness" APIs, you will need to update these use the new, and
+    - If you have any add-on products that used the old context-wrapper or
+      "context awareness" APIs, you will need to update them to use the new, and
       much simpler, location API. See zope/app/interfaces/location.py.
 
     - If you have add-on products that register views or resources using the
@@ -157,7 +157,7 @@ Zope Changes
 
     - Progress with the TUV-IT security accredidation
 
-    - Many maintainance work and bug fixes.  
+    - Much maintainance work and bug fixes.  
 
 
     Much thanks to everyone who contributed to this release:
