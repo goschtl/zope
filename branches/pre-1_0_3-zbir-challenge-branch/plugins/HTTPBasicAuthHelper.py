@@ -97,7 +97,7 @@ class HTTPBasicAuthHelper( BasePlugin ):
         realm = response.realm
         if realm:
             response.addHeader('WWW-Authenticate',
-                               'basic realm="%s"' % realm, 1)
+                               'basic realm="%s"' % realm)
         m = "<strong>You are not authorized to access this resource.</strong>"
         if response.debug_mode:
             if response._auth:
