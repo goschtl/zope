@@ -23,7 +23,7 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.container.tests.test_icontainer import TestSampleContainer
-from zope.app.location import LocationPhysicallyLocatable
+from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.location.interfaces import ILocation
 from zope.app.tests import placelesssetup
 from zope.app.tests import ztapi
