@@ -23,6 +23,9 @@ Somewhere over the rainbow
 
  Bugs Fixed
 
+  - Restored slot in <head> of ZPT main template into which content
+    can insert the <base> tag (Tracker #418).
+
   - Fixed 'CMFTopic.SimpleIntegerCriterion.edit' to require a pair
     of values when 'direction' is 'min:max';  updated skins to use
     new 'getValueString', which renders such values properly
