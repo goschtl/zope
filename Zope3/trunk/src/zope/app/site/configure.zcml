@@ -75,7 +75,7 @@
   
   <fssync:adapter
       class=".service.ServiceRegistration"
-      factory="zope.app.registration.registration.ComponentRegistrationAdapter"
+      factory="zope.app.registration.fssync.adapter.ComponentRegistrationAdapter"
       />
   
   <adapter 
