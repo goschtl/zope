@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.11 2002/11/11 20:43:32 jim Exp $
+$Id: Widget.py,v 1.12 2002/12/04 09:58:46 jim Exp $
 """
 
 __metaclass__ = type
@@ -54,7 +54,7 @@ class BrowserWidget(Widget, BrowserView):
             # No user input
             if field.required:
                 raise MissingInputError(field.__name__)
-            return self.field.default
+            return field.default
 
         try:
             value = self._convert(value)
@@ -87,9 +87,9 @@ class BrowserWidget(Widget, BrowserView):
         if (self._data is None) and self.haveData():
             data = self.getData()
         else:
-            data = self._unconvert(self._data)
+            data = self._data
 
-        return data
+        return self._unconvert(data)
     
     def __call__(self):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'

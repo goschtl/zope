@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testBrowserWidget.py,v 1.5 2002/11/11 20:43:33 jim Exp $
+$Id: testBrowserWidget.py,v 1.6 2002/12/04 09:58:46 jim Exp $
 """
 import unittest
 from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
@@ -72,10 +72,31 @@ class BrowserWidgetTest(unittest.TestCase):
         value = ''.join(self._widget().strip().split())
         row = ''.join(self._widget.row().strip().split())
         self.assertEqual(row, '<td>%s</td><td>%s</td>' % (label, value))
-        
+
+class Test(BrowserWidgetTest):
+
+    def test_showData(self):
+
+        class W(BrowserWidget):
+            def _convert(self, v):
+                return u'X' + (v or '')
+
+            def _unconvert(self, v):
+                return v and v[1:] or ''
+
+        field = Text(__name__ = 'foo', title = u"Foo Title")
+        request = TestRequest()
+
+        w = W(field, request)
+        self.assertEqual(w._showData(), '')
+        request.form['field.foo'] = 'val'
+        self.assertEqual(w._showData(), 'val')
+
+        w.setData('Xfoo')
+        self.assertEqual(w._showData(), 'foo')        
 
 def test_suite():
-    return unittest.makeSuite(BrowserWidgetTest)
+    return unittest.makeSuite(Test)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
