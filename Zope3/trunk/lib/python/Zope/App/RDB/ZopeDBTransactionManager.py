@@ -17,9 +17,9 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: ZopeDBTransactionManager.py,v 1.4 2002/12/09 16:07:28 alga Exp $
+$Id: ZopeDBTransactionManager.py,v 1.5 2002/12/20 19:10:38 jeremy Exp $
 """
-from Transaction.IDataManager import IDataManager
+from Transaction.interfaces import IDataManager
 
 class ZopeDBTransactionManager:
 
