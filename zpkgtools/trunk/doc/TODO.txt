@@ -1,7 +1,7 @@
-- need name + acronym to describe what gets built, not normal words
-  (Jim sez)
+- Need name + acronym to describe what gets built, not normal words
+  (Jim sez).
 
-- need to add support for Subversion checkouts
+- Need to add support for Subversion checkouts.
 
 - We should have some way to wildcard an entire hierarchy of packages
   in resource maps.  Something like
@@ -41,20 +41,17 @@
           packages/
               foo/
 
-- support for installation of packages that don't exist at the top
-  level of the package hierarchy (really a distutils problem)
+- Deal with a package tree like the zope package tree that includes
+  both pure-Python and non-pure packages; these could easily land in
+  separate directory hierarchies for installations using a different
+  $prefix and $exec_prefix.  (The pkgutil module from the standard
+  library does not provide an acceptable solution due to a bug: see
+  http://www.python.org/sf/935117 for more info.)
 
-  - installation of "zope.app" that uses existing "zope" package
+- Fix up finddeps.py to stop searching at defined boundaries.  How to
+  define these boundaries is in flux at the moment.
 
-  - dealing with a package tree like the zope package tree that
-    includes both pure-Python and non-pure packages; see the pkgutil
-    module in Python's standard library as a possible approach to a
-    solution
-
-- fix up finddeps.py to stop searching at `PUBLICATION.cfg` boundaries
-  (have patch)
-
-- package assembler script to build sumo/combined distro (in progress)
+- Package assembler script to build sumo/combined distro (in progress)
 
 - CVS retriever (mostly done; need to deal with unspecified type and
   user for remote repositories)
@@ -66,7 +63,9 @@
 
   - more configuration settings?
 
-- expand the prototype section to the pre-proposal documenting the
-  current effort; this lets people respond and offer suggestions
+  It's not clear these remaining issues are particularly important.
 
-- documentation, documentation, documentation!
+- Expand the prototype section to the pre-proposal documenting the
+  current effort; this lets people respond and offer suggestions.
+
+- Documentation, documentation, documentation!
