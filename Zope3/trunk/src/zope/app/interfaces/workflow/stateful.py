@@ -14,7 +14,7 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.9 2003/03/26 16:35:26 jack-e Exp $
+$Id: stateful.py,v 1.10 2003/03/26 17:14:32 jack-e Exp $
 """
 import zope.schema
 from zope.proxy.context import ContextProperty
@@ -53,6 +53,7 @@ class TriggerModeField(zope.schema.TextLine):
     """
 
     def __allowed(self):
+        # XXX Need to define Contants !!!
         return [u'Manual', u'Automatic']
     
     allowed_values = ContextProperty(__allowed)
