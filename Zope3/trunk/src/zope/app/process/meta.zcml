@@ -1,18 +1,17 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
 
-  <directives namespace="http://namespaces.zope.org/startup">
+  <meta:directive 
+      name="registerRequestFactory"
+      namespace="http://namespaces.zope.org/startup"
+      schema=".metadirectives.IRegisterRequestFactoryDirective"
+      handler=".metaconfigure.registerRequestFactory" />
 
-    <directive name="registerRequestFactory"
-               attributes="name publication request factory"
-               handler="zope.app.process.metaconfigure.registerRequestFactory"
-               />
+  <meta:directive 
+      name="registerServerType"
+      namespace="http://namespaces.zope.org/startup"
+      schema=".metadirectives.IRegisterServerTypeDirective"
+      handler=".metaconfigure.registerServerType"/>
 
-    <directive name="registerServerType"
-               attributes="name publication request  factory requestFactory
-                               defaultPort logFactory defaultVerbose"
-               handler="zope.app.process.metaconfigure.registerServerType"
-               />
-
-  </directives>
-
-</zopeConfigure>
+</configure>

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: servertyperegistry.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
+$Id: servertyperegistry.py,v 1.3 2003/08/02 16:34:53 srichter Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
 from zope.app.process.servertype import IServerType
@@ -40,3 +40,8 @@ class ServerTypeRegistry(SimpleRegistry):
 ServerTypeRegistry = ServerTypeRegistry(IServerType)
 registerServerType = ServerTypeRegistry.register
 getServerType = ServerTypeRegistry.get
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(ServerTypeRegistry._clear)
+del addCleanUp

@@ -11,13 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-This module handles the :startup directives.
+"""This module handles the 'startup' ZCML namespace directives.
 
-$Id: metaconfigure.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
+$Id: metaconfigure.py,v 1.3 2003/08/02 16:34:53 srichter Exp $
 """
-
-from zope.configuration.action import Action
 from zope.app.process import requestfactoryregistry
 from zope.app.process import servertyperegistry
 from zope.app.process.requestfactory import RequestFactory
@@ -30,43 +27,26 @@ def registerRequestFactory(_context, name, request=None, publication=None,
     if factory:
         if request or publication:
             raise ValuesError(
-                """Can't provide a request or publication (factory) if you
+                """You cannot provide a request or publication (factory) if you
                 provide a (request) factory""")
-        request_factory = _context.resolve(factory)
+        request_factory = factory
 
     else:
-        publication = _context.resolve(publication)
-        request = _context.resolve(request)
         request_factory = RequestFactory(publication, request)
 
-    return [
-        Action(
+    _context.action(
             discriminator = name,
             callable = requestfactoryregistry.registerRequestFactory,
-            args = (name, request_factory,),
-            )
-        ]
+            args = (name, request_factory,) )
 
 
 def registerServerType(_context, name, factory, requestFactory, logFactory,
                        defaultPort, defaultVerbose):
-    factory = _context.resolve(factory)
-    logFactory = _context.resolve(logFactory)
-
-    if defaultVerbose.lower() == 'true':
-        defaultVerbose = True
-    else:
-        defaultVerbose = False
-
-    defaultPort = int(defaultPort)
 
     server_type = ServerType(name, factory, requestFactory, logFactory,
                              defaultPort, defaultVerbose)
 
-    return [
-        Action(
+    _context.action(
             discriminator = name,
             callable = servertyperegistry.registerServerType,
-            args = (name, server_type),
-            )
-        ]
+            args = (name, server_type) )
