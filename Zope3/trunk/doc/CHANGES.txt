@@ -71,6 +71,9 @@ Zope Changes
 
       o Language Negotiator
 
+      o Converted MailService --> MailDelivery utility; also the Mailer is now
+        a utility, instead of using its own registry.
+
     - Rearranged the package hierarchy below zope.app.
 
       o Moved content types, including their interfaces and browser

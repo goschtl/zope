@@ -74,8 +74,6 @@ Things to do for the next release (in no particular order)
 
   - Workflow definitions
 
-  - Mail
-
 - Implement tools:
 
   http://dev.zope.org/Zope3/TheBrowserToolDirective
