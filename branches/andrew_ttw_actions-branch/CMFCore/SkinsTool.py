@@ -64,9 +64,10 @@ class SkinsTool(UniqueObject, SkinsContainer, PortalFolder):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( { 'label' : 'Overview', 'action' : 'manage_overview' }
+    manage_options = ( modifiedOptions() +
+                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
                      , 
-                     ) + modifiedOptions()
+                     ))
 
     def __init__(self):
         self.selections = PersistentMapping()

@@ -71,9 +71,10 @@ class CatalogTool (UniqueObject, ZCatalog):
     meta_type = 'CMF Catalog'
     security = ClassSecurityInfo()
 
-    manage_options = ( { 'label' : 'Overview', 'action' : 'manage_overview' }
+    manage_options = ( ZCatalog.manage_options +
+                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
                      , 
-                     ) + ZCatalog.manage_options
+                     ))
 
     def __init__(self):
         ZCatalog.__init__(self, self.getId())

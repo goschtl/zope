@@ -510,9 +510,10 @@ class TypesTool( UniqueObject, OFS.Folder.Folder ):
 
     security = ClassSecurityInfo()
 
-    manage_options = ( { 'label' : 'Overview', 'action' : 'manage_overview' }
+    manage_options = ( OFS.Folder.Folder.manage_options +
+                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
                      , 
-                     ) + OFS.Folder.Folder.manage_options
+                     ))
 
     #
     #   ZMI methods
