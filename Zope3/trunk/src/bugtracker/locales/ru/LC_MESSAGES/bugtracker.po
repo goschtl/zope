@@ -1,3 +1,4 @@
+# translation of bugtracker.po to Russian
 ##############################################################################
 #
 # Copyright (c) 2003-2004 Zope Corporation and Contributors.
@@ -11,17 +12,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+# Dmitry Vasiliev <dima@hlabs.spb.ru>, 2004
 msgid ""
 msgstr ""
 "Project-Id-Version: Development/Revision: 27349\n"
 "POT-Creation-Date: Mon Aug 30 17:09:39 2004\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2004-08-30 18:03+0000\n"
+"Last-Translator: Dmitry Vasiliev <dima@hlabs.spb.ru>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: zope/app/locales/extract.py\n"
+"X-Generator: KBabel 1.0\n"
 
 #: src/bugtracker/browser/bug_listing_normal.pt:10
 msgid "Bug #${bug_id} - ${bug_title}"
