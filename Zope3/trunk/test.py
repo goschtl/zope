@@ -160,6 +160,7 @@ import os
 import re
 import pdb
 import sys
+import threading    # just to get at Thread objects created by tests
 import time
 import traceback
 import unittest
@@ -206,6 +207,14 @@ class ImmediateTestResult(unittest._TextTestResult):
             # XXX Perhaps eat the garbage here, so that the garbage isn't
             #     printed for every subsequent test.
 
+        # Did the test leave any new threads behind?
+        new_threads = [t for t in threading.enumerate()
+                         if t not in self._threads]
+        if new_threads:
+            print "The following test left new threads behind:"
+            print test
+            print "New thread(s):", new_threads
+
     def print_times(self, stream, count=None):
         results = self._testtimes.items()
         results.sort(lambda x, y: cmp(y[1], x[1]))
@@ -247,6 +256,7 @@ class ImmediateTestResult(unittest._TextTestResult):
                 self.stream.write(": %s" % name)
                 self._lastWidth = width
             self.stream.flush()
+        self._threads = threading.enumerate()
         self.__super_startTest(test)
         self._testtimes[test] = time.time()
 
@@ -459,7 +469,7 @@ def check_test_dir():
             test_dir = d
         else:
             raise ValueError("%s does not exist!" % test_dir)
-    
+
 
 def find_tests(rx):
     global finder
@@ -777,7 +787,7 @@ def process_args(argv=None):
 	print """\
 	ERROR: Your python version is not supported by Zope3.
 	Zope3 needs either Python2.3 or Python2.2.3 or greater.
-	In particular, Zope3 on Python2.2.2 is a recipe for 
+	In particular, Zope3 on Python2.2.2 is a recipe for
 	pain. You are running:""" + sys.version
 	sys.exit(1)
 
