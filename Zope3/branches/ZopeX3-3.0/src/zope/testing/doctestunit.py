@@ -125,12 +125,14 @@ def DocFileSuite(*paths, **kw):
     # BBB temporarily support passing package as first argument
     if not isinstance(paths[0], basestring):
         import warnings
-        warnings.warn("DocFileSuite package arguemnt must be provided as a "
+        warnings.warn("DocFileSuite package argument must be provided as a "
                       "keyword argument",
                       DeprecationWarning, 2)
         kw = kw.copy()
         kw['package'] = paths[0]
         paths = paths[1:]
+    else:
+        kw['package'] = _normalizeModule(kw.get('package'))
     
     suite = unittest.TestSuite()
     for path in paths:
