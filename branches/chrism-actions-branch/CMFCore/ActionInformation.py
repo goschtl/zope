@@ -181,7 +181,7 @@ class ActionInformation( SimpleItem ):
         if not state.has_key('_action_info'):
             state['_action_info'] = {}
             id = state['id']
-            state['_acton_info']['id'] = id
+            state['_action_info']['id'] = id
             _marker = []
             for name in ('title', 'description', 'category', 'condition',
                          'permissions', 'priority', 'visible', 'action'):
