@@ -295,8 +295,17 @@ import zpkgtools.setup
 """
 
 
-def parse_args(args):
+def parse_args(argv):
+    """Parse the command line, return an options object and the
+    positional arguments.
+
+    :Parameters:
+      - `argv`: The command line arguments, including argv[0].
+
+    """
+
     parser = optparse.OptionParser(
+        prog=os.path.basename(argv[0]),
         usage="usage: %prog [options] resource",
         version="%prog 0.1")
     parser.add_option(
@@ -328,13 +337,17 @@ def parse_args(args):
         "-v", dest="version",
         help="version label for the new distribution",
         default="0.0.0")
-    return parser.parse_args(args)
+    return parser.parse_args(argv[1:])
 
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
-    options, args = parse_args(argv[1:])
+    try:
+        options, args = parse_args(argv)
+    except SystemExit, e:
+        print >>sys.stderr, e
+        return 2
 
     # figure out what to read from:
     if len(args) != 1:
