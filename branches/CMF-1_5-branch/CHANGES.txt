@@ -21,6 +21,10 @@ Post-CMF 1.5.0
       document content if the format has been changed (arising from
       discussion about http://www.zope.org/Collectors/CMF/214)
 
+    - DirectoryViews/FSMetadata: Corrected some erroneous docstrings
+      about proxy role handling using .metadata files
+      (http://www.zope.org/Collectors/CMF/177)
+
 CMF 1.5.0 (2004/10/21)
 
   New Features
