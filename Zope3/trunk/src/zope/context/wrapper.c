@@ -73,7 +73,7 @@ ContextAwareType = {
     0,						/* tp_dictoffset */
     0,						/* tp_init */
     0,						/* tp_alloc */
-    PyType_GenericNew,				/* tp_new */
+    0,/*PyType_GenericNew,*/				/* tp_new */
     0,						/* tp_free */
 };
 
@@ -130,7 +130,7 @@ ContextDescriptorType = {
     0,						/* tp_dictoffset */
     0,						/* tp_init */
     0,						/* tp_alloc */
-    PyType_GenericNew,				/* tp_new */
+    0, /*PyType_GenericNew,*/				/* tp_new */
     0,						/* tp_free */
 };
 
@@ -287,7 +287,7 @@ PyTypeObject ContextProperty_Type = {
 	0,						/* tp_hash */
 	0,						/* tp_call */
 	0,						/* tp_str */
-	PyObject_GenericGetAttr,			/* tp_getattro */
+	0, /*PyObject_GenericGetAttr,*/			/* tp_getattro */
 	0,						/* tp_setattro */
 	0,						/* tp_as_buffer */
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC |
@@ -308,9 +308,9 @@ PyTypeObject ContextProperty_Type = {
 	property_descr_set,				/* tp_descr_set */
 	0,						/* tp_dictoffset */
 	property_init,					/* tp_init */
-	PyType_GenericAlloc,				/* tp_alloc */
-	PyType_GenericNew,				/* tp_new */
-	_PyObject_Del,               			/* tp_free */
+	0, /*PyType_GenericAlloc,*/			/* tp_alloc */
+	0, /*PyType_GenericNew,*/			/* tp_new */
+	0, /*_PyObject_Del,*/				/* tp_free */
 };
 
 /* end of ContextProperty */
@@ -414,7 +414,7 @@ PyTypeObject ContextMethod_Type = {
 	0,						/* tp_hash */
 	0,						/* tp_call */
 	0,						/* tp_str */
-	PyObject_GenericGetAttr,			/* tp_getattro */
+	0, /*PyObject_GenericGetAttr,*/			/* tp_getattro */
 	0,						/* tp_setattro */
 	0,						/* tp_as_buffer */
 	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,	/* tp_flags */
@@ -434,9 +434,9 @@ PyTypeObject ContextMethod_Type = {
 	0,						/* tp_descr_set */
 	0,						/* tp_dictoffset */
 	cm_init,					/* tp_init */
-	PyType_GenericAlloc,				/* tp_alloc */
-	PyType_GenericNew,				/* tp_new */
-	_PyObject_Del,					/* tp_free */
+	0, /*PyType_GenericAlloc,*/			/* tp_alloc */
+	0, /*PyType_GenericNew,*/			/* tp_new */
+	0, /*_PyObject_Del,*/				/* tp_free */
 };
 
 PyObject *
@@ -1363,24 +1363,34 @@ initwrapper(void)
     Py_INCREF(&WrapperType);
     PyModule_AddObject(m, "Wrapper", (PyObject *)&WrapperType);
 
+    ContextAwareType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&ContextAwareType) < 0)
         return;
     Py_INCREF(&ContextAwareType);
     PyModule_AddObject(m, "ContextAware", (PyObject *)&ContextAwareType);
 
+    ContextDescriptorType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&ContextDescriptorType) < 0)
         return;
     Py_INCREF(&ContextDescriptorType);
     PyModule_AddObject(m, "ContextDescriptor",
                        (PyObject *)&ContextDescriptorType);
 
+    ContextMethod_Type.tp_new = PyType_GenericNew;
     ContextMethod_Type.tp_base = &ContextDescriptorType;
+    ContextMethod_Type.tp_getattro = PyObject_GenericGetAttr;
+    ContextMethod_Type.tp_alloc = PyType_GenericAlloc;
+    ContextMethod_Type.tp_free = _PyObject_Del;
     if (PyType_Ready(&ContextMethod_Type) < 0)
         return;
     Py_INCREF(&ContextMethod_Type);
     PyModule_AddObject(m, "ContextMethod", (PyObject *)&ContextMethod_Type);
 
+    ContextProperty_Type.tp_new = PyType_GenericNew;
     ContextProperty_Type.tp_base = &ContextDescriptorType;
+    ContextProperty_Type.tp_getattro = PyObject_GenericGetAttr;
+    ContextProperty_Type.tp_free = _PyObject_Del;
+    ContextProperty_Type.tp_alloc = PyType_GenericAlloc;
     if (PyType_Ready(&ContextProperty_Type) < 0)
         return;
     Py_INCREF(&ContextProperty_Type);
