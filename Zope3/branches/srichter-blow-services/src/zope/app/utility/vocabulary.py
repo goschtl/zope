@@ -11,25 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Local Service Directive
+"""Utility Vocabulary.
 
-$Id$
+This vocabulary provides terms for all utilities providing a given interface.
+
+$Id: vocabulary.py 28582 2004-12-08 00:46:02Z srichter $
 """
-__docformat__ = "reStructuredText"
 from zope.deprecation import deprecated
-from zope.interface import classImplements
-from zope.app.component.contentdirective import ContentDirective
 
-from interfaces import ISimpleService
+from zope.app.component.vocabulary import *
 
-
-class LocalServiceDirective(ContentDirective):
-
-    def __init__(self, _context, class_):
-        if not ISimpleService.implementedBy(class_):
-            classImplements(class_, ISimpleService)
-        super(LocalServiceDirective, self).__init__(_context, class_)
-
-deprecated('LocalServiceDirective',
-           'The concept of services has been removed. Use utilities instead. '
+deprecated(('UtilityTerm', 'UtilityVocabulary', 'UtilityNameTerm', 
+            'UtilityComponentInterfacesVocabulary', 'UtilityNames'),
+           'This class has been moved to zope.app.component.vocabulary. '
            'The reference will be gone in X3.3.')
+           

@@ -165,7 +165,7 @@ class TestPageRegistration(PlacefulSetup, unittest.TestCase):
 
     def test_factories_template(self):
         registration = contained(
-            PageRegistration(I1, 'test', 'zope.View',
+            PageRegistration('test', I1, 'zope.View',
                               "Foo.Bar.A",
                               template=self.__template,
                               ),

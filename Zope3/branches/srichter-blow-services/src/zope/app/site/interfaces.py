@@ -15,6 +15,7 @@
 
 $Id: interfaces.py 27514 2004-09-13 15:54:05Z fdrake $
 """
+from zope.deprecation import deprecated
 from zope.interface import Interface
 from zope.app.component.interfaces import registration
 from zope.app.container.interfaces import IContainer
@@ -23,7 +24,16 @@ from zope.app.component.interfaces import IPossibleSite, ISite
 from zope.app.component.interfaces import ILocalSiteManager
 from zope.app.component.interfaces import ISiteManagementFolder
 
+deprecated(('IPossibleSite', 'ISite'),
+           'This interface has been moved to zope.app.component.interfaces. '
+           'The reference will be gone in X3.3.')
+
 ISiteManager = ILocalSiteManager
+
+deprecated('ISiteManager',
+           'This interface has been moved to zope.app.component.interfaces '
+           'and been renamed ISiteManager. '
+           'The reference will be gone in X3.3.')
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
@@ -33,12 +43,17 @@ class ILocalService(registration.IRegisterable):
     IRegisterable (which implies that it is adaptable to
     IRegistered).  Implementing ILocalService implies this.
     """
+
 class ISimpleService(ILocalService):
     """Most local services should implement this instead of ILocalService.
 
     It implies a specific way of implementing IRegisterable,
     by subclassing IAttributeRegisterable.
     """
+
+deprecated(('ILocalService', 'ISimpleService'),
+           'The concept of services has been removed. Use utilities instead. '
+           'The reference will be gone in X3.3.')
 
 class IComponentManager(Interface):
 
@@ -56,6 +71,10 @@ class IComponentManager(Interface):
 
         """
 
+deprecated('IComponentManager',
+           'This interface has been removed. It was horrible anyways. '
+           'The reference will be gone in X3.3.')
+
 class IBindingAware(Interface):
 
     def bound(name):
@@ -72,6 +91,10 @@ class IBindingAware(Interface):
         this object from performing the named service.
         """
 
+deprecated('IBindingAware',
+           'Now that services are gone, we do not need the binding support. '
+           'The reference will be gone in X3.3.')
+
 class ISiteManagementFolders(IContainer, IComponentManager):
     """A collection of ISiteManagementFolder objects.
 
@@ -79,3 +102,7 @@ class ISiteManagementFolders(IContainer, IComponentManager):
     well as package query and lookup.
     
     """
+
+deprecated('ISiteManagementFolders',
+           'This interface has been removed. It was unused. '
+           'The reference will be gone in X3.3.')

@@ -1,6 +1,5 @@
 ##############################################################################
-#
-# Copyright (c) 2005 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -9,20 +8,11 @@
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-#
 ##############################################################################
-"""Service Manager Container
+"""Local utility service implementation.
 
-$Id$
+$Id: __init__.py 25177 2004-06-02 13:17:31Z jim $
 """
-__docformat__ = "reStructuredText"
-from zope.deprecation import deprecated
 
-from zope.app.component.site import SiteManagerContainer
+from utility import UtilityRegistration, LocalUtilityService
 
-ServiceManagerContainer = SiteManagerContainer
-
-deprecated('ServiceManagerContainer',
-           'This class has been moved to zope.app.component.site '
-           'and been renamed to SiteManagerContainer. '
-           'The reference will be gone in X3.3.')

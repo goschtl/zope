@@ -117,18 +117,16 @@ class Registered(object):
 
 def PageRegistrationAddSubscriber(registration, event):
     if registration.template is not None:
-        # XXX: Needs investigating
         dependents = IDependable(removeSecurityProxy(registration.template))
-        #objectpath = zapi.getPath(registration)
-        #dependents.addDependent(objectpath)
+        objectpath = zapi.getPath(registration)
+        dependents.addDependent(objectpath)
 
 
 def PageRegistrationRemoveSubscriber(registration, event):
     if registration.template is not None:
-        # XXX: Needs investigating
         dependents = IDependable(removeSecurityProxy(registration.template))
-        #objectpath = zapi.getPath(registration)
-        #dependents.removeDependent(objectpath)
+        objectpath = zapi.getPath(registration)
+        dependents.removeDependent(objectpath)
 
 
 class TemplateViewFactory(object):

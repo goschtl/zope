@@ -15,6 +15,7 @@
 
 $Id: interfaces.py 28654 2004-12-20 21:13:50Z gintautasm $
 """
+from zope.deprecation import deprecated
 from zope.interface import Interface, implements
 from zope.schema import TextLine
 from zope.schema.interfaces import ITextLine
@@ -24,13 +25,28 @@ UnregisteredStatus = registration.InactiveStatus
 RegisteredStatus = registration.InactiveStatus
 ActiveStatus = registration.ActiveStatus
 
+deprecated(('UnregisteredStatus', 'RegisteredStatus'),
+           'Registered and unregistered status has have been collapsed into '
+           'zope.app.component.interfaces.registration.InactiveStatus. '
+           'Will be gone in X3.3.')
+deprecated('ActiveStatus',
+           'ActiveStatus is now available in '
+           'zope.app.component.interfaces.registration. '
+           'Will be gone in X3.3.')
+
 IRegistrationEvent = registration.IRegistrationEvent
 IRegistrationActivatedEvent = registration.IRegistrationActivatedEvent
 IRegistrationDeactivatedEvent = registration.IRegistrationDeactivatedEvent
 
+deprecated(('IRegistrationEvent',
+            'IRegistrationActivatedEvent', 'IRegistrationDeactivatedEvent'),
+           'The registration events have moved to '
+           'zope.app.component.interfaces.registration. '
+           'Will be gone in X3.3.')
+
+
 class INoLocalServiceError(Interface):
-    """No local service to register with.
-    """
+    """No local service to register with."""
 
 class NoLocalServiceError(Exception):
     """No local service to configure
@@ -38,10 +54,19 @@ class NoLocalServiceError(Exception):
     An attempt was made to register a registration for which there is
     no local service.
     """
-
     implements(INoLocalServiceError)
 
+deprecated(('INoLocalServiceError', 'NoLocalServiceError'),
+           'The concept of services has been removed. This event will '
+           'be gone in X3.3.')
+
 IRegistration = registration.IRegistration
+
+deprecated(('IRegistrationEvent',
+            'IRegistrationActivatedEvent', 'IRegistrationDeactivatedEvent'),
+           'The registration events have moved to '
+           'zope.app.component.interfaces.registration. '
+           'Will be gone in X3.3.')
 
 class IComponentPath(ITextLine):
     """A component path
@@ -58,11 +83,30 @@ class ComponentPath(TextLine):
     """
     implements(IComponentPath)
 
+deprecated(('IComponentPath', 'ComponentPath'),
+           'Registrations now use component references instead of component '
+           'paths. Use zope.app.component.interfaces.registration.Component '
+           'instead. This field will be gone in X3.3.')
+
 IComponentRegistration = registration.IComponentRegistration
+
+deprecated('IComponentRegistration',
+           'The IComponentRegistration interface has moved to '
+           'zope.app.component.interfaces.registration. '
+           'This reference will be gone in X3.3.')
 
 from zope.app.component.bbb.interfaces import IRegistrationStack
 
+deprecated('IRegistrationStack',
+           'The registration stack concept has been removed. '
+           'This interface will be gone in X3.3.')
+
 IRegistry = registration.IRegistry
+
+deprecated('IRegistry',
+           'The IRegistry interface has moved to '
+           'zope.app.component.interfaces.registration. '
+           'This reference will be gone in X3.3.')
 
 class IOrderedContainer(Interface):
     """Containers whose items can be reorderd."""
@@ -83,13 +127,29 @@ class IOrderedContainer(Interface):
         """Move the objects corresponding to the given names down.
         """
 
+deprecated('IOrderedContainer',
+           'The ordered container should have not been declared here. The '
+           'registerable container does not support this interface anymore, '
+           'since it was useless anyways. '
+           'This interface will be gone in X3.3.')
+
 IRegistrationManager = registration.IRegistrationManager
 IRegisterableContainer = registration.IRegisterableContainer
 IRegisterable = registration.IRegisterable
-
 IRegistered = registration.IRegistered
 
+deprecated(('IRegistrationManager', 'IRegisterableContainer',
+            'IRegisterable', 'IRegistered'), 
+           'This interface has moved to '
+           'zope.app.component.interfaces.registration. '
+           'This reference will be gone in X3.3.')
+
 IAttributeRegisterable = IRegisterable
+
+deprecated('IAttributeRegisterable', 
+           'Registrations are not stored on the component anymore and thus '
+           'the attribute registerable is now simply a registerable. '
+           'This reference will be gone in X3.3.')
 
 class INoRegistrationManagerError(Interface):
     """No registration manager error
@@ -105,3 +165,7 @@ class NoRegistrationManagerError(Exception):
     """
     implements(INoRegistrationManagerError)
 
+deprecated(('INoRegistrationManagerError', 'NoRegistrationManagerError'),
+           'It is now guaranteed that a registerable container has a '
+           'registration manager; thus this error is never raised. '
+           'This event will be gone in X3.3.')
