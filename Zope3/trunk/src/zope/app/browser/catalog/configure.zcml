@@ -3,33 +3,24 @@
    xmlns="http://namespaces.zope.org/browser">
 
   <!-- Allow a catalog to be added to content space -->
-  <menuItem 
-      menu="add_content"
-      for="zope.app.interfaces.container.IAdding"
-      title="Catalog"
-      action="zope.app.catalog"
-      description="Catalog" />
-  
+  <addMenuItem
+    title="Catalog"
+    description="A Catalog allows indexing and searching of objects"
+    class="zope.app.catalog.catalog.Catalog"
+    permission="zope.ManageContent"
+  />
+
   <icon 
       name="zmi_icon" 
       for="zope.app.interfaces.catalog.catalog.ICatalog"
       file="catalog_icon.gif"/>
   
-  <menuItem
-      menu="add_component"
-      action="zope.app.catalogutility"
-      title="Catalog"
-      for="zope.app.interfaces.container.IAdding"
-      description="A Catalog allows indexing and searching of objects"
-      permission="zope.ManageServices" />
-
-  <menuItem
-      menu="add_utility"
-      action="zope.app.catalogutility"
-      title="Catalog"
-      for="zope.app.interfaces.container.IAdding"
-      description="A Catalog allows indexing and searching of objects"
-      permission="zope.ManageServices" />
+  <addMenuItem
+    title="Site Catalog"
+    description="A Catalog allows indexing and searching of objects"
+    class="zope.app.catalog.catalog.CatalogUtility"
+    permission="zope.ManageServices"
+  />
 
   <!-- Standard container 'contents' tab -->
   <page

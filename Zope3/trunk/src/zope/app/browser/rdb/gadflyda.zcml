@@ -12,20 +12,11 @@
       permission="zope.ManageContent"
       usage="addingdialog" />
 
-  <!-- Menu entry for "add utility" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_utility"
-      action="AddGadflyDA"
-      title="Gadfly DA" 
-      description="A DA for the built-in 100% Pure Python Gadfly Database" />
-
-  <!-- Menu entry for "add connection" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_connection"
-      action="AddGadflyDA"
-      title="Gadfly DA" 
-      description="A DA for the built-in 100% Pure Python Gadfly Database" />
+  <addMenuItem
+    title="Gadfly DA" 
+    description="A DA for the built-in 100% Pure Python Gadfly Database"
+    class="zope.app.rdb.gadflyda.GadflyAdapter"
+    permission="zope.ManageServices"
+  />
 
 </zope:configure>

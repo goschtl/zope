@@ -35,26 +35,12 @@
       fields="name interface componentPath permission status"
       usage="addingdialog" />
 
-
-  <!-- Menu entry for "add component" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_component"
-      action="zope.app.utilities.schema.SchemaUtility"
-      title="Mutable Schema"
-      description="A Persistent Schema that can be edited through the web"
-      permission="zope.ManageServices"
-      />
-
-  <!-- Menu entry for "add utility" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_utility"
-      action="zope.app.utilities.schema.SchemaUtility"
-      title="Mutable Schema"
-      description="A Persistent Schema that can be edited through the web"
-      permission="zope.ManageServices"
-      />
+   <addMenuItem
+    title="Mutable Schema"
+    description="A Persistent Schema that can be edited through the web"
+    class="zope.app.utilities.schema.SchemaUtility"
+    permission="zope.ManageServices"
+  />
 
 
   <defaultView

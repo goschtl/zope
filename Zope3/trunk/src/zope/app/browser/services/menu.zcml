@@ -4,11 +4,12 @@
 
 <!-- Browser Menu Service -->
 
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_service"
-      action="zope.app.services.LocalBrowserMenuService"
-      title="Menu Service" />
+   <addMenuItem
+     title="Browser Menu Service"
+     description="A Service For Persistent Browser Menus"
+     class="zope.app.services.menu.LocalBrowserMenuService"
+     permission="zope.ManageServices"
+   />
 
   <page
        name="overview.html"
@@ -75,23 +76,12 @@
        for="zope.app.interfaces.services.menu.ILocalBrowserMenu"
        name="contents.html" />
 
-  <!-- Menu entry for "add component" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_component"
-      action="AddBrowserMenu"
-      title="Browser Menu"
-      description="A Persistent Browser Menu"
-      permission="zope.ManageServices" />
-
-  <!-- Menu entry for "add utility" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_utility"
-      action="AddBrowserMenu"
-      title="Browser Menu"
-      description="A Persistent Browser Menu"
-      permission="zope.ManageServices" />
+  <addMenuItem
+    title="Browser Menu"
+    description="A Persistent Browser Menu"
+    class="zope.app.services.menu.LocalBrowserMenu"
+    permission="zope.ManageServices"
+  />
 
 
 <!-- Browser Menu Item-->

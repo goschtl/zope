@@ -2,20 +2,12 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-
-  <!-- Menu entry for "add cache" menu -->
-  <menuItem
-      menu="add_cache"
-      for="zope.app.interfaces.container.IAdding"
-      title="RAM Cache"
-      action="zope.caching.RAMCache" />
-
-  <!-- Menu entry for "add utility" menu -->
-  <menuItem
-      menu="add_utility"
-      for="zope.app.interfaces.container.IAdding"
-      title="RAM Cache"
-      action="zope.caching.RAMCache" />
+  <addMenuItem
+    title="RAM Cache"
+    description="A RAM cache is a volatile (in memory) cache for speeding up things"
+    class="zope.app.cache.ram.RAMCache"
+    permission="zope.ManageServices"
+  />
 
   <pages
       for="zope.app.interfaces.cache.ram.IRAMCache"
