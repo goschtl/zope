@@ -12,8 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Generate method skeletons for intefaces.
+"""Generate method skeletons for intefaces.
 
 Usage: python pyskel.py dotted_name
 
@@ -25,7 +24,7 @@ Example:
 The dotted name is the module name and interface object name connected
 with a dot.
 
-Revision information: $Id: pyskel.py,v 1.5 2004/01/14 22:55:30 chrism Exp $
+$Id$
 """
 
 import sys, os, re

@@ -12,7 +12,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Import checker
 
+This utility finds unused imports in Python modules.  Its output is
+grep-like and thus emacs-friendly.
+
+$Id$
+"""
 import compiler
 import os, os.path
 import sys

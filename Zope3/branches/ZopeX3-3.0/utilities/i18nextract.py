@@ -41,7 +41,7 @@ Options:
         Specifies a directory, relative to the package in which to put the
         output translation template.
 
-$Id: i18nextract.py,v 1.6 2004/04/21 10:02:14 eckart Exp $
+$Id$
 """
 
 import os, sys, getopt

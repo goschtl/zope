@@ -42,7 +42,7 @@ Import Order:-
    It Displays Import order for all py files in the specified path and
    doesn't write importorder into .py file. 
 
-$Id: importorder.py,v 1.1 2004/05/10 15:48:03 eddala Exp $
+$Id$
 """
 
 import getopt
