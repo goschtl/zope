@@ -10,6 +10,13 @@ Zope Changes
 
     New features
 
+      - Added a "debug" command to zopectl.  This loads the Zope
+        configuration and provides an interactive Python session in
+        which a `zope.app.debug.debug.Debugger` instance has been
+        provided as "debugger".  This allows exercising Zope under the
+        debugger using the same appserver configuration that the
+        server process uses.  The servers themselves are not started.
+
       - Created a new granting UI that allows advanced searching of
         principal sources.
 
