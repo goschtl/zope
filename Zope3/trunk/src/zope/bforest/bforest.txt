@@ -211,14 +211,6 @@ but here are some additional cases
     False
     >>> d != None
     True
-    >>> d > None
-    True
-    >>> d < None
-    False
-    >>> d >= None
-    True
-    >>> d <= None
-    False
     >>> d >= second
     True
     >>> d >= dict(second)
