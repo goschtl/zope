@@ -12,37 +12,41 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.10 2003/11/21 17:11:34 jim Exp $
+$Id: test_propfind.py,v 1.11 2004/02/24 16:51:30 philikon Exp $
 """
 __metaclass__ = type
 
+from StringIO import StringIO
+from unittest import TestCase, TestSuite, main, makeSuite
+from datetime import datetime
+
+from zope.interface import implements
+from zope.component import getService, getView, getAdapter
+from zope.publisher.interfaces.http import IHTTPRequest
+from zope.pagetemplate.tests.util import normalize_xml
+from zope.schema import getFieldNamesInOrder
+from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
+
 from zope.app import zapi
 from zope.app.tests import ztapi
-from datetime import datetime
-from unittest import TestCase, TestSuite, main, makeSuite
-from StringIO import StringIO
-from zope.component import getService, getView, getAdapter
+
 from zope.app.services.servicenames import Adapters
 from zope.app.traversing import traverse
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteFile
-from zope.app.interfaces.content.zpt import IZPTPage
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.publisher.interfaces.http import IHTTPRequest
 from zope.app.browser.absoluteurl import AbsoluteURL
-from zope.pagetemplate.tests.util import normalize_xml
-from zope.schema import getFieldNamesInOrder
 from zope.app.interfaces.container import IReadContainer
-from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
-from zope.app.dav import propfind
-from zope.app.interfaces.dav import IDAVSchema
-from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
-from zope.app.dav.globaldavschemaservice import provideInterface
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.interface import implements
+
+from zope.app.dav import propfind
+from zope.app.interfaces.dav import IDAVSchema
+from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
+from zope.app.dav.globaldavschemaservice import provideInterface
+
 import zope.app.location
 
 class Folder(zope.app.location.Location):
@@ -80,7 +84,7 @@ class File(zope.app.location.Location):
 
 class FooZPT(zope.app.location.Location):
 
-    implements(IAnnotatable, IZPTPage)
+    implements(IAnnotatable)
 
     def getSource(self):
         return 'bla bla bla'

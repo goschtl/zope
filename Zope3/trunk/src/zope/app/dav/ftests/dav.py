@@ -13,15 +13,21 @@
 ##############################################################################
 """Base class for DAV functional tests.
 
-$Id: dav.py,v 1.2 2003/09/21 17:30:44 jim Exp $
+$Id: dav.py,v 1.3 2004/02/24 16:51:30 philikon Exp $
 """
 
-from zope.testing.functional import HTTPTestCase
-from zope.app.content.zpt import ZPTPage
-from zope.app.content.folder import Folder
+from persistent import Persistent
 from transaction import get_transaction
+from zope.interface import implements
+from zope.testing.functional import HTTPTestCase
+
+from zope.app.folder import Folder
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 __metaclass__ = type
+
+class Page(Persistent):
+    implements(IAttributeAnnotatable)    
 
 class DAVTestCase(HTTPTestCase):
 
@@ -47,7 +53,6 @@ class DAVTestCase(HTTPTestCase):
         get_transaction().commit()
 
     def addPage(self, path, content):
-        page = ZPTPage()
+        page = Page()
         page.source = content
         self.createObject(path, page)
-
