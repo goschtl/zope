@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.3 2004/03/18 17:01:10 philikon Exp $
+$Id: widget.py,v 1.4 2004/03/19 04:26:13 srichter Exp $
 """
 import re, cgi
 import traceback
@@ -129,11 +129,11 @@ class BrowserWidget(Widget, BrowserView):
 
     implements(IBrowserWidget)
 
-    tag = 'input'
-    type = 'text'
-    cssClass = ''
-    extra = ''
-    _missing = ''
+    tag = u'input'
+    type = u'text'
+    cssClass = u''
+    extra = u''
+    _missing = u''
     _error = None
     
     required = property(lambda self: self.context.required)
@@ -294,12 +294,12 @@ class BrowserWidget(Widget, BrowserView):
 
     def row(self):
         if self._error:
-            return '<div class="%s">%s</div><div class="field">%s</div>' \
-                '<div class="error">%s</div>' % (self.labelClass(),
-                                                 self.label(), self(),
-                                                 self.error())
+            return u'<div class="%s">%s</div><div class="field">%s</div>' \
+                   u'<div class="error">%s</div>' % (self.labelClass(),
+                                                     self.label(), self(),
+                                                     self.error())
         else:
-            return '<div class="%s">%s</div><div class="field">%s</div>' % (
+            return u'<div class="%s">%s</div><div class="field">%s</div>' % (
                 self.labelClass(), self.label(), self())
                 
 class DisplayWidget(BrowserWidget):
@@ -326,21 +326,21 @@ def renderTag(tag, **kw):
     # text inputs.
     cssWidgetType = kw.get('type')
     if cssWidgetType:
-        cssWidgetType += 'Type'
+        cssWidgetType += u'Type'
     else:
-        cssWidgetType = ''
+        cssWidgetType = u''
     if cssWidgetType or cssClass:
         names = filter(None, (cssClass, cssWidgetType))
-        attr_list.append('class="%s"' % ' '.join(names))
+        attr_list.append(u'class="%s"' % ' '.join(names))
 
     if 'style' in kw:
-        if kw['style'] != '':
-            attr_list.append('style=%s' % quoteattr(kw['style']))
+        if kw['style'] != u'':
+            attr_list.append(u'style=%s' % quoteattr(kw['style']))
         del kw['style']
 
     # special case handling for extra 'raw' code
     if 'extra' in kw:
-        extra = " " + kw['extra'] # could be empty string but we don't care
+        extra = u" " + kw['extra'] # could be empty string but we don't care
         del kw['extra']
     else:
         extra = ""
@@ -352,20 +352,20 @@ def renderTag(tag, **kw):
         for key, value in items:
             if value == None:
                 value = key
-            attr_list.append('%s=%s' % (key, quoteattr(unicode(value))))
+            attr_list.append(u'%s=%s' % (key, quoteattr(unicode(value))))
 
     if attr_list:
-        attr_str = " ".join(attr_list)
-        return "<%s %s%s" % (tag, attr_str, extra)
+        attr_str = u" ".join(attr_list)
+        return u"<%s %s%s" % (tag, attr_str, extra)
     else:
-        return "<%s%s" % (tag, extra)
+        return u"<%s%s" % (tag, extra)
 
 
 def renderElement(tag, **kw):
     if 'contents' in kw:
         contents = kw['contents']
         del kw['contents']
-        return "%s>%s</%s>" % (renderTag(tag, **kw), contents, tag)
+        return u"%s>%s</%s>" % (renderTag(tag, **kw), contents, tag)
     else:
         return renderTag(tag, **kw) + " />"
         
