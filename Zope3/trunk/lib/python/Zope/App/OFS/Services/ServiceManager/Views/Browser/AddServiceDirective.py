@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: AddServiceDirective.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+$Id: AddServiceDirective.py,v 1.2 2002/11/18 13:26:36 stevea Exp $
 """
 __metaclass__ = type
 
@@ -25,7 +25,6 @@ from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
      import ServiceDirective
 
 class AddServiceDirective(BrowserView):
-
 
     def services(self):
         service = getServiceManager(self.context.context)
@@ -37,8 +36,7 @@ class AddServiceDirective(BrowserView):
         service = getServiceManager(self.context.context)
         type = service.getInterfaceFor(service_type)
         return [info['path']
-                for info in
-                service.queryComponent(type=type)
+                for info in service.queryComponent(type=type)
                 ]
 
     def action(self, service_type, component_path, status=""):
