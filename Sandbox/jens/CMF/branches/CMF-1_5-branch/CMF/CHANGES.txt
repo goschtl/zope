@@ -17,6 +17,10 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - PortalFolder: Fixed '_checkId' policy.
+      In a subfolder, members without 'Manage portal' permission were not able
+      to overwrite content items of the portal root.
+
     - CookieCrumbler: Improved 'came_from' URL.
       Problems in connection with stack manipulation on traversal or usage of
       'traverse_subpath' should be fixed now.
