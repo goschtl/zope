@@ -12,7 +12,7 @@ Installing PsycopgDA
    most convenient place:
 
  
-   svn co svn://svn.zope.org/repos/main/psycopg
+   svn co svn://svn.zope.org/repos/main/psycopg/trunk psycopg
 
 
 2. Copy `psycopg-configure.zcml` to the `package-includes` directory
