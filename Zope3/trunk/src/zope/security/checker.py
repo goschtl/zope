@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.14 2003/04/15 21:23:47 bwarsaw Exp $
+$Id: checker.py,v 1.15 2003/04/16 19:21:39 bwarsaw Exp $
 """
 
 import os
@@ -389,7 +389,6 @@ BasicTypes = {
     types.NoneType: NoProxy,
     str: NoProxy,
     unicode: NoProxy,
-    MessageID: NoProxy,
     type(True): NoProxy, # Boolean, if available :)
     datetime.timedelta: NoProxy,
     datetime.datetime: NoProxy,
