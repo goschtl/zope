@@ -135,7 +135,7 @@ class Checker(object):
                 return # allowed
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized(name=name, permission=permission)
+                raise Unauthorized(name, permission)
 
         __traceback_supplement__ = (TracebackSupplement, object)
         raise ForbiddenAttribute, (name, object)
@@ -150,7 +150,7 @@ class Checker(object):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized(name=name, permission=permission)
+                raise Unauthorized(name, permission)
         elif name in _always_available:
             return
 
