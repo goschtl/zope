@@ -17,6 +17,7 @@ $Id: functional.py 26214 2004-07-08 19:00:07Z srichter $
 """
 
 import unittest
+import transaction
 from zope.app.tests.functional import SampleFunctionalTest, BrowserTestCase
 from zope.app.tests.functional import FunctionalDocFileSuite
 
@@ -57,7 +58,7 @@ class CookieFunctionalTest(BrowserTestCase):
             <h1 tal:condition="ignored" />
             </tal:tag>'''
         root['setcookie'] = page
-
+        transaction.commit()
 
     def tearDown(self):
         root = self.getRootFolder()
