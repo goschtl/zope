@@ -11,29 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Default ISecurityContext impl """
+"""Default ISecurityContext implementation."""
 
 from zope.security.interfaces import ISecurityContext
+from zope.interface import implements
 
 class SecurityContext:
+    """Capture transient request-specific security information.
+
+    Attribute('stack',
+              'A stack of elements, each either be an ExecutableObject or a'
+              ' tuple consisting of an ExecutableObject and a custom'
+              ' SecurityPolicy.'
+              )
+
+    Attribute('user',
+              'The AUTHENTICATED_USER for the request.'
+              )
     """
-        Capture transient request-specific security information.
+    implements(ISecurityContext)
 
-        Attribute( 'stack'
-                , 'A stack of elements, each either be an ExecutableObject'
-                'or a tuple consisting of an ExecutableObject and a'
-                'custom SecurityPolicy.'
-                )
-
-        Attribute( 'user'
-                , 'The AUTHENTICATED_USER for the request.'
-                )
-    """
-
-    __implements__ = ISecurityContext
-    
     def __init__(self, user):
-
         self.stack       = []
         self.user        = user
         self.objectCache = {}

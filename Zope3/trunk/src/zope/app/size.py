@@ -13,17 +13,17 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: size.py,v 1.5 2003/01/17 13:23:15 efge Exp $
+$Id: size.py,v 1.6 2003/06/03 15:09:25 stevea Exp $
 """
 
 from zope.app.interfaces.size import ISized
+from zope.interface import implements
 
 __metaclass__ = type
 
 class DefaultSized:
+    implements(ISized)
 
-    __implements__ = ISized
-    
     def __init__(self, obj):
         try:
             size = int(obj.getSize())
@@ -35,7 +35,7 @@ class DefaultSized:
     def sizeForSorting(self):
         """See ISized"""
         return self._sortingSize
-        
+
     def sizeForDisplay(self):
         """See ISized"""
         units, size = self._sortingSize

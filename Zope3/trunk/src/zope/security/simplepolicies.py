@@ -11,33 +11,30 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Simple ISecurityPolicy implementations."""
+"""Simple ISecurityPolicy implementations."""
 
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
 import zope.security.checker
+from zope.interface import implements
 
 class ParanoidSecurityPolicy:
-    """
-        Deny all access.
-    """
-    __implements__ = ISecurityPolicy
+    """Deny all access."""
+    implements(ISecurityPolicy)
 
     def checkPermission(self, permission, object, context):
         if permission is zope.security.checker.CheckerPublic:
-            return 1
+            return True
         if (context.user is system_user   # no user
             and not context.stack  # no untrusted code
             ):
-            return 1 # Nobody not to trust!
+            return True # Nobody not to trust!
 
-        return 0
+        return False
 
 class PermissiveSecurityPolicy:
-    """
-        Allow all access
-    """
-    __implements__ = ISecurityPolicy
+    """Allow all access."""
+    implements(ISecurityPolicy)
 
     def checkPermission(self, permission, object, context):
-        return 1
+        return True
