@@ -1,0 +1,90 @@
+<html metal:use-macro="context/@@standard_macros/view"
+      i18n:domain="versioncontrol">
+<body><div metal:fill-slot="body">
+
+  <h1 i18n:translate="">Versioning informations</h1>
+  <form action="saveVersion.html" method="post">
+    <input type="submit" name="submit" value="save Version" />
+  </form>
+  <table class="listing">
+    <caption i18n:translate="">Version list</caption>
+    <tr>
+      <th i18n:translate="">name</th>
+      <th i18n:translate="">timestamp</th>
+      <th i18n:translate="">principal</th>
+      <th i18n:translate="">comment</th>
+      <th i18n:translate="">Revert</th>
+    </tr>
+    <tr tal:repeat="version view/listVersions">
+      <td tal:content="version/name">Version id</td>
+      <td tal:content="version/timestamp">Timestamp</td>
+      <td tal:content="version/principal">Label</td>
+      <td tal:content="version/comment">User Id</td>
+      <td>
+        <form action="revert.html" method="post">
+          <input type="hidden" name="labelselector" 
+                 tal:attributes="value version/label"/>
+          <input type="submit" name="submit" value="Revert" />
+        </form>
+    </tr>
+  </table>  
+ 
+  <!--form tal:condition="not:view/isCheckedOut" action="checkout.html" method="post">
+    <input type="submit" name="submit" value="checkout" />
+  </form>
+  <form tal:condition="view/isCheckedOut" action="checkin.html" method="post">
+    <input type="submit" name="submit" value="checkin" />
+  </form>
+  <form tal:condition="view/isCheckedOut" action="uncheckout.html" method="post">
+    <input type="submit" name="submit" value="uncheckout" />
+  </form>
+  <table tal:define="thisInfo view/getVersionInfo">
+    <caption i18n:translate="">Current version info</caption>
+    <tr>
+      <th i18n:translate="">version</th><td tal:content="thisInfo/version_id">version id</td>
+    </tr>
+    <tr>
+      <th i18n:translate="">status</th><td tal:content="thisInfo/status">version status</td>
+    </tr>
+    <tr>
+      <th i18n:translate="">user</th><td tal:content="thisInfo/user_id">user status</td>
+    </tr>
+    <tr>
+      <th i18n:translate="">changed</th><td tal:content="thisInfo/changed">version changed</td>
+    </tr>    
+  </table>
+  <table class="listing">
+    <caption i18n:translate="">Version list</caption>
+    <tr>
+      <th i18n:translate="">Version id</th>
+      <th i18n:translate="">Timestamp</th>
+      <th i18n:translate="">Message</th>
+      <th i18n:translate="">User Id</th>
+      <th i18n:translate="">Revert</th>
+    </tr>
+    <tr tal:repeat="versionList view/versionList">
+      <td tal:content="versionList/version_id">Version id</td>
+      <td tal:content="versionList/timestamp">Timestamp</td>
+      <td tal:content="versionList/message">Label</td>
+      <td tal:content="versionList/user_id">User Id</td>
+      <td>
+        <form action="revert.html" method="post">
+          <input type="hidden" name="id" tal:attributes="value versionList/version_id"/>
+          <input type="submit" name="submit" value="Revert" />
+        </form>
+    </tr>
+  </table>
+  <table class="listing">
+    <caption i18n:translate="">Version history</caption>
+    <tr>
+        <th>Id</th><th>Action</th><th>Timestamp</th><th>Message</th><th>Path</th><th>User Id</th>
+    <tr tal:repeat="versinfo view/getLogEntries">
+        <td tal:content="versinfo/version_id"/>
+        <td tal:content="versinfo/action"/>
+        <td tal:content="versinfo/timestamp"/>
+        <td tal:content="versinfo/message"/>
+        <td tal:content="versinfo/path"/>
+        <td tal:content="versinfo/user_id"/>
+    </tr>
+  </table-->
+</div></body></html>
