@@ -132,7 +132,7 @@ Zope Changes
       - Views for I18nFile/I18nImage now use contentType attribute instead
         of outdated getContentType method.
 
-      - ZopeVersion now know about Subversion.
+      - ZopeVersion now knows about Subversion.
 
     Much thanks to everyone who contributed to this release:
 
