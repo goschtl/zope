@@ -12,7 +12,7 @@ SCRIPT="$0"
 REPOSITORY="$1"; shift
 FILES="$@"
 
-exec 1>>/tmp/log-precommit_actions
+exec 2>&1 1>>/tmp/log-precommit_actions
 
 set -x
 /bin/chmod g+w $FILES
