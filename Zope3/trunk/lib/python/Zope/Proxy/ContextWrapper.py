@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: ContextWrapper.py,v 1.5 2002/07/13 14:18:37 jim Exp $
+$Id: ContextWrapper.py,v 1.6 2002/11/30 18:41:33 jim Exp $
 """
 
 from Zope.Security.Proxy import Proxy, getChecker, getObject
@@ -119,3 +119,17 @@ class ContainmentIterator:
         _ob = getinnercontext(_ob)
         self._ob = _ob
         return _ob
+
+def getItem(collection, name):
+    return ContextWrapper(collection[name], collection, name=name)
+
+def getAttr(collection, name):
+    return ContextWrapper(getattr(collection, name), collection, name=name)
+
+def queryItem(collection, name, default=None):
+    return ContextWrapper(collection.get(name, default),
+                          collection, name=name)
+
+def queryAttr(collection, name, default=None):
+    return ContextWrapper(getattr(collection, name, default),
+                          collection, name=name)
