@@ -22,6 +22,9 @@ from ldap import VERSION3
 from ldap import SCOPE_BASE
 from ldap import SCOPE_ONELEVEL
 from ldap import SCOPE_SUBTREE
+from ldap import MOD_ADD
+from ldap import MOD_REPLACE
+from ldap import MOD_DELETE
 
 from persistent import Persistent
 
@@ -37,6 +40,11 @@ SCOPES = {'base': SCOPE_BASE,
           }
 def convertScope(scope):
     return SCOPES[scope]
+
+
+def valuesToUTF8(values):
+    return [v.encode('utf-8') for v in values]
+
 
 class LDAPAdapter(object):
     implements(ILDAPAdapter)
@@ -72,24 +80,42 @@ class LDAPConnection(object):
         self.conn = conn
 
     def add(self, dn, entry):
-        attrs_list = entry.items()
-        dn = dn.encode('utf-8')
-        self.conn.add_s(dn, attrs_list)
+        attrs_list = []
+        for key, values in entry.items():
+            attrs_list.append((key, valuesToUTF8(values)))
+        self.conn.add_s(dn.encode('utf-8'), attrs_list)
 
     def delete(self, dn):
-        dn = dn.encode('utf-8')
-        self.conn.del_s(dn)
+        self.conn.delete_s(dn.encode('utf-8'))
 
     def modify(self, dn, entry):
         # Get current entry
-        pass
+        cur_dn, cur_entry = self.search(dn, 'base')[0]
+        # TODO nice exception if missing entry
+
+        mod_list = []
+        for key, values in entry.items():
+            if cur_entry.has_key(key):
+                if values == []:
+                    # TODO fail on rdn removal
+                    mod_list.append((MOD_DELETE, key, None))
+                elif cur_entry[key] != values:
+                    # TODO treat modrdn
+                    mod_list.append((MOD_REPLACE, key, valuesToUTF8(values)))
+            else:
+                if values != []:
+                    mod_list.append((MOD_ADD, key, valuesToUTF8(values)))
+        if not mod_list:
+            return
+
+        self.conn.modify_s(dn.encode('utf-8'), mod_list)
 
     def search(self, base, scope='sub', filter='(objectClass=*)',
                attrs=None):
         # Convert from unicode to utf-8.
         base = base.encode('utf-8')
         scope = convertScope(scope)
-        # XXX convert filter
+        # XXX convert filter to utf-8
         ldap_entries = self.conn.search_s(base, scope, filter, attrs)
         # May raise NO_SUCH_OBJECT, SERVER_DOWN, SIZELIMIT_EXCEEDED
 
