@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests. 
 
-$Id: doctestunit.py,v 1.2 2003/05/18 18:27:01 jim Exp $
+$Id: doctestunit.py,v 1.3 2003/06/29 05:07:50 tim_one Exp $
 """
 
 from StringIO import StringIO
@@ -205,6 +205,8 @@ def debug(module, name):
     globs = {}
     globs.update(module.__dict__)
     try:
-        pdb.run("execfile('%s')" % srcfilename, globs, globs)
+        # Note that %r is vital here.  '%s' instead can, e.g., cause
+        # backslashes to get treated as metacharacters on Windows.
+        pdb.run("execfile(%r)" % srcfilename, globs, globs)
     finally:
         os.remove(srcfilename)
