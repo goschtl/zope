@@ -1,6 +1,8 @@
 # XXX The fact that this module has the same name as the package makes
 # explicit imports impossible elsewhere.  Pick a new name?
 
+__metaclass__ = type
+
 from ITransaction import ITransaction
 
 class Set(dict):
