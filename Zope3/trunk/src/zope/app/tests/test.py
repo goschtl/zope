@@ -764,7 +764,7 @@ def main(module_filter, test_filter, libdir):
         print "Parsing %s" % config_file
         from zope.app.tests.functional import FunctionalTestSetup
         FunctionalTestSetup(config_file)
-    
+
 
     if GUI:
         gui_runner(files, test_filter)
