@@ -11,6 +11,7 @@ from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.utility import ILocalUtility
+from zope.security.proxy import trustedRemoveSecurityProxy
 
 from zope.app.interfaces.container import IDeleteNotifiable, IAddNotifiable
 from zope.app.interfaces.container import IContainer
@@ -67,16 +68,16 @@ class CatalogBase(Persistent, SampleContainer):
 
     def clearIndexes(self):
         for index in self.values():
-	    index.clear()
+            index.clear()
 
     def updateIndexes(wrapped_self):
-	eventF = Hub.ObjectRegisteredHubEvent
+        eventF = Hub.ObjectRegisteredHubEvent
         objectHub = getService(wrapped_self, HubIds) 
-	allobj = objectHub.iterObjectRegistrations()
-	for location, hubid, wrapped_object in allobj:
-	    evt = eventF(objectHub, hubid, location, wrapped_object)
-	    for index in wrapped_self.values():
-		index.notify(evt)
+        allobj = objectHub.iterObjectRegistrations()
+        for location, hubid, wrapped_object in allobj:
+            evt = eventF(objectHub, hubid, location, wrapped_object)
+            for index in wrapped_self.values():
+                index.notify(evt)
     updateIndexes = ContextMethod(updateIndexes)
 
     def subscribeEvents(wrapped_self, update=True):
@@ -130,6 +131,10 @@ class CatalogBase(Persistent, SampleContainer):
                 raise ValueError, "no such index %s"%(key)
             index = getAdapter(index, ISimpleQuery)
             results = index.query(value)
+            # Hm. As a result of calling getAdapter, I get back
+            # security proxy wrapped results from anything that
+            # needed to be adapted.
+            results = trustedRemoveSecurityProxy(results)
             if pendingResults is None:
                 pendingResults = results
             else:
