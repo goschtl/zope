@@ -2,25 +2,25 @@
 
 <!-- Stateful ProcessDefintion -->
 
-<content 
+<content
     class=".definition.StatefulProcessDefinition">
   <factory
       id="zope.app.workflow.StatefulProcessDefinition"
       />
   <implements
-      interface="zope.app.utility.interfaces.ILocalUtility" 
+      interface="zope.app.utility.interfaces.ILocalUtility"
       />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
       interface=".interfaces.IStatefulProcessDefinition"
-      set_schema=".interfaces.IStatefulProcessDefinition" 
+      set_schema=".interfaces.IStatefulProcessDefinition"
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.container.interfaces.IReadContainer" 
+      interface="zope.app.container.interfaces.IReadContainer"
       />
 </content>
 
@@ -35,8 +35,8 @@
       permission="zope.workflow.ManageProcessDefinitions"
       interface=".interfaces.IStatefulStatesContainer"
       />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
 </content>
 
@@ -51,8 +51,8 @@
       interface=".interfaces.IState"
       set_schema=".interfaces.IState"
       />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
 </content>
 
@@ -68,10 +68,10 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface=".interfaces.IStatefulTransitionsContainer" 
+      interface=".interfaces.IStatefulTransitionsContainer"
       />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
 </content>
 
@@ -83,28 +83,28 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface=".interfaces.ITransition" 
+      interface=".interfaces.ITransition"
       set_schema=".interfaces.ITransition"
       />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
 </content>
 
 
 
 <!-- ContentWorkflowsManager -->
-<content 
+<content
     class=".contentworkflow.ContentWorkflowsManager">
   <factory
     id="zope.app.workflow.ContentWorkflowsManager"
   />
 
   <implements
-      interface="zope.app.utility.interfaces.ILocalUtility" 
+      interface="zope.app.utility.interfaces.ILocalUtility"
       />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
 
   <require
@@ -118,10 +118,19 @@
   factory=".contentworkflow.NewObjectStatefulProcessInitializer"
   for="zope.app.event.interfaces.IObjectCreatedEvent"/>
 
+<!-- Transition event subscribers -->
 
+<subscriber
+    factory=".transition_event_subscribers.transitionUserTriggeredSubscriber"
+    for=".interfaces.ITransitionEventUserTriggered"
+    />
+
+<subscriber
+    factory=".transition_event_subscribers.afterTransitionEventSubscriber"
+    for=".interfaces.IAfterTransitionEvent"
+    />
 
 <!-- Stateful workflow import/Export -->
-<!--
 <adapter
    for=".interfaces.IStatefulProcessDefinition"
    provides="zope.app.workflow.interfaces.IProcessDefinitionExportHandler"
@@ -133,7 +142,6 @@
    provides="zope.app.workflow.interfaces.IProcessDefinitionImportHandler"
    factory=".xmlimportexport.XMLImportHandler"
    />
- -->
 
 
 <!-- Test Object for testing Stateful Workflows -->
