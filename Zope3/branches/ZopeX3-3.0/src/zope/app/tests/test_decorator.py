@@ -108,8 +108,8 @@ def test_SecurityCheckerDescriptor():
     >>> print selectChecker(w)
     None
     >>> c = w.__Security_checker__
-    >>> print type(c)
-    <class 'zope.security.checker.Checker'>
+    >>> c.__class__.__module__, c.__class__.__name__
+    ('zope.security.checker', 'Checker')
     >>> c.check_getattr(w, 'a')
 
     >>> check_forbidden_call(c.check_getattr, w, 'b')
@@ -135,8 +135,9 @@ def test_SecurityCheckerDescriptor():
     >>> int(w.__Security_checker__ is None)
     1
     >>> w = MyDecorator2(None)
-    >>> type(w.__Security_checker__)
-    <class 'zope.security.checker.Checker'>
+    >>> c = w.__Security_checker__
+    >>> c.__class__.__module__, c.__class__.__name__
+    ('zope.security.checker', 'Checker')
     """
 
 
