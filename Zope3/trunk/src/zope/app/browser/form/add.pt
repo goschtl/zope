@@ -54,7 +54,7 @@
           <input type="submit" value="Refresh"
               i18n:attributes="value refresh-button" />
           <input type="submit" name="UPDATE_SUBMIT" value=" Add "
-              tal:replace="structure view/renderAddButton|default"/> 
+              tal:replace="structure context/renderAddButton|default"/> 
         </div>
       </div>
       <div class="separator"></div>
