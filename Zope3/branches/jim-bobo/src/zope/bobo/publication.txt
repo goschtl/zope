@@ -1,0 +1,123 @@
+Bobo Publication
+================
+
+Publication objects are used to customize the Zope publisher for a
+particular application.  Publications provide a number of hooks the
+publisher while publishing requests.  The Bobo publisher simply
+delegates most of these to event subscribers:
+
+    >>> events = []
+    >>> import zope.event
+    >>> zope.event.subscribers.append(events.append)
+
+    >>> import zope.bobo.publication
+    >>> pub = zope.bobo.publication.Publication(None)
+
+    >>> pub.beforeTraversal('req')
+    >>> len(events), events[0].__class__, events[0].request
+    (1, <class 'zope.bobo.interfaces.BeginRequest'>, 'req')
+    >>> del events[0]
+
+    >>> pub.callTraversalHooks('req', 'ob')
+    >>> len(events), events[0].__class__, events[0].request, events[0].object
+    (1, <class 'zope.bobo.interfaces.BeforeTraverse'>, 'req', 'ob')
+    >>> del events[0]
+
+    >>> pub.afterTraversal('req', 'ob')
+    >>> len(events), events[0].__class__, events[0].request, events[0].object
+    (1, <class 'zope.bobo.interfaces.AfterTraversal'>, 'req', 'ob')
+    >>> del events[0]
+
+    >>> pub.afterCall('req', 'ob')
+    >>> len(events), events[0].__class__, events[0].request, events[0].object
+    (1, <class 'zope.bobo.interfaces.AfterCall'>, 'req', 'ob')
+    >>> del events[0]
+
+    >>> pub.endRequest('req', 'ob')
+    >>> len(events), events[0].__class__, events[0].request, events[0].object
+    (1, <class 'zope.bobo.interfaces.EndRequest'>, 'req', 'ob')
+    >>> del events[0]
+
+    >>> zope.event.subscribers.remove(events.append)
+
+There are 4 calls for which the publication provides special
+behavior.  Before discussing these, we need to discuss the
+`IBrowserPublisher` interface.  The publication works with objects
+that provide `IBrowserPublisher` to support URL traversal. In
+addition, the publisher is responsible for selecting the initial oject
+to be traversed.  When the publisher is created, we need to supply it
+with a factory for computing that initial object.
+
+To see how this works, we'll create a class that creates browser
+publishers:
+
+    >>> import zope.interface
+    >>> import zope.publisher.interfaces
+    >>> from zope.publisher.interfaces.browser import IBrowserPublisher
+
+    >>> class R:
+    ...     zope.interface.implements(IBrowserPublisher)
+    ...
+    ...     def __init__(self, request):
+    ...         self.request = request
+    ...
+    ...     def publishTraverse(self, request, name):
+    ...         if name == 'zope':
+    ...             return R(42)
+    ...         raise zope.publisher.interfaces.NotFound(self, name)
+    ... 
+    ...     def browserDefault(self, request):
+    ...         return self, ('eek')
+
+Now, we'll create a publication, providing this class as an argument:
+
+    >>> pub = zope.bobo.publication.Publication(R)
+
+When we call the `getApplication` method, we'll get an instance of `R`:
+
+    >>> app = pub.getApplication('req')
+
+The returned object is security proxied:
+
+    >>> app.request # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ForbiddenAttribute: ('request', ...
+
+    >>> from zope.security.proxy import removeSecurityProxy
+    >>> app = removeSecurityProxy(app)
+    >>> app.__class__.__name__, app.request
+    ('R', 'req')
+
+It isn't necessary that the factory return an `IBrowserPublisher`. Any
+factory taking a single argument will do.  The object returned should,
+at least, be adaptable, with a request, to IBrowserPublisher.
+
+Publication objects are responsible for traversal.  If passed an
+`IBrowserPublisher` (or an `IPublishTraverse`), the publication simply
+calls it's `publishTraverse` method:
+
+    >>> r = pub.traverseName('req', app, 'zope')
+
+The result is security proxied:
+
+    >>> r.request # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ForbiddenAttribute: ('request', ...
+
+    >>> r = removeSecurityProxy(r)
+    >>> r.__class__.__name__, r.request
+    ('R', 42)
+ 
+We can also traverse objects that don't provide `IBrowserPublisher`,
+but they must have an adapter to `IBrowserPublisher`:
+
+    >>> class A:
+    ...     zope.interface.implements(IBrowserPublisher)
+    ...     zope.component.adapts(Interface, Interface) # adapt anything
+    ...
+    ...     def __init__(self, context, request):
+    ...         self.context = context
+    ...         self.request = request
+
