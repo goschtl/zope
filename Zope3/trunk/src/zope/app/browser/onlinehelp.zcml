@@ -12,6 +12,7 @@
 
   <page
       name="+"
+      menu="zmi_actions" title="Add"
       for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
       permission="zope.View"
       template="onlinehelptopic.pt"

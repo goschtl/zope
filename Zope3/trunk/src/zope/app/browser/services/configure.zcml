@@ -145,7 +145,9 @@
      class="zope.app.browser.services.role.Add"
      >
 
-    <page name="+"           template="addrole.pt" />
+    <page name="+"           template="addrole.pt" 
+          menu="zmi_actions" title="Add"
+    />
     <page name="action.html" attribute="action" />
 
     </pages>
@@ -172,6 +174,7 @@
 
   <view
       name="+"  
+      menu="zmi_actions" title="Add"
       for="zope.app.services.auth.IAuthenticationService"
       permission="zope.ManageContent"
       class="zope.app.browser.services.auth.AddUser" >
@@ -553,6 +556,7 @@
 
 <view
    name="+"
+   menu="zmi_actions" title="Add"
    for="zope.app.interfaces.services.folder.ISiteManagementFolder"
    permission="zope.ManageServices"
    class="zope.app.browser.services.service.ComponentAdding">
@@ -741,5 +745,8 @@
     <page name="action.html" attribute="action" />
 
   </view>
+
+<!-- Translation Service Views -->
+<include package=".translation" />
 
 </zopeConfigure>

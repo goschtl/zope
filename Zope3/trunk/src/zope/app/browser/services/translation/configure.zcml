@@ -1,36 +1,36 @@
 <zopeConfigure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
 
-<browser:view 
-   permission="zope.ManageServices" 
-   for="zope.i18n.interfaces.ITranslationService"
-   class="zope.app.browser.services.translation.translate.Translate">
+<browser:pages 
+    permission="zope.ManageServices" 
+    for="zope.i18n.interfaces.ITranslationService"
+    class="zope.app.browser.services.translation.translate.Translate">
 
-   <browser:page name="index.html" attribute="index" />
-   <browser:page name="translateMessage.html" attribute="translateMessage" />
+  <browser:page name="index.html" attribute="index" />
+  <browser:page name="translateMessage.html" attribute="translateMessage" />
+  
+  <browser:page name="editMessages.html" attribute="editMessages" />
+  <browser:page name="editMessage.html" attribute="editMessage" />
+  
+  <browser:page name="deleteMessages.html" attribute="deleteMessages" />
+  
+  <browser:page name="addLanguage.html" attribute="addLanguage" />
+  <browser:page name="addDomain.html" attribute="addDomain" />
+  
+  <browser:page name="changeEditLanguages.html" 
+      attribute="changeEditLanguages" />
+  <browser:page name="changeEditDomains.html" 
+      attribute="changeEditDomains" />
+  <browser:page name="changeFilter.html" 
+                attribute="changeFilter" />
+  
+  <browser:page name="deleteLanguages.html" attribute="deleteLanguages" />
+  <browser:page name="deleteDomains.html" attribute="deleteDomains" />
 
-   <browser:page name="editMessages.html" attribute="editMessages" />
-   <browser:page name="editMessage.html" attribute="editMessage" />
+</browser:pages>
 
-   <browser:page name="deleteMessages.html" attribute="deleteMessages" />
-
-   <browser:page name="addLanguage.html" attribute="addLanguage" />
-   <browser:page name="addDomain.html" attribute="addDomain" />
-
-   <browser:page name="changeEditLanguages.html" 
-                 attribute="changeEditLanguages" />
-   <browser:page name="changeEditDomains.html" 
-                 attribute="changeEditDomains" />
-   <browser:page name="changeFilter.html" 
-                 attribute="changeFilter" />
-
-   <browser:page name="deleteLanguages.html" attribute="deleteLanguages" />
-   <browser:page name="deleteDomains.html" attribute="deleteDomains" />
-
-</browser:view>
-
-<browser:view 
+<browser:pages 
    permission="zope.ManageServices" 
    for="zope.i18n.interfaces.ITranslationService"
    class="zope.app.browser.services.translation.exportimport.ExportImport">
@@ -40,9 +40,9 @@
    <browser:page name="export.html" attribute="exportMessages" />
    <browser:page name="import.html" attribute="importMessages" />
 
-</browser:view>
+</browser:pages>
 
-<browser:view 
+<browser:pages
    permission="zope.ManageServices" 
    for="zope.i18n.interfaces.ITranslationService"
    class="zope.app.browser.services.translation.synchronize.Synchronize">
@@ -53,10 +53,11 @@
                  attribute="synchronizeMessages" />
    <browser:page name="saveSettings.html" attribute="saveSettings" />
 
-</browser:view>
+</browser:pages>
 
 
-<browser:menuItems menu="zmi_views" for="zope.i18n.interfaces.ITranslationService">
+<browser:menuItems menu="zmi_views" 
+    for="zope.i18n.interfaces.ITranslationService">
   <browser:menuItem title="Translate" action="@@index.html"/>
   <browser:menuItem title="Import/Export" action="@@exportImportForm.html"/>
   <browser:menuItem title="Synchronize" action="@@synchronizeForm.html"/>

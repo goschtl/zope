@@ -464,7 +464,11 @@
     interface='zope.app.interfaces.services.event.ISubscriptionService'
     />
 
-<!-- Utility Service --> <include file="utility.zcml" />
+<!-- Translation Service --> 
+<include package=".translation" />
+
+<!-- Utility Service --> 
+<include file="utility.zcml" />
 
 
 </zopeConfigure>

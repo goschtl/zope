@@ -66,6 +66,7 @@
 <view
    for="zope.app.interfaces.services.configuration.IConfigurationManager"
    name="+"
+   menu="zmi_actions" title="Add"
    permission="zope.ManageServices"
    class=".ConfigurationAdding">
   <page name="index.html"  attribute="index"  />

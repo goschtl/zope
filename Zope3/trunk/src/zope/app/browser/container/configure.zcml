@@ -2,7 +2,8 @@
    
    <view
        for="zope.app.interfaces.container.IContentContainer"
-       name="+"  
+       name="+" 
+       menu="zmi_actions" title="Add"
        class="zope.app.browser.container.adding.Adding"
        permission="zope.ManageContent"
        allowed_attributes="addingInfo"
@@ -12,13 +13,6 @@
        <page name="action.html" attribute="action" />
    
        </view>
-
-  <menuItem
-      for="zope.app.interfaces.container.IWriteContainer"
-      menu="zmi_actions"
-      title="Add"
-      action="+"
-      />
 
   <page
       for="zope.app.interfaces.container.IReadContainer"
