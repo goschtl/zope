@@ -13,7 +13,7 @@
 ##############################################################################
 """Widgets specific to WebDAV
 
-$Id: widget.py,v 1.1 2003/05/21 16:10:06 sidnei Exp $
+$Id: widget.py,v 1.2 2003/05/22 13:58:53 sidnei Exp $
 """
 
 from zope.app.interfaces.dav import ISimpleDAVWidget
@@ -35,3 +35,11 @@ class SimpleDAVWidget(Widget):
 
     def __call__(self):
         return self.getData()
+
+class TextDAVWidget(SimpleDAVWidget):
+    pass
+
+class SequenceDAVWidget(SimpleDAVWidget):
+
+    def __str__(self):
+        return u', '.join(self._data)

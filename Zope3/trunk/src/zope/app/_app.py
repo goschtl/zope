@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.10 2003/05/20 20:24:30 jim Exp $
+$Id: _app.py,v 1.11 2003/05/22 13:58:52 sidnei Exp $
 """
 
 import base64, time
@@ -81,7 +81,7 @@ class Application:
         if db is None and config_file is None:
             db = 'Data.fs'
             config_file = 'site.zcml'
-        
+
         if config_file is not None:
             config(config_file)
         self.db = database(db)
@@ -91,7 +91,7 @@ class Application:
 
         The object returned is connected to an open database connection.
         """
-        
+
         from zope.app.publication.zopepublication import ZopePublication
         return self.db.open().root()[ZopePublication.root_name]
 

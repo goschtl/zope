@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.3 2003/05/21 20:29:46 sidnei Exp $
+$Id: test_propfind.py,v 1.4 2003/05/22 13:58:54 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -34,10 +34,10 @@ from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
 from zope.app.interfaces.container import IReadContainer
-from zope.schema.interfaces import IText, ITextLine, IDatetime
+from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 from zope.app.dav import propfind
 from zope.app.interfaces.dav import IDAVSource, IDAVSchema
-from zope.app.dav.widget import SimpleDAVWidget
+from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 from zope.app.dav.globaldavschemaservice import provideInterface
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
@@ -132,14 +132,17 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         provideView(None, 'PROPFIND', IHTTPPresentation,
                     [propfind.PROPFIND])
         provideView(IText, 'view', IBrowserPresentation,
-                    [SimpleDAVWidget])
+                    [TextDAVWidget])
         provideView(ITextLine, 'view', IBrowserPresentation,
-                    [SimpleDAVWidget])
+                    [TextDAVWidget])
         provideView(IDatetime, 'view', IBrowserPresentation,
-                    [SimpleDAVWidget])
+                    [TextDAVWidget])
+        provideView(ISequence, 'view', IBrowserPresentation,
+                    [SequenceDAVWidget])
         setDefaultView(IText, IBrowserPresentation, 'view')
         setDefaultView(ITextLine, IBrowserPresentation, 'view')
         setDefaultView(IDatetime, IBrowserPresentation, 'view')
+        setDefaultView(ISequence, IBrowserPresentation, 'view')
         provideAdapter = getService(None, Adapters).provideAdapter
         provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
@@ -309,6 +312,48 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         </multistatus>
         ''' % {'resource_url':resource_url,
                'created': dc.created }
+
+        pfind = propfind.PROPFIND(zpt, request)
+        pfind.PROPFIND()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(pfind.getDepth(), '0')
+        s1 = normalize_xml(request.response._body)
+        s2 = normalize_xml(expect)
+        self.assertEqual(s1, s2)
+
+    def test_davpropdcsubjects(self):
+        root = self.rootFolder
+        zpt = traverse(root, 'zpt')
+        dc = getAdapter(zpt, IZopeDublinCore)
+        dc.subjects = (u'Bla', u'Ble', u'Bli')
+        body = '''<?xml version="1.0" encoding="utf-8"?>
+        <propfind xmlns="DAV:">
+        <prop xmlns:DC="http://www.purl.org/dc/1.1">
+        <DC:subjects />
+        </prop>
+        </propfind>
+        '''
+
+        request = _createRequest(body=body,
+                                 headers={'Content-type':'text/xml',
+                                          'Depth':'0'})
+
+        resource_url = str(getView(zpt, 'absolute_url', request))
+        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        <multistatus xmlns="DAV:">
+        <response>
+        <href>%(resource_url)s</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <subjects xmlns="a0">%(subjects)s</subjects>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        </multistatus>
+        ''' % {'resource_url':resource_url,
+               'subjects': u', '.join(dc.subjects) }
 
         pfind = propfind.PROPFIND(zpt, request)
         pfind.PROPFIND()

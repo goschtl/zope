@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.7 2003/05/01 19:35:51 faassen Exp $
+$Id: functional.py,v 1.8 2003/05/22 13:58:55 sidnei Exp $
 """
 
 import logging
@@ -31,7 +31,9 @@ from zodb.storage.memory import MemoryFullStorage
 from zodb.storage.demo import DemoStorage
 from zope.app import Application
 from zope.app.publication.zopepublication import ZopePublication
+from zope.app.publication.http import HTTPPublication
 from zope.publisher.browser import BrowserRequest
+from zope.publisher.http import HTTPRequest
 from zope.publisher.publish import publish
 from zope.exceptions import Forbidden, Unauthorized
 
@@ -170,7 +172,8 @@ class BrowserTestCase(FunctionalTestCase):
                                request=BrowserRequest)
         return request
 
-    def publish(self, path, basic=None, form=None, env={}, handle_errors=False):
+    def publish(self, path, basic=None, form=None, env={},
+                handle_errors=False):
         """Renders an object at a given location.
 
         Arguments are the same as in makeRequest with the following exception:
@@ -247,6 +250,61 @@ class BrowserTestCase(FunctionalTestCase):
         if errors:
             self.fail("%s contains broken links:\n" % path
                       + "\n".join(["  %s:\t%s" % (a, e) for a, e in errors]))
+
+
+class HTTPTestCase(FunctionalTestCase):
+    """Functional test case for HTTP requests."""
+
+    def makeRequest(self, path='', basic=None, form=None, env={},
+                    instream=None, outstream=None):
+        """Creates a new request object.
+
+        Arguments:
+          path   -- the path to be traversed (e.g. "/folder1/index.html")
+          basic  -- basic HTTP authentication credentials ("user:password")
+          form   -- a dictionary emulating a form submission
+                    (Note that field values should be Unicode strings)
+          env    -- a dictionary of additional environment variables
+                    (You can emulate HTTP request header
+                       X-Header: foo
+                     by adding 'HTTP_X_HEADER': 'foo' to env)
+          instream  -- a stream from where the HTTP request will be read
+          outstream -- a stream where the HTTP response will be written
+        """
+        if outstream is None:
+            outstream = StringIO()
+        if instream is None:
+            instream = ''
+        environment = {"HTTP_HOST": 'localhost',
+                       "HTTP_REFERER": 'localhost'}
+        environment.update(env)
+        app = FunctionalTestSetup().getApplication()
+        request = app._request(path, instream, outstream,
+                               environment=environment,
+                               basic=basic, form=form,
+                               request=HTTPRequest, publication=HTTPPublication)
+        return request
+
+    def publish(self, path, basic=None, form=None, env={},
+                handle_errors=False, request_body=''):
+        """Renders an object at a given location.
+
+        Arguments are the same as in makeRequest with the following exception:
+          handle_errors  -- if False (default), exceptions will not be caught
+                            if True, exceptions will return a formatted error
+                            page.
+
+        Returns the response object enhanced with the following methods:
+          getOutput()    -- returns the full HTTP output as a string
+          getBody()      -- returns the full response body as a string
+          getPath()      -- returns the path used in the request
+        """
+        outstream = StringIO()
+        request = self.makeRequest(path, basic=basic, form=form, env=env,
+                                   instream=request_body, outstream=outstream)
+        response = ResponseWrapper(request.response, outstream, path)
+        publish(request, handle_errors=handle_errors)
+        return response
 
 #
 # Sample functional test case

@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.3 2003/05/21 20:29:46 sidnei Exp $
+$Id: propfind.py,v 1.4 2003/05/22 13:58:53 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -133,7 +133,7 @@ class PROPFIND:
             pstat.appendChild(prop)
             status = response.createElement('status')
             pstat.appendChild(status)
-            text = response.createTextNode('HTTP/1.1 403 Forbidden')
+            text = response.createTextNode('HTTP/1.1 404 Not Found')
             status.appendChild(text)
             count = 0
             for ns in not_avail.keys():

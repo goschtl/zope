@@ -15,8 +15,8 @@
        name="view"
        permission="zope.Public"
        type="zope.publisher.interfaces.http.IHTTPPresentation"
-       factory="zope.app.dav.widget.SimpleDAVWidget"
-       allowed_attributes="getData haveData setData __call__"
+       factory="zope.app.dav.widget.TextDAVWidget"
+       allowed_attributes="getData haveData setData __call__ __str__"
        />
 
  <defaultView
@@ -24,8 +24,8 @@
        name="view"
        permission="zope.Public"
        type="zope.publisher.interfaces.http.IHTTPPresentation"
-       factory="zope.app.dav.widget.SimpleDAVWidget"
-       allowed_attributes="getData haveData setData __call__"
+       factory="zope.app.dav.widget.TextDAVWidget"
+       allowed_attributes="getData haveData setData __call__ __str__"
        />
 
  <defaultView
@@ -33,8 +33,17 @@
        name="view"
        permission="zope.Public"
        type="zope.publisher.interfaces.http.IHTTPPresentation"
-       factory="zope.app.dav.widget.SimpleDAVWidget"
-       allowed_attributes="getData haveData setData __call__"
+       factory="zope.app.dav.widget.TextDAVWidget"
+       allowed_attributes="getData haveData setData __call__ __str__"
+       />
+
+ <defaultView
+       for="zope.schema.interfaces.ISequence"
+       name="view"
+       permission="zope.Public"
+       type="zope.publisher.interfaces.http.IHTTPPresentation"
+       factory="zope.app.dav.widget.SequenceDAVWidget"
+       allowed_attributes="getData haveData setData __call__ __str__"
        />
 
  <adapter
