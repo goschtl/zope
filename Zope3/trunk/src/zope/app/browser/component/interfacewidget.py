@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.39 2003/08/17 06:05:31 philikon Exp $
+$Id: interfacewidget.py,v 1.40 2003/08/20 18:21:03 philikon Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.interfaces.browser.form import IBrowserWidget
@@ -313,7 +313,7 @@ def renderInterfaceSelect(
         if interface == 'None':
             options.append('<option value="None"%s>' \
                 % (interface == selected and ' selected' or '') \
-                + _(u"Anything") + '</option>'
+                + _('any-interface', "Anything") + '</option>'
 
                            )
         else:

@@ -19,7 +19,7 @@
       tal:condition="request/SEARCH|nothing">
   <table>
     <tr>
-       <th i18n:translate="">For/<br />Provided</th>
+       <th i18n:translate="">For/Provided</th>
        <th i18n:translate="">Configuration</th>
     </tr>
 

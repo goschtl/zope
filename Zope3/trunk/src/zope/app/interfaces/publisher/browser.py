@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser-Specific Publisher interfaces
 
-$Id: browser.py,v 1.6 2003/08/18 18:55:32 srichter Exp $
+$Id: browser.py,v 1.7 2003/08/20 18:21:09 philikon Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -27,7 +27,7 @@ class IBrowserMenuItem(Interface):
     (using a filter) or being selected to be the default view of the menu."""
 
     interface = InterfaceField(
-        title=_("Interface"),
+        title=_('interface-component', "Interface"),
         description=_("Specifies the interface this menu item is for."),
         required=True)
 

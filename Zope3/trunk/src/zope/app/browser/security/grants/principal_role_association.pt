@@ -10,14 +10,14 @@
    <div tal:condition="not: hasFilter">
      <span class="message" i18n:translate="">Apply filter</span>
      <form action="@@PrincipalRoles.html" method="POST">
-       <span i18n:translate="">Principal(s):</span>
+       <span i18n:translate="">Principal(s)</span>:
        <select name="principals:list" multiple="multiple">
          <option tal:repeat="principal view/getAllPrincipals"
                  tal:attributes="value principal/getId"
                  tal:content="principal/getTitle">my title</option>
        </select>
    
-       <span i18n:translate="">Role(s):</span>
+       <span i18n:translate="">Role(s)</span>:
        <select name="roles:list" multiple="multiple">
          <option tal:repeat="role view/getAllRoles"
                  tal:attributes="value role/getId"

@@ -10,7 +10,9 @@
 
   <permission
       id="zope.SendMail" 
-      title="Send out mail with arbitrary from and to addresses"/>
+      title="[send-mail-permission]
+             Send out mail with arbitrary from and to addresses"
+      />
 
   <mail:sendmailMailer id="sendmail"/>
 

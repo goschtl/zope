@@ -26,12 +26,18 @@
       <tr>
         <th colspan="2" i18n:translate="">Class Browser</th>
       </tr>
+
       <tr>
-        <th class="introspector" i18n:translate="">Class:</th>
+        <th class="introspector">
+          <span tal:omit-tag="" i18n:translate="class-component">Class</span>:
+        </th>
         <td><span tal:content="introspector/getClass">Name</span></td>
       </tr>
+
       <tr>
-        <th class="introspector" i18n:translate="">Bases:</th>
+        <th class="introspector">
+          <span omit-tag="" i18n:translate="class-bases">Bases</span>:
+        </th>
         <td>
           <div tal:repeat="base introspector/getBaseClassNames">
             <span tal:replace="repeat/base/item" />
@@ -44,20 +50,29 @@
           </div>
         </td>
       </tr>
+
       <tr>
-        <th class="introspector" i18n:translate="">Module:</th>
+        <th class="introspector">
+          <span tal:omit-tag="" i18n:translate="python-module">Module</span>:
+        </th>
         <td><span tal:content="introspector/getModule">Module</span></td>
       </tr>
+
       <tr>
-        <th i18n:translate="">Description:</th>
+        <th>
+          <span tal:omit-tag="" i18n:translate="">Description</span>:
+        </th>
         <td>
           <span class="preclass"
               tal:content="introspector/getDocString">
             Description</span>
         </td>
       </tr>
+
       <tr>
-        <th class="introspector" i18n:translate="">Interfaces from Class:</th>
+        <th class="introspector">
+          <span tal:omit-tag="" i18n:translate="">Interfaces from Class</span>:
+        </th>
         <td>
           <div tal:repeat="interface introspector/getInterfaceNames">
             <div tal:define="url python: view.getInterfaceURL(interface)">
@@ -71,8 +86,11 @@
           </div>
         </td>
       </tr>
+
       <tr tal:condition="introspector/getDirectlyProvided">
-        <th class="introspector" i18n:translate="">Interfaces from Object:</th>
+        <th class="introspector">
+          <span tal:omit-tag="" i18n:translate="">Interfaces from Object</span>:
+        </th>
         <td>
           <div tal:repeat="interface introspector/getDirectlyProvidedNames">
             <div tal:define="url python: view.getInterfaceURL(interface)">

@@ -75,14 +75,15 @@
       </div>
 
       <div tal:condition="result/total">
-        <div i18n:translate="">
+        <span tal:omit-tag="" i18n:translate="">
           Hits 
           <span tal:omit-tag="" tal:content="result/first" i18n:name="first"/>
           -
           <span tal:omit-tag="" tal:content="result/last" i18n:name="last"/>
           of
-          <span tal:omit-tag="" tal:content="result/total" i18n:name="total"/>:
-        </div>
+          <span tal:omit-tag="" tal:content="result/total" i18n:name="total"/>
+        </span>:
+
         <div tal:repeat="info result/results" i18n:translate="">
           title=<span tal:content="info/title" i18n:name="title"/>;
           url=<a href="location"

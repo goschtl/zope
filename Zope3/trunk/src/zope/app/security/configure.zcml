@@ -9,32 +9,32 @@
 
   <permission 
       id="zope.View"
-      title="View" />
+      title="[view-permission] View" />
 
   <permission 
       id="zope.Security"
-      title="Change security settings" />
+      title="[change-security-settings-permission] Change security settings" />
 
   <permission 
       id="zope.ManageContent" 
-      title="Manage Content" />
+      title="[manage-content-permission] Manage Content" />
 
   <permission 
       id="zope.ManageBindings" 
-      title="Manage Service Bindings" />
+      title="[manage-service-bindings-permission] Manage Service Bindings" />
 
   <permission 
       id="zope.ManageCode" 
-      title="Manage Code"
+      title="[manage-code-permission] Manage Code"
       description="Manage executable code, including Python, SQL, ZPT, etc." />
 
   <permission 
       id="zope.ManageServices" 
-      title="Manage Services" />
+      title="[manage-services-permission] Manage Services" />
 
   <permission 
       id="zope.ManageApplication" 
-      title="Manage Application"
+      title="[manage-application-permission] Manage Application"
       description="Manage the Zope Application, such as Restart/Shutdown or 
                    packing the ZODB." />
 

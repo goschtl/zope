@@ -13,7 +13,7 @@
   </div>
 
   <div tal:condition="view/methods">
-    <h3 i18n:translate="">Methods</h3> 
+    <h3 i18n:translate="class-methods">Methods</h3> 
     <ul>
       <li tal:repeat="method view/methods"
           tal:content="method/__name__">Method name</li>
@@ -21,7 +21,7 @@
   </div>
 
   <div tal:condition="view/schema">
-    <h3 i18n:translate="">Schema</h3>
+    <h3 i18n:translate="schema-component">Schema</h3>
     <ul>
       <li tal:repeat="field view/schema"
           tal:content="field/__name__">Field name</li>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: size.py,v 1.8 2003/08/19 14:57:13 fdrake Exp $
+$Id: size.py,v 1.9 2003/08/20 18:21:00 philikon Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.size import ISized
@@ -41,7 +41,7 @@ class DefaultSized:
         units, size = self._sortingSize
         if units == 'byte':
             return byteDisplay(size)
-        return _('n/a')
+        return _('not-available', 'n/a')
 
 def byteDisplay(size):
     if size == 0:

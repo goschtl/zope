@@ -279,7 +279,7 @@
       class="zope.app.browser.content.sql.SQLScriptTest" >
 
     <page name="test.html" template="sqltest.pt" 
-          menu="zmi_views" title="Test" />
+          menu="zmi_views" title="[test-page-title] Test" />
     <page name="testResults.html" template="sqltestresults.pt" />
 
   </pages>

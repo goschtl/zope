@@ -1,6 +1,8 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
-  <title metal:fill-slot="title" i18n:translate="">Add Role</title>
+  <title metal:fill-slot="title" i18n:translate="add-role-form-title">
+    Add Role
+  </title>
 </head>
 <body>
 <div metal:fill-slot="body">

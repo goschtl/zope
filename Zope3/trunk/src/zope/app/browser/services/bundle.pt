@@ -12,8 +12,8 @@
   <ul>
     <li tal:repeat="svc view/listServices">
       <span i18n:translate="">
-        <i tal:content="svc/service" i18n:name="service_name">Foo</i> service:
-      </span>
+        <i tal:content="svc/service" i18n:name="service_name">Foo</i> service
+      </span>:
       <span tal:condition="svc/insite" i18n:translate="">
         present in site at
         <a tal:content="svc/path" tal:attributes="href svc/path"

@@ -8,15 +8,21 @@
 
 <permission 
   id="zope.workflow.ManageProcessDefinitions" 
-  title="Manage Workflow ProcessDefinitions" />
+  title="[manage-workflow-processdefinitions-permission]
+         Manage Workflow ProcessDefinitions"
+  />
 
 <permission 
   id="zope.workflow.CreateProcessInstances"
-  title="Create Workflow ProcessInstances" />
+  title="[create-workflow-processinstances-permission]
+         Create Workflow ProcessInstances"
+  />
 
 <permission
   id="zope.workflow.UseProcessInstances"
-  title="Use Workflow ProcessInstances" />
+  title="[use-workflow-processinstances-permission]
+         Use Workflow ProcessInstances"
+  />
 
 
 <!-- Workflow Service -->

@@ -29,7 +29,7 @@
       <table width="100%" cellspacing="0" cellpadding="2" border="0" 
              nowrap="nowrap"
              tal:define="availableSettings 
-                python:view.availableSettings(noacquire=1)">
+                python:view.availableSettings(noacquire=True)">
 
         <tr class="list-header">
           <td align="left" valign="top"

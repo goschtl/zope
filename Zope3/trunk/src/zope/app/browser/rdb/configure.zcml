@@ -28,7 +28,7 @@
       permission="zope.View"
       class=".rdb.TestSQL">
     <page name="testForm.html" template="rdbtestsql.pt"
-          menu="zmi_views" title="Test"/>
+          menu="zmi_views" title="[test-page-title] Test"/>
     <page name="test.html" template="rdbtestresults.pt" />
 
   </pages>

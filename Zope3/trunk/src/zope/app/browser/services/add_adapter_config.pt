@@ -23,7 +23,7 @@
         <input type="submit" value="Refresh"
                i18n:attributes="value refresh-button" />
         <input type="submit" name="FINISH" value="Finish"
-               i18n:attributes="value finnish-button" />
+               i18n:attributes="value finish-button" />
       </div>
     </div>
 

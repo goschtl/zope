@@ -13,7 +13,7 @@
 ##############################################################################
 """Role Permission View Classes
 
-$Id: rolepermissionview.py,v 1.7 2003/08/07 17:40:56 srichter Exp $
+$Id: rolepermissionview.py,v 1.8 2003/08/20 18:21:06 philikon Exp $
 """
 from datetime import datetime
 
@@ -43,10 +43,13 @@ class RolePermissionView:
                 ).getPermissions()
         return permissions
 
-    def availableSettings(self, noacquire=0):
-        aq = {'id': Unset.getName(), 'shorttitle': ' ', 'title': _('Acquire')}
-        rest = [{'id': Allow.getName(), 'shorttitle': '+', 'title': _('Allow')},
-                {'id': Deny.getName(), 'shorttitle': '-', 'title': _('Deny')},
+    def availableSettings(self, noacquire=False):
+        aq = {'id': Unset.getName(), 'shorttitle': ' ',
+              'title': _('permission-acquire', 'Acquire')}
+        rest = [{'id': Allow.getName(), 'shorttitle': '+',
+                 'title': _('permission-allow', 'Allow')},
+                {'id': Deny.getName(), 'shorttitle': '-',
+                 'title': _('permission-deny', 'Deny')},
                 ]
         if noacquire:
             return rest

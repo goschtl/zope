@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Interfaces
 
-$Id: content.py,v 1.3 2003/08/18 18:55:34 srichter Exp $
+$Id: content.py,v 1.4 2003/08/20 18:21:09 philikon Exp $
 """
 from zope.app.interfaces.container import IAdding
 from zope.app.component.interfacefield import InterfaceField
@@ -36,7 +36,7 @@ class IContentComponentMenuItem(IBrowserMenuItem):
     """
 
     interface = InterfaceField(
-        title=_("Interface"),
+        title=_('interface-component', "Interface"),
         description=_("Specifies the interface this menu item is for."),
         default=IAdding,
         required=True)
@@ -75,7 +75,7 @@ class IContentComponentDefinition(Interface):
         required=True)
 
     schema = InterfaceField(
-        title=_("Schema"),
+        title=_('schema-component', "Schema"),
         description=_("Specifies the schema that characterizes the document."),
         required=True)
 
@@ -106,6 +106,6 @@ class IContentComponentInstance(Interface):
         required=True)
 
     __schema__ = InterfaceField(
-        title=_("Schema"),
+        title=_('schema-component', "Schema"),
         description=_("Specifies the schema that characterizes the document."),
         required=True)

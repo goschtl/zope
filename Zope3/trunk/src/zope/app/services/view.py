@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.33 2003/08/16 00:44:08 srichter Exp $
+$Id: view.py,v 1.34 2003/08/20 18:21:12 philikon Exp $
 """
 __metaclass__ = type
 
@@ -247,7 +247,7 @@ class GlobalViewRegistration:
 
     def usageSummary(self):
         if self.forInterface is None:
-            ifname = _("(Anything)")
+            ifname = _("any-interface", "Anything")
         else:
             ifname = self.forInterface.getName()
         summary = _("${view_name} ${ptype} View for ${iface_name}")
@@ -271,7 +271,8 @@ class ViewRegistration(SimpleRegistration):
 
     serviceType = Views
 
-    _what = _("View") # For usageSummary(); subclass may override
+    # For usageSummary(); subclass may override
+    _what = _("view-component", 'View')
 
     def __init__(self,
                  forInterface, viewName, presentationType,
@@ -292,7 +293,7 @@ class ViewRegistration(SimpleRegistration):
 
     def usageSummary(self):
         if self.forInterface is None:
-            ifname = _("(Anything)")
+            ifname = _('any-interface', "Anything")
         else:
             ifname = self.forInterface.getName()
 
@@ -316,7 +317,8 @@ class PageRegistration(ViewRegistration):
     # We only care about browser pages
     presentationType = IBrowserPresentation
 
-    _what = _("Page") # For usageSummary()
+    # For usageSummary()
+    _what = _("page-component", "Page")
 
     def __init__(self,
                  forInterface, viewName, permission,

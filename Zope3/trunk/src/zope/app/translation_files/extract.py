@@ -32,7 +32,7 @@ Options:
         Specifies the package that is supposed to be searched
         (i.e. 'zope/app')
 """
-__id__ = "$Id: extract.py,v 1.10 2003/08/20 16:33:08 srichter Exp $"
+__id__ = "$Id: extract.py,v 1.11 2003/08/20 18:21:13 philikon Exp $"
 
 import os, sys, fnmatch
 import getopt
@@ -97,8 +97,9 @@ class POTEntry:
         from zope.i18n.messageid import MessageID
         if isinstance(self.msgid, MessageID) and \
                self.msgid != self.msgid.default:
-            file.write('# Default: %s\n' %normalize(self.msgid.default))
-        file.write('msgid %s\n' %normalize(self.msgid))
+            default = self.msgid.default.strip()
+            file.write('# Default: %s\n' % normalize(default))
+        file.write('msgid %s\n' % normalize(self.msgid))
         file.write('msgstr ""\n')
         file.write('\n')
 

@@ -125,7 +125,10 @@
 
 </content>
 
-<permission id="zope.AddImages" title="Add Images" />
+<permission
+    id="zope.AddImages"
+    title="[add-images-permission] Add Images"
+    />
 
 <content class="zope.app.content.image.Image">
 
@@ -344,7 +347,10 @@
 
 <!-- SQL Script Directives -->
 
-<permission id="zope.AddSQLScripts" title="Add SQL Scripts" />
+<permission
+    id="zope.AddSQLScripts"
+    title="[add-sql-scripts-permission] Add SQL Scripts"
+    />
 
 <content class="zope.app.content.sql.SQLScript">
 

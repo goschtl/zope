@@ -25,12 +25,18 @@
         <tr>
           <th colspan="2" i18n:translate="">Interface Browser</th>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Interface:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="interface-component">Interface></span>:
+            </th>
           <td tal:content="python:interfacedata[0]">Interface</td>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Bases:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="class-bases">Bases</span>:
+          </th>
           <td>
             <div tal:repeat="interface python:interfacedata[1]">
               <a href=""
@@ -40,8 +46,11 @@
             </div>
           </td>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Description:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="">Description</span>:
+          </th>
           <td>
             <!-- the start of all of these preclass spans are carefully
             spatially placed (in terms of whitespace), because they are
@@ -51,8 +60,11 @@
                   Description</span>
           </td>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Attributes:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="class-attributes">Attributes</span>:
+          </th>
           <td>
             <div tal:repeat="attributes python:interfacedata[4]">
               <tal:block tal:define="details repeat/attributes/item">
@@ -65,8 +77,11 @@
             </div>
           </td>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Methods:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="class-methods">Methods</span>:
+          </th>
           <td>
             <div tal:repeat="methods python:interfacedata[3]">
               <tal:block tal:define="details repeat/methods/item">
@@ -84,7 +99,9 @@
         
         <!-- this section is currently not available
         <tr>
-          <th class="introspector" i18n:translate="">Services:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="">Services</span>:
+          </th>
           <td>
             <div tal:repeat="servicedic services">
               <span tal:define="dic repeat/servicedic/item">
@@ -97,18 +114,24 @@
       </table>
     </div>
 
-    <div tal:condition="python:introspector.isInterface()==0">
+    <div tal:condition="python:not introspector.isInterface()">
     
       <table>
         <tr>
           <th colspan="2" i18n:translate="">Class Browser</th>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Class:</th>
+          <th class="introspector">
+            <span omit-tag="" i18n:translate="class-component">Class</span>:
+          </th>
           <td><span tal:content="introspector/getClass">Name</span></td>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Bases:</th>
+          <th class="introspector">
+            <span omit-tag="" i18n:translate="class-bases">Bases</span>:
+          </th>
           <td>
             <div tal:repeat="base introspector/getBaseClassNames">
               <span tal:replace="repeat/base/item" />
@@ -120,20 +143,29 @@
             </div>
           </td>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Module:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="python-module">Module</span>:
+          </th>
           <td><span tal:content="introspector/getModule">Module</span></td>
         </tr>
+
         <tr>
-          <th i18n:translate="">Description:</th>
+          <th>
+            <span tal:omit-tag="" i18n:translate="">Description</span>:
+          </th>
           <td>
             <span class="preclass"
                     tal:content="introspector/getDocString">
                     Description</span>
           </td>
         </tr>
+
         <tr>
-          <th class="introspector" i18n:translate="">Interfaces from Class:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="">Interfaces from Class</span>:
+          </th>
           <td>
             <div tal:repeat="interface introspector/getInterfaceNames">
               <div tal:define="url python: view.getInterfaceURL(interface)">
@@ -147,9 +179,11 @@
             </div>
           </td>
         </tr>
+
         <tr>
-          <th class="introspector" 
-              i18n:translate="">Interfaces from Object:</th>
+          <th class="introspector">
+            <span tal:omit-tag="" i18n:translate="">Interfaces from Object</span>:
+          </th>
           <td>
             <div tal:repeat="interface introspector/getDirectlyProvidedNames"
                   tal:condition="introspector/getDirectlyProvided">
@@ -170,6 +204,7 @@
             </form>
           </td>
         </tr>
+
       </table>
     </div>
 

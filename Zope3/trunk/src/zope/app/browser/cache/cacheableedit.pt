@@ -20,7 +20,7 @@
 
     <div tal:condition="python: options.has_key('errors') and
                                 options['errors']">
-      <span style="font-weight: bold" i18n:translate="">Errors:</span>
+      <span style="font-weight: bold" i18n:translate="">Errors</span>:
       <div tal:repeat="error options/errors | nothing">
         <span tal:replace="python: error[0].title" />:
         <span tal:replace="python: error[1].error_name" />
