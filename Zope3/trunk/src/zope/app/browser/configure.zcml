@@ -10,9 +10,9 @@
   <include package=".cache" />
   <include package=".component" />
   <include package=".container" />
-  <include package=".content" />
   <include package=".dublincore" />
   <include package=".form" />
+  <include package=".fssync" />
   <include package=".security" />
   <include package=".services" />
   <include package=".utilities" />
