@@ -516,6 +516,9 @@ def match(rxlist, s):
     return False
 
 class TestFileFinder:
+
+    EMPTY_FILE_LISTS = ([], ["{arch}"], ["CVS"], ["_darcs"], [".svn"])
+
     def __init__(self, prefix):
         self.files = []
         self._plen = len(prefix)
@@ -538,8 +541,8 @@ class TestFileFinder:
                     return
             return
         # ignore tests that aren't in packages
-        if not "__init__.py" in files:
-            if not files or files == ["CVS"] or files == [".svn"]:
+        if "__init__.py" not in files:
+            if files in self.EMPTY_FILE_LISTS:
                 return
             print "not a package", dir
             return
@@ -585,7 +588,7 @@ def walk_with_symlinks(top, func, arg):
     except os.error:
         return
     func(arg, top, names)
-    exceptions = ('.', '..', '{arch}')
+    exceptions = ('.', '..', '{arch}', '_darcs')
     for name in names:
         if name not in exceptions:
             name = os.path.join(top, name)
@@ -782,7 +785,6 @@ def main(module_filter, test_filter, libdir):
         print "Parsing %s" % config_file
         from zope.app.tests.functional import FunctionalTestSetup
         FunctionalTestSetup(config_file)
-    
 
     if GUI:
         gui_runner(files, test_filter)
