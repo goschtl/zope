@@ -13,7 +13,7 @@
 ##############################################################################
 # -*- Mode: Python; tab-width: 4 -*-
 
-VERSION_STRING = "$Id: SelectTrigger.py,v 1.2 2002/06/10 23:29:37 jim Exp $"
+VERSION_STRING = "$Id: SelectTrigger.py,v 1.3 2002/10/02 19:29:46 gvanrossum Exp $"
 
 import asyncore
 import asynchat
@@ -106,6 +106,10 @@ else:
 
 
     # win32-safe version
+
+    # XXX The corresponding ZEO2 code (ZEO/zrpc/trigger.py) has a fix
+    # for Win98 hangs here.  Those changes should probably be applied
+    # here too.
 
     class Trigger (asyncore.dispatcher):
 
