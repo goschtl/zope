@@ -13,7 +13,7 @@
 ##############################################################################
 """Define view component for event service control.
 
-$Id: error.py,v 1.6 2003/08/07 17:41:03 srichter Exp $
+$Id: error.py,v 1.7 2004/02/09 01:44:05 richard Exp $
 """
 from zope.app.services.error import ILocalErrorReportingService
 
@@ -26,4 +26,4 @@ class EditErrorLog:
         if copy_to_zlog is None:
             copy_to_zlog = 0
         errorLog.setProperties(keep_entries, copy_to_zlog, ignored_exceptions)
-        return self.request.response.redirect('index.html')
+        return self.request.response.redirect('@@configure.html')
