@@ -343,12 +343,40 @@ class FileProxy(object):
 
 
 def parse(url):
+    """Parse a revision-control URL.
+
+    This can handle ``cvs:``, ``repository:``, and all supported
+    Subversion URL types.
+
+    :param url: URL to be parsed.
+    :type url: `str`
+
+    :return: Parsed URL object.
+
+    :raises ValueError: If `url` can't be handled as a supported URL
+      type.
+    """
     try:
         return cvsloader.parse(url)
     except ValueError:
         return svnloader.parse(url)
 
 def join(base, relurl):
+    """Join a base and relative URL.
+
+    :param base: Base URL.
+    :type base: `str`
+
+    :param relurl: Absolute or relative URL.
+    :type relurl: `str`
+
+    :return: The joined URL.  This will be `relurl` if `relurl` is not
+      a ``repository:`` URL.
+    :rtype: `str`
+
+    :raises ValueError: If either `base` or `relurl` are not
+      revision-control URLs.
+    """
     r = parse(relurl)
     if isinstance(r, cvsloader.RepositoryUrl):
         b = parse(base)
