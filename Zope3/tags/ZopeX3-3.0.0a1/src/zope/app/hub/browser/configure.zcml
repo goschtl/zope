@@ -1,0 +1,44 @@
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+  <page
+    name="index.html" 
+    menu="zmi_views" title="Control"
+    permission="zope.ManageServices" 
+    for="zope.app.hub.interfaces.IObjectHub"
+    class=".Control"
+    template="hubcontrol.pt" />
+
+  <addMenuItem
+      class="zope.app.hub.ObjectHub"
+      permission="zope.ManageServices"
+      title="HubIds Service"
+      description="An object hub, for cataloging, unique object ids, and
+                   more: use sparingly" />
+
+  <icon
+      name="zmi_icon"
+      for="zope.app.hub.interfaces.IObjectHub"
+      file="hub.gif" />
+
+<!-- Registration -->
+
+  <menuItem
+    menu="add_component"
+    for="zope.app.container.interfaces.IAdding"
+    action="zope.app.hub.Registration"
+    title="Registration subscriber"
+    description="An event subscriber that registers content with the objecthub"
+    permission="zope.ManageServices" />
+    />
+
+  <page
+    for="zope.app.hub.interfaces.ISubscriptionControl"
+    permission="zope.ManageServices"
+    name="index.html"
+    menu="zmi_views"
+    title="Control"
+    template="subscription_control.pt" />
+
+</zope:configure>

@@ -1,0 +1,7 @@
+[Scenario]
+Title: Browse Site Root
+Use_Case: BrowseSiteRoot
+
+[Homepage]
+URL: %(portal_url)s/%(site_path)s
+Expected_response: 200
