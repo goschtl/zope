@@ -104,8 +104,19 @@ class InlineAuthHelper(Folder, BasePlugin):
     security.declarePrivate('challenge')
     def challenge(self, request, response, **kw):
         """ Challenge the user for credentials. """
-        response.write(self.body)
+        response.setStatus('200')
+        response.setBody(self.body)
+
+        # Keep HTTPResponse.exception() from further writing on the
+        # response body, without using HTTPResponse.write()
+        response._locked_status = True
+        response.setBody = self._setBody # Keep response.exception
         return True
+
+    # Methods to override on response
+
+    def _setBody(self, body, *args, **kw):
+        pass
 
 InitializeClass(InlineAuthHelper)
 
