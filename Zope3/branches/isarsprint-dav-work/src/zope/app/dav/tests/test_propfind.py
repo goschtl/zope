@@ -42,7 +42,9 @@ from zope.app.dav import propfind
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dav.interfaces import IDAVNamespace
 from zope.app.dav.interfaces import IDAVWidget
+from zope.app.dav.interfaces import IDAVOpaqueNamespaces
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
+from zope.app.dav.opaquenamespacesadapter import DAVOpaqueNamespacesAdapter
 
 from unitfixtures import File, Folder, FooZPT
 
@@ -104,6 +106,8 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)
+        ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
+                             DAVOpaqueNamespacesAdapter)
         utils = zapi.getGlobalService('Utilities')
         directlyProvides(IDAVSchema, IDAVNamespace)
         utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
@@ -341,6 +345,8 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropname(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
+        oprops = IDAVOpaqueNamespaces(zpt)
+        oprops['http://foo/bar'] = {'egg': 'spam'}
         body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <propname/>
@@ -356,6 +362,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         props = getFieldNamesInOrder(IZopeDublinCore)
         for p in props:
             props_xml += '<%s xmlns="a0"/>' % p
+        props_xml += '<egg xmlns="a1"/>'
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
             props_xml += '<%s/>' % p
@@ -364,7 +371,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         <response>
         <href>%(resource_url)s</href>
         <propstat>
-        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <prop xmlns:a0="http://www.purl.org/dc/1.1" xmlns:a1="http://foo/bar">
         %(props_xml)s
         </prop>
         <status>HTTP/1.1 200 OK</status>
