@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.4 2002/06/23 17:03:40 jim Exp $
+$Id: Adding.py,v 1.5 2002/07/12 13:26:09 jim Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -23,6 +23,7 @@ from Zope.Publisher.IPublishTraverse import IPublishTraverse
 from Zope.ComponentArchitecture \
      import getView, getService, createObject, queryFactory, queryView
 from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.ContextWrapper import ContextMethod, getbaseobject
 
 class Adding(BrowserView):
 
@@ -75,10 +76,12 @@ class Adding(BrowserView):
 
         factory = queryFactory(self.context, name)
         if factory is None:
-            return super(Adding, self).publishTraverse(request, name)
+            return super(Adding, getbaseobject(self)
+                         ).publishTraverse(request, name)
 
         return factory
 
+    publishTraverse = ContextMethod(publishTraverse)
     
     #
     ############################################################
