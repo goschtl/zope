@@ -35,3 +35,10 @@ result than a real server would:
   >>> conn.search('o=test,dc=org', 'sub')
   [(u'cn=yo', {'cn': [u'yo']})]
 
+Modify it.
+
+  XXX>>> conn.modify('cn=yo,o=test,dc=org', {'givenName': ['bob']})
+
+Delete it.
+
+  >>> conn.delete('cn=yo,o=test,dc=org')
