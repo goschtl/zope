@@ -17,6 +17,8 @@
 $Id$
 """
 
+import sys
+
 from Acquisition import Implicit, aq_parent, aq_base, aq_inner
 
 from AccessControl import ClassSecurityInfo, ModuleSecurityInfo
@@ -27,7 +29,8 @@ from AccessControl.Permissions import manage_users as ManageUsers
 from AccessControl.User import nobody
 from AccessControl.SpecialUsers import emergency_user
 
-import sys
+from App.ImageFile import ImageFile
+
 from zLOG import LOG, WARNING
 from zExceptions import Unauthorized
 from Persistence import PersistentMapping
@@ -117,7 +120,7 @@ class DumbHTTPExtractor( Implicit ):
         return creds
 
 InitializeClass( DumbHTTPExtractor )
-    
+
 
 class EmergencyUserAuthenticator( Implicit ):
 
@@ -146,7 +149,7 @@ class EmergencyUserAuthenticator( Implicit ):
 
 InitializeClass( EmergencyUserAuthenticator )
 
-        
+
 class PluggableAuthService( Folder ):
 
     """ All-singing, all-dancing user folder.
@@ -163,7 +166,15 @@ class PluggableAuthService( Folder ):
     _nobody = nobody
 
     maxlistusers = -1   # Don't allow local role form to try to list us!
-    
+
+    #
+    #   ZMI
+    #
+    arrow_right_gif = ImageFile( 'www/arrow-right.gif', globals() )
+    arrow_left_gif = ImageFile( 'www/arrow-left.gif', globals() )
+    arrow_up_gif = ImageFile( 'www/arrow-up.gif', globals() )
+    arrow_down_gif = ImageFile( 'www/arrow-down.gif', globals() )
+
     def getId( self ):
 
         return self._id
@@ -254,7 +265,7 @@ class PluggableAuthService( Folder ):
                 else:
                     return None
 
-            if self._authorizeUser( user    
+            if self._authorizeUser( user
                                   , accessed
                                   , container
                                   , name
@@ -264,23 +275,25 @@ class PluggableAuthService( Folder ):
                 return user
 
         if not is_top:
-            # Try to validate with user folders higher up.
-            innerob=self.aq_parent
-            while hasattr(innerob,"aq_parent"):
-                inner = getattr(innerob, 'aq_inner', innerob)
-                parent = getattr(inner, 'aq_parent', None)
-                if parent is not None:
-                    innerob = parent
-                else:
-                    if hasattr(innerob, 'im_self'):
-                        innerob = innerob.im_self
-                        innerob = getattr(innerob, 'aq_inner', innerob)
-                if hasattr(innerob,"__allow_groups__"):
-                    userfolder=innerob.__allow_groups__
-                    if hasattr(userfolder,"validate"):
-                        user=userfolder.validate(request,auth,roles)
-                        if user is not None:
-                            return user
+            self.setupChallenge(plugins, request.RESPONSE)
+            return None
+#             # Try to validate with user folders higher up.
+#             innerob=self.aq_parent
+#             while hasattr(innerob,"aq_parent"):
+#                 inner = getattr(innerob, 'aq_inner', innerob)
+#                 parent = getattr(inner, 'aq_parent', None)
+#                 if parent is not None:
+#                     innerob = parent
+#                 else:
+#                     if hasattr(innerob, 'im_self'):
+#                         innerob = innerob.im_self
+#                         innerob = getattr(innerob, 'aq_inner', innerob)
+#                 if hasattr(innerob,"__allow_groups__"):
+#                     userfolder=innerob.__allow_groups__
+#                     if hasattr(userfolder,"validate"):
+#                         user=userfolder.validate(request,auth,roles)
+#                         if user is not None:
+#                             return user
                         
         #
         #   No other user folder above us can satisfy, and we have no user;
@@ -297,26 +310,57 @@ class PluggableAuthService( Folder ):
             return anonymous
 
         # No validation in upper user folders: Make a challenge
+            
+#         for challenger_id, challenger in challengers:
+#             try:
+#                 # A successful challenge involves raising a 
+#                 # "Redirect", url exception.
+#                 if challenger.challenge(request, request.RESPONSE):
+#                     break
+#                 
+#             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
+#                 LOG('PluggableAuthService', WARNING, 
+#                     'ChallengePlugin %s error' % challenger_id,
+#                     error=sys.exc_info())
+        
+        return None
+
+
+    def setupChallenge(self, plugins, response):
+        #import pdb;pdb.set_trace()
+        challengers = plugins.listPlugins(IChallengePlugin)
+        if len(challengers) > 0 and \
+           not getattr(response, '_old_unauthorized', None):
+            response._old_unauthorized = response.unauthorized
+            response.unauthorized = self.challenge
+            response._challenger = self
+            
+    def challenge(self):
+        #import pdb;pdb.set_trace()
+        request = self.REQUEST
+        response = request.RESPONSE
+        plugins = self._getOb( 'plugins' )
+
         challengers = plugins.listPlugins(IChallengePlugin)
         for challenger_id, challenger in challengers:
             try:
-                # A successful challenge involves raising a 
-                # "Redirect", url exception.
-                challenger.challenge(request, request.RESPONSE)
+                if challenger.challenge(request, response):
+                    return
+                
             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                 LOG('PluggableAuthService', WARNING, 
                     'ChallengePlugin %s error' % challenger_id,
                     error=sys.exc_info())
-        
-        return None
-
+                    
+        response._old_unauthorized()
+                    
     security.declareProtected( SearchPrincipals, 'searchUsers')
     def searchUsers(self, **kw):
         """ Search for users """
         exact_match = kw.get( 'exact_match', False )
         search_id = kw.get( 'id', None )
         search_name = kw.get( 'name', None )
-        
+
         if exact_match and search_id:
             plugin_id, principal_id = self._unmangleId( search_id )
             plugin = getattr( self, plugin_id, None )
@@ -341,7 +385,7 @@ class PluggableAuthService( Folder ):
                         'UserEnumerationPlugin %s error' % plugin_id,
                         error=sys.exc_info())
                     return ()
-        
+
         result = []
         max_results = kw.get('max_results', '')
         sort_by = kw.get('sort_by', '')
@@ -359,7 +403,7 @@ class PluggableAuthService( Folder ):
 
         plugins = self._getOb( 'plugins' )
         enumerators = plugins.listPlugins( IUserEnumerationPlugin )
-        
+
         for enumerator_id, enum in enumerators:
             try:
                 user_list = enum.enumerateUsers(**kw)
@@ -371,7 +415,7 @@ class PluggableAuthService( Folder ):
                     info[ 'principal_type' ] = 'user'
                     info[ 'title' ] = info[ 'login' ]
                     result.append(info)
-                    
+
             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                 LOG('PluggableAuthService', WARNING, 
                     'UserEnumerationPlugin %s error' % enumerator_id,
@@ -397,7 +441,7 @@ class PluggableAuthService( Folder ):
         exact_match = kw.get( 'exact_match', False )
         search_id = kw.get( 'id', None )
         search_name = kw.get( 'name', None )
-        
+
         if exact_match and search_id:
             plugin_id, principal_id = self._unmangleId( search_id )
             plugin = getattr( self, plugin_id, None )
@@ -422,7 +466,7 @@ class PluggableAuthService( Folder ):
                         'GroupEnumerationPlugin %s error' % plugin_id,
                         error=sys.exc_info())
                     return ()
-        
+
         result = []
         max_results = kw.get('max_results', '')
         sort_by = kw.get('sort_by', '')
@@ -484,24 +528,29 @@ class PluggableAuthService( Folder ):
             kw['login'] = search_name
 
         if exact_match and search_id:
+            user_info = group_info = ()
+
             plugin_id, principal_id = self._unmangleId( search_id )
             plugin = getattr( self, plugin_id, None )
             if plugin is not None:
                 if getattr( aq_base( plugin ), 'enumerateUsers', None ):
-                    enumeratePrincipals = plugin.enumerateUsers
-                    local_key = 'userid'
-                    principal_type = 'user'
-                    title_key = 'login'
-                    title_pattern = "%s"
-                else:
-                    enumeratePrincipals = plugin.enumerateGroups
-                    local_key = 'groupid'
-                    principal_type = 'group'
-                    title_key = 'groupid'
-                    title_pattern = "(Group) %s"
+                    user_info = plugin.enumerateUsers( id=principal_id
+                                                     , exact_match=True )
+                    if user_info:
+                        local_key = 'userid'
+                        principal_type = 'user'
+                        title_key = 'login'
+                        title_pattern = "%s"
+                if getattr( aq_base( plugin ), 'enumerateGroups', None ):
+                    group_info = plugin.enumerateGroups( id=principal_id
+                                                       , exact_match=True )
+                    if group_info:
+                        local_key = 'groupid'
+                        principal_type = 'group'
+                        title_key = 'groupid'
+                        title_pattern = "(Group) %s"
                 try:
-                    principal_info = enumeratePrincipals( id=principal_id
-                                                        , exact_match=True )
+                    principal_info = filter(None, (user_info + group_info))
                     assert( len( principal_info ) in [ 0, 1 ] )
                     if principal_info:
                         principal_info = principal_info[ 0 ]
@@ -571,7 +620,7 @@ class PluggableAuthService( Folder ):
     manage_options = ( Folder.manage_options[:1]
                       + ( { 'label' : 'Search'
                           , 'action': 'manage_search' }
-                        , 
+                        ,
                         )
                       + Folder.manage_options[2:]
                       )
@@ -719,8 +768,7 @@ class PluggableAuthService( Folder ):
                             continue
 
                         if user_id is not None:
-                            mangled_id = self._mangleId( authenticator_id
-                                                       , user_id )
+                            mangled_id = self._verifyUser(plugins, user_id)
                             user_ids.append( (mangled_id, name) )
 
 
@@ -739,28 +787,26 @@ class PluggableAuthService( Folder ):
 
     security.declarePrivate( '_unmangleId' )
     def _unmangleId( self, mangled_id ):
-        
+
         return mangled_id.split( MANGLE_DELIMITER, 1 )
 
     security.declarePrivate( '_mangleId' )
     def _mangleId( self, namespace, id ):
     
-        if id.find(MANGLE_DELIMITER) != -1: 
-            return id 
         return MANGLE_DELIMITER.join( ( namespace, id ) )
 
     security.declarePrivate( '_computeMangledId' )
     def _computeMangledId( self, info_dict ):
 
         """ Synthesize an from info_dict.
-        
+
         o Mangle plugin and original id together.
         """
         return self._mangleId( info_dict[ 'pluginid' ], info_dict[ 'id' ] )
 
     security.declarePrivate( '_tryEmergencyUserAuthentication' )
     def _tryEmergencyUserAuthentication( self, credentials ):
-        
+
         """ credentials -> emergency_user or None
         """
         try:
@@ -870,7 +916,7 @@ class PluggableAuthService( Folder ):
             groups = self._getGroupsForPrincipal( user, request
                                                 , plugins=plugins )
             user._addGroups( groups )
-            
+
             rolemakers = plugins.listPlugins( IRolesPlugin )
 
             for rolemaker_id, rolemaker in rolemakers:
@@ -882,6 +928,7 @@ class PluggableAuthService( Folder ):
                 if roles:
                     user._addRoles( roles )
 
+            user._addRoles( ['Authenticated'] )
             cache[ user_id ] = user
 
         return user.__of__( self )
@@ -1038,7 +1085,7 @@ class PluggableAuthService( Folder ):
         plugins = self._getOb( 'plugins' )
         useradders = plugins.listPlugins( IUserAdderPlugin )
         roleassigners = plugins.listPlugins( IRoleAssignerPlugin )
-        
+
         user = None
 
         if not (useradders and roleassigners):
