@@ -171,6 +171,8 @@ class DummyFolder( Implicit ):
 
 
 class DummyUser(Implicit):
+    """ A dummy User.
+    """
 
     def __init__(self, id='dummy'):
         self.id = id
@@ -187,6 +189,8 @@ class DummyUser(Implicit):
 
 
 class DummyUserFolder(Implicit):
+    """ A dummy User Folder with 2 dummy Users.
+    """
 
     def __init__(self):
         setattr( self, 'user_foo', DummyUser(id='user_foo') )
