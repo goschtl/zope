@@ -164,7 +164,7 @@ class EditWizardView(EditView):
         try:
             for k in self.fieldNames:
                 if k not in self.currentPane().names:
-                    getattr(self, k).getInputValue()
+                    getattr(self, k+'_widget').getInputValue()
             self.show_submit = 1
         except WidgetInputError:
             self.show_submit = 0
@@ -176,7 +176,7 @@ class EditWizardView(EditView):
     def apply_update(self, storage):
         ''' Save changes to our content object '''
         for k,v in storage.items():
-            getattr(self,k).setRenderedValue(v)
+            getattr(self,k+'_widget').setRenderedValue(v)
         content = self.adapted
         changed = applyWidgetsChanges(self, self.schema, target=content,
                 names=self.fieldNames)
@@ -210,14 +210,14 @@ class EditWizardView(EditView):
             current_fields = self.currentPane().names
             for k in self.fieldNames:
                 if k not in current_fields:
-                    widget = getattr(self, k)
+                    widget = getattr(self, k+'_widget')
                     out(widget.hidden())
             return ''.join(olist)
 
 
 def EditWizardViewFactory(name, schema, permission, layer,
                     panes, fields, template, default_template, bases, for_,
-                    menu=u'', usage=u'', use_session=True):
+                    menu=u'', use_session=False):
     # XXX What about the __implements__ of the bases?
     class_ = SimpleViewClass(template, used_for=schema, bases=bases)
     class_.schema = schema
@@ -226,9 +226,6 @@ def EditWizardViewFactory(name, schema, permission, layer,
     class_.use_session = use_session
 
     class_.generated_form = ViewPageTemplateFile(default_template)
-
-    class_.usage = usage or (
-        menu and globalBrowserMenuService.getMenuUsage(menu))
 
     defineChecker(
         class_,

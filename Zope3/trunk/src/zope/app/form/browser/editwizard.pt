@@ -28,10 +28,6 @@
         
         <div metal:use-macro="context/@@form_macros/widget_rows" />
         
-        <div tal:replace="structure view/renderHidden">
-          <!-- type=hidden input controls for passing state without session -->
-          <input type="hidden" name="example" value="foo" />
-        </div>
         <div class="row"
              metal:define-slot="extra_bottom" tal:replace="nothing">
             <div class="label">Extra bottom</div>
@@ -56,6 +52,10 @@
         </div>
       </div>
 
+        <div tal:replace="structure view/renderHidden">
+          <!-- type=hidden input controls for passing state without session -->
+          <input type="hidden" name="example" value="foo" />
+        </div>
     </form>
 
   </div>
