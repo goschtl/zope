@@ -134,7 +134,7 @@
 /Zope3/lib/python/Zope/Testing                 /Packages/Testing
 /Zope3/lib/python/Zope/TreeDisplay             /Packages/TreeDisplay
 /Zope3/lib/python/Zope/ZLogger                 /Packages/ZLogger
-/Zope3/lib/python/Zope/zExceptions             /Zope/lib/python/zExceptions
+/Zope3/lib/python/Zope/Exceptions              /Zope/lib/python/zExceptions
 
 /Zope3/lib/python/ZopeLegacy/AccessControl     /Packages/AccessControl
 /Zope3/lib/python/ZopeLegacy/App               /Packages/App
