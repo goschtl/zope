@@ -13,9 +13,8 @@
 ##############################################################################
 """Base class for DAV functional tests.
 
-$Id: dav.py,v 1.3 2004/02/24 16:51:30 philikon Exp $
+$Id: dav.py,v 1.4 2004/03/03 17:06:31 srichter Exp $
 """
-
 from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
@@ -23,8 +22,6 @@ from zope.testing.functional import HTTPTestCase
 
 from zope.app.folder import Folder
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-
-__metaclass__ = type
 
 class Page(Persistent):
     implements(IAttributeAnnotatable)    

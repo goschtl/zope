@@ -13,34 +13,31 @@
 ##############################################################################
 """Test the wiki ZCML namespace directives.
 
-$Id: test_directives.py,v 1.2 2003/11/27 13:59:18 philikon Exp $
+$Id: test_directives.py,v 1.3 2004/03/03 17:06:31 srichter Exp $
 """
 import unittest
 
-from zope.app.dav.globaldavschemaservice import davSchemaService
-from zope.app.interfaces.component import IDAVSchemaService
-from zope.app.services.servicenames import DAVSchema
-from zope.component.service import defineService, serviceManager
-from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.interface import Interface
+
+from zope.app import zapi
+from zope.app.services.servicenames import Utilities
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.dav.interfaces import IDAVNamespace
 import zope.app.dav.tests
+
+ns = 'http://www.zope3.org/dav-schema'
 
 class ISchema(Interface):
     pass
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
-    def setUp(self):
-        super(DirectivesTest, self).setUp()
-        defineService(DAVSchema, IDAVSchemaService)
-        serviceManager.provideService(DAVSchema, davSchemaService)
-
     def test_provideInterface(self):
-        self.assertEqual(davSchemaService.queryNamespace(ISchema), None)
+        utils = zapi.getService(None, Utilities)
+        self.assertEqual(utils.queryUtility(IDAVNamespace, name=ns), None)
         self.context = xmlconfig.file("dav.zcml", zope.app.dav.tests)
-        self.assertEqual(davSchemaService.queryNamespace(ISchema),
-                         'http://www.zope3.org/dav-schema')
+        self.assertEqual(utils.queryUtility(IDAVNamespace, name=ns), ISchema)
 
 def test_suite():
     return unittest.TestSuite((

@@ -79,19 +79,10 @@
       allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
   
   <adapter
-      provides="zope.app.interfaces.dav.IDAVSchema"
+      provides="zope.app.dav.interfaces.IDAVSchema"
       for="*"
       permission="zope.Public"
       factory=".adapter.DAVSchemaAdapter" />
-  
-  <serviceType
-      id="DAVSchema"
-      interface="zope.app.interfaces.component.IDAVSchemaService" />
-  
-  <service
-      serviceType="DAVSchema"
-      permission="zope.Public"
-      component="zope.app.dav.globaldavschemaservice.davSchemaService" />
   
   <dav:provideInterface
       for="http://purl.org/dc/1.1"
@@ -99,6 +90,6 @@
   
   <dav:provideInterface
       for="DAV:"
-      interface="zope.app.interfaces.dav.IDAVSchema" />
+      interface="zope.app.dav.interfaces.IDAVSchema" />
 
 </configure>

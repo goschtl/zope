@@ -11,19 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""WebDAV Adapters
+"""WebDAV-related Adapters
 
-$Id: adapter.py,v 1.6 2004/03/03 11:03:59 philikon Exp $
+$Id: adapter.py,v 1.7 2004/03/03 17:06:30 srichter Exp $
 """
-
 from xml.dom import minidom
+
 from zope.component import getAdapter, queryAdapter
+from zope.interface import implements
+
+from zope.app import zapi
+from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.interfaces.file import IReadDirectory
 from zope.app.size.interfaces import ISized
-from zope.app import zapi
 
 class DAVSchemaAdapter:
+    """An adapter for all content objects that provides the basic DAV
+    schema/namespace."""
+    implements(IDAVSchema)
 
     def __init__(self, object):
         self.context = object

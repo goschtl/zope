@@ -13,11 +13,20 @@
 ##############################################################################
 """WebDAV-specific interfaces
 
-$Id: dav.py,v 1.3 2004/02/24 14:18:04 srichter Exp $
+$Id: interfaces.py,v 1.1 2004/03/03 17:06:30 srichter Exp $
 """
 from zope.interface import Interface
 from zope.schema import Text
 from zope.app.interfaces.form import IWidget
+
+
+class IDAVNamespace(Interface):
+    """Represents a namespace available in WebDAV XML documents.
+
+    DAV namespaces and their associated interface are utilities that fullfill
+    provide this interface
+    """
+
 
 class IDAVCreationDate(Interface):
 
@@ -66,12 +75,13 @@ class IDAVSource(Interface):
                                 destination exists, this specification
                                 asserts no policy on ordering.''')
 
+
 class IOptionalDAVSchema(IDAVCreationDate, IDAVDisplayName, IDAVSource):
-    """ DAV properties that SHOULD be present but are not required """
-    pass
+    """DAV properties that SHOULD be present but are not required"""
+
 
 class IGETDependentDAVSchema(Interface):
-    """ DAV properties that are dependent on GET support of the resource """
+    """DAV properties that are dependent on GET support of the resource"""
 
     getcontentlanguage = Text(title=u'''Contains the Content-Language\
                                 header returned by a GET without\
@@ -130,7 +140,7 @@ class IGETDependentDAVSchema(Interface):
                                 GET.''')
 
 class IDAV1Schema(IGETDependentDAVSchema):
-    """ DAV properties required for Level 1 compliance """
+    """DAV properties required for Level 1 compliance"""
 
     resourcetype = Text(title=u'''Specifies the nature of the resource''',
 
@@ -141,7 +151,7 @@ class IDAV1Schema(IGETDependentDAVSchema):
                                 empty.''')
 
 class IDAV2Schema(IDAV1Schema):
-    """ DAV properties required for Level 2 compliance """
+    """DAV properties required for Level 2 compliance"""
 
     lockdiscovery = Text(title=u'''Describes the active locks on a\
                                  resource''',
@@ -176,11 +186,11 @@ class IDAV2Schema(IDAV1Schema):
 
 
 class IDAVSchema(IOptionalDAVSchema, IDAV2Schema):
-    """ Full DAV properties schema """
-    pass
+    """Full DAV properties schema"""
+
 
 class ISimpleDAVWidget(IWidget):
     """A specialized widget used to render DAV properties output (eg:
     for the response of a PROPFIND request)"""
-    pass
+
 

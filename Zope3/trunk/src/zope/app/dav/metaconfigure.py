@@ -13,14 +13,12 @@
 ##############################################################################
 """Configuration handlers for 'dav' namespace.
 
-$Id: metaconfigure.py,v 1.2 2003/08/02 17:26:12 srichter Exp $
+$Id: metaconfigure.py,v 1.3 2004/03/03 17:06:30 srichter Exp $
 """
-from zope.app.services.servicenames import DAVSchema
-from zope.app.component.metaconfigure import handler
+from zope.app.component.metaconfigure import utility
+from zope.interface import directlyProvides
+from interfaces import IDAVNamespace
 
 def interface(_context, for_, interface):
-    _context.action(
-          discriminator = ('dav', 'provideInterface', for_, interface),
-          callable = handler,
-          args = (DAVSchema, 'provideInterface', for_, interface) )
-
+    directlyProvides(interface, IDAVNamespace)
+    utility(_context, IDAVNamespace, interface, name=for_)

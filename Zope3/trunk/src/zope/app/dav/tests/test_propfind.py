@@ -12,15 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.14 2004/03/03 10:38:41 philikon Exp $
+$Id: test_propfind.py,v 1.15 2004/03/03 17:06:31 srichter Exp $
 """
-__metaclass__ = type
-
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
-from zope.interface import implements
+from zope.interface import implements, directlyProvides
 from zope.component import getView, getAdapter
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.pagetemplate.tests.util import normalize_xml
@@ -42,9 +40,8 @@ from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 
 from zope.app.dav import propfind
-from zope.app.interfaces.dav import IDAVSchema
+from zope.app.dav.interfaces import IDAVSchema, IDAVNamespace
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
-from zope.app.dav.globaldavschemaservice import provideInterface
 
 import zope.app.location
 
@@ -147,9 +144,14 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ztapi.setDefaultViewName(IDatetime, 'view')
         ztapi.setDefaultViewName(ISequence, 'view')
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
-        ztapi.provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
-        provideInterface('DAV:', IDAVSchema)
-        provideInterface('http://www.purl.org/dc/1.1', IZopeDublinCore)
+        ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
+                             ZDCAnnotatableAdapter)
+        utils = zapi.getService(None, 'Utilities')
+        directlyProvides(IDAVSchema, IDAVNamespace)
+        utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
+        directlyProvides(IZopeDublinCore, IDAVNamespace)
+        utils.provideUtility(IDAVNamespace, IZopeDublinCore,
+                             'http://www.purl.org/dc/1.1')
 
     def test_contenttype1(self):
         file = self.file

@@ -13,19 +13,17 @@
 ##############################################################################
 """Functional tests for PROPFIND.
 
-$Id: test_propfind.py,v 1.4 2004/03/01 15:02:49 philikon Exp $
+$Id: test_propfind.py,v 1.5 2004/03/03 17:06:31 srichter Exp $
 """
-
 import unittest
 from datetime import datetime
-from zope.app.dav.ftests.dav import DAVTestCase
-from zope.component import getAdapter
-from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.traversing import traverse
 from transaction import get_transaction
 from zope.pagetemplate.tests.util import normalize_xml
 
-__metaclass__ = type
+from zope.app import zapi
+from zope.app.dav.ftests.dav import DAVTestCase
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.traversing import traverse
 
 class TestPROPFIND(DAVTestCase):
 
@@ -37,7 +35,7 @@ class TestPROPFIND(DAVTestCase):
     def test_dctitle2(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
-        adapted = getAdapter(pt, IZopeDublinCore)
+        adapted = zapi.getAdapter(pt, IZopeDublinCore)
         adapted.title = u'Test Title'
         get_transaction().commit()
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
@@ -46,7 +44,7 @@ class TestPROPFIND(DAVTestCase):
     def test_dccreated(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
-        adapted = getAdapter(pt, IZopeDublinCore)
+        adapted = zapi.getAdapter(pt, IZopeDublinCore)
         adapted.created = datetime.utcnow()
         get_transaction().commit()
         expect = str(adapted.created)
@@ -56,7 +54,7 @@ class TestPROPFIND(DAVTestCase):
     def test_dcsubject(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
-        adapted = getAdapter(pt, IZopeDublinCore)
+        adapted = zapi.getAdapter(pt, IZopeDublinCore)
         adapted.subjects = (u'Bla', u'Ble', u'Bli')
         get_transaction().commit()
         expect = ', '.join(adapted.subjects)
@@ -89,6 +87,7 @@ class TestPROPFIND(DAVTestCase):
         </response>
         </multistatus>""" % {'ns':ns, 'prop':prop, 'expect':expect})
         self.assertEquals(s1, s2)
+
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -11,22 +11,20 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.13 2004/03/03 10:38:40 philikon Exp $
+$Id: propfind.py,v 1.14 2004/03/03 17:06:30 srichter Exp $
 """
-__metaclass__ = type
-
 from xml.dom import minidom
-from zope.component import getView, queryView, queryAdapter
 from zope.proxy import removeAllProxies
 from zope.schema import getFieldNamesInOrder
+from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
-from zope.app.dav.globaldavschemaservice import availableNamespaces
-from zope.app.dav.globaldavschemaservice import queryInterface
 from zope.app.form.utility import setUpWidgets, getWidgetsDataFromAdapter
 
-class PROPFIND:
-    """PROPFIND handler for all objects
-    """
+from interfaces import IDAVNamespace
+
+
+class PROPFIND(object):
+    """PROPFIND handler for all objects"""
 
     def __init__(self, context, request):
         self.context = context
@@ -43,7 +41,7 @@ class PROPFIND:
 
     def PROPFIND(self):
         request = self.request
-        resource_url = str(getView(self.context, 'absolute_url', request))
+        resource_url = str(zapi.getView(self.context, 'absolute_url', request))
         if IReadContainer.isImplementedBy(self.context):
             resource_url = resource_url + '/'
         data = request.bodyFile
@@ -74,8 +72,8 @@ class PROPFIND:
         # XXX For now, list the propnames for the all namespaces
         # but later on, we need to list *all* propnames from *all* known
         # namespaces that this object has.
-        for ns in availableNamespaces():
-            _avail_props[ns] = getFieldNamesInOrder(queryInterface(ns))
+        for ns, iface in zapi.getUtilitiesFor(None, IDAVNamespace):
+            _avail_props[ns] = getFieldNamesInOrder(iface)
         propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
         if propname:
             self._handlePropname(response, re, _avail_props)
@@ -106,7 +104,7 @@ class PROPFIND:
                     count += 1
                     prop.setAttribute('xmlns:%s' % attr_name, ns)
                 iface = _props[ns]['iface']
-                adapter = queryAdapter(self.context, iface, None)
+                adapter = zapi.queryAdapter(self.context, iface, None)
                 initial = getWidgetsDataFromAdapter(
                     adapter, iface, names=avail.get(ns))
                 setUpWidgets(self, iface, initial=initial, \
@@ -168,7 +166,7 @@ class PROPFIND:
         if depth != '0':
             if IReadContainer.isImplementedBy(self.context):
                 for id, obj in self.context.items():
-                    pfind = queryView(obj, 'PROPFIND', self.request, None)
+                    pfind = zapi.queryView(obj, 'PROPFIND', self.request, None)
                     if pfind is not None:
                         pfind.setDepth(subdepth)
                         value = pfind.PROPFIND()
@@ -184,7 +182,7 @@ class PROPFIND:
                   if e.nodeType == e.ELEMENT_NODE]
         for node in childs:
             ns = node.namespaceURI
-            iface = queryInterface(ns, None)
+            iface = zapi.queryUtility(None, IDAVNamespace, None, ns)
             value = _props.get(ns, {'iface': iface, 'props': []})
             value['props'].append(node.localName)
             _props[ns] = value
@@ -192,7 +190,7 @@ class PROPFIND:
 
     def _handleAllprop(self, _avail_props, _props):
         for ns in _avail_props.keys():
-            iface = queryInterface(ns, None)
+            iface = zapi.queryUtility(None, IDAVNamespace, None, ns)
             _props[ns] = {'iface': iface, 'props': _avail_props.get(ns)}
         return _props
 
@@ -228,7 +226,7 @@ class PROPFIND:
                     l.append(p)
                     not_avail[ns] = l
                     continue
-                adapter = queryAdapter(self.context, iface, None)
+                adapter = zapi.queryAdapter(self.context, iface, None)
                 if adapter is None:
                     l = not_avail.get(ns, [])
                     l.append(p)

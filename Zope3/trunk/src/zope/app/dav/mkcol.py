@@ -11,19 +11,16 @@
 ##############################################################################
 """DAV method MKCOL
 
-$Id: mkcol.py,v 1.2 2003/09/21 17:32:03 jim Exp $
+$Id: mkcol.py,v 1.3 2004/03/03 17:06:30 srichter Exp $
 """
-__metaclass__ = type
-
+from zope.app import zapi
 from zope.app.interfaces.file import IWriteDirectory
 from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.component import queryAdapter, getAdapter
 
-class NullResource:
-    """MKCOL handler for creating collections
-    """
+class NullResource(object):
+    """MKCOL handler for creating collections"""
 
     def __init__(self, context, request):
         self.context = context
@@ -42,12 +39,12 @@ class NullResource:
         container = self.context.container
         name = self.context.name
 
-        dir = queryAdapter(container, IWriteDirectory, None)
+        dir = zapi.queryAdapter(container, IWriteDirectory, None)
         if dir is None:
             request.response.setStatus(403)
             return ''
 
-        factory = getAdapter(container, IDirectoryFactory)
+        factory = zapi.getAdapter(container, IDirectoryFactory)
         newdir = factory(name)
         publish(self.context, ObjectCreatedEvent(newdir))
         dir[name] = newdir
@@ -55,9 +52,9 @@ class NullResource:
         request.response.setStatus(201)
         return ''
 
-class MKCOL:
-    """MKCOL handler for existing objects
-    """
+
+class MKCOL(object):
+    """MKCOL handler for existing objects"""
 
     def __init__(self, context, request):
         self.context = context
