@@ -9,7 +9,7 @@
 <body>
 <div metal:fill-slot="body">
 
-<form action="@@undo.html" method="post">
+<form action="@@undo.html" method="post" tal:define="first python:int(request.get('first',0)); all python:request.get('all', None)">
 
 <p class="form-help">
 This application's transactional feature allows you to easily undo changes 
@@ -24,26 +24,40 @@ is shown below, you may not be able to undo it if later transactions
 modified objects that were modified by a selected transaction.
 </p>
 
+<span tal:condition="all">
+<p>You are <span tal:replace="request/user/getId">username</span>, looking at all transactions. <a href="?">View only your own transactions</a>.
+<span tal:omit-tag=""
+   tal:define="global undoInfo python:view.getUndoInfo(first=first)"/></p>
+</span>
+<span tal:condition="not:all">
+<p>You are <span tal:replace="request/user/getId">username</span>, looking at your own transactions.  <a href="?all=yes">View everyone's transactions</a>.
+<!-- This nasty piece of work is needed because user IDs are written to
+     the transaction log with a (bogus?) "path" prepended to the username.
+     see zodb.ztransaction.Transaction.setUser
+     I can't see a way to reconstruct this path right now. I also can't see 
+     anywhere that calls setUser() with a path specified. -->
+<span tal:omit-tag=""
+    tal:define="global undoInfo python:view.getUndoInfo(first=first, user_name='/ '+request.user.getId())"/></p>
+</span>
 
+<p><a tal:attributes="href python:'?first=%s'%(first+20)">View 20 earlier transactions</a></p>
 
 <a name="t_list" />
 
-<table width="100%" cellspacing="0" cellpadding="2" border="0">
+<table width="100%" cellspacing="0" cellpadding="2" border="0" >
 
-  <span tal:define="global undoInfo view/getUndoInfo" />
   <div tal:repeat="undoitem undoInfo">
-  <span tal:condition="repeat/undoitem/odd" ><span tal:define="global rowclass string:row-hilite"/> </span>
-  <span tal:condition="repeat/undoitem/even" ><span tal:define="global rowclass string:row-normal"/> </span>
+  <span tal:condition="repeat/undoitem/odd" ><span tal:define="global rowclass string:content odd"/> </span>
+  <span tal:condition="repeat/undoitem/even" ><span tal:define="global rowclass string:content even"/> </span>
 
   <tr tal:attributes="class rowclass">
     <td width="16" align="left" valign="top">
       <input type="checkbox" name="id_list:list" value="-1" tal:attributes="value undoitem/id"/>
     </td>
-    <td align="left" valign="top">
+    <td tal:attributes="class rowclass" align="left" valign="top">
     <div class="list-item">
      
-     <i tal:condition="not:undoitem/description">
-           no description available</i>
+     <i tal:condition="not:undoitem/description">no description available</i>
      <span tal:condition="undoitem/description" tal:omit-tag=""
            tal:content="undoitem/description">description goes here</span>
      <span tal:condition="undoitem/user_name" tal:omit-tag=""> by 

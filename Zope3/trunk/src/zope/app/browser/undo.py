@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: undo.py,v 1.6 2003/07/10 01:32:13 anthony Exp $
+$Id: undo.py,v 1.7 2003/07/10 12:42:12 anthony Exp $
 """
 from zope.interface import implements
 from zope.component import getService, getUtility
@@ -47,7 +47,7 @@ class ZODBUndoManager:
     # Implementation methods for interface
     # zope.app.interfaces.undo.IUndoManager.
 
-    def getUndoInfo(self):
+    def getUndoInfo(self, first=0, last=-20, user_name=None):
         '''See interface IUndoManager'''
 
         # Entries are a list of dictionaries, containing
@@ -56,18 +56,23 @@ class ZODBUndoManager:
         # time        -> unix timestamp of last access
         # description -> transaction description
 
-        entries = self.__db.undoInfo()
+        if user_name is not None:
+            # !?&%!! The 'user' in the transactions is some combination
+            # of 'path' and 'user'. 'path' seems to only ever be '/' at
+            # the moment - I can't find anything that calls it :-(
+            # At the moment the path is hacked onto the user_name in the 
+            # PageTemplate 'undo_log.pt' (to minimise the nastiness).
+            specification = {'user_name':user_name}
+        else:
+            specification = None
+        entries = self.__db.undoInfo(first, last, specification)
 
-        # We walk through the entries, (possibly removing some)
-        # and augmenting the dictionaries with some additional
-        # items (such as datetime, a useful form of the unix timestamp).
-        # If there is no description provided, we provide one.
+        # We walk through the entries, augmenting the dictionaries 
+        # with some additional items (at the moment, datetime, a useful 
+        # form of the unix timestamp).
 
         for e in entries:
             e['datetime'] = datetime.fromtimestamp(e['time'])
-
-        # Here we'd filter out ones we don't care about (for instance,
-        # to show only entries from the current user).
 
         return entries
 
@@ -98,6 +103,6 @@ class Undo(BrowserView):
         if REQUEST is not None:
             REQUEST.response.redirect('index.html')
 
-    def getUndoInfo(self):
+    def getUndoInfo(self, first=0, last=-20, user_name=None):
         utility = getUtility(self.context, IUndoManager)
-        return utility.getUndoInfo()
+        return utility.getUndoInfo(first, last, user_name)
