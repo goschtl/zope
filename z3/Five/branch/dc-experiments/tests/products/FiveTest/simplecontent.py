@@ -3,11 +3,11 @@ from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 from helpers import add_and_edit
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.Five.api import Viewable
+from Products.Five.api import Traversable
 from zope.interface import implements
 from interfaces import ISimpleContent
 
-class SimpleContent(SimpleItem, Viewable):
+class SimpleContent(SimpleItem, Traversable):
     implements(ISimpleContent)
 
     meta_type = 'TestSimpleContent'
