@@ -71,3 +71,13 @@ class IConfigurationContext(Interface):
         actions with a discriminator of None never conflicts with
         other actions.
         """
+
+class IGroupingContext(Interface):
+
+    def before():
+        """Do something before processing nested directives
+        """
+
+    def after():
+        """Do something after processing nested directives
+        """

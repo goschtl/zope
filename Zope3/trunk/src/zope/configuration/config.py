@@ -15,12 +15,13 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.6 2003/07/30 15:06:47 sidnei Exp $
+$Id: config.py,v 1.7 2003/07/31 14:56:40 jim Exp $
 """
 
 from keyword import iskeyword
 from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.interfaces import IConfigurationContext
+from zope.configuration.interfaces import IGroupingContext
 from zope.interface.adapter import AdapterRegistry
 from zope.interface import Interface, implements, directlyProvides
 from zope.interface.interfaces import IInterface
@@ -805,7 +806,7 @@ class GroupingContextDecorator(ConfigurationContext):
     See the discussion (and test) id GroupingStackItem.
     """
 
-    implements(IConfigurationContext)
+    implements(IConfigurationContext, IGroupingContext)
 
     def __init__(self, context, **kw):
         self.context = context
