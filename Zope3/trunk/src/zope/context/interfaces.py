@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.12 2003/06/01 15:59:40 jim Exp $
+$Id: interfaces.py,v 1.13 2003/06/02 18:38:40 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -113,9 +113,6 @@ class IWrapper(Interface):
     __call__
     __str__
     """
-
-    def __getstate__():
-        """Raises AttributeError if called (to prevent pickling)"""
 
 
 class IWrapperIntrospection(Interface):
