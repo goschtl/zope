@@ -216,8 +216,9 @@ Setup a simply browser view with a 'index_pagelets.pt' template:
 Setup a view page template called 'index':
 
   >>> from zope.app.pagelet.tests import testfiles
-  >>> index = ViewPageTemplateFile('index_pagelets.pt',
-  ...   'src/zope/app/pagelet/tests/testfiles')
+  >>> import os.path
+  >>> path = os.path.join(os.path.dirname(__file__), 'tests', 'testfiles')
+  >>> index = ViewPageTemplateFile('index_pagelets.pt', path)
 
 Call the 'index' (view) on the browser view instance:
 
