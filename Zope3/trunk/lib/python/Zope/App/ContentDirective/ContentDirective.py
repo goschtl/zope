@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.9 2002/11/06 22:30:21 rdmurray Exp $
+$Id: ContentDirective.py,v 1.10 2002/11/11 20:13:49 jim Exp $
 """
 from types import ModuleType
 from Interface.Implements import implements
@@ -27,6 +27,7 @@ from Zope.App.Security.protectClass \
     import protectLikeUnto, protectName, checkPermission, protectSetAttribute
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Security.Checker import NamesChecker
+from Zope.Schema.IField import IField
 
 PublicPermission = 'Zope.Public'
 
@@ -63,7 +64,7 @@ class ContentDirective:
 
     def require(self, _context,
                 permission=None, attributes=None, interface=None,
-                like_class=None, set_attributes=None):
+                like_class=None, set_attributes=None, set_schema=None):
         """Require a the permission to access a specific aspect"""
 
         if like_class:
@@ -71,7 +72,7 @@ class ContentDirective:
         else:
             r = []
 
-        if not (interface or attributes or set_attributes):
+        if not (interface or attributes or set_attributes or set_schema):
             if r:
                 return r
             raise ConfigurationError("Nothing required")
@@ -86,6 +87,8 @@ class ContentDirective:
             self.__protectNames(attributes, permission, r)
         if set_attributes:
             self.__protectSetAttributes(set_attributes, permission, r)
+        if set_schema:
+            self.__protectSetSchema(set_schema, permission, r)
 
 
         return r
@@ -129,6 +132,16 @@ class ContentDirective:
             r.append((
                 ('protectSetAttribute', self.__class, name),
                 protectSetAttribute, (self.__class, name, permission_id)))
+            
+    def __protectSetSchema(self, schema, permission_id, r):
+        "Set a permission on a bunch of names."
+        schema = self.__context.resolve(schema)
+        for name in schema:
+            field = schema[name]
+            if IField.isImplementedBy(field):
+                r.append((
+                    ('protectSetAttribute', self.__class, name),
+                    protectSetAttribute, (self.__class, name, permission_id)))
 
 
     def __call__(self):

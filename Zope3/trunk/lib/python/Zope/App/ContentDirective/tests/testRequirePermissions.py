@@ -20,6 +20,9 @@ import Zope.Configuration
 import Zope.App.Security
 from Zope.App.Security import protectClass
 from Zope.App.Security.Exceptions import UndefinedPermissionError
+from Zope.Security.Checker import selectChecker
+from Zope.Exceptions import Forbidden
+
 
 # So we can use config parser to exercise protectClass stuff.
 from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
@@ -81,24 +84,9 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(checker.permission_id('m2'), (m2P or None))
         self.assertEqual(checker.permission_id('m3'), (m3P or None))
 
-    def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
-        "Verify that class, instance, and methods have expected permissions."
-
-        from Zope.Security.Checker import selectChecker
-        from Zope.Exceptions import Forbidden
-
-        checker = selectChecker(TestModule.test_instance)
-        self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))
-        self.assertEqual(checker.setattr_permission_id('m2'), (m2P or None))
-        self.assertEqual(checker.setattr_permission_id('m3'), (m3P or None))
-
     def assertDeclaration(self, declaration, **state):
         apply_declaration(template_bracket % declaration)
         self.assertState(**state)
-
-    def assertSetattrDeclaration(self, declaration, **state):
-        apply_declaration(template_bracket % declaration)
-        self.assertSetattrState(**state)
 
     # "testSimple*" exercises tags that do NOT have children.  This mode
     # inherently sets the instances as well as the class attributes.
@@ -112,6 +100,20 @@ class Test(CleanUp, unittest.TestCase):
                        % (PREFIX+"test_class", P1))
         self.assertDeclaration(declaration, m1P=P1, m3P=P1)
 
+    def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
+        "Verify that class, instance, and methods have expected permissions."
+
+        from Zope.Security.Checker import selectChecker
+        from Zope.Exceptions import Forbidden
+
+        checker = selectChecker(TestModule.test_instance)
+        self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))
+        self.assertEqual(checker.setattr_permission_id('m2'), (m2P or None))
+        self.assertEqual(checker.setattr_permission_id('m3'), (m3P or None))
+
+    def assertSetattrDeclaration(self, declaration, **state):
+        self.assertSetattrState(**state)
+
     def test_set_attributes(self):
         declaration = ("""<content class="%s">
                             <require
@@ -119,7 +121,26 @@ class Test(CleanUp, unittest.TestCase):
                                 set_attributes="m1 m3"/>
                           </content>"""
                        % (PREFIX+"test_class", P1))
-        self.assertSetattrDeclaration(declaration, m1P=P1, m3P=P1)
+        apply_declaration(template_bracket % declaration)
+        checker = selectChecker(TestModule.test_instance)
+        self.assertEqual(checker.setattr_permission_id('m1'), P1)
+        self.assertEqual(checker.setattr_permission_id('m2'), None)
+        self.assertEqual(checker.setattr_permission_id('m3'), P1)
+
+    def test_set_schema(self):
+        declaration = ("""<content class="%s">
+                            <require
+                                permission="%s" 
+                                set_schema="%s"/>
+                          </content>"""
+                       % (PREFIX+"test_class", P1, PREFIX+"S"))
+        apply_declaration(template_bracket % declaration)
+        checker = selectChecker(TestModule.test_instance)
+        self.assertEqual(checker.setattr_permission_id('m1'), None)
+        self.assertEqual(checker.setattr_permission_id('m2'), None)
+        self.assertEqual(checker.setattr_permission_id('m3'), None)
+        self.assertEqual(checker.setattr_permission_id('foo'), P1)
+        self.assertEqual(checker.setattr_permission_id('bar'), P1)
 
     def testSimpleInterface(self):
         declaration = ("""<content class="%s">

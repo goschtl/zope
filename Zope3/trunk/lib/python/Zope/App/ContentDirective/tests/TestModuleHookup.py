@@ -19,6 +19,7 @@ subject classes, instances, permissions, etc, that don't live in the test
 modules, themselves."""
 
 from Interface import Interface
+from Zope.Schema import Text
 
 PREFIX = "Zope.App.Security.tests.TestModule."
 import Zope.App.Security.tests.TestModule as TestModule
@@ -34,8 +35,14 @@ class I2(I):
         pass
     
 
+class S(Interface):
+    foo = Text()
+    bar = Text()
+    
+
 TestModule.I = I
 TestModule.I2 = I2
+TestModule.S = S
 
 template_bracket = """<zopeConfigure
    xmlns="http://namespaces.zope.org/zope">
