@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: AddConnectionConfiguration.py,v 1.1 2002/12/09 15:26:42 ryzaja Exp $
+$Id: AddConnectionConfiguration.py,v 1.2 2002/12/09 16:32:58 ryzaja Exp $
 """
 __metaclass__ = type
 
@@ -42,8 +42,9 @@ class AddConnectionConfiguration(BrowserView):
         return paths
 
     def action(self, component_path):
-        cd = ConnectionConfiguration(None, component_path)
+        connection_name = self.connectionName.getData()
+        cd = ConnectionConfiguration(connection_name, component_path)
         cd = self.context.add(cd)
-        getWidgetsDataForContent(self, IConnectionConfiguration, cd)
+        getWidgetsDataForContent(self, IConnectionConfiguration, content=cd,
+                                 required=True)
         self.request.response.redirect(self.context.nextURL())
-
