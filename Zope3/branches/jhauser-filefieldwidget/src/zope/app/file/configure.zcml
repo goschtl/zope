@@ -59,7 +59,7 @@
 
     <require
         permission="zope.View"
-        interface=".interfaces.IReadFileAccess"
+        interface=".interfaces.IReadFileStorage"
         />
 
   </class>
@@ -68,7 +68,7 @@
 
     <require
         permission="zope.ManageContent"
-        interface=".interfaces.IWriteFileAccess"
+        interface=".interfaces.IWriteFileStorage"
         />
 
   </class>

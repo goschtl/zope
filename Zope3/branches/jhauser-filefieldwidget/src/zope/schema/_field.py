@@ -179,6 +179,7 @@ class MimeData(Field):
                                object.__class__.__name__))
         setattr(object, self.__name__, value)
 
+# TODO: remove this
 # we shouldn't do that in a field, we normaly don't know other fieldnames
 # like contentType. That's the part of the MimeType field/widget
 
@@ -238,58 +239,20 @@ class MimeData(Field):
 
 
 # TODO: add encodng vocabulary for selecting possible mime-types
-class MimeDataEncoding(Field):
+class MimeDataEncoding(BytesLine):
     """Field containing the encoding used for text-based files."""
     implements(IMimeDataEncoding, IFromUnicode)
 
     _type = str
 
-    def fromUnicode(self, u):
-        """
-        >>> b = Bytes(constraint=lambda v: 'x' in v)
-
-        >>> b.fromUnicode(u" foo x.y.z bat")
-        ' foo x.y.z bat'
-        >>> b.fromUnicode(u" foo y.z bat")
-        Traceback (most recent call last):
-        ...
-        ConstraintNotSatisfied:  foo y.z bat
-
-        """
-        v = str(u)
-        self.validate(v)
-        return v
-
-    def constraint(self, value):
-        return '\n' not in value
-
 
 # TODO: perhaps add mime-type vocabulary for possible mime-types.
 # If so, we need also to list the mime-types from the python lib mimetypes
-class MimeType(Field):
+class MimeType(BytesLine):
     """Field containing the mime-type for a file."""
     implements(IMimeType, IFromUnicode)
 
     _type = str
-
-    def fromUnicode(self, u):
-        """
-        >>> b = Bytes(constraint=lambda v: 'x' in v)
-
-        >>> b.fromUnicode(u" foo x.y.z bat")
-        ' foo x.y.z bat'
-        >>> b.fromUnicode(u" foo y.z bat")
-        Traceback (most recent call last):
-        ...
-        ConstraintNotSatisfied:  foo y.z bat
-
-        """
-        v = str(u)
-        self.validate(v)
-        return v
-
-    def constraint(self, value):
-        return '\n' not in value
 
 
 class Float(Orderable, Field):

@@ -27,7 +27,27 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.schema import BytesLine
 
 
-class IFileStorage(Interface):
+class IReadFileStorage(Interface):
+    """File read interface."""
+
+    def read():
+        """Read access on file."""
+
+    def size():
+        """Size of the file."""
+
+    def getSize():
+        """Size of the file."""
+
+
+class IWriteFileStorage(Interface):
+    """File write interface."""
+
+    def write(data):
+        """Write access on file."""
+
+
+class IFileStorage(IReadFileStorage, IWriteFileStorage):
     """IFileStorage provides a read and write method for file-based objects.
     
     Objects implementing this interface handle the storage of the file
@@ -36,40 +56,49 @@ class IFileStorage(Interface):
     blob to a SQL-Server are possible implementations.
     """
 
-    def read():
-        """Read the file data."""
 
-    def write(data):
-        """Write the file data."""
+class IReadMime(Interface):
+    """Mime read interface."""
 
     def getSize():
-        """Returns the size of the file data."""
+        """Return the byte-size of the data of the object."""
+
+    def getMimeType():
+        """Return the mime-type of the file."""
+
+    def getEncoding():
+        """Return the encoding of a text-based file."""
 
 
-class IMime(Interface):
+class IWriteMime(Interface):
+    """Mime write interface."""
 
-    # TODO: remove the line below
-    # contentType = BytesLine(
-    contentType = MimeType(
+    def setMimeType(mimeType):
+        """Set the mime-type for the file object."""
+
+    def setEncoding(mimeType):
+        """Set the encoding for text-based file object."""
+
+
+class IMime(IReadMime, IWriteMime):
+    """Mime interface."""
+
+    mimeType = MimeType(
         title = _(u'Content Type'),
-        description=_(u'The content type identifies the type of data.'),
+        description=_(u'The mime-type identifies the type of data.'),
         default='',
+        missing_value='',
         required=False,
-        missing_value=''
         )
 
-    # TODO: remove the line below
-    #encoding = BytesLine(
     encoding = MimeDataEncoding(
         title = _(u'Encoding Type'),
         description=_(u'The encoding of the data if it is text.'),
         default='',
+        missing_value='',
         required=False,
-        missing_value=''
         )
 
-    # TODO: remove the line below
-    #data = Bytes(
     data = MimeData (
         title=_(u'Data'),
         description=_(u'The actual content of the file.'),
@@ -78,9 +107,6 @@ class IMime(Interface):
         required=False,
         )
 
-    def getSize():
-        """Return the byte-size of the data of the object."""
-
     def open(mode='r'):
         """Return a file like object for reading or updating.
         
@@ -88,26 +114,11 @@ class IMime(Interface):
         """
 
 
-class IReadFileAccess(Interface):
-    """File read interface."""
-
-    def read():
-        """Write access on file."""
-
-    def size():
-        """Size of the file."""
-
-
-class IWriteFileAccess(Interface):
-    """File write interface."""
-
-    def write():
-        """Write access on file."""
-
-
 
 class IFile(Interface):
     """File interface."""
+
+    # TODO: rember, we remove the contentType  field from the interface
 
     contents = Schema(IMime, "zope.app.file.Mime",
         title = _(u'The file data'),
@@ -128,18 +139,22 @@ class IFile(Interface):
         )
 
     # BBB: remove contentType
-    # this is explicit requiered for permission reason, old classes use the 
-    # interface IFile for permission settings  
     contentType = BytesLine(
         title = _(u'Content Type'),
         description=_(u'The content type identifies the type of data.'),
         default='',
+        missing_value='',
         required=False,
-        missing_value=''
         )
 
     def getSize():
         """Return the byte-size of the data of the object."""
+
+    def open(mode='r'):
+        """Return a file like object for reading or updating.
+        
+        Default is set to readonly, use mode='w' for write mode.
+        """
 
 
 class IFileContent(Interface):

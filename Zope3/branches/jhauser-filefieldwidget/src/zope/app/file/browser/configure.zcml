@@ -34,7 +34,7 @@
       menu="zmi_views" title="Text Edit"
       for="zope.app.file.interfaces.IFile"
       action="fileedit.html"
-      filter="python:context.contents.contentType.startswith('text/')"
+      filter="python:context.contents.mimeType.startswith('text/')"
       permission="zope.ManageContent" />
 
   <browser:editform

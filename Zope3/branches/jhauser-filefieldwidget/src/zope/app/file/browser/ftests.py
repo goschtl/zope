@@ -51,6 +51,7 @@ class FileTest(BrowserTestCase):
             '/+/zope.app.file.File=',
             form={'type_name': u'zope.app.file.File',
                   'field.data': StringIO('A file'),
+                  'field.contentType': '',
                   'add_input_name': u'file',
                   'UPDATE_SUBMIT': u'Add'},
             basic='mgr:mgrpw')

@@ -26,7 +26,10 @@ from zope.schema.fieldproperty import FieldProperty
 from zope.publisher.browser import FileUpload
 from zope.security.proxy import removeSecurityProxy
 
-from zope.app.file.interfaces import IMime, IFile, IFileStorage, IFileContent
+from zope.app.file.interfaces import IReadFileStorage, IWriteFileStorage
+from zope.app.file.interfaces import IFileStorage
+from zope.app.file.interfaces import IReadMime, IWriteMime, IMime
+from zope.app.file.interfaces import IFile, IFileContent
 
 # TODO: remove it, just for testing
 from zope.proxy import isProxy
@@ -233,6 +236,8 @@ class FileStorage(Persistent):
     def getSize(self):
         return self._size
 
+    size = getSize
+
 
 class Mime(Persistent):
     """A persistent content component storing binary file data
@@ -242,45 +247,45 @@ class Mime(Persistent):
     >>> mime = Mime()
     >>> mime.data
     ''
-    >>> mime.contentType
+    >>> mime.mimeType
     ''
-    >>> mime.encoding == None
+    >>> mime.encoding == ''
     True
 
     >>> mime = Mime('Foobar')
     >>> mime.data
     'Foobar'
-    >>> mime.contentType
+    >>> mime.mimeType
     ''
-    >>> mime.encoding == None
+    >>> mime.encoding == ''
     True
 
     >>> mime = Mime('Foobar', 'text/plain')
     >>> mime.data
     'Foobar'
-    >>> mime.contentType
+    >>> mime.mimeType
     'text/plain'
-    >>> mime.encoding == None
+    >>> mime.encoding == ''
     True
 
-    >>> mime = Mime(data='Foobar', contentType='text/plain')
+    >>> mime = Mime(data='Foobar', mimeType='text/plain')
     >>> mime.data
     'Foobar'
-    >>> mime.encoding == None
+    >>> mime.encoding == ''
     True
 
     >>> mime = Mime('Foobar', 'text/plain', 'UTF-8')
     >>> mime.data
     'Foobar'
-    >>> mime.contentType
+    >>> mime.mimeType
     'text/plain'
     >>> mime.encoding
     'UTF-8'
 
-    >>> mime = Mime(data='Foobar', contentType='text/plain', encoding='UTF-8')
+    >>> mime = Mime(data='Foobar', mimeType='text/plain', encoding='UTF-8')
     >>> mime.data
     'Foobar'
-    >>> mime.contentType
+    >>> mime.mimeType
     'text/plain'
     >>> mime.encoding
     'UTF-8'
@@ -293,8 +298,8 @@ class Mime(Persistent):
     'Foobar'
 
     >>> mime = Mime()
-    >>> mime.contentType = 'text/plain'
-    >>> mime.contentType
+    >>> mime.mimeType = 'text/plain'
+    >>> mime.mimeType
     'text/plain'
 
     >>> mime = Mime()
@@ -317,7 +322,7 @@ class Mime(Persistent):
     >>> mime.data = 'Foobar'*60000
     >>> mime.getSize()
     360000
-    >>> mime.data == 'Foobar'*60000
+    >>> mime.open().read() == 'Foobar'*60000
     True
 
     Insert data as FileChunk:
@@ -359,7 +364,7 @@ class Mime(Persistent):
 
     >>> file = mime.open(mode='w')
     >>> file.write('Foobar'*2)
-    >>> mime.data
+    >>> mime.open().read()
     'FoobarFoobar'
 
     >>> file.read()
@@ -378,42 +383,45 @@ class Mime(Persistent):
     
     implements(IMime)
 
-    def __init__(self, data='', contentType='', encoding=None):
-        self._data = FileStorage()
-        self._data.write(data)
-        self._contentType = contentType
-        self._encoding = encoding
+    def __init__(self, data='', mimeType='', encoding=''):
+        self._data = FileStorage(data)
+        self.mimeType = mimeType
+        self.encoding = encoding
+
+    # IMime
+    mimeType = FieldProperty(IMime['mimeType'])
+
+    encoding = FieldProperty(IMime['encoding'])
 
     def _getData(self):
-        # TODO: shold we read via the open() method, not really? ri
-        file = self._data.read()
-        return file
-
+        return self._data.read()
+        
     def _setData(self, data):
-        # TODO: shold we write via the open() method, not really? ri
         self._data.write(data)
 
     data = property(_getData, _setData)
 
-    def _getContentType(self):
-        return self._contentType
+    # IReadMime
+    def getMimeType(self):
+        return self.mimeType
 
-    def _setContentType(self, contentType):
-        self._contentType = contentType
+    # IWriteMime
+    def setMimeType(self, mimeType):
+        self.mimeType = mimeType
 
-    contentType = property(_getContentType, _setContentType)
+    # IReadMime
+    def getEncoding(self):
+        return self.encoding
 
-    def _getEncoding(self):
-        return self._encoding
+    # IWriteMime
+    def setEncoding(self, encoding):
+        self.encoding = encoding
 
-    def _setEncoding(self, encoding):
-        self._encoding = encoding
-
-    encoding = property(_getEncoding, _setEncoding)
-
+    # IReadMime
     def getSize(self):
         return self._data.getSize()
 
+    # IMime
     def open(self, mode='r'):
         if mode == 'r':
             return ReadFileStorage(self._data)
@@ -557,7 +565,6 @@ class File(Persistent):
     Let's test large data input for BBB files:
 
     >>> file = File()
-    >>> file._contents = None
 
     Insert as string:
 
@@ -590,43 +597,27 @@ class File(Persistent):
 
     """
 
-    implements(IFile, IMime, IFileContent)
-    
-    # BBB: set the _contents = None, if we have a Mime object stored
-    # under the _contents attr, we have a new style file.
-    # I f we test old style files we have to set the _contents to None 
-    # after initializing
-    _contents = None
-    
+    implements(IFile, IReadMime, IWriteMime, IFileContent)
+
     def __init__(self, data='', contentType=''):
-        self._contents = Mime()
-        self.open(mode='w').write(data)
-        
-        # BBB: map contentType to the right value for new style file
-        self.contentType = contentType
-        self.data = data
-        
-    def isNewStyle(self):
-        if self._contents is None:
-            warn("The File implementation has ben changes, migrate your class",
-                DeprecationWarning, 2)
-            return False
-        else:
-            return True
+        self.contents = Mime(data, contentType)
 
-    # TODO: Fix the widgets for to store the data
-    # now we get a Mime instance form the widget, but _get/_setContents 
-    # points to _contents.data
-    # We have to change this, that we can set on the contents attribute 
-    # directly a Mime instance.
-    # But how should we access the file data? Only with the open method?
-    # This whould break everything... hm, perhaps we can use the data property 
-    # for BBB and a access directly to the file data.
-    def _getContents(self):
-        return self._contents
+    contents = FieldProperty(IFile['contents'])
 
-    def _setContents(self, contents):
-        self._contents = contents
+    def getMimeType(self):
+        return self.contents.mimeType
+
+    def setMimeType(self, mimeType):
+        self.contents.mimeType = mimeType
+
+    def getEncoding(self):
+        return self.contents.encoding
+
+    def setEncoding(self, encoding):
+        self.contents.encoding = encoding
+
+    def getSize(self):
+        return self.contents.getSize()
 
     # TODO: How can we integrate security in this method
     # We must support read and wirte permission on this method
@@ -634,118 +625,39 @@ class File(Persistent):
         """return a file-like object for reading or updating the file value.
         """
         if mode == 'r':
-            return self._contents.open(mode='r')
+            return self.contents.open(mode='r')
         if mode == 'w':
-            return self._contents.open(mode='w')
+            return self.contents.open(mode='w')
         else:
             pass
             # TODO: raise wrong file open attribute error
 
-    # BBB: supports BBB
-    def getSize(self):
-        if self.isNewStyle():
-            return self._contents.getSize()
-        else:
-            warn("The File implementation has ben changes, migrate your class",
-                DeprecationWarning, 2)
-            return self._size
+
+    # BBB: the attribute contentType is deprecated.
+    def _getContentType(self):
+        warn("The contentType attribute is deprecated, use getMimeType()",
+            DeprecationWarning, 2)
+        return self.contents.mimeType
+
+    def _setContentType(self, contentType):
+        warn("The contentType attribute is deprecated, use setMimeType()",
+            DeprecationWarning, 2)
+        self.contents.mimeType = contentType
     
-    # See IFile.
-    contents = property(_getContents, _setContents)
-    #contents = FieldProperty(IFile['contents'])
-    
-    # BBB: remove it after removing BBB
-    # TODO: add deprication warning
+    # BBB: remove the code below this line if removing BBB
+    # since we store the contentType attriute on the File instance
+    # there is no need for a property contentType, use setMimeType
+    # and getMimeType instead. We use the contentType property in the Mime
+    # instance in forms directly via the Schema field of the contents
+    # attribute.
+    contentType = property(_getContentType, _setContentType)
+
     def _getData(self):
-        warn("The data attribute is deprecated, migrate your File class",
-            DeprecationWarning, 2)
-        if isinstance(self._data, FileChunk):
-            return str(self._data)
-        else:
-            return self._data
+        return self.open(mode='r').read()
+        
 
-    # TODO: add deprication warning
     def _setData(self, data):
-        # Handle case when data is a string
-        warn("The data attribute is deprecated, migrate your File class",
-            DeprecationWarning, 2)
-        if isinstance(data, unicode):
-            data = data.encode('UTF-8')
-
-        if isinstance(data, str):
-            self._data, self._size = FileChunk(data), len(data)
-            return
-
-        # Handle case when data is None
-        if data is None:
-            raise TypeError('Cannot set None data on a file.')
-
-        # Handle case when data is already a FileChunk
-        if isinstance(data, FileChunk):
-            size = len(data)
-            self._data, self._size = data, size
-            return
-
-        # Handle case when data is a file object
-        seek = data.seek
-        read = data.read
-
-        seek(0, 2)
-        size = end = data.tell()
-
-        if size <= 2*MAXCHUNKSIZE:
-            seek(0)
-            if size < MAXCHUNKSIZE:
-                self._data, self._size = read(size), size
-                return
-            self._data, self._size = FileChunk(read(size)), size
-            return
-
-        # Make sure we have an _p_jar, even if we are a new object, by
-        # doing a sub-transaction commit.
-        get_transaction().commit(1)
-
-        jar = self._p_jar
-
-        if jar is None:
-            # Ugh
-            seek(0)
-            self._data, self._size = FileChunk(read(size)), size
-            return
-
-        # Now we're going to build a linked list from back
-        # to front to minimize the number of database updates
-        # and to allow us to get things out of memory as soon as
-        # possible.
-        next = None
-        while end > 0:
-            pos = end - MAXCHUNKSIZE
-            if pos < MAXCHUNKSIZE:
-                pos = 0 # we always want at least MAXCHUNKSIZE bytes
-            seek(pos)
-            data = FileChunk(read(end - pos))
-
-            # Woooop Woooop Woooop! This is a trick.
-            # We stuff the data directly into our jar to reduce the
-            # number of updates necessary.
-            jar.add(data)
-
-            # This is needed and has side benefit of getting
-            # the thing registered:
-            data.next = next
-
-            # Now make it get saved in a sub-transaction!
-            get_transaction().commit(1)
-
-            # Now make it a ghost to free the memory.  We
-            # don't need it anymore!
-            data._p_changed = None
-
-            next = data
-            end = pos
-
-        self._data, self._size = next, size
-        return
+        self.open(mode='w').write(data)
 
     data = property(_getData, _setData)
 
@@ -757,11 +669,28 @@ class ReadFileStorage(object):
     >>> content = "This is some file\\ncontent."
     >>> filestorage = FileStorage(content)
     >>> filestorage._data = content
+
+    Test the read method:
+
     >>> ReadFileStorage(filestorage).read() == content
     True
+
+    Test the lenght:
+
     >>> ReadFileStorage(filestorage).size() == len(content)
     True
+
+    Last, but not least, verify the interface:
+
+    >>> from zope.interface.verify import verifyClass
+    >>> IReadFileStorage.implementedBy(ReadFileStorage)
+    True
+    >>> verifyClass(IReadFileStorage, ReadFileStorage)
+    True
     """
+
+    implements(IReadFileStorage)
+
     def __init__(self, context):
         self.__context = context
 
@@ -771,16 +700,32 @@ class ReadFileStorage(object):
     def size(self):
         return len(self.__context.read())
 
+    getSize = size
+
 
 class WriteFileStorage(object):
     """Adapter for file-system style write access.
 
     >>> content = "This is some file\\ncontent."
     >>> filestorage = FileStorage(content)
+
+    Test the write method:
+
     >>> WriteFileStorage(filestorage).write(content)
     >>> str(filestorage._data) == content
     True
+
+    Last, but not least, verify the interface:
+
+    >>> from zope.interface.verify import verifyClass
+    >>> IWriteFileStorage.implementedBy(WriteFileStorage)
+    True
+    >>> verifyClass(IWriteFileStorage, WriteFileStorage)
+    True
     """
+
+    implements(IWriteFileStorage)
+
     def __init__(self, context):
         self.__context = context
 
@@ -788,6 +733,7 @@ class WriteFileStorage(object):
         self.__context.write(data)
 
 
+# TODO, this is used in external editor, check if we can replace it.
 class FileReadFile(object):
     """Adapter for file-system style read access.
 
