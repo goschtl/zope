@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_modulegen.py,v 1.3 2002/12/12 10:45:53 faassen Exp $
+$Id: test_modulegen.py,v 1.4 2002/12/12 12:14:52 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -52,7 +52,9 @@ class GenerateModuleSourceTestsBase(TestCase):
         from Zope.Schema.FieldProperty import FieldProperty
         IFoo = self.g['IFoo']
         Foo = self.g['Foo']
-        self.assertEquals(Foo.__schema_version__, 0)
+        # we don't want a schema version attribute on the class, just
+        # on the individual instances
+        self.assertRaises(AttributeError, getattr, Foo, '__schema_version__')
         self.assertEquals(Foo.__implements__, IFoo)
         for field_name, field in self.fields:
             prop = getattr(Foo, field_name, None)
@@ -62,6 +64,7 @@ class GenerateModuleSourceTestsBase(TestCase):
     def test_instance(self):
         Foo = self.g['Foo']
         foo = Foo()
+        self.assertEquals(foo.__schema_version__, 0)
         for field_name, field in self.fields:
             self.assertEquals(field.default, getattr(foo, field_name))
         
