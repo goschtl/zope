@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.25 2004/03/18 12:19:26 jim Exp $
+$Id: __init__.py,v 1.26 2004/03/18 16:08:52 philikon Exp $
 """
 import sys
 import warnings
@@ -134,6 +134,13 @@ def interfaceAdapterHook(iface, ob):
 from zope.interface.interface import adapter_hooks
 adapter_hooks.append(interfaceAdapterHook)
 
+
+def getMultiAdapter(objects, interface, name=u'', context=None):
+    adapter = queryMultiAdapter(objects, interface, name, context=context)
+    if adapter is None:
+        raise ComponentLookupError(objects, interface)
+    return adapter
+
 def queryMultiAdapter(objects, interface, name=u'', default=None,
                       context=None):
     if context is None and objects:
@@ -188,9 +195,10 @@ def queryFactory(context, name, default=None):
 # Presentation service
 
 def getView(object, name, request, context=None, providing=Interface):
-    v = queryView(object, name, request, context=context, providing=providing)
-    if v is not None:
-        return v
+    view = queryView(object, name, request, context=context,
+                     providing=providing)
+    if view is not None:
+        return view
 
     raise ComponentLookupError("Couldn't find view",
                                name, object, context, request)
@@ -204,6 +212,15 @@ def queryView(object, name, request,
                        default=default, providing=providing)
 
 queryView = hookable(queryView)
+
+def getMultiView(objects, name, request, providing=Interface, context=None):
+    view = queryMultiView(objects, name, request, context=context,
+                          providing=providing)
+    if view is not None:
+        return view
+
+    raise ComponentLookupError("Couldn't find view",
+                               name, object, context, request)
 
 def queryMultiView(objects, name, request, providing=Interface,
                    default=None, context=None):
@@ -220,9 +237,9 @@ def queryViewProviding(object, providing, request, default=None,
     return queryView(object, '', request, default, context, providing)
 
 def getDefaultViewName(object, request, context=None):
-    v = queryDefaultViewName(object, request, context=context)
-    if v is not None:
-        return v
+    view = queryDefaultViewName(object, request, context=context)
+    if view is not None:
+        return view
 
     raise ComponentLookupError("Couldn't find default view name",
                                context, request)
@@ -234,9 +251,9 @@ def queryDefaultViewName(object, request, default=None, context=None):
     return s.queryDefaultViewName(object, request, default)
 
 def getResource(wrapped_object, name, request, providing=Interface):
-    v = queryResource(wrapped_object, name, request, providing=providing)
-    if v is not None:
-        return v
+    view = queryResource(wrapped_object, name, request, providing=providing)
+    if view is not None:
+        return view
 
     raise ComponentLookupError("Couldn't find resource", name, request)
 

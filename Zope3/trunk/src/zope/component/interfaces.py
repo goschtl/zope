@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.27 2004/03/18 12:19:26 jim Exp $
+$Id: interfaces.py,v 1.28 2004/03/18 16:08:52 philikon Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -102,6 +102,19 @@ class IComponentArchitecture(Interface):
         named adapter methods with an empty string for a name.
         """
 
+    def getMultiAdapter(objects, interface, name='', context=None):
+        """Look for a multi-adapter to an interface for an objects
+
+        Returns the nearest multi-adapter to the context that can
+        adapt objects to interface.  If context is not specified, the
+        first object, if any, is used.  If a matching adapter cannot
+        be found, raises ComponentLookupError.
+
+        The name consisting of an empty string is reserved for unnamed
+        adapters. The unnamed adapter methods will often call the
+        named adapter methods with an empty string for a name.
+        """
+
     def queryAdapter(object, interface, default=None, context=None):
         """Look for an adapter to an interface for an object
 
@@ -132,14 +145,12 @@ class IComponentArchitecture(Interface):
 
     def queryMultiAdapter(objects, interface, name='', default=None,
                           context=None):
-        """Look for a multi-adapter to an interface for an object
+        """Look for a multi-adapter to an interface for objects
 
         Returns the nearest multi-adapter to the context that can
-        adapt object to interface.  If context is not specified, the
+        adapt objects to interface.  If context is not specified, the
         first object, if any, is used.  If a matching adapter cannot
         be found, returns the default.
-
-        If a matching adapter cannot be found, returns the default.
 
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
@@ -220,24 +231,39 @@ class IComponentArchitecture(Interface):
                   default=None, context=None, providing=Interface):
         """Look for a named view for a given object.
 
-        The request must implement IPresentationRequest: it provides the view
-        type and the skin name.  The nearest one to the object is
-        found. If a matching view cannot be found, returns default.
+        The request must implement IPresentationRequest: it provides
+        the view type and the skin name.  The nearest one to the
+        object is found.  If a matching view cannot be found, returns
+        default.
 
-        If context is not specified, attempts to use 
-        object to specify a context.
+        If context is not specified, attempts to use object to specify
+        a context.
+        """
+
+    def getMultiView(objects, name, request, providing=Interface,
+                     context=None):
+        """Look for a multi-view for given objects
+
+        The request must implement IPresentationRequest: it provides
+        the view type and the skin name.  The nearest one to the
+        object is found.  If a matching view cannot be found, raises
+        ComponentLookupError.
+
+        If context is not specified, attempts to use the first object
+        to specify a context.
         """
 
     def queryMultiView(objects, name, request, providing=Interface,
                        default=None, context=None):
         """Look for a multi-view for given objects
 
-        The request must implement IPresentationRequest: it provides the view
-        type and the skin name.  The nearest one to the object is
-        found. If a matching view cannot be found, returns default.
+        The request must implement IPresentationRequest: it provides
+        the view type and the skin name.  The nearest one to the
+        object is found.  If a matching view cannot be found, returns
+        default.
 
-        If context is not specified, attempts to use 
-        the first object to specify a context.
+        If context is not specified, attempts to use the first object
+        to specify a context.
         """
         
     def getViewProviding(object, providing, request, context=None):
@@ -272,13 +298,13 @@ class IComponentArchitecture(Interface):
     def queryDefaultViewName(object, request, default=None, context=None):
         """Look for the name of the default view for the object and request.
 
-        The request must implement IPresentationRequest, and provides the
-        desired view type.  The nearest one to the object is found.
-        If a matching default view name cannot be found, returns the
-        default.
+        The request must implement IPresentationRequest, and provides
+        the desired view type.  The nearest one to the object is
+        found.  If a matching default view name cannot be found,
+        returns the default.
 
-        If context is not specified, attempts to use 
-        object to specify a context.
+        If context is not specified, attempts to use object to specify
+        a context.
         """
 
     def getResource(wrapped_object, name, request, providing=Interface):
