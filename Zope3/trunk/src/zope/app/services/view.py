@@ -12,9 +12,11 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.26 2003/06/23 16:20:08 jeremy Exp $
+$Id: view.py,v 1.27 2003/06/23 16:38:03 mgedmin Exp $
 """
 __metaclass__ = type
+
+from __future__ import generators
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
