@@ -4,12 +4,12 @@ After CMF 1.4.6
 
     - Minor featurelet: The "Action Providers" ZMI tab on the portal_actions 
       tool now links directly to the tools shown 
-      http://zope.org/Collectors/CMF/181)
+      (http://zope.org/Collectors/CMF/181)
 
   Bug Fixes
 
     - CMFCore.PortalFolder: Enforce check of "Delete objects" permission
-      during cut + paste. (http://zope.org/Collectors/259)
+      during cut + paste. (http://zope.org/Collectors/CMF/259)
 
       N.B.  This fix depends on an update to the underlying Zope software,
             e.g., Zope 2.7.3 or later.  Two new unit tests fail on
@@ -35,8 +35,8 @@ After CMF 1.4.6
       (http://zope.org/Collectors/CMF/167)
 
     - Default text format for NewsItems is now structured-text, just like
-      it is for Documents, thus removing a spurious difference (see
-      http://zope.org/Collectors/CMF/138).
+      it is for Documents, thus removing a spurious difference
+      (http://zope.org/Collectors/CMF/138).
 
     - CMFCalendar.CalendarTool: (Lost) fix for issues 65 and 159.
       The determination of the date/time range constituting a specific month
@@ -55,28 +55,28 @@ CMF 1.4.6 (2004/07/30)
 
     - CMFCalendar.Event: Fixed long-standing bug where day, month, and year
       were processed in the wrong order by Event.edit().
-      Also see http://collector.zope.org/CMF/202
+      (http://zope.org/Collectors/CMF/202)
 
     - CMFCalendar.Event: PUT() caused improper splitting of 'Contributors'
       metadata header.
 
     - CMFCalendar.CalendarTool: Code assumed US datetime format throughout.
       At least since Zope 2.7 users can change that.
-      Also see http://plone.org/collector/3218
+      (http://plone.org/collector/3218)
 
     - CMFCore.PortalFolder: _verifyObjectPaste() did not check the
       container's allowed content types, enabling users to paste objects
       they were not allowed to add.
-      Also see http://plone.org/collector/2183
+      (http://plone.org/collector/2183)
 
     - CMFDefault.File and CMFDefault.Image: setFormat() failed to update
       the content_type property causing a stale mimetype to be used when
       serving the file or image.
-      Also see http://plone.org/collector/1323
+      (http://plone.org/collector/1323)
 
     - CMFDefault.Document and CMFDefault.Link: PUT() caused improper
       splitting of 'Contributors' metadata header.
-      Also see http://plone.org/collector/3217
+      (http://plone.org/collector/3217)
       
     - CMFCore.utils: Introduced contributorsplitter() utility function.
 
