@@ -54,6 +54,13 @@ Zope Changes
 
     Restructuring
 
+    - Rearranged the package hierarchy below zope.app.
+
+      o Moved content types, including their interfaces and browser
+        views, to their individual packages below zope.app.
+
+      o ... more to come here ...
+
     - Moved the i18n message string extraction utility to the
       'utilities' directory
 
