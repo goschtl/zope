@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.3 2003/12/18 16:32:03 eddala Exp $
+$Id: content.py,v 1.2 2004/02/24 16:50:14 philikon Exp $
 """
 from zope.app.interfaces.content import IContentType
 from zope.interface.declarations import providedBy
