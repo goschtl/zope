@@ -56,7 +56,7 @@ CVSROOT = os.path.split(SCRIPT_DIR)[0]
 CVSROOT_ABS = os.path.abspath('..')
 LDAP_PORT = 389
 LDAP_HOST = "10.0.11.6"
-OFFICIAL_SENDER = "cvs-admin@cvs.zope.org"
+OFFICIAL_SENDER = "cvs-admin@zope.org"
 
 # Ceiling on number of lines per file report (diff or "added"), at which point
 # we go to excerpts from the beginning and end:
@@ -81,7 +81,7 @@ OUTPUT_LOG = "%s/cvs-postcommit_actions.log" % CVSROOT
 
 # Set CVSMASTER to the email address of someone managing your CVS mirroring.
 # Notices about any caught malfunctions will be sent to this address.
-CVSMASTER = "cvs-admin@zope.com"
+CVSMASTER = "cvs-admin@zope.org"
 
 # You have to plug in the recipients email address via '%' string formatting.
 MAIL_CMD = "/usr/lib/sendmail -t -f %s"
@@ -353,7 +353,7 @@ def create_diff(repo, file, old, new):
         header = ("=== %s/%s %s => %s ==="
                   % (str(repo), str(file), old, new))
 
-    if seems_binary(lines):
+    if expands_as_binary("%s/%s/%s,v" % (CVSROOT_ABS, repo, file)):
         return "%s\n  <Binary-ish file>" % header
     else:
         total = len(lines)
@@ -477,13 +477,13 @@ def get_user_ldap_info(user):
 
     Failing that, we use whatever we can get from the password file.
 
-    Failing that, we return an empty fullname and user@cvs.zope.org.
+    Failing that, we return an empty fullname and the value of OFFICIAL_SENDER.
 
     Failling all, we return ('', '')."""
     if not user:
         return ('', '')
     # Fallback values:
-    email = "%s@cvs.zope.org" % user
+    email = OFFICIAL_SENDER
     try:
         fullname = pwd.getpwnam(user)[4]
     except KeyError:
@@ -561,21 +561,19 @@ def get_command(cmd, path):
             return maybe
     note_failure("No usable %s executable found.\n", `cmd`)
     
-def seems_binary(lines):
-    """Return true iff more than half the chars, up to 500 checked, are binary.
-    """
-    isit = 0
-    count = 0
-    for l in lines:
-        for c in l:
-            if (31 < ord(c) < 177):
-                isit = isit - 1
-            else:
-                isit = isit + 1
-            count = count + 1
-            if count > 500:
-                break
-    return (count > 10) and (isit > 0)
+EXPANDS_RE = re.compile("expand.*@b@")
+def expands_as_binary(repository_path):
+    """Return true if the repository file is marked for binary keyword
+    expansion."""
+
+    f = open(repository_path, 'r')
+    while 1:
+        l = f.readline().strip()
+        if not l:
+            # Break out on first blank line or eof:
+            return 0
+        if EXPANDS_RE.match(l):
+            return 1
 
 complaints = []
 def complain(msg, *args):
