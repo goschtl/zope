@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.4 2002/12/07 17:23:48 ctheune Exp $
+$Id: ConfigurationInterfaces.py,v 1.5 2002/12/09 15:14:03 ryzaja Exp $
 """
 
 from Interface import Interface
@@ -50,7 +50,7 @@ class IConfiguration(IConfigurationSummary):
     decision, such as registering an adapter or defining a permission.
 
     In addition to the attributes or methods defined here,
-    configuration objecvts will include additional attributes
+    configuration objects will include additional attributes
     identifying how they should be used. For example, a service
     configuration will provide a service type. An adapter
     configuration will specify a used-for interface and a provided
@@ -154,7 +154,7 @@ class IConfigurationRegistry(Interface):
 
 class IConfigurable(Interface):
 
-    def queryConfigurationsFor(configuration):
+    def queryConfigurationsFor(configuration, default=None):
         """Return an IConfigurationRegistry for the configuration
 
         Data on the configuration is used to decide which registry to
@@ -181,5 +181,4 @@ class IConfigurable(Interface):
         implement a method named createConfigurations, which takes
         arguments for each of the parameters needed to specify a set
         of configurations.
-
         """
