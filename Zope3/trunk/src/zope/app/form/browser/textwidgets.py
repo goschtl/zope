@@ -133,7 +133,14 @@ class TextWidget(SimpleInputWidget):
         if self.convert_missing_value and input == self._missing:
             value = self.context.missing_value
         else:
-            value = input
+            # XXX We convert everything to unicode :-(
+            # But I see no other way for to convert the
+            # value at the moment. 
+            try:
+                value = unicode(input)
+            except ValueError, v:
+                raise ConversionError("Invalid integer data", v)
+        
         return decode_html(value)
 
 

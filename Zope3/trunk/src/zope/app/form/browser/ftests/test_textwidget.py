@@ -109,10 +109,12 @@ class Test(BrowserTestCase):
         # submit invalud type for text line
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.s1' : 'foo' }) # not unicode
+            'field.s1' : '' }) # not unicode
 
         self.assertEqual(response.getStatus(), 200)
-        self.assert_(validationErrorExists(
+        # XXX We don't have a invalid field value
+        #since we convert the value to unicode
+        self.assert_(not validationErrorExists(
             's1', 'Object is of wrong type.', response.getBody()))
 
 
@@ -144,9 +146,9 @@ class Test(BrowserTestCase):
         # submit missing values for required field s1
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.s1' : '',
-            'field.s2' : '',
-            'field.s3' : '' })
+            'field.s1' : u'',
+            'field.s2' : u'',
+            'field.s3' : u'' })
         self.assertEqual(response.getStatus(), 200)
 
         # confirm error msgs
