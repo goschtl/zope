@@ -461,6 +461,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         request = self.makeRequest()
         w = getView(bound, "edit", request)
         self.assert_(isinstance(w.query, MyVocabularyQuery))
+        self.assert_(w.queryview.widget is w)
         self.assertEqual(w.queryview.name, w.name + "-query")
         self.assertEqual(w.queryview.label, self.queryViewLabel)
 

@@ -99,6 +99,7 @@ def _get_vocabulary_edit_widget(field, request, modifier=''):
         queryname = "widget-query%s-helper" % modifier
         queryview = getView(query, queryname, request)
         view.setQuery(query, queryview)
+        queryview.setWidget(view)
     return view
 
 
@@ -557,6 +558,8 @@ class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
     # This specifically isn't a widget in it's own right, but is a
     # form of BrowserView (at least conceptually).
 
+    widget = None
+
     def __init__(self, context, request):
         self.vocabulary = context.vocabulary
         self.context = context
@@ -566,6 +569,11 @@ class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
     def setName(self, name):
         assert not name.endswith(".")
         self.name = name
+
+    def setWidget(self, widget):
+        assert self.widget is None
+        assert widget is not None
+        self.widget = widget
 
     def renderInput(self):
         return self.renderQueryInput()
