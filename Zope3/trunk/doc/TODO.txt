@@ -74,13 +74,9 @@ Others
 
 * 316: Zope3X test.py truncates path with dir=
 
-* 317: Relative links don't work in Page Template
-
 * 319: Navigation with anonymous
 
 * 321: TraversalError after renaming or moving Sites with local services 
-
-* 323: Permission zope.Public in addfrom does not work
 
 * 332: Death to IContentContainer
 

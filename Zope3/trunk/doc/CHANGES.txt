@@ -495,6 +495,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #317: Relative links don't work in Page Template
+
       - Fixed issue #335 (debug layer does not work with Zope3-trunk)
 
       - Fixed issue #338 (zapi help missing from the online help)

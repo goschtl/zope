@@ -125,6 +125,7 @@ class ZPTPageTest(BrowserTestCase):
             '/zptpage/@@index.html',
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
+        self.assertEqual(response.getBase(), 'http://localhost')
         body = response.getBody()
         self.assertEqual(
             body,
