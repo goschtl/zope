@@ -13,14 +13,13 @@
 ##############################################################################
 """Content Component Definition and Instance Interfaces
 
-$Id: interfaces.py,v 1.1 2004/03/10 00:57:59 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/04/24 23:17:58 srichter Exp $
 """
 from zope.app.container.interfaces import IAdding
-from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.publisher.interfaces.browser import IBrowserMenuItem
 from zope.interface import Interface, Attribute
-from zope.schema import TextLine, Bool
+from zope.schema import TextLine, Bool, Choice
 
 
 class IContentComponentMenuItem(IBrowserMenuItem):
@@ -35,9 +34,10 @@ class IContentComponentMenuItem(IBrowserMenuItem):
     will be created locally.
     """
 
-    interface = InterfaceField(
+    interface = Choice(
         title=_('interface-component', "Interface"),
         description=_("Specifies the interface this menu item is for."),
+        vocabulary="Interfaces",
         default=IAdding,
         required=True)
     
@@ -74,9 +74,10 @@ class IContentComponentDefinition(Interface):
         description=_("This is the name of the document type."),
         required=True)
 
-    schema = InterfaceField(
+    schema = Choice(
         title=_('schema-component', "Schema"),
         description=_("Specifies the schema that characterizes the document."),
+        vocabulary="Interfaces",
         required=True)
 
     copySchema = Bool(
@@ -105,7 +106,8 @@ class IContentComponentInstance(Interface):
         description=_("This is the name of the document type."),
         required=True)
 
-    __schema__ = InterfaceField(
+    __schema__ = Choice(
         title=_('schema-component', "Schema"),
         description=_("Specifies the schema that characterizes the document."),
+        vocabulary="Interfaces",
         required=True)

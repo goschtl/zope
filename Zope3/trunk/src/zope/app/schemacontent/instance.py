@@ -13,13 +13,12 @@
 ##############################################################################
 """Content Object Instance
 
-$Id: instance.py,v 1.1 2004/03/10 00:57:59 srichter Exp $
+$Id: instance.py,v 1.2 2004/04/24 23:17:58 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
-from zope.app.component.interfacefield import InterfaceField
 from zope.interface import directlyProvides, implements, Interface
-from zope.schema import getFields, TextLine
+from zope.schema import getFields, TextLine, Choice
 from zope.security.checker import CheckerPublic, Checker, defineChecker
 
 
@@ -31,9 +30,10 @@ class IContentComponentInstance(Interface):
         description=u"""This is the name of the document type.""",
         required=True)
 
-    __schema__ = InterfaceField(
+    __schema__ = Choice(
         title=u"Schema",
         description=u"Specifies the schema that characterizes the document.",
+        vocabulary="Interfaces",
         required=True)
 
 

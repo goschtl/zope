@@ -13,13 +13,12 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: text.py,v 1.1 2004/03/02 14:40:10 philikon Exp $
+$Id: text.py,v 1.2 2004/04/24 23:17:57 srichter Exp $
 """
 from zope.interface import Interface
-from zope.schema import BytesLine
-from zope.app.component.interfacefield import InterfaceField
-
+from zope.schema import BytesLine, Choice
 from zope.index.interfaces import IStatistics
+
 
 class ISearchableText(Interface):
 
@@ -38,9 +37,10 @@ class ISearchableText(Interface):
 class IUITextCatalogIndex(IStatistics):
     """Interface for creating a TextIndex inside a catalog"""
 
-    interface = InterfaceField(
+    interface = Choice(
                 title=u"Interface", 
                 description=u"Objects will be adapted to this interface",
+                vocabulary="Interfaces",
                 required=False,
                 default=ISearchableText)
 

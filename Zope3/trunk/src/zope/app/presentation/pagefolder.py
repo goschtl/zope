@@ -16,12 +16,10 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.5 2004/04/23 13:43:36 hdima Exp $
+$Id: pagefolder.py,v 1.6 2004/04/24 23:17:57 srichter Exp $
 """
 from zope.interface import Interface, implements
-from zope.schema import BytesLine, Bool, Field
-from zope.app.component.interfacefield import InterfaceField
-from zope.app.security.permission import PermissionField
+from zope.schema import BytesLine, Bool, Field, Choice
 
 from zope.app.container.btree import BTreeContainer
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
@@ -52,9 +50,10 @@ class IPageFolderInfo(Interface):
     This information is used to configure the pages in the folder.
     """
 
-    required = InterfaceField(
+    required = Choice(
         title = _(u"For interface"),
         description = _(u"The interface of the objects being viewed"),
+        vocabulary="Interfaces",
         required = True,
         )
 
@@ -71,9 +70,10 @@ class IPageFolderInfo(Interface):
         default = "default",
         )
 
-    permission = PermissionField(
+    permission = Choice(
         title=_(u"Permission"),
         description=_(u"The permission required to use the view"),
+        vocabulary="Permissions",
         required = True,
         )
 

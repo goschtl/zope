@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.10 2004/04/23 13:43:33 hdima Exp $
+$Id: adapter.py,v 1.11 2004/04/24 23:17:56 srichter Exp $
 """
 __metaclass__ = type
 
@@ -24,12 +24,10 @@ from zope.app.registration.registration import NotifyingRegistrationStack
 from zope.interface.adapter import adapterImplied, Default
 from zope.interface.adapter import Surrogate, AdapterRegistry
 import sys
-import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
 import zope.app.registration.interfaces
 import zope.app.site.interfaces
-import zope.app.security.permission
 import zope.app.registration
 import zope.component.interfaces
 import zope.component.adapter
@@ -276,19 +274,18 @@ class LocalAdapterService(LocalAdapterRegistry,
 class IAdapterRegistration(
     zope.app.registration.interfaces.IRegistration):
 
-    required = zope.app.component.interfacefield.InterfaceField(
+    required = zope.schema.Choice(
         title = _(u"For interface"),
         description = _(u"The interface of the objects being adapted"),
-        readonly = True,
-        basetype = None,
-        )
+        vocabulary="Interfaces",
+        readonly = True)
 
-    provided = zope.app.component.interfacefield.InterfaceField(
+    provided = zope.schema.Choice(
         title = _(u"Provided interface"),
         description = _(u"The interface provided"),
+        vocabulary="Interfaces",
         readonly = True,
-        required = True,
-        )
+        required = True)
 
     name = zope.schema.TextLine(
         title=_(u"Name"),
@@ -302,8 +299,9 @@ class IAdapterRegistration(
         required = True,
         )
 
-    permission = zope.app.security.permission.PermissionField(
+    permission = zope.schema.Choice(
         title=_(u"The permission required for use"),
+        vocabulary="Permissions",
         readonly=False,
         required=False,
         )

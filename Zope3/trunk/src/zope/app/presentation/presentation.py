@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.17 2004/04/23 13:43:36 hdima Exp $
+$Id: presentation.py,v 1.18 2004/04/24 23:17:57 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -22,7 +22,6 @@ from zope.component.presentation import IDefaultViewName
 from zope.component.presentation import PresentationRegistration
 from zope.security.checker import NamesChecker, ProxyFactory
 
-import zope.app.component.interfacefield
 import zope.app.component.nextservice
 import zope.app.container.contained
 import zope.app.event.interfaces
@@ -296,17 +295,18 @@ class LocalLayer(
 
 class IViewRegistration(zope.app.adapter.IAdapterRegistration):
 
-    required = zope.app.component.interfacefield.InterfaceField(
+    required = zope.schema.Choice(
         title = _(u"For interface"),
         description = _(u"The interface of the objects being viewed"),
+        vocabulary="Interfaces",
         readonly = True,
         required = True,
-        basetype = None
         )
 
-    requestType = zope.app.component.interfacefield.InterfaceField(
+    requestType = zope.schema.Choice(
         title = _(u"Request type"),
         description = _(u"The type of requests the view works with"),
+        vocabulary="Interfaces",
         readonly = True,
         required = True,
         )

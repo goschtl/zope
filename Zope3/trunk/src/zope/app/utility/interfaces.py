@@ -13,15 +13,14 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: interfaces.py,v 1.4 2004/04/17 14:33:42 srichter Exp $
+$Id: interfaces.py,v 1.5 2004/04/24 23:17:59 srichter Exp $
 """
-from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.registration.interfaces import IComponentRegistration
 from zope.app.registration.interfaces import IRegisterable
 from zope.app.registration.interfaces import IRegistry
 from zope.app.registration.interfaces import ComponentPath
-from zope.schema import TextLine
+from zope.schema import TextLine, Choice
 import zope.component.interfaces
 
 class ILocalUtilityService(
@@ -46,9 +45,10 @@ class IUtilityRegistration(IComponentRegistration):
         required=True,
         )
 
-    interface = InterfaceField(
+    interface = Choice(
         title = _("Provided interface"),
-        description = _("The interface provided by the adapter"),
+        description = _("The interface provided by the utility"),
+        vocabulary="Object Interfaces",
         readonly = True,
         required = True,
         )
