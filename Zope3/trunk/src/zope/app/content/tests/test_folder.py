@@ -19,7 +19,7 @@ from zope.app.container.tests.test_icontainer import BaseTestIContainer
 
 class Test(BaseTestIContainer, BaseTestServiceManagerContainer, TestCase):
 
-    def _Test__new(self):
+    def makeTestObject(self):
         from zope.app.content.folder import Folder
         return Folder()
 
