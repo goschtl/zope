@@ -22,7 +22,7 @@ register (class zope.app.onlinehelp.metaconfigure)
       Specifies where the file that contains the topic content is located on the
       filesystem.
 
-    doc_type -- (required)
+    doc_type -- (optional)
 
       Defines the type of document this topic will be.
       Examples (not necessarily available) are: TXT, reST, HTML
