@@ -68,6 +68,12 @@ pages
 Declare multiple page views for an interface. Permissions are Zope 2
 permissions.
 
+defaultView
+-----------
+
+Declare the name of the view that should be used for the default when viewing
+the object; i.e. when the object is traversed to without a view.
+
 defaultSkin
 -----------
 
