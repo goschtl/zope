@@ -93,7 +93,7 @@ Things to do for the next release (in no particular order)
 
 - Write a README.txt for zope.i18nmessageid.
 
-- http://dev.zope.org/Zope3InstanceAndTypeBasedSubscriptions
+- http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions
 
 - http://dev.zope.org/Zope3/LifeCycleEvents
 
