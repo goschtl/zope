@@ -43,7 +43,7 @@ Test harness.
     Unfortunately, the debug harness doesn't print the name of the
     test, so Use With Care.
 
---dir directory 
+--dir directory
     Option to limit where tests are searched for. This is
     important when you *really* want to limit the code that gets run.
     For example, if refactoring interfaces, you don't want to see the way
@@ -596,10 +596,10 @@ def main(module_filter, test_filter, libdir):
     pathinit = PathInit(build, build_inplace, libdir)
 
     # Initialize the logging module.
-    
+
     import logging.config
     logging.basicConfig()
-        
+
     level = os.getenv("LOGGING")
     if level:
         level = int(level)
@@ -609,7 +609,7 @@ def main(module_filter, test_filter, libdir):
 
     if os.path.exists(logini):
         logging.config.fileConfig(logini)
-        
+
     files = find_tests(module_filter)
     files.sort()
 
@@ -800,7 +800,16 @@ def process_args(argv=None):
         else:
             print "Running %s tests at level %d" % (kind, level)
 
-    warnings.filterwarnings("error")
+    # XXX We want to change *visible* warnings into errors.  The next
+    # line changes all warnings into errors, including warnings we
+    # normally never see.  In particular, test_datetime does some
+    # short-integer arithmetic that overflows to long ints, and, by
+    # default, Python doesn't display the overflow warning that can
+    # be enabled when this happens.  The next line turns that into an
+    # error instead.  Guido suggests that a better to get what we're
+    # after is to replace warnings.showwarning() with our own thing
+    # that raises an error.
+##    warnings.filterwarnings("error")
     warnings.filterwarnings("ignore", module="logging")
 
     if args:
