@@ -15,12 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: test_modulegen.py,v 1.2 2002/12/12 09:17:46 faassen Exp $
+$Id: test_modulegen.py,v 1.3 2002/12/12 10:45:53 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 from Interface import Interface
-from Zope.Schema import Text, Int, Float, getFields
+from Zope.Schema import Field, Text, Int, Float, getFieldsInOrder
 
 from Zope.App.schemagen.modulegen import generateModuleSource
     
@@ -30,6 +30,7 @@ class GenerateModuleSourceTestsBase(TestCase):
 
     def setUp(self):
         source = generateModuleSource('IFoo', self.fields, "Foo")
+        self.source = source
         g = {}
         exec source in g
         del g['__builtins__'] # to ease inspection during debugging
@@ -37,17 +38,16 @@ class GenerateModuleSourceTestsBase(TestCase):
         
     def test_schema(self):
         IFoo = self.g['IFoo']
+        self.assertEquals(self.fields, getFieldsInOrder(IFoo))
 
-        fieldsorter = lambda x, y: cmp(x[1].order, y[1].order)
-        new_fields = getFields(IFoo).items()
-        new_fields.sort(fieldsorter)
-        self.assertEquals(self.fields, new_fields)
-
-    # XXX we'd like to test the whole roundtrip eventually,
-    # by execing generated module source again and then generating
-    # module source for the schema in that. This requires the arguments
-    # to fields (their properties) to be in their own schema order.
-
+    def test_roundtrip(self):
+        IFoo = self.g['IFoo']
+        # not dealing with issues of schema inheritance,
+        # so simply get all fields
+        fields = getFieldsInOrder(IFoo) 
+        new_source = generateModuleSource('IFoo', fields, 'Foo')
+        self.assertEquals(self.source, new_source)
+    
     def test_class(self):
         from Zope.Schema.FieldProperty import FieldProperty
         IFoo = self.g['IFoo']
@@ -74,10 +74,9 @@ class GenerateModuleSourceTests1(GenerateModuleSourceTestsBase):
               ('hoi', Float(title=u"Float")),
               ('dag', Int(title=u"Dag", default=42)),]
 
- 
 def test_suite():
     return TestSuite(
         (makeSuite(GenerateModuleSourceTestsEmpty),
-         makeSuite(GenerateModuleSourceTests1)
+         makeSuite(GenerateModuleSourceTests1),
          ))
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: typereg.py,v 1.1 2002/12/11 16:11:14 faassen Exp $
+$Id: typereg.py,v 1.2 2002/12/12 10:45:53 faassen Exp $
 """
 
 from Interface.Implements import visitImplements
@@ -101,11 +101,23 @@ class DefaultFieldRepresentation:
         global typeRegistry
         self.importList =  self._getImportList(field)
         arguments = []
-        # don't represent order, as that will be implicit
+        # don't represent order of this field within its schema,
+        # as that will be implicit
         if 'order' in names:
             del names['order']
-        for name in names:
-            representation = typeRegistry.represent(getattr(field, name))
+        # we want to order the field constructor arguments according to the
+        # order of the fields on the schema describing this field
+        propertysorter = lambda x, y: cmp(x[1].order, y[1].order)
+        names_items = names.items()
+        names_items.sort(propertysorter)
+        # make a representation of property value and collect necessary imports
+        # we are not interested in the property field itself, just
+        # property value
+        for name, property in names_items:
+            value = getattr(field, name)
+            if property.default == value:
+                continue
+            representation = typeRegistry.represent(value)
             arguments.append((name, representation.text))
             for import_spec in representation.importList:
                 self.importList.append(import_spec) 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_typereg.py,v 1.1 2002/12/11 16:11:14 faassen Exp $
+$Id: test_typereg.py,v 1.2 2002/12/12 10:45:53 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -24,6 +24,11 @@ import datetime
 from Zope.App.schemagen.typereg import TypeRepresentationRegistry,\
      DefaultTypeRepresentation, DatetimeRepresentation,\
      DefaultFieldRepresentation
+
+from Zope import Schema
+
+from Zope.Schema.IField import IField
+from Zope.Schema import Field, Text, Int
 
 class DefaultTypeRepresentationTests(TestCase):
     def test_getTypes(self):
@@ -118,10 +123,24 @@ class TypeRepresentationRegistryTests(TestCase):
         self.assert_(isinstance(self.tr.represent('foo'),
                                 DefaultTypeRepresentation))
 
+class IFieldSchema(IField):
+    # the greek alphabet is not in alphabetical order, so we cannot
+    # depend on ascii sort order, which is good as we shouldn't.
+    alpha = Text(title=u"Alpha", default=u"")
+    beta = Int(title=u"Beta", default=0)
+    gamma = Text(title=u"Gamma", default=u"")
+    delta = Int(title=u"Delta", default=0)
 
-from Zope import Schema
+class MyField(Field):
+    __implements__ = IFieldSchema
 
-
+    def __init__(self, alpha=u'', beta=0, gamma=u'', delta=0, **kw):
+        super(MyField, self).__init__(**kw)
+        self.alpha = alpha
+        self.beta = beta
+        self.gamma = gamma
+        self.delta = delta
+        
 class DefaultFieldRepresentationTests(TestCase):
     # XXX there is an issue with field classes which have the same name
     # multiple 'from x import y' statements will cause one name to be
@@ -147,10 +166,22 @@ class DefaultFieldRepresentationTests(TestCase):
             import_list.sort()
             self.assertEquals(r_imports, import_list)
 
+    def test_order(self):
+        field = MyField(alpha=u'alpha', gamma=u'gamma', delta=23)
+        r = DefaultFieldRepresentation(field)
+        t = r.text
+        a = t.find('alpha')
+        g = t.find('gamma')
+        d = t.find('delta')
+        self.assertNotEquals(a, -1)
+        self.assertNotEquals(g, -1)
+        self.assertNotEquals(d, -1)
+        self.assert_(a < g < d)
     
 def test_suite():
     return TestSuite(
         (makeSuite(DefaultTypeRepresentationTests),
          makeSuite(DatetimeRepresentationTests),
          makeSuite(TypeRepresentationRegistryTests),
-         makeSuite(DefaultFieldRepresentationTests)))
+         makeSuite(DefaultFieldRepresentationTests),
+        ))
