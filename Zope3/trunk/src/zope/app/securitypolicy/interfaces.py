@@ -18,36 +18,6 @@ $Id$
 from zope.interface import Interface
 from zope.schema import TextLine, Text
 
-class ISecurityMap(Interface):
-    """Security map to hold matrix-like relationships."""
-
-    def addCell(rowentry, colentry, value):
-        """Add a cell"""
-
-    def delCell(rowentry, colentry):
-        """Delete a cell"""
-
-    def queryCell(rowentry, colentry, default=None):
-        """Return the value of a cell by row, entry
-
-        Return `default`, if the cell is not found.
-        """
-
-    def getCell(rowentry, colentry):
-        """Return the value of a cell by row, entry
-
-        Raise an error, if the cell is not found.
-        """
-        
-    def getRow(rowentry):
-        """Return a list of (colentry, value) tuples from a row"""
-
-    def getCol(colentry):
-        """Return a list of (rowentry, value) tuples from a col"""
-
-    def getAllCells():
-        """Return a list of (rowentry, colentry, value)"""
-
 class IRole(Interface):
     """A role object."""
 
@@ -227,4 +197,28 @@ class IPrincipalPermissionManager(IPrincipalPermissionMap):
     def unsetPermissionForPrincipal(permission_id, principal_id):
         """Remove the permission (either denied or allowed) from the
         principal.
+        """
+
+class IGrantInfo(Interface):
+    """Get grant info needed for checking access
+    """
+
+    def principalPermissionGrant(principal, permission):
+        """Return the principal-permission grant if any
+
+        The return value is one of Allow, Deny, or Unset
+        """
+
+    def getRolesForPermission(permission):
+        """Return the role grants for the permission
+
+        The role grants are an iterable of role, setting tuples, where
+        setting is either Allow or Deny.
+        """
+
+    def getRolesForPrincipal(principal):
+        """Return the role grants for the principal
+
+        The role grants are an iterable of role, setting tuples, where
+        setting is either Allow or Deny.
         """

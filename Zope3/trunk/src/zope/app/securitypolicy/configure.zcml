@@ -3,57 +3,55 @@
     i18n_domain="zope"
     >
 
-  <class class=".permissionroles.PermissionRoles">
-    <require permission="zope.Security"
-             attributes="roles rolesInfo id title description" />
-  </class>
-
-  <class class=".rolepermission.RolePermissions">
-    <require permission="zope.Security"
-             attributes="permissions permissionsInfo id title description" />
-  </class>
-
   <adapter factory=".rolepermission.AnnotationRolePermissionManager"
            provides=".interfaces.IRolePermissionManager"
            for="zope.app.annotation.interfaces.IAnnotatable"
-           trusted="true" />
+           trusted="true" 
+           />
 
   <class class=".rolepermission.AnnotationRolePermissionManager">
     <require 
         permission="zope.Security"
         attributes="grantPermissionToRole denyPermissionToRole
-                    unsetPermissionFromRole" />
-    <allow 
-        interface=".interfaces.IRolePermissionMap" />
+                    unsetPermissionFromRole" 
+        />
+    <allow interface=".interfaces.IRolePermissionMap" />
   </class>       
 
   <adapter factory=".principalrole.AnnotationPrincipalRoleManager"
            provides=".interfaces.IPrincipalRoleManager"
            for="zope.app.annotation.interfaces.IAnnotatable" 
-           trusted="true" />
+           trusted="true" 
+           />
 
   <class class=".principalrole.AnnotationPrincipalRoleManager">
     <require 
         permission="zope.Security"
         attributes="assignRoleToPrincipal removeRoleFromPrincipal
-                    unsetRoleForPrincipal" />
-    <allow 
-        interface=".interfaces.IPrincipalRoleMap" />
+                    unsetRoleForPrincipal" 
+        />
+    <allow interface=".interfaces.IPrincipalRoleMap" />
   </class>
 
   <adapter factory=".principalpermission.AnnotationPrincipalPermissionManager"
            provides=".interfaces.IPrincipalPermissionManager"
            for="zope.app.annotation.interfaces.IAnnotatable" 
-           trusted="true"/>
+           trusted="true"
+           />
 
   <class class=".principalpermission.AnnotationPrincipalPermissionManager">
     <require 
         permission="zope.Security"
         attributes="grantPermissionToRole denyPermissionToRole
-                    unsetPermissionFromRole" />
-    <allow 
-        interface=".interfaces.IPrincipalPermissionMap" />
+                    unsetPermissionFromRole" 
+        />
+    <allow interface=".interfaces.IPrincipalPermissionMap" />
   </class>
+
+  <adapter factory=".grantinfo.AnnotationGrantInfo"
+           provides=".interfaces.IGrantInfo"
+           for="zope.app.annotation.interfaces.IAnnotatable" 
+           />
 
   <!-- protect Roles and Permissions -->
   <content class=".role.Role">

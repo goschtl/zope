@@ -16,95 +16,46 @@
 $Id$
 """
 from zope.interface import implements
-from zope.security.proxy import trustedRemoveSecurityProxy
 
-from zope.app.annotation.interfaces import IAnnotations
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
-from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
 
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.securitypolicy.securitymap import SecurityMap
-from zope.app.securitypolicy.securitymap import PersistentSecurityMap
+from zope.app.securitypolicy.securitymap import AnnotationSecurityMap
 
 from zope.app.security.principal import checkPrincipal
 from zope.app.securitypolicy.role import checkRole
 
-annotation_key = 'zope.app.security.AnnotationPrincipalRoleManager'
-
-class AnnotationPrincipalRoleManager(object):
+class AnnotationPrincipalRoleManager(AnnotationSecurityMap):
     """Mappings between principals and roles."""
+
+    # the annotation key is a holdover from this module's old
+    # location, but cannot change without breaking existing databases
+    key = 'zope.app.security.AnnotationPrincipalRoleManager'
 
     implements(IPrincipalRoleManager)
 
-    def __init__(self, context):
-        self._context = context
-
     def assignRoleToPrincipal(self, role_id, principal_id):
-        ''' See the interface IPrincipalRoleManager '''
-        pp = self._getPrincipalRoles(create=1)
-        pp.addCell(role_id, principal_id, Allow)
+        AnnotationSecurityMap.addCell(self, role_id, principal_id, Allow)
 
     def removeRoleFromPrincipal(self, role_id, principal_id):
-        ''' See the interface IPrincipalRoleManager '''
-        pp = self._getPrincipalRoles(create=1)
-        pp.addCell(role_id, principal_id, Deny)
+        AnnotationSecurityMap.addCell(self, role_id, principal_id, Deny)
 
-    def unsetRoleForPrincipal(self, role_id, principal_id):
-        ''' See the interface IPrincipalRoleManager '''
-        pp = self._getPrincipalRoles()
-        # Only unset if there is a security map, otherwise, we're done
-        if pp:
-            pp.delCell(role_id, principal_id)
-
-    def getPrincipalsForRole(self, role_id):
-        ''' See the interface IPrincipalRoleManager '''
-        pp = self._getPrincipalRoles()
-        if pp:
-            return pp.getRow(role_id)
-        return []
-
-    def getRolesForPrincipal(self, principal_id):
-        ''' See the interface IPrincipalRoleManager '''
-        pp = self._getPrincipalRoles()
-        if pp:
-            return pp.getCol(principal_id)
-        return []
-
+    unsetRoleForPrincipal = AnnotationSecurityMap.delCell
+    getPrincipalsForRole = AnnotationSecurityMap.getRow
+    getRolesForPrincipal = AnnotationSecurityMap.getCol
+    
     def getSetting(self, role_id, principal_id):
-        ''' See the interface IPrincipalRoleManager '''
-        pp = self._getPrincipalRoles()
-        if pp:
-            return pp.queryCell(role_id, principal_id, default=Unset)
-        return Unset
+        return AnnotationSecurityMap.queryCell(
+            self, role_id, principal_id, default=Unset)
 
-    def getPrincipalsAndRoles(self):
-        ''' See the interface IPrincipalRoleManager '''
-        pp = self._getPrincipalRoles()
-        if pp:
-            return pp.getAllCells()
-        return []
-
-    # Implementation helpers
-
-    def _getPrincipalRoles(self, create=0):
-        """ Get the principal role map stored in the context, optionally
-            creating one if necessary """
-        annotations = IAnnotations(self._context)
-        try:
-            # there's a chance that annotations is security proxied -
-            # remove proxy to avoid authentication failure on role lookup
-            return trustedRemoveSecurityProxy(annotations)[annotation_key]
-        except KeyError:
-            if create:
-                rp = annotations[annotation_key] = PersistentSecurityMap()
-                return rp
-        return None
+    getPrincipalsAndRoles = AnnotationSecurityMap.getAllCells
 
 
 class PrincipalRoleManager(SecurityMap):
     """Mappings between principals and roles."""
 
-    implements(IPrincipalRoleManager, IPrincipalRoleMap)
+    implements(IPrincipalRoleManager)
 
     def assignRoleToPrincipal(self, role_id, principal_id, check=True):
         ''' See the interface IPrincipalRoleManager '''

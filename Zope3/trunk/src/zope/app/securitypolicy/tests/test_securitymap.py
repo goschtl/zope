@@ -11,35 +11,51 @@
 # FOR A PARTICULAR PURPOSE.
 #
 #############################################################################
-"""Test ISecurityMap implementations
+"""Test SecurityMap implementations
 
 $Id$
 """
 import unittest
 from zope.interface.verify import verifyClass
-from zope.app.securitypolicy.interfaces import ISecurityMap
 from zope.app.securitypolicy.securitymap import SecurityMap
 from zope.app.securitypolicy.securitymap import PersistentSecurityMap
+from zope.security.management import setSecurityPolicy, getInteraction
+from zope.security.management import newInteraction, endInteraction
+
+class InteractionStub:
+    invalidated = 0
+    def invalidate_cache(self):
+        self.invalidated += 1
+
 
 class TestSecurityMap(unittest.TestCase):
 
-    def testInterface(self):
-        verifyClass(ISecurityMap, SecurityMap)
+    def setUp(self):
+        self.oldpolicy = setSecurityPolicy(InteractionStub)
+        newInteraction()
+
+    def tearDown(self):
+        endInteraction()
+        setSecurityPolicy(self.oldpolicy)
 
     def _getSecurityMap(self):
         return SecurityMap()
 
     def test_addCell(self):
         map = self._getSecurityMap()
+        self.assertEqual(getInteraction().invalidated, 0)
         map.addCell(0, 0, 'aa')
+        self.assertEqual(getInteraction().invalidated, 1)
         self.assertEqual(map._byrow[0][0], 'aa')
         self.assertEqual(map._bycol[0][0], 'aa')
 
         map.addCell(1, 0, 'ba')
+        self.assertEqual(getInteraction().invalidated, 2)
         self.assertEqual(map._byrow[1][0], 'ba')
         self.assertEqual(map._bycol[0][1], 'ba')
 
         map.addCell(5, 3, 'fd')
+        self.assertEqual(getInteraction().invalidated, 3)
         self.assertEqual(map._byrow[5][3], 'fd')
         self.assertEqual(map._bycol[3][5], 'fd')
 
@@ -56,18 +72,20 @@ class TestSecurityMap(unittest.TestCase):
         
     def test_delCell(self):
         map = self._getSecurityMap()
-        map._byrow[0] = map._empty_mapping()
-        map._bycol[1] = map._empty_mapping()
+        self.assertEqual(getInteraction().invalidated, 0)
+        map._byrow[0] = {}
+        map._bycol[1] = {}
         map._byrow[0][1] = 'aa'
         map._bycol[1][0] = 'aa'
         map.delCell(0, 1)
-        self.assertEqual(len(map._byrow.get(0)), 0) 
-        self.assertEqual(len(map._bycol.get(1)), 0) 
+        self.assertEqual(getInteraction().invalidated, 1)
+        self.assertEqual(map._byrow.get(0), None) 
+        self.assertEqual(map._bycol.get(1), None) 
 
     def test_queryCell(self):
         map = self._getSecurityMap()
-        map._byrow[0] = map._empty_mapping()
-        map._bycol[1] = map._empty_mapping()
+        map._byrow[0] = {}
+        map._bycol[1] = {}
         map._byrow[0][1] = 'aa'
         map._bycol[1][0] = 'aa'
 
@@ -78,8 +96,8 @@ class TestSecurityMap(unittest.TestCase):
 
     def test_getCell(self):
         map = self._getSecurityMap()
-        map._byrow[0] = map._empty_mapping()
-        map._bycol[1] = map._empty_mapping()
+        map._byrow[0] = {}
+        map._bycol[1] = {}
         map._byrow[0][1] = 'aa'
         map._bycol[1][0] = 'aa'
 
@@ -88,15 +106,15 @@ class TestSecurityMap(unittest.TestCase):
 
     def test_getRow(self):
         map = self._getSecurityMap()
-        map._byrow[0] = map._empty_mapping()
+        map._byrow[0] = {}
         map._byrow[0][1] = 'ab'
         map._byrow[0][2] = 'ac'
-        map._byrow[1] = map._empty_mapping()
+        map._byrow[1] = {}
         map._byrow[1][1] = 'bb'
-        map._bycol[1] = map._empty_mapping()
+        map._bycol[1] = {}
         map._bycol[1][0] = 'ab'
         map._bycol[1][1] = 'bb'
-        map._bycol[2] = map._empty_mapping()
+        map._bycol[2] = {}
         map._bycol[2][0] = 'ac'
 
         self.assertEqual(map.getRow(0), [(1, 'ab'), (2, 'ac')])
@@ -105,15 +123,15 @@ class TestSecurityMap(unittest.TestCase):
 
     def test_getCol(self):
         map = self._getSecurityMap()
-        map._byrow[0] = map._empty_mapping()
+        map._byrow[0] = {}
         map._byrow[0][1] = 'ab'
         map._byrow[0][2] = 'ac'
-        map._byrow[1] = map._empty_mapping()
+        map._byrow[1] = {}
         map._byrow[1][1] = 'bb'
-        map._bycol[1] = map._empty_mapping()
+        map._bycol[1] = {}
         map._bycol[1][0] = 'ab'
         map._bycol[1][1] = 'bb'
-        map._bycol[2] = map._empty_mapping()
+        map._bycol[2] = {}
         map._bycol[2][0] = 'ac'
 
         self.assertEqual(map.getCol(1), [(0, 'ab'), (1, 'bb')])
@@ -122,15 +140,15 @@ class TestSecurityMap(unittest.TestCase):
 
     def test_getAllCells(self):
         map = self._getSecurityMap()
-        map._byrow[0] = map._empty_mapping()
+        map._byrow[0] = {}
         map._byrow[0][1] = 'ab'
         map._byrow[0][2] = 'ac'
-        map._byrow[1] = map._empty_mapping()
+        map._byrow[1] = {}
         map._byrow[1][1] = 'bb'
-        map._bycol[1] = map._empty_mapping()
+        map._bycol[1] = {}
         map._bycol[1][0] = 'ab'
         map._bycol[1][1] = 'bb'
-        map._bycol[2] = map._empty_mapping()
+        map._bycol[2] = {}
         map._bycol[2][0] = 'ac'
 
         self.assertEqual(map.getCol(1), [(0, 'ab'), (1, 'bb')])
@@ -139,9 +157,6 @@ class TestSecurityMap(unittest.TestCase):
 
 
 class TestPersistentSecurityMap(TestSecurityMap):
-
-    def testInterface(self):
-        verifyClass(ISecurityMap, PersistentSecurityMap)
 
     def _getSecurityMap(self):
         return PersistentSecurityMap()
