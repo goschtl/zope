@@ -40,7 +40,7 @@ def main(args):
     global VERBOSE, SCRIPT
 
     if VERBOSE:
-        complain("Initial args: %s\n", args)
+        complain("Initial args: %s\n", string.join(args, " "))
 
     if (len(args) < 2
         or (args[1] == "--verbose" and (len(args) != 3))):
@@ -118,8 +118,10 @@ def do_sync(repo, remote, subjs=None):
     if subjs != None:
         cmd = cmd + ' --exclude "/*/*"'
 
-    entire =("%s %s %s:%s"
-             % (cmd, repo, remote['host'], remote['repodir']))
+    entire =("%s %s/%s %s:%s"
+             % (cmd,
+                os.environ["CVSROOT"], repo,
+                remote['host'], remote['repodir']))
     print "The whole shebang:", entire
 
 def do_chmod(subjs):
