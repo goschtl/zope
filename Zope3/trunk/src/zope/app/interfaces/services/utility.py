@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.3 2003/04/03 22:05:33 fdrake Exp $
+$Id: utility.py,v 1.4 2003/04/08 19:31:20 fdrake Exp $
 """
 
 from zope.app.interfaces.services.configuration import IComponentConfiguration
@@ -76,7 +76,9 @@ class ILocalUtilityService(IUtilityService):
     """
 
     def getRegisteredMatching():
-        """The return value is an iterable object for which each item
+        """Return the registrations.
+
+        The return value is an iterable object for which each item
         is a three-element tuple:
 
         - provided interface
