@@ -13,11 +13,11 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopesecuritypolicy.py,v 1.3 2002/12/26 18:49:06 jim Exp $
+$Id: zopesecuritypolicy.py,v 1.4 2002/12/28 01:36:00 rdmurray Exp $
 """
-__version__='$Revision: 1.3 $'[11:-2]
+__version__='$Revision: 1.4 $'[11:-2]
 
-from zope.component import queryAdapter
+from zope.component import queryAdapter, getService
 
 from zope.proxy.context import ContainmentIterator
 
@@ -48,6 +48,17 @@ getPermissionsForRole = rolePermissionManager.getPermissionsForRole
 getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 
 globalContext = object()
+
+
+def _computeBasePrincipalRoles(principalid,object):
+    auth = getService(object, "Authentication")
+    p = auth.getPrincipal(principalid)
+    roles = tuple(p.getRoles()) + ('Anonymous',)
+    roledict = {}
+    for role in roles:
+        roledict[role] = Allow
+    return roledict
+
 
 class ZopeSecurityPolicy:
 
@@ -86,8 +97,8 @@ class ZopeSecurityPolicy:
         user = context.user
         if user is system_user:
             return 1
-
-        principals = {user : {'Anonymous': Allow}}
+        roledict = _computeBasePrincipalRoles(user, object)
+        principals = {user : roledict}
 
         role_permissions = {}
         remove = {}
@@ -232,7 +243,7 @@ class ZopeSecurityPolicy:
 
 def permissionsOfPrincipal(principal, object):
     permissions = {}
-    roles = {'Anonymous': Allow} # Everyone has anonymous
+    roles = _computeBasePrincipalRoles(principal, object)
     role_permissions = {}
 
     # Make two passes.
