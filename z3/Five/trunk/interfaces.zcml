@@ -1,0 +1,92 @@
+<configure xmlns="http://namespaces.zope.org/five">
+
+  <!-- IPersistent, IPersistentExtra -->
+
+  <!-- Acquisition -->
+
+  <implements
+      class="Acquisition.ImplicitAcquisitionWrapper"
+      interface=".interfaces.IAcquisitionWrapper"
+      />
+
+  <implements
+      class="Acquisition.ExplicitAcquisitionWrapper"
+      interface=".interfaces.IAcquisitionWrapper"
+      />
+
+  <implements
+      class="Acquisition.Implicit"
+      interface=".interfaces.IAcquisition"
+      />
+
+  <implements
+      class="Acquisition.Explicit"
+      interface=".interfaces.IAcquisition"
+      />
+
+  <!-- DAV -->
+
+  <implements
+      class="webdav.Lockable.LockableItem"
+      interface=".interfaces.IWriteLock"
+      />
+
+  <implements
+      class="webdav.Resource.Resource"
+      interface=".interfaces.IDAVResource"
+      />
+
+  <implements
+      class="webdav.Collection.Collection"
+      interface=".interfaces.IDAVCollection"
+      />
+
+  <!-- OFS -->
+
+  <implements
+      class="OFS.CopySupport.CopySource"
+      interface=".interfaces.ICopySource"
+      />
+
+  <implements
+      class="OFS.CopySupport.CopyContainer"
+      interface=".interfaces.ICopyContainer"
+      />
+
+  <implements
+      class="OFS.Traversable.Traversable"
+      interface=".interfaces.ITraversable"
+      />
+
+  <implements
+      class="OFS.SimpleItem.Item"
+      interface=".interfaces.IItem"
+      />
+
+  <implements
+      class="OFS.SimpleItem.Item_w__name__"
+      interface=".interfaces.IItemWithName"
+      />
+
+  <implements
+      class="OFS.SimpleItem.SimpleItem"
+      interface=".interfaces.ISimpleItem"
+      />
+
+ <!-- App -->
+
+  <implements
+      class="App.Undo.UndoSupport"
+      interface=".interfaces.IUndoSupport"
+      />
+
+  <!-- AccessControl -->
+
+  <implements
+      class="AccessControl.Owned.Owned"
+      interface=".interfaces.IOwned"
+      />
+
+  <!-- ... -->
+
+</configure>
