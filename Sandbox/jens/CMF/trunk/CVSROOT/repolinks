@@ -97,6 +97,8 @@
 /StandaloneZODB/zdaemon           /Packages/zdaemon
 /StandaloneZODB/zLOG              /Packages/zLOG
 
+/StandaloneSTX/StructuredText     /Packages/StructuredText
+
 /CMF/CMFCalendar                  /Products/CMFCalendar
 /CMF/CMFCore                      /Products/CMFCore
 /CMF/CMFDecor                     /Products/CMFDecor
