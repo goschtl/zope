@@ -115,6 +115,11 @@ class LoadTestCase(unittest.TestCase):
         self.check_error("package-without-location")
         self.check_error("package location junk")
 
+    def test_malformed_wildcards(self):
+        self.check_error("foo* file:///not/really/")
+        self.check_error(".* file:///not/really/")
+        self.check_error("foo-bar.* file:///not/really/")
+
     def check_error(self, input):
         sio = StringIO(input)
         try:
@@ -125,14 +130,24 @@ class LoadTestCase(unittest.TestCase):
             self.fail("expected MapLoadingError")
 
     def test_duplicate_entry_generates_warning(self):
-        sio = StringIO("r1 cvs://cvs.example.org/cvsroot:foo\n"
-                       "r1 cvs://cvs.example.org/cvsroot:foo\n")
-        map = self.collect_warnings(locationmap.load, sio)
+        map = self.check_duplicate_entry_generates_warning("r1")
         self.assertEqual(len(map), 1)
+
+    def test_duplicate_wildcard_generates_warning(self):
+        map = self.check_duplicate_entry_generates_warning("pkg.*")
+        # len(map) == 0, but it's not clear we care at this point;
+        # wildcards make the len() pretty questionable
+
+    def check_duplicate_entry_generates_warning(self, resource_name):
+        sio = StringIO("%s cvs://cvs.example.org/cvsroot:foo\n"
+                       "%s cvs://cvs.example.org/cvsroot:foo\n"
+                       % (resource_name, resource_name))
+        map = self.collect_warnings(locationmap.load, sio)
         self.assertEqual(len(self.warnings), 1)
         r = self.warnings[0]
         self.assertEqual(r.levelno, logging.WARNING)
         self.assertEqual(r.name, "zpkgtools.locationmap")
+        return map
 
     def collect_warnings(self, callable, *args, **kw):
         self.warnings = []
@@ -143,6 +158,35 @@ class LoadTestCase(unittest.TestCase):
             return callable(*args, **kw)
         finally:
             root_logger.removeHandler(handler)
+
+    def test_load_with_wildcards(self):
+        sio = StringIO("foo.*  cvs://cvs.example.org/cvsroot:foo\n"
+                       "bar.*  file:///some/path/\n"
+                       "bat.*  some/path\n")
+        map = locationmap.load(sio)
+        eq = self.assertEqual
+        self.assert_("foo.bar" in map)
+        self.assert_("bar.foo" in map)
+        self.assert_("bat.splat.funk" in map)
+        eq(map["foo.bar"], "cvs://cvs.example.org/cvsroot:foo/bar")
+        eq(map["bar.foo"], "file:///some/path/foo")
+        eq(map["bat.splat.funk"], "some/path/splat/funk")
+
+    def test_unmatched_wildcard(self):
+        sio = StringIO("foo.bar.*  some/path\n")
+        map = locationmap.load(sio)
+        eq = self.assertEqual
+        self.assert_("foo" not in map)
+        self.assert_("foo.bar" not in map)
+        self.assert_("foo.bar.bat" in map)
+
+    def test_invalid_wildcards(self):
+        self.check_error("not-a-package.*           some/path \n")
+        self.check_error("invalid.wildcard.suffix*  some/path \n")
+        self.check_error("invalid.*.wildcard        some/path \n")
+        self.check_error("invalid*wildcard          some/path \n")
+        self.check_error("*                         some/path \n")
+        self.check_error(".*                        some/path \n")
 
 
 class CollectingHandler(logging.StreamHandler):
@@ -178,11 +222,107 @@ class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
         self.assertEqual(d, EXPECTED_OUTPUT)
 
 
+class LocationMapTestCase(unittest.TestCase):
+    """Tests of the convenience mapping used as the CVS mapping storage.
+
+    This doesn't try to test everything about the mapping interface,
+    since the class inherits from UserDict; only the aspects that are
+    specific to the LocationMap.
+
+    """
+
+    def test_basic_operations(self):
+        m = locationmap.LocationMap()
+        self.assertEqual(len(m), 0)
+        m["foo"] = "value"
+        self.assert_("foo" in m)
+        self.assert_("foo" in m)
+        self.assert_(m.has_key("foo"))
+        self.assert_(m.has_key("foo"))
+        self.assertEqual(m["foo"], "value")
+        self.assertEqual(m["foo"], "value")
+        self.assertEqual(len(m), 1)
+        m["bar"] = "value"
+        self.assert_("bar" in m)
+        self.assert_("bar" in m)
+        self.assert_(m.has_key("bar"))
+        self.assert_(m.has_key("bar"))
+        self.assertEqual(m["bar"], "value")
+        self.assertEqual(m["bar"], "value")
+        self.assertEqual(len(m), 2)
+        keys = m.keys()
+        keys.sort()
+        self.assertEqual(keys, ["bar", "foo"])
+
+    def test_deletions(self):
+        m = locationmap.LocationMap()
+        m["foo"] = "value"
+        m["bar"] = "value"
+        del m["bar"]
+        self.failIf("bar" in m)
+        del m["foo"]
+        self.failIf("foo" in m)
+        self.assertEqual(len(m), 0)
+
+    def test_pop(self):
+        m = locationmap.LocationMap()
+        m["foo"] = "value-foo"
+        m["bar"] = "value-bar"
+        self.assertEqual(m.pop("foo"), "value-foo")
+        self.failIf("foo" in m)
+        self.assertEqual(m.pop("bar"), "value-bar")
+        self.failIf("bar" in m)
+        self.assertEqual(m.pop("bar", 42), 42)
+        self.failIf("bar" in m)
+        self.assertRaises(KeyError, m.pop, "foo")
+
+    def test_update(self):
+        m = locationmap.LocationMap()
+        m.update({"foo": "value-foo", "bar": "value-bar"})
+        self.assertEqual(m["bar"], "value-bar")
+        self.assertEqual(m["foo"], "value-foo")
+        m.update(bat="value-bat")
+        self.assertEqual(m["bat"], "value-bat")
+        self.assertEqual(len(m), 3)
+
+    def test_constructor_dict_kwargs(self):
+        # construct using both a dict and keywords
+        m = locationmap.LocationMap({"foo": 1, "bar": 2}, bat=3)
+        self.check_constructor_results(m)
+
+    def test_constructor_dict(self):
+        # construct using only a dict
+        m = locationmap.LocationMap({"foo": 1,
+                                     "bar": 2,
+                                     "bat": 3})
+        self.check_constructor_results(m)
+
+    def test_constructor_kwargs(self):
+        # construct using only keywords
+        m = locationmap.LocationMap(foo=1, bar=2, bat=3)
+        self.check_constructor_results(m)
+
+    def check_constructor_results(self, m):
+        self.assertEqual(len(m), 3)
+
+        self.assert_("foo" in m)
+        self.assert_("foo" in m)
+        self.assert_(m.has_key("foo"))
+        self.assertEqual(m["foo"], 1)
+
+        self.assert_("bar" in m)
+        self.assert_(m.has_key("bar"))
+        self.assertEqual(m["bar"], 2)
+
+        self.assert_("bat" in m)
+        self.assert_(m.has_key("bat"))
+        self.assertEqual(m["bat"], 3)
+
 
 def test_suite():
     suite = unittest.makeSuite(LoadTestCase)
     suite.addTest(unittest.makeSuite(CvsWorkingDirectoryTestCase))
-    suite.addTest(doctest.DocTestSuite('zpkgtools.locationmap'))
+    suite.addTest(unittest.makeSuite(LocationMapTestCase))
     return suite
 
 if __name__ == "__main__":
