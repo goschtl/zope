@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZPT Page Content Component Interfaces
+"""Templated Page Content Component Interfaces
 
 $Id$
 """

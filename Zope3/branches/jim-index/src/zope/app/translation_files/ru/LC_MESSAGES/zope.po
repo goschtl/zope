@@ -4953,6 +4953,10 @@ msgstr "Добавить еще"
 msgid "Root Folder"
 msgstr "Корневая папка"
 
+#: src/zope/app/zptpage/browser/configure.zcml:23
+msgid "Templated Page"
+msgstr "Шаблон страницы"
+
 #: src/zope/app/zptpage/browser/configure.zcml:31
 msgid "Add a ZPT Page"
 msgstr "Добавить шаблон страницы"
@@ -4994,7 +4998,6 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr "Обнаружено ошибок при вводе: ${num_errors}"
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
 #: src/zope/app/zptpage/configure.zcml:12
 msgid "ZPT Page"
 msgstr "Шаблон страницы"

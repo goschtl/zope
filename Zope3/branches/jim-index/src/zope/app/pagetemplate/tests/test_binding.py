@@ -36,8 +36,7 @@ class BindingTestCase(PlacelessSetup, unittest.TestCase):
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
 
     def test_binding(self):
-        from zope.publisher.browser import TestRequest
-        comp = PTComponent(Content(), TestRequest())
+        comp = PTComponent(Content())
         self.assertEqual(comp.index(), "42\n")
         self.assertEqual(comp.nothing(), "\n")
         self.assertEqual(comp.default(), "<span>42</span>\n")

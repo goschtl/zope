@@ -159,13 +159,12 @@ class XMLExportHandler(object):
     template = ViewPageTemplateFile('xmlexport_template.pt')
 
     def __init__(self, context):
-        self.context = context
+        self.context = context    
 
     def doExport(self):
         # Unfortunately, the template expects its parent to have an attribute
         # called request.
-        from zope.publisher.browser import TestRequest
-        self.request = TestRequest()
+        self.request = None
         return self.template()
 
     def getDublinCore(self, obj):

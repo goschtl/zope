@@ -4740,6 +4740,10 @@ msgstr ""
 msgid "Root Folder"
 msgstr ""
 
+#: src/zope/app/zptpage/browser/configure.zcml:23
+msgid "Templated Page"
+msgstr ""
+
 #: src/zope/app/zptpage/browser/configure.zcml:31
 msgid "Add a ZPT Page"
 msgstr ""
@@ -4769,7 +4773,6 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr ""
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
 #: src/zope/app/zptpage/configure.zcml:12
 msgid "ZPT Page"
 msgstr ""

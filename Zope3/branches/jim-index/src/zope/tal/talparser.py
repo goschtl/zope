@@ -62,8 +62,7 @@ class TALParser(XMLParser):
         name, attrlist, taldict, metaldict, i18ndict \
               = self.process_ns(name, attrlist)
         attrlist = self.xmlnsattrs() + attrlist
-        self.gen.emitStartElement(name, attrlist, taldict, metaldict, i18ndict,
-                                  self.getpos())
+        self.gen.emitStartElement(name, attrlist, taldict, metaldict, i18ndict)
 
     def process_ns(self, name, attrlist):
         taldict = {}
@@ -123,7 +122,7 @@ class TALParser(XMLParser):
 
     def EndElementHandler(self, name):
         name = self.fixname(name)[0]
-        self.gen.emitEndElement(name,  position=self.getpos())
+        self.gen.emitEndElement(name)
 
     def DefaultHandler(self, text):
         self.gen.emitRawText(text)

@@ -59,7 +59,7 @@ class UtilityService(AdapterRegistry):
                 yield item
 
     def getAllUtilitiesRegisteredFor(self, interface):
-        return iter(self._null.get(('s', interface)) or ())
+        return iter(self._null.get(('s', interface), ()))
 
 class GlobalUtilityService(UtilityService, GlobalService):
 
