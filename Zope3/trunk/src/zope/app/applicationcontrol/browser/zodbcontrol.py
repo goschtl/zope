@@ -13,10 +13,10 @@
 ##############################################################################
 """ Server Control View
 
-$Id: zodbcontrol.py,v 1.4 2004/02/20 16:57:19 fdrake Exp $
+$Id: zodbcontrol.py,v 1.1 2004/03/01 13:43:25 philikon Exp $
 """
 from ZODB.FileStorage.FileStorage import FileStorageError
-from zope.app.interfaces.applicationcontrol import IZODBControl
+from zope.app.applicationcontrol.interfaces import IZODBControl
 from zope.component import getAdapter
 
 from zope.app.i18n import ZopeMessageIDFactory as _

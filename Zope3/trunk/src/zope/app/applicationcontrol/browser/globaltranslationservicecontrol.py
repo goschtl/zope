@@ -13,10 +13,10 @@
 ##############################################################################
 """ Server Control View
 
-$Id: globaltranslationservicecontrol.py,v 1.3 2004/01/16 12:17:08 philikon Exp $
+$Id: globaltranslationservicecontrol.py,v 1.1 2004/03/01 13:43:25 philikon Exp $
 """
 
-from zope.app.interfaces.applicationcontrol import IGlobalTSControl
+from zope.app.applicationcontrol.interfaces import IGlobalTSControl
 from zope.component import getAdapter
 
 from zope.app.i18n import ZopeMessageIDFactory as _

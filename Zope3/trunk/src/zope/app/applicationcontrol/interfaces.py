@@ -13,7 +13,7 @@
 ##############################################################################
 """Application Control Interface
 
-$Id: applicationcontrol.py,v 1.2 2003/08/12 15:53:29 gotcha Exp $
+$Id: interfaces.py,v 1.1 2004/03/01 13:43:24 philikon Exp $
 """
 from zope.interface import Interface
 

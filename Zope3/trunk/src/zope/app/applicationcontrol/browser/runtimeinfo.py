@@ -13,9 +13,9 @@
 ##############################################################################
 """Define runtime information view component for Application Control
 
-$Id: runtimeinfo.py,v 1.5 2003/08/06 14:41:20 srichter Exp $
+$Id: runtimeinfo.py,v 1.1 2004/03/01 13:43:25 philikon Exp $
 """
-from zope.app.interfaces.applicationcontrol import IRuntimeInfo
+from zope.app.applicationcontrol.interfaces import IRuntimeInfo
 from zope.component import getAdapter
 from zope.component import ComponentLookupError
 

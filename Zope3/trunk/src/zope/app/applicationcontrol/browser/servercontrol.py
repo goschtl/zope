@@ -13,9 +13,9 @@
 ##############################################################################
 """ Server Control View
 
-$Id: servercontrol.py,v 1.5 2003/07/31 21:37:27 srichter Exp $
+$Id: servercontrol.py,v 1.1 2004/03/01 13:43:25 philikon Exp $
 """
-from zope.app.interfaces.applicationcontrol import IServerControl
+from zope.app.applicationcontrol.interfaces import IServerControl
 from zope.component import getUtility
 
 from zope.app.i18n import ZopeMessageIDFactory as _

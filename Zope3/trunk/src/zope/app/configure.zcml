@@ -78,7 +78,6 @@
 
   <include package="zope.app.container" />
   <include package="zope.app.services" />
-  <include package="zope.app.applicationcontrol" />
   <include package="zope.app.schema" />
 
   <include package="zope.app.i18n" />
@@ -127,6 +126,7 @@
 
   <!-- Additional packages -->
 
+  <include package="zope.app.applicationcontrol" />
   <include package="zope.app.dublincore" />
   <include package="zope.app.cache" />
   <include package="zope.app.workflow" />

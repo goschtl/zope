@@ -13,14 +13,14 @@
 ##############################################################################
 """Server Control View Tests
 
-$Id: test_servercontrolview.py,v 1.6 2003/07/31 21:37:31 srichter Exp $
+$Id: test_servercontrolview.py,v 1.1 2004/03/01 13:43:25 philikon Exp $
 """
 import unittest
 
 from zope.app.applicationcontrol.applicationcontrol import applicationController
 from zope.app.applicationcontrol.servercontrol import ServerControl
-from zope.app.browser.applicationcontrol.servercontrol import ServerControlView
-from zope.app.interfaces.applicationcontrol import IServerControl
+from zope.app.applicationcontrol.browser.servercontrol import ServerControlView
+from zope.app.applicationcontrol.interfaces import IServerControl
 from zope.app.services.servicenames import Utilities
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component import getService

@@ -6,7 +6,6 @@
 
   <include file="usages.zcml" />
   <include file="menus.zcml" />
-  <include package=".applicationcontrol" />
   <include package=".component" />
   <include package=".container" />
   <include package=".form" />

@@ -13,7 +13,7 @@
 ##############################################################################
 """Runtime View tests
 
-$Id: test_runtimeinfoview.py,v 1.9 2004/02/25 23:02:15 faassen Exp $
+$Id: test_runtimeinfoview.py,v 1.1 2004/03/01 13:43:25 philikon Exp $
 """
 import unittest
 from types import DictType
@@ -21,8 +21,8 @@ from zope.app.tests import ztapi
 
 from zope.app.applicationcontrol.applicationcontrol import applicationController
 from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
-from zope.app.browser.applicationcontrol.runtimeinfo import RuntimeInfoView
-from zope.app.interfaces.applicationcontrol import \
+from zope.app.applicationcontrol.browser.runtimeinfo import RuntimeInfoView
+from zope.app.applicationcontrol.interfaces import \
      IApplicationControl, IRuntimeInfo
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
