@@ -27,6 +27,7 @@ from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IVocabularyQueryView
 from zope.app.interfaces.form import WidgetInputError, MissingInputError
+from zope.interface.declarations import directlyProvides
 from zope.publisher.browser import BrowserView
 from zope.component import getView
 from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
@@ -106,8 +107,10 @@ class IterableVocabularyQuery(object):
 
     implements(IIterableVocabularyQuery)
 
-    def __init__(self, vocabulary):
+    def __init__(self, vocabulary, *interfaces):
         self.vocabulary = vocabulary
+        if interfaces:
+            directlyProvides(self, *interfaces)
 
 
 class TranslationHook:
@@ -741,11 +744,10 @@ class IterableVocabularyQueryView(IterableVocabularyQueryViewBase):
         return self.mkselectionlist("radio", items, name)
 
     def renderQueryResults(self, results, value):
-        return IterableVocabularyQueryViewBase.renderQueryResults(
-            self, results, [value])
+        return super(IterableVocabularyQueryView, self).renderQueryResults(
+            results, [value])
 
 class IterableVocabularyQueryMultiView(IterableVocabularyQueryViewBase):
 
     def makeSelectionList(self, items, name):
         return self.mkselectionlist("checkbox", items, name)
-
