@@ -14,14 +14,14 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.5 2003/01/25 05:13:44 rdmurray Exp $
+$Id: interface.py,v 1.6 2003/01/28 11:25:22 stevea Exp $
 """
 
 
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.5 2003/01/25 05:13:44 rdmurray Exp $
+$Id: interface.py,v 1.6 2003/01/28 11:25:22 stevea Exp $
 """
 
 from inspect import currentframe
@@ -150,7 +150,7 @@ class InterfaceClass(Element):
 
     def isImplementedBy(self, object):
         """Does the given object implement the interface?"""
-        
+
         # OPT Cache implements lookups
         implements = getImplements(object)
         if implements is None:
@@ -170,7 +170,7 @@ class InterfaceClass(Element):
                   self._getInterface)
                 )
             cache[key] = r
-            
+
         return r
 
     def isImplementedByInstancesOf(self, klass):
@@ -181,7 +181,7 @@ class InterfaceClass(Element):
                 i, klass, self.isEqualOrExtendedBy, self._getInterface)
         return False
 
-    def names(self, all=0):
+    def names(self, all=False):
         """Return the attribute names defined by the interface."""
         if not all:
             return self.__attrs.keys()
@@ -197,7 +197,7 @@ class InterfaceClass(Element):
     def __iter__(self):
         return iter(self.names(all=True))
 
-    def namesAndDescriptions(self, all=0):
+    def namesAndDescriptions(self, all=False):
         """Return attribute names and descriptions defined by interface."""
         if not all:
             return self.__attrs.items()
@@ -428,7 +428,6 @@ def fromFunction(func, interface='', imlevel=0, name=None):
 
     for k, v in func.__dict__.items():
         m.setTaggedValue(k, v)
-
 
     return m
 
