@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.3 2004/03/17 18:24:27 philikon Exp $
+$Id: traversal.py,v 1.4 2004/04/17 17:15:34 jim Exp $
 """
 from zope.interface import implements
 from zope.component import getDefaultViewName, queryView
@@ -70,12 +70,9 @@ class SchemaFieldTraversable:
     def __init__(self, context):
         self._context = context
 
-    def traverse(self, name, parameters, original_name, furtherPath):
-        if parameters:
-            raise UnexpectedParameters(parameters)
-
+    def traverse(self, name, furtherPath):
         subobj = self._context.get(name, _marker)
         if subobj is _marker:
-            raise NotFoundError, original_name
+            raise NotFoundError, name
 
         return subobj

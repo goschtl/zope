@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_traversable.py,v 1.2 2004/03/13 15:21:40 srichter Exp $
+$Id: test_traversable.py,v 1.3 2004/04/17 17:15:36 jim Exp $
 """
 import unittest, sys
 from zope.exceptions import NotFoundError
@@ -42,10 +42,9 @@ class TestTraversable(PlacefulSetup, CleanUp, unittest.TestCase):
         page2 = wiki['FooBar']
 
         T = WikiPageTraversable(page1)
-        self.failUnless(T.traverse('FooBar', (), 'FooBar', []) is page2)
+        self.failUnless(T.traverse('FooBar', []) is page2)
 
-        self.assertRaises(NotFoundError , T.traverse,
-                          'morebar', (), 'morebar', [])
+        self.assertRaises(NotFoundError , T.traverse, 'morebar', [])
 
 
 def test_suite():

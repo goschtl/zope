@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.3 2004/03/17 18:24:28 philikon Exp $
+$Id: traversal.py,v 1.4 2004/04/17 17:15:35 jim Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -68,14 +68,11 @@ class WikiPageTraversable:
         self._wiki = getParent(page)
 
 
-    def traverse(self, name, parameters, original_name, furtherPath):
-        if parameters:
-            raise UnexpectedParameters(parameters)
-
+    def traverse(self, name, furtherPath):
         subobj = self._wiki.get(name, _marker)
         if subobj is _marker:
             subobj = getattr(self._page, name, _marker)
             if subobj is _marker:
-                raise NotFoundError, original_name
+                raise NotFoundError, name
 
         return subobj

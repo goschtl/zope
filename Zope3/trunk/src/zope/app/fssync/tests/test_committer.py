@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.30 2004/03/15 13:10:50 srichter Exp $
+$Id: test_committer.py,v 1.31 2004/04/17 17:15:33 jim Exp $
 """
 
 import os
@@ -87,7 +87,7 @@ class PretendContainer(Location):
     def items(self):
         return self.holding.items()
 
-    def traverse(self, name, parameters, pname, furtherPath):
+    def traverse(self, name, furtherPath):
         try:
             return self[name]
         except KeyError:
