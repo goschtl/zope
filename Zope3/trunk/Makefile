@@ -1,7 +1,7 @@
 PYTHON=python2.2
 TESTFLAGS=-p -v
 TESTOPTS=
-SETUPFLAGS=-q
+SETUPFLAGS=
 
 # XXX What should the default be?
 all: inplace
