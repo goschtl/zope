@@ -91,6 +91,12 @@ def setUp(test) :
 def tearDown(test) :
     placelesssetup.tearDown()
 
+
+def instanceProvides(obj, interface) :
+    """ Adds an interface to the directly provided ones of obj. """
+    ifaces = zope.interface.directlyProvidedBy(obj)
+    ifaces += interface
+    zope.interface.directlyProvides(obj, *ifaces)
    
     
 def buildDatabaseRoot():

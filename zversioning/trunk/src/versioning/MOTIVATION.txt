@@ -16,7 +16,6 @@ folder tree with the following structure as our sample :
   >>> import zope.app.versioncontrol.interfaces
   >>> from zope.interface import directlyProvides
   >>> from zope.app.versioncontrol.repository import declare_versioned
-  >>> from versioning.tests.repository_setup import registerAdapter
   >>> from zope.app.folder import Folder, rootFolder
   >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
   >>> from ZODB.tests import util
@@ -47,7 +46,7 @@ the hierarchical ones, which should be naturally handled in Zope3:
 In order to show some limitations of the current implementation we use a
 prebuild version control repository :
 
-  >>> from versioning.tests.repository_setup import buildRepository, buildDatabaseRoot
+  >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
   >>> db_root = buildDatabaseRoot()
   >>> db_root["sample"] = sample 
   >>> repository = buildRepository()

@@ -66,7 +66,7 @@ class VersionableAspectsAdapter(object) :
             the object history.
         """
         # XXX we currently throw away the message
-        history = self.histories.getHistory(self.versionable)
+        history = self.histories.getVersionHistory(self.versionable)
         return IObjectCopier(self.versionable).copyTo(history)        
       
     def updateAspects(self, version_specifier) :
@@ -75,7 +75,7 @@ class VersionableAspectsAdapter(object) :
             objects history.
         """
         
-        history = self.histories.getHistory(self.versionable)
+        history = self.histories.getVersionHistory(self.versionable)
         version = history[version_specifier]
         self.copy(version, self.versionable)
               
@@ -95,8 +95,8 @@ class ReplaceWithCopyPolicy(VersionableAspectsAdapter) :
         paths this policy requires that external python 
         references are updated if needed.
     """
-  
-     def copy(self, source, target) :
+    
+    def copy(self, source, target) :
         """ Replaces the original with a copied version. """
          
         parent = target.__parent__

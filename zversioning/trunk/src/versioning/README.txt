@@ -13,15 +13,12 @@ as an example :
     |--> b    |
          |--> c
      
-
   >>> import zope.app.versioncontrol.interfaces
   >>> from zope.interface import directlyProvides
   >>> from zope.app.folder import Folder, rootFolder
   >>> from zope.app.tests.setup import setUpTraversal
   >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
   >>> from ZODB.tests import util
-  >>> registerAdapter()
-  >>> setUpTraversal()
   >>> class TestFolder(Folder) :
   ...   zope.interface.implements(IPhysicallyLocatable)
   ...   def getPath(self) :
@@ -37,7 +34,7 @@ as an example :
   >>> [x for x in sample.keys()]
   [u'a', u'b']
   
-  >>> from versioning.tests.repository_setup import buildRepository, buildDatabaseRoot
+  >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
   >>> db_root = buildDatabaseRoot()
   >>> db_root["sample"] = sample 
 
@@ -104,7 +101,7 @@ Applying version control should raise an exception:
 So let us attach marker interfaces to the object before putting them
 under version control:
 
-  >>> from versioning.tests.repository_setup import instanceProvides
+  >>> from versioning.tests.test_versioncontrol import instanceProvides
   >>> instanceProvides(sample, interfaces.IVersionable)
   >>> instanceProvides(a, interfaces.IVersionable)
   >>> instanceProvides(b, interfaces.IVersionable)
