@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.14 2002/12/03 16:14:09 runyaga Exp $
+Revision information: $Id: Contents.py,v 1.15 2002/12/03 17:43:48 runyaga Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -47,6 +47,8 @@ class Contents(BrowserView):
             title = dc.title
             if title:
                 info['title'] = title
+
+            info['size'] = getSize(item[1])
 
             created = dc.created
             if created is not None:
@@ -82,10 +84,29 @@ class Contents(BrowserView):
 
         return self._index()
 
+# Below is prime material for localization.
+# We are a touchpoint that should contact the personalization
+# service so that users can see datetime and decimals
+
 def formatTime(in_date):
     format='%m/%d/%Y'
     undefined=u'N/A'
     if hasattr(in_date, 'strftime'):
        return in_date.strftime(format)
     return undefined
+
+def getSize(obj):
+    try:
+        size=int(obj.getSize())
+    except (AttributeError, ValueError):
+        return u'N/A'
+
+    result = u''
+    if size < 1024:
+        result = "1 KB"
+    elif size > 1048576:
+        result = "%0.02f MB" % (size / 1048576.0)
+    else:
+        result = "%d KB" % (size / 1024.0)
+    return result
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testContents.py,v 1.8 2002/12/03 16:14:09 runyaga Exp $
+$Id: testContents.py,v 1.9 2002/12/03 17:43:48 runyaga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -77,13 +77,15 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
         from datetime import datetime
         from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
-        from Zope.App.OFS.Container.Views.Browser.Contents import formatTime
+        from Zope.App.OFS.Container.Views.Browser.Contents \
+            import formatTime, getSize
         class FauxDCAdapter:
             __implements__ = IZopeDublinCore
             
             def __init__(self, context):
                 pass
             title = 'faux title'
+            size = 1024
             created = datetime(2001, 1, 1, 1, 1, 1)
             modified = datetime(2002, 2, 2, 2, 2, 2)
             
@@ -98,9 +100,24 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         self.assertEqual(info['url'], 'document')
         self.assertEqual(info['object'], document)
         self.assertEqual(info['title'], 'faux title')
+        self.assertEqual(info['size'], getSize(FauxDCAdapter.size))
         self.assertEqual(info['created'], formatTime(FauxDCAdapter.created))
         self.assertEqual(info['modified'], formatTime(FauxDCAdapter.modified))
 
+    def testObjectSize(self):
+        from Zope.App.OFS.Container.Views.Browser.Contents import getSize
+        class SizeableObject:
+            def __init__(self, size=0):
+                self.size=size
+            def getSize(self):
+                return self.size
+        self.assertEqual(getSize(SizeableObject(0)), u'1 KB')
+        self.assertEqual(getSize(SizeableObject(2048)), u'2 KB')
+        self.assertEqual(getSize(SizeableObject(2000000)), u'1.91 MB')
+        self.assertEqual(getSize(SizeableObject('bob')), u'N/A')
+        self.assertEqual(getSize('dobbs'), u'N/A')
+
+        
     def testRemove( self ):
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()

@@ -21,9 +21,9 @@
         <thead> 
           <tr>
             <th>&nbsp;</th>
-            <th>&nbsp;</th>
             <th>Name</th>
             <th>Title</th>
+            <th>Size</th>
             <th>Created</th>
             <th>Modified</th>
           </tr>
@@ -48,15 +48,14 @@
                  tal:content="structure item/icon|default"
                  >
               </a> 
-            </td>
-            <td> 
               <a href="#" 
                  tal:attributes="href 
                                  string:${url}/@@SelectedManagementView.html"
                  tal:content="item/id"
                  >foo</a> 
-            </td>          
+            </td>
             <td><span tal:content="item/title|default">&nbsp;</span></td>
+            <td><span tal:content="item/size|default">&nbsp;</span></td>
             <td><span tal:define="created item/created|default"
                       tal:content="created">&nbsp;</span></td>
             <td><span tal:define="modified item/modified|default"
