@@ -40,7 +40,7 @@ def ChoiceDisplayWidget(field, request):
 def ChoiceInputWidget(field, request):
     return zapi.getMultiView((field, field.vocabulary), request, IInputWidget)
 
-# for collections, we want to make the widget a view of the field and the 
+# for collections, we want to make the widget a view of the field and the
 # value_type.  If the value_type is None we may fall over.  We may
 # not be able to do any better than that.
 
@@ -50,7 +50,7 @@ def CollectionDisplayWidget(field, request):
 def CollectionInputWidget(field, request):
     return zapi.getMultiView((field, field.value_type), request, IInputWidget)
 
-# for collections of choices, we want to make the widget a view of the field, 
+# for collections of choices, we want to make the widget a view of the field,
 # the value type, and the vocabulary.
 
 def ChoiceCollectionDisplayWidget(field, value_type, request):
@@ -100,7 +100,7 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
     def textForValue(self, term):
         """Extract a string from the `term`.
 
-        The `term` must be a vocabulary tokenized term. 
+        The `term` must be a vocabulary tokenized term.
 
         This can be overridden to support more complex `term` objects. The token
         is returned here since it's the only thing known to be a string, or
@@ -113,7 +113,7 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
         """Convert term tokens to the terms themselves.
 
         Tokens are used in the HTML form to represent terms. This method takes
-        the form tokens and converts them back to terms. 
+        the form tokens and converts them back to terms.
         """
         values = []
         for token in tokens:
@@ -188,7 +188,7 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
 class SingleDataHelper(object):
     """Mix-in helper class for getting the term from the HTML form.
 
-    This is used when we expect a single input, i.e. the Choice field. 
+    This is used when we expect a single input, i.e. the Choice field.
     """
 
     def _toFieldValue(self, input):
@@ -303,7 +303,7 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
     as value_type.
     """
     implements(IInputWidget)
-    
+
     size = 5
     tag = 'select'
     firstItem = False
@@ -483,7 +483,7 @@ class RadioWidget(ItemsEditWidgetBase):
                              id=id,
                              cssClass=cssClass,
                              type='radio')
-        return self._joinButtonToMessageTemplate %(elem, text)
+        return self._joinButtonToMessageTemplate % (elem, text)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
         """Render a selected item of the list."""
@@ -496,7 +496,7 @@ class RadioWidget(ItemsEditWidgetBase):
                              checked=None,
                              type='radio')
         return self._joinButtonToMessageTemplate %(elem, text)
-    
+
     def renderItems(self, value):
         # check if we want to select first item, the previously selected item
         # or the "no value" item.
@@ -562,7 +562,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
                              size=self.size,
                              contents="\n".join(rendered_items),
                              extra=self.extra)
-    
+
     def hidden(self):
         items = []
         for item in self._getFormValue():
@@ -575,7 +575,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
                               cssClass=self.cssClass,
                               extra=self.extra))
         return '\n'.join(items)
-         
+
 
 class MultiSelectWidget(ItemsMultiEditWidgetBase):
     """Provide a selection list for the list to be selected."""
