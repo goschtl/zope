@@ -13,7 +13,7 @@
 ##############################################################################
 """
 Revision information:
-$Id: LocalServiceSubscribable.py,v 1.7 2002/11/11 08:38:36 stevea Exp $
+$Id: LocalServiceSubscribable.py,v 1.8 2002/12/06 18:03:31 alga Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -23,7 +23,7 @@ from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from LocalSubscribable import LocalSubscribable
-from Zope.App.ComponentArchitecture.NextService import getNextService
+from Zope.App.ComponentArchitecture.NextService import getNextService, queryNextService
 
 class LocalServiceSubscribable(LocalSubscribable):
     """a local mix-in for services"""
@@ -53,9 +53,9 @@ class LocalServiceSubscribable(LocalSubscribable):
                 break
         else:
             # raise NotFoundError(subscriber)
-            getNextService(
-                wrapped_self, clean_self._serviceName).unsubscribe(
-                    subscriber, event_type, filter)
+            next_service = queryNextService(wrapped_self, clean_self._serviceName)
+            if next_service is not None:
+                next_service.unsubscribe(subscriber, event_type, filter)
             return
         
         
@@ -70,9 +70,9 @@ class LocalServiceSubscribable(LocalSubscribable):
                 # converted to 'None' so that the _registry can
                 # shortcut some of its tests
             if ev_type not in ev_set:
-                getNextService(
-                    wrapped_self, clean_self._serviceName).unsubscribe(
-                        subscriber, event_type, filter)
+                next_service = queryNextService(wrapped_self, clean_self._serviceName)
+                if next_service is not None:
+                    next_service.unsubscribe(subscriber, event_type, filter)
             else:
                 subscriptions = clean_self._registry.get(ev_type)
                 try:
@@ -105,9 +105,9 @@ class LocalServiceSubscribable(LocalSubscribable):
                     else: # kept (added back)
                         subscriptions.append(sub)
             del clean_self._subscribers[subscriber_index]
-            getNextService(
-                wrapped_self, clean_self._serviceName).unsubscribe(
-                    subscriber, event_type, filter)
+            next_service = queryNextService(wrapped_self, clean_self._serviceName)
+            if next_service is not None:
+                next_service.unsubscribe(subscriber, event_type, filter)
         clean_self._p_changed = 1 #trigger persistence
     unsubscribe = ContextMethod(unsubscribe)
     
@@ -118,8 +118,9 @@ class LocalServiceSubscribable(LocalSubscribable):
         clean_self = removeAllProxies(wrapped_self)
         result = LocalSubscribable.listSubscriptions(
             clean_self, subscriber, event_type)
-        result.extend(getNextService(
-            wrapped_self, clean_self._serviceName).listSubscriptions(
-                subscriber, event_type))
+        next_service = queryNextService(wrapped_self, clean_self._serviceName)
+        if next_service is not None:
+            result.extend(next_service.listSubscriptions(subscriber,
+                                                         event_type))
         return result
     listSubscriptions = ContextMethod(listSubscriptions)
