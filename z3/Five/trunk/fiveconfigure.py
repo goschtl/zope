@@ -65,7 +65,7 @@ def page(_context, name, for_,
 
     else:
         # template
-        new_class = SimpleViewClass(template)
+        new_class = SimpleViewClass(template, bases=(BrowserView,))
 
     _handle_for(_context, for_)
 

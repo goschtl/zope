@@ -50,7 +50,14 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         view = self.root.unrestrictedTraverse('testoid/falcon.html')
         self.assert_(isinstance(view, SimpleContentView))
         data = view()
-        self.assertEquals(u'<p>The falcon has taken flight</p>\n\n', data)
+        self.assertEquals(u'<p>The falcon has taken flight</p>\n', data)
+
+    def test_template_view_without_class(self):
+        self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        view = self.root.unrestrictedTraverse('testoid/owl.html')
+        data = view()
+        self.assertEquals(u'<p>2</p>\n', data)
         
     def test_view_backwards_compatibility(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(

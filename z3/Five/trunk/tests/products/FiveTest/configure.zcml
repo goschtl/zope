@@ -20,4 +20,10 @@
     name="falcon.html"
     />
 
+  <five:page
+    for=".interfaces.ISimpleContent"
+    template="owl.pt"
+    name="owl.html"
+    />
+
 </configure>
