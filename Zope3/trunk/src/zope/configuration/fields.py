@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.11 2003/08/05 11:59:13 srichter Exp $
+$Id: fields.py,v 1.12 2003/08/05 14:56:05 srichter Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -286,9 +286,13 @@ class MessageID(schema.Text):
     When a string is converted to a message ID, it is also
     recorded in the context.
 
+    >>> class Info:
+    ...     file = 'file location'
+    ...     line = 8
+    
     >>> class FauxContext:
     ...     i18n_strings = {}
-    ...     info = 'file location'
+    ...     info = Info()
 
     >>> context = FauxContext()
     >>> field = MessageID().bind(context)
@@ -333,16 +337,16 @@ class MessageID(schema.Text):
     In addition, the string has been registered with the context:
 
     >>> context.i18n_strings
-    {'testing': {u'Hello world!': ["'file location'"]}}
+    {'testing': {u'Hello world!': [('file location', 8)]}}
 
     >>> i = field.fromUnicode(u"Foo Bar")
     >>> i = field.fromUnicode(u"Hello world!")
     >>> from pprint import PrettyPrinter
     >>> pprint=PrettyPrinter(width=70).pprint
     >>> pprint(context.i18n_strings)
-    {'testing': {u'Foo Bar': ["'file location'"],
-                 u'Hello world!': ["'file location'",
-                                   "'file location'"]}}
+    {'testing': {u'Foo Bar': [('file location', 8)],
+                 u'Hello world!': [('file location', 8),
+                                   ('file location', 8)]}}
     """
 
     implements(IFromUnicode)
@@ -356,7 +360,7 @@ class MessageID(schema.Text):
             domain = 'untranslated'
             warnings.warn(
                 "You did not specify an i18n translation domain for the "\
-                "'%s' field in %s" % (self.getName(), context.info )
+                "'%s' field in %s" % (self.getName(), context.info.file )
                 )
         v = super(MessageID, self).fromUnicode(u)
 
