@@ -326,6 +326,9 @@ class IDatetime(IMinMax, IField):
 class IDate(IMinMax, IField):
     u"""Field containing a date."""
 
+class ITimedelta(IMinMax, IField):
+    u"""Field containing a timedelta."""
+
 def _is_field(value):
     if not IField.providedBy(value):
         return False

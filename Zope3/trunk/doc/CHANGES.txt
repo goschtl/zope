@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+      - New schema field: Timedelta.
+
       - The browser:containerViews directive provides an optional layer
         attribute.
 
@@ -386,7 +388,7 @@ Zope Changes
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
-      Shane Hathaway, Bjorn Tillenius, Garrett Smith
+      Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.

@@ -1,6 +1,3 @@
-# -*- coding: ISO-8859-1 -*-
-##############################################################################
-#
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
@@ -19,7 +16,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 import warnings
 import re
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from sets import Set as SetType
 
 from zope.interface import classImplements, implements, directlyProvides
@@ -32,7 +29,7 @@ from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBytes, IASCII, IBytesLine
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
-from zope.schema.interfaces import IPassword, IObject, IDate
+from zope.schema.interfaces import IPassword, IObject, IDate, ITimedelta
 from zope.schema.interfaces import IURI, IId, IFromUnicode
 from zope.schema.interfaces import ISource, IVocabulary
 
@@ -169,6 +166,11 @@ class Date(Orderable, Field):
     __doc__ = IDate.__doc__
     implements(IDate)
     _type = date
+
+class Timedelta(Orderable, Field):
+    __doc__ = ITimedelta.__doc__
+    implements(ITimedelta)
+    _type = timedelta
 
 class Choice(Field):
     """Choice fields can have a value found in a constant or dynamic set of
