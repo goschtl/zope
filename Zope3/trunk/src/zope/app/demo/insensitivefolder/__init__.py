@@ -61,6 +61,9 @@ class CaseInsensitiveFolderFactory(object):
     """A Factory that creates case-insensitive Folders."""
     implements(IFactory)
 
+    title = "Case-Insensitive Folder Factory"
+    description = "A Factory that creates case-insensitive Folders."
+
     def __call__(self):
         """See zope.component.interfaces.IFactory
 
