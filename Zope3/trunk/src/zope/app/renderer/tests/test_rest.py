@@ -13,7 +13,7 @@
 ##############################################################################
 """Structured Text Tests - StructuredText Source, HTML Renderer
 
-$Id: test_rest.py,v 1.1 2003/07/31 17:59:41 srichter Exp $
+$Id: test_rest.py,v 1.2 2003/09/09 06:46:31 jshell Exp $
 """
 import unittest
 
@@ -47,7 +47,7 @@ class ReStructuredTextTest(unittest.TestCase):
 class HTMLRendererTest(unittest.TestCase):
 
     def setUp(self):
-        self._source = ReStructuredTextSource(u'This is source.\n')
+        self._source = ReStructuredTextSource(basic_input)
         self._renderer = ReStructuredTextToHTMLRenderer(self._source,
                                                         TestRequest())
 
@@ -55,8 +55,7 @@ class HTMLRendererTest(unittest.TestCase):
         self.failUnless(IHTMLRenderer.isImplementedBy(self._renderer))
 
     def test_render(self):
-        self.assertEqual('<div class="document">\nThis is source.</div>\n',
-                         self._renderer.render(None))
+        self.assertEqual(expected_output, self._renderer.render(None))
         comment = self._source.createComment('This is a Comment.', 1,
                                              'srichter',
                                              '04/12/2003 12:00:00')
@@ -64,6 +63,23 @@ class HTMLRendererTest(unittest.TestCase):
 
         self.assertEqual(rendered_source_comment, self._renderer.render(None))
 
+basic_input = u'''\
+This is source.
+
+Header 3
+--------
+This is more source.
+'''
+
+expected_output = '''\
+<div class="document">
+<p>This is source.</p>
+<div class="section" id="header-3">
+<h3><a name="header-3">Header 3</a></h3>
+<p>This is more source.</p>
+</div>
+</div>
+'''
 
 comment = '''
 
@@ -78,10 +94,16 @@ Comment #1 by **srichter** (04/12/2003 12:00:00)
 
 This is a Comment.'''
 
-rendered_source_comment = '''<div class="document">\n<p>This is source.</p>
+rendered_source_comment = '''\
+<div class="document">
+<p>This is source.</p>
+<div class="section" id="header-3">
+<h3><a name="header-3">Header 3</a></h3>
+<p>This is more source.</p>
 <hr />
 <p>Comment #1 by <strong>srichter</strong> (04/12/2003 12:00:00)</p>
 <p>This is a Comment.</p>
+</div>
 </div>
 '''
 
