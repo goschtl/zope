@@ -16,10 +16,11 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.17 2003/09/21 17:31:59 jim Exp $
+$Id: interface.py,v 1.18 2003/11/21 17:10:03 jim Exp $
 """
 
 from persistence import Persistent
+from persistence.dict import PersistentDict
 from zodb.code.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
@@ -36,7 +37,12 @@ from zope.app.container.contained import Contained
 from zope.app.interfaces.services.registration import IRegistrationStack
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
-    pass
+
+    def __init__(self, *args, **kw):
+        Persistent.__init__(self)
+        InterfaceClass.__init__(self, *args, **kw)
+
+        self.dependents = PersistentDict()
 
 # PersistentInterface is equivalent to the zope.interface.Interface object
 # except that it is also persistent.  It is used in conjunction with
@@ -50,9 +56,18 @@ class PersistentInterfaceWrapper(Wrapper):
         return PersistentInterfaceClass(self._obj.__name__)
 
 
+def getInterfaceStateForPersistentInterfaceCreation(iface):
+    # Need to convert the dependents weakref dict to a persistent dict
+    dict = iface.__dict__.copy()
+    dependents = PersistentDict()
+    for k, v in dict['dependents'].iteritems():
+        dependents[k] = v
+    dict['dependents'] = dependents
+    return dict
+
 registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
                 lambda iface: (),
-                lambda iface: iface.__dict__,
+                getInterfaceStateForPersistentInterfaceCreation,
                 )
 
 
@@ -122,4 +137,3 @@ class LocalInterfaceService(Contained):
             return [match for match in matching
                     if match[0].find(search_string) > -1]
         return matching
-
