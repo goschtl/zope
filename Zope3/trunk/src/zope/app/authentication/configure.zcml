@@ -6,7 +6,7 @@
 
   <localUtility class=".PluggableAuthentication">
     <require
-        permission="zope.ManageServices"
+        permission="zope.ManageSite"
         interface=".interfaces.IPluggableAuthentication"
         set_schema=".interfaces.IPluggableAuthentication"
         />
