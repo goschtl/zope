@@ -174,6 +174,10 @@ To Do
     type to do a checkout; this may just be a matter of asking for
     missing username and password when performing a checkout.
 
+    Status: the username will probably remain required in the checkout
+    URL, but there are now login/logout commands very similar to those
+    in CVS.  Documentation is still needed.
+
   * Something akin to **cvs -n update** or **svn status -u**, which
     shows what update would do without actually doing it.
 
