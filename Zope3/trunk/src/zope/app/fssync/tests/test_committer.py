@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.3 2003/05/28 14:49:08 gvanrossum Exp $
+$Id: test_committer.py,v 1.4 2003/05/28 14:55:57 gvanrossum Exp $
 """
 
 import os
@@ -282,8 +282,8 @@ class TestCommitter(TempFiles, PlacelessSetup):
         self.assertEqual(self.com.get_errors(), [])
         self.assertEqual(parent.holding, {"child": child})
         self.assertEqual(child.holding, {"foo": foo})
-        self.assertEqual(self.com.read_file(foofile), dumps(foo))
-        self.assertEqual(self.com.read_file(originalfoofile), dumps(foo))
+        self.assertEqual(self.readfile(foofile, "rb"), dumps(foo))
+        self.assertEqual(self.readfile(originalfoofile, "rb"), dumps(foo))
 
         # Test modifying a file
         newfoo = {"x": 42}
@@ -292,8 +292,8 @@ class TestCommitter(TempFiles, PlacelessSetup):
         self.assertEqual(self.com.get_errors(), [])
         self.assertEqual(parent.holding, {"child": child})
         self.assertEqual(child.holding, {"foo": newfoo})
-        self.assertEqual(self.com.read_file(foofile), dumps(newfoo))
-        self.assertEqual(self.com.read_file(originalfoofile), dumps(newfoo))
+        self.assertEqual(self.readfile(foofile, "rb"), dumps(newfoo))
+        self.assertEqual(self.readfile(originalfoofile, "rb"), dumps(newfoo))
 
         # Test adding a file
         bar = {"y": 42}
@@ -304,8 +304,8 @@ class TestCommitter(TempFiles, PlacelessSetup):
         self.writefile(dumps(bar), barfile)
         self.com.synch(parent, "", parentdir)
         self.assertEqual(child.holding, {"foo": newfoo, "bar": bar})
-        self.assertEqual(self.com.read_file(barfile), dumps(bar))
-        self.assertEqual(self.com.read_file(originalbarfile), dumps(bar))
+        self.assertEqual(self.readfile(barfile, "rb"), dumps(bar))
+        self.assertEqual(self.readfile(originalbarfile, "rb"), dumps(bar))
         self.assertEqual(barentry.get("flag"), None)
 
         # Test removing a file
@@ -323,8 +323,8 @@ class TestCommitter(TempFiles, PlacelessSetup):
         fooentry["type"] = "__builtin__.int"
         self.com.synch(parent, "", parentdir)
         self.assertEqual(child.holding, {"foo": altfoo})
-        self.assertEqual(self.com.read_file(foofile), dumps(altfoo))
-        self.assertEqual(self.com.read_file(originalfoofile), dumps(altfoo))
+        self.assertEqual(self.readfile(foofile, "rb"), dumps(altfoo))
+        self.assertEqual(self.readfile(originalfoofile, "rb"), dumps(altfoo))
 
         # Test adding an empty directory
         kwikdir = os.path.join(childdir, "kwik")
@@ -364,7 +364,7 @@ class TestCommitter(TempFiles, PlacelessSetup):
         self.assertEqual(kwekentry.get("flag"), None)
         self.assertEqual(kwakentry.get("flag"), None)
         self.failUnless(os.path.isfile(kwakfile))
-        self.assertEqual(self.com.read_file(kwakfile), data)
+        self.assertEqual(self.readfile(kwakfile, "rb"), data)
         self.failUnless(os.path.isfile(fsutil.getoriginal(kwakfile)))
 
         # Test removing the subtree rooted at kwek
@@ -382,8 +382,8 @@ class TestCommitter(TempFiles, PlacelessSetup):
         self.writefile("something else", originalfoofile)
         self.com.synch(parent, "", parentdir)
         self.assertEqual(self.com.get_errors(), [foofile])
-        self.assertEqual(self.com.read_file(foofile),
-                         self.com.read_file(originalfoofile))
+        self.assertEqual(self.readfile(foofile, "rb"),
+                         self.readfile(originalfoofile, "rb"))
 
         # Test conflict reporting for object added in both places
         os.remove(originalfoofile)
