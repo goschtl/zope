@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.17 2004/02/09 05:35:20 anthony Exp $
+$Id: __init__.py,v 1.18 2004/02/09 05:45:33 richard Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -322,11 +322,12 @@ def gatherConfiguredServices(sm, request, items=None):
     """
     if items is None:
         items = {}
-        manageable = True      # is manageable from this View (easily)
         # make sure no-one tries to use this starting at the global service
         # manager
         assert ISiteManager.isImplementedBy(sm)
+        manageable = True
     else:
+        # don't want the "change registration" link for parent services
         manageable = False
 
     if IGlobalServiceManager.isImplementedBy(sm):
@@ -339,7 +340,7 @@ def gatherConfiguredServices(sm, request, items=None):
             if sm.queryService(type_name) is not None:
                 names.append(type_name)
                 items[type_name] = {'name': type_name, 'url': '',
-                    'manageable': False, 'parent': 'global'}
+                    'parent': 'global', 'disabled': False, 'manageable': False}
         return
 
     for name in sm.listRegistrationNames():
@@ -357,8 +358,8 @@ def gatherConfiguredServices(sm, request, items=None):
                 zapi.getView(component, 'absolute_url', request))
         else:
             url = ""
-        items[name] = {'name': name, 'url': url, 'manageable': manageable,
-            'parent': 'parent'}
+        items[name] = {'name': name, 'url': url, 'parent': 'parent',
+            'disabled': not url, 'manageable': manageable}
 
     # look for more
     gatherConfiguredServices(getNextServiceManager(sm), request, items)

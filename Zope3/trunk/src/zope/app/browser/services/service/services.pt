@@ -21,8 +21,8 @@
     
     <div tal:condition="registries">
       <p i18n:translate="">
-         Unless a service is disabled or is provided by a parent site manager,
-         the service name links to the active service.
+         Unless a service is disabled the service name links to the
+         active service.
          The (change registration)
          link allows activating a different implementation or
          disabling the service altogether.
@@ -36,17 +36,18 @@
                        name="selected:list" tal:attributes="value reg/name" />
             </td>
             <td>
-             <tal:block condition="reg/manageable">
-              <a href="(link to the active service)"
-                 tal:condition="reg/url"
-                 tal:attributes= "href reg/url"
-                 tal:content="reg/name">
-                Foobar (the service type)
-              </a>
-             <span tal:condition="not:reg/url"
+             <a href="(link to the active service)"
+                tal:condition="reg/url"
+                tal:attributes= "href reg/url"
+                tal:content="reg/name">
+               Foobar (the service type)
+             </a>
+
+             <span tal:condition="reg/disabled"
                    tal:replace="string:${reg/name} (disabled)" />
-             </tal:block>
-             <span tal:condition="not:reg/manageable" tal:replace="reg/name" />
+
+             <span tal:condition="python:not reg['url'] and not reg['disabled']"
+                   tal:replace="reg/name" />
             </td>
             <td>
              <tal:block condition="reg/manageable">
