@@ -886,10 +886,10 @@ def process_args(argv=None):
             test_dirs.append(v)
 
     if sys.version_info < ( 2,3,2 ):
-	print """\
-	ERROR: Your python version is not supported by Zope3.
-	Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
-	sys.exit(1)
+        print """\
+        ERROR: Your python version is not supported by Zope3.
+        Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
+        sys.exit(1)
 
     if gcthresh is not None:
         if gcthresh == 0:

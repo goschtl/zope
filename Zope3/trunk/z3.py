@@ -14,7 +14,7 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.22 2003/10/30 08:15:30 philikon Exp $
+$Id: z3.py,v 1.23 2004/03/17 21:05:34 srichter Exp $
 """
 
 import os
@@ -26,10 +26,10 @@ basepath = filter(None, sys.path)
 def run(argv=list(sys.argv)):
 
     if sys.version_info < ( 2,3,2 ):
-	print """\
-	ERROR: Your python version is not supported by Zope3.
-	Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
-	sys.exit(1)
+        print """\
+        ERROR: Your python version is not supported by Zope3.
+        Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
+        sys.exit(1)
 
     # Refuse to run without principals.zcml
     if not os.path.exists('principals.zcml'):
