@@ -87,8 +87,8 @@ class Finder:
             cmd.copy_file(file, dest)
 
 
-extra = ExtraFileFinder(EXTS)
-os.path.walk('.', extra.visit, None)
+##extra = ExtraFileFinder(EXTS)
+##os.path.walk('.', extra.visit, None)
 
 
 class MyLibInstaller(install_lib):
@@ -194,14 +194,14 @@ ext_modules = [
     Extension("Zope.ContextWrapper.wrapper",
               ["lib/python/Zope/ContextWrapper/wrapper.c"],
               include_dirs = ["include"],
-              depends = ["include/Zope/ContextWrapper/wrapper.h",
-                         "include/Zope/Proxy/proxy.h"]),
+              depends = ["lib/python/Zope/ContextWrapper/wrapper.h",
+                         "lib/python/Zope/Proxy/proxy.h"]),
     Extension("Zope.Proxy.proxy", ["lib/python/Zope/Proxy/proxy.c"],
-              include_dirs = ["include"],
-              depends = ["include/Zope/Proxy/proxy.h"]),
+              include_dirs = ["lib/python"],
+              depends = ["lib/python/Zope/Proxy/proxy.h"]),
     Extension("Zope.Security._Proxy", ["lib/python/Zope/Security/_Proxy.c"],
-              include_dirs = ["include"],
-              depends = ["include/Zope/Proxy/proxy.h"]),
+              include_dirs = ["lib/python"],
+              depends = ["lib/python/Zope/Proxy/proxy.h"]),
     ]
 
 doclines = __doc__.split("\n")
