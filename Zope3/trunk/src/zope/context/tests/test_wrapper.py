@@ -21,6 +21,11 @@ from zope.proxy.tests.test_proxy import Comparable, Thing, ProxyTestCase
 
 _marker = object()
 
+# We need to make a load of new types. If tests are run multiple times,
+# only make each required new type once, and cache it here.
+# Otherwise, it looks like we have a refcount leak.
+class_lookup = {}
+
 class WrapperTestCase(ProxyTestCase):
     def new_proxy(self, o, c=None):
         return wrapper.Wrapper(o, c)
@@ -93,19 +98,28 @@ class WrapperTestCase(ProxyTestCase):
             else:
                 return fixed_retval
 
-        # context-unaware object
-        t1 = type('ContextUnawareObj', (), {slot: doit})
-        proxy1 = self.new_proxy(t1(), context)
+        if slot in class_lookup:
+            # The unit test for this slot has been run before.
+            # Return the types we previously made.
+            return class_lookup[slot]
+        else:
+            # This is the first time the unit-test for this slot has been
+            # run. Make some new types, and cache them.
 
-        # context-aware object
-        t2 = type('ContextAwareObj', (ContextAware,), {slot: doit})
-        proxy2 = self.new_proxy(t2(), context)
+            # context-unaware object
+            t1 = type('ContextUnawareObj', (), {slot: doit})
+            proxy1 = self.new_proxy(t1(), context)
 
-        # object with context method
-        t3 = type('ContextMethodObj', (), {slot: ContextMethod(doit)})
-        proxy3 = self.new_proxy(t3(), context)
+            # context-aware object
+            t2 = type('ContextAwareObj', (ContextAware,), {slot: doit})
+            proxy2 = self.new_proxy(t2(), context)
 
-        return proxy1, proxy2, proxy3, context
+            # object with context method
+            t3 = type('ContextMethodObj', (), {slot: ContextMethod(doit)})
+            proxy3 = self.new_proxy(t3(), context)
+
+            class_lookup[slot] = retval = proxy1, proxy2, proxy3, context
+            return retval
 
     def test_normal_getattr(self):
         class X(object):
