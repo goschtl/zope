@@ -126,6 +126,51 @@ specialized version of lookup that takes a single required interface:
   >>> registry.lookup1(IR2, IP1)
   21
 
+Actual Adaptation
+-----------------
+
+The adapter registry is intended to support adaptation, where one
+object that implements an interface is adapted to another object that
+supports a different interface.  The adapter registry supports the
+computation of adapters. In this case, we have to register adapter
+factories: 
+
+   >>> class IR(zope.interface.Interface):
+   ...     pass
+
+   >>> class X:
+   ...     zope.interface.implements(IR)
+           
+   >>> class Y:
+   ...     zope.interface.implements(IP1)
+   ...     def __init__(self, context):
+   ...         self.context = context
+
+  >>> registry.register([IR], IP1, '', Y)
+
+In this case, we registered a class as the factory. Now we can call
+`queryAdapter` to get the adapted object:
+
+  >>> x = X()
+  >>> y = registry.queryAdapter(x, IP1)
+  >>> y.__class__.__name__
+  'Y'
+  >>> y.context is x
+  True
+
+We can register and lookup by name too:
+
+  >>> class Y2(Y):
+  ...     pass
+
+  >>> registry.register([IR], IP1, 'bob', Y2)
+  >>> y = registry.queryAdapter(x, IP1, 'bob')
+  >>> y.__class__.__name__
+  'Y2'
+  >>> y.context is x
+  True
+
+
 
 Default Adapters
 ----------------
@@ -196,6 +241,43 @@ You can adapt multiple specifications::
   >>> registry.lookup([IR2, IQ2], IP1, '')
   '1q22'
 
+Multi-adaptation
+----------------
+
+You can adapt multiple objects:
+
+  >>> class Q:
+  ...     zope.interface.implements(IQ)
+
+As with single adapters, we register a factory, which is often a class:
+
+  >>> class IM(zope.interface.Interface):
+  ...     pass
+  >>> class M:
+  ...     zope.interface.implements(IM)
+  ...     def __init__(self, x, q):
+  ...         self.x, self.q = x, q
+  >>> registry.register([IR, IQ], IM, '', M)
+
+And then we can call `queryMultiAdapter` to compute an adapter:
+
+  >>> q = Q()
+  >>> m = registry.queryMultiAdapter((x, q), IM)
+  >>> m.__class__.__name__
+  'M'
+  >>> m.x is x and m.q is q
+  True
+
+and, of course, we can use names:
+
+  >>> class M2(M):
+  ...     pass
+  >>> registry.register([IR, IQ], IM, 'bob', M2)
+  >>> m = registry.queryMultiAdapter((x, q), IM, 'bob')
+  >>> m.__class__.__name__
+  'M2'
+  >>> m.x is x and m.q is q
+  True
   
 Default Adapters
 ----------------
@@ -331,6 +413,28 @@ You can have subscriptions that are indepenent of any specifications::
   ['sub1', 'sub2']
   >>> registry.subscriptions([], IP2)
   ['sub2']
+
+
+Subscription adapters
+---------------------
+
+We normally register adapter factories, which then allow us to compute
+adapters, but with subscriptions, we get multiple adapters.  Here's an
+example of multiple-object subscribers:
+
+  >>> registry.subscribe([IR, IQ], IM, M)
+  >>> registry.subscribe([IR, IQ], IM, M2)
+
+  >>> subscribers = registry.subscribers((x, q), IM)
+  >>> len(subscribers)
+  2
+  >>> class_names = [s.__class__.__name__ for s in subscribers]
+  >>> class_names.sort()
+  >>> class_names
+  ['M', 'M2']
+  >>> [(s.x is x and s.q is q) for s in subscribers]
+  [True, True]
+
 
 Handlers
 --------

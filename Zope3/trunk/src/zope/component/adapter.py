@@ -58,24 +58,6 @@ class AdapterService(AdapterRegistry):
 
     implements(IAdapterService)
 
-    def queryAdapter(self, object, interface, name='', default=None):
-        factory = self.lookup1(providedBy(object), interface, name)
-        if factory is not None:
-            return factory(object)
-
-        return default
-
-    def queryMultiAdapter(self, objects, interface, name='', default=None):
-        factory = self.lookup(map(providedBy, objects), interface, name)
-        if factory is not None:
-            return factory(*objects)
-
-        return default
-
-    def subscribers(self, objects, interface):
-        subscriptions = self.subscriptions(map(providedBy, objects), interface)
-        return [subscription(*objects) for subscription in subscriptions]
-
 class GlobalAdapterService(AdapterService, GlobalService):
     """Global Adapter Service implementation."""
 

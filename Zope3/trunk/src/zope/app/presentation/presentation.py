@@ -274,7 +274,6 @@ class GlobalViewRegistration(object):
 
 class LocalLayer(
     zope.app.adapter.LocalAdapterRegistry,
-    zope.component.presentation.Layer,
     zope.app.container.contained.Contained,
     ):
 

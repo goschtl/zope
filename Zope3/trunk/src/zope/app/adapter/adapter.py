@@ -104,10 +104,12 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
 
     def __getstate__(self):
         state = Persistent.__getstate__(self).copy()
-        del state['_surrogates']
-        del state['_default']
-        del state['_null']
-        del state['_remove']
+        
+        for name in ('_default', '_null',
+                     'lookup', 'lookup1', 'queryAdapter', 'get',
+                     'subscriptions', 'queryMultiAdapter', 'subscribers'
+                     ):
+            del state[name]
         return state
 
     def __setstate__(self, state):

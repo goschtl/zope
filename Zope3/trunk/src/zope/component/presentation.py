@@ -469,22 +469,7 @@ def GL(presentation_service, layer_name):
     return presentation_service.queryLayer(layer_name)
 
 
-class Layer(zope.interface.adapter.AdapterRegistry):
-
-    def queryAdapter(self, obj, interface, name='', default=None):
-        factory = self.lookup1(providedBy(obj), interface, name)
-        if factory is not None:
-            return factory(obj)
-        return default
-
-    def queryMultiAdapter(self, objects, interface, name='', default=None):
-        factory = self.lookup(map(providedBy, objects), interface, name)
-        if factory is not None:
-            return factory(*objects)
-        return default
-
-
-class GlobalLayer(Layer):
+class GlobalLayer(zope.interface.adapter.AdapterRegistry):
 
     def __init__(self, parent, name):
         super(GlobalLayer, self).__init__()
