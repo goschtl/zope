@@ -392,6 +392,8 @@ class DisplayWidget(BrowserWidget):
 
     def __call__(self):
         if self._renderedValueSet():
+            if self._data == self.context.missing_value:
+                return ""
             return escape(self._data)
         else:
             return escape(self.context.default)

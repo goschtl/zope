@@ -72,6 +72,21 @@ def test_value_escaping():
     >>> widget.setRenderedValue(u'<Another Title>')
     >>> widget()
     u'&lt;Another Title&gt;'
+
+    When the value is the missing_value, the empty string should be
+    displayed::
+
+    >>> field = TextLine(title = u'Title',
+    ...                  __name__ = u'title',
+    ...                  required = False)
+
+    >>> field = field.bind(None)
+    >>> widget = DisplayWidget(field, TestRequest())
+    >>> widget.setRenderedValue(field.missing_value)
+
+    >>> widget()
+    ''
+    
     """
 
 
