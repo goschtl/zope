@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Dec 17 09:04:11 2003\n"
+"POT-Creation-Date: Wed Dec 17 14:55:35 2003\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -226,9 +226,9 @@ msgstr ""
 
 #: src/zope/app/browser/cache/configure.zcml:25
 #: src/zope/app/browser/content/configure.zcml:15
-#: src/zope/app/browser/content/configure.zcml:87
-#: src/zope/app/browser/content/configure.zcml:172
-#: src/zope/app/browser/content/configure.zcml:205
+#: src/zope/app/browser/content/configure.zcml:97
+#: src/zope/app/browser/content/configure.zcml:189
+#: src/zope/app/browser/content/configure.zcml:237
 #: src/zope/app/browser/services/auth.zcml:37
 #: src/zope/app/browser/services/pluggableauth/configure.zcml:73
 #: src/zope/app/browser/services/menu.zcml:63
@@ -382,17 +382,17 @@ msgstr ""
 msgid "any-interface"
 msgstr ""
 
-#: src/zope/app/browser/container/adding.py:128
+#: src/zope/app/browser/container/adding.py:134
 msgid "You must select the type of object to add."
 msgstr ""
 
-#: src/zope/app/browser/container/adding.py:147
+#: src/zope/app/browser/container/adding.py:153
 msgid "You must specify an id"
 msgstr ""
 
 #: src/zope/app/browser/container/adding.py:87
 #: src/zope/app/browser/marker.pt:133
-#: src/zope/app/browser/container/add.pt:40
+#: src/zope/app/browser/container/add.pt:39
 #: src/zope/app/browser/services/adduser.pt:58
 #: src/zope/app/browser/services/translation/translate.pt:78
 #: src/zope/app/browser/services/translation/translate.pt:84
@@ -402,6 +402,11 @@ msgstr ""
 #: src/zope/app/browser/utilities/add.pt:39
 # Default: "Add"
 msgid "add-button"
+msgstr ""
+
+#: src/zope/app/browser/container/adding.py:88
+# Default: "Object Name"
+msgid "add-button-label"
 msgstr ""
 
 #: src/zope/app/browser/container/commontasks.pt:5
@@ -509,50 +514,47 @@ msgid "find-button"
 msgstr ""
 
 #: src/zope/app/browser/content/configure.zcml:105
+msgid "A file that supports multiple locales."
+msgstr ""
+
+#: src/zope/app/browser/content/configure.zcml:115
 msgid "Upload an image"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:137
-msgid "This object helps you manage your images."
+#: src/zope/app/browser/content/configure.zcml:154
+msgid "Add a Image"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:180
+#: src/zope/app/browser/content/configure.zcml:197
 msgid "A multi-locale version of an Image."
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:205
-msgid "Edit a ZPT page"
+#: src/zope/app/browser/content/configure.zcml:229
+#: src/zope/app/browser/content/configure.zcml:283
+msgid "Add a ZPT Page"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:214
-#: src/zope/app/browser/content/configure.zcml:214
-msgid "Inline Code"
-msgstr ""
-
-#: src/zope/app/browser/content/configure.zcml:22
+#: src/zope/app/browser/content/configure.zcml:23
 msgid "Upload a file"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:22
-#: src/zope/app/browser/content/configure.zcml:90
-#: src/zope/app/browser/content/configure.zcml:105
-#: src/zope/app/browser/content/configure.zcml:175
+#: src/zope/app/browser/content/configure.zcml:23
+#: src/zope/app/browser/content/configure.zcml:100
+#: src/zope/app/browser/content/configure.zcml:115
+#: src/zope/app/browser/content/configure.zcml:192
 msgid "Upload"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:236
-msgid "An object for dynamic content based on Page Templates."
+#: src/zope/app/browser/content/configure.zcml:237
+msgid "Edit a ZPT page"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:236
-msgid "Templated Page"
+#: src/zope/app/browser/content/configure.zcml:246
+#: src/zope/app/browser/content/configure.zcml:246
+msgid "Inline Code"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:251
-msgid "A simple Folder."
-msgstr ""
-
-#: src/zope/app/browser/content/configure.zcml:260
+#: src/zope/app/browser/content/configure.zcml:293
 #: src/zope/app/browser/services/service/configure.zcml:80
 #: src/zope/app/browser/services/configure.zcml:79
 #: src/zope/app/browser/services/auth.zcml:12
@@ -565,54 +567,50 @@ msgstr ""
 msgid "Contents"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:284
-msgid "Manage Process"
-msgstr ""
-
-#: src/zope/app/browser/content/configure.zcml:293
-msgid "Add a SQL Script"
-msgstr ""
-
-#: src/zope/app/browser/content/configure.zcml:30
-#: src/zope/app/browser/content/configure.zcml:123
-#: src/zope/app/browser/content/configure.zcml:224
-#: src/zope/app/browser/content/configure.zcml:275
-#: src/zope/app/browser/content/configure.zcml:365
+#: src/zope/app/browser/content/configure.zcml:31
+#: src/zope/app/browser/content/configure.zcml:133
+#: src/zope/app/browser/content/configure.zcml:256
+#: src/zope/app/browser/content/configure.zcml:308
+#: src/zope/app/browser/content/configure.zcml:398
 msgid "Preview"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:314
-msgid "Edit an SQL script"
+#: src/zope/app/browser/content/configure.zcml:317
+msgid "Manage Process"
 msgstr ""
 
 #: src/zope/app/browser/content/configure.zcml:326
+msgid "Add a SQL Script"
+msgstr ""
+
+#: src/zope/app/browser/content/configure.zcml:347
+msgid "Edit an SQL script"
+msgstr ""
+
+#: src/zope/app/browser/content/configure.zcml:359
 #: src/zope/app/browser/rdb/configure.zcml:32
 # Default: "Test"
 msgid "test-page-title"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:358
+#: src/zope/app/browser/content/configure.zcml:391
 msgid "Edit a DTML page"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:377
-msgid "An object for dynamic content based on Document Templates."
+#: src/zope/app/browser/content/configure.zcml:411
+msgid "Add a DTML Page"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:44
-msgid "A file object, suitable for large data."
+#: src/zope/app/browser/content/configure.zcml:53
+msgid "Add a File"
 msgstr ""
 
-#: src/zope/app/browser/content/configure.zcml:57
+#: src/zope/app/browser/content/configure.zcml:67
 msgid "File Upload Screen"
 msgstr ""
 
 #: src/zope/app/browser/content/configure.zcml:8
 msgid "Change a file"
-msgstr ""
-
-#: src/zope/app/browser/content/configure.zcml:95
-msgid "A file that supports multiple locales."
 msgstr ""
 
 #: src/zope/app/browser/content/fromFS.pt:11
@@ -1802,10 +1800,6 @@ msgstr ""
 msgid "Interfaces registered with the interface service"
 msgstr ""
 
-#: src/zope/app/browser/services/interface/configure.zcml:14
-msgid "Browse"
-msgstr ""
-
 #: src/zope/app/browser/services/interface/configure.zcml:6
 msgid "Local Interface Service"
 msgstr ""
@@ -1860,11 +1854,11 @@ msgstr ""
 msgid "Action"
 msgstr ""
 
-#: src/zope/app/browser/services/module/__init__.py:32
+#: src/zope/app/browser/services/module/__init__.py:33
 msgid "module name must be provided"
 msgstr ""
 
-#: src/zope/app/browser/services/module/__init__.py:45
+#: src/zope/app/browser/services/module/__init__.py:46
 msgid "The source was updated."
 msgstr ""
 
@@ -1882,7 +1876,16 @@ msgstr ""
 msgid "Enter the module source code."
 msgstr ""
 
+#: src/zope/app/browser/services/module/browse_module.pt:3
+msgid "View Module Names"
+msgstr ""
+
 #: src/zope/app/browser/services/module/configure.zcml:27
+#: src/zope/app/browser/services/interface/configure.zcml:14
+msgid "Browse"
+msgstr ""
+
+#: src/zope/app/browser/services/module/configure.zcml:36
 msgid "Module"
 msgstr ""
 
@@ -2977,7 +2980,7 @@ msgid "An Internationalized Image"
 msgstr ""
 
 #: src/zope/app/content/configure.zcml:109
-#: src/zope/app/browser/content/configure.zcml:180
+#: src/zope/app/browser/content/configure.zcml:197
 msgid "I18n Image"
 msgstr ""
 
@@ -2991,26 +2994,23 @@ msgid "A simple, content-based Page Template"
 msgstr ""
 
 #: src/zope/app/content/configure.zcml:18
-msgid "Minimal folder"
-msgstr ""
-
-#: src/zope/app/content/configure.zcml:18
-#: src/zope/app/browser/content/configure.zcml:251
 msgid "Folder"
 msgstr ""
 
+#: src/zope/app/content/configure.zcml:18
+msgid "Minimal folder"
+msgstr ""
+
 #: src/zope/app/content/configure.zcml:193
-#: src/zope/app/browser/content/configure.zcml:377
 msgid "DTML Page"
 msgstr ""
 
 #: src/zope/app/content/configure.zcml:225
-msgid "A File"
+msgid "File"
 msgstr ""
 
 #: src/zope/app/content/configure.zcml:225
-#: src/zope/app/browser/content/configure.zcml:44
-msgid "File"
+msgid "A File"
 msgstr ""
 
 #: src/zope/app/content/configure.zcml:264
@@ -3018,7 +3018,7 @@ msgid "An Internationalized File"
 msgstr ""
 
 #: src/zope/app/content/configure.zcml:264
-#: src/zope/app/browser/content/configure.zcml:95
+#: src/zope/app/browser/content/configure.zcml:105
 msgid "I18n File"
 msgstr ""
 
@@ -3037,7 +3037,6 @@ msgid "An Image"
 msgstr ""
 
 #: src/zope/app/content/configure.zcml:79
-#: src/zope/app/browser/content/configure.zcml:137
 msgid "Image"
 msgstr ""
 
