@@ -61,8 +61,12 @@
       --help
 
          Output this usage information.
+
+      --build
+
+        Run from a build directory
          
-$Id: runurl.py,v 1.3 2003/05/15 19:01:37 jim Exp $
+$Id: runurl.py,v 1.4 2003/06/11 20:13:02 jim Exp $
 """
 
 import sys, os, getopt
@@ -74,7 +78,6 @@ def main(argv=None):
         argv = sys.argv
 
     script = argv[0]
-    app = _doimport(script) 
     
     args = argv[1:]
 
@@ -83,7 +86,7 @@ def main(argv=None):
             args,
             'b:r:p:d:c:hi:w',
             ['basic=', 'run=', 'profile=', 'database=', 'config=', 'help',
-             'input=', 'warmup', 'hotshot='])
+             'input=', 'warmup', 'build', 'hotshot='])
     except getopt.GetoptError:
         print __doc__ % {'script': script}
         raise
@@ -91,6 +94,7 @@ def main(argv=None):
     
     basic = run = warm = profilef = database = config = hotshotf = None
     stdin = ''
+    src = 'src'
     for name, value in options:
         if name in ('-b', '--basic'):
             basic = value
@@ -100,6 +104,11 @@ def main(argv=None):
             profilef = value
         elif name in ('--hotshot', ):
             hotshotf = value
+        elif name in ('--build', ):
+            from distutils.util import get_platform
+            PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
+            src = os.path.join("build", "lib.%s" % PLAT_SPEC)
+            
         elif name in ('-d', '--database'):
              database = value
         elif name in ('-c', '--config'):
@@ -123,6 +132,7 @@ def main(argv=None):
             name, value = arg.split('=', 1)
             env[name]=value
 
+    app = _doimport(script, src) 
     app = app.Application(database, config)
     
     if warm:
@@ -174,7 +184,7 @@ def _mainrun(app, path, basic, run, stdin, environment):
                                       environment=environment)
         
 
-def _doimport(script):
+def _doimport(script, src):
     try:
         import zope.app
     except ImportError:
@@ -182,7 +192,7 @@ def _doimport(script):
         dir = os.path.split(script)[0]
         # dir dir containing the dir containing the script (Zope3)
         dir = os.path.split(dir)[0]
-        sys.path.append(os.path.join(dir, 'src'))
+        sys.path.append(os.path.join(dir, src))
 
     from zope import app
     return app

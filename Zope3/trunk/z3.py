@@ -14,14 +14,17 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.18 2003/04/22 12:08:13 gvanrossum Exp $
+$Id: z3.py,v 1.19 2003/06/11 20:12:32 jim Exp $
 """
 
-import os, sys, time
+import os, sys, time, getopt
 
 basepath = filter(None, sys.path)
 
 def run(argv=sys.argv):
+
+    
+    
     # Record start times (real time and CPU time)
     t0 = time.time()
     c0 = time.clock()
@@ -38,9 +41,17 @@ def run(argv=sys.argv):
         sys.exit(1)
 
     # setting python paths
-    program = argv[0]
+    program = argv.pop(0)
+    if argv == ['--build']:
+        from distutils.util import get_platform
+        PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
+        src = os.path.join("build", "lib.%s" % PLAT_SPEC)
+    else:
+        src='src'
+
+    
     here = os.path.join(os.getcwd(), os.path.split(program)[0])
-    srcdir = os.path.abspath('src')
+    srcdir = os.path.abspath(src)
     sys.path = [srcdir, here] + basepath
 
     # Initialize the logging module.
