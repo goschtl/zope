@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: undo.py,v 1.5 2003/06/25 15:24:20 fdrake Exp $
+$Id: undo.py,v 1.6 2003/07/10 01:32:13 anthony Exp $
 """
 from zope.interface import implements
 from zope.component import getService, getUtility
@@ -23,6 +23,7 @@ from zope.app.event import function
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.interfaces.undo import IUndoManager
 from zope.app.services.servicenames import Utilities
+from datetime import datetime
 
 
 def undoSetup(event):
@@ -49,7 +50,28 @@ class ZODBUndoManager:
     def getUndoInfo(self):
         '''See interface IUndoManager'''
 
-        return self.__db.undoInfo()
+        # Entries are a list of dictionaries, containing
+        # id          -> internal id for zodb
+        # user_name   -> name of user that last accessed the file
+        # time        -> unix timestamp of last access
+        # description -> transaction description
+
+        entries = self.__db.undoInfo()
+
+        # We walk through the entries, (possibly removing some)
+        # and augmenting the dictionaries with some additional
+        # items (such as datetime, a useful form of the unix timestamp).
+        # If there is no description provided, we provide one.
+
+        for e in entries:
+            e['datetime'] = datetime.fromtimestamp(e['time'])
+
+        # Here we'd filter out ones we don't care about (for instance,
+        # to show only entries from the current user).
+
+        return entries
+
+
 
     def undoTransaction(self, id_list):
         '''See interface IUndoManager'''

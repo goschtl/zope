@@ -42,19 +42,22 @@ modified objects that were modified by a selected transaction.
     <td align="left" valign="top">
     <div class="list-item">
      
-     <span tal:content="undoitem/description"> description </span>
-     by
-     <strong><span tal:content="undoitem/user_name"> user_name </span></strong>
- 
+     <i tal:condition="not:undoitem/description">
+           no description available</i>
+     <span tal:condition="undoitem/description" tal:omit-tag=""
+           tal:content="undoitem/description">description goes here</span>
+     <span tal:condition="undoitem/user_name" tal:omit-tag=""> by 
+         <strong tal:content="undoitem/user_name">user_name</strong>
+     </span>
     </div>
     </td>
-<!--
+
     <td align="right" valign="top" colspan="2" nowrap>
-    <div class="list-item" tal:content="undoitem/time">
+    <div class="list-item" tal:content="python:undoitem['datetime'].strftime('%Y/%m/%d %H:%M:%S')">
       blah date
     </div>
     </td>
--->
+
   </tr>
 
 
