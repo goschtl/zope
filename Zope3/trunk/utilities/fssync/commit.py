@@ -86,11 +86,11 @@ def commit(fspath, dbpath, siteconfpath, mode=None):
                     ob = getObject(zopedb_path, root)
                     zopedb_temp_file = createTempfile(ob, zopedb_path)
                     diff_cmd1 = ("diff -q -b %s %s; echo $?" %
-                                 fmt_original_path, zopedb_temp_file)
+                                 (fmt_original_path, zopedb_temp_file))
                     diff_res1 = commands.getoutput(diff_cmd1)
                     isConflict = int(diff_res1[-1])
                     diff_cmd2 = ("diff -q -b %s %s; echo $?" %
-                                 fmt_sandbox_path, fmt_original_path)
+                                 (fmt_sandbox_path, fmt_original_path))
                     diff_res2 = commands.getoutput(diff_cmd2)
                     isCommitRequired = int(diff_res2[-1])
 
