@@ -42,9 +42,9 @@ from zope.app.dav import propfind
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dav.interfaces import IDAVNamespace
 from zope.app.dav.interfaces import IDAVWidget
-from zope.app.dav.interfaces import IDAVOpaqueNamespaces
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
-from zope.app.dav.opaquenamespacesadapter import DAVOpaqueNamespacesAdapter
+from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
+from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 
 from unitfixtures import File, Folder, FooZPT
 

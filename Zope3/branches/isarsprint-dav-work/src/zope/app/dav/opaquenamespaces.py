@@ -20,22 +20,49 @@ __docformat__ = 'restructuredtext'
 from UserDict import DictMixin
 
 from zope.interface import implements
+from zope.interface.common.mapping import IMapping
+from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
+from zope.app.location import Location
 
-from interfaces import IDAVOpaqueNamespaces
+from BTrees.OOBTree import OOBTree
+
+DANkey = "zope.app.dav.DAVOpaqueProperties"
 
 
-class DAVOpaqueNamespaces(DictMixin):
-    """Opaque storage for DAV properties."""
+class IDAVOpaqueNamespaces(IMapping):
+    """Opaque storage for non-registered DAV namespace properties.
+
+    Any unknown (no interface registered) DAV properties are stored opaquely
+    keyed on their namespace URI, so we can return them later when requested.
+    Thus this is a mapping of a mapping. 
+
+    Property values themselves consist of an attributes structure and the 
+    actual opaque value, of the form (((attr1, val1), (attr2, val2)), value) 
+    
+    """
+
+    
+class DAVOpaqueNamespacesAdapter(DictMixin, Location):
+    """Adapt annotatable objects to DAV opaque property storage."""
     
     implements(IDAVOpaqueNamespaces)
+    __used_for__ = IAnnotatable
 
-    def __init__(self, mapping=None):
-        if mapping is None:
-            mapping = {}
-        self._mapping = mapping
+    annotations = None
+
+    def __init__(self, context):
+        annotations = IAnnotations(context)
+        oprops = annotations.get(DANkey)
+        if oprops is None:
+            self.annotations = annotations
+            oprops = OOBTree()
+
+        self._mapping = oprops
         
     def _changed(self):
-        self._p_changed = True
+        if self.annotations is not None:
+            self.annotations[DANkey] = self._mapping
+            self.annotations = None
 
     def get(self, key, default=None):
         return self._mapping.get(key, default)

@@ -111,13 +111,13 @@
   <!-- XXX: This interface needs to be split up so we can apply seperate 
        permissions for reading and writing -->
   <adapter
-      factory=".opaquenamespacesadapter.DAVOpaqueNamespacesAdapter"
-      provides="zope.app.dav.interfaces.IDAVOpaqueNamespaces"
+      factory=".opaquenamespaces.DAVOpaqueNamespacesAdapter"
+      provides=".opaquenamespaces.IDAVOpaqueNamespaces"
       for="zope.app.annotation.interfaces.IAnnotatable"
       trusted="true"
       />
       
-  <class class=".opaquenamespacesadapter.DAVOpaqueNamespacesAdapter">
+  <class class=".opaquenamespaces.DAVOpaqueNamespacesAdapter">
     <require
         permission="zope.ManageContent"
         interface=".interfaces.IDAVOpaqueNamespaces"

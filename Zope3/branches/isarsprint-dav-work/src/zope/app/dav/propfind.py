@@ -19,11 +19,10 @@ from xml.dom import minidom
 from zope.schema import getFieldNamesInOrder
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
-from zope.app.dav.interfaces import IDAVWidget, IDAVOpaqueNamespaces
 from zope.app.form.utility import setUpWidgets
 
-from interfaces import IDAVNamespace
-
+from interfaces import IDAVWidget, IDAVNamespace
+from opaquenamespaces import IDAVOpaqueNamespaces
 
 class PROPFIND(object):
     """PROPFIND handler for all objects"""
