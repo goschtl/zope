@@ -63,6 +63,11 @@ Zope Changes
           `interface`, which allows you to directly specify the skin's or
           layer's interface instead of autogenerating it.
 
+        + Created function `applySkin(request, skin)`
+          (`zope.app.publisher.browser`) that allows you to assign a new skin
+          to a request. This effectively replaces the `setPresentationSkin()`
+          method.
+
       - Added `apidoc:rootModule` directive, so that third-party products can
         add their packages to the class browser documentation module.
 
