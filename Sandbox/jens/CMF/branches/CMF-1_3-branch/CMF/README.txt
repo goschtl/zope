@@ -21,11 +21,13 @@ Zope Content Management Framework (CMF) README
 
   Known Issues
 
-    * Please search the "CMF Tracker",
-      http://www.zope.org/Products/PTK/Tracker for issues which
+    * Please search the "CMF Collector",
+      http://collector.zope.org/CMF for issues which
       are open against the CMF.  You can also report issues there
       (please look for similar ones first!)
 
   Installation
 
-    Please see "Installing CMF":INSTALL.txt
+    Please see "Installing CMF":INSTALL.txt.  "Installing CMF from
+    CVS":INSTALL_CVS.txt covers installing the CMF from a CVS
+    checkout.
