@@ -13,11 +13,11 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.2 2003/11/21 17:09:37 jim Exp $
+$Id: ztapi.py,v 1.3 2003/12/05 12:41:38 philikon Exp $
 """
 from zope.app import zapi
 import zope.interface
-from zope.component.servicenames import Presentation, Adapters
+from zope.component.servicenames import Presentation, Adapters, Utilities
 from zope.publisher.browser import IBrowserRequest
 
 def browserView(for_, name, factory, layer='default'):
@@ -31,7 +31,6 @@ def browserResource(name, factory, layer='default'):
     """
     s = zapi.getService(None, Presentation)
     return s.provideResource(name, IBrowserRequest, factory, layer)
-    
 
 def setDefaultViewName(for_, name, layer='default'):
     s = zapi.getService(None, Presentation)
@@ -44,3 +43,6 @@ def provideAdapter(required, provided, factory, name='', with=()):
         factory = [factory]
     s.provideAdapter(required, provided, factory, name, with)
     
+def provideUtility(provided, component, name=''):
+    s = zapi.getService(None, Utilities)
+    s.provideUtility(provided, component, name)
