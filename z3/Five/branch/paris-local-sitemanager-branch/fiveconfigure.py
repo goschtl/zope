@@ -231,7 +231,7 @@ def installSiteHook(_context, class_, utility_provider):
         )
     if not IUtilityProvider.implementedBy(utility_provider):
         raise ConfigurationError('Global object does not implement '
-                                     'IUtilityProvider: %s' % utility_provider)
+                                 'IUtilityProvider: %s' % utility_provider)
     # Generate a marker interface that should be unique, so that
     # we can register the utility provider only for this class.
     iface = InterfaceClass('I%s' % next())
