@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.9 2003/05/28 20:23:55 gvanrossum Exp $
+$Id: merger.py,v 1.10 2003/05/28 22:30:53 gvanrossum Exp $
 """
 
 import os
@@ -283,7 +283,8 @@ class Merger(object):
     def cmpfile(self, file1, file2):
         """Helper to compare two files.
 
-        Return True iff the files are equal.
+        Return True iff the files both exist and are equal.
         """
-        # XXX What should this do when either file doesn't exist?
+        if not (isfile(file1) and isfile(file2)):
+            return False
         return filecmp.cmp(file1, file2, shallow=False)
