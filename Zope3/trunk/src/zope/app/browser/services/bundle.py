@@ -28,7 +28,7 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all configurations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.7 2003/06/19 21:33:01 gvanrossum Exp $
+$Id: bundle.py,v 1.8 2003/06/19 21:55:45 gvanrossum Exp $
 """
 
 import re
@@ -295,12 +295,4 @@ class BundleView(BrowserView):
 
     def getServiceName(self, configuration):
         # Return the service associated with a configuration.
-
-        # XXX There is no public API to get this information; while I
-        # ponder how to define such an API, I use a hack: all current
-        # configuration implementations use the
-        # ConfigurationStatusProperty class, and it stores the service
-        # name on its 'service' attribute.  We can get to this via the
-        # class.
-        configuration = removeAllProxies(configuration)
-        return configuration.__class__.status.service
+        return configuration.serviceType

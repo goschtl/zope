@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatusproperty.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
+$Id: test_configurationstatusproperty.py,v 1.9 2003/06/19 21:55:46 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -34,14 +34,17 @@ from zope.interface import implements
 
 
 class TestingConfiguration(TestingConfiguration):
-    status = ConfigurationStatusProperty("Services")
+    serviceType = "Services"
+    status = ConfigurationStatusProperty()
     service_type = "Test"
 
 class PassiveConfiguration(TestingConfiguration):
-    status = ConfigurationStatusProperty("NoSuchService")
+    serviceType = "NoSuchService"
+    status = ConfigurationStatusProperty()
 
 class UtilityConfiguration(TestingConfiguration):
-    status = ConfigurationStatusProperty("Utilities")
+    serviceType = "Utilities"
+    status = ConfigurationStatusProperty()
 
 class TestingConfigurationRegistry(TestingConfigurationRegistry):
     class_ = TestingConfiguration

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.13 2003/06/07 05:31:58 stevea Exp $
+$Id: connection.py,v 1.14 2003/06/19 21:55:45 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -83,7 +83,9 @@ class ConnectionConfiguration(NamedComponentConfiguration):
 
     implements(IConnectionConfiguration)
 
-    status = ConfigurationStatusProperty('SQLDatabaseConnections')
+    serviceType = 'SQLDatabaseConnections'
+
+    status = ConfigurationStatusProperty()
 
     label = "Connection"
 

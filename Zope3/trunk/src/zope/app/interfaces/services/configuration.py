@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.16 2003/06/18 20:12:10 gvanrossum Exp $
+$Id: configuration.py,v 1.17 2003/06/19 21:55:45 gvanrossum Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -62,6 +62,10 @@ class IConfiguration(Interface):
     configuration will specify a used-for interface and a provided
     interface.
     """
+
+    serviceType = Attribute("service type that manages "
+                            "this configuration type")
+    # A string; typically a class attribute
 
     status = ConfigurationStatus(title = u"Registration status")
 

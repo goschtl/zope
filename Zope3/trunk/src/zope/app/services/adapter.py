@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.17 2003/06/07 05:31:58 stevea Exp $
+$Id: adapter.py,v 1.18 2003/06/19 21:55:45 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -191,7 +191,9 @@ class AdapterConfiguration(SimpleConfiguration):
 
     implements(IAdapterConfiguration)
 
-    status = ConfigurationStatusProperty(Adapters)
+    serviceType = Adapters
+
+    status = ConfigurationStatusProperty()
 
     # XXX These should be positional arguments, except that forInterface
     #     isn't passed in if it is omitted. To fix this, we need a

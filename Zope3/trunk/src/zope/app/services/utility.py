@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.9 2003/06/06 16:34:53 stevea Exp $
+$Id: utility.py,v 1.10 2003/06/19 21:55:45 gvanrossum Exp $
 """
 
 from zope.interface import implements
@@ -114,7 +114,9 @@ class UtilityConfiguration(ComponentConfiguration):
 
     """
 
-    status = ConfigurationStatusProperty('Utilities')
+    serviceType = 'Utilities'
+
+    status = ConfigurationStatusProperty()
 
     implements(IUtilityConfiguration)
 

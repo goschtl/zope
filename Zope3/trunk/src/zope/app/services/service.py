@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.24 2003/06/11 19:33:06 gvanrossum Exp $
+$Id: service.py,v 1.25 2003/06/19 21:55:45 gvanrossum Exp $
 """
 
 import sys
@@ -301,7 +301,9 @@ class ServiceConfiguration(NamedComponentConfiguration):
 
     implements(IServiceConfiguration)
 
-    status = ConfigurationStatusProperty('Services')
+    serviceType = 'Services'
+
+    status = ConfigurationStatusProperty()
 
     label = "Service"
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.22 2003/06/07 05:31:59 stevea Exp $
+$Id: view.py,v 1.23 2003/06/19 21:55:45 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -219,7 +219,9 @@ class ViewConfiguration(SimpleConfiguration):
 
     implements(IViewConfiguration)
 
-    status = ConfigurationStatusProperty('Views')
+    serviceType = 'Views'
+
+    status = ConfigurationStatusProperty()
 
     _what = "View" # For usageSummary(); subclass may override
 

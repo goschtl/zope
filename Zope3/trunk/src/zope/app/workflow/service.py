@@ -14,7 +14,7 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.5 2003/06/06 19:29:05 stevea Exp $
+$Id: service.py,v 1.6 2003/06/19 21:55:46 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -111,7 +111,9 @@ class ProcessDefinitionConfiguration(NamedComponentConfiguration):
 
     implements(IProcessDefinitionConfiguration)
 
-    status = ConfigurationStatusProperty('Workflows')
+    serviceType = 'Workflows'
+
+    status = ConfigurationStatusProperty()
 
 
     def getInterface(self):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.13 2003/06/11 19:24:22 gvanrossum Exp $
+$Id: cache.py,v 1.14 2003/06/19 21:55:45 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -99,7 +99,9 @@ class CacheConfiguration(NamedComponentConfiguration):
 
     implements(ICacheConfiguration)
 
-    status = ConfigurationStatusProperty('Caching')
+    serviceType = 'Caching'
+
+    status = ConfigurationStatusProperty()
 
     label = "Cache"
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.37 2003/06/18 20:12:11 gvanrossum Exp $
+$Id: configuration.py,v 1.38 2003/06/19 21:55:45 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -61,9 +61,6 @@ from zope.proxy import getProxiedObject
 
 class ConfigurationStatusProperty(ContextDescriptor):
 
-    def __init__(self, service):
-        self.service = service
-
     def __get__(self, inst, klass):
         if inst is None:
             return self
@@ -71,7 +68,7 @@ class ConfigurationStatusProperty(ContextDescriptor):
         configuration = inst
 
         sm = getServiceManager(configuration)
-        service = sm.queryLocalService(self.service)
+        service = sm.queryLocalService(configuration.serviceType)
         # XXX The following may fail; there's a subtle bug here when
         # the returned service isn't in the same service manager as
         # the one owning the configuration.
@@ -90,7 +87,7 @@ class ConfigurationStatusProperty(ContextDescriptor):
         configuration = inst
 
         sm = getServiceManager(configuration)
-        service = sm.queryLocalService(self.service)
+        service = sm.queryLocalService(configuration.serviceType)
 
         registry = service and service.queryConfigurationsFor(configuration)
 
@@ -104,7 +101,7 @@ class ConfigurationStatusProperty(ContextDescriptor):
                     "This configuration change cannot be performed because "
                     "there isn't a corresponding %s service defined in this "
                     "site. To proceed, first add a local %s service."
-                    % (self.service, self.service))
+                    % (configuration.serviceType, configuration.serviceType))
 
             if registry is None:
                 registry = service.createConfigurationsFor(configuration)
