@@ -1,7 +1,7 @@
 CHANGES
 =======
 
-v1.1.0 (2004-02-15) -- 'Zapp'
+v1.1 (2004-02-16) -- 'Zapp'
 
   - Added support for displaying lines in a tree (Stephan Richter)
 
