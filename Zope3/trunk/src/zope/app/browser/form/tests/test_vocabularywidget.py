@@ -231,7 +231,9 @@ class SingleSelectionViews:
         provideView(IVocabularyTokenized,
                     "field-edit-widget",
                     IBrowserPresentation,
-                    vocabularywidget.VocabularyEditWidget)
+                    # XXX indirect through a derived class to allow
+                    # testing of multiple concrete widgets
+                    self.singleSelectionEditWidget)
         provideView(IIterableVocabularyQuery,
                     "widget-query-helper",
                     IBrowserPresentation,
@@ -290,7 +292,7 @@ class SelectionTestBase(VocabularyWidgetTestBase):
         self.assertEqual(w(), "foo")
 
 
-class SingleSelectionTests(SingleSelectionViews, SelectionTestBase):
+class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
     """Test cases for basic single-selection widgets."""
 
     defaultFieldValue = "splat"
@@ -308,7 +310,7 @@ class SingleSelectionTests(SingleSelectionViews, SelectionTestBase):
         self.assert_(w.haveData())
         self.assertEqual(w(), "foobar")
 
-    def test_edit(self):
+    def test_edit(self, extraChecks=[]):
         bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
         w = getView(bound, "edit", self.makeRequest())
         self.assert_(not w.haveData())
@@ -320,7 +322,7 @@ class SingleSelectionTests(SingleSelectionViews, SelectionTestBase):
             '>splat<',
             'value="foobar"',
             '>foobar<',
-            ])
+            ] + extraChecks)
         s1, s2 = w.renderItems("foobar")
         self.verifyResult(s1, [
             'value="splat"',
@@ -346,6 +348,20 @@ class SingleSelectionTests(SingleSelectionViews, SelectionTestBase):
             'name="field.f"',
             'value="foobar"',
             ])
+
+class SingleSelectionTests(SingleSelectionTestsBase):
+    """Test single-selection with the selection-box widget."""
+
+    singleSelectionEditWidget = vocabularywidget.SelectListWidget
+
+
+class DropdownSelectionTests(SingleSelectionTestsBase):
+    """Test single-selection with the dropdown-list widget."""
+
+    singleSelectionEditWidget = vocabularywidget.DropdownListWidget
+
+    def test_edit(self):
+        SingleSelectionTestsBase.test_edit(self, extraChecks=['size="1"'])
 
 
 class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
@@ -509,6 +525,7 @@ class SingleSelectionQuerySupportTests(SingleSelectionViews,
     defaultFieldValue = "splat"
     fieldClass = vocabulary.VocabularyField
     queryViewLabel = "single"
+    singleSelectionEditWidget = vocabularywidget.VocabularyEditWidget
 
     def registerViews(self):
         SingleSelectionViews.registerViews(self)
@@ -536,6 +553,7 @@ class MultiSelectionQuerySupportTests(MultiSelectionViews,
 
 def test_suite():
     suite = unittest.makeSuite(SingleSelectionTests)
+    suite.addTest(unittest.makeSuite(DropdownSelectionTests))
     suite.addTest(unittest.makeSuite(MultiSelectionTests))
     suite.addTest(unittest.makeSuite(SingleSelectionQuerySupportTests))
     suite.addTest(unittest.makeSuite(MultiSelectionQuerySupportTests))
