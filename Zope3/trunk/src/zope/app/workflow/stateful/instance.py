@@ -13,13 +13,14 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.13 2003/11/04 04:04:24 jeremy Exp $
+$Id: instance.py,v 1.14 2003/12/15 04:31:36 srichter Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 
+from zope.app import zapi
 from zope.app.event import publish
 from zope.app.interfaces.workflow.stateful import AUTOMATIC
 from zope.app.interfaces.workflow.stateful import IAfterTransitionEvent
@@ -215,7 +216,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
     def getProcessDefinition(self):
         """Get the ProcessDefinition object from WorkflowService."""
-        svc =  getService(self, "Workflows")
+        svc =  getService(zapi.getParent(self).context, "Workflows")
         return svc.getProcessDefinition(self.processDefinitionName)
 
     # XXX this is not entirely tested
