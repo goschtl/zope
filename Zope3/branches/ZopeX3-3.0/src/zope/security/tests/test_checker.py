@@ -289,12 +289,6 @@ class Test(TestCase, CleanUp):
         self.assertEqual(checker.permission_id('z'), 'p4')
         self.assertEqual(checker.permission_id('zzz'), None)
 
-    def testNonPrivateChecker(self):
-        from zope.security.checker import NonPrivateChecker
-        checker = NonPrivateChecker('p')
-        self.assertEqual(checker.permission_id('z'), 'p')
-        self.assertEqual(checker.permission_id('_z'), None)
-
     def testAlwaysAvailable(self):
         from zope.security.checker import NamesChecker
         checker = NamesChecker(())
