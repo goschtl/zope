@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.15 2002/12/04 16:59:49 jim Exp $
+$Id: Adding.py,v 1.16 2002/12/17 19:13:32 stevea Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -24,12 +24,12 @@ from Zope.ComponentArchitecture \
      import getView, getService, createObject, \
             queryFactory, queryView, getAdapter
 from Zope.App.PageTemplate import ViewPageTemplateFile
-from Zope.ContextWrapper import ContextMethod, getbaseobject
-from Zope.Proxy.ContextWrapper import ContextWrapper
+from Zope.ContextWrapper import ContextMethod 
 from Zope.Event import publish
-from Zope.Event.ObjectEvent \
-     import ObjectCreatedEvent, ObjectModifiedEvent, ObjectAddedEvent
+from Zope.Event.ObjectEvent import ObjectCreatedEvent
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
+from Zope.ContextWrapper import ContextSuper
+
 class Adding(BrowserView):
 
     __implements__ =  IAdding, IPublishTraverse
@@ -42,11 +42,9 @@ class Adding(BrowserView):
 
     def add(self, content):
         'See Zope.App.OFS.Container.IAdding.IAdding'
-        container = self.context
-        container = getAdapter(container, IZopeContainer)
+        container = getAdapter(self.context, IZopeContainer)
         name = container.setObject(self.contentName, content)
         return container[name]
-
     
     # See Zope.App.OFS.Container.Views.Browser.IAdding.IAdding
     contentName = None # usually set by Adding traverser
@@ -84,11 +82,9 @@ class Adding(BrowserView):
 
         factory = queryFactory(self.context, name)
         if factory is None:
-            return super(Adding, getbaseobject(self)
-                         ).publishTraverse(request, name)
+            return ContextSuper(Adding, self).publishTraverse(request, name)
 
         return factory
-
     publishTraverse = ContextMethod(publishTraverse)
     
     #
@@ -96,11 +92,13 @@ class Adding(BrowserView):
 
     index = ViewPageTemplateFile("add.pt")
 
-    def addingInfo(self):
+    def addingInfo(wrapped_self):
         """Return menu data"""
-
-        menu_service = getService(self.context, "BrowserMenu")
-        return menu_service.getMenu(self.menu_id, self, self.request)
+        menu_service = getService(wrapped_self.context, "BrowserMenu")
+        return menu_service.getMenu(wrapped_self.menu_id,
+                                    wrapped_self,
+                                    wrapped_self.request)
+    addingInfo = ContextMethod(addingInfo)
 
     def action(self, type_name, id=''):
         if queryView(self, type_name, self.request) is not None:
