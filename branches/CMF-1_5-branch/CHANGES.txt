@@ -8,6 +8,8 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - Workflow: Marked WorkflowMethod alias WorkflowAction as deprecated.
+
     - ZPT skin: Improved folder_copy_control and folder_cut_control.
       They now catch CopyErrors.
 
