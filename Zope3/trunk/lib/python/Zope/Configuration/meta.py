@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.4 2002/09/01 18:29:58 rdmurray Exp $
+$Id: meta.py,v 1.5 2002/09/16 05:52:40 rdmurray Exp $
 """
 
 
@@ -56,7 +56,7 @@ def registersub(directives, name, handler_method=None):
     directives is the subdirective registry for the containing
     directive, which may be either a top-level directive or an
     intermediate sub-directive (if subdirectives are nested more than
-    two deep.
+    two deep).
 
     The name argument is a tuple with a namespace URI and an
     name string.
