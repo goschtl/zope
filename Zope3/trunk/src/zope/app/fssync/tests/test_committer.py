@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.4 2003/05/28 14:55:57 gvanrossum Exp $
+$Id: test_committer.py,v 1.5 2003/05/28 15:11:07 gvanrossum Exp $
 """
 
 import os
@@ -175,7 +175,7 @@ class TestCommitter(TempFiles, PlacelessSetup):
 
     def test_read_file(self):
         data = "12345\rabcde\n12345\r\nabcde"
-        tfn = self.tempfile(data)
+        tfn = self.tempfile(data, "wb")
         x = self.com.read_file(tfn)
         self.assertEqual(x, data)
 
