@@ -13,11 +13,12 @@
 ##############################################################################
 """'mail' ZCML Namespaces Schemas
 
-$Id: metadirectives.py,v 1.4 2004/03/03 09:15:41 srichter Exp $
+$Id: metadirectives.py,v 1.5 2004/03/20 19:52:46 srichter Exp $
 """
 from zope.configuration.fields import Path
 from zope.interface import Interface
 from zope.schema import TextLine, Bytes, ASCII, BytesLine, Int
+from zope.app.security.fields import Permission
 
 class IDeliveryDirective(Interface):
     """This abstract directive describes a generic mail service
@@ -30,7 +31,7 @@ class IDeliveryDirective(Interface):
         default=u"Mail",
         required=False)
 
-    permission = TextLine(
+    permission = Permission(
         title=u"Permission",
         description=u"Defines the permission needed to use this service.",
         required=True)

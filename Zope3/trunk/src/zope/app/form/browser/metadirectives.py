@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.1 2004/03/14 01:11:34 srichter Exp $
+$Id: metadirectives.py,v 1.2 2004/03/20 19:52:45 srichter Exp $
 """
 
 from zope.interface import Interface
@@ -20,6 +20,7 @@ from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
 from zope.app.publisher.interfaces.browser import IUsage
+from zope.app.security.fields import Permission
 
 class ICommonInformation(IUsage):
     """
@@ -52,7 +53,7 @@ class ICommonInformation(IUsage):
         required=False
         )
 
-    permission = Id(
+    permission = Permission(
         title=u"Permission",
         description=u"The permission needed to use the view.",
         required=True
