@@ -19,6 +19,8 @@ class Checker(object):
 
     ok = 1
 
+    unproxied_types = str,
+
     def check_getattr(self, object, name):
         if name not in ("foo", "next", "__class__", "__name__", "__module__"):
             raise RuntimeError
@@ -32,7 +34,7 @@ class Checker(object):
             raise RuntimeError
 
     def proxy(self, value):
-        if type(value) is str:
+        if type(value) in self.unproxied_types:
             return value
         return ProxyFactory(value, self)
 
@@ -242,11 +244,16 @@ class ProxyTests(unittest.TestCase):
         ]
 
     def test_unops(self):
-        P = self.c.proxy
+        # We want the starting value of the expressions to be a proxy,
+        # but we don't want to create new proxies as a result of
+        # evaluation, so we have to extend the list of types that
+        # aren't proxied.
+        self.c.unproxied_types = str, int, long, float
         for expr in self.unops:
             x = 1
             y = eval(expr)
-            x = P(1)
+            # Make sure 'x' is a proxy always:
+            x = ProxyFactory(1, self.c)
             z = eval(expr)
             self.assertEqual(getProxiedObject(z), y,
                              "x=%r; expr=%r" % (x, expr))
