@@ -118,6 +118,9 @@ def init_table():
 
         {'path': "Products/DCOracle2",
          'addrs': ["zope-checkins@zope.org"]},
+
+        {'path': 'Packages/ZConfig',
+         'addrs': ['zope-checkins@zope.com']},
     ])
 
 init_table()
