@@ -13,15 +13,15 @@
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.4 2002/10/04 18:06:15 jim Exp $
+$Id: DateTimeParse.py,v 1.5 2002/11/11 16:37:57 stevea Exp $
 """
     
 import re, math, DateTimeZone
 from types import StringTypes
 from time import \
-     time as _time, gmtime, localtime, strftime, daylight, timezone, altzone
+     time as _time, gmtime, localtime, daylight, timezone, altzone
 try: from time import tzname
-except: tzname=('UNKNOWN','UNKNOWN')
+except ImportError: tzname = ('UNKNOWN','UNKNOWN')
 
 class DateTimeError(Exception): "Date-time error"
 class DateError(DateTimeError): 'Invalid Date Components'
