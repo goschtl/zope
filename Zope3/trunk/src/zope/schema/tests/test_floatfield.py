@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_floatfield.py,v 1.3 2003/04/14 16:13:43 fdrake Exp $
+$Id: test_floatfield.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import Float, EnumeratedFloat
-from zope.schema import errornames
+from zope.schema.interfaces import RequiredMissing, InvalidValue
+from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
 
 class FloatTest(FieldTestBase):
@@ -39,8 +40,7 @@ class FloatTest(FieldTestBase):
         field.validate(0.93)
         field.validate(1000.0003)
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
     def testValidateMin(self):
         field = self._Field_Factory(title=u'Float field', description=u'',
@@ -49,8 +49,8 @@ class FloatTest(FieldTestBase):
         field.validate(10.6)
         field.validate(20.2)
 
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, -9.0)
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, 10.4)
+        self.assertRaises(TooSmall, field.validate, -9.0)
+        self.assertRaises(TooSmall, field.validate, 10.4)
 
     def testValidateMax(self):
         field = self._Field_Factory(title=u'Float field', description=u'',
@@ -59,8 +59,8 @@ class FloatTest(FieldTestBase):
         field.validate(5.3)
         field.validate(-9.1)
 
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 10.51)
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 20.7)
+        self.assertRaises(TooBig, field.validate, 10.51)
+        self.assertRaises(TooBig, field.validate, 20.7)
 
     def testValidateMinAndMax(self):
         field = self._Field_Factory(title=u'Float field', description=u'',
@@ -71,10 +71,10 @@ class FloatTest(FieldTestBase):
         field.validate(-0.03)
         field.validate(10.0001)
 
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, -10.0)
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, -1.6)
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 11.45)
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 20.02)
+        self.assertRaises(TooSmall, field.validate, -10.0)
+        self.assertRaises(TooSmall, field.validate, -1.6)
+        self.assertRaises(TooBig, field.validate, 11.45)
+        self.assertRaises(TooBig, field.validate, 20.02)
 
 
 class EnumeratedFloatTest(FloatTest):
@@ -88,8 +88,7 @@ class EnumeratedFloatTest(FloatTest):
                                     allowed_values=(0.1, 2.6))
         field.validate(None)
         field.validate(2.6)
-        self.assertRaisesErrorNames(errornames.InvalidValue,
-                                    field.validate, -5.4)
+        self.assertRaises(InvalidValue, field.validate, -5.4)
 
 
 def test_suite():

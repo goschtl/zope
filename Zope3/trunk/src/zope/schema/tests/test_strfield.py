@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_strfield.py,v 1.3 2003/04/14 16:13:43 fdrake Exp $
+$Id: test_strfield.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from zope.schema import Bytes, BytesLine, Text, TextLine, EnumeratedTextLine
-from zope.schema import errornames
 from zope.schema.interfaces import ValidationError
+from zope.schema.interfaces import RequiredMissing, InvalidValue
+from zope.schema.interfaces import TooShort, TooLong, ConstraintNotSatisfied
 from zope.schema.tests.test_field import FieldTestBase
 
 class StrTest(FieldTestBase):
@@ -40,10 +41,8 @@ class StrTest(FieldTestBase):
             readonly=False, required=True, min_length=1)
         field.validate(self._convert('foo'))
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, self._convert(''))
+        self.assertRaises(RequiredMissing, field.validate, None)
+        self.assertRaises(TooShort, field.validate, self._convert(''))
 
     def testValidateMinLength(self):
         field = self._Field_Factory(
@@ -53,12 +52,9 @@ class StrTest(FieldTestBase):
         field.validate(self._convert('333'))
         field.validate(self._convert('55555'))
 
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, self._convert(''))
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, self._convert('22'))
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, self._convert('1'))
+        self.assertRaises(TooShort, field.validate, self._convert(''))
+        self.assertRaises(TooShort, field.validate, self._convert('22'))
+        self.assertRaises(TooShort, field.validate, self._convert('1'))
 
     def testValidateMaxLength(self):
         field = self._Field_Factory(
@@ -69,10 +65,8 @@ class StrTest(FieldTestBase):
         field.validate(self._convert('333'))
         field.validate(self._convert('55555'))
 
-        self.assertRaisesErrorNames(errornames.TooLong, field.validate,
-                                    self._convert('666666'))
-        self.assertRaisesErrorNames(errornames.TooLong, field.validate,
-                                    self._convert('999999999'))
+        self.assertRaises(TooLong, field.validate, self._convert('666666'))
+        self.assertRaises(TooLong, field.validate, self._convert('999999999'))
 
     def testValidateMinLengthAndMaxLength(self):
         field = self._Field_Factory(
@@ -85,14 +79,10 @@ class StrTest(FieldTestBase):
         field.validate(self._convert('4444'))
         field.validate(self._convert('55555'))
 
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, self._convert('22'))
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, self._convert('22'))
-        self.assertRaisesErrorNames(errornames.TooLong, field.validate,
-                                    self._convert('666666'))
-        self.assertRaisesErrorNames(errornames.TooLong, field.validate,
-                                    self._convert('999999999'))
+        self.assertRaises(TooShort, field.validate, self._convert('22'))
+        self.assertRaises(TooShort, field.validate, self._convert('22'))
+        self.assertRaises(TooLong, field.validate, self._convert('666666'))
+        self.assertRaises(TooLong, field.validate, self._convert('999999999'))
 
 
 class MultiLine:
@@ -124,7 +114,7 @@ class SingleLine:
 
     def test_newlines(self):
         field = self._Field_Factory(title=u'Str field')
-        self.assertRaisesErrorNames(errornames.ConstraintNotSatisfied,
+        self.assertRaises(ConstraintNotSatisfied,
                                     field.validate,
                                     self._convert('hello\nworld'))
 
@@ -146,8 +136,7 @@ class EnumeratedTextLineTest(TextLineTest):
         field.validate(None)
         field.validate(self._convert('foo'))
 
-        self.assertRaisesErrorNames(errornames.InvalidValue,
-                                    field.validate, self._convert('blah'))
+        self.assertRaises(InvalidValue, field.validate, self._convert('blah'))
 
 
 def test_suite():

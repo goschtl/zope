@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_datetime.py,v 1.3 2003/04/14 16:13:43 fdrake Exp $
+$Id: test_datetime.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import Datetime, EnumeratedDatetime
-from zope.schema import errornames
+from zope.schema.interfaces import RequiredMissing, InvalidValue
+from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
 from datetime import datetime
 
@@ -36,8 +37,7 @@ class DatetimeTest(FieldTestBase):
                                     readonly=False, required=True)
         field.validate(datetime.now())
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
     def testValidateMin(self):
         d1 = datetime(2000,10,1)
@@ -49,8 +49,7 @@ class DatetimeTest(FieldTestBase):
         field.validate(d2)
         field.validate(datetime.now())
 
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate,
-                                    datetime(2000,9,30))
+        self.assertRaises(TooSmall, field.validate, datetime(2000,9,30))
 
     def testValidateMax(self):
         d1 = datetime(2000,10,1)
@@ -62,7 +61,7 @@ class DatetimeTest(FieldTestBase):
         field.validate(d1)
         field.validate(d2)
 
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, d3)
+        self.assertRaises(TooBig, field.validate, d3)
 
     def testValidateMinAndMax(self):
         d1 = datetime(2000,10,1)
@@ -79,8 +78,8 @@ class DatetimeTest(FieldTestBase):
         field.validate(d3)
         field.validate(d4)
 
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, d1)
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, d5)
+        self.assertRaises(TooSmall, field.validate, d1)
+        self.assertRaises(TooBig, field.validate, d5)
 
 
 class EnumeratedDatetimeTest(DatetimeTest):
@@ -99,9 +98,7 @@ class EnumeratedDatetimeTest(DatetimeTest):
         field.validate(d2)
         field.validate(datetime(2000,10,2))
 
-        self.assertRaisesErrorNames(errornames.InvalidValue,
-                                    field.validate,
-                                    datetime(2000,10,4))
+        self.assertRaises(InvalidValue, field.validate, datetime(2000,10,4))
 
 
 def test_suite():

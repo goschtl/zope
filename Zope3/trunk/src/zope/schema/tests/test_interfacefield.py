@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_interfacefield.py,v 1.2 2003/05/01 19:35:46 faassen Exp $
+$Id: test_interfacefield.py,v 1.3 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import InterfaceField
-from zope.schema.errornames import RequiredMissing, WrongType
+from zope.schema.interfaces import RequiredMissing, WrongType
 from zope.schema.tests.test_field import FieldTestBase
 from zope.interface import Interface
 
@@ -32,12 +32,12 @@ class InterfaceTest(FieldTestBase):
         field = InterfaceField(title=u'Interface field', description=u'',
                      readonly=False, required=False)
         field.validate(DummyInterface)
-        self.assertRaisesErrorNames(WrongType, field.validate, object())
+        self.assertRaises(WrongType, field.validate, object())
 
     def testValidateRequired(self):
         field = InterfaceField(title=u'Interface field', description=u'',
                      readonly=False, required=True)
-        self.assertRaisesErrorNames(RequiredMissing, field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
 
 def test_suite():

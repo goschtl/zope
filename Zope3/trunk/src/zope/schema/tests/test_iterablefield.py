@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_iterablefield.py,v 1.2 2003/05/01 19:35:46 faassen Exp $
+$Id: test_iterablefield.py,v 1.3 2004/04/11 10:35:17 srichter Exp $
 """
 from UserDict import UserDict, IterableUserDict
 from unittest import main, makeSuite
 from zope.schema import Iterable
-from zope.schema.errornames import RequiredMissing
-from zope.schema.errornames import NotAContainer, NotAnIterator
+from zope.schema.interfaces import RequiredMissing
+from zope.schema.interfaces import NotAContainer, NotAnIterator
 from zope.schema.tests.test_field import FieldTestBase
 
 class IterableTest(FieldTestBase):
@@ -36,9 +36,9 @@ class IterableTest(FieldTestBase):
         field.validate({'a': 1, 'b': 2})
         field.validate(IterableUserDict())
 
-        self.assertRaisesErrorNames(NotAContainer, field.validate, 1)
-        self.assertRaisesErrorNames(NotAContainer, field.validate, True)
-        self.assertRaisesErrorNames(NotAnIterator, field.validate, UserDict)
+        self.assertRaises(NotAContainer, field.validate, 1)
+        self.assertRaises(NotAContainer, field.validate, True)
+        self.assertRaises(NotAnIterator, field.validate, UserDict)
 
     def testValidateRequired(self):
         field = self._Field_Factory(title=u'test field', description=u'',
@@ -46,7 +46,7 @@ class IterableTest(FieldTestBase):
 
         field.validate('')
 
-        self.assertRaisesErrorNames(RequiredMissing, field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
 
 def test_suite():

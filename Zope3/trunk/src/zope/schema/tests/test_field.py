@@ -12,23 +12,15 @@
 #
 ##############################################################################
 """
-$Id: test_field.py,v 1.5 2003/07/28 22:22:32 jim Exp $
+$Id: test_field.py,v 1.6 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.schema import Field, Text, Int
-from zope.schema import errornames
-from zope.schema.interfaces import ValidationError
+from zope.schema.interfaces import ValidationError, RequiredMissing
+from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.testing.doctestunit import DocTestSuite
 
 class FieldTestBase(TestCase):
-
-    def assertRaisesErrorNames(self, error_name, f, *args, **kw):
-        try:
-            f(*args, **kw)
-        except ValidationError, e:
-            self.assertEquals(error_name, e[0])
-            return
-        self.fail('Expected ValidationError')
 
     def test_bind(self):
         field = self._Field_Factory(
@@ -66,18 +58,15 @@ class FieldTestBase(TestCase):
         field.validate(0)
         field.validate('')
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
+
 
 class FieldTest(FieldTestBase):
     """Test generic Field."""
 
-
     _Field_Factory = Field
 
-
     def testSillyDefault(self):
-
         self.assertRaises(ValidationError, Text, default="")
 
     def test__doc__(self):
@@ -118,8 +107,7 @@ class FieldTest(FieldTestBase):
                 constraint=isodd)
 
         i.validate(11)
-        self.assertRaisesErrorNames(errornames.ConstraintNotSatisfied,
-                                    i.validate, 10)
+        self.assertRaises(ConstraintNotSatisfied, i.validate, 10)
 
 
 class FieldDefaultBehaviour(TestCase):

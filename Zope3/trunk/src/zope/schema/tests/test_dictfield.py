@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_dictfield.py,v 1.5 2003/08/17 06:09:20 philikon Exp $
+$Id: test_dictfield.py,v 1.6 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import Dict, Int
-from zope.schema import errornames
+from zope.schema.interfaces import RequiredMissing, WrongContainedType
+from zope.schema.interfaces import TooShort, TooLong
 from zope.schema.tests.test_field import FieldTestBase
 
 class DictTest(FieldTestBase):
@@ -39,8 +40,7 @@ class DictTest(FieldTestBase):
         field.validate({1: 'foo'})
         field.validate({'a': 1})
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
     def testValidateMinValues(self):
         field = Dict(title=u'Dict field',
@@ -50,8 +50,7 @@ class DictTest(FieldTestBase):
         field.validate({1: 'a'})
         field.validate({1: 'a', 2: 'b'})
 
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, {})
+        self.assertRaises(TooShort, field.validate, {})
 
     def testValidateMaxValues(self):
         field = Dict(title=u'Dict field',
@@ -61,10 +60,8 @@ class DictTest(FieldTestBase):
         field.validate({})
         field.validate({1: 'a'})
 
-        self.assertRaisesErrorNames(errornames.TooLong,
-                                    field.validate, {1: 'a', 2: 'b'})
-        self.assertRaisesErrorNames(errornames.TooLong,
-                                    field.validate, {1: 'a', 2: 'b', 3: 'c'})
+        self.assertRaises(TooLong, field.validate, {1: 'a', 2: 'b'})
+        self.assertRaises(TooLong, field.validate, {1: 'a', 2: 'b', 3: 'c'})
 
     def testValidateMinValuesAndMaxValues(self):
         field = Dict(title=u'Dict field',
@@ -74,10 +71,8 @@ class DictTest(FieldTestBase):
         field.validate({1: 'a'})
         field.validate({1: 'a', 2: 'b'})
 
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, {})
-        self.assertRaisesErrorNames(errornames.TooLong,
-                                    field.validate, {1: 'a', 2: 'b', 3: 'c'})
+        self.assertRaises(TooShort, field.validate, {})
+        self.assertRaises(TooLong, field.validate, {1: 'a', 2: 'b', 3: 'c'})
 
     def testValidateValueType(self):
         field = Dict(title=u'Dict field',
@@ -87,12 +82,9 @@ class DictTest(FieldTestBase):
         field.validate({'a': 5})
         field.validate({'a': 2, 'b': 3})
 
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, {1: ''} )
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, {1: 3.14159} )
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, {'a': ()} )
+        self.assertRaises(WrongContainedType, field.validate, {1: ''} )
+        self.assertRaises(WrongContainedType, field.validate, {1: 3.14159} )
+        self.assertRaises(WrongContainedType, field.validate, {'a': ()} )
 
     def testValidateKeyTypes(self):
         field = Dict(title=u'Dict field',
@@ -102,12 +94,9 @@ class DictTest(FieldTestBase):
         field.validate({5: 'a'})
         field.validate({2: 'a', 2: 'b'})
 
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, {'': 1} )
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, {3.14159: 1} )
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, {(): 'a'} )
+        self.assertRaises(WrongContainedType, field.validate, {'': 1} )
+        self.assertRaises(WrongContainedType, field.validate, {3.14159: 1} )
+        self.assertRaises(WrongContainedType, field.validate, {(): 'a'} )
 
 
 def test_suite():

@@ -14,7 +14,7 @@
 """
 This set of tests exercises Objects.
 
-$Id: test_objectfield.py,v 1.3 2004/03/19 12:00:09 jim Exp $
+$Id: test_objectfield.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import TestSuite, main, makeSuite
 
@@ -22,9 +22,10 @@ from zope.i18nmessageid import MessageIDFactory
 
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Object, TextLine
-from zope.schema import errornames
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import ValidationError
+from zope.schema.interfaces import RequiredMissing, WrongContainedType
+from zope.schema.interfaces import WrongType, SchemaNotFullyImplemented
 from zope.schema.tests.test_field import FieldTestBase
 
 _ = MessageIDFactory('zope')
@@ -45,7 +46,7 @@ class ITestSchema(Interface):
         default=u"",
         required=False)
         
-    attribute = Attribute("Test attribute, an attribute can't be validated.")    
+    attribute = Attribute("Test attribute, an attribute can't be validated.")
     
 
 class TestClass(object):
@@ -102,15 +103,15 @@ class NotFullyImplementedTestClass(object):
     
 class ObjectTest(FieldTestBase):
     """Test the Object Field."""
-    def getErrors(self, error_name, f, *args, **kw):
+    def getErrors(self, f, *args, **kw):
         try:
             f(*args, **kw)
-        except ValidationError, e:
+        except WrongContainedType, e:
             try:
-                return e[1]
+                return e[0]
             except:  
                 return []
-        self.fail('Expected ValidationError')    
+        self.fail('Expected WrongContainedType Error')    
     
     def makeTestObject(self, **kw):
         kw['schema'] = kw.get('schema', Interface)
@@ -138,7 +139,7 @@ class ObjectTest(FieldTestBase):
             field = Object(schema=schema)
         for schema in self.invalidSchemas():
             self.assertRaises(ValidationError, Object, schema=schema)
-            self.assertRaisesErrorNames(errornames.WrongType, Object, schema=schema)
+            self.assertRaises(WrongType, Object, schema=schema)
             
     def testValidate(self):
         # this test of the base class is not applicable
@@ -152,8 +153,7 @@ class ObjectTest(FieldTestBase):
         field = self._Field_Factory(
             title=u'Required field', description=u'',
             readonly=False, required=True)
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
         
     def test_validate_TestData(self):
         field = self.makeTestObject(schema=ITestSchema, required=False)
@@ -163,9 +163,9 @@ class ObjectTest(FieldTestBase):
         field.validate(data)
         data.foo = None
         self.assertRaises(ValidationError, field.validate, data)
-        self.assertRaisesErrorNames(errornames.WrongContainedType, field.validate, data)
-        errors = self.getErrors(errornames.WrongContainedType, field.validate, data)
-        self.assertEqual(str(errors[0]), errornames.RequiredMissing)
+        self.assertRaises(WrongContainedType, field.validate, data)
+        errors = self.getErrors(field.validate, data)
+        self.assertEquals(errors[0], RequiredMissing())
 
     def test_validate_FieldPropertyTestData(self):
         field = self.makeTestObject(schema=ITestSchema, required=False)
@@ -174,15 +174,15 @@ class ObjectTest(FieldTestBase):
         field = self.makeTestObject(schema=ITestSchema)
         field.validate(data)
         self.assertRaises(ValidationError, setattr, data, 'foo', None)
-        self.assertRaisesErrorNames(errornames.RequiredMissing, setattr, data, 'foo', None)
+        self.assertRaises(RequiredMissing, setattr, data, 'foo', None)
         
     def test_validate_NotFullyImplementedTestData(self):
         field = self.makeTestObject(schema=ITestSchema, required=False)
         data = self.makeNotFullyImplementedTestData()
         self.assertRaises(ValidationError, field.validate, data)
-        self.assertRaisesErrorNames(errornames.WrongContainedType, field.validate, data)
-        errors = self.getErrors(errornames.WrongContainedType, field.validate, data)
-        self.assertEqual(errors[0], errornames.SchemaNotFullyImplemented)
+        self.assertRaises(WrongContainedType, field.validate, data)
+        errors = self.getErrors(field.validate, data)
+        self.assertEquals(errors[0], SchemaNotFullyImplemented())
 
 def test_suite():
     suite = TestSuite()

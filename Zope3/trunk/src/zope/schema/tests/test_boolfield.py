@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_boolfield.py,v 1.3 2003/05/01 19:35:46 faassen Exp $
+$Id: test_boolfield.py,v 1.4 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import Bool
-from zope.schema.errornames import RequiredMissing
+from zope.schema.interfaces import RequiredMissing
 from zope.schema.tests.test_field import FieldTestBase
 
 class BoolTest(FieldTestBase):
@@ -37,7 +37,7 @@ class BoolTest(FieldTestBase):
         field.validate(True)
         field.validate(False)
 
-        self.assertRaisesErrorNames(RequiredMissing, field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
 
 def test_suite():

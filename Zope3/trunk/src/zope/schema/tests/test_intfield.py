@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_intfield.py,v 1.4 2003/05/01 19:35:46 faassen Exp $
+$Id: test_intfield.py,v 1.5 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import Int, EnumeratedInt
-from zope.schema import errornames
+from zope.schema.interfaces import RequiredMissing, InvalidValue
+from zope.schema.interfaces import TooSmall, TooBig
 from zope.schema.tests.test_field import FieldTestBase
 
 class IntTest(FieldTestBase):
@@ -39,8 +40,7 @@ class IntTest(FieldTestBase):
         field.validate(0)
         field.validate(-1)
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
     def testValidateMin(self):
         field = self._Field_Factory(title=u'Int field', description=u'',
@@ -49,8 +49,8 @@ class IntTest(FieldTestBase):
         field.validate(10)
         field.validate(20)
 
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, 9)
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, -10)
+        self.assertRaises(TooSmall, field.validate, 9)
+        self.assertRaises(TooSmall, field.validate, -10)
 
     def testValidateMax(self):
         field = self._Field_Factory(title=u'Int field', description=u'',
@@ -59,8 +59,8 @@ class IntTest(FieldTestBase):
         field.validate(5)
         field.validate(9)
 
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 11)
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 20)
+        self.assertRaises(TooBig, field.validate, 11)
+        self.assertRaises(TooBig, field.validate, 20)
 
     def testValidateMinAndMax(self):
         field = self._Field_Factory(title=u'Int field', description=u'',
@@ -71,10 +71,10 @@ class IntTest(FieldTestBase):
         field.validate(5)
         field.validate(10)
 
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, -10)
-        self.assertRaisesErrorNames(errornames.TooSmall, field.validate, -1)
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 11)
-        self.assertRaisesErrorNames(errornames.TooBig, field.validate, 20)
+        self.assertRaises(TooSmall, field.validate, -10)
+        self.assertRaises(TooSmall, field.validate, -1)
+        self.assertRaises(TooBig, field.validate, 11)
+        self.assertRaises(TooBig, field.validate, 20)
 
 
 class EnumeratedIntTest(IntTest):
@@ -88,8 +88,7 @@ class EnumeratedIntTest(IntTest):
                                     allowed_values=(-1, 2))
         field.validate(None)
         field.validate(2)
-        self.assertRaisesErrorNames(errornames.InvalidValue,
-                                    field.validate, 4)
+        self.assertRaises(InvalidValue, field.validate, 4)
 
 
 def test_suite():

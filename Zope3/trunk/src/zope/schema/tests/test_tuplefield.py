@@ -16,14 +16,16 @@ This set of tests exercises both Tuple and Sequence.  The only
 behavior Tuple adds to sequence is the restriction of the type
 to 'tuple'.
 
-$Id: test_tuplefield.py,v 1.6 2004/01/16 13:38:20 philikon Exp $
+$Id: test_tuplefield.py,v 1.7 2004/04/11 10:35:17 srichter Exp $
 """
 from unittest import TestSuite, main, makeSuite
 
 from zope.interface import implements
 from zope.schema import Field, Sequence, Tuple, Int
 from zope.schema.interfaces import IField
-from zope.schema import errornames
+from zope.schema.interfaces import NotAContainer, RequiredMissing
+from zope.schema.interfaces import WrongContainedType, WrongType
+from zope.schema.interfaces import TooShort, TooLong
 from zope.schema.tests.test_field import FieldTestBase
 
 class SequenceTest(FieldTestBase):
@@ -41,16 +43,14 @@ class SequenceTest(FieldTestBase):
         field.validate({})
         field.validate([1, 2])
 
-        self.assertRaisesErrorNames(errornames.NotAContainer,
-                                    field.validate, 1)
+        self.assertRaises(NotAContainer, field.validate, 1)
 
     def testValidateRequired(self):
         field = self._Field_Factory(title=u'test field', description=u'',
                                     readonly=False, required=True)
         field.validate([1, 2])
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
 
 class TupleTest(FieldTestBase):
@@ -66,14 +66,10 @@ class TupleTest(FieldTestBase):
         field.validate((1, 2))
         field.validate((3,))
 
-        self.assertRaisesErrorNames(errornames.WrongType,
-                                    field.validate, [1, 2, 3])
-        self.assertRaisesErrorNames(errornames.WrongType,
-                                    field.validate, 'abc')
-        self.assertRaisesErrorNames(errornames.WrongType,
-                                    field.validate, 1)
-        self.assertRaisesErrorNames(errornames.WrongType,
-                                    field.validate, {})
+        self.assertRaises(WrongType, field.validate, [1, 2, 3])
+        self.assertRaises(WrongType, field.validate, 'abc')
+        self.assertRaises(WrongType, field.validate, 1)
+        self.assertRaises(WrongType, field.validate, {})
 
     def testValidateRequired(self):
         field = Tuple(title=u'Tuple field', description=u'',
@@ -82,8 +78,7 @@ class TupleTest(FieldTestBase):
         field.validate((1, 2))
         field.validate((3,))
 
-        self.assertRaisesErrorNames(errornames.RequiredMissing,
-                                    field.validate, None)
+        self.assertRaises(RequiredMissing, field.validate, None)
 
     def testValidateMinValues(self):
         field = Tuple(title=u'Tuple field', description=u'',
@@ -92,10 +87,8 @@ class TupleTest(FieldTestBase):
         field.validate((1, 2))
         field.validate((1, 2, 3))
 
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, ())
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, (1,))
+        self.assertRaises(TooShort, field.validate, ())
+        self.assertRaises(TooShort, field.validate, (1,))
 
     def testValidateMaxValues(self):
         field = Tuple(title=u'Tuple field', description=u'',
@@ -104,10 +97,8 @@ class TupleTest(FieldTestBase):
         field.validate(())
         field.validate((1, 2))
 
-        self.assertRaisesErrorNames(errornames.TooLong,
-                                    field.validate, (1, 2, 3, 4))
-        self.assertRaisesErrorNames(errornames.TooLong,
-                                    field.validate, (1, 2, 3))
+        self.assertRaises(TooLong, field.validate, (1, 2, 3, 4))
+        self.assertRaises(TooLong, field.validate, (1, 2, 3))
 
     def testValidateMinValuesAndMaxValues(self):
         field = Tuple(title=u'Tuple field', description=u'',
@@ -117,10 +108,8 @@ class TupleTest(FieldTestBase):
         field.validate((1, ))
         field.validate((1, 2))
 
-        self.assertRaisesErrorNames(errornames.TooShort,
-                                    field.validate, ())
-        self.assertRaisesErrorNames(errornames.TooLong,
-                                    field.validate, (1, 2, 3))
+        self.assertRaises(TooShort, field.validate, ())
+        self.assertRaises(TooLong, field.validate, (1, 2, 3))
 
     def testValidateValueTypes(self):
         field = Tuple(title=u'Tuple field', description=u'',
@@ -130,10 +119,8 @@ class TupleTest(FieldTestBase):
         field.validate((5,))
         field.validate((2, 3))
 
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, ('',) )
-        self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, (3.14159,) )
+        self.assertRaises(WrongContainedType, field.validate, ('',) )
+        self.assertRaises(WrongContainedType, field.validate, (3.14159,) )
 
     def testCorrectValueType(self):
         # allow value_type of None (XXX)
