@@ -2,6 +2,9 @@ CMF 1.5.1beta (unreleased)
 
   New Features
 
+    - CachePolicyManager: You can now set a ETag using a TALES expression
+      (http://www.zope.org/Collectors/CMF/236) 
+
     - RegistrationTool: The regular expression that limits what people
       can put in as a valid member ID is now configurable TTW in the
       portal_registration tool (http://collector.zope.org/CMF/117)
