@@ -32,7 +32,7 @@ class SchemaManager(object):
        Schema managers implement `ISchemaManager` using scripts provided
        as module methods.  You create a schema manager by providing
        mimumum and maximum generations and a package providing modules
-       named ``moduleN``, where ``N`` is a generation number.  Each module
+       named ``evolveN``, where ``N`` is a generation number.  Each module
        provides a function, `evolve` that evolves a database from the
        previous generation.
 
