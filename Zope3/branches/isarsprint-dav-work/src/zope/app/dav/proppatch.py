@@ -37,32 +37,26 @@ class PROPPATCH(object):
         self.default_ns = 'DAV:'
 
     def PROPPATCH(self):
-        request = self.request
-        resource_url = str(zapi.getView(self.context, 'absolute_url', request))
-        if IReadContainer.providedBy(self.context):
-            resource_url = resource_url + '/'
-        data = request.bodyFile
-        data.seek(0)
-        response = ''
-        body = ''
-
         if self.content_type not in ['text/xml', 'application/xml']:
-            request.response.setStatus(400)
-            return body
+            self.request.response.setStatus(400)
+            return ''
 
-        xmldoc = minidom.parse(data)
-        response = minidom.Document()
-        ms = response.createElement('multistatus')
+        resource_url = str(zapi.getView(self.context, 'absolute_url', 
+                                        self.request))
+        if IReadContainer.providedBy(self.context):
+            resource_url += '/'
+
+        self.request.bodyFile.seek(0)
+        xmldoc = minidom.parse(self.request.bodyFile)
+        resp = minidom.Document()
+        ms = resp.createElement('multistatus')
         ms.setAttribute('xmlns', self.default_ns)
-        response.appendChild(ms)
-        re = response.createElement('response')
-        ms.appendChild(re)
-        href = response.createElement('href')
-        re.appendChild(href)
-        r_url = response.createTextNode(resource_url)
-        href.appendChild(r_url)
+        resp.appendChild(ms)
+        ms.appendChild(resp.createElement('response'))
+        ms.lastChild.appendChild(resp.createElement('href'))
+        ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
 
-        body = response.toxml().encode('utf-8')
-        request.response.setBody(body)
-        request.response.setStatus(207)
+        body = resp.toxml().encode('utf-8')
+        self.request.response.setBody(body)
+        self.request.response.setStatus(207)
         return body
