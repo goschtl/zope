@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.9 2003/01/07 17:56:01 stevea Exp $
+$Id: interfacewidget.py,v 1.10 2003/01/07 18:19:40 stevea Exp $
 """
 
 import sys
@@ -285,9 +285,14 @@ class MultiInterfaceWidget(Widget, BrowserView):
         else:
             data = self._data
         name = self.name
-        elements = ['<input type="hidden" name="%s" value="%s" />'
-                        % (name, interfaceToName(interface))
-                    for interface in data]
+        elements = []
+        count = 0
+        for interface in data:
+            elements.append(
+                '<input type="hidden" name="%s.i%s" value="%s" />'
+                % (name, count, interfaceToName(interface))
+                )
+            count += 1
         return ''.join(elements)
        
     def label(self):
