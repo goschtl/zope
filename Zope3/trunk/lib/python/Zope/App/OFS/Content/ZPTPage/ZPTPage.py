@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: ZPTPage.py,v 1.2 2002/06/10 23:28:05 jim Exp $
+$Id: ZPTPage.py,v 1.3 2002/07/03 13:30:44 jim Exp $
 """
 
 from Interface import Interface
@@ -73,6 +73,10 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 
     def setSource(self, text, content_type='text/html'):
         '''See interface IZPTPage'''
+
+        if isinstance(text, unicode):
+            text = text.encode('utf-8')
+        
         self.pt_edit(text, content_type)
 
     #
