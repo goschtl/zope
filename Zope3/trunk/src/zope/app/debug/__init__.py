@@ -15,4 +15,6 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.debug.debug import Debugger
