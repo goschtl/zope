@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.17 2003/07/11 05:50:46 anthony Exp $
+$Id: hub.py,v 1.18 2003/07/12 09:37:14 jim Exp $
 """
 
 from __future__ import generators
@@ -53,6 +53,7 @@ from zope.app.interfaces.event import IObjectAddedEvent
 from zope.app.interfaces.content.folder import IFolder
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.services.servicenames import HubIds
+from zope.app.event.objectevent import ObjectAddedEvent
 
 from zope.app.traversing import traverse, traverseName, getPath, getRoot
 from zope.app.interfaces.services.hub import ObjectHubError
@@ -411,8 +412,15 @@ class Registration(Persistent):
 
     def notify(wrapped_self, event):
         """An event occured. Perhaps register this object with the hub."""
-        hub = getService(wrapped_self, HubIds)
-        wrapped_self._registerObject(event.location, hub)
+
+        # XXX quick hack to make sure we *only* register on add events
+        # and not on extending events like move events.
+        # We still need to sort out move semantics. We certainly don't
+        # have it correct now.
+
+        if event.__class__ is ObjectAddedEvent:
+            hub = getService(wrapped_self, HubIds)
+            wrapped_self._registerObject(event.location, hub)
     notify = ContextMethod(notify)
 
     currentlySubscribed = False # Default subscription state
