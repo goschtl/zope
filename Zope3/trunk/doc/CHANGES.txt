@@ -10,65 +10,60 @@ Zope Changes
 
     What is Zope X3? It's Zope 3 "experimental". This is the release
     that will provide the new features of Zope 3 without any Zope 2
-    support.   Zope 3.0 will provide support for Zope 2 content and
+    support. Zope 3.0 will provide support for Zope 2 content and
     products, probably using conversion utilities of some sort. 
 
 
     Backward compatibility notes
 
     - If you have any add-on prodycts that used the old context-wrapper or
-      "context awareness" APIs, you will need to update these use the
-      new, and much simpler,  location API.  See
-      zope/app/interfaces/location.py. 
+      "context awareness" APIs, you will need to update these use the new, and
+      much simpler, location API. See zope/app/interfaces/location.py.
 
-    - If you have add-on products that register views or resources
-      using the view or resource directives from the zope ZCML
-      namespace, you will need to change the value of the 'type'
-      attribute to refer to a request type, rather than a presentation
-      type. 
+    - If you have add-on products that register views or resources using the
+      view or resource directives from the zope ZCML namespace, you will need
+      to change the value of the 'type' attribute to refer to a request type,
+      rather than a presentation type.
 
-    - If you have an add-on product that defines new layers, you need
-      to use the zope:layer or browser:layer directive to define the
-      layer before you use it in a skin definition or a view or
-      resource definition:
+    - If you have an add-on product that defines new layers, you need to use
+      the zope:layer or browser:layer directive to define the layer before you
+      use it in a skin definition or a view or resource definition:
 
         <browser:layer name="rotterdam" />
 
-    - If you had a local (through the web) adapter service, you will
-      need to recreate it and reactivate your adapter registrations.
+    - If you had a local (through the web) adapter service, you will need to
+      recreate it and reactivate your adapter registrations.
 
-    - If you had a local (through the web) view service, you will
-      need to create a local presentation service and reactivate your
-      page or view registrations.
+    - If you had a local (through the web) view service, you will need to
+      create a local presentation service and reactivate your page or view
+      registrations.
 
     Features
 
     - Changed the way presentation components are managed.
 
-      o The view, resource, and skin services have been combined into
-        a new presentation service.
+      o The view, resource, and skin services have been combined into a new
+        presentation service.
 
-      o Views and resources no adapt requests.  They are registered
-        for request types rather than presentation types.
+      o Views and resources now adapt requests. They are registered for request
+        types rather than presentation types.
 
-    - Refactored the way interfaces, declarations amd adapters are
-      implemented.  We now use a cleaner architecture that no-longer
-      requires a caching mechanism beyond what's provided by the
-      underlying data structures.  This has led to a significant speed
-      up for Zope 3.
+    - Refactored the way interfaces, declarations and adapters are
+      implemented. We now use a cleaner architecture that no-longer requires a
+      caching mechanism beyond what's provided by the underlying data
+      structures. This has led to a significant speed up for Zope 3.
 
-    - Refactored the way location-related events are generated and
-      handled.
+    - Refactored the way location-related events are generated and handled.
 
       For more details, see:
       http://dev.zope.org/Zope3/LocationRelatedEvents
       http://dev.zope.org/Zope3/SimplifyObjectLifecycleAndLocationEvents
 
-    - Refactored the way object location is modeled.  Zope 3 no longer
-      uses context wrappers. Instead, objects have __parent__
-      attributes that reference their containers.  Objects that don't
-      maintain these attributes themselves are warpped in persistent
-      proxy objects that do so.
+    - Refactored the way object location is modeled. Zope 3 no longer uses
+      context wrappers. Instead, objects have __parent__ attributes that
+      reference their containers.  Objects that don't maintain these
+      attributes themselves are warpped in persistent proxy objects that do
+      so.
 
       For more details, see:
       http://dev.zope.org/Zope3/ParentGeddon
@@ -84,15 +79,15 @@ Zope Changes
 
         A catalog is added to a regular content folder. 
 
-    - Added object fields. Object fields provide a simple composite
-      field mechanism. An object field is defined by a schema and,
-      thus, can contain sub-fields.
+    - Added object fields. Object fields provide a simple composite field
+      mechanism. An object field is defined by a schema and, thus, can contain
+      sub-fields.
 
-    - Added working widgets for list fields. List fields contain a
-      sequence of monogenous values.
+    - Added working widgets for list fields. List fields contain a sequence of
+      monogenous values.
 
-    - Improved forms error reporting. Error messages now appear next
-      to fields where errors occured.
+    - Improved forms error reporting. Error messages now appear next to fields
+      where errors occured.
 
     - Major fixes to the TAL I18n-Namespace support. Almost all fixes were
       backported to Zope 2.7 as well.
@@ -156,6 +151,7 @@ Zope Changes
       Dominik Huber
 
   ------------------------------------------------------------------
+
 
   Zope X3.0.0 Milestone 3
 
