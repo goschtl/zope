@@ -18,7 +18,23 @@ Zope Changes
       - utilities/runurl.py hadn't been updated to relect recent
         changes in the debugging support.
 
+      - Views for I18nFile/I18nImage now use contentType attribute instead
+        of outdated getContentType method.
+
+      - ZopeVersion now know about Subversion.
+
     Restructuring
+
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
+      Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
+      Eckart Hertzler, Roger Ineichen, Stuart Bishop
+
+      Note: If you are not listed and contributed, please add yourself. This
+      note will be deleted before the release.
+
+  ------------------------------------------------------------------
 
   Zope X3.0.0 Beta 1
 
@@ -105,9 +121,6 @@ Zope Changes
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
       Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
       Eckart Hertzler, Roger Ineichen, Stuart Bishop
-
-      Note: If you are not listed and contributed, please add yourself. This
-      note will be deleted before the release.
 
   ------------------------------------------------------------------
 
