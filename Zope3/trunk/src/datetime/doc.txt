@@ -814,6 +814,18 @@ of aware datetime objects.  If in doubt, simply implement all of them.
     tzinfo object's dst() method to determine how the tm_isdst flag
     should be set.
 
+    An instance tz of a tzinfo subclass that models both standard and
+    daylight times must be consistent in this sense:
+
+        tz.utcoffset(dt) - tz.dst(dt)
+
+    must return the same result for every datetimetz dt with dt.tzinfo=tz.
+    For sane tzinfo subclasses, this expression yields the time zone's
+    "standard offset", which should not depend on the specific date and
+    time passed.  The implementation of datetimetz.astimezone() relies on
+    this, but cannot detect violations; it's the programmer's
+    responsibility to ensure it.
+
 These methods are called by a datetimetz or timetz object, in response to
 their methods of the same names.  A datetimetz object passes itself as the
 argument, and a timetz object passes None as the argument.  A tzinfo
@@ -1159,7 +1171,7 @@ Instance methods:
     XXX The treatment of endcases remains unclear:  for DST-aware
     XXX classes, one hour per year has two spellings in local time, and
     XXX another hour has no spelling in local time.
-    
+
 
   - timetuple()
     Like datetime.timetuple(), but sets the tm_isdst flag according to

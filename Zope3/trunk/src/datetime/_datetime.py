@@ -1619,11 +1619,7 @@ class datetimetz(datetime):
 
     def astimezone(self, tz):
         _check_tzinfo_arg(tz)
-        # This is somewhat convoluted because we can only call
-        # tzinfo.utcoffset(dt) when dt.tzinfo is tzinfo.  It's more
-        # convoluted due to DST headaches (redundant spellings and
-        # "missing" hours in local time -- see the tests for details).
-        other = self.replace(tzinfo=tz) # this does no conversion
+        other = self.replace(tzinfo=tz)
 
         # Don't call utcoffset unless necessary.  First check trivial cases.
         if tz is None or self._tzinfo is None or self._tzinfo is tz:
@@ -1638,62 +1634,37 @@ class datetimetz(datetime):
         if otoff is None:
             return other
 
-        total_added_to_other = otoff - myoff
-        other += total_added_to_other
-        # If tz is a fixed-offset class, we're done, but we can't know
-        # whether it is.  If it's a DST-aware class, and we're not near a
-        # DST boundary, we're also done.  If we crossed a DST boundary,
-        # the offset will be different now, and that's our only clue.
-        # Unfortunately, we can be in trouble even if we didn't cross a
-        # DST boundary, if we landed on one of the DST "problem hours".
-        newoff = other.utcoffset()
-        if newoff is None:
-            self._inconsistent_utcoffset_error()
-        if newoff != otoff:
-            delta = newoff - otoff
-            total_added_to_other += delta
-            other += delta
+        # See the long comment block at the end of this file for an
+        # explanation of this algorithm.  That it always works requires a
+        # pretty intricate proof.
+        otdst = other.dst()
+        if otdst is None:
+            otdst = 0
+        total_added_to_other = otoff - otdst - myoff
+        if total_added_to_other:
+            other += total_added_to_other
             otoff = other.utcoffset()
             if otoff is None:
                 self._inconsistent_utcoffset_error()
-
-        # If this is the first hour of DST, it may be a local time that
-        # doesn't make sense on the local clock, in which case the naive
-        # hour before it (in standard time) is equivalent and does make
-        # sense on the local clock.  So force that.
-        alt = other - _HOUR
-        altoff = alt.utcoffset()
-        if altoff is None:
-            self._inconsistent_utcoffset_error()
-        # Are alt and other really the same time?  They are iff
-        # alt - altoff == other - otoff, iff
-        # (other - _HOUR) - altoff = other - otoff, iff
-        # otoff - altoff == _HOUR
-        # Note that the Python comparison "alt == other" would return false,
-        # though, because they have same tzinfo member, and utcoffset() is
-        # ignored when comparing times w/ the same tzinfo.
-        diff = otoff - altoff
-
-        # Enable the assert if you're dubious; it's expensive.
-        ##assert ((diff == _HOUR) ==
-        ##        (alt.replace(tzinfo=None) - alt.utcoffset() ==
-        ##         other.replace(tzinfo=None) - other.utcoffset()))
-        if diff == _HOUR:
-            return alt      # use the local time that makes sense
-
-        # There's still a problem with the unspellable (in local time)
-        # hour after DST ends.  other's local time now is
-        # self + total_added_to_other, so self == other iff
-        # self - myoff = other - otoff, iff
-        # self - myoff = self + total_added_to_other - otoff, iff
-        # total_added_to_other == otoff - myoff
-        ##assert (self == other) == (total_added_to_other == otoff - myoff)
-        if total_added_to_other == otoff - myoff:
+        # The distance now from self to other is
+        # self - other == naive(self) - myoff - (naive(other) - otoff) ==
+        # naive(self) - myoff -
+        #             ((naive(self) + total_added_to_other - otoff) ==
+        # - myoff - total_added_to_other + otoff
+        delta = otoff - myoff - total_added_to_other
+        ##assert (other == self) == (not delta) # expensive
+        if not delta:
             return other
-        # Else there's no way to spell self in zone other.tz.
+
+        # Must have crossed a DST switch point.
+        total_added_to_other += delta
+        other += delta
+        otoff = other.utcoffset()
+        ##assert (other == self) == (otoff - myoff == total_added_to_other)
+        if otoff - myoff == total_added_to_other:
+            return other
         raise ValueError("astimezone():  the source datetimetz can't be "
                          "expressed in the target timezone's local time")
-
 
     def isoformat(self, sep='T'):
         s = super(datetimetz, self).isoformat(sep)
@@ -1907,6 +1878,117 @@ pickle(timetz, _timetz_pickler, _timetz_unpickler)
 pickle(datetimetz, _datetimetz_pickler, _datetimetz_unpickler)
 del pickle
 
+"""
+Some time zone algebra.  For a datetimetz x, let
+    x.n = x stripped of its timezone -- its naive time.
+    x.o = x.utcoffset(), and assuming that doesn't raise an exception or
+          return None
+    x.d = x.dst(), and assuming that doesn't raise an exception or
+          return None
+    x.s = x's standard offset, x.o - x.d
+
+Now some derived rules, where k is a duration (timedelta).
+
+1. x.o = x.s + x.d
+   This follows from the definition of x.s.
+
+2. If x and y have the same tzinfo member, x.s == y.s.
+   This is actually a requirement, an assumption we need to make about
+   sane tzinfo classes.
+
+3. The naive UTC time corresponding to x is x.n - x.o.
+   This is again a requirement for a sane tzinfo class.
+
+4. (x+k).s = x.s
+   This follows from #2, and that datimetimetz+timedelta preserves tzinfo.
+
+5. (y+k).n = y.n + k
+   Again follows from how arithmetic is defined.
+
+Now we can explain x.astimezone(tz).  Let's assume it's an interesting case
+(meaning that the various tzinfo methods exist, and don't blow up or return
+None when called).
+
+The function wants to return a datetimetz y with timezone tz, equivalent to x.
+
+By #3, we want
+
+    y.n - y.o = x.n - x.o                       [1]
+
+The algorithm starts by attaching tz to x.n, and calling that y.  So
+x.n = y.n at the start.  Then it wants to add a duration k to y, so that [1]
+becomes true; in effect, we want to solve [2] for k:
+
+   (y+k).n - (y+k).o = x.n - x.o                [2]
+
+By #1, this is the same as
+
+   (y+k).n - ((y+k).s + (y+k).d) = x.n - x.o    [3]
+
+By #5, (y+k).n = y.n + k, which equals x.n + k because x.n=y.n at the start.
+Substituting that into [3],
+
+   x.n + k - (y+k).s - (y+k).d = x.n - x.o; the x.n terms cancel, leaving
+   k - (y+k).s - (y+k).d = - x.o; rearranging,
+   k = (y+k).s - x.o - (y+k).d; by #4, (y+k).s == y.s, so
+   k = y.s - x.o - (y+k).d; then by #1, y.s = y.o - y.d, so
+   k = y.o - y.d - x.o - (y+k).d
+
+On the RHS, (y+k).d can't be computed directly, but all the rest can be, and
+we approximate k by ignoring the (y+k).d term at first.  Note that k can't
+be very large, since all offset-returning methods return a duration of
+magnitude less than 24 hours.  For that reason, if y is firmly in std time,
+(y+k).d must be 0, so ignoring it has no consequence then.
+
+In any case, the new value is
+
+    z = y + y.o - y.d - x.o
+
+If
+    z.n - z.o = x.n - x.o                       [4]
+
+then, we have an equivalent time, and are almost done.  The insecurity here is
+at the start of daylight time.  Picture US Eastern for concreteness.  The wall
+time jumps from 1:59 to 3:00, and wall hours of the form 2:MM don't make good
+sense then.  A sensible Eastern tzinfo class will consider such a time to be
+EDT (because it's "after 2"), which is a redundant spelling of 1:MM EST on the
+day DST starts.  We want to return the 1:MM EST spelling because that's
+the only spelling that makes sense on the local wall clock.
+
+Claim:  When [4] is true, we have "the right" spelling in this endcase.  No
+further adjustment is necessary.
+
+Proof:  The right spelling has z.d = 0, and the wrong spelling has z.d != 0
+(for US Eastern, the wrong spelling has z.d = 60 minutes, but we can't assume
+that all time zones work this way -- we can assume a time zone is in daylight
+time iff dst() doesn't return 0).  By [4], and recalling that z.o = z.s + z.d,
+
+    z.n - z.s - z.d = x.n - x.o                 [5]
+
+Also
+
+    z.n = (y + y.o - y.d - x.o).n by the construction of z, which equals
+          y.n + y.o - y.d - x.o by #5.
+
+Plugging that into [5],
+
+    y.n + y.o - y.d - x.o - z.s - z.d = x.n - x.o; cancelling the x.o terms,
+    y.n + y.o - y.d - z.s - z.d = x.n; but x.n = y.n too, so they also cancel,
+    y.o - y.d - z.s - z.d = 0; then y.o = y.s + y.d, so
+    y.s + y.d - y.d - z.s - z.d = 0; then the y.d terms cancel,
+    y.s - z.s - z.d = 0; but y and z are in the same timezone, so by #2
+                         y.s = z.s, and they also cancel, leaving
+    - z.d = 0; or,
+    z.d = 0
+
+Therefore z is the standard-time spelling, and there's nothing left to do in
+this case.
+
+Note that we actually proved something stronger:  when [4] is true, it must
+also be true that z.dst() returns 0.
+
+XXX Flesh out the rest of the algorithm.
+"""
 def _test():
     import test_datetime
     test_datetime.test_main()
