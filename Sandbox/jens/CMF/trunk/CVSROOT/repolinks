@@ -188,6 +188,8 @@
 /ZopeProducts                                  /Products3
 /Products3/JobBoardEx                          /Packages/JobBoardEx
 
+# Zope3 new world order
+/Zope3/src/ZConfig		       /Packages/ZConfig
 
 
 # Zope 2.7 development tree (until 2.6 beta, waaa)
