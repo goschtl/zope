@@ -11,13 +11,6 @@
   
   </content>
 
-  <!--
-  <event:subscribe 
-      subscriber = ".RAMCache."
-      event_types = "Zope.Event.IObjectEvent.IObjectModifiedEvent"
-      />
-  -->
-
 <include package=".Views" />
 
 </zopeConfigure>

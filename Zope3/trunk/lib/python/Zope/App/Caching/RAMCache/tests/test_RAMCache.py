@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_RAMCache.py,v 1.2 2002/11/13 15:16:41 stevea Exp $
+$Id: test_RAMCache.py,v 1.3 2002/11/25 13:48:06 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,25 +25,6 @@ from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
 from Interface.Verify import verifyClass, verifyObject
 from time import time
 
-
-#############################################################################
-# If your tests change any global registries, then uncomment the
-# following import and include CleanUp as a base class of your
-# test. It provides a setUp and tearDown that clear global data that
-# has registered with the test cleanup framework.  If your class has
-# its own setUp or tearDown, make sure you call the CleanUp setUp and
-# tearDown from them, or the benefits of using CleanUp will be lost.
-# Don't use CleanUp based tests outside the Zope package.
-
-# from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
-
-class Request:
-    def __init__(self, dict=None):
-        if dict is None:
-            dict = {'foo': 1, 'bar': 2, 'baz': 3}
-        self._dict = dict
-    def __getitem__(self, key):
-        return self._dict[key]
 
 class Locatable:
     __implements__ = IPhysicallyLocatable
@@ -57,15 +38,9 @@ class Locatable:
     def getPhysicalPath(self):
         return self.path
 
-class ObjectStub(Locatable):
-    from Zope.ComponentArchitecture.IPresentation import IPresentation
-    __implements__ = IPresentation, Locatable.__implements__
-    request = Request()
-    value = 56
-
 class TestRAMCache(PlacelessSetup, 
                    TestCase, 
-#                   BaseICacheTest,
+                   BaseICacheTest,
                    ):
     
     def _Test__new(self):
@@ -91,7 +66,7 @@ class TestRAMCache(PlacelessSetup,
     def test_update(self):
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
         c = RAMCache()
-        c.update(None, 1, 2, 3)
+        c.update(1, 2, 3)
         s = c._getStorage()
         self.assertEqual(s.maxEntries, 1, "maxEntries not set")
         self.assertEqual(s.maxAge, 2, "maxAge not set")
@@ -130,127 +105,98 @@ class TestRAMCache(PlacelessSetup,
     def test_buildKey(self): 
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
 
-        r = Request()
-        key = RAMCache._buildKey('view', r, ('foo', 'bar'), {'baz': 42})
+        kw = {'foo': 1, 'bar': 2, 'baz': 3}
+        
+        key = RAMCache._buildKey(kw)
 
-        self.assertEqual(key, ('view', ('foo', 1, 'bar', 2), (('baz', 42),)),
-                         "wrong key")
+        self.assertEqual(key, (('bar',2), ('baz',3), ('foo',1)), "wrong key")
 
-        key = RAMCache._buildKey('view', r, ('frob', 'bar'), {'baz': 42})
-
-        self.assertEqual(key, ('view', ('bar', 2), (('baz', 42),)),
-                         "wrong key")
 
     def test_query(self):
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
 
-        location = ('aaa',)
-        ob = Locatable(path=location)
+        ob = ('aaa',)
         
         keywords = {"answer": 42}
         value = "true"
         c = RAMCache()
         c.requestVars = ('foo', 'bar')
-        key = RAMCache._buildKey('', None, None, keywords)
-        c._getStorage().setEntry(location, key, value)
+        key = RAMCache._buildKey(keywords)
+        c._getStorage().setEntry(ob, key, value)
 
-        self.assertEqual(c.query(ob, '', keywords=keywords), value,
+        self.assertEqual(c.query(ob, keywords), value,
                          "incorrect value")
 
-        self.assertEqual(c.query(ob, ''), None, "defaults incorrect")
-        self.assertEqual(c.query(ob, '', keywords={"answer": 2}, default="bummer"),
+        self.assertEqual(c.query(ob, None), None, "defaults incorrect")
+        self.assertEqual(c.query(ob, {"answer": 2}, default="bummer"),
                          "bummer", "default doesn't work")
-
-        ob = ObjectStub(path=location)
-        key = RAMCache._buildKey('', ob.request, ('foo', 'bar'), keywords)
-        c._getStorage().setEntry(location, key, ob.value)
-        
-        self.assertEqual(c.query(ob, '', keywords), ob.value)
-        
 
     def test_set(self):
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
 
-        location = ('path',)
-        ob = Locatable(path=location)
+        ob = ('path',)
         keywords = {"answer": 42}
         value = "true"
         c = RAMCache()
         c.requestVars = ('foo', 'bar')
-        key = RAMCache._buildKey('', None, None, keywords)
+        key = RAMCache._buildKey(keywords)
 
-        c.set(value, ob, keywords=keywords)
-        self.assertEqual(c._getStorage().getEntry(location, key), value,
+        c.set(value, ob, keywords)
+        self.assertEqual(c._getStorage().getEntry(ob, key), value,
                          "Not stored correctly")
 
-        ob = ObjectStub(path=location)
-        key = RAMCache._buildKey('view', ob.request, ('foo', 'bar'), keywords)
-        c.set(ob.value, ob, 'view', keywords)
-
-        self.assertEqual(c._getStorage().getEntry(location, key), ob.value)
         
     def test_invalidate(self):
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
 
-        location1 = ("loc1",)
-        location2 = ("loc2",)
-        ob1 = Locatable(path=location1)
-        ob2 = Locatable(path=location2)
+        ob1 = ("loc1",)
+        ob2 = ("loc2",)
         keywords = {"answer": 42}
         keywords2 = {"answer": 41}
         value = "true"
         c = RAMCache()
-        key1 = RAMCache._buildKey('v', None, None, keywords)
-        key2 = RAMCache._buildKey('v', None, None, keywords)
-        key3 = RAMCache._buildKey('V', None, None, keywords2)
+        key1 = RAMCache._buildKey(keywords)
+        key2 = RAMCache._buildKey(keywords)
+        key3 = RAMCache._buildKey(keywords2)
 
-        # Test deleting entries with the view and keywords passed
-        c._getStorage().setEntry(location1, key1, value)
-        c._getStorage().setEntry(location2, key2, value)
-        c._getStorage().setEntry(location2, key3, value)
+        # Test invalidating entries with a keyword
+        c._getStorage().setEntry(ob1, key1, value)
+        c._getStorage().setEntry(ob2, key2, value)
+        c._getStorage().setEntry(ob2, key3, value)
 
-        c.invalidate(ob1, 'v', keywords)
+        c.invalidate(ob2, keywords)
 
-        self.assertRaises(KeyError, c._getStorage().getEntry, location1, key1)
-        c._getStorage().getEntry(location2, key2)
-        c._getStorage().getEntry(location2, key3)
+        c._getStorage().getEntry(ob1, key1)
+        self.assertRaises(KeyError, c._getStorage().getEntry, ob2, key2)
+        c._getStorage().getEntry(ob2, key3)
 
-        # Test deleting a view for an object
-        c._getStorage().setEntry(location1, key1, value)
-        c._getStorage().setEntry(location2, key2, value)
-        c._getStorage().setEntry(location2, key3, value)
-
-        c.invalidate(ob2, 'V')
-        c._getStorage().getEntry(location1, key1)
-        c._getStorage().getEntry(location2, key2)
-        self.assertRaises(KeyError, c._getStorage().getEntry, location2, key3)
-        
         # Test deleting the whole object
-        c._getStorage().setEntry(location1, key1, value)
-        c._getStorage().setEntry(location2, key2, value)
-        c._getStorage().setEntry(location2, key3, value)
+        c._getStorage().setEntry(ob1, key1, value)
+        c._getStorage().setEntry(ob2, key2, value)
+        c._getStorage().setEntry(ob2, key3, value)
 
         c.invalidate(ob2)
-        self.assertRaises(KeyError, c._getStorage().getEntry, location2, key2)
-        self.assertRaises(KeyError, c._getStorage().getEntry, location2, key3)
-        c._getStorage().getEntry(location1, key1)
+        self.assertRaises(KeyError, c._getStorage().getEntry, ob2, key2)
+        self.assertRaises(KeyError, c._getStorage().getEntry, ob2, key3)
+        c._getStorage().getEntry(ob1, key1)
         
         # Try something that's not there
-        c.invalidate(Locatable())
+        c.invalidate(('yadda',))
 
     def test_notify(self):
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
         from Zope.Event.ObjectEvent import ObjectModifiedEvent
 
         location = ('aaa',)
-        ob = Locatable(path=location)
         
         keywords = {"answer": 42}
         value = "true"
         c = RAMCache()
-        key = RAMCache._buildKey('', None, None, keywords)
+        key = RAMCache._buildKey(keywords)
         c._getStorage().setEntry(location, key, value)
 
+
+        ob = Locatable(path=location)
         event = ObjectModifiedEvent(ob, location)
 
         c.notify(event)

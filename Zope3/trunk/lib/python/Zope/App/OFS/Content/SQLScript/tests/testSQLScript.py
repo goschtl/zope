@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testSQLScript.py,v 1.6 2002/10/07 09:54:39 mgedmin Exp $
+$Id: testSQLScript.py,v 1.7 2002/11/25 13:48:07 alga Exp $
 """
 
 import unittest
@@ -82,19 +82,19 @@ class CacheStub:
     def __init__(self):
         self.cache = {}
 
-    def set(self, data, obj, view_name="", keywords=None, mtime_func=None):
-        if keywords:
-            keywords = keywords.items()
+    def set(self, data, obj, key=None):
+        if key:
+            keywords = key.items()
             keywords.sort()
             keywords = tuple(keywords)
-        self.cache[obj, view_name, keywords] = data
+        self.cache[obj, keywords] = data
 
-    def query(self, obj, view_name="", keywords=None, mtime_func=None, default=None):
-        if keywords:
-            keywords = keywords.items()
+    def query(self, obj, key=None, default=None):
+        if key:
+            keywords = key.items()
             keywords.sort()
             keywords = tuple(keywords)
-        return self.cache.get((obj, view_name, keywords), default)
+        return self.cache.get((obj, keywords), default)
 
 
 class CachingServiceStub:

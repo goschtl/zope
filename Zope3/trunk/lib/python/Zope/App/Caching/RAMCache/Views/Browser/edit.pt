@@ -17,14 +17,6 @@
     <form action="./" method="post" enctype="multipart/form-data">
       <table class="EditTable">
         <tr>
-          <th class="EditAttributeName">Request variables</th>
-          <td class="EditAttributeValue">
-            <textarea name="requestVars:lines"   
-	              tal:content="python:'\n'.join(context.requestVars)"/>
-            
-          </td>
-        </tr>
-        <tr>
           <th class="EditAttributeName">Maximum cached entries</th>
           <td class="EditAttributeValue">
             <input type="text" name="maxEntries:int"   

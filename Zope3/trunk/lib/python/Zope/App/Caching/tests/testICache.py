@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for ICache interface
 
-$Id: testICache.py,v 1.2 2002/10/31 16:01:40 alga Exp $
+$Id: testICache.py,v 1.3 2002/11/25 13:48:06 alga Exp $
 """
 
 from unittest import TestSuite, main
@@ -36,31 +36,20 @@ class BaseICacheTest:
         ob = "obj"
         data = "data"
         marker = []
-        self.failIf(cache.query(ob, default=marker) is not marker,
+        self.failIf(cache.query(ob, None, default=marker) is not marker,
                     "empty cache should not contain anything")
 
-        cache.set(data, ob, view_name="view1")
-        self.assertEquals(cache.query(ob, "view1"), data,
+        cache.set(data, ob, key={'id': 35})
+        self.assertEquals(cache.query(ob, {'id': 35}), data,
                     "should return cached result")
-        self.failIf(cache.query(ob, "view2", default=marker) is not marker,
-                    "should not return cached result for a different view")
+        self.failIf(cache.query(ob, {'id': 33}, default=marker) is not marker,
+                    "should not return cached result for a different key")
 
-        cache.invalidate(ob, "view2")
-        self.assertEquals(cache.query(ob, "view1"), data,
-                    "should return cached result")
-        self.failIf(cache.query(ob, "view2", default=marker) is not marker,
-                    "should not return cached result for a different view")
-
-        cache.invalidate(ob, "view1")
-        self.failIf(cache.query(ob, "view1", default=marker) is not marker,
+        cache.invalidate(ob, {"id": 33})
+        self.assertEquals(cache.query(ob, {'id': 35}), data,
+                          "should return cached result")
+        self.failIf(cache.query(ob, {'id': 33}, default=marker) is not marker,
                     "should not return cached result after invalidate")
-
-# TODO: test all cases of invalidate (all, only view, view and keywords)
-#       test set/query with keywords
-#       test uses of mtime_func
-
-# So far there are no classes implementing ICache, so running the tests will
-# have to be deferred
 
 def test_suite():
     return TestSuite((

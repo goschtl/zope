@@ -12,16 +12,15 @@
 # 
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.3 2002/11/13 15:16:41 stevea Exp $
+$Id: RAMCache.py,v 1.4 2002/11/25 13:48:06 alga Exp $
 """
-from Persistence import Persistent
-from Zope.App.Caching.RAMCache.IRAMCache import IRAMCache
-from Zope.ComponentArchitecture.IPresentation import IPresentation
-from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
 from time import time
 from thread import allocate_lock
+from Persistence import Persistent
+from Zope.App.Caching.RAMCache.IRAMCache import IRAMCache
 from Zope.ComponentArchitecture import getAdapter
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
+from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
 
 # A global caches dictionary shared between threads
 caches = {}
@@ -59,13 +58,9 @@ class RAMCache(Persistent):
     def getStatistics(self):
         "See Zope.App.Caching.RAMCache.IRAMCache.IRAMCache"
 
-    def update(self, requestVars=None, maxEntries=None, maxAge=None,
-               cleanupInterval=None):
+    def update(self,  maxEntries=None, maxAge=None, cleanupInterval=None):
         "See Zope.App.Caching.RAMCache.IRAMCache.IRAMCache"
         
-        if requestVars is not None:
-            self.requestVars = requestVars
-
         if maxEntries is not None:
             self.maxEntries = maxEntries
 
@@ -78,58 +73,33 @@ class RAMCache(Persistent):
         self._getStorage().update(maxEntries, maxAge, cleanupInterval)
 
 
-    def invalidate(self, ob, view_name=None, keywords=None):
+    def invalidate(self, ob, key=None):
         "See Zope.App.Caching.ICache.ICache"
-        locatable = getAdapter(ob, IPhysicallyLocatable)
-        location = locatable.getPhysicalPath()
-        if keywords:
-            items = keywords.items()
-            items.sort()
-            keywords = tuple(items)
         s = self._getStorage()
-        if view_name is None:
-            s.invalidate(location)
-        else:
-            keys = s.getKeys(location)
-            for key in keys:
-                view, req, kw = key
-                if view == view_name:
-                    
-                    if keywords is None or keywords == kw:
-                        s.invalidate(location, key)
+        if key:
+            key =  self._buildKey(key)
+            s.invalidate(ob, key)
+        else: 
+            s.invalidate(ob)
                         
-    def query(self, ob, view_name='', keywords=None, default=None):
+    def query(self, ob, key=None, default=None):
         "See Zope.App.Caching.ICache.ICache"
         s = self._getStorage()
-        locatable = getAdapter(ob, IPhysicallyLocatable)
-        location = locatable.getPhysicalPath()
-        key = self._buildKey(view_name, RAMCache._getRequest(ob),
-                             self.requestVars, keywords)
+        key = self._buildKey(key)
         try:
-            return s.getEntry(location, key)
+            return s.getEntry(ob, key)
         except KeyError:
             return default
 
-    def set(self, data, ob, view_name='', keywords=None):
+    def set(self, data, ob, key=None):
         "See Zope.App.Caching.ICache.ICache"
         s = self._getStorage()
-        locatable = getAdapter(ob, IPhysicallyLocatable)
-        location = locatable.getPhysicalPath()
-        key = self._buildKey(view_name, RAMCache._getRequest(ob),
-                             self.requestVars, keywords)
-        s.setEntry(location, key, data)
-
-    def _getRequest(ob):
-        request = None
-        if IPresentation.isImplementedBy(ob):
-            request = ob.request
-        return request
-    
-    _getRequest = staticmethod(_getRequest)
+        key = self._buildKey(key)
+        s.setEntry(ob, key, data)
 
     def _getStorage(self):
         "Finds or creates a storage object."
-
+        
         global caches
         global writelock
         cacheId = self._cacheId
@@ -143,25 +113,15 @@ class RAMCache(Persistent):
             writelock.release()
         return self._v_storage
 
-    def _buildKey(view_name, req, req_names, kw):
+    def _buildKey(kw):
         "Build a tuple which can be used as an index for a cached value"
 
-        req_vars = ()
-        if req:
-            for key in req_names:
-                try:
-                    value = req[key]
-                    req_vars += (key, value)
-                except KeyError:
-                    pass
-
-        kw_vars = ()
         if kw:
             items = kw.items()
             items.sort()
-            kw_vars = tuple(items)
+            return tuple(items)
                 
-        return (view_name, req_vars, kw_vars)
+        return ()
 
     _buildKey = staticmethod(_buildKey)
 

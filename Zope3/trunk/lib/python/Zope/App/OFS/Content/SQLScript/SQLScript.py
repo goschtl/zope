@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: SQLScript.py,v 1.8 2002/10/07 09:54:39 mgedmin Exp $
+$Id: SQLScript.py,v 1.9 2002/11/25 13:48:07 alga Exp $
 """
 from types import StringTypes
 
@@ -148,12 +148,12 @@ class SQLScript(SQLCommand, Persistent):
         cache = getCacheForObj(self)
         if cache:
             _marker = []
-            result = cache.query(self, keywords={'query': query}, default=_marker)
+            result = cache.query(self, {'query': query}, default=_marker)
             if result is not _marker:
                 return result
         result = queryForResults(connection, query)
         if cache:
-            cache.set(result, self, keywords={'query': query})
+            cache.set(result, self, {'query': query})
         return result
 
     __call__ = ContextMethod(__call__)

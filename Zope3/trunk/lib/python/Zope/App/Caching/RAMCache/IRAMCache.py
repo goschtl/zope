@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IRAMCache.py,v 1.1 2002/10/31 16:01:39 alga Exp $
+$Id: IRAMCache.py,v 1.2 2002/11/25 13:48:06 alga Exp $
 """
 from Zope.App.Caching.ICache import ICache
 from Zope.Event.ISubscriber import ISubscriber
@@ -20,10 +20,6 @@ from Interface.Attribute import Attribute
 
 class IRAMCache(ICache, ISubscriber):
     """Interface for the RAM Cache."""
-
-    requestVars = Attribute("""A list of the request variables which
-    are automatically added to the key of a cached entry if
-    available.""")
 
     maxEntries = Attribute("""A maximum number of cached values.""")
 
@@ -42,5 +38,5 @@ class IRAMCache(ICache, ISubscriber):
           'entries'
         """
 
-    def update(request_vars, maxEntries, maxAge, cleanupInterval):
+    def update(maxEntries, maxAge, cleanupInterval):
         """Saves the parameters available to the user"""

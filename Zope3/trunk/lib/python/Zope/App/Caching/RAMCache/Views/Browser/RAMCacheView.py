@@ -13,7 +13,7 @@
 ##############################################################################
 """RAMCache view
 
-$Id: RAMCacheView.py,v 1.1 2002/10/31 16:01:40 alga Exp $
+$Id: RAMCacheView.py,v 1.2 2002/11/25 13:48:06 alga Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -23,8 +23,6 @@ class RAMCacheView(BrowserView):
 
     __used_for__ = IRAMCache
 
-    def action(self, request_vars=None, maxEntries=None, maxAge=None,
-               cleanupInterval=None):
-        self.context.update(request_vars, maxEntries, maxAge,
-                            cleanupInterval)
+    def action(self, maxEntries=None, maxAge=None, cleanupInterval=None):
+        self.context.update(maxEntries, maxAge, cleanupInterval)
         self.request.response.redirect('.')
