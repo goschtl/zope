@@ -225,7 +225,7 @@ def bootStrapSubscriber(event):
         # Sundry other services
         ensureService(service_manager, root_folder, ErrorLogging,
                       RootErrorReportingService,
-                      copy_to_zlog=True)
+                      copy_to_zlog=False)
         ensureService(service_manager, root_folder, PrincipalAnnotation,
                       PrincipalAnnotationService)
         ensureService(service_manager, root_folder, Utilities,
