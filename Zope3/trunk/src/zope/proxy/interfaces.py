@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: interfaces.py,v 1.3 2003/05/28 15:49:11 jim Exp $
+$Id: interfaces.py,v 1.4 2003/05/28 17:19:23 jim Exp $
 """
 
 from zope.interface import Interface
@@ -30,7 +30,7 @@ class IProxyIntrospection(Interface):
         proxied by the given proxytype.
         """
 
-    def getObject(obj):
+    def getProxiedObject(obj):
         """Get the proxied Object
 
         If the object isn't proxied, then just return the object.

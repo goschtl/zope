@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.9 2003/05/28 15:49:27 jim Exp $
+$Id: test_checker.py,v 1.10 2003/05/28 17:19:24 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,7 +25,7 @@ from zope.testing.cleanup import CleanUp
 from zope.security.interfaces import ISecurityPolicy
 from zope.exceptions import Forbidden, Unauthorized, ForbiddenAttribute
 from zope.security.management import setSecurityPolicy
-from zope.proxy import getObject
+from zope.proxy import getProxiedObject
 from zope.security.proxy import getChecker
 from zope.security.checker import defineChecker, ProxyFactory
 from zope.security.proxy import Proxy
@@ -217,7 +217,7 @@ class Test(TestCase, CleanUp):
 
             for ob in inst, class_:
                 proxy = checker.proxy(ob)
-                self.failUnless(getObject(proxy) is ob)
+                self.failUnless(getProxiedObject(proxy) is ob)
                 checker = getChecker(proxy)
                 if ob is inst:
                     self.assertEqual(checker.permission_id('__str__'),
@@ -231,7 +231,7 @@ class Test(TestCase, CleanUp):
 
             for ob in inst, TransparentProxy(inst):
                 proxy = checker.proxy(ob)
-                self.failUnless(getObject(proxy) is ob)
+                self.failUnless(getProxiedObject(proxy) is ob)
 
                 checker = getChecker(proxy)
                 self.failUnless(checker is special,

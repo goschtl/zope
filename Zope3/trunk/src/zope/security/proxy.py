@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: proxy.py,v 1.7 2003/05/28 15:49:27 jim Exp $
+$Id: proxy.py,v 1.8 2003/05/28 17:19:24 jim Exp $
 """
 
-from zope.proxy import getObject
+from zope.proxy import getProxiedObject
 from zope.security._proxy import getChecker
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.checker import TrustedCheckerBase
@@ -36,7 +36,7 @@ def trustedRemoveSecurityProxy(object):
     if ((type(object) is Proxy) and
         isinstance(getChecker(object), TrustedCheckerBase)
         ):
-        return getObject(object)
+        return getProxiedObject(object)
 
     return object
 

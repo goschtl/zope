@@ -13,7 +13,7 @@
 ##############################################################################
 import unittest
 from zope.security.proxy import getChecker, ProxyFactory
-from zope.proxy import ProxyBase as proxy, getObject
+from zope.proxy import ProxyBase as proxy, getProxiedObject
 
 class Checker:
 
@@ -112,7 +112,7 @@ class ProxyTests(unittest.TestCase):
                         s)
 
     def testGetAttrOK(self):
-        self.assertEqual(getObject(self.p.foo), [1,2,3])
+        self.assertEqual(getProxiedObject(self.p.foo), [1,2,3])
 
     def testGetAttrFail(self):
         self.assertRaises(RuntimeError, lambda: self.p.bar)
@@ -162,7 +162,7 @@ class ProxyTests(unittest.TestCase):
         self.shouldFail(lambda: self.p == self.x)
 
     def testIterOK(self):
-        self.assertEqual(getObject(iter(self.p)), self.x)
+        self.assertEqual(getProxiedObject(iter(self.p)), self.x)
 
     def testIterFail(self):
         self.shouldFail(iter, self.p)
@@ -198,7 +198,7 @@ class ProxyTests(unittest.TestCase):
         self.shouldFail(len, self.p)
 
     def testSliceOK(self):
-        self.assertEqual(getObject(self.p[:]), [42])
+        self.assertEqual(getProxiedObject(self.p[:]), [42])
 
     def testSliceFail(self):
         self.shouldFail(lambda: self.p[:])
@@ -217,7 +217,7 @@ class ProxyTests(unittest.TestCase):
         self.shouldFail(lambda: 42 in self.p)
 
     def testGetObject(self):
-        self.assertEqual(self.x, getObject(self.p))
+        self.assertEqual(self.x, getProxiedObject(self.p))
 
     def testGetChecker(self):
         self.assertEqual(self.c, getChecker(self.p))
@@ -248,7 +248,8 @@ class ProxyTests(unittest.TestCase):
             y = eval(expr)
             x = P(1)
             z = eval(expr)
-            self.assertEqual(getObject(z), y, "x=%r; expr=%r" % (x, expr))
+            self.assertEqual(getProxiedObject(z), y,
+                             "x=%r; expr=%r" % (x, expr))
             self.shouldFail(lambda x: eval(expr), x)
 
     def test_odd_unops(self):
@@ -273,7 +274,7 @@ class ProxyTests(unittest.TestCase):
                         z = eval(expr)
                         first = 0
                     else:
-                        self.assertEqual(getObject(eval(expr)), z,
+                        self.assertEqual(getProxiedObject(eval(expr)), z,
                                          "x=%r; y=%r; expr=%r" % (x, y, expr))
                         self.shouldFail(lambda x, y: eval(expr), x, y)
 
@@ -283,7 +284,7 @@ class ProxyTests(unittest.TestCase):
 
         pa = P(1)
         pa += 2
-        self.assertEqual(getObject(pa), 3)
+        self.assertEqual(getProxiedObject(pa), 3)
 
         a = [1, 2, 3]
         pa = qa = P(a)
@@ -298,7 +299,7 @@ class ProxyTests(unittest.TestCase):
 
         pa = P(2)
         pa **= 2
-        self.assertEqual(getObject(pa), 4)
+        self.assertEqual(getProxiedObject(pa), 4)
 
         def doit():
             pa = P(2)
@@ -320,16 +321,16 @@ class ProxyTests(unittest.TestCase):
         x = P(1)
         y = P(2.1)
         a, b = coerce(x, y)
-        self.failUnless(getObject(a) == 1.0 and b is y)
+        self.failUnless(getProxiedObject(a) == 1.0 and b is y)
         if fixed_coerce:
-            self.failUnless(type(getObject(a)) is float and b is y)
+            self.failUnless(type(getProxiedObject(a)) is float and b is y)
 
         x = P(1.1)
         y = P(2)
         a, b = coerce(x, y)
-        self.failUnless(a is x and getObject(b) == 2.0)
+        self.failUnless(a is x and getProxiedObject(b) == 2.0)
         if fixed_coerce:
-            self.failUnless(a is x and type(getObject(b)) is float)
+            self.failUnless(a is x and type(getProxiedObject(b)) is float)
 
         x = P(1)
         y = 2
@@ -339,12 +340,12 @@ class ProxyTests(unittest.TestCase):
         x = P(1)
         y = 2.1
         a, b = coerce(x, y)
-        self.failUnless(type(getObject(a)) is float and b is y)
+        self.failUnless(type(getProxiedObject(a)) is float and b is y)
 
         x = P(1.1)
         y = 2
         a, b = coerce(x, y)
-        self.failUnless(a is x and type(getObject(b)) is float)
+        self.failUnless(a is x and type(getProxiedObject(b)) is float)
 
         x = 1
         y = P(2)
@@ -354,12 +355,12 @@ class ProxyTests(unittest.TestCase):
         x = 1.1
         y = P(2)
         a, b = coerce(x, y)
-        self.failUnless(a is x and type(getObject(b)) is float)
+        self.failUnless(a is x and type(getProxiedObject(b)) is float)
 
         x = 1
         y = P(2.1)
         a, b = coerce(x, y)
-        self.failUnless(type(getObject(a)) is float and b is y)
+        self.failUnless(type(getProxiedObject(a)) is float and b is y)
 
 def test_suite():
     return unittest.makeSuite(ProxyTests)

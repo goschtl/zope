@@ -710,7 +710,7 @@ static PyObject *api_object = NULL;
 
 static char
 getobject__doc__[] =
-"getObject(proxy) --> object\n"
+"getProxiedObject(proxy) --> object\n"
 "\n"
 "Get the underlying object for proxy, or the object itself, if it is\n"
 "not a proxy.";
@@ -852,7 +852,7 @@ wrapper_queryInnerProxy(PyObject *unused, PyObject *args)
 
 static PyMethodDef
 module_functions[] = {
-    {"getObject", wrapper_getobject, METH_O, getobject__doc__},
+    {"getProxiedObject", wrapper_getobject, METH_O, getobject__doc__},
     {"isProxy", wrapper_isProxy, METH_VARARGS, isProxy__doc__},
     {"queryProxy", wrapper_queryProxy, METH_VARARGS, queryProxy__doc__},
     {"queryInnerProxy", wrapper_queryInnerProxy, METH_VARARGS, 

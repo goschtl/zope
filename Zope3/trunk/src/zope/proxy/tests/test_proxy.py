@@ -13,7 +13,7 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.9 2003/05/28 15:49:12 jim Exp $
+$Id: test_proxy.py,v 1.10 2003/05/28 17:19:23 jim Exp $
 """
 import pickle
 import unittest
@@ -370,19 +370,19 @@ def test_isProxy():
 
     """
 
-def test_getObject():
+def test_getProxiedObject():
     """
-    >>> from zope.proxy import ProxyBase, getObject
+    >>> from zope.proxy import ProxyBase, getProxiedObject
     >>> class C:
     ...     pass
     >>> c = C()
-    >>> int(getObject(c) is c)
+    >>> int(getProxiedObject(c) is c)
     1
     >>> p = ProxyBase(c)
-    >>> int(getObject(p) is c)
+    >>> int(getProxiedObject(p) is c)
     1
     >>> p2 = ProxyBase(p)
-    >>> int(getObject(p2) is p)
+    >>> int(getProxiedObject(p2) is p)
     1
 
     """

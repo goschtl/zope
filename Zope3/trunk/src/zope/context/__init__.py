@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.16 2003/05/28 15:46:51 jim Exp $
+$Id: __init__.py,v 1.17 2003/05/28 17:19:22 jim Exp $
 """
 from __future__ import generators
 
@@ -32,7 +32,7 @@ from zope.context.wrapper import ContextDescriptor, ContextAware
 from zope.context.wrapper import ContextMethod, ContextProperty
 from zope.context.wrapper import Wrapper
 from zope.security.checker import defineChecker, selectChecker, BasicTypes
-from zope.proxy import queryProxy, queryInnerProxy, isProxy, getObject
+from zope.proxy import queryProxy, queryInnerProxy, isProxy, getProxiedObject
 from zope.context.interfaces import IContextWrapper
 from zope.hookable import hookable
 
@@ -47,7 +47,7 @@ def ContextWrapper(_ob, _parent, **kw):
     if type(_ob) is Proxy:
         # insert into proxies
         checker = getChecker(_ob)
-        _ob = getObject(_ob)
+        _ob = getProxiedObject(_ob)
         _ob = Proxy(Wrapper(_ob, _parent, **kw), checker)
     else:
         _ob = Wrapper(_ob, _parent, **kw)
@@ -69,10 +69,10 @@ def getWrapperObject(_ob):
     elif type(_ob) is Proxy:
         # insert into proxies
         checker = getChecker(_ob)
-        _ob = getObject(_ob)
-        _ob = Proxy(getObject(_ob), checker)
+        _ob = getProxiedObject(_ob)
+        _ob = Proxy(getProxiedObject(_ob), checker)
     else:
-        _ob = getObject(_ob)
+        _ob = getProxiedObject(_ob)
 
     return _ob
 
@@ -149,7 +149,7 @@ def queryAttr(collection, name, default=None):
 
 # XXX Do I actually need these?
 def _contextWrapperChecker(ob):
-    return selectChecker(getObject(ob))
+    return selectChecker(getProxiedObject(ob))
 defineChecker(Wrapper, _contextWrapperChecker)
 
 class ContextSuper:
