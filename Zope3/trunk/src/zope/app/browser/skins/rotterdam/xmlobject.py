@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.11 2004/02/08 05:45:27 nevyn Exp $
+$Id: xmlobject.py,v 1.12 2004/02/08 06:25:23 nevyn Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -77,7 +77,7 @@ class ReadContainerXmlObjectView(BrowserView):
                     name, len(item), iconUrl))
             else:
                 result.append(xmlEscape(
-                    '<item name=s icon_url=%s/>',
+                    '<item name=%s icon_url=%s/>',
                     name, iconUrl))
 
         return ' '.join(result)
@@ -89,8 +89,7 @@ class ReadContainerXmlObjectView(BrowserView):
         self.request.response.setHeader('Content-Type', 'text/xml')
         setNoCacheHeaders(self.request.response)
         res = (u'<?xml version="1.0" ?><children> %s </children>'
-                % self.children_utility(container)
-                )
+                % self.children_utility(container))
 	return res
 
     def singleBranchTree(self, root=''):
