@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.10 2003/01/28 04:51:17 rdmurray Exp $
+$Id: utility.py,v 1.11 2003/01/28 11:26:41 stevea Exp $
 """
 __metaclass__ = type
 
@@ -43,8 +43,10 @@ from zope.app.interfaces.form import InputErrors
 from zope.component.interfaces import IViewFactory
 
 def _fieldlist(names, schema):
-    if not names: fields = getFieldsInOrder(schema)
-    else: fields = [ (name, schema[name]) for name in names ]
+    if not names:
+        fields = getFieldsInOrder(schema)
+    else:
+        fields = [ (name, schema[name]) for name in names ]
     return fields
 
 def setUpWidget(view, name, field, value=None, prefix=None,
@@ -58,7 +60,6 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     If there isn't already a view attribute of the given name, then a
     widget will be created and assigned to the attribute.
     """
-
     # Has a (custom) widget already been defined?
     widget = getattr(view, name, None)
 
@@ -137,7 +138,6 @@ def haveWidgetsData(view, schema, names=None):
     Returns true if any schema field related widget has data
     that was entered by the user.
     """
-    
     for name, field in _fieldlist(names, schema):
         if  getattr(view, name).haveData():
             return True
@@ -157,7 +157,6 @@ def getWidgetsData(view, schema, required=1, names=None):
     from the input, an error will be raised.
 
     """
-
     result = {}
     errors = []
 
@@ -192,7 +191,6 @@ def getWidgetsDataForContent(view, schema, content=None, required=0,
     raised.
 
     """
-
     data = getWidgetsData(view, schema, required, names)
 
     if content is None:
