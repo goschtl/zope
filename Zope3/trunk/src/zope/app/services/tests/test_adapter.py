@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.7 2003/03/23 22:35:42 jim Exp $
+$Id: test_adapter.py,v 1.8 2003/03/30 13:30:01 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -179,7 +179,8 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
                 self.assertEqual(adapter.__class__, A)
                 self.assertEqual(adapter.context, o)
 
-        self.assertEqual(service.getAdapter(o, I1, u"Yatta!"), o)
+        self.assertRaises(ComponentLookupError, service.getAdapter,
+                          o, I1, u"Yatta!")
 
         for r in I1, I1E:
             for p in I2B, I2:
@@ -190,7 +191,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
                 self.assertEqual(adapter.__class__, A)
                 self.assertEqual(adapter.context, o)
 
-        self.assertEqual(service.queryAdapter(o, I1, None, u"Yatta!"), o)
+        self.assertEqual(service.queryAdapter(o, I1, None, u"Yatta!"), None)
 
         self.assertRaises(ComponentLookupError, service.getAdapter,
                           O(), I3, "Yatta!")
