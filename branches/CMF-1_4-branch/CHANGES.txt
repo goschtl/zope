@@ -2,6 +2,9 @@ CMF 1.4.1 (unreleased)
 
   Bug Fixes
 
+    - Filesystem-based scripts should open their files in text mode, not
+      binary (Collector #185).
+
     - skins (CMFDefault): Fixed permission name and html in roster.
 
     - type actions: Made sure oldstyle fti data is always converted.
