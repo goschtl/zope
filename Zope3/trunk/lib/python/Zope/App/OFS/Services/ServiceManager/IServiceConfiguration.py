@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IServiceConfiguration.py,v 1.2 2002/11/30 18:39:16 jim Exp $
+$Id: IServiceConfiguration.py,v 1.3 2002/12/03 18:15:30 efge Exp $
 """
 
 from Interface.Attribute import Attribute
@@ -30,7 +30,7 @@ class IServiceConfiguration(IConfiguration):
 
     componentPath = Attribute("The physical path to the component")
 
-    def getService(service_manager):
+    def getService():
         """Return the service component named in the directive.
         """
 
