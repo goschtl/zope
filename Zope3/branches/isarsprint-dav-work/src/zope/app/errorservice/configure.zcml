@@ -1,0 +1,43 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <!-- Error Reporting Service -->
+
+  <serviceType
+      id="ErrorLogging"
+      interface=".interfaces.IErrorReportingService" 
+      />
+
+  <content class=".ErrorReportingService">
+    <factory
+        id="zope.app.ErrorLogging"
+        />
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IErrorReportingService"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.ILocalErrorReportingService"
+        />
+    </content>
+
+  <content class=".RootErrorReportingService">
+    <require
+        permission="zope.Public"
+        interface=".interfaces.IErrorReportingService"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.ILocalErrorReportingService"
+        />
+    </content>
+
+  <service 
+      serviceType="ErrorLogging"
+      permission="zope.Public"
+      component=".globalErrorReportingService" 
+      />
+
+  <include package=".browser" />
+
+</configure>
