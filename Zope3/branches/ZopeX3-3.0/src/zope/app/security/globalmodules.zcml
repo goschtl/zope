@@ -90,10 +90,6 @@
                        weibullvariate WichmannHill whseed" />
   </module>
 
-  <module module="whrandom">
-    <allow attributes="seed choice randint random seed uniform" />
-  </module>
-
   <module module="bisect">
     <allow attributes="bisect_left bisect_right bisect insort_left
                        insort_right insort" />
