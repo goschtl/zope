@@ -77,8 +77,8 @@ class ContentComponentPermissionEdit(EditView):
             schema = self.context.schema
             perms = trustedRemoveSecurityProxy(self.context.permissions)
             for name, field in getFieldsInOrder(schema):
-                getPerm = getattr(self, name+'_get_perm_widget').getData()
-                setPerm = getattr(self, name+'_set_perm_widget').getData()
+                getPerm = getattr(self, name+'_get_perm_widget').getInputValue()
+                setPerm = getattr(self, name+'_set_perm_widget').getInputValue()
                 perms[name] = (getPerm, setPerm)
             status = 'Fields permissions mapping updated.'
 
