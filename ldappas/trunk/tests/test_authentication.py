@@ -45,18 +45,34 @@ class FakeLDAPAdapter:
 
 class FakeLDAPConnection:
     def search(self, base, scope='sub', filter='(objectClass=*)', attrs=[]):
+        dn1 = u'uid=1,dc=test'
+        entry1 = {'cn': [u'many'],
+                  'uid': [u'1'],
+                  'sn': [u'mr1'],
+                  }
+        dn2 = u'uid=2,dc=test'
+        entry2 = {'cn': [u'many'],
+                  'uid': [u'2'],
+                  'sn': [u'mr2'],
+                  }
+        dn42 = u'uid=42,dc=test'
+        entry42 = {'cn': [u'ok'],
+                   'uid': [u'42'],
+                   'sn': [u'the question'],
+                   'mult': [u'm1', u'm2'],
+                   }
         if base.endswith('dc=bzzt'):
             raise NoSuchObject
-        if filter == '(cn=many)':
-            return [(u'uid=1,dc=test', {'cn': [u'many']}),
-                    (u'uid=2,dc=test', {'cn': [u'many']})]
         if filter == '(cn=none)':
             return []
-        if filter == '(cn=ok)':
-            return [(u'uid=42,dc=test', {'cn': [u'ok'],
-                                         'uid': [u'42'],
-                                         'mult': [u'm1', u'm2'],
-                                         })]
+        if filter in ('(cn=many)', '(cn=*many*)'):
+            return [(dn1, entry1), (dn2, entry2)]
+        if filter == '(cn=ok)' or filter == '(uid=42)':
+            return [(dn42, entry42)]
+        if filter in ('(&(sn=*mr2*)(cn=*many*))', '(&(cn=*many*)(sn=*mr2*))'):
+            return [(dn2, entry2)]
+        if filter == '(objectClass=*)':
+            return [(dn1, entry1), (dn2, entry2), (dn42, entry42)]
         return []
 
 def setUp(test):
