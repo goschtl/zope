@@ -331,7 +331,7 @@ def do_mail(name, remote, repo, addrs, subjs,
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS: %s " % name
 
-    diff_msg = '\n\n'
+    diff_msg = '\n'
 
     if remote is not None and remote.has_key('leading_path'):
         l = remote['leading_path']
