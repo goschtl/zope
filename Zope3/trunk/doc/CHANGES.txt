@@ -223,6 +223,9 @@ Zope Changes
 
     Restructuring
 
+    - The workflow XML import/export functionality uses now a set of adapters
+      instead of a complicated utility and custom registry structure.
+
     - Reimplemented the utility services using adapter registries.
 
     - Replaced the *used* names in schema.errornames to exceptions in
