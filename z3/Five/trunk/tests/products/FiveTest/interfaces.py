@@ -15,3 +15,5 @@ class IAdapted(Interface):
         """A method to adapt.
         """
 
+class ISimpleContent(Interface):
+    pass

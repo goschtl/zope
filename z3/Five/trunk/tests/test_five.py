@@ -15,6 +15,7 @@ ZopeTestCase.installProduct('FiveTest')
 from zope.component import getAdapter
 from Products.FiveTest.classes import Adaptable
 from Products.FiveTest.interfaces import IAdapted
+from Products.FiveTest.browser import SimpleContentView
 
 class FiveTestCase(ZopeTestCase.ZopeTestCase):
     def beforeSetUp(self):
@@ -33,8 +34,17 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         self.assertEquals(
             "Adapted: The method",
             adapted.adaptedMethod())
+
+    def test_view1(self):
         
-    
+        self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        test = self.root.test
+        view = self.root.unrestrictedTraverse('testoid/eagle.txt')
+        self.assert_(isinstance(view, SimpleContentView))
+        data = view()
+        self.assertEquals('The eagle has landed', data)
+        
 if __name__ == '__main__':
     framework()
 else:

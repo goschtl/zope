@@ -1,8 +1,16 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five">
 
   <adapter 
     for=".interfaces.IAdaptable"
     provides=".interfaces.IAdapted"
     factory=".classes.Adapter" /> 
-    
+  
+  <five:page 
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    attribute="eagle"
+    name="eagle.txt"
+    />
+
 </configure>
