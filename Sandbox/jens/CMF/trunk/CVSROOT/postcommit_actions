@@ -322,7 +322,7 @@ def find_entries(repo=None, all=None):
     return entries
 
 def do_mail(name, remote, repo, addrs, subjs,
-            msgfilenm="", doing_directory=0, no_files=0):
+            msgfilenm, doing_directory=0, no_files=0):
     """Send notice about checkin to addresses dictated by traffic table.
 
     We include a diff."""
@@ -344,7 +344,7 @@ def do_mail(name, remote, repo, addrs, subjs,
         if subjs[2] == 'New':
             new_msg = ('--- Added directory %s in package %s ---\n'
                        % (repo, name))
-            diff_msg = diff_msg + new_msg + '\n\n'
+            diff_msg = diff_msg + new_msg + '\n'
     else:
         subject = subject + " -"
         for fn, old, new in subjs:
@@ -355,7 +355,7 @@ def do_mail(name, remote, repo, addrs, subjs,
             else:
                 new_msg = create_diff(name, repo, fn, old, new)
 
-            diff_msg = diff_msg + new_msg + '\n\n'
+            diff_msg = diff_msg + new_msg + '\n'
 
     cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
                                      (DRYRUN and "echo Would do: ") or "",
@@ -363,8 +363,10 @@ def do_mail(name, remote, repo, addrs, subjs,
                                      (VERBOSE and "-v") or "",
                                      subject,
                                      string.join(addrs, ",")))
-    if msgfilenm:
-        cmd = cmd + "< %s" % msgfilenm
+    mf = open(msgfilenm, 'a')
+    mf.write("\n%s" % diff_msg)
+    mf.close()
+    cmd = cmd + "< %s" % msgfilenm
 
     if VERBOSE:
         complain("%sDoing mail cmd:\n\t%s\n",
@@ -372,8 +374,6 @@ def do_mail(name, remote, repo, addrs, subjs,
     result = os.system(cmd)
     if result:
         note_failure("*** Mail failed with error %s...", result)
-
-
 
 def create_diff(name, repo, file, old, new):
     """ Create a diff comparing old and new versions """
