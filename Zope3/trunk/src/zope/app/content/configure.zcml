@@ -22,12 +22,12 @@
       description="Minimal folder" />
 
   <allow
-      interface="zope.app.interfaces.services.service.Read"
+      attributes="getSiteManager"
       />
 
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.service.Write"
+      attributes="setSiteManager"
       />
 
   <require

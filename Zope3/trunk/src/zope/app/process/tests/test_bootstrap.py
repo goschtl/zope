@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.2 2003/08/17 06:07:30 philikon Exp $
+$Id: test_bootstrap.py,v 1.3 2003/09/02 20:46:48 jim Exp $
 """
 
 import unittest
@@ -64,7 +64,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
         self.root_folder = RootFolder()
         root[ZopePublication.root_name] = self.root_folder
         self.service_manager = ServiceManager()
-        self.root_folder.setServiceManager(self.service_manager)
+        self.root_folder.setSiteManager(self.service_manager)
         get_transaction().commit()
         cx.close()
 

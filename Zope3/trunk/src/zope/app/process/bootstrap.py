@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.7 2003/08/17 06:07:26 philikon Exp $
+$Id: bootstrap.py,v 1.8 2003/09/02 20:46:48 jim Exp $
 """
 
 from zope.app import zapi
@@ -76,7 +76,7 @@ class BootstrapSubscriberBase:
             self.service_manager = traverse(self.root_folder, '/++etc++site')
         except ComponentLookupError:
             self.service_manager = ServiceManager()
-            self.root_folder.setServiceManager(self.service_manager)
+            self.root_folder.setSiteManager(self.service_manager)
 
         self.doSetup()
 

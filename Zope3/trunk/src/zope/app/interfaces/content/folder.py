@@ -13,17 +13,17 @@
 ##############################################################################
 """
 
-$Id: folder.py,v 1.4 2003/03/30 15:37:28 sidnei Exp $
+$Id: folder.py,v 1.5 2003/09/02 20:46:47 jim Exp $
 """
 
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.services.service import IServiceManagerContainer
+from zope.app.interfaces.services.service import IPossibleSite
 from zope.interface import Interface
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
-class IFolder(IContainer, IServiceManagerContainer, IAttributeAnnotatable):
+class IFolder(IContainer, IPossibleSite, IAttributeAnnotatable):
     """The standard Zope Folder object interface."""
 
 class IRootFolder(IFolder, IContainmentRoot):

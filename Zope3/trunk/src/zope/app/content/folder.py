@@ -15,8 +15,9 @@
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.content.fssync import DirectoryAdapter
-from zope.app.interfaces.content.folder import IFolder, IRootFolder, \
-     ICloneWithoutChildren
+from zope.app.interfaces.content.folder import ICloneWithoutChildren
+from zope.app.interfaces.content.folder import IFolder, IRootFolder
+from zope.app.interfaces.services.service import ISite
 from zope.app.services.servicecontainer import ServiceManagerContainer
 from zope.app.zapi import ContextWrapper
 from zope.exceptions import DuplicationError
@@ -128,13 +129,13 @@ class ReadDirectory:
 
     def keys(self):
         keys = self.context.keys()
-        if self.context.hasServiceManager():
+        if ISite.isImplementedBy(self.context):
             return list(keys) + ['++etc++site']
         return keys
 
     def get(self, key, default=None):
-        if key == '++etc++site' and self.context.hasServiceManager():
-            return self.context.getServiceManager()
+        if key == '++etc++site' and ISite.isImplementedBy(self.context):
+            return self.context.getSiteManager()
 
         return self.context.get(key, default)
 
@@ -152,7 +153,7 @@ class ReadDirectory:
 
     def __len__(self):
         l = len(self.context)
-        if self.context.hasServiceManager():
+        if ISite.isImplementedBy(self.context):
             l += 1
         return l
 
@@ -169,8 +170,8 @@ class FolderAdapter(DirectoryAdapter):
 
     def contents(self):
         result = super(FolderAdapter, self).contents()
-        if self.context.hasServiceManager():
-            sm = self.context.getServiceManager()
+        if ISite.isImplementedBy(self.context):
+            sm = self.context.getSiteManager()
             w = ContextWrapper(sm, self.context, name='++etc++site')
             result.append(('++etc++site', w))
         return result

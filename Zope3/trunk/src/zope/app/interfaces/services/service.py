@@ -13,14 +13,13 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.14 2003/06/21 21:22:10 jim Exp $
+$Id: service.py,v 1.15 2003/09/02 20:46:47 jim Exp $
 """
 __metaclass__ = type
 
 from zope.interface import Interface
 from zope.component.interfaces import IServiceService
 from zope.app.interfaces.services import registration
-
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
@@ -56,36 +55,23 @@ class IComponentManager(Interface):
         """
 
 
-class IReadServiceManagerContainer(Interface):
+class IPossibleSite(Interface):
+    """An object that could be a site
+    """
 
-    def getServiceManager():
+    def setSiteManager(sm):
+        """Sets the service manager for this object.
+        """
+
+    def getSiteManager():
         """Returns the service manager contained in this object.
 
         If there isn't a service manager, raise a component lookup.
         """
 
-    def queryServiceManager(default=None):
-        """Returns the service manager contained in this object.
-
-        If there isn't a service manager, return the default.
-        """
-
-    def hasServiceManager():
-        """Query to find out if the component defines a service manager."""
-
-Read = IReadServiceManagerContainer
-
-class IWriteServiceManagerContainer(Interface):
-
-    def setServiceManager(sm):
-        """Sets the service manager for this object."""
-
-Write = IWriteServiceManagerContainer
-
-class IServiceManagerContainer(IReadServiceManagerContainer,
-                               IWriteServiceManagerContainer):
-    pass
-
+class ISite(IPossibleSite):
+    """Marker interface to indicate that we have a site
+    """
 
 class IBindingAware(Interface):
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.21 2003/07/04 13:28:19 ryzaja Exp $
+$Id: test_view.py,v 1.22 2003/09/02 20:46:51 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -235,7 +235,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.rootFolder = RootFolder()
-        self.rootFolder.setServiceManager(PhonyServiceManager())
+        self.rootFolder.setSiteManager(PhonyServiceManager())
         default = traverse(self.rootFolder, '++etc++site/default')
         self.__template = PhonyTemplate()
         default.setObject('t', self.__template)

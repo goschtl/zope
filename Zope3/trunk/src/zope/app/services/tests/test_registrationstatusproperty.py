@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_registrationstatusproperty.py,v 1.2 2003/06/23 00:31:31 jim Exp $
+$Id: test_registrationstatusproperty.py,v 1.3 2003/09/02 20:46:51 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -85,7 +85,7 @@ class Test(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self, folders=True)
         self.__sm = TestingServiceManager()
-        self.rootFolder.setServiceManager(self.__sm)
+        self.rootFolder.setSiteManager(self.__sm)
 
     def test_property(self):
 
