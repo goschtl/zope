@@ -17,7 +17,7 @@ $Id$
 """
 from zope.app import zapi
 from zope.app.component.metaconfigure import handler
-from zope.configuration.fields import GlobalInterface
+from zope.configuration.fields import GlobalInterface, GlobalObject
 from zope.interface import Interface
 
 class IRendererDirective(Interface):
@@ -35,7 +35,7 @@ class IRendererDirective(Interface):
                     u"browser) for which this view is being registered.",
         required=True)
 
-    factory = GlobalInterface(
+    factory = GlobalObject(
         title=u"Factory",
         description=u"Specifies the factory that is used to create the "
                     u"view on the source.",
