@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.4 2002/12/30 15:54:25 gotcha Exp $
+$Id: xmlobject.py,v 1.5 2003/01/02 15:03:20 stevea Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -133,10 +133,12 @@ class XmlObjectView(BrowserView):
 
     def singleBranchTree(self, root=''):
         parent = getParent(self.context)
-        while parent:
+        while parent is not None:
                 if IReadContainer.isImplementedBy(parent):
                         container = parent
-                        view = queryView(container, 'singleBranchTree.xml', self.request)
+                        view = queryView(container, 
+                                         'singleBranchTree.xml',
+                                         self.request)
                         return view()
                 else:
                     parent = getParent(parent)

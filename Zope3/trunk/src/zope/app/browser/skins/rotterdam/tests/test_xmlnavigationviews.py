@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_xmlnavigationviews.py,v 1.3 2003/01/02 14:07:27 stevea Exp $
+$Id: test_xmlnavigationviews.py,v 1.4 2003/01/02 15:03:21 stevea Exp $
 """
 
 #import sys
@@ -27,6 +27,7 @@ from zope.pagetemplate.tests.util import check_xml
 from zope.app.browser.skins.rotterdam.tests import util
 from zope.app.browser.skins.rotterdam.xmlobject \
     import ReadContainerXmlObjectView
+from zope.app.interfaces.container import IReadContainer
 from zope.app.browser.skins.rotterdam.xmlobject import XmlObjectView
 from zope.publisher.browser import TestRequest
 
@@ -54,15 +55,25 @@ class TestXmlObject(EventSetup, TestCase):
 
         from zope.app.content.file import File
         from zope.proxy.context import ContextWrapper
-        self.file1 = File()
+        file1 = File()
         self.rootFolder.setObject("file1", self.folder1_1_1)
-        self.file1 = ContextWrapper(self.file1, self.folder1_1_1,
-             name = "file1")
-             
-#        treeView = XmlObjectView(self.file1, TestRequest()).singleBranchTree
-#        check_xml(treeView(), util.read_output('test5.xml'))
-
-
+        self.file1 = ContextWrapper(file1, self.folder1_1_1, name = "file1")
+        from zope.component.view import provideView
+        from zope.publisher.interfaces.browser import IBrowserPresentation
+        from zope.publisher.interfaces.browser import IBrowserPublisher
+        class ReadContainerView(ReadContainerXmlObjectView):
+            __implements__ = (IBrowserPublisher, 
+                              ReadContainerXmlObjectView.__implements__)
+            def browserDefault(self, request):
+                return self, ()
+            def publishTraverse(self, request, name):
+                raise NotFoundError(self, name, request)
+            def __call__(self):
+                return self.singleBranchTree()
+        provideView(IReadContainer, 'singleBranchTree.xml',
+                    IBrowserPresentation, ReadContainerView)
+        treeView = XmlObjectView(self.file1, TestRequest()).singleBranchTree
+        #check_xml(treeView(), util.read_output('test5.xml'))
 
 
 def test_suite():
