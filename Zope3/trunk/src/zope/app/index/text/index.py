@@ -18,13 +18,12 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.14 2003/07/14 03:53:24 anthony Exp $
+$Id: index.py,v 1.15 2003/08/05 08:33:31 anthony Exp $
 """
 
-from zope.component import getService, queryAdapter
+from zope.component import getService
 from zope.app.services.servicenames import HubIds
 from zope.context import ContextMethod
-from zope.app.interfaces.event import ISubscriber
 from zope.index.text.textindexwrapper import TextIndexWrapper
 
 from zope.app.interfaces.services.hub import \
@@ -35,31 +34,14 @@ from zope.app.interfaces.services.hub import \
 from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.index.text import IUITextIndex, IUITextCatalogIndex
 from zope.interface import implements
+from zope.app.index import InterfaceIndexingSubscriber
+from zope.app.interfaces.catalog.index import ICatalogIndex
 
-class TextCatalogIndex(TextIndexWrapper):
+class TextCatalogIndex(InterfaceIndexingSubscriber, TextIndexWrapper):
+    implements(ICatalogIndex, IUITextCatalogIndex)
 
-    implements(ISubscriber, IUITextCatalogIndex)
-
-    def notify(wrapped_self, event):
-        """An event occurred.  Index or unindex the object in response."""
-        if (IObjectRegisteredHubEvent.isImplementedBy(event) or
-            IObjectModifiedHubEvent.isImplementedBy(event)):
-            texts = wrapped_self._getTexts(event.object)
-            if texts is not None:
-                wrapped_self.index_doc(event.hubid, texts)
-        elif IObjectUnregisteredHubEvent.isImplementedBy(event):
-            try:
-                wrapped_self.unindex_doc(event.hubid)
-            except KeyError:
-                pass
-    notify = ContextMethod(notify)
-
-    def _getTexts(wrapped_self, object):
-        adapted = queryAdapter(object, ISearchableText, context=wrapped_self)
-        if adapted is None:
-            return None
-        return adapted.getSearchableText()
-    _getTexts = ContextMethod(_getTexts)
+    default_interface = ISearchableText
+    default_field_name = "getSearchableText"
 
 class TextIndex(TextCatalogIndex):
 
@@ -98,7 +80,7 @@ class TextIndex(TextCatalogIndex):
 
     def _update(wrapped_self, registrations):
         for location, hubid, wrapped_object in registrations:
-            texts = wrapped_self._getTexts(wrapped_object)
+            texts = wrapped_self._getValue(wrapped_object)
             if texts is not None:
                 wrapped_self.index_doc(hubid, texts)
     _update = ContextMethod(_update)

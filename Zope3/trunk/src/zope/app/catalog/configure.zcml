@@ -2,7 +2,6 @@
                xmlns:browser="http://namespaces.zope.org/browser"
 >
 
-
 <content class=".catalog.Catalog">
   <implements 
            interface="zope.app.interfaces.annotation.IAttributeAnnotatable"/>

@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.10 2003/07/14 03:53:20 anthony Exp $
+$Id: index.py,v 1.11 2003/08/05 08:33:25 anthony Exp $
 """
 
 from zope.component import getService, queryAdapter
@@ -36,47 +36,10 @@ from zope.app.interfaces.services.hub import \
 
 from zope.app.interfaces.index.field import IUIFieldIndex, IUIFieldCatalogIndex
 from zope.app.interfaces.catalog.index import ICatalogIndex
+from zope.app.index import InterfaceIndexingSubscriber
 
-class FieldCatalogIndex(FieldIndexWrapper):
-
-    implements(ISubscriber, ICatalogIndex, IUIFieldCatalogIndex)
-
-    def __init__(self, field_name, interface=None):
-        FieldIndexWrapper.__init__(self)
-        self._field_name = field_name
-        self._interface = interface
-
-    field_name = property(lambda self: self._field_name)
-    interface = property(lambda self: self._interface)
-
-    def _getValue(self, object):
-        if self._interface is not None:
-            object = queryAdapter(object, self._interface)
-            if object is None: return None
-
-        value = getattr(object, self._field_name, None)
-        if value is None: return None
-
-        if callable(value):
-            try: value = value()
-            except: return None
-
-        return value
-
-    def notify(self, event):
-        """An event occurred.  Index or unindex the object in response."""
-
-        if (IObjectRegisteredHubEvent.isImplementedBy(event) or
-            IObjectModifiedHubEvent.isImplementedBy(event)):
-            value = self._getValue(event.object)
-            if value is not None:
-                self.index_doc(event.hubid, value)
-        elif IObjectUnregisteredHubEvent.isImplementedBy(event):
-            try:
-                self.unindex_doc(event.hubid)
-            except KeyError:
-                pass
-    notify = ContextMethod(notify)
+class FieldCatalogIndex(InterfaceIndexingSubscriber, FieldIndexWrapper):
+    implements(ICatalogIndex, IUIFieldCatalogIndex)
 
 class FieldIndex(FieldCatalogIndex):
 

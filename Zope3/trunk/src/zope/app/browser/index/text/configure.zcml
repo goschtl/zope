@@ -4,6 +4,7 @@
    i18n_domain='zope'
    >
 
+<!--
   <browser:menuItem
     menu="add_component"
     for="zope.app.interfaces.container.IAdding"
@@ -11,6 +12,17 @@
     title="Text Index"
     description="An index to support full-text search"
     />
+-->
+  <browser:addform
+    name="AddTextIndex"
+    menu="add_component" title="Text Index"
+    schema="zope.app.interfaces.index.text.IUITextIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.app.index.text.index.TextIndex"
+    arguments="field_name"
+    keyword_arguments="interface"
+    />
+
 
   <browser:page
     for="zope.app.interfaces.index.text.IUITextIndex"

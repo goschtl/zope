@@ -38,12 +38,15 @@ class TestCatalogAdd(BrowserTestCase):
                  'http://localhost/felix_the/@@contents.html')
 
         # and a couple more indexes now - first a full text index
-        response = self.publish("/felix_the/@@contents.html",
+        response = self.publish("/felix_the/+/AddTextIndexToCatalog=fulltext",
                         basic='mgr:mgrpw', 
-                        form={'type_name':
-                                    u'zope.app.index.text.TextCatalogIndex',
-                              'new_value': 'fulltext' })
+                        form={'field.interface':
+                               'zope.app.interfaces.index.text.ISearchableText',
+                              'field.field_name':'getSearchableText',
+                              'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.getHeader('Location'),
+                 'http://localhost/felix_the/@@contents.html')
 
         # Single page submit
         response = self.publish("/felix_the/+/AddFieldIndexToCatalog=name",

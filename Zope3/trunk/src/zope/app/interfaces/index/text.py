@@ -13,10 +13,14 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: text.py,v 1.4 2003/07/14 08:31:22 anthony Exp $
+$Id: text.py,v 1.5 2003/08/05 08:33:34 anthony Exp $
 """
 
 from zope.interface import Interface
+from zope.schema import BytesLine
+from zope.app.component.interfacefield import InterfaceField
+
+from zope.index.interfaces import IStatistics
 
 class ISearchableText(Interface):
 
@@ -32,13 +36,21 @@ class ISearchableText(Interface):
         returning None indicates the object should not be indexed
         """
 
-from zope.index.interfaces import IStatistics
-
 class IUITextCatalogIndex(IStatistics):
 
     """Interface for creating a TextIndex from with a catalog"""
+    interface = InterfaceField(
+                title=u"Interface", 
+                description=u"Objects will be adapted to this interface",
+                required=False,
+                default=ISearchableText)
 
-class IUITextIndex(IStatistics):
+    field_name = BytesLine(
+                 title=u"Field Name",
+                 description=u"Name of the field to index", 
+                 default="getSearchableText")
+
+class IUITextIndex(IUITextCatalogIndex):
 
     """Interface for creating a TextIndex from the ZMI."""
 
