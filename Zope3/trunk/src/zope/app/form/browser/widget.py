@@ -404,7 +404,6 @@ class DisplayWidget(BrowserWidget):
             return self.context.default
 
 
-# XXX Note, some HTML quoting is needed in renderTag and renderElement.
 def renderTag(tag, **kw):
     """Render the tag. Well, not all of it, as we may want to / it."""
     attr_list = []
@@ -428,7 +427,7 @@ def renderTag(tag, **kw):
         cssWidgetType = u''
     if cssWidgetType or cssClass:
         names = filter(None, (cssClass, cssWidgetType))
-        attr_list.append(u'class="%s"' % ' '.join(names))
+        attr_list.append(u'class="%s"' %' '.join(names))
 
     if 'style' in kw:
         if kw['style'] != u'':
@@ -460,6 +459,7 @@ def renderTag(tag, **kw):
 
 def renderElement(tag, **kw):
     if 'contents' in kw:
+        # Do not quote contents, since it often contains generated HTML.
         contents = kw['contents']
         del kw['contents']
         return u"%s>%s</%s>" % (renderTag(tag, **kw), contents, tag)
