@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.13 2003/05/01 19:35:35 faassen Exp $
+$Id: test_auth.py,v 1.14 2003/06/03 14:50:38 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,10 +28,11 @@ from zope.app.traversing import getPath, traverse
 from zope.app.interfaces.services.configuration import Active
 
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
+from zope.interface import implements
 
 class Request:
 
-    __implements__ = IHTTPCredentials
+    implements(IHTTPCredentials)
 
     def __init__(self, lpw):
         self.__lpw = lpw
@@ -61,13 +62,14 @@ class AuthSetup(EventSetup):
             self.createServiceManager(folder)
 
         default = traverse(folder, '++etc++site/default')
-        key = default.setObject("AuthenticationService", AuthenticationService())
+        key = default.setObject("AuthenticationService",
+                                AuthenticationService())
         auth = traverse(default, key)
 
         path = getPath(auth)
         configuration = ServiceConfiguration(Authentication, path)
         configure = default.getConfigurationManager()
-        key = configure.setObject(None, configuration)
+        key = configure.setObject('', configuration)
         traverse(configure, key).status = Active
 
         auth.setObject('srichter', User('srichter', 'Stephan', 'Richter',
