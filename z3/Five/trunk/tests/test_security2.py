@@ -6,6 +6,7 @@ if __name__ == '__main__':
 import unittest
 from AccessControl import getSecurityManager
 from Testing import ZopeTestCase
+from Testing.ZopeTestCase.functional import Functional
 from AccessControl import Unauthorized
 
 ZopeTestCase.installProduct('Five')
@@ -45,7 +46,15 @@ class RestrictedPythonTest(ZopeTestCase.ZopeTestCase):
             self.folder.ps()
         except (AttributeError, Unauthorized):
             pass
-        
+
+view_names = [
+    'eagle.txt',
+    'falcon.html',
+    'owl.html',
+    'flamingo.html',
+    'flamingo2.html',
+    'condor.html']
+
 class SecurityTestCase(RestrictedPythonTest):
     
     def afterSetUp(self):
@@ -55,29 +64,44 @@ class SecurityTestCase(RestrictedPythonTest):
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
-    view_names = [
-        'eagle.txt',
-        'falcon.html',
-        'owl.html',
-        'flamingo.html',
-        'flamingo2.html',
-        'condor.html']
-    
     def test_no_permission(self):
         self.login('viewer')
-        for view_name in self.view_names:
+        for view_name in view_names:
             self.checkUnauthorized(
                 'context.restrictedTraverse("testoid/%s")()' % view_name)
 
     def test_permission(self):
         self.login('manager')
-        for view_name in self.view_names:
+        for view_name in view_names:
             self.check(
                 'context.restrictedTraverse("testoid/%s")()' % view_name)
+
+class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
+    """A functional test for security actually involving the publisher.
+    """
+    def afterSetUp(self):
+        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        uf = self.folder.acl_users
+        uf._doAddUser('viewer', 'secret', [], [])
+        uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+    def test_no_permission(self):
+        # XXX this shouldn't be passing!
+        for view_name in view_names:
+            self.publish('/folder/test_folder_1/testoid/%s' % view_name,
+                         basic='viewer:secret')
+            
+    def test_permission(self):
+        for view_name in view_names:
+            self.publish('/folder/test_folder_1/testoid/%s' % view_name,
+                         basic='manager:r00t')
         
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SecurityTestCase))
+    suite.addTest(unittest.makeSuite(PublishTestCase))
     return suite
 
 if __name__ == '__main__':
