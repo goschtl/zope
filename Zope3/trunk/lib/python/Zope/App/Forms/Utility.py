@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: Utility.py,v 1.2 2002/10/28 23:52:31 jim Exp $
+$Id: Utility.py,v 1.3 2002/10/29 17:12:37 jim Exp $
 """
 __metaclass__ = type
 
@@ -41,7 +41,7 @@ from Zope.App.Forms.Exceptions import WidgetsError
 from Zope.Proxy.ContextWrapper import ContextWrapper
 
 
-def setUpWidget(view, name, field, value=None):
+def setUpWidget(view, name, field, value=None, prefix=None):
     """Set up a single view widget
 
     The widget will be an attribute of the view. If there is already
@@ -68,10 +68,13 @@ def setUpWidget(view, name, field, value=None):
                 "but isn't."
                 % (view.__class__.__name__, name))
 
+    if prefix:
+        widget.setPrefix(prefix)
+
     if value is not None:
         widget.setData(value)
 
-def setUpWidgets(view, schema, **kw):
+def setUpWidgets(view, schema, prefix=None, **kw):
     """Set up widgets for the fields defined by a schema
 
     Initial data is provided by keyword arguments.
@@ -81,9 +84,9 @@ def setUpWidgets(view, schema, **kw):
         field = schema[name]
         if IField.isImplementedBy(field):
             # OK, we really got a field
-            setUpWidget(view, name, field, kw.get(name))
+            setUpWidget(view, name, field, kw.get(name), prefix=prefix)
 
-def setUpEditWidgets(view, schema, content=None):
+def setUpEditWidgets(view, schema, content=None, prefix=None):
     """Set up widgets for the fields defined by a schema
 
     Initial data is provided by content object attributes.
@@ -97,7 +100,8 @@ def setUpEditWidgets(view, schema, content=None):
         field = schema[name]
         if IField.isImplementedBy(field):
             # OK, we really got a field
-            setUpWidget(view, name, field, getattr(content, name, None))
+            setUpWidget(view, name, field, getattr(content, name, None),
+                        prefix = prefix)
 
 def getWidgetsData(view, schema):
     """Collect the user-entered data defined by a schema

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testUtility.py,v 1.2 2002/10/28 23:52:31 jim Exp $
+$Id: testUtility.py,v 1.3 2002/10/29 17:12:37 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -55,6 +55,9 @@ class W(TextWidget):
     def setData(self, v):
         self.context.validate(v)
         self._data = v
+
+    def setPrefix(self, prefix):
+        self.prefix = prefix
 
     def __call__(self):
         name = self.getName()
@@ -137,6 +140,14 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(view.title(), u'title: ')
         self.assertEqual(view.description(), u'description: ')
     
+    def test_setupWidgets_w_prefix(self):
+        c = C()
+        request = TestRequest()
+        view = BrowserView(c, request)
+        setUpWidgets(view, I, prefix='spam')
+        self.assertEqual(view.title.prefix, 'spam')
+        self.assertEqual(view.description.prefix, 'spam')
+    
     def test_setupWidgets_w_initial_data_and_custom_widget(self):
         c = C()
         request = TestRequest()
@@ -157,6 +168,18 @@ class Test(PlacelessSetup, TestCase):
         setUpEditWidgets(view, I)
         self.assertEqual(view.title(), u'title: ct')
         self.assertEqual(view.description(), u'description: cd')
+        self.assertEqual(view.title, w) 
+
+    def test_setupEditWidgets_w_custom_widget_and_prefix(self):
+        c = C()
+        c.title = u'ct'
+        c.description = u'cd'
+        request = TestRequest()
+        view = BrowserView(c, request)
+        view.title = w = W(I['title'], request) 
+        setUpEditWidgets(view, I, prefix='eggs')
+        self.assertEqual(view.title.prefix, 'eggs')
+        self.assertEqual(view.description.prefix, 'eggs')
         self.assertEqual(view.title, w) 
 
     def test_setupEditWidgets_w_other_data(self):
