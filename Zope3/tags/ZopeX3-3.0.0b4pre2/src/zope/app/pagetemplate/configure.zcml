@@ -1,0 +1,30 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <content class=".viewpagetemplatefile.BoundPageTemplate">
+    <allow attributes="__call__ __str__ __name__" />
+  </content>
+
+  <adapter
+      for="*"
+      provides=".interfaces.IZopeTalesAPI"
+      factory=".talesapi.ZopeTalesAPI" 
+      />
+
+  <adapter
+      for="*"
+      provides="zope.app.traversing.interfaces.IPathAdapter"
+      factory=".talesapi.ZopeTalesAPI"
+      name="zope" 
+      />
+
+  <adapter
+      for="*"
+      provides="zope.app.traversing.interfaces.IPathAdapter"
+      factory=".urlquote.URLQuote"
+      name="url"/> 
+
+ <content class="zope.tales.tales.Iterator">
+    <allow interface="zope.tales.interfaces.ITALESIterator" />
+ </content>
+
+</configure>
