@@ -23,7 +23,7 @@
        <th>For/<br>Provided</th>
        <th>Configuration</th>
     </tr>
-    
+
     <tr tal:repeat="config view/configInfo">
       <td> <span tal:content="config/forInterface" />/<br>
            <span tal:content="config/providedInterface" />
