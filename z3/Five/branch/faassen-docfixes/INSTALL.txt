@@ -36,7 +36,7 @@ Installing Five is relatively straightforward.
   Zope 2.7 instance and add a ``path`` entry. If you used the released
   version of Zope X3.0.0, use something like the following::
 
-    path path/to/installed/Zope3/lib/python
+    path /path/to/installed/Zope3/lib/python
 
   If you are instead using the subversion version, use::
 
