@@ -1,4 +1,4 @@
-import unittest, string
+import unittest, string, re
 from Products.CMFDefault.Link import Link
 
 BASIC_STRUCTUREDTEXT = '''\
@@ -9,27 +9,45 @@ Subject: open source; Zope; community
 http://www.zope.org
 '''
 
+STX_W_CONTINUATION = '''\
+Title: Zope Community
+Description: Link to the Zope Community website,
+  including hundreds of contributed Zope products.
+Subject: open source; Zope; community
+
+http://www.zope.org
+'''
+
 class LinkTests(unittest.TestCase):
-
-    def setUp( self ):
-        get_transaction().begin()
-
-    def tearDown( self ):
-        get_transaction().abort()
 
     def test_Empty( self ):
         d = Link( 'foo' )
-        self.failUnless( d.Title() == '' )
-        self.failUnless( d.Description() == '' )
-        self.failUnless( d.getRemoteUrl() == '' )
+        self.assertEqual( d.Title(), '' )
+        self.assertEqual( d.Description(), '' )
+        self.assertEqual( d.getRemoteUrl(), '' )
 
     def test_StructuredText( self ):
         d = Link('foo')
         d._writeFromPUT( body=BASIC_STRUCTUREDTEXT )
         
         self.assertEqual( d.Title(), 'Zope Community' )
-        self.assertEqual(
-                d.Description(), 'Link to the Zope Community website.' )
+        self.assertEqual( d.Description()
+                        , 'Link to the Zope Community website.' )
+        self.assertEqual( len(d.Subject()), 3 )
+        self.assertEqual( d.getRemoteUrl(), 'http://www.zope.org' )
+
+    def test_StructuredText_w_Continuation( self ):
+
+        d = Link('foo')
+        d._writeFromPUT( body=STX_W_CONTINUATION )
+        rnlinesplit = re.compile( r'\r?\n?' )
+        desc_lines = rnlinesplit.split( d.Description() )
+        
+        self.assertEqual( d.Title(), 'Zope Community' )
+        self.assertEqual( desc_lines[0]
+                        , 'Link to the Zope Community website,' )
+        self.assertEqual( desc_lines[1]
+                        , 'including hundreds of contributed Zope products.' )
         self.assertEqual( len(d.Subject()), 3 )
         self.assertEqual( d.getRemoteUrl(), 'http://www.zope.org' )
 
