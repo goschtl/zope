@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.12 2003/06/01 15:59:30 jim Exp $
+$Id: test_zptpage.py,v 1.13 2003/08/06 14:45:14 srichter Exp $
 """
 
 import unittest
@@ -151,7 +151,8 @@ class SizedTests(unittest.TestCase):
         from zope.app.content.zpt import Sized
         s = Sized(DummyZPT(''))
         self.assertEqual(s.sizeForSorting(), ('line', 0))
-        self.assertEqual(s.sizeForDisplay(), u'0 lines')
+        self.assertEqual(s.sizeForDisplay(), u'${lines} lines')
+        self.assertEqual(s.sizeForDisplay().mapping, {'lines': '0'})
 
     def test_oneSized(self):
         from zope.app.content.zpt import Sized
@@ -163,7 +164,8 @@ class SizedTests(unittest.TestCase):
         from zope.app.content.zpt import Sized
         s = Sized(DummyZPT('some line\n'*5))
         self.assertEqual(s.sizeForSorting(), ('line', 5))
-        self.assertEqual(s.sizeForDisplay(), u'5 lines')
+        self.assertEqual(s.sizeForDisplay(), u'${lines} lines')
+        self.assertEqual(s.sizeForDisplay().mapping, {'lines': '5'})
 
 
 class TestFileEmulation(unittest.TestCase):

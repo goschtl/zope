@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.6 2003/04/14 17:15:20 stevea Exp $
+$Id: test_image.py,v 1.7 2003/08/06 14:45:14 srichter Exp $
 """
 
 import unittest
@@ -136,20 +136,25 @@ class TestSized(unittest.TestCase):
         from zope.app.content.image import ImageSized
         s = ImageSized(DummyImage(0, 0, 0))
         self.assertEqual(s.sizeForSorting(), ('byte', 0))
-        self.assertEqual(s.sizeForDisplay(), u'0 KB 0x0')
-
+        self.assertEqual(s.sizeForDisplay(), u'0 KB ${width}x${height}')
+        self.assertEqual(s.sizeForDisplay().mapping['width'], '0')
+        self.assertEqual(s.sizeForDisplay().mapping['height'], '0')
 
     def test_arbitrarySize(self):
         from zope.app.content.image import ImageSized
         s = ImageSized(DummyImage(34, 56, 78))
         self.assertEqual(s.sizeForSorting(), ('byte', 78))
-        self.assertEqual(s.sizeForDisplay(), u'1 KB 34x56')
+        self.assertEqual(s.sizeForDisplay(), u'1 KB ${width}x${height}')
+        self.assertEqual(s.sizeForDisplay().mapping['width'], '34')
+        self.assertEqual(s.sizeForDisplay().mapping['height'], '56')
 
     def test_unknownSize(self):
         from zope.app.content.image import ImageSized
         s = ImageSized(DummyImage(-1, -1, 23))
         self.assertEqual(s.sizeForSorting(), ('byte', 23))
-        self.assertEqual(s.sizeForDisplay(), u'1 KB ?x?')
+        self.assertEqual(s.sizeForDisplay(), u'1 KB ${width}x${height}')
+        self.assertEqual(s.sizeForDisplay().mapping['width'], '?')
+        self.assertEqual(s.sizeForDisplay().mapping['height'], '?')
 
 def test_suite():
     return unittest.TestSuite((

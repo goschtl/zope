@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.13 2003/06/07 06:37:23 stevea Exp $
+$Id: zpt.py,v 1.14 2003/08/06 14:45:10 srichter Exp $
 """
 
 import re
@@ -26,6 +26,7 @@ from zope.security.proxy import ProxyFactory
 
 from zope.pagetemplate.pagetemplate import PageTemplate
 from zope.app.pagetemplate.engine import AppPT
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.size import ISized
 from zope.app.interfaces.content.zpt import IZPTPage, IRenderZPTPage
@@ -119,8 +120,10 @@ class Sized:
     def sizeForDisplay(self):
         'See ISized'
         if self.num_lines == 1:
-            return '1 line'
-        return '%s lines' % self.num_lines
+            return _('1 line')
+        lines  = _('${lines} lines')
+        lines.mapping = {'lines': str(self.num_lines)}
+        return lines
 
 # File-system access adapters
 

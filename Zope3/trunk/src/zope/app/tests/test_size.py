@@ -63,18 +63,22 @@ class Test(unittest.TestCase):
 
         sized = DefaultSized(DummyObject(2048))
         self.assertEqual(sized.sizeForSorting(), ('byte', 2048))
-        self.assertEqual(sized.sizeForDisplay(), u'2 KB')
+        self.assertEqual(sized.sizeForDisplay(), u'${size} KB')
+        self.assertEqual(sized.sizeForDisplay().mapping, {'size': '2'})
 
         sized = DefaultSized(DummyObject(2000000))
         self.assertEqual(sized.sizeForSorting(), ('byte', 2000000))
-        self.assertEqual(sized.sizeForDisplay(), u'1.91 MB')
+        self.assertEqual(sized.sizeForDisplay(), u'${size} MB')
+        self.assertEqual(sized.sizeForDisplay().mapping, {'size': '1.91'})
 
     def test_byteDisplay(self):
         from zope.app.size import byteDisplay
         self.assertEqual(byteDisplay(0), u'0 KB')
         self.assertEqual(byteDisplay(1), u'1 KB')
-        self.assertEqual(byteDisplay(2048), u'2 KB')
-        self.assertEqual(byteDisplay(2000000), u'1.91 MB')
+        self.assertEqual(byteDisplay(2048), u'${size} KB')
+        self.assertEqual(byteDisplay(2048).mapping, {'size': '2'})
+        self.assertEqual(byteDisplay(2000000), u'${size} MB')
+        self.assertEqual(byteDisplay(2000000).mapping, {'size': '1.91'})
 
 def test_suite():
     loader = unittest.TestLoader()

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.8 2003/06/07 06:37:23 stevea Exp $
+$Id: image.py,v 1.9 2003/08/06 14:45:10 srichter Exp $
 """
 import struct
 from zope.app.content.file import File
@@ -22,6 +22,7 @@ from zope.app.interfaces.size import ISized
 from zope.app.size import byteDisplay
 
 from zope.app.content_types import guess_content_type
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.interface import implements
 
 __metaclass__ = type
@@ -69,7 +70,13 @@ class ImageSized:
         if h < 0:
             h = '?'
         bytes = self._image.getSize()
-        return '%s %sx%s' % (byteDisplay(bytes), w, h)
+        byte_size = byteDisplay(bytes)
+        mapping = byte_size.mapping
+        size = _(byte_size + ' ${width}x${height}')
+        mapping.update({'width': str(w), 'height': str(h)})
+        size.mapping = mapping 
+        return size
+
 
 def getImageInfo(data):
     data = str(data)
