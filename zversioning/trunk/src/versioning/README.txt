@@ -16,8 +16,6 @@ as an example :
 
   >>> import zope.app.versioncontrol.interfaces
   >>> from zope.interface import directlyProvides
-  >>> from zope.app.versioncontrol.repository import declare_versioned
-  >>> from versioning.tests.repository_setup import registerAdapter
   >>> from zope.app.folder import Folder, rootFolder
   >>> from zope.app.tests.setup import setUpTraversal
   >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
@@ -90,7 +88,7 @@ can be used with the same storage:
 
 Now we adapt our history storage to the chosen repository strategy:
 
-  >>> repository = interfaces.ICopyModifyMergeRepository(histories_storage)
+  >>> repo = interfaces.ICopyModifyMergeRepository(histories_storage)
 
 
 CopyModifyMergeRepository Usage Explained
@@ -99,7 +97,7 @@ CopyModifyMergeRepository Usage Explained
 An object that isn't 'IVersionable' can't be put under version control.
 Applying version control should raise an exception:
 
-  >>> repository.applyVersionControl(a)
+  >>> repo.applyVersionControl(a)
   Traceback (most recent call last):
   RepositoryError: This resource cannot be put under version control.
 
@@ -121,20 +119,20 @@ more about this and then talk about this in the interfaces.
 
 Now let's put our example data under version control:
 
-  >>> repository.applyVersionControl(sample)
-  >>> repository.applyVersionControl(a)
-  >>> repository.applyVersionControl(b)
-  >>> repository.applyVersionControl(c)
+  >>> repo.applyVersionControl(sample)
+  >>> repo.applyVersionControl(a)
+  >>> repo.applyVersionControl(b)
+  >>> repo.applyVersionControl(c)
   >>> [interfaces.IVersioned.providedBy(x) for x in (sample, a, b, c)]
   [True, True, True, True]
 
-  >>> 
+  #>>> repo.isCheckedOut(a)
+  False
+  #>>> #repo.checkout(a)
+  #>>> #repo.isCheckedOut(a)
+  True
+  
+  
 
-  >>> def accessVersion(repository, obj) :
-  ...   info = repository.getVersionInfo(obj)
-  ...   return repository.getVersionOfResource(info.history_id, 'mainline')
-  >>> new_a = accessVersion(repository, a)
-  >>> new_b = accessVersion(repository, b)
-  >>> new_c = accessVersion(repository, c)
-  >>> [x for x in sample.keys()]
-  [u'a', u'b']
+  #>>> len(repo.getVersionHistory(sample))
+  1

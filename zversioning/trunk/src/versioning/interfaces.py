@@ -40,7 +40,8 @@ from zope.interface import Interface
 
 from zope.app.container.interfaces import INameChooser
 
-
+class RepositoryError(Exception):
+    pass
 
 class IRepository(Interface):
     """A version repository providing core functionality.
@@ -56,13 +57,25 @@ class IRepository(Interface):
     versioned aspects). XXX After having deleted the last object 
     the IHistoryStorage component has to be asked for a bootstrap
     object.
+    
+    ToDo:
+    
+        - removeFromVersionControl: meant to be the opposite of 
+          applyVersionControl (what's the opposite?)
+        - deleteVersionHistory: meant to delete the history, heavy!!!!
+          We have to think about use cases and what the framework
+          shall support. 99.99% YAGNI
     """
     
     def applyVersionControl(obj):
         """Put the an object under version control.
-            
+        
         This method has to be call prior using any other repository
-        related methods.
+        related methods. The objects current state gets saved as first
+        version.
+        
+        XXX Different comments apply for different repositories. Where
+        to put this?
         """
     
     def revertToVersion(obj, selector):
@@ -76,6 +89,16 @@ class ICopyModifyMergeRepository(IRepository):
     """Top level API for a copy-modify-merge (subversion like) repository.
     """
     
+    def applyVersionControl(obj):
+        """Put the an object under version control.
+        
+        This method has to be call prior using any other repository
+        related methods. The objects current state gets saved as first
+        version.
+        
+        After this operation the object is in checked in state.
+        """
+    
     def saveAsVersion(obj, metadata=None):
         """Save the current state of the object for later retreival.
         """
@@ -86,7 +109,7 @@ class ICheckoutCheckinRepository(IRepository):
     These kind of repositories administrate an "object is in use" 
     information which may be suitable in some environments.
     
-    It my be seen as kind of soft locks.
+    The Checkin/Checkout information may be seen as kind of soft lock.
     """
 
     def checkout(obj):
@@ -133,7 +156,7 @@ class IIntrospectableRepository(Interface):
         does). Instead it returns the version as new object.
         """
 
-    def listVersions(obj):
+    def getVersionHistory(obj):
         """Returns all versions of the given object.
         
         XXX YAGNI? This was the former 'getVersionIds'.
@@ -189,7 +212,7 @@ class IVersionableAspects(Interface) :
         do that?
     """
 
-    def writeAspects():
+    def writeAspects(metadata=None):
         """Write an aspect from the original object.
         """
 
@@ -211,14 +234,6 @@ class IVersionableAspects(Interface) :
         object.
         
         XXX copy or ref?
-        """
-
-    def getVersionHistory(obj):
-        """Returns the whole version history of the object.
-        """
-        
-    def getMetadataHistory(obj):
-        """Returns the whole metadata history of the object.
         """
 
 class ITicket(Interface) :
@@ -252,8 +267,7 @@ class IVersionHistory(Interface) :
   
     
 
-# XXX 
-class IHistoryStorage(Interface) : # IHistories
+class IHistoryStorage(Interface) : # IHistoriesStorage?
     """ Minimal interface for a pluggable storage that stores a new version
     of an object into an object history.
     
@@ -264,7 +278,7 @@ class IHistoryStorage(Interface) : # IHistories
     IHistoryStorage components store IVersionableAspects of objects.
     """
 
-    def register(obj) :
+    def register(obj):
         """ Puts some object under version control. Returns an IHistory.
         
         Why register?
@@ -274,10 +288,23 @@ class IHistoryStorage(Interface) : # IHistories
         exceptions or similar)
         """
     
-    def getVersion(history, selector):
+    def getTicket(obj):
+        """ Returns the persistent oid of an object as
+            a ticket that remains stable across time.
         """
+ 
+    def getVersion(obj, selector):
+        """ Returns the version of an object that is specified by selector. 
+        """
+
+    def getObjectHistory(obj):
+        """Returns the whole version history of the objects aspects.
         """
         
+    def getMetadataHistory(obj):
+        """Returns the whole metadata history of the objects aspects.
+        """
+
 class IVersionable(persistent.interfaces.IPersistent):
     """Version control is allowed for objects that provide this."""
 

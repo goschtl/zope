@@ -60,11 +60,12 @@ class VersionableAspectsAdapter(object) :
         self.versionable = versionable
         self.histories = histories
         
-    def writeAspects(self) :
+    def writeAspects(self, message=None) :
         """ 
             Save the versionable aspects of an original object into 
             the object history.
-        """   
+        """
+        # XXX we currently throw away the message
         history = self.histories.getHistory(self.versionable)
         return IObjectCopier(self.versionable).copyTo(history)        
       

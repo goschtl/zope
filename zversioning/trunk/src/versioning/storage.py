@@ -19,8 +19,8 @@ from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.folder import Folder
 from zope.app.exception.interfaces import UserError
 
-from interfaces import IVersionHistory
-from interfaces import IHistoryStorage
+from versioning.interfaces import IVersionHistory
+from versioning.interfaces import IHistoryStorage
 
 
 
@@ -59,7 +59,7 @@ class SimpleHistoryStorage(Folder) :
            the _p_oid as an identification ticket for objects and their versions
            a Folder as a container for histories were each History is itself a Folder
            
-        >>> from policies import VersionableAspectsAdapter
+        >>> from versioning.policies import VersionableAspectsAdapter
         >>> from zope.app.tests.setup import buildSampleFolderTree
         >>> sample = buildSampleFolderTree()
         >>> histories = SimpleHistoryStorage()
@@ -69,7 +69,6 @@ class SimpleHistoryStorage(Folder) :
     
     implements(IHistoryStorage)
    
-
     def getTicket(self, obj) :
         """ Returns the persistent oid of an object as
             a ticket that remains stable across time.
