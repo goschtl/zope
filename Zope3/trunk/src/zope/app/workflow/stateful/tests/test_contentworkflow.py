@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.3 2003/07/30 00:00:28 srichter Exp $
+$Id: test_contentworkflow.py,v 1.4 2003/08/03 01:33:10 philikon Exp $
 """
 import unittest
 
@@ -150,9 +150,9 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
 
     def test_getInterfacesForProcessName(self):
         manager = self.getManager()
-        self.assertEqual(
-            manager.getInterfacesForProcessName(u'default'),
-            (IFace2, IFace1))
+        ifaces = manager.getInterfacesForProcessName(u'default')
+        self.assert_(ifaces == (IFace2, IFace1) or
+                     ifaces == (IFace1, IFace2))
         self.assertEqual(
             manager.getInterfacesForProcessName(u'foo'),
             ())
