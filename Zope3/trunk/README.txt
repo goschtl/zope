@@ -12,7 +12,8 @@ Welcome to the Zope3 source
 
 Building and running tests
 
-  Zope3 requires Python 2.2.2 or later.
+  Zope3 requires Python 2.2.2 or later and PyXML 0.8.1 or higher.
+  PyXML can be downloaded from http://sf.net/projects/pyxml.
 
   In the top-level Zope3 directory, you should find a script called
   setup.py.  Run it to build the extension modules needed by
