@@ -68,6 +68,12 @@ BUGS
   you can remove individual files and commit those removals first,
   then remove the directory last.)
 
+* When committing something creates additional stuff (for example,
+  committing an added site folder creates a RegistrationManager inside
+  the site folder), the commit operation doesn't send the created
+  stuff back necessarily.  (As a work-around, a subsequent update gets
+  them.)
+
 
 TO DO
 -----
