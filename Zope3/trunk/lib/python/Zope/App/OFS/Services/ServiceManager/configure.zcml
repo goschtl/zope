@@ -33,6 +33,12 @@
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
   </content>
 
+  <content class=".Module.Manager.">
+    <require 
+        permission="Zope.ManageCode"
+	interface="Persistence.IPersistentModuleManager." />
+   </content>
+
   <content class=".ServiceDirective.">
     <require
         permission="Zope.ManageServices"

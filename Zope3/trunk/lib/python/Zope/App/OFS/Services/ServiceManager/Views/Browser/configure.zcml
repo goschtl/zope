@@ -87,5 +87,26 @@
   <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
      action="ServiceDirective"  title="Service Directive" />
 
+  <view for="Zope.App.OFS.Container.IAdding."
+        name="Module"
+        factory=".Views.Browser.AddModule."
+        >
+      <page name="index.html" template="Views/Browser/add_module.pt" />
+      <page name="action.html" attribute="action" />
+  </view>
+
+  <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+     action="Module"  title="Module" />
+
+  <view for="Persistence.IPersistentModuleManager."
+        factory=".Views.Browser.EditModule."
+        >
+      <page name="edit.html" template="Views/Browser/edit_module.pt" />
+  </view>
+
+  <menuItems menu="zmi_views" for="Persistence.IPersistentModuleManager.">
+    <menuItem title="Edit" action="edit.html" />
+  </menuItems>
+
 </zope:zopeConfigure>
 
