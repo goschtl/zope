@@ -49,7 +49,7 @@ class IGeneralDublinCore(Interface):
     is not very useful and adds complexity.
 
     This interface provides methods for retrieving data in full
-    generality, to be complient with the dublin core standard.
+    generality, to be compliant with the Dublin Core standard.
     Other interfaces will provide more convenient access methods
     tailored to specific element usage patterns.
     """
