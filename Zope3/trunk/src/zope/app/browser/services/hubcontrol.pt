@@ -15,12 +15,36 @@
     objects registered.
   </p>
 
+  <div tal:condition="not:request/view_registrations|nothing">
+    <p>
+      <a i18n:translate=""
+        href="?view_registrations=1">View Object Registrations</a>
+    </p>
+  </div>
+  <div tal:condition="request/view_registrations|nothing">
+    <p>
+      <a i18n:translate=""
+        href=".">Hide Object Registrations</a>
+    </p>
+    <table>
+      <tr>
+        <th>Path</th>
+        <th>Object ID</th>
+        <th>Status</th>
+      </tr>
+      <tr tal:repeat="object view/objects"
+        tal:attributes="style python:not object['ok'] and 'color:red' or nothing">
+        <td tal:content="object/path">/foo/bar</td>
+        <td tal:content="object/id">87387239</td>
+        <td tal:content="object/status">OK</td>
+      </tr>
+    </table>
+  </div>
   <form>
     <input type="submit" name="unregister_missing" 
            value="Unregister Missing Objects" 
            i18n:attributes="value"/>
   </form>
-
 </div>
 </body>
 </html>

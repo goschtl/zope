@@ -407,7 +407,8 @@
     <require
         permission="zope.ManageServices"
         attributes="bound unbound subscribe unsubscribe subscribeOnBind
-                    unsubscribedFrom subscribedTo unregisterMissingObjects" />
+                    unsubscribedFrom subscribedTo unregisterMissingObjects
+                    iterRegistrations" />
     </content>
 
 <!-- Old simple auth service --> <include file="auth.zcml" />
