@@ -13,7 +13,7 @@
 ##############################################################################
 """Directives Tests
 
-$Id: test_directives.py,v 1.1 2004/03/21 16:02:26 srichter Exp $
+$Id: test_directives.py,v 1.2 2004/03/22 00:52:28 srichter Exp $
 """
 import unittest
 from zope.interface import Interface
@@ -22,7 +22,9 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.app.tests.placelesssetup import setUp, tearDown
 
 class FauxContext:
-    actions = []
+    def __init__(self):
+        self.actions = []
+
     def action(self, **kw):
         self.actions.append(kw)
 
@@ -57,9 +59,38 @@ def test_toolDirective():
     'zope.app.component.metaconfigure'
     >>> view['args'][5]
     'manageIDummyUtilityTool.html'
-    
     """
 
+
+def _test_servicetoolDirective():
+    r"""
+    >>> from zope.app.site.browser import metaconfigure
+    >>> context = FauxContext()
+    >>> metaconfigure.servicetool(context, folder="dummy",
+    ...                    title="dummy", description="the description")
+
+    >>> iface = context.actions[0]
+    >>> iface['discriminator']
+    >>> iface['callable'].__module__
+    'zope.app.component.interface'
+    >>> iface['args'][1].getName()
+    'ILocalService'
+    >>> iface['args'][2].getName()
+    'IToolType'
+
+    >>> view = context.actions[1]
+    >>> print '\n'.join([str(n) for n in view['discriminator']])
+    view
+    (<InterfaceClass zope.app.site.interfaces.ISiteManager>,)
+    manageILocalServiceTool.html
+    <InterfaceClass zope.publisher.interfaces.browser.IBrowserRequest>
+    default
+    <InterfaceClass zope.interface.Interface>
+    >>> view['callable'].__module__
+    'zope.app.component.metaconfigure'
+    >>> view['args'][5]
+    'manageILocalServiceTool.html'
+    """
 
 def test_suite():
     return unittest.TestSuite((
