@@ -5,13 +5,13 @@
     <meta:directive 
         namespace="http://namespaces.zope.org/workflow"
         name="importHandler" 
-        schema=".metadirectives.IImportHandlerDirective"
+        schema=".metadirectives.IHandlerDirective"
         handler=".metaconfigure.importHandlerDirective" />
 
     <meta:directive 
         namespace="http://namespaces.zope.org/workflow"
         name="exportHandler" 
-        schema=".metadirectives.IExportHandlerDirective"
+        schema=".metadirectives.IHandlerDirective"
         handler=".metaconfigure.exportHandlerDirective" />
 
 </configure>

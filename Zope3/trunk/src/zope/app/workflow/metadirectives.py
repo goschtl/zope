@@ -13,19 +13,20 @@
 ##############################################################################
 """Directive schema for the 'workflow' namespace.
 
-$Id: metadirectives.py,v 1.3 2003/08/02 09:11:29 anthony Exp $
+$Id: metadirectives.py,v 1.4 2003/08/02 16:36:54 srichter Exp $
 """
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 
-class IImportHandlerDirective(Interface):
-    """Register an Import Handler, that is able to load a XML Representation
-    of a ProcessDefinition and create a persistent Instance for it."""
+class IHandlerDirective(Interface):
+    """Register an Import/Export Handler, that is able to load/save a XML
+    Representation of a ProcessDefinition and create a persistent Instance for
+    it."""
 
     interface = GlobalObject(
         title=u"Interface",
         description=u"The interface of the process definition this "\
-                    u"handler can load.",
+                    u"handler can handle (both for either import or export).",
         required=True)
 
     factory = GlobalObject(
@@ -33,21 +34,3 @@ class IImportHandlerDirective(Interface):
         description=u"The factory for the instance that implements the "\
                     u"handler.",
         required=True)
-
-
-class IExportHandlerDirective(Interface):
-    """Register an Export Handler, that is able to save a XML Representation
-        of a ProcessDefinition from a given object."""
-
-    interface = GlobalObject(
-        title=u"Interface",
-        description=u"The interface of the process definition this "\
-                    u"handler can save.",
-        required=True)
-
-    factory = GlobalObject(
-        title=u"Factory",
-        description=u"The factory for the instance that implements the "\
-                    u"handler.",
-        required=True)
-
