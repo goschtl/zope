@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.10 2002/11/11 20:24:35 jim Exp $
+$Id: IField.py,v 1.11 2002/11/12 12:33:15 stevea Exp $
 """
 from Interface import Interface
 
@@ -27,12 +27,12 @@ class IField(Interface):
     values for object attributes, Field are typically defined in an
     interface. 
 
-    XXX We need to think aboyt the following
+    XXX We need to think about the following
     
-    Note that many field need information about the object
+    Note that many fields need information about the object
     implementing a field. For example, when validating a value to be
     set as an object attribute, it may be necessary for the field to
-    introspect the object's state. This meanss that the field needs to
+    introspect the object's state. This means that the field needs to
     have access to the object when performing validation.
 
     We haven't really decided on the best way to approach providing
@@ -50,7 +50,7 @@ class IField(Interface):
 
     3. Provide a specialized binding protocol:
 
-         bound = field(object_
+         bound = field(object)
          bound.validate(value)
 
     Options 2 and 3 allow us to use properties, but require an extra
@@ -137,7 +137,7 @@ class IField(Interface):
 class IContainer(IField):
     u"""Fields with values that allow containment checks using the in operator
 
-    Values include squences, iteratorable objects, and any objects
+    Values include sequences, iteratorable objects, and any objects
     that implement __contains__.
     """
 
@@ -156,7 +156,7 @@ class IOrderable(IField):
         title=u"The minimum allowable value",
         description=u"""\
         If this value is not None, then it must be a legal field value
-        and all field values must be less than this valie.        
+        and all field values must be less than this value.        
         """
         )
 
@@ -164,7 +164,7 @@ class IOrderable(IField):
         title=u"The maximum allowable value",
         description=u"""\
         If this value is not None, then it must be a legal field value
-        and all field values must be greater than this valie.        
+        and all field values must be greater than this value.        
         """
         )
 
@@ -213,7 +213,7 @@ class IBytes(ISized, IEnumeratable, IIteratable):
     u"""Describes the footprint of a Bytes variable"""
 
 class ILine(IBytes):
-    u"""Describes the footprint of a Bytes variable withouit newlines"""
+    u"""Describes the footprint of a Bytes variable without newlines"""
 
 class IText(ISized, IEnumeratable, IIteratable):
     u"""Describes the footprint of a Text variable."""
