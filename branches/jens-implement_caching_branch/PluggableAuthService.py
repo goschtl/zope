@@ -864,10 +864,12 @@ class PluggableAuthService( Folder, Cacheable ):
             user._addRoles( ['Authenticated'] )
 
             # Cache the user if caching is enabled
-            self.ZCacheable_set( aq_base(user)
-                               , view_name=view_name
-                               , keywords=keywords
-                               )
+            base_user = aq_base(user)
+            if getattr(base_user, '_p_jar', None) is None:
+                self.ZCacheable_set( base_user
+                                   , view_name=view_name
+                                   , keywords=keywords
+                                   )
 
         return user.__of__( self )
 
