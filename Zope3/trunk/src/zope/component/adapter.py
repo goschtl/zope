@@ -130,7 +130,7 @@ class GlobalAdapterService(AdapterService, GlobalService):
         AdapterService.register(self, required, provided, name, factory)
 
     def subscribe(self, required, provided, factory, info=''):
-        """Register an subscriptions adapter
+        """Register a subscriptions adapter
 
         >>> registry = GlobalAdapterService()
         >>> class R1(Interface):
