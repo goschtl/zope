@@ -11,14 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Zope RDBMS Transaction Integration.
+"""Zope RDBMS Transaction Integration.
 
 Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.3 2002/12/31 11:50:14 stevea Exp $
+$Id: __init__.py,v 1.4 2002/12/31 18:36:13 jeremy Exp $
 """
 from types import StringTypes
 
