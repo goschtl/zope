@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.43 2004/04/11 10:35:12 srichter Exp $
+$Id: interfaces.py,v 1.44 2004/04/24 23:20:54 srichter Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -37,6 +37,9 @@ from zope.schema._bootstrapinterfaces import InvalidValue
 class WrongContainedType(ValidationError):
     __doc__ = _("""Wrong contained type""")
 
+class NotUnique(ValidationError):
+    __doc__ = _("""One or more entries of sequence are not unique.""")
+
 class SchemaNotFullyImplemented(ValidationError):
     __doc__ = _("""Schema not fully implemented""")
 
@@ -52,6 +55,8 @@ class InvalidId(ValidationError):
 class InvalidDottedName(ValidationError):
     __doc__ = _("""The specified dotted name is not valid.""")
 
+class Unbound(Exception):
+    __doc__ = _("""The field is not bound.""")
 
 class IField(Interface):
     """Basic Schema Field Interface.
@@ -250,17 +255,6 @@ class IMinMaxLen(ILen):
         min=0, # needs to be a positive number
         default=None)
 
-class IEnumerated(IField):
-    u"""Field whose value is contained in a predefined set"""
-
-    allowed_values = Container(
-        title=_(u"Allowed Values"),
-        description=_(u"""\
-        Only values specified here can be values of this field.
-        If the list is empty, then there are no further
-        restictions."""),
-        required=False)
-
 class IInterfaceField(IField):
     u"""Fields with a value that is an interface (implementing
     zope.interface.Interface)."""
@@ -299,14 +293,8 @@ class ISourceText(IText):
 class ITextLine(IText):
     u"""Field containing a unicode string without newlines."""
 
-class IEnumeratedTextLine(IEnumerated, ITextLine):
-    u"""Field containing a unicode string without newlines.
-
-    The value may be constrained to an element of a specified list.
-    """
-
 class IPassword(ITextLine):
-    u"""Field containing a unicode string without newlines that is a password."""
+    u"Field containing a unicode string without newlines that is a password."
 
 class IInt(IMinMax, IField):
     u"""Field containing an Integer Value."""
@@ -329,38 +317,14 @@ class IInt(IMinMax, IField):
                         field value""")
         )
 
-class IEnumeratedInt(IInt, IEnumerated):
-    u"""Field containing an Integer Value.
-
-    The value may be constrained to an element of a specified list.
-    """
-
 class IFloat(IMinMax, IField):
     u"""Field containing a Float."""
-
-class IEnumeratedFloat(IEnumerated, IFloat):
-    u"""Field containing a Float.
-
-    The value may be constrained to an element of a specified list.
-    """
 
 class IDatetime(IMinMax, IField):
     u"""Field containing a DateTime."""
 
-class IEnumeratedDatetime(IEnumerated, IDatetime):
-    u"""Field containing a DateTime.
-
-    The value may be constrained to an element of a specified list.
-    """
-
 class IDate(IMinMax, IField):
     u"""Field containing a date."""
-
-class IEnumeratedDate(IEnumerated, IDate):
-    u"""Field containing a date.
-
-    The value may be constrained to an element of a specified list.
-    """
 
 def _is_field(value):
     if not IField.providedBy(value):
@@ -383,9 +347,28 @@ class IId(IBytesLine):
 
     A unique identifier is either an absolute URI ir a dotted name.
     If it's a dotted name, it should have a module/package name as a prefix.
-
     """
 
+class IChoice(IField):
+    u"""Field whose value is contained in a predefined set
+
+    Only one, values or vocabulary, may be specified for a given choice.
+    """
+    vocabularyName = TextLine(
+        title=u"Vocabulary Name",
+        description=(u"The name of the vocabulary to be used.  This name\n"
+                     u"is intended to be used by the IVocabularyRegistry's\n"
+                     u"get() method."),
+        required=False,
+        default=None)
+
+    vocabulary = Attribute(
+        "vocabulary",
+        ("IBaseVocabulary to be used, or None.\n"
+         "\n"
+         "If None, the vocabularyName should be used by an\n"
+         "IVocabularyRegistry should be used to locate an appropriate\n"
+         "IBaseVocabulary object."))
 
 class ISequence(IMinMaxLen, IIterable, IContainer):
     u"""Field containing a Sequence value.
@@ -393,16 +376,35 @@ class ISequence(IMinMaxLen, IIterable, IContainer):
     The Value must be iterable and may have a min_length/max_length.
     """
 
-    value_type = Attribute("value_type",
-        _(u"""Field value items must conform to the given type, expressed
-           via a Field.
-        """))
+    value_type = Field(
+        title = _("Value Type"),
+        description = _(u"Field value items must conform to the given type, "
+                        u"expressed via a Field."))
 
+    unique = Bool(
+        title = _('Unique Values'),
+        description = _('Specifies whether the values of the sequence must be'
+                        'unique.'),
+        default=False)
+
+class IChoiceSequence(Interface):
+    u"""Marker interface to signalize sequences whose value_type is a Choice.
+
+    This will simplify the selection of specialized views (i.e. widgets).
+    """
+    
 class ITuple(ISequence):
     u"""Field containing a conventional tuple."""
 
 class IList(ISequence):
     u"""Field containing a conventional list."""
+
+class ISet(ISequence):
+    u"""Field representing an unordered collection of values from a
+    vocabulary.
+
+    Specific values may be represented at most once.
+    """
 
 class IObject(IField):
     u"""Field containing an Object value."""
@@ -521,77 +523,6 @@ class IVocabularyTokenized(Interface):
 
     def getTermByToken(token):
         """Return an ITokenizedTerm for the passed-in token."""
-
-
-class IVocabularyFieldMixin(Interface):
-    # Mix-in interface that defines interesting things common to all
-    # vocabulary fields.
-
-    vocabularyName = TextLine(
-        title=u"Vocabulary Name",
-        description=(u"The name of the vocabulary to be used.  This name\n"
-                     u"is intended to be used by the IVocabularyRegistry's\n"
-                     u"get() method."),
-        required=False,
-        default=None)
-
-    vocabulary = Attribute(
-        "vocabulary",
-        ("IBaseVocabulary to be used, or None.\n"
-         "\n"
-         "If None, the vocabularyName should be used by an\n"
-         "IVocabularyRegistry should be used to locate an appropriate\n"
-         "IBaseVocabulary object."))
-
-
-class IVocabularyField(IVocabularyFieldMixin, IField):
-    """Field with a vocabulary-supported value.
-
-    The value for fields of this type is a single value from the
-    vocabulary.
-    """
-
-
-class IVocabularyMultiField(IVocabularyFieldMixin, IMinMaxLen, IField):
-    # XXX This is really a base class used in the more specific
-    # IVocabulary*Field interfaces.
-    """Field with a value containing selections from a vocabulary..
-
-    The value for fields of this type need to support at least
-    containment checks using 'in' and iteration.
-
-    The length constraint provided by IMinMaxLen constrains the number
-    of elements in the value.
-    """
-
-
-class IVocabularyBagField(IVocabularyMultiField):
-    """Field representing an unordered collection of values from a
-    vocabulary.
-
-    Specific values may be represented more than once.
-    """
-
-class IVocabularyListField(IVocabularyMultiField):
-    """Field representing an ordered collection of values from a
-    vocabulary.
-
-    Specific values may be represented more than once.
-    """
-
-class IVocabularySetField(IVocabularyMultiField):
-    """Field representing an unordered collection of values from a
-    vocabulary.
-
-    Specific values may be represented at most once.
-    """
-
-class IVocabularyUniqueListField(IVocabularyMultiField):
-    """Field representing an ordered collection of values from a
-    vocabulary.
-
-    Specific values may be represented at most once.
-    """
 
 
 class IVocabularyRegistry(Interface):
