@@ -43,7 +43,7 @@
       </table>
 
       <input type="submit" name="ChangeCaching.html:method" value="Save Changes"
-             i18n:attributes="value save-cahnges-button" />
+             i18n:attributes="value save-changes-button" />
       <input type="submit" name="InvalidateCache.html:method"
              value="Invalidate Cached Value" 
              i18n:attributes="value invalidate-cache-button" />

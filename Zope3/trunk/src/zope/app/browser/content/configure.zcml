@@ -167,7 +167,7 @@
       <menuItem title="Edit" action="upload.html"/>
 
       <!-- Suppress upload form (from IFile) -->
-      <menuItem title="Uload" action="upload.html"
+      <menuItem title="Upload" action="upload.html"
                         filter="python: 0" />
 
   </menuItems>
