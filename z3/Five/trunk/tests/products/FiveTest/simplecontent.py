@@ -22,6 +22,12 @@ class SimpleContent(SimpleItem, Viewable):
     def mymethod(self):
         return "Hello world"
 
+    security.declarePublic('direct')
+    def direct(self):
+        """Should be able to traverse directly to this as there is no view.
+        """
+        return "Direct traversal worked"
+    
 InitializeClass(SimpleContent)
 
 manage_addSimpleContentForm = PageTemplateFile(
