@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.15 2003/11/21 17:09:46 jim Exp $
+$Id: zpt.py,v 1.16 2003/12/15 14:59:13 jim Exp $
 """
 
 from zope.security.proxy import ProxyFactory
@@ -23,12 +23,13 @@ import zope.app.fssync.classes
 import zope.app.interfaces.file
 import zope.app.interfaces.fssync
 import zope.app.interfaces.index.text
+import zope.app.interfaces.services.registration
 import zope.app.pagetemplate.engine
 import zope.interface
 import zope.pagetemplate.pagetemplate
 import zope.schema
 
-class IZPTTemplate(zope.interface.Interface):
+class IZPTTemplate(zope.app.interfaces.services.registration.IRegisterable):
     """ZPT Templates for use in views
     """
 
