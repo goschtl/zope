@@ -23,7 +23,8 @@ Things that need to be done
 
     An alternative is to not include the Download-URL information in
     the distribution and to simply edit the finished registration
-    manually.
+    manually.  This doesn't feel like it "plays nice" in the distutils
+    world, though.
 
   - If a version number is used which appears to indicate "alpha" or
     "beta" status, check the Trove "Development Status" classifier to
@@ -110,7 +111,7 @@ Things that need to be done
   having to give up %defines and some of the nicer aspects of schemas
   (or having to re-implement them).
 
-- Write a new setup.py for Zope 3 to use in a checkout that uses the
-  package metadata; this can happen after the ZopeX3 release.
+- Write a new setup.py for Zope 3 and ZODB to use in a checkout that
+  uses the package metadata; this can happen after the ZopeX3 release.
 
 - Documentation, documentation, documentation!
