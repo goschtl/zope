@@ -50,11 +50,16 @@ class LDAPManagerAdapter:
         # register the principal with the principal source
         source[ldap_principal.login] = ldap_principal
         
+    # TODO later
     def editPrincipal(self, ldap_principal):
         source = trustedRemoveSecurityProxy(self.context)
 
     def deletePrincipal(self, login):
         source = trustedRemoveSecurityProxy(self.context)
+        l = self.__connect(source)
+        dn = self._createdn(ldap_principal, source)
+        l.delete_s(dn)
+        del source[login]
 
     def _createdn(self, principal, ldapauth):
         return '%s=%s,%s' % (ldapauth.login_attribute,
