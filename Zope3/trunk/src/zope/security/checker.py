@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.42 2003/11/21 17:12:43 jim Exp $
+$Id: checker.py,v 1.43 2003/12/03 05:41:50 jim Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -26,6 +26,8 @@ import sys
 import types
 import datetime
 import weakref
+import zope.interface.interface
+import zope.interface.interfaces
 
 from zope.interface import directlyProvides, Interface, implements
 from zope.interface.interfaces import IInterface, IDeclaration
@@ -743,6 +745,8 @@ _default_checkers = {
                                       __str__=CheckerPublic,
                                       _implied=CheckerPublic,
                                       subscribe=CheckerPublic),
+    zope.interface.interface.Method: InterfaceChecker(
+                                        zope.interface.interfaces.IMethod),
     ProvidesClass: _Declaration_checker,
     Implements: _Declaration_checker,
     Declaration: _Declaration_checker,
