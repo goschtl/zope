@@ -209,7 +209,12 @@ class IDAVWidget(IInputWidget):
     """A specialized widget used to convert to and from DAV properties."""
     
     def __call__():
-        """Render the widget."""
+        """Render the widget.
+
+        Optionally, this method could return a minidom DOM Node as the value;
+        this node will then be inersted into the resulting DAV XML response. 
+        Use a DocumentFragment if you want to include multiple nodes.
+        """
     
     def setRenderedValue(value):
         """Set the DAV value for the property

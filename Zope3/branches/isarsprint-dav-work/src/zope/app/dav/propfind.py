@@ -239,7 +239,8 @@ class PROPFIND(object):
                     el.appendChild(resp.createTextNode(value))
                 else:
                     if zapi.isinstance(value, minidom.Node):
-                        el.appendChild(value)
+                        el.appendChild(
+                            el.ownerDocument.importNode(value, True))
                     else:
                         # Try to string-ify
                         value = str(getattr(self, p + '_widget'))
