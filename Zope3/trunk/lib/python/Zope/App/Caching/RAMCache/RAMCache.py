@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.1 2002/10/31 16:01:39 alga Exp $
+$Id: RAMCache.py,v 1.2 2002/11/11 14:26:56 stevea Exp $
 """
 from Persistence import Persistent
 from Zope.App.Caching.RAMCache.IRAMCache import IRAMCache
@@ -21,6 +21,7 @@ from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
 from time import time
 from thread import allocate_lock
 from Zope.ComponentArchitecture import getAdapter
+from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 
 # A global caches dictionary shared between threads
 caches = {}
@@ -106,7 +107,7 @@ class RAMCache(Persistent):
                              self.requestVars, keywords)
         try:
             return s.getEntry(location, key)
-        except:
+        except KeyError:
             return default
 
     def set(self, data, ob, view_name='', keywords=None):
@@ -173,10 +174,11 @@ class RAMCache(Persistent):
 
         try:
             locatable = getAdapter(event.object, IPhysicallyLocatable)
+        except ComponentLookupError:
+            pass
+        else:
             location = locatable.getPhysicalPath()
             self._getStorage().invalidate(location)
-        except:
-            pass
 
 
 class Storage:
