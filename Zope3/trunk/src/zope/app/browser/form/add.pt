@@ -49,18 +49,16 @@
         </div>
         <div class="separator"></div>
       </div>
-      <br><br>
+      <br/><br/>
       <div class="row">
         <div class="controls">
           <input type="submit" value="Refresh"
               i18n:attributes="value refresh-button" />
-           <span tal:replace="structure context/renderAddButton"/>
+           <input tal:replace="structure context/renderAddButton"/>
         </div>
       </div>
       <div class="separator"></div>
-
     </form>
-
   </div>
 
   </div>
