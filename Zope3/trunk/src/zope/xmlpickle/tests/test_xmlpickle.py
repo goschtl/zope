@@ -15,7 +15,7 @@
 
 $Id$
 """
-
+import pickle
 import unittest
 from zope.xmlpickle import dumps, loads
 
@@ -218,13 +218,27 @@ class Test(unittest.TestCase):
         self.__test(complex(1,2))
 
     def test_cycles(self):
+        # Python 2.4 does not support recursive comparisons to the
+        # same extent as Python 2.3, so we test these recursive
+        # structures by comparing the standard pickles of the original
+        # and pickled/unpickled copy.  This works for things like
+        # lists and tuples, but could easily break for dictionaries.
+
         l = [1, 2 , 3]
         l.append(l)
-        self.__test(l)
+        xml = dumps(l)
+        newl = loads(xml)
+        p1 = pickle.dumps(l)
+        p2 = pickle.dumps(newl)
+        self.assertEqual(p1, p2)
+
         t = l, l
         l.append(t)
-        self.__test(l)
-
+        xml = dumps(l)
+        newl = loads(xml)
+        p1 = pickle.dumps(l)
+        p2 = pickle.dumps(newl)
+        self.assertEqual(p1, p2)
 
     def test_list(self):
         self.__test([])
