@@ -1,0 +1,12 @@
+HTTP/1.1 200 Ok
+Date: Thu, 26 Aug 2004 16:24:25 GMT
+Content-Length: 72
+X-Powered-By: Zope (www.zope.org), Python (www.python.org)
+Content-Type: text/html;charset=utf-8
+Server: zope.server.http (HTTP)
+
+<html>
+  <body>
+    <h1>Thu Aug 26 12:24:26 2004</h1>
+  </body>
+</html>

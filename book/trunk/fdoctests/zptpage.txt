@@ -1,0 +1,46 @@
+========
+ZPT Page
+========
+
+This file demonstrates how a page template is rendered in content
+space. Before we can render the page though, we have to create one. The
+template content will be:
+
+  >>> template = u'''\
+  ... <html>
+  ...   <body>
+  ...     <h1 tal:content="modules/time/asctime" />
+  ...   </body>
+  ... </html>'''
+
+Next we have to create the ZPT Page in the root folder. The root folder of the
+test setup can be simply retrieved by calling `getRootFolder()`. At the end we
+have to commit the transaction, so that the page will be stored in the ZODB
+and available for requests to be accessed.
+
+  >>> from transaction import get_transaction
+  >>> from zope.app.zptpage.zptpage import ZPTPage
+  >>> root = getRootFolder()
+  >>> root['newzptpage'] = ZPTPage()
+  >>> root['newzptpage'].setSource(template, 'text/html')
+  >>> get_transaction().commit()
+
+Now that we have the page setup, we can just send the HTTP request by calling
+the function `http()`, which will return the complete HTTP response. When
+comparing the 
+
+  >>> print http(r"""
+  ... GET /newzptpage HTTP/1.1
+  ... Cache-Control: no-cache
+  ... Pragma: no-cache
+  ... """)
+  HTTP/1.1 200 Ok
+  Content-Length: 72
+  Content-Type: text/html;charset=utf-8
+  <BLANKLINE>
+  <html>
+    <body>
+      <h1>...</h1>
+    </body>
+  </html>
+  <BLANKLINE>

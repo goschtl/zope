@@ -1,0 +1,11 @@
+GET /newzptpage HTTP/1.1
+Connection: Keep-Alive
+User-Agent: Mozilla/5.0 (compatible; Konqueror/3.3; Linux; X11; en_US) (KHTML, like Gecko)
+Pragma: no-cache
+Cache-control: no-cache
+Accept: text/html, image/jpeg, image/png, text/*, image/*, */*
+Accept-Encoding: x-gzip, x-deflate, gzip, deflate
+Accept-Charset: utf-8, utf-8;q=0.5, *;q=0.5
+Accept-Language: en
+Host: localhost:8081
+
