@@ -27,6 +27,11 @@ class DateTest(FieldTestBase):
 
     _Field_Factory = Date
 
+    def testInterface(self):
+        from zope.interface.verify import verifyObject
+        from zope.schema.interfaces import IDate
+        verifyObject(IDate, self._Field_Factory())
+
     def testValidate(self):
         field = self._Field_Factory(title=u'Date field', description=u'',
                                     readonly=False, required=False)

@@ -64,7 +64,6 @@ class Field(Attribute):
     #    of Field (including Field subclass) instances.
     order = 0
 
-    constraint = None
     default = ValidatedProperty('default')
 
     def __init__(self, title=u'', description=u'', __name__='',
@@ -120,6 +119,9 @@ class Field(Attribute):
         if missing_value is not self.__missing_value_marker:
             self.missing_value = missing_value
 
+    def constraint(self, value):
+        return True
+
     def bind(self, object):
         clone = self.__class__.__new__(self.__class__)
         clone.__dict__.update(self.__dict__)
@@ -161,7 +163,7 @@ class Field(Attribute):
         if self._type is not None and not isinstance(value, self._type):
             raise WrongType(value, self._type)
 
-        if self.constraint is not None and not self.constraint(value):
+        if not self.constraint(value):
             raise ConstraintNotSatisfied(value)
 
     def get(self, object):
