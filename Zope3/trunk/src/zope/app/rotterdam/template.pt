@@ -56,14 +56,7 @@
         </metal:block>
         <metal:block define-slot="login_logout">
           <metal:macro define-macro="login_logout">
-          <a href=""
-            tal:attributes="href string:@@logout.html?nextURL=${request/URL/url:quote}"
-            tal:condition="python: hasattr(request.principal, 'getLogin')"
-            i18n:translate="">[Logout]</a>
-          <a href=""
-            tal:attributes="href string:@@login.html?nextURL=${request/URL/url:quote}"
-            tal:condition="python: not hasattr(request.principal, 'getLogin')"
-            i18n:translate="">[Login]</a>
+          <tal:block content="structure context/@@login_logout" />
           </metal:macro>
         </metal:block>
       </div>
