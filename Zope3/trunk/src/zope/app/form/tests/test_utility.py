@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.18 2003/11/27 13:59:19 philikon Exp $
+$Id: test_utility.py,v 1.19 2003/12/02 21:30:21 mj Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -195,7 +195,8 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpWidgets(view, I)
         self.assertEqual(view.title_widget(), u'title: ')
-        self.assertEqual(view.description_widget(), u'description: ')
+        self.assertEqual(view.description_widget(),
+                         u'description: No description')
 
     def test_setupWidgets_via_names(self):
         c = C()
@@ -338,7 +339,8 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpEditWidgets(view, I)
         self.assertEqual(view.title_widget(), u'title: ')
-        self.assertEqual(view.description_widget(), u'description: ')
+        self.assertEqual(view.description_widget(),
+                         u'description: No description')
         setUpEditWidgets(view, I, c2)
         self.assertEqual(view.title_widget(), u'title: ct')
         self.assertEqual(view.description_widget(), u'description: cd')
