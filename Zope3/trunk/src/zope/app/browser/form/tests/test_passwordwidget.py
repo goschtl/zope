@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_passwordwidget.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
+$Id: test_passwordwidget.py,v 1.4 2003/02/24 14:50:44 stevea Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import PasswordWidget
@@ -36,15 +36,11 @@ class PasswordWidgetTest(BrowserWidgetTest):
     def testRender(self):
         value = 'Foo Value'
         check_list = ('type="password"', 'id="field.foo"',
-                      'name="field.foo"', 'value="Foo Value"', 'size="20"')
+                      'name="field.foo"', 'value=""', 'size="20"')
         self._verifyResult(self._widget.render(value), check_list)
-        check_list = ('type="hidden"',) + check_list[1:-1]
-        self._verifyResult(self._widget.renderHidden(value), check_list)
-        check_list = ('style="color: red"',) + check_list
-        self._widget.extra = 'style="color: red"'
-        self._verifyResult(self._widget.renderHidden(value), check_list)
 
-
+    def testHidden(self):
+        self.assertRaises(NotImplementedError, self._widget.hidden)
 
 def test_suite():
     return makeSuite(PasswordWidgetTest)

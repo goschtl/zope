@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.18 2003/02/21 09:46:09 alga Exp $
+$Id: widget.py,v 1.19 2003/02/24 14:50:44 stevea Exp $
 """
 
 __metaclass__ = type
@@ -357,6 +357,33 @@ class PasswordWidget(TextWidget):
     """Password Widget"""
     type='password'
 
+    def __call__(self):
+        displayMaxWidth = self.getValue('displayMaxWidth') or 0
+        if displayMaxWidth > 0:
+            return renderElement(self.getValue('tag'),
+                                 type = self.getValue('type'),
+                                 name = self.name,
+                                 id = self.name,
+                                 value = '',
+                                 cssClass = self.getValue('cssClass'),
+                                 style = self.style,
+                                 size = self.getValue('displayWidth'),
+                                 maxlength = displayMaxWidth,
+                                 extra = self.getValue('extra'))
+        else:
+            return renderElement(self.getValue('tag'),
+                                 type = self.getValue('type'),
+                                 name = self.name,
+                                 id = self.name,
+                                 value = '',
+                                 cssClass = self.getValue('cssClass'),
+                                 style = self.style,
+                                 size = self.getValue('displayWidth'),
+                                 extra = self.getValue('extra'))
+
+    def hidden(self):
+        raise NotImplementedError(
+            'Cannot get a hidden tag for a password field')
 
 class FileWidget(TextWidget):
     """File Widget"""
