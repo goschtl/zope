@@ -159,7 +159,11 @@ File "tests/simple.zcml", line 32.2-32.67
     <files:register path="__init__.py" title="Make this a package" />
 
 
-$Id: test_simple.py,v 1.3 2003/07/31 15:50:03 jim Exp $
+We'll clean up after ourselves:
+
+>>> del file_registry[:]
+
+$Id: test_simple.py,v 1.4 2003/09/23 19:12:34 jim Exp $
 """
 
 file_registry = []
