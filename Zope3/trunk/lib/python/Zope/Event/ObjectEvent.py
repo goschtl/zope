@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectEvent.py,v 1.5 2002/10/05 18:34:02 efge Exp $
+$Id: ObjectEvent.py,v 1.6 2002/12/05 10:34:47 bcsaller Exp $
 """
 
 __metaclass__ = type
@@ -22,6 +22,7 @@ __metaclass__ = type
 from IObjectEvent import IObjectEvent, IObjectCreatedEvent
 from IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 from IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
+from IObjectEvent import IObjectContentModifiedEvent, IObjectAnnotationsModifiedEvent
 
 class ObjectEvent:
     """Something has happened to an object"""
@@ -49,6 +50,16 @@ class ObjectModifiedEvent(ObjectEvent):
     """An object has been modified"""
 
     __implements__ = IObjectModifiedEvent
+
+class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
+    """An object's annotations have been modified"""
+
+    __implements__ = IObjectAnnotationsModifiedEvent
+
+class ObjectContentModifiedEvent(ObjectModifiedEvent):
+    """An object's content has been modified"""
+
+    __implements__ = IObjectContentModifiedEvent
 
 class ObjectRemovedEvent(ObjectEvent):
     """An object has been removed from a container"""

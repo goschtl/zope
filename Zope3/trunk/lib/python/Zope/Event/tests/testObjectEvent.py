@@ -14,13 +14,14 @@
 """
 
 Revision information:
-$Id: testObjectEvent.py,v 1.4 2002/10/03 20:53:22 jim Exp $
+$Id: testObjectEvent.py,v 1.5 2002/12/05 10:34:47 bcsaller Exp $
 """
 
 import unittest, sys
 
 from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
 from Zope.Event.ObjectEvent import ObjectRemovedEvent, ObjectMovedEvent
+from Zope.Event.ObjectEvent import ObjectAnnotationsModifiedEvent, ObjectContentModifiedEvent
 
 class TestObjectAddedEvent(unittest.TestCase):
     
@@ -40,6 +41,13 @@ class TestObjectAddedEvent(unittest.TestCase):
 class TestObjectModifiedEvent(TestObjectAddedEvent):
 
     klass = ObjectModifiedEvent
+
+class TestObjectAnnotationsModifiedEvent(TestObjectAddedEvent):
+    klass = ObjectAnnotationsModifiedEvent
+
+class TestObjectContentModifiedEvent(TestObjectAddedEvent):
+    klass = ObjectContentModifiedEvent
+
 
 class TestObjectRemovedEvent(TestObjectAddedEvent):
 
@@ -71,6 +79,8 @@ class TestObjectMovedEvent(TestObjectAddedEvent):
 def test_suite():
     return unittest.TestSuite((unittest.makeSuite(TestObjectAddedEvent),
                                unittest.makeSuite(TestObjectModifiedEvent),
+                               unittest.makeSuite(TestObjectAnnotationsModifiedEvent),
+                               unittest.makeSuite(TestObjectContentModifiedEvent),
                                unittest.makeSuite(TestObjectRemovedEvent),
                                unittest.makeSuite(TestObjectMovedEvent)))
 

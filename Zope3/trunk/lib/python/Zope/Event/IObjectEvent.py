@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IObjectEvent.py,v 1.4 2002/10/03 20:53:22 jim Exp $
+$Id: IObjectEvent.py,v 1.5 2002/12/05 10:34:47 bcsaller Exp $
 """
 
 from IEvent import IEvent
@@ -41,6 +41,13 @@ class IObjectAddedEvent(IObjectEvent):
 
 class IObjectModifiedEvent(IObjectEvent):
     """An object has been modified"""
+
+class IObjectAnnotationsModifiedEvent(IObjectModifiedEvent):
+    """An object's annotations have been modified"""
+
+class IObjectContentModifiedEvent(IObjectModifiedEvent):
+    """An object's content has been modified"""
+
 
 class IObjectRemovedEvent(IObjectEvent):
     """An object has been removed from a container"""
