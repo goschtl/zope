@@ -43,6 +43,13 @@ template = """<zopeConfigure
 
 request = Request(IBrowserPresentation)
 
+class VT(V1, object):
+    def publishTraverse(self, request, name):
+        try:
+            return int(name)
+        except:
+            return super(VT, self).publishTraverse(request, name)
+
 class Ob:
     __implements__ = IC
 
@@ -269,6 +276,34 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v(), 'done')
         v = getView(ob, 'test.html', request)
         self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
+
+    def testNamedViewPageViewsCustomTraversr(self):
+        self.assertEqual(queryView(ob, 'test', request), None)
+
+        xmlconfig(StringIO(template %
+            """
+            <browser:view
+                  name="test"
+                  factory="Zope.App.Publisher.Browser.tests.testDirectives.VT"
+                  for="Zope.ComponentArchitecture.tests.TestViews.IC">
+
+                <browser:page name="index.html" attribute="index" /> 
+                <browser:page name="action.html" attribute="action" /> 
+            </browser:view>
+            """
+            ))
+
+        view = getView(ob, 'test', request)
+        self.assertEqual(view.browserDefault(request)[1], (u'index.html', ))
+
+
+        v = view.publishTraverse(request, 'index.html')
+        self.assertEqual(v(), 'V1 here')
+        v = view.publishTraverse(request, 'action.html')
+        self.assertEqual(v(), 'done')
+
+        v = view.publishTraverse(request, '42')
+        self.assertEqual(v, 42)
 
     def testNamedViewPageViewsNoDefault(self):
         self.assertEqual(queryView(ob, 'test', request),

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.2 2002/06/19 21:31:57 jim Exp $
+$Id: ViewMeta.py,v 1.3 2002/06/20 14:37:30 jim Exp $
 """
 
 # XXX this will need to be refactored soon. :)
@@ -236,7 +236,7 @@ class view(resource):
         factory = self.factory[:]
         klass = factory[-1]
         klass = type(klass.__name__,
-                     (PageTraverser, klass, object),
+                     (klass, PageTraverser, object),
                      klassdict)
         factory[-1] = klass
         self.factory = factory
