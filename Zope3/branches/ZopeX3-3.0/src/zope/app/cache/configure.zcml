@@ -26,7 +26,7 @@
         />
 
     <require 
-        permission="zope.Public" 
+        permission="zope.ManageServices" 
         interface="zope.app.cache.interfaces.ram.IRAMCache"
         />
   </content>
