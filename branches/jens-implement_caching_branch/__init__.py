@@ -27,8 +27,6 @@ from PluggableAuthService import registerMultiPlugin
 
 import PluggableAuthService
 
-import PASCache
-
 from permissions import ManageGroups
 
 from plugins import HTTPBasicAuthHelper as HBAH
@@ -68,15 +66,6 @@ def initialize(context):
                          , constructors=(
                             PluggableAuthService.addPluggableAuthService, )
                          , icon='www/PluggableAuthService.png'
-                         )
-
-    context.registerClass( PASCache.PASRAMCacheManager
-                         , permission=ManageUsers
-                         , constructors=(
-                            PASCache.manage_addPASRAMCacheManagerForm,
-                            PASCache.addPASRAMCacheManager, )
-                         , visibility=None
-                         , icon='www/PASCache.png'
                          )
 
     context.registerClass( HBAH.HTTPBasicAuthHelper

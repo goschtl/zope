@@ -10,12 +10,12 @@ Caching
     Given a plugin that is cache-enabled the steps to using the cache are
     easy. The site administrator needs to...
 
-    o Instantiate a "PAS RAM Cache Manager" inside the PluggableAuthService
+    o Instantiate a "RAM Cache Manager" inside the PluggableAuthService
 
     o Using the "Cache" tab in the cache-enabled plugin's ZMI view,
-      associate the plugin with the PAS RAM Cache Manager
+      associate the plugin with the RAM Cache Manager
 
-    At this point values will be cached inside the PAS RAM Cache Manager. The
+    At this point values will be cached inside the RAM Cache Manager. The
     effect can be viewed easily on the "Statistics" tab in the Cache Manager
     ZMI view, which shows which plugins have stored values, how many values
     are stored, an approximation of the memory consumption for the cached
@@ -28,7 +28,7 @@ Caching
     The PluggableAuthService itself is also cacheable this way. Caching PAS
     itself is the easiest way to achieve caching. In PAS, the _findUsers and
     _verifyUser methods, being a suitably central spot for caching, have 
-    been enhanced to use the PAS RAM Cache Manager if so configured.
+    been enhanced to use the RAM Cache Manager if so configured.
 
 
   How does a plugin programmer use it?

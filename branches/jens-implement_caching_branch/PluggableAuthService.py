@@ -38,6 +38,7 @@ from zExceptions import Unauthorized
 from Persistence import PersistentMapping
 from OFS.Folder import Folder
 from OFS.Cache import Cacheable
+from Products.StandardCacheManagers.RAMCacheManager import RAMCacheManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from ZTUtils import Batch
 from App.class_init import default__class_init__ as InitializeClass
@@ -68,7 +69,6 @@ from interfaces.plugins import IRoleAssignerPlugin
 from permissions import SearchPrincipals
 
 from PropertiedUser import PropertiedUser
-from PASCache import PASRAMCacheManager
 from utils import _wwwdir
 from utils import createViewName
 
@@ -1073,7 +1073,7 @@ class PluggableAuthService( Folder, Cacheable ):
     def all_meta_types(self):
         """ What objects can be put in here?
         """
-        allowed_types = tuple(MultiPlugins) + (PASRAMCacheManager.meta_type,)
+        allowed_types = tuple(MultiPlugins) + (RAMCacheManager.meta_type,)
 
         return [x for x in Products.meta_types if x['name'] in allowed_types]
 

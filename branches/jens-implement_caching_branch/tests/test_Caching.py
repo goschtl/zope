@@ -17,7 +17,7 @@ import unittest
 from Acquisition import aq_base
 from OFS.Cache import isCacheable
 
-from Products.PluggableAuthService.PASCache import PASRAMCacheManager
+from Products.StandardCacheManagers.RAMCacheManager import RAMCacheManager
 
 class FauxRequest:
 
@@ -63,7 +63,7 @@ class PluggableAuthServiceCachingTests( unittest.TestCase ):
         if plugins is not None:
             zcuf._setObject( 'plugins', plugins )
 
-        rcm = PASRAMCacheManager('ramcache')
+        rcm = RAMCacheManager('ramcache')
         zcuf._setObject('ramcache', rcm)
 
         return zcuf
@@ -112,7 +112,7 @@ class PluggableAuthServiceCachingTests( unittest.TestCase ):
         # by default
         self.assert_(zcuf.ZCacheable_getManager() is None)
 
-        # Make sure the PASRAMCacheManager is empty
+        # Make sure the RAMCacheManager is empty
         self.assert_(len(rcm.getCacheReport()) == 0)
 
     def test_caching_in_PAS(self):
