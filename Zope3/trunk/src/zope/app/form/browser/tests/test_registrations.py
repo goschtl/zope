@@ -13,7 +13,7 @@
 ##############################################################################
 """Test widget registrations.
 
-$Id: test_registrations.py,v 1.1 2004/04/24 23:19:07 srichter Exp $
+$Id: test_registrations.py,v 1.2 2004/05/06 16:13:41 poster Exp $
 """
 import unittest
 
@@ -37,14 +37,14 @@ from zope.schema import vocabulary
 
 class ISampleObject(interfaces.IField):
     pass
-    
+
 class SampleObject:
     implements(ISampleObject)
-    
+
 class ISampleVocabulary(
     interfaces.IVocabularyTokenized, interfaces.IVocabulary):
     pass
-    
+
 class SampleVocabularyQuery:
     implements(interfaces.IIterableVocabularyQuery)
     def __init__(self, vocabulary):
@@ -54,8 +54,7 @@ class SampleVocabulary(vocabulary.SimpleVocabulary):
     implements(ISampleVocabulary)
     def getQuery(self):
         return SampleVocabularyQuery(self)
-    
-    
+
 request = TestRequest()
 sample = SampleObject()
 vocab = SampleVocabulary([])
@@ -64,7 +63,6 @@ def setUp():
     setup.placelessSetUp()
     context = xmlconfig.file("tests/registerWidgets.zcml",
                              zope.app.form.browser)
-    
 
 class Tests:
     """Documents and tests widgets registration for specific field types.
@@ -160,14 +158,14 @@ class Tests:
         
     ITuple, IInputWidget -> TupleSequenceWidget
     
-        >>> field = fields.Tuple()
+        >>> field = fields.Tuple(value_type=fields.Int())
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
         >>> isinstance(widget, TupleSequenceWidget)
         True
 
     IList, IInputWidget -> ListSequenceWidget
     
-        >>> field = fields.List()
+        >>> field = fields.List(value_type=fields.Int())
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
         >>> isinstance(widget, ListSequenceWidget)
         True
@@ -195,17 +193,17 @@ class Tests:
         >>> isinstance(widget, DropdownWidget)
         True
 
-    IChoiceSequence, IDisplayWidget -> ItemsMultiDisplayWidget
+    IList with IChoice value_type, IDisplayWidget -> ItemsMultiDisplayWidget
     
-        >>> field = fields.Sequence(value_type=fields.Choice(vocabulary=vocab))
+        >>> field = fields.List(value_type=fields.Choice(vocabulary=vocab))
         >>> field = field.bind(sample)
         >>> widget = zapi.getViewProviding(field, IDisplayWidget, request)
         >>> isinstance(widget, ItemsMultiDisplayWidget)
         True
                 
-    IChoiceSequence, IInputWidget -> MultiSelectWidget
+    IList with IChoice value_type, IInputWidget -> MultiSelectWidget
     
-        >>> field = fields.Sequence(value_type=fields.Choice(vocabulary=vocab))
+        >>> field = fields.List(value_type=fields.Choice(vocabulary=vocab))
         >>> field = field.bind(sample)
         >>> widget = zapi.getViewProviding(field, IInputWidget, request)
         >>> isinstance(widget, MultiSelectWidget)

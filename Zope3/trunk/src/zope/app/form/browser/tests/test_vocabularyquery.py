@@ -13,14 +13,14 @@
 ##############################################################################
 """Tests of the vocabulary queries.
 
-$Id: test_vocabularyquery.py,v 1.1 2004/04/24 23:19:07 srichter Exp $
+$Id: test_vocabularyquery.py,v 1.2 2004/05/06 16:13:41 poster Exp $
 """
 import unittest
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.publisher.browser import IBrowserRequest
-from zope.schema import vocabulary, Choice, Sequence
-from zope.schema.interfaces import IVocabularyQuery, IChoice, IChoiceSequence
+from zope.schema import vocabulary, Choice, List
+from zope.schema.interfaces import IVocabularyQuery, IChoice, ICollection
 
 from zope.app import zapi
 from zope.app.tests import ztapi
@@ -178,7 +178,7 @@ class MultiSelectionQuerySupportTests(QuerySupportTestBase):
     """Query support tests for multi-selection widgets."""
 
     defaultFieldValue = ["splat"]
-    fieldClass = Sequence
+    fieldClass = List
     queryViewLabel = "multi"
     _widgetFactory = MultiSelectWidget
 
@@ -186,16 +186,16 @@ class MultiSelectionQuerySupportTests(QuerySupportTestBase):
         """Create and return a bound vocabulary field."""
         if vocabulary is None:
             vocabulary = self._sampleVocabulary
-        field = Sequence(__name__="f",
-                         value_type=Choice(vocabulary=vocabulary,
-                                           required=required))
+        field = List(__name__="f",
+                     value_type=Choice(vocabulary=vocabulary,
+                                       required=required))
         if value is self._marker:
             value = self.defaultFieldValue
         content = SampleContent(value)
         return field.bind(content)
 
     def registerViews(self):
-        provideMultiView((ISampleVocabularyQuery, IChoiceSequence),
+        provideMultiView((ISampleVocabularyQuery, ICollection),
                          SampleQueryViewMulti, IVocabularyQueryView)
 
 

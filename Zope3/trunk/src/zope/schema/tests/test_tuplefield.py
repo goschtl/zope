@@ -11,19 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Sequence and Tuple field tests.
+"""Tuple field tests.
 
-This set of tests exercises both Tuple and Sequence.  The only
-behavior Tuple adds to sequence is the restriction of the type
-to 'tuple'.
-
-$Id: test_tuplefield.py,v 1.8 2004/04/24 23:21:06 srichter Exp $
+$Id: test_tuplefield.py,v 1.9 2004/05/06 16:13:50 poster Exp $
 """
 from unittest import TestSuite, main, makeSuite
 
 from zope.interface import implements
-from zope.schema import Field, Sequence, Tuple, Int
+from zope.schema import Field, Tuple, Int
 from zope.schema.interfaces import IField
+from zope.schema.interfaces import ICollection, ISequence, ITuple
 from zope.schema.interfaces import NotAContainer, RequiredMissing
 from zope.schema.interfaces import WrongContainedType, WrongType, NotUnique
 from zope.schema.interfaces import TooShort, TooLong
@@ -117,6 +114,12 @@ class TupleTest(FieldTestBase):
                                     readonly=False, required=True, unique=True)
         field.validate((1, 2))
         self.assertRaises(NotUnique, field.validate, (1, 2, 1))
+    
+    def testImplements(self):
+        field = Tuple()
+        self.failUnless(ITuple.providedBy(field))
+        self.failUnless(ISequence.providedBy(field))
+        self.failUnless(ICollection.providedBy(field))
 
 def test_suite():
     suite = TestSuite()

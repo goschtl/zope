@@ -13,10 +13,10 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.18 2004/04/24 23:20:37 srichter Exp $
+$Id: __init__.py,v 1.19 2004/05/06 16:13:50 poster Exp $
 """
 from zope.schema._field import Field, Container, Iterable, Orderable
-from zope.schema._field import MinMaxLen, Sequence, Choice
+from zope.schema._field import MinMaxLen, Choice
 from zope.schema._field import Bytes, ASCII, BytesLine
 from zope.schema._field import Text, TextLine, Bool, Int, Float
 from zope.schema._field import Tuple, List, Set

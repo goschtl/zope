@@ -13,13 +13,13 @@
 ##############################################################################
 """Browser widgets for items
 
-$Id: itemswidgets.py,v 1.2 2004/04/24 23:19:42 srichter Exp $
+$Id: itemswidgets.py,v 1.3 2004/05/06 16:13:41 poster Exp $
 """
 from zope.interface import implements
 from zope.i18n import translate
 from zope.proxy import removeAllProxies
 from zope.schema.interfaces import ValidationError, InvalidValue
-from zope.schema.interfaces import ConstraintNotSatisfied
+from zope.schema.interfaces import ConstraintNotSatisfied, ITitledTokenizedTerm
 
 from zope.app import zapi
 from zope.app.form.browser.widget import BrowserWidget, renderElement
@@ -29,26 +29,39 @@ from zope.app.form.interfaces import WidgetInputError
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
-# For fields with vocabularies, we really want to make the widget a view
-# of the field and vocabulary.
+# For choices, we want to make the widget a view of the field and vocabulary.
 
 def ChoiceDisplayWidget(field, request):
     return zapi.getMultiView((field, field.vocabulary), request,
                              IDisplayWidget)
 
-def ChoiceSequenceDisplayWidget(field, request):
-    return zapi.getMultiView((field, field.value_type.vocabulary), request,
-                             IDisplayWidget)
-
-def ChoiceEditWidget(field, request):
+def ChoiceInputWidget(field, request):
     return zapi.getMultiView((field, field.vocabulary), request,
                              IInputWidget)
 
-def ChoiceSequenceEditWidget(field, request):
-    return zapi.getMultiView((field, field.value_type.vocabulary), request,
+# for collections, we want to make the widget a view of the field and the 
+# value_type.  If the value_type is None we may fall over.  We may
+# not be able to do any better than that.
+
+def CollectionDisplayWidget(field, request):
+    return zapi.getMultiView((field, field.value_type), request,
+                             IDisplayWidget)
+
+def CollectionInputWidget(field, request):
+    return zapi.getMultiView((field, field.value_type), request,
                              IInputWidget)
-    
-    
+
+# for collections of choices, we want to make the widget a view of the field, 
+# the value type, and the vocabulary.
+
+def ChoiceCollectionDisplayWidget(field, value_type, request):
+    return zapi.getMultiView(
+        (field, value_type.vocabulary), request, IDisplayWidget)
+
+def ChoiceCollectionInputWidget(field, value_type, request):
+    return zapi.getMultiView(
+        (field, value_type.vocabulary), request, IInputWidget)
+
 class TranslationHook(object):
     """A mixin class that provides the translation capabilities."""
 
@@ -94,6 +107,8 @@ class ItemsWidgetBase(TranslationHook, BrowserWidget):
         This can be overridden to support more complex term objects. The token
         is returned here since it's the only thing known to be a string, or
         str()able."""
+        if ITitledTokenizedTerm.providedBy(term):
+            return term.title
         return term.token
 
     def convertTokensToValues(self, tokens):
@@ -305,7 +320,8 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         super(ItemsEditWidgetBase, self).__init__(field, vocabulary, request)
 
         # Queries are used in items widgets to reduce the amount of choices,
-        # since some vocabularies could literally provide thousands of terms.
+        # since some vocabularies could literally provide an infinite number
+        # of terms.
         self.queryview = None
         query = vocabulary.getQuery()
         if query is not None:

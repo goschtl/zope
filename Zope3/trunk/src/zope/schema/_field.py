@@ -14,11 +14,12 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.33 2004/04/24 23:20:46 srichter Exp $
+$Id: _field.py,v 1.34 2004/05/06 16:13:50 poster Exp $
 """
 import warnings
 import re
 from datetime import datetime, date
+from sets import Set as SetType
 
 from zope.interface import classImplements, implements, directlyProvides
 from zope.interface.interfaces import IInterface, IMethod
@@ -29,8 +30,7 @@ from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBytes, IASCII, IBytesLine
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
-from zope.schema.interfaces import IChoice, IChoiceSequence
-from zope.schema.interfaces import ISequence, ITuple, IList, ISet, IDict
+from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate
 from zope.schema.interfaces import IURI, IId, IFromUnicode
 from zope.schema.interfaces import IVocabulary
@@ -180,25 +180,23 @@ class Choice(Field):
         assert not (values is None and vocabulary is None), \
                "You must specify either values or vocabulary."
         assert values is None or vocabulary is None, \
-               "You cannot specify both, values and vocabulary."
+               "You cannot specify both values and vocabulary."
         
         self.vocabulary = None
         self.vocabularyName = None
-
         if values is not None:
-            terms = [SimpleTerm(value) for value in values]
-            self.vocabulary = SimpleVocabulary(terms)
+            self.vocabulary = SimpleVocabulary.fromValues(values)
         elif isinstance(vocabulary, (unicode, str)):
             self.vocabularyName = vocabulary
         else:
             assert IVocabulary.providedBy(vocabulary)
             self.vocabulary = vocabulary
-
         # Before a default value is checked, it is validated. However, a
-        # vocabulary is usually not complete when these fields are
-        # initialized. Therefore signalize to the validation method to ignore
-        # default value checks during initialization.
-        self._init_field = True
+        # named vocabulary is usually not complete when these fields are
+        # initialized. Therefore signal the validation method to ignore
+        # default value checks during initialization of a Choice tied to a
+        # registered vocabulary.
+        self._init_field = bool(self.vocabularyName)
         super(Choice, self).__init__(**kw)
         self._init_field = False
 
@@ -230,21 +228,16 @@ class Choice(Field):
         # Pass all validations during initialization
         if self._init_field:
             return
-
         super(Choice, self)._validate(value)
-
         vocabulary = self.vocabulary
-        
         if vocabulary is None:
             vr = getVocabularyRegistry()
             try:
                 vocabulary = vr.get(None, self.vocabularyName)
             except VocabularyRegistryError:
-                raise ValueError("can't validate value without vocabulary")
-
+                raise ValueError("Can't validate value without vocabulary")
         if value not in vocabulary:
             raise ConstraintNotSatisfied, value
-
 
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
@@ -287,55 +280,53 @@ def _validate_uniqueness(value):
 
         temp_values.append(item)
 
-
-class Sequence(MinMaxLen, Iterable, Field):
-    __doc__ = ISequence.__doc__
-    implements(ISequence)
+class AbstractCollection(MinMaxLen, Iterable, Field):
     value_type = None
 
     def __init__(self, value_type=None, unique=False, **kw):
-        super(Sequence, self).__init__(**kw)
+        super(AbstractCollection, self).__init__(**kw)
         # whine if value_type is not a field
         if value_type is not None and not IField.providedBy(value_type):
             raise ValueError, "'value_type' must be field instance."
         self.value_type = value_type
-        # When a choice is used for the sequence, signalize this through an
-        # interface, so that special views can be provided. 
-        if IChoice.providedBy(value_type):
-            directlyProvides(self, IChoiceSequence)
         self.unique = unique
 
     def bind(self, object):
         """See zope.schema._bootstrapinterfaces.IField."""
-        clone = super(Sequence, self).bind(object)
-        # We need to bin the choice as well, so the vocabulary is generated.
-        if IChoiceSequence.providedBy(self):
+        clone = super(AbstractCollection, self).bind(object)
+        # binding value_type is necessary for choices with named vocabularies,
+        # and possibly also for other fields.
+        if clone.value_type is not None:
            clone.value_type = clone.value_type.bind(object) 
         return clone
 
     def _validate(self, value):
-        super(Sequence, self)._validate(value)
+        super(AbstractCollection, self)._validate(value)
         errors = _validate_sequence(self.value_type, value)
         if errors:
             raise WrongContainedType, errors
-
         if self.unique:
             _validate_uniqueness(value)
 
-class Tuple(Sequence):
+class Tuple(AbstractCollection):
     """A field representing a Tuple."""
     implements(ITuple)
     _type = tuple
 
-class List(Sequence):
+class List(AbstractCollection):
     """A field representing a List."""
     implements(IList)
     _type = list
 
-class Set(Sequence):
+class Set(AbstractCollection):
     """A field representing a set."""
     implements(ISet)
-
+    _type = SetType
+    def __init__(self, **kw):
+        if 'unique' in kw: # set members are always unique
+            raise TypeError(
+                "__init__() got an unexpected keyword argument 'unique'")
+        super(Set, self).__init__(unique=True, **kw)
 
 def _validate_fields(schema, value, errors=None):
     if errors is None:

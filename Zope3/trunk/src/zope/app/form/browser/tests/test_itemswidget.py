@@ -13,12 +13,12 @@
 ##############################################################################
 """Select Widget Tests
 
-$Id: test_itemswidget.py,v 1.1 2004/04/24 23:19:07 srichter Exp $
+$Id: test_itemswidget.py,v 1.2 2004/05/06 16:13:41 poster Exp $
 """
 import unittest
 
 from zope.interface import Interface, implements
-from zope.schema import Choice, Sequence
+from zope.schema import Choice, List
 from zope.publisher.browser import TestRequest
 
 from zope.app.form.interfaces import WidgetInputError
@@ -43,7 +43,7 @@ class ICollector(Interface):
         values=['one', 'two', 'three'],
         required=True)
 
-    numbers = Sequence(
+    numbers = List(
         title=u"Numbers",
         description=u"The Numbers",
         value_type=choice,

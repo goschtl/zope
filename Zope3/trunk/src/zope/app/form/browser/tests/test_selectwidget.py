@@ -13,11 +13,11 @@
 ##############################################################################
 """Select Widget Tests
 
-$Id: test_selectwidget.py,v 1.1 2004/04/24 23:19:07 srichter Exp $
+$Id: test_selectwidget.py,v 1.2 2004/05/06 16:13:41 poster Exp $
 """
 import unittest
 
-from zope.schema import Choice, Sequence
+from zope.schema import Choice, List
 from zope.app.form.browser import SelectWidget
 
 choice = Choice(
@@ -25,7 +25,7 @@ choice = Choice(
     description=u"The Number",
     values=[1, 2, 3])
 
-sequence = Sequence(
+sequence = List(
     title=u"Numbers",
     description=u"The Numbers",
     value_type=choice)

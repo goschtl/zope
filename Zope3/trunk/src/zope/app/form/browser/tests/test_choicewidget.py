@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the Choice display and edit widget (function).
 
-$Id: test_choicewidget.py,v 1.1 2004/04/24 23:19:07 srichter Exp $
+$Id: test_choicewidget.py,v 1.2 2004/05/06 16:13:41 poster Exp $
 """
 import unittest
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -24,7 +24,7 @@ from zope.schema import Choice
 from zope.app import zapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
-from zope.app.form.browser import ChoiceDisplayWidget, ChoiceEditWidget
+from zope.app.form.browser import ChoiceDisplayWidget, ChoiceInputWidget
 from zope.app.form.browser import ItemDisplayWidget, DropdownWidget
 
 
@@ -47,12 +47,12 @@ class ChoiceWidgetTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(widget.vocabulary, bound.vocabulary)
 
 
-    def test_ChoiceEditWidget(self):
+    def test_ChoiceInputWidget(self):
         provideMultiView((IChoice, IIterableVocabulary),
                          DropdownWidget, IInputWidget)
         field = Choice(values=[1, 2, 3])
         bound = field.bind(object())
-        widget = ChoiceEditWidget(bound, TestRequest())
+        widget = ChoiceInputWidget(bound, TestRequest())
         self.assert_(isinstance(widget, DropdownWidget))
         self.assertEqual(widget.context, bound)
         self.assertEqual(widget.vocabulary, bound.vocabulary)

@@ -13,38 +13,17 @@
 ##############################################################################
 """Test of the Choice field.
 
-$Id: test_choice.py,v 1.1 2004/04/24 23:19:23 srichter Exp $
+$Id: test_choice.py,v 1.2 2004/05/06 16:13:50 poster Exp $
 """
 import unittest
 
 from zope.schema import vocabulary
-from zope.schema import Choice, Sequence
-from zope.schema.interfaces import IChoiceSequence
+from zope.schema import Choice
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import InvalidValue, NotAContainer, NotUnique
 
 from test_vocabulary import SampleVocabulary, DummyRegistry
-
-class SequenceAndChoiceFieldTests(unittest.TestCase):
-
-    def test_provides_IChoiceSequence(self):
-        sequence = Sequence(value_type=Choice(values=[1, 2, 3]))
-        self.assert_(IChoiceSequence.providedBy(sequence))
-
-    def test_validate(self):
-        sequence = Sequence(value_type=Choice(values=[1, 2, 3, 4, 5]))
-        sequence.validate([])
-        sequence.validate([1])
-        sequence.validate([1, 4])
-        sequence.validate([1, 4, 4])
-        self.assertRaises(NotAContainer, sequence.validate, 1)
-
-    def test_validate_unique(self):
-        sequence = Sequence(value_type=Choice(values=[1, 2, 3, 4, 5]),
-                            unique=True)
-        sequence.validate([1, 4])
-        self.assertRaises(NotUnique, sequence.validate, [1, 4, 4])
 
 
 class Value_ChoiceFieldTests(unittest.TestCase):
@@ -135,7 +114,6 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Vocabulary_ChoiceFieldTests))
     suite.addTest(unittest.makeSuite(Value_ChoiceFieldTests))
-    suite.addTest(unittest.makeSuite(SequenceAndChoiceFieldTests))
     return suite
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for sequences
 
-$Id: sequencewidget.py,v 1.1 2004/03/17 17:35:02 philikon Exp $
+$Id: sequencewidget.py,v 1.2 2004/05/06 16:13:41 poster Exp $
 """
 import re
 from zope.interface import implements
@@ -36,7 +36,7 @@ class SequenceWidget(BrowserWidget):
     _type = tuple    
     _data = () # pre-existing sequence items (from setRenderedValue)
 
-    def __init__(self, context, request, subwidget=None):
+    def __init__(self, context, value_type, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
 
         self.subwidget = None

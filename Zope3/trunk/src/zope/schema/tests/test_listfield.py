@@ -12,11 +12,16 @@
 #
 ##############################################################################
 """
-$Id: test_listfield.py,v 1.6 2004/04/11 10:35:17 srichter Exp $
+$Id: test_listfield.py,v 1.7 2004/05/06 16:13:50 poster Exp $
 """
 from unittest import main, makeSuite
-from zope.schema import List, Int
-from zope.schema.interfaces import RequiredMissing, WrongContainedType
+
+from zope.interface import implements
+from zope.schema import Field, List, Int
+from zope.schema.interfaces import IField
+from zope.schema.interfaces import ICollection, ISequence, IList
+from zope.schema.interfaces import NotAContainer, RequiredMissing
+from zope.schema.interfaces import WrongContainedType, WrongType, NotUnique
 from zope.schema.interfaces import TooShort, TooLong
 from zope.schema.tests.test_field import FieldTestBase
 
@@ -83,6 +88,32 @@ class ListTest(FieldTestBase):
 
         self.assertRaises(WrongContainedType, field.validate, ['',] )
         self.assertRaises(WrongContainedType, field.validate, [3.14159,] )
+
+    def testCorrectValueType(self):
+        # allow value_type of None (XXX)
+        List(value_type=None)
+
+        # do not allow arbitrary value types
+        self.assertRaises(ValueError, List, value_type=object())
+        self.assertRaises(ValueError, List, value_type=Field)
+
+        # however, allow anything that implements IField
+        List(value_type=Field())
+        class FakeField:
+            implements(IField)
+        List(value_type=FakeField())
+
+    def testUnique(self):
+        field = self._Field_Factory(title=u'test field', description=u'',
+                                    readonly=False, required=True, unique=True)
+        field.validate([1, 2])
+        self.assertRaises(NotUnique, field.validate, [1, 2, 1])
+    
+    def testImplements(self):
+        field = List()
+        self.failUnless(IList.providedBy(field))
+        self.failUnless(ISequence.providedBy(field))
+        self.failUnless(ICollection.providedBy(field))
 
 def test_suite():
     return makeSuite(ListTest)

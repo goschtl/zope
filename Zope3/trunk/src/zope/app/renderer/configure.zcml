@@ -8,27 +8,6 @@
       name="SourceTypes"
       factory=".vocabulary.SourceTypeVocabulary" />
 
-  <content class=".vocabulary.SourceTypeVocabulary">
-    <allow interface="zope.schema.interfaces.IVocabulary"/>
-    <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
-  </content>
-
-  <content class=".vocabulary.SourceTypeTerm">
-    <allow
-        interface="zope.schema.interfaces.ITokenizedTerm"
-        attributes="title"/>
-  </content>
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IChoiceSequence
-           .vocabulary.ISourceTypeVocabulary"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".vocabulary.SourceTypeEditWidget"
-      permission="zope.Public"
-      />
-  
-
   <!-- Plain Text Support -->
 
   <factory
@@ -70,16 +49,5 @@
       for=".rest.IReStructuredTextSource"
       class=".rest.ReStructuredTextToHTMLRenderer"
       permission="zope.Public" />
-
-  <!-- Special widget for Choice fields with ISourceType vocabularies -->
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IChoice
-           .vocabulary.ISourceTypeVocabulary"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".vocabulary.SourceTypeEditWidget"
-      permission="zope.Public"
-      />
 
 </configure>

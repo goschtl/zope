@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.44 2004/04/24 23:20:54 srichter Exp $
+$Id: interfaces.py,v 1.45 2004/05/06 16:13:50 poster Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -370,8 +370,12 @@ class IChoice(IField):
          "IVocabularyRegistry should be used to locate an appropriate\n"
          "IBaseVocabulary object."))
 
-class ISequence(IMinMaxLen, IIterable, IContainer):
-    u"""Field containing a Sequence value.
+# Collections:
+
+# Abstract
+
+class ICollection(IMinMaxLen, IIterable, IContainer):
+    u"""Abstract interface containing a collection value.
 
     The Value must be iterable and may have a min_length/max_length.
     """
@@ -382,29 +386,34 @@ class ISequence(IMinMaxLen, IIterable, IContainer):
                         u"expressed via a Field."))
 
     unique = Bool(
-        title = _('Unique Values'),
-        description = _('Specifies whether the values of the sequence must be'
-                        'unique.'),
+        title = _('Unique Members'),
+        description = _('Specifies whether the members of the collection '
+                        'must be unique.'),
         default=False)
 
-class IChoiceSequence(Interface):
-    u"""Marker interface to signalize sequences whose value_type is a Choice.
+class ISequence(ICollection):
+    u"""Abstract interface specifying that the value is ordered"""
 
-    This will simplify the selection of specialized views (i.e. widgets).
-    """
-    
+class IUnorderedCollection(ICollection):
+    u"""Abstract interface specifying that the value cannot be ordered"""
+
+# Concrete
+
 class ITuple(ISequence):
-    u"""Field containing a conventional tuple."""
+    u"""Field containing a value that implements the API of a conventional 
+    Python tuple."""
 
 class IList(ISequence):
-    u"""Field containing a conventional list."""
+    u"""Field containing a value that implements the API of a conventional 
+    Python list."""
 
-class ISet(ISequence):
-    u"""Field representing an unordered collection of values from a
-    vocabulary.
+class ISet(IUnorderedCollection):
+    u"""Field containing a value that implements the API of a conventional 
+    Python standard library sets.Set."""
+    
+    unique = Attribute(u"This ICollection interface attribute must be True")
 
-    Specific values may be represented at most once.
-    """
+# (end Collections)
 
 class IObject(IField):
     u"""Field containing an Object value."""
@@ -469,6 +478,10 @@ class ITokenizedTerm(ITerm):
         Control characters are not allowed.
         """)
 
+class ITitledTokenizedTerm(ITokenizedTerm):
+    """A tokenized term that includes a title."""
+    
+    title = TextLine(title=_(u"Title"))
 
 class IBaseVocabulary(Interface):
     """Representation of a vocabulary.

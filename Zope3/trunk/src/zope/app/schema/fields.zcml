@@ -85,17 +85,6 @@
 
   </content>
 
-  <content class="zope.schema.Sequence">
-
-    <factory
-	id="zope.schema.Sequence"
-	title="Sequence Field"
-	description="Sequence Field" />
-
-    <require like_class="zope.schema.Field" />
-
-  </content>
-
   <content class="zope.schema.Bytes">
 
     <factory
@@ -203,6 +192,17 @@
 
   </content>
 
+  <content class="zope.schema.Set">
+
+    <factory
+	id="zope.schema.Set"
+	title="Set Field"
+	description="Set Field" />
+
+    <require like_class="zope.schema.Field" />
+
+  </content>
+
   <content class="zope.schema.Password">
 
     <factory
@@ -297,6 +297,15 @@
 
     <require like_class="zope.schema.Field" />
 
+  </content>
+
+  <content class="zope.schema.vocabulary.SimpleTerm">
+    <allow interface="zope.schema.interfaces.ITitledTokenizedTerm" />
+  </content>
+
+  <content class="zope.schema.vocabulary.SimpleVocabulary">
+    <allow interface="zope.schema.interfaces.IVocabulary" />
+    <allow interface="zope.schema.interfaces.IVocabularyTokenized" />
   </content>
 
 </configure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.19 2004/04/11 10:35:00 srichter Exp $
+$Id: fields.py,v 1.20 2004/05/06 16:13:49 poster Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -141,8 +141,8 @@ class GlobalObject(schema.Field):
         self.validate(value)
         return value
 
-class Tokens(schema.Sequence):
-    """A sequence that can be read from a space-separated string
+class Tokens(schema.List):
+    """A list that can be read from a space-separated string
 
     Consider GlobalObject tokens:
 

@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.3 2004/04/24 23:19:43 srichter Exp $
+$Id: test_multicheckboxwidget.py,v 1.4 2004/05/06 16:13:41 poster Exp $
 """
 import unittest, doctest
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
-from zope.schema import Choice, Sequence
+from zope.schema import Choice, List
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import MultiCheckBoxWidget
@@ -32,7 +32,7 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
     """
 
     _WidgetFactory = MultiCheckBoxWidget
-    _FieldFactory = Sequence
+    _FieldFactory = List
 
     def setUpContent(self, desc=u''):
         class ITestContent(Interface):

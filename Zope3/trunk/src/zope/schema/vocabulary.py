@@ -13,29 +13,35 @@
 ##############################################################################
 """Vocabulary support for schema.
 
-$Id: vocabulary.py,v 1.22 2004/04/24 23:20:57 srichter Exp $
+$Id: vocabulary.py,v 1.23 2004/05/06 16:13:50 poster Exp $
 """
 from zope.interface.declarations import directlyProvides, implements
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
-from zope.schema.interfaces import ITokenizedTerm
+from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 
 # simple vocabularies performing enumerated-like tasks
+
+_marker = object()
 
 class SimpleTerm(object):
     """Simple tokenized term used by SimpleVocabulary."""
 
     implements(ITokenizedTerm)
 
-    def __init__(self, value, token=None):
+    def __init__(self, value, token=None, title=None):
         """Create a term for value and token. If token is omitted,
-        str(value) is used for the token
+        str(value) is used for the token.  If title is provided, 
+        term implements ITitledTokenizedTerm.
         """
         self.value = value
         if token is None:
             token = value
         self.token = str(token)
+        self.title = title
+        if title is not None:
+            directlyProvides(self, ITitledTokenizedTerm)
 
 class SimpleVocabulary(object):
     """Vocabulary that works from a sequence of terms."""
@@ -72,7 +78,7 @@ class SimpleVocabulary(object):
         One or more interfaces may also be provided so that alternate
         widgets may be bound without subclassing.
         """
-        terms = [cls.createTerm((value, token)) for (token, value) in items]
+        terms = [cls.createTerm(value, token) for (token, value) in items]
         return cls(terms, *interfaces)
     fromItems = classmethod(fromItems)
 
@@ -92,16 +98,13 @@ class SimpleVocabulary(object):
         return cls(terms, *interfaces)
     fromValues = classmethod(fromValues)
 
-    def createTerm(cls, data):
+    def createTerm(cls, *args):
         """Create a single term from data.
 
         Subclasses may override this with a class method that creates
-        a term of the appropriate type from the single data argument.
+        a term of the appropriate type from the arguments.
         """
-        if isinstance(data, tuple):
-            return SimpleTerm(*data)
-        else:
-            return SimpleTerm(data)
+        return SimpleTerm(*args)
     createTerm = classmethod(createTerm)
 
     def __contains__(self, value):

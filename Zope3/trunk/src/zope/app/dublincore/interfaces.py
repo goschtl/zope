@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.2 2004/03/13 23:00:52 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/05/06 16:13:40 poster Exp $
 """
 
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.interface import Interface
-from zope.schema import Text, TextLine, Datetime, Sequence
+from zope.schema import Text, TextLine, Datetime, List
 
 class IDublinCoreElementItem(Interface):
     """A qualified dublin core element"""
@@ -269,13 +269,13 @@ class IDCExtended(Interface):
     """
 
 
-    creators = Sequence(
+    creators = List(
         title = u'Creators',
         description = u"The unqualified Dublin Core 'Creator' element values",
         value_type = TextLine(),
         )
 
-    subjects = Sequence(
+    subjects = List(
         title = u'Subjects',
         description = u"The unqualified Dublin Core 'Subject' element values",
         value_type = TextLine(),
@@ -287,7 +287,7 @@ class IDCExtended(Interface):
         u"The first unqualified Dublin Core 'Publisher' element value.",
         )
 
-    contributors = Sequence(
+    contributors = List(
         title = u'Contributors',
         description =
         u"The unqualified Dublin Core 'Contributor' element values",

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets
 
-$Id: __init__.py,v 1.3 2004/04/24 23:19:42 srichter Exp $
+$Id: __init__.py,v 1.4 2004/05/06 16:13:41 poster Exp $
 """
 from zope.app.form.browser.widget import BrowserWidget, DisplayWidget
 
@@ -39,9 +39,11 @@ from zope.app.form.browser.itemswidgets import ListDisplayWidget
 # Widgets for fields with vocabularies.
 # Note that these are only dispatchers for the widgets below.
 from zope.app.form.browser.itemswidgets import ChoiceDisplayWidget
-from zope.app.form.browser.itemswidgets import ChoiceSequenceDisplayWidget
-from zope.app.form.browser.itemswidgets import ChoiceEditWidget
-from zope.app.form.browser.itemswidgets import ChoiceSequenceEditWidget
+from zope.app.form.browser.itemswidgets import ChoiceInputWidget
+from zope.app.form.browser.itemswidgets import CollectionDisplayWidget
+from zope.app.form.browser.itemswidgets import CollectionInputWidget
+from zope.app.form.browser.itemswidgets import ChoiceCollectionDisplayWidget
+from zope.app.form.browser.itemswidgets import ChoiceCollectionInputWidget
 
 # Widgets that let you choose a single item from a list
 # These widgets are multi-views on (field, vocabulary)
