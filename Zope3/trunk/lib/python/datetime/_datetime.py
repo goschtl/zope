@@ -1002,11 +1002,8 @@ class timetz(time):
             ottz = other.__tzinfo
         if mytz is ottz:
             return supercmp(other)
-        myoff = otoff = None
-        if mytz is not None:
-            myoff = mytz.utcoffset(self)
-        if ottz is not None:
-            otoff = ottz.utcoffset(other)
+        myoff = self.utcoffset()
+        otoff = other.utcoffset()
         if myoff == otoff:
             return supercmp(other)
         if myoff is None or otoff is None:
