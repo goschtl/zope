@@ -11,12 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import sys, unittest
+
+import os.path
+import sys
+import tempfile
+import unittest
+
+from zope.testing.cleanup import CleanUp
+
 
 # Caution:  tempfile.NamedTemporaryFile cannot be used on Windows, because
 # the tests here want to open the file more than once.  You can't do that
 # with an O_TEMPORARY file on Win2K (or higher).
-import tempfile
 
 class TempFile:
     # this actually becomes the remove() method
@@ -38,47 +44,41 @@ class TempFile:
             self.remove(self.file.name)
             self.closed = 1
 
-from zope.testing.cleanup import CleanUp
 
 class Test(CleanUp, unittest.TestCase):
 
-    def testInclude(self):
+    def checkZCMLText(self, text):
         file = TempFile()
         name = file.name
-        file.write(
+        file.write(text)
+        file.flush()
+        from zope.configuration.xmlconfig import XMLConfig
+        x = XMLConfig(name)
+        x()
+        file.close()
+
+    def testInclude(self):
+        self.checkZCMLText(
             """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
                  <include
                      package="zope.configuration.tests.contact"
                      file="contact.zcml" />
                </zopeConfigure>""")
-        file.flush()
-        from zope.configuration.xmlconfig import XMLConfig
-        x = XMLConfig(name)
-        x()
-        file.close()
 
     def testIncludeAll(self):
-        file = TempFile()
-        name = file.name
-        file.write(
+        self.checkZCMLText(
             """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
                  <include
                      package="zope.configuration.tests.*"
                      file="contact.zcml" />
                </zopeConfigure>""")
-        file.flush()
-        from zope.configuration.xmlconfig import XMLConfig
-        x = XMLConfig(name)
-        x()
-        file.close()
 
     def testIncludeNoSiteManagementFolder(self):
-        from os.path import split
         file = TempFile()
         full_name = file.name
         file1 = TempFile()
         full_name1 = file1.name
-        name1 = split(full_name1)[-1]
+        name1 = os.path.split(full_name1)[-1]
 
         file.write(
             """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
@@ -100,11 +100,10 @@ class Test(CleanUp, unittest.TestCase):
         file1.close()
 
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.makeSuite(Test)
 
 def run():
-    unittest.TextTestRunner().run(test_suite())
+    unittset.main(defaultTest="test_suite")
 
 def debug():
     test_suite().debug()
