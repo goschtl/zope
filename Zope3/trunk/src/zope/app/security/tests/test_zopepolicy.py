@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.6 2003/03/11 16:11:20 jim Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.7 2003/03/13 16:28:15 alga Exp $
 """
 
 import unittest
@@ -64,27 +64,19 @@ class Unprotected:
 class Principal(PrincipalBase):
     def getRoles(self): return ['Manager']
 
-class AuthService:
-    """we only implement what we need for testing here"""
-    __implements__ = IAuthenticationService, ISimpleService
-    def __init__(self):
-        self.data = {'jim': Principal('jim','Jim','Jim Fulton')}
-    def getPrincipal(self, id):
-        return self.data[id]
-
 
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
 
-    
+
         services.defineService(Permissions, IPermissionService)
         services.provideService(Permissions, permissionRegistry)
-        
+
         services.defineService(Roles, IRoleService)
         services.provideService(Roles, roleRegistry)
-        
+
         services.defineService(Authentication, IAuthenticationService)
         services.provideService(Authentication, principalRegistry)
 
@@ -95,17 +87,14 @@ class Test(PlacefulSetup, unittest.TestCase):
                        AttributeAnnotations)
 
         # set up some principals
-        jim = principalRegistry.definePrincipal('jim', 'Jim', 'Jim Fulton',
-                                                'jim', '123')
-        self.jim = jim.getId()
+        self.jim = principalRegistry.definePrincipal('jim', 'Jim', 'Jim Fulton',
+                                                     'jim', '123')
 
-        tim = principalRegistry.definePrincipal('tim', 'Tim', 'Tim Peters',
-                                                'tim', '456')
-        self.tim = tim.getId()
+        self.tim = principalRegistry.definePrincipal('tim', 'Tim', 'Tim Peters',
+                                                     'tim', '456')
 
-        unknown = principalRegistry.defineDefaultPrincipal('unknown',
+        self.unknown = principalRegistry.defineDefaultPrincipal('unknown',
                     'Unknown', 'Nothing is known about this principal')
-        self.unknown = unknown.getId()
 
         # set up some permissions
         read = permissionRegistry.definePermission('read', 'Read',
@@ -132,8 +121,10 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.arole = arole.getId()
 
         # grant and deny some permissions to a principal
-        principalPermissionManager.grantPermissionToPrincipal(self.create, self.jim)
-        principalPermissionManager.denyPermissionToPrincipal(self.update, self.jim)
+        principalPermissionManager.grantPermissionToPrincipal(self.create,
+                                                              self.jim.getId())
+        principalPermissionManager.denyPermissionToPrincipal(self.update,
+                                                             self.jim.getId())
 
         # grant and deny some permissions to the roles
         rolePermissionManager.grantPermissionToRole(self.read, self.peon)
@@ -142,8 +133,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         rolePermissionManager.grantPermissionToRole(self.write, self.manager)
 
         # ... and assign roles to principals
-        principalRoleManager.assignRoleToPrincipal(self.peon, self.jim)
-        principalRoleManager.assignRoleToPrincipal(self.manager, self.tim)
+        principalRoleManager.assignRoleToPrincipal(self.peon, self.jim.getId())
+        principalRoleManager.assignRoleToPrincipal(self.manager, self.tim.getId())
 
         self.policy = self._makePolicy()
 
@@ -190,7 +181,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.__assertPermissions(self.unknown, ['read'])
 
         principalPermissionManager.grantPermissionToPrincipal(
-            self.write, self.jim)
+            self.write, self.jim.getId())
         self.failUnless(
             self.policy.checkPermission(self.write, None, Context(self.jim)))
 
@@ -198,10 +189,10 @@ class Test(PlacefulSetup, unittest.TestCase):
 
 
     def testUserWithRoles(self):
-        services.provideService(Authentication, AuthService(),force=True)
+        jim = Principal('jim','Jim','Jim Fulton')
         self.failUnless(
-            self.policy.checkPermission(self.write, None, Context(self.jim)))
-        self.__assertPermissions(self.jim, ['create', 'read', 'write'])
+            self.policy.checkPermission(self.write, None, Context(jim)))
+        self.__assertPermissions(jim, ['create', 'read', 'write'])
 
 
     def testPlayfulPrincipalRole(self):
@@ -216,7 +207,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.failIf(self.policy.checkPermission(
             self.write, ob, Context(self.jim)))
         AnnotationPrincipalRoleManager(ob).assignRoleToPrincipal(
-            self.manager, self.jim)
+            self.manager, self.jim.getId())
         self.failUnless(self.policy.checkPermission(
             self.write, ob, Context(self.jim)))
 
@@ -255,13 +246,13 @@ class Test(PlacefulSetup, unittest.TestCase):
 
 
         principalPermissionManager.denyPermissionToPrincipal(
-            test, self.jim)
+            test, self.jim.getId())
         self.failIf(self.policy.checkPermission(
             test, ob, Context(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read'], ob)
 
         principalPermissionManager.unsetPermissionForPrincipal(
-            test, self.jim)
+            test, self.jim.getId())
 
         # Make sure multiple conflicting role permissions resolve correctly
         ARPM(ob2).grantPermissionToRole(test, 'Anonymous')
@@ -270,12 +261,11 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         new = principalRegistry.definePrincipal('new', 'Newbie',
                                                 'Newbie User', 'new', '098')
-        new = new.getId()
-        principalRoleManager.assignRoleToPrincipal(self.arole, new)
+        principalRoleManager.assignRoleToPrincipal(self.arole, new.getId())
         self.failUnless(self.policy.checkPermission(test, ob, Context(new)))
         self.__assertPermissions(new, ['test'], ob)
 
-        principalRoleManager.assignRoleToPrincipal(self.peon, new)
+        principalRoleManager.assignRoleToPrincipal(self.peon, new.getId())
         self.failIf(self.policy.checkPermission(test, ob, Context(new)))
         self.__assertPermissions(new, ['read'], ob)
 
@@ -296,32 +286,32 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.__assertPermissions(self.tim, ['read', 'write'], ob)
 
-        APPM(ob2).grantPermissionToPrincipal(test, self.tim)
+        APPM(ob2).grantPermissionToPrincipal(test, self.tim.getId())
         self.failUnless(self.policy.checkPermission(test, ob,
                                                     Context(self.tim)))
         self.__assertPermissions(self.tim, ['read', 'test', 'write'], ob)
 
-        APPM(ob3).denyPermissionToPrincipal(test, self.tim)
+        APPM(ob3).denyPermissionToPrincipal(test, self.tim.getId())
         self.failIf(self.policy.checkPermission(test, ob,
                                                 Context(self.tim)))
         self.__assertPermissions(self.tim, ['read', 'write'], ob)
 
-        APPM(ob1).denyPermissionToPrincipal(test, self.jim)
-        APPM(ob3).grantPermissionToPrincipal(test, self.jim)
+        APPM(ob1).denyPermissionToPrincipal(test, self.jim.getId())
+        APPM(ob3).grantPermissionToPrincipal(test, self.jim.getId())
         self.failUnless(self.policy.checkPermission(test, ob,
                                                     Context(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read', 'test'], ob)
 
 
-        APPM(ob3).unsetPermissionForPrincipal(test, self.jim)
+        APPM(ob3).unsetPermissionForPrincipal(test, self.jim.getId())
         self.failIf(self.policy.checkPermission(test, ob,
                                                 Context(self.jim)))
         self.__assertPermissions(self.jim, ['create', 'read'], ob)
 
         # make sure placeless principal permissions override placeful ones
-        APPM(ob).grantPermissionToPrincipal(test, self.tim)
+        APPM(ob).grantPermissionToPrincipal(test, self.tim.getId())
         principalPermissionManager.denyPermissionToPrincipal(
-            test, self.tim)
+            test, self.tim.getId())
         self.failIf(self.policy.checkPermission(test, ob,
                                                 Context(self.tim)))
 

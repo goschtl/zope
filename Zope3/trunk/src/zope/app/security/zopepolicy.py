@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.5 2003/02/12 02:17:31 seanb Exp $
+$Id: zopepolicy.py,v 1.6 2003/03/13 16:28:16 alga Exp $
 """
-__version__='$Revision: 1.5 $'[11:-2]
+__version__='$Revision: 1.6 $'[11:-2]
 
 from zope.component import queryAdapter, getService
 from zope.app.services.servicenames import Authentication
@@ -50,10 +50,8 @@ getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 globalContext = object()
 
 
-def _computeBasePrincipalRoles(principalid, object):
-    auth = getService(object, Authentication)
-    p = auth.getPrincipal(principalid)
-    roles = tuple(p.getRoles()) + ('Anonymous',)
+def _computeBasePrincipalRoles(principal, object):
+    roles = tuple(principal.getRoles()) + ('Anonymous',)
     roledict = {}
     for role in roles:
         roledict[role] = Allow
@@ -98,7 +96,7 @@ class ZopeSecurityPolicy:
         if user is system_user:
             return 1
         roledict = _computeBasePrincipalRoles(user, object)
-        principals = {user : roledict}
+        principals = {user.getId() : roledict}
 
         role_permissions = {}
         remove = {}
@@ -245,6 +243,7 @@ def permissionsOfPrincipal(principal, object):
     permissions = {}
     roles = _computeBasePrincipalRoles(principal, object)
     role_permissions = {}
+    principalid = principal.getId()
 
     # Make two passes.
 
@@ -252,12 +251,12 @@ def permissionsOfPrincipal(principal, object):
 
 
     # get placeless principal permissions
-    for permission, setting in getPermissionsForPrincipal(principal):
+    for permission, setting in getPermissionsForPrincipal(principalid):
         if permission not in permissions:
             permissions[permission] = setting
 
     # get placeless principal roles
-    for role, setting in getRolesForPrincipal(principal):
+    for role, setting in getRolesForPrincipal(principalid):
         if role not in roles:
             roles[role] = setting
 
@@ -268,14 +267,14 @@ def permissionsOfPrincipal(principal, object):
         prinper = queryAdapter(place, IPrincipalPermissionMap)
         if prinper is not None:
             for permission, setting in prinper.getPermissionsForPrincipal(
-                principal):
+                principalid):
                 if permission not in permissions:
                     permissions[permission] = setting
 
         # Collect principal roles
         prinrole = queryAdapter(place, IPrincipalRoleMap)
         if prinrole is not None:
-            for role, setting in prinrole.getRolesForPrincipal(principal):
+            for role, setting in prinrole.getRolesForPrincipal(principalid):
                 if role not in roles:
                     roles[role] = setting
 

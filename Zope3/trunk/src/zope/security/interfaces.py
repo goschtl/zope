@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for security machinery.
 
-$Id: interfaces.py,v 1.5 2003/02/11 16:00:10 sidnei Exp $
+$Id: interfaces.py,v 1.6 2003/03/13 16:28:14 alga Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -42,7 +42,7 @@ class ISecurityManagementSetup(Interface):
 
 class ISecurityManagement(Interface):
     """Public security management API."""
-    
+
     def getSecurityManager():
         """Get a SecurityManager (create if needed)."""
 
@@ -80,6 +80,9 @@ class ISecurityManager(Interface):
         This is equivalent to something like::
         REQUEST['AUTHENTICATED_USER']
         but is a bit cleaner, especially if 'REQUEST' isn't handy.
+
+        An IPrincipal object wrapped in a context of its
+        AuthenticationService is returned.
         """
 
     def checkPermission(permission, object):
@@ -126,7 +129,7 @@ class IChecker(Interface):
 
     Example (for __getitem__):
 
-           checker.check(ob, "__getitem__")
+           checker.check(ob, \"__getitem__\")
            return checker.proxy(ob[key])
     """
 
@@ -151,7 +154,7 @@ class ISecurityPolicy(Interface):
 
     def checkPermission(permission, object, context):
         """Return whether security context allows permission on object.
-        
+
         Arguments:
         permission -- A permission name
         object -- The object being accessed according to the permission
@@ -162,7 +165,7 @@ class ISecurityPolicy(Interface):
 
 class ISecurityContext(Interface):
     """Capture transient request-specific security information."""
-    
+
     Attribute('stack',
               'A stack of elements, each either be an ExecutableObject'
               'or a tuple consisting of an ExecutableObject and a'
