@@ -1,0 +1,30 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <content class=".DTMLPage.">
+    <factory
+        id="DTMLPage"
+        permission="Zope.ManageContent"
+        title="DTML Page"
+        description="A simple, content-based Page Template" />
+    <require permission="Zope.View"
+                      attributes="content_type __call__" />
+
+    <require permission="Zope.ManageContent"
+                      interface=".DTMLPage.IDTMLPage" />
+    <require permission="Zope.View"
+                      interface=".DTMLPage.IRenderDTMLPage" />
+  </content>
+
+
+  <adapter
+      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
+      provides="Zope.App.OFS.Annotation.IAnnotations."
+      for=".DTMLPage." />
+
+
+  <include package=".Views" />
+
+</zopeConfigure>
