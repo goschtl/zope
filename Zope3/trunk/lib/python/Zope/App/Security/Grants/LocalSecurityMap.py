@@ -13,9 +13,12 @@
 ##############################################################################
 """ Generic three dimensional array type """
 
+from Zope.App.Security.Grants.ILocalSecurityMap import ILocalSecurityMap
 
 class LocalSecurityMap(object):
-   
+
+    __implements__ = ILocalSecurityMap
+
     def __init__(self):
         self._clear()
 
