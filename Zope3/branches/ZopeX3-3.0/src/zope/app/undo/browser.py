@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.exceptions import ForbiddenAttribute
+from zope.security.interfaces import ForbiddenAttribute
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView

@@ -16,7 +16,7 @@ $Id$
 __metaclass__ = type
 
 import posixpath
-from zope.exceptions import Unauthorized
+from zope.security.interfaces import Unauthorized
 from zope.server.interfaces.ftp import IFileSystem
 from zope.server.interfaces.ftp import IFileSystemAccess
 from zope.interface import implements

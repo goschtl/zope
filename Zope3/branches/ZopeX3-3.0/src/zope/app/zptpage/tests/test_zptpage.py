@@ -19,7 +19,7 @@ $Id$
 import unittest
 
 from zope.interface.verify import verifyClass
-from zope.exceptions import Forbidden
+from zope.security.interfaces import Forbidden
 
 from zope.app.tests import ztapi
 from zope.component import getView

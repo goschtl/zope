@@ -20,8 +20,18 @@ $Id$
 """
 
 from zope.exceptions._zope_error import ZopeError, IZopeError
-from zope.exceptions.unauthorized import Unauthorized, IUnauthorized
 from zope.exceptions._notfounderror import NotFoundError, INotFoundError
-from zope.exceptions._forbidden import Forbidden, ForbiddenAttribute
-from zope.exceptions._forbidden import IForbidden, IForbiddenAttribute
 from zope.exceptions._duplicate import DuplicationError, IDuplicationError
+
+# Importing these interfaces from here is deprecated!
+
+# avoid depency on zope.security:
+try:
+    import zope.security
+except ImportError, v:
+    if not str(v).endswith(' zope.security'):
+        raise
+else:    
+    from zope.security.interfaces import IUnauthorized, Unauthorized
+    from zope.security.interfaces import IForbidden, IForbiddenAttribute
+    from zope.security.interfaces import Forbidden, ForbiddenAttribute

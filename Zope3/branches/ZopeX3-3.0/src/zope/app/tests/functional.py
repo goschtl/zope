@@ -30,7 +30,7 @@ from ZODB.DemoStorage import DemoStorage
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.http import HTTPRequest
 from zope.publisher.publish import publish
-from zope.exceptions import Forbidden, Unauthorized
+from zope.security.interfaces import Forbidden, Unauthorized
 from zope.security.management import endInteraction
 
 from zope.app.debug import Debugger

@@ -30,17 +30,19 @@ import sys
 import types
 import datetime
 import weakref
+
+from zope.exceptions import DuplicationError
 import zope.interface.interface
 import zope.interface.interfaces
 import zope.interface.declarations
-
 from zope.interface import directlyProvides, Interface, implements
 from zope.interface.interfaces import IInterface, IDeclaration
+
 from zope.security.interfaces import IChecker, INameBasedChecker
 from zope.security.interfaces import ISecurityProxyFactory
+from zope.security.interfaces import Unauthorized, ForbiddenAttribute
 from zope.security.management import thread_local
 from zope.security._proxy import _Proxy as Proxy, getChecker
-from zope.exceptions import Unauthorized, ForbiddenAttribute, DuplicationError
 
 __metaclass__ = type
 

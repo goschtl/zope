@@ -19,7 +19,7 @@ from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.size.interfaces import ISized
 from zope.app import zapi
 from zope.interface import implements
-from zope.exceptions import Unauthorized
+from zope.security.interfaces import Unauthorized
 from zope.tales.interfaces import ITALESFunctionNamespace
 from interfaces import IZopeTalesAPI
 

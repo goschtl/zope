@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
 <view
-    for="zope.exceptions.IUnauthorized"
+    for="zope.security.interfaces.IUnauthorized"
     type="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     permission="zope.Public"
@@ -9,7 +9,7 @@
     />
 
 <defaultView
-    for="zope.exceptions.IUnauthorized"
+    for="zope.security.interfaces.IUnauthorized"
     type="zope.publisher.interfaces.http.IHTTPRequest"
     name="index.html"
     />

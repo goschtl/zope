@@ -551,7 +551,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
   if (thread_local == NULL) return;
   Py_DECREF(m);
 
-  if ((m = PyImport_ImportModule("zope.exceptions")) == NULL) return;
+  if ((m = PyImport_ImportModule("zope.security.interfaces")) == NULL) return;
   ForbiddenAttribute = PyObject_GetAttrString(m, "ForbiddenAttribute");
   if (ForbiddenAttribute == NULL) return;
   Unauthorized = PyObject_GetAttrString(m, "Unauthorized");

@@ -21,7 +21,7 @@ import socket
 from datetime import date, timedelta
 from getopt import getopt, GetoptError
 import asyncore
-from zope.exceptions import Unauthorized
+from zope.security.interfaces import Unauthorized
 from zope.server.serverbase import ServerBase
 from zope.server.interfaces.ftp import IFileSystemAccess
 from zope.server.linereceiver.lineserverchannel import LineServerChannel

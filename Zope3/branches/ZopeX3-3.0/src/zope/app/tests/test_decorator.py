@@ -22,7 +22,7 @@ from zope.app.decorator import Decorator
 from zope.interface import Interface, implements, directlyProvides, providedBy
 from zope.interface import directlyProvidedBy, implementedBy
 from zope.testing.doctestunit import DocTestSuite
-from zope.exceptions import ForbiddenAttribute
+from zope.security.interfaces import ForbiddenAttribute
 
 class I1(Interface):
     pass
