@@ -50,12 +50,16 @@ Actually
 
 	Otherwise it applies to Zope 3 as much as to Five
 
-	The Five specific bits are just some extra ZCML statements
+	The Five specific bits are mainly some extra ZCML directives
+
+	These are in their own ZCML namespace
 
 %page
 
-Page template example
+Page template view example
 
+
+overview.pt
 
 %size 4, fore "blue"
 <html>
@@ -66,8 +70,10 @@ Page template example
 
 %page
 
-Hooking up the page template
+Hooking up the page
 
+
+configure.zcml
 
 %size 4, fore "blue"
 <configure 
@@ -79,8 +85,28 @@ Hooking up the page template
     />
   <browser:page
       for="Products.Five.interfaces.IFolder"
-      name="overview"
+      name="overview.html"
       template="overview.pt"
       permission="zope2.ViewManagementScreens"
       />
 </configure>
+
+%page
+
+What works now
+
+
+	some/folder/overview.html
+
+%page
+
+Hooking up the page, explanation
+
+
+	Much like hooking up an adapter
+
+	Adapter provides new interface (API) for developer
+
+	View provides new interface (UI) for user
+
+	Only five-specific thing is making Folder Zope-3 traversable
