@@ -1,0 +1,23 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+>
+
+  <content
+    class=".index.TextIndex"
+    >
+
+    <require
+      permission="Zope.ManageServices"
+      interface=".interfaces.IUITextIndex"
+      />
+
+    <factory
+      id="Zope.App.index.text.factory"
+      permission="Zope.ManageServices"
+      />
+
+  </content>
+
+  <include package=".browser" />
+
+</zopeConfigure>

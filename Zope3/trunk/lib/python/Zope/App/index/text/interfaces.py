@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: interfaces.py,v 1.1 2002/12/04 11:10:24 gvanrossum Exp $
+$Id: interfaces.py,v 1.2 2002/12/04 17:11:51 gvanrossum Exp $
 """
 
 from Interface import Interface
@@ -29,3 +29,15 @@ class ISearchableText(Interface):
         through the splitter pipeline; the combined stream of words
         coming out of the pipeline will be indexed.
         """
+
+from Zope.TextIndex.TextIndexInterfaces import IStatistics
+
+class IUITextIndex(IStatistics):
+
+    """Interface for creating a TextIndex from the ZMI."""
+
+    def subscribe():
+        """Subscribe to the prevailing object hub service."""
+
+    def unsubscribe():
+        """Unsubscribe from the object hub service."""

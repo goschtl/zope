@@ -16,7 +16,7 @@
 Events related to object creation and deletion are translated into
 index_doc() and unindex_doc() calls.
 
-$Id: index.py,v 1.3 2002/12/04 14:43:04 gvanrossum Exp $
+$Id: index.py,v 1.4 2002/12/04 17:11:51 gvanrossum Exp $
 """
 
 from Zope.Event.ISubscriber import ISubscriber
@@ -29,7 +29,7 @@ from Zope.App.OFS.Services.ObjectHub.IHubEvent import \
      IObjectUnregisteredHubEvent, \
      IObjectModifiedHubEvent
 
-from Zope.App.index.text.interfaces import ISearchableText
+from Zope.App.index.text.interfaces import ISearchableText, IUITextIndex
 
 from Zope.ComponentArchitecture import queryAdapter
 from Zope.ContextWrapper import ContextMethod
@@ -38,7 +38,8 @@ from Zope.TextIndex.TextIndexWrapper import TextIndexWrapper
 
 class TextIndex(TextIndexWrapper):
 
-    __implements__ = TextIndexWrapper.__implements__ + (ISubscriber,)
+    __implements__ = TextIndexWrapper.__implements__ + (ISubscriber,
+                                                        IUITextIndex)
 
     def notify(wrapped_self, event):
         """An event occurred.  Index or unindex the object in response."""
