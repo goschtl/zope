@@ -13,7 +13,7 @@
 ##############################################################################
 """Test handler for PrincipalPermissionManager module.
 
-$Id: test_principalpermissionmanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
+$Id: test_principalpermissionmanager.py,v 1.4 2004/03/13 23:55:25 srichter Exp $
 """
 import unittest
 
@@ -24,7 +24,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.security.interfaces import IAuthenticationService, IPermission
 from zope.app.security.permission import Permission
 
-from zope.app.services.servicenames import Authentication
+from zope.app.servicenames import Authentication
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.security.principalregistry import principalRegistry
 

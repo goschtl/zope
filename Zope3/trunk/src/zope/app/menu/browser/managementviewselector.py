@@ -13,13 +13,13 @@
 ##############################################################################
 """Selecting first available and allowed management view
 
-$Id: managementviewselector.py,v 1.1 2004/03/10 23:10:44 srichter Exp $
+$Id: managementviewselector.py,v 1.2 2004/03/13 23:55:10 srichter Exp $
 """
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app import zapi
-from zope.app.services.servicenames import BrowserMenu
+from zope.app.servicenames import BrowserMenu
 
 class ManagementViewSelector(BrowserView):
     """View that selects the first available management view."""

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the wiki ZCML namespace directives.
 
-$Id: test_directives.py,v 1.3 2004/03/03 17:06:31 srichter Exp $
+$Id: test_directives.py,v 1.4 2004/03/13 23:54:59 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,7 @@ from zope.configuration import xmlconfig
 from zope.interface import Interface
 
 from zope.app import zapi
-from zope.app.services.servicenames import Utilities
+from zope.app.servicenames import Utilities
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.dav.interfaces import IDAVNamespace
 import zope.app.dav.tests

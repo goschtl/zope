@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Permission View Classes
 
-$Id: principalpermissionview.py,v 1.4 2004/03/08 12:06:05 srichter Exp $
+$Id: principalpermissionview.py,v 1.5 2004/03/13 23:55:24 srichter Exp $
 """
 import time
 
@@ -21,7 +21,7 @@ from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.services.servicenames import Authentication
+from zope.app.servicenames import Authentication
 from zope.app.security.interfaces import IPermission
 from zope.app.security.settings import Allow, Deny, Unset
 

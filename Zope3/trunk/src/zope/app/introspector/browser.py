@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector View class
 
-$Id: browser.py,v 1.4 2004/03/06 17:48:51 jim Exp $
+$Id: browser.py,v 1.5 2004/03/13 23:55:09 srichter Exp $
 """
 from zope.app.publisher.browser import BrowserView
 from zope.app.introspector.interfaces import IIntrospector
@@ -22,7 +22,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.proxy import removeAllProxies
 from zope.app.component.interface import getInterface
-from zope.app.services.servicenames import Services
+from zope.app.servicenames import Services
 
 
 class IntrospectorView(BrowserView):

@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: __init__.py,v 1.3 2004/03/13 18:01:23 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/13 23:55:29 srichter Exp $
 """
 from zope.interface import implements
 from persistent.dict import PersistentDict
@@ -24,7 +24,7 @@ from zope.app.registration.interfaces import IRegistry
 from zope.app.site.interfaces import ISimpleService
 from zope.app.utility.interfaces import \
      IUtilityRegistration, ILocalUtilityService
-from zope.app.services.servicenames import Utilities
+from zope.app.servicenames import Utilities
 from zope.app.registration.registration import \
      RegistrationStack, ComponentRegistration
 from zope.component.exceptions import ComponentLookupError

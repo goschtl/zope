@@ -13,7 +13,7 @@
 ##############################################################################
 """Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.14 2004/03/08 12:06:02 srichter Exp $
+$Id: test_securitydirectives.py,v 1.15 2004/03/13 23:55:23 srichter Exp $
 """
 import unittest
 from zope.configuration.config import ConfigurationConflictError
@@ -23,7 +23,7 @@ from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.app.services.servicenames import Authentication
+from zope.app.servicenames import Authentication
 from zope.app.security.interfaces import IAuthenticationService, IPermission
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow

@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Views
 
-$Id: __init__.py,v 1.2 2004/03/13 21:37:28 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/13 23:55:22 srichter Exp $
 """
 import copy
 from zope.app import zapi
@@ -24,7 +24,7 @@ from zope.app.form.utility import setUpWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.schemacontent.interfaces import IContentComponentDefinition
 from zope.app.security.permission import PermissionField
-from zope.app.services.servicenames import Utilities
+from zope.app.servicenames import Utilities
 from zope.app.schemacontent.content import ContentComponentInstance
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.17 2004/03/13 18:44:50 srichter Exp $
+$Id: test_bootstrap.py,v 1.18 2004/03/13 23:55:13 srichter Exp $
 """
 import unittest
 from transaction import get_transaction
@@ -29,7 +29,7 @@ from zope.app.hub.interfaces import IObjectHub
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.errorservice import ErrorReportingService
-from zope.app.services.servicenames import ErrorLogging
+from zope.app.servicenames import ErrorLogging
 from zope.app.traversing import traverse
 from zope.app.site.service import ServiceManager
 

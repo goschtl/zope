@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests the standard zope policy.
 
-$Id: test_zopepolicy.py,v 1.5 2004/03/13 23:01:09 srichter Exp $
+$Id: test_zopepolicy.py,v 1.6 2004/03/13 23:55:25 srichter Exp $
 """
 import unittest
 from zope.interface import implements
@@ -24,7 +24,7 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
 from zope.app.security.principalregistry import principalRegistry, PrincipalBase
 from zope.app.security.interfaces import IPermission, IAuthenticationService
 from zope.app.security.permission import Permission
-from zope.app.services.servicenames import Authentication
+from zope.app.servicenames import Authentication
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import ztapi
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.16 2004/03/13 15:21:21 srichter Exp $
+$Id: test_index.py,v 1.17 2004/03/13 23:55:08 srichter Exp $
 """
 
 import unittest
@@ -22,7 +22,7 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.component import getService
-from zope.app.services.servicenames import HubIds
+from zope.app.servicenames import HubIds
 from zope.app.hub.interfaces import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
 from zope.app.hub import \

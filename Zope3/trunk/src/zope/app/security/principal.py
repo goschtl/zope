@@ -13,11 +13,11 @@
 ##############################################################################
 """Principals.
 
-$Id: principal.py,v 1.6 2004/03/08 12:06:01 srichter Exp $
+$Id: principal.py,v 1.7 2004/03/13 23:55:23 srichter Exp $
 """
 from zope.exceptions import NotFoundError
 from zope.app import zapi
-from zope.app.services.servicenames import Authentication
+from zope.app.servicenames import Authentication
 
 def checkPrincipal(context, principal_id):
 

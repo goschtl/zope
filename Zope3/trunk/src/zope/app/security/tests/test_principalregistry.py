@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Authentication Serive or Principal Registry Tests
 
-$Id: test_principalregistry.py,v 1.2 2004/03/13 15:21:32 srichter Exp $
+$Id: test_principalregistry.py,v 1.3 2004/03/13 23:55:23 srichter Exp $
 """
 import unittest
 from zope.interface import implements
@@ -22,7 +22,7 @@ from zope.publisher.interfaces.http import IHTTPCredentials
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.services.servicenames import Adapters
+from zope.app.servicenames import Adapters
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.security.basicauthadapter import BasicAuthAdapter

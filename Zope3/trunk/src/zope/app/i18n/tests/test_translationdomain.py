@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Domain.
 
-$Id: test_translationdomain.py,v 1.5 2004/03/13 23:00:57 srichter Exp $
+$Id: test_translationdomain.py,v 1.6 2004/03/13 23:55:03 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.component.interfaces import IFactory
 from zope.component.factory import Factory
 from zope.app.i18n.interfaces import ISyncTranslationDomain
-from zope.app.services.servicenames import Utilities
+from zope.app.servicenames import Utilities
 from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.i18n.translationdomain \
      import TranslationDomain as GlobalTranslationDomain

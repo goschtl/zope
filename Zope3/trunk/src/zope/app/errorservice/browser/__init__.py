@@ -13,12 +13,12 @@
 ##############################################################################
 """Define view component for event service control.
 
-$Id: __init__.py,v 1.1 2004/03/10 13:43:36 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 23:54:59 srichter Exp $
 """
 from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
-from zope.app.services.servicenames import ErrorLogging
+from zope.app.servicenames import ErrorLogging
 from zope.app.errorservice.interfaces import ILocalErrorReportingService
 
 class EditErrorLog:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Workflow service implementation.
 
-$Id: service.py,v 1.15 2004/03/13 15:21:40 srichter Exp $
+$Id: service.py,v 1.16 2004/03/13 23:55:30 srichter Exp $
 """
 from persistent import Persistent
 
@@ -24,7 +24,7 @@ from zope.schema.interfaces import \
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.site.interfaces import ISimpleService
-from zope.app.services.servicenames import Workflows
+from zope.app.servicenames import Workflows
 from zope.app.workflow.interfaces import IProcessDefinition, IWorkflowService
 
 

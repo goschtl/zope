@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Permission View Tests
 
-$Id: test_principalpermissionview.py,v 1.4 2004/03/13 23:01:09 srichter Exp $
+$Id: test_principalpermissionview.py,v 1.5 2004/03/13 23:55:24 srichter Exp $
 """
 import unittest
 
@@ -25,7 +25,7 @@ from zope.app.site.interfaces import ISimpleService
 from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
 from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.app.security.interfaces import IPermission
-from zope.app.services.servicenames import Authentication
+from zope.app.servicenames import Authentication
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.site.tests.placefulsetup import PlacefulSetup

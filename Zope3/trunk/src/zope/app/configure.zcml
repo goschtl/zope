@@ -7,6 +7,18 @@
   <!-- Meta configuration (new directives) -->
   <include file="meta.zcml" />
 
+  <!-- For backward compatibility -->
+
+  <modulealias
+      module="zope.app"
+      alias="zope.app.services"
+      />
+
+  <modulealias
+      module="zope.app.servicenames"
+      alias="zope.app.services.servicenames"
+      />
+
   <!-- Ordinary Application (non-view) configuration) -->
   <include package="zope.app.interface" />
   <include package="zope.app.component" />

@@ -13,12 +13,12 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.1 2004/03/02 14:40:05 philikon Exp $
+$Id: control.py,v 1.2 2004/03/13 23:55:04 srichter Exp $
 """
 from zope.app.introspector import interfaceToName
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.index.interfaces.text import IQueryView
-from zope.app.services.servicenames import HubIds
+from zope.app.servicenames import HubIds
 from zope.app.traversing import canonicalPath
 from zope.component import getService, queryAdapter
 from zope.exceptions import NotFoundError

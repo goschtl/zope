@@ -13,7 +13,7 @@
 ##############################################################################
 """Menu Access and Local Menu Service Views
 
-$Id: __init__.py,v 1.1 2004/03/10 23:10:44 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 23:55:10 srichter Exp $
 """
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
@@ -22,7 +22,7 @@ from zope.app.browser.container.contents import Contents
 from zope.app.component.nextservice import queryNextService
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.menu.interfaces import ILocalBrowserMenu
-from zope.app.services.servicenames import Utilities, BrowserMenu
+from zope.app.servicenames import Utilities, BrowserMenu
 from interfaces import IMenuAccessView
 
 class MenuAccessView(BrowserView):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: undo.py,v 1.1 2004/03/01 14:16:56 philikon Exp $
+$Id: undo.py,v 1.2 2004/03/13 23:55:28 srichter Exp $
 """
 from datetime import datetime
 from zope.interface import implements
@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.event import function
 from zope.app.undo.interfaces import IUndoManager
-from zope.app.services.servicenames import Utilities
+from zope.app.servicenames import Utilities
 
 def undoSetup(event):
     # setup undo functionality

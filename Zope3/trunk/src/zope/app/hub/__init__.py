@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: __init__.py,v 1.3 2004/03/13 21:03:12 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/13 23:55:01 srichter Exp $
 """
 __metaclass__ = type
 
@@ -26,7 +26,7 @@ from BTrees.OIBTree import OIBTree
 from zope.component import getService
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
-from zope.app.services.servicenames import EventSubscription
+from zope.app.servicenames import EventSubscription
 
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.container.interfaces import IObjectMovedEvent
@@ -48,7 +48,7 @@ from zope.app.folder.interfaces import IFolder
 from zope.app.container.contained import ObjectAddedEvent
 from zope.interface import implements
 from zope.app.event.localservice import ServiceSubscriberEventChannel
-from zope.app.services.servicenames import HubIds
+from zope.app.servicenames import HubIds
 
 from zope.app.traversing \
      import getPath, canonicalPath, traverse, traverseName, getRoot

@@ -11,14 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_objectretrievingprocessor.py,v 1.14 2004/03/13 20:24:10 srichter Exp $
+$Id: test_objectretrievingprocessor.py,v 1.15 2004/03/13 23:55:07 srichter Exp $
 """
 from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 
 from zope.component import getServiceManager
-from zope.app.services.servicenames import HubIds
+from zope.app.servicenames import HubIds
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.index.interfaces import IQueryProcessor

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for field index.
 
-$Id: test_index.py,v 1.8 2004/03/13 15:21:19 srichter Exp $
+$Id: test_index.py,v 1.9 2004/03/13 23:55:06 srichter Exp $
 """
 import unittest
 
@@ -24,7 +24,7 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.component import getService
 from zope.app.tests import ztapi
-from zope.app.services.servicenames import HubIds
+from zope.app.servicenames import HubIds
 from zope.app.hub.interfaces import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
 from zope.app.hub import ObjectRegisteredHubEvent

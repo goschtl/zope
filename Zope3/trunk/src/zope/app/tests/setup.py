@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.22 2004/03/13 23:01:14 srichter Exp $
+$Id: setup.py,v 1.23 2004/03/13 23:55:27 srichter Exp $
 """
 
 import zope.component
@@ -175,8 +175,8 @@ from zope.app.event.localservice import EventService
 from zope.app.hub import ObjectHub
 from zope.app.utility.interfaces import ILocalUtilityService
 from zope.app.utility import LocalUtilityService
-from zope.app.services.servicenames import HubIds, Utilities
-from zope.app.services.servicenames import EventPublication, EventSubscription
+from zope.app.servicenames import HubIds, Utilities
+from zope.app.servicenames import EventPublication, EventSubscription
 def createStandardServices(folder, hubids=None):
     '''Create a bunch of standard placeful services
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_directives.py,v 1.15 2004/03/03 10:38:42 philikon Exp $
+$Id: test_directives.py,v 1.16 2004/03/13 23:55:00 srichter Exp $
 """
 from unittest import TestCase, main, makeSuite
 
@@ -28,7 +28,7 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.tests.test_eventpublisher import DummyEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
-from zope.app.services.servicenames import EventPublication
+from zope.app.servicenames import EventPublication
 from zope.app.event.interfaces import IEvent
 
 class Test(PlacelessSetup, TestCase):

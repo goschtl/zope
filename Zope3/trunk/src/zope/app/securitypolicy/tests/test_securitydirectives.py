@@ -13,13 +13,13 @@
 ##############################################################################
 """Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
+$Id: test_securitydirectives.py,v 1.4 2004/03/13 23:55:25 srichter Exp $
 """
 import unittest
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.services.servicenames import Authentication
+from zope.app.servicenames import Authentication
 from zope.app.security.interfaces import IAuthenticationService
 
 from zope.configuration.config import ConfigurationConflictError

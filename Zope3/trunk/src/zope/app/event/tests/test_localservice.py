@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_localservice.py,v 1.4 2004/03/13 21:03:09 srichter Exp $
+$Id: test_localservice.py,v 1.5 2004/03/13 23:55:00 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -21,7 +21,7 @@ from zope.interface import Interface, implements
 from zope.exceptions import NotFoundError
 from zope.component.tests.components import RecordingAdapter
 
-from zope.app.services.servicenames import EventPublication, EventSubscription
+from zope.app.servicenames import EventPublication, EventSubscription
 from zope.app.event.localservice import EventService
 from zope.app.event.localservice import subscribe, unsubscribe, unsubscribeAll
 from zope.app.event.localservice import getSubscriptionService

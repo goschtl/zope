@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_registration.py,v 1.2 2004/03/13 15:21:18 srichter Exp $
+$Id: test_registration.py,v 1.3 2004/03/13 23:55:02 srichter Exp $
 """
 from unittest import makeSuite, main, TestCase
 
@@ -21,7 +21,7 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse, canonicalPath
 from zope.app.container.contained import ObjectAddedEvent
 from zope.component import getService
-from zope.app.services.servicenames import EventPublication, HubIds
+from zope.app.servicenames import EventPublication, HubIds
 
 class TestRegistration(PlacefulSetup, TestCase):
     def setUp(self):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Default service names
 
-$Id: servicenames.py,v 1.19 2004/03/10 19:41:04 srichter Exp $
+$Id: servicenames.py,v 1.1 2004/03/13 23:54:56 srichter Exp $
 """
 from zope.component.servicenames import *
 

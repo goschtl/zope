@@ -16,7 +16,7 @@
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
 
-$Id: tests.py,v 1.4 2004/03/11 09:19:23 srichter Exp $
+$Id: tests.py,v 1.5 2004/03/13 23:54:57 srichter Exp $
 """
 import unittest
 
@@ -30,7 +30,7 @@ from zope.index.interfaces import ISimpleQuery
 from zope.app.catalog.catalog import Catalog
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getServiceManager
-from zope.app.services.servicenames import HubIds
+from zope.app.servicenames import HubIds
 from BTrees.IIBTree import IISet
 
 from zope.app.index.tests.test_objectretrievingprocessor import FakeObjectHub

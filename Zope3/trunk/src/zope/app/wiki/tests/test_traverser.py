@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: test_traverser.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id: test_traverser.py,v 1.2 2004/03/13 23:55:29 srichter Exp $
 """
 
 import unittest, sys
 from zope.component.tests.request import Request
 from zope.component import getService
-from zope.app.services.servicenames import Presentation
+from zope.app.servicenames import Presentation
 from zope.interface import Interface
 from zope.exceptions import NotFoundError
 from zope.app.tests.placelesssetup import PlacelessSetup

@@ -12,10 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: __init__.py,v 1.12 2004/03/11 08:14:02 srichter Exp $
+$Id: __init__.py,v 1.13 2004/03/13 23:55:00 srichter Exp $
 """
 from zope.app import zapi
-from zope.app.services.servicenames import EventPublication
+from zope.app.servicenames import EventPublication
 from zope.app.event.interfaces import IEvent
 from zope.app.event.globalservice import eventPublisher
 

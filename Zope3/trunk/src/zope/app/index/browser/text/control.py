@@ -13,11 +13,11 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.1 2004/03/02 14:40:07 philikon Exp $
+$Id: control.py,v 1.2 2004/03/13 23:55:04 srichter Exp $
 """
 from zope.interface import implements
 from zope.component import getService, queryAdapter
-from zope.app.services.servicenames import HubIds
+from zope.app.servicenames import HubIds
 from zope.exceptions import NotFoundError
 from zope.publisher.browser import BrowserView
 

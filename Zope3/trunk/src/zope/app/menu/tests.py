@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: tests.py,v 1.4 2004/03/13 23:00:58 srichter Exp $
+$Id: tests.py,v 1.5 2004/03/13 23:55:10 srichter Exp $
 """
 import unittest
 
@@ -29,7 +29,7 @@ from zope.app.publisher.browser.globalbrowsermenuservice import \
 from zope.app.menu import \
      LocalBrowserMenuService, LocalBrowserMenu, LocalBrowserMenuItem
 from zope.app.utility import LocalUtilityService, UtilityRegistration
-from zope.app.services.servicenames import BrowserMenu, Utilities
+from zope.app.servicenames import BrowserMenu, Utilities
 from zope.app.tests import setup
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError

@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.13 2004/03/06 17:48:55 jim Exp $
+$Id: contentworkflow.py,v 1.14 2004/03/13 23:55:31 srichter Exp $
 """
 __metaclass__ = type
 
@@ -25,7 +25,7 @@ from zope.component import getService
 
 from zope.app.event.interfaces import ISubscriber
 from zope.app.event.interfaces import IObjectCreatedEvent
-from zope.app.services.servicenames import EventSubscription, Workflows
+from zope.app.servicenames import EventSubscription, Workflows
 
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
