@@ -112,6 +112,11 @@ TO DO
 - More adapters.  Should make sure that an XML Pickle will always work
   as a serialization, even if an adapter gets added.
 
+- For objects serialized as XML pickles which are
+  IAttributeAnnotatable and have an __annotations__ key in the pickled
+  dictionary, separate the annotations from the dict so they appear in
+  the @@Zope/Annotations/ tree.
+
 - Implement bundle commands.
 
   * Need a way to turn site-management folders into bundles, and
