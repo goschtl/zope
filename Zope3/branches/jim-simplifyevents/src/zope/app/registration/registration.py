@@ -30,7 +30,6 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.dependable.interfaces import IDependable, DependencyError
-from zope.app.event.interfaces import ISubscriber
 from zope.app.module.interfaces import IModuleManager
 from zope.app.registration import interfaces
 
@@ -515,26 +514,19 @@ class NotifyingRegistrationStack(RegistrationStack):
         registration.deactivated()
         self.__parent__.notifyDeactivated(self, registration)
 
-class SimpleRegistrationRemoveSubscriber:
+def SimpleRegistrationRemoveSubscriber(registration, event):
+    """Receive notification of remove event."""
+    objectstatus = registration.status
 
-    implements(ISubscriber)
-
-    def __init__(self, simple_registration, event):
-        self.registration = simple_registration
-
-    def notify(self, event):
-        """Receive notification of remove event."""
-        objectstatus = self.registration.status
-
-        if objectstatus == interfaces.ActiveStatus:
-            try:
-                objectpath = zapi.getPath(self.registration)
-            except: # XXX
-                objectpath = str(self.registration)
-            raise DependencyError("Can't delete active registration (%s)"
-                                  % objectpath)
-        elif objectstatus == interfaces.RegisteredStatus:
-            self.registration.status = interfaces.UnregisteredStatus
+    if objectstatus == interfaces.ActiveStatus:
+        try:
+            objectpath = zapi.getPath(registration)
+        except: # XXX
+            objectpath = str(registration)
+        raise DependencyError("Can't delete active registration (%s)"
+                              % objectpath)
+    elif objectstatus == interfaces.RegisteredStatus:
+        registration.status = interfaces.UnregisteredStatus
 
 class SimpleRegistration(Persistent, Contained):
     """Registration objects that just contain registration data"""
@@ -623,39 +615,27 @@ class ComponentRegistration(SimpleRegistration):
 
         return component
 
-class ComponentRegistrationRemoveSubscriber(object):
-    implements(ISubscriber)
- 
-    def __init__(self, component_registration, event):
-        self.component_registration = component_registration
+def ComponentRegistrationRemoveSubscriber(component_registration, event):
+    """Receive notification of remove event."""
+    component = component_registration.getComponent()
+    dependents = IDependable(component)
+    objectpath = zapi.getPath(self.component_registration)
+    dependents.removeDependent(objectpath)
+    # Also update usage, if supported
+    adapter = interfaces.IRegistered(component, None)
+    if adapter is not None:
+        adapter.removeUsage(zapi.getPath(component_registration))
 
-    def notify(self, event):
-        """Receive notification of remove event."""
-        component = self.component_registration.getComponent()
-        dependents = IDependable(component)
-        objectpath = zapi.getPath(self.component_registration)
-        dependents.removeDependent(objectpath)
-        # Also update usage, if supported
-        adapter = interfaces.IRegistered(component, None)
-        if adapter is not None:
-            adapter.removeUsage(zapi.getPath(self.component_registration))
-
-class ComponentRegistrationAddSubscriber(object):
-    implements(ISubscriber)
- 
-    def __init__(self, component_registration, event):
-        self.component_registration = component_registration
-
-    def notify(self, event):
-        """Receive notification of add event."""
-        component = self.component_registration.getComponent()
-        dependents = IDependable(component)
-        objectpath = zapi.getPath(self.component_registration)
-        dependents.addDependent(objectpath)
-        # Also update usage, if supported
-        adapter = interfaces.IRegistered(component, None)
-        if adapter is not None:
-            adapter.addUsage(objectpath)
+def ComponentRegistrationAddSubscriber(component_registration, event):
+    """Receive notification of add event."""
+    component = component_registration.getComponent()
+    dependents = IDependable(component)
+    objectpath = zapi.getPath(self.component_registration)
+    dependents.addDependent(objectpath)
+    # Also update usage, if supported
+    adapter = interfaces.IRegistered(component, None)
+    if adapter is not None:
+        adapter.addUsage(objectpath)
 
 from zope.app.dependable import PathSetAnnotation
 
@@ -681,17 +661,10 @@ class Registered(PathSetAnnotation):
         return [zapi.traverse(self.context, path)
                 for path in self.getPaths()]
 
-class RegistrationManagerRemoveSubscriber:
-    """Subscriber for RegistrationManager remove events."""
-    implements(ISubscriber)
-
-    def __init__(self, registration_manager, event):
-        self.registration_manager = registration_manager
-
-    def notify(self, event):
-        """Receive notification of remove event."""
-        for name in self.registration_manager:
-            del self.registration_manager[name]
+def RegistrationManagerRemoveSubscriber(registration_manager, event):
+    """Receive notification of remove event."""
+    for name in registration_manager:
+        del registration_manager[name]
             
 class RegistrationManager(Persistent, Contained):
     """Registration manager

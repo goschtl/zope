@@ -41,28 +41,24 @@
 
   <subscriber
     factory=".registration.SimpleRegistrationRemoveSubscriber"
-    provides="zope.app.event.interfaces.ISubscriber"
     for=".interfaces.IRegistration
          zope.app.container.interfaces.IObjectRemovedEvent"
     />
 
   <subscriber
     factory=".registration.ComponentRegistrationRemoveSubscriber"
-    provides="zope.app.event.interfaces.ISubscriber"
     for=".interfaces.IComponentRegistration
          zope.app.container.interfaces.IObjectRemovedEvent"
     />
 
   <subscriber
     factory=".registration.ComponentRegistrationAddSubscriber"
-    provides="zope.app.event.interfaces.ISubscriber"
     for=".interfaces.IComponentRegistration
          zope.app.container.interfaces.IObjectAddedEvent"
     />
 
   <subscriber
     factory=".registration.RegistrationManagerRemoveSubscriber"
-    provides="zope.app.event.interfaces.ISubscriber"
     for=".interfaces.IRegistrationManager
          zope.app.container.interfaces.IObjectRemovedEvent"
     />

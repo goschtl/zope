@@ -32,14 +32,12 @@
     factory=".presentation.PageRegistrationAddSubscriber"
     for=".presentation.IPageRegistration 
          zope.app.container.interfaces.IObjectAddedEvent"
-    provides="zope.app.event.interfaces.ISubscriber"    
     />
 
 <subscriber
     factory=".presentation.PageRegistrationRemoveSubscriber"
     for=".presentation.IPageRegistration 
          zope.app.container.interfaces.IObjectRemovedEvent"
-    provides="zope.app.event.interfaces.ISubscriber"    
     />
 
 <include file="pagefolder.zcml" />

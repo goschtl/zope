@@ -34,7 +34,6 @@ from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.tests import ztapi
 from zope.app.registration.interfaces import IRegistration
 from zope.app.container.interfaces import IObjectRemovedEvent
-from zope.app.event.interfaces import ISubscriber
 from zope.app.registration.registration import \
     SimpleRegistrationRemoveSubscriber, \
     ComponentRegistrationRemoveSubscriber, \
@@ -82,15 +81,15 @@ class TestSimpleRegistrationEvents(TestCase):
 
     def test_RemoveSubscriber(self):
         reg = DummyRegistration()
-        adapter = SimpleRegistrationRemoveSubscriber(reg, None)
+        reg.status = ActiveStatus
 
         # test that removal fails with Active status
-        reg.status = ActiveStatus
-        self.assertRaises(DependencyError, adapter.notify, None)
+        self.assertRaises(DependencyError,
+                          SimpleRegistrationRemoveSubscriber, reg, None)
 
         # test that removal succeeds with Registered status
         reg.status = RegisteredStatus
-        adapter.notify(None)
+        SimpleRegistrationRemoveSubscriber(reg, None)
 
         self.assertEquals(reg.status, UnregisteredStatus)
         
@@ -140,40 +139,43 @@ class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
 class TestComponentRegistrationEvents:
     def test_addNotify(self):
         """
-        First we create a dummy registration and an adapter for it.
+        First we create a dummy registration
         
-        >>> reg = DummyRegistration()
-        >>> adapter = ComponentRegistrationAddSubscriber(reg, None)
+          >>> reg = DummyRegistration()
 
         Now call notification
-        >>> adapter.notify(None)
+
+          >>> ComponentRegistrationAddSubscriber(reg, None)
 
         Check to make sure the adapter added the path
-        >>> reg.dependents()
-        ('dummy!',)
+
+          >>> reg.dependents()
+          ('dummy!',)
         """
         
     def test_removeNotify_dependents(self):
         """
-        First we create a dummy registration and an adapter for it.
+        First we create a dummy registration
         
-        >>> reg = DummyRegistration()
-        >>> adapter = ComponentRegistrationAddSubscriber(reg, None)
+          >>> reg = DummyRegistration()
 
         Now call notification
-        >>> adapter.notify(None)
+
+          >>> ComponentRegistrationAddSubscriber(reg, None)
 
         Check to make sure the adapter added the path
-        >>> reg.dependents()
-        ('dummy!',)
 
-        Now create a removal adapter and call it.
-        >>> removal_adapter = ComponentRegistrationRemoveSubscriber(reg, None)
-        >>> removal_adapter.notify(None)
+          >>> reg.dependents()
+          ('dummy!',)
+
+        Now remove notify:
+
+          >>> ComponentRegistrationRemoveSubscriber(reg, None)
 
         Check to make sure the adapter removed the dependencie(s).
-        >>> reg.dependents()
-        ()
+
+          >>> reg.dependents()
+          ()
         
         """
 
