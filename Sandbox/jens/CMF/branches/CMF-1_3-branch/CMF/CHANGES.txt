@@ -5,6 +5,9 @@ After 1.3.1
     - Backport fix of CMFCore/tests/test_FSImage.py to work with
       recent Zopes (> 2.6), which force HTTP headers to be strings.
 
+    - Use return instead of raise in RegistrationTool.testPropertiesValidity
+      if id is incorrect (Collector #48).
+
 CMF 1.3.1 (2003/03/06)
 
   Bug Fixes
