@@ -17,12 +17,15 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.publisher.browser import BrowserView
-from zope.app.introspector.interfaces import IIntrospector
-from zope.app import zapi
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, directlyProvidedBy
+from zope.proxy import removeAllProxies
+
+from zope.app import zapi
 from zope.app.component.interface import getInterface
+from zope.app.introspector.interfaces import IIntrospector
+from zope.app.publisher.browser import BrowserView
+
 
 
 class IntrospectorView(BrowserView):
@@ -47,12 +50,12 @@ class IntrospectorView(BrowserView):
                 if "add_%s" % interface in self.request:
                     ob = self.context
                     interface = getInterface(ob, interface)
-                    directlyProvides(ob, directlyProvidedBy(ob), interface)
+                    directlyProvides(removeAllProxies(ob), directlyProvidedBy(ob), interface)
 
         if 'REMOVE' in self.request:
             for interface in self.getIntrospector().getDirectlyProvidedNames():
                 if "rem_%s" % interface in self.request:
                     ob = self.context
                     interface = getInterface(ob, interface)
-                    directlyProvides(ob, directlyProvidedBy(ob)-interface)
+                    directlyProvides(removeAllProxies(ob), directlyProvidedBy(ob)-interface)
 
