@@ -66,7 +66,7 @@
 
         Run from a build directory
 
-$Id: runurl.py,v 1.5 2003/06/23 17:17:07 sidnei Exp $
+$Id: runurl.py,v 1.6 2003/11/21 17:12:47 jim Exp $
 """
 
 import sys, os, getopt
@@ -123,6 +123,8 @@ def main(argv=None):
         else:
             print usage
             raise ValueError(name)
+
+    src = os.path.abspath(src)
 
     path = '/'
     env = {}
