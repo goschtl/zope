@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.5 2002/08/08 15:05:59 ersab Exp $
+$Id: ISQLScript.py,v 1.6 2002/09/04 13:44:29 faassen Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -35,33 +35,28 @@ class ISQLScript(ISQLCommand):
     """A persistent script that can execute SQL."""
 
     connectionName = SQLConnectionName(
-        id="connectionName",
         title="Connection Name",
         description="The Connection Name for the connection to be used.",
         required=1)
 
     arguments = Schema.Str(
-        id="arguments",
         title="Arguments",
         description="A set of attributes that can be used during the DTML "
                     "rendering process to provide dynamic data.",
         required=0)
 
     source = Schema.Str(
-        id="source",
         title="Source",
         description="The source of the page template.",
         required=1)
 
     maxCache = Schema.Int(
-        id="maxCache",
         title="Maximum results to cache",
         description="The size of the SQL script cache.",
         min=0,
         required=1)
 
     cacheTime = Schema.Int(
-        id="cacheTime",
         title="Maximum time (sec) to cache",
         description="The time in seconds that results are cached. "
                     "Setting to zero disables caching.",

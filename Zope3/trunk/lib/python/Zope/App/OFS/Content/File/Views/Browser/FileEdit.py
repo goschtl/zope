@@ -12,13 +12,15 @@
 # 
 ##############################################################################
 """
-$Id: FileEdit.py,v 1.3 2002/07/19 13:12:31 srichter Exp $
+$Id: FileEdit.py,v 1.4 2002/09/04 13:44:26 faassen Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.Forms.Views.Browser import Widget 
 from Zope.App.Forms.Views.Browser.FormView import FormView
+from Zope.App.OFS.Content.File.IFile import IFile
 
 class FileEdit(FormView):
     form = ViewPageTemplateFile('edit.pt')
+    schema = IFile
     custom_widgets = {'data': Widget.FileWidget}
     fields_order = ('contentType', 'data')

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.8 2002/07/25 22:09:30 faassen Exp $
+$Id: _Schema.py,v 1.9 2002/09/04 13:44:22 faassen Exp $
 """
 from Interface import Interface
 import Validator
@@ -24,6 +24,18 @@ class Schema(Interface):
     """This is really just a marker class, but it seems more userfriendly
     this way."""
     
+
+def getFields(schema):
+    """Get all fields on a schema.
+    """
+    from IField import IField
+    fields = {}
+    for name in schema.names(1):
+        attr = schema.getDescriptionFor(name)
+        if IField.isImplementedBy(attr):
+            fields[name] = attr
+    return fields
+
 
 # validate functions either return silently, or raise a ValidationError
 # or in case of the validate*All functions, a ValidationErrosAll exception.

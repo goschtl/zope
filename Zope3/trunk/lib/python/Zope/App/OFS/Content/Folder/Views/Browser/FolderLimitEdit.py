@@ -12,17 +12,19 @@
 # 
 ##############################################################################
 """
-$Id: FolderLimitEdit.py,v 1.3 2002/07/19 13:21:09 srichter Exp $
+$Id: FolderLimitEdit.py,v 1.4 2002/09/04 13:44:27 faassen Exp $
 """
 from Zope.App.Forms.Views.Browser.FormView import FormView 
 from Zope.App.PageTemplate import ViewPageTemplateFile
-
+from Zope.App.OFS.Content.Folder.Folder import IFolder
 
 class FolderLimitEdit(FormView):
 
     #__implements__ = (Form.__implements__,)
 
     name = 'limitForm'     
+    schema = IFolder
+    
     title = 'Folder Item Limit Form'
     description = ('This edit form allows you to ...')
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.3 2002/07/25 22:09:30 faassen Exp $
+$Id: __init__.py,v 1.4 2002/09/04 13:44:22 faassen Exp $
 """
 from _Field import *
-from _Schema import validateMapping, validateMappingAll
+from _Schema import validateMapping, validateMappingAll, getFields

@@ -12,15 +12,17 @@
 #
 ##############################################################################
 """
-$Id: SQLScriptEdit.py,v 1.6 2002/08/08 15:05:59 ersab Exp $
+$Id: SQLScriptEdit.py,v 1.7 2002/09/04 13:44:29 faassen Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.Forms.Views.Browser import Widget
 from Zope.App.Forms.Widget import CustomWidget
 from Zope.App.Forms.Views.Browser.FormView import FormView
 from Schema.Converter import StrToIntConverter
+from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
 
 class SQLScriptEdit(FormView):
+    schema = ISQLScript
     form = ViewPageTemplateFile('edit.pt')
     custom_widgets = {'connectionName': CustomWidget(Widget.ListWidget,
                                                      size=1),

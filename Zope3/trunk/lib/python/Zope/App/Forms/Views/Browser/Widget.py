@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.6 2002/07/24 10:53:48 srichter Exp $
+$Id: Widget.py,v 1.7 2002/09/04 13:44:23 faassen Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
@@ -49,7 +49,7 @@ class BrowserWidget(Widget, BrowserView):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement(self.getValue('tag'),
                              type = self.getValue('type'),
-                             name = self.context.id,
+                             name = self.context.getName(),
                              value = value,
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
@@ -58,7 +58,7 @@ class BrowserWidget(Widget, BrowserView):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement(self.getValue('tag'),
                              type = 'hidden',
-                             name = self.context.id,
+                             name = self.context.getName(),
                              value = value,
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
@@ -78,14 +78,14 @@ class CheckBoxWidget(BrowserWidget):
         if value:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
-                                 name = self.context.id,
+                                 name = self.context.getName(),
                                  checked = None,
                                  cssClass = self.getValue('cssClass'),
                                  extra = self.getValue('extra'))
         else:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
-                                 name = self.context.id,
+                                 name = self.context.getName(),
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
@@ -106,7 +106,7 @@ class TextWidget(BrowserWidget):
         if displayMaxWidth > 0:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
-                                 name = self.context.id,
+                                 name = self.context.getName(),
                                  value = value,
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
@@ -115,7 +115,7 @@ class TextWidget(BrowserWidget):
         else:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
-                                 name = self.context.id,
+                                 name = self.context.getName(),
                                  value = value,
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
@@ -135,7 +135,7 @@ class TextAreaWidget(BrowserWidget):
     def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement("textarea",
-                             name=self.context.id,
+                             name=self.context.getName(),
                              cssClass=self.getValue('cssClass'),
                              cols=self.getValue('width'),
                              rows=self.getValue('height'),
@@ -159,7 +159,7 @@ class FileWidget(TextWidget):
         if displayMaxWidth > 0:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
-                                 name = self.context.id,
+                                 name = self.context.getName(),
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  maxlength = displayMaxWidth,
@@ -167,7 +167,7 @@ class FileWidget(TextWidget):
         else:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
-                                 name = self.context.id,
+                                 name = self.context.getName(),
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
@@ -185,7 +185,7 @@ class SingleItemsWidget(ItemsWidget):
     firstItem = 0    
 
     def renderItems(self, value):
-        name = self.context.id
+        name = self.context.getName()
         # get items
         items = self.context.items
         if callable(items):
@@ -236,7 +236,7 @@ class ListWidget(SingleItemsWidget):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         renderedItems = self.renderItems(value)
         return renderElement('select',
-                              name=self.context.id,
+                              name=self.context.getName(),
                               cssClass=self.getValue('cssClass'),
                               size=self.getValue('size'),
                               contents="\n".join(renderedItems),
@@ -294,7 +294,7 @@ class MultiItemsWidget(ItemsWidget):
 
         if not isinstance(value, ListTypes):
             value = [value]
-        name = self.context.id
+        name = self.context.getName()
         items = self.context.items
         if callable(items):
             items = items()
@@ -333,7 +333,7 @@ class MultiListWidget(MultiItemsWidget):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         rendered_items = self.renderItems(value)
         return renderElement('select',
-                              name=self.context.id,
+                              name=self.context.getName(),
                               multiple=None,
                               cssClass=self.getValue('cssClass'),
                               size=self.getValue('size'),

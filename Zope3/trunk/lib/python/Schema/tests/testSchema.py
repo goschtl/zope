@@ -12,34 +12,33 @@
 #
 ##############################################################################
 """
-$Id: testSchema.py,v 1.8 2002/07/25 22:09:30 faassen Exp $
+$Id: testSchema.py,v 1.9 2002/09/04 13:44:23 faassen Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Schema.Exceptions import StopValidation, ValidationError, \
      ValidationErrorsAll
 from Interface import Interface
 from Schema import Str
-from Schema import validateMapping, validateMappingAll, ErrorNames
+from Schema import validateMapping, validateMappingAll, getFields, ErrorNames
 
 class ISchemaTest(Interface):
-    title = Str(id="title",
-                   title="Title",
-                   description="Title",
-                   default="",
-                   required=1)
+    title = Str(
+        title="Title",
+        description="Title",
+        default="",
+        required=1)
+    
+    description = Str(
+        title="Description",
+        description="Description",
+        default="",
+        required=1)
 
-    description = Str(id="description",
-                         title="Description",
-                         description="Description",
-                         default="",
-                         required=1)
-
-    spam = Str(id="spam",
-                  title="Spam",
-                  description="Spam",
-                  default="",
-                  required=1)
-
+    spam = Str(
+        title="Spam",
+        description="Spam",
+        default="",
+        required=1)
 
 class SchemaTest(TestCase):
 
@@ -79,6 +78,17 @@ class SchemaTest(TestCase):
             return
         self.fail('Expected ValidationErrors, but none detected')
 
+    def test_getFields(self):
+        fields = getFields(ISchemaTest)
+
+        self.assert_(fields.has_key('title'))
+        self.assert_(fields.has_key('description'))
+        self.assert_(fields.has_key('spam'))
+
+        # test whether getName() has the right value
+        for key, value in fields.iteritems():
+            self.assertEquals(key, value.getName())
+        
 
 def test_suite():
     return makeSuite(SchemaTest)

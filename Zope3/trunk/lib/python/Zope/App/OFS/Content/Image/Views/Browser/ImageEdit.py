@@ -13,14 +13,16 @@
 ##############################################################################
 """Define view component for image editing.
 
-$Id: ImageEdit.py,v 1.3 2002/07/19 13:12:32 srichter Exp $
+$Id: ImageEdit.py,v 1.4 2002/09/04 13:44:28 faassen Exp $
 """
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.App.Forms.Views.Browser import Widget 
 from Zope.App.Forms.Views.Browser.FormView import FormView
+from Zope.App.OFS.Content.Image.Image import IImage
 
 class ImageEdit(FormView):
     form = ViewPageTemplateFile('edit.pt')
+    schema = IImage
     custom_widgets = {'data': Widget.FileWidget}
     fields_order = ('contentType', 'data')
  

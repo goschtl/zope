@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: WidgetTest.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
+$Id: WidgetTest.py,v 1.3 2002/09/04 13:44:24 faassen Exp $
 """
 import unittest
 from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
@@ -24,8 +24,6 @@ class ContentObject:
 
 class Field:
     """Field Stub """
-    id = 'foo'
-    
     def __init__(self, context):
         self._context  = context
 

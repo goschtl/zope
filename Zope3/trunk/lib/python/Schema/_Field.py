@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.10 2002/07/19 13:12:30 srichter Exp $
+$Id: _Field.py,v 1.11 2002/09/04 13:44:22 faassen Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -35,7 +35,9 @@ class Field(Attribute):
         """Pass in field values as keyword parameters."""
         for key, value in kw.items():
             setattr(self, key, value)
-        super(Field, self).__init__(self.title or 'no title')
+        # __name__ to '', so interface should initialize this with
+        # name of attribute
+        super(Field, self).__init__('')
 
     def validate(self, value):
         try:

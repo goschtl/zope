@@ -13,14 +13,15 @@
 ##############################################################################
 """
 
-$Id: testBrowserWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
+$Id: testBrowserWidget.py,v 1.3 2002/09/04 13:44:24 faassen Exp $
 """
 import unittest
 from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
 
 class Field:
     """Field Stub """
-    id = 'foo'
+    def getName(self):
+        return 'foo'
     
 
 class BrowserWidgetTest(unittest.TestCase):

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IForm.py,v 1.6 2002/07/24 10:53:48 srichter Exp $
+$Id: IForm.py,v 1.7 2002/09/04 13:44:23 faassen Exp $
 """
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Interface.Attribute import Attribute
@@ -24,6 +24,9 @@ class IReadForm(IBrowserView):
     form = Attribute(
         """The form template. Usually a Page Template.""")
 
+    schema = Attribute(
+        """The schema this form should be constructed from.""")
+    
     custom_widgets = Attribute(
         """A dictionary that holds custom widgets for various fields.""")
 
@@ -39,15 +42,15 @@ class IReadForm(IBrowserView):
     def getFields():
         """Get all the fields that need input from the content object."""
 
-    def getField(id):
-        """Get a field by id from the content object schemas."""
+    def getField(name):
+        """Get a field by name from the content object schemas."""
 
-    def getWidgetForFieldId(id):
-        """Lookup the widget of the field having id."""
+    def getWidgetForFieldName(name):
+        """Lookup the widget of the field by name."""
 
     def getWidgetForField(field):
         """Return the correct widget instance for a field. This method
-        consildates the custom_widgets attribute """
+        consults the custom_widgets attribute """
 
     def renderField(field):
         """Render a field using the widgets."""

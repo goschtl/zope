@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.5 2002/07/25 22:09:31 faassen Exp $
+$Id: ZPTPage.py,v 1.6 2002/09/04 13:44:29 faassen Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -43,7 +43,6 @@ class IZPTPage(Interface):
         """Get the source of the page template."""
 
     source = Schema.Str(
-        id="source",
         title="Source",
         description="""The source od the page template.""",
         required=1)

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.6 2002/07/25 22:09:30 faassen Exp $
+$Id: SchemaTestObject.py,v 1.7 2002/09/04 13:44:24 faassen Exp $
 """
 from Interface import Interface
 import Schema
@@ -43,27 +43,23 @@ class Email(Schema.Str):
     pass
 
 
-class STestObject(Interface):
+class ITestObject(Interface):
     """A simple Schema."""
 
     id = Schema.Int(
-        id="id",
         title="Id",
         required=1)
     
     title = Schema.Str(
-        id="title",
         title="Title",
         required=0)
     
     data = Schema.Str(
-        id="data",
         title="Data",
         description="Data stored by the object",
         required=0)
     
     creator = Email(
-        id="creator",
         title="Creator",
         description="Email of the creator of the content object",
         default="foo@bar.com",
@@ -72,7 +68,7 @@ class STestObject(Interface):
     
 class TestObject(object):
     """A very simple content object."""
-    __implements__ = STestObject
+    __implements__ = ITestObject
 
     def __init__(self, id, title, creator, data=None):
         self.id = id
@@ -84,6 +80,7 @@ class TestObject(object):
 class Edit(FormView):
     """A simple Edit View"""
     form = ViewPageTemplateFile('testEditForm.pt')
+    schema = ITestObject
     custom_widgets = {'id': CustomWidget(Widget.TextWidget,
                                          converter=StrToIntConverter()),
                       'creator': CustomWidget(Widget.TextWidget,

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IFile.py,v 1.3 2002/07/25 22:09:31 faassen Exp $
+$Id: IFile.py,v 1.4 2002/09/04 13:44:25 faassen Exp $
 """
 
 from Interface import Interface
@@ -23,7 +23,6 @@ import Schema
 class IReadFile(IFileContent):
     
     contentType = Schema.Str(
-        id = 'contentType',
         title = 'Content Type',
         description = 'The content type identifies the type of data.',
         default = 'text/plain',
@@ -31,7 +30,6 @@ class IReadFile(IFileContent):
 
 
     data = Schema.Str(
-        id = 'data',
         title = 'Data',
         description = 'The actual content of the object.',
         )
