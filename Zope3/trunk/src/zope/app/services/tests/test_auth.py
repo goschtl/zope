@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.3 2002/12/26 23:21:47 rdmurray Exp $
+$Id: test_auth.py,v 1.4 2002/12/27 18:41:21 rdmurray Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -108,16 +108,18 @@ class AuthServiceTest(TestCase, PlacefulSetup):
 
 class TestAuthAsIContainer(BaseTestIContainer, TestCase):
 
-    def _Test__new(self):
+    def makeTestObject(self):
         return AuthenticationService()
+
+    def makeTestData(self):
+        return [ (k, User(k, k+'title', k+'desc', k, k+'pass'))
+                    for k in 'abcdefghijkl' ]
 
 
 def test_suite():
     t1 = makeSuite(AuthServiceTest)
-    #XXX Need to fix IContainer to get the object list from subclass
-    #t2 = makeSuite(TestAuthAsIContainer)
-    #return TestSuite((t1, t2))
-    return TestSuite((t1,))
+    t2 = makeSuite(TestAuthAsIContainer)
+    return TestSuite((t1, t2))
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
