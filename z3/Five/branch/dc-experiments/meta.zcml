@@ -152,6 +152,12 @@
        handler=".fiveconfigure.viewable"
        />
 
+    <meta:directive
+       name="traversable"
+       schema=".fivedirectives.IViewableDirective"
+       handler=".fiveconfigure.traversable"
+       />
+
   </meta:directives>
 
 </configure>
