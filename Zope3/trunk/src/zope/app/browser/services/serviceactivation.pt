@@ -13,8 +13,8 @@
 
 <div metal:fill-slot="body">
 
-  <h2>
-    <span tal:replace="request/type|default">No service type specified</span>
+  <h2>Configurations for service
+    <i tal:content="request/type|default">No service type specified</i>
   </h2>
 
   <p tal:content="view/update">Message from update() goes here</p>
