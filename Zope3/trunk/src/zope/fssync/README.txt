@@ -106,9 +106,11 @@ TO DO
 
   * Should produce a single file (.zip or .tgz maybe)
 
-- Improve some common data file formats (for example, simplify the
-  Entries.xml file, possibly using ZConfig instead of XML, or at least
-  something more speciallized than an XML pickle).
+- Improve some common data file formats (for example, the Entries.xml
+  file, possibly incorporating some or all of the Extra or Annotations
+  data).  An XML data format is probably a better idea that switching
+  to ZConfig for this file, primarily to make it easier to support
+  additional data.
 
 - Figure out how to write meaningful adapter tests.
 
