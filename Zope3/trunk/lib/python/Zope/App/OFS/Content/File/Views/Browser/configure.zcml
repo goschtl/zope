@@ -43,6 +43,13 @@
              action="AllRolePermissions.html"/>
   </browser:menuItems>
 
+  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+                    title="File" action="File" />
+
+  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+                    title="Naive File" action="NaiveFile" />
+
+
   <browser:icon name="zmi_icon" for=".IFile." file="File_icon.gif" />
 
 </zopeConfigure>

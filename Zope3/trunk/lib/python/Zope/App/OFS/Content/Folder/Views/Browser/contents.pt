@@ -18,7 +18,7 @@
 <body>
 <div metal:fill-slot="body">
 
-<div>Folder Contents <a href="@@addForm.html"> Add... </a> </div>
+<div>Folder Contents <a href="@@create"> Add... </a> </div>
 
   <form name="folderContentsForm" method="get" action="@@index.html" 
         tal:define="folder_contents view/listContentInfo">

@@ -23,6 +23,7 @@ from Zope.ComponentArchitecture.IServiceManagerContainer import \
 from types import StringTypes
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 from Zope.App.OFS.Container.Exceptions import UnaddableError
+from Zope.Exceptions import DuplicationError
 
 class IFolder(IContainer, IServiceManagerContainer):
     """The standard Zope Folder object interface."""
@@ -82,8 +83,16 @@ class Folder(Persistence.Persistent, ServiceManagerContainer):
 
     def setObject(self, name, object):
         """Add the given object to the folder under the given name."""
-        if type(name) in StringTypes and len(name)==0:
-            raise ValueError
+
+        if not (isinstance(name, str) or isinstance(name, unicode)):
+            raise TypeError("Name must be a string rather than a %s" %
+                            name.__class__.__name__)
+        if not name:
+            raise TypeError("Name must not be empty")
+
+        if name in self.data:
+            raise DuplicationError("name, %s, is already in use" % name)
+
         self.data[name] = object
         return name
 

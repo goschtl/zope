@@ -11,10 +11,8 @@
                     attributes="permission attributes interface like_class" />
       <subdirective name="allow"
                     attributes="attributes interface" />
-      <subdirective namespace="http://namespaces.zope.org/zmi"
-                    name="factory"
-                    attributes="id permission title description
-                                creation_markers" />
+      <subdirective name="factory"
+                    attributes="id permission title description" />
     </directive>
   </directives>
 

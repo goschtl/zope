@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.4 2002/06/20 15:54:46 jim Exp $
+$Id: testDirectives.py,v 1.5 2002/06/20 20:00:19 jim Exp $
 """
 
 import unittest
@@ -36,8 +36,7 @@ from Zope.App.ContentDirective.tests.ExampleClass import ExampleClass, IExample
 
 def configfile(s):
     return StringIO("""<zopeConfigure
-      xmlns='http://namespaces.zope.org/zope'
-      xmlns:zmi='http://namespaces.zope.org/zmi'>
+      xmlns='http://namespaces.zope.org/zope'>
       %s
       </zopeConfigure>
       """ % s)
@@ -111,14 +110,12 @@ class TestFactorySubdirective(AddableSetup, CleanUp, unittest.TestCase):
 <permission id="Zope.Foo" title="Zope Foo Permission" />
 
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
-    <zmi:factory 
+    <factory 
       id="Example" 
       permission="Zope.Foo"
       title="Example content"
       description="Example description"
-      for_container="Zope.App.ContentDirective.tests.ExampleClass."
-      creation_markers="Zope.App.ContentDirective.tests.ExampleClass.IExample"
-       />
+    />
 </content>
                        """)
         xmlconfig(f)

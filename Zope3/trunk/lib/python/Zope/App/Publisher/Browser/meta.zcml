@@ -38,13 +38,21 @@
         handler="
         Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuDirective" />
 
-    <directive name="menuItems" attributes="id for" 
+    <directive name="menuItems" attributes="menu for" 
         handler="
        Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuItemsDirective">
        <subdirective name="menuItem" 
                      attributes="action title description filter" 
        /> 
     </directive>
+
+    <directive 
+       name="menuItem" 
+       attributes="menu for action title description filter" 
+       handler="
+       Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuItemDirective
+       "
+       />
 
     <directive name="icon" attributes="name for file image alt layer"
                handler="Zope.App.Publisher.Browser.IconDirective." />

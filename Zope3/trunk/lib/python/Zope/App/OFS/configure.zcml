@@ -1,13 +1,13 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-<include package=".Services" />
+<include package=".Container" />
 <include package=".Content" />
+<include package=".Services" />
 
 <include package=".ApplicationControl" />
 
 <include package=".Introspector" />
 <include package=".Annotation" />
 
-<include package=".Container" />
 
 </zopeConfigure>

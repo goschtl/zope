@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.3 2002/06/20 14:37:30 jim Exp $
+$Id: ViewMeta.py,v 1.4 2002/06/20 20:00:27 jim Exp $
 """
 
 # XXX this will need to be refactored soon. :)
@@ -214,8 +214,14 @@ class view(resource):
         # can traverse to the necessary pages. 
 
         require = {}
+
+        factory = self.factory[:]
+        klass = factory[-1]
+
         klassdict = {'_PageTraverser__pages': {},
                      '_PageTraverser__default': self.__default,
+                     '__implements__':
+                     (klass.__implements__, PageTraverser.__implements__),
                      }
         for name in self.__pages:
             attribute, permission, template = self.__pages[name] 
@@ -233,8 +239,6 @@ class view(resource):
 
             klassdict['_PageTraverser__pages'][name] = attribute
 
-        factory = self.factory[:]
-        klass = factory[-1]
         klass = type(klass.__name__,
                      (klass, PageTraverser, object),
                      klassdict)

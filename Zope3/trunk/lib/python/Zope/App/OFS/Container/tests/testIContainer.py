@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIContainer.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: testIContainer.py,v 1.3 2002/06/20 20:00:21 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,8 +30,8 @@ class BaseTestIContainer:
 
     def __setUp(self):
         self.__container = container = self._Test__new()
-        for k, v in [(3, 0), (2, 1), (4, 2), (6, 3), (0, 4),
-                     (5, 5), (1, 6), (8, 7), (7, 8), (9, 9)]:
+        for k, v in [('3', '0'), ('2', '1'), ('4', '2'), ('6', '3'), ('0', '4'),
+                     ('5', '5'), ('1', '6'), ('8', '7'), ('7', '8'), ('9', '9')]:
             container.setObject(k, v)
         return container
 
@@ -50,21 +50,21 @@ class BaseTestIContainer:
         container = self.__setUp()
         data = container.keys()
         data = list(data); data.sort() # convert to sorted list
-        self.assertEqual(data, range(10))
+        self.assertEqual(data, map(str, range(10)))
         
     def test_get(self):
         '''See interface IReadContainer'''
         container = self._Test__new()
-        self.assertRaises(KeyError, container.__getitem__, 1)
-        self.assertEqual(container.get(1, 99), 99)
+        self.assertRaises(KeyError, container.__getitem__, '1')
+        self.assertEqual(container.get('1', '99'), '99')
         
         container = self.__setUp()
-        self.assertRaises(KeyError, container.__getitem__, 100)
-        self.assertEqual(container.get(100, 99), 99)
-        self.assertEqual(container.get(1, 99), 6)
-        self.assertEqual(container[7], 8)
-        self.assertEqual(container[0], 4)
-        self.assertEqual(container[9], 9)
+        self.assertRaises(KeyError, container.__getitem__, '100')
+        self.assertEqual(container.get('100', '99'), '99')
+        self.assertEqual(container.get('1', '99'), '6')
+        self.assertEqual(container['7'], '8')
+        self.assertEqual(container['0'], '4')
+        self.assertEqual(container['9'], '9')
         
     def test_values(self):
         '''See interface IReadContainer'''
@@ -75,7 +75,7 @@ class BaseTestIContainer:
         container = self.__setUp()
         data = container.values()
         data = list(data); data.sort() # convert to sorted list
-        self.assertEqual(data, range(10))
+        self.assertEqual(data, map(str, range(10)))
 
     def test_len(self):
         '''See interface IReadContainer'''
@@ -95,36 +95,36 @@ class BaseTestIContainer:
         data = container.items()
         data = list(data); data.sort() # convert to sorted list
         self.assertEqual(data, [
-            (0, 4), (1, 6), (2, 1), (3, 0), (4, 2),
-            (5, 5), (6, 3), (7, 8), (8, 7), (9, 9)
+            ('0', '4'), ('1', '6'), ('2', '1'), ('3', '0'), ('4', '2'),
+            ('5', '5'), ('6', '3'), ('7', '8'), ('8', '7'), ('9', '9')
             ])
 
     def test___contains__(self):
         '''See interface IReadContainer'''
         container = self._Test__new()
-        self.assertEqual(not not (1 in container), 0)
+        self.assertEqual(not not ('1' in container), 0)
         
         container = self.__setUp()
-        self.assertEqual(not not (100 in container), 0)
-        self.assertEqual(not not (1 in container), 1)
-        self.assertEqual(not not (0 in container), 1)
-        self.assertEqual(not not (9 in container), 1)
+        self.assertEqual(not not ('100' in container), 0)
+        self.assertEqual(not not ('1' in container), 1)
+        self.assertEqual(not not ('0' in container), 1)
+        self.assertEqual(not not ('9' in container), 1)
 
     def test_delObject(self):
         '''See interface IWriteContainer'''
         container = self._Test__new()
-        self.assertRaises(KeyError, container.__delitem__, 1)
+        self.assertRaises(KeyError, container.__delitem__, '1')
         
         container = self.__setUp()
-        self.assertRaises(KeyError, container.__delitem__, 100)
-        del container[1]
-        del container[9]
-        self.assertRaises(KeyError, container.__getitem__, 1)
-        self.assertRaises(KeyError, container.__getitem__, 9)
-        self.assertEqual(container.get(1, 99), 99)
-        self.assertEqual(container[7], 8)
-        self.assertEqual(container[0], 4)
-        self.assertEqual(container.get(9, 88), 88)
+        self.assertRaises(KeyError, container.__delitem__, '100')
+        del container['1']
+        del container['9']
+        self.assertRaises(KeyError, container.__getitem__, '1')
+        self.assertRaises(KeyError, container.__getitem__, '9')
+        self.assertEqual(container.get('1', '99'), '99')
+        self.assertEqual(container['7'], '8')
+        self.assertEqual(container['0'], '4')
+        self.assertEqual(container.get('9', '88'), '88')
 
     ############################################################
     # Tests from Folder
@@ -166,17 +166,18 @@ class BaseTestIContainer:
         self.assertRaises( KeyError, folder.__getitem__, 'qux' )
 
         foo2 = []
-        folder.setObject( 'foo', foo )
+        folder.setObject( 'foo2', foo )
 
-        self.assertEquals( len( folder.keys() ), 1             )
-        self.assertEquals( folder.keys()[0], 'foo'             )
-        self.assertEquals( len( folder.values() ), 1          )
-        self.assertEquals( folder.values()[0], foo2           )
-        self.assertEquals( len( folder.items() ), 1           )
-        self.assertEquals( folder.items()[0], ( 'foo', foo2 ) )
-        self.assertEquals( len(folder), 1                  )
+        self.assertEquals( len( folder.keys() ), 2             )
+        self.assertEquals( folder.keys()[1], 'foo2'             )
+        self.assertEquals( len( folder.values() ), 2          )
+        self.assertEquals( folder.values()[1], foo2           )
+        self.assertEquals( len( folder.items() ), 2           )
+        self.assertEquals( folder.items()[1], ( 'foo2', foo2 ) )
+        self.assertEquals( len(folder), 2                  )
 
         del folder['foo']
+        del folder['foo2']
 
         self.failIf(folder.keys()         )
         self.failIf(folder.values()      )

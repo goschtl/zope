@@ -1,12 +1,10 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:zmi='http://namespaces.zope.org/zmi'
->
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
   <!-- Simple Folder Directives -->
 
   <content class=".Folder.">
-    <zmi:factory
+    <implements interface="Zope.App.OFS.Container.IContentContainer." />
+    <factory
         id="Folder"
         permission="Zope.ManageContent"
         title="Folder"
@@ -28,12 +26,14 @@
 
   <!-- XXX Do we really need RootFolder? -->
   <content class=".RootFolder.">
+    <implements interface="Zope.App.OFS.Container.IContentContainer." />
     <require like_class=".Folder." />
   </content>
 
   <!-- Loaded Folder Directives -->
   <content class=".LoadedFolder.">
-    <zmi:factory
+    <implements interface="Zope.App.OFS.Container.IContentContainer." />
+    <factory
         id="LoadedFolder"
         permission="Zope.ManageContent"
         title="Loaded Folder"

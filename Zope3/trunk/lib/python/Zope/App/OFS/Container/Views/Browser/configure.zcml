@@ -1,0 +1,21 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   >
+
+   <browser:menu id="add_content" 
+                 title="Menu of objects to be added to content containers"
+                 />
+
+   <browser:view
+       for="Zope.App.OFS.Container.IContentContainer."
+       name="create"  
+       factory=".Adding."
+       permission="Zope.ManageContent"
+       >
+       <browser:page name="index.html" template="add.pt" />
+       <browser:page name="action.html" attribute="action" />
+   </browser:view>
+
+</zopeConfigure>
+       

@@ -9,7 +9,16 @@
   <browser:icon name="zmi_icon" for=".Folder.IFolder."
                 file="Folder_icon.gif" />
 
-     
+  <browser:menuItems menu="zmi_views" for=".Folder.IFolder.">
+    <browser:menuItem title="Contents" action="@@index.html"/>
+    <browser:menuItem title="Role Permissions" 
+             action="@@AllRolePermissions.html"/>
+  </browser:menuItems>
+
+  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+                    title="Folder" action="Folder"
+                    />
+
   <browser:defaultView
        for=".Folder.IFolder." 
        name="index.html" />
@@ -26,20 +35,6 @@
                   attribute="addServiceManager"
                   />
   </browser:view>
-
-  <browser:view
-      for=".Folder.IFolder."
-      permission="Zope.ManageContent" 
-      factory=".Views.Browser.FolderAdder." >
-
-    <browser:page name="addForm.html"
-                  attribute="index"
-                  />
-    <browser:page name="add.html"
-                  attribute="action"
-                  />
-  </browser:view>
-
 
   <!-- Loaded Folder View Directives -->
      
@@ -75,12 +70,6 @@
       factory=".LoadedFolderFields.LimitField. 
                Zope.App.Formulator.Widgets.Browser.TextWidget." />
 
-  <browser:menuItems menu="zmi_views" for=".Folder.IFolder.">
-    <browser:menuItem title="Contents" action="@@index.html"/>
-    <browser:menuItem title="Role Permissions" 
-             action="@@AllRolePermissions.html"/>
-  </browser:menuItems>
-
   <browser:menuItems menu="zmi_views"
                      for="Zope.App.OFS.Container.IContainerLimit.">
     <browser:menuItem title="Limit" action="@@FolderLimitEditForm.html"/>
@@ -91,5 +80,10 @@
     <browser:menuItem title="Role Permissions" 
              action="@@AllRolePermissions.html"/>
   </browser:menuItems>
+
+  <browser:menuItem menu="add_content" for="Zope.App.OFS.Container.IAdding."
+                    title="Loaded Folder" action="LoadedFolder"
+                    description="A Folder having all the goodies."
+                    />
 
 </zopeConfigure>

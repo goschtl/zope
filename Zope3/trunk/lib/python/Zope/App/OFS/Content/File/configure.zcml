@@ -1,7 +1,4 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:zmi='http://namespaces.zope.org/zmi'
->
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
   <!-- NaiveFile Directives -->
 
@@ -9,7 +6,7 @@
                        title="Add Naive Files" />
 
   <content class=".NaiveFile.">
-    <zmi:factory
+    <factory
         id="NaiveFile"
         permission="Zope.AddNaiveFiles"
         title="Naive File"
@@ -22,7 +19,7 @@
   <permission id="Zope.AddFiles" title="Add Files" />
 
   <content class=".File.">
-    <zmi:factory
+    <factory
         id="File"
         permission="Zope.ManageContent"
         title="File"

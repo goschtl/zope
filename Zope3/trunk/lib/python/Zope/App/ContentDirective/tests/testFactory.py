@@ -35,8 +35,7 @@ from Zope.App.ContentDirective.tests.ExampleClass \
 
 def configfile(s):
     return StringIO("""<zopeConfigure
-      xmlns='http://namespaces.zope.org/zope'
-      xmlns:zmi='http://namespaces.zope.org/zmi'>
+      xmlns='http://namespaces.zope.org/zope'>
       %s
       </zopeConfigure>
       """ % s)
@@ -54,13 +53,11 @@ class Test(AddableSetup, CleanUp, unittest.TestCase):
         f = configfile("""
 <permission id="Zope.Foo" title="Zope Foo Permission" />
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
-    <zmi:factory 
+    <factory 
       id="Example" 
       permission="Zope.Foo"
       title="Example content"
       description="Example description"
-      for_container="Zope.App.ContentDirective.tests.ExampleClass.IExampleContainer"
-      creation_markers="Zope.App.ContentDirective.tests.ExampleClass.IExample"
        />
 </content>
                        """)
@@ -75,12 +72,10 @@ class Test(AddableSetup, CleanUp, unittest.TestCase):
         f = configfile("""
 <permission id="Zope.Foo" title="Zope Foo Permission" />
 <content class="Zope.App.ContentDirective.tests.ExampleClass.">
-    <zmi:factory 
+    <factory 
       permission="Zope.Foo"
       title="Example content"
       description="Example description"
-      for_container="Zope.App.ContentDirective.tests.ExampleClass.IExampleContainer"
-      creation_markers="Zope.App.ContentDirective.tests.ExampleClass.IExample"
        />
 </content>
                        """)

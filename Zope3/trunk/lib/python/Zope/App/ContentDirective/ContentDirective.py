@@ -13,18 +13,20 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.3 2002/06/20 15:54:46 jim Exp $
+$Id: ContentDirective.py,v 1.4 2002/06/20 20:00:19 jim Exp $
 """
 from Zope.Configuration.ConfigurationDirectiveInterfaces \
      import INonEmptyDirective
+from Zope.ComponentArchitecture import getService
 from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.Configuration.Action import Action
 import Interface
-
+from Zope.App.ComponentArchitecture.ClassFactory import ClassFactory
 from Zope.App.Security.protectClass \
     import protectLikeUnto, protectName, checkPermission
 from Zope.App.ZMI.IGenericCreatorMarker import IGenericCreatorMarker
-from Zope.App.ZMI.metaConfigure import provideClass
+from Zope.Security.Proxy import ProxyFactory
+from Zope.Security.Checker import NamesChecker
 
 PublicPermission = 'Zope.Public'
 
@@ -97,36 +99,6 @@ class ContentDirective:
         """Like require, but with permission_id Zope.Public"""
         return self.require(_context, PublicPermission, attributes, interface)
 
-    def factory(self, _context, permission, title, id=None, description='',
-                for_container='', creation_markers=''):
-        """Register a zmi factory for this class"""
-        if for_container:
-            for_container = tuple([_context.resolve(cls)
-                                   for cls in for_container.split()])
-        else:
-            for_container = None
-
-        if creation_markers:
-            creation_markers = tuple([_context.resolve(name)
-                                      for name in creation_markers.split()])
-        else:
-            creation_markers = (IGenericCreatorMarker,)
-
-        id = id or self.__id
-            
-        # note factories are all in one pile, services and content,
-        # so addable names must also act as if they were all in the
-        # same namespace, despite the service/content division
-        return [
-            Action(
-                discriminator = ('AddableFactory', id),
-                callable = provideClass,
-                args = ('AddableContent', id, self.__class,
-                        permission, title, description, for_container,
-                        creation_markers)
-                )
-            ]
-
 
 
     def __protectByInterface(self, interface, permission_id, r):
@@ -151,4 +123,39 @@ class ContentDirective:
         "Handle empty/simple declaration."
         return ()
 
+
+    def factory(self, _context, permission, title, id=None, description=''):
+        """Register a zmi factory for this class"""
+
+        id = id or self.__id
+            
+        # note factories are all in one pile, services and content,
+        # so addable names must also act as if they were all in the
+        # same namespace, despite the service/content division
+        return [
+            Action(
+                discriminator = ('AddableFactory', id),
+                callable = provideClass,
+                args = (id, self.__class,
+                        permission, title, description)
+                )
+            ]
     
+def provideClass(id, _class, permission,
+                 title, description=''):
+    """Provide simple class setup
+
+    - create a component
+
+    - set component permission
+    """
+    factory = ClassFactory(_class)
+    if permission and (permission != 'Zope.Public'):
+        # XXX should getInterfaces be public, as below?
+        factory = ProxyFactory(factory,
+                               NamesChecker(('getInterfaces',),
+                                            __call__=permission))
+
+    getService(None, 'Factories').provideFactory(id, factory)
+
+

@@ -5,6 +5,8 @@
    xmlns:vfs='http://namespaces.zope.org/vfs'
 >
 
+  <include package=".Views" />
+
   <browser:view
       name="_traverse" 
       for=".IContainer.IItemContainer."

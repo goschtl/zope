@@ -1,11 +1,10 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
-   xmlns:zmi='http://namespaces.zope.org/zmi'
 >
 
   <content class=".ZPTPage.">
-    <zmi:factory
+    <factory
         id="ZPTPage"
         permission="Zope.ManageContent"
         title="ZPT Page"
@@ -25,19 +24,6 @@
       provides="Zope.App.OFS.Annotation.IAnnotations."
       for=".ZPTPage." />
 
-
-  <!-- tabs for ZPT Page -->
-
-  <browser:menuItems menu="zmi_views" for=".ZPTPage.IZPTPage.">
-    <browser:menuItem title="Edit" action="editForm.html"/>
-    <browser:menuItem title="View" action="."/>
-    <!-- XXX This isn't working
-    <browser:menuItem title="Role Permissions"
-             action="AllRolePermissions.html"/>
-    -->
-  </browser:menuItems>
-
-  <browser:icon name="zmi_icon" for=".ZPTPage.IZPTPage." file="zpt.gif" />
 
   <include package=".Views" />
 

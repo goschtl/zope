@@ -1,12 +1,11 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
-   xmlns:zmi='http://namespaces.zope.org/zmi'
    xmlns:browser='http://namespaces.zope.org/browser'
 >
   <permission id="Zope.AddImages" title="Add Images" />
   
   <content class=".Image.">
-    <zmi:factory
+    <factory
         id="Image"                        
         permission="Zope.ManageContent"
         title="Image"
@@ -26,17 +25,6 @@
       factory="Zope.App.OFS.Annotation.AttributeAnnotations."
       provides="Zope.App.OFS.Annotation.IAnnotations."
       for=".Image." />
-
-  <!-- tabs for image -->
-
-  <browser:menuItems menu="zmi_views" for=".Image.IImage.">
-    <browser:menuItem title="Edit" action="editForm.html"/>
-    <browser:menuItem title="View" action="."/>
-    <browser:menuItem title="Role Permissions"
-             action="AllRolePermissions.html"/>
-  </browser:menuItems>
-
-  <browser:icon name="zmi_icon" for=".Image.IImage." file="Image_icon.gif" />
 
   <!-- Further Directives -->
 

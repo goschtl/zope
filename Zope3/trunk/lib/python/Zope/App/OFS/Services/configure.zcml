@@ -1,7 +1,4 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:zmi='http://namespaces.zope.org/zmi'
->
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
 <include package=".ServiceManager" />
 

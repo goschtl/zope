@@ -99,6 +99,12 @@ def menuDirective(_context, id, title, description=''):
         args = (id, title, description),
         )]
 
+def menuItemDirective(_context, menu, for_,
+                      action, title, description='', filter=None):
+    return menuItemsDirective(_context, menu, for_).menuItem(
+        _context, action, title, description, filter)        
+
+    
 class menuItemsDirective:
 
     def __init__(self, _context, menu, for_):
@@ -129,5 +135,5 @@ del addCleanUp
 
 __doc__ = GlobalBrowserMenuService.__doc__ + """
 
-$Id: GlobalBrowserMenuService.py,v 1.1 2002/06/18 19:34:57 jim Exp $
+$Id: GlobalBrowserMenuService.py,v 1.2 2002/06/20 20:00:27 jim Exp $
 """
