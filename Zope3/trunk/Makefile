@@ -28,7 +28,7 @@ test: test_inplace
 
 ftest: ftest_inplace
 
-run:
+run: inplace
 	$(PYTHON) z3.py
 
 clean:
