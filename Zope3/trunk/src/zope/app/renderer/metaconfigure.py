@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metaconfigure.py,v 1.2 2003/08/01 15:36:25 philikon Exp $
+$Id: metaconfigure.py,v 1.3 2003/08/02 06:54:00 philikon Exp $
 """
 from zope.app.component.metaconfigure import handler
 from zope.app.renderer.sourcetype import SourceTypes 
@@ -63,17 +63,13 @@ class IRendererDirective(Interface):
                     u"view on the source.",
         required=True)
 
-
 def renderer(_context, sourceType, for_, factory):
-    if for_ == '*':
-        for_ = None
     _context.action(
         discriminator = ('view', sourceType, None, for_, 'default'),
         callable = handler,
         args = ('Views', 'provideView',
                 sourceType, None, for_, factory, 'default')
         )
-
 
 def sourcetype(_context, interface, class_, title=u''):
     _context.action(
