@@ -39,7 +39,7 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     ztapi.provideAdapter(IRequest, ISession, Session)
     ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
     sdc = session_data_container_class()
-    ztapi.provideUtility(ISessionDataContainer, sdc, 'pas_credentials')
+    ztapi.provideUtility(ISessionDataContainer, sdc, 'pas')
 
 def formAuthSetUp(self):
     placefulSetUp(site=True)
