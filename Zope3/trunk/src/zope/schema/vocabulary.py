@@ -63,8 +63,9 @@ class SimpleVocabulary(object):
         for term in self._terms:
             self.by_value[term.value] = term
             self.by_token[term.token] = term
-        assert len(self.by_value) == len(self.by_token) == len(terms), \
-               'Supplied vocabulary values resulted in duplicate term tokens'
+        if not (len(self.by_value) == len(self.by_token) == len(terms)):
+            raise ValueError(
+                'Supplied vocabulary values resulted in duplicate term tokens')
         if interfaces:
             directlyProvides(self, *interfaces)
 
