@@ -13,11 +13,12 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.7 2003/01/16 11:59:59 alga Exp $
+$Id: interfaces.py,v 1.8 2003/01/21 21:45:06 jim Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.component.interfacefield import InterfaceField
+from zope.app.security.permission import PermissionField
 from zope.schema import BytesLine, TextLine, Text
 from zope.interface import Interface
 from zope.app.services.field import ComponentPath
@@ -80,13 +81,6 @@ class IViewConfigurationInfo(Interface):
         basetype = IPresentation,
         )
 
-    factoryName = BytesLine(
-        title=u"The dotted name of a factory for creating the view",
-        readonly = True,
-        required = True,
-        min_length = 1,
-        )
-
     viewName = TextLine(
         title = u"View name",
         readonly = True,
@@ -102,6 +96,19 @@ class IViewConfigurationInfo(Interface):
         min_length = 1,
         default = "default",
         )
+
+    class_ = BytesLine(
+        title=u"View class",
+        required = True,
+        min_length = 1,
+        )
+
+    permission = PermissionField(
+        title=u"Permission",
+        description=u"The permission required to use the view",
+        required = True,
+        )
+        
 
 class IViewConfiguration(IConfiguration, IViewConfigurationInfo):
 
@@ -141,9 +148,8 @@ class IZPTTemplate(Interface):
 
 class IPageConfigurationInfo(IViewConfigurationInfo):
 
-    factoryName = BytesLine(
-        title=u"The dotted name of a factory for creating the view",
-        readonly = True,
+    class_ = BytesLine(
+        title=u"Page class",
         required = False,
         min_length = 1,
         )

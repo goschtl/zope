@@ -14,12 +14,15 @@
 """View Service
 
 
-$Id: view.py,v 1.3 2003/01/16 12:00:00 alga Exp $
+$Id: view.py,v 1.4 2003/01/21 21:45:07 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
+
+from zope.publisher.interfaces.browser import IBrowserPresentation
+
 from zope.component.interfaces import IViewService
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getServiceManager
@@ -31,6 +34,8 @@ from zope.proxy.context import ContextMethod
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.component.nextservice import getNextService
 from zope.component import getSkin
+
+from zope.security.checker import NamesChecker, ProxyFactory
 
 from zope.proxy.introspection import removeAllProxies
 from zope.app.traversing import getPhysicalRoot, traverse
@@ -216,16 +221,17 @@ class ViewConfiguration(SimpleConfiguration):
 
     def __init__(self,
                  forInterface, viewName, presentationType,
-                 factoryName, layer='default'):
+                 class_, permission, layer='default'):
         self.forInterface = forInterface
         self.presentationType = presentationType
-        self.factoryName = factoryName
+        self.class_ = class_
         self.viewName = viewName
         self.layer = layer
+        self.permission = permission
 
     def getView(self, object, request):
         sm = getServiceManager(self)
-        factory = sm.resolve(self.factoryName)
+        factory = sm.resolve(self.class_)
         return factory(object, request)
 
     getView = ContextMethod(getView)
@@ -234,37 +240,46 @@ class PageConfiguration(ViewConfiguration):
 
     __implements__ = IPageConfiguration, ViewConfiguration.__implements__
 
+    # We only care about browser pages
+    presentationType = IBrowserPresentation
+
     def __init__(self,
-                 forInterface, viewName, presentationType,
-                 factoryName=None, template=None,
+                 forInterface, viewName, permission,                 
+                 class_=None, template=None,
                  layer='default'):
+
+        
         super(PageConfiguration, self).__init__(
-            forInterface, viewName, presentationType,
-            factoryName, layer)
+            forInterface, viewName, self.presentationType,
+            class_, permission, layer)
 
         self.template = template
 
     def getView(self, object, request):
         sm = getServiceManager(self)
 
-        if self.factoryName:
-            factory = sm.resolve(self.factoryName)
+        if self.class_:
+            class_ = sm.resolve(self.class_)
+            class_ = type(class_.__name__, (class_, DefaultClass), {})
+            
         else:
-            factory = DefaultFactory
+            class_  = DefaultClass
 
-        view = factory(object, request)
+        view = class_(object, request)
 
         # This is needed because we need to do an unrestricted traverse
         root = removeAllProxies(getPhysicalRoot(sm))
 
         template = traverse(root, self.template)
 
-        return BoundTemplate(template, view)
+        checker = NamesChecker(__call__ = self.permission)
+
+        return ProxyFactory(BoundTemplate(template, view), checker)
 
     getView = ContextMethod(getView)
 
 
-class DefaultFactory:
+class DefaultClass:
 
     def __init__(self, context, request):
         self.context = context

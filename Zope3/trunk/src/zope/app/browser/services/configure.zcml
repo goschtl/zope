@@ -347,7 +347,7 @@
     name="ItemEdit"
     label="View"
     permission="zope.ManageServices"
-    fields="forInterface viewName presentationType factoryName layer
+    fields="forInterface viewName presentationType class_ layer permission
             title status"
     />
 
@@ -362,12 +362,13 @@
       schema = "zope.app.interfaces.services.interfaces.IViewConfiguration"
       name= "ViewConfiguration"
       content_factory = ".view.ViewConfiguration"
-      keyword_arguments = "forInterface presentationType factoryName viewName"
+      keyword_arguments = "forInterface presentationType class_
+                           viewName permission"
       set_before_add = "layer"
       label = "Configure a view" 
       permission="zope.ManageServices" 
       fields="forInterface viewName presentationType
-              factoryName layer title status description"
+              class_ layer permission title status description"
       />
 
 <browser:menuItem
@@ -408,7 +409,7 @@
     name="ItemEdit"
     label="Page"
     permission="zope.ManageServices"
-    fields="forInterface viewName presentationType factoryName layer 
+    fields="forInterface viewName class_ layer permission 
             title status"
     />
 
@@ -423,13 +424,12 @@
       schema = "zope.app.interfaces.services.interfaces.IPageConfiguration"
       name= "PageConfiguration"
       content_factory = ".view.PageConfiguration"
-      keyword_arguments = "forInterface presentationType factoryName
-                           viewName"
+      keyword_arguments = "forInterface class_ viewName permission"
       set_before_add = "template layer"
       label = "Configure a view page" 
       permission="zope.ManageServices" 
-      fields="forInterface viewName presentationType
-              template factoryName layer title status description"
+      fields="forInterface viewName
+              template class_ layer permission title status description"
       />
 
 <browser:menuItem

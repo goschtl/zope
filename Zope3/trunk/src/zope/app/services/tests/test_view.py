@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_view.py,v 1.3 2003/01/21 21:45:09 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -36,7 +36,7 @@ from zope.app.interfaces.services.interfaces import IZPTTemplate
 from zope.app.services.view import PageConfiguration, BoundTemplate
 from zope.interface.verify import verifyObject
 from zope.component.interfaces import IViewService
-
+from zope.proxy.introspection import removeAllProxies
 class I1(Interface):
     pass
 
@@ -199,7 +199,8 @@ class TestViewConfiguration(PlacefulSetup, TestCase):
         rootFolder = RootFolder()
         rootFolder.setServiceManager(PhonyServiceManager())
         self.configuration = ContextWrapper(
-            ViewConfiguration(I1, 'test', IBrowserPresentation, "Foo.Bar.A"),
+            ViewConfiguration(I1, 'test', IBrowserPresentation, "Foo.Bar.A",
+                              'zope.View'),
             rootFolder,
             )
 
@@ -227,7 +228,7 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         self.__template = PhonyTemplate()
         default.setObject('t', self.__template)
         self.__configuration = ContextWrapper(
-            PageConfiguration(I1, 'test', IBrowserPresentation,
+            PageConfiguration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               '/++etc++Services/Packages/default/t',
                               ),
@@ -239,10 +240,10 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         request = TestRequest()
         view = self.__configuration.getView(c, request)
         self.assertEqual(view.__class__, BoundTemplate)
-        self.assertEqual(view.template, self.__template)
+        self.assertEqual(removeAllProxies(view).template, self.__template)
 
-        view = view.view
-        self.assertEqual(view.__class__, A)
+        view = removeAllProxies(view).view
+        self.assert_(issubclass(view.__class__, A))
         self.assertEqual(view.context, c)
         self.assertEqual(view.request, request)
         self.assertEqual(self.__configuration.forInterface, I1)
