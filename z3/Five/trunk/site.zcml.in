@@ -5,8 +5,6 @@
       'site.zcml' -->
 
   <include package="Products.Five" />
-
-  <include package="Products.Five" file="permissions.zcml" />
   <redefinePermission from="zope2.Public" to="zope.Public" />
 
   <include files="package-includes/*-meta.zcml" />

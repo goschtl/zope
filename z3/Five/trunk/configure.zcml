@@ -4,6 +4,7 @@
   <include file="meta.zcml" />
   <include file="services.zcml" />
   <include file="interfaces.zcml" />
+  <include file="permissions.zcml" />
 
   <!-- do 'traditional' traversing by default; needed by ZPT -->
   <adapter
