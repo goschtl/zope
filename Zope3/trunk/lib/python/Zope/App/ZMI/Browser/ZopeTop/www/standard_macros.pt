@@ -8,11 +8,11 @@
     >Zope</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="zopetopBasic.css" rel="stylesheet" type="text/css"
-        tal:attributes="href string:/@@/zopetopBasic.css" />
+        tal:attributes="href context/++resource++zopetopBasic.css" />
 <link href="zopetopWidgets.css" rel="stylesheet" type="text/css"
-        tal:attributes="href string:/@@/zopetopWidgets.css" />
+        tal:attributes="href context/++resource++zopetopWidgets.css" />
 <link href="zopetopStructure.css" rel="stylesheet" type="text/css"
-        tal:attributes="href string:/@@/zopetopStructure.css" />
+        tal:attributes="href context/++resource++zopetopStructure.css" />
 <div metal:define-slot="headers">
 </div>
 </head>
@@ -20,18 +20,18 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr> 
     <td background="bg_top.jpg"
-        tal:attributes="background string:/@@/bg_top.jpg"> 
+        tal:attributes="background context/++resource++bg_top.jpg"> 
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
         <tr> 
           <td><img src="zope3logo.jpg" width="366" height="37" 
                    alt="Zope 3 Logo"
-                   tal:attributes="src string:/@@/zope3logo.jpg" /></td>
+                   tal:attributes="src context/++resource++zope3logo.jpg" /></td>
           <td>
             <table border="0" align="right" cellpadding="0" cellspacing="0">
               <tr> 
                 <td><span metal:use-macro="views/standard_widgets/logged_user">Logged in as user</span></td>
                 <td>&nbsp;<img src="spacer1.gif" alt="" width="2" height="25"
-                               tal:attributes="src string:/@@/spacer1.gif" 
+                               tal:attributes="src context/++resource++spacer1.gif" 
                   />&nbsp;</td>
                 <td><select name="select">
                     <option value="1">Zope Quick Start</option>
@@ -47,7 +47,7 @@
   </tr>
   <tr> 
     <td background="bg_bar.jpg"
-         tal:attributes="background string:/@@/bg_bar.jpg"> 
+         tal:attributes="background context/++resource++bg_bar.jpg"> 
       <span metal:use-macro="views/standard_widgets/services_bar" />
     </td>
   </tr>
@@ -58,30 +58,30 @@
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr> 
                 <td background="bg_root_folder.jpg"
-                    tal:attributes="background string:/@@/bg_root_folder.jpg"
+                    tal:attributes="background context/++resource++bg_root_folder.jpg"
                   ><img src="bg_root_folder.jpg" width="176" height="16" 
-                       tal:attributes="src string:/@@/bg_root_folder.jpg"
+                       tal:attributes="src context/++resource++bg_root_folder.jpg"
                 /></td>
               </tr>
             </table>
 	    <span metal:use-macro="views/standard_widgets/explorer_box" />
             <img src="spacer3.gif" width="176" height="12"
-                 tal:attributes="src string:/@@/spacer3.gif"/> 
+                 tal:attributes="src context/++resource++spacer3.gif"/> 
             <span metal:use-macro="views/standard_widgets/actions_box" />
 
             <img src="spacer3.gif" width="176" height="12"
-             tal:attributes="src string:/@@/spacer3.gif"/> </td>
+             tal:attributes="src context/++resource++spacer3.gif"/> </td>
           <td width="1" bgcolor="#7B7AC6"> <img src="x.gif" 
             alt="" width="1" height="400"
-             tal:attributes="src string:/@@/x.gif"/></td>
+             tal:attributes="src context/++resource++x.gif"/></td>
           <td valign="top" bgcolor="#DFDEFF">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr> 
                 <td background="bg_content.jpg"
-                    tal:attributes="background string:/@@/bg_content.jpg">
+                    tal:attributes="background context/++resource++bg_content.jpg">
                 <img
                     src="bg_content.jpg" width="15" height="6" 
-                    tal:attributes="src string:/@@/bg_content.jpg"/></td>
+                    tal:attributes="src context/++resource++bg_content.jpg"/></td>
               </tr>
             </table>
             <table width="100%" border="0" align="center" cellpadding="0" cellspacing="10">
@@ -120,7 +120,7 @@
                       <td width="30"> <input type="checkbox" name="checkbox" value="checkbox" /> 
                       </td>
                       <td width="30"> <img src="control_panels_folder.gif" width="25" height="25"
-                 tal:attributes="src string:/@@/control_panels_folder.gif"/> </td>
+                 tal:attributes="src context/++resource++control_panels_folder.gif"/> </td>
                       <td>Control Panel </td>
                       <td>&nbsp; </td>
                       <td>18/06/2002@10:53 PM BRT </td>

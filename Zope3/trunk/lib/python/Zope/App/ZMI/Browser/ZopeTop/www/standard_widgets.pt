@@ -8,7 +8,7 @@
   <tr tal:on-error="string: No services available">
     <td>&nbsp;
       <img src="service_manager.gif" alt="Sort" 
-      tal:attributes="src string:/@@/service_manager.gif"/>
+      tal:attributes="src context/++resource++service_manager.gif"/>
     </td>
     <td>
       <a href="./++etc++Services/"
@@ -17,34 +17,34 @@
       tal:condition="not: context/hasServiceManager">Allow Services</a>
     </td>     
     <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src string:/@@/spacer2.gif"/>
+      tal:attributes="src context/++resource++spacer2.gif"/>
     </td>
     <td><img src="user_accounts.gif" width="22" height="28"
-      tal:attributes="src string:/@@/user_accounts.gif"/>
+      tal:attributes="src context/++resource++user_accounts.gif"/>
     </td>
     <td nowrap="nowrap">User Accounts
     </td>
     <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src string:/@@/spacer2.gif"/>
+      tal:attributes="src context/++resource++spacer2.gif"/>
     </td>
     <td><img src="control_panels.gif" width="24" height="28"
-      tal:attributes="src string:/@@/control_panels.gif"/>
+      tal:attributes="src context/++resource++control_panels.gif"/>
     </td>
     <td nowrap="nowrap">Control Panels
     </td>
     <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src string:/@@/spacer2.gif"/>
+      tal:attributes="src context/++resource++spacer2.gif"/>
     </td>
     <td><img src="system_security.gif" width="23" height="28"
-      tal:attributes="src string:/@@/system_security.gif"/>
+      tal:attributes="src context/++resource++system_security.gif"/>
     </td>
     <td nowrap="nowrap">System Security
     </td>
     <td><img src="spacer2.gif" width="15" height="28"
-      tal:attributes="src string:/@@/spacer2.gif"/>
+      tal:attributes="src context/++resource++spacer2.gif"/>
     </td>
     <td><img src="add_more.gif" width="26" height="28"
-      tal:attributes="src string:/@@/add_more.gif"/>
+      tal:attributes="src context/++resource++add_more.gif"/>
     </td>
     <td nowrap="nowrap">Add More
     </td>
@@ -61,27 +61,27 @@
     <tbody>
     <tr> 
       <td colspan="2" class="odd"><a href="#"><img src="plus.gif" width="19" height="25"
-	tal:attributes="src string:/@@/plus.gif"/><img
+	tal:attributes="src context/++resource++plus.gif"/><img
 	src="closed_folder.gif" width="26" height="25"
-	tal:attributes="src string:/@@/closed_folder.gif"
+	tal:attributes="src context/++resource++closed_folder.gif"
 	/>Folder Name</a>
       </td>
     </tr>
     <tr> 
       <td colspan="2" class="odd"><a href="#"><img src="plus.gif" 
 	width="19" height="25"
-	tal:attributes="src string:/@@/plus.gif"/><img 
+	tal:attributes="src context/++resource++plus.gif"/><img 
 	src="closed_folder.gif" width="26" height="25"
-	tal:attributes="src string:/@@/closed_folder.gif"
+	tal:attributes="src context/++resource++closed_folder.gif"
 	/>Folder Name</a>
       </td>
     </tr>
     <tr> 
       <td colspan="2" class="even"><a 
 	href="#"><img src="minus.gif" width="19" height="25"
-	tal:attributes="src string:/@@/minus.gif"/><img 
+	tal:attributes="src context/++resource++minus.gif"/><img 
 	src="closed_folder.gif" width="26" height="25"
-	tal:attributes="src string:/@@/closed_folder.gif"
+	tal:attributes="src context/++resource++closed_folder.gif"
 	/>Folder Name</a>
       </td>
     </tr>
@@ -110,7 +110,7 @@
 <table metal:define-macro="content_header_bar" width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr> 
     <td width="26"> <img src="closed_folder.gif" width="26" height="25"
-      tal:attributes="src string:/@@/closed_folder.gif"/>
+      tal:attributes="src context/++resource++closed_folder.gif"/>
     </td>
     <td width="95">Folder at - </td>
     <td><span
@@ -123,7 +123,7 @@
     </td>
     <td width="45" align="right">Help </td>
     <td width="25"> <img src="help.gif" width="25" height="25"
-      tal:attributes="src string:/@@/help.gif"/>
+      tal:attributes="src context/++resource++help.gif"/>
     </td>
   </tr>
 </table>
