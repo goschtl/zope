@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.16 2003/12/09 10:45:49 sraju Exp $
+$Id: test_adding.py,v 1.17 2003/12/10 07:44:46 sraju Exp $
 """
 
 import unittest
@@ -40,6 +40,9 @@ from zope.exceptions import ForbiddenAttribute
 from zope.app.interfaces.container import IWriteContainer
 from zope.app.interfaces.container import IContainerNamesContainer
 import zope.interface
+from zope.app.interfaces.container import INameChooser
+from zope.app.interfaces.container import IContainer
+from zope.app.browser.container.contents import Contents
 
 class Root:
     implements(IContainmentRoot)
@@ -116,7 +119,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         provideFactory('fooprivate', Factory())
 
         factory = Factory()
-        factory.__Security_checker__ = zope.security.checker.NamesChecker(
+        factory.__Security_checker__ = zope.security.checker.NamesChecker(      
             ['__call__'])
         provideFactory('foo', factory)
 
@@ -256,26 +259,68 @@ def test_renderAddButton():
     """
     Test for renderAddButton in adding.py 
     
+    >>> setUp()
     >>> from zope.app.browser.container.adding import Adding
     >>> from zope.app.interfaces.container import IContainerNamesContainer
+
+    Class implements IContainerNamesContainer
+    
     >>> class FakeContainer:
     ...    zope.interface.implements(IContainerNamesContainer)
 
-    >>> class Fake:
-    ...    pass
+    renderAddButton returns only 'Add' button if the class imlement
+    IContainerNamesContainer
+    
     >>> adding = Adding(FakeContainer(),TestRequest())
     >>> adding.renderAddButton()
     "<input type='submit' name='UPDATE_SUBMIT' value=' Add '>"
+
+    Fake class without IContainerNamesContainer
+    
+    >>> class Fake:
+    ...    pass
+
+    renderAddButton returns only 'Add' and 'inputbox' if the class
+    doest imlement IContainerNamesContainer
+
     >>> adding = Adding(Fake(),TestRequest())
     >>> adding.renderAddButton()
     "<input type='submit' name='UPDATE_SUBMIT' value=' Add '>""" \
           """<input type='text' name='add_input_name' value=''>"
+
     >>> adding.contentName='myname'
     >>> adding.renderAddButton()
     "<input type='submit' name='UPDATE_SUBMIT' value=' Add '>""" \
          """<input type='text' name='add_input_name' value='myname'>"
+    >>> adding = Adding(Fake(),TestRequest())     
 
-    >>>     
+    To check request variable
+
+    >>> from zope.app.interfaces.container import IContainer
+    >>> from zope.app.publisher.browser import BrowserView
+
+    >>> class MyContainer:
+    ...    zope.interface.implements(INameChooser, IContainer)
+    ...    def chooseName(self, name, object):
+    ...        return "foo"
+    ...    def checkName(self, name, object):
+    ...        return "foo"
+    ...    def __setitem__(self, name, object):
+    ...        setattr(self, name, object)
+    ...    def __getitem__(self, key):
+    ...        return key
+
+    >>> request = TestRequest()
+    >>> request.form.update({'add_input_name': 'reqname'})
+    >>> mycontainer = MyContainer()
+    >>> adding = Adding(mycontainer, request)
+    >>> o = object()
+    >>> adding.add(o)
+    'reqname'
+    >>> mycontainer.reqname is o
+    True
+    >>> tearDown()
+
     """
 
 
