@@ -21,27 +21,27 @@ This functionality can be used in cataloging.
 $Id$
 """
 import random
+
+from BTrees import OIBTree, IOBTree
+from persistent import Persistent
+from ZODB.interfaces import IConnection
+
+from zope.app.container.contained import Contained
 from zope.app.uniqueid.interfaces import IUniqueIdUtility, IReference
 from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
 from zope.interface import implements
-from ZODB.interfaces import IConnection
-from BTrees import OIBTree, IOBTree
 from zope.app import zapi
-from zope.app.location.interfaces import ILocation
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.event import notify
 
 
-class UniqueIdUtility(object):
+class UniqueIdUtility(Persistent, Contained):
     """This utility provides a two way mapping between objects and
     integer ids.
 
     IReferences to objects are stored in the indexes.
     """
-    implements(IUniqueIdUtility, ILocation)
-
-    __parent__ = None
-    __name__ = None
+    implements(IUniqueIdUtility)
 
     _v_nextid = None
 
