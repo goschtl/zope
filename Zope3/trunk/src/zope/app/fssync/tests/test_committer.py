@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.10 2003/06/03 17:08:53 gvanrossum Exp $
+$Id: test_committer.py,v 1.11 2003/06/03 19:16:38 gvanrossum Exp $
 """
 
 import os
@@ -497,16 +497,15 @@ class TestCommitterClass(TestCheckerClass):
     # repeated.  Big deal. :-)
 
     def __init__(self, name):
-        self.super = super(TestCommitterClass, self)
-        self.super.__init__(name)
+        TestCheckerClass.__init__(self, name)
         self.name = name
 
     def setUp(self):
-        self.super.setUp()
+        TestCheckerClass.setUp(self)
         self.committer = Committer(self.metadata)
 
     def check_no_errors(self):
-        self.super.check_no_errors()
+        TestCheckerClass.check_no_errors(self)
         self.committer.synch(self.parent, "", self.parentdir)
         name = "verify" + self.name[4:]
         method = getattr(self, name, None)
