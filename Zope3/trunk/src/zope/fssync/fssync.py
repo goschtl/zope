@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.16 2003/05/14 22:16:09 gvanrossum Exp $
+$Id: fssync.py,v 1.17 2003/05/15 01:55:08 gvanrossum Exp $
 """
 
 import os
@@ -266,9 +266,12 @@ class FSSync(object):
         if exists(target) and not isdir(target):
             raise Error("target should be a directory", target)
         fsutil.ensuredir(target)
+        i = rootpath.rfind("/")
+        tail = rootpath[i+1:]
+        assert tail
         fp, headers = self.network.httpreq(rootpath, "@@toFS.zip")
         try:
-            self.merge_zipfile(fp, target)
+            self.merge_zipfile(fp, target, tail)
         finally:
             fp.close()
         self.network.saverooturl(target)
@@ -314,7 +317,7 @@ class FSSync(object):
             if isfile(zipfile):
                 os.remove(zipfile)
         try:
-            self.merge_zipfile(outfp, head)
+            self.merge_zipfile(outfp, head, tail)
         finally:
             outfp.close()
 
@@ -327,11 +330,11 @@ class FSSync(object):
         path = entry["path"]
         fp, headers = self.network.httpreq(path, "@@toFS.zip")
         try:
-            self.merge_zipfile(fp, head)
+            self.merge_zipfile(fp, head, tail)
         finally:
             fp.close()
 
-    def merge_zipfile(self, fp, localdir):
+    def merge_zipfile(self, fp, localdir, tail):
         zipfile = tempfile.mktemp(".zip")
         try:
             tfp = open(zipfile, "wb")
@@ -347,7 +350,7 @@ class FSSync(object):
                 if sts:
                     raise Error("unzip failed:\n%s" % output)
                 m = FSMerger(self.metadata, self.reporter)
-                m.merge(localdir, tmpdir)
+                m.merge(join(localdir, tail), join(tmpdir, tail))
                 self.metadata.flush()
                 print "All done."
             finally:
