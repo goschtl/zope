@@ -14,7 +14,7 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.13 2002/12/25 19:28:50 tim_one Exp $
+$Id: z3.py,v 1.14 2003/01/09 08:48:33 anthony Exp $
 """
 
 import os, sys
@@ -54,7 +54,10 @@ def run(argv=sys.argv):
     if (not os.path.exists('products.zcml')
         and os.path.exists('products.zcml.in')
         ):
-        open('products.zcml', 'w').write(open('products.zcml.in').read())
+        cfin = open('products.zcml.in')
+        cfout = open('products.zcml', 'w')
+        cfout.write(cfin.read())
+        cfout.close(); cfin.close()
 
     # Do global software config
     from zope.app import config
@@ -64,7 +67,10 @@ def run(argv=sys.argv):
     if (not os.path.exists('zserver.zcml')
         and os.path.exists('zserver.zcml.in')
         ):
-        open('zserver.zcml', 'w').write(open('zserver.zcml.in').read())
+        cfin = open('zserver.zcml.in')
+        cfout = open('zserver.zcml', 'w')
+        cfout.write(cfin.read())
+        cfout.close(); cfin.close()
 
     from zope.configuration.xmlconfig import XMLConfig
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
