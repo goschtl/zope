@@ -208,7 +208,8 @@ be quite slow.  The easiest way to improve the load time is to have a
 copy available on the local system and add a resource entry for it
 using a ``file:`` URL::
 
-  setuptools  file:///home/fdrake/stuff/setuptools/setuptools
+  setuptools  file:///home/myuser/stuff/setuptools/setuptools
+  zpkgtools   file:///home/myuser/stuff/zpkgtools/zpkgtools
 
 (The path should identify the directory that contains the
 ``setuptools`` or ``zpkgtools`` package itself, not the directory that
