@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.7 2003/03/29 00:06:24 jim Exp $
+$Id: translationservice.py,v 1.8 2003/04/11 13:20:12 mgedmin Exp $
 """
 import re
 from types import StringTypes, TupleType
@@ -77,14 +77,11 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         if domain is None:
             domain = self.default_domain
 
-        if target_language is None:
-            if context is None:
-                raise TypeError, 'No destination language'
-            else:
-                avail_langs = self.getAvailableLanguages(domain)
-                # Let's negotiate the language to translate to. :)
-                negotiator = getService(self, 'LanguageNegotiation')
-                target_language = negotiator.getLanguage(avail_langs, context)
+        if target_language is None and context is not None:
+            avail_langs = self.getAvailableLanguages(domain)
+            # Let's negotiate the language to translate to. :)
+            negotiator = getService(self, 'LanguageNegotiation')
+            target_language = negotiator.getLanguage(avail_langs, context)
 
         # Get the translation. Default is the source text itself.
         catalog_names = self._catalogs.get((target_language, domain), [])
