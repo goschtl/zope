@@ -22,6 +22,7 @@ from zope.schema import Text, TextLine, Field
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.interfaces import IContainer
+from zope.app.file.interfaces import IFile
 
 
 class IMessage(IContainer):
@@ -60,6 +61,6 @@ class IMessageBoard(IContainer):
 
 
 IMessage['__setitem__'].setTaggedValue('precondition',
-                                       ItemTypePrecondition(IMessage))
+                                       ItemTypePrecondition(IMessage, IFile))
 IMessage.setTaggedValue('__parent__', Field(
     constraint=ContainerTypesConstraint(IMessageBoard, IMessage)))
