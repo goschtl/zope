@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for registration classes
 
-$Id: test_registrations.py,v 1.2 2003/06/23 00:31:31 jim Exp $
+$Id: test_registrations.py,v 1.3 2003/09/21 17:33:22 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,11 +26,10 @@ from zope.app.interfaces.dependable import DependencyError
 from zope.app.services.registration import SimpleRegistration
 from zope.app.services.registration import ComponentRegistration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.context import ContextWrapper
 from zope.app.interfaces.dependable import IDependable
 from zope.app.traversing import traverse
 from zope.security.proxy import Proxy
-
+from zope.app.container.contained import ObjectRemovedEvent
 
 class ITestComponent(Interface):
     pass
@@ -69,19 +68,18 @@ class TestSimpleRegistration(TestCase):
         # Restore the status prop
         SimpleRegistration.status = self.__oldprop
 
-    def test_beforeDeleteHook(self):
-        container = object()
+    def test_removeNotify(self):
         cfg = SimpleRegistration()
 
         # cannot delete an active registration
         cfg.status = ActiveStatus
-        self.assertRaises(DependencyError, cfg.beforeDeleteHook, cfg,
-                          container)
+        event = ObjectRemovedEvent(cfg, None, 'somename')
+        self.assertRaises(DependencyError, cfg.removeNotify, event)
 
         # deletion of a registered registration causes it to become
         # unregistered
         cfg.status = RegisteredStatus
-        cfg.beforeDeleteHook(cfg, container)
+        cfg.removeNotify(event)
         self.assertEquals(cfg.status, UnregisteredStatus)
 
 
@@ -95,51 +93,50 @@ class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
     def test_getComponent(self):
         # set up a component
         name, component = 'foo', object()
-        self.rootFolder.setObject(name, component)
+        self.rootFolder[name] = component
         # set up a registration
         cfg = ComponentRegistration("/"+name)
-        cfg = ContextWrapper(cfg, self.rootFolder)
+        cfg.__parent__ = self.rootFolder
         # check that getComponent finds the registration
         self.assertEquals(cfg.getComponent(), component)
 
     def test_getComponent_permission(self):
         # set up a component
         name, component = 'foo', object()
-        self.rootFolder.setObject(name, component)
+        self.rootFolder[name] = component
         # set up a registration
         cfg = ComponentRegistration("/"+name, 'zope.TopSecret')
         cfg.getInterface = lambda: ITestComponent
-        cfg = ContextWrapper(cfg, self.rootFolder)
+        cfg.__parent__ = self.rootFolder
         # check that getComponent finds the registration
         result = cfg.getComponent()
         self.assertEquals(result, component)
         self.failUnless(type(result) is Proxy)
 
-    def test_afterAddHook(self):
+    def test_addNotify(self):
         # set up a component
         name, component = 'foo', ComponentStub()
-        self.rootFolder.setObject(name, component)
+        self.rootFolder[name] = component
         # set up a registration
         cfg = ComponentRegistration("/"+name)
-        self.rootFolder.setObject('cfg', cfg)
+        self.rootFolder['cfg'] = cfg
         cfg = traverse(self.rootFolder, 'cfg')
-        # simulate IAddNotifiable
-        cfg.afterAddHook(cfg, self.rootFolder)
         # check that the dependency tracking works
         self.assertEquals(component.dependents(), ('/cfg',))
 
-    def test_beforeDeleteHook_dependents(self):
+    def test_removeNotify_dependents(self):
         # set up a component
         name, component = 'foo', ComponentStub()
-        self.rootFolder.setObject(name, component)
+        self.rootFolder[name] = component
         component.addDependent('/cfg')
         # set up a registration
         cfg = ComponentRegistration("/"+name)
         cfg.status = UnregisteredStatus
-        self.rootFolder.setObject('cfg', cfg)
+        self.rootFolder['cfg'] = cfg
         cfg = traverse(self.rootFolder, 'cfg')
-        # simulate IDeleteNotifiable
-        cfg.beforeDeleteHook(cfg, self.rootFolder)
+        # simulate IRemoveNotifiable
+        event = ObjectRemovedEvent(cfg, self.rootFolder, 'cfg')
+        cfg.removeNotify(event)
         # check that the dependency tracking works
         self.assertEquals(component.dependents(), ())
 

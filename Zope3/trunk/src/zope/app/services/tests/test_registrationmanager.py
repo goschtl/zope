@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.2 2003/08/17 06:08:20 philikon Exp $
+$Id: test_registrationmanager.py,v 1.3 2003/09/21 17:33:22 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
-from zope.app.interfaces.container import IDeleteNotifiable, IZopeContainer
+from zope.app.interfaces.container import IRemoveNotifiable
 from zope.app.interfaces.services.registration import IRegistrationManager
 from zope.app.services.registration import RegistrationManager
 from zope.app.services.tests import placefulsetup
@@ -25,13 +25,13 @@ from zope.app.traversing import traverse
 from zope.interface.common.tests.basemapping import BaseTestIEnumerableMapping
 from zope.interface.verify import verifyObject
 from zope.interface import implements
-from zope.app.context import ContextWrapper
+from zope.app.container.contained import ObjectRemovedEvent
 
 class Undeletable:
 
-    implements(IDeleteNotifiable)
+    implements(IRemoveNotifiable)
 
-    def beforeDeleteHook(self, object, container):
+    def removeNotify(self, event):
         self.was_called = 1
 
 
@@ -41,31 +41,31 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         self.__manager = manager = RegistrationManager()
-        for l in 'abcdefghijklmnop':
-            manager.setObject('', l)
-        del manager['8']
-        del manager['10']
+        self.names = []
+        self.stateDict = {}
+        for ltr in 'abcdefghijklmnop':
+            name = manager.addRegistration(ltr)
+            self.names.append(name)
+            self.stateDict[name] = ltr
+        n = self.names.pop(9); del manager[n]; del self.stateDict[n] # 'str10'
+        n = self.names.pop(7); del manager[n]; del self.stateDict[n] # 'str8'
 
     def test_implements_IRegistrationManager(self):
         verifyObject(IRegistrationManager, self.__manager)
 
     def _IEnumerableMapping__stateDict(self):
         # Hook needed by BaseTestIEnumerableMapping
-        # also, effectively test setObject and __delitem__.
-        return {
-            '1': 'a', '2': 'b', '3': 'c', '4': 'd', '5': 'e',
-            '6': 'f', '7': 'g', '9': 'i', '11': 'k', '12': 'l',
-            '13': 'm', '14': 'n', '15': 'o', '16': 'p',
-            }
+        # also, effectively test __setitem__ and __delitem__.
+        return self.stateDict
 
     def _IEnumerableMapping__sample(self):
         # Hook needed by BaseTestIEnumerableMapping
-        # also, effectively test setObject and __delitem__.
+        # also, effectively test __setitem__ and __delitem__.
         return self.__manager
 
     def _IEnumerableMapping__absentKeys(self):
         # Hook needed by BaseTestIEnumerableMapping
-        # also, effectively test setObject and __delitem__.
+        # also, effectively test __setitem__ and __delitem__.
         return ['-1', '8', '10', '17', '100', '10000']
 
     #########################################################
@@ -75,62 +75,70 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.__manager.moveTop([])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveTop_1_no_effect(self):
-        self.__manager.moveTop(['1'])
+        self.__manager.moveTop([self.names[0]])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveTop_many_no_effect(self):
-        self.__manager.moveTop(['1', '88', '3', '2', '99'])
+        names = self.names
+        self.__manager.moveTop([names[0], 'str88',
+                                names[2], names[1], 'str99'])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveTop_1(self):
-        self.__manager.moveTop(['3'])
+        names = self.names[:]
+        name = names.pop(2)
+        names.insert(0, name)
+        self.__manager.moveTop([name])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['3', '1', '2', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveTop_many(self):
-        self.__manager.moveTop(['1', '3', '88', '4', '11', '15', '16', '99'])
+        names = self.names[:]
+        n14 = names.pop(13)
+        n13 = names.pop(12)
+        n9 = names.pop(9)
+        n3 = names.pop(3)
+        n2 = names.pop(2)
+        n0 = names.pop(0)
+        move_names = [n0, n2, 'str88', n3, n9, n13, n14, 'str99']
+        self.__manager.moveTop(move_names)
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '3', '4', '11', '15', '16', '2', '5', '6', '7', '9',
-             '12', '13', '14'],
+            [n0, n2, n3, n9, n13, n14] + names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveTop_one_element_container(self):
         manager = RegistrationManager()
-        manager.setObject('', 'a')
-        manager.moveTop(['1'])
-        self.assertEqual(list(manager.items()), [('1', 'a')])
+        name = manager.addRegistration('a')
+        manager.moveTop([name])
+        self.assertEqual(list(manager.items()), [(name, 'a')])
 
     #########################################################
     # Move Bottom
@@ -139,63 +147,70 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.__manager.moveBottom([])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveBottom_1_no_effect(self):
-        self.__manager.moveBottom(['16'])
+        self.__manager.moveBottom([self.names[-1]])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveBottom_many_no_effect(self):
-        self.__manager.moveBottom(['14', '88', '16', '15', '99'])
+        names = self.names
+        self.__manager.moveBottom([names[11], 'str88',
+                                   names[13], names[12], 'str99'])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveBottom_1(self):
-        self.__manager.moveBottom(['3'])
+        names = self.names[:]
+        name = names.pop(2)
+        names.append(name)
+        self.__manager.moveBottom([name])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16', '3'],
+            names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveBottom_many(self):
+        names = self.names[:]
+        n13 = names.pop(13)
+        n12 = names.pop(12)
+        n9 = names.pop(9)
+        n3 = names.pop(3)
+        n2 = names.pop(2)
+        n0 = names.pop(0)
         self.__manager.moveBottom(
-            ['1', '3', '88', '4', '11', '16', '15', '99'])
+            [n0, n2, 'str88', n3, n9, n13, n12, 'str99'])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['2', '5', '6', '7', '9',
-             '12', '13', '14', '1', '3', '4', '11', '15', '16'],
+            names + [n0, n2, n3, n9, n12, n13],
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveBottom_one_element_container(self):
         manager = RegistrationManager()
-        manager.setObject('', 'a')
-        manager.moveBottom(['1'])
-        self.assertEqual(list(manager.items()), [('1', 'a')])
+        name = manager.addRegistration('a')
+        manager.moveBottom([name])
+        self.assertEqual(list(manager.items()), [(name, 'a')])
 
     #########################################################
     # Move Up
@@ -204,63 +219,66 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.__manager.moveUp([])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveUp_1_no_effect(self):
-        self.__manager.moveUp(['1'])
+        self.__manager.moveUp([self.names[0]])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveUp_many_no_effect(self):
-        self.__manager.moveUp(['1', '88', '3', '2', '99'])
+        names = self.names
+        self.__manager.moveUp([names[0], 'str88', names[2], names[1], 'str99'])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveUp_1(self):
-        self.__manager.moveUp(['3'])
+        names = self.names[:]
+        n2 = names.pop(2)
+        names.insert(1, n2)
+        self.__manager.moveUp([n2])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '3', '2', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveUp_many(self):
+        names = self.names
         self.__manager.moveUp(
-            ['1', '3', '88', '4', '11', '16', '15', '99'])
+            [names[0], names[2], 'str88', names[3], names[8],
+             names[13], names[12], 'str99'])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '3', '4', '2', '5', '6', '7', '11', '9',
-             '12', '13', '15', '16', '14'],
+            [names[0], names[2], names[3], names[1], names[4],
+             names[5], names[6], names[8], names[7], names[9],
+             names[10], names[12], names[13], names[11]],
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveUp_one_element_container(self):
         manager = RegistrationManager()
-        manager.setObject('', 'a')
-        manager.moveUp(['1'])
-        self.assertEqual(list(manager.items()), [('1', 'a')])
+        name = manager.addRegistration('a')
+        manager.moveUp([name])
+        self.assertEqual(list(manager.items()), [(name, 'a')])
 
     #########################################################
     # Move Down
@@ -269,73 +287,77 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.__manager.moveDown([])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveDown_1_no_effect(self):
-        self.__manager.moveDown(['16'])
+        self.__manager.moveDown([self.names[-1]])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveDown_many_no_effect(self):
-        self.__manager.moveDown(['16', '88', '14', '15', '99'])
+        names = self.names
+        self.__manager.moveDown([names[13], 'str88',
+                                 names[11], names[12], '99'])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '3', '4', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            self.names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveDown_1(self):
-        self.__manager.moveDown(['3'])
+        names = self.names[:]
+        n2 = names.pop(2)
+        names.insert(3, n2)
+        self.__manager.moveDown([n2])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['1', '2', '4', '3', '5', '6', '7', '9',
-             '11', '12', '13', '14', '15', '16'],
+            names,
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveDown_many(self):
+        names = self.names
         self.__manager.moveDown(
-            ['1', '3', '88', '4', '11', '16', '15', '99'])
+            [names[0], names[2], 'str88', names[3],
+             names[8], names[13], names[12], 'str99'])
         self.assertEqual(
             list(self.__manager.keys()),
-            ['2', '1', '5', '3', '4', '6', '7', '9',
-             '12', '11', '13', '14', '15', '16'],
+            [names[1], names[0], names[4], names[2], names[3],
+             names[5], names[6], names[7], names[9], names[8],
+             names[10], names[11], names[12], names[13]],
             )
 
-        # Make sure we still have thye right items
+        # Make sure we still have the right items
         self.test_items()
 
     def test_moveDown_one_element_container(self):
         manager = RegistrationManager()
-        manager.setObject('', 'a')
-        manager.moveDown(['1'])
-        self.assertEqual(list(manager.items()), [('1', 'a')])
+        name = manager.addRegistration('a')
+        manager.moveDown([name])
+        self.assertEqual(list(manager.items()), [(name, 'a')])
 
     #########################################################
 
-    def test_manageBeforeDelete(self):
+    def test_removeNotify(self):
         container = []
         manager = RegistrationManager()
-        manager = ContextWrapper(manager, None)  # decorate to IZopeContainer
         thingy = Undeletable()
-        manager.setObject('xyzzy', thingy)
-        manager.beforeDeleteHook(manager, container)
+        manager['xyzzy'] = thingy
+        event = ObjectRemovedEvent(manager, 'xxx', 'yyy')
+        manager.removeNotify(event)
         self.failUnless(thingy.was_called)
 
 class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
@@ -345,14 +367,14 @@ class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
         default = traverse(sm, 'default')
         self.assertEqual(default.getRegistrationManager(),
                          default['RegistrationManager'])
-        default.setObject('xxx', RegistrationManager())
+        default['xxx'] = RegistrationManager()
         del default['RegistrationManager']
         self.assertEqual(default.getRegistrationManager(),
                          default['xxx'])
 
 
 #       Can't test empty because there's no way to make it empty.
-##         del default['xxx']
+##         del default[name]
 ##         self.assertRaises(Exception,
 ##                           default.getRegistrationManager)
 
@@ -361,7 +383,7 @@ class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
         default = traverse(sm, 'default')
         self.assertRaises(Exception,
                           default.__delitem__, 'registration')
-        default.setObject('xxx', RegistrationManager())
+        default['xxx'] = RegistrationManager()
         del default['RegistrationManager']
 
 
