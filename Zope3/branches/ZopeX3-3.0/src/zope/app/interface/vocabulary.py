@@ -40,7 +40,7 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
 
     >>> vocab = ObjectInterfacesVocabulary(Object())
     >>> import pprint
-    >>> names = [term.token for term in vocab._terms]
+    >>> names = [term.token for term in vocab]
     >>> names.sort()
     >>> pprint.pprint(names)
     ['zope.app.interface.vocabulary.I1',

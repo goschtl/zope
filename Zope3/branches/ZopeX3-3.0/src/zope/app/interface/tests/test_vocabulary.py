@@ -25,4 +25,4 @@ def test_suite():
                         tearDown=setup.placelessTearDown)
 
 if __name__ == '__main__':
-    unittest.main(default='test_suite')
+    unittest.main(defaultTest='test_suite')
