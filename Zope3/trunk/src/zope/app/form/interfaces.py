@@ -24,6 +24,9 @@ from zope.app.exception.interfaces import UserError
 class IWidgetInputError(Interface):
     """Placeholder for a snippet View"""
 
+    def doc():
+        """Returns a string that represents the error message."""
+
 class WidgetInputError(UserError):
     """One or more user input errors occurred."""
     
@@ -39,18 +42,28 @@ class WidgetInputError(UserError):
         self.widget_title = widget_title
         self.errors = errors
 
+    def doc(self):
+        return self.errors.doc()
+
+
 class MissingInputError(WidgetInputError):
     """Required data was not supplied."""
 
-class ConversionError(WidgetInputError):
+
+class ConversionError(Exception):
     """A conversion error occurred."""
+
+    implements(IWidgetInputError)
 
     def __init__(self, error_name, original_exception=None):
         Exception.__init__(self, error_name, original_exception)
         self.error_name = error_name
         self.original_exception = original_exception
 
-InputErrors = WidgetInputError, ValidationError
+    def doc(self):
+        return self.error_name
+
+InputErrors = WidgetInputError, ValidationError, ConversionError
 
 
 class ErrorContainer(Exception):

@@ -14,7 +14,7 @@
 """
 $Id$
 """
-from zope.app.form.interfaces import IWidget, WidgetInputError
+from zope.app.form.interfaces import IWidget, InputErrors
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
 from zope.i18n import translate
@@ -69,7 +69,7 @@ class InputWidget(Widget):
         try:
             self.validate()
             return True
-        except WidgetInputError:
+        except InputErrors:
             return False
 
     def validate(self):
