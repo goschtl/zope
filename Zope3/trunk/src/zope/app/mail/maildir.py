@@ -15,11 +15,10 @@
 
 XXX check exception types
 
-$Id: maildir.py,v 1.1 2003/05/21 10:52:52 mgedmin Exp $
+$Id: maildir.py,v 1.2 2003/06/30 22:44:38 jeremy Exp $
 """
 
 import os
-import stat
 import socket
 import time
 from zope.interface import implements, classProvides
@@ -38,24 +37,22 @@ class Maildir:
         "See zope.app.interfaces.mail.IMaildirFactory"
         self.path = path
 
-        def isdir(path):
-            return stat.S_ISDIR(os.stat(path)[0])
-        def exists(path):
+        def access(path):
             return os.access(path, os.F_OK)
 
         subdir_cur = os.path.join(path, 'cur')
         subdir_new = os.path.join(path, 'new')
         subdir_tmp = os.path.join(path, 'tmp')
 
-        if create and not exists(path):
+        if create and not access(path):
             os.mkdir(path)
             os.mkdir(subdir_cur)
             os.mkdir(subdir_new)
             os.mkdir(subdir_tmp)
             maildir = True
         else:
-            maildir = (isdir(subdir_cur) and isdir(subdir_new)
-                                         and isdir(subdir_tmp))
+            maildir = (os.path.isdir(subdir_cur) and os.path.isdir(subdir_new)
+                       and os.path.isdir(subdir_tmp))
         if not maildir:
             raise ValueError('%s is not a Maildir folder' % path)
 
@@ -87,19 +84,15 @@ class Maildir:
             timestamp = int(time.time())
             unique = '%d.%d.%s' % (timestamp, pid, host)
             filename = join(subdir_tmp, unique)
-            try:
-                os.stat(filename)
-            except OSError, e:
-                # XXX How can I distinguish ENOENT from other errors?
+            if not os.path.exists(filename):
                 break
-            else:
-                counter += 1
-                if counter >= 1000:  # XXX hardcoded magic number
-                    raise RuntimeError('Failed to create unique file name in %s,'
-                                       ' are we under a DoS attack?' % subdir_tmp)
-                # XXX maildir.html (see above) says I should sleep for 2
-                # seconds, not 1
-                time.sleep(1)
+            counter += 1
+            if counter >= 1000:  # XXX hardcoded magic number
+                raise RuntimeError("Failed to create unique file name in %s,"
+                                   " are we under a DoS attack?" % subdir_tmp)
+            # XXX maildir.html (see above) says I should sleep for 2
+            # seconds, not 1
+            time.sleep(1)
         return MaildirMessageWriter(filename, join(subdir_new, unique))
 
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for zope.app.mail.maildir module
 
-$Id: test_maildir.py,v 1.2 2003/06/03 22:46:20 jim Exp $
+$Id: test_maildir.py,v 1.3 2003/06/30 22:44:38 jeremy Exp $
 """
 
 import unittest
@@ -40,14 +40,24 @@ class FakeTimeModule:
 
 class FakeOsPathModule:
 
+    def __init__(self, files, dirs):
+        self.files = files
+        self.dirs = dirs
+
+    _exists_never_fails = False
+
     def join(self, *args):
         return '/'.join(args)
+
+    def isdir(self, dir):
+        return dir in self.dirs
+
+    def exists(self, p):
+        return self._exists_never_fails or p in self.files
 
 class FakeOsModule:
 
     F_OK = 0
-    path = FakeOsPathModule()
-
     _stat_mode = {
         '/path/to/maildir': stat.S_IFDIR,
         '/path/to/maildir/new': stat.S_IFDIR,
@@ -64,12 +74,13 @@ class FakeOsModule:
         '/path/to/regularfile': stat.S_IFREG,
         '/path/to/emptydirectory': stat.S_IFDIR,
     }
-    _stat_never_fails = False
     _listdir = {
         '/path/to/maildir/new': ['1', '2'],
         '/path/to/maildir/cur': ['2', '1'],
         '/path/to/maildir/tmp': ['1', '2'],
     }
+
+    path = FakeOsPathModule(_stat_mode, _listdir)
 
     _made_directories = ()
     _removed_files = ()
@@ -81,8 +92,6 @@ class FakeOsModule:
     def stat(self, path):
         if path in self._stat_mode:
             return (self._stat_mode[path], 0, 0, 1, 0, 0, 0, 0, 0, 0)
-        if self._stat_never_fails:
-            return (stat.S_IFREG, 0, 0, 1, 0, 0, 0, 0, 0, 0)
         raise OSError('%s does not exist' % path)
 
     def listdir(self, path):
@@ -151,8 +160,8 @@ class TestMaildir(unittest.TestCase):
         verifyObject(IMaildir, m)
 
         # Case 2a: directory does not exist, create = False
-        self.assertRaises(OSError, Maildir, '/path/to/nosuchfolder', False)
-
+        self.assertRaises(ValueError, Maildir, '/path/to/nosuchfolder', False)
+        
         # Case 2b: directory does not exist, create = True
         m = Maildir('/path/to/nosuchfolder', True)
         verifyObject(IMaildir, m)
@@ -164,8 +173,8 @@ class TestMaildir(unittest.TestCase):
                                  '/path/to/nosuchfolder/tmp'])
 
         # Case 3: it is a file, not a directory
-        self.assertRaises(OSError, Maildir, '/path/to/regularfile', False)
-        self.assertRaises(OSError, Maildir, '/path/to/regularfile', True)
+        self.assertRaises(ValueError, Maildir, '/path/to/regularfile', False)
+        self.assertRaises(ValueError, Maildir, '/path/to/regularfile', True)
 
         # Case 4: it is a directory, but not a maildir
         self.assertRaises(OSError, Maildir, '/path/to/emptydirectory', False)
@@ -193,7 +202,7 @@ class TestMaildir(unittest.TestCase):
     def test_newMessage_never_loops(self):
         from zope.app.mail.maildir import Maildir
         from zope.app.interfaces.mail import IMaildirMessageWriter
-        self.fake_os_module._stat_never_fails = True
+        self.fake_os_module.path._exists_never_fails = True
         m = Maildir('/path/to/maildir')
         self.assertRaises(RuntimeError, m.newMessage)
 
