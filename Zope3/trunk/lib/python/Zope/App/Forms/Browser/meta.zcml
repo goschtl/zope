@@ -10,7 +10,8 @@
 
     <directive
        name="subedit" 
-       attributes="name schema label for layer permission class template"
+       attributes="name schema label for layer permission class template
+                   fulledit fulledit_label"
        handler=".EditView.subedit"
        />
 
