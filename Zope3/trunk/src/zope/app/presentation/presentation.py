@@ -39,9 +39,10 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.registration.interfaces import IRegistered
 
-# XXX How do we define skins and layers here?
-# For now, we will leave skin and layer definition to services above,
-# which effectively means to the global service.
+# TODO: Skins and layer definitions are not handled by this service
+# but left up to services above, which effectively means the global
+# service.  This problem will probably become obsolete when the
+# ImplementViewsAsAdapters proposal is implemented.
 
 class LocalPresentationService(
     zope.app.adapter.LocalAdapterBasedService,
@@ -269,7 +270,8 @@ class GlobalViewRegistration(object):
         return summary
 
     def implementationSummary(self):
-        # XXX This should report the ZCML that it came from.
+        # Report that this registration is implied because it was
+        # globally defined in ZCML
         return _("Registered by ZCML")
 
 class LocalLayer(
@@ -399,8 +401,8 @@ class PageRegistration(ViewRegistration):
                  factoryName=None, template=None, attribute=None,
                  layer='default'):
 
-        # XXX A Interface comes out of the interface widget
-        # wrapped on a proxy currently, which is not pickable
+        # An interface coming out of an interface widget is security
+        # proxied which is not pickable, thus remove the proxies here
         required = zope.proxy.removeAllProxies(required)
 
         super(PageRegistration, self).__init__(
@@ -485,7 +487,11 @@ def PageRegistrationRemoveSubscriber(self, event):
         objectpath = zapi.getPath(self)
         dependents.removeDependent(objectpath)
 
-#XXX can't make new-style class b/c of unpickling error...
+# TODO: Make this a new-style class. This is not easily possible
+# because existing databases apparently contain references to
+# instances of this class; probably because of a difference in the
+# pickling protocol, we get an UnpicklingError if we simply make this
+# a newstyle class.
 class TemplateViewFactory:
 
     def __init__(self, cls, template, permission):
