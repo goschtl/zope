@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Thu Aug  7 16:04:15 2003\n"
+"POT-Creation-Date: Thu Aug  7 16:57:18 2003\n"
 "PO-Revision-Date: 2003-08-07 16:07-0400\n"
 "Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
 "Language-Team: English US <en@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.2beta3\n"
 
-#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:8
+#: /home/philipp/dev/Zope3/site.zcml:8
 msgid "Site Manager"
 msgstr "Webseiten-Verwalter"
 
-#: /home/srichter/Zope3/Zope3-Fresh/site.zcml:9
+#: /home/philipp/dev/Zope3/site.zcml:9
 msgid "Site Member"
 msgstr "Webseiten-Mitglied"
 
@@ -225,11 +225,11 @@ msgid "You can configure the RAM Cache here."
 msgstr "Hier können sie den RAM Cache konfigurieren."
 
 #: zope/app/browser/cache/ramedit.pt:51
-#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/content/i18n_edit.pt:87
 #: zope/app/browser/content/i18nimageedit.pt:101
 #: zope/app/browser/content/imageedit.pt:17
 #: zope/app/browser/dublincore/edit.pt:33
+#: zope/app/browser/rdb/rdbconnection.pt:28
 #: zope/app/browser/security/grants/manage_permissionform.pt:86
 #: zope/app/browser/security/grants/manage_roleform.pt:63
 #: zope/app/browser/services/error.pt:46
@@ -237,8 +237,8 @@ msgid "save-changes-button"
 msgstr "Änderungen Speichern"
 
 #: zope/app/browser/cache/ramedit.pt:53
-#: zope/app/browser/services/bundle.pt:120
 #: zope/app/browser/services/add_svc_config.pt:35
+#: zope/app/browser/services/bundle.pt:120
 msgid "reset-button"
 msgstr "Zurücksetzen"
 
@@ -636,11 +636,11 @@ msgstr "Metadaten"
 #: zope/app/browser/services/services.pt:65
 #: zope/app/browser/services/views.pt:49 zope/app/browser/services/views.pt:72
 #: zope/app/browser/services/utility/utilities.pt:50
-#: zope/app/browser/services/registration/editregistration.pt:48
-#: zope/app/browser/catalog/advanced.pt:51
+#: zope/app/browser/services/registration/editregistration.pt:49
 #: zope/app/browser/workflow/stateful/instance_manage.pt:77
 #: zope/app/browser/workflow/stateful/definition_edit.pt:21
 #: zope/app/browser/workflow/stateful/definition_edit.pt:50
+#: zope/app/browser/catalog/advanced.pt:51
 msgid "refresh-button"
 msgstr "Auffrischen"
 
@@ -663,8 +663,8 @@ msgstr "Es gab ${num_errors} Eingabefehler."
 #: zope/app/browser/form/add.pt:51 zope/app/browser/form/edit.pt:53
 #: zope/app/browser/form/addwizard.pt:62
 #: zope/app/browser/form/editwizard.pt:53
-#: zope/app/browser/services/serviceactivation.pt:54
 #: zope/app/browser/services/add_svc_config.pt:37
+#: zope/app/browser/services/serviceactivation.pt:54
 #: zope/app/browser/workflow/stateful/instance_manage.pt:79
 msgid "submit-button"
 msgstr "Abschicken"
@@ -1042,9 +1042,8 @@ msgstr "Entfernen"
 msgid "Add Interfaces:"
 msgstr "Interfaces hinzufügen:"
 
-#: zope/app/browser/marker.pt:115 zope/app/browser/rdb/rdbadd.pt:27
-#: zope/app/browser/container/add.pt:39
-#: zope/app/browser/services/adduser.pt:56
+#: zope/app/browser/marker.pt:115 zope/app/browser/container/add.pt:39
+#: zope/app/browser/rdb/rdbadd.pt:27 zope/app/browser/services/adduser.pt:56
 #: zope/app/browser/services/translation/translate.pt:78
 #: zope/app/browser/services/translation/translate.pt:84
 #: zope/app/browser/workflow/stateful/add.pt:65
@@ -1499,8 +1498,8 @@ msgstr "Caching Service"
 #: zope/app/browser/services/caches.pt:11
 #: zope/app/browser/services/connections.pt:11
 #: zope/app/browser/services/services.pt:15
-#: zope/app/browser/services/views.pt:11
 #: zope/app/browser/services/bundle.pt:49
+#: zope/app/browser/services/views.pt:11
 #: zope/app/browser/services/utility/utilities.pt:11
 msgid "(click to clear message)"
 msgstr "(Nachricht löschen)"
@@ -1537,9 +1536,9 @@ msgstr "Deaktivieren"
 #: zope/app/browser/services/connections.pt:50
 #: zope/app/browser/services/services.pt:62
 #: zope/app/browser/services/views.pt:46
-#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/services/translation/translate.pt:37
 #: zope/app/browser/services/translation/translate.pt:67
+#: zope/app/browser/services/utility/utilities.pt:47
 #: zope/app/browser/workflow/instancecontainer_main.pt:47
 msgid "delete-button"
 msgstr "Löschen"
@@ -1673,16 +1672,6 @@ msgstr ""
 msgid "Role Service"
 msgstr "Rollen-Service"
 
-#: zope/app/browser/services/configureCache.pt:19
-#: zope/app/browser/services/configureConnection.pt:19
-#: zope/app/browser/services/configureView.pt:18
-#: zope/app/browser/services/utility/configureutility.pt:29
-#: zope/app/browser/services/registration/namecomponentregistry.pt:42
-#: zope/app/browser/services/registration/nameregistry.pt:44
-#: zope/app/browser/services/translation/synchronize.pt:142
-msgid "update-button"
-msgstr "Aktualisieren"
-
 #: zope/app/browser/services/configureCache.pt:7
 msgid "Cache registrations for ${cache_name}"
 msgstr "Cache Registrierung für ${cache_name}"
@@ -1690,6 +1679,16 @@ msgstr "Cache Registrierung für ${cache_name}"
 #: zope/app/browser/services/configureConnection.pt:7
 msgid "Connection registrations for ${connection_name}"
 msgstr "Verbindungs-Registrierungen für ${connection_name}"
+
+#: zope/app/browser/services/configureView.pt:18
+#: zope/app/browser/services/configureConnection.pt:19
+#: zope/app/browser/services/configureCache.pt:19
+#: zope/app/browser/services/translation/synchronize.pt:142
+#: zope/app/browser/services/utility/configureutility.pt:29
+#: zope/app/browser/services/registration/namecomponentregistry.pt:42
+#: zope/app/browser/services/registration/nameregistry.pt:44
+msgid "update-button"
+msgstr "Aktualisieren"
 
 #: zope/app/browser/services/configureView.pt:6
 msgid "View registrations for ${key_name}"
@@ -2006,19 +2005,23 @@ msgstr "Zusammenfassung"
 msgid "View Registration Manager"
 msgstr "Ansichtenregistrierung-Verwalter"
 
-#: zope/app/browser/services/registration/editregistration.pt:55
+#: zope/app/browser/services/registration/editregistration.pt:37
+msgid "(disabled)"
+msgstr "Deaktiviert"
+
+#: zope/app/browser/services/registration/editregistration.pt:56
 msgid "top-button"
 msgstr "Anfang"
 
-#: zope/app/browser/services/registration/editregistration.pt:57
+#: zope/app/browser/services/registration/editregistration.pt:58
 msgid "up-button"
 msgstr "Hoch"
 
-#: zope/app/browser/services/registration/editregistration.pt:59
+#: zope/app/browser/services/registration/editregistration.pt:60
 msgid "down-button"
 msgstr "Herunter"
 
-#: zope/app/browser/services/registration/editregistration.pt:61
+#: zope/app/browser/services/registration/editregistration.pt:62
 msgid "bottom-button"
 msgstr "Ende"
 
@@ -2044,19 +2047,19 @@ msgstr "Deaktiviert: ${deactivated_services}"
 
 #: zope/app/browser/services/service.py:207
 msgid "None of the checked services were active"
-msgstr "Keine der ausgewählten Dienste war aktiv"
+msgstr "Kein ausgewählter Dienst war aktiv"
 
 #: zope/app/browser/services/service.py:218
 msgid ""
 "Can't delete active service(s): ${service_names}; use the Deactivate button "
 "to deactivate"
 msgstr ""
-"Kann nicht aktive Dienst(e) löschen: ${service_names}; nutze die "
-"Deaktivierungsschaltfläche um diese zu deaktivieren"
+"Kann nicht aktive Dienst(e) löschen: ${service_names}; bitte benutzen Sie "
+"Deaktivieren, um die Dienste zu deaktivieren"
 
 #: zope/app/browser/services/service.py:254
 msgid "Deleted: ${service_names}"
-msgstr "Gelöschr: ${service_names}"
+msgstr "Gelöscht: ${service_names}"
 
 #: zope/app/browser/services/service.py:336
 msgid "Invalid service type specified"
@@ -2076,7 +2079,7 @@ msgstr "<i>${service_type}"
 
 #: zope/app/browser/services/serviceactivation.pt:13
 msgid "Registrations for service x"
-msgstr "Registrierungen für Service x"
+msgstr "Registrierungen für Dienst x"
 
 #: zope/app/browser/services/services.pt:18
 msgid "No services are registered."
@@ -2104,7 +2107,7 @@ msgstr "Einen Dienst zu diesem Dienstverwalter hinzufügen"
 #: zope/app/browser/services/subscription_control.pt:11
 #: zope/app/browser/workflow/stateful/contentworkflow_index.pt:11
 msgid "Subscription control"
-msgstr "Abonnement Kontrolle"
+msgstr "Abonnement-Kontrolle"
 
 #: zope/app/browser/services/subscription_control.pt:24
 msgid "Registration done."
@@ -2166,7 +2169,7 @@ msgstr "Übersetzungsservice - Übersetzen"
 #: zope/app/browser/services/translation/synchronize.pt:43
 #: zope/app/browser/services/translation/translate.pt:45
 msgid "Select Domains:"
-msgstr "Domainen auswählen:"
+msgstr "Domänen auswählen:"
 
 #: zope/app/browser/services/translation/exportimport.pt:44
 msgid "Import File Name:"
@@ -2250,7 +2253,7 @@ msgstr "Neue Sprache:"
 
 #: zope/app/browser/services/translation/translate.pt:81
 msgid "New Domain:"
-msgstr "Neue Domaine:"
+msgstr "Neue Domäne:"
 
 #: zope/app/browser/services/translation/translate.pt:91
 msgid "Filter (% - wildcard):"
@@ -2262,27 +2265,27 @@ msgstr "Nachricht bearbeiten"
 
 #: zope/app/browser/services/utility/__init__.py:100
 msgid "Activated: ${activated_utilities}"
-msgstr "Activiert: ${activated_utilities}"
+msgstr "Aktiviert: ${activated_utilities}"
 
 #: zope/app/browser/services/utility/__init__.py:104
 msgid "All of the checked utilities were already active"
-msgstr "Alle der ausgewählten Utilities waren schon aktiv"
+msgstr "Alle der ausgewählten Werkzeuge waren schon aktiv"
 
 #: zope/app/browser/services/utility/__init__.py:115
 msgid "Deactivated: ${deactivated_utilities}"
-msgstr "Deactiviert: ${deactivated_utilities}"
+msgstr "Deaktiviert: ${deactivated_utilities}"
 
 #: zope/app/browser/services/utility/__init__.py:119
 msgid "None of the checked utilities were active"
-msgstr "Keine der ausgewählten Utilities war aktiv."
+msgstr "Keine der ausgewählten Werkzeuge war aktiv."
 
 #: zope/app/browser/services/utility/__init__.py:131
 msgid ""
 "Can't delete active utility/utilites: ${utility_names}; use the Deactivate "
 "button to deactivate"
 msgstr ""
-"Kann nicht aktive Utility/Utilities löschen: ${utility_names}; nutze die "
-"Deaktivierungsschaltfläche um sie zu deaktivieren"
+"Kann aktive Werkzeuge nicht löschen: ${utility_names}; bitte benutzen Sie "
+"Deaktivieren, um die Werkzeuge zu deaktivieren"
 
 #: zope/app/browser/services/utility/__init__.py:165
 msgid "Deleted: ${utility_names}"
@@ -2290,28 +2293,28 @@ msgstr "Gelöscht: ${utility_names}"
 
 #: zope/app/browser/services/utility/configure.zcml:15
 msgid "Utilities"
-msgstr "Utilities"
+msgstr "Werkzeuge"
 
 #: zope/app/browser/services/utility/configure.zcml:46
 msgid "New Utility Registration"
-msgstr "Neue Utility Registrierung"
+msgstr "Neue Werkzeugregistrierung"
 
 #: zope/app/browser/services/utility/configure.zcml:62
 msgid "Edit Utility Registration"
-msgstr "Utility-Registrierung bearbeiten"
+msgstr "Werkzeugregistrierung bearbeiten"
 
 #: zope/app/browser/services/utility/configure.zcml:8
 msgid "Utility Service"
-msgstr "Utility Service"
+msgstr "Werkzeugdienst"
 
 #: zope/app/browser/services/utility/configureutility.pt:14
 msgid "Utility registrations for interface ${interface}"
-msgstr "Utility-Registrierung für Interface ${interface}"
+msgstr "Werkzeugregistrierung für Interface ${interface}"
 
 #: zope/app/browser/services/utility/configureutility.pt:9
 msgid "Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
-"Utility-Registrierung für Interface ${interface} mit dem Namen "
+"Werkzeugregistrierung für Interface ${interface} mit dem Namen "
 "${utility_name}"
 
 #: zope/app/browser/services/utility/utilities.pt:34
@@ -2320,27 +2323,27 @@ msgstr "Registrierung ändern"
 
 #: zope/app/browser/services/utility/utilities.pt:56
 msgid "Add a utility to this utility service"
-msgstr "Ein Utility zu diesem Utilitydienst hinzufügen"
+msgstr "Ein Werkzeug zu diesem Werkzeugdienst hinzufügen"
 
 #: zope/app/browser/services/utility/utilities.pt:6
 msgid "Utilities registered in this utility service:"
-msgstr "Utilities, die mit diesem Utility-Service registriert sind:"
+msgstr "Werkzeuge, die mit diesem Werkzeugdienst registriert sind:"
 
 #: zope/app/browser/services/view.py:129
 msgid "Activated: ${activated_views}"
-msgstr "Activiert: ${activated_views}"
+msgstr "Aktiviert: ${activated_views}"
 
 #: zope/app/browser/services/view.py:133
 msgid "All of the checked views were already active"
-msgstr "Alle der ausgewählten Ansichten waren bereits aktiv"
+msgstr "Alle ausgewählten Ansichten waren bereits aktiv"
 
 #: zope/app/browser/services/view.py:144
 msgid "Deactivated: ${deactivated_views}"
-msgstr "Deactiviert: ${deactivated_views}"
+msgstr "Deaktiviert: ${deactivated_views}"
 
 #: zope/app/browser/services/view.py:148
 msgid "None of the checked views were active"
-msgstr "Keine der ausgewählten Ansichten war aktiv"
+msgstr "Keine ausgewählte Ansicht war aktiv"
 
 #: zope/app/browser/services/view.py:162
 msgid ""
@@ -2382,7 +2385,7 @@ msgstr "Seiten die mit diesem Ansichtsdienst registriert wurden:"
 #: zope/app/browser/skins/basic/view_macros.pt:35
 #: zope/app/browser/skins/onlinehelp/view_macros.pt:28
 msgid "User: ${user_title}"
-msgstr "Nutzer: ${user_title}"
+msgstr "Benutzer: ${user_title}"
 
 #: zope/app/browser/skins/basic/view_macros.pt:40
 #: zope/app/browser/skins/rotterdam/dialog_macros.pt:158
@@ -2414,8 +2417,8 @@ msgid ""
 "address in the URL.<br> And use the own help skin like:<br> ../++help++/+"
 "+skin++Onlinehelp/"
 msgstr ""
-"Sie sind nicht im ++help++ Namesbereich.<br> Füge /++help++/ nach dem "
-"Rechnernamen in der URL ein.<br> Um die eigene Online Hilfe Haut zu "
+"Sie sind nicht im ++help++ Namesbereich.<br> Fügen Sie /++help++/ nach dem "
+"Rechnernamen in der URL ein, <br>, um die spezielle Online-Hilfe Haut zu "
 "benutzen: /++help++/++skin++Onlinehelp/"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:68
@@ -2440,12 +2443,12 @@ msgstr "Drucken"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:9
 msgid "Z3 UI Onlinehelp"
-msgstr "Z3 UI Online-Hilfe"
+msgstr "Z3 Oberfläche Online-Hilfe"
 
 #: zope/app/browser/skins/rotterdam/dialog_macros.pt:11
 #: zope/app/browser/skins/rotterdam/template.pt:9
 msgid "Z3 UI"
-msgstr "Z3 UI"
+msgstr "Z3 Oberfläche"
 
 #: zope/app/browser/skins/rotterdam/dialog_macros.pt:135
 #: zope/app/browser/skins/rotterdam/template.pt:215
@@ -2501,7 +2504,7 @@ msgstr "Oftgenutzte Aufgaben"
 #: zope/app/browser/skins/onlinehelp/template.pt:43
 #: zope/app/browser/skins/onlinehelp/template.pt:54
 msgid "Online Help - TOC"
-msgstr "Online Hilfe Inhalt"
+msgstr "Online-Hilfe - Inhalt"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:13
 msgid "Logged in as ${user_title}"
@@ -2568,8 +2571,8 @@ msgid ""
 msgstr ""
 "Diese transaktionelle Funktion der Anwendung erlaubt Ihnen, Änderungen, die "
 "in den Einstellungen oder Daten der Anwendung gemacht wurden, einfach "
-"rückgängig zu machen. Sie können die Anwendung auf einen &quot;"
-"Snapshot&quot; zurücksetzen, der zu einem früheren Zeitpunkt bestand."
+"rückgängig zu machen. Sie können die Anwendung auf einen bestimmten Moment "
+"zurücksetzen, der zu einem früheren Zeitpunkt bestand."
 
 #: zope/app/browser/undo_log.pt:22
 msgid ""
@@ -2617,12 +2620,12 @@ msgid "by ${username}"
 msgstr "von ${username}"
 
 #: zope/app/browser/workflow/configure.zcml:15
-msgid "A workflow service"
-msgstr "Ein Arbeitsablaufdienst"
-
-#: zope/app/browser/workflow/configure.zcml:15
 msgid "'Workflow Service"
 msgstr "Arbeitsablaufdienst"
+
+#: zope/app/browser/workflow/configure.zcml:15
+msgid "A workflow service"
+msgstr "Ein Arbeitsablaufdienst"
 
 #: zope/app/browser/workflow/configure.zcml:46
 msgid "ProcessDefinition Registration"
@@ -3353,28 +3356,35 @@ msgstr "Registrierungsverwalter"
 msgid "View Folder"
 msgstr "Ansichtenordner"
 
-#: zope/app/services/view.py:250 zope/app/services/view.py:289
+#: zope/app/services/view.py:250 zope/app/services/view.py:295
 msgid "(Anything)"
 msgstr "jegliches"
 
-#: zope/app/services/view.py:253 zope/app/services/view.py:268
-#: zope/app/security/configure.zcml:10
-msgid "View"
-msgstr "Ansicht"
+#: zope/app/services/view.py:253
+msgid "${view_name} ${ptype} View for {iface_name}"
+msgstr "${view_name} ${ptype} Ansicht für {iface_name}"
 
-#: zope/app/services/view.py:253 zope/app/services/view.py:293
-msgid "for"
-msgstr "für"
+#: zope/app/services/view.py:255
+msgid "${view_name} ${ptype} View for {iface_name} in layer ${layer}"
+msgstr "${view_name} ${ptype} Ansicht für {iface_name} in Ebene ${layer}"
 
-#: zope/app/services/view.py:255 zope/app/services/view.py:295
-msgid "in layer"
-msgstr "in Ebene"
-
-#: zope/app/services/view.py:260
+#: zope/app/services/view.py:266
 msgid "Registered by ZCML"
 msgstr "Registriert durch ZCML"
 
-#: zope/app/services/view.py:305
+#: zope/app/services/view.py:274 zope/app/security/configure.zcml:10
+msgid "View"
+msgstr "Ansicht"
+
+#: zope/app/services/view.py:300
+msgid "${view_name} for ${pname} {what} {iface_name}"
+msgstr "${view_name} für ${pname} {what} {iface_name}"
+
+#: zope/app/services/view.py:302
+msgid "${view_name} for ${pname} {what} {iface_name} in layer ${layer}"
+msgstr "${view_name} für ${pname} {what} {iface_name} in Ebene ${layer}"
+
+#: zope/app/services/view.py:319
 msgid "Page"
 msgstr "Seite"
 
@@ -3450,6 +3460,16 @@ msgstr "Bearbeite %s"
 msgid "a unicode string"
 msgstr "eine Unicode-Zeichenkette"
 
+#: zope/app/utilities/configure.zcml:8 zope/app/utilities/configure.zcml:31
+#: zope/app/utilities/configure.zcml:41
+msgid "Persistent Schema Utility"
+msgstr "Persistentes Schemawerkzeug"
+
+#: zope/app/utilities/configure.zcml:8 zope/app/utilities/configure.zcml:31
+#: zope/app/utilities/configure.zcml:41
+msgid "A Persistent Schema that can be edited through the web"
+msgstr "Ein persistentes Schema, das online bearbeitet werden kann"
+
 #: zope/app/workflow/configure.zcml:13
 msgid "Create Workflow ProcessInstances"
 msgstr "Arbeitsablauf-Prozessinstanzen erstellen"
@@ -3461,4 +3481,10 @@ msgstr "Arbeitsablauf-Prozessinstanzen benutzen"
 #: zope/app/workflow/configure.zcml:9
 msgid "Manage Workflow ProcessDefinitions"
 msgstr "Arbeitsablauf-Prozessdefinitionen verwalten"
+
+#~ msgid "for"
+#~ msgstr "für"
+
+#~ msgid "in layer"
+#~ msgstr "in Ebene"
 
