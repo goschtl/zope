@@ -12,10 +12,16 @@
 #
 ##############################################################################
 """
-$Id: _schema.py,v 1.5 2003/01/28 01:03:51 rdmurray Exp $
+$Id: _schema.py,v 1.6 2003/01/28 02:56:45 rdmurray Exp $
 """
 from zope.interface import Interface
 from zope.schema.interfaces import ValidationError
+
+def getFieldNames(schema):
+    """Return a list of all the Field names in a schema.
+    """
+    from zope.schema.interfaces import IField
+    return [ name for name in schema if IField.isImplementedBy(schema[name]) ]
 
 def getFields(schema):
     """Return a dictionary containing all the Fields in a schema.
@@ -30,8 +36,13 @@ def getFields(schema):
 
 def getFieldsInOrder(schema,
                      _fieldsorter=lambda x, y: cmp(x[1].order, y[1].order)):
-    """Get a list of (name, value) tuples in native schema order.
+    """Return a list of (name, value) tuples in native schema order.
     """
     fields = getFields(schema).items()
     fields.sort(_fieldsorter)
     return fields
+
+def getFieldNamesInOrder(schema):
+    """Return a list of all the Field names in a schema in schema order.
+    """
+    return [ name for name, field in getFieldsInOrder(schema) ]

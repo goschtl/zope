@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.3 2003/01/09 14:13:10 jim Exp $
+$Id: test_utility.py,v 1.4 2003/01/28 02:56:43 rdmurray Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -32,7 +32,7 @@ from zope.schema.interfaces import IText
 from zope.app.interfaces.form import WidgetsError, MissingInputError
 from zope.app.form.utility import setUpWidget, setUpWidgets, setUpEditWidgets
 from zope.app.form.utility import getWidgetsData, getWidgetsDataForContent
-from zope.app.form.utility import haveWidgetsData, fieldNames
+from zope.app.form.utility import haveWidgetsData
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IViewFactory
 
@@ -99,17 +99,6 @@ class Test(PlacelessSetup, TestCase):
         PlacelessSetup.setUp(self)
         setDefaultViewName(IText, IBrowserPresentation, 'edit')
         provideView(IText, 'edit', IBrowserPresentation, W)
-
-    def test_fieldNames(self):
-
-        class I3(I2):
-            foo = Text()
-            bar = Text()
-            foo2 = Text()
-
-        self.assertEqual(tuple(fieldNames(I3)),
-                         ('title', 'description', 'foo', 'bar', 'foo2'))
-
 
 
     def test_setUpWidget(self):

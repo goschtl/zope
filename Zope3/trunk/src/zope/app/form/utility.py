@@ -30,12 +30,13 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.5 2003/01/25 18:30:05 stevea Exp $
+$Id: utility.py,v 1.6 2003/01/28 02:56:43 rdmurray Exp $
 """
 __metaclass__ = type
 
 from zope.component import getView, getDefaultViewName
-from zope.schema.interfaces import IField, ValidationError
+from zope.schema import getFieldNamesInOrder
+from zope.schema.interfaces import ValidationError, IField
 from zope.app.interfaces.form import IWidget
 from zope.app.interfaces.form import WidgetsError, MissingInputError
 from zope.app.interfaces.form import InputErrors
@@ -88,17 +89,6 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     if value is not None and (force or not widget.haveData()):
         widget.setData(value)
 
-def fieldNames(schema):
-
-    names = []
-    for name in schema:
-        field = schema[name]
-        if IField.isImplementedBy(field):
-            names.append((field.order, name))
-
-    names.sort()
-
-    return [name[1] for name in names]
 
 def setUpWidgets(view, schema, prefix=None, force=0,
                  initial={}, names=None):

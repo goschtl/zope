@@ -21,13 +21,14 @@
 
   AdapterConfigurationAdd
 
-$Id: adapter.py,v 1.4 2003/01/28 01:59:09 rdmurray Exp $
+$Id: adapter.py,v 1.5 2003/01/28 02:56:41 rdmurray Exp $
 """
 __metaclass__ = type
 
 import md5
 
 from zope.interface import Interface
+from zope.schema import getFieldNamesInOrder
 from zope.component import getView
 from zope.publisher.browser import BrowserView
 from zope.proxy.context import ContextWrapper
@@ -36,7 +37,7 @@ from zope.app.interfaces.services.interfaces import IAdapterConfiguration
 from zope.app.interfaces.services.interfaces import IAdapterConfigurationInfo
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.form.utility import setUpWidgets, getWidgetsData
-from zope.app.form.utility import getWidgetsDataForContent, fieldNames
+from zope.app.form.utility import getWidgetsDataForContent
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.services.adapter import AdapterConfiguration
@@ -107,8 +108,8 @@ class AdapterConfigurationAdd(BrowserView):
 
     def getWidgets(self):
         return ([getattr(self, name)
-                 for name in fieldNames(IAdapterConfigurationInfo)]
+                 for name in getFieldNamesInOrder(IAdapterConfigurationInfo)]
                 +
                 [getattr(self, name)
-                 for name in fieldNames(IConfiguration)]
+                 for name in getFieldNamesInOrder(IConfiguration)]
                 )

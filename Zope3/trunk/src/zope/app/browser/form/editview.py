@@ -12,19 +12,19 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.6 2003/01/26 12:05:18 stevea Exp $
+$Id: editview.py,v 1.7 2003/01/28 02:56:40 rdmurray Exp $
 """
 
 from datetime import datetime
 
 from zope.schema.interfaces import ValidationError
+from zope.schema import getFieldNamesInOrder
 
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, getWidgetsData
-from zope.app.form.utility import haveWidgetsData, fieldNames
 from zope.configuration.action import Action
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
@@ -48,7 +48,7 @@ class EditView(BrowserView):
     label = ''
 
     # Fall-back field names computes from schema
-    fieldNames = property(lambda self: fieldNames(self.schema))
+    fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
 
     def __init__(self, context, request):
         super(EditView, self).__init__(context, request)
@@ -179,7 +179,7 @@ def _normalize(_context, schema_, for_, class_, template, default_template,
 
     template = str(template)
 
-    names = fieldNames(schema)
+    names = getFieldNamesInOrder(schema)
 
     if fields:
         fields = fields.split()
