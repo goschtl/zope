@@ -8,6 +8,8 @@
       tal:define="info view/action"
       tal:attributes="action request/URL">
 
+<div tal:condition="info" tal:content="info" />
+
 <table align=center width=100% cellspacing=0 cellpadding=0>
   <tr tal:repeat="config view/configInfo">
      <td valign=top>
