@@ -21,6 +21,7 @@ def test_suite():
     from zope.app.tests import functional
     return unittest.TestSuite((
         functional.FunctionalDocFileSuite('principalfolder.txt'),
+        functional.FunctionalDocFileSuite('groupfolder.txt'),
         ))
 
 if __name__ == '__main__':

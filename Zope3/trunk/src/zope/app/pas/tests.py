@@ -16,14 +16,19 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
 import unittest
+
 from zope.testing import doctest
+from zope.interface import implements
+from zope.publisher.interfaces import IRequest
+from zope.publisher.tests.httprequest import TestRequest
+
+from zope.app import zapi
 from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.tests.setup import placefulSetUp, placefulTearDown
-from zope.interface import implements
-from zope.app.zapi import getUtility
-
+from zope.app.security.interfaces import IAuthenticationService
 from zope.app.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer, \
         ISessionPkgData, ISessionData
@@ -32,8 +37,6 @@ from zope.app.session.session import \
         PersistentSessionDataContainer, RAMSessionDataContainer
 from zope.app.session.http import CookieClientIdManager
 
-from zope.publisher.interfaces import IRequest
-from zope.publisher.tests.httprequest import TestRequest
 
 class TestClientId(object):
     implements(IClientId)
@@ -54,6 +57,13 @@ def formAuthSetUp(self):
 def formAuthTearDown(self):
     placefulTearDown()
 
+def groupSetUp(test):
+    placelesssetup.setUp()
+    services = zapi.getGlobalServices()
+    services.defineService(zapi.servicenames.Authentication,
+                           IAuthenticationService)
+
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.app.pas.generic'),
@@ -70,6 +80,11 @@ def test_suite():
                              globs={'provideUtility': ztapi.provideUtility,
                                     'getEvents': getEvents,
                                     }),
+        doctest.DocFileSuite('groupfolder.txt',
+                             setUp=groupSetUp,
+                             tearDown=placelesssetup.tearDown,
+                             ),
+        
         ))
 
 if __name__ == '__main__':
