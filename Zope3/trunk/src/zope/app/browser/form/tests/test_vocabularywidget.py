@@ -119,12 +119,12 @@ class VocabularyWidgetTestBase(PlacelessSetup,
     # fieldClass -- class for the vocabulary field (VocabularyField or
     #               VocabularyMultiField)
 
-    def makeField(self, vocabulary=None, value=_marker):
+    def makeField(self, vocabulary=None, value=_marker, required=False):
         """Create and return a bound vocabulary field."""
         if vocabulary is None:
             vocabulary = self.sampleVocabulary
         field = self.fieldClass(vocabulary=vocabulary, __name__="f",
-                                required=False)
+                                required=required)
         content = SampleContent()
         if value is self._marker:
             value = self.defaultFieldValue
@@ -250,11 +250,42 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         self.assert_(w.haveData())
         self.assertEqual(w(), "foobar")
 
-    def test_edit(self, extraChecks=[]):
-        bound = self.makeField()
+    def setup_edit(self, bound):
         w = getView(bound, "edit", self.makeRequest())
         w.setData(bound.context.f)
         self.assert_(not w.haveData())
+        return w
+
+    def test_edit(self, extraChecks=[]):
+        w = self.setup_edit(self.makeField())
+        self.assertEqual(w.getData(), None)
+        self.verifyResult(w(), [
+            'selected="selected"',
+            'id="field.f"',
+            'name="field.f"',
+            'value="splat"',
+            '>splat<',
+            'value="foobar"',
+            '>foobar<',
+            ] + extraChecks)
+        s0, s1, s2 = w.renderItems("foobar")
+        self.verifyResult(s0, [
+            "value=''",
+            "no value",
+            ])
+        self.verifyResult(s1, [
+            'value="splat"',
+            '>splat<',
+            ])
+        self.assert_(s1.find('selected') < 0)
+        self.verifyResult(s2, [
+            'selected="selected"',
+            'value="foobar"',
+            '>foobar<',
+            ])
+
+    def test_edit_required(self, extraChecks=[]):
+        w = self.setup_edit(self.makeField(required=True))
         self.verifyResult(w(), [
             'selected="selected"',
             'id="field.f"',
@@ -308,6 +339,10 @@ class DropdownSelectionTests(SingleSelectionTestsBase):
 
     def test_edit(self):
         SingleSelectionTestsBase.test_edit(self, extraChecks=['size="1"'])
+
+    def test_edit_required(self):
+        SingleSelectionTestsBase.test_edit_required(
+            self, extraChecks=['size="1"'])
 
 
 class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):

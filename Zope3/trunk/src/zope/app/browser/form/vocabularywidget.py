@@ -124,6 +124,9 @@ def message(msgid, default):
     return msgid
 
 
+_msg_no_value = message(_("vocabulary-no-value"), "(no value)")
+
+
 # Widget implementation:
 
 class ViewSupport(object, TranslationHook):
@@ -283,11 +286,9 @@ class MultiDataHelper(object):
 class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
-    _msg_no_value = message(_("vocabulary-no-value"), "(no value)")
-
     def render(self, value):
         if value is None:
-            return self.translate(self._msg_no_value)
+            return self.translate(_msg_no_value)
         else:
             term = self.context.vocabulary.getTerm(value)
             return self.textForValue(term)
@@ -499,7 +500,7 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
                                     size=self.getValue('size'))
 
     def renderItems(self, value):
-        vocabulary = self.context
+        vocabulary = self.context.vocabulary
         # check if we want to select first item
         if (value == self._missing
             and getattr(self.context, 'firstItem', False)
@@ -510,7 +511,12 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
             values = [value]
         else:
             values = ()
-        return self.renderItemsWithValues(values)
+        L = self.renderItemsWithValues(values)
+        if not self.context.required:
+            option = ("<option name='%s' value=''>%s</option>"
+                      % (self.name, self.translate(_msg_no_value)))
+            L.insert(0, option)
+        return L
 
 # more general alias
 VocabularyEditWidget = SelectListWidget
