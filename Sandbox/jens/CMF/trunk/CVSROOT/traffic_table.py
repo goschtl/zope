@@ -1,11 +1,9 @@
 """Table dictating what goes where for the traffic_cop module.
 
-the global var 'table' contains a list of entries identifying project dirs
-to be mirrored.
-
-Custom (local, consulting-business) entries should go in
-/cvs-repository/custom_traffic_table.py, which is not mirrored in the
-public repository.
+The global var 'table' contains a list of entries identifying where
+change-notifications for particular sections of the repository are sent.  (You
+can also use the entries to identify mirroring target hosts, but that's not
+longer used.)
 
 Each 'table' entry is a dictionary containing some mandatory and some
 optional fields (optional fields have default values described)
@@ -24,6 +22,9 @@ optional fields (optional fields have default values described)
    excluded.
 
  - 'addrs' - a list of addresses to which checkin messages should be delivered.
+
+ The 'remote' entry is no longer particularly useful - in fact, we haven't yet
+ instituted rsync on the host system - so the following can be ignored:
 
  - 'remote' - specifying the repository to which checkins should be synced.
    This dictionary must have the following fields:
@@ -46,14 +47,7 @@ optional fields (optional fields have default values described)
 # Default is *no* remote - people explicitly propagation if they want it.
 remote = None
 public_remote = None
-## public_remote = {'host': "cvs.zope.org",
-##                  'acct': "anonymous",
-##                  'repodir': "/cvs-repository"}
 products_remote = None
-## products_remote = {'host': "cvs.zope.org",
-##                    'acct': "anonymous",
-##                    'repodir': "/cvs-repository",
-##                    'leading_path': "/Products/DC"}
 
 zopeaddr = ["zope-checkins@zope.org"]
 
@@ -81,8 +75,8 @@ def get_table():
 def init_table():
     add_to_table([
         {'path': "CVSROOT",
-         'remote': public_remote,
-         'addrs': ["digicool-cvs@zope.org"],
+         'addrs': ["klm@digicool.com"],
+#         'addrs': ["digicool-cvs@zope.org"],
          'excludes': ["/history"]},
 
 ##       {'path': "test",
@@ -90,90 +84,70 @@ def init_table():
 ##        'addrs': "klm@digicool.com"},
 
         {'path': "Operations",
-         'addrs': "support@digicool.com",
-         'remote': None},
+         'addrs': "support@digicool.com"},
 
         {'path': "Zope2",
-         'remote': public_remote,
          'addrs': zopeaddr},
 
         {'path': "Packages/ZEO",
-         'remote': public_remote,
          'addrs': ['zeo-checkins@zope.org']},
 
         {'path': "ZopeDocs",
-         'addrs': 'zopedocs-checkins@zope.org',
-         'remote': None},
+         'addrs': 'zopedocs-checkins@zope.org'},
 
 #        {'path': "Documentation/Guides/Book",
-#         'addrs': 'zope-book@zope.org',
-#         'remote': None},
+#         'addrs': 'zope-book@zope.org'},
 
         {'path': "ZopeMozilla",
-         'addrs': 'zope-mozilla@zope.org',
-         'remote': None},
+         'addrs': 'zope-mozilla@zope.org'},
 
         {'path': "ZopePTK",
-         'addrs': 'zope-ptk@mail.zope.org',
-         'remote': None},
+         'addrs': 'zope-ptk@mail.zope.org'},
 
         {'path': "CMF",
-         'addrs': 'cmf-checkins@zope.org',
-         'remote': public_remote},
+         'addrs': 'cmf-checkins@zope.org'},
 
         {'path': "Packages/Products/XMLDocument",
-         'addrs': zopeaddr,
-         'remote': products_remote},
+         'addrs': zopeaddr},
 
         {'path': "Packages/Products/PythonMethod",
-         'addrs': None,
-         'remote': products_remote},
+         'addrs': None},
 
         {'path': "Packages/Products/TrackerBase",
-         'addrs': ['tracker-dev@zope.org'],
-         'remote': products_remote},
+         'addrs': ['tracker-dev@zope.org']},
 
         {'path': "Packages/Products/ImageCache",
-         'addrs': None,
-         'remote': products_remote},
+         'addrs': None},
 
         {'path': "Packages/Products/ParsedXML",
-         'addrs': ["parsed-xml-dev@mail.zope.org"],
-         'remote': products_remote},
+         'addrs': ["parsed-xml-dev@mail.zope.org"]},
 
         {'path': "Packages/TAL",
-         'addrs': ["zpt@mail.zope.org"],
-         'remote': public_remote},
+         'addrs': ["zpt@mail.zope.org"]},
 
         {'path': "Packages/Products/PresentationTemplates",
-         'addrs': ["zpt@mail.zope.org"],
-         'remote': None},
+         'addrs': ["zpt@mail.zope.org"]},
 
         {'path': "Packages/Products/PageTemplates",
-         'addrs': ["zpt@mail.zope.org"],
-         'remote': products_remote},
+         'addrs': ["zpt@mail.zope.org"]},
 
         {'path': "Projects/python-site",
-         'addrs': ["pythonlabs@digicool.com"],
-         'remote': None},
+         'addrs': ["pythonlabs@digicool.com"]},
 
         {'path': "Packages/Products/CMFDemo",
-         'addrs': ["karl@digicool.com", "adam@digicool.com"],
-         'remote': products_remote},
+         'addrs': ["karl@digicool.com", "adam@digicool.com"]},
         
     ])
 
 # Support for the ZEO module (defined in CVSROOT/modules)
 
 add_to_table({'path': "Releases/ZEO",
-              'addrs': ("zodb-checkins@zope.org",),
-              'remote': public_remote})
+              'addrs': ("zodb-checkins@zope.org",)})
 
 # Support for the StandaloneZODB module (defined in CVSROOT/modules)
 
 add_to_table({'path': "Releases/StandaloneZODB",
-              'addrs': ("zodb-checkins@zope.org",),
-              'remote': public_remote})
+              'addrs': ("zodb-checkins@zope.org",)})
               
 add_multipath(("Zope2/lib/Components/ExtensionClass",
                "Packages/ZEO",
@@ -189,7 +163,6 @@ add_multipath(("Zope2/lib/Components/ExtensionClass",
               None)
 
 add_to_table({'path': "Packages/bsddb3Storage",
-              'addrs': ("zodb-checkins@zope.org",),
-              'remote': public_remote})
+              'addrs': ("zodb-checkins@zope.org",)})
 
 init_table()
