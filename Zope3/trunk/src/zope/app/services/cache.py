@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.15 2003/06/21 21:22:12 jim Exp $
+$Id: cache.py,v 1.16 2003/06/23 00:31:31 jim Exp $
 """
 
 from persistence import Persistent
@@ -24,7 +24,6 @@ from zope.app.interfaces.services.cache import ICacheRegistration
 from zope.app.interfaces.services.registration import INameComponentRegistry
 from zope.app.interfaces.services.event import IEventChannel
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
 from zope.app.services.event import ServiceSubscriberEventChannel
@@ -97,8 +96,6 @@ class CacheRegistration(NamedComponentRegistration):
     implements(ICacheRegistration)
 
     serviceType = 'Caching'
-
-    status = RegistrationStatusProperty()
 
     label = "Cache"
 

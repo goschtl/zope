@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.19 2003/06/21 21:22:12 jim Exp $
+$Id: adapter.py,v 1.20 2003/06/23 00:31:31 jim Exp $
 """
 __metaclass__ = type
 
@@ -31,7 +31,6 @@ from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
 from zope.app.context import ContextWrapper
 from zope.context import ContextMethod
-from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
 
@@ -192,8 +191,6 @@ class AdapterRegistration(SimpleRegistration):
     implements(IAdapterRegistration)
 
     serviceType = Adapters
-
-    status = RegistrationStatusProperty()
 
     # XXX These should be positional arguments, except that forInterface
     #     isn't passed in if it is omitted. To fix this, we need a

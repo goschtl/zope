@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.11 2003/06/21 21:22:12 jim Exp $
+$Id: utility.py,v 1.12 2003/06/23 00:31:31 jim Exp $
 """
 
 from zope.interface import implements
@@ -26,7 +26,6 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.services.utility import IUtilityRegistration
 from zope.app.interfaces.services.utility import ILocalUtilityService
 from zope.app.services.registration import RegistrationStack
-from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.services.registration import ComponentRegistration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface.implementor import ImplementorRegistry
@@ -115,8 +114,6 @@ class UtilityRegistration(ComponentRegistration):
     """
 
     serviceType = 'Utilities'
-
-    status = RegistrationStatusProperty()
 
     implements(IUtilityRegistration)
 

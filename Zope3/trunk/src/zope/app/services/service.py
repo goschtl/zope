@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.26 2003/06/21 21:22:12 jim Exp $
+$Id: service.py,v 1.27 2003/06/23 00:31:31 jim Exp $
 """
 
 import sys
@@ -53,7 +53,6 @@ from zope.app.interfaces.services.service import IServiceManager
 # (used as 2nd argument to isinstance() in method resolve() below)
 ModuleType = type(IModuleService), PersistentModule
 
-from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
 from zope.app.services.folder import SiteManagementFolders
@@ -124,8 +123,9 @@ class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
         # This is rather tricky. Normally, getting a service requires
         # the use of other services, like the adapter service.  We
         # need to be careful not to get into an infinate recursion by
-        # getting out getService to be called while looking up
-        # services, so we'll
+        # getting our getService to be called while looking up
+        # services, so we'll use _v_calling to prevent recursive
+        # getService calls.
 
         if name == 'Services':
             return wrapped_self # We are the service service
@@ -302,8 +302,6 @@ class ServiceRegistration(NamedComponentRegistration):
     implements(IServiceRegistration)
 
     serviceType = 'Services'
-
-    status = RegistrationStatusProperty()
 
     label = "Service"
 

@@ -14,7 +14,7 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.7 2003/06/21 21:22:15 jim Exp $
+$Id: service.py,v 1.8 2003/06/23 00:31:32 jim Exp $
 """
 __metaclass__ = type
 
@@ -27,7 +27,6 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.workflow import IProcessDefinition
 from zope.app.interfaces.workflow import IProcessDefinitionRegistration
 from zope.app.interfaces.workflow import IWorkflowService
-from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
 from zope.app.traversing import getPath
@@ -107,9 +106,6 @@ class ProcessDefinitionRegistration(NamedComponentRegistration):
     implements(IProcessDefinitionRegistration)
 
     serviceType = 'Workflows'
-
-    status = RegistrationStatusProperty()
-
 
     def getInterface(self):
         return IProcessDefinition

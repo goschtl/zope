@@ -11,19 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: connection.py,v 1.15 2003/06/21 21:22:12 jim Exp $
+"""Connection service
+
+$Id: connection.py,v 1.16 2003/06/23 00:31:31 jim Exp $
 """
 
 from persistence import Persistent
-from zope.context import ContextMethod
-
+from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
+from zope.app.interfaces.services.connection import IConnectionRegistration
 from zope.app.interfaces.services.connection import ILocalConnectionService
 from zope.app.interfaces.services.service import ISimpleService
-
-from zope.app.component.nextservice import queryNextService
 from zope.app.services.registration import NameComponentRegistry
+from zope.app.services.registration import NamedComponentRegistration
+from zope.context import ContextMethod
 from zope.interface import implements
 
 class ConnectionService(Persistent, NameComponentRegistry):
@@ -73,10 +74,6 @@ class ConnectionService(Persistent, NameComponentRegistry):
     getAvailableConnections = ContextMethod(getAvailableConnections)
 
 
-from zope.app.interfaces.services.connection import IConnectionRegistration
-from zope.app.services.registration import NamedComponentRegistration
-from zope.app.services.registration import RegistrationStatusProperty
-
 class ConnectionRegistration(NamedComponentRegistration):
 
     __doc__ = IConnectionRegistration.__doc__
@@ -84,8 +81,6 @@ class ConnectionRegistration(NamedComponentRegistration):
     implements(IConnectionRegistration)
 
     serviceType = 'SQLDatabaseConnections'
-
-    status = RegistrationStatusProperty()
 
     label = "Connection"
 

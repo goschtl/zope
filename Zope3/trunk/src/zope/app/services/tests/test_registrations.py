@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for registration classes
 
-$Id: test_registrations.py,v 1.1 2003/06/21 21:22:13 jim Exp $
+$Id: test_registrations.py,v 1.2 2003/06/23 00:31:31 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -59,6 +59,16 @@ class ComponentStub:
 
 class TestSimpleRegistration(TestCase):
 
+    def setUp(self):
+        # We can't use the status property on a SimpleRegistration instance.
+        # we disable it for these tests
+        self.__oldprop = SimpleRegistration.status
+        del SimpleRegistration.status
+
+    def tearDown(self):
+        # Restore the status prop
+        SimpleRegistration.status = self.__oldprop
+
     def test_beforeDeleteHook(self):
         container = object()
         cfg = SimpleRegistration()
@@ -78,6 +88,7 @@ class TestSimpleRegistration(TestCase):
 class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
 
     def setUp(self):
+        TestSimpleRegistration.setUp(self)
         PlacefulSetup.setUp(self, site=True)
         self.name = 'foo'
 

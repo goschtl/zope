@@ -12,9 +12,13 @@
 #
 ##############################################################################
 
+from zope.app.services.registration import RegistrationStatusProperty
+
 __metaclass__ = type
 
 class TestingRegistration:
+    status = RegistrationStatusProperty()
+
     def __init__(self, id):
         self.id = id
 

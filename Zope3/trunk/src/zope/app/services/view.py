@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.24 2003/06/21 21:22:12 jim Exp $
+$Id: view.py,v 1.25 2003/06/23 00:31:31 jim Exp $
 """
 __metaclass__ = type
 
@@ -29,7 +29,6 @@ from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
 from zope.app.context import ContextWrapper
 from zope.context import ContextMethod
-from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.component.nextservice import getNextService
 from zope.component import getSkin
 from zope.interface import implements
@@ -220,8 +219,6 @@ class ViewRegistration(SimpleRegistration):
     implements(IViewRegistration)
 
     serviceType = 'Views'
-
-    status = RegistrationStatusProperty()
 
     _what = "View" # For usageSummary(); subclass may override
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.1 2003/06/21 21:22:12 jim Exp $
+$Id: registration.py,v 1.2 2003/06/23 00:31:31 jim Exp $
 """
 __metaclass__ = type
 
@@ -66,9 +66,6 @@ class RegistrationStatusProperty(ContextDescriptor):
 
         sm = getServiceManager(registration)
         service = sm.queryLocalService(registration.serviceType)
-        # XXX The following may fail; there's a subtle bug here when
-        # the returned service isn't in the same service manager as
-        # the one owning the registration.
         registry = service and service.queryRegistrationsFor(registration)
 
         if registry:
@@ -325,6 +322,9 @@ class SimpleRegistration(Persistent):
                       # *think* we do. :)
                       IAttributeAnnotatable,
                       )
+
+    
+    status = RegistrationStatusProperty()
 
     # Methods from IRegistration
 

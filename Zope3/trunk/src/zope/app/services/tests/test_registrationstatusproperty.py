@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_registrationstatusproperty.py,v 1.1 2003/06/21 21:22:13 jim Exp $
+$Id: test_registrationstatusproperty.py,v 1.2 2003/06/23 00:31:31 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,6 @@ from zope.component.interfaces import IServiceService
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.tests.registrationstack import TestingRegistration
 from zope.app.services.tests.registrationstack import TestingRegistrationStack
-from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
@@ -35,16 +34,13 @@ from zope.interface import implements
 
 class TestingRegistration(TestingRegistration):
     serviceType = "Services"
-    status = RegistrationStatusProperty()
     service_type = "Test"
 
 class PassiveRegistration(TestingRegistration):
     serviceType = "NoSuchService"
-    status = RegistrationStatusProperty()
 
 class UtilityRegistration(TestingRegistration):
     serviceType = "Utilities"
-    status = RegistrationStatusProperty()
 
 class TestingRegistrationStack(TestingRegistrationStack):
     class_ = TestingRegistration
