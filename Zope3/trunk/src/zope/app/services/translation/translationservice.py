@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.12 2003/08/20 00:46:05 srichter Exp $
+$Id: translationservice.py,v 1.13 2003/08/20 19:19:40 srichter Exp $
 """
 import re
 from zodb.btrees.OOBTree import OOBTree
@@ -81,7 +81,8 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         catalog_names = self._catalogs.get((target_language, domain), [])
 
         for name in catalog_names:
-            catalog = super(TranslationService, self).__getitem__(name)
+            catalog = zapi.ContextSuper(
+                TranslationService, self).__getitem__(name)
             text = catalog.queryMessage(msgid)
             if text is not None:
                 break
