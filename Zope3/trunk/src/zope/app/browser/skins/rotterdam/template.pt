@@ -1,13 +1,10 @@
 <metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
-
-<html
-  xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml"
   xml:lang="en"
-  lang="en" >
+  lang="en">
 
-  <head>
-
-     <title metal:define-slot="title">Z3 UI</title>
+<head>
+    <title metal:define-slot="title">Z3 UI</title>
 
 
     <style type="text/css" 
@@ -16,21 +13,20 @@
            "string: @import url(${context/++resource++zope3.css});"
            >
       @import url(zope3.css);
-  </style>
+    </style>
 	
-   <meta http-equiv="Content-Type"
-        content="text/html;charset=utf-8" />
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=utf-8" />
 
     <metal:block define-slot="headers" />
     <metal:block define-slot="style_slot" />
     <metal:block define-slot="ecmascript_slot" />
 
     <script type="text/javascript" src="xmltree.js" 
-            tal:attributes="src string:${context/++resource++xmltree.js}"
-            ></script>
-  </head>
+            tal:attributes="src string:${context/++resource++xmltree.js}"></script>
+</head>
 
-  <body onload="loadtree('');"
+<body onload="loadtree('');"
         tal:define="rooturl     request/getApplicationURL;
                     thisbaseurl request/URL/-1;
                     "
@@ -77,17 +73,15 @@
 
       </div>
 
-      <div class="box" id="commonTasks">
+      <div class="box" id="commonTasks"
+           tal:define="view context/@@commonTasks|nothing"
+           tal:condition="view/strip|nothing">
 
         <h4>Common Tasks</h4>
 
         <div class="body">
 
-				  <div class="content">
-            <metal:block define-slot="commonTasks">
-    
-            </metal:block>
-				  </div>
+              <span tal:replace="structure view" />
 
         </div>
 
@@ -116,24 +110,19 @@
 
       </div>
 			
-			<div id="actions"
+      <div id="actions"
           tal:define="actions context/@@view_get_menu/zmi_actions"
           tal:condition="actions"
-					metal:define-slot="tabs"
-           >
-
-  					<a href="#" 
+          metal:define-slot="tabs">
+          <a href="#" 
                tal:attributes="href info/action" 
                tal:repeat="info actions"
-							 tal:content="info/title"
-               >
+               tal:content="info/title">
               Action name
-							</a>
-							&nbsp;
-
+          </a>&nbsp;
       </div>
 			
-			<div id="viewspace">
+      <div id="viewspace">
 
         <div id="breadcrumbs"
          metal:define-macro="breadcrumbs"
@@ -157,44 +146,29 @@
 
       </div>
 
-		<div id="content">
-		  <metal:block define-slot="body">
+      <div id="content">
+      <metal:block define-slot="body">
 
-          <table class="listing">
-
-            <thead>
-
-              <th>Test</th>
-              <th>Another</th>
-
-            </thead>
-
-
-            <tbody>
-
-              <tr>
-
-                <td>content</td>
-                <td>thingy</td>
-
-              </tr>
-
-
-              <tr class="even">
-
-                <td>more</td>
-                <td>data</td>
-
-              </tr>
-
-            </tbody>
-
-          </table>
-
+      <table class="listing">
+	<thead>
+	<th>Test</th>
+	<th>Another</th>
+	</thead>
+	<tbody>
+	<tr>
+	  <td>content</td>
+	  <td>thingy</td>
+	</tr>
+	<tr class="even">
+	  <td>more</td>
+	  <td>data</td>
+	</tr>
+	</tbody>
+      </table>
       </metal:block>
-    </div>
+      </div>
 
-<div id="context_information">
+      <div id="context_information">
 
       <div id="helpers">
 
@@ -218,41 +192,35 @@
 
       </div>
 
-
       <div id="inspectors">
 
-        <div class="box" id="metadata">
+       <div class="box" id="metadata"
+	  tal:define="view context/@@MetaDataBox|nothing"
+	  tal:condition="view/strip|nothing">
 
           <h4>Metadata</h4>
 
-          <div class="body"
-					     tal:define="view context/@@MetaDataBox|nothing"
-               tal:condition="view"
-               >
+          <div class="body">
 					
-  					<div class="content" tal:content="structure view">
-  					Some metadata
-            </div>
-
-				  </div>
-        </div>
-
- 
-
-       </div>
-		
-		</div>      
-
-		<div class="spacer">
-		&nbsp;
-		</div>
-		
+	  <div class="content" tal:content="structure view">
+	  Some metadata
+	  </div>
+	  
 	</div>
+       </div>
+     </div>
+    </div>      
 
-        <div class="box" id="help" 
-	           tal:define="results view/@@find_help_topics|nothing"
-             tal:condition="results">
-          <h4>Online Help</h4>
+    <div class="spacer">
+	  &nbsp;
+    </div>
+
+   </div>
+
+   <div class="box" id="help" 
+	  tal:define="results view/@@find_help_topics|nothing"
+	  tal:condition="results">
+	  <h4>Online Help</h4>
           <div class="body">
             <a href="#" 
                 tal:repeat="entry results"
@@ -262,22 +230,16 @@
                   tal:content="entry/topic/title">Topic Title
               </div>
             </a>
-          </div>
+	  </div>
         </div>
 
-
-
     </div>
-
-
     <div id="footer"
       metal:define-macro="footer">
-      
     </div>
+   <div id="logger" />
 
-		<div id="logger" />
-
-  </body>
+</body>
 
 </html>
 
