@@ -18,6 +18,7 @@ $Id$
 
 import zope.interface
 
+from zope.security.checker import CheckerPublic
 from zope.security.management import system_user
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 from zope.security.interfaces import ISecurityPolicy
@@ -205,6 +206,9 @@ class ZopeSecurityPolicy(ParanoidSecurityPolicy):
         
 
     def checkPermission(self, permission, object):
+        if permission is CheckerPublic:
+            return True
+
         principals = {}
         for participation in self.participations:
             principal = participation.principal

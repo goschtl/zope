@@ -72,6 +72,12 @@ are grants:
   >>> interaction.checkPermission('P1', ob)
   False
 
+But CheckerPublic permission id always have a permission:
+
+  >>> from zope.security.checker import CheckerPublic
+  >>> interaction.checkPermission(CheckerPublic, ob)
+  True
+
 We make grants and denials on objects by adaping them to various
 granting interfaces:
 
