@@ -308,7 +308,8 @@ class TestFileFinder:
         # We specifically do not want to catch ImportError since that's useful
         # information to know when running the tests.
         except RuntimeError, e:
-            print 'skipping', pkg, 'because:', e
+            if VERBOSE:
+                print 'skipping', pkg, 'because:', e
             return
         for file in files:
             if file.startswith('test') and os.path.splitext(file)[-1] == '.py':
