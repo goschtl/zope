@@ -21,7 +21,7 @@
 
   PageConfigurationView -- calls validation on PageConfiguration.
 
-$Id: view.py,v 1.8 2003/04/11 19:05:08 fdrake Exp $
+$Id: view.py,v 1.9 2003/04/30 17:23:39 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -79,8 +79,12 @@ class ViewServiceView(BrowserView):
 
             forInterface, presentationType, registry, layer, viewName = info
 
-            forInterface = (
-                forInterface.__module__ +"."+ forInterface.__name__)
+            if forInterface is None:
+                forInterface = "(Anything)"
+            else:
+                forInterface = (
+                    forInterface.__module__ +"."+ forInterface.__name__)
+
             presentationType = (
                 presentationType.__module__ +"."+ presentationType.__name__)
 
