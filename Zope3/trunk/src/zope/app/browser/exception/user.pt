@@ -3,10 +3,9 @@
 
 <div metal:fill-slot="body">
 
-<p>
-<span tal:repeat="part context"><span tal:replace="part">Error message</span>
-</span>
-</p>
+<ul>
+<li tal:repeat="part context" tal:content="part">Error message</li>
+</ul>
 
 </div>
 </body>
