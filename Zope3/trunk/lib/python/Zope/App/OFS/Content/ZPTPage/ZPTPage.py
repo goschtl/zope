@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.11 2002/10/04 20:03:36 jim Exp $
+$Id: ZPTPage.py,v 1.12 2002/11/12 17:02:49 stevea Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -23,7 +23,6 @@ from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import getWrapperContainer
 from Zope.Security.Proxy import ProxyFactory
 
-from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 from Zope.App.OFS.Content.IFileContent import IFileContent
 from Zope.PageTemplate.PageTemplate import PageTemplate
 from Zope.App.PageTemplate.Engine import AppPT
