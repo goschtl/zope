@@ -44,7 +44,7 @@ class DAVWidget(InputWidget):
     
     def setRenderedValue(self, value):
         if isinstance(value, minidom.Node):
-            text = ''
+            text = u''
             for node in value.childNodes:
                 if node.nodeType != node.TEXT_NODE:
                     continue
