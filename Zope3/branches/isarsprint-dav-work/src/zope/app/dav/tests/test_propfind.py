@@ -346,7 +346,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         oprops = IDAVOpaqueNamespaces(zpt)
-        oprops[u'http://foo/bar'] = {u'egg': ((), u'spam')}
+        oprops[u'http://foo/bar'] = {u'egg': '<egg>spam</egg>'}
         body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <propname/>
@@ -628,7 +628,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
         oprops = IDAVOpaqueNamespaces(zpt)
-        oprops[u'http://foo/bar'] = {u'egg': ((), u'spam')}
+        oprops[u'http://foo/bar'] = {u'egg': '<egg>spam</egg>'}
         body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
         <prop xmlns:foo="http://foo/bar">
@@ -649,6 +649,52 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         <propstat>
         <prop xmlns:a0="http://foo/bar">
         <egg xmlns="a0">spam</egg>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        </multistatus>
+        ''' % {'resource_url':resource_url }
+
+        pfind = propfind.PROPFIND(zpt, request)
+        pfind.PROPFIND()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(pfind.getDepth(), '0')
+        s1 = normalize_xml(request.response._body)
+        s2 = normalize_xml(expect)
+        self.assertEqual(s1, s2)
+
+    def test_propfind_opaque_complex(self):
+        root = self.rootFolder
+        zpt = traverse(root, 'zpt')
+        oprops = IDAVOpaqueNamespaces(zpt)
+        oprops[u'http://foo/bar'] = {u'egg': 
+            '<egg xmlns:bacon="http://bacon">\n'
+            '  <bacon:pork>crispy</bacon:pork>\n'
+            '</egg>\n'}
+        body = '''<?xml version="1.0" ?>
+        <propfind xmlns="DAV:">
+        <prop xmlns:foo="http://foo/bar">
+        <foo:egg />
+        </prop>
+        </propfind>
+        '''
+
+        request = _createRequest(body=body,
+                                 headers={'Content-type':'text/xml',
+                                          'Depth':'0'})
+
+        resource_url = str(zapi.getView(zpt, 'absolute_url', request))
+        expect = '''<?xml version="1.0" ?>
+        <multistatus xmlns="DAV:">
+        <response>
+        <href>%(resource_url)s</href>
+        <propstat>
+        <prop xmlns:a0="http://foo/bar">
+        <egg xmlns="a0" xmlns:bacon="http://bacon">
+            <bacon:pork>crispy</bacon:pork>
+        </egg>
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>

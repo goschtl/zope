@@ -18,6 +18,7 @@ $Id: attribute.py 26632 2004-07-19 14:56:53Z jim $
 __docformat__ = 'restructuredtext'
 
 from UserDict import DictMixin
+from xml.dom import minidom
 
 from zope.interface import implements
 from zope.interface.common.mapping import IMapping
@@ -80,14 +81,16 @@ class DAVOpaqueNamespacesAdapter(DictMixin, Location):
     def __delitem__(self, key):
         del self._mapping[key]
         self._changed()
-        
+    
+    #
     # Convenience methods; storing and retrieving properties through WebDAV
+    #
     def renderProperty(self, ns, nsprefix, prop, propel):
         """Render a property as DOM elements"""
         value = self.get(ns, {}).get(prop)
         if value is None:
             return
-        el = propel.ownerDocument.createElement('%s' % prop)
+        value = minidom.parseString(value)
+        el = propel.ownerDocument.importNode(value.documentElement, True)
         el.setAttribute('xmlns', nsprefix)
-        el.appendChild(el.ownerDocument.createTextNode(value[1]))
         propel.appendChild(el)
