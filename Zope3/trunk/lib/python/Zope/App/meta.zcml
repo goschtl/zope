@@ -2,7 +2,6 @@
 
 <include package=".ComponentArchitecture" file="meta.zcml" />
 <include package=".Publisher" file="meta.zcml" />
-<include package=".ZMI" file="meta.zcml" />
 <include package=".Security" file="meta.zcml" />
 <include package=".OFS" file="meta.zcml" />
 <include package=".ContentDirective" file="meta.zcml" />
