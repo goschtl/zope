@@ -1,13 +1,13 @@
-<configure
-    xmlns='http://namespaces.zope.org/zope'
-    xmlns:browser='http://namespaces.zope.org/browser'
-    i18n_domain='zope'
-    >
+<configure xmlns='http://namespaces.zope.org/zope'
+           xmlns:browser='http://namespaces.zope.org/browser'
+           >
 
 <include package="zope.app" />
 
-<role id="Manager" title="Site Manager" />
-<role id="Member" title="Site Member" />
+<configure i18n_domain="zope">
+  <role id="Manager" title="Site Manager" />
+  <role id="Member" title="Site Member" />
+</configure>
 
 <!-- Remove the following directive if you don't want public access -->
 <grant permission="zope.View" role="Anonymous" />
@@ -28,10 +28,10 @@
 
 <include file="products.zcml" />
 
-<include file="principals.zcml" />
+<!-- Provide local overrides of standard configurations-->
 
-<!--
-<browser:skin name="" layers="rotterdam default" />
--->
+<includeOverrides file="overrides.zcml" />
+
+<include file="principals.zcml" />
 
 </configure>
