@@ -2,7 +2,10 @@ Installing CMF 1.5.0beta
 
   Requirements
 
-    - Zope v. 2.7.0 and later
+    - Zope v. 2.7.0 and later (note that versions 2.7.2 and earlier lack
+      two fixes which cause unit tests to fail;  please see the
+      "collector issue", http://zope.org/Collectors/CMF/259 for more
+      information.
 
   Assumptions
 
