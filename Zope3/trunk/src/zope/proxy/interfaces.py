@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""Proxy-related interfaces.
 
-Revision information:
-$Id: interfaces.py,v 1.5 2003/05/28 22:15:27 jim Exp $
+$Id: interfaces.py,v 1.6 2004/02/24 14:02:39 srichter Exp $
 """
 
 from zope.interface import Interface
