@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_xmlnavigationviews.py,v 1.1 2003/01/02 11:06:10 gotcha Exp $
+$Id: test_xmlnavigationviews.py,v 1.2 2003/01/02 12:04:36 gotcha Exp $
 """
 
 #import sys
@@ -26,6 +26,7 @@ from zope.app.services.tests.eventsetup import EventSetup
 from zope.pagetemplate.tests.util import check_xml
 from zope.app.browser.skins.rotterdam.tests import util
 from zope.app.browser.skins.rotterdam.xmlobject import ReadContainerXmlObjectView
+from zope.app.browser.skins.rotterdam.xmlobject import XmlObjectView
 from zope.publisher.browser import TestRequest
 
 class TestXmlObject(EventSetup, TestCase):
@@ -45,6 +46,22 @@ class TestXmlObject(EventSetup, TestCase):
         
         treeView = ReadContainerXmlObjectView(self.rootFolder, TestRequest()).children
         check_xml(treeView(), util.read_output('test4.xml'))
+
+        treeView = ReadContainerXmlObjectView(self.folder1_1_1, TestRequest()).singleBranchTree
+        check_xml(treeView(), util.read_output('test5.xml'))
+
+        from zope.app.content.file import File
+        from zope.proxy.context import ContextWrapper
+        self.file1 = File()
+        self.rootFolder.setObject("file1", self.folder1_1_1)
+        self.file1 = ContextWrapper(self.file1, self.folder1_1_1,
+             name = "file1")
+             
+#        treeView = XmlObjectView(self.file1, TestRequest()).singleBranchTree
+#        check_xml(treeView(), util.read_output('test5.xml'))
+
+
+
 
 def test_suite():
     loader = TestLoader()
