@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_directives.py,v 1.2 2003/05/01 19:35:24 faassen Exp $
+$Id: test_directives.py,v 1.3 2003/05/19 10:03:37 ryzaja Exp $
 """
 import unittest
 
@@ -25,7 +25,7 @@ from zope.configuration.xmlconfig import xmlconfig, Context, XMLConfig
 
 from zope.app.component.metaconfigure import managerHandler, provideInterface
 import zope.app.mail
-import zope.app.interfaces.mail 
+import zope.app.interfaces.mail
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
@@ -46,17 +46,17 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         XMLConfig('metameta.zcml', zope.configuration)()
         XMLConfig('meta.zcml', zope.app.mail)()
 
-    def test_mailservice(self):        
+    def test_mailservice(self):
         xmlconfig(StringIO(template % (
-            '''            
+            '''
             <mail:mailservice name="Mail"
                hostname="somehost" port="125"
                username="foo" password="bar"
-               class=".mail.AsyncMailService" 
+               class=".mail.AsyncMailService"
                permission="zope.Public" />
             '''
             )), None, Context([], zope.app.mail))
-        service = getService(None, 'Mail') 
+        service = getService(None, 'Mail')
         self.assertEqual('AsyncMailService', service.__class__.__name__)
         self.assertEqual('somehost', service.hostname)
         self.assertEqual(125, service.port)
@@ -65,12 +65,12 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def test_mailer(self):
         xmlconfig(StringIO(template % (
-            '''            
-            <mail:mailservice class=".mail.AsyncMailService" 
+            '''
+            <mail:mailservice class=".mail.AsyncMailService"
                 permission="zope.Public" />
 
-            <mail:mailer name="TestSimpleMailer" class=".mailer.SimpleMailer" 
-                serviceType="Mail" default="True" /> 
+            <mail:mailer name="TestSimpleMailer" class=".mailer.SimpleMailer"
+                serviceType="Mail" default="True" />
             '''
             )), None, Context([], zope.app.mail))
 

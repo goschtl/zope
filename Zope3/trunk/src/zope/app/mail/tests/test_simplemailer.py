@@ -15,12 +15,12 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_simplemailer.py,v 1.2 2003/05/01 19:35:24 faassen Exp $
+$Id: test_simplemailer.py,v 1.3 2003/05/19 10:03:37 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, makeSuite
 from zope.app.interfaces.mail import IMailer
-from zope.app.mail.event import MailSentEvent 
-import zope.app.mail.mailer 
+from zope.app.mail.event import MailSentEvent
+import zope.app.mail.mailer
 
 from zope.component.tests.placelesssetup import PlacelessSetup
 import zope.app.event.tests.placelesssetup as event_setup
@@ -76,12 +76,12 @@ class TestSimpleMailer(event_setup.PlacelessSetup, PlacelessSetup, TestCase):
         SMTPStub.toaddrs = ['blah@bar.com', 'booh@bar.com']
         SMTPStub.message = 'This is the message'
         zope.app.mail.mailer.SMTP = SMTPStub
-        
+
         self.obj.send('foo@bar.com', ['blah@bar.com', 'booh@bar.com'],
                       'This is the message', 'localhost', 1025,
                       'srichter', 'blah');
         self.assertEqual(MailSentEvent, event_setup.events[0].__class__)
-        
+
 
 def test_suite():
     return TestSuite((

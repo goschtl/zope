@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A c
+"""MailService Implementation
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: mailer.py,v 1.2 2003/05/01 19:35:23 faassen Exp $
+$Id: mailer.py,v 1.3 2003/05/19 10:03:37 ryzaja Exp $
 """
 from smtplib import SMTP
 

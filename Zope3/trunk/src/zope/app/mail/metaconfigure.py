@@ -2,18 +2,18 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
-"""mail ZCML Namespace handler 
+"""mail ZCML Namespace handler
 
-$Id: metaconfigure.py,v 1.1 2003/04/16 13:45:43 srichter Exp $
+$Id: metaconfigure.py,v 1.2 2003/05/19 10:03:37 ryzaja Exp $
 """
 from zope.component import getService
 from zope.configuration.action import Action
@@ -44,10 +44,10 @@ def mailer(_context, name, class_, serviceType="Mail", default=False):
     if default == "True":
         default = True
 
-    def register(serviceType, name, klass, default): 
+    def register(serviceType, name, klass, default):
         mailservice = getService(None, serviceType)
         mailservice.provideMailer(name, klass, default)
-        
+
 
     return [
         Action(

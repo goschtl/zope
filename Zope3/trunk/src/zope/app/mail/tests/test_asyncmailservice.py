@@ -15,7 +15,7 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_asyncmailservice.py,v 1.2 2003/05/01 19:35:24 faassen Exp $
+$Id: test_asyncmailservice.py,v 1.3 2003/05/19 10:03:37 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, makeSuite
 from zope.app.interfaces.mail import IAsyncMailService, IMailer
@@ -69,7 +69,7 @@ class TestAsyncMailService(TestCase):
         self.assertEqual(['blah@bar.com'], mailer.toaddrs)
         self.assertEqual('This is a message', mailer.message)
 
-    
+
 
 def test_suite():
     return TestSuite((

@@ -15,9 +15,9 @@
 
 This module contains various implementations of MailServices.
 
-$Id: service.py,v 1.1 2003/04/16 13:45:43 srichter Exp $
+$Id: service.py,v 1.2 2003/05/19 10:03:37 ryzaja Exp $
 """
-from zope.app.interfaces.mail import IAsyncMailService 
+from zope.app.interfaces.mail import IAsyncMailService
 
 class AsyncMailService:
     __doc__ = IAsyncMailService.__doc__
@@ -44,7 +44,7 @@ class AsyncMailService:
     def createMailer(self, name):
         "See zope.app.interfaces.services.mail.IAsyncMailService"
         return self.__mailers[name]()
-        
+
     def getMailerNames(self):
         "See zope.app.interfaces.services.mail.IAsyncMailService"
         return self.__mailers.keys()

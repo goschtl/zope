@@ -15,7 +15,7 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: mail.py,v 1.1 2003/04/16 13:45:43 srichter Exp $
+$Id: mail.py,v 1.2 2003/05/19 10:03:37 ryzaja Exp $
 """
 from smtplib import SMTP
 
@@ -48,7 +48,7 @@ class AsyncMailService:
     def createMailer(self, name):
         "See zope.app.interfaces.services.mail.IAsyncMailService"
         return self.__mailers[name]()
-        
+
     def getMailerNames(self):
         "See zope.app.interfaces.services.mail.IAsyncMailService"
         return self.__mailers.keys()
@@ -71,28 +71,3 @@ class AsyncMailService:
         if default:
             self.__default_mailer = name
 
-
-class SimpleMailer:
-    __doc__ = IMailer.__doc__
-
-    __implements__ = IMailer
-
-    def send(self, fromaddr, toaddrs, message,
-             hostname, port, username, password):
-        "See zope.app.interfaces.services.mail.IMailer"
-        server = SMTP(hostname, port)
-        server.set_debuglevel(0)
-        if username is not None and password is not None:
-            server.login(username, password)
-        server.sendmail(fromaddr, toaddrs, message)
-        server.quit()
-        publish(self, MailSentEvent(self))
-
-
-class MailSentEvent:
-    __doc__ = IMailSentEvent.__doc__
-
-    __implements__ =  IMailSentEvent
-
-    def __init__(self, mailer):
-        self.mailer = mailer 
