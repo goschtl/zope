@@ -17,6 +17,11 @@ from zope.interface.exceptions import BrokenMethodImplementation
 from types import FunctionType, MethodType
 from zope.interface.interface import fromMethod, fromFunction
 
+# This will be monkey-patched when running under Zope 2, so leave this
+# here:
+MethodTypes = (MethodType, )
+
+
 def _verify(iface, candidate, tentative=0, vtype=None):
     """Verify that 'candidate' might correctly implements 'iface'.
 
@@ -50,7 +55,8 @@ def _verify(iface, candidate, tentative=0, vtype=None):
         if type(attr) is FunctionType:
             # should never get here
             meth = fromFunction(attr, n)
-        elif type(attr) is MethodType and type(attr.im_func) is FunctionType:
+        elif (isinstance(attr, MethodTypes)
+              and type(attr.im_func) is FunctionType):
             meth = fromMethod(attr, n)
         else:
             continue # must be an attribute...
