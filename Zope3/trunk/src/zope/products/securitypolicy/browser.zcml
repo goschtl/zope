@@ -4,12 +4,6 @@
 
 <!-- Role Service -->
 
-  <menuItem
-     menu="add_service"
-     for="zope.app.interfaces.container.IAdding"
-     action="RoleService"
-     title="Role Service" />
-
   <icon
       name="zmi_icon" 
       for=".role.ILocalRoleService"

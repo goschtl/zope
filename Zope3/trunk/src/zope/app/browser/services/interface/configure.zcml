@@ -3,11 +3,10 @@
    xmlns="http://namespaces.zope.org/browser"
    >
 
-  <menuItem 
-      menu="add_service"
-      for="zope.app.interfaces.container.IAdding"
-      action="zope.app.services.LocalInterfaceService"
+  <addMenuItem 
+      class="zope.app.services.interface.LocalInterfaceService"
       title="Local Interface Service"
+      description="This will be merged into the site manager (deprecated)"
       permission="zope.ManageServices" 
       />
   

@@ -6,14 +6,13 @@
 
 <!-- Pluggable Authentication Service -->
 
-  <menuItem
-       menu="add_service"
-       for="zope.app.interfaces.container.IAdding"
-       action="zope.app.services.PluggableAuthenticationService"
+  <addMenuItem
+       class="zope.app.services.pluggableauth.PluggableAuthenticationService"
        title="Authentication Service"
-       description="A Pluggable Authentication Service
+       description="A Pluggable Authentication uses plug-in principal sources."
+       permission="zope.ManageServices"
+  />
 
-                    Uses plug-in principal sources." />
   <page
        name="contents.html"
        for="zope.app.services.pluggableauth.IPluggableAuthenticationService"

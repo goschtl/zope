@@ -29,16 +29,7 @@
       
   </view> -->
 
-  <!-- "Add service" menu entry to add a connection service.
-       The action attribute matches a factory name defined in
-       zope/app/services/configure.zcml. -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_service" title="SQL Connection Service"
-      description="A Persistent SQL Connection Service for TTW development"
-      action="zope.services.ConnectionService"
-      permission="zope.ManageServices" />
- 
+
   <!-- <page
       for="zope.app.interfaces.services.connection.ILocalConnectionService"
       name="index.html"

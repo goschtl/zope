@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.16 2004/02/09 05:06:21 richard Exp $
+$Id: __init__.py,v 1.17 2004/02/09 05:35:20 anthony Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -116,7 +116,7 @@ class ComponentAdding(Adding):
 class ServiceAdding(ComponentAdding):
     """Adding subclass used for adding services."""
 
-    menu_id = "add_service"
+    menu_id = None
     title = _("Add Service")
 
     _addFilterInterface = ILocalService
@@ -153,7 +153,7 @@ class ServiceAdding(ComponentAdding):
 class UtilityAdding(ComponentAdding):
     """Adding subclass used for adding utilities."""
 
-    menu_id = "add_utility"
+    menu_id = None
     title = _("Add Utility")
 
     _addFilterInterface = ILocalUtility

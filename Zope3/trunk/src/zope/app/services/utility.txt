@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.6 $
+:Version: $Revision: 1.7 $
 
 .. contents::
 
@@ -88,6 +88,9 @@ zcml file.  So I also created an ``utility.zcml`` file::
 and I added an include to the package configuration file::
 
   <!-- Utility Service --> <include file="utility.zcml" />
+
+XXX This next section is out of date, and should be rewritten to
+use addMenuItem.
 
 To make it possible to add the utility service, I need to add an entry to
 the ``add_service`` browser menu.  The ``add_component`` menu is the menu

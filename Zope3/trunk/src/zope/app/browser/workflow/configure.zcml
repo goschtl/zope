@@ -12,12 +12,11 @@
       permission="zope.ManageServices"  
       menu="zmi_views" title="Processes" />
 
-  <menuItem
-      menu="add_service"
-      for="zope.app.interfaces.container.IAdding"
-      action="WorkflowService"
+  <addMenuItem
+      class="zope.app.workflow.service.WorkflowService"
       title="Workflow Service"
-      description="A workflow service" />
+      description="A workflow service" 
+      permission="zope.ManageServices" />
 
 
 

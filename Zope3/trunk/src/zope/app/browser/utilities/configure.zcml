@@ -165,11 +165,9 @@
       permission="zope.ManageServices"
       />
 
-  <!-- Menu entry for "add utility" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_utility"
-      action="utility.ContentComponentDefinition"
+  <!-- Menu entry for "Add Utility" menu -->
+  <addMenuItem
+      class="zope.app.utilities.content.ContentComponentDefinition"
       title="Content Component Definition"
       description="A Persistent Content Component Definition"
       permission="zope.ManageServices"

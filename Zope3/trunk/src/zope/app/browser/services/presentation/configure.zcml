@@ -1,9 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/browser">
 
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_service"
-      action="zope.app.services.presentation.LocalPresentationService"
+  <addMenuItem
+      class="zope.app.services.presentation.LocalPresentationService"
+      description="A Presentation Service allows you to register views, resources and skins"
       title="Presentation Service"
       permission="zope.ManageServices"
       />

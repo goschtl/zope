@@ -2,11 +2,11 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_service"
-      action="zope.app.services.adapter.LocalAdapterService"
+  <addMenuItem
+      class="zope.app.services.adapter.LocalAdapterService"
       title="Adapter Service" 
+      description="Allows the registration of Adapters in this site" 
+      permission="zope.ManageServices"
       />
 
   <editform
