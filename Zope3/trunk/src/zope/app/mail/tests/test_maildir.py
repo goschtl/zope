@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for zope.app.mail.maildir module
 
-$Id: test_maildir.py,v 1.5 2003/07/01 09:46:53 mgedmin Exp $
+$Id: test_maildir.py,v 1.6 2003/09/23 22:16:13 alga Exp $
 """
 
 import unittest
@@ -149,6 +149,7 @@ class TestMaildir(unittest.TestCase):
         self.maildir_module.socket = self.old_socket_module
         self.maildir_module.MaildirMessageWriter.open = open
         self.fake_os_module._stat_never_fails = False
+        self.fake_os_module.path._exists_never_fails = False
 
     def test_factory(self):
         from zope.app.interfaces.mail import IMaildirFactory, IMaildir

@@ -15,7 +15,7 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_service.py,v 1.3 2003/08/17 06:07:17 philikon Exp $
+$Id: test_service.py,v 1.4 2003/09/23 22:16:13 alga Exp $
 """
 import os.path
 from tempfile import mktemp
@@ -176,6 +176,8 @@ class TestQueuedMailService(TestCase):
 
     def tearDown(self):
         self.mail_service_module.Maildir = self.old_Maildir
+        MaildirWriterStub.commited_messages = []
+        MaildirWriterStub.aborted_messages = []
 
     def testInterface(self):
         from zope.app.interfaces.mail import IQueuedMailService
