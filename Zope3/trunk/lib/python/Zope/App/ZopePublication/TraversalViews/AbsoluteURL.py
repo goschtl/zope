@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: AbsoluteURL.py,v 1.2 2002/06/10 23:29:20 jim Exp $
+$Id: AbsoluteURL.py,v 1.1 2002/06/13 16:20:09 stevea Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Proxy.ContextWrapper import getWrapperContainer, getWrapperData
@@ -32,6 +32,9 @@ class IAbsoluteURL(Interface):
         """Get a string representation
         """
     
+    def __call__():
+        """Get a string representation
+        """
 
 class AbsoluteURL(BrowserView):
 
@@ -55,7 +58,3 @@ class SiteAbsoluteURL(BrowserView):
         return self.request.getApplicationURL()
 
     __call__ = __str__
-
-
-    
-

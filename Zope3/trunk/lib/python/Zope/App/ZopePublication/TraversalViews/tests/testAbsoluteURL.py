@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: testAbsoluteURL.py,v 1.2 2002/06/10 23:29:20 jim Exp $
+$Id: testAbsoluteURL.py,v 1.1 2002/06/13 16:20:09 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -38,7 +38,7 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        from Zope.App.ZopePublication.AbsoluteURL.AbsoluteURL \
+        from Zope.App.ZopePublication.TraversalViews.AbsoluteURL \
              import AbsoluteURL, SiteAbsoluteURL
         provideView=getService(None,"Views").provideView
         provideView(None, 'absolute_url', IBrowserPresentation,

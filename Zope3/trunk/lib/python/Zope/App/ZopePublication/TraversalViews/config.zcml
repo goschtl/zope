@@ -1,0 +1,50 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:view
+      name="absolute_url"
+      factory=".AbsoluteURL."
+      permission='Zope.Public'
+      allowed_interface=".AbsoluteURL.IAbsoluteURL"
+  />
+  
+  <browser:view
+      for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
+      name="absolute_url"
+      factory=".AbsoluteURL.SiteAbsoluteURL"
+      permission='Zope.Public'
+      allowed_interface=".AbsoluteURL.IAbsoluteURL"
+  />
+
+  <browser:view
+      name="object_name"
+      factory=".ObjectName."
+      permission='Zope.Public'
+      allowed_interface=".ObjectName.IObjectName"
+  />
+  
+  <browser:view
+      for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
+      name="object_name"
+      factory=".ObjectName.SiteObjectName"
+      permission='Zope.Public'
+      allowed_interface=".ObjectName.IObjectName"
+  />
+
+  <adapter
+      factory=".ObjectName."
+      provides=".ObjectName.IObjectName"
+      permission='Zope.Public'
+  />
+  
+  <adapter
+      factory=".ObjectName.SiteObjectName"
+      provides=".ObjectName.IObjectName"
+      for="Zope.App.OFS.Content.Folder.RootFolder.IRootFolder"
+      permission='Zope.Public'
+  />
+
+</zopeConfigure>
