@@ -17,7 +17,7 @@ $Id$
 """
 
 from zope.exceptions import NotFoundError
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.size.interfaces import ISized
@@ -46,7 +46,7 @@ class PrincipalSource(BrowserView):
             self.error = _("Error, No LDAP server or connection found")
         
         for principal in principals:
-            info = trustedRemoveSecurityProxy(principal)
+            info = removeSecurityProxy(principal)
             zmi_icon = zapi.queryView(info, 'zmi_icon', request)
             entry = {}
             if zmi_icon is None:
@@ -90,7 +90,7 @@ class PrincipalSourceManager(PrincipalSource):
             self.error = _("Error, No LDAP server or connection found")
         
         for principal in principals:
-            info = trustedRemoveSecurityProxy(principal)
+            info = removeSecurityProxy(principal)
             zmi_icon = zapi.queryView(info, 'zmi_icon', request)
             entry = {}
             if zmi_icon is None:
