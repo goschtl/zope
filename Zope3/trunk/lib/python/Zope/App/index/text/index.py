@@ -16,7 +16,9 @@
 Events related to object creation and deletion are translated into
 index_doc() and unindex_doc() calls.
 
-$Id: index.py,v 1.5 2002/12/04 20:00:52 gvanrossum Exp $
+In addition, this implements TTW subscription management.
+
+$Id: index.py,v 1.6 2002/12/04 21:36:51 gvanrossum Exp $
 """
 
 from Zope.Event.ISubscriber import ISubscriber
@@ -38,8 +40,8 @@ from Zope.TextIndex.TextIndexWrapper import TextIndexWrapper
 
 class TextIndex(TextIndexWrapper):
 
-    __implements__ = TextIndexWrapper.__implements__ + (ISubscriber,
-                                                        IUITextIndex)
+    __implements__ = (TextIndexWrapper.__implements__,
+                      ISubscriber, IUITextIndex)
 
     def notify(wrapped_self, event):
         """An event occurred.  Index or unindex the object in response."""
