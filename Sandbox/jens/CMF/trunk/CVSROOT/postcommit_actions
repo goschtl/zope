@@ -449,8 +449,8 @@ def create_diff(repo, file, old, new):
                     % (str(e), file))
 
     else:                # A "normal" update happened
-        diff_cmd = ('cvs -d %s -f rdiff -kk -u -t %s/%s'
-                    % (CVSROOT, repo, file))
+        diff_cmd = ('cvs -d %s -f rdiff -r %s -r %s -kk -u %s/%s'
+                    % (CVSROOT, old, new, repo, file))
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[6:]
         file_handle.close()
