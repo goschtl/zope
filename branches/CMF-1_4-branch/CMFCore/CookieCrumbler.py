@@ -36,6 +36,12 @@ ATTEMPT_NONE = 0       # No attempt at authentication
 ATTEMPT_LOGIN = 1      # Attempt to log in
 ATTEMPT_RESUME = 2     # Attempt to resume session
 
+try:
+    from zExceptions import Redirect
+except ImportError:
+    # Pre Zope 2.7
+    Redirect = 'Redirect'
+
 
 class CookieCrumbler (SimpleItemWithProperties):
     '''
@@ -198,7 +204,7 @@ class CookieCrumbler (SimpleItemWithProperties):
         # Redirect if desired.
         url = self.getLoginURL()
         if url is not None:
-            raise 'Redirect', url
+            raise Redirect, url
         # Fall through to the standard unauthorized() call.
         resp.unauthorized()
 
