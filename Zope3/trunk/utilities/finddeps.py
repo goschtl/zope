@@ -24,7 +24,7 @@ here = os.path.dirname(os.path.realpath(__file__))
 swhome = os.path.dirname(here)
 
 for parts in [("src",), ("lib", "python"), ("Lib", "site-packages")]:
-    d = os.path.join(swhome, *(parts + ("zope", "app", "process")))
+    d = os.path.join(swhome, *(parts + ("zope", "app", "appsetup")))
     if os.path.isdir(d):
         d = os.path.join(swhome, *parts)
         sys.path.insert(0, d)
