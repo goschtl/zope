@@ -60,9 +60,9 @@ OFFICIAL_SENDER = "cvs-admin@zope.org"
 
 # Ceiling on number of lines per file report (diff or "added"), at which point
 # we go to excerpts from the beginning and end:
-FILE_LINES_LIMIT = 500
+FILE_LINES_LIMIT = 1500
 # Number of lines in beginning and end excerpts when FILE_LINES_LIMIT is hit:
-FILE_EXCERPTS_LINES = 50
+FILE_EXCERPTS_LINES = 200
 
 CUSTOM_TRAFFIC_TABLE = "%s/custom_traffic_table.py" % CVSROOT
 
@@ -353,7 +353,24 @@ def create_diff(repo, file, old, new):
         header = ("=== %s/%s %s => %s ==="
                   % (str(repo), str(file), old, new))
 
-    if expands_as_binary(get_rcs_filename(repo, file)):
+    # Provide for initial checkins on branch - in which case, the ,v files
+    # exist only in the Attic.
+    if (old == 'NONE') and (len(new.split('.')) > 2):
+        template = "%s/%s/Attic/%s,v"
+    else:
+        template = "%s/%s/%s,v"
+    commav = template % (CVSROOT_ABS, repo, file)
+    if os.path.exists(commav):
+        isbinary = expands_as_binary(commav)
+    else:
+        complain("Couldn't check binary-ness of missing comma-v"
+                 " for %s%s v %s, should be at:\n  %s"
+                 % (((old == 'NONE') and "new ") or '',
+                    file, new, commav))
+        # Let the diff go ahead:
+        isbinary = None
+    
+    if isbinary:
         return "%s\n  <Binary-ish file>" % header
     else:
         total = len(lines)
@@ -369,14 +386,6 @@ def create_diff(repo, file, old, new):
             header = header + " (%s/%s lines abridged)" % (omitted, total)
         lines.insert(0, header + "\n")
         return string.join(lines, '')
-
-def get_rcs_filename(repodir, filename):
-    repofn = filename + ',v'
-    repodir = os.path.join(CVSROOT_ABS, repodir)
-    fn = os.path.join(repodir, repofn)
-    if not os.path.isfile(fn):
-        fn = os.path.join(repodir, "Attic", repofn)
-    return fn
 
 def do_special(trigger, action, addrs):
     """Do special action - a script, to be invoked from the CVSROOT dir.
