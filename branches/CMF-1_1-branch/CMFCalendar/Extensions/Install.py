@@ -102,21 +102,40 @@ from Products.CMFCore.TypesTool import ContentFactoryMetadata
 from Products.CMFCore.DirectoryView import addDirectoryViews
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCalendar import Event, event_globals
+from Acquisition import aq_base
 from cStringIO import StringIO
 import string
 
 def install(self):
     " Register the CMF Event with portal_types and friends "
     out = StringIO()
-    catalog = getToolByName(self, 'portal_catalog')
-    c_catalog = catalog._catalog
-    c_catalog.addIndex('start', 'FieldIndex')
-    c_catalog.addIndex('end', 'FieldIndex')
-    c_catalog.addColumn('start')
-    c_catalog.addColumn('end')
     typestool = getToolByName(self, 'portal_types')
     skinstool = getToolByName(self, 'portal_skins')
     metadatatool = getToolByName(self, 'portal_metadata')
+    catalog = getToolByName(self, 'portal_catalog')
+
+    # Due to differences in the API's for adding indexes between
+    # Zope 2.3 and 2.4, we have to catch them here before we can add
+    # our new ones.
+    base = aq_base(catalog)
+    if hasattr(base, 'addIndex'):
+        # Zope 2.4
+        addIndex = catalog.addIndex
+    else:
+        # Zope 2.3 and below
+        addIndex = catalog._catalog.addIndex
+    if hasattr(base, 'addColumn'):
+        # Zope 2.4
+        addColumn = catalog.addColumn
+    else:
+        # Zope 2.3 and below
+        addColumn = catalog._catalog.addColumn
+    addIndex('start', 'FieldIndex')
+    addIndex('end', 'FieldIndex')
+    addColumn('start')
+    addColumn('end')
+    out.write('Added "start" and "end" field indexes and columns to '\
+              'the portal_catalog\n')
 
     # Borrowed from CMFDefault.Portal.PortalGenerator.setupTypes()
     # We loop through anything defined in the factory type information
@@ -130,18 +149,19 @@ def install(self):
             out.write('Object "%s" already existed in the types tool\n' % (
                 t['id']))
 
-    # Setup an MetadataTool Element Policy for Events
-    
-    metadatatool.addElementPolicy(element='Subject'
-        ,content_type='Event'
-        ,is_required=0
-        ,supply_default=0
-        ,default_value=''
-        ,enforce_vocabulary=0
-        ,allowed_vocabulary=('Appointment', 'Convention', 'Meeting', 'Social Event', 'Work')
-        ,REQUEST=None
+    # Setup a MetadataTool Element Policy for Events
+    metadatatool.addElementPolicy(
+        element='Subject',
+        content_type='Event',
+        is_required=0,
+        supply_default=0,
+        default_value='',
+        enforce_vocabulary=0,
+        allowed_vocabulary=('Appointment', 'Convention', 'Meeting',
+                            'Social Event', 'Work'),
+        REQUEST=None,
         )
-    out.write('Event added to Metdata element Policies')
+    out.write('Event added to Metdata element Policies\n')
     
     
 
