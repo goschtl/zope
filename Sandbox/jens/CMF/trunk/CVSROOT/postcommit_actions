@@ -304,7 +304,7 @@ def do_mail(name, remote, repo, addrs, subjs, doing_directory=0, no_files=0):
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS: %s " % name
-    if remote.has_key('leading_path'):
+    if remote is not None and remote.has_key('leading_path'):
         l = remote['leading_path']
         if (len(l) > 1) and (l[-1] != '/'): l = l + '/'
         if (len(l) > 1) and (l[0] == '/'): l = l[1:]
