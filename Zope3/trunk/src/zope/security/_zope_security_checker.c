@@ -94,14 +94,11 @@ checkPermission(PyObject *permission, PyObject *object, PyObject *name)
 
 
 /*     def check(self, object, name): */
-static PyObject *
-Checker_check(Checker *self, PyObject *args)
+static int
+Checker_check_int(Checker *self, PyObject *object, PyObject *name)
 {
-  PyObject *object, *name, *permission=NULL;
+  PyObject *permission=NULL;
   int operator;
-
-  if (!PyArg_ParseTuple(args, "OO", &object, &name))
-    return NULL;
 
 /*         permission = self._permission_func(name) */
   if (self->getperms)
@@ -113,11 +110,11 @@ Checker_check(Checker *self, PyObject *args)
 /*             if permission is CheckerPublic: */
 /*                 return # Public */
       if (permission == CheckerPublic)
-        goto ok;
+        return 0;
 
       if (checkPermission(permission, object, name) < 0)
-        return NULL;
-      goto ok;
+        return -1;
+      return 0;
     }
 
 
@@ -131,9 +128,9 @@ Checker_check(Checker *self, PyObject *args)
 /*             return */
       int ic = PySequence_Contains(_always_available, name);
       if (ic < 0)
-        return NULL;
+        return -1;
       if (ic)
-        goto ok;
+        return 0;
 
 /*         if name != '__iter__' or hasattr(object, name): */
 /*             __traceback_supplement__ = (TracebackSupplement, object) */
@@ -143,18 +140,32 @@ Checker_check(Checker *self, PyObject *args)
           && ! PyObject_HasAttr(object, name))
         /* We want an attr error if we're asked for __iter__ and we don't 
            have it. We'll get one by allowing the access. */
-        goto ok;
+        return 0;
     }
-  
-  args = Py_BuildValue("OO", name, object);
-  if (args != NULL)
-    {
-      PyErr_SetObject(ForbiddenAttribute, args);
-      Py_DECREF(args);
-    }
-  return NULL;
 
- ok:
+  {
+    PyObject *args;
+    args = Py_BuildValue("OO", name, object);
+    if (args != NULL)
+      {
+        PyErr_SetObject(ForbiddenAttribute, args);
+        Py_DECREF(args);
+      }
+    return -1;
+  }
+}
+
+static PyObject *
+Checker_check(Checker *self, PyObject *args)
+{
+  PyObject *object, *name;
+
+  if (!PyArg_ParseTuple(args, "OO", &object, &name))
+    return NULL;
+
+  if (Checker_check_int(self, object, name) < 0)
+    return NULL;
+
   Py_INCREF(Py_None);
   return Py_None;
 }
@@ -340,6 +351,13 @@ static PyGetSetDef Checker_getset[] = {
     {NULL}  /* Sentinel */
 };
 
+static PyMappingMethods Checker_as_mapping = {
+	/* mp_length        */ (inquiry)NULL,
+	/* mp_subscript     */ (binaryfunc)Checker_proxy,
+	/* mp_ass_subscript */ (objobjargproc)Checker_check_int,
+};
+
+
 
 static PyTypeObject CheckerType = {
 	PyObject_HEAD_INIT(NULL)
@@ -356,7 +374,7 @@ static PyTypeObject CheckerType = {
 	/* tp_repr           */ (reprfunc)0,
 	/* tp_as_number      */ 0,
 	/* tp_as_sequence    */ 0,
-	/* tp_as_mapping     */ 0,
+	/* tp_as_mapping     */ &Checker_as_mapping,
 	/* tp_hash           */ (hashfunc)0,
 	/* tp_call           */ (ternaryfunc)0,
 	/* tp_str            */ (reprfunc)0,

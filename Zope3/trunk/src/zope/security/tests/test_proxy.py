@@ -15,7 +15,7 @@ import unittest
 from zope.security.proxy import getChecker, ProxyFactory
 from zope.proxy import ProxyBase as proxy, getProxiedObject
 
-class Checker:
+class Checker(object):
 
     ok = 1
 
@@ -362,8 +362,69 @@ class ProxyTests(unittest.TestCase):
         a, b = coerce(x, y)
         self.failUnless(type(getProxiedObject(a)) is float and b is y)
 
+def test_using_mapping_slots_hack():
+    """The security proxy will use mapping slots, on the checker to go faster
+
+    If a checker implements normally, a checkers's check and
+    check_getattr methods are used to check operator and attribute
+    access:
+
+      >>> class Checker(object):
+      ...     def check(self, object, name):
+      ...         print 'check', name
+      ...     def check_getattr(self, object, name):
+      ...         print 'check_getattr', name
+      ...     def proxy(self, object):
+      ...         return 1
+      >>> def f():
+      ...     pass
+      >>> p = ProxyFactory(f, Checker())
+      >>> p.__name__
+      check_getattr __name__
+      1
+      >>> p()
+      check __call__
+      1
+
+    But, if the checker has a __setitem__ method:
+
+      >>> def __setitem__(self, object, name):
+      ...     print '__setitem__', name
+      >>> Checker.__setitem__ = __setitem__
+
+    It will be used rather than either check or check_getattr:
+
+      >>> p.__name__
+      __setitem__ __name__
+      1
+      >>> p()
+      __setitem__ __call__
+      1
+
+    If a checker has a __getitem__ method:
+
+      >>> def __getitem__(self, object):
+      ...     return 2
+      >>> Checker.__getitem__ = __getitem__
+
+    It will be used rather than it's proxy method:
+
+      >>> p.__name__
+      __setitem__ __name__
+      2
+      >>> p()
+      __setitem__ __call__
+      2
+
+    """
+
+
+
 def test_suite():
-    return unittest.makeSuite(ProxyTests)
+    suite = unittest.makeSuite(ProxyTests)
+    from doctest import DocTestSuite
+    suite.addTest(DocTestSuite())
+    return suite
 
 if __name__=='__main__':
     from unittest import main

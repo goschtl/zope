@@ -426,16 +426,7 @@ class CombinedChecker(Checker):
             except ForbiddenAttribute:
                 raise unauthorized_exception
 
-    def check_getattr(self, object, name):
-        'See IChecker'
-        try:
-            Checker.check_getattr(self, object, name)
-        except ForbiddenAttribute:
-            self._checker2.check_getattr(object, name)
-        except Unauthorized, unauthorized_exception:
-            try: self._checker2.check_getattr(object, name)
-            except ForbiddenAttribute:
-                raise unauthorized_exception
+    check_getattr = __setitem__ = check
 
     def check_setattr(self, object, name):
         'See IChecker'
