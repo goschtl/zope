@@ -23,32 +23,8 @@
       provides="zope.app.interfaces.dependable.IDependable"
       for="zope.app.interfaces.annotation.IAnnotatable" />
 
-  <adapter
-      for="*"
-      factory="zope.app.size.DefaultSized"
-      provides="zope.app.interfaces.size.ISized"
-      permission="zope.View" />
-
-  <adapter
-      factory="zope.app.copypastemove.ObjectMover"
-      provides="zope.app.copypastemove.interfaces.IObjectMover"
-      permission="zope.ManageContent"
-      for="*"
-      />
-
-  <adapter
-      factory="zope.app.copypastemove.ObjectCopier"
-      provides="zope.app.copypastemove.interfaces.IObjectCopier"
-      permission="zope.ManageContent"
-      for="*"
-      />
-
-  <adapter
-      factory="zope.app.copypastemove.PrincipalClipboard"
-      provides="zope.app.copypastemove.interfaces.IPrincipalClipboard"
-      for="zope.app.interfaces.annotation.IAnnotations"
-      />
-
+  <include package="zope.app.copypastemove" />
+  <include package="zope.app.size" />
   <include package="zope.app.location" />
   <include package="zope.app.container" />
   <include package="zope.app.services" />
