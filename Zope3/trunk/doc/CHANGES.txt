@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+    - Implemented http://dev.zope.org/Zope3/MinimalDefaultViewDirectives
+      'zope:defaultView' canno longer *define* a view. It also only accepts
+      one "for" interface.
+
     - Implemented http://dev.zope.org/Zope3/Use303RedirectsByDefault
       Browsers which support HTTP/1.1 will now receive 303 redirects.
 
