@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: dt_util.py,v 1.2 2002/12/25 14:13:36 jim Exp $
+$Id: dt_util.py,v 1.3 2003/04/11 17:54:04 fdrake Exp $
 """
 import re, math
 import whrandom
@@ -24,8 +24,11 @@ from types import ListType, StringType, TupleType
 from zope.documenttemplate.pdocumenttemplate import InstanceDict, TemplateDict, render_blocks
 
 
-ParseError='Document Template Parse Error'
-ValidationError='Unauthorized'
+class ParseError(Exception):
+    '''Document Template Parse Error'''
+
+class ValidationError(Exception):
+    '''Unauthorized'''
 
 
 def html_quote(v, name='(Unknown name)', md={},

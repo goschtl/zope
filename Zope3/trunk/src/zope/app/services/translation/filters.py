@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Service Message Export and Import Filters
 
-$Id: filters.py,v 1.2 2003/03/25 23:25:12 bwarsaw Exp $
+$Id: filters.py,v 1.3 2003/04/11 17:54:03 fdrake Exp $
 """
 import time, re
 from types import StringTypes
@@ -21,6 +21,16 @@ from types import StringTypes
 from zope.i18n.interfaces import IMessageExportFilter
 from zope.i18n.interfaces import IMessageImportFilter
 from zope.app.interfaces.services.translation import ILocalTranslationService
+
+
+class ParseError(Exception):
+    def __init__(self, state, lineno):
+        Exception.__init__(self, state, lineno)
+        self.state = state
+        self.lineno = lineno
+
+    def __str__(self):
+        return "state %s, line %s" % (self.state, self.lineno)
 
 
 class GettextExportFilter:
@@ -155,7 +165,7 @@ def parseGetText(content):
             elif blank.match(line):
                 pointer = pointer + 1
             else:
-                raise 'ParseError', 'state 0, line %d\n' % (pointer + 1)
+                raise ParseError(0, pointer + 1)
         elif state == 1:
             if com.match(line):
                 COM.append(line.strip())
@@ -168,7 +178,7 @@ def parseGetText(content):
             elif blank.match(line):
                 pointer = pointer + 1
             else:
-                raise 'ParseError', 'state 1, line %d\n' % (pointer + 1)
+                raise ParseError(1, pointer + 1)
 
         elif state == 2:
             if com.match(line):
@@ -186,7 +196,7 @@ def parseGetText(content):
             elif blank.match(line):
                 pointer = pointer + 1
             else:
-                raise 'ParseError', 'state 2, line %d\n' % (pointer + 1)
+                raise ParseError(2, pointer + 1)
 
         elif state == 3:
             if com.match(line) or msgid.match(line):
@@ -200,7 +210,7 @@ def parseGetText(content):
             elif blank.match(line):
                 pointer = pointer + 1
             else:
-                raise 'ParseError', 'state 3, line %d\n' % (pointer + 1)
+                raise ParseError(3, pointer + 1)
 
     # the last also goes in
     if tuple(MSGID):
