@@ -53,46 +53,79 @@ ZOracleDA Packages/Products/ZOracleDA &DCOraclePackage &DCOracleSrc
 
 # KLM start
 
-lpAccessControl   -d lib/python/AccessControl Packages/AccessControl
-lpApp             -d lib/python/App Packages/App
-lpBoboPOS         -d lib/python/BoboPOS Packages/BoboPOS
-lpDateTime        -d lib/python/DateTime Packages/DateTime
-lpDocumentTemplate -d lib/python/DocumentTemplate Packages/DocumentTemplate
-lpHelpSys         -d lib/python/HelpSys Packages/HelpSys
-lpZPublisher      -d lib/python/ZPublisher Packages/ZPublisher
-lpOFS             -d lib/python/OFS Packages/OFS
-lpPrincipiaHelp   -d lib/python/PrincipiaHelp Packages/PrincipiaHelp
-lpScheduler       -d lib/python/Scheduler Packages/Scheduler
-lpStructuredText  -d lib/python/StructuredText Packages/StructuredText
-lpTreeDisplay     -d lib/python/TreeDisplay Packages/TreeDisplay
-lpSearchIndex     -d lib/python/SearchIndex Packages/SearchIndex
-lpZClasses        -d lib/python/ZClasses Packages/ZClasses
-lpWebdav      	  -d lib/python/webdav Packages/webdav
+lpAccessControl    -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/AccessControl Packages/AccessControl
+lpApp              -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/App Packages/App
+lpBoboPOS          -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/BoboPOS Packages/BoboPOS
+lpDateTime         -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/DateTime Packages/DateTime
+lpDocumentTemplate  -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/DocumentTemplate Packages/DocumentTemplate
+lpHelpSys          -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/HelpSys Packages/HelpSys
+lpZPublisher       -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/ZPublisher Packages/ZPublisher
+lpOFS              -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/OFS Packages/OFS
+lpPrincipiaHelp    -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/PrincipiaHelp Packages/PrincipiaHelp
+lpScheduler        -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Scheduler Packages/Scheduler
+lpStructuredText   -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/StructuredText Packages/StructuredText
+lpTreeDisplay      -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/TreeDisplay Packages/TreeDisplay
+lpSearchIndex      -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/SearchIndex Packages/SearchIndex
+lpZClasses         -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/ZClasses Packages/ZClasses
+lpWebdav      	   -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/webdav Packages/webdav
 
-lpSharedInit      -d lib/python/Shared cvs-indirect/Zope/Shared
-lpDCInit          -d lib/python/Shared/DC cvs-indirect/Zope/DC
-lpZRDB            -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
+lpSharedInit       -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Shared cvs-indirect/Zope/Shared
+lpDCInit           -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Shared/DC cvs-indirect/Zope/DC
+lpZRDB             -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
 
-lpProductsInit    -d lib/python/Products cvs-indirect/Zope/Products
-lpOFSP           -d lib/python/Products/OFSP Packages/Products/OFSP
-lpMailHost       -d lib/python/Products/MailHost Packages/Products/MailHost
-lpExternalMethod -d lib/python/Products/ExternalMethod Packages/Products/ExternalMethod
-lpZSQLMethods    -d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMethods
-lpZGadflyDA      -d lib/python/Products/ZGadflyDA Packages/Products/ZGadflyDA
+lpProductsInit     -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Products cvs-indirect/Zope/Products
+lpOFSP            -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Products/OFSP Packages/Products/OFSP
+lpMailHost        -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Products/MailHost Packages/Products/MailHost
+lpExternalMethod  -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Products/ExternalMethod Packages/Products/ExternalMethod
+lpZSQLMethods     -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMethods
+lpZGadflyDA       -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python/Products/ZGadflyDA Packages/Products/ZGadflyDA
 
-lExtensionClass -d lib/Components/ExtensionClass Components/ExtensionClass
-lBTree -d lib/Components/BTree Components/BTree
-lcPickle -d lib/Components/cPickle Components/cPickle
-lzlib -d lib/Components/zlib Components/zlib
+lExtensionClass  -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/Components/ExtensionClass Components/ExtensionClass
+lBTree  -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/Components/BTree Components/BTree
+lcPickle  -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/Components/cPickle Components/cPickle
+lzlib  -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/Components/zlib Components/zlib
 
-pcgi -d pcgi Components/pcgi2
+pcgi  -u /cvs-repository/CVSROOT/update_audit \
+		-d pcgi Components/pcgi2
 
-utilities ZUtil
-ZopeHTTPServer Components/ZopeHTTPServer
+utilities   -u /cvs-repository/CVSROOT/update_audit \
+	ZUtil
+ZopeHTTPServer  -u /cvs-repository/CVSROOT/update_audit \
+	Components/ZopeHTTPServer
 
-GreyThing -d lib/python Components/GreyThing
+GreyThing  -u /cvs-repository/CVSROOT/update_audit \
+		-d lib/python Components/GreyThing
 
-Zope ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
+Zope  -u /cvs-repository/CVSROOT/update_audit \
+  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
   &lpZClasses &lpWebdav \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
