@@ -13,8 +13,11 @@
 ##############################################################################
 """Default service names
 
-$Id: servicenames.py,v 1.2 2004/04/15 22:11:06 srichter Exp $
+$Id: servicenames.py,v 1.3 2004/04/29 15:15:09 fdrake Exp $
 """
+
+# XXX should check that all of the names are still used
+
 from zope.component.servicenames import *
 
 Authentication = 'Authentication'
