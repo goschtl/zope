@@ -19,7 +19,6 @@ application-specific packages.
 $Id$
 """
 
-from zope.exceptions._zope_error import ZopeError, IZopeError
 from zope.exceptions._notfounderror import NotFoundError, INotFoundError
 from zope.exceptions._duplicate import DuplicationError, IDuplicationError
 

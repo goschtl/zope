@@ -14,12 +14,11 @@
 """
 $Id$
 """
-from zope.exceptions import ZopeError, IZopeError
-from zope.interface import implements
+from zope.interface import implements, Interface
 
-class IDuplicationError(IZopeError):
+class IDuplicationError(Interface):
     pass
 
-class DuplicationError(ZopeError):
+class DuplicationError(Exception):
     """A duplicate registration was attempted"""
     implements(IDuplicationError)
