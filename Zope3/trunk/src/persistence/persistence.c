@@ -18,7 +18,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.5 2003/03/05 18:55:49 jeremy Exp $\n";
+"$Id: persistence.c,v 1.6 2003/03/06 19:08:16 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -618,47 +618,46 @@ persist_clear(PyPersistObject *self)
 static PyObject *
 persist_reduce(PyPersistObject *self)
 {
-  PyObject *state, *args=NULL, *result, *__getstate__;
-  PyObject *__getstate__str = NULL;
+    PyObject *state, *args=NULL, *result, *__getstate__;
+    PyObject *__getstate__str = NULL;
   
-  if (! __getstate__str)
-    {
-      __getstate__str = PyString_FromString("__getstate__");
-      if (! __getstate__str)
-        return NULL; 
+    if (! __getstate__str) {
+	__getstate__str = PyString_InternFromString("__getstate__");
+	if (! __getstate__str)
+	    return NULL; 
     }
   
-  __getstate__ = PyObject_GetAttr((PyObject*)self, __getstate__str);
-  if (! __getstate__)
-    return NULL;
+    __getstate__ = PyObject_GetAttr((PyObject*)self, __getstate__str);
+    if (! __getstate__)
+	return NULL;
 
-  state = PyObject_CallObject(__getstate__, NULL);
-  Py_DECREF(__getstate__);
-  if (! state)
-    return NULL;
+    state = PyObject_CallObject(__getstate__, NULL);
+    Py_DECREF(__getstate__);
+    if (! state)
+	return NULL;
   
-  args = PyTuple_New(1);
-  if (! args)
-    goto err;
+    args = PyTuple_New(1);
+    if (! args)
+	goto err;
   
-  Py_INCREF(self->ob_type);
-  PyTuple_SET_ITEM(args, 0, (PyObject*)(self->ob_type));
+    Py_INCREF(self->ob_type);
+    PyTuple_SET_ITEM(args, 0, (PyObject *)self->ob_type);
   
-  result = PyTuple_New(3);
-  if (! result)
-    goto err;
+    result = PyTuple_New(3);
+    if (! result)
+	goto err;
   
-  Py_INCREF(py_simple_new);
-  PyTuple_SET_ITEM(result, 0, py_simple_new);
-  PyTuple_SET_ITEM(result, 1, args);
-  PyTuple_SET_ITEM(result, 2, state);
+    Py_INCREF(py_simple_new);
+    PyTuple_SET_ITEM(result, 0, py_simple_new);
+    PyTuple_SET_ITEM(result, 1, args);
+    PyTuple_SET_ITEM(result, 2, state);
   
-  return result;      
+    return result;      
   
  err:
-  Py_DECREF(state);
-  Py_XDECREF(args);
-  return NULL;
+    Py_DECREF(state);
+    Py_XDECREF(args);
+    return NULL;
 }
 
 static PyMethodDef persist_methods[] = {
