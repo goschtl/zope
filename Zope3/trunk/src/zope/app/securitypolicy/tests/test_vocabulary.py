@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Permission vocabluary doc tests.
+"""Role vocabluary doc tests.
 
-$Id:$
+$Id$
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
