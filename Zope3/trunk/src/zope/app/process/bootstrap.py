@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.14 2004/02/09 05:16:28 Zen Exp $
+$Id: bootstrap.py,v 1.15 2004/02/09 07:52:08 Zen Exp $
 """
 
 from zope.app import zapi
@@ -43,6 +43,11 @@ from zope.app.event import function
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.hub import ISubscriptionControl
 from zope.app.interfaces.container import INameChooser
+from zope.app.interfaces.utilities.session import \
+    IBrowserIdManager, ISessionDataContainer
+from zope.app.utilities.session import \
+        CookieBrowserIdManager, PersistentSessionDataContainer
+from zope.app.services.utility import UtilityRegistration
 
 class BootstrapSubscriberBase:
     """A startup event subscriber base class.
@@ -97,7 +102,7 @@ class BootstrapSubscriberBase:
                           if object_type.isImplementedBy(package[name]) ]
         if valid_objects:
             return None
-        name = object_name 
+        name = object_name
         obj = object_factory()
         obj = removeAllProxies(obj)
         package[name] = obj
@@ -120,6 +125,14 @@ class BootstrapSubscriberBase:
                                            service_factory, **kw)
         else:
             return None
+
+    def ensureUtility(
+            self, interface, utility_type, utility_factory, name='', **kw):
+        """ Add a utility to the top Utility Service """
+        return addConfigureUtility(
+                self.root_folder, interface, utility_type, utility_factory,
+                name, **kw
+                )
 
 class BootstrapInstance(BootstrapSubscriberBase):
     """Bootstrap a Zope3 instance given a database object.
@@ -167,6 +180,16 @@ class BootstrapInstance(BootstrapSubscriberBase):
 
         self.ensureService(Utilities, LocalUtilityService)
 
+        # Utilities
+        self.ensureUtility(
+                IBrowserIdManager, 'CookieBrowserIdManager',
+                CookieBrowserIdManager,
+                )
+        self.ensureUtility(
+                ISessionDataContainer, 'PersistentSessionData',
+                PersistentSessionDataContainer, 'persistent'
+                )
+
 bootstrapInstance = BootstrapInstance()
 
 class CreateInterfaceService(BootstrapSubscriberBase):
@@ -186,7 +209,6 @@ def addConfigureService(root_folder, service_type, service_factory, **kw):
     name = addService(root_folder, service_type, service_factory, **kw)
     configureService(root_folder, service_type, name)
     return name
-
 
 def addService(root_folder, service_type, service_factory, **kw):
     """Add a service to the root folder.
@@ -221,6 +243,39 @@ def configureService(root_folder, service_type, name, initial_status='Active'):
                                         registration_manager)
     key = registration_manager.addRegistration(registration)
     registration = traverseName(registration_manager, key)
+    registration.status = initial_status
+
+def addConfigureUtility(
+        root_folder, interface, utility_type, utility_factory, name='', **kw):
+    """Add and configure a service to the root folder."""
+    folder_name = addUtility(root_folder, utility_type, utility_factory, **kw)
+    configureUtility(root_folder, interface, utility_type, name, folder_name)
+    return name
+
+def addUtility(root_folder, utility_type, utility_factory, **kw):
+    """ Add a Utility to the root folders Utility Service.
+
+    The utility is added to the default package and activated.
+    This assumes the root folder already as a Utility Service
+    """
+    package = getServiceManagerDefault(root_folder)
+    chooser = zapi.getAdapter(package, INameChooser)
+    utility = utility_factory()
+    name = chooser.chooseName(utility_type, utility)
+    package[name] = utility
+    # Set additional attributes on the utility
+    for k, v in kw.iteritems():
+        setattr(utility, k, v)
+    return name
+
+def configureUtility(
+        root_folder, interface, utility_type, name, folder_name,
+        initial_status='Active'):
+    """Configure a utility in the root folder."""
+    package = getServiceManagerDefault(root_folder)
+    registration_manager = package.getRegistrationManager()
+    registration = UtilityRegistration(name, interface, folder_name)
+    key = registration_manager.addRegistration(registration)
     registration.status = initial_status
 
 def getServiceManagerDefault(root_folder):

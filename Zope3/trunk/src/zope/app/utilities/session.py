@@ -29,6 +29,8 @@ from zope.component import getService
 from zope.interface import implements
 from zope.app import zapi
 from zodb.btrees.OOBTree import OOBTree
+from zope.app.interfaces.services.utility import ILocalUtility
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 # Sibling imports
 from zope.app.interfaces.utilities.session import \
@@ -51,7 +53,10 @@ class BrowserId(str):
 class CookieBrowserIdManager(Persistent):
     """Session service implemented using cookies."""
 
-    implements(IBrowserIdManager, ICookieBrowserIdManager, IContained)
+    implements(
+            IBrowserIdManager, ICookieBrowserIdManager, IContained,
+            ILocalUtility, IAttributeAnnotatable
+            )
 
     __parent__ = __name__ = None
 
@@ -132,7 +137,10 @@ class CookieBrowserIdManager(Persistent):
 class PersistentSessionDataContainer(Persistent, IterableUserDict):
     ''' A SessionDataContainer that stores data in the ZODB '''
     __parent__ = __name__ = None
-    implements(ISessionDataContainer, IContained)
+    implements(
+            ISessionDataContainer, IContained,
+            ILocalUtility, IAttributeAnnotatable
+            )
 
     def __init__(self):
         self.data = OOBTree()
