@@ -41,7 +41,7 @@
        This is mainly used to load Zope2 skin templates so they can be used
        in five skins and layers. -->
   <five:pagesFromDirectory
-      module="Products.FiveTest"
+      module="Products.Five.tests.products.FiveTest"
       directory="pages"
       />
 
@@ -310,7 +310,7 @@
       permission="zope2.Public"
       />
 
-  <five:traversable class="OFS.ObjectManager.ObjectManager" />
+  <five:traversable class=".helpers.FiveTraversableFolder" />
   
   <browser:addform
      schema=".interfaces.IFieldSimpleContent"
@@ -362,7 +362,6 @@
   <browser:menuItems
       for=".interfaces.ISimpleContent"
       menu="testmenu">
-
 
       <menuItem
           title="Test Menu Item 2"
