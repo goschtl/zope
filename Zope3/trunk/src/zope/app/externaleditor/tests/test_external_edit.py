@@ -9,10 +9,10 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""
-$Id: test_external_edit.py,v 1.4 2004/03/15 13:10:48 srichter Exp $
-"""
+"""External Editor Tests
 
+$Id: test_external_edit.py,v 1.5 2004/03/19 03:17:18 srichter Exp $
+"""
 import unittest
 from base64 import encodestring
 
@@ -35,10 +35,10 @@ class IEditableFile(Interface): pass
 class ReadFileAdapter(FileReadFile):
 
     def getContentType(self):
-        return self.context.getContentType()
+        return self.context.contentType
 
     def setContentType(self, ct):
-        self.context.setContentType(ct)
+        self.context.contentType = ct
 
     contentType = property(getContentType, setContentType)
 
@@ -62,8 +62,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         request = TestRequest(environ=env)
         container = zapi.traverse(self.rootFolder, 'folder1')
         file = EditableFile('Foobar', 'text/plain')
-        self.assertEqual(file.getContentType(), 'text/plain')
-        self.assertEqual(file.getData(), 'Foobar')
+        self.assertEqual(file.contentType, 'text/plain')
+        self.assertEqual(file.data, 'Foobar')
         file = contained(file, container, 'file')
         view = zapi.queryView(file, 'external_edit', request, None)
         self.failIf(view is None)
