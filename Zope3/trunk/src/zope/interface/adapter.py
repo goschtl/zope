@@ -15,7 +15,7 @@
 
 This implementationb is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.11 2004/03/18 12:19:29 jim Exp $
+$Id: adapter.py,v 1.12 2004/03/28 23:42:28 srichter Exp $
 """
 
 
@@ -620,7 +620,10 @@ class AdapterRegistry(object):
                     for key, factories in items:
                         subscription, rwith, aname, target = key
                         if subscription:
-                            raise NotImplementedError
+                            continue
+                            # XXX: We have subscriptions now, so not being
+                            # implemented is not an option. (SR) 
+                            #raise NotImplementedError
                         if with is not None and not mextends(with, rwith):
                             continue
                         if name is not None and aname != name:
