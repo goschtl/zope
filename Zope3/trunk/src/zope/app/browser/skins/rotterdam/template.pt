@@ -59,10 +59,10 @@
     <div id="navigators">
 
       <!-- Navigation tree box -->
-      <metal:tree tal:condition="python: str(usage).endswith('objectview')"
+      <metal:tree tal:condition="usage/objectview"
                   use-macro="context/@@standard_macros/navigation_tree_box" />
       
-      <tal:usage condition="python: str(usage).endswith('objectview')">
+      <tal:usage condition="usage/objectview">
         <div class="box" id="commonTasks"
              tal:define="view context/@@commonTasks|nothing"
              tal:condition="view/strip|nothing">
@@ -91,8 +91,7 @@
 
     <div id="workspace">
 
-      <div tal:condition="python: str(usage).endswith('objectview')" 
-           id="breadcrumbs"
+      <div tal:condition="usage/objectview" id="breadcrumbs"
            metal:define-macro="breadcrumbs"
        > <div tal:omit-tag="" i18n:translate="">Location:&nbsp;</div><tal:block
            repeat="breadcrumb context/@@absolute_url/breadcrumbs"
@@ -110,8 +109,7 @@
             breadcrumb item</a> / </tal:block>
       </div>
 
-      <div tal:condition="python: str(usage).endswith('objectview')" 
-           class="itemViews"
+      <div tal:condition="usage/objectview" class="itemViews"
            metal:define-slot="tabs">
         <tal:block repeat="view context/@@view_get_menu/zmi_views">
           <a href=""
@@ -125,8 +123,7 @@
       </div>
 
       <!-- OnlineHelp with popup support -->
-      <div tal:condition="python: str(usage).endswith('objectview')" 
-           id="actions"
+      <div tal:condition="usage/objectview" id="actions"
            tal:define="help_actions context/@@view_get_menu/help_actions;
                        actions context/@@view_get_menu/zmi_actions"
            metal:define-slot="tabs">
