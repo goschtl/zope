@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.5 2003/08/01 19:46:03 srichter Exp $
+$Id: fields.py,v 1.6 2003/08/02 06:51:23 philikon Exp $
 """
 import os, re
 from zope import schema
@@ -65,7 +65,6 @@ class PythonIdentifier(schema.TextLine):
     Validation Error
 
     """
-
     implements(IFromUnicode)
 
     def fromUnicode(self, u):
@@ -111,7 +110,10 @@ class GlobalObject(schema.Field):
     ValidationError: (u'Constraint not satisfied', 1)
     >>> gg.fromUnicode("y")
     42
-    >>> 
+    >>> g = GlobalObject()
+    >>> gg = g.bind(fake)
+    >>> gg.fromUnicode('*')
+    >>>
 
     """
 
@@ -128,6 +130,11 @@ class GlobalObject(schema.Field):
 
     def fromUnicode(self, u):
         name = str(u.strip())
+
+        # special case, mostly for interfaces
+        if name == '*':
+            return None
+
         try:
             value = self.context.resolve(name)
         except ConfigurationError, v:
@@ -177,7 +184,6 @@ class Tokens(schema.Sequence):
     >>> 
 
     """
-
     implements(IFromUnicode)
 
     def fromUnicode(self, u):
@@ -289,7 +295,6 @@ class URI(schema.TextLine):
         super(URI, self)._validate(value)
         if uriPattern.match(value) is None:
             raise schema.ValidationError(value)
-
 
 class Bool(schema.Bool):
     """A boolean value
