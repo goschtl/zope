@@ -13,7 +13,7 @@
 ##############################################################################
 """Case-Insensitive Traverser and Folder
 
-$Id: __init__.py,v 1.2 2004/02/14 02:27:40 srichter Exp $
+$Id: __init__.py,v 1.3 2004/02/14 13:13:27 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.container.traversal import ContainerTraverser
@@ -24,7 +24,6 @@ from zope.component.interfaces import IFactory
 from zope.interface import \
      implements, implementedBy, directlyProvides, directlyProvidedBy 
 from zope.publisher.interfaces import NotFound
-from zope.publisher.interfaces.browser import IBrowserPublisher
 
 
 class CaseInsensitiveContainerTraverser(ContainerTraverser):
@@ -55,7 +54,8 @@ class ICaseInsensitiveFolder(IFolder):
 
     When traversing in this folder, all names will be converted to lower
     case. For example, if the traverser requests an item called 'Foo', in
-    reality item 'foo' is looked up in the container."""        
+    reality the first item matching 'foo' or any upper-and-lowercase variants
+    are looked up in the container."""
 
 class CaseInsensitiveFolderFactory(object):
     """A Factory that creates case-insensitive Folders."""
