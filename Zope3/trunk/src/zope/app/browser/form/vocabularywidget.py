@@ -151,19 +151,25 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         self.name = self._prefix + field.__name__
 
     def __call__(self):
-        if self.haveData():
-            value = self._showData()
-        else:
-            field = self.context
-            try:
-                value = field.get(field.context)
-            except AttributeError:
-                value = field.default
-        return self.render(value)
+        return self.render(self.getData())
 
     def render(self, value):
         raise NotImplementedError(
             "render() must be implemented by a subclass")
+
+    def convertTokensToValues(self, tokens):
+        L = []
+        for token in tokens:
+            try:
+                term = self.context.vocabulary.getTermByToken(token)
+            except LookupError:
+                raise WidgetInputError(
+                    self.context.__name__,
+                    self.context.title,
+                    "token %r not found in vocabulary" % token)
+            else:
+                L.append(term.value)
+        return L
 
     # The *Data() methods have tightly bound semantics.  Subclasses
     # need to be really careful about dealing with these, and should
@@ -172,23 +178,63 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
 
     _have_field_data = False
 
-    def getData(self, optional=0):
-        if self._have_field_data:
-            return super(VocabularyWidgetBase, self).getData()
-        elif self.context.required:
-            raise MissingInputError()
-
     def haveData(self):
-        if self.name in self.request.form:
-            self._have_field_data = True
+        self.getData()
         return self._have_field_data
 
     def setData(self, value):
-        super(VocabularyWidgetBase, self).setData(value)
+        self._field_data = value
         self._have_field_data = True
 
+class SingleDataHelper:
 
-class VocabularyDisplayWidget(VocabularyWidgetBase):
+    def getData(self, optional=0):
+        data = getattr(self, "_field_data", self)
+        if data is self:
+            if self.name in self.request.form:
+                token = self.request.form[self.name]
+                data = self.convertTokensToValues([token])[0]
+                self.setData(data)
+                return data
+            data = self.context.query(self.context.context, self)
+            if data is self:
+                # not on the content object either
+                if self.context.required:
+                    raise MissingInputError(self.context.__name__,
+                                            self.title,
+                                            "required field not present")
+                data = self.context.default
+            else:
+                self.setData(data)
+        return data
+
+class MultiDataHelper:
+
+    def getData(self, optional=0):
+        data = getattr(self, "_field_data", self)
+        if data is self:
+            if self.name in self.request.form:
+                tokens = self.request.form[self.name]
+                if not isinstance(tokens, list):
+                    tokens = [tokens]
+                data = self.convertTokensToValues(tokens)
+                self.setData(data)
+                return data
+            data = self.context.query(self.context.context, self)
+            if data is self:
+                # not on the content object either
+                if self.context.required:
+                    raise MissingInputError(self.context.__name__,
+                                            self.title,
+                                            "required field not present")
+                data = self.context.default
+            else:
+                data = []
+                self.setData(data)
+        return data
+
+
+class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
     def render(self, value):
@@ -196,7 +242,7 @@ class VocabularyDisplayWidget(VocabularyWidgetBase):
         return self.textForValue(term)
 
 
-class VocabularyMultiDisplayWidget(VocabularyWidgetBase):
+class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
 
     propertyNames = (VocabularyWidgetBase.propertyNames
                      + ['itemTag', 'tag'])
@@ -366,7 +412,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
                                     selected=None)
 
 
-class SelectListWidget(VocabularyEditWidgetBase):
+class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
     """Vocabulary-backed single-selection edit widget.
 
     This widget can be used when the number of selections isn't going
@@ -400,13 +446,6 @@ class SelectListWidget(VocabularyEditWidgetBase):
 
         return VocabularyEditWidgetBase.renderItemsWithValues(self, values)
 
-    def hidden(self):
-        return widget.renderElement('input',
-                                    type='hidden',
-                                    name=self.name,
-                                    id=self.name,
-                                    value=self._showData())
-
 # more general alias
 VocabularyEditWidget = SelectListWidget
 
@@ -415,7 +454,7 @@ class DropdownListWidget(SelectListWidget):
 
     size = 1
 
-class VocabularyMultiEditWidget(VocabularyEditWidgetBase):
+class VocabularyMultiEditWidget(MultiDataHelper, VocabularyEditWidgetBase):
     """Vocabulary-backed widget supporting multiple selections."""
 
     def renderItems(self, value):
@@ -434,18 +473,6 @@ class VocabularyMultiEditWidget(VocabularyEditWidgetBase):
                                     multiple=None,
                                     size=self.getValue('size'),
                                     contents="\n".join(rendered_items))
-
-    def hidden(self):
-        L = []
-        for v in self._showData():
-            s = widget.renderElement('input',
-                                     type='hidden',
-                                     name=self.name + ':list',
-                                     value=v)
-            assert s[-1] == '>'
-            L.append(s[:-1])
-            L.append('\n>')
-        return ''.join(L)
 
 
 class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
