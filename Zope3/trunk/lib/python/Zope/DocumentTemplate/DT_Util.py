@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: DT_Util.py,v 1.1 2002/06/25 15:37:17 srichter Exp $
+$Id: DT_Util.py,v 1.2 2002/07/19 18:09:53 shane Exp $
 """ 
 import re, math
 import whrandom
@@ -284,13 +284,15 @@ class Eval:
            '_': mapping}
         code = self.code
         for name in code.co_names:
-            __traceback_info__ = name
-            try:
-                d[name] = mapping.getitem(name,0)
-            except KeyError:
-                if name == '_getattr':
-                    d['__builtins__'] = globals
-                    exec compiled_getattr in d
+            if not d.has_key(name):
+                __traceback_info__ = name
+                try:
+                    d[name] = mapping.getitem(name, 0)
+                except KeyError:
+                    # Swallow KeyErrors since the expression
+                    # might not actually need the name.  If it
+                    # does need the name, a NameError will occur.
+                    pass
 
         return eval(code, {}, d)
 
