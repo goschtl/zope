@@ -1,8 +1,5 @@
-<tal:Process_the_form_first
- tal:define="global status view/update"
-/><html metal:use-macro="views/standard_macros/page">
+<html metal:use-macro="views/standard_macros/page">
   <body>
-
   <div metal:fill-slot="body">
 
   <div metal:define-macro="body">
@@ -18,7 +15,8 @@
             metal:define-slot="heading"
             >Edit something</h3>
 
-        <p tal:condition="status"
+        <p tal:define="status view/update"
+           tal:condition="status"
            tal:content="status" />
 
         <div tal:condition="view/errors">
