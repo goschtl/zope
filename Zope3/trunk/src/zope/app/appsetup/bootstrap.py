@@ -173,7 +173,7 @@ class BootstrapInstance(BootstrapSubscriberBase):
                 )
         self.ensureUtility(
                 ISessionDataContainer, 'PersistentSessionData',
-                PersistentSessionDataContainer, 'persistent'
+                PersistentSessionDataContainer, ''
                 )
 
 bootstrapInstance = BootstrapInstance()
