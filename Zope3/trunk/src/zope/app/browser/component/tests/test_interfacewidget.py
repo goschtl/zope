@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.10 2003/01/09 09:13:03 stevea Exp $
+$Id: test_interfacewidget.py,v 1.11 2003/01/09 09:37:16 stevea Exp $
 """
 
 __metaclass__ = type
@@ -708,7 +708,51 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         self.assertEqual(widget.hidden(), out)
         
 
+class TestRenderInterfaceSelect(TestCase):
+
+    def testInterfaceSelect(self):
+        from zope.app.browser.component.interfacewidget \
+            import renderInterfaceSelect
+        interfaces = ['foo', 'bar', 'baz']
+        selected = 'bar'
+        search_name = 'searchname'
+        search_string = 'foo"blee'
+        select_name = 'selectname'
+        out = (
+        '''<input type="text" name="searchname" value='foo"blee'>'''
+        '''<select name="selectname">'''
+        '''<option value="">---select interface---</option>'''
+        '''<option value="foo">foo</option>'''
+        '''<option value="bar" selected>bar</option>'''
+        '''<option value="baz">baz</option>'''
+        '''</select>'''
+        )
+        self.assertEqual(
+            renderInterfaceSelect(interfaces, selected, search_name,
+                                  search_string, select_name),
+            out)
+
+    def testEmptyInterfaceSelect(self):
+        from zope.app.browser.component.interfacewidget \
+            import renderInterfaceSelect
+        interfaces = []
+        selected = 'bar'
+        search_name = 'searchname'
+        search_string = 'fooblee'
+        select_name = 'selectname'
+        out = (
+        '<input type="text" name="searchname" value="fooblee">'
+        '<select name="selectname">'
+        '<option value="">---select interface---</option>'
+        '</select>'
+        )
+        self.assertEqual(
+            renderInterfaceSelect(interfaces, selected, search_name,
+                                  search_string, select_name),
+            out)
+
 def test_suite():
     return TestSuite((makeSuite(TestInterfaceWidget),
-                      makeSuite(TestMultiInterfaceWidget)
+                      makeSuite(TestMultiInterfaceWidget),
+                      makeSuite(TestRenderInterfaceSelect),
                     ))

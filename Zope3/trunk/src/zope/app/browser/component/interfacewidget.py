@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.15 2003/01/09 09:13:05 stevea Exp $
+$Id: interfacewidget.py,v 1.16 2003/01/09 09:37:17 stevea Exp $
 """
 
 import sys
@@ -342,7 +342,6 @@ def renderInterfaceSelect(
                               interface == selected and ' selected' or '',
                               interface)
                            )
-    # XXX need unit test for use of quoteattr for search string
     search_field = '<input type="text" name="%s" value=%s>' % (
         search_name, quoteattr(search_string))
     select_field = '<select name="%s">%s</select>'  % (
