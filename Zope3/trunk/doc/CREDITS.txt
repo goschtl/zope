@@ -688,6 +688,14 @@ CVS Contributors
 
   Miscellaneous bug fixes.
 
+- Dmitry Vasiliev
+
+  Russian translation.
+
+  Work on I18n.
+
+  Miscellaneous bug fixes.
+
 
 Other Contributions
 -------------------
