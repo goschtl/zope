@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.12 2003/03/06 18:23:52 gvanrossum Exp $
+$Id: sitedefinition.py,v 1.13 2003/04/09 21:17:37 bwarsaw Exp $
 """
 
 import logging
@@ -89,32 +89,42 @@ class SiteDefinition:
             self._zodb.close()
             self._zodb = None
 
+    #
+    # Storage directives
+    #
+
     def useFileStorage(self, _context, file=DEFAULT_STORAGE_FILE):
-        """Lets you specify the ZODB to use."""
+        """Specify a FileStorage."""
         from zodb.storage.file import FileStorage
         if self._zodb is not None:
             raise RuntimeError("Database already open")
         self._zodb = DB(FileStorage(file))
         return []
 
-
     def useMappingStorage(self, _context):
-        """Lets you specify the ZODB to use."""
+        """Specify a MappingStorage - no undo or versions."""
         from zodb.storage.mapping import MappingStorage
         if self._zodb is not None:
             raise RuntimeError("Database already open")
         self._zodb = DB(MappingStorage())
         return []
 
-
     def useBDBFullStorage(self, _context, **kws):
+        """Specify a Berkeley full storage."""
         from zodb.config import convertBDBStorageArgs
         from zodb.storage.bdbfull import BDBFullStorage
-
         kws = convertBDBStorageArgs(**kws)
         self._zodb = DB(BDBFullStorage(**kws))
         return []
-        
+
+    def useMemoryFullStorage(self, _context, **kws):
+        """Specify a full memory storage."""
+        from zodb.config import convertBDBStorageArgs
+        from zodb.storage.memory import MemoryFullStorage
+        kws = convertBDBStorageArgs(**kws)
+        self._zodb = DB(MemoryFullStorage(**kws))
+        return []
+
 
     def useLog(self, _context, file=DEFAULT_LOG_FILE, level=DEFAULT_LOG_LEVEL):
         """Lets you specify the log file and level to use"""
