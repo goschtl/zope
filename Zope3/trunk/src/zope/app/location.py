@@ -13,9 +13,8 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.3 2003/09/24 21:00:39 sidnei Exp $
+$Id: location.py,v 1.4 2003/11/05 03:08:27 jeremy Exp $
 """
-from __future__ import generators
 import zope.interface
 from zope.app import zapi
 from zope.app.interfaces.location import ILocation

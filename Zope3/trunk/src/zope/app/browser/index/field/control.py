@@ -13,10 +13,8 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.5 2003/08/19 17:33:59 srichter Exp $
+$Id: control.py,v 1.6 2003/11/05 03:08:25 jeremy Exp $
 """
-from __future__ import generators
-
 from zope.app.introspector import interfaceToName
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.index.text import IQueryView

@@ -13,10 +13,8 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.14 2003/08/07 17:40:45 srichter Exp $
+$Id: control.py,v 1.15 2003/11/05 03:08:24 jeremy Exp $
 """
-from __future__ import generators
-
 from zope.interface import implements
 from zope.component import getService, queryAdapter
 from zope.app.services.servicenames import HubIds

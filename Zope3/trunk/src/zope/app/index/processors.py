@@ -13,11 +13,8 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.11 2003/09/21 17:31:54 jim Exp $
+$Id: processors.py,v 1.12 2003/11/05 03:08:19 jeremy Exp $
 """
-
-from __future__ import generators
-
 from zope.app.interfaces.index.interfaces import \
     IRankedObjectIterator, IRankedObjectRecord, \
     IRankedHubIdList, IBatchedResult
@@ -76,7 +73,7 @@ class RankedObjectIterator:
             yield RankedObjectRecord(objectfetcher(hubid), rank)
         raise StopIteration
 
-class RankedObjectRecord:
+class RankedObjectRecord(object):
     """Contains a reference to a ranked object."""
 
     __slots__ = ["rank", "object"]

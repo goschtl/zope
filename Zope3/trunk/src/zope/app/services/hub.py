@@ -13,11 +13,8 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.23 2003/11/04 04:04:25 jeremy Exp $
+$Id: hub.py,v 1.24 2003/11/05 03:08:16 jeremy Exp $
 """
-
-from __future__ import generators
-
 __metaclass__ = type
 
 import random

@@ -16,12 +16,11 @@
 This is a test of the assertions made in
 zope.security.checkers._default_checkers.
 
-$Id: test_standard_checkers.py,v 1.6 2003/08/15 19:49:56 garrett Exp $
+$Id: test_standard_checkers.py,v 1.7 2003/11/05 03:08:08 jeremy Exp $
 """
 
 from zope.security.checker import ProxyFactory, NamesChecker
 from zope.exceptions import ForbiddenAttribute
-from __future__ import generators
 
 
 def check_forbidden_get(object, attr):

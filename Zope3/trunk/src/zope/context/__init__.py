@@ -16,10 +16,8 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.27 2003/06/19 17:25:19 stevea Exp $
+$Id: __init__.py,v 1.28 2003/11/05 03:08:15 jeremy Exp $
 """
-from __future__ import generators
-
 __metaclass__ = type
 
 import sys

@@ -13,11 +13,8 @@
 ##############################################################################
 """More convenience functions for dealing with proxies.
 
-$Id: __init__.py,v 1.7 2003/07/01 23:26:38 jim Exp $
+$Id: __init__.py,v 1.8 2003/11/05 03:08:12 jeremy Exp $
 """
-
-from __future__ import generators
-
 from zope.interface import moduleProvides
 from zope.proxy.interfaces import IProxyIntrospection
 from types import ClassType

@@ -13,11 +13,8 @@
 ##############################################################################
 """ZCML directive for module security declarations
 
-
-$Id: modulezcml.py,v 1.1 2003/09/02 20:47:05 jim Exp $
+$Id: modulezcml.py,v 1.2 2003/11/05 03:08:17 jeremy Exp $
 """
-from __future__ import generators
-
 import zope.interface
 import zope.schema
 import zope.configuration.fields

@@ -14,11 +14,8 @@
 
 """Sample vocabularies for use with the complexsample widgets.
 
-$Id: vocabulary.py,v 1.2 2003/08/04 14:54:22 philikon Exp $
+$Id: vocabulary.py,v 1.3 2003/11/05 03:08:26 jeremy Exp $
 """
-
-from __future__ import generators
-
 from zope.interface.declarations import implements
 from zope.schema.interfaces import ITokenizedTerm, IIterableVocabulary
 

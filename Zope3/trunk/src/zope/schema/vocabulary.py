@@ -30,12 +30,6 @@ from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm
 
-try:
-    basestring  # new in Python 2.3
-except NameError:
-    from types import StringTypes as basestring
-
-
 class ContainerValidatedProperty(ValidatedProperty):
 
     def __get__(self, inst, type=None):

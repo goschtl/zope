@@ -14,15 +14,12 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.20 2003/11/03 21:37:59 jeremy Exp $
+$Id: subs.py,v 1.21 2003/11/05 03:08:20 jeremy Exp $
 """
-from __future__ import generators
 from zope.exceptions import NotFoundError
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
 from zodb.btrees.IOBTree import IOBTree
-
-from types import StringTypes
 
 from zope.proxy import removeAllProxies
 
@@ -35,21 +32,12 @@ from zope.component import getService, queryService, getAdapter, queryAdapter
 from zope.app.services.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
-import logging
 from zope.interface import implements
 from zope.app.container.contained import Contained
 
-__metaclass__ = type
+import logging
 
-try:
-    enumerate # python 2.3
-except NameError:
-    def enumerate(collection):
-        'Generates an indexed series:  (0,coll[0]), (1,coll[1]) ...'
-        count = 0
-        for item in collection:
-            yield count, item
-            count += 1
+__metaclass__ = type
 
 class Subscribable(Persistent, Contained):
     """A local mix-in"""
@@ -501,7 +489,7 @@ def getWaysToSubscribe(context, reference, allways=True):
                 except NotFoundError:
                     path = getPath(wrappedobj)
             cleanobj = removeAllProxies(wrappedobj)
-    elif isinstance(clean_reference, StringTypes):
+    elif isinstance(clean_reference, basestring):
         reftype = unicode
         path = canonicalPath(clean_reference)
         try:

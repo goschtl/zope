@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.40 2003/10/03 20:37:51 sidnei Exp $
+$Id: checker.py,v 1.41 2003/11/05 03:08:10 jeremy Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -21,8 +21,6 @@ Setting ZOPE_WATCH_CHECKERS to 1 will display messages about unauthorized or
 forbidden attribute access.  Setting it to a larger number will also display
 messages about granted attribute access.
 """
-from __future__ import generators
-
 import os
 import sys
 import types

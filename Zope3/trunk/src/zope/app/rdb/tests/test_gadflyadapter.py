@@ -13,34 +13,14 @@
 ##############################################################################
 """Gadfly database adapter unit tests.
 
-$Id: test_gadflyadapter.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id: test_gadflyadapter.py,v 1.3 2003/11/05 03:08:18 jeremy Exp $
 """
 
 import os
 import tempfile
 from unittest import TestCase, TestSuite, main, makeSuite
+
 from zope.app.rdb import DatabaseAdapterError
-
-try:
-    from tempfile import mkdtemp
-except ImportError:
-    import errno
-
-    def mkdtemp(suffix=""):
-        """Poor man's version of tempfile.mkdtemp from Python 2.3"""
-
-        for seq in xrange(1000):
-            name = tempfile.mktemp(suffix)
-            try:
-                os.mkdir(name, 0700)
-                return name
-            except IOError, e:
-                if e.errno == errno.EEXIST:
-                    continue
-                raise
-
-        raise IOError(errno.EEXIST, "No usable temporary directory name found")
-
 
 class GadflyTestBase(TestCase):
 
@@ -56,7 +36,7 @@ class GadflyTestBase(TestCase):
     def getGadflyRoot(self):
         # note that self is GadflyTestBase here
         if not self.tempdir:
-            self.tempdir = mkdtemp('gadfly')
+            self.tempdir = tempfile.mkdtemp('gadfly')
         return self.tempdir
 
     def _create(self, *args):

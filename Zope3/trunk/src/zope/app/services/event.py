@@ -13,11 +13,8 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.35 2003/09/21 17:31:59 jim Exp $
+$Id: event.py,v 1.36 2003/11/05 03:08:16 jeremy Exp $
 """
-
-from __future__ import generators
-
 from zope.app import zapi
 
 from zope.exceptions import NotFoundError
