@@ -67,6 +67,7 @@
     label="Edit UseCase"
     name="EditUseCase.html"
     title="Edit Use Case"
+    template="edit.pt"
     fields = "usecase"
     permission="zope.ManageContent"
     />
@@ -76,6 +77,7 @@
     label="Edit Concept"
     name="EditConcept.html"
     title="Edit Concept"
+    template="edit.pt"
     fields = "concept"
     permission="zope.ManageContent"
     />
@@ -85,6 +87,7 @@
     label="Edit Todo"
     name="EditTodo.html"
     title="Edit Todo"
+    template="edit.pt"
     fields = "todo"
     permission="zope.ManageContent"
     />
@@ -94,6 +97,7 @@
     label="Edit Issues"
     name="EditIssues.html"
     title="Edit Issues"
+    template="edit.pt"
     fields = "issues"
     permission="zope.ManageContent"
     />
