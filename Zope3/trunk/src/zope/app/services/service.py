@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.33 2003/12/05 14:42:01 philikon Exp $
+$Id: service.py,v 1.34 2003/12/18 08:01:18 jim Exp $
 """
 
 import sys
@@ -31,7 +31,8 @@ import sys
 from zope.app import zapi
 from zodb.code.module import PersistentModuleRegistry
 
-from zope.interface import implements
+import zope.interface
+import zope.app.interfaces.services.registration
 
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
@@ -39,10 +40,12 @@ from zope.component.exceptions import ComponentLookupError
 from zope.app.component.nextservice import getNextService
 from zope.app.component.nextservice import getNextServiceManager
 
+from zope.app.container.constraints import ItemTypePrecondition
+
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.service import IServiceRegistration
-from zope.app.interfaces.services.service import IServiceManager
+from zope.app.interfaces.services.service import ISiteManager
 
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
@@ -57,11 +60,24 @@ from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.services.service import ISite
 from zope.app.location import inside
 
-class SiteManager(BTreeContainer,
-                  PersistentModuleRegistry,
-                  NameComponentRegistry):
+class IRegistrationManagerContainerContainer(zope.interface.Interface):
 
-    implements(IServiceManager)
+    def __setitem__(name, folder):
+        """Add a site-management folder
+        """
+    __setitem__.precondition = ItemTypePrecondition(
+        zope.app.interfaces.services.registration.IRegistrationManagerContainer)
+
+class SiteManager(
+    BTreeContainer,
+    PersistentModuleRegistry,
+    NameComponentRegistry,
+    ):
+
+    zope.interface.implements(
+        ISiteManager,
+        IRegistrationManagerContainerContainer,
+        )
 
     def __init__(self, site):
         self.__parent__ = site
@@ -90,7 +106,7 @@ class SiteManager(BTreeContainer,
                 return
 
     def addSubsite(self, sub):
-        """See IServiceManager interface
+        """See ISiteManager interface
         """
         subsite = sub.__parent__
 
@@ -154,7 +170,7 @@ class SiteManager(BTreeContainer,
 
 
     def queryLocalService(wrapped_self, name, default=None):
-        """See IServiceManager
+        """See ISiteManager
         """
 
         # This is rather tricky. Normally, getting a service requires
@@ -246,7 +262,7 @@ class ServiceRegistration(NamedComponentRegistration):
 
     __doc__ = IServiceRegistration.__doc__
 
-    implements(IServiceRegistration)
+    zope.interface.implements(IServiceRegistration)
 
     serviceType = 'Services'
 
