@@ -8,10 +8,6 @@ from ISecurityProxyFactory import ISecurityProxyFactory
 from Zope.Security.SecurityManagement import getSecurityManager
 import sys, os, types
 import datetime
-from Persistence.BTrees.IIBTree import IIBTree, IIBucket, IISet, IITreeSet
-from Persistence.BTrees.IOBTree import IOBTree, IOBucket, IOSet, IOTreeSet
-from Persistence.BTrees.OIBTree import OIBTree, OIBucket, OISet, OITreeSet
-from Persistence.BTrees.OOBTree import OOBTree, OOBucket, OOSet, OOTreeSet
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
     WATCH_CHECKERS = 1
@@ -377,8 +373,6 @@ BasicTypes = {
     str: NoProxy,
     unicode: NoProxy,
     type(not 1): NoProxy, # Boolean, if available :)
-    type(iter(IIBTree())): NoProxy, # II-iterator
-    type(IIBTree().keys()): NoProxy, # IIBTreeItems
 }
 
 class _Sequence(object):
@@ -441,30 +435,6 @@ _default_checkers = {
                                        'isocalendar', 'isoformat', 'min',
                                        'max', 'resolution', 'utcoffset',
                                        'tzname', 'dst']),
-    IIBTree: _btreeChecker,
-    IOBTree: _btreeChecker,
-    OIBTree: _btreeChecker,
-    OOBTree: _btreeChecker,
-    IIBucket: _btreeBucketChecker,
-    IOBucket: _btreeBucketChecker,
-    OIBucket: _btreeBucketChecker,
-    OOBucket: _btreeBucketChecker,
-    IISet: _btreeSetChecker,
-    IOSet: _btreeSetChecker,
-    OISet: _btreeSetChecker,
-    OOSet: _btreeSetChecker,
-    IITreeSet: _btreeTreeSetChecker,
-    IOTreeSet: _btreeTreeSetChecker,
-    OITreeSet: _btreeTreeSetChecker,
-    OOTreeSet: _btreeTreeSetChecker,
-    # II-iterator is a rock
-    type(iter(IOBTree())): _iteratorChecker, # IO-iterator
-    type(iter(OIBTree())): _iteratorChecker, # OI-iterator
-    type(iter(OOBTree())): _iteratorChecker, # OO-iterator
-    # IIBTreeItems is a rock
-    type(IOBTree().keys()): _btreeItemsChecker, # IOBTreeItems
-    type(OIBTree().keys()): _btreeItemsChecker, # OIBTreeItems
-    type(OOBTree().keys()): _btreeItemsChecker, # OOBTreeItems
     }
 
 
