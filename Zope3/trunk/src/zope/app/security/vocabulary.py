@@ -21,9 +21,11 @@ from zope.security.checker import CheckerPublic
 from zope.app import zapi
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
-from zope.schema.interfaces import ISource, ISourceQueriables
+from zope.schema.interfaces import ISourceQueriables
 from zope.app.security.interfaces import IPermission
 from zope.app.component.localservice import queryNextService
+
+from interfaces import IPrincipalSource
 
 class PermissionIdsVocabulary(SimpleVocabulary):
     """A vocabular of permission IDs.
@@ -101,7 +103,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
 
 class PrincipalSource(object):
     """Generic Principal Source"""
-    implements(ISource, ISourceQueriables)
+    implements(IPrincipalSource, ISourceQueriables)
 
     def __contains__(self, id):
         """Test for the existence of a user.

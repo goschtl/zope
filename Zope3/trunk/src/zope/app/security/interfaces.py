@@ -18,6 +18,7 @@ $Id$
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.schema import Text, TextLine
+from zope.schema.interfaces import ISource
 
 class IPrincipal(Interface):
     """Principals are security artifacts that execute actions in a security
@@ -195,3 +196,6 @@ class IPermission(Interface):
         description=_("Provides a description for the permission."),
         required=False)
 
+
+class IPrincipalSource(ISource):
+    """A Source of Principal Ids"""
