@@ -13,12 +13,15 @@
 ##############################################################################
 """
 
-$Id: proxy.py,v 1.3 2002/12/26 18:11:48 stevea Exp $
+$Id: proxy.py,v 1.4 2002/12/26 18:42:47 stevea Exp $
 """
 
 from zope.security._proxy import getObject, getChecker
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.checker import Checker as _trustedChecker
+
+# This import represents part of the API for this module
+from zope.security.checker import ProxyFactory
 
 def trustedRemoveSecurityProxy(object):
     if ((type(object) is Proxy) and
