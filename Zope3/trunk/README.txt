@@ -9,7 +9,7 @@ Welcome to the Zope3 source
 
 Building and running tests
 
-  Zope3 requires Python 2.2
+  Zope3 requires Python 2.2.2 or later.
 
   In the top-level Zope3 directory, you should find a script called
   stupid_build.py.  Run it to build the extension modules needed by
