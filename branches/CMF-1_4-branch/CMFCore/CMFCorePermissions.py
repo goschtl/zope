@@ -24,6 +24,7 @@ from Globals import ApplicationDefaultPermissions
 # General Zope permissions
 View = Permissions.view
 AccessContentsInformation = Permissions.access_contents_information
+DeleteObjects = Permissions.delete_objects
 UndoChanges = Permissions.undo_changes
 ChangePermissions = Permissions.change_permissions
 ViewManagementScreens = Permissions.view_management_screens
