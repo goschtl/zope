@@ -14,7 +14,7 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.16 2003/02/18 17:26:12 jim Exp $
+$Id: z3.py,v 1.17 2003/03/06 18:25:13 gvanrossum Exp $
 """
 
 import os, sys
@@ -42,7 +42,8 @@ def run(argv=sys.argv):
     # Initialize the logging module.
     import logging.config
     logging.basicConfig()
-    logging.root.setLevel(logging.CRITICAL)
+    # See zope/app/startup/sitedefinition.py for this default:
+    logging.root.setLevel(logging.INFO)
     # If log.ini exists, use it
     if os.path.exists("log.ini"):
         logging.config.fileConfig("log.ini")
