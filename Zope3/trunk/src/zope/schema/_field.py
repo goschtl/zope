@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.3 2003/01/25 03:05:58 rdmurray Exp $
+$Id: _field.py,v 1.4 2003/01/25 03:14:16 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -109,6 +109,7 @@ def _validate_sequence(value_types, value, errors=None):
 
 class Sequence(MinMaxLen, Iterable):
     __doc__ = ISequence.__doc__
+    __implements__ = ISequence
     value_types = FieldProperty(ISequence['value_types'])
 
     def __init__(self, value_types=None, **kw):
