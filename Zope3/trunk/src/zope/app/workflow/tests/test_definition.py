@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Definition Tests
 
-$Id: test_definition.py,v 1.4 2004/03/03 20:20:36 srichter Exp $
+$Id: test_definition.py,v 1.5 2004/03/17 16:38:13 srichter Exp $
 """
 import unittest
 
@@ -37,10 +37,9 @@ class ProcessDefinitionTests(unittest.TestCase):
 
 
 
-from zope.app.container.tests.test_icontainer \
-     import Test as ContainerTests
+from zope.app.container.tests.test_icontainer import TestSampleContainer
 
-class ProcessDefinitionElementContainerTests(ContainerTests):
+class ProcessDefinitionElementContainerTests(TestSampleContainer):
 
     def testIProcessDefinitionElementContainer(self):
         verifyClass(IProcessDefinitionElementContainer,
