@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.9 2003/06/01 15:59:28 jim Exp $
+$Id: __init__.py,v 1.10 2003/06/06 20:44:28 stevea Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -31,6 +31,7 @@ from zope.context import getWrapperContainer
 from zope.app.context import ContextWrapper
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
+from zope.interface import implements
 
 
 class NameConfigurableView(BrowserView):
@@ -195,8 +196,7 @@ class ComponentPathWidget(BrowserWidget):
     the context.
     """
 
-    __implements__ =  IBrowserWidget
-
+    implements(IBrowserWidget)
 
     def __call__(self):
         "See zope.app.interfaces.browser.form.IBrowserWidget"

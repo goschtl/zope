@@ -16,13 +16,14 @@
 from zope.component import getAdapter, getService
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.cache.cache import ICacheable
+from zope.interface import implements
 
 annotation_key = 'zope.app.cache.CacheManager'
 
 class AnnotationCacheable:
     """Stores cache information in object's annotations."""
 
-    __implements__ = ICacheable
+    implements(ICacheable)
 
     def __init__(self, context):
         self._context = context

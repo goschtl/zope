@@ -13,11 +13,11 @@
 ##############################################################################
 """Unit tests for service adding and configuration views.
 
-$Id: test_service.py,v 1.2 2003/04/30 23:37:57 faassen Exp $
+$Id: test_service.py,v 1.3 2003/06/06 20:44:29 stevea Exp $
 """
 
 import unittest
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -27,7 +27,7 @@ class IFoo(Interface):
     pass
 
 class Foo:
-    __implements__ = IFoo
+    implements(IFoo)
     def __init__(self, url='some_url'):
         self.url = url
 

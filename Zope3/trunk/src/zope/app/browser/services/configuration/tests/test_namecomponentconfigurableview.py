@@ -13,11 +13,11 @@
 ##############################################################################
 """Unit test for the generic NameComponentConfigurable view mixin
 
-$Id: test_namecomponentconfigurableview.py,v 1.2 2003/03/24 16:42:20 mgedmin Exp $
+$Id: test_namecomponentconfigurableview.py,v 1.3 2003/06/06 20:44:28 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -44,7 +44,7 @@ class SM:
 class I(Interface): pass
 
 class Registry:
-    __implements__ = I
+    implements(I)
 
     def __init__(self, active):
         self._active = active
@@ -56,7 +56,7 @@ class ITestConfiguration(Interface): pass
 
 class Configuration:
 
-    __implements__ = ITestConfiguration, ITraversable
+    implements(ITestConfiguration, ITraversable)
 
     def __init__(self, path):
         self.componentPath = path

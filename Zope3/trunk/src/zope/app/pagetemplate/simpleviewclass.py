@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: simpleviewclass.py,v 1.8 2003/05/27 14:18:20 jim Exp $
+$Id: simpleviewclass.py,v 1.9 2003/06/06 20:44:31 stevea Exp $
 """
 
 import sys
@@ -22,10 +22,11 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.context import ContextMethod
 from zope.publisher.interfaces import NotFound
+from zope.interface import implements
 
 class simple(BrowserView):
 
-    __implements__ = IBrowserPublisher, BrowserView.__implements__
+    implements(IBrowserPublisher)
 
     def browserDefault(self, request):
         return self, ()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: test_caching.py,v 1.7 2003/03/11 16:10:56 jim Exp $
+$Id: test_caching.py,v 1.8 2003/06/06 20:44:30 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -31,16 +31,17 @@ from zope.app.services.servicenames import Adapters
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.service import serviceManager as sm
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 class ObjectStub:
-    __implements__ = IAttributeAnnotatable
+    implements(IAttributeAnnotatable)
 
 class CacheStub:
     pass
 
 class CachingServiceStub:
 
-    __implements__ = ICachingService, ISimpleService
+    implements(ICachingService, ISimpleService)
 
     def __init__(self):
         self.caches = {}

@@ -14,16 +14,17 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.5 2003/06/01 15:59:27 jim Exp $
+$Id: test_unauthorized.py,v 1.6 2003/06/06 20:44:27 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.publisher.browser import TestRequest
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
+from zope.interface import implements
 
 class DummyPrincipal:
-    __implements__ = IPrincipal  # this is a lie
+    implements(IPrincipal)  # this is a lie
 
     def __init__(self, id):
         self.id = id
@@ -32,7 +33,7 @@ class DummyPrincipal:
         return self.id
 
 class DummyAuthService:
-    __implements__ = IAuthenticationService  # this is a lie
+    implements(IAuthenticationService)  # this is a lie
 
     def unauthorized(self, principal_id, request):
         self.principal_id = principal_id

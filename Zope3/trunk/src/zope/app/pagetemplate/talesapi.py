@@ -14,17 +14,18 @@
 """Implementation of the Zope TALES API
 
 
-$Id: talesapi.py,v 1.4 2003/06/03 22:46:21 jim Exp $
+$Id: talesapi.py,v 1.5 2003/06/06 20:44:31 stevea Exp $
 """
 
 from zope.app.interfaces.talesapi import IZopeTalesAPI
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app import zapi
+from zope.interface import implements
 
 class ZopeTalesAPI(object):
 
-    __implements__ = IZopeTalesAPI
+    implements(IZopeTalesAPI)
 
     def __init__(self, context):
         self.context = context

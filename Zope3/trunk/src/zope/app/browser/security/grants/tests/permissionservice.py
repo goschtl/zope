@@ -13,16 +13,17 @@
 ##############################################################################
 """PermissionService implementation for testing
 
-$Id: permissionservice.py,v 1.4 2003/03/11 16:10:48 jim Exp $
+$Id: permissionservice.py,v 1.5 2003/06/06 20:44:27 stevea Exp $
 """
 
 from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IPermission
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 class Permission:
 
-    __implements__ = IPermission
+    implements(IPermission)
 
     def __init__(self, id, title): self._id, self._title = id, title
     def getId(self): return self._id
@@ -31,7 +32,7 @@ class Permission:
 
 class PermissionService:
 
-    __implements__ = IPermissionService, ISimpleService
+    implements(IPermissionService, ISimpleService)
 
     def __init__(self, **kw):
         self._permissions = r = {}

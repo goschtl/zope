@@ -13,13 +13,13 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.9 2003/06/03 22:46:17 jim Exp $
+$Id: test_field_widget.py,v 1.10 2003/06/06 20:44:29 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 
 class FakeComponentPath:
@@ -42,10 +42,10 @@ class I1(Interface):  pass
 class I2(Interface):  pass
 
 class C:
-    __implements__ = I1
+    implements(I1)
 
 class D:
-    __implements__ = I2
+    implements(I2)
 
 instanceOfComponentC = C()
 

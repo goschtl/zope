@@ -18,7 +18,7 @@ import unittest
 from zope.app.browser.services.utility import useconfiguration
 from zope.app.tests import placelesssetup
 from zope.component.view import provideView
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.publisher.browser import BrowserView, IBrowserPresentation
 from zope.publisher.browser import TestRequest
 
@@ -40,7 +40,7 @@ class Stub:
     # Does triple duty as a stub for a configuration, a configuration
     # registry, and a component!
 
-    __implements__ = IStub
+    implements(IStub)
 
     def __init__(self, url=None):
         self.url = url

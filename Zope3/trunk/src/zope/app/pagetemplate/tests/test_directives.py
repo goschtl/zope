@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.2 2003/05/01 19:35:26 faassen Exp $
+$Id: test_directives.py,v 1.3 2003/06/06 20:44:31 stevea Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.component.adapter import provideAdapter
 from zope.app.interfaces.traversing import ITraversable
 
@@ -42,7 +42,7 @@ class I(Interface):
     pass
 
 class Adapter:
-    __implements__ = (I, ITraversable)
+    implements(I, ITraversable)
 
     def __init__(self, context):
         pass

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_principalroleview.py,v 1.8 2003/04/30 23:37:55 faassen Exp $
+$Id: test_principalroleview.py,v 1.9 2003/06/06 20:44:27 stevea Exp $
 """
 
 import unittest
@@ -29,6 +29,7 @@ from zope.app.interfaces.security import IAuthenticationService
 from zope.app.interfaces.security import IPrincipalRoleManager
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 class DummySetting:
     def __init__(self, name):
@@ -38,14 +39,14 @@ class DummySetting:
 
 class DummyManager:
 
-    __implements__ = IPrincipalRoleManager
+    implements(IPrincipalRoleManager)
 
     def getSetting(self, role, principal):
         return DummySetting('%r:%r' % (role, principal))
 
 class DummyRoleService:
 
-    __implements__ = IRoleService, ISimpleService
+    implements(IRoleService, ISimpleService)
 
     def __init__(self, roles):
         self._roles = roles
@@ -66,7 +67,7 @@ class DummyObject:
 
 class DummyAuthenticationService:
 
-    __implements__ = IAuthenticationService, ISimpleService
+    implements(IAuthenticationService, ISimpleService)
 
     def __init__(self, principals):
         self._principals = principals

@@ -15,7 +15,7 @@ import unittest
 
 from zope.component import getService
 from zope.app.services.servicenames import Views
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -25,7 +25,7 @@ class I1(Interface):
     pass
 
 class C1:
-    __implements__ = I1
+    implements(I1)
 
 class InstanceWithContext:
     def __init__(self, context):
@@ -73,7 +73,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
              import IPresentationRequest
 
         class MyRequest:
-            __implements__ = IPresentationRequest
+            implements(IPresentationRequest)
             def getPresentationType(self):
                 return the_view_type
             def getPresentationSkin(self):

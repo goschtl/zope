@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_ramcache.py,v 1.7 2003/05/01 19:35:06 faassen Exp $
+$Id: test_ramcache.py,v 1.8 2003/06/06 20:44:30 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -21,11 +21,12 @@ from zope.app.cache.tests.test_icache import BaseICacheTest
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.interface.verify import verifyClass, verifyObject
+from zope.interface import implements
 from time import time
 
 
 class Locatable:
-    __implements__ = IPhysicallyLocatable
+    implements(IPhysicallyLocatable)
 
     def __init__(self, path=('a', 'b')):
         self.path = path
@@ -204,7 +205,7 @@ class TestRAMCache(PlacelessSetup,
         from zope.app.interfaces.event import IEvent
 
         class DummyEvent:
-            __implements__ = IEvent
+            implements(IEvent)
 
         location = ('aaa',)
         ob = Locatable(path=location)

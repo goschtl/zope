@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_principalpermissionview.py,v 1.7 2003/03/11 16:10:48 jim Exp $
+$Id: test_principalpermissionview.py,v 1.8 2003/06/06 20:44:27 stevea Exp $
 """
 
 import unittest
@@ -33,15 +33,16 @@ from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.services.tests.placefulsetup \
      import PlacefulSetup
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 class DummyContext:
 
-    __implements__ = IAttributeAnnotatable
+    implements(IAttributeAnnotatable)
 #IPrincipalPermissionManager, IPrincipalPermissionMap
 
 class DummyPermissionService:
 
-    __implements__ = IPermissionService, ISimpleService
+    implements(IPermissionService, ISimpleService)
 
     def __init__(self, perm_objs):
         perms = {}
@@ -58,7 +59,7 @@ class DummyPermissionService:
 
 
 class DummyAuthenticationService:
-    __implements__ = IAuthenticationService, ISimpleService
+    implements(IAuthenticationService, ISimpleService)
 
     def __init__(self, principals):
         pr = {}
@@ -71,7 +72,7 @@ class DummyAuthenticationService:
 
 class DummyAdapter:
 
-    __implements__ = IPrincipalPermissionManager, IPrincipalPermissionMap
+    implements(IPrincipalPermissionManager, IPrincipalPermissionMap)
 
     def __init__(self, context):
         self._context = context

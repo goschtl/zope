@@ -13,13 +13,14 @@
 ##############################################################################
 """
 Revision Information:
-$Id: i18nimage.py,v 1.2 2002/12/25 14:12:59 jim Exp $
+$Id: i18nimage.py,v 1.3 2003/06/06 20:44:31 stevea Exp $
 """
 
 from zope.app.content.image import IImage, Image, getImageInfo
 from zope.app.interfaces.content.i18nfile import II18nFile
 from zope.app.content.i18nfile import I18nFile
 from zope.app.interfaces.annotation import IAnnotatable
+from zope.interface import implements
 
 
 class II18nImage(II18nFile, IImage):
@@ -31,15 +32,10 @@ class I18nImage(I18nFile):
     languages share the same content type.
     """
 
-    __implements__ = (
-        II18nImage,
-        IAnnotatable,
-        )
-
+    implements(II18nImage, IAnnotatable)
 
     def _create(self, data):
         return Image(data)
-
 
     def setData(self, data, language=None):
         '''See interface IFile'''
@@ -52,7 +48,6 @@ class I18nImage(I18nFile):
             contentType = getImageInfo(self.getData(language))[0]
             if contentType:
                 self.setContentType(contentType)
-
 
     def getImageSize(self, language=None):
         '''See interface IImage'''

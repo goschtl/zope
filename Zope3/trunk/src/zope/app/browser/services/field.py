@@ -13,7 +13,7 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.7 2003/03/21 20:59:24 jim Exp $
+$Id: field.py,v 1.8 2003/06/06 20:44:28 stevea Exp $
 """
 __metaclass__ = type
 
@@ -25,6 +25,7 @@ from zope.publisher.browser import BrowserView
 from xml.sax.saxutils import quoteattr
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.traversing import traverse, canonicalPath
+from zope.interface import implements
 
 class ComponentPathWidget(BrowserWidget):
 
@@ -56,7 +57,7 @@ class ComponentPathDisplayWidget(ComponentPathWidget):
 
 class ComponentLocationWidget(Widget, BrowserView):
 
-    __implements__ = IBrowserWidget
+    implements(IBrowserWidget)
 
     # Names used:
     #
