@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.10 2003/07/28 22:22:39 jim Exp $
+$Id: xmlconfig.py,v 1.11 2003/07/30 14:35:00 jim Exp $
 """
 
 import errno
@@ -84,24 +84,24 @@ class ParserInfo:
     This includes the directive location, as well as text data
     contained in the directive.
 
-    >>> info = ParserInfo('tests//sample.zcml', 1, 1)
+    >>> info = ParserInfo('tests//sample.zcml', 1, 0)
     >>> info
-    File "tests//sample.zcml", line 1.1
+    File "tests//sample.zcml", line 1.0
 
     >>> print info
-    File "tests//sample.zcml", line 1.1
+    File "tests//sample.zcml", line 1.0
 
     >>> info.characters("blah\\n")
     >>> info.characters("blah")
     >>> info.text
     u'blah\\nblah'
 
-    >>> info.end(7,16)
+    >>> info.end(7, 0)
     >>> info
-    File "tests//sample.zcml", line 1.1-7.16
+    File "tests//sample.zcml", line 1.0-7.0
 
     >>> print info
-    File "tests//sample.zcml", line 1.1-7.16
+    File "tests//sample.zcml", line 1.0-7.0
       <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
         <!-- zope.configure -->
         <directives namespace="http://namespaces.zope.org/zope">
@@ -147,8 +147,21 @@ class ParserInfo:
             src = "  Could not read source."
         else:
             lines = f.readlines()[self.line-1:self.eline]
-            lines[0] = lines[0][self.column-1:]
-            lines[-1] = lines[-1][:self.ecolumn]
+            ecolumn = self.ecolumn
+            if lines[-1][ecolumn:ecolumn+2] == '</':
+                # We're pointing to the start of an end tag. Try to find
+                # the end
+                l = lines[-1].find('>', ecolumn)
+                if l >= 0:
+                    lines[-1] = lines[-1][:l+1]
+            else:
+                lines[-1] = lines[-1][:ecolumn+1]
+
+            column = self.column
+            if lines[0][:column].strip():
+                # Remove text before start if it's noy whitespace
+                lines[0] = lines[0][self.column:]
+                
             src = ''.join([u"  "+l for l in lines])
 
         return "%s\n%s" % (`self`, src)
