@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.24 2004/03/02 15:50:03 srichter Exp $
+$Id: engine.py,v 1.25 2004/03/04 02:08:31 philikon Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -137,7 +137,7 @@ class ZopeEngine(ExpressionEngine):
 
         return context
 
-def Engine():
+def _Engine():
     e = ZopeEngine()
     for pt in ZopePathExpr._default_type_names:
         e.registerType(pt, ZopePathExpr)
@@ -148,7 +148,7 @@ def Engine():
     e.registerBaseName('modules', ProxyFactory(sys.modules))
     return e
 
-Engine = Engine()
+Engine = _Engine()
 
 class AppPT:
 
