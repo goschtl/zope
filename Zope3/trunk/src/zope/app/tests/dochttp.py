@@ -52,7 +52,7 @@ default_options = [
 
     '-I', 'Accept-Charset', '-I', 'Accept-Encoding', '-I', 'Accept-Language',
     '-I', 'Accept', '-I', 'Connection', '-I', 'Host', '-I', 'Keep-Alive',
-    '-I', 'User-Agent',
+    '-I', 'User-Agent', '-I', 'Content-Length',
 
     '-O', 'Date', '-O', 'Server', '-O', 'X-Content-Type-Warning',
     '-O', 'X-Powered-By',
@@ -161,14 +161,16 @@ class Message:
                  v.rstrip()
                  )
                 for (name, v) in headers
-                if name.lower() not in skip_headers
             ]
-            self.headers = headers
             content_length = int(dict(headers).get('Content-Length', '0'))
             if content_length:
                 self.body = file.read(content_length).split('\n')
             else:
                 self.body = []
+            headers = [(name, v) for (name, v) in headers
+                       if name.lower() not in skip_headers
+                       ]
+            self.headers = headers
 
     def __nonzero__(self):
         return bool(self.start)
