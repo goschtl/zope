@@ -1,6 +1,6 @@
 from zope.interface import implements
 from zope.component import queryUtility
-from Products.Five.security.interfaces import IPermission
+from zope.app.security.interfaces import IPermission
 
 CheckerPublic = 'zope.Public'
 CheckerPrivate = 'zope.Private'
