@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Exceptions used by the Component Architecture
 
+$Id$
+"""
 from zope.exceptions import NotFoundError
 
 __all__ = ["ComponentLookupError",
