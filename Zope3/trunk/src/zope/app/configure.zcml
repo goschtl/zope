@@ -86,7 +86,6 @@
   <include package="zope.app.rdb" />
   <include package="zope.app.traversing" />
   <include package="zope.app.form" />
-  <include package="zope.app.dublincore" />
   <include package="zope.app.index" />
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.interpreter" />
@@ -128,6 +127,7 @@
 
   <!-- Additional packages -->
 
+  <include package="zope.app.dublincore" />
   <include package="zope.app.cache" />
   <include package="zope.app.workflow" />
   <include package="zope.app.catalog"/>

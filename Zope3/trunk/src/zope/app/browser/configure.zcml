@@ -9,7 +9,6 @@
   <include package=".applicationcontrol" />
   <include package=".component" />
   <include package=".container" />
-  <include package=".dublincore" />
   <include package=".form" />
   <include package=".security" />
   <include package=".services" />

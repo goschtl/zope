@@ -10,30 +10,36 @@
       />
 
   <class class=".annotatableadapter.ZDCAnnotatableAdapter">
-    <require permission="zope.View"
-             interface="zope.app.interfaces.dublincore.IZopeDublinCore"
-             />
+    <require
+        permission="zope.View"
+        interface="zope.app.interfaces.dublincore.IZopeDublinCore"
+        />
   </class>
 
   <event:subscribe
-      subscriber = ".timeannotators.ModifiedAnnotator"
-      event_types = "zope.app.interfaces.event.IObjectModifiedEvent"
+      subscriber=".timeannotators.ModifiedAnnotator"
+      event_types="zope.app.interfaces.event.IObjectModifiedEvent"
       />
 
   <event:subscribe
-      subscriber = ".timeannotators.CreatedAnnotator"
-      event_types = "zope.app.interfaces.event.IObjectCreatedEvent"
+      subscriber=".timeannotators.CreatedAnnotator"
+      event_types="zope.app.interfaces.event.IObjectCreatedEvent"
       />
 
   <event:subscribe
-    subscriber=".creatorannotator.CreatorAnnotator"
-    event_types="zope.app.interfaces.event.IObjectModifiedEvent
-                 zope.app.interfaces.event.IObjectCreatedEvent"
+      subscriber=".creatorannotator.CreatorAnnotator"
+      event_types="zope.app.interfaces.event.IObjectModifiedEvent
+                   zope.app.interfaces.event.IObjectCreatedEvent"
     />
 
   <fssync:adapter
-    class=".annotatableadapter.ZDCAnnotationData"
-    factory=".annotatableadapter.ZDCAnnotationDataAdapter"
-    />
+      class=".annotatableadapter.ZDCAnnotationData"
+      factory=".annotatableadapter.ZDCAnnotationDataAdapter"
+      />
+
+
+  <!-- Include browser package -->
+
+  <include package=".browser" />
 
 </configure>
