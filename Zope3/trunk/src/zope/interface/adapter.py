@@ -15,7 +15,7 @@
 
 This implementationb is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.15 2004/04/15 13:26:25 srichter Exp $
+$Id: adapter.py,v 1.16 2004/04/15 15:29:53 jim Exp $
 """
 
 
@@ -293,7 +293,7 @@ class AdapterRegistry(object):
         self._default = default
         null = self._surrogateClass(Null, self)
         self._null = null
-        surrogates = {Default.weakref(): default}
+        surrogates = {Default.weakref(): default, Null.weakref(): null}
         self._surrogates = surrogates
 
         def _remove(k):
