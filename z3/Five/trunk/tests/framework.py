@@ -70,6 +70,10 @@ if not sys.modules.has_key('Testing'):
         print 'You might need to set SOFTWARE_HOME.'
         sys.exit(1)
 
+# zope.conf must be read before 'import Testing'
+import zopeconf
+zopeconf.process()
+
 import Testing, unittest
 execfile(os.path.join(os.path.dirname(Testing.__file__), 'common.py'))
 
@@ -99,9 +103,6 @@ if 1:   # Create a new scope
         print 'Unable to locate %s.' % ztc_common
         sys.exit(1)
 
-    # run configuration
-    import zopeconf; zopeconf.process()
-    
 # Debug
 #
 print 'SOFTWARE_HOME: %s' % os.environ.get('SOFTWARE_HOME', 'Not set')
