@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.1 2003/05/12 20:19:38 gvanrossum Exp $
+$Id: merger.py,v 1.2 2003/05/13 14:10:05 gvanrossum Exp $
 """
 
 import os
@@ -94,7 +94,7 @@ class Merger(object):
     more work than reasonable).
     """
 
-    def __init__(self, metadata, verbose=True):
+    def __init__(self, metadata):
         """Constructor.
 
         The argument is the metadata database, which has a single
@@ -105,7 +105,6 @@ class Merger(object):
         clear() method.
         """
         self.metadata = metadata
-        self.verbose = verbose
 
     def getentry(self, file):
         """Helper to abstract away the existence of self.metadata."""
@@ -149,12 +148,15 @@ class Merger(object):
             origfile = orig
         else:
             origfile = "/dev/null"
-        cmd = "merge %s %s %s" % (commands.mkarg(local),
-                                  commands.mkarg(origfile),
-                                  commands.mkarg(remote))
+        cmd = "diff3 -m -E %s %s %s" % (commands.mkarg(local),
+                                        commands.mkarg(origfile),
+                                        commands.mkarg(remote))
         sts, output = commands.getstatusoutput(cmd)
-        if output and self.verbose:
-            print output
+        f = open(local, "wb")
+        try:
+            f.write(output)
+        finally:
+            f.close()
         shutil.copy(remote, orig)
         self.getentry(local).update(self.getentry(remote))
         self.clearflag(local)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.4 2003/05/13 13:47:04 gvanrossum Exp $
+$Id: test_merger.py,v 1.5 2003/05/13 14:10:06 gvanrossum Exp $
 """
 
 import os
@@ -108,7 +108,7 @@ class TestMerger(unittest.TestCase):
             md.setmetadata(local, localmetadata)
         if remotemetadata is not None:
             md.setmetadata(remote, remotemetadata)
-        m = Merger(md, verbose=False)
+        m = Merger(md)
         action, state = m.classify_files(local, orig, remote)
         self.assertEqual((action, state), (exp_action, exp_state))
         # Now try the actual merge
@@ -169,7 +169,7 @@ class TestMerger(unittest.TestCase):
     def test_remote_modified(self):
         self.runtest("a", "a", "ab", {}, {}, "Copy", "Uptodate")
 
-    def disabled_test_both_modified_resolved(self):
+    def test_both_modified_resolved(self):
         if os.name != "posix":
             # Alas, this test requires the external command 'merge'
             # which isn't usually found on Windows
