@@ -11,19 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit tests for configuration classes
+"""Unit tests for registration classes
 
-$Id: test_configurations.py,v 1.9 2003/06/12 17:03:45 gvanrossum Exp $
+$Id: test_registrations.py,v 1.1 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.interface import Interface, implements
-from zope.app.interfaces.services.configuration \
-        import Active, Registered, Unregistered
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.dependable import DependencyError
-from zope.app.services.configuration import SimpleConfiguration
-from zope.app.services.configuration import ComponentConfiguration
+from zope.app.services.registration import SimpleRegistration
+from zope.app.services.registration import ComponentRegistration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.dependable import IDependable
@@ -56,25 +57,25 @@ class ComponentStub:
         return self._dependents
 
 
-class TestSimpleConfiguration(TestCase):
+class TestSimpleRegistration(TestCase):
 
     def test_beforeDeleteHook(self):
         container = object()
-        cfg = SimpleConfiguration()
+        cfg = SimpleRegistration()
 
-        # cannot delete an active configuration
-        cfg.status = Active
+        # cannot delete an active registration
+        cfg.status = ActiveStatus
         self.assertRaises(DependencyError, cfg.beforeDeleteHook, cfg,
                           container)
 
-        # deletion of a registered configuration causes it to become
+        # deletion of a registered registration causes it to become
         # unregistered
-        cfg.status = Registered
+        cfg.status = RegisteredStatus
         cfg.beforeDeleteHook(cfg, container)
-        self.assertEquals(cfg.status, Unregistered)
+        self.assertEquals(cfg.status, UnregisteredStatus)
 
 
-class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
+class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
 
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
@@ -84,21 +85,21 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         # set up a component
         name, component = 'foo', object()
         self.rootFolder.setObject(name, component)
-        # set up a configuration
-        cfg = ComponentConfiguration("/"+name)
+        # set up a registration
+        cfg = ComponentRegistration("/"+name)
         cfg = ContextWrapper(cfg, self.rootFolder)
-        # check that getComponent finds the configuration
+        # check that getComponent finds the registration
         self.assertEquals(cfg.getComponent(), component)
 
     def test_getComponent_permission(self):
         # set up a component
         name, component = 'foo', object()
         self.rootFolder.setObject(name, component)
-        # set up a configuration
-        cfg = ComponentConfiguration("/"+name, 'zope.TopSecret')
+        # set up a registration
+        cfg = ComponentRegistration("/"+name, 'zope.TopSecret')
         cfg.getInterface = lambda: ITestComponent
         cfg = ContextWrapper(cfg, self.rootFolder)
-        # check that getComponent finds the configuration
+        # check that getComponent finds the registration
         result = cfg.getComponent()
         self.assertEquals(result, component)
         self.failUnless(type(result) is Proxy)
@@ -107,8 +108,8 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         # set up a component
         name, component = 'foo', ComponentStub()
         self.rootFolder.setObject(name, component)
-        # set up a configuration
-        cfg = ComponentConfiguration("/"+name)
+        # set up a registration
+        cfg = ComponentRegistration("/"+name)
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
         # simulate IAddNotifiable
@@ -121,9 +122,9 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         name, component = 'foo', ComponentStub()
         self.rootFolder.setObject(name, component)
         component.addDependent('/cfg')
-        # set up a configuration
-        cfg = ComponentConfiguration("/"+name)
-        cfg.status = Unregistered
+        # set up a registration
+        cfg = ComponentRegistration("/"+name)
+        cfg.status = UnregisteredStatus
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
         # simulate IDeleteNotifiable
@@ -132,13 +133,13 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         self.assertEquals(component.dependents(), ())
 
 
-# NamedConfiguration is too simple to need testing at the moment
+# NamedRegistration is too simple to need testing at the moment
 
 
 def test_suite():
     return TestSuite((
-        makeSuite(TestSimpleConfiguration),
-        makeSuite(TestComponentConfiguration),
+        makeSuite(TestSimpleRegistration),
+        makeSuite(TestComponentRegistration),
         ))
 
 if __name__=='__main__':

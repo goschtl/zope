@@ -91,7 +91,7 @@
 
 <form action="@@bundle.html" method="GET">
 
-  <p>Click "Deactivate bundle" to unregister all configurations in
+  <p>Click "Deactivate bundle" to unregister all registrations in
   this bundle.</p>
 
   <p><input type="submit" value="Deactivate bundle" /></p>

@@ -44,7 +44,7 @@ class ISessionService(Interface):
 
 
 class IConfigureSessionService(Interface):
-    """Configuration for ISessionService."""
+    """Registration for ISessionService."""
 
     def registerDataManager(name, dataManager):
         """Register ISessionDataManager under given name.

@@ -13,18 +13,18 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.16 2003/06/07 05:32:01 stevea Exp $
+$Id: test_view.py,v 1.17 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.iconfigurable import TestingIConfigurable
+from zope.app.services.tests.iregistry import TestingIRegistry
 from zope.app.services.view import ViewService
 from zope.interface import Interface, directlyProvides, implements
 from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager
-from zope.app.services.view import ViewConfiguration
+from zope.app.services.view import ViewRegistration
 from zope.app.content.folder import RootFolder
 from zope.app.traversing import traverse
 from zope.component.interfaces import IServiceService
@@ -32,7 +32,7 @@ from zope.component.view import provideView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.interfaces.services.view import IZPTTemplate
-from zope.app.services.view import PageConfiguration, BoundTemplate
+from zope.app.services.view import PageRegistration, BoundTemplate
 from zope.interface.verify import verifyObject
 from zope.component.interfaces import IViewService
 from zope.proxy import removeAllProxies
@@ -53,7 +53,7 @@ class I4(Interface):
     pass
 
 
-class Configuration:
+class Registration:
     forInterface = I1
     presentationType = I2
     viewName = 'test'
@@ -78,7 +78,7 @@ class A:
 
     run = PhonyTemplate()
 
-class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
+class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
@@ -91,11 +91,11 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
         verifyObject(IViewService, self._service)
 
 
-    def createTestingConfigurable(self):
+    def createTestingRegistry(self):
         return ContextWrapper(ViewService(), C())
 
-    def createTestingConfiguration(self):
-        return Configuration()
+    def createTestingRegistration(self):
+        return Registration()
 
     def test_implements_IViewService(self):
         verifyObject(IViewService, ViewService())
@@ -125,19 +125,19 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++site')
 
-        configure = traverse(sm, 'default').getConfigurationManager()
-        configuration = Configuration()
-        configure.setObject('', configuration)
-        configuration = traverse(configure, '1')
+        registration_manager = traverse(sm, 'default').getRegistrationManager()
+        registration = Registration()
+        registration_manager.setObject('', registration)
+        registration = traverse(registration_manager, '1')
 
         class O:
             implements(I1)
 
-        configuration.factory = A
+        registration.factory = A
 
-        registry = service.createConfigurationsFor(configuration)
-        registry.register(configuration)
-        registry.activate(configuration)
+        registry = service.createRegistrationsFor(registration)
+        registry.register(registration)
+        registry.activate(registration)
 
         o = O()
         request = TestRequest()
@@ -156,10 +156,10 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
         service = self._service
 
         sm = self.buildFolders(site=True)
-        configure = traverse(sm, 'default').getConfigurationManager()
-        configuration = Configuration()
-        configure.setObject('', configuration)
-        configuration = traverse(configure, '1')
+        registration_manager = traverse(sm, 'default').getRegistrationManager()
+        registration = Registration()
+        registration_manager.setObject('', registration)
+        registration = traverse(registration_manager, '1')
 
         class O:
             implements(I1)
@@ -178,7 +178,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
     def test_getRegisteredMatching(self):
         self.test_queryView_and_getView()
-        registry = self._service.queryConfigurationsFor(Configuration())
+        registry = self._service.queryRegistrationsFor(Registration())
 
         for args in ((), (I1E, ), (None, I2), (I1E, I2), ):
             r = self._service.getRegisteredMatching(*args)
@@ -192,14 +192,14 @@ class PhonyServiceManager(ServiceManager):
         if name == 'Foo.Bar.A':
             return A
 
-class TestViewConfiguration(PlacefulSetup, TestCase):
+class TestViewRegistration(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
         rootFolder = RootFolder()
         rootFolder.setServiceManager(PhonyServiceManager())
-        self.configuration = ContextWrapper(
-            ViewConfiguration(I1, 'test', IBrowserPresentation, "Foo.Bar.A",
+        self.registration = ContextWrapper(
+            ViewRegistration(I1, 'test', IBrowserPresentation, "Foo.Bar.A",
                               'zope.View'),
             rootFolder,
             )
@@ -207,15 +207,15 @@ class TestViewConfiguration(PlacefulSetup, TestCase):
     def test_getView(self):
         c = C()
         request = TestRequest()
-        view = self.configuration.getView(c, request)
+        view = self.registration.getView(c, request)
         self.assertEqual(view.__class__, A)
         self.assertEqual(view.context, c)
         self.assertEqual(view.request, request)
-        self.assertEqual(self.configuration.forInterface, I1)
-        self.assertEqual(self.configuration.presentationType, I2)
+        self.assertEqual(self.registration.forInterface, I1)
+        self.assertEqual(self.registration.presentationType, I2)
 
 
-class TestPageConfiguration(PlacefulSetup, TestCase):
+class TestPageRegistration(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
@@ -226,8 +226,8 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         default.setObject('t', self.__template)
 
     def test_getView_template(self):
-        configuration = ContextWrapper(
-            PageConfiguration(I1, 'test', 'zope.View',
+        registration = ContextWrapper(
+            PageRegistration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               template='/++etc++site/default/t',
                               ),
@@ -236,7 +236,7 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
 
         c = C()
         request = TestRequest()
-        view = configuration.getView(c, request)
+        view = registration.getView(c, request)
         self.assertEqual(view.__class__, BoundTemplate)
         self.assertEqual(removeAllProxies(view).template, self.__template)
 
@@ -244,12 +244,12 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         self.assert_(issubclass(view.__class__, A))
         self.assertEqual(view.context, c)
         self.assertEqual(view.request, request)
-        self.assertEqual(configuration.forInterface, I1)
-        self.assertEqual(configuration.presentationType, I2)
+        self.assertEqual(registration.forInterface, I1)
+        self.assertEqual(registration.presentationType, I2)
 
     def test_getView_attribute(self):
-        configuration = ContextWrapper(
-            PageConfiguration(I1, 'test', 'zope.View',
+        registration = ContextWrapper(
+            PageRegistration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               attribute='run',
                               ),
@@ -257,29 +257,29 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
             )
         c = C()
         request = TestRequest()
-        view = configuration.getView(c, request)
+        view = registration.getView(c, request)
         self.assertEquals(view, A.run)
 
     def test_getView_errors(self):
-        configuration = ContextWrapper(
-            PageConfiguration(I1, 'test', 'zope.View',
+        registration = ContextWrapper(
+            PageRegistration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               ),
             self.rootFolder,
             )
         c = C()
         request = TestRequest()
-        self.assertRaises(ConfigurationError, configuration.getView, c, request)
-        configuration.template = '/++etc++site/default/t'
-        configuration.attribute = 'run'
-        self.assertRaises(ConfigurationError, configuration.getView, c, request)
+        self.assertRaises(ConfigurationError, registration.getView, c, request)
+        registration.template = '/++etc++site/default/t'
+        registration.attribute = 'run'
+        self.assertRaises(ConfigurationError, registration.getView, c, request)
 
 
 def test_suite():
     return TestSuite((
         makeSuite(TestViewService),
-        makeSuite(TestViewConfiguration),
-        makeSuite(TestPageConfiguration),
+        makeSuite(TestViewRegistration),
+        makeSuite(TestPageRegistration),
         ))
 
 if __name__=='__main__':

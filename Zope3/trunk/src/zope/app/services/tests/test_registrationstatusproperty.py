@@ -15,39 +15,39 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatusproperty.py,v 1.9 2003/06/19 21:55:46 gvanrossum Exp $
+$Id: test_registrationstatusproperty.py,v 1.1 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component.interfaces import IServiceService
-from zope.app.services.tests.placefulsetup \
-     import PlacefulSetup
-from zope.app.services.tests.configurationregistry \
-     import TestingConfigurationRegistry, TestingConfiguration
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.app.interfaces.services.configuration \
-     import Active, Unregistered, Registered
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.services.tests.registrationstack import TestingRegistration
+from zope.app.services.tests.registrationstack import TestingRegistrationStack
+from zope.app.services.registration import RegistrationStatusProperty
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
-from zope.app.interfaces.services.configuration import NoLocalServiceError
+from zope.app.interfaces.services.registration import NoLocalServiceError
 from zope.interface import implements
 
 
-class TestingConfiguration(TestingConfiguration):
+class TestingRegistration(TestingRegistration):
     serviceType = "Services"
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
     service_type = "Test"
 
-class PassiveConfiguration(TestingConfiguration):
+class PassiveRegistration(TestingRegistration):
     serviceType = "NoSuchService"
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
-class UtilityConfiguration(TestingConfiguration):
+class UtilityRegistration(TestingRegistration):
     serviceType = "Utilities"
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
-class TestingConfigurationRegistry(TestingConfigurationRegistry):
-    class_ = TestingConfiguration
+class TestingRegistrationStack(TestingRegistrationStack):
+    class_ = TestingRegistration
 
 class TestingServiceManager:
 
@@ -72,15 +72,15 @@ class TestingServiceManager:
         else:
             return default
 
-    def queryConfigurationsFor(self, configuration, default=None):
-        if configuration.service_type != "Test":
-            raise ValueError("Bad service type", configuration.service_type)
+    def queryRegistrationsFor(self, registration, default=None):
+        if registration.service_type != "Test":
+            raise ValueError("Bad service type", registration.service_type)
         return self.registry
 
-    def createConfigurationsFor(self, configuration):
-        if configuration.service_type != "Test":
-            raise ValueError("Bad service type", configuration.service_type)
-        self.registry = TestingConfigurationRegistry()
+    def createRegistrationsFor(self, registration):
+        if registration.service_type != "Test":
+            raise ValueError("Bad service type", registration.service_type)
+        self.registry = TestingRegistrationStack()
         return self.registry
 
 
@@ -93,65 +93,65 @@ class Test(PlacefulSetup, TestCase):
 
     def test_property(self):
 
-        configa = ContextWrapper(TestingConfiguration('a'), self.rootFolder)
-        self.assertEqual(configa.status, Unregistered)
+        configa = ContextWrapper(TestingRegistration('a'), self.rootFolder)
+        self.assertEqual(configa.status, UnregisteredStatus)
 
-        configa.status = Registered
+        configa.status = RegisteredStatus
         self.assertEqual(self.__sm.registry._data, (None, 'a'))
-        self.assertEqual(configa.status, Registered)
+        self.assertEqual(configa.status, RegisteredStatus)
 
-        configa.status = Active
+        configa.status = ActiveStatus
         self.assertEqual(self.__sm.registry._data, ('a', ))
-        self.assertEqual(configa.status, Active)
+        self.assertEqual(configa.status, ActiveStatus)
 
-        configb = ContextWrapper(TestingConfiguration('b'), self.rootFolder)
+        configb = ContextWrapper(TestingRegistration('b'), self.rootFolder)
         self.assertEqual(self.__sm.registry._data, ('a', ))
-        self.assertEqual(configb.status, Unregistered)
+        self.assertEqual(configb.status, UnregisteredStatus)
 
-        configb.status = Registered
+        configb.status = RegisteredStatus
         self.assertEqual(self.__sm.registry._data, ('a', 'b'))
-        self.assertEqual(configb.status, Registered)
+        self.assertEqual(configb.status, RegisteredStatus)
 
-        configc = ContextWrapper(TestingConfiguration('c'), self.rootFolder)
-        self.assertEqual(configc.status, Unregistered)
+        configc = ContextWrapper(TestingRegistration('c'), self.rootFolder)
+        self.assertEqual(configc.status, UnregisteredStatus)
         self.assertEqual(self.__sm.registry._data, ('a', 'b'))
 
-        configc.status = Registered
+        configc.status = RegisteredStatus
         self.assertEqual(self.__sm.registry._data, ('a', 'b', 'c'))
-        self.assertEqual(configc.status, Registered)
+        self.assertEqual(configc.status, RegisteredStatus)
 
-        configc.status = Active
+        configc.status = ActiveStatus
         self.assertEqual(self.__sm.registry._data, ('c', 'a', 'b'))
-        self.assertEqual(configc.status, Active)
+        self.assertEqual(configc.status, ActiveStatus)
 
-        configc.status = Unregistered
+        configc.status = UnregisteredStatus
         self.assertEqual(self.__sm.registry._data, (None, 'a', 'b'))
-        self.assertEqual(configc.status, Unregistered)
-        self.assertEqual(configb.status, Registered)
-        self.assertEqual(configa.status, Registered)
+        self.assertEqual(configc.status, UnregisteredStatus)
+        self.assertEqual(configb.status, RegisteredStatus)
+        self.assertEqual(configa.status, RegisteredStatus)
 
     def test_passive(self):
         # scenario:
         #   1. create and configure an SQLConnectionService
         #   2. create and configure a database adapter&connection
         #   3. disable SQLConnectionService
-        # now the ConnectionConfiguration.status cannot access the
+        # now the ConnectionRegistration.status cannot access the
         # SQLConnectionService
 
-        configa = ContextWrapper(PassiveConfiguration('a'), self.rootFolder)
-        self.assertEqual(configa.status, Unregistered)
+        configa = ContextWrapper(PassiveRegistration('a'), self.rootFolder)
+        self.assertEqual(configa.status, UnregisteredStatus)
 
         try:
-            configa.status = Registered
+            configa.status = RegisteredStatus
         except NoLocalServiceError:
-            self.assertEqual(configa.status, Unregistered)
+            self.assertEqual(configa.status, UnregisteredStatus)
         else:
             self.fail("should complain about missing service")
 
         try:
-            configa.status = Active
+            configa.status = ActiveStatus
         except NoLocalServiceError:
-            self.assertEqual(configa.status, Unregistered)
+            self.assertEqual(configa.status, UnregisteredStatus)
         else:
             self.fail("should complain about missing service")
 
@@ -159,20 +159,20 @@ class Test(PlacefulSetup, TestCase):
         # we should also get an error if there *is a matching service,
         # not it is non-local
 
-        configa = ContextWrapper(UtilityConfiguration('a'), self.rootFolder)
-        self.assertEqual(configa.status, Unregistered)
+        configa = ContextWrapper(UtilityRegistration('a'), self.rootFolder)
+        self.assertEqual(configa.status, UnregisteredStatus)
 
         try:
-            configa.status = Registered
+            configa.status = RegisteredStatus
         except NoLocalServiceError:
-            self.assertEqual(configa.status, Unregistered)
+            self.assertEqual(configa.status, UnregisteredStatus)
         else:
             self.fail("should complain about missing service")
 
         try:
-            configa.status = Active
+            configa.status = ActiveStatus
         except NoLocalServiceError:
-            self.assertEqual(configa.status, Unregistered)
+            self.assertEqual(configa.status, UnregisteredStatus)
         else:
             self.fail("should complain about missing service")
 

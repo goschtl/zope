@@ -13,24 +13,25 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.31 2003/06/18 20:12:10 gvanrossum Exp $
+$Id: service.py,v 1.32 2003/06/21 21:21:59 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.container.contents import Contents
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration import Registered, Active
-from zope.app.interfaces.services.configuration import Unregistered
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.service import ILocalService
 from zope.app.interfaces.services.service import IServiceManager
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.app.services.folder import SiteManagementFolder
-from zope.app.services.service import ServiceConfiguration
+from zope.app.services.service import ServiceRegistration
 from zope.publisher.browser import BrowserView
 
 class ComponentAdding(Adding):
-    """Adding subclass used for configurable components."""
+    """Adding subclass used for registerable components."""
 
     menu_id = "add_component"
 
@@ -42,11 +43,11 @@ class ComponentAdding(Adding):
 
     def nextURL(self):
         v = zapi.queryView(
-            self.added_object, "addConfiguration.html", self.request)
+            self.added_object, "addRegistration.html", self.request)
         if v is not None:
             url = str(
                 zapi.getView(self.added_object, 'absolute_url', self.request))
-            return url + "/@@addConfiguration.html"
+            return url + "/@@addRegistration.html"
 
         return zapi.ContextSuper(ComponentAdding, self).nextURL()
 
@@ -113,7 +114,7 @@ class CacheAdding(ComponentAdding):
     menu_id = "add_cache"
 
 
-class AddServiceConfiguration(BrowserView):
+class AddServiceRegistration(BrowserView):
     """A view on a service implementation, used by add_svc_config.py."""
 
     def listServiceTypes(self):
@@ -123,7 +124,7 @@ class AddServiceConfiguration(BrowserView):
         lst = []
         for servicename, interface in sm.getServiceDefinitions():
             if interface.isImplementedBy(self.context):
-                registry = sm.queryConfigurations(servicename)
+                registry = sm.queryRegistrations(servicename)
                 checked = True
                 if registry and registry.active():
                     checked = False
@@ -134,17 +135,17 @@ class AddServiceConfiguration(BrowserView):
     def action(self, name=[], active=[]):
         path = zapi.name(self.context)
         configure = zapi.getWrapperContainer(
-            self.context).getConfigurationManager()
+            self.context).getRegistrationManager()
         container = zapi.getAdapter(configure, IZopeContainer)
 
         for nm in name:
-            sc = ServiceConfiguration(nm, path, self.context)
+            sc = ServiceRegistration(nm, path, self.context)
             name = container.setObject("", sc)
             sc = container[name]
             if nm in active:
-                sc.status = Active
+                sc.status = ActiveStatus
             else:
-                sc.status = Registered
+                sc.status = RegisteredStatus
 
         self.request.response.redirect("@@SelectedManagementView.html")
 
@@ -175,12 +176,12 @@ class ServiceSummary(BrowserView):
     def _activate(self, todo):
         done = []
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             obj = registry.active()
             if obj is None:
-                # Activate the first registered configuration
-                obj = registry.info()[0]['configuration']
-                obj.status = Active
+                # Activate the first registered registration
+                obj = registry.info()[0]['registration']
+                obj.status = ActiveStatus
                 done.append(name)
         if done:
             return "Activated: " + ", ".join(done)
@@ -190,10 +191,10 @@ class ServiceSummary(BrowserView):
     def _deactivate(self, todo):
         done = []
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             obj = registry.active()
             if obj is not None:
-                obj.status = Registered
+                obj.status = RegisteredStatus
                 done.append(name)
         if done:
             return "Deactivated: " + ", ".join(done)
@@ -203,7 +204,7 @@ class ServiceSummary(BrowserView):
     def _delete(self, todo):
         errors = []
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             assert registry
             if registry.active() is not None:
                 errors.append(name)
@@ -216,15 +217,15 @@ class ServiceSummary(BrowserView):
         # 1) Delete the registrations
         services = {}
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             assert registry
             assert registry.active() is None # Phase error
             for info in registry.info():
-                conf = info['configuration']
+                conf = info['registration']
                 obj = conf.getComponent()
                 path = zapi.getPath(obj)
                 services[path] = obj
-                conf.status = Unregistered
+                conf.status = UnregisteredStatus
                 parent = zapi.getParent(conf)
                 name = zapi.name(conf)
                 container = zapi.getAdapter(parent, IZopeContainer)
@@ -247,16 +248,16 @@ class ServiceSummary(BrowserView):
         return "Deleted: %s" % ", ".join(todo)
 
     def listConfiguredServices(self):
-        names = list(self.context.listConfigurationNames())
+        names = list(self.context.listRegistrationNames())
         names.sort()
 
         items = []
         for name in names:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             assert registry
             infos = [info for info in registry.info() if info['active']]
             if infos:
-                configobj = infos[0]['configuration']
+                configobj = infos[0]['registration']
                 component = configobj.getComponent()
                 url = str(
                     zapi.getView(component, 'absolute_url', self.request))
@@ -270,19 +271,19 @@ class ServiceSummary(BrowserView):
 class ServiceActivation(BrowserView):
     """A view on the service manager, used by serviceactivation.pt.
 
-    This really wants to be a view on a configuration registry
-    containing service configurations, but registries don't have names,
+    This really wants to be a view on a registration registry
+    containing service registrations, but registries don't have names,
     so we make it a view on the service manager; the request parameter
     'type' determines which service is to be configured."""
 
     def isDisabled(self):
         sm = zapi.getServiceManager(self.context)
-        registry = sm.queryConfigurations(self.request.get('type'))
+        registry = sm.queryRegistrations(self.request.get('type'))
         return not (registry and registry.active())
 
     def listRegistry(self):
         sm = zapi.getServiceManager(self.context)
-        registry = sm.queryConfigurations(self.request.get('type'))
+        registry = sm.queryRegistrations(self.request.get('type'))
         if not registry:
             return []
 
@@ -290,13 +291,13 @@ class ServiceActivation(BrowserView):
         result = []
         dummy = {'id': 'None',
                  'active': False,
-                 'configuration': None,
+                 'registration': None,
                  'name': '',
                  'url': '',
                  'config': '',
                 }
         for info in registry.info(True):
-            configobj = info['configuration']
+            configobj = info['registration']
             if configobj is None:
                 info = dummy
                 dummy = None
@@ -322,7 +323,7 @@ class ServiceActivation(BrowserView):
             return ""
 
         sm = zapi.getServiceManager(self.context)
-        registry = sm.queryConfigurations(self.request.get('type'))
+        registry = sm.queryRegistrations(self.request.get('type'))
         if not registry:
             return "Invalid service type specified"
         old_active = registry.active()
@@ -337,6 +338,6 @@ class ServiceActivation(BrowserView):
             registry.activate(None)
             return "Service deactivated"
         else:
-            new_active.status = Active
+            new_active.status = ActiveStatus
             return active + " activated"
 

@@ -28,8 +28,8 @@
   <require
       permission="zope.View"
       interface="zope.app.interfaces.workflow.IWorkflowService"
-        attributes="queryConfigurations queryConfigurationsFor
-                    listConfigurationNames" />
+        attributes="queryRegistrations queryRegistrationsFor
+                    listRegistrationNames" />
       />
   <implements 
      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
@@ -63,17 +63,17 @@
 </content>
 
 
-<!-- Process Definition Configuration -->
+<!-- Process Definition Registration -->
 
-<content class="zope.app.workflow.service.ProcessDefinitionConfiguration">
+<content class="zope.app.workflow.service.ProcessDefinitionRegistration">
   <factory
-      id="ProcessDefinitionConfiguration"
+      id="ProcessDefinitionRegistration"
       permission="zope.ManageServices"
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.workflow.IProcessDefinitionConfiguration"
-      set_schema="zope.app.interfaces.workflow.IProcessDefinitionConfiguration"
+      interface="zope.app.interfaces.workflow.IProcessDefinitionRegistration"
+      set_schema="zope.app.interfaces.workflow.IProcessDefinitionRegistration"
       />
   <require
       permission="zope.ManageServices"

@@ -13,21 +13,21 @@
 ##############################################################################
 """Page Folder interfaces
 
-Page folders support easy creation and configuration of page views
+Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.3 2003/06/05 12:03:16 stevea Exp $
+$Id: pagefolder.py,v 1.4 2003/06/21 21:22:10 jim Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.schema import BytesLine
 from zope.app.interfaces.container import IContainer
 from zope.app.security.permission import PermissionField
-from zope.app.interfaces.services.configuration \
-     import IConfigurationManagerContainer
+from zope.app.interfaces.services.registration \
+     import IRegistrationManagerContainer
 from zope.interface import Interface
 
 class IPageFolderInfo(Interface):
-    """Default configuration information for page folders
+    """Default registration information for page folders
 
     This information is used to configure the pages in the folder.
     """
@@ -59,6 +59,6 @@ class IPageFolderInfo(Interface):
 
 class IPageFolder(IPageFolderInfo,
                   IContainer,
-                  IConfigurationManagerContainer):
+                  IRegistrationManagerContainer):
     """Sub-packages that contain templates that are registered as page views
     """

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.12 2003/06/05 12:03:18 stevea Exp $
+$Id: test_serviceregistration.py,v 1.1 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -24,13 +24,13 @@ from zope.interface import Interface, implements
 
 from zope.component import getServiceManager, getAdapter
 from zope.app.traversing import traverse, getPath
-from zope.app.services.service import ServiceConfiguration
+from zope.app.services.service import ServiceRegistration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component.service import defineService
 from zope.app.interfaces.services.service import IBindingAware
-from zope.app.interfaces.services.configuration import Active
-from zope.app.interfaces.services.configuration import Registered
-from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.services.service import ISimpleService
 
 from zope.app.interfaces.dependable import IDependable
@@ -85,15 +85,15 @@ class Test(PlacefulSetup, TestCase):
         default.setObject('c', TestService())
 
 
-        configuration = ServiceConfiguration(
+        registration = ServiceRegistration(
             'test_service', '/++etc++site/default/c')
 
         self.__c = traverse(default, 'c')
-        self.__cm = default.getConfigurationManager()
+        self.__cm = default.getRegistrationManager()
 
-        self.__cm.setObject('', configuration)
+        self.__cm.setObject('', registration)
 
-        self.__config = traverse(default.getConfigurationManager(), '1')
+        self.__config = traverse(default.getRegistrationManager(), '1')
         self.__configpath = getPath(self.__config)
 
     def test_activated(self):
@@ -110,7 +110,7 @@ class Test(PlacefulSetup, TestCase):
         self.assertEquals(self.__config.getInterface(), ITestService)
 
     # XXX the following tests check the same things as
-    # zope.app.services.tests.testconfigurations, but in a different way
+    # zope.app.services.tests.testregistrations, but in a different way
 
     def test_getComponent(self):
         self.assertEqual(self.__config.getComponent(), self.__c)
@@ -118,26 +118,26 @@ class Test(PlacefulSetup, TestCase):
     def test_afterAddHook(self):
         self.assertEqual(self.__c._dependents,
                          (self.__configpath, ))
-        u = getAdapter(self.__c, IUseConfiguration)
+        u = getAdapter(self.__c, IRegistered)
         self.assertEqual(list(u.usages()),
                          [self.__configpath])
 
     def test_beforeDeleteHook_and_unregistered(self):
-        self.__config.status = Registered
+        self.__config.status = RegisteredStatus
 
         sm = getServiceManager(self.__default)
-        registry = sm.queryConfigurationsFor(self.__config)
+        registry = sm.queryRegistrationsFor(self.__config)
         self.failUnless(registry, "The components should be registered")
 
         del self.__cm['1']
         self.assertEqual(self.__c._dependents, ())
-        u = getAdapter(self.__c, IUseConfiguration)
+        u = getAdapter(self.__c, IRegistered)
         self.assertEqual(len(u.usages()), 0)
 
         self.failIf(registry, "The components should not be registered")
 
     def test_disallow_delete_when_active(self):
-        self.__config.status = Active
+        self.__config.status = ActiveStatus
         try:
             del self.__cm['1']
         except DependencyError:
@@ -151,7 +151,7 @@ class Test(PlacefulSetup, TestCase):
 
         self.assertRaises(
             TypeError,
-            ServiceConfiguration,
+            ServiceRegistration,
             'test_service',
             '/++etc++site/default/c2',
             self.__default

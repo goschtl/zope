@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.8 2003/06/07 05:32:01 stevea Exp $
+$Id: test_utility.py,v 1.9 2003/06/21 21:22:13 jim Exp $
 """
 
 import unittest
@@ -27,11 +27,12 @@ from zope.interface import Interface, implements
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
 from zope.app.traversing import traverse
-from zope.app.interfaces.services.configuration import IConfigurationRegistry
-from zope.app.interfaces.services.configuration \
-     import Active, Registered, Unregistered
+from zope.app.interfaces.services.registration import IRegistrationStack
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.utility import ILocalUtility
-from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.dependable import IDependable
 from zope.context import getWrapperContainer
 from zope.app.tests import setup
@@ -45,9 +46,9 @@ class IBar(Interface): pass
 
 
 class Foo:
-    # We implement IUseConfiguration and IDependable directly to
+    # We implement IRegistered and IDependable directly to
     # depend as little  as possible on other infrastructure.
-    implements(IFoo, ILocalUtility, IUseConfiguration, IDependable)
+    implements(IFoo, ILocalUtility, IRegistered, IDependable)
 
     def __init__(self, name):
         self.name = name
@@ -58,16 +59,16 @@ class Foo:
         return 'foo ' + self.name
     
     def addUsage(self, location):
-        "See zope.app.interfaces.services.configuration.IUseConfiguration"
+        "See zope.app.interfaces.services.registration.IRegistered"
         if location not in self._usages:
             self._usages.append(location)
     
     def removeUsage(self, location):
-        "See zope.app.interfaces.services.configuration.IUseConfiguration"
+        "See zope.app.interfaces.services.registration.IRegistered"
         self._usages.remove(location)
             
     def usages(self):
-        "See zope.app.interfaces.services.configuration.IUseConfiguration"
+        "See zope.app.interfaces.services.registration.IRegistered"
         return self._usages
 
     def addDependent(self, location):
@@ -137,19 +138,19 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
                           utility_service.getUtility, IFoo, name='rob')
 
 
-    def test_configurationsFor_methods(self):
+    def test_registrationsFor_methods(self):
         utilities = getService(self.rootFolder, "Utilities")
         default = traverse(self.rootFolder, "++etc++Services/default")
         default.setObject('foo', Foo("local"))
         path = "/++etc++Services/default/foo"
 
         for name in ('', 'bob'):
-            configuration = utility.UtilityConfiguration(name, IFoo, path)
-            self.assertEqual(utilities.queryConfigurationsFor(configuration),
+            registration = utility.UtilityRegistration(name, IFoo, path)
+            self.assertEqual(utilities.queryRegistrationsFor(registration),
                              None)
-            registery = utilities.createConfigurationsFor(configuration)
-            self.assert_(IConfigurationRegistry.isImplementedBy(registery))
-            self.assertEqual(utilities.queryConfigurationsFor(configuration),
+            registery = utilities.createRegistrationsFor(registration)
+            self.assert_(IRegistrationStack.isImplementedBy(registery))
+            self.assertEqual(utilities.queryRegistrationsFor(registration),
                              registery)
 
 
@@ -162,23 +163,23 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         default = traverse(self.rootFolder, "++etc++Services/default")
         default.setObject('foo', Foo("local"))
         path = "/++etc++Services/default/foo"
-        cm = default.getConfigurationManager()
+        cm = default.getRegistrationManager()
 
         for name in ('', 'bob'):
-            configuration = utility.UtilityConfiguration(name, IFoo, path)
-            cname = cm.setObject('', configuration)
-            configuration = traverse(cm, cname)
+            registration = utility.UtilityRegistration(name, IFoo, path)
+            cname = cm.setObject('', registration)
+            registration = traverse(cm, cname)
 
             gout = name and "foo global "+name or "foo global"
 
             self.assertEqual(utilities.getUtility(IFoo, name=name).foo(), gout)
 
-            configuration.status = Active
+            registration.status = ActiveStatus
 
             self.assertEqual(utilities.getUtility(IFoo, name=name).foo(),
                              "foo local")
 
-            configuration.status = Registered
+            registration.status = RegisteredStatus
 
             self.assertEqual(utilities.getUtility(IFoo, name=name).foo(), gout)
 
@@ -188,16 +189,16 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         r = list(utilities.getRegisteredMatching())
         r.sort()
         path = "/++etc++Services/default/foo"
-        cr1 = utilities.queryConfigurationsFor(
-            utility.UtilityConfiguration("", IFoo, path))
-        cr2 = utilities.queryConfigurationsFor(
-            utility.UtilityConfiguration("bob", IFoo, path))
+        cr1 = utilities.queryRegistrationsFor(
+            utility.UtilityRegistration("", IFoo, path))
+        cr2 = utilities.queryRegistrationsFor(
+            utility.UtilityRegistration("bob", IFoo, path))
         self.assertEqual(r, [(IFoo, "", cr1), (IFoo, "bob", cr2)])
         self.assertEqual(getWrapperContainer(r[0][2]), utilities)
         self.assertEqual(getWrapperContainer(r[1][2]), utilities)
         # Now test that an empty registry doesn't show up
         for cd in cr1.info(): # Remove everything from cr1
-            cd['configuration'].status = Unregistered
+            cd['registration'].status = UnregisteredStatus
         self.assertEqual(bool(cr1), False)
         r = list(utilities.getRegisteredMatching())
         self.assertEqual(r, [(IFoo, "bob", cr2)])

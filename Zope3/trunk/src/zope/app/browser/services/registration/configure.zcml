@@ -1,18 +1,18 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 
 <page
-    for="zope.app.interfaces.services.configuration.IConfigurationStatus"
+    for="zope.app.interfaces.services.registration.IRegistrationStatus"
     name="edit"
-    class=".ConfigurationStatusWidget"
+    class=".RegistrationStatusWidget"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
     permission="zope.ManageServices"
     />
 
 <page
-    for="zope.app.interfaces.services.configuration.IConfigurationRegistry"
-    name="ChangeConfigurations"
-    template="changeconfigurations.pt"
-    class=".ChangeConfigurations"
+    for="zope.app.interfaces.services.registration.IRegistrationStack"
+    name="ChangeRegistrations"
+    template="changeregistrations.pt"
+    class=".ChangeRegistrations"
     allowed_interface="zope.app.interfaces.browser.form.IFormCollaborationView"
     permission="zope.ManageServices"
     />
@@ -20,7 +20,7 @@
 <editform
     name="index.html"
     schema=
-    "zope.app.interfaces.services.configuration.INamedComponentConfiguration."
+    "zope.app.interfaces.services.registration.INamedComponentRegistration."
     menu="zmi_views"
     label="Edit Registration"
     permission="zope.ManageServices"
@@ -29,8 +29,8 @@
 
 <page
     name="index.html" 
-    for="zope.app.interfaces.services.configuration.INameComponentConfigurable"
-    class=".NameComponentConfigurableView"
+    for="zope.app.interfaces.services.registration.INameComponentRegistry"
+    class=".NameComponentRegistryView"
     permission="zope.ManageServices"
     attribute="index" 
     />
@@ -38,7 +38,7 @@
 <page
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    for="zope.app.interfaces.services.configuration.IComponentPath"
+    for="zope.app.interfaces.services.registration.IComponentPath"
     name="edit"
     class=".ComponentPathWidget" 
     />
@@ -46,30 +46,30 @@
 <page
     permission="zope.Public"
     allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
-    for="zope.app.interfaces.services.configuration.IComponentPath"
+    for="zope.app.interfaces.services.registration.IComponentPath"
     name="display"
     class=".ComponentPathWidget" 
     />
 
-<!-- ConfigurationManager -->
+<!-- RegistrationManager -->
 
 <page
    name="index.html" 
-   for="zope.app.interfaces.services.configuration.IConfigurationManager"
+   for="zope.app.interfaces.services.registration.IRegistrationManager"
    menu="zmi_views" title="Registration"
    permission="zope.ManageServices"
-   class=".EditConfiguration"
-   template="editconfiguration.pt" 
+   class=".EditRegistration"
+   template="editregistration.pt" 
    />
 
 <!-- For now, we'll allow CMs to be added, but we won't include them
      in the add_component menu. -->
 <view
-   for="zope.app.interfaces.services.configuration.IConfigurationManager"
+   for="zope.app.interfaces.services.registration.IRegistrationManager"
    name="+"
    menu="zmi_actions" title="Add"
    permission="zope.ManageServices"
-   class=".ConfigurationAdding">
+   class=".RegistrationAdding">
   <page name="index.html"  attribute="index"  />
   <page name="action.html" attribute="action" />
 </view>
@@ -78,14 +78,14 @@
 
 <page
     for="
-    zope.app.interfaces.services.configuration.INoConfigurationManagerError"
+    zope.app.interfaces.services.registration.INoRegistrationManagerError"
     name="index.html"
     permission="zope.Public"
     template="../../exception/user.pt"
     class="zope.app.browser.exception.user.UserErrorView"
     />
 <page
-    for="zope.app.interfaces.services.configuration.INoLocalServiceError"
+    for="zope.app.interfaces.services.registration.INoLocalServiceError"
     name="index.html"
     permission="zope.Public"
     template="../../exception/user.pt"

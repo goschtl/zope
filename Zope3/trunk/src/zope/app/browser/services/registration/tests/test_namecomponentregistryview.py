@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit test for the generic NameComponentConfigurable view mixin
+"""Unit test for the generic NameComponentRegistry view mixin
 
-$Id: test_namecomponentconfigurableview.py,v 1.3 2003/06/06 20:44:28 stevea Exp $
+$Id: test_namecomponentregistryview.py,v 1.1 2003/06/21 21:22:03 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,8 +24,7 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component.view import provideView
 from zope.component.adapter import provideAdapter
 from zope.publisher.browser import BrowserView
-from zope.app.browser.services.configuration \
-     import NameComponentConfigurableView
+from zope.app.browser.services.registration import NameComponentRegistryView
 from zope.app.interfaces.traversing import ITraversable, ITraverser
 from zope.app.traversing.adapters import Traverser
 
@@ -35,10 +34,10 @@ class SM:
     def __init__(self, **data):
         self._data = data
 
-    def listConfigurationNames(self):
+    def listRegistrationNames(self):
         return self._data.keys()
 
-    def queryConfigurations(self, name):
+    def queryRegistrations(self, name):
         return self._data[name]
 
 class I(Interface): pass
@@ -52,11 +51,11 @@ class Registry:
     def active(self):
         return self._active
 
-class ITestConfiguration(Interface): pass
+class ITestRegistration(Interface): pass
 
-class Configuration:
+class Registration:
 
-    implements(ITestConfiguration, ITraversable)
+    implements(ITestRegistration, ITraversable)
 
     def __init__(self, path):
         self.componentPath = path
@@ -83,17 +82,17 @@ class Test(PlacelessSetup, TestCase):
 
     def test_update(self):
         provideAdapter(None, ITraverser, Traverser)
-        provideView(I, 'ChangeConfigurations', IBrowserPresentation, V)
-        provideView(ITestConfiguration, 'absolute_url', IBrowserPresentation,
+        provideView(I, 'ChangeRegistrations', IBrowserPresentation, V)
+        provideView(ITestRegistration, 'absolute_url', IBrowserPresentation,
                     AU)
 
         r1 = Registry(None)
-        r2 = Registry(Configuration('1'))
-        r3 = Registry(Configuration('1'))
+        r2 = Registry(Registration('1'))
+        r3 = Registry(Registration('1'))
 
         sm = SM(test1=r1, test2=r2, test3=r3)
 
-        services = NameComponentConfigurableView(sm, TestRequest()).update()
+        services = NameComponentRegistryView(sm, TestRequest()).update()
 
         self.assertEqual(len(services), 3)
 

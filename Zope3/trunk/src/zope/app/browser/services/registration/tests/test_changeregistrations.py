@@ -15,21 +15,21 @@
 
 XXX longer description goes here.
 
-$Id: test_changeconfigurations.py,v 1.1 2003/03/21 21:09:34 jim Exp $
+$Id: test_changeregistrations.py,v 1.1 2003/06/21 21:22:03 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.app.services.tests.configurationregistry \
-     import TestingConfigurationRegistry
-from zope.app.browser.services.configuration import ChangeConfigurations
+from zope.app.services.tests.registrationstack \
+     import TestingRegistrationStack
+from zope.app.browser.services.registration import ChangeRegistrations
 
 class Test(TestCase):
 
     def test_applyUpdates_and_setPrefix(self):
-        registry = TestingConfigurationRegistry('a', 'b', 'c')
+        registry = TestingRegistrationStack('a', 'b', 'c')
         request = TestRequest()
-        view = ChangeConfigurations(registry, request)
+        view = ChangeRegistrations(registry, request)
         view.setPrefix("Roles")
 
         # Make sure we don't apply updates unless asked to

@@ -133,7 +133,7 @@ class Introspector:
         bases = self._unpackTuple((self.currentclass).__bases__)
         return bases
 
-    def getInterfaceConfiguration(self):
+    def getInterfaceRegistration(self):
         """Returns details for a interface configuration"""
         #sm = queryServiceManager(self.context)
         service = []

@@ -40,7 +40,7 @@
          usage="addingdialog"
          />
 
-   <menu id="add_configuration"
+   <menu id="add_registration"
          title="Menu of addable configuration objects"
          usage="addingdialog"
          />

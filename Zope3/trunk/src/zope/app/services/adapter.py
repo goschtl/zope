@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.18 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: adapter.py,v 1.19 2003/06/21 21:22:12 jim Exp $
 """
 __metaclass__ = type
 
@@ -26,16 +26,16 @@ from zope.component.interfaces import IAdapterService
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getServiceManager
 from zope.app.services.servicenames import Adapters
-from zope.app.interfaces.services.configuration import IConfigurable
-from zope.app.services.configuration import ConfigurationRegistry
-from zope.app.services.configuration import SimpleConfiguration
+from zope.app.interfaces.services.registration import IRegistry
+from zope.app.services.registration import RegistrationStack
+from zope.app.services.registration import SimpleRegistration
 from zope.app.context import ContextWrapper
 from zope.context import ContextMethod
-from zope.app.services.configuration import ConfigurationStatusProperty
+from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
 
-from zope.app.interfaces.services.adapter import IAdapterConfiguration
+from zope.app.interfaces.services.adapter import IAdapterRegistration
 
 class PersistentAdapterRegistry(Persistent, AdapterRegistry):
 
@@ -45,22 +45,22 @@ class PersistentAdapterRegistry(Persistent, AdapterRegistry):
 
 class AdapterService(Persistent):
 
-    implements(IAdapterService, IConfigurable, ISimpleService)
+    implements(IAdapterService, IRegistry, ISimpleService)
 
     def __init__(self):
         self._byName = PersistentDict()
 
-    def queryConfigurationsFor(self, configuration, default=None):
-        "See IConfigurable"
+    def queryRegistrationsFor(self, registration, default=None):
+        "See IRegistry"
         # XXX Need to add named adapter support
-        return self.queryConfigurations(
-            configuration.forInterface, configuration.providedInterface,
-            configuration.adapterName,
+        return self.queryRegistrations(
+            registration.forInterface, registration.providedInterface,
+            registration.adapterName,
             default)
 
-    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
+    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
-    def queryConfigurations(self,
+    def queryRegistrations(self,
                             forInterface, providedInterface, adapterName,
                             default=None):
 
@@ -74,18 +74,18 @@ class AdapterService(Persistent):
 
         return ContextWrapper(registry, self)
 
-    queryConfigurations = ContextMethod(queryConfigurations)
+    queryRegistrations = ContextMethod(queryRegistrations)
 
-    def createConfigurationsFor(self, configuration):
-        "See IConfigurable"
+    def createRegistrationsFor(self, registration):
+        "See IRegistry"
         # XXX Need to add named adapter support
-        return self.createConfigurations(
-            configuration.forInterface, configuration.providedInterface,
-            configuration.adapterName)
+        return self.createRegistrations(
+            registration.forInterface, registration.providedInterface,
+            registration.adapterName)
 
-    createConfigurationsFor = ContextMethod(createConfigurationsFor)
+    createRegistrationsFor = ContextMethod(createRegistrationsFor)
 
-    def createConfigurations(self, forInterface, providedInterface, name):
+    def createRegistrations(self, forInterface, providedInterface, name):
 
         adapters = self._byName.get(name)
         if adapters is None:
@@ -94,12 +94,12 @@ class AdapterService(Persistent):
 
         registry = adapters.getRegistered(forInterface, providedInterface)
         if registry is None:
-            registry = ConfigurationRegistry()
+            registry = RegistrationStack()
             adapters.register(forInterface, providedInterface, registry)
 
         return ContextWrapper(registry, self)
 
-    createConfigurations = ContextMethod(createConfigurations)
+    createRegistrations = ContextMethod(createRegistrations)
 
     def getAdapter(self, object, interface, name=''):
         "See IAdapterService"
@@ -187,13 +187,13 @@ class AdapterService(Persistent):
         return adapters.getRegisteredMatching(for_interfaces,
                                               provided_interfaces)
 
-class AdapterConfiguration(SimpleConfiguration):
+class AdapterRegistration(SimpleRegistration):
 
-    implements(IAdapterConfiguration)
+    implements(IAdapterRegistration)
 
     serviceType = Adapters
 
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
     # XXX These should be positional arguments, except that forInterface
     #     isn't passed in if it is omitted. To fix this, we need a
@@ -219,3 +219,6 @@ class AdapterConfiguration(SimpleConfiguration):
         return factory(object)
 
     getAdapter = ContextMethod(getAdapter)
+
+# XXX Pickle backward compatability
+AdapterConfiguration = AdapterRegistration

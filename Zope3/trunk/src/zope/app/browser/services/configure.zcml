@@ -11,7 +11,7 @@
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
      />
 
-<!-- General configuration views --> <include package=".configuration" />
+<!-- General registration views --> <include package=".registration" />
 
 <!--Error Logging Service -->
 
@@ -196,7 +196,7 @@
 <!-- Adapters -->
 
   <editform
-    schema="zope.app.interfaces.services.adapter.IAdapterConfiguration"
+    schema="zope.app.interfaces.services.adapter.IAdapterRegistration"
     name="index.html"
     menu="zmi_views"
     label="Change adapter"
@@ -213,9 +213,9 @@
 
   <view
      for = "zope.app.interfaces.container.IAdding"
-     name="AdapterConfiguration"
+     name="AdapterRegistration"
      permission="zope.ManageServices" 
-     class="zope.app.browser.services.adapter.AdapterConfigurationAdd"
+     class="zope.app.browser.services.adapter.AdapterRegistrationAdd"
      >
     <page
       name="index.html"
@@ -225,8 +225,8 @@
 
   <menuItem
       for="zope.app.interfaces.container.IAdding"
-      menu="add_configuration"
-      action="AdapterConfiguration"
+      menu="add_registration"
+      action="AdapterRegistration"
       title="Adapter"
       />
 
@@ -392,21 +392,21 @@
 <!-- Generic page for objects that keep track of their registrations -->
 
   <page
-      for="zope.app.interfaces.services.configuration.IUseConfigurable"
+      for="zope.app.interfaces.services.registration.IRegisterable"
       name="registrations.html"
-      template="configuration/useconfiguration.pt"
-      class=".configuration.NameUseConfiguration"
+      template="registration/registered.pt"
+      class=".registration.NameRegistered"
       permission="zope.ManageServices"
       menu="zmi_views" title="Registrations"
       />
 
-<!-- ServiceConfiguration -->
+<!-- ServiceRegistration -->
 
   <page
-      name="addConfiguration.html"
+      name="addRegistration.html"
       for="zope.app.interfaces.services.service.ILocalService"
       template="add_svc_config.pt"
-      class=".service.AddServiceConfiguration"
+      class=".service.AddServiceRegistration"
       permission="zope.ManageServices"
       />
 
@@ -414,7 +414,7 @@
       name="add_svc_config.html"
       for="zope.app.interfaces.services.service.ILocalService"
       attribute="action"
-      class=".service.AddServiceConfiguration"
+      class=".service.AddServiceRegistration"
       permission="zope.ManageServices"
       />
 
@@ -467,10 +467,10 @@
 
   <editform
      schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo."
-     name="DefaultConfiguration.html"
-     menu="zmi_views" title="Default Configuration"
+     name="DefaultRegistration.html"
+     menu="zmi_views" title="Default Registration"
      permission="zope.ManageServices"
-     label="Default configuration parameters"
+     label="Default registration parameters"
      />
 
   

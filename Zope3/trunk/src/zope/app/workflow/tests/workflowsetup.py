@@ -14,7 +14,7 @@
 """
 Setup for Placeful Worfklow Tests
 Revision information:
-$Id: workflowsetup.py,v 1.5 2003/06/05 12:03:20 stevea Exp $
+$Id: workflowsetup.py,v 1.6 2003/06/21 21:22:17 jim Exp $
 """
 
 from zope.component import getService, getServiceManager
@@ -52,13 +52,13 @@ class WorkflowSetup(PlacefulSetup):
         self.service = setup.addService(self.sm, Workflows,
                                         WorkflowServiceForTests())
         self.default = zapi.traverse(self.sm, "default")
-        self.cm = self.default.getConfigurationManager()
+        self.cm = self.default.getRegistrationManager()
 
         self.sm1 = self.makeSite('folder1')
         self.service1 = setup.addService(self.sm1, Workflows,
                                          WorkflowServiceForTests())
         self.default1 = zapi.traverse(self.sm1, "default")
-        self.cm1 = self.default1.getConfigurationManager()
+        self.cm1 = self.default1.getRegistrationManager()
 
     def setupAuthService(self):
         self.root_sm.defineService(Authentication, IAuthenticationService)

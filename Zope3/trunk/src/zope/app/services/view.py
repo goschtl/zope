@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.23 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: view.py,v 1.24 2003/06/21 21:22:12 jim Exp $
 """
 __metaclass__ = type
 
@@ -24,12 +24,12 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component.interfaces import IViewService
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getServiceManager
-from zope.app.interfaces.services.configuration import IConfigurable
-from zope.app.services.configuration import ConfigurationRegistry
-from zope.app.services.configuration import SimpleConfiguration
+from zope.app.interfaces.services.registration import IRegistry
+from zope.app.services.registration import RegistrationStack
+from zope.app.services.registration import SimpleRegistration
 from zope.app.context import ContextWrapper
 from zope.context import ContextMethod
-from zope.app.services.configuration import ConfigurationStatusProperty
+from zope.app.services.registration import RegistrationStatusProperty
 from zope.app.component.nextservice import getNextService
 from zope.component import getSkin
 from zope.interface import implements
@@ -40,29 +40,29 @@ from zope.proxy import removeAllProxies
 from zope.app.traversing import getRoot, traverse
 from zope.exceptions import NotFoundError
 
-from zope.app.interfaces.services.view import IViewConfiguration
-from zope.app.interfaces.services.view import IPageConfiguration
+from zope.app.interfaces.services.view import IViewRegistration
+from zope.app.interfaces.services.view import IPageRegistration
 from zope.app.services.adapter import PersistentAdapterRegistry
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.interfaces.services.service import ISimpleService
 
 class ViewService(Persistent):
 
-    implements(IViewService, IConfigurable, ISimpleService)
+    implements(IViewService, IRegistry, ISimpleService)
 
     def __init__(self):
         self._layers = PersistentDict()
 
-    def queryConfigurationsFor(self, configuration, default=None):
-        "See IConfigurable"
-        return self.queryConfigurations(
-            configuration.viewName, configuration.layer,
-            configuration.forInterface, configuration.presentationType,
+    def queryRegistrationsFor(self, registration, default=None):
+        "See IRegistry"
+        return self.queryRegistrations(
+            registration.viewName, registration.layer,
+            registration.forInterface, registration.presentationType,
             default)
 
-    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
+    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
-    def queryConfigurations(self, name, layer,
+    def queryRegistrations(self, name, layer,
                             forInterface, presentationType, default=None):
 
         names = self._layers.get(layer)
@@ -81,17 +81,17 @@ class ViewService(Persistent):
 
         return ContextWrapper(registry, self)
 
-    queryConfigurations = ContextMethod(queryConfigurations)
+    queryRegistrations = ContextMethod(queryRegistrations)
 
-    def createConfigurationsFor(self, configuration):
-        "See IConfigurable"
-        return self.createConfigurations(
-            configuration.viewName, configuration.layer,
-            configuration.forInterface, configuration.presentationType)
+    def createRegistrationsFor(self, registration):
+        "See IRegistry"
+        return self.createRegistrations(
+            registration.viewName, registration.layer,
+            registration.forInterface, registration.presentationType)
 
-    createConfigurationsFor = ContextMethod(createConfigurationsFor)
+    createRegistrationsFor = ContextMethod(createRegistrationsFor)
 
-    def createConfigurations(self,
+    def createRegistrations(self,
                              viewName, layer, forInterface, presentationType):
 
         names = self._layers.get(layer)
@@ -108,12 +108,12 @@ class ViewService(Persistent):
             forInterface, presentationType)
 
         if registry is None:
-            registry = ConfigurationRegistry()
+            registry = RegistrationStack()
             adapter_registry.register(forInterface, presentationType, registry)
 
         return ContextWrapper(registry, self)
 
-    createConfigurations = ContextMethod(createConfigurations)
+    createRegistrations = ContextMethod(createRegistrations)
 
     def getView(self, object, name, request):
         view = self.queryView(object, name, request)
@@ -215,13 +215,13 @@ class ViewService(Persistent):
 
         return result
 
-class ViewConfiguration(SimpleConfiguration):
+class ViewRegistration(SimpleRegistration):
 
-    implements(IViewConfiguration)
+    implements(IViewRegistration)
 
     serviceType = 'Views'
 
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
     _what = "View" # For usageSummary(); subclass may override
 
@@ -250,9 +250,9 @@ class ViewConfiguration(SimpleConfiguration):
             s = "%s in layer %s" % (s, self.layer)
         return s
 
-class PageConfiguration(ViewConfiguration):
+class PageRegistration(ViewRegistration):
 
-    implements(IPageConfiguration)
+    implements(IPageRegistration)
 
     # We only care about browser pages
     presentationType = IBrowserPresentation
@@ -264,7 +264,7 @@ class PageConfiguration(ViewConfiguration):
                  class_=None, template=None, attribute=None,
                  layer='default'):
 
-        super(PageConfiguration, self).__init__(
+        super(PageRegistration, self).__init__(
             forInterface, viewName, self.presentationType,
             class_, permission, layer)
 
@@ -289,19 +289,19 @@ class PageConfiguration(ViewConfiguration):
     def validate(self):
         if self.template and self.attribute:
             raise ConfigurationError(
-                "PageConfiguration for %s view name %s: "
+                "PageRegistration for %s view name %s: "
                 "Cannot have both 'template' and 'attribute' at the same time." %
                 (self.forInterface, self.viewName))
 
         if not self.template and not self.attribute:
             raise ConfigurationError(
-                "PageConfiguration for %s view name %s: "
+                "PageRegistration for %s view name %s: "
                 "Should have a 'template' or 'attribute' attribute." %
                 (self.forInterface, self.viewName))
 
         if not self.class_ and self.attribute:
             raise ConfigurationError(
-                "PageConfiguration for %s view name %s: "
+                "PageRegistration for %s view name %s: "
                 "Cannot have an 'attribute' without a 'class_'." %
                 (self.forInterface, self.viewName))
 
@@ -335,7 +335,6 @@ class PageConfiguration(ViewConfiguration):
 
     getView = ContextMethod(getView)
 
-
 class DefaultClass:
 
     def __init__(self, context, request):
@@ -352,3 +351,8 @@ class BoundTemplate:
         if not template_usage:
             kw["template_usage"] = template_usage
         return self.template.render(self.view, *args, **kw)
+
+
+# XXX Pickle backward compatability
+PageConfiguration = PageRegistration
+ViewConfiguration = ViewRegistration

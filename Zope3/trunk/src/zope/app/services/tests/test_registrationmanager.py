@@ -12,15 +12,15 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.11 2003/06/05 12:23:37 stevea Exp $
+$Id: test_registrationmanager.py,v 1.1 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IDeleteNotifiable
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration import IConfigurationManager
-from zope.app.services.configuration import ConfigurationManager
+from zope.app.interfaces.services.registration import IRegistrationManager
+from zope.app.services.registration import RegistrationManager
 from zope.app.services.tests import placefulsetup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing import traverse
@@ -39,18 +39,18 @@ class Undeletable:
 
 
 class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
-    """Testing for Configuration Manager """
+    """Testing for Registration Manager """
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        self.__manager = manager = ConfigurationManager()
+        self.__manager = manager = RegistrationManager()
         for l in 'abcdefghijklmnop':
             manager.setObject('', l)
         del manager['8']
         del manager['10']
 
-    def test_implements_IConfigurationManager(self):
-        verifyObject(IConfigurationManager, self.__manager)
+    def test_implements_IRegistrationManager(self):
+        verifyObject(IRegistrationManager, self.__manager)
 
     def _IEnumerableMapping__stateDict(self):
         # Hook needed by BaseTestIEnumerableMapping
@@ -130,7 +130,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.test_items()
 
     def test_moveTop_one_element_container(self):
-        manager = ConfigurationManager()
+        manager = RegistrationManager()
         manager.setObject('', 'a')
         manager.moveTop(['1'])
         self.assertEqual(list(manager.items()), [('1', 'a')])
@@ -195,7 +195,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.test_items()
 
     def test_moveBottom_one_element_container(self):
-        manager = ConfigurationManager()
+        manager = RegistrationManager()
         manager.setObject('', 'a')
         manager.moveBottom(['1'])
         self.assertEqual(list(manager.items()), [('1', 'a')])
@@ -260,7 +260,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.test_items()
 
     def test_moveUp_one_element_container(self):
-        manager = ConfigurationManager()
+        manager = RegistrationManager()
         manager.setObject('', 'a')
         manager.moveUp(['1'])
         self.assertEqual(list(manager.items()), [('1', 'a')])
@@ -325,7 +325,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.test_items()
 
     def test_moveDown_one_element_container(self):
-        manager = ConfigurationManager()
+        manager = RegistrationManager()
         manager.setObject('', 'a')
         manager.moveDown(['1'])
         self.assertEqual(list(manager.items()), [('1', 'a')])
@@ -334,37 +334,37 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
 
     def test_manageBeforeDelete(self):
         container = []
-        manager = ConfigurationManager()
+        manager = RegistrationManager()
         manager = ContextWrapper(manager, None)  # decorate to IZopeContainer
         thingy = Undeletable()
         manager.setObject('xyzzy', thingy)
         manager.beforeDeleteHook(manager, container)
         self.failUnless(thingy.was_called)
 
-class ConfigurationManagerContainerTests(placefulsetup.PlacefulSetup):
+class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
 
-    def test_getConfigurationManager(self):
+    def test_getRegistrationManager(self):
         sm = self.buildFolders(site=True)
         default = traverse(sm, 'default')
-        self.assertEqual(default.getConfigurationManager(),
+        self.assertEqual(default.getRegistrationManager(),
                          default['RegistrationManager'])
-        default.setObject('xxx', ConfigurationManager())
+        default.setObject('xxx', RegistrationManager())
         del default['RegistrationManager']
-        self.assertEqual(default.getConfigurationManager(),
+        self.assertEqual(default.getRegistrationManager(),
                          default['xxx'])
 
 
 #       Can't test empty because there's no way to make it empty.
 ##         del default['xxx']
 ##         self.assertRaises(Exception,
-##                           default.getConfigurationManager)
+##                           default.getRegistrationManager)
 
     def test_cant_remove_last_cm(self):
         sm = self.buildFolders(site=True)
         default = traverse(sm, 'default')
         self.assertRaises(Exception,
-                          default.__delitem__, 'configuration')
-        default.setObject('xxx', ConfigurationManager())
+                          default.__delitem__, 'registration')
+        default.setObject('xxx', RegistrationManager())
         del default['RegistrationManager']
 
 

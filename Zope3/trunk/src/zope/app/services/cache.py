@@ -13,34 +13,31 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.14 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: cache.py,v 1.15 2003/06/21 21:22:12 jim Exp $
 """
 
 from persistence import Persistent
-
-from zope.component import getService
-from zope.context import ContextMethod
-
 from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.cache.cache import ICache, ICachingService
 from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.interfaces.services.cache import ICacheConfiguration
-from zope.app.interfaces.services.configuration \
-     import INameComponentConfigurable
+from zope.app.interfaces.services.cache import ICacheRegistration
+from zope.app.interfaces.services.registration import INameComponentRegistry
 from zope.app.interfaces.services.event import IEventChannel
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.app.services.configuration import NameComponentConfigurable
-from zope.app.services.configuration import NamedComponentConfiguration
+from zope.app.services.registration import RegistrationStatusProperty
+from zope.app.services.registration import NameComponentRegistry
+from zope.app.services.registration import NamedComponentRegistration
 from zope.app.services.event import ServiceSubscriberEventChannel
+from zope.component import getService
+from zope.context import ContextMethod
 from zope.interface import implements
 
 class ILocalCachingService(ICachingService, IEventChannel,
-                           INameComponentConfigurable):
+                           INameComponentRegistry):
     """TTW manageable caching service"""
 
 
-class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
+class CachingService(ServiceSubscriberEventChannel, NameComponentRegistry):
 
     implements(ILocalCachingService, ISimpleService)
 
@@ -57,7 +54,7 @@ class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
         #     --Guido
         Persistent.__init__(self)
         ServiceSubscriberEventChannel.__init__(self)
-        NameComponentConfigurable.__init__(self)
+        NameComponentRegistry.__init__(self)
 
     def getCache(wrapped_self, name):
         'See ICachingService'
@@ -81,8 +78,8 @@ class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
     def getAvailableCaches(wrapped_self):
         'See ICachingService'
         caches = {}
-        for name in wrapped_self.listConfigurationNames():
-            registry = wrapped_self.queryConfigurations(name)
+        for name in wrapped_self.listRegistrationNames():
+            registry = wrapped_self.queryRegistrations(name)
             if registry.active() is not None:
                 caches[name] = 0
         service = queryNextService(wrapped_self, "Caching")
@@ -93,15 +90,15 @@ class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
     getAvailableCaches = ContextMethod(getAvailableCaches)
 
 
-class CacheConfiguration(NamedComponentConfiguration):
+class CacheRegistration(NamedComponentRegistration):
 
-    __doc__ = ICacheConfiguration.__doc__
+    __doc__ = ICacheRegistration.__doc__
 
-    implements(ICacheConfiguration)
+    implements(ICacheRegistration)
 
     serviceType = 'Caching'
 
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
     label = "Cache"
 
@@ -120,3 +117,7 @@ class CacheConfiguration(NamedComponentConfiguration):
 
     def getInterface(self):
         return ICache
+
+
+# XXX Pickle backward compatability
+CacheConfiguration = CacheRegistration

@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Helper classes for local view configuration.
+"""Helper classes for local view registry.
 
-$Id: view.py,v 1.19 2003/06/13 17:41:13 stevea Exp $
+$Id: view.py,v 1.20 2003/06/21 21:21:59 jim Exp $
 """
 __metaclass__ = type
 
@@ -29,8 +29,9 @@ from zope.publisher.browser import BrowserView
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.form.utility import setUpWidgets
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration import \
-     Unregistered, Registered, Active
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.traversing import getPath, getParent, getName
 
 class IViewSearch(Interface):
@@ -78,9 +79,9 @@ class _SharedBase(BrowserView):
 
     def _getSummaryFromRegistry(self, registry):
         assert registry
-        # Return the summary of the first configuration in the registry
+        # Return the summary of the first registration in the registry
         for info in registry.info():
-            return info['configuration'].usageSummary()
+            return info['registration'].usageSummary()
         assert 0
 
 
@@ -93,7 +94,7 @@ class ViewServiceView(_SharedBase):
         setUpWidgets(self, IViewSearch)
 
     def update(self):
-        """Possibly deactivate or delete one or more page configurations.
+        """Possibly deactivate or delete one or more page registrations.
 
         In that case, issue a message.
         """
@@ -118,9 +119,9 @@ class ViewServiceView(_SharedBase):
             registry = self._getRegistryFromKey(key)
             obj = registry.active()
             if obj is None:
-                # Activate the first registered configuration
-                obj = registry.info()[0]['configuration']
-                obj.status = Active
+                # Activate the first registered registration
+                obj = registry.info()[0]['registration']
+                obj.status = ActiveStatus
                 done.append(self._getSummaryFromRegistry(registry))
         if done:
             return "Activated: " + ", ".join(done)
@@ -133,7 +134,7 @@ class ViewServiceView(_SharedBase):
             registry = self._getRegistryFromKey(key)
             obj = registry.active()
             if obj is not None:
-                obj.status = Registered
+                obj.status = RegisteredStatus
                 done.append(self._getSummaryFromRegistry(registry))
         if done:
             return "Deactivated: " + ", ".join(done)
@@ -163,8 +164,8 @@ class ViewServiceView(_SharedBase):
             assert registry.active() is None # Phase error
             done.append(self._getSummaryFromRegistry(registry))
             for info in registry.info():
-                conf = info['configuration']
-                conf.status = Unregistered
+                conf = info['registration']
+                conf.status = UnregisteredStatus
                 parent = getParent(conf)
                 name = getName(conf)
                 container = getAdapter(parent, IZopeContainer)
@@ -199,7 +200,7 @@ class ViewServiceView(_SharedBase):
                 presentationType.__module__ +"."+ presentationType.__name__)
 
             registry = ContextWrapper(registry, self.context)
-            view = getView(registry, "ChangeConfigurations", self.request)
+            view = getView(registry, "ChangeRegistrations", self.request)
             # XXX Why are we setting this unique prefix?
             prefix = md5.new('%s %s' %
                              (forInterface, presentationType)).hexdigest()
@@ -235,12 +236,12 @@ class ViewServiceView(_SharedBase):
 
         return result
 
-class PageConfigurationView(BrowserView):
+class PageRegistrationView(BrowserView):
 
     """Helper class for the page edit form."""
 
     def update(self):
-        super(PageConfigurationView, self).update()
+        super(PageRegistrationView, self).update()
         if "UPDATE_SUBMIT" in self.request:
             self.context.validate()
 
@@ -249,7 +250,7 @@ class ConfigureView(_SharedBase):
     def update(self):
         key = self.request['key']
         registry = self._getRegistryFromKey(key)
-        form = getView(registry, "ChangeConfigurations", self.request)
+        form = getView(registry, "ChangeRegistrations", self.request)
         form.update()
         return form
 

@@ -11,22 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A configuration for a database adapter.
+"""A registration for a database adapter.
 
-$Id: connection.py,v 1.8 2003/05/01 19:35:22 faassen Exp $
+$Id: connection.py,v 1.9 2003/06/21 21:22:10 jim Exp $
 """
 
 from zope.schema import TextLine
-from zope.app.interfaces.services.configuration import IComponentConfiguration
-from zope.app.interfaces.services.configuration import ComponentPath
+from zope.app.interfaces.services.registration import IComponentRegistration
+from zope.app.interfaces.services.registration import ComponentPath
 from zope.app.interfaces.rdb import IConnectionService
-from zope.app.interfaces.services.configuration \
-     import INameComponentConfigurable
+from zope.app.interfaces.services.registration \
+     import INameComponentRegistry
 
-class IConnectionConfiguration(IComponentConfiguration):
-    """Database Connection Configuration
+class IConnectionRegistration(IComponentRegistration):
+    """Database Connection Registration
 
-    Connection configurations are dependent on the database adapters that they
+    Connection registrations are dependent on the database adapters that they
     configure. They register themselves as component dependents.
     """
 
@@ -44,5 +44,5 @@ class IConnectionConfiguration(IComponentConfiguration):
         required=True)
 
 
-class ILocalConnectionService(IConnectionService, INameComponentConfigurable):
+class ILocalConnectionService(IConnectionService, INameComponentRegistry):
     """A local (placeful) connection service"""

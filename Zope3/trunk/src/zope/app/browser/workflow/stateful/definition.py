@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ProcessDefinition configuration adding view
+"""ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.3 2003/06/03 22:46:18 jim Exp $
+$Id: definition.py,v 1.4 2003/06/21 21:22:08 jim Exp $
 """
 __metaclass__ = type
 

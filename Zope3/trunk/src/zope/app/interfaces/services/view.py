@@ -13,10 +13,10 @@
 ##############################################################################
 """Service interfaces
 
-$Id: view.py,v 1.3 2003/05/29 20:48:14 gvanrossum Exp $
+$Id: view.py,v 1.4 2003/06/21 21:22:10 jim Exp $
 """
 
-from zope.app.interfaces.services.configuration import IConfiguration
+from zope.app.interfaces.services.registration import IRegistration
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.security.permission import PermissionField
 from zope.schema import BytesLine, TextLine, Text, Bool
@@ -24,7 +24,7 @@ from zope.interface import Interface
 from zope.app.services.field import ComponentPath
 from zope.component.interfaces import IPresentation
 
-class IAdapterConfigurationInfo(Interface):
+class IAdapterRegistrationInfo(Interface):
 
     forInterface = InterfaceField(
         title = u"For interface",
@@ -53,7 +53,7 @@ class IAdapterConfigurationInfo(Interface):
         )
 
 
-class IAdapterConfiguration(IConfiguration, IAdapterConfigurationInfo):
+class IAdapterRegistration(IRegistration, IAdapterRegistrationInfo):
 
     def getAdapter(object):
         """Return an adapter for the object
@@ -62,7 +62,7 @@ class IAdapterConfiguration(IConfiguration, IAdapterConfigurationInfo):
         registered factory.
         """
 
-class IViewConfigurationInfo(Interface):
+class IViewRegistrationInfo(Interface):
 
     forInterface = InterfaceField(
         title = u"For interface",
@@ -110,7 +110,7 @@ class IViewConfigurationInfo(Interface):
         )
 
 
-class IViewConfiguration(IConfiguration, IViewConfigurationInfo):
+class IViewRegistration(IRegistration, IViewRegistrationInfo):
 
     def getView(object, request):
         """Return a view for the object
@@ -150,7 +150,7 @@ class IZPTTemplate(Interface):
 
         """
 
-class IPageConfigurationInfo(IViewConfigurationInfo):
+class IPageRegistrationInfo(IViewRegistrationInfo):
 
     class_ = BytesLine(
         title=u"Page class",
@@ -168,14 +168,14 @@ class IPageConfigurationInfo(IViewConfigurationInfo):
         required = False,
         )
 
-class IPageConfiguration(IConfiguration, IPageConfigurationInfo):
+class IPageRegistration(IRegistration, IPageRegistrationInfo):
 
     def getView(object, request):
         """Return a page for the object.
         """
 
     def validate(self):
-        """Verifies that the configuration is valid.
+        """Verifies that the registration is valid.
 
         Raises a ConfigurationError if the validation is failed.
         """

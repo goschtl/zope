@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit test for CacheConfiguration.
+"""Unit test for CacheRegistration.
 
-$Id: test_cacheconfiguration.py,v 1.13 2003/06/05 12:03:18 stevea Exp $
+$Id: test_cacheregistration.py,v 1.1 2003/06/21 21:22:13 jim Exp $
 """
 __metaclass__ = type
 
@@ -23,12 +23,13 @@ from zope.app.interfaces.cache.cache import ICache
 from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.interfaces.services.configuration import Active, Unregistered
-from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
-from zope.app.interfaces.services.configuration import IConfigurable
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import IAttributeRegisterable
+from zope.app.interfaces.services.registration import IRegistry
 from zope.app.interfaces.services.service import ILocalService
-from zope.app.services.cache import CacheConfiguration
-from zope.app.services.configuration import ConfigurationRegistry
+from zope.app.services.cache import CacheRegistration
+from zope.app.services.registration import RegistrationStack
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
 from zope.app.traversing import traverse
@@ -51,7 +52,7 @@ class DependableStub:
 
 class TestCache(DependableStub):
 
-    implements(ICache, IAttributeUseConfigurable)
+    implements(ICache, IAttributeRegisterable)
 
     def invalidateAll(self):
         self.invalidated = True
@@ -59,32 +60,32 @@ class TestCache(DependableStub):
 
 class CachingServiceStub(DependableStub):
 
-    implements(ICachingService, IConfigurable, ILocalService)
+    implements(ICachingService, IRegistry, ILocalService)
 
     def __init__(self):
         self.bindings = {}
         self.subscriptions = {}
 
-    def queryConfigurationsFor(self, cfg, default=None):
-        return self.queryConfigurations(cfg.name)
-    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
+    def queryRegistrationsFor(self, cfg, default=None):
+        return self.queryRegistrations(cfg.name)
+    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
-    def queryConfigurations(self, name, default=None):
+    def queryRegistrations(self, name, default=None):
         registry = self.bindings.get(name, default)
         return ContextWrapper(registry, self)
-    queryConfigurations = ContextMethod(queryConfigurations)
+    queryRegistrations = ContextMethod(queryRegistrations)
 
-    def createConfigurationsFor(self, cfg):
-        return self.createConfigurations(cfg.name)
-    createConfigurationsFor = ContextMethod(createConfigurationsFor)
+    def createRegistrationsFor(self, cfg):
+        return self.createRegistrations(cfg.name)
+    createRegistrationsFor = ContextMethod(createRegistrationsFor)
 
-    def createConfigurations(self, name):
+    def createRegistrations(self, name):
         try:
             registry = self.bindings[name]
         except KeyError:
-            self.bindings[name] = registry = ConfigurationRegistry()
+            self.bindings[name] = registry = RegistrationStack()
         return ContextWrapper(registry, self)
-    createConfigurations = ContextMethod(createConfigurations)
+    createRegistrations = ContextMethod(createRegistrations)
 
     def subscribe(self, obj, event):
         self.subscriptions.setdefault(obj, []).append(event)
@@ -96,7 +97,7 @@ class CachingServiceStub(DependableStub):
         return self.subscriptions.get(obj, [])
 
 
-class TestConnectionConfiguration(PlacefulSetup, TestCase):
+class TestConnectionRegistration(PlacefulSetup, TestCase):
 
     def setUp(self):
         sm = PlacefulSetup.setUp(self, site=True)
@@ -108,25 +109,25 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.default.setObject('cch', TestCache())
         self.cch = traverse(self.default, 'cch')
 
-        self.cm = self.default.getConfigurationManager()
+        self.cm = self.default.getRegistrationManager()
         key = self.cm.setObject('',
-                                CacheConfiguration('cache_name',
+                                CacheRegistration('cache_name',
                                                    '/++etc++site/default/cch'))
-        self.config = traverse(self.default.getConfigurationManager(), key)
+        self.config = traverse(self.default.getRegistrationManager(), key)
 
     def tearDown(self):
         PlacefulSetup.tearDown(self)
 
     def test_getComponent(self):
-        # This should be already tested by ComponentConfiguration tests, but
+        # This should be already tested by ComponentRegistration tests, but
         # let's doublecheck
         self.assertEqual(self.config.getComponent(), self.cch)
 
     def test_status(self):
-        self.assertEqual(self.config.status, Unregistered)
-        self.config.status = Active
-        self.assertEqual(self.config.status, Active)
-        cr = self.service.queryConfigurations('cache_name')
+        self.assertEqual(self.config.status, UnregisteredStatus)
+        self.config.status = ActiveStatus
+        self.assertEqual(self.config.status, ActiveStatus)
+        cr = self.service.queryRegistrations('cache_name')
         self.assertEqual(cr.active(), self.config)
 
     def test_activated(self):
@@ -144,7 +145,7 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
 
 
 def test_suite():
-    return makeSuite(TestConnectionConfiguration)
+    return makeSuite(TestConnectionRegistration)
 
 
 if __name__=='__main__':

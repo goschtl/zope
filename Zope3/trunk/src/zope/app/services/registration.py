@@ -13,15 +13,11 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.38 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: registration.py,v 1.1 2003/06/21 21:22:12 jim Exp $
 """
 __metaclass__ = type
 
 
-# XXX Backward Compatibility for pickles
-import sys
-sys.modules['zope.app.services.configurationmanager'
-            ] = sys.modules['zope.app.services.configuration']
 
 from persistence import Persistent
 from zope.interface import implements
@@ -31,24 +27,25 @@ from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.interfaces.dependable import IDependable, DependencyError
 
-from zope.app.interfaces.services.configuration import IConfigurationManager
-from zope.app.interfaces.services.configuration import IConfigurationRegistry
-from zope.app.interfaces.services.configuration \
-     import INameComponentConfigurable
-from zope.app.interfaces.services.configuration import INamedConfiguration
-from zope.app.interfaces.services.configuration import IConfiguration
-from zope.app.interfaces.services.configuration \
-     import INamedComponentConfiguration
-from zope.app.interfaces.services.configuration import INameConfigurable
-from zope.app.interfaces.services.configuration \
-     import INamedComponentConfiguration, IComponentConfiguration
-from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.interfaces.services.configuration \
-     import NoConfigurationManagerError
-from zope.app.interfaces.services.configuration import NoLocalServiceError
+from zope.app.interfaces.services.registration import IRegistrationManager
+from zope.app.interfaces.services.registration import IRegistrationStack
+from zope.app.interfaces.services.registration \
+     import INameComponentRegistry
+from zope.app.interfaces.services.registration import INamedRegistration
+from zope.app.interfaces.services.registration import IRegistration
+from zope.app.interfaces.services.registration \
+     import INamedComponentRegistration
+from zope.app.interfaces.services.registration import INameRegistry
+from zope.app.interfaces.services.registration \
+     import INamedComponentRegistration, IComponentRegistration
+from zope.app.interfaces.services.registration import IRegistered
+from zope.app.interfaces.services.registration \
+     import NoRegistrationManagerError
+from zope.app.interfaces.services.registration import NoLocalServiceError
 
-from zope.app.interfaces.services.configuration import Unregistered
-from zope.app.interfaces.services.configuration import Registered, Active
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.traversing import getRoot, getPath, traverse
 from zope.component import getAdapter, queryAdapter
 from zope.component import getServiceManager
@@ -59,68 +56,68 @@ from zope.security.checker import InterfaceChecker
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 from zope.proxy import getProxiedObject
 
-class ConfigurationStatusProperty(ContextDescriptor):
+class RegistrationStatusProperty(ContextDescriptor):
 
     def __get__(self, inst, klass):
         if inst is None:
             return self
 
-        configuration = inst
+        registration = inst
 
-        sm = getServiceManager(configuration)
-        service = sm.queryLocalService(configuration.serviceType)
+        sm = getServiceManager(registration)
+        service = sm.queryLocalService(registration.serviceType)
         # XXX The following may fail; there's a subtle bug here when
         # the returned service isn't in the same service manager as
-        # the one owning the configuration.
-        registry = service and service.queryConfigurationsFor(configuration)
+        # the one owning the registration.
+        registry = service and service.queryRegistrationsFor(registration)
 
         if registry:
 
-            if registry.active() == configuration:
-                return Active
-            if registry.registered(configuration):
-                return Registered
+            if registry.active() == registration:
+                return ActiveStatus
+            if registry.registered(registration):
+                return RegisteredStatus
 
-        return Unregistered
+        return UnregisteredStatus
 
     def __set__(self, inst, value):
-        configuration = inst
+        registration = inst
 
-        sm = getServiceManager(configuration)
-        service = sm.queryLocalService(configuration.serviceType)
+        sm = getServiceManager(registration)
+        service = sm.queryLocalService(registration.serviceType)
 
-        registry = service and service.queryConfigurationsFor(configuration)
+        registry = service and service.queryRegistrationsFor(registration)
 
-        if value == Unregistered:
+        if value == UnregisteredStatus:
             if registry:
-                registry.unregister(configuration)
+                registry.unregister(registration)
 
         else:
             if not service:
                 raise NoLocalServiceError(
-                    "This configuration change cannot be performed because "
+                    "This registration change cannot be performed because "
                     "there isn't a corresponding %s service defined in this "
                     "site. To proceed, first add a local %s service."
-                    % (configuration.serviceType, configuration.serviceType))
+                    % (registration.serviceType, registration.serviceType))
 
             if registry is None:
-                registry = service.createConfigurationsFor(configuration)
+                registry = service.createRegistrationsFor(registration)
 
-            if value == Registered:
-                if registry.active() == configuration:
-                    registry.deactivate(configuration)
+            if value == RegisteredStatus:
+                if registry.active() == registration:
+                    registry.deactivate(registration)
                 else:
-                    registry.register(configuration)
+                    registry.register(registration)
 
-            elif value == Active:
-                if not registry.registered(configuration):
-                    registry.register(configuration)
-                registry.activate(configuration)
+            elif value == ActiveStatus:
+                if not registry.registered(registration):
+                    registry.register(registration)
+                registry.activate(registration)
 
 
-class ConfigurationRegistry(Persistent):
+class RegistrationStack(Persistent):
 
-    """Configuration registry implementation.
+    """Registration registry implementation.
 
     The invariants for _data are as follows:
 
@@ -129,10 +126,10 @@ class ConfigurationRegistry(Persistent):
         (2) No value occurs more than once
 
         (3) Each value except None is a relative path from the nearest
-            service manager to an object implementing IConfiguration
+            service manager to an object implementing IRegistration
     """
 
-    implements(IConfigurationRegistry)
+    implements(IRegistrationStack)
 
     _data = ()
 
@@ -148,18 +145,18 @@ class ConfigurationRegistry(Persistent):
             lpackages = path.rfind(prefix)
 
         if lpackages < 0:
-            raise ValueError("Configuration object is in an invalid location",
+            raise ValueError("Registration object is in an invalid location",
                              path)
 
         rpath = path[lpackages+len(prefix):]
         if not rpath or (".." in rpath.split("/")):
-            raise ValueError("Configuration object is in an invalid location",
+            raise ValueError("Registration object is in an invalid location",
                              path)
 
         return rpath
 
-    def register(wrapped_self, configuration):
-        cid = wrapped_self._id(configuration)
+    def register(wrapped_self, registration):
+        cid = wrapped_self._id(registration)
 
         if wrapped_self._data:
             if cid in wrapped_self._data:
@@ -172,14 +169,14 @@ class ConfigurationRegistry(Persistent):
         wrapped_self._data += (cid, )
     register = ContextMethod(register)
 
-    def unregister(wrapped_self, configuration):
-        cid = wrapped_self._id(configuration)
+    def unregister(wrapped_self, registration):
+        cid = wrapped_self._id(registration)
 
         data = wrapped_self._data
         if data:
             if data[0] == cid:
                 # Tell it that it is no longer active
-                configuration.deactivated()
+                registration.deactivated()
 
             # Remove it from our data
             data = tuple([item for item in data if item != cid])
@@ -198,16 +195,16 @@ class ConfigurationRegistry(Persistent):
             wrapped_self._data = data
     unregister = ContextMethod(unregister)
 
-    def registered(wrapped_self, configuration):
-        cid = wrapped_self._id(configuration)
+    def registered(wrapped_self, registration):
+        cid = wrapped_self._id(registration)
         return cid in wrapped_self._data
     registered = ContextMethod(registered)
 
-    def activate(wrapped_self, configuration):
-        if configuration is None:
+    def activate(wrapped_self, registration):
+        if registration is None:
             cid = None
         else:
-            cid = wrapped_self._id(configuration)
+            cid = wrapped_self._id(registration)
         data = wrapped_self._data
 
         if cid is None and not data:
@@ -234,30 +231,30 @@ class ConfigurationRegistry(Persistent):
             # Write data back
             wrapped_self._data = data
 
-            if configuration is not None:
+            if registration is not None:
                 # Tell it that it is now active
-                configuration.activated()
+                registration.activated()
 
         else:
             raise ValueError(
-                "Configuration to be activated is not registered",
-                configuration)
+                "Registration to be activated is not registered",
+                registration)
     activate = ContextMethod(activate)
 
-    def deactivate(wrapped_self, configuration):
-        cid = wrapped_self._id(configuration)
+    def deactivate(wrapped_self, registration):
+        cid = wrapped_self._id(registration)
         data = wrapped_self._data
 
         if cid not in data:
             raise ValueError(
-                "Configuration to be deactivated is not registered",
-                configuration)
+                "Registration to be deactivated is not registered",
+                registration)
 
         if data[0] != cid:
             return # already inactive
 
         # Tell it that it is no longer active
-        configuration.deactivated()
+        registration.deactivated()
 
         if None not in data:
             # Append None
@@ -282,8 +279,8 @@ class ConfigurationRegistry(Persistent):
             if path is not None:
                 # Make sure we can traverse to it.
                 sm = getServiceManager(wrapped_self)
-                configuration = traverse(sm, path)
-                return configuration
+                registration = traverse(sm, path)
+                return registration
 
         return None
     active = ContextMethod(active)
@@ -300,28 +297,28 @@ class ConfigurationRegistry(Persistent):
 
         result = [{'id': path or "",
                    'active': False,
-                   'configuration': (path and traverse(sm, path))
+                   'registration': (path and traverse(sm, path))
                   }
                   for path in data if path or keep_dummy
                  ]
 
-        if keep_dummy or (result and result[0]['configuration'] is not None):
+        if keep_dummy or (result and result[0]['registration'] is not None):
             result[0]['active'] = True
 
         return result
     info = ContextMethod(info)
 
 
-class SimpleConfiguration(Persistent):
-    """Configuration objects that just contain configuration data
+class SimpleRegistration(Persistent):
+    """Registration objects that just contain registration data
 
     Classes that derive from this must make sure they implement
     IDeleteNotifiable either by implementing
-    implementedBy(SimpleConfiguration) or explicitly implementing
+    implementedBy(SimpleRegistration) or explicitly implementing
     IDeleteNotifiable.
     """
 
-    implements(IConfiguration, IDeleteNotifiable,
+    implements(IRegistration, IDeleteNotifiable,
                       # We are including this here because we want all of the
                       # subclasses to get it and we don't really need to be
                       # flexible about the policy here. At least we don't
@@ -329,7 +326,7 @@ class SimpleConfiguration(Persistent):
                       IAttributeAnnotatable,
                       )
 
-    # Methods from IConfiguration
+    # Methods from IRegistration
 
     def activated(self):
         pass
@@ -345,27 +342,27 @@ class SimpleConfiguration(Persistent):
 
     # Methods from IDeleteNotifiable
 
-    def beforeDeleteHook(self, configuration, container):
+    def beforeDeleteHook(self, registration, container):
         "See IDeleteNotifiable"
 
-        objectstatus = configuration.status
+        objectstatus = registration.status
 
-        if objectstatus == Active:
+        if objectstatus == ActiveStatus:
             try:
-                objectpath = getPath(configuration)
+                objectpath = getPath(registration)
             except: # XXX
-                objectpath = str(configuration)
-            raise DependencyError("Can't delete active configuration (%s)"
+                objectpath = str(registration)
+            raise DependencyError("Can't delete active registration (%s)"
                                   % objectpath)
-        elif objectstatus == Registered:
-            configuration.status = Unregistered
+        elif objectstatus == RegisteredStatus:
+            registration.status = UnregisteredStatus
 
 
-class NamedConfiguration(SimpleConfiguration):
-    """Named configuration
+class NamedRegistration(SimpleRegistration):
+    """Named registration
     """
 
-    implements(INamedConfiguration)
+    implements(INamedRegistration)
 
     def __init__(self, name):
         self.name = name
@@ -374,16 +371,16 @@ class NamedConfiguration(SimpleConfiguration):
         return "%s %s" % (self.name, self.__class__.__name__)
 
 
-class ComponentConfiguration(SimpleConfiguration):
-    """Component configuration.
+class ComponentRegistration(SimpleRegistration):
+    """Component registration.
 
     Subclasses should define a getInterface() method returning the interface
     of the component.
     """
 
-    # SimpleConfiguration implements IDeleteNotifiable, so we don't need
+    # SimpleRegistration implements IDeleteNotifiable, so we don't need
     # it below.
-    implements(IComponentConfiguration, IAddNotifiable)
+    implements(IComponentRegistration, IAddNotifiable)
 
     def __init__(self, component_path, permission=None):
         self.componentPath = component_path
@@ -397,9 +394,9 @@ class ComponentConfiguration(SimpleConfiguration):
     def getComponent(wrapped_self):
         service_manager = getServiceManager(wrapped_self)
 
-        # The user of the configuration object may not have permission
+        # The user of the registration object may not have permission
         # to traverse to the component.  Yet they should be able to
-        # get it by calling getComponent() on a configuration object
+        # get it by calling getComponent() on a registration object
         # for which they do have permission.  What they get will be
         # wrapped in a security proxy of course.  Hence:
 
@@ -443,110 +440,114 @@ class ComponentConfiguration(SimpleConfiguration):
         return component
     getComponent = ContextMethod(getComponent)
 
-    def afterAddHook(self, configuration, container):
+    def afterAddHook(self, registration, container):
         "See IAddNotifiable"
-        component = configuration.getComponent()
+        component = registration.getComponent()
         dependents = getAdapter(component, IDependable)
-        objectpath = getPath(configuration)
+        objectpath = getPath(registration)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
-        adapter = queryAdapter(component, IUseConfiguration)
+        adapter = queryAdapter(component, IRegistered)
         if adapter is not None:
-            adapter.addUsage(getPath(configuration))
+            adapter.addUsage(getPath(registration))
 
-    def beforeDeleteHook(self, configuration, container):
+    def beforeDeleteHook(self, registration, container):
         "See IDeleteNotifiable"
-        super(ComponentConfiguration, self).beforeDeleteHook(configuration,
+        super(ComponentRegistration, self).beforeDeleteHook(registration,
                                                              container)
-        component = configuration.getComponent()
+        component = registration.getComponent()
         dependents = getAdapter(component, IDependable)
-        objectpath = getPath(configuration)
+        objectpath = getPath(registration)
         dependents.removeDependent(objectpath)
         # Also update usage, if supported
-        adapter = queryAdapter(component, IUseConfiguration)
+        adapter = queryAdapter(component, IRegistered)
         if adapter is not None:
-            adapter.removeUsage(getPath(configuration))
+            adapter.removeUsage(getPath(registration))
 
-class NamedComponentConfiguration(NamedConfiguration, ComponentConfiguration):
-    """Configurations for named components.
+class NamedComponentRegistration(NamedRegistration, ComponentRegistration):
+    """Registrations for named components.
 
     This configures components that live in folders, by name.
     """
-    implements(INamedComponentConfiguration)
+    implements(INamedComponentRegistration)
 
     def __init__(self, name, component_path, permission=None):
-        NamedConfiguration.__init__(self, name)
-        ComponentConfiguration.__init__(self, component_path, permission)
+        NamedRegistration.__init__(self, name)
+        ComponentRegistration.__init__(self, component_path, permission)
 
 
-class NameConfigurable:
-    """Mixin for implementing INameConfigurable
+class NameRegistry:
+    """Mixin for implementing INameRegistry
     """
-    implements(INameConfigurable)
+    implements(INameRegistry)
 
     def __init__(self, *args, **kw):
         self._bindings = {}
-        super(NameConfigurable, self).__init__(*args, **kw)
+        super(NameRegistry, self).__init__(*args, **kw)
 
-    def queryConfigurationsFor(wrapped_self, cfg, default=None):
-        """See IConfigurable"""
-        return wrapped_self.queryConfigurations(cfg.name, default)
-    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
+    def queryRegistrationsFor(wrapped_self, cfg, default=None):
+        """See IRegistry"""
+        return wrapped_self.queryRegistrations(cfg.name, default)
+    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
-    def queryConfigurations(wrapped_self, name, default=None):
-        """See INameConfigurable"""
+    def queryRegistrations(wrapped_self, name, default=None):
+        """See INameRegistry"""
         registry = wrapped_self._bindings.get(name, default)
         return ContextWrapper(registry, wrapped_self)
-    queryConfigurations = ContextMethod(queryConfigurations)
+    queryRegistrations = ContextMethod(queryRegistrations)
 
-    def createConfigurationsFor(wrapped_self, cfg):
-        """See IConfigurable"""
-        return wrapped_self.createConfigurations(cfg.name)
-    createConfigurationsFor = ContextMethod(createConfigurationsFor)
+    def createRegistrationsFor(wrapped_self, cfg):
+        """See IRegistry"""
+        return wrapped_self.createRegistrations(cfg.name)
+    createRegistrationsFor = ContextMethod(createRegistrationsFor)
 
-    def createConfigurations(wrapped_self, name):
-        """See INameConfigurable"""
+    def createRegistrations(wrapped_self, name):
+        """See INameRegistry"""
         try:
             registry = wrapped_self._bindings[name]
         except KeyError:
-            wrapped_self._bindings[name] = registry = ConfigurationRegistry()
+            wrapped_self._bindings[name] = registry = RegistrationStack()
             wrapped_self._p_changed = 1
         return ContextWrapper(registry, wrapped_self)
-    createConfigurations = ContextMethod(createConfigurations)
+    createRegistrations = ContextMethod(createRegistrations)
 
-    def listConfigurationNames(wrapped_self):
-        """See INameConfigurable"""
+    def listRegistrationNames(wrapped_self):
+        """See INameRegistry"""
         return filter(wrapped_self._bindings.get,
                       wrapped_self._bindings.keys())
 
 
-class NameComponentConfigurable(NameConfigurable):
-    """Mixin for implementing INameComponentConfigurable
+class NameComponentRegistry(NameRegistry):
+    """Mixin for implementing INameComponentRegistry
     """
-    implements(INameComponentConfigurable)
+    implements(INameComponentRegistry)
 
     def queryActiveComponent(wrapped_self, name, default=None):
-        """See INameComponentConfigurable"""
-        registry = wrapped_self.queryConfigurations(name)
+        """See INameComponentRegistry"""
+        registry = wrapped_self.queryRegistrations(name)
         if registry:
-            configuration = registry.active()
-            if configuration is not None:
-                return configuration.getComponent()
+            registration = registry.active()
+            if registration is not None:
+                return registration.getComponent()
         return default
     queryActiveComponent = ContextMethod(queryActiveComponent)
 
 
 from zope.app.dependable import PathSetAnnotation
 
-class UseConfiguration(PathSetAnnotation):
-    """An adapter from IUseConfigurable to IUseConfiguration.
+class Registered(PathSetAnnotation):
+    """An adapter from IRegisterable to IRegistered.
 
-    This class is the only place that knows how 'UseConfiguration'
+    This class is the only place that knows how 'Registered'
     data is represented.
     """
 
-    implements(IUseConfiguration)
+    implements(IRegistered)
 
+    # We want to use this key:
+    #   key = "zope.app.services.registration.Registered"
+    # But we have existing annotations with the following key, so we'll keep
+    # it. :( 
     key = "zope.app.services.configuration.UseConfiguration"
 
     addUsage = PathSetAnnotation.addPath
@@ -554,13 +555,13 @@ class UseConfiguration(PathSetAnnotation):
     usages = PathSetAnnotation.getPaths
 
 
-class ConfigurationManager(Persistent):
-    """Configuration manager
+class RegistrationManager(Persistent):
+    """Registration manager
 
-    Manages configurations within a package.
+    Manages registrations within a package.
     """
 
-    implements(IConfigurationManager, IDeleteNotifiable)
+    implements(IRegistrationManager, IDeleteNotifiable)
 
     def __init__(self):
         self._data = ()
@@ -693,66 +694,66 @@ class ConfigurationManager(Persistent):
             del container[k]
 
 
-class ConfigurationManagerContainer(object):
-    """Mix-in to implement IConfigurationManagerContainer
+class RegistrationManagerContainer(object):
+    """Mix-in to implement IRegistrationManagerContainer
     """
 
     def __init__(self):
-        super(ConfigurationManagerContainer, self).__init__()
-        self.setObject('RegistrationManager', ConfigurationManager())
+        super(RegistrationManagerContainer, self).__init__()
+        self.setObject('RegistrationManager', RegistrationManager())
 
     def __delitem__(self, name):
-        """Delete an item, but not if it's the last configuration manager
+        """Delete an item, but not if it's the last registration manager
         """
         item = self[name]
-        if IConfigurationManager.isImplementedBy(item):
+        if IRegistrationManager.isImplementedBy(item):
             # Check to make sure it's not the last one
             if len([i for i in self.values()
-                    if IConfigurationManager.isImplementedBy(i)]) < 2:
-                raise NoConfigurationManagerError(
-                    "Can't delete the last configuration manager")
-        super(ConfigurationManagerContainer, self).__delitem__(name)
+                    if IRegistrationManager.isImplementedBy(i)]) < 2:
+                raise NoRegistrationManagerError(
+                    "Can't delete the last registration manager")
+        super(RegistrationManagerContainer, self).__delitem__(name)
 
-    def getConfigurationManager(self):
-        """Get a configuration manager
+    def getRegistrationManager(self):
+        """Get a registration manager
         """
-        # Get the configuration manager for this folder
+        # Get the registration manager for this folder
         for name in self:
             item = self[name]
-            if IConfigurationManager.isImplementedBy(item):
+            if IRegistrationManager.isImplementedBy(item):
                 # We found one. Get it in context
                 return ContextWrapper(item, self, name=name)
         else:
-            raise NoConfigurationManagerError(
-                "Couldn't find an configuration manager")
-    getConfigurationManager = ContextMethod(getConfigurationManager)
+            raise NoRegistrationManagerError(
+                "Couldn't find an registration manager")
+    getRegistrationManager = ContextMethod(getRegistrationManager)
 
 
 from zope.xmlpickle import dumps, loads
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.fssync.classes import ObjectEntryAdapter
 
-class ComponentConfigurationAdapter(ObjectEntryAdapter):
+class ComponentRegistrationAdapter(ObjectEntryAdapter):
 
-    """Fssync adapter for ComponentConfiguration objects and subclasses.
+    """Fssync adapter for ComponentRegistration objects and subclasses.
 
     This is fairly generic -- it should apply to most subclasses of
-    ComponentConfiguration.  But in order for it to work for a
-    specific subclass (say, UtilityConfiguration), you have to (a) add
+    ComponentRegistration.  But in order for it to work for a
+    specific subclass (say, UtilityRegistration), you have to (a) add
     an entry to configure.zcml, like this:
 
         <fssync:adapter
-            class=".utility.UtilityConfiguration"
-            factory=".configuration.ComponentConfigurationAdapter"
+            class=".utility.UtilityRegistration"
+            factory=".registration.ComponentRegistrationAdapter"
             />
 
     and (b) add a function to factories.py, like this:
 
-        def UtilityConfiguration():
-            from zope.app.services.utility import UtilityConfiguration
-            return UtilityConfiguration("", None, "")
+        def UtilityRegistration():
+            from zope.app.services.utility import UtilityRegistration
+            return UtilityRegistration("", None, "")
 
-    The file representation of a configuration object is an XML pickle
+    The file representation of a registration object is an XML pickle
     for a modified version of the instance dict.  In this version of
     the instance dict, the __annotations__ attribute is omitted,
     because annotations are already stored on the filesystem in a
@@ -781,3 +782,14 @@ class ComponentConfigurationAdapter(ObjectEntryAdapter):
         obj = removeAllProxies(self.context)
         ivars = loads(body)
         obj.__setstate__(ivars)
+
+
+
+# XXX Pickle backward compatability
+ConfigurationRegistry = RegistrationStack
+ConfigurationManager = RegistrationManager
+import sys
+sys.modules['zope.app.services.registrationmanager'
+            ] = sys.modules['zope.app.services.registration']
+sys.modules['zope.app.services.configuration'
+            ] = sys.modules['zope.app.services.registration']

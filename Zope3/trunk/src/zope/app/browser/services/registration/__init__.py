@@ -11,19 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Gewneral configuration-related views
+"""Gewneral registry-related views
 
-$Id: __init__.py,v 1.12 2003/06/13 17:41:13 stevea Exp $
+$Id: __init__.py,v 1.1 2003/06/21 21:22:02 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration import Active, Registered
-from zope.app.interfaces.services.configuration import IComponentConfiguration
-from zope.app.interfaces.services.configuration import Unregistered
-from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import IComponentRegistration
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import IRegistered
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getPath, getName, traverse
 from zope.component import getView, getServiceManager, getAdapter
@@ -34,19 +35,19 @@ from zope.publisher.browser import BrowserView
 from zope.interface import implements
 
 
-class NameConfigurableView(BrowserView):
+class NameRegistryView(BrowserView):
 
-    indexMacros = index = ViewPageTemplateFile('nameconfigurable.pt')
+    indexMacros = index = ViewPageTemplateFile('nameregistry.pt')
 
     def update(self):
 
-        names = list(self.context.listConfigurationNames())
+        names = list(self.context.listRegistrationNames())
         names.sort()
 
         items = []
         for name in names:
-            registry = self.context.queryConfigurations(name)
-            view = getView(registry, "ChangeConfigurations", self.request)
+            registry = self.context.queryRegistrations(name)
+            view = getView(registry, "ChangeRegistrations", self.request)
             view.setPrefix(name)
             view.update()
             cfg = registry.active()
@@ -64,12 +65,12 @@ class NameConfigurableView(BrowserView):
                 }
 
 
-class NameComponentConfigurableView(NameConfigurableView):
+class NameComponentRegistryView(NameRegistryView):
 
-    indexMacros = index = ViewPageTemplateFile('namecomponentconfigurable.pt')
+    indexMacros = index = ViewPageTemplateFile('namecomponentregistry.pt')
 
     def _getItem(self, name, view, cfg):
-        item_dict = NameConfigurableView._getItem(self, name, view, cfg)
+        item_dict = NameRegistryView._getItem(self, name, view, cfg)
         if cfg is not None:
             ob = traverse(cfg, cfg.componentPath)
             url = str(getView(ob, 'absolute_url', self.request))
@@ -79,7 +80,7 @@ class NameComponentConfigurableView(NameConfigurableView):
         return item_dict
 
 
-class NameUseConfiguration:
+class NameRegistered:
 
     def __init__(self, context, request):
         self.context = context
@@ -87,7 +88,7 @@ class NameUseConfiguration:
 
     def uses(self):
         component = self.context
-        useconfig = getAdapter(component, IUseConfiguration)
+        useconfig = getAdapter(component, IRegistered)
         result = []
         for path in useconfig.usages():
             config = traverse(component, path)
@@ -96,12 +97,12 @@ class NameUseConfiguration:
             if summaryMethod:
                 description = summaryMethod()
             url = getView(config, 'absolute_url', self.request)
-            # XXX This assumes the configuration implements
-            #     INamedComponentConfiguration rather than just
-            #     IComponentConfiguration.  ATM there are no
+            # XXX This assumes the registration implements
+            #     INamedComponentRegistration rather than just
+            #     IComponentRegistration.  ATM there are no
             #     counterexamples, so this is a sleeper bug;
-            #     but what to do?  Could move the configuration
-            #     management up to INamedComponentConfiguration,
+            #     but what to do?  Could move the registration
+            #     management up to INamedComponentRegistration,
             #     or could use path as default for name here.
             result.append({'name': config.name,
                            'path': path,
@@ -112,9 +113,9 @@ class NameUseConfiguration:
         return result
 
 
-class ChangeConfigurations(BrowserView):
+class ChangeRegistrations(BrowserView):
 
-    _prefix = 'configurations'
+    _prefix = 'registrations'
     name = _prefix + ".active"
     message = ''
     configBase = ''
@@ -136,7 +137,7 @@ class ChangeConfigurations(BrowserView):
                 for info in self.context.info():
                     if info['id'] == active:
                         if not info['active']:
-                            self.context.activate(info['configuration'])
+                            self.context.activate(info['registration'])
                             message = "Updated"
 
         return message
@@ -149,30 +150,30 @@ class ChangeConfigurations(BrowserView):
                                       'absolute_url', self.request)
                               )
 
-        configurations = self.context.info()
+        registrations = self.context.info()
 
-        # This is OK because configurations is just a list of dicts
-        configurations = removeAllProxies(configurations)
+        # This is OK because registrations is just a list of dicts
+        registrations = removeAllProxies(registrations)
 
         inactive = 1
-        for info in configurations:
+        for info in registrations:
             if info['active']:
                 inactive = None
             else:
                 info['active'] = None
 
-            info['summary'] = info['configuration'].implementationSummary()
+            info['summary'] = info['registration'].implementationSummary()
 
         self.inactive = inactive
-        self.configurations = configurations
+        self.registrations = registrations
 
         self.message = message
 
 
-class ConfigurationStatusWidget(BrowserWidget):
+class RegistrationStatusWidget(BrowserWidget):
 
     def __call__(self):
-        checked = self._showData() or Unregistered
+        checked = self._showData() or UnregisteredStatus
         result = [
             ('<label>'
              '<input type="radio" name="%s" value="%s"%s>'
@@ -181,7 +182,7 @@ class ConfigurationStatusWidget(BrowserWidget):
              '</label>'
              % (self.name, v, (v == checked and ' checked' or ''), v)
              )
-            for v in (Unregistered, Registered, Active)
+            for v in (UnregisteredStatus, RegisteredStatus, ActiveStatus)
             ]
         return ' '.join(result)
 
@@ -191,7 +192,7 @@ class ComponentPathWidget(BrowserWidget):
 
     The widget doesn't actually allow editing. Rather it gets the
     value by inspecting its field's context. If the context is an
-    IComponentConfiguration, then it just gets its value from the
+    IComponentRegistration, then it just gets its value from the
     component using the field's name. Otherwise, it uses the path to
     the context.
     """
@@ -203,8 +204,8 @@ class ComponentPathWidget(BrowserWidget):
         # Render as a link to the component
         field = self.context
         context = field.context 
-        if IComponentConfiguration.isImplementedBy(context):
-            # It's a configuration object. Just get the corresponding attr
+        if IComponentRegistration.isImplementedBy(context):
+            # It's a registration object. Just get the corresponding attr
             path = getattr(context, field.__name__)
             # The path may be relative; then interpret relative to ../..
             if not path.startswith("/"):
@@ -229,8 +230,8 @@ class ComponentPathWidget(BrowserWidget):
         "See zope.app.interfaces.form.IWidget"
         field = self.context
         context = field.context 
-        if IComponentConfiguration.isImplementedBy(context):
-            # It's a configuration object. Just get the corresponding attr
+        if IComponentRegistration.isImplementedBy(context):
+            # It's a registration object. Just get the corresponding attr
             # XXX this code has no unittests !!!
             path = getattr(context, field.__name__)
         else:
@@ -245,37 +246,37 @@ class ComponentPathWidget(BrowserWidget):
         return True
 
 
-class AddComponentConfiguration(BrowserView):
-    """View for adding component configurations
+class AddComponentRegistration(BrowserView):
+    """View for adding component registrations
 
-    This class is used to define configuration add forms.  It provides
+    This class is used to define registration add forms.  It provides
     tha ``add`` and ``nextURL`` methods needed when creating add forms
-    for non IAdding object. We need this here because configuration
+    for non IAdding object. We need this here because registration
     add forms are views of the component being configured.
     """
     
-    def add(self, configuration):
-        """Add a configuration
+    def add(self, registration):
+        """Add a registration
 
-        We are going to add the configuration to the local
-        configuration manager. We don't want to hard code the name of
+        We are going to add the registration to the local
+        registration manager. We don't want to hard code the name of
         this, so we'll simply scan the containing folder and add the
-        configuration to the first configuration manager we find.
+        registration to the first registration manager we find.
 
         """
 
         component = self.context
         
-        # Get the configuration manager for this folder
+        # Get the registration manager for this folder
         folder = getWrapperContainer(component)
-        configure = folder.getConfigurationManager()
+        configure = folder.getRegistrationManager()
 
         # Adapt to IZopeContainer, which takes care of generating
         # standard events and calling standard hooks
         container = getAdapter(configure, IZopeContainer)
 
         # Now add the item, saving the key, which is picked by the config
-        key = container.setObject("", configuration)
+        key = container.setObject("", registration)
 
         # and return the config in context by fetching it from the container
         return container[key]
@@ -284,17 +285,17 @@ class AddComponentConfiguration(BrowserView):
         return "@@SelectedManagementView.html"
 
 
-class ConfigurationAdding(Adding):
-    """Adding subclass for adding configurations."""
+class RegistrationAdding(Adding):
+    """Adding subclass for adding registrations."""
 
-    menu_id = "add_configuration"
+    menu_id = "add_registration"
 
     def nextURL(self):
         return str(getView(self.context, "absolute_url", self.request))
 
 
-class EditConfiguration(BrowserView):
-    """A view on a configuration manager, used by configurations.pt."""
+class EditRegistration(BrowserView):
+    """A view on a registration manager, used by registrations.pt."""
 
     def __init__(self, context, request):
         self.request = request
@@ -342,7 +343,7 @@ class EditConfiguration(BrowserView):
         for name, configobj in self.context.items():
             configobj = ContextWrapper(configobj, self.context, name=name)
             url = str(getView(configobj, 'absolute_url', self.request))
-            active = configobj.status == Active
+            active = configobj.status == ActiveStatus
             summary1 = getattr(configobj, "usageSummary", None)
             summary2 = getattr(configobj, "implementationSummary", None)
             item = {'name': name, 'url': url, 'active': active}

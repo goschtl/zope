@@ -39,7 +39,7 @@ class IntrospectorView(BrowserView):
         #        # XXX IConfigureFor appears to have disappeared at some point
         #        adapter = queryAdapter(service, IConfigureFor)
         #        if (adapter is not None
-        #            and adapter.hasConfigurationFor(self.context)):
+        #            and adapter.hasRegistrationFor(self.context)):
         #            search_result = service.getRegisteredMatching(
         #                self.context, None, [], self.context)
         #            directive_path = []

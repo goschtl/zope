@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_instance.py,v 1.6 2003/06/05 12:03:20 stevea Exp $
+$Id: test_instance.py,v 1.7 2003/06/21 21:22:17 jim Exp $
 """
 
 import unittest
@@ -33,13 +33,13 @@ from zope.security.management import newSecurityManager
 
 from zope.app.context import ContextWrapper
 
-from zope.app.interfaces.services.configuration import IUseConfigurable
-from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.services.configuration import Active
+from zope.app.interfaces.services.registration import ActiveStatus
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
-from zope.app.workflow.service import ProcessDefinitionConfiguration
+from zope.app.workflow.service import ProcessDefinitionRegistration
 from zope.app.interfaces.workflow.stateful \
      import IStatefulProcessInstance
 from zope.app.workflow.stateful.definition \
@@ -51,9 +51,9 @@ from zope.app import zapi
 
 # define and create ProcessDefinition (PD) for tests
 class TestProcessDefinition(StatefulProcessDefinition):
-    implements(IAttributeAnnotatable, IUseConfigurable, IUseConfiguration)
+    implements(IAttributeAnnotatable, IRegisterable, IRegistered)
 
-    # Incompletely implementing IUseConfiguration
+    # Incompletely implementing IRegistered
     def addUsage(self, location):
         pass
 
@@ -97,10 +97,10 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.default.setObject('pd1', pd )
 
-        self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
+        self.cm.setObject('', ProcessDefinitionRegistration('definition1',
                                 '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getConfigurationManager(),
-                      '2').status = Active
+        zapi.traverse(self.default.getRegistrationManager(),
+                      '2').status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
@@ -191,9 +191,9 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.default.setObject('pd1', pd )
 
-        self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
+        self.cm.setObject('', ProcessDefinitionRegistration('definition1',
                                 '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getConfigurationManager(), '2').status = Active
+        zapi.traverse(self.default.getRegistrationManager(), '2').status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
@@ -282,10 +282,10 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.default.setObject('pd1', pd )
 
-        k = self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
+        k = self.cm.setObject('', ProcessDefinitionRegistration('definition1',
                                 '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getConfigurationManager(),
-                      k).status = Active
+        zapi.traverse(self.default.getRegistrationManager(),
+                      k).status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
@@ -375,10 +375,10 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         self.default.setObject('pd1', pd )
 
-        k = self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
+        k = self.cm.setObject('', ProcessDefinitionRegistration('definition1',
                                 '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getConfigurationManager(),
-                      k).status = Active
+        zapi.traverse(self.default.getRegistrationManager(),
+                      k).status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service

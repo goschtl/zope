@@ -11,17 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A configuration for a cache.
+"""A registration for a cache.
 
-$Id: cache.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: cache.py,v 1.3 2003/06/21 21:22:10 jim Exp $
 """
 
-from zope.app.interfaces.services.configuration \
-     import INamedComponentConfiguration
+from zope.app.interfaces.services.registration \
+     import INamedComponentRegistration
 
-class ICacheConfiguration(INamedComponentConfiguration):
-    """Cache configuration
+class ICacheRegistration(INamedComponentRegistration):
+    """Cache registration
 
-    Cache configurations are dependent on the caches that they configure. They
+    Cache registrations are dependent on the caches that they configure. They
     register themselves as component dependents.
     """

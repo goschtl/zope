@@ -13,7 +13,7 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.6 2003/06/03 15:45:11 stevea Exp $
+$Id: ram.py,v 1.7 2003/06/21 21:22:09 jim Exp $
 """
 
 from time import time
@@ -24,8 +24,7 @@ from persistence import Persistent
 
 from zope.app.interfaces.cache.ram import IRAMCache
 from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.interfaces.services.configuration import \
-     IAttributeUseConfigurable
+from zope.app.interfaces.services.registration import IAttributeRegisterable
 from zope.interface import implements
 
 # A global caches dictionary shared between threads
@@ -56,7 +55,7 @@ class RAMCache(Persistent):
     handle their blocking internally.
     """
 
-    implements(IRAMCache, IAttributeUseConfigurable)
+    implements(IRAMCache, IAttributeRegisterable)
 
     def __init__(self):
 
@@ -181,7 +180,7 @@ class Storage:
         self.lastCleanup = time()
 
     def update(self, maxEntries=None, maxAge=None, cleanupInterval=None):
-        """Set the configuration options.
+        """Set the registration options.
 
         None values are ignored.
         """

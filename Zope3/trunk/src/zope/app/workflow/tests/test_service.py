@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_service.py,v 1.4 2003/06/05 12:03:20 stevea Exp $
+$Id: test_service.py,v 1.5 2003/06/21 21:22:17 jim Exp $
 """
 
 import unittest
@@ -24,20 +24,21 @@ from zope.interface import implements
 from zope.interface.verify import verifyClass
 
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.services.configuration import IUseConfigurable
-from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.interfaces.services.configuration import Active, Registered
+from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.interfaces.services.registration import IRegistered
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.interfaces.workflow \
      import IWorkflowService, IProcessDefinition
 from zope.app.workflow.service import WorkflowService
-from zope.app.workflow.service import ProcessDefinitionConfiguration
+from zope.app.workflow.service import ProcessDefinitionRegistration
 
 # define and create dummy ProcessDefinition (PD) for tests
 class DummyProcessDefinition:
-    implements(IProcessDefinition, IAttributeAnnotatable, IUseConfigurable,
-               IUseConfiguration)
+    implements(IProcessDefinition, IAttributeAnnotatable, IRegisterable,
+               IRegistered)
 
     def __init__(self, n):
         self.n = n
@@ -48,8 +49,8 @@ class DummyProcessDefinition:
     def createProcessInstance(self, definition_name):
         return 'PI #%d' % self.n
 
-    # Implements (incompletely) IUseConfiguration to satisfy the promise that
-    # it is IUseConfigurable.
+    # Implements (incompletely) IRegistered to satisfy the promise that
+    # it is IRegisterable.
     # Only the method addUsage is implemented.
     def addUsage(self, location):
         pass
@@ -68,32 +69,32 @@ class WorkflowServiceTests(WorkflowSetup, unittest.TestCase):
         self.default.setObject('pd1', DummyProcessDefinition(1))
         self.default.setObject('pd2', DummyProcessDefinition(2))
 
-        self.cm.setObject('', ProcessDefinitionConfiguration('definition1',
+        self.cm.setObject('', ProcessDefinitionRegistration('definition1',
                                 '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getConfigurationManager(),
-                      '2').status = Active
-        self.cm.setObject('', ProcessDefinitionConfiguration('definition2',
+        zapi.traverse(self.default.getRegistrationManager(),
+                      '2').status = ActiveStatus
+        self.cm.setObject('', ProcessDefinitionRegistration('definition2',
                                 '/++etc++site/default/pd2'))
-        zapi.traverse(self.default.getConfigurationManager(),
-                      '3').status = Active
-        self.cm.setObject('', ProcessDefinitionConfiguration('definition3',
+        zapi.traverse(self.default.getRegistrationManager(),
+                      '3').status = ActiveStatus
+        self.cm.setObject('', ProcessDefinitionRegistration('definition3',
                                 '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getConfigurationManager(),
-                 '4').status = Registered
+        zapi.traverse(self.default.getRegistrationManager(),
+                 '4').status = RegisteredStatus
         # Now self.service has definition1 and definition2 available
         # and knows about definition3
 
         self.default1.setObject('pd3', DummyProcessDefinition(3))
         self.default1.setObject('pd4', DummyProcessDefinition(4))
 
-        self.cm1.setObject('', ProcessDefinitionConfiguration('definition1',
+        self.cm1.setObject('', ProcessDefinitionRegistration('definition1',
                             '/folder1/++etc++site/default/pd3'))
-        zapi.traverse(self.default1.getConfigurationManager(),
-                      '2').status = Active
-        self.cm1.setObject('', ProcessDefinitionConfiguration('definition4',
+        zapi.traverse(self.default1.getRegistrationManager(),
+                      '2').status = ActiveStatus
+        self.cm1.setObject('', ProcessDefinitionRegistration('definition4',
                             '/folder1/++etc++site/default/pd4'))
-        zapi.traverse(self.default1.getConfigurationManager(),
-                      '3').status = Active
+        zapi.traverse(self.default1.getRegistrationManager(),
+                      '3').status = ActiveStatus
         # Now self.service1 overrides definition1, adds new definition4
         # available, and inherits definition2 from self.service
 

@@ -14,19 +14,20 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.12 2003/06/05 12:03:18 stevea Exp $
+$Id: test_servicemanager.py,v 1.13 2003/06/21 21:22:13 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
 from zope.interface import Interface, implements
 from zope.context import getWrapperContainer
 from zope.app.services.service import ServiceManager
-from zope.app.services.service import ServiceConfiguration
+from zope.app.services.service import ServiceRegistration
 from zope.component import getService, getServiceManager
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
-from zope.app.interfaces.services.configuration import Active, Unregistered
-from zope.app.interfaces.services.configuration import Registered
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.component.service import serviceManager
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
@@ -48,12 +49,12 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         ts = TestService()
         default.setObject('test_service1', ts)
-        configuration = ServiceConfiguration(
+        registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service1')
 
-        default.getConfigurationManager().setObject('', configuration)
-        traverse(default.getConfigurationManager(), '1').status = Active
+        default.getRegistrationManager().setObject('', registration)
+        traverse(default.getRegistrationManager(), '1').status = ActiveStatus
 
         testOb = getService(self.rootFolder, 'test_service')
         c = getWrapperContainer
@@ -74,11 +75,11 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         default = traverse(sm, 'default')
         ts = TestService()
         default.setObject('test_service1', ts)
-        configuration = ServiceConfiguration(
+        registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service1')
-        default.getConfigurationManager().setObject('', configuration)
-        traverse(default.getConfigurationManager(), '1').status = Active
+        default.getRegistrationManager().setObject('', registration)
+        traverse(default.getRegistrationManager(), '1').status = ActiveStatus
 
         testOb = sm.queryLocalService('test_service')
         c = getWrapperContainer
@@ -98,19 +99,20 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         ts1 = TestService()
         default.setObject('test_service1', ts1)
-        configuration = ServiceConfiguration(
+        registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service1')
-        default.getConfigurationManager().setObject('', configuration)
-        traverse(default.getConfigurationManager(), '1').status = Active
+        default.getRegistrationManager().setObject('', registration)
+        traverse(default.getRegistrationManager(), '1').status = ActiveStatus
 
         ts2 = TestService()
         default.setObject('test_service2', ts2)
-        configuration = ServiceConfiguration(
+        registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service2')
-        default.getConfigurationManager().setObject('', configuration)
-        traverse(default.getConfigurationManager(), '2').status = Registered
+        default.getRegistrationManager().setObject('', registration)
+        traverse(default.getRegistrationManager(), '2'
+                 ).status = RegisteredStatus
 
         testOb = getService(self.rootFolder, 'test_service')
         self.assertEqual(testOb, ts1)
@@ -125,8 +127,8 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.testGetService() # set up localservice
 
         sm = traverse(self.rootFolder, '++etc++site')
-        cm = traverse(sm, 'default').getConfigurationManager()
-        traverse(cm, '1').status = Unregistered
+        cm = traverse(sm, 'default').getRegistrationManager()
+        traverse(cm, '1').status = UnregisteredStatus
 
         self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
 

@@ -13,16 +13,16 @@
 ##############################################################################
 """Interfaces for packages.
 
-$Id: folder.py,v 1.4 2003/03/23 19:24:45 jim Exp $
+$Id: folder.py,v 1.5 2003/06/21 21:22:10 jim Exp $
 """
 
 from zope.app.interfaces.container import IAdding, IContainer
 from zope.app.interfaces.services.service import IComponentManager
-from zope.app.interfaces.services.configuration \
-     import IConfigurationManagerContainer
+from zope.app.interfaces.services.registration \
+     import IRegistrationManagerContainer
 
-class ISiteManagementFolder(IContainer, IConfigurationManagerContainer):
-    """Component and component configuration containers."""
+class ISiteManagementFolder(IContainer, IRegistrationManagerContainer):
+    """Component and component registration containers."""
 
 
 class ISiteManagementFolders(IContainer, IComponentManager):
@@ -39,6 +39,6 @@ class ISiteManagementFolderAdding(IAdding):
     The SiteManagementFolder Adding is special, since it is not part
     of the content namespace, but has a similar functionality as a
     Folder. Therefore there are views that overlap; this interface was
-    created so that there are no configuration conflicts.
+    created so that there are no registration conflicts.
 
     """

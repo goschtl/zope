@@ -11,35 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-import unittest
+
 from StringIO import StringIO
-
-from zope.interface.verify import verifyClass
-from zope.interface import implements, classImplements
-
+from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
+from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
 from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.workflow.stateful.definition import StatefulProcessDefinition
+from zope.app.workflow.stateful.definition import State, Transition
+from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
+from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
 from zope.component.adapter import provideAdapter
 from zope.component import getAdapter
-
+from zope.interface import implements, classImplements
+from zope.interface.verify import verifyClass
 from zope.security.checker import CheckerPublic
-
-from zope.app.dublincore.annotatableadapter \
-     import ZDCAnnotatableAdapter
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.app.interfaces.annotation \
-     import IAnnotatable, IAnnotations, IAttributeAnnotatable
-
-from zope.app.interfaces.services.configuration \
-     import IUseConfigurable
-
-from zope.app.workflow.stateful.definition \
-     import StatefulProcessDefinition, State, Transition
-
-from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
-from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
-from zope.app.workflow.stateful.xmlimportexport \
-     import XMLImportHandler, XMLExportHandler
+import unittest
 
 
 xml_text = """<?xml version="1.0"?>
@@ -85,7 +77,7 @@ xml_text = """<?xml version="1.0"?>
 
 
 class TestProcessDefinition(StatefulProcessDefinition):
-    implements(IAttributeAnnotatable, IUseConfigurable)
+    implements(IAttributeAnnotatable, IRegisterable)
 
 # need to patch this cause these classes are used directly
 # in the import/export classes

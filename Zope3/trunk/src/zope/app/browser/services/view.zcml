@@ -29,18 +29,18 @@
       />
 
   <editform
-    schema="zope.app.interfaces.services.view.IPageConfiguration"
+    schema="zope.app.interfaces.services.view.IPageRegistration"
     name="index.html"
-    class=".view.PageConfigurationView"
+    class=".view.PageRegistrationView"
     menu="zmi_views"
     label="Change page"
     permission="zope.ManageServices"
     />
 
   <addform
-      schema="zope.app.interfaces.services.view.IPageConfiguration"
-      name="PageConfiguration"
-      content_factory="zope.app.services.view.PageConfiguration"
+      schema="zope.app.interfaces.services.view.IPageRegistration"
+      name="PageRegistration"
+      content_factory="zope.app.services.view.PageRegistration"
       keyword_arguments="forInterface class_ viewName permission layer"
       set_before_add="template"
       label="Register a view page"
@@ -53,11 +53,11 @@
      So I'm commenting it out for now.
 
   <defaultView
-    for="zope.app.interfaces.services.view.IViewConfiguration"
+    for="zope.app.interfaces.services.view.IViewRegistration"
     name="edit.html" />
 
   <editform
-    schema="zope.app.interfaces.services.view.IViewConfiguration"
+    schema="zope.app.interfaces.services.view.IViewRegistration"
     name="edit.html"
     menu="zmi_views"
     label="Change view"
@@ -65,9 +65,9 @@
     />
 
   <addform
-      schema="zope.app.interfaces.services.view.IViewConfiguration"
-      name="ViewConfiguration"
-      content_factory=".view.ViewConfiguration"
+      schema="zope.app.interfaces.services.view.IViewRegistration"
+      name="ViewRegistration"
+      content_factory=".view.ViewRegistration"
       keyword_arguments="forInterface presentationType class_
                            viewName permission"
       set_before_add="layer"
@@ -79,8 +79,8 @@
 
   <menuItem
       for="zope.app.interfaces.container.IAdding"
-      menu="add_configuration"
-      action="ViewConfiguration"
+      menu="add_registration"
+      action="ViewRegistration"
       title="View"
       />
 

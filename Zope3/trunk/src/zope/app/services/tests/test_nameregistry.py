@@ -11,19 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""NameConfigurable tests
+"""NameRegistry tests
 
-$Id: test_nameconfigurable.py,v 1.4 2003/06/01 15:59:36 jim Exp $
+$Id: test_nameregistry.py,v 1.1 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
-from zope.app.services.configuration import NameConfigurable
-from zope.app.services.configuration import NameComponentConfigurable
+from zope.app.services.registration import NameRegistry
+from zope.app.services.registration import NameComponentRegistry
 from zope.app.context import ContextWrapper
 from zope.context import getWrapperContainer
 
-class ConfigurationStub:
+class RegistrationStub:
 
     def __init__(self, **kw):
         self.__dict__.update(kw)
@@ -45,46 +45,46 @@ class RegistryStub:
         return self._active
 
 
-class TestNameConfigurable(TestCase):
+class TestNameRegistry(TestCase):
 
     def setUp(self):
         self.container = object()
-        self.subject = ContextWrapper(NameConfigurable(), self.container)
+        self.subject = ContextWrapper(NameRegistry(), self.container)
 
-    def test_queryConfigurationsFor(self):
+    def test_queryRegistrationsFor(self):
         subject = self.subject
-        cfg = ConfigurationStub(name="Foo")
-        self.assertEquals(subject.queryConfigurationsFor(cfg), None)
-        self.assertEquals(subject.queryConfigurationsFor(cfg, 42), 42)
+        cfg = RegistrationStub(name="Foo")
+        self.assertEquals(subject.queryRegistrationsFor(cfg), None)
+        self.assertEquals(subject.queryRegistrationsFor(cfg, 42), 42)
 
         registry = RegistryStub()
         subject._bindings["Foo"] = registry
-        result = subject.queryConfigurationsFor(cfg)
+        result = subject.queryRegistrationsFor(cfg)
         self.assertEquals(result, registry)
         self.assertEquals(getWrapperContainer(result), subject)
         self.assertEquals(getWrapperContainer(getWrapperContainer(result)),
                           self.container)
 
-    def test_queryConfigurations(self):
+    def test_queryRegistrations(self):
         subject = self.subject
-        self.assertEquals(subject.queryConfigurations("Foo"), None)
-        self.assertEquals(subject.queryConfigurations("Foo", 42), 42)
+        self.assertEquals(subject.queryRegistrations("Foo"), None)
+        self.assertEquals(subject.queryRegistrations("Foo", 42), 42)
 
         registry = RegistryStub()
         subject._bindings["Foo"] = registry
-        result = subject.queryConfigurations("Foo")
+        result = subject.queryRegistrations("Foo")
         self.assertEquals(result, registry)
         self.assertEquals(getWrapperContainer(result), subject)
         self.assertEquals(getWrapperContainer(getWrapperContainer(result)),
                           self.container)
 
-    def test_createConfigurationsFor(self):
+    def test_createRegistrationsFor(self):
         subject = self.subject
-        cfg1 = ConfigurationStub(name='Foo')
-        cfg2 = ConfigurationStub(name='Bar')
-        r1 = subject.createConfigurationsFor(cfg1)
-        r2 = subject.createConfigurationsFor(cfg2)
-        r3 = subject.createConfigurationsFor(cfg1)
+        cfg1 = RegistrationStub(name='Foo')
+        cfg2 = RegistrationStub(name='Bar')
+        r1 = subject.createRegistrationsFor(cfg1)
+        r2 = subject.createRegistrationsFor(cfg2)
+        r3 = subject.createRegistrationsFor(cfg1)
         self.assertEquals(r1, r3)
         self.assertNotEquals(r1, r2)
         self.assertNotEquals(r2, r3)
@@ -94,11 +94,11 @@ class TestNameConfigurable(TestCase):
                           self.container)
         self.failUnless(subject._p_changed)
 
-    def test_createConfigurations(self):
+    def test_createRegistrations(self):
         subject = self.subject
-        r1 = subject.createConfigurations('Foo')
-        r2 = subject.createConfigurations('Bar')
-        r3 = subject.createConfigurations('Foo')
+        r1 = subject.createRegistrations('Foo')
+        r2 = subject.createRegistrations('Bar')
+        r3 = subject.createRegistrations('Foo')
         self.assertEquals(r1, r3)
         self.assertNotEquals(r1, r2)
         self.assertNotEquals(r2, r3)
@@ -108,19 +108,19 @@ class TestNameConfigurable(TestCase):
                           self.container)
         self.failUnless(subject._p_changed)
 
-    def test_listConfigurationNames(self):
+    def test_listRegistrationNames(self):
         subject = self.subject
-        self.assertEquals(tuple(subject.listConfigurationNames()), ())
+        self.assertEquals(tuple(subject.listRegistrationNames()), ())
         subject._bindings['Foo'] = 1
-        self.assertEquals(tuple(subject.listConfigurationNames()), ('Foo',))
+        self.assertEquals(tuple(subject.listRegistrationNames()), ('Foo',))
         subject._bindings['Bar'] = 0   # false values should be filtered out
-        self.assertEquals(tuple(subject.listConfigurationNames()), ('Foo',))
+        self.assertEquals(tuple(subject.listRegistrationNames()), ('Foo',))
 
-class TestNameComponentConfigurable(TestNameConfigurable):
+class TestNameComponentRegistry(TestNameRegistry):
 
     def setUp(self):
         self.container = object()
-        self.subject = ContextWrapper(NameComponentConfigurable(),
+        self.subject = ContextWrapper(NameComponentRegistry(),
                                       self.container)
 
     def test_queryActiveComponent(self):
@@ -131,15 +131,15 @@ class TestNameComponentConfigurable(TestNameConfigurable):
         self.assertEquals(subject.queryActiveComponent('xyzzy'), None)
         subject._bindings['xyzzy'] = RegistryStub(nonzero=1)
         self.assertEquals(subject.queryActiveComponent('xyzzy'), None)
-        cfg = ConfigurationStub(component='X')
+        cfg = RegistrationStub(component='X')
         subject._bindings['xyzzy'] = RegistryStub(active=cfg)
         self.assertEquals(subject.queryActiveComponent('xyzzy'), 'X')
 
 
 def test_suite():
     return TestSuite((
-        makeSuite(TestNameConfigurable),
-        makeSuite(TestNameComponentConfigurable),
+        makeSuite(TestNameRegistry),
+        makeSuite(TestNameComponentRegistry),
         ))
 
 

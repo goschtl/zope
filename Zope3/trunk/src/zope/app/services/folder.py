@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A package contains components and component configurations.
+"""A package contains components and component registrations.
 
-$Id: folder.py,v 1.10 2003/06/03 14:17:10 stevea Exp $
+$Id: folder.py,v 1.11 2003/06/21 21:22:12 jim Exp $
 """
 
 __metaclass__ = type
@@ -24,13 +24,13 @@ from zope.app.interfaces.services.folder import ISiteManagementFolders
 from zope.app.interfaces.services.folder import ISiteManagementFolder
 from zope.app.interfaces.services.service import IComponentManager
 from zope.app.interfaces.file import IDirectoryFactory
-from zope.app.services.configuration import ConfigurationManagerContainer
+from zope.app.services.registration import RegistrationManagerContainer
 from zope.app.traversing import getPath
 from zope.app.context import ContextWrapper
 from zope.context import ContextMethod
 from zope.interface import implements
 
-class SiteManagementFolder(ConfigurationManagerContainer, BTreeContainer):
+class SiteManagementFolder(RegistrationManagerContainer, BTreeContainer):
     implements(ISiteManagementFolder)
 
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.26 2003/06/05 12:03:18 stevea Exp $
+$Id: test_eventservice.py,v 1.27 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -32,7 +32,7 @@ from zope.app.interfaces.event import IObjectRemovedEvent, IObjectAddedEvent
 from zope.app.interfaces.event import ISubscriber
 from zope.app.event.objectevent import ObjectAddedEvent, ObjectModifiedEvent
 from zope.app.interfaces.event import IEvent, ISubscribingAware
-from zope.app.interfaces.services.configuration import Registered
+from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.context import ContextWrapper
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.component.tests.components import RecordingAdapter
@@ -885,14 +885,14 @@ class TestEventPublisher(EventSetup, TestCase):
             )
 
         sm = traverse(self.rootFolder, "folder1/++etc++site")
-        configuration = sm.queryConfigurations(EventPublication).active()
-        configuration.status = Registered
+        registration = sm.queryRegistrations(EventPublication).active()
+        registration.status = RegisteredStatus
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
 
-        configuration = sm.queryConfigurations(EventSubscription).active()
-        configuration.status = Registered
+        registration = sm.queryRegistrations(EventSubscription).active()
+        registration.status = RegisteredStatus
 
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 1)
@@ -909,12 +909,12 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
         sm = traverse(self.rootFolder, "folder2/++etc++site")
-        configuration = sm.queryConfigurations(EventSubscription).active()
+        registration = sm.queryRegistrations(EventSubscription).active()
         # make sure it doesn't raise any errors
-        configuration.status = Registered
-        configuration = sm.queryConfigurations(EventPublication).active()
+        registration.status = RegisteredStatus
+        registration = sm.queryRegistrations(EventPublication).active()
         # make sure it doesn't raise any errors
-        configuration.status = Registered
+        registration.status = RegisteredStatus
 
     def testSubscriptionAwareInteraction(self):
         adapter = SubscribingAwareAdapter()

@@ -13,30 +13,30 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.13 2003/05/01 19:35:22 faassen Exp $
+$Id: service.py,v 1.14 2003/06/21 21:22:10 jim Exp $
 """
 __metaclass__ = type
 
 from zope.interface import Interface
 from zope.component.interfaces import IServiceService
-from zope.app.interfaces.services import configuration
+from zope.app.interfaces.services import registration
 
 
-class ILocalService(configuration.IUseConfigurable):
+class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
 
     The contract of a local service includes collaboration with
     services above it.  A local service should also implement
-    IUseConfigurable (which implies that it is adaptable to
-    IUseConfiguration).  Implementing ILocalService implies this.
+    IRegisterable (which implies that it is adaptable to
+    IRegistered).  Implementing ILocalService implies this.
     """
 
 
-class ISimpleService(ILocalService, configuration.IAttributeUseConfigurable):
+class ISimpleService(ILocalService, registration.IAttributeRegisterable):
     """Most local services should implement this instead of ILocalService.
 
-    It implies a specific way of implementing IUseConfigurable,
-    by subclassing IAttributeUseConfigurable.
+    It implies a specific way of implementing IRegisterable,
+    by subclassing IAttributeRegisterable.
     """
 
 class IComponentManager(Interface):
@@ -105,7 +105,7 @@ class IBindingAware(Interface):
 
 
 class IServiceManager(IServiceService, IComponentManager,
-                      configuration.INameComponentConfigurable):
+                      registration.INameComponentRegistry):
     """Service Managers act as containers for Services.
 
     If a Service Manager is asked for a service, it checks for those it
@@ -123,12 +123,12 @@ class IServiceManager(IServiceService, IComponentManager,
         The service must be returned in the context of the service manager.
         """
 
-class IServiceConfiguration(configuration.INamedComponentConfiguration):
-    """Service Configuration
+class IServiceRegistration(registration.INamedComponentRegistration):
+    """Service Registration
 
-    Service configurations are dependent on the components that they
+    Service registrations are dependent on the components that they
     configure. They register themselves as component dependents.
 
-    The name of a service configuration is used to determine the service
+    The name of a service registration is used to determine the service
     type.
     """

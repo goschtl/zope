@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.11 2003/06/05 12:03:18 stevea Exp $
+$Id: test_cachingservice.py,v 1.12 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,8 +22,9 @@ from zope.interface.verify import verifyObject
 from zope.interface import implements
 from zope.app.interfaces.cache.cache import ICache
 from zope.app.interfaces.cache.cache import ICachingService
-from zope.app.services.cache import CacheConfiguration
-from zope.app.interfaces.services.configuration import Active, Registered
+from zope.app.services.cache import CacheRegistration
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.app.traversing import getPath, traverse
 from zope.app.interfaces.annotation import IAttributeAnnotatable
@@ -55,7 +56,7 @@ class CachingServiceSetup(EventSetup):
 
         return service
 
-    def addCache(self, name, cache=None, cname=None, status=Active, folder=''):
+    def addCache(self, name, cache=None, cname=None, status=ActiveStatus, folder=''):
         if not cache:
             cache = CacheStub("%s/%s" % (folder, name))
         if not cname:
@@ -63,8 +64,8 @@ class CachingServiceSetup(EventSetup):
         default = traverse(self.rootFolder, folder +'/++etc++site/default')
         key = default.setObject(cname, cache)
         cache = traverse(default, key)
-        configure = default.getConfigurationManager()
-        key = configure.setObject('', CacheConfiguration(name, getPath(cache)))
+        configure = default.getRegistrationManager()
+        key = configure.setObject('', CacheRegistration(name, getPath(cache)))
         traverse(configure, key).status = status
         return cache
 
@@ -76,7 +77,7 @@ class TestCachingService(CachingServiceSetup, TestCase):
         self.service = self.createCachingService()
         self.cache1 = self.addCache('cache1')
         self.cache2 = self.addCache('cache2')
-        self.cache3 = self.addCache('cache3', status=Registered)
+        self.cache3 = self.addCache('cache3', status=RegisteredStatus)
         self.service_f1 = self.createCachingService('folder1')
         self.cache1_f1 = self.addCache('cache1', folder='folder1')
         self.cache4_f1 = self.addCache('cache4', folder='folder1')

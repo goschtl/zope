@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit tests for service adding and configuration views.
+"""Unit tests for service adding and registration views.
 
-$Id: test_service.py,v 1.3 2003/06/06 20:44:29 stevea Exp $
+$Id: test_service.py,v 1.4 2003/06/21 21:22:04 jim Exp $
 """
 
 import unittest
@@ -43,7 +43,7 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
                 return self.context.url
             __call__ = __str__
         provideView(IFoo, 'absolute_url', IBrowserPresentation, AU)
-        provideView(IFoo, 'addConfiguration.html', IBrowserPresentation, AU)
+        provideView(IFoo, 'addRegistration.html', IBrowserPresentation, AU)
 
         context = Foo('foo_url')
         request = TestRequest()
@@ -52,7 +52,7 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
         self.assertEquals(view.nextURL(), 'foo_url/@@contents.html')
 
         view.added_object = Foo('bar_url')
-        self.assertEquals(view.nextURL(), 'bar_url/@@addConfiguration.html')
+        self.assertEquals(view.nextURL(), 'bar_url/@@addRegistration.html')
 
 
 # XXX: add tests for other methods and classes

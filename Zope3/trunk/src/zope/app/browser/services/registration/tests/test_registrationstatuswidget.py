@@ -15,20 +15,20 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationstatuswidget.py,v 1.3 2003/04/30 23:37:56 faassen Exp $
+$Id: test_registrationstatuswidget.py,v 1.1 2003/06/21 21:22:03 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.app.interfaces.services.configuration import ConfigurationStatus
-from zope.app.browser.services.configuration import ConfigurationStatusWidget
+from zope.app.interfaces.services.registration import RegistrationStatus
+from zope.app.browser.services.registration import RegistrationStatusWidget
 
 class Test(TestCase):
 
     def test_call(self):
-        field = ConfigurationStatus(__name__="status")
+        field = RegistrationStatus(__name__="status")
         request = TestRequest()
-        widget = ConfigurationStatusWidget(field, request)
+        widget = RegistrationStatusWidget(field, request)
         widget.setPrefix("f")
 
         text = ' '.join(widget().split())

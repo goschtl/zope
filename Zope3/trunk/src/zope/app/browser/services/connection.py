@@ -11,18 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Connection configuration support classes.
+"""Connection registry support classes.
 
-$Id: connection.py,v 1.12 2003/06/13 17:41:13 stevea Exp $
+$Id: connection.py,v 1.13 2003/06/21 21:21:59 jim Exp $
 """
 
-from zope.app.browser.services.configuration import AddComponentConfiguration
+from zope.app.browser.services.registration import AddComponentRegistration
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.registration import IRegistered
 from zope.component import getAdapter, getView
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.services.configuration \
-     import Unregistered, Registered, Active
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.traversing import traverse, getPath, getParent, getName
 
 class Connections(BrowserView):
@@ -52,12 +53,12 @@ class Connections(BrowserView):
     def _activate(self, todo):
         done = []
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             obj = registry.active()
             if obj is None:
-                # Activate the first registered configuration
-                obj = registry.info()[0]['configuration']
-                obj.status = Active
+                # Activate the first registered registration
+                obj = registry.info()[0]['registration']
+                obj.status = ActiveStatus
                 done.append(name)
         if done:
             return "Activated: " + ", ".join(done)
@@ -67,10 +68,10 @@ class Connections(BrowserView):
     def _deactivate(self, todo):
         done = []
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             obj = registry.active()
             if obj is not None:
-                obj.status = Registered
+                obj.status = RegisteredStatus
                 done.append(name)
         if done:
             return "Deactivated: " + ", ".join(done)
@@ -80,7 +81,7 @@ class Connections(BrowserView):
     def _delete(self, todo):
         errors = []
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             assert registry
             if registry.active() is not None:
                 errors.append(name)
@@ -93,15 +94,15 @@ class Connections(BrowserView):
         # 1) Delete the registrations
         connections = {}
         for name in todo:
-            registry = self.context.queryConfigurations(name)
+            registry = self.context.queryRegistrations(name)
             assert registry
             assert registry.active() is None # Phase error
             for info in registry.info():
-                conf = info['configuration']
+                conf = info['registration']
                 obj = conf.getComponent()
                 path = getPath(obj)
                 connections[path] = obj
-                conf.status = Unregistered
+                conf.status = UnregisteredStatus
                 parent = getParent(conf)
                 name = getName(conf)
                 container = getAdapter(parent, IZopeContainer)
@@ -118,8 +119,8 @@ class Connections(BrowserView):
 
     def getConfigs(self):
         L = []
-        for name in self.context.listConfigurationNames():
-            cr = self.context.queryConfigurations(name)
+        for name in self.context.listRegistrationNames():
+            cr = self.context.queryRegistrations(name)
             active = cr.active()
             d = {"name": name,
                  "url": "",
@@ -136,19 +137,19 @@ class Connections(BrowserView):
 class ConfigureConnection(BrowserView):
 
     def update(self):
-        cr = self.context.queryConfigurations(self.request['name'])
-        form = getView(cr, "ChangeConfigurations", self.request)
+        cr = self.context.queryRegistrations(self.request['name'])
+        form = getView(cr, "ChangeRegistrations", self.request)
         form.update()
         return form
 
-class UseConfiguration(BrowserView):
+class Registered(BrowserView):
 
-    """View for displaying the configurations for a connection."""
+    """View for displaying the registrations for a connection."""
 
     def uses(self):
-        """Get a sequence of configuration summaries."""
+        """Get a sequence of registration summaries."""
         component = self.context
-        useconfig = getAdapter(component, IUseConfiguration)
+        useconfig = getAdapter(component, IRegistered)
         result = []
         for path in useconfig.usages():
             config = traverse(component, path)
@@ -160,6 +161,6 @@ class UseConfiguration(BrowserView):
                            })
         return result
 
-class AddConnectionConfiguration(AddComponentConfiguration):
+class AddConnectionRegistration(AddComponentRegistration):
 
     pass

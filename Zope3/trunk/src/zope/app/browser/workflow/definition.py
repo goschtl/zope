@@ -11,29 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ProcessDefinition configuration adding view
+"""ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.1 2003/05/08 17:27:17 jack-e Exp $
+$Id: definition.py,v 1.2 2003/06/21 21:22:07 jim Exp $
 """
 __metaclass__ = type
  
 from zope.component import getAdapter, getView, getUtility
 from zope.publisher.browser import BrowserView
 from zope.app.traversing import traverse
-from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.workflow import IProcessDefinitionImportExport
 
 
 
-class UseConfiguration(BrowserView):
-    """View for displaying the configurations for a process definition
+class Registered(BrowserView):
+    """View for displaying the registrations for a process definition
     """
 
     def uses(self):
-        """Get a sequence of configuration summaries
+        """Get a sequence of registration summaries
         """
         component = self.context
-        useconfig = getAdapter(component, IUseConfiguration)
+        useconfig = getAdapter(component, IRegistered)
         result = []
         for path in useconfig.usages():
             config = traverse(component, path)

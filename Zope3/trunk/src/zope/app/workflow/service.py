@@ -14,39 +14,34 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.6 2003/06/19 21:55:46 gvanrossum Exp $
+$Id: service.py,v 1.7 2003/06/21 21:22:15 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
-
-from zope.app.context import ContextWrapper
-from zope.context import ContextMethod
-
-from zope.component import getAdapter
 from zope.app.component.nextservice import queryNextService
-from zope.app.interfaces.services.configuration \
-        import INameComponentConfigurable
-from zope.app.services.configuration import NameComponentConfigurable
-
-from zope.app.services.configuration import NamedComponentConfiguration
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.traversing import getPath
-
+from zope.app.context import ContextWrapper
+from zope.app.interfaces.services.registration import INameComponentRegistry
+from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.interfaces.workflow import IProcessDefinitionConfiguration
 from zope.app.interfaces.workflow import IProcessDefinition
+from zope.app.interfaces.workflow import IProcessDefinitionRegistration
 from zope.app.interfaces.workflow import IWorkflowService
+from zope.app.services.registration import RegistrationStatusProperty
+from zope.app.services.registration import NameComponentRegistry
+from zope.app.services.registration import NamedComponentRegistration
+from zope.app.traversing import getPath
+from zope.component import getAdapter
+from zope.context import ContextMethod
 from zope.interface import implements
 
 
-class ILocalWorkflowService(IWorkflowService, INameComponentConfigurable):
+class ILocalWorkflowService(IWorkflowService, INameComponentRegistry):
     """A Local WorkflowService.
     """
 
 
-class WorkflowService(Persistent, NameComponentConfigurable):
+class WorkflowService(Persistent, NameComponentRegistry):
 
     __doc__ = IWorkflowService.__doc__
 
@@ -59,8 +54,8 @@ class WorkflowService(Persistent, NameComponentConfigurable):
     def getProcessDefinitionNames(self):
         'See IWorkflowService'
         definition_names = {}
-        for name in self.listConfigurationNames():
-            registry = self.queryConfigurations(name)
+        for name in self.listRegistrationNames():
+            registry = self.queryRegistrations(name)
             if registry.active() is not None:
                 definition_names[name] = 0
         service = queryNextService(self, "Workflows")
@@ -105,15 +100,15 @@ class WorkflowService(Persistent, NameComponentConfigurable):
     ############################################################
 
 
-class ProcessDefinitionConfiguration(NamedComponentConfiguration):
+class ProcessDefinitionRegistration(NamedComponentRegistration):
 
-    __doc__ = IProcessDefinitionConfiguration.__doc__
+    __doc__ = IProcessDefinitionRegistration.__doc__
 
-    implements(IProcessDefinitionConfiguration)
+    implements(IProcessDefinitionRegistration)
 
     serviceType = 'Workflows'
 
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
 
     def getInterface(self):
@@ -122,25 +117,25 @@ class ProcessDefinitionConfiguration(NamedComponentConfiguration):
     # The following hooks are called only if we implement
     # IAddNotifiable and IDeleteNotifiable.
 
-    def afterAddHook(self, configuration, container):
+    def afterAddHook(self, registration, container):
         """Hook method will call after an object is added to container.
 
         Defined in IAddNotifiable.
         """
-        super(ProcessDefinitionConfiguration, self).afterAddHook(configuration,
+        super(ProcessDefinitionRegistration, self).afterAddHook(registration,
                                                                  container)
-        pd = configuration.getComponent()
-        adapter = getAdapter(pd, IUseConfiguration)
-        adapter.addUsage(getPath(configuration))
+        pd = registration.getComponent()
+        adapter = getAdapter(pd, IRegistered)
+        adapter.addUsage(getPath(registration))
 
 
-    def beforeDeleteHook(self, configuration, container):
+    def beforeDeleteHook(self, registration, container):
         """Hook method will call before object is removed from container.
 
         Defined in IDeleteNotifiable.
         """
-        pd = configuration.getComponent()
-        adapter = getAdapter(pd, IUseConfiguration)
-        adapter.removeUsage(getPath(configuration))
-        super(ProcessDefinitionConfiguration, self).beforeDeleteHook(
-            configuration, container)
+        pd = registration.getComponent()
+        adapter = getAdapter(pd, IRegistered)
+        adapter.removeUsage(getPath(registration))
+        super(ProcessDefinitionRegistration, self).beforeDeleteHook(
+            registration, container)

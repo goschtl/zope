@@ -13,16 +13,16 @@
 ##############################################################################
 """RAM cache interface.
 
-$Id: ram.py,v 1.4 2003/04/24 21:01:25 gvanrossum Exp $
+$Id: ram.py,v 1.5 2003/06/21 21:22:10 jim Exp $
 """
 
 from zope.interface import Attribute
 
 from zope.app.interfaces.cache.cache import ICache
 from zope.app.interfaces.event import ISubscriber
-from zope.app.interfaces.services.configuration import IUseConfigurable
+from zope.app.interfaces.services.registration import IRegisterable
 
-class IRAMCache(ICache, ISubscriber, IUseConfigurable):
+class IRAMCache(ICache, ISubscriber, IRegisterable):
     """Interface for the RAM Cache."""
 
     maxEntries = Attribute("""A maximum number of cached values.""")

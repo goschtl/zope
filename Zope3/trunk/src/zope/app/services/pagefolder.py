@@ -13,10 +13,10 @@
 ##############################################################################
 """Page Folders
 
-Page folders support easy creation and configuration of page views
+Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.10 2003/06/05 12:03:17 stevea Exp $
+$Id: pagefolder.py,v 1.11 2003/06/21 21:22:12 jim Exp $
 """
 __metaclass__ = type
 
@@ -27,18 +27,18 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.traversing import getPath
 from zope.app.context import getItem
 from zope.context import ContextMethod
-from zope.app.interfaces.services.configuration import Active
-from zope.app.services.configuration import ConfigurationManagerContainer
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.services.registration import RegistrationManagerContainer
 from zope.proxy import removeAllProxies
-from zope.app.services.view import PageConfiguration
+from zope.app.services.view import PageRegistration
 from zope.app.interfaces.services.pagefolder import IPageFolder
-from zope.app.interfaces.services.configuration import IConfigurationManager
+from zope.app.interfaces.services.registration import IRegistrationManager
 from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectDirectory
 from zope.interface import implements
 
-class PageFolder(ConfigurationManagerContainer, BTreeContainer):
+class PageFolder(RegistrationManagerContainer, BTreeContainer):
 
     implements(IPageFolder)
 
@@ -51,7 +51,7 @@ class PageFolder(ConfigurationManagerContainer, BTreeContainer):
     template = None
 
     def setObject(self, name, object):
-        if (IConfigurationManager.isImplementedBy(object) or
+        if (IRegistrationManager.isImplementedBy(object) or
             IZPTTemplate.isImplementedBy(object)):
             return super(PageFolder, self).setObject(name, object)
         else:
@@ -63,10 +63,10 @@ class PageFolder(ConfigurationManagerContainer, BTreeContainer):
                 )
 
     def activated(self):
-        "See IConfiguration"
+        "See IRegistration"
 
     def deactivated(self):
-        "See IConfiguration"
+        "See IRegistration"
 
 
 _attrNames = (
@@ -107,7 +107,7 @@ class PageFolderContextDecorator(ZopeContainerDecorator):
         if IZPTTemplate.isImplementedBy(object):
             template = getItem(self, name)
             template = getPath(template)
-            config = PageConfiguration(
+            config = PageRegistration(
                 forInterface=self.forInterface,
                 viewName=name,
                 permission=self.permission,
@@ -115,10 +115,10 @@ class PageFolderContextDecorator(ZopeContainerDecorator):
                 template=template,
                 layer=self.layer,
                 )
-            configure = self.getConfigurationManager()
+            configure = self.getRegistrationManager()
             id = configure.setObject('', config)
             config = getItem(configure, id)
-            config.status = Active
+            config.status = ActiveStatus
         return name
 
 

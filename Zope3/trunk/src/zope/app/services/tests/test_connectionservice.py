@@ -12,17 +12,17 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.11 2003/06/05 12:03:18 stevea Exp $
+$Id: test_connectionservice.py,v 1.12 2003/06/21 21:22:13 jim Exp $
 """
 
 import unittest
 
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.interfaces.services.configuration import Active, Registered
-from zope.app.interfaces.services.configuration \
-     import IAttributeUseConfigurable
-from zope.app.services.connection import ConnectionConfiguration
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import IAttributeRegisterable
+from zope.app.services.connection import ConnectionRegistration
 from zope.app.services.connection import ConnectionService
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
@@ -31,7 +31,7 @@ from zope.interface import implements
 
 class ConnectionServiceForTests(ConnectionService):
 
-    implements(IAttributeUseConfigurable)
+    implements(IAttributeRegisterable)
 
 class DAStub:
 
@@ -60,18 +60,18 @@ class TestConnectionService(unittest.TestCase, PlacefulSetup):
         self.default.setObject('da1', DAStub(1))
         self.default.setObject('da2', DAStub(2))
 
-        self.cm = self.default.getConfigurationManager()
+        self.cm = self.default.getRegistrationManager()
 
-        k = self.cm.setObject('', ConnectionConfiguration('conn1',
+        k = self.cm.setObject('', ConnectionRegistration('conn1',
                                 '/++etc++site/default/da1'))
-        zapi.traverse(self.default.getConfigurationManager(), k).status = Active
-        k = self.cm.setObject('', ConnectionConfiguration('conn2',
+        zapi.traverse(self.default.getRegistrationManager(), k).status = ActiveStatus
+        k = self.cm.setObject('', ConnectionRegistration('conn2',
                                 '/++etc++site/default/da2'))
-        zapi.traverse(self.default.getConfigurationManager(), k).status = Active
-        k = self.cm.setObject('', ConnectionConfiguration('conn3',
+        zapi.traverse(self.default.getRegistrationManager(), k).status = ActiveStatus
+        k = self.cm.setObject('', ConnectionRegistration('conn3',
                                 '/++etc++site/default/da1'))
-        zapi.traverse(self.default.getConfigurationManager(),
-                 k).status = Registered
+        zapi.traverse(self.default.getRegistrationManager(),
+                 k).status = RegisteredStatus
         # Now self.service has conn1 and conn2 available and knows about conn3
 
         sm = self.makeSite('folder1')
@@ -82,14 +82,14 @@ class TestConnectionService(unittest.TestCase, PlacefulSetup):
         default1.setObject('da3', DAStub(3))
         default1.setObject('da4', DAStub(4))
 
-        cm1 = default1.getConfigurationManager()
+        cm1 = default1.getRegistrationManager()
 
-        k = cm1.setObject('', ConnectionConfiguration('conn1',
+        k = cm1.setObject('', ConnectionRegistration('conn1',
                             '/folder1/++etc++site/default/da3'))
-        zapi.traverse(default1.getConfigurationManager(), k).status = Active
-        k = cm1.setObject('', ConnectionConfiguration('conn4',
+        zapi.traverse(default1.getRegistrationManager(), k).status = ActiveStatus
+        k = cm1.setObject('', ConnectionRegistration('conn4',
                             '/folder1/++etc++site/default/da4'))
-        zapi.traverse(default1.getConfigurationManager(), k).status = Active
+        zapi.traverse(default1.getRegistrationManager(), k).status = ActiveStatus
         # Now self.service1 overrides conn1, adds new conn4 available, and
         # inherits conn2 from self.service
 

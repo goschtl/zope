@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.18 2003/06/12 17:03:45 gvanrossum Exp $
+$Id: bootstrap.py,v 1.19 2003/06/21 21:22:14 jim Exp $
 """
 from transaction import get_transaction
 
@@ -28,7 +28,7 @@ from zope.app.services.servicenames import HubIds
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.servicenames import ErrorLogging
 from zope.app.services.service import ServiceManager
-from zope.app.services.service import ServiceConfiguration
+from zope.app.services.service import ServiceRegistration
 from zope.app.services.hub import ObjectHub
 from zope.app.services.event import EventService
 from zope.app.services.errorr import ErrorReportingService
@@ -102,7 +102,7 @@ def addService(root_folder, service_type, service_factory, **kw):
     """
     # The code here is complicated by the fact that the registry
     # calls at the end require a fully context-wrapped
-    # configuration; hence all the traverse() and traverseName() calls.
+    # registration; hence all the traverse() and traverseName() calls.
     package_name = '/++etc++site/default'
     package = traverse(root_folder, package_name)
     name = service_type + '-1'
@@ -119,10 +119,10 @@ def configureService(root_folder, service_type, name, initial_status='Active'):
     """Configure a service in the root folder."""
     package_name = '/++etc++site/default'
     package = traverse(root_folder, package_name)
-    configuration_manager = package.getConfigurationManager()
-    configuration =  ServiceConfiguration(service_type,
-                                          name,
-                                          configuration_manager)
-    key = configuration_manager.setObject("", configuration)
-    configuration = traverseName(configuration_manager, key)
-    configuration.status = initial_status
+    registration_manager = package.getRegistrationManager()
+    registration =  ServiceRegistration(service_type,
+                                        name,
+                                        registration_manager)
+    key = registration_manager.setObject("", registration)
+    registration = traverseName(registration_manager, key)
+    registration.status = initial_status

@@ -21,26 +21,27 @@ status.
 Eventually, bundles will be read-only, and the only thing you can do
 with bundles is install and uninstall them.  At installation time, a
 bundle's dependencies and are analized and satisfied, and the
-configurations in the bundle are activated, unless they conflict with
-existing configurations.  This is an interactive process.
+registrations in the bundle are activated, unless they conflict with
+existing registrations.  This is an interactive process.
 
 XXX This interim code is much less ambitious: it just provides a view
-on a (site-management) folder that displays all configurations in a
+on a (site-management) folder that displays all registrations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.8 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: bundle.py,v 1.9 2003/06/21 21:21:59 jim Exp $
 """
 
 import re
 from transaction import get_transaction
 from zope.app import zapi
 from zope.app.interfaces.container import IReadContainer
-from zope.app.interfaces.services.configuration import IConfiguration
-from zope.app.interfaces.services.configuration import IConfigurationManager
-from zope.app.interfaces.services.configuration import Active, Registered
-from zope.app.interfaces.services.configuration import Unregistered
+from zope.app.interfaces.services.registration import IRegistration
+from zope.app.interfaces.services.registration import IRegistrationManager
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.folder import ISiteManagementFolder
-from zope.app.interfaces.services.service import IServiceConfiguration
+from zope.app.interfaces.services.service import IServiceRegistration
 from zope.component import ComponentLookupError
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
@@ -61,8 +62,8 @@ class BundleView(BrowserView):
         else:
             sitepath = ""
         self.sitepath = sitepath
-        self.configurations = self.findConfigurations(self.context, "")
-        self.configurations.sort(self.compareConfigurations)
+        self.registrations = self.findRegistrations(self.context, "")
+        self.registrations.sort(self.compareRegistrations)
         self.services = self.findServices()
 
     # Methods called from the page template (bundle.pt)
@@ -79,34 +80,34 @@ class BundleView(BrowserView):
             return "ERROR: Won't change the default folder"
         if "allclear" in self.request:
             count = 0
-            for path, obj in self.configurations:
-                if obj.status != Unregistered:
-                    obj.status = Unregistered
+            for path, obj in self.registrations:
+                if obj.status != UnregisteredStatus:
+                    obj.status = UnregisteredStatus
                     count += 1
             if count:
                 get_transaction().note("deactivate bundle")
-            return "unregistered %d configurations" % count
+            return "unregistered %d registrations" % count
         activated = []
         registered = []
         for key, value in self.request.form.items():
-            if value not in (Active, Registered):
+            if value not in (ActiveStatus, RegisteredStatus):
                 continue
-            for path, obj in self.configurations:
+            for path, obj in self.registrations:
                 if key == path:
                     break
             else:
                 raise ComponentLookupError(key)
-        for path, obj in self.configurations:
+        for path, obj in self.registrations:
             value = self.request.form.get(path)
-            if value not in (Active, Registered):
+            if value not in (ActiveStatus, RegisteredStatus):
                 continue
             if obj.status != value:
-                if value == Active:
+                if value == ActiveStatus:
                     activated.append(path)
-                    obj.status = Active
+                    obj.status = ActiveStatus
                 else:
                     registered.append(path)
-                    obj.status = Registered
+                    obj.status = RegisteredStatus
         s = ""
         if activated:
             s += "Activated: %s.\n" % (", ".join(activated))
@@ -127,9 +128,9 @@ class BundleView(BrowserView):
             infos.append(d)
         return infos
 
-    def listConfigurations(self):
+    def listRegistrations(self):
         infos = []
-        for path, obj in self.configurations:
+        for path, obj in self.registrations:
             name, advice, conflict = self.getAdvice(obj)
             d = {"path": path,
                  "service": name,
@@ -158,23 +159,23 @@ class BundleView(BrowserView):
             else:
                 insite = (path == self.sitepath or
                           path.startswith(self.sitepath + "/"))
-        inbundle = self.findServiceConfiguration(name)
+        inbundle = self.findServiceRegistration(name)
         return path, insite, inbundle
 
     def getAdvice(self, obj):
         name = self.getServiceName(obj)
-        advice = Active
+        advice = ActiveStatus
         conflict = ""
         sm = zapi.getServiceManager(obj)
         service = sm.queryLocalService(name)
         if service:
-            registry = service.queryConfigurationsFor(obj)
+            registry = service.queryRegistrationsFor(obj)
             if registry:
                 active = registry.active()
                 if active and active != obj:
                     conflict = zapi.getPath(active)
                     if not self.inOlderVersion(active):
-                        advice = Registered
+                        advice = RegisteredStatus
         return name, advice, conflict
 
     def inOlderVersion(self, obj):
@@ -244,23 +245,23 @@ class BundleView(BrowserView):
         parts.append(last)
         return parts
 
-    def findServiceConfiguration(self, name):
-        for path, obj in self.configurations:
-            if IServiceConfiguration.isImplementedBy(obj):
+    def findServiceRegistration(self, name):
+        for path, obj in self.registrations:
+            if IServiceRegistration.isImplementedBy(obj):
                 if obj.name == name:
                     return path
         return None
 
-    def findConfigurations(self, f, prefix):
+    def findRegistrations(self, f, prefix):
         alist = []
         for name, obj in f.items():
-            if IConfiguration.isImplementedBy(obj):
+            if IRegistration.isImplementedBy(obj):
                 alist.append((prefix+name, obj))
             elif IReadContainer.isImplementedBy(obj):
-                alist.extend(self.findConfigurations(obj, prefix+name+"/"))
+                alist.extend(self.findRegistrations(obj, prefix+name+"/"))
         return alist
 
-    def compareConfigurations(self, c1, c2):
+    def compareRegistrations(self, c1, c2):
         path1, obj1 = c1
         path2, obj2 = c2
         t1 = (self.getAdjustedServiceName(obj1),
@@ -273,7 +274,7 @@ class BundleView(BrowserView):
 
     def findServices(self):
         sd = {}
-        for path, obj in self.configurations:
+        for path, obj in self.registrations:
             sd[self.getServiceName(obj)] = 1
         services = sd.keys()
         services.sort(self.compareServiceNames)
@@ -282,8 +283,8 @@ class BundleView(BrowserView):
     def compareServiceNames(self, n1, n2):
         return cmp(self.adjustServiceName(n1), self.adjustServiceName(n2))
 
-    def getAdjustedServiceName(self, configuration):
-        name = self.getServiceName(configuration)
+    def getAdjustedServiceName(self, registration):
+        name = self.getServiceName(registration)
         return self.adjustServiceName(name)
 
     def adjustServiceName(self, name):
@@ -293,6 +294,6 @@ class BundleView(BrowserView):
         else:
             return name
 
-    def getServiceName(self, configuration):
-        # Return the service associated with a configuration.
-        return configuration.serviceType
+    def getServiceName(self, registration):
+        # Return the service associated with a registration.
+        return registration.serviceType

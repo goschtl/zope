@@ -3,13 +3,13 @@
     xmlns:fssync='http://namespaces.zope.org/fssync'
     >
 
-<!-- Configuration registries -->
+<!-- Registration registries -->
 
-<content class="zope.app.services.configuration.ConfigurationRegistry">
+<content class="zope.app.services.registration.RegistrationStack">
   <require
       permission="zope.ManageServices"
       interface=
-      "zope.app.interfaces.services.configuration.IConfigurationRegistry"
+      "zope.app.interfaces.services.registration.IRegistrationStack"
       />
 </content>
 
@@ -22,16 +22,16 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.configuration.IConfigurable"
+      interface="zope.app.interfaces.services.registration.IRegistry"
       attributes="getRegisteredMatching"
       />
 </content>
 
-<content class="zope.app.services.adapter.AdapterConfiguration">
+<content class="zope.app.services.adapter.AdapterRegistration">
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.adapter.IAdapterConfiguration"
-      set_schema="zope.app.interfaces.services.configuration.IConfiguration"
+      interface="zope.app.interfaces.services.adapter.IAdapterRegistration"
+      set_schema="zope.app.interfaces.services.registration.IRegistration"
       />
   <require
       permission="zope.ManageServices"
@@ -48,16 +48,16 @@
       />
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.configuration.IConfigurable"
+      interface="zope.app.interfaces.services.registration.IRegistry"
       attributes="getRegisteredMatching"
       />
 </content>
 
-<content class="zope.app.services.view.ViewConfiguration">
+<content class="zope.app.services.view.ViewRegistration">
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.view.IViewConfiguration"
-      set_schema="zope.app.interfaces.services.configuration.IConfiguration"
+      interface="zope.app.interfaces.services.view.IViewRegistration"
+      set_schema="zope.app.interfaces.services.registration.IRegistration"
       />
   <require
       permission="zope.ManageServices"
@@ -65,11 +65,11 @@
       />
 </content>
 
-<content class="zope.app.services.view.PageConfiguration">
+<content class="zope.app.services.view.PageRegistration">
   <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.view.IPageConfiguration"
-      set_schema="zope.app.interfaces.services.view.IPageConfiguration"
+      interface="zope.app.interfaces.services.view.IPageRegistration"
+      set_schema="zope.app.interfaces.services.view.IPageRegistration"
       />
   <require
       permission="zope.ManageServices"
@@ -122,9 +122,9 @@
   />
 
 <adapter
-  for="zope.app.interfaces.services.configuration.IUseConfigurable"
-  provides="zope.app.interfaces.services.configuration.IUseConfiguration"
-  factory="zope.app.services.configuration.UseConfiguration"
+  for="zope.app.interfaces.services.registration.IRegisterable"
+  provides="zope.app.interfaces.services.registration.IRegistered"
+  factory="zope.app.services.registration.Registered"
   />
 
 <!-- Role Templates -->
@@ -177,20 +177,20 @@
       <require
           permission="zope.View"
           interface="zope.app.interfaces.cache.cache.ICachingService"
-          attributes="queryConfigurations queryConfigurationsFor
-                      listConfigurationNames" />
+          attributes="queryRegistrations queryRegistrationsFor
+                      listRegistrationNames" />
       <require
           permission="zope.ManageServices"
           interface="zope.app.interfaces.container.IContainer" />
     </content>
 
-  <content class="zope.app.services.cache.CacheConfiguration">
+  <content class="zope.app.services.cache.CacheRegistration">
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.cache.ICacheConfiguration"
+        interface="zope.app.interfaces.services.cache.ICacheRegistration"
         set_attributes="name componentPath permission"
         set_schema=
-            "zope.app.interfaces.services.configuration.IConfiguration" />
+            "zope.app.interfaces.services.registration.IRegistration" />
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.container.IAddNotifiable" />
@@ -213,13 +213,13 @@
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
 
-  <content class="zope.app.services.service.ServiceConfiguration">
+  <content class="zope.app.services.service.ServiceRegistration">
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.service.IServiceConfiguration"
+        interface="zope.app.interfaces.services.service.IServiceRegistration"
         set_attributes="serviceType componentPath permission"
         set_schema=
-            "zope.app.interfaces.services.configuration.IConfiguration"
+            "zope.app.interfaces.services.registration.IRegistration"
         />
     <require
         permission="zope.ManageServices"
@@ -257,20 +257,20 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.container.IWriteContainer"
-        attributes="getConfigurationManager" 
+        attributes="getRegistrationManager" 
         />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
     </content>
 
-<!-- Configuration Manager -->
+<!-- Registration Manager -->
 
-  <content class="zope.app.services.configuration.ConfigurationManager">
+  <content class="zope.app.services.registration.RegistrationManager">
     <factory
-        id = "zope.app.services.ConfigurationManager"
+        id = "zope.app.services.RegistrationManager"
         permission = "zope.ManageServices"
-        title = "Configuration Manager" />
+        title = "Registration Manager" />
     <require
         permission="zope.View"
         interface="zope.app.interfaces.container.IReadContainer" />
@@ -278,7 +278,7 @@
         permission="zope.ManageServices"
         interface="
         zope.app.interfaces.container.IWriteContainer
-        zope.app.interfaces.services.configuration.IOrderedContainer
+        zope.app.interfaces.services.registration.IOrderedContainer
         zope.app.interfaces.container.IDeleteNotifiable
         " 
         />
@@ -319,7 +319,7 @@
         interface="zope.app.interfaces.container.IWriteContainer
                    zope.app.interfaces.services.pagefolder.IPageFolderInfo"
         set_schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo"
-        attributes="configured getConfigurationManager" 
+        attributes="configured getRegistrationManager" 
         />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
@@ -341,17 +341,17 @@
     <require
         permission="zope.View"
         interface="zope.app.interfaces.rdb.IConnectionService"
-        attributes="queryConfigurations queryConfigurationsFor
-                    listConfigurationNames" />
+        attributes="queryRegistrations queryRegistrationsFor
+                    listRegistrationNames" />
     </content>
 
-  <content class="zope.app.services.connection.ConnectionConfiguration">
+  <content class="zope.app.services.connection.ConnectionRegistration">
     <require
         permission="zope.ManageServices"
         interface=
-        "zope.app.interfaces.services.connection.IConnectionConfiguration"
+        "zope.app.interfaces.services.connection.IConnectionRegistration"
         set_attributes="name componentPath"
-        set_schema="zope.app.interfaces.services.view.IPageConfiguration"
+        set_schema="zope.app.interfaces.services.view.IPageRegistration"
         />
     <require
         permission="zope.ManageServices"
@@ -488,7 +488,7 @@
 <!-- Filesystem synchronization support -->
 
 <fssync:adapter
-    class=".configuration.ConfigurationManager"
+    class=".registration.RegistrationManager"
     factory="zope.app.content.fssync.DirectoryAdapter"
     />
 
@@ -518,23 +518,23 @@
     />
 
 <fssync:adapter
-    class=".cache.CacheConfiguration"
-    factory=".configuration.ComponentConfigurationAdapter"
+    class=".cache.CacheRegistration"
+    factory=".registration.ComponentRegistrationAdapter"
     />
 
 <fssync:adapter
-    class=".connection.ConnectionConfiguration"
-    factory=".configuration.ComponentConfigurationAdapter"
+    class=".connection.ConnectionRegistration"
+    factory=".registration.ComponentRegistrationAdapter"
     />
 
 <fssync:adapter
-    class=".service.ServiceConfiguration"
-    factory=".configuration.ComponentConfigurationAdapter"
+    class=".service.ServiceRegistration"
+    factory=".registration.ComponentRegistrationAdapter"
     />
 
 <fssync:adapter
-    class=".utility.UtilityConfiguration"
-    factory=".configuration.ComponentConfigurationAdapter"
+    class=".utility.UtilityRegistration"
+    factory=".registration.ComponentRegistrationAdapter"
     />
 
 <adapter 

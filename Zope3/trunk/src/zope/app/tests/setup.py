@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.4 2003/06/12 18:48:02 gvanrossum Exp $
+$Id: setup.py,v 1.5 2003/06/21 21:22:15 jim Exp $
 """
 
 import zope.component
@@ -72,14 +72,13 @@ def setUpTraversal():
                 SiteAbsoluteURL)
 
 #------------------------------------------------------------------------
-# Use configuration
-from zope.app.interfaces.services.configuration \
-     import IAttributeUseConfigurable
-from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.services.configuration import UseConfiguration
-def setUpUseConfiguration():
-    provideAdapter(IAttributeUseConfigurable, IUseConfiguration,
-                   UseConfiguration)
+# Use registration
+from zope.app.interfaces.services.registration import IAttributeRegisterable
+from zope.app.interfaces.services.registration import IRegistered
+from zope.app.services.registration import Registered
+def setUpRegistered():
+    provideAdapter(IAttributeRegisterable, IRegistered,
+                   Registered)
 
 
 #------------------------------------------------------------------------
@@ -93,7 +92,7 @@ def placefulSetUp(site=False):
     setUpAnnotations()
     setUpDependable()
     setUpTraversal()
-    setUpUseConfiguration()
+    setUpRegistered()
 
     if site:
         site = RootFolder()
@@ -138,8 +137,8 @@ def createServiceManager(folder):
 
     return zapi.traverse(folder, "++etc++site")
 
-from zope.app.services.service import ServiceConfiguration
-from zope.app.interfaces.services.configuration import Active
+from zope.app.services.service import ServiceRegistration
+from zope.app.interfaces.services.registration import ActiveStatus
 def addService(servicemanager, name, service, suffix=''):
     """Add a service to a service manager
 
@@ -148,9 +147,9 @@ def addService(servicemanager, name, service, suffix=''):
     default = zapi.traverse(servicemanager, 'default')
     default.setObject(name+suffix, service)
     path = "%s/default/%s" % (zapi.getPath(servicemanager), name+suffix)
-    configuration = ServiceConfiguration(name, path, servicemanager)
-    key = default.getConfigurationManager().setObject("", configuration)
-    zapi.traverse(default.getConfigurationManager(), key).status = Active
+    registration = ServiceRegistration(name, path, servicemanager)
+    key = default.getRegistrationManager().setObject("", registration)
+    zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
     return zapi.traverse(servicemanager, path)
 
 

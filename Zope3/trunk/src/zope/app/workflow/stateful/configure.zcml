@@ -11,8 +11,10 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
-      set_schema="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition" 
+      interface="
+         zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+      set_schema="
+         zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition" 
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -22,7 +24,7 @@
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
       />
   <implements 
-      interface="zope.app.interfaces.services.configuration.IUseConfigurable" 
+      interface="zope.app.interfaces.services.registration.IRegisterable" 
       />
 </content>
 

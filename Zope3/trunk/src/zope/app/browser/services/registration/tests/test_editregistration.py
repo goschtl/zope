@@ -15,17 +15,17 @@
 
 XXX longer description goes here.
 
-$Id: test_editconfiguration.py,v 1.4 2003/06/05 12:41:54 stevea Exp $
+$Id: test_editregistration.py,v 1.1 2003/06/21 21:22:03 jim Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.browser.services.configuration import EditConfiguration
+from zope.app.browser.services.registration import EditRegistration
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.event import IObjectRemovedEvent
-from zope.app.interfaces.services.configuration import Active
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component.adapter import provideAdapter
@@ -44,7 +44,7 @@ class I(Interface):
 
 class C:
     implements(I)
-    status = Active
+    status = ActiveStatus
 
 
 class Test(PlacefulSetup, TestCase):
@@ -55,7 +55,7 @@ class Test(PlacefulSetup, TestCase):
         c7 = C()
         d = Container({'1': c1, '2': c2, '7': c7})
         d = ContextWrapper(d, None)
-        view = EditConfiguration(d, TestRequest())
+        view = EditRegistration(d, TestRequest())
         view.remove_objects(['2', '7'])
         self.assertEqual(d, {'1': c1})
 
@@ -85,7 +85,7 @@ class Test(PlacefulSetup, TestCase):
         c7 = C()
         d = Container({'1': c1, '2': c2, '7': c7})
 
-        view = EditConfiguration(d, TestRequest())
+        view = EditRegistration(d, TestRequest())
 
         info = view.configInfo()
         self.assertEqual(len(info), 3)

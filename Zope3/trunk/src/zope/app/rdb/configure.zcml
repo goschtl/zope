@@ -16,7 +16,7 @@
       />
   <implements
       interface=
-      "zope.app.interfaces.services.configuration.IAttributeUseConfigurable"
+      "zope.app.interfaces.services.registration.IAttributeRegisterable"
       />
 </content>
 

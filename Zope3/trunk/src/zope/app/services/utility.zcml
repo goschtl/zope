@@ -7,17 +7,17 @@
       />
   <require
     permission="zope.ManageServices"
-    attributes="getRegisteredMatching queryConfigurations"
+    attributes="getRegisteredMatching queryRegistrations"
     />
 </content>
 
-<content class=".utility.UtilityConfiguration">
+<content class=".utility.UtilityRegistration">
   <require
     permission="zope.ManageServices"
-    interface="zope.app.interfaces.services.utility.IUtilityConfiguration
+    interface="zope.app.interfaces.services.utility.IUtilityRegistration
                zope.app.interfaces.container.IAddNotifiable
                zope.app.interfaces.container.IDeleteNotifiable"
-    set_schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
+    set_schema="zope.app.interfaces.services.utility.IUtilityRegistration"
     />
  </content>
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.14 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: connection.py,v 1.15 2003/06/21 21:22:12 jim Exp $
 """
 
 from persistence import Persistent
@@ -23,10 +23,10 @@ from zope.app.interfaces.services.connection import ILocalConnectionService
 from zope.app.interfaces.services.service import ISimpleService
 
 from zope.app.component.nextservice import queryNextService
-from zope.app.services.configuration import NameComponentConfigurable
+from zope.app.services.registration import NameComponentRegistry
 from zope.interface import implements
 
-class ConnectionService(Persistent, NameComponentConfigurable):
+class ConnectionService(Persistent, NameComponentRegistry):
 
     __doc__ = ILocalConnectionService.__doc__
 
@@ -56,8 +56,8 @@ class ConnectionService(Persistent, NameComponentConfigurable):
     def getAvailableConnections(self):
         'See IConnectionService'
         connections = {}
-        for name in self.listConfigurationNames():
-            registry = self.queryConfigurations(name)
+        for name in self.listRegistrationNames():
+            registry = self.queryRegistrations(name)
             if registry.active() is not None:
                 connections[name] = 0
         service = queryNextService(self, "SQLDatabaseConnections")
@@ -73,21 +73,25 @@ class ConnectionService(Persistent, NameComponentConfigurable):
     getAvailableConnections = ContextMethod(getAvailableConnections)
 
 
-from zope.app.interfaces.services.connection import IConnectionConfiguration
-from zope.app.services.configuration import NamedComponentConfiguration
-from zope.app.services.configuration import ConfigurationStatusProperty
+from zope.app.interfaces.services.connection import IConnectionRegistration
+from zope.app.services.registration import NamedComponentRegistration
+from zope.app.services.registration import RegistrationStatusProperty
 
-class ConnectionConfiguration(NamedComponentConfiguration):
+class ConnectionRegistration(NamedComponentRegistration):
 
-    __doc__ = IConnectionConfiguration.__doc__
+    __doc__ = IConnectionRegistration.__doc__
 
-    implements(IConnectionConfiguration)
+    implements(IConnectionRegistration)
 
     serviceType = 'SQLDatabaseConnections'
 
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
     label = "Connection"
 
     def getInterface(self):
         return IZopeDatabaseAdapter
+
+
+# XXX Pickle backward compatability
+ConnectionConfiguration = ConnectionRegistration

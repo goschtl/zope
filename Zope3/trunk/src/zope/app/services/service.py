@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.25 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: service.py,v 1.26 2003/06/21 21:22:12 jim Exp $
 """
 
 import sys
@@ -46,28 +46,28 @@ from zope.app.component.nextservice import getNextServiceManager
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.module import IModuleService
-from zope.app.interfaces.services.service import IServiceConfiguration
+from zope.app.interfaces.services.service import IServiceRegistration
 from zope.app.interfaces.services.service import IServiceManager
 
 # Declare a tuple of all types we consider to be modules
 # (used as 2nd argument to isinstance() in method resolve() below)
 ModuleType = type(IModuleService), PersistentModule
 
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.app.services.configuration import NameComponentConfigurable
-from zope.app.services.configuration import NamedComponentConfiguration
+from zope.app.services.registration import RegistrationStatusProperty
+from zope.app.services.registration import NameComponentRegistry
+from zope.app.services.registration import NamedComponentRegistration
 from zope.app.services.folder import SiteManagementFolders
 from zope.app.interfaces.services.service import ILocalService
 
 from zope.app.traversing import getPath
 
-class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
+class ServiceManager(PersistentModuleRegistry, NameComponentRegistry):
 
     implements(IServiceManager, IContainer, IModuleService)
 
     def __init__(self):
         PersistentModuleRegistry.__init__(self)
-        NameComponentConfigurable.__init__(self)
+        NameComponentRegistry.__init__(self)
         self.Packages = SiteManagementFolders()
 
     def getServiceDefinitions(wrapped_self):
@@ -295,20 +295,20 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
     resolve = ContextMethod(resolve)
 
 
-class ServiceConfiguration(NamedComponentConfiguration):
+class ServiceRegistration(NamedComponentRegistration):
 
-    __doc__ = IServiceConfiguration.__doc__
+    __doc__ = IServiceRegistration.__doc__
 
-    implements(IServiceConfiguration)
+    implements(IServiceRegistration)
 
     serviceType = 'Services'
 
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
     label = "Service"
 
     def __init__(self, name, path, context=None):
-        super(ServiceConfiguration, self).__init__(name, path)
+        super(ServiceRegistration, self).__init__(name, path)
         if context is not None:
             # Check that the object implements stuff we need
             wrapped_self = ContextWrapper(self, context)
@@ -342,6 +342,9 @@ class ServiceConfiguration(NamedComponentConfiguration):
         return self.name + " Service"
 
 
+# XXX Pickle backward compatability
+ServiceConfiguration = ServiceRegistration
+
 # Fssync stuff
 
 from zope.app.fssync.classes import AttrMapping
@@ -349,7 +352,7 @@ from zope.app.content.fssync import DirectoryAdapter
 
 _smattrs = (
     '_modules',                         # PersistentModuleRegistry
-    '_bindings',                        # NameComponentConfigurable
+    '_bindings',                        # NameComponentRegistry
 )
 
 class ServiceManagerAdapter(DirectoryAdapter):

@@ -13,7 +13,7 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_pagefolder.py,v 1.5 2003/06/05 12:03:18 stevea Exp $
+$Id: test_pagefolder.py,v 1.6 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,17 +25,17 @@ from zope.app.interfaces.context import IZopeContextWrapper
 from zope.app.traversing import traverse
 from zope.app.services.zpt import ZPTTemplate
 from zope.app.services.view import ViewService
-from zope.app.interfaces.services.configuration import Active
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.services.tests.test_configurationmanager \
-     import ConfigurationManagerContainerTests
+from zope.app.services.tests.test_registrationmanager \
+     import RegistrationManagerContainerTests
 from zope.component.adapter import provideAdapter
 
 class I(Interface):
     pass
 
-class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
+class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
 
     def test_setObject(self):
         provideAdapter(IPageFolder, IZopeContextWrapper,
@@ -51,15 +51,15 @@ class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
         views.permission = 'zope.View'
         views.setObject('foo.html', ZPTTemplate())
 
-        configuration = traverse(views.getConfigurationManager(), '1')
-        self.assertEqual(configuration.status, Active)
-        self.assertEqual(configuration.forInterface, I)
-        self.assertEqual(configuration.presentationType, IBrowserPresentation)
-        self.assertEqual(configuration.viewName, u'foo.html')
-        self.assertEqual(configuration.layer, 'default')
-        self.assertEqual(configuration.class_, None)
-        self.assertEqual(configuration.permission, 'zope.View')
-        self.assertEqual(configuration.attribute, None)
+        registration = traverse(views.getRegistrationManager(), '1')
+        self.assertEqual(registration.status, ActiveStatus)
+        self.assertEqual(registration.forInterface, I)
+        self.assertEqual(registration.presentationType, IBrowserPresentation)
+        self.assertEqual(registration.viewName, u'foo.html')
+        self.assertEqual(registration.layer, 'default')
+        self.assertEqual(registration.class_, None)
+        self.assertEqual(registration.permission, 'zope.View')
+        self.assertEqual(registration.attribute, None)
 
         self.assertRaises(TypeError,
                           views.setObject, 'bar.html', PageFolder())

@@ -13,16 +13,16 @@
 ##############################################################################
 """Service interfaces
 
-$Id: adapter.py,v 1.1 2003/03/11 16:15:52 jim Exp $
+$Id: adapter.py,v 1.2 2003/06/21 21:22:10 jim Exp $
 """
 
-from zope.app.interfaces.services.configuration import IConfiguration
+from zope.app.interfaces.services.registration import IRegistration
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.security.permission import PermissionField
 from zope.schema import BytesLine, TextLine
 from zope.interface import Interface
 
-class IAdapterConfigurationInfo(Interface):
+class IAdapterRegistrationInfo(Interface):
 
     forInterface = InterfaceField(
         title = u"For interface",
@@ -57,7 +57,7 @@ class IAdapterConfigurationInfo(Interface):
         )
         
 
-class IAdapterConfiguration(IConfiguration, IAdapterConfigurationInfo):
+class IAdapterRegistration(IRegistration, IAdapterRegistrationInfo):
 
     def getAdapter(object):
         """Return an adapter for the object

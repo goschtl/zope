@@ -11,29 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A collection of factory functions for various configuration classes.
+"""A collection of factory functions for various registration classes.
 
-See method factory() in class ComponentConfigurationAdapter in file
-configuration.py.
+See method factory() in class ComponentRegistrationAdapter in file
+registration.py.
 
 The functions here may create invalid objects; a subsequent setBody()
 call to the adapter's setBody() method will make the object valid.
 
-$Id: factories.py,v 1.2 2003/06/16 16:47:51 gvanrossum Exp $
+$Id: factories.py,v 1.3 2003/06/21 21:22:12 jim Exp $
 """
 
-def CacheConfiguration():
-    from zope.app.services.cache import CacheConfiguration
-    return CacheConfiguration("", "") # name, componentPath
+def CacheRegistration():
+    from zope.app.services.cache import CacheRegistration
+    return CacheRegistration("", "") # name, componentPath
 
-def ConnectionConfiguration():
-    from zope.app.services.connection import ConnectionConfiguration
-    return ConnectionConfiguration("", "") # name, componentPath
+def ConnectionRegistration():
+    from zope.app.services.connection import ConnectionRegistration
+    return ConnectionRegistration("", "") # name, componentPath
 
-def ServiceConfiguration():
-    from zope.app.services.service import ServiceConfiguration
-    return ServiceConfiguration("", "") # name, componentPath
+def ServiceRegistration():
+    from zope.app.services.service import ServiceRegistration
+    return ServiceRegistration("", "") # name, componentPath
 
-def UtilityConfiguration():
-    from zope.app.services.utility import UtilityConfiguration
-    return UtilityConfiguration("", None, "") # name, interface, componentPath
+def UtilityRegistration():
+    from zope.app.services.utility import UtilityRegistration
+    return UtilityRegistration("", None, "") # name, interface, componentPath

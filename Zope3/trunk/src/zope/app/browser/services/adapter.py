@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Views for local adapter configuration.
+"""Views for local adapter registration.
 
   AdapterSeviceView -- it's a bit different from other services, as it
   has a lot of things in it, so we provide a search interface:
@@ -19,9 +19,9 @@
     search page
     browsing page
 
-  AdapterConfigurationAdd
+  AdapterRegistrationAdd
 
-$Id: adapter.py,v 1.9 2003/06/01 15:59:27 jim Exp $
+$Id: adapter.py,v 1.10 2003/06/21 21:21:59 jim Exp $
 """
 __metaclass__ = type
 
@@ -33,14 +33,14 @@ from zope.component import getView
 from zope.publisher.browser import BrowserView
 from zope.app.context import ContextWrapper
 
-from zope.app.interfaces.services.adapter import IAdapterConfiguration
-from zope.app.interfaces.services.adapter import IAdapterConfigurationInfo
-from zope.app.interfaces.services.configuration import IConfiguration
+from zope.app.interfaces.services.adapter import IAdapterRegistration
+from zope.app.interfaces.services.adapter import IAdapterRegistrationInfo
+from zope.app.interfaces.services.registration import IRegistration
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.utility import getWidgetsDataForContent
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.services.adapter import AdapterConfiguration
+from zope.app.services.adapter import AdapterRegistration
 from zope.app.component.interfacefield import InterfaceField
 
 class IAdapterSearch(Interface):
@@ -74,7 +74,7 @@ class AdapterServiceView(BrowserView):
                 providedInterface.__module__ +"."+ providedInterface.__name__)
 
             registry = ContextWrapper(registry, self.context)
-            view = getView(registry, "ChangeConfigurations", self.request)
+            view = getView(registry, "ChangeRegistrations", self.request)
             prefix = md5.new('%s %s' %
                              (forInterface, providedInterface)).hexdigest()
             view.setPrefix(prefix)
@@ -88,19 +88,19 @@ class AdapterServiceView(BrowserView):
         return result
 
 
-class AdapterConfigurationAdd(BrowserView):
+class AdapterRegistrationAdd(BrowserView):
 
     def __init__(self, *args):
-        super(AdapterConfigurationAdd, self).__init__(*args)
-        setUpWidgets(self, IAdapterConfiguration)
+        super(AdapterRegistrationAdd, self).__init__(*args)
+        setUpWidgets(self, IAdapterRegistration)
 
     def refresh(self):
         if "FINISH" in self.request:
-            data = getWidgetsData(self, IAdapterConfigurationInfo, strict=True)
-            configuration = AdapterConfiguration(**data)
-            publish(self.context.context, ObjectCreatedEvent(configuration))
-            configuration = self.context.add(configuration)
-            getWidgetsDataForContent(self, IConfiguration, configuration,
+            data = getWidgetsData(self, IAdapterRegistrationInfo, strict=True)
+            registration = AdapterRegistration(**data)
+            publish(self.context.context, ObjectCreatedEvent(registration))
+            registration = self.context.add(registration)
+            getWidgetsDataForContent(self, IRegistration, registration,
                                      strict=False)
             self.request.response.redirect(self.context.nextURL())
             return False
@@ -109,8 +109,8 @@ class AdapterConfigurationAdd(BrowserView):
 
     def getWidgets(self):
         return ([getattr(self, name)
-                 for name in getFieldNamesInOrder(IAdapterConfigurationInfo)]
+                 for name in getFieldNamesInOrder(IAdapterRegistrationInfo)]
                 +
                 [getattr(self, name)
-                 for name in getFieldNamesInOrder(IConfiguration)]
+                 for name in getFieldNamesInOrder(IRegistration)]
                 )

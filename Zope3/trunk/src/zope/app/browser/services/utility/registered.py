@@ -11,17 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Use-Configuration view for utilities.
+"""Use-Registration view for utilities.
 
-$Id: useconfiguration.py,v 1.11 2003/06/13 17:41:14 stevea Exp $
+$Id: registered.py,v 1.1 2003/06/21 21:22:06 jim Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
-from zope.app.browser.services.configuration import AddComponentConfiguration
+from zope.app.browser.services.registration import AddComponentRegistration
 from zope.app.form.widget import CustomWidget
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.configuration \
-     import Unregistered, Registered, Active
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.traversing import getPath, getParent, getName
 from zope.component import getServiceManager, getView, getAdapter
 from zope.interface import providedBy
@@ -45,11 +46,11 @@ class UtilityInterfaceWidget(InterfaceWidget):
         return '\n'.join(result)
         
 
-class AddConfiguration(AddComponentConfiguration):
-    """View for adding a utility configuration.
+class AddRegistration(AddComponentRegistration):
+    """View for adding a utility registration.
 
 
-    We could just use AddComponentConfiguration, except that we need a
+    We could just use AddComponentRegistration, except that we need a
     custom interface widget.
 
     This is a view on a local utility, configured by an <addform>
@@ -92,12 +93,12 @@ class Utilities(BrowserView):
     def _activate(self, todo):
         done = []
         for key, name, iface in todo:
-            registry = self.context.queryConfigurations(name, iface)
+            registry = self.context.queryRegistrations(name, iface)
             obj = registry.active()
             if obj is None:
-                # Activate the first registered configuration
-                obj = registry.info()[0]['configuration']
-                obj.status = Active
+                # Activate the first registered registration
+                obj = registry.info()[0]['registration']
+                obj.status = ActiveStatus
                 done.append(obj.usageSummary())
         if done:
             return "Activated: " + ", ".join(done)
@@ -107,10 +108,10 @@ class Utilities(BrowserView):
     def _deactivate(self, todo):
         done = []
         for key, name, iface in todo:
-            registry = self.context.queryConfigurations(name, iface)
+            registry = self.context.queryRegistrations(name, iface)
             obj = registry.active()
             if obj is not None:
-                obj.status = Registered
+                obj.status = RegisteredStatus
                 done.append(obj.usageSummary())
         if done:
             return "Deactivated: " + ", ".join(done)
@@ -120,7 +121,7 @@ class Utilities(BrowserView):
     def _delete(self, todo):
         errors = []
         for key, name, iface in todo:
-            registry = self.context.queryConfigurations(name, iface)
+            registry = self.context.queryRegistrations(name, iface)
             assert registry
             obj = registry.active()
             if obj is not None:
@@ -135,19 +136,19 @@ class Utilities(BrowserView):
         services = {}
         done = []
         for key, name, iface in todo:
-            registry = self.context.queryConfigurations(name, iface)
+            registry = self.context.queryRegistrations(name, iface)
             assert registry
             assert registry.active() is None # Phase error
             first = True
             for info in registry.info():
-                conf = info['configuration']
+                conf = info['registration']
                 obj = conf.getComponent()
                 if first:
                     done.append(conf.usageSummary())
                     first = False
                 path = getPath(obj)
                 services[path] = obj
-                conf.status = Unregistered
+                conf.status = UnregisteredStatus
                 parent = getParent(conf)
                 name = getName(conf)
                 container = getAdapter(parent, IZopeContainer)
@@ -167,7 +168,7 @@ class Utilities(BrowserView):
         for iface, name, cr in self.context.getRegisteredMatching():
             active = obj = cr.active()
             if obj is None:
-                obj = cr.info()[0]['configuration'] # Pick a representative
+                obj = cr.info()[0]['registration'] # Pick a representative
             ifname = _interface_name(iface)
             d = {"interface": ifname,
                  "name": name,
@@ -190,8 +191,8 @@ class ConfigureUtility(BrowserView):
         sm = getServiceManager(self.context)
         iface = sm.resolve(self.request['interface'])
         name = self.request['name']
-        cr = self.context.queryConfigurations(name, iface)
-        form = getView(cr, "ChangeConfigurations", self.request)
+        cr = self.context.queryRegistrations(name, iface)
+        form = getView(cr, "ChangeRegistrations", self.request)
         form.update()
         return form
 

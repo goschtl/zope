@@ -13,18 +13,18 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.6 2003/05/01 19:35:22 faassen Exp $
+$Id: utility.py,v 1.7 2003/06/21 21:22:10 jim Exp $
 """
 
-from zope.app.interfaces.services.configuration import IComponentConfiguration
+from zope.app.interfaces.services.registration import IComponentRegistration
 from zope.app.component.interfacefield import InterfaceField
 from zope.schema import TextLine
-from zope.app.interfaces.services.configuration import IUseConfigurable
-from zope.app.interfaces.services.configuration import ComponentPath
+from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.interfaces.services.registration import ComponentPath
 from zope.component.interfaces import IUtilityService
 
-class IUtilityConfiguration(IComponentConfiguration):
-    """Utility configuration object.
+class IUtilityRegistration(IComponentRegistration):
+    """Utility registration object.
 
     This is keyed off name (which may be empty) and interface.  It
     overrides componentPath (to make it readonly); it also inherits a
@@ -53,7 +53,7 @@ class IUtilityConfiguration(IComponentConfiguration):
 
 
 
-class ILocalUtility(IUseConfigurable):
+class ILocalUtility(IRegisterable):
     """Local utility marker.
 
     A marker interface that indicates that a component can be used as
@@ -61,8 +61,8 @@ class ILocalUtility(IUseConfigurable):
 
     Utilities should usually also declare they implement
     IAttributeAnnotatable, so that the standard adapter to
-    IUseConfiguration can be used; otherwise, they must provide
-    another way to be adaptable to IUseConfiguration.
+    IRegistered can be used; otherwise, they must provide
+    another way to be adaptable to IRegistered.
     """
 
 
@@ -84,7 +84,7 @@ class ILocalUtilityService(IUtilityService):
 
         - name
 
-        - configuration registry
+        - registration stack
 
         One item is present for each registration.
         """

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_contents.py,v 1.2 2003/06/18 16:03:33 jim Exp $
+$Id: test_contents.py,v 1.3 2003/06/21 21:21:59 jim Exp $
 """
 
 import unittest
@@ -68,7 +68,7 @@ class Test(BrowserTestCase):
                      < 0)
         self.assert_(body.find('type="submit" name="container_rename_button"')
                      >= 0)
-        self.assert_(body.find('div class="error"')
+        self.assert_(body.find('div class="page_error"')
                      >= 0)
 
 

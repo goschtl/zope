@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for the useconfiguration view support."""
+"""Tests for the registered view support."""
 
 import unittest
 
-from zope.app.browser.services.utility import useconfiguration
+from zope.app.browser.services.utility import registered
 from zope.app.tests import placelesssetup
 from zope.component.view import provideView
 from zope.interface import Interface, implements
@@ -37,15 +37,15 @@ class IStub(Interface):
     """Interface used to bind an absolute_url view to stub objects."""
 
 class Stub:
-    # Does triple duty as a stub for a configuration, a configuration
-    # registry, and a component!
+    # Does triple duty as a stub for a registration, ay registration
+    # stack, and a component!
 
     implements(IStub)
 
     def __init__(self, url=None):
         self.url = url
 
-    # configuration registry
+    # registration registry
     def active(self):
         if self.url:
             return self
@@ -53,9 +53,9 @@ class Stub:
             return None
 
     def info(self):
-        return [{'configuration': self}]
+        return [{'registration': self}]
 
-    # configuration
+    # registration
     def getComponent(self):
         return self
 
@@ -78,7 +78,7 @@ class StubLocalUtilityService:
             ]
 
 
-class UseConfigurationTest(placelesssetup.PlacelessSetup, unittest.TestCase):
+class RegisteredTest(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def test_utility(self):
         provideView(IStub,
@@ -87,7 +87,7 @@ class UseConfigurationTest(placelesssetup.PlacelessSetup, unittest.TestCase):
                     StubAbsoluteURL)
         utilityservice = StubLocalUtilityService()
         request = TestRequest()
-        utilities = useconfiguration.Utilities(utilityservice, request)
+        utilities = registered.Utilities(utilityservice, request)
         ifname1 = __name__ + ".IFoo"
         ifname2 = __name__ + ".IBar"
         def confurl(ifname, name):
@@ -130,4 +130,4 @@ class UseConfigurationTest(placelesssetup.PlacelessSetup, unittest.TestCase):
 
 
 def test_suite():
-    return unittest.makeSuite(UseConfigurationTest)
+    return unittest.makeSuite(RegisteredTest)

@@ -13,17 +13,17 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.18 2003/06/07 05:32:01 stevea Exp $
+$Id: test_adapter.py,v 1.19 2003/06/21 21:22:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.tests.iconfigurable import TestingIConfigurable
+from zope.app.services.tests.iregistry import TestingIRegistry
 from zope.app.services.adapter import AdapterService
 from zope.interface import Interface, directlyProvides, implements
 from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.adapter import AdapterConfiguration
+from zope.app.services.adapter import AdapterRegistration
 from zope.app.content.folder import RootFolder
 from zope.app.traversing import traverse
 from zope.component.interfaces import IServiceService
@@ -49,7 +49,7 @@ class I4(Interface):
     pass
 
 
-class Configuration:
+class Registration:
     forInterface = I1
     providedInterface = I2
     adapterName = ''
@@ -67,7 +67,7 @@ class A:
         self.context = object
 
 
-class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
+class TestAdapterService(PlacefulSetup, TestingIRegistry, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
@@ -79,11 +79,11 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         verifyObject(IAdapterService, self._service)
 
-    def createTestingConfigurable(self):
+    def createTestingRegistry(self):
         return ContextWrapper(AdapterService(), C())
 
-    def createTestingConfiguration(self):
-        return Configuration()
+    def createTestingRegistration(self):
+        return Registration()
 
     def test_conforms(self):
         service = self._service
@@ -132,19 +132,19 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++site')
 
-        configure = traverse(sm, 'default').getConfigurationManager()
-        configuration = Configuration()
-        configure.setObject('', configuration)
-        configuration = traverse(configure, '1')
+        registration_manager = traverse(sm, 'default').getRegistrationManager()
+        registration = Registration()
+        registration_manager.setObject('', registration)
+        registration = traverse(registration_manager, '1')
 
         class O:
             implements(I1)
 
-        configuration.factory = A
+        registration.factory = A
 
-        registry = service.createConfigurationsFor(configuration)
-        registry.register(configuration)
-        registry.activate(configuration)
+        registry = service.createRegistrationsFor(registration)
+        registry.register(registration)
+        registry.activate(registration)
 
         o = O()
 
@@ -170,20 +170,20 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++site')
 
-        configure = traverse(sm, 'default').getConfigurationManager()
-        configuration = Configuration()
-        configuration.adapterName = u"Yatta!"
-        configure.setObject('', configuration)
-        configuration = traverse(configure, '1')
+        registration_manager = traverse(sm, 'default').getRegistrationManager()
+        registration = Registration()
+        registration.adapterName = u"Yatta!"
+        registration_manager.setObject('', registration)
+        registration = traverse(registration_manager, '1')
 
         class O:
             implements(I1)
 
-        configuration.factory = A
+        registration.factory = A
 
-        registry = service.createConfigurationsFor(configuration)
-        registry.register(configuration)
-        registry.activate(configuration)
+        registry = service.createRegistrationsFor(registration)
+        registry.register(registration)
+        registry.activate(registration)
 
         o = O()
 
@@ -220,19 +220,19 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++site')
 
-        configure = traverse(sm, 'default').getConfigurationManager()
-        configuration = Configuration()
-        configure.setObject('', configuration)
-        configuration = traverse(configure, '1')
+        registration_manager = traverse(sm, 'default').getRegistrationManager()
+        registration = Registration()
+        registration_manager.setObject('', registration)
+        registration = traverse(registration_manager, '1')
 
         class O:
             implements(I1)
 
-        configuration.factory = A
+        registration.factory = A
 
-        registry = service.createConfigurationsFor(configuration)
-        registry.register(configuration)
-        registry.activate(configuration)
+        registry = service.createRegistrationsFor(registration)
+        registry.register(registration)
+        registry.activate(registration)
 
         o = O()
 
@@ -262,7 +262,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
 
     def test_getRegisteredMatching(self):
         self.test_queryAdapter_and_getAdapter()
-        registry = self._service.queryConfigurations(I1, I2, '')
+        registry = self._service.queryRegistrations(I1, I2, '')
 
         for args in ((), (I1E, ), (None, I2), (I1E, I2), ):
             r = self._service.getRegisteredMatching(*args)
@@ -280,30 +280,30 @@ class PhonyServiceManager:
         return serviceManager.getService(name)
 
 
-class TestAdapterConfiguration(PlacefulSetup, TestCase):
+class TestAdapterRegistration(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
         rootFolder = RootFolder()
         rootFolder.setServiceManager(PhonyServiceManager())
 
-        self.configuration = ContextWrapper(
-            AdapterConfiguration(I1, I2, "Foo.Bar.A", "adapter"),
+        self.registration = ContextWrapper(
+            AdapterRegistration(I1, I2, "Foo.Bar.A", "adapter"),
             rootFolder,
             )
 
     def test_getAdapter(self):
         c = C()
-        adapter = self.configuration.getAdapter(c)
+        adapter = self.registration.getAdapter(c)
         self.assertEqual(adapter.__class__, A)
         self.assertEqual(adapter.context, c)
-        self.assertEqual(self.configuration.forInterface, I1)
-        self.assertEqual(self.configuration.providedInterface, I2)
+        self.assertEqual(self.registration.forInterface, I1)
+        self.assertEqual(self.registration.providedInterface, I2)
 
 def test_suite():
     return TestSuite((
         makeSuite(TestAdapterService),
-        makeSuite(TestAdapterConfiguration),
+        makeSuite(TestAdapterRegistration),
         ))
 
 if __name__=='__main__':

@@ -14,22 +14,22 @@
 
 __metaclass__ = type
 
-class TestingConfiguration:
+class TestingRegistration:
     def __init__(self, id):
         self.id = id
 
     def __eq__(self, other):
         return self.id == getattr(other, 'id', 0)
 
-class TestingConfigurationRegistry:
+class TestingRegistrationStack:
 
-    class_ = TestingConfiguration
+    class_ = TestingRegistration
 
     def __init__(self, *args):
         self._data = args
 
-    def register(self, configuration):
-        cid = configuration.id
+    def register(self, registration):
+        cid = registration.id
 
         if self._data:
             if cid in self._data:
@@ -41,8 +41,8 @@ class TestingConfigurationRegistry:
 
         self._data += (cid, )
 
-    def unregister(self, configuration):
-        cid = configuration.id
+    def unregister(self, registration):
+        cid = registration.id
 
         data = self._data
         if data:
@@ -52,12 +52,12 @@ class TestingConfigurationRegistry:
             else:
                 self._data = tuple([item for item in data if item != cid])
 
-    def registered(self, configuration):
-        cid = configuration.id
+    def registered(self, registration):
+        cid = registration.id
         return cid in self._data
 
-    def activate(self, configuration):
-        cid = configuration.id
+    def activate(self, registration):
+        cid = registration.id
         if self._data[0] == cid:
             return # already active
 
@@ -69,8 +69,8 @@ class TestingConfigurationRegistry:
             [item for item in self._data if item != cid]
             )
 
-    def deactivate(self, configuration):
-        cid = configuration.id
+    def deactivate(self, registration):
+        cid = registration.id
         if self._data[0] != cid:
             return # already inactive
 
@@ -89,13 +89,13 @@ class TestingConfigurationRegistry:
     def info(self):
         result = [{'id': path,
                    'active': False,
-                   'configuration': self.class_(path),
+                   'registration': self.class_(path),
                    }
                   for path in self._data
                   ]
 
         if result:
-            if result[0]['configuration'] is None:
+            if result[0]['registration'] is None:
                 del result[0]
             else:
                 result[0]['active'] = True

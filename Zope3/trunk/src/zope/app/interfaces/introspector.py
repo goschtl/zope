@@ -46,5 +46,5 @@ class IIntrospector(Interface):
     def getExtends():
         """Returns all the class extended up to the top most level"""
 
-    def getInterfaceConfiguration():
+    def getInterfaceRegistration():
         """Returns details for a interface configuration"""

@@ -15,7 +15,7 @@
 
 XXX Incomplete.
 
-$Id: test_bundle.py,v 1.1 2003/06/19 21:33:01 gvanrossum Exp $
+$Id: test_bundle.py,v 1.2 2003/06/21 21:22:04 jim Exp $
 """
 
 # standard library modules
@@ -78,9 +78,9 @@ class TestBundleView(PlacelessSetup, unittest.TestCase):
         infos = bv.listServices()
         self.assertEquals(infos, [])
 
-    def test_listConfigurations(self):
+    def test_listRegistrations(self):
         bv = BundleView(SampleClass("/++etc++site/foo-bar-1.0.0"), None)
-        infos = bv.listConfigurations()
+        infos = bv.listRegistrations()
         self.assertEquals(infos, [])
 
 

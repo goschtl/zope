@@ -14,20 +14,20 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.10 2003/06/19 21:55:45 gvanrossum Exp $
+$Id: utility.py,v 1.11 2003/06/21 21:22:12 jim Exp $
 """
 
 from zope.interface import implements
 from persistence.dict import PersistentDict
 from persistence import Persistent
 from zope.app.component.nextservice import getNextService
-from zope.app.interfaces.services.configuration import IConfigurable
+from zope.app.interfaces.services.registration import IRegistry
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.interfaces.services.utility import IUtilityConfiguration
+from zope.app.interfaces.services.utility import IUtilityRegistration
 from zope.app.interfaces.services.utility import ILocalUtilityService
-from zope.app.services.configuration import ConfigurationRegistry
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.app.services.configuration import ComponentConfiguration
+from zope.app.services.registration import RegistrationStack
+from zope.app.services.registration import RegistrationStatusProperty
+from zope.app.services.registration import ComponentRegistration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface.implementor import ImplementorRegistry
 from zope.context import ContextMethod
@@ -35,7 +35,7 @@ from zope.app.context import ContextWrapper
 
 class LocalUtilityService(Persistent):
 
-    implements(ILocalUtilityService, IConfigurable, ISimpleService)
+    implements(ILocalUtilityService, IRegistry, ISimpleService)
 
     def __init__(self):
         self._utilities = PersistentDict()
@@ -48,52 +48,52 @@ class LocalUtilityService(Persistent):
     getUtility = ContextMethod(getUtility)
 
     def queryUtility(self, interface, default=None, name=''):
-        registry = self.queryConfigurations(name, interface)
-        if registry is not None:
-            configuration = registry.active()
-            if configuration is not None:
-                return configuration.getComponent()
+        stack = self.queryRegistrations(name, interface)
+        if stack is not None:
+            registration = stack.active()
+            if registration is not None:
+                return registration.getComponent()
 
         next = getNextService(self, "Utilities")
         return next.queryUtility(interface, default, name)
     queryUtility = ContextMethod(queryUtility)
 
-    def queryConfigurationsFor(self, configuration, default=None):
-        return self.queryConfigurations(configuration.name,
-                                        configuration.interface,
+    def queryRegistrationsFor(self, registration, default=None):
+        return self.queryRegistrations(registration.name,
+                                        registration.interface,
                                         default)
-    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
+    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
-    def queryConfigurations(self, name, interface, default=None):
+    def queryRegistrations(self, name, interface, default=None):
         utilities = self._utilities.get(name)
         if utilities is None:
             return default
-        registry = utilities.getRegistered(interface)
-        if registry is None:
+        stack = utilities.getRegistered(interface)
+        if stack is None:
             return default
 
-        return ContextWrapper(registry, self)
-    queryConfigurations = ContextMethod(queryConfigurations)
+        return ContextWrapper(stack, self)
+    queryRegistrations = ContextMethod(queryRegistrations)
 
-    def createConfigurationsFor(self, configuration):
-        return self.createConfigurations(configuration.name,
-                                         configuration.interface)
+    def createRegistrationsFor(self, registration):
+        return self.createRegistrations(registration.name,
+                                         registration.interface)
 
-    createConfigurationsFor = ContextMethod(createConfigurationsFor)
+    createRegistrationsFor = ContextMethod(createRegistrationsFor)
 
-    def createConfigurations(self, name, interface):
+    def createRegistrations(self, name, interface):
         utilities = self._utilities.get(name)
         if utilities is None:
             utilities = ImplementorRegistry(PersistentDict())
             self._utilities[name] = utilities
 
-        registry = utilities.getRegistered(interface)
-        if registry is None:
-            registry = ConfigurationRegistry()
-            utilities.register(interface, registry)
+        stack = utilities.getRegistered(interface)
+        if stack is None:
+            stack = RegistrationStack()
+            utilities.register(interface, stack)
 
-        return ContextWrapper(registry, self)
-    createConfigurations = ContextMethod(createConfigurations)
+        return ContextWrapper(stack, self)
+    createRegistrations = ContextMethod(createRegistrations)
 
     def getRegisteredMatching(self):
         L = []
@@ -106,35 +106,39 @@ class LocalUtilityService(Persistent):
     getRegisteredMatching = ContextMethod(getRegisteredMatching)
 
 
-class UtilityConfiguration(ComponentConfiguration):
-    """Utility component configuration for persistent components
+class UtilityRegistration(ComponentRegistration):
+    """Utility component registration for persistent components
 
-    This configuration configures persistent components in packages to
+    This registration configures persistent components in packages to
     be utilities.
 
     """
 
     serviceType = 'Utilities'
 
-    status = ConfigurationStatusProperty()
+    status = RegistrationStatusProperty()
 
-    implements(IUtilityConfiguration)
+    implements(IUtilityRegistration)
 
     def __init__(self, name, interface, component_path, permission=None):
-        ComponentConfiguration.__init__(self, component_path, permission)
+        ComponentRegistration.__init__(self, component_path, permission)
         self.name = name
         self.interface = interface
 
     def usageSummary(self):
-        # Override IConfiguration.usageSummary()
+        # Override IRegistration.usageSummary()
         s = "%s utility" % self.interface.__name__
         if self.name:
             s += " named %s" % self.name
         return s
 
     def getInterface(self):
-        # ComponentConfiguration calls this when you specify a
+        # ComponentRegistration calls this when you specify a
         # permission; it needs the interface to create a security
         # proxy for the interface with the given permission.
         # XXX Smells like a dead chicken to me.
         return self.interface
+
+
+# XXX Pickle backward compatability
+UtilityConfiguration = UtilityRegistration
