@@ -378,7 +378,7 @@ class Object(Field):
     def _validate(self, value):
         super(Object, self)._validate(value)
         
-        # schema has to be implemented by value    
+        # schema has to be provided by value
         if not self.schema.providedBy(value):
             raise SchemaNotProvided
             
