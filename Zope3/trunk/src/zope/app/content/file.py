@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.4 2002/12/31 20:15:02 jim Exp $
+$Id: file.py,v 1.5 2003/02/03 15:08:32 jim Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -26,7 +26,6 @@ from zope.publisher.browser import FileUpload
 
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.content.file import IFile, IReadFile
-
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
@@ -226,3 +225,24 @@ class FileChunk(Persistent):
             next = self.next
 
         return ''.join(result)
+
+# Adapters for file-system style access
+
+class FileReadFile:
+
+    def __init__(self, context):
+        self.context = context
+
+    def read(self):
+        return self.context.getData()
+
+    def size(self):
+        return len(self.context.getData())
+
+class FileWriteFile:
+
+    def __init__(self, context):
+        self.context = context
+
+    def write(self, data):
+        self.context.setData(data)

@@ -81,6 +81,6 @@
 <!-- Views -->
 
   <include package="zope.app.browser" />
-  <include package="zope.app.vfs" />
+  <include package="zope.app.ftp" />
 
 </zopeConfigure>

@@ -23,7 +23,7 @@ A service manager has a number of roles:
   - A registry for persistent modules.  The Zope import hook uses the
     ServiceManager to search for modules.
 
-$Id: service.py,v 1.6 2003/01/08 17:47:56 stevea Exp $
+$Id: service.py,v 1.7 2003/02/03 15:08:48 jim Exp $
 """
 
 import sys
@@ -195,6 +195,9 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
         return self.get(key) is not None
 
     # Enumeration methods. We'll only expose Packages for now:
+    def __iter__(self):
+        return iter(self.keys())
+
     def keys(self):
         return ['Packages']
 

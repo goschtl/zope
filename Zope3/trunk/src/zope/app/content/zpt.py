@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.5 2002/12/30 16:41:21 alga Exp $
+$Id: zpt.py,v 1.6 2003/02/03 15:08:32 jim Exp $
 """
 
 import re
@@ -28,6 +28,8 @@ from zope.app.pagetemplate.engine import AppPT
 from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.size import ISized
 from zope.app.interfaces.content.zpt import IZPTPage, IRenderZPTPage
+
+from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
 
 __metaclass__ = type
 
@@ -114,3 +116,42 @@ class Sized:
             return '1 line'
         return '%s lines' % self.num_lines
 
+# File-system access adapters
+
+class ZPTReadFile:
+
+    __implements__ = IReadFile
+
+    def __init__(self, context):
+        self.context = context
+
+    def read(self):
+        return self.context.getSource()
+
+    def size(self):
+        return len(self.read())
+
+class ZPTWriteFile:
+
+    __implements__ = IWriteFile
+
+    def __init__(self, context):
+        self.context = context
+
+    def write(self, data):
+        # XXX Hm, how does one figure out an ftp encoding. Waaa.
+        self.context.setSource(unicode(data), None)
+
+class ZPTFactory:
+
+    __implements__ = IFileFactory
+
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name, content_type, data):
+        r = ZPTPage()
+        # XXX Hm, how does one figure out an ftp encoding. Waaa.
+        r.setSource(unicode(data), content_type or 'text/html')
+        return r

@@ -13,18 +13,17 @@
 ##############################################################################
 # HTTP Basic Authentication adapter
 
-from zope.publisher.interfaces.vfs import IVFSCredentials
+from zope.publisher.interfaces.ftp import IFTPCredentials
 from zope.app.security.loginpassword import LoginPassword
 
-class BasicVFSAuthAdapter(LoginPassword):
+class FTPAuth(LoginPassword):
 
-    __used_for__ = IVFSCredentials
+    __used_for__ = IFTPCredentials
 
     __request = None
 
     def __init__(self, request):
         self.__request = request
-        # XXX base64 decoding should be done here, not in request
         lpw = request._authUserPW()
         if lpw is None:
             login, password = None, None

@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.8 2003/01/31 11:03:34 alga Exp $
+$Id: auth.py,v 1.9 2003/02/03 15:08:48 jim Exp $
 """
 
 from types import TupleType
@@ -136,6 +136,9 @@ class AuthenticationService(Persistent):
     def keys(self):
         'See IEnumerableMapping'
         return self._usersbyid.keys()
+
+    def __iter__(self):
+        return iter(self.keys())
 
     def values(self):
         'See IEnumerableMapping'

@@ -13,16 +13,31 @@
 ##############################################################################
 """
 
-$Id: test_file.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: test_file.py,v 1.3 2003/02/03 15:08:34 jim Exp $
 """
 
 import unittest
 
 from zope.interface.verify import verifyClass
-from zope.app.content.file import FileChunk
+from zope.app.content.file import FileChunk, FileReadFile, FileWriteFile
 
+class TestFileAdapters:
+    
 
-class Test(unittest.TestCase):
+    def test_ReadFile(self):
+        file = self._makeFile()
+        content = "This is some file\ncontent."
+        file.edit(content, 'text/plain')
+        self.assertEqual(FileReadFile(file).read(), content)
+        self.assertEqual(FileReadFile(file).size(), len(content))
+
+    def test_WriteFile(self):
+        file = self._makeFile()
+        content = "This is some file\ncontent."
+        FileWriteFile(file).write(content)
+        self.assertEqual(file.getData(), content)
+
+class Test(unittest.TestCase, TestFileAdapters):
 
     def _makeFile(self, *args, **kw):
         """ """

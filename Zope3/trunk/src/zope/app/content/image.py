@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.4 2002/12/30 14:02:56 stevea Exp $
+$Id: image.py,v 1.5 2003/02/03 15:08:32 jim Exp $
 """
 import struct
 from zope.app.content.file import File
@@ -20,6 +20,8 @@ from cStringIO import StringIO
 from zope.app.interfaces.content.image import IImage
 from zope.app.interfaces.size import ISized
 from zope.app.size import byteDisplay
+
+from zope.app.content_types import guess_content_type
 
 __metaclass__ = type
 
@@ -130,3 +132,20 @@ def getImageInfo(data):
             pass
 
     return content_type, width, height
+
+
+class FileFactory:
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name, content_type, data):
+        if not content_type and data:
+            content_type, width, height = getImageInfo(data)
+        if not content_type:
+            content_type, encoding = guess_content_type(name, data, '')
+
+        if content_type.startswith('image/'):
+            return Image(data)
+
+        return File(data, content_type)

@@ -102,3 +102,50 @@ class RootFolder(Folder):
     """The standard Zope root Folder implementation."""
 
     __implements__ = Folder.__implements__, IRootFolder
+
+
+# Adapter to provide a file-system rendition of folders
+
+class ReadDirectory:
+
+    def __init__(self, context):
+        self.context = context
+
+    def keys(self):
+        keys = self.context.keys()
+        if self.context.hasServiceManager():
+            return list(keys) + ['++etc++Services']
+        return keys
+
+    def get(self, key, default=None):
+        if key == '++etc++Services' and self.context.hasServiceManager():
+            return self.context.getServiceManager()
+        
+        return self.context.get(key, default)
+
+    def __iter__(self):
+        return iter(self.keys())
+
+    def __getitem__(self, key):
+        v = self.get(key, self)
+        if v is self:
+            raise KeyError, key
+        return v
+
+    def values(self):
+        return map(self.get, self.keys())
+
+    def __len__(self):
+        l = len(self.context)
+        if self.context.hasServiceManager():
+            l += 1
+        return l
+
+    def items(self):
+        get = self.get
+        return [(key, get(key)) for key in self.keys()]
+
+    def __contains__(self, key):
+        return self.get(key) is not None  
+    
+

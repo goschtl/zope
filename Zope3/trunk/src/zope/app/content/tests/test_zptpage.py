@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.6 2003/01/25 14:48:52 jim Exp $
+$Id: test_zptpage.py,v 1.7 2003/02/03 15:08:34 jim Exp $
 """
 
 import unittest
@@ -22,6 +22,7 @@ import unittest
 from zope.interface.verify import verifyClass
 from zope.exceptions import Forbidden
 
+import zope.app.content.zpt
 from zope.app.content.zpt import ZPTPage, SearchableText
 from zope.app.interfaces.content.zpt import IZPTPage
 from zope.app.interfaces.index.text import ISearchableText
@@ -137,11 +138,35 @@ class SizedTests(unittest.TestCase):
         self.assertEqual(s.sizeForSorting(), ('line', 5))
         self.assertEqual(s.sizeForDisplay(), u'5 lines')
 
+class TestFileEmulation(unittest.TestCase):
+
+    def test_ReadFile(self):
+        page = zope.app.content.zpt.ZPTPage()
+        content = u"<p></p>"
+        page.setSource(content)        
+        f = zope.app.content.zpt.ZPTReadFile(page)
+        self.assertEqual(f.read(), content)
+        self.assertEqual(f.size(), len(content))
+
+    def test_WriteFile(self):
+        page = zope.app.content.zpt.ZPTPage()
+        f = zope.app.content.zpt.ZPTWriteFile(page)
+        content = "<p></p>"
+        f.write(content)
+        self.assertEqual(page.getSource(), content)
+
+    def test_factory(self):
+        content = "<p></p>"
+        page = zope.app.content.zpt.ZPTFactory(None)('foo', '', content)
+        self.assertEqual(page.getSource(), content)
+    
 
 def test_suite():
-    return unittest.TestSuite((unittest.makeSuite(ZPTPageTests),
-                               unittest.makeSuite(SizedTests)
-                             ))
+    return unittest.TestSuite((
+        unittest.makeSuite(ZPTPageTests),
+        unittest.makeSuite(SizedTests),
+        unittest.makeSuite(TestFileEmulation),
+        ))
 
 if __name__=='__main__':
     unittest.TextTestRunner().run(test_suite())

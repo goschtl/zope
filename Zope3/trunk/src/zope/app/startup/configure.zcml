@@ -17,10 +17,9 @@
   />
 
 
-  <startup:registerRequestFactory name="VFSRequestFactory"
-    publication = 
-    "zope.app.publication.vfs.VFSPublication"
-    request = "zope.publisher.vfs.VFSRequest" 
+  <startup:registerRequestFactory name="FTPRequestFactory"
+    publication = "zope.app.publication.ftp.FTPPublication"
+    request = "zope.publisher.ftp.FTPRequest" 
   />
 
 
@@ -44,10 +43,9 @@
 
   <startup:registerServerType 
     name = "FTP"
-    factory = "zope.server.ftp.publisherftpserver.PublisherFTPServer"
-    requestFactory="VFSRequestFactory"
-    logFactory = 
-    "zope.server.ftp.commonftpactivitylogger.CommonFTPActivityLogger"
+    factory = "zope.server.ftp.publisher.PublisherFTPServer"
+    requestFactory="FTPRequestFactory"
+    logFactory = "zope.server.ftp.logger.CommonFTPActivityLogger"
     defaultPort="8021"
     defaultVerbose="true" />
 

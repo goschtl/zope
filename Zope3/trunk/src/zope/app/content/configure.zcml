@@ -40,6 +40,27 @@
 
 </content>
 
+<adapter
+   for="zope.app.interfaces.content.folder.IFolder"
+   provides="zope.app.interfaces.file.IDirectoryFactory"
+   factory="zope.app.container.directory.Cloner"
+   permission="zope.ManageContent"
+   />
+
+<adapter
+   for="zope.app.interfaces.content.folder.IFolder"
+   provides="zope.app.interfaces.file.IFileFactory"
+   factory="zope.app.content.image.FileFactory"
+   permission="zope.ManageContent"
+   />
+
+<adapter
+   for="zope.app.interfaces.content.folder.IFolder"
+   provides="zope.app.interfaces.file.IReadDirectory"
+   factory="zope.app.content.folder.ReadDirectory"
+   permission="zope.View"
+   />
+
 <!-- XXX Do we really need RootFolder? -->
 
 <content class="zope.app.content.folder.RootFolder">
@@ -140,6 +161,28 @@
 
 </content>
 
+<adapter 
+  for="zope.app.interfaces.content.folder.IFolder"
+  provides="zope.app.interfaces.file.IFileFactory"
+  name=".pt"
+  factory=".zpt.ZPTFactory"
+  permission="zope.ManageContent"
+  />
+
+<adapter 
+  for="zope.app.interfaces.content.zpt.IZPTPage"
+  provides="zope.app.interfaces.file.IReadFile"
+  factory=".zpt.ZPTReadFile"
+  permission="zope.ManageContent"
+  />
+
+<adapter 
+  for="zope.app.interfaces.content.zpt.IZPTPage"
+  provides="zope.app.interfaces.file.IWriteFile"
+  factory=".zpt.ZPTWriteFile"
+  permission="zope.ManageContent"
+  />
+
 <adapter factory="zope.app.content.zpt.SearchableText"
          provides="zope.app.interfaces.index.text.ISearchableText"
          for="zope.app.interfaces.content.zpt.IZPTPage" />
@@ -195,6 +238,21 @@
      />
 
 </content>
+
+<adapter 
+   for="zope.app.interfaces.content.file.IFile"
+   provides="zope.app.interfaces.file.IReadFile"
+   factory=".file.FileReadFile"
+   permission="zope.View"
+   />
+
+<adapter 
+   for="zope.app.interfaces.content.file.IFile"
+   provides="zope.app.interfaces.file.IWriteFile"
+   factory=".file.FileWriteFile"
+   permission="zope.ManageContent"
+   />
+
 
 <content class="zope.app.content.i18nfile.I18nFile">
 

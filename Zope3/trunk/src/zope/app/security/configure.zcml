@@ -52,9 +52,9 @@
            provides="zope.app.interfaces.security.ILoginPassword"
            for="zope.publisher.interfaces.http.IHTTPCredentials" />
 
-  <adapter factory="zope.app.security.basicvfsauthadapter.BasicVFSAuthAdapter"
+  <adapter factory="zope.app.security.ftpauth.FTPAuth"
            provides="zope.app.interfaces.security.ILoginPassword"
-           for="zope.publisher.interfaces.vfs.IVFSCredentials" />
+           for="zope.publisher.interfaces.ftp.IFTPCredentials" />
 
 </zopeConfigure>
 

@@ -8,7 +8,6 @@
     <require
         permission="zope.View"
         interface="zope.app.interfaces.onlinehelp.IOnlineHelpTopic" 
-	attributes="__iter__"
     />
   </content>
 
