@@ -38,17 +38,11 @@ from zope.component import getGlobalServices
 ### from zope.app.servicenames import HubIds
 from BTrees.IIBTree import IISet
 
-### from zope.app.index.tests.test_objectretrievingprocessor import FakeObjectHub
-
-### import zope.app.hub as Hub
-
 #XXX XXX XXX these will need to be changed XXX XXX XXX
 ### regEvt = Hub.ObjectRegisteredHubEvent
 ### unregEvt = Hub.ObjectUnregisteredHubEvent
 ### modEvt = Hub.ObjectModifiedHubEvent
 
-#XXX XXX XXX this will probably need to be reimplemented XXX XXX XXX
-class CFakeObjectHub: pass
 #class CFakeObjectHub(FakeObjectHub):
 #    def iterObjectRegistrations(self):
 #        def gen(things):
@@ -56,6 +50,36 @@ class CFakeObjectHub: pass
 #                loc = "/%s"%hubid
 #                yield loc,hubid,obj
 #        return gen(self.data.items())
+
+class UniqueIdUtilityStub:
+    """A stub for UniqueIdUtility."""
+    def __init__(self):
+        self.ids = {}
+        self.objs = {}
+        self.lastid = 0
+
+    def _generateId(self):
+        self.lastid += 1
+        return self.lastid
+
+    def register(self, ob):
+        if ob not in self.ids:
+            uid = self._generateId(self)
+            self.ids[ob] = uid
+            self.objs[uid] = ob
+        else:
+            return self.ids[ob]
+
+    def unregister(self, ob):
+        uid = self.ids[ob]
+        del self.ids[ob]
+        del self.objs[id]
+
+    def getObject(self, uid):
+        return self.objs[uid]
+
+    def getId(self, ob):
+        return self.ids[ob]
 
 
 class StubIndex:
