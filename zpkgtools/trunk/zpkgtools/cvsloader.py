@@ -138,7 +138,7 @@ class UrlBase:
 
         This requires the derived class to implement `getUrl()`.
 
-        :rtype: str
+        :rtype: `str`
         """
         return "<%s.%s: %s>" % (self.__class__.__module__,
                                 self.__class__.__name__,
@@ -147,12 +147,44 @@ class UrlBase:
     def getUrl(self):
         """Return the URL represented by the instance as a simple string.
 
-        :rtype: str
+        :rtype: `str`
         """
         raise NotImplementedError
 
 
 class CvsUrl(UrlBase):
+    """Parsed representation of a ``repository:`` URL.
+
+    :ivar type: Repository access type to use; typical values include
+      ``ext`` and ``pserver``.
+    :type type: `str` or `None`
+
+    :ivar host: Repository server host if the repository is remote;
+      otherwise `None`.
+    :type host: `str` or `None`
+
+    :ivar cvsroot: Path to the CVS repository on the server (including
+      direct access on the local system).
+    :type cvsroot: `str`
+
+    :ivar username: Login username for remote server access.  This is
+      normally only used for the ``pserver`` access method.
+    :type username: `str` or `None`
+
+    :ivar password: Login password for remote server access.  This is
+      normally only used for the ``pserver`` access method.
+    :type password: `str` or `None`
+
+    :ivar path: Path the the identified resource.  This may be either
+      an absolute path (starting with ``/``) or a relative path.  The
+      path is written using POSIX notation.
+    :type path: `str` or `None`
+
+    :ivar tag: Tag that should be referenced in the repository.
+    :type tag: `str` or `None`
+
+    """
+
     def __init__(self, type, host, cvsroot, path,
                  tag=None, username=None, password=None):
         assert cvsroot.startswith("/")
@@ -165,6 +197,22 @@ class CvsUrl(UrlBase):
         self.password = password or None
 
     def getCvsRoot(self):
+        """Return a reference to the 'CVS root' of the repository.
+
+        :return: CVS root refernce suitable for use as the CVSROOT
+          environment variable or the value passed to the **-d**
+          global option of the command-line **cvs** client.
+        :rtype: `str`
+
+        >>> url = CvsUrl('pserver', 'cvs.example.net', '/cvsroot',
+        ...              'module/path/file.txt',
+        ...              username='me')
+        >>> url.getUrl()
+        'cvs://me@cvs.example.net:pserver/cvsroot:module/path/file.txt'
+        >>> url.getCvsRoot()
+        ':pserver:me@cvs.example.net:/cvsroot'
+
+        """
         s = ""
         if self.type:
             s = ":%s:" % self.type
@@ -204,6 +252,17 @@ class CvsUrl(UrlBase):
 
 
 class RepositoryUrl(UrlBase):
+    """Parsed representation of a ``repository:`` URL.
+
+    :ivar path: Path the the identified resource.  This may be either
+      an absolute path (starting with ``/``) or a relative path.  The
+      path is written using POSIX notation.
+    :type path: `str` or `None`
+
+    :ivar tag: Tag that should be referenced in the repository.
+    :type tag: `str` or `None`
+
+    """
 
     def __init__(self, path, tag=None):
         self.path = path or None
@@ -221,7 +280,16 @@ class CvsLoader:
     def load(self, cvsurl, workdir):
         """Load resource from URL into a temporary location.
 
-        Returns the location of the resource once loaded.
+        :return: Location of the resource once loaded.  This must be
+          somewhere in a tree rooted at `workdir`.
+        :rtype: path
+
+        :param cvsurl: Parsed ``cvs:`` URL as a `CvsUrl` instance.
+        :type cvsurl: `CvsUrl`
+
+        :param workdir: Temporary directory available to load the
+          resource into.
+        :type workdir: directory path
         """
 
         cvsroot = cvsurl.getCvsRoot()
