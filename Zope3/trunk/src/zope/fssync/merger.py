@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.2 2003/05/13 14:10:05 gvanrossum Exp $
+$Id: merger.py,v 1.3 2003/05/13 21:47:15 gvanrossum Exp $
 """
 
 import os
@@ -103,12 +103,15 @@ class Merger(object):
         preserved when the database is written back (not by the Merger
         class).  To delete all metadata for a file, call the dict's
         clear() method.
+
+        We pass in the metadata database rather than inheriting from
+        it, in part because this makes testing with a Mock metadata
+        database easier.
         """
         self.metadata = metadata
 
     def getentry(self, file):
         """Helper to abstract away the existence of self.metadata."""
-        # XXX Hmm...  This could be a subclass of class Metadata...
         return self.metadata.getentry(file)
 
     def merge_files(self, local, orig, remote, action, state):
