@@ -11,16 +11,6 @@
 
 <!-- Content Component Definition -->
 
-  <!-- Menu entry for "add component" menu -->
-  <menuItem
-      for="zope.app.container.interfaces.IAdding"
-      menu="add_component"
-      action="utility.ContentComponentDefinition"
-      title="Content Component Definition"
-      description="A Persistent Content Component Definition"
-      permission="zope.ManageServices"
-      />
-
   <!-- Menu entry for "Add Utility" menu -->
   <addMenuItem
       class="zope.app.schemacontent.content.ContentComponentDefinition"
