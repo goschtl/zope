@@ -1,0 +1,29 @@
+<html metal:use-macro="context/@@standard_macros/page">
+
+<div metal:fill-slot="body">
+
+<h2>View registrations for
+    <i tal:content="view/summary">key</i></h2>
+
+<form method="POST"
+      action="."
+      tal:attributes="action request/URL"
+      tal:define="form view/update"
+      >
+  <input type="hidden"
+         name="key"
+         tal:attributes="value request/key"
+         />
+
+  <div tal:replace="structure form" />
+
+  <input type="submit"
+         name="submit_update"
+         value="Update"
+         />
+
+</form>
+
+</div>
+
+</html>

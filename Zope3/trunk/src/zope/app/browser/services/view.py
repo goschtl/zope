@@ -11,17 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Views for local view configuration.
+"""Helper classes for local view configuration.
 
-  ViewSeviceView -- it's a bit different from other services, as it
-  has a lot of things in it, so we provide a search interface:
-
-    search page
-    browsing page
-
-  PageConfigurationView -- calls validation on PageConfiguration.
-
-$Id: view.py,v 1.12 2003/05/01 14:46:26 gvanrossum Exp $
+$Id: view.py,v 1.13 2003/05/01 15:51:24 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -68,7 +60,39 @@ class IViewSearch(Interface):
                       )
 
 
-class ViewServiceView(BrowserView):
+class _SharedBase(BrowserView):
+
+    def _getRegistryFromKey(self, key):
+        values = key.split(":")
+        assert len(values) == 4, `values`
+        viewName, forInterfaceName, presentationTypeName, layerName = values
+        sm = getServiceManager(self.context)
+        if forInterfaceName == "(Anything)":
+            forInterface = None
+        else:
+            forInterface = sm.resolve(forInterfaceName)
+        presentationType = sm.resolve(presentationTypeName)
+        infos = self.context.getRegisteredMatching(forInterface,
+                                                   presentationType,
+                                                   viewName,
+                                                   layerName)
+        # We only want exact matches on 'forInterface'
+        infos = [info for info in infos if info[0] == forInterface]
+        assert len(infos) == 1
+        registry = infos[0][2]
+        registry = ContextWrapper(registry, self.context)
+        assert registry
+        return registry
+
+    def _getSummaryFromRegistry(self, registry):
+        assert registry
+        # Return the summary of the first configuration in the registry
+        for info in registry.info():
+            return info['configuration'].usageSummary()
+        assert 0
+
+
+class ViewServiceView(_SharedBase):
 
     """Helper class for the default view on the Views service."""
 
@@ -96,38 +120,16 @@ class ViewServiceView(BrowserView):
         if doDelete:
             return self._delete(todo)
 
-    def _getInfosFromKey(self, key):
-        values = key.split(":")
-        assert len(values) == 4, `values`
-        viewName, forInterfaceName, presentationTypeName, layerName = values
-        sm = getServiceManager(self.context)
-        if forInterfaceName == "(Anything)":
-            forInterface = None
-        else:
-            forInterface = sm.resolve(forInterfaceName)
-        presentationType = sm.resolve(presentationTypeName)
-        infos = self.context.getRegisteredMatching(forInterface,
-                                                   presentationType,
-                                                   viewName,
-                                                   layerName)
-        # We only want exact matches on 'forInterface'
-        return [info for info in infos if info[0] == forInterface]
-
     def _activate(self, todo):
         done = []
         for key in todo:
-            infos = self._getInfosFromKey(key)
-            for info in infos:
-                (forInterface, presentationType,
-                 registry, layer, viewName) = info
-                registry = ContextWrapper(registry, self.context)
-                obj = registry.active()
-                if obj is None:
-                    assert registry
-                    # Activate the first registered configuration
-                    obj = registry.info()[0]['configuration']
-                    obj.status = Active
-                    done.append(key)
+            registry = self._getRegistryFromKey(key)
+            obj = registry.active()
+            if obj is None:
+                # Activate the first registered configuration
+                obj = registry.info()[0]['configuration']
+                obj.status = Active
+                done.append(self._getSummaryFromRegistry(registry))
         if done:
             return "Activated: " + ", ".join(done)
         else:
@@ -136,15 +138,11 @@ class ViewServiceView(BrowserView):
     def _deactivate(self, todo):
         done = []
         for key in todo:
-            infos = self._getInfosFromKey(key)
-            for info in infos:
-                (forInterface, presentationType,
-                 registry, layer, viewName) = info
-                registry = ContextWrapper(registry, self.context)
-                obj = registry.active()
-                if obj is not None:
-                    obj.status = Registered
-                    done.append(key)
+            registry = self._getRegistryFromKey(key)
+            obj = registry.active()
+            if obj is not None:
+                obj.status = Registered
+                done.append(self._getSummaryFromRegistry(registry))
         if done:
             return "Deactivated: " + ", ".join(done)
         else:
@@ -156,25 +154,22 @@ class ViewServiceView(BrowserView):
 
         # Check that none of the registrations are active
         for key in todo:
-            infos = self._getInfosFromKey(key)
-            for info in infos:
-                (forInterface, presentationType,
-                 registry, layer, viewName) = info
-                registry = ContextWrapper(registry, self.context)
-                assert registry
-                if registry.active() is not None:
-                    errors.append(key)
-                    continue
-                registries.append(registry)
+            registry = self._getRegistryFromKey(key)
+            if registry.active() is not None:
+                errors.append(self._getSummaryFromRegistry(key))
+                continue
+            registries.append(registry)
         if errors:
             return ("Can't delete active page%s: %s; "
                     "use the Deactivate button to deactivate" %
                     (len(errors) != 1 and "s" or "", ", ".join(errors)))
 
         # Now delete the registrations
+        done = []
         for registry in registries:
             assert registry
             assert registry.active() is None # Phase error
+            done.append(self._getSummaryFromRegistry(registry))
             for info in registry.info():
                 conf = info['configuration']
                 conf.status = Unregistered
@@ -183,7 +178,7 @@ class ViewServiceView(BrowserView):
                 container = getAdapter(parent, IZopeContainer)
                 del container[name]
 
-        return "Deleted: %s" % ", ".join([key for key in todo])
+        return "Deleted: %s" % ", ".join(done)
 
     def configInfo(self):
         """Do a search, or (by default) return all view pages."""
@@ -213,6 +208,7 @@ class ViewServiceView(BrowserView):
 
             registry = ContextWrapper(registry, self.context)
             view = getView(registry, "ChangeConfigurations", self.request)
+            # XXX Why are we setting this unique prefix?
             prefix = md5.new('%s %s' %
                              (forInterface, presentationType)).hexdigest()
             view.setPrefix(prefix)
@@ -230,6 +226,7 @@ class ViewServiceView(BrowserView):
             rec = {'forInterface': forInterface,
                    'presentationType': presentationType,
                    'shortType': shortType,
+                   'summary': self._getSummaryFromRegistry(registry),
                    'view': view,
                    'viewName': viewName,
                    'layer': layer,
@@ -254,3 +251,17 @@ class PageConfigurationView(BrowserView):
         super(PageConfigurationView, self).update()
         if "UPDATE_SUBMIT" in self.request:
             self.context.validate()
+
+class ConfigureView(_SharedBase):
+
+    def update(self):
+        key = self.request['key']
+        registry = self._getRegistryFromKey(key)
+        form = getView(registry, "ChangeConfigurations", self.request)
+        form.update()
+        return form
+
+    def summary(self):
+        key = self.request['key']
+        registry = self._getRegistryFromKey(key)
+        return self._getSummaryFromRegistry(registry)

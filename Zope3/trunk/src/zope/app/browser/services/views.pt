@@ -25,20 +25,13 @@
         </td>
         <td>
           <a tal:condition="config/url" tal:attributes="href config/url">
-            <span tal:content="config/viewName" /> for
-            <span tal:content="config/forInterface" />
+            <span tal:replace="config/summary" />
           </a>
-          <span tal:condition="not:config/url">
-            <span tal:content="config/viewName" /> for
-            <span tal:content="config/forInterface" />
-          </span>
-          <br>
-          layer=<span tal:content="config/layer" />,
-          type=<span tal:content="config/shortType" />
-          <!--
+          <span tal:condition="not:config/url" tal:replace="config/summary" />
+        </td>
+        <td>
           <a href="." tal:attributes="href config/configurl">
             (change registration)</a>
-          -->
         </td>
       </tr>
     </tbody>
@@ -46,19 +39,24 @@
 
   <input type="submit" name="Activate" value="Activate" />
   <input type="submit" name="Deactivate" value="Deactivate" />
+  &nbsp;
   <input type="submit" name="Delete" value="Delete" />
+  &nbsp;
   <input type="submit" name="Refresh" value="Refresh" />
 
 </form>
 
 <p><a href="../RegistrationManager/@@+/PageConfiguration=">
-Add a page to this view service</a></p>
+Add a page to this views service</a></p>
 
 <h3>Search filter:</h3>
 
 <form action="." method="GET">
     <div class="row" tal:content="structure view/forInterface/row" />
+    <!-- presentationType search is not useful yet since we can
+         so far only register "pages", which are a browser-only concept.
     <div class="row" tal:content="structure view/presentationType/row" />
+    -->
     <div class="row">
     <div class="controls"> 
          <input type="submit" value="Refresh">
