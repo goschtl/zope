@@ -1,9 +1,9 @@
 *.mif -f 'python /cvs-repository/CVSROOT/fixfm.py f %s' -t 'python /cvs-repository/CVSROOT/fixfm.py t %s %s' 
 
-*.gif -kb
-*.jpg -kb
-*.so -kb
-*.dll -kb
-*.pyd -kb
+*.gif -k b
+*.jpg -k b
+*.so  -k b
+*.dll -k b
+*.pyd -k b
 
 * -f 'chmod g+w %s' 
