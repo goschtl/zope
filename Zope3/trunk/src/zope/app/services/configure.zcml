@@ -119,7 +119,7 @@
 
 <!-- Service Manager -->
 
-  <content class="zope.app.services.service.ServiceManager">
+  <content class="zope.app.services.service.SiteManager">
     <require
         permission="zope.View"
         interface="zope.app.interfaces.container.IReadContainer" />
