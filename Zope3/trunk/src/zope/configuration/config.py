@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.23 2004/03/10 12:24:02 srichter Exp $
+$Id: config.py,v 1.24 2004/03/15 20:42:30 jim Exp $
 """
 
 import os.path
@@ -29,7 +29,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.configuration.interfaces import IConfigurationContext
 from zope.configuration.interfaces import IGroupingContext
 from zope.interface.adapter import AdapterRegistry
-from zope.interface import Interface, implements, directlyProvides
+from zope.interface import Interface, implements, directlyProvides, providedBy
 from zope.interface.interfaces import IInterface
 from zope.schema.errornames import WrongType
 from zope.configuration import fields
@@ -399,7 +399,7 @@ class ConfigurationAdapterRegistry(object):
             r = AdapterRegistry()
             self._registry[name] = r
 
-        r.provideAdapter(interface, Interface, factory)
+        r.register([interface], Interface, '', factory)
 
     def document(self, name, schema, usedIn, info, parent=None):
         if isinstance(name, (str, unicode)):
@@ -415,7 +415,7 @@ class ConfigurationAdapterRegistry(object):
             if r is None:
                 raise ConfigurationError("Unknown directive", ns, n)
 
-        f = r.queryAdapter(context, Interface, raw=True)
+        f = r.lookup1(providedBy(context), Interface)
         if f is None:
             raise ConfigurationError(
                 "The directive %s cannot be used in this context" % (name, ))
