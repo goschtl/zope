@@ -64,7 +64,10 @@ on the target directories."""
 import sys, os, tempfile, time
 import string
 import getopt
+import smtplib
 
+SMTP_SERVER = 'smtp.digicool.com'
+SENDER_ADDR = '"Digicool CVS" <cvs@digicool.com>'
 CUSTOM_TRAFFIC_TABLE = "/cvs-repository/custom_traffic_table.py"
 
 try:
@@ -322,6 +325,9 @@ def do_mail(name, remote, repo, addrs, subjs,
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS: %s " % name
+
+    diff_msg = '\n\n'
+
     if remote is not None and remote.has_key('leading_path'):
         l = remote['leading_path']
         if (len(l) > 1) and (l[-1] != '/'): l = l + '/'
@@ -330,25 +336,87 @@ def do_mail(name, remote, repo, addrs, subjs,
 
     if doing_directory or no_files:
         subject = subject + string.join(subjs, " ")
+        if subjs[2] == 'New':
+            new_msg = ('--- Added directory %s in package %s ---\n'
+                       % (repo, name))
+            diff_msg = diff_msg + new_msg + '\n\n'
     else:
         subject = subject + " -"
         for fn, old, new in subjs:
             subject = subject + " %s:%s" % (fn, new)
-    cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
-                                     (DRYRUN and "echo Would do: ") or "",
-                                     MAIL_CMD,
-                                     (VERBOSE and "-v") or "",
-                                     subject,
-                                     string.join(addrs, ",")))
-    if msgfilenm:
-        cmd = cmd + "< %s" % msgfilenm
+            if new == 'NONE':
+                new_msg = ('--- Removed file %s from package %s --\n'
+                           % (fn, name))
+            else:
+                new_msg = create_diff(name, repo, fn, old, new)
 
-    if VERBOSE:
-        complain("%sDoing mail cmd:\n\t%s\n",
-                 ((DRYRUN and "NOT ") or ""), cmd)
-    result = os.system(cmd)
-    if result:
-        note_failure("*** Mail returned %s...", result)
+            diff_msg = diff_msg + new_msg + '\n\n'
+
+    if msgfilenm:
+        msg_handle = open(msgfilenm, 'r')
+        message    = msg_handle.read()
+        msg_handle.close()
+    else:
+        message = ''
+
+    header = 'From: ' + SENDER_ADDR + '\012To: ' + string.join(addrs, ',') + '\012Subject: ' + subject + '\012'
+
+    try:
+        mail_server = smtplib.SMTP(SMTP_SERVER)
+        mail_server.sendmail(SENDER_ADDR, addrs, header + message + diff_msg)
+        mail_server.quit()
+    except:
+        note_failure("*** Mail returned %s...", str(sys.exc_info()))
+
+##    cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
+##                                     (DRYRUN and "echo Would do: ") or "",
+##                                     MAIL_CMD,
+##                                     (VERBOSE and "-v") or "",
+##                                     subject,
+##                                     string.join(addrs, ",")))
+##    if msgfilenm:
+##        cmd = cmd + "< %s" % msgfilenm
+
+##    if VERBOSE:
+##        complain("%sDoing mail cmd:\n\t%s\n",
+##                 ((DRYRUN and "NOT ") or ""), cmd)
+##    result = os.system(cmd)
+##    if result:
+##        note_failure("*** Mail returned %s...", result)
+
+
+
+def create_diff(name, repo, file, old, new):
+    """ Create a diff comparing old and new versions """
+    if old == 'NONE':   # A new file was added
+        try:
+            if os.path.exists(file):
+                file_handle = open(file)
+            else:
+                update_cmd = 'cvs -fn update -r %s -p %s' % (new, file)
+                file_handle = os.popen(update_cmd)
+
+            lines = file_handle.readlines()
+            file_handle.close()
+            insert_str = ('--- Added File ' + str(file)
+                          + ' in package ' + str(name)
+                          + ' ---\n')
+            lines.insert(0, insert_str)
+        except IOError, e:
+            lines = ['***** ERROR reading new file: ',
+                     str(e), '\n***** file: ', file, ' cwd: ', os.getcwd()]
+
+    else:                # A "normal" update happened
+        diff_cmd = 'cvs -f diff -kk -C 5 -r %s -r %s %s' % (old, new, file)
+        file_handle = os.popen(diff_cmd)
+        lines = file_handle.readlines()[6:]
+        file_handle.close()
+        insert_str = ('--- Updated File ' + str(file)
+                      + ' in package ' + str(name)
+                      + ' --\n')
+        lines.insert(0, insert_str) 
+
+    return string.join(lines, '')
 
 def do_sync(path, repo, remote, receiverid, subjs=None,
             excludes=None, recurse=0, doing_directory=0, no_files=0):
