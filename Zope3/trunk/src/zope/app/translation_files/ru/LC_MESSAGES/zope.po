@@ -458,7 +458,7 @@ msgstr "Статистика кэша в памяти"
 
 #: src/zope/app/catalog/browser/advanced.pt:10
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
-msgstr ""
+msgstr "В данный момент каталог <strong>подписан</strong> концентратором объектов."
 
 # Default: "Subscribe"
 #: src/zope/app/catalog/browser/advanced.pt:27
@@ -469,7 +469,7 @@ msgstr "Подписаться"
 
 #: src/zope/app/catalog/browser/advanced.pt:30
 msgid "(and reindex all objects, if checked)"
-msgstr ""
+msgstr "(и переиндексировать все объекты, если отмечен)"
 
 # Default: "Refresh"
 #: src/zope/app/catalog/browser/advanced.pt:51
@@ -497,7 +497,7 @@ msgstr "Настройки каталога"
 
 #: src/zope/app/catalog/browser/configure.zcml:21
 msgid "Site Catalog"
-msgstr ""
+msgstr "Каталог сайта"
 
 #: src/zope/app/catalog/browser/configure.zcml:29
 msgid "Indexes"
@@ -534,7 +534,7 @@ msgstr "Настройки"
 
 #: src/zope/app/component/browser/interfacewidget.py:240
 msgid "Use refresh to enter more interfaces"
-msgstr ""
+msgstr "Используйте обновление для ввода большего количества интерфейсов"
 
 #: src/zope/app/component/browser/interfacewidget.py:293
 msgid "---select interface---"
@@ -545,7 +545,7 @@ msgstr "---выбрать интерфейс---"
 #: src/zope/app/presentation/presentation.py:263
 #: src/zope/app/presentation/presentation.py:344
 msgid "any-interface"
-msgstr ""
+msgstr "Любой интерфейс"
 
 #: src/zope/app/container/browser/adding.py:134
 msgid "You must select the type of object to add."
@@ -615,7 +615,7 @@ msgstr "Отказаться"
 #: src/zope/app/menu/browser/menu_contents.pt:25
 #: src/zope/app/schema/browser/schema_edit.pt:30
 msgid "Content listing"
-msgstr ""
+msgstr "Контент"
 
 #: src/zope/app/container/browser/contents.pt:34
 #: src/zope/app/file/browser/image_edit.pt:11
@@ -682,11 +682,11 @@ msgstr ""
 
 #: src/zope/app/container/contained.py:567
 msgid "An empty name was provided. Names cannot be empty."
-msgstr ""
+msgstr "Было введено пустое имя. Имена не могут быть пустыми."
 
 #: src/zope/app/container/contained.py:577
 msgid "Names cannot begin with '+' or '@' or contain '/'"
-msgstr ""
+msgstr "Имена не могут начинаться с '+' или '@', или содержать '/'"
 
 #: src/zope/app/container/contained.py:582
 msgid "The given name is already being used"
@@ -702,11 +702,11 @@ msgstr "${items} элемента(ов)"
 
 #: src/zope/app/debugskin/error_debug.pt:12
 msgid "Error object: ${error_object}"
-msgstr ""
+msgstr "Объект ошибки: ${error_object}"
 
 #: src/zope/app/debugskin/error_debug.pt:7
 msgid "Error type: ${error_type}"
-msgstr ""
+msgstr "Тип ошибки: ${error_type}"
 
 #: src/zope/app/debugskin/unauthorized.pt:7
 #: src/zope/app/exception/browser/unauthorized.pt:8
@@ -715,7 +715,7 @@ msgstr "Нет прав доступа"
 
 #: src/zope/app/debugskin/unauthorized.pt:8
 msgid "You're not allowed in here."
-msgstr ""
+msgstr "У Вас нет доступа."
 
 #: src/zope/app/demo/passwdauth/interfaces.py:27
 msgid "File Name"
@@ -772,7 +772,7 @@ msgstr "Создатель"
 
 #: src/zope/app/dublincore/browser/metadataedit.py:39
 msgid "Changed data ${datetime}"
-msgstr ""
+msgstr "Дата изменена ${datetime}"
 
 # Default: "Change Dublin-Core Meta Data"
 #: src/zope/app/dublincore/configure.zcml:12
@@ -829,7 +829,7 @@ msgstr "Ошибка"
 #: src/zope/app/errorservice/browser/error.pt:3
 #: src/zope/app/errorservice/browser/errorentry.pt:3
 msgid "View Error Log Report"
-msgstr ""
+msgstr "Просмотр лога ошибок"
 
 #: src/zope/app/errorservice/browser/error.pt:8
 msgid "Exception Log (most recent first)"
@@ -902,7 +902,7 @@ msgstr "Сервис событий"
 
 #: src/zope/app/event/browser/configure.zcml:13
 msgid "An event service. One of these in the root is usually enough"
-msgstr ""
+msgstr "Сервис событий. Обычно достаточно одного сервиса событий в корне сайта."
 
 #: src/zope/app/event/browser/eventcontrol.pt:5
 msgid "This is an event service."
@@ -1002,7 +1002,7 @@ msgstr "Данные"
 
 #: src/zope/app/file/interfaces.py:33
 msgid "The actual content of the object."
-msgstr ""
+msgstr "Содержимое объекта."
 
 #: src/zope/app/folder/browser/configure.zcml:40
 #: src/zope/app/file/browser/configure.zcml:128
@@ -1021,7 +1021,7 @@ msgstr "Папка"
 #: src/zope/app/folder/configure.zcml:26
 #: src/zope/app/folder/browser/configure.zcml:13
 msgid "Minimal folder"
-msgstr "Папка"
+msgstr "Простая папка"
 
 #: src/zope/app/form/browser/add.pt:22 src/zope/app/form/browser/edit.pt:23
 #: src/zope/app/pythonpage/edit.pt:23
@@ -1042,7 +1042,7 @@ msgstr "Ошибка"
 #: src/zope/app/form/browser/addwizard.pt:59
 #: src/zope/app/form/browser/editwizard.pt:55
 msgid "previous-button"
-msgstr ""
+msgstr "Предыдущий"
 
 # Default: "Submit"
 #: src/zope/app/form/browser/addwizard.pt:62
@@ -1061,7 +1061,7 @@ msgstr "Изменить"
 #: src/zope/app/form/browser/addwizard.pt:65
 #: src/zope/app/form/browser/editwizard.pt:61
 msgid "next-button"
-msgstr ""
+msgstr "Следующий"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:45
 msgid "sampleWidget-button-move-up"
@@ -1148,11 +1148,11 @@ msgstr "Обновлено ${date_time}"
 
 #: src/zope/app/form/browser/editwizard.py:149
 msgid "No changes to save"
-msgstr ""
+msgstr "Нет изменений для сохранения"
 
 #: src/zope/app/form/browser/editwizard.py:151
 msgid "Changes saved"
-msgstr ""
+msgstr "Изменения сохранены"
 
 # Default: "Remove selected items"
 #: src/zope/app/form/browser/sequencewidget.py:82
@@ -1201,7 +1201,7 @@ msgstr ""
 
 #: src/zope/app/fssync/browser/__init__.py:156
 msgid "required argument 'name' missing"
-msgstr ""
+msgstr "отсутствует необходимый аргумент 'name'"
 
 #: src/zope/app/fssync/browser/__init__.py:215
 msgid "Up-to-date check failed:"
@@ -1222,7 +1222,7 @@ msgstr ""
 # Default: "Upload"
 #: src/zope/app/fssync/browser/fromFS.pt:20
 msgid "upload-button"
-msgstr ""
+msgstr "Загрузить"
 
 #: src/zope/app/fssync/browser/fromFS.pt:5
 msgid "Commit Action"
@@ -1230,11 +1230,11 @@ msgstr ""
 
 #: src/zope/app/hub/browser/__init__.py:47
 msgid "OK"
-msgstr ""
+msgstr "Ок"
 
 #: src/zope/app/hub/browser/__init__.py:50
 msgid "Missing"
-msgstr ""
+msgstr "Отсутствует"
 
 #: src/zope/app/hub/browser/configure.zcml:13
 msgid ""
@@ -1331,7 +1331,7 @@ msgstr "Переводы"
 #: src/zope/app/i18n/browser/configure.zcml:35
 #: src/zope/app/workflow/browser/configure.zcml:25
 msgid "Import/Export"
-msgstr "Загрузить/Сохранить"
+msgstr "Импортировать/Экпортировать"
 
 #: src/zope/app/i18n/browser/configure.zcml:48
 msgid "Synchronize"
@@ -1363,7 +1363,7 @@ msgstr ""
 
 #: src/zope/app/i18n/browser/exportimport.pt:10
 msgid "Import and Export Messages"
-msgstr "Загрузка и сохранение сообщений"
+msgstr "Импортирование и экспортирование сообщений"
 
 #: src/zope/app/i18n/browser/exportimport.pt:12
 msgid "Here you can export and import messages from your Translation Domain."
@@ -1378,7 +1378,7 @@ msgstr "Выберите языки:"
 #: src/zope/app/i18n/browser/exportimport.pt:3
 #: src/zope/app/i18n/browser/translate.pt:3
 msgid "Translation Domain - Translate"
-msgstr ""
+msgstr "Сервис переводов - Перевести"
 
 #: src/zope/app/i18n/browser/exportimport.pt:32
 msgid "Import File Name:"
@@ -1411,7 +1411,7 @@ msgstr "URL сервера"
 
 #: src/zope/app/i18n/browser/synchronize.pt:3
 msgid "Translation Service - Synchronize"
-msgstr ""
+msgstr "Сервис переводов - Синхронизировать"
 
 # Default: "Save Settings"
 #: src/zope/app/i18n/browser/synchronize.pt:65
@@ -1436,23 +1436,23 @@ msgstr "Статус"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
 msgid "New Remote"
-msgstr ""
+msgstr "Новый удаленный"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
 msgid "Up to Date"
-msgstr ""
+msgstr "Обновление не нужно"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
 msgid "Out of Date"
-msgstr ""
+msgstr "Нужно обновление"
 
 #: src/zope/app/i18n/browser/synchronize.py:31
 msgid "Does not exist"
-msgstr ""
+msgstr "Не создан"
 
 #: src/zope/app/i18n/browser/synchronize.py:31
 msgid "Newer Local"
-msgstr ""
+msgstr "Новый локальный"
 
 #: src/zope/app/i18n/browser/translate.pt:102
 msgid "Add new messages"
@@ -1497,7 +1497,7 @@ msgstr "Фильтр"
 
 #: src/zope/app/i18n/browser/translatemessage.pt:3
 msgid "Translation Service - Translate"
-msgstr ""
+msgstr "Сервис переводов - Перевести"
 
 #: src/zope/app/i18n/browser/translatemessage.pt:30
 msgid "Edit Message"
@@ -1572,7 +1572,7 @@ msgstr "Мультиязыковое изображение"
 #: src/zope/app/index/browser/field/control.pt:105
 #: src/zope/app/index/browser/text/control.pt:101
 msgid "NEXT BATCH --&gt;"
-msgstr ""
+msgstr "Следующая --&gt;"
 
 #: src/zope/app/index/browser/field/control.pt:12
 msgid "FieldIndex"
@@ -1602,7 +1602,7 @@ msgstr ""
 #: src/zope/app/index/browser/field/control.pt:46
 #: src/zope/app/index/browser/text/control.pt:36
 msgid "Documents: ${doc_count}"
-msgstr ""
+msgstr "Документы: ${doc_count}"
 
 # Default: "Unsubscribe"
 #: src/zope/app/index/browser/field/control.pt:52
@@ -1615,21 +1615,21 @@ msgstr "Отписаться"
 #: src/zope/app/index/browser/field/control.pt:73
 #: src/zope/app/index/browser/text/control.pt:68
 msgid "No hits. Please try another query."
-msgstr ""
+msgstr "Ничего не найдено. Попробуйте другой запрос."
 
 #: src/zope/app/index/browser/field/control.pt:84
 #: src/zope/app/index/browser/text/control.pt:79
 msgid "Hits ${first} - ${last} of ${total}"
-msgstr ""
+msgstr "Найдено ${first} - ${last} из ${total}"
 
 #: src/zope/app/index/browser/field/control.pt:89
 msgid "title=${title}; url=${title}"
-msgstr ""
+msgstr "title=${title}; url=${title}"
 
 #: src/zope/app/index/browser/field/control.pt:97
 #: src/zope/app/index/browser/text/control.pt:93
 msgid "&lt;-- PREVIOUS BATCH"
-msgstr ""
+msgstr "&lt;--Предыдущая"
 
 #: src/zope/app/index/browser/text/control.pt:12
 msgid "TextIndex"
@@ -1650,11 +1650,11 @@ msgstr ""
 
 #: src/zope/app/index/browser/text/control.pt:41
 msgid "Words: ${word_count}"
-msgstr ""
+msgstr "Слов: ${word_count}"
 
 #: src/zope/app/index/browser/text/control.pt:88
 msgid "title=${title}; url=${url}; score=${score}"
-msgstr ""
+msgstr "title=${title}; url=${url}; score=${score}"
 
 #: src/zope/app/introspector/configure.zcml:31
 msgid "Introspector"
@@ -1719,7 +1719,7 @@ msgstr "Добавить интерфейсы:"
 # Default: "Module"
 #: src/zope/app/introspector/marker.pt:56
 msgid "python-module"
-msgstr "Модуль"
+msgstr "Модуль Python"
 
 # Default: "Send out mail with arbitrary from and to addresses"
 #: src/zope/app/mail/configure.zcml:7
@@ -1728,31 +1728,31 @@ msgstr ""
 
 #: src/zope/app/mail/interfaces.py:107
 msgid "Queue path"
-msgstr ""
+msgstr "Путь к очереди"
 
 #: src/zope/app/mail/interfaces.py:108 src/zope/app/mail/interfaces.py:117
 msgid "Pathname of the directory used to queue mail."
-msgstr ""
+msgstr "Путь к директорию используемому для почтовой очереди."
 
 #: src/zope/app/mail/interfaces.py:116
 msgid "Queue Path"
-msgstr ""
+msgstr "Путь к очереди"
 
 #: src/zope/app/mail/interfaces.py:120
 msgid "Polling Interval"
-msgstr ""
+msgstr "Интервал проверки"
 
 #: src/zope/app/mail/interfaces.py:121
 msgid "How often the queue is checked for new messages (in milliseconds)"
-msgstr ""
+msgstr "Как часто очередь проверяется на новые сообщения (в миллисекундах)"
 
 #: src/zope/app/mail/interfaces.py:153
 msgid "Hostname"
-msgstr ""
+msgstr "Имя хоста"
 
 #: src/zope/app/mail/interfaces.py:154
 msgid "Name of server to be used as SMTP server."
-msgstr ""
+msgstr "Имя SMPP сервера."
 
 #: src/zope/app/mail/interfaces.py:157
 msgid "Port"
@@ -1769,7 +1769,7 @@ msgstr "Имя пользователя"
 
 #: src/zope/app/mail/interfaces.py:163
 msgid "Username used for optional SMTP authentication."
-msgstr ""
+msgstr "Имя пользователя используемого для необязательной SMTP аутентификации."
 
 #: src/zope/app/mail/interfaces.py:166
 #: src/zope/app/pluggableauth/interfaces.py:36
@@ -1779,7 +1779,7 @@ msgstr "Пароль"
 
 #: src/zope/app/mail/interfaces.py:167
 msgid "Password used for optional SMTP authentication."
-msgstr ""
+msgstr "Пароль используемый для необязательной SMTP аутентификации."
 
 #: src/zope/app/mail/interfaces.py:174
 msgid "Command"
@@ -1791,7 +1791,7 @@ msgstr "Команда используемая для посылки элект
 
 #: src/zope/app/menu/browser/configure.zcml:106
 msgid "Edit Browser Menu Item"
-msgstr ""
+msgstr "Редактировать пункт меню"
 
 #: src/zope/app/menu/browser/configure.zcml:14
 msgid "A Service For Persistent Browser Menus"
@@ -1851,11 +1851,11 @@ msgstr "Редактировать"
 
 #: src/zope/app/menu/browser/configure.zcml:94
 msgid "Add Menu Item"
-msgstr ""
+msgstr "Добавить пункт меню"
 
 #: src/zope/app/menu/browser/configure.zcml:99
 msgid "Add Browser Menu Item"
-msgstr ""
+msgstr "Добавить пункт меню"
 
 #: src/zope/app/menu/browser/menu_contents.pt:32
 msgid "Action"
@@ -1878,20 +1878,20 @@ msgstr ""
 
 #: src/zope/app/menu/configure.zcml:48
 msgid "Browser Menu Item"
-msgstr ""
+msgstr "Пункт меню"
 
 #: src/zope/app/menu/configure.zcml:48
 msgid "A Persistent Browser Menu Item"
-msgstr ""
+msgstr "Сохраняемый в базе пункт меню"
 
 #: src/zope/app/menu/configure.zcml:6
 msgid "A Persistent Browser Menu Service"
-msgstr ""
+msgstr "Сохраняемый в базе сервис меню"
 
 #: src/zope/app/menu/configure.zcml:6
 #: src/zope/app/menu/browser/configure.zcml:14
 msgid "Browser Menu Service"
-msgstr ""
+msgstr "Сервиc меню"
 
 #: src/zope/app/menus.zcml:13
 msgid "Menu of caches to be added"
@@ -1927,11 +1927,11 @@ msgstr ""
 
 #: src/zope/app/module/browser/__init__.py:32
 msgid "module name must be provided"
-msgstr ""
+msgstr "должно быть указано имя модуля"
 
 #: src/zope/app/module/browser/__init__.py:45
 msgid "The source was updated."
-msgstr ""
+msgstr "Исходный код был обновлен."
 
 # Default: "Add module"
 #: src/zope/app/module/browser/add_module.pt:12
@@ -1945,7 +1945,7 @@ msgstr "Добавить модуль"
 #: src/zope/app/module/browser/add_module.pt:8
 #: src/zope/app/module/browser/edit_module.pt:8
 msgid "Enter the module source code."
-msgstr ""
+msgstr "Введите исходный код модуля python."
 
 #: src/zope/app/module/browser/browse_module.pt:3
 msgid "View Module Names"
@@ -1957,7 +1957,7 @@ msgstr "Просмотр"
 
 #: src/zope/app/module/browser/configure.zcml:33
 msgid "Module"
-msgstr "Модуль"
+msgstr "Модуль Python"
 
 #: src/zope/app/module/browser/edit_module.pt:3
 msgid "Edit a Module"
@@ -2181,19 +2181,19 @@ msgstr ""
 
 #: src/zope/app/publisher/interfaces/browser.py:39
 msgid "The relative url to use if the item is selected"
-msgstr ""
+msgstr "Относительный URL используемый когда пункт выбран"
 
 #: src/zope/app/publisher/interfaces/browser.py:40
 msgid "The url is relative to the object the menu is being displayed for."
-msgstr ""
+msgstr "URL относителен к объекту для которого будет показываться меню."
 
 #: src/zope/app/publisher/interfaces/browser.py:46
 msgid "The text to be displayed for the menu item"
-msgstr ""
+msgstr "Текст для пункта меню"
 
 #: src/zope/app/publisher/interfaces/browser.py:50
 msgid "A longer explanation of the menu item"
-msgstr ""
+msgstr "Длинное описание пункта меню"
 
 #: src/zope/app/publisher/interfaces/browser.py:51
 #: src/zope/app/publisher/interfaces/browser.py:93
@@ -2216,7 +2216,7 @@ msgstr ""
 
 #: src/zope/app/publisher/interfaces/browser.py:66
 msgid "A condition for displaying the menu item"
-msgstr ""
+msgstr "Условие для показа пункта меню"
 
 #: src/zope/app/publisher/interfaces/browser.py:67
 msgid ""
