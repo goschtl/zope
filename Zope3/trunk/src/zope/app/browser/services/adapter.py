@@ -21,24 +21,26 @@
 
   AdapterConfigurationAdd
 
-$Id: adapter.py,v 1.3 2002/12/30 14:02:54 stevea Exp $
+$Id: adapter.py,v 1.4 2003/01/28 01:59:09 rdmurray Exp $
 """
 __metaclass__ = type
 
 import md5
-from zope.app.form.utility \
-     import setUpWidgets, getWidgetsData, getWidgetsDataForContent, fieldNames
-from zope.publisher.browser import BrowserView
-from zope.app.interfaces.services.interfaces \
-     import IAdapterConfiguration, IAdapterConfigurationInfo
-from zope.app.event import publish
-from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.app.interfaces.services.configuration import IConfiguration
-from zope.app.services.adapter import AdapterConfiguration
-from zope.app.component.interfacefield import InterfaceField
+
 from zope.interface import Interface
 from zope.component import getView
+from zope.publisher.browser import BrowserView
 from zope.proxy.context import ContextWrapper
+
+from zope.app.interfaces.services.interfaces import IAdapterConfiguration
+from zope.app.interfaces.services.interfaces import IAdapterConfigurationInfo
+from zope.app.interfaces.services.configuration import IConfiguration
+from zope.app.form.utility import setUpWidgets, getWidgetsData
+from zope.app.form.utility import getWidgetsDataForContent, fieldNames
+from zope.app.event import publish
+from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.app.services.adapter import AdapterConfiguration
+from zope.app.component.interfacefield import InterfaceField
 
 class IAdapterSearch(Interface):
 
