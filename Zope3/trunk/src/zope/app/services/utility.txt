@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.1 $
+:Version: $Revision: 1.2 $
 
 .. contents::
 
@@ -128,35 +128,33 @@ components to be registered and then looked up later.
 
 We'll start by updating the utility service to support registrations.
 The updated local utility service implementation can be found in
-zope/app/services/utility.py.
+``zope/app/services/utility.py``. It's a good idea to refer to the
+source file as you read the description here.
 
 First, we'll pick a data structure.  We'll use a persistent dictionary
 mapping utility names to implementor registries.  An implementor
-registry implements a mapping from interfaces to objects; it's not
-quite the same as a mapping because it understands subclassing
-relationships between the interfaces used as keys.  In this case, the
-implementor registries themselves map interfaces to
-RegistrationStacks::
+registry implements a mapping from interfaces to objects; it's a
+special mapping because it understands subclassing relationships
+between the interfaces used as keys.  In this case, the implementor
+registries themselves map interfaces to RegistrationStacks. The
+overall data structure looks like::
 
   { utility_name -> { interface -> stack } }
 
-
 We also need to implement
-zope.app.interfaces.services.registration.IRegistry.  This defines two
-methods, ``queryRegistrationsFor`` and ``createRegistrationsFor``.
+``zope.app.interfaces.services.registration.IRegistry``.  This defines
+two methods, ``queryRegistrationsFor`` and ``createRegistrationsFor``.
+The ``queryRegistrationsFor`` method takes a registration object and
+returns the corresponding registration stack.  The registration
+object is used to provide an abstract way to represent registration
+parameters.  Typically, the registration parameters are extracted and
+a more concrete method is called.  In the local utility service, we
+extract the utility name and interface and call ``queryRegistrations``
+with the name and interface.
 
-A ``queryRegistrationsFor`` method is added to implement
-``IRegistry``.  It takes a registration object and returns the
-corresponding registration registry.  The registration object is
-used to provide an abstract way to represent registration parameters.
-Typically, the registration parameters are extracted and a more
-concrete method is called.  In the local utility service, we extract
-the utility name and interface and call ``queryRegistrations`` with
-the name and interface.
-
-Similarly, we add a ``createRegistrationsFor`` method that takes a
+Similarly, the``createRegistrationsFor`` method takes a
 registration object holding registration parameters and creates a
-registration registry for the parameters (if none already exists).
+registration stack for the parameters (if none already exists).
 If we don't have a implementor registry for a utility name, we create
 one and add it.  When we create the implementor registry, we pass a
 ``PersistentDict`` for it to use to store registration data.  This
@@ -164,17 +162,17 @@ assures that updates are made persistently.  If there isn't implementor
 data for the given interface, we create a registration registry and
 register it for the interface.
 
-Finally, we modify ``queryUtility`` to use registered utility
-registrations.  We try to get a registration registery by calling
-``queryRegistrations``.  If we get one, we call its ``active``
-method to get the active registration, if any.  Finally, we call
-``getComponent`` on the active registration to get the actual
-component.  We leave it up to the registration object to take care of
-actually finding and returning the component.
+Finally, we modify ``queryUtility`` to use registered utilities.  We
+try to get a registration stack by calling ``queryRegistrations``.  If
+we get one, we call its ``active`` method to get the active
+registration, if any.  Finally, we call ``getComponent`` on the active
+registration to get the actual component.  We leave it up to the
+registration object to take care of actually finding and returning the
+component.
 
-We need to provide utility registration objects.  The
-utility registration objects need to manage several bits of
-information:
+In addition to the utility service, We need to provide utility
+registration objects.  The utility registration objects need to manage
+several bits of information:
 
 - name
 
@@ -185,29 +183,30 @@ information:
 - The location of the actual component.
 
 The registration objects provide access to the component through the
-getComponent method.
+``getComponent`` method.
 
 To create the registration class, we'll start by defining a
-registration schema in
-``zope/app/interfaces/services/utility.py``.  The schema should extend
-``zope.app.interfaces.services.registration.IRegistration``.
-There's a more specific interface,
+registration schema in ``zope/app/interfaces/services/utility.py``.
+The schema should extend
+``zope.app.interfaces.services.registration.IRegistration``.  There's
+a more specific interface,
 ``zope.app.interfaces.services.registration.IComponentRegistration``
-that is much closer to what we need.  (XXX Add footnote explaining why
-we can't use INamedComponentRegistration in this example.)
-We extend this interface as IUtilityRegistration, which adds a name
-field (which is required but may be empty -- note the subtle
-difference, because the empty string is still used as part of the
-lookup key) and an interface field.  We also override the
-componentPath field to make it read-only (this is for the UI
-definition).
+that is much closer to what we need. [2]_ We extend this interface as
+IUtilityRegistration, which adds a name field (which is required but
+may be empty -- note the subtle difference, because the empty string
+is still used as part of the lookup key) and an interface field.  We
+also override the componentPath field to make it read-only (this is
+for the UI definition).
 
 A ``UtilityRegistration`` class is added to the ``utility`` module in
 ``zope/app/services`` that implements the registration interface.  We
-can subclass ComponentRegistration, which does much of the work.  Note
-that registration component includes two methods, defined in
+can subclass ComponentRegistration, which does much of the work.  The
+class definition includes a ``serviceType`` attribute. This attribute
+is used by the registration framework to decide which service a
+registration is used with.  The class includes two methods, defined in
 ``IRegistration``, giving summary information used by several
-predefined views.  See the interface for a description of these methods.
+predefined views.  See the interface for a description of these
+methods.
 
 We need to provide user interfaces for:
 
@@ -355,3 +354,11 @@ Annotations are used to record the registrations for a component.
 
 .. [1] Of course, I initially forgot to include a nearly empty
    ``__init__.py`` file and had to add one later.
+
+.. [2] It's tempting to use ``INamedComponentRegistration`, but
+   ``INamedComponentRegistration`` is based on ``INamedRegistration``,
+   which is for registring components looked up by name alone.
+   ``INamedRegistration`` requires a non-empty name, but we want to
+   allow empty names, as we are looking up objects based on **both**
+   name and interface.
+ 
