@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.17 2003/04/30 23:37:50 faassen Exp $
+Revision information: $Id: contents.py,v 1.18 2003/05/27 09:47:18 stevea Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -150,7 +150,6 @@ class Contents(BrowserView):
             return True
 
         return False
-
 
     def listContentInfo(self):
         return map(self._extractContentInfo,
