@@ -239,10 +239,10 @@ class BuilderApplication(Application):
             url = self.locations[name]
         else:
             url = fallback
-            self.logger.info("resource package:%s not configured;"
+            self.logger.info("resource %s not configured;"
                              " using fallback URL" % name)
         if source is None:
-            self.logger.debug("loading resource 'package:%s' from %s",
+            self.logger.debug("loading resource '%s' from %s",
                               name, url)
             source = self.loader.load_mutable_copy(url)
             tests_dir = os.path.join(source, "tests")
