@@ -13,13 +13,32 @@
 ##############################################################################
 """Browser-Specific Publisher interfaces
 
-$Id: browser.py,v 1.8 2003/09/24 17:22:06 sidnei Exp $
+$Id: browser.py,v 1.9 2003/12/07 10:04:52 gotcha Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.permission import PermissionField
 from zope.interface import Interface
 from zope.schema import TextLine, Text
+
+
+
+class IUsage(Interface):
+
+    usage = TextLine(
+        title=u"The template usage top-level variable",
+        description=u"""
+          See the usage documentation in the README.txt in the
+          zope/app/browser/skins directory.
+          If this view is associated with a menu item, this attribute should
+          not be supplied as the view will get its usage from the menu the
+          menu item is registered to.
+          This attribute is available for views not associated with a menu
+          item.
+          """,
+        required=False,
+        default=u""
+        )
 
 
 class IBrowserMenuItem(Interface):
@@ -75,7 +94,7 @@ class IBrowserMenuItem(Interface):
         required=False)
 
 
-class IBrowserMenu(Interface):
+class IBrowserMenu(IUsage):
     """A menu can contain a set of views that a represented asa
     collective."""
 
@@ -88,14 +107,6 @@ class IBrowserMenu(Interface):
         title=_("A longer explanation of the menu"),
         description=_("A UI may display this with the item or display it "
                       "when the user requests more assistance."),
-        required=False)
-
-    usage = TextLine(
-        title=_("The templates usage top-level variable"),
-        description=_("See the usage documentation in the README.txt in the "
-                      "zope/app/browser/skins directory. If a view is "
-                      "associated with a menu item, the view will get its "
-                      "usage from the menu the menu item is registered to."),
         required=False)
 
     def getMenuItems(object=None):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.35 2003/11/21 17:10:10 jim Exp $
+$Id: add.py,v 1.36 2003/12/07 10:04:49 gotcha Exp $
 """
 import sys
 
@@ -32,6 +32,8 @@ from zope.component import getAdapter
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import defineChecker, NamesChecker
+from zope.app.publisher.browser.globalbrowsermenuservice import \
+    globalBrowserMenuService
 
 class AddView(EditView):
     """Simple edit-view base class.
@@ -137,8 +139,10 @@ class AddView(EditView):
 def AddViewFactory(name, schema, label, permission, layer,
                    template, default_template, bases, for_,
                    fields, content_factory, arguments,
-                   keyword_arguments, set_before_add, set_after_add):
+                   keyword_arguments, set_before_add, set_after_add,
+                   menu=u'', usage=u''):
 
+    s = zapi.getService(None, zapi.servicenames.Presentation)
     class_  = SimpleViewClass(
         template,
         used_for = schema, bases = bases
@@ -155,6 +159,14 @@ def AddViewFactory(name, schema, label, permission, layer,
 
     class_.generated_form = ViewPageTemplateFile(default_template)
 
+    if not usage and menu:
+        usage = globalBrowserMenuService.getMenuUsage(menu)
+    if not usage:
+        # usage could be None
+        usage = u''
+    s.useUsage(usage)
+    class_.usage = usage
+
     defineChecker(class_,
                   NamesChecker(
                     ("__call__", "__getitem__",
@@ -163,5 +175,4 @@ def AddViewFactory(name, schema, label, permission, layer,
                     )
                   )
 
-    s = zapi.getService(None, zapi.servicenames.Presentation)
     s.provideView(for_, name, IBrowserRequest, class_, layer)

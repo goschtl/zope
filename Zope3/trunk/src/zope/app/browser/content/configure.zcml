@@ -9,6 +9,7 @@
       name="edit.html"
       schema="zope.app.interfaces.content.file.IFile"
       label="Change a file"
+      usage="objectview"
       permission="zope.ManageContent" />
 
   <menuItem

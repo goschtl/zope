@@ -12,15 +12,16 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.7 2003/08/12 12:47:55 Zen Exp $
+$Id: metadirectives.py,v 1.8 2003/12/07 10:04:49 gotcha Exp $
 """
 
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
+from zope.app.interfaces.publisher.browser import IUsage
 
-class ICommonInformation(Interface):
+class ICommonInformation(IUsage):
     """
     Common information for all successive directives
     """
@@ -79,6 +80,7 @@ class ICommonInformation(Interface):
         subclass any special classes, such as BrowserView.""",
         required=False
         )
+
 
 class ICommonFormInformation(ICommonInformation):
     """

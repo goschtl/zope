@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.6 2003/11/21 17:12:19 jim Exp $
+$Id: metaconfigure.py,v 1.7 2003/12/07 10:04:49 gotcha Exp $
 """
 
 __metaclass__ = type
@@ -132,6 +132,7 @@ class AddFormDirective(BaseFormDirective):
 
     view = AddView
     default_template = 'add.pt'
+    usage = None
     for_ = IAdding
 
     # default add form information
@@ -147,6 +148,7 @@ class AddFormDirective(BaseFormDirective):
             if (not self.menu) or (not self.title):
                 raise ValueError("If either menu or title are specified, "
                                  "they must both be specified")
+            # XXX why no self.schema in for as in EditFormDirective
             menuItemDirective(
                 self._context, self.menu, self.for_, '@@' + self.name,
                 self.title, permission=self.permission,
@@ -209,11 +211,12 @@ class AddFormDirective(BaseFormDirective):
         self._handle_arguments()
 
         self._context.action(
-            discriminator = self._discriminator(),
-            callable = AddViewFactory,
-            args = self._args()+(self.content_factory, self.arguments,
+            discriminator=self._discriminator(),
+            callable=AddViewFactory,
+            args=self._args()+(self.content_factory, self.arguments,
                                  self.keyword_arguments,
                                  self.set_before_add, self.set_after_add),
+            kw={'menu': self.menu, 'usage': self.usage},
             )
 
 class EditFormDirective(BaseFormDirective):
@@ -232,9 +235,10 @@ class EditFormDirective(BaseFormDirective):
     def __call__(self):
         self._handle_menu()
         self._context.action(
-            discriminator = self._discriminator(),
-            callable = EditViewFactory,
-            args = self._args()+(self.menu, self.usage),
+            discriminator=self._discriminator(),
+            callable=EditViewFactory,
+            args=self._args(),
+            kw={'menu': self.menu, 'usage': self.usage},
         )
 
 class SubeditFormDirective(BaseFormDirective):

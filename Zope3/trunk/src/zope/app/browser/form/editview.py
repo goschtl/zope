@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.41 2003/11/21 17:10:10 jim Exp $
+$Id: editview.py,v 1.42 2003/12/07 10:04:49 gotcha Exp $
 """
 from datetime import datetime
 
@@ -32,6 +32,8 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+from zope.app.publisher.browser.globalbrowsermenuservice import \
+    globalBrowserMenuService
 
 class EditView(BrowserView):
     """Simple edit-view base class
@@ -117,6 +119,7 @@ def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u'',
                     usage=u''):
+    s = zapi.getService(None, zapi.servicenames.Presentation)
     # XXX What about the __implements__ of the bases?
     class_ = SimpleViewClass(template, used_for=schema, bases=bases)
     class_.schema = schema
@@ -131,13 +134,17 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     class_.generated_form = ViewPageTemplateFile(default_template)
 
-    class_.usage = usage or (
-        menu and globalBrowserMenuService.getMenuUsage(menu))
-
+    if not usage and menu:
+        usage = globalBrowserMenuService.getMenuUsage(menu)
+    if not usage:
+        # usage could be None
+        usage = u''
+    s.useUsage(usage)
+    class_.usage = usage
+    
     defineChecker(class_,
                   NamesChecker(("__call__", "__getitem__",
                                 "browserDefault", "publishTraverse"),
                                permission))
 
-    s = zapi.getService(None, zapi.servicenames.Presentation)
     s.provideView(for_, name, IBrowserRequest, class_, layer)

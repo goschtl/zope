@@ -42,7 +42,9 @@
         >
 
     <div id="global">
-        <img tal:attributes="src context/++resource++zope3logo.gif" />
+       <!--div tal:content="string:Usage:${usage}"></div>  
+       <div tal:content="nocall:view"></div-->
+       <img tal:attributes="src context/++resource++zope3logo.gif" />
     </div>
 
     <div id="personal">

@@ -4,6 +4,7 @@
 
   <browser:defaultView name="index.html" />
 
+  <include file="usages.zcml" />
   <include file="menus.zcml" />
   <include package=".applicationcontrol" />
   <include package=".cache" />

@@ -34,6 +34,7 @@
   <body tal:attributes="onload body_onload | nothing">
 
     <div id="global">
+      <!--div tal:content="usage"></div-->
       <div id="userDetails">
         <metal:block define-macro="logged_user">
           <span tal:omit-tag="" i18n:translate="">User:</span>
@@ -58,17 +59,20 @@
     <div id="navigators">
 
       <!-- Navigation tree box -->
-      <metal:tree use-macro="context/@@standard_macros/navigation_tree_box" />
+      <metal:tree tal:condition="usage/objectview"
+                  use-macro="context/@@standard_macros/navigation_tree_box" />
+      
+      <tal:usage condition="usage/objectview">
+        <div class="box" id="commonTasks"
+             tal:define="view context/@@commonTasks|nothing"
+             tal:condition="view/strip|nothing">
 
-      <div class="box" id="commonTasks"
-           tal:define="view context/@@commonTasks|nothing"
-           tal:condition="view/strip|nothing">
-
-        <h4 i18n:translate="">Common Tasks</h4>
-        <div class="body">
-          <span tal:replace="structure view" />
+          <h4 i18n:translate="">Common Tasks</h4>
+          <div class="body">
+            <span tal:replace="structure view" />
+          </div>
         </div>
-      </div>
+      </tal:usage>
 
       <!-- Tree of the help topics that appears on the help namespace -->
       <div class="box" id="help"
@@ -87,11 +91,11 @@
 
     <div id="workspace">
 
-      <div id="breadcrumbs"
-           metal:define-macro="breadcrumbs">
-        <div tal:omit-tag="" i18n:translate="">Location:&nbsp;</div><tal:block
-           repeat="breadcrumb context/@@absolute_url/breadcrumbs">
-          <a href=""
+      <div tal:condition="usage/objectview" id="breadcrumbs"
+           metal:define-macro="breadcrumbs"
+       > <div tal:omit-tag="" i18n:translate="">Location:&nbsp;</div><tal:block
+           repeat="breadcrumb context/@@absolute_url/breadcrumbs"
+          ><a href=""
               tal:condition="repeat/breadcrumb/start"
               tal:attributes="
               href string:${breadcrumb/url}/@@SelectedManagementView.html"
@@ -105,7 +109,7 @@
             breadcrumb item</a> / </tal:block>
       </div>
 
-      <div class="itemViews"
+      <div tal:condition="usage/objectview" class="itemViews"
            metal:define-slot="tabs">
         <tal:block repeat="view context/@@view_get_menu/zmi_views">
           <a href=""
@@ -119,7 +123,7 @@
       </div>
 
       <!-- OnlineHelp with popup support -->
-      <div id="actions"
+      <div tal:condition="usage/objectview" id="actions"
            tal:define="help_actions context/@@view_get_menu/help_actions;
                        actions context/@@view_get_menu/zmi_actions"
            metal:define-slot="tabs">

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.2 2003/11/21 17:09:26 jim Exp $
+$Id: presentation.py,v 1.3 2003/12/07 10:04:54 gotcha Exp $
 """
 
 from zope.component.interfaces import IPresentationService
@@ -29,7 +29,7 @@ from types import ClassType
 
 
 class IGlobalPresentationService(zope.interface.Interface):
-    """Provide abaility to update the flobal presentation service
+    """Provide ability to update the global presentation service
     """
 
     def defineSkin(name, layers):
@@ -50,6 +50,10 @@ class IGlobalPresentationService(zope.interface.Interface):
 
     def defineLayer(name):
         """Define a layer
+        """
+    
+    def defineUsage(name):
+        """Define a usage
         """
 
     def provideAdapter(request_type, factories, name='', contexts=(),
@@ -200,6 +204,7 @@ class GlobalPresentationService(GlobalService):
         self._skins = {'default': [self._layers['default']]}
         self.skins = {'default': ('default', )}
         self.defaultSkin = 'default'
+        self._usages = {'default': GlobalUsage(self, 'default')}
 
     def defineSkin(self, name, layers):
         """Define a skin
@@ -251,6 +256,13 @@ class GlobalPresentationService(GlobalService):
     def queryLayer(self, name):
         return self._layers.get(name)
 
+    def queryUsage(self, name):
+        return self._usages.get(name)
+
+    def useUsage(self, name):
+        if name and not self.queryUsage(name):
+            raise ValueError, ('Undefined usage', name)
+    
     def setDefaultSkin(self, name):
         """Set the default skin for a request type
 
@@ -299,6 +311,25 @@ class GlobalPresentationService(GlobalService):
 
         self._layers[name] = GlobalLayer(self, name)
 
+    def defineUsage(self, name):
+        """
+        >>> s = GlobalPresentationService()
+        >>> s.defineUsage('custom')
+       
+        You cannot redefine a usage:
+        
+        >>> s.defineUsage('custom')
+        Traceback (most recent call last):
+        ...
+        ValueError: ("Can't redefine usage", 'custom')
+        """
+        if name in self._usages:
+            raise ValueError("Can\'t redefine usage", name)
+
+        self._usages[name] = GlobalUsage(self, name)
+
+
+    
     def provideAdapter(self, request_type, factories, name=u'', contexts=(), 
                        providing=zope.interface.Interface, layer='default'):
         """Provide a presentation adapter
@@ -422,6 +453,9 @@ class GlobalPresentationService(GlobalService):
 def GL(presentation_service, layer_name):
     return presentation_service.queryLayer(layer_name)
 
+def GU(presentation_service, usage_name):
+    return presentation_service.queryUsage(usage_name)
+
 class GlobalLayer(zope.interface.surrogate.SurrogateRegistry):
 
     def __init__(self, parent, name):
@@ -431,3 +465,14 @@ class GlobalLayer(zope.interface.surrogate.SurrogateRegistry):
 
     def __reduce__(self):
         return GL, (self.__parent__, self.__name__)
+
+
+class GlobalUsage(zope.interface.surrogate.SurrogateRegistry):
+
+    def __init__(self, parent, name):
+        zope.interface.surrogate.SurrogateRegistry.__init__(self)
+        self.__parent__ = parent
+        self.__name__ = name
+
+    def __reduce__(self):
+        return GU, (self.__parent__, self.__name__)

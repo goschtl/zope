@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: test_menu.py,v 1.4 2003/12/03 05:41:35 jim Exp $
+$Id: test_menu.py,v 1.5 2003/12/07 10:04:54 gotcha Exp $
 """
 import unittest
 
@@ -71,7 +71,7 @@ def addMenu(servicemanager, menu_id, title, inherit, usage=''):
     registration = UtilityRegistration(menu_id, ILocalBrowserMenu, path)
     key = default.getRegistrationManager().addRegistration(registration)
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
-    return zapi.traverse(default, menu_id)    
+    return zapi.traverse(default, menu_id)
 
 
 def addMenuItem(menu, interface, action, title):
@@ -98,6 +98,10 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
         classImplements(LocalBrowserMenu, IAttributeAnnotatable)
         
         # Create Placeless Components
+        ps = zapi.getService(None, zapi.servicenames.Presentation)
+        ps.defineUsage('usage')
+        ps.defineUsage('usage 2')
+        ps.defineUsage('usage 3')
         ms = zapi.getService(None, BrowserMenu)
         ms.menu('test_id', 'test menu', usage='usage')
         ms.menu('test_id2', 'test menu 2', usage='usage 2')

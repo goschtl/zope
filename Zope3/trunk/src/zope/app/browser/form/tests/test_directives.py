@@ -1,0 +1,228 @@
+###########################################################IC#############
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+
+import os
+import unittest
+from cStringIO import StringIO
+
+from zope.app import zapi
+from zope.interface import Interface, implements
+
+from zope.configuration.xmlconfig import xmlconfig, XMLConfig
+from zope.configuration.exceptions import ConfigurationError
+from zope.component import getView, queryView, queryResource
+from zope.component import getDefaultViewName, getResource
+from zope.app.services.servicenames import Permissions
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.security.proxy import ProxyFactory
+from zope.proxy import removeAllProxies
+
+from zope.component.exceptions import ComponentLookupError
+
+
+from zope.app.publisher.browser.globalbrowsermenuservice import \
+    globalBrowserMenuService
+from zope.publisher.browser import TestRequest
+
+from zope.app.publisher.browser.i18nfileresource import I18nFileResource
+
+import zope.app.publisher.browser
+from zope.component.service import serviceManager
+from zope.app.interfaces.security import IPermissionService
+from zope.app.security.registries.permissionregistry import permissionRegistry
+
+from zope.component.service import serviceManager
+from zope.app.security.registries.permissionregistry import permissionRegistry
+from zope.app.interfaces.security import IPermissionService
+
+from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.schema import TextLine
+
+tests_path = os.path.join(
+    os.path.split(zope.app.publisher.browser.__file__)[0],
+    'tests')
+
+template = """<configure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   i18n_domain='zope'>
+   %s
+   </configure>"""
+
+
+request = TestRequest()
+
+class Schema(Interface):
+
+    text = TextLine(
+        title=u'Text',
+        description=u'Nice text',
+        required=False,
+    )
+
+class IC(Schema): pass
+
+class Ob:
+    implements(IC)
+
+ob = Ob()
+
+
+
+
+class Test(PlacelessSetup, unittest.TestCase):
+
+    def setUp(self):
+        super(Test, self).setUp()
+        XMLConfig('meta.zcml', zope.app.browser.form)()
+        XMLConfig('meta.zcml', zope.app.publisher.browser)()
+
+        from zope.app.tests import ztapi
+        from zope.app.traversing.adapters import DefaultTraversable
+        from zope.app.interfaces.traversing import ITraversable
+
+        ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+
+        ps =  zapi.getService(None, zapi.servicenames.Presentation)
+        ps.defineUsage("objectview")
+        ps.defineUsage("overridden")
+        
+    def testEditForm(self):
+        self.assertEqual(queryView(ob, 'test', request),
+                         None)
+        xmlconfig(StringIO(template % (
+            """
+              <browser:page
+                  permission="zope.Public"
+                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  for="zope.schema.interfaces.ITextLine"
+                  name="edit"
+                  class="zope.app.browser.form.widget.TextWidget"
+                  />
+              <browser:editform
+                  for="zope.app.browser.form.tests.test_directives.IC"
+                  schema="zope.app.browser.form.tests.test_directives.Schema"
+                  name="edit.html"
+                  label="Edit a ZPT page"
+                  fields="text"
+                  permission="zope.Public" />
+            """
+            )))
+
+        v = queryView(ob, 'edit.html', request)
+        # expect component lookup as standard macros are not configured
+        self.assertRaises(ComponentLookupError, v)
+
+
+    def testEditFormWithMenu(self):
+        self.assertEqual(queryView(ob, 'test', request),
+                         None)
+        xmlconfig(StringIO(template % (
+            """
+              <browser:menu id="test_menu" title="Test menu" usage="objectview"/>
+              <browser:page
+                  permission="zope.Public"
+                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  for="zope.schema.interfaces.ITextLine"
+                  name="edit"
+                  class="zope.app.browser.form.widget.TextWidget"
+                  />
+              <browser:editform
+                  for="zope.app.browser.form.tests.test_directives.IC"
+                  schema="zope.app.browser.form.tests.test_directives.Schema"
+                  name="edit.html"
+                  label="Edit a ZPT page"
+                  fields="text"
+                  permission="zope.Public"
+                  menu="test_menu"
+                  title="Test View"
+                  />
+            """
+            )))
+
+        v = queryView(ob, 'edit.html', request)
+        self.assertEqual(v.usage, 'objectview')
+        # expect component lookup as standard macros are not configured
+        self.assertRaises(ComponentLookupError, v)
+
+    def testEditFormWithUsage(self):
+        self.assertEqual(queryView(ob, 'test', request),
+                         None)
+        xmlconfig(StringIO(template % (
+            """
+              <browser:page
+                  permission="zope.Public"
+                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  for="zope.schema.interfaces.ITextLine"
+                  name="edit"
+                  class="zope.app.browser.form.widget.TextWidget"
+                  />
+              <browser:editform
+                  for="zope.app.browser.form.tests.test_directives.IC"
+                  schema="zope.app.browser.form.tests.test_directives.Schema"
+                  name="edit.html"
+                  label="Edit a ZPT page"
+                  fields="text"
+                  permission="zope.Public"
+                  usage="objectview"
+                  />
+            """
+            )))
+
+        v = queryView(ob, 'edit.html', request)
+        self.assertEqual(v.usage, 'objectview')
+        # expect component lookup as standard macros are not configured
+        self.assertRaises(ComponentLookupError, v)
+
+
+    def testEditFormWithMenuAndUsage(self):
+        self.assertEqual(queryView(ob, 'test', request),
+                         None)
+        xmlconfig(StringIO(template % (
+            """
+              <browser:menu id="test_menu" title="Test menu" usage="overridden"/>
+              <browser:page
+                  permission="zope.Public"
+                  allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+                  for="zope.schema.interfaces.ITextLine"
+                  name="edit"
+                  class="zope.app.browser.form.widget.TextWidget"
+                  />
+              <browser:editform
+                  for="zope.app.browser.form.tests.test_directives.IC"
+                  schema="zope.app.browser.form.tests.test_directives.Schema"
+                  name="edit.html"
+                  label="Edit a ZPT page"
+                  fields="text"
+                  permission="zope.Public"
+                  menu="test_menu"
+                  title="Test View"
+                  usage="objectview"        
+                  />
+            """
+            )))
+
+        v = queryView(ob, 'edit.html', request)
+        self.assertEqual(v.usage, 'objectview')
+        # expect component lookup as standard macros are not configured
+        self.assertRaises(ComponentLookupError, v)
+
+# XXX Tests for AddFormDirective are missing
+
+def test_suite():
+    loader=unittest.TestLoader()
+    return loader.loadTestsFromTestCase(Test)
+
+if __name__=='__main__':
+    unittest.TextTestRunner().run(test_suite())

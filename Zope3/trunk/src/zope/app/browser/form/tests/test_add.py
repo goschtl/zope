@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.22 2003/11/27 13:59:13 philikon Exp $
+$Id: test_add.py,v 1.23 2003/12/07 10:04:50 gotcha Exp $
 """
 
 import unittest
@@ -172,7 +172,6 @@ class Test(PlacelessSetup, unittest.TestCase):
                          "getfoo")
         self.assertEqual(" ".join(set_after_add),
                          "extra1 name address extra2")
-        self.failIf(kw)
 
         return args
 

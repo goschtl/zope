@@ -1,0 +1,9 @@
+<zope:configure
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+  <usage name="objectview" />
+  <usage name="activitydialog" />
+  <usage name="addingdialog" />
+
+</zope:configure>

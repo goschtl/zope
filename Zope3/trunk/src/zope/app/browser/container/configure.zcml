@@ -8,7 +8,8 @@
       menu="zmi_actions" title="Add"
       class="zope.app.browser.container.adding.ContentAdding"
       permission="zope.ManageContent"
-      allowed_attributes="addingInfo">
+      allowed_attributes="addingInfo"
+      usage="addingdialog" >
 
     <page name="index.html"  template="add.pt" />
     <page name="action.html" attribute="action" />
