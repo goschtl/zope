@@ -18,22 +18,19 @@ $Id$
 __docformat__ = "reStructuredText"
 import unittest
 from zope.testing import doctest
-from zope.schema.interfaces import ITextLine
-from zope.app.tests import placelesssetup
-from zope.app.tests import ztapi
-from zope.app.form.browser import TextWidget
-from zope.app.form.interfaces import IInputWidget
+from zope.app.tests.setup import placefulSetUp, placefulTearDown
 
-def setUp(test):
-    placelesssetup.setUp()
-    ztapi.browserView(ITextLine, '', TextWidget, providing=IInputWidget)
+
+def schemaSearchSetUp(self):
+    placefulSetUp(site=True)
+
+def schemaSearchTearDown(self):
+    placefulTearDown()
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('schemasearch.txt',
-                             setUp=setUp, tearDown=placelesssetup.tearDown),
+        doctest.DocFileSuite('schemasearch.txt'),
         ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
-
