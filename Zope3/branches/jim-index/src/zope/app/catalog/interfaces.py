@@ -17,14 +17,6 @@ $Id$
 """
 from zope.interface import Interface
 
-class ICatalogView(Interface):
-    """Provides information about a catalog."""
-
-    def getSubscribed():
-        """Return 'True', if the catalog is subscribed to events, otherwise
-        'False'."""
-
-
 class ICatalogQuery(Interface):
     "Provides Catalog Queries"
 
@@ -35,23 +27,16 @@ class ICatalogQuery(Interface):
 class ICatalogEdit(Interface):
     """Allows one to manipulate the Catalog information."""
 
-    def clearIndexes(): 
+    def clearIndexes():
         """Remove all index data."""
 
-    def updateIndexes(): 
+    def updateIndexes():
         """Reindex all objects."""
 
-    def subscribeEvents(update=True): 
-        """Start listening for events.
-
-        Starts listening to events for possible index updating. If 'update' is
-        'True', always reindex all objects.
-        """
-
-    def unsubscribeEvents(): 
-        """Stop listening to events."""
+    def updateObject(obj):
+        """Reindex the object in all indexes."""
 
 
-class ICatalog(ICatalogView, ICatalogQuery, ICatalogEdit): 
+class ICatalog(ICatalogQuery, ICatalogEdit): 
     """Marker to describe a catalog in content space."""
 
