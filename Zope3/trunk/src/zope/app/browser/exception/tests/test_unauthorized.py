@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.7 2003/06/09 16:39:12 alga Exp $
+$Id: test_unauthorized.py,v 1.8 2003/07/18 14:00:20 alga Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -39,6 +39,9 @@ class DummyAuthService:
         self.principal_id = principal_id
         self.request = request
 
+class DummyPrincipalSource:
+    pass
+
 class Test(TestCase):
 
     def test(self):
@@ -51,6 +54,28 @@ class Test(TestCase):
         request = TestRequest('/')
         authservice = DummyAuthService()
         request.setUser(ContextWrapper(DummyPrincipal(23), authservice))
+        u = Unauthorized(exception, request)
+        u.issueChallenge()
+
+        # Make sure the response status was set
+        self.assertEqual(request.response.getStatus(), 403)
+
+        # Make sure the auth service was called
+        self.failUnless(authservice.request is request)
+        self.assertEqual(authservice.principal_id, 23)
+
+    def testPluggableAuthService(self):
+        from zope.app.browser.exception.unauthorized import Unauthorized
+        exception = Exception()
+        try:
+            raise exception
+        except:
+            pass
+        request = TestRequest('/')
+        authservice = DummyAuthService()
+        psrc = DummyPrincipalSource()
+        psrc = ContextWrapper(psrc, authservice)
+        request.setUser(ContextWrapper(DummyPrincipal(23), psrc))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 

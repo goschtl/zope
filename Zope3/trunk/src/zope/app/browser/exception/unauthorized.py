@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: unauthorized.py,v 1.4 2003/03/24 10:42:09 ryzaja Exp $
+$Id: unauthorized.py,v 1.5 2003/07/18 14:00:22 alga Exp $
 """
 __metaclass__ = type
 from zope.app.traversing import getParent
@@ -31,5 +31,10 @@ class Unauthorized:
         self.request.response.setStatus(403)
         principal = self.request.user
         prinreg = getParent(principal)
+        if not IAuthenticationService.isImplementedBy(prinreg):
+            # With PluggableAuthenticationService, principals are
+            # contained in the PrincipalSource, which is contained in
+            # the service.
+            prinreg = getParent(prinreg)
         assert IAuthenticationService.isImplementedBy(prinreg)
         prinreg.unauthorized(principal.getId(), self.request)
