@@ -24,13 +24,14 @@ class IFile(Interface):
     contentType = BytesLine(
         title = _(u'Content Type'),
         description=_(u'The content type identifies the type of data.'),
-        default = 'text/plain',
-        required=False
+        default='',
+        required=False,
+        missing_value=''
         )
 
     data = Bytes(
-        title = _(u'Data'),
-        description = _(u'The actual content of the object.'),
+        title=_(u'Data'),
+        description=_(u'The actual content of the object.'),
         default='',
         required=False,
         )
