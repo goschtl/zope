@@ -280,6 +280,39 @@ def test_classProvides_before_implements():
           ['IFoo']
     """
 
+def test_getting_spec_for_proxied_builtin_class():
+    """
+
+    In general, we should be able to get a spec
+    for a proxied class if someone has declared or
+    asked for a spec before.
+
+    We don't want to depend on proxies in this (zope.interface)
+    package, but we do want to work with proxies.  Proxies have the
+    effect that a class's __dict__ cannot be gotten. Further, for
+    built-in classes, we can't save, and thus, cannot get, any class
+    attributes.  We'll emulate this by treating a plain object as a class:
+
+      >>> cls = object()
+
+    We'll create an implements specification:
+
+      >>> import zope.interface.declarations
+      >>> impl = zope.interface.declarations.Implements(I1, I2)
+
+    Now, we'll emulate a declaration for a built-in type by putting
+    it in BuiltinImplementationSpecifications:
+
+      >>> zope.interface.declarations.BuiltinImplementationSpecifications[
+      ...   cls] = impl
+
+    Now, we should be able to get it back:
+
+      >>> implementedBy(cls) is impl
+      True
+    
+    """
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))

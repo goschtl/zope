@@ -380,7 +380,12 @@ def implementedByFallback(cls):
 
         spec = getattr(cls, '__implemented__', None)
         if spec is None:
+            # There's no spec stred in the class. Maybe its a builtin:
+            spec = BuiltinImplementationSpecifications.get(cls)
+            if spec is not None:
+                return spec
             return _empty
+        
         if spec.__class__ == Implements:
             # we defaulted to _empty or there was a spec. Good enough.
             # Return it.
