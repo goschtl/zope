@@ -2,6 +2,10 @@ After CMF 1.4.6
 
   Bug Fixes
 
+    - Default text format for NewsItems is now structured-text, just like
+      it is for Documents, thus removing a spurious difference (see
+      http://www.zope.org/Collectors/CMF/138).
+
     - CMFCalendar.CalendarTool: (Lost) fix for issues 65 and 159.
       The determination of the date/time range constituting a specific month
       was faulty.
