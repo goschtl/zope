@@ -119,7 +119,7 @@ def setUp(test, name) :
 def setUpReadMe(test) :
     setUp(test, "versioning.README")
 
-def teatDownReadMe(test) :
+def tearDownReadMe(test) :
     tearDown(test, "versioning.README")
 
 def setUpMotivation(test) :
