@@ -15,10 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: iregistry.py,v 1.2 2003/09/21 17:31:13 jim Exp $
+$Id: iregistry.py,v 1.3 2003/11/21 17:09:43 jim Exp $
 """
 from zope.app.interfaces.services.registration import IRegistry
 from zope.interface.verify import verifyObject
+from zope.app.location import inside
 
 class TestingIRegistry:
     """Base class for testing implementors of IRegistry
@@ -43,8 +44,7 @@ class TestingIRegistry:
         have some context.
 
         """
-        self.assertEqual(ob.__parent__, parent)
-        self.failIf(ob.__parent__.__parent__ is None)
+        self.assert_(inside(ob, parent))
 
     def test_implements_IRegistry(self):
         verifyObject(IRegistry, self.createTestingRegistry())
@@ -63,13 +63,13 @@ class TestingIRegistry:
         registration = self.createTestingRegistration()
         stack = registry.createRegistrationsFor(registration)
 
-        self.assertEqual(stack.__parent__, registry)
+        self.assert_(inside(stack, registry))
 
         # If we call it again, we should get the same object
         self.assertEqual(registry.createRegistrationsFor(registration),
                          stack)
 
-        self._assertInContext(stack, registry)
+        self.assert_(inside(stack, registry))
 
         return stack
 
