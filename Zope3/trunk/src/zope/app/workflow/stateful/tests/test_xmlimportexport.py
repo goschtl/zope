@@ -13,7 +13,7 @@
 ##############################################################################
 """XML import/export tests
 
-$Id: test_xmlimportexport.py,v 1.15 2004/03/13 23:01:17 srichter Exp $
+$Id: test_xmlimportexport.py,v 1.16 2004/04/16 11:51:59 srichter Exp $
 """
 import unittest
 from StringIO import StringIO
@@ -119,16 +119,13 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testImport(self):
         testpd = TestProcessDefinition()
-        handler = XMLImportHandler()
+        handler = XMLImportHandler(testpd)
 
-        self.assertEqual(handler.canImport(testpd, StringIO(xml_text)), True)
-        self.assertEqual(handler.canImport(None, StringIO(xml_text)), False)
-        self.assertEqual(
-            handler.canImport(None, StringIO(
-            '<some><nonworking/><xml/></some>')),
-            False)
+        self.assertEqual(handler.canImport(xml_text), True)
+        self.assertEqual(handler.canImport('<some><nonworking/><xml/></some>'),
+                         False)
 
-        handler.doImport(testpd, StringIO(xml_text))
+        handler.doImport(xml_text)
 
         self.assertEqual(testpd.relevantDataSchema, ISchema)
         self.assertEqual(IZopeDublinCore(testpd).title, 'TestPD')
