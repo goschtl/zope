@@ -14,17 +14,16 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.7 2003/02/11 15:59:52 sidnei Exp $
+$Id: __init__.py,v 1.8 2003/03/22 16:02:46 jack-e Exp $
 """
 
 from zope.interface import Interface
 from zope.interface import Attribute
-from zope.interface.common.mapping \
-     import IEnumerableMapping
+from zope.interface.common.mapping import IEnumerableMapping
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.configuration \
      import INamedComponentConfiguration
-
+from zope.app.interfaces.services.configuration import ComponentPath
 
 
 
@@ -58,6 +57,12 @@ class IProcessDefinitionConfiguration(INamedComponentConfiguration):
     """Configuration for a workflow process definition.
     """
 
+    componentPath = ComponentPath(
+        title=u"Component path",
+        description=u"The physical path to the component",
+        required=True,
+        readonly=True,
+        )
 
 
 

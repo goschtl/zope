@@ -14,7 +14,7 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.7 2003/02/11 15:59:52 sidnei Exp $
+$Id: stateful.py,v 1.8 2003/03/22 16:02:46 jack-e Exp $
 """
 import zope.schema
 from zope.proxy.context import ContextProperty
@@ -64,7 +64,8 @@ class ITransition(Interface):
 
     condition = zope.schema.TextLine(
         title=u"Condition",
-        description=u"The condition that is evaluated to decide if the condition is fired or not.",
+        description=u"""The condition that is evaluated to decide if the
+                        condition is fired or not.""",
         required=False)
 
     permission = PermissionField(
