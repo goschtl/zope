@@ -4,7 +4,7 @@
 
   <pages
       for="zope.app.annotation.interfaces.IAnnotatable"
-      permission="zope.ManageContent"
+      permission="zope.app.dublincore.change"
       class=".metadataedit.MetaDataEdit">
 
     <page name="EditMetaData.html" template="edit.pt"
