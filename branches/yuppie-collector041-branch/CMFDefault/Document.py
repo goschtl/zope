@@ -345,15 +345,14 @@ class Document(PortalContent, DefaultDublinCoreImpl):
             self.dav__init(REQUEST, RESPONSE)
             self.dav__simpleifhandler(REQUEST, RESPONSE, refresh=1)
         body = REQUEST.get('BODY', '')
-        if REQUEST.get_header('Content-Type', '') == 'text/html':
-            text_format = 'html'
-        else:
-            text_format = None
 
         try:
-            headers, body, text_format = self.handleText(text=body,
-                                                         format=text_format)
+            headers, body, format = self.handleText(text=body)
             safety_belt = headers.get('SafetyBelt', '')
+            if REQUEST.get_header('Content-Type', '') == 'text/html':
+                text_format = 'html'
+            else:
+                text_format = format
             self.setFormat(value=text_format)
             self.setMetadata(headers)
             self._edit(text=body, safety_belt=safety_belt)
