@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Resource.py,v 1.2 2002/07/11 18:21:34 jim Exp $
+$Id: Resource.py,v 1.3 2002/07/12 22:11:03 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -33,16 +33,21 @@ class Resource:
 
         service = getWrapperContainer(self)
         site = getWrapperContainer(service)
+
+        skin = self.request.getPresentationSkin()
+        if skin:
+            skin = "++skin++%s/" % skin
+
         if site is None:
-            return "/@@/%s" % (name)
+            return "/%s@@/%s" % (skin, name)
 
         absolute_url = queryView(service, 'absolute_url', self.request)
 
         if absolute_url is None:
-            return "/@@/%s" % (name)
+            return "/%s@@/%s" % (skin, name)
 
         site_url = absolute_url()
         
-        return "%s/@@/%s" % (site_url, name)
+        return "%s/%s@@/%s" % (site_url, skin, name)
 
     __call__ = ContextMethod(__call__)
