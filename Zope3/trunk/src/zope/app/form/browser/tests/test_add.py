@@ -17,6 +17,7 @@ $Id$
 """
 import unittest
 
+from zope.security.checker import CheckerPublic
 from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -169,7 +170,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(name, 'addthis')
         self.assertEqual(schema, I)
         self.assertEqual(label, 'Add this')
-        self.assertEqual(permission, 'zope.Public')
+        self.assertEqual(permission, CheckerPublic) # 'zope.Public' translated
         self.assertEqual(layer, IDefaultBrowserLayer)
         self.assertEqual(template, 'add.pt')
         self.assertEqual(default_template, 'add.pt')

@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 import os
 
 import zope.component
-
+from zope.security.checker import CheckerPublic
 from zope.interface import implementedBy
 from zope.configuration.exceptions import ConfigurationError
 
@@ -47,7 +47,7 @@ class BaseFormDirective(object):
     # default basic information
     for_ = None
     layer = IDefaultBrowserLayer
-    permission = 'zope.Public'
+    permission = CheckerPublic
     template = None
     class_ = None
 
@@ -119,7 +119,11 @@ class BaseFormDirective(object):
             self.fields = self.names
 
     def _args(self):
-        return (self.name, self.schema, self.label, self.permission,
+        permission = self.permission
+        if permission == 'zope.Public':
+            # Translate public permission to CheckerPublic
+            permission = CheckerPublic
+        return (self.name, self.schema, self.label, permission,
                 self.layer, self.template, self.default_template,
                 self.bases, self.for_, self.fields)
 
@@ -147,7 +151,11 @@ class BaseWizardDirective(BaseFormDirective):
         self.panes = []
 
     def _args(self):
-        return (self.name, self.schema, self.permission, self.layer,
+        permission = self.permission
+        if permission == 'zope.Public':
+            # Translate public permission to CheckerPublic
+            permission = CheckerPublic
+        return (self.name, self.schema, permission, self.layer,
                 self.panes, self.fields, self.template, self.default_template,
                 self.bases, self.for_)
 
