@@ -34,6 +34,8 @@ Zope Changes
       running a profile on a single test (specially useful for
       functional tests) without having to do the whole profile setup.
 
+    - Session support implemented and usable from Python code.
+
     Bug fixes
     
     - Reimplemented 'getRegisteredMatching()' of the Presentation Service,
