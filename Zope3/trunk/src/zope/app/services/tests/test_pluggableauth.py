@@ -14,17 +14,21 @@
 """Test the PluggableAuthenticationService.
 
 
-$Id: test_pluggableauth.py,v 1.2 2003/06/23 22:46:18 chrism Exp $
+$Id: test_pluggableauth.py,v 1.3 2003/09/21 17:33:19 jim Exp $
 """
 
 import unittest
 from zope.interface import *
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import Interface
+from zope.app.tests.placelesssetup import setUp, tearDown
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(DocTestSuite("zope.app.services.pluggableauth"))
+    suite.addTest(
+        DocTestSuite("zope.app.services.pluggableauth",
+                     setUp=setUp, tearDown=tearDown),
+        )
 
     return suite
 

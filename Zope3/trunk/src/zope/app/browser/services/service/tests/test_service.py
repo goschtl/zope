@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for service adding and registration views.
 
-$Id: test_service.py,v 1.1 2003/09/02 20:45:57 jim Exp $
+$Id: test_service.py,v 1.2 2003/09/21 17:31:03 jim Exp $
 """
 
 import unittest
@@ -21,7 +21,7 @@ from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
 from zope.testing.doctestunit import DocTestSuite
 
 class IFoo(Interface):
@@ -59,7 +59,8 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestComponentAdding))
-    suite.addTest(DocTestSuite('zope.app.browser.services.service'))
+    suite.addTest(DocTestSuite('zope.app.browser.services.service',
+                               setUp=setUp, tearDown=tearDown))
     return suite
 
 
