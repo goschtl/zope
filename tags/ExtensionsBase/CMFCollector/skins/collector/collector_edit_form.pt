@@ -1,0 +1,272 @@
+<span tal:condition="nothing"
+      tal:define="has_edit_priv nocall: here/edit">
+  This span ensures that the visitor has edit privilege, by fetching - but not
+  displaying - the protected collector.edit method.
+</span>
+
+<html xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="here/main_template/macros/master">
+
+<span tal:condition="nothing">
+  Template description: Form for configuring the collector.
+</span>
+
+<body>
+
+<div metal:fill-slot="header">
+
+  <div metal:use-macro="here/collector_macros/macros/collector_header">
+    COLLECTOR HEADER
+  </div>
+
+</div>
+
+<div metal:fill-slot="main">	  
+
+<form action="collector_edit" method="post">
+<table class="FormLayout" width="100%">
+ 
+ <tr bgcolor="#ccffcc">
+  <td align="center" colspan="4">
+    <font size="+1"> <strong> Configure Collector </strong> </font>
+  </td>
+ </tr>
+
+ <tr>
+  <td> &nbsp; </td>
+ </tr>
+ 
+ <tr valign="top">
+  <th align="right"> Title
+  </th>
+  <td colspan="2">
+   <input type="text"
+          name="title"
+          value=""
+     tal:attributes="value here/title"
+          size="45">
+  </td>
+ </tr>
+  
+ <tr valign="top">
+  <th> Abbreviation </th>
+  <td colspan="4">
+   <input type="text"
+          name="abbrev"
+          value=""
+      tal:attributes="value here/abbrev|nothing"
+          size="5">
+    <font color="gray" size="-1">
+      Collector email subject-line prefix
+    </font>
+  </td>
+ </tr>
+  
+ <tr valign="top">
+  <th align="right"> Description
+  </th>
+  <td colspan="3">
+   <font color="gray" size="-1"> Will be rendered as HTML: </font>
+   <br>
+   <textarea name="description:text" rows="3"
+             cols="50"
+       tal:content="here/description">
+   </textarea>
+  </td>
+ </tr>
+  
+ <tr valign="top">
+  <th align="right"> Collector Email
+  </th>
+  <td colspan="3"
+      tal:define="member python:
+                         here.portal_membership.getAuthenticatedMember();
+                  getpropemail python: hasattr(member, 'getProperty')
+                                       and member.getProperty('email', '');
+                  attremail python: getattr(member, 'email', '');
+                  email python: getattr(here, 'email', 
+                                        getpropemail or attremail)">
+          <table>
+            <tr>
+              <td>
+                <input type="text" name="email" size=25
+                       value="EMAIL"
+                       tal:attributes="value email">
+              </td>
+              <td>
+                <font color="gray" size="-1">
+                  Collector email "From" address
+                </font>
+              </td>
+            </tr>
+          </table>
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <th align="right"> Managers
+  </th>
+  <td>
+   <textarea name="managers:lines" rows="5" cols="15">
+<span tal:repeat="it here/managers" tal:replace="it"></span>
+</textarea>
+  </td>
+  <td colspan="2">
+          <font color="gray" size="-1">
+            Managers configure the collector, and receive request notices.
+            Managers can accept issues, but must be on Supporters roster to be
+            assigned.  (Managers cannot remove <em>themselves</em> from the
+            management roster.)
+          </font>
+  </td>
+ </tr>
+
+ <tr>
+  <th align="right"> Supporters
+  </th>
+  <td>
+   <textarea name="supporters:lines" rows="5" cols="15">
+<span tal:repeat="it here/supporters" tal:replace="it"></span>
+</textarea>
+  </td>
+  <td colspan="2">
+          <font color="gray" size="-1">
+            Supporters can be assigned to requests.  They may or may not
+            receive initial request notifications, depending on the
+            "dispatching" setting below.
+          </font>
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <th align="right"> Dispatcher Mode
+  </th>
+  <td colspan="3">
+          <table>
+            <tr>
+              <td NOWRAP>
+                <input type="radio" name="dispatching:int" value="0"
+                       tal:attributes="checked not: here/dispatching|nothing">
+                  Off
+              </td>
+              <td>
+                <font color="gray" size="-1">
+                  Managers and supporters receive pending-issue notices
+                </font>
+              </td>
+            </tr>
+            <tr>
+              <td NOWRAP>
+                <input type="radio" name="dispatching:int" value="1"
+                       tal:attributes="checked here/dispatching|nothing">
+                  On
+              </td>
+              <td>
+                <font color="gray" size="-1">
+                  Only managers receive pending-issue notices
+                </font>
+              </td>
+            </tr>
+          </table>
+  </td>
+ </tr>
+  
+ <tr valign="top">
+  <th align="right"> Topics
+  </th>
+  <td>
+   <textarea name="topics:lines" rows="5" cols="15">
+<span tal:repeat="it here/topics|nothing" tal:replace="it"></span></textarea>
+  </td>
+  <th align="right"> Classifications
+  </th>
+  <td>
+   <textarea name="classifications:lines" rows="5" cols="15">
+<span tal:repeat="it here/classifications|nothing" tal:replace="it">
+</span></textarea>
+  </td>
+ </tr>
+  
+ <tr valign="top">
+  <th align="right"> Importance
+  </th>
+  <td>
+   <textarea name="importances:lines" rows="5" cols="15">
+<span tal:repeat="it here/importances|nothing" tal:replace="it">
+</span></textarea>
+  </td>
+ </tr>
+  
+ <tr valign="top">
+  <th align="right"> Version Info Spiel </th>
+  <td colspan=3>
+          <font color="gray" size="-1">
+            Something to prompt requesters for useful version info...
+          </font>
+    <br> 
+   <textarea name="version_info_spiel:text" rows="3" cols="50">
+<span tal:replace="here/version_info_spiel|nothing">
+</span></textarea>
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <th> Reinstate catalog </th>
+  <td colspan="4">
+    <font color="gray" size="-1">
+      Rarely, product updates require internal catalog reinit and reindex.
+      Collector product RELEASE_NOTES.txt will indicate when necessary.
+    </font>
+    <br>
+    <input type="radio" name="recatalog:int" value="0" CHECKED>No
+    <input type="radio" name="recatalog:int" value="1">Internal only
+    <input type="radio" name="recatalog:int" value="2">Internal &amp; Site-wide
+    (<em>slow</em>)
+  </td>
+ </tr>
+
+ <tr valign="top">
+  <td> &nbsp; </td>
+ </tr>
+
+ <tr valign="top">
+  <td> <br> </td>
+  <td>
+   <input type="submit" value=" Submit ">
+   <input type="reset" value=" Reset ">
+  </td>
+ </tr>
+</table>
+</form>
+</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
