@@ -15,7 +15,7 @@
 This server uses asyncore to accept connections and do initial
 processing but threads to do work.
 
-$Id: HTTPRequestParser.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: HTTPRequestParser.py,v 1.3 2002/12/05 09:42:05 efge Exp $
 """
 
 import re
@@ -130,8 +130,6 @@ class HTTPRequestParser:
 
         command, uri, version = self.crack_first_line()
         self.command = str(command)
-        if uri and '%' in uri:
-            uri = unquote(uri)
         self.uri = str(uri)
         self.version = version
         self.split_uri()
@@ -189,7 +187,10 @@ class HTTPRequestParser:
         if m.end() != len(self.uri):
             raise ValueError, "Broken URI"
         else:
-            self.path, query, self.fragment = m.groups()
+            path, query, self.fragment = m.groups()
+            if path and '%' in path:
+                path = unquote(path)
+            self.path = path
             if query:
                 query = query[1:]
             self.query = query
