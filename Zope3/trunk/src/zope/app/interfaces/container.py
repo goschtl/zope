@@ -13,10 +13,10 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.5 2003/09/22 21:05:13 sidnei Exp $
+$Id: container.py,v 1.6 2003/12/01 16:19:23 jim Exp $
 """
 
-from zope.interface import Interface, Attribute, implements
+from zope.interface import Interface, Attribute, implements, Invalid
 from zope.component.interfaces import IView
 from zope.interface.common.mapping import IItemMapping
 from zope.interface.common.mapping import IReadMapping, IEnumerableMapping
@@ -29,6 +29,17 @@ class DuplicateIDError(KeyError):
 class ContainerError(Exception):
     """An error of a container with one of its components."""
 
+class InvalidContainerType(Invalid, TypeError):
+    """The type of a container is not valid
+    """
+
+class InvalidItemType(Invalid, TypeError):
+    """The type of an item is not valid
+    """
+
+class InvalidType(Invalid, TypeError):
+    """The type of an object is not valid
+    """
 
 class IContained(ILocation):
     """Objects contained in containers
