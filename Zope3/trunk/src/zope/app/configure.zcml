@@ -133,5 +133,14 @@
   <include package="zope.app.utilities" />
   <include package="zope.app.schema" file="fieldforms.zcml" />
 
+  <!-- Interfaces -->
+  <!-- This is for module security declarations to make interfaces
+       accessable -->
+  <include package=".interfaces" />
+
+
+  <!-- Backward compatability fixups -->
+  <include file="backward.zcml" />
+
 
 </configure>
