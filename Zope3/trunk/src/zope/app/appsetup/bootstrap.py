@@ -38,15 +38,11 @@ from zope.app.utility import UtilityRegistration, LocalUtilityService
 
 # XXX It should be possible to remove each of these from the basic
 # bootstrap, at which point we can remove the
-# zope.app.principalannotation, and zope.app.session packages from
+# zope.app.principalannotation packages from
 # zope.app.
 
 from zope.app.principalannotation import PrincipalAnnotationService
 
-from zope.app.session.interfaces import \
-     IBrowserIdManager, ISessionDataContainer
-from zope.app.session import \
-     CookieBrowserIdManager, PersistentSessionDataContainer
 
 class BootstrapSubscriberBase:
     """A startup event subscriber base class.
@@ -165,16 +161,6 @@ class BootstrapInstance(BootstrapSubscriberBase):
         self.ensureService(PrincipalAnnotation, PrincipalAnnotationService)
 
         self.ensureService(Utilities, LocalUtilityService)
-
-        # Utilities
-        self.ensureUtility(
-                IBrowserIdManager, 'CookieBrowserIdManager',
-                CookieBrowserIdManager,
-                )
-        self.ensureUtility(
-                ISessionDataContainer, 'PersistentSessionData',
-                PersistentSessionDataContainer, ''
-                )
 
 bootstrapInstance = BootstrapInstance()
 

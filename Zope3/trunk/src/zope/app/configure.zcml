@@ -56,7 +56,6 @@
   <include package="zope.app.principalannotation" />  
 
   <!-- Utilities -->
-  <include package="zope.app.session" />
   <include package="zope.app.schema" />
 
   <!-- Misc. Service Manager objects -->
