@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -57,7 +57,6 @@ class LDAPPrincipalSource(Contained, Persistent):
 
     ### This is the stuff needed to add the Principal to the cache and to
     ### make it containment friendly.
-    ### TODO: add the principal to the ldap server if it is a new one.
     def __setitem__(self, login, obj):
         obj.id = login
         setitem(self, self._setitem, login, obj)

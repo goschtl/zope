@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -16,11 +16,10 @@
 $Id$
 """
 
-from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.interface import implements
+from zope.security.proxy import trustedRemoveSecurityProxy
 
 from interfaces import ILDAPManager
-
 
 
 class LDAPManagerAdapter:
@@ -31,17 +30,17 @@ class LDAPManagerAdapter:
     def __init__(self, source):
         self.context = source
     
-    def addPrincipal(self, login_attribute, ldap_principal):
+    def addPrincipal(self, ldap_principal):
+        # register the principal with the principal source
         source = trustedRemoveSecurityProxy(self.context)
-        # add a principal to the 
-        pass
+        source[ldap_principal.login] = ldap_principal
+        
+    def editPrincipal(self, ldap_principal):
+        # register the principal with the principal source
+        source = trustedRemoveSecurityProxy(self.context)
+        source[ldap_principal.login] = ldap_principal
 
-    def editPrincipal(self, login_attribute, ldap_principal):
+    def deletePrincipal(self, login):
+        # unregister the principal with the principal source
         source = trustedRemoveSecurityProxy(self.context)
-        # replace the principal on the ldap server with the given principal
-        pass
-
-    def deletePrincipal(self, login_attribute):
-        source = trustedRemoveSecurityProxy(self.context)
-        # delete the principal with the given login_attribute
-        pass
+        del source[login]
