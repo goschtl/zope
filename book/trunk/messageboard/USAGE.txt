@@ -20,4 +20,4 @@ contain a single line of the form::
   <include package="book.messageboard" />
 
 For detailed installation and setup instructions see the Content Components
-recipe at http://dev.zope.org/Zope3/DevelCookbook/NewContentObject.
+chapter at http://dev.zope.org/Zope3/Zope3Book/contentobject.html.
