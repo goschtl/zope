@@ -260,9 +260,9 @@ def getView(object, name, request, providing=Interface, context=None):
     if not IInterface.providedBy(providing):
         providing, context = context, providing
         warnings.warn("Use getView(object, name, request,"
-                      " prodiving=Interface, context=Interface)"
+                      " providing=Interface, context=Interface)"
                       " instead of getView(object, name, request,"
-                      " context=None, prodiving=Interface)",
+                      " context=None, providing=Interface)",
                       DeprecationWarning, 2)
     view = queryView(object, name, request, context=context,
                      providing=providing)
