@@ -34,6 +34,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.destination = tempfile.mkdtemp(prefix="test_include_")
         self.processor = include.InclusionProcessor(self.source,
                                                     self.destination)
+        self.spec = include.Specification(self.source)
         self.source = os.path.abspath(self.source)
 
     def tearDown(self):
@@ -49,24 +50,22 @@ class InclusionProcessorTestCase(unittest.TestCase):
 
           # Another comment.
           """)
-        spec = include.Specification(self.source)
-        spec.load(f, "<string>")
-        self.assertEqual(len(spec.excludes), 1)
-        self.assertEqual(len(spec.includes), 2)
+        self.spec.load(f, "<string>")
+        self.assertEqual(len(self.spec.excludes), 1)
+        self.assertEqual(len(self.spec.includes), 2)
         self.assert_(join(self.source, "ignorethis.txt")
-                     in spec.excludes)
-        self.assertEqual(spec.includes["foo.html"],
+                     in self.spec.excludes)
+        self.assertEqual(self.spec.includes["foo.html"],
                          "http://www.python.org/index.html")
-        self.assertEqual(spec.includes[join("doc", "whatzit.txt")],
+        self.assertEqual(self.spec.includes[join("doc", "whatzit.txt")],
                          "repository:doc/whatzit.txt")
 
     def test_error_on_nonexistant_ignore(self):
         f = StringIO("""
             does-not-exist.txt  -
             """)
-        spec = include.Specification(self.source)
         try:
-            spec.load(f, "<string>")
+            self.spec.load(f, "<string>")
         except include.InclusionSpecificationError, e:
             self.assertEqual(e.filename, "<string>")
             self.assertEqual(e.lineno, 2)
@@ -75,9 +74,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
 
     def test_error_on_omitted_source(self):
         f = StringIO("whatzit.txt \n")
-        spec = include.Specification(self.source)
         try:
-            spec.load(f, "<string>")
+            self.spec.load(f, "<string>")
         except include.InclusionSpecificationError, e:
             self.assertEqual(e.filename, "<string>")
             self.assertEqual(e.lineno, 1)
@@ -86,11 +84,10 @@ class InclusionProcessorTestCase(unittest.TestCase):
 
     def test_globbing_on_ignore(self):
         f = StringIO("*.txt -")
-        spec = include.Specification(self.source)
-        spec.load(f, "<string>")
-        self.assertEqual(len(spec.excludes), 1)
+        self.spec.load(f, "<string>")
+        self.assertEqual(len(self.spec.excludes), 1)
         self.assert_(join(self.source, "ignorethis.txt")
-                     in spec.excludes)
+                     in self.spec.excludes)
 
     def test_normalizePath(self):
         normalize = include.Specification("foo").normalizePath
@@ -133,9 +130,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assert_(os.path.isfile(join(self.destination, "ignorethis.txt")))
 
     def test_createDistributionTree(self):
-        spec = include.Specification(self.source)
-        spec.load(StringIO("__init__.py -"), "<string>")
-        self.processor.createDistributionTree(spec)
+        self.spec.load(StringIO("__init__.py -"), "<string>")
+        self.processor.createDistributionTree(self.spec)
         self.check_file("ignorethis.txt")
         self.check_file("somescript.py")
         self.assert_(not os.path.exists(join(self.destination, "__init__.py")))
