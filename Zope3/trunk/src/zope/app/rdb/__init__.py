@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.14 2003/06/09 15:31:57 stevea Exp $
+$Id: __init__.py,v 1.15 2003/06/11 13:47:59 srichter Exp $
 """
 __metaclass__ = type
 
@@ -122,8 +122,16 @@ class ZopeDatabaseAdapter(Persistent):
     def connect(self):
         'See IZopeDatabaseAdapter'
         if not self.isConnected():
-            self._v_connection = ZopeConnection(self._connection_factory(),
-                                                self)
+            try:
+                self._v_connection = ZopeConnection(
+                    self._connection_factory(), self)
+            # Note: I added the general Exception, since the DA can return
+            # implementation-specific errors. But we really want to catch all
+            # issues at this point, so that we can convert it to a
+            # DatabaseException. 
+            except Exception, error:
+                raise DatabaseException, str(error)
+
 
     def disconnect(self):
         'See IZopeDatabaseAdapter'

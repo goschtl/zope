@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.6 2003/06/07 06:37:23 stevea Exp $
+$Id: sql.py,v 1.7 2003/06/11 13:47:57 srichter Exp $
 """
 
 import re
@@ -159,14 +159,14 @@ from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.interface import implements
 from zope.component import getService
-from zope.context import ContextMethod
+from zope.context import ContextMethod, ContextProperty
 
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
 from zope.app.interfaces.content.file import IFileContent
-from zope.app.interfaces.content.sql import ISQLScript
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.content.sql import ISQLScript, MissingInput
 from zope.app.rdb import SQLCommand
 from zope.app.rdb import queryForResults
+from zope.app.traversing import objectName
 
 unparmre = re.compile(r'([\000- ]*([^\000- ="]+))')
 parmre = re.compile(r'([\000- ]*([^\000- ="]+)=([^\000- ="]+))')
@@ -326,25 +326,24 @@ class SQLVar:
                 v = md[expr]
             else:
                 v = expr(md)
-        except:
+        except (KeyError, ValueError):
             if args.has_key('optional') and args['optional']:
                 return 'null'
             if not isinstance(expr, StringTypes):
                 raise
-            raise ('Missing Input',
-                   'Missing input variable, **%s**' % name)
+            raise MissingInput, 'Missing input variable, **%s**' % name
 
-        # XXX Shrug, should these tyoes be really hard coded? What about
+        # XXX Shrug, should these types be really hard coded? What about
         # Dates and other types a DB supports; I think we should make this
         # a plugin.
+        # We might be able to reuse some of the widget conversion code. (SR)
         if t == 'int':
             try:
                 if isinstance(v, StringTypes):
                     int(v)
                 else:
                     v = str(int(v))
-                # XXX Bare except!
-            except:
+            except ValueError:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
                 raise ValueError, (
@@ -356,8 +355,7 @@ class SQLVar:
                     float(v)
                 else:
                     v = str(float(v))
-                # XXX Bare except!
-            except:
+            except ValueError:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
                 raise ValueError, (
@@ -448,10 +446,9 @@ class SQLTest:
                         int(v)
                     else:
                         v = str(int(v))
-                    # XXX Bare except!
-                except:
+                except ValueError:
                     raise ValueError, (
-                        'Invalid integer value for **%s**' % name)
+                        'Invalid integer value for **%s**' %name)
 
             elif t == 'float':
                 if not v and isinstance(v, str):
@@ -461,10 +458,9 @@ class SQLTest:
                         float(v)
                     else:
                         v = str(float(v))
-                    # XXX Bare except!
-                except:
+                except ValueError:
                     raise ValueError, (
-                        'Invalid floating-point value for **%s**' % name)
+                        'Invalid floating-point value for **%s**' %name)
             else:
                 v = str(v)
                 v = self.sql_quote__(v)
@@ -474,8 +470,7 @@ class SQLTest:
         if not vs:
             if self.optional:
                 return ''
-            raise 'Missing Input', (
-                'No input was provided for **%s**' % name)
+            raise MissingInput, 'No input was provided for **%s**' %name
 
         if len(vs) > 1:
             vs = ', '.join(map(str, vs))
@@ -576,14 +571,12 @@ class SQLVar:
                 v = md[expr]
             else:
                 v = expr(md)
-            # XXX Bare except!
-        except:
+        except (KeyError, ValueError):
             if args.has_key('optional') and args['optional']:
                 return 'null'
             if not isinstance(expr, StringTypes):
                 raise
-            raise ('Missing Input',
-                   'Missing input variable, **%s**' % name)
+            raise MissingInput, 'Missing input variable, **%s**' %name
 
         # XXX Shrug, should these tyoes be really hard coded? What about
         # Dates and other types a DB supports; I think we should make this
@@ -606,8 +599,7 @@ class SQLVar:
                     float(v)
                 else:
                     v = str(float(v))
-                # XXX Bare except!
-            except:
+            except ValueError:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
                 raise ValueError, (
@@ -646,16 +638,15 @@ class SQLDTML(HTML):
 
 class SQLScript(SQLCommand, Persistent):
 
-    implements(ISQLScript, IFileContent, IAttributeAnnotatable)
+    implements(ISQLScript, IFileContent)
 
     def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)
-        self.setConnectionName(connectionName)
+        self.connectionName = connectionName
         # In our case arguments should be a string that is parsed
-        self.setArguments(arguments)
+        self.arguments = arguments
 
     def setArguments(self, arguments):
-        'See ISQLScript'
         assert isinstance(arguments, StringTypes), (
                '"arguments" argument of setArguments() must be a string'
                )
@@ -663,27 +654,29 @@ class SQLScript(SQLCommand, Persistent):
         self._arguments = parseArguments(arguments)
 
     def getArguments(self):
-        'See ISQLScript'
+        'See zope.app.interfaces.content.sql.ISQLScript'
         return self._arguments
 
     def getArgumentsString(self):
-        'See ISQLScript'
         return self._arg_string
 
+    # See zope.app.interfaces.content.sql.ISQLScript
+    arguments = property(getArgumentsString, setArguments)
+
     def setSource(self, source):
-        'See ISQLScript'
         self.template.munge(source)
 
     def getSource(self):
-        'See ISQLScript'
         return self.template.read_raw()
 
+    # See zope.app.interfaces.content.sql.ISQLScript
+    source = property(getSource, setSource)
+
     def getTemplate(self):
-        'See ISQLScript'
+        'See zope.app.interfaces.content.sql.ISQLScript'
         return self.template
 
-    def setConnectionName(self, name):
-        'See ISQLScript'
+    def _setConnectionName(self, name):
         self._connectionName = name
         cache = getCacheForObj(self)
         location = getLocationForCache(self)
@@ -691,22 +684,23 @@ class SQLScript(SQLCommand, Persistent):
         if cache and location:
             cache.invalidate(location)
 
-    setConnectionName = ContextMethod(setConnectionName)
-
-    def getConnectionName(self):
-        'See ISQLScript'
+    def _getConnectionName(self):
         return self._connectionName
 
     def getConnection(self):
-        'See ISQLCommand'
         connection_service = getService(self, "SQLDatabaseConnections")
         connection = connection_service.getConnection(self.connectionName)
         return connection
 
     getConnection = ContextMethod(getConnection)
 
+    # See zope.app.interfaces.content.sql.ISQLScript
+    # We need to preserve the context for connectionName, so we make it
+    # a ContextProperty instead of a property
+    connectionName = ContextProperty(_getConnectionName, _setConnectionName)
+
     def __call__(self, **kw):
-        'See ISQLCommand'
+        'See zope.app.interfaces.rdb'
 
         # Try to resolve arguments
         arg_values = {}
@@ -716,38 +710,31 @@ class SQLScript(SQLCommand, Persistent):
             try:
                 # Try to find argument in keywords
                 arg_values[name] = kw[name]
-                # XXX Bare except!
-            except:
+            except KeyError:
                 # Okay, the first try failed, so let's try to find the default
                 arg = self._arguments[name]
                 try:
                     arg_values[name] = arg['default']
-                    # XXX Bare except!
-                except:
+                except KeyError:
                     # Now the argument might be optional anyways; let's check
                     try:
                         if not arg['optional']:
                             missing.append(name)
-                        # XXX Bare except!
-                    except:
+                    except KeyError:
                         missing.append(name)
 
         try:
             connection = self.getConnection()
-        except AttributeError:
+        except KeyError:
             raise AttributeError, (
-                "The database connection **%s** cannot be found." % (
+                "The database connection '%s' cannot be found." % (
                 self.connectionName))
-
-        if connection is None:
-            raise 'Database Error', (
-                '%s is not connected to a database' %'foo')# self.id)
 
         query = apply(self.template, (), arg_values)
         cache = getCacheForObj(self)
         location = getLocationForCache(self)
         if cache and location:
-            _marker = []
+            _marker = object()
             result = cache.query(location, {'query': query}, default=_marker)
             if result is not _marker:
                 return result
@@ -757,151 +744,6 @@ class SQLScript(SQLCommand, Persistent):
         return result
 
     __call__ = ContextMethod(__call__)
-
-
-    # See ISQLScript
-    arguments = property(getArgumentsString, setArguments, None,
-                         "Set the arguments that are used for the SQL Script.")
-    source = property(getSource, setSource, None,
-                      "Set the SQL template source.")
-    connectionName = property(getConnectionName, setConnectionName, None,
-                              "Connection Name for the SQL scripts.")
-
-class SQLDTML(HTML):
-    __name__ = 'SQLDTML'
-
-    commands = {}
-
-    for k, v in HTML.commands.items():
-        commands[k]=v
-
-    # add the new tags to the DTML
-    commands['sqlvar'] = SQLVar
-    commands['sqltest'] = SQLTest
-    commands['sqlgroup'] = SQLGroup
-
-
-class SQLScript(SQLCommand, Persistent):
-
-    implements(ISQLScript, IFileContent, IAttributeAnnotatable)
-
-    def __init__(self, connectionName='', source='', arguments=''):
-        self.template = SQLDTML(source)
-        self.setConnectionName(connectionName)
-        # In our case arguments should be a string that is parsed
-        self.setArguments(arguments)
-
-    def setArguments(self, arguments):
-        'See ISQLScript'
-        assert isinstance(arguments, StringTypes), \
-               '"arguments" argument of setArguments() must be a string'
-        self._arg_string = arguments
-        self._arguments = parseArguments(arguments)
-
-    def getArguments(self):
-        'See ISQLScript'
-        return self._arguments
-
-    def getArgumentsString(self):
-        'See ISQLScript'
-        return self._arg_string
-
-    def setSource(self, source):
-        'See ISQLScript'
-        self.template.munge(source)
-
-    def getSource(self):
-        'See ISQLScript'
-        return self.template.read_raw()
-
-    def getTemplate(self):
-        'See ISQLScript'
-        return self.template
-
-    def setConnectionName(self, name):
-        'See ISQLScript'
-        self._connectionName = name
-        cache = getCacheForObj(self)
-        location = getLocationForCache(self)
-
-        if cache and location:
-            cache.invalidate(location)
-
-    setConnectionName = ContextMethod(setConnectionName)
-
-    def getConnectionName(self):
-        'See ISQLScript'
-        return self._connectionName
-
-    def getConnection(self):
-        'See ISQLCommand'
-        connection_service = getService(self, "SQLDatabaseConnections")
-        connection = connection_service.getConnection(self.connectionName)
-        return connection
-
-    getConnection = ContextMethod(getConnection)
-
-    def __call__(self, **kw):
-        'See ISQLCommand'
-
-        # Try to resolve arguments
-        arg_values = {}
-        missing = []
-        for name in self._arguments.keys():
-            name = name.encode('UTF-8')
-            try:
-                # Try to find argument in keywords
-                arg_values[name] = kw[name]
-                # XXX Bare Except!
-            except:
-                # Okay, the first try failed, so let's try to find the default
-                arg = self._arguments[name]
-                try:
-                    arg_values[name] = arg['default']
-                    # XXX Bare except!
-                except:
-                    # Now the argument might be optional anyways; let's check
-                    try:
-                        if not arg['optional']:
-                            missing.append(name)
-                        # XXX Bare except!
-                    except:
-                        missing.append(name)
-
-        try:
-            connection = self.getConnection()
-        except AttributeError:
-            raise AttributeError, (
-                "The database connection **%s** cannot be found." % (
-                self.connectionName))
-
-        if connection is None:
-            raise 'Database Error', (
-                '%s is not connected to a database' %'foo')# self.id)
-
-        query = apply(self.template, (), arg_values)
-        cache = getCacheForObj(self)
-        location = getLocationForCache(self)
-        if cache and location:
-            _marker = []
-            result = cache.query(location, {'query': query}, default=_marker)
-            if result is not _marker:
-                return result
-        result = queryForResults(connection, query)
-        if cache and location:
-            cache.set(result, location, {'query': query})
-        return result
-
-    __call__ = ContextMethod(__call__)
-
-
-    # See ISQLScript
-    arguments = property(getArgumentsString, setArguments, None,
-                         "Set the arguments that are used for the SQL Script.")
-    source = property(getSource, setSource, None,
-                      "Set the SQL template source.")
-    connectionName = property(getConnectionName, setConnectionName, None,
-                              "Connection Name for the SQL scripts.")
-
+    
 
 valid_type = {'int':1, 'float':1, 'string':1, 'nb': 1}.has_key

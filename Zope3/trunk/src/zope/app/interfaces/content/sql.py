@@ -12,24 +12,30 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.5 2003/05/27 14:18:19 jim Exp $
+$Id: sql.py,v 1.6 2003/06/11 13:47:58 srichter Exp $
 """
 import zope.schema
 
 from zope.app.interfaces.rdb import ISQLCommand
-from zope.component import getService
+from zope.component import getService, ComponentLookupError
 from zope.context import ContextProperty
 from zope.app.i18n import ZopeMessageIDFactory as _
 
+class MissingInput(Exception):
+    pass
 
 class SQLConnectionName(zope.schema.TextLine):
     """SQL Connection Name"""
 
     def __allowed(self):
         """Note that this method works only if the Field is context wrapped."""
-        connection_service = getService(self.context, "SQLDatabaseConnections")
-        connections = connection_service.getAvailableConnections()
-        return connections
+        try:
+            connection_service = getService(self.context,
+                                            "SQLDatabaseConnections")
+        except ComponentLookupError:
+            return []
+        
+        return connection_service.getAvailableConnections()
 
     allowed_values = ContextProperty(__allowed)
 
@@ -52,28 +58,8 @@ class ISQLScript(ISQLCommand):
         description=_(u"The source of the page template."),
         required=True)
 
-    def setArguments(arguments):
-        """Processes the arguments (which could be a dict, string or whatever)
-        to arguments as they are needed for the rendering process."""
-
     def getArguments():
-        """Get the arguments. A method is preferred here, since some argument
-        evaluation might be done."""
-
-    def getArgumentsString():
-        """This method returns the arguments string."""
-
-    def setSource(source):
-        """Save the source of the page template."""
-
-    def getSource():
-        """Get the source of the page template."""
+        """Returns a set of arguments. Note that this is not a string!"""
 
     def getTemplate():
         """Get the SQL DTML Template object."""
-
-    def setConnectionName(name):
-        """Save the connection name for this SQL Script."""
-
-    def getConnectionName():
-        """Get the connection name for this SQL Script."""

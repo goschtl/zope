@@ -324,13 +324,6 @@
       />
 
   <browser:menuItem
-      menu="zmi_views"
-      for="zope.app.interfaces.content.sql.ISQLScript"
-      title="Cache"
-      action="Caching.html"
-      />
-
-  <browser:menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="SQLScript"

@@ -12,10 +12,13 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.11 2003/06/07 06:37:24 stevea Exp $
+$Id: test_sqlscript.py,v 1.12 2003/06/11 13:47:58 srichter Exp $
 """
 
 import unittest
+
+from zope.interface import implements
+from zope.interface.implements import implements as setImplements
 
 from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.rdb import IZopeConnection
@@ -39,7 +42,6 @@ from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.services.service import ISimpleService
-from zope.interface import implements
 
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties
@@ -129,6 +131,7 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
+        setImplements(SQLScript, IAttributeAnnotatable)
         sm.defineService('SQLDatabaseConnections', IConnectionService)
         sm.provideService('SQLDatabaseConnections', ConnectionServiceStub())
         self._old_getNextServiceManager = nextservice.getNextServiceManager
@@ -180,14 +183,11 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
         self.assertEqual(expected,
                          self._getScript().getSource())
 
-    def testSetConnectionName(self):
+    def testConnectionName(self):
         script = self._getScript()
-        script.setConnectionName('test_conn')
-        self.assertEqual('test_conn', script.getConnectionName())
-
-    def testGetConnectionName(self):
-        self.assertEqual('my_connection',
-                         self._getScript().getConnectionName())
+        self.assertEqual('my_connection', script.connectionName)
+        script.connectionName = 'test_conn'
+        self.assertEqual('test_conn', script.connectionName)
 
     def testSQLScript(self):
         result = self._getScript()(id=1)

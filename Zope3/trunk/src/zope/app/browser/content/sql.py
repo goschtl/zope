@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.8 2003/06/07 06:37:19 stevea Exp $
+$Id: sql.py,v 1.9 2003/06/11 13:47:57 srichter Exp $
 """
-from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.rdb import DatabaseException
@@ -23,18 +22,6 @@ from zope.context import ContextMethod
 class SQLScriptTest(BrowserView):
     """Edit View for SQL Scripts"""
 
-    # XXX: if the following line is uncommented, @@test.html stops working
-    # __implements__ = BrowserView.__implements__
-    #
-    # Just found the reason: if you specify __implements__ here, it overrides
-    # the one defined in zope.app.pagetemplate.simpeviewclass.simple,
-    # and IBrowserPublisher disappears from the interface list.  Instead,
-    # __implements__ of the newly created class (see SimpleViewClass in the
-    # same module) ought to be a union of __implements__ of all the base
-    # classes.  Or perhaps it should be done by zope.app.browser.form.editview?
-    #
-    # XXX: is this still true now that we have the new interfaces package?
-
     __used_for__ = ISQLScript
 
     error = None
@@ -42,20 +29,19 @@ class SQLScriptTest(BrowserView):
     def getArguments(self):
         form = self.request.form
         arguments = {}
-        # XXX does anyone know what arg[0] and arg[1] are supposed to be?
-        for arg in self.context.getArguments().items():
-            value = form.get(arg[0])
+
+        for argname, argvalue in self.context.getArguments().items():
+            value = form.get(argname)
             if value is None:
-                value = arg[1].get('default')
+                value = argvalue.get('default')
             if value is not None:
-                arguments[arg[0].encode('UTF-8')] = value
+                arguments[argname.encode('UTF-8')] = value
         return arguments
 
     def getTestResults(self):
-        self.context.getConnection()
         try:
             return self.context(**self.getArguments())
-        except (DatabaseException, AttributeError), error:
+        except (DatabaseException, AttributeError, Exception), error:
             self.error = error
             return []
 
