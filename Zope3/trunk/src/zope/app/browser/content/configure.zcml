@@ -402,6 +402,7 @@
 
   <!-- toFS.snarf and fromFS.snarf views, for new fssync tools -->
 
+  <!-- fssync checkout, update -->
   <browser:page
       for="zope.interface.Interface"
       name="toFS.snarf"
@@ -410,6 +411,7 @@
       attribute="show" 
       />
 
+  <!-- fssync commit -->
   <browser:page
       for="zope.interface.Interface"
       name="fromFS.snarf"
@@ -418,6 +420,7 @@
       attribute="commit"
       />
 
+  <!-- fssync checkin -->
   <browser:page
       for="zope.interface.Interface"
       name="checkin.snarf"
