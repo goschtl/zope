@@ -17,3 +17,5 @@ $Id$
 """
 
 from utility import LDAPAdapter
+from utility import ManageableLDAPAdapter
+
