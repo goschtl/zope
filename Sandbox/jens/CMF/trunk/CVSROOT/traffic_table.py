@@ -37,8 +37,9 @@ tmpaddr = ["klm@digicool.com"]
 zopeaddr = ["klm@digicool.com"]
 
 table = [
-    {'path': "CVSROOT", 'addrs': "digicool-cvs@zope.org",
+    {'path': "CVSROOT", 'addrs': ["digicool-cvs@zope.org"],
      'excludes': ["/history"]},
+
     {'path': "test", 'addrs': tmpaddr},
 
     {'path': "Components/GreyThing", 'addrs': tmpaddr},
