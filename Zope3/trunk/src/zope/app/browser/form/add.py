@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.5 2003/01/09 14:13:04 jim Exp $
+$Id: add.py,v 1.6 2003/01/28 01:50:14 rdmurray Exp $
 """
 
 import sys
@@ -23,7 +23,6 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
-from zope.app.form.utility import haveWidgetsData, fieldNames
 from zope.configuration.action import Action
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
