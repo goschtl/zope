@@ -25,7 +25,7 @@ with the module, by calling defineProxyType, however, it
 short-circuits the definitions for two types, which, hopefully will be
 the only two types that need to get registered. ;)
 
-$Id: ProxyIntrospection.py,v 1.2 2002/06/10 23:29:31 jim Exp $
+$Id: ProxyIntrospection.py,v 1.3 2002/07/18 18:05:46 jeremy Exp $
 """
 from IProxyIntrospection import IProxyIntrospection
 
@@ -98,7 +98,7 @@ class ProxyRegistry:
         raise TypeError('excessive proxy nesting')
 
     def isProxy(self, obj):
-        """Checkj whether the given object is a proxy
+        """Check whether the given object is a proxy
         """
         return type(obj) in self._proxy_types
     
