@@ -41,19 +41,12 @@ class ISampleObject(interfaces.IField):
 class SampleObject(object):
     implements(ISampleObject)
 
-class ISampleVocabulary(
-    interfaces.IVocabularyTokenized, interfaces.IVocabulary):
+class ISampleVocabulary(interfaces.IVocabularyTokenized,
+                        interfaces.IVocabulary):
     pass
-
-class SampleVocabularyQuery(object):
-    implements(interfaces.IIterableVocabularyQuery)
-    def __init__(self, vocabulary):
-        self.vocabulary = vocabulary    
 
 class SampleVocabulary(vocabulary.SimpleVocabulary):
     implements(ISampleVocabulary)
-    def getQuery(self):
-        return SampleVocabularyQuery(self)
 
 request = TestRequest()
 sample = SampleObject()
