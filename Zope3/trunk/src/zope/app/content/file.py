@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.10 2003/06/07 06:37:23 stevea Exp $
+$Id: file.py,v 1.11 2003/07/23 21:46:18 philikon Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -53,16 +53,14 @@ class File(Persistent):
 
         if contentType is not None:
             self._contentType = contentType
-        if hasattr(data, '__class__') and data.__class__ is FileUpload \
-           and not data.filename:
+        if isinstance(data, FileUpload) and not data.filename:
             data = None          # Ignore empty files
         if data is not None:
             self.data = data
 
     def getData(self):
         '''See interface IFile'''
-        if hasattr(self._data, '__class__') and \
-           self._data.__class__ is FileChunk:
+        if isinstance(self._data, FileChunk):
             return str(self._data)
         else:
             return self._data
@@ -86,7 +84,7 @@ class File(Persistent):
             raise TypeError('Cannot set None data on a file.')
 
         # Handle case when data is already a FileChunk
-        if hasattr(data, '__class__') and data.__class__ is FileChunk:
+        if isinstance(data, FileChunk):
             size = len(data)
             self._data, self._size = data, size
             return

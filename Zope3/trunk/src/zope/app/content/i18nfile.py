@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: i18nfile.py,v 1.3 2003/06/07 06:37:23 stevea Exp $
+$Id: i18nfile.py,v 1.4 2003/07/23 21:46:18 philikon Exp $
 """
 
 import persistence
@@ -99,8 +99,7 @@ class I18nFile(persistence.Persistent):
 
         if contentType is not None:
             self.setContentType(contentType)
-        if hasattr(data, '__class__') and data.__class__ is FileUpload \
-           and not data.filename:
+        if isinstance(data, FileUpload) and not data.filename:
             data = None          # Ignore empty files
         if data is not None:
             self.setData(data, language)
