@@ -35,6 +35,12 @@
         />
 
     <meta:directive
+        name="subscriber"
+        schema="zope.app.component.metadirectives.ISubscriberDirective"
+        handler="zope.app.component.metaconfigure.subscriber"
+        />
+
+    <meta:directive
         name="utility"
         schema="zope.app.component.metadirectives.IUtilityDirective"
         handler="zope.app.component.metaconfigure.utility"
@@ -168,6 +174,12 @@
        name="traversable"
        schema=".fivedirectives.ITraversableDirective"
        handler=".fiveconfigure.traversable"
+       />
+
+    <meta:directive
+       name="sendEvents"
+       schema=".fivedirectives.ISendEventsDirective"
+       handler=".eventconfigure.sendEvents"
        />
 
     <!-- viewable is deprecated, use traversable instead -->

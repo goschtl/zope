@@ -294,6 +294,36 @@
     permission="zope2.Public"
     />
 
+  <!-- subscribe to all events -->
+  <five:sendEvents
+      class=".simplecontent.SimpleContent"
+     />
+
+  <subscriber 
+      factory=".subscriber.objectEventSubscriber"
+      for="zope.app.event.interfaces.IObjectEvent" 
+     />
+
+  <subscriber
+      factory=".subscriber.objectMovedEventSubscriber"
+      for="zope.app.container.interfaces.IObjectMovedEvent"
+      />
+
+  <subscriber
+      factory=".subscriber.objectAddedEventSubscriber"
+      for="zope.app.container.interfaces.IObjectAddedEvent"
+      />
+
+  <subscriber
+      factory=".subscriber.objectCopiedEventSubscriber"
+      for="zope.app.event.interfaces.IObjectCopiedEvent"
+      />
+
+  <subscriber
+      factory=".subscriber.objectRemovedEventSubscriber"
+      for="zope.app.container.interfaces.IObjectRemovedEvent"
+      />
+
   <!-- as new style classes are ignored, zope.app.form.browser
        can be imported -->
 

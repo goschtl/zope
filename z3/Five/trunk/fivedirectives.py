@@ -49,3 +49,12 @@ class IDefaultViewableDirective(Interface):
         required=True
         )
 
+class ISendEventsDirective(Interface):
+    """Make instances of class send events.
+    """
+
+    class_ = GlobalObject(
+        title=u"Class",
+        required=True
+        )
+

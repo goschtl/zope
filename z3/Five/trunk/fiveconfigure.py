@@ -42,7 +42,8 @@ def loadProducts(_context):
 
     # now load their configure.zcml
     for product in products:
-        zcml = os.path.join(os.path.dirname(product.__file__), 'configure.zcml')
+        zcml = os.path.join(os.path.dirname(product.__file__),
+                            'configure.zcml')
         if os.path.isfile(zcml):
             xmlconfig.include(_context, zcml, package=product)
 
@@ -148,4 +149,3 @@ def viewable(_context, class_):
         callable = classTraversable,
         args=(class_,)
         )
-    
