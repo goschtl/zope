@@ -2,30 +2,32 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: PropertySetDef.py,v 1.3 2002/07/16 22:54:03 jeremy Exp $
+$Id: PropertySetDef.py,v 1.4 2002/12/20 20:22:11 bwarsaw Exp $
 """
 
 from Interface.Verify import verifyObject
 from Zope.App.OFS.PropertySets.IPropertySetDef import IPropertySetDef
 from Zope.Exceptions import DuplicationError
 
+
 class Field:
     pass
 
+
 class PropertySetDefTest:
-    "Test the IPropertySetDef interface"
+    """Test the IPropertySetDef interface"""
 
     def setUp(self):
         self.field1 = Field()
@@ -37,11 +39,11 @@ class PropertySetDefTest:
         verifyObject(IPropertySetDef, self.psd)
 
     def testStorage(self):
-        """test __getitem__"""
+        # test __getitem__
         self.failUnlessEqual(self.field1, self.psd.getField('test1'))
 
     def testGetitemException(self):
-        """test getField raises exception on unknown key"""
+        # test getField raises exception on unknown key
         self.assertRaises(KeyError, self.psd.getField, 'randomkey')
 
     def testHas_field(self):
