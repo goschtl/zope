@@ -66,6 +66,29 @@ class IManageableLDAPAdapter(ILDAPAdapter,
 
 class ILDAPConnection(Interface):
     """LDAP connection to a server, bound to a user."""
+
+    def add(dn, entry):
+        """Add an entry.
+
+        - dn is a unicode dn.
+
+        - entry is a mapping whose values are lists.
+        """
+
+    def delete(dn):
+        """Delete an entry.
+
+        dn is a unicode dn.
+        """
+
+    def modify(dn, entry):
+        """Modify an entry.
+
+        - dn is a unicode dn.
+
+        - entry is the subset of attributes we want to modify.
+        """
+
     def search(base, scope='one', filter='(objectclass=*)', attrs=None):
         """Search an LDAP server.
 
