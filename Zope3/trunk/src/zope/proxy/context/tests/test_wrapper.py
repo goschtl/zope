@@ -26,6 +26,84 @@ _marker = object()
 # Otherwise, it looks like we have a refcount leak.
 class_lookup = {}
 
+class ForTestContextAwareGetattr(ContextAware):
+    def __init__(self, retval):
+        self.args = None
+        self.retval = retval
+    def __getattr__(self, name):
+        if name == '__del__':
+            # We don't want Python's gc to think that we have a
+            # __del__, otherwise cycles will not be collected.
+            raise AttributeError, name
+        self.args = self, name
+        return self.__dict__['retval']
+    def getArgs(self):
+        # Need to get __dict__ from the clean object, because it
+        # is a special descriptor and complains bitterly about
+        # being got from the wrong kind of object.
+        return getobject(self).__dict__['args']
+
+class ForTestNormalGetattr(object):
+    def __init__(self, retval):
+        self.args = None
+        self.retval = retval
+    def __getattr__(self, name):
+        if name == '__del__':
+            # We don't want Python's gc to think that we have a
+            # __del__, otherwise cycles will not be collected.
+            raise AttributeError, name
+        self.__dict__['args'] = self, name
+        return self.__dict__['retval']
+    def getArgs(self):
+        return self.__dict__['args']
+
+class ForTestContextMethodGetattr(object):
+    def __getattr__(self, name):
+        return 23
+    __getattr__ = ContextMethod(__getattr__)
+
+class ForTestContextMethodGetattr2(object):
+    def __getattr__(self, name):
+        return 23
+    __getattr__ = classmethod(__getattr__)
+
+class ForTestProperty(object):
+    def getFoo(self):
+        self.called_with = self
+        return 42
+    def setFoo(self, value):
+        self.called_with = self, value
+    foo = property(getFoo, setFoo)
+    context_foo = ContextProperty(getFoo, setFoo)
+
+class ForContextAwareProperty(ContextAware):
+    def getFoo(self):
+        self.called_with = self
+        return 42
+    def setFoo(self, value):
+        self.called_with = self, value
+    foo = property(getFoo, setFoo)
+
+class ForTestWrapperSubclassAttributes(wrapper.Wrapper):
+    def __init__(self, ob):
+        super(ForTestWrapperSubclassAttributes, self).__init__(ob)
+        self.foo = 1
+
+class ForTestSubclassConstructor(wrapper.Wrapper):
+    def __init__(self, *args, **kwds):
+        super(ForTestSubclassConstructor, self).__init__('foo', **kwds)
+
+class ForTestSetattr(object):
+    def __setattr__(self, name, value):
+        self.__dict__['value_called'] = self, name, value
+
+class ForTestSetattrContextAware(ForTestSetattr, ContextAware):
+    pass
+
+class ForTestSetattrContextMethod(ForTestSetattr):
+    __setattr__ = ContextMethod(ForTestSetattr.__setattr__)
+
+
 class WrapperTestCase(ProxyTestCase):
     def new_proxy(self, o, c=None):
         return wrapper.Wrapper(o, c)
@@ -38,18 +116,13 @@ class WrapperTestCase(ProxyTestCase):
         self.assertEquals(wrapper.getobject(w), (o1, o2))
         self.assert_(wrapper.getcontext(w) is o3)
 
-
     def test_subclass_constructor(self):
-        class MyWrapper(wrapper.Wrapper):
-            def __init__(self, *args, **kwds):
-                super(MyWrapper, self).__init__('foo', **kwds)
-
-        w = MyWrapper(1, 2, key='value')
+        w = ForTestSubclassConstructor(1, 2, key='value')
         self.assertEquals(wrapper.getobject(w), 'foo')
         self.assertEquals(wrapper.getdict(w), {'key': 'value'})
 
         # __new__ catches too many positional args:
-        self.assertRaises(TypeError, MyWrapper, 1, 2, 3)
+        self.assertRaises(TypeError, ForTestSubclassConstructor, 1, 2, 3)
 
     def test_wrapper_basics(self):
         o1 = 1
@@ -76,15 +149,10 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(wrapper.getcontext(w) is c)
 
     def test_wrapper_subclass_attributes(self):
-        class MyWrapper(wrapper.Wrapper):
-            def __init__(self, ob):
-                super(MyWrapper, self).__init__(ob)
-                self.foo = 1
-
         o = Thing()
         o.foo = 'not 1'
         o.bar = 2
-        w = MyWrapper(o)
+        w = ForTestWrapperSubclassAttributes(o)
         self.assert_(w.foo == 1)
         self.assert_(w.bar == 2)
 
@@ -122,23 +190,8 @@ class WrapperTestCase(ProxyTestCase):
             return retval
 
     def test_normal_getattr(self):
-        class X(object):
-            def __init__(self, retval):
-                self.args = None
-                self.retval = retval
-            def __getattr__(self, name):
-                if name == '__del__':
-                    # We don't want Python's gc to think that we have a
-                    # __del__, otherwise cycles will not be collected.
-                    raise AttributeError, name
-                self.__dict__['args'] = self, name
-                return self.__dict__['retval']
-            def getArgs(self):
-                return self.__dict__['args']
-
         context = object()
-
-        x = X(23)
+        x = ForTestNormalGetattr(23)
         p = self.new_proxy(x, context)
         self.assertEquals(p.foo, 23)
         # Nothing special happens; we don't rebind the self of __getattr__
@@ -146,24 +199,7 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(p.getArgs()[0] is x)
 
     def test_ContextAware_getattr(self):
-        class Y(ContextAware):
-            def __init__(self, retval):
-                self.args = None
-                self.retval = retval
-            def __getattr__(self, name):
-                if name == '__del__':
-                    # We don't want Python's gc to think that we have a
-                    # __del__, otherwise cycles will not be collected.
-                    raise AttributeError, name
-                self.args = self, name
-                return self.__dict__['retval']
-            def getArgs(self):
-                # Need to get __dict__ from the clean object, because it
-                # is a special descriptor and complains bitterly about
-                # being got from the wrong kind of object.
-                return getobject(self).__dict__['args']
-
-        y = Y(23)
+        y = ForTestContextAwareGetattr(23)
         p = self.new_proxy(y, 23)
         self.assertEquals(p.foo, 23)
         # Nothing special happens; we don't rebind the self of __getattr__
@@ -171,36 +207,18 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(p.getArgs()[0] is y)
 
     def test_ContextMethod_getattr(self):
-        class Z(object):
-            def __getattr__(self, name):
-                return 23
-            __getattr__ = ContextMethod(__getattr__)
-
-        z = Z()
+        z = ForTestContextMethodGetattr()
         self.assertRaises(TypeError, getattr, z, 'foo')
         p = self.new_proxy(z, 23)
         self.assertRaises(TypeError, getattr, p, 'foo')
 
         # This is the same behaviour that you get if you try to make
         # __getattr__ a classmethod.
-        class ZZ(object):
-            def __getattr__(self, name):
-                return 23
-            __getattr__ = classmethod(__getattr__)
-
-        zz = ZZ()
+        zz = ForTestContextMethodGetattr2()
         self.assertRaises(TypeError, getattr, zz, 'foo')
 
     def test_property(self):
-        class X(object):
-            def getFoo(self):
-                self.called_with = self
-                return 42
-            def setFoo(self, value):
-                self.called_with = self, value
-            foo = property(getFoo, setFoo)
-            context_foo = ContextProperty(getFoo, setFoo)
-        x = X()
+        x = ForTestProperty()
         p = self.new_proxy(x)
         self.assertEquals(p.foo, 42)
         self.assert_(x.called_with is x)
@@ -214,14 +232,7 @@ class WrapperTestCase(ProxyTestCase):
         self.assert_(x.called_with[0] is p)
 
     def test_ContextAware_property(self):
-        class Y(ContextAware):
-            def getFoo(self):
-                self.called_with = self
-                return 42
-            def setFoo(self, value):
-                self.called_with = self, value
-            foo = property(getFoo, setFoo)
-        y = Y()
+        y = ForContextAwareProperty()
         p = self.new_proxy(y)
         self.assertEquals(p.foo, 42)
         self.assert_(y.called_with is p)
@@ -231,30 +242,24 @@ class WrapperTestCase(ProxyTestCase):
 
     def test_setattr(self):
         value_called = [None]
-        class X(object):
-            def __setattr__(self, name, value):
-                value_called[0] = self, name, value
 
-        x = X()
+        x = ForTestSetattr()
         p = self.new_proxy(x)
         p.foo = 'bar'
-        self.assertEqual(value_called[0], (p, 'foo', 'bar'))
-        self.assert_(value_called[0][0] is x)
+        self.assertEqual(x.value_called, (p, 'foo', 'bar'))
+        self.assert_(x.value_called[0] is x)
 
-        class ContextAwareX(X, ContextAware):
-            pass
-        cax = ContextAwareX()
+        cax = ForTestSetattrContextAware()
         p = self.new_proxy(cax)
         p.foo = 'bar'
-        self.assertEqual(value_called[0], (p, 'foo', 'bar'))
-        self.assert_(value_called[0][0] is cax)
+        self.assertEqual(cax.value_called, (p, 'foo', 'bar'))
+        self.assert_(cax.value_called[0] is cax)
 
-        X.__setattr__ = ContextMethod(X.__setattr__)
-        x = X()
+        x = ForTestSetattrContextMethod()
         p = self.new_proxy(x)
         p.foo = 'bar'
-        self.assertEqual(value_called[0], (p, 'foo', 'bar'))
-        self.assert_(value_called[0][0] is x)
+        self.assertEqual(x.value_called, (p, 'foo', 'bar'))
+        self.assert_(x.value_called[0] is x)
 
     def test_getitem(self):
         p1, p2, p3, context = self.make_proxies('__getitem__')

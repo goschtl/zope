@@ -675,7 +675,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 #define FILLSLOTDEFS \
     PyObject *wrapped; \
     PyObject *descriptor; \
-    PyObject *name;
+    PyObject *wrapped_type;
 
 #define FILLSLOT(NAME, IDX, BADVAL) \
     wrapped = Proxy_GET_OBJECT(self); \
@@ -685,13 +685,27 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
                      (NAME)); \
             return (BADVAL); \
     } \
-    name = SlotStrings[IDX]; \
-    descriptor = _PyType_Lookup(wrapped->ob_type, name);\
+    descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[IDX]);\
     if (descriptor != NULL && \
         descriptor->ob_type->tp_descr_get != NULL && \
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
             PyObject_TypeCheck(wrapped, &ContextAwareType))\
-        )
+        ) { \
+        wrapped_type = PyObject_Type(wrapped); \
+        if (wrapped_type == NULL) \
+             return (BADVAL); \
+        descriptor = descriptor->ob_type->tp_descr_get( \
+                    descriptor, self, wrapped_type); \
+        if (descriptor == NULL) \
+             return (BADVAL);
+
+/* Concerning the last two lines of the above macro:
+ * Calling tp_descr_get returns a new reference.
+ * We need to decref it once we've finished using it.
+ * It will be available in the 'descriptor' variable.
+ * tp_descr_get should never return NULL. So, we can use
+ * Py_DECREF on the new value of 'descriptor'.
+ */
 
 #define FILLSLOTBASE(NAME, IDX) \
     FILLSLOTDEFS \
@@ -700,10 +714,6 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
 #define FILLSLOTBASEINT(NAME, IDX) \
     FILLSLOTDEFS \
     FILLSLOT(NAME, IDX, -1)
-
-#define REBOUNDDESCRIPTOR \
-    descriptor->ob_type->tp_descr_get( \
-                    descriptor, self, PyObject_Type(wrapped))
 
 
 /* Sequence/mapping protocol: __len__, __getitem__, __setitem__
@@ -714,8 +724,9 @@ wrap_length(PyObject *self)
 {
     PyObject *res;
     int len;
-    FILLSLOTBASEINT("__len__", LEN_IDX) {
-        res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+    FILLSLOTBASEINT("__len__", LEN_IDX)
+        res = PyObject_CallFunctionObjArgs(descriptor, NULL);
+        Py_DECREF(descriptor);
         if (res == NULL)
             return -1;
         len = (int)PyInt_AsLong(res);
@@ -727,8 +738,12 @@ wrap_length(PyObject *self)
 
 static PyObject *
 wrap_getitem(PyObject *self, PyObject *v) {
+    PyObject *retval;
     FILLSLOTBASE("__getitem__", GETITEM_IDX)
-        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, v, NULL);
+        retval = PyObject_CallFunctionObjArgs(descriptor, v, NULL);
+        Py_DECREF(descriptor);
+        return retval;
+    }
     return PyObject_GetItem(wrapped, v);
 }
 
@@ -739,8 +754,9 @@ wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
     FILLSLOTDEFS
 
     if (value == NULL) {
-        FILLSLOT("__delitem__", DELITEM_IDX, -1) {
-            res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, key, NULL);
+        FILLSLOT("__delitem__", DELITEM_IDX, -1)
+            res = PyObject_CallFunctionObjArgs(descriptor, key, NULL);
+            Py_DECREF(descriptor);
             if (res == NULL)
                 return -1;
             Py_DECREF(res);
@@ -748,9 +764,9 @@ wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
         }
         return PyObject_DelItem(wrapped, key);
     } else {
-        FILLSLOT("__setitem__", SETITEM_IDX, -1) {
-            res = PyObject_CallFunctionObjArgs(
-                            REBOUNDDESCRIPTOR, key, value, NULL);
+        FILLSLOT("__setitem__", SETITEM_IDX, -1)
+            res = PyObject_CallFunctionObjArgs(descriptor, key, value, NULL);
+            Py_DECREF(descriptor);
             if (res == NULL)
                 return -1;
             Py_DECREF(res);
@@ -766,16 +782,24 @@ wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
 static PyObject *
 wrap_iter(PyObject *self)
 {
+    PyObject *retval;
     FILLSLOTBASE("__iter__", ITER_IDX)
-        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+        retval = PyObject_CallFunctionObjArgs(descriptor, NULL);
+        Py_DECREF(descriptor);
+        return retval;
+    }
     return PyObject_GetIter(wrapped);
 }
 
 static PyObject *
 wrap_iternext(PyObject *self)
 {
+    PyObject *retval;
     FILLSLOTBASE("next", NEXT_IDX)
-        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+        retval = PyObject_CallFunctionObjArgs(descriptor, NULL);
+        Py_DECREF(descriptor);
+        return retval;
+    }
     return PyIter_Next(Proxy_GET_OBJECT(self));
 }
 
@@ -787,8 +811,9 @@ wrap_contains(PyObject *self, PyObject *value)
 {
     PyObject *res;
     int result;
-    FILLSLOTBASEINT("__contains__", CONTAINS_IDX) {
-        res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, value, NULL);
+    FILLSLOTBASEINT("__contains__", CONTAINS_IDX)
+        res = PyObject_CallFunctionObjArgs(descriptor, value, NULL);
+        Py_DECREF(descriptor);
         if (res == NULL)
             return -1;
         result = PyObject_IsTrue(res);
@@ -804,23 +829,35 @@ wrap_contains(PyObject *self, PyObject *value)
 static PyObject *
 wrap_call(PyObject *self, PyObject *args, PyObject *kw)
 {
+    PyObject *retval;
     FILLSLOTDEFS
 
     if (kw) {
         FILLSLOT("__call__", CALL_IDX, NULL)
-            return PyEval_CallObjectWithKeywords(REBOUNDDESCRIPTOR, args, kw);
+            retval = PyEval_CallObjectWithKeywords(descriptor, args, kw);
+            Py_DECREF(descriptor);
+            return retval;
+        }
         return PyEval_CallObjectWithKeywords(wrapped, args, kw);
     } else {
         FILLSLOT("__call__", CALL_IDX, NULL)
-            return PyObject_CallObject(REBOUNDDESCRIPTOR, args);
+            retval = PyObject_CallObject(descriptor, args);
+            Py_DECREF(descriptor);
+            return retval;
+        }
         return PyObject_CallObject(wrapped, args);
     }
 }
 
 static PyObject *
 wrap_str(PyObject *self) {
+    PyObject *retval;
+
     FILLSLOTBASE("__str__", STR_IDX)
-        return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
+        retval =PyObject_CallFunctionObjArgs(descriptor, NULL);
+        Py_DECREF(descriptor);
+        return retval;
+    }
     return PyObject_Str(wrapped);
 }
 
