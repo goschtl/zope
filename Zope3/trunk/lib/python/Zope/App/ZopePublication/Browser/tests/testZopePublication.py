@@ -281,15 +281,16 @@ class BrowserPublicationTests(BasePublicationTests):
 
     def testTraverseNameApplicationControl(self):
         from Zope.App.OFS.ApplicationControl.ApplicationControl \
-             import ApplicationController
+             import applicationController, applicationControllerRoot
         pub = self.klass(self.db)
         r = self._createRequest('/++etc++ApplicationController',pub)
-        ac = pub.traverseName(r, None, '++etc++ApplicationController')
-        self.assertEqual(ac, ApplicationController)
+        ac = pub.traverseName(r,
+                              applicationControllerRoot,
+                              '++etc++ApplicationController')
+        self.assertEqual(ac, applicationController)
         r = self._createRequest('/++etc++ApplicationController',pub)
         app = r.publication.getApplication(r)
-        self.assertEqual(app, ApplicationController)
-        self.failIf(r.getTraversalStack())
+        self.assertEqual(app, applicationControllerRoot)
 
 
 def test_suite():

@@ -15,7 +15,7 @@
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from Zope.App.OFS.ApplicationControl.ApplicationControl import \
-  ApplicationController
+  applicationController
 from Zope.App.OFS.ApplicationControl.ServerControl.IServerControl import \
   IServerControl
 from \
@@ -37,13 +37,13 @@ class Test(PlacefulSetup, TestCase):
               IServerControl, ServerControl())
 
         test_serverctrl = self._TestView__newView(
-            ApplicationController,
+            applicationController,
             {'shutdown': 1},
             )
         test_serverctrl.action()
 
         test_serverctrl = self._TestView__newView(
-            ApplicationController,
+            applicationController,
             {'restart': 1},
             )
         test_serverctrl.action()

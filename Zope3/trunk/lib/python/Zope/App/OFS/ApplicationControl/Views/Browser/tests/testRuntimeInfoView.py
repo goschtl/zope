@@ -15,7 +15,7 @@
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from Zope.App.OFS.ApplicationControl.ApplicationControl import \
-  ApplicationController
+  applicationController
 from Zope.App.OFS.ApplicationControl.IApplicationControl import \
   IApplicationControl
 from Zope.App.OFS.ApplicationControl.IRuntimeInfo import IRuntimeInfo
@@ -35,7 +35,7 @@ class Test(PlacefulSetup, TestCase):
     def test_RuntimeInfoView(self):
         getService(None,'Adapters').provideAdapter(
               IApplicationControl, IRuntimeInfo, RuntimeInfo)
-        test_runtimeinfoview = self._TestView__newView(ApplicationController)
+        test_runtimeinfoview = self._TestView__newView(applicationController)
 
         test_format = test_runtimeinfoview.runtimeInfo()
         self.failUnless(isinstance(test_format, DictType))

@@ -13,9 +13,11 @@
 ##############################################################################
 __doc__ = """ Application Control
 
-$Id: ApplicationControl.py,v 1.2 2002/06/10 23:27:51 jim Exp $"""
+$Id: ApplicationControl.py,v 1.3 2002/12/20 19:45:44 jim Exp $"""
 
 from IApplicationControl import IApplicationControl
+from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
+from Zope.Security.Checker import ProxyFactory, NamesChecker
 
 import time
 
@@ -47,5 +49,6 @@ class ApplicationControl:
     #
     ############################################################
 
-ApplicationController = ApplicationControl()
-
+applicationController = ApplicationControl()
+applicationControllerRoot = ProxyFactory(RootFolder(),
+                                         NamesChecker("__class__"))

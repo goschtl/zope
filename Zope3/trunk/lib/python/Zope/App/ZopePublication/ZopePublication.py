@@ -33,6 +33,9 @@ from Zope.App.ComponentArchitecture.IServiceManagerContainer \
 
 from Zope.Exceptions import Unauthorized
 
+from Zope.App.OFS.ApplicationControl.ApplicationControl \
+     import applicationControllerRoot
+
 from Zope.App.Security.Registries.PrincipalRegistry \
      import principalRegistry as prin_reg
 
@@ -128,12 +131,9 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
         # If the first name is '++etc++ApplicationControl', then we should
         # get it rather than look in the database!
         stack = request.getTraversalStack()
-        if stack:
-            name = stack[-1]
-            if name == '++etc++ApplicationController':
-                stack.pop() # consume the name
-                request.setTraversalStack(stack) # Reset the stack
-                return self.traverseName(request, None, name)
+
+        if '++etc++ApplicationController' in stack:
+            return applicationControllerRoot
         
         # Open the database.
         version = request.get(self.version_cookie, '')

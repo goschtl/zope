@@ -13,10 +13,10 @@
 ##############################################################################
 """ Register Application Control configuration directives.
 
-$Id: metaConfigure.py,v 1.2 2002/06/10 23:27:51 jim Exp $
+$Id: metaConfigure.py,v 1.3 2002/12/20 19:45:44 jim Exp $
 """
 
-from ApplicationControl import ApplicationController
+from ApplicationControl import applicationController
 from Zope.Configuration.Action import Action
 
 
@@ -24,7 +24,7 @@ def registerView(_context, name, title):
     return [
         Action(
             discriminator = ('application-control:registerView', name),
-            callable = ApplicationController.registerView,
+            callable = applicationController.registerView,
             args = (name, title),
             )
         ]

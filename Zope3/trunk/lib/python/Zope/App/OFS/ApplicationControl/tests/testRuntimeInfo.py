@@ -13,7 +13,7 @@
 """
 
 Revision information:
-$Id: testRuntimeInfo.py,v 1.3 2002/07/17 16:54:16 jeremy Exp $
+$Id: testRuntimeInfo.py,v 1.4 2002/12/20 19:45:45 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ import os, sys, time
 from Zope.ComponentArchitecture import getService
 from Zope.App.OFS.ApplicationControl.IRuntimeInfo import IRuntimeInfo
 from Zope.App.OFS.ApplicationControl.ApplicationControl import \
-  ApplicationController
+  applicationController
 from Zope.App.OFS.ApplicationControl.IZopeVersion import IZopeVersion
 
 # seconds, time values may differ in order to be assumed equal
@@ -45,7 +45,7 @@ class Test(PlacefulSetup, TestCase):
 
     def _Test__new(self):
         from Zope.App.OFS.ApplicationControl.RuntimeInfo import RuntimeInfo
-        return RuntimeInfo(ApplicationController)
+        return RuntimeInfo(applicationController)
 
     ############################################################
     # Interface-driven tests:
@@ -86,7 +86,7 @@ class Test(PlacefulSetup, TestCase):
         runtime_info = self._Test__new()
         # whats the uptime we expect?
 
-        start_time = ApplicationController.getStartTime()       
+        start_time = applicationController.getStartTime()       
         asserted_uptime = time.time() - start_time
 
         # get the uptime the current implementation calculates

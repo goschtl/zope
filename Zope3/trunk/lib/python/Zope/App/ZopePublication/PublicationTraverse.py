@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PublicationTraverse.py,v 1.7 2002/12/17 19:03:09 stevea Exp $
+$Id: PublicationTraverse.py,v 1.8 2002/12/20 19:45:46 jim Exp $
 """
 
 from Zope.ComponentArchitecture import queryView, getService
@@ -22,8 +22,6 @@ from types import StringTypes
 from Zope.Proxy.ContextWrapper import ContextWrapper 
 
 from Zope.App.OFS.Container.IContainer import IWriteContainer
-from Zope.App.OFS.ApplicationControl.ApplicationControl \
-     import ApplicationController
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.App.Traversing.Namespaces import namespaceLookup
 from Zope.App.Traversing.ParameterParsing import parameterizedNameParse
