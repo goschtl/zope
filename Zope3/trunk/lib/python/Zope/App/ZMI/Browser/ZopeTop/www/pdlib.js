@@ -13,7 +13,7 @@
 // A library for manipulating objects on a page with object selection,
 // context menus, and drag and drop.  Mostly DOM 2 oriented, with bits
 // for IE compatibility.
-// $Id: pdlib.js,v 1.1 2002/11/20 21:27:21 shane Exp $
+// $Id: pdlib.js,v 1.2 2002/11/21 19:57:39 shane Exp $
 
 // The following variables and functions are documented for use by
 // scripts that use this library:
@@ -45,9 +45,10 @@ var pd_selected_item = null;     // Non-null when exactly one item is selected
 var pd_drag_select_mode = null; // In drag-select mode, -1 or 1, otherwise null
 var pd_node_setup = {};          // Object containing node setup functions
 var pd_max_contextmenu_width = 250; // Threshold for faulty browsers
+var pd_invisible_targets = [];   // A list of normally invisible drop targets
 
 var pd_target_normal_border = "2px solid transparent";
-var pd_target_highlighted_border = "2px dotted red"
+var pd_target_highlighted_border = "2px dotted red";
 var pd_target_loading_border = "2px solid green";
 
 
@@ -84,6 +85,11 @@ function pd_findEventTarget(e, className, stop_className) {
   }
   // Not found.
   return null;
+}
+
+function pd_highlight(node, enabled) {
+  node.style.color = enabled ? "HighlightText" : "";
+  node.style.backgroundColor = enabled ? "Highlight" : "";
 }
 
 //
@@ -142,20 +148,16 @@ function pd_highlightContextMenuItem(e) {
   if (!e)
     e = event;
   var node = pd_getContextMenuItem(e);
-  if (node) {
-    node.style.backgroundColor = "Highlight";
-    node.style.color = "HighlightText";
-  }
+  if (node)
+    pd_highlight(node, true);
 }
 
 function pd_unhighlightContextMenuItem(e) {
   if (!e)
     e = event;
   var node = pd_getContextMenuItem(e);
-  if (node) {
-    node.style.backgroundColor = "";
-    node.style.color = "";
-  }
+  if (node)
+    pd_highlight(node, false);
 }
 
 function pd_filterContextMenuItems(node) {
@@ -187,6 +189,7 @@ function pd_DragEvent(e, move_func, checkmove_func) {
   this.start_y = e.pageY ? e.pageY : e.clientY + document.body.scrollTop;
   this.feedback_node = document.getElementById("drag-feedback-box");
   this.began_moving = false;
+  this.revealed = [];
 }
 
 function pd_unhighlightDropTarget() {
@@ -196,31 +199,35 @@ function pd_unhighlightDropTarget() {
   }
 }
 
-function pd_highlightDropTarget(target, e) {
+function pd_allowDrop(target) {
   if (!pd_drag_event)
-    return;
-  if (!e)
-    e = event;
+    return false;
   var i;
   for (i = 0; i < pd_selected_items.length; i++) {
     if (pd_hasAncestor(target, pd_selected_items[i])) {
       // Don't let the user drag an element inside itself.
-      return;
+      return false;
     }
   }
   if (pd_drag_event.checkmove_func) {
     if (!pd_drag_event.checkmove_func(pd_selected_items, target))
-      return;
+      return false;
   }
-  pd_unhighlightDropTarget();
-  target.style.border = pd_target_highlighted_border;
-  pd_drag_event.target = target;
+  return true;
+}
+
+function pd_highlightDropTarget(target) {
+  if (pd_allowDrop(target)) {
+    pd_unhighlightDropTarget();
+    target.style.border = pd_target_highlighted_border;
+    pd_drag_event.target = target;
+  }
 }
 
 function pd_firstDrag(x, y) {
   if (!pd_drag_event)
     return;
-  var i;
+  var i, target;
   var feedback_node_style = pd_drag_event.feedback_node.style;
   var item = pd_selected_items[0];  // TODO: expand box to include all items
 
@@ -230,6 +237,18 @@ function pd_firstDrag(x, y) {
   feedback_node_style.width = item.offsetWidth - 2;
   feedback_node_style.height = item.offsetHeight - 2;
   feedback_node_style.display = "block";
+
+  // Show some of the normally invisible targets.
+  for (i = 0; i < pd_invisible_targets.length; i++) {
+    target = pd_invisible_targets[i];
+    if (pd_allowDrop(target)) {
+      if (pd_drag_event.revealed.push)
+        pd_drag_event.revealed.push(target);
+      else
+        pd_drag_event.revealed = pd_drag_event.revealed.concat([target]);
+      target.style.visibility = "visible";
+    }
+  }
 }
 
 function pd_dragging(e) {
@@ -253,6 +272,10 @@ function pd_dragging(e) {
 }
 
 function pd_finishDrag() {
+  var i;
+  for (i = 0; i < pd_drag_event.revealed.length; i++)
+    pd_drag_event.revealed[i].style.visibility = '';
+
   document.onmousemove = null;
   document.onmouseup = null;
   document.onselectstart = null;
@@ -321,8 +344,7 @@ function pd_deselect(node) {
     pd_selected_items = newsel;
     pd_changedSelection();
   }
-  node.style.color = '';
-  node.style.backgroundColor = '';
+  pd_highlight(node, false);
 }
 
 function pd_select(node) {
@@ -334,19 +356,14 @@ function pd_select(node) {
     else
       pd_selected_items = pd_selected_items.concat([node]);
   }
-  pd_changedSelection();
-  node.style.color = 'HighlightText';
-  node.style.backgroundColor = 'Highlight';
+  pd_highlight(node, true);
 }
 
 function pd_clearSelection() {
-  var i, node;
+  var i, node, n;
   if (pd_selected_items) {
-    for (i = 0; i < pd_selected_items.length; i++) {
-      node = pd_selected_items[i];
-      node.style.color = '';
-      node.style.backgroundColor = '';
-    }
+    for (i = 0; i < pd_selected_items.length; i++)
+      pd_highlight(pd_selected_items[i], false);
   }
   pd_selected_items = [];
   pd_changedSelection();
@@ -374,33 +391,34 @@ function pd_startDragSelect(v) {
 // On-page object management functions
 //
 
-function pd_itemOnMousedown(mo, e, move_func, checkmove_func) {
+function pd_itemOnMousedown(mo, e, move_func, checkmove_func, box) {
   if (!e)
     e = event;
   if (e.button == 0 || e.button == 1) {
     pd_hideContextMenu();
+    if (!box)
+      box = mo;
     if (e.shiftKey) {
       // Toggle the selected state of this item and start drag select.
-      if (pd_isSelected(mo)) {
-        pd_deselect(mo);
+      if (pd_isSelected(box)) {
+        pd_deselect(box);
         pd_startDragSelect(-1);
       }
       else {
-        pd_select(mo);
+        pd_select(box);
         pd_startDragSelect(1);
       }
     }
     else if (e.ctrlKey) {
-      if (pd_isSelected(mo))
-        pd_deselect(mo);
+      if (pd_isSelected(box))
+        pd_deselect(box);
       else
-        pd_select(mo);
-      // No dragging
+        pd_select(box);
     }
     else {
-      if (!pd_isSelected(mo)) {
+      if (!pd_isSelected(box)) {
         pd_clearSelection();
-        pd_select(mo);
+        pd_select(box);
       }
       pd_startDrag(e, move_func, checkmove_func);
     }
@@ -408,21 +426,21 @@ function pd_itemOnMousedown(mo, e, move_func, checkmove_func) {
   return pd_stopEvent(e);
 }
 
-function pd_itemOnMouseover(mo, e) {
+function pd_itemOnMouseover(mo, e, box) {
   if (pd_drag_select_mode) {
-    if (!e)
-      e = event;
-    pd_dragSelecting(mo);
+    pd_dragSelecting(box || mo);
     return pd_stopEvent(e);
   }
 }
 
-function pd_itemOnContextMenu(mo, e, contextMenuId) {
+function pd_itemOnContextMenu(mo, e, contextMenuId, box) {
   if (!e)
     e = event;
-  if (!pd_isSelected(mo)) {
+  if (!box)
+    box = mo;
+  if (!pd_isSelected(box)) {
     pd_clearSelection();
-    pd_select(mo);
+    pd_select(box);
   }
   var menu = document.getElementById(contextMenuId);
   if (menu) {
@@ -432,23 +450,23 @@ function pd_itemOnContextMenu(mo, e, contextMenuId) {
   }
 }
 
-function pd_setupDragUI(mo, move_func, checkmove_func) {
+function pd_setupDragUI(mo, move_func, checkmove_func, box) {
   // Adds selection and drag and drop functionality to an element
   function call_onmousedown(e) {
-    return pd_itemOnMousedown(mo, e, move_func, checkmove_func);
+    return pd_itemOnMousedown(mo, e, move_func, checkmove_func, box);
   }
   function call_onmouseover(e) {
-    return pd_itemOnMouseover(mo, e);
+    return pd_itemOnMouseover(mo, e, box);
   }
   mo.onmousedown = call_onmousedown;
   mo.onmouseover = call_onmouseover;
   mo.onselectstart = pd_stopEvent;  // IE: Don't start a selection.
 }
 
-function pd_setupContextMenu(mo, contextMenuId) {
+function pd_setupContextMenu(mo, contextMenuId, box) {
   // Adds context menu functionality to an element
   function oncontextmenu(e) {
-    return pd_itemOnContextMenu(mo, e, contextMenuId);
+    return pd_itemOnContextMenu(mo, e, contextMenuId, box);
   }
   mo.oncontextmenu = oncontextmenu;
 }
@@ -479,8 +497,8 @@ function pd_setupPage(node) {
 }
 
 function pd_setupDropTarget(node) {
-  function call_highlight(e) {
-    return pd_highlightDropTarget(node, e);
+  function call_highlight() {
+    return pd_highlightDropTarget(node);
   }
   node.onmouseover = call_highlight;
   node.onmouseout = pd_unhighlightDropTarget;

@@ -18,13 +18,13 @@
        width="150">
     <thead>
       <tr> 
-        <th align="center">Services</th>
+        <th align="center" class="boxtop">Services</th>
 	<th class="empty">&nbsp;</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-	<td colspan="2" nowrap="nowrap">
+	<td colspan="2" nowrap="nowrap" class="highlightable">
 
     <span tal:condition="not: context/hasServiceManager">
     <a href="@@addServiceManager.html">Allow Services</a>
@@ -55,7 +55,7 @@
 <table metal:define-macro="explorer_box" align="center" class="box" width="150">
   <thead>
     <tr> 
-      <th align="center" >Root Folder</th>
+      <th align="center" class="boxtop">Root Folder</th>
       <th class="empty">&nbsp;</th>
     </tr>
     </thead>
@@ -69,7 +69,7 @@
       </td>
     </tr>
     <tr> 
-      <td colspan="2" class="odd"><a href="#"><img src="plus.gif" 
+      <td colspan="2" class="odd"><a href="#"><img src="plus.gif"
 	width="19" height="25"
 	tal:attributes="src context/++resource++plus.gif"/><img 
 	src="closed_folder.gif" width="26" height="25"
@@ -92,7 +92,7 @@
   <table metal:define-macro="views_box" align="center" class="box" width="150">
     <thead>
       <tr> 
-        <th align="center">Views</th>
+        <th align="center" class="boxtop">Views</th>
 	<th class="empty">&nbsp;</th>
       </tr>
       </thead>
@@ -112,7 +112,7 @@
          width="150">
     <thead>
       <tr> 
-        <th align="center">Search</th>
+        <th align="center" class="boxtop">Search</th>
 	<th class="empty">&nbsp;</th>
       </tr>
     </thead>
@@ -132,7 +132,7 @@
          width="150">
     <thead>
       <tr> 
-        <th align="center">Metadata</th>
+        <th align="center" class="boxtop">Metadata</th>
 	<th class="empty">&nbsp;</th>
       </tr>
     </thead>

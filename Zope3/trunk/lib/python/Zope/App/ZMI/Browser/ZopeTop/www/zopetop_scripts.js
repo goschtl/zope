@@ -35,11 +35,15 @@ function Boxes_remove() {
 }
 
 function Boxes_move(pd_selected_items, target_node) {
-  var i, node;
+  var i, node, peer;
+  if (target_node.parentNode.className == 'box-holder')
+    peer = target_node.parentNode;
+  else
+    peer = target_node;
   for (i = 0; i < pd_selected_items.length; i++) {
     node = pd_selected_items[i];
     node.parentNode.removeChild(node);
-    target_node.parentNode.insertBefore(node, target_node);
+    peer.parentNode.insertBefore(node, peer);
     target_node.style.border = "2px solid transparent";
   }
 }
@@ -48,10 +52,34 @@ function Boxes_checkmove(pd_selected_items, target_node) {
   return true;
 }
 
-function setupBox(node) {
-  pd_setupDragUI(node, Boxes_move, Boxes_checkmove);
-  pd_setupContextMenu(node, 'box-context-menu');
+function zopetop_findDescendant(node, className) {
+  // Returns a descendant with the given class name, or null.
+  if (node.className == className)
+    return node;
+  var i, c;
+  for (i = 0; i < node.childNodes.length; i++) {
+    c = zopetop_findDescendant(node.childNodes[i], className);
+    if (c != null)
+      return c;
+  }
+  return null;
 }
 
-pd_node_setup['box'] = setupBox;
+function zopetop_setupBoxHolder(holder) {
+  var boxtop = zopetop_findDescendant(holder, "boxtop") || holder;
+  pd_setupDragUI(boxtop, Boxes_move, Boxes_checkmove, holder);
+  pd_setupContextMenu(boxtop, 'box-context-menu', holder);
+}
+
+pd_node_setup['box-holder'] = zopetop_setupBoxHolder;
+
+function zopetop_setupDropTarget(node) {
+  pd_setupDropTarget(node);
+  if (pd_invisible_targets.push)
+    pd_invisible_targets.push(node);
+  else
+    pd_invisible_targets = pd_invisible_targets.concat([node]);
+}
+
+pd_node_setup['drop-target'] = zopetop_setupDropTarget;
 

@@ -18,7 +18,7 @@
 
  KNOWN BUG: The selected tab cannot have image backdrop. FIXME
 
- $Id: zopetopStructure.css,v 1.3 2002/11/20 21:27:21 shane Exp $
+ $Id: zopetopStructure.css,v 1.4 2002/11/21 19:57:39 shane Exp $
 */
 
 div.top {
@@ -277,4 +277,5 @@ div.message a {
 
 .drop-target {
   border: 2px solid transparent;
+  visibility: hidden;
 }

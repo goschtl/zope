@@ -78,13 +78,16 @@
        class="main-table">
         <tr> 
           <td width="160" align="center" valign="top" class="left-column"> 
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr><td class="drop-target">&nbsp;</td></tr>
-            </table>
+            <div class="box-holder">
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+                 tal:attributes="src context/++resource++spacer3.gif" /> 
 	    <span metal:use-macro="views/standard_macros/explorer_box" />
+            </div>
+            <div class="box-holder">
             <img src="spacer3.gif" width="150" height="8" class="drop-target"
                  tal:attributes="src context/++resource++spacer3.gif" /> 
             <span metal:use-macro="views/standard_macros/search_box" />
+            </div>
             <img src="spacer3.gif" width="150" height="8" class="drop-target"
              tal:attributes="src context/++resource++spacer3.gif" />
           </td>
@@ -155,16 +158,21 @@
             </table>
           </td>
           <td width="160" align="center" valign="top" class="right-column">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-              <tr><td>&nbsp;</td></tr>
-            </table>
+            <div class="box-holder">
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+             tal:attributes="src context/++resource++spacer3.gif" />
             <span metal:use-macro="views/standard_macros/metadata_box" />
+            </div>
+            <div class="box-holder">
             <img src="spacer3.gif" width="150" height="8" class="drop-target"
              tal:attributes="src context/++resource++spacer3.gif" />
             <span metal:use-macro="views/standard_macros/views_box" />
+            </div>
+            <div class="box-holder">
             <img src="spacer3.gif" width="150" height="8" class="drop-target"
              tal:attributes="src context/++resource++spacer3.gif" />
             <span metal:use-macro="views/standard_macros/services_box" />
+            </div>
             <img src="spacer3.gif" width="150" height="8" class="drop-target"
              tal:attributes="src context/++resource++spacer3.gif" />
           </td>
