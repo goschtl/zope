@@ -79,7 +79,7 @@ class CopyModifyMergeRepository(object):
     def saveAsVersion(self, obj, metadata=None):
         """Save the current state of the object for later retreival.
         """
-        self._saveAsVersion(self, obj)
+        self._saveAsVersion(obj, metadata)
     
     def _saveAsVersion(self, obj, metadata=None):
         """Save the current state of the object for later retreival.
