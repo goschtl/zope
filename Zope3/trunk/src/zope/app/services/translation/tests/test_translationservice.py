@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.7 2003/03/26 00:19:57 srichter Exp $
+$Id: test_translationservice.py,v 1.8 2003/03/29 00:06:25 jim Exp $
 """
 import sys
 import unittest
@@ -108,7 +108,11 @@ class TestILocalTranslationService:
     def testAddUpdateDeleteMessage(self):
         service = self._service
         self.assertEqual(service.translate('test', 'greeting',
-                                           target_language='de'), 'greeting')
+                                           target_language='de'),
+                         None)
+        self.assertEqual(service.translate('test', 'greeting',
+                                           target_language='de', default=42),
+                         42)
         service.addMessage('test', 'greeting', 'Hallo!', 'de')
         self.assertEqual(service.translate('test', 'greeting',
                                            target_language='de'), 'Hallo!')

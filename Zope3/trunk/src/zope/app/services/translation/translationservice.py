@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.6 2003/03/25 23:25:12 bwarsaw Exp $
+$Id: translationservice.py,v 1.7 2003/03/29 00:06:24 jim Exp $
 """
 import re
 from types import StringTypes, TupleType
@@ -72,7 +72,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
                                        object.getDomain(), name)
 
     def translate(self, domain, msgid, mapping=None, context=None,
-                  target_language=None):
+                  target_language=None, default=None):
         """See interface ITranslationService"""
         if domain is None:
             domain = self.default_domain
@@ -89,20 +89,20 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         # Get the translation. Default is the source text itself.
         catalog_names = self._catalogs.get((target_language, domain), [])
 
-        text = msgid
         for name in catalog_names:
             catalog = super(TranslationService, self).__getitem__(name)
             text = catalog.queryMessage(msgid)
-
-        # If the message id equals the returned text, then we should look up
-        # a translation server higher up the tree.
-        if text == msgid:
+            if text is not None:
+                break
+        else:
+            # If nothing found, delegate to
+            # a translation server higher up the tree.
             ts = queryNextService(self, 'Translation')
             if ts is not None:
                 return ts.translate(domain, msgid, mapping, context,
-                                    target_language)
+                                    target_language, default=default)
             else:
-                return text
+                return default
 
         # Now we need to do the interpolation
         return self.interpolate(text, mapping)
