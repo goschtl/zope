@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.12 2003/06/07 07:23:52 stevea Exp $
+$Id: objecthubsetup.py,v 1.13 2003/09/21 17:33:07 jim Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
@@ -22,7 +22,7 @@ from zope.component import getService
 from zope.app.services.servicenames import HubIds
 from zope.app.traversing import traverse, canonicalPath
 
-from zope.app.interfaces.event import IObjectAddedEvent, IObjectMovedEvent
+from zope.app.interfaces.container import IObjectAddedEvent, IObjectMovedEvent
 from zope.app.interfaces.event import ISubscriber
 
 from zope.interface import implements
@@ -59,7 +59,7 @@ class LoggingSubscriber:
             location = canonicalPath(location)
             testcase.assert_(interface.isImplementedBy(event),
                              'Interface %s' % interface.getName())
-            testcase.assertEqual(event.location, location)
+            testcase.assertEqual(canonicalPath(event.object), location)
 
             if obj is not None:
                 testcase.assertEqual(event.object, obj)
@@ -79,21 +79,20 @@ class RegistrationSubscriber(LoggingSubscriber):
     def notify(self, event):
         LoggingSubscriber.notify(self, event)
         # The policy is to register on object adds and object copies.
-        if (IObjectAddedEvent.isImplementedBy(event)
-            and not IObjectMovedEvent.isImplementedBy(event)):
-            self.hub.register(event.location)
+        if IObjectAddedEvent.isImplementedBy(event):
+            self.hub.register(event.object)
 
 class ObjectHubSetup(EventSetup):
 
     def setUpRegistrationSubscriber(self):
         subscriber = RegistrationSubscriber(self.object_hub)
-        self.rootFolder.setObject('registration_subscriber', subscriber)
+        self.rootFolder['registration_subscriber'] = subscriber
         self.subscriber = traverse(self.rootFolder, 'registration_subscriber')
         self.object_hub.subscribe(self.subscriber)
 
     def setUpLoggingSubscriber(self):
         subscriber = LoggingSubscriber()
-        self.rootFolder.setObject('logging_subscriber', subscriber)
+        self.rootFolder['logging_subscriber'] = subscriber
         self.subscriber = traverse(self.rootFolder, 'logging_subscriber')
         self.object_hub.subscribe(self.subscriber)
 
