@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.2 2002/12/25 14:13:17 jim Exp $
+$Id: principalregistry.py,v 1.3 2002/12/28 01:37:13 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -133,6 +133,10 @@ class PrincipalBase:
 
     def getDescription(self):
         return self.__description
+
+    def getRoles(self):
+        return ()
+
 
 class Principal(PrincipalBase):
 
