@@ -27,11 +27,11 @@ import glob
 # provide a bunch of custom components that make it possible to install a non
 # .py file into one of the packages
 from distutils import dir_util
+from distutils.command.build import build as buildcmd
+from distutils.command.install_lib import install_lib as installcmd
 from distutils.core import setup
 from distutils.dist import Distribution
 from distutils.extension import Extension
-from distutils.command.install_lib import install_lib
-from distutils.command.build_py import build_py
 
 
 # A hack to determine if Extension objects support the depends keyword arg,
@@ -50,7 +50,7 @@ if not "depends" in Extension.__init__.func_code.co_varnames:
 # We have to snoop for file types that distutils doesn't copy correctly when
 # doing a non-build-in-place.
 EXTS = ['.zcml', '.pt', '.gif', '.xml', '.html', '.png',
-        '.css', '.js', '.conf']
+        '.css', '.js', '.conf', '.mo']
 
 
 class Finder:
@@ -73,38 +73,33 @@ class Finder:
                 self._files.append(os.path.join(dir, file))
 
     def copy_files(self, cmd, outputbase):
-        dest = os.path.join(outputbase, file)
-        # Make sure the destination directory exists
-        dir = os.path.dirname(dest)
-        if not os.path.exists(dir):
-            dir_util.mkpath(dir)
         for file in self._files:
+            dest = os.path.join(outputbase, file[self._plen:])
+            # Make sure the destination directory exists
+            dir = os.path.dirname(dest)
+            if not os.path.exists(dir):
+                dir_util.mkpath(dir)
             cmd.copy_file(file, dest)
 
     def get_packages(self):
         return self._pkgs.keys()
+
 
 basedir = 'lib/python/'
 finder = Finder(EXTS, basedir)
 os.path.walk(basedir, finder.visit, None)
 packages = finder.get_packages()
 
-
-class MyLibInstaller(install_lib):
-    """Custom library installer, used to put hosttab in the right place."""
-    # We use the install_lib command since we need to put hosttab
-    # inside the library directory.  This is where we already have the
-    # real information about where to install it after the library
-    # location has been set by any relevant distutils command line
-    # options.
+class MyBuilder(buildcmd):
     def run(self):
-        install_lib.run(self)
+        buildcmd.run(self)
+        finder.copy_files(self, self.build_lib)
+
+class MyLibInstaller(installcmd):
+    def run(self):
+        installcmd.run(self)
         extra.copy_files(self, self.install_dir)
 
-class MyPyBuilder(build_py):
-    def build_packages(self):
-        build_py.build_packages(self)
-        extra.copy_files(self, self.build_lib)
 
 class MyDistribution(Distribution):
     # To control the selection of MyLibInstaller and MyPyBuilder, we
@@ -112,7 +107,7 @@ class MyDistribution(Distribution):
     # Distribution.__init__().
     def __init__(self, *attrs):
         Distribution.__init__(self, *attrs)
-        self.cmdclass['build_py'] = MyPyBuilder
+        self.cmdclass['build'] = MyBuilder
         self.cmdclass['install_lib'] = MyLibInstaller
 
 
@@ -201,4 +196,5 @@ setup(name="Zope3",
       long_description = "\n".join(doclines[2:]),
       packages = packages,
       package_dir = {'': 'lib/python'},
+      distclass = MyDistribution,
       )
