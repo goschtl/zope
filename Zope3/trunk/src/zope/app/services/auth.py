@@ -12,9 +12,10 @@
 #
 ##############################################################################
 """
-$Id: auth.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: auth.py,v 1.3 2002/12/26 18:57:11 jim Exp $
 """
 from types import TupleType
+from persistence import Persistent
 
 from zope.exceptions import NotFoundError
 from zope.component import getAdapter, queryAdapter
@@ -26,6 +27,13 @@ from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.security import IAuthenticationService
 
 from zope.app.interfaces.services.auth import IUser
+
+from zope.proxy.introspection import removeAllProxies
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.security.grants.principalrole import principalRoleManager
+
+
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
@@ -89,19 +97,6 @@ class AuthenticationService(BTreeContainer):
                   if p.getTitle().lower().startswith(name) or
                      p.getLogin().lower().startswith(name)]
 
-
-
-"""A persistent implementation of thr IPrincipal interface
-
-$Id: auth.py,v 1.2 2002/12/25 14:13:19 jim Exp $
-"""
-from persistence import Persistent
-from zope.proxy.introspection import removeAllProxies
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.services.auth import IUser
-from zope.app.security.grants.principalrolemanager import \
-     principalRoleManager
 
 class User(Persistent):
     """A persistent implementation of the IUser interface """
