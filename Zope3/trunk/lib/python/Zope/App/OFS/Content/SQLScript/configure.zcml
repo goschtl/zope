@@ -13,8 +13,10 @@
         description="Dynamic SQL Script" />
 
     <require
-        permission="Zope.ManageContent"
-        interface=".ISQLScript." />
+        permission = "Zope.ManageContent"
+        interface = ".ISQLScript."
+        set_schema = ".ISQLScript."
+        />
 
     <require
         permission="Zope.ManageContent"

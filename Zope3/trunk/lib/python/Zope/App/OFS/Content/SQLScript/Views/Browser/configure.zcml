@@ -1,6 +1,7 @@
 <zopeConfigure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:form="http://namespaces.zope.org/form"
    package="Zope.App.OFS.Content.SQLScript">
 
 <!-- SQL Script View Directives -->
@@ -18,18 +19,16 @@
       template="Views/Browser/testResults.pt" />
 </browser:view>
 
-<browser:view
-    for=".ISQLScript."
-    permission="Zope.View"
-    factory=".Views.Browser.SQLScriptEdit.">
 
-  <browser:page name="editForm.html" attribute="form" />
-  <browser:page name="edit.html" attribute="action" />
-
-</browser:view>
+<form:edit
+    schema = ".ISQLScript."
+    name = "edit.html"
+    label = "Edit an SQL script"
+    permission = "Zope.ManageContent"
+    />
 
 <browser:menuItems menu="zmi_views" for=".ISQLScript.">
-  <browser:menuItem title="Edit" action="editForm.html"/>
+  <browser:menuItem title="Edit" action="edit.html"/>
   <browser:menuItem title="Test" action="testForm.html"/>
   <browser:menuItem title="Cache" action="Caching.html"/>
 </browser:menuItems>
