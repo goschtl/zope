@@ -13,12 +13,12 @@
 ##############################################################################
 """TTW Schema Interfaces
 
-$Id: interfaces.py,v 1.1 2004/03/10 00:57:56 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/03/13 23:08:41 srichter Exp $
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 from zope.app.container.interfaces import IAdding
-from zope.app.interfaces.component import IInterfaceField
+from zope.app.component.interfaces import IInterfaceField
 
 class ISchemaUtility(Interface):
     pass

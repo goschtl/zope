@@ -2,7 +2,7 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.app.interfaces.component.IInterfaceField"
+      for="zope.app.component.interfaces.IInterfaceField"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".interfacewidget.InterfaceWidget"
       permission="zope.Public"
@@ -10,7 +10,7 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.app.interfaces.component.IInterfaceField"
+      for="zope.app.component.interfaces.IInterfaceField"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".interfacewidget.InterfaceDisplayWidget"
       permission="zope.Public"
@@ -18,7 +18,7 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.app.interfaces.component.IInterfacesField"
+      for="zope.app.component.interfaces.IInterfacesField"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".interfacewidget.MultiInterfaceWidget"
       permission="zope.Public"
@@ -26,7 +26,7 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.app.interfaces.component.IInterfacesField"
+      for="zope.app.component.interfaces.IInterfacesField"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".interfacewidget.MultiInterfaceDisplayWidget"
       permission="zope.Public"
