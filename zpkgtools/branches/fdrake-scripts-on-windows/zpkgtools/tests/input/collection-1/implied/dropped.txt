@@ -1,0 +1,2 @@
+This file should not be included in the distribution for collection-1
+since it is named in an exclusion in PACKAGE.cfg.
