@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.19 2003/07/28 22:22:14 jim Exp $
+$Id: _field.py,v 1.20 2003/08/02 17:24:57 srichter Exp $
 """
 __metaclass__ = type
 
@@ -281,8 +281,8 @@ class Dict(MinMaxLen, Iterable, Field):
 
 
 _isuri = re.compile(
-    r"[a-zA-z0-9+.-]+://" # scheme
-    r"\S+$"               # non space (should be pickier)
+    r"[a-zA-z0-9+.-]+:"   # scheme
+    r"\S*$"               # non space (should be pickier)
     ).match
 class URI(BytesLine):
     """URI schema field
@@ -294,6 +294,7 @@ class URI(BytesLine):
         """
         >>> uri = URI(__name__='test')
         >>> uri.validate("http://www.python.org/foo/bar")
+        >>> uri.validate("DAV:")
         >>> uri.validate("www.python.org/foo/bar")
         Traceback (most recent call last):
         ...
