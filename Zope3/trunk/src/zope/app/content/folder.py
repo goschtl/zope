@@ -110,6 +110,13 @@ class RootFolder(Folder):
     __implements__ = Folder.__implements__, IRootFolder
 
 
+class RootDirectoryFactory:
+    def __init__(self, context):
+        pass
+
+    def __call__(self, name):
+        return Folder()
+
 # Adapter to provide a file-system rendition of folders
 
 class ReadDirectory:

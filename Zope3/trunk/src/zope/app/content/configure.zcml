@@ -49,6 +49,13 @@
    />
 
 <adapter
+   for="zope.app.interfaces.content.folder.IRootFolder"
+   provides="zope.app.interfaces.file.IDirectoryFactory"
+   factory="zope.app.content.folder.RootDirectoryFactory"
+   permission="zope.ManageContent"
+   />
+
+<adapter
    for="zope.app.interfaces.content.folder.IFolder"
    provides="zope.app.interfaces.file.IFileFactory"
    factory="zope.app.content.image.FileFactory"
