@@ -12,7 +12,7 @@ Internationalization (I18n) and Localalization (L10n)
   
     2. Go into the 'locales' directory and execute extract.py::
 
-        python2.2 extract.py
+        python2.3 extract.py
 
 
   Updating Message Catalog (PO) Files
