@@ -9,7 +9,12 @@ Zope Changes
   Some future release (Zope X3 3.1.0)
 
     New features
-    
+
+      - Added the HTTP request recorder, which lets you inspect raw HTTP
+        requests and responses.  It can be used to create functional doctests
+        without requiring third-party tools such as TCPWatch.  See the
+        README.txt file in zope.app.recorder for instructions.
+
       - zope.app.form.utility setUpEditWidgets, when given a source
         that is security proxied and asked to set up edit widgets
         for fields that will raise Unauthorized when set, now raises
