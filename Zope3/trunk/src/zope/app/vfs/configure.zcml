@@ -1,7 +1,0 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-
-<include package=".container" />
-<include package=".content" />
-<include package=".services" />
-
-</zopeConfigure>
