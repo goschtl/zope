@@ -16,8 +16,6 @@ and meta-data apis.
 
 $Id$
 """
-__metaclass__ = type
-
 from zope.interface import implements
 from zope.component import queryAdapter
 from zope.proxy import removeAllProxies
@@ -34,7 +32,7 @@ from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.copypastemove import rename
 
-class FTPView:
+class FTPView(object):
     implements(IFTPPublisher)
 
     def __init__(self, context, request):
@@ -120,7 +118,7 @@ class FTPView:
         return self._lsinfo(name, self._dir[name])
 
     def _mtime(self, file):
-        dc = IZopeDublinCore(file)
+        dc = IZopeDublinCore(file, None)
         if dc is not None:
             return dc.modified
 
