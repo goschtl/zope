@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.6 2002/07/14 18:51:27 faassen Exp $
+$Id: _Field.py,v 1.7 2002/07/14 20:00:56 faassen Exp $
 """
 from Interface.Attribute import Attribute
 from Interface.Implements import objectImplements
@@ -27,7 +27,8 @@ class Field(Attribute):
     type = None
     default = None
     required = 0
-
+    allowed_values = []
+    
     def __init__(self, **kw):
         """Pass in field values as keyword parameters."""
         for key, value in kw.items():
@@ -40,26 +41,22 @@ class Field(Attribute):
         except StopValidation:
             return value
 
-class SingleValueField(Field):
-    """A field that contains only one value."""
-    allowed_values = []
-
-class Str(SingleValueField):
+class Str(Field):
     """A field representing a Str."""
     type = str
     min_length = None
     max_length = None
 
-class Bool(SingleValueField):
+class Bool(Field):
     """A field representing a Bool."""
     type = type(not 1) 
 
-class Int(SingleValueField):
+class Int(Field):
     """A field representing a Integer."""
     type = int
     min = max = None
 
-class Float(SingleValueField):
+class Float(Field):
     """A field representing a Floating Point."""
     type = float, int
     min = max = None

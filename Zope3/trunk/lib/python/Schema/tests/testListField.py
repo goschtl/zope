@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: testListField.py,v 1.3 2002/07/14 18:51:27 faassen Exp $
+$Id: testListField.py,v 1.4 2002/07/14 20:00:56 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import List, Int, Float, ErrorNames
 from testField import FieldTest
+from Schema.Exceptions import ValidationError
 
 class ListTest(FieldTest):
     """Test the List Field."""

@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: testStrField.py,v 1.1 2002/07/14 18:51:27 faassen Exp $
+$Id: testStrField.py,v 1.2 2002/07/14 20:00:56 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import Str, ErrorNames
 from testField import FieldTest
+from Schema.Exceptions import ValidationError
 
 class StrTest(FieldTest):
     """Test the Str Field."""

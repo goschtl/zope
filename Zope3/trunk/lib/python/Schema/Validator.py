@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Validator.py,v 1.3 2002/07/14 18:51:27 faassen Exp $
+$Id: Validator.py,v 1.4 2002/07/14 20:00:56 faassen Exp $
 """
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
@@ -58,14 +58,14 @@ class RequiredValidator(Validator):
                 raise StopValidation
 
 class StrRequiredValidator(Validator):
-    """Empty Str are not acceptable for a required field."""
+    """Don't accept empty strings for a required field."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         if self.field.required and value == '':
             raise ValidationError, ErrorNames.RequiredEmptyStr
 
 class MinimumLengthValidator(Validator):
-    """Check that the length is larger than the minimum value."""
+    """Check that the length is larger than the minimum."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         length = len(value)
@@ -74,7 +74,7 @@ class MinimumLengthValidator(Validator):
             raise ValidationError, ErrorNames.TooShort
 
 class MaximumLengthValidator(Validator):
-    """Check that the length is smaller than the maximum value."""
+    """Check that the length is smaller than the maximum."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         length = len(value)
@@ -83,21 +83,21 @@ class MaximumLengthValidator(Validator):
             raise ValidationError, ErrorNames.TooLong
 
 class MinimumValueValidator(Validator):
-    """Check that the value is larger than the minimum value."""
+    """Check that the value is larger than the minimum."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         if self.field.min is not None and value < self.field.min:
             raise ValidationError, ErrorNames.TooSmall
 
 class MaximumValueValidator(Validator):
-    """Check that the value is smaller than the maximum value."""
+    """Check that the value is smaller than the maximum."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         if self.field.max is not None and value > self.field.max:
             raise ValidationError, ErrorNames.TooBig
 
 class AllowedValuesValidator(Validator):
-    """Check whether the value is in one of the allowed values."""
+    """Check whether the value is one of the allowed values."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         allowed = self.field.allowed_values
@@ -126,7 +126,7 @@ def _flatten(list):
     return out
 
 class ListValueTypeValidator(Validator):
-    """Check that the values in the value have the right type."""
+    """Check that all list elements have the right type."""
     def validate(self, value):
         'See Schema.IValidator.IValidator'
         if self.field.value_types:
@@ -171,9 +171,9 @@ class DictValueTypeValidator(Validator):
         validator = ListValueTypeValidator(field)
         validator.validate(values)
 
-class ContainerValidator(Validator):
-    """ """
-    validators = [TypeValidator, RequiredValidator]
+class CombinedValidator(Validator):
+    """Combine several validators into a larger one."""
+    validators = []
 
     def validate(self, value):
         'See Schema.IValidator.IValidator'        
@@ -183,33 +183,42 @@ class ContainerValidator(Validator):
             except StopValidation:
                 return
 
-class SingleValueValidator(ContainerValidator):
-    """Validator for Single Value Fields"""
-    validators = ContainerValidator.validators + [AllowedValuesValidator] 
-    
-class StrValidator(SingleValueValidator):
-    """Completely validates a Str Field."""
-    validators = SingleValueValidator.validators + [StrRequiredValidator,
-                                                    MinimumLengthValidator,
-                                                    MaximumLengthValidator]
+class BaseValidator(CombinedValidator):
+    """A simple base validator."""
+    validators = [TypeValidator, RequiredValidator, AllowedValuesValidator] 
 
-class BoolValidator(SingleValueValidator):
+class SimpleValidator(BaseValidator):
+    """Validator for values of simple type.
+    A simple type cannot be further decomposed into other types.""" 
+
+class StrValidator(SimpleValidator):
+    """Completely validates a Str Field."""
+    validators = SimpleValidator.validators + [StrRequiredValidator,
+                                               MinimumLengthValidator,
+                                               MaximumLengthValidator]
+
+class BoolValidator(SimpleValidator):
     """Completely validates a Bool Field."""
 
-class IntValidator(SingleValueValidator):
+class IntValidator(SimpleValidator):
     """Completely validates a Int Field."""
-    validators = SingleValueValidator.validators + [MinimumValueValidator,
-                                                    MaximumValueValidator]
+    validators = SimpleValidator.validators + [MinimumValueValidator,
+                                               MaximumValueValidator]
 
-class FloatValidator(SingleValueValidator):
+class FloatValidator(SimpleValidator):
     """Completely validates a Float Field."""
-    validators = SingleValueValidator.validators + [MinimumValueValidator,
-                                                    MaximumValueValidator,
-                                                    DecimalsValidator]
+    validators = SimpleValidator.validators + [MinimumValueValidator,
+                                               MaximumValueValidator,
+                                               DecimalsValidator]
 
-class MultiValueValidator(ContainerValidator):
+class CompositeValidator(BaseValidator):
+    """Validator for values of composite type.
+    A a composite type one composed of several others, i.e. an
+    object but also a list, tuple or mapping."""
+
+class MultiValueValidator(BaseValidator):
     """Validator for Single Value Fields"""
-    validators = ContainerValidator.validators + [
+    validators = BaseValidator.validators + [
         ListValueTypeValidator,
         MinimumAmountOfItemsValidator, MaximumAmountOfItemsValidator] 
 
@@ -219,9 +228,9 @@ class TupleValidator(MultiValueValidator):
 class ListValidator(TupleValidator):
     """Completely validates a List Field."""
 
-class DictValidator(MultiValueValidator):
+class DictValidator(CompositeValidator):
     """Completely validates a Dict Field."""
-    validators = ContainerValidator.validators + [
+    validators = CompositeValidator.validators + [
         DictKeyTypeValidator, DictValueTypeValidator,
         MinimumAmountOfItemsValidator, MaximumAmountOfItemsValidator] 
 

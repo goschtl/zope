@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: testDictField.py,v 1.1 2002/07/14 18:51:27 faassen Exp $
+$Id: testDictField.py,v 1.2 2002/07/14 20:00:56 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import Dict, Int, Float, ErrorNames
 from testField import FieldTest
+from Schema.Exceptions import ValidationError
 
 class DictTest(FieldTest):
     """Test the Dict Field."""
@@ -91,12 +92,13 @@ class DictTest(FieldTest):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=0,
                            value_types=(Int, Float))
-        try:
-            field.validate(None)
-            field.validate({'a': 5.3})
-            field.validate({'a': 2, 'b': 2.3})
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        #try:
+        field.validate(None)
+        field.validate({'a': 5.3})
+        field.validate({'a': 2, 'b': 2.3})
+
+        #except ValidationError, e:
+        #    self.unexpectedValidationError(e)
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
                                     field.validate, {1: ''} )
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
