@@ -27,6 +27,7 @@ from zpkgsetup import loggingapi as logging
 from zpkgsetup import package
 from zpkgsetup import publication
 from zpkgsetup import setup
+from zpkgsetup import urlutils
 
 from zpkgtools import config
 from zpkgtools import dependencies
@@ -50,7 +51,17 @@ class Application:
         self.logger = logging.getLogger(__name__)
         self.options = options
         cf = config.Configuration()
-        cf.location_maps.extend(options.location_maps)
+        # The resource maps and loader tools assume that all resources
+        # are being addressed by URLs, so we need to make sure paths
+        # referenced on the command line are converted to URLs before
+        # loading anything.
+        location_maps = []
+        for map in options.location_maps:
+            if os.path.isfile(map):
+                map = os.path.abspath(map)
+                map = "file://" + urlutils.pathname2url(map)
+            location_maps.append(map)
+        cf.location_maps.extend(location_maps)
         path = options.configfile
         if path is None:
             path = config.defaultConfigurationPath()

@@ -25,6 +25,7 @@ import zpkgsetup
 
 from zpkgsetup import package
 from zpkgsetup import publication
+from zpkgsetup import urlutils
 from zpkgsetup.tests import tempfileapi as tempfile
 
 import zpkgtools
@@ -465,6 +466,30 @@ class BuilderApplicationTestCase(unittest.TestCase):
         #
         cls = context.get_distribution_class()
         self.assert_(cls is mysupport.MyDistribution)
+
+    def test_relative_paths_in_cmdline_resource_maps(self):
+        """Make sure that paths passed to the -m option become URLs.
+
+        The resource maps and loader tools like to think of addresses
+        as URLs, so paths passed in on the command line need to become
+        URLs before being processed; this ensures that happens and
+        that relative paths inside a resource map are handled
+        correctly in that case (not just when referenced from a
+        configuration file).
+
+        """
+        orig_pwd = os.getcwd()
+        here = os.path.dirname(os.path.abspath(__file__))
+        mapfile = os.path.join("input", "packages.map")
+        args = ["-f", "-m", mapfile, "package"]
+        os.chdir(here)
+        try:
+            app = self.createApplication(args)
+            pkgurl = "file://%s/" % urlutils.pathname2url(
+                os.path.join(here, "input", "package"))
+            self.assertEqual(app.locations["package"], pkgurl)
+        finally:
+            os.chdir(orig_pwd)
 
 
 class DelayedCleanupBuilderApplication(app.BuilderApplication):
