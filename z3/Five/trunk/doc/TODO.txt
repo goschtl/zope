@@ -9,6 +9,14 @@ TODO
   possible. A lot of edge cases with different behavior likely remain, 
   and things like IObjectModifiedEvents are not sent yet for folders.
 
+- allow the use of five:traversable and five:defaultViewable more
+  than once, to avoid conflicts between multiple Five-using products.
+  We thought we had this for five:viewable (now five:traversable), but
+  we left the discriminators in. This needs to be reviewed for the new 
+  directives. (Similarly five:sendEvents is also a candidate for this
+  treatment; should already be partially implemented correctly to allow
+  multiple use as well)
+  
 - allow Zope2 boilerplate context.registerClass be configured thru zcml
 
 - now that we have zope:content, do we still need five:implements?
