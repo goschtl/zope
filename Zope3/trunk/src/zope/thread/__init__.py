@@ -15,7 +15,7 @@
 
 Thread-local objects support the management of thread-local data.
 If you have data that you want to be local to a thread, simply create
-a thread-local object and use it's attributes:
+a thread-local object and use its attributes:
 
   >>> import zope.thread
   >>> mydata = zope.thread.local()
@@ -92,7 +92,7 @@ Now we have a default number:
   2
 
 an initial color:
-    
+
   >>> mydata.color
   'red'
   >>> del mydata.color
@@ -187,9 +187,9 @@ except ImportError:
                 cls.__init__(self, *args, **kw)
         else:
             object.__setattr__(self, '__dict__', d)
-            
+
     class local(_localbase):
-        
+
         def __getattribute__(self, name):
             lock = object.__getattribute__(self, '_local__lock')
             lock.acquire()
@@ -231,21 +231,21 @@ except ImportError:
                     # if enumerate fails, as it seems to do during
                     # shutdown, we'll skip cleanup under the assumption
                     # that there is nothing to clean up
-                    return 
-                
+                    return
+
                 for thread in threads:
                     try:
                         __dict__ = thread.__dict__
                     except AttributeError:
                         # Thread is dying, rest in peace
                         continue
-                    
+
                     if key in __dict__:
                         try:
                             del __dict__[key]
-                        except KeyError: 
-                            pass # didn't have nything in this thread
-              
+                        except KeyError:
+                            pass # didn't have anything in this thread
+
             return __del__
         __del__ = __del__()
 
