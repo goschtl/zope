@@ -7,11 +7,13 @@
 #  $2- - the names of the files being committed, from the working directory.
 #  $CVSROOT - 
 
+WD=`pwd`
 SCRIPT="$0"
 REPOSITORY="$1"; shift
 FILES="$@"
 
-exec 1>>/tmp/precommit_actions
+exec 1>>/tmp/log-precommit_actions
 
-echo Script: "$SCRIPT", Repository: "$REPOSITORY", Files: "$FILES"
+echo Script: "$SCRIPT", Repository: "$REPOSITORY"
+echo wd: "$WD", Files: "$FILES"
 echo Root: "${CVSROOT}"
