@@ -44,16 +44,18 @@ Online Help System
     <!-- Register initial Help Topics -->
 
     <help:register
-        id = "ui"
-        title = "Zope UI Help"
-        doc_path = "./ui.txt" />
+        id="ui"
+        title="Zope UI Help"
+        doc_path="./ui.txt"
+        />
 
     <help:register 
-        id = "welcome"
-        title = "Welcome"
-        parent = "ui"
-        for = "zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
-        view = "zope.app.browser.onlinehelp.OnlineHelpTopicView"
-        doc_path = "./help.txt" />
+        id="welcome"
+        title="Welcome"
+        parent="ui"
+        for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
+        view="zope.app.browser.onlinehelp.OnlineHelpTopicView"
+        doc_path="./help.txt"
+        />
 
     </configure>

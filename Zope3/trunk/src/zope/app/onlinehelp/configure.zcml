@@ -7,37 +7,42 @@
   <content class="zope.app.onlinehelp.OnlineHelpTopic">
     <require
         permission="zope.View"
-        interface="zope.app.onlinehelp.interfaces.IOnlineHelpTopic" />
+        interface="zope.app.onlinehelp.interfaces.IOnlineHelpTopic"
+        />
   </content>
 
   <!-- Setup OnlineHelp as Service -->
-  <serviceType id="OnlineHelp" 
-               interface="zope.app.onlinehelp.interfaces.IOnlineHelp" />
+  <serviceType
+      id="OnlineHelp" 
+      interface="zope.app.onlinehelp.interfaces.IOnlineHelp"
+      />
 
   <service serviceType="OnlineHelp"
       permission="zope.Public"
-      component="zope.app.onlinehelp.help" />
+      component="zope.app.onlinehelp.help"
+      />
 
   <!-- Register initial Help Topics -->
   <help:register 
-      id = "ui"
-      title = "Zope UI Help"
-      doc_path = "./ui.txt" />
+      id="ui"
+      title="Zope UI Help"
+      doc_path="./ui.txt"
+      />
 
   <help:register 
-      id = "welcome"
-      title = "Welcome"
-      parent = "ui"
-      doc_path = "./help.txt" />
+      id="welcome"
+      title="Welcome"
+      parent="ui"
+      doc_path="./help.txt"
+      />
 
   <help:register
-      id = "onlinehelp"
-      title = "Online help system"
-      doc_path = "./README.txt" />
-
+      id="onlinehelp"
+      title="Online help system"
+      doc_path="./README.txt"
+      />
 
   <!-- include browser package -->
-
   <include package=".browser" />
     
 </configure>
