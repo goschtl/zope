@@ -1,0 +1,60 @@
+<tal:page
+   xmlns:tal="http://xml.zope.org/namespaces/tal"
+   xmlns:metal="http://xml.zope.org/namespaces/metal"
+   tal:define="control python: here.search_results_control(**request.form)"
+   tal:condition="control"
+><html metal:use-macro="here/main_template/macros/master">
+<body>
+
+<metal:block metal:fill-slot="main"
+   tal:define="batch control/batch">
+<div class="Desktop" i18n:domain="cmf_default">
+
+<h2 i18n:translate="">Search Results</h2>
+
+<metal:block metal:use-macro="here/batch_widgets/macros/summary" />
+<table class="SearchResults" tal:condition="batch/listItemBrains">
+ <thead>
+  <tr>
+   <td width="16">&nbsp;</td>
+   <th i18n:translate="">Title</th>
+   <th i18n:translate="">Type</th>
+   <th i18n:translate="">Date</th>
+  </tr>
+ </thead>
+ <tbody tal:repeat="item_brain batch/listItemBrains">
+  <tr tal:define="objURL string:${item_brain/getURL}/view">
+   <td><a href=""
+     tal:condition="item_brain/getIcon|nothing"
+         tal:attributes="href objURL"><img src="" border="0" alt="" title=""
+             tal:define="alt item_brain/Type"
+             tal:attributes="src item_brain/getIcon;
+                             alt alt;
+                             title alt" /></a></td>
+   <td><a href=""
+     tal:attributes="href objURL"><span
+         tal:condition="item_brain/Title"
+             tal:replace="item_brain/Title">Title</span><span
+         tal:condition="not:item_brain/Title"
+             tal:omit-tag=""
+             i18n:translate="">(No title)</span></a></td>
+   <td tal:content="item_brain/Type" i18n:translate="">Type</td>
+   <td tal:content="item_brain/Date">Date</td>
+  </tr>
+  <tr>
+   <td>&nbsp;</td>
+   <td colspan="3"><em
+     tal:condition="item_brain/Description"
+         tal:content="item_brain/Description">Description</em><em
+     tal:condition="not:item_brain/Description"
+         i18n:translate="">(No description)</em></td>
+  </tr>
+ </tbody>
+</table>
+<metal:block metal:use-macro="here/batch_widgets/macros/navigation" />
+
+</div>
+</metal:block>
+
+</body>
+</html></tal:page>
