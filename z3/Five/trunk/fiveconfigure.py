@@ -22,21 +22,18 @@ from provideinterface import provideInterface
 from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
-from security import getSecurityInfo, CheckerPublic
+from security import getSecurityInfo
 from metaconfigure import protectName, initializeClass
 
-#def handler(serviceName, methodName, *args, **kwargs):
-#    method=getattr(getService(serviceName), methodName)
-#    method(*args, **kwargs)
-
 def handler(serviceName, methodName, *args, **kwargs):
-    method=getattr(getGlobalService(serviceName), methodName)
+    # specifically ask for a global service
+    method = getattr(getGlobalService(serviceName), methodName)
     method(*args, **kwargs)
 
-def page(_context, name, for_,
+def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
          attribute='__call__', menu=None, title=None,
-         permission=CheckerPublic
+         allowed_interface=None, allowed_attributes=None,
          ):
 
     try:
@@ -110,7 +107,6 @@ def page(_context, name, for_,
         callable = initializeClass,
         args = (new_class,)
         )
-
 
 def _handle_for(_context, for_):
     if for_ is not None:
