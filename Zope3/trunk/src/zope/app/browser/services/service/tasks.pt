@@ -19,13 +19,13 @@
         <span title="Services register themselves with the ServiceService">Services</span>
  and <span title="Utilities register themselves with the UtilityService">Utilities</span>. These perform tasks like
         error logging, translation, authentication and so on.
-        Your site may provide new 
-        <a href="default/AddService" i18n:translate="">services</a> or
-        <a href="default/AddUtility" i18n:translate="">utilities</a>
+        Your site may provide
+        <a href="default/AddService" i18n:translate="">new services</a> or
+        <a href="default/AddUtility" i18n:translate="">new utilities</a>
         (which may override existing tools). You may also configure the
         <a href="@@services.html" i18n:translate="">services</a> and
-        <a href="default/Utilities/@@utilities.html" i18n:translate="">utilities</a>
-        already present in this site.
+        <a href="default/Utilities/@@utilities.html"
+          i18n:translate="">utilities</a> already present in this site.
     </dd>
     <dt i18n:translate=""> Software: </dt>
     <dd i18n:translate="">

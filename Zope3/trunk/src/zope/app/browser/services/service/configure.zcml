@@ -81,6 +81,10 @@
         title="Add service"
         action="default/AddService"
         permission="zope.ManageServices" />
+    <menuItem
+        title="Add utility"
+        action="default/AddUtility"
+        permission="zope.ManageServices" />
 
   </menuItems>
 
