@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.18 2003/11/21 17:10:10 jim Exp $
+$Id: editwizard.py,v 1.19 2004/02/06 06:24:44 Zen Exp $
 """
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -114,22 +114,19 @@ class EditWizardView(EditView):
 
         # Validate the current pane, and set self.errors
         try:
-            if self.use_session:
-                names = self.currentPane().names
-            else:
-                names = self.fieldNames
+            names = self.currentPane().names
             data = getWidgetsData(
                 self, self.schema, strict=True, set_missing=True,
                 names=names, exclude_readonly=True
                 )
             self.errors = {}
         except WidgetsError, errors:
-            errors = {}
+            x = {}
             for k, label, msg in errors:
-                errors[k] = msg
-            self.errors = errors
-
+                x[k] = msg
+            self.errors = x
         else:
+
             self.storage.update(data)
 
             if Next in self.request:
@@ -139,6 +136,14 @@ class EditWizardView(EditView):
                 self._current_pane_idx -= 1
                 assert self._current_pane_idx >= 0
             elif Update in self.request:
+                if not self.use_session:
+                    # Data from panes other than the current one is still
+                    # stuck in request
+                    self.storage.update(getWidgetsData(
+                            self, self.schema, strict=True, set_missing=True,
+                            names=self.fieldNames, exclude_readonly=True
+                            ))
+
                 if self.apply_update(self.storage):
                     self.feedback = _(u'No changes to save')
                 else:
@@ -231,7 +236,7 @@ def EditWizardViewFactory(name, schema, permission, layer,
         NamesChecker(("__call__", "__getitem__", "browserDefault"), permission)
         )
 
-    s = zapi.getService(None, zapi.servicenames.Previous)
+    s = zapi.getService(None, zapi.servicenames.Presentation)
     s.provideView(for_, name, IBrowserRequest, class_, layer)
 
 
