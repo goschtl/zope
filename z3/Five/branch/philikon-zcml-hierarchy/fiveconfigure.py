@@ -13,11 +13,27 @@ These directives are specific to Five and have no equivalents in Zope 3.
 $Id$
 """
 from zope.interface import classImplements
+from zope.configuration import xmlconfig
 from zope.component.servicenames import Presentation
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
 
 from viewable import Viewable
+
+def loadProducts(_context):
+    import sys, os
+    import Products
+    products = []
+    for name in dir(Products):
+	name = "Products." + name
+	module = sys.modules.get(name, None)
+	if module:
+	    products.append(module)
+    for product in products:
+	zcml = os.path.join(os.path.dirname(product.__file__), "configure.zcml")
+	if os.path.isfile(zcml):
+	    xmlconfig.file(zcml, context=_context, execute=True,
+			   package=product)
 
 def implements(_context, class_, interface):
     for interface in interface:

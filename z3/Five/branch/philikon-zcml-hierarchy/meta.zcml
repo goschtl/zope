@@ -113,6 +113,13 @@
   <meta:directives namespace="http://namespaces.zope.org/five">
 
     <!-- specific to Five -->
+
+    <meta:directive
+       name="loadProducts"
+       schema="zope.interface.Interface"
+       handler=".fiveconfigure.loadProducts"
+       />
+
     <meta:directive
        name="implements"
        schema=".fivedirectives.IImplementsDirective"
