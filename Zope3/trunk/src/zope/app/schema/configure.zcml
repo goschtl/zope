@@ -1,12 +1,14 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <serviceType 
+  <serviceType
       id="Vocabularies"
       interface="zope.schema.interfaces.IVocabularyRegistry" />
-  
-  <service 
+
+  <service
       serviceType="Vocabularies"
       permission="zope.Public"
       component="zope.app.schema.vocabulary.vocabularyService" />
+
+  <include file="fields.zcml" />
 
 </configure>
