@@ -66,8 +66,7 @@ class PROPFIND(object):
             self.request.response.setStatus(400)
             return ''
 
-        resource_url = str(zapi.getMultiAdapter((self.context, self.request),
-                                                name='absolute_url'))
+        resource_url = zapi.absoluteURL(self.context, self.request)
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 

@@ -226,8 +226,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ''' % req
         request = _createRequest(body=body, headers={
             'Content-type': 'text/xml', 'Depth': depth})
-        resource_url = str(zapi.getMultiAdapter((obj, request),
-                                                name='absolute_url'))
+        resource_url = zapi.absoluteURL(obj, request)
         if IReadContainer.providedBy(obj):
             resource_url += '/'
         if resp is None:

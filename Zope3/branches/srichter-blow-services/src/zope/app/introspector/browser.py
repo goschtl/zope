@@ -36,7 +36,7 @@ class IntrospectorView(BrowserView):
         sm = zapi.getSiteManager(self.context)
         try:
             getInterface(self.context, name)
-            url = zapi.getMultiAdapter((sm, self.request), name='absolute_url')
+            url = zapi.absoluteURL(sm, self.request)
         except ComponentLookupError:
             return ""
         return "%s/interfacedetail.html?id=%s" % (url, name)

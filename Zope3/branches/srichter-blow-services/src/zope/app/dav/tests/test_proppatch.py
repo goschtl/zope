@@ -234,8 +234,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
     def _checkProppatch(self, obj, ns=(), set=(), rm=(), extra='', expect=''):
         request = _createRequest(namespaces=ns, set=set, remove=rm, 
                                  extra=extra)
-        resource_url = str(
-            zapi.getMultiAdapter((obj, request), name='absolute_url'))
+        resource_url = zapi.absoluteURL(obj, request)
         expect = '''<?xml version="1.0" encoding="utf-8"?>
             <multistatus xmlns="DAV:"><response>
             <href>%%(resource_url)s</href>

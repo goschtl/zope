@@ -30,7 +30,7 @@ class ExternalEditor(BrowserView):
         response = request.response
 
         r = []
-        url = zapi.getMultiAdapter((context, request), name='absolute_url')()
+        url = zapi.absoluteURL(context, request)
         r.append('url:%s' % url)
         adapted = IReadFile(context)
 

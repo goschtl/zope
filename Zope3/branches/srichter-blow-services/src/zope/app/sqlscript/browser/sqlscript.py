@@ -127,8 +127,7 @@ class SQLScriptAdd(object):
             name = self.context.contentName
             container = self.context.context
             obj = container[name]
-            url = zapi.getMultiAdapter((obj, self.request),
-                                       name='absolute_url')()
+            url = zapi.absoluteURL(obj, self.request)
             url = '%s/test.html' % url
             return url
         else:
