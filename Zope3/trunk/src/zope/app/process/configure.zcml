@@ -70,4 +70,10 @@
     event_types="zope.app.interfaces.event.IDatabaseOpenedEvent"
     />
 
+
+  <event:subscribe
+    subscriber=".bootstrap.createInterfaceService"
+    event_types="zope.app.interfaces.event.IDatabaseOpenedEvent"
+    />
+
 </zopeConfigure>

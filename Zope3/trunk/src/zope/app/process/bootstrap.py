@@ -17,77 +17,124 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
+$Id: bootstrap.py,v 1.3 2003/07/02 10:59:18 alga Exp $
 """
 from transaction import get_transaction
-
+from zope.interface import implements
+from zope.app.interfaces.event import ISubscriber
 from zope.app.traversing import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.content.folder import RootFolder
-from zope.app.services.servicenames import HubIds
+from zope.app.services.servicenames import HubIds, PrincipalAnnotation
 from zope.app.services.servicenames import EventPublication, EventSubscription
-from zope.app.services.servicenames import ErrorLogging
+from zope.app.services.servicenames import ErrorLogging, Interfaces
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceRegistration
 from zope.app.services.hub import ObjectHub
 from zope.app.services.event import EventService
 from zope.app.services.error import ErrorReportingService
 from zope.app.services.principalannotation import PrincipalAnnotationService
+from zope.app.services.interface import LocalInterfaceService
 from zope.proxy import removeAllProxies
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event import function
+from zope.component.exceptions import ComponentLookupError
 
-def bootstrapInstance(event):
+class BootstrapSubscriberBase:
+    """A startup event subscriber base class.
+
+    Ensures the root folder and the service manager are created.
+    Subclasses may create local services by overriding the doSetup()
+    method.
+    """
+
+    implements(ISubscriber)
+
+    def doSetup(self):
+        """Instantiate some service.
+
+        This method is meant to be overriden in the subclasses.
+        """
+        pass
+
+    def notify(self, event):
+
+        db = event.database
+        connection = db.open()
+        root = connection.root()
+        self.root_folder = root.get(ZopePublication.root_name, None)
+        self.root_created = False
+
+        if self.root_folder is None:
+            self.root_created = True
+            self.root_folder = RootFolder()
+            root[ZopePublication.root_name] = self.root_folder
+
+        try:
+            self.service_manager = traverse(self.root_folder, '/++etc++site')
+        except ComponentLookupError:
+            self.service_manager = ServiceManager()
+            self.root_folder.setServiceManager(self.service_manager)
+
+        self.doSetup()
+
+        get_transaction().commit()
+        connection.close()
+
+    def ensureService(self, service_type, service_factory, **kw):
+        """Add and configure a service to the root folder if it's
+        not yet provided.
+
+        Returns the name added or None if nothing was added.
+        """
+        if not self.service_manager.queryLocalService(service_type):
+            return addConfigureService(self.root_folder, service_type,
+                                       service_factory, **kw)
+        else:
+            return None
+
+class BootstrapInstance(BootstrapSubscriberBase):
     """Bootstrap a Zope3 instance given a database object.
 
-    This first checks if the root folder exists.  If it exists, nothing
-    is changed.  If no root folder exists, one is added, and several
-    essential services are added and configured.
+    This first checks if the root folder exists and has a service
+    manager.  If it exists, nothing else is changed.  If no root
+    folder exists, one is added, and several essential services are
+    added and configured.
     """
-    db = event.database
-    connection = db.open()
-    root = connection.root()
-    root_folder = root.get(ZopePublication.root_name, None)
 
-    if root_folder is None:
-        # Bootstrap code
+    def doSetup(self):
+        """Add essential services.
 
-        root_folder = RootFolder()
-        addEssentialServices(root_folder)
-        root[ZopePublication.root_name] = root_folder
+        XXX This ought to be configurable.  For now, hardcode some
+        services we know we all need.
+        """
 
-        publish(root_folder, ObjectCreatedEvent(root_folder))
-        get_transaction().commit()
+        # The EventService class implements two services
+        name = self.ensureService(EventPublication, EventService)
+        if name:
+            configureService(self.root_folder, EventSubscription, name)
 
-    connection.close()
+        # Add the HubIds service, which subscribes itself to the event service
+        name = self.ensureService(HubIds, ObjectHub)
 
+        # Sundry other services
+        self.ensureService(ErrorLogging,
+                           ErrorReportingService, copy_to_zlog=True)
+        self.ensureService(PrincipalAnnotation, PrincipalAnnotationService)
 
-bootstrapInstance = function.Subscriber(bootstrapInstance)
+bootstrapInstance = BootstrapInstance()
 
-
-def addEssentialServices(root_folder):
-    """Add essential services.
-
-    XXX This ought to be configurable.  For now, hardcode some
-    services we know we all need.
+class CreateInterfaceService(BootstrapSubscriberBase):
+    """A subscriber to the startup event which ensures that a local
+    interface service is available.
     """
-    service_manager = ServiceManager()
-    root_folder.setServiceManager(service_manager)
 
-    # The EventService class implements two services
-    name = addConfigureService(root_folder, EventPublication, EventService)
-    configureService(root_folder, EventSubscription, name)
+    def doSetup(self):
+        if not self.service_manager.queryLocalService(Interfaces):
+            addConfigureService(self.root_folder, Interfaces, LocalInterfaceService)
 
-    # Add the HubIds service, which subscribes itself to the event service
-    name = addService(root_folder, HubIds, ObjectHub)
-    configureService(root_folder, HubIds, name)
-
-    # Sundry other services
-    addConfigureService(root_folder, ErrorLogging,
-                        ErrorReportingService, copy_to_zlog=True)
-    addConfigureService(root_folder, 'PrincipalAnnotation',
-                        PrincipalAnnotationService)
+createInterfaceService = CreateInterfaceService()
 
 
 def addConfigureService(root_folder, service_type, service_factory, **kw):
@@ -95,6 +142,7 @@ def addConfigureService(root_folder, service_type, service_factory, **kw):
     name = addService(root_folder, service_type, service_factory, **kw)
     configureService(root_folder, service_type, name)
     return name
+
 
 def addService(root_folder, service_type, service_factory, **kw):
     """Add a service to the root folder.
