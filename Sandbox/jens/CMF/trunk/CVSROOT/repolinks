@@ -166,24 +166,24 @@
 
 # Zope 3 layout.
 
-/Zope3/lib/python/Interface                    /Packages3/Interface
-/Zope3/lib/python/Persistence                  /Packages3/Persistence
-/Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
-/Zope3/lib/python/ZConfig		       /Packages/ZConfig
-/Zope3/lib/python/logging                      /Packages/logging
-/Zope3/lib/python/ZEO                          /Packages3/ZEO
-/Zope3/lib/python/zLOG                         /Packages3/zLOG
-/Zope3/lib/python/ZODB                         /Packages3/ZODB
-/Zope3/lib/python/Zope/ComponentArchitecture   /Packages3/ComponentArchitecture
-/Zope3/lib/python/Zope/TAL                     /Packages3/TAL
-/Zope3/lib/python/Zope/Testing                 /Packages3/Testing
-/Zope3/lib/python/Zope/ZLogger                 /Packages3/ZLogger
-/Zope3/lib/python/pre_python_2_2               /Packages3/pre_python_2_2
-/Zope3/lib/python/Zope/Publisher               /Packages3/Publisher
-/Zope3/lib/python/Zope/ContextWrapper          /Packages3/ContextWrapper
-/Zope3/lib/python/BDBStorage                   /Packages3/bsddb3Storage/bsddb3Storage
+#/Zope3/lib/python/Interface                    /Packages3/Interface
+#/Zope3/lib/python/Persistence                  /Packages3/Persistence
+#/Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
+#/Zope3/lib/python/ZConfig		       /Packages/ZConfig
+#/Zope3/lib/python/logging                      /Packages/logging
+#/Zope3/lib/python/ZEO                          /Packages3/ZEO
+#/Zope3/lib/python/zLOG                         /Packages3/zLOG
+#/Zope3/lib/python/ZODB                         /Packages3/ZODB
+#/Zope3/lib/python/Zope/ComponentArchitecture   /Packages3/ComponentArchitecture
+#/Zope3/lib/python/Zope/TAL                     /Packages3/TAL
+#/Zope3/lib/python/Zope/Testing                 /Packages3/Testing
+#/Zope3/lib/python/Zope/ZLogger                 /Packages3/ZLogger
+#/Zope3/lib/python/pre_python_2_2               /Packages3/pre_python_2_2
+#/Zope3/lib/python/Zope/Publisher               /Packages3/Publisher
+#/Zope3/lib/python/Zope/ContextWrapper          /Packages3/ContextWrapper
+#/Zope3/lib/python/BDBStorage                   /Packages3/bsddb3Storage/bsddb3Storage
 
-/Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
+#/Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
 # Zope 3 products
 /ZopeProducts                                  /Products3
 /Products3/JobBoardEx                          /Packages/JobBoardEx
