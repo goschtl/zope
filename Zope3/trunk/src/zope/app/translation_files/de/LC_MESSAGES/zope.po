@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
 "POT-Creation-Date: Wed Jun  2 12:14:03 2004\n"
-"PO-Revision-Date: 2004-05-31 09:55-0400\n"
+"PO-Revision-Date: 2004-06-02 06:40-0400\n"
 "Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
 "Language-Team: German <zope3-dev@zope.org>\n"
 "MIME-Version: 1.0\n"
@@ -235,14 +235,12 @@ msgid "Interfaces"
 msgstr "Interfaces"
 
 #: src/zope/app/apidoc/ifacemodule/browser.py:158
-#, fuzzy
 msgid "required"
-msgstr "notwendig:"
+msgstr "notwendig"
 
 #: src/zope/app/apidoc/ifacemodule/browser.py:160
-#, fuzzy
 msgid "optional"
-msgstr "Ausnahmewert"
+msgstr "optional"
 
 #: src/zope/app/apidoc/ifacemodule/index.pt:100
 msgid "There are no methods specified."
@@ -495,12 +493,11 @@ msgid "File:"
 msgstr "Datei:"
 
 #: src/zope/app/apidoc/zcmlmodule/index.pt:19
-#, fuzzy
 msgid ""
 "from (line ${beginline}, column ${begincolumn}) to (line ${endline}, column "
 "${endcolumn})"
 msgstr ""
-"(Zeile ${beginline}, Spalte ${begincolumn} bis Zeile ${endline}, Spalte "
+"von (Zeile ${beginline}, Spalte ${begincolumn}) bis (Zeile ${endline}, Spalte "
 "${endcolumn})"
 
 #: src/zope/app/apidoc/zcmlmodule/index.pt:25
@@ -531,8 +528,7 @@ msgid "Subdirectives"
 msgstr "Unterdirektiven"
 
 #: src/zope/app/apidoc/zcmlmodule/menu.pt:4
-msgid ""
-"Namespaces that are not full URLs start with \"http://namespaces.zope.org\"."
+msgid "Namespaces that are not full URLs start with \"http://namespaces.zope.org\"."
 msgstr ""
 "Namensräume, die nicht als volle URIs angegeben sind, starten mit \"http://"
 "namespaces.zope.org\"."
@@ -606,8 +602,7 @@ msgid "seconds"
 msgstr "Sekunden"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
-msgid ""
-"If you specify a time of 0 seconds, then the server will do a hard shutdown."
+msgid "If you specify a time of 0 seconds, then the server will do a hard shutdown."
 msgstr ""
 "Wenn Sie eine Zeit von 0 Sekunden eingeben, dann wird der Server sofort "
 "angehalten (hard shutdown)."
@@ -727,16 +722,14 @@ msgstr "Dieses Bündel stellt keine Registrierungen zur Verfügung."
 
 #: src/zope/app/bundle/browser/bundle.pt:123
 msgid "Click \"Activate bundle\" to perform the above actions."
-msgstr ""
-"Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
+msgstr "Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
 
 #: src/zope/app/bundle/browser/bundle.pt:127
 msgid "activate-bundle-button"
 msgstr "Aktivieren"
 
 #: src/zope/app/bundle/browser/bundle.pt:137
-msgid ""
-"Click \"Deactivate bundle\" to unregister all registrations in this bundle."
+msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
 msgstr ""
 "Klicken Sie auf \"Bündel deaktivieren\", um alle Registrierungen in diesem "
 "Bündel nichtig zu machen."
@@ -840,8 +833,7 @@ msgstr "Cache ungültig machen"
 
 #: src/zope/app/cache/browser/cacheableedit.pt:5
 msgid "This edit form allows you to associate a cache with this object."
-msgstr ""
-"Dieses Formular erlaubt Ihnen, einen Cache für dieses Objekt zu definieren."
+msgstr "Dieses Formular erlaubt Ihnen, einen Cache für dieses Objekt zu definieren."
 
 #: src/zope/app/cache/browser/cacheableedit.pt:9
 msgid "Currently there is no cache associated with the object."
@@ -1090,8 +1082,7 @@ msgid "Error Reporting Service for Logging Errors"
 msgstr "Fehlermeldedienst für Logging Fehler"
 
 #: src/zope/app/errorservice/browser/error.pt:10
-msgid ""
-"This page lists the exceptions that have occurred in this site recently."
+msgid "This page lists the exceptions that have occurred in this site recently."
 msgstr ""
 "Diese Seite listet die Ausnahmen auf, die kürzlich in dieser Webseite "
 "aufgetreten sind."
@@ -1504,8 +1495,7 @@ msgid "Database Schemas"
 msgstr "Datenbanken-Schemas"
 
 #: src/zope/app/generations/browser/managers.pt:18
-msgid ""
-"The database was updated to generation ${generation} for ${application}."
+msgid "The database was updated to generation ${generation} for ${application}."
 msgstr ""
 "Die Datenbank wurde auf Generation ${generation} für ${application} "
 "aktualisiert."
@@ -1601,8 +1591,7 @@ msgstr "Exportieren"
 
 #: src/zope/app/i18n/browser/synchronize.pt:122
 msgid "No connection could be made to remote data source."
-msgstr ""
-"Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
+msgstr "Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
 
 #: src/zope/app/i18n/browser/synchronize.pt:26
 msgid "Server URL"
@@ -1751,8 +1740,7 @@ msgid "Edit Form"
 msgstr "Bearbeitungsformular"
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:28
-msgid ""
-"This edit form allows you to make changes to the properties of this image."
+msgid "This edit form allows you to make changes to the properties of this image."
 msgstr ""
 "Dieses Berarbeitungsformular erlaubt es Ihnen, Änderungen an den "
 "Einstellungen ihres Bildes vorzunehmen."
@@ -1923,8 +1911,7 @@ msgid "Add Browser Menu (Registration)"
 msgstr "Browsermenü hinzufügen (Registrierung)"
 
 #: src/zope/app/menu/browser/configure.zcml:5
-msgid ""
-"Browser Menu tools are used to build menus for Web user        interfaces."
+msgid "Browser Menu tools are used to build menus for Web user        interfaces."
 msgstr ""
 "Browsermenü-Werkzeuge werden benutzt, um Menüs für Web-Benutzeroberflächen "
 "zu erstellen."
@@ -2036,8 +2023,7 @@ msgstr "Menü der hinzufügbaren Caches"
 
 #: src/zope/app/menus.zcml:17
 msgid "Menu of objects to be added to content folders"
-msgstr ""
-"Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
+msgstr "Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
 
 #: src/zope/app/menus.zcml:21
 msgid "Menu for objects to be added according to containment constraints"
@@ -2047,8 +2033,7 @@ msgstr ""
 
 #: src/zope/app/menus.zcml:26
 msgid "Menu of objects to be added to site management folders"
-msgstr ""
-"Menü von Objekten die Webseitenverwaltungs-Ordnern hinzugefügt werden können"
+msgstr "Menü von Objekten die Webseitenverwaltungs-Ordnern hinzugefügt werden können"
 
 #: src/zope/app/menus.zcml:30
 msgid "Menu of database connections to be added"
@@ -2288,8 +2273,7 @@ msgstr "Anmeldung"
 
 #: src/zope/app/pluggableauth/interfaces.py:31
 msgid "The Login/Username of the user. This value can change."
-msgstr ""
-"Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
+msgstr "Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
 
 #: src/zope/app/pluggableauth/interfaces.py:37
 msgid "The password for the user."
@@ -2308,8 +2292,7 @@ msgid "Presentation Service"
 msgstr "Präsentationsdienst"
 
 #: src/zope/app/presentation/browser/configure.zcml:3
-msgid ""
-"A Presentation Service allows you to register views, resources and skins"
+msgid "A Presentation Service allows you to register views, resources and skins"
 msgstr ""
 "Ein Präsentationsdienst erlaubt es Ihnen, Ansichten, Ressourcen und Themen "
 "zu registrieren."
@@ -2462,8 +2445,7 @@ msgstr "Die URL, die aufgerufen werden soll, wenn der Eintrag ausgewählt ist"
 
 #: src/zope/app/publisher/interfaces/browser.py:39
 msgid "The url is relative to the object the menu is being displayed for."
-msgstr ""
-"DIe URL ist relativ zu dem Objekt für das der Menüeintrag angezeigt wird."
+msgstr "DIe URL ist relativ zu dem Objekt für das der Menüeintrag angezeigt wird."
 
 #: src/zope/app/publisher/interfaces/browser.py:45
 msgid "The text to be displayed for the menu item"
@@ -2588,8 +2570,7 @@ msgid "Add Database Connection Registration"
 msgstr "Datenbankverbindungs-Registrierung hinzufügen"
 
 #: src/zope/app/rdb/browser/configure.zcml:5
-msgid ""
-"Database Adapters are used to connect to external       relational databases."
+msgid "Database Adapters are used to connect to external       relational databases."
 msgstr ""
 "Datenbankadapter werde benutzt, um Verbindungen zu externen relationalen "
 "Datenbanken herzustellen."
@@ -2641,8 +2622,7 @@ msgstr "Datenbankadapter - Testverbindung"
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:13
 msgid "Here you can enter an SQL statement, so you can test the connection."
-msgstr ""
-"Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
+msgstr "Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:18
 msgid "Query"
@@ -3236,8 +3216,7 @@ msgid "Login Failed!"
 msgstr "Login fehlgeschlagen!"
 
 #: src/zope/app/security/browser/login_failed.pt:9
-msgid ""
-"You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
+msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
 msgstr ""
 "Sie haben den Loginprozess abgebrochen. <a href=\"\"> Bitte hier klicken um "
 "zurückzukehren. </a>"
@@ -3413,8 +3392,7 @@ msgstr "Der Rolle zugewiesene Berechtigungen ${perm_title} (id: ${perm_id})"
 
 #: src/zope/app/securitypolicy/browser/manage_roleform.pt:9
 msgid "Helpful message explaining about how to set specific roles"
-msgstr ""
-"Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
+msgstr "Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
 
 #: src/zope/app/securitypolicy/browser/principal_permission_edit.pt:12
 msgid "Permission Settings"
@@ -3539,8 +3517,7 @@ msgid "Purge Interval"
 msgstr "Abfrageintervall"
 
 #: src/zope/app/session/interfaces.py:110
-msgid ""
-"How often stale data is purged in seconds. Higer values improve performance."
+msgid "How often stale data is purged in seconds. Higer values improve performance."
 msgstr ""
 "Wie oft verfallene Daten gelöscht werden, in Sekunden. Höhere Werte "
 "verbessern die Geschwindigkeit."
@@ -4309,8 +4286,7 @@ msgid "update-button"
 msgstr "Aktualisieren"
 
 #: src/zope/app/utility/browser/configureutility.pt:9
-msgid ""
-"Utility registrations for interface ${interface} with name ${utility_name}"
+msgid "Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
 "Werkzeugregistrierung für Interface ${interface} mit dem Namen "
 "${utility_name}"
@@ -4952,8 +4928,7 @@ msgstr "${lines} Zeilen"
 #: src/zope/exceptions/unauthorized.py:69
 #: src/zope/exceptions/unauthorized.py:72
 msgid "You are not allowed to access ${name} in this context"
-msgstr ""
-"Es ist Ihnen nicht gestattet auf ${name} in diesem Kontext zuzugreifen."
+msgstr "Es ist Ihnen nicht gestattet auf ${name} in diesem Kontext zuzugreifen."
 
 #: src/zope/exceptions/unauthorized.py:74
 msgid "You are not authorized"
@@ -5038,8 +5013,7 @@ msgstr "Vorgegebener Wert"
 msgid ""
 "The field default value may be None or a legal\n"
 "                        field value"
-msgstr ""
-"Der \"default\" Wert des Feldes kann None oder ein legaler Feldwert sein"
+msgstr "Der \"default\" Wert des Feldes kann None oder ein legaler Feldwert sein"
 
 #: src/zope/schema/interfaces.py:132
 msgid "Missing Value"
@@ -5123,8 +5097,7 @@ msgid "Value Type"
 msgstr "Werttyp"
 
 #: src/zope/schema/interfaces.py:385
-msgid ""
-"Field value items must conform to the given type, expressed via a Field."
+msgid "Field value items must conform to the given type, expressed via a Field."
 msgstr "Feldwerte müssen sich auf den Typen in diesem Feld anpassen."
 
 #: src/zope/schema/interfaces.py:389
@@ -5197,219 +5170,3 @@ msgstr "Bar"
 msgid "Bar description"
 msgstr "Bar Beschreibung"
 
-#~ msgid "from"
-#~ msgstr "von"
-
-#~ msgid "line"
-#~ msgstr "Zeile"
-
-#~ msgid "column"
-#~ msgstr "Spalte"
-
-#~ msgid "to"
-#~ msgstr "zu"
-
-#~ msgid "Translation Domain Control"
-#~ msgstr "Übersetzungsdomänenkontrolle"
-
-#~ msgid "ZGlobal Transaction Service Controller"
-#~ msgstr "Globale Übersetzungsdienst-Kontrolle"
-
-#~ msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
-#~ msgstr ""
-#~ "Der Katalog ist derzeit bei dem Objekt Hub <strong>abonniert</strong>."
-
-#~ msgid "(and reindex all objects, if checked)"
-#~ msgstr "(und reindiziere alle Objekte, wenn aus ausgewählt)"
-
-#~ msgid "Advanced Catalog Thingies"
-#~ msgstr "Fortgeschrittende Katalog-Dinge"
-
-#~ msgid "Site Catalog"
-#~ msgstr "Webseitenkatalog"
-
-#~ msgid "Indexes"
-#~ msgstr "Indices"
-
-#~ msgid "Add Index"
-#~ msgstr "Index Hinzfügen"
-
-#~ msgid "A full text index"
-#~ msgstr "Ein vollständiger Textindex"
-
-#~ msgid "Text Index"
-#~ msgstr "Text-Index"
-
-#~ msgid "An index of a specific field"
-#~ msgstr "Ein Index eines bestimmten Feldes"
-
-#~ msgid "Field Index"
-#~ msgstr "Feldindex"
-
-#~ msgid "Keyword Index"
-#~ msgstr "Schlüsselwort-Index"
-
-#~ msgid "A keyword index of a specific field"
-#~ msgstr "Ein Schlüsselwortindex eines bestimmten Feldes"
-
-#~ msgid "Catalog"
-#~ msgstr "Katalog"
-
-#~ msgid "A Catalog allows indexing and searching of objects"
-#~ msgstr "Ein Katalog erlaubt das Indizieren und Suchen von Objekten"
-
-#~ msgid "Advanced"
-#~ msgstr "Fortgeschrittenes"
-
-#~ msgid "Event Service"
-#~ msgstr "Ereignisdienst"
-
-#~ msgid "An event service. One of these in the root is usually enough"
-#~ msgstr ""
-#~ "Ein Ereignisdienst. Normalerweise ist einer im Wurzelelement ausreichend"
-
-#~ msgid "This is an event service."
-#~ msgstr "Dies ist ein Ereignisdienst."
-
-#~ msgid "OK"
-#~ msgstr "OK"
-
-#~ msgid "Missing"
-#~ msgstr "Fehlt"
-
-#~ msgid ""
-#~ "An object hub, for cataloging, unique object ids, and                    "
-#~ "more: use sparingly"
-#~ msgstr ""
-#~ "Eine Objekt-Hub, zum katalogisieren, eindeutige Objekt-Idsm und mehr: "
-#~ "sparsam nutzen"
-
-#~ msgid "HubIds Service"
-#~ msgstr "Hub-Ids-Dienst"
-
-#~ msgid "An event subscriber that registers content with the objecthub"
-#~ msgstr "Ein Ereignis-Abonnent, der Inhalte mit der Objekt-Hub registriert"
-
-#~ msgid "Registration subscriber"
-#~ msgstr "Registrierungs-Abonnent"
-
-#~ msgid "Control"
-#~ msgstr "Kontrolle"
-
-#~ msgid "This is an object hub. There are ${num_objects} objects registered."
-#~ msgstr ""
-#~ "Dies ist die Objektnabe. Es sind ${num_objects} Objekte registriert."
-
-#~ msgid "View Object Registrations"
-#~ msgstr "Objektregistrierungen ansehen"
-
-#~ msgid "Hide Object Registrations"
-#~ msgstr "Objektregistrierungen verstecken"
-
-#~ msgid "Object ID"
-#~ msgstr "Objekt ID"
-
-#~ msgid "Unregister Missing Objects"
-#~ msgstr "Registrierung fehlender Objekte löschen"
-
-#~ msgid "${missing_num} object(s) unregistered."
-#~ msgstr "Registrierung von ${missing_num} Objekt(en) gelöscht."
-
-#~ msgid "Subscription control"
-#~ msgstr "Abonnement-Kontrolle"
-
-#~ msgid "Successfully subscribed."
-#~ msgstr "Erfolgreich abonniert."
-
-#~ msgid "Successfully unsubscribed."
-#~ msgstr "Abonnement erfolgreich gekündigt."
-
-#~ msgid "Registration done."
-#~ msgstr "Registrierung abgeschlossen."
-
-#~ msgid "Subscription state: ON"
-#~ msgstr "Abonnementsstatus: AN"
-
-#~ msgid "Registration \"Service\" Control Page"
-#~ msgstr "Registrierungs-\"Dienst\" Kontrollseite"
-
-#~ msgid "unsubscribe-button"
-#~ msgstr "Abonnieren"
-
-#~ msgid "Subscription state: OFF"
-#~ msgstr "Abonnementsstatus: AUS"
-
-#~ msgid "subscribe-button"
-#~ msgstr "Abonnieren"
-
-#~ msgid "Register Existing Objects"
-#~ msgstr "Existierende Objekte registrieren"
-
-#~ msgid "NEXT BATCH --&gt;"
-#~ msgstr "NÄCHSTER STAPEL --&gt;"
-
-#~ msgid "FieldIndex"
-#~ msgstr "Feldindex"
-
-#~ msgid ""
-#~ "This page lets you control a field index, which is used to provide a "
-#~ "single field searching facility. The search box here is only for "
-#~ "debugging. Subscription status: A \"subscribed\" index will update itself "
-#~ "whenever objects are added, deleted or modified; an \"unsubscribed\" "
-#~ "index will retain the indexing information but not update itself further."
-#~ msgstr ""
-#~ "Auf dieser Seite können Sie den Feldindex kontrollieren. Ein Feldindex "
-#~ "kann einzelne Felder indizieren. Die Suchbox ist nur für die Fehlersuche. "
-#~ "Abonnementsstatus: Ein Index, der \"abonniert\" hat, aktualisiert sich "
-#~ "selbst, wann immer Objekte hinzugefügt, gelöscht oder geändert werden; "
-#~ "ein Index, der nicht \"abonniert\" hat, wird die Indexinformationen "
-#~ "behalten, sich aber nicht weiterhin aktualisieren."
-
-#~ msgid "FieldIndex Control Page"
-#~ msgstr "Feldindex Kontrollseite"
-
-#~ msgid "Adapting objects to: ${iface_name}"
-#~ msgstr "Adaptiere Objekte zu: ${iface_name}"
-
-#~ msgid "Indexing on attribute: ${field_name}"
-#~ msgstr "Indiziere Attribut: ${field_name}"
-
-#~ msgid "Documents: ${doc_count}"
-#~ msgstr "Dokumente: ${doc_count}"
-
-#~ msgid "No hits. Please try another query."
-#~ msgstr "Keine Ergebnisse. Bitte versuchen Sie eine andere Abfrage."
-
-#~ msgid "Hits ${first} - ${last} of ${total}"
-#~ msgstr "Ergebnisse ${first} - ${last} von ${total}"
-
-#~ msgid "title=${title}; url=${title}"
-#~ msgstr "Titel=${title}; URL=${title}"
-
-#~ msgid "&lt;-- PREVIOUS BATCH"
-#~ msgstr "&lt;-- VORHERIGER STAPEL"
-
-#~ msgid "TextIndex"
-#~ msgstr "Textindex"
-
-#~ msgid ""
-#~ "This page lets you control a text index, which is used to provide a full-"
-#~ "text searching facility. The search box here is only for debugging. "
-#~ "Subscription status: A \"subscribed\" index will update itself whenever "
-#~ "objects are added, deleted or modified; an \"unsubscribed\" index will "
-#~ "retain the indexing information but not update itself further."
-#~ msgstr ""
-#~ "Auf dieser Seite können Sie den Textindex kontrollieren. Ein Textindex "
-#~ "wird für die Volltextsuche benutzt. Ein Index, der \"abonniert\" hat, "
-#~ "aktualisiert sich selbst, wann immer Objekte hinzugefügt, gelöscht oder "
-#~ "geändert werden; ein Index, der nicht \"abonniert\" hat, wird die "
-#~ "Indexinformationen behalten, sich aber nicht weiterhin aktualisieren."
-
-#~ msgid "TextIndex Control Page"
-#~ msgstr "Textindex Kontrollseite"
-
-#~ msgid "Words: ${word_count}"
-#~ msgstr "Wörter: ${word_count}"
-
-#~ msgid "title=${title}; url=${url}; score=${score}"
-#~ msgstr "Titel=${title}; URL=${url}; Punkte=${score}"
