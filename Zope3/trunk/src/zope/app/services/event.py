@@ -13,25 +13,26 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.32 2003/06/17 19:54:48 stevea Exp $
+$Id: event.py,v 1.33 2003/06/24 22:37:24 jim Exp $
 """
 
 from __future__ import generators
+
+from zope.app import zapi
+
 from zope.exceptions import NotFoundError
 
+from zope.component import queryService
 from zope.app.interfaces.event import IEvent, ISubscriber
-from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.services.event import ISubscriptionService
 from zope.app.interfaces.services.event import IEventChannel, IEventService
 from zope.app.interfaces.services.service import IBindingAware
 
-from zope.component import getAdapter, getService, queryService
 from zope.component import ComponentLookupError
 from zope.app.services.servicenames import HubIds, EventPublication
 from zope.app.services.servicenames import EventSubscription
 from zope.app.component.nextservice import getNextService, queryNextService
 
-from zope.context import ContextMethod, ContextSuper
 from zope.proxy import removeAllProxies
 from zope.interface import implements
 
@@ -40,7 +41,7 @@ from zope.app.event.subs import Subscribable, SubscriptionTracker
 import logging
 
 def getSubscriptionService(context):
-    return getService(context, EventSubscription)
+    return zapi.getService(context, EventSubscription)
 
 def subscribe(subscriber, event_type=IEvent, filter=None, context=None):
     if context is None and not isinstance(subscriber, (int, str, unicode)):
@@ -93,7 +94,8 @@ class EventChannel(Subscribable):
             hubGet = None
         else:
             hubGet = hubIdsService.getObject
-        pathGet = getAdapter(wrapped_self, ITraverser).traverse
+
+        root = removeAllProxies(zapi.getRoot(wrapped_self))
 
         badSubscribers = {}  # using a dict as a set
         for subscriptions in subscriptionsForEvent:
@@ -108,7 +110,7 @@ class EventChannel(Subscribable):
                         continue
                 else:
                     try:
-                        obj = pathGet(subscriber)
+                        obj = zapi.traverse(root, subscriber)
                     except NotFoundError:
                         badSubscribers[subscriber] = None
                         continue
@@ -119,7 +121,7 @@ class EventChannel(Subscribable):
                 # is no ISubscriber adapter available, that is an application
                 # error that should be fixed. So, failing is appropriate, and
                 # adding this subscriber to badSubscribers is inappropriate.
-                getAdapter(obj, ISubscriber).notify(event)
+                zapi.getAdapter(obj, ISubscriber).notify(event)
 
         for subscriber in badSubscribers:
             logging.getLogger('SiteError').warn(
@@ -133,7 +135,7 @@ class EventChannel(Subscribable):
     def notify(wrapped_self, event):
         clean_self = removeAllProxies(wrapped_self)
         clean_self._notify(wrapped_self, event)
-    notify = ContextMethod(notify)
+    notify = zapi.ContextMethod(notify)
 
 
 class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
@@ -165,9 +167,9 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
         if getattr(wrapped_self, "_v_ssecunbinding", None) is not None:
             raise Exception(
                 'Cannot subscribe to a subscriber that is unbinding.')
-        return ContextSuper(ServiceSubscriberEventChannel, wrapped_self
+        return zapi.ContextSuper(ServiceSubscriberEventChannel, wrapped_self
                 ).subscribe(reference, event_type, filter)
-    subscribe = ContextMethod(subscribe)
+    subscribe = zapi.ContextMethod(subscribe)
 
     def bound(wrapped_self, name):
         "See IBindingAware"
@@ -177,7 +179,8 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
         clean_self = removeAllProxies(wrapped_self)
         clean_self._serviceName = name  # for ServiceSubscribable
         if clean_self.subscribeOnBind:
-            es = queryService(wrapped_self, clean_self._subscribeToServiceName)
+            es = queryService(
+                wrapped_self, clean_self._subscribeToServiceName)
             if es is not None:
                 if removeAllProxies(es) is clean_self:
                     es = queryNextService(
@@ -195,7 +198,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
                     clean_self._subscribeToServiceInterface,
                     clean_self._subscribeToServiceFilter
                     )
-    bound = ContextMethod(bound)
+    bound = zapi.ContextMethod(bound)
 
     def unbound(wrapped_self, name):
         "See IBindingAware"
@@ -243,7 +246,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
         assert len(paths) == len(hubIds) == len(clean_self._registry) == 0
 
         clean_self._serviceName = None
-    unbound = ContextMethod(unbound)
+    unbound = zapi.ContextMethod(unbound)
 
 
 class ServiceSubscribable(Subscribable):
@@ -267,7 +270,7 @@ class ServiceSubscribable(Subscribable):
         # The point here is that if we can't unsubscribe here, we should
         # allow the next event service to unsubscribe.
         try:
-            ContextSuper(ServiceSubscribable, wrapped_self).unsubscribe(
+            zapi.ContextSuper(ServiceSubscribable, wrapped_self).unsubscribe(
                 reference, event_type, filter)
         except NotFoundError:
             next_service = queryNextService(wrapped_self,
@@ -276,14 +279,14 @@ class ServiceSubscribable(Subscribable):
                 next_service.unsubscribe(reference, event_type, filter)
             else:
                 raise
-    unsubscribe = ContextMethod(unsubscribe)
+    unsubscribe = zapi.ContextMethod(unsubscribe)
 
     def unsubscribeAll(wrapped_self, reference, event_type=IEvent,
                        local_only=False):
         # unsubscribe all from here, and from the next service
 
         # n is the number of subscriptions removed
-        n = ContextSuper(ServiceSubscribable, wrapped_self).unsubscribeAll(
+        n = zapi.ContextSuper(ServiceSubscribable, wrapped_self).unsubscribeAll(
             reference, event_type)
         if not local_only:
             next_service = queryNextService(wrapped_self,
@@ -291,10 +294,10 @@ class ServiceSubscribable(Subscribable):
             if next_service is not None:
                 n += next_service.unsubscribeAll(reference, event_type)
         return n
-    unsubscribeAll = ContextMethod(unsubscribeAll)
+    unsubscribeAll = zapi.ContextMethod(unsubscribeAll)
 
     def resubscribeByHubId(wrapped_self, reference):
-        n = ContextSuper(ServiceSubscribable, wrapped_self
+        n = zapi.ContextSuper(ServiceSubscribable, wrapped_self
             ).resubscribeByHubId(reference)
         next_service = queryNextService(wrapped_self,
                                         wrapped_self._serviceName)
@@ -303,7 +306,7 @@ class ServiceSubscribable(Subscribable):
         return n
 
     def resubscribeByPath(wrapped_self, reference):
-        n = ContextSuper(ServiceSubscribable, wrapped_self
+        n = zapi.ContextSuper(ServiceSubscribable, wrapped_self
             ).resubscribeByPath(reference)
         next_service = queryNextService(wrapped_self,
                                         wrapped_self._serviceName)
@@ -314,7 +317,7 @@ class ServiceSubscribable(Subscribable):
     def iterSubscriptions(wrapped_self, reference=None, event_type=IEvent,
                           local_only=False):
         'See ISubscriptionService'
-        subs = ContextSuper(ServiceSubscribable, wrapped_self
+        subs = zapi.ContextSuper(ServiceSubscribable, wrapped_self
                 ).iterSubscriptions(reference, event_type)
         for subscription in subs:
             yield subscription
@@ -326,7 +329,7 @@ class ServiceSubscribable(Subscribable):
                 for subscription in next_service.iterSubscriptions(
                     reference, event_type):
                     yield subscription
-    iterSubscriptions = ContextMethod(iterSubscriptions)
+    iterSubscriptions = zapi.ContextMethod(iterSubscriptions)
 
 
 from zope.app.interfaces.services.service import ISimpleService
@@ -361,7 +364,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
                 getNextService(wrapped_self, EventPublication).publish(event)
         finally:
             publishedEvents.remove(event)
-    publish = ContextMethod(publish)
+    publish = zapi.ContextMethod(publish)
 
     def notify(wrapped_self, event):
         "see ISubscriber"
@@ -369,7 +372,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
         publishedEvents = getattr(clean_self, "_v_publishedEvents", [])
         if event not in publishedEvents:
             clean_self._notify(wrapped_self, event)
-    notify = ContextMethod(notify)
+    notify = zapi.ContextMethod(notify)
 
     def bound(wrapped_self, name):
         "See IBindingAware"
@@ -386,7 +389,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
                     pass
                 else:
                     es.subscribe(wrapped_self)
-    bound = ContextMethod(bound)
+    bound = zapi.ContextMethod(bound)
 
     def unbound(wrapped_self, name):
         "See IBindingAware"
@@ -401,15 +404,15 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
             # what we're already doing.
             clean_self._v_unbinding = True
             try:
-                ContextSuper(EventService, wrapped_self).unbound(name)
+                zapi.ContextSuper(EventService, wrapped_self).unbound(name)
             finally:
                 # unset flag
                 del clean_self._v_unbinding
-    unbound = ContextMethod(unbound)
+    unbound = zapi.ContextMethod(unbound)
 
     def unsubscribedFrom(wrapped_self, subscribable, event_type, filter):
         "See ISubscribingAware"
-        ContextSuper(EventService, wrapped_self).unsubscribedFrom(
+        zapi.ContextSuper(EventService, wrapped_self).unsubscribedFrom(
             subscribable, event_type, filter)
         clean_self = removeAllProxies(wrapped_self)
         if getattr(clean_self, "_v_unbinding", None) is None:
@@ -422,7 +425,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
             if ISubscriptionService.isImplementedBy(
                 removeAllProxies(clean_subscribable)):
                 try:
-                    context = getService(wrapped_self, EventSubscription)
+                    context = zapi.getService(wrapped_self, EventSubscription)
                     # we do this instead of getNextService because the order
                     # of unbinding and notification of unbinding is not
                     # guaranteed
@@ -433,5 +436,5 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
                     pass
                 else:
                     context.subscribe(wrapped_self)
-    unsubscribedFrom = ContextMethod(unsubscribedFrom)
+    unsubscribedFrom = zapi.ContextMethod(unsubscribedFrom)
 
