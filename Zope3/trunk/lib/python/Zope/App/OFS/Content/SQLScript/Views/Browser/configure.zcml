@@ -31,6 +31,7 @@
 <browser:menuItems menu="zmi_views" for=".ISQLScript.">
   <browser:menuItem title="Edit" action="editForm.html"/>
   <browser:menuItem title="Test" action="testForm.html"/>
+  <browser:menuItem title="Cache" action="Caching.html"/>
 </browser:menuItems>
 
 <browser:menuItem menu="add_content"
