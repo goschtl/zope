@@ -10,7 +10,7 @@
 
   <content class=".service.SiteManager">
     <require
-        permission="zope.View"
+        permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
@@ -34,7 +34,7 @@
 
   <content class=".folder.SiteManagementFolders">
     <require
-        permission="zope.View"
+        permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
@@ -50,7 +50,7 @@
   <content class=".folder.SiteManagementFolder">
     <factory />
     <require
-        permission="zope.View"
+        permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IReadContainer" />
     <require
         permission="zope.ManageServices"
