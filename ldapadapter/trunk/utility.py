@@ -18,30 +18,23 @@ $Id$
 
 import re
 import ldap
-from ldap import OPT_PROTOCOL_VERSION
-from ldap import VERSION3
-from ldap import SCOPE_BASE
-from ldap import SCOPE_ONELEVEL
-from ldap import SCOPE_SUBTREE
-from ldap import MOD_ADD
-from ldap import MOD_REPLACE
-from ldap import MOD_DELETE
-
 from persistent import Persistent
-
 from zope.interface import implements
 from zope.app.container.contained import Contained
 
 from exceptions import LDAPURIParseError
 from exceptions import LDAP_uri_parse_error
+from exceptions import ServerDown
+from exceptions import InvalidCredentials
+from exceptions import NoSuchObject
 
 from interfaces import ILDAPAdapter
 from interfaces import ILDAPConnection
 from interfaces import IManageableLDAPAdapter
 
-SCOPES = {'base': SCOPE_BASE,
-          'one': SCOPE_ONELEVEL,
-          'sub': SCOPE_SUBTREE,
+SCOPES = {'base': ldap.SCOPE_BASE,
+          'one': ldap.SCOPE_ONELEVEL,
+          'sub': ldap.SCOPE_SUBTREE,
           }
 def convertScope(scope):
     return SCOPES[scope]
@@ -66,8 +59,8 @@ class LDAPAdapter(object):
         conn_str = self.getServerURL()
         conn = ldap.initialize(conn_str)
         try:
-            conn.set_option(OPT_PROTOCOL_VERSION, VERSION3)
-        except LDAPError:
+            conn.set_option(ldap.OPT_PROTOCOL_VERSION, ldap.VERSION3)
+        except ldap.LDAPError:
             # TODO: fallback on VERSION2 and note that the values
             # are then not utf-8 encoded (charset is implicit (?))
             raise Exception("Server should be LDAP v3")
@@ -75,10 +68,14 @@ class LDAPAdapter(object):
 
         # Bind the connection to the dn
         if dn is None:
-            dn = self.bindDN
-            password = self.bindPassword
-        conn.simple_bind_s(dn, password)
-        # May raise INVALID_CREDENTIALS, SERVER_DOWN, ...
+            dn = self.bindDN or ''
+            password = self.bindPassword or ''
+        try:
+            conn.simple_bind_s(dn, password)
+        except ldap.SERVER_DOWN:
+            raise ServerDown
+        except ldap.INVALID_CREDENTIALS:
+            raise InvalidCredentials
 
         return LDAPConnection(conn)
 
@@ -107,7 +104,7 @@ class LDAPConnection(object):
         # Get current entry
         res = self.search(dn, 'base')
         if not res:
-            raise Exception("No such entry") # FIXME use proper exception
+            raise NoSuchObject(dn)
         cur_dn, cur_entry = res[0]
 
         mod_list = []
@@ -115,13 +112,14 @@ class LDAPConnection(object):
             if cur_entry.has_key(key):
                 if values == []:
                     # TODO fail on rdn removal
-                    mod_list.append((MOD_DELETE, key, None))
+                    mod_list.append((ldap.MOD_DELETE, key, None))
                 elif cur_entry[key] != values:
                     # TODO treat modrdn
-                    mod_list.append((MOD_REPLACE, key, valuesToUTF8(values)))
+                    mod_list.append((ldap.MOD_REPLACE, key,
+                                     valuesToUTF8(values)))
             else:
                 if values != []:
-                    mod_list.append((MOD_ADD, key, valuesToUTF8(values)))
+                    mod_list.append((ldap.MOD_ADD, key, valuesToUTF8(values)))
         if not mod_list:
             return
 
@@ -133,8 +131,11 @@ class LDAPConnection(object):
         base = base.encode('utf-8')
         scope = convertScope(scope)
         # XXX convert filter to utf-8
-        ldap_entries = self.conn.search_s(base, scope, filter, attrs)
-        # May raise NO_SUCH_OBJECT, SERVER_DOWN, SIZELIMIT_EXCEEDED
+        try:
+            ldap_entries = self.conn.search_s(base, scope, filter, attrs)
+        except ldap.NO_SUCH_OBJECT:
+            raise NoSuchObject(base)
+        # May raise SIZELIMIT_EXCEEDED
 
         # Convert returned values from utf-8 to unicode.
         results = []
@@ -167,7 +168,7 @@ class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
             if len(urlList) == 3:
                 port = int(urlList[2])
         else:
-            LDAPURIParseError(LDAP_uri_parse_error)
+            raise LDAPURIParseError(LDAP_uri_parse_error)
 
         self.host = host
         self.port = port
