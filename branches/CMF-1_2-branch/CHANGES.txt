@@ -11,6 +11,10 @@
 
  Bugs Fixed
 
+   - Added external method update_catalogIndexes.py to run as part of a
+     upgrade to CMFs migrating to Zope2.4+ from from CMF sites which were built
+     using Zope2.3 catalog
+
   - Use ID to label Favorite when target has an empty Title (Tracker #440).
 
   - Allowed sub-folders to have different syndication properties 
