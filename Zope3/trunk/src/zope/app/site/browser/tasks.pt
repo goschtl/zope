@@ -27,27 +27,20 @@
 
       <ul>
         <li>
+          <a href="@@tools.html" i18n:translate="label-configure-services">
+            Tools Management
+          </a>
+        </li>
+        <li>
           <a href="@@services.html" i18n:translate="label-configure-services">
-            Configure services
+            Services Overview
           </a>
         </li>
 
         <li>
           <a href="default/Utilities/@@utilities.html"
              i18n:translate="label-configure-utilities">
-            Configure utilities
-          </a>
-        </li>
-
-        <li>
-          <a href="default/AddService" i18n:translate="label-add-service">
-            Add a service
-          </a>
-        </li>
-
-        <li>
-          <a href="default/AddUtility" i18n:translate="label-add-utility">
-            Add a utility
+            Utilities Overview (<b>default</b> Site Manager)
           </a>
         </li>
       </ul>
