@@ -24,6 +24,7 @@ import urlparse
 import UserDict
 
 from zpkgtools import cvsloader
+from zpkgtools import loader
 
 
 _logger = logging.getLogger(__name__)
@@ -145,7 +146,7 @@ def fromPathOrUrl(path, mapping=None):
             else:
                 base = path
         else:
-            f = cvsloader.open(path, "rU")
+            f = loader.open(path, "rU")
             cvsurl.path = posixpath.dirname(cvsurl.path)
             base = cvsurl.getUrl()
     try:

@@ -27,6 +27,7 @@ from zpkgtools import config
 from zpkgtools import cvsloader
 from zpkgtools import dependencies
 from zpkgtools import include
+from zpkgtools import loader
 from zpkgtools import locationmap
 from zpkgtools import package
 from zpkgtools import publication
@@ -48,9 +49,9 @@ class Application:
         self.tmpdir = tempfile.mkdtemp(prefix=options.program + "-")
         tempfile.tempdir = self.tmpdir
         if options.revision_tag:
-            self.loader = cvsloader.CvsLoader(tag=options.revision_tag)
+            self.loader = loader.Loader(tag=options.revision_tag)
         else:
-            self.loader = cvsloader.CvsLoader()
+            self.loader = loader.Loader()
         cf = config.Configuration()
         cf.location_maps.extend(options.location_maps)
         path = options.configfile
@@ -399,7 +400,7 @@ class Application:
         old_loader = self.loader
         if self.options.revision_tag:
             # we really don't want the tagged version of the support code
-            self.loader = cvsloader.CvsLoader()
+            self.loader = loader.Loader()
         self.include_support_package(
             "zpkgtools", ("cvs://cvs.zope.org/cvs-repository"
                           ":Packages/zpkgtools/zpkgtools"))

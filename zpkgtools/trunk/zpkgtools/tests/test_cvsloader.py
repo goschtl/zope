@@ -21,6 +21,8 @@ import unittest
 from StringIO import StringIO
 
 from zpkgtools import cvsloader
+from zpkgtools import loader
+from zpkgtools.tests.test_loader import LoaderTestBase
 
 
 class UrlUtilitiesTestCase(unittest.TestCase):
@@ -242,15 +244,7 @@ class UrlUtilitiesTestCase(unittest.TestCase):
                           cvsloader.parse, "http://www.example.org/")
 
 
-class CvsWorkingDirectoryBase(unittest.TestCase):
-
-    def setUp(self):
-        self.workingdir = tempfile.mkdtemp(prefix="test-workdir-")
-        self.cvsdir = os.path.join(self.workingdir, "CVS")
-        os.mkdir(self.cvsdir)
-
-    def tearDown(self):
-        shutil.rmtree(self.workingdir)
+class CvsWorkingDirectoryBase(LoaderTestBase):
 
     def initialize(self, root, repository, tag=None):
         self.writeCvsFile("Root", root + "\n")
@@ -354,6 +348,12 @@ class CvsLoaderTestCase(unittest.TestCase):
     cvs_return_code = 0
     rlog_output = ""
 
+    def setUp(self):
+        self._temp_working_dir = tempfile.mkdtemp(prefix="test-workdir-")
+
+    def tearDown(self):
+        shutil.rmtree(self._temp_working_dir)
+
     def runCvsExport(self, cvsroot, workdir, tag, path):
         self.assert_(os.path.isdir(workdir),
                      "working directory must exist and be a directory")
@@ -394,7 +394,9 @@ class CvsLoaderTestCase(unittest.TestCase):
     def test_simple_load_ok(self):
         self.rlog_output = "/cvsroot/module/dir/README.txt,v\n"
         loader = self.createLoader()
-        path = loader.load("cvs://cvs.example.org:ext/cvsroot:module/dir")
+        path = loader.load(
+            cvsloader.parse("cvs://cvs.example.org:ext/cvsroot:module/dir"),
+            self._temp_working_dir)
         self.assertEqual(self.cvsroot, ":ext:cvs.example.org:/cvsroot")
         self.assertEqual(self.tag, "HEAD")
         self.assertEqual(self.path, "module/dir")
@@ -408,7 +410,7 @@ class CvsLoaderTestCase(unittest.TestCase):
         url = "cvs://cvs.example.org:ext/cvsroot:module/dir"
         loader = self.createLoader()
         try:
-            loader.load(url)
+            loader.load(cvsloader.parse(url), self._temp_working_dir)
         except cvsloader.CvsLoadingError, e:
             self.assertEqual(e.exitcode, self.cvs_return_code)
             self.assertEqual(e.cvsurl.getUrl(), url)
@@ -417,21 +419,21 @@ class CvsLoaderTestCase(unittest.TestCase):
         self.assertEqual(self.cvsroot, ":ext:cvs.example.org:/cvsroot")
         self.assertEqual(self.tag, "HEAD")
         self.assertEqual(self.path, "module/dir")
-        self.assert_(not os.path.exists(self.workdir),
-                     "working directory must not exist after a failed run")
 
     def test_reuse_loaded_resource(self):
         url = "cvs://cvs.example.org/cvsroot:module/path"
-        loader = self.createLoader()
-        first = loader.load(url)
-        second = loader.load(url)
+        myloader = loader.Loader()
+        myloader.cvsloader = self.createLoader()
+        first = myloader.load(url)
+        second = myloader.load(url)
         self.assertEqual(first, second)
 
     def test_no_reuse_loaded_resource_different_tags(self):
         url = "cvs://cvs.example.org/cvsroot:module/path"
-        loader = self.createLoader()
-        first = loader.load(url)
-        second = loader.load(url + ":TAG")
+        myloader = loader.Loader()
+        myloader.cvsloader = self.createLoader()
+        first = myloader.load(url)
+        second = myloader.load(url + ":TAG")
         self.assertNotEqual(first, second)
 
     def test_isFileResource_file(self):
@@ -459,64 +461,10 @@ class CvsLoaderTestCase(unittest.TestCase):
                          ":pserver:user@cvs.example.org:/cvsroot")
 
 
-class DummyLoader:
-
-    cleanup_called = False
-
-    def cleanup(self):
-        self.cleanup_called += 1
-
-
-class FileProxyTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.loader = DummyLoader()
-        self.mode = "rU"
-        self.fp = cvsloader.FileProxy(__file__, self.mode, self.loader)
-
-    def tearDown(self):
-        self.fp.close()
-
-    def test_close(self):
-        self.fp.close()
-        self.assertEqual(self.loader.cleanup_called, 1)
-        self.assert_(self.fp.closed)
-        self.fp.close()
-        self.assertEqual(self.loader.cleanup_called, 1)
-        self.assert_(self.fp.closed)
-
-    def test_softspace(self):
-        self.failIf(self.fp.softspace)
-        self.fp.softspace = 1
-        self.assertEqual(self.fp.softspace, 1)
-        self.fp.softspace = 2
-        self.assertEqual(self.fp.softspace, 2)
-        self.assertRaises(TypeError, setattr, self.fp, "softspace", "12")
-        # XXX a little white box, to make sure softspace is passed to
-        # the underlying file object:
-        self.assertEqual(self.fp._file.softspace, 2)
-
-    def test_read(self):
-        text = self.fp.read()
-        expected = open(__file__, self.mode).read()
-        self.assertEqual(text, expected)
-
-    def test_url_as_name(self):
-        # make sure the path is used by default:
-        self.assertEqual(self.fp.name, __file__)
-        # now 
-        fp = cvsloader.FileProxy(__file__, self.mode, self.loader, "fake:url")
-        try:
-            self.assertEqual(fp.name, "fake:url")
-        finally:
-            fp.close()
-
-
 def test_suite():
     suite = unittest.makeSuite(UrlUtilitiesTestCase)
     suite.addTest(unittest.makeSuite(CvsWorkingDirectoryTestCase))
     suite.addTest(unittest.makeSuite(CvsLoaderTestCase))
-    suite.addTest(unittest.makeSuite(FileProxyTestCase))
     return suite
 
 if __name__ == "__main__":

@@ -204,99 +204,30 @@ class RepositoryUrl(UrlBase):
         return url
 
 
-def open(url, mode="r"):
-    if mode[:1] != "r" or "+" in mode:
-        raise ValueError("CVS resources can only be opened in read-only mode")
-    loader = CvsLoader()
-    path = loader.load(url)
-    if os.path.isfile(path):
-        return FileProxy(path, mode, loader, url)
-    # Only files and directories come from CVS, so no need to check
-    # for magical directory entries here:
-    loader.cleanup()
-    raise IOError(errno.EISDIR, "Is a directory", url)
-
-
 class CvsLoader:
 
-    def __init__(self, tag=None):
-        self.tag = tag or None
-        self.workdirs = {}  # URL -> (directory, path)
-
-    def cleanup(self):
-        """Remove all checkouts that are present."""
-        while self.workdirs:
-            url, (directory, path) = self.workdirs.popitem()
-            if directory:
-                shutil.rmtree(directory)
-
-    def load(self, url):
+    def load(self, cvsurl, workdir):
         """Load resource from URL into a temporary location.
 
         Returns the location of the resource once loaded.
         """
-        key = url
-        try:
-            url = parse(url)
-        except ValueError:
-            # XXX Hack to make this support file: URLs to ease
-            # testing with filesystem-based resources.  There
-            # really should be some sort of dispatch mechanism,
-            # but we won't do that right now.
-            parts = urlparse.urlparse(url)
-            if parts[0] == "file" and not parts[1]:
-                fn = urllib.url2pathname(parts[2])
-                if os.path.exists(fn):
-                    return fn
-                raise ValueError(
-                    "file: URL refers to non-existant resource")
-            raise TypeError(
-                "load() requires a cvs or repository URL; received %r"
-                % url)
-        if isinstance(url, RepositoryUrl):
-            raise ValueError("repository: URLs must be joined with the"
-                             " appropriate cvs: base URL")
-        elif isinstance(url, CvsUrl):
-            cvsurl = copy.copy(url)
-            key = cvsurl.getUrl()
-        else:
-            raise TypeError("load() requires a cvs: URL")
-        if not cvsurl.tag:
-            cvsurl.tag = self.tag
-            key = cvsurl.getUrl()
-        # If we've already loaded this, use that copy.  This doesn't
-        # consider fetching something with a different path that's
-        # represent by a previous load():
-        if key in self.workdirs:
-            return self.workdirs[key][1]
 
-        workdir = tempfile.mkdtemp(prefix="cvsloader-")
         cvsroot = cvsurl.getCvsRoot()
         tag = cvsurl.tag or "HEAD"
         path = cvsurl.path or "."
 
         rc = self.runCvsExport(cvsroot, workdir, tag, path)
         if rc:
-            # Some error occurred: we haven't figured out what, and
-            # don't really care; details went to standard error.
-            # Assume there's nothing to be gained from the temporary
-            # directory and toss it.
-            shutil.rmtree(workdir)
             raise CvsLoadingError(cvsurl, rc)
 
         if path == ".":
-            self.workdirs[key] = (workdir, workdir)
             return workdir
         elif self.isFileResource(cvsurl):
             basename = posixpath.basename(path)
-            path = os.path.join(workdir, basename, basename)
-            self.workdirs[key] = (workdir, path)
-            return path
+            return os.path.join(workdir, basename, basename)
         else:
             basename = posixpath.basename(path)
-            path = os.path.join(workdir, basename)
-            self.workdirs[key] = (workdir, path)
-            return path
+            return os.path.join(workdir, basename)
 
     def runCvsExport(self, cvsroot, workdir, tag, path):
         # cvs -f -Q -z6 -d CVSROOT export -kk -d WORKDIR -r TAG PATH
@@ -354,32 +285,3 @@ class CvsLoader:
     def openCvsRLog(self, cvsroot, path):
         return os.popen(
             "cvs -f -q -d '%s' rlog -R -l '%s'" % (cvsroot, path), "r")
-
-
-class FileProxy(object):
-
-    def __init__(self, path, mode, loader, url=None):
-        self.name = url or path
-        self._file = file(path, mode)
-        self._cleanup = loader.cleanup
-
-    def __getattr__(self, name):
-        return getattr(self._file, name)
-
-    def close(self):
-        if not self._file.closed:
-            self._file.close()
-            self._cleanup()
-            self._cleanup = None
-
-    # We shouldn't ever actually need to deal with softspace since
-    # we're read-only, but... real files still behave this way, so we
-    # emulate it.
-
-    def _get_softspace(self):
-        return self._file.softspace
-
-    def _set_softspace(self, value):
-        self._file.softspace = value
-
-    softspace = property(_get_softspace, _set_softspace)
