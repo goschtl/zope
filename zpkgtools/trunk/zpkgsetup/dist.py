@@ -67,4 +67,6 @@ class ZPkgDistribution(distutils.dist.Distribution):
         distutils.dist.Distribution.__init__(self, attrs)
         if self.package_data and sys.version_info < (2, 4):
             from zpkgsetup.build_py import build_py
+            from zpkgsetup.install_lib import install_lib
             self.cmdclass.setdefault('build_py', build_py)
+            self.cmdclass.setdefault('install_lib', install_lib)
