@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.7 2003/06/02 19:41:14 jim Exp $
+$Id: context.py,v 1.8 2003/06/03 14:20:31 stevea Exp $
 """
 
 from pickle import PicklingError
@@ -125,14 +125,13 @@ class Wrapper(BaseWrapper):
 
 
 def ContextWrapper(_ob, _parent, **kw):
-
     if type(_ob) in BasicTypes:
         # Don't wrap basic objects
         return _ob
 
     wrapper = queryProxy(_ob, Wrapper)
     if wrapper is not None: # using kw as marker
-        
+
         if _parent is getcontext(wrapper):
             # This would be a redundant wrapper. We'll just use the
             # one we've got.
@@ -141,8 +140,6 @@ def ContextWrapper(_ob, _parent, **kw):
             if kw:
                 getdictcreate(wrapper).update(kw)
             return _ob
-        
-
 
     if type(_ob) is Proxy:
         # insert into proxies
@@ -150,7 +147,6 @@ def ContextWrapper(_ob, _parent, **kw):
         _ob = getProxiedObject(_ob)
     else:
         checker = None
-
 
     if wrapper is not None:
         # we were already wrapped, use the same class
