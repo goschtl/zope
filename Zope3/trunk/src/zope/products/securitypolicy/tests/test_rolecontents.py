@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_rolecontents.py,v 1.2 2004/01/14 22:55:35 chrism Exp $
+$Id: test_rolecontents.py,v 1.3 2004/02/24 16:51:14 philikon Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.products.securitypolicy.browser import Contents
 from zope.products.securitypolicy.role import RoleService
 from zope.app.browser.container.tests.test_contents \
      import BaseTestContentsBrowserView, Principal
-from zope.app.content.folder import rootFolder
+from zope.app.folder import rootFolder
 from zope.app.container.contained import contained
 
 class IDummy(Interface):

@@ -13,10 +13,10 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wiki.py,v 1.1 2003/12/16 10:05:52 nmurthy Exp $
+$Id: wiki.py,v 1.2 2004/02/24 16:51:15 philikon Exp $
 """
 from zope.interface import implements
-from zope.app.content.folder import Folder
+from zope.app.folder import Folder
 from zope.products.zwiki.interfaces import IWiki
 
 

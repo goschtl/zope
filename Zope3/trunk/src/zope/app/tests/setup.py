@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.11 2004/02/09 05:31:27 Zen Exp $
+$Id: setup.py,v 1.12 2004/02/24 16:51:13 philikon Exp $
 """
 
 import zope.component
@@ -101,7 +101,7 @@ def placefulTearDown():
     zope.component.getServiceManager.reset()
 
 
-from zope.app.content.folder import Folder, rootFolder
+from zope.app.folder import Folder, rootFolder
 
 def buildSampleFolderTree():
     # set up a reasonably complex folder structure

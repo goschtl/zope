@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.28 2004/02/14 03:27:13 srichter Exp $
+$Id: test_contents.py,v 1.29 2004/02/24 16:51:15 philikon Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -296,7 +296,7 @@ class Test(BaseTestContentsBrowserView, TestCase):
 
     def _TestView__newContext(self):
         from zope.app.container.sample import SampleContainer
-        from zope.app.content.folder import rootFolder
+        from zope.app.folder import rootFolder
         root = rootFolder()
         container = SampleContainer()
         return contained(container, root, 'sample')

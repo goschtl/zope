@@ -13,13 +13,13 @@
 ##############################################################################
 """Case-Insensitive Traverser and Folder
 
-$Id: __init__.py,v 1.3 2004/02/14 13:13:27 srichter Exp $
+$Id: __init__.py,v 1.4 2004/02/24 16:51:10 philikon Exp $
 """
 from zope.app import zapi
+from zope.app.folder import Folder
+from zope.app.folder.interfaces import IFolder
 from zope.app.container.traversal import ContainerTraverser
-from zope.app.content.folder import Folder
 from zope.app.interfaces.container import IReadContainer
-from zope.app.interfaces.content.folder import IFolder
 from zope.component.interfaces import IFactory
 from zope.interface import \
      implements, implementedBy, directlyProvides, directlyProvidedBy 

@@ -13,7 +13,7 @@
 ##############################################################################
 """MKCOL tests
 
-$Id: test_mkcol.py,v 1.5 2003/11/21 17:12:02 jim Exp $
+$Id: test_mkcol.py,v 1.6 2004/02/24 16:51:13 philikon Exp $
 """
 __metaclass__ = type
 
@@ -28,12 +28,11 @@ from zope.app.interfaces.container import IWriteContainer
 from zope.app.interfaces.file import IWriteDirectory
 from zope.app.container.directory import noop
 
-from zope.app.interfaces.content.folder import IFolder
+from zope.app.folder.interfaces import IFolder
 from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.container.directory import Cloner
 
 from zope.app.http.put import NullResource
-
 from zope.app.dav import mkcol
 from zope.app.dav.tests.test_propfind import _createRequest, File
 

@@ -13,12 +13,12 @@
 ##############################################################################
 """Base Mix-in class for Placeful Setups 
 
-$Id: placefulsetup.py,v 1.28 2003/09/21 17:33:09 jim Exp $
+$Id: placefulsetup.py,v 1.29 2004/02/24 16:51:16 philikon Exp $
 """
 from zope.app import zapi
 from zope.app.tests import setup
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.content.folder import rootFolder
+from zope.app.folder import rootFolder
 
 class Place(object):
 

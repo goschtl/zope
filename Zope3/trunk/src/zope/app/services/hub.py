@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.28 2004/02/20 22:02:31 fdrake Exp $
+$Id: hub.py,v 1.29 2004/02/24 16:51:10 philikon Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,6 @@ from zope.app.interfaces.event import IObjectEvent
 from zope.app.interfaces.container import IObjectRemovedEvent
 from zope.app.interfaces.container import IObjectMovedEvent
 from zope.app.interfaces.container import IObjectAddedEvent
-from zope.app.interfaces.content.folder import IFolder
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectCreatedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
@@ -44,6 +43,7 @@ from zope.app.interfaces.services.hub import IObjectMovedHubEvent
 from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.traversing import ITraverser, ITraversable
+from zope.app.folder.interfaces import IFolder
 from zope.app.container.contained import ObjectAddedEvent
 from zope.interface import implements
 from zope.app.services.event import ServiceSubscriberEventChannel
@@ -522,6 +522,8 @@ class Registration(Persistent, Contained):
     def _registerTree(self, object, hub):
         self._registerObject(object, hub)
         # XXX Policy decision: only traverse into folders
+        # XXX Ugh! direct dependency on folders
+        # Can this be changed to IContentContainer?!?
         if not IFolder.isImplementedBy(object):
             return
         # Register subobjects

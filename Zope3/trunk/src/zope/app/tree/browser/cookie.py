@@ -13,11 +13,11 @@
 ##############################################################################
 """Stateful cookie tree
 
-$Id: cookie.py,v 1.1 2004/02/19 20:43:05 philikon Exp $
+$Id: cookie.py,v 1.2 2004/02/24 16:51:11 philikon Exp $
 """
 
 from zope.app import zapi
-from zope.app.interfaces.content.folder import IFolder
+from zope.app.folder.interfaces import IFolder
 from zope.app.interfaces.services.service import ISite, ISiteManager
 from zope.app.interfaces.traversing import IContainmentRoot
 
