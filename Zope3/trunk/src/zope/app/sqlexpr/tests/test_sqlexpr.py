@@ -13,7 +13,7 @@
 ##############################################################################
 """SQL Expression Type Tests
 
-$Id: test_sqlexpr.py,v 1.1 2004/02/11 17:43:30 philikon Exp $
+$Id: test_sqlexpr.py,v 1.1 2004/02/27 14:39:41 philikon Exp $
 """
 
 import unittest
@@ -26,7 +26,7 @@ from zope.tales.tests.test_expressions import Data
 from zope.tales.engine import Engine
 
 from zope.app.rdb.tests.stubs import ConnectionStub
-from zope.products.sqlexpr.sqlexpr import SQLExpr, NoConnectionSpecified
+from zope.app.sqlexpr.sqlexpr import SQLExpr, NoConnectionSpecified
 
 __metaclass__ = type
 

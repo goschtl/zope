@@ -56,7 +56,7 @@ SQL TALES Expression
 
     Add the following line to products.zcml file::
 
-      <include package="zope.products.sqlexpr" />
+      <include package="zope.app.sqlexpr" />
 
     However, the product is useless unless you install a relational
     database adapter or get a Gadfly database setup (the DA for Gadfly

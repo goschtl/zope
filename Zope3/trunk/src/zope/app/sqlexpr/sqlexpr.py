@@ -13,7 +13,7 @@
 ##############################################################################
 """SQL Expression Type
 
-$Id: sqlexpr.py,v 1.1 2004/02/11 17:43:29 philikon Exp $
+$Id: sqlexpr.py,v 1.1 2004/02/27 14:39:41 philikon Exp $
 """
 __metaclass__ = type 
 
