@@ -4,7 +4,8 @@
 
 <!-- Stateful ProcessDefintion -->
 
-<content class="zope.app.workflow.stateful.definition.StatefulProcessDefinition">
+<content 
+    class="zope.app.workflow.stateful.definition.StatefulProcessDefinition">
   <factory
       id="StatefulProcessDefinition"
       permission="zope.workflow.ManageProcessDefinitions"
@@ -39,7 +40,7 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.interfaces.workflow.stateful.IStatefulStatesContainer" 
+      interface="zope.app.interfaces.workflow.stateful.IStatefulStatesContainer"
       />
   <implements 
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
@@ -96,16 +97,18 @@
       />
 </content>
 
-<!-- ContentWorkflowsUtility -->
+<!-- ContentWorkflowsManager -->
 
-<content class="zope.app.workflow.stateful.contentworkflow.ContentWorkflowsUtility">
+<content 
+    class="zope.app.workflow.stateful.contentworkflow.ContentWorkflowsManager">
+  <factory
+    id="ContentWorkflowsManager"
+    permission="zope.ManageServices"
+  />
   <require
     permission="zope.ManageServices"
-    interface="zope.app.interfaces.workflow.stateful.IContentWorkflowsUtility"
-    />
-  <factory
-    id="ContentWorkflowsUtility"
-    permission="zope.ManageServices"
+    interface="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
+    attributes="cpRegistry"
     />
 </content>
 

@@ -8,8 +8,9 @@
   for="zope.app.interfaces.workflow.IWorkflowService"
   name="index.html"
   template="workflows.pt"
-  class="zope.app.browser.services.registration.NameComponentRegistryView"
+  class=".workflows.WorkflowsRegistryView"
   permission="zope.ManageServices"  
+  menu="zmi_views" title="Processes"
   />
 
 
@@ -18,7 +19,7 @@
   menu="add_service"
   for="zope.app.interfaces.container.IAdding"
   action="WorkflowService"
-  title='Workflow Service'
+  title="'Workflow Service"
   description="A workflow service" 
   />
 

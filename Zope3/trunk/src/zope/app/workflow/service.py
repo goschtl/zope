@@ -14,11 +14,12 @@
 """Workflow service implementation.
 
 Revision information:
-$Id: service.py,v 1.8 2003/06/23 00:31:32 jim Exp $
+$Id: service.py,v 1.9 2003/07/30 00:00:22 srichter Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
+from zope.component import getService
 from zope.app.component.nextservice import queryNextService
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.services.registration import INameComponentRegistry
@@ -29,10 +30,13 @@ from zope.app.interfaces.workflow import IProcessDefinitionRegistration
 from zope.app.interfaces.workflow import IWorkflowService
 from zope.app.services.registration import NameComponentRegistry
 from zope.app.services.registration import NamedComponentRegistration
+from zope.app.services.servicenames import Workflows
 from zope.app.traversing import getPath
 from zope.component import getAdapter
 from zope.context import ContextMethod
 from zope.interface import implements
+from zope.schema.interfaces import \
+     ITokenizedTerm, IVocabulary, IVocabularyTokenized
 
 
 class ILocalWorkflowService(IWorkflowService, INameComponentRegistry):
@@ -57,7 +61,7 @@ class WorkflowService(Persistent, NameComponentRegistry):
             registry = self.queryRegistrations(name)
             if registry.active() is not None:
                 definition_names[name] = 0
-        service = queryNextService(self, "Workflows")
+        service = queryNextService(self, Workflows)
         if service is not None:
             for name in service.getProcessDefinitionNames():
                 definition_names[name] = 0
@@ -66,12 +70,13 @@ class WorkflowService(Persistent, NameComponentRegistry):
     getProcessDefinitionNames = ContextMethod(getProcessDefinitionNames)
 
 
+
     def getProcessDefinition(self, name):
         'See IWorkflowService'
         pd = self.queryActiveComponent(name)
         if pd is not None:
             return ContextWrapper(pd, self, name=name)
-        service = queryNextService(self, "Workflows")
+        service = queryNextService(self, Workflows)
         if service is not None:
             return service.getProcessDefinition(name)
         raise KeyError, name
@@ -105,7 +110,7 @@ class ProcessDefinitionRegistration(NamedComponentRegistration):
 
     implements(IProcessDefinitionRegistration)
 
-    serviceType = 'Workflows'
+    serviceType = Workflows
 
     def getInterface(self):
         return IProcessDefinition
@@ -135,3 +140,40 @@ class ProcessDefinitionRegistration(NamedComponentRegistration):
         adapter.removeUsage(getPath(registration))
         super(ProcessDefinitionRegistration, self).beforeDeleteHook(
             registration, container)
+
+
+class ProcessDefinitionTerm:
+
+    implements(ITokenizedTerm)
+
+    def __init__(self, name):
+        self.value = name
+        self.token = name
+
+
+class ProcessDefinitionVocabulary(object):
+
+    implements(IVocabulary, IVocabularyTokenized)
+
+    def __init__(self, context):
+        self.workflows = getService(context, Workflows)
+    
+    def __contains__(self, value):
+        return value in self.workflows.getProcessDefinitionNames()
+    
+    def __iter__(self):
+        terms = map(lambda p: ProcessDefinitionTerm(p),
+                    self.workflows.getProcessDefinitionNames())
+        return iter(terms)
+    
+    def __len__(self):
+        return len(self.workflows.getProcessDefinitionNames())
+    
+    def getQuery(self):
+        return None
+    
+    def getTerm(self, value):
+        return ProcessDefinitionTerm(value)
+
+    def getTermByToken(self, token):
+        return self.getTerm(token)

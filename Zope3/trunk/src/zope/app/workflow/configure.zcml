@@ -2,7 +2,6 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:service='http://namespaces.zope.org/service'>
 
-
 <!-- Workflow Permissions -->
 
 <permission 
@@ -37,10 +36,9 @@
 </content>
 
 <serviceType 
-  id='Workflows'
-  interface='zope.app.interfaces.workflow.IWorkflowService' 
+  id="Workflows"
+  interface="zope.app.interfaces.workflow.IWorkflowService"
   />
-
 
 
 <!-- Workflow Process Definition 
@@ -85,6 +83,20 @@
       />
 </content>
 
+<vocabulary
+   name="ProcessDefinitions"
+   factory=".service.ProcessDefinitionVocabulary" />
+
+<content class=".service.ProcessDefinitionVocabulary">
+  <allow interface="zope.schema.interfaces.IVocabulary"/>
+  <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
+  <allow attributes="__contains__"/>
+</content>
+
+<content class=".service.ProcessDefinitionTerm">
+  <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
+</content>
+
 
 <!-- Process Instance Container -->
 
@@ -112,7 +124,6 @@
          for="zope.app.interfaces.annotation.IAnnotatable" />
 
 <!-- Workflow Import/Export Utility -->
-
 <utility
     component=".globalimportexport.globalImportExport" 
     provides="zope.app.interfaces.workflow.IProcessDefinitionImportExport"

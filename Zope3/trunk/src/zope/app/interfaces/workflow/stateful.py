@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.15 2003/06/24 19:01:36 jeremy Exp $
+$Id: stateful.py,v 1.16 2003/07/30 00:00:19 srichter Exp $
 """
 
 import zope.schema
@@ -223,9 +223,28 @@ class IStatefulProcessInstance(IProcessInstance):
         """Fire a outgoing transitions."""
 
 
+class IContentProcessRegistry(Interface):
+    """Content Type <-> Process Definitions Registry
 
-class IContentWorkflowsUtility(Interface):
-    """A Content Workflows Utility.
+    This is a registry for mapping content types (interface) to workflow process
+    definitions (by name)."""
+
+    def register(iface, name):
+        """Register a new process definition (name) for the interface iface."""
+
+    def unregister(iface, name):
+        """Unregister a process (name) for a particular interface."""
+
+    def getProcessNamesForInterface(iface):
+        """Return a list of process defintion names for the particular
+        interface."""
+
+    def getInterfacesForProcessName(name):
+        """Return a list of interfaces for the particular process name."""
+
+
+class IContentWorkflowsManager(IContentProcessRegistry):
+    """A Content Workflows Manager.
 
     it associates content objects with some workflow process definitions.
     """
@@ -239,8 +258,9 @@ class IContentWorkflowsUtility(Interface):
     def isSubscribed():
         """Return whether we are currently subscribed."""
 
-    def getProcessDefinitionNames():
-        """Get the process definition names."""
+    def getProcessDefinitionNamesForObject(object):
+        """Get the process definition names for a particular object.
 
-    def setProcessDefinitionNames(names):
-        """Set the process definition names."""
+        This method reads in all the interfaces this object implements and
+        finds then the corresponding process names using the
+        IContentProcessRegistry."""

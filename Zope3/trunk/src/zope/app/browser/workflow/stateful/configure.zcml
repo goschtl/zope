@@ -14,8 +14,9 @@
 
 
 <browser:pages
-  for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
-  class="zope.app.browser.workflow.stateful.definition.StatefulProcessDefinitionView"
+    for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+    class=
+  "zope.app.browser.workflow.stateful.definition.StatefulProcessDefinitionView"
   permission="zope.ManageServices">
 
   <browser:page name="index.html" template="definition_index.pt" />
@@ -34,8 +35,10 @@
   for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
   menu="zmi_actions">
   
-  <browser:menuItem title="Manage States" action="states/contents.html" />
-  <browser:menuItem title="Manage Transitions" action="transitions/contents.html" />
+  <browser:menuItem 
+      title="Manage States" action="states/contents.html" />
+  <browser:menuItem 
+      title="Manage Transitions" action="transitions/contents.html" />
 
 </browser:menuItems>
 
@@ -43,7 +46,6 @@
 <!-- States/Transitions Container Adding Menus -->
 <browser:menu id="add_stateful_states" title="State Items" />
 <browser:menu id="add_stateful_transitions" title="Transition Items" />
-
 
 
 <!-- States Container -->
@@ -61,7 +63,6 @@
     <browser:page name="action.html" attribute="action" />
 
 </browser:view>
-
 
 
 <!-- State -->
@@ -87,10 +88,6 @@
   />
 
 
-
-
-
-
 <!-- Transitions Container -->
 
 <browser:view
@@ -99,8 +96,7 @@
     menu="zmi_actions" title="Add"
     class=".definition.TransitionsContainerAdding"
     permission="zope.workflow.ManageProcessDefinitions"
-    allowed_attributes="addingInfo"
-    >
+    allowed_attributes="addingInfo">
 
     <browser:page name="index.html"  template="add.pt" />
     <browser:page name="action.html" attribute="action" />
@@ -134,27 +130,30 @@
 <browser:menuItem
   menu="add_component"
   for="zope.app.interfaces.container.IAdding"
-  action="ContentWorkflowsUtility"
-  title="Content Workflows Utility"
-  description="An utility for creating/deleting workflow for content objects." />
+  action="ContentWorkflowsManager"
+  title="Content Workflows Manager"
+  description="An utility to manage content and workflow interaction." 
+  />
 
 <browser:pages
-  for="zope.app.interfaces.workflow.stateful.IContentWorkflowsUtility"
-  class="zope.app.browser.workflow.stateful.contentworkflow.ContentWorkflowsUtilityView"
+  for="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
+  class=".contentworkflow.ContentWorkflowsManagerView"
   permission="zope.ManageServices">
 
-  <browser:page name="index.html" template="contentworkflow_index.pt" />
+  <browser:page name="index.html" template="contentworkflow_index.pt" 
+       menu="zmi_views" title="Overview"/>
 
 </browser:pages>
 
-<browser:menuItem
-  menu="zmi_views"
-  for="zope.app.interfaces.workflow.stateful.IContentWorkflowsUtility"
-  action="index.html"
-  title="Overview"
-  description="ContentWorkflowsUtility Overview" />
+<browser:pages
+  for="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
+  class=".contentworkflow.ManageContentProcessRegistry"
+  permission="zope.ManageServices">
 
+  <browser:page name="registry.html" template="contentworkflow_registry.pt" 
+       menu="zmi_views" title="Content/Process Registry"/>
 
+</browser:pages>
 
 
 <!-- ProcessInstanceContainerAdaptable -->
