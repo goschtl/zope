@@ -180,7 +180,7 @@ class ComponentPathWidget(SimpleInputWidget):
             "of using the component's path.",
             DeprecationWarning, stacklevel=2,
             )        
-        super(ComponentPathWidget, self).__init__(*agrs, **kw)
+        super(ComponentPathWidget, self).__init__(*args, **kw)
 
     def __call__(self):
         """See zope.app.browser.interfaces.form.IBrowserWidget"""
