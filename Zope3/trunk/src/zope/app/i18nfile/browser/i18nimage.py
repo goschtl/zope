@@ -19,7 +19,7 @@ from zope.i18n.negotiator import negotiator
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.file.browser.image import ImageData
 from zope.app.size import byteDisplay
-
+from urllib import quote
 
 class I18nImageEdit(object):
 
@@ -54,9 +54,9 @@ class I18nImageEdit(object):
             self.context.setData(data, language)
             self.context.contentType = contentType
         return self.request.response.redirect(self.request.URL[-1] +
-                      "/upload.html?language=%s" % language)  # XXX url_quote
+                      "/upload.html?language=%s" % quote(language, ''))
 
-
+    
 class I18nImageData(ImageData):
 
     def __call__(self):
