@@ -264,6 +264,12 @@ class IInterface(ISpecification, IElement):
 
         If the named attribute is not defined, a KeyError is raised.
         """
+
+    def direct(name):
+        """Get the description for the name if it was defined by the interface
+
+        If the interface doesn't define the name, returns None.
+        """
     
     def validateInvariants(obj, errors=None):
         """Validate invariants

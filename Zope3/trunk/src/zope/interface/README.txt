@@ -90,6 +90,11 @@ syntax::
   >>> x.__doc__
   'X blah blah'
 
+  >>> IFoo.get('x').__name__
+  'x'
+
+  >>> IFoo.get('y')
+
 You can use `in` to determine if an interface defines a name::
 
   >>> 'x' in IFoo
@@ -116,7 +121,7 @@ Methods provide access to the method signature::
   >>> bar.getSignatureString()
   '(q, r=None)'
 
-XXX
+TODO
   Methods really should have a better API.  This is something that
   needs to be improved.
 
@@ -459,6 +464,45 @@ method for that::
   >>> list(IBaz.names())
   ['eek']
 
+Inheritance if attribute specifications
+---------------------------------------
+
+An interface may override attribute definitions frob base interfaces.
+If two base interfaces define the same attribute, the attribute is
+inherited from the most specific interface. For example, with:
+
+  >>> class IBase(zope.interface.Interface):
+  ...    
+  ...     def foo():
+  ...         "base foo doc"
+
+  >>> class IBase1(IBase):
+  ...     pass
+
+  >>> class IBase2(IBase):
+  ...    
+  ...     def foo():
+  ...         "base2 foo doc"
+
+  >>> class ISub(IBase1, IBase2):
+  ...     pass
+
+ISub's definition of foo is the one from IBase2, since IBase2 is more
+specific that IBase:
+
+  >>> ISub['foo'].__doc__
+  'base2 foo doc'
+
+Note that this differs from a depth-first search.
+
+Sometimes, it's useful to ask whether an interface defines an
+attribute directly.  You can use the direct method to get a directly
+defined definitions:
+
+  >>> IBase.direct('foo').__doc__
+  'base foo doc'
+
+  >>> ISub.direct('foo')
 
 Specifications
 --------------

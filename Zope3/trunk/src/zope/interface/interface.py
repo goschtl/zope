@@ -357,7 +357,27 @@ class Specification(SpecificationBase):
             return weakref.ref(self)
         else:
             return weakref.ref(self, callback)
-        
+
+
+    def get(self, name, default=None):
+        """Query for an attribute description
+        """
+        try:
+            attrs = self._v_attrs
+        except AttributeError:
+            attrs = self._v_attrs = {}
+        attr = attrs.get(name)
+        if attr is None:
+            for iface in self.__iro__:
+                attr = iface.direct(name)
+                if attr is not None:
+                    attrs[name] = attr
+                    break
+            
+        if attr is None:
+            return default
+        else:
+            return attr
 
 class InterfaceClass(Element, Specification):
     """Prototype (scarecrow) Interfaces Implementation."""
@@ -495,7 +515,7 @@ class InterfaceClass(Element, Specification):
 
     def getDescriptionFor(self, name):
         """Return the attribute description for the given name."""
-        r = self.queryDescriptionFor(name)
+        r = self.get(name)
         if r is not None:
             return r
 
@@ -504,21 +524,13 @@ class InterfaceClass(Element, Specification):
     __getitem__ = getDescriptionFor
 
     def __contains__(self, name):
-        return self.queryDescriptionFor(name) is not None
+        return self.get(name) is not None
+
+    def direct(self, name):
+        return self.__attrs.get(name)
 
     def queryDescriptionFor(self, name, default=None):
-        """Return the attribute description for the given name."""
-        r = self.__attrs.get(name, self)
-        if r is not self:
-            return r
-        for base in self.__bases__:
-            r = base.queryDescriptionFor(name, self)
-            if r is not self:
-                return r
-
-        return default
-
-    get = queryDescriptionFor
+        return self.get(name, default)
 
     def deferred(self):
         """Return a defered class corresponding to the interface."""

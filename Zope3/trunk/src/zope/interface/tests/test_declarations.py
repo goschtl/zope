@@ -311,6 +311,48 @@ def test_getting_spec_for_proxied_builtin_class():
     
     """
 
+def test_declaration_get():
+    """
+    We can get definitions from a declaration:
+
+        >>> import zope.interface
+        >>> class I1(zope.interface.Interface):
+        ...    a11 = zope.interface.Attribute('a11')
+        ...    a12 = zope.interface.Attribute('a12')
+        >>> class I2(zope.interface.Interface):
+        ...    a21 = zope.interface.Attribute('a21')
+        ...    a22 = zope.interface.Attribute('a22')
+        ...    a12 = zope.interface.Attribute('a212')
+        >>> class I11(I1):
+        ...    a11 = zope.interface.Attribute('a111')
+
+        >>> decl = Declaration(I11, I2)
+        >>> decl.get('a11') is I11.get('a11')
+        True
+        >>> decl.get('a12') is I1.get('a12')
+        True
+        >>> decl.get('a21') is I2.get('a21')
+        True
+        >>> decl.get('a22') is I2.get('a22')
+        True
+        >>> decl.get('a')
+        >>> decl.get('a', 42)
+        42
+
+    We get None even with no interfaces:
+
+        >>> decl = Declaration()
+        >>> decl.get('a11')
+        >>> decl.get('a11', 42)
+        42
+
+    We get new data if e change interface bases:
+
+        >>> decl.__bases__ = I11, I2
+        >>> decl.get('a11') is I11.get('a11')
+        True
+    """
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
