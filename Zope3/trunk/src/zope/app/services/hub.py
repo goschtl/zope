@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.25 2003/12/06 10:00:12 zagy Exp $
+$Id: hub.py,v 1.26 2003/12/16 22:05:40 garrett Exp $
 """
 __metaclass__ = type
 
@@ -174,10 +174,20 @@ def randid():
 
 def canonicalSlash(parent, name=None):
     # Return a canonical path, with a slash appended
-    path = canonicalPath(parent) + u'/'
+    path = canonicalPath(parent)
+    if not path.endswith(u'/'):
+        path += u'/'
     if name:
         path += name + u'/'
     return path
+
+def userPath(path):
+    # Return a path for presentation to a user/external agent -- trailing 
+    # slash is omitted
+    if path.endswith(u'/') and len(path) > 1:
+        return path[:-1]
+    else:
+        return path
 
 class ObjectHub(ServiceSubscriberEventChannel, Contained):
 
@@ -202,61 +212,102 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
 
         # XXX all of these "if"s are BS.  We should subscribe to the
         # different kinds of events independently.
-
+        # XXX not sure about this being BS -- we'd still have to explicitly
+        # check whether an IObjectMovedEvent event is a 'moved', 'added', or
+        # 'removed'.
         
-        if IObjectEvent.isImplementedBy(event):
-            # generate NotificationHubEvents only if object is known
-            # ie registered
-              
-            if IObjectMovedEvent.isImplementedBy(event):
-                if not (event.oldParent and event.oldName):
-                    # add event, not interested
-                    return
-
-                # We have a move or remove. See if we know anything about it:
-                pathslash = canonicalSlash(event.oldParent, event.oldName)
-                hubid = self.__path_to_hubid.get(pathslash)
-                if hubid is None:
-                    # Nope
-                    return
-
-                if not (event.newParent and event.newName):
-                    # Removed event
-                    del self.__hubid_to_path[hubid]
-                    del self.__path_to_hubid[pathslash]
-                    # send out IObjectRemovedHubEvent to plugins
+        if IObjectMovedEvent.isImplementedBy(event) and \
+            not IObjectAddedEvent.isImplementedBy(event):
+            pathslash = canonicalSlash(event.oldParent, event.oldName)
+            hubid = self.__path_to_hubid.get(pathslash)      
+            if hubid is not None:
+                if IObjectRemovedEvent.isImplementedBy(event):
+                    # Removed - update data and publish remove hub event
+                    self._removeDescendants(pathslash)
                     event = ObjectRemovedHubEvent(
-                        event.object, hubid, pathslash[:-1], event.object)
+                        event.object, hubid, userPath(pathslash), 
+                        event.object)
                     self._notify(self, event)
                 else:
-                    # Move
+                    # Moved - update data and publish moved hub event
                     new_pathslash = canonicalSlash(
                         event.newParent, event.newName)
-                    path_to_hubid = self.__path_to_hubid
-                    if path_to_hubid.has_key(new_pathslash):
-                        raise ObjectHubError(
-                            'Cannot move to location %s, '
-                            'as there is already something there'
-                            % new_pathslash[:-1])
-                    hubid = path_to_hubid[pathslash]
-                    del path_to_hubid[pathslash]
-                    path_to_hubid[new_pathslash] = hubid
-                    self.__hubid_to_path[hubid] = new_pathslash
-                    # send out IObjectMovedHubEvent to plugins
+                    self._repathDescendants(pathslash, new_pathslash)
                     event = ObjectMovedHubEvent(
-                        self, hubid, pathslash[:-1],
-                        new_pathslash[:-1], event.object)
+                        self, hubid, userPath(pathslash),
+                        userPath(new_pathslash), event.object)
                     self._notify(self, event)
 
-            elif IObjectModifiedEvent.isImplementedBy(event):
-                # send out IObjectModifiedHubEvent to plugins
-                pathslash = canonicalSlash(zapi.getPath(event.object))
-                hubid = self.__path_to_hubid.get(pathslash)
-                if hubid is None:
-                    return
+        elif IObjectModifiedEvent.isImplementedBy(event):
+            # Modified - publish modified hub event
+            pathslash = canonicalSlash(zapi.getPath(event.object))
+            hubid = self.__path_to_hubid.get(pathslash)
+            if hubid is not None:
                 event = ObjectModifiedHubEvent(
-                    self, hubid, pathslash[:-1], event.object)
+                    self, hubid, userPath(pathslash), event.object)
                 self._notify(self, event)
+
+    def _repathDescendants(self, curParent, newParent):
+        """Updates the paths of all objects that have curParent as their
+        ancestor. curParent is the path of the current common ancestor and
+        newParent is the path of the new common ancestor. For example, if
+        the following objects are registered:
+
+            1: /foo/
+            2: /foo/bar/
+            3: /baz/
+
+        _repathDescendants('/foo/', '/foo2/') will modify the registrations
+        as follows:
+
+            1: /foo2/
+            2: /foo2/bar/
+            3: /baz/
+        """
+        path_to_hubid = self.__path_to_hubid
+        hubid_to_path = self.__hubid_to_path
+        curParentLen = len(curParent)
+        # use temp storage to avoid modifying path_to_hubid during iteration
+        toRepath = []
+        for path in path_to_hubid.keys():
+            if path.startswith(curParent):
+                toRepath.append(path)
+        for path in toRepath:
+            hubid = path_to_hubid[path]
+            newPath = newParent + path[curParentLen:]
+            if path_to_hubid.has_key(newPath):
+                raise ObjectHubError(
+                    'Cannot move path %s to %s - target path exists'
+                    % (path, newPath))
+            del path_to_hubid[path]
+            path_to_hubid[newPath] = hubid
+            hubid_to_path[hubid] = newPath
+
+    def _removeDescendants(self, curParent):
+        """Removes the registration data for all objects that have curParent
+        as their ancestor. For example, if the following objects are
+        registered:
+
+            1: /foo/
+            2: /foo/bar/
+            3: /baz/
+
+        _removeDescendants('/foo/') will modify the registrations as follows:
+
+            3: /baz/
+        """
+        path_to_hubid = self.__path_to_hubid
+        hubid_to_path = self.__hubid_to_path
+        curParentLen = len(curParent)
+        # use temp storage to avoid modifying path_to_hubid during iteration
+        toRemove = []
+        for path in path_to_hubid.keys():
+            if path.startswith(curParent):
+                toRemove.append(path)
+        for path in toRemove:
+            hubid = path_to_hubid[path]
+            del hubid_to_path[hubid]
+            del path_to_hubid[path]
 
     def getHubId(self, path_or_object):
         '''See interface ILocalObjectHub'''
@@ -275,7 +326,7 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
     def getPath(self, hubid):
         '''See interface IObjectHub'''
         try:
-            return self.__hubid_to_path[hubid][:-1]
+            return userPath(self.__hubid_to_path[hubid])
         except KeyError:
             raise NotFoundError(hubid)
 
@@ -309,7 +360,7 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
 
         # send out IObjectRegisteredHubEvent to plugins
         event = ObjectRegisteredHubEvent(
-            self, hubid, pathslash[:-1], obj)
+            self, hubid, userPath(pathslash), obj)
         self._notify(self, event)
         return hubid
 
@@ -336,7 +387,7 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
 
             # send out IObjectUnregisteredHubEvent to plugins
             event = ObjectUnregisteredHubEvent(
-                self, hubid, pathslash[:-1])
+                self, hubid, userPath(pathslash))
             self._notify(self, event)
 
     def numRegistrations(self):
@@ -351,19 +402,19 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
         """See interface IObjectHub"""
         # or unicodes. So, get a canonical path first of all.
         pathslash = canonicalSlash(path)
-        if pathslash == u'//':
+        if pathslash == u'/':
             # Optimisation when we're asked for all the registered objects.
             # Returns an IOBTreeItems object.
             for pathslash, hubId in self.__path_to_hubid.iteritems():
-                yield pathslash[:-1], hubId
+                yield userPath(pathslash), hubId
 
         else:
             # For a search /foo/bar, constrain the paths returned to those
             # between /foo/bar/ and /foo/bar0, excluding /foo/bar0.
             # chr(ord('/')+1) == '0'
             for pathslash, hubId in self.__path_to_hubid.iteritems(
-                min=pathslash, max=pathslash[:-1]+u'0', excludemax=True):
-                yield pathslash[:-1], hubId
+                min=pathslash, max=userPath(pathslash)+u'0', excludemax=True):
+                yield userPath(pathslash), hubId
 
     def iterObjectRegistrations(self, path=u'/'):
         """See interface IHubEventChannel"""

@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.15 2003/11/21 17:12:13 jim Exp $
+$Id: test_objecthub.py,v 1.16 2003/12/16 22:05:40 garrett Exp $
 """
 
 import unittest
@@ -41,6 +41,7 @@ from zope.app.interfaces.services.hub import IObjectUnregisteredHubEvent
 from zope.app.services.hub import ObjectModifiedHubEvent, ObjectRemovedHubEvent
 from zope.app.services.hub import ObjectMovedHubEvent, ObjectRegisteredHubEvent
 from zope.app.services.hub import ObjectUnregisteredHubEvent
+from zope.app.services.hub import canonicalSlash, userPath
 
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.location import Location
@@ -264,7 +265,6 @@ class TestNoRegistration(BasicHubTest):
                 (IObjectAddedEvent, location),
             ])
 
-
 class TestObjectCreatedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
@@ -405,6 +405,33 @@ class TestObjectRemovedEvent(BasicHubTest):
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectRemovedEvent, location),
             ])
+
+
+    def testRemoveDescendants(self):
+        # Test that removing an object also removes its descendants
+        locations = (
+            '/',
+            '/1',
+            '/1/1_1',
+            '/1/1_1/1_1_1',
+            '/2',
+            '/2/2_1',
+            '/2/2_2' )
+        hub = self.object_hub
+        for path in locations:
+            hub.register(path)
+        removed_event = self.removed_event
+        removed_event.oldParent = '/'
+        removed_event.oldName = '1'
+        hub.notify(removed_event)
+        newLocations = [path for (path, oid) in hub.iterRegistrations()]
+        newLocations.sort()
+        self.assertEqual([
+            '/', 
+            '/2', 
+            '/2/2_1', 
+            '/2/2_2'], 
+            newLocations)
 
 
 class TestObjectModifiedEvent(BasicHubTest):
@@ -561,6 +588,84 @@ class TestObjectMovedEvent(BasicHubTest):
                 (IObjectMovedEvent, new_location),
             ])
 
+    def testRepathDescendantsOnRename(self):
+        # Test that the paths of descendants of renamed objects are updated
+        locations = (
+            '/',
+            '/1',
+            '/1/1_1',
+            '/1/1_1/1_1_1',
+            '/2',
+            '/2/2_1',
+            '/2/2_2' )
+        hub = self.object_hub
+        for path in locations:
+            hub.register(path)
+        moved_event = self.moved_event
+        moved_event.oldParent = '/'
+        moved_event.oldName = '1'
+        moved_event.newParent = '/'
+        moved_event.newName = '3'
+        hub.notify(moved_event)
+        newLocations = [path for (path, oid) in hub.iterRegistrations()]
+        newLocations.sort()
+        self.assertEqual([
+            '/',
+            '/2',
+            '/2/2_1',
+            '/2/2_2',
+            '/3',
+            '/3/1_1',
+            '/3/1_1/1_1_1'],
+            newLocations)
+
+    def testRepathDescendantsOnMove(self):
+        # Test that the paths of descendants of moved objects are updated
+        locations = (
+            '/',
+            '/1',
+            '/1/1_1',
+            '/1/1_1/1_1_1',
+            '/2',
+            '/2/2_1',
+            '/2/2_2' )
+        hub = self.object_hub
+        for path in locations:
+            hub.register(path)
+        moved_event = self.moved_event
+        moved_event.oldParent = '/'
+        moved_event.oldName = '1'
+        moved_event.newParent = '/2/2_1'
+        moved_event.newName = '1'
+        hub.notify(moved_event)
+        newLocations = [path for (path, oid) in hub.iterRegistrations()]
+        newLocations.sort()
+        self.assertEqual([
+            '/',
+            '/2',
+            '/2/2_1',
+            '/2/2_1/1',
+            '/2/2_1/1/1_1',
+            '/2/2_1/1/1_1/1_1_1',
+            '/2/2_2'],
+            newLocations)
+
+class TestPathFunctions(BasicHubTest):
+
+    def testCanonicalSlash(self):
+        self.assertEqual(canonicalSlash('/'), '/')
+        self.assertEqual(canonicalSlash('/', 'bar'), '/bar/')
+        self.assertEqual(canonicalSlash('/foo'), '/foo/')
+        self.assertEqual(canonicalSlash('/foo', 'bar'), '/foo/bar/')
+        self.assertRaises(ValueError, canonicalSlash, '\\')
+        self.assertRaises(ValueError, canonicalSlash, '')
+
+    def testUserPath(self):
+        self.assertEqual(userPath('/'), '/')
+        self.assertEqual(userPath('/foo'), '/foo')
+        self.assertEqual(userPath('/foo/'), '/foo')
+        self.assertEqual(userPath('/foo/bar'), '/foo/bar')
+        self.assertEqual(userPath('/foo/bar/'), '/foo/bar')
 
 def test_suite():
     return unittest.TestSuite((
@@ -576,6 +681,7 @@ def test_suite():
         unittest.makeSuite(TestObjectRemovedEvent),
         unittest.makeSuite(TestObjectModifiedEvent),
         unittest.makeSuite(TestObjectMovedEvent),
+        unittest.makeSuite(TestPathFunctions),
         ))
 
 if __name__=='__main__':
