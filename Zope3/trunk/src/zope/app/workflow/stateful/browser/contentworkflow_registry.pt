@@ -53,10 +53,15 @@
     </div>
 
     <h3 i18n:translate="">Add new Mapping</h3>
-    <div class="row" 
-         tal:content="structure view/iface_widget/row" />
-    <div class="row" 
-         tal:content="structure view/name_widget/row" />
+    
+    <div class="row" tal:define="widget nocall:view/iface_widget">
+      <metal:block use-macro="context/@@form_macros/widget_row" />
+    </div>
+    
+    <div class="row" tal:define="widget nocall:view/name_widget">
+      <metal:block use-macro="context/@@form_macros/widget_row" />
+    </div>
+    
     <div class="row">
       <div class="controls"> 
          <input type="submit" value="Add Mappings" name="ADD"
