@@ -13,41 +13,38 @@
 ##############################################################################
 """A query processor to the TextIndex that supports batching and ranking.
 
-$Id: processors.py,v 1.3 2002/12/30 18:43:07 stevea Exp $
+$Id: processors.py,v 1.4 2003/02/06 13:04:28 stevea Exp $
 """
 
 from zope.component import getAdapter
 
 from zope.textindex.textindexinterfaces import IQuerying
-from zope.app.interfaces.index.interfaces import \
-    IBatchedResult, IRankedHubIdList, IBatchedTextIndexQuery
-from zope.app.interfaces.services.query import \
-    IQueryProcessor
+from zope.app.interfaces.index.interfaces import IBatchedResult
+from zope.app.interfaces.index.interfaces import IRankedHubIdList
+from zope.app.interfaces.index.interfaces import IBatchedTextIndexQuery
+from zope.app.interfaces.services.query import IQueryProcessor
 from zope.app.index.text.queries import BatchedTextIndexQuery
 from zope.app.index.queries import BatchedRankedResult
 
-class IBatchedRankedProcessor(IQueryProcessor):
-    # XXX until named adapters are there
-    pass
-
 class BatchedRankedProcessor:
 
-    __implements__ = IBatchedRankedProcessor
+    __implements__ = IQueryProcessor
     __used_for__ = IQuerying
 
     inputInterfaces = (IBatchedTextIndexQuery,)
     outputInterfaces = (IRankedHubIdList, IBatchedResult)
 
     def __init__(self, textindex):
-        self.__textindex = textindex
+        self.textindex = textindex
 
     def __call__(self, query):
         query = getAdapter(query, IBatchedTextIndexQuery)
-        resultlist, totalresults = self.__textindex.query(query.textIndexQuery, \
-                    query.startPosition, query.batchSize)
+        resultlist, totalresults = self.textindex.query(query.textIndexQuery,
+                                                        query.startPosition,
+                                                        query.batchSize)
 
         # XXX do we need some wrapping here?
-        result = BatchedRankedResult(resultlist, query.startPosition, \
-                    query.batchSize, totalresults)
+        result = BatchedRankedResult(resultlist, query.startPosition,
+                                     query.batchSize, totalresults)
 
         return result
