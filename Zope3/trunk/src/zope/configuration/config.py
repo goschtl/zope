@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.16 2004/03/01 13:25:47 mgedmin Exp $
+$Id: config.py,v 1.17 2004/03/01 21:22:10 jim Exp $
 """
 
 import os.path
@@ -269,7 +269,7 @@ class ConfigurationContext(object):
         ...
         True
 
-        """
+        """ #'
         path = self.path(filename)
         if path in self._seen_files:
             raise ConfigurationError('%r included more than once' % path)
