@@ -22,6 +22,8 @@ def test_suite():
     return unittest.TestSuite((
         functional.FunctionalDocFileSuite('principalfolder.txt'),
         functional.FunctionalDocFileSuite('groupfolder.txt'),
+        functional.FunctionalDocFileSuite(
+            'group_searching_with_empty_string.txt'),
         ))
 
 if __name__ == '__main__':

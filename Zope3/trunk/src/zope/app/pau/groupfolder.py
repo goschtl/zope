@@ -79,7 +79,12 @@ class IGroupContained(IContained):
              
 
 class IGroupSearchCriteria(zope.interface.Interface):
-    search = zope.schema.TextLine(title=u"Group Search String")
+
+    search = zope.schema.TextLine(
+        title=u"Group Search String",
+        required=False,
+        missing_value=u'',
+        )
 
 
 class GroupFolder(BTreeContainer):
