@@ -26,7 +26,8 @@
       </p>
 
 
-      <form action="edit.html" method="post" enctype="multipart/form-data">
+      <form action="uploadAction.html" method="post" 
+            enctype="multipart/form-data">
 
         <table class="EditTable">
 	  <tbody>

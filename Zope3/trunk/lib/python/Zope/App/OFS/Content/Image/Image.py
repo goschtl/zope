@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Image.py,v 1.6 2002/11/11 15:32:04 stevea Exp $
+$Id: Image.py,v 1.7 2002/11/11 21:08:12 jim Exp $
 """
 import struct
 
@@ -39,6 +39,7 @@ class Image(File):
 
 
     def setData(self, data):
+        
         super(Image, self).setData(data)
 
         if data is not None:

@@ -22,7 +22,9 @@
 
     <require
         permission="Zope.ManageContent"
-        interface="Zope.App.OFS.Content.File.IFile.IWriteFile" />
+        interface="Zope.App.OFS.Content.File.IFile.IWriteFile"
+        set_schema="Zope.App.OFS.Content.File.IFile.IReadFile"
+        />
 
     <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 
