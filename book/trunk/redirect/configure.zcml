@@ -1,0 +1,10 @@
+<configure 
+    xmlns="http://namespaces.zope.org/browser">
+
+  <redirect
+      name="manage.html"
+      for="zope.app.folder.interfaces.IFolder"
+      url="manage"
+      permission="zope.Public" />
+
+</configure>

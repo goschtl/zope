@@ -1,0 +1,12 @@
+<configure 
+    xmlns="http://namespaces.zope.org/meta">
+
+  <directives namespace="http://namespaces.zope.org/browser">
+    <directive
+      name="redirect"
+      schema=".metadirectives.IRedirectDirective"
+      handler=".metaconfigure.redirect"
+      />
+  </directives>
+
+</configure>
