@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.interface import Interface
 from zope.schema import Text
-from zope.app.form.interfaces import IWidget
+from zope.app.form.interfaces import IInputWidget
 
 
 class IDAVNamespace(Interface):
@@ -205,8 +205,17 @@ class IDAVSchema(IOptionalDAVSchema, IDAV2Schema):
     """Full DAV properties schema"""
 
 
-class IDAVWidget(IWidget):
-    """A specialized widget used to render DAV properties output."""
+class IDAVWidget(IInputWidget):
+    """A specialized widget used to convert to and from DAV properties."""
+    
+    def __call__():
+        """Render the widget."""
+    
+    def setRenderedValue(value):
+        """Set the DAV value for the property
+
+        value can be a DOM Element node representing the value.
+        """
 
 
 class ITextDAVWidget(IDAVWidget):

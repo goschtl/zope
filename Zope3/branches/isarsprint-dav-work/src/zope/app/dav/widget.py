@@ -17,16 +17,16 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from xml.dom import minidom
+
 from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.interfaces import ITextDAVWidget
 from zope.app.dav.interfaces import ISequenceDAVWidget
 
-from zope.app.form.interfaces import IWidget
-from zope.app.form import Widget
-from zope.component.interfaces import IViewFactory
+from zope.app.form import InputWidget
 from zope.interface import implements
 
-class DAVWidget(Widget):
+class DAVWidget(InputWidget):
 
     implements(IDAVWidget)
 
@@ -40,7 +40,18 @@ class DAVWidget(Widget):
         return str(self._data)
 
     def __call__(self):
-        return self.getInputValue()
+        return str(self)
+    
+    def setRenderedValue(self, value):
+        if isinstance(value, minidom.Node):
+            text = ''
+            for node in value.childNodes:
+                if node.nodeType != node.TEXT_NODE:
+                    continue
+                text += node.nodeValue
+            value = text
+        
+        super(DAVWidget, self).setRenderedValue(value)
 
 class TextDAVWidget(DAVWidget):
 
@@ -52,3 +63,6 @@ class SequenceDAVWidget(DAVWidget):
 
     def __str__(self):
         return u', '.join(self._data)
+    
+    def getInputValue(self):
+        return list(self._data).split(',').strip()
