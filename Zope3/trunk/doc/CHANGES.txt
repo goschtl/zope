@@ -74,6 +74,13 @@ Zope Changes
 
     Bug fixes
     
+    - Removed 'zope.app' and 'zope.component' dependency from
+      'zope.publisher'. Now it only depends on 'zope.proxy' (eek, should also
+      go), 'zope.interface', 'zope.exceptions' and 'zope.i18n'.
+
+      Moved the 'zope.component'-specific code to zope.app.publisher. Updated
+      all of Zope to catch up with these API changes.
+
     - Fixed issue 80. There were only a few very contained spots that made
       DTML non-unicode aware. Once I removed these spots, unicode input works
       like a charm. I converted all the tests to use unicode, so that
