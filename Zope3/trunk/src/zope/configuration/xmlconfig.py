@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.17 2003/12/17 08:04:07 philikon Exp $
+$Id: xmlconfig.py,v 1.18 2004/02/23 10:02:03 philikon Exp $
 """
 
 import errno
@@ -172,7 +172,7 @@ class ParserInfo:
 
 
 class ConfigurationHandler(ContentHandler):
-    """Interface toi the cml parser
+    """Interface to the xml parser
 
     Translate parser events into calls into the configuration system.
     """
