@@ -12,63 +12,134 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.4 2002/07/16 14:03:02 srichter Exp $
+$Id: FormView.py,v 1.5 2002/07/16 23:42:58 srichter Exp $
 """
-from Zope.Publisher.Browser.BrowserView import BrowserView
-from Interface import Interface
+from Interface.Implements import flattenInterfaces
 from Schema.IField import IField
+
 from Zope.ComponentArchitecture import getView
-import Schema
+from Zope.Publisher.Browser.BrowserView import BrowserView
+
 from IForm import IForm
 
+
 class FormView(BrowserView):
+    """A View that represents a complete HTML Form based on the Schema of the
+    object."""
+    __implements__ = IForm
 
-    __implements__ = IForm, BrowserView.__implements__
-
-    schema = None
+    form = None
     custom_widgets = None
 
+    def getFields(self):
+        'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
+        interfaces = self.context.__implements__
+        if isinstance(interfaces, (tuple, list)):
+            interfaces = flattenInterfaces(interfaces)
+        else:
+            interfaces = (interfaces,)
+        request = self.request
+        fields = []
+        for interface in interfaces:
+            for name in interface.names(1):
+                attr = interface.getDescriptionFor(name)
+                if IField.isImplementedBy(attr):
+                    fields.append(attr)
+        return fields
+
+
     def getWidgetForFieldId(self, id):
-        field = self.schema[id]
+        'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
+        # XXX This needs to be optimized!
+        field = None
+        for f in self.getFields():
+            if f.id == id:
+                field = f
+        if field is None:
+            raise KeyError, 'Field id "%s" does not exist.' %id
         return self.getWidgetForField(field)
 
 
     def getWidgetForField(self, field):
+        'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
         if self.custom_widgets is not None and \
-           field.getValue('id') in custom_widgets.keys():
-            return custom_widgets[field.getValue('id')](field)
-
+           field.id in self.custom_widgets.keys():
+            return self.custom_widgets[field.id](field, self.request)
         return getView(field, 'widget', self.request)
 
-    def getFieldData(self):
-        result = {}
+
+    def renderField(self, field):
+        'See Zope.App.Forms.Views.Browser.IForm.IReadForm'
+        widget = self.getWidgetForField(field)
+        value = self.request.form.get('field_' + field.id)
+        if value is None:
+            value = getattr(self.context, field.id)
+        return widget.render(value)
+
+
+    def getAllRawFieldData(self):
+        """Returns field data retrieved from request."""
+        interfaces = _flatten(self.context.__implements__)
         request = self.request
-
-        for name in schema.names(1):
-            field = schema.getDescriptionFor(name)
-
-            if IField.isImplementedBy(field):
-                widget = self.getWidgetForField(field)
-                result[field.getValue(id)] = widget.convert(request)
-
-        return result
+        data = {}
+        for field in self.getFields():
+            raw_data = request.form.get('field_' + attr.get('id'))
+            data[attr] = raw_data
+        return data
 
 
-    def saveValuesInContext(self, mapping):
-        """Store all the new data inside the context object."""
-        for item in mapping.items():
-            if getattr(self.context, item[0]) != item[1]:
-                setattr(self.context, attr, mapping[attr])
+    def convertAllFieldData(self, mapping):
+        """Convert the raw data into valid objects."""
+        data = {}
+        errors = []
+        for field in mapping:
+            widget = self.getWidgetForField(field)
+            try:
+                data[field] = widget.convert(mapping[field])
+            except ConversionError, error:
+                errors.append((field.get('id'), error))
+
+        if errors:
+            raise ConversionErrorsAll, errors
+        
+        return data
+            
+
+    def validateAllFieldData(self, mapping):
+        """Validate all the data."""
+        errors = []
+        for field in mapping:
+            try:
+                field.validate(mapping[field])
+            except ValidationError, error:
+                errors.append((field.get('id'), error))
+
+        if errors:
+            raise ValidationErrorsAll, errors
+
+
+    def storeAllDataInContext(self, mapping):
+        """Store the data back into the context object."""
+        for field in mapping:
+            value = mapping[field]
+            if value != getattr(self, field.get('id')):
+                setattr(self, field.get('id'))
+
+
+    def saveValuesInContext(self):
+        'See Zope.App.Forms.Views.Browser.IForm.IWriteForm'
+        data = self.getAllRawFieldData()
+        data = self.convertAllFieldData(data)
+        self.validateAllFieldData(data)
+        self.storeAllDataInContext(data)
 
 
     def action(self):
-        """Execute the form. By default it tries to save the values back
-           into the content object."""
-        data = self.getFieldData()
+        'See Zope.App.Forms.Views.Browser.IForm.IWriteForm'
         try:
-            Schema.validateMappingAll(self.schema, self.getFieldData())
-        except ValidationErrorsAll, errors:
-            # display the form again
-            pass
+            self.saveValuesInContext()
+        except Error, e:
+            errors = e
         else:
-            self.saveValuesInContext(data)
+            return self.request.response.redirect(self.request.URL[-1])
+        

@@ -12,36 +12,46 @@
 # 
 ##############################################################################
 """
-$Id: IForm.py,v 1.3 2002/07/16 23:00:14 jeremy Exp $
+$Id: IForm.py,v 1.4 2002/07/16 23:42:58 srichter Exp $
 """
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Interface.Attribute import Attribute
 
 class IReadForm(IBrowserView):
+    """This interface defines methods and attributes that are required to
+    display a form."""
 
-    custom_widgets = Attribute(""" """)
+    form = Attribute("""The form template. Usually a Page Template.""")
+    custom_widgets = Attribute("""A dictionary that holds custom widgets
+                                  for various fields.""")
+
+    def getFields():
+        """Get all the fields that need input from the content object."""
 
     def getWidgetForFieldId(id):
-        """"""
+        """Lookup the widget of the field having id."""
 
     def getWidgetForField(field):
         """Return the correct widget instance for a field. This method
         consildates the custom_widgets attribute """
 
-
+    def renderField(field):
+        """Render a field using the widgets."""
+    
     def action():
         """Execute the form. By default it tries to save the values back
            into the content object."""
 
 
 class IWriteForm(IBrowserView):
+    """This interface defines methods and attributes that are required to
+    retrieve the data from the request and store them back into the."""
 
-    def getFieldData():
-        """ """
-        
-    def saveValuesInContext(mapping):
-        """Store all the new data inside the context object."""
+    def saveValuesInContext():
+        """This method is responsible of retrieving all the data from
+        the request, converting it, validating it and then store it back
+        to the context object."""
 
 
 class IForm(IReadForm, IWriteForm):
-    pass
+    """This is a complete form."""

@@ -1,9 +1,0 @@
-<html>
-<body>
-<form>
-  <fields tal:omit-tag="" tal:repeat="field view/getFields">
-    <field tal:replace="structure field/render" /><br />
-  </fields>
-</form>
-</body>
-</html>

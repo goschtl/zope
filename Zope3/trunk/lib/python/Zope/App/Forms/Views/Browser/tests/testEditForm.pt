@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>Simple Edit Form</title>
+  </head>
+
+  <body>
+    <form action="." method="post">
+   
+      <table>
+
+        <tal:block repeat="field view/getFields">
+
+          <tr>
+            <th tal:content="field/title">Title:</th>
+	    <td tal:content="view/renderField">
+              <input size="20" />
+            </td>            
+          </tr>
+
+	</tal:block>
+
+      </table>
+ 
+      <input type="submit" name="action:method" value="Save" />
+
+    </form>
+  </body>
+
+</html>
