@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.4 2002/06/25 10:45:46 dannu Exp $
+$Id: ObjectHub.py,v 1.5 2002/06/25 15:10:49 gotcha Exp $
 """
 
 from IObjectHub import IObjectHub
-from Zope.Event.IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
+from Zope.Event.IObjectEvent import IObjectEvent, IObjectAddedEvent, IObjectModifiedEvent
 from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
 from Zope.Event.IEvent import IEvent
 from Zope.Event.EventChannel import EventChannel
@@ -36,6 +36,8 @@ from Interface.Implements import objectImplements
 from types import StringTypes
 from Persistence.BTrees.IOBTree import IOBTree
 from Persistence.BTrees.OIBTree import OIBTree
+
+from Zope.App.Traversing import locationAsUnicode
 
 from Zope.App.Traversing.ITraverser import ITraverser
 from Zope.ComponentArchitecture import getAdapter
@@ -82,30 +84,43 @@ class ObjectHub(Persistent):
 
     def notify(self, event):
         '''See interface ISubscriber'''
-        if IObjectAddedEvent.isImplementedBy(event):
-            self._objectAdded(event.getLocation())
-            
-        elif IObjectModifiedEvent.isImplementedBy(event):
-            self._objectModified(event.getLocation())
-            
-        elif IObjectMovedEvent.isImplementedBy(event):
-            self._objectMoved(event.getFromLocation(),
-                              event.getLocation())
-                              
-        elif IObjectRemovedEvent.isImplementedBy(event):
-            self._objectRemoved(event.getLocation(), event.getObject())
-        
-        elif IRuidObjectEvent.isImplementedBy(event):
+        if IRuidObjectEvent.isImplementedBy(event):
             self.__eventchannel.notify(event)
+            return
+
+        if IObjectEvent.isImplementedBy(event):
+            self.__eventchannel.notify(event)
+            
+            if IObjectMovedEvent.isImplementedBy(event):
+                canonical_location = locationAsUnicode(event.getFromLocation())
+                ruid = self._lookupRuid(canonical_location)
+                if ruid is not None:
+                    self._objectMoved(event.getFromLocation(),
+                                      event.getLocation())
+                return
+                
+            canonical_location = locationAsUnicode(event.getLocation())
+            ruid = self._lookupRuid(canonical_location)
+            if ruid is not None:
+                if IObjectAddedEvent.isImplementedBy(event): 
+                    self._objectAdded(canonical_location, ruid)
+                    
+                elif IObjectModifiedEvent.isImplementedBy(event):
+                    self._objectModified(canonical_location, ruid)
+                                      
+                elif IObjectRemovedEvent.isImplementedBy(event):
+                    self._objectRemoved(canonical_location, ruid, event.getObject())
+                
 
         # otherwise, ignore the event
 
     def lookupRuid(self, location):
         '''See interface IObjectHub'''
-        try:
-            return self.__location_to_ruid[self._canonical(location)]
-        except KeyError:
-            raise NotFoundError, self._canonical(location)
+        ruid = self._lookupRuid(location)
+        if ruid is None:
+            raise NotFoundError, locationAsUnicode(location)
+        else:
+            return ruid
     
     def lookupLocation(self, ruid):
         '''See interface IObjectHub'''
@@ -122,7 +137,7 @@ class ObjectHub(Persistent):
 
     def register(self, location):
         '''See interface IObjectHub'''
-        canonical_location=self._canonical(location)
+        canonical_location=locationAsUnicode(location)
 
         ruid = self._registerObject(canonical_location)
 
@@ -139,7 +154,7 @@ class ObjectHub(Persistent):
         if type(ruid_or_location) is int:
             canonical_location=self.lookupLocation(ruid_or_location)
         else:
-            canonical_location=self._canonical(ruid_or_location)
+            canonical_location=locationAsUnicode(ruid_or_location)
         ruid = self._unregisterObject(canonical_location)
         if ruid is None:
             raise NotFoundError, 'location %s is not in object hub' % \
@@ -162,13 +177,9 @@ class ObjectHub(Persistent):
         self._v_nextid=index+1
         return index
 
-    def _canonical(location):
-        if not isinstance(location, StringTypes):
-            location='/'.join(location)
-        # URIs are ascii, right?
-        return str(location)
-        
-    _canonical=staticmethod(_canonical)
+    def _lookupRuid(self, location):
+        canonical_location = locationAsUnicode(location) 
+        return self.__location_to_ruid.get(canonical_location, None)
 
     def _registerObject(self, canonical_location):
         location_to_ruid = self.__location_to_ruid
@@ -179,38 +190,27 @@ class ObjectHub(Persistent):
         location_to_ruid[canonical_location] = ruid
         return ruid
 
-    def _objectAdded(self, location):
-        canonical_location = self._canonical(location)
-
-        ruid = self._registerObject(canonical_location)
-
+    def _objectAdded(self, canonical_location, ruid):
         # send out to plugins IRuidObjectAddedEvent
         event = RuidObjectAddedEvent(
             self, 
             ruid,
             canonical_location)
         self.__eventchannel.notify(event)
-        
     
-    def _objectModified(self, location):
-        location_to_ruid = self.__location_to_ruid
-        canonical_location = self._canonical(location)
-        if not location_to_ruid.has_key(canonical_location):
-            # we're not interested in this event
-            return
-            
+    def _objectModified(self, canonical_location, ruid):
         # send out to plugins IRuidObjectModifiedEvent
         event = RuidObjectModifiedEvent(
             self, 
-            location_to_ruid[canonical_location],
+            ruid,
             canonical_location)
         self.__eventchannel.notify(event)
         
     
     def _objectMoved(self, old_location, new_location):
         location_to_ruid = self.__location_to_ruid
-        canonical_location = self._canonical(old_location)
-        canonical_new_location = self._canonical(new_location)
+        canonical_location = locationAsUnicode(old_location)
+        canonical_new_location = locationAsUnicode(new_location)
         if location_to_ruid.has_key(canonical_new_location):
             raise ObjectHubError(
                 'Cannot move to location %s, '
@@ -247,13 +247,7 @@ class ObjectHub(Persistent):
             return ruid
         
             
-    def _objectRemoved(self, location, obj):
-        canonical_location = self._canonical(location)
-        ruid = self._unregisterObject(canonical_location)
-        if ruid is None:
-            # we don't know about this location, so we
-            # just ignore the Event
-            return
+    def _objectRemoved(self, canonical_location, ruid, obj):
             
         # send out to plugins IRuidObjectRemovedEvent
         event = RuidObjectRemovedEvent(

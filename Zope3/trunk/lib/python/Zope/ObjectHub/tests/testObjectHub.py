@@ -14,11 +14,13 @@
 """
 
 Revision information:
-$Id: testObjectHub.py,v 1.4 2002/06/25 10:45:46 dannu Exp $
+$Id: testObjectHub.py,v 1.5 2002/06/25 15:10:49 gotcha Exp $
 """
 
 import unittest, sys
 
+from Zope.Event.IObjectEvent import IObjectAddedEvent, IObjectRemovedEvent
+from Zope.Event.IObjectEvent import IObjectModifiedEvent, IObjectMovedEvent
 from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
 from Zope.Event.ObjectEvent import ObjectRemovedEvent, ObjectMovedEvent
 from Zope.Event.ISubscriber import ISubscriber
@@ -36,6 +38,8 @@ import Zope.ObjectHub.RuidObjectEvent as RuidObjectEvent
 from Zope.Exceptions import NotFoundError
 from types import StringTypes
 
+from Zope.App.Traversing import locationAsUnicode
+
 class LoggingSubscriber:
 
     __implements__ = ISubscriber
@@ -45,16 +49,12 @@ class LoggingSubscriber:
     
     def notify(self, event):
         self.events_received.append(event)
-
+        # print 'notify :', id(self),self.__class__.__name__, event.__implements__.__name__
 
     # see ObjectHub._canonical
     def _canonical(location):
-        """ returns a canonical traversal location for a location that is 
-        a string or a sequence of strings """
-        if not isinstance(location, StringTypes):
-            location='/'.join(location)
-        # URIs are ascii, right?
-        return str(location)
+        return locationAsUnicode(location)
+
     _canonical = staticmethod(_canonical)
     
     def verifyEventsReceived(self, testcase, event_spec_list):
@@ -67,11 +67,15 @@ class LoggingSubscriber:
         for spec,event in zip(event_spec_list, self.events_received):
             if len(spec)==4:
                 interface,ruid,location,obj = spec
-            else:
+            elif len(spec)==3:
                 interface,ruid,location = spec
                 obj = None
+            elif len(spec)==2:
+                interface, location = spec
+                obj = None
+                ruid = None
             location = self._canonical(location)
-            testcase.assert_(interface.isImplementedBy(event))
+            testcase.assert_(interface.isImplementedBy(event), 'Interface %s' % interface.getName())
             testcase.assertEqual(event.getLocation(), location)
             
             if obj is not None:
@@ -82,8 +86,29 @@ class LoggingSubscriber:
             if ruid is not None:
                 testcase.assertEqual(event.getRuid(), ruid)
 
-        self.events_received=[]
-  
+        self.events_received = []
+
+class RegistrationSubscriber(LoggingSubscriber):
+    def __init__(self, objectHub):
+        LoggingSubscriber.__init__(self)
+        self.hub = objectHub
+	
+    def notify(self, event):
+        LoggingSubscriber.notify(self, event)
+        if IObjectAddedEvent.isImplementedBy(event):
+            self.hub.register(event.getLocation())                  
+        elif IObjectRemovedEvent.isImplementedBy(event):
+            try:
+                ruid = self.hub.lookupRuid(event.getLocation())
+            except NotFoundError:
+                pass
+            else:   
+                location = event.getLocation()
+                obj = event.getObject()
+                removeEvent = RuidObjectEvent.RuidObjectRemovedEvent(obj, ruid, location)
+                self.hub.notify(removeEvent)
+                self.hub.unregister(location)                  
+
 class TransmitRuidObjectEventTest(unittest.TestCase):
     ruid = 23
     location = '/foo/bar'
@@ -137,25 +162,27 @@ class BasicHubTest(unittest.TestCase):
     location = '/foo/bar'
     obj = object()
     new_location = '/baz/spoo'
-    
+
     def setUp(self):
+        self.object_hub = ObjectHub()
+        self.setEvents()
+        self.subscriber = LoggingSubscriber()
+        self.object_hub.subscribe(self.subscriber)
+
+
+    def setEvents(self):
         self.added_event = ObjectAddedEvent(self.location)
         self.added_new_location_event = ObjectAddedEvent(self.new_location)
         self.removed_event = ObjectRemovedEvent(self.location, self.obj)
         self.modified_event = ObjectModifiedEvent(self.location)
         self.moved_event = ObjectMovedEvent(self.location,
                                             self.new_location)
-        self.object_hub = ObjectHub()
-        self.subscriber = LoggingSubscriber()
-        self.object_hub.subscribe(self.subscriber)
-
-        # TODO: test that ObjectHub acts as an EventChannel
 
 class TestRegistrationEvents(BasicHubTest):
     def testRegistration(self):
         # check for notFoundError
-        self.assertRaises(NotFoundError,  self.object_hub.unregister, self.location)
-        self.assertRaises(NotFoundError,  self.object_hub.unregister, 42)
+        self.assertRaises(NotFoundError, self.object_hub.unregister, self.location)
+        self.assertRaises(NotFoundError, self.object_hub.unregister, 42)
 
         ruid = self.object_hub.register(self.location)
         ruid2 = self.object_hub.register(self.new_location)
@@ -166,7 +193,7 @@ class TestRegistrationEvents(BasicHubTest):
             ])
 
         # register again and check for error
-        self.assertRaises(ObjectHubError,  self.object_hub.register, self.location)
+        self.assertRaises(ObjectHubError, self.object_hub.register, self.location)
 
         # unregister first object by location
         self.object_hub.unregister(self.location)
@@ -179,13 +206,40 @@ class TestRegistrationEvents(BasicHubTest):
                 (IRuidObjectUnregisteredEvent, ruid2, self.new_location)
             ])
 
+
+
         
+class TestNoRegistration(BasicHubTest):
+            
+    def testAddWithoutRegistration(self):
+        """Test that no RuidEvents are generated
+        
+        if there is no registration
+        """
+        hub = self.object_hub
+        event = self.added_event
+        location = self.location
+        
+        hub.notify(event)
+        
+        self.subscriber.verifyEventsReceived(self, [
+                (IObjectAddedEvent, location),
+            ])
+
+
 class TestObjectAddedEvent(BasicHubTest):
+    def setUp(self):
+        self.object_hub = ObjectHub()
+        self.setEvents()
+        self.subscriber = RegistrationSubscriber(self.object_hub)
+        self.object_hub.subscribe(self.subscriber)
             
     def testLookingUpLocation(self):
         """Test that the location is in the lookup
         
         Compare getRuidForLocation and getLocationForRuid
+
+        Checks the sequence of events
         
         """
         hub = self.object_hub
@@ -203,7 +257,9 @@ class TestObjectAddedEvent(BasicHubTest):
         self.assertEqual(location_from_hub, location)
         
         self.subscriber.verifyEventsReceived(self, [
-                (IRuidObjectAddedEvent, ruid, location)
+                (IObjectAddedEvent, location),
+                (IRuidObjectRegisteredEvent, ruid, location),
+                (IRuidObjectAddedEvent, ruid, location),
             ])
 
         
@@ -240,9 +296,16 @@ class TestObjectAddedEvent(BasicHubTest):
         
         self.subscriber.verifyEventsReceived(self, [])
 
+    
+
 
 class TestObjectRemovedEvent(BasicHubTest):
-
+    def setUp(self):
+        self.object_hub = ObjectHub()
+        self.setEvents()
+        self.subscriber = RegistrationSubscriber(self.object_hub)
+        self.object_hub.subscribe(self.subscriber)
+          
     def testRemovedLocation(self):
         """Test that a location that is added then removed is
            actually gone.        
@@ -266,8 +329,12 @@ class TestObjectRemovedEvent(BasicHubTest):
         self.assertRaises(NotFoundError, hub.lookupLocation, ruid)
         
         self.subscriber.verifyEventsReceived(self, [
+                (IObjectAddedEvent, location),
+                (IRuidObjectRegisteredEvent, ruid, location),
                 (IRuidObjectAddedEvent, ruid, location),
-                (IRuidObjectRemovedEvent, ruid, location, obj)
+                (IObjectRemovedEvent, location),
+                (IRuidObjectRemovedEvent, ruid, location, obj),
+                (IRuidObjectUnregisteredEvent, ruid, location),
             ])
         
         
@@ -284,10 +351,17 @@ class TestObjectRemovedEvent(BasicHubTest):
                 
         hub.notify(removed_event)
 
-        self.subscriber.verifyEventsReceived(self, [])
+        self.subscriber.verifyEventsReceived(self, [
+                (IObjectRemovedEvent, location),
+            ])
                 
 
 class TestObjectModifiedEvent(BasicHubTest):
+    def setUp(self):
+        self.object_hub = ObjectHub()
+        self.setEvents()
+        self.subscriber = RegistrationSubscriber(self.object_hub)
+        self.object_hub.subscribe(self.subscriber)
 
     def testModifiedLocation(self):
         """Test that lookup state does not change after an object
@@ -316,7 +390,10 @@ class TestObjectModifiedEvent(BasicHubTest):
         self.assertEqual(ruid, ruid2)
         
         self.subscriber.verifyEventsReceived(self, [
+                (IObjectAddedEvent, location),
+                (IRuidObjectRegisteredEvent, ruid, location),
                 (IRuidObjectAddedEvent, ruid, location),
+                (IObjectModifiedEvent, location),
                 (IRuidObjectModifiedEvent, ruid, location)
             ])
 
@@ -337,10 +414,17 @@ class TestObjectModifiedEvent(BasicHubTest):
         hub.notify(modified_event)
         self.assertRaises(NotFoundError, hub.lookupRuid, location)
         
-        self.subscriber.verifyEventsReceived(self, [])
+        self.subscriber.verifyEventsReceived(self, [
+                (IObjectModifiedEvent, location),
+            ])
 
 
 class TestObjectMovedEvent(BasicHubTest):
+    def setUp(self):
+        self.object_hub = ObjectHub()
+        self.setEvents()
+        self.subscriber = RegistrationSubscriber(self.object_hub)
+        self.object_hub.subscribe(self.subscriber)
 
     def testMovedLocation(self):
         """Test that the location does indeed change after a move.
@@ -365,7 +449,10 @@ class TestObjectMovedEvent(BasicHubTest):
         self.assertEqual(ruid2, ruid)
         
         self.subscriber.verifyEventsReceived(self, [
+                (IObjectAddedEvent, location),
+                (IRuidObjectRegisteredEvent, ruid, location),
                 (IRuidObjectAddedEvent, ruid, location),
+                (IObjectMovedEvent, new_location),
                 (IRuidObjectContextChangedEvent, ruid, new_location)
             ])
 
@@ -386,33 +473,38 @@ class TestObjectMovedEvent(BasicHubTest):
         self.assertRaises(NotFoundError, hub.lookupRuid, location)
         self.assertRaises(NotFoundError, hub.lookupRuid, new_location)
         
-        self.subscriber.verifyEventsReceived(self, [])
+        self.subscriber.verifyEventsReceived(self, [
+                (IObjectMovedEvent, new_location),
+                ])
 
 
     def testMovedToExistingLocation(self):
         """Test that moving to an existing location raises ObjectHubError.
         """
         hub = self.object_hub
+        added_event = self.added_event
         added_event2 = self.added_new_location_event
         moved_event = self.moved_event
-        location = self.new_location
+        location = self.location
+        new_location = self.new_location
         
+        hub.notify(added_event)
         hub.notify(added_event2)
         
         self.assertRaises(ObjectHubError, hub.notify, moved_event)
         
         self.subscriber.verifyEventsReceived(self, [
-                (IRuidObjectAddedEvent, None, location)
+                (IObjectAddedEvent, location),
+                (IRuidObjectRegisteredEvent, None, location),
+                (IRuidObjectAddedEvent, None, location),
+                (IObjectAddedEvent, new_location),
+                (IRuidObjectRegisteredEvent, None, new_location),
+                (IRuidObjectAddedEvent, None, new_location),
+                (IObjectMovedEvent, new_location),
             ])
-        
-
         
 def test_suite():
     return unittest.TestSuite((
-        unittest.makeSuite(TestObjectAddedEvent),
-        unittest.makeSuite(TestObjectRemovedEvent),
-        unittest.makeSuite(TestObjectModifiedEvent),
-        unittest.makeSuite(TestObjectMovedEvent),
         unittest.makeSuite(TransmitRuidObjectAddedEventTest),
         unittest.makeSuite(TransmitRuidObjectRemovedEventTest),
         unittest.makeSuite(TransmitRuidObjectModifiedEventTest),
@@ -420,6 +512,11 @@ def test_suite():
         unittest.makeSuite(TransmitRuidObjectRegisteredEventTest),
         unittest.makeSuite(TransmitRuidObjectUnregisteredEventTest),
         unittest.makeSuite(TestRegistrationEvents),
+        unittest.makeSuite(TestNoRegistration),
+        unittest.makeSuite(TestObjectAddedEvent),
+        unittest.makeSuite(TestObjectRemovedEvent),
+        unittest.makeSuite(TestObjectModifiedEvent),
+        unittest.makeSuite(TestObjectMovedEvent),
         ))
 
 if __name__=='__main__':
