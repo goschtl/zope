@@ -600,7 +600,10 @@
 
 <!-- Packages -->
 
-  <browser:defaultView for="zope.app.interfaces.services.package.IPackages" name="contents.html" />
+  <browser:defaultView
+     for="zope.app.interfaces.services.package.IPackages"
+     name="contents.html" 
+     />
 
   <browser:view
       for="zope.app.interfaces.services.package.IPackages"
@@ -618,15 +621,28 @@
                   />
   </browser:view>
 
-  <browser:menuItems menu="zmi_views" for="zope.app.interfaces.services.package.IPackages">
-    <browser:menuItem title="Services"
-              action="@@contents.html"/>
-  </browser:menuItems>
+  <browser:menuItem
+      menu="zmi_views" 
+      for="zope.app.interfaces.services.package.IPackages"
+      title="Services"
+      action="@@contents.html"
+      />
 
-  <browser:defaultView for="zope.app.interfaces.services.package.IPackage" name="contents.html" />
+  <browser:menuItem
+      menu="zmi_actions" 
+      for="zope.app.interfaces.services.package.IPackages"
+      title="Add"
+      action="@@contents.html"
+      filter="nothing"
+      />
 
 
 <!-- Package -->
+
+  <browser:defaultView
+     for="zope.app.interfaces.services.package.IPackage"
+     name="contents.html" 
+     />
 
   <browser:view
      for="zope.app.interfaces.services.package.IPackage"
