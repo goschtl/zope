@@ -178,7 +178,7 @@ def getDefaultViewName(object, request, context=None):
     if __warn__:
         warnings.warn(
             "The concrete concept of a view has been deprecated. You want to "
-            "use `getSiteManager(context).lookup(map(providedBy, "
+            "use `getSiteManager(context).adapters.lookup(map(providedBy, "
             "(object, request)), IDefaultViewName)",
             DeprecationWarning, warningLevel())
     view = queryDefaultViewName(object, request, context=context)
@@ -193,7 +193,7 @@ def queryDefaultViewName(object, request, default=None, context=None):
     if __warn__:
         warnings.warn(
             "The concrete concept of a view has been deprecated. You want to "
-            "use `getSiteManager(context).lookup(map(providedBy, "
+            "use `getSiteManager(context).adapters.lookup(map(providedBy, "
             "(object, request)), IDefaultViewName)`",
             DeprecationWarning, warningLevel())
     from zope.component.bbb.exceptions import ComponentLookupError
