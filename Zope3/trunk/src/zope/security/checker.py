@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: checker.py,v 1.43 2003/12/03 05:41:50 jim Exp $
+"""Security Checkers
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -20,6 +19,8 @@ security checker debugging output on the standard error.
 Setting ZOPE_WATCH_CHECKERS to 1 will display messages about unauthorized or
 forbidden attribute access.  Setting it to a larger number will also display
 messages about granted attribute access.
+
+$Id: checker.py,v 1.44 2004/02/24 14:01:33 srichter Exp $
 """
 import os
 import sys
@@ -464,12 +465,13 @@ class TracebackSupplement:
         return "\n".join(result)
 
 
-# Marker for public attributes
-
-# We want this to behave as a global, meaning it's pickled
-# by name, rather than value. We need to arrange that it has a suitable
-# __reduce__.
 class Global(object):
+    """A global object that behaves like a string.
+
+    We want this to behave as a global, meaning it's pickled
+    by name, rather than value. We need to arrange that it has a suitable
+    __reduce__.
+    """
 
     def __init__(self, name, module=None):
         if module is None:
@@ -485,6 +487,7 @@ class Global(object):
         return "%s(%s,%s)" % (self.__class__.__name__,
                               self.__name__, self.__module__)
 
+# Marker for public attributes
 CheckerPublic = Global('CheckerPublic')
 
 # Now we wrap it in a security proxy so that it retains it's
