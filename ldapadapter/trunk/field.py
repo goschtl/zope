@@ -29,7 +29,7 @@ from ldapadapter.exceptions import InvalidLDAPURI
 
 """
 From RFC 952:
-    
+
      A "name" (Net, Host, Gateway, or  Domain  name)  is  a  text
      string  up  to  24 characters drawn from the alphabet (A-Z),
      digits (0-9), minus sign (-),  and  period  (.).  Note  that
@@ -55,7 +55,7 @@ _isldapuri = re.compile(
     r"([1-9][\d]{0,1}|1[\d]{0,2}|2[0-5]{0,2})"
     r"(\.([\d]{1,2}|1[\d]{0,2}|2[0-5]{0,2})){3})"
     # END: IP
-    
+
     r"(:[\d]{1,5})?$"     # port
     ).match
 
@@ -76,19 +76,18 @@ class LDAPURI(URI):
         Traceback (most recent call last):
         ...
         InvalidLDAPURI: www.python.org
-        
+
         >>> uri.validate("http://www.python.org")
         Traceback (most recent call last):
         ...
         InvalidLDAPURI: http://www.python.org
-        
+
         >>> uri.validate("ldap://www.python.org/foo")
         Traceback (most recent call last):
         ...
         InvalidLDAPURI: ldap://www.python.org/foo
-        
+
         """
-        
         #super(LDAPURI, self)._validate(value)
         if _isldapuri(value):
             return
