@@ -72,7 +72,28 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 """
         self.assertEquals(expected, view())
 
+    def test_repeat(self):
+        view = self.folder.unrestrictedTraverse('testoid/ostrich.html')
+        expected = """\
+<ul>
+<li>Alpha</li>
+<li>Beta</li>
+<li>Gamma</li>
+</ul>
+"""
+        self.assertEquals(expected, view())
 
+##     def test_repeat_iterator(self):
+##         view = self.folder.unrestrictedTraverse('testoid/ostrich2.html')
+##         expected = """\
+## <ul>
+## <li>0</li>
+## <li>1</li>
+## <li>2</li>
+## </ul>
+## """
+##         self.assertEquals(expected, view())    
+        
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FiveTestCase))

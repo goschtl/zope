@@ -58,4 +58,19 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- test TALES -->
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    template="ostrich.pt"
+    name="ostrich.html"
+    permission="zope.ViewManagementScreens" 
+    />
+
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    template="ostrich2.pt"
+    name="ostrich2.html"
+    permission="zope.ViewManagementScreens" 
+    />
+
 </configure>
