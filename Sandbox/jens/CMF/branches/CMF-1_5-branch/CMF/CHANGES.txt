@@ -46,6 +46,16 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFCore.CachingPolicyManager and CMFCore.ActionInformation: The names
+      available to TALES expressions throughout the CMF showed some
+      inconsistencies. To prevent confusion the names "content" and 
+      "content_url" that were used for Cache Policy Manager policies as well
+      as the special ActionInformation.oai class are now deprecated and will
+      be removed in CMF 1.7. The canonical names to be used are "object" and
+      "object_url", which matches all other CMF expression contexts with
+      DCWorkflow being the only exception due to its non-CMF roots.
+      (http://www.zope.org/Collectors/CMF/328)
+
     - CMFCore.PortalFolder: Cataloging portal folders was prevented by
       overriding the typical indexing calls, but one of them was forgotten,
       so they still got cataloged.  (http://www.zope.org/Collectors/CMF/309)
