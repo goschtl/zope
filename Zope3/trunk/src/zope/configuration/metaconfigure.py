@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.3 2003/05/18 18:06:44 jim Exp $
+$Id: metaconfigure.py,v 1.4 2003/08/17 06:22:25 philikon Exp $
 """
-from zope.configuration.action import Action
 
 def hook(_context, name, implementation, module=None):
     if module:
@@ -24,10 +23,8 @@ def hook(_context, name, implementation, module=None):
     if sethook is None:
         raise TypeError(name,'is not hookable')
     implementation = _context.resolve(implementation)
-    return [
-        Action(
-            discriminator=('http://namespaces.zope.org/zope/hook', name),
-            callable=sethook,
-            args=(implementation, )
-            )
-        ]
+    _context.action(
+        discriminator=('http://namespaces.zope.org/zope/hook', name),
+        callable=sethook,
+        args=(implementation, )
+        )
