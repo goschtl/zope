@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.16 2003/03/08 00:51:43 seanb Exp $
+$Id: event.py,v 1.17 2003/03/08 21:46:08 seanb Exp $
 """
 
 from __future__ import generators
@@ -28,7 +28,8 @@ from zope.app.interfaces.services.service import IBindingAware
 
 from zope.component import getAdapter, queryAdapter, getService, queryService
 from zope.component import ComponentLookupError
-from zope.app.services.servicenames import HubIds, EventDispatch, EventSubscription
+from zope.app.services.servicenames import HubIds, EventPublication
+from zope.app.services.servicenames import EventSubscription
 from zope.app.component.nextservice import getNextService, queryNextService
 
 from zope.proxy.context import ContextMethod, ContextSuper
@@ -329,7 +330,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
         try:
             clean_self._notify(wrapped_self, event)
             if clean_self.isPromotableEvent(event):
-                getNextService(wrapped_self, EventDispatch).publish(event)
+                getNextService(wrapped_self, EventPublication).publish(event)
         finally:
             publishedEvents.remove(event)
     publish = ContextMethod(publish)
@@ -344,7 +345,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
 
     def bound(wrapped_self, name):
         "See IBindingAware"
-        # An event service is bound as EventSubscription and as EventDispatch.
+        # An event service is bound as EventSubscription and EventPublication.
         # We only want to subscribe to the next event service when we're bound
         # as EventSubscription
         if name == EventSubscription:
@@ -361,7 +362,7 @@ class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
 
     def unbound(wrapped_self, name):
         "See IBindingAware"
-        # An event service is bound as EventSubscription and as EventDispatch.
+        # An event service is bound as EventSubscription and EventPublication.
         # We only want to unsubscribe from the next event service when
         # we're unbound as EventSubscription
         if name == EventSubscription:

@@ -17,14 +17,14 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.9 2003/03/08 00:51:49 seanb Exp $
+$Id: bootstrap.py,v 1.10 2003/03/08 21:46:10 seanb Exp $
 """
 from transaction import get_transaction
 
 from zope.app.traversing import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.content.folder import RootFolder
-from zope.app.services.servicenames import EventDispatch, HubIds, EventSubscription
+from zope.app.services.servicenames import EventPublication, HubIds, EventSubscription
 from zope.app.services.servicenames import ErrorLogging
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceConfiguration
@@ -72,7 +72,7 @@ def addEssentialServices(root_folder):
     configureService(root_folder, HubIds, name)
 
     # The EventService class implements two services
-    name = addConfigureService(root_folder, EventDispatch, EventService)
+    name = addConfigureService(root_folder, EventPublication, EventService)
     configureService(root_folder, EventSubscription, name)
 
     # Sundry other services

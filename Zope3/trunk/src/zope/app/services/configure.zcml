@@ -379,7 +379,7 @@
 <!-- Error reporting service -->
 
   <serviceType
-      id="ErrorReportingService"
+      id="ErrorLogging"
       interface="zope.app.interfaces.services.error.IErrorReportingService" />
 
   <content class='zope.app.services.errorr.ErrorReportingService'>
@@ -388,7 +388,7 @@
         interface="zope.app.interfaces.services.error.IErrorReportingService"
         />
     <factory
-        id='ErrorReportingService'
+        id='ErrorLogging'
         permission='zope.Public' />
     </content>
 
@@ -400,7 +400,7 @@
 
   <content class='zope.app.services.hub.ObjectHub'>
     <factory
-        id='ObjectHub'
+        id='HubIds'
         permission='zope.ManageServices' />
     <require
         permission="zope.View"

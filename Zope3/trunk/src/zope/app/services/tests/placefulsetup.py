@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.10 2003/03/08 00:51:46 seanb Exp $
+$Id: placefulsetup.py,v 1.11 2003/03/08 21:46:09 seanb Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
-from zope.app.services.servicenames import HubIds, EventDispatch, EventSubscription
+from zope.app.services.servicenames import HubIds, EventPublication, EventSubscription
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
@@ -160,7 +160,7 @@ class PlacefulSetup(PlacelessSetup):
 
     def createEventService(self, folder_path):
         """Create an event service in 'folder', and configure it for
-        EventDispatch and EventSubscription services."""
+        EventPublication and EventSubscription services."""
         folder = traverse(self.rootFolder, folder_path)
         if not folder.hasServiceManager():
             folder.setServiceManager(ServiceManager())
@@ -171,7 +171,7 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject(service_name, EventService())
 
         path = "%s/%s" % (getPhysicalPathString(default), service_name)
-        configuration = ServiceConfiguration(EventDispatch, path, self.rootFolder)
+        configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
         default['configure'].setObject(
                 "%sEventsDir" % service_name, configuration)
         traverse(default, 'configure/1').status = Active
@@ -199,7 +199,7 @@ class PlacefulSetup(PlacelessSetup):
         from zope.app.services.event import EventService
         defineService(EventSubscription, ISubscriptionService)
 
-        # EventDispatch service already defined by
+        # EventPublication service already defined by
         # zope.app.events.tests.PlacelessSetup
 
         defineService(HubIds, IObjectHub)
@@ -210,7 +210,7 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject("myObjectHub", self.getObjectHub())
 
         path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration(EventDispatch, path, self.rootFolder)
+        configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
 

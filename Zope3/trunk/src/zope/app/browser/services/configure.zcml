@@ -2,7 +2,7 @@
    xmlns='http://namespaces.zope.org/browser'
    >
 
-<!--Error Reporting Service -->
+<!--Error Logging Service -->
 
   <pages
     for="zope.app.interfaces.services.error.IErrorReportingService"
@@ -19,8 +19,8 @@
   <menuItem
      menu="add_service"
      for="zope.app.interfaces.container.IAdding" 
-     action="ErrorReportingService"
-     title="Error Reporting Service"
+     action="ErrorLogging"
+     title="Error Logging Service"
      description="Error Reporting Service for Logging Errors"
      />
   
@@ -861,8 +861,8 @@
   <menuItem
       menu="add_service"
       for="zope.app.interfaces.container.IAdding"
-      action="ObjectHub"
-      title="ObjectHub Service"
+      action="HubIds"
+      title="HubIds Service"
       description="An object hub, for cataloging, unique object ids, and 
                    more: use sparingly" 
       />
