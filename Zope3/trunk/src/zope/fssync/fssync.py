@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.44 2003/08/27 19:36:21 fdrake Exp $
+$Id: fssync.py,v 1.45 2003/08/29 12:47:36 fdrake Exp $
 """
 
 import os
@@ -550,11 +550,7 @@ class FSSync(object):
                 self.diff(t, mode, diffopts, need_original)
 
     def add(self, path, type=None, factory=None):
-        if not exists(path):
-            raise Error("nothing known about '%s'", path)
-        entry = self.metadata.getentry(path)
-        if entry:
-            raise Error("path '%s' is already registered", path)
+        entry = self.basicadd(path, type, factory)
         head, tail = fsutil.split(path)
         pentry = self.metadata.getentry(head)
         if not pentry:
@@ -566,11 +562,6 @@ class FSSync(object):
             zpath += "/"
         zpath += tail
         entry["path"] = zpath
-        entry["flag"] = "added"
-        if type:
-            entry["type"] = type
-        if factory:
-            entry["factory"] = factory
         self.metadata.flush()
         if isdir(path):
             # Force Entries.xml to exist, even if it wouldn't normally
@@ -583,6 +574,19 @@ class FSSync(object):
             print "A", join(path, "")
         else:
             print "A", path
+
+    def basicadd(self, path, type=None, factory=None):
+        if not exists(path):
+            raise Error("nothing known about '%s'", path)
+        entry = self.metadata.getentry(path)
+        if entry:
+            raise Error("path '%s' is already registered", path)
+        entry["flag"] = "added"
+        if type:
+            entry["type"] = type
+        if factory:
+            entry["factory"] = factory
+        return entry
 
     def mkdir(self, path):
         dir, name = split(path)
