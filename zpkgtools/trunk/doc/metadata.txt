@@ -41,7 +41,6 @@ package.conf
   Information about scripts and documentation files will also be
   included in this file.
 
-
 Embedded Package Definitions
 ----------------------------
 
