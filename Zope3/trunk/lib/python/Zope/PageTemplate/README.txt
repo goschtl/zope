@@ -22,7 +22,7 @@ Page Templates
 
       - ZTUtils (batching utilities for zpt)
 
-      - The standard logging module (logging.py) from Python 2.3.
+      - The standard logging package ("logging") from Python 2.3.
 
   Simple Usage
 
