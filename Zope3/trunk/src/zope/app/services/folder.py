@@ -13,13 +13,14 @@
 ##############################################################################
 """A site management folder contains components and component registrations.
 
-$Id: folder.py,v 1.12 2003/08/08 21:56:22 fdrake Exp $
+$Id: folder.py,v 1.13 2003/08/12 22:00:18 fdrake Exp $
 """
 
 __metaclass__ = type
 
 from zope.app.component.nextservice import getNextServiceManager
 from zope.app.container.btree import BTreeContainer
+from zope.app.interfaces.services.bundle import IBundle
 from zope.app.interfaces.services.folder import ISiteManagementFolders
 from zope.app.interfaces.services.folder import ISiteManagementFolder
 from zope.app.interfaces.services.service import IComponentManager
@@ -69,7 +70,8 @@ class SiteManagementFolders(BTreeContainer):
     queryComponent = ContextMethod(queryComponent)
 
     def setObject(self, name, obj):
-        if not ISiteManagementFolder.isImplementedBy(obj):
+        if not (ISiteManagementFolder.isImplementedBy(obj)
+                or IBundle.isImplementedBy(obj)):
             raise TypeError("Can only add packages")
         return super(SiteManagementFolders, self).setObject(name, obj)
 
