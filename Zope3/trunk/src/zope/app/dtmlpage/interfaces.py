@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.2 2003/03/25 18:37:45 jim Exp $
+$Id: interfaces.py,v 1.2 2004/02/24 16:49:37 philikon Exp $
 """
 import zope.schema
 from zope.interface import Interface, Attribute

@@ -14,20 +14,19 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_dtmlpage.py,v 1.8 2003/11/27 13:59:17 philikon Exp $
+$Id: test_dtmlpage.py,v 1.2 2004/02/24 16:49:38 philikon Exp $
 """
 
 import unittest
 
-from zope.app.content.dtmlpage import DTMLPage
+from zope.security.checker import NamesChecker, defineChecker
 
-# Wow, this is a lot of work. :(
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.tests import ztapi
-from zope.security.checker import NamesChecker, defineChecker
 from zope.app.container.contained import contained
+from zope.app.dtmlpage.dtmlpage import DTMLPage
 
 
 class Data(object):

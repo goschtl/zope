@@ -12,24 +12,23 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.8 2004/02/20 16:57:24 fdrake Exp $
+$Id: dtmlpage.py,v 1.2 2004/02/24 16:49:37 philikon Exp $
 """
 from persistent import Persistent
 
-from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.content.file import IFileContent
-from zope.app.interfaces.content.dtmlpage import IDTMLPage, IRenderDTMLPage
-from zope.app.interfaces.file import IFileFactory
+from zope.security.proxy import ProxyFactory
+from zope.documenttemplate.dt_html import HTML
 from zope.interface import implements
 
-from zope.security.proxy import ProxyFactory
-
-from zope.documenttemplate.dt_html import HTML
+from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.interfaces.file import IFileFactory
 from zope.app.container.contained import Contained
 
-class DTMLPage(Persistent, Contained):
+from zope.app.file.interfaces import IFileContent
+from interfaces import IDTMLPage, IRenderDTMLPage
 
-    # XXX Putting IFileContent at the end gives an error!
+class DTMLPage(Persistent, Contained):
+    #XXX Putting IFileContent at the end gives an error!
     implements(IFileContent, IDTMLPage, IRenderDTMLPage, IAnnotatable)
 
     def __init__(self, source=''):
@@ -63,7 +62,6 @@ class DTMLPage(Persistent, Contained):
                       """Source of the DTML Page.""")
 
 class DTMLFactory(object):
-
     implements(IFileFactory)
 
     def __init__(self, context):

@@ -13,11 +13,12 @@
 ##############################################################################
 """DTML Page Evaluation Tests
 
-$Id: test_dtmlpageeval.py,v 1.7 2003/09/21 17:30:33 jim Exp $
+$Id: test_dtmlpageeval.py,v 1.2 2004/02/24 16:49:38 philikon Exp $
 """
 from unittest import TestCase, main, makeSuite
-from zope.app.browser.content.dtmlpageeval import DTMLPageEval
 from zope.app.container.contained import contained
+from zope.app.dtmlpage.browser import DTMLPageEval
+
 class Test(TestCase):
 
     def test(self):
@@ -30,7 +31,9 @@ class Test(TestCase):
 
             content_type = 'text/x-test'
 
-        class Folder: name='zope'
+        class Folder:
+            name='zope'
+
         folder = Folder()
 
         class Request(object):
