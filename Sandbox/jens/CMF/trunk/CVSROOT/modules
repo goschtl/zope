@@ -165,3 +165,6 @@ sazBTrees -d BTrees Zope2/lib/python/BTrees
 
 StandaloneZODB Releases/StandaloneZODB \
 	       &sazZODB &sazZEO &sazExtensionClass &sazLib &sazBTrees
+
+# modules to be used for the ZEO 1.0 release
+ZEO Releases/ZEO &Packages/ZEO
