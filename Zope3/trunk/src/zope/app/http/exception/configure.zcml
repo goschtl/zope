@@ -8,4 +8,12 @@
     factory=".unauthorized.Unauthorized"
     />
 
+<defaultView 
+    for="zope.exceptions.INotFoundError"	
+    type="zope.publisher.interfaces.http.IHTTPPresentation"
+    name="index.html"
+    permission="zope.Public"
+    factory=".notfound.NotFound"
+    />
+
 </zopeConfigure>
