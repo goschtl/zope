@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for TextIndexWrapper.
 
-$Id: testTextIndexWrapper.py,v 1.2 2002/12/04 08:32:19 gvanrossum Exp $
+$Id: testTextIndexWrapper.py,v 1.3 2002/12/05 12:41:09 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -36,6 +36,22 @@ class Test(TestCase):
         self.assertEqual(total, 1)
         [(docid, rank)] = matches # if this fails there's a problem
         self.assertEqual(docid, 1000)
+
+    def testDefaultBatch(self):
+        matches, total = self.wrapper.query(u"fox", 0)
+        self.assertEqual(total, 2)
+        self.assertEqual(len(matches), 2)
+        matches, total = self.wrapper.query(u"fox")
+        self.assertEqual(total, 2)
+        self.assertEqual(len(matches), 2)
+        matches, total = self.wrapper.query(u" fox", 1)
+        self.assertEqual(total, 2)
+        self.assertEqual(len(matches), 1)
+
+    def testGlobbing(self):
+        matches, total = self.wrapper.query("fo*")
+        self.assertEqual(total, 2)
+        self.assertEqual(len(matches), 2)
 
     def testLatin1(self):
         w = self.wrapper

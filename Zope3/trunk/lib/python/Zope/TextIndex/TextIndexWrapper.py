@@ -15,7 +15,7 @@
 
 This exists to implement IInjection and IQuerying.
 
-$Id: TextIndexWrapper.py,v 1.4 2002/12/04 18:41:56 gvanrossum Exp $
+$Id: TextIndexWrapper.py,v 1.5 2002/12/05 12:41:08 gvanrossum Exp $
 """
 
 from Persistence import Persistent
@@ -68,8 +68,13 @@ class TextIndexWrapper(Persistent):
         chooser.addmany(results.items())
         batch = chooser.getbest()
         batch = batch[start:]
-        qw = 1.0 * self.index.query_weight(tree.terms())
-        batch = [(docid, score/qw) for docid, score in batch]
+        if batch:
+            qw = self.index.query_weight(tree.terms())
+            # Hack to avoid ZeroDivisionError
+            if qw == 0:
+                qw = batch[0][1] or 1
+            qw *= 1.0
+            batch = [(docid, score/qw) for docid, score in batch]
         return batch, len(results)
 
     # Methods implementing IStatistics
