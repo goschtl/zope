@@ -24,6 +24,14 @@
 #   path translates to a link that points to an empty directory
 #   (CVSROOT/Emptydir) - the CVS equivalent of a removed directory.
 
+# Temporary backwards compat: Make 'Releases' stay current.
+# We'll be encouraging people (primarily developers) to migrate to new
+# checkouts, and eventually be retiring these.
+/Releases/Zope                                  /Zope
+/Releases/StandaloneZODB                        /Zope/StandaloneZODB
+/Releases/CMF                                   /CMF
+/Releases/ZEO                                   /ZEO
+
 /Zope/ZServer                                   /Packages/ZServer
 /Zope/lib/Components/ExtensionClass             /Cruft/ExtensionClass
 /Zope/lib/python/AccessControl                  /Packages/AccessControl
