@@ -4,20 +4,28 @@
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for zope.restrictedpython.
+"""Untrusted python tests
 
 $Id$
 """
-import os
-import zope.testing.doctestunit
-
+import unittest
+from zope.testing import doctestunit
 
 def test_suite():
-    return zope.testing.doctestunit.DocFileSuite("README.txt")
+    return unittest.TestSuite((
+        doctestunit.DocFileSuite('builtins.txt',
+                                 'rcompile.txt',
+                                 'interpreter.txt',
+                                 ),
+        ))
+
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
+

@@ -24,6 +24,7 @@ from zope.component.servicenames import Utilities
 from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.security.untrustedpython.interpreter import CompiledProgram
 
 
 class IPythonPage(Interface):
@@ -172,18 +173,30 @@ class PythonPage(Contained, Persistent):
         self.__prepared_source = self.prepareSource(source)
 
         # Compile objects cannot be pickled
-        self._v_compiled = compile(self.__prepared_source,
-                                   self.__filename(), 'exec')
+        self._v_compiled = CompiledProgram(self.__prepared_source,
+                                           self.__filename())
 
     _tripleQuotedString = re.compile(
-        r"^([ \t]*)[uU]?([rR]?)(('''|\"\"\").*?\4)", re.MULTILINE | re.DOTALL)
+        r"^([ \t]*)[uU]?([rR]?)(('''|\"\"\")(.*)\4)", re.MULTILINE | re.DOTALL)
 
     def prepareSource(self, source):
         """Prepare source."""
         # compile() don't accept '\r' altogether
         source = source.replace("\r\n", "\n")
         source = source.replace("\r", "\n")
+        
+        if isinstance(source, unicode):
+
+            # Use special conversion function to work around
+            # compiler-module failure to handle unicode in literals
+
+            try:
+                source = source.encode('ascii')
+            except UnicodeEncodeError:
+                return self._tripleQuotedString.sub(_print_usrc, source)
+
         return self._tripleQuotedString.sub(r"\1print u\2\3", source)
+
 
     def getSource(self):
         """Get the original source code."""
@@ -198,8 +211,8 @@ class PythonPage(Contained, Persistent):
 
         # Compile objects cannot be pickled
         if not hasattr(self, '_v_compiled'):
-            self._v_compiled = compile(self.__prepared_source,
-                                       self.__filename(), 'exec')
+            self._v_compiled = CompiledProgram(self.__prepared_source,
+                                               self.__filename())
 
         kw['request'] = request
         kw['script'] = self
@@ -208,3 +221,13 @@ class PythonPage(Contained, Persistent):
         service = zapi.getService(Utilities)
         interpreter = service.queryUtility(IInterpreter, 'text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)
+
+def _print_usrc(match):
+    string = match.group(3)
+    raw = match.group(2)
+    if raw:
+        return match.group(1)+'print '+`string`
+    return match.group(1)+'print u'+match.group(3).encode('unicode-escape')
+
+    
+    

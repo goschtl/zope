@@ -15,12 +15,12 @@
 
 $Id$
 """
-import StringIO
+from StringIO import StringIO
 import sys
 
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.interface import implements
-from zope.security.interpreter import RestrictedInterpreter
+from zope.security.untrustedpython.interpreter import exec_src, exec_code
 
 class PythonInterpreter(object):
 
@@ -28,18 +28,19 @@ class PythonInterpreter(object):
 
     def evaluate(self, code, globals):
         """See zope.app.interfaces.IInterpreter"""
-        tmp = sys.stdout
-        sys.stdout = StringIO.StringIO()
-        ri = RestrictedInterpreter()
-        ri.globals = globals
-        try:
-            # This used to add a newline for Python 2.2. As far as 
-            # I know, we only care about 2.3 and later.
-            ri.ri_exec(code)
-        finally:
-            result = sys.stdout
-            sys.stdout = tmp
-        return result.getvalue()
+        tmp = StringIO()
+        globals['untrusted_output'] = tmp
+        if isinstance(code, basestring):
+            exec_src(code, globals,
+                     {}, # we don't want to get local assignments saved.
+                     )
+        else:
+            # XXX There atr no tests for this branch
+            code.exec_(globals,
+                       {}, # we don't want to get local assignments saved.
+                       )
+            
+        return tmp.getvalue()
         
 
     def evaluateRawCode(self, code, globals):
