@@ -41,8 +41,8 @@
 			</table>
 
 			<span i18n:translate="">
-				For to test the authentication, you can set a username and password.<br /> 
-				This usename and password has to be falid on the LDAP server.
+				To test the authentication, you can set a username and password.<br /> 
+				This username and password has to be valid on the LDAP server.
 			</span>
 
 			<table id="sortable" class="listing" summary="LDAP Connection Test Data"

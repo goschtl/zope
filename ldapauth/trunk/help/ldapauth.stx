@@ -34,8 +34,8 @@ Installation
   
   Add a LDAP Principal Source to the auth service
   
-  Now it's time to make shure you havea LDAP server available 
-  XXX more description how to install or where to find a LDAP server
+  Now it's time to make sure you have an LDAP server available 
+  XXX more description how to install or where to find an LDAP server
   
   Go to the added ldap authentication source and edit the configuration.
   You can find the edit view under the tab "edit".
