@@ -31,9 +31,8 @@ Each 'table' entry is a tuple containing:
 E.g.: 
 
 
-("test", "^test", None, ["klm@digicool.com"], {'host': "www.zope.org",
-					       'acct': "anonymous",
-					       'repodir': "%s"})
+("CVSROOT", "^CVSROOT", "/history", ["nobody@no.where"],
+ {'host': "www.zope.org", 'acct': "anonymous", 'repodir': "/cvs-repository"})
 """
 
 MIRROR = {'host': "www.zope.org",
@@ -42,5 +41,5 @@ MIRROR = {'host': "www.zope.org",
 
 table = [
     ("test", "^test", None, ["klm@digicool.com"], MIRROR),
-    ("CVSROOT", "^CVSROOT", "^CVSROOT/history", ["klm@digicool.com"], MIRROR)
+    ("CVSROOT", "^CVSROOT", "/history", ["klm@digicool.com"], MIRROR)
 ]
