@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.7 2004/04/02 15:33:57 srichter Exp $
+$Id: __init__.py,v 1.8 2004/04/02 17:07:59 tim_one Exp $
 """
 import re
 from persistent import Persistent
@@ -71,7 +71,7 @@ class PythonPage(Contained, Persistent):
       >>> request = None
 
       Test that can produce the correct filename
-      
+
       >>> pp._PythonPage__filename()
       u'/pp'
 
@@ -82,10 +82,9 @@ class PythonPage(Contained, Persistent):
       >>> pp(request)
       u'<html>...</html>\n'
 
-      Make sure that Windows users input also works. Normally Python does not
-      like '\r' as line endings.
+      Make sure that Windows (\r\n) line ends also work.
 
-      >>> pp.setSource(u"if 1 == 1:\r\r\n\n   '''<html>...</html>'''")
+      >>> pp.setSource(u"if 1 == 1:\r\n\r\n   '''<html>...</html>'''")
       >>> pp(request)
       u'<html>...</html>\n'
 
@@ -95,7 +94,7 @@ class PythonPage(Contained, Persistent):
       >>> pp(request)
       u'<html>...</html>\n'
 
-      ... and here a triple quote with some variable replacement. 
+      ... and here a triple quote with some variable replacement.
 
       >>> pp.setSource(u"'''<html>%s</html>''' %x")
       >>> pp(request, x='test')
