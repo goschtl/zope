@@ -55,9 +55,9 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     """
     
     if not NoWL:
-        __implements__ = (WriteLockInterface
-                         ,Contentish
-                         ,DynamicType.__implements__)
+        __implements__ = (WriteLockInterface,
+                          Contentish,
+                          DynamicType.__implements__)
     else:
         __implements__ = (Contentish, DynamicType.__implements__)
 

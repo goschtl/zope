@@ -87,7 +87,6 @@ class MajorMinorPredicate( SimpleItem ):
         """
             Return true if the rule matches, else false.
         """
-        SLASH_SPLIT = re.compile( '/' )
         if self.major is None:
             return 0
 
@@ -97,7 +96,7 @@ class MajorMinorPredicate( SimpleItem ):
         typ = typ or '/'
         if not '/' in typ:
             typ = typ + '/'
-        major, minor = SLASH_SPLIT.split( typ )
+        major, minor = typ.split('/', 1)
 
         if self.major and not major in self.major:
             return 0
