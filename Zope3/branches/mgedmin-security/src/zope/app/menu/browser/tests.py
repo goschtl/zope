@@ -20,7 +20,7 @@ import unittest
 from zope.interface import Interface, implements
 from zope.component import getServiceManager
 
-from zope.security.management import newSecurityManager
+from zope.security.management import newInteraction
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
 from zope.security.proxy import ProxyFactory
 
@@ -71,6 +71,12 @@ class V:
     def __call__(self):
         pass
 
+class ParticipationStub:
+
+    def __init__(self, principal):
+        self.principal = principal
+        self.interaction = None
+
 
 class Test(PlacefulSetup, unittest.TestCase):
 
@@ -89,7 +95,7 @@ class Test(PlacefulSetup, unittest.TestCase):
                                       abad='waaa'))
 
     def test(self):
-        newSecurityManager('who')
+        newInteraction(ParticipationStub('who'))
         v = MenuAccessView(ProxyFactory(ob), TestRequest())
         self.assertEqual(v['zmi_views'],
                          [{'description': '', 'title':'l1', 'action':'a1'},

@@ -22,11 +22,19 @@ from persistent.tests.persistenttestbase import DM
 from zope.configuration import xmlconfig
 from zope.schema import Text, getFieldsInOrder
 from zope.security.checker import ProxyFactory
-from zope.security.management import system_user, newSecurityManager
+from zope.security.management import system_user, newInteraction
 from zope.app.tests import setup
 from zope.app.schema.wrapper import Struct
 from zope.security.checker import getChecker, _defaultChecker
 import zope.app.schema.tests
+
+
+class ParticipationStub:
+
+    def __init__(self, principal):
+        self.principal = principal
+        self.interaction = None
+
 
 class FieldPersistence(unittest.TestCase):
 
@@ -46,7 +54,7 @@ class FieldPermissions(unittest.TestCase):
     def setUp(self):
         setup.placefulSetUp()
         self.context = xmlconfig.file("fields.zcml", zope.app.schema.tests)
-        newSecurityManager(system_user)
+        newInteraction(ParticipationStub(system_user))
 
     def test_wrapped_field_checker(self):
         f1 = Text(title=u'alpha')

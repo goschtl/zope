@@ -23,10 +23,17 @@ from zope.app import zapi
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IFactory
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.security.management import newSecurityManager, system_user
+from zope.security.management import newInteraction, system_user
 from zope.schema.interfaces import IField, IText
 from zope.interface import Interface
 from zope.configuration import xmlconfig
+
+
+class ParticipationStub:
+
+    def __init__(self, principal):
+        self.principal = principal
+        self.interaction = None
 
 class IFoo(Interface): pass
 
@@ -34,7 +41,7 @@ class TestFieldFactory(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(TestFieldFactory, self).setUp()
-        newSecurityManager(system_user)
+        newInteraction(ParticipationStub(system_user))
         context = xmlconfig.file('tests/test_fieldfactory.zcml',
                                  zope.app.schema)
 
