@@ -10,12 +10,6 @@
     name="zope3.css" file="zope3.css" layer="rotterdam" />
 
 <browser:resource 
-    name="all_links.css" file="all_links.css" layer="rotterdam" />
-
-<browser:resource 
-    name="content_links.css" file="content_links.css" layer="rotterdam" />
-
-<browser:resource 
     name="xmltree.js" file="xmltree.js" layer="rotterdam" />
 
 <browser:resource

@@ -11,19 +11,19 @@
 /* Basic Elements */
 
 body {
-    font: 75% Verdana, Helvetica, Arial, sans-serif;
+    font: 85% Helvetica, Arial, sans-serif;
     background: White;
     color: Black;
     margin: 0;
     padding: 0;
 /* These work in IE only, changes the look of the scrollbar + textareas */
-    scrollbar-base-color: #DEE7EC;
-    scrollbar-highlight-color: #DEE7EC;
-    scrollbar-track-color: #F7F9FA;
-    scrollbar-darkshadow-color: #F7F9FA;
-    scrollbar-3dlight-color: #8CACBB;
-    scrollbar-shadow-color: #8CACBB;
-    scrollbar-arrow-color: #436976;
+    scrollbar-base-color: White;
+    scrollbar-highlight-color: White;
+    scrollbar-track-color: #F8F8F8;
+    scrollbar-darkshadow-color: #F8F8F8;
+    scrollbar-3dlight-color: #336699;
+    scrollbar-shadow-color: #336699;
+    scrollbar-arrow-color: Black;
 }
 
 table {
@@ -32,13 +32,10 @@ table {
 
 a {
     text-decoration: none;
-    color: #436976;
+    color: #336699;
     background-color: transparent;
 }
 
-a:hover, div.box div.body a:hover div  {
-    text-decoration: underline;
-}
 
 table {
 
@@ -79,7 +76,7 @@ p img {
 hr {
     clear: both;
     height: 1px;
-    color: #8CACBB;
+    color: #336699;
     background-color: transparent;
 }
 
@@ -87,10 +84,10 @@ hr {
 h1, h2, h3, h4, h5, h6 {
     color: Black;
     clear: left;
-    font: 100% Verdana, Helvetica, Arial, sans-serif;
+    font: 100% bold Verdana, Helvetica, Arial, sans-serif;
     margin: 0;
-    padding-top: 1em;
-    border-bottom: 1px solid #8CACBB;
+    padding-top: 0.5em;
+    border-bottom: 1px solid #336699;
 }
 
 h1 {
@@ -148,7 +145,7 @@ dd {
 
 
 fieldset {
-    border: 1px solid #8cacbb;
+    border: 1px solid #A0A0A0;
     margin: 2em 0em 1em 0em;
     padding: 1em 0em;
 }
@@ -165,26 +162,21 @@ form {
 }
 
 textarea {
-    border: 1px solid #8cacbb;  
     color: Black;
-    background-color: white;
-    width: 93%;
+    width: 88%;
     padding: 0.1em;
 }
 
 input {
-    font: 100% Verdana, Helvetica, Arial, sans-serif;
-    border: 1px solid #8cacbb;  
+    font: normal 100% Verdana, Helvetica, Arial, sans-serif;
     color: Black;
-    background-color: white;
     vertical-align: middle;
     margin-bottom: 1px; /* IE bug fix */
     padding: 0.1em;
 }
 
 select {
-    font: 100% Verdana, Helvetica, Arial, sans-serif;
-    border: 1px solid #8cacbb;  
+    font: normal 100% Verdana, Helvetica, Arial, sans-serif;
     vertical-align: top;
 }
 
@@ -210,15 +202,15 @@ blockquote {
 code {
     font-size: 120%;
     color: Black;
-    background-color: #dee7ec;
+    background-color: #CCCCCC;
 }
 
 pre {
     font-size: 120%;
     padding: 1em;
-    border: 1px solid #8cacbb;
+    border: 1px solid #A0A0A0;
     color: Black;
-    background-color: #dee7ec;
+    background-color: #CCCCCC;
 }
 
 .netscape4 {
@@ -231,7 +223,7 @@ pre {
 
 #navtreecontents a {
        cursor: pointer;
-       height: 18px;
+       height: 20px;
 }
 
 #navtreecontents loading {
@@ -249,16 +241,18 @@ pre {
 
 #navtreecontents icon {
        background-repeat: no-repeat;
-       padding-left: 17px;
+       padding-left: 20px;
        display: inline;
        cursor: auto;
                 }
 
 #navtreecontents collection {
        display: block;
-       margin-left: 8px;
+       margin-left: 10px;
 /*     border: red solid 1pt;  */
        height: auto;
+		 padding-top: 0.5em;
+		 padding-bottom: 0.5em;
 }
 
 
@@ -274,38 +268,72 @@ pre {
 #personal {
     border-bottom: 1px solid black;
     text-align: left;
+	 padding: 0.1em 1em;
+}
+
+#userDetails {
+	float: right;
+}
+
+#actions {
+    background: #336699;
+    border-left: 1px solid #336699;
+    border-right: 1px solid #336699;
+	 padding: 0.3em;
+    color: Black;
+	 border-collapse: collapse;
+}
+
+#actions a {
+	color: White;
+   float: right;
+	border-left: 1px dashed white;
+	padding: 0 0.5em;
+}
+
+#actions a:hover {
+	color: black;
+	background-color: White;
 }
 
 #breadcrumbs {
-    border: 1px solid #74AE0B;
-    padding: 0.1em 1em;
-    margin-top: 0.8em;
+    border: 1px solid #336699;
+    border-style: none none solid none;
+	 margin: 0;
 }
+
 
 #navigators {
     float: left;
-    width: 20%;
+    width: 15%;
+	padding: 1em;
+}
+
+#workspace {
+    width: 79%;
+    float: left;
 }
 
 #content {
     float: left;
-    width: 64%;
 }
 
 #context_information {
-    float: left;
+    float: right;
     width: 15%;
+    padding-top: 1em;
+	 padding-left: 0.5em;
 }
+
 #helpers {
 }
 
 #inspectors {
 }
 
-
 #footer {
     border-bottom: 1px solid black;
-    float: none;
+    float: left;
     clear: both;
 }
 
@@ -326,57 +354,47 @@ div.row div.field {
 }
 
 div.box {
-    background: transparent;
-    border-collapse: collapse;
-    margin: .8em;
-    border: none;
+    margin: 0em 0em 2em 0em;
+    padding: 0;
+    overflow: auto;
 }
 
-div.box h4 {
-    background: #DEE7EC;
-    border: 1px solid #8CACBB;
-    border-style: solid solid none;
-    color: Black;
-    text-transform: lowercase;
-    margin: 0px;
-    font-weight: normal;
-
-    padding: 0.1em 1em 0.3em 0.5em;
-/*    height: 1em; */
-}
-
-/*div.box h4 {
-    background: #DEE7EC;
-    border-style: solid solid none;
-    border: 1px solid #8CACBB;
-    color: Black;
-    display: inline;
+div.box h4 { 
+    background: #CCCCCC;
+    border: 1px solid #CCCCCC;
+    border-style: solid solid none solid;
+    color: #808080;
+    padding: 0em 1em 0em 1em;
+    display: block;
     font-size: 1em;
-    font-weight: normal;
     height: 1em;
-    margin: 0px;
-    padding: 0px 1em;
-    text-transform: lowercase;
-}*/
+	 text-align: center;
+}
+
 
 div.box div.body {
     background: transparent;
     border-collapse: collapse;
-    border: 1px solid #8CACBB;
+    border: 1px solid #CCCCCC;
+}
+
+div.box .content {
+    padding: 0.5em;
+}
+
+div.box h1, 
+div.box h2, 
+div.box h3, 
+div.box h4 {
     margin: 0;
-    padding: 0.1em 1em 0.3em 0.5em;
 }
 
-div.box div.body a div.odd {
-    padding: 0.2em 0;
-    background: transparent;
+div.box .even {
+    background-color: #F8F8F8;
 }
 
-div.box div.body a div.even {
-    padding: 0.2em 0;
-/*    background: #F7F9FA; */
-    border-bottom: 1px dotted #8CACBB;
-    border-top: 1px dotted #8CACBB;
+div.box .odd {
+    background-color: White;
 }
 
 
@@ -387,7 +405,7 @@ div.box div.body a div.even {
 .itemViews {
     background: transparent;
     border-collapse: collapse;
-    border-bottom: 1px solid #74AE0B;
+    border-bottom: 1px solid #336699;
     padding-left: 1em;
     margin-top: 0.8em;
     white-space: nowrap;
@@ -395,70 +413,50 @@ div.box div.body a div.even {
 
 .itemViews a {
     background: transparent;
-    border: 1px solid #74AE0B;
-    color: #578308;
+    border: 1px solid #336699;
+    color: Black;
     font-weight: normal;
     margin-right: 0.5em;
     padding: 0em 0.5em;
-    text-transform: lowercase;
 }
 
 .itemViews a.selected {
-    background: #CDE2A7;
-    border-bottom: #CDE2A7 1px solid;
-    color: #578308;
+    background: #336699;
+    border-bottom: #336699 1px solid;
+    color: White;
     font-weight: normal;
 }
 
-.itemViews p.selected {
-    background: #CDE2A7;
-    border: 1px solid #74AE0B;
-    border-bottom: #CDE2A7 1px solid;
-    color: #578308;
-    font-weight: normal;
-    margin-right: 0.5em;
-    padding: 0em 0.5em;
-    text-transform: lowercase;
-    display: inline;
-}
 
 .itemViews a:hover {
-    background-color: #CDE2A7;
-    color: #578308;
+    background-color: #336699;
+    color: White;
 }
 
-.itemViewsBar {
-    background: #CDE2A7;
-    border-left: 1px solid #74AE0B;
-    border-right: 1px solid #74AE0B;
-    color: #578308;
-    text-align: right;
-    text-transform: lowercase;
-}
-
-.item {
-    border: 1px solid #74AE0B;
+#viewspace {
+    border: 1px solid #336699;
+	 border-collapse: collapse;
     padding: 10px;
+	 margin: 0;
 }
 
 table.listing {
     /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
     border-collapse: collapse;
-    border-left: 1px solid #8CACBB;
-    border-bottom: 1px solid #8CACBB;
+    border-left: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
     margin: 1em 0em 1em 0em;
     clear: both;
 }
 
 table.listing th {
-    background: #DEE7EC;
-    border-top: 1px solid #8CACBB;
-    border-bottom: 1px solid #8CACBB;
-    border-right: 1px solid #8CACBB;
-    color: Black;
+    background: #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    color: #808080;
     font-weight: normal;
     padding: 0em 1em 0em 1em;
-    text-transform: lowercase;
     white-space: nowrap;
 }
 
@@ -476,15 +474,15 @@ table.listing td.top {
 
 table.listing tr.odd {
     /*every second line should be shaded */
-    background: transparent;
+    background: White;
 }
 
 table.listing tr.even {
-    background: #F7F9FA;
+    background: #F8F8F8;
 }
 
 table.listing td {
-    border-right: 1px solid #8CACBB;
+    border-right: 1px solid #CCCCCC;
     padding: 0em 1em;
     text-align: left;
 }
@@ -495,7 +493,9 @@ table.listing img {
 }
 
 
-
+div.spacer {
+	clear: both;
+}
 
 
 

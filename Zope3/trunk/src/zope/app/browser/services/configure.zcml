@@ -557,7 +557,7 @@
   <browser:icon
       name="zmi_icon"
       for="zope.app.interfaces.services.service.IServiceManager" 
-      file="service_manager.png" />
+      file="service_manager.gif" />
 
  
   <browser:menuItems 
