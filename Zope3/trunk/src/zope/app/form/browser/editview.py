@@ -44,6 +44,9 @@ class EditView(BrowserView):
 
     Subclasses should provide a schema attribute defining the schema
     to be edited.
+
+    The automatically generated widgets are available by name through
+    the attributes widget_*. (E.g. view.widget_title for the title widget)
     """
 
     errors = ()
