@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.17 2003/12/18 08:01:04 jim Exp $
+$Id: service.py,v 1.18 2004/03/03 17:21:28 stevea Exp $
 """
 __metaclass__ = type
 
@@ -113,7 +113,7 @@ class ISiteManager(IServiceService, IComponentManager,
         """Add a subsite of the site
 
         Local sites are connected in a tree. Each site knows about
-        it's containing sites anb it's subsites.
+        its containing sites and its subsites.
         """
 
 class IServiceRegistration(registration.INamedComponentRegistration):
