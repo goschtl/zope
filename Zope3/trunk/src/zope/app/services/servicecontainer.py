@@ -14,6 +14,7 @@
 
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.service import IServiceManagerContainer  
+from zope.component.interfaces import IServiceService
 
 class ServiceManagerContainer:
 
