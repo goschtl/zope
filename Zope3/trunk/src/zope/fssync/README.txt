@@ -57,12 +57,12 @@ BUGS
 * After update or commit for a single file, the other files and
   directories in the same directory are silently removed!!!!
 
+* After committing an added or removed dict, the flag doesn't get
+  cleared in the entry.
+
 
 TO DO
 -----
-
-* after committing an added or removed file, the flag doesn't get
-  cleared in the entry
 
 * unit tests for the fssync core functionality
 
@@ -79,37 +79,38 @@ TO DO
   -N shows diffs for added/removed files as diffs with /dev/null
   more GNU diff options?  e.g. --ignore-space-change etc.
 
+* allow checking out the root
 
-Jim's TO DO
+* allow checking out /++etc++site
+
+* add adapters for more common content types, e.g. images
+
+* add a log message to the commit command
+
+* commit shouldn't commit new versions of unchanged objects to ZODB
+
+* refine the adapter protocol or implementation to leverage the
+  file-system representation protocol
+
+
+TO DO LATER
 -----------
 
-Here's the TO DO list from zope3/doc/TODO.txt:
+* Work out security details.
 
-  - Client command-line tool w HTTP-based interface to server
-    that provided CVS-like interface and features. Including:
+* In common case where extra data are simple values, store extra data
+  in the entries file to simplify representation and updates.  Maybe
+  do something similar w annotations.
 
-    - checkout and commit
+* Maybe do some more xmlpickle refinement with an eye toward
+  impproving the usability of simple dictionary pickles.
 
-    - update including merge and offline version
+* Maybe leverage adaptable storage ideas to assure losslessness.
 
-    - diff and offline diff
+* Export and import as a special case.
 
-  - Refine the adapter protocol or implementation to leverage
-    the file-system representation protocol.
+* Improve some common data file formats (e.g. simplify entries file).
 
-  - Maybe leverage adaptable storage ideas to assure
-    losslessness.
+* Commit to multiple Zope instances?
 
-  - In common case where extra data are simple values, store
-    extra data in the entries file to simplify representation
-    and updates.  Maybe do something similar w annotations.
-
-  - Maybe do some more xmlpickle refinement with an eye toward
-    impproving the usability of simple dictionary pickles.
-
-  - export and import as a special case
-
-  - Improve some common data file formats (e.g. simplify
-    entries file).
-
-  - Work out security details
+* Diff/merge multiple working sets (a la bitkeeper)?
