@@ -39,7 +39,7 @@ class ManagementView(BrowserView):
     def __init__(self, context, request):
         super(ManagementView, self).__init__(context, request)
         workflow = self._getSelWorkflow()
-        # XXX workflow might be None
+        # Workflow might be None
         if workflow is None or workflow.data is None:
             return
         schema = workflow.data.getSchema()
@@ -130,7 +130,7 @@ class ManagementView(BrowserView):
 
     def widgets(self):
         workflow = self._getSelWorkflow()
-        # XXX workflow might be None
+        # Workflow might be None
         if workflow is None or workflow.data is None:
             return []
         schema = self._getSelWorkflow().data.getSchema()
@@ -141,7 +141,7 @@ class ManagementView(BrowserView):
     def update(self):
         status = ''
         workflow = self._getSelWorkflow() 
-        # XXX workflow might be None
+        # Workflow might be None
         if Update in self.request and (workflow is not None and workflow.data is not None):
             schema = trustedRemoveSecurityProxy(workflow.data.getSchema())
             changed = applyWidgetsChanges(self, schema, target=workflow.data, 
