@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.3 2002/12/10 19:42:51 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.4 2002/12/10 23:04:09 gvanrossum Exp $
 """
 
 import sys
@@ -24,7 +24,14 @@ from Zope.Configuration.Action import Action
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
 from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 
+# Import classes related to initial-services
 from ServerTypeRegistry import getServerType
+from Zope.App.OFS.Services.ObjectHub.ObjectHub import ObjectHub
+from Zope.App.OFS.Services.LocalEventService.LocalEventService import \
+     LocalEventService
+from Zope.App.OFS.Services.ServiceManager.ServiceManager import ServiceManager
+from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration import \
+     ServiceConfiguration
 
 # Import Undo-related classes 
 from Zope.ComponentArchitecture import getService
@@ -154,6 +161,7 @@ class SiteDefinition:
             from Transaction import get_transaction
         
             app = RootFolder()
+            self._addEssentialServices(app)
             root[ZopePublication.root_name] = app
 
             get_transaction().commit()
@@ -162,6 +170,47 @@ class SiteDefinition:
 
         imp = PersistentModuleImporter()
         imp.install()
+
+
+    def _addEssentialServices(self, app):
+        """Add essential services.
+
+        XXX This ought to be configurable.  For now, hardcode an Event
+        service and an ObjectHub.  I'll refactor later.
+
+        XXX To reiterate, THIS IS AN EXAMPLE ONLY!!!  This code should
+        be generalized.  Preferably, using marker interfaces,
+        adapters, and a factory or two.  Oh, and don't forget
+        metameta.zcml. :-)
+        """
+
+        sm = ServiceManager()
+        app.setServiceManager(sm)
+
+        default = sm.Packages['default']
+
+        es = LocalEventService()
+        default.setObject('Events-1', es)
+
+        hub = ObjectHub()
+        default.setObject('ObjectHub-1', hub)
+
+        configure = default['configure']
+        here = ('', '++etc++Services', 'Packages', 'default')
+
+        sc = ServiceConfiguration('Events', here + ('Events-1',))
+        configure.setObject(None, sc)
+
+        sc = ServiceConfiguration('ObjectHub', here + ('ObjectHub-1',))
+        configure.setObject(None, sc)
+
+        # XXX I want to register and possibly activate these services,
+        #     but the following code doesn't work. :-(
+        ##sc.status = "Active"
+        # XXX And the following code doesn't work either. :-(
+        registry = sm.createConfigurationsFor(sc)
+        ##registry.register(sc)
+        ##registry.activate(sc)
 
 
     def __call__(self):
