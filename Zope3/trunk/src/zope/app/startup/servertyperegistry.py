@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: servertyperegistry.py,v 1.2 2002/12/25 14:13:24 jim Exp $
+$Id: servertyperegistry.py,v 1.3 2003/06/06 19:42:56 stevea Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
 from zope.app.startup.servertype import IServerType
 from zope.app.startup.simpleregistry import SimpleRegistry
+from zope.interface import implements
 
 
 class IServerTypeRegistry(ISimpleRegistry):
@@ -33,7 +34,7 @@ class IServerTypeRegistry(ISimpleRegistry):
 
 class ServerTypeRegistry(SimpleRegistry):
     """Registry for the various Server types"""
-    __implements__ =  (IServerTypeRegistry,)
+    implements(IServerTypeRegistry)
 
 
 ServerTypeRegistry = ServerTypeRegistry(IServerType)

@@ -15,20 +15,20 @@
 I do not think it is necessary to do the entire SimpleRegistry tests again.
 Instead we will test whether the module in itself works.
 
-$Id: test_servertyperegistry.py,v 1.3 2003/03/13 18:49:10 alga Exp $
+$Id: test_servertyperegistry.py,v 1.4 2003/06/06 19:42:57 stevea Exp $
 """
 
 import unittest
 from zope.app.startup.servertyperegistry import \
      registerServerType, getServerType
 from zope.app.startup.servertype import IServerType
+from zope.interface import implements
 
 
 class ServerType:
     """ServerType Stub."""
 
-    __implements__ = IServerType
-
+    implements(IServerType)
 
 
 class Test(unittest.TestCase):

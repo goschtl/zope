@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_simpleregistry.py,v 1.3 2003/03/13 18:49:10 alga Exp $
+$Id: test_simpleregistry.py,v 1.4 2003/06/06 19:42:57 stevea Exp $
 """
 
 import unittest
 from zope.interface import Interface
 from zope.app.startup.simpleregistry import SimpleRegistry, \
      ZopeDuplicateRegistryEntryError, ZopeIllegalInterfaceError
+from zope.interface import implements
 
 
 class I1(Interface):
@@ -31,11 +32,11 @@ class I2(Interface):
 
 
 class Object1:
-    __implements__ = I1
+    implements(I1)
 
 
 class Object2:
-    __implements__ = I2
+    implements(I2)
 
 
 class Test(unittest.TestCase):

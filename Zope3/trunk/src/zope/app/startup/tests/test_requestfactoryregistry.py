@@ -15,20 +15,20 @@
 I do not think it is necessary to do the entire SimpleRegistry tests again.
 Instead we will test whether the module in itself works.
 
-$Id: test_requestfactoryregistry.py,v 1.3 2003/03/13 18:49:10 alga Exp $
+$Id: test_requestfactoryregistry.py,v 1.4 2003/06/06 19:42:57 stevea Exp $
 """
 
 import unittest
 from zope.app.startup.requestfactoryregistry import \
      registerRequestFactory, getRequestFactory
 from zope.app.startup.requestfactory import IRequestFactory
+from zope.interface import implements
 
 
 class RequestFactory:
     """RequestFactory Stub."""
 
-    __implements__ = IRequestFactory
-
+    implements(IRequestFactory)
 
 
 class Test(unittest.TestCase):

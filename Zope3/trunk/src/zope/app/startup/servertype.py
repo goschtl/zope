@@ -14,7 +14,7 @@
 """e.py,v 1.1.2.2 2002/04/02 02:20:40 srichter Exp $
 """
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.app.startup.requestfactoryregistry import getRequestFactory
 
 
@@ -27,11 +27,9 @@ class IServerType(Interface):
         """Create the server knowing the port, task dispatcher and the ZODB.
         """
 
-
 class ServerType:
 
-    __implements__ =  IServerType
-
+    implements(IServerType)
 
     def __init__(self, name, factory, requestFactory, logFactory,
                  defaultPort, defaultVerbose):

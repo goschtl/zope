@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_registerrequestfactory.py,v 1.6 2003/05/01 19:35:37 faassen Exp $
+$Id: test_registerrequestfactory.py,v 1.7 2003/06/06 19:42:57 stevea Exp $
 """
 
 import unittest
@@ -22,10 +22,11 @@ from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.startup.requestfactoryregistry import getRequestFactory
 from zope.testing.cleanup import CleanUp
 from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
+from zope.interface import implements
 
 class TF:
     "test request factory"
-    __implements__ = IPublicationRequestFactoryFactory
+    implements(IPublicationRequestFactoryFactory)
 
 tf = TF()
 

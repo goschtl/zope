@@ -16,13 +16,14 @@
 
 import copy
 from zope.app.interfaces.startup import IRequestFactory
+from zope.interface import implements
 
 class RequestFactory:
     """This class will generically create RequestFactories. This way I do
        not have to create a method for each Server Type there is.
     """
 
-    __implements__ =  IRequestFactory
+    implements(IRequestFactory)
 
     def __init__(self, publication, request):
         """Initialize Request Factory"""

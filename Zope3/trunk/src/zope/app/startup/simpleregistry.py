@@ -12,10 +12,11 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.6 2003/05/01 19:35:36 faassen Exp $
+$Id: simpleregistry.py,v 1.7 2003/06/06 19:42:56 stevea Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
 from types import ListType, TupleType
+from zope.interface import implements
 ListTypes = (TupleType, ListType)
 
 
@@ -51,12 +52,10 @@ class ZopeIllegalInterfaceError(Exception):
                 "the interface " + self.interface.__name__ + ".")
 
 
-
 class SimpleRegistry:
     """ """
 
-    __implements__ =  (ISimpleRegistry,)
-
+    implements(ISimpleRegistry)
 
     def __init__(self, interface):
         """Initialize registry"""
@@ -78,7 +77,6 @@ class SimpleRegistry:
             raise ZopeIllegalInterfaceError(name, self.interface)
 
         return []
-
 
     def get(self, name):
         '''See ISimpleRegistry'''

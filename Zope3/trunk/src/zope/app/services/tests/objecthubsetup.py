@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.10 2003/05/01 19:35:35 faassen Exp $
+$Id: objecthubsetup.py,v 1.11 2003/06/06 19:42:56 stevea Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
@@ -25,11 +25,13 @@ from zope.app.traversing import traverse, canonicalPath
 from zope.app.interfaces.event import IObjectAddedEvent
 from zope.app.interfaces.event import ISubscriber
 
+from zope.interface import implements
+
 class LoggingSubscriber:
     # XXX Jim mentioned there is a new generic
     # version of this in zope.app somewhere...
 
-    __implements__ = ISubscriber
+    implements(ISubscriber)
 
     def __init__(self):
         self.events_received = []
