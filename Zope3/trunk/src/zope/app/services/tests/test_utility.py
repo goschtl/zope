@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.10 2003/08/06 13:03:21 sidnei Exp $
+$Id: test_utility.py,v 1.11 2003/09/21 17:33:25 jim Exp $
 """
 
 import unittest
@@ -34,7 +34,6 @@ from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.dependable import IDependable
-from zope.context import getWrapperContainer
 from zope.app.tests import setup
 
 class IFo(Interface): pass
@@ -141,7 +140,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
     def test_registrationsFor_methods(self):
         utilities = getService(self.rootFolder, "Utilities")
         default = traverse(self.rootFolder, "++etc++site/default")
-        default.setObject('foo', Foo("local"))
+        default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
 
         for name in ('', 'bob'):
@@ -161,13 +160,13 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
         utilities = getService(self.rootFolder, "Utilities")
         default = traverse(self.rootFolder, "++etc++site/default")
-        default.setObject('foo', Foo("local"))
+        default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
         cm = default.getRegistrationManager()
 
         for name in ('', 'bob'):
             registration = utility.UtilityRegistration(name, IFoo, path)
-            cname = cm.setObject('', registration)
+            cname = cm.addRegistration(registration)
             registration = traverse(cm, cname)
 
             gout = name and "foo global "+name or "foo global"
@@ -194,8 +193,8 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         cr2 = utilities.queryRegistrationsFor(
             utility.UtilityRegistration("bob", IFoo, path))
         self.assertEqual(r, [(IFoo, "", cr1), (IFoo, "bob", cr2)])
-        self.assertEqual(getWrapperContainer(r[0][2]), utilities)
-        self.assertEqual(getWrapperContainer(r[1][2]), utilities)
+        self.assertEqual(r[0][2].__parent__, utilities)
+        self.assertEqual(r[1][2].__parent__, utilities)
         # Now test that an empty registry doesn't show up
         for cd in cr1.info(): # Remove everything from cr1
             cd['registration'].status = UnregisteredStatus

@@ -14,12 +14,11 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.15 2003/09/02 20:46:51 jim Exp $
+$Id: test_servicemanager.py,v 1.16 2003/09/21 17:33:25 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
 from zope.interface import Interface, implements
-from zope.context import getWrapperContainer
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceRegistration
 from zope.component import getService, getServiceManager
@@ -48,18 +47,21 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         default = traverse(sm, 'default')
 
         ts = TestService()
-        default.setObject('test_service1', ts)
+        default['test_service1'] = ts
         registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service1')
 
-        default.getRegistrationManager().setObject('', registration)
-        traverse(default.getRegistrationManager(), '1').status = ActiveStatus
+        rm = default.getRegistrationManager()
+        name = rm.addRegistration(registration)
+        traverse(rm, name).status = ActiveStatus
 
         testOb = getService(self.rootFolder, 'test_service')
-        c = getWrapperContainer
-        self.assertEqual(c(c(c(testOb))), self.rootFolder)
+        self.assertEqual(testOb.__parent__.__parent__.__parent__,
+                         self.rootFolder)
         self.assertEqual(testOb, ts)
+        # used by one of the callers
+        return name
 
     def test_queryLocalService(self):
         sm = traverse(self.rootFolder, '++etc++site')
@@ -74,23 +76,24 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         # Test found local
         default = traverse(sm, 'default')
         ts = TestService()
-        default.setObject('test_service1', ts)
+        default['test_service1'] = ts
         registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service1')
-        default.getRegistrationManager().setObject('', registration)
-        traverse(default.getRegistrationManager(), '1').status = ActiveStatus
+        rm = default.getRegistrationManager()
+        name = rm.addRegistration(registration)
+        traverse(rm, name).status = ActiveStatus
 
         testOb = sm.queryLocalService('test_service')
-        c = getWrapperContainer
-        self.assertEqual(c(c(c(testOb))), self.rootFolder)
+        self.assertEqual(testOb.__parent__.__parent__.__parent__,
+                         self.rootFolder)
         self.assertEqual(testOb, ts)
 
 
     def test_get(self):
         sm = traverse(self.rootFolder, '++etc++site')
         default = sm.get('default')
-        self.assertEqual(default, sm.Packages['default'])
+        self.assertEqual(default, sm['default'])
         self.assertEqual(sm.get('spam'), None)
 
     def testAddService(self):
@@ -98,21 +101,21 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         default = traverse(sm, 'default')
 
         ts1 = TestService()
-        default.setObject('test_service1', ts1)
+        default['test_service1'] = ts1
         registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service1')
-        default.getRegistrationManager().setObject('', registration)
-        traverse(default.getRegistrationManager(), '1').status = ActiveStatus
+        rm = default.getRegistrationManager()
+        name = rm.addRegistration(registration)
+        traverse(rm, name).status = ActiveStatus
 
         ts2 = TestService()
-        default.setObject('test_service2', ts2)
+        default['test_service2'] = ts2
         registration = ServiceRegistration(
             'test_service',
             '/++etc++site/default/test_service2')
-        default.getRegistrationManager().setObject('', registration)
-        traverse(default.getRegistrationManager(), '2'
-                 ).status = RegisteredStatus
+        name = rm.addRegistration(registration)
+        traverse(rm, name).status = RegisteredStatus
 
         testOb = getService(self.rootFolder, 'test_service')
         self.assertEqual(testOb, ts1)
@@ -124,17 +127,17 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         gsm = getServiceManager(None)
         gsm.provideService('test_service', root_ts)
 
-        self.testGetService() # set up localservice
+        name = self.testGetService() # set up localservice
 
         sm = traverse(self.rootFolder, '++etc++site')
         cm = traverse(sm, 'default').getRegistrationManager()
-        traverse(cm, '1').status = UnregisteredStatus
+        traverse(cm, name).status = UnregisteredStatus
 
         self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
 
     def testContextServiceLookup(self):
         self.testGetService() # set up localservice
-        sm=getServiceManager(self.rootFolder)
+        sm = getServiceManager(self.rootFolder)
         self.assertEqual(getService(self.folder1_1, 'test_service'),
                          sm['default']['test_service1'])
 
@@ -163,29 +166,27 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         # XXX This test expects that the local module implementation
         # (the Manager class) to register itself.  This is no longer
         # intentional behavior; the right tests need to be determined.
-        from zope.app.context import ContextWrapper as cw
         from zope.app.services.module import Manager
         import zope.app.services.tests.sample1
         import zope.app.services.tests.sample2
 
         sm = self.makeSite()
 
-        default = cw(sm['default'], self.rootFolder, name='default')
-        default.setObject('m1', Manager('zope.app.services.tests.sample1',
-                                        'x = "root m1"\n'))
-        manager = cw(default['m1'], default, name='m1')
+        default = contained(sm['default'], self.rootFolder, name='default')
+        default['m1'] = Manager('zope.app.services.tests.sample1',
+                                'x = "root m1"\n')
+        manager = contained(default['m1'], default, name='m1')
         manager.execute()
-        default.setObject('m2', Manager('XXX.ZZZ',
-                                        'x = "root m2"\nZZZ = 42\n'))
-        manager = cw(default['m2'], default, name='m2')
+        default['m2'] = Manager('XXX.ZZZ', 'x = "root m2"\nZZZ = 42\n')
+        manager = contained(default['m2'], default, name='m2')
         manager.execute()
 
-        self.folder1.setSiteManager(ServiceManager())
+        self.folder1.setSiteManager(ServiceManager(self.folder1))
         sm2=getServiceManager(self.folder1)
-        default = cw(sm2['default'], self.folder1, name='default')
-        default.setObject('m1', Manager('zope.app.services.tests.sample1',
-                                        'x = "folder1 m1 1"'))
-        manager = cw(default['m1'], default, name='m1')
+        default = contained(sm2['default'], self.folder1, name='default')
+        default['m1'] = Manager('zope.app.services.tests.sample1',
+                                'x = "folder1 m1 1"')
+        manager = contained(default['m1'], default, name='m1')
         manager.execute()
 
         self.assertEqual(

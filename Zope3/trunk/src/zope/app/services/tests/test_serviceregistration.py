@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceregistration.py,v 1.1 2003/06/21 21:22:13 jim Exp $
+$Id: test_serviceregistration.py,v 1.2 2003/09/21 17:33:25 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -35,7 +35,6 @@ from zope.app.interfaces.services.service import ISimpleService
 
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.dependable import DependencyError
-
 
 class ITestService(Interface):
     pass
@@ -82,8 +81,7 @@ class Test(PlacefulSetup, TestCase):
                            '++etc++site/default')
         self.__default = default
 
-        default.setObject('c', TestService())
-
+        default['c'] = TestService()
 
         registration = ServiceRegistration(
             'test_service', '/++etc++site/default/c')
@@ -91,9 +89,9 @@ class Test(PlacefulSetup, TestCase):
         self.__c = traverse(default, 'c')
         self.__cm = default.getRegistrationManager()
 
-        self.__cm.setObject('', registration)
+        self.__registration_name = self.__cm.addRegistration(registration)
 
-        self.__config = traverse(default.getRegistrationManager(), '1')
+        self.__config = traverse(self.__cm, self.__registration_name)
         self.__configpath = getPath(self.__config)
 
     def test_activated(self):
@@ -115,21 +113,21 @@ class Test(PlacefulSetup, TestCase):
     def test_getComponent(self):
         self.assertEqual(self.__config.getComponent(), self.__c)
 
-    def test_afterAddHook(self):
+    def test_addNotify(self):
         self.assertEqual(self.__c._dependents,
                          (self.__configpath, ))
         u = getAdapter(self.__c, IRegistered)
         self.assertEqual(list(u.usages()),
                          [self.__configpath])
 
-    def test_beforeDeleteHook_and_unregistered(self):
+    def test_removeNotify_and_unregistered(self):
         self.__config.status = RegisteredStatus
 
         sm = getServiceManager(self.__default)
         registry = sm.queryRegistrationsFor(self.__config)
         self.failUnless(registry, "The components should be registered")
 
-        del self.__cm['1']
+        del self.__cm[self.__registration_name]
         self.assertEqual(self.__c._dependents, ())
         u = getAdapter(self.__c, IRegistered)
         self.assertEqual(len(u.usages()), 0)
@@ -139,15 +137,15 @@ class Test(PlacefulSetup, TestCase):
     def test_disallow_delete_when_active(self):
         self.__config.status = ActiveStatus
         try:
-            del self.__cm['1']
+            del self.__cm[self.__registration_name]
         except DependencyError:
             pass # OK
         else:
-            self.failUnless(0, "Should have gotten a depency error")
+            self.fail("Should have gotten a dependency error")
 
     def test_not_a_local_service(self):
         defineService('test_service_2', ITestService)
-        self.__default.setObject('c2', TestServiceBase())
+        self.__default['c2'] = TestServiceBase()
 
         self.assertRaises(
             TypeError,

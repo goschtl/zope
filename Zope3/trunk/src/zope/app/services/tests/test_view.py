@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.22 2003/09/02 20:46:51 jim Exp $
+$Id: test_view.py,v 1.23 2003/09/21 17:33:25 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -21,8 +21,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import Interface, directlyProvides, implements
 from zope.interface.verify import verifyObject
 
-from zope.app.content.folder import RootFolder
-from zope.app.context import ContextWrapper
+from zope.app.content.folder import rootFolder
 from zope.app.interfaces.services.view import IZPTTemplate
 from zope.app.services.service import ServiceManager
 from zope.app.services.servicenames import Views
@@ -44,6 +43,7 @@ from zope.proxy import removeAllProxies
 
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.app.container.contained import contained
 
 class I1(Interface):
     pass
@@ -99,7 +99,7 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
 
 
     def createTestingRegistry(self):
-        return ContextWrapper(ViewService(), C())
+        return contained(ViewService(), C())
 
     def createTestingRegistration(self):
         return Registration()
@@ -131,7 +131,7 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
         sm = traverse(self.rootFolder, '++etc++site')
 
         registration_manager = traverse(sm, 'default').getRegistrationManager()
-        key = registration_manager.setObject('', Registration())
+        key = registration_manager.addRegistration(Registration())
         registration = traverse(registration_manager, key)
 
         class O:
@@ -162,8 +162,8 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
         sm = self.buildFolders(site=True)
         registration_manager = traverse(sm, 'default').getRegistrationManager()
         registration = Registration()
-        registration_manager.setObject('', registration)
-        registration = traverse(registration_manager, '1')
+        name = registration_manager.addRegistration(registration)
+        registration = traverse(registration_manager, name)
 
         class O:
             implements(I1)
@@ -209,12 +209,12 @@ class ModuleFinder:
         raise ImportError(name)
 
 
-class TestViewRegistration(TestCase):
+class TestViewRegistration(PlacefulSetup, TestCase):
 
     def test_getView(self):
         folder = ModuleFinder()
-        folder = ContextWrapper(folder, folder)
-        registration = ContextWrapper(
+        folder = contained(folder, folder)
+        registration = contained(
             ViewRegistration(I1, 'test', IBrowserPresentation, "Foo.Bar.A",
                               'zope.View'),
             folder,
@@ -234,16 +234,16 @@ class TestPageRegistration(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        self.rootFolder = RootFolder()
-        self.rootFolder.setSiteManager(PhonyServiceManager())
+        self.rootFolder = rootFolder()
+        self.rootFolder.setSiteManager(PhonyServiceManager(self.rootFolder))
         default = traverse(self.rootFolder, '++etc++site/default')
         self.__template = PhonyTemplate()
-        default.setObject('t', self.__template)
-        self.folder = ContextWrapper(ModuleFinder(), self.rootFolder)
-        self.folder = ContextWrapper(ModuleFinder(), self.folder)
+        default['t'] = self.__template
+        self.folder = contained(ModuleFinder(), self.rootFolder)
+        self.folder = contained(ModuleFinder(), self.folder)
 
     def test_getView_template(self):
-        registration = ContextWrapper(
+        registration = contained(
             PageRegistration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               template='/++etc++site/default/t',
@@ -265,7 +265,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         self.assertEqual(registration.presentationType, I2)
 
     def test_getView_attribute(self):
-        registration = ContextWrapper(
+        registration = contained(
             PageRegistration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               attribute='run',
@@ -278,7 +278,7 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         self.assertEquals(view, A.run)
 
     def test_getView_errors(self):
-        registration = ContextWrapper(
+        registration = contained(
             PageRegistration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
                               ),
