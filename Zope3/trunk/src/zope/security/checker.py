@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.33 2003/06/07 18:58:13 stevea Exp $
+$Id: checker.py,v 1.34 2003/06/20 06:40:12 stevea Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -76,7 +76,12 @@ def ProxyFactory(object, checker=None):
             checker = selectChecker(object)
             if checker is None:
                 return object
-
+    else:
+        c = getattr(object, '__Security_checker__', None)
+        if c is not None:
+            pass
+            # XXX This is odd. We're being asked to use a checker that is
+            #     not the "natural" one for this object.
     return Proxy(object, checker)
 
 directlyProvides(ProxyFactory, ISecurityProxyFactory)
