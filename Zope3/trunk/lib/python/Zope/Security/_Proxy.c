@@ -700,8 +700,14 @@ proxy_setitem(PyObject *self, PyObject *key, PyObject *value)
 	PyObject *object = Proxy_GetObject(self);
 	PyObject *checker = Proxy_GetChecker(self);
 
-	if (check(checker, "__setitem__", object))
-		return PyObject_SetItem(object, key, value);
+	if (value == NULL) {
+		if (check(checker, "__delitem__", object))
+			return PyObject_DelItem(object, key);
+	}
+	else {
+		if (check(checker, "__setitem__", object))
+			return PyObject_SetItem(object, key, value);
+	}
 	return -1;
 }
 
