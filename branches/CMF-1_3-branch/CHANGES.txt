@@ -39,6 +39,11 @@ CMF 1.3
 
   Bug Fixes
 
+    - Fixed CookieCrumbler to emit "Basic" and not "basic" auth as per
+      HTTP spec (Collector #14, thanks to Simon Eisenmann for the
+      report). This fixes some WebDAV locking problems with (rightfully)
+      picky clients, like ExternalEditor.
+
     - Made old ListCriterion instances forward-compatible across earlier
       addition of 'operator' field.
 
