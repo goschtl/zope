@@ -13,7 +13,7 @@
       permission="zope.View"
       />
 
-  <content class="zope.app.content.file.File">
+  <content class="zope.app.file.File">
     <implements
         interface="zope.app.externaleditor.interfaces.IExternallyEditable"
         />
