@@ -39,7 +39,7 @@ Next, we'll access the same page with credentials:
 
   >>> print http(r"""
   ... GET /@@contents.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
+  ... Authorization: Basic mgr:mgrpw
   ... """)
   HTTP/1.1 200 Ok
   Content-Length: ...
@@ -48,8 +48,7 @@ Next, we'll access the same page with credentials:
   <!DOCTYPE html PUBLIC ...
 
 Important note: you must use the user named "mgr" with a password
-"mgrpw". This means that when you record requests with tcpwatch, you
-need to use that user login name and password.
+"mgrpw". 
 
 And we get a normal output.
 
@@ -58,7 +57,7 @@ we got redirected:
 
   >>> print http(r"""
   ... GET /++etc++site/@@manage HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
+  ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/
   ... """)
   HTTP/1.1 303 See Other
@@ -73,7 +72,7 @@ HTTP 1.0, we'd get a 302 response:
 
   >>> print http(r"""
   ... GET /++etc++site/@@manage HTTP/1.0
-  ... Authorization: Basic bWdyOm1ncnB3
+  ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/
   ... """)
   HTTP/1.0 302 Moved Temporarily
@@ -86,7 +85,7 @@ Lets visit the page we were rediected to:
 
   >>> print http(r"""
   ... GET /++etc++site/@@tasks.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
+  ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/
   ... """)
   HTTP/1.1 200 Ok
@@ -99,7 +98,7 @@ Finally, lets access the default page for the site:
 
   >>> print http(r"""
   ... GET / HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
+  ... Authorization: Basic mgr:mgrpw
   ... """)
   HTTP/1.1 200 Ok
   Content-Length: ...
@@ -123,7 +122,7 @@ transaction before the HTTP request.
 
   >>> print http(r"""
   ... POST /@@contents.html HTTP/1.1
-  ... Authorization: Basic bWdyOm1ncnB3
+  ... Authorization: Basic mgr:mgrpw
   ... Content-Length: 73
   ... Content-Type: application/x-www-form-urlencoded
   ... 
