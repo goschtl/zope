@@ -51,7 +51,7 @@ class AppsupportTestBase(unittest.TestCase):
         self.app = app.BuilderApplication(self.options)
 
     def tearDown(self):
-        #self.app.cleanup()
+        self.app.cleanup()
         shutil.rmtree(self.tmpdir)
         tempfile.tempdir = self.old_tempdir
 
