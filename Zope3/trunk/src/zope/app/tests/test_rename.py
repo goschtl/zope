@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: test_rename.py,v 1.3 2003/11/21 17:12:14 jim Exp $
+$Id: test_rename.py,v 1.4 2004/02/24 16:51:25 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,9 +25,11 @@ from zope.app.tests import ztapi
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.container import IContainer
 from zope.app.copypastemove import ObjectMover
-from zope.app.content.file import File
 from zope.exceptions import NotFoundError, DuplicationError
 from zope.app.copypastemove import rename
+
+class File:
+    pass
 
 class RenameTest(PlacefulSetup, TestCase):
 
