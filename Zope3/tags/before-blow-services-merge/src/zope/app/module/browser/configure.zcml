@@ -1,0 +1,40 @@
+<zope:configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    >
+
+  <page 
+      name="edit.html" 
+      for="zope.app.module.interfaces.IModuleManager"
+      menu="zmi_views" title="Edit"
+      class=".EditModule"
+      template="edit_module.pt" 
+      permission="zope.ManageServices"
+      />
+
+  <view for="zope.app.container.interfaces.IAdding"
+      name="Module"
+      class=".AddModule"
+      permission="zope.ManageServices"
+      >
+    <page name="index.html" template="add_module.pt" />
+    <page name="action.html" attribute="action" />
+  </view>
+  
+  <page
+      name="browse.html"
+      for="zope.app.module.interfaces.IModuleManager"
+      menu="zmi_views" title="Browse"
+      permission="zope.ManageServices"
+      class=".ViewModule"
+      template="browse_module.pt"
+      /> 
+
+  <menuItem 
+      menu="add_component" 
+      for="zope.app.container.interfaces.IAdding"
+      action="Module"  
+      title="Module" 
+      />
+
+</zope:configure>
