@@ -16,7 +16,7 @@
 This module contains advanced core query mechanisms. See the
 docstrings and interfaces.py for more information.
 
-$Id: query.py,v 1.3 2004/04/01 17:21:56 philikon Exp $
+$Id: query.py,v 1.4 2004/04/01 17:23:28 faassen Exp $
 """
 
 def advancedQueryMechanism(arguments,action='query',
@@ -57,6 +57,7 @@ def advancedQueryMechanism(arguments,action='query',
     """
     if arguments:
         items=arguments.items()
+        # XXX should use a list comprehension
         return (
             "%s\n%s%s" % (
                 '<!--#var standard_html_header-->\n%s\n'
