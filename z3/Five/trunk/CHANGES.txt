@@ -1,8 +1,8 @@
 Five Changes
 ============
 
-0.3
----
+Five 0.3 (2005-03-11)
+---------------------
 
 * Five now uses the Zope 2 page template engine, not the Zope 3
   engine. This allows better integration with Zope 2-based page
@@ -40,8 +40,8 @@ Five Changes
   a page could not be found (missing docstring instead of not
   found). Zope 2.7.4 (or higher) is required for this fix.
 
-Five 0.2b
----------
+Five 0.2b (2004-09-24)
+----------------------
 
 * Added utility module, 'bridge', allowing reuse of Zope 2 interfaces
   (by introspecting them to create equivalent Zope 3 interfaces).
@@ -90,7 +90,7 @@ Five 0.2b
 
 * Change in findProducts so that non-filesystem products are skipped.
 
-Five 0.1
---------
+Five 0.1 (2004-07-30)
+---------------------
 
 Initial public release.
