@@ -13,7 +13,7 @@
 ##############################################################################
 """Protection of builtin objects.
 
-$Id: builtins.py,v 1.2 2004/02/20 20:42:12 srichter Exp $
+$Id: builtins.py,v 1.3 2004/03/21 16:57:09 philikon Exp $
 """
 import sys
 
@@ -35,16 +35,17 @@ def RestrictedBuiltins():
         'SystemExit', 'TabError', 'TypeError', 'UnboundLocalError',
         'UnicodeError', 'UserWarning', 'ValueError', 'Warning',
         'ZeroDivisionError',
-        '__debug__', '__doc__', '__name__', 'abs', 'apply', 'buffer',
-        'callable', 'chr', 'classmethod', 'cmp', 'coerce', 'compile',
-        'complex', 'copyright', 'credits', 'delattr', 'dict',
-        'divmod', 'eval', 'filter', 'float', 'getattr', 'globals',
-        'hasattr', 'hash', 'hex', 'id', 'int', 'isinstance',
+        '__debug__', '__doc__', '__name__', 'abs', 'apply', 'bool',
+        'buffer', 'callable', 'chr', 'classmethod', 'cmp', 'coerce',
+        'compile', 'complex', 'copyright', 'credits', 'delattr',
+        'dict', 'divmod', 'eval', 'filter', 'float', 'getattr',
+        'globals', 'hasattr', 'hash', 'hex', 'id', 'int', 'isinstance',
         'issubclass', 'iter', 'len', 'license', 'list', 'locals',
         'long', 'map', 'max', 'min', 'object', 'oct', 'ord', 'pow',
         'property', 'quit', 'range', 'reduce', 'repr', 'round',
         'setattr', 'slice', 'staticmethod', 'str', 'super', 'tuple',
         'type', 'unichr', 'unicode', 'vars', 'xrange', 'zip',
+        'True', 'False'
         ]
 
     # XXX dir segfaults with a seg fault due to a bas tuple check in
