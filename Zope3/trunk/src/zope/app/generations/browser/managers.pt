@@ -1,0 +1,57 @@
+<html metal:use-macro="context/@@standard_macros/view" i18n:domain="zope">
+<head>
+<title metal:fill-slot="title">Database Generations</title>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+Database generations
+
+<form tal:attributes="action request/URL"
+      tal:define="status view/evolve" 
+      >
+
+<p tal:condition="status">
+<span tal:condition="status/to" i18n:translate=""
+      >The database was updated to generation <span
+      i18n:name=generation
+      tal:content="status/to">2</span> for <span
+            i18n:name=application
+            tal:content="status/app"
+            >foo.bar</span>.</span>
+<span tal:condition="not: status/to" i18n:translate=""
+      >The database is up to date for <span 
+      i18n:name=application
+      tal:content="status/app"
+      >foo.bar</span>.</span>
+</p>
+
+<table border="1">
+
+<tr>
+    <th>Application</th>
+    <th>Minimum Generation</th>
+    <th>Maximum Generation</th>
+    <th>Current Database Generation</th>
+    <th>Evolve?</th>
+</tr>
+<tr tal:repeat="app view/applications">
+    <td tal:content="app/id">foo.bar</td>
+    <td tal:content="app/min">1</td>
+    <td tal:content="app/max">10</td>
+    <td tal:content="app/generation">2</td>
+    <td>
+       <input type="submit" value=" evolve " name="evolve"
+              tal:condition="app/evolve"
+              tal:attributes="name app/evolve"
+              >
+       <span tal:condition="not: app/evolve"
+             i18n:translate=""
+             >No, up to date</span>
+    </td>
+</tr>
+</table>
+</form>
+</div>
+</body>
+</html>

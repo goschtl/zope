@@ -15,4 +15,6 @@
     evolution scripts.
 </utility>
 
+<include package=".browser" />
+
 </configure>
