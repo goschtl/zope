@@ -169,6 +169,29 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v._testData('en'), open(path1, 'rb').read())
         self.assertEqual(v._testData('fr'), open(path2, 'rb').read())
 
+        # translation must be provided for the default language
+        config = StringIO(template % (
+            """
+            <browser:i18n-resource name="test" defaultLanguage="fr">
+              <browser:translation language="en" file="%s" />
+              <browser:translation language="lt" file="%s" />
+            </browser:i18n-resource>
+            """ % (path1, path2)
+            ))
+        self.assertRaises(ConfigurationError, xmlconfig, config)
+
+        # files and images can't be mixed
+        config = StringIO(template % (
+            """
+            <browser:i18n-resource name="test" defaultLanguage="fr">
+              <browser:translation language="en" file="%s" />
+              <browser:translation language="fr" image="%s" />
+            </browser:i18n-resource>
+            """ % (path1, path2)
+            ))
+        self.assertRaises(ConfigurationError, xmlconfig, config)
+
+
     def testSkinResource(self):
         self.assertEqual(
             queryResource(ob, 'test', request, None),

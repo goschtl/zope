@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: I18nResourceMeta.py,v 1.1 2002/06/25 14:30:08 mgedmin Exp $
+$Id: I18nResourceMeta.py,v 1.2 2002/06/25 14:44:51 mgedmin Exp $
 """
 
 from Zope.Security.Proxy import Proxy
@@ -43,6 +43,7 @@ class I18nResource(object):
         self.layer = layer
         self.permission = permission
         self.__data = {}
+        self.__format = None
 
 
     def translation(self, _context, language, file=None, image=None):
@@ -53,9 +54,21 @@ class I18nResource(object):
                 "attributes for resource directives"
                 )
         elif file is not None:
+            if self.__format is not None and self.__format != File:
+                raise ConfigurationError(
+                    "Can't use both files and images in the same "
+                    "i18n-resource directive"
+                    )
             self.__data[language] = File(_context.path(file))
+            self.__format = File
         elif image is not None:
+            if self.__format is not None and self.__format != Image:
+                raise ConfigurationError(
+                    "Can't use both files and images in the same "
+                    "i18n-resource directive"
+                    )
             self.__data[language] = Image(_context.path(image))
+            self.__format = Image
         else:
             raise ConfigurationError(
                 "At least one of the file, and image "
@@ -68,6 +81,12 @@ class I18nResource(object):
     def __call__(self, require = None):
         if self.name is None:
             return ()
+
+        if not self.__data.has_key(self.defaultLanguage):
+            raise ConfigurationError(
+                "A translation for the default language (%s) "
+                "must be specified" % self.defaultLanguage
+                )
 
         permission = self.permission
         factory = I18nFileResourceFactory(self.__data, self.defaultLanguage)
