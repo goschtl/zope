@@ -14,7 +14,7 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.2 2003/02/01 19:19:03 jack-e Exp $
+$Id: __init__.py,v 1.3 2003/02/02 18:57:46 jack-e Exp $
 """
 
 from zope.interface import Interface
@@ -39,6 +39,10 @@ class IWorkflowService(Interface):
 
     def getProcessDefinition(name):
         """Return the IProcessDefinition for the name.
+        """
+
+    def queryProcessDefinition(name, default=None):
+        """Return the IProcessDefinition for the name or default.
         """
 
     def createProcessInstance(definition_name):
@@ -79,9 +83,11 @@ class IProcessInstance(Interface):
     Represents the instance of a process defined by a ProcessDefinition.
     """
 
+    name = Attribute("The Name of the ProcessInstance.")
+
     status = Attribute("The state in which the workitem is.")
 
-    processDefinition = Attribute("The process definition.")
+    processDefinitionName = Attribute("The process definition Name.")
 
 
 
