@@ -19,7 +19,6 @@ import docutils.core
 import re
 
 from zope.component.interfaces import IViewFactory
-from zope.exceptions import NotFoundError
 from zope.security.interfaces import Unauthorized, ForbiddenAttribute
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -64,7 +63,7 @@ class BugBaseView(object):
         id = self.context.submitter
         try:
             return users.getTerm(id).principal
-        except NotFoundError:
+        except LookupError:
             # There is no principal for this id, so let's just fake one.
             return {'id': id, 'login': id, 'title': id, 'description': id}
 
@@ -120,7 +119,7 @@ class BugBaseView(object):
         for id in self.context.owners:
             try:
                 userTerms.append(vocab.getTerm(id).principal)
-            except NotFoundError:
+            except LookupError:
                 # There is no principal for this id, so let's just fake one.
                 userTerms.append(
                     {'id': id, 'login': id, 'title': id, 'description': id})

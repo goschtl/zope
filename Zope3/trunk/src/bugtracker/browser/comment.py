@@ -39,7 +39,7 @@ class CommentViewBase(object):
         id = dc.creators[0]
         try:
             return users.getTerm(id).principal
-        except NotFoundError:
+        except LookupError:
             # There is no principal for this id, so let's just fake one.
             return {'id': id, 'login': id, 'title': id, 'description': id}
 

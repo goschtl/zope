@@ -21,7 +21,6 @@ import base64
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
 
-from zope.exceptions import NotFoundError
 from zope.i18n.locales import locales
 from zope.publisher.browser import TestRequest
 from zope.schema.vocabulary import getVocabularyRegistry
@@ -116,7 +115,7 @@ class BugInfo:
         vocab = registry.get(self.context, 'Users')
         try:
             return vocab.getTerm(self.context.submitter).principal['login']
-        except NotFoundError:
+        except LookupError:
             return self.context.submitter
         
     def created(self):
@@ -151,7 +150,7 @@ class BugInfo:
         for owner in self.context.owners:
             try:
                 owners.append(vocab.getTerm(owner).principal['login'])
-            except NotFoundError:
+            except LookupError:
                 owners.append(owner)
         return ', '.join(owners)
 
