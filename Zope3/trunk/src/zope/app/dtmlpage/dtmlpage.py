@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.4 2004/03/15 13:10:47 srichter Exp $
+$Id: dtmlpage.py,v 1.5 2004/03/19 04:26:16 srichter Exp $
 """
 from persistent import Persistent
 
@@ -40,7 +40,7 @@ class DTMLPage(Persistent, Contained):
 
     def setSource(self, text, content_type='text/html'):
         '''See interface IDTMLPage'''
-        self.template = HTML(text.encode('utf-8'))
+        self.template = HTML(text)
         self.content_type = content_type
 
     def render(self, request, *args, **kw):
