@@ -535,7 +535,11 @@ class IVocabularyTokenized(Interface):
     """
 
     def getTermByToken(token):
-        """Return an ITokenizedTerm for the passed-in token."""
+        """Return an ITokenizedTerm for the passed-in token.
+
+        If `token` is not represented in the vocabulary, `LookupError`
+        is raised.
+        """
 
 
 class IVocabularyRegistry(Interface):
