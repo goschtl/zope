@@ -20,7 +20,7 @@ Zope Changes
 
       - Added the function zope.component.adapts for declaring interfaces
         adapted by classes. This is similar to zope.interface.implements in
-        that it puts a marker on the class that has a significant meaning in 
+        that it puts a marker on the class that has a significant meaning in
         the component architecture machinery.
 
       - It is no longer necessary to supply a for attribute in adapter
@@ -240,6 +240,11 @@ Zope Changes
         + Deprecated the `activated()` and `deactivated()` method. It is now
           replaced with the 'IRegistrationActivatedEvent' and
           'IRegistrationDectivatedEvent', respectively.
+
+        + Added an event dispatcher for component registrations to support
+          subscriptions for specific component types. E.g. one can declare a
+          subscriber for (IFoo, IRegistrationActivatedEvent) to be notified
+          when IFoo component registrations are activated.
 
         + Restructured registration framework to use direct references rather
           than paths.
