@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.59 2004/01/05 11:29:05 philikon Exp $
+$Id: widget.py,v 1.60 2004/01/12 22:00:20 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -206,7 +206,7 @@ class BrowserWidget(Widget, BrowserView):
         if value == field.missing_value and not field.required:
             return value
 
-        # value must be valid per the field contraints
+        # value must be valid per the field constraints
         try:
             field.validate(value)
         except ValidationError, v:
@@ -411,6 +411,19 @@ class CheckBoxWidget(BrowserWidget):
       type="checkbox"
       />
 
+    When a checkbox is not 'checked', it's value is not
+    sent in the request, so we consider it 'False', which
+    means that 'required' for a boolean field doesn't make
+    much sense in the end.
+
+    >>> field = Bool(__name__='foo', title=u'on', required=True)
+    >>> request = TestRequest(form={'field.foo.used': u''})
+    >>> widget = CheckBoxWidget(field, request)
+    >>> widget.hasInput()
+    True
+    >>> widget.validate()
+    >>> widget.getInputValue()
+    False
     """
     propertyNames = BrowserWidget.propertyNames + \
                      ['extra', 'default']
