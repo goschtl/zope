@@ -13,14 +13,15 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.5 2004/03/23 15:15:05 mmceahern Exp $
+$Id: registration.py,v 1.6 2004/04/08 21:02:42 jim Exp $
 """
 from persistent import Persistent
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
-from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.dependable.interfaces import IDependable, DependencyError
+from zope.app.event.interfaces import ISubscriber
+from zope.app import zapi
 from zope.app.module.interfaces import IModuleManager
 from zope.exceptions import DuplicationError
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
@@ -31,7 +32,7 @@ from zope.security.checker import InterfaceChecker, CheckerPublic
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 from zope.xmlpickle import dumps, loads
 import interfaces
-from zope.app.event.interfaces import ISubscriber
+import zope.cachedescriptors.property
 
 class RegistrationStatusProperty(object):
 
@@ -106,106 +107,75 @@ class RegistrationStack(Persistent, Contained):
 
     implements(interfaces.IRegistrationStack)
 
-    _data = ()  # tuple of strings (ivar)
-
     def __init__(self, container):
         self.__parent__ = container
-
-    def _id(self, ob):
-        """Turn ob into a path relative to the site management folder."""
-        # Get and check relative path
-        path = zapi.getPath(ob)
-        prefix = "/++etc++site/"
-        lpackages = path.rfind(prefix)
-        if lpackages < 0:
-            # XXX Backward compatability
-            prefix = "/++etc++Services/"
-            lpackages = path.rfind(prefix)
-
-        if lpackages < 0:
-            raise ValueError("Registration object is in an invalid location",
-                             path)
-
-        rpath = path[lpackages+len(prefix):]
-        if not rpath or (".." in rpath.split("/")):
-            raise ValueError("Registration object is in an invalid location",
-                             path)
-
-        return rpath
+        self.data = ()
 
     def register(self, registration):
-        cid = self._id(registration)
-
-        if self._data:
-            if cid in self._data:
+        data = self.data
+        if data:
+            if registration in data:
                 return # already registered
         else:
             # Nothing registered. Need to stick None in front so that nothing
             # is active.
-            self._data = (None, )
-
-        self._data += (cid, )
+            data = (None, )
+            
+        self.data = data + (registration, )
 
     def unregister(self, registration):
-        cid = self._id(registration)
 
-        data = self._data
+        data = self.data
         if data:
-            if data[0] == cid:
+            if data[0] == registration:
+                # It is active!
                 data = data[1:]
-                self._data = data
+                self.data = data
 
                 # Tell it that it is no longer active
                 registration.deactivated()
 
                 if data and data[0] is not None:
                     # Activate the newly active component
-                    sm = zapi.getServiceManager(self)
-                    new = zapi.traverse(sm, data[0])
-                    new.activated()
+                    data[0].activated()
             else:
                 # Remove it from our data
-                data = tuple([item for item in data if item != cid])
+                data = tuple([item for item in data if item != registration])
 
                 # Check for trailing None
                 if data and data[-1] is None:
                     data = data[:-1]
 
-                self._data = data
+                self.data = data
 
     def registered(self, registration):
-        cid = self._id(registration)
-        return cid in self._data
+        return registration in self.data
 
     def activate(self, registration):
-        if registration is None:
-            cid = None
-        else:
-            cid = self._id(registration)
-        data = self._data
+        data = self.data
 
-        if cid is None and not data:
+        if registration is None and not data:
             return # already in the state we want
 
-        if cid is None or cid in data:
+        if registration is None or registration in data:
             old = data[0]
-            if old == cid:
+            if old == registration:
                 return # already active
 
             # Insert it in front, removing it from back
-            data = (cid, ) + tuple([item for item in data if item != cid])
+            data = ((registration, ) +
+                    tuple([item for item in data if item != registration])
+                    )
 
             # Check for trailing None
             if data[-1] == None:
                 data = data[:-1]
 
             # Write data back
-            self._data = data
+            self.data = data
 
             if old is not None:
                 # Deactivated the currently active component
-                sm = zapi.getServiceManager(self)
-                old = zapi.traverse(sm, old)
                 old.deactivated()
 
             if registration is not None:
@@ -218,15 +188,14 @@ class RegistrationStack(Persistent, Contained):
                 registration)
 
     def deactivate(self, registration):
-        cid = self._id(registration)
-        data = self._data
+        data = self.data
 
-        if cid not in data:
+        if registration not in data:
             raise ValueError(
                 "Registration to be deactivated is not registered",
                 registration)
 
-        if data[0] != cid:
+        if data[0] != registration:
             return # already inactive
 
         if None not in data:
@@ -237,52 +206,63 @@ class RegistrationStack(Persistent, Contained):
         data = data[1:] + data[:1]
 
         # Write data back
-        self._data = data
+        self.data = data
 
         # Tell it that it is no longer active
         registration.deactivated()
 
         if data[0] is not None:
             # Activate the newly active component
-            sm = zapi.getServiceManager(self)
-            new = zapi.traverse(sm, data[0])
-            new.activated()
+            data[0].activated()
 
     def active(self):
-        if self._data:
-            path = self._data[0]
-            if path is not None:
-                # Make sure we can zapi.traverse to it.
-                sm = zapi.getServiceManager(self)
-                registration = zapi.traverse(sm, path)
-                return registration
-
+        data = self.data
+        if data:
+            return data[0]
         return None
 
     def __nonzero__(self):
-        return bool(self._data)
+        return bool(self.data)
 
-    def info(self, keep_dummy=False):
-        sm = zapi.getServiceManager(self)
+    def info(self):
 
-        data = self._data
-        if None not in data:
-            data += (None,)
+        data = self.data
 
-        result = [{'id': path or "",
-                   'active': False,
-                   'registration': (path and zapi.traverse(sm, path))
+        result = [{'active': False,
+                   'registration': registration,
                   }
-                  for path in data
+                  for registration in data
                  ]
 
         result[0]['active'] = True
 
-        if not keep_dummy:
-            # Throw away dummy:
-            result = [x for x in result if x['id']]
+        return [r for r in result if r['registration'] is not None]
 
-        return result
+    #########################################################################
+    # Backward compat
+    #
+    def data(self):
+        # Need to convert old path-based data to object-based data
+        # It won't affect new objects that get instance-based data attrs
+        # on construction.
+
+        data = []
+        sm = zapi.getServiceManager(self)
+        for path in self._data:
+            if isinstance(path, basestring):
+                try:
+                    data.append(zapi.traverse(sm, path))
+                except KeyError:
+                    # ignore objects we can'r get to
+                    raise # for testing
+            else:
+                data.append(path)
+
+        return tuple(data)
+
+    data = zope.cachedescriptors.property.CachedProperty(data)
+    #
+    #########################################################################
 
 class NotifyingRegistrationStack(RegistrationStack):
 
