@@ -28,7 +28,6 @@ def monkeyPatch():
 
     HTTPRequest.getPresentationSkin = getPresentationSkin
     HTTPRequest.setPresentationSkin = setPresentationSkin
-    HTTPRequest.debug = DebugFlags()
 
     from RestrictedPython.Utilities import test
     from zope.tales.pythonexpr import PythonExpr
@@ -42,9 +41,3 @@ def monkeyPatch():
         return eval(self._code, vars)
 
     PythonExpr.__call__ = __call__
-
-class DebugFlags(object):
-    """Debugging flags."""
-
-    sourceAnnotations = False
-    showTAL = False
