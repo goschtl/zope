@@ -253,11 +253,12 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.check_normalize_urls(normalize)
 
     def check_normalize_paths(self, normalize):
-        INCLUDES = "INCLUDES.txt"
         self.assertEqual(normalize("README.txt", "t", "group"),
                          "README.txt")
         self.assertEqual(normalize("doc/README.txt", "t", "group"),
                          join("doc", "README.txt"))
+        self.assertEqual(normalize(".", "t", "group"),
+                         os.curdir)
         # Ignore this because it looks like a Windows drive letter:
         self.assertRaises(include.InclusionSpecificationError,
                           normalize, "c:foo/bar", "t", "group")
@@ -271,7 +272,6 @@ class InclusionProcessorTestCase(unittest.TestCase):
                           normalize, "../def.txt", "t", "group")
 
     def check_normalize_urls(self, normalize):
-        INCLUDES = "INCLUDES.txt"
         for url in ("http://www.example.com/index.html",
                     "repository:/Zope3/doc",
                     "cvs://cvs.zope.com/cvs-repository:/Zope3/doc:HEAD"):

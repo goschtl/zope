@@ -108,12 +108,15 @@ def normalize_path(path, type, group):
             raise InclusionSpecificationError(
                 "URLs are not allowed in inclusions")
     np = posixpath.normpath(path)
-    if posixpath.isabs(np) or np[:1] == ".":
+    if posixpath.isabs(np) or np.split("/", 1)[0] == "..":
         raise InclusionSpecificationError(
             "%s path must not be absolute or refer to a location"
             " not contained in the source directory"
             % path)
-    return np.replace("/", os.sep)
+    if np == ".":
+        return os.curdir
+    else:
+        return np.replace("/", os.sep)
 
 
 def normalize_path_or_url(path, type, group, baseurl=None):
@@ -198,6 +201,10 @@ class SpecificationSchema(cfgparser.Schema):
             other = normalize_path_or_url(other, "source", section.group,
                                           self.baseurl)
         elif other:
+            # workfile and other have a backward relationship for this:
+            # <destination>
+            #   target workfile
+            # </destination>
             other = normalize_path(other, "destination", section.group)
 
         if workfile:
