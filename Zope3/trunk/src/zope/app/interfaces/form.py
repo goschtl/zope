@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.8 2003/08/17 06:07:02 philikon Exp $
+$Id: form.py,v 1.9 2003/09/26 19:53:35 poster Exp $
 """
 
 from zope.schema.interfaces import ValidationError
@@ -114,7 +114,7 @@ class IWidget(IView):
     def getInputValue():
         """Return value suitable for the widget's field.
 
-        The widget must return a value that can be legally assigned to 
+        The widget must return a value that can be legally assigned to
         its bound field or otherwise raise WidgetInputError.
 
         See validate() for validation performed.
@@ -138,7 +138,7 @@ class IWidget(IView):
         hasValidInput to determine whether or not getInputValue will return
         a valid value.
 
-        A widget that does not have input should generally not be used to 
+        A widget that does not have input should generally not be used to
         update its bound field.
         """
 
@@ -155,7 +155,11 @@ class IWidget(IView):
         This must be unique within a set of widgets.
         """)
 
-    title = Attribute("The widget title")
+    title = Attribute(
+        """The widget title; may be translated for the request""")
+
+    description = Attribute(
+        """The widget description; may be translated for the request""")
 
     required = Attribute("Flag indicating whether the field is required")
 

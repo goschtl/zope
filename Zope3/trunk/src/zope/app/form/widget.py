@@ -12,13 +12,15 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.8 2003/08/13 21:28:34 garrett Exp $
+$Id: widget.py,v 1.9 2003/09/26 19:53:34 poster Exp $
 """
 import traceback
 from warnings import warn
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
+from zope.app.services.servicenames import Translation
+from zope.component import getService
 
 __metaclass__ = type
 
@@ -54,8 +56,8 @@ class Widget:
         if traceback.extract_stack()[-2][2] != 'setRenderedValue':
             warn("setData is deprecated - use setRenderedValue",
                 DeprecationWarning, 2)
-        
-        # XXX - move this implementation to setRenderedValue when 
+
+        # XXX - move this implementation to setRenderedValue when
         # deprecation is removed
 
         self._data = value
@@ -68,7 +70,7 @@ class Widget:
 
     def hasValidInput(self):
         raise TypeError("hasValidInput has not been implemented")
-    
+
     def getInputValue(self):
         raise TypeError("getInputValue has not been implemented")
 
@@ -78,8 +80,22 @@ class Widget:
     def applyChanges(self, content):
         raise TypeError("applyChanges has not been implemented")
 
-    title = property(lambda self: self.context.title)
-    description = property(lambda self: self.context.description)
+    def title(self):
+        ts = getService(self.context, Translation)
+        # Note that the domain is not that important here, since the title
+        # is most likely a message id carrying the domain anyways.
+        context_title = self.context.title
+        return (ts.translate(context_title, "zope", context=self.request)
+                or context_title)
+    title = property(title)
+
+    def description(self):
+        ts = getService(self.context, Translation)
+        # hopefully the description is a message id with domain (?).
+        context_desc = self.context.description
+        return (ts.translate(context_desc, "zope", context=self.request)
+                or context_desc)
+    description = property(description)
 
     required = property(lambda self: self.context.required)
 

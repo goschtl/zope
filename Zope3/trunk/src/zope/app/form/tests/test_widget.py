@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_widget.py,v 1.3 2003/01/09 14:13:10 jim Exp $
+$Id: test_widget.py,v 1.4 2003/09/26 19:53:35 poster Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -38,12 +38,26 @@ class TestWidget(TestCase):
         self.assertEqual(w.name, 'test.foo')
 
     def test_title(self):
+        from zope.app.tests.placelesssetup import setUp, tearDown
+        setUp()
         w = Widget(Text(__name__='foo', title=u'Foo title'), TestRequest())
         self.assertEqual(w.title, 'Foo title')
+        tearDown()
+
+    def test_description(self):
+        from zope.app.tests.placelesssetup import setUp, tearDown
+        setUp()
+        w = Widget(Text(__name__='foo', description=u'Foo desc'),
+                   TestRequest())
+        self.assertEqual(w.description, 'Foo desc')
+        tearDown()
 
     def test_IWidget(self):
+        from zope.app.tests.placelesssetup import setUp, tearDown
+        setUp()
         w = Widget(Text(__name__='foo', title=u'Foo title'), TestRequest())
         verifyObject(IWidget, w)
+        tearDown()
 
     # XXX Don't test getValue. It's silly and will go away.
 
@@ -52,12 +66,15 @@ class TestCustomWidget(TestCase):
     # XXX this test should be rewritten once we've refactored widget properties
 
     def test(self):
+        from zope.app.tests.placelesssetup import setUp, tearDown
+        setUp()
         cw = CustomWidget(Widget, width=60)
         verifyObject(IViewFactory, cw)
         w = cw(Text(__name__='foo', title=u'Foo title'), TestRequest())
         self.assertEqual(w.name, 'field.foo')
         self.assertEqual(w.width, 60)
         verifyObject(IWidget, w)
+        tearDown()
 
 
 

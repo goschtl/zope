@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.54 2003/09/25 21:43:12 poster Exp $
+$Id: widget.py,v 1.55 2003/09/26 19:53:33 poster Exp $
 """
 __metaclass__ = type
 
@@ -43,7 +43,27 @@ ListTypes = list, tuple
 class BrowserWidget(Widget, BrowserView):
     """A field widget that knows how to display itself as HTML.
 
+    When we generate labels, titles, descriptions, and errors, the
+    labels, titles, and descriptions are translated and the
+    errors are rendered with the view machinery, so we need to set up
+    a lot of machinery to support translation and views:
+
+    >>> setUp() # now we have to set up an error view...
+    >>> from zope.component.view import provideView
+    >>> from zope.app.interfaces.form import IWidgetInputError
+    >>> from zope.publisher.browser import IBrowserPresentation
+    >>> from zope.app.publisher.browser import BrowserView
+    >>> from cgi import escape
+    >>> class SnippetErrorView(BrowserView):
+    ...     def __call__(self):
+    ...         return escape(self.context.errors[0])
+    ...
+    >>> provideView(IWidgetInputError, 'snippet',
+    ...             IBrowserPresentation, SnippetErrorView)
     >>> from zope.publisher.browser import TestRequest
+
+    And now the tests proper...
+
     >>> from zope.schema import Field
     >>> import re
     >>> isFriendly=re.compile(".*hello.*").match
@@ -74,22 +94,6 @@ class BrowserWidget(Widget, BrowserView):
     >>> widget.error()
     ''
 
-    When we generate labels and errors, the labels are translated and the 
-    errors rendered with the view machinery, so we need to set up
-    a lot of machinery to support translation and views:
-
-    >>> setUp() # now we have to set up an error view...
-    >>> from zope.component.view import provideView
-    >>> from zope.app.interfaces.form import IWidgetInputError
-    >>> from zope.publisher.browser import IBrowserPresentation
-    >>> from zope.app.publisher.browser import BrowserView
-    >>> from cgi import escape
-    >>> class SnippetErrorView(BrowserView):
-    ...     def __call__(self):
-    ...         return escape(self.context.errors[0])
-    ... 
-    >>> provideView(IWidgetInputError, 'snippet', 
-    ...             IBrowserPresentation, SnippetErrorView)
     >>> widget.setPrefix('baz')
     >>> widget.name
     'baz.foo'
@@ -127,9 +131,12 @@ class BrowserWidget(Widget, BrowserView):
     1
     >>> widget.error()
     ''
-    
+
     >>> print widget.label()
     <label for="test.foo">Foo</label>
+
+    Now we clean up.
+
     >>> tearDown()
 
     """
@@ -158,7 +165,7 @@ class BrowserWidget(Widget, BrowserView):
 
     def hasInput(self):
         """See IWidget.hasInput.
-        
+
         Returns True if the submitted request form contains a value for
         the widget, otherwise returns False.
 
@@ -225,7 +232,7 @@ class BrowserWidget(Widget, BrowserView):
 
     def _convert(self, input):
         """Converts input to a value appropriate for the field type.
-        
+
         Widgets for non-string fields should override this method to
         perform an appropriate conversion.
 
@@ -316,16 +323,10 @@ class BrowserWidget(Widget, BrowserView):
             return txt
 
     def label(self):
-        ts = getService(self.context, Translation)
-        # Note that the domain is not that important here, since the title
-        # is most likely a message id carrying the domain anyways.
-        title = ts.translate(self.title, "zope", context=self.request)
-        if title is None:
-            title = self.title
         return '<label for="%s">%s</label>' % (
-            self.name, self._tooltip(title, self.context.description),
-            )
-    
+            self.name, self._tooltip(self.title,
+                                     self.context.description))
+
     def error(self):
         if self._error:
             return zapi.getView(self._error, 'snippet', self.request)()
@@ -338,7 +339,7 @@ class BrowserWidget(Widget, BrowserView):
         if self._error:
             return '<div class="%s">%s</div><div class="field">%s</div>' \
                 '<div class="error">%s</div>' % (self.labelClass(),
-                                                 self.label(), self(), 
+                                                 self.label(), self(),
                                                  self.error())
         else:
             return '<div class="%s">%s</div><div class="field">%s</div>' % (
@@ -393,7 +394,7 @@ class CheckBoxWidget(BrowserWidget):
       />
 
     Calling setRenderedValue will change what gets output:
-    
+
     >>> widget.setRenderedValue(False)
     >>> print normalize( widget() )
     <input
@@ -496,7 +497,7 @@ class TextWidget(BrowserWidget):
       />
 
     Calling setRenderedValue will change what gets output:
-    
+
     >>> widget.setRenderedValue("Barry")
     >>> print normalize( widget() )
     <input
@@ -527,7 +528,7 @@ class TextWidget(BrowserWidget):
         if field.allowed_values is not None:
             values = []
             # if field is optional and missing_value isn't in
-            # allowed_values, add an additional option at top to represent 
+            # allowed_values, add an additional option at top to represent
             # field.missing_value
             if not field.required and \
                 field.missing_value not in field.allowed_values:
@@ -655,7 +656,7 @@ class DateWidget(TextWidget):
                 return parseDatetimetz(value).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
-                
+
 
 class TextAreaWidget(BrowserWidget):
     """TextArea widget.
@@ -695,7 +696,7 @@ class TextAreaWidget(BrowserWidget):
       />
 
     Calling setRenderedValue will change what gets output:
-    
+
     >>> widget.setRenderedValue("Hey\\ndude!")
     >>> print normalize( widget() )
     <textarea
