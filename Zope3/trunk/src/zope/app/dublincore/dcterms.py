@@ -13,7 +13,7 @@
 ##############################################################################
 """Support information for qualified Dublin Core metadata.
 
-$Id: dcterms.py,v 1.4 2003/08/22 13:09:37 fdrake Exp $
+$Id: dcterms.py,v 1.5 2003/08/27 04:43:55 fdrake Exp $
 """
 
 from zope.app.dublincore import dcsv
@@ -184,7 +184,8 @@ _prefix_to_ns = {
     }
 
 element_to_name = {}
-for name, (qname, unused) in name_to_element.iteritems():
+for name, (qname, attrs) in name_to_element.iteritems():
     prefix, localname = qname.split(":")
     elem_name = _prefix_to_ns[prefix], localname
     element_to_name[elem_name] = name
+    name_to_element[name] = (elem_name, attrs)

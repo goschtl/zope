@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: xmlmetadata.py,v 1.2 2003/08/22 13:03:19 fdrake Exp $
+$Id: xmlmetadata.py,v 1.3 2003/08/27 04:43:55 fdrake Exp $
 """
 
 import xml.sax
@@ -34,11 +34,12 @@ dublin_core_namespaces = dcterms.DC_NS, dcterms.DCTERMS_NS
 
 def dumpString(mapping):
     sio = StringIO()
-    sio.write("<?xml version='1.0' encoding='utf-8'?>\n"
-              "<metadata\n"
-              "  xmlns:dc='http://purl.org/dc/elements/1.1/'\n"
-              "  xmlns:dcterms='http://purl.org/dc/terms/'\n"
-              "  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n")
+    nsmap = {
+        # prefix: [uri, used],
+        dcterms.DC_NS:      ("dc", False),
+        dcterms.DCTERMS_NS: ("dcterms", False),
+        dcterms.XSI_NS:     ("xsi", False),
+        }
     items = mapping.items()
     items.sort()
     prev = None
@@ -50,16 +51,35 @@ def dumpString(mapping):
             prev = group
         if name in dcterms.name_to_element:
             element, t = dcterms.name_to_element[name]
+            nsuri, localname = element
+            if nsuri not in nsmap:
+                prefix = "ns%d" % (len(nsmap) - 2)
+                nsmap[nsuri] = prefix, True
+            else:
+                prefix, used = nsmap[nsuri]
+                if not used:
+                    nsmap[nsuri] = prefix, True
+            qname = "%s:%s" % (prefix, localname)
             if not type:
                 type = t
             if type:
                 type = " xsi:type=" + quoteattr(type)
+                nsmap[dcterms.XSI_NS] = "xsi", True
             for value in values:
                 sio.write("  <%s%s>\n    %s\n  </%s>\n"
-                          % (element, type, _encode_string(value), element))
+                          % (qname, type, _encode_string(value), qname))
         else:
             raise RuntimeError("could not serialize %r metadata element"
                                % name)
+    content = sio.getvalue()
+    sio = StringIO()
+    sio.write("<?xml version='1.0' encoding='utf-8'?>\n"
+              "<metadata")
+    for uri, (prefix, used) in nsmap.iteritems():
+        if used:
+            sio.write("\n  xmlns:%s=%s" % (prefix, quoteattr(uri)))
+    sio.write(">\n")
+    sio.write(content)
     sio.write("</metadata>\n")
     return sio.getvalue()
 
