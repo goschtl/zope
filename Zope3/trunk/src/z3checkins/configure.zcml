@@ -40,7 +40,7 @@
      <require permission="zope.View"
               interface=".interfaces.ICheckinFolderSchema" />
 
-     <factory id="CheckinFolder"
+     <factory id="z3checkins.CheckinFolder"
               title="Checkin Folder"
               description="A checkin folder" />
 

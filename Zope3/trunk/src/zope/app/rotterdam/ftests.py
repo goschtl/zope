@@ -22,23 +22,23 @@ class TestNavTree(BrowserTestCase):
     def testnavtree(self):
         # Add some folders
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'Folder', 
+                                form={'type_name':u'zope.app.content.Folder', 
                                       'id':u'First'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'Folder', 
+                                form={'type_name':u'zope.app.content.Folder', 
                                       'id':u'S&econd'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'Folder', 
+                                form={'type_name':u'zope.app.content.Folder', 
                                       'id':u'Third'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/First/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'Folder', 
+                                form={'type_name':u'zope.app.content.Folder', 
                                       'id':u'Firsts"Folder'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/First/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'Folder', 
+                                form={'type_name':u'zope.app.content.Folder', 
                                       'id':u'somesite'})
         self.assertEqual(response.getStatus(), 302)
 
@@ -66,7 +66,7 @@ class TestNavTree(BrowserTestCase):
         tree = minidom.parseString(response.getBody())
 
         response = self.publish("/First/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'Folder', 
+                                form={'type_name':u'zope.app.content.Folder', 
                                       'id':u'Firsts2ndFolder'})
         self.assertEqual(response.getStatus(), 302)
 

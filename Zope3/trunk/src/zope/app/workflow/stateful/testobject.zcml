@@ -12,7 +12,7 @@
         "zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"/>
 
     <factory
-        id="TestObject"
+        id="zope.app.workflow.TestObject"
         permission="zope.ManageContent"
         title="Test Object"
         description="Test Object" />

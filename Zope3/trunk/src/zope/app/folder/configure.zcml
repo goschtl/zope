@@ -10,7 +10,7 @@
 
   <content class=".folder.Folder">
     <factory
-        id="Folder"
+        id="zope.app.content.Folder"
         title="Folder"
         description="Minimal folder"
         />

@@ -9,7 +9,7 @@
 
   <content class=".PrincipalAnnotationService">
     <factory
-        id="IPrincipalAnnotationService"
+        id="zope.app.PrincipalAnnotationService"
         />
     <require
         permission="zope.Public"

@@ -163,7 +163,7 @@
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
-        id="BugTracker"
+        id="bugtracker.BugTracker"
 	title="Bug Tracker"
         description="A Bug Tracker" />
 
@@ -231,7 +231,7 @@
        interface="zope.app.container.interfaces.IContentContainer" />
 
     <factory
-        id="Bug"
+        id="bugtracker.Bug"
         title="Bug"
         description="A Bug" />
 
@@ -309,7 +309,7 @@
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
 
     <factory
-        id="BugComment"
+        id="bugtracker.BugComment"
         title="Comment"
         description="A comment about the bug." />
 

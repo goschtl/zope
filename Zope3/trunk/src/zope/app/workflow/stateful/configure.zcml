@@ -5,7 +5,7 @@
 <content 
     class=".definition.StatefulProcessDefinition">
   <factory
-      id="StatefulProcessDefinition"
+      id="zope.app.workflow.StatefulProcessDefinition"
       />
   <implements
       interface="zope.app.utility.interfaces.ILocalUtility" 
@@ -29,7 +29,7 @@
 
 <content class=".definition.StatesContainer">
   <factory
-      id="StatefulStatesContainer"
+      id="zope.app.workflow.StatefulStatesContainer"
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -44,7 +44,7 @@
 
 <content class=".definition.State">
   <factory
-      id="StatefulState"
+      id="zope.app.workflow.StatefulState"
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -64,7 +64,7 @@
 
 <content class=".definition.TransitionsContainer">
   <factory
-      id="StatefulTransitionsContainer"
+      id="zope.app.workflow.StatefulTransitionsContainer"
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -79,7 +79,7 @@
 
 <content class=".definition.Transition">
   <factory
-      id="StatefulTransition"
+      id="zope.app.workflow.StatefulTransition"
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -96,7 +96,7 @@
 <content 
     class=".contentworkflow.ContentWorkflowsManager">
   <factory
-    id="ContentWorkflowsManager"
+    id="zope.app.workflow.ContentWorkflowsManager"
   />
 
   <implements

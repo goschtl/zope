@@ -8,8 +8,8 @@
 
 <content class=".zpt.ZPTTemplate">
   <factory
-      title="ZPT Template"
-      description="Page Template"
+      title="zope.app.ZPTTemplate"
+      description="Persistent View Page Template"
       />
   <require
       permission="zope.View"

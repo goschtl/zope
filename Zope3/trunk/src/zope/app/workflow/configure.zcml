@@ -29,7 +29,7 @@
 
   <content class="zope.app.workflow.definition.ProcessDefinition">
     <factory
-        id="ProcessDefinition"
+        id="zope.app.workflow.ProcessDefinition"
         />
     <implements
         interface="zope.app.utility.interfaces.ILocalUtility" 

@@ -11,7 +11,7 @@
 
   <content class=".dtmlpage.DTMLPage">
     <factory
-        id="DTMLPage"
+        id="zope.app.DTMLPage"
         title="DTML Page"
         description="A simple, content-based DTML Page"
         />
