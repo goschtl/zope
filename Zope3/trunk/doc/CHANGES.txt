@@ -270,6 +270,9 @@ Zope Changes
 
     Restructuring
 
+      - zope.component.createObject no longer accepts a positional
+        context argument.  A context can be provided as a keyword argument.
+
       - Deprecated _configureCopy in zope.app.copypastemove.ObjectCopier. To
         configure a recently copied object, suscribe to IObjectCopiedEvent for
         the type of object you're interested in configuring.
