@@ -35,6 +35,10 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFCore.PortalFolder: Cataloging portal folders was prevented by
+      overriding the typical indexing calls, but one of them was forgotten,
+      so they still got cataloged.  (http://www.zope.org/Collectors/CMF/309)
+
     - CMFCore.DirectoryView: A special __setattr__ on the
       DirectoryViewSurrogate class made sure to write changes through to the
       underlying DirectoryView, but there was no equivalent __delattr__
