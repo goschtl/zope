@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.5 2004/04/08 21:02:39 jim Exp $
+$Id: interfaces.py,v 1.6 2004/04/17 14:33:26 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
@@ -26,6 +26,7 @@ from zope.schema import TextLine, Field
 from zope.schema.interfaces import ITextLine
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
+import zope.component.interfaces
 
 UnregisteredStatus = _('Unregistered')
 RegisteredStatus = _('Registered')
@@ -226,8 +227,18 @@ class IRegistrationStack(Interface):
         """The registry is true iff it has no registrations."""
 
 
-class IRegistry(Interface):
+class IRegistry(zope.component.interfaces.IRegistry):
     """A component that can be configured using a registration manager."""
+
+    def registrations(localOnly=False):
+        """Returns a list of all registrations.
+
+        This method returns a complete list of Registration objects, which can
+        be used for 'queryRegistrationFor()', for example. Usually this method
+        will return registrations from all accessible registries of the same
+        kind, but if 'localOnly' is set to true only registrations defined in
+        this registry will be returned.
+        """
 
     def queryRegistrationsFor(registration, default=None):
         """Return an IRegistrationStack for the registration.
