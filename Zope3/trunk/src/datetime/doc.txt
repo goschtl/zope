@@ -759,7 +759,7 @@ class tzinfo
 tzinfo is an abstract base clase, meaning that objects directly of this
 class should not be instantiated.  You need to derive a concrete
 subclass, and (at least) supply implementations of the standard tzinfo
-methods needed by the datetime methods you use. The datetime module does
+methods needed by the datetime methods you use.  The datetime module does
 not supply any concrete subclasses of tzinfo.
 
 An instance of (a concrete subclass of) tzinfo can be passed to the
@@ -776,12 +776,9 @@ requirement that may be relaxed in the future.
 
 A concrete subclass of tzinfo may need to implement the following
 methods.  Exactly which methods are needed depends on the uses made
-of aware datetime objects; if in doubt, simply implement all of them.
-The methods are called by a datetimetz or timetz object, passing itself
-as the argument.  A tzinfo subclass's methods should be prepared to
-accept an argument of type None, timetz, or datetimetz.
+of aware datetime objects.  If in doubt, simply implement all of them.
 
-  - utcoffset(dt)
+  - utcoffset(self, dt)
     Return offset of local time from UTC, in minutes east of UTC.  If
     local time is west of UTC, this should be negative.  Note that this
     is intended to be the total offset from UTC; for example, if a
@@ -790,9 +787,13 @@ accept an argument of type None, timetz, or datetimetz.
     return None.  Else the value returned must be an int, long, or
     timedelta object, in the range -1439 to 1439 inclusive (1440 = 24*60;
     the magnitude of the offset must be less than one day, and must be
-    a whole number of minutes).
+    a whole number of minutes).  Most implementations of utcoffset()
+    will probably look like:
 
-  - tzname(dt)
+        return CONSTANT  # fixed-offset class
+        return CONSTANT + self.dst(dt)  # daylight-aware class
+
+  - tzname(self, dt)
     Return the timezone name corresponding to the datetime represented
     by dt, as a string.  Nothing about string names is defined by the
     datetime module, and there's no requirement that it mean anything
@@ -803,7 +804,7 @@ accept an argument of type None, timetz, or datetimetz.
     will wish to return different names depending on the specific value
     of dt passed, especially if the tzinfo class is accounting for DST.
 
-  - dst(dt)
+  - dst(self, dt)
     Return the DST offset, in minutes east of UTC, or None if DST
     information isn't known.  Return 0 if DST is not in effect.
     If DST is in effect, return an int, long, or timedelta object, in
@@ -814,6 +815,27 @@ accept an argument of type None, timetz, or datetimetz.
     separately.  For example, datetimetz.timetuple() calls its
     tzinfo object's dst() method to determine how the tm_isdst flag
     should be set.
+
+These methods are called by a datetimetz or timetz object, in response to
+their methods of the same names.  A datetimetz object passes itself as the
+argument, and a timetz object passes None as the argument.  A tzinfo
+subclass's methods should therefore be prepared to accept a dt argument of
+None, or of class datetimetz.
+
+When None is passed, it's up to the class designer to decide the best
+response.  For example, returning None is appropriate if the class wishes
+to say that timetz objects don't participate in the tzinfo protocol.  In
+other applications, it may be more useful for utcoffset(None} to return the
+standard UTC offset.
+
+When a datetimetz object is passed in response to a datetimetz method,
+dt.tzinfo is the same object as self.  tzinfo methods can rely on this,
+unless user code calls tzinfo methods directly.  The intent is that the
+tzinfo methods interpret dt as being in local time, and not need to worry
+about objects in other timezones.
+XXX That isn't always true yet:  datetimetz.astimezone(tz) can pass
+XXX a datetimetz with a "foreign" tzinfo to a self.tzinfo method.  This
+XXX needs to be repaired.
 
 Example tzinfo classes:
 

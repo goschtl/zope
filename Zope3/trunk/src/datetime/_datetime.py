@@ -216,10 +216,10 @@ def _wrap_strftime(object, format, timetuple):
     newformat = "".join(newformat)
     return _time.strftime(newformat, timetuple)
 
-def _call_tzinfo_method(self, tzinfo, methname):
+def _call_tzinfo_method(tzinfo, methname, tzinfoarg):
     if tzinfo is None:
         return None
-    return getattr(tzinfo, methname)(self)
+    return getattr(tzinfo, methname)(tzinfoarg)
 
 # Just raise TypeError if the arg isn't None or a string.
 def _check_tzname(name):
@@ -1128,7 +1128,7 @@ class timetz(time):
     def utcoffset(self):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
-        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self._tzinfo, "utcoffset", None)
         offset = _check_utc_offset("utcoffset", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1136,7 +1136,7 @@ class timetz(time):
 
     # Return an integer (or None) instead of a timedelta (or None).
     def _utcoffset(self):
-        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self._tzinfo, "utcoffset", None)
         offset = _check_utc_offset("utcoffset", offset)
         return offset
 
@@ -1147,7 +1147,7 @@ class timetz(time):
         it mean anything in particular. For example, "GMT", "UTC", "-500",
         "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
         """
-        name = _call_tzinfo_method(self, self._tzinfo, "tzname")
+        name = _call_tzinfo_method(self._tzinfo, "tzname", None)
         _check_tzname(name)
         return name
 
@@ -1160,7 +1160,7 @@ class timetz(time):
         need to consult dst() unless you're interested in displaying the DST
         info.
         """
-        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
+        offset = _call_tzinfo_method(self._tzinfo, "dst", None)
         offset = _check_utc_offset("dst", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1185,7 +1185,7 @@ class timetz(time):
 
     # Return an integer (or None) instead of a timedelta (or None).
     def _dst(self):
-        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
+        offset = _call_tzinfo_method(self._tzinfo, "dst", None)
         offset = _check_utc_offset("dst", offset)
         return offset
 
@@ -1649,7 +1649,7 @@ class datetimetz(datetime):
     def utcoffset(self):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
-        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self._tzinfo, "utcoffset", self)
         offset = _check_utc_offset("utcoffset", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1657,7 +1657,7 @@ class datetimetz(datetime):
 
     # Return an integer (or None) instead of a timedelta (or None).
     def _utcoffset(self):
-        offset = _call_tzinfo_method(self, self._tzinfo, "utcoffset")
+        offset = _call_tzinfo_method(self._tzinfo, "utcoffset", self)
         offset = _check_utc_offset("utcoffset", offset)
         return offset
 
@@ -1668,7 +1668,7 @@ class datetimetz(datetime):
         it mean anything in particular. For example, "GMT", "UTC", "-500",
         "-5:00", "EDT", "US/Eastern", "America/New York" are all valid replies.
         """
-        name = _call_tzinfo_method(self, self._tzinfo, "tzname")
+        name = _call_tzinfo_method(self._tzinfo, "tzname", self)
         _check_tzname(name)
         return name
 
@@ -1681,7 +1681,7 @@ class datetimetz(datetime):
         need to consult dst() unless you're interested in displaying the DST
         info.
         """
-        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
+        offset = _call_tzinfo_method(self._tzinfo, "dst", self)
         offset = _check_utc_offset("dst", offset)
         if offset is not None:
             offset = timedelta(minutes=offset)
@@ -1689,7 +1689,7 @@ class datetimetz(datetime):
 
     # Return an integer (or None) instead of a timedelta (or None).1573
     def _dst(self):
-        offset = _call_tzinfo_method(self, self._tzinfo, "dst")
+        offset = _call_tzinfo_method(self._tzinfo, "dst", self)
         offset = _check_utc_offset("dst", offset)
         return offset
 
