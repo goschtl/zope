@@ -80,7 +80,7 @@
   <page
       name="contents.html"
       for="zope.app.interfaces.services.service.ISiteManager"
-      menu="zmi_views" title="Contents"
+      menu="zmi_views" title="Software"
       permission="zope.ManageServices"
       class="zope.app.browser.container.contents.Contents"
       attribute="contents" />

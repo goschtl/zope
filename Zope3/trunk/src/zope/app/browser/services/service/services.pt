@@ -3,7 +3,7 @@
 <div metal:fill-slot="body">
 
   <h2 i18n:translate="">
-    Services registered in this service manager
+    Services registered in this site manager
   </h2>
 
   <div tal:define="message view/update;
