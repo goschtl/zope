@@ -2,10 +2,16 @@ import Zope
 from unittest import TestCase, TestSuite, makeSuite, main
 
 from Products.CMFCore.tests.base.security import \
-     OmnipotentUser, PermissiveSecurityPolicy
+     OmnipotentUser, UserWithRoles, PermissiveSecurityPolicy
 
 from Products.CMFCore.tests.base.dummy import \
      DummyContent
+
+from Products.CMFCore.tests.base.testcase import \
+     SecurityTest
+
+from Products.CMFCore.tests.base.utils import \
+     has_path
 
 import re, new
 import OFS.Folder, OFS.SimpleItem
@@ -21,25 +27,16 @@ from Products.CMFCore.PortalFolder import *
 def extra_meta_types():
     return [  { 'name' : 'Dummy', 'action' : 'manage_addFolder' } ]
 
-class PortalFolderTests( TestCase ):
+class PortalFolderTests( SecurityTest ):
 
     def setUp( self ):
-        get_transaction().begin()
-        self._policy = PermissiveSecurityPolicy()
-        self._oldPolicy = SecurityManager.setSecurityPolicy(self._policy)
-        self.connection = Zope.DB.open()
-        self.root = root = self.connection.root()[ 'Application' ]
-        newSecurityManager( None, OmnipotentUser().__of__( self.root ) )
+        SecurityTest.setUp(self)
+
+        root = self.root
         try: root._delObject('test')
         except AttributeError: pass
         root._setObject( 'test', PortalFolder( 'test','' ) )
     
-    def tearDown( self ):
-        get_transaction().abort()
-        self.connection.close()
-        SecurityManager.setSecurityPolicy( self._oldPolicy )
-        
-
     def test_deletePropagation( self ):
 
         test = self.root.test
@@ -317,52 +314,20 @@ class PortalFolderTests( TestCase ):
         assert has_path( catalog._catalog, '/test/sub2/dummy' )
         assert has_path( catalog._catalog, '/test/sub3/dummy' )
 
-
-def has_path( catalog, path ):
-    """
-        Verify that catalog has an object at path.
-    """
-    rids = map( lambda x: x.data_record_id_, catalog.searchResults() )
-    for rid in rids:
-        if catalog.getpath( rid ) == path:
-            return 1
-    return 0
-
-class LimitedUnitTestUser( Acquisition.Implicit ):
-    """
-        Stubbed out mmember for unit testing purposes.
-    """
-    def getId( self ):
-        return 'unit_test_member'
-    
-    getUserName = getId
-
-    def allowed( self, object, object_roles=None ):
-        if object_roles is None:
-            object_roles = ()
-        return 'Member' in object_roles
-
-class PortalFolderPermissionTests( TestCase ):
+class PortalFolderPermissionTests( SecurityTest ):
 
     def setUp( self ):
-        get_transaction().begin()
-        self._policy = PermissiveSecurityPolicy()
-        self._oldPolicy = SecurityManager.setSecurityPolicy(self._policy)
-        self.connection = Zope.DB.open()
-        self.root = self.connection.root()[ 'Application' ]
+        
+        SecurityTest.setUp(self)
+        
         self.manager = OmnipotentUser().__of__( self.root )
-        self.member = LimitedUnitTestUser().__of__( self.root )
+        self.member = UserWithRoles(['Member']).__of__( self.root )
         self.root._setObject( 'folder', PortalFolder( 'folder', '' ) )
         self.folder = self.root.folder
         self.folder._setObject( 'doc1', DummyContent( 'doc1' ) )
         self.folder._setObject( 'doc2', DummyContent( 'doc2' ) )
         self.folder._setObject( 'doc3', DummyContent( 'doc3' ) )
     
-    def tearDown( self ):
-        get_transaction().abort()
-        self.connection.close()
-        SecurityManager.setSecurityPolicy( self._oldPolicy )
-
     def test_listFolderContentsPerms( self ):
         pass
 
