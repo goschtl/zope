@@ -38,13 +38,14 @@ class DAVSchemaAdapter(object):
         if IReadDirectory(self.context, None) is not None:
             value = value + '/'
         return value
+    displayname = property(displayname)
 
     def creationdate(self):
-        value = IDCTimes(self.context).created
-        if value is None:
+        dc = IDCTimes(self.context, None)
+        if dc is None or dc.created is None:
             return ''
-        value = value.strftime('%Y-%m-%d %TZ')
-        return value
+        return dc.created.strftime('%Y-%m-%d %TZ')
+    creationdate = property(creationdate)
 
     def resourcetype(self):
         value = IReadDirectory(self.context, None)
@@ -53,17 +54,22 @@ class DAVSchemaAdapter(object):
             node = xml.createElement('collection')
             return node
         return ''
+    resourcetype = property(resourcetype)
 
     def getcontentlength(self):
-        value = ISized(self.context).sizeForDisplay()
-        return str(value)
+        sized = ISized(self.context, None)
+        if sized is None:
+            return ''
+        return str(sized.sizeForDisplay())
+    getcontentlength = property(getcontentlength)
 
     def getlastmodified(self):
-        value = IDCTimes(self.context).modified
-        if value is None:
+        dc = IDCTimes(self.context, None)
+        if dc is None or dc.created is None:
             return ''
-        value = value.strftime('%a, %d %b %Y %H:%M:%S GMT')
-        return value
+        return dc.modified.strftime('%a, %d %b %Y %H:%M:%S GMT')
+    getlastmodified = property(getlastmodified)
 
     def executable(self):
         return ''
+    executable = property(executable)
