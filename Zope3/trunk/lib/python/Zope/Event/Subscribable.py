@@ -14,8 +14,9 @@
 """
 
 Revision information:
-$Id: Subscribable.py,v 1.5 2002/10/21 06:14:47 poster Exp $
+$Id: Subscribable.py,v 1.6 2002/12/05 17:18:12 stevea Exp $
 """
+__metaclass__ = type
 
 from Interface.Registry.TypeRegistry import TypeRegistry
 from Zope.Exceptions import NotFoundError
@@ -24,7 +25,7 @@ from ISubscriptionAware import ISubscriptionAware
 from IEvent import IEvent
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
-class Subscribable(object): # do we need this to be a type?
+class Subscribable:
     """a global mix-in"""
     
     __implements__ = ISubscribable
