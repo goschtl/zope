@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.21 2003/12/17 09:07:52 sraju Exp $
+$Id: test_adding.py,v 1.22 2003/12/17 12:15:09 mukruthi Exp $
 """
 
 import unittest
@@ -273,7 +273,7 @@ def test_renderAddButton():
     
     >>> adding = Adding(FakeContainer(),TestRequest())
     >>> adding.renderAddButton()
-    u"<input type='submit' name='UPDATE_SUBMIT' value='Add'>"
+    u" <input type='submit' name='UPDATE_SUBMIT' value='Add'>"
 
     Fake class without IContainerNamesContainer
     
@@ -285,13 +285,10 @@ def test_renderAddButton():
 
     >>> adding = Adding(Fake(),TestRequest())
     >>> adding.renderAddButton()
-    u"<input type='submit' name='UPDATE_SUBMIT' value='Add'>""" \
-          """<input type='text' name='add_input_name' value=''>"
-
+    u"&nbsp;&nbsp;<input type='submit' name='UPDATE_SUBMIT' value='Add'>&nbsp;&nbsp;<b>Object Name:<b>&nbsp;<input type='text' name='add_input_name' value=''>"
     >>> adding.contentName='myname'
     >>> adding.renderAddButton()
-    u"<input type='submit' name='UPDATE_SUBMIT' value='Add'>""" \
-         """<input type='text' name='add_input_name' value='myname'>"
+    u"&nbsp;&nbsp;<input type='submit' name='UPDATE_SUBMIT' value='Add'>&nbsp;&nbsp;<b>Object Name:<b>&nbsp;<input type='text' name='add_input_name' value='myname'>"
     >>> adding = Adding(Fake(),TestRequest())     
 
     To check request variable

@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.37 2003/12/17 11:30:36 mukruthi Exp $
+$Id: adding.py,v 1.38 2003/12/17 12:15:09 mukruthi Exp $
 """
 __metaclass__ = type
 
@@ -85,24 +85,24 @@ class BasicAdding(BrowserView):
         """To Render Add button with or without Inputbox"""
         container = self.context
         button_label = _('add-button', 'Add')
+        object_name = _('object-name','Object Name')
+        
         translation = zapi.getService(self.context,
                                       zapi.servicenames.Translation)
         button_label = translation.translate(button_label,
                                              context=self.request)
+        object_name = translation.translate(object_name,
+                                             context=self.request)
         if IContainerNamesContainer.isImplementedBy(container):
-            return "<hr><input type='submit' value='Refresh'\
-            i18n:attributes='value refresh-button'> \
-            <input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
+            return " <input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
                    % button_label
         else:
             contentName = self.contentName or ''
             return (
-               "<hr><input type='submit' value='Refresh' \
-               i18n:attributes='value refresh-button' >&nbsp;&nbsp; \
-               <input type='submit' name='UPDATE_SUBMIT' value='%s'>"
-               "&nbsp;&nbsp;<b>Object Name:<b>&nbsp;\
-<input type='text' name='add_input_name' value='%s'>"
-                    % (button_label, contentName))
+               "&nbsp;&nbsp;<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
+               "&nbsp;&nbsp;<b>%s:<b>&nbsp;"
+               "<input type='text' name='add_input_name' value='%s'>"
+                    % (button_label, object_name, contentName))
 
     def publishTraverse(self, request, name):
         """See zope.app.interfaces.container.IAdding"""
