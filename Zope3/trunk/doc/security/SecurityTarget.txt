@@ -1,11 +1,11 @@
-===================================
- Zope X3 Security Target for EAL 1
-===================================
+===============================================================================
+ Zope X3 Security Target for EAL 1 ($Revision: 1.6 $ - Draft)
+===============================================================================
 
-:Version: $Revision: 1.5 $ (Draft)
-:Date: $Date: 2003/10/02 07:01:24 $
+:Version: $Revision: 1.6 $ (Draft)
+:Date: $Date: 2003/10/03 20:36:11 $
 :Authors: Steve Alexander <steve@catbox.net>, Christian Theune <ct@gocept.com>
-:DocumentID: $Id: SecurityTarget.txt,v 1.5 2003/10/02 07:01:24 ctheune Exp $
+:DocumentID: $Id: SecurityTarget.txt,v 1.6 2003/10/03 20:36:11 ctheune Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.5 2003/10/02 07:01:24 ctheune Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.6 2003/10/03 20:36:11 ctheune Exp $
 
-:Document Version: $Revision: 1.5 $
+:Document Version: $Revision: 1.6 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -254,9 +254,12 @@ The following assets have been identified:
                         permission to allow or deny an operation in the context.
                         As a third state, permissions may be declared to
                         be acquired from the context. 
-
     Permission grants
     Audit data
+    Transaction data    All operations within Zope are held within ACID
+                        compatible transactions that are bound to each
+                        request from the outside and associated with a 
+                        principal.
     =================   ====================================================
 
 Subjects
@@ -313,7 +316,7 @@ The following assumptions need to be made about the TOE environment:
     Assumption Name     Description
     ===============     ==================================================
     A.OS                The machine and the operating system Zope is 
-                        running on is physical secure.
+                        running on is physical secure. 
     A.Admin             The "system-administrator" of the above 
                         mentioned machine is trustworthy.
     A.Network           A network connection to the Zope services is 
@@ -330,6 +333,7 @@ The following assumptions need to be made about the TOE environment:
                         Trojan horses.
     ===============     ==================================================
 
+
 Threats
 -------
 
@@ -345,24 +349,16 @@ The following threat agents have been identified:
 
 The following threats against the assets have been identified:
 
-    ============    ===============================================     ====================
-    Threat          Threat description                                  Asset
-    ============    ===============================================     ====================
-    T.IA            An attacker might impersonate an authorised         Principal
-                    principal without providing the necessary 
-                    credentials.
-    T.PermRole      A principal changes the role grants or              Permission grants,
-                    permission grants without having that right.        Role grants
-    T.Operation     A principal performs an operation on an object      Operation, Object
-                    without having the correct permission.
-    ============    ===============================================     ====================
-
-    ===============    ===================================================     ====================
-    Threat             **proposed threats**
-    ===============    ===================================================     ====================
-    T.AuditDOS         An attacker might misuse the audit data 
-                       generation functions to flood the server with 
-                       data resulting in the denial of service.
+    ==============     ===============================================     ====================
+    Threat             Threat description                                  Asset
+    ==============     ===============================================     ====================
+    T.IA               An attacker might impersonate an authorised         Principal
+                       principal without providing the necessary 
+                       credentials.
+    T.PermRole         A principal changes the role grants or              Permission grants,
+                       permission grants without having that right.        Role grants
+    T.Operation        A principal performs an operation on an object      Operation, Object
+                       without having the correct permission.
     T.AuditFake        An attacker might convince the audit data 
                        generation functions to log false information 
                        (date, time, type of event, outcome, user)
@@ -389,9 +385,9 @@ The following threats against the assets have been identified:
                        which would result in wrong association to a
                        user on dynamic ip address ranges.
     T.TrustedPath      An attacker might try to use "user data import"
-                       or "user data export" without beeing a local user
-                       and using the trusted path.
-    ===============    ===================================================     ====================
+                       or "user data export" without beeing a local 
+                       user and using the trusted path.
+    ==============     ===============================================     ====================
 
 Organisational security policies
 --------------------------------
@@ -428,7 +424,28 @@ The following security objectives have been defined for the TOE:
     O.Grants                Only principals having the permission to change 
                             permission/role grants can change the 
                             permission/role grants.
-    O.Access                Access to objects is only possible via operations.
+    
+                            XXX O.Grants is too specific IMHO
+
+    O.Audit                 The TOE will provide the means of recording any 
+                            security relevant events, so as to assist an 
+                            administrator in the detection of potential attacks 
+                            or misconfiguration of the TOE security features 
+                            that would leave the TOE susceptible to attack, and 
+                            also to hold users accountable for any actions 
+                            they perform that are relevant to security.
+    O.Protect               ?? See Guide B.4
+    O.Rollback              The TOE will provide the means of returning to a 
+                            well-defined state by permitting a user to undo 
+                            transactions in the case of an incomplete series 
+                            of operations.
+    O.Access                The TOE ensures that access to objects is
+                            mediated by operations and guarded by permissions.
+    O.Integrity             Whenever an error within the context of a running
+                            transaction occurs (related or unrelated to
+                            security) the transaction will be rolled back
+                            and the system will be in the state before the
+                            transaction started.
     ==============          ===================================================
 
 Security objectives for the environment
@@ -442,26 +459,34 @@ The following security objectives have been defined for the TOE environment:
     ===============     =======================================================
     OE.OS               The machine and the operating system Zope is running 
                         on is physical secure.
-    OE.Admin            The "system-administrator" of the above mentioned 
-                        machine is trustworthy.
+    OE.Trust            Those responsible for the TOE must be trustworthy.
+    OE.Manage           Those responsible for the TOE must ensure that the TOE 
+                        is delivered, installed, managed, and operated in a 
+                        manner which maintains IT security.
+    OE.AUDITLOG         Administrators of the TOE must ensure that audit 
+                        facilities are used and managed effectively. In 
+                        particular: 
+                        
+                        a) Appropriate action must be taken to ensure continued 
+                           audit logging, e.g. by regular archiving of logs 
+                           before audit trail exhaustion to ensure sufficient 
+                           free space. 
+                        b) Audit logs should be inspected on a regular basis, 
+                           and appropriate action should be taken on the 
+                           detection of breaches of security, or events that 
+                           are likely to lead to a breach in the future.
+
     OE.Network          A network connection to the Zope services is present. 
-                        All The other network connection are secure in such a 
-                        way that the integrity of the machien and operating 
+                        All other network connections are secure in such a 
+                        way that the integrity of the machine and operating 
                         system is preserved.
     OE.Client           The connection between client and Zope server is secure 
-                        in a sense the the identification and authentication 
+                        in a sense that the identification and authentication 
                         data is not monitored or interfered.
     OE.Credential       The user is keeping the credential to authenticate 
                         secret.
-    OE.Integrity        The system is administrated such that the system is 
-                        free from malicious software like viruses and Trojan 
-                        horses.
     ===============     =======================================================
 
-Operating System,
-Python Version,
-Browsers (Can't assure about browser behaviour),
-ZODB Storage
 
 Security requirements
 =====================
@@ -750,7 +775,7 @@ FMT_SMR.1 Security roles
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 FMT_SMR.1.1
-    The TSF shall maintain *[a list of authorised roles]*.
+    The TSF shall maintain *[a list of roles]*.
 
 FMT_SMR.1.2
     The TSF shall be able to associate *[principals]* with roles.
@@ -762,7 +787,7 @@ FMT_MSA.1.1
     The TSF shall enforce the *[formal security policy]* to
     restrict the ability to *[apply operations modifying]*
     the security attributes *[role grants, permission grants, principals,
-    permissions]* to *[principals with the appropriate roles]*.
+    permissions]* to *[principals with the appropriate permission grants]*.
 
 FMT_MSA.3 Static attribute initialisation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -838,6 +863,13 @@ Security requirements for the IT environment
 --------------------------------------------
 
 The following security requirements exist for the IT environment:
+
+The operating system is Windows 2000, Windows XP or Linux. Either all known security
+patches must have been installed.
+
+The Python Version is 2.3.2 or a compatible Bugfix release.
+
+The ZODB storage is FSStorage or XXX ... What else?.
 
 Security requirements for the non-IT environment
 ------------------------------------------------
@@ -996,6 +1028,10 @@ General
     *   Bibliographic references
 
     *   Numbering of sections would be fine
+
+    *   Consolidate the use of the term "anonymous user", "anonymous principal"
+
+    *   Consolidate the use of the term "permission grant" and "permissions"
     
 Part 1
 ------
@@ -1035,15 +1071,15 @@ FPT_TDC.1.1
     Describe data types
 
 FPT_TDC.1.2
-    Describe the rules that apply for interpretation of data.
+    Describe the rules that apply for interpretation of data / data formats
 
 What about the "nice to have" functions?
 
-Questions to TUV-IT
-===================
-
-    *   What does FDP_ETC.2.3 mean?
+    FIA_SOS.1   :   password effectiveness check
+    FIA_AFL.1   :   authentication failure counter
     
-    *   Are DOS within the range of possible threats?
 
-    *   Review threats/threat agents
+Questions to TUV
+================
+
+    XXX none right now
