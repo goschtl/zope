@@ -1,0 +1,40 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <content class=".Registration">
+    <factory
+      id="zope.app.services.hub.Registration"
+      />
+  
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.hub.interfaces.ISubscriptionControl"
+      />
+    
+    <!-- XXX
+         We really need to think through the security aspects of event
+         processing -->
+    <allow attributes="notify" /> 
+  </content>
+
+  <serviceType
+      id="HubIds"
+      interface=".interfaces.IObjectHub" />
+
+  <content class=".ObjectHub">
+    <factory
+        id="HubIds" />
+    <require
+        permission="zope.View"
+        attributes="notify getHubId getLocation getObject
+                    register unregister numRegistrations
+                    getRegistrations" />
+    <require
+        permission="zope.ManageServices"
+        attributes="bound unbound subscribe unsubscribe subscribeOnBind
+                    unsubscribedFrom subscribedTo unregisterMissingObjects
+                    iterRegistrations" />
+  </content>
+
+  <include package=".browser" />
+
+</configure>

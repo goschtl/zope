@@ -1,0 +1,9 @@
+<ul>
+  <li tal:repeat="item view/listHelpItems">
+    <a href=""
+       tal:attributes="href item/path"
+       tal:content="item/title"
+       i18n:translate="">Title</a>
+    <div tal:replace="structure item/topics" />
+  </li>
+</ul>
