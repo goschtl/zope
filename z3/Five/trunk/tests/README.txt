@@ -29,3 +29,7 @@ variables::
 Then you should be able to run the tests by typing::
 
   python2.3 runalltests.py
+
+If you have troubles running the tests because zope.conf is looked for
+in lib/Testing/etc/zope.conf, then you are running a Zope version
+older than Zope 2.7.2. Please upgrade to Zope 2.7.2.

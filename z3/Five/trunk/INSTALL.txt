@@ -1,10 +1,11 @@
 How to install Five
 -------------------
 
-Requirements for Five 0.1
+Requirements for Five 0.2
 =========================
 
-* Zope 2.7.x with python 2.3.x
+* Zope 2.7.2+ with python 2.3.x. Zope versions lower than Zope 2.7.2
+  may work, but the tests don't run, so no guarantees.
 
 * Zope X3.0.0 Beta 2, found here: http://zope.org/Products/ZopeX3/3.0.0b2/
 
