@@ -27,13 +27,13 @@ the data actually gets written/not written to the storge.
 
 Obviously this test suite should be expanded.
 
-$Id: abstestIDataManager.py,v 1.2 2002/06/10 23:27:44 jim Exp $
+$Id: abstestIDataManager.py,v 1.3 2002/07/18 17:10:18 jeremy Exp $
 """
 
 import os
 from unittest import TestCase
 
-from Transaction import Transaction
+from Transaction import Transaction, get_transaction
 
 class IDataManagerTests(TestCase):
     
