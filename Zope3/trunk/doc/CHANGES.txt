@@ -375,6 +375,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed most formatting characters for i18n's datetime formatter. Only
+        timezones are left.
+
       - Partially fixed issue #306 (Problem 2: Browser page and view directive
         cannot register serveral pages views within different layers for
         the same for, menu and title attributes.)
