@@ -13,17 +13,17 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.2 2004/03/08 19:40:33 jim Exp $
+$Id: permissionwidget.py,v 1.3 2004/03/08 23:35:32 srichter Exp $
 """
+from zope.interface import implements
+from zope.i18n import translate 
 
+from zope.app import zapi
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app import zapi
 from zope.app.security.interfaces import IPermission
-from zope.app.services.servicenames import Translation
 from zope.security.checker import CheckerPublic
 import zope.app.interfaces.form
-import zope.interface
 
 
 class BaseWidget:
@@ -51,7 +51,7 @@ class BaseWidget:
 
 class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
 
-    zope.interface.implements(zope.app.interfaces.form.IInputWidget)
+    implements(zope.app.interfaces.form.IInputWidget)
 
     def __call__(self):
         search_name = self.name + ".search"
@@ -69,11 +69,9 @@ class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
         select_name = self.name
         selected = self._showData()
 
-        ts = zapi.getService(self.context.context, Translation)
         sel_perm = _('---select permission---')
-        trans = ts.translate(sel_perm, "zope", context=self.request)
-        if trans is not None:
-            sel_perm = trans
+        sel_perm = translate(self.context.context, sel_perm,
+                             context=self.request)
         
         options = ['<option value=\"\">'+sel_perm+'</option>']
         for permission in permissions:

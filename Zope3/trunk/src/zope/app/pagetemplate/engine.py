@@ -15,10 +15,8 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.25 2004/03/04 02:08:31 philikon Exp $
+$Id: engine.py,v 1.26 2004/03/08 23:35:32 srichter Exp $
 """
-__metaclass__ = type # All classes are new style when run with Python 2.2+
-
 import sys
 from types import StringTypes
 
@@ -26,12 +24,11 @@ from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
-from zope.component.servicenames import Utilities
 from zope.component.exceptions import ComponentLookupError
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
-from zope.i18n.translate import Translator
+from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -86,9 +83,8 @@ class ZopeContext(Context):
         # When running Zope, request is a Proxy, but no mutation is done here,
         # so it is safe to remove all proxies
         request = removeAllProxies(self.request)
-        # XXX should we cache the translator instance?
-        translator = Translator(domain, request, self.context)
-        return translator.translate(msgid, mapping, default=default)
+        return translate(self.context, msgid, domain, mapping,
+                         context=request, default=default)
 
     evaluateInlineCode = False
 
@@ -99,8 +95,7 @@ class ZopeContext(Context):
                     'you cannot have inline code snippets in your Page '
                     'Template. Activate Inline Code Evaluation and try again.')
 
-        service = zapi.getService(self.context, Utilities)
-        interpreter = service.queryUtility(IInterpreter, name=lang)
+        interpreter = zapi.queryUtility(self.context, IInterpreter, name=lang)
         if interpreter is None:
             error = _('No interpreter named "${lang_name}" was found.')
             error.mapping = {'lang_name': lang}
@@ -150,7 +145,7 @@ def _Engine():
 
 Engine = _Engine()
 
-class AppPT:
+class AppPT(object):
 
     # Use our special engine
     pt_getEngineContext = Engine.getContext
