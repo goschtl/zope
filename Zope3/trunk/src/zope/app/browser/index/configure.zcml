@@ -9,14 +9,12 @@
     description="An event subscriber that registers content with the objecthub"
     />
 
-  <defaultView
-    for="zope.app.index.subscribers.ISubscriptionControl"
-    name="control.html" />
-
   <page
     for="zope.app.index.subscribers.ISubscriptionControl"
     permission="zope.ManageServices"
-    name="control.html"
+    name="index.html"
+    menu="zmi_views"
+    title="Control"
     template="subscription_control.pt" 
     />
 
