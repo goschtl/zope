@@ -20,15 +20,18 @@ from zope.component import getGlobalService, ComponentLookupError
 from zope.configuration.exceptions import ConfigurationError
 from zope.component.servicenames import Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile as VPT
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
 
+from resource import FileResourceFactory, ImageResourceFactory
+from resource import PageTemplateResourceFactory
 from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, initializeClass
+from Products.PageTemplates.Expressions import SecureModuleImporter
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
@@ -94,7 +97,7 @@ def page(_context, name, permission, for_,
             # some security declarations on it so we really shouldn't
             # modify the original.  So, instead we make a new class
             # with just one base class -- the original
-            new_class = makeClass(class_.__name__, (class_), cdict)
+            new_class = makeClass(class_.__name__, (class_,), cdict)
 
     else:
         # template
@@ -139,6 +142,55 @@ def _handle_for(_context, for_):
             args = ('', for_)
             )
 
+_factory_map = {'image':{'prefix':'ImageResource',
+                         'count':0,
+                         'factory':ImageResourceFactory},
+                'file':{'prefix':'FileResource',
+                        'count':0,
+                        'factory':FileResourceFactory},
+                'template':{'prefix':'PageTemplateResource',
+                            'count':0,
+                            'factory':PageTemplateResourceFactory}
+                }
+
+def resource(_context, name, layer='default', permission='zope.Public',
+             file=None, image=None, template=None):
+
+    if ((file and image) or (file and template) or
+        (image and template) or not (file or image or template)):
+        raise ConfigurationError(
+            "Must use exactly one of file or image or template"
+            "attributes for resource directives"
+            )
+
+    res = file or image or template
+    res_type = ((file and 'file') or
+                 (image and 'image') or
+                 (template and 'template'))
+    factory_info = _factory_map.get(res_type)
+    factory_info['count'] += 1
+    res_factory = factory_info['factory']
+    class_name = '%s%s' % (factory_info['prefix'], factory_info['count'])
+    new_class = makeClass(class_name, (res_factory.resource,), {})
+    factory = res_factory(name, res, resource_factory=new_class)
+
+    _context.action(
+        discriminator = ('resource', name, IBrowserRequest, layer),
+        callable = handler,
+        args = (Presentation, 'provideResource',
+                name, IBrowserRequest, factory, layer),
+        )
+    _context.action(
+        discriminator = ('five:protectClass', new_class),
+        callable = protectClass,
+        args = (new_class, permission)
+        )
+    _context.action(
+        discriminator = ('five:initialize:class', new_class),
+        callable = initializeClass,
+        args = (new_class,)
+        )
+
 #
 # mixin classes / class factories
 #
@@ -156,6 +208,14 @@ class ViewMixinForAttributes(BrowserView):
         attr = self.__page_attribute__
         meth = getattr(self, attr)
         return meth(*args, **kw)
+
+class ViewPageTemplateFile(VPT):
+
+    def pt_getContext(self, instance, request, **kw):
+        _super = super(ViewPageTemplateFile, self)
+        ns = _super.pt_getContext(instance, request, **kw)
+        ns['modules'] = SecureModuleImporter
+        return ns
 
 class ViewMixinForTemplates(BrowserView):
 
