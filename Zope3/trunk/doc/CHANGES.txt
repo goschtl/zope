@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+    - The macro name is now available via 'macroname' (reserved name) in the
+      TALES namespace.
+
     - Implemented type based message subscriptions
       (http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions)
       Removed IAddNotifiable, IRemoveNotifiable interfaces.
