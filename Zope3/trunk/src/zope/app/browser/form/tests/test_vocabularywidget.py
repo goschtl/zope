@@ -22,11 +22,13 @@ from zope.app.interfaces.browser.form import IVocabularyQueryView
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
 from zope.component.view import provideView
+from zope.interface.declarations import implements
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.schema.interfaces import IVocabulary, ITerm, IVocabularyQuery
 from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
+from zope.schema.interfaces import IVocabularyListField
 from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import IVocabularyTokenized, ITokenizedTerm
 from zope.schema import vocabulary
@@ -37,7 +39,7 @@ class ISampleVocabulary(IVocabularyTokenized, IVocabulary):
 
 class SampleTerm(object):
     """Trivial ITerm implementation."""
-    __implements__ = ITokenizedTerm
+    implements(ITokenizedTerm)
 
     def __init__(self, value):
         self.value = value
@@ -46,7 +48,7 @@ class SampleTerm(object):
 
 class BasicVocabulary(object):
     """Simple vocabulary that uses terms from a passed-in list of values."""
-    __implements__ = IVocabularyTokenized, IVocabulary
+    implements(IVocabularyTokenized, IVocabulary)
 
     def __init__(self, values):
         self._values = values
@@ -88,7 +90,7 @@ class BasicIterator(object):
 
 class SampleVocabulary(BasicVocabulary):
     """Vocabulary used to test vocabulary-based specialization of widgets."""
-    __implements__ = ISampleVocabulary
+    implements(ISampleVocabulary)
 
 
 class SampleDisplayWidget(vocabularywidget.VocabularyWidgetBase):
@@ -96,7 +98,7 @@ class SampleDisplayWidget(vocabularywidget.VocabularyWidgetBase):
 
     This is not intended to be a useful widget.
     """
-    __implements__ = IBrowserWidget
+    implements(IBrowserWidget)
 
     def __call__(self):
         return "foo"
@@ -120,7 +122,7 @@ class IMyVocabularyQuery(IVocabularyQuery):
 class MyVocabularyQuery:
     """Vocabulary query object which query views can be registered for."""
 
-    __implements__ = IMyVocabularyQuery
+    implements(IMyVocabularyQuery)
 
     def __init__(self, vocabulary):
         self.vocabulary = vocabulary
@@ -142,7 +144,7 @@ class MyQueryViewBase(vocabularywidget.VocabularyQueryViewBase):
 class MyQueryViewSingle(MyQueryViewBase):
     """Single-selection vocabulary query view."""
 
-    __implements__ = IVocabularyQueryView
+    implements(IVocabularyQueryView)
 
     def getLabel(self):
         return "single"
@@ -151,7 +153,7 @@ class MyQueryViewSingle(MyQueryViewBase):
 class MyQueryViewMulti(MyQueryViewBase):
     """Multi-selection vocabulary query view."""
 
-    __implements__ = IVocabularyQueryView
+    implements(IVocabularyQueryView)
 
     def getLabel(self):
         return "multi"
@@ -258,21 +260,21 @@ class MultiSelectionViews:
                     "display",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyMultiFieldDisplayWidget)
-        provideView(IVocabularyMultiField,
+        provideView(IVocabularyListField,
                     "edit",
                     IBrowserPresentation,
-                    vocabularywidget.VocabularyMultiFieldEditWidget)
+                    vocabularywidget.VocabularyListFieldEditWidget)
         # Bind widgets to the vocabulary fields:
         provideView(IVocabularyTokenized,
                     "field-display-multi-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyMultiDisplayWidget)
         provideView(IVocabularyTokenized,
-                    "field-edit-multi-widget",
+                    "field-edit-list-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyMultiEditWidget)
         provideView(IIterableVocabularyQuery,
-                    "widget-query-multi-helper",
+                    "widget-query-list-helper",
                     IBrowserPresentation,
                     vocabularywidget.IterableVocabularyQueryMultiView)
         # The following widget registration supports the specific
@@ -549,7 +551,7 @@ class MultiSelectionQuerySupportTests(MultiSelectionViews,
     def registerViews(self):
         MultiSelectionViews.registerViews(self)
         provideView(IMyVocabularyQuery,
-                    "widget-query-multi-helper",
+                    "widget-query-list-helper",
                     IBrowserPresentation,
                     MyQueryViewMulti)
 
