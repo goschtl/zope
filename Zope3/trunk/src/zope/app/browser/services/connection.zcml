@@ -2,14 +2,21 @@
 
 <!-- Browser directives for the connection service -->
 
+  <menuItem
+    menu="add_component"
+    for="zope.app.interfaces.container.IAdding"
+    action="../AddSQLConnection"
+    title="SQL Connection"
+    description="Takes you to a menu of SQL Connections to add"
+    permission="zope.ManageServices" />
+
   <view
       for="zope.app.interfaces.services.folder.ISiteManagementFolder"
       name="AddSQLConnection"
       class=".connection.ConnectionAdding"
-      permission="zope.ManageContent"
-      allowed_attributes="addingInfo">
+      permission="zope.ManageContent">
       
-    <page name="index.html"  attribute="index" />
+    <page name="index.html"  attribute="index"/>
     <page name="action.html" attribute="action" />
       
   </view>

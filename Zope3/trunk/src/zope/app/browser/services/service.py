@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.36 2003/08/19 07:09:38 srichter Exp $
+$Id: service.py,v 1.37 2003/08/19 13:14:47 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -48,7 +48,9 @@ class ComponentAdding(Adding):
         return zapi.ContextSuper(ComponentAdding, self).nextURL()
 
     def action(self, type_name, id):
-        if type_name == "../AddService":
+        # For special case of that we want to redirect to another adding view
+        # (usually another menu such as AddService)
+        if type_name.startswith("../"):
             # Special case
             url = type_name
             if id:

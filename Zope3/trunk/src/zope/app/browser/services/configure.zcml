@@ -435,7 +435,7 @@
      name="AddService"
      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
      permission="zope.ManageServices"
-     class="zope.app.browser.services.service.ServiceAdding">
+     class=".service.ServiceAdding">
 
     <page name="index.html"  attribute="index"  />
     <page name="action.html" attribute="action" />

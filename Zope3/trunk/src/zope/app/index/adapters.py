@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: adapters.py,v 1.5 2003/08/17 06:06:47 philikon Exp $
-"""
+"""Index-relevant adapters.
 
+$Id: adapters.py,v 1.6 2003/08/19 13:14:50 srichter Exp $
+"""
 from zope.index.interfaces import IQuerying, ISimpleQuery, IKeywordQuerying
 from zodb.btrees.IIBTree import IISet
 

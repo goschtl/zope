@@ -9,14 +9,6 @@
       fields="dsn"
       permission="zope.ManageContent" />
 
-  <!-- Menu entry for "add component" menu -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_component"
-      action="AddGadflyDA"
-      title="Gadfly DA" 
-      description="A DA for the built-in 100% Pure Python Gadfly Database" />
-
   <!-- Menu entry for "add utility" menu -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
