@@ -27,7 +27,7 @@ from zope.app.file.interfaces import IImage
 class ISmileyTheme(Interface):
     """A theme is a collection of smileys having a stylistic theme.
 
-    Themes are intened to be implemented as named utilities, which will be
+    Themes are intended to be implemented as named utilities, which will be
     available via a local smiley service.
     """
 
@@ -52,7 +52,7 @@ class ISmileyTheme(Interface):
 
 
 class IGlobalSmileyTheme(ISmileyTheme):
-    """A global smiley theme that also allows managament of smileys."""
+    """A global smiley theme that also allows management of smileys."""
 
     def provideSmiley(text, smiley_path):
         """Provide a smiley for the utility."""
