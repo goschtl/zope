@@ -115,6 +115,10 @@ class TranslationHook:
         # XXX This is where we should be calling on the translation service
         return msgid.default
 
+def message(msgid, default):
+    msgid.default = default
+    return msgid
+
 
 # Widget implementation:
 
@@ -275,9 +279,11 @@ class MultiDataHelper(object):
 class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
+    _msg_no_value = message(_("vocabulary-no-value"), "(no value)")
+
     def render(self, value):
         if value is None:
-            return "(no value)"
+            return self.translate(self._msg_no_value)
         else:
             term = self.context.vocabulary.getTerm(value)
             return self.textForValue(term)
@@ -588,10 +594,6 @@ class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
 ADD_DONE = "adddone"
 ADD_MORE = "addmore"
 MORE = "more"
-
-def message(msgid, default):
-    msgid.default = default
-    return msgid
 
 
 class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
