@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.3 2003/05/27 14:18:24 jim Exp $
+$Id: module.py,v 1.4 2003/05/29 20:38:57 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -23,7 +23,7 @@ from zodb.code.interfaces import IPersistentModuleManager
 from zope.component import getServiceManager
 from zope.context import ContextMethod
 
-class Registry:
+class Registry(Persistent):
 
     # The registry is found via context, but the PersistentModuleManager
     # doesn't know about context.  To make it behave contextually, this
