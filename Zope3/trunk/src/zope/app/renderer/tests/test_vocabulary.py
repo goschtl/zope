@@ -13,58 +13,58 @@
 ##############################################################################
 """Tests for Global Wiki Source Type Service.
 
-$Id: test_vocabulary.py,v 1.2 2003/11/27 13:59:24 philikon Exp $
+$Id: test_vocabulary.py,v 1.3 2004/03/02 14:24:45 srichter Exp $
 """
 import unittest
 
-from zope.app.interfaces.renderer import IGlobalSourceTypeService
-from zope.app.renderer.sourcetype import SourceTypes
+from zope.app import zapi
+from zope.app.renderer import SourceFactory
+from zope.app.renderer.interfaces import ISource
 from zope.app.renderer.vocabulary import SourceTypeTerm, SourceTypeVocabulary
-from zope.component.service import defineService, serviceManager
+from zope.component.factory import FactoryInfo
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.interface import Interface, implements
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
 
 
+class IFoo(ISource):
+    """Source marker interface"""
 
-class IFoo(Interface):
-    pass
+FooFactory = SourceFactory(IFoo)
 
-class Foo:
-    implements(IFoo)
+class IFoo2(ISource):
+    """Source marker interface"""
 
-class IFoo2(Interface):
-    pass
+Foo2Factory = SourceFactory(IFoo2)
 
-class Foo2:
-    implements(IFoo2)
 
 
 class SourceTypeTermTest(unittest.TestCase):
 
     def setUp(self):
-        self.term = SourceTypeTerm('Foo')
+        self.term = SourceTypeTerm('zope.Foo', FactoryInfo('Foo', 'Foo Source'))
 
     def test_Interface(self):
         self.failUnless(ITokenizedTerm.isImplementedBy(self.term))
 
     def test_token(self):
-        self.assertEqual(self.term.token, 'Foo')
+        self.assertEqual(self.term.token, 'zope.Foo')
 
     def test_value(self):
-        self.assertEqual(self.term.value, 'Foo')
+        self.assertEqual(self.term.value, 'zope.Foo')
 
 
 class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(SourceTypeVocabularyTest, self).setUp()
-        defineService("SourceTypeRegistry", IGlobalSourceTypeService)
-        serviceManager.provideService("SourceTypeRegistry", SourceTypes)
-        SourceTypes._clear()
-        SourceTypes.provide('Foo', IFoo, Foo)
-        SourceTypes.provide('Foo 2', IFoo2, Foo2)
+        
+        factories = zapi.getService(None, 'Factories')
+        factories.provideFactory('zope.source.Foo', FooFactory,
+                                 FactoryInfo('Foo', 'Foo Source'))
+        factories.provideFactory('zope.source.Foo2', Foo2Factory,
+                                 FactoryInfo('Foo2', 'Foo2 Source'))
+
         self.vocab = SourceTypeVocabulary(None)
 
     def test_Interface(self):
@@ -72,19 +72,16 @@ class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
         self.failUnless(IVocabularyTokenized.isImplementedBy(self.vocab))
 
     def test_contains(self):
-        self.assertEqual(self.vocab.__contains__('Foo'), True)
-        self.assertEqual(self.vocab.__contains__('Foo 3'), False)
+        self.assertEqual(self.vocab.__contains__('zope.source.Foo'), True)
+        self.assertEqual(self.vocab.__contains__('zope.source.Foo3'), False)
 
     def test_iter(self):
-        vocab = self.vocab
-        self.assertEqual('Foo' in map(lambda x: x.value, vocab.__iter__()),
-                         True)
-        self.assertEqual('Foo 3' in map(lambda x: x.value, vocab.__iter__()),
-                         False)
-        self.assertEqual('Foo' in map(lambda x: x.value, iter(vocab)),
-                         True)
-        self.assertEqual('Foo 3' in map(lambda x: x.value, iter(vocab)),
-                         False)
+        self.assertEqual(
+            'zope.source.Foo' in [term.value for term in iter(self.vocab)],
+            True)
+        self.assertEqual(
+            'zope.source.Foo3' in [term.value for term in iter(self.vocab)],
+            False)
 
     def test_len(self):
         self.assertEqual(self.vocab.__len__(), 2)
@@ -94,13 +91,13 @@ class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(self.vocab.getQuery(), None)
 
     def test_getTerm(self):
-        self.assertEqual(self.vocab.getTerm('Foo').value, 'Foo')
-        self.assertRaises(KeyError, self.vocab.getTerm, ('Foo 3',))
+        self.assertEqual(self.vocab.getTerm('zope.source.Foo').title, 'Foo')
+        self.assertRaises(KeyError, self.vocab.getTerm, ('zope.source.Foo3',))
 
     def test_getTermByToken(self):
         vocab = self.vocab
-        self.assertEqual(vocab.getTermByToken('Foo').value, 'Foo')
-        self.assertRaises(KeyError, vocab.getTermByToken, ('Foo 3',))
+        self.assertEqual(vocab.getTermByToken('zope.source.Foo').title, 'Foo')
+        self.assertRaises(KeyError, vocab.getTermByToken, ('zope.source.Foo3',))
 
 
 def test_suite():

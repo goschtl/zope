@@ -13,7 +13,7 @@
 ##############################################################################
 """ReStructured Text Renderer Classes
 
-$Id: rest.py,v 1.5 2003/11/04 04:04:26 jeremy Exp $
+$Id: rest.py,v 1.6 2004/03/02 14:24:45 srichter Exp $
 """
 import docutils.core, docutils.io
 from docutils import nodes, writers
@@ -22,7 +22,17 @@ from docutils.writers.html4css1 import Writer as HTMLWriter
 
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.renderer import IReStructuredTextSource, IHTMLRenderer
+from zope.app.renderer.interfaces import ISource, IHTMLRenderer
+from zope.app.renderer import SourceFactory
+
+
+class IReStructuredTextSource(ISource):
+    """Marker interface for a restructured text source. Note that an
+    implementation of this interface should always derive from unicode or
+    behave like a unicode class."""
+
+
+ReStructuredTextSourceFactory = SourceFactory(IReStructuredTextSource)
 
 
 class Writer(writers.Writer):
@@ -103,25 +113,35 @@ class ZopeTranslator(HTMLTranslator):
             self.section_level -= (self.settings.base_section - 1)
     
     
-
-class ReStructuredTextSource(unicode):
-    """Represents Restructured Text source code""" 
-    implements(IReStructuredTextSource)
-
-    def createComment(self, comment, number, user, date):
-        "See zope.app.interfaces.renderer.IReStructuredTextSource"
-        if number == 1:
-            return first_comment_template %(number, user, date, comment)
-        else:
-            return comment_template %(number, user, date, comment)
-
-
 class ReStructuredTextToHTMLRenderer(BrowserView):
-    """An Adapter to convert from Restructured Text to HTML.""" 
+    r"""An Adapter to convert from Restructured Text to HTML.
+
+    Examples::
+
+      >>> from zope.publisher.browser import TestRequest
+      >>> source = ReStructuredTextSourceFactory(u'''
+      ... This is source.
+      ... 
+      ... Header 3
+      ... --------
+      ... This is more source.
+      ... ''')
+      >>> renderer = ReStructuredTextToHTMLRenderer(source, TestRequest())
+      >>> print renderer.render().strip()
+      <div class="document">
+      <p>This is source.</p>
+      <div class="section" id="header-3">
+      <h3><a name="header-3">Header 3</a></h3>
+      <p>This is more source.</p>
+      </div>
+      </div>
+    """ 
+
+
     implements(IHTMLRenderer)
     __used_for__ = IReStructuredTextSource
 
-    def render(self, context):
+    def render(self):
         "See zope.app.interfaces.renderer.IHTMLRenderer"
         settings_overrides = {
             'footnote_references': 'brackets',
@@ -135,17 +155,3 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
             settings_overrides=settings_overrides,
             )
         return html
-
-
-comment_template = '''
-
-Comment #%i by **%s** (%s)
-
-%s'''
-
-first_comment_template = '''
-----------
-
-Comment #%i by **%s** (%s)
-
-%s'''

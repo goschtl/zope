@@ -13,20 +13,26 @@
 ##############################################################################
 """Vocabulary for the Source Type Registry
 
-$Id: vocabulary.py,v 1.2 2003/10/29 20:26:28 sidnei Exp $
+$Id: vocabulary.py,v 1.3 2004/03/02 14:24:45 srichter Exp $
 """
 from zope.interface import implements
-from zope.component import getService
+from zope.proxy import removeAllProxies
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
+
+from zope.app import zapi
+from zope.app.browser.form.vocabularywidget import DropdownListWidget
+from zope.app.services.servicenames import Factories
+from zope.app.renderer.interfaces import ISource
 
 class SourceTypeTerm:
 
     implements(ITokenizedTerm)
 
-    def __init__(self, title):
-        self.value = self.token = title
-        self.title = title
+    def __init__(self, name, info):
+        self.token = self.value = name
+        self.title = info.title
+        self.description = info.description
 
 
 class SourceTypeVocabulary(object):
@@ -34,27 +40,40 @@ class SourceTypeVocabulary(object):
     implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, context):
-        self.types = getService(context, 'SourceTypeRegistry')
-
+        factories = zapi.getService(context, Factories)
+        self.types = [(name, factories.getFactoryInfo(name)) \
+                      for name, fact in factories.queryFactoriesFor(ISource,
+                                                                    ())]
     def __contains__(self, value):
-        return value in self.types.getAllTitles()
+        return value in [name for name, info in self.types]
 
     def __iter__(self):
-        terms = map(lambda st: SourceTypeTerm(st), self.types.getAllTitles())
-        return iter(terms)
+        return iter([SourceTypeTerm(name, info) for name, info in self.types])
 
     def __len__(self):
-        return len(self.types.getAllTitles())
+        return len(self.types)
 
     def getQuery(self):
         return None
 
     def getTerm(self, value):
-        if value not in self:
-            raise KeyError, 'item (%s) not in vocabulary.' %value
-        return SourceTypeTerm(value)
+        for name, info in self.types:
+            if name == value:
+                return SourceTypeTerm(name, info)
+
+        raise KeyError, 'item (%s) not in vocabulary.' %value
 
     def getTermByToken(self, token):
-        if token not in self:
-            raise KeyError, 'item (%s) not in vocabulary.' %token
         return self.getTerm(token)
+
+
+class SourceTypeEditWidget(DropdownListWidget):
+
+    def __init__(self, field, request):
+        self.request = request
+        vocabs = zapi.getService(field, "Vocabularies")
+        self.vocabulary = vocabs.get(field, "SourceTypes")
+        self.setField(field)
+
+    def textForValue(self, term):
+        return term.title

@@ -13,45 +13,37 @@
 ##############################################################################
 """Plain Text Renderer Classes
 
-$Id: plaintext.py,v 1.1 2003/07/31 17:59:36 srichter Exp $
+$Id: plaintext.py,v 1.2 2004/03/02 14:24:45 srichter Exp $
 """
 from zope.interface import implements
-from zope.app.interfaces.renderer import IPlainTextSource, IHTMLRenderer
 from zope.publisher.browser import BrowserView
 
+from zope.app.renderer.interfaces import ISource, IHTMLRenderer
+from zope.app.renderer import SourceFactory
 
-class PlainTextSource(unicode):
-    """Represents Plain Text source code""" 
-    implements(IPlainTextSource)
 
-    def createComment(self, comment, number, user, date):
-        "See zope.app.interfaces.renderer.IPlainTextSource"
-        if number == 1:
-            return first_comment_template %(number, user, date, comment)
-        else:
-            return comment_template %(number, user, date, comment)    
-    
+class IPlainTextSource(ISource):
+    """Marker interface for a plain text source. Note that an implementation
+    of this interface should always derive from unicode or behave like a
+    unicode class."""
+
+PlainTextSourceFactory = SourceFactory(IPlainTextSource)
+
 
 class PlainTextToHTMLRenderer(BrowserView):
-    """An Adapter to convert from Plain Text to HTML.""" 
+    r"""A view to convert from Plain Text to HTML.
+
+    Example::
+
+      >>> from zope.publisher.browser import TestRequest
+      >>> source = PlainTextSourceFactory(u'This is source.\n')
+      >>> renderer = PlainTextToHTMLRenderer(source, TestRequest())
+      >>> renderer.render()
+      u'This is source.<br />\n'
+    """ 
     implements(IHTMLRenderer)
     __used_for__ = IPlainTextSource
 
-    def render(self, context):
+    def render(self):
         "See zope.app.interfaces.renderer.IHTMLRenderer"
-        html = self.context.replace('\n', '<br/>\n')
-        html = html.replace('----------<br/>',
-                            '<hr class="comments" size="1" NOSHADE>')
-        return html
-
-
-comment_template = '''
-
-Comment #%i by %s (%s)
-%s'''
-
-first_comment_template = '''
-----------
-
-Comment #%i by %s (%s)
-%s'''
+        return self.context.replace('\n', '<br />\n')

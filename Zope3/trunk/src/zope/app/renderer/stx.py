@@ -13,34 +13,43 @@
 ##############################################################################
 """Structured Text Renderer Classes
 
-$Id: stx.py,v 1.3 2004/02/19 19:56:52 philikon Exp $
+$Id: stx.py,v 1.4 2004/03/02 14:24:45 srichter Exp $
 """
 import re
 
-from zope.structuredtext.document import Document
-from zope.structuredtext.html import HTML
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.renderer import IStructuredTextSource, IHTMLRenderer
+from zope.structuredtext.document import Document
+from zope.structuredtext.html import HTML
 
-class StructuredTextSource(unicode):
-    """Represents Structured Text source code""" 
-    implements(IStructuredTextSource)
+from zope.app.renderer.interfaces import ISource, IHTMLRenderer
+from zope.app.renderer import SourceFactory
 
-    def createComment(self, comment, number, user, date):
-        "See zope.app.interfaces.renderer.IStructuredTextSource"
-        if number == 1:
-            return first_comment_template %(number, user, date, comment)
-        else:
-            return comment_template %(number, user, date, comment)    
-    
+
+class IStructuredTextSource(ISource):
+    """Marker interface for a structured text source. Note that an
+    implementation of this interface should always derive from unicode or
+    behave like a unicode class."""
+
+StructuredTextSourceFactory = SourceFactory(IStructuredTextSource)
+
 
 class StructuredTextToHTMLRenderer(BrowserView):
-    """An Adapter to convert from Plain Text to HTML.""" 
+    r"""A view to convert from Plain Text to HTML.
+
+    Example::
+
+      >>> from zope.publisher.browser import TestRequest
+      >>> source = StructuredTextSourceFactory(u'This is source.')
+      >>> renderer = StructuredTextToHTMLRenderer(source, TestRequest())
+      >>> renderer.render()
+      '<p>This is source.</p>\n'
+
+    """ 
     implements(IHTMLRenderer)
     __used_for__ = IStructuredTextSource
 
-    def render(self, context):
+    def render(self):
         "See zope.app.interfaces.renderer.IHTMLRenderer"
         doc = Document()(str(self.context))
         html = HTML()(doc)
@@ -49,21 +58,4 @@ class StructuredTextToHTMLRenderer(BrowserView):
         html = re.sub(
             r'(?sm)^<html.*<body.*?>\n(.*)</body>\n</html>\n',r'\1', html)
 
-        html = html.replace('<p>----------</p>',
-                            '<hr class="comments" size="1" NOSHADE>')
         return html
-
-
-comment_template = '''
-
-Comment #%i by **%s** (%s)
-
-%s'''
-
-first_comment_template = '''
-
-----------
-
-Comment #%i by **%s** (%s)
-
-%s'''
