@@ -59,3 +59,14 @@ class portal_catalog(Interface):
     def getpath(data_record_id_):
         '''Calls ZCatalog.getpath().
         '''
+
+
+class IndexableObjectWrapper(Interface):
+    """ Indexable object wrapper interface.
+    """
+
+    def allowedRolesAndUsers():
+        """
+        Return a list of roles and users with View permission.
+        Used by PortalCatalog to filter out items you're not allowed to see.
+        """

@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
-""" Metadata tool interface.
+""" Metadata registration tool interface.
 
 $Id$
 """
@@ -27,6 +27,7 @@ class portal_metadata(Interface):
     """
         CMF metadata policies interface.
     """
+    id = Attribute('id', 'Must be set to "portal_metadata"')
 
     #
     #   Site-wide queries.

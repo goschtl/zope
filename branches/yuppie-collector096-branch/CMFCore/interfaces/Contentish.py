@@ -10,9 +10,19 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
-import Interface
+""" Contentish type interface.
 
-class Contentish(Interface.Base):
+$Id$
+"""
+
+try:
+    from Interface import Interface
+except ImportError:
+    # for Zope versions before 2.6.0
+    from Interface import Base as Interface
+
+
+class Contentish(Interface):
     """
     General interface for "contentish" items.
 
@@ -22,21 +32,6 @@ class Contentish(Interface.Base):
     PortalContent implements this interface.
     """
     
-    def getIcon(relative_to_portal=0):
-        """
-        This method returns the path to an object's icon. It is used 
-        in the folder_contents view to generate an appropriate icon 
-        for the items found in the folder.
-
-        If the content item does not define an attribute named "icon"
-        this method will return the path "/misc_/dtmldoc.gif", which is 
-        the icon used for DTML Documents.
-
-        If 'relative_to_portal' is true, return only the portion of
-        the icon's URL which finds it "within" the portal;  otherwise,
-        return it as an absolute URL.
-        """
-
     def SearchableText():
         """
         SearchableText is called to provide the Catalog with textual 
@@ -44,10 +39,4 @@ class Contentish(Interface.Base):
         by concatenating the string attributes of your content class. This
         string can then be used by the catalog to index your document and
         make it findable through the catalog.
-        """
-
-    def allowedRolesAndUsers(permission='View'):
-        """
-        Return a list of roles and users with View permission.
-        Used by PortalCatalog to filter out items you're not allowed to see.
         """

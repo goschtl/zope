@@ -10,7 +10,18 @@ except ImportError:
 from Products.CMFCore.tests.base.dummy import \
      DummyContent
 
+from Products.CMFCore.CatalogTool import IndexableObjectWrapper
 from Products.CMFCore.CatalogTool import CatalogTool
+
+
+class IndexableObjectWrapperTests(TestCase):
+
+    def test_interface(self):
+        from Products.CMFCore.interfaces.portal_catalog \
+                import IndexableObjectWrapper as IIndexableObjectWrapper
+
+        verifyClass(IIndexableObjectWrapper, IndexableObjectWrapper)
+
 
 class CatalogToolTests( TestCase ):
 
@@ -37,6 +48,7 @@ class CatalogToolTests( TestCase ):
 
 def test_suite():
     return TestSuite((
+        makeSuite( IndexableObjectWrapperTests ),
         makeSuite( CatalogToolTests ),
         ))
 

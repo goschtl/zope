@@ -6,6 +6,8 @@ def test_suite():
 
     return build_test_suite('Products.CMFCore.tests',[
         'test_ContentTypeRegistry',
+        'test_DynamicType',
+        'test_PortalContent',
         'test_PortalFolder',
         'test_TypesTool',
         'test_WorkflowTool',

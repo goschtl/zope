@@ -8,6 +8,7 @@ except ImportError:
     from Interface import verify_class_implementation as verifyClass
 
 from Products.CMFCore.DiscussionTool import DiscussionTool
+from Products.CMFCore.DiscussionTool import OldDiscussable
 
 
 class DiscussionToolTests(TestCase):
@@ -19,9 +20,19 @@ class DiscussionToolTests(TestCase):
         verifyClass(IOldstyleDiscussionTool, DiscussionTool)
 
 
+class OldDiscussableTests(TestCase):
+
+    def test_interface(self):
+        from Products.CMFCore.interfaces.Discussions \
+                import OldDiscussable as IOldDiscussable
+
+        verifyClass(IOldDiscussable, OldDiscussable)
+
+
 def test_suite():
     return TestSuite((
         makeSuite( DiscussionToolTests ),
+        makeSuite( OldDiscussableTests ),
         ))
 
 if __name__ == '__main__':

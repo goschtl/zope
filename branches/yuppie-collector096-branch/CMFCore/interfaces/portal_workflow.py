@@ -164,7 +164,7 @@ class WorkflowDefinition(Interface):
         '''
 
     # security.declarePrivate('doActionFor')
-    def doActionFor(ob, action, *args, **kw):
+    def doActionFor(ob, action, comment=''):
         '''
         Invoked by the portal_workflow tool.
         Allows the user to request a workflow action.  This method
@@ -179,7 +179,7 @@ class WorkflowDefinition(Interface):
         '''
 
     # security.declarePrivate('getInfoFor')
-    def getInfoFor(ob, name, default, *args, **kw):
+    def getInfoFor(ob, name, default):
         '''
         Invoked by the portal_workflow tool.
         Allows the user to request information provided by the

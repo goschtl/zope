@@ -25,11 +25,20 @@ from utils import _dtmldir, getToolByName
 
 import re, os, string, urllib
 
+from interfaces.ContentTypeRegistry \
+        import ContentTypeRegistryPredicate as IContentTypeRegistryPredicate
+from interfaces.ContentTypeRegistry \
+        import ContentTypeRegistry as IContentTypeRegistry
+
+
 class MajorMinorPredicate( SimpleItem ):
     """
         Predicate matching on 'major/minor' content types.
         Empty major or minor implies wildcard (all match).
     """
+
+    __implements__ = IContentTypeRegistryPredicate
+
     major = minor = None
     PREDICATE_TYPE  = 'major_minor'
 
@@ -74,10 +83,11 @@ class MajorMinorPredicate( SimpleItem ):
     #   ContentTypeRegistryPredicate interface
     #
     security.declareObjectPublic()
-    def __call__( self, name, typ, body, SLASH_SPLIT=re.compile( '/' ) ):
+    def __call__( self, name, typ, body ):
         """
             Return true if the rule matches, else false.
         """
+        SLASH_SPLIT = re.compile( '/' )
         if self.major is None:
             return 0
 
@@ -113,6 +123,9 @@ class ExtensionPredicate( SimpleItem ):
     """
         Predicate matching on filename extensions.
     """
+
+    __implements__ = IContentTypeRegistryPredicate
+
     extensions = None
     PREDICATE_TYPE  = 'extension'
 
@@ -174,6 +187,9 @@ class MimeTypeRegexPredicate( SimpleItem ):
         string patterns (other objects conforming to 'match' can
         also be passed).
     """
+
+    __implements__ = IContentTypeRegistryPredicate
+
     pattern         = None
     PREDICATE_TYPE  = 'mimetype_regex'
 
@@ -227,6 +243,9 @@ class NameRegexPredicate( SimpleItem ):
         for string patterns (other objects conforming to 'match'
         and 'pattern' can also be passed).
     """
+
+    __implements__ = IContentTypeRegistryPredicate
+
     pattern         = None
     PREDICATE_TYPE  = 'name_regex'
 
@@ -298,6 +317,9 @@ class ContentTypeRegistry( SimpleItem ):
     """
         Registry for rules which map PUT args to a CMF Type Object.
     """
+
+    __implements__ = IContentTypeRegistry
+
     meta_type = 'Content Type Registry'
     id = 'content_type_registry'
 

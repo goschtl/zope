@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
-""" Membership data storage tool interface.
+""" Memberdata storage tool interface.
 
 $Id$
 """

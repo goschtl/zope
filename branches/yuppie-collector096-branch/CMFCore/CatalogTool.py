@@ -34,10 +34,14 @@ from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import AccessInactivePortalContent
 from Acquisition import aq_base
 
+from interfaces.portal_catalog \
+        import IndexableObjectWrapper as IIndexableObjectWrapper
 from interfaces.portal_catalog import portal_catalog as ICatalogTool
 
 
 class IndexableObjectWrapper:
+
+    __implements__ = IIndexableObjectWrapper
 
     def __init__(self, vars, ob):
         self.__vars = vars

@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
-""" Caching tool interface.
+""" Caching policies tool interface.
 
 $Id$
 """
