@@ -1,5 +1,9 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 
+  <!-- Browser directives for the utility service and for individual
+       utility objects -->
+
+  <!-- "Add service" menu entry to add a utility service -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
       menu="add_service"
@@ -8,6 +12,9 @@
       permission="zope.ManageServices"
       />
 
+  <!-- ZMI tab named "Configurations" for utility objects.
+       Given a utility object this lets you view all configurations
+       available for it. -->
   <page
       for="zope.app.interfaces.services.utility.ILocalUtility"
       name="useConfiguration.html"
@@ -17,6 +24,7 @@
       menu="zmi_views" title="Configurations"
       />
 
+  <!-- ZMI tab named "Utilites" for the utility service -->
   <page
       for="zope.app.interfaces.services.utility.ILocalUtilityService"
       name="utilities.html"
@@ -27,6 +35,16 @@
       title="Utilities"
       />
 
+  <!-- Configuration page for utility objects.  You get here by
+       clicking on the (configure) link for a particular utility
+       in the "Utilities" tab of the utility service.  It shows
+       a menu of different configurations, at most one of which
+       is active.  You can activate a different configuration, or
+       click on an individual configuration to edit it.
+       (Note that this page doesn't really apply to a single utility,
+       it applies to a single "utility registration".  That is a
+       combination of a name and a provided interface, where the name
+       may be empty.) -->
   <page
       for="zope.app.interfaces.services.utility.ILocalUtilityService"
       name="configureutility.html"
@@ -35,6 +53,10 @@
       permission="zope.ManageServices"
       />
 
+  <!-- When creating a new utility object, you are taken to this
+       form to configure it.  The form lets you choose a name,
+       an interface, a permission, and a registration status
+       (Unregistered, Registered or Active). -->
   <addform
       label="New Utility Configuration"
       for="zope.app.interfaces.services.utility.ILocalUtility"
@@ -48,6 +70,10 @@
       fields="name interface componentPath permission status"
       />
 
+  <!-- When editing the configuration of an existing utility object,
+       you are taken to this form.  It is similar to the above add
+       form, but doesn't let you change the name, interface or path.
+       (Thus leaving only permission and registration status.) -->
   <editform
       name="index.html"
       menu="zmi_views" title="Edit"
