@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_file.py,v 1.3 2003/02/03 15:08:34 jim Exp $
+$Id: test_file.py,v 1.4 2003/04/14 17:15:20 stevea Exp $
 """
 
 import unittest
@@ -22,7 +22,6 @@ from zope.interface.verify import verifyClass
 from zope.app.content.file import FileChunk, FileReadFile, FileWriteFile
 
 class TestFileAdapters:
-    
 
     def test_ReadFile(self):
         file = self._makeFile()
@@ -42,37 +41,28 @@ class Test(unittest.TestCase, TestFileAdapters):
     def _makeFile(self, *args, **kw):
         """ """
         from zope.app.content.file import File
-
         return File(*args, **kw)
 
-
     def testEmpty(self):
-
         file = self._makeFile()
 
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), '')
 
-
     def testConstructor(self):
-
         file = self._makeFile('Foobar')
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), 'Foobar')
-
 
         file = self._makeFile('Foobar', 'text/plain')
         self.assertEqual(file.getContentType(), 'text/plain')
         self.assertEqual(file.getData(), 'Foobar')
 
-
         file = self._makeFile(data='Foobar', contentType='text/plain')
         self.assertEqual(file.getContentType(), 'text/plain')
         self.assertEqual(file.getData(), 'Foobar')
 
-
     def testMutators(self):
-
         file = self._makeFile()
 
         file.setContentType('text/plain')
@@ -85,9 +75,7 @@ class Test(unittest.TestCase, TestFileAdapters):
         self.assertEqual(file.getContentType(), 'text/html')
         self.assertEqual(file.getData(), 'Blah')
 
-
     def testLargeDataInput(self):
-
         file = self._makeFile()
 
         # Insert as string
@@ -110,14 +98,15 @@ class Test(unittest.TestCase, TestFileAdapters):
         self.assertEqual(file.getSize(), 6*100000)
         self.assertEqual(file.getData(), 'Foobar'*100000)
 
+    def testNoneDataInput(self):
+        file = self._makeFile()
+        self.assertRaises(TypeError, file.setData, None)
 
     def testInterface(self):
-
         from zope.app.content.file import File, IFile
 
         self.failUnless(IFile.isImplementedByInstancesOf(File))
         self.failUnless(verifyClass(IFile, File))
-
 
     def testEdit(self):
         file = self._makeFile()

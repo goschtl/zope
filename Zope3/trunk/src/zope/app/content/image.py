@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.6 2003/03/12 10:05:08 stevea Exp $
+$Id: image.py,v 1.7 2003/04/14 17:15:20 stevea Exp $
 """
 import struct
 from zope.app.content.file import File
@@ -28,22 +28,18 @@ __metaclass__ = type
 class Image(File):
     __implements__ = IImage
 
-    def __init__(self, data=None):
+    def __init__(self, data=''):
         '''See interface IFile'''
         self.contentType, self._width, self._height = getImageInfo(data)
         self.data = data
 
-
     def setData(self, data):
-
         super(Image, self).setData(data)
 
-        if data is not None:
-            contentType = None
-            contentType, self._width, self._height = getImageInfo(self.data)
-            if contentType:
-                self.contentType = contentType
-
+        contentType = None
+        contentType, self._width, self._height = getImageInfo(self.data)
+        if contentType:
+            self.contentType = contentType
 
     def getImageSize(self):
         '''See interface IImage'''

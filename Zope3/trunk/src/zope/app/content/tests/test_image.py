@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.5 2003/02/03 15:08:34 jim Exp $
+$Id: test_image.py,v 1.6 2003/04/14 17:15:20 stevea Exp $
 """
 
 import unittest
@@ -47,11 +47,10 @@ class TestImage(unittest.TestCase):
     def _makeImage(self, *args, **kw):
         return Image(*args, **kw)
 
-
     def testEmpty(self):
         file = self._makeImage()
         self.assertEqual(file.getContentType(), '')
-        self.assertEqual(file.getData(), None)
+        self.assertEqual(file.getData(), '')
 
     def testConstructor(self):
         file = self._makeImage('Data')
@@ -85,7 +84,7 @@ class TestFileAdapters(test_file.TestFileAdapters, unittest.TestCase):
 
     def _makeFile(self, *args, **kw):
         return Image(*args, **kw)
-    
+
 
 class DummyImage:
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.6 2003/03/12 10:07:27 stevea Exp $
+$Id: file.py,v 1.7 2003/04/14 17:15:20 stevea Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -79,20 +79,19 @@ class File(Persistent):
             size = len(data)
             if size < MAXCHUNKSIZE:
                 self._data, self._size = FileChunk(data), size
-                return None
+                return
             self._data, self._size = FileChunk(data), size
-            return None
+            return
 
         # Handle case when data is None
         if data is None:
-            self._data, self._size = None, 0
-            return None
+            raise TypeError('Cannot set None data on a file.')
 
         # Handle case when data is already a FileChunk
         if hasattr(data, '__class__') and data.__class__ is FileChunk:
             size = len(data)
             self._data, self._size = data, size
-            return None
+            return
 
         # Handle case when data is a file object
         seek = data.seek
@@ -105,9 +104,9 @@ class File(Persistent):
             seek(0)
             if size < MAXCHUNKSIZE:
                 self._data, self._size = read(size), size
-                return None
+                return
             self._data, self._size = FileChunk(read(size)), size
-            return None
+            return
 
         # Make sure we have an _p_jar, even if we are a new object, by
         # doing a sub-transaction commit.
@@ -119,7 +118,7 @@ class File(Persistent):
             # Ugh
             seek(0)
             self._data, self._size = FileChunk(read(size)), size
-            return None
+            return
 
         # Now we're going to build a linked list from back
         # to front to minimize the number of database updates
@@ -153,7 +152,7 @@ class File(Persistent):
             end = pos
 
         self._data, self._size = next, size
-        return None
+        return
 
     def getSize(self):
         '''See interface IFile'''
@@ -196,15 +195,12 @@ class FileChunk(Persistent):
     def __init__(self, data):
         self._data = data
 
-
     def __getslice__(self, i, j):
         return self._data[i:j]
-
 
     def __len__(self):
         data = str(self)
         return len(data)
-
 
     def __str__(self):
         next = self.next
