@@ -13,27 +13,28 @@
 ##############################################################################
 """Form Directives Tests
 
-$Id: test_directives.py,v 1.3 2004/03/23 22:08:07 srichter Exp $
+$Id: test_directives.py,v 1.4 2004/04/25 16:19:18 srichter Exp $
 """
 import os
 import unittest
 from cStringIO import StringIO
+from zope.component.exceptions import ComponentLookupError
+from zope.exceptions import NotFoundError
+from zope.interface import Interface, implements
+from zope.publisher.browser import TestRequest
 
 from zope.app import zapi
-from zope.interface import Interface, implements
+import zope.app.component
+import zope.app.form.browser
+import zope.app.publisher.browser
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.component import getDefaultViewName, getResource
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.proxy import ProxyFactory
 
-from zope.component.exceptions import ComponentLookupError
-
-from zope.publisher.browser import TestRequest
-
-import zope.app.publisher.browser
-
-from zope.schema import TextLine
+from zope.schema import TextLine, Int
+from zope.app.form.browser import TextWidget
 
 tests_path = os.path.join(
     os.path.split(zope.app.publisher.browser.__file__)[0],
@@ -63,6 +64,15 @@ class Ob:
 
 ob = Ob()
 
+class ISomeWidget(Interface):
+    displayWidth = Int(
+        title=u"Display Width",
+        default=20,
+        required=True)
+
+class SomeWidget(TextWidget):
+    implements(ISomeWidget)
+
 
 class Test(PlacelessSetup, unittest.TestCase):
 
@@ -80,6 +90,31 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         ps =  zapi.getService(None, zapi.servicenames.Presentation)
         
+    def testAddForm(self):
+        self.assertEqual(zapi.queryView(ob, 'test', request),
+                         None)
+        xmlconfig(StringIO(template % ("""
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ITextLine"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.TextWidget"
+              permission="zope.Public"
+              />
+
+          <browser:addform
+              for="zope.app.form.browser.tests.test_directives.IC"
+              schema="zope.app.form.browser.tests.test_directives.Schema"
+              name="add.html"
+              label="Add a ZPT page"
+              fields="text"
+              permission="zope.Public" />
+            """)))
+
+        v = zapi.queryView(ob, 'add.html', request)
+        # expect component lookup as standard macros are not configured
+        self.assertRaises(NotFoundError, v)
+
     def testEditForm(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),
                          None)
@@ -109,7 +144,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testEditFormWithMenu(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),
                          None)
-        xmlconfig(StringIO(template % ("""
+        xmlconfig(StringIO(template % ('''
           <browser:menu id="test_menu" title="Test menu"/>
           <view
               type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -128,14 +163,86 @@ class Test(PlacelessSetup, unittest.TestCase):
               menu="test_menu"
               title="Test View"
               />
-            """)))
+            ''')))
 
         v = zapi.queryView(ob, 'edit.html', request)
         # expect component lookup as standard macros are not configured
         self.assertRaises(ComponentLookupError, v)
 
 
-# XXX Tests for AddFormDirective are missing
+    def testAddFormWithWidget(self):
+        self.assertEqual(zapi.queryView(ob, 'test', request),
+                         None)
+        xmlconfig(StringIO(template % ('''
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ITextLine"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.TextWidget"
+              permission="zope.Public"
+              />
+
+          <browser:addform
+              for="zope.app.form.browser.tests.test_directives.IC"
+              schema="zope.app.form.browser.tests.test_directives.Schema"
+              name="add.html"
+              label="Add a ZPT page"
+              fields="text"
+              permission="zope.Public">
+
+            <widget
+                field="text"
+                class="zope.app.form.browser.tests.test_directives.SomeWidget"
+                displayWidth="30"
+                extra="foo"
+                />
+
+          </browser:addform>
+            ''')), )
+
+        view = zapi.queryView(ob, 'add.html', request)
+        self.assert_(hasattr(view, 'text_widget'))
+        self.assert_(isinstance(view.text_widget, SomeWidget))
+        self.assertEqual(view.text_widget.extra, u'foo')
+        self.assertEqual(view.text_widget.displayWidth, 30)
+
+
+    def testEditFormWithWidget(self):
+        self.assertEqual(zapi.queryView(ob, 'test', request),
+                         None)
+        xmlconfig(StringIO(template % ('''
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ITextLine"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.TextWidget"
+              permission="zope.Public"
+              />
+
+          <browser:editform
+              for="zope.app.form.browser.tests.test_directives.IC"
+              schema="zope.app.form.browser.tests.test_directives.Schema"
+              name="edit.html"
+              label="Edit a ZPT page"
+              fields="text"
+              permission="zope.Public">
+
+            <widget
+                field="text"
+                class="zope.app.form.browser.tests.test_directives.SomeWidget"
+                displayWidth="30"
+                extra="foo"
+                />
+
+          </browser:editform>
+            ''')), )
+
+        view = zapi.queryView(ob, 'edit.html', request)
+        self.assert_(hasattr(view, 'text_widget'))
+        self.assert_(isinstance(view.text_widget, SomeWidget))
+        self.assertEqual(view.text_widget.extra, u'foo')
+        self.assertEqual(view.text_widget.displayWidth, 30)
+
 
 def test_suite():
     loader=unittest.TestLoader()
