@@ -13,7 +13,7 @@
 ##############################################################################
 """Support for reading and generating PKG-INFO files.
 
-$Id: publication.py,v 1.1 2004/03/05 21:39:19 fdrake Exp $
+$Id: publication.py,v 1.2 2004/03/09 21:45:25 fdrake Exp $
 """
 from distutils.dist import DistributionMetadata
 from distutils.util import rfc822_escape
@@ -129,6 +129,10 @@ def _get_single_header(msg, name, default=None):
     if headers and len(headers) > 1:
         raise ValueError("header %r can only be given once" % name)
     if headers:
-        return headers[0]
+        v = headers[0]
+        if v == "UNKNOWN":
+            return None
+        else:
+            return v
     else:
         return default
