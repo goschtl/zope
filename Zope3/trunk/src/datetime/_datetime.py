@@ -1275,6 +1275,7 @@ class datetime(date):
         "Construct a datetime from a POSIX timestamp (like time.time())."
         y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
         us = int(round((t % 1.0) * 1000000))
+        ss = min(ss, 59)    # clamp out leap seconds if the platform has them
         return cls(y, m, d, hh, mm, ss, us)
     fromtimestamp = classmethod(fromtimestamp)
 
@@ -1293,6 +1294,7 @@ class datetime(date):
         "Construct a UTC datetime from a POSIX timestamp (like time.time())."
         y, m, d, hh, mm, ss, weekday, jday, dst = _time.gmtime(t)
         us = int((t % 1.0) * 1000000)
+        ss = min(ss, 59)    # clamp out leap seconds if the platform has them
         return cls(y, m, d, hh, mm, ss, us)
     utcfromtimestamp = classmethod(utcfromtimestamp)
 
@@ -1542,6 +1544,7 @@ class datetimetz(datetime):
         """
         y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
         us = int((t % 1.0) * 1000000)
+        ss = min(ss, 59)    # clamp out leap seconds if the platform has them
         return cls(y, m, d, hh, mm, ss, us, tzinfo)
     fromtimestamp = classmethod(fromtimestamp)
 
