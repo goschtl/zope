@@ -65,7 +65,7 @@ class AnnotationGrantInfo(object):
     def principalPermissionGrant(self, principal, permission):
         prinper = self.prinper.get(principal)
         if prinper:
-            return prinper.get(permission)
+            return prinper.get(permission, Unset)
         return Unset
 
     def getRolesForPermission(self, permission):
