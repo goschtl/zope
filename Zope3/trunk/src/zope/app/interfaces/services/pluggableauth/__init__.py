@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.9 2003/12/18 09:57:13 pnaveen Exp $
+$Id: __init__.py,v 1.10 2004/02/24 14:24:12 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IContainer, IContained
@@ -58,7 +58,6 @@ class IUserSchemafied(IPrincipal):
         """Confirm whether 'password' is the password of the user."""
 
 
-
 class IPrincipalSource(Interface):
     """A read-only source of IPrincipals.
     """
@@ -90,7 +89,6 @@ class IPrincipalSource(Interface):
         """
 
 
-
 class IPluggableAuthenticationService(IAuthenticationService, IContainer):
     """An AuthenticationService that can contain multiple pricipal sources.
     """
@@ -104,6 +102,7 @@ class IPluggableAuthenticationService(IAuthenticationService, IContainer):
 
         If id is not present, raise KeyError.
         """
+
 
 class ILoginPasswordPrincipalSource(IPrincipalSource):
     """ A principal source which can authenticate a user given a
@@ -120,6 +119,7 @@ class ILoginPasswordPrincipalSource(IPrincipalSource):
         have a login which is his email address.  He'd like to be able
         to change his login when his email address changes without
         effecting his security profile on the site.  """
+
 
 class IContainerPrincipalSource(IPrincipalSource, IContained):
     """This is a marker interface for specifying principal sources that are

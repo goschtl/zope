@@ -11,12 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Interfaces for WfMC workflow process definition.
 
 Status: Draft
 
-$Id: wfmc.py,v 1.2 2003/08/16 00:43:37 srichter Exp $
+$Id: wfmc.py,v 1.3 2004/02/24 14:25:37 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 

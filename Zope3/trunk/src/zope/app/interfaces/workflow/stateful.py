@@ -13,9 +13,8 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.20 2003/09/21 17:31:56 jim Exp $
+$Id: stateful.py,v 1.21 2004/02/24 14:25:37 srichter Exp $
 """
-
 import zope.schema
 from zope.app.security.permission import PermissionField
 
@@ -279,8 +278,9 @@ class IStatefulProcessInstance(IProcessInstance):
 class IContentProcessRegistry(Interface):
     """Content Type <-> Process Definitions Registry
 
-    This is a registry for mapping content types (interface) to workflow process
-    definitions (by name)."""
+    This is a registry for mapping content types (interface) to workflow
+    process definitions (by name).
+    """
 
     def register(iface, name):
         """Register a new process definition (name) for the interface iface."""
@@ -299,7 +299,7 @@ class IContentProcessRegistry(Interface):
 class IContentWorkflowsManager(IContentProcessRegistry):
     """A Content Workflows Manager.
 
-    it associates content objects with some workflow process definitions.
+    It associates content objects with some workflow process definitions.
     """
 
     def subscribe():

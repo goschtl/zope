@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Service for storing IAnnotations for principals.
 
-"""Service for storing IAnnotations for principals."""
-
+$Id: principalannotation.py,v 1.6 2004/02/24 14:24:12 srichter Exp $
+"""
 from zope.interface import Interface
 
 

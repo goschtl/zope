@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: auth.py,v 1.6 2003/06/23 22:46:16 chrism Exp $
+"""User and Authentication Service Interfaces.
+
+$Id: auth.py,v 1.7 2004/02/24 14:24:12 srichter Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.security import IPrincipal
