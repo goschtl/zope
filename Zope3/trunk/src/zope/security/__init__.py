@@ -22,3 +22,4 @@ $Id$
 import zope.proxy
 
 from zope.security.management import checkPermission
+from zope.security.checker import canWrite, canAccess
