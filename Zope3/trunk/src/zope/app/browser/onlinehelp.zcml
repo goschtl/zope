@@ -2,13 +2,6 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
-  <page
-      name="find_help_topics"
-      for="*"
-      class=".onlinehelp.FindRelevantHelpTopics"
-      permission="zope.Public"
-      allowed_attributes="__call__" />
-
   <pages
       for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
       permission="zope.Public"

@@ -223,43 +223,6 @@
               </div>
             </div>
 
-            <!-- Do not remove! This box will show the contextually related 
-                 help topics and point to the Onlinehelp skin -->
-            <div class="box" id="help"
-                tal:define="results view/@@find_help_topics|nothing"
-                tal:condition="results">
-              <h4 i18n:translate="">Online Help</h4>
-              <div class="body">
-                <div tal:repeat="entry results" tal:omit-tag="">
-                <a href="#"
-                    tal:define="url string:'${entry/url}';
-                                name string:'OnlineHelp';
-                                settings string:'height=400
-                                                ,width=700
-                                                ,resizable=1
-                                                ,scrollbars=yes
-                                                ,location=yes
-                                                ,status=yes
-                                                ,toolbar=yes
-                                                ,menubar=yes'"
-                    tal:attributes="href python:'javascript:popup('
-                                                + url + ',' 
-                                                + name + ','
-                                                + settings +')'"
-                    >
-                  <div tal:define="oddrow repeat/entry/odd"
-                       tal:attributes="class python:oddrow and 'even' or 'odd'"
-                       tal:content="entry/topic/title"
-                       i18n:translate="">Topic Title
-                  </div>
-                </a>
-              </div>
-            </div>
-
-
-            <div class="spacer">
-              &nbsp;
-            </div>
 
           </div>
 
