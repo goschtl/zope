@@ -106,7 +106,7 @@ def init_table():
          'remote': None},
 
         {'path': "ZopePTK",
-         'addrs': 'zope-ptk@zope.org',
+         'addrs': 'zope-ptk@mail.zope.org',
          'remote': None},
 
         {'path': "Packages/Products/XMLDocument",
