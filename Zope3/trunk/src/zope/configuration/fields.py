@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.3 2003/07/29 17:13:17 jim Exp $
+$Id: fields.py,v 1.4 2003/07/31 14:56:47 jim Exp $
 """
 
 import os
@@ -242,7 +242,7 @@ class MessageID(schema.Text):
 
     With the domain specified:
 
-    >>> context.domain = 'testing'
+    >>> context.i18n_domain = 'testing'
 
     We can get a message id:
 
@@ -268,7 +268,7 @@ class MessageID(schema.Text):
     __factories = {}
 
     def fromUnicode(self, u):
-        domain = getattr(self.context, 'domain', '')
+        domain = getattr(self.context, 'i18n_domain', '')
         if not domain:
             raise ConfigurationError(
                 "You must specify a an i18n translation domain")
