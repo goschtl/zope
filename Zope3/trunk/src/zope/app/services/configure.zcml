@@ -291,7 +291,10 @@
         permission="zope.ManageCode"
         interface="zodb.code.interfaces.IPersistentModuleManager"
         />
-    </content>
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+        />
+  </content>
 
 <!-- View Packages -->
 
