@@ -16,23 +16,23 @@
 
 Command line syntax summary:
 
-%(program)s [global_options] help [COMMAND ...]
-%(program)s [global_options] checkout [local_options] URL [TARGETDIR]
-%(program)s [global_options] update [local_options] [TARGET ...]
-%(program)s [global_options] commit [local_options] [TARGET ...]
-%(program)s [global_options] diff [local_options] [TARGET ...]
-%(program)s [global_options] status [local_options] [TARGET ...]
-%(program)s [global_options] add [local_options] PATH ...
-%(program)s [global_options] mkdir [local_options] PATH ...
-%(program)s [global_options] remove [local_options] TARGET ...
-%(program)s [global_options] resolve [local_options] PATH ...
-%(program)s [global_options] checkin [local_options] URL [TARGETDIR]
+%(program)s help [COMMAND ...]
+%(program)s checkout [local_options] URL [TARGETDIR]
+%(program)s update [local_options] [TARGET ...]
+%(program)s commit [local_options] [TARGET ...]
+%(program)s diff [local_options] [TARGET ...]
+%(program)s status [local_options] [TARGET ...]
+%(program)s add [local_options] PATH ...
+%(program)s mkdir [local_options] PATH ...
+%(program)s remove [local_options] TARGET ...
+%(program)s resolve [local_options] PATH ...
+%(program)s checkin [local_options] URL [TARGETDIR]
 
-``%(program)s -h'' prints the global help (this message)
-``%(program)s command -h'' prints the local help for the command
+``%(program)s help'' prints the global help (this message)
+``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.34 2003/08/12 18:11:14 fdrake Exp $
+$Id: main.py,v 1.35 2003/08/12 18:23:34 fdrake Exp $
 """
 
 import os
