@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_mkcol.py,v 1.1 2003/06/23 17:21:09 sidnei Exp $
+"""MKCOL tests
+
+$Id: test_mkcol.py,v 1.2 2003/08/02 17:26:15 srichter Exp $
 """
 __metaclass__ = type
 

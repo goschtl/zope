@@ -11,20 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: metaconfigure.py,v 1.1 2003/05/20 15:46:38 sidnei Exp $
-"""
+"""Configuration handlers for 'dav' namespace.
 
+$Id: metaconfigure.py,v 1.2 2003/08/02 17:26:12 srichter Exp $
+"""
 from zope.app.services.servicenames import DAVSchema
-from zope.app.component.metaconfigure import handler, resolveInterface
-from zope.configuration.action import Action
+from zope.app.component.metaconfigure import handler
 
 def interface(_context, for_, interface):
-    interface = resolveInterface(_context, interface)
-    return [
-        Action(
-          discriminator = None,
+    _context.action(
+          discriminator = ('dav', 'provideInterface', for_, interface),
           callable = handler,
-          args = (DAVSchema, 'provideInterface', for_, interface)
-        ),
-      ]
+          args = (DAVSchema, 'provideInterface', for_, interface) )
+

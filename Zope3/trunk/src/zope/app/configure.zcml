@@ -1,13 +1,11 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'
-               xmlns:global_translation="http://namespaces.zope.org/gts"
-               >
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:global_translation="http://namespaces.zope.org/gts">
 
-<!-- Meta configuration (new directives) -->
-
+  <!-- Meta configuration (new directives) -->
   <include file="meta.zcml" />
 
-<!-- Ordinary Application (non-view) configuration) -->
-
+  <!-- Ordinary Application (non-view) configuration) -->
   <include package="zope.app.component" />
   <include package="zope.app.security" />
   <include package="zope.app.event" />
@@ -110,28 +108,23 @@
 
   <include package="zope.app.interfaces" />
 
-<!-- Views -->
-
+  <!-- Views -->
   <include package="zope.app.browser" />
   <include package="zope.app.ftp" />
   <include package="zope.app.xmlrpc" />
   <include package="zope.app.http" />
 
-<!-- Translations -->
+  <!-- Translations -->
   <global_translation:registerTranslations directory="translation_files" />
 
-<!-- Filesystem synchronization -->
-
+  <!-- Filesystem synchronization -->
   <include package="zope.app.fssync" />
 
-<!-- WebDAV Support -->
-
+  <!-- WebDAV Support -->
   <include package="zope.app.dav" />
 
-<!-- Services -->
-
+   <!-- Services -->
   <include package="zope.app.rdb" file="service.zcml" />
-
   <include package="zope.app.catalog"/>
 
-</zopeConfigure>
+</configure>

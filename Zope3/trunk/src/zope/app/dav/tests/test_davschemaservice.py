@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""DAV Schema Service Tests
+
+$Id: test_davschemaservice.py,v 1.3 2003/08/02 17:26:15 srichter Exp $
+"""
 from zope.interface import Interface
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.cleanup import CleanUp
@@ -23,25 +27,22 @@ class B(Interface):
     pass
 
 class I(Interface):
-    """bah blah
-    """
+    pass
 
 class I2(B):
-    """eek
-    """
+    """eek"""
 
 class I3(B):
-    """
-    """
+
     def one():
         """method one"""
 
     def two():
         """method two"""
 
+
 class Test(CleanUp, TestCase):
-    """Test Interface for DAVSchemaService Instance.
-    """
+    """Test Interface for DAVSchemaService Instance"""
 
     def testInterfaceVerification(self):
 
@@ -52,14 +53,18 @@ class Test(CleanUp, TestCase):
 
         self.assertRaises(ComponentLookupError,
                           service.getInterface, 'http://www.foo.bar/boxschema/')
-        self.assertEqual(service.queryInterface('http://www.foo.bar/boxschema/'), None)
-        self.assertEqual(service.queryInterface('http://www.foo.bar/boxschema/', 42), 42)
+        self.assertEqual(
+            service.queryInterface('http://www.foo.bar/boxschema/'), None)
+        self.assertEqual(
+            service.queryInterface('http://www.foo.bar/boxschema/', 42), 42)
         self.failIf(service.searchInterface(''))
 
         service.provideInterface('http://www.foo.bar/boxschema/', I)
 
-        self.assertEqual(service.getInterface('http://www.foo.bar/boxschema/'), I)
-        self.assertEqual(service.queryInterface('http://www.foo.bar/boxschema/'), I)
+        self.assertEqual(
+            service.getInterface('http://www.foo.bar/boxschema/'), I)
+        self.assertEqual(
+            service.queryInterface('http://www.foo.bar/boxschema/'), I)
         self.assertEqual(list(service.searchInterface('')), [I])
         self.assertEqual(list(service.searchInterface(base=B)), [])
 
@@ -72,8 +77,10 @@ class Test(CleanUp, TestCase):
         self.assertEqual(list(service.searchInterface('I2')), [I2])
         self.assertEqual(list(service.searchInterface('eek')), [I2])
 
-        self.assertEqual(list(service.searchInterfaceIds('I2')), ['http://www.foo.bag/boxschema/'])
-        self.assertEqual(list(service.searchInterfaceIds('eek')), ['http://www.foo.bag/boxschema/'])
+        self.assertEqual(list(service.searchInterfaceIds('I2')),
+                         ['http://www.foo.bag/boxschema/'])
+        self.assertEqual(list(service.searchInterfaceIds('eek')),
+                         ['http://www.foo.bag/boxschema/'])
 
         service.provideInterface('http://www.foo.baz/boxschema/', I3)
         self.assertEqual(list(service.searchInterface('two')), [I3])
@@ -91,13 +98,6 @@ class Test(CleanUp, TestCase):
 
         ns = service.queryNamespace(I3, '')
         self.assertEqual(ns, 'http://www.foo.baz/boxschema/')
-
-def test_suite():
-    return TestSuite((makeSuite(Test),))
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')
-    self.assertEqual(list(service.searchInterface('two')), [I3])
 
 
 def test_suite():

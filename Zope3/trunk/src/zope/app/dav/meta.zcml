@@ -1,10 +1,11 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
 
-  <directives namespace="http://namespaces.zope.org/zope/dav">
-    <directive name="provideInterface"
-               attributes="for interface"
-               handler=" zope.app.dav.metaconfigure.interface"
-    />
-  </directives>
+  <meta:directive 
+      namespace="http://namespaces.zope.org/dav"
+      name="provideInterface"
+      schema=".metadirectives.IProvideInterfaceDirective"
+      handler=".metaconfigure.interface"/>
 
-</zopeConfigure>
+</configure>
