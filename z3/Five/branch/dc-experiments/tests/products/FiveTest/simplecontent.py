@@ -5,7 +5,7 @@ from helpers import add_and_edit
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.Five.api import Traversable
 from zope.interface import implements
-from interfaces import ISimpleContent
+from interfaces import ISimpleContent, ICallableSimpleContent, IIndexSimpleContent
 
 class SimpleContent(SimpleItem, Traversable):
     implements(ISimpleContent)
@@ -29,6 +29,23 @@ class SimpleContent(SimpleItem, Traversable):
 
 InitializeClass(SimpleContent)
 
+class CallableSimpleContent(SimpleItem):
+    """A Viewable piece of content"""
+    implements(ICallableSimpleContent)
+
+    def __call__(self, *args, **kw):
+        """ """
+        return "Default __call__ called"
+
+class IndexSimpleContent(SimpleItem):
+    """A Viewable piece of content"""
+    implements(IIndexSimpleContent)
+
+    def index_html(self, *args, **kw):
+        """ """
+        return "Default index_html called"
+
+
 manage_addSimpleContentForm = PageTemplateFile(
     "www/simpleContentAdd", globals(),
     __name__ = 'manage_addSimpleContentForm')
@@ -36,5 +53,17 @@ manage_addSimpleContentForm = PageTemplateFile(
 def manage_addSimpleContent(self, id, title, REQUEST=None):
     """Add the simple content."""
     id = self._setObject(id, SimpleContent(id, title))
+    add_and_edit(self, id, REQUEST)
+    return ''
+
+def manage_addCallableSimpleContent(self, id, title, REQUEST=None):
+    """Add the viewable simple content."""
+    id = self._setObject(id, CallableSimpleContent(id, title))
+    add_and_edit(self, id, REQUEST)
+    return ''
+
+def manage_addIndexSimpleContent(self, id, title, REQUEST=None):
+    """Add the viewable simple content."""
+    id = self._setObject(id, IndexSimpleContent(id, title))
     add_and_edit(self, id, REQUEST)
     return ''

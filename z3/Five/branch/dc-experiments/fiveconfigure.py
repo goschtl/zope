@@ -18,7 +18,7 @@ import warnings
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
-
+from viewable import Viewable
 from traversable import Traversable
 
 def findProducts():
@@ -68,6 +68,12 @@ def implements(_context, class_, interface):
 
 def classTraversable(class_):
     # If a class already has this attribute, it means it is either a
+    # subclass of api.Viewable or was already processed with this
+    # directive; in either case, do nothing... except in the case were
+    # the class overrides the attribute instead of getting it from
+    # a base class. In this case, we suppose that the class probably
+    # didn't bother with the base classes attribute anyway.
+    # If a class already has this attribute, it means it is either a
     # subclass of api.Traversable or was already processed with this
     # directive; in either case, do nothing... except in the case were
     # the class overrides __bobo_traverse__ instead of getting it from
@@ -93,15 +99,72 @@ def classTraversable(class_):
 
 def traversable(_context, class_):
     _context.action(
-        discriminator = (class_,),
+        discriminator = ('five:traversable', class_,),
         callable = classTraversable,
         args = (class_,)
         )
 
 def viewable(_context, class_):
     dotted_name = "...%s" % class_.__name__
-    warnings.warn('<five:viewable class="%(k)s" /> is deprecated. '
-                  'Please switch to <five:traversable class="%(k)s" />' %
+    warnings.warn('<five:viewable class="%(k)s" /> has changed meaning. '
+                  'Please switch to <five:traversable class="%(k)s" />'
+                  'unless you know what you are doing.' %
                   {'k':dotted_name},
                   DeprecationWarning)
-    traversable(_context, class_)
+    _context.action(
+        discriminator = ('five:viewable', class_,),
+        callable = classViewable,
+        args = (class_,)
+        )
+
+def classViewable(class_):
+    # If a class already has this attribute, it means it is either a
+    # subclass of api.Viewable or was already processed with this
+    # directive; in either case, do nothing... except in the case were
+    # the class overrides the attribute instead of getting it from
+    # a base class. In this case, we suppose that the class probably
+    # didn't bother with the base classes attribute anyway.
+    if (hasattr(class_, '__five_viewable__') and
+        hasattr(class_, '__dict__') and
+        (not class_.__dict__.has_key('__browser_default__') and
+         not class_.__dict__.has_key('__call__') and
+         not class_.__dict__.has_key('index_html'))):
+        return
+
+    if not hasattr(class_, '__dict__'):
+        # XXX Should raise an error maybe?
+        return
+
+    if class_.__dict__.has_key('__browser_default__'):
+        # if there's an existing __browser_default__ hook already, use that
+        # as the fallback
+        setattr(class_, "__fallback_default__",
+                class_.__browser_default__)
+    else:
+        setattr(class_, "__fallback_default__",
+                Viewable.__fallback_default__)
+
+    if class_.__dict__.has_key('index_html'):
+        # if there's an existing index_html already, use that
+        # as the fallback
+        setattr(class_, "fallback_index_html__",
+                class_.index_html)
+    else:
+        setattr(class_, "fallback_index_html__",
+                Viewable.fallback_index_html__)
+
+    if class_.__dict__.has_key('__call__'):
+        # if there's an existing __call__ already, use that
+        # as the fallback
+        setattr(class_, "fallback_call__",
+                class_.__call__)
+    else:
+        setattr(class_, "fallback_call__",
+                Viewable.fallback_call__)
+
+
+    setattr(class_, '__browser_default__', Viewable.__browser_default__)
+    setattr(class_, '__call__', Viewable.__call__)
+    setattr(class_, 'index_html', Viewable.index_html)
+    setattr(class_, '__five_viewable__', True)
+

@@ -98,6 +98,12 @@
        />
 
     <meta:directive
+        name="defaultView"
+        schema="zope.app.publisher.browser.metadirectives.IDefaultViewDirective"
+        handler=".browserconfigure.defaultView"
+        />
+
+    <meta:directive
         name="page"
         schema="zope.app.publisher.browser.metadirectives.IPageDirective"
         handler=".browserconfigure.page"

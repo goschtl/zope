@@ -2,18 +2,48 @@
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:five="http://namespaces.zope.org/five">
 
-  <!-- this is a test whether five:viewable can be called more than
+  <!-- this is a test whether five:traversable can be called more than
        once on a class; SimpleContent inherits from api.Viewable, so
        one directive suffices here -->
 
   <five:traversable class=".simplecontent.SimpleContent" />
 
+  <five:viewable class=".simplecontent.SimpleContent" />
 
-  <!-- this tests whether five:viewable can be called on a class that
+  <browser:defaultView
+      for=".interfaces.ISimpleContent"
+      name="eagle.txt"
+      />
+
+  <!-- this tests whether five:traversable can be called on a class that
        already provides __bobo_traverse__, such as our FancyContent -->
 
   <five:traversable class=".fancycontent.FancyContent" />
 
+
+  <!-- this tests whether five:viewable can be called on a class that
+       already provides __call__, such as our
+       CallableSimpleContent
+  -->
+
+  <five:viewable class=".simplecontent.CallableSimpleContent" />
+
+  <browser:defaultView
+      for=".interfaces.ICallableSimpleContent"
+      name="__call__"
+      />
+
+  <!-- this tests whether five:viewable can be called on a class that
+       already provides index_html, such as our
+       IndexSimpleContent
+  -->
+
+  <five:viewable class=".simplecontent.IndexSimpleContent" />
+
+  <browser:defaultView
+      for=".interfaces.IIndexSimpleContent"
+      name="index_html"
+      />
 
   <adapter
       for=".interfaces.IAdaptable"

@@ -40,6 +40,10 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
     def afterSetUp(self):
         self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
+        self.folder.manage_addProduct['FiveTest'].manage_addCallableSimpleContent(
+            'testcall', 'TestCall')
+        self.folder.manage_addProduct['FiveTest'].manage_addIndexSimpleContent(
+            'testindex', 'TestIndex')
         uf = self.folder.acl_users
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
         self.login('manager')
@@ -217,12 +221,25 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             view = self.folder.unrestrictedTraverse(base % macro)
         self.failUnless(view)
 
+    def test_existing_call(self):
+        view = self.folder.unrestrictedTraverse('testcall')
+        self.assertEquals("Default __call__ called", view())
+
+    def test_existing_index(self):
+        view = self.folder.unrestrictedTraverse('testindex')
+        self.assertEquals("Default index_html called", view())
+
+
 class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     """Test a few publishing features"""
 
     def afterSetUp(self):
         self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
+        self.folder.manage_addProduct['FiveTest'].manage_addCallableSimpleContent(
+            'testcall', 'TestCall')
+        self.folder.manage_addProduct['FiveTest'].manage_addIndexSimpleContent(
+            'testindex', 'TestIndex')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -257,6 +274,18 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         url = '/test_folder_1_/testoid/++resource++style.css'
         response = self.publish(url, basic='manager:r00t')
         self.assertEquals(200, response.getStatus())
+
+    def test_existing_call(self):
+        response = self.publish('/test_folder_1_/testcall')
+        self.assertEquals("Default __call__ called", response.getBody())
+
+    def test_existing_index(self):
+        response = self.publish('/test_folder_1_/testindex')
+        self.assertEquals("Default index_html called", response.getBody())
+
+    def test_default_view(self):
+        response = self.publish('/test_folder_1_/testoid', basic='manager:r00t')
+        self.assertEquals("The eagle has landed", response.getBody())
 
 def test_suite():
     suite = unittest.TestSuite()

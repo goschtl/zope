@@ -147,6 +147,19 @@ class pages(zope_app_pages):
                     menu=menu, title=title,
                     **(self.opts))
 
+def defaultView(_context, name, for_=None):
+
+    type = IBrowserRequest
+
+    _context.action(
+        discriminator = ('defaultViewName', for_, type, name),
+        callable = handler,
+        args = (Presentation,
+                'setDefaultViewName', for_, type, name),
+        )
+
+    _handle_for(_context, for_)
+
 def _handle_for(_context, for_):
     if for_ is not None:
         _context.action(

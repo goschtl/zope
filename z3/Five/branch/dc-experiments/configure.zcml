@@ -41,6 +41,7 @@
 
   <!-- make Zope 2's REQUEST implement the right thing -->
   <five:implements class="ZPublisher.HTTPRequest.HTTPRequest"
-                   interface="zope.publisher.interfaces.browser.IBrowserRequest" />
+                   interface="zope.publisher.interfaces.browser.IBrowserRequest"
+                   />
 
 </configure>
