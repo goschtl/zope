@@ -13,19 +13,15 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.41 2004/03/05 22:09:31 jim Exp $
+$Id: interfaces.py,v 1.42 2004/03/19 12:00:08 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
 from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 from zope.schema._bootstrapfields import Container, Iterable
 
-try:
-    from zope.i18n import MessageIDFactory
-    _ = MessageIDFactory("zope")
-except ImportError:
-    import gettext
-    gettext.install(domain='zope')
+from zope.i18nmessageid import MessageIDFactory
+_ = MessageIDFactory("zope")
 
 # Import from _bootstrapinterfaces only because other packages will expect
 # to find these interfaces here.

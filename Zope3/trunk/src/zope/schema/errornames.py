@@ -13,19 +13,17 @@
 ##############################################################################
 """Common Schema Error Names
 
-$Id: errornames.py,v 1.6 2003/11/24 17:02:29 dominikhuber Exp $
+$Id: errornames.py,v 1.7 2004/03/19 12:00:08 jim Exp $
 
 Defines common validation error messages.
 Using these symbols instead of strings makes unit tests less fragile,
 as the strings are only defined in one place. Otherwise, this module
 serves no real function.
 """
-try:
-    from zope.i18n import MessageIDFactory
-    _ = MessageIDFactory("zope")
-except ImportError:
-    import gettext
-    gettext.install(domain='zope')
+
+from zope.i18nmessageid import MessageIDFactory
+_ = MessageIDFactory("zope")
+
 
 WrongType = _(u'Wrong type')
 

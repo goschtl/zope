@@ -13,14 +13,14 @@
 ##############################################################################
 """Message ID tests.
 
-$Id: test_messageid.py,v 1.6 2004/03/08 23:36:00 srichter Exp $
+$Id: tests.py,v 1.1 2004/03/19 12:00:05 jim Exp $
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.i18n.messageid'),
+        DocTestSuite('zope.i18nmessageid.messageid'),
         ))
 
 if __name__ == '__main__':

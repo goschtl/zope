@@ -14,10 +14,12 @@
 """
 This set of tests exercises Objects.
 
-$Id: test_objectfield.py,v 1.2 2003/12/17 09:52:02 dominikhuber Exp $
+$Id: test_objectfield.py,v 1.3 2004/03/19 12:00:09 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from zope.i18n import MessageIDFactory
+
+from zope.i18nmessageid import MessageIDFactory
+
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Object, TextLine
 from zope.schema import errornames
