@@ -16,11 +16,12 @@
 These exceptions are so general purpose that they don't belong in Zope
 application-specific packages.
 
-$Id: __init__.py,v 1.2 2002/12/25 14:13:38 jim Exp $
+$Id: __init__.py,v 1.3 2003/02/04 20:21:59 stevea Exp $
 """
 
-from zope.exceptions._zope_error import ZopeError
-from zope.exceptions.unauthorized import Unauthorized
-from zope.exceptions._notfounderror import NotFoundError
+from zope.exceptions._zope_error import ZopeError, IZopeError
+from zope.exceptions.unauthorized import Unauthorized, IUnauthorized
+from zope.exceptions._notfounderror import NotFoundError, INotFoundError
 from zope.exceptions._forbidden import Forbidden, ForbiddenAttribute
-from zope.exceptions._duplicate import DuplicationError
+from zope.exceptions._forbidden import IForbidden, IForbiddenAttribute
+from zope.exceptions._duplicate import DuplicationError, IDuplicationError

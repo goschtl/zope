@@ -12,9 +12,15 @@
 #
 ##############################################################################
 """
-$Id: _duplicate.py,v 1.2 2002/12/25 14:13:38 jim Exp $
+$Id: _duplicate.py,v 1.3 2003/02/04 20:21:59 stevea Exp $
 """
-from zope.exceptions import ZopeError
+from zope.exceptions import ZopeError, IZopeError
+from zope.interface.implements import implements
 
 class DuplicationError(ZopeError):
     """A duplicate registration was attempted"""
+
+class IDuplicationError(IZopeError):
+    pass
+
+implements(DuplicationError, IDuplicationError)
