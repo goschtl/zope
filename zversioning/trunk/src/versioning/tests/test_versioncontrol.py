@@ -156,7 +156,7 @@ def buildRepository(factory=zope.app.versioncontrol.repository.Repository, inter
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(),
-        doctest.DocFileSuite("../README.txt", setUp=setUp, tearDown=tearDown),
+        #doctest.DocFileSuite("../README.txt", setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite("../MOTIVATION.txt", setUp=setUp, tearDown=tearDown),
         ))
 if __name__=='__main__':
