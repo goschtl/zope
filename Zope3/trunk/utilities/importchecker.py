@@ -19,9 +19,11 @@ grep-like and thus emacs-friendly.
 
 $Id$
 """
+
 import compiler
 import os, os.path
 import sys
+
 
 def _findDottedNamesHelper(node, result):
     more_node = node
@@ -43,9 +45,10 @@ def _findDottedNamesHelper(node, result):
         result.append(node.name)
         return
     elif name == 'AssAttr':
-        return 
+        return
     for child in more_node.getChildNodes():
         _findDottedNamesHelper(child, result)
+
 
 def findDottedNames(node):
     """Find dotted names in an AST tree node
@@ -53,6 +56,7 @@ def findDottedNames(node):
     result = []
     _findDottedNamesHelper(node, result)
     return result
+
 
 class ImportFinder:
     """An instance of this class will be used to walk over a compiler AST
@@ -97,12 +101,14 @@ class ImportFinder:
     def getMap(self):
         return self._map
 
+
 def findImports(mod):
     """Find import statements in module and put the result in a mapping.
     """
     visitor = ImportFinder()
     compiler.walk(mod, visitor)
     return visitor.getMap()
+
 
 class Module:
     """This represents a python module.
@@ -114,7 +120,7 @@ class Module:
         self._map = findImports(mod)
         dottednames = {}
         self._dottednames = findDottedNames(mod)
-           
+
     def getPath(self):
         """Return the path to this module's file.
         """
@@ -150,12 +156,13 @@ class Module:
                 if usedname not in self._dottednames:
                     result.append((originalname, value['lineno']))
         return result
-    
+
+
 class ModuleFinder:
 
     def __init__(self):
         self._files = []
-        
+
     def visit(self, arg, dirname, names):
         """This method will be called when we walk the filesystem
         tree. It looks for python modules and stored their filenames.
@@ -168,6 +175,7 @@ class ModuleFinder:
     def getModuleFilenames(self):
         return self._files
 
+
 def findModules(path):
     """Find python modules in the given path and return their absolute
     filenames in a sequence.
@@ -175,6 +183,7 @@ def findModules(path):
     finder = ModuleFinder()
     os.path.walk(path, finder.visit, ())
     return finder.getModuleFilenames()
+
 
 class ImportDatabase:
     """This database keeps tracks of imports.
@@ -187,7 +196,7 @@ class ImportDatabase:
         self._root_path = root_path
         self._modules = {}
         self._names = {}
-        
+
     def resolveDottedModuleName(self, dotted_name, module):
         """Return path to file representing module, or None if no such
         thing. Can do this relative from module.
@@ -243,7 +252,7 @@ class ImportDatabase:
             if not modulepaths.has_key(self_path):
                 modulepaths[self_path] = 1
             names[t] = modulepaths
-        
+
     def getUnusedImports(self):
         """Get unused imports of all known modules.
         """
@@ -273,6 +282,7 @@ class ImportDatabase:
         for path in self._names.get((module.getPath(), name), {}).keys():
             result.append(self._modules[path])
         return result
+
 
 def main():
     try:
