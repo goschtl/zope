@@ -21,7 +21,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Tue Jun  1 10:42:02 2004\n"
+"POT-Creation-Date: Tue Jun  1 19:32:56 2004\n"
 "PO-Revision-Date: 2004-04-01 17:43+0200\n"
 "Last-Translator: Fabrizio Reale\n"
 "Language-Team:  <realefab@redomino.org>\n"
@@ -142,13 +142,13 @@ msgid "Zope 3 API Docs"
 msgstr ""
 
 # Default: "Basi"
-#: src/zope/app/apidoc/classmodule/__init__.py:512
+#: src/zope/app/apidoc/classmodule/__init__.py:511
 #: src/zope/app/apidoc/ifacemodule/index.pt:264
 #, fuzzy
 msgid "Classes"
 msgstr "Classi base"
 
-#: src/zope/app/apidoc/classmodule/__init__.py:553
+#: src/zope/app/apidoc/classmodule/__init__.py:549
 msgid "Zope 3 root."
 msgstr ""
 
@@ -187,6 +187,19 @@ msgstr "Usa rigenera per inserire più interfacce"
 msgid "Attributes/Properties"
 msgstr ""
 
+#: src/zope/app/apidoc/classmodule/class_index.pt:69
+#: src/zope/app/apidoc/classmodule/function_index.pt:40
+#: src/zope/app/apidoc/classmodule/function_index.pt:44
+#, fuzzy
+msgid "type:"
+msgstr "Tipo"
+
+#: src/zope/app/apidoc/classmodule/class_index.pt:75
+#: src/zope/app/apidoc/classmodule/function_index.pt:51
+#, fuzzy
+msgid "Value:"
+msgstr "Valore"
+
 #: src/zope/app/apidoc/classmodule/class_index.pt:89
 #: src/zope/app/apidoc/classmodule/class_index.pt:131
 #, fuzzy
@@ -214,19 +227,6 @@ msgstr "Documentazione"
 #, fuzzy
 msgid "Attributes"
 msgstr "Attributi"
-
-#: src/zope/app/apidoc/classmodule/function_index.pt:40
-#: src/zope/app/apidoc/classmodule/function_index.pt:44
-#: src/zope/app/apidoc/classmodule/class_index.pt:69
-#, fuzzy
-msgid "type:"
-msgstr "Tipo"
-
-#: src/zope/app/apidoc/classmodule/function_index.pt:51
-#: src/zope/app/apidoc/classmodule/class_index.pt:75
-#, fuzzy
-msgid "Value:"
-msgstr "Valore"
 
 #: src/zope/app/apidoc/classmodule/function_index.pt:9
 #, fuzzy
@@ -530,36 +530,23 @@ msgstr ""
 msgid "File:"
 msgstr "Files"
 
-#: src/zope/app/apidoc/zcmlmodule/index.pt:14
-msgid "from"
-msgstr ""
-
-#: src/zope/app/apidoc/zcmlmodule/index.pt:15
-#: src/zope/app/apidoc/zcmlmodule/index.pt:18
-#, fuzzy
-msgid "line"
-msgstr "1 linea"
-
-#: src/zope/app/apidoc/zcmlmodule/index.pt:16
 #: src/zope/app/apidoc/zcmlmodule/index.pt:19
-msgid "column"
+msgid ""
+"(line ${beginline}, column ${begincolumn} to line ${endline}, column "
+"${endcolumn})"
 msgstr ""
 
-#: src/zope/app/apidoc/zcmlmodule/index.pt:17
-msgid "to"
-msgstr ""
-
-#: src/zope/app/apidoc/zcmlmodule/index.pt:24
+#: src/zope/app/apidoc/zcmlmodule/index.pt:25
 msgid "Info:"
 msgstr ""
 
-#: src/zope/app/apidoc/zcmlmodule/index.pt:31
+#: src/zope/app/apidoc/zcmlmodule/index.pt:32
 #: src/zope/app/apidoc/zcmlmodule/index.pt:95
 #, fuzzy
 msgid "Handler:"
 msgstr "Intestazione"
 
-#: src/zope/app/apidoc/zcmlmodule/index.pt:39
+#: src/zope/app/apidoc/zcmlmodule/index.pt:40
 #, fuzzy
 msgid "Schema"
 msgstr "Imposta schema"
@@ -589,11 +576,6 @@ msgstr "Informazioni di Runtime"
 #: src/zope/app/applicationcontrol/browser/configure.zcml:24
 msgid "ZODB Control"
 msgstr "Gestione ZODB"
-
-#: src/zope/app/applicationcontrol/browser/configure.zcml:32
-#, fuzzy
-msgid "Translation Domain Control"
-msgstr "Controllo globale traduzioni"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:41
 msgid "Manage Process"
@@ -696,10 +678,6 @@ msgstr "Files"
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:29
 msgid "reload-button"
 msgstr "Ricarica"
-
-#: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:3
-msgid "ZGlobal Transaction Service Controller"
-msgstr "Gestione servizio globale di traduzione"
 
 #: src/zope/app/applicationcontrol/browser/translationdomaincontrol.py:49
 #, fuzzy
@@ -1638,17 +1616,19 @@ msgid "Synchronize"
 msgstr "Sincronizza"
 
 #: src/zope/app/i18n/browser/configure.zcml:5
-#, fuzzy
-msgid "Translation Domains"
-msgstr "Elementi delle transizioni"
-
-#: src/zope/app/i18n/browser/configure.zcml:5
 msgid ""
 "Translation Domains allow you to localize your software by       providing "
 "message translations."
 msgstr ""
 "I Domini di Traduzione permettono di localizzare il software fornendo le "
 "traduzioni dei messaggi."
+
+#: src/zope/app/i18n/browser/configure.zcml:5
+#: src/zope/app/applicationcontrol/browser/configure.zcml:32
+#: src/zope/app/applicationcontrol/browser/translationdomaincontrol.pt:3
+#, fuzzy
+msgid "Translation Domains"
+msgstr "Elementi delle transizioni"
 
 #: src/zope/app/i18n/browser/configure.zcml:61
 #, fuzzy
@@ -2211,75 +2191,115 @@ msgid "Menu for displaying help actions to be performed with popup"
 msgstr ""
 "Menu per mostrare le azioni di aiuto che possono essere eseguite con un popup"
 
-#: src/zope/app/onlinehelp/browser/contexthelp.pt:11
 #: src/zope/app/onlinehelp/browser/helptopic.pt:11
+#: src/zope/app/onlinehelp/browser/contexthelp.pt:11
 msgid "Online Help - TOC"
 msgstr "Aiuto online - Indice"
 
-#: src/zope/app/onlinehelp/configure.zcml:44
+#: src/zope/app/onlinehelp/configure.zcml:45
 msgid "Zope UI Help"
 msgstr "Aiuto sulla UI di Zope"
 
-#: src/zope/app/onlinehelp/configure.zcml:51
+#: src/zope/app/onlinehelp/configure.zcml:52
 msgid "Welcome"
 msgstr "Benvenuto"
 
-#: src/zope/app/onlinehelp/configure.zcml:58
+#: src/zope/app/onlinehelp/configure.zcml:59
 #, fuzzy
 msgid "Online Help System"
 msgstr "Sistema di aiuto in linea"
 
-#: src/zope/app/onlinehelp/interfaces.py:112
+#: src/zope/app/onlinehelp/interfaces.py:142
 msgid "Path to the Resource"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:113
+#: src/zope/app/onlinehelp/interfaces.py:143
 msgid ""
 "The Path to the Resource, assumed to be in the same directory as the Help "
 "Topic"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:43
+#: src/zope/app/onlinehelp/interfaces.py:46
+#: src/zope/app/security/interfaces/__init__.py:38
+#: src/zope/app/security/interfaces/__init__.py:191
+#: src/zope/app/workflow/stateful/browser/addstate.pt:12
+#: src/zope/app/workflow/stateful/browser/addtransition.pt:12
+msgid "Id"
+msgstr ""
+
+#: src/zope/app/onlinehelp/interfaces.py:47
+msgid "The Id of this Help Topic"
+msgstr ""
+
+#: src/zope/app/onlinehelp/interfaces.py:52
+#, fuzzy
+msgid "Parent Path"
+msgstr "Nome dell'argomento"
+
+#: src/zope/app/onlinehelp/interfaces.py:53
+msgid "The Path to the Parent of this Help Topic"
+msgstr ""
+
+#: src/zope/app/onlinehelp/interfaces.py:58
 msgid "Help Topic Title"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:44
+#: src/zope/app/onlinehelp/interfaces.py:59
 msgid "The Title of a Help Topic"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:45
+#: src/zope/app/onlinehelp/interfaces.py:60
 msgid "Help Topic"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:49 src/zope/app/wiki/interfaces.py:44
+#: src/zope/app/onlinehelp/interfaces.py:64 src/zope/app/wiki/interfaces.py:44
 #: src/zope/app/wiki/interfaces.py:70
 #, fuzzy
 msgid "Source Text"
 msgstr "Campo Sorgente di Testo"
 
-#: src/zope/app/onlinehelp/interfaces.py:50
+#: src/zope/app/onlinehelp/interfaces.py:65
 #, fuzzy
 msgid "Renderable source text of the topic."
 msgstr "Sorgente della pagina DTML"
 
-#: src/zope/app/onlinehelp/interfaces.py:56
+#: src/zope/app/onlinehelp/interfaces.py:71
 msgid "Path to the Topic"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:57
+#: src/zope/app/onlinehelp/interfaces.py:72
 msgid "The Path to the Definition of a Help Topic"
 msgstr ""
 
-#: src/zope/app/onlinehelp/interfaces.py:62 src/zope/app/wiki/interfaces.py:50
+#: src/zope/app/onlinehelp/interfaces.py:77 src/zope/app/wiki/interfaces.py:50
 #: src/zope/app/wiki/interfaces.py:76
 #, fuzzy
 msgid "Source Type"
 msgstr "Sorgente"
 
-#: src/zope/app/onlinehelp/interfaces.py:63 src/zope/app/wiki/interfaces.py:51
+#: src/zope/app/onlinehelp/interfaces.py:78 src/zope/app/wiki/interfaces.py:51
 #: src/zope/app/wiki/interfaces.py:77
 msgid "Type of the source text, e.g. structured text"
 msgstr "Tipo del sorgente del testo, es. testo strutturato"
+
+#: src/zope/app/onlinehelp/interfaces.py:84
+#, fuzzy
+msgid "Object Interface"
+msgstr "Aggiungi Interfacce:"
+
+#: src/zope/app/onlinehelp/interfaces.py:85
+msgid "Interface for which this Help Topic is registered."
+msgstr ""
+
+#: src/zope/app/onlinehelp/interfaces.py:90
+#, fuzzy
+msgid "View Name"
+msgstr "Nome del Cookie"
+
+#: src/zope/app/onlinehelp/interfaces.py:91
+#, fuzzy
+msgid "The View Name for which this Help Topic is registered"
+msgstr "Il nome registrato"
 
 #: src/zope/app/pagetemplate/engine.py:102
 msgid "No interpreter named \"${lang_name}\" was found."
@@ -3430,13 +3450,6 @@ msgstr "Fornisce un titolo per il permesso."
 msgid "Provides a description for the permission."
 msgstr "Una descrizione dettagliata dell'utente."
 
-#: src/zope/app/security/interfaces/__init__.py:38
-#: src/zope/app/security/interfaces/__init__.py:191
-#: src/zope/app/workflow/stateful/browser/addtransition.pt:12
-#: src/zope/app/workflow/stateful/browser/addstate.pt:12
-msgid "Id"
-msgstr ""
-
 #: src/zope/app/security/interfaces/__init__.py:39
 #, fuzzy
 msgid "The unique identification of the principal."
@@ -4139,9 +4152,9 @@ msgstr "Disattiva"
 # Default: "Aggiungi"
 #: src/zope/app/site/browser/tool.pt:96
 #: src/zope/app/schema/browser/schema_add.pt:39
+#: src/zope/app/workflow/stateful/browser/addstate.pt:20
 #: src/zope/app/workflow/stateful/browser/add.pt:65
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:55
-#: src/zope/app/workflow/stateful/browser/addstate.pt:20
 #: src/zope/app/i18n/browser/translate.pt:48
 #: src/zope/app/container/browser/add.pt:38
 #: src/zope/app/introspector/marker.pt:133 src/zope/app/form/browser/add.pt:52
@@ -4932,6 +4945,11 @@ msgstr ""
 msgid "Available Mappings"
 msgstr "Mappature disponibili."
 
+#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:3
+#: src/zope/app/workflow/stateful/browser/definition_edit.pt:3
+msgid "Process Definition <-> Content Type Registry"
+msgstr "Definizione del processo <-> Registro del tipo di contenuto"
+
 # Default: "Switch View"
 #: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:48
 msgid "switch-view-button"
@@ -4961,11 +4979,6 @@ msgstr "Dati importanti di workflow"
 #, fuzzy
 msgid "set-schema-button"
 msgstr "Salva modifiche"
-
-#: src/zope/app/workflow/stateful/browser/definition_edit.pt:3
-#: src/zope/app/workflow/stateful/browser/contentworkflow_registry.pt:3
-msgid "Process Definition <-> Content Type Registry"
-msgstr "Definizione del processo <-> Registro del tipo di contenuto"
 
 #: src/zope/app/workflow/stateful/browser/definition_index.pt:13
 msgid "Process Definition: ${name}"
@@ -5412,6 +5425,17 @@ msgstr ""
 #, fuzzy
 msgid "Bar description"
 msgstr "Descrizione"
+
+#, fuzzy
+#~ msgid "line"
+#~ msgstr "1 linea"
+
+#, fuzzy
+#~ msgid "Translation Domain Control"
+#~ msgstr "Controllo globale traduzioni"
+
+#~ msgid "ZGlobal Transaction Service Controller"
+#~ msgstr "Gestione servizio globale di traduzione"
 
 #~ msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
 #~ msgstr ""
