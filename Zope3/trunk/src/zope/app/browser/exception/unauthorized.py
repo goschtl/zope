@@ -13,11 +13,9 @@
 ##############################################################################
 """
 
-$Id: unauthorized.py,v 1.2 2003/03/06 22:41:37 jim Exp $
+$Id: unauthorized.py,v 1.3 2003/03/24 09:02:06 ryzaja Exp $
 """
 __metaclass__ = type
-import sys
-from zope.exceptions.exceptionformatter import format_exception
 from zope.app.traversing import getParent
 from zope.app.interfaces.security import IAuthenticationService
 
