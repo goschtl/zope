@@ -13,12 +13,11 @@
 ##############################################################################
 """
 
-$Id: OSFileSystem.py,v 1.2 2002/06/10 23:29:37 jim Exp $
+$Id: OSFileSystem.py,v 1.3 2002/11/11 14:36:04 stevea Exp $
 """
 import os
 import re
 import stat
-import time
 import fnmatch
 
 from IPosixFileSystem import IPosixFileSystem
@@ -198,7 +197,7 @@ class OSFileSystem(object):
 
     # utility methods
 
-    def normalize (self, path):
+    def normalize(self, path):
         # watch for the ever-sneaky '/+' path element
         # XXX It is unclear why "/+" is dangerous.  It is definitely
         # unexpected.
@@ -211,7 +210,7 @@ class OSFileSystem(object):
         return path
 
 
-    def translate (self, path):
+    def translate(self, path):
         """We need to join together three separate path components,
            and do it safely.  <real_root>/<path>
            use the operating system's path separator.
@@ -228,13 +227,13 @@ class OSFileSystem(object):
         return os.path.join(self.root, path)
 
 
-    def __repr__ (self):
+    def __repr__(self):
         return '<OSFileSystem, root=%s>' % self.root
 
 
 
-def safe_stat (path):
+def safe_stat(path):
     try:
         return os.stat(path)
-    except:
+    except OSError:
         return None
