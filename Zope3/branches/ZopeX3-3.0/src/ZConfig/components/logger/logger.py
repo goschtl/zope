@@ -87,10 +87,10 @@ class EventLogFactory(LoggerFactoryBase):
     name = None
 
 
-class HitLogFactory(LoggerFactoryBase):
-    """Logger factory that returns the hit logger."""
+class AccessLogFactory(LoggerFactoryBase):
+    """Logger factory that returns the access logger."""
 
-    name = "hitlog"
+    name = "accesslog"
 
     def create(self):
         logger = LoggerFactoryBase.create(self)
@@ -100,6 +100,16 @@ class HitLogFactory(LoggerFactoryBase):
         for handler in logger.handlers:
             handler.setFormatter(formatter)
         return logger
+
+
+class HitLogFactory(AccessLogFactory):
+    """AccessLogFactory that generates a deprecation warning."""
+
+    def create(self):
+        import warnings
+        warnings.warn("<hitlog> is deprecated; use <accesslog> instead",
+                      DeprecationWarning)
+        return AccessLogFactory.create(self)
 
 
 class LoggerFactory(LoggerFactoryBase):

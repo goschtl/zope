@@ -226,23 +226,23 @@ class TestConfig(LoggingTestBase):
         return logger
 
 
-class TestHitLogging(LoggingTestBase):
+class TestAccessLogging(LoggingTestBase):
 
-    name = "hitlog"
+    name = "accesslog"
 
     _schematext = """
       <schema>
         <import package='ZConfig.components.logger'/>
-        <section type='hitlog' name='*' attribute='hitlog'/>
+        <section type='accesslog' name='*' attribute='accesslog'/>
       </schema>
     """
 
     def test_config_without_logger(self):
         conf = self.get_config("")
-        self.assert_(conf.hitlog is None)
+        self.assert_(conf.accesslog is None)
 
     def test_config_without_handlers(self):
-        logger = self.check_simple_logger("<hitlog/>")
+        logger = self.check_simple_logger("<accesslog/>")
         # Make sure there's a NullHandler, since a warning gets
         # printed if there are no handlers:
         self.assertEqual(len(logger.handlers), 1)
@@ -250,13 +250,13 @@ class TestHitLogging(LoggingTestBase):
                                 loghandler.NullHandler))
 
     def test_formatter(self):
-        logger = self.check_simple_logger("<hitlog>\n"
+        logger = self.check_simple_logger("<accesslog>\n"
                                           "  <syslog>\n"
                                           "    level error\n"
                                           "    facility local3\n"
                                           "    format xyzzy\n"
                                           "  </syslog>\n"
-                                          "</hitlog>")
+                                          "</accesslog>")
         self.assertEqual(len(logger.handlers), 1)
         syslog = logger.handlers[0]
         self.assertEqual(syslog.level, logging.ERROR)
@@ -265,11 +265,11 @@ class TestHitLogging(LoggingTestBase):
 
     def check_simple_logger(self, text):
         conf = self.get_config(text)
-        self.assert_(conf.hitlog is not None)
-        logger = conf.hitlog()
+        self.assert_(conf.accesslog is not None)
+        logger = conf.accesslog()
         self.assert_(isinstance(logger, logging.Logger))
         self.assert_(not logger.propagate)
-        self.assertEquals(logger.name, "hitlog")
+        self.assertEquals(logger.name, "accesslog")
         self.assertEquals(logger.level, logging.INFO)
         return logger
 
@@ -277,7 +277,7 @@ class TestHitLogging(LoggingTestBase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestConfig))
-    suite.addTest(unittest.makeSuite(TestHitLogging))
+    suite.addTest(unittest.makeSuite(TestAccessLogging))
     return suite
 
 if __name__ == '__main__':

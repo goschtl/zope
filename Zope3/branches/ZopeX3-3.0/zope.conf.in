@@ -30,7 +30,7 @@ interrupt-check-interval 200
   </filestorage>
 </zodb>
 
-<hitlog>
+<accesslog>
   # This sets up logging to both a file (access.log) and to standard
   # output (STDOUT).  The "path" setting can be a relative or absolute
   # filesystem path or the tokens STDOUT or STDERR.
@@ -42,7 +42,7 @@ interrupt-check-interval 200
   <logfile>
     path STDOUT
   </logfile>
-</hitlog>
+</accesslog>
 
 <eventlog>
   # This sets up logging to both a file (z3.log) and to standard
