@@ -28,16 +28,3 @@ def monkeyPatch():
 
     HTTPRequest.getPresentationSkin = getPresentationSkin
     HTTPRequest.setPresentationSkin = setPresentationSkin
-
-    from RestrictedPython.Utilities import test
-    from zope.tales.pythonexpr import PythonExpr
-
-    def __call__(self, econtext):
-        __traceback_info__ = self.text
-        builtins = __builtins__.copy()
-        builtins['test'] = test
-
-        vars = self._bind_used_names(econtext, builtins)
-        return eval(self._code, vars)
-
-    PythonExpr.__call__ = __call__
