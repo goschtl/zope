@@ -114,16 +114,24 @@ class SchemaWidget(BrowserWidget, InputWidget):
         return content
 
     def applyChanges(self, content):
+        print ""
+        print "applyChanges"
         field = self.context
+        print "field = self.context ", self.context
 
         # create our new object value
         value = field.query(content, None)
+        print "value ", value
         if value is None:
             # TODO: ObjectCreatedEvent here would be nice
+            print "if value is None:"
             value = self.factory()
+            print "value ", value
 
         # apply sub changes, see if there *are* any changes
         # TODO: ObjectModifiedEvent here would be nice
+        print "self ", self
+        print "self.names ", self.names
         changes = applyWidgetsChanges(self, field.schema, target=value,
                                       names=self.names)
 

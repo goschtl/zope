@@ -17,6 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from warnings import warn
 from persistent import Persistent
 from transaction import get_transaction
 
@@ -428,6 +429,92 @@ class File(Persistent):
     Let's test the constructor:
 
     >>> file = File()
+    >>> file.open('r').read()
+    ''
+
+    >>> file = File('Foobar')
+    >>> file.contentType
+    ''
+    >>> file.open('r').read()
+    'Foobar'
+
+    >>> file = File('Foobar', 'text/plain')
+    >>> file.contentType
+    'text/plain'
+    >>> file.open('r').read()
+    'Foobar'
+
+    >>> file = File(data='Foobar', contentType='text/plain')
+    >>> file.contentType
+    'text/plain'
+    >>> file.open('r').read()
+    'Foobar'
+
+
+    Let's test the mutators:
+
+    >>> file = File()
+    >>> file.contentType = 'text/plain'
+    >>> file.contentType
+    'text/plain'
+
+    >>> file.open('w').write('Foobar')
+    >>> file.open('r').read()
+    'Foobar'
+
+    >>> file.open('w').write(None)
+    Traceback (most recent call last):
+    ...
+    TypeError: Cannot set None data on a file.
+
+
+    Let's test large data input:
+
+    >>> file = File()
+
+    Insert as string:
+
+    >>> file.open('w').write('Foobar'*60000)
+    >>> file.getSize()
+    360000
+    >>> file.open('r').read() == 'Foobar'*60000
+    True
+
+    Insert data as FileChunk:
+
+    >>> fc = FileChunk('Foobar'*4000)
+    >>> file.open('w').write(fc)
+    >>> file.getSize()
+    24000
+    >>> file.open('r').read() == 'Foobar'*4000
+    True
+
+    Insert data from file object:
+
+    >>> import cStringIO
+    >>> sio = cStringIO.StringIO()
+    >>> sio.write('Foobar'*100000)
+    >>> sio.seek(0)
+    >>> file.open('w').write(sio)
+    >>> file.getSize()
+    600000
+    >>> file.open('r').read() == 'Foobar'*100000
+    True
+
+
+    Last, but not least, verify the interface:
+
+    >>> from zope.interface.verify import verifyClass
+    >>> IFile.implementedBy(File)
+    True
+    >>> verifyClass(IFile, File)
+    True
+
+    BBB: test backward compatibility:
+
+    >>> file = File()
+    >>> file.contentType
+    ''
     >>> file.data
     ''
 
@@ -467,9 +554,10 @@ class File(Persistent):
     TypeError: Cannot set None data on a file.
 
 
-    Let's test large data input:
+    Let's test large data input for BBB files:
 
     >>> file = File()
+    >>> file._contents = None
 
     Insert as string:
 
@@ -500,23 +588,31 @@ class File(Persistent):
     >>> file.data == 'Foobar'*100000
     True
 
-
-    Last, but not least, verify the interface:
-
-    >>> from zope.interface.verify import verifyClass
-    >>> IFile.implementedBy(File)
-    True
-    >>> verifyClass(IFile, File)
-    True
     """
 
     implements(IFile, IMime, IFileContent)
     
+    # BBB: set the _contents = None, if we have a Mime object stored
+    # under the _contents attr, we have a new style file.
+    # I f we test old style files we have to set the _contents to None 
+    # after initializing
+    _contents = None
+    
     def __init__(self, data='', contentType=''):
         self._contents = Mime()
         self.open(mode='w').write(data)
-        # BBB: map it to the right contentType
+        
+        # BBB: map contentType to the right value for new style file
         self.contentType = contentType
+        self.data = data
+        
+    def isNewStyle(self):
+        if self._contents is None:
+            warn("The File implementation has ben changes, migrate your class",
+                DeprecationWarning, 2)
+            return False
+        else:
+            return True
 
     # TODO: Fix the widgets for to store the data
     # now we get a Mime instance form the widget, but _get/_setContents 
@@ -527,10 +623,10 @@ class File(Persistent):
     # This whould break everything... hm, perhaps we can use the data property 
     # for BBB and a access directly to the file data.
     def _getContents(self):
-        return removeSecurityProxy(self._contents.data)
+        return self._contents
 
-    def _setContents(self, data):
-        self._contents.data = removeSecurityProxy(data)
+    def _setContents(self, contents):
+        self._contents = contents
 
     def open(self, mode='r'):
         """return a file-like object for reading or updating the file value.
@@ -543,22 +639,113 @@ class File(Persistent):
             pass
             # TODO: raise wrong file open attribute error
 
+    # BBB: supports BBB
     def getSize(self):
-        return self._contents.getSize()
+        if self.isNewStyle():
+            return self._contents.getSize()
+        else:
+            warn("The File implementation has ben changes, migrate your class",
+                DeprecationWarning, 2)
+            return self._size
     
     # See IFile.
     contents = property(_getContents, _setContents)
     #contents = FieldProperty(IFile['contents'])
     
     # BBB: remove it after removing BBB
-    # old compatibility methods
+    # TODO: add deprication warning
     def _getData(self):
-        return self._contents
+        warn("The data attribute is deprecated, migrate your File class",
+            DeprecationWarning, 2)
+        if isinstance(self._data, FileChunk):
+            return str(self._data)
+        else:
+            return self._data
 
+    # TODO: add deprication warning
     def _setData(self, data):
-        self._contents = data
+        # Handle case when data is a string
+        warn("The data attribute is deprecated, migrate your File class",
+            DeprecationWarning, 2)
+        if isinstance(data, unicode):
+            data = data.encode('UTF-8')
 
-    data = property(_getContents, _setContents)
+        if isinstance(data, str):
+            self._data, self._size = FileChunk(data), len(data)
+            return
+
+        # Handle case when data is None
+        if data is None:
+            raise TypeError('Cannot set None data on a file.')
+
+        # Handle case when data is already a FileChunk
+        if isinstance(data, FileChunk):
+            size = len(data)
+            self._data, self._size = data, size
+            return
+
+        # Handle case when data is a file object
+        seek = data.seek
+        read = data.read
+
+        seek(0, 2)
+        size = end = data.tell()
+
+        if size <= 2*MAXCHUNKSIZE:
+            seek(0)
+            if size < MAXCHUNKSIZE:
+                self._data, self._size = read(size), size
+                return
+            self._data, self._size = FileChunk(read(size)), size
+            return
+
+        # Make sure we have an _p_jar, even if we are a new object, by
+        # doing a sub-transaction commit.
+        get_transaction().commit(1)
+
+        jar = self._p_jar
+
+        if jar is None:
+            # Ugh
+            seek(0)
+            self._data, self._size = FileChunk(read(size)), size
+            return
+
+        # Now we're going to build a linked list from back
+        # to front to minimize the number of database updates
+        # and to allow us to get things out of memory as soon as
+        # possible.
+        next = None
+        while end > 0:
+            pos = end - MAXCHUNKSIZE
+            if pos < MAXCHUNKSIZE:
+                pos = 0 # we always want at least MAXCHUNKSIZE bytes
+            seek(pos)
+            data = FileChunk(read(end - pos))
+
+            # Woooop Woooop Woooop! This is a trick.
+            # We stuff the data directly into our jar to reduce the
+            # number of updates necessary.
+            jar.add(data)
+
+            # This is needed and has side benefit of getting
+            # the thing registered:
+            data.next = next
+
+            # Now make it get saved in a sub-transaction!
+            get_transaction().commit(1)
+
+            # Now make it a ghost to free the memory.  We
+            # don't need it anymore!
+            data._p_changed = None
+
+            next = data
+            end = pos
+
+        self._data, self._size = next, size
+        return
+
+    data = property(_getData, _setData)
 
 
 
