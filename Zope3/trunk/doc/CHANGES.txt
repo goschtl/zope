@@ -682,7 +682,7 @@ Zope Changes
         Weitershausen, Phillip Eby, R. David Murray, R. Sean Bowman,
         Sathya Rangaswami, Sidnei da Silva, Stephan Richter, Steve
         Alexander, Tim Peters, Tres Seaver, Ulrich Eck, Viktorija
-        Zaksiene, and Volker Bachschneider
+        Zaksiene, Volker Bachschneider, and Mark McEahern
 
 
   ------------------------------------------------------------------
