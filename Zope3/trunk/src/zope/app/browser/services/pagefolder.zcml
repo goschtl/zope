@@ -20,11 +20,20 @@
         class=".pagefolder.PageFolderDefaultConfiguration" 
         />
 
+  <addform
+        name="AddPageFolder.html"
+        label="Default registration parameters"
+        schema="zope.app.services.pagefolder.IPageFolderInfo"
+        permission="zope.ManageServices"
+        content_factory="zope.app.services.pagefolder.PageFolder"
+        />
 
-  <menuItem
-     menu="add_component"
-     for="zope.app.interfaces.container.IAdding"
-     action="zope.app.services.PageFolder"
-     title="Page Folder" />
+
+  <addMenuItem
+     class="zope.app.services.pagefolder.PageFolder"
+     title="Page Folder"
+     permission="zope.ManageServices"
+     view="AddPageFolder.html" 
+     />
 
 </zope:configure>
