@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.10 2003/01/20 16:23:37 mgedmin Exp $
+$Id: widget.py,v 1.11 2003/02/06 19:23:15 stevea Exp $
 """
 
 __metaclass__ = type
@@ -200,7 +200,9 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     displayWidth = 20
     displayMaxWidth = ""
     extra = ''
-    style = "width:100%"
+    # XXX Alex Limi doesn't like this!
+    # style = "width:100%"
+    style = ''
     __values = None
 
     def _convert(self, value):
@@ -321,7 +323,8 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     width = 60
     height = 15
     extra=""
-    style="width:100%"
+    #style="width:100%"
+    style = ''
 
     def _convert(self, value):
         if self.context.min_length and not value:
@@ -635,6 +638,11 @@ def renderTag(tag, **kw):
         if kw['cssClass'] != "":
             attr_list.append('class="%s"' % kw['cssClass'])
         del kw['cssClass']
+
+    if 'style' in kw:
+        if kw['style'] != '':
+            attr_list.append('style="%s"' % kw['style'])
+        del kw['style']
 
     # special case handling for extra 'raw' code
     if 'extra' in kw:
