@@ -16,20 +16,18 @@
                alias="zope.products.securitypolicy" />
 
 
-
-
   <include file="meta.zcml" />
 
   <content class=".permissionroles.PermissionRoles">
     <require permission="zope.Security"
              attributes="roles rolesInfo"
-             interface=".interfaces.IRegisteredObject" />
+             interface="zope.app.interfaces.security.IRegisteredObject" />
   </content>
 
   <content class=".rolepermission.RolePermissions">
     <require permission="zope.Security"
              attributes="permissions permissionsInfo"
-             interface=".interfaces.IRegisteredObject" />
+             interface="zope.app.interfaces.security.IRegisteredObject" />
   </content>
 
   <adapter factory=".rolepermission.AnnotationRolePermissionManager"
@@ -44,36 +42,36 @@
            provides=".interfaces.IPrincipalPermissionManager"
            for="zope.app.interfaces.annotation.IAnnotatable" />
 
-  <serviceType id="Roles"
-               interface=".interfaces.IRoleService" />
-
-  <service serviceType="Roles"
-           component=".roleregistry.roleRegistry" />
 
   <!-- protect Roles and Permissions -->
-  <content class=".roleregistry.Role">
-    <allow interface=".interfaces.IRegisteredObject" />
-  </content>
-
-  <content class=".role.RoleService">
-    <factory id="RoleService"
-             permission="zope.ManageServices"
-             />
-    <require permission="zope.Security"
-             interface=".interfaces.IRoleService"
-             />
-    <require permission="zope.ManageServices"
-             interface="zope.app.container.interfaces.IContainer"
-             />
-  </content>
-
   <content class=".role.Role">
-    <factory />
-    <require permission="zope.Security"
-             interface=".interfaces.IRole"
-             />
+    <allow interface=".interfaces.IRole" />
   </content>
 
+  <content class=".role.PersistentRole">
+    <factory
+        id="zope.security.role.Role"
+        />
+    <implements
+        interface="zope.app.interfaces.services.utility.ILocalUtility" 
+        />
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+        />
+    <require 
+        permission="zope.Security"
+        interface=".interfaces.IRole"
+        />
+  </content>
+
+  <content class=".role.RoleRegistration">
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.utility.IUtilityRegistration
+                 zope.app.container.interfaces.IAddNotifiable
+                 zope.app.container.interfaces.IRemoveNotifiable"
+      set_schema="zope.app.interfaces.services.utility.IUtilityRegistration" />
+  </content>
 
   <!-- Include browser package -->
   <include package=".browser"/>
@@ -83,6 +81,8 @@
       component=".zopepolicy.zopeSecurityPolicy"
       />
 
+  <role id="zope.Anonymous" title="Everybody" 
+        description="All users have this role implicitly" />
   <role id="zope.Manager" title="Site Manager" />
   <role id="zope.Member" title="Site Member" />
 
