@@ -291,6 +291,16 @@ class Component:
         specs.distribution.cook()
         self.collection = specs.collection
         self.distribution = specs.distribution
+        #
+        # Check that this package is valid:
+        #
+        setup_cfg = os.path.join(self.source, package.PACKAGE_CONF)
+        if self.is_python_package() or os.path.isfile(setup_cfg):
+            return
+        raise zpkgtools.Error(
+            "%r is an invalid distribution component: all components must"
+            " either be a Python package or provide a %s file"
+            % (name, package.PACKAGE_CONF))
 
     def get_dependencies(self):
         """Get the direct dependencies of this component.

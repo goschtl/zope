@@ -22,7 +22,11 @@ import urllib
 
 from StringIO import StringIO
 
+import zpkgtools
+
 from zpkgtools import app
+from zpkgtools import include
+from zpkgtools import loader
 from zpkgtools import publication
 
 
@@ -203,30 +207,48 @@ class CommandLineTestCase(unittest.TestCase):
         self.assert_(options.build_type is "application")
 
 
-class ApplicationSupportTestCase(unittest.TestCase):
+class ComponentTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.tmpdir = tempfile.mkdtemp(prefix="test_app_")
-        appdir = os.path.join(self.tmpdir, "app")
-        pkgmap = os.path.join(self.tmpdir, "packages.map")
-        self.mapfile = "file://" + urllib.pathname2url(pkgmap)
-        f = open(pkgmap, "w")
-        print >>f, ("application  file://"
-                    + urllib.pathname2url(appdir))
-        f.close()
-        os.mkdir(appdir)
-        f = open(os.path.join(appdir, publication.PUBLICATION_CONF), "w")
-        print >>f, "Metadata-Version: 1.0"
-        print >>f, "Name: sample application"
+        self.tmpdir = tempfile.mkdtemp(prefix="test-app-")
+        self.mypkg_url = "file://" + urllib.pathname2url(self.tmpdir)
+        self.ip = include.InclusionProcessor(loader.Loader())
+
+    def write_app_file(self, name, text):
+        f = open(os.path.join(self.tmpdir, name), "w")
+        f.write(text)
         f.close()
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
 
+    def test_validation_of_package_without_setup_cfg(self):
+        self.write_app_file("__init__.py", "# make this a package\n")
+        #
+        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        self.assert_(c.is_python_package())
+
+    def test_validation_of_package_with_setup_cfg(self):
+        self.write_app_file("SETUP.cfg", "# this is a simple package\n")
+        self.write_app_file("__init__.py", "# make this a package\n")
+        #
+        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        self.assert_(c.is_python_package())
+
+    def test_validation_of_nonpackage_with_setup_cfg(self):
+        self.write_app_file("SETUP.cfg", "# this is a simple package\n")
+        #
+        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        self.assert_(not c.is_python_package())
+
+    def test_non_validation_of_nonpackage_without_setup_cfg(self):
+        self.assertRaises(zpkgtools.Error,
+                          app.Component, "mypkg", self.mypkg_url, self.ip)
+
 
 def test_suite():
     suite = unittest.makeSuite(CommandLineTestCase)
-    suite.addTest(unittest.makeSuite(ApplicationSupportTestCase))
+    suite.addTest(unittest.makeSuite(ComponentTestCase))
     return suite
 
 if __name__ == "__main__":
