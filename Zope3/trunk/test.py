@@ -423,11 +423,29 @@ class TestFileFinder:
         mod = path.replace(os.sep, ".")
         return mod
 
+def walk_with_symlinks(top, func, arg):
+    """Like os.path.walk, but follows symlinks on POSIX systems.
+
+    This could theoreticaly result in an infinite loop, if you create symlink
+    cycles in your Zope sandbox, so don't do that.
+    """
+    try:
+        names = os.listdir(top)
+    except os.error:
+        return
+    func(arg, top, names)
+    exceptions = ('.', '..')
+    for name in names:
+        if name not in exceptions:
+            name = os.path.join(top, name)
+            if os.path.isdir(name):
+                walk_with_symlinks(name, func, arg)
+
 def find_tests(rx):
     global finder
     finder = TestFileFinder(pathinit.libdir)
     walkdir = test_dir or pathinit.libdir
-    os.path.walk(walkdir, finder.visit, rx)
+    walk_with_symlinks(walkdir, finder.visit, rx)
     return finder.files
 
 def package_import(modname):
