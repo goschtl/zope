@@ -4,11 +4,11 @@
   <!-- which may be needed if you have some special setup -->
   <!-- done in zcml. -->
 
-  <!-- For example, you may want to include overrides.zcml on -->
-  <!-- functional tests to make sure that the system will-->
-  <!-- behave as expected in the presence of overrides.-->
+  <!-- For example, you may want to include a zcml file -->
+  <!-- that sets up a rdb connection needed for a test. -->
   <!-- Example:
-       <includeOverrides file="overrides.zcml" />
+       <include package="zope.products.example.ftests"
+                file="test_setup.zcml" />
   -->
 
 </configure>

@@ -22,5 +22,6 @@
   <grant role="zope.Manager" principal="zope.mgr" />
 
   <include file="products_ftesting.zcml" />
+  <includeOverrides file="overrides_ftesting.zcml" />
 
 </configure>
