@@ -19,6 +19,8 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 
 from zope.interface import implements
+from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from zope.security.checker import CheckerPublic
 
 from zope.app.container.interfaces import IReadContainer
 from zope.app.container.contained import Contained, containedEvent
@@ -30,6 +32,7 @@ from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
 from zope.app.workflow.stateful.interfaces import IState, ITransition, INITIAL
 from zope.app.workflow.stateful.interfaces import IStatefulStatesContainer
 from zope.app.workflow.stateful.interfaces import IStatefulTransitionsContainer
+from zope.app.workflow.stateful.interfaces import MANUAL
 from zope.app.workflow.stateful.instance import StatefulProcessInstance
 
 
@@ -43,75 +46,46 @@ class StatesContainer(ProcessDefinitionElementContainer):
     implements(IStatefulStatesContainer)
 
 
+class StateNamesVocabulary(SimpleVocabulary):
+    """Vocabulary providing the names of states in a local process definition.
+    """
+
+    def __init__(self, context):
+        terms = [SimpleTerm(name) for name in self._getStateNames(context)]
+        super(StateNamesVocabulary, self).__init__(terms)
+
+    def _getStateNames(self, context):
+        if hasattr(context, 'getProcessDefinition'):
+            return context.getProcessDefinition().getStateNames()
+        else:
+            for obj in zapi.getParents(context):
+                if IStatefulProcessDefinition.providedBy(obj):
+                    return obj.getStateNames()
+        raise 'NoLocalProcessDefinition', 'No local process definition found.'
+
+
 class Transition(Persistent, Contained):
     """Transition from one state to another."""
 
     implements(ITransition)
 
-    def __init__(self, source=None, destination=None, condition=None,
-                 script=None, permission=None, triggerMode=None):
-        super(Transition, self).__init__()
-        self.__source = source
-        self.__destination = destination
-        self.__condition = condition or None
-        self.__script = script or None
-        self.__permission = permission or None
-        self.__triggerMode = triggerMode
-
-    def getSourceState(self):
-        return self.__source
-
-    def setSourceState(self, source):
-        self.__source = source
-
-    def getDestinationState(self):
-        return self.__destination
-
-    def setDestinationState(self, destination):
-        self.__destination = destination
-
-    def getCondition(self):
-        return self.__condition
-
-    def setCondition(self, condition):
-        self.__condition = condition or None
-
-    def getScript(self):
-        return self.__script
-
-    def setScript(self, script):
-        self.__script = script or None
-
-    def getPermission(self):
-        return self.__permission
-
-    def setPermission(self, permission):
-        self.__permission = permission or None
-
-    def getTriggerMode(self):
-        return self.__triggerMode
-
-    def setTriggerMode(self, mode):
-        self.__triggerMode = mode
-
     # See ITransition
-    sourceState = property(getSourceState, setSourceState, None,
-                           "Source State of Transition.")
+    sourceState = None
+    destinationState = None
+    condition = None
+    script = None
+    permission = CheckerPublic
+    triggerMode = MANUAL
 
-    destinationState = property(getDestinationState, setDestinationState, None,
-                                "Destination State of Transition.")
-
-    condition = property(getCondition, setCondition, None,
-                         "Condition for Transition.")
-
-    script = property(getScript, setScript, None,
-                         "Script for Transition.")
-
-    permission = property(getPermission, setPermission, None,
-                          "Permission for Transition.")
-
-    triggerMode = property(getTriggerMode, setTriggerMode, None,
-                           "TriggerMode for Transition.")
+    def __init__(self, sourceState=None, destinationState=None, condition=None,
+                 script=None, permission=CheckerPublic, triggerMode=None):
+        super(Transition, self).__init__()
+        self.sourceState = sourceState
+        self.destinationState = destinationState
+        self.condition = condition or None
+        self.script = script or None
+        self.permission = permission or None
+        self.triggerMode = triggerMode
 
     def getProcessDefinition(self):
         return self.__parent__.getProcessDefinition()
