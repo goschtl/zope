@@ -2,51 +2,94 @@
 Packaging Tool Quick Start
 ==========================
 
+Overview
+--------
+
 This is a very brief "getting started" guide to using the Zope 3
 package tool, |zpkg|_.  We'll start with simple instructions for
 building the ZopeX3 distribution.  These instructions only apply to
 Unix systems.
 
-Do the following things to build a ZopeX3 distribution:
+The packaging tool builds a distribution pacakge based on *resources*.
+The tool builds a distribution based on a single resource named on the
+command line; this is called the *primary resource*.  Individual
+resources can be Python packages or *collections*, which are
+(essentially) a bunch of files that should be included.  Resources
+have *metadata* which describe what they contain and how they should
+be installed.  One part of the metadata is a list of dependencies; a
+resource can depend on other resources.  The packaging tool can be
+told to collect the dependencies of the primary resource into the
+distribution using a command-line option.
 
-1.  Retrieve the ``zpkgtools`` code from CVS::
+Preparation
+-----------
 
-      cvs -d :pserver:anonymous@cvs.zope.org:/cvs-repository \
-          checkout -d zpkgtools Packages/zpkgtools
+Before you can build a distribution, you need to have the packaging
+tool itself and at least a minimal configuration.  This only needs to
+be done once.
 
-    It can be convenient to either add *zpkgtools/bin/* to your PATH
-    or add a symlink to *zpkgtools/bin/zpkg* to a directory already on
-    your PATH; either allows you to simply type ``zpkg`` at the
-    command line to run the packager.
+There isn't a distribution for |zpkg|_ yet (simply because we haven't
+had time), but this is easy to get from CVS.  Use the following
+command to retrieve the ``zpkgtools`` code::
 
-2.  You'll need at least a minimal |zpkg|_ configuration to identify
-    the necessary resource maps.  These can be identified from the
-    command line, but that's generally hard to work with.  Create a
-    directory *.zpkg* in your home directory, and add this text in the
-    configuration file *zpkg.conf*::
+  cvs -d :pserver:anonymous@cvs.zope.org:/cvs-repository \
+      checkout -d zpkgtools Packages/zpkgtools
 
-      resource-map svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zope3.map
-      resource-map cvs://cvs.zope.org/cvs-repository:Releases/packages.map:HEAD
+It can be convenient to either add *zpkgtools/bin/* to your PATH or
+add a symlink to *zpkgtools/bin/zpkg* to a directory already on your
+PATH; either allows you to simply type |zpkg|_ at the command line to
+run the packager.
 
-    The map from svn.zope.org is used to locate the Zope 3
-    implementation components.  The map from cvs.zope.org is used to
-    locate the actual release information and support code added to
-    the generated distribution package.
+You will need to define a *resource map* to tell |zpkg|_ where package
+components can be found.  Resource maps can be loaded from local files
+or from remote locations specified by URL.  If you are primarily
+working with the Zope 3 packages, you should be able to use some
+prepared resource maps rather than defining your own.
 
-    Read more about resource maps in |zpkg|_, and about how resource
-    locations are specified in `Resource Locations
-    <resources.html>`_.
+The resource maps can be specified from the |zpkg|_ command line or in
+a configuration file.  It's generally easiest to work with a
+configuration file since that avoids always needing to use really long
+command lines.  The default configuration file is *~/.zkpg/zpkg.conf*
+on Unix or *zpkg\\zpkg.conf* in the *\\Documents and Setting\\username*
+folder on Windows.  The exact name of the folder on Windows depends
+on the native language settings; you can determine the actual location
+using the Python interpreter::
 
-3.  Make sure you have lots of disk space in */tmp/* and enough to
-    hold the finished tarball in the current directory.
+  >>> import os
+  >>> os.path.expanduser('~')
+  'C:\\Documents and Settings\\username'
 
-4.  Run |zpkg|_ using this command:"
+A good starting configuration to allow working with the resources
+defined for the Zope 3 project would be::
 
-      zpkg -av1.0.0a1 ZopeX3
+  # Resources for the Zope 3 project:
+  resource-map svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zope3.map
 
-    After listening to a good CD, or perhaps having some Thai food,
-    you should find a very large tarball named *ZopeX3-1.0.0a1.tgz* in
-    the current directory.
+  # Resources for use by zpkg:
+  resource-map cvs://cvs.zope.org/cvs-repository:Releases/packages.map:HEAD
+
+The map from svn.zope.org is used to locate the Zope 3 implementation
+components.  The map from cvs.zope.org is used to locate the actual
+release information and support code added to the generated
+distribution package.  Read more about resource maps in |zpkg|_, and
+about how resource locations are specified in `Resource Locations
+<resources.html>`_.
+
+
+Building a Distribution
+-----------------------
+
+Let's start by building a distribution using existing resources and
+metadata.  Make sure you have lots of disk space in */tmp/* and enough
+to hold the finished tarball in the current directory.
+
+Run |zpkg|_ using this command::
+
+  zpkg -a -vVERSION ZopeX3
+
+After listening to a good CD, or perhaps having some good Thai food,
+you should find a very large tarball named *ZopeX3-VERSION.tgz* in the
+current directory.
 
 
 .. include:: links.rst
