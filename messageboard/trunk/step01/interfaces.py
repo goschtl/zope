@@ -17,7 +17,6 @@ Interfaces for the Zope 3 based Message Board Package
 
 $Id$
 """
-
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Field
 
