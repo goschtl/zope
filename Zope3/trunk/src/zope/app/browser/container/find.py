@@ -11,29 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Find View Class
 
-$Id: find.py,v 1.3 2003/05/27 14:18:06 jim Exp $
+$Id: find.py,v 1.4 2003/08/06 14:41:36 srichter Exp $
 """
-
-from zope.app.interfaces.container.find import IFind
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.context import getInnerWrapperData
 # XXX this needs to be looked up in a registry
 from zope.app.container.find import SimpleIdFindFilter
-
+from zope.app.interfaces.container.find import IFind
+from zope.app.traversing import getName
 from zope.component import getAdapter, getView
+from zope.context import getInnerWrapperData
 from zope.publisher.browser import BrowserView
 
 
 # XXX very simple implementation right now
 class Find(BrowserView):
 
-    index = ViewPageTemplateFile('find.pt')
-
     def findByIds(self, ids):
-        """Do a find for the ids listed in ids, which is a string.
-        """
+        """Do a find for the ids listed in ids, which is a string."""
         finder = getAdapter(self.context, IFind)
         ids = ids.split()
         # if we don't have any ids listed, don't search at all
@@ -42,15 +37,6 @@ class Find(BrowserView):
         request = self.request
         result = []
         for object in finder.find([SimpleIdFindFilter(ids)]):
-            id = getId(object)
             url = str(getView(object, 'absolute_url', request))
-            result.append({ 'id': id, 'url': url})
+            result.append({ 'id': getName(object), 'url': url})
         return result
-
-
-# XXX get the id of an object (should be imported from somewhere)
-def getId(object):
-    dict = getInnerWrapperData(object)
-    if dict:
-        return dict.get('name')
-    return None

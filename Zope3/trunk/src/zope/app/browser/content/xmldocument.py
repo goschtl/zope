@@ -11,13 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: xmldocument.py,v 1.1 2003/04/09 11:47:52 philikon Exp $
-"""
+"""XML-Document Views
 
-from zope.publisher.browser import BrowserView
-
-class XMLDocumentView(BrowserView):
+$Id: xmldocument.py,v 1.2 2003/08/06 14:41:41 srichter Exp $
+"""
+class XMLDocumentView:
 
     def show(self):
         """Show the XML text"""

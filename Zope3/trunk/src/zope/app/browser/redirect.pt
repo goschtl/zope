@@ -8,11 +8,12 @@
   <body>
   <div metal:fill-slot="body">
   
-     <h1>You are being redirected!</h1>
+     <h1 i18n:translate="">You are being redirected!</h1>
 
      <p style="font-size: 150%">
-       If you you see this screen, click 
-       <a tal:attributes="href view/request/nextURL">here</a>.
+       <a tal:attributes="href view/request/nextURL" i18n:translate="">
+         If you you see this screen for more than 5 seconds, click here.
+       </a>
      </p>
 
   </div>

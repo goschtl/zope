@@ -11,17 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""I18n versions of several content objects.
 
-$Id: i18n.py,v 1.3 2003/06/06 21:35:16 philikon Exp $
+$Id: i18n.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
 """
-
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.i18n.negotiator import negotiator
-from zope.publisher.browser import BrowserView
 
 
-class I18nFileView(BrowserView):
+class I18nFileView:
 
     def __call__(self):
         """Call the File"""
@@ -39,14 +36,12 @@ class I18nFileView(BrowserView):
         return self.context.getData(language)
 
 
-class I18nFileEdit(BrowserView):
+class I18nFileEdit:
 
     name = 'editForm'
     title = 'Edit Form'
     description = ('This edit form allows you to make changes to the ' +
                    'properties of this file.')
-
-    template = ViewPageTemplateFile('i18n_edit.pt')
 
     def action(self, contentType, data, language, defaultLanguage,
                selectLanguage=None, removeLanguage=None,
@@ -62,4 +57,4 @@ class I18nFileEdit(BrowserView):
             self.context.setDefaultLanguage(defaultLanguage)
             self.context.edit(data, contentType, language)
         return self.request.response.redirect(self.request.URL[-1] +
-                      "/editForm.html?language=%s" % language)  # XXX url_quote
+                      "/editForm.html?language=%s" %language)  # XXX url_quote

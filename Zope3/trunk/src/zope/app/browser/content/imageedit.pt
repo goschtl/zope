@@ -1,25 +1,26 @@
 <html metal:use-macro="views/standard_macros/page">
-  <body>
-  <div metal:fill-slot="body">
+<body>
+<div metal:fill-slot="body">
 
-    <div metal:use-macro="view/generated_form/macros/body">
+  <div metal:use-macro="view/generated_form/macros/body">
 
-    <form action=".">   
+  <form action=".">   
 
-      <table metal:fill-slot="extra_top">
-        <tr>
-          <td>Size</td>
-          <td tal:content="view/size"
-             >103 x 45 pixels, 43KB</td>            
-        </tr>
-      </table>
- 
-      <input type="submit" name="save" value="Save Changes" />
+    <table metal:fill-slot="extra_top">
+      <tr>
+        <td i18n:translate="">Size</td>
+        <td tal:content="view/size" i18n:translate=""
+           >103 x 45 pixels, 43KB</td>            
+      </tr>
+    </table>
 
-    </form>
+    <input type="submit" name="save" value="Save Changes" 
+        i18n:attributes="value save-changes-button"/>
 
-    </div>
+  </form>
+
   </div>
-  </body>
+</div>
+</body>
 
 </html>

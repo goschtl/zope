@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: undo.py,v 1.7 2003/07/10 12:42:12 anthony Exp $
+$Id: undo.py,v 1.8 2003/08/06 14:41:11 srichter Exp $
 """
 from zope.interface import implements
 from zope.component import getService, getUtility
@@ -35,20 +35,15 @@ undoSetup = function.Subscriber(undoSetup)
 
 
 class ZODBUndoManager:
-    """Implement the basic undo management api for a single ZODB database.
-    """
+    """Implement the basic undo management api for a single ZODB database."""
 
     implements(IUndoManager)
 
     def __init__(self, db):
         self.__db = db
 
-    ############################################################
-    # Implementation methods for interface
-    # zope.app.interfaces.undo.IUndoManager.
-
     def getUndoInfo(self, first=0, last=-20, user_name=None):
-        '''See interface IUndoManager'''
+        '''See zope.app.interfaces.undo.IUndoManager'''
 
         # Entries are a list of dictionaries, containing
         # id          -> internal id for zodb
@@ -77,32 +72,26 @@ class ZODBUndoManager:
         return entries
 
 
-
     def undoTransaction(self, id_list):
-        '''See interface IUndoManager'''
+        '''See zope.app.interfaces.undo.IUndoManager'''
 
         for id in id_list:
             self.__db.undo(id)
 
-    #
-    ############################################################
 
-
-class Undo(BrowserView):
+class Undo:
     """Undo View"""
 
-    index = ViewPageTemplateFile('undo_log.pt')
-
-    def action (self, id_list, REQUEST=None):
-        """
-        processes undo form and redirects to form again (if possible)
-        """
+    def action (self, id_list):
+        """processes undo form and redirects to form again (if possible)"""
         utility = getUtility(self.context, IUndoManager)
         utility.undoTransaction(id_list)
-
-        if REQUEST is not None:
-            REQUEST.response.redirect('index.html')
+        self.request.response.redirect('index.html')
 
     def getUndoInfo(self, first=0, last=-20, user_name=None):
         utility = getUtility(self.context, IUndoManager)
-        return utility.getUndoInfo(first, last, user_name)
+        info = utility.getUndoInfo(first, last, user_name)
+        formatter = self.request.locale.getDateTimeFormatter('medium')
+        for entry in info:
+            entry['datetime'] = formatter.format(entry['datetime'])
+        return info

@@ -13,9 +13,8 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.32 2003/08/05 07:35:50 anthony Exp $
+$Id: interfacewidget.py,v 1.33 2003/08/06 14:41:33 srichter Exp $
 """
-
 import sys
 from zope.interface import Interface, implements
 from zope.app.interfaces.browser.form import IBrowserWidget

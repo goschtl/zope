@@ -11,28 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: metadataedit.py,v 1.5 2003/08/02 08:46:24 anthony Exp $
-"""
+"""Dublin Core Meta Data View
 
-from zope.component import getAdapter
-from zope.app.interfaces.dublincore import IZopeDublinCore
+$Id: metadataedit.py,v 1.6 2003/08/06 14:41:51 srichter Exp $
+"""
 from datetime import datetime
-from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.event import publish
-
+from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.component import getAdapter
 
 __metaclass__ = type
 
 class MetaDataEdit:
     """Provide view for editing basic dublin-core meta-data."""
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
     def edit(self):
         request = self.request
+        formatter = request.locale.getDateTimeFormatter('medium')
         dc = getAdapter(self.context, IZopeDublinCore)
         message=''
 
@@ -40,15 +37,15 @@ class MetaDataEdit:
             dc.title = request['dctitle']
             dc.description = request['dcdescription']
             publish(self.context, ObjectAnnotationsModifiedEvent(self.context))
-            message = "Changed data %s" % datetime.utcnow()
+            message = _("Changed data ${datetime}")
+            message.mapping = {'datetime': formatter.format(datetime.utcnow())}
 
         return {
             'message': message,
             'dctitle': dc.title,
             'dcdescription': dc.description,
-            'modified': dc.modified,
-            'created': dc.created,
+            'modified': (dc.modified or dc.created) and \
+                        formatter.format(dc.modified or dc.created) or '',
+            'created': dc.created and formatter.format(dc.created) or '',
             'creators': dc.creators
             }
-
-__doc__ = MetaDataEdit.__doc__ + __doc__

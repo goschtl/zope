@@ -13,38 +13,45 @@
 ##############################################################################
 """ Server Control View
 
-$Id: zodbcontrol.py,v 1.1 2003/07/31 21:37:27 srichter Exp $
+$Id: zodbcontrol.py,v 1.2 2003/08/06 14:41:20 srichter Exp $
 """
 from zodb.storage.file.errors import FileStorageError
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.applicationcontrol import IZODBControl
 from zope.component import getAdapter
 
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class ZODBControlView:
 
-     def getDatabaseSize(self):
-         zodbcontrol = getAdapter(self.context, IZODBControl)
-         size = zodbcontrol.getDatabaseSize(
-                    self.request.publication.db)
-         if size > 1024**2:
-             return "%.1f MB" %(float(size)/1024**2)
-         elif size > 1024:
-             return "%.1f kB" %(float(size)/1024)
-         else:
-             return "%i Bytes" %size
+    def getDatabaseSize(self):
+        """Get the database size in a human readable format."""
+        zodbcontrol = getAdapter(self.context, IZODBControl)
+        size = zodbcontrol.getDatabaseSize(self.request.publication.db)
+        if size > 1024**2:
+            size_str = _("${size} MB")
+            size_str.mapping = {'size': "%.1f" %(float(size)/1024**2)}
+        elif size > 1024:
+            size_str = _("${size} kB")
+            size_str.mapping = {'size': "%.1f" %(float(size)/1024)}
+        else:
+            size_str = _("${size} Bytes")
+            size_str.mapping = {'size': "%i" %size}
 
-     def pack(self):
-         """Do the packing!"""
-         status = ''
+        return size_str
+        
 
-         if 'PACK' in self.request:
-              zodbcontrol = getAdapter(self.context, IZODBControl)
-              try:
-                   zodbcontrol.pack(self.request.publication.db,
-                                    int(self.request.get('days', 0)))
-                   status = _('ZODB successfully packed.')
-              except FileStorageError, err:
-                   status = _(err)
-
-         return status
+    def pack(self):
+        """Do the packing!"""
+        status = ''
+        
+        if 'PACK' in self.request:
+            zodbcontrol = getAdapter(self.context, IZODBControl)
+            try:
+                zodbcontrol.pack(self.request.publication.db,
+                                 int(self.request.get('days', 0)))
+                status = _('ZODB successfully packed.')
+            except FileStorageError, err:
+                status = _(err)
+                
+        return status

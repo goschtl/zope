@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Extended Editor</title>
+  <title i18n:translate="">Extended Editor</title>
 </head>
 <body>
 <metal:define define-macro="widget">
@@ -22,7 +22,8 @@ function getKeyPress(e) {
 }
 </script>
 <label for="source-text" tal:attributes="for view/name" 
-       tal:content="view/title">Some Source</label>
+       tal:content="view/title"
+       i18n:translate="">Some Source</label>
 <div class="field">
 
 

@@ -11,17 +11,18 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""Absolute URL View components
 
-Revision information:
-$Id: absoluteurl.py,v 1.10 2003/06/12 09:29:27 jim Exp $
+$Id: absoluteurl.py,v 1.11 2003/08/06 14:41:11 srichter Exp $
 """
 
 from zope.app import zapi
 from zope.publisher.browser import BrowserView
 from zope.proxy import sameProxiedObjects
 
-_insufficientContext = ("There isn't enough context to get URL information. "
+from zope.app.i18n import ZopeMessageIDFactory as _
+
+_insufficientContext = _("There isn't enough context to get URL information. "
                        "This is probably due to a bug in setting up context "
                        "wrappers.")
 

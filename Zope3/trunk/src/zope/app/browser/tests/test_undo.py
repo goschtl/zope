@@ -11,34 +11,33 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Undo Tests
 
-Revision information:
-$Id: test_undo.py,v 1.5 2003/07/11 03:51:04 anthony Exp $
+$Id: test_undo.py,v 1.6 2003/08/06 14:42:00 srichter Exp $
 """
-
+from datetime import datetime
 from unittest import TestCase, main, makeSuite
 
 from zope.interface import implements
 from zope.app.interfaces.undo import IUndoManager
 from zope.app.browser.undo import Undo
-from zope.app.services.tests.placefulsetup\
-           import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.publisher.browser import TestRequest
 
 class TestIUndoManager:
     implements(IUndoManager)
 
     def __init__(self):
         dict1 = {'id': '1', 'user_name': 'monkey', 'description': 'thing1',
- 'time': 'today'}
+ 'time': 'today', 'datetime': datetime(2001, 01, 01, 12, 00, 00)}
         dict2 = {'id': '2', 'user_name': 'monkey', 'description': 'thing2',
- 'time': 'today'}
+ 'time': 'today', 'datetime': datetime(2001, 01, 01, 12, 00, 00)}
         dict3 = {'id': '3', 'user_name': 'bonobo', 'description': 'thing3',
- 'time': 'today'}
+ 'time': 'today', 'datetime': datetime(2001, 01, 01, 12, 00, 00)}
         dict4 = {'id': '4', 'user_name': 'monkey', 'description': 'thing4',
- 'time': 'today'}
+ 'time': 'today', 'datetime': datetime(2001, 01, 01, 12, 00, 00)}
         dict5 = {'id': '5', 'user_name': 'bonobo', 'description': 'thing5',
- 'time': 'today'}
+ 'time': 'today', 'datetime': datetime(2001, 01, 01, 12, 00, 00)}
 
         self.dummy_db = [dict1, dict2, dict3, dict4, dict5]
 
@@ -66,30 +65,41 @@ class Test(PlacefulSetup, TestCase):
               TestIUndoManager())
 
     def testGetUndoInfo(self):
-        view = Undo(None, None)
-
-        self.assertEqual(view.getUndoInfo(), TestIUndoManager().getUndoInfo())
-
+        view = Undo()
+        view.context = None
+        view.request = TestRequest()
+        self.checkResult(view.getUndoInfo())
 
     def testUndoSingleTransaction(self):
-        view = Undo(None, None)
+        view = Undo()
+        view.context = None
+        view.request = TestRequest()
         id_list = ['1']
         view.action(id_list)
 
         testum = TestIUndoManager()
         testum.undoTransaction(id_list)
 
-        self.assertEqual(view.getUndoInfo(), testum.getUndoInfo())
+        self.checkResult(view.getUndoInfo())
 
     def testUndoManyTransactions(self):
-        view = Undo(None, None)
+        view = Undo()
+        view.context = None
+        view.request = TestRequest()
         id_list = ['1','2','3']
         view.action(id_list)
 
         testum = TestIUndoManager()
         testum.undoTransaction(id_list)
+        
+        self.checkResult(view.getUndoInfo())
 
-        self.assertEqual(view.getUndoInfo(), testum.getUndoInfo())
+    def checkResult(self, info):
+        for entry in info:
+            self.assertEqual(entry['datetime'], u'Jan 1, 2001 0:00:00 PM ')
+            self.assertEqual(entry['time'], 'today')
+            self.assert_(entry['user_name'] in ('bonobo', 'monkey'))
+            self.assertEqual(entry['description'], 'thing'+entry['id'])
 
 def test_suite():
     return makeSuite(Test)

@@ -1,64 +1,55 @@
 <configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser"
-   xmlns:help="http://namespaces.zope.org/help"
-   i18n_domain='zope'
-   >
+   xmlns="http://namespaces.zope.org/browser"
+   xmlns:help="http://namespaces.zope.org/help">
 
 <!-- File View Directives -->
 
-  <browser:editform
+  <editform
       name="edit.html"
       schema="zope.app.interfaces.content.file.IFile"
       label="Change a file"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:menuItem
+  <menuItem
       menu="zmi_views" title="Edit"
       for="zope.app.interfaces.content.file.IFile"
       action="edit.html"
       filter="python:context.contentType.startswith('text/')"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:editform
+  <editform
       name="upload.html"
       menu="zmi_views" title="Upload"
       schema="zope.app.interfaces.content.file.IFile"
       label="Upload a file"
       permission="zope.ManageContent"
-      class=".file.FileUpload"
-      />
+      class=".file.FileUpload" />
 
-  <browser:page
+  <page
       for="zope.app.interfaces.content.file.IFile"
       name="preview.html"
       menu="zmi_views" title="Preview"
       template="preview.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:page
+  <page
       for="zope.app.interfaces.content.file.IFile"
       name="index.html"
       permission="zope.View"
       class="zope.app.browser.content.file.FileView"
-      attribute="show"
-      />
+      attribute="show" />
 
-  <browser:menuItem menu="add_content"
+  <menuItem 
+      menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="File"
       action="File"
-      description="A file object, suitable for large data."
-      />
+      description="A file object, suitable for large data." />
 
-  <browser:icon
+  <icon
       name="zmi_icon"
       for="zope.app.interfaces.content.file.IFile"
-      file="file_icon.gif"
-      />
+      file="file_icon.gif" />
 
   <help:register
       id="file_upload"
@@ -66,48 +57,39 @@
       parent="ui"
       for="zope.app.interfaces.content.file.IFile"
       view="upload.html"
-      doc_path="./file_upload.hlp"
-      />
+      doc_path="./file_upload.hlp" />
 
 <!-- I18n File View Directives -->
 
-  <browser:page
+  <page
       name="index.html"
       for="zope.app.interfaces.content.i18nfile.II18nFile"
       permission="zope.View"
-      class="zope.app.browser.content.i18n.I18nFileView"
-      />
+      class="zope.app.browser.content.i18n.I18nFileView" />
 
-  <browser:pages
+  <pages
       for="zope.app.interfaces.content.i18nfile.II18nFile"
       permission="zope.View"
       class="zope.app.browser.content.i18n.I18nFileEdit">
 
-      <browser:page
-          name="editForm.html"
-          template="i18n_edit.pt"
-          />
-      <browser:page
-          name="edit.html"
-          attribute="action"
-          />
+    <page name="editForm.html" template="i18n_edit.pt" />
+    <page name="edit.html" attribute="action" />
 
-  </browser:pages>
+  </pages>
 
-  <browser:menuItems menu="zmi_views"
+  <menuItems menu="zmi_views"
       for="zope.app.interfaces.content.i18nfile.II18nFile">
 
       <!-- Keep original edit view, for now -->
-      <browser:menuItem title="Edit" action="editForm.html" />
+      <menuItem title="Edit" action="editForm.html" />
 
       <!-- Supress the upload view from file -->
-      <browser:menuItem title="Upload" action="editForm.html"
-                        filter="python: 0"
-                        />
+      <menuItem title="Upload" action="editForm.html"
+                        filter="python: 0" />
 
-  </browser:menuItems>
+  </menuItems>
 
-  <browser:menuItem menu="add_content"
+  <menuItem menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="I18n File"
       action="zope.app.content.I18nFile"
@@ -116,7 +98,7 @@
 
 <!-- Image -->
 
-  <browser:editform
+  <editform
       schema="zope.app.content.image.IImage"
       name="upload.html"
       menu="zmi_views" title="Upload"
@@ -126,7 +108,7 @@
       template="imageedit.pt"
       />
 
-  <browser:page
+  <page
       name="index.html"
       for="zope.app.content.image.IImage"
       permission="zope.View"
@@ -134,7 +116,7 @@
       class="zope.app.browser.content.image.ImageData"
       />
 
-  <browser:page
+  <page
       for="zope.app.interfaces.content.image.IImage"
       name="preview.html"
       menu="zmi_views" title="Preview"
@@ -142,13 +124,13 @@
       permission="zope.ManageContent"
       />
 
-  <browser:icon
+  <icon
       name="zmi_icon"
       for="zope.app.content.image.IImage"
       file="image_icon.gif"
       />
 
-  <browser:menuItem
+  <menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="Image"
@@ -158,7 +140,7 @@
 
 <!-- I18n Image -->
 
-  <browser:page
+  <page
       name="index.html"
       for="zope.app.interfaces.content.i18nimage.II18nImage"
       permission="zope.View"
@@ -166,164 +148,143 @@
       class="zope.app.browser.content.i18nimage.I18nImageData"
       />
 
-  <browser:pages
+  <pages
       for="zope.app.content.i18nimage.II18nImage"
       permission="zope.ManageContent"
       class="zope.app.browser.content.i18nimage.I18nImageEdit">
 
-      <browser:page name="upload.html" template="i18nimageedit.pt" />
-      <browser:page name="uploadAction.html" attribute="action" />
+      <page name="upload.html" template="i18nimageedit.pt" />
+      <page name="uploadAction.html" attribute="action" />
 
-      </browser:pages>
+      </pages>
 
-  <browser:menuItems
+  <menuItems
       menu="zmi_views"
       for="zope.app.content.i18nimage.II18nImage"
       >
 
       <!-- Keep the old "edit" form -->
-      <browser:menuItem title="Edit" action="upload.html"/>
+      <menuItem title="Edit" action="upload.html"/>
 
       <!-- Suppress upload form (from IFile) -->
-      <browser:menuItem title="Uload" action="upload.html"
+      <menuItem title="Uload" action="upload.html"
                         filter="python: 0" />
 
-  </browser:menuItems>
+  </menuItems>
 
-  <browser:menuItem
+  <menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="I18n Image"
       action="I18nImage"
-      description="A multi-locale version of an Image."
-      />
+      description="A multi-locale version of an Image." />
 
 <!-- ZPT Page View Directives -->
 
-  <browser:page
+  <page
       name="index.html"
       for="zope.app.content.zpt.IZPTPage"
       class="zope.app.browser.content.zpt.ZPTPageEval"
       attribute="index"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
-  <browser:page
+  <page
       name="source.html"
       for="zope.app.content.zpt.IZPTPage"
       class="zope.app.content.zpt.ZPTSourceView"
       attribute="__call__"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:editform
+  <editform
       schema="zope.app.content.zpt.IZPTPage"
       name="edit.html"
       menu="zmi_views"
       label="Edit a ZPT page"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:page
+  <page
       for="zope.app.content.zpt.IZPTPage"
       name="preview.html"
       menu="zmi_views" title="Preview"
       template="preview.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:icon name="zmi_icon"
-           for="zope.app.content.zpt.IZPTPage" file="zpt.gif" />
+  <icon 
+      name="zmi_icon"
+      for="zope.app.content.zpt.IZPTPage" 
+      file="zpt.gif" />
 
-  <browser:menuItem
+  <menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
-      title="Templated Page" action="ZPTPage"
-      description="An object for dynamic content based on Page Templates."
-      />
+      action="ZPTPage"
+      title="Templated Page"
+      description="An object for dynamic content based on Page Templates." />
 
 <!-- Folder View Directives -->
-  <browser:icon
+  <icon
       name="zmi_icon"
       for="zope.app.interfaces.content.folder.IFolder"
-      file="folder_icon.gif"
-      />
+      file="folder_icon.gif" />
 
-  <browser:menuItem menu="add_content"
+  <menuItem 
+      menu="add_content"
       for="zope.app.interfaces.container.IAdding"
-      title="Folder" action="Folder"
-      description="A simple Folder."
-      />
+      action="Folder"
+      title="Folder" 
+      description="A simple Folder." />
 
-  <browser:page
+  <page
       name="contents.html"
       menu="zmi_views" title="Contents"
       for="zope.app.interfaces.content.folder.IFolder"
       permission="zope.ManageContent"
       class="zope.app.browser.container.contents.Contents"
-      attribute="contents"
-      />
+      attribute="contents" />
 
-  <browser:page
+  <page
       name="index.html"
       for="zope.app.interfaces.content.folder.IFolder"
       permission="zope.View"
       class="zope.app.browser.container.contents.Contents"
-      attribute="index"
-      />
+      attribute="index" />
 
-  <browser:page
+  <page
       for="zope.app.interfaces.content.folder.IFolder"
       name="preview.html"
       menu="zmi_views" title="Preview"
       template="preview.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <!-- ApplicationController navigation -->
 
-  <browser:menuItems menu="zmi_actions"
-    for="zope.app.interfaces.content.folder.IRootFolder">
+  <menuItem 
+      menu="zmi_actions"
+      for="zope.app.interfaces.content.folder.IRootFolder"
+      title="Manage Process" 
+      action="++etc++process/index.html" />
 
-    <browser:menuItem title="Manage Process"
-              action="++etc++process/index.html"
-              />
+  <!-- SQL Script View Directives -->
 
-  </browser:menuItems>
-
-<!-- SQL Script View Directives -->
-
-  <browser:editform
+  <editform
       schema="zope.app.interfaces.content.sql.ISQLScript"
       name="edit.html"
       menu="zmi_views"
       label="Edit an SQL script"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:pages
+  <pages
       for="zope.app.interfaces.content.sql.ISQLScript"
       permission="zope.View"
       class="zope.app.browser.content.sql.SQLScriptTest" >
 
-    <browser:page
-        name="test.html"
-        template="sqltest.pt"
-        />
-    <browser:page
-        name="testResults.html"
-        template="sqltestresults.pt" />
+    <page name="test.html" template="sqltest.pt" 
+          menu="zmi_views" title="Test" />
+    <page name="testResults.html" template="sqltestresults.pt" />
 
-  </browser:pages>
+  </pages>
 
-  <browser:menuItem
-      menu="zmi_views"
-      for="zope.app.interfaces.content.sql.ISQLScript"
-      title="Test"
-      action="test.html"
-      />
-
-  <browser:menuItem
+  <menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="SQLScript"
@@ -333,101 +294,92 @@
 
 <!-- DTML Page View Directives -->
 
-  <browser:page
+  <page
       name="index.html"
       for="zope.app.content.dtmlpage.IDTMLPage"
       permission="zope.View"
       class="zope.app.browser.content.dtmlpageeval.DTMLPageEval"
-      attribute="index"
-      />
+      attribute="index" />
 
-  <browser:editform
+  <editform
       schema="zope.app.content.dtmlpage.IDTMLPage"
       name="edit.html"
       menu="zmi_views"
       label="Edit a DTML page"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:page
+  <page
       for="zope.app.content.dtmlpage.IDTMLPage"
       name="preview.html"
       menu="zmi_views" title="Preview"
       template="preview.pt"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
-  <browser:icon
+  <icon
       name="zmi_icon"
       for="zope.app.content.dtmlpage.IDTMLPage"
-      file="dtml.gif"
-      />
+      file="dtml.gif" />
 
-  <browser:menuItem
+  <menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
-      title="DTML Page" action="DTMLPage"
+      action="DTMLPage"
+      title="DTML Page"
       description="An object for dynamic content based on Document Templates."
       />
 
 
 <!-- XML Document View Directives -->
 
-  <browser:page
+  <page
       name="index.html"
       for="zope.app.content.xmldocument.IXMLDocument"
       class="zope.app.browser.content.xmldocument.XMLDocumentView"
       attribute="show"
-      permission="zope.View"
-      />
+      permission="zope.View" />
 
-  <browser:editform
+  <editform
       schema="zope.app.content.xmldocument.IXMLDocument"
       name="edit.html"
       menu="zmi_views"
       label="Edit an XML document"
-      permission="zope.ManageContent"
-      />
+      permission="zope.ManageContent" />
 
   <!-- XXX we don't have an icon for this yet
-  <browser:icon name="zmi_icon"
+  <icon name="zmi_icon"
            for="zope.app.content.xmldocument.IXMLDocument" file="xml.gif" />
   -->
 
-  <browser:menuItem
+  <menuItem
       menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="XML Document" action="XMLDocument"
-      description="An object storing XML text."
-      />
+      description="An object storing XML text." />
 
   <!-- toFS.snarf and fromFS.snarf views, for new fssync tools -->
 
   <!-- fssync checkout, update -->
-  <browser:page
+  <page
       for="zope.interface.Interface"
       name="toFS.snarf"
       permission="zope.ManageServices"
       class="zope.app.browser.content.fssync.SnarfFile"
-      attribute="show"
-      />
+      attribute="show" />
 
   <!-- fssync commit -->
-  <browser:page
+  <page
       for="zope.interface.Interface"
       name="fromFS.snarf"
       permission="zope.ManageServices"
       class="zope.app.browser.content.fssync.SnarfCommit"
-      attribute="commit"
-      />
+      attribute="commit" />
 
   <!-- fssync checkin -->
-  <browser:page
+  <page
       for="zope.interface.Interface"
       name="checkin.snarf"
       permission="zope.ManageServices"
       class="zope.app.browser.content.fssync.SnarfCommit"
-      attribute="checkin"
-      />
+      attribute="checkin" />
 
 </configure>

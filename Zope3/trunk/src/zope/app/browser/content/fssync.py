@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.21 2003/06/13 17:41:12 stevea Exp $
+$Id: fssync.py,v 1.22 2003/08/06 14:41:41 srichter Exp $
 """
-
 import os
 import cgi
 import shutil
@@ -32,6 +30,8 @@ from zope.app.fssync.syncer import toFS
 from zope.app.fssync.committer import Committer, Checker
 from zope.fssync.metadata import Metadata
 
+from zope.app.i18n import ZopeMessageIDFactory as _
+
 def snarf_dir(response, dirname):
     """Helper to snarf a directory to the response."""
     response.setStatus(200)
@@ -41,7 +41,6 @@ def snarf_dir(response, dirname):
     return ""
 
 class SnarfFile(BrowserView):
-
     """View returning a snarfed representation of an object tree.
 
     This applies to any object (for="zope.interface.Interface").
@@ -68,7 +67,6 @@ class NewMetadata(Metadata):
         return entry
 
 class SnarfCommit(BrowserView):
-
     """View for committing and checking in changes.
 
     The input to commit() should be a POST request whose data is a
@@ -119,7 +117,7 @@ class SnarfCommit(BrowserView):
 
     def check_content_type(self):
         if not self.request.getHeader("Content-Type") == "application/x-snarf":
-            raise ValueError("Content-Type is not application/x-snarf")
+            raise ValueError(_("Content-Type is not application/x-snarf"))
 
     def set_transaction(self):
         self.txn = get_transaction()
@@ -161,7 +159,7 @@ class SnarfCommit(BrowserView):
         # Compute self.{name, container, fspath} for checkin()
         name = self.get_arg("name")
         if not name:
-            raise ValueError("required argument 'name' missing")
+            raise ValueError(_("required argument 'name' missing"))
         src = self.get_arg("src")
         if not src:
             src = name
@@ -201,7 +199,7 @@ class SnarfCommit(BrowserView):
 
     def send_errors(self):
         self.txn.abort()
-        lines = ["Up-to-date check failed:"]
+        lines = [_("Up-to-date check failed:")]
         tempdir_sep = os.path.join(self.tempdir, "") # E.g. foo -> foo/
         for e in self.errors:
             lines.append(e.replace(tempdir_sep, ""))

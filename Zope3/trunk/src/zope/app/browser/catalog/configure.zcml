@@ -1,108 +1,98 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:global_translation="http://namespaces.zope.org/gts"
-    i18n_domain='zope'
-    >
+    xmlns:browser="http://namespaces.zope.org/browser">
 
-<global_translation:registerTranslations directory="translation_files"/>
-
-<!-- Allow a catalog to be added to content space -->
-<browser:menuItem menu="add_content"
-  for="zope.app.interfaces.container.IAdding"
-  title="Catalog"
-  action="zope.app.catalog"
-  description="Catalog"
-/>
-
-<browser:icon name="zmi_icon" 
-              for="zope.app.interfaces.catalog.catalog.ICatalog"
-              file="catalog_icon.gif"/>
-
-<browser:menuItem
-  menu="add_component"
-  action="zope.app.catalogutility"
-  title="Catalog"
-  for="zope.app.interfaces.container.IAdding"
-  permission="zope.ManageServices"
-  />
-
-<!-- Standard container 'contents' tab -->
-<browser:page
-  for="zope.app.interfaces.catalog.catalog.ICatalog"
-  name="contents.html"
-  menu="zmi_views"
-  title="Indexes"
-  attribute="contents"
-  class="zope.app.browser.container.contents.Contents"
-  permission="zope.ManageContent"
-/>
-
-<!-- This hooks up a custom add menu. This will be improved when
-     Jim finished refactoring Containers to suck less. -->
-<browser:view
-   for="zope.app.interfaces.catalog.catalog.ICatalog"
-   name="+"
-   menu="zmi_actions" title="Add"
-   class="zope.app.browser.catalog.catalog.IndexAdding"
-   permission="zope.ManageContent">
-   <browser:page name="index.html"  attribute="index" />
-   <browser:page name="action.html" attribute="action" />
-</browser:view>
-
-<!-- the add menu is browser.IndexAdding -->
-<browser:menu id="catalog_index_menu" title="Add Index" />
-
-<!-- Add a couple of items to the add menu -->
-<!-- TextIndex -->
-<browser:addform
-  name="AddTextIndexToCatalog"
-  menu="catalog_index_menu" title="Text Index"
-  schema="zope.app.interfaces.index.text.IUITextCatalogIndex"
-  permission="zope.ManageServices"
-  content_factory="zope.app.index.text.index.TextCatalogIndex"
-  arguments="field_name"
-  keyword_arguments="interface"
-  description="A full text index"
-/>
-
-<!-- FieldIndex -->
-<browser:addform
-  name="AddFieldIndexToCatalog"
-  menu="catalog_index_menu" title="Field Index"
-  schema="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
-  permission="zope.ManageServices"
-  content_factory="zope.app.index.field.index.FieldCatalogIndex"
-  arguments="field_name"
-  keyword_arguments="interface"
-  description="An index of a specific field"
-/>
-
-<!-- KeywordIndex -->
-<browser:addform
-  name="AddKeywordIndexToCatalog"
-  menu="catalog_index_menu" title="Keyword Index"
-  schema="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
-  permission="zope.ManageServices"
-  content_factory="zope.app.index.keyword.index.KeywordCatalogIndex"
-  arguments="field_name"
-  keyword_arguments="interface"
-  description="A keyword index of a specific field"
-/>
-
-<!-- the Advanced tab of the Catalog -->
-<browser:pages
-    for="zope.app.interfaces.catalog.catalog.ICatalog"
-    class="zope.app.browser.catalog.catalog.CatalogEditView"
-    permission="zope.ManageContent">
-
-  <browser:page name="index.html" template="advanced.pt"
-      menu="zmi_views" title="Advanced"/>
-
-  <browser:page name="subscribe.html" attribute="subscribe"/>
-  <browser:page name="unsubscribe.html" attribute="unsubscribe"/>
-  <browser:page name="clear.html" attribute="clear"/>
-  <browser:page name="reindex.html" attribute="reindex"/>
-</browser:pages>
+  <!-- Allow a catalog to be added to content space -->
+  <browser:menuItem 
+      menu="add_content"
+      for="zope.app.interfaces.container.IAdding"
+      title="Catalog"
+      action="zope.app.catalog"
+      description="Catalog" />
+  
+  <browser:icon 
+      name="zmi_icon" 
+      for="zope.app.interfaces.catalog.catalog.ICatalog"
+      file="catalog_icon.gif"/>
+  
+  <browser:menuItem
+      menu="add_component"
+      action="zope.app.catalogutility"
+      title="Catalog"
+      for="zope.app.interfaces.container.IAdding"
+      permission="zope.ManageServices" />
+  
+  <!-- Standard container 'contents' tab -->
+  <browser:page
+      for="zope.app.interfaces.catalog.catalog.ICatalog"
+      name="contents.html"
+      menu="zmi_views"
+      title="Indexes"
+      attribute="contents"
+      class="zope.app.browser.container.contents.Contents"
+      permission="zope.ManageContent" />
+  
+  <!-- This hooks up a custom add menu.  -->
+  <browser:view
+       for="zope.app.interfaces.catalog.catalog.ICatalog"
+       name="+"
+       menu="zmi_actions" title="Add"
+       class="zope.app.browser.catalog.catalog.IndexAdding"
+       permission="zope.ManageContent">
+     <browser:page name="index.html"  attribute="index" />
+     <browser:page name="action.html" attribute="action" />
+  </browser:view>
+  
+  <!-- the add menu is browser.IndexAdding -->
+  <browser:menu id="catalog_index_menu" title="Add Index" />
+  
+  <!-- Add a couple of items to the add menu -->
+  <!-- TextIndex -->
+  <browser:addform
+    name="AddTextIndexToCatalog"
+    menu="catalog_index_menu" title="Text Index"
+    schema="zope.app.interfaces.index.text.IUITextCatalogIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.app.index.text.index.TextCatalogIndex"
+    arguments="field_name"
+    keyword_arguments="interface"
+    description="A full text index" />
+  
+  <!-- FieldIndex -->
+  <browser:addform
+    name="AddFieldIndexToCatalog"
+    menu="catalog_index_menu" title="Field Index"
+    schema="zope.app.interfaces.index.field.IUIFieldCatalogIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.app.index.field.index.FieldCatalogIndex"
+    arguments="field_name"
+    keyword_arguments="interface"
+    description="An index of a specific field" />
+  
+  <!-- KeywordIndex -->
+  <browser:addform
+    name="AddKeywordIndexToCatalog"
+    menu="catalog_index_menu" title="Keyword Index"
+    schema="zope.app.interfaces.index.keyword.IUIKeywordCatalogIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.app.index.keyword.index.KeywordCatalogIndex"
+    arguments="field_name"
+    keyword_arguments="interface"
+    description="A keyword index of a specific field" />
+  
+  <!-- the Advanced tab of the Catalog -->
+  <browser:pages
+      for="zope.app.interfaces.catalog.catalog.ICatalog"
+      class="zope.app.browser.catalog.catalog.CatalogEditView"
+      permission="zope.ManageContent">
+  
+    <browser:page name="index.html" template="advanced.pt"
+        menu="zmi_views" title="Advanced"/>
+  
+    <browser:page name="subscribe.html" attribute="subscribe"/>
+    <browser:page name="unsubscribe.html" attribute="unsubscribe"/>
+    <browser:page name="clear.html" attribute="clear"/>
+    <browser:page name="reindex.html" attribute="reindex"/>
+  </browser:pages>
 
 </configure>

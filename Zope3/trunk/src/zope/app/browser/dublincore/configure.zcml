@@ -1,22 +1,14 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain='zope'
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <browser:pages
+  <pages
       for="zope.app.interfaces.annotation.IAnnotatable"
       permission="zope.ManageContent"
-      class="zope.app.browser.dublincore.metadataedit.MetaDataEdit"
-      >
+      class=".metadataedit.MetaDataEdit">
 
-    <browser:page name="EditMetaData.html"
-                  menu="zmi_views" title="Metadata"
-                  template="edit.pt" />
+    <page name="EditMetaData.html" template="edit.pt"
+          menu="zmi_views" title="Metadata" />
+    <page name="MetaDataBox" template="box.pt" />
 
-    <browser:page name="MetaDataBox"
-                  template="box.pt" />
-
-  </browser:pages>
+  </pages>
 
 </configure>

@@ -1,84 +1,78 @@
-<configure
-    xmlns="http://namespaces.zope.org/browser"
-    i18n_domain="zope"
-    >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-    <menu id="zmi_views" 
-          title="Menu for displaying alternate representations of an object"
-          usage="objectview"
-          />
+  <menu 
+      id="zmi_views" 
+      title="Menu for displaying alternate representations of an object"
+      usage="objectview" />
 
-    <menu id="zmi_actions" 
-          title="Menu for displaying actions to be performed"
-          usage="activitydialog"
-          />
+  <menu 
+      id="zmi_actions" 
+      title="Menu for displaying actions to be performed"
+      usage="activitydialog" />
 
-   <menu id="help_actions" 
-          title="Menu for displaying help actions to be performed with popup"
-          usage="activitydialog"
-          />
+  <menu 
+      id="help_actions" 
+      title="Menu for displaying help actions to be performed with popup"
+      usage="activitydialog" />
 
-   <menu id="add_content"
-         title="Menu of objects to be added to content folders"
-         usage="addingdialog"
-         />
+  <menu 
+      id="add_content"
+      title="Menu of objects to be added to content folders"
+      usage="addingdialog" />
 
-   <menu id="add_component"
-         title="Menu of objects to be added to service manager packages"
-         usage="addingdialog"
-         />
+  <menu 
+      id="add_component"
+      title="Menu of objects to be added to service manager packages"
+      usage="addingdialog" />
 
-   <menu id="add_service"
-         title="Menu of services to be added"
-         usage="addingdialog"
-         />
+  <menu 
+      id="add_service"
+      title="Menu of services to be added"
+      usage="addingdialog" />
 
-   <menu id="add_utility"
-         title="Menu of utilities to be added"
-         usage="addingdialog"
-         />
+  <menu 
+      id="add_utility"
+      title="Menu of utilities to be added"
+      usage="addingdialog" />
 
-   <menu id="add_connection"
-         title="Menu of database connections to be added"
-         usage="addingdialog"
-         />
+  <menu 
+      id="add_connection"
+      title="Menu of database connections to be added"
+      usage="addingdialog" />
 
-   <menu id="add_cache"
-         title="Menu of database connections to be added"
-         usage="addingdialog"
-         />
+  <menu 
+      id="add_cache"
+      title="Menu of database connections to be added"
+      usage="addingdialog" />
 
-   <menu id="add_registration"
-         title="Menu of addable configuration objects"
-         usage="addingdialog"
-         />
+  <menu 
+      id="add_registration"
+      title="Menu of addable configuration objects"
+      usage="addingdialog" />
 
   <!-- Management view selector -->
   <!-- Get first accessable item from zmi_views menu -->
   <page
-     for="*"
-     name="SelectedManagementView.html"
-     permission="zope.Public"
-     class=".managementviewselector.ManagementViewSelector" 
-     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-     />
+      for="*"
+      name="SelectedManagementView.html"
+      permission="zope.Public"
+      class=".managementviewselector.ManagementViewSelector" 
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
 
   <!-- Make manage an alias for same -->
   <page
-     for="*"
-     name="manage"
-     permission="zope.ManageContent"
-     class=".managementviewselector.ManagementViewSelector" 
-     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
-     />
+      for="*"
+      name="manage"
+      permission="zope.ManageContent"
+      class=".managementviewselector.ManagementViewSelector" 
+      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" />
 
   <!-- Menu access -->
   <page
-     for="*"
-     name="view_get_menu"
-     permission="zope.Public"
-     class=".menu.MenuAccessView" 
-     allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView"
-     />
+      for="*"
+      name="view_get_menu"
+      permission="zope.Public"
+      class=".menu.MenuAccessView" 
+      allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView" />
 
 </configure>

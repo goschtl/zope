@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""View Class for the Container's Contents view.
 
-Revision information: $Id: contents.py,v 1.24 2003/07/01 15:27:31 sidnei Exp $
+$Id: contents.py,v 1.25 2003/08/06 14:41:36 srichter Exp $
 """
 
 from zope.app import zapi
@@ -314,8 +314,7 @@ class Contents(BrowserView):
         return self._index()
 
 class JustContents(Contents):
-    """Like Contents, but does't delegate to item named index.html
-    """
+    """Like Contents, but does't delegate to item named index.html"""
 
     def index(self):
         return self._index()

@@ -1,8 +1,4 @@
-<configure
-    xmlns='http://namespaces.zope.org/browser'
-    i18n_domain='zope'
-    >
-<!-- Introspection -->
+<configure xmlns="http://namespaces.zope.org/browser">
 
   <!--page
       name="classBrowser.html"
@@ -13,28 +9,23 @@
       title="Introspector"
       menu="zmi_views"
       /-->
+
   <pages
       for = "zope.interface.Interface"
       permission="zope.ManageServices"
       class="zope.app.browser.introspector.IntrospectorView" >
 
-      <page name="classBrowser.html"
-            title="Introspector"
-            template="introspector.pt"
-            menu="zmi_views"
-      />
+    <page name="classBrowser.html" template="introspector.pt"
+          menu="zmi_views" title="Introspector" />
+    <page name="objectMarker.html" template="marker.pt" />
 
-      <page name="objectMarker.html"
-            template="marker.pt"
-      />
-    </pages>
+  </pages>
 
   <page
       name="index.html"
       for="zope.interface.interfaces.IInterface"
       permission="zope.View"
       template="introspector.pt"
-      class="zope.app.browser.introspector.IntrospectorView"
-      />
+      class="zope.app.browser.introspector.IntrospectorView" />
 
 </configure>

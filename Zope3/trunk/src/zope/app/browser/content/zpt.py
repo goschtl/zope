@@ -13,12 +13,9 @@
 ##############################################################################
 """Define view component for ZPT page eval results.
 
-$Id: zpt.py,v 1.3 2003/01/25 13:34:15 jim Exp $
+$Id: zpt.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
 """
-
-from zope.publisher.browser import BrowserView
-
-class ZPTPageEval(BrowserView):
+class ZPTPageEval:
 
     def index(self, **kw):
         """Call a Page Template"""

@@ -11,16 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""SQL Script Views
+
+$Id: sql.py,v 1.10 2003/08/06 14:41:41 srichter Exp $
 """
-$Id: sql.py,v 1.9 2003/06/11 13:47:57 srichter Exp $
-"""
-from zope.publisher.browser import BrowserView
 from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.rdb import DatabaseException
 from zope.context import ContextMethod
 
-class SQLScriptTest(BrowserView):
-    """Edit View for SQL Scripts"""
+class SQLScriptTest:
+    """Test the SQL inside the SQL Script"""
 
     __used_for__ = ISQLScript
 

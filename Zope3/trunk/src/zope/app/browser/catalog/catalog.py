@@ -1,22 +1,23 @@
-from persistence import Persistent
-from zope.interface import implements
-from zope.component import getAdapter
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Catalog Views
 
-from zope.app.event import publish
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
-
-from zope.app.index.field.index import FieldIndex
-from zope.app.index.text.index import TextIndex
-
-from zope.app.interfaces.container import IAdding
-
+$Id: catalog.py,v 1.3 2003/08/06 14:41:26 srichter Exp $
+"""
 from zope.app.browser.container.adding import Adding
-
-from zope.app.catalog.catalog import Catalog
-
-import time
-
-from zope.app.interfaces.catalog.catalog import ICatalog, ICatalogView
+from zope.app.interfaces.catalog.catalog import ICatalog
+from zope.interface import implements
 
 class CatalogEditView:
     "Provides a user interface for configuring a catalog"
@@ -42,6 +43,7 @@ class CatalogEditView:
     def reindex(self):
         self.context.updateIndexes()
 	self.request.response.redirect(".")
+
 
 class IndexAdding(Adding):
     menu_id = 'catalog_index_menu'

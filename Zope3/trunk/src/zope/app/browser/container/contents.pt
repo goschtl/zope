@@ -1,16 +1,12 @@
-<html metal:use-macro="views/standard_macros/page"  i18n:domain="zope">
-<head>
-<style metal:fill-slot="headers" type="text/css">
-</style>
-</head>
+<html metal:use-macro="views/standard_macros/page">
 <body>
 <div metal:fill-slot="body">
-<div metal:define-macro="contents">
 
-  <form name="containerContentsForm" method="POST" action="."
-        tal:attributes="action request/URL"
-        tal:define="container_contents view/listContentInfo"
-        >
+  <div metal:define-macro="contents">
+
+    <form name="containerContentsForm" method="POST" action="."
+          tal:attributes="action request/URL"
+          tal:define="container_contents view/listContentInfo">
 
       <input type="hidden" name="type_name" value=""
              tal:attributes="value request/type_name"
@@ -23,20 +19,22 @@
 
       <div class="page_error"
            tal:condition="view/error"
-           tal:content="view/error">
+           tal:content="view/error"
+           i18n:translate="">
         Error message
       </div>
 
-      <table id="sortable" class="listing" summary="Content listing">
+      <table id="sortable" class="listing" summary="Content listing"
+             i18n:attributes="summary">
 
         <thead>
           <tr>
             <th>&nbsp;</th>
-            <th>Name</th>
-            <th>Title</th>
-            <th>Size</th>
-            <th>Created</th>
-            <th>Modified</th>
+            <th i18n:translate="">Name</th>
+            <th i18n:translate="">Title</th>
+            <th i18n:translate="">Size</th>
+            <th i18n:translate="">Created</th>
+            <th i18n:translate="">Modified</th>
           </tr>
         </thead>
 
@@ -101,8 +99,10 @@
                  tal:content="item/title|default"
                  >&nbsp;&nbsp;&nbsp;&nbsp;</span>
             </td>
+
             <td><span tal:attributes="size item/size/sizeForSorting"
-                      tal:content="item/size/sizeForDisplay">&nbsp;</span></td>
+                      tal:content="item/size/sizeForDisplay"
+                      >&nbsp;</span></td>
             <td><span tal:define="created item/created|default"
                       tal:content="created">&nbsp;</span></td>
             <td><span tal:define="modified item/modified|default"
@@ -115,23 +115,23 @@
 
       <div tal:condition="view/normalButtons">
         <input type="submit" name="container_rename_button" value="Rename"
-               i18n:attributes="value container_rename_button"
+               i18n:attributes="value container-rename-button"
                tal:condition="view/supportsRename"
                />
         <input type="submit" name="container_cut_button" value="Cut"
-               i18n:attributes="value container_cut_button"
+               i18n:attributes="value container-cut-button"
                tal:condition="view/supportsCut"
                />
         <input type="submit" name="container_copy_button" value="Copy"
-               i18n:attributes="value container_copy_button"
+               i18n:attributes="value container-copy-button"
                tal:condition="view/supportsCopy"
                />
         <input type="submit" name="container_paste_button" value="Paste"
                tal:condition="view/hasClipboardContents"
-               i18n:attributes="value container_paste_button"
+               i18n:attributes="value container-paste-button"
                />
         <input type="submit" name="container_delete_button" value="Delete"
-               i18n:attributes="value container_delete_button"
+               i18n:attributes="value container-delete-button"
                i18n:domain="zope"
                />
       </div>
@@ -141,20 +141,20 @@
                i18n:attributes="value container_apply_button"
                />
         <input type="submit" name="container_cancel_button" value="Cancel"
-               i18n:attributes="value container_cancel_button"
+               i18n:attributes="value container-cancel-button"
                />
       </div>
 
-  </form>
+    </form>
 
-      <script ><!--
-          prettydump('focus', LG_INFO);
-          document.containerContentsForm.new_value.focus();
-          //-->
-      </script>
+    <script ><!--
+        prettydump('focus', LG_INFO);
+        document.containerContentsForm.new_value.focus();
+        //-->
+    </script>
 
+  </div>
 
-</div>
 </div>
 </body>
 </html>

@@ -1,8 +1,10 @@
-<html metal:use-macro="views/standard_macros/page" i18n:domain="zope">
+<html metal:use-macro="views/standard_macros/page">
   <body>
   <div metal:fill-slot="body">
 
-    <p i18n:translate="">This edit form allows you to associate a cache with this object.</p>
+    <p i18n:translate="">
+      This edit form allows you to associate a cache with this object.
+    </p>
 
     <p tal:condition="not: view/current_cache_id" i18n:translate="">
       Currently there is no cache associated with the object.
@@ -12,7 +14,8 @@
       Currently the object uses
       <a tal:omit-tag="not:view/current_cache_url"
          tal:attributes="href view/current_cache_url"
-         tal:content="view/current_cache_id"/>.
+         tal:content="view/current_cache_id"
+         i18n:name="cache_id_or_url"/>.
     </p>
 
     <div tal:condition="python: options.has_key('errors') and
@@ -39,10 +42,11 @@
         </tr>
       </table>
 
-      <input type="submit" name="ChangeCaching.html:method" 
-             value="Save Changes" i18n:attributes="value" />
+      <input type="submit" name="ChangeCaching.html:method" value="Save Changes"
+             i18n:attributes="value save-cahnges-button" />
       <input type="submit" name="InvalidateCache.html:method"
-             value="Invalidate Cached Value" i18n:attributes="value" />
+             value="Invalidate Cached Value" 
+             i18n:attributes="value invalidate-cache-button" />
 
     </form>
     <div tal:content="options/message|nothing" i18n:translate="" />

@@ -1,22 +1,17 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser"
-   i18n_domain="zope"
-   >
+<configure xmlns="http://namespaces.zope.org/browser">
 
-  <!-- ServerControl View Directives -->
-  <browser:pages
+  <pages
       for="zope.app.interfaces.applicationcontrol.IApplicationControl"
       permission="zope.ManageApplication"
       class=
          "zope.app.browser.applicationcontrol.servercontrol.ServerControlView">
     
-    <browser:page name="ServerControlForm.html" template="server-control.pt" 
-                  menu="zmi_views" title="Server Control" />
-    <browser:page name="ServerControl.html" attribute="action" />
-  </browser:pages>
+    <page name="ServerControlForm.html" template="server-control.pt" 
+          menu="zmi_views" title="Server Control" />
+    <page name="ServerControl.html" attribute="action" />
+  </pages>
  
-  <browser:page
+   <page
       for="zope.app.interfaces.applicationcontrol.IApplicationControl"
       name="index.html"
       menu="zmi_views"
@@ -25,7 +20,7 @@
       class="zope.app.browser.applicationcontrol.runtimeinfo.RuntimeInfoView" 
       permission="zope.ManageApplication"/>
 
-  <browser:page
+  <page
       for="zope.app.interfaces.applicationcontrol.IApplicationControl"
       name="ZODBControl.html"
       template="zodbcontrol.pt"

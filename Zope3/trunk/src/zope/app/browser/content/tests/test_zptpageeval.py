@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_zptpageeval.py,v 1.6 2003/06/01 15:59:26 jim Exp $
+$Id: test_zptpageeval.py,v 1.7 2003/08/06 14:41:49 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -50,7 +50,10 @@ class Test(CleanUp, TestCase):
 
         template = ContextWrapper(Template(), folder)
 
-        view = ZPTPageEval(template, request)
+        view = ZPTPageEval()
+        # Do manually, since directive adds BrowserView as base class
+        view.context = template
+        view.request = request
         self.assertEqual(view.index(), 42)
         self.assertEqual(template.called, (request, {}))
         self.assertEqual(getattr(request, 'content-type'), 'text/x-test')

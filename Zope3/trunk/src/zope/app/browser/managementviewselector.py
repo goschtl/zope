@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: managementviewselector.py,v 1.3 2003/06/06 21:35:15 philikon Exp $
-"""
+"""Selecting first available and allowed management view
 
+$Id: managementviewselector.py,v 1.4 2003/08/06 14:41:11 srichter Exp $
+"""
 __metaclass__ = type
 
 from zope.interface import implements
@@ -23,8 +23,7 @@ from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPublisher
 
 class ManagementViewSelector(BrowserView):
-    """View that selects the first available management view
-    """
+    """View that selects the first available management view."""
 
     implements(IBrowserPublisher)
 

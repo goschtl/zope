@@ -11,26 +11,23 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Define view component for image editing.
+"""Define view component for image editing.
 
-Revision Information:
-$Id: i18nimage.py,v 1.4 2003/06/06 21:35:16 philikon Exp $
+$Id: i18nimage.py,v 1.5 2003/08/06 14:41:41 srichter Exp $
 """
-
 from zope.app.browser.content.image import ImageData
 from zope.i18n.negotiator import negotiator
-from zope.publisher.browser import BrowserView
+from zope.app.i18n import ZopeMessageIDFactory as _
 
-
-class I18nImageEdit(BrowserView):
+class I18nImageEdit:
 
     name = 'editForm'
-    title = 'Edit Form'
-    description = ('This edit form allows you to make changes to the ' +
+    title = _('Edit Form')
+    description = _('This edit form allows you to make changes to the ' +
                    'properties of this image.')
 
     def getImageSize(self, language=None):
+        # XXX Change to ISizeable adapter
         size = self.context.getImageSize(language)
         return "%d x %d" % (size[0], size[1])
 

@@ -3,11 +3,12 @@
 <html
   xmlns="http://www.w3.org/1999/xhtml"
   xml:lang="en"
-  lang="en" >
+  lang="en" 
+  i18n:domain="zope">
 
   <head>
     <!-- Waaa -->
-    <title metal:define-slot="title">Z3 UI</title>
+    <title metal:define-slot="title" i18n:translate="">Z3 UI</title>
 
 
     <style type="text/css" 
@@ -47,13 +48,13 @@
     <div id="personal">
 
       <metal:block define-macro="logged_user">
-        User:
+        <span tal:omit-tag="" i18n:translate="">User:</span>
         <tal:block replace="request/user/getTitle">
           User
         </tal:block>
       </metal:block>
 
-      (Personal elements)
+      <!-- (Personal elements) -->
     </div>
 
 
@@ -62,7 +63,7 @@
 <!--
       <div class="box" id="navigationTree">
 
-        <h4>Navigation</h4>
+        <h4 i18n:translate="">Navigation</h4>
 
         <div 
           xmlns="http://www.zope.org/zope3xmltree"
@@ -131,7 +132,7 @@
 
       <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
 
-        <h4>Tip</h4>
+        <h4 i18n:translate="">Tip</h4>
 
         <div class="body">
 
@@ -155,7 +156,8 @@
 
 
     <div id="footer"
-      metal:define-macro="footer">
+      metal:define-macro="footer"
+      i18n:translate="">
       Powered by Zope
     </div>
 

@@ -1,22 +1,22 @@
-<tal:block define="data view/edit"
-           condition="data">
+<tal:block define="data view/edit" condition="data">
 
    <div tal:condition="data/dctitle">
-     <span class="label">Title:</span> <span tal:replace="data/dctitle" />
+     <span class="label">Title:</span> 
+     <span tal:replace="data/dctitle" />
    </div>
              
    <div tal:condition="data/dcdescription">
-      <span class="label">Description:</span> <span tal:replace="data/dcdescription" />
+     <span class="label">Description:</span> 
+     <span tal:replace="data/dcdescription" />
    </div>
    <div tal:condition="data/created">
-      <!-- XXX TODO localize time format -->     
-      <span class="label">Created:</span>
-      <span tal:replace="python: data['created'].strftime('%m/%d/%Y')">2000-01-01 01:01:01</span>
+     <span class="label">Created:</span>
+     <span tal:replace="data/created">2000-01-01 01:01:01</span>
    </div>
           
    <div tal:condition="data/modified">
-      <span class="label">Modified:</span>
-      <span tal:replace="python: data['modified'].strftime('%m/%d/%Y')">2000-01-01 01:01:01</span>
+     <span class="label">Modified:</span>
+     <span tal:replace="data/modified">2000-01-01 01:01:01</span>
    </div>
 
 </tal:block>

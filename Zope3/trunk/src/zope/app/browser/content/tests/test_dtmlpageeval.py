@@ -11,20 +11,15 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""DTML Page Evaluation Tests
 
-$Id: test_dtmlpageeval.py,v 1.5 2003/06/01 15:59:26 jim Exp $
+$Id: test_dtmlpageeval.py,v 1.6 2003/08/06 14:41:49 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-
-from zope.app.browser.content.dtmlpageeval import \
-     DTMLPageEval
+from zope.app.browser.content.dtmlpageeval import DTMLPageEval
 from zope.app.context import ContextWrapper
 
-
-class Test(CleanUp, TestCase):
+class Test(TestCase):
 
     def test(self):
 
@@ -50,10 +45,12 @@ class Test(CleanUp, TestCase):
                 setattr(self, name, value)
 
         request = Request()
-
         template = ContextWrapper(Template(), folder)
 
-        view = DTMLPageEval(template, None)
+        view = DTMLPageEval()
+        # Do manually, since directive adds BrowserView as base class
+        view.context = template
+        view.request = request
         self.assertEqual(view.index(request), 42)
         self.assertEqual(template.called, (request, {}))
         self.assertEqual(getattr(request, 'content-type'), 'text/x-test')

@@ -1,28 +1,28 @@
 <configure xmlns="http://namespaces.zope.org/browser">
 
-<defaultView name="index.html" />
-
-<include file="menus.zcml" />
-<include package=".applicationcontrol" />
-<include package=".cache" />
-<include package=".component" />
-<include package=".container" />
-<include package=".content" />
-<include package=".dublincore" />
-<include package=".form" />
-<include package=".security" />
-<include package=".services" />
-<include package=".skins" />
-<include package=".index" />
-<include package=".rdb" />
-<include package=".workflow" />
-<include package=".catalog" />
-<include file="onlinehelp.zcml" />
-<include file="introspector.zcml" />
-<include file="traversal.zcml" />
-<include file="undo.zcml" />
-<include file="auth.zcml" />
-
-<include package=".exception" />
+  <defaultView name="index.html" />
+  
+  <include file="menus.zcml" />
+  <include package=".applicationcontrol" />
+  <include package=".cache" />
+  <include package=".component" />
+  <include package=".container" />
+  <include package=".content" />
+  <include package=".dublincore" />
+  <include package=".form" />
+  <include package=".security" />
+  <include package=".services" />
+  <include package=".skins" />
+  <include package=".index" />
+  <include package=".rdb" />
+  <include package=".workflow" />
+  <include package=".catalog" />
+  <include file="onlinehelp.zcml" />
+  <include file="introspector.zcml" />
+  <include file="traversal.zcml" />
+  <include file="undo.zcml" />
+  <include file="auth.zcml" />
+  
+  <include package=".exception" />
 
 </configure>

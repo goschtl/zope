@@ -11,15 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""File views.
+
+$Id: file.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
 """
+from zope.app.browser.form.widget import FileWidget
+from zope.app.form.widget import CustomWidget
 
-$Id: file.py,v 1.3 2003/06/05 20:13:07 jim Exp $
-"""
+__metaclass__ = type
 
-from zope.publisher.browser import BrowserView
-
-
-class FileView(BrowserView):
+class FileView:
 
     def show(self):
         """Call the File"""
@@ -33,21 +34,7 @@ class FileView(BrowserView):
         return self.context.getData()
 
 
-"""
-$Id: file.py,v 1.3 2003/06/05 20:13:07 jim Exp $
-"""
-
-__metaclass__ = type
-
-from zope.app.browser.form.widget import FileWidget
-from zope.app.form.widget import CustomWidget
-
 class FileUpload:
-    """File editing mix-in that uses a file-upload widget.
-    """
+    """File editing mix-in that uses a file-upload widget."""
 
     data_widget = CustomWidget(FileWidget)
-
-
-
-__doc__ = FileUpload.__doc__ + __doc__

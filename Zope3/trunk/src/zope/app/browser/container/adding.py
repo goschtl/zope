@@ -11,9 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Adding View
 
-$Id: adding.py,v 1.13 2003/08/04 13:58:05 sidnei Exp $
+The Adding View is used to add new objects to a container. It is sort of a
+factory screen.
+
+$Id: adding.py,v 1.14 2003/08/06 14:41:36 srichter Exp $
 """
 __metaclass__ = type
 
@@ -38,11 +41,8 @@ class BasicAdding(BrowserView):
 
     implements(IAdding, IPublishTraverse)
 
-    ############################################################
-    # Implementation methods for interface
-    # IAdding.py
-
     def add(self, content):
+        """See zope.app.interfaces.container.IAdding"""
         container = zapi.getAdapter(self.context, IZopeContainer)
         name = container.setObject(self.contentName, content)
         return container[name]
@@ -50,6 +50,7 @@ class BasicAdding(BrowserView):
     contentName = None # usually set by Adding traverser
 
     def nextURL(self):
+        """See zope.app.interfaces.container.IAdding"""
         return (str(zapi.getView(self.context, "absolute_url", self.request))
                 + '/@@contents.html')
 
@@ -58,7 +59,7 @@ class BasicAdding(BrowserView):
     context = None # set in BrowserView.__init__
 
     def publishTraverse(self, request, name):
-
+        """See zope.app.interfaces.container.IAdding"""
         if '=' in name:
             view_name, content_name = name.split("=", 1)
             self.contentName = content_name
@@ -83,10 +84,8 @@ class BasicAdding(BrowserView):
 
         return factory
 
+    # See zope.app.interfaces.container.IAdding
     publishTraverse = zapi.ContextMethod(publishTraverse)
-
-    #
-    ############################################################
 
     def action(self, type_name='', id=''):
         if not type_name:

@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Define view component for naive file editing.
+"""Define view component for naive file editing.
 
-$Id: image.py,v 1.4 2003/04/30 23:37:51 faassen Exp $
+$Id: image.py,v 1.5 2003/08/06 14:41:41 srichter Exp $
 """
-
 from zope.app.browser.content.file import FileUpload
 from zope.app.size import byteDisplay
 from zope.app.event.objectevent import ObjectModifiedEvent

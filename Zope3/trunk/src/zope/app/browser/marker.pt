@@ -1,65 +1,63 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
 
-<style type="text/css" metal:fill-slot="style_slot">
-.preclass {
-    color : #000066;
-    font-family : monospace;
-    white-space : pre;
-    }
-th.introspector {
-    vertical-align: top;
-    }
-</style>
+  <style type="text/css" metal:fill-slot="style_slot">
+    .preclass {
+        color : #000066;
+        font-family : monospace;
+        white-space : pre;
+        }
+    th.introspector {
+        vertical-align: top;
+        }
+  </style>
 </head>
 
 <body>
 <div metal:fill-slot="body">
-<tal:block
-    tal:define =
-       "global introspector view/getIntrospector;
-        global services view/getServicesFor;
-        global status view/update">
+  <tal:block
+      tal:define ="global introspector view/getIntrospector;
+                   global services view/getServicesFor;
+                   global status view/update">
 
+  <form action="" tal:attributes="action request/URL" method="POST">
 
-<form action="" tal:attributes="action request/URL" method="POST">
-
-<table>
-    <tr>
-        <th colspan="2">Class Browser</th>
-    </tr>
-    <tr>
-        <th class="introspector">Class:</th>
+    <table>
+      <tr>
+        <th colspan="2" i18n:translate="">Class Browser</th>
+      </tr>
+      <tr>
+        <th class="introspector" i18n:translate="">Class:</th>
         <td><span tal:content="introspector/getClass">Name</span></td>
-    </tr>
-    <tr>
-        <th class="introspector">Bases:</th>
+      </tr>
+      <tr>
+        <th class="introspector" i18n:translate="">Bases:</th>
         <td>
-            <div tal:repeat="base introspector/getBaseClassNames">
-              <span tal:replace="repeat/base/item" />
-               <!--
-                <a href=""
-                    tal:attributes="href
-                        string: ++module++${repeat/base/item}"
-                    tal:content="repeat/base/item">Base</a>
-                -->
-            </div>
+          <div tal:repeat="base introspector/getBaseClassNames">
+            <span tal:replace="repeat/base/item" />
+              <!--
+              <a href=""
+                  tal:attributes="href
+                      string: ++module++${repeat/base/item}"
+                  tal:content="repeat/base/item">Base</a>
+               -->
+          </div>
         </td>
-    </tr>
-    <tr>
-        <th class="introspector">Module:</th>
+      </tr>
+      <tr>
+        <th class="introspector" i18n:translate="">Module:</th>
         <td><span tal:content="introspector/getModule">Module</span></td>
-    </tr>
-    <tr>
-        <th>Description:</th>
+      </tr>
+      <tr>
+        <th i18n:translate="">Description:</th>
         <td>
-        <span class="preclass"
-                tal:content="introspector/getDocString">
-                Description</span>
+          <span class="preclass"
+              tal:content="introspector/getDocString">
+            Description</span>
         </td>
-    </tr>
-    <tr>
-        <th class="introspector">Interfaces from Class:</th>
+      </tr>
+      <tr>
+        <th class="introspector" i18n:translate="">Interfaces from Class:</th>
         <td>
           <div tal:repeat="interface introspector/getInterfaceNames">
             <div tal:define="url python: view.getInterfaceURL(interface)">
@@ -72,53 +70,57 @@ th.introspector {
             </div>
           </div>
         </td>
-    </tr>
-    <tr tal:condition="introspector/getDirectlyProvided">
-        <th class="introspector">Interfaces from Object:</th>
+      </tr>
+      <tr tal:condition="introspector/getDirectlyProvided">
+        <th class="introspector" i18n:translate="">Interfaces from Object:</th>
         <td>
-            <div tal:repeat="interface introspector/getDirectlyProvidedNames">
-              <div tal:define="url python: view.getInterfaceURL(interface)">
-                  <a href=""
-                     tal:attributes="href url"
-                     tal:content="interface"
-                     tal:condition="url">Interface</a>
-                  <span tal:condition="python: not url"
-                        tal:content="interface" />
-               </div>
+          <div tal:repeat="interface introspector/getDirectlyProvidedNames">
+            <div tal:define="url python: view.getInterfaceURL(interface)">
+              <a href=""
+                  tal:attributes="href url"
+                  tal:content="interface"
+                  tal:condition="url">Interface</a>
+                <span tal:condition="python: not url"
+                    tal:content="interface" />
             </div>
+          </div>
         </td>
-    </tr>
-
-    <tr tal:condition="introspector/getDirectlyProvided">
-        <th class="introspector">Remove Interfaces:</th>
+      </tr>
+    
+      <tr tal:condition="introspector/getDirectlyProvided">
+        <th class="introspector" i18n:translate="">Remove Interfaces:</th>
         <td>
-            <div tal:repeat="interface introspector/getDirectlyProvidedNames">
-              <label><input type="checkbox"
-                            tal:attributes="name string:rem_${interface}"/>
-                     <span tal:replace="interface" />
-              </label>
-            </div>
-            <input type="submit" name="REMOVE" value="Remove" />
+          <div tal:repeat="interface introspector/getDirectlyProvidedNames">
+            <label>
+              <input type="checkbox"
+                  tal:attributes="name string:rem_${interface}"/>
+              <span tal:replace="interface" />
+            </label>
+          </div>
+          <input type="submit" name="REMOVE" value="Remove" 
+              i18n:attributes="value remove-button"/>
         </td>
-    </tr>
-
-    <tr tal:condition="introspector/getMarkerInterfaceNames">
-        <th class="introspector">Add Interfaces:</th>
+      </tr>
+    
+      <tr tal:condition="introspector/getMarkerInterfaceNames">
+        <th class="introspector" i18n:translate="">Add Interfaces:</th>
         <td>
-            <div tal:repeat="interface introspector/getMarkerInterfaceNames">
-              <label><input type="checkbox"
-                            tal:attributes="name string:add_${interface}"/>
-                     <span tal:replace="interface" />
-              </label>
-            </div>
-            <input type="submit" name="ADD" value="Add" />
+          <div tal:repeat="interface introspector/getMarkerInterfaceNames">
+            <label>
+              <input type="checkbox"
+                  tal:attributes="name string:add_${interface}"/>
+              <span tal:replace="interface" />
+            </label>
+          </div>
+          <input type="submit" name="ADD" value="Add" 
+              i18n:attributes="value add-button"/>
         </td>
-    </tr>
+      </tr>
+    
+    </table>
+  </form>
 
-</table>
-</form>
-
-</tal:block>
+  </tal:block>
 
 </div>
 </body>

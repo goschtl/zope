@@ -13,12 +13,13 @@
 ##############################################################################
 """Define runtime information view component for Application Control
 
-$Id: runtimeinfo.py,v 1.4 2003/07/31 21:37:27 srichter Exp $
+$Id: runtimeinfo.py,v 1.5 2003/08/06 14:41:20 srichter Exp $
 """
 from zope.app.interfaces.applicationcontrol import IRuntimeInfo
 from zope.component import getAdapter
 from zope.component import ComponentLookupError
 
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class RuntimeInfoView:
 
@@ -47,14 +48,18 @@ class RuntimeInfoView:
             uptime = uptime - minutes * 60
 
             seconds = uptime
-            # XXX Uptime still to be localized
-            formatted['Uptime'] = "%s%02d:%02d:%02d" % (
-                ((days or "") and "%d days, " % days), hours, minutes, seconds)
+
+            uptime = _('${days} day(s) ${hours}:${minutes}:${seconds}')
+            uptime.mapping = {'days': '%d' %days,
+                              'hours': '%02d' %hours,
+                              'minutes': '%02d' %minutes,
+                              'seconds': '%02d' %seconds}
+
+            formatted['Uptime'] = uptime
 
         except ComponentLookupError:
-            # XXX We avoid having errors in the ApplicationController,
+            # We avoid having errors in the ApplicationController,
             # because all those things need to stay accessible.
-            # Everybody ok with that?
             formatted['ZopeVersion'] = "N/A"
             formatted['PythonVersion'] = "N/A"
             formatted['PythonPath'] = "N/A"

@@ -13,12 +13,11 @@
 ##############################################################################
 """Define view component for ZPT page eval results.
 
-$Id: dtmlpageeval.py,v 1.3 2003/04/30 23:37:51 faassen Exp $
+$Id: dtmlpageeval.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
 """
+__metaclass__ = type
 
-from zope.publisher.browser import BrowserView
-
-class DTMLPageEval(BrowserView):
+class DTMLPageEval:
 
     def index(self, REQUEST=None, **kw):
         """Call a Page Template"""

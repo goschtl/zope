@@ -1,55 +1,44 @@
 <configure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   i18n_domain='zope'
-   >
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- Menu entry for "add component" menu -->
   <browser:menuItem
       menu="add_component"
       for="zope.app.interfaces.container.IAdding"
       title="RAM Cache"
-      action="zope.app.caching.RAMCache"
-      />
+      action="zope.app.caching.RAMCache" />
 
   <!-- Menu entry for "add cache" menu -->
   <browser:menuItem
       menu="add_cache"
       for="zope.app.interfaces.container.IAdding"
       title="RAM Cache"
-      action="zope.app.caching.RAMCache"
-      />
+      action="zope.app.caching.RAMCache" />
 
   <browser:pages
       for="zope.app.interfaces.cache.ram.IRAMCache"
       class="zope.app.browser.cache.ram.RAMCacheView"
-      permission="zope.Public"
-      >
+      permission="zope.Public">
     <browser:page name="editAction.html" attribute="action" />
-    <browser:page name="index.html"       template="ramedit.pt" />
-    <browser:page name="stats.html"      template="ramstats.pt" />
+    <browser:page name="index.html" template="ramedit.pt" />
+    <browser:page name="stats.html" template="ramstats.pt" />
   </browser:pages>
 
   <browser:menuItems menu="zmi_views"
      for="zope.app.interfaces.cache.ram.IRAMCache">
-    <browser:menuItem title="Edit"       action="index.html"/>
+    <browser:menuItem title="Edit" action="index.html"/>
     <browser:menuItem title="Statistics" action="stats.html"/>
   </browser:menuItems>
 
   <browser:pages 
       for="zope.app.interfaces.annotation.IAnnotatable"
       permission="zope.ManageBindings"
-      class="zope.app.browser.cache.cacheable.CacheableView"
-      >
-
-    <browser:page name="Caching.html"
-                  attribute="form"  
-                  menu="zmi_views" title="Caching" 
-                  />
-    <browser:page name="ChangeCaching.html"
-                  attribute="action" />
-    <browser:page name="InvalidateCache.html"
-                  attribute="invalidate" />
+      class="zope.app.browser.cache.cacheable.CacheableView">
+    <browser:page name="Caching.html" attribute="form"  
+                  menu="zmi_views" title="Caching" />
+    <browser:page name="ChangeCaching.html" attribute="action" />
+    <browser:page name="InvalidateCache.html" attribute="invalidate" />
   </browser:pages>
 
 </configure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.12 2003/07/30 01:06:05 rogerineichen Exp $
+$Id: onlinehelp.py,v 1.13 2003/08/06 14:41:11 srichter Exp $
 """
 from zope.interface import providedBy
 
@@ -28,6 +28,7 @@ from zope.app.traversing import getParents, getName
 from zope.proxy import removeAllProxies
 
 class OnlineHelpTopicView(BrowserView):
+    """View for one particular help topic."""
 
     def _makeSubTree(self, topic):
         html = '<ul>\n'
