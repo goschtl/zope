@@ -164,9 +164,9 @@
 
 # Zope 3 layout.
 /Zope3/src/ZConfig		/Packages/ZConfig
-/Zope3/src/zdaemon       	/Packages3/zdaemon
-
+/Zope3/src/zdaemon       	/Packages/zdaemon
 /Zope3/src/ZODB                 /ZODB3/ZODB
+/Zope3/src/ZEO                  /ZODB3/ZEO
 /Zope3/src/persistent           /ZODB3/persistent
 /Zope3/src/zLOG                 /ZODB3/zLOG
 /Zope3/src/BTrees               /ZODB3/BTrees
