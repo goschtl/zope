@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: rolepermission.py,v 1.3 2003/06/07 05:46:03 stevea Exp $
+$Id: rolepermission.py,v 1.4 2003/10/06 19:29:49 sidnei Exp $
 """
 from zope.component import getAdapter
 from zope.interface import implements
@@ -158,7 +158,7 @@ class RolePermissionManager(SecurityMap):
         if check:
             checkRole(None, role_id)
             checkPermission(None, permission_id)
-        
+
         self.addCell(permission_id, role_id, Allow)
 
     def denyPermissionToRole(self, permission_id, role_id, check=True):
@@ -167,7 +167,7 @@ class RolePermissionManager(SecurityMap):
         if check:
             checkRole(None, role_id)
             checkPermission(None, permission_id)
-        
+
         self.addCell(permission_id, role_id, Deny)
 
     def unsetPermissionFromRole(self, permission_id, role_id):
@@ -175,7 +175,7 @@ class RolePermissionManager(SecurityMap):
 
         # Don't check validity intentionally.
         # After all, we certianly want to unset invalid ids.
-        
+
         self.delCell(permission_id, role_id)
 
     def getRolesForPermission(self, permission_id):

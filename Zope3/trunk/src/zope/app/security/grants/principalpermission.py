@@ -133,7 +133,7 @@ class PrincipalPermissionManager(SecurityMap):
 
         # Don't check validity intentionally.
         # After all, we certianly want to unset invalid ids.
-        
+
         self.delCell(permission_id, principal_id)
 
     def getPrincipalsForPermission(self, permission_id):

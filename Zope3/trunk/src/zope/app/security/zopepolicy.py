@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.12 2003/09/21 17:31:58 jim Exp $
+$Id: zopepolicy.py,v 1.13 2003/10/06 19:29:48 sidnei Exp $
 """
-__version__='$Revision: 1.12 $'[11:-2]
+__version__='$Revision: 1.13 $'[11:-2]
 
 from zope.component import queryAdapter
 from zope.app.location import LocationIterator
@@ -127,7 +127,9 @@ class ZopeSecurityPolicy:
         # Get principal permissions based on roles
         for principal in principals:
             roles = principals[principal]
-            for role in roles:
+            for role, role_setting in roles.items():
+                if role_setting is Deny:
+                    return False
                 if role in role_permissions:
                     if permission in role_permissions[role]:
                         setting = role_permissions[role][permission]
@@ -199,7 +201,9 @@ class ZopeSecurityPolicy:
             # Get principal permissions based on roles
             for principal in principals:
                 roles = principals[principal]
-                for role in roles:
+                for role, role_setting in roles.items():
+                    if role_setting is Deny:
+                        return False
                     if role in role_permissions:
                         if permission in role_permissions[role]:
                             setting = role_permissions[role][permission]

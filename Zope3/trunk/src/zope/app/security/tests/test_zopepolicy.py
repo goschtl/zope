@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.14 2003/09/21 17:31:59 jim Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.15 2003/10/06 19:29:49 sidnei Exp $
 """
 
 import unittest
@@ -186,6 +186,18 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.__assertPermissions(self.jim, ['create', 'read', 'write'])
 
+    def testPlaylessPrincipalRole(self):
+        self.failIf(self.policy.checkPermission(
+            self.write, None, Context(self.jim)))
+        principalRoleManager.assignRoleToPrincipal(
+            self.manager, self.jim.getId())
+        self.failUnless(self.policy.checkPermission(
+            self.write, None, Context(self.jim)))
+        principalRoleManager.removeRoleFromPrincipal(
+            self.manager, self.jim.getId())
+        self.failIf(self.policy.checkPermission(
+            self.write, None, Context(self.jim)))
+
     def testPlayfulPrincipalRole(self):
         getService(None,Adapters).provideAdapter(
             ITest,
@@ -194,14 +206,17 @@ class Test(PlacefulSetup, unittest.TestCase):
         ob1 = TestClass()
         ob2 = TestClass(); ob2.__parent__ = ob1
         ob3 = TestClass(); ob3.__parent__ = ob2
-        
+
         self.failIf(self.policy.checkPermission(
             self.write, ob3, Context(self.jim)))
         AnnotationPrincipalRoleManager(ob3).assignRoleToPrincipal(
             self.manager, self.jim.getId())
         self.failUnless(self.policy.checkPermission(
             self.write, ob3, Context(self.jim)))
-
+        AnnotationPrincipalRoleManager(ob3).removeRoleFromPrincipal(
+            self.manager, self.jim.getId())
+        self.failIf(self.policy.checkPermission(
+            self.write, ob3, Context(self.jim)))
 
     def testPlayfulRolePermissions(self):
 
