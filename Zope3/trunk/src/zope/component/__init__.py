@@ -221,7 +221,7 @@ def getView(object, name, request, providing=Interface, context=None):
         return view
 
     raise ComponentLookupError("Couldn't find view",
-                               name, object, context, request)
+                               name, object, context, request, providing)
 
 def queryView(object, name, request,
               default=None, providing=Interface, context=None):
