@@ -69,30 +69,9 @@ class Test(BrowserTestCase):
         pd_id = rm.addRegistration(registration)
         zapi.traverse(rm, pd_id).status = ActiveStatus
 
-    def test_subscribe(self):
-        response = self.publish(
-            self.basepath + '/mgr/index.html',
-            basic='mgr:mgrpw')
-
-        self.assertEqual(response.getStatus(), 200)
-        body = ' '.join(response.getBody().split())
-        self.assert_(body.find("Subscription state: OFF") >= 0)        
-
-        response = self.publish(
-            self.basepath + '/mgr/index.html',
-            basic='mgr:mgrpw',
-            form={'callSubscribe':'Subscribe'})
-
-        self.assertEqual(response.getStatus(), 200)
-        body = ' '.join(response.getBody().split())
-        self.assert_(body.find("Subscription state: ON") >= 0)        
-        root = self.getRootFolder()
-        mgr = zapi.traverse(root, self.basepath+'/mgr')
-        self.assert_(mgr.isSubscribed())
-
     def test_registry(self):
         response = self.publish(
-            self.basepath + '/mgr/registry.html',
+            self.basepath + '/mgr/index.html',
             basic='mgr:mgrpw')
 
         self.assertEqual(response.getStatus(), 200)
@@ -105,7 +84,7 @@ class Test(BrowserTestCase):
             ) >= 0)        
 
         response = self.publish(
-            self.basepath + '/mgr/registry.html',
+            self.basepath + '/mgr/index.html',
             basic='mgr:mgrpw',
             form={
             'field.iface':['zope.app.folder.interfaces.IFolder',
@@ -130,7 +109,7 @@ class Test(BrowserTestCase):
         self.assertEqual(len(ifaces), 2)
 
         response = self.publish(
-            self.basepath + '/mgr/registry.html',
+            self.basepath + '/mgr/index.html',
             basic='mgr:mgrpw',
             form={
             'mappings': ['dummy-definition:zope.app.folder.interfaces.IFolder',

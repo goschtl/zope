@@ -28,12 +28,6 @@ from zope.schema import Choice, List
 from zope.security.proxy import trustedRemoveSecurityProxy 
 from zope.app.workflow.interfaces import IProcessDefinition
 
-class ContentWorkflowsManagerView(object):
- 
-    def getName(self):
-        return """I'm a ContentWorkflows Utility"""
-
-
 class IContentProcessMapping(Interface):
 
     iface = List(

@@ -129,14 +129,6 @@
   <page
       name="index.html"
       for="zope.app.workflow.stateful.interfaces.IContentWorkflowsManager"
-      class=".contentworkflow.ContentWorkflowsManagerView"
-      permission="zope.ManageServices"
-      template="contentworkflow_index.pt"
-      menu="zmi_views" title="Overview"/>
-
-  <page
-      name="registry.html"
-      for="zope.app.workflow.stateful.interfaces.IContentWorkflowsManager"
       class=".contentworkflow.ManageContentProcessRegistry"
       permission="zope.ManageServices"
       template="contentworkflow_registry.pt"

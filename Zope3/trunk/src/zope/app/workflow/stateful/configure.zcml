@@ -1,6 +1,4 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:workflow="http://namespaces.zope.org/workflow" >
+<configure xmlns="http://namespaces.zope.org/zope">
 
 <!-- Stateful ProcessDefintion -->
 
@@ -127,6 +125,18 @@
    provides="zope.app.workflow.interfaces.IProcessDefinitionImportHandler"
    factory=".xmlimportexport.XMLImportHandler"
    />
+
+
+<subscriber
+   for="..interfaces.IProcessInstanceContainerAdaptable
+        zope.app.event.objectevent.IObjectCreatedEvent"
+   provides="zope.app.event.interfaces.ISubscriber"
+   factory=".contentworkflow.NewObjectProcessInstanceCreator"
+   >
+
+   Cause workflow instances to be added to content objects when they
+   are created.
+</subscriber>
 
 <!-- Test Object for testing Stateful Workflows -->
 <!--include file="testobject.zcml"/-->

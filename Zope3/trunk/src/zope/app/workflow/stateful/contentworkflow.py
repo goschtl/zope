@@ -33,74 +33,50 @@ from zope.interface import implements, providedBy
 from zope.app.container.contained import Contained
 
 
-class ContentWorkflowsManager(Persistent, Contained):
+class NewObjectProcessInstanceCreator(object):
+    implements(ISubscriber)
+    
+    __used_for__ = (IProcessInstanceContainerAdaptable, IObjectCreatedEvent)
 
-    implements(IContentWorkflowsManager, ISubscriber)
+    __slots__ = ('event', )
 
-    currentlySubscribed = False # Default subscription state
+    def __init__(self, obj, event):
+        self.event = event
 
-    def __init__(self):
-        super(ContentWorkflowsManager, self).__init__()
-        self._registry = PersistentDict()
-
-    def notify(self, event):
+    def notify(self, ignored_event):
         """See zope.app.event.interfaces.ISubscriber"""
+        event = self.event
         obj = event.object
 
-        # check if it implements IProcessInstanceContainerAdaptable
-        # This interface ensures that the object can store process
-        # instances.
-        if not IProcessInstanceContainerAdaptable.providedBy(obj):
-            return
+        pi_container = IProcessInstanceContainer(obj)
 
-        pi_container = IProcessInstanceContainer(obj, None)
-        # probably need to adapt to IZopeContainer to use pi_container with
-        # context.
-        if pi_container is None:
-            # Object can't have associated PIs.
-            return
-
-        if IObjectCreatedEvent.providedBy(event):
+        for (ignored, cwf) in zapi.getUtilitiesFor(IContentWorkflowsManager):
             # here we will lookup the configured processdefinitions
             # for the newly created compoent. For every pd_name
             # returned we will create a processinstance.
-            for pd_name in self.getProcessDefinitionNamesForObject(obj):
+
+            # Note that we use getUtilitiesFor rather than getAllUtilitiesFor
+            # so that we don't use overridden content-workflow managers.
+            
+            for pd_name in cwf.getProcessDefinitionNamesForObject(obj):
 
                 if pd_name in pi_container.keys():
                     continue
                 try:
-                    pi = createProcessInstance(self, pd_name)
+                    pi = createProcessInstance(cwf, pd_name)
                 except KeyError:
                     # No registered PD with that name..
                     continue
                 pi_container[pd_name] = pi
+        
 
+class ContentWorkflowsManager(Persistent, Contained):
 
+    implements(IContentWorkflowsManager)
 
-    def subscribe(self):
-        """See interfaces.workflows.stateful.IContentWorkflowsManager"""
-        if self.currentlySubscribed:
-            raise ValueError, "already subscribed; please unsubscribe first"
-        channel = self._getChannel(None)
-        channel.subscribe(self, IObjectCreatedEvent)
-        self.currentlySubscribed = True
-
-    def unsubscribe(self):
-        """See interfaces.workflows.stateful.IContentWorkflowsManager"""
-        if not self.currentlySubscribed:
-            raise ValueError, "not subscribed; please subscribe first"
-        channel = self._getChannel(None)
-        channel.unsubscribe(self, IObjectCreatedEvent)
-        self.currentlySubscribed = False
-
-    def isSubscribed(self):
-        """See interfaces.workflows.stateful.IContentWorkflowsManager"""
-        return self.currentlySubscribed
-
-    def _getChannel(self, channel):
-        if channel is None:
-            channel = zapi.getService(self, EventSubscription)
-        return channel
+    def __init__(self):
+        super(ContentWorkflowsManager, self).__init__()
+        self._registry = PersistentDict()
 
     def getProcessDefinitionNamesForObject(self, object):
         """See interfaces.workflows.stateful.IContentWorkflowsManager"""
@@ -108,6 +84,17 @@ class ContentWorkflowsManager(Persistent, Contained):
         for iface in providedBy(object):
             names += self.getProcessNamesForInterface(iface)
         return names
+
+    def getProcessNamesForInterface(self, iface):
+        """See zope.app.workflow.interfacess.stateful.IContentProcessRegistry"""
+        return self._registry.get(iface, ())
+
+    def getInterfacesForProcessName(self, name):
+        ifaces = []
+        for iface, names in self._registry.items():
+            if name in names:
+                ifaces.append(iface)
+        return tuple(ifaces)
 
     def register(self, iface, name):
         """See zope.app.workflow.interfacess.stateful.IContentProcessRegistry"""
@@ -123,14 +110,3 @@ class ContentWorkflowsManager(Persistent, Contained):
             del self._registry[iface]
         else:
             self._registry[iface] = tuple(names)
-
-    def getProcessNamesForInterface(self, iface):
-        """See zope.app.workflow.interfacess.stateful.IContentProcessRegistry"""
-        return self._registry.get(iface, ())
-
-    def getInterfacesForProcessName(self, name):
-        ifaces = []
-        for iface, names in self._registry.items():
-            if name in names:
-                ifaces.append(iface)
-        return tuple(ifaces)

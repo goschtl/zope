@@ -172,7 +172,8 @@ def addUtility(servicemanager, name, iface, utility, suffix=''):
 
     This utility is useful for tests that need to set up utilities.
     """
-    folder_name = name + suffix
+    
+    folder_name = (name or (iface.__name__ + 'Utility')) + suffix
     default = zapi.traverse(servicemanager, 'default')
     default[folder_name] = utility
     path = "%s/default/%s" % (zapi.getPath(servicemanager), folder_name)

@@ -246,15 +246,6 @@ class IContentWorkflowsManager(IContentProcessRegistry):
     It associates content objects with some workflow process definitions.
     """
 
-    def subscribe():
-        """Subscribe to the prevailing object hub service."""
-
-    def unsubscribe():
-        """Unsubscribe from the object hub service."""
-
-    def isSubscribed():
-        """Return whether we are currently subscribed."""
-
     def getProcessDefinitionNamesForObject(object):
         """Get the process definition names for a particular object.
 

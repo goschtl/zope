@@ -27,9 +27,7 @@ from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.tests.placelesssetup import eventPublisher, EventRecorder
 from zope.app.event.tests.placelesssetup import clearEvents
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
-from zope.app.event.interfaces import IObjectCreatedEvent, ISubscriptionService
-from zope.app.event.localservice import EventService
-from zope.app.servicenames import EventSubscription
+from zope.app.event.interfaces import IObjectCreatedEvent, ISubscriber
 from zope.app.utility import UtilityRegistration
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.registration.interfaces import ActiveStatus
@@ -40,6 +38,8 @@ from zope.app.workflow.interfaces import IProcessInstanceContainer
 from zope.app.workflow.stateful.interfaces import IContentWorkflowsManager
 from zope.app.workflow.instance import ProcessInstanceContainerAdapter
 from zope.app.workflow.stateful.contentworkflow import ContentWorkflowsManager
+from zope.app.workflow.stateful.contentworkflow \
+     import NewObjectProcessInstanceCreator
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 
 from zope.app.tests import ztapi, setup
@@ -89,12 +89,6 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
 
     def setUp(self):
         WorkflowSetup.setUp(self)
-        sm = zapi.getGlobalServices()
-        sm.defineService(EventSubscription, ISubscriptionService)
-        self.events = EventService()
-        setup.addService(self.sm, EventSubscription, self.events)
-        clearEvents()
-        eventPublisher.globalSubscribe(EventRecorder)
         ztapi.provideAdapter(IAnnotatable, IProcessInstanceContainer,
                              ProcessInstanceContainerAdapter)
 
@@ -106,32 +100,6 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
         manager._registry = {IFace1: ('default',), IFace2: ('default',)}
         self.default['manager'] = manager
         return zapi.traverse(self.default, 'manager')
-
-    def test_subscribe(self):
-        manager = self.getManager()
-        self.assertEqual(manager.currentlySubscribed, False)
-        manager.subscribe()
-        self.assertEqual(manager.currentlySubscribed, True)
-        self.assertEqual(self.events._registry._reg.keys()[0],
-                         IObjectCreatedEvent)
-        self.assertEqual(self.events._registry._reg.values()[0][0][0],
-                         u'/++etc++site/default/manager')
-
-    def test_unsubscribe(self):
-        manager = self.getManager()
-        self.assertEqual(manager.currentlySubscribed, False)
-        manager.subscribe()
-        manager.unsubscribe()
-        self.assertEqual(manager.currentlySubscribed, False)
-        self.assertEqual(len(self.events._registry._reg.values()), 0)
-
-    def test_isSubscribed(self):
-        manager = self.getManager()
-        self.assertEqual(manager.isSubscribed(), False)
-        manager.subscribe()
-        self.assertEqual(manager.isSubscribed(), True)
-        manager.unsubscribe()
-        self.assertEqual(manager.isSubscribed(), False)
 
     def test_getProcessDefinitionNamesForObject(self):
         manager = self.getManager()
@@ -179,25 +147,22 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
 
     def test_notify(self):
         # setup ProcessDefinitions
-        self.default['pd1'] = DummyProcessDefinition(1)
-        self.default['pd2'] = DummyProcessDefinition(2)
 
-        id = self.cm.addRegistration(
-            UtilityRegistration('definition1', IProcessDefinition,
-                                '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getRegistrationManager(),
-                      id).status = ActiveStatus
-        id = self.cm.addRegistration(
-            UtilityRegistration('definition2', IProcessDefinition,
-                                '/++etc++site/default/pd2'))
-        zapi.traverse(self.default.getRegistrationManager(),
-                      id).status = ActiveStatus
+        setup.addUtility(self.sm, 'definition1', IProcessDefinition,
+                         DummyProcessDefinition(1))
+        setup.addUtility(self.sm, 'definition2', IProcessDefinition,
+                         DummyProcessDefinition(2))
+
         manager = self.getManager()
         manager._registry = {IFace1: ('definition1',),
                              IFace2: ('definition1', 'definition2')}
+        setup.addUtility(self.sm, '', IContentWorkflowsManager,
+                         manager)
 
         obj = TestObject2()
-        manager.notify(ObjectCreatedEvent(obj))
+        event = ObjectCreatedEvent(obj)
+        subscriber = NewObjectProcessInstanceCreator(obj, event)
+        subscriber.notify(event)
         pi = obj.__annotations__['zope.app.worfklow.ProcessInstanceContainer']
         self.assertEqual(pi.keys(), ['definition2', 'definition1'])
 
