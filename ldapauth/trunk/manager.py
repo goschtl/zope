@@ -20,7 +20,7 @@ import ldap
 from ldap.modlist import addModlist
 
 from zope.interface import implements
-from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.security.proxy import removeSecurityProxy
 
 from interfaces import ILDAPManager
 
@@ -41,7 +41,7 @@ class LDAPManagerAdapter:
     
     # Lack the verification of the schema.
     def addPrincipal(self, ldap_principal):
-        source = trustedRemoveSecurityProxy(self.context)
+        source = removeSecurityProxy(self.context)
         l = self.__connect(source)
         dn = self._createdn(ldap_principal, source)
         modification = addModlist(
@@ -53,10 +53,10 @@ class LDAPManagerAdapter:
         
     # TODO later
     def editPrincipal(self, ldap_principal):
-        source = trustedRemoveSecurityProxy(self.context)
+        source = removeSecurityProxy(self.context)
 
     def deletePrincipal(self, ldap_principal):
-        source = trustedRemoveSecurityProxy(self.context)
+        source = removeSecurityProxy(self.context)
         l = self.__connect(source)
         dn = self._createdn(ldap_principal, source)
         l.delete_s(dn)
