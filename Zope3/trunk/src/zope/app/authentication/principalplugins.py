@@ -22,7 +22,7 @@ from zope.interface import implements
 
 from zope.security.interfaces import IGroupAwarePrincipal
 
-from zope.app.pau import interfaces
+from zope.app.authentication import interfaces
 
 class Principal:
     """A simple Principal
@@ -90,7 +90,7 @@ class PrincipalFactory:
     implements(interfaces.IPrincipalFactoryPlugin)
 
     def createAuthenticatedPrincipal(self, id, info, request):
-        """See zope.app.pau.interfaces.IPrincipalFactoryPlugin"""
+        """See zope.app.authentication.interfaces.IPrincipalFactoryPlugin"""
         principal = Principal(id)
         notify(interfaces.AuthenticatedPrincipalCreated(principal,
                                                         info, request))
@@ -98,7 +98,7 @@ class PrincipalFactory:
 
 
     def createFoundPrincipal(self, id, info):
-        """See zope.app.pau.interfaces.IPrincipalFactoryPlugin"""
+        """See zope.app.authentication.interfaces.IPrincipalFactoryPlugin"""
         principal = Principal(id)
         notify(interfaces.FoundPrincipalCreated(principal, info))
         return principal

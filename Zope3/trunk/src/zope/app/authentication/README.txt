@@ -1,8 +1,8 @@
 ================================
-Pluggable Authentication Utility
+Pluggable-Authentication Utility
 ================================
 
-The Pluggable Authentication Utility (PAU) provides a framework for
+The Pluggable-Authentication Utility provides a framework for
 authenticating principals and associating information with them.  It uses a
 variety of different utilities, called plugins, and subscribers to get its
 work done.
@@ -12,7 +12,7 @@ Authentication
 
 The primary job of an authentication utility is to authenticate principals.
 Given a request object, the authentication utility returns a principal object,
-if it can.  The PAU does this in two steps:
+if it can.  The pluggable-authentication utility does this in two steps:
 
 1. It determines a principal ID based on authentication credentials found in a
    request, and then
@@ -23,10 +23,11 @@ if it can.  The PAU does this in two steps:
 It uses plug-ins in both phases of its work. Plugins are named utilities that
 the utility is configured to use in some order.
 
-In the first phase, the PAU iterates through a sequence of extractor plugins.
-From each plugin, it attempts to get a set of credentials.  If it gets
-credentials, it iterates through a sequence of authentication plugins, trying
-to get a principal id for the given credentials.  It continues this until it
+In the first phase, the pluggable-authentication utility iterates
+through a sequence of extractor plugins.  From each plugin, it
+attempts to get a set of credentials.  If it gets credentials, it
+iterates through a sequence of authentication plugins, trying to get a
+principal id for the given credentials.  It continues this until it
 gets a principal id.
 
 Once it has a principal id, it begins the second phase.  In the second phase,
@@ -42,7 +43,7 @@ Let's look at an example. We create a simple plugin that provides credential
 extraction:
 
   >>> import zope.interface
-  >>> from zope.app.pau import interfaces
+  >>> from zope.app.authentication import interfaces
 
   >>> class MyExtractor:
   ...
@@ -101,10 +102,10 @@ We provide a principal factory plugin:
   >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(),
   ...                name='pf')
 
-Finally, we create a PAU instance:
+Finally, we create a pluggable-authentication utility instance:
 
-  >>> from zope.app import pau
-  >>> auth = pau.LocalPAU()
+  >>> from zope.app import authentication
+  >>> auth = authentication.LocalPluggableAuthentication()
 
 Now, we'll create a request and try to authenticate:
 
@@ -122,7 +123,7 @@ utility to use our plugins. Let's fix that:
   >>> principal
   Principal('42', '')
 
-In addition to getting a principal, an `IPAUPrincipalCreated` event will
+In addition to getting a principal, an `IPrincipalCreated` event will
 have been generated.  We'll use the testing event logging API to see that 
 this is the case:
 
@@ -153,7 +154,7 @@ the title to a repr of the event info:
   ...     event.principal.title = `event.info`
 
   >>> from zope.app.tests.ztapi import subscribe
-  >>> subscribe([interfaces.IPAUPrincipalCreated], None, add_info)
+  >>> subscribe([interfaces.IPrincipalCreated], None, add_info)
 
 Now, if we authenticate a principal, its title will be set:
 
@@ -262,16 +263,17 @@ In this example, we used the supplemental information to get the
 integer credentials.  It's common for factories to decide whether they
 should be used depending on supplemental information.  Factories
 should not try to inspect the principal ids. Why? Because, as we'll
-see later, the PAU may modify ids before giving them to factories.
-Similarly, subscribers should use the supplemental information for any
-data they need.
+see later, the pluggable-authentication utility may modify ids before
+giving them to factories.  Similarly, subscribers should use the
+supplemental information for any data they need.
 
 Get a principal given an id
 ===========================
 
-We can ask the PAU for a principal, given an id.
+We can ask the pluggable-authentication utility for a principal, given an id.
 
-To do this, the PAU uses principal search plugins:
+To do this, the pluggable-authentication utility uses principal search
+plugins:
 
   >>> class Search42:
   ...
@@ -310,16 +312,16 @@ In addition to returning a principal, this will generate an event:
   >>> auth.getPrincipal('42')
   Principal('42', "{'domain': 42}")
 
-  >>> [event] = getEvents(interfaces.IPAUPrincipalCreated)
+  >>> [event] = getEvents(interfaces.IPrincipalCreated)
   >>> event.principal
   Principal('42', "{'domain': 42}")
 
   >>> event.info
   {'domain': 42}
 
-Our PAU will not find a principal with the ID '123'. Therefore it will
-delegate to the next utility. To make sure that it's delegated, we put in place
-a fake utility.
+Our pluggable-authentication utility will not find a principal with
+the ID '123'. Therefore it will delegate to the next utility. To make
+sure that it's delegated, we put in place a fake utility.
 
   >>> from zope.app.utility.utility import testingNextUtility
   >>> from zope.app.security.interfaces import IAuthentication
@@ -346,10 +348,11 @@ a fake utility.
 Issuing a challenge
 ===================
 
-If the unauthorized method is called on the PAU, the PAU iterates
-through a sequence of challenge plugins calling their challenge
-methods until one returns True, indicating that a challenge was
-issued. (This is a simplification. See "Protocols" below.)
+If the unauthorized method is called on the pluggable-authentication
+utility, the pluggable-authentication utility iterates through a
+sequence of challenge plugins calling their challenge methods until
+one returns True, indicating that a challenge was issued. (This is a
+simplification. See "Protocols" below.)
 
 Nothing will happen if there are no plugins registered.
 
@@ -400,10 +403,10 @@ code, then the following things happen:
 3. The view gets the authentication utility and calls it's
    'unauthorized' method.
 
-4. The PAU will call its challenge plugins.  If none return a value,
-   then the PAU delegates to the next authentication utility above it
-   in the containment hierarchy, or to the global authentication
-   utility.
+4. The pluggable-authentication utility will call its challenge
+   plugins.  If none return a value, then the pluggable-authentication
+   utility delegates to the next authentication utility above it in
+   the containment hierarchy, or to the global authentication utility.
 
 5. The view sets the body of the response.
 
@@ -481,17 +484,19 @@ an 'Unauthorized' exception to indicate that a challenge should be
 issued immediately. They might do this if they recognize partial
 credentials that pertain to them.
 
-PAU prefixes
-============
+Pluggable-Authentication Prefixes
+=================================
 
 Principal ids are required to be unique system wide.  Plugins will
 often provide options for providing id prefixes, so that different
-sets of plugins provide unique ids within a PAU.  If there are
-multiple PAUs in a system, it's a good idea to give each PAU a
-unique prefix, so that principal ids from different PAUs don't
-conflict. We can provide a prefix when a PAU is created:
+sets of plugins provide unique ids within a pluggable-authentication
+utility.  If there are multiple pluggable-authentication utilities in
+a system, it's a good idea to give each pluggable-authentication
+utility a unique prefix, so that principal ids from different
+pluggable-authentication utilities don't conflict. We can provide a
+prefix when a pluggable-authentication utility is created:
 
-  >>> auth = pau.PAU('mypas_')
+  >>> auth = authentication.PluggableAuthentication('mypas_')
   >>> auth.extractors = 'eodd', 'emy'
   >>> auth.authenticators = 'a42', 'aint'
   >>> auth.factories = 'oddf', 'pf'
@@ -504,7 +509,8 @@ Now, we'll create a request and try to authenticate:
   >>> principal
   Principal('mypas_42', "{'domain': 42}")
 
-Note that now, our principal's id has the PAU prefix.
+Note that now, our principal's id has the pluggable-authentication
+utility prefix.
 
 We can still lookup a principal, as long as we supply the prefix:
 
@@ -534,7 +540,8 @@ searching:
   view that provides
   `zope.app.form.browser.interfaces.ISourceQueryView`.
 
-PAU uses search plugins in a very simple way.  It merely implements
+Pluggable-authentication utilities use search plugins in a very simple
+way.  They merely implements
 `zope.schema.interfaces.ISourceQueriables`:
 
   >>> [id for (id, queriable) in auth.getQueriables()]

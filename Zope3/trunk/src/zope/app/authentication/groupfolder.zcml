@@ -19,7 +19,7 @@
     
 <subscriber
     factory=".groupfolder.setGroupsForPrincipal"
-    for="zope.app.pau.interfaces.IPAUPrincipalCreated"
+    for=".interfaces.IPrincipalCreated"
     />
 
 <localUtility class=".groupfolder.GroupFolder">

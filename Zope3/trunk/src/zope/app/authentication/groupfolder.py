@@ -33,8 +33,9 @@ from zope.app.container.btree import BTreeContainer
 import zope.app.container.constraints
 from zope.app.container.interfaces import IContained, IContainer
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.pau.interfaces import IAuthenticatedPrincipalCreated
-from zope.app.pau.interfaces import IQuerySchemaSearch, IPrincipalSearchPlugin
+from zope.app.authentication.interfaces import IAuthenticatedPrincipalCreated
+from zope.app.authentication.interfaces import IPrincipalSearchPlugin
+from zope.app.authentication.interfaces import IQuerySchemaSearch
 import zope.app.security.vocabulary
         
 class IGroupInformation(zope.interface.Interface):

@@ -20,8 +20,8 @@
 
   <addMenuItem
       title="Principal Folder"
-      description="A PAU Persistent Authentication Plugin"
-      class="zope.app.pau.principalfolder.PrincipalFolder"
+      description="A Pluggable Authentication Persistent Authentication Plugin"
+      class="..principalfolder.PrincipalFolder"
       permission="zope.ManageServices"
       view="AddPrincipalFolder.html"
       />
@@ -81,38 +81,33 @@
 
   <tool
       interface="..interfaces.IAuthenticationPlugin"
-      title="PAU Authentication Plugin"
-      description="PAU Authentication Plugin"
+      title="Pluggable-Authentication Authentication Plugin"
       />
 
   <tool
       interface="..interfaces.IPrincipalSearchPlugin"
-      title="PAU Search Plugin"
-      description="PAU Search Plugin"
+      title="Pluggable-Authentication Search Plugin"
       />
 
   <tool
       interface="..interfaces.ISearchableAuthenticationPlugin"
-      title="PAU Search and Authentication Plugin"
-      description="PAU Search and Authentication Plugin"
+      title="Pluggable-Authentication Search and Authentication Plugin"
       />
 
   <tool
       interface="..interfaces.IExtractionPlugin"
-      title="PAU Extraction Plugin"
-      description="PAU Extraction Plugin"
+      title="Pluggable-Authentication Extraction Plugin"
       />
 
   <tool
       interface="..interfaces.IChallengePlugin"
-      title="PAU Challenge Plugin"
-      description="PAU Challenge Plugin"
+      title="Pluggable-Authentication Challenge Plugin"
       />
 
   <tool
       interface="..interfaces.IExtractionAndChallengePlugin"
-      title="PAU Credential Extraction and Challenge Plugin"
-      description="PAU Credential Extraction and Challenge Plugin"
+      title=
+      "Pluggable-Authentication Credential Extraction and Challenge Plugin"
       />
 
   <include file="groupfolder.zcml" />
@@ -120,15 +115,14 @@
 <!-- Challengers -->
   
   <addMenuItem
-      title="PAU Custom Realm Basic Auth Challenge Plugin"
-      description="A PAU Basic Auth Challenge Plugin"
+      title="Pluggable-Authentication Custom Realm Basic Auth Challenge Plugin"
       class="..httpplugins.HTTPBasicAuthChallenger"
       permission="zope.ManageContent"
       />
 
   <addMenuItem
       title="Custom Form Session Challenge Plugin"
-      description="A PAU Challenge Plugin"
+      description="A Pluggable-Authentication Challenge Plugin"
       class="..browserplugins.FormChallenger"
       permission="zope.ManageServices"
       />
@@ -136,8 +130,7 @@
 <!-- Extractors -->
 
   <addMenuItem
-      title="PAU Browser Session Extractor"
-      description="A PAU Extraction Plugin"
+      title="Pluggable-Authentication Browser Session Extractor"
       class="..browserplugins.SessionExtractor"
       permission="zope.ManageServices"
       />

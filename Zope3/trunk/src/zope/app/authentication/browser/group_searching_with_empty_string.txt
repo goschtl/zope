@@ -5,11 +5,9 @@ We'll add a  pluggable authentication utility:
   >>> print http(r"""
   ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 60
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/default/@@contents.html?type_name=BrowserAdd__zope.app.pau.pau.LocalPAU
   ... 
-  ... type_name=BrowserAdd__zope.app.pau.pau.LocalPAU&new_value=PA""")
+  ... type_name=BrowserAdd__zope.app.authentication.authentication.LocalPluggableAuthentication&new_value=PA""")
   HTTP/1.1 303 See Other
   ...
 
@@ -18,7 +16,6 @@ And register it:
   >>> print http(r"""
   ... POST /++etc++site/default/PA/addRegistration.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 852
   ... Content-Type: multipart/form-data; boundary=---------------------------8474411127918531132143183931
   ... Referer: http://localhost:8081/++etc++site/default/PA/addRegistration.html
   ... 
@@ -57,7 +54,6 @@ Next, we'll add the group folder:
   >>> print http(r"""
   ... POST /++etc++site/@@contents.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 118
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/@@contents.html
   ... 
@@ -68,7 +64,6 @@ Next, we'll add the group folder:
   >>> print http(r"""
   ... POST /++etc++site/AddIPrincipalSearchPluginTool/AddGroupFolder.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 420
   ... Content-Type: multipart/form-data; boundary=---------------------------1160081710811409419323271465
   ... Referer: http://localhost:8081/++etc++site/AddIPrincipalSearchPluginTool/AddGroupFolder.html=
   ... 
@@ -94,7 +89,6 @@ And add some groups:
   >>> print http(r"""
   ... POST /++etc++site/tools/GroupFolder/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 545
   ... Content-Type: multipart/form-data; boundary=---------------------------57051497716357005611441891504
   ... Referer: http://localhost:8081/++etc++site/tools/GroupFolder/+/AddGroupInformation.html=
   ... 
@@ -123,7 +117,6 @@ And add some groups:
   >>> print http(r"""
   ... POST /++etc++site/tools/GroupFolder/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 540
   ... Content-Type: multipart/form-data; boundary=---------------------------1162360160489428309570988744
   ... Referer: http://localhost:8081/++etc++site/tools/GroupFolder/+/AddGroupInformation.html=
   ... 
@@ -154,7 +147,6 @@ group folder:
   >>> print http(r"""
   ... POST /++etc++site/default/PA/@@edit.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 708
   ... Content-Type: multipart/form-data; boundary=---------------------------13414337386198656711891559433
   ... Referer: http://localhost:8081/++etc++site/default/PA/@@edit.html
   ... 
@@ -188,7 +180,6 @@ Now, if we search for a group, but don't supply a string:
   >>> print http(r"""
   ... POST /@@grant.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 182
   ... Content-Type: application/x-www-form-urlencoded
   ... 
   ... field.principal.displayed=y&field.principal.MC5Hcm91cEZvbGRlcg__.query.field.search=&field.principal.MC5Hcm91cEZvbGRlcg__.query.search=Search&field.principal.MQ__.query.searchstring=""")

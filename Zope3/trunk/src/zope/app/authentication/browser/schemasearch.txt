@@ -43,7 +43,8 @@ If a plugin supports `IQuerySchemaSearch`:
 
 then we can get a view:
 
-  >>> from zope.app.pau.browser.schemasearch import QuerySchemaSearchView 
+  >>> from zope.app.authentication.browser.schemasearch \
+  ...     import QuerySchemaSearchView 
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
   >>> view = QuerySchemaSearchView(MySearchPlugin(), request)

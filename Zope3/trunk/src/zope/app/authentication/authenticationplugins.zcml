@@ -45,9 +45,9 @@
 
 
   <browser:addMenuItem
-      title="SQL PAU Authentication Plugin"
-      description="A SQL PAU Authentication Plugin"
-      class="zope.app.pau.sql.SQLAuthenticationPlugin"
+      title="SQL Pluggable-Authentication Authentication Plugin"
+      description="A SQL Pluggable-Authentication Authentication Plugin"
+      class=".sql.SQLAuthenticationPlugin"
       permission="zope.ManageContent"
       />
 

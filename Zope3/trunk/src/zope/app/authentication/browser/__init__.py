@@ -11,10 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Autentication Utility
+"""Pluggable Authentication Views
 
 $Id$
 """
-
-import interfaces
-from zope.app.pau.pau import PAU, LocalPAU

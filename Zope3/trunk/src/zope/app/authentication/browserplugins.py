@@ -28,7 +28,8 @@ from zope.app.session.interfaces import ISession, IClientId
 import transaction 
 from urllib import urlencode
 
-from zope.app.pau.interfaces import IExtractionPlugin, IChallengePlugin
+from zope.app.authentication.interfaces import IChallengePlugin
+from zope.app.authentication.interfaces import IExtractionPlugin
 
 
 class ISessionCredentials(Interface):
@@ -119,7 +120,8 @@ class SessionExtractor(Persistent, Contained):
 
         >>> request = TestRequest(authrequest='logout')
         >>> se.extractCredentials(request)
-        >>> Session(request)['zope.app.pau.browserplugins']['credentials']
+        >>> Session(request)['zope.app.authentication.browserplugins'][
+        ...    'credentials']
      """
     implements(IExtractionPlugin)
 
@@ -127,7 +129,8 @@ class SessionExtractor(Persistent, Contained):
         """ return credentials from session, request or None """
         #if not credentials:
             # check for form data
-        sessionData = ISession(request)['zope.app.pau.browserplugins']
+        sessionData = ISession(request)[
+            'zope.app.authentication.browserplugins']
         login = request.get('login', None)
         password = request.get('password', None)
         if login and password:
