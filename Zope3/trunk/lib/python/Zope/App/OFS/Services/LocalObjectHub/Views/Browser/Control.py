@@ -11,24 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-""" Define view component for event service control.
+""" Define view component for object hub.
 
-$Id: Control.py,v 1.3 2002/10/21 06:14:46 poster Exp $
+$Id: Control.py,v 1.1 2002/10/21 06:14:46 poster Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.ComponentArchitecture.ContextDependent import ContextDependent
-from Zope.Event.IEventService import IEventService
+from Zope.ObjectHub.IObjectHub import IObjectHub
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
 class Control(BrowserView):
-    __used_for__ = IEventService
+    __used_for__ = IObjectHub
 
-    def index( self, toggleSubscribeOnBind=0):
-        if toggleSubscribeOnBind:
-            cntx=removeAllProxies(self.context)
-            cntx.subscribeOnBind=not cntx.subscribeOnBind
+    def index( self ):
+
         return self.__control()
     
     __control=ViewPageTemplateFile("control.pt")

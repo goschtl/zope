@@ -55,6 +55,7 @@
 <include package=".App" />
 <include package=".I18n" />
 <include package=".Publisher" />
+<include package=".ObjectHub" />
 <include package=".StartUp" />
 
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ISubscribable.py,v 1.3 2002/09/03 20:13:38 jim Exp $
+$Id: ISubscribable.py,v 1.4 2002/10/21 06:14:47 poster Exp $
 """
 
 from Interface import Interface
@@ -82,8 +82,9 @@ class ISubscribable(Interface):
         If event_type is None, the default value, the subscriber is
         unsubscribed completely for all event types from this
         subscribable (and its parents, if the subscribable is a placeful
-        service).  If no subscriptions for this subscriber are
-        present, no error is raised.
+        service).  The filter argument is ignored in this case.  If no
+        subscriptions for this subscriber are present, no error is
+        raised.
         
         if event_type is supplied, this method will unsubscribe the
         subscriber from one subscription exactly matching the

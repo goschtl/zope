@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalSubscribable.py,v 1.4 2002/09/06 02:14:31 poster Exp $
+$Id: LocalSubscribable.py,v 1.5 2002/10/21 06:14:46 poster Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -28,6 +28,12 @@ from Persistence import Persistent
 
 class LocalSubscribable(Subscribable, Persistent):
     """a local mix-in"""
+    
+    __implements__ = (
+        Subscribable.__implements__,
+        Persistent.__implements__)
+    
+    # uses (and needs) __init__ from Zope.Event.Subscribable
 
     def subscribe(wrapped_self,
                   subscriber,
@@ -63,6 +69,8 @@ class LocalSubscribable(Subscribable, Persistent):
             subs.append((subscriber,{ev_type:1}))
         
         clean_self._p_changed = 1 #trigger persistence
+        # XXX should this and similar be done earlier in the method?
+        # XXX Ask Shane
         
     
     subscribe=ContextMethod(subscribe)
@@ -126,5 +134,6 @@ class LocalSubscribable(Subscribable, Persistent):
                         subscriptions.append(sub)
             del clean_self._subscribers[subscriber_index]
         clean_self._p_changed = 1
+        # XXX should be done earlier?  Ask Shane
     
     unsubscribe = ContextMethod(unsubscribe)

@@ -1,0 +1,9 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+<serviceType id='ObjectHub' 
+             interface='Zope.ObjectHub.IObjectHub.' />
+
+</zopeConfigure>

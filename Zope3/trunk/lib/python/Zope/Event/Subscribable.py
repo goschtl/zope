@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: Subscribable.py,v 1.4 2002/09/05 21:30:09 jeremy Exp $
+$Id: Subscribable.py,v 1.5 2002/10/21 06:14:47 poster Exp $
 """
 
 from Interface.Registry.TypeRegistry import TypeRegistry
@@ -28,6 +28,7 @@ class Subscribable(object): # do we need this to be a type?
     """a global mix-in"""
     
     __implements__ = ISubscribable
+        # plus has subscriptionsForEvent
 
     def __init__(self):
         self._registry = TypeRegistry()
@@ -113,6 +114,10 @@ class Subscribable(object): # do we need this to be a type?
         self._registry=self._registry #trigger persistence, if pertinent
 
     def subscriptionsForEvent(self, event):
+        # XXX currently a non-interface method:
+        # just a more readable prettification
+        # used only for notify methods now.  Could this be replaced
+        # with an explanatory comment in the code that uses it?
         return self._registry.getAllForObject(event)
     
     def listSubscriptions(self, subscriber, event_type=None):

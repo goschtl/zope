@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -14,51 +14,46 @@
 """
 
 Revision information:
-$Id: testHubEvent.py,v 1.3 2002/10/21 06:14:48 poster Exp $
+$Id: testHubEvent.py,v 1.1 2002/10/21 06:14:47 poster Exp $
 """
 
-import unittest, sys
+# in the local version of these tests, we are no longer using a fake
+# ObjectHub, which makes these tests less pure...but still useful
+# as a test for both the events and the object hub now.
 
-from Zope.ObjectHub.HubEvent import ObjectRegisteredHubEvent
-from Zope.ObjectHub.HubEvent import ObjectUnregisteredHubEvent
-from Zope.ObjectHub.HubEvent import ObjectModifiedHubEvent
-from Zope.ObjectHub.HubEvent import ObjectMovedHubEvent
-from Zope.ObjectHub.HubEvent import ObjectRemovedHubEvent
+import unittest, sys
+from ObjectHubSetup import ObjectHubSetup
+from Zope.App.OFS.Services.LocalObjectHub.LocalHubEvent import \
+     ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
+     ObjectModifiedHubEvent, ObjectMovedHubEvent, \
+     ObjectRemovedHubEvent
+from Zope.App.Traversing import getPhysicalPathString
 
 from Zope.Exceptions import NotFoundError
-
-class DummyObjectHub:
-
-    def __init__(self, ruid, obj):
-        self.ruid = ruid
-        self.obj = obj
-    
-    
-    def getObject(self, ruid):
-        if ruid==self.ruid:
-            return self.obj
-            
-        raise NotFoundError
+from Zope.ComponentArchitecture import getService
         
-class AbstractTestHubEvent(unittest.TestCase):
+class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
     
-    location = '/some/location'
-    hubid = 23
-    obj = object()
     klass = None
     
     def setUp(self):
-        objecthub = DummyObjectHub(self.hubid, self.obj)
-        self.event = self.klass(objecthub, self.hubid, self.location)
+        ObjectHubSetup.setUp(self)
+        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.obj = self.folder1_2_1
+        self.hubid = self.object_hub.register(self.obj)
+        self.location = getPhysicalPathString(self.obj)
+        self.event = self.klass(self.object_hub, self.hubid, self.location)
         
     def testGetLocation(self):
+        "Test getLocation method"
         self.assertEqual(self.event.location, self.location)
         
     def testGetHubId(self):
-        "Test hubid"
+        "Test getHubId method"
         self.assertEqual(self.event.hubid, self.hubid)
     
     def testGetObject(self):
+        "Test getObject method"
         self.assertEqual(self.event.object, self.obj)
     
 class TestObjectRegisteredHubEvent(AbstractTestHubEvent):

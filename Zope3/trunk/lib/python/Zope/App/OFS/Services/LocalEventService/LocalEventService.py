@@ -14,16 +14,13 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.5 2002/08/01 18:42:11 jim Exp $
+$Id: LocalEventService.py,v 1.6 2002/10/21 06:14:46 poster Exp $
 """
 
 from Zope.Event.GlobalEventService import eventService
 from Zope.Event.IEvent import IEvent
 from Zope.Event.IEventService import IEventService
-from Zope.Event.ISubscriber import ISubscriber
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
-
-from Zope.App.OFS.Services.ServiceManager.IBindingAware import IBindingAware
 from Zope.App.Traversing.ITraverser import ITraverser
 from Zope.ComponentArchitecture import getAdapter, getService
 from Zope.App.ComponentArchitecture.NextService import getNextService
@@ -33,40 +30,25 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
 from PathSubscriber import PathSubscriber
-from LocalSubscriptionAware import LocalSubscriptionAware
-from LocalServiceSubscribable import LocalServiceSubscribable
+from ProtoServiceEventChannel import ProtoServiceEventChannel
 
-from Interface.Attribute import Attribute
-
-class ILocalEventService(
-    IEventService, ISubscriber, IBindingAware, ISubscriptionAware):
+class LocalEventService(ProtoServiceEventChannel):
+        
+    __implements__ = (
+        IEventService,
+        ProtoServiceEventChannel.__implements__
+        )
     
-    def isPromotableEvent(event):
+    # uses (and needs) __init__ from base class
+    
+    def isPromotableEvent(self, event):
         """a hook.  Returns a true value if, when publishing an
         event, the event should also be promoted to the
         next (higher) level of event service, and a false value
-        otherwise.  The default implementation is to always return
-        true."""
-    
-    subscribeOnBind=Attribute(
-        """if true, event service will subscribe
-        to the parent event service on binding, unless the parent
-        service is the global event service""")
-
-class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
-        
-    __implements__ = ILocalEventService
-    
-    _serviceName="Events" # used by LocalServiceSubscribable
-    
-    subscribeOnBind=1
-    
-    def __init__(self):
-        LocalServiceSubscribable.__init__(self)
-        LocalSubscriptionAware.__init__(self)
-    
-    def isPromotableEvent(self, event):
-        "see ILocalEventService"
+        otherwise."""
+        # XXX A probably temporary appendage.  Depending on the usage,
+        # this should be (a) kept as is, (b) made into a registry, or
+        # (c) removed.
         return 1
     
     def publishEvent(wrapped_self, event):
@@ -108,14 +90,14 @@ class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
     
     notify=ContextMethod(notify)
     
-    
     def bound(wrapped_self, name):
         "see IBindingAware"
         clean_self=removeAllProxies(wrapped_self)
+        clean_self._serviceName = name # for LocalServiceSubscribable
         if clean_self.subscribeOnBind:
-            es=getNextService(wrapped_self, name)
-            if es is not eventService: # if we really want the top-level
-                # placeful event service to receive events from the
+            es=getNextService(wrapped_self, "Events")
+            if es is not eventService:
+                # XXX if we really want to receive events from the
                 # global event service we're going to have to
                 # set something special up--something that subscribes
                 # every startup...
@@ -123,18 +105,33 @@ class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
     
     bound=ContextMethod(bound)
     
+    # _unbound = ProtoServiceEventChannel.unbound # see comment below
+    
     def unbound(wrapped_self, name):
         "see IBindingAware"
         clean_self=removeAllProxies(wrapped_self)
-        subscriber=PathSubscriber(wrapped_self)
         clean_self._v_unbinding=1
+        # this flag is used by the unsubscribedFrom method (below) to
+        # determine that it doesn't need to further unsubscribe beyond
+        # what we're already doing.
+        # wrapped_self._unbound(name) # or, instead, ...
+        # ... this seems fine also, even though it's a ContextMethod:
+        # ProtoServiceEventChannel.unbound(wrapped_self, name)
+        # but in actuality we're doing a copy and paste because of
+        # various wrapper/security problems:
+        # start copy/paste
+        subscriber=PathSubscriber(wrapped_self)
         for subscription in clean_self._subscriptions:
             subscribable=getAdapter(
                 wrapped_self, ITraverser).traverse(subscription[0])
             subscribable.unsubscribe(subscriber)
-        clean_self._subscriptions=()
+        clean_self._subscriptions = ()
+        clean_self._serviceName = None
+        # end copy/paste
+        
         for subscriber in clean_self._subscribers:
             clean_self.__unsubscribeAllFromSelf(wrapped_self, subscriber[0])
+        # unset flag
         clean_self._v_unbinding=None
 
     unbound=ContextMethod(unbound)
@@ -152,6 +149,7 @@ class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
                 break
         else:
             raise NotFoundError(subscriber)
+        clean_self._p_changed = 1 # trigger persistence before change
         do_alert=ISubscriptionAware.isImplementedBy(subscriber)
         for ev_type in ev_set:
             subscriptions = clean_self._registry.get(ev_type)
@@ -166,7 +164,6 @@ class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
                 else: # kept (added back)
                     subscriptions.append(sub)
         del clean_self._subscribers[subscriber_index]
-        clean_self._registry=clean_self._registry #trigger persistence
     
     def unsubscribedFrom(wrapped_self, subscribable, event_type, filter):
         "see ISubscriptionAware"
@@ -177,7 +174,7 @@ class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
             # itself: we need to remove the higher level event service
             # from our subscriptions list and try to find another event
             # service to which to attach
-            LocalSubscriptionAware.unsubscribedFrom(
+            ProtoServiceEventChannel.unsubscribedFrom(
                 clean_self, subscribable, event_type, filter)
             clean_subscribable=removeAllProxies(subscribable)
             if IEventService.isImplementedBy(removeAllProxies(clean_subscribable)):
@@ -196,5 +193,4 @@ class LocalEventService(LocalServiceSubscribable, LocalSubscriptionAware):
                 context.subscribe(PathSubscriber(wrapped_self))
     
     unsubscribedFrom=ContextMethod(unsubscribedFrom)
-            
-        
+

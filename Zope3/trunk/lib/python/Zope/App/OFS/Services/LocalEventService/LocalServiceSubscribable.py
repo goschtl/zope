@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalServiceSubscribable.py,v 1.5 2002/09/06 02:14:31 poster Exp $
+$Id: LocalServiceSubscribable.py,v 1.6 2002/10/21 06:14:46 poster Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -24,13 +24,18 @@ from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from LocalSubscribable import LocalSubscribable
-from Persistence import Persistent
 from Zope.App.ComponentArchitecture.NextService import getNextService
 
-class LocalServiceSubscribable(LocalSubscribable, Persistent):
+class LocalServiceSubscribable(LocalSubscribable):
     """a local mix-in for services"""
     
-    _serviceName = None # replace me
+    __implements__ = LocalSubscribable.__implements__
+    
+    _serviceName = None # should be replaced; usually done in "bound"
+    # method of a subclass
+    
+    # uses (and needs) __init__ from Zope.Event.Subscribable (via
+    # LocalSubscribable)
     
     def unsubscribe(wrapped_self,
                     subscriber,
@@ -58,9 +63,13 @@ class LocalServiceSubscribable(LocalSubscribable, Persistent):
         do_alert = ISubscriptionAware.isImplementedBy(subscriber)
         
         if event_type:
+            # we only have to clean the one event_type out
             ev_type = event_type
             if event_type is IEvent:
-                ev_type = None # handle optimization
+                ev_type = None # *** handle optimization: a subscription
+                # to IEvent is a subscription to all events; this is
+                # converted to 'None' so that the _registry can
+                # shortcut some of its tests
             if ev_type not in ev_set:
                 getNextService(
                     wrapped_self, clean_self._serviceName).unsubscribe(
@@ -81,6 +90,7 @@ class LocalServiceSubscribable(LocalSubscribable, Persistent):
                     else:
                         del clean_self._subscribers[subscriber_index]
         else:
+            # we have to clean all the event types out (ignoring filter)
             for ev_type in ev_set:
                 subscriptions = clean_self._registry.get(ev_type)
                 subs = subscriptions[:]
@@ -91,7 +101,8 @@ class LocalServiceSubscribable(LocalSubscribable, Persistent):
                             wrapped_subscriber.unsubscribedFrom(
                                 wrapped_self, ev_type or IEvent, sub[1])
                             # IEvent switch is to make optimization
-                            # transparent
+                            # transparent (see *** comment above in
+                            # this method)
                     else: # kept (added back)
                         subscriptions.append(sub)
             del clean_self._subscribers[subscriber_index]

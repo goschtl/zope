@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IObjectHub.py,v 1.3 2002/06/25 10:45:46 dannu Exp $
+$Id: IObjectHub.py,v 1.4 2002/10/21 06:14:48 poster Exp $
 """
 
 from Zope.Event.IEventChannel import IEventChannel
@@ -23,51 +23,51 @@ class IObjectHub(IEventChannel):
     """ObjectHub.
     
     Receives Object Modify Events from the Event Service, and
-    changes these into RUID Object Modify Events, then passes
-    these on to its PlugIns (possibly via some other EventChannels).
+    changes these into Hub Id Object Modify Events, then passes
+    these on to its subscribers.
        
-    To map Object Modify Events onto RUID Object Modify Events, take
-    the location from the Object Modify Event, look up the RUID for this
-    location, and create an equivalent RUID Object Modify Event using this
-    RUID.
+    To map Object Modify Events onto Hub Id Object Modify Events, take
+    the location from the Object Modify Event, look up the Hub Id for this
+    location, and create an equivalent Hub Id Object Modify Event using this
+    Hub Id.
        
     Note that we are concerned with locations and not with Objects.
     An object may have more than one location. That doesn't concern
     us here.
+    
+    We're only interested in what happens during the time during which
+    an object is registered with the hub -- between ObjectRegistered
+    and ObjectUnregistered events.  As one consequence of that, we do
+    care about object removals, but not (directly) about object
+    additions.
        
-    Table of decisions about maintaining the location<->ruid lookup:
+    Table of decisions about maintaining the location<->Hub Id lookup:
        
       Register
       
          if location already in lookup:
              raise ObjectHubError, as this is implies bad state somewhere
-         generate new ruid
-         place ruid<->location into lookup, to say that we have an
+         generate new hub id
+         place hub id<->location into lookup, to say that we have an
              interesting object
              
-         send out ruid object register event to plug-ins, via event channels
+         send out hub id object register event to subscribers
          
       Unregister
          
          if location not in lookup:
              raise ObjectHubError, as this is implies bad state somewhere
-         remove location<->ruid from lookup
+         remove location<->hub id from lookup
             
-         send out ruid unregister event to plug-ins, via event channels
-       
-      Add (specialises Register)
-         
-         as Register, except at the end send out ruid object add event
-         instead
+         send out hub id unregister event to subscribers
          
       Modify
          
          if location not in lookup:
              ignore this event, as we're not interested in this object
          else:
-             look up ruid for the location
-             send out ruid object modify event to plug-ins,
-                 via event channels
+             look up hub id for the location
+             send out hub id object modify event to subscribers
                 
       Move 
 
@@ -76,36 +76,26 @@ class IObjectHub(IEventChannel):
          elif new_location is in lookup:
              raise ObjectHubError
          else:
-             look up ruid for old_location
+             look up hub id for old_location
              change lookup:
-                 remove ruid<->old_location
-                 add ruid<->new_location
-             send out ruid object context-change event to plug-ins,
-                 via event channels
-         
-      Remove (specialises Unregister)
+                 remove hub id<->old_location
+                 add hub id<->new_location
+             send out hub id object context-change event to subscribers
+
+      Remove (specializes Unregister)
 
          if old_location not in lookup:
              ignore this event, as we're not interested in this object
          else:
-             look up ruid for old_location
+             look up hub id for old_location
              change lookup:
-                 remove ruid<->old_location
-             send out ruid object remove event to plug-ins,
-                 via event channels
-    
-     # XXX: Possibly add Link to EventChannel.
-     #      This implies multiple locations for a ruid. 
-     #      We'll refactor later if needed.
-        
-     # Possibly also add registerObject and unregisterObject methods
-     # unless these are better handled by events, or unless we don't
-     # need them.
+                 remove hub id<->old_location
+             send out hub id object remove event to subscribers
      """
 
         
-    def lookupRuid(location):
-        """Returns the ruid int that is mapped to the given location.
+    def lookupHubId(location):
+        """Returns the hub id int that is mapped to the given location.
         
         Location is either a string, or a sequence of strings.
         It must be absolute, so if it is a string it must start with a '/',
@@ -114,36 +104,36 @@ class IObjectHub(IEventChannel):
         ('','whatever','whatever2')
         '/whatever/whatever2'
         
-        If there is no ruid, raise Zope.Exceptions.NotFoundError.
+        If there is no hub id, raise Zope.Exceptions.NotFoundError.
         
         """
         
-    def lookupLocation(ruid):
+    def lookupLocation(hubid):
         """Returns a location as a string.
         
         If there is no location, raise Zope.Exceptions.NotFoundError.
         """
         
-    def getObject(ruid):
-        """Returns an object for the given ruid.
+    def getObject(hubid):
+        """Returns an object for the given hub id.
         
-        If there is no such ruid, raise Zope.Exceptions.NotFoundError.
+        If there is no such hub id, raise Zope.Exceptions.NotFoundError.
         If there is no such object, passes through whatever error
         the traversal service raises.
         """
 
     def register(location):
-        """Returns a new ruid for the given location if it is not 
+        """Returns a new hub id for the given location if it is not 
         already registered. 
 
-        It also emits a RuidObjectRegisteredEvent.  Raises an 
+        It also emits a HubIdObjectRegisteredEvent.  Raises an 
         ObjectHubError if the location was previously registered. 
         """
 
-    def unregister(ruid_or_location):
-        """Unregister an object identified either by location or by ruid.
+    def unregister(hubid_or_location):
+        """Unregister an object identified either by location or by hubid.
 
-        It also emits a RuidObjectUnregisteredEvent. 
-        If the Ruid or location wasn't registered a 
+        It also emits a HubIdObjectUnregisteredEvent. 
+        If the hub id or location wasn't registered a 
         Zope.Exceptions.NotFoundError is raised.
         """ 

@@ -14,16 +14,16 @@
 """
 
 Revision information:
-$Id: HubEvent.py,v 1.3 2002/10/21 06:14:48 poster Exp $
+$Id: LocalHubEvent.py,v 1.1 2002/10/21 06:14:46 poster Exp $
 """
 
 __metaclass__ = type
 
-from IHubEvent import IObjectRegisteredHubEvent
-from IHubEvent import IObjectUnregisteredHubEvent
-from IHubEvent import IObjectModifiedHubEvent
-from IHubEvent import IObjectMovedHubEvent
-from IHubEvent import IObjectRemovedHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectRegisteredHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectUnregisteredHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectModifiedHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectMovedHubEvent
+from Zope.ObjectHub.IHubEvent import IObjectRemovedHubEvent
 from Zope.App.Traversing import traverse
 
 class HubEvent:
@@ -43,7 +43,14 @@ class HubEvent:
     def __getObject(self):
         if hasattr(self, '_v_object'):
             return self._v_object
-        obj = self._v_object = self.__objecthub.getObject(self.hubid)
+        obj = self._v_object = traverse(
+            self.__objecthub, self.location)
+        # we use the above instead of the below primarily because
+        # the object hub call is not guaranteed to work on an
+        # unregistered event; the above also does a bit less work:
+        # obj = self._v_object = (self.__objecthub.getObject(self.__hubid)
+        # and that, unfortunately, is the only reason why we're not
+        # using the Zope.ObjectHub.HubEvent versions of these...
         return obj
 
     object = property(__getObject)
@@ -59,14 +66,6 @@ class ObjectUnregisteredHubEvent(HubEvent):
     """We are no longer interested in this object."""
 
     __implements__ = IObjectUnregisteredHubEvent
-    
-    # XXX __getObject is *not* implemented in a safe way for this
-    # event, because the hubid-to-object mapping in the object hub may
-    # have already been deleted.  However, I am more concerned about the
-    # local version and will merely mark this as an issue.  In the
-    # global object hub I have merely made the deletion happen *after*
-    # the event notify.  (We cannot use traverse for these events
-    # because that is a Zope-specific capability, in App.)
     
     
 class ObjectModifiedHubEvent(HubEvent):

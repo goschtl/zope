@@ -11,20 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
-
-Revision information:
-$Id: IPathSubscriber.py,v 1.3 2002/10/21 06:14:45 poster Exp $
-"""
-from Interface.Attribute import Attribute
-from Zope.Event.ISubscriber import IIndirectSubscriber
+"""Local Object Hub Views"""
 
 
-class IPathSubscriber(IIndirectSubscriber):
-    
-    def __init__(wrapped_subscriber):
-        """creates new PathSubscriber for the given wrapped_subscriber"""
-    
-    subscriber_path = Attribute(
-        """the slash-delineated physical path to the subscriber"""
-        )
