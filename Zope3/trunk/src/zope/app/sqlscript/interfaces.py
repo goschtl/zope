@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.3 2004/03/02 13:48:29 philikon Exp $
+$Id: interfaces.py,v 1.4 2004/04/14 22:32:48 jim Exp $
 """
 import zope.schema
 from zope.app import zapi
@@ -23,7 +23,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 class MissingInput(Exception):
     pass
 
-class SQLConnectionName(zope.schema.TextLine):
+class SQLConnectionName(zope.schema.EnumeratedTextLine):
     """SQL Connection Name"""
 
     def __allowed(self):
