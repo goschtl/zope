@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.4 2003/05/28 19:08:56 gvanrossum Exp $
+$Id: fsmerger.py,v 1.5 2003/05/28 19:09:55 gvanrossum Exp $
 """
 
 import os
@@ -74,7 +74,6 @@ class FSMerger(object):
 
     def merge_dirs(self, localdir, remotedir):
         """Merge remote directory into local directory."""
-        ##import pdb; pdb.set_trace()
         lentrynames = self.metadata.getnames(localdir)
         rentrynames = self.metadata.getnames(remotedir)
         lentry = self.metadata.getentry(localdir)
