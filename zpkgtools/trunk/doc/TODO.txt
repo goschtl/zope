@@ -69,6 +69,9 @@ Things that need to be done
     The use cases aren't sufficiently clear at this time.  Won't
     happen unless the use cases become clearer.
 
+  - Consider looking for the configuration file in the current
+    directory before look in ~/.zpkg/.
+
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
   separate directory hierarchies for installations using a different
