@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.21 2003/09/21 17:32:52 jim Exp $
+$Id: hub.py,v 1.22 2003/10/31 23:09:16 garrett Exp $
 """
 
 from __future__ import generators
@@ -290,7 +290,6 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
         '''See interface IObjectHub'''
         path = self.getPath(hubid)
         adapter = getAdapter(self, ITraverser)
-        self._verifyPath(path, adapter)
         return adapter.traverse(path)
 
     def register(self, path_or_object):
@@ -392,29 +391,25 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
         return index
 
 
-    def _verifyPath(self, path, traverser=None):
-        if traverser is None:
-            traverser = getAdapter(self, ITraverser)
-        try:
-            traverser.traverse(path)
-        except NotFoundError, e:
-            self.unregister(path)
-            raise e
-
-
     def _safeTraverse(self, path, traverser):
         try:
             return traverser.traverse(path)
         except NotFoundError:
             return None
 
+
     def unregisterMissingObjects(self):
-        # XXX temporary method for clearing missing objects - remove when
-        # proper unregistration mechanisms are added.
+        """Unregisters all missing objects from the hub.
+
+        Returns the number of objects unregistered.
+
+        An object is missing if it is registered with the hub but cannot
+        be accessed via traversal.
+        """
         missing = []
-        for object in self.iterObjectRegistrations():
-            if object[2] is None:
-                missing.append(object[0])
+        for path, hubid, object in self.iterObjectRegistrations():
+            if object is None:
+                missing.append(path)
         for path in missing:
             self.unregister(path)
         return len(missing)
