@@ -49,20 +49,15 @@
 
 <!-- Setup Message Catalogs -->
 <content class=".messagecatalog.MessageCatalog">
+  <factory id="zope.app.MessageCatalog" />
+  <implements 
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
   <require permission="zope.View" 
       interface="zope.i18n.interfaces.IMessageCatalog" />
-
   <require permission="zope.ManageServices"
       attributes="setMessage getMessageIds" />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 </content>
-
-<factory 
-    component="zope.app.i18n.messagecatalog.MessageCatalog" 
-    id="zope.app.MessageCatalog"
-    />
 
 
 <!-- Setup Export and Import Filters -->
