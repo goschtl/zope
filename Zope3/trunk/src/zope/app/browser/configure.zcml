@@ -72,7 +72,7 @@
       name="classBrowser.html"
       for = "zope.interface.Interface"
       permission="zope.View"
-      template="ibrowser.pt"
+      template="introspector.pt"
       factory="zope.app.browser.introspector.IntrospectorView"
       />
 
@@ -88,7 +88,7 @@
       name="interfaceBrowser.html"
       for="zope.interface.interfaces.IInterface"
       permission="zope.View"
-      template="ibrowser.pt"
+      template="introspector.pt"
       factory="zope.app.browser.introspector.IntrospectorView"
       /> 
 
