@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.17 2003/04/22 16:22:37 gvanrossum Exp $
+$Id: checker.py,v 1.18 2003/04/23 17:38:49 stevea Exp $
 """
 
 import os
@@ -281,7 +281,7 @@ def MultiChecker(specs):
       All the names in the sequence of names or the interface are
       protected by the permission.
 
-    - A dictionoid (having anitems method), with items that are
+    - A dictionoid (having an items method), with items that are
       name/permission-id pairs.
     """
     data = {}
@@ -311,7 +311,6 @@ def NonPrivateChecker(permission_id = CheckerPublic):
         return permission_id
 
     return Checker(check)
-
 
 def selectChecker(object):
     """Get a checker for the given object
@@ -386,6 +385,8 @@ def _instanceChecker(inst):
     return checker
 
 def _classChecker(class_):
+    # XXX This function does not appear to be used.
+    #     What is it for?
     checker = _checkers.get(class_, _typeChecker)
     if checker is _typeChecker and issubclass(class_, Exception):
         return NoProxy # XXX we should be more careful
@@ -448,7 +449,7 @@ _default_checkers = {
                          '__str__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
-    types.ClassType: _classChecker,
+    types.ClassType: _typeChecker,  # XXX Check that this is right.
     types.FunctionType: _callableChecker,
     types.MethodType: _callableChecker,
     types.BuiltinFunctionType: _callableChecker,

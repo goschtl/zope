@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.5 2003/03/07 21:13:04 jim Exp $
+$Id: test_checker.py,v 1.6 2003/04/23 17:38:49 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -179,7 +179,9 @@ class Test(TestCase, CleanUp):
 
         for rock in (1, 1.0, 1l, 1j,
                      '1', u'1', None,
-                     AttributeError, AttributeError(),
+                     AttributeError(),
+                     # Not AttributeError though. No reason to consider
+                     # exception classes as rocks.
                      ):
             proxy = checker.proxy(rock)
 

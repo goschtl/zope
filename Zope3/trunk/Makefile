@@ -1,4 +1,5 @@
 PYTHON=python2.2
+#PYTHON=/home/steve/py222/bin/python2.2
 TESTOPTS=
 
 # XXX What should the default be?
