@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.11 $
+:Version: $Revision: 1.12 $
 
 This package includes implementations of several local services.
 It also contains infrastructure for implementing local services.
@@ -157,6 +157,12 @@ There are several major concepts/terms that need to be understood
   a registration object that has the desired interface and name.  The
   registration object passed need not be in in the stack. It is used
   soley to provide the parameters.  
+
+- Registered
+
+  The interface ``IRegistered'' provides storage and access to the
+  registrations for a registerable.  When we make a registration, we
+  refer to it in a registration stack and in the registered object.
 
 
 Examples
