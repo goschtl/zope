@@ -141,16 +141,16 @@
               tal:repeat="help_info help_actions"
               tal:omit-tag="">
           <a href="#"
-               tal:define="url string:'${help_info/action}';
+               tal:define="url string:'${view/__name__}/${help_info/action}';
                            name string:'OnlineHelp';
                            settings string:'height=400
                                            ,width=700
                                            ,resizable=1
                                            ,scrollbars=yes
-                                           ,location=yes
-                                           ,status=yes
-                                           ,toolbar=yes
-                                           ,menubar=yes'"
+                                           ,location=no
+                                           ,status=no
+                                           ,toolbar=no
+                                           ,menubar=no'"
                tal:attributes="href python:'javascript:popup('
                                            + url + ','
                                            + name + ','

@@ -17,6 +17,7 @@ These are the interfaces designed for the OnlineHelp system.
 
 $Id$
 """
+from zope.schema import TextLine
 from zope.app.container.interfaces import IContainer
 
 
@@ -35,11 +36,11 @@ class IOnlineHelpTopic(IContainer):
     interface. 
     """
 
-    def setTitle(title):
-        """Set the title of the Topic."""
-        
-    def getTitle():
-        """Get the title of the Topic."""
+    title = TextLine(
+        title = u"Help Topic Title",
+        description = u"The Title of a Help Topic",
+        default = u"Help Topic",
+        required = True)
 
     def setContentPath(filename, doc_type="stx"):
         """Tell the Topic where it can find"""

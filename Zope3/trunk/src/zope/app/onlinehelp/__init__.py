@@ -21,6 +21,7 @@ $Id$
 import os
 
 import zope.app
+from zope.app import zapi
 from zope.app.container.sample import SampleContainer
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing import traverse
@@ -33,21 +34,13 @@ class OnlineHelpTopic(SampleContainer):
 
     implements(IOnlineHelpTopic)
 
+    title = u""
+
     def __init__(self, title, path, doc_type='txt'):
         """Initialize object."""
         self.title = title
         self.setContentPath(path, doc_type)
         super(OnlineHelpTopic, self).__init__()
-
-    def setTitle(self, title):
-        "See Zope.App.OnlineHelp.interfaces.IOnlineHelpTopic"
-        self._title = title
-
-    def getTitle(self):
-        "See Zope.App.OnlineHelp.interfaces.IOnlineHelpTopic"
-        return self._title
-
-    title = property(getTitle, setTitle, None)
 
     def setContentPath(self, path, doc_type='txt'):
         "See Zope.App.OnlineHelp.interfaces.IOnlineHelpTopic"
@@ -91,10 +84,10 @@ class OnlineHelp(OnlineHelpTopic):
         parent[id] = OnlineHelpTopic(title, doc_path, doc_type)
         topic = parent[id]
         # Add topic to registry
-        if not self._registry.has_key((interface, view)):
-            self._registry[(interface, view)] = []
-        self._registry[(interface, view)].append(topic)
-
+        if interface is not None:
+            if not self._registry.has_key((interface, view)):
+                self._registry[(interface, view)] = []
+            self._registry[(interface, view)].append(topic)
 
 # Global Online Help
 path = os.path.join(os.path.dirname(zope.app.__file__),

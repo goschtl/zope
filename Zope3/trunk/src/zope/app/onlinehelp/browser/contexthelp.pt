@@ -1,7 +1,7 @@
 <html metal:use-macro="views/popup_macros/page">
 <head>
   <title metal:fill-slot="title" 
-      tal:content="context/title"
+      tal:content="view/getContextHelpTopic/title"
       i18n:translate="">Title</title>
 </head>
 <body>
@@ -19,16 +19,18 @@
 
 <div metal:fill-slot="body">
 
+  <div tal:define="topic view/getContextHelpTopic"> 
 
-  <h1 tal:content="context/title"
-      i18n:translate="">Title of Help Topic</h1>
+    <h1 tal:content="topic/title"
+        i18n:translate="">Title of Help Topic</h1>
 
-  <p tal:content="structure context/getContent"
-      i18n:translate="">Content of Online Help.</p>
+    <p tal:content="structure topic/getContent"
+        i18n:translate="">Content of Online Help.</p>
+
+  </div>
 
 </div>
 
 </body>
 </html>
-
 

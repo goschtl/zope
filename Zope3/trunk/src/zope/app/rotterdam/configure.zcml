@@ -90,6 +90,14 @@
       template="navigation_macros.pt"
       />
 
+  <browser:page
+      for="*"
+      name="popup_macros"
+      permission="zope.View"
+      layer="rotterdam"
+      template="popup_macros.pt"
+      />
+
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ISourceText"

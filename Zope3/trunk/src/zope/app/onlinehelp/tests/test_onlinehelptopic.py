@@ -31,13 +31,10 @@ class TestOnlineHelpTopic(TestCase):
         self.topic = OnlineHelpTopic('Help', path, 'txt')
 
     def test_title(self):
-        self.assertEqual(self.topic.getTitle(), 'Help')
         self.assertEqual(self.topic.title, 'Help')
-        self.topic.setTitle('Help1')
-        self.assertEqual(self.topic.getTitle(), 'Help1')
+        self.topic.title = 'Help1'
         self.assertEqual(self.topic.title, 'Help1')
         self.topic.title = 'Help2'
-        self.assertEqual(self.topic.getTitle(), 'Help2')
         self.assertEqual(self.topic.title, 'Help2')
 
     def test_content(self):

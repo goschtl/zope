@@ -15,63 +15,101 @@
 
 $Id$
 """
+from zope.proxy import removeAllProxies
 from zope.interface import providedBy
+from zope.app.publisher.interfaces.browser import IBrowserView
+from zope.app import zapi
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.onlinehelp.interfaces import IOnlineHelpTopic
 
-from zope.component import getService, getView
-from zope.app.publisher.browser import BrowserView
-from zope.app.traversing import getRoot
-from zope.app.traversing import getParents, getName
-
-class OnlineHelpTopicView(BrowserView):
+class OnlineHelpTopicView(object):
     """View for one particular help topic."""
 
-    def _makeSubTree(self, topic):
-        html = '<ul>\n'
-        for entry in topic.items():
-            html += '  <li><a href="%s">%s</a></li>\n' %(
-                getView(entry, 'absolute_url', self.request)(),
-                entry.getTitle())
-            html += self._makeSubTree(entry)
-        html += '</ul>\n'
-        return html
+    def __init__(self, context, request, base_url=''):
+        self.context = context
+        self.request = request
+        self.base_url = base_url
+        self.onlinehelp = removeAllProxies(zapi.getRoot(self.context))
+        if base_url == '':
+            self.base_url = zapi.getPath(self.onlinehelp.context)+"/++help++"
 
     def getTopicTree(self):
-        onlinehelp = getRoot(self.context)
-        return self._makeSubTree(onlinehelp)
+        """ return the tree of help topics."""
+        self.context = zapi.getRoot(self.context)
+        return self.subtopics()
 
-# XXX The view below is highly qeustionable on many levels.
-# - It uses the global view service (now refactored to presentation service
-# - It's very expensive.
-# Perhaps we'll resurrect this later when we have time to do it bit better.
+    def getContextHelpTopic(self):
+        """ Retrieve a help topic based on the context of the
+        help namespace.
 
-## class FindRelevantHelpTopics(BrowserView):
-##     """This object is used as a view on a view, so that we can get all the
-##     required information."""
+        If the context is a view, try to find
+        a matching help topic for the view and its context.
+        If not help topic is found, try got get a help topic for
+        and interface only.
 
-##     def __call__(self):
+        If the context is not a view, try to retrieve a help topic
+        for an interface only.
 
-##         class FindResult:
-##             def __init__(self, url, topic):
-##                 self.url = url
-##                 self.topic = topic
+        If nothing is found, return the onlinehelp root topic
 
-##         view_class = self.context.__class__
-##         obj = self.context.context
-##         help = getService(obj, 'OnlineHelp')
-##         ifaces = providedBy(obj).flattened()
-##         topics = []
-##         for iface in ifaces:
-##             specs = viewService.getRegisteredMatching((iface,),
-##                                                       IBrowserRequest)
-##             for spec in specs:
-##                 if spec[2][0] is not view_class:
-##                     continue
-##                 for topic in help.getTopicsForInterfaceAndView(iface, spec[4]):
-##                     parents = getParents(topic)
-##                     path = map(getName, [topic]+parents[:-1]) 
-##                     path.reverse()
-##                     url = getView(obj, 'absolute_url', self.request)()
-##                     url += '/++help++/++skin++Onlinehelp/'+'/'.join(path)
-##                     topics.append(FindResult(url, topic))
-        
-##         return topics
+        """
+        help_context = self.onlinehelp.context
+        topic = self.context
+        if IBrowserView.providedBy(help_context):
+            # called from a view
+            for iface in providedBy(zapi.getParent(help_context)):
+                # try for interface and view match
+                topics = self.onlinehelp.getTopicsForInterfaceAndView(
+                    iface,
+                    zapi.getName(help_context)
+                    )
+                if len(topics)>0:
+                    topic = topics[0]
+                    break
+            if topic == self.context:
+                # nothing found for view try iface only
+                for iface in providedBy(zapi.getParent(help_context)):
+                    topics = self.onlinehelp.getTopicsForInterfaceAndView(
+                        iface,
+                        None
+                        )
+                    if len(topics)>0:
+                        topic = topics[0]
+                        break
+        else:
+            # called without view
+            for iface in providedBy(help_context):
+                topics = self.onlinehelp.getTopicsForInterfaceAndView(
+                    iface,
+                    None
+                    )
+                if len(topics)>0:
+                    topic = topics[0]
+                    break
+                
+        # XXX returns only the first of the matching topics.
+        #     The page template only processes one topic
+        return topic
+
+    def listHelpItems(self):
+        """ recurse through the help topic tree"""
+        # 
+        children=[]
+        for name, helpitem in self.context.items():
+            info={}
+            info['title'] = helpitem.title
+            info['path'] = self.base_url+'/'+name
+            topic = OnlineHelpTopicView(
+                helpitem,
+                self.request,
+                self.base_url+'/'+name)
+
+            info['topics']=topic.subtopics()
+            children.append(info)
+
+        return children
+
+    subtopics = ViewPageTemplateFile('topiclink.pt')
+
+
+
