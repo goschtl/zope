@@ -42,15 +42,15 @@ def _days_before_year(year):
     y = year - 1
     return y*365 + y//4 - y//100 + y//400
 
-def _days_in_month(month, year):
-    "month, year -> number of days in that month in that year."
+def _days_in_month(year, month):
+    "year, month -> number of days in that month in that year."
     assert 1 <= month <= 12, month
     if month == 2 and _is_leap(year):
         return 29
     return _DAYS_IN_MONTH[month]
 
-def _days_before_month(month, year):
-    "month, year -> number of days in year preceeding first day of month."
+def _days_before_month(year, month):
+    "year, month -> number of days in year preceeding first day of month."
     if not 1 <= month <= 12:
         raise ValueError('month must be in 1..12', month)
     return _DAYS_BEFORE_MONTH[month] + (month > 2 and _is_leap(year))
@@ -59,11 +59,11 @@ def _ymd2ord(year, month, day):
     "year, month, day -> ordinal, considering 01-Jan-0001 as day 1."
     if not 1 <= month <= 12:
         raise ValueError('month must be in 1..12', month)
-    dim = _days_in_month(month, year)
+    dim = _days_in_month(year, month)
     if not 1 <= day <= dim:
         raise ValueError('day must be in 1..%d' % dim, day)
     return (_days_before_year(year) +
-            _days_before_month(month, year) +
+            _days_before_month(year, month) +
             day)
 
 _DI400Y = _days_before_year(401)    # number of days in 400 years
@@ -138,7 +138,7 @@ def _ord2ymd(n):
         month -= 1
         preceding -= _DAYS_IN_MONTH[month] + (month == 2 and leapyear)
     n -= preceding
-    assert 0 <= n < _days_in_month(month, year)
+    assert 0 <= n < _days_in_month(year, month)
 
     # Now the year and month are correct, and n is the offset from the
     # start of that month:  we're done!
@@ -152,7 +152,7 @@ _DAYNAMES = [None, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 def _build_struct_time(y, m, d, hh, mm, ss, dstflag):
     wday = (_ymd2ord(y, m, d) + 6) % 7
-    dnum = _days_before_month(m, y) + d
+    dnum = _days_before_month(y, m) + d
     return _time.struct_time((y, m, d, hh, mm, ss, wday, dnum, dstflag))
 
 def _format_time(hh, mm, ss, us):
@@ -269,7 +269,7 @@ class tmxxx:
         # for a datetime object, but we don't care about that here).
         # If day is out of bounds, what to do is arguable, but at least the
         # method here is principled and explainable.
-        dim = _days_in_month(month, year)
+        dim = _days_in_month(year, month)
         if not 1 <= day <= dim:
             # Move day-1 days from the first of the month.  First try to
             # get off cheap if we're only one day out of range (adjustments
@@ -277,7 +277,7 @@ class tmxxx:
             if day == 0:    # move back a day
                 month -= 1
                 if month > 0:
-                    day = _days_in_month(month, year)
+                    day = _days_in_month(year, month)
                 else:
                     year, month, day = year-1, 12, 31
             elif day == dim + 1:    # move forward a day
@@ -601,7 +601,7 @@ class date(object):
                              year)
         if not 1 <= month <= 12:
             raise ValueError('month must be in 1..12', month)
-        dim = _days_in_month(month, year)
+        dim = _days_in_month(year, month)
         if not 1 <= day <= dim:
             raise ValueError('day must be in 1..%d' % dim, day)
         self.__year = year
