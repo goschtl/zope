@@ -19,8 +19,7 @@
 static PyTypeObject WrapperType;
 static PyTypeObject ContextAwareType;
 
-static PyObject *
-empty_tuple = NULL;
+static PyObject *empty_tuple = NULL;
 
 /* We need to use PyStrings for the various python special method names,
  * such as __len__ and next and __getitem__.
@@ -1274,6 +1273,7 @@ api_setcontext(PyObject *wrapper, PyObject *context)
 
 static WrapperInterface
 wrapper_capi = {
+    &WrapperType,
     api_check,
     api_create,
     api_getobject,
@@ -1504,9 +1504,7 @@ The context object and dictionary give additional context information\n\
 associated with a reference to the basic object.  The wrapper objects\n\
 act as proxies for the original object.";
 
-static PyObject *
-api_object = NULL;
-
+static PyObject *api_object = NULL;
 
 void
 initwrapper(void)

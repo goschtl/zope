@@ -21,6 +21,7 @@ typedef struct {
 } WrapperObject;
 
 typedef struct {
+    PyTypeObject *wrappertype;
     int (*check)(PyObject *obj);
     PyObject *(*create)(PyObject *object, PyObject *context);
     PyObject *(*getobject)(PyObject *wrapper);
@@ -48,7 +49,7 @@ static int
 Wrapper_Import(void)
 {
     if (_wrapper_api == NULL) {
-        PyObject *m = PyImport_ImportModule("Zope.ContextWrapper.wrapper");
+        PyObject *m = PyImport_ImportModule("zope.proxy.context.wrapper");
         if (m != NULL) {
             PyObject *tmp = PyObject_GetAttrString(m, "_CAPI");
             if (tmp != NULL) {
@@ -62,6 +63,8 @@ Wrapper_Import(void)
     return (_wrapper_api == NULL) ? -1 : 0;
 }
 
+#define WrapperType                       \
+        (_wrapper_api->wrappertype)
 #define Wrapper_Check(obj)                   \
         (_wrapper_api->check((obj)))
 #define Wrapper_New(object, context)         \
