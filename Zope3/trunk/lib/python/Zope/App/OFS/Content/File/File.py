@@ -13,13 +13,16 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.4 2002/06/25 11:27:50 mgedmin Exp $
+$Id: File.py,v 1.5 2002/07/18 16:02:16 jeremy Exp $
 """
 
-import Persistence
 from types import StringType, UnicodeType, NoneType
-from FileChunk import FileChunk
-from IFile import IFile
+
+import Persistence
+from Transaction import get_transaction
+
+from Zope.App.OFS.Content.File.FileChunk import FileChunk
+from Zope.App.OFS.Content.File.IFile import IFile
 from Zope.Publisher.Browser.BrowserRequest import FileUpload
 
 # set the size of the chunks
