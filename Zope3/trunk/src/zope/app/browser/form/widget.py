@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.58 2003/12/17 10:20:47 mukruthi Exp $
+$Id: widget.py,v 1.59 2004/01/05 11:29:05 philikon Exp $
 """
 __metaclass__ = type
 
@@ -22,12 +22,15 @@ import traceback
 from warnings import warn
 from xml.sax.saxutils import quoteattr
 
+from zope.interface import implements
+from zope.component import getService
+from zope.proxy import removeAllProxies
+from zope.schema import getFieldNamesInOrder
+from zope.schema.interfaces import ValidationError
+from zope.publisher.browser import BrowserView
+
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.component import getService
-from zope.interface import implements
-from zope.proxy import removeAllProxies
-from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.form.widget import Widget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
@@ -36,8 +39,7 @@ from zope.app.interfaces.form import MissingInputError
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 from zope.app.services.servicenames import Translation
-from zope.schema import getFieldNamesInOrder
-from zope.schema.interfaces import ValidationError
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 ListTypes = list, tuple
 
@@ -74,21 +76,21 @@ class BrowserWidget(Widget, BrowserView):
     'field.foo'
     >>> widget.title
     u'Foo'
-    >>> int(widget.hasInput())
-    1
+    >>> widget.hasInput()
+    True
     >>> widget.getInputValue()
     u'hello\\r\\nworld'
-    >>> int(widget.required)
-    1
+    >>> widget.required
+    True
     >>> widget._error is None
-    1
+    True
     >>> widget.error()
     ''
     >>> widget.setRenderedValue('Hey\\nfolks')
     >>> widget.getInputValue()
     u'hello\\r\\nworld'
     >>> widget._error is None
-    1
+    True
     >>> widget.error()
     ''
 
@@ -110,23 +112,23 @@ class BrowserWidget(Widget, BrowserView):
     >>> widget.name
     'test.foo'
     >>> widget._error is None
-    1
+    True
     >>> widget.error()
     ''
-    >>> int(widget.hasInput())
-    0
+    >>> widget.hasInput()
+    False
     >>> widget.getInputValue()
     Traceback (most recent call last):
     ...
     MissingInputError: ('test.foo', u'Foo', None)
     >>> field.required = False
     >>> widget.request.form['test.foo'] = u''
-    >>> int(widget.required)
-    0
-    >>> int(widget.getInputValue() == field.missing_value)
-    1
+    >>> widget.required
+    False
+    >>> widget.getInputValue() == field.missing_value
+    True
     >>> widget._error is None
-    1
+    True
     >>> widget.error()
     ''
 
@@ -358,10 +360,10 @@ class CheckBoxWidget(BrowserWidget):
     >>> request = TestRequest(form={'field.foo.used': u'on',
     ...                             'field.foo': u'on'})
     >>> widget = CheckBoxWidget(field, request)
-    >>> int(widget.hasInput())
-    1
-    >>> int(widget.getInputValue())
-    1
+    >>> widget.hasInput()
+    True
+    >>> widget.getInputValue()
+    True
 
     >>> def normalize(s):
     ...   return '\\n  '.join(s.split())
@@ -467,8 +469,8 @@ class TextWidget(BrowserWidget):
     >>> field = TextLine(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Bob'})
     >>> widget = TextWidget(field, request)
-    >>> int(widget.hasInput())
-    1
+    >>> widget.hasInput()
+    True
     >>> widget.getInputValue()
     u'Bob'
 
@@ -595,8 +597,8 @@ class BytesWidget(Bytes, TextWidget):
     >>> field = BytesLine(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Bob'})
     >>> widget = BytesWidget(field, request)
-    >>> int(widget.hasInput())
-    1
+    >>> widget.hasInput()
+    True
     >>> widget.getInputValue()
     'Bob'
 
@@ -675,8 +677,8 @@ class TextAreaWidget(BrowserWidget):
     >>> field = Text(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
     >>> widget = TextAreaWidget(field, request)
-    >>> int(widget.hasInput())
-    1
+    >>> widget.hasInput()
+    True
     >>> widget.getInputValue()
     u'Hello\\nworld!'
 
@@ -756,8 +758,8 @@ class BytesAreaWidget(Bytes, TextAreaWidget):
     >>> field = Bytes(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
     >>> widget = BytesAreaWidget(field, request)
-    >>> int(widget.hasInput())
-    1
+    >>> widget.hasInput()
+    True
     >>> widget.getInputValue()
     'Hello\\nworld!'
 
@@ -1119,7 +1121,6 @@ class SequenceWidget(BrowserWidget):
             return ''
 
         render = []
-        r = render.append
 
         # length of sequence info
         sequence = list(self._generateSequence())
@@ -1137,23 +1138,35 @@ class SequenceWidget(BrowserWidget):
         # "remove" button for each one
         for i in range(num_items):
             value = sequence[i]
-            r('<tr><td>')
+            render.append('<tr><td>')
             if num_items > min_length:
-                r('<input type="checkbox" name="%s.remove_%d">'%(self.name, i))
+                render.append(
+                    '<input type="checkbox" name="%s.remove_%d" />' % (
+                    self.name, i)
+                    )
             widget = self._getWidget(i)
             widget.setRenderedValue(value)
-            r(widget()+'</td></tr>')
+            render.append(widget() + '</td></tr>')
 
         # possibly generate the "remove" and "add" buttons
-        s = ''
+        buttons = ''
+        translation = zapi.getService(self.context,
+                                      zapi.servicenames.Translation)
         if render and num_items > min_length:
-            s += '<input type="submit" value="Remove Selected Items">'
+            button_label = _('remove-selected-items', "Remove selected items")
+            button_label = translation.translate(button_label,
+                                                 context=self.request)
+            buttons += '<input type="submit" value="%s" />' % button_label
         if max_length is None or num_items < max_length:
             field = self.context.value_type
-            s += '<input type="submit" name="%s.add" value="Add %s">'%(
-                self.name, field.title or field.__name__)
-        if s:
-            r('<tr><td>%s</td></tr>'%s)
+            button_label = _('Add %s')
+            button_label = translation.translate(button_label,
+                                                 context=self.request)
+            button_label = button_label % (field.title or field.__name__)
+            buttons += '<input type="submit" name="%s.add" value="%s" />' % (
+                self.name, button_label)
+        if buttons:
+            render.append('<tr><td>%s</td></tr>' % buttons)
 
         return '<table border="0">' + ''.join(render) + '</table>'
 
@@ -1233,37 +1246,37 @@ class SequenceWidget(BrowserWidget):
         self._data = value
 
     def _generateSequence(self):
-        """Take sequence info in the self.request and _data."""
+        """Take sequence info in the self.request and _data.
+        """
         len_prefix = len(self.name)
         adding = False
         removing = []
-        subprefix = re.compile(r'(\d+)\.(.+)')
+        subprefix = re.compile(r'(\d+)\.(.*)$')
         if self.context.value_type is None:
             return []
 
         # pre-populate
         found = {}
-        for i in range(len(self._data)):
-            entry = self._data[i]
-            found[i] = entry
+        if self._data is not None:
+            found = dict(enumerate(self._data))
 
         # now look through the request for interesting values
-        for k, v in self.request.items():
-            if not k.startswith(self.name):
+        for key in self.request.keys():
+            if not key.startswith(self.name):
                 continue
-            s = k[len_prefix+1:]        # skip the '.'
-            if s == 'add':
+            token = key[len_prefix+1:]        # skip the '.'
+            if token == 'add':
                 # append a new blank field to the sequence
                 adding = True
-            elif s.startswith('remove_'):
+            elif token.startswith('remove_'):
                 # remove the index indicated
-                removing.append(int(s[7:]))
+                removing.append(int(token[7:]))
             else:
-                m = subprefix.match(s)
-                if m is None:
+                match = subprefix.match(token)
+                if match is None:
                     continue
                 # key refers to a sub field
-                i = int(m.group(1))
+                i = int(match.group(1))
 
                 # find a widget for the sub-field and use that to parse the
                 # request data
@@ -1272,15 +1285,15 @@ class SequenceWidget(BrowserWidget):
                 found[i] = value
 
         # remove the indicated indexes
-        for i in  removing:
+        for i in removing:
             del found[i]
 
         # generate the list, sorting the dict's contents by key
-        l = found.items()
-        l.sort()
-        sequence = [v for k,v in l]
+        items = found.items()
+        items.sort()
+        sequence = [value for key, value in items]
 
-        # the submission might add or remove a sequence item
+        # add an entry to the list if the add button has been pressed
         if adding:
             sequence.append(None)
 
@@ -1332,17 +1345,16 @@ class ObjectWidget(BrowserWidget):
         """Render the widget
         """
         render = []
-        r = render.append
 
         # XXX see if there's some widget layout already
 
         # generate each widget from fields in the schema
         field = self.context
         title = field.title or field.__name__
-        r('<fieldset><legend>%s</legend>'%title)
+        render.append('<fieldset><legend>%s</legend>'%title)
         for name, widget in self.getSubWidgets():
-            r(widget.row())
-        r('</fieldset>')
+            render.append(widget.row())
+        render.append('</fieldset>')
 
         return '\n'.join(render)
 
@@ -1483,4 +1495,3 @@ def tearDown():
     global tearDown
     tearDown = zope.app.tests.placelesssetup.tearDown
     tearDown()
-
