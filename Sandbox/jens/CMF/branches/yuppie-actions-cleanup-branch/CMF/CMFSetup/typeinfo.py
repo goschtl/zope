@@ -282,7 +282,7 @@ def _extractTypeInfoNode(parent, encoding=None):
     immediate_view        = _qs('immediate_view', '%s_edit' % type_id)
     global_allow          = _qb('global_allow', True)
     filter_content_types  = _qb('filter_content_types', False)
-    allowed_content_types = _extractAllowedContentTypesNode(ti_node, encoding)
+    allowed_content_types = _extractAllowedContentTypeNodes(ti_node, encoding)
     allow_discussion      = _qb('allow_discussion', False)
     aliases               = _extractAliasesNode(ti_node, encoding)
     actions               = _extractActionNodes(ti_node, encoding)
@@ -312,10 +312,15 @@ def _extractTypeInfoNode(parent, encoding=None):
 
     return result
 
-def _extractAllowedContentTypesNode(parent, encoding=None):
+def _extractAllowedContentTypeNodes(parent, encoding=None):
 
-    act = _queryNodeAttribute(parent, 'allowed_content_types', '', encoding)
-    return act.split(',')
+    result = []
+
+    for act_node in parent.getElementsByTagName('allowed_content_type'):
+        value = _coalesceTextNodeChildren(act_node, encoding)
+        result.append(value)
+
+    return tuple(result)
 
 def _extractDescriptionNode(parent, encoding=None):
 

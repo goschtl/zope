@@ -4,10 +4,10 @@
            icon="topic_icon.gif"
            immediate_view="topic_edit_form"
            filter_content_types="True"
-           allowed_content_types="Topic"
            allow_discussion="False" global_allow="True"
            product="CMFTopic" factory="addTopic">
   <description>Topics are canned queries for organizing content with up to date queries into the catalog.</description>
+  <allowed_content_type>Topic</allowed_content_type>
   <aliases>
    <alias from="(Default)" to="topic_view"/>
    <alias from="view" to="topic_view"/>

@@ -4,9 +4,8 @@
            icon="link_icon.gif"
            immediate_view="metadata_edit_form"
            filter_content_types="True"
-           allowed_content_types="" allow_discussion="False"
-           global_allow="True" product="CMFDefault"
-           factory="addLink">
+           allow_discussion="False" global_allow="True"
+           product="CMFDefault" factory="addLink">
   <description>Link items are annotated URLs.</description>
   <aliases>
    <alias from="(Default)" to="link_view"/>
