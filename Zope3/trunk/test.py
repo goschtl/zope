@@ -755,6 +755,14 @@ def process_args(argv=None):
         elif k == '--dir':
             test_dir = v
 
+    if sys.version_info < ( 2,2,3 ):
+	print """\
+	ERROR: Your python version is not supported by Zope3.
+	Zope3 needs either Python2.3 or Python2.2.3 or greater.
+	In particular, Zope3 on Python2.2.2 is a recipe for 
+	pain. You are running:""" + sys.version
+	sys.exit(1)
+
     if gcthresh is not None:
         if gcthresh == 0:
             gc.disable()
