@@ -57,13 +57,13 @@ class ILDAPBasedPrincipalSource(IPrincipalSource):
 class ILDAPManager(Interface):
     """A LDAP server manager."""
 
-    def addPrincipal(login_attribute, ldap_principal):
+    def addPrincipal(ldap_principal):
         """Add a principal to the LDAP server."""
 
-    def editPrincipal(login_attribute, ldap_principal):
+    def editPrincipal(ldap_principal):
         """Edit a principal to the LDAP server."""
 
-    def deletePrincipal(login_attribute):
+    def deletePrincipal(login):
         """Delete a principal to the LDAP server."""
 
 
