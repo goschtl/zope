@@ -24,9 +24,9 @@
   <menuItem
       for="*"
       filter="python:request.getURL().find('++help++')==-1"
-      menu="zmi_actions"
+      menu="help_actions"
       title="Help"
-      action="++help++/@@index.html"
+      action="++help++/++skin++Onlinehelp/@@index.html"
       /> 
  
 

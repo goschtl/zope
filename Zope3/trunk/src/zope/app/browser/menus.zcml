@@ -10,6 +10,11 @@
           usage="activitydialog"
           />
 
+   <menu id="help_actions" 
+          title="Menu for displaying help actions to be performed with popup"
+          usage="activitydialog"
+          />
+
    <menu id="add_content"
          title="Menu of objects to be added to content folders"
          usage="addingdialog"
