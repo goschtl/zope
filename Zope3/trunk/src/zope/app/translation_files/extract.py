@@ -15,7 +15,7 @@
 """Extract message strings from python modules, page template files
 and ZCML files.
 
-$Id: extract.py,v 1.15 2003/12/17 14:06:54 philikon Exp $
+$Id: extract.py,v 1.16 2004/02/19 15:20:37 philikon Exp $
 """
 
 import os, sys, fnmatch
@@ -28,6 +28,9 @@ from interfaces import IPOTEntry, IPOTMaker, ITokenEater
 from zope.interface import implements
 
 __meta_class__ = type
+
+DEFAULT_CHARSET = 'UTF-8'
+DEFAULT_ENCODING = '8bit'
 
 pot_header = '''\
 ##############################################################################
@@ -51,8 +54,8 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\\n"
 "MIME-Version: 1.0\\n"
-"Content-Type: text/plain; charset=CHARSET\\n"
-"Content-Transfer-Encoding: ENCODING\\n"
+"Content-Type: text/plain; charset=%(charset)s\\n"
+"Content-Transfer-Encoding: %(encoding)s\\n"
 "Generated-By: zope/app/translation_files/extract.py\\n"
 
 '''
@@ -123,8 +126,10 @@ class POTMaker:
 
     def write(self):
         file = open(self._output_filename, 'w')
-        file.write(pot_header % {'time':    time.ctime(),
-                                 'version': self._getProductVersion()})
+        file.write(pot_header % {'time':     time.ctime(),
+                                 'version':  self._getProductVersion(),
+                                 'charset':  DEFAULT_CHARSET,
+                                 'encoding': DEFAULT_ENCODING})
 
         # Sort the catalog entries by filename
         catalog = self.catalog.values()
