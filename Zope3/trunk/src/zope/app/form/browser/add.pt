@@ -48,9 +48,14 @@
       <div class="row">
         <div class="controls"><hr />
           <input type='submit' value='Refresh'
-                 i18n:attributes='value refresh-button'>
-          <input type="submit" name="UPDATE_SUBMIT" value=" Add "
-                 tal:replace="structure context/renderAddButton|default"/>
+                 i18n:attributes='value refresh-button' />
+          <input type='submit' value='Add' name='UPDATE_SUBMIT'
+                 i18n:attributes='value add-button' />
+	  <span tal:condition="context/nameAllowed" tal:omit-tag="">
+               &nbsp;&nbsp;<b i18n:translate="">Object Name</b>&nbsp;&nbsp;    
+              <input type='text' name='add_input_name'
+                     tal:attributes="value context/contentName" /> 
+          </span> 	             
         </div>
       </div>
      
