@@ -13,7 +13,7 @@
 ##############################################################################
 """Clipboard tests
 
-$Id: test_clipboard.py,v 1.13 2004/03/13 23:01:14 srichter Exp $
+$Id: test_clipboard.py,v 1.1 2004/03/13 23:34:43 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: tests.py,v 1.3 2004/03/13 15:21:14 srichter Exp $
+$Id: test_rename.py,v 1.1 2004/03/13 23:34:43 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 
