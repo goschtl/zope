@@ -67,6 +67,15 @@ class InclusionSpecificationError(cfgparser.ConfigurationError,
         self.filename = filename
         self.lineno = lineno
 
+    def __str__(self):
+        s = InclusionError.__str__(self)
+        if self.filename:
+            s = "%s\n(in %s" % (s, self.filename)
+            if self.lineno is not None:
+                s = "%s, line %d" % (s, self.lineno)
+            s += ")"
+        return s
+
 
 def load(sourcedir, url=None):
     """Return the specifications for populating the distribution and
