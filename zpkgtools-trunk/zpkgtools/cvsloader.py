@@ -189,7 +189,7 @@ class RepositoryUrl:
 def open(url, mode="r"):
     if mode[:1] != "r" or "+" in mode:
         raise ValueError("CVS resources can only be opened in read-only mode")
-    loader = CvsLoader(None)
+    loader = CvsLoader()
     path = loader.load(url)
     if os.path.isfile(path):
         return FileProxy(path, mode, loader, url)
