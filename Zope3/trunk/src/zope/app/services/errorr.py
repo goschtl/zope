@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: errorr.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: errorr.py,v 1.3 2003/01/02 13:57:37 srichter Exp $
 """
 
 import time
@@ -93,7 +93,10 @@ class ErrorReportingService(Persistent):
             username = None
             req_html = None
             if request:
-                url = request.URL
+                # XXX: Temporary fix, which Steve should undo. URL is
+                #      just too HTTPRequest-specific.
+                if hasattr(request, 'URL'):
+                    url = request.URL
                 try:
                     username = ', '.join((request.user.getLogin(),
                                           request.user.getId(),
@@ -103,6 +106,11 @@ class ErrorReportingService(Persistent):
                 # When there's an unauthorized access, request.user is
                 # not set, so we get an AttributeError
                 # XXX is this right? Surely request.user should be set!
+                # XXX Answer: Catching AttributeError is correct for the
+                #             simple reason that UnauthenticatedUser (which
+                #             I always use during coding), has no 'getLogin()'
+                #             method. However, for some reason this except
+                #             does **NOT** catch these errors.
                 except AttributeError:
                     pass
 
