@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: Thu Aug  7 13:43:08 2003\n"
+"POT-Creation-Date: Thu Aug  7 16:04:15 2003\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -290,20 +290,20 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
-#: zope/app/browser/component/interfacewidget.py:279
+#: zope/app/browser/component/interfacewidget.py:282
 msgid "Use refresh to enter more interfaces"
 msgstr ""
 
-#: zope/app/browser/component/interfacewidget.py:342
+#: zope/app/browser/component/interfacewidget.py:349
 msgid "---select interface---"
 msgstr ""
 
-#: zope/app/browser/component/interfacewidget.py:348
+#: zope/app/browser/component/interfacewidget.py:355
 msgid "Anything"
 msgstr ""
 
-#: zope/app/browser/component/interfacewidget.py:49
-#: zope/app/browser/component/interfacewidget.py:169
+#: zope/app/browser/component/interfacewidget.py:52
+#: zope/app/browser/component/interfacewidget.py:172
 msgid "the field is required"
 msgstr ""
 
@@ -330,10 +330,10 @@ msgstr ""
 
 #: zope/app/browser/container/configure.zcml:3
 #: zope/app/browser/services/registration/configure.zcml:61
-#: zope/app/browser/services/configure.zcml:95
+#: zope/app/browser/services/configure.zcml:103
 #: zope/app/browser/services/auth.zcml:18
-#: zope/app/browser/services/configure.zcml:257
-#: zope/app/browser/services/configure.zcml:290
+#: zope/app/browser/services/configure.zcml:265
+#: zope/app/browser/services/configure.zcml:298
 #: zope/app/browser/services/pagefolder.zcml:29
 #: zope/app/browser/workflow/stateful/configure.zcml:48
 #: zope/app/browser/workflow/stateful/configure.zcml:85
@@ -460,11 +460,11 @@ msgid "A simple Folder."
 msgstr ""
 
 #: zope/app/browser/content/configure.zcml:237
-#: zope/app/browser/services/configure.zcml:84
+#: zope/app/browser/services/configure.zcml:92
 #: zope/app/browser/services/auth.zcml:10
 #: zope/app/browser/services/pluggableauth/configure.zcml:45
-#: zope/app/browser/services/configure.zcml:248
-#: zope/app/browser/services/configure.zcml:282
+#: zope/app/browser/services/configure.zcml:256
+#: zope/app/browser/services/configure.zcml:290
 #: zope/app/browser/services/pagefolder.zcml:12
 #: zope/app/browser/workflow/configure.zcml:75
 msgid "Contents"
@@ -1528,118 +1528,118 @@ msgstr ""
 msgid "Caches registered in this cache service:"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:127
+#: zope/app/browser/services/configure.zcml:135
 msgid "Change adapter"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:142
+#: zope/app/browser/services/configure.zcml:150
 msgid "Adapter"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:153
+#: zope/app/browser/services/configure.zcml:161
 msgid "Adapter Service"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:196
+#: zope/app/browser/services/configure.zcml:204
 msgid "Manage Local Services"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:201
+#: zope/app/browser/services/configure.zcml:209
 msgid "Turn On Local Service Manager"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:213
+#: zope/app/browser/services/configure.zcml:221
 #: zope/app/browser/skins/zopetop/widget_macros.pt:42
 msgid "Services"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:23
-msgid "Errors"
-msgstr ""
-
-#: zope/app/browser/services/configure.zcml:237
+#: zope/app/browser/services/configure.zcml:245
 msgid "Visit default package"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:241
+#: zope/app/browser/services/configure.zcml:249
 msgid "Add service"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:30
-msgid "Error Logging Service"
-msgstr ""
-
-#: zope/app/browser/services/configure.zcml:30
-msgid "Error Reporting Service for Logging Errors"
-msgstr ""
-
-#: zope/app/browser/services/configure.zcml:304
+#: zope/app/browser/services/configure.zcml:312
 #: zope/app/browser/workflow/configure.zcml:26
 msgid "Registrations"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:336
+#: zope/app/browser/services/configure.zcml:32
+msgid "Errors"
+msgstr ""
+
+#: zope/app/browser/services/configure.zcml:344
 msgid "Simplistic session support using cookies"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:336
+#: zope/app/browser/services/configure.zcml:344
 msgid "Cookie Session Service"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:344
+#: zope/app/browser/services/configure.zcml:352
 msgid "Stores Annotations for Principals"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:344
+#: zope/app/browser/services/configure.zcml:352
 msgid "Principal Annotation Service"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:362
+#: zope/app/browser/services/configure.zcml:370
 msgid "An object hub, for cataloging, unique object ids, and                    more: use sparingly"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:362
+#: zope/app/browser/services/configure.zcml:370
 msgid "HubIds Service"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:377
+#: zope/app/browser/services/configure.zcml:38
+msgid "Error Logging Service"
+msgstr ""
+
+#: zope/app/browser/services/configure.zcml:38
+msgid "Error Reporting Service for Logging Errors"
+msgstr ""
+
+#: zope/app/browser/services/configure.zcml:385
 msgid "Registration subscriber"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:377
+#: zope/app/browser/services/configure.zcml:385
 msgid "An event subscriber that registers content with the objecthub"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:398
+#: zope/app/browser/services/configure.zcml:406
 msgid "Takes you to a menu of services to add"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:398
+#: zope/app/browser/services/configure.zcml:406
 #: zope/app/browser/services/serviceactivation.pt:26
 msgid "Service"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:459
+#: zope/app/browser/services/configure.zcml:467
 msgid "Bundle"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:46
-#: zope/app/browser/services/configure.zcml:354
-#: zope/app/browser/services/configure.zcml:385
+#: zope/app/browser/services/configure.zcml:54
+#: zope/app/browser/services/configure.zcml:362
+#: zope/app/browser/services/configure.zcml:393
 #: zope/app/browser/index/text/configure.zcml:12
 #: zope/app/browser/index/field/configure.zcml:12
 msgid "Control"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:54
+#: zope/app/browser/services/configure.zcml:62
 msgid "Event Service"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:54
+#: zope/app/browser/services/configure.zcml:62
 msgid "An event service. One of these in the root is usually enough"
 msgstr ""
 
-#: zope/app/browser/services/configure.zcml:68
+#: zope/app/browser/services/configure.zcml:76
 msgid "Role Service"
 msgstr ""
 
@@ -1647,7 +1647,7 @@ msgstr ""
 #: zope/app/browser/services/configureConnection.pt:19
 #: zope/app/browser/services/configureView.pt:18
 #: zope/app/browser/services/utility/configureutility.pt:29
-#: zope/app/browser/services/registration/namecomponentregistry.pt:43
+#: zope/app/browser/services/registration/namecomponentregistry.pt:42
 #: zope/app/browser/services/registration/nameregistry.pt:44
 #: zope/app/browser/services/translation/synchronize.pt:142
 msgid "update-button"
@@ -1936,8 +1936,13 @@ msgstr ""
 msgid "Edit User Information"
 msgstr ""
 
+#: zope/app/browser/services/registration/__init__.py:135
 #: zope/app/browser/services/registration/changeregistrations.pt:19
 msgid "Disabled"
+msgstr ""
+
+#: zope/app/browser/services/registration/__init__.py:140
+msgid "Updated"
 msgstr ""
 
 #: zope/app/browser/services/registration/configure.zcml:19
@@ -3031,6 +3036,18 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: zope/app/interfaces/services/registration.py:27
+msgid "Unregistered"
+msgstr ""
+
+#: zope/app/interfaces/services/registration.py:28
+msgid "Registered"
+msgstr ""
+
+#: zope/app/interfaces/services/registration.py:29
+msgid "Active"
+msgstr ""
+
 #: zope/app/mail/configure.zcml:11
 msgid "Send out mail with arbitrary from and to addresses"
 msgstr ""
@@ -3219,8 +3236,8 @@ msgid "Page Template"
 msgstr ""
 
 #: zope/app/services/configure.zcml:109
-#: zope/app/browser/services/configure.zcml:170
-#: zope/app/browser/services/configure.zcml:177
+#: zope/app/browser/services/configure.zcml:178
+#: zope/app/browser/services/configure.zcml:185
 msgid "ZPT Template"
 msgstr ""
 

@@ -34,7 +34,8 @@
                 Config item <span tal:content="config/name" />
               </span>
             </a>
-            <span tal:condition="not:config/active">(disabled)</span>
+            <span tal:condition="not:config/active"
+                i18n:translate="">(disabled)</span>
             <br />
             <span tal:content="config/line2|default">
               (No implementation summary)

@@ -13,11 +13,12 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.3 2003/07/02 19:15:01 fdrake Exp $
+$Id: __init__.py,v 1.4 2003/08/07 20:27:33 srichter Exp $
 """
 
 from zope.app.browser.container.adding import Adding
 from zope.app.browser.form.widget import BrowserWidget
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import RegisteredStatus
@@ -131,12 +132,12 @@ class ChangeRegistrations(BrowserView):
                 active = self.context.active()
                 if active is not None:
                     self.context.activate(None)
-                    message = "Disabled"
+                    message = _("Disabled")
             else:
                 for info in self.context.info():
                     if info['id'] == id and not info['active']:
                         self.context.activate(info['registration'])
-                        message = "Updated"
+                        message = _("Updated")
                         break
                             
         return message

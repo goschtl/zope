@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Thu Aug  7 13:43:08 2003\n"
-"PO-Revision-Date: 2003-08-07 15:29-0400\n"
+"POT-Creation-Date: Thu Aug  7 16:04:15 2003\n"
+"PO-Revision-Date: 2003-08-07 16:07-0400\n"
 "Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
 "Language-Team: English US <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -295,20 +295,20 @@ msgstr "Schlüsselwort-Index"
 msgid "Advanced"
 msgstr "Fortgescrittenes"
 
-#: zope/app/browser/component/interfacewidget.py:279
+#: zope/app/browser/component/interfacewidget.py:282
 msgid "Use refresh to enter more interfaces"
 msgstr "Nutze Zurücksetzen um mehr Interfaces einzugeben."
 
-#: zope/app/browser/component/interfacewidget.py:342
+#: zope/app/browser/component/interfacewidget.py:349
 msgid "---select interface---"
 msgstr "---Interface wählen---"
 
-#: zope/app/browser/component/interfacewidget.py:348
+#: zope/app/browser/component/interfacewidget.py:355
 msgid "Anything"
 msgstr "Irgendetwas"
 
-#: zope/app/browser/component/interfacewidget.py:49
-#: zope/app/browser/component/interfacewidget.py:169
+#: zope/app/browser/component/interfacewidget.py:52
+#: zope/app/browser/component/interfacewidget.py:172
 msgid "the field is required"
 msgstr "Dieses Feld ist erforderlich"
 
@@ -335,10 +335,10 @@ msgstr "Suchen"
 
 #: zope/app/browser/container/configure.zcml:3
 #: zope/app/browser/services/registration/configure.zcml:61
-#: zope/app/browser/services/configure.zcml:95
+#: zope/app/browser/services/configure.zcml:103
 #: zope/app/browser/services/auth.zcml:18
-#: zope/app/browser/services/configure.zcml:257
-#: zope/app/browser/services/configure.zcml:290
+#: zope/app/browser/services/configure.zcml:265
+#: zope/app/browser/services/configure.zcml:298
 #: zope/app/browser/services/pagefolder.zcml:29
 #: zope/app/browser/workflow/stateful/configure.zcml:48
 #: zope/app/browser/workflow/stateful/configure.zcml:85
@@ -465,11 +465,11 @@ msgid "A simple Folder."
 msgstr "Ein einfacher Ordner"
 
 #: zope/app/browser/content/configure.zcml:237
-#: zope/app/browser/services/configure.zcml:84
+#: zope/app/browser/services/configure.zcml:92
 #: zope/app/browser/services/auth.zcml:10
 #: zope/app/browser/services/pluggableauth/configure.zcml:45
-#: zope/app/browser/services/configure.zcml:248
-#: zope/app/browser/services/configure.zcml:282
+#: zope/app/browser/services/configure.zcml:256
+#: zope/app/browser/services/configure.zcml:290
 #: zope/app/browser/services/pagefolder.zcml:12
 #: zope/app/browser/workflow/configure.zcml:75
 msgid "Contents"
@@ -819,12 +819,12 @@ msgid ""
 "objects are added, deleted or modified; an \"unsubscribed\" index will "
 "retain the indexing information but not update itself further."
 msgstr ""
-"Auf dieser Seite können die den Feldindex kontrollieren. Ein Feldindex "
-"kann einzelne Felder indizieren. Die Suchbox ist nur für die Fehlersuche. "
-"Abonnementsstatus: Ein Index, der \"abonniniert\" hat, aktualisiert sich selbst, "
-"wann immer Objekte hinzugefügt, gelöscht oder geändert werden; ein Index, "
-"der nicht \"abonniert\" hat, wird die Indexinformationen behalten, sich aber "
-"nicht weiterhin aktualisieren."
+"Auf dieser Seite können die den Feldindex kontrollieren. Ein Feldindex kann "
+"einzelne Felder indizieren. Die Suchbox ist nur für die Fehlersuche. "
+"Abonnementsstatus: Ein Index, der \"abonniniert\" hat, aktualisiert sich "
+"selbst, wann immer Objekte hinzugefügt, gelöscht oder geändert werden; ein "
+"Index, der nicht \"abonniert\" hat, wird die Indexinformationen behalten, "
+"sich aber nicht weiterhin aktualisieren."
 
 #: zope/app/browser/index/field/control.pt:3
 msgid "FieldIndex Control Page"
@@ -873,10 +873,10 @@ msgid ""
 "retain the indexing information but not update itself further."
 msgstr ""
 "Auf dieser Seite können Sie den Textindex kontrollieren. Ein Textindex wird "
-"für die Volltextsuche benutzt. Ein Index, der \"abonniniert\" hat, aktualisiert sich selbst, "
-"wann immer Objekte hinzugefügt, gelöscht oder geändert werden; ein Index, "
-"der nicht \"abonniert\" hat, wird die Indexinformationen behalten, sich aber "
-"nicht weiterhin aktualisieren."
+"für die Volltextsuche benutzt. Ein Index, der \"abonniniert\" hat, "
+"aktualisiert sich selbst, wann immer Objekte hinzugefügt, gelöscht oder "
+"geändert werden; ein Index, der nicht \"abonniert\" hat, wird die "
+"Indexinformationen behalten, sich aber nicht weiterhin aktualisieren."
 
 #: zope/app/browser/index/text/control.pt:26
 #: zope/app/browser/index/field/control.pt:26
@@ -1324,7 +1324,9 @@ msgstr "Aktivieren"
 
 #: zope/app/browser/services/add_svc_config.pt:7
 msgid "Register this object to provide the following service(s):"
-msgstr "Dieses Objekt so registrieren, dass es die folgenden Dienste zur Verfügung stellt:"
+msgstr ""
+"Dieses Objekt so registrieren, dass es die folgenden Dienste zur Verfügung "
+"stellt:"
 
 #: zope/app/browser/services/addrole.pt:3
 msgid "Add Role"
@@ -1364,7 +1366,9 @@ msgstr "Aktivieren"
 
 #: zope/app/browser/services/bundle.pt:127
 msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
-msgstr "Klicken Sie auf \"Bündel deaktivieren\", um alle Registrierungen in diesem Bündel nichtig zu machen."
+msgstr ""
+"Klicken Sie auf \"Bündel deaktivieren\", um alle Registrierungen in diesem "
+"Bündel nichtig zu machen."
 
 #: zope/app/browser/services/bundle.pt:130
 msgid "deactivate-bundle-button"
@@ -1395,8 +1399,9 @@ msgid ""
 "(You must <a href=\"../default/AddService\">add a ${service_name} service to "
 "this site</a> before you can activate this bundle)"
 msgstr ""
-"(Sie müssen der Webseite <a href=\"../default/AddService\">einen ${service_name}-Dienst hinzufügen</a>, "
-"bevor Sie dieses Bündel aktivieren können)"
+"(Sie müssen der Webseite <a href=\"../default/AddService\">einen "
+"${service_name}-Dienst hinzufügen</a>, bevor Sie dieses Bündel aktivieren "
+"können)"
 
 #: zope/app/browser/services/bundle.pt:43
 msgid "Registrations in this bundle"
@@ -1472,8 +1477,8 @@ msgid ""
 "Can't delete active cache(s): ${cache_names}; use the Deactivate button to "
 "deactivate"
 msgstr ""
-"Kann nicht aktive Cache löschen:: ${cache_names}; bitte benutzen Sie Deaktiveren zum "
-"Deaktivieren der Caches."
+"Kann nicht aktive Cache löschen:: ${cache_names}; bitte benutzen Sie "
+"Deaktiveren zum Deaktivieren der Caches."
 
 #: zope/app/browser/services/cache.zcml:16
 msgid "Caches"
@@ -1547,73 +1552,65 @@ msgstr "Einen Cache zum Cachedienst hinzufügen"
 msgid "Caches registered in this cache service:"
 msgstr "Caches die mit diesem Cache Service registriert wurden:"
 
-#: zope/app/browser/services/configure.zcml:127
+#: zope/app/browser/services/configure.zcml:135
 msgid "Change adapter"
 msgstr "Adapter ändern"
 
-#: zope/app/browser/services/configure.zcml:142
+#: zope/app/browser/services/configure.zcml:150
 msgid "Adapter"
 msgstr "Adapter"
 
-#: zope/app/browser/services/configure.zcml:153
+#: zope/app/browser/services/configure.zcml:161
 msgid "Adapter Service"
 msgstr "Adapter Service"
 
-#: zope/app/browser/services/configure.zcml:196
+#: zope/app/browser/services/configure.zcml:204
 msgid "Manage Local Services"
 msgstr "Lokale Services verwalten"
 
-#: zope/app/browser/services/configure.zcml:201
+#: zope/app/browser/services/configure.zcml:209
 msgid "Turn On Local Service Manager"
 msgstr "Lokalen Serive Verwalter anschalten"
 
-#: zope/app/browser/services/configure.zcml:213
+#: zope/app/browser/services/configure.zcml:221
 #: zope/app/browser/skins/zopetop/widget_macros.pt:42
 msgid "Services"
 msgstr "Services"
 
-#: zope/app/browser/services/configure.zcml:23
-msgid "Errors"
-msgstr "Fehler"
-
-#: zope/app/browser/services/configure.zcml:237
+#: zope/app/browser/services/configure.zcml:245
 msgid "Visit default package"
 msgstr "Direkt zum 'default' Paket"
 
-#: zope/app/browser/services/configure.zcml:241
+#: zope/app/browser/services/configure.zcml:249
 msgid "Add service"
 msgstr "Service hinzufügen"
 
-#: zope/app/browser/services/configure.zcml:30
-msgid "Error Logging Service"
-msgstr "Fehlermelde-Service"
-
-#: zope/app/browser/services/configure.zcml:30
-msgid "Error Reporting Service for Logging Errors"
-msgstr "Fehlermelde-Service für Logging Fehler"
-
-#: zope/app/browser/services/configure.zcml:304
+#: zope/app/browser/services/configure.zcml:312
 #: zope/app/browser/workflow/configure.zcml:26
 msgid "Registrations"
 msgstr "Registrierungen"
 
-#: zope/app/browser/services/configure.zcml:336
+#: zope/app/browser/services/configure.zcml:32
+msgid "Errors"
+msgstr "Fehler"
+
+#: zope/app/browser/services/configure.zcml:344
 msgid "Simplistic session support using cookies"
 msgstr "Einfache Session Unterstützungen durch Cookies"
 
-#: zope/app/browser/services/configure.zcml:336
+#: zope/app/browser/services/configure.zcml:344
 msgid "Cookie Session Service"
 msgstr "Cookie-Sitzungs-Service"
 
-#: zope/app/browser/services/configure.zcml:344
+#: zope/app/browser/services/configure.zcml:352
 msgid "Stores Annotations for Principals"
 msgstr "Speichert Anmerkungen für Prinzipal"
 
-#: zope/app/browser/services/configure.zcml:344
+#: zope/app/browser/services/configure.zcml:352
 msgid "Principal Annotation Service"
 msgstr "Prinzipal Anmerkungen Service"
 
-#: zope/app/browser/services/configure.zcml:362
+#: zope/app/browser/services/configure.zcml:370
 msgid ""
 "An object hub, for cataloging, unique object ids, and                    "
 "more: use sparingly"
@@ -1621,50 +1618,58 @@ msgstr ""
 "Eine Objekt-Hub, zum katalogisieren, eindeutige Objekt-Idsm und mehr: "
 "sparsam nutzen"
 
-#: zope/app/browser/services/configure.zcml:362
+#: zope/app/browser/services/configure.zcml:370
 msgid "HubIds Service"
 msgstr "Hub-Ids Service"
 
-#: zope/app/browser/services/configure.zcml:377
+#: zope/app/browser/services/configure.zcml:38
+msgid "Error Logging Service"
+msgstr "Fehlermelde-Service"
+
+#: zope/app/browser/services/configure.zcml:38
+msgid "Error Reporting Service for Logging Errors"
+msgstr "Fehlermelde-Service für Logging Fehler"
+
+#: zope/app/browser/services/configure.zcml:385
 msgid "Registration subscriber"
 msgstr "Registrierungs-Abonnent"
 
-#: zope/app/browser/services/configure.zcml:377
+#: zope/app/browser/services/configure.zcml:385
 msgid "An event subscriber that registers content with the objecthub"
 msgstr "Ein Ereignis-Abonnent der Inhälte mit der Objekt-Hub registriert"
 
-#: zope/app/browser/services/configure.zcml:398
+#: zope/app/browser/services/configure.zcml:406
 msgid "Takes you to a menu of services to add"
 msgstr "Bringt sie zu einem Menü zum hinzufügen von Services"
 
-#: zope/app/browser/services/configure.zcml:398
+#: zope/app/browser/services/configure.zcml:406
 #: zope/app/browser/services/serviceactivation.pt:26
 msgid "Service"
 msgstr "Service"
 
-#: zope/app/browser/services/configure.zcml:459
+#: zope/app/browser/services/configure.zcml:467
 msgid "Bundle"
 msgstr "Bündel"
 
-#: zope/app/browser/services/configure.zcml:46
-#: zope/app/browser/services/configure.zcml:354
-#: zope/app/browser/services/configure.zcml:385
+#: zope/app/browser/services/configure.zcml:54
+#: zope/app/browser/services/configure.zcml:362
+#: zope/app/browser/services/configure.zcml:393
 #: zope/app/browser/index/text/configure.zcml:12
 #: zope/app/browser/index/field/configure.zcml:12
 msgid "Control"
 msgstr "Kontrolle"
 
-#: zope/app/browser/services/configure.zcml:54
+#: zope/app/browser/services/configure.zcml:62
 msgid "Event Service"
 msgstr "Ereignis-Service"
 
-#: zope/app/browser/services/configure.zcml:54
+#: zope/app/browser/services/configure.zcml:62
 msgid "An event service. One of these in the root is usually enough"
 msgstr ""
 "Ein Ereignis-Service. Einer dieser im Wurzelelement ist normalerweise "
 "ausreichend"
 
-#: zope/app/browser/services/configure.zcml:68
+#: zope/app/browser/services/configure.zcml:76
 msgid "Role Service"
 msgstr "Rollen-Service"
 
@@ -1672,7 +1677,7 @@ msgstr "Rollen-Service"
 #: zope/app/browser/services/configureConnection.pt:19
 #: zope/app/browser/services/configureView.pt:18
 #: zope/app/browser/services/utility/configureutility.pt:29
-#: zope/app/browser/services/registration/namecomponentregistry.pt:43
+#: zope/app/browser/services/registration/namecomponentregistry.pt:42
 #: zope/app/browser/services/registration/nameregistry.pt:44
 #: zope/app/browser/services/translation/synchronize.pt:142
 msgid "update-button"
@@ -1715,8 +1720,8 @@ msgid ""
 "Can't delete active connection(s): ${connection_names}; use the Deactivate "
 "button to deactivate"
 msgstr ""
-"Kann keine aktive Verbindungen löschen: ${connection_names}; benutzen Sie Deaktivieren, "
-"um die Verbindungen zu deaktiveren"
+"Kann keine aktive Verbindungen löschen: ${connection_names}; benutzen Sie "
+"Deaktivieren, um die Verbindungen zu deaktiveren"
 
 #: zope/app/browser/services/connection.zcml:17
 msgid "Connections"
@@ -1802,9 +1807,10 @@ msgid ""
 "can configure how many exceptions should be kept and whether the exceptions "
 "should be copied to Zope's event log file(s)."
 msgstr ""
-"Diese Seite listet alle Ausnahmen, die in dieser Website kürzlich aufgetreten sind, auf. "
-"Sie können einstellen, wie viele Ausnahmen behalten werden sollen und ob die "
-"Ausnahmen in Zopes Ereignislog-Datei(en)kopiert werden soll."
+"Diese Seite listet alle Ausnahmen, die in dieser Website kürzlich "
+"aufgetreten sind, auf. Sie können einstellen, wie viele Ausnahmen behalten "
+"werden sollen und ob die Ausnahmen in Zopes Ereignislog-Datei(en)kopiert "
+"werden soll."
 
 #: zope/app/browser/services/errorentry.pt:11
 msgid "Exception traceback"
@@ -1974,9 +1980,14 @@ msgstr "Einfachen Nutzer mit Details hinzufügen"
 msgid "Edit User Information"
 msgstr "Nutzer-Informationen bearbeiten"
 
+#: zope/app/browser/services/registration/__init__.py:135
 #: zope/app/browser/services/registration/changeregistrations.pt:19
 msgid "Disabled"
 msgstr "Deaktiviert"
+
+#: zope/app/browser/services/registration/__init__.py:140
+msgid "Updated"
+msgstr "Aktualisiert"
 
 #: zope/app/browser/services/registration/configure.zcml:19
 msgid "Edit Registration"
@@ -2077,9 +2088,10 @@ msgid ""
 "The (change registration) link allows activating a different implementation "
 "or disabling the service altogether."
 msgstr ""
-"Es sei denn ein Dienst ist deaktiviert, der Name des Dienstes bietet eine Link "
-"zu dem aktiven Dienst. Der (Registrierung ändern) Link erlaubt das Aktivieren "
-"einer anderen Implementation oder sogar das Abschalten des Dienstes."
+"Es sei denn ein Dienst ist deaktiviert, der Name des Dienstes bietet eine "
+"Link zu dem aktiven Dienst. Der (Registrierung ändern) Link erlaubt das "
+"Aktivieren einer anderen Implementation oder sogar das Abschalten des "
+"Dienstes."
 
 #: zope/app/browser/services/services.pt:5
 msgid "Services registered in this service manager"
@@ -2134,7 +2146,9 @@ msgstr "Nachrichten Importiern und Exportieren"
 
 #: zope/app/browser/services/translation/exportimport.pt:12
 msgid "Here you can export and import messages from your Translation Service."
-msgstr "Hier können sie Nachrichten von ihrem Übersetzungsdienst importieren und exportieren."
+msgstr ""
+"Hier können sie Nachrichten von ihrem Übersetzungsdienst importieren und "
+"exportieren."
 
 #: zope/app/browser/services/translation/exportimport.pt:20
 #: zope/app/browser/services/translation/synchronize.pt:63
@@ -2401,8 +2415,8 @@ msgid ""
 "+skin++Onlinehelp/"
 msgstr ""
 "Sie sind nicht im ++help++ Namesbereich.<br> Füge /++help++/ nach dem "
-"Rechnernamen in der URL ein.<br> Um die eigene Online Hilfe Haut zu benutzen: "
-"/++help++/++skin++Onlinehelp/"
+"Rechnernamen in der URL ein.<br> Um die eigene Online Hilfe Haut zu "
+"benutzen: /++help++/++skin++Onlinehelp/"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:68
 msgid "Close this window"
@@ -2859,17 +2873,18 @@ msgid ""
 "may select the component to provide the ProcessDefinition or disable the "
 "ProcessDefinition."
 msgstr ""
-"Für jede Prozessdefinition werden der Name und alle registrierten Komponenten "
-"die die Prozessdefinition ausmachen gezeigt. Sie können Komponenten auswählen "
-"um diese als Prozessdefinitionen anzubieten oder abzuschalten."
+"Für jede Prozessdefinition werden der Name und alle registrierten "
+"Komponenten die die Prozessdefinition ausmachen gezeigt. Sie können "
+"Komponenten auswählen um diese als Prozessdefinitionen anzubieten oder "
+"abzuschalten."
 
 #: zope/app/browser/workflow/workflows.pt:23
 msgid ""
 "Select a ProcessDefinition name or a component name to visit the "
 "ProcessDefinition or component."
 msgstr ""
-"Wählen sie den Namen einer Prozessdefinition oder einer Komponenten "
-"aus um sie anzuschauen."
+"Wählen sie den Namen einer Prozessdefinition oder einer Komponenten aus um "
+"sie anzuschauen."
 
 #: zope/app/browser/workflow/workflows.pt:29
 msgid ""
@@ -2879,15 +2894,16 @@ msgid ""
 "is added, add a ProcessDefinition configuration that configures the "
 "component to provide a ProcessDefinition."
 msgstr ""
-"Um eine Prozessdefinition zu konfigurieren, müssen sie zuerst eine Prozessdefinition "
-"dem <em>Paket</em> in <a href=\"../../../Packages\">Pakete</a> oder dem <a "
-"href=\"../../../Packages/default\">\"default\" Paket</a> hinzufügen. Nachdem diese "
-"Komponente hinzugefügt wurde, erstellen sie eine Prozessdefinition Konfiguration "
-"welche die Komponente so konfiguriert, dass sie eine Prozessdefinition bereitstellt."
+"Um eine Prozessdefinition zu konfigurieren, müssen sie zuerst eine "
+"Prozessdefinition dem <em>Paket</em> in <a href=\"../../../Packages"
+"\">Pakete</a> oder dem <a href=\"../../../Packages/default\">\"default\" "
+"Paket</a> hinzufügen. Nachdem diese Komponente hinzugefügt wurde, erstellen "
+"sie eine Prozessdefinition Konfiguration welche die Komponente so "
+"konfiguriert, dass sie eine Prozessdefinition bereitstellt."
 
 #: zope/app/browser/workflow/workflows.pt:7
 msgid "ProcessDefinitions configured in this workflow service."
-msgstr "Prozessdefinitionen die in diesem Ablaufdienst configuriert sind."
+msgstr "Prozessdefinitionen die in diesem Ablaufdienst konfiguriert sind."
 
 #: zope/app/container/size.py:40
 msgid "1 item"
@@ -3148,6 +3164,18 @@ msgstr "Beschreibung"
 msgid "Login"
 msgstr "Anmeldung"
 
+#: zope/app/interfaces/services/registration.py:27
+msgid "Unregistered"
+msgstr "Nicht registriert"
+
+#: zope/app/interfaces/services/registration.py:28
+msgid "Registered"
+msgstr "Registriert"
+
+#: zope/app/interfaces/services/registration.py:29
+msgid "Active"
+msgstr "Aktiviert"
+
 #: zope/app/mail/configure.zcml:11
 msgid "Send out mail with arbitrary from and to addresses"
 msgstr "Emails mit beliebiger Absender- und Empfängeradresse verschicken"
@@ -3311,8 +3339,8 @@ msgid "Page Template"
 msgstr "Seitenschablone"
 
 #: zope/app/services/configure.zcml:109
-#: zope/app/browser/services/configure.zcml:170
-#: zope/app/browser/services/configure.zcml:177
+#: zope/app/browser/services/configure.zcml:178
+#: zope/app/browser/services/configure.zcml:185
 msgid "ZPT Template"
 msgstr "ZPT Schablone"
 

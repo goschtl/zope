@@ -13,9 +13,9 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.5 2003/07/02 19:03:45 fdrake Exp $
+$Id: registration.py,v 1.6 2003/08/07 20:27:36 srichter Exp $
 """
-
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container  import IContainerNamesContainer, IContainer
@@ -24,9 +24,9 @@ from zope.interface import Interface, Attribute, implements
 from zope.schema import TextLine
 from zope.schema.interfaces import ITextLine
 
-UnregisteredStatus = 'Unregistered'
-RegisteredStatus = 'Registered'
-ActiveStatus = 'Active'
+UnregisteredStatus = _('Unregistered')
+RegisteredStatus = _('Registered')
+ActiveStatus = _('Active')
 
 class IRegistrationStatus(ITextLine):
     """The status of a registration

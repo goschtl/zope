@@ -13,11 +13,9 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.8 2003/07/18 19:12:51 alga Exp $
+$Id: registration.py,v 1.9 2003/08/07 20:27:39 srichter Exp $
 """
 __metaclass__ = type
-
-
 
 from zope.app import zapi
 

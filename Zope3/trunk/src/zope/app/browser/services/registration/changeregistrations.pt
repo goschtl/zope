@@ -1,4 +1,4 @@
-<table width="100%">
+<table width="100%" i18n:domain="zope">
   <tr tal:define="message view/message" tal:condition="message">
      <td></td>
      <td colspan="2"><em tal:content="message">xxxx</em></td>
