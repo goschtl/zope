@@ -14,7 +14,7 @@
 """\
 Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.8 2003/08/03 02:13:02 philikon Exp $
+$Id: schemadisplay.py,v 1.9 2003/08/04 14:52:45 philikon Exp $
 """
 
 from zope.schema import getFieldNamesInOrder
@@ -29,11 +29,6 @@ from zope.component import getAdapter
 from zope.app.form.utility import setUpDisplayWidgets
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-
-from zope.app.publisher.browser.globalbrowsermenuservice \
-     import menuItemDirective, globalBrowserMenuService
-
-from editview import normalize
 
 class DisplayView(BrowserView):
     """Simple display-view base class.
@@ -91,22 +86,3 @@ def DisplayViewFactory(name, schema, label, permission, layer,
                   NamesChecker(("__call__", "__getitem__", "browserDefault"),
                                permission))
     provideView(for_, name, IBrowserPresentation, class_, layer)
-
-def display(_context, name, schema, permission, label='',
-            layer="default", class_=None, for_=None,
-            template=None, fields=None,
-            menu=None, title='Display', usage=u''):
-    if menu:
-        actions = menuItemDirective(
-            _context, menu, for_ or schema, '@@' + name, title,
-            permission=permission)
-
-    for_, bases, template, fields = normalize(
-        for_, schema, class_, template, 'display.pt', fields, DisplayView)
-
-    _context.action(
-        discriminator=('view', for_, name, IBrowserPresentation, layer),
-        callable=DisplayViewFactory,
-        args=(name, schema, label, permission, layer, template, 'display.pt',
-              bases, for_, fields, menu, usage)
-        )

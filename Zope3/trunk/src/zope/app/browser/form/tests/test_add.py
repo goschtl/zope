@@ -13,23 +13,24 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.19 2003/08/03 02:13:07 philikon Exp $
+$Id: test_add.py,v 1.20 2003/08/04 14:52:49 philikon Exp $
 """
 
-import sys
 import unittest
 
-from zope.app.browser.form.add import add, AddViewFactory, AddView
 from zope.interface import Interface, implements
-from zope.schema import TextLine, accessors
-from zope.app.interfaces.container import IAdding
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.form.widget import CustomWidget
-from zope.app.browser.form.widget import TextWidget as Text
 from zope.publisher.browser import TestRequest
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.schema import TextLine, accessors
 from zope.component import getView
 from zope.component.adapter import provideAdapter
+
+from zope.app.browser.form.add import AddViewFactory, AddView
+from zope.app.browser.form.metaconfigure import AddFormDirective
+from zope.app.interfaces.container import IAdding
+from zope.app.form.widget import CustomWidget
+from zope.app.browser.form.widget import TextWidget as Text
+from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.browser.form.submit import Update
 # Foo needs to be imported as globals() are checked
 from zope.app.browser.form.tests.test_editview import IFoo, IBar, Foo
@@ -100,19 +101,19 @@ class Test(PlacelessSetup, unittest.TestCase):
                     set_before_add=['getfoo'], set_after_add=['extra1'],
                     fields=None):
         """ Call the 'add' factory to process arguments into 'args'."""
-        return add(self._context,
-                   schema=schema,
-                   name=name,
-                   permission=permission,
-                   label=label,
-                   content_factory=content_factory,
-                   class_=class_,
-                   arguments=arguments,
-                   keyword_arguments=keyword_arguments,
-                   set_before_add=set_before_add,
-                   set_after_add=set_after_add,
-                   fields=fields
-                   )
+        AddFormDirective(self._context,
+                         schema=schema,
+                         name=name,
+                         permission=permission,
+                         label=label,
+                         content_factory=content_factory,
+                         class_=class_,
+                         arguments=arguments,
+                         keyword_arguments=keyword_arguments,
+                         set_before_add=set_before_add,
+                         set_after_add=set_after_add,
+                         fields=fields
+                         )()
 
     def test_add_no_fields(self):
         _context = self._context

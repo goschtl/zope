@@ -8,7 +8,7 @@
     <meta:complexDirective
         name="addwizard"
         schema=".metadirectives.IAddWizardDirective"
-        handler="zope.app.browser.form.addwizard.AddWizardDirective"
+        handler=".metaconfigure.AddWizardDirective"
         >
 
       <meta:subdirective
@@ -21,7 +21,7 @@
     <meta:complexDirective
         name="editwizard"
         schema=".metadirectives.IEditWizardDirective"
-        handler="zope.app.browser.form.editwizard.EditWizardDirective"
+        handler=".metaconfigure.EditWizardDirective"
         >
 
       <meta:subdirective
@@ -31,28 +31,28 @@
 
     </meta:complexDirective>
 
-    <meta:directive
+    <meta:complexDirective
         name="editform"
         schema=".metadirectives.IEditFormDirective"
-        handler=".editview.edit"
+        handler=".metaconfigure.EditFormDirective"
         />
 
-    <meta:directive
+    <meta:complexDirective
         name="subeditform"
         schema=".metadirectives.ISubeditFormDirective"
-        handler=".editview.subedit"
+        handler=".metaconfigure.SubeditFormDirective"
         />
 
-    <meta:directive
+    <meta:complexDirective
         name="addform"
         schema=".metadirectives.IAddFormDirective"
-        handler=".add.add"
+        handler=".metaconfigure.AddFormDirective"
         />
 
-    <meta:directive
+    <meta:complexDirective
         name="schemadisplay"
         schema=".metadirectives.ISchemaDisplayDirective"
-        handler=".schemadisplay.display"
+        handler=".metaconfigure.SchemaDisplayDirective"
         />
 
   </meta:directives>

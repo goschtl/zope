@@ -12,26 +12,19 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.32 2003/08/03 02:13:02 philikon Exp $
+$Id: editview.py,v 1.33 2003/08/04 14:52:45 philikon Exp $
 """
 
-import os
-
 from datetime import datetime
-from zope.configuration.exceptions import ConfigurationError
 
-from zope.schema.interfaces import ValidationError
 from zope.schema import getFieldNamesInOrder
-
-from zope.interface import classProvides, implements
-
-from zope.app.context import ContextWrapper
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component.view import provideView
 from zope.component import getAdapter
 
+from zope.app.context import ContextWrapper
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.browser.form.submit import Update
@@ -39,9 +32,6 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-
-from zope.app.publisher.browser.globalbrowsermenuservice \
-     import menuItemDirective, globalBrowserMenuService
 
 class EditView(BrowserView):
     """Simple edit-view base class
@@ -139,70 +129,3 @@ def EditViewFactory(name, schema, label, permission, layer,
                                permission))
 
     provideView(for_, name, IBrowserPresentation, class_, layer)
-
-
-def normalize(for_, schema, class_, template, default_template, fields, view=EditView):
-    if for_ is None:
-        for_ = schema
-
-    if class_ is None:
-        bases = view,
-    else:
-        bases = (class_, view)
-
-    if template is not None:
-        template = os.path.abspath(str(template))
-        if not os.path.isfile(template):
-            raise ConfigurationError("No such file", template)
-    else:
-        template = default_template
-
-    names = getFieldNamesInOrder(schema)
-
-    if fields:
-        for name in fields:
-            if name not in names:
-                raise ValueError("Field name is not in schema",
-                                 name, schema)
-    else:
-        fields = names
-
-    return (for_, bases, template, fields)
-
-def edit(_context, name, schema, permission, label='',
-         layer = "default", class_ = None, for_ = None,
-         template = None, fields=None,
-         menu=None, title='Edit', usage=u''):
-
-    if menu:
-        menuItemDirective(
-            _context, menu, for_ or schema, '@@' + name, title,
-            permission=permission)
-
-    for_, bases, template, fields = normalize(
-        for_, schema, class_, template, 'edit.pt', fields)
-
-    _context.action(
-        #XXX added schema to descriminator to make it unique
-        # don't know whether that's a Good Thing(tm) -- philiKON
-        discriminator=('view', for_, name, schema,
-                       IBrowserPresentation, layer),
-        callable=EditViewFactory,
-        args=(name, schema, label, permission, layer, template, 'edit.pt',
-              bases, for_, fields, menu, usage),
-        )
-
-def subedit(_context, name, schema, label,
-            permission='zope.Public', layer="default",
-            class_=None, for_=None, template=None, fields=None,
-            fulledit=None, fulledit_label=None):
-
-    for_, bases, template, fields = normalize(
-        for_, schema, class_, template, 'subedit.pt', fields)
-
-    _context.action(
-        discriminator=('view', for_, name, IBrowserPresentation, layer),
-        callable=EditViewFactory,
-        args=(name, schema, label, permission, layer, template, 'subedit.pt',
-              bases, for_, fields, fulledit, fulledit_label),
-        )

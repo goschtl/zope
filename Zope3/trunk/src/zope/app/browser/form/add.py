@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.27 2003/08/03 02:13:02 philikon Exp $
+$Id: add.py,v 1.28 2003/08/04 14:52:45 philikon Exp $
 """
 
 import sys
 
 from zope.schema.interfaces import ValidationError
 
-from zope.app.interfaces.container import IAdding
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.interfaces.form import WidgetsError
@@ -31,9 +30,7 @@ from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.browser.form.submit import Update
-from zope.app.browser.form.editview import EditView, normalize
-from zope.app.publisher.browser.globalbrowsermenuservice \
-     import menuItemDirective
+from zope.app.browser.form.editview import EditView
 
 class AddView(EditView):
     """Simple edit-view base class.
@@ -165,75 +162,3 @@ def AddViewFactory(name, schema, label, permission, layer,
                   )
 
     provideView(for_, name, IBrowserPresentation, class_, layer)
-
-
-def add(_context, name, schema, content_factory='', label='',
-        permission = 'zope.Public', layer = "default",
-        class_ = None, for_ = IAdding,
-        template = None, fields=None, arguments=None, keyword_arguments=None,
-        set_before_add=None, set_after_add=None,
-        menu=None, title=None, description=''):
-
-    # Handle menu attrs. We do this now to rather than later becaise
-    # menuItemDirective expects a dotted name for for_. 
-    if menu or title:
-        if (not menu) or (not title):
-            raise ValueError("If either menu or title are specified, "
-                             "they must both be specified")
-        menuItemDirective(
-            _context, menu, for_, '@@' + name, title,
-            permission=permission, description=description)
-
-    for_, bases, template, fields = normalize(
-        for_, schema, class_, template, 'add.pt', fields, AddView)
-
-    leftover = fields
-
-    if arguments:
-        missing = [n for n in arguments if n not in fields]
-        if missing:
-            raise ValueError("Some arguments are not included in the form",
-                             missing)
-        optional = [n for n in arguments if not schema[n].required]
-        if optional:
-            raise ValueError("Some arguments are optional, use"
-                             " keyword_arguments for them",
-                             optional)
-        leftover = [n for n in leftover if n not in arguments]
-
-    if keyword_arguments:
-        missing = [n for n in keyword_arguments if n not in fields]
-        if missing:
-            raise ValueError(
-                "Some keyword_arguments are not included in the form",
-                missing)
-        leftover = [n for n in leftover if n not in keyword_arguments]
-
-    if set_before_add:
-        missing = [n for n in set_before_add if n not in fields]
-        if missing:
-            raise ValueError(
-                "Some set_before_add are not included in the form",
-                missing)
-        leftover = [n for n in leftover if n not in set_before_add]
-
-    if set_after_add:
-        missing = [n for n in set_after_add if n not in fields]
-        if missing:
-            raise ValueError(
-                "Some set_after_add are not included in the form",
-                missing)
-        leftover = [n for n in leftover if n not in set_after_add]
-
-        set_after_add += leftover
-
-    else:
-        set_after_add = leftover
-
-    _context.action(
-        discriminator = ('view', for_, name, IBrowserPresentation, layer),
-        callable = AddViewFactory,
-        args = (name, schema, label, permission, layer, template, 'add.pt',
-                bases, for_, fields, content_factory, arguments,
-                keyword_arguments, set_before_add, set_after_add),
-        )

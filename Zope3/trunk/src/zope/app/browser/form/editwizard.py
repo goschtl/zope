@@ -12,30 +12,27 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.10 2003/08/03 02:13:02 philikon Exp $
+$Id: editwizard.py,v 1.11 2003/08/04 14:52:45 philikon Exp $
 """
 
-import logging
-from UserDict import UserDict
-from zope.interface import implements, classProvides
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.component import getAdapter
-from zope.app.publisher.browser.globalbrowsermenuservice \
-     import menuItemDirective, globalBrowserMenuService
+from zope.app.publisher.browser.globalbrowsermenuservice import \
+     globalBrowserMenuService
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from editview import normalize, EditViewFactory, EditView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.app.context import ContextWrapper
 from zope.component.view import provideView
 from zope.app.form.utility \
         import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
 from zope.app.interfaces.form import WidgetInputError
-from submit import Next, Previous, Update
 from zope.app.interfaces.form import WidgetsError
-from zope.i18n import MessageIDFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
+
+from editview import EditView
+from submit import Next, Previous, Update
 
 PaneNumber = 'CURRENT_PANE_IDX'
 
@@ -220,65 +217,6 @@ class Pane:
     def __init__(self, field_names, label):
         self.names = field_names
         self.label = label
-
-
-class EditWizardDirective:
-
-    def __init__(self, _context, name, schema, permission, 
-                 for_=None, class_=None, template=None, layer='default',
-                 menu=None, title='Edit', use_session='yes'):
-        self.name = name
-        self.permission = permission
-        self.title = title
-        self.layer = layer
-        self.menu = menu
-
-        if use_session.lower() == 'yes':
-            self.use_session = True
-        elif use_session.lower() == 'no':
-            self.use_session = False
-        else:
-            raise ValueError('Invalid value %r for use_session'%(use_session,))
-
-        if menu:
-            actions = menuItemDirective(
-                _context, menu, for_ or schema, '@@' + name, title,
-                permission=permission
-                )
-        else:
-            actions = []
-
-        for_, bases, template, fields = normalize(
-            for_, schema, class_, template, 'editwizard.pt', view=EditWizardView)
-
-        self._context = _context
-        self.schema = schema
-        self.for_ = for_
-        self.bases = bases
-        self.template = template
-        self.all_fields = fields
-
-        self.panes = []
-        self.actions = actions
-
-    def pane(self, _context, fields, label=''):
-        for f in fields:
-            if f not in self.all_fields:
-                raise ValueError(
-                    'Field name is not in schema', 
-                    name, self.schema
-                    )
-        self.panes.append(Pane(fields, label))
-
-    def __call__(self):
-        self._context.action(
-            discriminator=(
-            'view', self.for_, self.name, IBrowserPresentation, self.layer),
-            callable=EditWizardViewFactory,
-            args=(self.name, self.schema, self.permission, self.layer, 
-                  self.panes, self.all_fields, self.template, 'editwizard.pt',
-                  self.bases, self.for_, self.menu, u'', self.use_session)
-            )
 
 def EditWizardViewFactory(name, schema, permission, layer,
                     panes, fields, template, default_template, bases, for_, 
