@@ -20,7 +20,7 @@ from zope.app.fssync.syncer import toFS, fromFS
 from zope.app.interfaces.fssync import IObjectDirectory
 from zope.component import getView, queryView
 from zope.component.view import viewService
-from zope.xmlpickle.xmlpickle import loads
+from zope.xmlpickle import loads
 
 from common import getZODBPath, getApplicationRoot, getObject, getObjectAdapter
 
@@ -156,14 +156,11 @@ def addTypes(dbpath, siteconfpath):
     adapter = getObjectAdapter(f)
     request = FSAddRequest()
     allviews = viewService.all()['default']
-    print
-    print "ALL AVAILABLE TYPES"
-    print "===================================================="
-    print
+    print "AVAILABLE TYPES"
+    print "==============="
     for view in allviews:
-        try:
-            if len(view)>1 and view[0] == '.':
-                doc = getView(adapter, view, request).__doc__
-                print ' %s  \n %s \n\n' % (view, doc)
-        except: # XXX which exception are we trying to catch?
-            pass
+        # The view named '.' is the default AddView object; skip it.
+        # Views whose name starts with '.' are our special add views.
+        if len(view) > 1 and view.startswith('.'):
+            doc = getView(adapter, view, request).__doc__
+            print ' %s  \n %s' % (view, doc)
