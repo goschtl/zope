@@ -33,8 +33,8 @@
 
       <tr>
         <td><br /></td>
-        <td> <input type="text" name="id"
-                   tal:condition="view/namesAccepted
+        <td><input type="text" name="id"
+                   tal:condition="view/namesAccepted"
                    tal:attributes="value request/id | nothing" />
             <input type="submit" name="add" value=" Add "
                    i18n:attributes="value add-button" />
