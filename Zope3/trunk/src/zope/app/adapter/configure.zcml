@@ -8,7 +8,7 @@
 <!-- Adapter Service -->
 
 <content class=".adapter.LocalAdapterService">
-  <factory permission="zope.ManageServices" />
+  <factory />
   <require
       permission="zope.ManageServices"
       interface="zope.app.interfaces.services.registration.IRegistry"

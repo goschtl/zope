@@ -28,7 +28,6 @@
   <content class=".dtmlpage.DTMLPage">
     <factory
         id="DTMLPage"
-        permission="zope.ManageContent"
         title="DTML Page"
         description="A simple, content-based DTML Page"
         />
