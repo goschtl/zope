@@ -60,8 +60,6 @@ Things to do After the next release (in no particular order)
 
 - Local event subscriptions
 
-- Catalogs (?)
-
 - Finish cache framework:
 
   http://dev.zope.org/Zope3/Zope.App.Caching
