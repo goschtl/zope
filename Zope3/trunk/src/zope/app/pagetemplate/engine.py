@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.8 2003/03/26 00:19:57 srichter Exp $
+$Id: engine.py,v 1.9 2003/04/03 19:55:20 fdrake Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -61,13 +61,13 @@ class ZopeContext(Context):
         macro = removeAllProxies(macro)
         return macro
 
-    def translate(self, domain, msgid, mapping):
+    def translate(self, domain, msgid, mapping, default=None):
         # When running Zope, request is a Proxy, but no mutation is done here,
         # so it is safe to remove all proxies
         request = removeAllProxies(self.request)
         # XXX should we cache the translator instance?
         translator = Translator(request.locale, domain, self.context)
-        return translator.translate(msgid, mapping)
+        return translator.translate(msgid, mapping, default=default)
 
 
 class ZopeEngine(ExpressionEngine):
