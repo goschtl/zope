@@ -15,7 +15,8 @@
 
 $Id$
 """
-import unittest, doctest
+import unittest
+from zope.testing import doctest
 
 from zope.app.testing import ztapi
 from zope.interface import Interface, implements
@@ -100,6 +101,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ObjectWidgetTest),
+        doctest.DocFileSuite('../objectwidget.txt'),
         doctest.DocTestSuite(),
         ))
 
