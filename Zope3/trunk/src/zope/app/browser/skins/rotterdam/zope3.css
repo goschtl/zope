@@ -36,6 +36,10 @@ a {
     background-color: transparent;
 }
 
+a[href]:active {
+    text-decoration: underline;
+}
+
 
 table {
 
@@ -50,10 +54,6 @@ img {
 p {
     margin: 0.5em 0em 1em 0em;
     line-height: 1.5em;
-}
-
-p a {
-    text-decoration: underline;
 }
 
 p a:visited {
@@ -124,10 +124,6 @@ ol {
     line-height: 1.5em;
     margin-left: 2em;
     padding:0;
-}
-
-ul a, ol a {
-    text-decoration: underline;
 }
 
 dl {
@@ -533,7 +529,6 @@ div.message {
 
 div.message a {
     color: Black;
-    text-decoration: underline;
 }
 
 /* Style for page error divs.  Use this for displaying errors for a
