@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.8 2003/12/05 14:42:00 philikon Exp $
+$Id: __init__.py,v 1.9 2003/12/07 11:24:03 philikon Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -30,7 +30,7 @@ from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.services.service import ServiceRegistration
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.services.service import ISite
-from zope.app.services.service import ServiceManager
+from zope.app.services.service import SiteManager
 
 class ComponentAdding(Adding):
     """Adding subclass used for registerable components."""
@@ -393,8 +393,8 @@ class MakeSite(BrowserView):
 
         # we don't want to store security proxies (we can't,
         # actually), so we have to remove proxies here before passing
-        # the context to the ServiceManager.
+        # the context to the SiteManager.
         bare = removeAllProxies(self.context)
-        sm = ServiceManager(bare)
+        sm = SiteManager(bare)
         self.context.setSiteManager(sm)
         self.request.response.redirect("++etc++site/")
