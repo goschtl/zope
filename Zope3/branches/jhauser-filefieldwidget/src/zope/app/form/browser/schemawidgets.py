@@ -118,6 +118,7 @@ class SchemaWidget(BrowserWidget, InputWidget):
         print "applyChanges"
         field = self.context
         print "field = self.context ", self.context
+        print "content ", content
 
         # create our new object value
         value = field.query(content, None)
@@ -131,13 +132,29 @@ class SchemaWidget(BrowserWidget, InputWidget):
         # apply sub changes, see if there *are* any changes
         # TODO: ObjectModifiedEvent here would be nice
         print "self ", self
+        print "isProxy(self) ", isProxy(self)
+        print "isProxy(value) ", isProxy(value)
+        print "isProxy(field) ", isProxy(field)
+        print "isProxy(content) ", isProxy(content)
         print "self.names ", self.names
         changes = applyWidgetsChanges(self, field.schema, target=value,
                                       names=self.names)
 
+        # TODO: check this
+        # We have a Subobject allready set in the init method. Don't replace 
+        # the subobject, just update it
+        
         # if there's changes, then store the new value on the content
-        if changes:
-            field.set(content, value)
+        #print "start if changes"
+        #if changes:
+        #    print "field.set(content, value) "
+        #    print "   ... field ", field
+        #    print "       ... isProxy(field) ", isProxy(field)
+        #    print "   ... content ", content
+        #    print "       ... isProxy(content) ", isProxy(content)
+        #    print "   ... value ", value
+        #    print "       ... isProxy(value) ", isProxy(value)
+        #    field.set(content, value)
 
         return changes
 

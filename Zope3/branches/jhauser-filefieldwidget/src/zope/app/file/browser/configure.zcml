@@ -59,6 +59,14 @@
       permission="zope.ManageContent"
       />
 
+  <browser:page
+      for="zope.app.file.interfaces.IFile"
+      name="index.html"
+      permission="zope.View"
+      class=".file.NewStyleFileView"
+      attribute="show"
+      />
+
 <!-- BBB: old style files -->
 
   <browser:menuItem
@@ -90,13 +98,16 @@
       permission="zope.ManageContent"
       />
 
+<!-- add the index.html view back for BBB files
+     TODO: Perhaps we can use menuItem and filter/condition
   <browser:page
       for="zope.app.file.interfaces.IFile"
       name="index.html"
       permission="zope.View"
       class=".file.FileView"
-      attribute="show" />
-
+      attribute="show"
+      />
+-->
 
   <browser:addMenuItem
       class="zope.app.file.File"

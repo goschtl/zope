@@ -28,6 +28,24 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 __docformat__ = 'restructuredtext'
 
 
+class NewStyleFileView(object):
+
+    def show(self):
+        """Call the File"""
+        request = self.request
+        if request is not None:
+            request.response.setHeader('Content-Type',
+                                       self.context.contentType)
+            request.response.setHeader('Content-Length',
+                                       self.context.getSize())
+
+        # TODO: use self.context.open('r').read() instead directly
+        # access the MimeData via .contents
+        # But first we have to support read and write permission in
+        # the open method
+        return self.context.contents.open('r').read()
+
+
 class FileView(object):
 
     def show(self):

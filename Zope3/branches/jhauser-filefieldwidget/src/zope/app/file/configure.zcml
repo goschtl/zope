@@ -35,26 +35,6 @@
        />
   </content>
 
-  <content class=".file.ReadFileStorage">
-
-    <require
-        permission="zope.View"
-        interface=".interfaces.IReadFileAccess"
-        />
-
-  </content>
-
-  <content class=".file.WriteFileStorage">
-
-    <require
-        permission="zope.ManageContent"
-        interface=".interfaces.IWriteFileAccess"
-        />
-
-  </content>
-
-
-
   <!-- handle the mime field value as content -->
   <content class=".file.Mime">
 
@@ -74,6 +54,24 @@
         />
 
   </content>
+
+  <class class=".file.ReadFileStorage">
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IReadFileAccess"
+        />
+
+  </class>
+
+  <class class=".file.WriteFileStorage">
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IWriteFileAccess"
+        />
+
+  </class>
 
   <adapter 
       for=".interfaces.IFile"

@@ -79,8 +79,9 @@ class FileTest(BrowserTestCase):
         self.addFile()
         response = self.publish(
             '/file/@@edit.html',
-            form={'field.data': u'<h1>A File</h1>',
-                  'field.contentType': u'text/plain',
+            form={'field.contents.data': u'<h1>A File</h1>',
+                  'field.contents.contentType': u'text/plain',
+                  'field.contents.encoding': u'',
                   'UPDATE_SUBMIT': u'Edit'},
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
@@ -91,7 +92,7 @@ class FileTest(BrowserTestCase):
         self.assert_(escape(u'<h1>A File</h1>') in body)
         root = self.getRootFolder()
         file = root['file']
-        self.assertEqual(file.data, '<h1>A File</h1>')
+        self.assertEqual(file.open('r').read(), '<h1>A File</h1>')
         self.assertEqual(file.contentType, 'text/plain')
 
     def testUploadForm(self):
@@ -111,9 +112,9 @@ class FileTest(BrowserTestCase):
         self.addFile()
         response = self.publish(
             '/file/@@fileupload.html',
-            form={'field.contents': StringIO('<h1>A file</h1>'),
-                  'field.contentType': u'text/plain',
-                  'field.encoding': u'UTF-8',
+            form={'field.contents.data': StringIO('<h1>A file</h1>'),
+                  'field.contents.contentType': u'text/plain',
+                  'field.contents.encoding': u'UTF-8',
                   'UPDATE_SUBMIT': u'Change'},
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
@@ -124,7 +125,7 @@ class FileTest(BrowserTestCase):
         self.failIf(escape(u'<h1>A File</h1>') in body)
         root = self.getRootFolder()
         file = root['file']
-        self.assertEqual(file.contents, '<h1>A file</h1>')
+        self.assertEqual(file.open('r').read(), '<h1>A file</h1>')
         self.assertEqual(file.contentType, 'text/plain')
         
     def testIndex(self):

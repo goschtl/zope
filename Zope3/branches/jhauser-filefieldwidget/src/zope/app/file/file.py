@@ -628,6 +628,8 @@ class File(Persistent):
     def _setContents(self, contents):
         self._contents = contents
 
+    # TODO: How can we integrate security in this method
+    # We must support read and wirte permission on this method
     def open(self, mode='r'):
         """return a file-like object for reading or updating the file value.
         """
