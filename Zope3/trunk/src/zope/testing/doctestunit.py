@@ -94,6 +94,12 @@ def DocFileSuite(package, *paths):
     
     Each subsequent argument is a string specifying the file name of the
     doctest relative to the package.
+    
+    The suite contains one function test case (unittest.FunctionTestCase) for 
+    each doctest source file. The function name is derrived from the doctest
+    file name by replacing '.' characters with '_'. E.g. if the doctest file is
+    'utility.txt' and the package is foo.bar, the test function name will be 
+    'foo.bar.utility_txt'.
     """
     
     # It's not entirely obvious how to connection this single string
@@ -106,11 +112,14 @@ def DocFileSuite(package, *paths):
     suite = unittest.TestSuite()
     dir = os.path.split(package.__file__)[0]
     for path in paths:
+        from re import sub
+        funcName = path.replace('.', '_')
+        funcName = package.__name__ + '.' + sub('\\\|/', '.', funcName)
         path = os.path.join(dir, path)
         source = open(path).read()
         def runit(path=path, source=source):
             doctest._utest(t, path, source, path, 0)
-        runit = new.function(runit.func_code, runit.func_globals, path,
+        runit = new.function(runit.func_code, runit.func_globals, funcName,
                              runit.func_defaults, runit.func_closure)
         f = unittest.FunctionTestCase(runit,
                                       description="doctest from %s" % path)
