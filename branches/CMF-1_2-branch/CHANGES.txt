@@ -19,6 +19,16 @@ Somewhere over the rainbow
   - (__future__) Added DCWorkflow (through-the-web configurable
     workflows) to the core set of CMF products.
 
+1.2
+
+ Bugs Fixed
+
+  - Made links emitted by 'topic_view' play nice with virtual hosting
+    (Tracker #433).
+
+  - Made 'CMFCore/interfaces/__init__.py' non-empty, to remove suspicion
+    that the file was corrupted in the download (Tracker #426).
+
 1.2 beta (2001/12/11)
 
  New features
