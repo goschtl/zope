@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.4 2002/12/04 14:30:47 gvanrossum Exp $
+$Id: test_index.py,v 1.5 2002/12/04 20:03:48 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -116,16 +116,21 @@ class Test(PlacefulSetup, TestCase):
         self.assertAbsent(Sheila)
 
     def testBootstrap(self):
+        self.assertEqual(self.index.isSubscribed(), False)
+        self.assertAbsent(Bruce)
+        self.assertAbsent(Sheila)
+
         hub = ObjectHub()
         location = "/bruce"
         traverser = FakeTraverser(self.object, location)
         provideAdapter(None, ITraverser, lambda dummy: traverser)
         hubid = hub.register(location)
         self.index.subscribe(hub)
-        results, total = self.index.query(Bruce)
+        self.assertEqual(self.index.isSubscribed(), True)
         self.assertPresent(Bruce, hubid)
 
         self.index.unsubscribe(hub)
+        self.assertEqual(self.index.isSubscribed(), False)
         self.assertPresent(Bruce, hubid)
 
         self.object.texts = [Sheila]
