@@ -113,7 +113,7 @@ class Cache(object):
             n = na - self._size
             must_go = L[:n]
             L = L[n:]
-            for atime, oid, ob in L:
+            for atime, oid, ob in must_go:
                 self._ghostify(oid, ob)
 
         # ghostify old objects regardless of cache size
