@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testFormView.py,v 1.1 2002/06/25 13:34:58 faassen Exp $
+$Id: testFormView.py,v 1.2 2002/06/25 13:52:27 sf Exp $
 """
 
 
@@ -50,6 +50,13 @@ class ITestSchema(Interface):
     foo = Schema.Str(title="Foo")
     bar = Schema.Bool(title="Bar")
     
+class TestBrowserRequest(TestRequest):
+    """Since we have IBrowserViews, we need a request that works
+    for IBrowserView.
+    """
+    def getPresentationType(self):
+        return IBrowserView
+    
 class TestFormView(TestCase, PlacelessSetup):
     def setUp(self):
         PlacelessSetup.setUp(self)
@@ -64,18 +71,12 @@ class TestFormView(TestCase, PlacelessSetup):
         viewService = self.getViewService()
         view = FormView(None,TestBrowserRequest())
         widgets = view.getWidgetsForSchema(ITestSchema, 'normal')
-        # XXX order is undefined, so this only works by coincidence
-        # right now, until we have order
-        self.assert_(isinstance(widgets[0], TextWidget))
-        self.assert_(isinstance(widgets[1], CheckboxWidget))
+        # XXX order is undefined. Fix this when we have order.
+        self.assert_(isinstance(widgets[0], TextWidget) or
+            isinstance(widgets[1], TextWidget))
+        self.assert_(isinstance(widgets[0], CheckboxWidget) or
+            isinstance(widgets[1], CheckboxWidget))
 
-class TestBrowserRequest(TestRequest):
-    """Since we have IBrowserViews, we need a request that works
-    for IBrowserView.
-    """
-    def getPresentationType(self):
-        return IBrowserView
-    
 def test_suite():
     return TestSuite((
         makeSuite(TestFormView),
