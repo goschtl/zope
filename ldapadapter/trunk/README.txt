@@ -48,6 +48,13 @@ LDAPConnection
 Once you have an LDAP adapter, you can get an LDAP connection by calling
 connect() on the database adapter.
 
+If the server doesn't answer, you'll get an exception when you connect:
+
+  >>> LDAPAdapter('down', 389).connect('', '')
+  Traceback (most recent call last):
+  ...
+  ServerDown
+
 You can either use the default bind DN and password if these have been
 specified in the adapter:
 
@@ -56,6 +63,13 @@ specified in the adapter:
 Or you can provide specific binding parameters:
 
   >>> conn = da.connect('cn=Manager,dc=org', 'supersecret')
+
+If you provide an incorrect password, an exception is returned:
+
+  >>> conn = da.connect('cn=Bob', 'pretend')
+  Traceback (most recent call last):
+  ...
+  InvalidCredentials
 
 You can bind anonymously by using an empty DN and password:
 
@@ -66,6 +80,7 @@ The connection object that is returned implements ILDAPConnection:
   >>> from ldapadapter.interfaces import ILDAPConnection
   >>> verifyObject(ILDAPConnection, conn)
   True
+
 
 Commands
 ========
@@ -116,6 +131,13 @@ You can use a search filter to filter the entries returned:
   [(u'cn=bar,dc=test', {'cn': [u'bar']}),
    (u'cn=baz,dc=test', {'cn': [u'baz']})]
 
+Searching on an base that doesn't exist returns an exception:
+
+  >>> conn.search('dc=bzzt')
+  Traceback (most recent call last):
+  ...
+  NoSuchObject: dc=bzzt
+
 Modify
 ------
 
@@ -142,4 +164,6 @@ You can delete an entry.
 
   >>> conn.delete('cn=foo,dc=test')
   >>> conn.search('cn=foo,dc=test')
-  []
+  Traceback (most recent call last):
+  ...
+  NoSuchObject: cn=foo,dc=test
