@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testBrowserWidget.py,v 1.6 2002/12/04 09:58:46 jim Exp $
+$Id: testBrowserWidget.py,v 1.7 2002/12/19 19:54:08 jim Exp $
 """
 import unittest
 from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
@@ -73,7 +73,14 @@ class BrowserWidgetTest(unittest.TestCase):
         row = ''.join(self._widget.row().strip().split())
         self.assertEqual(row, '<td>%s</td><td>%s</td>' % (label, value))
 
+class TestWidget(BrowserWidget):
+
+    def _convert(self, v):
+        return v or None
+
 class Test(BrowserWidgetTest):
+
+    _WidgetFactory = TestWidget
 
     def test_showData(self):
 
@@ -94,6 +101,20 @@ class Test(BrowserWidgetTest):
 
         w.setData('Xfoo')
         self.assertEqual(w._showData(), 'foo')        
+
+    def test_haveData(self):
+        self.failUnless(self._widget.haveData())
+        del self._widget.request.form['field.foo']
+        self.failIf(self._widget.haveData())
+        self._widget.request.form['field.foo'] = u''
+        self.failIf(self._widget.haveData())
+
+    def test_showData_w_default(self):
+        field = Text(__name__ = 'foo', title = u"Foo Title", default=u"def")
+        request = TestRequest()
+        widget = self._WidgetFactory(field, request)
+        self.assertEqual(widget._showData(), u'def')
+        
 
 def test_suite():
     return unittest.makeSuite(Test)
