@@ -56,102 +56,102 @@ files is optional if the information in that file is not needed.
 Package Construction Information
 --------------------------------
 
-  The `PACKAGE.cfg` file can contain three distinct sections; the
-  ``<load>`` section identifies files that need to be loaded from
-  other sources, the ``<distribution>`` section is used to include
-  files in the distribution root, and the ``<collection>`` section is
-  used to include files in the component itself (even if the component
-  isn't a collection; this name is used since it usually will be a
-  collection).
+The `PACKAGE.cfg` file can contain three distinct sections; the
+``<load>`` section identifies files that need to be loaded from
+other sources, the ``<distribution>`` section is used to include
+files in the distribution root, and the ``<collection>`` section is
+used to include files in the component itself (even if the component
+isn't a collection; this name is used since it usually will be a
+collection).
 
-  The way `PACKAGE.cfg` is processed is straightforward, but warrants
-  explanation.  The process has the following steps:
+The way `PACKAGE.cfg` is processed is straightforward, but warrants
+explanation.  The process has the following steps:
 
-  1. A copy of the component is made that can be written to.  This is
-     the *workspace*.
+1. A copy of the component is made that can be written to.  This is
+   the *workspace*.
 
-  2. External references are loaded into the workspace.  It is
-     possible for this to overwrite portions of the component itself,
-     so specify the loads carefully.  This is based on the ``<load>``
-     section of `PACKAGE.cfg`.
+2. External references are loaded into the workspace.  It is
+   possible for this to overwrite portions of the component itself,
+   so specify the loads carefully.  This is based on the ``<load>``
+   section of `PACKAGE.cfg`.
 
-  3. Files from the workspace are copied into their final locations in
-     the component-specific portion of the distribution tree.
+3. Files from the workspace are copied into their final locations in
+   the component-specific portion of the distribution tree.
 
-     If `PACKAGE.cfg` contains a ``<collection>`` section, it is used
-     to specify which files should be copied into the
-     component-specific portion of the distribution tree.  Only files
-     listed will be copied.
+   If `PACKAGE.cfg` contains a ``<collection>`` section, it is used
+   to specify which files should be copied into the
+   component-specific portion of the distribution tree.  Only files
+   listed will be copied.
 
-     If the ``<collection>`` section is not present or is empty, all
-     files in the workspace are copied; directories are copied
-     recursively.  Files named `.cvsignore` and directories with names
-     of `CVS`, `RCS`, or `SCCS` are excluded.
+   If the ``<collection>`` section is not present or is empty, all
+   files in the workspace are copied; directories are copied
+   recursively.  Files named `.cvsignore` and directories with names
+   of `CVS`, `RCS`, or `SCCS` are excluded.
 
-     A copy of a file with a new name can be generated in the
-     distribution tree using a line like this in `PACKAGE.cfg`:
+   A copy of a file with a new name can be generated in the
+   distribution tree using a line like this in `PACKAGE.cfg`:
 
-       *source*   *destination*
+     *source*   *destination*
 
-     This causes the file or directory identified by *source* in the
-     workspace to be copied to the name *destination* in the
-     distribution tree.
+   This causes the file or directory identified by *source* in the
+   workspace to be copied to the name *destination* in the
+   distribution tree.
 
-     If *destination* is omitted, the destination is assumed to have
-     the same name as the source.  In this case, *source* can contain
-     POSIX globbing wildcards.
+   If *destination* is omitted, the destination is assumed to have
+   the same name as the source.  In this case, *source* can contain
+   POSIX globbing wildcards.
 
-  4. If the component being processed is the primary resource being
-     packaged, files from the workspace can be copied into the
-     distribution root.  This is done using the ``<distribution>``
-     section of `PACKAGE.cfg`.  This is most useful for including a
-     `README.txt` in the distribution root so people unpacking the
-     distribution can read about the package they've just unpacked.
+4. If the component being processed is the primary resource being
+   packaged, files from the workspace can be copied into the
+   distribution root.  This is done using the ``<distribution>``
+   section of `PACKAGE.cfg`.  This is most useful for including a
+   `README.txt` in the distribution root so people unpacking the
+   distribution can read about the package they've just unpacked.
 
-     Including a file in the distribution root is done using a basic
-     inclusion line of the form
+   Including a file in the distribution root is done using a basic
+   inclusion line of the form
 
-       *destination*   *source*
+     *destination*   *source*
 
-     Unlike inclusions in the ``<collection>`` section, the
-     *destination* is interpreted relative to the distribution root
-     rather than the component-specific portion of the distribution
-     tree.
+   Unlike inclusions in the ``<collection>`` section, the
+   *destination* is interpreted relative to the distribution root
+   rather than the component-specific portion of the distribution
+   tree.
 
-  As an example, this is the `PACKAGE.cfg` used for the ``ZConfig``
-  package::
+As an example, this is the `PACKAGE.cfg` used for the ``ZConfig``
+package::
 
-    # Load the license from an external source, so we don't have to keep a
-    # copy of it sitting around:
-    <load>
-      LICENSE.txt  http://cvs.zope.org/Zope3/ZopePublicLicense.txt?rev=HEAD
-    </load>
+  # Load the license from an external source, so we don't have to keep a
+  # copy of it sitting around:
+  <load>
+    LICENSE.txt  http://cvs.zope.org/Zope3/ZopePublicLicense.txt?rev=HEAD
+  </load>
 
-    # Add a few things to the distribution root.
-    <distribution>
-      doc
-      LICENSE.txt
-      NEWS.txt
-      README.txt
-    </distribution>
+  # Add a few things to the distribution root.
+  <distribution>
+    doc
+    LICENSE.txt
+    NEWS.txt
+    README.txt
+  </distribution>
 
-    # Specify what is included in the component.
-    <collection>
-      # Python modules from the package:
-      *.py
+  # Specify what is included in the component.
+  <collection>
+    # Python modules from the package:
+    *.py
 
-      # Child packages:
-      components
-      tests
+    # Child packages:
+    components
+    tests
 
-      # Other files and directories needed when distutils runs:
-      scripts
-    </collection>
+    # Other files and directories needed when distutils runs:
+    scripts
+  </collection>
 
-  What isn't obvious is that one of the files in the ``ZConfig``
-  package under revision control isn't included in either the
-  distribution root or the component-specific directory (the
-  `BRANCHES.txt` file in particular).
+What isn't obvious is that one of the files in the ``ZConfig``
+package under revision control isn't included in either the
+distribution root or the component-specific directory (the
+`BRANCHES.txt` file in particular).
 
 
 Embedded Package Definitions
