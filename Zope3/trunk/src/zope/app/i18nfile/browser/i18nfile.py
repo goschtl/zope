@@ -13,15 +13,17 @@
 ##############################################################################
 """I18n versions of several content objects.
 
-$Id: i18n.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
+$Id: i18nfile.py,v 1.2 2004/02/24 16:50:08 philikon Exp $
 """
 from zope.i18n.negotiator import negotiator
 
+__metaclass__ = type
 
 class I18nFileView:
 
     def __call__(self):
-        """Call the File"""
+        """Call the File
+        """
         request = self.request
         language = None
         if request is not None:

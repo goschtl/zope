@@ -11,27 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test I18nFile Content Component
-
-$Id: testi18nfile.py,v 1.5 2004/02/14 03:27:14 srichter Exp $
 """
+$Id: test_i18nfile.py,v 1.2 2004/02/24 16:50:09 philikon Exp $
+"""
+
 import unittest
 from zope.interface.verify import verifyClass
-from zope.app.content.file import FileChunk
 from zope.i18n.tests.testii18naware import TestII18nAware
-
+from zope.app.file.file import FileChunk
+from zope.app.i18nfile import I18nFile
 
 def sorted(list):
     list.sort()
     return list
 
-
-class I18nFileTest(TestII18nAware):
+class Test(TestII18nAware):
 
     def _makeFile(self, *args, **kw):
-        from zope.app.content.i18nfile import I18nFile
         return I18nFile(*args, **kw)
-
 
     def _createObject(self):
         obj = self._makeFile(defaultLanguage='fr')
@@ -39,13 +36,12 @@ class I18nFileTest(TestII18nAware):
         obj.setData('', 'en')
         return obj
 
-
     def testEmpty(self):
         file = self._makeFile()
+
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), '')
         self.assertEqual(file.getDefaultLanguage(), 'en')
-
 
     def testConstructor(self):
         file = self._makeFile('Foobar')
@@ -56,6 +52,7 @@ class I18nFileTest(TestII18nAware):
         self.assertEqual(file.getDefaultLanguage(), 'en')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['en'])
 
+
         file = self._makeFile('Foobar', 'text/plain')
         self.assertEqual(file.getContentType(), 'text/plain')
         self.assertEqual(file.getData(), 'Foobar')
@@ -63,6 +60,7 @@ class I18nFileTest(TestII18nAware):
         self.assertEqual(file.getData('nonexistent'), 'Foobar')
         self.assertEqual(file.getDefaultLanguage(), 'en')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['en'])
+
 
         file = self._makeFile(data='Foobar', contentType='text/plain')
         self.assertEqual(file.getContentType(), 'text/plain')
@@ -81,9 +79,9 @@ class I18nFileTest(TestII18nAware):
         self.assertEqual(file.getDefaultLanguage(), 'fr')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['fr'])
 
-
     def testMutators(self):
         file = self._makeFile()
+
         file.setContentType('text/plain')
         self.assertEqual(file.getContentType(), 'text/plain')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['en'])
@@ -111,8 +109,7 @@ class I18nFileTest(TestII18nAware):
         self.assertEqual(file.getSize(), len('Blah'))
         self.assertEqual(file.getSize('fr'), len('Barbaz'))
         self.assertEqual(file.getSize('lt'), len('Quux'))
-        self.assertEqual(sorted(file.getAvailableLanguages()),
-                         ['en', 'fr', 'lt'])
+        self.assertEqual(sorted(file.getAvailableLanguages()), ['en', 'fr', 'lt'])
 
         file.removeLanguage('lt')
         self.assertEqual(file.getContentType(), 'text/html')
@@ -134,11 +131,8 @@ class I18nFileTest(TestII18nAware):
         self.assertEqual(file.getData('lt'), 'Blah')
         self.assertEqual(file.getSize('lt'), len('Blah'))
 
-        self.assertRaises(ValueError,
-                          file.removeLanguage, file.getDefaultLanguage())
-
+        self.assertRaises(ValueError, file.removeLanguage, file.getDefaultLanguage())
         self.assertRaises(ValueError, file.setDefaultLanguage, 'nonexistent')
-
 
     def testLargeDataInput(self):
         file = self._makeFile()
@@ -163,11 +157,9 @@ class I18nFileTest(TestII18nAware):
         self.assertEqual(file.getSize('fr'), 6*100000)
         self.assertEqual(file.getData('fr'), 'Foobar'*100000)
 
-
     def testInterface(self):
-        from zope.app.interfaces.content.file import IFile
-        from zope.app.interfaces.content.i18n import II18nFile
-        from zope.app.content.i18nfile import I18nFile
+        from zope.app.file.interfaces import IFile
+        from zope.app.i18nfile.interfaces import II18nFile
         from zope.i18n.interfaces import II18nAware
 
         self.failUnless(IFile.isImplementedByInstancesOf(I18nFile))
@@ -178,7 +170,6 @@ class I18nFileTest(TestII18nAware):
 
         self.failUnless(II18nFile.isImplementedByInstancesOf(I18nFile))
         self.failUnless(verifyClass(II18nFile, I18nFile))
-
 
     def testSetDefaultLanguage(self):
         # getDefaultLanguage and getAvailableLanguages are tested in the
@@ -191,9 +182,8 @@ class I18nFileTest(TestII18nAware):
 
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(I18nFileTest),
-        ))
+    loader = unittest.TestLoader()
+    return loader.loadTestsFromTestCase(Test)
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+if __name__=='__main__':
+    unittest.TextTestRunner().run(test_suite())

@@ -11,20 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""File implementation that can have its content in multiple languages.
-
-$Id: i18nfile.py,v 1.6 2004/02/20 16:57:24 fdrake Exp $
+"""
+$Id: i18nfile.py,v 1.2 2004/02/24 16:50:07 philikon Exp $
 """
 
-import persistent
-from zope.app.interfaces.content.i18n import II18nFile
-from zope.app.content.file import File
+import persistence
 from zope.interface import implements
-
-# XXX We shouldn't be dependent on Browser here! Aaaargh.
 from zope.publisher.browser import FileUpload
+from zope.app.file.file import File
 
-class I18nFile(persistent.Persistent):
+from interfaces import II18nFile
+
+class I18nFile(persistence.Persistent):
     """I18n aware file object.  It contains a number of File objects --
     one for each language.
     """
@@ -32,8 +30,6 @@ class I18nFile(persistent.Persistent):
     implements(II18nFile)
 
     def __init__(self, data='', contentType=None, defaultLanguage='en'):
-        """ """
-
         self._data = {}
         self.defaultLanguage = defaultLanguage
         self.setData(data, language=defaultLanguage)
@@ -43,17 +39,14 @@ class I18nFile(persistent.Persistent):
         else:
             self.setContentType(contentType)
 
-
     def __len__(self):
         return self.getSize()
-
 
     def _create(self, data):
         """Create a new subobject of the appropriate type.  Should be
         overriden in subclasses.
         """
         return File(data)
-
 
     def _get(self, language):
         """Helper function -- return a subobject for a given language,
@@ -64,7 +57,6 @@ class I18nFile(persistent.Persistent):
         if not file:
             file = self._data[self.defaultLanguage]
         return file
-
 
     def _get_or_add(self, language, data=''):
         """Helper function -- return a subobject for a given language,
@@ -78,16 +70,13 @@ class I18nFile(persistent.Persistent):
             self._p_changed = 1
         return file
 
-
     def setContentType(self, contentType):
         '''See interface IFile'''
         self._contentType = contentType
 
-
     def getContentType(self):
         '''See interface IFile'''
         return self._contentType
-
 
     contentType = property(getContentType, setContentType)
 
@@ -104,11 +93,9 @@ class I18nFile(persistent.Persistent):
         if data is not None:
             self.setData(data, language)
 
-
     def getData(self, language=None):
         '''See interface IFile'''
         return self._get(language).getData()
-
 
     def setData(self, data, language=None):
         '''See interface IFile'''
@@ -142,4 +129,4 @@ class I18nFile(persistent.Persistent):
             raise ValueError, 'cannot remove default language (%s)' % language
         if self._data.has_key(language):
             del self._data[language]
-            self._p_changed = 1
+            self._p_changed = True

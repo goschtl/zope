@@ -11,26 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test I18nImage Content Component
-
-$Id: testi18nimage.py,v 1.5 2004/02/14 03:27:14 srichter Exp $
 """
+
+$Id: test_i18nimage.py,v 1.2 2004/02/24 16:50:09 philikon Exp $
+"""
+
 import unittest
 from zope.interface.verify import verifyClass
 from zope.i18n.tests.testii18naware import TestII18nAware
 
+from zope.app.i18nfile.i18nimage import I18nImage
 
 def sorted(list):
     list.sort()
     return list
 
-
-class I18nImageTest(TestII18nAware):
+class Test(TestII18nAware):
 
     def _makeImage(self, *args, **kw):
-        from zope.app.content.i18nimage import I18nImage
         return I18nImage(*args, **kw)
-
 
     def _createObject(self):
         obj = self._makeImage(defaultLanguage='fr')
@@ -38,9 +37,9 @@ class I18nImageTest(TestII18nAware):
         obj.setData('', 'en')
         return obj
 
-
     def testEmpty(self):
         file = self._makeImage()
+
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), '')
         self.assertEqual(file.getDefaultLanguage(), 'en')
@@ -63,12 +62,10 @@ class I18nImageTest(TestII18nAware):
         self.assertEqual(file.getDefaultLanguage(), 'fr')
         self.assertEqual(sorted(file.getAvailableLanguages()), ['fr'])
 
-
     def testMutators(self):
         # XXX What's the point of this test? Does it test that data
         # contents override content-type? Or not? If the former, then
         # real image data should be used.
-
         file = self._makeImage()
 
         file.setContentType('text/plain')
@@ -137,11 +134,9 @@ class I18nImageTest(TestII18nAware):
         file.setData(pngHdr, 'en')
         self.assertEqual(file.getContentType(), 'image/png')
 
-
     def testInterface(self):
-        from zope.app.content.image import IImage
-        from zope.app.content.i18nimage import I18nImage
-        from zope.app.interfaces.content.i18n import II18nFile, II18nImage
+        from zope.app.file.interfaces import IImage
+        from zope.app.i18nfile.interfaces import II18nFile
         from zope.i18n.interfaces import II18nAware
 
         self.failUnless(IImage.isImplementedByInstancesOf(I18nImage))
@@ -153,23 +148,19 @@ class I18nImageTest(TestII18nAware):
         self.failUnless(II18nFile.isImplementedByInstancesOf(I18nImage))
         self.failUnless(verifyClass(II18nFile, I18nImage))
 
-        self.failUnless(II18nImage.isImplementedByInstancesOf(I18nImage))
-        self.failUnless(verifyClass(II18nImage, I18nImage))
-
-
     def testSetDefaultLanguage(self):
         # getDefaultLanguage and getAvailableLanguages are tested in the
         # above tests
+
         file = self._makeImage()
+
         file.setData('', language='lt')
         file.setDefaultLanguage('lt')
         self.assertEqual(file.getDefaultLanguage(), 'lt')
 
-
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(I18nImageTest),
-        ))
+    loader = unittest.TestLoader()
+    return loader.loadTestsFromTestCase(Test)
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+if __name__=='__main__':
+    unittest.TextTestRunner().run(test_suite())

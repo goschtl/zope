@@ -11,21 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces for internationalized versions of content components. 
-
-$Id: i18n.py,v 1.1 2004/02/14 03:27:15 srichter Exp $
 """
-from zope.app.content.image import IImage
-from zope.app.interfaces.content.file import IFile
-from zope.i18n.interfaces import II18nAware
+$Id: interfaces.py,v 1.2 2004/02/24 16:50:07 philikon Exp $
+"""
 
+from zope.i18n.interfaces import II18nAware
+from zope.app.file.interfaces import IFile, IImage
 
 class II18nFile(IFile, II18nAware):
     """I18n aware file interface."""
 
     def removeLanguage(language):
-        '''Remove translated content for a given language.'''
-
+        """Remove translated content for a given language.
+        """
 
 class II18nImage(II18nFile, IImage):
     """I18n aware image interface."""

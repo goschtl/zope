@@ -1,0 +1,117 @@
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    i18n_domain='zope'
+    >
+
+  <!-- Module alias for backward compat
+       Will go away once we have a conversion script -->
+
+  <modulealias
+      module=".i18nfile"
+      alias="zope.app.content.i18nfile"
+      />
+
+  <modulealias
+      module=".interfaces"
+      alias="zope.app.interfaces.content.i18nfile"
+      />
+
+  <modulealias
+      module=".i18nimage"
+      alias="zope.app.content.i18nimage"
+      />
+
+  <modulealias
+      module=".interfaces"
+      alias="zope.app.interfaces.content.i18nimage"
+      />
+
+
+
+  <!-- setting up content types -->
+
+  <interface 
+      interface=".i18nfile.II18nFile" 
+      type="zope.app.interfaces.content.IContentType"
+      />
+
+  <interface 
+      interface=".interfaces.II18nImage" 
+      type="zope.app.interfaces.content.IContentType"
+      />
+
+
+  <!-- content classes -->
+
+  <content class=".i18nfile.I18nFile">
+    <factory
+        id="I18nFile"
+        permission="zope.ManageContent"
+        title="I18n File"
+        description="An Internationalized File"
+        />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.file.interfaces.IReadFile"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.file.interfaces.IWriteFile"
+        />
+
+    <require
+        permission="zope.View"
+        attributes="getDefaultLanguage getAvailableLanguages"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        attributes="setDefaultLanguage removeLanguage"
+        />
+
+    <implements
+       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+       />
+  </content>
+
+  <content class=".i18nimage.I18nImage">
+    <factory
+        id="I18nImage"
+        permission="zope.ManageContent"
+        title="I18n Image"
+        description="An Internationalized Image"
+        />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.file.interfaces.IReadFile"
+        attributes="getImageSize"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.file.interfaces.IWriteFile"
+        />
+
+    <require
+        permission="zope.View"
+        attributes="getDefaultLanguage getAvailableLanguages"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        attributes="setDefaultLanguage removeLanguage" />
+
+    <implements
+       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+       />
+  </content>
+
+
+  <!-- include browser package -->
+
+  <include package=".browser" />
+
+</configure>

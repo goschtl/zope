@@ -13,11 +13,13 @@
 ##############################################################################
 """Define view component for image editing.
 
-$Id: i18nimage.py,v 1.5 2003/08/06 14:41:41 srichter Exp $
+$Id: i18nimage.py,v 1.2 2004/02/24 16:50:08 philikon Exp $
 """
-from zope.app.browser.content.image import ImageData
 from zope.i18n.negotiator import negotiator
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.file.browser.image import ImageData
+
+__metaclass__ = type
 
 class I18nImageEdit:
 
