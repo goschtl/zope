@@ -74,7 +74,7 @@ msgstr "hallo"
         self._domain = TranslationDomain()
         self._domain.domain = 'default'
         ztapi.provideUtility(IFactory, Factory(MessageCatalog),
-                             'Message Catalog')
+                             'zope.app.MessageCatalog')
 
     def testImportExport(self):
         imp = GettextImportFilter(self._domain)

@@ -198,7 +198,7 @@ class TestTranslationDomain(TestITranslationDomain,
         setup.addUtility(self.sm, 'default', ITranslationDomain, self._domain)
         
         ztapi.provideUtility(IFactory, Factory(MessageCatalog),
-                             'Message Catalog')
+                             'zope.app.MessageCatalog')
 
 
     def _getTranslationDomain(self):
