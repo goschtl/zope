@@ -17,65 +17,67 @@
 <body>
 <div metal:fill-slot="body">
 
-<form action="@@index.html" method="get">
-  <table class="ContentListing">
-  
-    <caption>Folder Contents
-             <a href="@@addForm.html"> Add... </a> </caption>
-  
-    <tbody>
-  
-      <tr>
-	<td class="ContentIcon"><br /> </td>
-	<th class="ContentTitle"></th>
-      </tr>
-  
-      <!--
-	** listContentInfo returns a sequence of mappings, containing:
-	**   'id'    : the ID of the contained within the container
-	**   'url'   : the absolute URL of the contained object
-	**   'title' : the title of the contained object
-	**   'icon'  : the icon img tag for the contained object
-		       (may be None)
-	-->
+<div>Folder Contents <a href="@@addForm.html"> Add... </a> </div>
 
-      <tr tal:repeat="info view/listContentInfo">
-  
-	<td class="ContentSelect">
-	  <input type="checkbox" name="ids:list" value="id"
-		 tal:attributes="value info/id" />
-	</td>
-  
-	<td class="ContentIcon" tal:content="structure info/icon|default">
-	</td>
-  
-	<td class="ContentTitle">
-	  <a href="subfolder_id"
-	     tal:attributes="href string:${info/url}"
-	     tal:content="info/title"
-	  >Folder Title or ID here</a>
-	</td>
-  
-      </tr>
-  
-      <tr tal:condition="nothing">
-  
-	<td class="ContentIcon">
-	  <img alt="Document" src="../../ZMI/www/document_icon.gif" />
-	</td>
-  
-	<td class="ContentTitle">
-	   <a href="document_id">Document Title or ID here</a>
-	</td>
-  
-      </tr>
-    </tbody>
-  
-  </table>
-  <br />
 
-  <input type="submit" name="removeObjects:method" value="Delete"
-         i18nXXX:attributes="value string:menu_delete_button"> 
+  <form name="folderContentsForm"
+          method="get"
+          action="@@index.html" 
+          tal:define="folder_contents view/listContentInfo">
+
+     <metal:block tal:condition="folder_contents">
+     
+            <table id="sortable"
+                   class="listing"
+                   summary="Content listing"
+                   cellpadding="0" cellspacing="0"
+                   metal:define-macro="folder_listing">
+    
+                <thead> 
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>&nbsp;</th>
+			<th>Title <img src="arrowUp.gif" alt="Sort" height="6" width="9" /></th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                <metal:block tal:repeat="item folder_contents"> 
+                    <tr tal:define="oddrow repeat/item/odd;
+		                    url item/url"
+                      tal:attributes="class python:oddrow and 'even' or 'odd'" > 
+    
+                        <td>
+                            <input type="checkbox" class="noborder" name="ids:list" id="#"
+                                   value="#"
+                                   tal:attributes="value item/id;
+                                                   id python: 'cb_'+item['id'];
+                                                   checked request/ids_checked|nothing;"/>
+                        </td>
+                        <td> 
+			     <a href="#" tal:attributes="href url"
+			                 tal:content="structure item/icon|default">
+                            </a> 
+                        </td>
+                        <td> 
+                            <a href="#" tal:attributes="href url">
+			     <span tal:replace="item/id">Id</span>
+			     <span tal:condition="item/title"
+			           tal:replace="string: (${item/title})">(Title)</span>
+                            </a> 
+                        </td>
+
+                    </tr>
+                </metal:block>
+                </tbody> 
+            </table>
+	    <br />
+
+	    <input type="submit" name="removeObjects:method" value="Delete"
+	           i18nXXX:attributes="value string:menu_delete_button"> 
+
+	    </metal:block>
+
 </form>
 
 <p><a href="./++etc++Services/"
