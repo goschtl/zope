@@ -13,14 +13,15 @@
 ##############################################################################
 """Unit tests for Dependable class.
 
-$Id: test_dependable.py,v 1.3 2003/06/12 19:28:08 gvanrossum Exp $
+$Id: test_dependable.py,v 1.4 2003/09/21 17:33:35 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-class C:pass
+class C:
+    pass
 
 class Test(PlacelessSetup, TestCase):
 
