@@ -15,44 +15,25 @@
 
 See Adapter class.
 
-$Id: _flatten.py,v 1.4 2003/05/01 19:35:44 faassen Exp $
+$Id: _flatten.py,v 1.5 2003/05/03 16:35:29 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
+from zope.interface import Interface, InterfaceSpecification
+
 def _flatten(implements, include_None=0):
-    """Flatten an implements spec to a list of interfaces
 
-    The list includes all base interfaces of the interface(s) in
-    implements. Each interface is listed only once and more
-    specific interfaces are listed before less specific
-    interfaces. This is similar to Python 2.2's MRO.
-    """
-    interfaces = []
-    _flatten_recurse(implements, interfaces)
-    interfaces.reverse()
-    seen = {}
-    flattened = []
-    for interface in interfaces:
-        if interface not in seen:
-            seen[interface] = 1
-            flattened.append(interface)
-    flattened.reverse()
+    try:
+        r = implements.flattened()
+    except AttributeError:
+        if implements is None:
+            r=()
+        else:
+            r = InterfaceSpecification(implements).flattened()
 
-    if include_None and None not in flattened:
-        flattened.append(None)
+    if not include_None:
+        return r
 
-    return flattened
-
-def _flatten_recurse(implements, list):
-    if implements.__class__ == tuple:
-        for i in implements:
-            _flatten_recurse(i, list)
-    else:
-        _flatten_recurse_interface(implements, list)
-
-def _flatten_recurse_interface(interface, list):
-    list.append(interface)
-    if interface is None:
-        return
-    for i in interface.__bases__:
-        _flatten_recurse_interface(i, list)
+    r = list(r)
+    r.append(None)
+    return r
