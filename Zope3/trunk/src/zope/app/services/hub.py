@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.15 2003/06/07 09:56:19 stevea Exp $
+$Id: hub.py,v 1.16 2003/07/09 00:57:19 srichter Exp $
 """
 
 from __future__ import generators
@@ -27,12 +27,14 @@ from zodb.btrees.OIBTree import OIBTree
 
 from zope.app.traversing import getPath, canonicalPath
 
-from zope.component import getAdapter
+from zope.component import getAdapter, getService
 from zope.exceptions import NotFoundError
 from zope.context import ContextMethod
 from zope.proxy import removeAllProxies
+from zope.app.services.servicenames import EventSubscription
 
 from zope.app.interfaces.traversing import ITraverser
+from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectEvent
 from zope.app.interfaces.event import IObjectMovedEvent, IObjectCreatedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
@@ -172,7 +174,7 @@ class ObjectHub(ServiceSubscriberEventChannel):
     # concerned, and if it doesn't know how to do something, it won't
     # ask anything else to try.  Everything else is YAGNI for now.
 
-    implements(IObjectHub, ISimpleService)
+    implements(IObjectHub, ISimpleService, IAddNotifiable, IDeleteNotifiable)
 
     def __init__(self):
         ServiceSubscriberEventChannel.__init__(self)
@@ -181,6 +183,18 @@ class ObjectHub(ServiceSubscriberEventChannel):
         self.__hubid_to_path = IOBTree()
         # unicode pathslash --> int
         self.__path_to_hubid = OIBTree()
+
+    def afterAddHook(self, hub, container):
+        '''See interface IAddNotifiable'''
+        events = getService(hub, EventSubscription)
+        events.subscribe(hub, IObjectModifiedEvent)
+        events.subscribe(hub, IObjectRemovedEvent)
+
+    def beforeDeleteHook(self, hub, container):
+        '''See interface IDeleteNotifiable'''
+        events = getService(hub, EventSubscription)
+        events.unsubscribe(hub, IObjectModifiedEvent)
+        events.unsubscribe(hub, IObjectRemovedEvent)
 
     def notify(wrapped_self, event):
         '''See interface ISubscriber'''
