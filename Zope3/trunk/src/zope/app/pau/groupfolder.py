@@ -136,10 +136,11 @@ class GroupFolder(BTreeContainer):
 
     def search(self, query, start=None, batch_size=None):
         """ Search for groups"""
-        search = query.get('search').lower()
+        search = query.get('search')
         if search is not None:
             i = 0
             n = 0
+            search = search.lower()
             for id, groupinfo in self.items():
                 if (search in groupinfo.title.lower() or
                     search in groupinfo.description.lower()):

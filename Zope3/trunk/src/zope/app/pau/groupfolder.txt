@@ -157,3 +157,8 @@ simple string searches on group titles and descriptions.
 
   >>> list(groups.search({'search': 'two'}))
   [u'group.G2']
+
+If you don't supply a search key, no results will be returned:
+
+  >>> list(groups.search({}))
+  []
