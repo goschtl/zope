@@ -13,11 +13,10 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.9 2004/05/07 19:46:13 garrett Exp $
+$Id: widget.py,v 1.10 2004/05/11 11:16:28 garrett Exp $
 """
 import re, cgi
 import traceback
-from warnings import warn
 from xml.sax.saxutils import quoteattr
 
 from zope.interface import implements
@@ -26,149 +25,217 @@ from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.form import Widget
+from zope.app.form import Widget, InputWidget
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.interfaces import IBrowserWidget
+from zope.app.form.browser.interfaces import ISimpleInputWidget
 from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class BrowserWidget(Widget, BrowserView):
-    """A field widget that knows how to display itself as HTML.
+    """Base class for browser widgets.
 
-    When we generate labels, titles, descriptions, and errors, the
-    labels, titles, and descriptions are translated and the
-    errors are rendered with the view machinery, so we need to set up
-    a lot of machinery to support translation and views:
+    >>> setUp()
 
-	  >>> setUp() # now we have to set up an error view...
-	  >>> from zope.app.form.interfaces import IWidgetInputError
-	  >>> from zope.app.publisher.browser import BrowserView
-	  >>> from cgi import escape
-	  >>> class SnippetErrorView(BrowserView):
-	  ...     implements(IWidgetInputErrorView)
-	  ...     def snippet(self):
-	  ...         return escape(self.context.errors[0])
-	  ...
-	  >>> ztapi.browserViewProviding(IWidgetInputError, SnippetErrorView,
-	  ...                            IWidgetInputErrorView)
-	  >>> from zope.publisher.browser import TestRequest
-	
-	  >>> from zope.schema import Field
-	  >>> import re
-	  >>> isFriendly=re.compile(".*hello.*").match
-	  >>> field = Field(__name__='foo', title=u'Foo', constraint=isFriendly)
-	  >>> request = TestRequest(form={
-	  ...     'field.foo': u'hello\\r\\nworld',
-	  ...     'baz.foo': u'bye world'})
-	  >>> widget = BrowserWidget(field, request)
+    The class provides some basic functionality common to all browser widgets.
+
+    Browser widgets have a 'required' attribute, which indicates whether or
+    not the underlying field requires input. By default, the widget's required
+    attribute is equal to the field's required attribute:
+
+        >>> from zope.schema import Field
+        >>> from zope.publisher.browser import TestRequest
+        >>> field = Field(required=True)
+        >>> widget = BrowserWidget(field, TestRequest())
+        >>> widget.required
+        True
+        >>> field.required = False
+        >>> widget = BrowserWidget(field, TestRequest())
+        >>> widget.required
+        False
+
+    However, the two 'required' values are independent of one another:
+
+        >>> field.required = True
+        >>> widget.required
+        False
+
+    Browser widgets have an error state, which can be rendered in a form using
+    the error() method. The error method delegates the error rendering to a
+    view that is registered as providing IWidgetInputErrorView. To illustrate,
+    we can create and register a simple error display view:
+
+        >>> from zope.app.form.interfaces import IWidgetInputError
+        >>> class SnippetErrorView:
+        ...     implements(IWidgetInputErrorView)
+        ...     def __init__(self, context, request):
+        ...         self.context = context
+        ...     def snippet(self):
+        ...         return "The error: " + str(self.context.errors)
+        >>> ztapi.browserViewProviding(IWidgetInputError, SnippetErrorView,
+        ...                            IWidgetInputErrorView)
+
+    Whever an error occurs, widgets should set _error:
+
+        >>> widget._error = WidgetInputError('foo', 'Foo', ('Err1', 'Err2'))
+
+    so that it can be displayed using the error() method:
+
+        >>> widget.error()
+        "The error: ('Err1', 'Err2')"
+
+    >>> tearDown()
+
+    """
+
+    implements(IBrowserWidget)
+
+    _error = None
+
+    def __init__(self, context, request):
+        super(BrowserWidget, self).__init__(context, request)
+        self.required = context.required
+
+    def error(self):
+        if self._error:
+            return zapi.getViewProviding(self._error, IWidgetInputErrorView,
+                                         self.request).snippet()
+        return ""
+
+    def hidden(self):
+        return ""
+
+
+class SimpleInputWidget(BrowserWidget, InputWidget):
+    """A widget that uses a single HTML form element to capture user input.
+
+    >>> setUp()
+
+    Simple input widgets read input from a browser form. To illustrate, we
+    will use a test request with two form values:
+
+        >>> from zope.publisher.browser import TestRequest
+        >>> request = TestRequest(form={
+        ...     'field.foo': u'hello\\r\\nworld',
+        ...     'baz.foo': u'bye world'})
+
+    Like all widgets, simple input widgets are a view to a field context:
+
+        >>> from zope.schema import Field
+        >>> field = Field(__name__='foo', title=u'Foo')
+        >>> widget = SimpleInputWidget(field, request)
 
     Widgets are named using their field's name:
 
-      >>> widget.name
-      'field.foo'
+        >>> widget.name
+        'field.foo'
 
     The default implementation for the widget label is to use the field title:
 
-      >>> widget.label
-      u'Foo'
+        >>> widget.label
+        u'Foo'
 
     According the request, the widget has input because 'field.foo' is
     present:
 
-      >>> widget.hasInput()
-      True
-      >>> widget.getInputValue()
-      u'hello\\r\\nworld'
+        >>> widget.hasInput()
+        True
+        >>> widget.getInputValue()
+        u'hello\\r\\nworld'
 
     Widgets maintain an error state, which is used to communicate invalid
     input or other errors:
 
-      >>> widget._error is None
-      True
-      >>> widget.error()
-      ''
+        >>> widget._error is None
+        True
+        >>> widget.error()
+        ''
 
     setRenderedValue is used to specify the value displayed by the widget to
     the user. This value, however, is not the same as the input value, which
     is read from the request:
 
-      >>> widget.setRenderedValue('Hey\\nfolks')
-      >>> widget.getInputValue()
-      u'hello\\r\\nworld'
-      >>> widget._error is None
-      True
-      >>> widget.error()
-      ''
+        >>> widget.setRenderedValue('Hey\\nfolks')
+        >>> widget.getInputValue()
+        u'hello\\r\\nworld'
+        >>> widget._error is None
+        True
+        >>> widget.error()
+        ''
 
     You can modify the prefix used to create the widget name as follows:
 
-      >>> widget.setPrefix('baz')
-      >>> widget.name
-      'baz.foo'
+        >>> widget.setPrefix('baz')
+        >>> widget.name
+        'baz.foo'
 
-    The modification of the widget's name changes the input the widget reads
-    from the request. Instead of reading input from 'field.foo', the widget
-    now reads input from 'baz.foo'. In this case, the input from 'baz.foo'
-    (see request above) violates the isFriendly constraint on field 'foo':
+    getInputValue always returns a value that can legally be assigned to
+    the widget field. To illustrate widget validation, we can add a constraint
+    to its field:
 
-      >>> widget.error()
-      ''
-      >>> try:
-      ...     widget.getInputValue()
-      ... except WidgetInputError:
-      ...     print widget._error.errors
-      bye world
-      >>> widget.error()
-      u'bye world'
-      >>> widget._error = None # clean up for next round of tests
+        >>> import re
+        >>> field.constraint = re.compile(".*hello.*").match
 
-    Changing the widget prefix/name, again, changes the input the widget uses
-    from the request:
+    Because we modified the widget's name, the widget will now read different
+    different form input:
 
-      >>> widget.setPrefix('test')
-      >>> widget.name
-      'test.foo'
-      >>> widget._error is None
-      True
-      >>> widget.error()
-      ''
-      >>> widget.hasInput()
-      False
-      >>> widget.getInputValue()
-      Traceback (most recent call last):
-      ...
-      MissingInputError: ('test.foo', u'Foo', None)
+        >>> request.form[widget.name]
+        u'bye world'
 
-    Whether or not the widget requires input depends on its field's required
-    attribute:
+    This input violates the new field constraint and therefore causes an
+    error when getInputValue is called:
 
-      >>> field.required
-      True
-      >>> widget.required
-      True
-      >>> field.required = False
-      >>> widget.request.form['test.foo'] = u''
-      >>> widget.required
-      False
-      >>> widget.getInputValue() == field.missing_value
-      True
-      >>> widget._error is None
-      True
-      >>> widget.error()
-      ''
+        >>> widget.getInputValue()
+        Traceback (most recent call last):
+        WidgetInputError: ('foo', u'Foo', bye world)
+
+    Simple input widgets require that input be available in the form request.
+    If input is not present, a MissingInputError is raised:
+
+        >>> del request.form[widget.name]
+        >>> widget.getInputValue()
+        Traceback (most recent call last):
+        MissingInputError: ('baz.foo', u'Foo', None)
+
+    A MissingInputError indicates that input is missing from the form
+    altogether. It does not indicate that the user failed to provide a value
+    for a required field. The MissingInputError above was caused by the fact
+    that the form does have any input for the widget:
+
+        >>> request.form[widget.name]
+        Traceback (most recent call last):
+        KeyError: 'baz.foo'
+
+    If a user fails to provide input for a field, the form will contain the
+    input provided by the user, namely an empty string:
+
+        >>> request.form[widget.name] = ''
+
+    In such a case, if the field is required, a WidgetInputError will be
+    raised on a call to getInputValue:
+
+        >>> field.required = True
+        >>> widget.getInputValue()
+        Traceback (most recent call last):
+        WidgetInputError: ('foo', u'Foo', )
+
+    However, if the field is not required, the empty string will be converted
+    by the widget into the field's 'missing_value' and read as a legal field
+    value:
+
+        >>> field.required = False
+        >>> widget.getInputValue() is field.missing_value
+        True
 
     >>> tearDown()
     """
 
-    implements(IBrowserWidget)
+    implements(ISimpleInputWidget)
 
     tag = u'input'
     type = u'text'
     cssClass = u''
     extra = u''
     _missing = u''
-    _error = None
-
-    required = property(lambda self: self.context.required)
 
     def hasInput(self):
         """See IWidget.hasInput.
@@ -183,16 +250,7 @@ class BrowserWidget(Widget, BrowserView):
         """
         return self.name in self.request.form
 
-    def hasValidInput(self):
-        """See IWidget."""
-        try:
-            self.getInputValue()
-            return True
-        except WidgetInputError:
-            return False
-
     def getInputValue(self):
-        """See IWidget."""
         self._error = None
         field = self.context
 
@@ -202,7 +260,7 @@ class BrowserWidget(Widget, BrowserView):
             raise MissingInputError(self.name, self.label, None)
 
         # convert input to suitable value - may raise conversion error
-        value = self._convert(input)
+        value = self._toFieldValue(input)
 
         # allow missing values only for non-required fields
         if value == field.missing_value and not field.required:
@@ -217,9 +275,6 @@ class BrowserWidget(Widget, BrowserView):
             raise self._error
         return value
 
-    def validate(self):
-        self.getInputValue()
-
     def applyChanges(self, content):
         field = self.context
         value = self.getInputValue()
@@ -229,7 +284,7 @@ class BrowserWidget(Widget, BrowserView):
         else:
             return False
 
-    def _convert(self, input):
+    def _toFieldValue(self, input):
         """Converts input to a value appropriate for the field type.
 
         Widgets for non-string fields should override this method to
@@ -246,7 +301,7 @@ class BrowserWidget(Widget, BrowserView):
         else:
             return input
 
-    def _unconvert(self, value):
+    def _toFormValue(self, value):
         """Converts a field value to a string used as an HTML form value.
 
         This method is used in the default rendering of widgets that can
@@ -259,9 +314,8 @@ class BrowserWidget(Widget, BrowserView):
         else:
             return value
 
-    def _showData(self):
-        """Returns a value suitable for use as an HTML form value."""
-
+    def _getFormValue(self):
+        """Returns a value suitable for use in an HTML form."""
         if not self._renderedValueSet():
             if self.hasInput():
                 try:
@@ -272,11 +326,10 @@ class BrowserWidget(Widget, BrowserView):
                 value = self._getDefault()
         else:
             value = self._data
-
-        return self._unconvert(value)
+        return self._toFormValue(value)
 
     def _getDefault(self):
-        """Return the default value for this widget."""
+        """Returns the default value for this widget."""
         return self.context.default
 
     def __call__(self):
@@ -284,7 +337,7 @@ class BrowserWidget(Widget, BrowserView):
                              type=self.type,
                              name=self.name,
                              id=self.name,
-                             value=self._showData(),
+                             value=self._getFormValue(),
                              cssClass=self.cssClass,
                              extra=self.extra)
 
@@ -293,34 +346,18 @@ class BrowserWidget(Widget, BrowserView):
                              type='hidden',
                              name=self.name,
                              id=self.name,
-                             value=self._showData(),
+                             value=self._getFormValue(),
                              cssClass=self.cssClass,
                              extra=self.extra)
-
-    def render(self, value):
-        warn("The widget render method is deprecated",
-            DeprecationWarning, 2)
-
-        self.setRenderedValue(value)
-        return self()
-
-    def renderHidden(self, value):
-        warn("The widget render method is deprecated",
-            DeprecationWarning, 2)
-        self.setRenderedValue(value)
-        return self.hidden()
-
-    def error(self):
-        if self._error:
-            return zapi.getViewProviding(self._error, IWidgetInputErrorView,
-                                         self.request).snippet()
-        return ""
-
 
 class DisplayWidget(BrowserWidget):
 
     def __call__(self):
-        return self._showData()
+        if self._renderedValueSet():
+            return self._data
+        else:
+            return self.context.default
+
 
 # XXX Note, some HTML quoting is needed in renderTag and renderElement.
 def renderTag(tag, **kw):

@@ -12,10 +12,87 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.4 2004/05/07 19:39:44 garrett Exp $
+$Id: interfaces.py,v 1.5 2004/05/11 11:16:28 garrett Exp $
 """
 from zope.interface import Interface
-from zope.app.form.interfaces import IWidget
+from zope.schema import TextLine, Bool
+from zope.app.form.interfaces import IWidget, IInputWidget
+
+
+class IBrowserWidget(IWidget):
+    """A widget for use in a web browser UI."""
+
+    def __call__():
+        """Render the widget."""
+
+    def hidden():
+        """Render the widget as a hidden field."""
+
+    def error():
+        """Render the validation error for the widget, or return
+        an empty string if no error"""
+        
+        
+class ISimpleInputWidget(IBrowserWidget, IInputWidget):
+    """A widget that uses a single HTML element to collect user input."""
+    
+    tag = TextLine(
+        title=u'Tag',
+        description=u'The widget HTML element.')
+        
+    type = TextLine(
+        title=u'Type',
+        description=u'The element type attribute',
+        required=False)
+        
+    cssClass = TextLine(
+        title=u'CSS Class',
+        description=u'The element class attribute.',
+        required=False)
+        
+    extra = TextLine(
+        title=u'Extra',
+        description=u'The element extra attribute.',
+        required=False)
+        
+        
+class ITextBrowserWidget(ISimpleInputWidget):
+    
+    convert_missing_value = Bool(
+        title=u'Translate Input Value',
+        description=
+            u'If True, an empty string is converted to field.missing_value.',
+        default=True)
+    
+
+class IFormCollaborationView(Interface):
+    """Views that collaborate to create a single form.
+
+    When a form is applied, the changes in the form need to
+    be applied to individual views, which update objects as
+    necessary.
+    """
+
+    def __call__():
+        """Render the view as a part of a larger form.
+
+        Form input elements should be included, prefixed with the
+        prefix given to setPrefix.
+
+        'form' and 'submit' elements should not be included. They
+        will be provided for the larger form.
+        """
+
+    def setPrefix(prefix):
+        """Set the prefix used for names of input elements
+
+        Element names should begin with the given prefix,
+        followed by a dot.
+        """
+
+    def update():
+        """Update the form with data from the request."""
+
 
 class IAddFormCustomization(Interface):
     """API for add form customization.
@@ -74,50 +151,6 @@ class IAddFormCustomization(Interface):
         The default implementation returns self.context.nextURL(),
         i.e. it delegates to the IAdding view.
         """
-
-class IBrowserWidget(IWidget):
-    """A widget for use in a web browser UI."""
-
-    def __call__():
-        """Render the widget."""
-
-    def hidden():
-        """Render the widget as a hidden field."""
-
-    def error():
-        """Render the validation error for the widget, or return
-        an empty string if no error"""
-
-
-class IFormCollaborationView(Interface):
-    """Views that collaborate to create a single form.
-
-    When a form is applied, the changes in the form need to
-    be applied to individual views, which update objects as
-    necessary.
-    """
-
-    def __call__():
-        """Render the view as a part of a larger form.
-
-        Form input elements should be included, prefixed with the
-        prefix given to setPrefix.
-
-        'form' and 'submit' elements should not be included. They
-        will be provided for the larger form.
-        """
-
-    def setPrefix(prefix):
-        """Set the prefix used for names of input elements
-
-        Element names should begin with the given prefix,
-        followed by a dot.
-        """
-
-    def update():
-        """Update the form with data from the request."""
-
-
 class IVocabularyQueryView(Interface):
     """View support for IVocabularyQuery objects.
 
