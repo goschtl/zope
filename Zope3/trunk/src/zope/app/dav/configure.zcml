@@ -11,6 +11,14 @@
       allowed_attributes="PROPFIND setDepth getDepth" />
   
   <view
+      for="*"
+      name="PROPPATCH"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      factory=".proppatch.PROPPATCH"
+      permission="zope.ManageContent"
+      allowed_attributes="PROPPATCH" />
+  
+  <view
       for="zope.app.http.interfaces.INullResource"
       name="MKCOL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
@@ -99,7 +107,23 @@
       for="*"
       permission="zope.Public"
       factory=".adapter.DAVSchemaAdapter" />
-  
+
+  <!-- XXX: This interface needs to be split up so we can apply seperate 
+       permissions for reading and writing -->
+  <adapter
+      factory=".opaquenamespaces.DAVOpaqueNamespacesAdapter"
+      provides=".opaquenamespaces.IDAVOpaqueNamespaces"
+      for="zope.app.annotation.interfaces.IAnnotatable"
+      trusted="true"
+      />
+      
+  <class class=".opaquenamespaces.DAVOpaqueNamespacesAdapter">
+    <require
+        permission="zope.ManageContent"
+        interface=".opaquenamespaces.IDAVOpaqueNamespaces"
+        />
+  </class>
+
   <dav:provideInterface
       for="http://purl.org/dc/1.1"
       interface="zope.app.dublincore.interfaces.IZopeDublinCore" />
