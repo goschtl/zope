@@ -50,16 +50,16 @@
       </div>
       <br/><br/>
       <div class="row">
-        <div class="controls"><hr>
-          <input type='submit' value='Refresh' i18n:attributes='value refresh-button'>
+        <div class="controls"><hr />
+          <input type='submit' value='Refresh'
+                 i18n:attributes='value refresh-button'>
           <input type="submit" name="UPDATE_SUBMIT" value=" Add "
-              tal:replace="structure context/renderAddButton|default"/> 
+                 tal:replace="structure context/renderAddButton|default"/>
         </div>
       </div>
      
       <div class="row" metal:define-slot="extra_buttons" tal:replace="nothing">
       </div>
-
 
       <div class="separator"></div>
     </form>
