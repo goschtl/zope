@@ -417,7 +417,7 @@ def send_mail(addrs, text, subject):
     else:
         user = "*unknown*"
     if not fullname:
-        fullname = "The Unidentified User"
+        fullname = user or "The Unidentified User"
     if not email:
         email = OFFICIAL_SENDER
 
