@@ -14,8 +14,8 @@ Let's look at an example:
 
   >>> from ldapadapter.interfaces import ILDAPAdapter
   >>> from ldapadapter.interfaces import ILDAPConnection
-  >>> from ldapadapter.utility import LDAPAdapter
-  >>> from ldapadapter.utility import LDAPConnection
+  >>> from ldapadapter import LDAPAdapter
+  >>> from ldapadapter import LDAPConnection
   
   >>> host = u'localhost'
   >>> port = 389
