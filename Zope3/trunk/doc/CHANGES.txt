@@ -15,6 +15,14 @@ Zope Changes
         for utilities in higher-up sites. These mimic their service-based
         equivalents.
 
+      - Added initial indexing and cataloging support
+
+      - Added an integer-id facility for assigning integer identifiers
+        to objects.  In Zope 2, this functionality is internal to
+        catalogs. By separating id management out, multiple catalogs
+        and indexing structures can share the same id scheme, allowing
+        cross-catalog joins and other sorts of aggregated analyses.
+
       - Added `getInfo(generation)` method to `zope.app.generations`'s
         `ISchemaManager`. It will return some information about the evolver
         that brings the database to the specified generation. This way we can
