@@ -15,7 +15,7 @@ if [ -e doc/apiref ] ; then
 fi
 
 epydoc -o doc/apiref -n 'Zope Packaging Tools' --docformat restructuredtext \
-    zpkgtools
+    zpkgtools zpkgsetup
 
 ERR=$?
 
