@@ -175,21 +175,18 @@ class ZopeDublinCore:
 
     def Type(self):
         "See IZopeDublinCore"
-        # XXX what is this?
         return self.type
 
     format = ScalarProperty(u'Format')
 
     def Format(self):
         "See IZopeDublinCore"
-        # XXX what is this?
         return self.format
 
     identifier = ScalarProperty(u'Identifier')
 
     def Identifier(self):
         "See IZopeDublinCore"
-        # XXX what is this?
         return self.identifier
 
     language = ScalarProperty(u'Language')
