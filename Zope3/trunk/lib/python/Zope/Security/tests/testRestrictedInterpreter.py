@@ -4,15 +4,16 @@ from Zope.Security.RestrictedInterpreter import RestrictedInterpreter
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Security.Checker import defineChecker
 
-from Zope.Testing.CleanUp import cleanUp
+from Zope.Testing.CleanUp import CleanUp
 
-class RITests(unittest.TestCase):
+class RITests(unittest.TestCase, CleanUp):
 
     def setUp(self):
+        CleanUp.setUp(self)
         self.rinterp = RestrictedInterpreter()
 
     def tearDown(self):
-        cleanUp()
+        CleanUp.tearDown(self)
 
     def testExec(self):
         self.rinterp.ri_exec("str(type(1))\n")

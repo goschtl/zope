@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: testChecker.py,v 1.3 2002/07/17 16:54:23 jeremy Exp $
+$Id: testChecker.py,v 1.4 2002/09/05 20:46:29 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Security.Checker import NamesChecker, CheckerPublic
-from Zope.Testing.CleanUp import cleanUp
+from Zope.Testing.CleanUp import CleanUp
 from Zope.Security.ISecurityPolicy import ISecurityPolicy
 from Zope.Exceptions import Forbidden, Unauthorized
 from Zope.Security.SecurityManagement import setSecurityPolicy
@@ -64,15 +64,15 @@ class NewInst(object, OldInst):
     def sete(self, v): pass
     e = property(gete, sete)
 
-class Test(TestCase):
+class Test(TestCase, CleanUp):
 
     def setUp(self):
+        CleanUp.setUp(self)
         self.__oldpolicy = setSecurityPolicy(SecurityPolicy())
 
     def tearDown(self):
         setSecurityPolicy(self.__oldpolicy)
-        cleanUp()
-
+        CleanUp.tearDown(self)
 
     # check_getattr cases:
     #
