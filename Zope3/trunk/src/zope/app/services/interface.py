@@ -16,13 +16,14 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.12 2003/08/06 21:16:41 sidnei Exp $
+$Id: interface.py,v 1.13 2003/08/08 20:47:47 sidnei Exp $
 """
 
 from persistence import Persistent
 from zodb.code.patch import registerWrapper, Wrapper
 from zope.interface.interface import InterfaceClass
-
+from zope.interface.interfaces import IInterface
+from zope.interface import Interface
 from zope.component import getService
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
@@ -31,7 +32,6 @@ from zope.app import zapi
 from zope.app.services.servicenames import Interfaces, Utilities
 from zope.component import ComponentLookupError
 from zope.interface import implements
-from zope.interface.interfaces import IInterface
 from zope.app.interfaces.services.registration import IRegistrationStack
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
@@ -40,7 +40,8 @@ class PersistentInterfaceClass(Persistent, InterfaceClass):
 # PersistentInterface is equivalent to the zope.interface.Interface object
 # except that it is also persistent.  It is used in conjunction with
 # zodb.code to support interfaces in persistent modules.
-PersistentInterface = PersistentInterfaceClass("PersistentInterface")
+PersistentInterface = PersistentInterfaceClass("PersistentInterface",
+                                               (Interface, ))
 
 class PersistentInterfaceWrapper(Wrapper):
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.31 2003/08/07 22:36:53 philikon Exp $
+$Id: view.py,v 1.32 2003/08/08 20:47:47 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -322,6 +322,10 @@ class PageRegistration(ViewRegistration):
                  forInterface, viewName, permission,
                  class_=None, template=None, attribute=None,
                  layer='default'):
+
+        # XXX A Interface comes out of the interface widget
+        # wrapped on a proxy currently, which is not pickable
+        forInterface = removeAllProxies(forInterface)
 
         super(PageRegistration, self).__init__(
             forInterface, viewName, self.presentationType,
