@@ -37,6 +37,7 @@ from zope.app.debug import Debugger
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
 import zope.app.tests.setup
+from zope.thread import thread_globals
 
 __metaclass__ = type
 
@@ -162,6 +163,18 @@ class FunctionalTestCase(unittest.TestCase):
 class BrowserTestCase(FunctionalTestCase):
     """Functional test case for Browser requests."""
 
+    def tearDown(self):
+        self.setSite(None)
+        super(BrowserTestCase, self).tearDown()
+
+    def setSite(self, site):
+        """Set the site which will be used to look up local services"""
+        thread_globals().site = site
+
+    def getSite(self):
+        """Returns the site which is used to look up local services"""
+        return thread_globals().site
+
     def makeRequest(self, path='', basic=None, form=None, env={},
                     outstream=None):
         """Creates a new request object.
@@ -204,10 +217,13 @@ class BrowserTestCase(FunctionalTestCase):
           getPath()      -- returns the path used in the request
         """
         outstream = HTTPTaskStub()
+        old_site = self.getSite()
+        self.setSite(None)
         request = self.makeRequest(path, basic=basic, form=form, env=env,
                                    outstream=outstream)
         response = ResponseWrapper(request.response, outstream, path)
         publish(request, handle_errors=handle_errors)
+        self.setSite(old_site)
         return response
 
     def checkForBrokenLinks(self, body, path, basic=None):
@@ -215,6 +231,9 @@ class BrowserTestCase(FunctionalTestCase):
         URIs.
         """
         if not body: return
+
+        old_site = self.getSite()
+        self.setSite(None)
 
         from htmllib import HTMLParser
         from formatter import NullFormatter
@@ -260,12 +279,12 @@ class BrowserTestCase(FunctionalTestCase):
                     e = traceback.format_exception_only(*sys.exc_info()[:2])[-1]
                     errors.append((a, e.strip()))
             finally:
+                publication.endRequest(request, object)
+                self.setSite(old_site)
                 # Bad Things(TM) related to garbage collection and special
                 # __del__ methods happen if request.close() is not called here
                 if request:
                     request.close()
-                # Make sure the interaction is ended
-                endInteraction()
         if errors:
             self.fail("%s contains broken links:\n" % path
                       + "\n".join(["  %s:\t%s" % (a, e) for a, e in errors]))
