@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.1 2003/03/31 19:00:09 jim Exp $
+$Id: test_utility.py,v 1.2 2003/04/02 21:10:35 fdrake Exp $
 """
 
 import unittest
@@ -79,7 +79,7 @@ class Foo:
         "See zope.app.interfaces.dependable.IDependable"
         return self._dependents
 
-class TestSomething(placefulsetup.PlacefulSetup, unittest.TestCase):
+class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         placefulsetup.PlacefulSetup.setUp(self)
@@ -185,7 +185,7 @@ class TestSomething(placefulsetup.PlacefulSetup, unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestSomething))
+    suite.addTest(unittest.makeSuite(TestUtilityService))
     return suite
 
 
