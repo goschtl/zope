@@ -46,50 +46,7 @@
       action="index.html"
       />
 
-<!-- CachingService -->
-
-  <menuItems
-      menu="zmi_views"
-      for="zope.app.services.cache.ILocalCachingService">
-      <menuItem title="Caches" action="index.html"/>
-    </menuItems>
-
-  <page
-      for="zope.app.services.cache.ILocalCachingService"
-      name="index.html"
-      template="caches.pt"
-      class=".configuration.NameComponentConfigurableView"
-      permission="zope.ManageServices" 
-      />
-
-  <menuItem
-      menu="add_service"
-      for="zope.app.interfaces.container.IAdding"
-      action="CachingService"
-      title="Caching Service"
-      description="A Persistent Caching Service for TTW development"
-      />
-
-  <!-- CacheConfiguration -->
-
-  <view
-      for="zope.app.interfaces.container.IAdding"
-      name="CacheConfiguration"
-      class="zope.app.browser.services.cache.AddCacheConfiguration"
-      permission="zope.ManageServices">
-
-    <page name="add.html" template="add_cache.pt" />
-    <page name="finish.html" attribute="action" />
-
-  </view>
-
-  <menuItem
-      menu="add_configuration"
-      for="zope.app.interfaces.container.IAdding"
-      action="CacheConfiguration"
-      title="Cache"
-      description="Named Cache"
-      />
+<!-- CachingService --> <include file="cache.zcml" />
 
 <!-- Event Service -->
 

@@ -1,0 +1,42 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+
+  <menuItems
+      menu="zmi_views"
+      for="zope.app.services.cache.ILocalCachingService">
+      <menuItem title="Caches" action="index.html"/>
+    </menuItems>
+
+  <page
+      for="zope.app.services.cache.ILocalCachingService"
+      name="index.html"
+      template="caches.pt"
+      class=".configuration.NameComponentConfigurableView"
+      permission="zope.ManageServices" 
+      />
+
+  <menuItem
+      menu="add_service"
+      for="zope.app.interfaces.container.IAdding"
+      action="CachingService"
+      title="Caching Service"
+      description="A Persistent Caching Service for TTW development"
+      />
+
+  <!-- When creating a new cache object, you are taken to this
+       form to configure it.  The form lets you choose a name,
+       an interface, a permission, and a registration status
+       (Unregistered, Registered or Active). -->
+  <addform
+      label="New Cache Configuration"
+      for="zope.app.interfaces.cache.cache.ICache"
+      name="addConfiguration.html"
+      schema="zope.app.interfaces.services.cache.ICacheConfiguration"
+      class=".cache.AddCacheConfiguration"
+      permission="zope.ManageServices"
+      content_factory="zope.app.services.cache.CacheConfiguration"
+      arguments="name componentPath"
+      set_after_add="status"
+      fields="name componentPath permission status"
+      />
+
+</zopeConfigure>

@@ -11,38 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Cache configuration adding view
+"""Cache configuration support classes.
 
-$Id: cache.py,v 1.3 2003/02/21 14:53:34 alga Exp $
+$Id: cache.py,v 1.4 2003/04/24 20:28:50 gvanrossum Exp $
 """
-__metaclass__ = type
 
-from zope.component import getServiceManager
-from zope.publisher.browser import BrowserView
-from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
-from zope.app.interfaces.services.cache \
-     import ICacheConfiguration
-from zope.app.services.cache \
-     import CacheConfiguration
-from zope.app.interfaces.cache.cache import ICache
+from zope.app.browser.services.configuration import AddComponentConfiguration
 
-class AddCacheConfiguration(BrowserView):
+class AddCacheConfiguration(AddComponentConfiguration):
 
-    def __init__(self, *args):
-        super(AddCacheConfiguration, self).__init__(*args)
-        setUpWidgets(self, ICacheConfiguration)
-
-    def components(self):
-        service = getServiceManager(self.context.context)
-        paths = [info['path'] for info in service.queryComponent(type=ICache)]
-        paths.sort()
-        return paths
-
-    def action(self, cache_name, component_path):
-        if not cache_name:
-            raise ValueError, 'You must specify a cache name'
-        cd = CacheConfiguration(cache_name, component_path)
-        cd = self.context.add(cd)
-        getWidgetsDataForContent(self, ICacheConfiguration, content=cd,
-                                 strict=False)
-        self.request.response.redirect(self.context.nextURL())
+    pass
