@@ -144,8 +144,7 @@ class InclusionProcessor:
                                  % source)
         self.source = os.path.abspath(source)
         self.destination = os.path.abspath(destination)
-        self.manifest = []
-        self.manifest_prefix = os.path.join(self.destination, "")
+        self.manifests = []
         prefix = os.path.commonprefix([self.source, self.destination])
         if prefix == self.source:
             raise InclusionError("destination directory may not be"
@@ -220,14 +219,36 @@ class InclusionProcessor:
         self.add_output(destination)
 
     def add_output(self, path):
-        # we're going to build the manifest here
-        assert path.startswith(self.manifest_prefix)
-        relpath = path[len(self.manifest_prefix):]
-        parts = relpath.split(os.sep)
-        if len(parts) == 1:
-            self.manifest.append(parts[0])
-        else:
-            self.manifest.append(posixpath.join(*parts))
+        """Add 'path' to each of the relevant manifests."""
+        for prefix, manifest in self.manifests:
+            if path.startswith(prefix):
+                relpath = path[len(prefix):]
+                parts = relpath.split(os.sep)
+                if len(parts) == 1:
+                    manifest.append(parts[0])
+                else:
+                    manifest.append(posixpath.join(*parts))
+
+    # This pair of methods handles the creation and removal of
+    # manifest lists.  We use this approach since we need to support
+    # multiple manifests for collection distributions (each component
+    # will have a manifest of it's own, as well as the package as a
+    # whole).  This makes managing manifests a function of the client
+    # rather than being implicit.
+
+    def add_manifest(self, destination):
+        manifest = []
+        prefix = os.path.join(destination, "")
+        self.manifests.append((prefix, manifest))
+        return manifest
+
+    def drop_manifest(self, destination):
+        prefix = os.path.join(destination, "")
+        for i in range(len(self.manifests)):
+            if self.manifests[i][0] == prefix:
+                del self.manifests[i]
+                return
+        raise ValueError("no manifest for %s" % destination)
 
     def addSingleInclude(self, relpath, source):
         dirname, basename = os.path.split(relpath)
