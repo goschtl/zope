@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
 
   <view
       for="zope.app.security.interfaces.IPermissionField"
@@ -12,6 +14,24 @@
       provides="zope.app.form.interfaces.IDisplayWidget"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       factory=".permissionwidget.DisplayWidget"
+      />
+
+  <browser:page
+      name="login.html"
+      for="*"
+      class=".auth.HTTPAuthenticationLogin"
+      attribute="login"
+      permission="zope.Public"
+      allowed_interface="zope.app.publisher.interfaces.http.ILogin"
+      />
+
+  <browser:page
+      name="logout.html"
+      for="*"
+      class=".auth.HTTPAuthenticationLogout"
+      attribute="logout"
+      permission="zope.Public"
+      allowed_interface="zope.app.publisher.interfaces.http.ILogout"
       />
 
 </configure>

@@ -1,9 +1,0 @@
-<configure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser">
-
-  <browser:defaultView name="index.html" />
-  <include file="auth.zcml" />
-  <include package=".exception" />
-
-</configure>
