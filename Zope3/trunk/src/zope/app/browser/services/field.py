@@ -13,7 +13,7 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.4 2003/01/12 21:22:15 stevea Exp $
+$Id: field.py,v 1.5 2003/01/16 19:50:32 stevea Exp $
 """
 __metaclass__ = type
 
@@ -161,7 +161,8 @@ class ComponentLocationWidget(Widget, BrowserView):
         return '<label for="%s">%s</label>' % (self.name, self.title)
 
     def row(self):
-        return "<td>%s</td><td>%s</td>" % (self.label(), self())
+        return '<div class="label">%s</div><div class="field">%s</div>"' % (
+                self.label(), self())
 
     # --- deprecated methods of IBrowserWidget
 

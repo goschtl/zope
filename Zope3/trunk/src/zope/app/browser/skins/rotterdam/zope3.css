@@ -1,4 +1,4 @@
-/* 
+/*
 ** Zope3 style sheet for CSS2-capable browsers.
 **
 */
@@ -31,7 +31,7 @@ table {
 }
 
 a {
-	text-decoration: none;
+    text-decoration: none;
     color: #436976;
     background-color: transparent;
 }
@@ -47,7 +47,7 @@ table {
 
 img {
     border: none;
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 p {
@@ -61,12 +61,12 @@ p a {
 }
 
 p a:visited {
-	color: Purple;
+    color: Purple;
     background-color: transparent;
 }
 
 p a:active {
-	color: Red;
+    color: Red;
     background-color: transparent;
 }
 
@@ -230,35 +230,35 @@ pre {
 */
 
 #navtreecontents a {
-	   cursor: pointer;
-	   height: 18px;
+       cursor: pointer;
+       height: 18px;
 }
 
 #navtreecontents loading {
-           display: block;
-  	   padding-left: 31px;
-	   height: 18px;
+       display: block;
+       padding-left: 31px;
+       height: 18px;
 }
 
 #navtreecontents expand {
-  	   background-repeat: no-repeat;
-  	   padding-left: 14px;
-	   display: inline;
-	   cursor: pointer;
+       background-repeat: no-repeat;
+       padding-left: 14px;
+       display: inline;
+       cursor: pointer;
                 }
-                 
+
 #navtreecontents icon {
-  	   background-repeat: no-repeat;
-  	   padding-left: 17px;
-	   display: inline;
-	   cursor: auto;
+       background-repeat: no-repeat;
+       padding-left: 17px;
+       display: inline;
+       cursor: auto;
                 }
-                 
+
 #navtreecontents collection {
-	   display: block;
-	   margin-left: 8px;
-/*	   border: red solid 1pt;  */
-	   height: auto;
+       display: block;
+       margin-left: 8px;
+/*     border: red solid 1pt;  */
+       height: auto;
 }
 
 
@@ -307,6 +307,22 @@ pre {
     border-bottom: 1px solid black;
     float: none;
     clear: both;
+}
+
+div.row {
+    clear: both;
+    padding-top: 10px;
+}
+
+div.row div.label {
+    float: left;
+    width: 100px;
+    text-align: right;
+}
+# XXX someone please come and do this properly
+div.row div.field {
+    float: right;
+    text-align: left;
 }
 
 div.box {
@@ -359,8 +375,8 @@ div.box div.body a div.odd {
 div.box div.body a div.even {
     padding: 0.2em 0;
 /*    background: #F7F9FA; */
-    border-bottom: 1px dotted #8CACBB;    
-    border-top: 1px dotted #8CACBB;    
+    border-bottom: 1px dotted #8CACBB;
+    border-top: 1px dotted #8CACBB;
 }
 
 
@@ -475,7 +491,7 @@ table.listing td {
 
 
 table.listing img {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 
@@ -496,7 +512,7 @@ div.message {
 }
 
 div.message a {
-	color: Black;
+    color: Black;
     text-decoration: underline;
 }
 

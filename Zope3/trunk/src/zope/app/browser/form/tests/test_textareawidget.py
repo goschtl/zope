@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
+$Id: test_textareawidget.py,v 1.4 2003/01/16 19:50:30 stevea Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import TextAreaWidget
@@ -50,8 +50,8 @@ class TextAreaWidgetTest(BrowserWidgetTest):
         value = ''.join(self._widget().strip().split())
         row = ''.join(self._widget.row().strip().split())
         self.assertEqual(row,
-                         '<tdcolspan="2">%s<br/>%s</td>' % (label, value))
-
+                         '<divclass="label">%s</div>'
+                         '<divclass="field">%s</div>' % (label, value))
 
 
 def test_suite():

@@ -6,24 +6,21 @@
 <form action="." method="GET"
       tal:attributes="action request/URL"
       >
-  <table>
-    <tr tal:content="structure view/forInterface/row" />
-    <tr tal:content="structure view/presentationType/row" />
-    <tr>
-      <td></td>
-      <td> 
+    <div class="row" tal:content="structure view/forInterface/row" />
+    <div class="row" tal:content="structure view/presentationType/row" />
+    <div class="row">
+    <div class="controls"> 
          <input type="submit" value="Refresh">
          <input type="submit" value="Search" name="SEARCH">
-     </td>
-    </tr>
-  </table>
+     </div>
+    </div>
 </form>
 
 <form action="." method="POST"
       tal:attributes="action request/URL"
       tal:condition="request/SEARCH|nothing"
       >
-  <table      
+  <table
       tal:define="layer not:request/field.layer|nothing;
                   viewName not:request/field.viewName|nothing;
                   "

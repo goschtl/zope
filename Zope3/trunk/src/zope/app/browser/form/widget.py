@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.8 2003/01/15 15:43:17 ryzaja Exp $
+$Id: widget.py,v 1.9 2003/01/16 19:50:28 stevea Exp $
 """
 
 __metaclass__ = type
@@ -126,7 +126,8 @@ class BrowserWidget(Widget, BrowserView):
             )
 
     def row(self):
-        return "<td>%s</td><td>%s</td>" % (self.label(), self())
+        return '<div class="label">%s</div><div class="field">%s</div>' % (
+                self.label(), self())
 
 class DisplayWidget(BrowserWidget):
 
@@ -299,7 +300,7 @@ class IntWidget(TextWidget):
                 return int(value)
             except ValueError, v:
                 raise ConversionError("Invalid integer data", v)
-        
+
 
 class FloatWidget(TextWidget):
     displayWidth = 10
@@ -339,7 +340,11 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
                              extra = self.getValue('extra'))
 
     def row(self):
-        return '<td colspan="2">%s<br />%s</td>' % (self.label(), self())
+        # XXX This was originally set to make a colspan=2 table cell, and
+        #     have the label above the text area. Perhaps we should use
+        #     different div classes for this case?
+        return '<div class="label">%s</div><div class="field">%s</div>' % (
+                self.label(), self())
 
 class BytesAreaWidget(Bytes, TextAreaWidget):
     pass

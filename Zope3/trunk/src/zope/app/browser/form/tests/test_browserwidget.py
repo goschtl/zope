@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.5 2003/01/15 15:44:33 ryzaja Exp $
+$Id: test_browserwidget.py,v 1.6 2003/01/16 19:50:30 stevea Exp $
 """
 import unittest
 from zope.app.browser.form.widget import BrowserWidget
@@ -74,7 +74,8 @@ class BrowserWidgetTest(unittest.TestCase):
         label = ''.join(self._widget.label().strip().split())
         value = ''.join(self._widget().strip().split())
         row = ''.join(self._widget.row().strip().split())
-        self.assertEqual(row, '<td>%s</td><td>%s</td>' % (label, value))
+        self.assertEqual(row, '<divclass="label">%s</div>'
+                              '<divclass="field">%s</div>' % (label, value))
 
 
 class TestWidget(BrowserWidget):

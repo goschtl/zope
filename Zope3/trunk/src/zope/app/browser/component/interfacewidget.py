@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.18 2003/01/09 14:13:00 jim Exp $
+$Id: interfacewidget.py,v 1.19 2003/01/16 19:50:25 stevea Exp $
 """
 
 import sys
@@ -108,7 +108,7 @@ class InterfaceWidget(Widget, BrowserView):
         return ('<input type="hidden" name="%s" value="%s" />'
                         % (self.name, interfaceToName(data))
                         )
-       
+
     def label(self):
         return '<label for="%s">%s</label>' % (
             self.name,
@@ -116,7 +116,8 @@ class InterfaceWidget(Widget, BrowserView):
             )
 
     def row(self):
-        return "<td>%s</td><td>%s</td>" % (self.label(), self())
+        return '<div class="label">%s</div><div class="field">%s</div>' % (
+                self.label(), self())
 
     # --- deprecated methods of IBrowserWidget
 
@@ -291,7 +292,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
                 )
             count += 1
         return ''.join(elements)
-       
+
     def label(self):
         return '<label for="%s">%s</label>' % (
             self.name,
@@ -299,7 +300,8 @@ class MultiInterfaceWidget(Widget, BrowserView):
             )
 
     def row(self):
-        return "<td>%s</td><td>%s</td>" % (self.label(), self())
+        return '<div class="label">%s</div><div class="field">%s</div>' % (
+                self.label(), self())
 
     # --- deprecated methods of IBrowserWidget
 

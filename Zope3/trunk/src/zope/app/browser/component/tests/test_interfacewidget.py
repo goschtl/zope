@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.13 2003/01/09 14:13:02 jim Exp $
+$Id: test_interfacewidget.py,v 1.14 2003/01/16 19:50:27 stevea Exp $
 """
 
 __metaclass__ = type
@@ -355,7 +355,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
                                 title=u'This is a test',
                                 required=False)
         widget = MultiInterfaceWidget(field, request)
-        
+
         self.assertEqual(widget.getData(), ())
         self.failIf(widget.haveData())
 
@@ -503,9 +503,9 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '</option>'
 
         '</select>'
-        
+
         '<br>'
-        
+
         '<input type="text" name="field.TestName.search.i1" value="two">'
 
         '<select name="field.TestName.i1">'
@@ -523,7 +523,8 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         label = '<label for="field.TestName">This is a test</label>'
         self.assertEqual(widget.label(), label)
         self.assertEqual(widget.row(),
-                         '<td>%s</td><td>%s</td>' % (label, out)
+                         '<div class="label">%s</div>'
+                         '<div class="field">%s</div>' % (label, out)
                          )
 
     def testMultiInterfaceWidgetNone(self):
