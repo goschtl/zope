@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets with text-based input
 
-$Id: textwidgets.py,v 1.1 2004/03/17 17:35:02 philikon Exp $
+$Id: textwidgets.py,v 1.2 2004/03/18 00:49:07 srichter Exp $
 """
 from zope.interface import implements
 
@@ -72,6 +72,23 @@ class TextWidget(BrowserWidget):
       value="Barry"
       />
 
+    Check that HTML is correctly encoded and decoded:
+
+    >>> request = TestRequest(
+    ...     form={'field.foo': u'&lt;h1&gt;&amp;copy;&lt;/h1&gt;'})
+    >>> widget = TextWidget(field, request)
+    >>> widget.getInputValue()
+    u'<h1>&copy;</h1>'
+
+    >>> print normalize( widget() )
+    <input
+      class="textType"
+      id="field.foo"
+      name="field.foo"
+      size="20"
+      type="text"
+      value="&lt;h1&gt;&amp;copy;&lt;/h1&gt;"
+      />
     """
     
     implements(IInputWidget)
@@ -111,6 +128,13 @@ class TextWidget(BrowserWidget):
                                  style=self.style,
                                  size=self.displayWidth,
                                  extra=self.extra)
+
+    def _convert(self, value):
+        value = super(TextWidget, self)._convert(value)
+        if value:
+            value = decode_html(value)
+        return value
+
 
 class Bytes(BrowserWidget):
 
@@ -200,6 +224,22 @@ class TextAreaWidget(BrowserWidget):
       >Hey\r
     dude!</textarea>
 
+    Check that HTML is correctly encoded and decoded:
+
+    >>> request = TestRequest(
+    ...     form={'field.foo': u'&lt;h1&gt;&amp;copy;&lt;/h1&gt;'})
+    >>> widget = TextAreaWidget(field, request)
+    >>> widget.getInputValue()
+    u'<h1>&copy;</h1>'
+
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.foo"
+      name="field.foo"
+      rows="15"
+      >&lt;h1&gt;&amp;copy;&lt;/h1&gt;</textarea>
+
     """
 
     implements(IInputWidget)
@@ -214,12 +254,14 @@ class TextAreaWidget(BrowserWidget):
         value = super(TextAreaWidget, self)._convert(value)
         if value:
             value = value.replace("\r\n", "\n")
+            value = decode_html(value)
         return value
 
     def _unconvert(self, value):
         value = super(TextAreaWidget, self)._unconvert(value)
         if value:
             value = value.replace("\n", "\r\n")
+            value = encode_html(value)
         return value
 
     def __call__(self):
@@ -398,3 +440,17 @@ class DateWidget(TextWidget):
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
 
+
+def encode_html(text):
+    text = text.replace('&', '&amp;')
+    text = text.replace('<', '&lt;')
+    text = text.replace('>', '&gt;')
+    text = text.replace('"', '&quot;')
+    return text
+
+def decode_html(text):
+    text = text.replace('&amp;', '&')
+    text = text.replace('&lt;', '<')
+    text = text.replace('&gt;', '>')
+    text = text.replace('&quot;', '"')
+    return text
