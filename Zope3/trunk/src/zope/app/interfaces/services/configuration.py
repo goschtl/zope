@@ -13,13 +13,13 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: configuration.py,v 1.3 2002/12/26 18:55:35 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
 from zope.schema import Text, TextLine
 from zope.schema.interfaces import ITextLine
-from zope.app.security.permissionfield import PermissionField
+from zope.app.security.permission import PermissionField
 
 Unregistered = u'Unregistered'
 Registered = u'Registered'
