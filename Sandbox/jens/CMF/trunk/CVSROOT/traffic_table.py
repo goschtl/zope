@@ -35,6 +35,6 @@ MIRROR = {'host': "www.zope.org",
           'repodir': "/cvs-repository/%s"}
 
 table = [
-    ("test", "^test", [], MIRROR),
-    ("CVSROOT", "^CVSROOT", [], MIRROR)
+    ("test", "^test", ["klm@digicool.com"], MIRROR),
+    ("CVSROOT", "^CVSROOT", ["klm@digicool.com"], MIRROR)
 ]
