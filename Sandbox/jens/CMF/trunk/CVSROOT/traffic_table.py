@@ -67,17 +67,17 @@ def init_table():
 ##        {'path': "Products(/|$)",
 ##         'addrs': zopeaddr},
 
-        {'path': "Zope3(/|$)",
-         'addrs': ["zope3-checkins@zope.org"]},
+##        {'path': "Zope3(/|$)",
+##         'addrs': ["zope3-checkins@zope.org"]},
 
         {'path': "Zope27(/|$)",
          'addrs': ["zope-checkins@zope.org"]},
 
-        {'path': "Products3(/|$)",
-         'addrs': ["zope3-checkins@zope.org"]},
+##        {'path': "Products3(/|$)",
+##         'addrs': ["zope3-checkins@zope.org"]},
 
-        {'path': "Packages3(/|$)",
-         'addrs': ["zope3-checkins@zope.org"]},
+##        {'path': "Packages3(/|$)",
+##         'addrs': ["zope3-checkins@zope.org"]},
 
         {'path': "ZODB3",
          'addrs': ["zodb-checkins@zope.org"]},
