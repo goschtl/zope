@@ -13,6 +13,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 
 class IExternallyEditable(Interface):

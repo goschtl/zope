@@ -13,6 +13,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
@@ -43,7 +45,7 @@ class ExternalEditor(BrowserView):
         # using IContentType, which is a marker interface
 
         # Had to use trustedRemoveSecurityProxy because
-        # I was getting I was getting unauthorized on __iro__
+        # I was getting unauthorized on __iro__
         meta_type = queryType(trustedRemoveSecurityProxy(context), IContentType)
         if meta_type:
             r.append('meta_type:%s' % meta_type.__name__)
