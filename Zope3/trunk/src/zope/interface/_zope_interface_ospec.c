@@ -601,6 +601,77 @@ static PyTypeObject OSpecDescrType = {
         /* tp_descr_get      */ (descrgetfunc)OSpecDescr_descr_get,
 };
 
+int
+init_globals(void)
+{
+  str___implements__ = PyString_FromString("__implements__");
+  if (str___implements__ == NULL)
+    return -1;
+  
+  str___provides__ = PyString_FromString("__provides__");
+  if (str___provides__ == NULL)
+    return -1;
+  
+  str___providedBy__ = PyString_FromString("__providedBy__");
+  if (str___providedBy__ == NULL)
+    return -1;
+  
+  str___class__ = PyString_FromString("__class__");
+  if (str___class__ == NULL)
+    return -1;
+  
+  str___dict__ = PyString_FromString("__dict__");
+  if (str___dict__ == NULL)
+    return -1;
+  
+  str___signature__ = PyString_FromString("__signature__");
+  if (str___signature__ == NULL)
+    return -1;
+  
+  str_flattened = PyString_FromString("flattened");
+  if (str_flattened == NULL)
+    return -1;
+  
+  str_extends = PyString_FromString("extends");
+  if (str_extends == NULL)
+    return -1;
+  
+  str_only = PyString_FromString("only");
+  if (str_only == NULL)
+    return -1;
+  
+  _implements_reg = PyDict_New();
+  if (_implements_reg == NULL)
+    return -1;
+
+  return 0;
+}
+
+int
+init_declarations(void)
+{
+  declarations = PyImport_ImportModule("zope.interface.declarations");
+  if (declarations == NULL)
+    return -1;
+
+  classImplements = PyObject_GetAttrString(declarations, "classImplements");
+  if (classImplements == NULL)
+    return -1;
+
+  proxySig = PyObject_GetAttrString(declarations, "proxySig");
+  if (proxySig == NULL)
+    return -1;
+
+  oldSpecSig = PyObject_GetAttrString(declarations, "oldSpecSig");
+  if (oldSpecSig == NULL)
+    return -1;
+
+  combinedSpec = PyObject_GetAttrString(declarations, "combinedSpec");
+  if (combinedSpec == NULL)
+    return -1;
+  return 0;
+}
+
 static struct PyMethodDef module_methods[] = {
 	{"getObjectSpecification",  (PyCFunction)getObjectSpecification,
          METH_O, "internal function to compute an object spec"},
@@ -608,7 +679,6 @@ static struct PyMethodDef module_methods[] = {
          "Return a specification for the interfaces of an object"},
 	{NULL,	 (PyCFunction)NULL, 0, NULL}		/* sentinel */
 };
-
 
 static char _zope_interface_ospec_module_documentation[] = 
 "C implementation of parts of zope.interface.declarations"
@@ -622,67 +692,6 @@ init_zope_interface_ospec(void)
 {
   PyObject *module;
 
-  str___implements__ = PyString_FromString("__implements__");
-  if (str___implements__ == NULL)
-    return;
-  
-  str___provides__ = PyString_FromString("__provides__");
-  if (str___provides__ == NULL)
-    return;
-  
-  str___providedBy__ = PyString_FromString("__providedBy__");
-  if (str___providedBy__ == NULL)
-    return;
-  
-  str___class__ = PyString_FromString("__class__");
-  if (str___class__ == NULL)
-    return;
-  
-  str___dict__ = PyString_FromString("__dict__");
-  if (str___dict__ == NULL)
-    return;
-  
-  str___signature__ = PyString_FromString("__signature__");
-  if (str___signature__ == NULL)
-    return;
-  
-  str_flattened = PyString_FromString("flattened");
-  if (str_flattened == NULL)
-    return;
-  
-  str_extends = PyString_FromString("extends");
-  if (str_extends == NULL)
-    return;
-  
-  str_only = PyString_FromString("only");
-  if (str_only == NULL)
-    return;
-  
-  _implements_reg = PyDict_New();
-  if (_implements_reg == NULL)
-    return;
-
-  declarations = PyImport_ImportModule("zope.interface.declarations");
-  if (declarations == NULL) 
-    return;
-
-  classImplements = PyObject_GetAttrString(declarations, "classImplements");
-  if (classImplements == NULL)
-    return;
-
-  proxySig = PyObject_GetAttrString(declarations, "proxySig");
-  if (proxySig == NULL)
-    return;
-
-  oldSpecSig = PyObject_GetAttrString(declarations, "oldSpecSig");
-  if (oldSpecSig == NULL)
-    return;
-
-  combinedSpec = PyObject_GetAttrString(declarations, "combinedSpec");
-  if (combinedSpec == NULL)
-    return;
- 
-  
   /* Initialize types: */  
 
   ISBType.tp_new = PyType_GenericNew;
@@ -701,28 +710,40 @@ init_zope_interface_ospec(void)
 
  
   OSpecDescrType.tp_new = PyType_GenericNew;
-    if (PyType_Ready(&OSpecDescrType) < 0)
+  if (PyType_Ready(&OSpecDescrType) < 0)
     return;
 
-
+  if (init_globals() < 0)
+    return;
+  
   /* Create the module and add the functions */
   module = Py_InitModule3("_zope_interface_ospec", module_methods,
                           _zope_interface_ospec_module_documentation);
   
   if (module == NULL)
     return;
-  
+
   /* Add types: */
   if (PyModule_AddObject(module, "InterfaceSpecificationBase", 
                          (PyObject *)&ISBType) < 0)
     return;
+
   if (PyModule_AddObject(module, "ObjectSpecification", 
                          (PyObject *)&OSpecType) < 0)
     return;
+
   if (PyModule_AddObject(module, "ObjectSpecificationDescriptor", 
                          (PyObject *)&OSpecDescrType) < 0)
     return;
+
   if (PyModule_AddObject(module, "_implements_reg", _implements_reg) < 0)
     return;
+
+  /* init_declarations() loads objects from zope.interface.declarations,
+     which circularly depends on the objects defined in this module.
+     Call init_declarations() last to ensure that the necessary names
+     are bound.
+  */
+  init_declarations();
 }
 
