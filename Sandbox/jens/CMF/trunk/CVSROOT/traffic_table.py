@@ -72,8 +72,6 @@ def init_table():
 
         {'path': "Products3(/|$)",
          'addrs': ["zope3-checkins@zope.org"]},
-        {'path': "ZopeProducts(/|$)",
-         'addrs': ["zope3-checkins@zope.org"]},
 
         {'path': "StandaloneZODB",
          'addrs': ["zodb-checkins@zope.org"]},
