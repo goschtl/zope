@@ -713,14 +713,12 @@ def main(module_filter, test_filter, libdir):
     logging.basicConfig()
 
     level = os.getenv("LOGGING")
-    if level:
-        level = int(level)
-    else:
-        level = logging.CRITICAL
-    logging.root.setLevel(level)
-
     if os.path.exists(logini):
         logging.config.fileConfig(logini)
+        if level:
+            logging.root.setLevel(int(level))
+    elif level:
+        logging.root.setLevel(int(level))
 
     files = find_tests(module_filter)
     files.sort()
