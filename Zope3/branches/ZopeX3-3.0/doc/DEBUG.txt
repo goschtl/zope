@@ -1,91 +1,101 @@
+=======================
 Using the Zope Debugger
+=======================
 
-  Introduction
-  
-    Zope3 includes a mechanism to debug an object publishing request, 
-    similar to the Zope2 
-    "debug mechanism":http://www.zope.org/Members/mcdonc/HowTos/UsingTheZopeDebugger
+Introduction
+------------
 
-  Setting up Environment
+Zope3 includes a mechanism to debug an object publishing request,
+similar to the Zope2
+`debug mechanism`_.
 
-    Setup your PYTHONPATH environment variable to include
-    src. ie (unix bash syntax)::
+.. _debug mechanism:
+   http://www.zope.org/Members/mcdonc/HowTos/UsingTheZopeDebugger
 
-      cd Zope3
-      export PYTHONPATH=$PWD/src:$PYTHONPATH
-    
-    To start interacting with the debugger you need to initialize the
-    zope application::
+Setting up Environment
+----------------------
 
-      $ python2.3
-      >>> from zope.app.debug import Debugger
-      >>> debugger = Debugger()
+Setup your PYTHONPATH environment variable to include src. ie (unix
+bash syntax)::
+
+  cd Zope3
+  export PYTHONPATH=$PWD/src:$PYTHONPATH
+
+To start interacting with the debugger you need to initialize the zope
+application::
+
+  $ python2.3
+  >>> from zope.app.debug import Debugger
+  >>> debugger = Debugger()
 
 
-    Note that you can pass a database file name and a site ZCML file
-    to the debugger:
+Note that you can pass a database file name and a site ZCML file to
+the debugger:
 
-      >>> Debugger('path/to/zodb/', 'path/to/site.zcml')
-          
-    But you can generally let the debugger figure out where they are.
+  >>> Debugger('path/to/zodb/', 'path/to/site.zcml')
 
-    XXX In the future, the debugger should have it's own ZConfig file.
-  
-  Using the Debugger
+But you can generally let the debugger figure out where they are.
 
-    There are several methods you can call on the application object
-    for testing purposes.
+XXX In the future, the debugger should have it's own ZConfig file.
 
-    Publish 
 
-      The 'publish' method executes a request as the publisher would
-      and prints the response headers and body::
+Using the Debugger
+------------------
 
-         >>> debugger.publish(path='/folder/content_object')
+There are several methods you can call on the application object for
+testing purposes.
 
-    Run
+Publish
+  The `publish()` method executes a request as the publisher would and
+  prints the response headers and body::
 
-      The 'run' method executes a request with the publisher's normal 
-      error handling disabled and without outputting anything.  This is
-      useful for use with Python's post-mortem.
+     >>> debugger.publish(path='/folder/content_object')
 
-         >>> debugger.run(path='/folder/content_object')
-         # an exception is raised
-         >>> import pdb; pdb.pm()
-         # enters the python post-mortem debugger
+Run
+  The `run()` method executes a request with the publisher's normal
+  error handling disabled and without outputting anything.  This is
+  useful for use with Python's post-mortem.
 
-    Debug
-      
-      The 'debug' method starts up the publisher in the python
-      debugger, with an extra convenience break point, setup just before
-      the published object call::
+     >>> debugger.run(path='/folder/content_object')
+     # an exception is raised
+     >>> import pdb; pdb.pm()
+     # enters the python post-mortem debugger
 
-        >>> debugger.debug(path='/folder/content_object')
-        * Type c<cr> to jump to published object call.
-        pdb> 
-      
-    Arguments
+Debug
+  The `debug()` method starts up the publisher in the python debugger,
+  with an extra convenience break point, setup just before the
+  published object call::
 
-      All of the debugger object's debug methods take optional
-      arguments, the more common/useful ones...
+    >>> debugger.debug(path='/folder/content_object')
+    * Type c<cr> to jump to published object call.
+    pdb>
 
-      - path - the url path to debug
+Arguments
+~~~~~~~~~
 
-      - basic - user:password used for HTTP basic auth (it will be
-        base64 encoded by the debug method).
+All of the debugger object's debug methods take optional arguments,
+the more common/useful ones...
 
-  Accessing objects (without the debugger)
+`path`
+  the URL path to debug
 
-    You can use the application object to open a database connection
-    to access your objects.  If the application object is called, it
-    opens a database connection and fetches the root object::
+`basic`
+  user:password used for HTTP basic auth (it will be base64 encoded by
+  the debug method).
 
-       root = debugger.root()
+Accessing objects (without the debugger)
+----------------------------------------
 
-    For example, to list the objects in the root folder:
+You can use the application object to open a database connection to
+access your objects.  If the application object is called, it opens a
+database connection and fetches the root object::
 
-       print list(root)
+   root = debugger.root()
 
-    Also note that, after initializing the application, by creating
-    the root object, you can access any global services setup during
-    initialization. 
+For example, to list the objects in the root folder::
+
+   print list(root)
+
+Also note that, after initializing the application, by creating the
+root object, you can access any global services setup during
+initialization.
