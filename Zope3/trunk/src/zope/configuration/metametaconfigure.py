@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigure.py,v 1.7 2003/05/03 16:34:15 jim Exp $
+$Id: metametaconfigure.py,v 1.8 2003/06/04 10:22:20 stevea Exp $
 """
-from zope.interface import directlyProvides, classProvides
+from zope.interface import directlyProvides, classProvides, implements
 from zope.configuration.meta \
      import DirectiveNamespace as bootstrapDirectiveNamespace
 from zope.configuration.meta import Subdirective as bootstrapSubdirective
@@ -29,7 +29,6 @@ from zope.configuration.interfaces import ISubdirectiveHandler
 class DirectiveNamespace(bootstrapDirectiveNamespace):
 
     classProvides(INonEmptyDirective)
-    __implements__ = ISubdirectiveHandler
 
     def _Subdirective(self, *args, **kw):
         return Subdirective(*args, **kw)
@@ -55,8 +54,6 @@ class DirectiveNamespace(bootstrapDirectiveNamespace):
 
 class Subdirective(bootstrapSubdirective):
     """An extended Subdirective that handles descriptions and attributes"""
-
-    __implements__ = ISubdirectiveHandler
 
     def __init__(self, subs, namespace=None, name=None):
         bootstrapSubdirective.__init__(self,subs,namespace)
@@ -95,8 +92,8 @@ class Subdirective(bootstrapSubdirective):
 
 class Description:
 
-    __implements__ = ISubdirectiveHandler
-    
+    implements(ISubdirectiveHandler)
+
     def __init__(self, dir):
         self._dir = dir
         self._description = ''
@@ -113,8 +110,8 @@ class Description:
 
 class Attribute:
 
-    __implements__ = ISubdirectiveHandler
-    
+    implements(ISubdirectiveHandler)
+
     def __init__(self, dir, name, required, description=''):
         required = required.lower()
         if required not in ('', 'yes', 'no'):
@@ -141,8 +138,8 @@ class Attribute:
 
 class AttrDescription:
 
-    __implements__ = ISubdirectiveHandler
-    
+    implements(ISubdirectiveHandler)
+
     def __init__(self, dir):
         self._dir = dir
 
@@ -151,4 +148,3 @@ class AttrDescription:
 
     def __call__(self):
         return ()
-        

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigurefordocgen.py,v 1.5 2003/05/03 16:34:31 jim Exp $
+$Id: metametaconfigurefordocgen.py,v 1.6 2003/06/04 10:22:20 stevea Exp $
 """
 from zope.interface import classProvides
 from zope.configuration.metametaconfigure \
@@ -80,7 +80,6 @@ class DirectiveNamespace(baseDirectiveNamespace):
     """An extended class that handles descriptions and attributes"""
 
     classProvides(INonEmptyDirective)
-    __implements__ = ISubdirectiveHandler
 
     def _Subdirective(self, *args, **kw):
         return Subdirective(*args, **kw)
@@ -91,8 +90,6 @@ class DirectiveNamespace(baseDirectiveNamespace):
 
 class Subdirective(baseSubdirective):
     """An extended class that handles descriptions and attributes"""
-
-    __implements__ = ISubdirectiveHandler
 
     def _useDescription(self, namespace, name, subs, description):
         _recordCommandMetadata(subs, description)

@@ -14,10 +14,10 @@
 """
 Test class for use by test modules
 
-$Id: directives.py,v 1.4 2003/04/18 22:12:31 jim Exp $
+$Id: directives.py,v 1.5 2003/06/04 10:22:20 stevea Exp $
 """
 
-from zope.interface import directlyProvides, classProvides
+from zope.interface import directlyProvides, classProvides, implements
 from zope.configuration.interfaces import INonEmptyDirective
 from zope.configuration.interfaces import ISubdirectiveHandler
 
@@ -35,7 +35,7 @@ def increment(_context):
 class protectClass:
 
     classProvides(INonEmptyDirective)
-    __implements__ = ISubdirectiveHandler
+    implements(ISubdirectiveHandler)
 
     def __init__(self, _context, name, permission=None, names=None):
         self._name=name
