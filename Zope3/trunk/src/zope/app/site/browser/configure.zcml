@@ -253,4 +253,13 @@
      class=".tools.ToolsOverview"
      />
 
+  <page
+     name="tools.html"
+     for="zope.app.utility.interfaces.ILocalUtility"
+     permission="zope.ManageContent"
+     class=".tools.ToolsBacklink"
+     attribute="getLink"
+     menu="zmi_actions" title="Tools"
+     />
+
 </zope:configure>
