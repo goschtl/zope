@@ -24,7 +24,10 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.app import zapi
 from zope.app.location import Location
 from zope.app.component.interface import provideInterface
+
+# XXX handler is non-public.  Should call directives instead
 from zope.app.component.metaconfigure import handler
+
 from interfaces import ISOAPRequest
 
 
@@ -71,7 +74,7 @@ def view(_context, for_=None, interface=None, methods=None,
         _context.action(
             discriminator = ('view', for_, name, ISOAPRequest),
             callable = handler,
-            args = (zapi.servicenames.Adapters, 'register',
+            args = ('provideAdapter',
                     (for_, ISOAPRequest), Interface, name, class_,
                     _context.info)
             )
@@ -91,7 +94,7 @@ def view(_context, for_=None, interface=None, methods=None,
             _context.action(
                 discriminator = ('view', for_, name, ISOAPRequest),
                 callable = handler,
-                args = (zapi.servicenames.Adapters, 'register',
+                args = ('provideAdapter',
                         (for_, ISOAPRequest), Interface, name, new_class,
                         _context.info)
                 )
