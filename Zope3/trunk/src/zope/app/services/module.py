@@ -13,15 +13,13 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.16 2003/10/13 16:03:46 fdrake Exp $
+$Id: module.py,v 1.17 2003/10/13 16:12:34 fdrake Exp $
 """
 
 from persistence import Persistent
-from zodb.code.interfaces import IPersistentModuleUpdateRegistry
 from zodb.code.module import PersistentModule, compileModule
 from zope.app.event import function
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
-from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.file import IFileFactory
 from zope.app.interfaces.fssync import IObjectFile
