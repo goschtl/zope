@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface, Attribute
 
 class IObjectEvent(Interface):
@@ -29,7 +31,7 @@ class IObjectEvent(Interface):
 class IObjectCreatedEvent(IObjectEvent):
     """An object has been created.
 
-    The location will usually be None for this event."""
+    The location will usually be ``None`` for this event."""
 
 class IObjectCopiedEvent(IObjectCreatedEvent):
     """An object has been copied"""

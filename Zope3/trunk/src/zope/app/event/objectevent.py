@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.event.interfaces import IObjectEvent, IObjectCreatedEvent
 from zope.app.event.interfaces import IObjectModifiedEvent
 from zope.app.event.interfaces import IObjectCopiedEvent

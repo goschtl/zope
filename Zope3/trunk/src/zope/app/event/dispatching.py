@@ -14,9 +14,9 @@
 """Implement zope-specific event dispatching, based on subscription adapters
 
 This package instals an event dispatcher that calls event handlers,
-registered as subscription adapters providing None.
+registered as subscription adapters providing ``None``.
 
-So, to subscribe to an event, use a subscription adapter to None:
+So, to subscribe to an event, use a subscription adapter to ``None``:
 
   >>> from zope.app.tests.placelesssetup import setUp, tearDown
   >>> setUp()
@@ -55,6 +55,7 @@ So, to subscribe to an event, use a subscription adapter to None:
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from warnings import warn
 from zope.component import subscribers

@@ -15,4 +15,6 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from dispatching import publish
