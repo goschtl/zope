@@ -217,6 +217,10 @@ def main(args):
             no_files = 0
             subjs = map(grok_file, split_args[1:])
 
+        try: os.getcwd()
+        except:
+            raise
+
         if VERBOSE:
             complain("CWD: %s, Repo: %s, ", os.getcwd(), repo)
             complain("Subjects: %s\n", subjs)
