@@ -13,14 +13,14 @@
 ##############################################################################
 """Site-management folder tests
 
-$Id: test_folder.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
+$Id: test_folder.py,v 1.3 2004/04/17 15:13:14 jim Exp $
 """
 import unittest
 from zope.app.registration.tests.test_registrationmanager \
-     import RegistrationManagerContainerTests
+     import RegisterableContainerTests
 
 
-class TestSomething(RegistrationManagerContainerTests, unittest.TestCase):
+class TestSomething(RegisterableContainerTests, unittest.TestCase):
     "Test registration manager access"
         
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.6 2004/04/17 14:33:26 srichter Exp $
+$Id: interfaces.py,v 1.7 2004/04/17 15:13:12 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
@@ -304,7 +304,7 @@ class IRegistrationManager(IContainerNamesContainer, IOrderedContainer):
     """Manage Registrations
     """
 
-class IRegistrationManagerContainer(IContainer):
+class IRegisterableContainer(IContainer):
     """Containers with registration managers
 
     These are site-management folders of one sort or another.
@@ -368,11 +368,11 @@ class IRegisterable(IAnnotatable, IContained):
     """A marker interface."""
     
     __parent__ = Field(
-        constraint = ContainerTypesConstraint(IRegistrationManagerContainer))
+        constraint = ContainerTypesConstraint(IRegisterableContainer))
 
-IRegistrationManagerContainer['__setitem__'].setTaggedValue(
+IRegisterableContainer['__setitem__'].setTaggedValue(
     'precondition',
-    ItemTypePrecondition(IRegisterable, IRegistrationManagerContainer))
+    ItemTypePrecondition(IRegisterable, IRegisterableContainer))
     
 
 class IRegistered(Interface):

@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.3 2004/03/15 13:10:53 srichter Exp $
+$Id: pagefolder.py,v 1.4 2004/04/17 15:13:10 jim Exp $
 """
 from zope.interface import Interface, implements
 from zope.schema import BytesLine, Bool, Field
@@ -27,13 +27,13 @@ from zope.app.container.btree import BTreeContainer
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.registration.interfaces import IRegistrationManager
-from zope.app.registration.interfaces import IRegistrationManagerContainer
+from zope.app.registration.interfaces import IRegisterableContainer
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import IRegisterable
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.presentation import PageRegistration
-from zope.app.registration.registration import RegistrationManagerContainer
+from zope.app.registration.registration import RegisterableContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zpt import IZPTTemplate
 from zope.app.traversing import getPath
@@ -43,7 +43,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.container.interfaces import IContainer
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.fssync.server.interfaces import IObjectDirectory
-from zope.app.registration.interfaces import IRegistrationManagerContainer
+from zope.app.registration.interfaces import IRegisterableContainer
 
 class IPageFolderInfo(Interface):
     """Default registration information for page folders
@@ -81,7 +81,7 @@ class IPageFolderInfo(Interface):
         required = True,
         )
 
-class IPageFolder(IPageFolderInfo, IContainer, IRegistrationManagerContainer):
+class IPageFolder(IPageFolderInfo, IContainer, IRegisterableContainer):
 
     def applyDefaults(self):
         """Apply the default configuration to the already-registered pages. 
@@ -94,10 +94,10 @@ class IPageFolder(IPageFolderInfo, IContainer, IRegistrationManagerContainer):
     __setitem__.precondition = ItemTypePrecondition(IZPTTemplate)
     
     __parent__ = Field(
-        constraint = ContainerTypesConstraint(IRegistrationManagerContainer))
+        constraint = ContainerTypesConstraint(IRegisterableContainer))
 
 
-class PageFolder(RegistrationManagerContainer, BTreeContainer):
+class PageFolder(RegisterableContainer, BTreeContainer):
 
     implements(IPageFolder)
 

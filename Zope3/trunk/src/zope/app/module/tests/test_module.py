@@ -13,7 +13,7 @@
 ##############################################################################
 """Peristent Module tests
 
-$Id: test_module.py,v 1.3 2004/03/13 19:33:26 srichter Exp $
+$Id: test_module.py,v 1.4 2004/04/17 15:13:10 jim Exp $
 """
 import unittest
 
@@ -68,7 +68,7 @@ class LocalModuleTests(PlacefulSetup, unittest.TestCase):
         root['Application'] = self.rootFolder
         get_transaction().commit()
         # The findModule() here is only for the
-        # RegistrationManagerContainer, not the SiteManager.
+        # RegisterableContainer, not the SiteManager.
         default = traverse(self.rootFolder, "++etc++site/default")
         m = default.findModule(NAME)
 

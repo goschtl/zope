@@ -13,7 +13,7 @@
 ##############################################################################
 """Page folder tests.
 
-$Id: test_pagefolder.py,v 1.5 2004/03/13 23:01:00 srichter Exp $
+$Id: test_pagefolder.py,v 1.6 2004/04/17 15:13:11 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -26,7 +26,7 @@ from zope.app.registration.interfaces import ActiveStatus
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.registration.tests.test_registrationmanager \
-     import RegistrationManagerContainerTests
+     import RegisterableContainerTests
 from zope.component.servicenames import Presentation
 
 from zope.app.dependable.interfaces import IDependable
@@ -44,7 +44,7 @@ class I(Interface):
 class I2(Interface):
     pass
 
-class Test(RegistrationManagerContainerTests, PlacefulSetup, TestCase):
+class Test(RegisterableContainerTests, PlacefulSetup, TestCase):
 
     def setUp(self):
         sm = PlacefulSetup.setUp(self, site=True)

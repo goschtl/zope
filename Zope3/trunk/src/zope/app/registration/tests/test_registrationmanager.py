@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.3 2004/03/23 16:37:20 nathan Exp $
+$Id: test_registrationmanager.py,v 1.4 2004/04/17 15:13:13 jim Exp $
 """
 from unittest import TestSuite, TestCase, main, makeSuite
 from doctest import DocTestSuite
@@ -369,7 +369,7 @@ class TestRegistrationManagerRemoveSubscriber:
         
         """
 
-class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
+class RegisterableContainerTests(placefulsetup.PlacefulSetup):
 
     def test_getRegistrationManager(self):
         sm = self.buildFolders(site=True)

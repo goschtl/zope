@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.8 2004/04/17 14:33:30 srichter Exp $
+$Id: registration.py,v 1.9 2004/04/17 15:13:12 jim Exp $
 """
 from persistent import Persistent
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -835,16 +835,14 @@ class RegistrationManager(Persistent, Contained):
         self._moveUpOrDown(names, 1)
 
 
-
-
-class RegistrationManagerContainer(object):
-    """Mix-in to implement IRegistrationManagerContainer
+class RegisterableContainer(object):
+    """Mix-in to implement IRegisterableContainer
     """
 
-    implements(interfaces.IRegistrationManagerContainer)
+    implements(interfaces.IRegisterableContainer)
 
     def __init__(self):
-        super(RegistrationManagerContainer, self).__init__()
+        super(RegisterableContainer, self).__init__()
         rm = RegistrationManager()
         rm.__parent__ = self
         rm.__name__ = 'RegistrationManager'
@@ -862,7 +860,7 @@ class RegistrationManagerContainer(object):
                    ) < 2:
                 raise interfaces.NoRegistrationManagerError(
                     "Can't delete the last registration manager")
-        super(RegistrationManagerContainer, self).__delitem__(name)
+        super(RegisterableContainer, self).__delitem__(name)
 
     def getRegistrationManager(self):
         """Get a registration manager
@@ -895,9 +893,9 @@ class RegistrationManagerContainer(object):
                 return manager.getModule()
 
 
-        # See if out container is a RegistrationManagerContainer:
+        # See if out container is a RegisterableContainer:
         c = self.__parent__
-        if interfaces.IRegistrationManagerContainer.providedBy(c):
+        if interfaces.IRegisterableContainer.providedBy(c):
             return c.findModule(name)
 
         # Use sys.modules in lieu of module service:

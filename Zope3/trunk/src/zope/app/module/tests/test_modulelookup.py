@@ -16,11 +16,11 @@
 Note that when we get around to implementing module services, those
 tests will go here too.
 
-$Id: test_modulelookup.py,v 1.2 2004/03/13 18:01:14 srichter Exp $
+$Id: test_modulelookup.py,v 1.3 2004/04/17 15:13:10 jim Exp $
 """
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.registration.registration import RegistrationManagerContainer
+from zope.app.registration.registration import RegisterableContainer
 from zope.app.module.interfaces import IModuleManager
 from zope.interface import implements
 from zope.app.container.contained import Contained, setitem
@@ -35,14 +35,14 @@ class MyModuleManager(object):
     def getModule(self):
         return self.module
 
-class MyFolder(RegistrationManagerContainer, dict, Contained):
+class MyFolder(RegisterableContainer, dict, Contained):
     def __setitem__(self, name, object):
         setitem(self, super(MyFolder, self).__setitem__, name, object)
 
 
 def test_findMoule():
     """
-    Tests for RegistrationManagerContainer.findModule().
+    Tests for RegisterableContainer.findModule().
 
     >>> folder = MyFolder()
     >>> folder['m1.py'] = MyModuleManager(1)

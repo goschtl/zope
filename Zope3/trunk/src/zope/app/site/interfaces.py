@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id: interfaces.py,v 1.2 2004/03/13 18:01:21 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/04/17 15:13:13 jim Exp $
 """
 from zope.interface import Interface
 import zope.schema
@@ -168,7 +168,7 @@ class IServiceRegistration(registration.IComponentRegistration):
 
 
 class ISiteManagementFolder(
-    registration.IRegistrationManagerContainer,
+    registration.IRegisterableContainer,
     IContainer,
     ):
     """Component and component registration containers."""
@@ -176,7 +176,7 @@ class ISiteManagementFolder(
     __parent__ = zope.schema.Field(
         constraint = ContainerTypesConstraint(
             ISiteManager,
-            registration.IRegistrationManagerContainer,
+            registration.IRegisterableContainer,
             ),
         )
 

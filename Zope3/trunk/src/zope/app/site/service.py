@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.4 2004/03/14 04:03:31 srichter Exp $
+$Id: service.py,v 1.5 2004/04/17 15:13:13 jim Exp $
 """
 from transaction import get_transaction
 from zodbcode.module import PersistentModuleRegistry
@@ -53,13 +53,13 @@ import zope.app.registration.interfaces
 import zope.interface
 
 
-class IRegistrationManagerContainerContainer(zope.interface.Interface):
+class IRegisterableContainerContainer(zope.interface.Interface):
 
     def __setitem__(name, folder):
         """Add a site-management folder
         """
     __setitem__.precondition = ItemTypePrecondition(
-       zope.app.registration.interfaces.IRegistrationManagerContainer)
+       zope.app.registration.interfaces.IRegisterableContainer)
 
 
 class SiteManager(
@@ -69,7 +69,7 @@ class SiteManager(
 
     zope.interface.implements(
         ISiteManager,
-        IRegistrationManagerContainerContainer,
+        IRegisterableContainerContainer,
         IRegistry,
         )
 
