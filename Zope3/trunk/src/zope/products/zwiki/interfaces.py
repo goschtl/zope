@@ -15,7 +15,7 @@
 
 This module defines the ZWiki relevant interfaces.
 
-$Id: interfaces.py,v 1.2 2003/12/16 12:10:38 krishna_m Exp $
+$Id: interfaces.py,v 1.3 2004/01/15 10:49:39 philikon Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, List, SourceText
@@ -67,8 +67,8 @@ class IWikiPageHierarchy(Interface):
     parents = List(
         title = _(u"Wiki Page Parents"),
         description = _(u"Parents of a a Wiki"),
-        value_type = (TextLine(title=_(u"Parent Name"),
-                        description=_(u"Name of the parent wiki page.")),),
+        value_type = TextLine(title=_(u"Parent Name"),
+                              description=_(u"Name of the parent wiki page.")),
         required=False)
 
     def reparent(parents):
