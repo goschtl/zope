@@ -56,8 +56,8 @@ class DummyCheckoutAware(object):
     and checkout information.
     """
     
-    zope.interface.implements(interface.ICheckoutAware)
-    __used_for__ = IHistoryStorage
+    zope.interface.implements(interfaces.ICheckoutAware)
+    __used_for__ = interfaces.IHistoryStorage
     
     def markAsCheckedIn(self, obj):
         """Fake checkin mark doing anything.
@@ -94,13 +94,13 @@ class CopyModifyMergeRepository(object):
     """
 
     zope.interface.implements(
-        ICopyModifyMergeRepository,
-        IIntrospectableRepository,
+        interfaces.ICopyModifyMergeRepository,
+        interfaces.IIntrospectableRepository,
     )
 
     def __init__(self):
         self.histories = zapi.getUtility(IHistoryStorage)
-        self.checkout_blah = zapi.
+        #self.checkout_blah = zapi.
         
     def applyVersionControl(self, obj):
         """Put the passed object under version control.
@@ -159,7 +159,7 @@ class CopyModifyMergeRepository(object):
             (obj, self.histories), IVersionableAspects)
         return versionable_state.getApsectsHistory(specifier)
         
-    def getMetadataHistory(self, obj)
+    def getMetadataHistory(self, obj):
         versionable_state = zapi.getMultiAdapter(
             (obj, self.histories), IVersionableAspects)
         return versionable_state.getMetadataHistory(specifier)
@@ -170,8 +170,8 @@ class CheckoutCheckinRepository(CopyModifyMergeRepository):
     """
 
     zope.interface.implements(
-        ICheckoutCheckinRepository,
-        IIntrospectableRepository,
+        interfaces.ICheckoutCheckinRepository,
+        interfaces.IIntrospectableRepository,
     )
 
     def saveAsVersion(self, obj):
