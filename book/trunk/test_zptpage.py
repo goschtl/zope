@@ -15,9 +15,6 @@
 
 $Id: test_templatedpage.py,v 1.1.1.1 2004/02/18 18:07:08 srichter Exp $
 """
-
-
-
 import time
 import unittest
 
