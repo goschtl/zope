@@ -209,7 +209,9 @@ class ImmediateTestResult(unittest._TextTestResult):
 
         # Did the test leave any new threads behind?
         new_threads = [t for t in threading.enumerate()
-                         if t not in self._threads]
+                         if (t.isAlive()
+                             and
+                             t not in self._threads)]
         if new_threads:
             print "The following test left new threads behind:"
             print test
