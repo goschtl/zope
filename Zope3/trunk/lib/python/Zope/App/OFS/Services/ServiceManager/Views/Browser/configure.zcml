@@ -43,7 +43,7 @@
     <page name="addPackage.html"
                   attribute="addPackage"
                   />
-    <page name="removeObjects"
+    <page name="removeObjects.html"
                   attribute="removeObjects"
                   />
   </view>
