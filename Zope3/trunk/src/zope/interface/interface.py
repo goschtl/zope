@@ -14,14 +14,14 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: interface.py,v 1.3 2002/12/30 14:01:45 stevea Exp $
 """
 
 
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: interface.py,v 1.3 2002/12/30 14:01:45 stevea Exp $
 """
 
 from inspect import currentframe
@@ -132,7 +132,7 @@ class InterfaceClass(Element):
     def getBases(self):
         return self.__bases__
 
-    def extends(self, other, strict=1):
+    def extends(self, other, strict=True):
         """Does an interface extend another?"""
         if not strict and self is other:
             return True
