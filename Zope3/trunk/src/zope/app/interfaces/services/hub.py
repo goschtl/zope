@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub interfaces.
 
-$Id: hub.py,v 1.3 2002/12/30 14:03:14 stevea Exp $
+$Id: hub.py,v 1.4 2003/02/03 16:01:11 stevea Exp $
 """
 
 from zope.interface import Attribute
@@ -147,6 +147,8 @@ class IObjectHub(IHubEventChannel):
     def register(obj_or_loc):
         """Returns a new hub id for the given location or the given
         wrapped object if it is not already registered.
+
+        A hubId is an int. 0 is never a valid hubId.
 
         It also emits a HubIdObjectRegisteredEvent.  Raises an
         ObjectHubError if the location was previously registered.
