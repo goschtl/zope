@@ -12,11 +12,9 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.18 2003/06/01 15:59:40 jim Exp $
+$Id: test_wrapper.py,v 1.19 2003/06/02 11:06:57 jim Exp $
 """
-import pickle
 import unittest
-
 from zope.proxy import getProxiedObject
 from zope.context import Wrapper, wrapper
 from zope.context import ContextMethod, ContextProperty, ContextAware
@@ -513,29 +511,6 @@ class WrapperTestCase(ProxyTestCase):
         context = object()
         wrapper.setcontext(w, context)
         self.assert_(wrapper.getcontext(w) is context)
-
-    def test_pickle_prevention(self):
-        w = self.new_proxy(Thing())
-        self.assertRaises(pickle.PicklingError,
-                          pickle.dumps, w)
-        try:
-            pickle.dumps(w)
-        except pickle.PicklingError, err:
-            # We need to check that the error is the one raised by the
-            # Wrapper's __reduce__ method, and not one caused by the pickling
-            # machinery getting confused.
-            self.assertEquals(err[0], "Wrapper instances cannot be pickled.")
-
-    def test_reduce_in_subclass(self):
-        class CustomPicklingError(pickle.PicklingError):
-            pass
-        class WrapperWithReduce(self.proxy_class):
-            def __reduce__(self):
-                raise CustomPicklingError
-            def __reduce_ex__(self, proto):
-                raise CustomPicklingError
-        w = WrapperWithReduce(Thing())
-        self.assertRaises(CustomPicklingError, pickle.dumps, w)
 
     def test_simple_subclass(self):
 
