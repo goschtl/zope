@@ -34,6 +34,7 @@ Five developer
 
 Views with Five
 
+
 	What are views?
 
 	Why?
@@ -53,5 +54,33 @@ Actually
 
 %page
 
-View example
+Page template example
 
+
+%size 4, fore "blue"
+<html>
+<body>
+<p tal:content="context/objectIds"></p>
+</body>
+</html>
+
+%page
+
+Hooking up the page template
+
+
+%size 4, fore "blue"
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  xmlns:five="http://namespaces.zope.org/five">
+  <five:traversable
+    class="OFS.Folder.Folder"
+    />
+  <browser:page
+      for="Products.Five.interfaces.IFolder"
+      name="overview"
+      template="overview.pt"
+      permission="zope2.ViewManagementScreens"
+      />
+</configure>
