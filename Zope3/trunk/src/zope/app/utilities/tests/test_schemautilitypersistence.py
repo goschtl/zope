@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests for Schema Utility Persistence
 
-$Id: test_schemautilitypersistence.py,v 1.2 2003/10/08 13:10:11 sidnei Exp $
+$Id: test_schemautilitypersistence.py,v 1.3 2003/10/18 18:56:24 sidnei Exp $
 """
 
 import unittest
 
 from persistence.tests.test_persistence import PersistentTest, DM
-from persistence.wrapper import Struct
+from zope.app.utilities.wrapper import Struct
 from zope.app.utilities.schema import SchemaUtility
 from zope.schema import Text, getFieldsInOrder
 from zope.app.tests import setup
@@ -44,6 +44,26 @@ class PersistentSchemaUtilityTest(PersistentTest):
 
     def testState(self):
         pass
+
+#     def testChangeField(self):
+#         f = Text(title=u'alpha')
+#         p = self.klass()
+#         p._p_oid = '\0\0\0\0\0\0hi'
+#         dm = DM()
+#         p._p_jar = dm
+#         self.assertEqual(p._p_changed, 0)
+#         self.assertEqual(dm.called, 0)
+#         p.addField('alpha', f)
+#         self.assertEqual(p._p_changed, 1)
+#         self.assertEqual(dm.called, 1)
+#         p._p_changed = 0
+#         self.assertEqual(p._p_changed, 0)
+#         self.assertEqual(dm.called, 1)
+#         field = p['alpha']
+#         field.title = u'Beta'
+#         self.assertEqual(f._p_changed, 1)
+#         self.assertEqual(p._p_changed, 1)
+#         self.assertEqual(dm.called, 2)
 
 #     def testAddField(self):
 #         f = Text(title=u'alpha')
@@ -72,26 +92,6 @@ class PersistentSchemaUtilityTest(PersistentTest):
 #         self.assertEqual(p._p_changed, 0)
 #         self.assertEqual(dm.called, 1)
 #         p.removeField('alpha')
-#         self.assertEqual(p._p_changed, 1)
-#         self.assertEqual(dm.called, 2)
-
-#     def testChangeField(self):
-#         f = Text(title=u'alpha')
-#         p = self.klass()
-#         p._p_oid = '\0\0\0\0\0\0hi'
-#         dm = DM()
-#         p._p_jar = dm
-#         self.assertEqual(p._p_changed, 0)
-#         self.assertEqual(dm.called, 0)
-#         p.addField('alpha', f)
-#         self.assertEqual(p._p_changed, 1)
-#         self.assertEqual(dm.called, 1)
-#         p._p_changed = 0
-#         self.assertEqual(p._p_changed, 0)
-#         self.assertEqual(dm.called, 1)
-#         field = p['alpha']
-#         field.title = u'Beta'
-#         self.assertEqual(f._p_changed, 1)
 #         self.assertEqual(p._p_changed, 1)
 #         self.assertEqual(dm.called, 2)
 

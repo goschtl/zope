@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.4 2003/09/21 17:31:11 jim Exp $
+$Id: traversal.py,v 1.5 2003/10/18 18:56:23 sidnei Exp $
 """
 from zope.interface import implements
 from zope.component import getDefaultViewName, queryView
@@ -50,7 +50,7 @@ class SchemaFieldTraverser:
                 if ILocation.isImplementedBy(view):
                     view.__parent__ = self.context
                     view.__name__ = name
-                    
+
                 return view
 
             raise NotFoundError(self.context, name, request)

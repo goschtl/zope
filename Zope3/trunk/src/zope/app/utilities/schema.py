@@ -13,14 +13,14 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.9 2003/10/08 13:16:01 sidnei Exp $
+$Id: schema.py,v 1.10 2003/10/18 18:56:24 sidnei Exp $
 """
 from types import FunctionType
 
 from persistence.dict import PersistentDict
-from persistence.wrapper import Struct
 
 from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.proxy import removeAllProxies
 from zope.interface import Interface
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
@@ -28,6 +28,7 @@ from zope.app import zapi
 from zope.app.introspector import nameToInterface, interfaceToName
 from zope.app.browser.container.adding import Adding
 from zope.app.utilities.interfaces import IMutableSchemaContent
+from zope.app.utilities.wrapper import Struct
 from zope.app.interfaces.utilities.schema import \
      ISchemaAdding, IMutableSchema, ISchemaUtility
 from zope.app.services.interface import PersistentInterfaceClass
@@ -121,7 +122,7 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
         del self._attrs[name]
 
     def __setitem__(self, name, value):
-        value = trustedRemoveSecurityProxy(value)
+        value = removeAllProxies(value)
         if isinstance(value, Attribute):
             value.interface = name
             if not value.__name__:

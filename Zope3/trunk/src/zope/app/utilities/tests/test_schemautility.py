@@ -12,14 +12,20 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.4 2003/09/25 16:56:42 sidnei Exp $
+$Id: test_schemautility.py,v 1.5 2003/10/18 18:56:24 sidnei Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 
+from zope.configuration import xmlconfig
+from zope.schema import Text, getFieldNamesInOrder, getFieldsInOrder
+from zope.security.management import system_user, newSecurityManager
+from zope.security.checker import getChecker, _defaultChecker
+from zope.security.checker import ProxyFactory
 from zope.app.utilities.schema import SchemaUtility
 from zope.app.tests import setup
-from zope.schema import Text, getFieldNamesInOrder
+from zope.app import zapi
+import zope.app.utilities.tests
 
 class SchemaUtilityTests(TestCase):
 
@@ -154,6 +160,22 @@ class SchemaUtilityTests(TestCase):
         s.addField(u'beta', beta)
         self.assertRaises(IndexError, s.moveField,
                           'beta', -1)
+
+    def test_traverseToField(self):
+        context = xmlconfig.file("fields.zcml", zope.app.utilities.tests)
+        s = self.s
+        s.addField(u'alpha', self.alpha)
+        s = ProxyFactory(s)
+        newSecurityManager(system_user)
+        f1 = ProxyFactory(s[u'alpha'])
+        order = f1.order
+        f1 = zapi.traverse(s, 'alpha')
+        self.assertEquals(f1.order, self.alpha.order)
+        title = zapi.traverse(f1, 'title')
+        self.assertEquals(title, self.alpha.title)
+        fields = getFieldsInOrder(s)
+        for k, v in fields:
+            self.failUnless(v.title is not None)
 
     def tearDown(self):
         setup.placefulTearDown()
