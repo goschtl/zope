@@ -162,16 +162,19 @@ class IInputWidget(IWidget):
         """)
 
     def validate():
-        """Validate the widget data.
+        """Returns a valid value from the widget.
 
-        If there is no user input and the field is required, then a
+        This method returns the data of the field in the native Python
+        format. The value is also validated against the field's constraints.
+
+        If the field is required and no input was found, a
         ``MissingInputError`` will be raised.
 
-        If there is no user input and the field is not required, then
-        the field default value will be returned.
+        If the field is not required and no input was found, then return the
+        ``missing_value`` of the field.
 
-        A ``WidgetInputError`` is returned in the case of one or more
-        errors encountered, inputting, converting, or validating the data.
+        If validation errors occurred, then they are all collected in a new
+        ``WidgetInputError`` exception, which is raised.
         """
 
     def getInputValue():
@@ -179,8 +182,6 @@ class IInputWidget(IWidget):
 
         The widget must return a value that can be legally assigned to
         its bound field or otherwise raise ``WidgetInputError``.
-
-        See validate() for validation performed.
         """
 
     def applyChanges(content):

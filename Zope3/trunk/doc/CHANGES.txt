@@ -495,6 +495,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #352: documentation for
+        zope.app.form.interfaces.IInputWidget.validate is wrong
+
       - Fixed issue #317: Relative links don't work in Page Template
 
       - Fixed issue #335 (debug layer does not work with Zope3-trunk)

@@ -92,9 +92,6 @@ Others
 
 * 348: ZCML hides import errors 
 
-* 352: documentation for zope.app.form.interfaces.IInputWidget.validate is
-       wrong
-
 * 356: Copy and Paste does not handle exceptions raised by __setitem__ 
 
 * 360: MultiSelectWidget configured for ISet but creates list
