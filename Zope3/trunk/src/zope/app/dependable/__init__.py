@@ -38,7 +38,10 @@ class PathSetAnnotation(object):
         except TypeError:
             parent = None
         if parent is not None:
-            pp = getPath(parent)
+            try:
+                pp = getPath(parent)
+            except TypeError:
+                pp = ""
             if not pp.endswith("/"):
                 pp += "/"
             self.pp = pp # parentpath
