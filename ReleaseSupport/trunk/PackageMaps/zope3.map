@@ -33,3 +33,4 @@ ZODB           svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZODB
 #
 ZopeX3         svn://svn.zope.org/repos/main/Zope3/tags/*/releases/ZopeX3
 ZopeInterface  svn://svn.zope.org/repos/main/Zope3/tags/*/releases/ZopeInterface
+ZPT            svn://svn.zope.org/repos/main/Zope3/tags/*/releases/ZPT
