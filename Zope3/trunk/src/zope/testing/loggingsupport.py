@@ -31,7 +31,7 @@ Then, any log output is collected in the handler:
 
   >>> for record in handler.records:
   ...     print record.name, record.levelname
-  ...     print ' ', record.message
+  ...     print ' ', record.getMessage()
   foo.bar ERROR
     eek
   foo.bar INFO
@@ -106,7 +106,7 @@ class Handler(logging.Handler):
             [("%s %s\n  %s" %
               (record.name, record.levelname,
                '\n'.join([line
-                          for line in record.message.split('\n')
+                          for line in record.getMessage().split('\n')
                           if line.strip()])
                )
               )
