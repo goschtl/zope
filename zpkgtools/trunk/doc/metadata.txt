@@ -28,9 +28,9 @@ contain different aspects of the relevant metadata.
   constraints on any software included in the distribution.
 
 `PACKAGE.cfg`
-  List of inclusions (and exclusions) that are added/removed from the
-  distribution as it's constructed.  See `Package Construction
-  Information`_ for details.
+  Control over the files that are included in the distribution when it
+  is constructed.  See `Package Construction Information`_ for
+  details.
 
 `PUBLICATION.cfg`
   General metadata related to a distribution.  This includes
@@ -75,47 +75,33 @@ Package Construction Information
   2. External references are loaded into the workspace.  It is
      possible for this to overwrite portions of the component itself,
      so specify the loads carefully.  This is based on the ``<load>``
-     section of `PACKAGE.cfg`; the ``<load>`` section cannot contain
-     exclusions.
+     section of `PACKAGE.cfg`.
 
   3. Files from the workspace are copied into their final locations in
      the component-specific portion of the distribution tree.
 
-     By default, the entire workspace is copied to the
-     component-specific portion of the distribution tree, with the
-     exception of files and directories associated with various
-     revision control systems.  Files named `.cvsignore` and
-     directories with names of `CVS`, `RCS`, or `SCCS` are excluded.
+     If `PACKAGE.cfg` contains a ``<collection>`` section, it is used
+     to specify which files should be copied into the
+     component-specific portion of the distribution tree.  Only files
+     listed will be copied.
 
-     Files in the workspace can be excluded from this copy operation
-     using a line of the form
-
-       *files* ``-``
-
-     The hyphen indicates that this is an exclusion.  In this case,
-     *files* can contain globbing wildcards; these patterns will be
-     matched against the workspace, and can include files loaded as
-     part of the component or from external references.
+     If the ``<collection>`` section is not present or is empty, all
+     files in the workspace are copied; directories are copied
+     recursively.  Files named `.cvsignore` and directories with names
+     of `CVS`, `RCS`, or `SCCS` are excluded.
 
      A copy of a file with a new name can be generated in the
      distribution tree using a line like this in `PACKAGE.cfg`:
 
-       *destination*   *source*
+       *source*   *destination*
 
      This causes the file or directory identified by *source* in the
      workspace to be copied to the name *destination* in the
-     distribution tree.  This does *not* prevent a file named *source*
-     from also being created in the distribution; an exclusion must be
-     used to completely rename the file.  For example, to rename a
-     file named `README` to `README.txt`, use::
+     distribution tree.
 
-       README.txt  README
-       README      -
-
-     The order of the two lines is irrelevant.
-
-     This operation is based on the ``<collection>`` section of the
-     `PACKAGE.cfg` file.
+     If *destination* is omitted, the destination is assumed to have
+     the same name as the source.  In this case, *source* can contain
+     POSIX globbing wildcards.
 
   4. If the component being processed is the primary resource being
      packaged, files from the workspace can be copied into the
@@ -134,23 +120,8 @@ Package Construction Information
      rather than the component-specific portion of the distribution
      tree.
 
-     To move a file from the component into the distribution root, and
-     not include it when using the component as part of some other
-     distribution, use an inclusion in the ``<distribution>`` section
-     and an exclusion in the ``<collection>`` section::
-
-       <collection>
-         README       -
-       </collection>
-
-       <distribution>
-         README.txt   README
-       </distribution>
-
-     The ``<distribution>`` section may not contain exclusions.
-
-  As an example, this is the `PACKAGE.cfg` being used for the
-  ``ZConfig`` package at the time of this writing::
+  As an example, this is the `PACKAGE.cfg` used for the ``ZConfig``
+  package::
 
     # Load the license from an external source, so we don't have to keep a
     # copy of it sitting around:
@@ -160,37 +131,29 @@ Package Construction Information
 
     # Add a few things to the distribution root.
     <distribution>
-      doc          doc
-      LICENSE.txt  LICENSE.txt
-      NEWS.txt     NEWS.txt
-      README.txt   README.txt
+      doc
+      LICENSE.txt
+      NEWS.txt
+      README.txt
     </distribution>
 
     # and remove the same from the package itself.
     <collection>
-      doc          -
-      LICENSE.txt  -
-      NEWS.txt     -
-      README.txt   -
+      # Python modules from the package:
+      *.py
 
-      # We'll remove this too, since it's only of interest to CVS users:
-      BRANCHES.txt -
+      # Child packages:
+      components
+      tests
+
+      # Other files and directories needed when distutils runs:
+      scripts
     </collection>
 
-  Note that when excluding files from the collection, wildcards are
-  supported using the convention POSIX globbing syntax.  The
-  ``<collection>`` section above could have been written as::
-
-    <collection>
-      doc          -
-      *.txt        -
-    </collection>
-
-  This wouldn't have made it as screamingly obvious that we were
-  dropping a text file from the finished package that wasn't already
-  mentioned, however.  This re-write would not be possible if there
-  were other files matching ``*.txt`` that should be copied into the
-  installed ``ZConfig`` package.
+  What isn't obvious is that one of the files in the ``ZConfig``
+  package under revision control isn't included in either the
+  distribution root or the component-specific directory (the
+  `BRANCHES.txt` file in particular).
 
 
 Embedded Package Definitions
