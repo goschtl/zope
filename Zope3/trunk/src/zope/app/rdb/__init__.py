@@ -247,9 +247,9 @@ class ZopeCursor(object):
 
         if isinstance(operation, unicode):
             operation = operation.encode('UTF-8')
-        if parameters is None:
-            parameters = {}
         self.connection.registerForTxn()
+        if parameters is None:
+            return self.cursor.execute(operation)
         return self.cursor.execute(operation, parameters)
 
     def __getattr__(self, key):
