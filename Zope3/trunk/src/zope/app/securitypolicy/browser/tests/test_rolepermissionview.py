@@ -13,11 +13,12 @@
 ##############################################################################
 """Role-Permission View Tests
 
-$Id: test_rolepermissionview.py,v 1.4 2004/03/13 15:21:33 srichter Exp $
+$Id: test_rolepermissionview.py,v 1.5 2004/03/19 20:26:36 srichter Exp $
 """
 import unittest
 
-from zope.publisher.browser import BrowserView, TestRequest
+from zope.publisher.browser import TestRequest
+from zope.app.publisher.browser import BrowserView
 from zope.app.tests import ztapi
 from zope.app.security.permission import Permission
 from zope.app.security.interfaces import IPermission

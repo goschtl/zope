@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.4 2004/03/14 02:17:07 srichter Exp $
+$Id: __init__.py,v 1.5 2004/03/19 20:26:36 srichter Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.app import zapi
@@ -26,7 +26,7 @@ from zope.app.registration.interfaces import ActiveStatus
 from zope.app.site.interfaces import ILocalService
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.site.service import ServiceRegistration
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.site.interfaces import ISite, ISiteManager
 from zope.app.site.service import SiteManager
 from zope.app.component.nextservice import getNextServiceManager

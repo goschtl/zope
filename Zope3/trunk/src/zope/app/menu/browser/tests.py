@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Browser Tests
 
-$Id: tests.py,v 1.4 2004/03/17 18:24:25 philikon Exp $
+$Id: tests.py,v 1.5 2004/03/19 20:26:28 srichter Exp $
 """
 import unittest
 
@@ -25,7 +25,8 @@ from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
 from zope.security.proxy import ProxyFactory
 
 from zope.publisher.browser import TestRequest
-from zope.publisher.interfaces.browser import IBrowserView, IBrowserPublisher
+from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.app.publisher.interfaces.browser import IBrowserView
 
 from zope.app.tests import ztapi
 from zope.app.site.tests.placefulsetup import PlacefulSetup

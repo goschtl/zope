@@ -13,7 +13,7 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.2 2004/03/13 23:55:04 srichter Exp $
+$Id: control.py,v 1.3 2004/03/19 20:26:27 srichter Exp $
 """
 from zope.app.introspector import interfaceToName
 from zope.app.dublincore.interfaces import IZopeDublinCore
@@ -23,7 +23,7 @@ from zope.app.traversing import canonicalPath
 from zope.component import getService, queryAdapter
 from zope.exceptions import NotFoundError
 from zope.interface import implements
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 class ControlView(BrowserView):
 

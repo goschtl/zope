@@ -13,10 +13,10 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.4 2004/03/17 17:59:30 srichter Exp $
+$Id: xmlobject.py,v 1.5 2004/03/19 20:26:34 srichter Exp $
 """
 
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app import zapi
 from zope.app.container.interfaces import IReadContainer
 from zope.app.traversing import getParents, getParent, traverse

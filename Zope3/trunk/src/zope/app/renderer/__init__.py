@@ -13,11 +13,11 @@
 ##############################################################################
 """Plain Text Renderer Classes
 
-$Id: __init__.py,v 1.5 2004/03/13 20:24:30 srichter Exp $
+$Id: __init__.py,v 1.6 2004/03/19 20:26:32 srichter Exp $
 """
 from zope.component.interfaces import IFactory
 from zope.interface import implements, directlyProvides, Declaration
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from interfaces import ISource, IHTMLRenderer
 
 

@@ -13,11 +13,11 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.7 2004/03/14 01:11:43 srichter Exp $
+$Id: instance.py,v 1.8 2004/03/19 20:26:38 srichter Exp $
 """
 from zope.component import getService
 from zope.proxy import removeAllProxies
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.schema import getFields
 

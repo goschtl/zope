@@ -28,7 +28,7 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all registrations in a
 bundle and lets the user activate them.
 
-$Id: __init__.py,v 1.3 2004/03/13 18:01:10 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/19 20:26:23 srichter Exp $
 """
 import re
 from transaction import get_transaction
@@ -40,7 +40,7 @@ from zope.app.registration.interfaces import \
      IRegistration, RegisteredStatus, ActiveStatus, UnregisteredStatus
 from zope.app.site.interfaces import IServiceRegistration
 from zope.component import ComponentLookupError
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 class BundleView(BrowserView):
 

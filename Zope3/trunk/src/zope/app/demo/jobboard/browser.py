@@ -1,5 +1,5 @@
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 

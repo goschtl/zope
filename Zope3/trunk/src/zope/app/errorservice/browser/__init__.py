@@ -13,9 +13,9 @@
 ##############################################################################
 """Define view component for event service control.
 
-$Id: __init__.py,v 1.2 2004/03/13 23:54:59 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/19 20:26:25 srichter Exp $
 """
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.servicenames import ErrorLogging

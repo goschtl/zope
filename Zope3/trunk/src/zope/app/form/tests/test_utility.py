@@ -11,23 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Form Utilities Tests
 
-XXX longer description goes here.
-
-$Id: test_utility.py,v 1.22 2004/03/18 17:01:12 philikon Exp $
+$Id: test_utility.py,v 1.23 2004/03/19 20:26:26 srichter Exp $
 """
 import doctest
 
 from zope.interface import Interface, implements
 from zope.component.interfaces import IViewFactory
 from zope.component.exceptions import ComponentLookupError
-from zope.publisher.browser import BrowserView, TestRequest
+from zope.publisher.browser import TestRequest
 
 from zope.schema import Field
 from zope.schema.interfaces import IField
 
 from zope.app.tests import ztapi
+from zope.app.publisher.browser import BrowserView
 from zope.app.form import Widget
 from zope.app.form.interfaces import IWidget, IInputWidget
 from zope.app.form.interfaces import IDisplayWidget, WidgetsError
@@ -500,7 +499,7 @@ class TestSetUpWidgets:
             >>> setUpWidgets(view, IContent, IWidget, 'prefix', True,
             ...              initial={ "bar":"Bar" },
             ...              context="Alt Context")
-            view: <class 'zope.publisher.browser.BrowserView'>
+            view: <class 'zope.app.publisher.browser.BrowserView'>
             name: foo
             field: <class 'zope.app.form.tests.test_utility.Foo'>
             viewType: <class 'zope.interface.interface.InterfaceClass'>
@@ -509,7 +508,7 @@ class TestSetUpWidgets:
             ignoreStickyValues: True
             context: Alt Context
             ---
-            view: <class 'zope.publisher.browser.BrowserView'>
+            view: <class 'zope.app.publisher.browser.BrowserView'>
             name: bar
             field: <class 'zope.app.form.tests.test_utility.Bar'>
             viewType: <class 'zope.interface.interface.InterfaceClass'>

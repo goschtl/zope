@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Basic tests for Page Templates used in content-space.
+"""Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.7 2004/03/13 21:03:26 srichter Exp $
+$Id: test_zptpage.py,v 1.8 2004/03/19 20:26:38 srichter Exp $
 """
 
 import unittest
@@ -25,7 +24,8 @@ from zope.exceptions import Forbidden
 from zope.app.tests import ztapi
 from zope.app.index.interfaces.text import ISearchableText
 from zope.component import getView
-from zope.publisher.browser import TestRequest, BrowserView
+from zope.publisher.browser import TestRequest
+from zope.app.publisher.browser import BrowserView
 
 # Wow, this is a lot of work. :(
 from zope.app.tests.placelesssetup import PlacelessSetup

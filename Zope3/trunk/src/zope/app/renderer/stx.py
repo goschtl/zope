@@ -13,12 +13,12 @@
 ##############################################################################
 """Structured Text Renderer Classes
 
-$Id: stx.py,v 1.4 2004/03/02 14:24:45 srichter Exp $
+$Id: stx.py,v 1.5 2004/03/19 20:26:32 srichter Exp $
 """
 import re
 
 from zope.interface import implements
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.structuredtext.document import Document
 from zope.structuredtext.html import HTML
 

@@ -6,7 +6,8 @@
       provides="zope.publisher.interfaces.ftp.IFTPPublisher"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -15,7 +16,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -24,7 +26,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -33,7 +36,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -42,7 +46,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -51,7 +56,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -60,7 +66,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -69,7 +76,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -78,7 +86,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -87,7 +96,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -96,7 +106,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -105,7 +116,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
   <view 
@@ -114,7 +126,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
     <view 
@@ -123,7 +136,8 @@
       type="zope.publisher.interfaces.ftp.IFTPRequest"
       factory=".FTPView"
       permission="zope.Public"
-      allowed_interface="zope.publisher.interfaces.ftp.IFTPDirectoryPublisher"
+      allowed_interface=
+          "zope.app.publisher.interfaces.ftp.IFTPDirectoryPublisher"
       />
 
 </configure>

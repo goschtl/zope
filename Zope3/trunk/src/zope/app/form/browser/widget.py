@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.4 2004/03/19 04:26:13 srichter Exp $
+$Id: widget.py,v 1.5 2004/03/19 20:26:25 srichter Exp $
 """
 import re, cgi
 import traceback
@@ -22,7 +22,7 @@ from xml.sax.saxutils import quoteattr
 
 from zope.interface import implements
 from zope.schema.interfaces import ValidationError
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.tests import ztapi

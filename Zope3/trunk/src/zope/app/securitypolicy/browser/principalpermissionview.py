@@ -13,11 +13,11 @@
 ##############################################################################
 """Principal Permission View Classes
 
-$Id: principalpermissionview.py,v 1.5 2004/03/13 23:55:24 srichter Exp $
+$Id: principalpermissionview.py,v 1.6 2004/03/19 20:26:35 srichter Exp $
 """
 import time
 
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile

@@ -13,12 +13,12 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: __init__.py,v 1.1 2004/03/10 17:00:54 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/19 20:26:28 srichter Exp $
 """
 from zope.app.module import Manager
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.proxy import removeAllProxies
 
 from zope.app.i18n import ZopeMessageIDFactory as _

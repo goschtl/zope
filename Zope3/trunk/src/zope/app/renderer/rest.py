@@ -13,7 +13,7 @@
 ##############################################################################
 """ReStructured Text Renderer Classes
 
-$Id: rest.py,v 1.6 2004/03/02 14:24:45 srichter Exp $
+$Id: rest.py,v 1.7 2004/03/19 20:26:32 srichter Exp $
 """
 import docutils.core, docutils.io
 from docutils import nodes, writers
@@ -21,7 +21,7 @@ from docutils.writers.html4css1 import HTMLTranslator
 from docutils.writers.html4css1 import Writer as HTMLWriter
 
 from zope.interface import implements
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.renderer.interfaces import ISource, IHTMLRenderer
 from zope.app.renderer import SourceFactory
 

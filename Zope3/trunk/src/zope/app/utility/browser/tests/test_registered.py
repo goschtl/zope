@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the registered view support.
 
-$Id: test_registered.py,v 1.1 2004/03/11 22:05:03 srichter Exp $
+$Id: test_registered.py,v 1.2 2004/03/19 20:26:37 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,8 @@ from zope.app.tests import ztapi
 from zope.app.utility.browser import Utilities
 from zope.app.tests import placelesssetup
 from zope.interface import Interface, implements
-from zope.publisher.browser import BrowserView, TestRequest
+from zope.publisher.browser import TestRequest
+from zope.app.publisher.browser import BrowserView
 
 
 class IFoo(Interface):

@@ -13,10 +13,10 @@
 ##############################################################################
 """Translation Domain XML-RPC Methods 
 
-$Id: methods.py,v 1.1 2004/03/08 23:34:49 srichter Exp $
+$Id: methods.py,v 1.2 2004/03/19 20:26:26 srichter Exp $
 """
 from zope.proxy import removeAllProxies
-from zope.publisher.xmlrpc import XMLRPCView
+from zope.app.publisher.xmlrpc import XMLRPCView
 
 
 class Methods(XMLRPCView):

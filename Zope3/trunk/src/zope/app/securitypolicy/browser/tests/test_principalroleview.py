@@ -13,12 +13,13 @@
 ##############################################################################
 """Principal-Role View Tests
 
-$Id: test_principalroleview.py,v 1.5 2004/03/13 23:55:24 srichter Exp $
+$Id: test_principalroleview.py,v 1.6 2004/03/19 20:26:36 srichter Exp $
 """
 import unittest
 
 from zope.interface import implements
-from zope.publisher.browser import BrowserView, TestRequest
+from zope.publisher.browser import TestRequest
+from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.tests import ztapi

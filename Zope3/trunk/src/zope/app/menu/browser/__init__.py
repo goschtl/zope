@@ -13,10 +13,10 @@
 ##############################################################################
 """Menu Access and Local Menu Service Views
 
-$Id: __init__.py,v 1.3 2004/03/14 02:17:05 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/19 20:26:28 srichter Exp $
 """
 from zope.interface import implements
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app import zapi
 from zope.app.container.browser.contents import Contents
 from zope.app.component.nextservice import queryNextService

@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Editing Tests
 
-$Id: test_editregistration.py,v 1.2 2004/03/13 21:03:19 srichter Exp $
+$Id: test_editregistration.py,v 1.3 2004/03/19 20:26:31 srichter Exp $
 """
 from zope.app.tests import ztapi
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,7 @@ from zope.app.registration.interfaces import ActiveStatus
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.interface import Interface, implements
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
 from zope.app.container.contained import Contained
 

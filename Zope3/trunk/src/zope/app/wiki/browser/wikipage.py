@@ -13,14 +13,14 @@
 ##############################################################################
 """Browser View Components for WikiPages
 
-$Id: wikipage.py,v 1.7 2004/03/18 17:01:13 philikon Exp $
+$Id: wikipage.py,v 1.8 2004/03/19 20:26:38 srichter Exp $
 """
 import re
 from urllib import quote, unquote
 from datetime import datetime
 
 from zope.proxy import removeAllProxies
-from zope.publisher.browser import BrowserView 
+from zope.app.publisher.browser import BrowserView 
 
 from zope.app import zapi
 from zope.app.form.browser.submit import Update

@@ -21,14 +21,14 @@
 
   AdapterRegistrationAdd
 
-$Id: __init__.py,v 1.3 2004/03/13 21:37:18 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/19 20:26:21 srichter Exp $
 """
 __metaclass__ = type
 
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 
 from zope.schema import getFieldNamesInOrder
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 
 from zope.app.adapter.adapter import IAdapterRegistration
 from zope.app.registration.interfaces import IRegistration
