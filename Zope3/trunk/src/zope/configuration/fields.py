@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.14 2003/08/18 19:42:25 srichter Exp $
+$Id: fields.py,v 1.15 2003/08/18 20:44:52 srichter Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -348,6 +348,10 @@ class MessageID(schema.Text):
                  u'Hello world!': [('file location', 8),
                                    ('file location', 8)]}}
 
+    >>> from zope.i18n.messageid import MessageID
+    >>> isinstance(context.i18n_strings['testing'].keys()[0], MessageID)
+    True
+
     Explicit Message IDs
 
     >>> i = field.fromUnicode(u'[View-Permission] View')
@@ -387,14 +391,6 @@ class MessageID(schema.Text):
             default = v[end+2:]
             v = v[1:end]
 
-        # Record the string we got for the domain
-        i18n_strings = context.i18n_strings
-        strings = i18n_strings.get(domain)
-        if strings is None:
-            strings = i18n_strings[domain] = {}
-        locations = strings.setdefault(v, [])
-        locations.append((context.info.file, context.info.line))
-
         # Convert to a message id, importing the factory, if necessary
         factory = self.__factories.get(domain)
         if factory is None:
@@ -402,4 +398,14 @@ class MessageID(schema.Text):
             factory = zope.i18n.messageid.MessageIDFactory(domain)
             self.__factories[domain] = factory
 
-        return factory(v, default)
+        msgid = factory(v, default)
+
+        # Record the string we got for the domain
+        i18n_strings = context.i18n_strings
+        strings = i18n_strings.get(domain)
+        if strings is None:
+            strings = i18n_strings[domain] = {}
+        locations = strings.setdefault(msgid, [])
+        locations.append((context.info.file, context.info.line))
+
+        return msgid
