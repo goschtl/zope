@@ -52,7 +52,7 @@ class SetupContext:
             print depnames
             print "suffix = %r" % suffix
             for name in depnames:
-                if not name.endswith(suffix):
+                if name != "Includes" and not name.endswith(suffix):
                     # an unexpected name; we didn't put this here!
                     print >>sys.stderr, \
                           "unexpected name in Dependencies/: %r" % name
@@ -67,6 +67,10 @@ class SetupContext:
                 pkgdir = os.path.join(depdir, depname)
                 reldir = posixpath.join("Dependencies", name, depname)
                 self.scan(depname, pkgdir, reldir)
+            includes_dir = os.path.join(depsdir, "Includes")
+            if os.path.isdir(includes_dir):
+                for ext in self.ext_modules:
+                    ext.include_dirs.append(includes_dir)
 
     def setup(self):
         kwargs = self.__dict__.copy()

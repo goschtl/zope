@@ -149,6 +149,7 @@ def read_package_info(directory, reldir=None):
         f.close()
     pkginfo.documentation = expand_globs(directory, reldir,
                                          pkginfo.documentation)
+    pkginfo.header = expand_globs(directory, reldir, pkginfo.header)
     pkginfo.script = expand_globs(directory, reldir, pkginfo.script)
     return pkginfo
 
@@ -379,7 +380,8 @@ def path_ref(s):
 
 
 SCHEMA = cfgparser.Schema(
-    ({"script": path_ref, "documentation": path_ref}, ["extension"], None),
+    ({"script": path_ref, "documentation": path_ref, "header": path_ref},
+     ["extension"], None),
     {"extension": ({"source": path_ref, "depends-on": path_ref,
                     "define" : cpp_definition, "undefine": cpp_names,
                     "language": str,
