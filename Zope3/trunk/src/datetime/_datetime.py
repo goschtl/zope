@@ -3,6 +3,15 @@
 See http://www.zope.org/Members/fdrake/DateTimeWiki/FrontPage
 
 See also http://dir.yahoo.com/Reference/calendars/
+
+For a primer on DST, including many current DST rules, see
+http://webexhibits.org/daylightsaving/
+
+For more about DST than you ever wanted to know, see
+ftp://elsie.nci.nih.gov/pub/
+
+Sources for time zone and DST data: http://www.twinsun.com/tz/tz-link.htm
+
 """
 
 import time as _time
