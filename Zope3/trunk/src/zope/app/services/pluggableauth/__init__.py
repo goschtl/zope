@@ -13,9 +13,8 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.8 2003/09/21 17:33:05 jim Exp $
+$Id: __init__.py,v 1.9 2004/02/15 03:11:14 srichter Exp $
 """
-
 from __future__ import generators
 import random
 import sys
@@ -41,6 +40,7 @@ from zope.app.interfaces.services.pluggableauth import \
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.component.nextservice import queryNextService
 from zope.app import zapi
+from zope.app.location import locate
 from zope.app.traversing import getPath
 from zope.exceptions import NotFoundError
 from zope.app.container.contained import Contained, setitem, uncontained
@@ -167,7 +167,8 @@ class PluggableAuthenticationService(OrderedContainer):
 
         if not IPrincipalSource.isImplementedBy(principal_source):
             raise TypeError("Source must implement IPrincipalSource")
-        self[id] = principal_source
+        locate(principal_source, self, id)
+        self[id] = principal_source        
 
     def removePrincipalSource(self, id):
         """ See IPluggableAuthenticationService.
@@ -448,9 +449,7 @@ class SimplePrincipal(Persistent, Contained):
         self.description = description
 
     def getId(self):
-        """ See IPrincipal.
-
-        """
+        """See IPrincipal."""
         source = self.__parent__
         auth = source.__parent__
         return "%s\t%s\t%s" %(auth.earmark, source.__name__, self.id)
@@ -460,11 +459,11 @@ class SimplePrincipal(Persistent, Contained):
         return self.title
 
     def getDescription(self):
-        """ See IPrincipal. """
+        """See IPrincipal."""
         return self.description
 
     def getLogin(self):
-        """ See IReadUser. """
+        """See IReadUser."""
         return self.login
 
     def validate(self, test_password):
