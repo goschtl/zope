@@ -150,6 +150,10 @@ def init_table():
         {'path': "Packages/Products/PageTemplates",
          'addrs': ["zpt@mail.zope.org"],
          'remote': products_remote},
+
+        {'path': "Projects/python-site",
+         'addrs': ["pythonlabs@digicool.com"],
+         'remote': None},
     ])
 
 # Support for the ZEO module (defined in CVSROOT/modules)
