@@ -85,6 +85,7 @@ class CheckBoxWidgetTest(SimpleInputWidgetTest):
           id="field.foo"
           name="field.foo"
           type="checkbox"
+          value="on"
           />
 
     Hidden rendering:
@@ -114,6 +115,7 @@ class CheckBoxWidgetTest(SimpleInputWidgetTest):
           id="field.foo"
           name="field.foo"
           type="checkbox"
+          value="on"
           />
 
     The checkbox widget does not support None values, so a Bool required
