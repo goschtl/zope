@@ -76,18 +76,19 @@ def init_table():
     add_to_table([
         {'path': "CVSROOT",
          'addrs': ["digicool-cvs@zope.org"],
-         'excludes': ["/history"]},
+         'excludes': ["/history"],
+         'specials': [("repolinks", "adjustlinks.py")]},
 
 ##       {'path': "test",
 ##        'remote': None,
-##        'addrs': "klm@digicool.com"},
+##        'addrs': "klm@zope.com"},
 
         # Catchall for when *no other entry* matches:
         {'path': None,
          'addrs': ["digicool-cvs@zope.org"]},
 
         {'path': "Operations",
-         'addrs': ["support@digicool.com"]},
+         'addrs': ["support@zope.com"]},
 
         {'path': "Releases/Zope", 'addrs': zopeaddr},
         {'path': "Packages", 'addrs': zopeaddr},
@@ -138,10 +139,10 @@ def init_table():
          'addrs': ['tracker-dev@zope.org']},
 
         {'path': "Projects/python-site",
-         'addrs': ["pythonlabs@digicool.com"]},
+         'addrs': ["pythonlabs@zope.com"]},
 
         {'path': "Products/CMFDemo",
-         'addrs': ["karl@digicool.com", "adam@digicool.com"]},
+         'addrs': ["karl@zope.com", "adam@zope.com"]},
         
     ])
 
