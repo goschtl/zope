@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.4 2003/05/06 11:08:00 jim Exp $
+$Id: declarations.py,v 1.5 2003/05/07 15:48:57 stevea Exp $
 """
 
 import sys
@@ -85,13 +85,9 @@ class InterfaceSpecification:
           ...    I2.__identifier__, I1.__identifier__,
           ...    Interface.__identifier__))
           1
-          
+
         """
-    
         self.__signature__ = '\t'.join([iface.__identifier__ for iface in iro])
-
-        
-
 
     def __contains__(self, interface):
         """Test whether an interface is in the specification
@@ -294,8 +290,7 @@ class InterfaceSpecification:
           >>> [iface.__name__ for iface
           ...  in spec - InterfaceSpecification(I3, I4)]
           ['I2']
-          
-        
+
         """
         if other is None:
             other = _empty
@@ -311,7 +306,7 @@ class InterfaceSpecification:
                     break
                 else:
                     ifaces.append(iface)
-                
+
         return self.__class__(*ifaces)
 
 
@@ -344,7 +339,7 @@ class ImplementsSpecification(InterfaceSpecification):
           >>> directlyProvides(b, I4)
           >>> [i.__name__ for i in b.__implements__]
           ['I3', 'I2']
-          
+
         """
 
         return InterfaceSpecification(_gatherSpecs(cls, []))
@@ -356,7 +351,7 @@ class OnlyImplementsSpecification(ImplementsSpecification):
     def __init__(self, *interfaces):
         ImplementsSpecification.__init__(self, *interfaces)
         self.__signature__ = "only(%s)" % self.__signature__
-        
+
 
 class ProvidesSpecification(InterfaceSpecification):
 
@@ -407,9 +402,9 @@ class ObjectSpecificationDescriptor:
           ['IFooFactory']
           >>> [i.__name__ for i in C().__providedBy__]
           ['IFoo']
-          
+
         """
-        
+
         # Get an ObjectSpecification bound to either an instance or a class,
         # depending on how we were accessed.
         if inst is None:
@@ -492,7 +487,7 @@ class ObjectSpecification:
 
     def __signature__(self):
         ob = self.ob
-        
+
         provides = getattr(ob, '__provides__', None)
         if provides is not None:
             result = [provides.__signature__]
@@ -513,7 +508,7 @@ class ObjectSpecification:
             for c in mro:
                 try: flags = c.__flags__
                 except AttributeError: flags = heap
-                
+
                 if flags & heap:
                     try:
                         dict = c.__dict__
@@ -538,11 +533,11 @@ class ObjectSpecification:
                                      implements.__class__.__mro__)
                                     )
                             result.append(`implements`)
-                        
+
                     else:
 
                         # Normal case
-                        
+
                         implements = dict.get('__implements__')
 
                         if implements is not None:
@@ -847,10 +842,10 @@ def _implements(name, spec):
 
     # Try to make sure we were called from a class def
     if (locals is frame.f_globals) or ('__module__' not in locals):
-        raise TypeError(name+" can only be used from a class definition.")
+        raise TypeError(name+" can be used only from a class definition.")
 
     if '__providedBy__' in locals:
-        raise TypeError( name+" can only be used once in a class definition.")
+        raise TypeError(name+" can be used only once in a class definition.")
 
     locals["__implements__"] = spec
     locals["__providedBy__"] = _objectSpecificationDescriptor
@@ -1119,14 +1114,14 @@ def _getImplements(cls):
             implements = getattr(cls, '__implements__', None)
             if implements is not None:
                 implements = OnlyImplementsSpecification(implements)
-                
+
             return implements
 
         k = '__implements__'
     else:
         d = _implements_reg
         k = cls
-    
+
     return d.get(k)
 
 def _setImplements(cls, v):
@@ -1152,7 +1147,7 @@ def _flattenSpecs(specs, result):
     >>> r = _flattenSpecs((I3, spec), [])
     >>> int(r == [I3, I1, I2])
     1
-    
+
     """
     try:
         # catch bad spec by seeing if we can iterate over it
@@ -1160,7 +1155,7 @@ def _flattenSpecs(specs, result):
     except TypeError:
         # Must be a bad spec
         raise exceptions.BadImplements(specs)
-    
+
     for spec in ispecs:
         # We do this rather than isinstance because it works w proxies classes
         if InterfaceClass in spec.__class__.__mro__:
@@ -1191,11 +1186,11 @@ def _gatherSpecs(cls, result):
                 _flattenSpecs([implements], []))
             stop = 1
             _setImplements(cls, implements)
-            
+
         result.append(implements)
     else:
         stop = 0
-        
+
     if not stop:
         for b in cls.__bases__:
             _gatherSpecs(b, result)
