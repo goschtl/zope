@@ -10,9 +10,9 @@ Zope Changes
 
     New features
 
-      - The zope.security.interfaces.Unauthorized exception now shows the
-        object, in addition to the attribute and permission names.  This should
-        make debugging easier.
+      - When raising the Unahtorized exception, the security checker now passes
+        the object in question in addition to the attribute name and missiing
+        permission.  This should make debugging easier
 
       - You can declare "features" provided by your package with the new
         <meta:provides feature="name" /> ZCML directive.  The presence of these
