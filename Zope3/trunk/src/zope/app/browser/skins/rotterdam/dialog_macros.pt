@@ -25,6 +25,8 @@
     <script type="text/javascript" src="xmltree.js" 
             tal:attributes="src string:${context/++resource++xmltree.js}"
             ></script>
+    <link rel="icon" type="image/png"
+          tal:attributes="href context/++resource++favicon.png" />
   </head>
 
   <body onload="loadtree('');"
