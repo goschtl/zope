@@ -1,7 +1,7 @@
+import logging
+
 from IDataManager import IRollback
 from Transaction import Transaction, Status
-
-import zLOG
 
 # XXX need to change asserts of transaction status into explicit checks
 # that raise some exception
@@ -17,14 +17,14 @@ class TransactionManager(object):
 
     def new(self):
         txn = self.txn_factory(self)
-        zLOG.LOG("txn", zLOG.DEBUG, "%s: begin" % txn)
+        logging.debug("txn %s: begin" % txn)
         return txn
 
     def commit(self, txn):
         assert txn._status is Status.ACTIVE
         txn._status = Status.PREPARING
         prepare_ok = True
-        zLOG.LOG("txn", zLOG.DEBUG, "%s: prepare" % txn)
+        logging.debug("txn %s: prepare" % txn)
         try:
             for r in txn._resources:
                 if prepare_ok and not r.prepare(txn):
@@ -40,14 +40,14 @@ class TransactionManager(object):
             self.abort(txn)
 
     def _commit(self, txn):
-        zLOG.LOG("txn", zLOG.DEBUG, "%s: commit" % txn)
+        logging.debug("txn %s: commit" % txn)
         # finish the two-phase commit
         for r in txn._resources:
             r.commit(txn)
         txn._status = Status.COMMITTED
 
     def abort(self, txn):
-        zLOG.LOG("txn", zLOG.DEBUG, "%s: abort" % txn)
+        logging.debug("txn %s: abort" % txn)
         assert txn._status in (Status.ACTIVE, Status.PREPARED, Status.FAILED)
         txn._status = Status.PREPARING
         for r in txn._resources:
@@ -55,7 +55,7 @@ class TransactionManager(object):
         txn._status = Status.ABORTED
 
     def savepoint(self, txn):
-        zLOG.LOG("txn", zLOG.DEBUG, "%s: savepoint" % txn)
+        logging.debug("txn %s: savepoint" % txn)
         return Rollback([r.savepoint(txn) for r in txn._resources])
 
 class Rollback(object):
@@ -96,4 +96,3 @@ class ThreadedTransactionManager(TransactionManager):
         assert self._pool[tid] is txn
         super(ThreadedTransactionManager, self).abort(txn)
         del self._pool[tid]
-            
