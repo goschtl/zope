@@ -52,20 +52,18 @@ Things to do for the next release (in no particular order)
 
   What remains is the section "Utilities everywhere".
 
-  - Translation (?)  Note that if these were utilities, you could
+  - Factories
+
+  - Translation.  Note that if these were utilities, you could
     have independent utilities prt domain
 
   - Caching (Naveen is working on this)
-
-  - SQL Database connections (Mostly done, but Madhavi and Mohan
-    working on new UI).
-
-  - Interface (Murthy and Suresh are working on these)
 
   - Permissions
 
   - Session data managers
 
+  - Query
 
 - Implement tools:
 
