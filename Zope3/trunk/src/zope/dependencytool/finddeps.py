@@ -52,7 +52,7 @@ import re
 import zope
 
 from zope.dependencytool.dependency import Dependency
-from zope.dependencytool.importfinder import ImportFinder
+from zope.dependencytool import importfinder
 
 
 # Get the Zope base path
@@ -102,7 +102,7 @@ def makeDottedName(path):
 
 
 def getDependenciesOfPythonFile(path, packages):
-    finder = ImportFinder(packages)
+    finder = importfinder.ImportFinder(packages)
     module_name = makeDottedName(path)
     if '.' in module_name:
         package = module_name[:module_name.rfind('.')]
@@ -128,10 +128,9 @@ def getDependenciesOfZCMLFile(path, packages):
             for name in match:
                 if name.startswith('.'):
                     name = localPackage + name
-                try:
-                    __import__(name)
-                except:
-                    continue
+                name = importfinder.module_for_importable(name)
+                if packages:
+                    name = importfinder.package_for_module(name)
                 deps.append(Dependency(name, path, lineno))
     return deps
 

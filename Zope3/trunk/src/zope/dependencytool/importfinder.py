@@ -104,15 +104,11 @@ class ImportFinder:
         # command-line scripts), so we need to filter that out.
         if self.module_checks[name] and name != "__main__":
             if self.packages:
-                __import__(name)
-                module = sys.modules[name]
-                if not hasattr(module, "__path__"):
-                    if "." in name:
-                        name = name[:name.rfind(".")]
-                    else:
-                        # just drop it on the floor, since we're not
-                        # interested in bare modules
-                        return
+                name = package_for_module(name)
+                if name is None:
+                    # just drop it on the floor, since we're not
+                    # interested in bare modules
+                    return
             self.deps.append(Dependency(name, self.path, lineno))
 
     def check_module_name(self, name):
@@ -214,3 +210,33 @@ class ImportFinder:
         self.state = self.post_name_state
         self.post_name_state = None
         self.transition(type, string, lineno)
+
+
+def package_for_module(name):
+    """Return the package name for the module named `name`."""
+    __import__(name)
+    module = sys.modules[name]
+    if not hasattr(module, "__path__"):
+        if "." in name:
+            name = name[:name.rfind(".")]
+        else:
+            name = None
+    return name
+
+
+def module_for_importable(name):
+    """Return the module name for the importable object `name`."""
+    try:
+        __import__(name)
+    except ImportError:
+        while "." in name:
+            name = name[:name.rfind(".")]
+            try:
+                __import__(name)
+            except ImportError:
+                pass
+            else:
+                break
+        else:
+            return None
+    return name
