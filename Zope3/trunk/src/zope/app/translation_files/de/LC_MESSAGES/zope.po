@@ -1,19 +1,20 @@
+# translation of zope.po to English US
 # translation of zope.po to German
 # This file is distributed under the same license as Zope itself.
 # Stephan Richter <stephan.richter@tufts.edu>, 2003.
-# Philipp von Weitershausen <philikon@philikon.de>, 2003
+# Philipp von Weitershausen <philikon@philikon.de>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
 "POT-Creation-Date: Thu Aug  7 13:43:08 2003\n"
-"PO-Revision-Date: 2003-08-06 11:20-0500\n"
-"Last-Translator: Philipp von Weitershause\n"
-"Language-Team:  <C@li.org>\n"
+"PO-Revision-Date: 2003-08-07 15:29-0400\n"
+"Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
+"Language-Team: English US <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0.1\n"
+"X-Generator: KBabel 1.2beta3\n"
 
 #: /home/srichter/Zope3/Zope3-Fresh/site.zcml:8
 msgid "Site Manager"
@@ -200,7 +201,7 @@ msgstr "Statistiken"
 
 #: zope/app/browser/cache/configure.zcml:38
 msgid "Caching"
-msgstr "Cache"
+msgstr "Caching"
 
 #: zope/app/browser/cache/configure.zcml:6
 #: zope/app/browser/cache/configure.zcml:13
@@ -419,7 +420,7 @@ msgstr "Erstellt am"
 #: zope/app/browser/container/index.pt:29
 #: zope/app/browser/container/contents.pt:37
 msgid "Modified"
-msgstr "Geändert am"
+msgstr "Modifiziert am"
 
 #: zope/app/browser/content/configure.zcml:101
 msgid "Upload an image"
@@ -641,7 +642,7 @@ msgstr "Metadaten"
 #: zope/app/browser/workflow/stateful/definition_edit.pt:21
 #: zope/app/browser/workflow/stateful/definition_edit.pt:50
 msgid "refresh-button"
-msgstr "Aktualisieren"
+msgstr "Auffrischen"
 
 #: zope/app/browser/dublincore/edit.pt:43
 msgid "Content Last Modified"
@@ -649,7 +650,7 @@ msgstr "Inhalt wurde zuletzt geändert am"
 
 #: zope/app/browser/dublincore/edit.pt:47
 msgid "Creator"
-msgstr "Ersteller"
+msgstr "Autor"
 
 #: zope/app/browser/dublincore/metadataedit.py:40
 msgid "Changed data ${datetime}"
@@ -839,7 +840,7 @@ msgstr "Indiziere Attribut: ${field_name}"
 
 #: zope/app/browser/index/field/control.pt:88
 msgid "title=${title}; url=${title}"
-msgstr ""
+msgstr "Titel=${title}; URL=${title}"
 
 #: zope/app/browser/index/keyword/configure.zcml:3
 msgid "Edit Keyword Index"
@@ -941,7 +942,7 @@ msgstr "Ergebnisse ${first} - ${last} von ${total}:"
 
 #: zope/app/browser/index/text/control.pt:88
 msgid "title=${title}; url=${url}; score=${score}"
-msgstr ""
+msgstr "Titel=${title}; URL=${url}; Punkte=${score}"
 
 #: zope/app/browser/index/text/control.pt:93
 #: zope/app/browser/index/field/control.pt:96
@@ -983,7 +984,7 @@ msgstr "Interface:"
 #: zope/app/browser/introspector.pt:33 zope/app/browser/introspector.pt:111
 #: zope/app/browser/marker.pt:34
 msgid "Bases:"
-msgstr "Basisklassen:"
+msgstr "Basen:"
 
 #: zope/app/browser/introspector.pt:44 zope/app/browser/introspector.pt:128
 #: zope/app/browser/marker.pt:52
@@ -1070,7 +1071,7 @@ msgstr "Menü der Objekte die zu Diensteverwalter-Paketen hinzugefügt werden k�
 
 #: zope/app/browser/menus.zcml:28
 msgid "Menu of services to be added"
-msgstr "Menü der hinzufügbaren Dienste"
+msgstr "Menü der hinzufügbaren Services"
 
 #: zope/app/browser/menus.zcml:3
 msgid "Menu for displaying alternate representations of an object"
@@ -1187,7 +1188,7 @@ msgstr "Rollen"
 
 #: zope/app/browser/security/grants/manage_permissionform.pt:24
 msgid "Helpful message."
-msgstr ""
+msgstr "Hiflreiche Nachricht"
 
 #: zope/app/browser/security/grants/manage_permissionform.pt:35
 msgid "Roles assigned to the permission ${perm_title} (id: ${perm_id})"
@@ -1207,7 +1208,7 @@ msgstr "Der Rolle zugewiesene Erlaubnisse ${perm_title} (id: ${perm_id})"
 
 #: zope/app/browser/security/grants/manage_roleform.pt:9
 msgid "Helpful message explaining about how to set specific roles"
-msgstr ""
+msgstr "Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
 
 #: zope/app/browser/security/grants/principal_permission_edit.pt:12
 msgid "Permission Settings"
@@ -1403,7 +1404,7 @@ msgstr "Registrierungen in diesem Bündel"
 
 #: zope/app/browser/services/bundle.pt:58
 msgid "For ${service_name} service"
-msgstr "Für den ${name}-Dienst"
+msgstr "Für den ${service_name}-Dienst"
 
 #: zope/app/browser/services/bundle.pt:68
 msgid "${usage_summary} implemented by ${impl_summary}"
@@ -1484,11 +1485,11 @@ msgstr "Neue Cache-Registrierung"
 
 #: zope/app/browser/services/cache.zcml:8
 msgid "A Persistent Caching Service for TTW development"
-msgstr "Ein persistenter Cachedienst für die Online-Entwicklung"
+msgstr "Ein persistenter Caching-Service für die TTW Entwicklung"
 
 #: zope/app/browser/services/cache.zcml:8
 msgid "Caching Service"
-msgstr "Cachedienst"
+msgstr "Caching Service"
 
 #: zope/app/browser/services/caches.pt:11
 #: zope/app/browser/services/connections.pt:11
@@ -1544,7 +1545,7 @@ msgstr "Einen Cache zum Cachedienst hinzufügen"
 
 #: zope/app/browser/services/caches.pt:6
 msgid "Caches registered in this cache service:"
-msgstr "Caches die mit diesem Cachedienst registriert wurden:"
+msgstr "Caches die mit diesem Cache Service registriert wurden:"
 
 #: zope/app/browser/services/configure.zcml:127
 msgid "Change adapter"
@@ -1556,11 +1557,11 @@ msgstr "Adapter"
 
 #: zope/app/browser/services/configure.zcml:153
 msgid "Adapter Service"
-msgstr "Adapterdienst"
+msgstr "Adapter Service"
 
 #: zope/app/browser/services/configure.zcml:196
 msgid "Manage Local Services"
-msgstr "Lokale Dienste verwalten"
+msgstr "Lokale Services verwalten"
 
 #: zope/app/browser/services/configure.zcml:201
 msgid "Turn On Local Service Manager"
@@ -1569,7 +1570,7 @@ msgstr "Lokalen Serive Verwalter anschalten"
 #: zope/app/browser/services/configure.zcml:213
 #: zope/app/browser/skins/zopetop/widget_macros.pt:42
 msgid "Services"
-msgstr "Dienste"
+msgstr "Services"
 
 #: zope/app/browser/services/configure.zcml:23
 msgid "Errors"
@@ -1581,15 +1582,15 @@ msgstr "Direkt zum 'default' Paket"
 
 #: zope/app/browser/services/configure.zcml:241
 msgid "Add service"
-msgstr "Dienst hinzufügen"
+msgstr "Service hinzufügen"
 
 #: zope/app/browser/services/configure.zcml:30
 msgid "Error Logging Service"
-msgstr "Fehlermeldedienst"
+msgstr "Fehlermelde-Service"
 
 #: zope/app/browser/services/configure.zcml:30
 msgid "Error Reporting Service for Logging Errors"
-msgstr "Fehlermeldedienst für Logging-Fehler"
+msgstr "Fehlermelde-Service für Logging Fehler"
 
 #: zope/app/browser/services/configure.zcml:304
 #: zope/app/browser/workflow/configure.zcml:26
@@ -1602,7 +1603,7 @@ msgstr "Einfache Session Unterstützungen durch Cookies"
 
 #: zope/app/browser/services/configure.zcml:336
 msgid "Cookie Session Service"
-msgstr "Cookie-Sitzungsdienst"
+msgstr "Cookie-Sitzungs-Service"
 
 #: zope/app/browser/services/configure.zcml:344
 msgid "Stores Annotations for Principals"
@@ -1610,7 +1611,7 @@ msgstr "Speichert Anmerkungen für Prinzipal"
 
 #: zope/app/browser/services/configure.zcml:344
 msgid "Principal Annotation Service"
-msgstr "Prinzipal-Anmerkungendienst"
+msgstr "Prinzipal Anmerkungen Service"
 
 #: zope/app/browser/services/configure.zcml:362
 msgid ""
@@ -1622,7 +1623,7 @@ msgstr ""
 
 #: zope/app/browser/services/configure.zcml:362
 msgid "HubIds Service"
-msgstr "Hub-ID-Dienst"
+msgstr "Hub-Ids Service"
 
 #: zope/app/browser/services/configure.zcml:377
 msgid "Registration subscriber"
@@ -1634,12 +1635,12 @@ msgstr "Ein Ereignis-Abonnent der Inhälte mit der Objekt-Hub registriert"
 
 #: zope/app/browser/services/configure.zcml:398
 msgid "Takes you to a menu of services to add"
-msgstr "Bringt sie zu einem Menü zum hinzufügen von Diensten"
+msgstr "Bringt sie zu einem Menü zum hinzufügen von Services"
 
 #: zope/app/browser/services/configure.zcml:398
 #: zope/app/browser/services/serviceactivation.pt:26
 msgid "Service"
-msgstr "Dienst"
+msgstr "Service"
 
 #: zope/app/browser/services/configure.zcml:459
 msgid "Bundle"
@@ -1655,17 +1656,17 @@ msgstr "Kontrolle"
 
 #: zope/app/browser/services/configure.zcml:54
 msgid "Event Service"
-msgstr "Ereignisdienst"
+msgstr "Ereignis-Service"
 
 #: zope/app/browser/services/configure.zcml:54
 msgid "An event service. One of these in the root is usually enough"
 msgstr ""
-"Ein Ereignisdienst. Eine Instanz im Wurzelelement ist normalerweise "
+"Ein Ereignis-Service. Einer dieser im Wurzelelement ist normalerweise "
 "ausreichend"
 
 #: zope/app/browser/services/configure.zcml:68
 msgid "Role Service"
-msgstr "Rollendienst"
+msgstr "Rollen-Service"
 
 #: zope/app/browser/services/configureCache.pt:19
 #: zope/app/browser/services/configureConnection.pt:19
@@ -1731,11 +1732,11 @@ msgstr "Bearbeite Verbindungs-Registrierung"
 
 #: zope/app/browser/services/connection.zcml:8
 msgid "A Persistent SQL Connection Service for TTW development"
-msgstr "Ein persistenter SQL-Verbindungsdienst für die Online Entwicklung"
+msgstr "Ein persistenter SQL-Verbindungs-Service für die TTW Entwicklung"
 
 #: zope/app/browser/services/connection.zcml:8
 msgid "SQL Connection Service"
-msgstr "SQL-Verbindungsdienst"
+msgstr "SQL-Verbindungs-Service"
 
 #: zope/app/browser/services/connections.pt:58
 msgid "Add a connection to this connection service"
@@ -1743,7 +1744,7 @@ msgstr "Verbindung zu diesem Verbindungsdienst hinzufügen"
 
 #: zope/app/browser/services/connections.pt:6
 msgid "Connections registered in this connection service:"
-msgstr "Verbindungen, die mit diesem Verbindungsdienst registriert sind:"
+msgstr "Verbindungen, die mit diesem Verbindungs-Service registriert sind:"
 
 #: zope/app/browser/services/edituser.pt:11
 msgid "User id: ${user_id}"
@@ -1859,7 +1860,7 @@ msgstr "Registrierung von ${missing_num} Objekt(en) gelöscht."
 
 #: zope/app/browser/services/interface/browse.pt:5
 msgid "Interfaces registered with the interface service"
-msgstr "Interfaces, die mit dem Interfacedienst registriert sind"
+msgstr "Interfaces die mit dem Interface Service registriert sind"
 
 #: zope/app/browser/services/interface/configure.zcml:10
 msgid "Browse"
@@ -1871,7 +1872,7 @@ msgstr "Detail"
 
 #: zope/app/browser/services/interface/configure.zcml:3
 msgid "Local Interface Service"
-msgstr "Lokaler Interfacedienst"
+msgstr "Lokaler Interface Service"
 
 #: zope/app/browser/services/interface/detail.pt:11
 msgid "Documentation"
@@ -1935,7 +1936,7 @@ msgstr "Standard-Registrierung"
 
 #: zope/app/browser/services/pagefolder.zcml:36
 msgid "Page Folder"
-msgstr "Seitenordner"
+msgstr "Seiten Ordner"
 
 #: zope/app/browser/services/pluggableauth/configure.zcml:21
 msgid "Add Source"
@@ -1954,12 +1955,12 @@ msgid ""
 "A Pluggable Authentication Service                      Uses plug-in "
 "principal sources."
 msgstr ""
-"Ein einfügbarer Authentifzierungsdienst                  Nutzt einfügbare "
+"Ein einfügbarer Legitimations-Service                  Nutzt einfügbare "
 "Prinzipalquellen."
 
 #: zope/app/browser/services/pluggableauth/configure.zcml:5
 msgid "Authentication Service"
-msgstr "Authentifzierungsdienst"
+msgstr "Legitimations-Service"
 
 #: zope/app/browser/services/pluggableauth/configure.zcml:59
 msgid "Add Principal"
@@ -2024,51 +2025,51 @@ msgstr "Aktiviert: ${activated_services}"
 
 #: zope/app/browser/services/service.py:192
 msgid "All of the checked services were already active"
-msgstr ""
+msgstr "Alle ausgewählten Dienste waren schon aktiv"
 
 #: zope/app/browser/services/service.py:203
 msgid "Deactivated: ${deactivated_services}"
-msgstr ""
+msgstr "Deaktiviert: ${deactivated_services}"
 
 #: zope/app/browser/services/service.py:207
 msgid "None of the checked services were active"
-msgstr ""
+msgstr "Keine der ausgewählten Dienste war aktiv"
 
 #: zope/app/browser/services/service.py:218
 msgid ""
 "Can't delete active service(s): ${service_names}; use the Deactivate button "
 "to deactivate"
 msgstr ""
+"Kann nicht aktive Dienst(e) löschen: ${service_names}; nutze die "
+"Deaktivierungsschaltfläche um diese zu deaktivieren"
 
 #: zope/app/browser/services/service.py:254
 msgid "Deleted: ${service_names}"
-msgstr ""
+msgstr "Gelöschr: ${service_names}"
 
 #: zope/app/browser/services/service.py:336
 msgid "Invalid service type specified"
-msgstr ""
+msgstr "Ungültiger Diensttyp angegeben"
 
 #: zope/app/browser/services/service.py:343
-#, fuzzy
 msgid "No change"
-msgstr "Keine Änderungen zum speichern"
+msgstr "Keine Änderungen"
 
 #: zope/app/browser/services/service.py:347
 msgid "Service deactivated"
-msgstr ""
+msgstr "Dienst deaktiviert"
 
 #: zope/app/browser/services/serviceactivation.pt:13
 msgid "<i>${service_type}"
-msgstr ""
+msgstr "<i>${service_type}"
 
 #: zope/app/browser/services/serviceactivation.pt:13
-#, fuzzy
 msgid "Registrations for service x"
-msgstr "Registrierungen für den ${name}-Dienst"
+msgstr "Registrierungen für Service x"
 
 #: zope/app/browser/services/services.pt:18
 msgid "No services are registered."
-msgstr ""
+msgstr "Es sind keine Dienste registriert."
 
 #: zope/app/browser/services/services.pt:23
 msgid ""
@@ -2076,35 +2077,35 @@ msgid ""
 "The (change registration) link allows activating a different implementation "
 "or disabling the service altogether."
 msgstr ""
+"Es sei denn ein Dienst ist deaktiviert, der Name des Dienstes bietet eine Link "
+"zu dem aktiven Dienst. Der (Registrierung ändern) Link erlaubt das Aktivieren "
+"einer anderen Implementation oder sogar das Abschalten des Dienstes."
 
 #: zope/app/browser/services/services.pt:5
-#, fuzzy
 msgid "Services registered in this service manager"
-msgstr "Caches die mit diesem Cachedienst registriert wurden:"
+msgstr "Dienste die mit diesem Dienstverwalter registriert sind"
 
 #: zope/app/browser/services/services.pt:70
 msgid "Add a service to this service manager"
-msgstr ""
+msgstr "Einen Dienst zu diesem Dienstverwalter hinzufügen"
 
 #: zope/app/browser/services/subscription_control.pt:11
 #: zope/app/browser/workflow/stateful/contentworkflow_index.pt:11
 msgid "Subscription control"
-msgstr ""
+msgstr "Abonnement Kontrolle"
 
 #: zope/app/browser/services/subscription_control.pt:24
-#, fuzzy
 msgid "Registration done."
-msgstr "Registrierung"
+msgstr "Registrierung abgeschlossen."
 
 #: zope/app/browser/services/subscription_control.pt:3
 #: zope/app/browser/workflow/stateful/contentworkflow_index.pt:3
-#, fuzzy
 msgid "Registration \"Service\" Control Page"
-msgstr "Registrierungsverwalter"
+msgstr "Registrierungs-\"Dienst\" Kontrollseite"
 
 #: zope/app/browser/services/subscription_control.pt:39
 msgid "Register Existing Objects"
-msgstr ""
+msgstr "Existierende Objekte registrieren"
 
 #: zope/app/browser/services/translation/configure.zcml:29
 #: zope/app/browser/workflow/configure.zcml:55
@@ -2117,7 +2118,7 @@ msgstr "Synchronisieren"
 
 #: zope/app/browser/services/translation/configure.zcml:54
 msgid "A Persistent Translation Service for TTW development"
-msgstr "Ein persistenter Übersetzungsdienst für die Online-Entwicklung"
+msgstr "Ein persistenter Übersetzungsservice für die TTW Entwicklung"
 
 #: zope/app/browser/services/translation/configure.zcml:54
 msgid "Translation Service"
@@ -2128,13 +2129,12 @@ msgid "Translate"
 msgstr "Übersetzen"
 
 #: zope/app/browser/services/translation/exportimport.pt:10
-#, fuzzy
 msgid "Import and Export Messages"
-msgstr "Importiern/Exportieren"
+msgstr "Nachrichten Importiern und Exportieren"
 
 #: zope/app/browser/services/translation/exportimport.pt:12
 msgid "Here you can export and import messages from your Translation Service."
-msgstr ""
+msgstr "Hier können sie Nachrichten von ihrem Übersetzungsdienst importieren und exportieren."
 
 #: zope/app/browser/services/translation/exportimport.pt:20
 #: zope/app/browser/services/translation/synchronize.pt:63
@@ -2145,9 +2145,8 @@ msgstr "Sprachen auswählen:"
 #: zope/app/browser/services/translation/exportimport.pt:3
 #: zope/app/browser/services/translation/translate.pt:3
 #: zope/app/browser/services/translation/translatemessage.pt:3
-#, fuzzy
 msgid "Translation Service - Translate"
-msgstr "Übersetzungsdienst"
+msgstr "Übersetzungsservice - Übersetzen"
 
 #: zope/app/browser/services/translation/exportimport.pt:32
 #: zope/app/browser/services/translation/synchronize.pt:43
@@ -2161,14 +2160,12 @@ msgstr "Dateinamen importieren:"
 
 #: zope/app/browser/services/translation/exportimport.pt:49
 #: zope/app/browser/workflow/importexport_index.pt:17
-#, fuzzy
 msgid "import-button"
-msgstr "Zurücksetzen"
+msgstr "Importieren"
 
 #: zope/app/browser/services/translation/exportimport.pt:51
-#, fuzzy
 msgid "export-button"
-msgstr "Nächste"
+msgstr "Exportieren"
 
 #: zope/app/browser/services/translation/synchronize.pt:107
 #: zope/app/browser/services/translation/translate.pt:112
@@ -2179,55 +2176,51 @@ msgstr "Message Id"
 #: zope/app/browser/services/translation/synchronize.pt:108
 #: zope/app/browser/services/translation/translate.pt:113
 msgid "Domain"
-msgstr "Domaine"
+msgstr "Domäne"
 
 #: zope/app/browser/services/translation/synchronize.pt:110
-#, fuzzy
 msgid "Status"
-msgstr "Statistiken"
+msgstr "Status"
 
 #: zope/app/browser/services/translation/synchronize.pt:147
 msgid "No connection could be made to remote data source."
-msgstr ""
+msgstr "Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
 
 #: zope/app/browser/services/translation/synchronize.pt:26
 msgid "Server URL"
-msgstr ""
+msgstr "Server URL"
 
 #: zope/app/browser/services/translation/synchronize.pt:3
-#, fuzzy
 msgid "Translation Service - Synchronize"
-msgstr "Übersetzungsdienst"
+msgstr "Übersetzungsservice - Synchronisieren"
 
 #: zope/app/browser/services/translation/synchronize.pt:85
-#, fuzzy
 msgid "save-settings-button"
-msgstr "Änderungen speichern"
+msgstr "Einstellungen speichern"
 
 #: zope/app/browser/services/translation/synchronize.pt:90
-#, fuzzy
 msgid "synchronize-button"
-msgstr "Abonieren"
+msgstr "Synchronisieren"
 
 #: zope/app/browser/services/translation/synchronize.py:29
 msgid "Up to Date"
-msgstr ""
+msgstr "Aktuell"
 
 #: zope/app/browser/services/translation/synchronize.py:29
 msgid "New Remote"
-msgstr ""
+msgstr "Neu in Ferndienst"
 
 #: zope/app/browser/services/translation/synchronize.py:29
 msgid "Out of Date"
-msgstr ""
+msgstr "Veraltet"
 
 #: zope/app/browser/services/translation/synchronize.py:30
 msgid "Does not exist"
-msgstr ""
+msgstr "Existiert nicht"
 
 #: zope/app/browser/services/translation/synchronize.py:30
 msgid "Newer Local"
-msgstr ""
+msgstr "Neuere Ländereinstellung"
 
 #: zope/app/browser/services/translation/translate.pt:181
 msgid "Edit Messages"
@@ -2255,29 +2248,31 @@ msgstr "Nachricht bearbeiten"
 
 #: zope/app/browser/services/utility/__init__.py:100
 msgid "Activated: ${activated_utilities}"
-msgstr ""
+msgstr "Activiert: ${activated_utilities}"
 
 #: zope/app/browser/services/utility/__init__.py:104
 msgid "All of the checked utilities were already active"
-msgstr ""
+msgstr "Alle der ausgewählten Utilities waren schon aktiv"
 
 #: zope/app/browser/services/utility/__init__.py:115
 msgid "Deactivated: ${deactivated_utilities}"
-msgstr ""
+msgstr "Deactiviert: ${deactivated_utilities}"
 
 #: zope/app/browser/services/utility/__init__.py:119
 msgid "None of the checked utilities were active"
-msgstr ""
+msgstr "Keine der ausgewählten Utilities war aktiv."
 
 #: zope/app/browser/services/utility/__init__.py:131
 msgid ""
 "Can't delete active utility/utilites: ${utility_names}; use the Deactivate "
 "button to deactivate"
 msgstr ""
+"Kann nicht aktive Utility/Utilities löschen: ${utility_names}; nutze die "
+"Deaktivierungsschaltfläche um sie zu deaktivieren"
 
 #: zope/app/browser/services/utility/__init__.py:165
 msgid "Deleted: ${utility_names}"
-msgstr ""
+msgstr "Gelöscht: ${utility_names}"
 
 #: zope/app/browser/services/utility/configure.zcml:15
 msgid "Utilities"
@@ -2293,7 +2288,7 @@ msgstr "Utility-Registrierung bearbeiten"
 
 #: zope/app/browser/services/utility/configure.zcml:8
 msgid "Utility Service"
-msgstr "Werkzeugdienst"
+msgstr "Utility Service"
 
 #: zope/app/browser/services/utility/configureutility.pt:14
 msgid "Utility registrations for interface ${interface}"
@@ -2310,39 +2305,40 @@ msgid "change registration"
 msgstr "Registrierung ändern"
 
 #: zope/app/browser/services/utility/utilities.pt:56
-#, fuzzy
 msgid "Add a utility to this utility service"
-msgstr "Werkzeuge, die mit diesem Werkzeugdienst registriert sind:"
+msgstr "Ein Utility zu diesem Utilitydienst hinzufügen"
 
 #: zope/app/browser/services/utility/utilities.pt:6
 msgid "Utilities registered in this utility service:"
-msgstr "Werkzeuge, die mit diesem Werkzeugdienst registriert sind:"
+msgstr "Utilities, die mit diesem Utility-Service registriert sind:"
 
 #: zope/app/browser/services/view.py:129
 msgid "Activated: ${activated_views}"
-msgstr ""
+msgstr "Activiert: ${activated_views}"
 
 #: zope/app/browser/services/view.py:133
 msgid "All of the checked views were already active"
-msgstr ""
+msgstr "Alle der ausgewählten Ansichten waren bereits aktiv"
 
 #: zope/app/browser/services/view.py:144
 msgid "Deactivated: ${deactivated_views}"
-msgstr ""
+msgstr "Deactiviert: ${deactivated_views}"
 
 #: zope/app/browser/services/view.py:148
 msgid "None of the checked views were active"
-msgstr ""
+msgstr "Keine der ausgewählten Ansichten war aktiv"
 
 #: zope/app/browser/services/view.py:162
 msgid ""
 "Can't delete active view(s): ${view_names}; use the Deactivate button to "
 "deactivate"
 msgstr ""
+"Kann nicht aktive Ansicht(en) löschen: ${view_names}; nutze die "
+"Deaktivierungsschaltfläche um sie zu deaktivieren"
 
 #: zope/app/browser/services/view.zcml:13
 msgid "View Service"
-msgstr "Ansichtendienst"
+msgstr "Ansichtsdienst"
 
 #: zope/app/browser/services/view.zcml:28
 msgid "Change page"
@@ -2359,21 +2355,20 @@ msgstr "Ansichten"
 
 #: zope/app/browser/services/views.pt:55
 msgid "Add a page to this views service"
-msgstr ""
+msgstr "Eine Seite zu diesem Ansichtsdienst hinzufügen"
 
 #: zope/app/browser/services/views.pt:58
 msgid "Search filter:"
-msgstr ""
+msgstr "Suchfilter:"
 
 #: zope/app/browser/services/views.pt:6
-#, fuzzy
 msgid "Pages registered in this views service:"
-msgstr "Caches die mit diesem Cachedienst registriert wurden:"
+msgstr "Seiten die mit diesem Ansichtsdienst registriert wurden:"
 
 #: zope/app/browser/skins/basic/view_macros.pt:35
 #: zope/app/browser/skins/onlinehelp/view_macros.pt:28
 msgid "User: ${user_title}"
-msgstr ""
+msgstr "Nutzer: ${user_title}"
 
 #: zope/app/browser/skins/basic/view_macros.pt:40
 #: zope/app/browser/skins/rotterdam/dialog_macros.pt:158
@@ -2385,20 +2380,19 @@ msgstr "Powered by Zope"
 
 #: zope/app/browser/skins/debug/error_debug.pt:12
 msgid "Error object: ${error_object}"
-msgstr ""
+msgstr "Fehlerobjekt: ${error_object}"
 
 #: zope/app/browser/skins/debug/error_debug.pt:7
 msgid "Error type: ${error_type}"
-msgstr ""
+msgstr "Fehlertyp: ${error_type}"
 
 #: zope/app/browser/skins/debug/unauthorized.pt:7
 msgid "Unauthorized"
-msgstr ""
+msgstr "Unberechtigt"
 
 #: zope/app/browser/skins/debug/unauthorized.pt:8
-#, fuzzy
 msgid "You're not allowed in here."
-msgstr "Sie sind nun als  ${UserTitle} eingelogged."
+msgstr "Sie sind hier nicht erlaubt."
 
 #: zope/app/browser/skins/onlinehelp/template.pt:55
 msgid ""
@@ -2406,32 +2400,33 @@ msgid ""
 "address in the URL.<br> And use the own help skin like:<br> ../++help++/+"
 "+skin++Onlinehelp/"
 msgstr ""
+"Sie sind nicht im ++help++ Namesbereich.<br> Füge /++help++/ nach dem "
+"Rechnernamen in der URL ein.<br> Um die eigene Online Hilfe Haut zu benutzen: "
+"/++help++/++skin++Onlinehelp/"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:68
 msgid "Close this window"
-msgstr ""
+msgstr "Fenster schließen"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:71
 msgid "Blur"
-msgstr ""
+msgstr "Unscharf"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:74
 msgid "view 800x600"
-msgstr ""
+msgstr "In 800x600"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:77
 msgid "view 1024x768"
-msgstr ""
+msgstr "In 1024x768"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:80
-#, fuzzy
 msgid "Print"
-msgstr "Port"
+msgstr "Drucken"
 
 #: zope/app/browser/skins/onlinehelp/template.pt:9
-#, fuzzy
 msgid "Z3 UI Onlinehelp"
-msgstr "Online-Hilfe"
+msgstr "Z3 UI Online-Hilfe"
 
 #: zope/app/browser/skins/rotterdam/dialog_macros.pt:11
 #: zope/app/browser/skins/rotterdam/template.pt:9
@@ -2495,60 +2490,53 @@ msgid "Online Help - TOC"
 msgstr "Online Hilfe Inhalt"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:13
-#, fuzzy
 msgid "Logged in as ${user_title}"
-msgstr "Sie sind nun als  ${UserTitle} eingelogged."
+msgstr "Sie sind nun als  ${user_title} eingelogged."
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:157
-#, fuzzy
 msgid "Actions"
-msgstr "Verbindungen"
+msgstr "Tätigkeiten"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:193
 #: zope/app/browser/skins/onlinehelp/template.pt:100
-#, fuzzy
 msgid "Location:"
-msgstr "Standort:&nbsp;"
+msgstr "Standort:"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:45
 msgid "user accounts"
-msgstr ""
+msgstr "Benutzerkonten"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:48
 msgid "User Accounts"
-msgstr ""
+msgstr "Benutzerkonten"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:51
 msgid "control panels"
-msgstr ""
+msgstr "Kontrollen"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:54
-#, fuzzy
 msgid "Control Panels"
-msgstr "Kontrolle"
+msgstr "Kontrollen"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:57
 msgid "system security"
-msgstr ""
+msgstr "Systemsicherheit"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:60
 msgid "System Security"
-msgstr ""
+msgstr "Systemsicherheit"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:63
-#, fuzzy
 msgid "add more"
-msgstr "Quellcode hinzufügen"
+msgstr "Mehr hinzufügen"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:66
-#, fuzzy
 msgid "Add More"
-msgstr "Quellcode hinzufügen"
+msgstr "Mehr hinzufügen"
 
 #: zope/app/browser/skins/zopetop/widget_macros.pt:74
-#, fuzzy
 msgid "Root Folder"
-msgstr "Ordner"
+msgstr "Wurzelordner"
 
 #: zope/app/browser/undo.zcml:14
 msgid "Undo"
@@ -2608,7 +2596,7 @@ msgstr "20 frühere Transaktionen anzeigen"
 
 #: zope/app/browser/undo_log.pt:81
 msgid "no description available"
-msgstr ""
+msgstr "Keine Beschreibung vorhanden"
 
 #: zope/app/browser/undo_log.pt:89
 msgid "by ${username}"
@@ -2631,71 +2619,61 @@ msgid "Processes"
 msgstr "Prozesse"
 
 #: zope/app/browser/workflow/definition_index.pt:11
-#, fuzzy
 msgid "Process Definition: ${pd_name}"
-msgstr "Prozessdefinitionen-Registrierung"
+msgstr "Prozessdefinition: ${pd_name}"
 
 #: zope/app/browser/workflow/definition_index.pt:3
 #: zope/app/browser/workflow/stateful/definition_index.pt:3
-#, fuzzy
 msgid "Process Definition"
-msgstr "Zustandsbasierte Prozessdefinition"
+msgstr "Prozessdefinition"
 
 #: zope/app/browser/workflow/importexport_index.pt:12
-#, fuzzy
 msgid "Import / Export Process Definitions:"
-msgstr "Zustandsbasierte Prozessdefinition"
+msgstr "Import / Export Prozessdefinitionen:"
 
 #: zope/app/browser/workflow/importexport_index.pt:13
-#, fuzzy
 msgid "Import:"
-msgstr "Importiern/Exportieren"
+msgstr "Importiern:"
 
 #: zope/app/browser/workflow/importexport_index.pt:21
 msgid "Export: <a href=\"@@export.html\">save as file</a>"
-msgstr ""
+msgstr "Exportieren: <a href=\"@@export.html\">Speichere als Datei</a>"
 
 #: zope/app/browser/workflow/importexport_index.pt:6
-#, fuzzy
 msgid "Import was successfull!"
-msgstr "Ausloggen erfolgreich!"
+msgstr "Import war erfolgreich!"
 
 #: zope/app/browser/workflow/instance_index.pt:19
 msgid "Status: ${status}"
-msgstr ""
+msgstr "Status: ${status}"
 
 #: zope/app/browser/workflow/instance_index.pt:22
-#, fuzzy
 msgid "Outgoing Transitions:"
-msgstr "Übergänge verwalten"
+msgstr "Verlassende Übergänge"
 
 #: zope/app/browser/workflow/instance_index.pt:37
 msgid "Key"
-msgstr ""
+msgstr "Schlüssel"
 
 #: zope/app/browser/workflow/stateful/addstate.pt:3
-#, fuzzy
 msgid "Add State"
-msgstr "Bilder hinzufügen"
+msgstr "Zustand hinzufügen"
 
 #: zope/app/browser/workflow/stateful/addtransition.pt:19
-#, fuzzy
 msgid "Source Satte"
-msgstr "Quellcode"
+msgstr "Quell-Zustand"
 
 #: zope/app/browser/workflow/stateful/addtransition.pt:29
 msgid "Destination Satte"
-msgstr ""
+msgstr "Ziel-Zustand"
 
 #: zope/app/browser/workflow/stateful/addtransition.pt:3
-#, fuzzy
 msgid "Add Transition"
-msgstr "Übergang bearbeiten"
+msgstr "Übergang hinzufügen"
 
 #: zope/app/browser/workflow/stateful/addtransition.pt:39
-#, fuzzy
 msgid "Condition"
-msgstr "Verbindungen"
+msgstr "Bedingung"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:101
 msgid "Edit a Transition"
@@ -2759,134 +2737,120 @@ msgstr "Zustandsbasierter Zustand"
 
 #: zope/app/browser/workflow/stateful/contentworkflow.py:86
 msgid "Mapping(s) added."
-msgstr ""
+msgstr "Zuweisung(en) hinzugefügt."
 
 #: zope/app/browser/workflow/stateful/contentworkflow.py:94
 msgid "Mapping(s) removed."
-msgstr ""
+msgstr "Zuweisung(en) entfernt."
 
 #: zope/app/browser/workflow/stateful/contentworkflow_registry.pt:15
 msgid ""
 "This screen let's you specify which content types (by interface) can receive "
 "which workflows (process definitions)."
 msgstr ""
+"Diese Ansicht erlaubt es ihnen zu sagen, welche Inhaltstypen (per Interface) "
+"welche Arbeitsabläufe (Prozessdefinitionen) erhalten könen."
 
 #: zope/app/browser/workflow/stateful/contentworkflow_registry.pt:20
 msgid "Available Mappings"
-msgstr ""
+msgstr "Verfügbare Zuweisungen"
 
 #: zope/app/browser/workflow/stateful/contentworkflow_registry.pt:3
 #: zope/app/browser/workflow/stateful/definition_edit.pt:3
-#, fuzzy
 msgid "Process Definition <-> Content Type Registry"
-msgstr "Prozessdefinitionen-Registrierung"
+msgstr "Prozessdefinition <-> Inhaltstyp-Registrierung"
 
 #: zope/app/browser/workflow/stateful/contentworkflow_registry.pt:48
-#, fuzzy
 msgid "switch-view-button"
-msgstr "Zeigen"
+msgstr "Ansicht ändern"
 
 #: zope/app/browser/workflow/stateful/contentworkflow_registry.pt:50
-#, fuzzy
 msgid "remove-mappings-button"
-msgstr "Entfernen"
+msgstr "Zuweisungne Entfernen"
 
 #: zope/app/browser/workflow/stateful/contentworkflow_registry.pt:55
-#, fuzzy
 msgid "Add new Mapping"
-msgstr "Neue Sprache hinzufügen"
+msgstr "Neue Zuweisungen hinzufügen"
 
 #: zope/app/browser/workflow/stateful/contentworkflow_registry.pt:62
-#, fuzzy
 msgid "add-mappings-button"
-msgstr "Hinzufügen"
+msgstr "Zuweisung Hinzufügen"
 
 #: zope/app/browser/workflow/stateful/definition_edit.pt:29
 msgid "Map permissions to Schema fields"
-msgstr ""
+msgstr "Erlaubnisse auf Schema-Felder zuweisen"
 
 #: zope/app/browser/workflow/stateful/definition_edit.pt:52
-#, fuzzy
 msgid "change-button"
 msgstr "Änderungen Speichern"
 
 #: zope/app/browser/workflow/stateful/definition_index.pt:13
-#, fuzzy
 msgid "Process Definition: ${name}"
-msgstr "Zustandsbasierte Prozessdefinition"
+msgstr "Prozessdefinition: ${name}"
 
 #: zope/app/browser/workflow/stateful/definition_states.pt:10
-#, fuzzy
 msgid "States"
 msgstr "Zustände"
 
 #: zope/app/browser/workflow/stateful/definition_states.pt:3
-#, fuzzy
 msgid "Process Definition States"
-msgstr "Prozessdefinitionen-Registrierung"
+msgstr "Prozessdefinitionen-Zustände"
 
 #: zope/app/browser/workflow/stateful/definition_transitions.pt:10
-#, fuzzy
 msgid "Transitions"
 msgstr "Übergänge"
 
 #: zope/app/browser/workflow/stateful/definition_transitions.pt:3
-#, fuzzy
 msgid "Process Definition Transitions"
-msgstr "Prozessdefinitionen-Registrierung"
+msgstr "Prozessdefinitionen-Übergänge"
 
 #: zope/app/browser/workflow/stateful/instance.py:145
 msgid "Updated Workflow Data."
-msgstr ""
+msgstr "Arbeitsablaufdaten wurden aktualisiert."
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:16
-#, fuzzy
 msgid "Workflow:"
-msgstr "Arbeitsabläufe"
+msgstr "Arbeitsablauf:"
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:22
-#, fuzzy
 msgid "choose-button"
-msgstr "Zeigen"
+msgstr "Auswählen"
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:28
 msgid "Workflow: ${wf_title}"
-msgstr ""
+msgstr "Arbeitsablauf: ${wf_title}"
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:42
 msgid "Current Status:"
-msgstr ""
+msgstr "Derzetiger Zustand:"
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:45
 msgid "Possible State Changes:"
-msgstr ""
+msgstr "Mögliche Zustandsänderungen"
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:5
-#, fuzzy
 msgid "Workflow Options"
-msgstr "Arbeitsabläufe"
+msgstr "Arbeitsablauf-Optionen"
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:57
-#, fuzzy
 msgid "make-transition-button"
-msgstr "Änderungen speichern"
+msgstr "Übergang vornehmen"
 
 #: zope/app/browser/workflow/stateful/instance_manage.pt:62
 msgid "Workflow-relevant Data"
-msgstr ""
+msgstr "Arbeitsablauf-relevante Daten"
 
 #: zope/app/browser/workflow/useprocessdefinitionconfig.pt:17
-#, fuzzy
 msgid "Add a configuration for this process definition"
-msgstr "Eine zustandsbasierte Arbeitsablauf-Prozessdefinition"
+msgstr "Eine Konfiguration für diese Prozessdefinition hinzufügen"
 
 #: zope/app/browser/workflow/useprocessdefinitionconfig.pt:5
 msgid "Configurations for this process definition:"
-msgstr ""
+msgstr "Konfigurationen für diese Prozessdefinition:"
 
 #: zope/app/browser/workflow/workflows.pt:11
 msgid "No ProcessDefinitions have been configured"
-msgstr ""
+msgstr "Keine Prozessdefinitionen wurden konfiguriert."
 
 #: zope/app/browser/workflow/workflows.pt:17
 msgid ""
@@ -2895,12 +2859,17 @@ msgid ""
 "may select the component to provide the ProcessDefinition or disable the "
 "ProcessDefinition."
 msgstr ""
+"Für jede Prozessdefinition werden der Name und alle registrierten Komponenten "
+"die die Prozessdefinition ausmachen gezeigt. Sie können Komponenten auswählen "
+"um diese als Prozessdefinitionen anzubieten oder abzuschalten."
 
 #: zope/app/browser/workflow/workflows.pt:23
 msgid ""
 "Select a ProcessDefinition name or a component name to visit the "
 "ProcessDefinition or component."
 msgstr ""
+"Wählen sie den Namen einer Prozessdefinition oder einer Komponenten "
+"aus um sie anzuschauen."
 
 #: zope/app/browser/workflow/workflows.pt:29
 msgid ""
@@ -2910,10 +2879,15 @@ msgid ""
 "is added, add a ProcessDefinition configuration that configures the "
 "component to provide a ProcessDefinition."
 msgstr ""
+"Um eine Prozessdefinition zu konfigurieren, müssen sie zuerst eine Prozessdefinition "
+"dem <em>Paket</em> in <a href=\"../../../Packages\">Pakete</a> oder dem <a "
+"href=\"../../../Packages/default\">\"default\" Paket</a> hinzufügen. Nachdem diese "
+"Komponente hinzugefügt wurde, erstellen sie eine Prozessdefinition Konfiguration "
+"welche die Komponente so konfiguriert, dass sie eine Prozessdefinition bereitstellt."
 
 #: zope/app/browser/workflow/workflows.pt:7
 msgid "ProcessDefinitions configured in this workflow service."
-msgstr ""
+msgstr "Prozessdefinitionen die in diesem Ablaufdienst configuriert sind."
 
 #: zope/app/container/size.py:40
 msgid "1 item"
@@ -3340,7 +3314,7 @@ msgstr "Seitenschablone"
 #: zope/app/browser/services/configure.zcml:170
 #: zope/app/browser/services/configure.zcml:177
 msgid "ZPT Template"
-msgstr "ZPT-Schablone"
+msgstr "ZPT Schablone"
 
 #: zope/app/services/configure.zcml:289
 #: zope/app/browser/services/registration/editregistration.pt:10
@@ -3414,11 +3388,11 @@ msgstr ""
 
 #: zope/app/translation_files/pygettext.py:366
 msgid "# File: %(filename)s, line: %(lineno)d"
-msgstr ""
+msgstr " "
 
 #: zope/app/translation_files/pygettext.py:374
 msgid " %(filename)s:%(lineno)d"
-msgstr ""
+msgstr " "
 
 #: zope/app/translation_files/pygettext.py:451
 msgid "Invalid value for --style: %s"
@@ -3459,22 +3433,4 @@ msgstr "Arbeitsablauf-Prozessinstanzen benutzen"
 #: zope/app/workflow/configure.zcml:9
 msgid "Manage Workflow ProcessDefinitions"
 msgstr "Arbeitsablauf-Prozessdefinitionen verwalten"
-
-#~ msgid "There are"
-#~ msgstr "Es gibt"
-
-#~ msgid "input errors."
-#~ msgstr "Eingabefehler."
-
-#~ msgid "form_update"
-#~ msgstr "Form Erneuern"
-
-#~ msgid "Interface <span></span>"
-#~ msgstr "Interface <span></span>"
-
-#~ msgid "Delete"
-#~ msgstr "Löschen"
-
-#~ msgid "Filter"
-#~ msgstr "Filter"
 
