@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.10 $
+:Version: $Revision: 1.11 $
 
 This package includes implementations of several local services.
 It also contains infrastructure for implementing local services.
@@ -41,7 +41,7 @@ Registration
 Many services act as component registries.  Their primary job is to
 allow components to be looked up based on parameters such as names,
 interfaces or both. Examples of component registries include the
-adapter service, the view service, the service service, and the
+adapter service, the presentation service, the service service, and the
 utility service.
 
 An important feature of component registration services is that they
@@ -103,6 +103,61 @@ There are two kinds of registrations:
 
 Implementation of services that support registration is substantially
 more difficult that implementation of non-registry services.
+
+High-level registration concepts glossary
+-----------------------------------------
+
+There are several major concepts/terms that need to be understood
+
+- Registerables
+
+  Registerables are objects that can be registered.  The implement the
+  ``IRegisterable'' interface.
+
+- Registries
+
+  Registeries are objects that registerables are registered with.
+  Typically, these are component-management services like the adapter
+  or utility service.
+
+- Registration objects
+
+  Registration objects store data about registrations.  They store
+  registration data and represent the relationship between registries
+  and registerables.
+
+- Registration managers
+
+  Registration managers are containers for managing registrations.
+  Registrations are stored in registration managers.  All of the
+  registrations for objects stored in a site-management folder are
+  contained in the folder's registration manager. Currently, the
+  registration manager is an item in the folder. We want to change
+  this so that the registration manager is exposed as a folder tab
+  rather than as an item.
+
+- Registration stack
+
+  Registries allow multiple registrations for the same set of
+  registration parameters. At most one registration for a set of
+  parameters can be active at one time, but multiple registrations are
+  managed. 
+
+  Registries provide functions for looking up (``queryRegistrationsFor'')
+  or creating (``createRegistrationsFor'') registration stacks.  These
+  methods are passed registration objects whos attribute values are
+  used to specify the desired registration stacks.
+
+  This is a little but confusing, so we'll look at an example.
+  Utilities are registered using 2 parameterer, the interface provided
+  by the uttility, and the utility name.  For a given interface and
+  name, the utility service may have multiple ustility
+  registrations. It uses a registration stack to store these. We can
+  get the registration stack by calling ``queryRegistrationsFor'' with
+  a registration object that has the desired interface and name.  The
+  registration object passed need not be in in the stack. It is used
+  soley to provide the parameters.  
+
 
 Examples
 --------
