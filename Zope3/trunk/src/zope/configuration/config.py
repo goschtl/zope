@@ -178,6 +178,11 @@ class ConfigurationContext(object):
         try:
             mod = __import__(mname, *_import_chickens)
         except ImportError, v:
+            if sys.modules.has_key(mname):
+                # The module was at least partially imported, so there
+                # is probably a bug in some Python code rather than a
+                # configuration error.
+                raise
             raise ConfigurationError, (
                 "Couldn't import %s, %s" % (mname, v)
                 ), sys.exc_info()[2]
