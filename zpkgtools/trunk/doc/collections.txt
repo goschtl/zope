@@ -17,6 +17,7 @@ and the release tag is ``ZopeX3-1_0``, we get a tree that looks like
 this (assuming it has the ``zope`` package as a dependency)::
 
   ZopeX3-1.0/
+      Makefile.in
       MANIFEST
       README.txt
       configure
@@ -34,7 +35,6 @@ this (assuming it has the ``zope`` package as a dependency)::
                   version.txt
 
       Support/
-          Makefile.in
           setuptools/
               __init__.py
               ...
