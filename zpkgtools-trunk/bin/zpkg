@@ -22,26 +22,31 @@ except ImportError:
     sys.path.append(basedir)
     import zpkgtools
 
+from zpkgtools import config
+from zpkgtools import cvsloader
 from zpkgtools import publication
 from zpkgtools import setup
 from zpkgtools.include import InclusionProcessor
 
 
 class Application:
-    def __init__(self, options, source, program=None):
-        if program is None:
-            program = os.path.basename(__file__)
+
+    def __init__(self, options, source, program):
+        self.ip = None
         self.options = options
         self.source = source
         # Create a new directory for all temporary files to go in:
         self.tmpdir = tempfile.mkdtemp(prefix=program + "-")
         tempfile.tempdir = self.tmpdir
+        self.loader = cvsloader.CvsLoader()
+        cf = config.Configuration(options.configfile)
+        cf.finalize()
+        self.locations = cf.locations
 
         self.loadMetadata()
         self.target_name = "%s-%s" % (self.metadata.name, options.version)
         self.target_file = self.target_name + ".tar.bz2"
         self.destination = os.path.join(self.tmpdir, self.target_name)
-        self.ip = None
 
     def buildDistribution(self):
         # This could be either a package distribution or a collection
@@ -55,7 +60,61 @@ class Application:
 
     def buildPackageDistribution(self):
         os.mkdir(self.destination)
-        
+        pkgname = self.metadata.name
+
+        self.ip = InclusionProcessor(self.source,
+                                     os.path.join(self.destination, pkgname))
+        try:
+            self.ip.createDistributionTree()
+        except cvsloader.CvsLoadingError, e:
+            print >>sys.stderr, e
+            sys.exit(1)
+
+        self.package_data = {}
+        self.package_dir = {pkgname: pkgname}
+        self.packages = [pkgname]
+        self.scripts = []
+        self.scanPackage(pkgname, self.source)
+
+    def scanPackage(self, name, directory):
+        files = os.listdir(directory)
+        # need to load package-specific data here as well
+        for fn in files:
+            fnbase, ext = os.path.splitext(fn)
+            if ext in (".py", ".pyc", ".pyo", ".so", ".sl", ".pyd"):
+                continue
+            path = os.path.join(directory, fn)
+            if os.path.isdir(path):
+                init_py = os.path.join(path, "__init__.py")
+                publication_txt = os.path.join(path, "PUBLICATION.txt")
+                if (os.path.isfile(init_py)
+                    and os.path.exists(publication_txt)):
+                    pkgname = "%s.%s" % (name, fn)
+                    self.packages.append(pkgname)
+                    self.scanPackage(pkgname, path)
+                else:
+                    # an ordinary directory
+                    pass
+            else:
+                self.addPackageFile(name, fn)
+
+    def scanDirectory(self, pkgname, directory, reldir):
+        """Scan a data directory, adding files to package_data."""
+        for fn in os.listdir(directory):
+            relfn = os.path.join(reldir, fn)
+            if os.path.isdir(fn):
+                self.scanDirectory(pkgname,
+                                   os.path.join(directory, fn),
+                                   relfn)
+            else:
+                fnbase, ext = os.path.splitext(fn)
+                if ext in (".pyc", ".pyo", ".so", ".sl", ".pyd"):
+                    continue
+                self.addPackageFile(pkgname, relfn)
+
+    def addPackageFile(self, pkgname, relfn):
+        L = self.package_data.setdefault(pkgname, [])
+        L.append(relfn)
 
     def buildCollectionDistribution(self):
         # Build the destination directory:
@@ -75,6 +134,10 @@ class Application:
                   "source-dir does not contain required publication data file"
             sys.exit(1)
         self.metadata = publication.load(open(metadata_file))
+
+    def loadResource(self, name):
+        location = self.locations[name]
+        
 
     def generateSetup(self):
         setup.generate(self.destination,
@@ -118,7 +181,10 @@ def main(argv=None):
         argv = sys.argv
     program = os.path.basename(argv[0])
     parser = optparse.OptionParser(
-        usage="usage: %prog [-i file] [-r tag] [-v version] [source-dir]")
+        usage="usage: %prog [options] [source-dir]")
+    parser.add_option(
+        "-C", "--configure", dest="configfile",
+        help="path or URL to the configuration file")
     parser.add_option(
         "-i", "--include", dest="include_spec",
         help="specification file for inclusions")
@@ -131,8 +197,10 @@ def main(argv=None):
         help="version label for the new distribution",
         default="0.0.0")
     options, args = parser.parse_args(argv[1:])
+
+    # figure out what to read from:
     if not args:
-        source = "."
+        source = os.curdir
     elif len(args) > 1:
         print >>sys.stderr, "too many arguments"
         return 2
