@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.25 2004/03/29 15:09:05 srichter Exp $
+$Id: config.py,v 1.26 2004/04/11 10:35:00 srichter Exp $
 """
 
 import os.path
@@ -31,7 +31,7 @@ from zope.configuration.interfaces import IGroupingContext
 from zope.interface.adapter import AdapterRegistry
 from zope.interface import Interface, implements, directlyProvides, providedBy
 from zope.interface.interfaces import IInterface
-from zope.schema.errornames import WrongType
+from zope.schema.interfaces import WrongType
 from zope.configuration import fields
 
 
@@ -959,7 +959,7 @@ class DirectiveSchema(fields.GlobalObject):
     def _validate(self, value):
         super(fields.GlobalObject, self)._validate(value)
         if not IInterface.providedBy(value):
-            raise zope.schema.ValidationError(WrongType, value)
+            raise WrongType(value)
 
 
 class IDirectivesInfo(Interface):
@@ -1259,8 +1259,7 @@ def toargs(context, schema, data):
     ...          'u': u'http://www.zope.org', 'a': u'1'}))
     Traceback (most recent call last):
     ...
-    ConfigurationError: ('Invalid value for', 'in',""" \
-                                """ "(u'Constraint not satisfied', 0)")
+    ConfigurationError: ('Invalid value for', 'in', '0')
 
     """
 

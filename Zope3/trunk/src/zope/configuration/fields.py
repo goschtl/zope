@@ -13,13 +13,15 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.18 2004/01/05 08:06:44 philikon Exp $
+$Id: fields.py,v 1.19 2004/04/11 10:35:00 srichter Exp $
 """
 import os, re, warnings
 from zope import schema
 from zope.schema.interfaces import IFromUnicode
+from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.configuration.exceptions import ConfigurationError
 from zope.interface import implements
+from zope.configuration.interfaces import InvalidToken
 
 PYIDENTIFIER_REGEX = u'\A[a-zA-Z_]+[a-zA-Z0-9_]*\Z'
 pyidentifierPattern = re.compile(PYIDENTIFIER_REGEX)
@@ -96,14 +98,14 @@ class GlobalObject(schema.Field):
     >>> gg.fromUnicode("z")
     Traceback (most recent call last):
     ...
-    ValidationError: (u'Wrong type', 'zope', (<type 'int'>, <type 'long'>))
+    WrongType: ('zope', (<type 'int'>, <type 'long'>))
 
     >>> g = GlobalObject(constraint=lambda x: x%2 == 0)
     >>> gg = g.bind(fake)
     >>> gg.fromUnicode("x")
     Traceback (most recent call last):
     ...
-    ValidationError: (u'Constraint not satisfied', 1)
+    ConstraintNotSatisfied: 1
     >>> gg.fromUnicode("y")
     42
     >>> g = GlobalObject()
@@ -168,13 +170,12 @@ class Tokens(schema.Sequence):
     >>> gg.fromUnicode("x y")
     Traceback (most recent call last):
     ...
-    ValidationError: Invalid token: (u'Constraint not satisfied', 1) in x y
+    InvalidToken: 1 in x y
 
     >>> gg.fromUnicode("z y")
     Traceback (most recent call last):
     ...
-    ValidationError: Invalid token: (u'Wrong type', 'zope', """ \
-                             """(<type 'int'>, <type 'long'>)) in z y
+    InvalidToken: ('zope', (<type 'int'>, <type 'long'>)) in z y
     >>> gg.fromUnicode("y y")
     [42, 42]
     >>> 
@@ -191,8 +192,7 @@ class Tokens(schema.Sequence):
                 try:
                     v = vt.fromUnicode(s)
                 except schema.ValidationError, v:
-                    raise schema.ValidationError("Invalid token: %s in %s"
-                                                 % (v, u))
+                    raise InvalidToken("%s in %s" % (v, u))
                 else:
                     values.append(v)
         else:

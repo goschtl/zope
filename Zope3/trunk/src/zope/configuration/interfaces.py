@@ -11,9 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Zope Configuration (ZCML) interfaces
 
+$Id: interfaces.py,v 1.6 2004/04/11 10:35:00 srichter Exp $
+"""
 from zope.interface import Interface
 from zope.schema import BytesLine
+from zope.schema.interfaces import ValidationError
+
+class InvalidToken(ValidationError):
+    """Invaid token in list."""
 
 class IConfigurationContext(Interface):
     """Configuration Context
