@@ -61,7 +61,7 @@
 
 <browser:view
        name="login"
-       for="zope.app.interfaces.services.pluggableauth.IPrincipalSource"
+       for="zope.app.interfaces.services.pluggableauth.ILoginPasswordPrincipalSource"
        class="zope.app.services.pluggableauth.PrincipalAuthenticationView"
        permission="zope.Public"
 /> <!-- XXX why do we need a permission? -->
