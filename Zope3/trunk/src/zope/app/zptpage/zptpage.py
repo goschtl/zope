@@ -28,6 +28,7 @@ from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.container.contained import Contained
+from zope.app import zapi
 
 from interfaces import IZPTPage, IRenderZPTPage
 
@@ -71,9 +72,16 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
         namespace['container'] = namespace['context'] = instance
         return namespace
 
+    def pt_source_file(self):
+        try:
+            return zapi.getPath(self)
+        except TypeError:
+            return None
+
     def render(self, request, *args, **keywords):
         instance = self.__parent__
 
+        debug_flags = request.debug
         request = ProxyFactory(request)
         instance = ProxyFactory(instance)
         if args: args = ProxyFactory(args)
@@ -82,7 +90,8 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
         namespace = self.pt_getContext(instance, request,
                                        args=args, options=kw)
 
-        return self.pt_render(namespace)
+        return self.pt_render(namespace, showtal=debug_flags.showTAL,
+                              sourceAnnotations=debug_flags.sourceAnnotations)
 
     source = property(getSource, setSource, None,
                       """Source of the Page Template.""")

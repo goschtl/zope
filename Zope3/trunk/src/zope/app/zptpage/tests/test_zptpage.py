@@ -18,6 +18,7 @@ $Id$
 
 import unittest
 
+from zope.interface import directlyProvides
 from zope.interface.verify import verifyClass
 from zope.exceptions import Forbidden
 
@@ -30,9 +31,13 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.traversing.interfaces import ITraverser, ITraversable
+from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.tests import ztapi
 from zope.security.checker import NamesChecker, defineChecker
 from zope.app.container.contained import contained
+from zope.app.location.traversing import LocationPhysicallyLocatable
+from zope.app.traversing.adapters import RootPhysicallyLocatable
 
 from zope.app.zptpage.interfaces import IZPTPage
 from zope.app.zptpage.zptpage import ZPTPage, ZPTSourceView,\
@@ -51,6 +56,10 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         super(ZPTPageTests, self).setUp()
         ztapi.provideAdapter(None, ITraverser, Traverser)
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+        ztapi.provideAdapter(
+              None, IPhysicallyLocatable, LocationPhysicallyLocatable)
+        ztapi.provideAdapter(
+              IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
         defineChecker(Data, NamesChecker(['URL', 'name']))
         defineChecker(TestRequest, NamesChecker(['getPresentationSkin']))
 
@@ -68,8 +77,9 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
         page = contained(page, Data(name='zope'))
 
-        out = page.render(Data(URL={'1': 'http://foo.com/'}),
-                          title="Zope rules")
+        request = Data(URL={'1': 'http://foo.com/'},
+                       debug=Data(showTAL=False, sourceAnnotations=False))
+        out = page.render(request, title="Zope rules")
         out = ' '.join(out.split())
 
         self.assertEqual(
@@ -88,7 +98,8 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
         page = contained(page, Data(name='zope'))
 
-        self.assertRaises(Forbidden, page.render, Data())
+        request = Data(debug=Data(showTAL=False, sourceAnnotations=False))
+        self.assertRaises(Forbidden, page.render, request)
 
     def test_template_context_wrapping(self):
 
@@ -110,6 +121,40 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         page = contained(page, None, name='zpt')
         request = TestRequest()
         self.assertEquals(page.render(request), 'zpt\n')
+
+    def test_source_file(self):
+        page = ZPTPage()
+        self.assert_(page.pt_source_file() is None)
+
+        page = self.pageInContext(page)
+        self.assertEquals(page.pt_source_file(), '/folder/zpt')
+
+    def pageInContext(self, page):
+        root = Data()
+        directlyProvides(root, IContainmentRoot)
+        folder = contained(Data(), root, name='folder')
+        return contained(page, folder, name='zpt')
+
+    def test_debug_flags(self):
+        page = ZPTPage()
+        page = self.pageInContext(page)
+        page.setSource(u'<tal:x>Foo</tal:x>')
+
+        request = TestRequest()
+        self.assertEquals(page.render(request), 'Foo\n')
+
+        request.debug.showTAL = True
+        self.assertEquals(page.render(request), '<tal:x>Foo</tal:x>\n')
+
+        request.debug.showTAL = False
+        request.debug.sourceAnnotations = True
+        self.assertEquals(page.pt_source_file(), '/folder/zpt')
+        self.assertEquals(page.render(request),
+            '<!--\n' +
+            '=' * 78 + '\n' +
+            '/folder/zpt (line 1)\n' +
+            '=' * 78 + '\n' +
+            '-->Foo\n')
 
 
 class DummyZPT:
@@ -150,7 +195,7 @@ class TestFileEmulation(unittest.TestCase):
     def test_ReadFile(self):
         page = ZPTPage()
         content = u"<p></p>"
-        page.setSource(content)        
+        page.setSource(content)
         f = ZPTReadFile(page)
         self.assertEqual(f.read(), content)
         self.assertEqual(f.size(), len(content))
