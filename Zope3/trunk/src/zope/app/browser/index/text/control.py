@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.8 2003/03/21 15:29:06 alga Exp $
+$Id: control.py,v 1.9 2003/04/10 15:05:36 jack-e Exp $
 """
 
 from __future__ import generators
@@ -80,7 +80,7 @@ class ControlView(BrowserView):
             yield self._cookInfo(hubid, score)
 
     def _cookInfo(self, hubid, score):
-        location = canonicalPath(self.hub.getLocation(hubid))
+        location = canonicalPath(self.hub.getPath(hubid))
         scoreLabel = "%.1f%%" % (100.0 * score)
         result = {
             'location': location,
