@@ -17,7 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.container.interfaces import IAdding
 from zope.app.container.interfaces import IContainer, IContentContainer
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.site.interfaces import IPossibleSite
