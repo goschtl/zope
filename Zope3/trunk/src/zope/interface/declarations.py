@@ -504,6 +504,7 @@ class implementer:
             ob.__implemented__ = spec
         except AttributeError:
             raise TypeError("Can't declare implements", ob)
+        return ob
 
 def _implements(name, interfaces, classImplements):
     frame = sys._getframe(2)
