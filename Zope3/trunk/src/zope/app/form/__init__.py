@@ -14,9 +14,6 @@
 """
 $Id$
 """
-import traceback
-from warnings import warn
-from zope.app import zapi
 from zope.app.form.interfaces import IWidget, WidgetInputError
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
