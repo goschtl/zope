@@ -49,7 +49,7 @@ class FieldIndex(Persistent):
 
 
     def has_doc(self, docid):
-        return self._rev_index.has_key(docid) > 0 
+        return bool(self._rev_index.has_key(docid))
 
 
     def index_doc(self, docid, value):
