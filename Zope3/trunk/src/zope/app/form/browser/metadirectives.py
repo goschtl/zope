@@ -22,6 +22,7 @@ from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
 from zope.app.security.fields import Permission
+from zope.app.component.fields import LayerField
 
 class ICommonInformation(Interface):
     """
@@ -60,7 +61,7 @@ class ICommonInformation(Interface):
         required=True
         )
 
-    layer = TextLine(
+    layer = LayerField(
         title=u"Layer",
         description=u"The later the view is in. Default: 'default'",
         required=False
