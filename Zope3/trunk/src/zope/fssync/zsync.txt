@@ -25,6 +25,9 @@ The additional specific command given controls what operation is
 performed.  The following commands are supported; names given in
 parentheses are aliases supported for convenience:
 
+**help** (h, ?)
+  Display help text on **zsync** and individual commands.
+
 **checkin** (ci)
   Add the target material to the object database.
 
@@ -41,7 +44,7 @@ parentheses are aliases supported for convenience:
 **update** (up)
   Retrieve updates from the object database.
 
-**diff**
+**diff** (di)
   Report differences between the local representation and the data
   from which the modified copy was generated.  This command can be run
   *offline* (without any network access), so is useful when working
@@ -57,7 +60,7 @@ parentheses are aliases supported for convenience:
   additions are not made to the object database itself until the next
   **zsync commit**.
 
-**remove** (rm)
+**delete** (del remove rm)
   Mark an object for removal from the object database.  The change is
   not made to the object database itself until the next **zsync
   commit**.
@@ -204,6 +207,21 @@ Options
   reporting a list of paths for which conflicts are detected.
 
 
+The **zsync delete** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**delete** *path* ...
+
+Description
++++++++++++
+
+The **delete** command has no specific options.  It requires at least
+one *path* argument.
+
+
 The **zsync diff** Command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -255,6 +273,22 @@ Options
   **patch** typically needs at least two lines of context.
 
 
+The **zsync help** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**help** [*command* ...]
+
+Description
++++++++++++
+
+When used with specifying *command*, this displays general help on
+using **zsync**.  When *command* is given, information about each
+command list is presented.
+
+
 The **zsync mkdir** Command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -270,21 +304,6 @@ Create one or more directories and schedule them for addition.  The
 additions are not made to the object database itself until the next
 **zsync commit**.  Reverting these additions with **zsync revert**
 will not cause the directories themselves to be removed.
-
-
-The **zsync remove** Command
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Synopsis
-++++++++
-
-**remove** *path* ...
-
-Description
-+++++++++++
-
-The **remove** command has no specific options.  It requires at least
-one *path* argument.
 
 
 The **zsync resolve** Command
