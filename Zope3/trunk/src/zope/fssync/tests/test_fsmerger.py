@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the FSMerger class.
 
-$Id: test_fsmerger.py,v 1.2 2003/05/15 11:38:39 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.3 2003/05/28 13:48:16 gvanrossum Exp $
 """
 
 import os
@@ -25,49 +25,7 @@ from os.path import exists, isdir, isfile, realpath, normcase, split, join
 
 from zope.fssync.fsmerger import FSMerger
 
-class MockMetadata(object):
-
-    def __init__(self):
-        self.database = {}
-
-    def getentry(self, filename):
-        key, filename = self.makekey(filename)
-        if key not in self.database:
-            self.database[key] = {}
-        return self.database[key]
-
-    def getnames(self, dirpath):
-        dirkey, dirpath = self.makekey(dirpath)
-        names = []
-        for key in self.database:
-            head, tail = split(key)
-            if head == dirkey:
-                names.append(tail)
-        return names
-
-    def flush(self):
-        pass
-
-    # These only exist for the test framework
-
-    def makekey(self, path):
-        path = realpath(path)
-        key = normcase(path)
-        return key, path
-
-    def setmetadata(self, filename, metadata={}):
-        key, filename = self.makekey(filename)
-        if key not in self.database:
-            self.database[key] = {"path": filename}
-        self.database[key].update(metadata)
-
-    def delmetadata(self, filename):
-        key, filename = self.makekey(filename)
-        if key in self.database:
-            del self.database[key]
-
-    def dump(self):
-        return dict([(k, v) for (k, v) in self.database.iteritems() if v])
+from zope.fssync.tests.mockmetadata import MockMetadata
 
 class TestFSMerger(unittest.TestCase):
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.9 2003/05/15 12:05:12 gvanrossum Exp $
+$Id: test_merger.py,v 1.10 2003/05/28 13:48:16 gvanrossum Exp $
 """
 
 import os
@@ -25,32 +25,7 @@ from os.path import exists, isdir, isfile, realpath, normcase
 
 from zope.fssync.merger import Merger
 
-class MockMetadatabase(object):
-
-    def __init__(self):
-        self.database = {}
-
-    def makekey(self, file):
-        file = realpath(file)
-        key = normcase(file)
-        return key, file
-
-    def getentry(self, file):
-        key, file = self.makekey(file)
-        if key not in self.database:
-            self.database[key] = {}
-        return self.database[key]
-
-    def setmetadata(self, file, metadata={}):
-        key, file = self.makekey(file)
-        if key not in self.database:
-            self.database[key] = {"path": file}
-        self.database[key].update(metadata)
-
-    def delmetadata(self, file):
-        key, file = self.makekey(file)
-        if key in self.database:
-            del self.database[key]
+from zope.fssync.tests.mockmetadata import MockMetadata
 
 added = {"flag": "added"}
 removed = {"flag": "removed"}
@@ -121,7 +96,7 @@ class TestMerger(unittest.TestCase):
         local = self.addfile(localdata)
         orig = self.addfile(origdata)
         remote = self.addfile(remotedata)
-        md = MockMetadatabase()
+        md = MockMetadata()
         if localmetadata is not None:
             md.setmetadata(local, localmetadata)
         if remotemetadata is not None:
