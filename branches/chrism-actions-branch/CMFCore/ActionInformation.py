@@ -20,7 +20,7 @@ from Globals import InitializeClass
 from Globals import DTMLFile
 from Acquisition import aq_inner, aq_parent
 from OFS.SimpleItem import SimpleItem
-
+from Persistence import Persistent
 from Expression import Expression
 from CMFCorePermissions import View
 from CMFCorePermissions import ManagePortal
@@ -179,13 +179,16 @@ class ActionInformation( SimpleItem ):
 
     def __setstate__(self, state):
         if not state.has_key('_action_info'):
-            kw = {}
-            for name in ('id', 'title', 'description', 'category', 'condition',
+            state['_action_info'] = {}
+            id = state['id']
+            state['_acton_info']['id'] = id
+            _marker = []
+            for name in ('title', 'description', 'category', 'condition',
                          'permissions', 'priority', 'visible', 'action'):
-                kw[name] = state.get(name)
-                del state[name]
-            self._action_info = kw
-            self.__dict__.update(state)
+                if state.get(name, _marker) is not _marker:
+                    state['_action_info'][name] = state[name]
+                    del state[name]
+        Persistent.__setstate__(self, state)
 
 InitializeClass( ActionInformation )
 

@@ -225,11 +225,11 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
         if object is not None and hasattr(object, 'aq_base'):
             folder = self._findParentFolder(object)
 
-        # include actions from action providers
-        actions.extend(self.getProviderActions(oai(self, folder, object)))
-
         # include actions from types tool
         actions.extend(self.getTypeActions(object))
+
+        # include actions from action providers
+        actions.extend(self.getProviderActions(oai(self, folder, object)))
 
         # Reorganize the actions by category, filtering out disallowed actions.
         filtered_actions={
