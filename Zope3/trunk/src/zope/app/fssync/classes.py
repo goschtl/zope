@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.3 2003/05/06 19:58:44 gvanrossum Exp $
+$Id: classes.py,v 1.4 2003/05/15 16:19:04 gvanrossum Exp $
 """
 
 import os
@@ -23,6 +23,7 @@ from zope.app.content.folder import Folder
 from zope.app.interfaces.fssync import IFSAddView, IObjectFile
 from zope.component.interfaces import IPresentationRequest
 from zope.xmlpickle import dumps
+from zope.proxy.introspection import removeAllProxies
 
 class FSAddView(object):
     """See IFSAddView."""
@@ -88,6 +89,7 @@ class ObjectEntryAdapter(object):
 
     def extra(self):
         "See Zope.App.FSSync.IObjectEntry.IObjectEntry"
+        return None
 
     def typeIdentifier(self):
         "See Zope.App.FSSync.IObjectEntry.IObjectEntry"
@@ -104,6 +106,10 @@ class Default(ObjectEntryAdapter):
     """Default File-system representation for objects."""
 
     __implements__ =  IObjectFile
+
+    def __init__(self, context):
+        # XXX for now, remove all proxies.
+        ObjectEntryAdapter.__init__(self, removeAllProxies(context))
 
     def getBody(self):
         "See IObjectFile"
