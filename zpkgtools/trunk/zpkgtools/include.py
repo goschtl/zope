@@ -234,17 +234,19 @@ class Specification:
         self.group = group
 
     def cook(self):
-        return
-        patterns = self.excludes
-        self.excludes = []
+        patterns = self.includes.pop(None, [])
+        source = os.path.normpath(self.source)
+        prefix = os.path.join(source, "")
         for pat in patterns:
-            path = os.path.join(self.source, pat)
+            path = os.path.join(source, pat)
             expansions = filter_names(glob.glob(path))
             if not expansions:
                 raise InclusionSpecificationError(
-                    "exclusion %r doesn't match any files" % pat,
+                    "%r doesn't match any files in <%s>" % (pat, self.group),
                     self.filename)
-            self.excludes.extend(expansions)
+            for fn in expansions:
+                suffix = fn[len(prefix):]
+                self.includes[suffix] = suffix
 
 
 class InclusionProcessor:

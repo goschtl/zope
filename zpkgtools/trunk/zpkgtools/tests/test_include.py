@@ -68,7 +68,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
             ignorethis.txt   newname1.txt
             ignorethis.txt   newname2.txt
 
-            source.txt
+            runtests.py
 
             # Another comment.
           </collection>
@@ -87,7 +87,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assertEqual(len(includes), 3)
         self.assert_("newname1.txt" in includes)
         self.assert_("newname2.txt" in includes)
-        self.assert_(None in includes)
+        self.assert_("runtests.py" in includes)
         self.assertEqual(specs.collection.includes["newname1.txt"],
                          "ignorethis.txt")
         self.assertEqual(specs.loads.includes["repository:doc/whatzit.txt"],
@@ -110,6 +110,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
             """)
         specs = include.load(self.source)
         specs.collection.cook()
+        self.assertEqual(len(specs.collection.includes), 1)
+        self.assert_("ignorethis.txt" in specs.collection.includes)
 
     def test_disallow_external_reference_in_collection_spec(self):
         self.check_disallow_external_reference_in_spec("collection")
