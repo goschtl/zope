@@ -3,16 +3,6 @@ from unittest import TestCase, TestSuite, makeSuite, main
 
 from Products.CMFCore.tests.base.dummy import DummyFolder
 
-#
-# XXX: 2002/08/12  Generic rule:  *don't* do imports of the module-under-test
-#       at module scope in the unittest;  failure here suppresses information!
-#
-from Products.CMFCore.DirectoryView import registerDirectory
-from Products.CMFCore.DirectoryView import addDirectoryViews
-from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
-from Products.CMFCore.DirectoryView import _dirreg
-from Products.CMFCore.DirectoryView import DirectoryInformation
-
 from Globals import package_home, DevelopmentMode
 
 from os import remove, mkdir, rmdir, curdir, stat
@@ -33,6 +23,8 @@ else:
 skin_path_name = join(_prefix, 'fake_skins', 'fake_skin')
 
 def _registerDirectory(self=None):
+    from Products.CMFCore.DirectoryView import registerDirectory
+    from Products.CMFCore.DirectoryView import addDirectoryViews
     registerDirectory('fake_skins', _prefix)
     if self is not None:
         ob = self.ob = DummyFolder()
@@ -81,24 +73,28 @@ class DirectoryViewTests1( TestCase ):
     #
     def test_getDirectoryInfo1( self ):
         """ windows INSTANCE_HOME  """
+        from Products.CMFCore.DirectoryView import addDirectoryViews
         addDirectoryViews(self.ob, 'fake_skins', _prefix)
         self.ob.fake_skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')        
         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
     def test_getDirectoryInfo2( self ):
         """ windows SOFTWARE_HOME  """
+        from Products.CMFCore.DirectoryView import addDirectoryViews
         addDirectoryViews(self.ob, 'fake_skins', _prefix)
         self.ob.fake_skin.manage_properties(r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')        
         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
     def test_getDirectoryInfo3( self ):
         """ *nix INSTANCE_HOME  """
+        from Products.CMFCore.DirectoryView import addDirectoryViews
         addDirectoryViews(self.ob, 'fake_skins', _prefix)
         self.ob.fake_skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')        
         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
     def test_getDirectoryInfo4( self ):
         """ *nix SOFTWARE_HOME  """
+        from Products.CMFCore.DirectoryView import addDirectoryViews
         addDirectoryViews(self.ob, 'fake_skins', _prefix)
         self.ob.fake_skin.manage_properties('/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')        
         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
@@ -118,6 +114,7 @@ class DirectoryViewTests2( TestCase ):
         appears as a DirectoryViewSurrogate due
         to Acquisition hackery.
         """
+        from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
         self.failUnless(isinstance(self.ob.fake_skin,DirectoryViewSurrogate))
 
     def test_DirectoryViewMethod( self ):
@@ -184,6 +181,7 @@ if DevelopmentMode:
         """
         See if a new folder shows up
         """
+        from Products.CMFCore.DirectoryView import DirectoryViewSurrogate
         self.failUnless(isinstance(self.ob.fake_skin.test3,DirectoryViewSurrogate))
         self.ob.fake_skin.test3.objectIds()
 
