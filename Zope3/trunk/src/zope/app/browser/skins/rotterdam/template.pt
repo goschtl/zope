@@ -27,11 +27,11 @@
     <metal:block define-slot="style_slot" />
     <metal:block define-slot="ecmascript_slot" />
 
-    <!--
+    <!-- Ugly is better than lobotomized.
+    -->
     <script type="text/javascript" src="xmltree.js" 
             tal:attributes="src string:${context/++resource++xmltree.js}" >
     </script>
-    -->
 
     <link rel="icon" type="image/png"
           tal:attributes="href context/++resource++favicon.png" />
@@ -57,7 +57,9 @@
     </div>
 
     <div id="navigators">
-<!--     
+
+    <!-- Ugly is better than lobotomized.
+    -->
       <div class="box" id="navigationTree">
         <h4>Navigation</h4>
         <div 
@@ -68,7 +70,6 @@
             >Loading...
         </div>
       </div>
--->
 
       <div class="box" id="commonTasks"
            tal:define="view context/@@commonTasks|nothing"
