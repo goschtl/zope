@@ -297,7 +297,7 @@ def _handle_menu(_context, menu, title, for_, name, permission):
                 "multi-views.")
 
         return menuItemDirective(
-            _context, menu, for_[0], '@@' + name, title,
+            _context, menu, for_[0], '@@' + str(name), title,
             permission=permission)
 
     return []
