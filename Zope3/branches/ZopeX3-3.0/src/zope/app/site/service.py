@@ -27,7 +27,6 @@ $Id$
 """
 import sys
 from transaction import get_transaction
-from zodbcode.module import PersistentModuleRegistry
 
 import zope.interface
 from zope.component.exceptions import ComponentLookupError
@@ -64,7 +63,6 @@ class IRegisterableContainerContainer(zope.interface.Interface):
 
 class SiteManager(
     BTreeContainer,
-    PersistentModuleRegistry,
     ):
 
     zope.interface.implements(
@@ -78,7 +76,6 @@ class SiteManager(
         self.__parent__ = site
         self.__name__ = '++etc++site'
         BTreeContainer.__init__(self)
-        PersistentModuleRegistry.__init__(self)
         self.subSites = ()
         self._setNext(site)
         self['default'] = SiteManagementFolder()

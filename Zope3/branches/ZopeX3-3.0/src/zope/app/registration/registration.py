@@ -32,7 +32,6 @@ from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.component.localservice import getLocalServices
 from zope.app.location import inside
-from zope.app.module.interfaces import IModuleManager
 from zope.app.registration import interfaces
 
 class RegistrationStatusProperty(object):
@@ -846,21 +845,6 @@ class RegisterableContainer(object):
 
     def findModule(self, name):
         # Used by the persistent modules import hook
-
-        # Look for a .py file first:
-        manager = self.get(name+'.py')
-        if manager is not None:
-            # found an item with that name, make sure it's a module(manager):
-            if IModuleManager.providedBy(manager):
-                return manager.getModule()
-
-        # Look for the module in this folder:
-        manager = self.get(name)
-        if manager is not None:
-            # found an item with that name, make sure it's a module(manager):
-            if IModuleManager.providedBy(manager):
-                return manager.getModule()
-
 
         # See if out container is a RegisterableContainer:
         c = self.__parent__

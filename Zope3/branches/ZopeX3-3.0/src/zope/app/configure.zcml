@@ -55,12 +55,6 @@
   <include package="zope.app.utility" />  
   <include package="zope.app.principalannotation" />  
 
-  <!-- Utilities -->
-  <include package="zope.app.schema" />
-
-  <!-- Misc. Service Manager objects -->
-  <include package="zope.app.module" />
-
   <!-- Broken-object support -->
   <include package="zope.app.broken" />
 

@@ -17,46 +17,7 @@ This module contains code for interfaces in persistent modules.
 
 $Id$
 """
-from persistent import Persistent
-from persistent.dict import PersistentDict
-from zodbcode.patch import registerWrapper, Wrapper
-from zope.interface.interface import InterfaceClass
-from zope.interface import Interface
 from zope.proxy import removeAllProxies
-
-class PersistentInterfaceClass(Persistent, InterfaceClass):
-
-    def __init__(self, *args, **kw):
-        Persistent.__init__(self)
-        InterfaceClass.__init__(self, *args, **kw)
-
-        self.dependents = PersistentDict()
-
-# PersistentInterface is equivalent to the zope.interface.Interface object
-# except that it is also persistent.  It is used in conjunction with
-# zodb.code to support interfaces in persistent modules.
-PersistentInterface = PersistentInterfaceClass("PersistentInterface",
-                                               (Interface, ))
-
-class PersistentInterfaceWrapper(Wrapper):
-
-    def unwrap(self):
-        return PersistentInterfaceClass(self._obj.__name__)
-
-
-def getInterfaceStateForPersistentInterfaceCreation(iface):
-    # Need to convert the dependents weakref dict to a persistent dict
-    dict = iface.__dict__.copy()
-    dependents = PersistentDict()
-    for k, v in dict['dependents'].iteritems():
-        dependents[k] = v
-    dict['dependents'] = dependents
-    return dict
-
-registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
-                lambda iface: (),
-                getInterfaceStateForPersistentInterfaceCreation,
-                )
 
 from zope.interface.declarations import providedBy
 
