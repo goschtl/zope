@@ -12,6 +12,7 @@ Options:
  --recurse - remote repository sync recurses into all subject dirs offspring
  --dryrun - do not actually do any of the activities
  --wait - do not fork into the background (and leave output in stdout/stderr)
+ --msgfile MSGFILENM - get log message from MSGFILENM (and delete it!)
 
 An optional leading arg --verbose argument says operate verbosely.
 
@@ -28,17 +29,21 @@ multiple space-delimited parts:
     - The old version number, then
     - the new one, like so
 
-    filename,1.1,1.2
+##     filename,1.1,1.2
 
-(See the CVS Gnu INFO file for loginfo for more format-string details.)
+## (See the CVS Gnu INFO file for loginfo for more format-string details.)
 
-Currently the actions are:
+## Currently the actions are:
 
-##  - doing a g+w chmod of the subject files
-##  - emailing checkin messages to designated recipients
-##  - doing an rsync of the repository to the public repository host.
+ - doing a g+w chmod of the subject files
+ - emailing checkin messages to designated recipients
+ - doing an rsync of the repository to the public repository host.
 
 ... as dictated in the traffic_table.py module."""
+
+import sys, os, tempfile
+import re, string
+import getopt
 
 OUTPUT_LOG = "/var/tmp/cvs-postcommit_actions.log"
 
@@ -57,24 +62,25 @@ WAIT = 0                                # Fork unless waiting is requested.
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
+MSGFILENM = ""                            # '--msgfile' option (value of arg)
 SCRIPT = "postcommit_actions"           # Changes to args[0], when obtained.
-
-import sys, os
-import re, string
-import getopt
 
 sVv_re = re.compile("(.*),([^,]+),([^,]+)")
 
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
 
-    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT
+    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT, MSGFILENM
+
+    complain("Args: %s\n", args)                 # DEBUG
 
     orig_args = args[:]
 
     SCRIPT = args[0]
     opts, args = getopt.getopt(args[1:], "",
-                               ["verbose", "dryrun", "recurse", "wait"])
+                               ["verbose", "dryrun",
+                                "recurse", "wait",
+                                "msgfile="])
     if len(args) != 1:
         usage(); raise SystemExit, 1
     for opt, val in opts:
@@ -90,6 +96,8 @@ def main(args):
         elif opt == "--wait":
             WAIT = 1
             complain("%s: Not doing activities in background...\n", SCRIPT)
+        elif opt == "--msgfile":
+            MSGFILENM = val
         else:
             complain("Unrecognize option '%s'\n", opt)
             raise SystemExit, 1
@@ -126,13 +134,23 @@ def main(args):
 
 def detach(args):
     """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
+    global MSGFILENM
+
     doctored_args = [args[0]]
     doctored_args.append("--wait")
+    if not MSGFILENM:
+        tempfile.mktemp()           # Throw one away, to get initial template.
+        tempfile.template = "cvs-log." + tempfile.template
+        msgfile = open(tempfile.mktemp(), 'w')
+        msgfile.write(sys.stdin.read())
+        MSGFILENM = msgfile.name
+    doctored_args.append("--msgfile")
+    doctored_args.append(MSGFILENM)
     for i in args[1:]:
         doctored_args.append('"%s"' % i)
     cmd = (("( exec 1> %s 2>&1; " + string.join(doctored_args, " ") +  " &)")
            % OUTPUT_LOG)
-    print "Am doing:", cmd        # DEBUG
+    
     os.system(cmd)
     os._exit(0)
     
@@ -183,12 +201,19 @@ def do_mail(name, repo, addrs, subjs):
     subject = "CVS checkin: %s -" % name
     for fn, old, new in subjs:
         subject = subject + " %s:%s" % (fn, new)
-    os.system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
-                                              (DRYRUN and "echo ") or "",
-                                              MAIL_CMD,
-                                              (VERBOSE and "-v") or "",
-                                              subject,
-                                              string.join(addrs, ",")))
+    cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
+                                     (DRYRUN and "echo ") or "",
+                                     MAIL_CMD,
+                                     (VERBOSE and "-v") or "",
+                                     subject,
+                                     string.join(addrs, ",")))
+    if MSGFILENM:
+        cmd = cmd + "< %s" % MSGFILENM
+    if VERBOSE:
+        complain("do_mail doing command:\n\t%s\n", cmd)
+    os.system(cmd)
+    if MSGFILENM:
+        os.unlink(MSGFILENM)
 
 def do_sync(name, repo, remote, subjs=None, recurse=0):
     """Instigate repository mirror synchronize.
@@ -255,8 +280,8 @@ def grok_file(s):
     return m.groups()
 
 def usage():
-    complain("Usage: %s repository-path file,oldv,newv [f2,o2,n2 ...]\n",
-             SCRIPT)
+    complain("Usage: %s [options...] ", SCRIPT)
+    complain("repo-path file,oldv,newv [f2,o2,n2 ...]\n")
 
 def complain(msg, *args):
     sys.stderr.write(msg % args)
