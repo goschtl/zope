@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.6 2002/11/18 13:20:44 stevea Exp $
+$Id: _Field.py,v 1.7 2002/12/05 13:27:06 dannu Exp $
 """
 __metaclass__ = type
 
@@ -22,8 +22,8 @@ from Exceptions import ValidationError
 import ErrorNames
 
 import IField
-from _bootstrapFields import Field, Container, Iteratable, Orderable, Sized
-from _bootstrapFields import Enumeratable, Text, TextLine, Bool, Int
+from _bootstrapFields import Field, Container, Iterable, Orderable, MinMaxLen
+from _bootstrapFields import ValueSet, Text, TextLine, Bool, Int
 from FieldProperty import FieldProperty
 from datetime import datetime
 
@@ -36,21 +36,21 @@ Field.readonly    = FieldProperty(IField.IField['readonly'])
 implements(Field, IField.IField)
 
 implements(Container, IField.IContainer)
-implements(Iteratable, IField.IIteratable)
+implements(Iterable, IField.IIterable)
 implements(Orderable, IField.IOrderable)
 
-Sized.min_length = FieldProperty(IField.ISized['min_length'])
-Sized.max_length = FieldProperty(IField.ISized['max_length'])
-implements(Sized, IField.ISized)
+MinMaxLen.min_length = FieldProperty(IField.IMinMaxLen['min_length'])
+MinMaxLen.max_length = FieldProperty(IField.IMinMaxLen['max_length'])
+implements(MinMaxLen, IField.IMinMaxLen)
 
-implements(Enumeratable, IField.IEnumeratable)
+implements(ValueSet, IField.IValueSet)
 
 implements(Text, IField.IText)
 implements(TextLine, IField.ITextLine)
 implements(Bool, IField.IBool)
 implements(Int, IField.IInt)
             
-class Bytes(Sized, Enumeratable):
+class Bytes(MinMaxLen, ValueSet):
     __doc__ = IField.IBytes.__doc__
     __implements__ = IField.IBytes
     
@@ -59,19 +59,19 @@ class Bytes(Sized, Enumeratable):
 class Line(Bytes):
     """A Text field with no newlines."""
 
-    __implements__ = IField.ILine
+    __implements__ = IField.IBytesLine
 
     def constraint(self, value):
         # XXX we should probably use a more general definition of newlines
         return '\n' not in value
     
 
-class Float(Enumeratable, Orderable):
+class Float(ValueSet, Orderable):
     __doc__ = IField.IFloat.__doc__
     __implements__ = IField.IFloat
     _type = float
 
-class Datetime(Enumeratable, Orderable):
+class Datetime(ValueSet, Orderable):
     __doc__ = IField.IDatetime.__doc__
     __implements__ = IField.IDatetime
     _type = datetime
@@ -84,9 +84,7 @@ def _validate_sequence(value_types, value, errors=None):
         return errors
 
     for item in value:
-
         error = None
-
         for t in value_types:
             try:
                 t.validate(item)
@@ -104,7 +102,7 @@ def _validate_sequence(value_types, value, errors=None):
     return errors
     
 
-class Sequence(Sized, Iteratable):
+class Sequence(MinMaxLen, Iterable):
     __doc__ = IField.ISequence.__doc__
     value_types = FieldProperty(IField.ISequence['value_types'])
 
@@ -132,7 +130,7 @@ class List(Sequence):
     __implements__ = IField.IList
     _type = list
 
-class Dict(Sized, Iteratable):
+class Dict(MinMaxLen, Iterable):
     """A field representing a Dict."""
     __implements__ = IField.IDict
     _type = dict

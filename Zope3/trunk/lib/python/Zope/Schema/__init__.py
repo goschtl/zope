@@ -13,10 +13,10 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.4 2002/11/11 20:24:35 jim Exp $
+$Id: __init__.py,v 1.5 2002/12/05 13:27:06 dannu Exp $
 """
 
-from _Field import Field, Container, Iteratable, Orderable, Sized, Enumeratable
+from _Field import Field, Container, Iterable, Orderable, MinMaxLen, ValueSet
 from _Field import Sequence
 from _Field import Bytes, Line, Text, TextLine, Bool, Int, Float
 from _Field import Tuple, List, Dict, Datetime

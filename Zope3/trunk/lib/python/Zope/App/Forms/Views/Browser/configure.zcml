@@ -24,7 +24,7 @@
   <browser:view
       permission="Zope.Public"
       allowed_interface=".IBrowserWidget."
-      for="Zope.Schema.IField.ILine"
+      for="Zope.Schema.IField.IBytesLine"
       name="widget"
       factory=".Widget.BytesWidget." />
 

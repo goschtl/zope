@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: testInterfaceWidget.py,v 1.1 2002/12/04 09:54:06 jim Exp $
+$Id: testInterfaceWidget.py,v 1.2 2002/12/05 13:27:04 dannu Exp $
 """
 
 __metaclass__ = type
@@ -65,7 +65,8 @@ class Test(CleanUp, TestCase):
         request = TestRequest()
         
         interfaceField = InterfaceField(__name__ = 'TestName',
-                                        title = u"This is a test")
+                                        title = u"This is a test",
+                                        required=False)
         
         widget = SingleInterfaceWidget(interfaceField, request)
         

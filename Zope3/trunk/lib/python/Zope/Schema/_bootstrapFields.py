@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _bootstrapFields.py,v 1.4 2002/12/04 10:00:56 jim Exp $
+$Id: _bootstrapFields.py,v 1.5 2002/12/05 13:27:06 dannu Exp $
 """
 __metaclass__ = type
 
@@ -46,7 +46,7 @@ class Field(Attribute):
     
     def __init__(self, __name__='', __doc__='',
                  title=u'', description=u'',
-                 required=False, readonly=False, constraint=None, default=None,
+                 required=True, readonly=False, constraint=None, default=None,
                  ):
         """Pass in field values as keyword parameters."""
 
@@ -110,10 +110,10 @@ class Container(Field):
                 raise ValidationError(ErrorNames.NotAContainer, value)
                 
                 
-class Iteratable(Container):
+class Iterable(Container):
 
     def _validate(self, value):
-        super(Iteratable, self)._validate(value)
+        super(Iterable, self)._validate(value)
 
         # See if we can get an iterator for it
         try:
@@ -159,17 +159,17 @@ class Orderable(Field):
             raise ValidationError(ErrorNames.TooBig, value, self.max)
 
 _int_types = int, long
-class Sized(Field):
+class MinMaxLen(Field):
     min_length = 0
     max_length = None
 
     def __init__(self, min_length=0, max_length=None, **kw):
         self.min_length = min_length
         self.max_length = max_length
-        super(Sized, self).__init__(**kw)
+        super(MinMaxLen, self).__init__(**kw)
 
     def _validate(self, value):
-        super(Sized, self)._validate(value)
+        super(MinMaxLen, self)._validate(value)
 
         if self.min_length is not None and len(value) < self.min_length:
             raise ValidationError(ErrorNames.TooShort, value, self.min_length)
@@ -178,7 +178,7 @@ class Sized(Field):
             raise ValidationError(ErrorNames.TooLong, value, self.max_length)
         
 
-class Enumeratable(Field):
+class ValueSet(Field):
 
     def allowed_values(self, values):
         # Reset current value so it doesn't hose validation
@@ -204,7 +204,7 @@ class Enumeratable(Field):
         # Set allowed_values to None so that we can validate if
         # one of the super methods invoke validation.
         self.__dict__['allowed_values'] = None
-        super(Enumeratable, self).__init__(**kw)
+        super(ValueSet, self).__init__(**kw)
         if allowed_values is not None:
             self.allowed_values = allowed_values
 
@@ -213,7 +213,7 @@ class Enumeratable(Field):
         self.default = default
 
     def _validate(self, value):
-        super(Enumeratable, self)._validate(value)
+        super(ValueSet, self)._validate(value)
 
         if self.allowed_values:
             if not value in self.allowed_values:
@@ -221,7 +221,7 @@ class Enumeratable(Field):
                                       self.allowed_values)
 
 
-class Text(Sized, Enumeratable):
+class Text(MinMaxLen, ValueSet):
     """A field containing text used for human discourse."""
     _type = unicode
     
@@ -247,6 +247,6 @@ class Bool(Field):
     else:
         _type = bool
 
-class Int(Enumeratable, Orderable):
+class Int(ValueSet, Orderable):
     """A field representing a Integer."""
     _type = int, long

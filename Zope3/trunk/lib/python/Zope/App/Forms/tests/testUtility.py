@@ -15,12 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: testUtility.py,v 1.4 2002/11/11 20:52:57 jim Exp $
+$Id: testUtility.py,v 1.5 2002/12/05 13:27:05 dannu Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
-from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
@@ -39,9 +38,9 @@ from Zope.ComponentArchitecture.IView import IViewFactory
 
 
 class I(Interface):
-    title = Text(title=u"Title")
+    title = Text(title=u"Title", required = False)
     description = Text(title=u"Description",
-                       default = u'No description')
+                       default = u'No description', required = False)
 
 class I2(Interface):
     title = Text(title = u"Title", required = True)

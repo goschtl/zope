@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.12 2002/12/04 09:58:46 jim Exp $
+$Id: Widget.py,v 1.13 2002/12/05 13:27:04 dannu Exp $
 """
 
 __metaclass__ = type
@@ -25,7 +25,7 @@ from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.Forms.Views.Browser.IBrowserWidget import IBrowserWidget
 from Zope.App.Forms.Widget import Widget
-from Zope.App.Forms.Exceptions import ConversionError, WidgetInputError
+from Zope.App.Forms.Exceptions import ConversionError, WidgetInputError, MissingInputError
 from Zope.Schema.Exceptions import ValidationError
 
 

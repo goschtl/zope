@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testImageUpload.py,v 1.1 2002/11/11 21:08:13 jim Exp $
+$Id: testImageUpload.py,v 1.2 2002/12/05 13:27:05 dannu Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,7 +29,7 @@ from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture.GlobalViewService \
      import provideView, setDefaultViewName
 from Zope.App.Forms.Views.Browser.Widget import BytesWidget, BytesAreaWidget
-from Zope.Schema.IField import IField, ILine, IBytes
+from Zope.Schema.IField import IField, IBytesLine, IBytes
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 
 class IU(ImageUpload, EditView):
@@ -43,7 +43,7 @@ class Test(PlacelessSetup, TestCase):
 
         # Configure the widget views
         setDefaultViewName(IField, IBrowserPresentation, "widget")
-        provideView(ILine, "widget", IBrowserPresentation, BytesWidget)
+        provideView(IBytesLine, "widget", IBrowserPresentation, BytesWidget)
         provideView(IBytes, "widget", IBrowserPresentation, BytesAreaWidget)
 
         icondir = os.path.split(Zope.App.OFS.Content.Image.__file__)[0]

@@ -13,20 +13,20 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: InterfaceField.py,v 1.2 2002/12/04 09:54:04 jim Exp $
+$Id: InterfaceField.py,v 1.3 2002/12/05 13:27:02 dannu Exp $
 """
 
-from Zope.Schema.IField import IEnumeratable
-from Zope.Schema import Enumeratable
+from Zope.Schema.IField import IValueSet
+from Zope.Schema import ValueSet
 from Interface import Interface
 from Interface.IInterface import IInterface
 from Zope.Schema.Exceptions import ValidationError
 
-class IInterfaceField(IEnumeratable):
+class IInterfaceField(IValueSet):
     u"""Fields with Interfaces as values
     """
     
-class InterfaceField(Enumeratable):
+class InterfaceField(ValueSet):
     __doc__ = IInterfaceField.__doc__
     __implements__ = IInterfaceField
 

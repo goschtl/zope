@@ -13,24 +13,30 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.11 2002/11/12 12:33:15 stevea Exp $
+$Id: IField.py,v 1.12 2002/12/05 13:27:06 dannu Exp $
 """
 from Interface import Interface
 
 from _bootstrapFields \
-     import Field, Text, TextLine, Bool, Int, Container, Iteratable
+     import Field, Text, TextLine, Bool, Int, Container, Iterable
 
 class IField(Interface):
-    u"""Fields
+    """Basic Schema Field Interface.
 
-    Fields are attribute specifications. They specify the allowed
-    values for object attributes, Field are typically defined in an
-    interface. 
+    Fields are used for Interface specifications.  They at least provide 
+    a title, description and a default value.  You can also
+    specify if they are required and/or readonly.  
 
-    XXX We need to think about the following
+    The Field Interface is also used for validation and specifying 
+    constraints. 
+ 
+    We want to make it possible for a IField to not only work
+    on its value but also on the object this value is bound to.  
+    This enables a Field implementation to perform validation
+    against an object which also marks a certain place. 
     
     Note that many fields need information about the object
-    implementing a field. For example, when validating a value to be
+    containing a field. For example, when validating a value to be
     set as an object attribute, it may be necessary for the field to
     introspect the object's state. This means that the field needs to
     have access to the object when performing validation.
@@ -50,7 +56,7 @@ class IField(Interface):
 
     3. Provide a specialized binding protocol:
 
-         bound = field(object)
+         bound = field.bind(object)
          bound.validate(value)
 
     Options 2 and 3 allow us to use properties, but require an extra
@@ -66,10 +72,11 @@ class IField(Interface):
     """
 
     def bind(object):
-        """Bind the field to an object
+        """return a copy of this field which is bound to an object. 
 
-        This is done by returning a copy of the field with a "context"
-        attribute set to the object.
+        The copy of the Field will have the 'context' attribute set
+        to 'object'.  This way a Field can implement more complex 
+        checks involving the object and its location. 
 
         Many fields don't need to be bound. Only fields that condition
         validation or properties on an object containing the field
@@ -93,33 +100,38 @@ class IField(Interface):
     required = Bool(
         title=u"Required",
         description=(
-        u"An indication of whether the field value must be provided"),
+        u"tells whether a field requires its value to exist."),
         default=True)
 
     readonly = Bool(
-        title="uRead Only",
+        title=u"Read Only",
         description=u"Read-only.", # XXX what is this?
+        required=False,
         default=False)
 
     default = Field(
-        title=u"The default field value",
+        title=u"default field value if no value is present",
         description=u"""The field default value may be None or a legal
                         field value"""
         )
 
     def constraint(value):
-        u"""Optional vaue constraint
+        u"""check a customized contraint on the value. 
 
-        Returns true is the value is legal, and false otherwise.
-
-        This is typically specified as a constructor argument.
+        You can implement this method with your Field to 
+        require a certain constraint.  This relaxes the need
+        to inherit/subclass a Field you to add a simple contraint. 
+        Returns true if the given value is within the Field's contraint.
         """
 
     def validate(value):
-        u"""Validate that the given value is a valid field entry.
+        u"""Validate that the given value is a valid field value.
 
         Returns nothing but raises an error if the value is invalid.
+        It checks everything specific to a Field and also checks
+        with the additional constraint. 
         """
+
     order = Int(
         title=u"Field Order",
         description=u"""\
@@ -134,43 +146,52 @@ class IField(Interface):
         readonly=True,
         )
 
-class IContainer(IField):
-    u"""Fields with values that allow containment checks using the in operator
 
-    Values include sequences, iteratorable objects, and any objects
-    that implement __contains__.
+class IIterable(IField):
+    u"""Fields with a value that can be iterated over.
+
+    The value needs to follow the python __iter__ protocol. 
     """
 
-class IIteratable(IContainer):
-    u"""Fields with value that can be iterated over
+class IContainer(IField):
+    u"""Fields whose value allows an 'x in value' check. 
+
+    The Value needs to have a conventional __contains__ method. 
     """
 
 class IOrderable(IField):
-    u"""Orderable values
+    u"""a Field requiring its value to be orderable.
 
-    They can be restricted to a range of values by specifying a
-    minimum and maximum value.
+    The value needs to have a conventional __cmp__ method. 
+    """
+
+class ILen(IField):
+    u"""a Field requiring its value to have a length. 
+
+    The value needs to have a conventional __len__ method.
+    """
+
+class IMinMax(IOrderable):
+    u"""a Field requiring its value to be between min and max. 
+    
+    This also means that the value needs to support the IOrderable interface.
     """
 
     min = Field(
-        title=u"The minimum allowable value",
-        description=u"""\
-        If this value is not None, then it must be a legal field value
-        and all field values must be less than this value.        
-        """
+        title=u"Start of the range",
+        required=False,
+        default=None
         )
 
     max = Field(
-        title=u"The maximum allowable value",
-        description=u"""\
-        If this value is not None, then it must be a legal field value
-        and all field values must be greater than this value.        
-        """
+        title=u"End of the range (excluding the value itself)",
+        required=False,
+        default=None
         )
+    
 
-class ISized(IField):
-    u"""Sized objects may have a minimum and maximum length
-    """
+class IMinMaxLen(ILen):
+    u"""a Field requiring the length of its value to be within a range"""
     
     min_length = Int(
         title=u"Minimum length",
@@ -179,7 +200,7 @@ class ISized(IField):
         min_length characters. If min_length is None, there is 
         no minimum.
         """,
-        required=0,
+        required=False,
         min=0, # needs to be a positive number
         default=0)
 
@@ -189,14 +210,12 @@ class ISized(IField):
         Value after whitespace processing cannot have greater
         or equal than max_length characters. If max_length is
         None, there is no maximum.""",
-        required=0,
+        required=False,
         min=0, # needs to be a positive number
         default=None)
 
-
-class IEnumeratable(IField):
-    u"""Fields with values that may be constrained to a set of values
-    """
+class IValueSet(IField):
+    u"""Field whose value is contained in a predefined set"""
     
     allowed_values = Container(
         title=u"Allowed Values",
@@ -204,31 +223,35 @@ class IEnumeratable(IField):
         Only values specified here can be values of this field.
         If the list is empty, then there are no further
         restictions.""",
-        required=0)
+        required=False)
             
 class IBool(IField):
-    u"""Describes the footprint of a Bool variable."""
+    u"""a Boolean Field."""
 
-class IBytes(ISized, IEnumeratable, IIteratable):
-    u"""Describes the footprint of a Bytes variable"""
+class IBytes(IMinMaxLen, IValueSet, IIterable):
+    u"""a Field containing a byte string (like the python str).
 
-class ILine(IBytes):
-    u"""Describes the footprint of a Bytes variable without newlines"""
+    The value might be contrained to be with length limits, or 
+    be within a set of values. 
+    """
 
-class IText(ISized, IEnumeratable, IIteratable):
-    u"""Describes the footprint of a Text variable."""
+class IBytesLine(IBytes):
+    u"""a Field containing a byte string without newlines."""
+
+class IText(IMinMaxLen, IValueSet, IIterable):
+    u"""a Field containing a unicode string."""
 
 class ITextLine(IText):
-    u"""Describes the footprint of a one-line Text variable."""
+    u"""a Field containing a unicode string without newlines."""
     
-class IInt(IEnumeratable, IOrderable):
-    u"""Describes the footprint of an Int variable."""
+class IInt(IMinMax, IValueSet):
+    u"""a Field containing an Integer Value."""
         
-class IFloat(IEnumeratable, IOrderable):
-    u"""Describes the footprint of a Float variable."""
+class IFloat(IMinMax, IValueSet):
+    u"""a Field containing a Float."""
         
-class IDatetime(IEnumeratable, IOrderable):
-    u"""Describes the footprint of a datetime variable."""
+class IDatetime(IMinMax, IValueSet):
+    u"""a Field containing a DateTime."""
 
 def _fields(values):
     for value in values:
@@ -236,45 +259,47 @@ def _fields(values):
             return False
     return True
 
-class ISequence(ISized, IIteratable):
-    u"""Describes fields that can hold a sequence values
+class ISequence(IMinMaxLen, IIterable):
+    u"""a Field containing a Sequence value.
 
-    These values may be constrained.
+    The Value must be iterable and may have a min_length/max_length.
     """
 
-    value_types = Iteratable(
+    value_types = Iterable(
         title=u"Value Types",
         description=(
         u"""\
         If set to a non-empty value, field value items must conform to one
         of the given types, which are expressed via fields.
         """),
-        required=0,
+        required=False,
         constraint=_fields,
         )
 
-
 class ITuple(ISequence):
-    u"""Describes the footprint of a Tuple variable."""
+    u"""a Field containing a conventional tuple."""
 
 class IList(ISequence):
-    u"""Describes the footprint of a List variable."""
+    u"""a Field containing a conventional list."""
 
+class IDict(IMinMaxLen, IIterable):
+    u"""a Field containing a conventional dict.
 
-class IDict(ISized, IIteratable):
-    u"""Describes the footprint of a Dict variable."""
+    the key_types and value_types field allow specification
+    of restrictions for the dict.
+    """
 
-    key_types = Iteratable(
+    key_types = Iterable(
         title=u"Value Types",
         description=u"""\
         If set to a non-empty value, field value keys must conform to one
         of the given types, which are expressed via fields.
         """,
         constraint=_fields,
-        required=0,
+        required=False,
         )
 
-    value_types = Iteratable(
+    value_types = Iterable(
         title=u"Value Types",
         description=(
         u"""\
@@ -282,5 +307,5 @@ class IDict(ISized, IIteratable):
         of the given types, which are expressed via fields.
         """),
         constraint=_fields,
-        required=0,
+        required=False,
         )

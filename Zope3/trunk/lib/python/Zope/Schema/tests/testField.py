@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: testField.py,v 1.4 2002/11/11 20:24:35 jim Exp $
+$Id: testField.py,v 1.5 2002/12/05 13:27:07 dannu Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.Schema import Field, Text, IField, ErrorNames
+from Zope.Schema import Field, Text, IField, ErrorNames, Int
 from Zope.Schema.Exceptions import StopValidation, ValidationError
 
 class FieldTestBase(TestCase):
@@ -107,11 +107,31 @@ class FieldTest(FieldTestBase):
             a = Text()
 
         self.failUnless(S2['a'].order > S2['b'].order)
-                           
+
+    def testConstraint(self):
+        def isodd(x):
+            return x % 2 == 1
+
+        i = Int(title=u'my constrained integer',
+                constraint=isodd)
+
+        i.validate(11)
+        self.assertRaisesErrorNames(ErrorNames.ConstraintNotSatisfied,
+                                    i.validate, 10)
         
+                           
+class FieldDefaultBehaviour(TestCase):
+    def test_required_defaults_to_true(self):
+        class MyField(Field):
+            pass
+        field = MyField(title=u'my')
+        self.assert_(field.required)
 
 def test_suite():
-    return makeSuite(FieldTest)
+    return TestSuite(   (
+            makeSuite(FieldTest),
+            makeSuite(FieldDefaultBehaviour)
+    ))
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')
