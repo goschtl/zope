@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.2 2002/12/25 14:12:29 jim Exp $
+Revision information: $Id: contents.py,v 1.3 2002/12/27 13:40:25 stevea Exp $
 """
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IZopeContainer
@@ -29,26 +29,27 @@ class Contents(BrowserView):
 
     __used_for__ = IContainer
 
-    def _extractContentInfo( self, item ):
-        info = { }
-        info['id'] = item[0]
-        info['object'] = item[1]
+    def _extractContentInfo(self, item):
+        id, obj = item
+        info = {}
+        info['id'] = id
+        info['object'] = obj
 
-        info[ 'url' ] = item[0]
+        info['url'] = id
 
-        zmi_icon = queryView(item[1], 'zmi_icon', self.request)
+        zmi_icon = queryView(obj, 'zmi_icon', self.request)
         if zmi_icon is None:
             info['icon'] = None
         else:
             info['icon'] = zmi_icon()
 
-        dc = queryAdapter(item[1], IZopeDublinCore)
+        dc = queryAdapter(obj, IZopeDublinCore)
         if dc is not None:
             title = dc.title
             if title:
                 info['title'] = title
 
-            magnitude, label = getSize(item[1])
+            magnitude, label = getSize(obj)
             info['size'] = {'size':magnitude, 'label':label}
             created = dc.created
             if created is not None:
