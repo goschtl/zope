@@ -13,35 +13,40 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_componentpathwidget.py,v 1.2 2003/08/17 06:05:55 philikon Exp $
+$Id: test_componentpathwidget.py,v 1.3 2003/09/21 17:30:59 jim Exp $
 """
 __metaclass__ = type
 
 import unittest
 from zope.app.browser.services.registration import ComponentPathWidget
-from zope.app.context import ContextWrapper
 from zope.app.interfaces.services.registration import IComponentRegistration
-from zope.app.interfaces.traversing import ITraverser, \
-     ITraversable, IPhysicallyLocatable
+from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.services.field import ComponentPath
-from zope.app.traversing.adapters import \
-     Traverser, DefaultTraversable, WrapperPhysicallyLocatable
+from zope.app.location import LocationPhysicallyLocatable
+from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements, Interface
 from zope.publisher.browser import TestRequest, BrowserView
 from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.app.container.contained import Contained
 
 class Component:
     implements(Interface)
 
-class Registration:
+class SiteManagementFolder:
+    foo = Component()
+
+class RegistrationManager:
+    pass
+
+class Registration(Contained):
     implements(IComponentRegistration)
 
     path = 'foo'
 
-    foo = Component()
 
 class AbsoluteURL(BrowserView):
 
@@ -55,13 +60,16 @@ class ComponentPathWidgetTest(PlacelessSetup, unittest.TestCase):
         PlacelessSetup.setUp(self)
         provideAdapter(None, ITraverser, Traverser)
         provideAdapter(None, ITraversable, DefaultTraversable)
-        provideAdapter(None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
+        provideAdapter(None, IPhysicallyLocatable, LocationPhysicallyLocatable)
         provideView(Interface, "absolute_url", IBrowserPresentation,
                     AbsoluteURL)
 
         field = ComponentPath(None, title=u"Path")
         field.__name__ = u'path'
-        reg = ContextWrapper(Registration(), None, name="reg")
+
+        folder = SiteManagementFolder()
+        rm = RegistrationManager(); rm.__parent__ = folder
+        reg = Registration(); reg.__parent__ = rm
         field = field.bind(reg)
         self.widget = ComponentPathWidget(field, TestRequest())
 
@@ -75,7 +83,8 @@ class ComponentPathWidgetTest(PlacelessSetup, unittest.TestCase):
 
     def test_getInputValue(self):
         self.assertEqual(self.widget.getInputValue(), 'foo')
-        comp = ContextWrapper(Component(), None, name="path2")
+        comp = Component()
+        comp.__name__ = "path2"
         self.widget.context.context = comp
         self.assertEqual(self.widget.getInputValue(), 'path2')
 
@@ -83,7 +92,8 @@ class ComponentPathWidgetTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(
             self.widget(),
             '<a href="something/@@SelectedManagementView.html">foo</a>')
-        comp = ContextWrapper(Component(), None, name="path2")
+        comp = Component()
+        comp.__name__ = "path2"
         self.widget.context.context = comp
         self.assertEqual(
             self.widget(),
