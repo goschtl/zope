@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: File.py,v 1.3 2002/06/24 15:41:10 mgedmin Exp $
 """
 
 import Persistence
-from types import StringType, NoneType
+from types import StringType, UnicodeType, NoneType
 from FileChunk import FileChunk
 from IFile import IFile
 
@@ -82,6 +82,9 @@ class File(Persistence.Persistent):
         '''See interface IFile'''
 
         # Handle case when data is a string
+        if isinstance(data, UnicodeType):
+            data = data.encode('UTF-8')
+
         if isinstance(data, StringType):
             size = len(data)
             if size < MAXCHUNKSIZE:
