@@ -77,6 +77,15 @@ class InputWidget(Widget):
     def validate(self):
         self.getInputValue()
 
+    def applyChanges(self, content):
+        field = self.context
+        value = self.getInputValue()
+        if field.query(content, self) != value:
+            field.set(content, value)
+            return True
+        else:
+            return False
+
 class CustomWidgetFactory(object):
     """Custom Widget Factory."""
     implements(IViewFactory)

@@ -311,15 +311,6 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
             raise self._error
         return value
 
-    def applyChanges(self, content):
-        field = self.context
-        value = self.getInputValue()
-        if field.query(content, self) != value:
-            field.set(content, value)
-            return True
-        else:
-            return False
-
     def _getFormInput(self):
         """Returns current form input.
         
