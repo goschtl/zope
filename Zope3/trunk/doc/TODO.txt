@@ -80,8 +80,6 @@ Things to do for the next release (in no particular order)
 
   - Workflow definitions
 
-  - Rendered source types
-
   - Interpreter types
 
   - Mail

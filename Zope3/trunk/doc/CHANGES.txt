@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+    - Removed source type service and replaced source types by source
+      factories. Updated the vocabulary accordingly.
+
     - Import checker utilitiy that can tell you which import statements in
       your Python files are unused.
 
@@ -75,6 +78,9 @@ Zope Changes
       'utilities' directory
 
     Miscellaneous
+
+    - Keep Zope3 Wiki product uptodate with API changes. Furthermore update
+      code to implement "modern" patterns.
 
     - Gave many empty module doc strings a title. There are still many files
       without titles.
