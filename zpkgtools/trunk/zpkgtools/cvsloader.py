@@ -26,7 +26,12 @@ from zpkgtools import Error
 
 
 class CvsLoadingError(Error):
-    """Raised when there was some error loading from CVS."""
+    """Raised when there was some error loading from CVS.
+
+    :Ivariables:
+      - `cvsurl`: Parsed cvs: URL object.
+      - `exitcode`: Return code of the CVS process.
+    """
 
     def __init__(self, cvsurl, exitcode):
         self.cvsurl = cvsurl

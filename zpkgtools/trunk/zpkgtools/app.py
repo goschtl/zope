@@ -73,6 +73,14 @@ class Application:
         self.handled_resources = sets.Set()
 
     def build_distribution(self):
+        """Create the distribution tree.
+
+        This method performs common actions for both types of
+        distribution, and then dispatches to either
+        `build_collection_distribution()` or
+        `build_package_distribution()` based on the type of the
+        primary resource.
+        """
         # This could be either a package distribution or a collection
         # distribution; it's the former if there's an __init__.py in
         # the source directory.
