@@ -13,9 +13,9 @@
 ##############################################################################
 """Customization of zope.i18n for the Zope application server
 
-$Id: __init__.py,v 1.4 2003/08/12 19:13:50 srichter Exp $
+$Id: __init__.py,v 1.5 2004/03/08 23:35:04 srichter Exp $
 """
-from zope.i18n import MessageIDFactory
+from zope.i18n.messageid import MessageIDFactory
 
 # Import _ to use to create message ids in the zope domain
 ZopeMessageIDFactory = MessageIDFactory('zope')
