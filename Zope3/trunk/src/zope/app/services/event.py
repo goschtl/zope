@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.27 2003/06/07 05:31:58 stevea Exp $
+$Id: event.py,v 1.28 2003/06/16 20:32:53 stevea Exp $
 """
 
 from __future__ import generators
@@ -62,11 +62,12 @@ def unsubscribe(subscriber, event_type, filter=None, context=None):
     return getSubscriptionService(context).unsubscribe(
         subscriber, event_type, filter)
 
-def unsubscribeAll(subscriber, event_type=IEvent, context=None):
+def unsubscribeAll(subscriber, event_type=IEvent, context=None,
+                   local_only=False):
     if context is None and not isinstance(subscriber, (int, str, unicode)):
         context = subscriber
     return getSubscriptionService(context).unsubscribeAll(
-        subscriber, event_type)
+        subscriber, event_type, local_only=local_only)
 
 def iterSubscriptions(subscriber=None, event_type=None, local_only=False,
                       context=None):
@@ -216,6 +217,7 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
             paths = clean_self._paths
             while paths:
                 path = iter(paths).next()
+                # XXX This code path needs a unit test!
                 unsubscribeAll(path, local_only=True)
         finally:
             del clean_self._v_ssecunbinding
