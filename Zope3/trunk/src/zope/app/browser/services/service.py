@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.32 2003/06/21 21:21:59 jim Exp $
+$Id: service.py,v 1.33 2003/06/21 21:45:03 jeremy Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -186,7 +186,7 @@ class ServiceSummary(BrowserView):
         if done:
             return "Activated: " + ", ".join(done)
         else:
-            return "All of the checked services were alrady active"
+            return "All of the checked services were already active"
 
     def _deactivate(self, todo):
         done = []
