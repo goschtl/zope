@@ -43,7 +43,7 @@
      for="zope.app.site.interfaces.ILocalService"
      name="index.html"
      permission="zope.ManageServices"
-     class="zope.app.menu.browser.managementviewselector.ManagementViewSelector"
+     class="zope.app.publisher.browser.managementviewselector.ManagementViewSelector"
      allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
      />
 

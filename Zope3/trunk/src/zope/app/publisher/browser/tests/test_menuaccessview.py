@@ -29,10 +29,11 @@ from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.publisher.interfaces.browser import IBrowserView
 
 from zope.app.tests import ztapi
+from zope.app.servicenames import BrowserMenu
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.publisher.interfaces.browser import IBrowserMenuService
-from zope.app.menu.browser import MenuAccessView
+from zope.app.publisher.browser.globalbrowsermenuservice import MenuAccessView
 from zope.app.publication.traversers import TestTraverser
 from zope.app.site.interfaces import ISimpleService
 
@@ -85,9 +86,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         defineService = getGlobalServices().defineService
         provideService = getGlobalServices().provideService
 
-
-        defineService('BrowserMenu', IBrowserMenuService)
-        provideService('BrowserMenu', Service())
+        defineService(BrowserMenu, IBrowserMenuService)
+        provideService(BrowserMenu, Service())
         ztapi.browserView(I, 'a3', V)
         ztapi.browserViewProviding(None, IBrowserPublisher, TestTraverser)
         defineChecker(C, NamesChecker(['a1', 'a2', 'a3', '__call__'],

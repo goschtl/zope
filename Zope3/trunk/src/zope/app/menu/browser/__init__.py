@@ -16,24 +16,12 @@
 $Id$
 """
 from zope.interface import implements
-from zope.app.publisher.browser import BrowserView
 from zope.app import zapi
 from zope.app.container.browser.contents import Contents
 from zope.app.component.localservice import queryNextService
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.menu.interfaces import ILocalBrowserMenu
 from zope.app.servicenames import Utilities, BrowserMenu
-from interfaces import IMenuAccessView
-
-class MenuAccessView(BrowserView):
-
-    implements(IMenuAccessView)
-
-    def __getitem__(self, menu_id):
-        browser_menu_service = zapi.getService(self.context, 'BrowserMenu')
-        return browser_menu_service.getMenu(menu_id,
-                                            self.context,
-                                            self.request)
 
 
 class MenuContents(Contents):
