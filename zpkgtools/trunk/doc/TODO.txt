@@ -24,7 +24,8 @@ Things that need to be done
   - It would be really nice to be able to build a distribution from a
     Subversion branch as well as a tag for the purpose of testing the
     generated distribution, instead of having alternate resource maps
-    to work from a checkout to access the branch.
+    to work from a checkout to access the branch.  See also the
+    previous item.
 
   - The setuptools helper should only be included in distributions that
     actually need it.  This is currenly only needed when packages end up
