@@ -1,4 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:five="http://namespaces.zope.org/five">
 
   <include file="meta.zcml" />
@@ -6,11 +7,34 @@
   <include file="interfaces.zcml" />
   <include file="permissions.zcml" />
 
+  <include package="zope.app.traversing" />
+
   <!-- do 'traditional' traversing by default; needed by ZPT -->
   <adapter
       for="*"
       factory="zope.app.traversing.adapters.DefaultTraversable"
       provides="zope.app.traversing.interfaces.ITraversable" />
+
+  <adapter
+      for="*"
+      factory="zope.app.traversing.adapters.Traverser"
+      provides="zope.app.traversing.interfaces.ITraverser" />
+
+  <browser:page
+      for="*"
+      name="absolute_url"
+      class=".browser.AbsoluteURL"
+      permission="zope.Public"
+      allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
+  <view
+      for="*"
+      factory=".browser.AbsoluteURL"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      />
 
   <!-- make Zope 2's REQUEST implement the right thing -->
   <five:implements class="ZPublisher.HTTPRequest.HTTPRequest"
