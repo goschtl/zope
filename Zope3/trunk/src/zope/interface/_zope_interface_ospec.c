@@ -269,10 +269,14 @@ OSpec_getsig(OSpec *self, void *closure)
       return NULL;
     }
 
-  if (sig == Py_None && psig != NULL)
+  if (psig != NULL && ! PyObject_IsTrue(psig))
     {
-      /* We have a provided sig, but the class sig was None, so make class
-         sig NULL  */
+      Py_DECREF(psig);
+      psig = NULL;
+    }
+
+  if (sig != NULL && ! PyObject_IsTrue(sig))
+    {
       Py_DECREF(sig);
       sig = NULL;
     }
@@ -296,10 +300,7 @@ OSpec_getsig(OSpec *self, void *closure)
   else if (psig != NULL)
     return psig;
   else
-    {
-      Py_INCREF(Py_None);
-      return Py_None;
-    }
+    return PyString_FromString("");
 }    
 
 static PyGetSetDef OSpec_getset[] = {
@@ -366,9 +367,17 @@ OSpec_sub(PyObject *v, PyObject *w)
   return PyNumber_Subtract(v, w);
 }
 
+static int
+OSpec_nonzero(OSpec *self)
+{
+  return PyObject_IsTrue(getspec(self));
+}
+
 static PyNumberMethods OSpec_as_number = {
     /* nb_add                  */ (binaryfunc)OSpec_add,
     /* nb_subtract             */ (binaryfunc)OSpec_sub,
+    /* nb_multiply to nb_absolute */ 0, 0, 0, 0, 0, 0, 0, 0, 
+    /* nb_nonzero             */ (inquiry)OSpec_nonzero,
 };
 
 static int
