@@ -180,7 +180,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> field.constraint = re.compile('.*hello.*').match
 
     Because we modified the widget's name, the widget will now read different
-    different form input:
+    form input:
 
         >>> request.form[widget.name]
         u'bye world'
