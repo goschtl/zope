@@ -52,13 +52,18 @@ navigationTreeNode.prototype.setName = function(name) {
 
 navigationTreeNode.prototype.collapse = function() {
  	this.isCollapsed = 1;
-        changeExpandIcon(this.domNode, "pl.gif"); 
+        this.changeExpandIcon("pl.gif"); 
 }
 
 navigationTreeNode.prototype.expand = function() {
  	this.isCollapsed = 0;
-        changeExpandIcon(this.domNode, "mi.gif"); 
+        this.changeExpandIcon("mi.gif"); 
 }
+
+navigationTreeNode.prototype.changeExpandIcon = function(icon) {
+        var expand = this.domNode.getElementsByTagName('expand')[0];
+        expand.style.backgroundImage = 'url("' + baseurl + '@@/' + icon + '")';
+        }
 
 navigationTreeNode.prototype.getNodeByName = function(name) {
         var numchildren = this.childNodes.length;
@@ -74,6 +79,49 @@ navigationTreeNode.prototype.getNodeByName = function(name) {
                         }        
                 }
         return null;
+}
+
+navigationTreeNode.prototype.toggleExpansion = function() {
+with (this) {
+        prettydump('toggleExpansion', LG_TRACE);
+        // If this collection is empty, load it from server
+        // todo xxx optimize for the case where collection has null length
+        var elem = domNode;
+        if (isEmpty) {
+                var url = baseurl + name + XML_CHILDREN_VIEW;
+                var data = loadtreexml(url);
+                addNavigationTreeNodes(data, this, 0);
+                isEmpty = 0;
+                }
+        if (isCollapsed) {
+	 	expand();
+                showChildren();
+   		}
+        else {
+                collapse();
+                hideChildren();
+   		}
+        }
+} 
+
+navigationTreeNode.prototype.hideChildren = function() {
+with (this) {
+        prettydump('hideChildren', LG_TRACE);
+        var num = childNodes.length;
+	for (var i = num - 1; i >=0; i--) {
+	        childNodes[i].domNode.style.display = 'none';
+        	}
+        }
+}
+
+navigationTreeNode.prototype.showChildren = function() {
+with (this) {
+        prettydump('showChildren', LG_TRACE);
+        var num = childNodes.length;
+	for (var i = num - 1; i >=0; i--) {
+	        childNodes[i].domNode.style.display = 'block';
+        	}
+        }
 }
 
 // utilities
@@ -139,61 +187,26 @@ function checkTagName(elem, tagName) {
 	return (elem.tagName.toUpperCase() == tagName);
 	}
 
-function toggleExpansion (navTreeNode) {
-	prettydump('toggleExpansion', LG_TRACE);
-        // If this collection is empty, load it from server
-        // todo xxx optimize for the case where collection has null length
-        var elem = navTreeNode.domNode;
-        if (navTreeNode.isEmpty) {
-                var url = baseurl + navTreeNode.name + XML_CHILDREN_VIEW;
-                var data = loadtreexml(url);
-                addNavigationTreeNodes(data, navTreeNode, 0);
-                navTreeNode.isEmpty = 0;
-                }
-        if (navTreeNode.isCollapsed) {
-	 	navTreeNode.expand();
-                showChildren(elem);
-   		}
-        else {
-                navTreeNode.collapse();
-                hideChildren(elem);
-   		}
-        } 
+function getCollectionChildNodes(xmlDomElem) {
+        // get collection element nodes among childNodes of elem
+        var result = new Array();
+        
+        var items = xmlDomElem.childNodes;
+        var numitems = items.length;
+        var currentItem;
+        for (var i = 0; i < numitems; i++) {
+                currentItem = items[i];
 
-function hideChildren(elem) {
-        prettydump('hideChildren', LG_TRACE);
-        var collections = elem.getElementsByTagName('collection');
-        var num = collections.length;
-	for (var i = num - 1; i >=0; i--) {
-	        collections[i].style.display = 'none';
-        	}
-        }
-
-function showChildren(elem) {
-        prettydump('showChildren', LG_TRACE);
-        var collections = elem.getElementsByTagName('collection');
-        var num = collections.length;
-        for (var i = num - 1; i >=0; i--) {
-                var parentColl = getParentCollection(collections[i]);
-                var parentNavTreeNode = navigationTree.getNodeByName(parentColl.getAttribute('name'));
-                if (! (parentNavTreeNode.isCollapsed)) {
-                        collections[i].style.display = 'block';
+                if (currentItem.nodeType != ELEMENT_NODE) {
+                        continue;
                         }
-                }
-        }
 
-function getParentCollection(elem) {
-        if (elem.getAttribute('isroot') != null) {
-                throw "Root collection has no parent collection"; 
+                if (!isCollection(currentItem)) {
+                        continue;
+                        }
+                result.push(currentItem);
                 }
-        else {
-                return elem.parentNode; 
-                }
-        }
-
-function changeExpandIcon(elem, icon) {
-        var expand = elem.getElementsByTagName('expand')[0];
-        expand.style.backgroundImage = 'url("' + baseurl + '@@/' + icon + '")';
+        return result;
         }
 
 //events
@@ -232,7 +245,7 @@ function treeclicked (e) {
                 //get collection node
                 elem = elem.parentNode;
                 var navTreeNode = navigationTree.getNodeByName(elem.getAttribute('name'));
-                toggleExpansion(navTreeNode);
+                navTreeNode.toggleExpansion();
                 }
         }
 
@@ -343,29 +356,7 @@ function addNavigationTreeNodes(sourceNode, targetNavTreeNode, deep) {
                 }
         }       
 
-function getCollectionChildNodes(elem) {
-        // get collection element nodes among childNodes of elem
-        var items = elem.childNodes;
-        var numitems = items.length;
-        var currentItem;
-        var result = new Array();
-        for (var i = 0; i < numitems; i++) {
-                currentItem = items[i];
-
-                if (currentItem.nodeType != ELEMENT_NODE) {
-                        continue;
-                        }
-
-                if (!isCollection(currentItem)) {
-                        continue;
-                        }
-                result.push(currentItem);
-                }
-        return result;
-        }
-
-
-function createPresentationNodes(title, icon_url) {
+function createPresentationNodes(title, icon_url, length) {
         // create nodes hierarchy for one collection (without children)
         
         // create elem for plus/minus icon
@@ -379,6 +370,7 @@ function createPresentationNodes(title, icon_url) {
         var newtextnode = document.createTextNode(title);
         
         titleElem.appendChild(newtextnode);
+        titleElem.setAttribute('title', 'Contains ' + length + ' item(s)');
         
         iconElem.appendChild(titleElem);
 
@@ -405,13 +397,13 @@ function createNavigationTreeNode(source, basename, deep) {
         navTreeNode.setName(elemName);
         
         //could show number of child items
-        //var length = source.getAttribute('length');
+        var length = source.getAttribute('length');
         //elemTitle = elemTitle + '(' + length + ')';
         
         var icon_url = source.getAttribute('icon_url');  
 
         
-        var expandElem = createPresentationNodes(elemTitle, icon_url);
+        var expandElem = createPresentationNodes(elemTitle, icon_url, length);
         newelem.appendChild(expandElem);
 
 
