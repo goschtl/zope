@@ -16,10 +16,6 @@ Things that need to be done
     when building an "application" distribution since that has some
     support to select from different available Python interpreters.)
 
-  - When installing an application bundle, it should be an error if
-    the installation directory already exists and the user hasn't
-    explicitly said that's ok (-f/--force).
-
   - There should be a way to specify a Download-URL when building a
     package; using the distutils "register" command would then cause
     that field to be provided via PyPI.
