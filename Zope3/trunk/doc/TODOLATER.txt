@@ -24,7 +24,6 @@ Things to do After the next release (in no particular order)
 
 - http://dev.zope.org/Zope3/ActionPlans
 
-
 - Persistent interfaces cannot be provided as providedBy or implementedBy
   interfaces anymore. This functionality was broken during some interface and
   adapter refactorings. 
@@ -61,18 +60,11 @@ Things to do After the next release (in no particular order)
 
 - Local event subscriptions
 
-- Finish/cleanup XML-RPC (?)
-
-- Redo object hub (?)
-
 - Catalogs (?)
 
 - Finish cache framework:
 
   http://dev.zope.org/Zope3/Zope.App.Caching
-
-- Write documentation on how to develop principal sources for the
-  pluggable auth service.
 
 - Local role definitions
 
@@ -127,11 +119,6 @@ Things to do After the next release (in no particular order)
   * Output to stderr/stdout should be captured, saved to be viewed
     after import
 
-- Support for groups in the security model. No one has been
-  interested in working on this and, at this point, there are
-  too many other things to do. We *are* committed to adding this
-  eventually.
-
 - Support for permission categories in the security model. No
   one has been interested in working on this and, at this point,
   there are too many other things to do. We *are* committed to
@@ -180,7 +167,7 @@ Things to do After the next release (in no particular order)
 
 - Finish WebDAV
   
-  missing WebDAV verbs: PROPPATCH, MOVE, COPY, DELETE, LOCK and UNLOCK
+  missing WebDAV verbs: MOVE, COPY, DELETE, LOCK and UNLOCK
 
 - Python scripts
 
@@ -196,12 +183,6 @@ Things to do After the next release (in no particular order)
 - UI
 
   * Add nested menus.
-
-- Schema fields
-
-  Some kind of field that can contain objects that conform to a
-  particular schema. And, widgets for this field.
-
 
 - Revisit and, to degree necessary, implement:
 
@@ -251,5 +232,3 @@ Things to do After the next release (in no particular order)
   relationships among components.
 
   Add checking and better spelling of __used_for__.
-
-- Replace the CacheName field/widget with a vocabulary
