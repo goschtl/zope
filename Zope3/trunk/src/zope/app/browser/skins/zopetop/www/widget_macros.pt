@@ -138,6 +138,23 @@
   </div>
 
   <div class="box"
+       tal:define="actions context/@@view_get_menu/zmi_actions|nothing"
+       tal:condition="actions"
+       metal:define-macro="actions_box">
+
+  <h5>Actions</h5>
+
+  <div class="body">
+     <div class="content" tal:repeat="action actions">
+       <a href="" tal:attributes="href action/action"
+                  tal:content="action/title">
+          Action
+       </a>
+     </div>
+  </div>
+  </div>
+
+  <div class="box"
        tal:define="view context/@@MetaDataBox|nothing"
        tal:condition="view"
        metal:define-macro="metadata_box">
@@ -165,7 +182,7 @@
       metal:define-macro="breadcrumbs"
 	  tal:omit-tag=""
       tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs"> <a href="" 
-      tal:attributes="href breadcrumb/url"
+      tal:attributes="href string:${breadcrumb/url}/@@manage"
       tal:content="string:${breadcrumb/name}/"
       >name</a></span>
 

@@ -255,7 +255,9 @@
   <browser:menuItems menu="zmi_views"
       for="zope.app.interfaces.content.folder.IFolder">
 
-    <browser:menuItem title="Contents" action="@@contents.html"/>
+    <browser:menuItem title="Contents" 
+        action="@@contents.html"
+        />
 
   </browser:menuItems>
 

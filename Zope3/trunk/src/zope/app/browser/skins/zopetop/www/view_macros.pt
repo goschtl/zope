@@ -28,9 +28,11 @@
         tal:attributes="onload string:loadtree('${rooturl}/', '${thisbaseurl}/')">
 
 <div class="top">
+  <a href="#" tal:attributes="href string:${request/URL/1}/@@manage">
   <img src="zope3logo.jpg" width="366" height="37" 
                    alt="Zope 3 Logo"
                    tal:attributes="src context/++resource++zope3logo.jpg" />
+  </a>
   <span metal:use-macro="views/standard_macros/logged_user">
       Logged in as user
   </span>
@@ -48,162 +50,11 @@
      <td class="right">
             <span metal:use-macro="views/standard_macros/metadata_box" />
             <span metal:use-macro="views/standard_macros/views_box" />
-            <span metal:use-macro="views/standard_macros/services_box" />
+            <span metal:use-macro="views/standard_macros/actions_box" />
      </td>
    </tr>
 </table>
 
-<!--
-<table width="100%" border="0" cellspacing="0" cellpadding="0"
-       class="top-table">
-  <tr> 
-    <td background="bg_top.jpg"
-        tal:attributes="background context/++resource++bg_top.jpg"> 
-      <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr> 
-          <td><img src="zope3logo.jpg" width="366" height="37" 
-                   alt="Zope 3 Logo"
-                   tal:attributes="src context/++resource++zope3logo.jpg" /></td>
-          <td>
-            <table border="0" align="right" cellpadding="0" cellspacing="0">
-              <tr class="personalBar">
-                <td><span metal:use-macro="views/standard_macros/logged_user">Logged in as user</span></td>
-                <td>&nbsp;<img src="spacer1.gif" alt="" width="2" height="25"
-                               tal:attributes="src context/++resource++spacer1.gif" 
-                  />&nbsp;</td>
-                <td><select name="select">
-                    <option value="1">Zope Quick Start</option>
-                  </select></td>
-                <td>&nbsp;
-                  <input name="Go" type="submit" id="Go" value="Go" />
-                  &nbsp;</td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table></td>
-  </tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0"
-       class="main-table">
-        <tr> 
-          <td width="160" align="center" valign="top" class="left-column"> 
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-                 tal:attributes="src context/++resource++spacer3.gif" /> 
-	    <span metal:use-macro="views/standard_macros/explorer_box" />
-            </div>
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-                 tal:attributes="src context/++resource++spacer3.gif" /> 
-            <span metal:use-macro="views/standard_macros/search_box" />
-            </div>
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
-w          </td>
-          <td valign="top" class="hilite">
-            <table width="100%" border="0" align="center" cellpadding="0" cellspacing="10">
-              <tr> 
-                <td class="background">
-		  <span metal:use-macro="views/standard_macros/content_header_bar" />
-		</td>
-              </tr>
-              <tr> 
-                <td> <span metal:define-slot="body"> 
-                  <div align="center"> 
-                    <select name="select2">
-                      <option value="1">Select type to add...</option>
-                    </select>
-                    <input name="Add" type="submit" id="Add" value="Add" />
-                  </div>
-                  <div align="center"> 
-                    <input name="Rename" type="submit" id="Rename" value="Rename" />
-                    <input name="Cut" type="submit" id="Cut" value="Cut" />
-                    <input name="Copy" type="submit" id="Copy" value="Copy" />
-                    <input name="Paste" type="submit" id="Paste" value="Paste" />
-                    <input name="Delete" type="submit" id="Delete" value="Delete" />
-                    <input name="Import" type="submit" id="Import" value="Import" />
-                    <input name="Export" type="submit" id="Export" value="Export" />
-                    <input name="All" type="submit" id="All" value="All" />
-                    <input name="None" type="submit" id="None" value="None" />
-                  </div>
-                  <table width="100%" border="0" cellpadding="2" cellspacing="1" class="listing">
-                    <thead>
-                    </thead>
-                    <th colspan="2">Type</th>
-                    <th>Name</th>
-                    <th>Size</th>
-                    <th>Last Modified</th>
-                    <tr> 
-                      <td width="30"> <input type="checkbox" name="checkbox" value="checkbox" /> 
-                      </td>
-                      <td width="30"> <img src="control_panels_folder.gif" width="25" height="25"
-                 tal:attributes="src context/++resource++control_panels_folder.gif"/> </td>
-                      <td>Control Panel </td>
-                      <td>&nbsp; </td>
-                      <td>18/06/2002@10:53 PM BRT </td>
-                    </tr>
-                  </table>
-                  <div align="center"> 
-                    <input name="Rename" type="submit" id="Rename" value="Rename" />
-                    <input name="Cut" type="submit" id="Cut" value="Cut" />
-                    <input name="Copy" type="submit" id="Copy" value="Copy" />
-                    <input name="Paste" type="submit" id="Paste" value="Paste" />
-                    <input name="Delete" type="submit" id="Delete" value="Delete" />
-                    <input name="Import" type="submit" id="Import" value="Import" />
-                    <input name="Export" type="submit" id="Export" value="Export" />
-                    <input name="All" type="submit" id="All" value="All" />
-                    <input name="None" type="submit" id="None" value="None" />
-                  </div>
-                  </span> </td>
-              </tr>
-	      <tr>
-		<td>
-		  <div metal:use-macro="views/standard_macros/footer">
-		    footer
-		  </div>
-		</td>
-	      </tr>
-
-            </table>
-          </td>
-          <td width="160" align="center" valign="top" class="right-column">
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
-            <span metal:use-macro="views/standard_macros/metadata_box" />
-            </div>
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
-            <span metal:use-macro="views/standard_macros/views_box" />
-            </div>
-            <div class="box-holder">
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
-            <span metal:use-macro="views/standard_macros/services_box" />
-            </div>
-            <img src="spacer3.gif" width="150" height="8" class="drop-target"
-             tal:attributes="src context/++resource++spacer3.gif" />
-          </td>
-        </tr>
-</table>
--->
-
-<div id="box-context-menu" class="context-menu">
-<div class="context-menu-item" onmouseup="Box_add()">Add a box...</div>
-<br />
-<div class="context-menu-item" onmouseup="Boxes_copy()">Copy</div>
-<div class="context-menu-item" onmouseup="Boxes_cut()">Cut</div>
-<div class="context-menu-item" onmouseup="Boxes_paste()"
-     filter="false">Paste</div>
-<div class="context-menu-item" onmouseup="Boxes_remove()">Remove</div>
-</div>
-
-<div id="drag-feedback-box"></div>
-<script type="text/javascript"><!--
-  pd_setupPage();
-// --></script>
 
 
 </body>
