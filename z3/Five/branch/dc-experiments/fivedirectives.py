@@ -27,11 +27,18 @@ class IImplementsDirective(Interface):
         value_type=GlobalObject()
         )
 
-class IViewableDirective(Interface):
-    """State that a class can be viewed.
+class ITraversableDirective(Interface):
+    """State that a class traversal can be controlled by the use of
+    an ITraverser adapter.
     """
     class_ = GlobalObject(
         title=u"Class",
         required=True
         )
+
+class IViewableDirective(ITraversableDirective):
+    """State that a class can be viewed.
+
+    Deprecated.
+    """
 
