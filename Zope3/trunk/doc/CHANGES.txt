@@ -18,6 +18,9 @@ Zope Changes
       - Fixed so that a UnicodeDecodeError isn't produced when Internet
         Explorer requests a page containing non-ISO-8859-1 characters.
 
+      - Fixed the TextWidget and TextAreaWidget, added convertion
+        from string to unicode in the method _toFieldValue.
+
     Restructuring
 
       - The event system was completely reimplemented:
@@ -65,7 +68,7 @@ Zope Changes
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
       Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
-      Eckart Hertzler
+      Eckart Hertzler, Roger Ineichen
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.

@@ -17,6 +17,7 @@ $Id$
 """
 __metaclass__ = type
 
+from zope.app import zapi
 from zope.proxy import removeAllProxies
 from zope.app.publisher.browser import BrowserView
 from zope.app.container.browser.adding import Adding
@@ -26,6 +27,7 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.schema import getFields, Choice
 
+from zope.app.security.interfaces import IPermission
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.form.utility import setUpWidget
@@ -70,31 +72,39 @@ class RelevantDataSchemaEdit(EditView):
         schema = self.context.relevantDataSchema
         if schema is not None:
             for name, field in getFields(schema).items():
-                # Try to get current settings
+
                 if self.context.schemaPermissions.has_key(name):
                     get_perm, set_perm = self.context.schemaPermissions[name]
+                    try:
+                        get_perm_id = get_perm.id
+                    except:
+                        get_perm_id = None
+                    try:
+                        set_perm_id = set_perm.id
+                    except:
+                        set_perm_id = None
                 else:
-                    get_perm, set_perm = None, None
+                    get_perm_id, set_perm_id = None, None
 
                 # Create the Accessor Permission Widget for this field
                 permField = Choice(
                     __name__=name+'_get_perm',
                     title=u"Accessor Permission",
-                    vocabulary="Permissions",
+                    vocabulary="Permission Ids",
                     default=CheckerPublic,
                     required=False)
                 setUpWidget(self, name + '_get_perm', permField, IInputWidget, 
-                            value=get_perm)
+                            value=get_perm_id)
 
                 # Create the Mutator Permission Widget for this field
                 permField = Choice(
                     __name__=name+'_set_perm',
                     title=u"Mutator Permission",
                     default=CheckerPublic,
-                    vocabulary="Permissions",
+                    vocabulary="Permission Ids",
                     required=False)
                 setUpWidget(self, name+'_set_perm', permField, IInputWidget, 
-                            value=set_perm)
+                            value=set_perm_id)
 
     def update(self):
         status = ''
@@ -106,11 +116,27 @@ class RelevantDataSchemaEdit(EditView):
             schema = self.context.relevantDataSchema
             perms = trustedRemoveSecurityProxy(self.context.schemaPermissions)
             for name, field in getFields(schema).items():
-                getPerm = getattr(
-                    self, name+'_get_perm_widget').getInputValue()
-                setPerm = getattr(
-                    self, name+'_set_perm_widget').getInputValue()
-                perms[name] = (getPerm, setPerm)
+                
+                getPermWidget = getattr(self, name+'_get_perm_widget')
+                setPermWidget = getattr(self, name+'_set_perm_widget')
+                
+                # get the selected permission id from the from request
+                get_perm_id = getPermWidget.getInputValue()
+                set_perm_id = setPermWidget.getInputValue()
+
+                # get the right permission from the given id
+                get_perm = zapi.getUtility(IPermission, get_perm_id)
+                set_perm = zapi.getUtility(IPermission, set_perm_id)
+                
+                # set the permission back to the instance
+                perms[name] = (get_perm, set_perm)
+
+                # update widget ohterwise we see the old value
+                getPermWidget.setRenderedValue(get_perm_id)
+                setPermWidget.setRenderedValue(set_perm_id)
+                
+                
+                
             status = 'Fields permissions mapping updated.'
 
         return status
