@@ -61,13 +61,13 @@ def init_table():
         {'path': "Operations",
          'addrs': ["support@zope.com"]},
 
-        {'path': "Zope/",
+        {'path': "Zope(/|$)",
          'addrs': zopeaddr},
 
-        {'path': "Zope3/",
+        {'path': "Zope3(/|$)",
          'addrs': ["zope3-checkins@zope.org"]},
 
-        {'path': "Zope27/",
+        {'path': "Zope27(/|$)",
          'addrs': ["zope-checkins@zope.org"]},
 
         {'path': "StandaloneZODB",
