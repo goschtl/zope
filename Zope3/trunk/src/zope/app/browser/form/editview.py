@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.28 2003/07/13 06:47:16 richard Exp $
+$Id: editview.py,v 1.29 2003/07/15 00:55:21 richard Exp $
 """
 
 import os
@@ -101,6 +101,10 @@ class EditView(BrowserView):
             try:
                 changed = applyWidgetsChanges(self, content, self.schema,
                     names=self.fieldNames, exclude_readonly=True)
+                # We should not generate events whan an adapter is used.
+                # That's the adapter's job.
+                if changed and self.context is self.adapted:
+                    publish(content, ObjectModifiedEvent(content))
             except WidgetsError, errors:
                 self.errors = errors
                 status = u"An error occured."
