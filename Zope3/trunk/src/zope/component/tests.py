@@ -599,3 +599,6 @@ def test_suite():
 
 if __name__ == "__main__":
     unittest.main(defaultTest='test_suite')
+
+# BBB: Import some backward-compatibility; 12/10/2004
+from zope.component.bbb.tests import placelesssetup
