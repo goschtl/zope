@@ -461,6 +461,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #349 (zapi help missing from the online help)
+
       - Fixed issue #349 (Adapter registry doesn't notice __bases__ changes.)
 
         Thanks to "foom" for the report and the fix.
