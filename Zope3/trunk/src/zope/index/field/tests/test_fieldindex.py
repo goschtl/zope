@@ -15,11 +15,11 @@
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zodb.btrees.IIBTree import IISet
-from zope.fieldindex.fieldindex import FieldIndex
+from zope.index.field.index import FieldIndex
 from zope.interface.verify import verifyClass
 
-from zope.index.interfaces.index import IInjection, ISimpleQuery, IStatistics, \
-    IRangeQuerying
+from zope.index.interfaces.index import IInjection, ISimpleQuery
+from zope.index.interfaces.index import IStatistics, IRangeQuerying
 
 
 class FieldIndexTest(TestCase):

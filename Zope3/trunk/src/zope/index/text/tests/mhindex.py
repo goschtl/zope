@@ -66,11 +66,11 @@ from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 from zodb.btrees.IIBTree import IIBTree
 
-from zope.textindex.okapiindex import OkapiIndex
-from zope.textindex.lexicon import Splitter
-from zope.textindex.lexicon import CaseNormalizer, StopWordRemover
-from zope.textindex.stopdict import get_stopdict
-from zope.textindex.textindexwrapper import TextIndexWrapper
+from zope.index.text.okapiindex import OkapiIndex
+from zope.index.text.lexicon import Splitter
+from zope.index.text.lexicon import CaseNormalizer, StopWordRemover
+from zope.index.text.stopdict import get_stopdict
+from zope.index.text.textindexwrapper import TextIndexWrapper
 
 NBEST = 3
 MAXLINES = 3

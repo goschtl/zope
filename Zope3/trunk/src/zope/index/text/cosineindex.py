@@ -19,9 +19,8 @@ import math
 from zodb.btrees.IIBTree import IIBucket
 from zope.interface import implements
 
-from zope.textindex.baseindex import BaseIndex, \
-                                     inverse_doc_frequency, \
-                                     scaled_int, SCALE_FACTOR
+from zope.index.text.baseindex import BaseIndex, inverse_doc_frequency
+from zope.index.text.baseindex import scaled_int, SCALE_FACTOR
 
 class CosineIndex(BaseIndex):
 

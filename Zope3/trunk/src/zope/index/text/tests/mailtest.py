@@ -53,14 +53,14 @@ index from the database:
     index.search("python AND unicode")
 """
 
-from zope.textindex.lexicon import \
+from zope.index.text.lexicon import \
      Lexicon, CaseNormalizer, Splitter, StopWordRemover
 
 # XXX This import is bad, and was so before the renaming
-from zope.textindex.zctextindex import ZCTextIndex
+from zope.index.text.zctextindex import ZCTextIndex
 
 from BTrees.IOBTree import IOBTree
-from zope.textindex.queryparser import QueryParser
+from zope.index.text.queryparser import QueryParser
 
 import sys
 import mailbox

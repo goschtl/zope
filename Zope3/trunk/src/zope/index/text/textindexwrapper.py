@@ -15,17 +15,17 @@
 
 This exists to implement IInjection and IQuerying.
 
-$Id: textindexwrapper.py,v 1.4 2003/07/13 05:51:24 andyh Exp $
+$Id: textindexwrapper.py,v 1.1 2003/07/14 03:53:41 anthony Exp $
 """
 
 from persistence import Persistent
 from zope.interface import implements
 
-from zope.textindex.okapiindex import OkapiIndex
-from zope.textindex.lexicon import Lexicon
-from zope.textindex.lexicon import Splitter, CaseNormalizer, StopWordRemover
-from zope.textindex.queryparser import QueryParser
-from zope.textindex.nbest import NBest
+from zope.index.text.okapiindex import OkapiIndex
+from zope.index.text.lexicon import Lexicon
+from zope.index.text.lexicon import Splitter, CaseNormalizer, StopWordRemover
+from zope.index.text.queryparser import QueryParser
+from zope.index.text.nbest import NBest
 
 from zope.index.interfaces.index import \
      IInjection, IQuerying, IStatistics

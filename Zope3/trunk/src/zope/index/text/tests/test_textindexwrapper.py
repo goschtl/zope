@@ -13,13 +13,13 @@
 ##############################################################################
 """Unit tests for TextIndexWrapper.
 
-$Id: test_textindexwrapper.py,v 1.2 2002/12/25 14:15:35 jim Exp $
+$Id: test_textindexwrapper.py,v 1.1 2003/07/14 03:53:48 anthony Exp $
 """
 
 import unittest
 
-from zope.textindex.textindexwrapper import TextIndexWrapper
-from zope.textindex import parsetree
+from zope.index.text.textindexwrapper import TextIndexWrapper
+from zope.index.text import parsetree
 
 class TextIndexWrapperTest(unittest.TestCase):
 

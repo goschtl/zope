@@ -14,9 +14,9 @@
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
-from zope.textindex.lexicon import Lexicon, Splitter
-from zope.textindex.cosineindex import CosineIndex
-from zope.textindex.okapiindex import OkapiIndex
+from zope.index.text.lexicon import Lexicon, Splitter
+from zope.index.text.cosineindex import CosineIndex
+from zope.index.text.okapiindex import OkapiIndex
 
 # Subclasses must set a class variable IndexFactory to the appropriate
 # index object constructor.

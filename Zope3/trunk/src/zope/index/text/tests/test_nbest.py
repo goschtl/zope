@@ -14,7 +14,7 @@
 
 from unittest import TestCase, main, makeSuite
 
-from zope.textindex.nbest import NBest
+from zope.index.text.nbest import NBest
 
 class NBestTest(TestCase):
 

@@ -22,9 +22,9 @@ from zodb.btrees.OIBTree import OIBTree
 from persistence import Persistent
 
 from zope.index.interfaces.lexicon import ILexicon
-from zope.textindex.stopdict import get_stopdict
-from zope.textindex.parsetree import QueryError
-from zope.textindex.pipelinefactory import element_factory
+from zope.index.text.stopdict import get_stopdict
+from zope.index.text.parsetree import QueryError
+from zope.index.text.pipelinefactory import element_factory
 
 
 class Lexicon(Persistent):
@@ -195,7 +195,7 @@ class StopWordRemover:
     dict = get_stopdict().copy()
 
     try:
-        from zope.textindex.stopper import process as _process
+        from zope.index.text.stopper import process as _process
     except ImportError:
         def process(self, lst):
             has_key = self.dict.has_key

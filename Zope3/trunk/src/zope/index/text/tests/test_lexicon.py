@@ -15,8 +15,8 @@
 import sys
 from unittest import TestCase, main, makeSuite
 
-from zope.textindex.lexicon import Lexicon
-from zope.textindex.lexicon import Splitter, CaseNormalizer
+from zope.index.text.lexicon import Lexicon
+from zope.index.text.lexicon import Splitter, CaseNormalizer
 
 class StupidPipelineElement:
     def __init__(self, fromword, toword):
@@ -115,7 +115,7 @@ class Test(TestCase):
         self.assertEqual(wids, [2])
 
     def testSplitterLocaleAwareness(self):
-        from zope.textindex.htmlsplitter import HTMLWordSplitter
+        from zope.index.text.htmlsplitter import HTMLWordSplitter
         import locale
         loc = locale.setlocale(locale.LC_ALL) # get current locale
          # set German locale

@@ -29,9 +29,9 @@ from time import clock
 from zodb.storage.file import FileStorage
 from zodb.btrees.IOBTree import IOBTree
 
-from zope.textindex.textindexwrapper import TextIndexWrapper
-from zope.textindex.htmlsplitter import HTMLWordSplitter
-from zope.textindex.lexicon import Lexicon, StopWordRemover
+from zope.index.text.textindexwrapper import TextIndexWrapper
+from zope.index.text.htmlsplitter import HTMLWordSplitter
+from zope.index.text.lexicon import Lexicon, StopWordRemover
 
 def make_zc_index():
     # there's an elaborate dance necessary to construct an index
@@ -61,7 +61,7 @@ class MySplitter:
 def make_old_index():
     from Products.PluginIndexes.TextIndex.TextIndex import TextIndex
     from Products.PluginIndexes.TextIndex.Lexicon  import Lexicon
-    from zope.textindex.stopdict import get_stopdict
+    from zope.index.text.stopdict import get_stopdict
 
     l = Lexicon(get_stopdict())
     l.SplitterFunc = MySplitter()

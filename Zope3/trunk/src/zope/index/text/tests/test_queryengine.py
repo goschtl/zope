@@ -16,9 +16,9 @@ import unittest
 
 from zodb.btrees.IIBTree import IIBucket
 
-from zope.textindex.queryparser import QueryParser
-from zope.textindex.parsetree import QueryError
-from zope.textindex.lexicon import Lexicon, Splitter
+from zope.index.text.queryparser import QueryParser
+from zope.index.text.parsetree import QueryError
+from zope.index.text.lexicon import Lexicon, Splitter
 
 class FauxIndex:
 
@@ -61,7 +61,7 @@ class TestQueryEngine(unittest.TestCase):
         self.compareQuery("ham AND foo AND bar", {1: 3})
 
     def testInvalidQuery(self):
-        from zope.textindex.parsetree import NotNode, AtomNode
+        from zope.index.text.parsetree import NotNode, AtomNode
         tree = NotNode(AtomNode("foo"))
         self.assertRaises(QueryError, tree.executeQuery, self.index)
 

@@ -39,8 +39,8 @@ def path2url(p):
     return "http://www.python.org" + p[i:]
 
 from Products.PluginIndexes.TextIndex.TextIndex import And, Or
-from zope.textindex.tests.indexhtml import MySplitter
-from zope.textindex.nbest import NBest
+from zope.index.text.tests.indexhtml import MySplitter
+from zope.index.text.nbest import NBest
 
 def main(rt):
     index = rt["index"]

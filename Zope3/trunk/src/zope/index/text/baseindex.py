@@ -27,8 +27,8 @@ from zodb.btrees import Length
 
 from zope.index.interfaces.index import IInjection, IStatistics, \
     IExtendedQuerying
-from zope.textindex import widcode
-from zope.textindex.setops import mass_weightedIntersection, \
+from zope.index.text import widcode
+from zope.index.text.setops import mass_weightedIntersection, \
                                   mass_weightedUnion
 
 

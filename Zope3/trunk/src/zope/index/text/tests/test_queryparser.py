@@ -19,11 +19,11 @@ from zope.interface.verify import verifyClass
 from zope.index.interfaces.queryparser import IQueryParser
 from zope.index.interfaces.queryparsetree import IQueryParseTree
 
-from zope.textindex.queryparser import QueryParser
-from zope.textindex.parsetree import ParseError, ParseTreeNode
-from zope.textindex.parsetree import OrNode, AndNode, NotNode
-from zope.textindex.parsetree import AtomNode, PhraseNode, GlobNode
-from zope.textindex.lexicon import Lexicon, Splitter
+from zope.index.text.queryparser import QueryParser
+from zope.index.text.parsetree import ParseError, ParseTreeNode
+from zope.index.text.parsetree import OrNode, AndNode, NotNode
+from zope.index.text.parsetree import AtomNode, PhraseNode, GlobNode
+from zope.index.text.lexicon import Lexicon, Splitter
 
 
 class TestInterfaces(TestCase):

@@ -16,8 +16,8 @@ from unittest import TestCase, main, makeSuite
 
 from zodb.btrees.IIBTree import IIBTree, IIBucket
 
-from zope.textindex.setops import mass_weightedIntersection
-from zope.textindex.setops import mass_weightedUnion
+from zope.index.text.setops import mass_weightedIntersection
+from zope.index.text.setops import mass_weightedUnion
 
 class TestSetOps(TestCase):
 
