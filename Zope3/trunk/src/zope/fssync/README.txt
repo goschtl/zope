@@ -87,12 +87,10 @@ TO DO
 - On the server side:
 
   * Should be able to add various standard object types based on
-    filename extension.  (This now works for extensions .pt and .dtml;
-    for other extensions, either an image or a plain file is created
-    based on the extension and the contents.  Is this good enough?)
-
-  * When committing a change, shouldn't the mtime in the DC metadata
-    be updated?
+    filename extension.  (This now works for extensions .pt and .dtml,
+    and for .py extensions in the ++etc++site tree; for other
+    extensions, either an image or a plain file is created based on
+    the extension and the contents.  Is this good enough?)
 
 - In the sync application:
 
