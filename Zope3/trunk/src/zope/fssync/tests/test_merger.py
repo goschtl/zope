@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.5 2003/05/13 14:10:06 gvanrossum Exp $
+$Id: test_merger.py,v 1.6 2003/05/13 14:13:20 gvanrossum Exp $
 """
 
 import os
@@ -171,7 +171,7 @@ class TestMerger(unittest.TestCase):
 
     def test_both_modified_resolved(self):
         if os.name != "posix":
-            # Alas, this test requires the external command 'merge'
+            # Alas, this test requires the external command 'diff3'
             # which isn't usually found on Windows
             return
         self.runtest("l\na\n", "a\n", "a\nr\n", {}, {}, "Merge", "Modified")
