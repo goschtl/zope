@@ -30,7 +30,7 @@ To illustrate the group interaction with the authentication service,
 we'll create a sample authentication service:
 
   >>> from zope import interface
-  >>> from zope.app.security.interfaces import IAuthentication2
+  >>> from zope.app.security.interfaces import IAuthentication
   >>> from zope.security.interfaces import IGroupAwarePrincipal
   >>> from zope.app.authentication.groupfolder import setGroupsForPrincipal
 
@@ -48,7 +48,7 @@ we'll create a sample authentication service:
 
   >>> class Principals:
   ...
-  ...     interface.implements(IAuthentication2)
+  ...     interface.implements(IAuthentication)
   ...
   ...     def __init__(self, groups):
   ...         self.principals = {
@@ -67,7 +67,7 @@ we'll create a sample authentication service:
   ...         setGroupsForPrincipal(PrincipalCreatedEvent(principal))
   ...         return principal
 
-This class doesn't really implement the full `IAuthentication2` interface, but
+This class doesn't really implement the full `IAuthentication` interface, but
 it implements the `getPrincipal` method used by groups. It works very much
 like the pluggable authentication utility.  It creates principals on demand. It
 calls `setGroupsForPrincipal`, which is normally called as an event subscriber,
@@ -81,7 +81,7 @@ group folder, we have to register it as a utility:
 We will create and register a new principals utility:
 
   >>> principals = Principals(groups)
-  >>> ztapi.provideUtility(IAuthentication2, principals)
+  >>> ztapi.provideUtility(IAuthentication, principals)
 
 Now we can set the principals on the group:
 

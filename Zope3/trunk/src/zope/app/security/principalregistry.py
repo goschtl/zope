@@ -29,9 +29,9 @@ class DuplicateId(Exception): pass
 
 class PrincipalRegistry(object):
 
-    implements(interfaces.IAuthentication2)
+    implements(interfaces.IAuthentication, interfaces.ILogout)
 
-    # Methods implementing IAuthentication2
+    # Methods implementing IAuthentication
 
     def authenticate(self, request):
         a = interfaces.ILoginPassword(request, None)

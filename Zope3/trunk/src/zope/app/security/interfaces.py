@@ -137,17 +137,14 @@ class IAuthentication(Interface):
         object hierarchy.
         """
 
+# BBB gone for 3.1
 class IAuthentication2(IAuthentication):
-    """The second iteration of IAuthentication."""
-    
-    def logout(request):
-        """Perform a logout."""
+    pass
 
-
-class IAuthenticationUtility(IAuthentication2):
+class IAuthenticationUtility(IAuthentication):
     """This interface is deprecated
     """
-    
+
     def getPrincipals(name):
         """This interface is deprecated
         """
@@ -184,9 +181,16 @@ class IPrincipalSource(ISource):
     """A Source of Principal Ids"""
 
 
+class ILogout(Interface):
+    """Provides support for logging out."""
+
+    def logout(request):
+        """Perform a logout."""
+
+
 class ILogoutSupported(Interface):
     """A marker indicating that the security configuration supports logout.
-    
+
     Provide an adapter to this interface to signal that the security system
     supports logout.
     """

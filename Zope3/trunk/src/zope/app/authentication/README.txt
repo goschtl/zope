@@ -323,7 +323,7 @@ This highlights PAU's ability to use multiple plugins for authentication:
 Principal Searching
 ===================
 
-As a component that provides IAuthentication2, a PAU lets you lookup a
+As a component that provides IAuthentication, a PAU lets you lookup a
 principal with a principal ID. The PAU looks up a principal by delegating to
 its authenticators. In out example, none of the authenticators implement this
 search capability, so when we look for a principal:
@@ -481,13 +481,13 @@ we get a different principal for ID 'white':
 Issuing a Challenge
 ===================
 
-Part of PAU's IAuthentication2 contract is to challenge the user for
+Part of PAU's IAuthentication contract is to challenge the user for
 credentials when its 'unauthorized' method is called. The need for this
 functionality is driven by the following use case:
 
   - A user attempts to perform an operation he is not authorized to perform.
 
-  - A handler responds to the unauthorized error by calling IAuthentication2
+  - A handler responds to the unauthorized error by calling IAuthentication
     'unauthorized'.
 
   - The authentication component (in our case, a PAU) issues a challenge to

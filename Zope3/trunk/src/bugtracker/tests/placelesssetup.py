@@ -40,7 +40,7 @@ from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.renderer.plaintext import IPlainTextSource
 from zope.app.renderer.plaintext import PlainTextToHTMLRenderer
 from zope.app.renderer.plaintext import PlainTextSourceFactory
-from zope.app.security.interfaces import IAuthentication2
+from zope.app.security.interfaces import IAuthentication
 from zope.app.size.interfaces import ISized
 from zope.app.traversing.interfaces import IContainmentRoot, ITraverser
 from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable
@@ -104,7 +104,7 @@ class PlacelessSetup(SetupBase):
         registry.register('Releases', ReleaseVocabulary)
         registry.register('Users', UserVocabulary)
 
-        ztapi.provideUtility(IAuthentication2, principalRegistry)
+        ztapi.provideUtility(IAuthentication, principalRegistry)
 
         principalRegistry.definePrincipal(u'zope.srichter',
                                           u'Stephan Richter', u'',

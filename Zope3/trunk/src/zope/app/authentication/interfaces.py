@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.schema
+from zope.app.security.interfaces import ILogout
 from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer
 
@@ -27,7 +28,7 @@ class IPlugin(zope.interface.Interface):
     """A plugin for a pluggable authentication component."""
 
 
-class IPluggableAuthentication(IContainer):
+class IPluggableAuthentication(ILogout, IContainer):
     """Provides authentication services with the help of various plugins."""
 
     contains(IPlugin)
@@ -43,6 +44,10 @@ class IPluggableAuthentication(IContainer):
         value_type=zope.schema.Choice(vocabulary='AuthenticatorPlugins'),
         default=[],
         )
+
+    def logout(request):
+        """Performs a logout by delegating to its authentictor plugins."""
+
 
 class ICredentialsPlugin(IPlugin):
     """Handles credentials extraction and challenges per request."""

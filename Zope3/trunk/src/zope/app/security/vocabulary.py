@@ -22,7 +22,7 @@ from zope.app import zapi
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
-from zope.app.security.interfaces import IPermission, IAuthentication2
+from zope.app.security.interfaces import IPermission, IAuthentication
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.component import queryNextUtility
 
@@ -147,7 +147,7 @@ class PrincipalSource(object):
 
         >>> zapi.getUtility = temp
         """
-        auth = zapi.getUtility(IAuthentication2)
+        auth = zapi.getUtility(IAuthentication)
         try:
             auth.getPrincipal(id)
         except PrincipalLookupError:
@@ -174,27 +174,27 @@ class PrincipalSource(object):
         authentication utilities to look for queriables.
 
         >>> class DummyUtility1:
-        ...     implements(IAuthentication2)
+        ...     implements(IAuthentication)
         ...     __parent__ = None
         ...     def __repr__(self): return 'dummy1'
         >>> dummy1 = DummyUtility1()
 
         >>> class DummyUtility2:
-        ...     implements(ISourceQueriables, IAuthentication2)
+        ...     implements(ISourceQueriables, IAuthentication)
         ...     __parent__ = None
         ...     def getQueriables(self):
         ...         return ('1', 1), ('2', 2), ('3', 3)
         >>> dummy2 = DummyUtility2()
 
         >>> class DummyUtility3(DummyUtility2):
-        ...     implements(IAuthentication2)
+        ...     implements(IAuthentication)
         ...     def getQueriables(self):
         ...         return ('4', 4),
         >>> dummy3 = DummyUtility3()
 
         >>> from zope.app.component.testing import testingNextUtility
-        >>> testingNextUtility(dummy1, dummy2, IAuthentication2)
-        >>> testingNextUtility(dummy2, dummy3, IAuthentication2)
+        >>> testingNextUtility(dummy1, dummy2, IAuthentication)
+        >>> testingNextUtility(dummy2, dummy3, IAuthentication)
 
         >>> temp = zapi.getUtility
         >>> zapi.getUtility = lambda iface: dummy1
@@ -206,7 +206,7 @@ class PrincipalSource(object):
         >>> zapi.getUtility = temp
         """
         i = 0
-        auth = zapi.getUtility(IAuthentication2)
+        auth = zapi.getUtility(IAuthentication)
         yielded = []
         while True:
             queriables = ISourceQueriables(auth, None)
@@ -219,7 +219,7 @@ class PrincipalSource(object):
                     if queriable not in yielded:
                         yield unicode(i)+'.'+unicode(qid), queriable
                         yielded.append(queriable)
-            auth = queryNextUtility(auth, IAuthentication2)
+            auth = queryNextUtility(auth, IAuthentication)
             if auth is None:
                 break
             i += 1

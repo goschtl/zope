@@ -27,7 +27,7 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.container.contained import contained, Contained
-from zope.app.security.interfaces import IAuthentication2
+from zope.app.security.interfaces import IAuthentication
 from zope.app.security.principalregistry import principalRegistry, Principal
 
 from bugtracker.interfaces import IManagableVocabulary
@@ -194,7 +194,7 @@ class UserVocabularyTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        ztapi.provideUtility(IAuthentication2, principalRegistry)
+        ztapi.provideUtility(IAuthentication, principalRegistry)
         principalRegistry.definePrincipal(
             '0', 'title0', 'desc0', 'zero', 'pass0')
         principalRegistry.definePrincipal(

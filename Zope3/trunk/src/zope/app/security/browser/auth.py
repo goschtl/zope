@@ -21,9 +21,9 @@ from zope.i18n import translate
 from zope import component
 from zope.app.zapi import getName, getPath
 from zope.app.publisher.interfaces.http import ILogin, ILogout
-from zope.app.security.interfaces import IAuthentication2
+from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.app.security.interfaces import ILogoutSupported
+from zope.app.security.interfaces import ILogout, ILogoutSupported
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.proxy import removeAllProxies
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -33,7 +33,7 @@ search_label = _('search-button', 'Search')
 
 class AuthUtilitySearchView(object):
 
-    __used_for__ = IAuthentication2
+    __used_for__ = IAuthentication
 
     def __init__(self, context, request):
         self.context = context
@@ -87,7 +87,7 @@ class HTTPAuthenticationLogin(object):
     def login(self, nextURL=None):
         # we don't want to keep challenging if we're authenticated
         if IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            component.getUtility(IAuthentication2).unauthorized(
+            component.getUtility(IAuthentication).unauthorized(
                 self.request.principal.id, self.request)
             return self.failed()
         else:
@@ -136,7 +136,8 @@ class HTTPAuthenticationLogout(object):
 
     def logout(self, nextURL=None):
         if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
-            component.getUtility(IAuthentication2).logout(self.request)
+            auth = component.getUtility(IAuthentication)
+            ILogout(auth).logout(self.request)
             if nextURL:
                 return self.redirect()
         if nextURL is None:

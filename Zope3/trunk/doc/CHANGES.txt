@@ -303,12 +303,6 @@ Zope Changes
         zope.app.container.constraints.containers) that greatly simplify
         expressing containment constraints.
 
-      - Added IAuthentication2, which formally supports logout. Support for
-        IAuthentication is deprecated and will be dropped in Zope 3.3. If
-        you provide an IAuthentication utility, add a 'logout' method (see
-        zope.app.security.interfaces.IAuthentication2) and register it as
-        providing IAuthentication2.
-
       - Added a view 'failsafelogin.html' that always uses HTTP basic auth
         credentials to identify a principal. This can be used to login as
         admin in the event a site authentication configuration is broken and
@@ -523,6 +517,9 @@ Zope Changes
       - Moved site-specific security policy configuration into
         securitypolicy.zcml. If you want to change the default security policy
         for a Zope instance, you can modify this file in your etc directory.
+
+      - Added formal support for logout. See zope/app/security/logout.txt for
+        more information.
 
       - Made the 'Logout' link optionally configured by registering a marker
         component in ZCML. To display the link, add this:

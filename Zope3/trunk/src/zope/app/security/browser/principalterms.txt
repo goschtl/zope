@@ -11,10 +11,10 @@ create an authentication utility to demonstrate how this works:
   ...         self.id, self.title = id, title
 
   >>> from zope.interface import implements
-  >>> from zope.app.security.interfaces import IAuthentication2
+  >>> from zope.app.security.interfaces import IAuthentication
   >>> from zope.app.security.interfaces import PrincipalLookupError
   >>> class AuthUtility:
-  ...     implements(IAuthentication2)
+  ...     implements(IAuthentication)
   ...     data = {'jim': 'Jim Fulton', 'stephan': 'Stephan Richter'}
   ...
   ...     def getPrincipal(self, id):
@@ -26,14 +26,14 @@ create an authentication utility to demonstrate how this works:
 Now we need to install the authentication utility:
 
   >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IAuthentication2, AuthUtility())
+  >>> ztapi.provideUtility(IAuthentication, AuthUtility())
 
 We need a principal source so that we can create a view from it.
 
   >>> from zope.app import zapi
   >>> class PrincipalSource:
   ...     def __contains__(self, id):
-  ...          auth = zapi.getUtility(IAuthentication2)
+  ...          auth = zapi.getUtility(IAuthentication)
   ...          try:
   ...              auth.getPrincipal(id)
   ...          except PrincipalLookupError:

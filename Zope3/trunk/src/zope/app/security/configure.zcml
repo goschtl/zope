@@ -23,7 +23,7 @@
   <include file="_protections.zcml" />
 
   <utility
-      provides=".interfaces.IAuthentication2"
+      provides=".interfaces.IAuthentication"
       component=".principalregistry.principalRegistry" />
 
   <localUtility class=".permission.LocalPermission">
@@ -64,6 +64,7 @@
              attributes="getName getDescription __str__" />
   </content>
 
+  <adapter factory=".NoLogout" />
 
   <!-- Standard Permissions -->
 

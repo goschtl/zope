@@ -21,7 +21,7 @@ import zope.schema
 
 from zope import component
 from zope.schema.interfaces import ISourceQueriables
-from zope.app.security.interfaces import IAuthentication2
+from zope.app.security.interfaces import IAuthentication
 from zope.app.component import queryNextUtility
 from zope.app.component.site import SiteManagementFolder
 
@@ -31,7 +31,7 @@ from zope.app.authentication import interfaces
 class PluggableAuthentication(SiteManagementFolder):
 
     zope.interface.implements(
-        IAuthentication2,
+        IAuthentication,
         interfaces.IPluggableAuthentication,
         ISourceQueriables)
 
@@ -67,7 +67,7 @@ class PluggableAuthentication(SiteManagementFolder):
 
     def getPrincipal(self, id):
         if not id.startswith(self.prefix):
-            next = queryNextUtility(self, IAuthentication2)
+            next = queryNextUtility(self, IAuthentication)
             return (next is not None) and next.getPrincipal(id) or None
         id = id[len(self.prefix):]
         for name in self.authenticatorPlugins:
@@ -81,7 +81,7 @@ class PluggableAuthentication(SiteManagementFolder):
             principal = interfaces.IFoundPrincipalFactory(info)()
             principal.id = self.prefix + info.id
             return principal
-        next = queryNextUtility(self, IAuthentication2)
+        next = queryNextUtility(self, IAuthentication)
         return (next is not None) and next.getPrincipal(self.prefix+id) or None
 
     def getQueriables(self):
@@ -115,7 +115,7 @@ class PluggableAuthentication(SiteManagementFolder):
                         challengeProtocol = protocol
 
         if challengeProtocol is None:
-            next = queryNextUtility(self, IAuthentication2)
+            next = queryNextUtility(self, IAuthentication)
             if next is not None:
                 next.unauthorized(id, request)
 
@@ -136,7 +136,7 @@ class PluggableAuthentication(SiteManagementFolder):
                         challengeProtocol = protocol
 
         if challengeProtocol is None:
-            next = queryNextUtility(self, IAuthentication2)
+            next = queryNextUtility(self, IAuthentication)
             if next is not None:
                 next.logout(request)
 
