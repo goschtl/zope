@@ -11,10 +11,6 @@
     module in Python's standard library as a possible approach to a
     solution
 
-- need to generate a MANIFEST so that "limitations" (bugs!) in the
-  sdist command don't screw us (scripts, data files aren't
-  automatically included)
-
 - find way to ditch setup.cfg completely; we only need it to mark
   files as documentation for bdist_rpm
 
