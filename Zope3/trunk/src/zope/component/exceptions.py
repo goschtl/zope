@@ -14,13 +14,15 @@
 
 from zope.exceptions import NotFoundError
 
+__all__ = ["ComponentLookupError",
+           "Invalid",
+           "Misused"]
+
 class ComponentLookupError(NotFoundError):
-    "A component could not be found"
+    """A component could not be found."""
 
 class Invalid(Exception):
-    """A component doesn't satisfy a promise
-    """
+    """A component doesn't satisfy a promise."""
 
 class Misused(Exception):
-    """A component is being used (registered) for the wrong interface
-    """
+    """A component is being used (registered) for the wrong interface."""

@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.5 2003/05/23 22:17:33 jim Exp $
+$Id: interfaces.py,v 1.6 2003/06/22 19:00:29 jeremy Exp $
 """
 
 from zope.interface import Interface, Attribute
+from zope.component.exceptions import *
 
 class IComponentArchitecture(Interface):
     """The Component Architecture is defined by six key services,
