@@ -179,6 +179,13 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
         try:
             # Abort the transaction.
             get_transaction().abort()
+
+            try:
+                errService = getService(object,'ErrorReportingService')
+                errService.raising(exc_info, request)
+            except ComponentLookupError:
+                pass
+
             # Delegate Unauthorized errors to the authentication service
             # XXX Is this the right way to handle Unauthorized?  We need
             # to understand this better.
@@ -188,12 +195,6 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
                 prin_reg.unauthorized(id, request) # May issue challenge
                 request.response.handleException(exc_info)
                 return
-
-            try:
-                errService = getService(object,'ErrorReportingService')
-                errService.raising(exc_info, request)
-            except ComponentLookupError:
-                pass
 
             # XXX This is wrong. Should use getRequstView:
             # 
