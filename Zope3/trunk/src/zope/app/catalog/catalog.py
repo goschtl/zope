@@ -4,7 +4,7 @@ from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.interface import implements
 from zope.context import ContextMethod
-from zope.app.zapi import getService
+from zope.app.zapi import getService, getAdapter
 from zope.app.services.servicenames import HubIds
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.services.registration import IRegisterable
@@ -14,6 +14,7 @@ from zope.app.interfaces.services.utility import ILocalUtility
 
 from zope.app.interfaces.container import IDeleteNotifiable, IAddNotifiable
 from zope.app.interfaces.container import IContainer
+from zope.index.interfaces.index import IQuerying
 
 from zope.app.container.sample import SampleContainer
 
@@ -127,7 +128,8 @@ class Catalog(Persistent, SampleContainer):
             index = wrapped_self.get(key)
             if not index: 
                 raise ValueError, "no such index %s"%(key)
-            results = index.search(value)
+            index = getAdapter(index, IQuerying)
+            results = index.query(value)
             if pendingResults is None:
                 pendingResults = results
             else:
