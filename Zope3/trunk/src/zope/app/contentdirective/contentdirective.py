@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.4 2003/01/10 14:06:27 mgedmin Exp $
+$Id: contentdirective.py,v 1.5 2003/01/21 21:35:22 jim Exp $
 """
 from types import ModuleType
 from zope.interface.implements import implements
@@ -157,7 +157,7 @@ class ContentDirective:
         schema = self.__context.resolve(schema)
         for name in schema:
             field = schema[name]
-            if IField.isImplementedBy(field):
+            if IField.isImplementedBy(field) and not field.readonly:
                 r.append((
                     ('protectSetAttribute', self.__class, name),
                     protectSetAttribute, (self.__class, name, permission_id)))

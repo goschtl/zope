@@ -139,6 +139,7 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(checker.setattr_permission_id('m3'), None)
         self.assertEqual(checker.setattr_permission_id('foo'), P1)
         self.assertEqual(checker.setattr_permission_id('bar'), P1)
+        self.assertEqual(checker.setattr_permission_id('baro'), None)
 
     def testSimpleInterface(self):
         declaration = ("""<content class="%s">

@@ -38,6 +38,7 @@ class I2(I):
 class S(Interface):
     foo = Text()
     bar = Text()
+    baro = Text(readonly=True)
 
 
 module.I = I
