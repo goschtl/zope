@@ -20,8 +20,6 @@ from zope.app.container.browser.contents import Contents
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 
-__metaclass__ = type
-
 class FilterList(Contents):
 
     __used_for__ = IProcessInstanceContainerAdaptable
