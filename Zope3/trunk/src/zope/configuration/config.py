@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.18 2004/03/01 22:39:31 fdrake Exp $
+$Id: config.py,v 1.19 2004/03/02 14:26:30 srichter Exp $
 """
 
 import os.path
@@ -120,6 +120,8 @@ class ConfigurationContext(object):
         1
         >>> c.resolve('..interface') is zope.interface
         1
+        >>> c.resolve('unicode')
+        <type 'unicode'>
         """
 
         name = dottedname.strip()
@@ -131,8 +133,15 @@ class ConfigurationContext(object):
             raise ValueError(
                 "Trailing dots are no longer supported in dotted names")
 
+        if len(names) == 1:
+            # Check for built-in objects
+            marker = object()
+            obj = __builtins__.get(names[0], marker)
+            if obj is not marker:
+                return obj
+
         if not names[0]:
-            # Got a relative name. Conver it to abs using package info
+            # Got a relative name. Convert it to abs using package info
             if self.package is None:
                 raise ConfigurationError(
                     "Can't use leading dots in dotted names, "
