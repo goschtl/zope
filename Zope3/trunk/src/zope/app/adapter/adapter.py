@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.7 2004/04/12 17:58:33 jim Exp $
+$Id: adapter.py,v 1.8 2004/04/15 15:29:36 jim Exp $
 """
 __metaclass__ = type
 
@@ -178,6 +178,16 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
 
     notifyActivated = notifyDeactivated = adaptersChanged
 
+    def baseChanged(self):
+        """Someone changed the base service
+
+        This should only happen during testing
+        """
+        AdapterRegistry.__init__(self)
+        for sub in self.subs:
+            sub.baseChanged()
+                
+
     def registrations(self):
         for stacks in self.stacks.itervalues():
             for stack in stacks.itervalues():
@@ -243,9 +253,11 @@ class LocalAdapterService(LocalAdapterRegistry,
         zope.component.interfaces.IComponentRegistry,
         )
 
+    serviceType = zapi.servicenames.Adapters
+
     def __init__(self, base=None):
         if base is None:
-            base = zapi.getService(None, zapi.servicenames.Adapters)
+            base = zapi.getService(None, self.serviceType)
         LocalAdapterRegistry.__init__(self, base)
 
     def registrations(self):
