@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.27 2004/04/06 20:58:13 jim Exp $
+$Id: engine.py,v 1.28 2004/04/29 16:10:02 fdrake Exp $
 """
 import sys
 from types import StringTypes
@@ -32,7 +32,6 @@ from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.traversing.adapters import Traverser
 
 
@@ -95,6 +94,9 @@ class ZopeContext(Context):
                     'you cannot have inline code snippets in your Page '
                     'Template. Activate Inline Code Evaluation and try again.')
 
+        # XXX This is only needed when self.evaluateInlineCode is true,
+        # so should only be needed for zope.app.pythonpage.
+        from zope.app.interpreter.interfaces import IInterpreter
         interpreter = zapi.queryUtility(self.context, IInterpreter, name=lang)
         if interpreter is None:
             error = _('No interpreter named "${lang_name}" was found.')
