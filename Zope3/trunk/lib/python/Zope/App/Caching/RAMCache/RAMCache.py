@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.6 2002/12/03 08:45:46 alga Exp $
+$Id: RAMCache.py,v 1.7 2002/12/03 14:43:57 alga Exp $
 """
 from time import time
 from thread import allocate_lock
@@ -54,15 +54,21 @@ class RAMCache(Persistent):
     __implements__ = IRAMCache
 
     def __init__(self):
-        global cache_id_counter
-        cache_id_nr = 0
+
+        # A timestamp and a counter are used here because using just a
+        # timestamp and an id (address) produced unit test failures on
+        # Windows (where ticks are 55ms long).  If we want to use just
+        # the counter, we need to make it persistent, because the
+        # RAMCaches are persistent.
+
         cache_id_writelock.acquire()
         try:
+            global cache_id_counter
             cache_id_counter +=1
-            cache_id_nr = cache_id_counter
+            self._cacheId = "%s_%f_%d" % (id(self), time(), cache_id_counter)
         finally:
             cache_id_writelock.release()
-        self._cacheId = "%s_%f_%d" % (id(self), time(), cache_id_nr)
+
         self.requestVars = ()
         self.maxEntries = 1000
         self.maxAge = 3600
