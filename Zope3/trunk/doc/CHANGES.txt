@@ -10,6 +10,18 @@ Zope Changes
 
     New features
 
+    - Until now, only a checkbox widget was available for boolean fields. This
+      situation has changed, as we now also have BooleanRadioWidget,
+      BoolenSelectWidget, and BoolenDropdownWidget.
+
+    - A new vocabulary called Object Interfaces extracts the provided
+      interfaces of its context and provides them as the term of the
+      vocabulary. The vocabulary is named "Object Interfaces".
+
+    - Developed Utility Vocabulary that provides a vocabulary for a particular
+      utility. The constructor of the vocabulary expects a string or interface
+      that expresses the interface provided by the utility.
+
     - Implemented 'registrations()' method for all adapter, utility and
       presentation services. This method is particularly aimed for people
       building informational GUIs and documentation. Examples of its use are
@@ -222,6 +234,28 @@ Zope Changes
       LocationProxies for all adapters which do not implement ILocation itself.
 
     Restructuring
+
+    - All enumerated fields are gone. Instead there is now a 'Choice' field
+      that can take a listing of values, vocabulary or vocabulary name as
+      source for the choices. The Sequence field has been improved to cope
+      better with Choice value types. 
+
+    - A new attribute 'unique' was added to sequence to require uniqueness of
+      the values. This way all four container classes, set, bag, list and
+      unique list can be expressed using only two fields.
+
+    - All vocabulary widgets are gone. They were replaced by widgets that
+      expect choice- or sequence-like fields and vocabularies. Convinience
+      broker widgets are provided to provide simple views for the fields only.
+
+    - Use new Utility Vocabulary is now used to provide fields for permissions
+      and interfaces. This allowed us to get rid of PermissionField and
+      InterfaceField and their associated widgets.
+
+    - Moved stateful workflow interfaces and browser code to
+      zope.app.workflow.stateful. This way we can distribute the workflow
+      package without specific implementations or choose the implementations
+      we want to distribute. 
 
     - The workflow XML import/export functionality uses now a set of adapters
       instead of a complicated utility and custom registry structure.
