@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.33 2003/08/06 14:41:33 srichter Exp $
+$Id: interfacewidget.py,v 1.34 2003/08/07 19:06:15 sidnei Exp $
 """
 import sys
 from zope.interface import Interface, implements
@@ -27,16 +27,19 @@ from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
 from xml.sax.saxutils import quoteattr
 from zope.app.browser.form.widget import BrowserWidget
-
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.traversing import getPath
+
 
 class InterfaceWidget(BrowserWidget, BrowserView):
     implements(IBrowserWidget)
 
     def haveData(self):
+        field = self.context
         if self.name in self.request.form:
             v = self.request.form[self.name]
-            return v and (v == 'None' or nameToInterface(self.context, v))
+            return v and (v == 'None' or \
+                          nameToInterface(field.context, v))
         return False
 
     def getData(self, optional=0):
@@ -52,7 +55,7 @@ class InterfaceWidget(BrowserWidget, BrowserView):
             value = None
         else:
             try:
-                value = nameToInterface(field, value)
+                value = nameToInterface(field.context, value)
             except ComponentLookupError:
                 # Convert to conversion error
                 exc = ConversionError(sys.exc_info()[1])
@@ -79,19 +82,18 @@ class InterfaceWidget(BrowserWidget, BrowserView):
         if base == Interface:
             base = None
 
-        interfaces = list(service.searchInterface(search_string, base=base))
-            
+        items = list(service.items(search_string, base=base))
         if field.constraint is not None:
-            interfaces = [i
-                          for i in interfaces
-                          if field.constraint(i)
-                         ]
-        interfaces = map(interfaceToName, interfaces)
-        interfaces.sort()
+            items = [(id, iface)
+                     for id, iface in items
+                     if field.constraint(iface)
+                     ]
+        ids = [id for id, iface in items]
+        ids.sort()
         # Only include None if there is no search string, and include_none
         # is True
         if include_none and not search_string:
-            interfaces = ['None'] + interfaces
+            ids = ['None'] + ids
 
         marker = self
         if field.default:
@@ -106,19 +108,20 @@ class InterfaceWidget(BrowserWidget, BrowserView):
             selected = self._data
 
         if selected is not marker:
-            selected = interfaceToName(selected)
+            selected = interfaceToName(field.context, selected)
 
         return renderInterfaceSelect(
-                interfaces, selected, search_name, search_string, name)
+                ids, selected, search_name, search_string, name)
 
     def hidden(self):
         'See IBrowserWidget'
+        field = self.context
         if self._data is None:
             data = self.getData(1)
         else:
             data = self._data
         return ('<input type="hidden" name="%s" value="%s" />'
-                        % (self.name, interfaceToName(data))
+                        % (self.name, interfaceToName(field.context, data))
                         )
 
     # --- deprecated methods of IBrowserWidget
@@ -241,11 +244,11 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
                                       for s,v in selections
                                       if v != '']))
             else:  # otherwise, use the default
-                selections = [('', interfaceToName(interface))
+                selections = [('', interfaceToName(field.context, interface))
                               for interface in field.default]
         else:
             # data has been set with Widget.setData()
-            selections = [('', interfaceToName(interface))
+            selections = [('', interfaceToName(field.context, interface))
                           for interface in self._data]
 
         # If there are no empty values, add one extra empty selection
@@ -262,16 +265,16 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
         rendered_selections = []
         count = 0
         for search, value in selections:
-            interfaces = list(service.searchInterface(search, base=base))
-            interfaces.sort()
-            interfaces = map(interfaceToName, interfaces)
+            items = list(service.items(search, base=base))
+            ids = [id for id, iface in items]
+            ids.sort()
             # Only include None if there is no search string, and include_none
             # is True
             if include_none and not search:
-                interfaces = ['None'] + interfaces
+                ids = ['None'] + ids
             search_name = '%s.search.i%s' % (name, count)
             rendered_selections.append(
-                renderInterfaceSelect(interfaces, value, search_name,
+                renderInterfaceSelect(ids, value, search_name,
                                       search, '%s.i%s' % (name, count))
                 )
             count += 1
@@ -282,6 +285,7 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
 
     def hidden(self):
         'See IBrowserWidget'
+        field = self.context
         if self._data is None:
             data = self.getData(1)
         else:
@@ -292,7 +296,7 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
         for interface in data:
             elements.append(
                 '<input type="hidden" name="%s.i%s" value="%s" />'
-                % (name, count, interfaceToName(interface))
+                % (name, count, interfaceToName(field.context, interface))
                 )
             count += 1
         return ''.join(elements)
@@ -322,19 +326,22 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
 
 class InterfaceDisplayWidget(InterfaceWidget):
     def __call__(self):
+        field = self.context
         if self._data is None:
             data = self.getData(1)
         else:
             data = self._data
-        return interfaceToName(data)
+        return interfaceToName(field.context, data)
 
 class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
     def __call__(self):
+        field = self.context
         if self._data is None:
             data = self.getData(1)
         else:
             data = self._data
-        return ', '.join([interfaceToName(interface) for interface in data])
+        return ', '.join([interfaceToName(field.context, interface)
+                          for interface in data])
 
 def renderInterfaceSelect(
         interfaces, selected, search_name, search_string, select_name):
@@ -346,7 +353,7 @@ def renderInterfaceSelect(
             options.append('<option value="None"%s>' \
                 % (interface == selected and ' selected' or '') \
                 + _(u"Anything") + '</option>'
-                           
+
                            )
         else:
             options.append('<option value="%s"%s>%s</option>'
@@ -368,7 +375,14 @@ def nameToInterface(context, name):
     service = getService(context, Interfaces)
     return service.getInterface(name)
 
-def interfaceToName(interface):
+def interfaceToName(context, interface):
     if interface is None:
         return 'None'
-    return interface.__module__ + '.' + interface.__name__
+    service = getService(context, Interfaces)
+    items = service.items()
+    ids = [id for id, iface in items
+           if iface == interface]
+    if not ids:
+        raise ComponentLookupError, interface
+    assert len(ids) == 1, "Ambiguous interface names: %s" % ids
+    return ids[0]
