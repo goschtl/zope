@@ -31,7 +31,7 @@ Step 11: Availability via XML-RPC
 
 Step 12: Developing new Skins
 
-Step 13: Integrating Smiley Service
+Step 13: Integrating Smiley Utilities
 
 IMPORTANT: Please do not edit any of the steps (except adding comments)
            unless you are willing to make the correct modifications in the
