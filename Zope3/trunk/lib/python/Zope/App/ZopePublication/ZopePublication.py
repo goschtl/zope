@@ -46,13 +46,6 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 # XXX Should this be imported here?
 from Transaction import get_transaction
 
-class RequestContainer:
-    # TODO: add security assertion declaring access to REQUEST
-
-    def __init__(self, request):
-        self.REQUEST = request
-
-
 class Cleanup:
     def __init__(self, f):
         self.__del__ = f
@@ -243,3 +236,19 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
     def _parameterSetskin(self, pname, pval, request):
         request.setViewSkin(pval)
         
+class DebugPublication(object):
+
+    class call_wrapper:
+
+        def __init__(self, ob):
+            self.__ob = ob
+
+        def __getattr__(self, name):
+            return getattr(self.__ob, name)
+
+        def __call__(self, *args, **kw):
+            self.__ob(*args, **kw)
+
+    def callObject(self, request, ob):
+        return mapply(self.call_wrapper(ob),
+                      request.getPositionalArguments(), request)
