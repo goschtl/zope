@@ -1,0 +1,12 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+  <!-- The snippet view renders the exception as a human readable HTML
+    error message, suitable for being embeded in an HTML page.
+    -->
+<page
+  for="zope.app.interfaces.form.IWidgetInputError"
+  name="snippet"
+  permission="zope.Public"
+  class=".form.WidgetInputErrorView"
+  attribute="snippet"
+  />
+</zopeConfigure>

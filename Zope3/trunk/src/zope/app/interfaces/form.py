@@ -13,23 +13,35 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.4 2003/07/13 06:47:25 richard Exp $
+$Id: form.py,v 1.5 2003/07/14 15:28:30 Zen Exp $
 """
 
+import cgi
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
-from zope.interface import Attribute
+from zope.interface import Attribute, Interface, implements
+from zope.app.interfaces.exceptions import UserError
 
+class IWidgetInputError(Interface):
+    'Placeholder for a snippet View'
+    pass
 
-class WidgetInputError(Exception):
+class WidgetInputError(UserError):
     """There were one or more user input errors
     """
+    implements(IWidgetInputError)
 
     def __init__(self, field_name, widget_title, errors):
-        Exception.__init__(self, field_name, widget_title, errors)
+        ''' errors is a ValidationError '''
+        UserError.__init__(self, field_name, widget_title, errors)
         self.field_name = field_name
         self.widget_title = widget_title
         self.errors = errors
+
+class WidgetInputErrorView:
+    __used_for__ = IWidgetInputError
+    def snippet(self):
+        return '<span class="error">%s</span>' % self.context.errors[0]
 
 class MissingInputError(WidgetInputError):
     """Required data was not supplied

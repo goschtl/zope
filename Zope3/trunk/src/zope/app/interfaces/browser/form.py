@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.12 2003/06/20 06:42:44 stevea Exp $
+$Id: form.py,v 1.13 2003/07/14 15:28:32 Zen Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.form import IWidget
@@ -95,10 +95,12 @@ class IBrowserWidget(IWidget):
         """Render a label tag"""
 
     def row():
-        """Render the widget as two div elements, for the label and the field.
+        """Render the widget as two or three div elements, 
+           for the label, the field and possibly the validation error
 
         For example:
           <div class="label">label</div><div class="field">field</div>
+          <div class="error">Validation error message</div>
         """
 
 

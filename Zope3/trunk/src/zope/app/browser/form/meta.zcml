@@ -136,6 +136,16 @@
         </description>
       </attribute>
 
+      <attribute name="description" required="no">
+        <description>
+         A longer description of the add form.
+
+          A UI may display this with the item or display it when the
+          user requests more assistance.
+        </description>
+        </attribute>
+
+
       <attribute name="use_session" required="no">
         <description>
           If 'no', hidden input controls are used to maintain state

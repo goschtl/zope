@@ -332,21 +332,36 @@ pre {
 }
 
 div.row {
+    display: table-row;
     clear: both;
     padding-top: 10px;
 }
 
+div.row div {
+    margin: 0.4em;
+    padding-bottom: 0.4em;
+    vertical-align: top;
+}
+
 div.row div.label {
-    float: left;
+    display: table-cell;
     width: 100px;
     text-align: right;
-    margin-right: 0.8em;
+    padding-right: 0.8em;
+    padding-top: 0.8em;
     font-weight: bold;
 }
 # XXX someone please come and do this properly
 div.row div.field {
-    float: right;
+    display: table-cell;
     text-align: left;
+}
+div.row div.error {
+    display: table-cell;
+    text-align: left;
+    color: red;
+    padding-left: 0.8em;
+    padding-top: 0.8em;
 }
 
 div.box {

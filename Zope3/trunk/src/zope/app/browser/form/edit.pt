@@ -20,15 +20,11 @@
            tal:condition="status"
            tal:content="status" />
 
-        <div tal:condition="view/errors">
-           <ul>
-              <li tal:repeat="error view/errors">
-                 <strong tal:content="error/__class__" i18n:translate="">
-                    Error Type</strong>:
-                 <span tal:content="error">Error text</span>
-              </li>
-           </ul>
-        </div>
+         <p tal:condition="view/errors">
+           <span i18n:translate="">There are</span> 
+           <strong tal:content="python:len(view.errors)">6</strong>
+           <span i18n:translate="">input errors.</span>
+        </p>
 
         <div metal:define-slot="extra_info" tal:replace="nothing">
         </div>

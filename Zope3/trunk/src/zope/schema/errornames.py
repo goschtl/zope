@@ -13,30 +13,37 @@
 ##############################################################################
 """Common Schema Error Names
 
-$Id: errornames.py,v 1.2 2002/12/25 14:15:20 jim Exp $
+$Id: errornames.py,v 1.3 2003/07/14 15:28:35 Zen Exp $
+
+Defines common validation error messages.
+Using these symbols instead of strings makes unit tests less fragile,
+as the strings are only defined in one place. Otherwise, this module
+serves no real function.
 """
-WrongType = u"WrongType"
+from zope.app.i18n import ZopeMessageIDFactory as _
 
-RequiredMissing = u'RequiredMissing'
+WrongType = _(u'Wrong type')
 
-RequiredEmptyStr = u'RequiredEmptyString'
+RequiredMissing = _(u'Input is required') # Required input missing
 
-TooBig = u'TooBig'
+RequiredEmptyStr = _(u'Required empty string')
 
-TooSmall = u'TooSmall'
+TooBig = _(u'Too big')
 
-TooLong = u'TooLong'
+TooSmall = _(u'Too small')
 
-TooShort = u'TooShort'
+TooLong = _(u'Too long')
 
-InvalidValue = u'InvalidValue'
+TooShort = _(u'Too short')
 
-TooManyDecimals = u'TooManyDecimals'
+InvalidValue = _(u'Invalid value')
 
-WrongContainedType = u"WrongContainedType"
+TooManyDecimals = _(u'Too many decimals')
 
-ConstraintNotSatisfied = u'ConstraintNotSatisfied'
+WrongContainedType = _(u"Wrong contained type")
 
-NotAContainer = u'NotAContainer'
+ConstraintNotSatisfied = _(u'Constraint not satisfied')
 
-NotAnIterator = u'NotAnIterator'
+NotAContainer = _(u'Not a container')
+
+NotAnIterator = _(u'Not an iterator')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.4 2003/07/13 04:47:35 Zen Exp $
+$Id: editwizard.py,v 1.5 2003/07/14 15:28:23 Zen Exp $
 """
 
 import logging
@@ -31,7 +31,8 @@ from editview import normalize, EditViewFactory, EditView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.app.context import ContextWrapper
 from zope.component.view import provideView
-from zope.app.form.utility import setUpEditWidgets, getWidgetsData
+from zope.app.form.utility \
+        import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
 from zope.app.interfaces.form import WidgetInputError
 from submit import Next, Previous, Update
 from zope.app.interfaces.form import WidgetsError
@@ -111,7 +112,7 @@ class EditWizardView(EditView):
         else:
             # First page
             self._current_pane_idx = 0
-            self.errors = []
+            self.errors = {}
             self.label = self.currentPane().label
             self._choose_buttons()
             return
@@ -126,8 +127,11 @@ class EditWizardView(EditView):
                 self, self.schema, strict=True, set_missing=True, 
                 names=names, exclude_readonly=True
                 )
-            self.errors = []
+            self.errors = {}
         except WidgetsError, errors:
+            errors = {}
+            for k, label, msg in errors:
+                errors[k] = msg
             self.errors = errors
 
         else:
@@ -167,6 +171,15 @@ class EditWizardView(EditView):
         self.show_next = (self._current_pane_idx < len(self.panes) - 1)
 
         self.show_previous = self._current_pane_idx > 0
+
+    def apply_update(self, storage):
+        ''' Save changes to our content object '''
+        for k,v in storage.items():
+            getattr(self,k).setData(v)
+        return not applyWidgetsChanges(
+                self, self.adapted, self.schema,
+                names=self.fieldNames, exclude_readonly=True
+                )
 
     def renderHidden(self):
         ''' Render state as hidden fields. Also render hidden fields to 

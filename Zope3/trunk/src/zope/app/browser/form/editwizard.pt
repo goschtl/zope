@@ -17,16 +17,6 @@
 
         <p tal:condition="view/feedback" tal:content="view/feedback" />
 
-        <div tal:condition="view/errors">
-           <ul>
-              <li tal:repeat="error view/errors">
-                 <strong tal:content="error/__class__" i18n:translate="">
-                    Error Type</strong>:
-                 <span tal:content="error">Error text</span>
-              </li>
-           </ul>
-        </div>
-
         <div metal:define-slot="extra_info" tal:replace="nothing">
         </div>
 

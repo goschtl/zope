@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: addwizard.py,v 1.2 2003/07/13 04:47:35 Zen Exp $
+$Id: addwizard.py,v 1.3 2003/07/14 15:28:23 Zen Exp $
 """
 
 import sys
@@ -99,7 +99,7 @@ class AddWizardView(EditWizardView):
 
         publish(self.context, ObjectCreatedEvent(content))
 
-        content = self.add(content)
+        content = self.context.add(content)
 
         adapted = getAdapter(content, self.schema)
 
@@ -116,10 +116,6 @@ class AddWizardView(EditWizardView):
 
         self.request.response.redirect(self.context.nextURL())
         return False
-
-    def add(self, content):
-        # Cut & Paste from add.py
-        return self.context.add(content)
 
 
 def AddWizardViewFactory(
@@ -161,7 +157,7 @@ class AddWizardDirective:
         layer='default', template=None, 
         for_='zope.app.interfaces.container.IAdding', class_=None, 
         arguments='',keyword_arguments='', set_before_add='', set_after_add='',
-        menu=None, title=None, use_session='yes'
+        menu=None, description='', title=None, use_session='yes'
         ):
 
         self.name = name
@@ -187,7 +183,7 @@ class AddWizardDirective:
                                 "they must both be specified")
             actions = menuItemDirective(
                 _context, menu, for_, '@@' + name, title,
-                permission=permission)
+                permission=permission, description=description)
         else:
             actions = []
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.39 2003/07/13 07:57:43 richard Exp $
+$Id: widget.py,v 1.40 2003/07/14 15:28:23 Zen Exp $
 """
 
 __metaclass__ = type
@@ -37,6 +37,7 @@ from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import ValidationError
+from zope.schema.errornames import RequiredMissing
 
 ListTypes = list, tuple
 
@@ -59,23 +60,34 @@ class BrowserWidget(Widget, BrowserView):
     u'hello\\r\\nworld'
     >>> int(widget.required)
     1
+    >>> widget.error is None
+    1
     >>> widget.setData('Hey\\nfolks')
     >>> widget.getData()
     u'hello\\r\\nworld'
+    >>> widget.error is None
+    1
 
     >>> widget.setPrefix('test')
     >>> widget.name
     'test.foo'
+    >>> widget.error is None
+    1
     >>> int(widget.haveData())
     0
     >>> widget.getData()
     Traceback (most recent call last):
     ...
-    MissingInputError: ('foo', u'Foo', 'the field is required')
+    MissingInputError: ('foo', u'Foo', u'Input is required')
+    >>> widget.error is not None
+    1
     >>> field.required = False
     >>> int(widget.required)
     0
-    >>> widget.getData()
+    >>> widget.getData() is None
+    1
+    >>> widget.error is None
+    1
 
     When we generate labels, the labels are translated, so we need to set up
     a lot of machinery to support translation:
@@ -97,6 +109,7 @@ class BrowserWidget(Widget, BrowserView):
     cssClass = ''
     extra = ''
     _missing = None
+    error = None
 
     def haveData(self):
         if self.name in self.request.form:
@@ -106,11 +119,14 @@ class BrowserWidget(Widget, BrowserView):
     def getData(self, optional=0):
         field = self.context
         value = self.request.form.get(self.name, self) # self used as marker
+        self.error = None
         if value is self:
             # No user input
             if field.required and not optional:
-                raise MissingInputError(field.__name__, field.title,
-                                        'the field is required')
+                self.error = MissingInputError(
+                        field.__name__, field.title,  RequiredMissing
+                        )
+                raise self.error
             return field.default
 
         value = self._convert(value)
@@ -118,9 +134,9 @@ class BrowserWidget(Widget, BrowserView):
             try:
                 field.validate(value)
             except ValidationError, v:
-                raise WidgetInputError(self.context.__name__,
-                                       self.title, str(v))
-
+                self.error = WidgetInputError(self.context.__name__,
+                                       self.title, v)
+                raise self.error
         return value
 
     def validate(self):
@@ -196,14 +212,27 @@ class BrowserWidget(Widget, BrowserView):
         title = ts.translate(self.title, "zope", context=self.request)
         if title is None:
             title = self.title
-        return '<label for="%s">%s</label>' % (
-            self.name,
-            title,
-            )
+        # TODO: Use a JavaScript tooltip instead of an abuse of the
+        # acronym HTML tag.
+        desc = self.context.description
+        if desc:
+            return '<label for="%s"><acronym title="%s">%s</acronym></label>'%(
+                    self.name, desc, title,
+                    )
+        else:
+            return '<label for="%s">%s</label>' % (
+                    self.name, title,
+                    )
 
     def row(self):
-        return '<div class="label">%s</div><div class="field">%s</div>' % (
-                self.label(), self())
+        if self.error:
+            error = zapi.getView(self.error, 'snippet', self.request)()
+            return '<div class="label">%s</div><div class="field">%s</div>' \
+                '<div class="error">%s</div>' % (self.label(), self(), error)
+        else:
+            return '<div class="label">%s</div><div class="field">%s</div>' % (
+                self.label(), self()
+                )
 
 class DisplayWidget(BrowserWidget):
 
