@@ -7,13 +7,14 @@ CMF_PACKAGES = [ ( 'CMFCore',       1 )
                , ( 'CMFDefault',    1 )
                , ( 'CMFTopic',      1 )
                , ( 'CMFCalendar',   0 )
-               , ( 'DCWorkflow',    0 )
+               , ( 'DCWorkflow',    1 )
                ]
 
 PACKAGES_UNDER_TEST = []
 
 def test_suite():
 
+    import Testing
     import Zope
 
     try:
