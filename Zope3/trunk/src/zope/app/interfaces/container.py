@@ -13,13 +13,15 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.3 2003/09/05 18:52:40 jim Exp $
+$Id: container.py,v 1.4 2003/09/21 17:32:20 jim Exp $
 """
 
-from zope.interface import Interface, Attribute
+from zope.interface import Interface, Attribute, implements
 from zope.component.interfaces import IView
 from zope.interface.common.mapping import IItemMapping
 from zope.interface.common.mapping import IReadMapping, IEnumerableMapping
+from zope.app.interfaces.location import ILocation
+from zope.app.interfaces.event import IObjectEvent
 
 class DuplicateIDError(KeyError):
     pass
@@ -27,42 +29,10 @@ class DuplicateIDError(KeyError):
 class ContainerError(Exception):
     """An error of a container with one of its components."""
 
-class CopyException(Exception):
-    """An error that occurred within a copy operation."""
 
-    def __init__(self, container, key, message=""):
-        self.container = container
-        self.key = key
-        self.message = message and ": %s" % message
-
-    def __str__(self):
-        return ("%(key)s cannot be copied "
-                "from %(container)s%(message)s" % self.__dict__)
-
-class MoveException(Exception):
-    """An error that occurred within a move operation."""
-
-    def __init__(self, container, key, message=""):
-        self.container = container
-        self.key = key
-        self.message = message and ": %s" % message
-
-    def __str__(self):
-        return ("%(key)s cannot be copied "
-                "from %(container)s%(message)s" % self.__dict__)
-
-class UnaddableError(ContainerError):
-    """An object cannot be added to a container."""
-
-    def __init__(self, container, obj, message=""):
-        self.container = container
-        self.obj = obj
-        self.message = message and ": %s" % message
-
-    def __str__(self):
-        return ("%(obj)s cannot be added "
-                "to %(container)s%(message)s" % self.__dict__)
-
+class IContained(ILocation):
+    """Objects contained in containers
+    """
 
 class IItemContainer(IItemMapping):
     """Minimal readable container
@@ -79,24 +49,66 @@ class IReadContainer(ISimpleReadContainer, IEnumerableMapping):
 class IWriteContainer(Interface):
     """An interface for the write aspects of a container."""
 
-    def setObject(key, object):
-        """Add the given object to the container under the given key.
-
-        The container might choose to add a different object than the
-        one passed to this method.
-
-        Raises a ValueError if key is an empty string, unless the
-        container chooses a different key.
+    def __setitem__(name, object):
+        """Add the given object to the container under the given name.
 
         Raises a TypeError if the key is not a unicode or ascii string.
+        Raises a ValueError if key is empty.
 
-        Returns the key used, which might be different than the given key.
+        The container might choose to add a different object than the
+        one passed to this method. 
+
+        If the object doesn't implement IContained, then one of two
+        things must be done:
+
+        1. If the object implements ILocation, then the IContained
+           interface must be declared for the object.
+
+        2. Otherwise, a ContainedProxy is created for the object and
+           stored.
+
+        The object's __parent__ and __name__ attributes are set to the
+        container and the given name.
+
+        If the old parent was None, then an IObjectAddedEvent is
+        generated, otherwise, and IObjectMovedEvent is generated.  An
+        IObjectModifiedEvent is generated for the container.  If an
+        add event is generated and the object can be adapted to
+        IAddNotifiable, then the adapter's addNotify method is called
+        with the event.  If the object can be adapted to
+        IMoveNotifiable, then the adapter's moveNotify method is
+        called with the event.
+
+        If the object replaces another object, then the old object is
+        deleted before the new object is added, unless the container
+        vetos the replacement by raising an exception.
+
+        If the object's __parent__ and __name__ were already set to
+        the container and the name, then no events are generated and
+        no hooks.  This allows advanced clients to take over event
+        generation.
+        
         """
 
-    def __delitem__(key):
-        """Delete the keyed object from the container.
+    def __delitem__(name):
+        """Delete the nameed object from the container.
 
         Raises a KeyError if the object is not found.
+
+        If the deleted object's __parent__ and __name__ match the
+        container and given name, then an IObjectRemovedEvent is
+        generated and the attributes are set to None. If the object
+        can be adapted to IMoveNotifiable, then the adapter's
+        moveNotify method is called with the event.
+
+        Unless the object's __parent__ and __name__ attributes were
+        initially None, generate an IObjectModifiedEvent for the
+        container. 
+
+        If the object's __parent__ and __name__ were already set to
+        None, then no events are generated.  This allows advanced
+        clients to take over event generation.
+        
         """
 
 class IItemWriteContainer(IWriteContainer, IItemContainer):
@@ -124,13 +136,58 @@ class IOrderedContainer(IContainer):
         Raises ValueError if order contains an invalid set of keys.
         """
 
-class IOptionalNamesContainer(IContainer):
-    """Containers that will choose names for their items if no names are given
-    """
-
 class IContainerNamesContainer(IContainer):
     """Containers that always choose names for their items
     """
+
+
+##############################################################################
+# Moving Objects
+
+class IObjectMovedEvent(IObjectEvent):
+    """An object has been moved"""
+
+    oldParent = Attribute("The old location parent for the object.")
+    oldName = Attribute("The old location name for the object.")
+    newParent = Attribute("The new location parent for the object.")
+    newName = Attribute("The new location name for the object.")
+
+class IMoveNotifiable(Interface):
+    """Interface for notification of being deleted, added, or moved."""
+
+    def moveNotify(event):
+        """Notify of a move event
+
+        This is called after the object has been added to the new
+        location and before it has been deleted from the old.
+        
+        """
+
+
+##############################################################################
+# Adding objects
+
+class UnaddableError(ContainerError):
+    """An object cannot be added to a container."""
+
+    def __init__(self, container, obj, message=""):
+        self.container = container
+        self.obj = obj
+        self.message = message and ": %s" % message
+
+    def __str__(self):
+        return ("%(obj)s cannot be added "
+                "to %(container)s%(message)s" % self.__dict__)
+
+class IObjectAddedEvent(IObjectMovedEvent):
+    """An object has been added to a container."""
+
+class IAddNotifiable(Interface):
+    """Interface for notification of being added."""
+
+    def addNotify(event):
+        """Hook method will call after an object is added to container.
+        """
 
 class IAdding(IView):
 
@@ -163,211 +220,39 @@ class IAdding(IView):
         decide what page to display after content is added.
         """
 
-class IZopeItemContainer(IItemContainer):
+class INameChooser(Interface):
 
-    def __getitem__(key):
-        """Return the content for the given key
+    def checkName(name, object):
+        """Check whether an object name is valid.
 
-        Raises KeyError if the content can't be found.
-
-        The returned value will be in the context of the container.
+        Raise a user error if the name is not valid.
         """
 
-class IZopeSimpleReadContainer(IZopeItemContainer, ISimpleReadContainer):
-    """Readable content containers
-    """
+    def chooseName(name, object):
+        """Choose a unique valid name for the object
 
-    def get(key, default=None):
-        """Get a value for a key
+        The given name and object may be taken into account when
+        choosing the name.
 
-        The default is returned if there is no value for the key.
-
-        The value for the key will be in the context of the container.
         """
 
-class IZopeReadContainer(IZopeSimpleReadContainer, IReadContainer):
-    """Readable containers that can be enumerated.
-    """
-
-    def values():
-        """Return the values of the mapping object in the context of
-           the container
-        """
-
-    def items():
-        """Return the items of the mapping object in the context
-           of the container
-        """
+##############################################################################
+# Removing objects
 
 
-class IZopeWriteContainer(IWriteContainer):
-    """An interface for the write aspects of a container."""
+class IObjectRemovedEvent(IObjectMovedEvent):
+    """An object has been removed from a container"""
 
-    def setObject(key, object):
-        """Add the given object to the container under the given key.
-
-        Raises a ValueError if key is an empty string, unless the
-        context wrapper chooses a different key.
-
-        Returns the key used, which might be different than the given key.
-
-        If the object has an adpter to IAddNotifiable then the afterAddHook
-        method on the adpter will be called after the object is added.
-
-        An IObjectAddedEvent will be published after the object is added and
-        after afterAddHook is called. The event object will be the added
-        object in the context of the container
-
-        An IObjectModifiedEvent will be published after the IObjectAddedEvent
-        is published. The event object will be the container.
-        """
-
-    def __delitem__(key):
-        """Delete the keyed object from the context of the container.
-
-        Raises a KeyError if the object is not found.
-
-        If the object has an adpter to IDeleteNotifiable then the
-        beforeDeleteHook method on the adpter will be called before
-        the object is removed.
-
-        An IObjectRemovedEvent will be published before the object is
-        removed and before beforeDeleteHook method is called.
-        The event object will be the removed from the context of the container
-
-        An IObjectModifiedEvent will be published after the
-        IObjectRemovedEvent is published. The event object will be the
-        container.
-        """
-
-class IZopeItemWriteContainer(IZopeWriteContainer, IZopeItemContainer):
-    """An IZopeWriteContainer for writable item containers.
-
-    'setObject' and '__delitem__' of IZopeWriteContainer imply being able
-    to get at an object after it has been added to the container, or
-    before it has been deleted from the container.
-    This interface makes that contract explicit, and also offers to
-    make '__getitem__' context-aware.
-    """
-
-class IZopeContainer(IZopeReadContainer, IZopeWriteContainer, IContainer):
-    """Readable and writable content container."""
-
-class IAddNotifiable(Interface):
-    """Interface for notification of being added."""
-
-    def afterAddHook(object, container):
-        """Hook method will call after an object is added to container."""
-
-class IDeleteNotifiable(Interface):
+class IRemoveNotifiable(Interface):
     """Interface for notification of being deleted."""
 
-    def beforeDeleteHook(object, container):
+    def removeNotify(object, container):
         """Hook method will call before object is removed from container."""
 
-class IMoveNotifiable(IDeleteNotifiable, IAddNotifiable):
-    """Interface for notification of being deleted, added, or moved."""
-
-    def beforeDeleteHook(object, container, movingTo=None):
-        """Hook method will call before object is removed from container.
-
-        If the object is being moved, 'movingTo' will be the unicode path
-        the object is being moved to.
-        If the object is simply being deleted and not being moved, 'movingTo'
-        will be None.
-        """
-
-    def afterAddHook(object, container, movedFrom=None):
-        """Hook method will call after an object is added to container.
-
-        If the object is being moved, 'movedFrom' will be the unicode path
-        the object was moved from.
-        If the object is simply being added and not being moved, 'movedFrom'
-        will be None.
-        """
-
-class ICopyNotifiable(IAddNotifiable):
-
-    def afterAddHook(object, container, copiedFrom=None):
-        """Hook method. Will be called after an object is added to a
-        container.
-
-        If the object is being copied, 'copiedFrom' will
-        be the unicode path the object was copied from.
-
-        If the object is simply being added and not being copied,
-        'copiedFrom' will be None.
-
-        Clients calling this method must be careful to use
-        'copiededFrom' as a keyword argument rather than a positional
-        argument, to avoid confusion if the object is both
-        IMoveNotifiable and ICopyNotifiable.  """
-
-class IPasteTarget(Interface):
-
-    def acceptsObject(key, obj):
-        '''Allow the container to say if it accepts the given wrapped
-        object.
-
-        Returns True if the object would be accepted as contents of
-        this container. Otherwise, returns False.
-        '''
-
-    def pasteObject(key, obj):
-        '''Add the given object to the container under the given key.
-
-        Raises a ValueError if key is an empty string, unless the
-        this object chooses a different key.
-
-        Returns the key used, which might be different than the
-        given key.
-
-        This method must not issue an IObjectAddedEvent, nor must it
-        call the afterAddHook hook of the object.
-        However, it must publish an IObjectModified event for the
-        container.
-        '''
-
-class IMoveSource(Interface):
-
-    def removeObject(key, movingTo):
-        '''Remove and return the object with the given key, as the
-        first part of a move.
-
-        movingTo is the unicode path for where the move is to.
-        This method should not publish an IObjectRemovedEvent, nor should
-        it call the afterDeleteHook method of the object.
-        However, it must publish an IObjectModified event for the container.
-        '''
-
-class ICopySource(Interface):
-
-    def copyObject(key, copyingTo):
-        '''Return the object with the given key, as the first part of a
-        copy.
-
-        copyingTo is the unicode path for where the copy is to.
-        '''
-
-class INoChildrenCopySource(ICopySource):
-
-    def copyObjectWithoutChildren(key, copyingTo):
-        '''Return the object with the given key, without any children,
-        as the first part of a copy.
-
-        copyingTo is the unicode path for where the copy is to.
-
-        May return None if its not possible to get a copy without children.
-        '''
-
-class IPasteNamesChooser(Interface):
-    """Containers automatically chooses a new name for the object if the
-    given one is already choosen.
-    """
-
-    def getNewName(obj, key):
-        """ Should return a choosen name based on object and key to be used
-        for pasting. This may not be reliable all the time as
-        the name you choose is not guaranteed to be reserved between the time
-        you get it and the time you paste the object, so be careful."""
+##############################################################################
+# Backward compatability
+from zope.app.interfaces import event
+event.IObjectMovedEvent = IObjectMovedEvent
+event.IObjectAddedEvent = IObjectAddedEvent
+event.IObjectRemovedEvent = IObjectRemovedEvent
 
