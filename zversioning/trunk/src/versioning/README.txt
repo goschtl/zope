@@ -2,6 +2,8 @@
 Versioning
 ==========
 
+Setup Stuff
+-----------
 
 In the following we take a simple folder tree with the following structure
 as an example :
@@ -42,19 +44,26 @@ as an example :
   >>> db_root = buildDatabaseRoot()
   >>> db_root["sample"] = sample 
 
+
+CopyModifyMergeRepository explained
+-----------------------------------
+
 In this architecture we can choose between several repositories. We take a
 CopyModifyMergeRepository without check in and check out as an example.
 
-  >>> from zope.app.tests import ztapi
-  >>> from versioning import interfaces, policies, storage
+First lets configure the various component needed (what 'configure.zcml' 
+usually does for us):
 
-First lets configure the 'IHistoryStorage' utility being responsible
-for the storage of the objects histories:
+  >>> from zope.app.tests import ztapi
+  >>> from versioning import interfaces, repository, policies, storage
+
+Configure the 'IHistoryStorage' utility being responsible for the storage 
+of the objects histories:
 
   >>> ztapi.provideUtility(interfaces.IHistoryStorage,
   ...                      storage.SimpleHistoryStorage())
 
-Then we need a 'IVersionableAspects' multi adapter beeing responsible
+We also need a 'IVersionableAspects' multi adapter beeing responsible
 for the versioning policy (what is versioned and how (not storage)).
 
   >>> ztapi.provideAdapter((interfaces.IVersionable, 
@@ -62,14 +71,27 @@ for the versioning policy (what is versioned and how (not storage)).
   ...                      interfaces.IVersionableAspects,
   ...                      policies.VersionableAspectsAdapter)
 
+Register a 'ICheckoutAware' adapter to a 'IHistoryStorage' that 
+handles the checkout/checkin status for the repository.
+
+  >>> ztapi.provideAdapter(interfaces.ICheckoutAware,
+  ...                      interfaces.IHistoryStorage,
+  ...                      repository.DummyCheckoutAware)
+
+Let's now build the repository:
+
   >>> from versioning.repository import CopyModifyMergeRepository
   >>> repository = buildRepository(CopyModifyMergeRepository)
 
-An object that isn't 'IVersionable' can't be put under version control:
+An object that isn't 'IVersionable' can't be put under version control.
+Applying version control should raise an exception:
 
   >>> repository.applyVersionControl(a)
   Traceback (most recent call last):
   RepositoryError: This resource cannot be put under version control.
+
+So let us attach marker interfaces to the object before putting them
+under version control:
 
   >>> from versioning.tests.repository_setup import instanceProvides
   >>> instanceProvides(sample, interfaces.IVersionable)
@@ -78,11 +100,13 @@ An object that isn't 'IVersionable' can't be put under version control:
   >>> instanceProvides(c, interfaces.IVersionable)
 
 The chosen 'IHistoryStorage' component expects the objects having
-a '_p_oid'
+a '_p_oid'. 
+XXX We know this is an implementation detail. We probably should think
+more about this and then talk about this in the interfaces.
 
   >>> util.commit()
 
-Now we can put our example data under version control:
+Now let's put our example data under version control:
 
   >>> repository.applyVersionControl(sample)
   >>> repository.applyVersionControl(a)
