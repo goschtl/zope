@@ -13,12 +13,10 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: testCacheConfiguration.py,v 1.1 2002/12/12 15:28:17 mgedmin Exp $
+$Id: testCacheConfiguration.py,v 1.2 2002/12/18 17:39:09 stevea Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
-
-from Interface import Interface
+from unittest import TestCase, main, makeSuite
 
 from Zope.App.OFS.Services.CachingService.CacheConfiguration \
      import CacheConfiguration
@@ -30,7 +28,7 @@ from Zope.App.OFS.Services.ServiceManager.ServiceManager \
      import ServiceManager
 from Zope.App.OFS.Container.ZopeContainerAdapter import ZopeContainerAdapter
 from Zope.App.OFS.Services.ConfigurationInterfaces \
-     import Active, Unregistered, Registered
+     import Active, Unregistered
 from Zope.App.Caching.ICache import ICache
 from Zope.App.DependencyFramework.IDependable import IDependable
 from Zope.App.Caching.ICachingService import ICachingService
