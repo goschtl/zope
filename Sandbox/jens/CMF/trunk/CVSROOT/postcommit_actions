@@ -17,6 +17,7 @@ to the public repository."""
 
 MAIL_CMD = "/bin/mail"
 RSYNC_CMD = "/usr/bin/rsync"
+RSYNC_IN_BACKGROUND = 0                 # Set this when done debugging.
 
 # XXX IDENTITY_FILE must be readable by the process of anyone doing a
 #     checkin that uses the rsync mechanism.  Ideally, that would be by
@@ -147,7 +148,7 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
         bg = 0
     else:
         cmd = cmd + ' --exclude "/*/*"'
-        bg = 1
+        bg = RSYNC_IN_BACKGROUND
 
     os.system("%s%s%s %s/%s %s:%s %s"
               % ((VERBOSE and "set -x; ") or "",
