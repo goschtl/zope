@@ -13,7 +13,7 @@
 ##############################################################################
 """
 Revision information:
-$Id: subs.py,v 1.2 2003/01/28 11:30:54 stevea Exp $
+$Id: subs.py,v 1.3 2003/01/28 12:11:29 stevea Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -110,13 +110,66 @@ class Subscribable(Persistent):
         return subscriber
     subscribe = ContextMethod(subscribe)
 
+    # XXX I'm going to refactor this method so that it is a bit more
+    #     obvious and easier to understand.
     def _getSubscribers(clean_self, wrapped_self, subscriber):
+        '''Returns a tuple of
+              [subscriber],
+              unwrapped_subscriber_object,
+              context_wrapped_subscriber_object
+
+        In the argument list, 'clean_self' and 'wrapped_self' are the
+        subscribable that is using this method.
+        'subscriber' is an int hubId, a string/unicode path, or a wrapped
+        object.
+        We assume that the int or string/unicode might be wrapped.
+
+        If the 'clean_self' argument is identical with the 'wrapped_self'
+        argument:
+            unwrapped_subscriber_object will be None
+            context_wrapped_subscriber_object will be None
+            The [subscriber] will be [subscriber argument]
+
+        If the 'subscriber' argument is an int, and it cannot be found as
+        a hubId:
+            unwrapped_subscriber_object will be the int
+            context_wrapped_subscriber_object will be None
+        If it can be found:
+            unwrapped_subscriber_object will be the object at the hubId
+            context_wrapped_subscriber_object will be that object, in context
+        In either case, [subscriber] will be [the subscriber argument],
+        which is the (possibly wrapped) int.
+
+        If the 'subscriber' argument is a string/unicode, and it cannot
+        be traversed as a path:
+            unwrapped_subscriber_object will be the string/unicode
+            context_wrapped_subscriber_object will be None
+        If it can be traversed:
+            unwrapped_subscriber_object will be the object traversed to
+            context_wrapped_subscriber_object will be the object, in context
+        In either case, [subscriber] will be
+          [canonical_unicode_location(subscriber_argument)]
+
+        If the 'subscriber' argument is neither int nor string/unicode,
+        context_wrapped_subscriber_object will be the 'subscriber' argument,
+        unwrapped_subscriber_object will be the unwrapped 'subscriber'
+        argument, and [subscriber] will be either a one-element list
+        [unicode path of subscriber], or the two-element list
+        [hubId of subscriber, unicode path of subscriber].
+        The former is used when there is no hubId available for the
+        subscriber, the latter when there is a hubId available.
+
+        '''
         subscribers = []
-        # XXX This comment needs explanation:
-        # shortcut; useful for notify
+
+        # This is a fast shortcut; useful for notify().
+        # If the 'wrapped_self' is in fact not wrapped, then we can't
+        # expect to get a subscriber object.
         if wrapped_self is clean_self: 
             return [subscriber], None, None
+
         clean_subObj = removeAllProxies(subscriber)
+
         if isinstance(clean_subObj, int):
             hub = getService(wrapped_self, "HubIds")
             try:
