@@ -1,0 +1,44 @@
+register (class zope.app.onlinehelp.metaconfigure)
+
+  The register directive defines a help topic in the help system.
+
+  Attributes
+
+    parent -- (optional)
+
+      Location of this topic's parent in the OnlineHelp tree.
+
+    id -- (reqired)
+
+      The id of the help topic.
+
+    title -- (required)
+
+      Specifies title of the topic. This title will be used in
+      the tree as Identification.
+
+    doc_path --  (required)
+
+      Specifies where the file that contains the topic content is located on the
+      filesystem.
+
+    doc_type -- (required)
+
+      Defines the type of document this topic will be.
+      Examples (not necessarily available) are: TXT, reST, HTML
+
+    for -- (optional)
+
+      The interface this help topic applies to.
+
+      The help topic will be for all objects that implement this interface.
+      If 'for' is not supplied, the help topic applies to all objects
+      (XXX this ought to change).
+      This can be optional, since not all topics must be bound to a particular
+      interface.
+
+    view -- (optional)
+
+      This attribute specifies the name of the view for which
+      this topic is registered. Note that this attribute is also
+      optional.
