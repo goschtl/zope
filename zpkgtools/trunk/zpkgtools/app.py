@@ -113,6 +113,7 @@ class BuilderApplication(Application):
         specs = include.load(self.source)
         self.ip.addIncludes(self.source, specs.loads)
         specs.collection.cook()
+        specs.distribution.cook()
         try:
             self.ip.createDistributionTree(pkgdest, specs.collection)
         except zpkgtools.LoadingError, e:
@@ -252,6 +253,7 @@ class BuilderApplication(Application):
         specs = include.load(source)
         self.ip.addIncludes(source, specs.loads)
         specs.collection.cook()
+        specs.distribution.cook()
 
         if type == "package":
             self.add_package_component(name, destination, specs.collection)
@@ -455,22 +457,18 @@ class BuilderApplication(Application):
         if name in self.locations:
             url = self.locations[name]
         else:
-            try:
-                __import__(name)
-            except ImportError:
-                url = fallback
-                self.logger.info("resource package:%s not configured;"
-                                 " using fallback URL" % name)
-            else:
-                mod = sys.modules[name]
-                source = os.path.abspath(mod.__path__[0])
+            url = fallback
+            self.logger.info("resource package:%s not configured;"
+                             " using fallback URL" % name)
         if source is None:
             self.logger.debug("loading resource 'package:%s' from %s",
                               name, url)
-            source = self.loader.load(url)
+            source = self.loader.load_mutable_copy(url)
+            tests_dir = os.path.join(source, "tests")
+            if os.path.exists(tests_dir):
+                shutil.rmtree(tests_dir)
 
-        tests_dir = os.path.join(source, "tests")
-        self.ip.copyTree(source, destination, excludes=[tests_dir])
+        self.ip.copyTree(source, destination)
 
     def create_manifest(self, destination):
         """Write out a MANIFEST file for the directory `destination`.
