@@ -105,7 +105,7 @@ class ViewSupport:
     def textForValue(self, term):
         # Extract the value from the term.  This can be overridden to
         # support more complex term objects.
-        return term.value
+        return term.token
 
     def mkselectionlist(self, type, info, name):
         L = ["<table>\n"]
