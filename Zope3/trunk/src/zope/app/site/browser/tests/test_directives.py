@@ -49,13 +49,13 @@ def test_toolDirective():
     'IToolType'
 
     >>> view = context.actions[1]
-    >>> print '\n'.join([str(n) for n in view['discriminator']])
-    view
-    (<InterfaceClass zope.app.site.interfaces.ISiteManager>,)
-    manageIDummyUtilityTool.html
-    <InterfaceClass zope.publisher.interfaces.browser.IBrowserRequest>
-    default
-    <InterfaceClass zope.interface.Interface>
+    >>> from pprint import pprint 
+    >>> pprint([n for n in view['discriminator']])
+    ['view',
+     (<InterfaceClass zope.app.site.interfaces.ISiteManager>,
+      <InterfaceClass zope.publisher.interfaces.browser.IBrowserRequest>),
+     'manageIDummyUtilityTool.html',
+     <InterfaceClass zope.interface.Interface>]
     >>> view['callable'].__module__
     'zope.app.component.metaconfigure'
     >>> view['args'][4]
@@ -80,13 +80,13 @@ def _test_servicetoolDirective():
     'IToolType'
 
     >>> view = context.actions[1]
-    >>> print '\n'.join([str(n) for n in view['discriminator']])
-    view
-    (<InterfaceClass zope.app.site.interfaces.ISiteManager>,)
-    manageILocalServiceTool.html
-    <InterfaceClass zope.publisher.interfaces.browser.IBrowserRequest>
-    default
-    <InterfaceClass zope.interface.Interface>
+    >>> from pprint import pprint 
+    >>> pprint([n for n in view['discriminator']])
+    ['view',
+     (<InterfaceClass zope.app.site.interfaces.ISiteManager>,
+      <InterfaceClass zope.publisher.interfaces.browser.IBrowserRequest>),
+     'manageILocalServiceTool.html',
+     <InterfaceClass zope.interface.Interface>]
     >>> view['callable'].__module__
     'zope.app.component.metaconfigure'
     >>> view['args'][4]
