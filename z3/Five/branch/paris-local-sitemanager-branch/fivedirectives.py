@@ -100,7 +100,7 @@ class IPagesFromDirectoryDirective(IBasicResourceInformation):
         required=True
         )
 
-class IFiveLocalSiteHook(Interface):
+class IFiveLocalSite(Interface):
     """Make instances of class hookable for Local Site.
 
     Actual implementation of ISite is delegated to a IFiveSite adapter.
@@ -109,7 +109,7 @@ class IFiveLocalSiteHook(Interface):
         title=u"Class",
         required=True
         )
-    service_provider = GlobalObject(
-        title=u"Service Provider",
-        required=False
+    utility_provider = GlobalObject(
+        title=u"Utility Provider",
+        required=True
         )

@@ -420,9 +420,9 @@
 
   <include package="zope.app.form.browser"/>
 
-  <five:localsitehook
+  <five:localsite
       class=".localsite.DummySite"
-      service_provider=".localsite.ServiceProvider"
+      utility_provider=".localsite.UtilityProvider"
       />
 
 </configure>

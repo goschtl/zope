@@ -26,7 +26,7 @@ from zope.app.site.interfaces import IPossibleSite
 from viewable import Viewable
 from traversable import Traversable
 from localsite import FiveSite
-from interfaces import IServiceProvider
+from interfaces import IUtilityProvider
 from bridge import fromZ2Interface
 from browserconfigure import page
 
@@ -201,7 +201,7 @@ def pagesFromDirectory(_context, directory, module, for_=None,
         page(_context, name=name, permission=permission,
              layer=layer, for_=for_, template=fname)
 
-def classFiveSiteHook(class_):
+def classSiteHook(class_):
     if hasattr(class_, '__five_possible_site__'):
         if (hasattr(class_, 'getSiteManager') and
             isFiveMethod(class_.getSiteManager)):
@@ -218,10 +218,10 @@ def next():
     count += 1
     return count
 
-def installFiveSiteHook(_context, class_, service_provider=None):
+def installSiteHook(_context, class_, utility_provider):
     _context.action(
         discriminator = None,
-        callable = classFiveSiteHook,
+        callable = classSiteHook,
         args=(class_,)
         )
     _context.action(
@@ -229,14 +229,13 @@ def installFiveSiteHook(_context, class_, service_provider=None):
         callable = classImplements,
         args=(class_, IPossibleSite)
         )
-    if service_provider:
-        if not IServiceProvider.implementedBy(service_provider):
-            raise ConfigurationError('Global object does not implement '
-                                     'IServiceProvider: %s' % service_provider)
-        # Generate a marker interface that should be unique, so that
-        # we can register the service provider only for this class.
-        iface = InterfaceClass('I%s' % next())
-        adapter(_context, factory=(service_provider,),
-                provides=IServiceProvider,
-                for_=(iface,))
-        classImplements(class_, iface)
+    if not IUtilityProvider.implementedBy(utility_provider):
+        raise ConfigurationError('Global object does not implement '
+                                     'IUtilityProvider: %s' % utility_provider)
+    # Generate a marker interface that should be unique, so that
+    # we can register the utility provider only for this class.
+    iface = InterfaceClass('I%s' % next())
+    adapter(_context, factory=(utility_provider,),
+            provides=IUtilityProvider,
+            for_=(iface,))
+    classImplements(class_, iface)

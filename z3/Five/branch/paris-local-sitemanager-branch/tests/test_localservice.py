@@ -268,13 +268,6 @@ class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
         from zope.app.component.localservice import clearSite
         clearSite()
 
-    def test_before_traversal_event(self):
-        from Products.Five.localsite import enableLocalSiteHook
-        enableLocalSiteHook(self.folder)
-        path = '/'.join(self.folder.getPhysicalPath())
-        response = self.publish(path)
-        self.assertEqual(getSite(), self.folder)
-
     def test_before_traversal_event_and_hook(self):
         from Products.Five.localsite import enableLocalSiteHook
         f1 = Folder()
@@ -322,7 +315,7 @@ class LocalUtilityServiceTest(ZopeTestCase.FunctionalTestCase):
         self.failUnless(isinstance(local_sm, LocalService))
 
     def test_getUtilityService(self):
-        from Products.FiveTest.localsite import SimpleLocalUtilityService
+        from Products.Five.localsite import SimpleLocalUtilityService
         utils = getService(Utilities)
         self.failUnless(isinstance(utils, SimpleLocalUtilityService))
 

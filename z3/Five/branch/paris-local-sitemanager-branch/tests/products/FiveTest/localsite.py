@@ -4,22 +4,14 @@ from zope.component.interfaces import IUtilityService
 from zope.component.servicenames import Utilities
 
 from OFS.Folder import Folder
-from Products.Five.interfaces import IServiceProvider
+from Products.Five.interfaces import IUtilityProvider
 from Products.FiveTest.interfaces import IDummySite
 
-class SimpleLocalUtilityService:
-    implements(IUtilityService)
+class UtilityProvider:
+    implements(IUtilityProvider)
 
     def __init__(self, context):
         self.context = context
-
-    def getUtility(self, interface, name=''):
-        """See IUtilityService interface
-        """
-        c = self.queryUtility(interface, name)
-        if c is not None:
-            return c
-        raise ComponentLookupError(interface, name)
 
     def queryUtility(self, interface, name='', default=None):
         """See IUtilityService interface
@@ -37,20 +29,6 @@ class SimpleLocalUtilityService:
         for utility in utilities.objectValues():
             if interface.providedBy(utility):
                 yield utility
-
-    def getAllUtilitiesRegisteredFor(self, interface):
-        return ()
-
-class ServiceProvider:
-    implements(IServiceProvider)
-
-    def __init__(self, context):
-        self.context = context
-
-    def getService(self, name):
-        if name in (Utilities,):
-            return SimpleLocalUtilityService(self.context)
-        raise ComponentLookupError, name
 
 class DummySite(Folder):
     """A very dummy Site

@@ -31,13 +31,16 @@ class IFiveSite(ISite):
     """Five specialization of ISite
     """
 
-class IServiceProvider(Interface):
-    """Lookup a service for a given context
+class IUtilityProvider(Interface):
+    """Lookup utilities for a given context
     """
 
-    def getService(name):
-        """Given a service name, find the service within the adapted
-        context and return it, or raise a ComponentLookupError.
+    def queryUtility(interface, name='', default=None):
+        """ See IUtilityService interface
+        """
+
+    def getUtilitiesFor(interface):
+        """ See IUtilityService interface
         """
 
 class IPersistentExtra(Interface):

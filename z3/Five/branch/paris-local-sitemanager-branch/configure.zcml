@@ -132,8 +132,4 @@
       for="zope.app.publication.interfaces.IEndRequestEvent"
       />
 
-  <five:localsitehook
-      class="OFS.ObjectManager.ObjectManager"
-      />
-
 </configure>

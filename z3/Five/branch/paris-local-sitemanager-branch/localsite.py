@@ -14,8 +14,9 @@ from zope.event import notify
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.interface import implements
 from zope.component import getGlobalServices
-from zope.component.interfaces import IServiceService
+from zope.component.interfaces import IServiceService, IUtilityService
 from zope.component.exceptions import ComponentLookupError
+from zope.component.servicenames import Utilities
 from zope.app.site.interfaces import ISite
 from zope.app.site.interfaces import IPossibleSite
 from zope.app.publication.zopepublication import BeforeTraverseEvent
@@ -25,7 +26,7 @@ from interfaces import IFiveSite
 from ExtensionClass import Base
 from Acquisition import aq_base, aq_inner, aq_parent
 from Products.SiteAccess.AccessRule import AccessRule
-from Products.Five.interfaces import IServiceProvider
+from Products.Five.interfaces import IUtilityProvider
 from ZPublisher.BeforeTraverse import registerBeforeTraverse
 from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 
@@ -116,11 +117,35 @@ class LocalService:
 
         Raises ComponentLookupError if the service can't be found.
         """
-        if name not in (Adapters,):
-            adapted = IServiceProvider(self.context, None)
-            if adapted is not None:
-                return adapted.getService(name)
+        if name in (Utilities,):
+            return SimpleLocalUtilityService(self.context)
         return getGlobalServices().getService(name)
+
+class SimpleLocalUtilityService:
+    implements(IUtilityService)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getUtility(self, interface, name=''):
+        """See IUtilityService interface
+        """
+        c = self.queryUtility(interface, name)
+        if c is not None:
+            return c
+        raise ComponentLookupError(interface, name)
+
+    def queryUtility(self, interface, name='', default=None):
+        """See IUtilityService interface
+        """
+        return IUtilityProvider(self.context).queryUtility(interface,
+                                                           name, default)
+
+    def getUtilitiesFor(self, interface):
+        return IUtilityProvider(self.context).getUtilitiesFor(interface)
+
+    def getAllUtilitiesRegisteredFor(self, interface):
+        return ()
 
 class FiveSiteAdapter:
     implements(IFiveSite)
