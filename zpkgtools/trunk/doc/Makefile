@@ -14,19 +14,9 @@
 
 # Format the documentation for the Zope Packaging Tools.
 
-local:  $(LOCAL_HTML)
-all:	local apiref
-
-
 # This should point to the Zope3/utilities/rst2html, but just about
 # implementation will do.
-RST2HTML=rst2html
-
-.PHONY: apiref
-
-.SUFFIXES: .txt .html
-.txt.html:
-	$(RST2HTML) $<
+RST2HTML=../../Zope3/utilities/rst2html
 
 LOCAL_HTML=\
 	collections.html \
@@ -35,9 +25,24 @@ LOCAL_HTML=\
 	resources.html \
 	zpkg.html
 
+
+local:  $(LOCAL_HTML)
+all:	local apiref
+
+
+.PHONY: apiref
+
+.SUFFIXES: .txt .html
+.txt.html:
+	$(RST2HTML) $<
+
 $(LOCAL_HTML): links.rst
 
 # Need to add dependency information for this; this really depends on
 # all the modules in zpkgtools, so is tedious to spell out.
 apiref: apiref/index.html
 	./mkapiref.sh
+
+
+clean:
+	rm -f *.html
