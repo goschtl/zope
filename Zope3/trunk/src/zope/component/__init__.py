@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.30 2004/04/20 11:01:09 stevea Exp $
+$Id: __init__.py,v 1.31 2004/04/24 23:20:34 srichter Exp $
 """
 import sys
 import warnings
@@ -21,7 +21,7 @@ from zope.interface import moduleProvides, Interface
 from zope.component.interfaces import IComponentArchitecture, IFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
-from zope.component.servicenames import Adapters, Presentation
+from zope.component.servicenames import Adapters, Presentation, Utilities
 
 # Try to be hookable. Do so in a try/except to avoid a hard dependence
 try:
@@ -50,14 +50,14 @@ def getServiceDefinitions(context):
 # Utility service
 
 def getUtility(context, interface, name=''):
-    return getService(context, 'Utilities').getUtility(interface, name)
+    return getService(context, Utilities).getUtility(interface, name)
 
 def queryUtility(context, interface, default=None, name=''):
-    return getService(context, 'Utilities').queryUtility(
+    return getService(context, Utilities).queryUtility(
         interface, default, name)
 
 def getUtilitiesFor(context, interface):
-    return getService(context, 'Utilities').getUtilitiesFor(interface)
+    return getService(context, Utilities).getUtilitiesFor(interface)
 
 # Adapter service
 
@@ -174,7 +174,7 @@ def getFactoryInterfaces(context, name):
     return getUtility(context, IFactory, name).getInterfaces()
 
 def getFactoriesFor(context, interface):
-    utils = getService(context, 'Utilities')
+    utils = getService(context, Utilities)
     for (name, factory) in utils.getUtilitiesFor(IFactory):
         interfaces = factory.getInterfaces()
         try:
