@@ -11,14 +11,14 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.14 2003/06/04 22:24:59 jim Exp $
+$Id: declarations.py,v 1.15 2003/06/14 12:32:07 stevea Exp $
 """
 
 import sys
 from zope.interface.interface import InterfaceClass, mergeOrderings
 import exceptions
 from types import ClassType
-from advice import addClassAdvisor
+from zope.interface.advice import addClassAdvisor
 
 # There are imports from _zope_interface_ospec later in the file
 # because _zope_interface_ospec depends on some functions defined
