@@ -91,8 +91,6 @@ class SecurityEquivalenceTestCase(ZopeTestCase.ZopeTestCase):
         """
         zcml.string(decl)
         InitializeClass(self.dummy2)
-        import pdb
-        pdb.set_trace()
         ac1 = getattr(self.dummy1, '__ac_permissions__')
         ac2 = getattr(self.dummy2, '__ac_permissions__')
         self.assertEquals(ac1, ac2)
