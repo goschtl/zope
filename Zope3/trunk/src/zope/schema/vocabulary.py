@@ -141,11 +141,11 @@ class VocabularyUniqueListField(UniqueElements, VocabularyMultiField):
 
 class SimpleTerm:
     """Simple tokenized term used by SimpleVocabulary"""
-    
+
     implements(ITokenizedTerm)
 
     def __init__(self, value, token=None):
-        """Create a term for value and token. If token is omitted, 
+        """Create a term for value and token. If token is omitted,
         str(value) is used for the token
         """
         self.value = value
@@ -162,7 +162,7 @@ class SimpleVocabulary(object):
         """Construct a vocabulary from a simple list. Values of the list become
         both the tokens and values of the terms in the vocabulary. The order
         of the values is preserved as the order of the terms in the vocabulary.
-        One or more interfaces may also be provided so that alternate widgets 
+        One or more interfaces may also be provided so that alternate widgets
         may be bound without subclassing
         """
         self.by_value = {}
@@ -174,14 +174,14 @@ class SimpleVocabulary(object):
             self.by_token[term.token] = term
             self._terms.append(term)
         assert len(self.by_value) == len(self.by_token), \
-            'Supplied vocabulary values resulted in duplicate term tokens'
+               'Supplied vocabulary values resulted in duplicate term tokens'
         if interfaces:
             directlyProvides(self, *interfaces)
-    
+
     def fromItems(cls, items, *interfaces):
-        """Construct a vocabulary from a list of (token, value) pairs. 
-        The order of the items is preserved as the order of the terms in the 
-        vocabulary. One or more interfaces may also be provided so that 
+        """Construct a vocabulary from a list of (token, value) pairs.
+        The order of the items is preserved as the order of the terms in the
+        vocabulary. One or more interfaces may also be provided so that
         alternate widgets may be bound without subclassing
         """
         self = cls.__new__(cls, items, *interfaces)
@@ -194,10 +194,10 @@ class SimpleVocabulary(object):
             self.by_token[term.token] = term
             self._terms.append(term)
         assert len(self.by_value) == len(self.by_token), \
-            'Supplied vocabulary items resulted in duplicate term tokens'
+               'Supplied vocabulary items resulted in duplicate term tokens'
         return self
     fromItems = classmethod(fromItems)
-    
+
     def __contains__(self, value):
         return value in self.by_value
 
@@ -209,12 +209,12 @@ class SimpleVocabulary(object):
             return self.by_value[value]
         except KeyError:
             raise LookupError(value)
-    
+
     def getTermByToken(self, token):
         try:
             return self.by_token[token]
         except KeyError:
-            raise LookupError(token)        
+            raise LookupError(token)
 
     def __iter__(self):
         return iter(self._terms)
