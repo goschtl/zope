@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.4 2003/05/29 16:10:29 gvanrossum Exp $
+$Id: committer.py,v 1.5 2003/05/29 18:04:26 gvanrossum Exp $
 """
 
 import os
@@ -33,7 +33,7 @@ from zope.app.interfaces.fssync \
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.container import IContainer
 from zope.app.fssync.classes import Default
-from zope.app.traversing import getPath
+from zope.app.traversing import getPath, traverseName
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 
 class SynchronizationError(Exception):
@@ -95,14 +95,19 @@ class Committer(object):
         if not name:
             self.synch_dir(container, fspath)
         else:
-            if name not in container:
+            try:
+                traverseName(container, name)
+            except:
                 self.synch_new(container, name, fspath)
             else:
                 self.synch_old(container, name, fspath)
 
             # Now update extra and annotations
-            if name in container:
-                obj = container[name]
+            try:
+                obj = traverseName(container, name)
+            except:
+                pass
+            else:
                 adapter = self.get_adapter(obj)
                 extra = adapter.extra()
                 extrapath = fsutil.getextra(fspath)
@@ -143,7 +148,7 @@ class Committer(object):
                     self.report_conflict(fspath)
                     return
             self.create_object(container, name, entry, fspath)
-            obj = container[name]
+            obj = traverseName(container, name)
             adapter = self.get_adapter(obj)
             if IObjectDirectory.isImplementedBy(adapter):
                 self.synch_dir(obj, fspath)
@@ -153,7 +158,7 @@ class Committer(object):
         entry = self.metadata.getentry(fspath)
         if "conflict" in entry:
             self.report_conflict(fspath)
-        obj = container[name]
+        obj = traverseName(container, name)
         adapter = self.get_adapter(obj)
         if IObjectDirectory.isImplementedBy(adapter):
             self.synch_dir(obj, fspath)
@@ -222,7 +227,9 @@ class Committer(object):
                     obj = removeAllProxies(obj)
                 else:
                     raise SynchronizationError(
-                        "don't know how to create a directory")
+                        "don't know how to create a directory",
+                        container,
+                        name)
             else:
                 if factory:
                     data = self.read_file(fspath)

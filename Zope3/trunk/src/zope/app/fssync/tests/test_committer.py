@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.7 2003/05/29 16:19:47 gvanrossum Exp $
+$Id: test_committer.py,v 1.8 2003/05/29 18:04:26 gvanrossum Exp $
 """
 
 import os
@@ -23,6 +23,7 @@ import unittest
 from zope.component.service import serviceManager
 from zope.component.adapter import provideAdapter
 from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.exceptions import NotFoundError
 from zope.testing.cleanup import CleanUp
 
 from zope.xmlpickle import loads, dumps
@@ -33,6 +34,7 @@ from zope.fssync.tests.tempfiles import TempFiles
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.interfaces.fssync import IGlobalFSSyncService
+from zope.app.interfaces.traversing import ITraversable
 
 from zope.app.fssync.committer import Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
@@ -45,7 +47,7 @@ class Sample(object):
 
 class PretendContainer(object):
     
-    __implements__ = IContainer
+    __implements__ = IContainer, ITraversable
 
     def __init__(self):
         self.holding = {}
@@ -71,6 +73,12 @@ class PretendContainer(object):
 
     def items(self):
         return self.holding.items()
+
+    def traverse(self, name, parameters, pname, furtherPath):
+        try:
+            return self[name]
+        except KeyError:
+            raise NotFoundError
 
 PCname = PretendContainer.__module__ + "." + PretendContainer.__name__
 
