@@ -24,13 +24,17 @@ And register it:
   ... 
   ... 
   ... -----------------------------8474411127918531132143183931
-  ... Content-Disposition: form-data; name="field.interface"
+  ... Content-Disposition: form-data; name="field.provided"
   ... 
   ... zope.app.security.interfaces.IAuthentication
   ... -----------------------------8474411127918531132143183931
-  ... Content-Disposition: form-data; name="field.interface-empty-marker"
+  ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 
   ... 1
+  ... -----------------------------8474411127918531132143183931
+  ... Content-Disposition: form-data; name="field.status"
+  ... 
+  ... Active
   ... -----------------------------8474411127918531132143183931
   ... Content-Disposition: form-data; name="field.permission"
   ... 
@@ -52,17 +56,16 @@ And register it:
 Next, we'll add the group folder:
 
   >>> print http(r"""
-  ... POST /++etc++site/@@contents.html HTTP/1.1
+  ... POST /++etc++site/SiteManagement/index.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Type: application/x-www-form-urlencoded
-  ... Referer: http://localhost:8081/++etc++site/@@contents.html
   ... 
-  ... container_add_button=Add&single_new_value=tools&single_type_name=BrowserAdd__zope.app.site.folder.SiteManagementFolder""")
-  HTTP/1.1 303 See Other
+  ... activeTool=IPrincipalSearchPlugin""")
+  HTTP/1.1 200 Ok
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/AddIPrincipalSearchPluginTool/AddGroupFolder.html%3D HTTP/1.1
+  ... POST /++etc++site/SiteManagement/AddGroupFolder.html= HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Content-Type: multipart/form-data; boundary=---------------------------1160081710811409419323271465
   ... Referer: http://localhost:8081/++etc++site/AddIPrincipalSearchPluginTool/AddGroupFolder.html=
