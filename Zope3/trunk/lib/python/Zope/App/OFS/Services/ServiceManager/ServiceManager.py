@@ -11,9 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""XXX I need a summary line.
 
-$Id: ServiceManager.py,v 1.7 2002/08/01 18:42:12 jim Exp $
+In addition, a ServiceManager acts as a registry for persistent
+modules.  The Zope import hook uses the ServiceManager to search for
+modules.
+
+$Id: ServiceManager.py,v 1.8 2002/10/02 22:15:28 jeremy Exp $
 """
 from Persistence import Persistent
 
@@ -40,12 +44,16 @@ from Packages import Packages
 from Package import Package
 from IServiceManager import IServiceManager
 
-class ServiceManager(Persistent):
+from Persistence.Module import PersistentModuleRegistry
 
-    __implements__ = IServiceManager, ISimpleReadContainer
+class ServiceManager(Persistent,
+                     PersistentModuleRegistry):
+
+    __implements__ = (IServiceManager, ISimpleReadContainer,
+                      PersistentModuleRegistry.__implements__)
 
     def __init__(self):
-
+        super(ServiceManager, self).__init__()
         self.__bindings = {}
         # Bindings is of the form:
         #
@@ -298,3 +306,18 @@ class ServiceManager(Persistent):
 
         return self.get(key) is not None
 
+    def findModule(self, name):
+        # override to pass call up to next service manager 
+        mod = super(ServiceManager, self).findModule(name)
+        if mod is not None:
+            return mod
+        
+        sm = getNextServiceManager(self)
+        try:
+            findModule = sm.findModule
+        except AttributeError:
+            # The only service manager that doesn't implement this
+            # interface is the global service manager.  There is no
+            # direct way to ask if sm is the global service manager.
+            return None
+        return findModule(name)
