@@ -85,8 +85,33 @@ def init_table():
         {'path': "Operations",
          'addrs': "support@digicool.com"},
 
-        {'path': "Zope2",
-         'addrs': zopeaddr},
+        {'path': "Releases/Zope", 'addrs': zopeaddr},
+        {'path': "Packages", 'addrs': zopeaddr},
+        {'path': "Products/__init__.py", 'addrs': zopeaddr},
+        {'path': "Products/ExternalMethod", 'addrs': zopeaddr},
+        {'path': "Products/ImageCache", 'addrs': None},
+        {'path': "Products/MIMETools", 'addrs': zopeaddr},
+        {'path': "Packages/MailHost", 'addrs': zopeaddr},
+        {'path': "Products/OFSP", 'addrs': zopeaddr},
+        {'path': "Products/PluginIndexes", 'addrs': zopeaddr},
+        {'path': "Products/XMLDocument", 'addrs': zopeaddr},
+        {'path': "Products/PythonMethod", 'addrs': None},
+        {'path': "Products/STXDocument", 'addrs': zopeaddr},
+        {'path': "Products/SiteAccess", 'addrs': zopeaddr},
+        {'path': "Products/StandardCacheManagers", 'addrs': zopeaddr},
+        {'path': "Products/ZCatalog", 'addrs': zopeaddr},
+        {'path': "Products/ZGadflyDA", 'addrs': zopeaddr},
+        {'path': "Products/ZSQLMethods", 'addrs': zopeaddr},
+        {'path': "Products/ZopeTutorial", 'addrs': zopeaddr},
+
+        {'path': "Packages/TAL", 'addrs': ["zpt@mail.zope.org"]},
+
+        {'path': "Products/PageTemplates", 'addrs': ["zpt@mail.zope.org"]},
+        {'path': "Products/PresentationTemplates",
+         'addrs': ["zpt@mail.zope.org"]},
+
+        {'path': "Products/ParsedXML",
+         'addrs': ["parsed-xml-dev@mail.zope.org"]},
 
         {'path': "Packages/ZEO",
          'addrs': ['zeo-checkins@zope.org']},
@@ -100,40 +125,18 @@ def init_table():
         {'path': "ZopeMozilla",
          'addrs': 'zope-mozilla@zope.org'},
 
-        {'path': "ZopePTK",
-         'addrs': 'zope-ptk@mail.zope.org'},
-
         {'path': "CMF",
          'addrs': 'cmf-checkins@zope.org'},
+        {'path': "Products/CMF", 'addrs': 'cmf-checkins@zope.org'},
+        {'path': "Products/DCWorkflow", 'addrs': 'cmf-checkins@zope.org'},
 
-        {'path': "Packages/Products/XMLDocument",
-         'addrs': zopeaddr},
-
-        {'path': "Packages/Products/PythonMethod",
-         'addrs': None},
-
-        {'path': "Packages/Products/TrackerBase",
+        {'path': "Products/TrackerBase",
          'addrs': ['tracker-dev@zope.org']},
-
-        {'path': "Packages/Products/ImageCache",
-         'addrs': None},
-
-        {'path': "Packages/Products/ParsedXML",
-         'addrs': ["parsed-xml-dev@mail.zope.org"]},
-
-        {'path': "Packages/TAL",
-         'addrs': ["zpt@mail.zope.org"]},
-
-        {'path': "Packages/Products/PresentationTemplates",
-         'addrs': ["zpt@mail.zope.org"]},
-
-        {'path': "Packages/Products/PageTemplates",
-         'addrs': ["zpt@mail.zope.org"]},
 
         {'path': "Projects/python-site",
          'addrs': ["pythonlabs@digicool.com"]},
 
-        {'path': "Packages/Products/CMFDemo",
+        {'path': "Products/CMFDemo",
          'addrs': ["karl@digicool.com", "adam@digicool.com"]},
         
     ])
