@@ -13,11 +13,14 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.9 2003/07/02 01:27:58 srichter Exp $
+$Id: onlinehelp.py,v 1.10 2003/07/15 14:20:06 srichter Exp $
 """
 from zope.interface import providedBy
 
+from zope.publisher.interfaces.browser import IBrowserPresentation
+
 from zope.component import getService, getView
+from zope.component.view import viewService
 from zope.publisher.browser import BrowserView
 from zope.app.traversing import getRoot
 from zope.app.context import ContextWrapper
@@ -53,14 +56,18 @@ class FindRelevantHelpTopics(BrowserView):
                 self.url = url
                 self.topic = topic
 
-        view = self.context
-        obj = view.context
+        view_class = self.context.__class__
+        obj = self.context.context
         help = getService(obj, 'OnlineHelp')
         ifaces = providedBy(obj).flattened()
         topics = []
-        for klass in view.__class__.__bases__ + (view.__class__, None):
-            for iface in ifaces:
-                for topic in help.getTopicsForInterfaceAndView(iface, klass):
+        for iface in ifaces:
+            specs = viewService.getRegisteredMatching((iface,),
+                                                      IBrowserPresentation)
+            for spec in specs:
+                if spec[2][0] is not view_class:
+                    continue
+                for topic in help.getTopicsForInterfaceAndView(iface, spec[4]):
                     parents = getParents(topic)
                     path = map(getName, parents[:-1]+[topic]) 
                     url = getView(obj, 'absolute_url', self.request)()

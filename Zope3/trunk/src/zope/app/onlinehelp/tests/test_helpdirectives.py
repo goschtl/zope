@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_helpdirectives.py,v 1.2 2003/05/01 19:35:25 faassen Exp $
+$Id: test_helpdirectives.py,v 1.3 2003/07/15 14:20:15 srichter Exp $
 """
 import os
 import unittest
@@ -21,8 +21,13 @@ import unittest
 from cStringIO import StringIO
 
 from zope.interface import Interface
+from zope.component.adapter import provideAdapter
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration.xmlconfig import xmlconfig, Context, XMLConfig
+from zope.app.interfaces.traversing import \
+     ITraverser, ITraversable, IPhysicallyLocatable
+from zope.app.traversing.adapters import \
+     Traverser, DefaultTraversable, WrapperPhysicallyLocatable
 
 import zope.app.onlinehelp
 from zope.app.onlinehelp import help
@@ -38,14 +43,14 @@ template = """<zopeConfigure
 class I1(Interface):
     pass
 
-class View:
-    pass
-
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
+        provideAdapter(None, ITraverser, Traverser)
+        provideAdapter(None, ITraversable, DefaultTraversable)
+        provideAdapter(None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
         XMLConfig('meta.zcml', zope.app.onlinehelp)()
 
     def test_register(self):
@@ -56,12 +61,12 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
                   id = "help1"
                   title = "Help"
                   for = "zope.app.onlinehelp.tests.test_helpdirectives.I1"
-                  view = "zope.app.onlinehelp.tests.test_helpdirectives.View"
+                  view = "view.html"
                   doc_path = "./help.txt" />
                   '''
             )), None, Context([], zope.i18n.tests))
         self.assertEqual(help.keys(), ['help1'])
-        self.assertEqual(help._registry[(I1, View)][0].title, 'Help')
+        self.assertEqual(help._registry[(I1, 'view.html')][0].title, 'Help')
         help._register = {}
         del help['help1']
 
@@ -69,14 +74,14 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(help.keys(), [])
         path = os.path.join(testdir(), 'help.txt')
         help.registerHelpTopic('', 'help', 'Help',
-                               path, 'txt', I1, View)
-        # XXX: Requires CA setup
-        #xmlconfig(StringIO(template % (
-        #    '''
-        #      <help:unregister path="help1" />
-        #      '''
-        #    )), None, Context([], zope.i18n.tests))
-        #self.assertEqual(help.keys(), [])
+                               path, 'txt', I1, 'view.html')
+
+        xmlconfig(StringIO(template % (
+            '''
+              <help:unregister path="help" />
+              '''
+            )), None, Context([], zope.i18n.tests))
+        self.assertEqual(help.keys(), [])
 
 
 

@@ -16,13 +16,13 @@
 This the default implmentation of the OnlineHelp. It defines the global
 OnlineHelp in which all basic Zope-core help screens are registered.
 
-$Id: __init__.py,v 1.9 2003/06/24 14:58:14 rogerineichen Exp $
+$Id: __init__.py,v 1.10 2003/07/15 14:20:12 srichter Exp $
 """
 import os
 from zope.app.container.sample import SampleContainer
 from zope.app.traversing import getParent, getName
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.traversing.adapters import Traverser
+from zope.app.traversing import traverse
 import zope.app
 from zope.app.context import ContextWrapper
 
@@ -87,8 +87,7 @@ class OnlineHelp(OnlineHelpTopic):
     def registerHelpTopic(self, parent_path, id, title,
                           doc_path, doc_type='txt', interface=None, view=None):
         "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
-        #parent = traverse(self, parent_path)
-        parent = Traverser(self).traverse(parent_path)
+        parent = traverse(self, parent_path)
         # Create and add topic
         id = parent.setObject(id, OnlineHelpTopic(title, doc_path, doc_type))
         topic = ContextWrapper(parent[id], parent, name=id)
@@ -100,12 +99,12 @@ class OnlineHelp(OnlineHelpTopic):
     def unregisterHelpTopic(self, topic_path):
         "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
         # Delete topic from tree
-        topic = Traverser(self).traverse(topic_path)
+        topic = traverse(self, topic_path)
         name = getName(topic)
         parent = getParent(topic)
         del parent[name]
         # unregister from registry
-        for item in registry.items():
+        for item in self._registry.items():
             if topic in item[1]:
                 item[1].remove(topic)
 

@@ -64,7 +64,7 @@
       title="File Upload Screen"
       parent="ui"
       for="zope.app.interfaces.content.file.IFile"
-      view=".file.FileUpload."
+      view="upload.html"
       doc_path="./file_upload.hlp"
       />
 
