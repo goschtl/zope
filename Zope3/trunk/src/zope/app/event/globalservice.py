@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.6 2003/04/09 20:51:31 philikon Exp $
+$Id: globalservice.py,v 1.7 2003/04/10 09:29:08 philikon Exp $
 """
 
 __metaclass__ = type
@@ -56,8 +56,8 @@ def subscribeDirective(_context, subscriber,
         event_types.append(_context.resolve(event_type_name))
 
     if filter is not None:
-        filter = resolveInterface(_context, filter)
-
+        filter = _context.resolve(filter)
+        
     return [
         Action(
              # subscriptions can never conflict
