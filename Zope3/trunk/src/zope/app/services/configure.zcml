@@ -520,5 +520,13 @@
   permission="zope.ManageContent"
   />
 
+<adapter 
+  for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+  provides="zope.app.interfaces.file.IFileFactory"
+  name=".py"
+  factory=".module.ModuleFactory"
+  permission="zope.ManageContent"
+  />
+
 
 </zopeConfigure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.6 2003/05/29 21:33:09 gvanrossum Exp $
+$Id: module.py,v 1.7 2003/05/29 21:53:31 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -29,6 +29,8 @@ from zope.interface import implements
 
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile
+from zope.app.interfaces.file import IFileFactory
+from zope.context import ContextWrapper
 
 
 class Registry:
@@ -107,7 +109,7 @@ class Manager(Persistent):
 
 class ModuleAdapter(ObjectEntryAdapter):
 
-    __implements__ =  IObjectFile
+    implements(IObjectFile)
 
     def getBody(self):
         return self.context.source
@@ -117,3 +119,19 @@ class ModuleAdapter(ObjectEntryAdapter):
 
     def extra(self):
         return AttrMapping(self.context, ("name",))
+
+
+class ModuleFactory(object):
+
+    implements(IFileFactory)
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name, content_type, data):
+        assert name.endswith(".py")
+        name = name[:-3]
+        m = Manager()
+        m = ContextWrapper(m, self.context)
+        m.new(name, data)
+        return m
