@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testAddServiceDirective.py,v 1.1 2002/07/11 18:21:33 jim Exp $
+$Id: testAddServiceDirective.py,v 1.2 2002/07/17 16:54:18 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -209,9 +209,7 @@ class Test(PlacefulSetup, TestCase):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: testAdding.py,v 1.1 2002/06/20 20:00:21 jim Exp $
+$Id: testAdding.py,v 1.2 2002/07/17 16:54:17 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -52,9 +52,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(container.data, ('foo', 42))
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

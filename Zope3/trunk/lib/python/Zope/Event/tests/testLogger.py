@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testLogger.py,v 1.2 2002/06/10 23:29:26 jim Exp $
+$Id: testLogger.py,v 1.3 2002/07/17 16:54:21 jeremy Exp $
 """
 
 import unittest, sys
@@ -95,10 +95,8 @@ class TestLogger2(TestLogger1):
             ])
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(TestLogger1),
-        unittest.makeSuite(TestLogger2),
-        ))
+    return unittest.TestSuite((unittest.makeSuite(TestLogger1),
+                               unittest.makeSuite(TestLogger2)))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

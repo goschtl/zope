@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testCheckBoxWidget.py,v 1.1 2002/07/16 15:15:55 srichter Exp $
+$Id: testCheckBoxWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import CheckBoxWidget
@@ -52,9 +52,7 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(CheckBoxWidgetTest),
-        ))
+    return makeSuite(CheckBoxWidgetTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

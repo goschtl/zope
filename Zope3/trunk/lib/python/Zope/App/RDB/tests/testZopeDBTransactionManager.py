@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testZopeDBTransactionManager.py,v 1.1 2002/06/25 15:41:46 k_vertigo Exp $
+$Id: testZopeDBTransactionManager.py,v 1.2 2002/07/17 16:54:19 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -62,9 +62,7 @@ class TxnMgrTest(TestCase):
                         """ commit failed """)
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TxnMgrTest),
-        ))
+    return makeSuite(TxnMgrTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

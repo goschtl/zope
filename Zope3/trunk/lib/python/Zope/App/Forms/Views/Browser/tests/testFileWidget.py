@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFileWidget.py,v 1.1 2002/07/16 15:15:55 srichter Exp $
+$Id: testFileWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import FileWidget
@@ -50,9 +50,7 @@ class FileWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(FileWidgetTest),
-        ))
+    return makeSuite(FileWidgetTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

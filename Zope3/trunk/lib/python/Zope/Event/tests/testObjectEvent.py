@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testObjectEvent.py,v 1.2 2002/06/10 23:29:26 jim Exp $
+$Id: testObjectEvent.py,v 1.3 2002/07/17 16:54:21 jeremy Exp $
 """
 
 import unittest, sys
@@ -69,12 +69,10 @@ class TestObjectMovedEvent(TestObjectAddedEvent):
         self.assertEqual(self.event.getFromLocation(),self.from_location)
         
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(TestObjectAddedEvent),
-        unittest.makeSuite(TestObjectModifiedEvent),
-        unittest.makeSuite(TestObjectRemovedEvent),
-        unittest.makeSuite(TestObjectMovedEvent),
-        ))
+    return unittest.TestSuite((unittest.makeSuite(TestObjectAddedEvent),
+                               unittest.makeSuite(TestObjectModifiedEvent),
+                               unittest.makeSuite(TestObjectRemovedEvent),
+                               unittest.makeSuite(TestObjectMovedEvent)))
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

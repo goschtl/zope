@@ -297,7 +297,7 @@ class BrowserPublicationTests(BasePublicationTests):
 def test_suite():
     t2 = unittest.makeSuite(BrowserPublicationTests, 'test')
     t3 = unittest.makeSuite(BrowserDefaultTests, 'test')
-    return unittest.TestSuite((t2,t3))
+    return unittest.TestSuite((t2, t3))
 
 if __name__=='__main__':
     unittest.TextTestRunner().run( test_suite() )

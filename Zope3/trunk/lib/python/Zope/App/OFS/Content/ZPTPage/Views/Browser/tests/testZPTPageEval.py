@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testZPTPageEval.py,v 1.3 2002/06/18 14:47:04 jim Exp $
+$Id: testZPTPageEval.py,v 1.4 2002/07/17 16:54:18 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -57,9 +57,7 @@ class Test(CleanUp, TestCase):
         self.assertEqual(getattr(request, 'content-type'), 'text/x-test')
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

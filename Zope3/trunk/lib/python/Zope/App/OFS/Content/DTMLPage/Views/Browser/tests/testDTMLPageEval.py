@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDTMLPageEval.py,v 1.1 2002/07/11 00:17:02 srichter Exp $
+$Id: testDTMLPageEval.py,v 1.2 2002/07/17 16:54:17 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -59,9 +59,7 @@ class Test(CleanUp, TestCase):
         self.assertEqual(getattr(request, 'content-type'), 'text/x-test')
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

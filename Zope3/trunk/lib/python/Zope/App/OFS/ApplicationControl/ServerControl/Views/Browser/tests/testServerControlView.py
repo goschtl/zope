@@ -49,9 +49,7 @@ class Test(PlacefulSetup, TestCase):
         test_serverctrl.action()
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

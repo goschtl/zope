@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testBrowserWidget.py,v 1.1 2002/07/16 15:15:55 srichter Exp $
+$Id: testBrowserWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
 """
 import unittest
 from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
@@ -54,9 +54,7 @@ class BrowserWidgetTest(unittest.TestCase):
 
 
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(BrowserWidgetTest),
-        ))
+    return unittest.makeSuite(BrowserWidgetTest)
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testIntField.py,v 1.2 2002/07/14 21:54:42 faassen Exp $
+$Id: testIntField.py,v 1.3 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import Int, ErrorNames
@@ -83,9 +83,7 @@ class IntTest(FieldTest):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(IntTest),
-        ))
+    return makeSuite(IntTest)
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

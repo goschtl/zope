@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testField.py,v 1.6 2002/07/14 21:54:42 faassen Exp $
+$Id: testField.py,v 1.7 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Schema import Field, IField, ErrorNames
@@ -52,9 +52,7 @@ class FieldTest(TestCase):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(FieldTest),
-        ))
+    return makeSuite(FieldTest)
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testTupleField.py,v 1.5 2002/07/14 21:54:42 faassen Exp $
+$Id: testTupleField.py,v 1.6 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import Tuple, Int, Float, ErrorNames
@@ -88,9 +88,7 @@ class TupleTest(FieldTest):
                                     field.validate, (2, '') )
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TupleTest),
-        ))
+    return makeSuite(TupleTest)
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

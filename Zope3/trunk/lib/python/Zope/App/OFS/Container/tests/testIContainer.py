@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIContainer.py,v 1.3 2002/06/20 20:00:21 jim Exp $
+$Id: testIContainer.py,v 1.4 2002/07/17 16:54:17 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -269,9 +269,7 @@ class Test(BaseTestIContainer, TestCase):
         return SampleContainer()
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

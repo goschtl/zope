@@ -13,7 +13,7 @@
 ##############################################################################
 """Test conversion functionality of schema.
 
-$Id: testConverter.py,v 1.1 2002/07/14 22:45:17 faassen Exp $
+$Id: testConverter.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -56,9 +56,7 @@ class ConverterTest(TestCase):
         self.assertRaises(ConversionError, combined_converter.convert, 'foo')
         
 def test_suite():
-    return TestSuite((
-        makeSuite(ConverterTest),
-        ))
+    return makeSuite(ConverterTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

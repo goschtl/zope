@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testRow.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: testRow.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
 """
 
 from Zope.App.RDB.Row import RowClassFactory
@@ -62,9 +62,7 @@ class RowTests(TestCase):
                           )
 
 def test_suite():
-    return TestSuite((
-        makeSuite(RowTests),
-        ))
+    return makeSuite(RowTests)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

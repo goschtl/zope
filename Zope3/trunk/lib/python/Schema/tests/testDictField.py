@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testDictField.py,v 1.3 2002/07/14 21:54:42 faassen Exp $
+$Id: testDictField.py,v 1.4 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import Dict, Int, Float, ErrorNames
@@ -104,9 +104,7 @@ class DictTest(FieldTest):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(DictTest),
-        ))
+    return makeSuite(DictTest)
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

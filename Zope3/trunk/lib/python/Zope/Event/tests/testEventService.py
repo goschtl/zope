@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.2 2002/06/10 23:29:26 jim Exp $
+$Id: testEventService.py,v 1.3 2002/07/17 16:54:21 jeremy Exp $
 """
 
 import unittest, sys
@@ -199,7 +199,8 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.service.publishEvent(event2)
         self.assertEqual(self.subscriber.notified, 6)
         self.assertEqual(subscriber2.notified, 2)
-        self.assertRaises(NotFoundError, self.service.unsubscribe, self.subscriber, IObjectAddedEvent)
+        self.assertRaises(NotFoundError, self.service.unsubscribe,
+                          self.subscriber, IObjectAddedEvent)
         self.service.unsubscribe(self.subscriber, IObjectAddedEvent, filter)
         self.service.publishEvent(self.event)
         self.assertEqual(self.subscriber.notified, 6)
@@ -274,24 +275,19 @@ class TestEventService(CleanUp, unittest.TestCase):
     
     def testListSubscriptions2(self):
         "one subscription"
-        self.service.subscribe(
-            self.subscriber,
-            event_type=IObjectAddedEvent
-            )
-        self.assertEqual([(IObjectAddedEvent,None)], self.service.listSubscriptions(self.subscriber))
+        self.service.subscribe(self.subscriber, event_type=IObjectAddedEvent)
+        self.assertEqual([(IObjectAddedEvent, None)],
+                         self.service.listSubscriptions(self.subscriber))
     
     def testListSubscriptions3(self):
         "listing limited subscription"
-        self.service.subscribe(
-            self.subscriber,
-            event_type=IObjectAddedEvent
-            )
-        self.assertEqual([], self.service.listSubscriptions(self.subscriber, IObjectRemovedEvent))
+        self.service.subscribe(self.subscriber, event_type=IObjectAddedEvent)
+        L = self.service.listSubscriptions(self.subscriber,
+                                           IObjectRemovedEvent)
+        self.assertEqual([], L)
     
 def test_suite():
-    return unittest.TestSuite((
-        unittest.makeSuite(TestEventService),
-        ))
+    return unittest.makeSuite(TestEventService)
 
 if __name__=='__main__':
     unittest.main(defaultTest='test_suite')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testFormView.py,v 1.7 2002/07/17 02:36:37 srichter Exp $
+$Id: testFormView.py,v 1.8 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
@@ -138,9 +138,7 @@ class TestFormView(TestCase, PlacelessSetup):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TestFormView),
-        ))
+    return makeSuite(TestFormView)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

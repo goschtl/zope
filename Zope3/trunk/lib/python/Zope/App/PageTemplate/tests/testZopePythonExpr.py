@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testZopePythonExpr.py,v 1.2 2002/06/10 23:28:14 jim Exp $
+$Id: testZopePythonExpr.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -50,9 +50,7 @@ class Test(CleanUp, TestCase):
           self.assertRaises(NameError, expr, Context())
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

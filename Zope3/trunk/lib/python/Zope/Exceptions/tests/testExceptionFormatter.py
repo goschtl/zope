@@ -15,7 +15,7 @@
 ExceptionFormatter tests.
 
 Revision information:
-$Id: testExceptionFormatter.py,v 1.4 2002/06/10 23:29:27 jim Exp $
+$Id: testExceptionFormatter.py,v 1.5 2002/07/17 16:54:22 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -140,9 +140,7 @@ class Test(CleanUp, TestCase):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

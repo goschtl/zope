@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testListField.py,v 1.5 2002/07/14 21:54:42 faassen Exp $
+$Id: testListField.py,v 1.6 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import List, Int, Float, ErrorNames
@@ -88,9 +88,7 @@ class ListTest(FieldTest):
                                     field.validate, [2, ''] )
 
 def test_suite():
-    return TestSuite((
-        makeSuite(ListTest),
-        ))
+    return makeSuite(ListTest)
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

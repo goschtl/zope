@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testResources.py,v 1.3 2002/06/14 16:50:19 srichter Exp $
+$Id: testResources.py,v 1.4 2002/07/17 16:54:19 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -63,9 +63,7 @@ class Test(PlacelessSetup, TestCase):
         
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testZODBUndoManager.py,v 1.2 2002/06/10 23:28:17 jim Exp $
+$Id: testZODBUndoManager.py,v 1.3 2002/07/17 16:54:20 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -60,9 +60,7 @@ class Test(CleanUp, TestCase):
         self.assertEqual(list(um.getUndoInfo()), expected)
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

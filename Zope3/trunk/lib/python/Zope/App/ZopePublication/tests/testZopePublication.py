@@ -200,8 +200,7 @@ class SimpleObject:
         self.v = v
 
 def test_suite():
-    t1 = unittest.makeSuite(ZopePublicationTests, 'test')
-    return unittest.TestSuite((t1, ))
+    return unittest.makeSuite(ZopePublicationTests, 'test')
 
 if __name__=='__main__':
     unittest.TextTestRunner().run( test_suite() )

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testI18nFileResource.py,v 1.1 2002/06/25 14:30:08 mgedmin Exp $
+$Id: testI18nFileResource.py,v 1.2 2002/07/17 16:54:19 jeremy Exp $
 """
 
 from unittest import TestSuite, main, makeSuite
@@ -154,9 +154,7 @@ class Test(PlacelessSetup, TestII18nAware):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

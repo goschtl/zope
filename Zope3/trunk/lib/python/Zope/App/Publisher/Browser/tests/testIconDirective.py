@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.3 2002/06/25 15:26:12 mgedmin Exp $
+$Id: testIconDirective.py,v 1.4 2002/07/17 16:54:19 jeremy Exp $
 """
 import os
 from StringIO import StringIO
@@ -144,9 +144,7 @@ class Test(PlacelessSetup, TestCase):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

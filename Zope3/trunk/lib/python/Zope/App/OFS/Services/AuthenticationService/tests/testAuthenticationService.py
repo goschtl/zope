@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testAuthenticationService.py,v 1.1 2002/07/13 16:52:58 srichter Exp $
+$Id: testAuthenticationService.py,v 1.2 2002/07/17 16:54:18 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -111,9 +111,7 @@ class AuthServiceTest(TestCase, PlacefulSetup):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(AuthServiceTest),
-        ))
+    return makeSuite(AuthServiceTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testPasswordWidget.py,v 1.1 2002/07/16 15:15:55 srichter Exp $
+$Id: testPasswordWidget.py,v 1.2 2002/07/17 16:54:15 jeremy Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.Forms.Views.Browser.Widget import PasswordWidget
@@ -51,9 +51,7 @@ class PasswordWidgetTest(BrowserWidgetTest):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(PasswordWidgetTest),
-        ))
+    return makeSuite(PasswordWidgetTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

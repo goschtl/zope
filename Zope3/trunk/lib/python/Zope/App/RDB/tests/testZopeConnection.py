@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testZopeConnection.py,v 1.2 2002/07/10 23:37:26 srichter Exp $
+$Id: testZopeConnection.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -60,9 +60,7 @@ class ZopeConnectionTests(TestCase):
         get_transaction().abort()
         
 def test_suite():
-    return TestSuite((
-        makeSuite(ZopeConnectionTests),
-        ))
+    return makeSuite(ZopeConnectionTests)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testSQLCommand.py,v 1.2 2002/07/16 23:41:16 jim Exp $
+$Id: testSQLCommand.py,v 1.3 2002/07/17 16:54:19 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -85,9 +85,7 @@ class Test(TestCase, PlacelessSetup):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testNextService.py,v 1.2 2002/07/11 18:21:28 jim Exp $
+$Id: testNextService.py,v 1.3 2002/07/17 16:54:15 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -81,9 +81,7 @@ class Test(TestCase):
         
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    return makeSuite(Test)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testUser.py,v 1.2 2002/07/13 18:26:26 srichter Exp $
+$Id: testUser.py,v 1.3 2002/07/17 16:54:18 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -76,9 +76,7 @@ class UserTest(TestCase):
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(UserTest),
-        ))
+    return makeSuite(UserTest)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
