@@ -22,11 +22,6 @@
                tal:content="view/componentPath">foo/bar</a>
           </td>
         </tr>
-        <tr>
-          <td>Permission</td>
-          <td>
-            <span tal:replace="view/permission">Zope.Foo</span>
-          </td>
       </table>
 
     </div>
