@@ -16,6 +16,7 @@
 $Id$
 """
 from zope.interface import Interface, Attribute, implements
+from zope.component import adapts
 
 class RecordingAdapter(object):
 
@@ -50,7 +51,7 @@ class Content(object):
     implements(IContent)
 
 class Comp(object):
-    __used_for__ = IContent
+    adapts(IContent)
     implements(IApp)
 
     def __init__(self, *args):
