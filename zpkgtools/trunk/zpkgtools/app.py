@@ -296,7 +296,7 @@ class BuilderApplication(Application):
         self.generate_package_setup(destination, name)
 
     def load_metadata(self):
-        metadata_file = os.path.join(self.source, "PUBLICATION.cfg")
+        metadata_file = os.path.join(self.source, publication.PUBLICATION_CONF)
         if not os.path.isfile(metadata_file):
             self.error("source-dir does not contain required"
                        " publication data file")
@@ -315,7 +315,8 @@ class BuilderApplication(Application):
             apptypes = msg.get_all("Installation-type", [])
             if len(apptypes) > 1:
                 self.error("installation-type can only be"
-                           " specified once in PUBLICATION.cfg")
+                           " specified once in %s",
+                           publication.PUBLICATION_CONF)
             if apptypes and apptypes[0].lower() == "application":
                 # This is an application rather than a normal collection
                 self.resource_type = "application"
