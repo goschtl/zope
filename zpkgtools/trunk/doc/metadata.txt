@@ -138,7 +138,7 @@ Package Construction Information
       README.txt
     </distribution>
 
-    # and remove the same from the package itself.
+    # Specify what is included in the component.
     <collection>
       # Python modules from the package:
       *.py
