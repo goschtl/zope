@@ -5,24 +5,50 @@ Things that need to be done
 - Need name + acronym to describe what gets built, not normal words
   (Jim sez).  Zope3-Dev seems to want to call them "packages".
 
-- We should have some way to wildcard an entire hierarchy of packages
-  in resource maps.  Something like::
+- Package assembler script to build sumo/combined distro (mostly done)
 
-    zope.*  cvs://cvs.zope.org/cvs-repository:Zope3/src/zope/
+  - We should have some way to wildcard an entire hierarchy of packages
+    in resource maps.  Something like::
 
-  would make the resource map for Zope 3 much more concise.
-  I've started writing the tests and the implementation, but it's too
-  much for today given that it's not necessay.
+      zope.*  cvs://cvs.zope.org/cvs-repository:Zope3/src/zope/
 
-- The zpkgtools.locationmap module still doesn't handle Subversion
-  URLs properly; revision control URLs need to be abstracted
-  separately from the specific revision control loaders (perhaps in
-  the zpkgtools.loader module).
+    would make the resource map for Zope 3 much more concise.
+    I've started writing the tests and the implementation, but it's too
+    much for today given that it's not necessay.
 
-- The setuptools helper should only be included in distributions that
-  actually need it.  This is currenly only needed when packages end up
-  defining package data (common in Zope, but not for everyone).  Low
-  priority.
+  - The zpkgtools.locationmap module still doesn't handle Subversion
+    URLs properly; revision control URLs need to be abstracted
+    separately from the specific revision control loaders (perhaps in
+    the zpkgtools.loader module).
+
+  - The setuptools helper should only be included in distributions that
+    actually need it.  This is currenly only needed when packages end up
+    defining package data (common in Zope, but not for everyone).  Low
+    priority.
+
+  - Make directory inclusion through `PACKAGE.cfg` honor PACKAGE.cfg
+    files in included directories.  The <load> section of the such
+    `PACKAGE.cfg` files should be honored as well.
+
+  - CVS retriever (mostly done; need to deal with unspecified type and
+    user for remote repositories)
+
+    - can check *~/.cvspass* to see if there's an entry there
+
+    - otherwise assume :ext: if there's a CVS_RSH setting?  or just
+      always?  try anonymous :pserver: access?
+
+    - more configuration settings?
+
+    It's not clear these remaining issues are particularly important.
+
+  - Use delayed loading of resource maps, especially those that need to
+    be retrieved from remote systems.  The basic model of the resource
+    map allows this strategy to be employed effectively.  Low priority.
+
+  - Support use of http: and https: for access to Subversion
+    repositories.  Very low priority since we're using svn: and svn+ssh:
+    for svn.zope.org.
 
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
@@ -31,39 +57,16 @@ Things that need to be done
   library does not provide an acceptable solution due to a bug: see
   http://www.python.org/sf/935117 for more info.)
 
-- Make directory inclusion through `PACKAGE.cfg` honor PACKAGE.cfg
-  files in included directories.  The <load> section of the such
-  `PACKAGE.cfg` files should be honored as well.
+  (We're currently dealing with them by saying "use --home when
+  installing".)
 
 - Fix up finddeps.py to stop searching at defined boundaries.  How to
   define these boundaries is in flux at the moment.
-
-- Package assembler script to build sumo/combined distro (in progress)
 
 - Find a way to use ZConfig itself instead of the half-way
   re-implementation in zpkgtools.cfgparser; it's a real pain having to
   give up %defines and some of the nicer aspects of schemas (or having
   to re-implement them).
-
-- CVS retriever (mostly done; need to deal with unspecified type and
-  user for remote repositories)
-
-  - can check *~/.cvspass* to see if there's an entry there
-
-  - otherwise assume :ext: if there's a CVS_RSH setting?  or just
-    always?  try anonymous :pserver: access?
-
-  - more configuration settings?
-
-  It's not clear these remaining issues are particularly important.
-
-- Use delayed loading of resource maps, especially those that need to
-  be retrieved from remote systems.  The basic model of the resource
-  map allows this strategy to be employed effectively.  Low priority.
-
-- Support use of http: and https: for access to Subversion
-  repositories.  Very low priority since we're using svn: and svn+ssh:
-  for svn.zope.org.
 
 - Expand the prototype section to the pre-proposal documenting the
   current effort; this lets people respond and offer suggestions.
