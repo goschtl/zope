@@ -214,19 +214,25 @@ ext_modules = [
                          "src/persistence/persistenceAPI.h",]),
     Extension("zodb._timestamp", ["src/zodb/_timestamp.c"]),
     Extension("zodb.storage._helper", ["src/zodb/storage/_helper.c"]),
+
     Extension("zope.context.wrapper",
               ["src/zope/context/wrapper.c"],
               include_dirs = include_dirs,
               depends = ["src/zope/context/wrapper.h",
                          "src/zope/proxy/proxy.h"]),
-    Extension("zope.proxy.proxy", ["src/zope/proxy/proxy.c"],
+    
+    Extension("zope.proxy._zope_proxy_proxy",
+              ["src/zope/proxy/_zope_proxy_proxy.c"],
               include_dirs = include_dirs,
               depends = ["src/zope/proxy/proxy.h"]),
+
     Extension("zope.security._proxy", ["src/zope/security/_proxy.c"],
               include_dirs = include_dirs,
               depends = ["src/zope/proxy/proxy.h"]),
+
     Extension("zope.interface._zope_interface_ospec",
               ["src/zope/interface/_zope_interface_ospec.c"]),
+
     Extension("zope.hookable._zope_hookable",
               ["src/zope/hookable/_zope_hookable.c"])
     ]
