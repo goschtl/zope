@@ -15,7 +15,7 @@
 
 This implementationb is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.13 2004/03/30 21:40:00 jim Exp $
+$Id: adapter.py,v 1.14 2004/04/12 17:58:34 jim Exp $
 """
 
 
@@ -88,6 +88,7 @@ from zope.interface.declarations import providedBy
 from zope.interface.interface import InterfaceClass
 
 Default = InterfaceClass("Default", (), {})
+Null = InterfaceClass("Null", (), {})
 
 class ReadProperty(object):
 
@@ -276,7 +277,6 @@ def withextends(with1, with2):
             break
     return False
 
-
 class AdapterRegistry(object):
     """Adapter registry
     """
@@ -291,7 +291,7 @@ class AdapterRegistry(object):
     def __init__(self):
         default = self._surrogateClass(Default, self)
         self._default = default
-        null = self._surrogateClass(Default, self)
+        null = self._surrogateClass(Null, self)
         self._null = null
         surrogates = {Default.weakref(): default}
         self._surrogates = surrogates
