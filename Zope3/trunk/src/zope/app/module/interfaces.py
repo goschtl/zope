@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces needed by the module service.
 
-XXX There is no module service yet; instead, the service manager
+TODO: There is no module service yet; instead, the service manager
 currently implements it.  This should change.
 
 $Id$
