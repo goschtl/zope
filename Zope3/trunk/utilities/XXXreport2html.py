@@ -15,10 +15,11 @@
 
 Creates a HTML file from a XXXReport file.
 
-$Id: XXXreport2html.py,v 1.2 2002/12/07 17:37:35 zagy Exp $
+$Id: XXXreport2html.py,v 1.3 2002/12/09 20:42:07 ctheune Exp $
 """
 
 import sys
+import time
 
 
 if len(sys.argv) < 3:
@@ -59,6 +60,7 @@ outputfile.write("""<html><head><title>XXX/TODO-Comment report for Zope 3</title
 
 <body>
 <h1>Zope 3 - Developer report tools: XXX/TODO comments</h1>
+<p>Generated on %(reporttime)s</p>
 <hr>
 <h3>Summary</h3>
 <p>
@@ -66,7 +68,9 @@ outputfile.write("""<html><head><title>XXX/TODO-Comment report for Zope 3</title
 </p>
 <hr/>
 <h3>Listing</h3>
-<ol>""" % {"commentcount" : len(comments)})
+<ol>""" % {"commentcount" : len(comments),
+           "reporttime" : time.strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime())
+          })
 
 # Write the comments down
 
