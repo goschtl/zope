@@ -98,4 +98,10 @@
 
   <grantAll role="zope.Manager" />
 
+  <!-- Vocabularies -->
+
+  <vocabulary
+      name="Role Ids"
+      factory=".vocabulary.RoleIdsVocabulary" />
+
 </configure>
