@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.24 2004/03/06 17:48:46 jim Exp $
+$Id: __init__.py,v 1.25 2004/03/07 13:54:15 jim Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -489,7 +489,8 @@ class MakeSite(BrowserView):
         bare = removeAllProxies(self.context)
         sm = SiteManager(bare)
         self.context.setSiteManager(sm)
-        self.request.response.redirect("++etc++site/@@SelectedManagementView.html")
+        self.request.response.redirect(
+            "++etc++site/@@SelectedManagementView.html")
 
 
 class Interfaces:
