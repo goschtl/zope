@@ -10,13 +10,14 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: __init__.py,v 1.3 2004/03/15 13:10:48 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/20 22:10:05 nathan Exp $
 """
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
-from zope.app.content import queryContentType
+from zope.app.interface import queryType
+from zope.app.content.interfaces import IContentType
 from zope.security.proxy import trustedRemoveSecurityProxy
 
 class ExternalEditor(BrowserView):
@@ -42,7 +43,7 @@ class ExternalEditor(BrowserView):
         # using IContentType, which is a marker interface
         # XXX Had to use trustedRemoveSecurityProxy because
         # I was getting I was getting unauthorized on __iro__
-        meta_type = queryContentType(trustedRemoveSecurityProxy(context))
+        meta_type = queryType(trustedRemoveSecurityProxy(context), IContentType)
         if meta_type:
             r.append('meta_type:%s' % meta_type.__name__)
 
