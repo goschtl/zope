@@ -585,12 +585,16 @@
      permission="zope.ManageServices"
      />
 
-  <browser:menuItems menu="zmi_views" for="zope.app.interfaces.services.service.IServiceManager">
+  <browser:menuItems menu="zmi_views"
+    for="zope.app.interfaces.services.service.IServiceManager">
     <browser:menuItem title="Services"
               action="@@index.html"/>
-    <browser:menuItem title="Packages"
+  </browser:menuItems>
+
+  <browser:menuItems menu="zmi_actions" for="zope.app.interfaces.services.service.IServiceManager">
+    <browser:menuItem title="View local packages"
               action="Packages/@@SelectedManagementView.html"/>
-    <browser:menuItem title="Default Package"
+    <browser:menuItem title="Visit default package"
               action="Packages/default/@@SelectedManagementView.html"/>
   </browser:menuItems>
 
