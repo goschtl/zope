@@ -2,6 +2,9 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
+  <layer name="templates" />
+  <layer name="images" />
+  <layer name="css" />
   <skin name="ZopeTop" layers="templates images css rotterdam default" />
 
   <page

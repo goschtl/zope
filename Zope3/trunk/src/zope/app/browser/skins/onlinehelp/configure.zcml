@@ -2,7 +2,8 @@
    xmlns:zope="http://namespaces.zope.org/zope"
    xmlns="http://namespaces.zope.org/browser">
 
-  <skin name="Onlinehelp" layers="onlinehelp images css default" />
+ <layer name="onlinehelp" /> 
+ <skin name="Onlinehelp" layers="onlinehelp images css default" />
 
   <page
       for="*"
