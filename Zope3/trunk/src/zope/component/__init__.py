@@ -233,13 +233,13 @@ def getFactoriesFor(interface, context=None):
 
 def getFactory(context, name):
     warnings.warn(
-        "Use getUtility(context, IFactory, name) instead of getFactory(...)",
+        "Use getUtility(IFactory, name, context) instead of getFactory(...)",
         DeprecationWarning, 2)
     return getUtility(IFactory, name, context=context)
 
 def queryFactory(context, name, default=None):
     warnings.warn(
-        "Use getUtility(context, IFactory, name) instead of getFactory(...)",
+        "Use getUtility(IFactory, name, context) instead of getFactory(...)",
         DeprecationWarning, 2)
     return queryUtility(IFactory, name=name, context=context)
 
