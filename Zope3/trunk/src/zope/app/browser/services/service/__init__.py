@@ -13,18 +13,22 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.38 2003/08/19 17:34:02 srichter Exp $
+$Id: __init__.py,v 1.1 2003/09/02 20:45:56 jim Exp $
 """
+
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.registration import \
-     ActiveStatus,  RegisteredStatus, UnregisteredStatus
+from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.service import ILocalService
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.services.service import ServiceRegistration
 from zope.publisher.browser import BrowserView
+from zope.app.interfaces.services.service import ISite
+from zope.app.services.service import ServiceManager
 
 class ComponentAdding(Adding):
     """Adding subclass used for registerable components."""
@@ -338,3 +342,57 @@ class ServiceActivation(BrowserView):
             s = "${active_services} activated"
             s.mapping = {'active_services': active}
             return s
+
+class MakeSite(BrowserView):
+    """View for convering a possible site to a site
+    """
+
+    def addSiteManager(self):
+        """Convert a possible site to a site
+
+        XXX we should also initialize some user-selected services.
+
+        >>> class PossibleSite:
+        ...     def setSite(self, sm):
+        ...         from zope.interface import directlyProvides
+        ...         directlyProvides(self, ISite)
+
+        
+        >>> folder = PossibleSite()
+
+        >>> from zope.publisher.browser import TestRequest
+        >>> request = TestRequest()
+        
+        Now we'll make out folder a site:
+
+        >>> MakeSite(folder, request).addSiteManager()
+
+        Now verify that we have a site:
+
+        >>> ISite.isImplementedBy(folder)
+        1
+
+        Note that we've also redirected the request:
+
+        >>> request.response.getStatus()
+        302
+
+        >>> request.response.getHeader('location')
+        '++etc++site/'
+
+        If we try to do it again, we'll fail:
+
+        >>> MakeSite(folder, request).addSiteManager()
+        Traceback (most recent call last):
+        ...
+        UserError: This is already a site
+                
+        
+        """
+        if ISite.isImplementedBy(self.context):
+            raise zapi.UserError('This is already a site')
+        sm = ServiceManager()
+        self.context.setSite(sm)
+        self.request.response.redirect("++etc++site/")
+
+    

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for service adding and registration views.
 
-$Id: test_service.py,v 1.4 2003/06/21 21:22:04 jim Exp $
+$Id: test_service.py,v 1.1 2003/09/02 20:45:57 jim Exp $
 """
 
 import unittest
@@ -22,6 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.testing.doctestunit import DocTestSuite
 
 class IFoo(Interface):
     pass
@@ -55,12 +56,10 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
         self.assertEquals(view.nextURL(), 'bar_url/@@addRegistration.html')
 
 
-# XXX: add tests for other methods and classes
-
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestComponentAdding))
+    suite.addTest(DocTestSuite('zope.app.browser.services.service'))
     return suite
 
 

@@ -1,0 +1,143 @@
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
+
+<!-- For services, just treat @@manage as @@index.html by default -->
+
+  <!-- Get first accessable item from zmi_views menu -->
+  <page
+     for="zope.app.interfaces.services.service.ILocalService"
+     name="index.html"
+     permission="zope.ManageServices"
+     class="zope.app.browser.managementviewselector.ManagementViewSelector"
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher" 
+     />
+
+<!-- Service Manager navigation action -->
+
+  <page
+      for="zope.app.interfaces.services.service.IPossibleSite"
+      name="addServiceManager.html" 
+      permission="zope.ManageServices" 
+      class=".MakeSite"
+      attribute="addSiteManager" 
+      />
+
+  <menuItem 
+      menu="zmi_actions" title="Make a site"
+      for="zope.app.interfaces.services.service.IPossibleSite"
+      action="addServiceManager.html" 
+      filter="python:not modules['zope.app.interfaces.services.service'
+                  ].ISite.isImplementedBy(context)"
+      permission="zope.ManageServices" 
+      />
+
+  <menuItem 
+      menu="zmi_actions"
+      title="Manage Site"
+      for="zope.app.interfaces.services.service.ISite"
+      action="++etc++site/@@SelectedManagementView.html"
+      permission="zope.ManageServices" 
+      />
+
+<!-- ServiceManager -->
+
+  <page
+     for="zope.app.interfaces.services.service.IServiceManager"
+     name="services.html"
+     menu="zmi_views" title="Services"
+     template="services.pt"
+     class=".ServiceSummary"
+     permission="zope.ManageServices" />
+
+  <page
+     for="zope.app.interfaces.services.service.IServiceManager"
+     name="serviceActivation.html"
+     template="serviceactivation.pt"
+     class=".ServiceActivation"
+     permission="zope.ManageServices" />
+
+  <icon
+      name="zmi_icon"
+      for="zope.app.interfaces.services.service.IServiceManager" 
+      file="service_manager.gif" />
+
+  <menuItems
+      menu="zmi_actions"
+      for="zope.app.interfaces.services.service.IServiceManager">
+
+    <menuItem
+        title="Visit default package"
+        action="default/@@SelectedManagementView.html"
+        permission="zope.ManageServices" />
+    <menuItem
+        title="Add service"
+        action="default/AddService"
+        permission="zope.ManageServices" />
+
+  </menuItems>
+
+  <page
+      name="contents.html"
+      for="zope.app.interfaces.services.service.IServiceManager"
+      menu="zmi_views" title="Contents"
+      permission="zope.ManageServices"
+      class="zope.app.browser.container.contents.Contents"
+      attribute="contents" />
+
+  <!-- Override the add action with a link to add a page folder -->
+  <menuItem
+      menu="zmi_actions"
+      for="zope.app.interfaces.services.service.IServiceManager"
+      title="Add"
+      action=
+      "@@contents.html?type_name=zope.app.services.folder.SiteManagementFolder"
+      permission="zope.ManageServices"/>
+
+  <pages
+      for="zope.app.interfaces.services.service.IServiceManager"
+      permission="zope.ManageServices"
+      class="zope.app.browser.container.contents.JustContents">
+
+    <page name="index.html" attribute="index" />
+
+  </pages>
+
+  <!-- ServiceRegistration -->
+
+  <page
+      name="addRegistration.html"
+      for="zope.app.interfaces.services.service.ILocalService"
+      template="add_svc_config.pt"
+      class=".AddServiceRegistration"
+      permission="zope.ManageServices" />
+
+  <page
+      name="add_svc_config.html"
+      for="zope.app.interfaces.services.service.ILocalService"
+      attribute="action"
+      class=".AddServiceRegistration"
+      permission="zope.ManageServices" />
+
+<!-- "Add Service" menu -->
+
+  <menuItem
+    menu="add_component"
+    for="zope.app.interfaces.container.IAdding"
+    action="../AddService"
+    title="Service"
+    description="Takes you to a menu of services to add"
+    permission="zope.ManageServices" />
+
+  <view
+     name="AddService"
+     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+     permission="zope.ManageServices"
+     class=".ServiceAdding">
+
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+
+  </view>
+
+</zope:configure>
