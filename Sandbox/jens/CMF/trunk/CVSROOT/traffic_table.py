@@ -70,6 +70,10 @@ table = [
      'addrs': 'zopedocs-checkins@zope.org',
      'remote': None},
 
+    {'path': "ZopeDocs",
+     'addrs': 'zope-mozilla@zope.org',
+     'remote': None},
+
     {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
      'remote': products_remote},
 ]
