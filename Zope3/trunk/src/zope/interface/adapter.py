@@ -15,12 +15,12 @@
 
 See Adapter class.
 
-$Id: adapter.py,v 1.6 2003/06/23 22:44:01 chrism Exp $
+$Id: adapter.py,v 1.7 2003/11/21 17:11:43 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 from zope.interface import Interface, implements, providedBy
-from zope.interface import InterfaceSpecification
+from zope.interface import Declaration
 from zope.interface.interfaces import IInterface
 from zope.interface.interfaces import IAdapterRegistry
 from _flatten import _flatten
@@ -33,8 +33,7 @@ class AdapterRegistry:
 
     # The implementation uses a mapping:
     #
-    #  { (required_interface, provided_interface) ->
-    #                             (registered_provides, component) }
+    #  { (required, provided) -> (registered_provided, component) }
     #
     # Where the registered provides is what was registered and
     # provided may be some base interface
@@ -94,15 +93,7 @@ class AdapterRegistry:
                 cache = self._v_cache = {}
 
             # get the cache key
-            interfaces, provide = ob_interface_provide
-            try:
-                key = interfaces.__signature__
-            except AttributeError:
-                if interfaces is None:
-                    key = None
-                else:
-                    key = InterfaceSpecification(interfaces).__signature__
-            key = key, provide.__identifier__
+            key = ob_interface_provide
 
             cached = cache.get(key, self)
             if cached is self:
@@ -121,7 +112,7 @@ class AdapterRegistry:
         except AttributeError:
             # Somebodey (probably a test) passed us a bare interface
             if ob_interface is not None:
-                flattened = InterfaceSpecification(ob_interface).flattened()
+                flattened = Declaration(ob_interface).flattened()
             else:
                 flattened = None,
         else:
@@ -161,9 +152,12 @@ class AdapterRegistry:
         return None
 
     def getRegisteredMatching(self,
-                              required_interfaces=None,
-                              provided_interfaces=None):
+                              required=None,
+                              provided=None):
 
+
+        required_interfaces = required
+        provided_interfaces = provided
 
         if IInterface.isImplementedBy(required_interfaces):
             required_interfaces = (required_interfaces, )

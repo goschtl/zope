@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: iadapter.py,v 1.4 2003/05/03 16:37:26 jim Exp $
+$Id: iadapter.py,v 1.5 2003/11/21 17:11:44 jim Exp $
 """
 
 import unittest
@@ -165,7 +165,7 @@ class TestIAdapterRegistry(unittest.TestCase):
         registry = self.__registery()
 
         got = list(registry.getRegisteredMatching(
-            required_interfaces = (R1, )
+            required = (R1, )
             ))
         got.sort()
         expect = [
@@ -179,7 +179,7 @@ class TestIAdapterRegistry(unittest.TestCase):
         registry = self.__registery()
 
         got = list(registry.getRegisteredMatching(
-            required_interfaces = (R12, R2)
+            required = (R12, R2)
             ))
         got.sort()
         expect = [
@@ -193,9 +193,7 @@ class TestIAdapterRegistry(unittest.TestCase):
     def test_getRegisteredMatching_provided_P1(self):
         registry = self.__registery()
 
-        got = list(registry.getRegisteredMatching(
-            provided_interfaces = (P1, )
-            ))
+        got = list(registry.getRegisteredMatching(provided = (P1, )))
         got.sort()
         expect = [
             (None, P3, 'default P3'),
@@ -209,7 +207,7 @@ class TestIAdapterRegistry(unittest.TestCase):
         registry = self.__registery()
 
         got = list(registry.getRegisteredMatching(
-            provided_interfaces = (P3, )
+            provided = (P3, )
             ))
         got.sort()
         expect = [
@@ -224,8 +222,8 @@ class TestIAdapterRegistry(unittest.TestCase):
         registry = self.__registery()
 
         got = list(registry.getRegisteredMatching(
-            required_interfaces = (R4, R12),
-            provided_interfaces = (P1, ),
+            required = (R4, R12),
+            provided = (P1, ),
             ))
         got.sort()
         expect = [
@@ -240,8 +238,8 @@ class TestIAdapterRegistry(unittest.TestCase):
         registry = self.__registery()
 
         got = list(registry.getRegisteredMatching(
-            required_interfaces = (R4, R12),
-            provided_interfaces = (P3, ),
+            required = (R4, R12),
+            provided = (P3, ),
             ))
         got.sort()
         expect = [
@@ -257,8 +255,8 @@ class TestIAdapterRegistry(unittest.TestCase):
         registry = self.__registery()
 
         got = list(registry.getRegisteredMatching(
-            required_interfaces = (R2, ),
-            provided_interfaces = (P3, ),
+            required = (R2, ),
+            provided = (P3, ),
             ))
         got.sort()
         expect = [

@@ -13,6 +13,7 @@
 ##############################################################################
 
 import unittest
+from zope.testing.doctestunit import DocTestSuite
 from zope.interface.tests.unitfixtures import *  # hehehe
 from zope.interface.exceptions import BrokenImplementation
 from zope.interface import implementedBy
@@ -29,56 +30,54 @@ class InterfaceTests(unittest.TestCase):
         pass
 
     def testClassImplements(self):
-        assert IC.isImplementedByInstancesOf(C)
+        self.assert_(IC.isImplementedByInstancesOf(C))
 
-        assert I1.isImplementedByInstancesOf(A)
-        assert I1.isImplementedByInstancesOf(B)
-        assert not I1.isImplementedByInstancesOf(C)
-        assert I1.isImplementedByInstancesOf(D)
-        assert I1.isImplementedByInstancesOf(E)
+        self.assert_(I1.isImplementedByInstancesOf(A))
+        self.assert_(I1.isImplementedByInstancesOf(B))
+        self.assert_(not I1.isImplementedByInstancesOf(C))
+        self.assert_(I1.isImplementedByInstancesOf(D))
+        self.assert_(I1.isImplementedByInstancesOf(E))
 
-        assert not I2.isImplementedByInstancesOf(A)
-        assert I2.isImplementedByInstancesOf(B)
-        assert not I2.isImplementedByInstancesOf(C)
+        self.assert_(not I2.isImplementedByInstancesOf(A))
+        self.assert_(I2.isImplementedByInstancesOf(B))
+        self.assert_(not I2.isImplementedByInstancesOf(C))
 
         # No longer after interfacegeddon
-        # assert not I2.isImplementedByInstancesOf(D)
+        # self.assert_(not I2.isImplementedByInstancesOf(D))
 
-        assert not I2.isImplementedByInstancesOf(E)
+        self.assert_(not I2.isImplementedByInstancesOf(E))
 
     def testUtil(self):
-        f = implementedBy
-        assert IC in f(C)
-        assert I1 in f(A)
-        assert not I1 in f(C)
-        assert I2 in f(B)
-        assert not I2 in f(C)
+        self.assert_(IC in implementedBy(C))
+        self.assert_(I1 in implementedBy(A))
+        self.assert_(not I1 in implementedBy(C))
+        self.assert_(I2 in implementedBy(B))
+        self.assert_(not I2 in implementedBy(C))
 
-        f = providedBy
-        assert IC in f(C())
-        assert I1 in f(A())
-        assert not I1 in f(C())
-        assert I2 in f(B())
-        assert not I2 in f(C())
+        self.assert_(IC in providedBy(C()))
+        self.assert_(I1 in providedBy(A()))
+        self.assert_(not I1 in providedBy(C()))
+        self.assert_(I2 in providedBy(B()))
+        self.assert_(not I2 in providedBy(C()))
 
 
     def testObjectImplements(self):
-        assert IC.isImplementedBy(C())
+        self.assert_(IC.isImplementedBy(C()))
 
-        assert I1.isImplementedBy(A())
-        assert I1.isImplementedBy(B())
-        assert not I1.isImplementedBy(C())
-        assert I1.isImplementedBy(D())
-        assert I1.isImplementedBy(E())
+        self.assert_(I1.isImplementedBy(A()))
+        self.assert_(I1.isImplementedBy(B()))
+        self.assert_(not I1.isImplementedBy(C()))
+        self.assert_(I1.isImplementedBy(D()))
+        self.assert_(I1.isImplementedBy(E()))
 
-        assert not I2.isImplementedBy(A())
-        assert I2.isImplementedBy(B())
-        assert not I2.isImplementedBy(C())
+        self.assert_(not I2.isImplementedBy(A()))
+        self.assert_(I2.isImplementedBy(B()))
+        self.assert_(not I2.isImplementedBy(C()))
 
         # Not after interface geddon
-        # assert not I2.isImplementedBy(D())
+        # self.assert_(not I2.isImplementedBy(D()))
 
-        assert not I2.isImplementedBy(E())
+        self.assert_(not I2.isImplementedBy(E()))
 
     def testDeferredClass(self):
         a = A()
@@ -86,18 +85,18 @@ class InterfaceTests(unittest.TestCase):
 
 
     def testInterfaceExtendsInterface(self):
-        assert BazInterface.extends(BobInterface)
-        assert BazInterface.extends(BarInterface)
-        assert BazInterface.extends(FunInterface)
-        assert not BobInterface.extends(FunInterface)
-        assert not BobInterface.extends(BarInterface)
-        assert BarInterface.extends(FunInterface)
-        assert not BarInterface.extends(BazInterface)
+        self.assert_(BazInterface.extends(BobInterface))
+        self.assert_(BazInterface.extends(BarInterface))
+        self.assert_(BazInterface.extends(FunInterface))
+        self.assert_(not BobInterface.extends(FunInterface))
+        self.assert_(not BobInterface.extends(BarInterface))
+        self.assert_(BarInterface.extends(FunInterface))
+        self.assert_(not BarInterface.extends(BazInterface))
 
     def testVerifyImplementation(self):
         from zope.interface.verify import verifyClass
-        assert verifyClass(FooInterface, Foo)
-        assert Interface.isImplementedBy(I1)
+        self.assert_(verifyClass(FooInterface, Foo))
+        self.assert_(Interface.isImplementedBy(I1))
 
     def test_names(self):
         names = list(_I2.names()); names.sort()
@@ -181,7 +180,9 @@ class _I2(_I1__):
 
 
 def test_suite():
-    return unittest.makeSuite(InterfaceTests)
+    suite = unittest.makeSuite(InterfaceTests)
+    suite.addTest(DocTestSuite("zope.interface.interface"))
+    return suite
 
 def main():
     unittest.TextTestRunner().run(test_suite())

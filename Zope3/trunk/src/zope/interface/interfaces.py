@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.16 2003/10/17 08:05:53 stevea Exp $
+$Id: interfaces.py,v 1.17 2003/11/21 17:11:43 jim Exp $
 """
 
 from zope.interface import Interface
@@ -55,8 +55,44 @@ class IMethod(IAttribute):
         """Return a signature string suitable for inclusion in documentation.
         """
 
+class ISpecification(Interface):
+    """Object Behavioral specifications
+    """
 
-class IInterface(IElement):
+    def extends(other, strict=True):
+        """Test whether a specification extends another
+
+        The specification extends other if it has other as a base
+        interface or if one of it's bases extends other.
+
+        If strict is false, then the specification extends itself.
+        
+        """
+
+    def isOrExtends(other):
+        """Test whether the specification is or extends another
+        """
+
+    def weakref(callback=None):
+        """Return a weakref to the specification
+
+        This method is, regrettably, needed to allow weakrefs to be
+        computed to security-proxied specifications.  While the
+        zope.interface package does not require zope.security or
+        zope.proxy, it has to be able to coexist with it.
+
+        """
+
+    __bases__ = Attribute("""Base specifications
+
+    A tuple if specifications from which this specification is
+    directly derived.
+
+    """)
+
+
+        
+class IInterface(ISpecification, IElement):
     """Interface objects
 
     Interface objects describe the behavior of an object by containing
@@ -148,22 +184,6 @@ class IInterface(IElement):
 
     """
 
-
-    def getBases():
-        """Return a sequence of the base interfaces."""
-
-    def extends(other, strict=True):
-        """Test whether the interface extends another interface
-
-        A true value is returned in the interface extends the other
-        interface, and false otherwise.
-
-        Normally, an interface doesn't extend itself. If a false value
-        is passed as the second argument, or via the 'strict' keyword
-        argument, then a true value will be returned if the interface
-        and the other interface are the same.
-        """
-
     def isImplementedBy(object):
         """Test whether the interface is implemented by the object
 
@@ -236,25 +256,6 @@ class IInterface(IElement):
         """
 
     __module__ = Attribute("""The name of the module defining the interface""")
-
-    __bases__ = Attribute("""A tuple of base interfaces""")
-    __iro__ = Attribute(
-        """A tuple of all interfaces extended by the interface
-
-        The first item in the tuple is the interface itself.  The
-        interfaces are listed in order from most specific to most
-        general, preserving the original order of base interfaces
-        where possible.
-
-        """)
-
-    __identifier__ = Attribute("""A unique identifier for the interface
-
-    This identifier should be different for different interfaces.
-
-    The identifier is not allowed to contain tab characters.
-    """)
-
 
 class ITypeRegistry(Interface):
     """Type-specific registry
@@ -377,8 +378,8 @@ class IAdapterRegistry(Interface):
         None is returned if nothing is registered.
         """
 
-    def getRegisteredMatching(required_interfaces=None,
-                              provided_interfaces=None):
+    def getRegisteredMatching(required=None,
+                              provided=None):
         """Return information about registered data
 
         Zero or more required and provided interfaces may be
@@ -452,7 +453,13 @@ class IImplementorRegistry(Interface):
 
         """
 
-class IInterfaceSpecification(Interface):
+class IDeclaration(ISpecification):
+    """Interface declaration
+
+    Declarations are used to express the interfaces implemented by
+    classes or provided by objects.
+    
+    """
 
     def __contains__(interface):
         """Test whether an interface is in the specification
@@ -475,14 +482,6 @@ class IInterfaceSpecification(Interface):
         base interfaces are listed after interfaces that extend them
         and, otherwise, interfaces are included in the order that they
         were defined in the specification.
-        """
-
-    def extends(interface):
-        """Test whether an interface specification extends an interface
-
-        An interface specification extends an interface if it contains
-        an interface that extends an interface.
-        
         """
 
     def __sub__(interfaces):
@@ -514,21 +513,6 @@ class IInterfaceSpecification(Interface):
         """Return a true value of the interface specification is non-empty
         """
 
-    __signature__ = Attribute("""A specification signature
-
-    The signature should change if any of the interfaces in the
-    specification change.
-
-    """)
-
-    only = Attribute("""\
-    A flag (boolean) indicating whether a specification extends others
-
-    If only is true, then a class implementing the specification
-    doesn't implement base-class specifications.
-    
-    """)
-
 class IInterfaceDeclaration(Interface):
     """Declare and check the interfaces of objects
 
@@ -559,20 +543,20 @@ class IInterfaceDeclaration(Interface):
         This is the union of the interfaces directly provided by an
         object and interfaces implemented by it's class.
 
-        The value returned is an IInterfaceSpecification.
+        The value returned is an IDeclaration.
         """
 
     def implementedBy(class_):
         """Return the interfaces implemented for a class' instances
 
-        The value returned is an IInterfaceSpecification.
+        The value returned is an IDeclaration.
         """
 
     def classImplements(class_, *interfaces):
         """Declare additional interfaces implemented for instances of a class
 
         The arguments after the class are one or more interfaces or
-        interface specifications (IInterfaceSpecification objects).
+        interface specifications (IDeclaration objects).
 
         The interfaces given (including the interfaces in the
         specifications) are added to any interfaces previously
@@ -594,7 +578,7 @@ class IInterfaceDeclaration(Interface):
         """Declare the only interfaces implemented by instances of a class
 
         The arguments after the class are one or more interfaces or
-        interface specifications (IInterfaceSpecification objects).
+        interface specifications (IDeclaration objects).
 
         The interfaces given (including the interfaces in the
         specifications) replace any previous declarations.
@@ -614,14 +598,14 @@ class IInterfaceDeclaration(Interface):
     def directlyProvidedBy(object):
         """Return the interfaces directly provided by the given object
 
-        The value returned is an IInterfaceSpecification.
+        The value returned is an IDeclaration.
         """
 
     def directlyProvides(object, *interfaces):
         """Declare interfaces declared directly for an object
 
         The arguments after the object are one or more interfaces or
-        interface specifications (IInterfaceSpecification objects).
+        interface specifications (IDeclaration objects).
 
         The interfaces given (including the interfaces in the
         specifications) replace interfaces previously
@@ -662,7 +646,7 @@ class IInterfaceDeclaration(Interface):
         This function is called in a class definition.
 
         The arguments are one or more interfaces or interface
-        specifications (IInterfaceSpecification objects).
+        specifications (IDeclaration objects).
 
         The interfaces given (including the interfaces in the
         specifications) are added to any interfaces previously
@@ -698,7 +682,7 @@ class IInterfaceDeclaration(Interface):
         This function is called in a class definition.
 
         The arguments are one or more interfaces or interface
-        specifications (IInterfaceSpecification objects).
+        specifications (IDeclaration objects).
 
         Previous declarations including declarations for base classes
         are overridden.
@@ -730,7 +714,7 @@ class IInterfaceDeclaration(Interface):
         This function is called in a class definition.
 
         The arguments are one or more interfaces or interface
-        specifications (IInterfaceSpecification objects).
+        specifications (IDeclaration objects).
 
         The given interfaces (including the interfaces in the
         specifications) are used to create the class's direct-object
@@ -760,7 +744,7 @@ class IInterfaceDeclaration(Interface):
         This function is used in a module definition.
 
         The arguments are one or more interfaces or interface
-        specifications (IInterfaceSpecification objects).
+        specifications (IDeclaration objects).
 
         The given interfaces (including the interfaces in the
         specifications) are used to create the module's direct-object
@@ -779,13 +763,13 @@ class IInterfaceDeclaration(Interface):
           directlyProvides(sys.modules[__name__], I1)
         """
 
-    def InterfaceSpecification(*interfaces):
+    def Declaration(*interfaces):
         """Create an interface specification
 
         The arguments are one or more interfaces or interface
-        specifications (IInterfaceSpecification objects).
+        specifications (IDeclaration objects).
 
-        A new interface specification (IInterfaceSpecification) with
+        A new interface specification (IDeclaration) with
         the given interfaces is returned.
         """
 
@@ -803,7 +787,7 @@ class IInterfaceDeclarationYAGNI(Interface):
         This function is called in a class definition.
 
         The arguments are one or more interfaces or interface
-        specifications (IInterfaceSpecification objects).
+        specifications (IDeclaration objects).
 
         The interfaces given (including the interfaces in the
         specifications) are removed from any interfaces previously
@@ -837,7 +821,7 @@ class IInterfaceDeclarationYAGNI(Interface):
         """Declare the interfaces not implemented for instances of a class
 
         The arguments after the class are one or more interfaces or
-        interface specifications (IInterfaceSpecification objects).
+        interface specifications (IDeclaration objects).
 
         The interfaces given (including the interfaces in the
         specifications) cancel previous declarations for the same

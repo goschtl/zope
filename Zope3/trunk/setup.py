@@ -224,8 +224,8 @@ ext_modules = [
               include_dirs = include_dirs,
               depends = ["src/zope/proxy/proxy.h"]),
 
-    Extension("zope.interface._zope_interface_ospec",
-              ["src/zope/interface/_zope_interface_ospec.c"]),
+    Extension("zope.interface._zope_interface_coptimizations",
+              ["src/zope/interface/_zope_interface_coptimizations.c"]),
 
     Extension("zope.hookable._zope_hookable",
               ["src/zope/hookable/_zope_hookable.c"]),
