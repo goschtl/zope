@@ -29,7 +29,6 @@ from zope.app.file.image import getImageInfo
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, \
      IOnlineHelpResource
 
-
 class OnlineHelpResource(Persistent):
     """
     Represents a resource that is used inside
@@ -41,6 +40,17 @@ class OnlineHelpResource(Persistent):
     >>> resource = OnlineHelpResource(path)
     >>> resource.contentType
     'image/png'
+    >>> resource._fileMode
+    'rb'
+
+    
+    >>> path = os.path.join(testdir(), 'help2.txt')
+
+    >>> resource = OnlineHelpResource(path)
+    >>> resource.contentType
+    'text/plain'
+    >>> resource._fileMode
+    'r'
     
     """
     implements(IOnlineHelpResource)
@@ -49,6 +59,7 @@ class OnlineHelpResource(Persistent):
         self.path = path
         _data = open(os.path.normpath(self.path), 'rb').read()
         self._size=len(path)
+        self._fileMode = 'rb'
 
         if contentType=='':
             content_type, encoding = guess_content_type(self.path, _data, '')
@@ -57,8 +68,11 @@ class OnlineHelpResource(Persistent):
         else:
             self.contentType = content_type
 
+        if self.contentType.startswith('text/'):
+            self._fileMode = 'r'
+
     def _getData(self):
-        return open(os.path.normpath(self.path)).read()
+        return open(os.path.normpath(self.path), self._fileMode).read()
 
     data = property(_getData)
 
