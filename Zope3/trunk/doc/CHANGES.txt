@@ -14,19 +14,23 @@ Zope Changes
         mainly means that layers and skins became adapters. Here are some
         other points:
 
-        o Backward-compatibility of the Zope component API and the browser
+        + Backward-compatibility of the Zope component API and the browser
           directives was ensured.
 
-        o The `setPresentationSkin()` and `getPresentationSkin()` directives
+        + The `setPresentationSkin()` and `getPresentationSkin()` directives
           of `IRequest` objects were removed. They were not used anywhere but 
           testing anyways.
 
-        o The default skin is now just an adapter from `IRequest` to
+        + The default skin is now just an adapter from `IRequest` to
           `IDefaultSkin`. You have to use `adapter_service.lookup()`, since
           the returned component is a skin interface and not a factory.
 
-        o The adapter service can now provide adapters from objects as well,
+        + The adapter service can now provide adapters from objects as well,
           like it was possible in the presentation service before.
+
+        + Gave `browser:skin` and `browser:layer` directive a new attribute
+          `interface`, which allows you to directly specify the skin's or
+          layer's interface instead of autogenerating it.
 
       - Added `apidoc:rootModule` directive, so that third-party products can
         add their packages to the class browser documentation module.
