@@ -34,7 +34,7 @@
 
   <menu
       id="add_component"
-      title="Menu of objects to be added to service manager packages"
+      title="Menu of objects to be added to site management folders"
       usage="addingdialog" />
 
   <menu
