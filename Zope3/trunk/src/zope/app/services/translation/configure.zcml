@@ -12,6 +12,9 @@
        interface="zope.i18n.interfaces.ITranslationService" />
    <require permission="zope.ManageServices"
        interface="zope.app.interfaces.container.IContainer" />
+   <require permission="zope.ManageServices"
+       interface="
+       zope.app.interfaces.services.translation.IWriteTranslationService" />
    <implements 
        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 </content>
