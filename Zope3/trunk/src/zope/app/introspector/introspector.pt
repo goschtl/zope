@@ -151,7 +151,7 @@
         </tr>
 
         <tr>
-          <th>
+          <th class="introspector">
             <tal:span i18n:translate="">Description</tal:span>:
           </th>
           <td>
