@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema Interfaces
 
-$Id: schema.py,v 1.3 2003/08/17 06:07:10 philikon Exp $
+$Id: schema.py,v 1.4 2003/10/31 14:57:09 sidnei Exp $
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
@@ -26,12 +26,16 @@ class ISchemaUtility(Interface):
 class ISchemaAdding(IAdding):
     pass
 
-class IMutableSchema(IInterface):
+class IReadMutableSchema(IInterface):
     """This object represents an interface/schema that can be edited by
     managing the fields it contains."""
 
     def getName(name):
         """Get the name of the schema."""
+
+class IWriteMutableSchema(Interface):
+    """This object represents an interface/schema that can be edited by
+    managing the fields it contains."""
 
     def setName(name):
         """Set the name of the schema."""
@@ -64,6 +68,10 @@ class IMutableSchema(IInterface):
         If the position does not make sense, i.e. a negative number of a
         number larger than len(self), then an error is raised.
         """
+
+class IMutableSchema(IReadMutableSchema, IWriteMutableSchema):
+    """This object represents an interface/schema that can be edited by
+    managing the fields it contains."""
 
 class IMutableSchemaField(IInterfaceField):
     """A type of Field that has an IMutableSchema as its value."""
