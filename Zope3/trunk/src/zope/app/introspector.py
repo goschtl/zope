@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector
 
-$Id: introspector.py,v 1.16 2003/08/17 06:05:18 philikon Exp $
+$Id: introspector.py,v 1.17 2003/09/02 20:45:38 jim Exp $
 """
 from zope.interface import Interface
 
@@ -135,7 +135,6 @@ class Introspector:
 
     def getInterfaceRegistration(self):
         """Returns details for a interface configuration"""
-        #sm = queryServiceManager(self.context)
         service = []
         for name, interface in getServiceDefinitions(self.context):
             if self.context.extends(interface):
