@@ -103,8 +103,7 @@ def newModule(registry, name, source):
 
 
 def compileModule(module, registry, source):
-    # Try to prevent compilation errors from files without trailing
-    # newlines.
+    # Try to prevent compilation errors from files without trailing newlines.
     if source and source[-1] != "\n":
         source += "\n"
     module._p_changed = True
