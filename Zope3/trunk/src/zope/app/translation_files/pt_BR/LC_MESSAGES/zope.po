@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Jun  9 12:49:12 2004\n"
+"POT-Creation-Date: Fri Jun 18 17:40:55 2004\n"
 "PO-Revision-Date: 2003-08-07 18:51-0300\n"
 "Last-Translator: Sidnei da Silva <sidnei@plone.org>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -926,7 +926,7 @@ msgstr "Conteúdo"
 msgid "Add"
 msgstr "Adicionar"
 
-#: src/zope/app/container/constraints.py:187
+#: src/zope/app/container/constraints.py:185
 msgid "Container is not a valid Zope container."
 msgstr ""
 
@@ -1244,13 +1244,13 @@ msgstr ""
 msgid "The content type identifies the type of data."
 msgstr ""
 
-#: src/zope/app/file/interfaces.py:32
+#: src/zope/app/file/interfaces.py:33
 #: src/zope/app/i18nfile/browser/file_edit.pt:78
 #: src/zope/app/i18nfile/browser/image_edit.pt:79
 msgid "Data"
 msgstr ""
 
-#: src/zope/app/file/interfaces.py:33
+#: src/zope/app/file/interfaces.py:34
 msgid "The actual content of the object."
 msgstr ""
 
@@ -1280,22 +1280,22 @@ msgid "Object Name"
 msgstr "Nome"
 
 #: src/zope/app/form/browser/add.py:61
-#: src/zope/app/form/browser/editview.py:106
+#: src/zope/app/form/browser/editview.py:109
 #: src/zope/app/schema/browser/__init__.py:53
 #: src/zope/app/schema/browser/__init__.py:64
 #: src/zope/app/schema/browser/__init__.py:70
 msgid "An error occured."
 msgstr ""
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "off"
 msgstr ""
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "on"
 msgstr ""
 
@@ -1379,7 +1379,7 @@ msgstr ""
 msgid "widget-missing-multiple-value"
 msgstr ""
 
-#: src/zope/app/form/browser/editview.py:115
+#: src/zope/app/form/browser/editview.py:118
 msgid "Updated on ${date_time}"
 msgstr ""
 
@@ -1922,6 +1922,7 @@ msgstr ""
 #: src/zope/app/schema/browser/schema_edit.pt:30
 #: src/zope/app/container/browser/contents.pt:26
 #: src/zope/app/container/browser/index.pt:18
+#: src/zope/app/uniqueid/browser/registrations.pt:7
 msgid "Content listing"
 msgstr "Listagem de conteúdo"
 
@@ -3315,6 +3316,11 @@ msgstr ""
 msgid "Roles"
 msgstr ""
 
+#: src/zope/app/securitypolicy/browser/manage_access.pt:89
+#, fuzzy
+msgid "Save Changes"
+msgstr "Modificações salvas."
+
 #: src/zope/app/securitypolicy/browser/manage_permissionform.pt:24
 msgid "Helpful message."
 msgstr ""
@@ -4142,6 +4148,31 @@ msgid ""
 "transactions initiated by you."
 msgstr ""
 
+#: src/zope/app/uniqueid/browser/configure.zcml:12
+msgid "Registered Objects"
+msgstr ""
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+msgid "A utility that provides unique ids to objects"
+msgstr ""
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+msgid "Unique Id Utility"
+msgstr ""
+
+#: src/zope/app/uniqueid/browser/registrations.pt:5
+msgid "objects"
+msgstr ""
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+#, fuzzy
+msgid "Object"
+msgstr "Nome"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+msgid "ID"
+msgstr ""
+
 #: src/zope/app/utility/browser/__init__.py:100
 msgid "Deactivated: ${deactivated_utilities}"
 msgstr ""
@@ -4841,14 +4872,14 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr ""
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
 #: src/zope/app/zptpage/configure.zcml:12
-msgid "ZPT Page"
+#: src/zope/app/zptpage/browser/configure.zcml:23
+msgid "A simple, content-based Page Template"
 msgstr ""
 
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "A simple, content-based Page Template"
+msgid "ZPT Page"
 msgstr ""
 
 #: src/zope/app/zptpage/interfaces.py:37
@@ -4873,11 +4904,11 @@ msgid ""
 "feature."
 msgstr ""
 
-#: src/zope/app/zptpage/zptpage.py:105
+#: src/zope/app/zptpage/zptpage.py:114
 msgid "1 line"
 msgstr ""
 
-#: src/zope/app/zptpage/zptpage.py:106
+#: src/zope/app/zptpage/zptpage.py:115
 msgid "${lines} lines"
 msgstr ""
 

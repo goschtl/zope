@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Jun  9 12:49:12 2004\n"
+"POT-Creation-Date: Fri Jun 18 17:40:55 2004\n"
 "PO-Revision-Date: 2003-08-06 11:22-0500\n"
 "Last-Translator: Philipp von Weitershausen\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -908,7 +908,7 @@ msgstr "Contenido"
 msgid "Add"
 msgstr "Añadir"
 
-#: src/zope/app/container/constraints.py:187
+#: src/zope/app/container/constraints.py:185
 msgid "Container is not a valid Zope container."
 msgstr ""
 
@@ -1221,13 +1221,13 @@ msgstr "Tipo de contenido"
 msgid "The content type identifies the type of data."
 msgstr "El tipo de contenido identifica el tipo de datos."
 
-#: src/zope/app/file/interfaces.py:32
+#: src/zope/app/file/interfaces.py:33
 #: src/zope/app/i18nfile/browser/file_edit.pt:78
 #: src/zope/app/i18nfile/browser/image_edit.pt:79
 msgid "Data"
 msgstr "Datos"
 
-#: src/zope/app/file/interfaces.py:33
+#: src/zope/app/file/interfaces.py:34
 msgid "The actual content of the object."
 msgstr "El contenido real de este objeto."
 
@@ -1256,22 +1256,22 @@ msgid "Object Name"
 msgstr "Nombre del Objeto"
 
 #: src/zope/app/form/browser/add.py:61
-#: src/zope/app/form/browser/editview.py:106
+#: src/zope/app/form/browser/editview.py:109
 #: src/zope/app/schema/browser/__init__.py:53
 #: src/zope/app/schema/browser/__init__.py:64
 #: src/zope/app/schema/browser/__init__.py:70
 msgid "An error occured."
 msgstr "Ocurrió un error."
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "off"
 msgstr ""
 
-#: src/zope/app/form/browser/boolwidgets.py:84
-#: src/zope/app/form/browser/boolwidgets.py:89
+#: src/zope/app/form/browser/boolwidgets.py:91
 #: src/zope/app/form/browser/boolwidgets.py:96
+#: src/zope/app/form/browser/boolwidgets.py:103
 msgid "on"
 msgstr ""
 
@@ -1355,7 +1355,7 @@ msgstr ""
 msgid "widget-missing-multiple-value"
 msgstr ""
 
-#: src/zope/app/form/browser/editview.py:115
+#: src/zope/app/form/browser/editview.py:118
 msgid "Updated on ${date_time}"
 msgstr "Los datos han sido cambiado ${date_time}"
 
@@ -1895,6 +1895,7 @@ msgstr ""
 #: src/zope/app/schema/browser/schema_edit.pt:30
 #: src/zope/app/container/browser/contents.pt:26
 #: src/zope/app/container/browser/index.pt:18
+#: src/zope/app/uniqueid/browser/registrations.pt:7
 msgid "Content listing"
 msgstr "Lista de contenido"
 
@@ -3272,6 +3273,11 @@ msgstr "Conceder roles a principales"
 msgid "Roles"
 msgstr "Roles"
 
+#: src/zope/app/securitypolicy/browser/manage_access.pt:89
+#, fuzzy
+msgid "Save Changes"
+msgstr "Los cambios han sido guardados."
+
 #: src/zope/app/securitypolicy/browser/manage_permissionform.pt:24
 msgid "Helpful message."
 msgstr ""
@@ -4076,6 +4082,34 @@ msgid ""
 "transactions initiated by you."
 msgstr ""
 
+#: src/zope/app/uniqueid/browser/configure.zcml:12
+#, fuzzy
+msgid "Registered Objects"
+msgstr "Registrar objetos existentes"
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+msgid "A utility that provides unique ids to objects"
+msgstr ""
+
+#: src/zope/app/uniqueid/browser/configure.zcml:5
+#, fuzzy
+msgid "Unique Id Utility"
+msgstr "Añadir Herramienta"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:5
+#, fuzzy
+msgid "objects"
+msgstr "Campo de Objeto"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+#, fuzzy
+msgid "Object"
+msgstr "Campo de Objeto"
+
+#: src/zope/app/uniqueid/browser/registrations.pt:9
+msgid "ID"
+msgstr ""
+
 #: src/zope/app/utility/browser/__init__.py:100
 msgid "Deactivated: ${deactivated_utilities}"
 msgstr ""
@@ -4769,15 +4803,15 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr ""
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
-#: src/zope/app/zptpage/configure.zcml:12
-msgid "ZPT Page"
-msgstr "Página ZPT"
-
 #: src/zope/app/zptpage/configure.zcml:12
 #: src/zope/app/zptpage/browser/configure.zcml:23
 msgid "A simple, content-based Page Template"
 msgstr "Una plantilla de página sencilla y basada en contenido"
+
+#: src/zope/app/zptpage/configure.zcml:12
+#: src/zope/app/zptpage/browser/configure.zcml:23
+msgid "ZPT Page"
+msgstr "Página ZPT"
 
 #: src/zope/app/zptpage/interfaces.py:37
 msgid "The source of the page template."
@@ -4801,11 +4835,11 @@ msgid ""
 "feature."
 msgstr ""
 
-#: src/zope/app/zptpage/zptpage.py:105
+#: src/zope/app/zptpage/zptpage.py:114
 msgid "1 line"
 msgstr "1 línea"
 
-#: src/zope/app/zptpage/zptpage.py:106
+#: src/zope/app/zptpage/zptpage.py:115
 msgid "${lines} lines"
 msgstr "${lines} líneas"
 
@@ -5041,6 +5075,10 @@ msgid "Bar description"
 msgstr "Descripción Bar"
 
 #, fuzzy
+#~ msgid "Unset"
+#~ msgstr "Usuario"
+
+#, fuzzy
 #~ msgid "line"
 #~ msgstr "1 línea"
 
@@ -5089,10 +5127,6 @@ msgstr "Descripción Bar"
 #~ msgid "Hide Object Registrations"
 #~ msgstr "Ocultar registraciones del objeto"
 
-#, fuzzy
-#~ msgid "Object ID"
-#~ msgstr "Campo de Objeto"
-
 #~ msgid "Subscription control"
 #~ msgstr "Control de subscripción"
 
@@ -5104,9 +5138,6 @@ msgstr "Descripción Bar"
 
 #~ msgid "subscribe-button"
 #~ msgstr "Subscribir"
-
-#~ msgid "Register Existing Objects"
-#~ msgstr "Registrar objetos existentes"
 
 #~ msgid "FieldIndex"
 #~ msgstr "Índice de Campo"
