@@ -66,6 +66,13 @@ def add_to_table(entries, prepend=0):
     else:
         _TABLE = _TABLE + entries
 
+def add_multipath(paths, addrs, remote):
+    """Add entries with different paths but the same addrs and remote"""
+    for path in paths:
+        add_to_table({'path': path,
+                      'addrs': addrs,
+                      'remote': remote})
+
 def get_table():
     return _TABLE[:]
 
@@ -144,5 +151,22 @@ def init_table():
          'addrs': ["zpt@mail.zope.org"],
          'remote': None},
     ])
+
+# Support for the StandaloneZODB module (defined in CVSROOT/modules)
+
+add_to_table({'path': "Releases/StandaloneZODB",
+              'addrs': ("zodb-checkins@zope.org",),
+              'remote': public_remote})
+              
+add_multipath(("Zope2/lib/Components/ExtensionClass",
+               "Packages/ZEO",
+               "Zope2/lib/python/ZODB",
+               "Zope2/lib/python/Persistence.py",
+               "Zope2/lib/python/ThreadedAsync.py",
+               "Zope2/lib/python/zLOG.py",
+               "Zope2/lib/python/zdaemon.py",
+               ),
+              ("zodb-checkins@zope.org"),
+              None)
 
 init_table()
