@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.15 2004/02/09 07:52:08 Zen Exp $
+$Id: bootstrap.py,v 1.16 2004/02/11 03:33:39 Zen Exp $
 """
 
 from zope.app import zapi
@@ -128,11 +128,22 @@ class BootstrapSubscriberBase:
 
     def ensureUtility(
             self, interface, utility_type, utility_factory, name='', **kw):
-        """ Add a utility to the top Utility Service """
-        return addConfigureUtility(
-                self.root_folder, interface, utility_type, utility_factory,
-                name, **kw
+        """Add a utility to the top Utility Service
+        
+        Returns the name added or None if nothing was added.
+        """
+        utility_manager = zapi.getService(
+                self.root_folder, Utilities
                 )
+        utility = utility_manager.queryUtility(interface, name=name)
+        if utility is None:
+            return addConfigureUtility(
+                    self.root_folder, interface, utility_type, utility_factory,
+                    name, **kw
+                    )
+        else:
+            return None
+
 
 class BootstrapInstance(BootstrapSubscriberBase):
     """Bootstrap a Zope3 instance given a database object.
