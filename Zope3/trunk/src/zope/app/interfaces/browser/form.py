@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.10 2003/05/22 22:49:45 jim Exp $
+$Id: form.py,v 1.11 2003/06/18 14:50:47 fdrake Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.form import IWidget
@@ -146,9 +146,18 @@ class IVocabularyQueryView(Interface):
         components separated by dots may be appended if multiple form
         fields are needed.
 
-        This will be called immediately after the IVocabularyQueryView
-        has been created; form values may be extracted as a result of
-        calling this method.
+        This method will be called after the IVocabularyQueryView has
+        been created and before performAction() is called.
+        """
+
+    def setWidget(widget):
+        """Set the widget using this query view.
+
+        This allows the query view to take advantage of rendering
+        helper methods made available by the widget.
+
+        This method will be called after the IVocabularyQueryView has
+        been created and before performAction() is called.
         """
 
     def performAction(value):
@@ -162,8 +171,8 @@ class IVocabularyQueryView(Interface):
         Actions should only be performed if a submit button provided
         by the view was selected.
 
-        This method will be called after setName() and before
-        renderInput() or renderResults().
+        This method will be called after setName() and setWidget() and
+        before renderInput() or renderResults().
         """
 
     def renderInput():
