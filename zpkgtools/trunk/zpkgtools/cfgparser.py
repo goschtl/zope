@@ -246,7 +246,11 @@ class Parser:
             value = self.replace(value)
         else:
             value = ''
-        self.schema.addValue(section, key, value)
+        try:
+            self.schema.addValue(section, key, value)
+        except ConfigurationError, e:
+            e.lineno = self.lineno
+            raise
 
     def replace(self, text):
         parts = []
