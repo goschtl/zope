@@ -51,7 +51,7 @@ class EditModule(BrowserView):
 
 class ViewModule(BrowserView):
 
-    def getModuleName(self):
+    def getModuleObjects(self):
         module = removeAllProxies(self.context.getModule())
         remove_keys = ['__name__', '__builtins__', '_p_serial']
 
@@ -63,9 +63,12 @@ class ViewModule(BrowserView):
              if id not in remove_keys]
         L.sort()
 
-        l_dict = [{"name": name, "doc": doc, "objtype": objtype} for name, doc, objtype in L]
+        l_dict = [{"name": name, "doc": doc, "objtype": objtype}
+                  for name, doc, objtype in L]
 
         for dic in l_dict:
-                if dic['objtype'].find('Class') != -1: dic['objtype'] = 'Class'
-                if dic['objtype'].find('Function') != -1: dic['objtype'] = 'Function'
+                if dic['objtype'].find('Class') != -1:
+                    dic['objtype'] = 'Class'
+                if dic['objtype'].find('Function') != -1:
+                    dic['objtype'] = 'Function'
         return l_dict

@@ -1,12 +1,22 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <content class=".Manager">
+  <localUtility class=".ModuleManager">
     <require
         permission="zope.ManageCode"
         interface=".interfaces.IModuleManager"
         set_schema=".interfaces.IModuleManager"
         />
-  </content>
+  </localUtility>
+
+  <subscriber
+     for="..component.interfaces.registration.IRegistrationActivatedEvent"
+     factory=".manager.setNameOnActivation"
+     />
+
+  <subscriber
+     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
+     factory=".manager.unsetNameOnDeactivation"
+     />
 
   <adapter
       for="zope.app.site.interfaces.ISiteManagementFolder"

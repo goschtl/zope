@@ -17,87 +17,40 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 import sys
-from persistent import Persistent
-from zodbcode.module import PersistentModule, compileModule
+import zodbcode.interfaces
 
 from zope.interface import implements
-from zope.security.proxy import removeSecurityProxy
-
 from zope.app import zapi
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.module.interfaces import IModuleManager
-from zope.app.container.contained import Contained
-
-class Manager(Persistent, Contained):
-
-    implements(IModuleManager, IAttributeAnnotatable)
-
-    def __init__(self, name, source):
-        self.name = name
-        self._source = None
-        self.source = source
-
-    def __setstate__(self, state):
-        manager = state.get('_manager')
-        if manager is None:
-            return Persistent.__setstate__(self, state)
-
-        # We need to convert an old-style manager
-        self._module = manager._module
-        self.name = manager.name
-        self._source = manager.source
-        self._recompile = False
-
-    def execute(self):
-        try:
-            mod = self._module
-        except AttributeError:
-            mod = self._module = PersistentModule(self.name)
 
 
-        folder = self.__parent__
+class ZopeModuleRegistry(object):
+    """ """
+    implements(zodbcode.interfaces.IPersistentModuleImportRegistry)
 
-        # TODO:
-        # We are currently only supporting trusted code.
-        # We don't want the folder to be proxied because, if it is, then
-        # the modules will be proxied.
-        # When we do support untrusted code, we're going to have to do
-        # something different.
-        folder = removeSecurityProxy(folder)
+    def findModule(self, name):
+        """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
+        return zapi.getUtility(IModuleManager, name)
 
-        compileModule(mod, folder, self.source)
-        self._recompile = False
+    def modules(self):
+        """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
+        return [name
+                for name, modulemgr in zapi.getUtilitiesFor(IModuleManager)]
 
-    def getModule(self):
-        if self._recompile:
-            self.execute()
-        return self._module
-
-    
-    def _get_source(self):
-        return self._source
-    def _set_source(self, source):
-        if self._source != source:
-            self._source = source
-            self._recompile = True
-    source = property(_get_source, _set_source)
+# Make Zope Module Registry a singelton
+ZopeModuleRegistry = ZopeModuleRegistry()
 
 
-class ModuleFactory(object):
+def findModule(name, context=None):
+    """Find the module matching the provided name."""
+    module = ZopeModuleRegistry.findModule(name)
+    return module or sys.modules.get(name)
 
-    implements(IFileFactory)
-
-    def __init__(self, context):
-        self.context = context
-
-    def __call__(self, name, content_type, data):
-        assert name.endswith(".py")
-        name = name[:-3]
-        m = Manager(name, data)
-        m.__parent__ = self.context
-        m.execute()
-        return m
+def resolve(name, context=None):
+    """Resolve a dotted name to a Python object."""
+    pos = name.rfind('.')
+    mod = findModule(name[:pos], context)
+    return getattr(mod, name[pos+1:])
 
 
 # Installer function that can be called from ZCML.
@@ -106,17 +59,3 @@ class ModuleFactory(object):
 def installPersistentModuleImporter(event):
     from zodbcode.module import PersistentModuleImporter
     PersistentModuleImporter().install()
-
-
-def findModule(name, context=None):
-    util = zapi.queryUtility(IModuleManager, name, context=context)
-    if util is not None:
-        return util.getModule()
-    return sys.modules.get(name)
-
-
-def resolve(name, context=None):
-    pos = name.rfind('.')
-    mod = findModule(name[:pos], context)
-    return getattr(mod, name[pos+1:])
-    
