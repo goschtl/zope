@@ -493,7 +493,7 @@ Handlers
 
 A handler is a subscriber factory that doesn't produce any normal
 output.  It returns None.  A handler is unlike adapters in that it does
-all of it's work when the factory is called.
+all of its work when the factory is called.
 
 To register a handler, simply provide None as the provided interface::
 

@@ -297,9 +297,9 @@ class AdapterLookup(object):
     # Adapter lookup support
     # We have a class here because we want to provide very
     # fast lookup support in C and making this part of the adapter
-    # registry itself would provide problems if someone wanted to
+    # registry itself would provide problems if someone wanted
     # persistent adapter registries, because we want C slots for fast
-    # lookup that would clash with persistence-suppplied slots.
+    # lookup that would clash with persistence-supplied slots.
     # so this class acts a little bit like a lookup adapter for the adapter
     # registry.
 
