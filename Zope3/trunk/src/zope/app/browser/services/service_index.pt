@@ -1,0 +1,9 @@
+<html metal:use-macro="views/standard_macros/page">
+<body>
+<div metal:fill-slot="body">
+
+<a href="Packages">Packages</a>
+
+</div>
+</body>
+</html>

@@ -444,16 +444,16 @@
 
 <!-- ZPT Templates -->
 
-<browser:page
+<browser:view
     for="zope.app.interfaces.services.interfaces.IZPTTemplate"
     name="index.html"
-    class="zope.app.browser.services.zpt.Source"
+    class=".zpt.Source"
     permission="zope.ManageServices"
     />
 
 <browser:editform
     schema="zope.app.interfaces.services.interfaces.IZPTTemplate"
-    name="index.html"
+    name="edit.html"
     menu="zmi_views"
     label="ZPT Template"
     permission="zope.ManageServices"
@@ -481,7 +481,7 @@
     >
 
   <browser:menuItem title="Manage Local Services"
-            action="++etc++Services/index.html"
+            action="++etc++Services/@@services.html"
             filter="context/hasServiceManager"
             />
 
@@ -491,15 +491,6 @@
              />
 
 </browser:menuItems>
-
-<browser:page
-    name="index.html" 
-    menu="zmi_views" title="Control"
-    permission="zope.ManageServices" 
-    for="zope.app.interfaces.services.hub.IObjectHub"
-    class="zope.app.browser.services.hub.Control"
-    attribute="index" 
-    />
 
 <!-- ConnectionService -->
 
@@ -550,10 +541,17 @@
 
   <browser:page
      for="zope.app.interfaces.services.service.IServiceManager"
-     name="index.html"
+     name="services.html"
      menu="zmi_views" title="Services"
      template="services.pt"
      class=".namecomponentconfigurableview.NameComponentConfigurableView"
+     permission="zope.ManageServices"
+     />
+
+  <browser:page
+     for="zope.app.interfaces.services.service.IServiceManager"
+     name="index.html"
+     template="service_index.pt"
      permission="zope.ManageServices"
      />
 
@@ -581,11 +579,6 @@
 
 <!-- Packages -->
 
-  <browser:defaultView
-     for="zope.app.interfaces.services.package.IPackages"
-     name="contents.html" 
-     />
-
   <browser:pages
       for="zope.app.interfaces.services.package.IPackages"
       permission="zope.ManageServices"
@@ -605,7 +598,7 @@
   <browser:menuItem
       menu="zmi_views" 
       for="zope.app.interfaces.services.package.IPackages"
-      title="Services"
+      title="Packages"
       action="@@contents.html"
       />
 
@@ -617,13 +610,26 @@
       filter="nothing"
       />
 
+  <browser:pages
+      for="zope.app.interfaces.services.package.IPackages"
+      permission="zope.ManageServices" 
+      class="zope.app.browser.container.contents.JustContents">
+
+    <browser:page name="index.html" attribute="index" />
+
+  </browser:pages>
+
 
 <!-- Package -->
 
-  <browser:defaultView
-     for="zope.app.interfaces.services.package.IPackage"
-     name="contents.html" 
-     />
+  <browser:pages
+      for="zope.app.interfaces.services.package.IPackage"
+      permission="zope.ManageServices" 
+      class="zope.app.browser.container.contents.JustContents">
+
+    <browser:page name="index.html" attribute="index" />
+
+  </browser:pages>
 
   <browser:pages
      for="zope.app.interfaces.services.package.IPackage"
@@ -737,9 +743,14 @@
 
 <!-- View Package -->
 
-  <browser:defaultView 
-     for="zope.app.interfaces.services.service.IViewPackage"
-     name="contents.html" />
+  <browser:pages
+      for="zope.app.interfaces.services.service.IViewPackage"
+      permission="zope.ManageServices" 
+      class="zope.app.browser.container.contents.JustContents">
+
+    <browser:page name="index.html" attribute="index" />
+
+  </browser:pages>
 
   <browser:pages
       for="zope.app.interfaces.services.service.IViewPackage"
@@ -805,6 +816,15 @@
 
 
 <!-- Object Hub -->
+
+<browser:page
+    name="index.html" 
+    menu="zmi_views" title="Control"
+    permission="zope.ManageServices" 
+    for="zope.app.interfaces.services.hub.IObjectHub"
+    class="zope.app.browser.services.hub.Control"
+    attribute="index" 
+    />
 
   <browser:menuItem
       menu="add_component"

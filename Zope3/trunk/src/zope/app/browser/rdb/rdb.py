@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: rdb.py,v 1.3 2002/12/30 20:41:50 jeremy Exp $
+$Id: rdb.py,v 1.1 2003/02/07 15:48:39 jim Exp $
 """
 from zope.component import getFactory
 from zope.proxy.introspection import removeAllProxies

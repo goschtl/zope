@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.6 2003/01/28 01:50:14 rdmurray Exp $
+$Id: add.py,v 1.7 2003/02/07 15:48:38 jim Exp $
 """
 
 import sys
@@ -40,8 +40,7 @@ class AddView(EditView):
     to be edited.
     """
 
-    def __init__(self, context, request):
-        super(EditView, self).__init__(context, request)
+    def _setUpWidgets(self):
         setUpWidgets(self, self.schema, names=self.fieldNames)
 
     def apply_update(self, data):
@@ -193,7 +192,7 @@ def add(_context, name, schema, label, content_factory,
 
     return [
         Action(
-        discriminator = ('http://namespaces.zope.org/form/add', name, layer),
+        discriminator = ('view', IAdding, name, IBrowserPresentation, layer),
         callable = AddViewFactory,
         args = (name, schema, label, permission, layer, template, 'add.pt',
                 bases,

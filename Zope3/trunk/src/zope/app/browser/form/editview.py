@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.8 2003/01/28 04:57:30 rdmurray Exp $
+$Id: editview.py,v 1.9 2003/02/07 15:48:38 jim Exp $
 """
 
 from datetime import datetime
@@ -53,7 +53,11 @@ class EditView(BrowserView):
 
     def __init__(self, context, request):
         super(EditView, self).__init__(context, request)
+        self._setUpWidgets()
+
+    def _setUpWidgets(self):
         setUpEditWidgets(self, self.schema, names=self.fieldNames)
+        
 
     def setPrefix(self, prefix):
         for widget in self.widgets():
@@ -221,8 +225,7 @@ def edit(_context, name, schema, permission, label='',
 
     actions.append(
         Action(
-        discriminator = ('http://namespaces.zope.org/form/edit',
-                         name, for_, layer),
+        discriminator = ('view', for_, name, IBrowserPresentation, layer),
         callable = EditViewFactory,
         args = (name, schema, label, permission, layer, template, 'edit.pt',
                 bases,
@@ -244,8 +247,7 @@ def subedit(_context, name, schema, label,
 
     return [
         Action(
-        discriminator = ('http://namespaces.zope.org/form/subedit',
-                         name, for_, layer),
+        discriminator = ('view', for_, name, IBrowserPresentation, layer),
         callable = EditViewFactory,
         args = (name, schema, label, permission, layer, template, 'subedit.pt',
                 bases,

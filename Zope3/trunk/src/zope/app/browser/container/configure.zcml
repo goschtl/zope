@@ -1,9 +1,6 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   >
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
    
-   <browser:view
+   <view
        for="zope.app.interfaces.container.IContentContainer"
        name="+"  
        class="zope.app.browser.container.adding.Adding"
@@ -11,19 +8,19 @@
        allowed_attributes="addingInfo"
        >
 
-       <browser:page name="index.html"  template="add.pt" />
-       <browser:page name="action.html" attribute="action" />
+       <page name="index.html"  template="add.pt" />
+       <page name="action.html" attribute="action" />
    
-       </browser:view>
+       </view>
 
-  <browser:menuItem
+  <menuItem
       for="zope.app.interfaces.container.IWriteContainer"
       menu="zmi_actions"
       title="Add"
       action="+"
       />
 
-  <browser:page
+  <page
       for="zope.app.interfaces.container.IReadContainer"
       name="find.html" 
       menu="zmi_actions"

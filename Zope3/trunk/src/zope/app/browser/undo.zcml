@@ -1,0 +1,21 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+
+<!-- Undo -->
+
+  <pages
+      for="*"
+      permission="zope.ManageContent"
+      class="zope.app.browser.undo.Undo" >
+
+     <page name="undoForm.html" attribute="index" />
+     <page name="undo.html" attribute="action" />
+     </pages>
+
+  <menuItem
+      for="*"
+      menu="zmi_actions"
+      title="Undo"
+      action="@@undoForm.html"
+      />
+
+</zopeConfigure>

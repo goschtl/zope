@@ -1,0 +1,29 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+
+<!-- OnlineHelp -->
+
+  <page
+      for="*"
+      name="find_help_topics"
+      class=".onlinehelp.FindRelevantHelpTopics"
+      permission="zope.Public"
+      allowed_attributes="__call__" 
+      />
+
+  <page
+      name="+"
+      for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
+      permission="zope.View"
+      template="onlinehelptopic.pt"
+      class="zope.app.browser.onlinehelp.OnlineHelpTopicView"
+      />
+
+  <page
+      name="index.html"
+      for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"
+      permission="zope.View"
+      template="onlinehelptopic.pt"
+      class="zope.app.browser.onlinehelp.OnlineHelpTopicView"
+      /> 
+
+</zopeConfigure>

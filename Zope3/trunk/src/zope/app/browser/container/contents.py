@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.7 2003/01/31 10:51:45 alga Exp $
+Revision information: $Id: contents.py,v 1.8 2003/02/07 15:48:37 jim Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -85,6 +85,15 @@ class Contents(BrowserView):
             return ''
 
         return self._index()
+
+class JustContents(Contents):
+    """Like Contents, but does't delegate to item named index.html
+    """
+
+    def index(self):
+        return self._index()
+    
+
 
 # XXX L10N Below is prime material for localization.
 # We are a touchpoint that should contact the personalization

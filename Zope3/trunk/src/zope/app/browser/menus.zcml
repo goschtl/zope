@@ -1,0 +1,55 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+
+    <menu 
+       id="zmi_views" 
+       title="Menu for displaying alternate representations of an object"
+       />
+
+    <menu
+       id="zmi_actions" 
+       title="Menu for displaying actions to be performed"
+       />
+
+   <menu
+        id="add_content"
+        title="Menu of objects to be added to content folders"
+        />
+
+   <menu
+        id="add_component"
+        title="Menu of objects to be added to service manager packages"
+        />
+
+   <menu id="add_configuration"
+        title="Menu of addable configuration objects"
+        />
+
+  <!-- Management view selector -->
+  <!-- Get first accessable item from zmi_views menu -->
+  <page
+     for="*"
+     name="SelectedManagementView.html"
+     permission="zope.Public"
+     class=".managementviewselector.ManagementViewSelector" 
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+     />
+
+  <!-- Make manage an alias for same -->
+  <page
+     for="*"
+     name="manage"
+     permission="zope.ManageContent"
+     class=".managementviewselector.ManagementViewSelector" 
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+     />
+
+  <!-- Menu access -->
+  <page
+     for="*"
+     name="view_get_menu"
+     permission="zope.Public"
+     class=".menu.MenuAccessView" 
+     allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView"
+     />
+
+</zopeConfigure>

@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: gadflyda.py,v 1.2 2002/12/25 14:12:26 jim Exp $
+$Id: gadflyda.py,v 1.1 2003/02/07 15:48:39 jim Exp $
 """
-from zope.app.browser.rdb import AdapterAdd
+from zope.app.browser.rdb.rdb import AdapterAdd
 from zope.app.interfaces.container import IAdding
 
 

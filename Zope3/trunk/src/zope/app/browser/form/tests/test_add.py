@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.3 2002/12/27 16:04:53 jim Exp $
+$Id: test_add.py,v 1.4 2003/02/07 15:48:38 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -21,6 +21,7 @@ from zope.app.browser.form.add import add, AddViewFactory, AddView
 from zope.interface import Interface
 from zope.schema import TextLine
 from zope.app.interfaces.container import IAdding
+from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.form.widget import CustomWidget
 from zope.app.browser.form.widget import TextWidget as Text
 from zope.publisher.browser import TestRequest
@@ -122,8 +123,8 @@ class Test(PlacelessSetup, TestCase):
 
 
         self.assertEqual(descriminator,
-                         ('http://namespaces.zope.org/form/add',
-                          "addthis", "default"))
+                         ('view', IAdding, "addthis", IBrowserPresentation,
+                          "default"))
         self.assertEqual(callable, AddViewFactory)
 
         (name, schema, label, permission, layer, template,
