@@ -12,7 +12,7 @@
 ##############################################################################
 """A utility module for content-type handling.
 
-$Id: content_types.py,v 1.6 2003/11/20 07:29:24 philikon Exp $
+$Id: content_types.py,v 1.7 2004/01/16 19:23:49 sidnei Exp $
 """
 
 import re, mimetypes
@@ -73,6 +73,7 @@ _addtypes = (
     ('.xsl', 'text/xml'),
     ('.xul', 'application/vnd.mozilla.xul+xml'),
     ('.swf', 'application/x-shockwave-flash'),
+    ('.csv', 'text/csv'),
     )
 for name, val in _addtypes:
     mimetypes.types_map[name] = val
