@@ -19,24 +19,25 @@ from persistent import Persistent
 
 from zope.interface import implements
 from zope.event import notify
+from zope.schema.vocabulary import getVocabularyRegistry
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
-from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.app.filerepresentation.interfaces import IReadFile
+from zope.app.filerepresentation.interfaces import IWriteFile
+from zope.app.filerepresentation.interfaces import IReadDirectory
+from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.event.objectevent import ObjectEvent
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.mail.interfaces import IMailDelivery
 
-from zope.app.wiki.interfaces import IWiki, IWikiPage, IComment
+from zope.app.wiki.interfaces import IWiki, IWikiPage
 from zope.app.wiki.interfaces import IWikiContained, IWikiPageContained
 from zope.app.wiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 from zope.app.wiki.interfaces import IWikiPageEditEvent
 from zope.app.wiki.diff import textdiff
-
-__metaclass__ = type
 
 HierarchyKey = 'http://www.zope.org/zwiki#1.0/PageHierarchy/parents'
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
@@ -69,7 +70,7 @@ class WikiPage(BTreeContainer):
     type = u'zope.source.rest'
 
 
-class WikiPageHierarchyAdapter:
+class WikiPageHierarchyAdapter(object):
     __doc__ = IWikiPageHierarchy.__doc__
 
     implements(IWikiPageHierarchy)
@@ -119,40 +120,143 @@ class WikiPageHierarchyAdapter:
         return tuple(children)
 
 
-# Simple comments implementation
-
-class Comment(Persistent):
-    """A simple persistent comment implementation."""
-    implements(IComment, IWikiPageContained)
-    
-    # See zope.app.container.interfaces.IContained
-    __parent__ = __name__ = None
-
-    # See zope.app.wiki.interfaces.IComment
-    source = u''
-    
-    # See zope.app.wiki.interfaces.IComment
-    type = u'zope.source.rest'
-
-
-    # See zope.app.wiki.interfaces.IComment
-    def _getTitle(self):
-        dc = ICMFDublinCore(self)
-        return dc.title
-
-    def _setTitle(self, title):
-        dc = ICMFDublinCore(self)
-        dc.title = title
-
-    title = property(_getTitle, _setTitle)
-
 
 # Adapters for file-system style access
 
-class WikiPageReadFile:
-    """Adapter for letting a Wiki Page look like a regular readable file."""
+class Directory(object):
+    r"""Adapter to provide a file-system rendition of wiki pages
 
-    implements(IReadFile)
+    Usage:
+
+      >>> page = WikiPage()
+      >>> page.source = 'This is the FrontPage.'
+
+      >>> from comment import Comment
+      >>> comment = Comment()
+      >>> comment.title = u'C1'
+      >>> comment.source = u'Comment 1'
+      >>> page[u'comment1'] = comment
+
+      >>> dir = Directory(page)
+      >>> IReadDirectory.providedBy(dir)
+      True
+      >>> IWriteDirectory.providedBy(dir)
+      True
+
+      >>> dir.keys()
+      [u'comment1', u'content.txt']
+      >>> len(dir)
+      2
+
+      >>> content = dir.get('content.txt')
+      >>> content.__class__ == ContentFile
+      True
+      >>> comment = dir.get('comment1')
+      >>> comment.__class__ == Comment
+      True
+
+      >>> del dir[u'content.txt']
+      >>> dir.keys()
+      [u'comment1', u'content.txt']
+      >>> del dir[u'comment1']
+      >>> dir.keys()
+      [u'content.txt']
+    """
+
+    content_file = u'content.txt'
+    implements(IReadDirectory, IWriteDirectory)
+    __used_for__ = IWikiPage
+
+    def __init__(self, context):
+        self.context = context
+
+    def keys(self):
+        return list(self.context.keys()) + [self.content_file]
+
+    def get(self, key, default=None):
+        if key == self.content_file: 
+            return ContentFile(self.context)
+        return self.context.get(key, default)
+
+    def __iter__(self):
+        return iter(self.keys())
+
+    def __getitem__(self, key):
+        v = self.get(key, self)
+        if v is self:
+            raise KeyError, key
+        return v
+
+    def values(self):
+        return map(self.get, self.keys())
+
+    def __len__(self):
+        return len(self.context)+1
+
+    def items(self):
+        get = self.get
+        return [(key, get(key)) for key in self.keys()]
+
+    def __contains__(self, key):
+        return self.get(key) is not None
+
+    def __setitem__(self, name, object):
+        if name == self.content_file:
+            pass
+        else:
+            self.context.__setitem__(name, object)
+
+    def __delitem__(self, name):
+        if name == self.content_file:
+            pass
+        else:
+            self.context.__delitem__(name)
+
+
+class ContentFile:
+    r"""Adapter for letting a Wiki Page look like a regular file.
+
+    Usage:
+
+      >>> page = WikiPage()
+      >>> page.source = 'This is the FrontPage.'
+
+      >>> file = ContentFile(page)
+      >>> IReadFile.providedBy(file)
+      True
+      >>> IWriteFile.providedBy(file)
+      True
+
+      >>> file.read()
+      u'Source Type: zope.source.rest\n\nThis is the FrontPage.'
+      >>> file.size()
+      53
+
+      >>> file.write('Type: zope.source.stx\n\nThis is the FrontPage 2.')
+      >>> file.context.type
+      u'zope.source.stx'
+      >>> file.context.source
+      u'This is the FrontPage 2.'
+
+    Sometimes the user might not have entered a valid type; let's ignore the
+    assignment then.
+
+      >>> file.write('Type: zope.source.foo\n\nThis is the FrontPage 3.')
+      >>> file.context.type
+      u'zope.source.stx'
+      >>> file.context.source
+      u'This is the FrontPage 3.'
+
+    Or the type was ommitted altogether.
+
+      >>> file.write('This is the FrontPage 4.')
+      >>> file.context.type
+      u'zope.source.stx'
+      >>> file.context.source
+      u'This is the FrontPage 4.'
+    """
+
+    implements(IReadFile, IWriteFile)
     __used_for__ = IWikiPage
 
     def __init__(self, context):
@@ -160,24 +264,23 @@ class WikiPageReadFile:
 
     def read(self):
         """See zope.app.filerepresentation.interfaces.IReadFile"""
-        return self.context.source
+        text = u'Source Type: %s\n\n' %self.context.type
+        text += self.context.source 
+        return text
 
     def size(self):
         """See zope.app.filerepresentation.interfaces.IReadFile"""
-        return len(self.context.source)
-
-
-class WikiPageWriteFile:
-    """Adapter for letting a Wiki Page look like a regular writable file."""
-
-    implements(IWriteFile)
-    __used_for__ = IWikiPage
-    
-    def __init__(self, context):
-        self.context = context
+        return len(self.read())
 
     def write(self, data):
         """See zope.app.filerepresentation.interfaces.IWriteFile"""
+        if data.startswith('Type: '):
+            type, data = data.split('\n\n', 1)
+            type = type[6:]
+            vocab = getVocabularyRegistry().get(self.context, 'SourceTypes')
+            if type in [term.value for term in vocab]:
+                self.context.type = unicode(type)
+                
         self.context.source = unicode(data)
 
 

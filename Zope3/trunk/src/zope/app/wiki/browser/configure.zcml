@@ -135,13 +135,13 @@
       label="Comment"
       name="AddComment.html"
       schema="zope.app.wiki.interfaces.IComment"
-      content_factory="zope.app.wiki.wikipage.Comment"
+      content_factory="zope.app.wiki.comment.Comment"
       permission="zope.app.wiki.AddWikiPage"
       fields="title source type"
       class=".wikipage.AddComment" />
 
   <browser:addMenuItem
-      class="zope.app.wiki.wikipage.Comment"
+      class="zope.app.wiki.comment.Comment"
       title="Comment"
       description="A Comment"
       permission="zope.app.wiki.AddWikiPage"

@@ -148,7 +148,7 @@
       type="zope.app.content.interfaces.IContentType"
       /> 
 
-  <content class=".wikipage.Comment">
+  <content class=".comment.Comment">
 
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
@@ -166,6 +166,20 @@
 
   </content>  
 
+  <adapter 
+     for=".interfaces.IComment"
+     provides="zope.app.filerepresentation.interfaces.IReadFile"
+     factory=".comment.CommentFile"
+     permission="zope.app.wiki.ViewWikiPage"
+     />
+
+  <adapter 
+     for=".interfaces.IComment"
+     provides="zope.app.filerepresentation.interfaces.IWriteFile"
+     factory=".comment.CommentFile"
+     permission="zope.app.wiki.CommentWikiPage"
+     />
+
 
   <!-- Mail Subscriptions support -->
   <adapter
@@ -182,18 +196,24 @@
   <!-- WikiPage FTP configurations -->
   <adapter 
      for=".interfaces.IWikiPage"
-     provides="zope.app.filerepresentation.interfaces.IReadFile"
-     factory=".wikipage.WikiPageReadFile"
+     provides="zope.app.filerepresentation.interfaces.IReadDirectory"
+     factory=".wikipage.Directory"
      permission="zope.app.wiki.ViewWikiPage"
      />
 
   <adapter 
      for=".interfaces.IWikiPage"
-     provides="zope.app.filerepresentation.interfaces.IWriteFile"
-     factory=".wikipage.WikiPageWriteFile"
-     permission="zope.app.wiki.EditWikiPage"
+     provides="zope.app.filerepresentation.interfaces.IWriteDirectory"
+     factory=".wikipage.Directory"
+     permission="zope.app.wiki.CommentWikiPage"
      />
 
+  <adapter
+      for=".interfaces.IWikiPage"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      factory="zope.app.wiki.comment.CommentFileFactory"
+      permission="zope.ManageContent"
+      />
 
   <!-- Register mail delivery for change mails -->
   <mail:smtpMailer name="wiki-smtp" hostname="localhost" port="25" />
