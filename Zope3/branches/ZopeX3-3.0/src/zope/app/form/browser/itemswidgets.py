@@ -176,7 +176,7 @@ class MultiDataHelper(object):
 
     def _toFieldValue(self, input):
         """See SimpleInputWidget"""
-        if input is self._data_marker:
+        if input is None:
             return []
         if not isinstance(input, list):
             input = [input]
