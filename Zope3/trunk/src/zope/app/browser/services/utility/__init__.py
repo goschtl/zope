@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.3 2003/06/22 14:02:03 jim Exp $
+$Id: __init__.py,v 1.4 2003/07/01 18:58:07 fdrake Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -24,7 +24,7 @@ from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.traversing import getPath, getParent, getName
-from zope.component import getServiceManager, getView, getAdapter
+from zope.app import zapi
 from zope.interface import providedBy
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
@@ -77,7 +77,7 @@ class Utilities(BrowserView):
             if doActivate or doDeactivate or doDelete:
                 return "Please select at least one checkbox"
             return None
-        sm = getServiceManager(self.context)
+        sm = zapi.getServiceManager(self.context)
         todo = []
         for key in selected:
             name, ifacename = key.split(":", 1)
@@ -151,14 +151,14 @@ class Utilities(BrowserView):
                 conf.status = UnregisteredStatus
                 parent = getParent(conf)
                 name = getName(conf)
-                container = getAdapter(parent, IZopeContainer)
+                container = zapi.getAdapter(parent, IZopeContainer)
                 del container[name]
 
         # 2) Delete the service objects
         for path, obj in services.items():
             parent = getParent(obj)
             name = getName(obj)
-            container = getAdapter(parent, IZopeContainer)
+            container = zapi.getAdapter(parent, IZopeContainer)
             del container[name]
 
         return "Deleted: %s" % ", ".join(done)
@@ -178,9 +178,9 @@ class Utilities(BrowserView):
                                % (ifname, name)),
                  }
             if active is not None:
-                d["url"] = str(getView(active.getComponent(),
-                                       "absolute_url",
-                                       self.request))
+                d["url"] = str(zapi.getView(active.getComponent(),
+                                            "absolute_url",
+                                            self.request))
             L.append((ifname, name, d))
         L.sort()
         return [d for ifname, name, d in L]
@@ -188,11 +188,11 @@ class Utilities(BrowserView):
 
 class ConfigureUtility(BrowserView):
     def update(self):
-        sm = getServiceManager(self.context)
-        iface = sm.resolve(self.request['interface'])
+        folder = zapi.getWrapperContainer(self.context)
+        iface = folder.resolve(self.request['interface'])
         name = self.request['name']
         cr = self.context.queryRegistrations(name, iface)
-        form = getView(cr, "ChangeRegistrations", self.request)
+        form = zapi.getView(cr, "ChangeRegistrations", self.request)
         form.update()
         return form
 
