@@ -19,6 +19,8 @@ __docformat__ = 'restructuredtext'
 
 import os
 
+import zope.component
+
 from zope.interface import implementedBy
 from zope.configuration.exceptions import ConfigurationError
 
@@ -28,6 +30,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser.menu import menuItemDirective
 
 from zope.app.form import CustomWidgetFactory
+from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from add import AddView, AddViewFactory
 from editview import EditView, EditViewFactory
 from addwizard import AddWizardView, AddWizardViewFactory
@@ -61,8 +64,9 @@ class BaseFormDirective(object):
         self._normalize()
         self._widgets = {}
 
-    def widget(self, _context, field, class_, **kw):
+    def widget(self, _context, field, **kw):
         attrs = kw
+        class_ = attrs.pop("class_", None)
         # Try to do better than accepting the string value by looking through
         # the interfaces and trying to find the field, so that we can use
         # 'fromUnicode()' 
@@ -73,6 +77,12 @@ class BaseFormDirective(object):
                     if name in iface:
                         attrs[name] = iface[name].fromUnicode(value)
                         break
+        if class_ is None:
+            # The _default_widget_factory is required to allow the
+            # <widget> directive to be given without a "class"
+            # attribute.  This can be used to override some of the
+            # presentational attributes of the widget implementation.
+            class_ = self._default_widget_factory
         self._widgets[field+'_widget'] = CustomWidgetFactory(class_, **attrs) 
 
     def _processWidgets(self):
@@ -163,6 +173,11 @@ class AddFormDirective(BaseFormDirective):
     set_before_add = None
     set_after_add = None
 
+    def _default_widget_factory(self, field, request):
+        # `field` is a bound field
+        return zope.component.getMultiAdapter(
+            (field, request), IInputWidget)
+
     def _handle_menu(self):
         if self.menu or self.title:
             if (not self.menu) or (not self.title):
@@ -241,9 +256,21 @@ class AddFormDirective(BaseFormDirective):
             kw={'menu': self.menu},
             )
 
-class EditFormDirective(BaseFormDirective):
+class EditFormDirectiveBase(BaseFormDirective):
 
     view = EditView
+
+    def _default_widget_factory(self, field, request):
+        # `field` is a bound field
+        if field.readonly:
+            iface = IDisplayWidget
+        else:
+            iface = IInputWidget
+        return zope.component.getMultiAdapter(
+            (field, request), iface)
+
+class EditFormDirective(EditFormDirectiveBase):
+
     default_template = 'edit.pt'
     title = 'Edit'
 
@@ -263,9 +290,8 @@ class EditFormDirective(BaseFormDirective):
             kw={'menu': self.menu},
         )
 
-class SubeditFormDirective(BaseFormDirective):
+class SubeditFormDirective(EditFormDirectiveBase):
 
-    view = EditView
     default_template = 'subedit.pt'
 
     # default subedit form directive

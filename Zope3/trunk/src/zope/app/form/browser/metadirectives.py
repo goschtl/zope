@@ -352,7 +352,7 @@ class IWidgetSubdirective(Interface):
     class_ = GlobalObject(
         title=u"Widget Class",
         description=u"""The class that will create the widget.""",
-        required=True,
+        required=False,
         )
 
 # Arbitrary keys and values are allowed to be passed to the CustomWidget.

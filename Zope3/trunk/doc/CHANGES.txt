@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - Allow the <widget> subdirective to be used without specifying
+        a "class" attribute.  This allows overriding some attributes
+        for the default widget implementation without having to
+        specify the widget class itself.
+
       - Added a "debug" command to zopectl.  This loads the Zope
         configuration and provides an interactive Python session in
         which a `zope.app.debug.debug.Debugger` instance has been
