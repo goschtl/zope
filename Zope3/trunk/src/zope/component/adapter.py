@@ -14,6 +14,7 @@
 """adapter service
 """
 
+__metaclass__ = type
 import sys
 from zope.interface import implements
 from zope.interface.adapter import AdapterRegistry
@@ -21,7 +22,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IGlobalAdapterService
 import warnings
 
-class GlobalAdapterService(object):
+class GlobalAdapterService:
 
     implements(IGlobalAdapterService)
 
@@ -70,7 +71,7 @@ class GlobalAdapterService(object):
             warnings.warn("The name argument to queryAdapter is deprecated",
                           DeprecationWarning, 2)
             return self.queryNamedAdapter(object, interface, name, default)
-    
+
         conform = getattr(object, '__conform__', None)
         if conform is not None:
             try:
