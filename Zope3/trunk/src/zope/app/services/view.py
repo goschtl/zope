@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.6 2003/02/11 15:59:56 sidnei Exp $
+$Id: view.py,v 1.7 2003/02/21 14:50:04 alga Exp $
 """
 __metaclass__ = type
 
@@ -256,20 +256,20 @@ class PageConfiguration(ViewConfiguration):
         self.template = template
         self.attribute = attribute
 
-    def _validate(self):
-        if self.template is not None and self.attribute is not None:
+    def validate(self):
+        if self.template and self.attribute:
             raise ConfigurationError(
                 "PageConfiguration for %s view name %s: "
                 "Cannot have both 'template' and 'attribute' at the same time." %
                 (self.forInterface, self.viewName))
 
-        if self.template is None and self.attribute is None:
+        if not self.template and not self.attribute:
             raise ConfigurationError(
                 "PageConfiguration for %s view name %s: "
                 "Should have a 'template' or 'attribute' attribute." %
                 (self.forInterface, self.viewName))
 
-        if self.class_ is None and self.attribute is not None:
+        if not self.class_ and self.attribute:
             raise ConfigurationError(
                 "PageConfiguration for %s view name %s: "
                 "Cannot have an 'attribute' without a 'class_'." %
@@ -278,7 +278,7 @@ class PageConfiguration(ViewConfiguration):
     def getView(self, object, request):
 
 
-        self._validate()
+        self.validate()
 
         sm = getServiceManager(self)
 
@@ -293,7 +293,7 @@ class PageConfiguration(ViewConfiguration):
         # This is needed because we need to do an unrestricted traverse
         root = removeAllProxies(getPhysicalRoot(sm))
 
-        if self.attribute is not None:
+        if self.attribute:
             template = getattr(view, self.attribute)
         else:
             template = traverse(root, self.template)

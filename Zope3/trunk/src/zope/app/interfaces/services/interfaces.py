@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.13 2003/02/19 15:24:49 stevea Exp $
+$Id: interfaces.py,v 1.14 2003/02/21 14:50:04 alga Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -152,24 +152,27 @@ class IPageConfigurationInfo(IViewConfigurationInfo):
     class_ = BytesLine(
         title=u"Page class",
         required = False,
-        min_length = 1,
         )
 
     template = ComponentPath(
         title = u"Page template",
         required = False,
-        readonly = True,
         type = IZPTTemplate,
         )
 
     attribute = TextLine(
         title = u"Class attribute",
         required = False,
-        readonly = True,
         )
 
 class IPageConfiguration(IConfiguration, IPageConfigurationInfo):
 
     def getView(object, request):
         """Return a page for the object.
+        """
+
+    def validate(self):
+        """Verifies that the configuration is valid.
+
+        Raises a ConfigurationError if the validation is failed.
         """

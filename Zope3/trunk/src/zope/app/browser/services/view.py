@@ -19,9 +19,9 @@
     search page
     browsing page
 
-  ViewConfigrationAdd
+  PageConfigurationView -- calls validation on PageConfiguration.
 
-$Id: view.py,v 1.6 2003/01/28 02:21:40 rdmurray Exp $
+$Id: view.py,v 1.7 2003/02/21 14:50:05 alga Exp $
 """
 __metaclass__ = type
 
@@ -106,3 +106,10 @@ class ViewServiceView(BrowserView):
                  })
 
         return result
+
+class PageConfigurationView:
+
+    def update(self):
+        super(PageConfigurationView, self).update()
+        if "UPDATE_SUBMIT" in self.request:
+            self.context.validate()
