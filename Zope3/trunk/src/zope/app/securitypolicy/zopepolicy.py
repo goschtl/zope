@@ -26,6 +26,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
 
+from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.security.settings import Allow, Deny, Unset
 
 from zope.app.securitypolicy.principalpermission \
