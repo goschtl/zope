@@ -59,6 +59,12 @@ class FakeRequest:
             return default
         return {'value':value}
 
+    def getApplicationURL(self, depth=0, path_only=False):
+        if depth == 0 and path_only:
+            return '/'
+        raise AssertionError(
+            'Inappropriate arguments passed to getApplicationURL')
+
 
 class SessionServiceTestCaseMixin(PlacefulSetup):
 
