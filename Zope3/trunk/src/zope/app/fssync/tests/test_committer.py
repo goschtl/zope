@@ -13,12 +13,11 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.2 2003/05/28 13:51:49 gvanrossum Exp $
+$Id: test_committer.py,v 1.3 2003/05/28 14:49:08 gvanrossum Exp $
 """
 
 import os
 import shutil
-import tempfile
 import unittest
 
 from zope.component.service import serviceManager
@@ -29,6 +28,7 @@ from zope.testing.cleanup import CleanUp
 from zope.xmlpickle import loads, dumps
 from zope.fssync import fsutil
 from zope.fssync.tests.mockmetadata import MockMetadata
+from zope.fssync.tests.tempfiles import TempFiles
 
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.file import IFileFactory
@@ -86,7 +86,7 @@ class DictAdapter(Default):
             if key not in new:
                 del old[key]
 
-class TestCommitter(unittest.TestCase, PlacelessSetup):
+class TestCommitter(TempFiles, PlacelessSetup):
 
     def setUp(self):
         # Set up standard services
@@ -97,8 +97,10 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         serviceManager.provideService("FSRegistryService", fsRegistry)
         provideSynchronizer(None, Default)
 
+        # Set up temporary name administration
+        TempFiles.setUp(self)
+
         # Instance initialization
-        self.tempfiles = []
         self.metadata = MockMetadata() 
         self.com = Committer(self.metadata)
         self.getentry = self.metadata.getentry
@@ -106,37 +108,10 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
 
     def tearDown(self):
         # Clean up temporary files and directories
-        for tfn in self.tempfiles:
-            if os.path.isdir(tfn):
-                shutil.rmtree(tfn)
-            elif os.path.exists(tfn):
-                os.remove(tfn)
+        TempFiles.tearDown(self)
 
         # Clean up service registrations etc.
         PlacelessSetup.tearDown(self)
-
-    def writefile(self, fn, data):
-        head, tail = os.path.split(fn)
-        if not os.path.exists(head):
-            os.makedirs(head)
-        fp = open(fn, "wb")
-        try:
-            fp.write(data)
-        finally:
-            fp.close()
-
-    def tempfile(self, data):
-        tfn = tempfile.mktemp()
-        self.tempfiles.append(tfn)
-        if data is not None:
-            self.writefile(tfn, data)
-        return tfn
-
-    def tempdir(self):
-        tfn = tempfile.mktemp()
-        self.tempfiles.append(tfn)
-        os.mkdir(tfn)
-        return tfn
 
     def test_get_adapter(self):
         obj = Sample()
@@ -149,7 +124,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         self.failIf(os.path.exists(tfn))
         self.com.remove(tfn)
         tfn = self.tempdir()
-        self.writefile(os.path.join(tfn, "foo", "bar"), "12345")
+        self.writefile("12345", os.path.join(tfn, "foo", "bar"))
         self.com.remove(tfn)
         self.failIf(os.path.exists(tfn))
 
@@ -159,10 +134,10 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         originalfoo = fsutil.getoriginal(foo)
         extrafoo = os.path.join(fsutil.getextra(foo), "x")
         annfoo = os.path.join(fsutil.getannotations(foo), "a")
-        self.writefile(foo, "12345")
-        self.writefile(originalfoo, "12345")
-        self.writefile(extrafoo, "12345")
-        self.writefile(annfoo, "12345")
+        self.writefile("12345", foo)
+        self.writefile("12345", originalfoo)
+        self.writefile("12345", extrafoo)
+        self.writefile("12345", annfoo)
         self.com.remove_all(foo)
         self.failIf(os.path.exists(foo))
         self.failIf(os.path.exists(originalfoo))
@@ -255,7 +230,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         entry = {"flag": "added"}
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
-        self.writefile(tfn, dumps(data))
+        self.writefile(dumps(data), tfn)
         self.com.create_object(container, "foo", entry, tfn)
         self.assertEqual(container, {"foo": ["hello", "world"]})
         self.assertEqual(entry, {"factory": None, "type": "__builtin__.list"})
@@ -270,7 +245,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         entry = {"flag": "added"}
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
-        self.writefile(tfn, dumps(data))
+        self.writefile(dumps(data), tfn)
         self.com.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.holding, {"foo": ["hello", "world"]})
         self.assertEqual(entry, {"factory": None, "type": "__builtin__.list"})
@@ -292,9 +267,9 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         parentdir = self.tempdir()
         childdir = os.path.join(parentdir, "child")
         foofile = os.path.join(childdir, "foo")
-        self.writefile(foofile, dumps(foo))
+        self.writefile(dumps(foo), foofile)
         originalfoofile = fsutil.getoriginal(foofile)
-        self.writefile(originalfoofile, dumps(foo))
+        self.writefile(dumps(foo), originalfoofile)
         parententry = self.getentry(parentdir)
         parententry["@"] = "@" # To make it non-empty
         childentry = self.getentry(childdir)
@@ -312,7 +287,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
 
         # Test modifying a file
         newfoo = {"x": 42}
-        self.writefile(foofile, dumps(newfoo))
+        self.writefile(dumps(newfoo), foofile)
         self.com.synch(parent, "", parentdir)
         self.assertEqual(self.com.get_errors(), [])
         self.assertEqual(parent.holding, {"child": child})
@@ -326,7 +301,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         originalbarfile = fsutil.getoriginal(barfile)
         barentry = self.getentry(barfile)
         barentry["flag"] = "added"
-        self.writefile(barfile, dumps(bar))
+        self.writefile(dumps(bar), barfile)
         self.com.synch(parent, "", parentdir)
         self.assertEqual(child.holding, {"foo": newfoo, "bar": bar})
         self.assertEqual(self.com.read_file(barfile), dumps(bar))
@@ -344,7 +319,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
 
         # Test changing the type of an object
         altfoo = 42
-        self.writefile(foofile, dumps(altfoo))
+        self.writefile(dumps(altfoo), foofile)
         fooentry["type"] = "__builtin__.int"
         self.com.synch(parent, "", parentdir)
         self.assertEqual(child.holding, {"foo": altfoo})
@@ -380,7 +355,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         kwakentry = self.getentry(kwakfile)
         kwakentry["flag"] = "added"
         data = dumps(["Google", "Kwik", "Kwek", "Kwak"])
-        self.writefile(kwakfile, data)
+        self.writefile(data, kwakfile)
         assert os.path.isdir(kwikdir)
         assert os.path.isdir(kwekdir)
         assert os.path.isfile(kwakfile)
@@ -404,7 +379,7 @@ class TestCommitter(unittest.TestCase, PlacelessSetup):
         self.failUnless(os.path.exists(kwikdir))
 
         # Test conflict reporting for object modified in both places
-        self.writefile(originalfoofile, "something else")
+        self.writefile("something else", originalfoofile)
         self.com.synch(parent, "", parentdir)
         self.assertEqual(self.com.get_errors(), [foofile])
         self.assertEqual(self.com.read_file(foofile),
