@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.11 2003/09/24 20:43:07 fdrake Exp $
+$Id: __init__.py,v 1.12 2003/11/03 21:56:49 fdrake Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -289,8 +289,8 @@ class AddComponentRegistration(BrowserView):
     """View for adding component registrations
 
     This class is used to define registration add forms.  It provides
-    tha ``add`` and ``nextURL`` methods needed when creating add forms
-    for non IAdding object. We need this here because registration
+    the ``add`` and ``nextURL`` methods needed when creating add forms
+    for non-IAdding objects.  We need this here because registration
     add forms are views of the component being configured.
     """
 
