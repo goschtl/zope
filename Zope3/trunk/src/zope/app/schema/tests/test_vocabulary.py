@@ -18,8 +18,7 @@ import unittest
 
 from zope.app.schema import vocabulary
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.configuration.tests.test_xml import TempFile
-from zope.configuration.xmlconfig import XMLConfig
+from zope.configuration import xmlconfig
 
 
 class MyContext:
@@ -46,9 +45,8 @@ class VocabularyServiceTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(vocab.kw, kw)
 
     def load_zcml(self, fragment):
-        text = """\
+        xmlconfig.string("""\
         <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-          <include package='zope.configuration' file='metameta.zcml' />
           <include package='zope.configuration' file='meta.zcml' />
           <include package='zope.app.component' file='meta.zcml' />
           <include package='zope.app.schema' file='meta.zcml' />
@@ -57,15 +55,7 @@ class VocabularyServiceTests(PlacelessSetup, unittest.TestCase):
 
           %s
         </zopeConfigure>
-        """ % fragment
-        f = TempFile()
-        try:
-            f.write(text)
-            f.flush()
-            x = XMLConfig(f.name)
-            x()
-        finally:
-            f.close()
+        """ % fragment)
 
     extra_keywords = {"filter": "my-filter",
                       "another": "keyword"}

@@ -17,31 +17,23 @@
 import unittest
 
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.configuration.tests.test_xml import TempFile
-from zope.configuration.xmlconfig import XMLConfig
+from zope.configuration import xmlconfig
 
 
 class TestBrowserFormZCML(PlacelessSetup, unittest.TestCase):
 
     def test_load_zcml(self):
-        text = """\
-        <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-          <include package='zope.configuration' file='metameta.zcml' />
-          <include package='zope.app.component' file='meta.zcml' />
-          <include package='zope.app.event' file='meta.zcml' />
-          <include package='zope.app.publisher.browser' file='meta.zcml' />
-
-          <include package='zope.app.browser.form' />
-        </zopeConfigure>
-        """
-        f = TempFile()
-        try:
-            f.write(text)
-            f.flush()
-            x = XMLConfig(f.name)
-            x()
-        finally:
-            f.close()
+        # XXX Not much of a test.
+        xmlconfig.string(
+            """<configure xmlns='http://namespaces.zope.org/zope'>
+                 <include package='zope.app.component' file='meta.zcml' />
+                 <include package='zope.app.event' file='meta.zcml' />
+                 <include package='zope.app.publisher.browser'
+                          file='meta.zcml' />
+            
+                 <include package='zope.app.browser.form' />
+               </configure>"""
+            )
 
 
 def test_suite():

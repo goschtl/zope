@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: testi18ndirectives.py,v 1.3 2003/05/01 19:35:18 faassen Exp $
+$Id: testi18ndirectives.py,v 1.4 2003/07/28 22:20:25 jim Exp $
 """
 import os
 import unittest
@@ -21,7 +21,7 @@ import unittest
 from cStringIO import StringIO
 
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.configuration.xmlconfig import xmlconfig, Context, XMLConfig
+from zope.configuration import xmlconfig
 
 import zope.app.i18n
 import zope.i18n.tests
@@ -43,17 +43,18 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        XMLConfig('meta.zcml', zope.app.i18n)()
+        self.context = xmlconfig.file('meta.zcml', zope.app.i18n)
 
     def testRegisterTranslations(self):
         eq = self.assertEqual
         eq(translationService._catalogs, {})
-        xmlconfig(StringIO(template % (
-            '''
+        xmlconfig.string(
+            template % '''
+            <configure package="zope.i18n.tests">
             <gts:registerTranslations directory="./locale" />
-            '''
-            )), None, Context([], zope.i18n.tests))
-        path = os.path.join(Context([], zope.i18n.tests).path(),
+            </configure>
+            ''', self.context)
+        path = os.path.join(os.path.dirname(zope.i18n.tests.__file__),
                             'locale', 'en',
                             'LC_MESSAGES', 'zope-i18n.mo')
         eq(translationService._catalogs,
@@ -62,11 +63,10 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
     def testDefaultLanguages(self):
         eq = self.assertEqual
         eq(translationService._fallbacks, ['en'])
-        xmlconfig(StringIO(template % (
-            '''
+        xmlconfig.string(
+            template % '''
             <gts:defaultLanguages languages="de nl xx" />
-            '''
-            )), None, Context([], zope.i18n.tests))
+            ''', self.context)
         eq(translationService._fallbacks, ['de', 'nl', 'xx'])
 
 

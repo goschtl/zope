@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.12 2003/06/26 14:42:34 fdrake Exp $
+$Id: _app.py,v 1.13 2003/07/28 22:20:19 jim Exp $
 """
 
 import base64, time
@@ -32,7 +32,7 @@ def config(file):
     if _configured:
         return
 
-    from zope.configuration.xmlconfig import XMLConfig
+    from zope.configuration import xmlconfig
 
     # Set user to system_user, so we can do anything we want
     from zope.security.management import system_user
@@ -40,7 +40,7 @@ def config(file):
     newSecurityManager(system_user)
 
     # Load server-independent site config
-    XMLConfig(file)()
+    xmlconfig.file(file)
 
     # Reset user
     from zope.security.management import noSecurityManager

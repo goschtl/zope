@@ -24,7 +24,6 @@ from zope.app.interfaces.form import WidgetInputError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
 from zope.component.view import provideView
-from zope.configuration.tests.test_xml import TempFile
 from zope.configuration.xmlconfig import XMLConfig
 from zope.interface.declarations import \
      directlyProvides, providedBy, implements
@@ -39,6 +38,7 @@ from zope.app.browser.form.complexsample import complexsample
 from zope.app.browser.form.complexsample.interfaces import \
      ISampleVocabulary, ISampleVocabularyQuery, IFancySampleVocabularyQuery
 
+from zope.configuration import xmlconfig
 
 class MyTerm:
     def __init__(self, value):
@@ -1102,9 +1102,8 @@ class SingleSampleTests(TestBase):
 class ConfigurationTest(PlacelessSetup, unittest.TestCase):
 
     def test_load_zcml(self):
-        text = """\
+        xmlconfig.string("""\
         <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-          <include package='zope.configuration' file='metameta.zcml' />
           <include package='zope.app.component' file='meta.zcml' />
           <include package='zope.app.event' file='meta.zcml' />
           <include package='zope.app.publisher.browser' file='meta.zcml' />
@@ -1112,15 +1111,7 @@ class ConfigurationTest(PlacelessSetup, unittest.TestCase):
 
           <include package='zope.app.browser.form.complexsample' />
         </zopeConfigure>
-        """
-        f = TempFile()
-        try:
-            f.write(text)
-            f.flush()
-            x = XMLConfig(f.name)
-            x()
-        finally:
-            f.close()
+        """)
 
 
 def show(s):

@@ -13,17 +13,15 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_helpdirectives.py,v 1.3 2003/07/15 14:20:15 srichter Exp $
+$Id: test_helpdirectives.py,v 1.4 2003/07/28 22:20:30 jim Exp $
 """
 import os
 import unittest
 
-from cStringIO import StringIO
-
 from zope.interface import Interface
 from zope.component.adapter import provideAdapter
 from zope.component.tests.placelesssetup import PlacelessSetup
-from zope.configuration.xmlconfig import xmlconfig, Context, XMLConfig
+from zope.configuration import xmlconfig
 from zope.app.interfaces.traversing import \
      ITraverser, ITraversable, IPhysicallyLocatable
 from zope.app.traversing.adapters import \
@@ -51,20 +49,19 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         provideAdapter(None, ITraverser, Traverser)
         provideAdapter(None, ITraversable, DefaultTraversable)
         provideAdapter(None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
-        XMLConfig('meta.zcml', zope.app.onlinehelp)()
+        self.context = xmlconfig.file('meta.zcml', zope.app.onlinehelp)
 
     def test_register(self):
         self.assertEqual(help.keys(), [])
-        xmlconfig(StringIO(template % (
+        xmlconfig.string(template % (
             '''
               <help:register 
                   id = "help1"
                   title = "Help"
                   for = "zope.app.onlinehelp.tests.test_helpdirectives.I1"
                   view = "view.html"
-                  doc_path = "./help.txt" />
-                  '''
-            )), None, Context([], zope.i18n.tests))
+                  doc_path = "tests/help.txt" />
+                  '''), self.context)
         self.assertEqual(help.keys(), ['help1'])
         self.assertEqual(help._registry[(I1, 'view.html')][0].title, 'Help')
         help._register = {}
@@ -76,11 +73,10 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         help.registerHelpTopic('', 'help', 'Help',
                                path, 'txt', I1, 'view.html')
 
-        xmlconfig(StringIO(template % (
+        xmlconfig.string(template % (
             '''
               <help:unregister path="help" />
-              '''
-            )), None, Context([], zope.i18n.tests))
+              '''), self.context)
         self.assertEqual(help.keys(), [])
 
 
