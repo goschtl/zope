@@ -31,10 +31,10 @@ from zpkgtools.include import InclusionProcessor
 
 class Application:
 
-    def __init__(self, options, source, program):
+    def __init__(self, options, resource, program):
         self.ip = None
         self.options = options
-        self.source = source
+        self.resource = resource
         # Create a new directory for all temporary files to go in:
         self.tmpdir = tempfile.mkdtemp(prefix=program + "-")
         tempfile.tempdir = self.tmpdir
@@ -43,10 +43,10 @@ class Application:
         cf.finalize()
         self.locations = cf.locations
 
-        self.loadMetadata()
-        self.target_name = "%s-%s" % (self.metadata.name, options.version)
-        self.target_file = self.target_name + ".tar.bz2"
-        self.destination = os.path.join(self.tmpdir, self.target_name)
+        if resource not in self.locations:
+            print >>sys.stderr, "unknown resource:", resource
+            sys.exit(1)
+        self.resource_url = self.locations[resource]
 
     def buildDistribution(self):
         # This could be either a package distribution or a collection
@@ -119,8 +119,7 @@ class Application:
     def buildCollectionDistribution(self):
         # Build the destination directory:
         self.ip = InclusionProcessor(self.source,
-                                     self.destination,
-                                     self.options.include_spec)
+                                     self.destination)
         try:
             self.ip.createDistributionTree()
         except cvsloader.CvsLoadingError, e:
@@ -135,9 +134,12 @@ class Application:
             sys.exit(1)
         self.metadata = publication.load(open(metadata_file))
 
-    def loadResource(self, name):
-        location = self.locations[name]
-        
+    def loadResource(self):
+        self.source = self.loader.load(self.resource_url)
+        self.loadMetadata()
+        self.target_name = "%s-%s" % (self.metadata.name, self.options.version)
+        self.target_file = self.target_name + ".tar.bz2"
+        self.destination = os.path.join(self.tmpdir, self.target_name)
 
     def generateSetup(self):
         setup.generate(self.destination,
@@ -158,8 +160,6 @@ class Application:
         # We have a tarball; clear some space, then copy the tarball
         # to the current directory:
         shutil.rmtree(self.destination)
-        if self.ip is not None and self.ip.cvs_loader is not None:
-            self.ip.cvs_loader.cleanup()
         shutil.copy(os.path.join(self.tmpdir, self.target_file),
                     self.target_file)
 
@@ -168,6 +168,7 @@ class Application:
 
     def run(self):
         try:
+            self.loadResource()
             self.buildDistribution()
             self.createTarball()
             self.cleanup()
@@ -181,13 +182,10 @@ def main(argv=None):
         argv = sys.argv
     program = os.path.basename(argv[0])
     parser = optparse.OptionParser(
-        usage="usage: %prog [options] [source-dir]")
+        usage="usage: %prog [options] resource")
     parser.add_option(
         "-C", "--configure", dest="configfile",
         help="path or URL to the configuration file")
-    parser.add_option(
-        "-i", "--include", dest="include_spec",
-        help="specification file for inclusions")
     parser.add_option(
         "-r", "--revision-tag", dest="revision_tag",
         help="default CVS tag to use (default: HEAD)",
@@ -199,19 +197,13 @@ def main(argv=None):
     options, args = parser.parse_args(argv[1:])
 
     # figure out what to read from:
-    if not args:
-        source = os.curdir
-    elif len(args) > 1:
-        print >>sys.stderr, "too many arguments"
+    if len(args) != 1:
+        print >>sys.stderr, "wrong number of arguments"
         return 2
-    else:
-        source = args[0]
-        if not os.path.isdir(source):
-            print >>sys.stderr, "source-dir must be a directory"
-            return 1
+    resource = args[0]
 
     try:
-        app = Application(options, source, program)
+        app = Application(options, resource, program)
         app.run()
     except SystemExit, e:
         return e.code
