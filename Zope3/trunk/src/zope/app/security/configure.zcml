@@ -15,6 +15,12 @@
       factory="zope.app.utility.vocabulary.UtilityVocabulary"
       interface="zope.app.security.interfaces.IPermission" />
 
+  <vocabulary 
+      name="Permission Ids"
+      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      interface="zope.app.security.interfaces.IPermission" 
+      nameOnly="True" />
+
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />
   <include package=".browser" />
