@@ -514,10 +514,17 @@ class FactoryTypeInformation (TypeInformation):
         raise AccessControl_Unauthorized( 'Cannot create %s' % self.getId() )
 
     def _queryFactoryMethod(self, container, default=None):
-        if not self.product or not self.factory:
+
+        if not self.product or not self.factory or container is None:
             return default
+
+        dispatcher = getattr(container, 'manage_addProduct', None)
+
+        if dispatcher is None:
+            return default
+
         try:
-            p = container.manage_addProduct[self.product]
+            p = dispatcher[self.product]
         except AttributeError:
             LOG('Types Tool', ERROR, '_queryFactoryMethod raised an exception',
                 error=exc_info())
