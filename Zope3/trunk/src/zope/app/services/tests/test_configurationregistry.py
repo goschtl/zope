@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationregistry.py,v 1.8 2003/06/03 22:46:22 jim Exp $
+$Id: test_configurationregistry.py,v 1.9 2003/06/18 20:12:11 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -118,6 +118,21 @@ class Test(PlacefulSetup, TestCase):
         self.failUnless(registry.registered(c2))
         self.assertEqual(registry.active(), c1)
 
+    def test_activate_none(self):
+        self.test_activate_and_active()
+
+        registry = self.__registry
+        c1 = self.__c1
+        c2 = self.__c2
+
+        registry.activate(None)
+
+        self.assertEqual(c1.active, 0)
+        self.failUnless(registry.registered(c1))
+        self.assertEqual(c2.active, 0)
+        self.failUnless(registry.registered(c2))
+        self.assertEqual(registry.active(), None)
+
     def test_activate_unregistered(self):
         registry = self.__registry
         self.assertRaises(ValueError, registry.activate, self.__config('3'))
@@ -137,9 +152,9 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(registry.active(), c1)
 
         registry.deactivate(c1)
-        self.assertEqual(c2.active, 0)
         self.assertEqual(c1.active, 0)
-        self.assertEqual(registry.active(), None)
+        self.assertEqual(c2.active, 1)
+        self.assertEqual(registry.active(), c2)
 
         self.failUnless(registry.registered(c1))
         self.failUnless(registry.registered(c2))
@@ -153,9 +168,9 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(registry.active(), c1)
 
         registry.unregister(c1)
-        self.assertEqual(c2.active, 0)
         self.assertEqual(c1.active, 0)
-        self.assertEqual(registry.active(), None)
+        self.assertEqual(c2.active, 1)
+        self.assertEqual(registry.active(), c2)
 
         self.failIf(registry.registered(c1))
         self.failUnless(registry.registered(c2))
@@ -172,7 +187,6 @@ class Test(PlacefulSetup, TestCase):
         c2 = self.__c2
 
         info = registry.info()
-        info.sort(lambda a, b: cmp(a['id'], b['id']))
         self.assertEqual(
             info,
             [
@@ -189,17 +203,34 @@ class Test(PlacefulSetup, TestCase):
         registry.deactivate(c1)
 
         info = registry.info()
-        info.sort(lambda a, b: cmp(a['id'], b['id']))
         self.assertEqual(
             info,
             [
+              {'id': 'default/2',
+               'active': True,
+               'configuration': c2,
+               },
               {'id': 'default/1',
                'active': False,
                'configuration': c1,
                },
+              ])
+
+        info = registry.info(True)
+        self.assertEqual(
+            info,
+            [
               {'id': 'default/2',
-               'active': False,
+               'active': True,
                'configuration': c2,
+               },
+              {'id': '',
+               'active': False,
+               'configuration': None,
+               },
+              {'id': 'default/1',
+               'active': False,
+               'configuration': c1,
                },
               ])
 

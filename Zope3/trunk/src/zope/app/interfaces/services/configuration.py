@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.15 2003/06/12 17:03:43 gvanrossum Exp $
+$Id: configuration.py,v 1.16 2003/06/18 20:12:10 gvanrossum Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -141,35 +141,47 @@ class IConfigurationRegistry(Interface):
     """A registry of configurations for a set of parameters
 
     A service will have a registry containing configuration registries
-    for specific parameters. For example, an adapter service will have
-    a configuration registry for each given used-for and provided
+    for specific parameters.  For example, an adapter service will
+    have a configuration registry for each given used-for and provided
     interface.
+
+    The adapter registry works like a stack: the first element is
+    active; when it is removed, the element after it is automatically
+    activated.  An explicit None may be present (at most once) to
+    signal that nothing is active.  To deactivate an element, it is
+    moved to the end.
     """
 
     def register(configuration):
-        """Register the given configuration
+        """Register the given configuration without activating it.
 
         Do nothing if the configuration is already registered.
         """
 
     def unregister(configuration):
-        """Unregister the given configuration
+        """Unregister the given configuration.
 
         Do nothing if the configuration is not registered.
+
+        Implies deactivate() if the configuration is active.
         """
 
     def registered(configuration):
-        """Is the configuration registered
+        """Is the configuration registered?
 
         Return a boolean indicating whether the configuration has been
         registered.
-
         """
 
     def activate(configuration):
         """Make the configuration active.
 
-        The activated method is called on the configuration.
+        The activated() method is called on the configuration.  If
+        another configuration was previously active, its deactivated()
+        method is called first.
+
+        If the argument is None, the currently active configuration if
+        any is disabled and no new configuration is activated.
 
         Raises a ValueError if the given configuration is not registered.
         """
@@ -177,8 +189,10 @@ class IConfigurationRegistry(Interface):
     def deactivate(configuration):
         """Make the configuration inactive.
 
-        Id the configuration is active, the deactivated method is called
-        on the configuration.
+        If the configuration is active, the deactivated() method is
+        called on the configuration.  If this reveals a configuration
+        that was previously active, that configuration's activated()
+        method is called.
 
         Raises a ValueError if the given configuration is not registered.
 
@@ -187,28 +201,33 @@ class IConfigurationRegistry(Interface):
         """
 
     def active():
-        """Return the active configuration, if any
+        """Return the active configuration, if any.
 
         Otherwise, returns None.
         """
 
-    def info():
-        """Return a sequence of configuration information
+    def info(keep_dummy=False):
+        """Return a sequence of configuration information.
 
         The sequence items are mapping objects with keys:
 
         id -- A string that can be used to uniquely identify the
-              configuration
+              configuration.
 
         active -- A boolean indicating whether the configuration is
-                  active
+                  active.
 
         configuration -- The configuration object.
+
+        If keep_dummy is true, an entry corresponding to the dummy
+        entry's position is returned whose value is
+        {id: '',
+         active: (True iff it is the first entry),
+         configuration: None}.
         """
 
     def __nonzero__(self):
-        """The registry is true if it is non-empty
-        """
+        """The registry is true iff it has no registered configurations."""
 
 
 class IConfigurable(Interface):

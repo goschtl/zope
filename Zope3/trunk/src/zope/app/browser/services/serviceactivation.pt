@@ -36,20 +36,15 @@
           <td><input type="radio" name="active" value="default/configure/1"
                      tal:attributes="value config/id;
                                      checked config/active" /></td>
-          <td><a href="foo"
+          <td tal:condition="not:config/name">Disabled</td>
+          <td tal:condition="config/name"><a href="foo"
                  tal:content="config/name"
                  tal:attributes="href config/url">Implementation</a>
           </td>
-          <td><a href="foo"
+          <td tal:condition="config/name"><a href="foo"
                  tal:content="config/id"
                  tal:attributes="href config/config">Registration</a>
           </td>
-        </tr>
-
-        <tr>
-          <td><input type="radio" name="active" value="None"
-                     tal:attributes="checked view/isDisabled"></td>
-          <td>Disable</td>
         </tr>
       
       </tbody>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.36 2003/06/12 19:28:08 gvanrossum Exp $
+$Id: configuration.py,v 1.37 2003/06/18 20:12:11 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -123,6 +123,18 @@ class ConfigurationStatusProperty(ContextDescriptor):
 
 class ConfigurationRegistry(Persistent):
 
+    """Configuration registry implementation.
+
+    The invariants for _data are as follows:
+
+        (1) The last element (if any) is not None
+
+        (2) No value occurs more than once
+
+        (3) Each value except None is a relative path from the nearest
+            service manager to an object implementing IConfiguration
+    """
+
     implements(IConfigurationRegistry)
 
     _data = ()
@@ -169,20 +181,24 @@ class ConfigurationRegistry(Persistent):
         data = wrapped_self._data
         if data:
             if data[0] == cid:
-                # It's active, we need to switch in None
-                data = (None, ) + data[1:]
-
-                # we need to notify it that it's inactive.
+                # Tell it that it is no longer active
                 configuration.deactivated()
 
-            else:
-                data = tuple([item for item in data if item != cid])
+            # Remove it from our data
+            data = tuple([item for item in data if item != cid])
 
-        # Check for empty registry
-        if len(data) == 1 and data[0] is None:
-            data = ()
+            # Check for trailing None
+            if data and data[-1] is None:
+                data = data[:-1]
 
-        wrapped_self._data = data
+            if data and data[0] is not None:
+                # Activate the newly active component
+                sm = getServiceManager(wrapped_self)
+                new = traverse(sm, data[0])
+                new.activated()
+
+            # Write data back
+            wrapped_self._data = data
     unregister = ContextMethod(unregister)
 
     def registered(wrapped_self, configuration):
@@ -191,29 +207,39 @@ class ConfigurationRegistry(Persistent):
     registered = ContextMethod(registered)
 
     def activate(wrapped_self, configuration):
-        cid = wrapped_self._id(configuration)
+        if configuration is None:
+            cid = None
+        else:
+            cid = wrapped_self._id(configuration)
         data = wrapped_self._data
 
-        if cid in data:
+        if cid is None and not data:
+            return # already in the state we want
+
+        if cid is None or cid in data:
 
             if data[0] == cid:
                 return # already active
 
-            if data[0] is None:
-                # Remove leading None marker
-                data = data[1:]
-            else:
-                # We need to deactivate the currently active component
+            if data[0] is not None:
+                # Deactivate the currently active component
                 sm = getServiceManager(wrapped_self)
                 old = traverse(sm, data[0])
                 old.deactivated()
 
+            # Insert it in front, removing it from back
+            data = (cid, ) + tuple([item for item in data if item != cid])
 
-            wrapped_self._data = (cid, ) + tuple(
-                [item for item in data if item != cid]
-                )
+            # Check for trailing None
+            if data[-1] == None:
+                data = data[:-1]
 
-            configuration.activated()
+            # Write data back
+            wrapped_self._data = data
+
+            if configuration is not None:
+                # Tell it that it is now active
+                configuration.activated()
 
         else:
             raise ValueError(
@@ -223,21 +249,34 @@ class ConfigurationRegistry(Persistent):
 
     def deactivate(wrapped_self, configuration):
         cid = wrapped_self._id(configuration)
+        data = wrapped_self._data
 
-        if cid in wrapped_self._data:
-
-            if wrapped_self._data[0] != cid:
-                return # already inactive
-
-            # Just stick None on the front
-            wrapped_self._data = (None, ) + wrapped_self._data
-
-            configuration.deactivated()
-
-        else:
+        if cid not in data:
             raise ValueError(
                 "Configuration to be deactivated is not registered",
                 configuration)
+
+        if data[0] != cid:
+            return # already inactive
+
+        # Tell it that it is no longer active
+        configuration.deactivated()
+
+        if None not in data:
+            # Append None
+            data += (None,)
+
+        # Move it to the end
+        data = data[1:] + data[:1]
+
+        if data[0] is not None:
+            # Activate the newly active component
+            sm = getServiceManager(wrapped_self)
+            new = traverse(sm, data[0])
+            new.activated()
+
+        # Write data back
+        wrapped_self._data = data
     deactivate = ContextMethod(deactivate)
 
     def active(wrapped_self):
@@ -255,21 +294,22 @@ class ConfigurationRegistry(Persistent):
     def __nonzero__(self):
         return bool(self._data)
 
-    def info(wrapped_self):
+    def info(wrapped_self, keep_dummy=False):
         sm = getServiceManager(wrapped_self)
 
-        result = [{'id': path,
+        data = wrapped_self._data
+        if not data and keep_dummy:
+            data += (None,)
+
+        result = [{'id': path or "",
                    'active': False,
                    'configuration': (path and traverse(sm, path))
-                   }
-                  for path in wrapped_self._data
-                  ]
+                  }
+                  for path in data if path or keep_dummy
+                 ]
 
-        if result:
-            if result[0]['configuration'] is None:
-                del result[0]
-            else:
-                result[0]['active'] = True
+        if keep_dummy or (result and result[0]['configuration'] is not None):
+            result[0]['active'] = True
 
         return result
     info = ContextMethod(info)

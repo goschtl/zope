@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.30 2003/06/18 16:02:50 jim Exp $
+$Id: service.py,v 1.31 2003/06/18 20:12:10 gvanrossum Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -288,17 +288,32 @@ class ServiceActivation(BrowserView):
 
         # XXX this code path is not being tested
         result = []
-        for info in registry.info():
+        dummy = {'id': 'None',
+                 'active': False,
+                 'configuration': None,
+                 'name': '',
+                 'url': '',
+                 'config': '',
+                }
+        for info in registry.info(True):
             configobj = info['configuration']
-            component = configobj.getComponent()
-            path = zapi.getPath(component)
-            path = path.split("/")
-            info['name'] = "/".join(path[-2:])
-            info['url'] = str(
-                zapi.getView(component, 'absolute_url', self.request))
-            info['config'] = str(zapi.getView(configobj, 'absolute_url',
-                                         self.request))
+            if configobj is None:
+                info = dummy
+                dummy = None
+                if not result:
+                    info['active'] = True
+            else:
+                component = configobj.getComponent()
+                path = zapi.getPath(component)
+                path = path.split("/")
+                info['name'] = "/".join(path[-2:])
+                info['url'] = str(
+                    zapi.getView(component, 'absolute_url', self.request))
+                info['config'] = str(zapi.getView(configobj, 'absolute_url',
+                                             self.request))
             result.append(info)
+        if dummy:
+            result.append(dummy)
         return result
 
     def update(self):
@@ -319,7 +334,7 @@ class ServiceActivation(BrowserView):
             return "No change"
 
         if new_active is None:
-            old_active.status = Registered
+            registry.activate(None)
             return "Service deactivated"
         else:
             new_active.status = Active
