@@ -102,8 +102,12 @@ def createZope2Bridge(zope2, package, name):
 
 def bridge(_context, zope2, package, name=None):
     # Directive handler for <five:bridge> directive.
+
+    # N.B.:  We have to do the work early, or else we won't be able
+    #        to use the synthesized interface in other ZCML directives.
+    createZope2Bridge(zope2, package, name)
+
+    # Faux action, only for conflict resolution.
     _context.action(
         discriminator = (zope2,),
-        callable = createZope2Bridge,
-        args = (zope2, package, name)
         )

@@ -12,6 +12,16 @@ $Id$
 """
 import unittest
 
+#------------------------------------------------------------------------------
+# Running these tests
+# ===================
+#
+# I (Tres) can't figure out your testing framework.  These tests run
+# in a "normal" Z27 + Z3 + Five instance home via the following:
+#
+#   $ bin/zopectl run Products/Five/tests/test_bridge.py
+#------------------------------------------------------------------------------
+
 from Interface import Interface as Z2_Interface
 from Interface import Attribute as Z2_Attribute
 
@@ -23,7 +33,7 @@ class BridgeTests(unittest.TestCase):
 
     def test_fromZ2Interface_invalid(self):
 
-        from Products.CMFonFive.utilities import fromZ2Interface
+        from Products.Five.bridge import fromZ2Interface
 
         self.assertRaises(ValueError, fromZ2Interface, None)
         self.assertRaises(ValueError, fromZ2Interface, object())
@@ -35,7 +45,7 @@ class BridgeTests(unittest.TestCase):
 
     def test_fromZ2Interface_empty(self):
 
-        from Products.CMFonFive.utilities import fromZ2Interface
+        from Products.Five.bridge import fromZ2Interface
 
         class IEmpty(Z2_Interface):
             pass
@@ -47,7 +57,7 @@ class BridgeTests(unittest.TestCase):
 
     def test_fromZ2Interface_attributes(self):
 
-        from Products.CMFonFive.utilities import fromZ2Interface
+        from Products.Five.bridge import fromZ2Interface
 
         class IAttributes(Z2_Interface):
             one = Z2_Attribute('one', 'One attribute')
@@ -72,7 +82,7 @@ class BridgeTests(unittest.TestCase):
 
     def test_fromZ2Interface_methods(self):
 
-        from Products.CMFonFive.utilities import fromZ2Interface
+        from Products.Five.bridge import fromZ2Interface
 
         class IMethods(Z2_Interface):
 
