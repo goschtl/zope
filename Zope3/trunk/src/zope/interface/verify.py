@@ -73,7 +73,7 @@ def _verify(iface, candidate, tentative=0, vtype=None):
         if mess:
             raise BrokenMethodImplementation(n, mess)
 
-    return 1
+    return True
 
 def verifyClass(iface, candidate, tentative=0):
     return _verify(iface, candidate, tentative, vtype='c')
