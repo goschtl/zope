@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.8 2003/05/14 22:16:09 gvanrossum Exp $
+$Id: test_merger.py,v 1.9 2003/05/15 12:05:12 gvanrossum Exp $
 """
 
 import os
@@ -96,6 +96,24 @@ class TestMerger(unittest.TestCase):
         finally:
             f2.close()
         return data1 == data2
+
+    diff3ok = None
+
+    def check_for_diff3(self):
+        if self.diff3ok is None:
+            self.__class__.diff3ok = self.diff3_check()
+        return self.diff3ok
+
+    def diff3_check(self):
+        if not hasattr(os, "popen"):
+            return False
+        f1 = self.addfile("a")
+        f2 = self.addfile("b")
+        f3 = self.addfile("b")
+        pipe = os.popen("diff3 -m -E %s %s %s" % (f1, f2, f3), "r")
+        output = pipe.read()
+        sts = pipe.close()
+        return output == "b" and not sts
 
     def runtest(self, localdata, origdata, remotedata,
                 localmetadata, remotemetadata, exp_localdata,
@@ -184,14 +202,14 @@ class TestMerger(unittest.TestCase):
         self.runtest("a", "a", "ab", {}, {}, "ab", "Copy", "Uptodate")
 
     def test_both_modified_resolved(self):
-        if os.name != "posix":
-            # Alas, this test requires the external command 'diff3'
-            # which isn't usually found on Windows
+        if not self.check_for_diff3():
             return
         self.runtest("l\na\n", "a\n", "a\nr\n", {}, {},
                      "l\na\nr\n", "Merge", "Modified")
 
     def test_both_modified_conflict(self):
+        if not self.check_for_diff3():
+            return
         self.runtest("ab", "a", "ac", {}, {},
                      "", "Merge", "Modified", "Conflict")
 
@@ -205,6 +223,8 @@ class TestMerger(unittest.TestCase):
         self.runtest("a", None, "a", added, {}, "a", "Fix", "Uptodate")
 
     def test_both_added_different(self):
+        if not self.check_for_diff3():
+            return
         self.runtest("a", None, "b", added, {},
                      "", "Merge", "Modified", "Conflict")
 
