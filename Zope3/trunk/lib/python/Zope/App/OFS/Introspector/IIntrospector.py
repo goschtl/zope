@@ -15,16 +15,37 @@ from Interface import Interface
 
 class IIntrospector(Interface):
     """An interface for introspecting a component"""
-    
-    def getName():
-        """Returns the component name"""
+
+    def isInterface():
+        "Checks if the context is class or interface"
+        
+    def setRequest(request):
+        """sets the request"""
+        
+    def getClass():
+        """Returns the class name"""
+
+    def getBaseClassNames():
+        """Returns the names of the classes"""
+        
+    def getModule():
+        """Returns the module name of the class"""
     
     def getDocString():
-        """Returns the description of component (string)"""
+        """Returns the description of the class"""
         
     def getInterfaces():
-        """Returns interfaces implemented by this component (iterator)"""
-        
+        """Returns interfaces implemented by this class"""
+
     def getInterfaceNames():
-        """Returns dotted names usable by the interface reference"""
+        """Returns the name of the interface"""
+        
+    def getInterfaceDetails():
+        """Returns the entire documentation in the interface"""
+
+    def getExtends():
+        """Returns all the class extended up to the top most level"""
+
+    def getInterfaceConfiguration():
+        """Returns details for a interface configuration"""        
 

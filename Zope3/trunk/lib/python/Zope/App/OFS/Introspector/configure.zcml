@@ -2,20 +2,12 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'>
 
-  <permission
-     id="Zope.App.OFS.Introspector.View" 
-     title="View Component Description" />
-
-  <browser:view
-    name="api"
-     permission="Zope.View"
-    factory="Zope.App.OFS.Introspector.
-             Zope.App.OFS.Introspector.Views.Browser.IntrospectorView." />
-
   <adapter
       factory="Zope.App.OFS.Introspector."
       permission="Zope.View"
       provides="Zope.App.OFS.Introspector.IIntrospector." />
+
+  <include package=".Browser" />
 
 </zopeConfigure>
 

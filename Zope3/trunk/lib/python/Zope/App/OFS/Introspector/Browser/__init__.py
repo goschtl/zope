@@ -11,7 +11,3 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-from Zope.App.PageTemplate import SimpleViewClass
-from Zope.App.OFS.Introspector.IIntrospector import IIntrospector
-
-IntrospectorView  = SimpleViewClass('Introspector.pt', used_for=IIntrospector)

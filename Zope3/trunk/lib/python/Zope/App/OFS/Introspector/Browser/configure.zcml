@@ -1,0 +1,29 @@
+<zopeConfigure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'>
+
+<browser:defaultView
+    name="classBrowser.html"
+    for = "Interface.Interface"
+    permission="Zope.View"
+    template="IBrowser.pt"
+    factory=".IntrospectorView."
+    />
+
+<browser:menuItem 
+    for = "Interface.Interface" 
+    title="Introspector" 
+    menu="zmi_views" 
+    action="classBrowser.html"/>
+ 
+
+<browser:defaultView
+    name="interfaceBrowser.html"
+    for="Interface.IInterface."
+    permission="Zope.View"
+    template="IBrowser.pt"
+    factory=".IntrospectorView."
+    /> 
+
+ 
+</zopeConfigure>
