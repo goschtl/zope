@@ -16,8 +16,6 @@ import re
 
 from zope.interface import implements
 
-import zodb
-
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 
