@@ -101,7 +101,7 @@
 
   <browser:containerViews
       for=".localtheme.SmileyTheme"
-      index="book.messageboard.View"
+      index="zope.View"
       contents="zope.ManageServices"
       add="zope.ManageServices"
       />
