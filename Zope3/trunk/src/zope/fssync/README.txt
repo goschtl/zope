@@ -74,6 +74,9 @@ BUGS
   stuff back necessarily.  (As a work-around, a subsequent update gets
   them.)
 
+* Removing an object with annotations doesn't always remove the
+  @@Zope/Annotations/<name>/ directory.  Probably the same for Extra.
+
 
 TO DO
 -----
