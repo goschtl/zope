@@ -58,7 +58,7 @@ class TypesToolTests(SecurityTest):
         self.ttool = self.site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_DUMMY[0].copy()
         del fti['id']
-        self.ttool._setObject( 'Dummy Content', apply( FTI, ('Dummy Content',), fti) )
+        self.ttool._setObject( 'Dummy Content', FTI('Dummy Content', **fti) )
  
     def test_processActions( self ):
         """
@@ -161,9 +161,9 @@ class TypeInfoTests(TestCase):
                                )
         self.assertEqual( ti.immediate_view, 'foo_view' )
 
-    def _makeAndSetInstance( self,id,**kw ):
+    def _makeAndSetInstance(self, id, **kw):
         tool = self.tool
-        t = apply( self._makeInstance, (id,), kw )
+        t = self._makeInstance(id, **kw)
         tool._setObject(id,t)
         return tool[id]
               
@@ -390,14 +390,14 @@ class TypeInfoTests(TestCase):
 
 class FTIDataTests( TypeInfoTests ):
 
-    def _makeInstance( self, id, **kw ):
-        return apply( FTI, ( id, ), kw )
+    def _makeInstance(self, id, **kw):
+        return FTI(id, **kw)
 
     def _makeInstanceByFTIData(self, ftidata):
         fti = ftidata[0].copy()
         id = fti['id']
         del fti['id']
-        return apply( FTI, ( id, ), fti )
+        return FTI(id, **fti)
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
@@ -420,14 +420,14 @@ class FTIDataTests( TypeInfoTests ):
 
 class STIDataTests( TypeInfoTests ):
 
-    def _makeInstance( self, id, **kw ):
-        return apply( STI, ( id, ), kw )
+    def _makeInstance(self, id, **kw):
+        return STI(id, **kw)
 
     def _makeInstanceByFTIData(self, ftidata):
         fti = ftidata[0].copy()
         id = fti['id']
         del fti['id']
-        return apply( STI, ( id, ), fti )
+        return STI(id, **fti)
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
@@ -453,8 +453,8 @@ class FTIConstructionTests(TestCase):
     def setUp( self ):
         noSecurityManager()
 
-    def _makeInstance( self, id, **kw ):
-        return apply( FTI, ( id, ), kw )
+    def _makeInstance(self, id, **kw):
+        return FTI(id, **kw)
 
     def _makeFolder( self, fake_product=0 ):
         return DummyFolder( fake_product )

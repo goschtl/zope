@@ -129,8 +129,8 @@ class DocumentTests(RequestTest):
         body = '<ul>\n%s\n</ul>' % '\n'.join(s)
         html = HTML_TEMPLATE % {'title': 'big document',
                                 'body': body}
-        file = StringIO( html )
-        d.edit(text_format='html', text='', file=file)
+        _file = StringIO( html )
+        d.edit(text_format='html', text='', file=_file)
         self.assertEqual( d.CookedBody(), body )
         
     def test_plain_text(self):
@@ -320,7 +320,7 @@ class DocumentFTPGetTests(RequestTest):
         ttool = site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_CMF15[0].copy()
         del fti['id']
-        ttool._setObject( 'Document', apply( FTI, ('Document',), fti) )
+        ttool._setObject( 'Document', FTI('Document', **fti) )
 
         zpt = site._setObject( 'source_html',
                                ZopePageTemplate('source_html') )
@@ -329,8 +329,8 @@ class DocumentFTPGetTests(RequestTest):
             dir = dir[:-15]
         else:
             dir = dir[:-6]
-        file = join(dir, 'skins', 'zpt_content', 'source_html.pt')
-        data = open(file, 'r').read()
+        _file = join(dir, 'skins', 'zpt_content', 'source_html.pt')
+        data = open(_file, 'r').read()
         zpt.write(data)
 
         d = site._setObject( 'foo', Document('foo') )
