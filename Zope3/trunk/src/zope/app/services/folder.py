@@ -13,7 +13,7 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: folder.py,v 1.3 2003/03/23 17:20:48 jim Exp $
+$Id: folder.py,v 1.4 2003/03/23 18:04:26 jim Exp $
 """
 
 __metaclass__ = type
@@ -28,6 +28,7 @@ from zope.app.services.configuration import ConfigurationManager
 from zope.app.traversing import getPath
 from zope.proxy.context import ContextMethod, ContextWrapper
 from zope.app.interfaces.services.configuration import IConfigurationManager
+from zope.app.interfaces.services.folder import NoConfigurationManagerError
 
 class SiteManagementFolder(BTreeContainer):
     __implements__ = ISiteManagementFolder
@@ -35,6 +36,20 @@ class SiteManagementFolder(BTreeContainer):
     def __init__(self):
         super(SiteManagementFolder, self).__init__()
         self.setObject('configure', ConfigurationManager())
+
+
+    def __delitem__(self, name):
+        """Delete an item, but not if it's the last configuration manager
+        """
+
+        item = self[name]
+        if IConfigurationManager.isImplementedBy(item):
+            # Check to make sure it's not the last one
+            if len([i for i in self.values()
+                    if IConfigurationManager.isImplementedBy(i)]) < 2:
+                raise NoConfigurationManagerError(
+                    "Can't delete the last configuration manager")
+        BTreeContainer.__delitem__(self, name)
 
     def getConfigurationManager(self):
         """Get a configuration manager
@@ -47,7 +62,8 @@ class SiteManagementFolder(BTreeContainer):
                 # We found one. Get it in context
                 return ContextWrapper(item, self, name=name)
         else:
-            raise SystemError("Couldn't find an configuration manager")
+            raise NoConfigurationManagerError(
+                "Couldn't find an configuration manager")
     
     getConfigurationManager = ContextMethod(getConfigurationManager)
 

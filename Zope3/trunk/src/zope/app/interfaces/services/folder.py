@@ -13,11 +13,28 @@
 ##############################################################################
 """Interfaces for packages.
 
-$Id: folder.py,v 1.2 2003/03/23 17:13:42 jim Exp $
+$Id: folder.py,v 1.3 2003/03/23 18:04:26 jim Exp $
 """
 
 from zope.app.interfaces.container import IAdding, IContainer
 from zope.app.interfaces.services.service import IComponentManager
+from zope.interface import Interface
+
+class INoConfigurationManagerError(Interface):
+    """No configuration manager error
+    """
+    
+
+class NoConfigurationManagerError(Exception):
+    """No configuration manager
+
+    There is no configuration manager in a site-management folder, or
+    an operation would result in no configuration manager in a
+    site-management folder.
+
+    """
+
+    __implements__ = INoConfigurationManagerError
 
 class ISiteManagementFolder(IContainer):
     """Component and component configuration containers."""

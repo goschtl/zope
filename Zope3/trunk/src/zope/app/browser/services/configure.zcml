@@ -522,44 +522,49 @@
 
   </pages>
 
-
-  
-
-
 <!-- SiteManagementFolder -->
 
-  <pages
-      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-      permission="zope.ManageServices" 
-      class="zope.app.browser.container.contents.JustContents">
+<pages
+    for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+    permission="zope.ManageServices" 
+    class="zope.app.browser.container.contents.JustContents">
 
-    <page name="index.html" attribute="index" />
+  <page name="index.html" attribute="index" />
 
-  </pages>
+</pages>
 
-  <pages
-     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-     permission="zope.ManageServices"
-     class="zope.app.browser.container.contents.Contents"
-     >
+<pages
+   for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+   permission="zope.ManageServices"
+   class="zope.app.browser.container.contents.Contents"
+   >
 
-    <page name="contents.html" 
-          attribute="contents"
-          menu="zmi_views" title="Contents"
-          />
-    <page name="removeObjects.html" attribute="removeObjects" />
-   </pages>
+  <page name="contents.html" 
+        attribute="contents"
+        menu="zmi_views" title="Contents"
+        />
+  <page name="removeObjects.html" attribute="removeObjects" />
+ </pages>
 
-  <view
-     name="+"
-     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-     permission="zope.ManageServices"
-     class="zope.app.browser.services.service.ComponentAdding">
+<view
+   name="+"
+   for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+   permission="zope.ManageServices"
+   class="zope.app.browser.services.service.ComponentAdding">
 
-    <page name="index.html"  attribute="index"  />
-    <page name="action.html" attribute="action" />
+  <page name="index.html"  attribute="index"  />
+  <page name="action.html" attribute="action" />
 
-  </view>
+</view>
+
+<page
+    for="zope.app.interfaces.services.folder.INoConfigurationManagerError"
+    name="index.html"
+    permission="zope.Public"
+    template="../exception/user.pt"
+    class="zope.app.browser.exception.user.UserErrorView"
+    />
+
 
 <!-- ServiceConfiguration -->
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Site-management folder tests
 
-$Id: test_folder.py,v 1.1 2003/03/23 17:13:42 jim Exp $
+$Id: test_folder.py,v 1.2 2003/03/23 18:04:27 jim Exp $
 """
 
 import unittest
@@ -29,13 +29,26 @@ class TestSomething(placefulsetup.PlacefulSetup, unittest.TestCase):
         default = traverse(sm, 'default')
         self.assertEqual(default.getConfigurationManager(),
                          default['configure'])
-        del default['configure']
         default.setObject('xxx', ConfigurationManager())
+        del default['configure']
         self.assertEqual(default.getConfigurationManager(),
                          default['xxx'])
-        del default['xxx']
-        self.assertRaises(Exception, # don't care what it raised
-                          default.getConfigurationManager)
+
+
+#       Can't test empty because there's no way to make it empty.
+##         del default['xxx']
+##         self.assertRaises(Exception,
+##                           default.getConfigurationManager)
+
+    def test_cant_remove_last_cm(self):
+        self.buildFolders()
+        sm = placefulsetup.createServiceManager(self.rootFolder)
+        default = traverse(sm, 'default')
+        self.assertRaises(Exception,
+                          default.__delitem__, 'configuration')
+        default.setObject('xxx', ConfigurationManager())
+        del default['configure']
+        
         
 
 def test_suite():
