@@ -21,6 +21,7 @@ from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
 
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
+from zope.app.form.browser.widget import DisplayWidget
 from zope.app.form.browser.itemswidgets import RadioWidget
 from zope.app.form.browser.itemswidgets import SelectWidget, DropdownWidget
 from zope.app.form.interfaces import IInputWidget
@@ -105,3 +106,19 @@ def BooleanSelectWidget(field, request, true=_('on'), false=_('off')):
 def BooleanDropdownWidget(field, request, true=_('on'), false=_('off')):
     vocabulary = SimpleVocabulary.fromItems( ((true, True), (false, False)) )
     return DropdownWidget(field, vocabulary, request)
+
+
+_msg_true = _("True")
+_msg_false = _("False")
+
+class BooleanDisplayWidget(DisplayWidget):
+
+    def __call__(self):
+        if self._renderedValueSet():
+            value = self._data
+        else:
+            value = self.context.default
+        if value:
+            return _msg_true
+        else:
+            return _msg_false

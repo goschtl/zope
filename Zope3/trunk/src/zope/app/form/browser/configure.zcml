@@ -46,6 +46,14 @@
       permission="zope.Public"
       />
 
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IBool"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".boolwidgets.BooleanDisplayWidget"
+      permission="zope.Public"
+      />
+
   <!-- Core edit widgets -->
 
   <view
