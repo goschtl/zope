@@ -81,12 +81,9 @@ class CustomWidgetFactory(object):
     """Custom Widget Factory."""
     implements(IViewFactory)
 
-    def __init__(self, *args, **kw):
-        self._widget_factory = args[0]
-        if len(args) > 1:
-            self.args = args[1:]
-        else:
-            self.args = ()
+    def __init__(self, widget_factory, *args, **kw):
+        self._widget_factory = widget_factory
+        self.args = args
         self.kw = kw
 
     def __call__(self, context, request):
