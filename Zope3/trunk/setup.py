@@ -59,20 +59,15 @@ class Finder:
         self._pkgs = {}
         self._exts = exts
         self._plen = len(prefix)
-        self._skips = ['ZopeProducts']
 
     def visit(self, ignore, dir, files):
         for file in files[:]:
             # First see if this is one of the packages we want to add, or if
             # we're really skipping this package.
             if '__init__.py' in files:
-                aspkg = dir[len(self._prefix):].replace(os.sep, '.')
-                if aspkg in self._skips:
-                    del files[:]
-                    return
-                else:
-                    self._pkgs[aspkg] = True
-            # Otherwise, als
+                aspkg = dir[self._plen:].replace(os.sep, '.')
+                self._pkgs[aspkg] = True
+            # Add any extra files we're interested in
             base, ext = os.path.splitext(file)
             if ext in self._exts:
                 self._files.append(os.path.join(dir, file))
@@ -86,9 +81,13 @@ class Finder:
         for file in self._files:
             cmd.copy_file(file, dest)
 
+    def get_packages(self):
+        return self._pkgs.keys()
 
-##extra = ExtraFileFinder(EXTS)
-##os.path.walk('.', extra.visit, None)
+basedir = 'lib/python/'
+finder = Finder(EXTS, basedir)
+os.path.walk(basedir, finder.visit, None)
+packages = finder.get_packages()
 
 
 class MyLibInstaller(install_lib):
@@ -117,34 +116,11 @@ class MyDistribution(Distribution):
         self.cmdclass['install_lib'] = MyLibInstaller
 
 
-# Sniff for packages we want to install
-class PackageFinder:
-    def __init__(self, prefix):
-        self._pkgs = {}
-        self._prefix = prefix
-        self._skips = ['ZopeProducts']
-
-    def visit(self, ignore, dir, files):
-        for file in files[:]:
-            if '__init__.py' in files:
-                aspkg = dir[len(self._prefix):].replace(os.sep, '.')
-                if aspkg in self._skips:
-                    del files[:]
-                else:
-                    self._pkgs[aspkg] = True
-
-    def get_packages(self):
-        return self._pkgs.keys()
-
-
-pkgfinder = PackageFinder('./lib/python/')
-os.path.walk('.', pkgfinder.visit, None)
-packages = pkgfinder.get_packages()
-
-# XXX
-if sys.version_info < (2, 3):
-    # the logging package becomes a std feature in 2.3
-    packages.append("logging")
+# The logging package is standard in Python 2.3.  Don't include it unless
+# we're building a source distribution.
+if 'sdist' not in sys.argv:
+    if sys.hexversion >= 0x02030000:
+        packages.remove('logging')
 
 
 doclines = __doc__.split("\n")
