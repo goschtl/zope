@@ -16,7 +16,7 @@
 Events related to object creation and deletion are translated into
 index_doc() and unindex_doc() calls.
 
-$Id: index.py,v 1.2 2002/12/04 14:22:58 gvanrossum Exp $
+$Id: index.py,v 1.3 2002/12/04 14:43:04 gvanrossum Exp $
 """
 
 from Zope.Event.ISubscriber import ISubscriber
@@ -61,9 +61,8 @@ class TextIndex(TextIndexWrapper):
         return adapted.getSearchableText()
     _getTexts = ContextMethod(_getTexts)
 
-    def subscribe(wrapped_self, channel=None, update=1):
-        if channel is None:
-            channel = wrapped_self._getChannel()
+    def subscribe(wrapped_self, channel=None, update=True):
+        channel = wrapped_self._getChannel(channel)
         channel.subscribe(wrapped_self, IRegistrationHubEvent)
         channel.subscribe(wrapped_self, IObjectModifiedHubEvent)
         if update:
@@ -71,14 +70,15 @@ class TextIndex(TextIndexWrapper):
     subscribe = ContextMethod(subscribe)
 
     def unsubscribe(wrapped_self, channel=None):
-        if channel is None:
-            channel = wrapped_self._getChannel()
+        channel = wrapped_self._getChannel(channel)
         channel.unsubscribe(wrapped_self, IObjectModifiedHubEvent)
         channel.unsubscribe(wrapped_self, IRegistrationHubEvent)
     unsubscribe = ContextMethod(unsubscribe)
 
-    def _getChannel(wrapped_self):
-        return getService(wrapped_self, "ObjectHubService")
+    def _getChannel(wrapped_self, channel):
+        if channel is None:
+            channel = getService(wrapped_self, "ObjectHubService")
+        return channel
     _getChannel = ContextMethod(_getChannel)
 
     def _update(wrapped_self, registrations):
