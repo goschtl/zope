@@ -1,0 +1,83 @@
+The Zope Content Managment Framework
+
+  Introduction
+
+    - What is content management, what is unique about CMF, what's the
+      future for the CMF
+
+    - Content and services. Introduce ideas of core ideas including:
+      metadata, search, distributed control,
+      workflow, security, etc.
+
+  Quick Tour
+
+    - A quick, hands-on tour of CMF features. 
+
+  Using the CMF
+
+    - Accounts - how to create an account, preferences, log in, log out, etc.
+
+    - Getting around - how to use navigation, member folder, actions box, etc.
+
+    - Using Services - use of pubic services: search, discussion, etc.
+
+  Working with Content
+
+    - Overview of content - distributed authorship, distributed
+      through out site, ownership, access controls (ie public versus
+      private), catalogability, etc.
+
+    - Site, Folder, Topic, Document, Image, etc. Desribe what each
+      built-in content type is good for, how to create and edit them,
+      and other features (if applicable).
+
+    - Formats (stx, html)
+
+    - Metadata - overview, why its important, and definition of the
+      various metadata fields.
+
+    - Remote authoring - FTP & WebDAV. How to use various editors. How
+      to set metadata headers, how to handle errors, etc.
+
+  Configuring and Customizing the CMF
+
+    - Overview of services - they are customizable and
+      configurable. 
+
+      The following sections describe each service, including it
+      purpose and use.
+
+    - Basic configuration - Portal configuration stuff
+
+    - Look and Feel - Skins, Page Templates, etc.
+
+    - Workflow
+
+    - Search - cataloging
+
+    - Syndication
+
+    - Discussion,
+      
+    - Membership, (using various authentication sources)
+
+    - Versioning XXX fiction? XXX
+
+    - Personalization XXX fiction? XXX
+
+  Scripting the CMF
+
+    - Overview of scripting CMF
+
+    - API docs for CMF tools and other scriptable objects. Should
+      include plenty of examples.
+
+  Glossary
+
+    - XXX is this needed? XXX
+
+  Notes
+
+    - Emphasize the *demo* aspect of demo folder
+
+    - Emphasize fundamental ideas: content types, services, skins
