@@ -17,23 +17,27 @@ Zope Changes
         event subscribers that don't create objects, which is the case
         for most subscribers.  Using the factory attribute without a
         provides attribute to register a handler is deprecated.
-         
+
+      - Added the function zope.component.adapts for declaring interfaces
+        adapted by classes. This is similar to zope.interface.implements in
+        that it puts a marker on the class that has a significant meaning in 
+        the component architecture machinery.
 
       - It is no longer necessary to supply a for attribute in adapter
         directives if the factory declares the interfaces or classes that it
-        adapts.
+        adapts using zope.component.adapts.
 
       - It is no longer necessary to specify a provides attribute in
         an adapter or utility directive if the factory/component
         implements/provides a single interface.
 
       - Added `zope.security.canAccess` and `zope.security.canWrite`
-        convenience methods.  Often code wants to check if a certain option is 
+        convenience methods.  Often code wants to check if a certain option is
         open to a user before presenting it.  If the code relies on a certain
-        permission, the Zope 3 goal of keeping knowledge of security  
-        assertions out of the code and only in configuration is broken. 
-        Instead, ask if the current intreaction canAccess or canWrite some 
-        pertinent aspect of the object.  canAccess is used for both read 
+        permission, the Zope 3 goal of keeping knowledge of security
+        assertions out of the code and only in configuration is broken.
+        Instead, ask if the current intreaction canAccess or canWrite some
+        pertinent aspect of the object.  canAccess is used for both read
         access on an attribute and call access to methods.
 
       - Added lazy properties. (See zope/cachedescriptors/README.txt)
@@ -42,8 +46,6 @@ Zope Changes
         `testingNextUtility()` functions to make it easier to find and test
         for utilities in higher-up sites. These mimic their service-based
         equivalents.
-
-      - Added an API for declaring interfaces adapted by classes
 
       - Added a simplified Python API for registering global utilities
         and adapters.
@@ -73,8 +75,8 @@ Zope Changes
         extend another macro, which is particularly useful for writing
         a skin that customizes another skin.
 
-      - Added pagelet concept. Pagelets are responsible for a piece 
-        of content in a view. They can be used to render additionaly 
+      - Added pagelet concept. Pagelets are responsible for a piece
+        of content in a view. They can be used to render additionaly
         provided information into a pagetemplate.
 
         + Added tales expression 'pagelet'
@@ -82,7 +84,7 @@ Zope Changes
         + Added tales expression 'pagelets'
 
         + Added tales expression 'pagedata'
-        
+
       - Added pagelet chooser for store pagelet name in the annotation
         of a object.
 
@@ -115,14 +117,14 @@ Zope Changes
 
         The directive now also makes sure that the class implements the
         `IPersistent` and `ILocation` interfaces; without those a class cannot
-        be a local utility. This addresses issue 297.  
+        be a local utility. This addresses issue 297.
 
       - The `Attribute` and `Method` class of the `zope.interface` have now a
         new public `interface` attribute that stores the interface they are
-        defined in.  
+        defined in.
 
       - New Pluggable Authentication Service, which is similar in philosophy to
-        the Zope 2 PAS.  One of the main reasons for this is to support 
+        the Zope 2 PAS.  One of the main reasons for this is to support
         principal groups. The following features are available in the core:
 
         o Extraction Plugins: Basic HTTP Auth, Session
@@ -132,7 +134,7 @@ Zope Changes
 
         o Authentication Plugins: Persistent (ZODB), SQL-based (LDAP is also
           available, but needs to be separately be downloaded)
-        
+
         o Principal Factory Plugins: Default factory
 
         o Principal Search Plugins: Persistent (ZODB), SQL-based
@@ -170,7 +172,7 @@ Zope Changes
         templates are trusted, and database-based templates are
         untrusted.
 
-      - Implemented rdb:gadflyRoot directive.    
+      - Implemented rdb:gadflyRoot directive.
 
       - Schemas are now copied before they are appended to content type or
         instance. This should probably become a policy later.
@@ -196,7 +198,7 @@ Zope Changes
         to strings (and string-like objects) from within ZPT, e.g:
 
         tal:attributes="href string:login.html?nextURL=${request/URL/url:quote}
-        
+
         Other functions available are quote_plus, unquote, unquote_plus.
 
       - Added basic cataloging functionality.
@@ -222,10 +224,10 @@ Zope Changes
         + Converted Principal Annotation Service to be a utility. Added
           database evolution code to convert all service instances to
           utilities.
- 
 
-      - The `pluggableauth` package has been deprecated. The `pas` module
-        provides a much more modular approach with many more capabilities.
+      - The `pluggableauth` package has been deprecated. The `authentication`
+        module provides a much more modular approach with many more
+        capabilities.
 
       - Removed special `DomainRegistration` now that we have events for
         notification.
@@ -234,7 +236,7 @@ Zope Changes
         notification. Also, renamed `PersistentRole` to `LocalRole`.
 
       - Refactored Registration component for local components
-      
+
         + Deprecated the `activated()` and `deactivated()` method. It is now
           replaced with the 'IRegistrationActivatedEvent' and
           'IRegistrationDectivatedEvent', respectively.
@@ -250,18 +252,18 @@ Zope Changes
         - Other traversal components raise TraversalError
 
         - getPrincipal of IAuthenticationService now raises
-          PrincipalLookupError. 
+          PrincipalLookupError.
 
       - Removed Browser Menu Service and implemented menus as subscriber
         adapters. Menu Item Types (in other words, menus) are now utilities
-        that provide `IMenuItemType`. 
+        that provide `IMenuItemType`.
 
         + Completes http://dev.zope.org/Zope3/AdaptersForMenuItems. New
           features such as sub-menus, icons, disabled entries and so on were
           not well defined and should be reconsidered in a different proposal.
 
         + Backward-compatibility of the existing `browser` directives was
-          ensured. 
+          ensured.
 
         + If you have a directive that accepts a menu as attribute, it now
           needs to be a `MenuField`, so that it is correctly resolved to a menu
@@ -272,26 +274,26 @@ Zope Changes
           instead of having the machinery create one for you.
 
         + The two API methods `getMenu()` and `getFirstItemOfMenu()` of the
-          Browser Menu Service are now available as functions in 
+          Browser Menu Service are now available as functions in
           `zope.app.publisher.browser.menu` having identical semantics.
 
         + Added `order` attribute to the menu item that declares the item's
           relative position. In general the menu items are always sorted from
           most to least specific, which is determined by the order of the
           implemented interfaces of the object. If ambiguities still exists,
-          the order and then the title of the menu item are taken account. 
+          the order and then the title of the menu item are taken account.
 
       - Removed Presentation Serivce and implemented views as adapters. This
         mainly means that layers and skins became adapters. Here are some
         other points:
-        
+
         + Completes http://dev.zope.org/Zope3/ImplementViewsAsAdapters.
 
         + Backward-compatibility of the Zope component API and the browser
           directives was ensured.
 
         + The `setPresentationSkin()` and `getPresentationSkin()` directives
-          of `IRequest` objects were removed. They were not used anywhere but 
+          of `IRequest` objects were removed. They were not used anywhere but
           testing anyways.
 
         + The default skin is now just an adapter from `IRequest` to
@@ -309,6 +311,11 @@ Zope Changes
           (`zope.app.publisher.browser`) that allows you to assign a new skin
           to a request. This effectively replaces the `setPresentationSkin()`
           method.
+
+        + Created an explicit IDefaultLayer, which is, by default, added to
+          incoming browser requests. However, it is not added when an explicit
+          skin is specified. This allows developers to create skins that do
+          not include the default layer.
 
     Bug Fixes
 
@@ -328,7 +335,7 @@ Zope Changes
         contain any special character, except for the hostname and the port.
 
       - Fixed intid utility: Registration and unregistration of
-        local utitlity services, context aware registration of nested 
+        local utitlity services, context aware registration of nested
         components that may provide their own intids utiltities.
 
       - Fixed browser:defaultView metaconfigure: for_ passes a GlobalObject
@@ -337,7 +344,7 @@ Zope Changes
       - Changed negotiator import with "INegotiator" utility lookup in
         default global "TranslationDomain". This makes it possible to
         use local INegotiator utilities with the standard translation
-        domain. 
+        domain.
 
       - contents.html no longer breaks when no IAdding is available.
 
@@ -348,7 +355,7 @@ Zope Changes
       - NotFound pages and stattus codes are now returned only when
         something can't be found during publishing-path (e.g. URL)
         traversal. Traversal errors within application code are no
-        longer treated as "Not Found" errors. 
+        longer treated as "Not Found" errors.
 
       - Added missing modification events when add forms modified
         objects (assigned properties) after they were added.
@@ -367,7 +374,7 @@ Zope Changes
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
-      Shane Hathaway, Bjorn Tillenius
+      Shane Hathaway, Bjorn Tillenius, Garrett Smith
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
