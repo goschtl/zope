@@ -168,12 +168,12 @@ class IPrincipalSearchPlugin(IPrincipalIdAwarePlugin):
 
     - Search for principal ids
 
-    The second function is a bit tricky, because there are many ways
-    that one might search for principals.
+      Searching is provided in one of two ways:
 
-    XXX Need to say more here.  We need to work out what to say. :)
-    XXX In the mean time, see IQuerySchemaSearch.  Initially, search
-    XXX plugins should provide IQuerySchemaSearch.
+      - by implementing `IQuerySchemaSearch`, or
+
+      - by providing user interface components that support searching.
+        (See README.txt.)
     """
 
     def get(principal_id):
@@ -207,3 +207,17 @@ class IQuerySchemaSearch(IPrincipalSearchPlugin):
         integer and no more than the given number of items should be
         returned.
         """
+
+class ISearchableAuthenticationPlugin(IAuthenticationPlugin,
+                                      IPrincipalSearchPlugin):
+    """Components that provide authentication ans searching
+
+    This interface exists to make component registration a little bit easier.
+    """
+
+class IExtractionAndChallengePlugin(IExtractionPlugin, IChallengePlugin):
+    """Components that provide credential extraction and challenge
+
+    This interface exists to make component registration a little bit easier.
+    """
+    

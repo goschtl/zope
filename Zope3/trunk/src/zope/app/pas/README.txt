@@ -544,3 +544,12 @@ PAS uses search plugins in a very simple way.  It mearly implements
   >>> [queriable.__class__.__name__ 
   ...  for (id, queriable) in service.getQueriables()]
   ['Search42', 'IntSearch']
+
+Design Notes
+============
+
+- It is common for the same component to implement authentication and
+  search or extraction and challenge. See
+  `ISearchableAuthenticationPlugin` and
+  `IExtractionAndChallengePlugin`.
+ 
