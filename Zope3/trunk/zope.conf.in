@@ -15,11 +15,23 @@ interrupt-check-interval 200
   address 8021
 </server>
 
+# Standard Filestorage
 <zodb>
   <filestorage>
     path Data.fs
   </filestorage>
 </zodb>
+
+# Alternate Full BerkeleyDB storage which stores all its data in the
+# ./Full directory, performs old revision cleanup once per hour, and
+# does a full gc pack once every day.  All other values are defaulted.
+#<zodb>
+#  <fullstorage>
+#    name Full
+#    frequency 1h
+#    gcpack 24
+#  </fullstorage>
+#</zodb>
 
 <eventlog>
   # This sets up logging to both a file (z3.log) and to standard
