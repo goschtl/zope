@@ -15,7 +15,7 @@
 
 This script extracts translatable strings and creates a single zope.pot file.
 
-$Id: extract.py,v 1.3 2003/08/04 19:20:31 srichter Exp $
+$Id: extract.py,v 1.4 2003/08/05 13:48:54 srichter Exp $
 """
 import os, sys, fnmatch
 import time
@@ -59,7 +59,7 @@ class POTEntry:
 
     def write(self, file):
         file.write(self.comments)
-        file.write('msgid %s' % self.msgid)
+        file.write('msgid %s\n' %normalize(self.msgid))
         file.write('msgstr ""\n')
         file.write('\n')
 
@@ -77,7 +77,8 @@ class POTMaker:
 
     def add(self, strings, base_dir=None):
         for msgid, locations in strings.items():
-            msgid = '"%s"\n' %msgid
+            if msgid == '':
+                continue
             if msgid not in self.catalog:
                 self.catalog[msgid] = POTEntry(msgid)
 
@@ -184,8 +185,6 @@ class TokenEater:
             rentries = reverse[rkey]
             rentries.sort()
             for msgid, locations in rentries:
-                # Normalize and take off surrounding quotes (we do that later)
-                msgid = normalize(msgid)[1:-1]
                 catalog[msgid] = []
                 
                 locations = locations.keys()
@@ -235,7 +234,7 @@ def py_strings(dir, domain="zope"):
     """Retrieve all Python messages from dir that are in the domain."""
     eater = TokenEater()
     make_escapes(0)
-    for filename in find_files(dir, '*.py'):
+    for filename in find_files(dir, '*.py', exclude=('extract.py',)):
         fp = open(filename)
         try:
             eater.set_filename(filename)
