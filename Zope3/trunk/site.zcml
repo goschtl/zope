@@ -17,6 +17,7 @@
 <grant permission="Zope.ManageCode"        role="Manager" />
 <grant permission="Zope.ManageServices"    role="Manager" />
 <grant permission="Zope.ManageApplication" role="Manager" />
+<grant permission="Zope.ManageBindings"    role="Manager" />
 
 <include file="products.zcml" />
 

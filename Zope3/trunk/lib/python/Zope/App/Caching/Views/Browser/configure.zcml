@@ -3,7 +3,7 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
   <browser:view for="Zope.App.OFS.Annotation.IAnnotatable."
-                permission="Zope.Public"
+                permission="Zope.ManageBindings"
                 factory=".CacheableView.">
 
     <browser:page name="Caching.html"
