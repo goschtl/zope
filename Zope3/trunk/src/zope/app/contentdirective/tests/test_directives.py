@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_directives.py,v 1.7 2003/02/12 02:17:19 seanb Exp $
+$Id: test_directives.py,v 1.8 2003/03/21 21:03:41 jim Exp $
 """
 
 import unittest
@@ -32,10 +32,12 @@ import zope.app.contentdirective
 from zope.app.security.exceptions import UndefinedPermissionError
 from zope.component import getService
 from zope.app.services.servicenames import Factories
+from zope.app.component.globalinterfaceservice import queryInterface
 
 # explicitly import ExampleClass and IExample using full paths
 # so that they are the same objects as resolve will get.
-from zope.app.contentdirective.tests.exampleclass import ExampleClass, IExample
+from zope.app.contentdirective.tests.exampleclass import ExampleClass
+from zope.app.contentdirective.tests.exampleclass import IExample, IExample2
 
 
 def configfile(s):
@@ -67,6 +69,9 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
 
 
     def testImplements(self):
+        self.assertEqual(queryInterface(
+            "zope.app.contentdirective.tests.exampleclass.IExample"), None)
+
         f = configfile("""
 <content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
   <implements interface="zope.app.contentdirective.tests.exampleclass.IExample" />
@@ -75,6 +80,33 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
         xmlconfig(f)
         self.failUnless(IExample.isImplementedByInstancesOf(ExampleClass))
 
+        self.assertEqual(queryInterface(
+            "zope.app.contentdirective.tests.exampleclass.IExample"), IExample)
+
+
+    def testMulImplements(self):
+        self.assertEqual(queryInterface(
+            "zope.app.contentdirective.tests.exampleclass.IExample"), None)
+        self.assertEqual(queryInterface(
+            "zope.app.contentdirective.tests.exampleclass.IExample2"), None)
+
+        f = configfile("""
+<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+  <implements interface="
+           zope.app.contentdirective.tests.exampleclass.IExample
+           zope.app.contentdirective.tests.exampleclass.IExample2
+                       " />
+</content>
+                       """)
+        xmlconfig(f)
+        self.failUnless(IExample.isImplementedByInstancesOf(ExampleClass))
+        self.failUnless(IExample2.isImplementedByInstancesOf(ExampleClass))
+
+        self.assertEqual(queryInterface(
+            "zope.app.contentdirective.tests.exampleclass.IExample"), IExample)
+        self.assertEqual(queryInterface(
+            "zope.app.contentdirective.tests.exampleclass.IExample2"),
+                         IExample2)
 
     def testRequire(self):
         f = configfile("""

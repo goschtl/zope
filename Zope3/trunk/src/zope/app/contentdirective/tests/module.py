@@ -21,9 +21,6 @@ modules, themselves."""
 from zope.interface import Interface
 from zope.schema import Text
 
-PREFIX = "zope.app.security.tests.module."
-import zope.app.security.tests.module as module
-module.test_class = None
 class I(Interface):
     def m1():
         pass
@@ -34,16 +31,24 @@ class I2(I):
     def m4():
         pass
 
+class I3(Interface):
+    def m3():
+        pass
+
+class I4(Interface):
+    def m2():
+        pass
+
 
 class S(Interface):
     foo = Text()
     bar = Text()
     baro = Text(readonly=True)
 
+class S2(Interface):
+    foo2 = Text()
+    bar2 = Text()
 
-module.I = I
-module.I2 = I2
-module.S = S
 
 template_bracket = """<zopeConfigure
    xmlns="http://namespaces.zope.org/zope">

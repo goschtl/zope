@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.9 2003/03/18 21:02:21 jim Exp $
+$Id: contentdirective.py,v 1.10 2003/03/21 21:03:41 jim Exp $
 """
 from types import ModuleType
 from zope.interface.implements import implements
@@ -140,6 +140,15 @@ class ContentDirective:
         interface = self.__context.resolve(interface)
         for n, d in interface.namesAndDescriptions(1):
             self.__protectName(n, permission_id, r)
+        r.append(
+            Action(
+               discriminator = None,
+               callable = handler,
+               args = (Interfaces, 'provideInterface',
+                       interface.__module__+ '.'+ interface.__name__,
+                       interface)
+               )
+            )
 
     def __protectName(self, name, permission_id, r):
         "Set a permission on a particular name."
@@ -168,6 +177,16 @@ class ContentDirective:
                 r.append((
                     ('protectSetAttribute', self.__class, name),
                     protectSetAttribute, (self.__class, name, permission_id)))
+
+        r.append(
+            Action(
+               discriminator = None,
+               callable = handler,
+               args = (Interfaces, 'provideInterface',
+                       schema.__module__+ '.'+ schema.__name__,
+                       schema)
+               )
+            )
 
 
     def __call__(self):

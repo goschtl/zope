@@ -13,24 +13,23 @@
 ##############################################################################
 """ Test handler for 'require' subdirective of 'content' directive """
 
-import unittest
 from cStringIO import StringIO
-
-import zope.configuration
-import zope.app.security
+from zope.app.component.globalinterfaceservice import queryInterface
+from zope.app.contentdirective.tests import module
 from zope.app.security.exceptions import UndefinedPermissionError
-from zope.security.checker import selectChecker
+from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.exceptions import Forbidden
+from zope.security.checker import selectChecker
+import unittest
+import zope.app.contentdirective
+import zope.app.security
+import zope.configuration
 
 # So we can use config parser to exercise protectClass stuff.
-from zope.configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
 from zope.configuration.xmlconfig import XMLConfig
+from zope.configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
 
-from zope.app.contentdirective.tests.modulehookup import * # XXX I hate this!
-
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-
-import zope.app.contentdirective
+PREFIX = module.__name__ + '.'
 
 def defineDirectives():
     XMLConfig('metameta.zcml', zope.configuration)()
@@ -47,17 +46,19 @@ NOTSET = []
 P1 = "extravagant"
 P2 = "paltry"
 
-class Test(CleanUp, unittest.TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
+        PlacelessSetup.setUp(self)
         defineDirectives()
+        
         class B:
             def m1(self):
                 return "m1"
             def m2(self):
                 return "m2"
         class C(B):
-            __implements__ = I
+            __implements__ = module.I
             def m3(self):
                 return "m3"
             def m4(self):
@@ -68,7 +69,7 @@ class Test(CleanUp, unittest.TestCase):
         self.assertState()
 
     def tearDown(self):
-        CleanUp.tearDown(self)
+        PlacelessSetup.tearDown(self)
         module.test_class = None
 
     def assertState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
@@ -83,7 +84,7 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(checker.permission_id('m3'), (m3P or None))
 
     def assertDeclaration(self, declaration, **state):
-        apply_declaration(template_bracket % declaration)
+        apply_declaration(module.template_bracket % declaration)
         self.assertState(**state)
 
     # "testSimple*" exercises tags that do NOT have children.  This mode
@@ -119,20 +120,27 @@ class Test(CleanUp, unittest.TestCase):
                                 set_attributes="m1 m3"/>
                           </content>"""
                        % (PREFIX+"test_class", P1))
-        apply_declaration(template_bracket % declaration)
+        apply_declaration(module.template_bracket % declaration)
         checker = selectChecker(module.test_instance)
         self.assertEqual(checker.setattr_permission_id('m1'), P1)
         self.assertEqual(checker.setattr_permission_id('m2'), None)
         self.assertEqual(checker.setattr_permission_id('m3'), P1)
 
     def test_set_schema(self):
+
+        self.assertEqual(queryInterface(PREFIX+"S"), None)
+
         declaration = ("""<content class="%s">
                             <require
                                 permission="%s"
                                 set_schema="%s"/>
                           </content>"""
                        % (PREFIX+"test_class", P1, PREFIX+"S"))
-        apply_declaration(template_bracket % declaration)
+        apply_declaration(module.template_bracket % declaration)
+
+        self.assertEqual(queryInterface(PREFIX+"S"), module.S)
+
+
         checker = selectChecker(module.test_instance)
         self.assertEqual(checker.setattr_permission_id('m1'), None)
         self.assertEqual(checker.setattr_permission_id('m2'), None)
@@ -141,7 +149,37 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(checker.setattr_permission_id('bar'), P1)
         self.assertEqual(checker.setattr_permission_id('baro'), None)
 
+    def test_multiple_set_schema(self):
+
+        self.assertEqual(queryInterface(PREFIX+"S"), None)
+        self.assertEqual(queryInterface(PREFIX+"S2"), None)
+
+        declaration = ("""<content class="%s">
+                            <require
+                                permission="%s"
+                                set_schema="%s %s"/>
+                          </content>"""
+                       % (PREFIX+"test_class", P1, PREFIX+"S", PREFIX+"S2"))
+        apply_declaration(module.template_bracket % declaration)
+
+        self.assertEqual(queryInterface(PREFIX+"S"), module.S)
+        self.assertEqual(queryInterface(PREFIX+"S2"), module.S2)
+
+
+        checker = selectChecker(module.test_instance)
+        self.assertEqual(checker.setattr_permission_id('m1'), None)
+        self.assertEqual(checker.setattr_permission_id('m2'), None)
+        self.assertEqual(checker.setattr_permission_id('m3'), None)
+        self.assertEqual(checker.setattr_permission_id('foo'), P1)
+        self.assertEqual(checker.setattr_permission_id('bar'), P1)
+        self.assertEqual(checker.setattr_permission_id('foo2'), P1)
+        self.assertEqual(checker.setattr_permission_id('bar2'), P1)
+        self.assertEqual(checker.setattr_permission_id('baro'), None)
+
     def testSimpleInterface(self):
+
+        self.assertEqual(queryInterface(PREFIX+"I"), None)
+
         declaration = ("""<content class="%s">
                             <require
                                 permission="%s"
@@ -150,6 +188,28 @@ class Test(CleanUp, unittest.TestCase):
                        % (PREFIX+"test_class", P1, PREFIX+"I"))
         # m1 and m2 are in the interface, so should be set, and m3 should not:
         self.assertDeclaration(declaration, m1P=P1, m2P=P1)
+
+        # Make sure we know about the interfaces
+        self.assertEqual(queryInterface(PREFIX+"I"), module.I)
+        
+
+    def testMultipleInterface(self):
+
+        self.assertEqual(queryInterface(PREFIX+"I3"), None)
+        self.assertEqual(queryInterface(PREFIX+"I4"), None)
+
+        declaration = ("""<content class="%s">
+                            <require
+                                permission="%s"
+                                interface="  %s
+                                             %s  "/>
+                          </content>"""
+                       % (PREFIX+"test_class", P1, PREFIX+"I3", PREFIX+"I4"))
+        self.assertDeclaration(declaration, m3P=P1, m2P=P1)
+
+        # Make sure we know about the interfaces
+        self.assertEqual(queryInterface(PREFIX+"I3"), module.I3)
+        self.assertEqual(queryInterface(PREFIX+"I4"), module.I4)
 
     # "testComposite*" exercises tags that DO have children.
     # "testComposite*TopPerm" exercises tags with permission in containing tag.
