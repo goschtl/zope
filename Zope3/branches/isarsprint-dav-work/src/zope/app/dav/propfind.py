@@ -73,10 +73,8 @@ class PROPFIND(object):
         response.appendChild(ms)
         re = response.createElement('response')
         ms.appendChild(re)
-        href = response.createElement('href')
-        re.appendChild(href)
-        r_url = response.createTextNode(resource_url)
-        href.appendChild(r_url)
+        re.appendChild(response.createElement('href'))
+        re.lastChild.appendChild(response.createTextNode(resource_url))
         _avail_props = {}
         
         # List all *registered* DAV interface namespaces and their properties
@@ -102,14 +100,12 @@ class PROPFIND(object):
         avail, not_avail = self._propertyResolver(_props)
 
         if avail:
-            pstat = response.createElement('propstat')
-            re.appendChild(pstat)
+            re.appendChild(response.createElement('propstat'))
             prop = response.createElement('prop')
-            pstat.appendChild(prop)
-            status = response.createElement('status')
-            pstat.appendChild(status)
-            text = response.createTextNode('HTTP/1.1 200 OK')
-            status.appendChild(text)
+            re.lastChild.appendChild(prop)
+            re.lastChild.appendChild(response.createElement('status'))
+            re.lastChild.lastChild.appendChild(
+                response.createTextNode('HTTP/1.1 200 OK'))
             count = 0
             for ns in avail.keys():
                 attr_name = 'a%s' % count
@@ -163,14 +159,12 @@ class PROPFIND(object):
                             el.appendChild(value)
 
         if not_avail:
-            pstat = response.createElement('propstat')
-            re.appendChild(pstat)
+            re.appendChild(response.createElement('propstat'))
             prop = response.createElement('prop')
-            pstat.appendChild(prop)
-            status = response.createElement('status')
-            pstat.appendChild(status)
-            text = response.createTextNode('HTTP/1.1 404 Not Found')
-            status.appendChild(text)
+            re.lastChild.appendChild(prop)
+            re.lastChild.appendChild(response.createElement('status'))
+            re.lastChild.lastChild.appendChild(
+                response.createTextNode('HTTP/1.1 404 Not Found'))
             count = 0
             for ns in not_avail.keys():
                 attr_name = 'a%s' % count
@@ -228,10 +222,9 @@ class PROPFIND(object):
         return _props
 
     def _handlePropname(self, response, re, _avail_props):
-        pstat = response.createElement('propstat')
-        re.appendChild(pstat)
+        re.appendChild(response.createElement('propstat'))
         prop = response.createElement('prop')
-        pstat.appendChild(prop)
+        re.lastChild.appendChild(prop)
         count = 0
         for ns in _avail_props.keys():
             attr_name = 'a%s' % count
@@ -243,10 +236,9 @@ class PROPFIND(object):
                 prop.appendChild(el)
                 if ns is not None and ns != self.default_ns:
                     el.setAttribute('xmlns', attr_name)
-        status = response.createElement('status')
-        pstat.appendChild(status)
-        text = response.createTextNode('HTTP/1.1 200 OK')
-        status.appendChild(text)
+        re.lastChild.appendChild(response.createElement('status'))
+        re.lastChild.lastChild.appendChild(
+            response.createTextNode('HTTP/1.1 200 OK'))
 
     def _propertyResolver(self, _props):
         avail = {}
