@@ -1,13 +1,10 @@
 #!/usr/local/bin/python2.1
 
-"""Apply actions dictated by traffic_table.py to checkins as they occur.
+"""Apply actions triggered by checkins as dictated by traffic_table.py.
 
-Normal operation is to fork into the background with stderr and stdout
-redirected to append to the file named by the OUTPUT_LOG config var - so
-that the user doesn't have to wait for the checkin message to be collected
-and sent or for the rsync to complete.  (We can't simply fork into the
-background, because clients like emacs VC will hang waiting the close of
-sys.stdin, sys.stderr, sys.stdout, etc. - on the order of minutes.)
+Special provisions to fork into the background, disconnected from tty, so
+the user and (more critically) CVS locks don't wait pending completion of
+notification and other potentially meandering actions.
 
 Options:
 
@@ -18,6 +15,7 @@ Options:
  --dryrun - do not actually do any of the activities
 
  --wait - do not fork into the background (and leave output in stdout/stderr)
+          This is for internal use by the script when forking.
 
  --msgfile MSGFILENM - internal - get log message from MSGFILENM (and delete)
 
@@ -55,7 +53,7 @@ import getopt
 import smtplib
 import socket, whrandom, getpass
 
-CVSROOT = os.environ.get('CVSROOT', '/cvs-repository')
+CVSROOT = os.path.split(SCRIPT_DIR)[0]
 LDAP_PORT = 389
 LDAP_HOST = "10.0.11.6"
 OFFICIAL_SENDER = "cvs-admin@cvs.zope.org"
