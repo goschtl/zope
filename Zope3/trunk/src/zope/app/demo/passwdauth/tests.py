@@ -13,12 +13,12 @@
 ##############################################################################
 """/etc/passwd Authentication Plugin Tests
 
-$Id: tests.py,v 1.1 2004/02/27 14:50:24 philikon Exp $
+$Id: tests.py,v 1.2 2004/03/03 16:08:26 jeremy Exp $
 """
 import os
 from zope.app.demo import passwdauth
 from zope.exceptions import NotFoundError
-from unittest import TestCase, TestSuite, main, makeSuite
+from unittest import TestCase, main, makeSuite
 
 class PasswdPrincipalSourceTest(TestCase):
 
@@ -43,9 +43,7 @@ class PasswdPrincipalSourceTest(TestCase):
         self.assertEqual(self.source.authenticate('foo', 'bar'), None)
     
 def test_suite():
-    return TestSuite((
-        makeSuite(PasswdPrincipalSourceTest),
-        ))
+    return makeSuite(PasswdPrincipalSourceTest)
     
 if __name__=='__main__':
     main(defaultTest='test_suite')
