@@ -27,7 +27,7 @@ class WindowsUrlutilsTestCase(unittest.TestCase):
     This should only be used on Windows systems.
     """
 
-    def test_with_drive_letter(self):
+    def test_file_url_with_drive_letter(self):
         self.assertEqual(urlutils.file_url("c:\\some\\file.txt"),
                          "file:///C|/some/file.txt")
         self.assertEqual(urlutils.file_url("c:some\\file.txt"),
@@ -37,7 +37,7 @@ class WindowsUrlutilsTestCase(unittest.TestCase):
         self.assertEqual(urlutils.file_url("\\some\\folder\\"),
                          "file:///some/folder")
 
-    def test_without_drive_letter(self):
+    def test_file_url_without_drive_letter(self):
         self.assertEqual(urlutils.file_url("\\some\\file.txt"),
                          "file:///some/file.txt")
         self.assertEqual(urlutils.file_url("\\some\\folder"),
@@ -45,19 +45,45 @@ class WindowsUrlutilsTestCase(unittest.TestCase):
         self.assertEqual(urlutils.file_url("\\some\\folder\\"),
                          "file:///some/folder")
 
+    def test_pathname2url_with_drive_letter(self):
+        self.assertEqual(urlutils.pathname2url("c:\\some\\file.txt"),
+                         "file:///C|/some/file.txt")
+        self.assertEqual(urlutils.pathname2url("c:some\\file.txt"),
+                         "file:///C|/some/file.txt")
+        self.assertEqual(urlutils.pathname2url("\\some\\folder"),
+                         "file:///some/folder")
+        self.assertEqual(urlutils.pathname2url("\\some\\folder\\"),
+                         "file:///some/folder")
+
+    def test_pathname2url_without_drive_letter(self):
+        self.assertEqual(urlutils.pathname2url("\\some\\file.txt"),
+                         "/some/file.txt")
+        self.assertEqual(urlutils.pathname2url("\\some\\folder"),
+                         "/some/folder")
+        self.assertEqual(urlutils.pathname2url("\\some\\folder\\"),
+                         "/some/folder")
+
 
 class PosixUrlutilsTestCase(unittest.TestCase):
     """Tests of POSIX path-to-URL conversions.
 
     This should only be used on Unix-like systems.
     """
-    def test_paths(self):
+    def test_file_url(self):
         self.assertEqual(urlutils.file_url("/some/file.txt"),
                          "file:///some/file.txt")
         self.assertEqual(urlutils.file_url("/some/folder"),
                          "file:///some/folder")
         self.assertEqual(urlutils.file_url("/some/folder/"),
                          "file:///some/folder")
+
+    def test_pathname2url(self):
+        self.assertEqual(urlutils.pathname2url("/some/file.txt"),
+                         "/some/file.txt")
+        self.assertEqual(urlutils.pathname2url("/some/folder"),
+                         "/some/folder")
+        self.assertEqual(urlutils.pathname2url("/some/folder/"),
+                         "/some/folder")
 
 
 def test_suite():

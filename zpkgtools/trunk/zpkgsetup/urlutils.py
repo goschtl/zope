@@ -20,8 +20,13 @@ import urllib
 
 
 def file_url(path):
+    return "file://" + pathname2url(path)
+
+def pathname2url(path):
     urlpart = urllib.pathname2url(path)
+    # On Windows, pathname2url() returns too many slashes, or it
+    # returns too few on Unix.  This makes everything conform to the
+    # expectations for Unix.
     if urlpart.startswith("///"):
         urlpart = urlpart[2:]
-    urlpart = posixpath.normpath(urlpart)
-    return "file://" + urlpart
+    return posixpath.normpath(urlpart)
