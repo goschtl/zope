@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.14 2003/05/12 10:02:41 ryzaja Exp $
+$Id: _field.py,v 1.15 2003/06/04 09:09:46 stevea Exp $
 """
 __metaclass__ = type
 
 import warnings
 
-from zope.interface import classImplements
+from zope.interface import classImplements, implements
 from zope.interface.interfaces import IInterface
 
 from zope.schema.interfaces import ValidationError
@@ -62,19 +62,19 @@ classImplements(EnumeratedTextLine, IEnumeratedTextLine)
 
 class SourceText(Text):
     __doc__ = ISourceText.__doc__
-    __implements__ = ISourceText
+    implements(ISourceText)
     _type = unicode
 
 class Bytes(Enumerated, MinMaxLen, Field):
     __doc__ = IBytes.__doc__
-    __implements__ = IBytes
+    implements(IBytes)
 
     _type = str
 
 class BytesLine(Bytes):
     """A Text field with no newlines."""
 
-    __implements__ = IBytesLine
+    implements(IBytesLine)
 
     def constraint(self, value):
         # XXX we should probably use a more general definition of newlines
@@ -83,7 +83,7 @@ class BytesLine(Bytes):
 
 class Float(Enumerated, Orderable, Field):
     __doc__ = IFloat.__doc__
-    __implements__ = IFloat
+    implements(IFloat)
     _type = float
 
     def __init__(self, *args, **kw):
@@ -97,11 +97,11 @@ class Float(Enumerated, Orderable, Field):
 
 class EnumeratedFloat(Float):
     __doc__ = IEnumeratedFloat.__doc__
-    __implements__ = IEnumeratedFloat
+    implements(IEnumeratedFloat)
 
 class Datetime(Enumerated, Orderable, Field):
     __doc__ = IDatetime.__doc__
-    __implements__ = IDatetime
+    implements(IDatetime)
     _type = datetime
 
     def __init__(self, *args, **kw):
@@ -115,11 +115,11 @@ class Datetime(Enumerated, Orderable, Field):
 
 class EnumeratedDatetime(Datetime):
     __doc__ = IEnumeratedDatetime.__doc__
-    __implements__ = IEnumeratedDatetime
+    implements(IEnumeratedDatetime)
 
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
-    __implements__ = IInterfaceField
+    implements(IInterfaceField)
 
     def _validate(self, value):
         super(InterfaceField, self)._validate(value)
@@ -154,7 +154,7 @@ def _validate_sequence(value_types, value, errors=None):
 
 class Sequence(MinMaxLen, Iterable, Field):
     __doc__ = ISequence.__doc__
-    __implements__ = ISequence
+    implements(ISequence)
     value_types = FieldProperty(ISequence['value_types'])
 
     def __init__(self, value_types=None, **kw):
@@ -170,19 +170,19 @@ class Sequence(MinMaxLen, Iterable, Field):
 
 class Tuple(Sequence):
     """A field representing a Tuple."""
-    __implements__ = ITuple
+    implements(ITuple)
     _type = tuple
 
 
 class List(Sequence):
     """A field representing a List."""
-    __implements__ = IList
+    implements(IList)
     _type = list
 
 
 class Dict(MinMaxLen, Iterable, Field):
     """A field representing a Dict."""
-    __implements__ = IDict
+    implements(IDict)
     _type = dict
     key_types   = FieldProperty(IDict['key_types'])
     value_types = FieldProperty(IDict['value_types'])

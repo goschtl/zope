@@ -17,7 +17,7 @@
 import unittest
 
 from zope.interface.verify import verifyObject
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.schema import interfaces
 from zope.schema import vocabulary
@@ -60,7 +60,7 @@ class SampleTerm:
     pass
 
 class SampleVocabulary:
-    __implements__ = interfaces.IVocabulary
+    implements(interfaces.IVocabulary)
 
     def __contains__(self, value):
         return 0 <= value < 10
@@ -129,12 +129,12 @@ class VocabularyFieldTests(BaseTest):
 
 
 class SimpleVocabularyTests(unittest.TestCase):
-    
+
     def setUp(self):
         self.list_vocab = vocabulary.SimpleVocabulary([1, 2, 3])
         self.items_vocab = vocabulary.SimpleVocabulary.fromItems(
             [('one', 1), ('two', 2), ('three', 3), ('fore!', 4)])
-    
+
     def test_simple_term(self):
         t = vocabulary.SimpleTerm(1)
         verifyObject(interfaces.ITokenizedTerm, t)
@@ -144,18 +144,18 @@ class SimpleVocabularyTests(unittest.TestCase):
         verifyObject(interfaces.ITokenizedTerm, t)
         self.assertEqual(t.value, 1)
         self.assertEqual(t.token, "One")
-        
+
     def test_order(self):
         value = 1
         for t in self.list_vocab:
             self.assertEqual(t.value, value)
             value += 1
-            
+
         value = 1
         for t in self.items_vocab:
             self.assertEqual(t.value, value)
             value += 1
-    
+
     def test_implementation(self):
         self.failUnless(verifyObject(interfaces.IVocabulary, self.list_vocab))
         self.failUnless(
@@ -163,38 +163,38 @@ class SimpleVocabularyTests(unittest.TestCase):
         self.failUnless(verifyObject(interfaces.IVocabulary, self.items_vocab))
         self.failUnless(
             verifyObject(interfaces.IVocabularyTokenized, self.items_vocab))
-            
+
     def test_addt_interfaces(self):
         class IStupid(Interface):
             pass
         v = vocabulary.SimpleVocabulary([1, 2, 3], IStupid)
         self.failUnless(IStupid.isImplementedBy(v))
-    
+
     def test_len(self):
         self.assertEqual(len(self.list_vocab), 3)
         self.assertEqual(len(self.items_vocab), 4)
-    
+
     def test_contains(self):
         for v in (self.list_vocab, self.items_vocab):
             self.assert_(1 in v and 2 in v and 3 in v)
             self.assert_(5 not in v)
-            
+
     def test_get_query(self):
         self.assert_(self.list_vocab.getQuery() is None)
-        
+
     def test_iter_and_get_term(self):
         for v in (self.list_vocab, self.items_vocab):
             for term in v:
                 self.assert_(v.getTerm(term.value) is term)
                 self.assert_(v.getTermByToken(term.token) is term)
-        
+
     def test_nonunique_tokens(self):
         self.assertRaises(
             AssertionError, vocabulary.SimpleVocabulary, [2, '2'])
         self.assertRaises(
             AssertionError, vocabulary.SimpleVocabulary.fromItems, 
             [(1, 'one'), ('1', 'another one')])
-        
+
 
 def test_suite():
     suite = unittest.makeSuite(RegistryTests)

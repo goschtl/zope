@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: resource.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: resource.py,v 1.3 2003/06/04 09:09:45 stevea Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
+from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getSkin
 from zope.component.interfaces import IResourceService
@@ -47,7 +48,7 @@ class GlobalResourceService:
     def __init__(self):
         self.__layers = {}
 
-    __implements__ = IGlobalResourceService
+    implements(IGlobalResourceService)
 
     def getResource(self, object, name, request):
         '''See interface IResourceService'''

@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: skin.py,v 1.4 2003/05/01 19:35:38 faassen Exp $
+$Id: skin.py,v 1.5 2003/06/04 09:09:45 stevea Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
+from zope.interface import implements
 from zope.component.interfaces import ISkinService
 
 class IGlobalSkinService(ISkinService):
@@ -34,7 +35,7 @@ class GlobalSkinService:
     def __init__(self):
         self.__skins = {}
 
-    __implements__ = IGlobalSkinService
+    implements(IGlobalSkinService)
 
     def defineSkin(self, name, view_type, layers):
         '''See interface IGlobalSkinService'''

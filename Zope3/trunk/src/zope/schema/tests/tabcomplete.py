@@ -16,10 +16,11 @@
 
 
 from zope.schema.interfaces import ITerm, ISubsetVocabulary, IVocabulary
+from zope.interface import implements
 
 
 class Term:
-    __implements__ = ITerm
+    implements(ITerm)
 
     def __init__(self, value):
         self.value = value
@@ -37,7 +38,7 @@ class TermIterator:
 
 
 class CompletionVocabulary(object):
-    __implements__ = IVocabulary
+    implements(IVocabulary)
 
     def __init__(self, values):
         # In practice, something more dynamic could be used to
@@ -71,7 +72,7 @@ class CompletionVocabulary(object):
 
 
 class SubsetCompletionVocabulary(CompletionVocabulary):
-    __implements__ = IVocabulary, ISubsetVocabulary
+    implements(ISubsetVocabulary)
 
     def __init__(self, values, master):
         super(SubsetCompletionVocabulary, self).__init__(values)

@@ -23,10 +23,10 @@ from zope.security.simplepolicies import PermissiveSecurityPolicy
 from zope.security.context import SecurityContext
 
 class DummyExecutable:
-    """__implements__ = (pseudo) IExecutableObject"""
+    """implements( (pseudo) IExecutableObject)"""
 
 class DummyExecutableWithCustomPolicy:
-    """__implements__ = (pseudo) IExecutableObjectWithCustomSecurityPolicy"""
+    """implements( (pseudo) IExecutableObjectWithCustomSecurityPolicy)"""
 
     def _customSecurityPolicy(self):
         return PermissiveSecurityPolicy()

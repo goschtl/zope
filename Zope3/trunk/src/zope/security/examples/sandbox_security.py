@@ -14,6 +14,7 @@
 import sandbox
 from zope.security.interfaces import ISecurityPolicy, IChecker
 from zope.security import management, checker
+from zope.interface import implements
 
 #################################
 # 1. map permissions to actions
@@ -73,7 +74,7 @@ class SimulationSecurityDatabase:
 
 class SimulationSecurityPolicy:
 
-    __implements__ = ISecurityPolicy
+    implements(ISecurityPolicy)
 
     def checkPermission(self, permission, object, context):
         token = context.user.getAuthenticationToken()

@@ -15,11 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: test_accessors.py,v 1.2 2003/05/12 10:02:41 ryzaja Exp $
+$Id: test_accessors.py,v 1.3 2003/06/04 09:09:46 stevea Exp $
 """
 
 import unittest
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.schema import Text, accessors
 from zope.schema.interfaces import IText
 from zope.schema.accessors import FieldReadAccessor, FieldWriteAccessor
@@ -37,10 +37,10 @@ class Test(unittest.TestCase):
             getFoo, setFoo = accessors(field)
 
         class Bad:
-            __implements__ = I
+            implements(I)
 
         class Good:
-            __implements__ = I
+            implements(I)
 
             def getFoo(self):
                 return u"foo"

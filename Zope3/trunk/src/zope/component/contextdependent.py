@@ -13,15 +13,16 @@
 ##############################################################################
 """
 
-$Id: contextdependent.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: contextdependent.py,v 1.3 2003/06/04 09:09:45 stevea Exp $
 """
 
 from zope.component.interfaces import IContextDependent
+from zope.interface import implements
 
 class ContextDependent(object):
     """standard boilerplate for context dependent objects"""
 
-    __implements__ = IContextDependent
+    implements(IContextDependent)
 
     def __init__(self, context):
         self.context = context

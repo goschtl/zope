@@ -16,7 +16,7 @@
 
 from zope.schema import interfaces
 from zope.schema import vocabulary
-
+from zope.interface import implements
 
 # This table is based on information from the United States Postal Service:
 # http://www.usps.com/ncsc/lookups/abbreviations.html#states
@@ -85,7 +85,7 @@ _states = {
 
 class State:
     __slots__ = 'value', 'title'
-    __implements__ = interfaces.ITerm
+    implements(interfaces.ITerm)
 
     def __init__(self, value, title):
         self.value = value
@@ -101,7 +101,7 @@ class IStateVocabulary(interfaces.IVocabulary):
 
 class StateVocabulary(object):
     __slots__ = ()
-    __implements__ = IStateVocabulary
+    implements(IStateVocabulary)
 
     def __init__(self, object=None):
         pass
@@ -120,7 +120,7 @@ class StateVocabulary(object):
 
 
 class StateSelectionField(vocabulary.VocabularyField):
-    __implements__ = vocabulary.VocabularyField.__implements__
+
     vocabulary = StateVocabulary()
 
     def __init__(self, **kw):

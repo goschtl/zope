@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: view.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: view.py,v 1.3 2003/06/04 09:09:45 stevea Exp $
 """
 
 from zope.interface.adapter import AdapterRegistry
+from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getSkin
 from zope.component.interfaces import IViewService
@@ -39,7 +40,7 @@ class IGlobalViewService(IViewService):
 
 class GlobalViewService:
 
-    __implements__ = IGlobalViewService
+    implements(IGlobalViewService)
 
     def __init__(self):
         self.__layers = {}

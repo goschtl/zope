@@ -13,10 +13,11 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.3 2003/04/11 13:38:28 philikon Exp $
+$Id: utility.py,v 1.4 2003/06/04 09:09:45 stevea Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
+from zope.interface import implements
 from zope.component.interfaces import IUtilityService
 from zope.component.exceptions import Invalid, ComponentLookupError
 
@@ -30,7 +31,7 @@ class IGlobalUtilityService(IUtilityService):
 
 class GlobalUtilityService:
 
-    __implements__=IGlobalUtilityService
+    implements(IGlobalUtilityService)
 
     def __init__(self):
         self.__utilities = {}

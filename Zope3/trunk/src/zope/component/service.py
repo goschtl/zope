@@ -13,12 +13,13 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.3 2002/12/28 01:42:21 rdmurray Exp $
+$Id: service.py,v 1.4 2003/06/04 09:09:45 stevea Exp $
 """
 
 from zope.exceptions import DuplicationError
 from zope.component.interfaces import IServiceService
 from zope.component.exceptions import ComponentLookupError
+from zope.interface import implements
 
 
 class IGlobalServiceManager(IServiceService):
@@ -52,7 +53,7 @@ class InvalidService(Exception):
 class GlobalServiceManager:
     """service manager"""
 
-    __implements__ = IGlobalServiceManager
+    implements(IGlobalServiceManager)
 
     def __init__(self):
         self.__defs     = {}

@@ -16,7 +16,7 @@
 
 import unittest
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.schema import vocabulary
 from zope.schema.tests import states
@@ -47,7 +47,7 @@ class IBirthInfo(Interface):
         )
 
 class BirthInfo:
-    __implements__ = IBirthInfo
+    implements(IBirthInfo)
 
     def __init__(self):
         self.state = state

@@ -16,6 +16,7 @@
 
 
 from zope.interface.verify import verifyObject
+from zope.interface import implements
 from zope.component.interfaces import IFactory
 from zope.component.interfaces import IFactoryService
 from zope.component.exceptions import ComponentLookupError
@@ -28,7 +29,7 @@ class IGlobalFactoryService(IFactoryService):
 
 class GlobalFactoryService:
 
-    __implements__ = IGlobalFactoryService
+    implements(IGlobalFactoryService)
 
     def __init__(self):
         self.__factories={}

@@ -13,7 +13,7 @@
 ##############################################################################
 import time, whrandom
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 class IAgent(Interface):
     """
@@ -70,7 +70,7 @@ class Agent(Identity):
     """
     see IAgent doc
     """
-    __implements__ = IAgent
+    implements(IAgent)
 
     def __init__(self, id, home, auth_token, action):
         self.id = id
@@ -96,7 +96,7 @@ class Sandbox(Identity):
     """
     see ISandbox doc
     """
-    __implements__ = ISandbox
+    implements(ISandbox)
 
     def __init__(self, id, service_factories):
         self.id = id
@@ -147,7 +147,7 @@ class Sandbox(Identity):
                                )
 
 class Service:
-    __implements__ = IService
+    implements(IService)
     def getId(self):
         return self.__class__.__name__
     def setHome(self, home):
