@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.32 2003/06/10 22:00:11 gvanrossum Exp $
+$Id: fssync.py,v 1.33 2003/06/11 15:50:55 gvanrossum Exp $
 """
 
 import os
@@ -421,7 +421,7 @@ class FSSync(object):
             if e and "flag" not in e:
                 self.diff(t, mode, diffopts)
 
-    def add(self, path):
+    def add(self, path, type=None, factory=None):
         if not exists(path):
             raise Error("nothing known about '%s'", path)
         entry = self.metadata.getentry(path)
@@ -439,6 +439,10 @@ class FSSync(object):
         zpath += tail
         entry["path"] = zpath
         entry["flag"] = "added"
+        if type:
+            entry["type"] = type
+        if factory:
+            entry["factory"] = factory
         self.metadata.flush()
         if isdir(path):
             # Force Entries.xml to exist, even if it wouldn't normally

@@ -29,7 +29,7 @@ fssync [global_options] checkin [local_options] URL [TARGETDIR]
 ``fssync command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.18 2003/06/10 22:00:11 gvanrossum Exp $
+$Id: main.py,v 1.19 2003/06/11 15:50:55 gvanrossum Exp $
 """
 
 import os
@@ -197,17 +197,35 @@ def update(opts, args):
     fs.multiple(args, fs.update)
 
 def add(opts, args):
-    """fssync add TARGET ...
+    """fssync add [-t TYPE] [-f FACTORY] TARGET ...
 
     Add the TARGET files or directories to the set of registered
     objects.  Each TARGET must exist.  The next commit will add them
     to the Zope 3 server.
+
+    The options -t and -f can be used to set the type and factory of
+    the newly created object; these should be dotted names of Python
+    objects.  Usually only the factory needs to be specified.
+
+    If no factory is specified, the type will be guessed when the
+    object is inserted into the Zope 3 server based on the filename
+    extension and the contents of the data.  For example, some common
+    image types are recognized by their contents, and the extensions
+    .pt and .dtml are used to create page templates and DTML
+    templates, respectively.
     """
+    type = None
+    factory = None
+    for o, a in opts:
+        if o in ("-t", "--type"):
+            type = a
+        elif o in ("-f", "--factory"):
+            factory = a
     if not args:
         raise Usage("add requires at least one TARGET argument")
     fs = FSSync()
     for a in args:
-        fs.add(a)
+        fs.add(a, type, factory)
 
 def remove(opts, args):
     """fssync remove TARGET ...
@@ -298,7 +316,7 @@ command_table = {
     "co":       ("", [], checkout),
     "update":   ("", [], update),
     "commit":   ("m:r", ["message=", "raise-on-conflicts"], commit),
-    "add":      ("", [], add),
+    "add":      ("f:t:", ["factory=", "type="], add),
     "remove":   ("", [], remove),
     "rm":       ("", [], remove),
     "r":        ("", [], remove),
