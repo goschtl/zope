@@ -29,12 +29,8 @@ contain different aspects of the relevant metadata.
 
 `PACKAGE.cfg`
   List of inclusions (and exclusions) that are added/removed from the
-  distribution as it's constructed.  This file can contain two
-  distinct sections; the <distribution> section is used to include
-  files in the distribution root, and the <collection> section is used
-  to include files in the component itself (even if the component
-  isn't a collection; this name is used since it usually will be a
-  collection).
+  distribution as it's constructed.  See `Package Construction
+  Information`_ for details.
 
 `PUBLICATION.cfg`
   General metadata related to a distribution.  This includes
@@ -56,7 +52,47 @@ contain different aspects of the relevant metadata.
 `SETUP.cfg`
   This file contains information on building extension modules.
   Information about scripts and documentation files will also be
-  included in this file.
+  included in this file.  See `Embedded Package Definitions`_ for more
+  information.
+
+Package Construction Information
+--------------------------------
+
+  The `PACKAGE.cfg` file can contain three distinct sections; the
+  <load> section identifies files that need to be loaded from other
+  sources, the <distribution> section is used to include files in the
+  distribution root, and the <collection> section is used to include
+  files in the component itself (even if the component isn't a
+  collection; this name is used since it usually will be a
+  collection).
+
+  As an example, this is the `PACKAGE.cfg` being used for the
+  ``ZConfig`` package at the time of this writing::
+
+    # Load the license from an external source, so we don't have to keep a
+    # copy of it sitting around:
+    <load>
+      LICENSE.txt  http://cvs.zope.org/Zope3/ZopePublicLicense.txt?rev=HEAD
+    </load>
+
+    # Add a few things to the distribution root.
+    <distribution>
+      doc          doc
+      LICENSE.txt  LICENSE.txt
+      NEWS.txt     NEWS.txt
+      README.txt   README.txt
+    </distribution>
+
+    # and remove the same from the package itself.
+    <collection>
+      doc          -
+      LICENSE.txt  -
+      NEWS.txt     -
+      README.txt   -
+
+      # We'll remove this too, since it's only of interest to CVS users:
+      BRANCHES.txt -
+    </collection>
 
 Embedded Package Definitions
 ----------------------------
@@ -86,7 +122,7 @@ Paths can only refer to descendents of the directory containing
 the filesystem hierarchy.
 
 Support for Compiled Extensions
--------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Compiled extensions are described using **<extension>** sections in
 the `SETUP.cfg` file.  The name of the section should be the name of
