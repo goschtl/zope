@@ -195,3 +195,12 @@ The order that items are listed here is not significant.
 
   Some kind of field that can contain objects that conform to a particular
   schema. And, widgets for this field.
+
+- Mailing service
+
+  Mail sending service that integrates with Zope 3 transactions and only sends
+  out email on successfull commits (and no multiple emails on ConflictErrors),
+  is asynchronous (does not force the user to wait until the mail is completely
+  sent) and reliable (does not lose mail on crashes, keeps a queue that can
+  survive server restarts).
+
