@@ -1,0 +1,75 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    xmlns:test="http://sample.namespaces.zope.org/test"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <meta:directive
+      name="register"
+      namespace="http://sample.namespaces.zope.org/test"
+      schema=".test_conditions.IRegister"
+      handler=".test_conditions.register"
+      >
+    This registers a directive which creates registrations we can test.
+  </meta:directive>
+
+  <test:register id="unqualified.registration" />
+
+  <configure zcml:condition="python:modules['sys'].platform">
+    ZCML directives inside here should be included.
+
+    <configure>
+      <test:register id="nested.true.condition" />
+    </configure>
+
+    <!-- These registrations stand on the basis of their own
+         conditions: -->
+    <test:register
+        zcml:condition="python:42"
+        id="true.condition.nested.in.true"
+        />
+
+    <test:register
+        zcml:condition="python:0"
+        id="false.condition.nested.in.true"
+        />
+
+  </configure>
+
+  <test:register
+      zcml:condition="string:yes!"
+      id="direct.true.condition"
+      >
+    This registration should be included.
+  </test:register>
+
+  <configure zcml:condition="python:False">
+    ZCML directives inside here should be ignored.
+
+    <configure>
+      <test:register id="nested.false.condition" />
+    </configure>
+
+    <!-- These registrations are ignored, since the container is
+         ignored: -->
+    <test:register
+        zcml:condition="python:42"
+        id="true.condition.nested.in.true"
+        />
+
+    <test:register
+        zcml:condition="python:0"
+        id="false.condition.nested.in.true"
+        />
+
+  </configure>
+
+  <test:register
+      zcml:condition="string:"
+      id="direct.false.condition"
+      >
+    This registration should be ignored.
+  </test:register>
+
+</configure>

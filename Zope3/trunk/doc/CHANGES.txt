@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - ZCML supports conditional directives using the zcml:condition
+        attribute.  The value of the attribute is a TALES expression;
+        if the expression is true, the element the attribute is
+        attached to will be used, otherwise the element and its
+        descendents will be ignored.
+
       - Added lazy properties. (See zope/cachedescriptors/README.txt)
 
       - Added new `getNextUtility()`, `queryNextUtility()`, and
