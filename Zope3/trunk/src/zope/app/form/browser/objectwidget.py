@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets for text-like data
 
-$Id: objectwidget.py,v 1.1 2004/03/17 17:35:02 philikon Exp $
+$Id: objectwidget.py,v 1.2 2004/05/07 19:41:32 garrett Exp $
 """
 from zope.interface import implements
 from zope.schema import getFieldNamesInOrder
@@ -21,7 +21,21 @@ from zope.schema import getFieldNamesInOrder
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
+
+class ObjectWidgetView:
+
+    template = ViewPageTemplateFile('objectwidget.pt')
+    
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+        
+    def __call__(self):
+        return self.template()
+    
+    
 class ObjectWidget(BrowserWidget):
     """A widget over an Interface that contains Fields.
 
@@ -38,6 +52,9 @@ class ObjectWidget(BrowserWidget):
 
     def __init__(self, context, request, factory, **kw):
         super(ObjectWidget, self).__init__(context, request)
+        
+        # define view that renders the widget
+        self.view = ObjectWidgetView(self, request)
 
         # factory used to create content that this widget (field)
         # represents
@@ -63,33 +80,23 @@ class ObjectWidget(BrowserWidget):
                          context=self.context)
 
     def __call__(self):
-        """Render the widget
-        """
-        render = []
+        return self.view()
+        
+    def legendTitle(self):
+        return self.context.title or self.context.__name__
 
-        # XXX see if there's some widget layout already
-
-        # generate each widget from fields in the schema
-        field = self.context
-        title = field.title or field.__name__
-        render.append('<fieldset><legend>%s</legend>'%title)
-        for name, widget in self.getSubWidgets():
-            render.append(widget.row())
-        render.append('</fieldset>')
-
-        return '\n'.join(render)
-
-    def getSubWidgets(self):
-        l = []
-        for name in self.names:
-            l.append((name, getattr(self, '%s_widget'%name)))
-        return l
+    def getSubWidget(self, name):
+        return getattr(self, '%s_widget' % name)
+            
+    def subwidgets(self):
+        return [self.getSubWidget(name) for name in self.names]
 
     def hidden(self):
-        ''' Render the list as hidden fields '''
-        for name, widget in self.getSubWidgets():
-            s += widget.hidden()
-        return s
+        """Render the list as hidden fields."""
+        result = []
+        for name in self.names:
+            result.append(getSubwidget(name).hidden())
+        return "".join(result)
 
     def getInputValue(self):
         """Return converted and validated widget data.
@@ -101,8 +108,8 @@ class ObjectWidget(BrowserWidget):
         does this).
         """
         content = self.factory()
-        for name, widget in self.getSubWidgets():
-            setattr(content, name, widget.getInputValue())
+        for name in self.names:
+            setattr(content, name, self.getSubWidget(name).getInputValue())
         return content
 
     def applyChanges(self, content):
@@ -130,8 +137,8 @@ class ObjectWidget(BrowserWidget):
 
         Return True if there is data and False otherwise.
         """
-        for name, widget in self.getSubWidgets():
-            if widget.hasInput():
+        for name in self.names:
+            if self.getSubWidget(name).hasInput():
                 return True
         return False
 
@@ -143,7 +150,7 @@ class ObjectWidget(BrowserWidget):
         """
         # re-call setupwidgets with the content
         self._setUpEditWidgets()
-        for name, widget in self.getSubWidgets():
-            widget.setRenderedValue(getattr(value, name, None))
+        for name in self.names:
+            self.getSubWidget(name).setRenderedValue(getattr(value, name, None))
             
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.2 2004/03/17 17:37:06 philikon Exp $
+$Id: test_objectwidget.py,v 1.3 2004/05/07 19:41:33 garrett Exp $
 """
 
 import unittest, doctest
@@ -25,12 +25,12 @@ from zope.schema import Object, TextLine
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextWidget, ObjectWidget
 from zope.interface.verify import verifyClass
-
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 
 class ITestContact(Interface):
     name = TextLine()
     email = TextLine()
+    
 class TestContact:
     implements(ITestContact)
 
@@ -46,14 +46,14 @@ class ObjectWidgetTest(BrowserWidgetTest):
         kw.update({'factory': TestContact})
         return ObjectWidget(context, request, **kw)
 
-    def setUpContent(self, desc=u''):
+    def setUpContent(self, desc=u'', title=u'Foo Title'):
         ztapi.browserViewProviding(ITextLine, TextWidget, IInputWidget)
 
         class ITestContent(Interface):
             foo = self._FieldFactory(
                     ITestContact, 
-                    title = u"Foo Title",
-                    description = desc
+                    title=title,
+                    description=desc
                     )
         class TestObject:
             implements(ITestContent)
@@ -63,7 +63,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         self.request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(self.field, self.request)
-
+        
     def test_hasInput(self):
         # doesn't work with subfields
         pass
@@ -104,32 +104,6 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.assertEqual(self.content.foo.name, u'Foo Name')
         self.assertEqual(self.content.foo.email, u'foo@foo.test')
 
-    def test_new(self):
-        request = TestRequest()
-        widget = ObjectWidget(self.field, request, TestContact)
-        self.assertEquals(int(widget.hasInput()), 0)
-        check_list = (
-            'input', 'name="field.foo.name"',
-            'input', 'name="field.foo.email"'
-        )
-        self.verifyResult(widget(), check_list)
-
-    def test_edit(self):
-        request = TestRequest(form={
-            'field.foo.name': u'fred',
-            'field.foo.email': u'fred@fred.com'
-            })
-        widget = ObjectWidget(self.field, request, TestContact)
-        self.assertEquals(int(widget.hasInput()), 1)
-        o = widget.getInputValue()
-        self.assertEquals(hasattr(o, 'name'), 1)
-        self.assertEquals(o.name, u'fred')
-        self.assertEquals(o.email, u'fred@fred.com')
-        check_list = (
-            'input', 'name="field.foo.name"', 'value="fred"',
-            'input', 'name="field.foo.email"', 'value="fred@fred.com"',
-        )
-        self.verifyResult(widget(), check_list)
 
 def test_suite():
     return unittest.TestSuite((
