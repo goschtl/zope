@@ -334,6 +334,7 @@ def match(rx, s):
 class TestFileFinder:
     def __init__(self, prefix):
         self.files = []
+		# XXX will break if prefix ends with a slash
         self._plen = len(prefix)+1
 
     def visit(self, rx, dir, files):
