@@ -29,7 +29,7 @@ fssync [global_options] checkin [local_options] URL [TARGETDIR]
 ``fssync command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.17 2003/06/05 21:05:49 gvanrossum Exp $
+$Id: main.py,v 1.18 2003/06/10 22:00:11 gvanrossum Exp $
 """
 
 import os
@@ -159,7 +159,7 @@ def checkout(opts, args):
     fs.checkout(target)
 
 def commit(opts, args):
-    """fssync commit [-m message] [TARGET ...]
+    """fssync commit [-m message] [-r] [TARGET ...]
 
     Commit the TARGET files or directories to the Zope 3 server
     identified by the checkout command.  TARGET defaults to the
@@ -173,11 +173,14 @@ def commit(opts, args):
     The default message is 'fssync'.
     """
     message = "fssync_commit"
+    raise_on_conflicts = False
     for o, a in opts:
         if o in ("-m", "--message"):
             message = a
+        if o in ("-r", "--raise-on-conflicts"):
+            raise_on_conflicts = True
     fs = FSSync()
-    fs.multiple(args, fs.commit, message)
+    fs.multiple(args, fs.commit, message, raise_on_conflicts)
 
 def update(opts, args):
     """fssync update [TARGET ...]
@@ -294,7 +297,7 @@ command_table = {
     "checkout": ("", [], checkout),
     "co":       ("", [], checkout),
     "update":   ("", [], update),
-    "commit":   ("m:", ["message="], commit),
+    "commit":   ("m:r", ["message=", "raise-on-conflicts"], commit),
     "add":      ("", [], add),
     "remove":   ("", [], remove),
     "rm":       ("", [], remove),

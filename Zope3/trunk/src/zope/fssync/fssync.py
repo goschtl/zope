@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.31 2003/06/05 21:05:49 gvanrossum Exp $
+$Id: fssync.py,v 1.32 2003/06/10 22:00:11 gvanrossum Exp $
 """
 
 import os
@@ -316,13 +316,15 @@ class FSSync(object):
                     for name in names:
                         method(join(target, name), *more)
 
-    def commit(self, target, note="fssync_commit"):
+    def commit(self, target, note="fssync_commit", raise_on_conflicts=False):
         entry = self.metadata.getentry(target)
         if not entry:
             raise Error("nothing known about", target)
         self.network.loadrooturl(target)
         path = entry["path"]
         view = "@@fromFS.snarf?note=%s" % urllib.quote(note)
+        if raise_on_conflicts:
+            view += "&raise=1"
         head, tail = split(realpath(target))
         data = DataSource(head, tail)
         fp, headers = self.network.httpreq(path, view, data)
