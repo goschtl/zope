@@ -16,7 +16,7 @@
 $Id$
 """
 __metaclass__ = type
-__docformat__ = 'restructuredtext'
+__docformat__ = 'restructuredtext' 
 
 from persistent.dict import PersistentDict
 from persistent import Persistent
