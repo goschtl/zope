@@ -5,7 +5,10 @@
   <!-- used for functional testing setup -->
 
   <include package="zope.app" />
+
+  <include files="products/*-meta.zcml" />
   <include file="products_ftesting.zcml" />
+  <include files="products/*-configure.zcml" />
 
   <!-- Principals -->
 
