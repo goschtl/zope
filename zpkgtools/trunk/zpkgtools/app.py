@@ -112,8 +112,9 @@ class BuilderApplication(Application):
                 handled.add(resource)
                 if resource not in self.locations:
                     # it's an external dependency, so we do nothing for now
-                    self.logger.warn("ignoring resource %r (no source) from %s"
-                                     % (resource, dep_sources.get(resource)))
+                    self.logger.error(
+                        "ignoring resource %r (no source) from %s"
+                        % (resource, dep_sources.get(resource)))
                     continue
                 #
                 location = self.locations[resource]
