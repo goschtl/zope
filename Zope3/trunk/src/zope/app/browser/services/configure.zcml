@@ -489,14 +489,14 @@
   <pages
       for="zope.app.interfaces.services.service.IServiceManager" 
       permission="zope.ManageServices"
-      class="zope.app.browser.services.package.PackagesContents">
+      class="zope.app.browser.services.service.SiteManagementFoldersContents">
 
     <page name="contents.html"
           attribute="index"
           menu="zmi_views" title="Contents" 
           />
-    <page name="addPackage.html"
-          attribute="addPackage"
+    <page name="addSiteManagementFolder.html"
+          attribute="addSiteManagementFolder"
           />
     <page name="removeObjects.html"
           attribute="removeObjects"
@@ -526,10 +526,10 @@
   
 
 
-<!-- Package -->
+<!-- SiteManagementFolder -->
 
   <pages
-      for="zope.app.interfaces.services.package.IPackage"
+      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
       permission="zope.ManageServices" 
       class="zope.app.browser.container.contents.JustContents">
 
@@ -538,7 +538,7 @@
   </pages>
 
   <pages
-     for="zope.app.interfaces.services.package.IPackage"
+     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
      permission="zope.ManageServices"
      class="zope.app.browser.container.contents.Contents"
      >
@@ -552,7 +552,7 @@
 
   <view
      name="+"
-     for="zope.app.interfaces.services.package.IPackage"
+     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
      permission="zope.ManageServices"
      class="zope.app.browser.services.service.ComponentAdding">
 
@@ -615,10 +615,10 @@
       title="Module" 
       />
 
-<!-- View Package -->
+<!-- PageFolder -->
 
   <pages
-      for="zope.app.interfaces.services.service.IViewPackage"
+      for="zope.app.interfaces.services.pagefolder.IPageFolder"
       permission="zope.ManageServices" 
       class="zope.app.browser.container.contents.JustContents">
 
@@ -627,9 +627,9 @@
   </pages>
 
   <pages
-      for="zope.app.interfaces.services.service.IViewPackage"
+      for="zope.app.interfaces.services.pagefolder.IPageFolder"
       permission="zope.ManageServices" 
-      class="zope.app.browser.services.package.ViewPackageContents"
+      class="zope.app.browser.services.pagefolder.PageFolderContents"
       >
 
     <page name="contents.html"
@@ -644,7 +644,7 @@
   </pages>
 
   <editform
-     schema="zope.app.interfaces.services.service.IViewPackageInfo."
+     schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo."
      name="DefaultConfiguration.html"
      menu="zmi_views" title="Default Configuration"
      permission="zope.ManageServices"
@@ -653,7 +653,7 @@
 
   <menuItem
      menu="zmi_actions"
-     for="zope.app.interfaces.services.service.IViewPackage"
+     for="zope.app.interfaces.services.pagefolder.IPageFolder"
      title="Add"
      action="."
      filter="nothing"
@@ -661,7 +661,7 @@
 
   <menuItem
      menu="zmi_views"
-     for="zope.app.interfaces.services.service.IViewPackage"
+     for="zope.app.interfaces.services.pagefolder.IPageFolder"
      title="Contents"
      action="@@contents.html"
      filter="context/configured"
@@ -670,8 +670,8 @@
   <menuItem
      menu="add_component"
      for="zope.app.interfaces.container.IAdding"
-     action="zope.app.services.ViewPackage" 
-     title="View Sub-Package" />
+     action="zope.app.services.PageFolder" 
+     title="Page Folder" />
 
 <!-- Session service -->
 
@@ -732,7 +732,7 @@
 
   <view
      name="AddService"
-     for="zope.app.interfaces.services.package.IPackage"
+     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
      permission="zope.ManageServices"
      class="zope.app.browser.services.service.ServiceAdding">
 

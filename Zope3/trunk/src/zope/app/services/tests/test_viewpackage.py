@@ -13,12 +13,12 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_viewpackage.py,v 1.6 2003/03/18 21:02:23 jim Exp $
+$Id: test_viewpackage.py,v 1.7 2003/03/23 16:45:45 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.viewpackage import ViewPackage
+from zope.app.services.pagefolder import PageFolder
 from zope.app.traversing import traverse
 from zope.app.services.zpt import ZPTTemplate
 from zope.app.services.view import ViewService
@@ -36,7 +36,7 @@ class Test(PlacefulSetup, TestCase):
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
         default = traverse(self.rootFolder, '++etc++Services/default')
-        default.setObject('Views', ViewPackage())
+        default.setObject('Views', PageFolder())
         views = traverse(default, 'Views')
         views.forInterface = I
         views.factoryName = None
@@ -65,7 +65,7 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(configuration.attribute, None)
 
         self.assertRaises(TypeError,
-                          views.setObject, 'bar.html', ViewPackage())
+                          views.setObject, 'bar.html', PageFolder())
 
 
 def test_suite():

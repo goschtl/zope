@@ -112,7 +112,7 @@
   />
 
 <adapter
-  for="zope.app.interfaces.services.service.IViewPackage"
+  for="zope.app.interfaces.services.pagefolder.IPageFolder"
   provides="zope.app.interfaces.file.IFileFactory"
   factory=".zpt.ZPTFactory"
   permission="zope.ManageServices"
@@ -229,9 +229,9 @@
 
   </content>
 
-<!-- Packages -->
+<!-- SiteManagementFolders -->
 
-  <content class="zope.app.services.package.Packages">
+  <content class="zope.app.services.folder.SiteManagementFolders">
     <require
         permission="zope.View"
         interface="zope.app.interfaces.container.IReadContainer" />
@@ -246,7 +246,7 @@
 
     </content>
 
-  <content class="zope.app.services.package.Package">
+  <content class="zope.app.services.folder.SiteManagementFolder">
     <require
         permission="zope.View"
         interface="zope.app.interfaces.container.IReadContainer" />
@@ -293,11 +293,11 @@
         />
   </content>
 
-<!-- View Packages -->
+<!-- Page Folder -->
 
-  <content class="zope.app.services.viewpackage.ViewPackage">
+  <content class="zope.app.services.pagefolder.PageFolder">
     <factory
-      id = "zope.app.services.ViewPackage"
+      id = "zope.app.services.PageFolder"
       permission = "zope.ManageServices"
       title = "View Folder"
       />
@@ -306,12 +306,9 @@
         interface="zope.app.interfaces.container.IReadContainer" />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer"
-        set_schema="zope.app.interfaces.services.service.IViewPackageInfo"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.service.IViewPackageInfo"
+        interface="zope.app.interfaces.container.IWriteContainer
+                   zope.app.interfaces.services.pagefolder.IPageFolderInfo"
+        set_schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo"
         attributes="configured"
         />
     <implements

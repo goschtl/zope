@@ -10,7 +10,7 @@
       tal:define="container_contents view/listContentInfo"
       >
 
-  <p>View Package Contents</p>
+  <p>Page Folder Contents</p>
 
   <div metal:use-macro="view/contentsMacros/macros/contents_table" />
 

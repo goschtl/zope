@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.14 2003/03/19 19:57:31 alga Exp $
+$Id: service.py,v 1.15 2003/03/23 16:45:44 jim Exp $
 """
 
 import sys
@@ -57,7 +57,7 @@ ModuleType = type(IModuleService), PersistentModule
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.services.configuration import NamedComponentConfiguration
-from zope.app.services.package import Packages
+from zope.app.services.folder import SiteManagementFolders
 from zope.app.interfaces.services.configuration import IUseConfigurable
 from zope.app.interfaces.services.service import ILocalService
 
@@ -73,7 +73,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
     def __init__(self):
         super(ServiceManager, self).__init__()
         NameComponentConfigurable.__init__(self)
-        self.Packages = Packages()
+        self.Packages = SiteManagementFolders()
 
     def getServiceDefinitions(wrapped_self):
         "See IServiceService"
@@ -186,7 +186,6 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
         return self.get(key) is not None
 
-    # Enumeration methods. We'll only expose Packages for now:
     def __iter__(self):
         return iter(self.keys())
 

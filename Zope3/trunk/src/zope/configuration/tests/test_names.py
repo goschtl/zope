@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_names.py,v 1.2 2002/12/25 14:13:34 jim Exp $
+$Id: test_names.py,v 1.3 2003/03/23 16:45:45 jim Exp $
 """
 
 import unittest, sys
@@ -41,7 +41,7 @@ class NameTest(unittest.TestCase):
         c=resolve('zopeproducts.contact.contact.Contact')
         self.assertEquals(c.n, 2)
 
-    def testPackagePath(self):
+    def testSiteManagementFolderPath(self):
         from zope.configuration.name import resolve
 
         c=resolve('zope.configuration.tests.contact')
@@ -60,7 +60,7 @@ class NameTest(unittest.TestCase):
 
         self.assertEquals(id(c), id(zope))
 
-    def testPackage(self):
+    def testSiteManagementFolder(self):
         from zope.configuration.name import resolve
         c=resolve('zope.configuration.tests')
         import zope.configuration.tests

@@ -21,9 +21,8 @@
   </div>
 
   <p metal:fill-slot="help_text">To configure a connection, add a database
-     adapter component to a <em>package</em> in <a
-     href="../../../Packages">Packages</a> or to the <a
-     href="../../../Packages/default">default package</a>. After the component
+     adapter component to a <em>site-management folder</em>. 
+     After the component
      is added, add a connection configuration that configures the component to
      provide a connection.
   </p>

@@ -13,17 +13,13 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.10 2003/03/18 21:02:22 jim Exp $
+$Id: service.py,v 1.11 2003/03/23 16:45:44 jim Exp $
 """
 __metaclass__ = type
 
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.component.interfacefield import InterfaceField
-from zope.schema import BytesLine
 from zope.component.interfaces import IPresentation
-from zope.app.interfaces.container import IContainer
-from zope.app.security.permission import PermissionField
-from zope.interface import Interface, Attribute
+from zope.interface import Interface
 from zope.component.interfaces import IServiceService
 from zope.app.interfaces.services import configuration
 
@@ -129,35 +125,4 @@ class IServiceConfiguration(configuration.INamedComponentConfiguration):
 
     The name of a service configuration is used to determine the service
     type.
-    """
-
-class IViewPackageInfo(Interface):
-
-    forInterface = InterfaceField(
-        title = u"For interface",
-        description = u"The interface of the objects being viewed",
-        required = True,
-        )
-
-    factoryName = BytesLine(
-        title=u"The dotted name of a factory for creating the view",
-        required = True,
-        )
-
-    layer = BytesLine(
-        title = u"Layer",
-        description = u"The skin layer the view is registered for",
-        required = False,
-        min_length = 1,
-        default = "default",
-        )
-
-    permission = PermissionField(
-        title=u"Permission",
-        description=u"The permission required to use the view",
-        required = True,
-        )
-
-class IViewPackage(IViewPackageInfo,  IContainer):
-    """Sub-packages that contain templates that are registered as views
     """

@@ -77,7 +77,7 @@ class Test(CleanUp, unittest.TestCase):
         x()
         file.close()
 
-    def testIncludeNoPackageAndIncluderNoPackage(self):
+    def testIncludeNoSiteManagementFolder(self):
         from os.path import split
         file = TempFile()
         full_name = file.name

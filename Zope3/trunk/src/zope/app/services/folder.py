@@ -13,36 +13,34 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: package.py,v 1.5 2003/03/21 21:06:26 jim Exp $
+$Id: folder.py,v 1.1 2003/03/23 16:45:44 jim Exp $
 """
 
 __metaclass__ = type
 
 from zope.app.component.nextservice import getNextServiceManager
 from zope.app.container.btree import BTreeContainer
+from zope.app.interfaces.services.folder import ISiteManagementFolders
+from zope.app.interfaces.services.folder import ISiteManagementFolder
+from zope.app.interfaces.services.service import IComponentManager
+from zope.app.interfaces.services.service import IServiceManager
 from zope.app.services.configuration import ConfigurationManager
 from zope.app.traversing import getPath
+from zope.proxy.context import ContextMethod, ContextWrapper
 
-from zope.proxy.context import ContextMethod
-from zope.proxy.context import ContextWrapper
-
-from zope.app.interfaces.services.service \
-     import IServiceManager, IComponentManager
-from zope.app.interfaces.services.package import IPackage, IPackages
-
-class Package(BTreeContainer):
-    __implements__ = IPackage
+class SiteManagementFolder(BTreeContainer):
+    __implements__ = ISiteManagementFolder
 
     def __init__(self):
-        super(Package, self).__init__()
+        super(SiteManagementFolder, self).__init__()
         self.setObject('configure', ConfigurationManager())
 
-class Packages(BTreeContainer):
-    __implements__ = IPackages
+class SiteManagementFolders(BTreeContainer):
+    __implements__ = ISiteManagementFolders
 
     def __init__(self):
-        super(Packages, self).__init__()
-        self.setObject('default', Package())
+        super(SiteManagementFolders, self).__init__()
+        self.setObject('default', SiteManagementFolder())
 
     def queryComponent(self, type=None, filter=None, all=0):
         local = []
@@ -72,7 +70,13 @@ class Packages(BTreeContainer):
     queryComponent = ContextMethod(queryComponent)
 
     def setObject(self, name, obj):
-        if not IPackage.isImplementedBy(obj):
+        if not ISiteManagementFolder.isImplementedBy(obj):
             raise TypeError("Can only add packages")
-        return super(Packages, self).setObject(name, obj)
+        return super(SiteManagementFolders, self).setObject(name, obj)
 
+# XXX Backward compatability. This is needed to support old pickles.
+Package = SiteManagementFolder
+Packages = SiteManagementFolders
+import sys
+sys.modules['zope.app.services.package'
+            ] = sys.modules['zope.app.services.folder']

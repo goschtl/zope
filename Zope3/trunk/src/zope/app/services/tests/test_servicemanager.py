@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.3 2003/03/18 21:02:23 jim Exp $
+$Id: test_servicemanager.py,v 1.4 2003/03/23 16:45:45 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -153,7 +153,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         self.rootFolder.setServiceManager(ServiceManager())
         sm=getServiceManager(self.rootFolder)
-        default = cw(sm['default'], self.rootFolder, name='Packages')
+        default = cw(sm['default'], self.rootFolder, name='default')
         default.setObject('m1', Manager())
         manager = cw(default['m1'], default, name='m1')
         manager.new('zope.app.services.tests.sample1',
@@ -164,7 +164,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         self.folder1.setServiceManager(ServiceManager())
         sm2=getServiceManager(self.folder1)
-        default = cw(sm2['default'], self.folder1, name='Packages')
+        default = cw(sm2['default'], self.folder1, name='default')
         default.setObject('m1', Manager())
         manager = cw(default['m1'], default, name='m1')
         manager.new('zope.app.services.tests.sample1',

@@ -11,9 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""View package.
+"""Page Folders
 
-$Id: viewpackage.py,v 1.9 2003/03/21 21:06:26 jim Exp $
+Page folders support easy creation and configuration of page views
+using folders of templates.
+
+$Id: pagefolder.py,v 1.1 2003/03/23 16:45:44 jim Exp $
 """
 __metaclass__ = type
 
@@ -28,11 +31,11 @@ from zope.app.services.configuration import ConfigurationManager
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.proxy.introspection import removeAllProxies
 from zope.app.services.view import PageConfiguration
-from zope.app.interfaces.services.service import IViewPackage
+from zope.app.interfaces.services.pagefolder import IPageFolder
 
-class ViewPackage(BTreeContainer):
+class PageFolder(BTreeContainer):
 
-    __implements__ = IViewPackage
+    __implements__ = IPageFolder
 
     presentationType = IBrowserPresentation
     layer = "default"
@@ -43,8 +46,8 @@ class ViewPackage(BTreeContainer):
     template = None
 
     def __init__(self):
-        super(ViewPackage, self).__init__()
-        super(ViewPackage, self).setObject('configure', ConfigurationManager())
+        super(PageFolder, self).__init__()
+        super(PageFolder, self).setObject('configure', ConfigurationManager())
 
     def setObject(self, name, object):
         if not IZPTTemplate.isImplementedBy(object):
@@ -53,7 +56,7 @@ class ViewPackage(BTreeContainer):
         # super() does not work on a context wrapped instance
         base = removeAllProxies(self)
 
-        name = super(ViewPackage, base).setObject(name, object)
+        name = super(PageFolder, base).setObject(name, object)
         template = getItem(self, name)
         template = getPath(template)
         config = PageConfiguration(
@@ -82,3 +85,9 @@ class ViewPackage(BTreeContainer):
 
     def deactivated(self):
         "See IConfiguration"
+
+# XXX Backward compatability. This is needed to support old pickles.
+ViewPackage = PageFolder
+import sys
+sys.modules['zope.app.services.viewpackage'
+            ] = sys.modules['zope.app.services.pagefolder']

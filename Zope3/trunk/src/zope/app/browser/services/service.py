@@ -13,25 +13,27 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.15 2003/03/21 21:00:28 jim Exp $
+$Id: service.py,v 1.16 2003/03/23 16:45:43 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
+from zope.app.browser.container.contents import Contents
+from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
+from zope.app.interfaces.container import IZopeContainer
+from zope.app.interfaces.services.configuration import IConfiguration
+from zope.app.interfaces.services.configuration import Registered, Active
+from zope.app.interfaces.services.configuration import Unregistered
+from zope.app.interfaces.services.service import ILocalService
+from zope.app.interfaces.services.service import IServiceManager
+from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.app.services.folder import SiteManagementFolder
+from zope.app.services.service import ServiceConfiguration
+from zope.app.traversing import traverse, getPath
+from zope.component import getServiceManager
 from zope.component import getView, getAdapter, queryView
 from zope.proxy.context import ContextWrapper, ContextSuper
-from zope.app.interfaces.container import IZopeContainer
-from zope.component import getServiceManager
-from zope.publisher.browser import BrowserView
-from zope.app.services.service import ServiceConfiguration
-from zope.app.interfaces.services.configuration import IConfiguration
-from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
-from zope.app.traversing import traverse, getPath
-from zope.app.interfaces.services.service import ILocalService
 from zope.proxy.context import getWrapperContainer
-from zope.app.interfaces.services.configuration \
-     import Unregistered, Registered, Active
-
-__metaclass__ = type
+from zope.publisher.browser import BrowserView
 
 class ComponentAdding(Adding):
     """Adding subclass used for configurable components."""
@@ -204,3 +206,15 @@ class ServiceActivation(BrowserView):
         else:
             new_active.status = Active
             return active + " activated"
+
+
+class SiteManagementFoldersContents(Contents):
+
+    __used_for__ = IServiceManager
+
+    index = ViewPageTemplateFile('sitemanagement_contents.pt')
+
+    def addSiteManagementFolder(self, name):
+        self.context.setObject(name, SiteManagementFolder())
+        self.request.response.redirect('@@contents.html')
+
