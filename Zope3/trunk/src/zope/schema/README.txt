@@ -148,10 +148,65 @@ Selection issues; field type can specify:
   There is not currently a spelling of this, but it could be
   facilitated using alternate mixins similar to IEnumerated and
   Enumerated.
+  
+- Whether or not the field is read-only
 
+  If a field value is read-only, it cannot be changed once the object is
+  created.
+  
+- Whether or not the field is required
+
+  If a field is designated as required, assigned field values must always
+  be non-missing. See the next section for a descriptiom of missing values.
+  
+- A value designated as 'missing'
+
+  Missing values, when assigned to an object, indicate that there is 'no
+  data' for that field. Missing values are analogous to null values in
+  relational databases. For example, a boolean value can be True, False, or
+  missing, in which case its value is unknown.
+  
+  While Python's None is the most likely value to signify 'missing', some
+  fields may use different values. For example, it is common for text fields
+  to use the empty string ('') to signify that a value is missing. Numeric
+  fields may use 0 or -1 instead of None as their missing value.
+  
+  A field that is 'required' signfies that missing values are invalid and
+  should not be assigned.
+  
+- A default value
+
+  Default field values are assigned to objects when they are first created.
+  
+  
+Fields and Widgets
+------------------
+Widgets are components that display field values and, in the case of
+writable fields, allow the user to edit those values.
+
+Widgets:
+
+- Display current field values, either in a read-only format, or in a
+  format that lets the user change the field value.
+  
+- Update their corresponding field values based on values provided by users.
+  
+- Manage the relationships between their representation of a field value
+  and the object's field value. For example, a widget responsible for
+  editing a number will likely represent that number internally as a string.
+  For this reason, widgets must be able to convert between the two value
+  formats. In the case of the number-editing widget, string values typed
+  by the user need to be converted to numbers such as int or float.
+  
+- Support the ability to assign a missing value to a field. For example,
+  a widget may present a "None" option for selection that, when selected,
+  indicates thet the object should be updated with the field's 'missing' 
+  value.
+  
 
 Issues to be solved
 -------------------
+
 
 These issues were written up at the `Rotterdam Sprint`_ (12/4/2002).
 
