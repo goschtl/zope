@@ -34,6 +34,12 @@
       permission="zope.ManageServices"
       menu="zmi_views" title="Edit" />
 
+  <zope:adapter
+      for="..interfaces.IQuerySchemaSearch
+           zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.browser.interfaces.ISourceQueryView"
+      factory=".schemasearch.QuerySchemaSearchView"
+      />
 
   <tool
       interface="..interfaces.IAuthenticationPlugin"
