@@ -14,7 +14,7 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.4 2003/05/08 19:53:55 gvanrossum Exp $
+$Id: fssync.py,v 1.5 2003/05/08 20:41:02 gvanrossum Exp $
 """
 
 import os
@@ -115,13 +115,17 @@ class Commit(BrowserView):
     """
 
     def update(self):
-        zipfile = self.request.get("zipfile")
-        if zipfile is None:
-            return # Not updating -- must be presenting a blank form
-        zipfiledata = zipfile.read()
+        if self.request.getHeader("Content-Type") == "application/zip":
+            zipfiledata = self.request.body
+        else:
+            zipfile = self.request.get("zipfile")
+            if zipfile is None:
+                return # Not updating -- must be presenting a blank form
+            else:
+                zipfiledata = zipfile.read()
         # 00) Allocate temporary names
         topdir = tempfile.mktemp()
-        zipfilename = os.path.join(topdir, zipfile.filename)
+        zipfilename = os.path.join(topdir, "working.zip")
         working = os.path.join(topdir, "working")
         current = os.path.join(topdir, "current")
         try:
