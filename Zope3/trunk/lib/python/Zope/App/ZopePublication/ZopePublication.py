@@ -44,6 +44,9 @@ from PublicationTraverse import PublicationTraverse
 
 from Zope.Proxy.ContextWrapper import ContextWrapper
 
+# XXX Should this be imported here?
+from Transaction import get_transaction
+
 class RequestContainer:
     # TODO: add security assertion declaring access to REQUEST
 
@@ -54,14 +57,6 @@ class RequestContainer:
 class Cleanup:
     def __init__(self, f):
         self.__del__ = f
-
-
-try: get_transaction
-except NameError:
-    class get_transaction:
-        def abort(self): pass
-        def begin(self): pass
-        def commit(self): pass
 
 
 class ZopePublication(object, PublicationTraverse, DefaultPublication):

@@ -46,6 +46,8 @@ from Zope.Publisher.BaseRequest import TestRequest
 
 from Zope.ComponentArchitecture.GlobalServiceManager import serviceManager
 
+from Transaction import get_transaction
+
 class BasePublicationTests(PlacelessSetup, unittest.TestCase):
     klass = ZopePublication 
     
@@ -63,7 +65,6 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
 
         if app is None:
             from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
-            from Transaction import get_transaction
 
             app = RootFolder()
             root[ZopePublication.root_name] = app
