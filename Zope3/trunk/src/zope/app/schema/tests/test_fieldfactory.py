@@ -13,7 +13,7 @@
 ##############################################################################
 """Field Factory Tests
 
-$Id: test_fieldfactory.py,v 1.5 2004/03/09 12:39:10 srichter Exp $
+$Id: test_fieldfactory.py,v 1.6 2004/04/11 18:16:27 jim Exp $
 """
 import unittest
 
@@ -45,15 +45,15 @@ class TestFieldFactory(PlacelessSetup, unittest.TestCase):
         self.assertEquals(factory.description, "Text Field")
 
     def testGetFactoriesForIField(self):
-        factories = zapi.getFactoriesFor(None, IField)
+        factories = list(zapi.getFactoriesFor(None, IField))
         self.assertEqual(len(factories), 3)
 
     def testGetFactoriesForIText(self):
-        factories = zapi.getFactoriesFor(None, IText)
+        factories = list(zapi.getFactoriesFor(None, IText))
         self.assertEqual(len(factories), 2)
 
     def testGetFactoriesUnregistered(self):
-        factories = zapi.getFactoriesFor(None, IFoo)
+        factories = list(zapi.getFactoriesFor(None, IFoo))
         self.assertEqual(len(factories), 0)
 
 
