@@ -13,7 +13,7 @@
 ##############################################################################
 """A plugable authentication module for LDAP.
 
-$Id:
+$Id$
 """
 
 from zope.schema import TextLine, Int, List, Password

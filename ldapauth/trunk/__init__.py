@@ -13,6 +13,6 @@
 ##############################################################################
 """A plugable authentication module for LDAP.
 
-$Id:
+$Id$
 """
 from ldapauth.source import LDAPPrincipalSource
