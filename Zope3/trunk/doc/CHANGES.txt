@@ -9,6 +9,16 @@ Zope Changes
   Some future release (Zope X3 3.1.0)
 
     New features
+    
+      - zope.app.form.utility setUpEditWidgets, when given a source
+        that is security proxied and asked to set up edit widgets
+        for fields that will raise Unauthorized when set, now raises
+        Unauthorized by default, eliminating the lie that the form
+        is usable.  It also accepts degradeDisplay and degradeInput
+        optional keyword arguments to change the behavior to degrade
+        unavailable input widgets to display widgets and to hide
+        unavailable display widgets.  setUpDisplayWidgets also accepts
+        degradeDisplay.
 
       - Implemented issue 306: page/view-menu-layer configuration
 
