@@ -130,7 +130,7 @@ Tying all this together is the ``configure.zcml``::
         xmlns:browser='http://namespaces.zope.org/browser'>
 
     <content class=".poll.Poll">
-    <factory id="zope.products.demo.poll"
+    <factory id="zope.app.demo.poll"
              permission="zope.ManageContent" />
 
     <implements 
@@ -175,7 +175,7 @@ Tying all this together is the ``configure.zcml``::
         schema=".interfaces.IPoll"
         label="Add a Poll"
         content_factory=".poll.Poll"
-        name="zope.products.demo.poll"
+        name="zope.app.demo.poll"
         class=".browser.PollAddView"
         menu="add_content" title="Poll"
         permission="zope.ManageContent" />
