@@ -1,6 +1,6 @@
 <h1 tal:replace="structure here/manage_page_header">Header</h1>
 
-<h2 tal:define="form_title string:Add Silva SidebarService"
+<h2 tal:define="form_title string:Add Simple Content"
     tal:replace="structure here/manage_form_title">Form Title</h2>
 
 <p class="form-help">
@@ -36,8 +36,6 @@ Add Simple Content
     <div class="form-element">
     <input class="form-element" type="submit" name="submit_add" 
      value=" Add " /> 
-    <input class="form-element" type="submit" name="submit_edit" 
-     value=" Add and Edit " />
     </div>
     </td>
   </tr>
