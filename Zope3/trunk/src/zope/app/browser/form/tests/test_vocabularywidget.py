@@ -28,23 +28,25 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.schema.interfaces import IVocabulary, ITerm, IVocabularyQuery
 from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
 from zope.schema.interfaces import IIterableVocabularyQuery
+from zope.schema.interfaces import IVocabularyTokenized, ITokenizedTerm
 from zope.schema import vocabulary
 
 
-class ISampleVocabulary(IVocabulary):
+class ISampleVocabulary(IVocabularyTokenized, IVocabulary):
     """Specialized interface so we can hook views onto a vocabulary."""
 
 class SampleTerm(object):
     """Trivial ITerm implementation."""
-    __implements__ = ITerm
+    __implements__ = ITokenizedTerm
 
     def __init__(self, value):
         self.value = value
+        self.token = value
 
 
 class BasicVocabulary(object):
     """Simple vocabulary that uses terms from a passed-in list of values."""
-    __implements__ = IVocabulary
+    __implements__ = IVocabularyTokenized, IVocabulary
 
     def __init__(self, values):
         self._values = values
@@ -65,6 +67,12 @@ class BasicVocabulary(object):
         if value in self._values:
             return SampleTerm(value)
         raise LookupError("%r not a vocabulary member" % value)
+
+    def getTermByToken(self, token):
+        for term in self._values:
+            if term.token == token:
+                return term
+        raise LookupError("token %r not found in vocabulary" % token)
 
 class BasicIterator(object):
     """Iterator that produces ITerm objects from vocabulary data."""
@@ -216,11 +224,11 @@ class SingleSelectionViews:
                     IBrowserPresentation,
                     vocabularywidget.VocabularyFieldEditWidget)
         # Register the "basic" widgets:
-        provideView(IVocabulary,
+        provideView(IVocabularyTokenized,
                     "field-display-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyDisplayWidget)
-        provideView(IVocabulary,
+        provideView(IVocabularyTokenized,
                     "field-edit-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyEditWidget)
@@ -252,11 +260,11 @@ class MultiSelectionViews:
                     IBrowserPresentation,
                     vocabularywidget.VocabularyMultiFieldEditWidget)
         # Bind widgets to the vocabulary fields:
-        provideView(IVocabulary,
+        provideView(IVocabularyTokenized,
                     "field-display-multi-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyMultiDisplayWidget)
-        provideView(IVocabulary,
+        provideView(IVocabularyTokenized,
                     "field-edit-multi-widget",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyMultiEditWidget)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.18 2003/05/28 14:34:28 fdrake Exp $
+$Id: interfaces.py,v 1.19 2003/05/28 17:09:03 fdrake Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -445,6 +445,31 @@ class ITerm(Interface):
 
     value = Attribute(
         "value", "The value used to represent vocabulary term in a field.")
+
+
+class ITokenizedTerm(ITerm):
+    """Object representing a single value in a tokenized vocabulary.
+    """
+
+    token = Attribute(
+        "token",
+        """Token which can be used to represent the value on a stream.
+
+        The value of this attribute must be a 7-bit string.
+        """)
+
+
+class IVocabularyTokenized(Interface):
+    """Vocabulary that provides support for tokenized representation.
+
+    This interface must be used as a mix-in with IBaseVocabulary.
+
+    Terms returned from getTerm() and provided by iteration must
+    conform to ITokenizedTerm.
+    """
+
+    def getTermByToken(token):
+        """Return an ITokenizedTerm for the passed-in token."""
 
 
 class IIterableVocabulary(Interface):
