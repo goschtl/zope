@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.17 2003/06/06 19:42:56 stevea Exp $
+$Id: sitedefinition.py,v 1.18 2003/06/23 19:46:06 bwarsaw Exp $
 """
 
 from zope.interface import classProvides, implements
@@ -108,20 +108,35 @@ class SiteDefinition:
         self._zodb = DB(MappingStorage())
         return []
 
-    def useBDBFullStorage(self, _context, **kws):
+    def _makeConfig(self, kws):
+        def asbool(s):
+            ss = s.lower()
+            if ss in ('yes', 'true', 'on'):
+                return True
+            if ss in ('no', 'false', 'off'):
+                return False
+            raise ValueError('not a valid boolean value: %s' % repr(s))
+
+        from zodb.storage.base import BerkeleyConfig
+        config = BerkeleyConfig()
+        for k, v in kws.items():
+            if k == 'read_only':
+                v = asbool(v)
+            elif k <> 'logdir':
+                v = int(v)
+            setattr(config, k, v)
+        return config
+
+    def useBDBFullStorage(self, _context, name, **kws):
         """Specify a Berkeley full storage."""
-        from zodb.config import convertBDBStorageArgs
         from zodb.storage.bdbfull import BDBFullStorage
-        kws = convertBDBStorageArgs(**kws)
-        self._zodb = DB(BDBFullStorage(**kws), cache_size=4000)
+        self._zodb = DB(BDBFullStorage(name, config=self._makeConfig(kws)))
         return []
 
-    def useMemoryFullStorage(self, _context, **kws):
+    def useMemoryFullStorage(self, _context, name, **kws):
         """Specify a full memory storage."""
-        from zodb.config import convertBDBStorageArgs
         from zodb.storage.memory import MemoryFullStorage
-        kws = convertBDBStorageArgs(**kws)
-        self._zodb = DB(MemoryFullStorage(**kws))
+        self._zodb = DB(MemoryFullStorage(name, config=self._makeConfig(kws)))
         return []
 
 
