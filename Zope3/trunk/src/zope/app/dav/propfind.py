@@ -45,7 +45,7 @@ class PROPFIND(object):
         _avail_props = {}
         # List all *registered* DAV interface namespaces and their properties
         for ns, iface in zapi.getUtilitiesFor(IDAVNamespace):
-            _avail_props[ns] = getFieldNamesInOrder(iface)    
+            _avail_props[ns] = getFieldNamesInOrder(iface)
         # List all opaque DAV namespaces and the properties we know of
         if self.oprops:
             for ns, oprops in self.oprops.items():
@@ -70,8 +70,11 @@ class PROPFIND(object):
         if IReadContainer.providedBy(self.context):
             resource_url += '/'
 
+        self.request.bodyFile.seek(0, 2)
+        size = self.request.bodyFile.tell()
         self.request.bodyFile.seek(0)
-        xmldoc = minidom.parse(self.request.bodyFile)
+
+        xmldoc = size and minidom.parse(self.request.bodyFile) or None
         resp = minidom.Document()
         ms = resp.createElement('multistatus')
         ms.setAttribute('xmlns', self.default_ns)
@@ -79,19 +82,23 @@ class PROPFIND(object):
         ms.appendChild(resp.createElement('response'))
         ms.lastChild.appendChild(resp.createElement('href'))
         ms.lastChild.lastChild.appendChild(resp.createTextNode(resource_url))
-        
-        propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
-        if propname:
-            self._handlePropname(resp)
+
+        if xmldoc is not None:
+            propname = xmldoc.getElementsByTagNameNS(self.default_ns, 'propname')
+            if propname:
+                self._handlePropname(resp)
+            else:
+                source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
+                self._handlePropvalues(source, resp)
         else:
-            source = xmldoc.getElementsByTagNameNS(self.default_ns, 'prop')
-            self._handlePropvalues(source, resp)
+            self._handlePropvalues(None, resp)
 
         self._depthRecurse(ms)
 
         body = resp.toxml('utf-8')
         self.request.response.setBody(body)
         self.request.response.setStatus(207)
+        self.request.response.setHeader('content-type', 'text/xml')
         return body
 
     def _depthRecurse(self, ms):
@@ -126,9 +133,9 @@ class PROPFIND(object):
 
     def _handleAllprop(self):
         props = {}
-        for ns, props in self.avail_props.items():
+        for ns, properties in self.avail_props.items():
             iface = zapi.queryUtility(IDAVNamespace, ns)
-            props[ns] = {'iface': iface, 'props': props}
+            props[ns] = {'iface': iface, 'props': properties}
         return props
 
     def _handlePropname(self, resp):
@@ -158,9 +165,9 @@ class PROPFIND(object):
             _props = self._handleProp(source)
 
         avail, not_avail = self._propertyResolver(_props)
-        if avail: 
+        if avail:
             self._renderAvail(avail, resp, _props)
-        if not_avail: 
+        if not_avail:
             self._renderNotAvail(not_avail, resp)
 
     def _propertyResolver(self, _props):
@@ -171,11 +178,11 @@ class PROPFIND(object):
             for p in _props[ns]['props']:
                 if iface is None:
                     # The opaque property case
-                    if (self.oprops is not None and 
+                    if (self.oprops is not None and
                         self.oprops.get(ns, {}).has_key(p)):
                         l = avail.setdefault(ns, [])
                         l.append(p)
-                    else:    
+                    else:
                         l = not_avail.setdefault(ns, [])
                         l.append(p)
                     continue
@@ -190,7 +197,7 @@ class PROPFIND(object):
                 l.append(p)
 
         return avail, not_avail
-    
+
     def _renderAvail(self, avail, resp, _props):
         re = resp.lastChild.lastChild
         re.appendChild(resp.createElement('propstat'))
@@ -212,23 +219,37 @@ class PROPFIND(object):
                 for name in props:
                     self.oprops.renderProperty(ns, attr_name, name, prop)
                 continue
-            
+
             # The registered namespace case
             initial = {}
+            adapted = iface(self.context)
             for name, field in getFields(iface).items():
-                value = field.get(iface(self.context))
+                try:
+                    value = field.get(adapted)
+                except AttributeError:
+                    # Interface says the attribute exists but it
+                    # couldn't be found on the adapted object.
+                    value = field.missing_value
                 if value is not field.missing_value:
                     initial[name] = value
             setUpWidgets(self, iface, IDAVWidget, ignoreStickyValues=True,
-                         initial=initial, names=avail[ns])
-                        
+                         initial=initial, names=initial.keys())
+
             for p in props:
                 el = resp.createElement('%s' % p )
                 if ns is not None and ns != self.default_ns:
                     el.setAttribute('xmlns', attr_name)
                 prop.appendChild(el)
-                value = getattr(self, p + '_widget')()
-                    
+                widget = getattr(self, p + '_widget', None)
+                if widget is None:
+                    # A widget wasn't generated for this property
+                    # because the attribute was missing on the adapted
+                    # object, which actually means that the adapter
+                    # didn't fully implement the interface ;(
+                    el.appendChild(resp.createTextNode(''))
+                    continue
+                value = widget()
+
                 if isinstance(value, (unicode, str)):
                     # Get the widget value here
                     el.appendChild(resp.createTextNode(value))
@@ -238,7 +259,7 @@ class PROPFIND(object):
                             el.ownerDocument.importNode(value, True))
                     else:
                         # Try to string-ify
-                        value = str(getattr(self, p + '_widget'))
+                        value = str(widget)
                         # Get the widget value here
                         el.appendChild(resp.createTextNode(value))
 
