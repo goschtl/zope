@@ -15,5 +15,6 @@ Attributes
   
   Either component or factory must be given, not both.
   If component is given, it is a resolvable name to an object.
-  If factory is given, it is a callable object that provides a component.
+  If factory is given, it is a callable object or list of callable
+    objects that provides a component.
   
