@@ -13,7 +13,7 @@
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.5 2002/11/11 16:37:57 stevea Exp $
+$Id: DateTimeParse.py,v 1.6 2002/11/11 16:42:26 stevea Exp $
 """
     
 import re, math, DateTimeZone
@@ -251,7 +251,7 @@ def _findLocalTimeZoneName(isDST):
         # Get the name of the current time zone depending
         # on DST.
         _localzone = _cache._zmap[tzname[isDST].lower()]
-    except:
+    except KeyError:
         try:
             # Generate a GMT-offset zone name.
             if isDST:
@@ -366,7 +366,7 @@ def _tzoffset(tz, t):
         if numericTimeZoneMatch(tz) is not None:
             return -int(tz[1:3])*3600-int(tz[3:5])*60
         else:
-            return 0 # ??
+            return 0 # XXX ??
 
 def _correctYear(year):
     # Y2K patch.
