@@ -194,7 +194,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         context = ConformsToIServiceService(servicemanager)
         class I3(Interface):
             pass
-        servicemanager.sm.registerAdapter((I1,), I3, '', lambda x: 43)
+        servicemanager.sm.provideAdapter((I1,), I3, '', lambda x: 43)
 
         # If an object implements the interface you want to adapt to,
         # getAdapterInContext should simply return the object.

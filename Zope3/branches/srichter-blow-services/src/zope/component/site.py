@@ -28,7 +28,7 @@ from zope.component.interfaces import ComponentLookupError
 
 class IGlobalSiteManager(ISiteManager, IRegistry):
 
-    def registerAdapter(required, provided, name, factory, info=''):
+    def provideAdapter(required, provided, name, factory, info=''):
         """Register an adapter factory
 
         :Parameters:
@@ -52,8 +52,8 @@ class IGlobalSiteManager(ISiteManager, IRegistry):
           - `info`: Provide some info about this particular adapter.
         """
 
-    def registerUtility(providedInterface, component, name='', info='',
-                        strict=True):
+    def provideUtility(providedInterface, component, name='', info='',
+                       strict=True):
         """Register a utility
 
         If strict is true, then the specified component *must* implement the
@@ -116,7 +116,7 @@ class GlobalSiteManager(SiteManager):
         super(GlobalSiteManager, self).__init__()
         self._registrations = {}
 
-    def registerAdapter(self, required, provided, name, factory, info=''):
+    def provideAdapter(self, required, provided, name, factory, info=''):
         """Register an adapter
 
         >>> from zope.interface import Interface
@@ -130,8 +130,8 @@ class GlobalSiteManager(SiteManager):
         >>> class P2(P1):
         ...     pass
 
-        >>> registry.registerAdapter((R1, ), P2, 'bob', 'c1', 'd1')
-        >>> registry.registerAdapter((R1, ), P2,    '', 'c2', 'd2')
+        >>> registry.provideAdapter((R1, ), P2, 'bob', 'c1', 'd1')
+        >>> registry.provideAdapter((R1, ), P2,    '', 'c2', 'd2')
         >>> registry.adapters.lookup((R2, ), P1, '')
         'c2'
 
@@ -153,11 +153,11 @@ class GlobalSiteManager(SiteManager):
         ...     def __init__(self, obj1, obj2=None):
         ...         pass
 
-        >>> registry.registerAdapter((O1, ), R1, '', O3)
+        >>> registry.provideAdapter((O1, ), R1, '', O3)
         >>> registry.queryAdapter(O1(), R1, '').__class__
         <class 'zope.component.site.O3'>
 
-        >>> registry.registerAdapter((O1, O2), R1, '', O3)
+        >>> registry.provideAdapter((O1, O2), R1, '', O3)
         >>> registry.queryMultiAdapter((O1(), O2()), R1, '').__class__
         <class 'zope.component.site.O3'>
         """
@@ -218,7 +218,7 @@ class GlobalSiteManager(SiteManager):
 
         self.adapters.subscribe(required, provided, factory)
 
-    def registerUtility(self, providedInterface, component, name='', info='',
+    def provideUtility(self, providedInterface, component, name='', info='',
                         strict=True):
 
         if strict and not providedInterface.providedBy(component):

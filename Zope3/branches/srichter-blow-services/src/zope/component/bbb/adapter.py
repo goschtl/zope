@@ -126,7 +126,7 @@ class GlobalAdapterService(AdapterService, GlobalService):
         >>> registry.queryMultiAdapter((O1(), O2()), R1, '').__class__
         <class 'zope.component.bbb.adapter.O3'>
         """
-        self.sm.registerAdapter(required, provided, name, factory, info)
+        self.sm.provideAdapter(required, provided, name, factory, info)
 
     def subscribe(self, required, provided, factory, info=''):
         """Register an subscriptions adapter

@@ -93,7 +93,7 @@ class GlobalServiceManager(object):
         if name in names:
             raise DuplicationError(name)
 
-        self.sm.registerUtility(IServiceDefinition, (name, interface),
+        self.sm.provideUtility(IServiceDefinition, (name, interface),
                                 name=name, strict=False)
 
     def getServiceDefinitions(self):
@@ -129,7 +129,7 @@ class GlobalServiceManager(object):
             return
 
         directlyProvides(component, IService)
-        self.sm.registerUtility(IService, component, name)
+        self.sm.provideUtility(IService, component, name)
 
     def getService(self, name):
         """see IServiceService interface"""

@@ -84,7 +84,7 @@ with the framework, more specifically with the global site manager:
   >>> from zope import component as capi
   >>> gsm = capi.getGlobalSiteManager()
   
-  >>> gsm.registerAdapter((IGermanSocket,), IUSSocket, '',
+  >>> gsm.provideAdapter((IGermanSocket,), IUSSocket, '',
   ...                    GermanToUSSocketAdapter)
 
 `capi` is the component architecture API that is being presented by this
@@ -160,9 +160,9 @@ frequency of the AC current:
 Now, we need a way to keep the two adapters apart. Thus we register them with
 a name:
 
-  >>> gsm.registerAdapter((IGermanSocket,), IUSSocket, 'shaver',
+  >>> gsm.provideAdapter((IGermanSocket,), IUSSocket, 'shaver',
   ...                    GermanToUSSocketAdapter)
-  >>> gsm.registerAdapter((IGermanSocket,), IUSSocket, 'dvd',
+  >>> gsm.provideAdapter((IGermanSocket,), IUSSocket, 'dvd',
   ...                    GermanToUSSocketAdapterAndTransformer)
 
 Now we simply look up the adapters using their labels (called *name*):
@@ -236,7 +236,7 @@ Then together they will provided a grounded us socket:
 You now register the combination, so that you know you can create a
 `IUSGroundedSocket`:
 
-  >>> gsm.registerAdapter((IGermanSocket, IGrounder), IUSGroundedSocket, 'mp3',
+  >>> gsm.provideAdapter((IGermanSocket, IGrounder), IUSGroundedSocket, 'mp3',
   ...                    GroundedGermanToUSSocketAdapter)
 
 Given the grounder
@@ -373,7 +373,7 @@ electric generator. The generator provides of course a US-style socket:
 Like for adapters, we now have to add the newly-acquired generator to our
 inventory by registering it as a utility:
 
-  >>> gsm.registerUtility(IUSSocket, generator)
+  >>> gsm.provideUtility(IUSSocket, generator)
 
 We can now get the utility using
 
@@ -425,7 +425,7 @@ panels that provide a regular US-style socket as output:
 
 Once it arrives, we add it to our inventory:
 
-  >>> gsm.registerUtility(IUSSocket, panel, 'Solar Panel')
+  >>> gsm.provideUtility(IUSSocket, panel, 'Solar Panel')
 
 You can now access the solar panel using
 
@@ -495,7 +495,7 @@ will provide, but the factory class is smart enough to determine the
 implemented interface from the class. We now register the factory:
 
   >>> from zope.component.interfaces import IFactory
-  >>> gsm.registerUtility(IFactory, factory, 'SolarPanel')
+  >>> gsm.provideUtility(IFactory, factory, 'SolarPanel')
 
 We can now get a list of interfaces the produced object will provide:
 
@@ -522,7 +522,7 @@ to the specified callable.
 
 Once you register several factories
 
-  >>> gsm.registerUtility(IFactory, Factory(Generator), 'Generator')
+  >>> gsm.provideUtility(IFactory, Factory(Generator), 'Generator')
 
 you can also determine, which available factories will create objects
 providing a certian interface:

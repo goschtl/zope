@@ -62,7 +62,7 @@ class GlobalUtilityService(UtilityService, GlobalService):
         super(GlobalUtilityService, self).__init__(sitemanager)
 
     def provideUtility(self, providedInterface, component, name='', info=''):
-        self.sm.registerUtility(providedInterface, component, name, info)
+        self.sm.provideUtility(providedInterface, component, name, info)
 
     def registrations(self):
         for reg in self.sm.registrations():

@@ -273,6 +273,14 @@ class ISiteManager(Interface):
         required objects.
         """
 
+    def adapts(*interfaces):
+        """Declare that a class adapts the given interfaces.
+
+        This function can only be used in a class definition.
+
+        (TODO, allow classes to be passed as well as interfaces.)
+        """
+
     def queryUtility(interface, name='', default=None):
         """Look up a utility that provides an interface.
 
@@ -294,7 +302,52 @@ class ISiteManager(Interface):
         returned.
         """
 
+        
+class IComponentRegistrationConvenience(Interface):
+    """API for registering components.
 
+    CAUTION: This API should only be used from test or
+    application-setup code. This api shouldn't be used by regular
+    library modules, as component registration is a configuration
+    activity. 
+    """
+
+    def provideUtility(component, provides=None, name=u''):
+        """Register a utility globally
+
+        A utility is registered to provide an interface with a
+        name. If a component provides only one interface, then the
+        provides argument can be omitted and the provided interface
+        will be used. (In this case, provides argument can still be
+        provided to provide a less specific interface.)
+
+        CAUTION: This API should only be used from test or
+        application-setup code. This api shouldn't be used by regular
+        library modules, as component registration is a configuration
+        activity. 
+        
+        """
+
+    def provideAdapter(factory, adapts=None, provides=None, name=u''):
+        """Register an adapter globally
+
+        An adapter is registered to provide an interface with a name
+        for some number of object types. If a factory implements only
+        one interface, then the provides argument can be omitted and
+        the provided interface will be used. (In this case, a provides
+        argument can still be provided to provide a less specific
+        interface.)
+
+        If the factory has an adapts declaration, then the adapts
+        argument can be omitted and the declaration will be used.  (An
+        adapts argument can be provided to override the declaration.)
+
+        CAUTION: This API should only be used from test or
+        application-setup code. This api shouldn't be used by regular
+        library modules, as component registration is a configuration
+        activity. 
+        
+        """
 
 class IRegistry(Interface):
     """Object that supports component registry

@@ -107,7 +107,7 @@ The Componant Architecture Factory API
   >>> gsm = capi.getGlobalSiteManager() 
 
   >>> from zope.component.interfaces import IFactory
-  >>> gsm.registerUtility(IFactory, factory, 'klass')
+  >>> gsm.provideUtility(IFactory, factory, 'klass')
 
 Creating an Object
 ++++++++++++++++++

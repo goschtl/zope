@@ -185,7 +185,7 @@ def testAdapterInContext(self):
 
     We now register an adapter from `I1` to `I3`:
       
-      >>> sitemanager.registerAdapter((I1,), I3, '', lambda x: 43)
+      >>> sitemanager.provideAdapter((I1,), I3, '', lambda x: 43)
 
     If an object implements the interface you want to adapt to,
     `getAdapterInContext()` should simply return the object.
@@ -253,7 +253,7 @@ def testAdapter():
     Now get the global site manager and register an adapter from `I1` to `I2`
     without a name:
       
-      >>> capi.getGlobalSiteManager().registerAdapter((I1,), I2, '', Comp)
+      >>> capi.getGlobalSiteManager().provideAdapter((I1,), I2, '', Comp)
 
     You can now simply access the adapter using the `getAdapter()` API
     function:
@@ -272,7 +272,7 @@ def testInterfaceCall():
 
     First, we need to register an adapter:
     
-      >>> capi.getGlobalSiteManager().registerAdapter([I1], I2, '', Comp)
+      >>> capi.getGlobalSiteManager().provideAdapter([I1], I2, '', Comp)
 
     Then we try to adapt `ob` to provide an `I2` interface by calling the `I2`
     interface with the obejct as first argument:
@@ -304,7 +304,7 @@ def testNamedAdapter():
 
     First we register some named adapter:
 
-      >>> capi.getGlobalSiteManager().registerAdapter([I1], I2, 'foo',
+      >>> capi.getGlobalSiteManager().provideAdapter([I1], I2, 'foo',
       ...                                             lambda x: 0)
 
     If an adapter isn't registered for the given object and interface,
@@ -323,7 +323,7 @@ def testNamedAdapter():
 
     But now we register an adapter for the object having the correct name
 
-      >>> capi.getGlobalSiteManager().registerAdapter([I1], I2, 'bar', Comp)
+      >>> capi.getGlobalSiteManager().provideAdapter([I1], I2, 'bar', Comp)
 
     so that the lookup succeeds:
     
@@ -372,7 +372,7 @@ def testMultiAdapter():
 
     Now we can register the multi-adapter using
     
-      >>> capi.getGlobalSiteManager().registerAdapter((I1, I2), I3, '',
+      >>> capi.getGlobalSiteManager().provideAdapter((I1, I2), I3, '',
       ...                                        DoubleAdapter)
 
     Notice how the required interfaces are simply provided by a tuple. Now we
@@ -391,7 +391,7 @@ def testAdapterForInterfaceNone():
     """Providing an adapter for None says that your adapter can adapt anything
     to `I2`.
 
-      >>> capi.getGlobalSiteManager().registerAdapter((None,), I2, '', Comp)
+      >>> capi.getGlobalSiteManager().provideAdapter((None,), I2, '', Comp)
 
       >>> adapter = I2(ob)
       >>> adapter.__class__ is Comp
@@ -416,8 +416,8 @@ def testGetAdapters():
 
     Let's register some adapters first: 
     
-      >>> capi.getGlobalSiteManager().registerAdapter([I1], I2, '', Comp)
-      >>> capi.getGlobalSiteManager().registerAdapter([None], I2, 'foo', Comp)
+      >>> capi.getGlobalSiteManager().provideAdapter([I1], I2, '', Comp)
+      >>> capi.getGlobalSiteManager().provideAdapter([None], I2, 'foo', Comp)
 
     Now we get all the adapters that are registered for `ob` that provide
     `I2`:
@@ -452,7 +452,7 @@ def testUtility():
 
     Now we declare `ob` to be the utility providing `I1`
 
-      >>> capi.getGlobalSiteManager().registerUtility(I1, ob)
+      >>> capi.getGlobalSiteManager().provideUtility(I1, ob)
 
     so that the component is now available:
     
@@ -465,7 +465,7 @@ def testNamedUtility():
 
     Just because you register an utility having no name
     
-      >>> capi.getGlobalSiteManager().registerUtility(I1, ob)
+      >>> capi.getGlobalSiteManager().provideUtility(I1, ob)
 
     does not mean that they are available when you specify a name:
     
@@ -483,7 +483,7 @@ def testNamedUtility():
 
     Registering the utility under the correct name 
 
-      >>> capi.getGlobalSiteManager().registerUtility(I1, ob, name='foo')
+      >>> capi.getGlobalSiteManager().provideUtility(I1, ob, name='foo')
 
     really helps:
 
@@ -510,10 +510,10 @@ def test_getAllUtilitiesRegisteredFor():
     Now we register the new utilities:
 
       >>> gsm = capi.getGlobalSiteManager()
-      >>> gsm.registerUtility(I1, ob)
-      >>> gsm.registerUtility(I11, ob11)
-      >>> gsm.registerUtility(I1, ob_bob, name='bob')
-      >>> gsm.registerUtility(I2, Comp(2))
+      >>> gsm.provideUtility(I1, ob)
+      >>> gsm.provideUtility(I11, ob11)
+      >>> gsm.provideUtility(I1, ob_bob, name='bob')
+      >>> gsm.provideUtility(I2, Comp(2))
 
     We can now get all the utilities that provide interface `I1`:
 
@@ -545,11 +545,31 @@ def testNotBrokenWhenNoSiteManager():
       42
     """
 
+
+def testNo__component_adapts__leakage():
+    """
+    We want to make sure that an `adapts()` call in a class definition
+    doesn't affect instances.
+
+      >>> import zope.component
+      >>> class C:
+      ...     zope.component.adapts()
+
+      >>> C.__component_adapts__
+      ()
+      >>> C().__component_adapts__
+      Traceback (most recent call last):
+      ...
+      AttributeError: __component_adapts__
+    """
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),
         doctest.DocTestSuite('zope.component.site'),
         doctest.DocFileSuite('README.txt',
+                             setUp=setUp, tearDown=tearDown),
+        doctest.DocFileSuite('socketexample.txt',
                              setUp=setUp, tearDown=tearDown),
         doctest.DocFileSuite('factory.txt',
                              setUp=setUp, tearDown=tearDown),
