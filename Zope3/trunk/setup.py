@@ -73,6 +73,9 @@ EXTS = ['.conf', '.css', '.dtd', '.gif', '.jpg', '.html',
         '.txt',  '.xml', '.zcml', '.mar', '.in', '.sample',
         ]
 
+IGNORE_NAMES = (
+    'CVS', '.svn', # Revision Control Directories
+    )
 
 # This class serves multiple purposes.  It walks the file system looking for
 # auxiliary files that distutils doesn't install properly, and it actually
@@ -90,6 +93,10 @@ class Finder:
         self._plen = len(prefix)
 
     def visit(self, ignore, dir, files):
+        # Remove ignored filenames
+        for name in IGNORE_NAMES:
+            if name in files:
+                files.remove(name)
         for file in files:
             # First see if this is one of the packages we want to add, or if
             # we're really skipping this package.
