@@ -327,6 +327,10 @@ Zope Changes
           skin is specified. This allows developers to create skins that do
           not include the default layer.
 
+      - Replaced copypastemove.rename with adapters to IContainerItemRenamer.
+        Instead of `rename(container, oldName, newName)`, one should use
+        `IContainerItemRenamer(container).renameItem(oldName, newName)`.
+
     Bug Fixes
 
       - Partially fixed issue #306 (Problem 2: Browser page and view directive
