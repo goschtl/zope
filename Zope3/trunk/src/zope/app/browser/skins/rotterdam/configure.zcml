@@ -9,6 +9,9 @@
   
   <browser:resource 
       name="zope3.css" file="zope3.css" layer="rotterdam" />
+
+  <browser:resource 
+      name="site_management.css" file="site_management.css" layer="rotterdam" />
   
   <browser:resource 
       name="xmltree.js" file="xmltree.js" layer="rotterdam" />
