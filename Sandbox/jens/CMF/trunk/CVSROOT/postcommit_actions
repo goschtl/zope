@@ -216,7 +216,7 @@ def main(args):
         path, addrs = entry['path'], entry['addrs']
         excludes, remote = entry['excludes'], entry['remote']
         if addrs and not only_sync:
-                do_mail(path, repo, addrs, subjs,
+                do_mail(path, remote, repo, addrs, subjs,
                         doing_directory=doing_directory, no_files=no_files)
         if remote:
             do_sync(path, repo, remote, subjs, excludes, recurse=RECURSE,
@@ -298,12 +298,18 @@ def find_entries(repo=None, all=None):
         complain("Resolved table entry:\n  %s\n", entries)
     return entries
 
-def do_mail(name, repo, addrs, subjs, doing_directory=0, no_files=0):
+def do_mail(name, remote, repo, addrs, subjs, doing_directory=0, no_files=0):
     """Send notice about checkin to addresses dictated by traffic table."""
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS: %s " % name
+    if remote.has_key('leading_path'):
+        l = remote['leading_path']
+        if (len(l) > 1) and (l[-1] != '/'): l = l + '/'
+        if (len(l) > 1) and (l[0] == '/'): l = l[1:]
+        subject = subject + "(" + l + os.path.split(name)[-1] + ")"
+
     if doing_directory or no_files:
         subject = subject + string.join(subjs, " ")
     else:
@@ -410,12 +416,24 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
         trailing_slash_or_comma_v_1 = "/"
         trailing_slash_or_comma_v_2 = "/"
 
-    cmd = ("%s%s %s/%s%s %s:%s/%s%s" % ((VERBOSE and "set -x; ") or "",
-                                        cmd,
-                                        os.environ["CVSROOT"], path,
-                                        trailing_slash_or_comma_v_1,
-                                        remote['host'], repodir, path,
-                                        trailing_slash_or_comma_v_2))
+    if remote.has_key('leading_path'):
+        l = remote['leading_path']
+        if not l or l[-1] != '/': l = l + '/'
+        remotesubpath = ("%s%s%s" % (l, os.path.split(path)[-1],
+                                       trailing_slash_or_comma_v_2))
+    else:
+        if path and path[0] != '/':
+            remotesubpath = '/' + path
+        else:
+            remotesubpath = path
+    remotepath = ("%s:%s%s" % (remote['host'], remote['repodir'],
+                               remotesubpath))
+
+    cmd = ("%s%s %s/%s%s %s" % ((VERBOSE and "set -x; ") or "",
+                                cmd,
+                                os.environ["CVSROOT"], path,
+                                trailing_slash_or_comma_v_1,
+                                remotepath))
     if VERBOSE:
         complain("%sDoing rsync cmd:\n\t%s\n",
                  ((DRYRUN and "NOT ") or ""), cmd)
