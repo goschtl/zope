@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventChannel.py,v 1.5 2002/11/08 01:33:08 poster Exp $
+$Id: LocalEventChannel.py,v 1.6 2002/11/11 08:38:36 stevea Exp $
 """
 
 from LocalSubscribable import LocalSubscribable
@@ -31,21 +31,15 @@ class LocalEventChannel(LocalSubscribable):
     # LocalSubscribable)!!
         
     def notify(wrapped_self, event):
-        clean_self=removeAllProxies(wrapped_self)
+        clean_self = removeAllProxies(wrapped_self)
         
         subscriptionses = clean_self.subscriptionsForEvent(event)
         # that's a non-interface shortcut for
         # subscriptionses = clean_self._registry.getAllForObject(event)
 
         for subscriptions in subscriptionses:
-            
             for subscriber,filter in subscriptions:
                 if filter is not None and not filter(event):
                     continue
                 ContextWrapper(subscriber, wrapped_self).notify(event)
-    
-    notify=ContextMethod(notify)
-
-    
-
-    
+    notify = ContextMethod(notify)

@@ -14,11 +14,10 @@
 """
 
 Revision information:
-$Id: IPathSubscriber.py,v 1.3 2002/10/21 06:14:45 poster Exp $
+$Id: IPathSubscriber.py,v 1.4 2002/11/11 08:38:36 stevea Exp $
 """
 from Interface.Attribute import Attribute
 from Zope.Event.ISubscriber import IIndirectSubscriber
-
 
 class IPathSubscriber(IIndirectSubscriber):
     

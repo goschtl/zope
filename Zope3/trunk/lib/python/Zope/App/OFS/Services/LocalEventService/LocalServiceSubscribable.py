@@ -12,9 +12,8 @@
 # 
 ##############################################################################
 """
-
 Revision information:
-$Id: LocalServiceSubscribable.py,v 1.6 2002/10/21 06:14:46 poster Exp $
+$Id: LocalServiceSubscribable.py,v 1.7 2002/11/11 08:38:36 stevea Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -32,15 +31,15 @@ class LocalServiceSubscribable(LocalSubscribable):
     __implements__ = LocalSubscribable.__implements__
     
     _serviceName = None # should be replaced; usually done in "bound"
-    # method of a subclass
+                        # method of a subclass
     
     # uses (and needs) __init__ from Zope.Event.Subscribable (via
     # LocalSubscribable)
     
     def unsubscribe(wrapped_self,
                     subscriber,
-                    event_type = None,
-                    filter = None):
+                    event_type=None,
+                    filter=None):
         # might be wrapped, might not
         subscriber = removeAllProxies(subscriber) 
         
@@ -73,7 +72,7 @@ class LocalServiceSubscribable(LocalSubscribable):
             if ev_type not in ev_set:
                 getNextService(
                     wrapped_self, clean_self._serviceName).unsubscribe(
-                    subscriber, event_type, filter)
+                        subscriber, event_type, filter)
             else:
                 subscriptions = clean_self._registry.get(ev_type)
                 try:
@@ -110,12 +109,11 @@ class LocalServiceSubscribable(LocalSubscribable):
                 wrapped_self, clean_self._serviceName).unsubscribe(
                     subscriber, event_type, filter)
         clean_self._p_changed = 1 #trigger persistence
-    
     unsubscribe = ContextMethod(unsubscribe)
     
-    def listSubscriptions(wrapped_self, subscriber, event_type = None):
+    def listSubscriptions(wrapped_self, subscriber, event_type=None):
         # might be wrapped, might not
-        subscriber = removeAllProxies(subscriber) 
+        subscriber = removeAllProxies(subscriber)
         
         clean_self = removeAllProxies(wrapped_self)
         result = LocalSubscribable.listSubscriptions(
@@ -124,5 +122,4 @@ class LocalServiceSubscribable(LocalSubscribable):
             wrapped_self, clean_self._serviceName).listSubscriptions(
                 subscriber, event_type))
         return result
-    
     listSubscriptions = ContextMethod(listSubscriptions)

@@ -15,22 +15,17 @@
 event service when bound, and unsubscribe
 when unbound, as one needs for an event channel that will be a service
 
-$Id: ProtoServiceEventChannel.py,v 1.2 2002/11/08 01:33:08 poster Exp $
+$Id: ProtoServiceEventChannel.py,v 1.3 2002/11/11 08:38:36 stevea Exp $
 """
 
 from Zope.App.Traversing.ITraverser import ITraverser
-from Zope.Event.GlobalEventService import eventService
-from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.ComponentArchitecture import getAdapter, getService
 from PathSubscriber import PathSubscriber
 from LocalSubscriptionAware import LocalSubscriptionAware
 from Zope.ContextWrapper import ContextMethod
-from Zope.App.ComponentArchitecture.NextService import getNextService
 from LocalEventChannel import LocalEventChannel
 from LocalServiceSubscribable import LocalServiceSubscribable
-from Interface.Attribute import Attribute
-from Zope.Event.IEventChannel import IEventChannel
 from Zope.App.OFS.Services.ServiceManager.IBindingAware import IBindingAware
 from Zope.Proxy.ContextWrapper import isWrapper
 from Zope.Event.IEvent import IEvent
@@ -70,34 +65,33 @@ class ProtoServiceEventChannel(
     
     def bound(wrapped_self, name):
         "see IBindingAware"
-        clean_self=removeAllProxies(wrapped_self)
+        clean_self = removeAllProxies(wrapped_self)
         clean_self._serviceName = name # for LocalServiceSubscribable
         if clean_self.subscribeOnBind:
-            es=getService(
-                wrapped_self,
-                clean_self._subscribeToServiceName)
+            es = getService(wrapped_self, clean_self._subscribeToServiceName)
             if isWrapper(es):
                 # if we really want to receive events from a
                 # global event-type service we're going to have to
-                # set something special up--something that subscribes
+                # set something special up -- something that subscribes
                 # every startup...
                 es.subscribe(
                     PathSubscriber(wrapped_self),
                     clean_self._subscribeToServiceInterface,
-                    clean_self._subscribeToServiceFilter)
+                    clean_self._subscribeToServiceFilter
+                    )
     
-    bound=ContextMethod(bound)
+    bound = ContextMethod(bound)
     
     def unbound(wrapped_self, name):
         "see IBindingAware"
-        clean_self=removeAllProxies(wrapped_self)
-        subscriber=PathSubscriber(wrapped_self)
+        clean_self = removeAllProxies(wrapped_self)
+        subscriber = PathSubscriber(wrapped_self)
         for subscription in clean_self._subscriptions:
-            subscribable=getAdapter(
+            subscribable = getAdapter(
                 wrapped_self, ITraverser).traverse(subscription[0])
             subscribable.unsubscribe(subscriber)
         clean_self._subscriptions = ()
         clean_self._serviceName = None
 
-    unbound=ContextMethod(unbound)
+    unbound = ContextMethod(unbound)
     

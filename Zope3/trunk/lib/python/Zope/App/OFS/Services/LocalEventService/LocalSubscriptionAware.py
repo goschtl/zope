@@ -14,20 +14,19 @@
 """mix-in for subscribers that want to know to whom they are subscribed
 
 Revision information:
-$Id: LocalSubscriptionAware.py,v 1.4 2002/10/21 06:14:46 poster Exp $
+$Id: LocalSubscriptionAware.py,v 1.5 2002/11/11 08:38:36 stevea Exp $
 """
 
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
 from Zope.App.Traversing import getPhysicalPathString
 
-
 class LocalSubscriptionAware:
     "mix-in for subscribers that want to know to whom they are subscribed"
     
-    __implements__=ISubscriptionAware
+    __implements__ = ISubscriptionAware
     
     def __init__(self):
-        self._subscriptions=()
+        self._subscriptions = ()
     
     def subscribedTo(self, subscribable, event_type, filter):
         # This breaks for subscriptions to global event service.
@@ -35,14 +34,11 @@ class LocalSubscriptionAware:
         # is probably correct behavior.
         subscribable_path = getPhysicalPathString(subscribable)
         if (subscribable_path, event_type, filter) not in self._subscriptions:
-            self._subscriptions+=((subscribable_path,event_type, filter),)
+            self._subscriptions += ((subscribable_path, event_type, filter),)
     
     def unsubscribedFrom(self, subscribable, event_type, filter):
         # global event service breaks, as above
         subscribable_path = getPhysicalPathString(subscribable)
-        sub=list(self._subscriptions)
+        sub = list(self._subscriptions)
         sub.remove((subscribable_path, event_type, filter))
-        self._subscriptions=tuple(sub)
-        
-        
-        
+        self._subscriptions = tuple(sub)
