@@ -74,6 +74,7 @@ import smtplib
 import socket, whrandom, getpass
 
 CVSROOT = os.environ.get('CVSROOT', '/cvs-repository')
+os.chdir('/tmp')                        # So we have a valid working directory.
 
 #SMTP_SERVER = 'smtp.digicool.com'
 #SENDER_ADDR = '"Digicool CVS" <cvs@digicool.com>'
@@ -439,8 +440,8 @@ def create_diff(name, repo, file, old, new):
             lines.insert(0, insert_str)
         except IOError, e:
             lines = ['***** ERROR reading new file: ',
-                     str(e), '\n***** file: ', file, '
-                     cwd: ', safe_getcwd('/tmp')]
+                     str(e), '\n***** file: ', file,
+                     ' cwd: ', safe_getcwd('/tmp')]
 
     else:                # A "normal" update happened
         diff_cmd = ('cvs -d %s -f rdiff -kk -u -t %s/%s'
