@@ -1,0 +1,35 @@
+- need name + acronym to describe what gets built, not normal words
+  (Jim sez)
+
+- support for installation of packages that don't exist at the top
+  level of the package hierarchy (really a distutils problem)
+
+  - installation of "zope.app" that uses existing "zope" package
+
+  - dealing with a package tree like the zope package tree that
+    includes both pure-Python and non-pure packages; see the pkgutil
+    module in Python's standard library as a possible approach to a
+    solution
+
+- find way to ditch setup.cfg completely; we only need it to mark
+  files as documentation for bdist_rpm
+
+- fix up finddeps.py to stop searching at PUBLICATION.txt boundaries
+  (have patch)
+
+- package assembler script to build sumo/combined distro (in progress)
+
+- CVS retriever (mostly done; need to deal with unspecified type and
+  user for remote repositories)
+
+  - can check ~/.cvspass to see if there's an entry there
+
+  - otherwise assume :ext: if there's a CVS_RSH setting?  or just
+    always?  try anonymous :pserver: access?
+
+  - more configuration settings?
+
+- expand the prototype section to the pre-proposal documenting the
+  current effort; this lets people respond and offer suggestions
+
+- documentation, documentation, documentation!
