@@ -87,13 +87,13 @@
                 &nbsp;&nbsp;
                 <input type="submit" name="addLanguage"
                        value="Add new language" />
-                <input type="text" name="newLanguage" size=10 />
+                <input type="text" name="newLanguage" size="10" />
               </td>
             </tr>
             <tr>
               <th class="EditAttributeName">Data</th>
               <td class="EditAttributeValue">
-                <input type="file" name="data" size=20 />
+                <input type="file" name="data" size="20" />
               </td>
             </tr>
 

@@ -38,7 +38,7 @@
            <span tal:content="structure registry/view" />
          </div>
 
-      <input type=submit name="submit_update" value="Update"><br>
+      <input type="submit" name="submit_update" value="Update"><br>
 
       </form>
 
