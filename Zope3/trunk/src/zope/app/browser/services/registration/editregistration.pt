@@ -48,9 +48,9 @@
     <div class="row">
       <input type="submit" name='refresh_submit' value="Refresh" 
              i18n:attributes="value refresh-button" />
-      <input type="submit" name='UPDATE_SUBMIT' value="Submit" />
+      <input type="submit" name='UPDATE_SUBMIT' value="Submit" 
              i18n:attributes="value submit-button" />
-      <input type="submit" name='remove_submit' value="Remove" />
+      <input type="submit" name='remove_submit' value="Remove" 
              i18n:attributes="value remove-button" />
       &nbsp;&nbsp;
       <input type="submit" name='top_submit' value="Top"
