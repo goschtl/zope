@@ -13,6 +13,8 @@
 ##############################################################################
 """Functional Tests for StatefulProcessDefinition
 
+   $Id$
+
 """
 import unittest
 import re
@@ -100,3 +102,6 @@ class Test(BrowserTestCase):
 
 def test_suite():
     return unittest.makeSuite(Test)
+
+if __name__ == '__main__':
+    unittest.main()
