@@ -14,7 +14,7 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.15 2003/11/21 17:11:43 jim Exp $
+$Id: interface.py,v 1.16 2003/12/01 16:19:33 jim Exp $
 """
 
 from __future__ import generators
@@ -55,6 +55,10 @@ class Element(object):
     def getTaggedValue(self, tag):
         """ Returns the value associated with 'tag'. """
         return self.__tagged_values[tag]
+
+    def queryTaggedValue(self, tag, default=None):
+        """ Returns the value associated with 'tag'. """
+        return self.__tagged_values.get(tag, default)
 
     def getTaggedValueTags(self):
         """ Returns a list of all tags. """

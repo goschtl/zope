@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.17 2003/11/21 17:11:43 jim Exp $
+$Id: interfaces.py,v 1.18 2003/12/01 16:19:33 jim Exp $
 """
 
 from zope.interface import Interface
@@ -33,7 +33,16 @@ class IElement(Interface):
         """Returns the documentation for the object."""
 
     def getTaggedValue(tag):
-        """Returns the value associated with 'tag'."""
+        """Returns the value associated with 'tag'.
+
+        Raise a KeyErrpr of the tag isn't set
+        """
+
+    def queryTaggedValue(tag, default=None):
+        """Returns the value associated with 'tag'.
+
+        Return the default value of the tag isn't set.
+        """
 
     def getTaggedValueTags():
         """Returns a list of all tags."""
