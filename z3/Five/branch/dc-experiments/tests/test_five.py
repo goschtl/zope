@@ -20,7 +20,7 @@ from zope.app.traversing.browser.interfaces import IAbsoluteURL
 from Products.FiveTest.classes import Adaptable, Origin
 from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
-from Products.Five.resource import Resource
+from Products.Five.resource import Resource, PageTemplateResource
 from Products.Five.traversable import FakeRequest
 
 from Products import FiveTest
@@ -181,9 +181,13 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 
     def test_resource_directory(self):
         base = 'testoid/++resource++fivetest_resources/%s'
+        base_url = 'test_folder_1_/%s' % base
         for r in dir_resource_names:
             resource = self.folder.unrestrictedTraverse(base % r)
             self.assert_(isinstance(resource, Resource))
+            # PageTemplateResource's __call__ renders the template
+            if not isinstance(resource, PageTemplateResource):
+                self.assertEquals(resource(), base_url % r)
         abs_url = self.folder.unrestrictedTraverse(base % '')()
         expected = 'http://nohost/test_folder_1_/testoid/++resource++fivetest_resources'
         self.assertEquals(abs_url, expected)

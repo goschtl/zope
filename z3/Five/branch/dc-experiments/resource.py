@@ -12,6 +12,7 @@ $Id: browser.py 5259 2004-06-23 15:59:52Z philikon $
 """
 
 import os
+import urllib
 
 from Acquisition import Explicit, aq_inner, aq_parent
 from ComputedAttribute import ComputedAttribute
@@ -44,7 +45,8 @@ class Resource(Explicit):
         container = self.__parent__
 
         url = str(getViewProviding(container, IAbsoluteURL, self.request))
-        if not '++resource++' in url:
+        url = urllib.unquote(url)
+        if not isinstance(container, DirectoryResource):
             name = '++resource++%s' % name
         return "%s/%s" % (url, name)
 
@@ -202,6 +204,7 @@ class DirectoryResource(BrowserView, Resource, OFSTraversable):
         factory = self.resource_factories.get(ext, self.default_factory)
         resource = factory(name, filename)(self.request)
         resource.__name__ = name
+        resource.__parent__ = self
         # XXX __of__ wrapping is usually done on traversal.
         # However, we don't want to subclass Traversable (or do we?)
         # The right thing should probably be a specific (and very simple)
