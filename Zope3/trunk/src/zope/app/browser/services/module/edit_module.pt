@@ -5,7 +5,7 @@
 <body>
 <div metal:fill-slot="body">
 
-  <p i18n:translate="">Enter the absolute module name and source code.</p>
+  <p i18n:translate="">Enter the module source code.</p>
 
   <form action="edit.html">
     <span tal:replace="view/update"></span>
