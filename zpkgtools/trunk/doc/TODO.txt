@@ -22,10 +22,6 @@ Things that need to be done
     defining package data (common in Zope, but not for everyone).  Low
     priority.
 
-  - Make directory inclusion through `PACKAGE.cfg` honor `PACKAGE.cfg`
-    files in included directories.  The <load> section of the such
-    `PACKAGE.cfg` files should be honored as well.
-
   - CVS retriever (mostly done; need to deal with unspecified type and
     user for remote repositories)
 
