@@ -35,13 +35,16 @@ from utils import getToolByName
 from utils import _dtmldir
 from utils import cookString
 
+from interfaces.portal_actions import portal_actions as IActionsTool
+
+
 class ActionsTool(UniqueObject, Folder, ActionProviderBase):
     """
         Weave together the various sources of "actions" which are apropos
         to the current user and context.
     """
 
-    __implements__ = ActionProviderBase.__implements__
+    __implements__ = (IActionsTool, ActionProviderBase.__implements__)
 
     id = 'portal_actions'
     _actions = [ActionInformation(id='folderContents'

@@ -19,7 +19,6 @@ $Id$
 from Globals import InitializeClass, DTMLFile
 from AccessControl import ClassSecurityInfo
 
-from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.ActionInformation import ActionInformation

@@ -28,10 +28,13 @@ from Products.CMFCore.Expression import Expression
 from Products.CMFCore.CMFCorePermissions import ManagePortal
 from utils import _dtmldir
 
+from Products.CMFCore.interfaces.portal_properties \
+        import portal_properties as IPropertiesTool
+
 
 class PropertiesTool(UniqueObject, SimpleItem, ActionProviderBase):
 
-    __implements__ = ActionProviderBase.__implements__
+    __implements__ = (IPropertiesTool, ActionProviderBase.__implements__)
 
     id = 'portal_properties'
     meta_type = 'Default Properties Tool'

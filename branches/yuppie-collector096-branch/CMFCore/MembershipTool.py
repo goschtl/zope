@@ -31,6 +31,9 @@ from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import SetOwnPassword
 from ActionProviderBase import ActionProviderBase
 
+from interfaces.portal_membership \
+        import portal_membership as IMembershipTool
+
 default_member_content = '''Default page for %s
  
   This is the default document created for you when
@@ -45,7 +48,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
     # It can be replaced with something that accesses member data in
     # a different way.
 
-    __implements__ = ActionProviderBase.__implements__
+    __implements__ = (IMembershipTool, ActionProviderBase.__implements__)
 
     id = 'portal_membership'
     meta_type = 'CMF Membership Tool'

@@ -10,14 +10,20 @@
 # FOR A PARTICULAR PURPOSE
 # 
 ##############################################################################
-""" Actions tool interface description.
+""" Actions tool interface.
 
 $Id$
 """
 
-from Interface import Base, Attribute
+from Interface import Attribute
+try:
+    from Interface import Interface
+except ImportError:
+    # for Zope versions before 2.6.0
+    from Interface import Base as Interface
 
-class portal_actions(Base):
+
+class portal_actions(Interface):
     '''Gathers a list of links which the user is allowed to view according to
     the current context.
     '''
@@ -64,7 +70,7 @@ class portal_actions(Base):
         '''
 
 
-class ActionProvider(Base):
+class ActionProvider(Interface):
     '''The interface expected of an object that can provide actions.
     '''
 

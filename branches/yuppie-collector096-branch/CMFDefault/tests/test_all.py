@@ -15,6 +15,9 @@ def test_suite():
         'test_utils',
         'test_join',
         'test_Portal',
+        'test_MembershipTool',
+        'test_PropertiesTool',
+        'test_RegistrationTool',
         ])
 
 if __name__ == '__main__':
