@@ -39,7 +39,7 @@
   <help:register
       id="onlinehelp"
       title="Online help system"
-      doc_path="./README.txt"
+      doc_path="./README.stx"
       />
 
   <!-- include browser package -->

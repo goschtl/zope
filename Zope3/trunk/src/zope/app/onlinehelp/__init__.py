@@ -19,69 +19,145 @@ OnlineHelp in which all basic Zope-core help screens are registered.
 $Id$
 """
 import os
+#import os.path
 
 import zope.app
 from zope.app import zapi
 from zope.app.container.sample import SampleContainer
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.traversing.api import traverse
 
 from zope.app.onlinehelp.interfaces import IOnlineHelpTopic, IOnlineHelp
 from zope.interface import implements
 
 class OnlineHelpTopic(SampleContainer):
-    __doc__ = IOnlineHelpTopic.__doc__
+    """
+    Represents a Help Topic.
+    
+    >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
+    >>> path = os.path.join(testdir(), 'help.txt')
 
+    Create a Help Topic from a file
+    
+    >>> topic = OnlineHelpTopic('Help',path)
+
+    Test the title
+    
+    >>> topic.title
+    'Help'
+
+    The type should be set to plaintext, since
+    the file extension is 'txt'
+    
+    >>> topic.type
+    'zope.source.plaintext'
+
+    Test the help content.
+
+    >>> topic.source
+    'This is a help!'
+
+    >>> path = os.path.join(testdir(), 'help.stx')
+    >>> topic = OnlineHelpTopic('Help',path)
+
+    The type should now be structured text
+    >>> topic.type
+    'zope.source.stx'
+
+    >>> path = os.path.join(testdir(), 'help.rst')
+    >>> topic = OnlineHelpTopic('Help',path)
+
+    The type should now be restructured text
+    >>> topic.type
+    'zope.source.rest'
+
+    """
     implements(IOnlineHelpTopic)
 
     title = u""
 
-    def __init__(self, title, path, doc_type='txt'):
+    source = None
+
+    path = u""
+
+    type = None
+
+    def __init__(self, title, path):
         """Initialize object."""
         self.title = title
-        self.setContentPath(path, doc_type)
+        self.path = path
+
+        filename = os.path.basename(path.lower())
+        file_ext = 'txt'
+        if len(filename.split('.'))>1:
+            file_ext = filename.split('.')[-1]
+
+        self.type = 'zope.source.plaintext'
+        
+        if file_ext == ('rst' or 'rest') :
+            self.type = 'zope.source.rest'
+        elif file_ext == 'stx':
+            self.type = 'zope.source.stx'
+        
+        self.source = open(self.path).read()
+
         super(OnlineHelpTopic, self).__init__()
-
-    def setContentPath(self, path, doc_type='txt'):
-        "See Zope.App.OnlineHelp.interfaces.IOnlineHelpTopic"
-        self._content_path = path
-        self._doc_type = doc_type
-
-    def getContent(self):
-        "See Zope.App.OnlineHelp.interfaces.IOnlineHelpTopic"
-        raw = open(self._content_path).read()
-
-        if self._doc_type == 'txt':
-            # XXX This should be cleaned up when reST is implemented
-            raw = raw.replace('<', '&lt;')
-            raw = raw.replace('>', '&gt;')
-            raw = '<p>' + raw.replace('\n\n', '\n</p><p>') + '</p>'
-            raw = raw.replace('\n', '<br>')
-            raw = raw.replace('  ', '&nbsp;&nbsp;')
-            return raw
-        else:
-            return raw
 
 
 class OnlineHelp(OnlineHelpTopic):
-    __doc__ = IOnlineHelp.__doc__
+    """
+    >>> from zope.app.onlinehelp.tests.test_onlinehelp import testdir
+    >>> from zope.app.onlinehelp.tests.test_onlinehelp import I1
+    >>> path = os.path.join(testdir(), 'help.txt')
 
+    Create an onlinehelp instance
+    
+    >>> onlinehelp = OnlineHelp('Help', path)
+
+    First do the inteface verifing tests.
+    
+    >>> from zope.interface.verify import verifyObject
+    >>> from zope.app.traversing.interfaces import IContainmentRoot
+    >>> verifyObject(IOnlineHelp, onlinehelp)
+    True
+    >>> verifyObject(IContainmentRoot, onlinehelp)
+    True
+
+    Register a new subtopic for interface 'I1' and view 'view.html'
+    
+    >>> path = os.path.join(testdir(), 'help2.txt')
+    >>> onlinehelp.registerHelpTopic('', 'help2', 'Help 2',
+    ...     path, I1, 'view.html')
+
+    Test if the subtopic is set correctly
+    >>> onlinehelp['help2'].title
+    'Help 2'
+
+    >>> onlinehelp._registry[(I1, 'view.html')][0].title
+    'Help 2'
+
+    The help topic must be found if the onlinehelp is queried
+    with interface and view name.
+    
+    >>> onlinehelp.getTopicsForInterfaceAndView(I1, 'view.html')[0].title
+    'Help 2'
+    
+    """
     implements(IOnlineHelp, IContainmentRoot)
 
-    def __init__(self, title, path, doc_type='txt'):
+    def __init__(self, title, path):
         self._registry = {}
-        super(OnlineHelp, self).__init__(title, path, doc_type)
+        super(OnlineHelp, self).__init__(title, path)
 
     def getTopicsForInterfaceAndView(self, interface=None, view=None):
         "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
         return self._registry.get((interface, view), [])
 
     def registerHelpTopic(self, parent_path, id, title,
-                          doc_path, doc_type='txt', interface=None, view=None):
+                          doc_path, interface=None, view=None):
         "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
-        parent = traverse(self, parent_path)
+        parent = zapi.traverse(self, parent_path)
         # Create and add topic
-        parent[id] = OnlineHelpTopic(title, doc_path, doc_type)
+        parent[id] = OnlineHelpTopic(title, doc_path)
         topic = parent[id]
         # Add topic to registry
         if interface is not None:

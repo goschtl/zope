@@ -16,10 +16,16 @@
       >
 
       <page name="index.html" template="helptopic.pt" />
-      <page name="contexthelp.html" template="contexthelp.pt" />
       <page name="getTopicTree" attribute="getTopicTree" />
 
   </pages>
+
+  <page
+      for="zope.app.onlinehelp.interfaces.IOnlineHelp"
+      permission="zope.Public"
+      class=".ContextHelpView"
+      name="contexthelp.html" 
+      template="contexthelp.pt" />
 
   <menuItem
       for="*"

@@ -19,15 +19,11 @@
 
 <div metal:fill-slot="body">
 
-  <div tal:define="topic view/getContextHelpTopic"> 
-
-    <h1 tal:content="topic/title"
+    <h1 tal:content="view/getContextHelpTopic/title"
         i18n:translate="">Title of Help Topic</h1>
 
-    <p tal:content="structure topic/getContent"
+    <p tal:content="structure view/renderContextTopic"
         i18n:translate="">Content of Online Help.</p>
-
-  </div>
 
 </div>
 

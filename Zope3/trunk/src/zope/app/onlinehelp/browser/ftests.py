@@ -22,18 +22,18 @@ import re
 from zope.app.folder.interfaces import IRootFolder
 from zope.app.file import File
 from zope.app.tests.functional import BrowserTestCase
-from zope.app.onlinehelp.tests.test_onlinehelptopic import testdir
+from zope.app.onlinehelp.tests.test_onlinehelp import testdir
 from zope.app.onlinehelp import help
 
 class Test(BrowserTestCase):
 
     def test_contexthelp(self):
         path = os.path.join(testdir(), 'help.txt')
-        help.registerHelpTopic('ui','help','Help',path, 'txt',
+        help.registerHelpTopic('ui','help','Help',path,
              IRootFolder,
              None)
         path = os.path.join(testdir(), 'help2.txt')
-        help.registerHelpTopic('ui','help2','Help2',path, 'txt',
+        help.registerHelpTopic('ui','help2','Help2',path,
              IRootFolder,
              'contents.html')
         root = self.getRootFolder()

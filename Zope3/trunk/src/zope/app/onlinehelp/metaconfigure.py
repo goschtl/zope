@@ -24,10 +24,7 @@ def register(_context, id, title, parent="", doc_path=None, for_=None,
              view=None):
     """Register an OnlineHelp topic"""
 
-    # XXX This should be really autodetected.
-    doc_type="txt"
-
     _context.action(
         discriminator = ('registerHelpTopic', parent, id),
         callable = help.registerHelpTopic,
-        args = (parent, id, title, doc_path, doc_type, for_, view) )
+        args = (parent, id, title, doc_path, for_, view) )

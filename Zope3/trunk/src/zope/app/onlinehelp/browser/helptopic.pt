@@ -23,7 +23,7 @@
   <h1 tal:content="context/title"
       i18n:translate="">Title of Help Topic</h1>
 
-  <p tal:content="structure context/getContent"
+  <p tal:content="structure view/renderTopic"
       i18n:translate="">Content of Online Help.</p>
 
 </div>

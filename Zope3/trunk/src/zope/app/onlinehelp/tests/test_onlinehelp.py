@@ -16,54 +16,36 @@
 $Id$
 """
 import os
-from unittest import TestSuite, makeSuite
-from zope.app.tests import ztapi
-from zope.app.tests.placelesssetup import PlacelessSetup
+import unittest
+
 from zope.interface import Interface
-from zope.interface.verify import verifyObject
-from zope.app.onlinehelp import OnlineHelp, IOnlineHelp
-from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable
-from zope.app.traversing.interfaces import IContainmentRoot, ITraverser
-from zope.app.location.traversing import LocationPhysicallyLocatable
+from zope.testing.doctestunit import DocTestSuite
+from zope.app.tests import ztapi
+from zope.app.tests import placelesssetup
+from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable,\
+     ITraverser
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from test_onlinehelptopic import TestOnlineHelpTopic, testdir
+from zope.app.location.traversing import LocationPhysicallyLocatable
 
 class I1(Interface):
     pass
 
-class TestOnlineHelp(PlacelessSetup, TestOnlineHelpTopic):
+def testdir():
+    import zope.app.onlinehelp.tests
+    return os.path.dirname(zope.app.onlinehelp.tests.__file__)
 
-    def setUp(self):
-        super(TestOnlineHelp, self).setUp()
-        ztapi.provideAdapter(None, ITraverser, Traverser)
-        ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
-        ztapi.provideAdapter(None, IPhysicallyLocatable,
-                             LocationPhysicallyLocatable)
-        path = os.path.join(testdir(), 'help.txt')
-        self.topic = OnlineHelp('Help', path, 'txt')
-
-    def test_registerHelpTopic(self):
-        path = os.path.join(testdir(), 'help2.txt')
-        self.topic.registerHelpTopic('', 'help2', 'Help 2',
-                                     path, 'txt', I1, 'view.html')
-        self.assertEqual(self.topic['help2'].title, 'Help 2')
-        self.assertEqual(self.topic._registry[(I1, 'view.html')][0].title,
-                         'Help 2')
-        
-    def test_getTopicsForInterfaceAndView(self):
-        path = os.path.join(testdir(), 'help2.txt')
-        self.topic.registerHelpTopic('', 'help2', 'Help 2',
-                                     path, 'txt', I1, 'view.html')
-        self.assertEqual(
-            self.topic.getTopicsForInterfaceAndView(I1, 'view.html')[0].title,
-            'Help 2')
-            
-    def test_interface(self):
-        verifyObject(IOnlineHelp, self.topic)
-        verifyObject(IContainmentRoot, self.topic)
+def setUp():
+    placelesssetup.setUp()
+    ztapi.provideAdapter(None, ITraverser, Traverser)
+    ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+    ztapi.provideAdapter(None, IPhysicallyLocatable,
+                         LocationPhysicallyLocatable)
 
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TestOnlineHelp),
-        ))
+      return unittest.TestSuite((
+          DocTestSuite('zope.app.onlinehelp', setUp=setUp),
+          ))
+  
+if __name__ == '__main__':
+      unittest.main(defaultTest='test_suite')

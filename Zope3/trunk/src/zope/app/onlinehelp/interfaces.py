@@ -17,9 +17,11 @@ These are the interfaces designed for the OnlineHelp system.
 
 $Id$
 """
-from zope.schema import TextLine
+from zope.schema import TextLine, SourceText, Choice
 from zope.app.container.interfaces import IContainer
+from zope.i18n import MessageIDFactory
 
+_ = MessageIDFactory('messageboard')
 
 class IOnlineHelpTopic(IContainer):
     """A Topic is one help page that you could view. Topics will be able to
@@ -37,20 +39,31 @@ class IOnlineHelpTopic(IContainer):
     """
 
     title = TextLine(
-        title = u"Help Topic Title",
-        description = u"The Title of a Help Topic",
-        default = u"Help Topic",
+        title = _(u"Help Topic Title"),
+        description = _(u"The Title of a Help Topic"),
+        default = _(u"Help Topic"),
         required = True)
 
-    def setContentPath(filename, doc_type="stx"):
-        """Tell the Topic where it can find"""
+    source = SourceText(
+        title=_(u"Source Text"),
+        description=_(u"Renderable source text of the topic."),
+        default=u"",
+        required=True)
 
-    def getContent():
-        """Get the content of the Topic's file and return it. If the contents
-        is STX or Plain Text, the content is processed to HTML at this
-        point."""
+    path = TextLine(
+        title = _(u"Path to the Topic"),
+        description = _(u"The Path to the Definition of a Help Topic"),
+        default = u"./README.TXT",
+        required = True)
 
-        
+    type = Choice(
+        title=_(u"Source Type"),
+        description=_(u"Type of the source text, e.g. structured text"),
+        default=u"zope.source.rest",
+        required = True,
+        vocabulary = "SourceTypes")
+
+
 class IOnlineHelp(IOnlineHelpTopic):
     """This service manages all the HelpTopics."""
 
@@ -58,21 +71,20 @@ class IOnlineHelp(IOnlineHelpTopic):
         """Returns a list of Topics that were registered to be
         applicable to a particular view of an interface."""
 
-    def registerHelpTopic(parent_path, title, doc_path, doc_type, 
+    def registerHelpTopic(parent_path, id, title, doc_path,  
                           interface=None, view=None):
         """This method registers a topic at the correct place.
 
            parent_path -- Location of this topic's parent in the OnlineHelp
            tree.
 
+           id -- Specifies the id of the topic 
+
            title -- Specifies title of the topic. This title will be used in
            the tree as Identification.
 
            doc_path -- Specifies where the file that contains the topic
            content is located.
-
-           doc_type -- Defines the type of document this topic will
-           be. Examples (not necessarily available) are: TXT, reST, HTML
 
            interface -- Name of the interface for which the help topic is
            being registered. This can be optional, since not all topics must
