@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.9 2003/03/30 17:28:32 sidnei Exp $
+$Id: test_contents.py,v 1.10 2003/03/30 17:34:34 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -226,6 +226,35 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         self.failIf('document2' not in container)
         self.failIf('copy_of_document1' not in container)
         self.failIf('copy_of_document2' not in container)
+
+    def testCopyFolder(self):
+        container = traverse(self.rootFolder, 'folder1')
+        fc = self._TestView__newView(container)
+        ids = ['folder1_1']
+        fc.copyObjects(ids)
+        fc.pasteObjects()
+        self.failIf('folder1_1' not in container)
+        self.failIf('copy_of_folder1_1' not in container)
+
+    def testCopyFolder2(self):
+        container = traverse(self.rootFolder, '/folder1/folder1_1')
+        fc = self._TestView__newView(container)
+        ids = ['folder1_1_1']
+        fc.copyObjects(ids)
+        fc.pasteObjects()
+        self.failIf('folder1_1_1' not in container)
+        self.failIf('copy_of_folder1_1_1' not in container)
+
+    def testCopyFolder3(self):
+        container = traverse(self.rootFolder, '/folder1/folder1_1')
+        target = traverse(self.rootFolder, '/folder2/folder2_1')
+        fc = self._TestView__newView(container)
+        tg = self._TestView__newView(target)
+        ids = ['folder1_1_1']
+        fc.copyObjects(ids)
+        tg.pasteObjects()
+        self.failIf('folder1_1_1' not in container)
+        self.failIf('folder1_1_1' not in target)
 
     def testCutPaste(self):
         container = traverse(self.rootFolder, 'folder1')
