@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.1 2004/04/24 23:18:24 srichter Exp $
+$Id: instance.py,v 1.2 2004/04/26 09:44:50 dominikhuber Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.security.proxy import trustedRemoveSecurityProxy
@@ -38,8 +38,9 @@ class ManagementView(BrowserView):
 
     def __init__(self, context, request):
         super(ManagementView, self).__init__(context, request)
-        workflow = self._getSelWorkflow() 
-        if workflow.data is None:
+        workflow = self._getSelWorkflow()
+        # XXX workflow might be None
+        if workflow is None or workflow.data is None:
             return
         schema = workflow.data.getSchema()
         for name, field in getFields(schema).items():
@@ -47,7 +48,7 @@ class ManagementView(BrowserView):
             field = trustedRemoveSecurityProxy(field)
             setUpWidget(self, name, field, IInputWidget,
                         value=getattr(workflow.data, name))
-        
+
     def _extractContentInfo(self, item):
         id, processInstance = item
         info = {}
@@ -105,7 +106,7 @@ class ManagementView(BrowserView):
     def _getTitle(self, obj):
         return (IZopeDublinCore(obj).title or obj.__name___)
 
- 
+
     def _getSelWorkflow(self):
         reqWorkflow = self.request.get('workflow', u'')
         pi_container = IProcessInstanceContainer(self.context)
@@ -117,7 +118,7 @@ class ManagementView(BrowserView):
                 pi = None
         else:
             pi = pi_container[reqWorkflow]
-        
+
         return pi
 
 
@@ -128,18 +129,20 @@ class ManagementView(BrowserView):
 
 
     def widgets(self):
-        if self._getSelWorkflow().data is None:
+        workflow = self._getSelWorkflow()
+        # XXX workflow might be None
+        if workflow is None or workflow.data is None:
             return []
         schema = self._getSelWorkflow().data.getSchema()
         return [getattr(self, name+'_widget')
                 for name in getFields(schema).keys()]
 
-    
+
     def update(self):
         status = ''
         workflow = self._getSelWorkflow() 
-
-        if Update in self.request and workflow.data is not None:
+        # XXX workflow might be None
+        if Update in self.request and (workflow is not None and workflow.data is not None):
             schema = trustedRemoveSecurityProxy(workflow.data.getSchema())
             changed = applyWidgetsChanges(self, schema, target=workflow.data, 
                 names=getFields(schema).keys())
