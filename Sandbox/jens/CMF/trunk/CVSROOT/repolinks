@@ -98,6 +98,16 @@
 /StandaloneZODB/zdaemon           /Packages/zdaemon
 /StandaloneZODB/zLOG              /Packages/zLOG
 
+/ZODB3/ZODB              /Packages/ZODB
+/ZODB3/ZEO               /Packages/ZEO
+/ZODB3/ExtensionClass    /Cruft/ExtensionClass
+/ZODB3/BTrees            /Packages/BTrees
+/ZODB3/bsddb3Storage     /Packages/bsddb3Storage
+/ZODB3/Persistence       /Packages/Persistence
+/ZODB3/ThreadedAsync     /Packages/ThreadedAsync
+/ZODB3/zdaemon           /Packages/zdaemon
+/ZODB3/zLOG              /Packages/zLOG
+
 /StandaloneSTX/StructuredText     /Packages/StructuredText
 
 /CMF/CMFCalendar                  /Products/CMFCalendar
