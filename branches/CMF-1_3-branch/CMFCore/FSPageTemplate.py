@@ -162,7 +162,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         # call "inherited"
         result = self._ZPT_exec( bound_names, args, kw )
         if response is not None:
-            response.setHeader( 'content-type', self.content_type )
+            if not response.headers.has_key('content-type'):
+                 response.setHeader('content-type', self.content_type)
         return result
  
     # Copy over more methods
