@@ -13,10 +13,8 @@
 ##############################################################################
 """ProcessDefinition Import Export Utility
 
-$Id: globalimportexport.py,v 1.6 2004/04/15 15:29:45 jim Exp $
+$Id: globalimportexport.py,v 1.7 2004/04/15 22:11:20 srichter Exp $
 """
-__metaclass__ = type
-
 from zope.proxy import removeAllProxies
 from zope.interface import implements, providedBy
 
@@ -25,7 +23,7 @@ from zope.app.workflow.interfaces import IGlobalProcessDefinitionImportExport
 
 from StringIO import StringIO
 
-class ImportExportUtility:
+class ImportExportUtility(object):
 
     implements(IGlobalProcessDefinitionImportExport)
 
@@ -80,7 +78,7 @@ class ImportExportUtility:
 
 
 from zope.interface import Interface
-class ImplementorRegistry:
+class ImplementorRegistry(object):
     # This was copied from zope.interface.implementor
     # zope.interface.implementor has been removed
 
