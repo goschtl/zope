@@ -71,7 +71,7 @@ class Application:
         # distribution; it's the former if there's an __init__.py in
         # the source directory.
         os.mkdir(self.destination)
-        self.ip = include.InclusionProcessor(self.source)
+        self.ip = include.InclusionProcessor(self.source, loader=self.loader)
         name = "build_%s_distribution" % self.resource_type
         method = getattr(self, name)
         method()
