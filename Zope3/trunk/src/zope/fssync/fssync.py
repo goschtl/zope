@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.17 2003/05/15 01:55:08 gvanrossum Exp $
+$Id: fssync.py,v 1.18 2003/05/15 01:58:01 gvanrossum Exp $
 """
 
 import os
@@ -379,7 +379,7 @@ class FSSync(object):
         orig = fsutil.getoriginal(target)
         if not isfile(orig):
             raise Error("can't find original for diff target '%s'", target)
-        if self.cmp(target, orig):
+        if filecmp.cmp(target, orig, shallow=False):
             return
         print "Index:", target
         sys.stdout.flush()
