@@ -1522,8 +1522,6 @@ datetime.min = datetime(1, 1, 1)
 datetime.max = datetime(9999, 12, 31, 23, 59, 59, 999999)
 datetime.resolution = timedelta(microseconds=1)
 
-_HOUR = timedelta(hours=1)
-
 class datetimetz(datetime):
 
     # XXX needs docstrings
