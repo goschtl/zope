@@ -1,3 +1,10 @@
+After CMF 1.4.4 (unreleased)
+
+  Bug Fixes
+
+    - Further hardening of member property, 'email', to prevent trickier
+      header injection into system-generated e-mails (Collector #243 redux).
+
 CMF 1.4.4 (2004/05/14)
 
   Bug Fixes
