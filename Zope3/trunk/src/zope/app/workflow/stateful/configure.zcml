@@ -17,10 +17,8 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="
-         zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
-      set_schema="
-         zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition" 
+      interface="..interfaces.stateful.IStatefulProcessDefinition"
+      set_schema="..interfaces.stateful.IStatefulProcessDefinition" 
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
@@ -37,7 +35,7 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.workflow.interfaces.stateful.IStatefulStatesContainer"
+      interface="..interfaces.stateful.IStatefulStatesContainer"
       />
   <implements 
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
@@ -68,8 +66,7 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface=
-          "zope.app.workflow.interfaces.stateful.IStatefulTransitionsContainer" 
+      interface="..interfaces.stateful.IStatefulTransitionsContainer" 
       />
   <implements 
       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
@@ -95,7 +92,7 @@
 <!-- ContentWorkflowsManager -->
 
 <content 
-    class="zope.app.workflow.stateful.contentworkflow.ContentWorkflowsManager">
+    class=".contentworkflow.ContentWorkflowsManager">
   <factory
     id="ContentWorkflowsManager"
   />
@@ -107,14 +104,16 @@
 </content>
 
 <!-- Stateful workflow import/Export -->
-<workflow:importHandler
-   interface="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
-   factory=".xmlimportexport.XMLImportHandler"
+<adapter
+   for="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
+   provides="zope.app.workflow.interfaces.IProcessDefinitionExportHandler"
+   factory=".xmlimportexport.XMLExportHandler"
    />
 
-<workflow:exportHandler
-   interface="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
-   factory=".xmlimportexport.XMLExportHandler"
+<adapter
+   for="zope.app.workflow.interfaces.stateful.IStatefulProcessDefinition"
+   provides="zope.app.workflow.interfaces.IProcessDefinitionImportHandler"
+   factory=".xmlimportexport.XMLImportHandler"
    />
 
 <!-- Test Object for testing Stateful Workflows -->
