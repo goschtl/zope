@@ -54,8 +54,8 @@ User stories
 BUGS
 ----
 
-* After committing an added or removed dict, the flag doesn't get
-  cleared in the entry.
+* Sometimes when committing additions or removals, the Entries.xml
+  file doesn't get updated properly.
 
 
 TO DO
@@ -70,19 +70,18 @@ TO DO
 * allow adding files of different types based on the file suffix or an
   explicit -t argument
 
-* a 'status' command showing careful status
-
 * more diff options:
   -2 diffs between local and remote
   -3 diffs between original and remote
   -N shows diffs for added/removed files as diffs with /dev/null
   more GNU diff options?  e.g. --ignore-space-change etc.
 
+* something akin to cvs -n update, which shows what update would do
+  without actually doing it
+
 * allow checking out the root
 
 * allow checking out /++etc++site
-
-* add adapters for more common content types, e.g. images
 
 * add a log message to the commit command
 
