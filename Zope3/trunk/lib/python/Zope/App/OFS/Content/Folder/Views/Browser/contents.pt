@@ -22,9 +22,9 @@
 
   <p>
     <a href="./++etc++Services/"
-        tal:condition="context/hasServiceManager">Services</a>
+        tal:condition="context/hasServiceManager">Local Service Manager</a>
     <a href="@@addServiceManager.html" 
-       tal:condition="not: context/hasServiceManager">Allow Services</a>
+       tal:condition="not: context/hasServiceManager">Turn On Local Service Manager</a>
   </p>
 </div>
 
