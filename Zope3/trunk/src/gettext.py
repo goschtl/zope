@@ -267,9 +267,9 @@ class GNUTranslations(NullTranslations):
             else:
                 raise IOError(0, 'File is corrupt', filename)
             # See if we're looking at GNU .mo conventions for metadata
-            if mlen == 0:
+            if mlen == 0 and tmsg.lower().startswith('project-id-version:'):
                 # Catalog description
-                for item in tmsg.split('\n'):
+                for item in tmsg.splitlines():
                     item = item.strip()
                     if not item:
                         continue
