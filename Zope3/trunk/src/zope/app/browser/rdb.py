@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: rdb.py,v 1.2 2002/12/25 14:12:26 jim Exp $
+$Id: rdb.py,v 1.3 2002/12/30 20:41:50 jeremy Exp $
 """
 from zope.component import getFactory
 from zope.proxy.introspection import removeAllProxies
@@ -64,7 +64,7 @@ class AdapterAdd(BrowserView):
     # This needs to be overridden by the actual implementation
     _adapter_factory_id = None
 
-    add = ViewPageTemplateFile('add.pt')
+    add = ViewPageTemplateFile('rdbadd.pt')
 
     def action(self, dsn):
         factory = getFactory(self, self._adapter_factory_id)
