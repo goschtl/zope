@@ -14,7 +14,3 @@ class VProposal(persistent.Persistent):
         self.concept = concept
         self.todo = todo
         self.issues = issues
-        
-    def proposal(self):
-        return "%s\n%s\n%s\n%s\n%s" % (self.title,self.usecase,self.concept, \
-                           self.todo,self.issues)        

@@ -5,6 +5,8 @@
     xmlns:i18n="http://namespaces.zope.org/i18n"
     >
 
+<i18n:registerTranslations directory="locales" />
+
 <content class=".vproposal.VProposal">
   <implements interface="zope.app.annotation.IAttributeAnnotatable"/>  
   <require permission="zope.View"

@@ -1,8 +1,31 @@
->>> from versioning.demo import vproposal
->>> vprop = vproposal.VProposal('Proptitle','Usecases are ...', 
-... 'Technical Concept','Todo: Steps are ...','Open Issues ...')
-... 
->>> vprop.title, vprop.usecase, vprop.concept
-('Proptitle', 'Usecases are ...', 'Technical Concept')
->>> vprop.todo, vprop.issues
-('Todo: Steps are ...', 'Open Issues ...')
+VProposal
+=========
+
+VProposal contains a title an some content blocks
+
+- Use Cases
+- Technical Concept
+- Todo
+- Open Issues
+
+You create it calling the 'VProposal' class:
+
+  >>> from versioning.demo import vproposal
+  >>> vprop = vproposal.VProposal('Proptitle','Usecases are ...', 
+  ... 'Technical Concept','Todo: Steps are ...','Open Issues ...')
+  ...
+
+Access the content and title via attributes:
+ 
+  >>> vprop.title, vprop.usecase, vprop.concept
+  ('Proptitle', 'Usecases are ...', 'Technical Concept')
+  >>> vprop.todo, vprop.issues
+  ('Todo: Steps are ...', 'Open Issues ...')
+
+All data in the 'VProposal' class defaults to a empty string:
+
+  >>> vprop = vproposal.VProposal()
+  >>> vprop.title, vprop.usecase, vprop.concept
+  ('', '', '')
+  >>> vprop.todo, vprop.issues
+  ('', '')
