@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zopecursor.py,v 1.5 2003/07/04 13:52:30 sidnei Exp $
+$Id: test_zopecursor.py,v 1.6 2003/07/04 14:29:35 sidnei Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -43,7 +43,10 @@ class MyCursorStub(CursorStub):
     description = ((None, 'string'), (None, 'int'), (None, 'foo'))
 
     def fetchone(self):
-        return self._raw[:1][0]
+        if self._raw:
+            return self._raw[0]
+        else:
+            return None
 
     def fetchall(self):
         return self._raw
@@ -87,13 +90,13 @@ class ZopeCursorTests(TestCase):
 
     def test_cursor_fetchone(self):
         results = self.cursor.fetchone()
-        expected = converted[:1][0]
+        expected = converted[0]
         self.assertEqual(results, expected,
                    'type conversion was not performed in cursor.fetchone:\n'
                    'got %r, expected %r' % (results, expected))
 
     def test_cursor_fetchone_no_more_results(self):
-        self.cursor._raw[0] = None
+        self.cursor.cursor._raw = [] 
         results = self.cursor.fetchone()
         expected = None
         self.assertEqual(results, expected,
