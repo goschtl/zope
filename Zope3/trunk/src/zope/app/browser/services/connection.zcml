@@ -66,7 +66,7 @@
       class=".connection.AddConnectionConfiguration"
       permission="zope.ManageServices"
       content_factory="zope.app.services.connection.ConnectionConfiguration"
-      arguments="name componentPath permission"
+      arguments="name componentPath"
       set_after_add="status"
       fields="name componentPath permission status"
       />

@@ -13,7 +13,7 @@
 ##############################################################################
 """A configuration for a database adapter.
 
-$Id: connection.py,v 1.6 2003/04/24 15:00:43 gvanrossum Exp $
+$Id: connection.py,v 1.7 2003/04/24 15:07:25 gvanrossum Exp $
 """
 
 from zope.schema import TextLine
@@ -43,12 +43,6 @@ class IConnectionConfiguration(IComponentConfiguration):
         description=u"The physical path to the component",
         readonly=True,
         required=True)
-
-    # XXX There's still a problem with the inherited 'permission'.
-    #     Even though it is not optional, when not specified
-    #     upon creation, the creation fails with a
-    #       KeyError: 'permission'
-    #     in zope/app/browser/form/add.py on line 85.
 
 
 class ILocalConnectionService(IConnectionService, INameComponentConfigurable):
