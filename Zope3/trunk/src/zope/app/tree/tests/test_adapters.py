@@ -19,6 +19,8 @@ import unittest
 
 from zope.interface import implements, directlyProvides
 from zope.component.exceptions import ComponentLookupError
+from zope.security.checker import defineChecker
+from zope.security.checker import NamesChecker
 
 from zope.app.location.interfaces import ILocation
 from zope.app.container.interfaces import IReadContainer
@@ -52,6 +54,12 @@ class SampleSite(SampleContainer):
         except AttributeError:
             raise ComponentLookupError
 
+class SiteManagerStub(object):
+    """This stub is used for to check the permission on __getitem__."""
+
+    def __getitem__(key):
+        return 'nada'
+
 class AdapterTestCase(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -66,6 +74,8 @@ class AdapterTestCase(PlacelessSetup, unittest.TestCase):
         self.makeObjects()
 
     def makeObjects(self):
+        checker = NamesChecker(['__getitem__'])
+        defineChecker(SiteManagerStub, checker)
         self.futurama = futurama = SampleSite()
         directlyProvides(futurama, IContainmentRoot)
         planetexpress = SampleContainer()
@@ -149,7 +159,7 @@ class AdapterTestCase(PlacelessSetup, unittest.TestCase):
         self.assertEqual(adapter.getChildObjects(), [])
 
     def test_container_site(self):
-        sm = object()
+        sm = SiteManagerStub()
         futurama = self.futurama
         omicronpersei = self.futurama['omicronpersei']
 

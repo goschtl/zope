@@ -22,6 +22,8 @@ $Id$
 """
 from zope.interface import Interface, implements
 from zope.component.exceptions import ComponentLookupError
+from zope.security import canAccess
+from zope.security.interfaces import Unauthorized
 
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
@@ -52,7 +54,7 @@ class StubChildObjects(object):
         return False
 
     def getChildObjects(self):
-        return ()
+        return []
 
 class LocationUniqueId(object):
     implements(IUniqueId)
@@ -79,10 +81,21 @@ class ContainerChildObjects(object):
         self.context = context
 
     def hasChildren(self):
-        return bool(len(self.context))
+        # make sure we check for access
+        try:
+            lenght = bool(len(self.context))
+            if lenght > 0:
+                return True
+            else:
+                return False
+        except Unauthorized:
+            return False
 
     def getChildObjects(self):
-        return self.context.values()
+        if self.hasChildren():
+            return self.context.values()
+        else:
+            return []
 
 class ContainerSiteChildObjects(ContainerChildObjects):
     """Adapter for read containers which are sites as well. The site
@@ -93,15 +106,42 @@ class ContainerSiteChildObjects(ContainerChildObjects):
     def hasChildren(self):
         if super(ContainerSiteChildObjects, self).hasChildren():
             return True
-        try:
-            self.context.getSiteManager()
+        if self._canAccessSiteManager():
             return True
-        except ComponentLookupError:
+        else:
             return False
 
     def getChildObjects(self):
-        values = super(ContainerSiteChildObjects, self).getChildObjects()
+        if self.hasChildren():
+            values = super(ContainerSiteChildObjects, self).getChildObjects()
+            if self._canAccessSiteManager():
+                return [self.context.getSiteManager()] + list(values)
+            else:
+                return values
+        else:
+            return []
+
+    def _canAccessSiteManager(self):
         try:
-            return [self.context.getSiteManager()] + list(values)
+            # the ++etc++ namespace is public this means we get the sitemanager
+            # without permissions. But this does not mean we can access it
+            # Right now we check the __getitem__ method on the sitemamanger
+            # but this means we don't show the ++etc++site link if we have
+            # registred views on the sitemanager which have other permission
+            # then the __getitem__ method form the interface IReadContainer
+            # in the LocalSiteManager.
+            # If this will be a problem in the future, we can add a 
+            # attribute to the SiteManager which we can give individual 
+            # permissions and check it via canAccess.
+            sitemanager = self.context.getSiteManager()
+            authorized = canAccess(sitemanager, '__getitem__')
+            if authorized:
+                return True
+            else:
+                return False
         except ComponentLookupError:
-            return values
+            return False
+        except TypeError:
+            # we can't check unproxied objects, but unproxied objects
+            # are public.
+            return True
