@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.18 2003/04/14 08:27:15 jim Exp $
+$Id: add.py,v 1.19 2003/04/16 21:51:37 fdrake Exp $
 """
 
 import sys
@@ -31,7 +31,7 @@ from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.browser.form.submit import Update
-from zope.app.browser.form.editview import EditView, _normalize
+from zope.app.browser.form.editview import EditView, normalize
 from zope.app.publisher.browser.globalbrowsermenuservice \
      import menuItemDirective
 
@@ -188,8 +188,7 @@ def add(_context, name, schema, content_factory='', label='',
     content_factory = (content_factory and _context.resolve(content_factory)
                        or None)
 
-    (schema, for_, bases, template, fields,
-     ) = _normalize(
+    schema, for_, bases, template, fields = normalize(
         _context, schema, for_, class_, template, 'add.pt', fields, omit,
         AddView)
 
