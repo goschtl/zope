@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.3 2002/09/11 22:06:41 jim Exp $
+$Id: _Schema.py,v 1.4 2002/12/12 10:42:33 faassen Exp $
 """
 from Interface import Interface
 from Zope.Schema.Exceptions import ValidationError, ValidationErrorsAll
@@ -28,6 +28,13 @@ def getFields(schema):
             fields[name] = attr
     return fields
 
+def getFieldsInOrder(schema,
+                     _fieldsorter=lambda x, y: cmp(x[1].order, y[1].order)):
+    """Get a list of (name, value) tuples in native schema order.
+    """
+    fields = getFields(schema).items()
+    fields.sort(_fieldsorter)
+    return fields
 
 # validate functions either return silently, or raise a ValidationError
 # or in case of the validate*All functions, a ValidationErrosAll exception.

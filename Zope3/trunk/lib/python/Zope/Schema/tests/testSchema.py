@@ -12,14 +12,15 @@
 #
 ##############################################################################
 """
-$Id: testSchema.py,v 1.4 2002/09/18 15:05:51 jim Exp $
+$Id: testSchema.py,v 1.5 2002/12/12 10:42:33 faassen Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Schema.Exceptions import StopValidation, ValidationError, \
      ValidationErrorsAll
 from Interface import Interface
 from Zope.Schema import Bytes, ErrorNames
-from Zope.Schema import validateMapping, validateMappingAll, getFields
+from Zope.Schema import validateMapping, validateMappingAll,\
+     getFields, getFieldsInOrder
 
 class ISchemaTest(Interface):
     title = Bytes(
@@ -89,7 +90,13 @@ class SchemaTest(TestCase):
         for key, value in fields.iteritems():
             self.assertEquals(key, value.getName())
         
-
+    def test_getFieldsInOrder(self):
+        fields = getFieldsInOrder(ISchemaTest)
+        field_names = [name for name, field in fields]
+        self.assertEquals(field_names, ['title', 'description', 'spam'])
+        for key, value in fields:
+            self.assertEquals(key, value.getName())
+            
 def test_suite():
     return makeSuite(SchemaTest)
 
