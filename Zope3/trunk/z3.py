@@ -14,10 +14,11 @@
 ##############################################################################
 """
 
-$Id: z3.py,v 1.6 2002/11/18 20:20:11 jim Exp $
+$Id: z3.py,v 1.7 2002/11/25 17:07:32 jeremy Exp $
 """
 
-import os, sys, asyncore
+import os, sys
+import ThreadedAsync
 
 basepath = filter(None, sys.path)
 
@@ -57,7 +58,7 @@ def run(argv=sys.argv):
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
 
     try:
-        asyncore.loop()
+        ThreadedAsync.loop()
     except KeyboardInterrupt:
         # Exit without spewing an exception.
         pass
