@@ -5,8 +5,7 @@
 <!-- we need to allow methods of XMLSchemaInterfaceClass so we can access them
      through the security proxy -->
 <content class=".schemainterface.XMLSchemaInterfaceClass">
-  <allow interface="zope.interface.interfaces.IInterface"
-         attributes="__bases__" />
+  <allow interface="zope.interface.interfaces.IInterface" />
 </content>
 
 </zopeConfigure>
