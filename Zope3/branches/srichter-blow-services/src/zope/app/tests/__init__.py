@@ -5,13 +5,14 @@
 # BBB: backward-comptibility; 12/18/2004
 
 import sys
-from zope.deprecation.deprecation import DeprecatedModule 
+#from zope.deprecation.deprecation import DeprecatedModule 
 import zope.app
 
 def deprecate(module):
-    return DeprecatedModule(module,
-                            'Test setup code moved from zope.app.tests to '
-                            'zope.app.testing. This will go away in Zope 3.3.')
+    return module
+#    return DeprecatedModule(module,
+#                            'Test setup code moved from zope.app.tests to '
+#                            'zope.app.testing. This will go away in Zope 3.3.')
 
 
 from zope.app.testing import placelesssetup

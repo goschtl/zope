@@ -48,6 +48,7 @@ from zope.app.container.ordered import OrderedContainer
 
 from zope.app.servicenames import Authentication
 from zope.app.security.interfaces import ILoginPassword
+from zope.app.component.localservice import queryNextService
 
 from interfaces import IUserSchemafied, IPluggableAuthenticationService
 from interfaces import IPrincipalSource, ILoginPasswordPrincipalSource
@@ -88,8 +89,6 @@ class PluggableAuthenticationService(OrderedContainer):
                 if principal is not None:
                     return principal
 
-        # Import placed here, to not require BBB with older code
-        from zope.app.component.localservice import queryNextService
         next = queryNextService(self, Authentication, None)
         if next is not None:
             return next.authenticate(request)
