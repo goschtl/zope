@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.16 2004/02/20 16:57:18 fdrake Exp $
+$Id: _app.py,v 1.17 2004/04/23 06:24:37 philikon Exp $
 """
 
 import base64, time
@@ -154,7 +154,7 @@ class Application:
         t, c = time.time(), time.clock()
         request = self._request(*args, **kw)
         getStatus = getattr(request.response, 'getStatus', lambda: None)
-        _publish(request, handle_errors = 0)
+        _publish(request, handle_errors=False)
         return time.time()-t, time.clock()-c, getStatus()
 
     def debug(self, *args, **kw):
