@@ -13,17 +13,18 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.6 2003/02/21 14:53:34 alga Exp $
+$Id: field.py,v 1.7 2003/03/21 20:59:24 jim Exp $
 """
 __metaclass__ = type
 
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.interfaces.browser.form import IBrowserWidget
-from zope.component import getServiceManager
+from zope.component import getServiceManager, getView
 from zope.app.form.widget import Widget
 from zope.publisher.browser import BrowserView
 from xml.sax.saxutils import quoteattr
 from zope.app.interfaces.form import WidgetInputError
+from zope.app.traversing import traverse, canonicalPath
 
 class ComponentPathWidget(BrowserWidget):
 
@@ -40,7 +41,18 @@ class ComponentPathWidget(BrowserWidget):
     def __call__(self):
         selected = self._showData()
         field = self.context
-        return renderPathSelect(field.context, field.type, self.name, selected)
+        return renderPathSelect(field.context, field.type,
+                                self.name, selected)
+
+class ComponentPathDisplayWidget(ComponentPathWidget):
+
+    def __call__(self):
+        path = self._showData()
+        path = canonicalPath(path)
+        ob = traverse(self.context.context, path)
+        url = str(getView(ob, 'absolute_url', self.request))
+        url += "/@@SelectedManagementView.html"
+        return '<a href="%s">%s</a>' % (url, path)
 
 class ComponentLocationWidget(Widget, BrowserView):
 
