@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ResourceMeta.py,v 1.3 2002/06/25 14:28:42 mgedmin Exp $
+$Id: ResourceMeta.py,v 1.4 2002/10/28 11:57:13 stevea Exp $
 """
 
 from Zope.Security.Proxy import Proxy
@@ -33,7 +33,7 @@ from Zope.App.Publisher.Browser.FileResource \
 class resource(object):
 
     type = IBrowserPresentation
-    default_allowed_attributes = '__call__'
+    default_allowed_attributes = '__call__'  # space separated string
 
     def __init__(self, _context, factory=None, name=None, layer='default',
                  permission=None,
@@ -133,7 +133,7 @@ class resource(object):
 
         return pageView
 
-    def __call__(self, require = None):
+    def __call__(self, require=None):
         if self.name is None:
             return ()
 
