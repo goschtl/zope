@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.24 2003/06/18 19:02:46 fdrake Exp $
+$Id: interfaces.py,v 1.25 2003/07/12 02:47:22 richard Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -315,9 +315,14 @@ class IEnumeratedDatetime(IEnumerated, IDatetime):
     The value may be constrained to an element of a specified list.
     """
 
+def _is_field(value):
+    if not IField.isImplementedBy(value):
+        return False
+    return True
+
 def _fields(values):
     for value in values:
-        if not IField.isImplementedBy(value):
+        if not _is_field(value):
             return False
     return True
 
@@ -327,16 +332,10 @@ class ISequence(IMinMaxLen, IIterable, IContainer):
     The Value must be iterable and may have a min_length/max_length.
     """
 
-    value_types = Iterable(
-        title=_(u"Value Types"),
-        description=(
-        _(u"""\
-        If set to a non-empty value, field value items must conform to one
-        of the given types, which are expressed via fields.
-        """)),
-        required=False,
-        constraint=_fields,
-        )
+    value_type = Attribute("value_type",
+        _(u"""Field value items must conform to the given type, expressed
+           via a Field.
+        """))
 
 class ITuple(ISequence):
     u"""Field containing a conventional tuple."""
@@ -347,30 +346,19 @@ class IList(ISequence):
 class IDict(IMinMaxLen, IIterable, IContainer):
     u"""Field containing a conventional dict.
 
-    The key_types and value_types field allow specification
+    The key_type and value_type fields allow specification
     of restrictions for keys and values contained in the dict.
     """
 
-    key_types = Iterable(
-        title=_(u"Value Types"),
-        description=_(u"""\
-        If set to a non-empty value, field value keys must conform to one
-        of the given types, which are expressed via fields.
-        """),
-        constraint=_fields,
-        required=False,
-        )
+    key_type = Attribute("key_type",
+        _(u"""Field keys must conform to the given type, expressed
+           via a Field.
+        """))
 
-    value_types = Iterable(
-        title=_(u"Value Types"),
-        description=(
-        _(u"""\
-        If set to a non-empty value, field value values must conform to one
-        of the given types, which are expressed via fields.
-        """)),
-        constraint=_fields,
-        required=False,
-        )
+    value_type = Attribute("value_type",
+        _(u"""Field values must conform to the given type, expressed
+           via a Field.
+        """))
 
 
 class IVocabularyQuery(Interface):

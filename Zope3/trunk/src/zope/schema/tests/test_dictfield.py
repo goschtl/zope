@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_dictfield.py,v 1.3 2003/05/01 19:35:46 faassen Exp $
+$Id: test_dictfield.py,v 1.4 2003/07/12 02:47:26 richard Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import Dict, Int, Float
@@ -79,29 +79,33 @@ class DictTest(FieldTestBase):
         self.assertRaisesErrorNames(errornames.TooLong,
                                     field.validate, {1: 'a', 2: 'b', 3: 'c'})
 
-    def testValidateValueTypes(self):
+    def testValidateValueType(self):
         field = Dict(title=u'Dict field',
                      description=u'', readonly=False, required=False,
-                     value_types=(Int(), Float()))
+                     value_type=Int())
         field.validate(None)
-        field.validate({'a': 5.3})
-        field.validate({'a': 2, 'b': 2.3})
+        field.validate({'a': 5})
+        field.validate({'a': 2, 'b': 3})
 
         self.assertRaisesErrorNames(errornames.WrongContainedType,
                                     field.validate, {1: ''} )
+        self.assertRaisesErrorNames(errornames.WrongContainedType,
+                                    field.validate, {1: 3.14159} )
         self.assertRaisesErrorNames(errornames.WrongContainedType,
                                     field.validate, {'a': ()} )
 
     def testValidateKeyTypes(self):
         field = Dict(title=u'Dict field',
                      description=u'', readonly=False, required=False,
-                     key_types=(Int(), Float()))
+                     key_type=Int())
         field.validate(None)
-        field.validate({5.3: 'a'})
-        field.validate({2: 'a', 2.3: 'b'})
+        field.validate({5: 'a'})
+        field.validate({2: 'a', 2: 'b'})
 
         self.assertRaisesErrorNames(errornames.WrongContainedType,
                                     field.validate, {'': 1} )
+        self.assertRaisesErrorNames(errornames.WrongContainedType,
+                                    field.validate, {3.14159: 1} )
         self.assertRaisesErrorNames(errornames.WrongContainedType,
                                     field.validate, {(): 'a'} )
 

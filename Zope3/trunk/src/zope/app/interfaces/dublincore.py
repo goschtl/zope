@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dublincore.py,v 1.5 2003/05/27 12:56:57 jim Exp $
+$Id: dublincore.py,v 1.6 2003/07/12 02:47:17 richard Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -274,13 +274,13 @@ class IDCExtended(Interface):
     creators = Sequence(
         title = u'Creators',
         description = u"The unqualified Dublin Core 'Creator' element values",
-        value_types = (TextLine(),),
+        value_type = TextLine(),
         )
 
     subjects = Sequence(
         title = u'Subjects',
         description = u"The unqualified Dublin Core 'Subject' element values",
-        value_types = (TextLine(),),
+        value_type = TextLine(),
         )
 
     publisher = Text(
@@ -293,7 +293,7 @@ class IDCExtended(Interface):
         title = u'Contributors',
         description =
         u"The unqualified Dublin Core 'Contributor' element values",
-        value_types = (TextLine(),),
+        value_type = TextLine(),
         )
 
 class ICMFDublinCore(Interface):

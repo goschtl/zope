@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.36 2003/07/12 01:28:59 richard Exp $
+$Id: widget.py,v 1.37 2003/07/12 02:47:07 richard Exp $
 """
 
 __metaclass__ = type
@@ -948,8 +948,8 @@ class SequenceWidget(BrowserWidget):
     def __call__(self):
         """Render the widget
         """
-        # XXX we really shouldn't allow value_types of None
-        if self.context.value_types is None:
+        # XXX we really shouldn't allow value_type of None
+        if self.context.value_type is None:
             return ''
 
         if not self._sequence_generated:
@@ -975,7 +975,7 @@ class SequenceWidget(BrowserWidget):
 
         # generate each widget from items in the _sequence - adding a
         # "remove" button for each one
-        field = self.context.value_types[0]
+        field = self.context.value_type
         for i in range(num_items):
             value = sequence[i]
             r('<tr><td>')
@@ -1015,7 +1015,7 @@ class SequenceWidget(BrowserWidget):
         num_items = len(sequence)
 
         # generate hidden fields for each value
-        field = self.context.value_types[0]
+        field = self.context.value_type
         s = ''
         for i in range(num_items):
             value = sequence[i]
@@ -1040,6 +1040,9 @@ class SequenceWidget(BrowserWidget):
         # XXX enforce required
         if not self._sequence_generated:
             self._generateSequenceFromRequest()
+        # validate the input values
+        for value in self._sequence:
+            self.context.value_type.validate(value)
         return self._type(self._sequence)
 
     def haveData(self):
@@ -1071,11 +1074,11 @@ class SequenceWidget(BrowserWidget):
         adding = False
         removing = []
         subprefix = re.compile(r'(\d+)\.(.+)')
-        if self.context.value_types is None:
+        if self.context.value_type is None:
             self._sequence = []
             self._sequence_generated = True
             return
-        field = self.context.value_types[0]
+        field = self.context.value_type
 
         # pre-populate 
         found = {}
@@ -1110,7 +1113,6 @@ class SequenceWidget(BrowserWidget):
                 widget = zapi.getView(field, 'edit', self.request, self.context)
                 widget.setPrefix('%s.%d.'%(prefix, i))
                 value = widget.getData()
-                field.validate(value)
                 found[i] = value
 
         # remove the indicated indexes 

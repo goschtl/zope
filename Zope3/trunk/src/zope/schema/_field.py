@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.16 2003/07/12 01:29:04 richard Exp $
+$Id: _field.py,v 1.17 2003/07/12 02:47:22 richard Exp $
 """
 __metaclass__ = type
 
@@ -126,25 +126,24 @@ class InterfaceField(Field):
         if not IInterface.isImplementedBy(value):
             raise ValidationError(WrongType)
 
-def _validate_sequence(value_types, value, errors=None):
+def _validate_sequence(value_type, value, errors=None):
     if errors is None:
         errors = []
 
-    if value_types is None:
+    if value_type is None:
         return errors
 
     for item in value:
         error = None
-        for t in value_types:
-            try:
-                t.validate(item)
-            except ValidationError, error:
-                pass
-            else:
-                # We validated, so clear error (if any) and done with
-                # this value
-                error = None
-                break
+        try:
+            value_type.validate(item)
+        except ValidationError, error:
+            pass
+        else:
+            # We validated, so clear error (if any) and done with
+            # this value
+            error = None
+            break
 
         if error is not None:
             errors.append(error)
@@ -155,15 +154,16 @@ def _validate_sequence(value_types, value, errors=None):
 class Sequence(MinMaxLen, Iterable, Field):
     __doc__ = ISequence.__doc__
     implements(ISequence)
-    value_types = FieldProperty(ISequence['value_types'])
+    value_type = None
 
-    def __init__(self, value_types=None, **kw):
+    def __init__(self, value_type=None, **kw):
         super(Sequence, self).__init__(**kw)
-        self.value_types = value_types
+        # XXX reject value_type of None?
+        self.value_type = value_type
 
     def _validate(self, value):
         super(Sequence, self)._validate(value)
-        errors = _validate_sequence(self.value_types, value)
+        errors = _validate_sequence(self.value_type, value)
         if errors:
             raise ValidationError(WrongContainedType, errors)
 
@@ -183,22 +183,23 @@ class Dict(MinMaxLen, Iterable, Field):
     """A field representing a Dict."""
     implements(IDict)
     _type = dict
-    key_types   = FieldProperty(IDict['key_types'])
-    value_types = FieldProperty(IDict['value_types'])
+    key_type   = None
+    value_type = None
 
-    def __init__(self, key_types=None, value_types=None, **kw):
+    def __init__(self, key_type=None, value_type=None, **kw):
         super(Dict, self).__init__(**kw)
-        self.key_types = key_types
-        self.value_types = value_types
+        # XXX reject key_type, value_type of None?
+        self.key_type = key_type
+        self.value_type = value_type
 
     def _validate(self, value):
         super(Dict, self)._validate(value)
         errors = []
         try:
-            if self.value_types:
-                errors = _validate_sequence(self.value_types, value.values(),
+            if self.value_type:
+                errors = _validate_sequence(self.value_type, value.values(),
                                             errors)
-            errors = _validate_sequence(self.key_types, value, errors)
+            errors = _validate_sequence(self.key_type, value, errors)
 
             if errors:
                 raise ValidationError(WrongContainedType, errors)

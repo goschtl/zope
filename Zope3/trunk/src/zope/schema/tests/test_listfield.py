@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_listfield.py,v 1.3 2003/05/01 19:35:46 faassen Exp $
+$Id: test_listfield.py,v 1.4 2003/07/12 02:47:26 richard Exp $
 """
 from unittest import main, makeSuite
 from zope.schema import List, Int, Float
@@ -82,15 +82,15 @@ class ListTest(FieldTestBase):
     def testValidateValueTypes(self):
         field = List(title=u'List field', description=u'',
                      readonly=False, required=False,
-                     value_types=(Int(), Float()))
+                     value_type=Int())
         field.validate(None)
-        field.validate([5.3,])
-        field.validate([2, 2.3])
+        field.validate([5,])
+        field.validate([2, 3])
 
         self.assertRaisesErrorNames(errornames.WrongContainedType,
                                     field.validate, ['',] )
         self.assertRaisesErrorNames(errornames.WrongContainedType,
-                                    field.validate, [2, ''] )
+                                    field.validate, [3.14159,] )
 
 def test_suite():
     return makeSuite(ListTest)

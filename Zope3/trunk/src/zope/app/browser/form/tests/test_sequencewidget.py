@@ -1,11 +1,11 @@
 __rcs_id__ = '$Id'
-__version__ = '$Revision: 1.1 $'[11:-2]
+__version__ = '$Revision: 1.2 $'[11:-2]
 
 import unittest
 
 from zope.component.view import provideView
 from zope.app.browser.form.widget import TextWidget
-from zope.schema.interfaces import ITextLine
+from zope.schema.interfaces import ITextLine, ValidationError
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import TestRequest
 from zope.schema import Tuple, List, TextLine
@@ -18,8 +18,7 @@ from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
 class SequenceWidgetTest(BrowserWidgetTest):
     def _FieldFactory(self, **kw):
-        kw.update({'__name__': u'foo',
-            'value_types': (TextLine(__name__=u'bar'),)})
+        kw.update({'__name__': u'foo', 'value_type': TextLine(__name__=u'bar')})
         return Tuple(**kw)
     _WidgetFactory = TupleSequenceWidget
 
@@ -31,7 +30,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
     def setUp(self):
         BrowserWidgetTest.setUp(self)
         self.field = Tuple(__name__=u'foo',
-            value_types=(TextLine(__name__=u'bar'),))
+            value_type=TextLine(__name__=u'bar'))
         provideView(ITextLine, 'edit', IBrowserPresentation, [TextWidget])
 
     def test_haveNoData(self):
@@ -42,8 +41,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         self.failUnless(self._widget.haveData())
 
     def test_list(self):
-        self.field = List(__name__=u'foo',
-            value_types=(TextLine(__name__=u'bar'),))
+        self.field = List(__name__=u'foo', value_type=TextLine(__name__=u'bar'))
         request = TestRequest()
         widget = ListSequenceWidget(self.field, request)
         self.assertEquals(int(widget.haveData()), 0)
@@ -52,7 +50,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest(form={'field.foo.add': u'Add bar'})
         widget = ListSequenceWidget(self.field, request)
         self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), [None])
+        self.assertRaises(ValidationError, widget.getData)
 
         request = TestRequest(form={'field.foo.0.bar': u'Hello world!'})
         widget = ListSequenceWidget(self.field, request)
@@ -71,7 +69,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest(form={'field.foo.add': u'Add bar'})
         widget = TupleSequenceWidget(self.field, request)
         self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), (None,))
+        self.assertRaises(ValidationError, widget.getData)
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar'
             'submit', 'submit', 'field.foo.add'
@@ -87,18 +85,18 @@ class SequenceWidgetTest(BrowserWidgetTest):
     def test_existing(self):
         request = TestRequest()
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData(('existing',))
+        widget.setData((u'existing',))
         self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), ('existing',))
+        self.assertEquals(widget.getData(), (u'existing',))
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
                 'existing',
             'submit', 'submit', 'field.foo.add'
         )
         self.verifyResult(widget(), check_list, inorder=True)
-        widget.setData(('existing', 'second'))
+        widget.setData((u'existing', u'second'))
         self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), ('existing', 'second'))
+        self.assertEquals(widget.getData(), (u'existing', u'second'))
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
                 'existing',
@@ -112,7 +110,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest(form={'field.foo.remove_0': u'Hello world!',
             'field.foo.0.bar': u'existing', 'field.foo.1.bar': u'second'})
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData(('existing', 'second'))
+        widget.setData((u'existing', u'second'))
         self.assertEquals(widget.getData(), (u'second',))
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
@@ -125,7 +123,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest()
         self.field.min_length = 2
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData(('existing',))
+        widget.setData((u'existing',))
         self.assertEquals(widget.getData(), (u'existing',))
         check_list = (
             'input', 'field.foo.0.bar', 'existing',
@@ -140,7 +138,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest()
         self.field.max_length = 1
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData(('existing',))
+        widget.setData((u'existing',))
         self.assertEquals(widget.getData(), (u'existing',))
         s = widget()
         self.assertEquals(s.find('field.foo.add'), -1)
