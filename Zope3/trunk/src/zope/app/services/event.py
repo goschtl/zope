@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.33 2003/06/24 22:37:24 jim Exp $
+$Id: event.py,v 1.34 2003/07/14 11:07:22 jim Exp $
 """
 
 from __future__ import generators
@@ -37,6 +37,8 @@ from zope.proxy import removeAllProxies
 from zope.interface import implements
 
 from zope.app.event.subs import Subscribable, SubscriptionTracker
+
+from zope.security.proxy import trustedRemoveSecurityProxy
 
 import logging
 
@@ -105,6 +107,11 @@ class EventChannel(Subscribable):
                 if isinstance(subscriber, int):
                     try:
                         obj = hubGet(subscriber)
+
+                        # XXX we need to figure out exactly how we want to
+                        # handle this. For now, we'll assume that all
+                        # subscriptions are trusted, so can always notify
+                        obj = trustedRemoveSecurityProxy(obj)
                     except NotFoundError:
                         badSubscribers[subscriber] = None
                         continue
