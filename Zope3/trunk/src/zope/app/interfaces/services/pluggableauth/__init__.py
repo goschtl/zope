@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.6 2003/08/08 23:21:13 srichter Exp $
+$Id: __init__.py,v 1.7 2003/09/02 20:46:07 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IContainer 
@@ -32,7 +32,8 @@ class IUserSchemafied(IPrincipal):
 
     title = TextLine(
         title=_("Title"),
-        description=_("The title of the user. This is usually used in the UI."),
+        description=_("The title of the user. "
+                      "This is usually used in the UI."),
         required=False)
 
     description = Text(
@@ -42,7 +43,8 @@ class IUserSchemafied(IPrincipal):
 
     login = TextLine(
         title=_("Login"),
-        description=_("The Login/Username of the user. This value can change."),
+        description=_("The Login/Username of the user. "
+                      "This value can change."),
         required=True)
 
     password = Password(
