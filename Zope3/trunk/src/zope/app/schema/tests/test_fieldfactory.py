@@ -13,19 +13,16 @@
 ##############################################################################
 """
 
-$Id: test_fieldfactory.py,v 1.1 2003/08/05 14:25:06 sidnei Exp $
+$Id: test_fieldfactory.py,v 1.2 2003/08/17 06:07:58 philikon Exp $
 """
 
 import unittest
-from StringIO import StringIO
+
+import zope.app.schema
 
 from zope.component.exceptions import ComponentLookupError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.management import newSecurityManager, system_user
-from zope.security.proxy import Proxy
-import zope.app.security
-import zope.app.component
-from zope.app.security.exceptions import UndefinedPermissionError
 from zope.component import getService
 from zope.app.services.servicenames import Factories
 from zope.schema.interfaces import IField, IText

@@ -13,9 +13,8 @@
 ##############################################################################
 """Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.4 2003/08/02 20:05:30 srichter Exp $
+$Id: metaconfigure.py,v 1.5 2003/08/17 06:08:00 philikon Exp $
 """
-from zope.configuration.action import Action
 from zope.security.manager import setSecurityPolicy
 
 def securityPolicy(_context, component):

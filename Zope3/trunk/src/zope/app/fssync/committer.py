@@ -13,12 +13,12 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.16 2003/07/29 16:53:43 fdrake Exp $
+$Id: committer.py,v 1.17 2003/08/17 06:06:34 philikon Exp $
 """
 
 import os
 
-from zope.component import getAdapter, queryAdapter, getService
+from zope.component import getAdapter, getService
 from zope.xmlpickle import loads
 from zope.configuration.name import resolve
 from zope.proxy import removeAllProxies

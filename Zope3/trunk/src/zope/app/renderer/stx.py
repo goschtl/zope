@@ -13,11 +13,10 @@
 ##############################################################################
 """Structured Text Renderer Classes
 
-$Id: stx.py,v 1.1 2003/07/31 17:59:36 srichter Exp $
+$Id: stx.py,v 1.2 2003/08/17 06:07:54 philikon Exp $
 """
 import re
 
-from datetime import datetime
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.renderer import IStructuredTextSource, IHTMLRenderer

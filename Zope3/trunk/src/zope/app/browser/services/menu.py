@@ -13,18 +13,16 @@
 ##############################################################################
 """Local Menu Service Views
 
-$Id: menu.py,v 1.2 2003/08/16 00:42:54 srichter Exp $
+$Id: menu.py,v 1.3 2003/08/17 06:05:47 philikon Exp $
 """
+
 from zope.app import zapi
 from zope.app.browser.container.contents import Contents
-from zope.app.browser.form.widget import DisplayWidget, BrowserWidget
 from zope.app.component.nextservice import queryNextService
-from zope.app.form.widget import CustomWidget
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.services.menu import ILocalBrowserMenu
 from zope.app.services.servicenames import Utilities
 from zope.security.proxy import trustedRemoveSecurityProxy
-
 
 class MenuContents(Contents):
 

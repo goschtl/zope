@@ -16,7 +16,7 @@
 
 
 from zope.schema.interfaces import ITerm, IVocabulary, IVocabularyQuery
-from zope.interface import implements, Interface
+from zope.interface import implements
 
 
 class IPrefixQuery(IVocabularyQuery):

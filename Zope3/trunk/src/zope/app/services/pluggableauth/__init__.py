@@ -13,26 +13,25 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.6 2003/08/08 23:23:19 srichter Exp $
+$Id: __init__.py,v 1.7 2003/08/17 06:08:15 philikon Exp $
 """
 
 from __future__ import generators
 import random
 import sys
-import datetime
 import time
+import random
+
 from persistence import Persistent
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 from zope.interface import implements
-from zope.component import getAdapter, queryAdapter
+from zope.component import queryAdapter
 from zope.context.wrapper import Wrapper
 from zope.context import getWrapperData
 from zope.app.services.servicenames import Authentication
 from zope.component.interfaces import IViewFactory
-from zope.app.container.btree import BTreeContainer
 from zope.app.container.ordered import OrderedContainer
-from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IContainerNamesContainer
 from zope.app.interfaces.container import IOrderedContainer
 from zope.app.interfaces.container import IAddNotifiable
@@ -45,10 +44,8 @@ from zope.app.interfaces.services.pluggableauth import IPrincipalSource, \
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.component.nextservice import queryNextService
 from zope.app import zapi
-from zope.app.traversing import getPath
 from zope.context import ContextMethod
 from zope.exceptions import NotFoundError
-import random
 
 def gen_key():
     """Return a random int (1, MAXINT), suitable for use as a BTree key."""

@@ -13,11 +13,10 @@
 ##############################################################################
 """Defines fields that are used in mutable schemas.
 
-$Id: mutableschemafield.py,v 1.2 2003/08/16 00:44:21 srichter Exp $
+$Id: mutableschemafield.py,v 1.3 2003/08/17 06:08:33 philikon Exp $
 """
 
-from zope.schema import Enumerated, Field, Tuple
-from zope.interface import Interface, implements
+from zope.interface import implements
 from zope.interface.interfaces import IInterface
 from zope.interface import providedBy
 from zope.schema.interfaces import ValidationError

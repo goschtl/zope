@@ -16,7 +16,7 @@
 
 import unittest
 
-from zope.interface import Interface, implements
+from zope.interface import Interface
 from zope.interface.verify import verifyObject
 
 from zope.schema import vocabulary

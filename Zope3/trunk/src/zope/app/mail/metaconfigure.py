@@ -13,10 +13,8 @@
 ##############################################################################
 """mail ZCML Namespace handler
 
-$Id: metaconfigure.py,v 1.4 2003/08/02 12:30:24 srichter Exp $
+$Id: metaconfigure.py,v 1.5 2003/08/17 06:07:13 philikon Exp $
 """
-from zope.component import getService
-from zope.configuration.action import Action
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.component.metaconfigure import provideService
 from zope.app.mail.service import QueuedMailService, DirectMailService

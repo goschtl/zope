@@ -13,11 +13,11 @@
 ##############################################################################
 """Browser-Specific Publisher interfaces
 
-$Id: browser.py,v 1.4 2003/08/16 00:43:29 srichter Exp $
+$Id: browser.py,v 1.5 2003/08/17 06:07:05 philikon Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.security.permission import PermissionField
-from zope.interface import Interface, Attribute
+from zope.interface import Interface
 from zope.schema import TextLine, Text
 
 

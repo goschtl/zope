@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.41 2003/08/12 20:49:15 fdrake Exp $
+$Id: fssync.py,v 1.42 2003/08/17 06:08:56 philikon Exp $
 """
 
 import os
@@ -28,16 +28,13 @@ import filecmp
 import htmllib
 import httplib
 import tempfile
-import urlparse
 import formatter
 
 from StringIO import StringIO
 
-from os.path import exists, isfile, isdir, islink
+from os.path import exists, isfile, isdir
 from os.path import dirname, basename, split, join
 from os.path import realpath, normcase, normpath
-
-from zope.xmlpickle import dumps
 
 from zope.fssync.metadata import Metadata, dump_entries
 from zope.fssync.fsmerger import FSMerger

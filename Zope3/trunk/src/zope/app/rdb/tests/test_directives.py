@@ -13,12 +13,11 @@
 ##############################################################################
 """Test 'rdb' ZCML Namespace Directives
 
-$Id: test_directives.py,v 1.1 2003/08/03 16:07:44 srichter Exp $
+$Id: test_directives.py,v 1.2 2003/08/17 06:07:52 philikon Exp $
 """
 import unittest
 
 from zope.configuration import xmlconfig
-from zope.security.management import newSecurityManager, system_user
 from zope.app.rdb import queryConnection, getAvailableConnections
 from zope.app.rdb import ZopeConnection
 import zope.app.rdb.tests

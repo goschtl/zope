@@ -13,15 +13,16 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.51 2003/08/16 17:23:35 sidnei Exp $
+$Id: widget.py,v 1.52 2003/08/17 06:05:44 philikon Exp $
 """
 
 __metaclass__ = type
 
 import re, cgi
-from xml.sax.saxutils import quoteattr
 import traceback
 from warnings import warn
+from xml.sax.saxutils import quoteattr
+
 from zope.app import zapi
 from zope.component import getService
 from zope.interface import implements
@@ -37,10 +38,8 @@ from zope.app.datetimeutils import DateTimeError
 from zope.app.services.servicenames import Translation
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import ValidationError
-from zope.schema.errornames import RequiredMissing
 
 ListTypes = list, tuple
-
 
 class BrowserWidget(Widget, BrowserView):
     """A field widget that knows how to display itself as HTML.

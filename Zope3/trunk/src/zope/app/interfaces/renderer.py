@@ -15,10 +15,9 @@
 
 This module defines the ZWiki relevant interfaces.
 
-$Id: renderer.py,v 1.1 2003/07/31 17:59:33 srichter Exp $
+$Id: renderer.py,v 1.2 2003/08/17 06:07:02 philikon Exp $
 """
 from zope.interface import Interface
-from zope.schema import Text, TextLine, List
 
 class ISourceTypeService(Interface):
     """The source type service keeps track of all interfaces that have been

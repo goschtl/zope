@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_introspector.py,v 1.6 2003/08/11 16:55:51 sidnei Exp $
+$Id: test_introspector.py,v 1.7 2003/08/17 06:08:25 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,7 +28,6 @@ from zope.app.services.servicenames import Interfaces
 from zope.app.services.interface import LocalInterfaceService
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.component.globalinterfaceservice import provideInterface
-from zope.app.component.metaconfigure import provideService
 from zope.app.component.globalinterfaceservice import InterfaceService
 from zope.app.interfaces.component import IInterfaceService
 from zope.component.service import serviceManager, defineService

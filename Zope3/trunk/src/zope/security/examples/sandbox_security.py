@@ -12,7 +12,7 @@
 #
 ##############################################################################
 import sandbox
-from zope.security.interfaces import ISecurityPolicy, IChecker
+from zope.security.interfaces import ISecurityPolicy
 from zope.security import management, checker
 from zope.interface import implements
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.1 2003/07/02 10:59:19 alga Exp $
+$Id: test_bootstrap.py,v 1.2 2003/08/17 06:07:30 philikon Exp $
 """
 
 import unittest
@@ -32,8 +32,7 @@ from zope.app.publication.zopepublication import ZopePublication
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.error import ErrorReportingService
 from zope.app.services.servicenames import ErrorLogging
-from zope.app.traversing import traverse, traverseName
-from zope.component.exceptions import ComponentLookupError
+from zope.app.traversing import traverse
 from zope.exceptions import NotFoundError
 from zope.app.services.service import ServiceManager
 __metaclass__ = type

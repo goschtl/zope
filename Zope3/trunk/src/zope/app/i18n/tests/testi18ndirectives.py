@@ -13,12 +13,10 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: testi18ndirectives.py,v 1.5 2003/08/03 20:58:42 philikon Exp $
+$Id: testi18ndirectives.py,v 1.6 2003/08/17 06:06:43 philikon Exp $
 """
 import os
 import unittest
-
-from cStringIO import StringIO
 
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig

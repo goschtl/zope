@@ -13,11 +13,11 @@
 ##############################################################################
 """Workflow View Classes
 
-$Id: workflows.py,v 1.2 2003/08/07 17:41:45 srichter Exp $
+$Id: workflows.py,v 1.3 2003/08/17 06:06:04 philikon Exp $
 """
 from zope.app.browser.services.registration import \
      NameComponentRegistryView, NameRegistryView
-from zope.app.traversing import traverse, getParent, getName
+from zope.app.traversing import traverse, getParent
 from zope.component import getView
 
 class WorkflowsRegistryView(NameComponentRegistryView):

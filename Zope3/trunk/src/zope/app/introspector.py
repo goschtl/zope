@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector
 
-$Id: introspector.py,v 1.15 2003/08/16 00:42:31 srichter Exp $
+$Id: introspector.py,v 1.16 2003/08/17 06:05:18 philikon Exp $
 """
 from zope.interface import Interface
 
@@ -25,7 +25,6 @@ from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
 from zope.interface.interfaces import IInterface
 from zope.app.services.servicenames import Interfaces
-from zope.component.exceptions import ComponentLookupError
 
 class Introspector:
     """Introspects an object"""

@@ -13,11 +13,11 @@
 ##############################################################################
 """Schemas for the 'help' ZCML namespace 
 
-$Id: metadirectives.py,v 1.2 2003/08/03 19:08:30 philikon Exp $
+$Id: metadirectives.py,v 1.3 2003/08/17 06:07:19 philikon Exp $
 """
 from zope.configuration.fields import GlobalObject, Path, MessageID
-from zope.interface import Interface, implements, classProvides
-from zope.schema import TextLine, BytesLine
+from zope.interface import Interface
+from zope.schema import BytesLine
 
 class IRegisterDirective(Interface):
     """Register directive for onlien help topics."""

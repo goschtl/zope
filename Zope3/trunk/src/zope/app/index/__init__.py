@@ -1,5 +1,19 @@
+##############################################################################
 #
-# This file is necessary to make this directory a package.
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: __init__.py,v 1.4 2003/08/17 06:06:47 philikon Exp $
+"""
 
 from zope.interface import implements
 from zope.app.interfaces.index import IInterfaceIndexer
@@ -8,7 +22,6 @@ from zope.component import queryAdapter
 from zope.context import ContextMethod
 
 from zope.app.interfaces.services.hub import \
-     IRegistrationHubEvent, \
      IObjectRegisteredHubEvent, \
      IObjectUnregisteredHubEvent, \
      IObjectModifiedHubEvent

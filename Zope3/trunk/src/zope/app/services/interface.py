@@ -16,7 +16,7 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.15 2003/08/16 00:44:08 srichter Exp $
+$Id: interface.py,v 1.16 2003/08/17 06:08:11 philikon Exp $
 """
 
 from persistence import Persistent
@@ -32,7 +32,6 @@ from zope.app import zapi
 from zope.app.services.servicenames import Interfaces, Utilities
 from zope.component import ComponentLookupError
 from zope.interface import implements
-from zope.app.interfaces.services.registration import IRegistrationStack
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
     pass

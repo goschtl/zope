@@ -33,11 +33,11 @@ There are two aspects of this:
 This file contains the implementations of the old-style meta
 configurations.
 
-$Id: backward.py,v 1.3 2003/08/02 12:46:04 jim Exp $
+$Id: backward.py,v 1.4 2003/08/17 06:08:49 philikon Exp $
 """
 
 from keyword import iskeyword
-from zope.configuration import config, xmlconfig
+from zope.configuration import config
 from zope import interface
 from zope import schema
 

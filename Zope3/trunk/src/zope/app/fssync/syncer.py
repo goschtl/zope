@@ -13,16 +13,15 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.29 2003/08/06 21:34:44 fdrake Exp $
+$Id: syncer.py,v 1.30 2003/08/17 06:06:34 philikon Exp $
 """
 
 import os
 
-from zope.component import queryAdapter, getService
+from zope.component import getService
 from zope.app.interfaces.fssync import IObjectDirectory, IObjectFile
 
 from zope.app.traversing import getPath
-from zope.app.fssync.fsregistry import getSynchronizer
 from zope.fssync import metadata
 
 

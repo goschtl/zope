@@ -13,19 +13,20 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.4 2003/07/28 22:20:04 jim Exp $
+$Id: test_directives.py,v 1.5 2003/08/17 06:07:23 philikon Exp $
 """
 
 import unittest
 from cStringIO import StringIO
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-
-from zope.app.tests.placelesssetup import PlacelessSetup
-
 from zope.interface import Interface, implements
 from zope.component.adapter import provideAdapter
+
+import zope.app.pagetemplate
+
 from zope.app.interfaces.traversing import ITraversable
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 template = """<zopeConfigure 
    xmlns='http://namespaces.zope.org/zope'
@@ -58,7 +59,6 @@ class Test(PlacelessSetup, unittest.TestCase):
     # XXX: tests for other directives needed
 
     def setUp(self):
-        import zope.configuration
         PlacelessSetup.setUp(self)
         XMLConfig('meta.zcml', zope.app.pagetemplate)()
 

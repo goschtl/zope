@@ -12,21 +12,17 @@
 #
 ##############################################################################
 """
-$Id: test_pluggableauth.py,v 1.4 2003/07/10 09:37:57 alga Exp $
+$Id: test_pluggableauth.py,v 1.5 2003/08/17 06:08:18 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.services.auth import AuthenticationService
 from zope.app.services.auth import User
-from zope.app.services.servicenames import Adapters, Authentication
+from zope.app.services.servicenames import Adapters
 from zope.app.services.tests import placefulsetup
 
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.services.service import ServiceConfiguration
 from zope.app.tests import setup
-from zope.app.traversing import getPath, traverse
-from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.exceptions import NotFoundError
 

@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.22 2003/07/17 14:00:00 alga Exp $
+$Id: test_wrapper.py,v 1.23 2003/08/17 06:08:53 philikon Exp $
 """
 import unittest
 from types import MethodType, FunctionType
 from zope.proxy import getProxiedObject
-from zope.context import Wrapper, wrapper, ContextMethod, ContextProperty
+from zope.context import wrapper, ContextMethod, ContextProperty
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
 _marker = object()

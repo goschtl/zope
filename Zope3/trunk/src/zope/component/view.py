@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: view.py,v 1.5 2003/06/24 15:29:51 jeremy Exp $
+$Id: view.py,v 1.6 2003/08/17 06:08:45 philikon Exp $
 """
 
 from zope.interface.adapter import AdapterRegistry
 from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 from zope.component import getSkin
-from zope.component.interfaces import IViewService, IGlobalViewService
+from zope.component.interfaces import IGlobalViewService
 from zope.exceptions import NotFoundError
 
 # XXX The GlobalViewService and LocalViewService contain a lot of

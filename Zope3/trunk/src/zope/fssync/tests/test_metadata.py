@@ -13,15 +13,12 @@
 ##############################################################################
 """Tests for the Metadata class.
 
-$Id: test_metadata.py,v 1.6 2003/07/25 20:18:50 fdrake Exp $
+$Id: test_metadata.py,v 1.7 2003/08/17 06:09:00 philikon Exp $
 """
 
-import os
 import unittest
 
 from os.path import dirname, isfile, join
-
-from zope.xmlpickle import loads
 
 from zope.fssync.metadata import Metadata, load_entries
 from zope.fssync.tests.tempfiles import TempFiles

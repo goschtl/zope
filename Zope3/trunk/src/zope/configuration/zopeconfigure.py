@@ -97,13 +97,13 @@ documentation, which is provided by the schema.
 lower-level Python API because it is registered for all namespaces,
 which isn't supported using the meta-configuration directives.)
 
-$Id: zopeconfigure.py,v 1.1 2003/07/31 14:56:55 jim Exp $
+$Id: zopeconfigure.py,v 1.2 2003/08/17 06:08:49 philikon Exp $
 """
 
 import os
 import zope.configuration.config as config
 from zope import schema
-from zope.interface import Interface, implements
+from zope.interface import Interface
 
 class IZopeConfigure(Interface):
 

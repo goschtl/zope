@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.3 2003/08/16 15:32:40 srichter Exp $
+$Id: menu.py,v 1.4 2003/08/17 06:08:11 philikon Exp $
 """
 __metaclass__ = type 
 
@@ -27,13 +27,12 @@ from zope.app.interfaces.publisher.browser import \
      IBrowserMenuItem, IGlobalBrowserMenuService
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.publisher.browser.globalbrowsermenuservice import \
-     Menu, BaseBrowserMenuService
+     BaseBrowserMenuService
 from zope.app.services.servicenames import Utilities, BrowserMenu
 from zope.interface import implements
 from zope.component.exceptions import ComponentLookupError
 from zope.context import ContextMethod
 from zope.interface import providedBy
-from zope.security.proxy import trustedRemoveSecurityProxy
 
 
 class LocalBrowserMenuItem(Persistent):

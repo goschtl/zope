@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_componentpathwidget.py,v 1.1 2003/08/16 19:17:11 srichter Exp $
+$Id: test_componentpathwidget.py,v 1.2 2003/08/17 06:05:55 philikon Exp $
 """
 __metaclass__ = type
 
@@ -21,8 +21,8 @@ import unittest
 from zope.app.browser.services.registration import ComponentPathWidget
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.services.registration import IComponentRegistration
-from zope.app.interfaces.traversing import \
-     IContainmentRoot, ITraverser, ITraversable, IPhysicallyLocatable
+from zope.app.interfaces.traversing import ITraverser, \
+     ITraversable, IPhysicallyLocatable
 from zope.app.services.field import ComponentPath
 from zope.app.traversing.adapters import \
      Traverser, DefaultTraversable, WrapperPhysicallyLocatable

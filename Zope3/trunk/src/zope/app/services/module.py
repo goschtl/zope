@@ -13,11 +13,10 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.13 2003/07/12 09:41:19 jim Exp $
+$Id: module.py,v 1.14 2003/08/17 06:08:11 philikon Exp $
 """
 
 from persistence import Persistent
-from zodb.code.interfaces import IPersistentModuleImportRegistry
 from zodb.code.interfaces import IPersistentModuleUpdateRegistry
 from zodb.code.module import PersistentModule, compileModule
 from zope.app.event import function

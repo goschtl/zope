@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.14 2003/08/02 12:46:33 jim Exp $
+$Id: xmlconfig.py,v 1.15 2003/08/17 06:08:49 philikon Exp $
 """
 
 import errno
@@ -25,14 +25,14 @@ import os
 import sys
 import logging
 import zope.configuration.config as config
-from keyword import iskeyword
+
 from zope import schema
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import SAXParseException
 from zope.configuration.exceptions import ConfigurationError
-from zope.interface import Interface, implements
+from zope.interface import Interface
 from zope.configuration.zopeconfigure import IZopeConfigure, ZopeConfigure
 
 logger = logging.getLogger("config")

@@ -13,13 +13,8 @@
 ##############################################################################
 import unittest
 
-from zope.component.exceptions import ComponentLookupError
-from zope.interface import Interface
-from zope.interface.verify import verifyObject
-
 from zope.app.component.globalinterfaceservice \
      import interfaceService as globalService
-from zope.app.interfaces.component import IInterfaceService
 from zope.app.services.interface import LocalInterfaceService
 from zope.app.services.servicenames import Interfaces
 from zope.app.tests import setup

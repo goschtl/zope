@@ -13,10 +13,9 @@
 ##############################################################################
 """'rdb' ZCML Namespace Directive Handler
 
-$Id: metaconfigure.py,v 1.2 2003/08/03 16:07:39 srichter Exp $
+$Id: metaconfigure.py,v 1.3 2003/08/17 06:07:45 philikon Exp $
 """
 from zope.component import getService
-from zope.configuration.action import Action
 from zope.app.services.servicenames import SQLDatabaseConnections
 
 def connectionhandler(_context, name, component, dsn):

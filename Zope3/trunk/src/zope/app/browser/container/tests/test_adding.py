@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.9 2003/08/16 14:08:15 srichter Exp $
+$Id: test_adding.py,v 1.10 2003/08/17 06:05:39 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -22,12 +22,11 @@ from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.browser.container.adding import Adding
 from zope.app.context import ContextWrapper
 from zope.app.event.tests.placelesssetup import getEvents
-from zope.app.interfaces.container import IAdding, IContainer, IZopeContainer
+from zope.app.interfaces.container import IAdding, IZopeContainer
 from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
 from zope.app.interfaces.exceptions import UserError
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
 from zope.component.factory import provideFactory
 from zope.component.interfaces import IFactory

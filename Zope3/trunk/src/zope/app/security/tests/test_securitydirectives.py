@@ -13,7 +13,7 @@
 ##############################################################################
 """Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.10 2003/08/02 20:05:43 srichter Exp $
+$Id: test_securitydirectives.py,v 1.11 2003/08/17 06:08:09 philikon Exp $
 """
 import unittest
 
@@ -23,7 +23,6 @@ from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IAuthenticationService
 
-from zope.configuration.xmlconfig import ZopeXMLConfigurationError
 from zope.configuration.config import ConfigurationConflictError
 from zope.configuration import xmlconfig
 

@@ -15,8 +15,13 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.8 2003/08/02 12:46:20 jim Exp $
+$Id: config.py,v 1.9 2003/08/17 06:08:49 philikon Exp $
 """
+
+import os.path
+import sys
+
+import zope.schema
 
 from keyword import iskeyword
 from zope.configuration.exceptions import ConfigurationError
@@ -26,11 +31,7 @@ from zope.interface.adapter import AdapterRegistry
 from zope.interface import Interface, implements, directlyProvides
 from zope.interface.interfaces import IInterface
 from zope.schema.errornames import WrongType
-import zope.schema
-from zope.schema.interfaces import IField, IFromUnicode
 from zope.configuration import fields
-import os.path
-import sys
 
 
 zopens = 'http://namespaces.zope.org/zope'

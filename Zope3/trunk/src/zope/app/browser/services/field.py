@@ -13,9 +13,8 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.13 2003/08/13 21:28:14 garrett Exp $
+$Id: field.py,v 1.14 2003/08/17 06:05:47 philikon Exp $
 """
-from xml.sax.saxutils import quoteattr
 
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.traversing import traverse

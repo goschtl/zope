@@ -13,11 +13,11 @@
 ##############################################################################
 """Functional tests for MKCOL.
 
-$Id: test_mkcol.py,v 1.1 2003/06/23 17:21:08 sidnei Exp $
+$Id: test_mkcol.py,v 1.2 2003/08/17 06:06:27 philikon Exp $
 """
 
 import unittest
-from datetime import datetime
+
 from zope.app.dav.ftests.dav import DAVTestCase
 from transaction import get_transaction
 

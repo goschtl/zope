@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Views
 
-$Id: content.py,v 1.2 2003/08/16 00:43:11 srichter Exp $
+$Id: content.py,v 1.3 2003/08/17 06:06:01 philikon Exp $
 """
 from zope.app import zapi
 from zope.app.browser.form.add import AddView
@@ -27,7 +27,7 @@ from zope.app.utilities.content import ContentComponentInstance
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
-from zope.schema import getFieldNamesInOrder, getFieldsInOrder
+from zope.schema import getFieldsInOrder
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import trustedRemoveSecurityProxy
 

@@ -14,7 +14,6 @@
 import string
 import kjSet
 import kjParser
-import re
 
 # import some constants
 from kjParser import \

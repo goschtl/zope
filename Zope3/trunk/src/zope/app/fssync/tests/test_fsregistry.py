@@ -13,14 +13,13 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: test_fsregistry.py,v 1.2 2003/06/30 16:52:49 stevea Exp $
+$Id: test_fsregistry.py,v 1.3 2003/08/17 06:06:38 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-from zope.app.interfaces.fssync \
-     import IGlobalFSSyncService, IObjectFile, IObjectDirectory
+from zope.app.interfaces.fssync import IGlobalFSSyncService
 from zope.interface.verify import verifyObject
 from zope.exceptions import DuplicationError, NotFoundError
 from zope.app.fssync.tests.sampleclass \

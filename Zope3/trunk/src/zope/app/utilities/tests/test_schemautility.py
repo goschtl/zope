@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.2 2003/08/16 00:44:27 srichter Exp $
+$Id: test_schemautility.py,v 1.3 2003/08/17 06:08:36 philikon Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 from zope.app.utilities.schema import SchemaUtility
-from zope.schema import Text, getFieldsInOrder, getFieldNamesInOrder
+from zope.schema import Text, getFieldsInOrder
 
 class SchemaUtilityTests(TestCase):
 

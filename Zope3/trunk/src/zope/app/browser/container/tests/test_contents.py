@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.23 2003/07/26 13:11:11 srichter Exp $
+$Id: test_contents.py,v 1.24 2003/08/17 06:05:39 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,8 +22,6 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.adapter import provideAdapter
 
-from zope.app.interfaces.traversing import ITraversable
-from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.copypastemove import IObjectMover
 

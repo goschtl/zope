@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.4 2003/08/02 20:05:36 srichter Exp $
+$Id: metaconfigure.py,v 1.5 2003/08/17 06:08:03 philikon Exp $
 """
 from zope.app.security.grants.rolepermission \
      import rolePermissionManager as role_perm_mgr
@@ -21,7 +21,6 @@ from zope.app.security.grants.principalpermission \
      import principalPermissionManager as principal_perm_mgr
 from zope.app.security.grants.principalrole \
      import principalRoleManager as principal_role_mgr
-from zope.configuration.action import Action
 from zope.configuration.exceptions import ConfigurationError
 
 

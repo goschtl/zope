@@ -13,13 +13,13 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.14 2003/08/11 22:02:08 fdrake Exp $
+$Id: fsmerger.py,v 1.15 2003/08/17 06:08:56 philikon Exp $
 """
 
 import os
 import shutil
 
-from os.path import exists, isfile, isdir, split, join
+from os.path import exists, isfile, isdir, join
 from os.path import realpath, normcase, normpath
 
 from zope.xmlpickle import dumps

@@ -13,9 +13,8 @@
 ##############################################################################
 """ProcessDefinition Import Export Utility
 
-$Id: metaconfigure.py,v 1.2 2003/08/01 20:40:59 srichter Exp $
+$Id: metaconfigure.py,v 1.3 2003/08/17 06:08:38 philikon Exp $
 """
-from zope.configuration.action import Action
 from globalimportexport import globalImportExport
 
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.8 2003/08/16 19:17:08 srichter Exp $
+$Id: __init__.py,v 1.9 2003/08/17 06:05:52 philikon Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -21,13 +21,10 @@ from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.container import IZopeContainer
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.registration import IComponentRegistration
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import IRegistered
+from zope.app.interfaces.services.registration import ActiveStatus, \
+     IComponentRegistration, UnregisteredStatus, IRegistered
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.traversing import getPath, getName, traverse
+from zope.app.traversing import getName, traverse
 from zope.component import getView, getServiceManager, getAdapter
 from zope.context import getWrapperContainer
 from zope.app.context import ContextWrapper

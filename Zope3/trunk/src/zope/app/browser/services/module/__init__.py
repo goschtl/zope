@@ -13,12 +13,10 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: __init__.py,v 1.2 2003/06/30 16:22:59 jim Exp $
+$Id: __init__.py,v 1.3 2003/08/17 06:05:50 philikon Exp $
 """
 
-from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.services.module import Manager
-from zope.component import getAdapter
 from zope.publisher.browser import BrowserView
 
 from zope.app.i18n import ZopeMessageIDFactory as _

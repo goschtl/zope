@@ -21,10 +21,8 @@ Command line syntax summary:
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: bundle.py,v 1.2 2003/08/15 22:23:15 fdrake Exp $
+$Id: bundle.py,v 1.3 2003/08/17 06:08:56 philikon Exp $
 """
-
-import os
 
 from zope.fssync.command import Command, Usage
 from zope.fssync.fsbundle import FSBundle

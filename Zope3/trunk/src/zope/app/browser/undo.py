@@ -12,15 +12,11 @@
 #
 ##############################################################################
 """
-
-Revision information:
-$Id: undo.py,v 1.8 2003/08/06 14:41:11 srichter Exp $
+$Id: undo.py,v 1.9 2003/08/17 06:05:23 philikon Exp $
 """
 from zope.interface import implements
 from zope.component import getService, getUtility
-from zope.publisher.browser import BrowserView
 from zope.app.event import function
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.interfaces.undo import IUndoManager
 from zope.app.services.servicenames import Utilities
 from datetime import datetime

@@ -12,12 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.1 2003/08/03 21:56:10 philikon Exp $
+$Id: metadirectives.py,v 1.2 2003/08/17 06:06:32 philikon Exp $
 """
 
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens
-from zope.schema import TextLine
 
 class ISubscribeDirective(Interface):
     """

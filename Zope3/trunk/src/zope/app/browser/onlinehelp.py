@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.13 2003/08/06 14:41:11 srichter Exp $
+$Id: onlinehelp.py,v 1.14 2003/08/17 06:05:23 philikon Exp $
 """
 from zope.interface import providedBy
 
@@ -25,7 +25,6 @@ from zope.publisher.browser import BrowserView
 from zope.app.traversing import getRoot
 from zope.app.context import ContextWrapper
 from zope.app.traversing import getParents, getName
-from zope.proxy import removeAllProxies
 
 class OnlineHelpTopicView(BrowserView):
     """View for one particular help topic."""

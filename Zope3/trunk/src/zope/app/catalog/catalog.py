@@ -7,7 +7,6 @@ from zope.context import ContextMethod
 from zope.app.zapi import getService, getAdapter
 from zope.app.services.servicenames import HubIds
 from zope.exceptions import NotFoundError
-from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.utility import ILocalUtility
@@ -23,9 +22,7 @@ from zope.app.container.sample import SampleContainer
 import zope.app.interfaces.services.hub as IHub
 import zope.app.services.hub as Hub
 
-import time
-
-from zope.app.interfaces.catalog.catalog import ICatalogView, ICatalog
+from zope.app.interfaces.catalog.catalog import ICatalog
 
 class ResultSet:
     "Lazily accessed set of objects"

@@ -15,16 +15,17 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_service.py,v 1.2 2003/06/23 15:45:40 alga Exp $
+$Id: test_service.py,v 1.3 2003/08/17 06:07:17 philikon Exp $
 """
+import os.path
+from tempfile import mktemp
 from unittest import TestCase, TestSuite, makeSuite
+
 from zope.interface import implements
 from zope.interface.verify import verifyObject
 from zope.app.interfaces.mail import IMailer
+
 from transaction import get_transaction
-from os import mkdir, rmdir, unlink, getpid, listdir
-from tempfile import mktemp
-import os.path
 
 __metaclass__ = type
 

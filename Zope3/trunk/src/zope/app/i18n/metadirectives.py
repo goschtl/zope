@@ -12,11 +12,11 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.1 2003/08/03 20:58:38 philikon Exp $
+$Id: metadirectives.py,v 1.2 2003/08/17 06:06:42 philikon Exp $
 """
 
 from zope.interface import Interface
-from zope.configuration.fields import GlobalObject, Tokens, Path
+from zope.configuration.fields import Tokens, Path
 from zope.schema import TextLine
 
 class IRegisterTranslationsDirective(Interface):

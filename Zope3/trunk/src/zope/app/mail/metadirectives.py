@@ -13,9 +13,9 @@
 ##############################################################################
 """'mail' ZCML Namespaces Schemas
 
-$Id: metadirectives.py,v 1.1 2003/08/02 12:30:24 srichter Exp $
+$Id: metadirectives.py,v 1.2 2003/08/17 06:07:13 philikon Exp $
 """
-from zope.configuration.fields import GlobalObject, Path
+from zope.configuration.fields import Path
 from zope.interface import Interface
 from zope.schema import TextLine, Bytes, BytesLine, Int
 

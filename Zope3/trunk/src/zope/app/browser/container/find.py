@@ -13,16 +13,14 @@
 ##############################################################################
 """Find View Class
 
-$Id: find.py,v 1.4 2003/08/06 14:41:36 srichter Exp $
+$Id: find.py,v 1.5 2003/08/17 06:05:35 philikon Exp $
 """
 # XXX this needs to be looked up in a registry
 from zope.app.container.find import SimpleIdFindFilter
 from zope.app.interfaces.container.find import IFind
 from zope.app.traversing import getName
 from zope.component import getAdapter, getView
-from zope.context import getInnerWrapperData
 from zope.publisher.browser import BrowserView
-
 
 # XXX very simple implementation right now
 class Find(BrowserView):

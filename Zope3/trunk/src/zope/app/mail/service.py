@@ -15,19 +15,19 @@
 
 This module contains various implementations of MailServices.
 
-$Id: service.py,v 1.6 2003/07/26 15:04:08 srichter Exp $
+$Id: service.py,v 1.7 2003/08/17 06:07:13 philikon Exp $
 """
 import rfc822
 import threading
-import os.path
 import logging
-from os import listdir, unlink
+
+from os import unlink, getpid
 from cStringIO import StringIO
 from random import randrange
 from time import strftime
 from socket import gethostname
-from os import getpid
 from time import sleep
+
 from zope.interface import implements
 from zope.app.interfaces.mail import IDirectMailService, IQueuedMailService
 from zope.app.mail.maildir import Maildir

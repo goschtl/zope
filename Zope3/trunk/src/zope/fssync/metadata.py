@@ -20,14 +20,14 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.9 2003/08/15 22:23:15 fdrake Exp $
+$Id: metadata.py,v 1.10 2003/08/17 06:08:56 philikon Exp $
 """
 
 import os
 import copy
 
 from cStringIO import StringIO
-from os.path import exists, isdir, isfile, split, join, realpath, normcase
+from os.path import exists, isfile, split, join, realpath, normcase
 from xml.sax import ContentHandler, parse, parseString
 from xml.sax.saxutils import quoteattr
 

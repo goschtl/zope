@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_editregistration.py,v 1.1 2003/06/21 21:22:03 jim Exp $
+$Id: test_editregistration.py,v 1.2 2003/08/17 06:05:55 philikon Exp $
 """
 __metaclass__ = type
 
@@ -23,12 +23,10 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.services.registration import EditRegistration
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.interfaces.event import IObjectRemovedEvent
+from zope.app.interfaces.event import IObjectModifiedEvent, IObjectRemovedEvent
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
 from zope.interface import Interface, implements
 from zope.publisher.browser import BrowserView

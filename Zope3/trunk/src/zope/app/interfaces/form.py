@@ -13,10 +13,9 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.7 2003/08/13 21:28:42 garrett Exp $
+$Id: form.py,v 1.8 2003/08/17 06:07:02 philikon Exp $
 """
 
-import cgi
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
 from zope.interface import Attribute, Interface, implements

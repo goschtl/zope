@@ -13,11 +13,10 @@
 ##############################################################################
 """Testing vocabulary directive.
 
-$Id: test_directives.py,v 1.1 2003/08/01 21:48:38 srichter Exp $
+$Id: test_directives.py,v 1.2 2003/08/17 06:07:58 philikon Exp $
 """
 import unittest
 
-from zope.interface import Interface, implements
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.app.schema import vocabulary

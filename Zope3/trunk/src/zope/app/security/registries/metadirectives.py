@@ -13,10 +13,10 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metadirectives.py,v 1.3 2003/08/04 11:11:45 jim Exp $
+$Id: metadirectives.py,v 1.4 2003/08/17 06:08:05 philikon Exp $
 """
 from zope.interface import Interface
-from zope.schema import TextLine, Text, Id
+from zope.schema import TextLine, Id
 from zope.configuration.fields import MessageID
 
 class IBaseDefineDirective(Interface):

@@ -15,14 +15,14 @@
 
 XXX Incomplete.
 
-$Id: test_bundle.py,v 1.3 2003/08/07 17:41:31 srichter Exp $
+$Id: test_bundle.py,v 1.4 2003/08/17 06:05:57 philikon Exp $
 """
 
 # standard library modules
 import unittest
 
 # Zope modules
-from zope.interface import Interface, implements
+from zope.interface import implements
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 
 # Zope test support modules

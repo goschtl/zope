@@ -13,14 +13,14 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.6 2003/08/04 23:12:55 sidnei Exp $
+$Id: test_contentworkflow.py,v 1.7 2003/08/17 06:08:41 philikon Exp $
 """
 import unittest
 
 from zope.app import zapi
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.event.tests.placelesssetup import \
-     eventPublisher, EventRecorder, events, clearEvents
+     eventPublisher, EventRecorder, clearEvents
 from zope.app.interfaces.annotation import IAnnotatable, IAttributeAnnotatable
 from zope.app.interfaces.event import IObjectCreatedEvent
 from zope.app.interfaces.services.event import ISubscriptionService

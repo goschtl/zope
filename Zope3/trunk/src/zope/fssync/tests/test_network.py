@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.7 2003/05/29 18:38:46 gvanrossum Exp $
+$Id: test_network.py,v 1.8 2003/08/17 06:09:00 philikon Exp $
 """
 
 import os
@@ -24,7 +24,7 @@ import threading
 
 from StringIO import StringIO
 
-from os.path import isdir, isfile, join
+from os.path import join
 
 from zope.fssync.fssync import Network, Error
 from zope.fssync.tests.tempfiles import TempFiles

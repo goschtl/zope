@@ -13,13 +13,12 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.12 2003/07/07 16:35:50 fdrake Exp $
+$Id: classes.py,v 1.13 2003/08/17 06:06:34 philikon Exp $
 """
 
 from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.annotation import IAnnotations
 from zope.component import queryAdapter
-from zope.component.interfaces import IPresentationRequest
 from zope.xmlpickle import dumps
 from zope.proxy import removeAllProxies
 from zope.interface import implements

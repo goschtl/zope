@@ -13,14 +13,14 @@
 ##############################################################################
 """Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.11 2003/08/11 22:02:16 fdrake Exp $
+$Id: test_fsmerger.py,v 1.12 2003/08/17 06:09:00 philikon Exp $
 """
 
 import os
 import sys
 import unittest
 
-from os.path import exists, isdir, isfile, realpath, normcase, split, join
+from os.path import exists, isdir, split, join
 
 from zope.fssync.fsmerger import FSMerger
 

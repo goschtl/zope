@@ -13,10 +13,9 @@
 ##############################################################################
 """Interfaces for filesystem synchronization.
 
-$Id: fssync.py,v 1.4 2003/06/09 21:38:09 gvanrossum Exp $
+$Id: fssync.py,v 1.5 2003/08/17 06:07:02 philikon Exp $
 """
 
-from zope.component.interfaces import IView
 from zope.interface import Interface
 
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.20 2003/06/30 16:37:14 jim Exp $
+$Id: test_adapter.py,v 1.21 2003/08/17 06:08:20 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,11 +24,8 @@ from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.adapter import AdapterRegistration
-from zope.app.content.folder import RootFolder
 from zope.app.traversing import traverse
-from zope.component.interfaces import IServiceService
 from zope.component.adapter import provideAdapter
-from zope.component.service import serviceManager
 
 class I1(Interface):
     pass

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.10 2003/08/13 19:44:23 fdrake Exp $
+$Id: registration.py,v 1.11 2003/08/17 06:08:11 philikon Exp $
 """
 __metaclass__ = type
 
@@ -21,7 +21,6 @@ from zope.app import zapi
 
 from persistence import Persistent
 from zope.interface import implements
-from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
 from zope.app.interfaces.container import IZopeWriteContainer

@@ -13,15 +13,11 @@
 ##############################################################################
 """Locale Menu Service interfaces
 
-$Id: menu.py,v 1.2 2003/08/16 00:43:32 srichter Exp $
+$Id: menu.py,v 1.3 2003/08/17 06:07:07 philikon Exp $
 """
 from zope.schema import Bool
-from zope.app.component.interfacefield import InterfaceField
-from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.publisher.browser import \
      IBrowserMenu, IBrowserMenuService
-from zope.app.interfaces.services.registration import \
-     IComponentRegistration, ComponentPath
 
 class ILocalBrowserMenu(IBrowserMenu):
     """A local menu. Local menus can inherit menu entries from menus with the

@@ -13,13 +13,12 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.2 2003/08/16 00:44:21 srichter Exp $
+$Id: schema.py,v 1.3 2003/08/17 06:08:33 philikon Exp $
 """
 from persistence.dict import PersistentDict
 from zope.app import zapi
 from zope.app.introspector import nameToInterface, interfaceToName
 from zope.app.browser.container.adding import Adding
-from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.utilities.interfaces import IMutableSchemaContent
 from zope.app.interfaces.utilities.schema import \
      ISchemaAdding, IMutableSchema, ISchemaUtility
@@ -29,9 +28,7 @@ from zope.app.services.utility import UtilityRegistration
 from zope.context import ContextMethod
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
-from zope.proxy import removeAllProxies
 from zope.schema import getFieldsInOrder, getFieldNamesInOrder
-from zope.component.exceptions import ComponentLookupError
 
 
 class SchemaUtility(PersistentInterfaceClass):

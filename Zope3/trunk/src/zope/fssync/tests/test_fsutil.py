@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests for the functions in the fsutil module.
 
-$Id: test_fsutil.py,v 1.3 2003/05/28 14:40:04 gvanrossum Exp $
+$Id: test_fsutil.py,v 1.4 2003/08/17 06:09:00 philikon Exp $
 """
 
 import os
 import unittest
 
-from os.path import split, join, exists, isdir, isfile
+from os.path import split, join, exists, isdir
 
 from zope.fssync import fsutil
 from zope.fssync.tests.tempfiles import TempFiles
@@ -29,7 +29,7 @@ def FIX(path):
     parts = path.split("/")
     mapping = {".": os.curdir, "..": os.pardir}
     parts = [mapping.get(x, x) for x in parts]
-    return os.path.join(*parts)
+    return join(*parts)
 
 class TestFSUtil(TempFiles):
 

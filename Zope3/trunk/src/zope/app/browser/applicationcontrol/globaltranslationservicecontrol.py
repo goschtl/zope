@@ -13,9 +13,9 @@
 ##############################################################################
 """ Server Control View
 
-$Id: globaltranslationservicecontrol.py,v 1.1 2003/08/12 15:52:08 gotcha Exp $
+$Id: globaltranslationservicecontrol.py,v 1.2 2003/08/17 06:05:26 philikon Exp $
 """
-from zodb.storage.file.errors import FileStorageError
+
 from zope.app.interfaces.applicationcontrol import IGlobalTSControl
 from zope.component import getAdapter
 

@@ -13,11 +13,10 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_directives.py,v 1.6 2003/08/02 12:30:28 srichter Exp $
+$Id: test_directives.py,v 1.7 2003/08/17 06:07:17 philikon Exp $
 """
 import os
 import unittest
-import threading
 
 from zope.app.component.metaconfigure import managerHandler, provideInterface
 from zope.app.interfaces.mail import IMailService, ISMTPMailer, ISendmailMailer

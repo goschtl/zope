@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_rolecontents.py,v 1.5 2003/06/05 12:03:14 stevea Exp $
+$Id: test_rolecontents.py,v 1.6 2003/08/17 06:05:57 philikon Exp $
 """
 
 import unittest
@@ -33,7 +33,6 @@ class Dummy:
 class Test(BaseTestContentsBrowserView, unittest.TestCase):
 
     def _TestView__newContext(self):
-        from zope.app.container.sample import SampleContainer
         from zope.app.content.folder import RootFolder
         from zope.app.context import ContextWrapper
         root = RootFolder()

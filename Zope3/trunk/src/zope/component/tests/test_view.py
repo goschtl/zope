@@ -13,7 +13,6 @@
 ##############################################################################
 
 from pprint import pprint
-import unittest
 
 from zope.component.view import viewService
 from zope.interface import Interface
