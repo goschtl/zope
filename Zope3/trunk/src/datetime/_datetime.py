@@ -877,10 +877,6 @@ class tzinfo(object):
         """
         raise NotImplementedError("tzinfo subclass must override dst()")
 
-    def _inconsistent_dst(self):
-        raise ValueError("astimezone():  tz.dst() gave "
-                         "inconsistent results; cannot convert")
-
     def fromutc(self, dt):
         "datetime in UTC -> datetime in local time."
 
