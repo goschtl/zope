@@ -6,7 +6,7 @@ For background and the original description by Jim Fulton, see:
   http://dev.zope.org/Zope3/FileSystemSynchronizationProposal
 
 This version is based loosely on a prototype written by Jim Fulton and
-Deb Hazarika.  It is now maintained by Guido van Rossum.
+Deb Hazarika.  It is now maintained by Fred Drake.
 
 Possibly also relevant background:
 
