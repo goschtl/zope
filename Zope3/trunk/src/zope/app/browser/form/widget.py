@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.63 2004/01/20 20:14:53 fdrake Exp $
+$Id: widget.py,v 1.64 2004/02/04 19:17:29 jim Exp $
 """
 __metaclass__ = type
 
@@ -727,7 +727,7 @@ class TextAreaWidget(BrowserWidget):
 class BytesAreaWidget(Bytes, TextAreaWidget):
     """BytesArea widget.
 
-    Multi-line text (unicode) input.
+    Multi-line string input.
 
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.schema import Bytes
