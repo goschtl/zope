@@ -147,7 +147,69 @@ def read_package_info(directory, reldir=None):
                                          pkginfo.documentation)
     pkginfo.header = expand_globs(directory, reldir, pkginfo.header)
     pkginfo.script = expand_globs(directory, reldir, pkginfo.script)
+
+    # need to post-process the data_files so included directories are
+    # handled properly; distutils expects everything to be a file!
+    #
+    # XXX need tests!
+    #
+    datamap = {}
+    for dir, paths in pkginfo.data_files:
+        expand_data(directory, reldir, dir, paths, datamap)
+    if "." in datamap and datamap["."] == []:
+        del datamap["."]
+    pkginfo.data_files = datamap.items()
+
     return pkginfo
+
+
+def expand_data(directory, reldir, targetdir, paths, datamap):
+    #
+    # `directory` is where we find things
+    #
+    # `reldir` is the relative location of directory in the source; we
+    # need it so we can rip it off of the values in `paths`
+    #
+    # `targetdir` is where we want the things in `paths` copied in
+    # POSIX notation
+    #
+    # `paths` is a list of paths to things we want copied, in POSIX
+    # notation, with `reldir` prepended
+    #
+    # `datamap` is a mapping from target directory -> [files], where
+    # files are really paths to actual files (not directories!) that
+    # are to be copied to the target directory; the file paths are
+    # given in POSIX notation and are prefixed by `reldir`
+    #
+    # All directories must be represented in the data map, even if
+    # they're empty.
+    #
+    targetdir = posixpath.normpath(targetdir)
+
+    # Make sure there's an entry for every directory we look at; that
+    # ensures distutils will create empty directories for us.
+    L = datamap.setdefault(targetdir, [])
+
+    if reldir:
+        prefix = posixpath.join(reldir, "")
+    else:
+        prefix = ""
+
+    # for files, add to the list, otherwise recursively scan
+    for src in paths:
+        # strip `reldir`, convert to local path notation
+        localpath = src[len(prefix):].replace("/", os.sep)
+        # find the referenced path
+        fullpath = os.path.join(directory, localpath)
+        if os.path.isfile(fullpath):
+            L.append(src)
+        else:
+            # directory; recurse
+            basename = os.path.basename(fullpath)
+            expand_data(
+                directory, reldir, posixpath.join(targetdir, basename),
+                [posixpath.join(src, name) for name in os.listdir(fullpath)],
+                datamap)
 
 
 def create_extension(section, pkgname, reldir):
