@@ -13,10 +13,11 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: context.py,v 1.1 2003/06/01 17:22:10 jim Exp $
+$Id: context.py,v 1.2 2003/06/02 18:44:06 jim Exp $
 """
 
 from zope.interface import Interface
+import zope.context.interfaces
 
 class IContextWrapper(Interface):
     """Wrapper API provided to applications."""
@@ -34,3 +35,31 @@ class IContextWrapper(Interface):
 
           Proxy(Wrapper(o1, parent, name='foo'), c1)
         """
+
+class IWrapper(zope.context.interfaces.IWrapper):
+    """Base Context wrapper
+
+    These objects extend context wrappers to:
+
+    - Prevent pickling
+
+    - To wrapper interface declarations.
+
+    """
+    
+    def __reduce__():
+        """Raises pickle.PicklingError if called (to prevent pickling)"""
+
+    def __reduce_ex__(proto):
+        """Raises pickle.PicklingError if called (to prevent pickling)"""
+
+class IZopeContextWrapper(IWrapper):
+    """Context wrappers that provide Zope framework support.
+
+    This is a marker interface used to provide extra functionality,
+    generally context-dependent, to make using objects in Zope more
+    convenient.
+
+    Decorators registered to provide IZopeContextWrapper will usually
+    implement additional interfaces used by Zope.
+    """
