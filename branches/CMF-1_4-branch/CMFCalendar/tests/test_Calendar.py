@@ -10,6 +10,7 @@ from Testing.makerequest import makerequest
 from Products.CMFCalendar import CalendarTool
 from DateTime import DateTime
 from AccessControl.SecurityManagement import newSecurityManager
+from AccessControl.SecurityManagement import noSecurityManager
 from AccessControl.User import UnrestrictedUser
 from Products.ExternalMethod.ExternalMethod import manage_addExternalMethod
 
@@ -62,6 +63,7 @@ class TestCalendar(unittest.TestCase):
         apply(obj,params)
 
     def tearDown(self):
+        noSecurityManager()
         get_transaction().abort()
         self.app._p_jar.close()
 
