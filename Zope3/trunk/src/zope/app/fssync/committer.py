@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.2 2003/05/28 15:46:08 jim Exp $
+$Id: committer.py,v 1.3 2003/05/28 22:31:46 gvanrossum Exp $
 """
 
 import os
@@ -151,6 +151,8 @@ class Committer(object):
     def synch_old(self, container, name, fspath):
         """Helper to synchronize an existing object."""
         entry = self.metadata.getentry(fspath)
+        if "conflict" in entry:
+            self.report_conflict(fspath)
         obj = container[name]
         adapter = self.get_adapter(obj)
         if IObjectDirectory.isImplementedBy(adapter):
