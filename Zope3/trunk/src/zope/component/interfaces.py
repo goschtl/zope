@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.29 2004/03/31 23:26:25 jim Exp $
+$Id: interfaces.py,v 1.30 2004/04/07 19:18:56 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -327,6 +327,14 @@ class IComponentArchitecture(Interface):
         The object provides a place to look for placeful resources.
 
         If the component can't be found, the default is returned.
+        """
+
+class IComponentRegistry(Interface):
+    """Object that supports component registry
+    """
+
+    def registrations():
+        """Return an iterable of component registrations
         """
 
 class IServiceService(Interface):
