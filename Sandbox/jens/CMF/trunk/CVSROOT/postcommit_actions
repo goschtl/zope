@@ -192,7 +192,7 @@ def main(args):
         complain("Initial args: %s '%s'\n",
                  string.join(orig_args[:-1], " "),
                  orig_args[-1])
-        complain("Working dir: %s\n" % safe_getcwd())
+        complain("Working dir: %s\n" % safe_getcwd('/tmp'))
 
     if not sync_all and len(args) != 1:
         usage(); raise SystemExit, 1
@@ -220,7 +220,8 @@ def main(args):
             subjs = map(grok_file, split_args[1:])
 
         if VERBOSE:
-            complain("CWD: %s, Repo: %s, ", safe_getcwd(), repo)
+            complain("CWD: %s, Repo: %s, ",
+                     safe_getcwd('/tmp'), repo)
             complain("Subjects: %s\n", subjs)
 
         if not WAIT:
@@ -295,7 +296,8 @@ def detach(args):
            % OUTPUT_LOG)
     
     if VERBOSE:
-        complain("Reexecing detached in %s, cmd:\n\t%s\n", safe_getcwd(), cmd)
+        complain("Reexecing detached in %s, cmd:\n\t%s\n",
+                 safe_getcwd('/tmp'), cmd)
 
     os.system(cmd)
     loosen_file(OUTPUT_LOG)
@@ -437,7 +439,8 @@ def create_diff(name, repo, file, old, new):
             lines.insert(0, insert_str)
         except IOError, e:
             lines = ['***** ERROR reading new file: ',
-                     str(e), '\n***** file: ', file, ' cwd: ', safe_getcwd()]
+                     str(e), '\n***** file: ', file, '
+                     cwd: ', safe_getcwd('/tmp')]
 
     else:                # A "normal" update happened
         diff_cmd = ('cvs -d %s -f rdiff -kk -u -t %s/%s'
@@ -582,7 +585,7 @@ def do_chmod(subjs):
                                  (DRYRUN and "echo would do: ") or "",
                                  string.join(fnames, " ")))
     if VERBOSE:
-        complain("Reexecing in %s, cmd:\n\t%s\n", safe_getcwd(), cmd)
+        complain("Reexecing in %s, cmd:\n\t%s\n", safe_getcwd('/tmp'), cmd)
     result = os.system(cmd)
     if result:
         msg = "*** Chmod returned %s..."
@@ -681,11 +684,11 @@ def complain(msg, *args):
     sys.stderr.write(msg % args)
     sys.stderr.flush()
 
-def safe_getcwd():
+def safe_getcwd(fallback):
     try:
         return os.getcwd()
     except:
-        os.chdir(CVSROOT)
+        os.chdir(fallback)
         try:
             return os.getcwd()
         except:
