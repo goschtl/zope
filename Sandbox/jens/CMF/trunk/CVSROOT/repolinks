@@ -108,6 +108,12 @@
 /ZODB3/zdaemon           /Packages/zdaemon
 /ZODB3/zLOG              /Packages/zLOG
 
+/ZODB4/ZODB		 /Packages3/ZODB
+/ZODB4/Interface	 /Packages3/Interface
+/ZODB4/Persistence	 /Packages3/Persistence
+/ZODB4/Transaction	 /Zope3/lib/python/Transaction
+/ZODB4/zLOG		 /Packages3/zLOG
+
 /StandaloneSTX/StructuredText     /Packages/StructuredText
 
 /CMF/CMFCalendar                  /Products/CMFCalendar
