@@ -21,3 +21,13 @@ $Id$
 
 from doctest import DocFileSuite, DocTestSuite
 from doctest import debug_src, debug
+
+def pprint():
+    from pprint import PrettyPrinter
+    def pprint(ob, **opts):
+        if 'width' not in opts:
+            opts['width'] = 1
+        return PrettyPrinter(**opts).pprint(ob)
+    return pprint
+
+pprint = pprint()
