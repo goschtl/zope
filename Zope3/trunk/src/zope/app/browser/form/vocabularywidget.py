@@ -199,8 +199,7 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
             try:
                 field.validate(data)
             except ValidationError, v:
-                raise WidgetInputError(self.context.__name__,
-                                       self.title, str(v))
+                raise WidgetInputError(self.context.__name__, self.title, v)
         return data
 
     def _emptyMarker(self):
