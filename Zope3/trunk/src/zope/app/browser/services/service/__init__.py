@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.10 2003/12/10 05:13:00 jace Exp $
+$Id: __init__.py,v 1.11 2004/02/07 04:23:50 richard Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -89,8 +89,32 @@ class ServiceAdding(ComponentAdding):
         if not ILocalService.isImplementedBy(content):
             raise TypeError("%s is not a local service" % content)
 
-        return super(ServiceAdding, self).add(content)
+        content = super(ServiceAdding, self).add(content)
 
+        # figure out the interfaces that this service implements
+        sm = zapi.getServiceManager(self.context)
+        implements = []
+        for type_name, interface in sm.getServiceDefinitions():
+            if interface.isImplementedBy(content):
+                implements.append(type_name)
+        
+        # more than one interface, punt to user to make choice
+        if len(implements) > 1:
+            return content
+
+        type_name = implements[0]
+
+        # register an activated service registration
+        path = zapi.name(content)
+        rm = content.__parent__.getRegistrationManager()
+        chooser = zapi.getAdapter(rm, INameChooser)
+
+        sc = ServiceRegistration(type_name, path, content)
+        name = chooser.chooseName(type_name, sc)
+        rm[name] = sc
+        sc.status = ActiveStatus
+
+        return content
 
 class UtilityAdding(ComponentAdding):
     """Adding subclass used for adding utilities."""
@@ -106,7 +130,7 @@ class UtilityAdding(ComponentAdding):
 
 
 class AddServiceRegistration(BrowserView):
-    """A view on a service implementation, used by add_svc_config.py."""
+    """A view on a service implementation, used by add_svc_config.pt."""
 
     def listServiceTypes(self):
 
