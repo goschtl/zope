@@ -45,6 +45,8 @@ FTP Server
 
   * 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
 
+  * 375: ftp data channel does not tell control channel about activity 
+
 File Content Component
 ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -74,8 +76,6 @@ Others
 
 * 316: Zope3X test.py truncates path with dir=
 
-* 319: Navigation with anonymous
-
 * 332: Death to IContentContainer
 
 * 334: Failing RuntimeInfo tests 
@@ -85,8 +85,6 @@ Others
 * 340: Adding a big file eats a lot of memory / memory leak? 
 
 * 344: PAU registration error
-
-* 345: Using response.write should not involve unicode conversion
 
 * 356: Copy and Paste does not handle exceptions raised by __setitem__ 
 
