@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.5 2003/03/07 16:44:48 jim Exp $
+$Id: configuration.py,v 1.6 2003/03/10 22:36:40 gvanrossum Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -58,6 +58,12 @@ class IConfiguration(Interface):
     def deactivated():
         """Method called when a configuration is made inactive
         """
+
+    def usageSummary():
+        """Text for line 1 of configuration manager summary"""
+
+    def implementationSummary():
+        """Text for line 2 of configuration manager summary"""
 
 
 class INamedConfigurationInfo(Interface):

@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.8 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: view.py,v 1.9 2003/03/10 22:37:47 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -221,6 +221,8 @@ class ViewConfiguration(SimpleConfiguration):
 
     status = ConfigurationStatusProperty('Views')
 
+    _what = "View" # For usageSummary(); subclass may override
+
     def __init__(self,
                  forInterface, viewName, presentationType,
                  class_, permission, layer='default'):
@@ -238,12 +240,21 @@ class ViewConfiguration(SimpleConfiguration):
 
     getView = ContextMethod(getView)
 
+    def usageSummary(self):
+        s = "%s %s for %s" % (self.viewName, self._what,
+                              self.forInterface.__name__)
+        if self.layer and self.layer != "default":
+            s = "%s in layer %s" % (s, self.layer)
+        return s
+
 class PageConfiguration(ViewConfiguration):
 
     __implements__ = IPageConfiguration, ViewConfiguration.__implements__
 
     # We only care about browser pages
     presentationType = IBrowserPresentation
+
+    _what = "Page" # For usageSummary()
 
     def __init__(self,
                  forInterface, viewName, permission,
@@ -256,6 +267,21 @@ class PageConfiguration(ViewConfiguration):
 
         self.template = template
         self.attribute = attribute
+
+    def implementationSummary(self):
+        L = []
+        if self.template:
+            prefix = "/++etc++Services/Packages/"
+            t = self.template
+            i = t.rfind(prefix)
+            if i >= 0:
+                t = t[i + len(prefix):]
+            L.append("template=%s" % t)
+        if self.class_:
+            L.append("class=%s" % self.class_)
+        if self.attribute:
+            L.append("attribute=%s" % self.attribute)
+        return ", ".join(L)
 
     def validate(self):
         if self.template and self.attribute:

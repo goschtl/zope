@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.9 2003/03/07 16:44:49 jim Exp $
+$Id: configuration.py,v 1.10 2003/03/10 22:37:47 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -44,7 +44,7 @@ from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
 
 from zope.app.traversing \
-     import getPhysicalRoot, getPhysicalPathString, traverse
+     import getPhysicalRoot, getPhysicalPathString, traverse, locationAsUnicode
 
 
 class ConfigurationStatusProperty:
@@ -267,11 +267,21 @@ class SimpleConfiguration(Persistent):
                       IAttributeAnnotatable,
                       )
 
+    # Methods from IConfiguration
+
     def activated(self):
         pass
 
     def deactivated(self):
         pass
+
+    def usageSummary(self):
+        return self.__class__.__name__
+
+    def implementationSummary(self):
+        return ""
+
+    # Methods from IDeleteNotifiable
 
     def beforeDeleteHook(self, configuration, container):
         "See IDeleteNotifiable"
@@ -299,6 +309,9 @@ class NamedConfiguration(SimpleConfiguration):
         self.name = name
         super(NamedConfiguration, self).__init__()
 
+    def usageSummary(self):
+        return self.name + " " + self.__class__.__name__
+
 
 class NamedComponentConfiguration(NamedConfiguration):
     """Named component configuration
@@ -317,6 +330,9 @@ class NamedComponentConfiguration(NamedConfiguration):
             permission = CheckerPublic
         self.permission = permission
         super(NamedComponentConfiguration, self).__init__(name)
+
+    def implementationSummary(self):
+        return locationAsUnicode(self.componentPath)
 
     def getComponent(wrapped_self):
         service_manager = getServiceManager(wrapped_self)

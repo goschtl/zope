@@ -23,7 +23,7 @@ A service manager has a number of roles:
   - A registry for persistent modules.  The Zope import hook uses the
     ServiceManager to search for modules.
 
-$Id: service.py,v 1.9 2003/03/03 23:16:13 gvanrossum Exp $
+$Id: service.py,v 1.10 2003/03/10 22:37:47 gvanrossum Exp $
 """
 
 import sys
@@ -292,6 +292,9 @@ class ServiceConfiguration(NamedComponentConfiguration):
             service.unbound(self.name)
 
     deactivated = ContextMethod(deactivated)
+
+    def usageSummary(self):
+        return self.name + " Service"
 
     def afterAddHook(self, configuration, container):
         NamedComponentConfiguration.afterAddHook(self,
