@@ -424,16 +424,22 @@ def main(module_filter, test_filter):
 
     os.path.walk(os.curdir, remove_stale_bytecode, None)
 
+    # Get the log.ini file from the current directory instead of possibly
+    # buried in the build directory.  XXX This isn't perfect because if
+    # log.ini specifies a log file, it'll be relative to the build directory.
+    # Hmm...
+    logini = os.path.abspath('log.ini')
+
+    # Initialize the path and cwd
+    pathinit = PathInit(build, build_inplace)
+
     # Initialize the logging module.
     import logging.config
     logging.basicConfig()
     logging.root.setLevel(logging.CRITICAL)
     # If log.ini exists, use it
-    if os.path.exists("log.ini"):
-        logging.config.fileConfig("log.ini")
-
-    # Initialize the path and cwd
-    pathinit = PathInit(build, build_inplace)
+    if os.path.exists(logini):
+        logging.config.fileConfig(logini)
 
     files = find_tests(module_filter)
     files.sort()
