@@ -12,11 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: PropertySchemas.py,v 1.2 2002/10/04 19:05:50 jim Exp $
+$Id: PropertySchemas.py,v 1.3 2002/11/11 21:00:06 jim Exp $
 """
 
 from Interface import Interface
-from Zope.Schema import Text, Datetime, Sequence
+from Zope.Schema import Text, TextLine, Datetime, Sequence
 
 # XXX This will need to be filled out more.
 
@@ -24,7 +24,7 @@ class IDCDescriptiveProperties(Interface):
     """Basic descriptive meta-data properties
     """
 
-    title = Text(
+    title = TextLine(
         title = u'Title',
         description =
         u"The first unqualified Dublin Core 'Title' element value."
@@ -82,13 +82,13 @@ class IDCExtended(Interface):
     creators = Sequence(
         title = u'Creators',
         description = u"The unqualified Dublin Core 'Creator' element values",
-        value_types = (Text(),),
+        value_types = (TextLine(),),
         )
 
     subjects = Sequence(
         title = u'Subjects',
         description = u"The unqualified Dublin Core 'Subject' element values",
-        value_types = (Text(),),
+        value_types = (TextLine(),),
         )
 
     publisher = Text(
@@ -101,7 +101,7 @@ class IDCExtended(Interface):
         title = u'Contributors',
         description =
         u"The unqualified Dublin Core 'Contributor' element values",
-        value_types = (Text(),),
+        value_types = (TextLine(),),
         )
     
 

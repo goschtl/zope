@@ -13,16 +13,16 @@
 ##############################################################################
 """Interfaces for getting standard dublin core data in it's full generality
 
-$Id: General.py,v 1.2 2002/10/04 19:05:50 jim Exp $
+$Id: General.py,v 1.3 2002/11/11 21:00:06 jim Exp $
 """
 
 from Interface import Interface
-from Zope.Schema import Text
+from Zope.Schema import Text, TextLine
 
 class IDublinCoreElementItem(Interface):
     """A qualified sublin core element"""
 
-    qualification = Text(title = u"Qualification",
+    qualification = TextLine(title = u"Qualification",
                          description = u"The element qualification"
                          )
 
