@@ -8,6 +8,9 @@ After CMF 1.4.6
 
   Bug Fixes
 
+    - CMFDefault.DiscussionItem: Replies were not sorted chronologically
+      (http://www.zope.org/Collectors/CMF/211)
+
     - CMFDefault.Image: When pasting an Image object the review state did not
       revert to "private" (http://www.zope.org/Collectors/CMF/176)   
 
