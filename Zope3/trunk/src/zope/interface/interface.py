@@ -13,9 +13,8 @@
 ##############################################################################
 """Interface object implementation
 
-$Id: interface.py,v 1.19 2004/02/15 13:04:26 philikon Exp $
+$Id: interface.py,v 1.20 2004/03/02 14:26:59 srichter Exp $
 """
-
 import sys
 import weakref
 from types import FunctionType
