@@ -12,7 +12,6 @@
   <require
       permission="zope.ManageServices"
       interface="zope.app.registration.interfaces.IRegistry"
-      attributes="getRegisteredMatching"
       />
 </content>
 
