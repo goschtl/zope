@@ -11,20 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Test FTP views
 
-XXX longer description goes here.
-
-$Id: test_ftpview.py,v 1.7 2004/03/03 10:52:05 philikon Exp $
+$Id: test_ftpview.py,v 1.8 2004/03/15 13:10:51 srichter Exp $
 """
 
 import datetime
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 import zope.server.ftp.tests.demofs as demofs
-from zope.app.interfaces.file import IReadFile, IWriteFile
-from zope.app.interfaces.file import IReadDirectory, IWriteDirectory
-from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
+from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.app.filerepresentation.interfaces import IReadDirectory
+from zope.app.filerepresentation.interfaces import IWriteDirectory
+from zope.app.filerepresentation.interfaces import IFileFactory
+from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.ftp import FTPView
 from zope.app.tests.placelesssetup import PlacelessSetup

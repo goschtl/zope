@@ -11,11 +11,11 @@
 ##############################################################################
 """DAV method MKCOL
 
-$Id: mkcol.py,v 1.5 2004/03/06 17:48:48 jim Exp $
+$Id: mkcol.py,v 1.6 2004/03/15 13:10:45 srichter Exp $
 """
 from zope.app import zapi
-from zope.app.interfaces.file import IWriteDirectory
-from zope.app.interfaces.file import IDirectoryFactory
+from zope.app.filerepresentation.interfaces import IWriteDirectory
+from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 

@@ -27,14 +27,14 @@
 
 <adapter
   for=".pagefolder.IPageFolder"
-  provides="zope.app.interfaces.file.IFileFactory"
+  provides="zope.app.filerepresentation.interfaces.IFileFactory"
   factory=".zpt.ZPTFactory"
   permission="zope.ManageServices"
   />
 
 <adapter 
   for="zope.app.site.interfaces.ISiteManagementFolder"
-  provides="zope.app.interfaces.file.IDirectoryFactory"
+  provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
   factory=".pagefolder.PageFolderFactory"
   permission="zope.ManageContent"
   />

@@ -11,15 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_delete.py,v 1.7 2003/09/21 17:32:17 jim Exp $
+"""Test HTTP DELETE verb
+
+$Id: test_delete.py,v 1.8 2004/03/15 13:10:52 srichter Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, makeSuite
 import zope.app.http.delete
 from zope.publisher.browser import TestRequest
-from zope.app.interfaces.file import IWriteDirectory, IFileFactory
+from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 from zope.app.container.contained import contained

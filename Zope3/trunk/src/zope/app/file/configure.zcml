@@ -106,14 +106,14 @@
 
   <adapter 
       for=".interfaces.IFile"
-      provides="zope.app.interfaces.file.IReadFile"
+      provides="zope.app.filerepresentation.interfaces.IReadFile"
       factory=".file.FileReadFile"
       permission="zope.View"
       />
 
   <adapter 
       for=".interfaces.IFile"
-      provides="zope.app.interfaces.file.IWriteFile"
+      provides="zope.app.filerepresentation.interfaces.IWriteFile"
       factory=".file.FileWriteFile"
       permission="zope.ManageContent"
       />
@@ -131,7 +131,7 @@
 
   <adapter
       for="zope.app.folder.interfaces.IFolder"
-      provides="zope.app.interfaces.file.IFileFactory"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
       factory=".image.FileFactory"
       permission="zope.ManageContent"
       />

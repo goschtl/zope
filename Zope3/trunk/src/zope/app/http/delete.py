@@ -9,15 +9,13 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""XXX short summary goes here.
+"""HTTP DELETE verb
 
-XXX longer description goes here.
-
-$Id: delete.py,v 1.5 2004/03/06 16:50:24 jim Exp $
+$Id: delete.py,v 1.6 2004/03/15 13:10:51 srichter Exp $
 """
 __metaclass__ = type
 
-from zope.app.interfaces.file import IWriteDirectory
+from zope.app.filerepresentation.interfaces import IWriteDirectory
 
 class DELETE:
     """Delete handler for all objects

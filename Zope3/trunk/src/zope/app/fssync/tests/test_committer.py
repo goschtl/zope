@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.29 2004/03/13 21:03:11 srichter Exp $
+$Id: test_committer.py,v 1.30 2004/03/15 13:10:50 srichter Exp $
 """
 
 import os
@@ -34,7 +34,8 @@ from zope.fssync.tests.tempfiles import TempFiles
 
 from zope.fssync.server.entryadapter import DirectoryAdapter
 from zope.app.container.interfaces import IContainer
-from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
+from zope.app.filerepresentation.interfaces import IFileFactory
+from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.interfaces import ITraversable, ITraverser
 from zope.app.location import Location

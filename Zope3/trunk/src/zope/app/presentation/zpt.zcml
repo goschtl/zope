@@ -27,14 +27,14 @@
 
 <adapter
   for=".zpt.IZPTTemplate"
-  provides="zope.app.interfaces.file.IReadFile"
+  provides="zope.app.filerepresentation.interfaces.IReadFile"
   factory=".zpt.ReadFile"
   permission="zope.ManageServices"
   />
 
 <adapter
   for=".zpt.IZPTTemplate"
-  provides="zope.app.interfaces.file.IWriteFile"
+  provides="zope.app.filerepresentation.interfaces.IWriteFile"
   factory=".zpt.WriteFile"
   permission="zope.ManageServices"
   />

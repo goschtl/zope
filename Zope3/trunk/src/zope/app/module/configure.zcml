@@ -19,7 +19,7 @@
 
   <adapter
       for="zope.app.site.interfaces.ISiteManagementFolder"
-      provides="zope.app.interfaces.file.IFileFactory"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
       name=".py"
       factory=".ModuleFactory"
       permission="zope.ManageContent"

@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: zpt.py,v 1.2 2004/03/13 18:01:15 srichter Exp $
+"""Persistent PageTemplate-based View
+
+$Id: zpt.py,v 1.3 2004/03/15 13:10:53 srichter Exp $
 """
 import re
 
@@ -26,7 +27,8 @@ from zope.app.registration.interfaces import IRegisterable
 from zope.app.index.interfaces.text import ISearchableText
 from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
 from zope.fssync.server.interfaces import IObjectFile
-from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
+from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
+from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.pagetemplate.engine import AppPT
 from zope.pagetemplate.pagetemplate import PageTemplate
 

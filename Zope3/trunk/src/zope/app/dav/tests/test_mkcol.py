@@ -13,7 +13,7 @@
 ##############################################################################
 """MKCOL tests
 
-$Id: test_mkcol.py,v 1.9 2004/03/13 15:21:14 srichter Exp $
+$Id: test_mkcol.py,v 1.10 2004/03/15 13:10:46 srichter Exp $
 """
 __metaclass__ = type
 
@@ -23,11 +23,11 @@ from zope.app.traversing import traverse
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 
 from zope.app.container.interfaces import IWriteContainer
-from zope.app.interfaces.file import IWriteDirectory
+from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.container.directory import noop
 
 from zope.app.folder.interfaces import IFolder
-from zope.app.interfaces.file import IDirectoryFactory
+from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.app.container.directory import Cloner
 
 from zope.app.http.put import NullResource

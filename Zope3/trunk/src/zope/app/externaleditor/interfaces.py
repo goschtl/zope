@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: interfaces.py,v 1.1 2004/02/27 14:23:16 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/03/15 13:10:47 srichter Exp $
 """
 from zope.interface import Interface
 
@@ -27,11 +27,11 @@ class IExternallyEditable(Interface):
        action should be available.
 
     2. It needs to have an adapter for the interface
-       ``zope.app.interfaces.file.IReadFile``.
+       ``zope.app.filerepresentation.interfaces.IReadFile``.
 
     3. It needs to have a ``PUT`` view which receive the content
        back from the External Editor client and update the
        object, optimally using an adapter to the interface
-       ``zope.app.interfaces.file.IWriteFile`` (but not
+       ``zope.app.filerepresentation.interfaces.IWriteFile`` (but not
        necessarily).
     """

@@ -13,7 +13,7 @@
 ##############################################################################
 """WebDAV-related Adapters
 
-$Id: adapter.py,v 1.9 2004/03/06 17:48:48 jim Exp $
+$Id: adapter.py,v 1.10 2004/03/15 13:10:45 srichter Exp $
 """
 from xml.dom import minidom
 
@@ -22,7 +22,7 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dublincore.interfaces import IDCTimes
-from zope.app.interfaces.file import IReadDirectory
+from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.size.interfaces import ISized
 
 class DAVSchemaAdapter:

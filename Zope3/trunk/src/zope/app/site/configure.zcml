@@ -115,7 +115,7 @@
   
   <adapter 
       for="zope.app.site.interfaces.ISiteManager"
-      provides="zope.app.interfaces.file.IDirectoryFactory"
+      provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
       factory=".folder.SMFolderFactory"
       permission="zope.ManageContent"
       />

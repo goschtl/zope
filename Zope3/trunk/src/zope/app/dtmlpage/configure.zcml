@@ -55,7 +55,7 @@
 
   <adapter 
       for="zope.app.folder.interfaces.IFolder"
-      provides="zope.app.interfaces.file.IFileFactory"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
       name=".dtml"
       factory=".dtmlpage.DTMLFactory"
       permission="zope.ManageContent"

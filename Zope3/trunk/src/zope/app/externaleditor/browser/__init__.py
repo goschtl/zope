@@ -10,12 +10,12 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: __init__.py,v 1.2 2004/03/06 16:50:23 jim Exp $
+$Id: __init__.py,v 1.3 2004/03/15 13:10:48 srichter Exp $
 """
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
-from zope.app.interfaces.file import IReadFile, IWriteFile
+from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.content import queryContentType
 from zope.security.proxy import trustedRemoveSecurityProxy
 

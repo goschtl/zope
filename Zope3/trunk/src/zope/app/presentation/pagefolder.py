@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.2 2004/03/13 18:01:15 srichter Exp $
+$Id: pagefolder.py,v 1.3 2004/03/15 13:10:53 srichter Exp $
 """
 from zope.interface import Interface, implements
 from zope.schema import BytesLine, Bool, Field
@@ -41,7 +41,7 @@ from zope.proxy import removeAllProxies
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 from zope.app.container.interfaces import IContainer
-from zope.app.interfaces.file import IDirectoryFactory
+from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.fssync.server.interfaces import IObjectDirectory
 from zope.app.registration.interfaces import IRegistrationManagerContainer
 

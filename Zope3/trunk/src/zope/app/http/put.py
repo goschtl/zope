@@ -11,11 +11,12 @@
 ##############################################################################
 """HTTP PUT verb
 
-$Id: put.py,v 1.10 2004/03/13 23:34:28 srichter Exp $
+$Id: put.py,v 1.11 2004/03/15 13:10:51 srichter Exp $
 """
 from zope.component import queryNamedAdapter
 from zope.app.http.interfaces import INullResource
-from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
+from zope.app.filerepresentation.interfaces import IWriteFile
+from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.interface import implements

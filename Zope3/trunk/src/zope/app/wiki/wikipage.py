@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.7 2004/03/13 23:01:14 srichter Exp $
+$Id: wikipage.py,v 1.8 2004/03/15 13:10:54 srichter Exp $
 """
 import smtplib
 from persistent import Persistent
@@ -23,7 +23,7 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.interfaces.file import IReadFile, IWriteFile
+from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.event.interfaces import ISubscriber, IObjectModifiedEvent
 from zope.app.container.interfaces import \
@@ -144,11 +144,11 @@ class WikiPageReadFile:
         self.context = context
 
     def read(self):
-        """See zope.app.interfaces.file.IReadFile"""
+        """See zope.app.filerepresentation.interfaces.IReadFile"""
         return self.context.source
 
     def size(self):
-        """See zope.app.interfaces.file.IReadFile"""
+        """See zope.app.filerepresentation.interfaces.IReadFile"""
         return len(self.context.source)
 
 
@@ -162,7 +162,7 @@ class WikiPageWriteFile:
         self.context = context
 
     def write(self, data):
-        """See zope.app.interfaces.file.IWriteFile"""
+        """See zope.app.filerepresentation.interfaces.IWriteFile"""
         self.context.source = unicode(data)
 
 

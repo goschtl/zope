@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_put.py,v 1.6 2003/09/21 17:32:15 jim Exp $
+"""Test HTTP PUT verb
+
+$Id: test_put.py,v 1.7 2004/03/15 13:10:52 srichter Exp $
 """
 __metaclass__ = type
 
@@ -20,7 +21,8 @@ from unittest import TestCase, TestSuite, makeSuite
 from StringIO import StringIO
 import zope.app.http.put
 from zope.publisher.browser import TestRequest
-from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
+from zope.app.filerepresentation.interfaces import IWriteFile
+from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 

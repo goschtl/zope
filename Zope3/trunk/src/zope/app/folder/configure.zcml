@@ -50,14 +50,14 @@
 
   <adapter
       for=".interfaces.IFolder"
-      provides="zope.app.interfaces.file.IDirectoryFactory"
+      provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
       factory="zope.app.container.directory.Cloner"
       permission="zope.ManageContent"
       />
 
   <adapter
       for=".interfaces.IFolder"
-      provides="zope.app.interfaces.file.IReadDirectory"
+      provides="zope.app.filerepresentation.interfaces.IReadDirectory"
       factory=".fssync.ReadDirectory"
       permission="zope.View"
       />

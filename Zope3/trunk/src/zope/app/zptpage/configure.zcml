@@ -50,7 +50,7 @@
 
   <adapter 
       for="zope.app.folder.interfaces.IFolder"
-      provides="zope.app.interfaces.file.IFileFactory"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
       name=".pt"
       factory=".zptpage.ZPTFactory"
       permission="zope.ManageContent"
@@ -58,14 +58,14 @@
 
   <adapter 
       for=".interfaces.IZPTPage"
-      provides="zope.app.interfaces.file.IReadFile"
+      provides="zope.app.filerepresentation.interfaces.IReadFile"
       factory=".zptpage.ZPTReadFile"
       permission="zope.ManageContent"
       />
 
   <adapter 
       for=".interfaces.IZPTPage"
-      provides="zope.app.interfaces.file.IWriteFile"
+      provides="zope.app.filerepresentation.interfaces.IWriteFile"
       factory=".zptpage.ZPTWriteFile"
       permission="zope.ManageContent"
       />

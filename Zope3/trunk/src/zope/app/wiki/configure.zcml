@@ -182,14 +182,14 @@
   <!-- WikiPage FTP configurations -->
   <adapter 
      for=".interfaces.IWikiPage"
-     provides="zope.app.interfaces.file.IReadFile"
+     provides="zope.app.filerepresentation.interfaces.IReadFile"
      factory=".wikipage.WikiPageReadFile"
      permission="zope.app.wiki.ViewWikiPage"
      />
 
   <adapter 
      for=".interfaces.IWikiPage"
-     provides="zope.app.interfaces.file.IWriteFile"
+     provides="zope.app.filerepresentation.interfaces.IWriteFile"
      factory=".wikipage.WikiPageWriteFile"
      permission="zope.app.wiki.EditWikiPage"
      />
