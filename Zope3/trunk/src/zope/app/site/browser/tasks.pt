@@ -34,7 +34,7 @@
 
         <li>
           <a href="default/Utilities/@@utilities.html"
-             i18n:translate="label-configure-services">
+             i18n:translate="label-configure-utilities">
             Configure utilities
           </a>
         </li>

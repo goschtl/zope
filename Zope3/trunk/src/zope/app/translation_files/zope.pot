@@ -14,7 +14,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Mar 24 14:22:31 2004\n"
+"POT-Creation-Date: Wed Mar 31 17:27:07 2004\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -3461,9 +3461,13 @@ msgid "Tools consist of Services and Utilities. Services register themselves wit
 msgstr ""
 
 #: src/zope/app/site/browser/tasks.pt:30
-#: src/zope/app/site/browser/tasks.pt:36
 # Default: "Configure services"
 msgid "label-configure-services"
+msgstr ""
+
+#: src/zope/app/site/browser/tasks.pt:36
+# Default: "Configure utilities"
+msgid "label-configure-utilities"
 msgstr ""
 
 #: src/zope/app/site/browser/tasks.pt:43
