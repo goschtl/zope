@@ -1,6 +1,7 @@
 import Zope
 from unittest import TestCase, TestSuite, makeSuite, main
-from Products.CMFCore.DirectoryView import registerDirectory,addDirectoryViews,DirectoryViewSurrogate
+from Products.CMFCore.DirectoryView import \
+     registerDirectory,addDirectoryViews,DirectoryViewSurrogate
 from Globals import package_home, DevelopmentMode
 from Acquisition import Implicit
 from os import remove, mkdir, rmdir
@@ -11,12 +12,6 @@ from shutil import copy2
 skin_path_name = join(package_home(globals()),'fake_skins','fake_skin')
 
 class DirectoryViewTests1( TestCase ):
-
-    def setUp( self ):
-        get_transaction().begin()
-    
-    def tearDown( self ):
-        get_transaction().abort()
 
     def test_registerDirectory( self ):
         """ Test registerDirectory  """
@@ -34,13 +29,9 @@ class Dummy(Implicit):
 class DirectoryViewTests2( TestCase ):
 
     def setUp( self ):
-        get_transaction().begin()
         registerDirectory('fake_skins', globals())
         ob = self.ob = Dummy()
         addDirectoryViews(ob, 'fake_skins', globals())
-
-    def tearDown( self ):
-        get_transaction().abort()
 
     def test_addDirectoryViews( self ):
         """ Test addDirectoryViews  """
@@ -52,11 +43,11 @@ class DirectoryViewTests2( TestCase ):
         appears as a DirectoryViewSurrogate due
         to Acquisition hackery.
         """
-        assert isinstance(self.ob.fake_skin,DirectoryViewSurrogate)
+        self.failUnless(isinstance(self.ob.fake_skin,DirectoryViewSurrogate))
 
     def test_DirectoryViewMethod( self ):
         """ Check if DirectoryView method works """
-        assert self.ob.fake_skin.test1()=='test1'
+        self.assertEqual(self.ob.fake_skin.test1(),'test1')
 
 test1path = join(skin_path_name,'test1.py')
 test2path = join(skin_path_name,'test2.py')
@@ -67,7 +58,6 @@ if DevelopmentMode:
   class DebugModeTests( TestCase ):
 
     def setUp( self ):
-        get_transaction().begin()
         
         # initialise skins
         registerDirectory('fake_skins', globals())
@@ -105,26 +95,24 @@ if DevelopmentMode:
             # it might be gone already
             pass
         
-        get_transaction().abort()
-
     def test_AddNewMethod( self ):
         """
         See if a method added to the skin folder can be found
         """
-        assert self.ob.fake_skin.test2()=='test2'
+        self.assertEqual(self.ob.fake_skin.test2(),'test2')
 
     def test_EditMethod( self ):
         """
         See if an edited method exhibits its new behaviour
         """
-        assert self.ob.fake_skin.test1()=='new test1'
+        self.assertEqual(self.ob.fake_skin.test1(),'new test1')
 
     def test_NewFolder( self ):
         """
         See if a new folder shows up
         """
         # This fails for some bizarre reason :-( - CW
-        # assert isinstance(self.ob.fake_skin.test3,DirectoryViewSurrogate)
+        self.failUnless(isinstance(self.ob.fake_skin.test3,DirectoryViewSurrogate))
         self.ob.fake_skin.test3.objectIds()
 
     def test_DeleteMethod( self ):
