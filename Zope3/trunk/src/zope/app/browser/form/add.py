@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.17 2003/04/10 06:17:34 srichter Exp $
+$Id: add.py,v 1.18 2003/04/14 08:27:15 jim Exp $
 """
 
 import sys
@@ -26,7 +26,7 @@ from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.configuration.action import Action
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
-from zope.component import queryAdapter
+from zope.component import getAdapter
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
@@ -90,14 +90,15 @@ class AddView(EditView):
                 kw[str(name)] = data[name]
 
         content = self.create(*args, **kw)
-        adapted = queryAdapter(content, self.schema, content)
+        adapted = getAdapter(content, self.schema, context=self.context)
 
         errors = []
 
         for name in self._set_before_add:
             if name in data:
+                field = self.schema[name]
                 try:
-                    setattr(adapted, name, data[name])
+                    field.set(adapted, data[name])
                 except ValidationError:
                     errors.append(sys.exc_info()[1])
 
@@ -108,12 +109,13 @@ class AddView(EditView):
 
         content = self.add(content)
 
-        adapted = queryAdapter(content, self.schema, content)
+        adapted = getAdapter(content, self.schema)
 
         for name in self._set_after_add:
             if name in data:
+                field = self.schema[name]
                 try:
-                    setattr(adapted, name, data[name])
+                    field.set(adapted, data[name])
                 except ValidationError:
                     errors.append(sys.exc_info()[1])
 

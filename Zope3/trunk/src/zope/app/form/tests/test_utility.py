@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.10 2003/03/07 21:27:33 jim Exp $
+$Id: test_utility.py,v 1.11 2003/04/14 08:27:16 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,7 @@ from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.interface import Interface
-from zope.schema import Text
+from zope.schema import Text, accessors
 from zope.app.browser.form.widget import TextWidget
 from zope.component.view import provideView, setDefaultViewName
 from zope.schema.interfaces import IText
@@ -34,6 +34,7 @@ from zope.app.form.utility import getWidgetsData, getWidgetsDataForContent
 from zope.app.form.utility import haveWidgetsData
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IViewFactory
+
 
 
 class I(Interface):
@@ -56,6 +57,22 @@ class C:
 
 class C2:
     __implements__ = I2
+
+
+class Ia(Interface):
+    getTitle, setTitle = accessors(Text(title=u"Title", required = False))
+    getDescription, setDescription = accessors(Text(
+        title=u"Description",
+        default = u'No description', required = False)
+                                               )
+
+class Ca:
+    __implements__ = Ia
+
+    def getTitle(self): return self._t
+    def setTitle(self, v): self._t = v
+    def getDescription(self): return self._d
+    def setDescription(self, v): self._d = v
 
 class ViewWithCustomTitleWidgetFactory(BrowserView):
 
@@ -272,6 +289,16 @@ class Test(PlacelessSetup, TestCase):
         setUpEditWidgets(view, I, names=['title'])
         self.assertEqual(view.title(), u'title: ft')
         self.failIf(hasattr(view, 'description'))
+
+    def test_setupEditWidgets_and_accessors(self):
+        c = Ca()
+        c.setTitle(u'ct')
+        c.setDescription(u'cd')
+        request = TestRequest()
+        view = BrowserView(c, request)
+        setUpEditWidgets(view, Ia)
+        self.assertEqual(view.getTitle(), u'getTitle: ct')
+        self.assertEqual(view.getDescription(), u'getDescription: cd')
 
     def test_setupWidgets_bad_field_name(self):
         c = C()
@@ -506,6 +533,29 @@ class Test(PlacelessSetup, TestCase):
 
         self.assertEqual(c2.title, u'ftt')
         self.assertEqual(c2.description, u'fdd')
+
+    def test_getWidgetsDataForContent_accessors(self):
+        c = Ca()
+        request = TestRequest()
+        request.form['field.getTitle'] = u'ft'
+        request.form['field.getDescription'] = u'fd'
+        view = BrowserView(c, request)
+        setUpWidgets(view, Ia, initial=kw(title=u"ttt", description=u"ddd"))
+        getWidgetsDataForContent(view, Ia)
+
+        self.assertEqual(c.getTitle(), u'ft')
+        self.assertEqual(c.getDescription(), u'fd')
+
+        c2 = Ca()
+        request.form['field.getTitle'] = u'ftt'
+        request.form['field.getDescription'] = u'fdd'
+        getWidgetsDataForContent(view, Ia, c2)
+
+        self.assertEqual(c.getTitle(), u'ft')
+        self.assertEqual(c.getDescription(), u'fd')
+
+        self.assertEqual(c2.getTitle(), u'ftt')
+        self.assertEqual(c2.getDescription(), u'fdd')
 
     def testErrors(self):
         c = C2()

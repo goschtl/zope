@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.18 2003/04/11 22:15:45 gotcha Exp $
+$Id: editview.py,v 1.19 2003/04/14 08:27:15 jim Exp $
 """
 
 from datetime import datetime
@@ -26,7 +26,7 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component.view import provideView
-from zope.component import queryAdapter
+from zope.component import getAdapter
 
 from zope.app.interfaces.form import WidgetsError
 from zope.app.component.metaconfigure import resolveInterface
@@ -56,26 +56,18 @@ class EditView(BrowserView):
     fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
 
     def __init__(self, context, request):
-        # XXX   This feels like it should be 'getAdapter';  it won't really
-        #       be sensible to use an EditView against an object which
-        #       doesn't implement our schema.  The AddView subclass, however,
-        #       expects its context to be an IAdding, and doesn't use the
-        #       schema attributes to set values.
-        #
-        #       I originally had EditView declare an '_adaptContextToSchema'
-        #       method, which used 'getAdapter', and then overrode it in
-        #       AddView to just return the context.  That felt icky, too,
-        #       and was more complex, so I backed that out in favor of
-        #       just using 'queryAdapter'.
-        adapted = queryAdapter(context, self.schema)
-        if adapted is not None:
-            context = ContextWrapper(adapted, context, name='(adapted)')
         super(EditView, self).__init__(context, request)
+
         self._setUpWidgets()
 
 
     def _setUpWidgets(self):
-        setUpEditWidgets(self, self.schema, names=self.fieldNames)
+        adapted = getAdapter(self.context, self.schema)
+        if adapted is not self.context:
+            adapted = ContextWrapper(adapted, self.context, name='(adapted)')
+        self.adapted = adapted
+        setUpEditWidgets(self, self.schema, names=self.fieldNames,
+                         content=self.adapted)
 
     def setPrefix(self, prefix):
         for widget in self.widgets():
@@ -94,12 +86,13 @@ class EditView(BrowserView):
         avoid tracking changes.
         """
 
-        content = self.context
+        content = self.adapted
 
         errors = []
         unchanged = True
 
         for name in data:
+            field = self.schema[name]
             try:
                 newvalue = data[name]
 
@@ -112,10 +105,10 @@ class EditView(BrowserView):
                 change = True
 
                 # Use self as a marker
-                change = getattr(content, name, self) != newvalue
+                change = field.query(content, self) != newvalue
 
                 if change:
-                    setattr(content, name, data[name])
+                    field.set(content, data[name])
                     unchanged = False
 
             except ValidationError, v:
@@ -124,7 +117,9 @@ class EditView(BrowserView):
         if errors:
             raise WidgetsError(*errors)
 
-        if not unchanged:
+        # We should not generate events whan an adapter is used. That's the
+        # adapter's job.
+        if not unchanged and self.context is self.adapted:
             publish(content, ObjectModifiedEvent(content))
 
         return unchanged

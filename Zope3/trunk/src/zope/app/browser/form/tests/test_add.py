@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.10 2003/04/08 21:34:22 fdrake Exp $
+$Id: test_add.py,v 1.11 2003/04/14 08:27:15 jim Exp $
 """
 
 import sys
@@ -21,7 +21,7 @@ import unittest
 
 from zope.app.browser.form.add import add, AddViewFactory, AddView
 from zope.interface import Interface
-from zope.schema import TextLine
+from zope.schema import TextLine, accessors
 from zope.app.interfaces.container import IAdding
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.form.widget import CustomWidget
@@ -29,7 +29,10 @@ from zope.app.browser.form.widget import TextWidget as Text
 from zope.publisher.browser import TestRequest
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
+from zope.component.adapter import provideAdapter
 from zope.app.browser.form.submit import Update
+from zope.app.browser.form.tests.test_editview import IFoo, IBar, Foo
+from zope.app.browser.form.tests.test_editview import FooBarAdapter
 
 class Context:
 
@@ -50,7 +53,7 @@ class I(Interface):
     last = TextLine()
     email = TextLine()
     address = TextLine()
-    foo = TextLine()
+    getfoo, setfoo = accessors(TextLine())
     extra1 = TextLine()
     extra2 = TextLine()
 
@@ -62,15 +65,21 @@ class C:
         self.args = args
         self.kw = kw
 
+    def getfoo(self): return self._foo
+    def setfoo(self, v): self._foo = v
+
 class V:
     name_ = CustomWidget(Text)
     first = CustomWidget(Text)
     last = CustomWidget(Text)
     email = CustomWidget(Text)
     address = CustomWidget(Text)
-    foo = CustomWidget(Text)
+    getfoo = CustomWidget(Text)
     extra1 = CustomWidget(Text)
     extra2 = CustomWidget(Text)
+
+class FooV:
+    bar = CustomWidget(Text)
 
 
 class SampleData:
@@ -80,16 +89,20 @@ class SampleData:
     last = u"baz"
     email = u"baz@dot.com"
     address = u"aa"
-    foo = u"foo"
+    getfoo = u"foo"
     extra1 = u"extra1"
     extra2 = u"extra2"
 
 class Test(PlacelessSetup, unittest.TestCase):
 
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        provideAdapter(IFoo, IBar, FooBarAdapter)
+
     def _invoke_add(self, schema="I", name="addthis", permission="zope.Public",
                     label="Add this", content_factory="C", class_="V",
                     arguments="first last", keyword_arguments="email",
-                    set_before_add="foo", set_after_add="extra1",
+                    set_before_add="getfoo", set_after_add="extra1",
                     fields=None):
         """ Call the 'add' factory to process arguments into 'args'."""
         return add(Context(),
@@ -110,7 +123,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         result1 = self._invoke_add()
         result2 = self._invoke_add(
-            fields="name_ first last email address foo extra1 extra2",
+            fields="name_ first last email address getfoo extra1 extra2",
             )
 
         self.assertEqual(result1, result2)
@@ -139,14 +152,14 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(bases, (V, AddView, ))
         self.assertEqual(for_, IAdding)
         self.assertEqual(" ".join(fields),
-                         "name_ first last email address foo extra1 extra2")
+                         "name_ first last email address getfoo extra1 extra2")
         self.assertEqual(content_factory, C)
         self.assertEqual(" ".join(arguments),
                          "first last")
         self.assertEqual(" ".join(keyword_arguments),
                          "email")
         self.assertEqual(" ".join(set_before_add),
-                         "foo")
+                         "getfoo")
         self.assertEqual(" ".join(set_after_add),
                          "extra1 name_ address extra2")
         self.failIf(kw)
@@ -168,7 +181,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                     ob.__dict__,
                     {'args': ("bar", "baz"),
                      'kw': {'email': 'baz@dot.com'},
-                     'foo': 'foo',
+                     '_foo': 'foo',
                     })
                 return ob
             def nextURL(self):
@@ -200,7 +213,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                     ob.__dict__,
                     {'args': ("bar", "baz"),
                      'kw': {'email': 'baz@dot.com'},
-                     'foo': 'foo',
+                     '_foo': 'foo',
                     })
                 return ob
             def nextURL(self):
@@ -211,12 +224,42 @@ class Test(PlacelessSetup, unittest.TestCase):
         factory = AddViewFactory(*args)
         request = TestRequest()
         view = getView(adding, 'addthis', request)
+
         view.createAndAdd(SampleData.__dict__)
 
         self.assertEqual(adding.ob.extra1, "extra1")
         self.assertEqual(adding.ob.extra2, "extra2")
         self.assertEqual(adding.ob.name_, "foo")
         self.assertEqual(adding.ob.address, "aa")
+
+    def test_createAndAdd_w_adapter(self):
+
+        class Adding:
+
+            __implements__ = IAdding
+
+            def __init__(self, test):
+                self.test = test
+
+            def add(self, ob):
+                self.ob = ob
+                self.test.assertEqual(ob.__dict__, {'foo': 'bar'})
+                return ob
+            def nextURL(self):
+                return "."
+
+        adding = Adding(self)
+        [(descriminator, callable, args, kw)] = self._invoke_add(
+            schema="IBar", name="addthis", permission="zope.Public",
+            label="Add this", content_factory="Foo", class_="FooV",
+            arguments="", keyword_arguments="",
+            set_before_add="bar", set_after_add="",
+            fields=None)
+        factory = AddViewFactory(*args)
+        request = TestRequest()
+        view = getView(adding, 'addthis', request)
+
+        view.createAndAdd({'bar': 'bar'})
 
     def test_hooks(self):
 
@@ -246,7 +289,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                 ob.__dict__,
                 {'args': ("bar", "baz"),
                  'kw': {'email': 'baz@dot.com'},
-                 'foo': 'foo',
+                 '_foo': 'foo',
                  })
             return ob
 

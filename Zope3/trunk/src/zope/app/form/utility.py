@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.15 2003/03/07 21:27:32 jim Exp $
+$Id: utility.py,v 1.16 2003/04/14 08:27:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -139,7 +139,7 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=False,
             vname = 'edit'
 
         try:
-            value = getattr(content, name)
+            value = field.get(content)
         except AttributeError, v:
             if v.__class__ != AttributeError:
                 raise
@@ -221,10 +221,10 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
 def getWidgetsDataForContent(view, schema, content=None, strict=True,
                              names=None, set_missing=True):
     """Collect the user-entered data defined by a schema
-
+    
     Data is collected from view widgets. For every field in the
     schema, we look for a view of the same name and get it's data.
-
+    
     The data are assigned to the given content object.
 
     If the strict argument is true, then if some required data are
@@ -250,7 +250,8 @@ def getWidgetsDataForContent(view, schema, content=None, strict=True,
 
     for name in data:
         try:
-            setattr(content, name, data[name])
+            field = schema[name]
+            field.set(content, data[name])
         except ValidationError, v:
             errors.append(v)
 
