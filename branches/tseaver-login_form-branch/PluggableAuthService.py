@@ -51,6 +51,7 @@ from interfaces.plugins import IExtractionPlugin
 from interfaces.plugins import ILoginPasswordHostExtractionPlugin
 from interfaces.plugins import IAuthenticationPlugin
 from interfaces.plugins import IChallengePlugin
+from interfaces.plugins import ICredentialsInitializePlugin
 from interfaces.plugins import ICredentialsUpdatePlugin
 from interfaces.plugins import ICredentialsResetPlugin
 from interfaces.plugins import IUserFactoryPlugin
@@ -1297,6 +1298,12 @@ _PLUGIN_TYPE_INFO = (
     , 'IChallengePlugin'
     , 'challenge'
     , "Challenge plugins initiate a challenge to the user to provide "
+      "credentials."
+    )
+  , ( ICredentialsInitializePlugin
+    , 'ICredentialsInitializePlugin'
+    , 'initialize credentials'
+    , "Credential initialize plugins respond to the newly-authenticated "
       "credentials."
     )
   , ( ICredentialsUpdatePlugin
