@@ -37,7 +37,7 @@
     />
 
 <page
-    for="zope.app.interfaces.content.folder.IRootFolder"
+    for="zope.app.interfaces.traversing.IContainmentRoot"
     name="absolute_url"
     class=".absoluteurl.SiteAbsoluteURL"
     permission="zope.Public"

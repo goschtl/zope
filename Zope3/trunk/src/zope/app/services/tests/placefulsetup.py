@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.11 2003/03/08 21:46:09 seanb Exp $
+$Id: placefulsetup.py,v 1.12 2003/03/10 22:35:06 gvanrossum Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -45,6 +45,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.dependable import IDependable
+from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.dependable import Dependable
 
 class PlacefulSetup(PlacelessSetup):
@@ -80,7 +81,7 @@ class PlacefulSetup(PlacelessSetup):
 
         provideView(None, "absolute_url", IBrowserPresentation,
                     AbsoluteURL)
-        provideView(IRootFolder, "absolute_url", IBrowserPresentation,
+        provideView(IContainmentRoot, "absolute_url", IBrowserPresentation,
                     SiteAbsoluteURL)
 
 
