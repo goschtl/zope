@@ -303,13 +303,9 @@ class ViewMixinForAttributes(BrowserView):
         meth = getattr(self, attr)
         return meth(*args, **kw)
 
-class ViewPageTemplateFile(VPT):
-
-    def pt_getContext(self, instance, request, **kw):
-        _super = super(ViewPageTemplateFile, self)
-        ns = _super.pt_getContext(instance, request, **kw)
-        ns['modules'] = SecureModuleImporter
-        return ns
+# VPT is of the Trusted kind, so it allows access to sys.modules
+# directly and allows importing of not-yet imported modules.
+class ViewPageTemplateFile(VPT): pass
 
 class ViewMixinForTemplates(BrowserView):
 

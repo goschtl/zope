@@ -22,8 +22,6 @@ After 0.1
 - browser:page now correctly handles the allow_attributes and protects
   the named attributes on the view with the same permission used for
   the view (this sounds a bit strange, doesn't it?)
-- ViewPageTemplateFile 'modules' uses zope2 SecureModuleImporter now
-  (eg: browser:page)
 - zopeconf.py will try to find etc/zope.conf on INSTANCE_HOME
 
 Five 0.1
