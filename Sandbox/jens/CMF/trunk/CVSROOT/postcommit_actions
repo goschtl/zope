@@ -257,7 +257,7 @@ def do_mail(name, repo, addrs, subjs, doing_directory=0, no_files=0):
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
-    subject = "CVS checkin: %s " % name
+    subject = "CVS: %s " % name
     if doing_directory or no_files:
         subject = subject + string.join(subjs, " ")
     else:
