@@ -34,11 +34,11 @@ from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.mail.interfaces import IMailDelivery
 
-from zope.app.wiki.interfaces import IWiki, IWikiPage
-from zope.app.wiki.interfaces import IWikiContained, IWikiPageContained
-from zope.app.wiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
-from zope.app.wiki.interfaces import IWikiPageEditEvent
-from zope.app.wiki.diff import textdiff
+from zwiki.interfaces import IWiki, IWikiPage
+from zwiki.interfaces import IWikiContained, IWikiPageContained
+from zwiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
+from zwiki.interfaces import IWikiPageEditEvent
+from zwiki.diff import textdiff
 
 HierarchyKey = 'http://www.zope.org/zwiki#1.0/PageHierarchy/parents'
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
@@ -61,10 +61,10 @@ class WikiPage(BTreeContainer, Contained):
         self._source = source
         notify(WikiPageEditEvent(self, old_source))
 
-    # See zope.app.wiki.interfaces.IWikiPage
+    # See zwiki.interfaces.IWikiPage
     source = property(_getSource, _setSource)
 
-    # See zope.app.wiki.interfaces.IWikiPage
+    # See zwiki.interfaces.IWikiPage
     type = u'zope.source.rest'
 
 
@@ -81,7 +81,7 @@ class WikiPageHierarchyAdapter(object):
             self._annotations[HierarchyKey] = ()
 
     def reparent(self, parents):
-        "See zope.app.wiki.interfaces.IWikiPageHierarchy"
+        "See zwiki.interfaces.IWikiPageHierarchy"
         self.setParents(parents)
 
     def setParents(self, parents):
@@ -93,7 +93,7 @@ class WikiPageHierarchyAdapter(object):
     parents = property(getParents, setParents)
 
     def path(self):
-        "See zope.app.wiki.interfaces.IWikiPageHierarchy"
+        "See zwiki.interfaces.IWikiPageHierarchy"
         if not self.getParents():
             return [self.context]
         wiki = zapi.getParent(self.context)
@@ -102,7 +102,7 @@ class WikiPageHierarchyAdapter(object):
         return hier.path() + [self.context]
 
     def findChildren(self, recursive=True):
-        "See zope.app.wiki.interfaces.IWikiPageHierarchy"
+        "See zwiki.interfaces.IWikiPageHierarchy"
         wiki = zapi.getParent(self.context)
         contextName = zapi.name(self.context)
         children = []
@@ -308,11 +308,11 @@ class MailSubscriptions:
             self._annotations[SubscriberKey] = ()
 
     def getSubscriptions(self):
-        "See zope.app.wiki.interfaces.IMailSubscriptions"
+        "See zwiki.interfaces.IMailSubscriptions"
         return self._annotations[SubscriberKey]
         
     def addSubscriptions(self, emails):
-        "See zope.app.wiki.interfaces.IMailSubscriptions"
+        "See zwiki.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
         for email in emails:
             if email not in subscribers:
@@ -320,7 +320,7 @@ class MailSubscriptions:
         self._annotations[SubscriberKey] = tuple(subscribers)
                 
     def removeSubscriptions(self, emails):
-        "See zope.app.wiki.interfaces.IMailSubscriptions"
+        "See zwiki.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
         for email in emails:
             if email in subscribers:

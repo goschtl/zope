@@ -28,9 +28,9 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.location.traversing import LocationPhysicallyLocatable
 
-from zope.app.wiki.interfaces import IWikiPage, IWikiPageHierarchy
-from zope.app.wiki.wikipage import WikiPage, WikiPageHierarchyAdapter
-from zope.app.wiki.wiki import Wiki
+from zwiki.interfaces import IWikiPage, IWikiPageHierarchy
+from zwiki.wikipage import WikiPage, WikiPageHierarchyAdapter
+from zwiki.wiki import Wiki
 
 class TestAnnotations(dict):
     implements(IAnnotations)

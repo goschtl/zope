@@ -4,6 +4,9 @@
    i18n_domain="zope"
    >
 
+  <!-- Backward compatibility -->
+  <modulealias module="zwiki" alias="zope.app.wiki" />
+
   <!-- Security definitions -->
 
   <role
@@ -22,57 +25,57 @@
       description="The Wiki Admin can fully manage wiki pages." />
 
   <permission
-      id="zope.app.wiki.ViewWikiPage"
+      id="zwiki.ViewWikiPage"
       title="View Wiki Page"
       description="View a Wiki Page" />
 
   <grant
-      permission="zope.app.wiki.ViewWikiPage"
+      permission="zwiki.ViewWikiPage"
       role="zwiki.User" />
 
   <permission
-      id="zope.app.wiki.CommentWikiPage"
+      id="zwiki.CommentWikiPage"
       title="Comment on Wiki Page"
       description="Make a comment on Wiki Page" />
 
   <grant
-      permission="zope.app.wiki.CommentWikiPage"
+      permission="zwiki.CommentWikiPage"
       role="zwiki.User" />
 
   <permission
-      id="zope.app.wiki.AddWikiPage"
+      id="zwiki.AddWikiPage"
       title="Add Wiki Page"
       description="Add Wiki Page" />
 
   <grant
-      permission="zope.app.wiki.AddWikiPage"
+      permission="zwiki.AddWikiPage"
       role="zwiki.Editor" />
 
   <permission
-      id="zope.app.wiki.EditWikiPage"
+      id="zwiki.EditWikiPage"
       title="Edit Wiki Page"
       description="Edit Wiki Page" />
 
   <grant
-      permission="zope.app.wiki.EditWikiPage"
+      permission="zwiki.EditWikiPage"
       role="zwiki.Editor" />
 
   <permission
-      id="zope.app.wiki.DeleteWikiPage"
+      id="zwiki.DeleteWikiPage"
       title="Delete Wiki Page"
       description="Delete Wiki Page" />
 
   <grant
-      permission="zope.app.wiki.DeleteWikiPage"
+      permission="zwiki.DeleteWikiPage"
       role="zwiki.Admin" />
 
   <permission
-      id="zope.app.wiki.ReparentWikiPage"
+      id="zwiki.ReparentWikiPage"
       title="Reparent Wiki Page"
       description="Reparent a Wiki Page" />
 
   <grant
-      permission="zope.app.wiki.ReparentWikiPage"
+      permission="zwiki.ReparentWikiPage"
       role="zwiki.Admin"/>
 
 
@@ -91,7 +94,7 @@
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
-        id="zope.wiki.Wiki"
+        id="zwiki.Wiki"
         description="Minimal Wiki Page Container implementation " />
 
     <require
@@ -99,7 +102,7 @@
         interface="zope.app.container.interfaces.IReadContainer"/>
 
     <require
-        permission="zope.app.wiki.AddWikiPage"
+        permission="zwiki.AddWikiPage"
         interface="zope.app.container.interfaces.IWriteContainer"/>
 
   </content>
@@ -108,7 +111,20 @@
   <adapter
       factory=".wikipage.MailSubscriptions"
       provides=".interfaces.IMailSubscriptions"
-      for=".interfaces.IWiki" />
+      for=".interfaces.IWiki" 
+      trusted="true"
+      />
+
+  <class class=".wikipage.MailSubscriptions">
+    <require
+        permission="zwiki.EditWikiPage"
+        attributes="getSubscriptions"
+        />
+    <require
+        permission="zwiki.EditWikiPage"
+        attributes="addSubscriptions removeSubscriptions"
+        />
+  </class>
 
 
   <!-- Wiki Page Content Type -->
@@ -124,14 +140,15 @@
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
-        id="zope.wiki.WikiPage"
+        id="zwiki.WikiPage"
         title="Wiki Page"
         description="A Wiki Page" />
 
     <allow interface=".interfaces.IWikiPage" />
 
+
     <require
-        permission="zope.app.wiki.AddWikiPage"
+        permission="zwiki.AddWikiPage"
         set_schema=".interfaces.IWikiPage" />
 
   </content>
@@ -139,7 +156,20 @@
   <adapter
       factory=".wikipage.WikiPageHierarchyAdapter"
       provides=".interfaces.IWikiPageHierarchy"
-      for=".interfaces.IWikiPage" />
+      for=".interfaces.IWikiPage"
+      trusted="true" />
+
+  <class class=".wikipage.WikiPageHierarchyAdapter">
+    <require
+        permission="zwiki.ViewWikiPage"
+        attributes="parents path findChildren"
+        />
+    <require
+        permission="zwiki.ReparentWikiPage"
+        attributes="reparent"
+        set_attributes="parents"
+        />
+  </class>
 
   <!-- Wiki Comments support -->
 
@@ -154,14 +184,14 @@
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
-        id="zope.wiki.Comment"
+        id="zwiki.Comment"
         title="Wiki Page Comment"
         description="A Wiki Page Comment" />
 
     <allow interface=".interfaces.IComment" />
 
     <require
-        permission="zope.app.wiki.CommentWikiPage"
+        permission="zwiki.CommentWikiPage"
         set_schema=".interfaces.IComment" />
 
   </content>  
@@ -170,14 +200,14 @@
      for=".interfaces.IComment"
      provides="zope.app.filerepresentation.interfaces.IReadFile"
      factory=".comment.CommentFile"
-     permission="zope.app.wiki.ViewWikiPage"
+     permission="zwiki.ViewWikiPage"
      />
 
   <adapter 
      for=".interfaces.IComment"
      provides="zope.app.filerepresentation.interfaces.IWriteFile"
      factory=".comment.CommentFile"
-     permission="zope.app.wiki.CommentWikiPage"
+     permission="zwiki.CommentWikiPage"
      />
 
 
@@ -185,12 +215,16 @@
   <adapter
       factory=".wikipage.MailSubscriptions"
       provides=".interfaces.IMailSubscriptions"
-      for=".interfaces.IWikiPage" />
+      for=".interfaces.IWikiPage" 
+      trusted="true"
+      />
 
   <adapter 
       factory=".traversal.WikiPageTraversable"
       provides="zope.app.traversing.interfaces.ITraversable"
-      for=".interfaces.IWikiPage" />
+      for=".interfaces.IWikiPage" 
+      trusted="true"
+      />
 
 
   <!-- WikiPage FTP configurations -->
@@ -198,20 +232,20 @@
      for=".interfaces.IWikiPage"
      provides="zope.app.filerepresentation.interfaces.IReadDirectory"
      factory=".wikipage.Directory"
-     permission="zope.app.wiki.ViewWikiPage"
+     permission="zwiki.ViewWikiPage"
      />
 
   <adapter 
      for=".interfaces.IWikiPage"
      provides="zope.app.filerepresentation.interfaces.IWriteDirectory"
      factory=".wikipage.Directory"
-     permission="zope.app.wiki.CommentWikiPage"
+     permission="zwiki.CommentWikiPage"
      />
 
   <adapter
       for=".interfaces.IWikiPage"
       provides="zope.app.filerepresentation.interfaces.IFileFactory"
-      factory="zope.app.wiki.comment.CommentFileFactory"
+      factory="zwiki.comment.CommentFileFactory"
       permission="zope.ManageContent"
       />
 

@@ -27,11 +27,11 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.mail.interfaces import IMailDelivery
 
-from zope.app.wiki.interfaces import IWikiPage, IWiki, IMailSubscriptions
-from zope.app.wiki.interfaces import IWikiPageEditEvent
-from zope.app.wiki.wikipage import WikiPage
-from zope.app.wiki.wikipage import MailSubscriptions, WikiMailer, mailer
-from zope.app.wiki.wiki import Wiki
+from zwiki.interfaces import IWikiPage, IWiki, IMailSubscriptions
+from zwiki.interfaces import IWikiPageEditEvent
+from zwiki.wikipage import WikiPage
+from zwiki.wikipage import MailSubscriptions, WikiMailer, mailer
+from zwiki.wiki import Wiki
 
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
 

@@ -26,7 +26,8 @@ from zope.app import zapi
 from zope.app.form.browser.submit import Update
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.traversing.api import getParent, getPath, getName
-from zope.app.wiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
+
+from zwiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 
 urlchars = r'[A-Za-z0-9/:@_%~#=&\.\-\?\+\$,]+'
 urlendchar  = r'[A-Za-z0-9/]'

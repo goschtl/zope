@@ -26,7 +26,7 @@ from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.tests import placelesssetup, ztapi
 
-from zope.app.wiki.interfaces import IComment
+from zwiki.interfaces import IComment
 
 
 class DCStub(object):
@@ -62,10 +62,8 @@ def tearDown():
 
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.wiki.comment',
-                     setUp=setUp, tearDown=tearDown),
-        DocTestSuite('zope.app.wiki.wikipage',
-                     setUp=setUp, tearDown=tearDown),
+        DocTestSuite('wiki.comment', setUp=setUp, tearDown=tearDown),
+        DocTestSuite('wiki.wikipage', setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == '__main__':

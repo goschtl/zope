@@ -17,7 +17,7 @@ $Id$
 """
 from zope.interface import implements
 from zope.app.folder import Folder
-from zope.app.wiki.interfaces import IWiki
+from zwiki.interfaces import IWiki
 
 class Wiki(Folder):
     __doc__ = IWiki.__doc__

@@ -19,8 +19,9 @@ import unittest
 
 from zope.app.container.tests.test_icontainer import \
      BaseTestIContainer, DefaultTestData
-from zope.app.wiki.wiki import Wiki
-from zope.app.wiki.interfaces import IWiki
+
+from zwiki.wiki import Wiki
+from zwiki.interfaces import IWiki
 
 
 class Test(BaseTestIContainer, unittest.TestCase):

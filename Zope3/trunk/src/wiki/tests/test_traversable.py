@@ -19,9 +19,9 @@ import unittest, sys
 from zope.exceptions import NotFoundError
 from zope.testing.cleanup import CleanUp
 
-from zope.app.wiki.wiki import Wiki
-from zope.app.wiki.wikipage import WikiPage
-from zope.app.wiki.traversal import WikiPageTraversable
+from zwiki.wiki import Wiki
+from zwiki.wikipage import WikiPage
+from zwiki.traversal import WikiPageTraversable
 
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 

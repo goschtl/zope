@@ -30,10 +30,11 @@ from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.interfaces import IPhysicallyLocatable
-from zope.app.wiki.interfaces import IWikiPage, IWikiPageHierarchy
-from zope.app.wiki.wiki import Wiki
-from zope.app.wiki.wikipage import WikiPage, WikiPageHierarchyAdapter
-from zope.app.wiki.traversal import WikiPageTraverser
+
+from zwiki.interfaces import IWikiPage, IWikiPageHierarchy
+from zwiki.wiki import Wiki
+from zwiki.wikipage import WikiPage, WikiPageHierarchyAdapter
+from zwiki.traversal import WikiPageTraverser
 
 class I(Interface):
     pass

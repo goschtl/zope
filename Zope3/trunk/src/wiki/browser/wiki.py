@@ -23,7 +23,7 @@ from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.traversing.api import getName, getPath
 from zope.app.container.browser.adding import Adding
 
-from zope.app.wiki.interfaces import IWikiPageHierarchy
+from zwiki.interfaces import IWikiPageHierarchy
 
 class AddWiki(object):
     """Add a Wiki"""
@@ -33,7 +33,7 @@ class AddWiki(object):
 
         if self.request.get('frontpage'):
             page = removeAllProxies(
-                zapi.createObject(None, 'zope.wiki.WikiPage'))
+                zapi.createObject(None, 'zwiki.WikiPage'))
             page.type = u'zope.source.rest'
             page.source = u'This is the FrontPage of the Wiki.'
             dc = ICMFDublinCore(page)
@@ -73,7 +73,7 @@ class TableOfContents:
 
         for name, page in self.context.items():
             hier = IWikiPageHierarchy(page)
-            if hier.getParents() == ():
+            if hier.parents == ():
                 children.append((page, hier.findChildren())) 
         return self._branchHTML(children)
 

@@ -4,7 +4,7 @@ Installation
   - Since Wiki is not enabled by default, you need to include the Wiki
     package in your products.zcml file::
 
-    <include package="zope.app.wiki" />
+    <include package="zwiki" />
 
   - You need to define the following role declarations to your user in order
     to use the wiki package effectively::

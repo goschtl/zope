@@ -17,8 +17,8 @@ $Id$
 """
 import unittest
 
-from zope.app.wiki.wikipage import WikiPage
-from zope.app.wiki.interfaces import IWikiPage
+from zwiki.wikipage import WikiPage
+from zwiki.interfaces import IWikiPage
 
 class Test(unittest.TestCase):
 

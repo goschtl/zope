@@ -23,7 +23,8 @@ from zope.app import zapi
 from zope.app.traversing.api import getParent
 from zope.app.traversing.namespace import UnexpectedParameters
 from zope.app.traversing.interfaces import ITraversable
-from zope.app.wiki.interfaces import IWikiPage, IWikiPageHierarchy
+
+from zwiki.interfaces import IWikiPage, IWikiPageHierarchy
 
 class WikiPageTraverser:
     implements(IPublishTraverse)

@@ -23,8 +23,8 @@ from zope.app.container.contained import Contained
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 
-from zope.app.wiki.interfaces import IComment
-from zope.app.wiki.interfaces import IWikiPageContained
+from zwiki.interfaces import IComment
+from zwiki.interfaces import IWikiPageContained
 
 
 class Comment(Persistent, Contained):
@@ -66,13 +66,13 @@ class Comment(Persistent, Contained):
     """
     implements(IComment, IWikiPageContained)
     
-    # See zope.app.wiki.interfaces.IComment
+    # See wiki.interfaces.IComment
     source = u''
     
-    # See zope.app.wiki.interfaces.IComment
+    # See wiki.interfaces.IComment
     type = u'zope.source.rest'
 
-    # See zope.app.wiki.interfaces.IComment
+    # See wiki.interfaces.IComment
     def _getTitle(self):
         dc = ICMFDublinCore(self)
         return dc.title
