@@ -151,7 +151,7 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         self.name = self._prefix + field.__name__
 
     def __call__(self):
-        return self.render(self.getData())
+        return self.render(self.getData(True))
 
     def render(self, value):
         raise NotImplementedError(
