@@ -33,12 +33,12 @@
       filter="python:context.contentType.startswith('text/')"
       permission="zope.ManageContent" />
 
-
-  <browser:editform
+  <browser:page
       name="upload.html"
       menu="zmi_views" title="Upload"
-      schema="zope.app.file.interfaces.IFile"
-      label="Upload a file"
+      for="zope.app.file.interfaces.IFile"
+      template="file_upload.pt"
+      class=".file.FileUpload"
       permission="zope.ManageContent"
       />
 
@@ -58,11 +58,11 @@
       view="zope.app.file.File"
       />
 
-  <browser:addform
-      schema="zope.app.file.interfaces.IFile"
-      label="Add a File"
-      content_factory="zope.app.file.File"
+  <browser:page
       name="zope.app.file.File"
+      for="zope.app.container.interfaces.IAdding"
+      template="file_add.pt"
+      class=".file.FileAdd"
       permission="zope.ManageContent"
       />
 
