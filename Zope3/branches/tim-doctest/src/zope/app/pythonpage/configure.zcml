@@ -1,0 +1,81 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <interface 
+      interface=".IPythonPage" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+  
+  <content class=".PythonPage">
+      <factory
+        id="zope.app.pythonpage.PythonPage"
+        title="Python Page"
+        description="A simple, content-based Python Page"
+        />  
+    <require
+        permission="zope.View"
+        interface=".IPythonPage"
+        />
+    <require
+        permission="zope.ManageContent"
+        set_attributes="source contentType"
+        />
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
+        />
+  </content>
+
+
+  <!-- browser directives -->
+
+  <browser:page
+      name="index.html"
+      for=".IPythonPage"
+      class=".browser.PythonPageEval"
+      attribute="index"
+      permission="zope.View"
+      />
+
+  <browser:addform
+      label="Add Python Page"
+      name="AddPythonPage.html"
+      schema=".IPythonPage"
+      content_factory=".PythonPage"
+      permission="zope.ManageContent"
+      />
+
+  <browser:addMenuItem
+      class=".PythonPage"
+      title="Python Page"
+      description="An Python Page"
+      permission="zope.ManageContent"
+      view="AddPythonPage.html"
+      />
+
+  <browser:editform
+      for=".IPythonPage"
+      schema=".IPythonPage"
+      name="edit.html"
+      label="Edit Python Page"
+      class=".browser.PythonPageEditView"
+      template="edit.pt"
+      permission="zope.ManageContent" 
+      menu="zmi_views" title="Edit"
+      />
+
+
+  <!-- Preview view - requires zope.app.preview -->
+
+  <configure package="zope.app.preview">
+    <browser:page
+        for="zope.app.pythonpage.IPythonPage"
+        name="preview.html"
+        template="preview.pt"
+        permission="zope.ManageContent"
+        menu="zmi_views" title="Preview"
+        />
+  </configure>
+
+</configure>
