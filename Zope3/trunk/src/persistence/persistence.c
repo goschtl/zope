@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.11 2003/04/10 17:55:25 jeremy Exp $\n";
+"$Id: persistence.c,v 1.12 2003/04/11 21:59:54 pje Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -840,9 +840,11 @@ PyPersist_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 
     /* It is possible for a class that inherits from Persistent to
        define __slots__, in which case it shouldn't have a dict.
-       XXX This isn't ready yet.
+       We have to look in the dictionary supplied to the keyword arguments,
+       however, or we can be fooled by a base type having __slots__.
+       (See 'persistence.tests.test_persistence.Test.testSlots')
     */
-    if (PyObject_HasAttrString((PyObject *)new, "__slots__")) {
+    if (PyMapping_HasKeyString(PyTuple_GetItem(args,2), "__slots__")) {
 	return (PyObject *)new;
     }
 
@@ -971,6 +973,16 @@ init_persistence(void)
     PyPersist_MetaType.tp_clear = PyType_Type.tp_clear;
     if (PyType_Ready(&PyPersist_MetaType) < 0)
 	return;
+
+    /* Cheap hack to force us to be used instead of 'type' as '__base__';
+       this ensures that we are always used for C-level layout, and can
+       therefore interoperate with other (pure Python) metaclasses.
+       (See 'persistence.tests.test_persistence.Test.testMultipleMeta')
+       This costs us a (PyObject *) per subclass of Persistent, but it
+       seems to be the only way to fix this in Python 2.2.x.  :(
+    */
+    PyPersist_MetaType.tp_basicsize += sizeof(PyObject *);
+
     Py_INCREF(&PyPersist_MetaType);
     if (PyDict_SetItemString(d, "PersistentMetaClass", 
 			     (PyObject *)&PyPersist_MetaType) < 0)

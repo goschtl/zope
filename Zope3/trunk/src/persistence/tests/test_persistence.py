@@ -13,7 +13,7 @@
 ##############################################################################
 import unittest
 
-from persistence import Persistent
+from persistence import Persistent, PersistentMetaClass
 from persistence.interfaces import IPersistent
 
 class Test(unittest.TestCase):
@@ -164,6 +164,41 @@ class Test(unittest.TestCase):
         class E(D, B):
             pass
 
+    def testMultipleMeta(self):
+        # make sure it's possible to define persistent classes
+        # with a base whose metaclass is different
+        class alternateMeta(type):
+            pass
+        class alternate(object):
+            __metaclass__ = alternateMeta
+        class mixedMeta(alternateMeta, PersistentMetaClass):
+            pass
+        class mixed(alternate,Persistent):
+            __metaclass__ = mixedMeta
+
+    def testSlots(self):
+        # Verify that Persistent classes behave the same way
+        # as pure Python objects where '__slots__' and '__dict__'
+        # are concerned.
+
+        class noDict(object):
+            __slots__ = ['foo']
+
+        class shouldHaveDict(noDict):
+            pass
+
+        class p_noDict(Persistent):
+            __slots__ = ['foo']
+
+        class p_shouldHaveDict(p_noDict):
+            pass
+
+        self.assertEqual(noDict.__dictoffset__, 0)
+        self.assertEqual(p_noDict.__dictoffset__, 0)
+
+        self.assert_(shouldHaveDict.__dictoffset__ <> 0)
+        self.assert_(p_shouldHaveDict.__dictoffset__ <> 0)
+        
     def testBasicTypeStructure(self):
         # test that a persistent class has a sane C type structure
         # use P (defined below) as simplest example
