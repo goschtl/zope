@@ -23,7 +23,7 @@ from OFS.ObjectManager import ObjectManager
 from Acquisition import ImplicitAcquisitionWrapper, aq_base, aq_inner
 from ExtensionClass import Base
 from AccessControl import ClassSecurityInfo
-
+from utils import getToolByName
 
 # superGetAttr is assigned to whatever ObjectManager.__getattr__
 # used to do.
@@ -36,7 +36,6 @@ except:
         superGetAttr = None
 
 _marker = []  # Create a new marker object.
-
 
 class SkinnableObjectManager (ObjectManager):
 
@@ -71,7 +70,48 @@ class SkinnableObjectManager (ObjectManager):
         if superGetAttr is None:
             raise AttributeError, name
         return superGetAttr(self, name)
+    
+    security.declarePrivate('getSkin')
+    def getSkin(self, name=None):
+        '''
+        Returns the requested skin.
+        '''
+        skinob = None
+        skinstool = None
+        sfn = self.getSkinsFolderName()
 
+        if sfn is not None:
+            sf = getattr(self, sfn, None)
+            if sf is not None:
+               if name is not None:
+                   skinob = sf.getSkinByName(name)
+               if skinob is None:
+                   skinob = sf.getSkinByName(sf.getDefaultSkin())
+                   if skinob is None:
+                       skinob = sf.getSkinByPath('')
+               return skinob
+    
+    security.declarePublic('getSkinNameFromRequest')
+    def getSkinNameFromRequest(self, REQUEST=None):
+        ''' returns the skin name from the Request'''
+        sfn = self.getSkinsFolderName()
+        if sfn is not None:
+            sf = getattr(self, sfn, None)
+            if sf is not None:
+                return REQUEST.get(sf.getRequestVarname(), None)
+
+    security.declarePublic('changeSkin')
+    def changeSkin(self, skinname):
+        self._v_skindata = None
+        skinobj=self.getSkin(skinname)
+        if skinobj is not None:
+            self._v_skindata = (self.REQUEST, skinobj, {})
+        else:
+            import sys
+            from zLOG import LOG, ERROR
+            LOG('CMFCore', ERROR, 'Unable to change skin',
+                error=sys.exc_info())
+            
     security.declarePublic('setupCurrentSkin')
     def setupCurrentSkin(self, REQUEST=None):
         '''
@@ -89,25 +129,9 @@ class SkinnableObjectManager (ObjectManager):
         if self._v_skindata is not None and self._v_skindata[0] is REQUEST:
             # Already set up for this request.
             return
-        self._v_skindata = None
-        sfn = self.getSkinsFolderName()
-        if sfn is not None:
-            # Note that our custom __getattr__ won't get confused
-            # by skins at the moment because _v_skindata is None.
-            sf = getattr(self, sfn, None)
-            if sf is not None:
-                try:
-                    sd = sf.getSkin(REQUEST)
-                except:
-                    import sys
-                    from zLOG import LOG, ERROR
-                    LOG('CMFCore', ERROR, 'Unable to get skin',
-                        error=sys.exc_info())
-                else:
-                    if sd is not None:
-                        # Hide from acquisition.
-                        self._v_skindata = (REQUEST, sd, {})
-
+        skinname=self.getSkinNameFromRequest(REQUEST)
+        self.changeSkin(skinname)
+        
     def __of__(self, parent):
         '''
         Sneakily sets up the portal skin then returns the wrapper
