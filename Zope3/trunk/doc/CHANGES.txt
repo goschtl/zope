@@ -70,17 +70,19 @@ Zope Changes
 
     Bug fixes
     
+    - Fixed issue 128. The TALES Iterator class is now up-to-date.
+
     - BTreeContainer's '__contains__()' and 'has_key()' methods return 'True'
       and 'False' now instead 0 or a positive integer. Added tests for
       BTreeContainer.
 
     - All IContainer objects are tree items now by default. 
 
-    - Fixed Issue 126. HTML entities and elements are now correctly escaped
+    - Fixed issue 126. HTML entities and elements are now correctly escaped
       when editing via the browser. The fix has been made in the browser
       widget code.
 
-    - Fixed Issue 195. The remove language buttons for I18n File and Image have
+    - Fixed issue 195. The remove language buttons for I18n File and Image have
       now a value. 
 
     - Removed last TAB characters from Python code. 
