@@ -1,44 +1,266 @@
 Context Decorators
 ==================
 
+Introduction
+------------
+
+Sorry. We should have a general description of context wrappers and
+decorators here, but all we've got are some issues that we're
+wrestling with.
+
+Until we've written a clear description, the following irc dialog is
+instructive:: 
+
+  <SteveA> So... Decorators.
+
+  <SteveA> Before I talk about decorators, I need to spend a little time
+  talking about context wrappers.
+
+  <SteveA> As you know, zope 3 doesn't do implicit acquisition like zope
+  2 does.
+
+  <bigkevmcd> SteveA: is it worth pointing out a source file, to look
+  at...?
+
+  <SteveA> That is, if I have a folder f that contains a document d,
+  f.d.items() will not be equivalent to f.items()
+
+  <SteveA> (assuming that a folder has an items method)
+
+  * faassen listens in. :)
+
+  <mexiKON> SteveA: yeah, i read the wiki page about basic context
+  wrappers
+
+  <SteveA> This is for the better, as it gets rid of the indeterminate
+  nature of implicit acquisition
+
+  <SteveA> however, even though we don't want or need implicit
+  acquisition in zope 3, we still need some way of recording the
+  "context" of a particular journey through the content.
+
+  <mexiKON> right, through context wrappers
+
+  <SteveA> we need this because we want to make policy decisions, and
+  provide different software and settings, at different places
+
+  <mexiKON> like for 'playful' utilities
+
+  <SteveA> for example, we might want to install two different versions
+  of a software package in different parts of a site
+
+  <SteveA> or to customise them differently
+
+  <SteveA> right, this is like local utilities
+
+  <faassen> or two different frontends on websites, a traditional use
+  for acquisition in zope 2
+
+  <SteveA> we've stopped using the terms "placeful" and "placeless" in
+  favour of "local" and "global"
+
+  <SteveA> faassen: actually, that's a bit different
+
+  <faassen> SteveA: wouldn't that be a set of views associated ..um,
+  localfully? :)
+
+  <SteveA> you'd use a different publishing traversal component for
+  that, which would set a different skin to use
+
+  <SteveA> but the context, as far as services etc. are concerned, would
+  be the same
+
+  <faassen> SteveA: hm.
+
+  <SteveA> So, the way we remember the traversal to a particular piece
+  of content is by looking in its context wrapper
+
+  <SteveA> we can get from the wrapper the names used at each step in
+  the traversal, and each of the "parent" objects, all the way down to
+  the root
+
+  <SteveA> you can use what you get from the context wrapper to do the
+  equivalent of implicit acquisition, but do it explicitly
+
+  <SteveA> The way context wrappers work is this:
+
+  <SteveA> >>> o = SomeContentObject()
+
+  <SteveA> >>> wrapped_o = ContextWrapper(o)
+
+  <SteveA> >>> wrapped_o.somemethod() # passes through the
+  call. Equivalent to o.somemethod()
+
+  <SteveA> So, you see that a context wrapper is like a transparent
+  wrapper around the object.
+
+  <SteveA> A decorator is a context wrapper that isn't quite so
+  transparent.
+
+  <mexiKON> what does it not let thru?
+
+  <bigkevmcd> or what does it let through?
+
+  <SteveA> That is, for some methods or attributes, the wrapper itself
+  handles the method call / attribute lookup
+
+  <bigkevmcd> as it's a fixed set
+
+  <SteveA> Take a look at src/zope/app/container/zopecontainer.py
+
+  <SteveA>
+  http://cvs.zope.org/Zope3/src/zope/app/container/zopecontainer.py?rev=HEAD&content-type=text/vnd.viewcvs-markup
+
+  <SteveA> The first class in the file is ZopeContainerAdapter. Don't
+  bother about that.
+
+  <SteveA> About half way down, there is ZopeContainerDecorator.
+
+  <SteveA> You can see that it derives from Wrapper. That is, it is a
+  kind of context wrapper.
+
+  <SteveA> It implements(IZopeContainer). Decorators are set up so that
+  if you say that the class implements some interface, a wrapped object
+  will provide whatever the object provides, plus what the decorator
+  provides.
+
+  <SteveA> Each of the methods in ZopeContainerDecorator are handled by
+  the decorator (that is, by the wrapper), rather than by the object
+  that is wrappe.
+
+  <SteveA> Each of the methods in ZopeContainerDecorator are handled by
+  the decorator (that is, by the wrapper), rather than by the object
+  that is wrapped.
+
+  <SteveA> If you look at the first method, __getitem__, you see that it
+  passes the call to __getitem__ through to the proxied object, but
+  rather than return the retrieved item, it returns the item in a
+  context-wrapper.
+
+  <SteveA> This is helpful when you are working with containers, as, if
+  you have a context-wrapped container, when you get one of its
+  subobjects, it too is context wrapped. So, getPath and getting
+  services for that subobject will work as expected.
+
+  <SteveA> Writing using decorators is another way to keep your content
+  classes looking like ordinary python, and putting zope-specific
+  functionality in a separate place.
+
+  <SteveA> this makes it easier to write tests, easier to see what is
+  going on, easier to use third-party python classes with zope
+
+  <bigkevmcd> by developing the content in python, and then "decorating"
+  it with Zope behaviour via a Decorator?
+
+  <SteveA> right
+
+
 Issues
 ------
 
 * How to decide what permssions to use for new methods introduced in
   the decorator?
 
-Consider a ZopeContainerDecorator. It has a method 'rename' that does not
-appear in IContainer. What permission should guard 'rename'?
-'rename' depends on 'setObject' in IContainer. Different content components
-protect 'setObject' with different permissions; for example,
-zope.ManageContent or zope.ManageServices.
-So, we can't guard 'rename' with one hard-coded permission.
+  Consider a ZopeContainerDecorator. It has a method 'rename' that does not
+  appear in IContainer. What permission should guard 'rename'?
+  'rename' depends on 'setObject' in IContainer. Different content components
+  protect 'setObject' with different permissions; for example,
+  zope.ManageContent or zope.ManageServices.
+  So, we can't guard 'rename' with one hard-coded permission.
 
-What could we do instead?
+  What could we do instead?
 
-- Reorder proxies, decorator outside the security proxy.
-We could somehow re-order the proxies around an object so that the decorator
-goes on the outside. This is awkward, as it breaks our invariant of putting
-the security proxy always on the outside. There are also efficiency issues
-if the interface-related descriptors are security-proxied.
+  - Reorder proxies, decorator outside the security proxy.
+  We could somehow re-order the proxies around an object so that the decorator
+  goes on the outside. This is awkward, as it breaks our invariant of putting
+  the security proxy always on the outside. There are also efficiency issues
+  if the interface-related descriptors are security-proxied.
 
-- What protects rename should be what protects setObject.
-We could declare that rename is to be protected with whatever protects the
-'setObject' operation on the proxied object.
-That makes the zcml more complex, and special for decorators.
-That also makes the checker to use for decorators more complex and special.
+  Let's analyze this a bit further.  
 
-- Rename gets proxied by magic in the decorator.
-We could declare that rename is a special "untrusted" method, and cause
-its 'self' argument to be bound not to the decorator instance, but to
-some special object that is like the original decorator, but which wraps
-a security-proxied object.
+  * Why do we have an invariant that security proxies always go on the
+    outside?  I'm not sure I know. I think it may be:
 
-- Register decorators to classes rather than interfaces.
-Security declarations are made by class, not by interface, so it makes sense
-for a decorator that needs particular security declarations to be declared
-for a class, and not an interface.
-It is not possible, currently, to register an adapter for a class.
-If it is made possible to do this, adapters registered for classes would
-always trump those registered for interfaces.
+    + Context methods and methods of ContextAware classes get rebound
+    to wrapper. They don't generally expect to be bound to security
+    proxies.  In particular, it's common for context methods to rely
+    on access to private data.
 
+    + Maybe it simplified wrapper manipulation. I *think* recent
+    changes to basic proxy introspection make this a non issue.
+
+  * Adapters commonly are put around proxied objects.
+
+    I see decorators lying along a continuum from totally transparent
+    proxies to adapters.  Given, this, I'm not positive that we have
+    such an invariant.
+
+  * It would be bad for interface descriptors to end up on the wrong
+    side of security proxies.  Security descriptors always need to
+    be bound to objects wo security proxies.
+
+    Note that interface descriptors can deal with context wrappers
+    now, but they would go faster if they didn't need to.
+
+    If we didn't have the ContextAware mix-in, we wouldn't need to
+    worry about effects on interface descriptors, because they
+    wouldn't evey be magically converted to context descriptors.
+
+  * Is there a helpful rule that's less general than "security
+    proxies" always go on the outside?
+
+  - What protects rename should be what protects setObject.
+  We could declare that rename is to be protected with whatever protects the
+  'setObject' operation on the proxied object.
+  That makes the zcml more complex, and special for decorators.
+  That also makes the checker to use for decorators more complex and special.
+
+  - Rename gets proxied by magic in the decorator.
+  We could declare that rename is a special "untrusted" method, and cause
+  its 'self' argument to be bound not to the decorator instance, but to
+  some special object that is like the original decorator, but which wraps
+  a security-proxied object.
+
+  - Register decorators to classes rather than interfaces.
+  Security declarations are made by class, not by interface, so it makes sense
+  for a decorator that needs particular security declarations to be declared
+  for a class, and not an interface.
+  It is not possible, currently, to register an adapter for a class.
+  If it is made possible to do this, adapters registered for classes would
+  always trump those registered for interfaces.
+
+* ContextAware mix-in considered harmful
+
+  ContextAware is a marker mix-in class that causes all descriptors
+  for instances of the class to be implicitly rebound to context
+  wrappers if they are accessed through context wrappers. These
+  descriptors include descriptors not defined in the class statement,
+  such as inherited descriptors and descriptors set by interface
+  declarations. 
+
+  This implicit behavior has a high potential to break the
+  expectations of descrioptors set in the class statement.
+
+  Note that it would not be so evil to have a way to say that all of
+  the descriptors defined in a class statement are context
+  descriptoes, since that is still explicit.  For example::
+
+     class Foo(A, B):
+
+        ContextAware()
+
+        implements(IFoo)
+
+        def m1(self, ...): ...
+
+        def m2(self, ...): ...
+
+        ...
+
+  would assert that m1, m2, etc are context methods but would not
+  affect descriptors provided by A and B. 
+
+  The way to achieve this is with the __metaclass__ advice hack.
+
+  Actually, I *think* the ContextAware mixin could be fixed with a suitably
+  tricky meta class.
