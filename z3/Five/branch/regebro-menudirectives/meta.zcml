@@ -151,6 +151,19 @@
         schema="zope.app.publisher.browser.metadirectives.IMenuItemDirective"
         handler=".globalbrowsermenuservice.menuItemDirective"
         />
+    
+    <meta:complexDirective
+        name="menuItems"
+        schema="zope.app.publisher.browser.metadirectives.IMenuItemsDirective"
+        handler=".globalbrowsermenuservice.menuItemsDirective"
+        >
+
+      <meta:subdirective
+          name="menuItem"
+          schema="zope.app.publisher.browser.metadirectives.IMenuItemSubdirective"
+          />
+    
+    </meta:complexDirective>
                 
   </meta:directives>
 
