@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.10 2003/07/15 14:20:06 srichter Exp $
+$Id: onlinehelp.py,v 1.11 2003/07/15 14:46:04 srichter Exp $
 """
 from zope.interface import providedBy
 
@@ -69,7 +69,8 @@ class FindRelevantHelpTopics(BrowserView):
                     continue
                 for topic in help.getTopicsForInterfaceAndView(iface, spec[4]):
                     parents = getParents(topic)
-                    path = map(getName, parents[:-1]+[topic]) 
+                    path = map(getName, [topic]+parents[:-1]) 
+                    path.reverse()
                     url = getView(obj, 'absolute_url', self.request)()
                     url += '/++help++/'+'/'.join(path)
                     topics.append(FindResult(url, topic))
