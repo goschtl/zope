@@ -378,7 +378,6 @@ def do_special(trigger, action, addrs):
         complain("%s\n%s\n", subject, output)
 
 def send_mail(addrs, text, subject):
-    mailcmd = MAIL_CMD
     user = getuser()
     fullname = email = ''
     if user:
@@ -390,34 +389,39 @@ def send_mail(addrs, text, subject):
     if not email:
         email = OFFICIAL_SENDER
 
-    cmd = ("%(verbose1)s%(dryrun)s%(mailcmd)s %(verbose2)s"
-           % {'verbose1': (VERBOSE and "set -x; ") or "",
-              'dryrun': (DRYRUN and "echo Would do: ") or "",
-              'mailcmd': mailcmd % email,
-              'verbose2': (VERBOSE and "-v") or ""})
+    cmd_info = {'verbose1': (VERBOSE and "set -x; ") or "",
+                'dryrun': (DRYRUN and "echo Would do: ") or "",
+                'mailcmd': MAIL_CMD % email,
+                'verbose2': (VERBOSE and "-v") or ""}
+    cmd = ("%(verbose1)s%(dryrun)s%(mailcmd)s %(verbose2)s" % cmd_info)
 
     if VERBOSE:
-        complain("%sDoing mail cmd for user %s:\n\t%s\n",
+        complain("%sDid mail cmd for user %s:\n\t%s\n",
                  ((DRYRUN and "NOT ") or ""), user, cmd)
 
+    envelope_info = {'subject': subject,
+                     'to': string.join(addrs, ", "),
+                     'from': "%s <%s>" % (fullname, email),
+                     'sender': OFFICIAL_SENDER,
+                     'text': text,
+                     'user': user}
     text = ("Subject: %(subject)s\n"
             "To: %(to)s\n"
             "From: %(from)s\n"
             "Sender: %(sender)s\n"
             "\n"
             "%(text)s"
-            % {'subject': subject,
-               'to': string.join(addrs, ","),
-               'from': "%s <%s>" % (fullname, email),
-               'sender': OFFICIAL_SENDER,
-               'text': text})
+            % envelope_info)
 
     cmd_in, cmd_out = os.popen2(cmd, 'rw')
     cmd_in.write(text)
     cmd_in.close()
     output = cmd_out.read()
     result = cmd_out.close()
-    if output:
+    if VERBOSE:
+        complain("%(user)s (%(from)s) sent to %(to)s, subject: '%(subject)s'\n"
+                 % envelope_info)
+    if result:
         note_failure("*** Mail cmd yielded output %s:\n%s\n",
                      result, output)
 
