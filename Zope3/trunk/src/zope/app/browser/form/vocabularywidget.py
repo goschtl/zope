@@ -124,9 +124,6 @@ def message(msgid, default):
     return msgid
 
 
-_msg_no_value = message(_("vocabulary-no-value"), "(no value)")
-
-
 # Widget implementation:
 
 class ViewSupport(object, TranslationHook):
@@ -261,6 +258,8 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
 
 class SingleDataHelper(object):
 
+    _msg_no_value = message(_("vocabulary-no-value"), "(no value)")
+
     def _compute_data(self):
         if self.name in self.request.form:
             token = self.request.form[self.name]
@@ -290,7 +289,7 @@ class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
 
     def render(self, value):
         if value is None:
-            return self.translate(_msg_no_value)
+            return self.translate(self._msg_no_value)
         else:
             term = self.context.vocabulary.getTerm(value)
             return self.textForValue(term)
@@ -516,7 +515,7 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
         L = self.renderItemsWithValues(values)
         if not self.context.required:
             option = ("<option name='%s' value=''>%s</option>"
-                      % (self.name, self.translate(_msg_no_value)))
+                      % (self.name, self.translate(self._msg_no_value)))
             L.insert(0, option)
         return L
 
