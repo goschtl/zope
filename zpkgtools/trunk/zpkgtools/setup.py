@@ -40,6 +40,7 @@ class SetupContext:
         self.scripts = []
         self.platforms = None
         self.classifiers = None
+        self.data_files = []
         self.load_metadata(
             os.path.join(self._working_dir, pkgname,
                          publication.PUBLICATION_CONF))
@@ -113,12 +114,12 @@ class SetupContext:
     def scan_collection(self, name, directory, reldir):
         # load the collection metadata
         pkginfo = package.loadCollectionInfo(directory, reldir)
-        self.scripts.extend(pkginfo.script)
+        self.scan_basic(pkginfo)
 
     def scan_package(self, name, directory, reldir):
         # load the package metadata
         pkginfo = package.loadPackageInfo(name, directory, reldir)
-        self.scripts.extend(pkginfo.script)
+        self.scan_basic(pkginfo)
         self.ext_modules.extend(pkginfo.extensions)
         self.add_package_dir(name, reldir)
 
@@ -131,6 +132,9 @@ class SetupContext:
                 init_py = os.path.join(path, "__init__.py")
                 if os.path.isfile(init_py):
                     # if this package is published separately, skip it:
+                    # XXX we shouldn't actually need this if we only
+                    # use this class to scan in the generated
+                    # distributions
                     if os.path.isfile(
                         os.path.join(path, publication.PUBLICATION_CONF)):
                         continue
@@ -144,8 +148,8 @@ class SetupContext:
                 self.add_package_file(name, fn)
 
         # We need to check that any files that were labelled as
-        # scripts aren't copied in as package data; they shouldn't be
-        # installed into the package itself.
+        # scripts or application data aren't copied in as package
+        # data; they shouldn't be installed into the package itself.
         #
         # XXX I'm not sure whether documentation files should be
         # removed from package_data or not, given that there's no spec
@@ -153,8 +157,11 @@ class SetupContext:
         #
         relbase = posixpath.join(reldir, "")
         pkgfiles = self.package_data.get(reldir, [])
-        for script in pkginfo.script:
-            pkgdatapath = script[len(relbase):]
+        non_pkgdata = pkginfo.script[:]
+        for dir, files in pkginfo.data_files:
+            non_pkgdata.extend(files)
+        for fn in non_pkgdata:
+            pkgdatapath = fn[len(relbase):]
             if pkgdatapath in pkgfiles:
                 pkgfiles.remove(pkgdatapath)
 
@@ -172,6 +179,19 @@ class SetupContext:
                 if ext in (".pyc", ".pyo", ".so", ".sl", ".pyd"):
                     continue
                 self.add_package_file(pkgname, posixpath.join(reldir, fn))
+
+    def scan_basic(self, pkginfo):
+        self.scripts.extend(pkginfo.script)
+        if pkginfo.data_files:
+            if self.data_files:
+                # merge:
+                d = dict(self.data_files)
+                for dir, files in pkginfo.data_files:
+                    L = d.setdefault(dir, [])
+                    L.extend(files)
+                self.data_files = d.items()
+            else:
+                self.data_files = pkginfo.data_files
 
     def add_package_dir(self, pkgname, reldir):
         self.packages.append(pkgname)
