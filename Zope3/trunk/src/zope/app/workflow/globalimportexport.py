@@ -13,11 +13,10 @@
 ##############################################################################
 """ProcessDefinition Import Export Utility
 
-$Id: globalimportexport.py,v 1.5 2004/02/27 16:50:37 philikon Exp $
+$Id: globalimportexport.py,v 1.6 2004/04/15 15:29:45 jim Exp $
 """
 __metaclass__ = type
 
-from zope.interface.implementor import ImplementorRegistry
 from zope.proxy import removeAllProxies
 from zope.interface import implements, providedBy
 
@@ -79,6 +78,56 @@ class ImportExportUtility:
         """
         self._exporters.register(interface, factory)
 
+
+from zope.interface import Interface
+class ImplementorRegistry:
+    # This was copied from zope.interface.implementor
+    # zope.interface.implementor has been removed
+
+    # The implementation that needs this should be rethought
+
+    def __init__(self):
+        self._reg = {}
+
+    def _registerAllProvided(self, primary_provide, object, provide):
+        # Registers a component using (require, provide) as a key.
+        # Also registers superinterfaces of the provided interface,
+        # stopping when the registry already has a component
+        # that provides a more general interface or when the Base is Interface.
+
+        reg = self._reg
+        reg[provide] = (primary_provide, object)
+        bases = getattr(provide, '__bases__', ())
+        for base in bases:
+            if base is Interface:
+                # Never register the say-nothing Interface.
+                continue
+            existing = reg.get(base, None)
+            if existing is not None:
+                existing_provide = existing[0]
+                if existing_provide is not primary_provide:
+                    if not existing_provide.extends(primary_provide):
+                        continue
+                    # else we are registering a general component
+                    # after a more specific component.
+            self._registerAllProvided(primary_provide, object, base)
+
+
+    def register(self, provide, object):
+        self._registerAllProvided(provide, object, provide)
+
+
+    def getRegisteredMatching(self):
+        return [(iface, impl)
+                for iface, (regiface, impl) in self._reg.items()
+                if iface is regiface]
+
+    def get(self, interface, default=None):
+        c = self._reg.get(interface)
+        if c is not None:
+            return c[1]
+
+        return default
 
 globalImportExport = ImportExportUtility()
 
