@@ -20,10 +20,9 @@ from zope.component import getGlobalService, ComponentLookupError
 from zope.configuration.exceptions import ConfigurationError
 from zope.component.servicenames import Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
-from zope.app.publisher.browser.globalbrowsermenuservice import menuItemDirective
+from zope.app.publisher.browser.globalbrowsermenuservice import\
+     menuItemDirective
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
 from zope.app.form.browser.metaconfigure import BaseFormDirective
@@ -33,15 +32,9 @@ from resource import PageTemplateResourceFactory
 from resource import DirectoryResourceFactory
 from browser import BrowserView, EditView
 from metaclass import makeClass
-from security import getSecurityInfo, protectClass, protectName, initializeClass
-
-class FivePageTemplateFile(ViewPageTemplateFile):
-
-    def pt_getContext(self, instance, request, **_kw):
-        # instance is a View component
-        namespace = super(FivePageTemplateFile, self).pt_getContext(instance, request, **_kw)
-        namespace['here'] = namespace['context']
-        return namespace
+from security import getSecurityInfo, protectClass, protectName,\
+     initializeClass
+from pagetemplatefile import ZopeTwoPageTemplateFile
 
 
 def page(_context, name, permission, for_,
@@ -339,7 +332,7 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     class_.fulledit_label = fulledit_label
 
-    class_.generated_form = ViewPageTemplateFile(default_template)
+    class_.generated_form = ZopeTwoPageTemplateFile(default_template)
 
     # Not the prettiest solution, but it works...
     class_.__init__ = EditView.__init__
@@ -409,7 +402,7 @@ def makeClassForTemplate(src, template=None, used_for=None,
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
-    cdict.update({'index': FivePageTemplateFile(src, template)})
+    cdict.update({'index': ZopeTwoPageTemplateFile(src, template)})
     bases += (ViewMixinForTemplates,)
     class_ = makeClass("SimpleViewClass from %s" % src, bases, cdict)
 

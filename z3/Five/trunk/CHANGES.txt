@@ -4,10 +4,20 @@ Five Changes
 Trunk
 -----
 
-* Five now supports the browser:menu, menuItem and menuItems directives.
+* Five now uses the Zope 2 page template engine, not the Zope 3
+  engine. This allows better integration with Zope 2-based page
+  templates, such as macros.
+
+  It uses TrustedExecutables technology (thanks to Dieter Maurer) to
+  turn off Zope 2 security in page templates, so Five's security
+  behavior is very similar to what it was before.
+
+* Five now supports the browser:menu, menuItem and menuItems
+  directives.
   
-  Also supports the menu parameter for page directives and subdirectives,
-  as well as editform directives. [XXX this doesn't seem to work yet]
+  Also supports the menu parameter for page directives and
+  subdirectives, as well as editform directives. [XXX this doesn't
+  seem to work yet]
 
 * A new Five-specific directive has been added:
   five:pagesFromDirectory.  This adds one page for each .pt file in a
