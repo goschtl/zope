@@ -15,11 +15,10 @@
 
 $Id$
 """
+import zope.interface
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
 from zope.app.event.interfaces import IEvent
-import zope.interface
-
 
 class IDatabaseOpenedEvent(IEvent):
     """The main database has been opened."""
@@ -44,10 +43,9 @@ class SystemConfigurationParticipation:
     principal = system_user
     interaction = None
 
-
-_configured = 0
+_configured = False
 def config(file, execute=True):
-    "Configure site globals"
+    """Configure site globals"""
     global _configured
 
     if _configured:
@@ -71,6 +69,7 @@ def config(file, execute=True):
     return context
 
 def database(db):
+    """Load ZODB database from Python module or FileStorage file"""
     if type(db) is str:
         # Database name
         if db.endswith('.py'):
