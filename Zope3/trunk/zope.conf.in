@@ -1,0 +1,31 @@
+# identify the component configuration used to define the site:
+site-definition site.zcml
+
+# number of bytecode instructions to execute between checks for
+# interruptions (SIGINTR, thread switches):
+interrupt-check-interval 200
+
+<server>
+  type HTTP
+  address 8080
+</server>
+
+<zodb>
+  <filestorage>
+    path Data.fs
+  </filestorage>
+</zodb>
+
+<eventlog>
+  # This sets up logging to both a file (z3.log) and to standard
+  # output (STDOUT).  The "path" setting can be a relative or absolute
+  # filesystem path or the tokens STDOUT or STDERR.
+
+  <logfile>
+    path z3.log
+  </logfile>
+
+  <logfile>
+    path STDOUT
+  </logfile>
+</eventlog>
