@@ -30,9 +30,6 @@ from zpkgtools import loader
 _logger = logging.getLogger(__name__)
 
 
-DEFAULT_TYPE = "package"
-
-
 class MapLoadingError(ValueError):
     def __init__(self, message, filename, lineno):
         self.filename = filename
@@ -40,32 +37,8 @@ class MapLoadingError(ValueError):
         ValueError.__init__(self, message)
 
 
-class LocationMap(UserDict.UserDict):
-
-    def __getitem__(self, key):
-        return self.data[normalizeResourceId(key)]
-
-    def __setitem__(self, key, item):
-        self.data[normalizeResourceId(key)] = item
-
-    def __delitem__(self, key):
-        del self.data[normalizeResourceId(key)]
-
-    def has_key(self, key):
-        return normalizeResourceId(key) in self.data
-
-    def update(self, dict=None, **kwargs):
-        if dict:
-            for key, value in dict.iteritems():
-                self.data[normalizeResourceId(key)] = value
-        if len(kwargs):
-            self.update(kwargs)
-
-    def pop(self, key, *args):
-        return self.data.pop(normalizeResourceId(key), *args)
-
-    def __contains__(self, key):
-        return normalizeResourceId(key) in self.data
+def LocationMap():
+    return {}
 
 
 def load(f, base=None, mapping=None):
@@ -90,7 +63,6 @@ def load(f, base=None, mapping=None):
             raise MapLoadingError("malformed package specification",
                                   getattr(f, "name", "<unknown>"), lineno)
         resource, url = parts
-        resource = normalizeResourceId(resource)
         try:
             cvsurl = cvsloader.parse(url)
         except ValueError:
@@ -153,18 +125,6 @@ def fromPathOrUrl(path, mapping=None):
         return load(f, base, mapping)
     finally:
         f.close()
-
-
-def normalizeResourceId(resource):
-    if resource[:1] == ":":
-        return resource
-    type, rest = urllib.splittype(resource)
-    if not type:
-        type = DEFAULT_TYPE
-    if type == "package":
-        if not isModuleName(rest):
-            raise ValueError("not a valid package name: %r" % rest)
-    return "%s:%s" % (type, rest)
 
 
 _ident = "[a-zA-Z_][a-zA-Z_0-9]*"

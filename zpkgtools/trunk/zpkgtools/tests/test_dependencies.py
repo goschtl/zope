@@ -42,8 +42,8 @@ class DependenciesTestCase(unittest.TestCase):
             """)
         deps = dependencies.load(sio)
         self.assertEqual(len(deps), 2)
-        self.assert_("package:zope.foo" in deps)
-        self.assert_("package:zope.app.bar" in deps)
+        self.assert_("zope.foo" in deps)
+        self.assert_("zope.app.bar" in deps)
 
     def test_just_others(self):
         sio = StringIO("""\
@@ -65,8 +65,8 @@ class DependenciesTestCase(unittest.TestCase):
             """)
         deps = dependencies.load(sio)
         self.assertEqual(len(deps), 4)
-        self.assert_("package:zope.foo" in deps)
-        self.assert_("package:zope.app.bar" in deps)
+        self.assert_("zope.foo" in deps)
+        self.assert_("zope.app.bar" in deps)
         self.assert_("feature:not-a-module" in deps)
         self.assert_("feature:zope.bar" in deps)
 
@@ -82,10 +82,10 @@ class DependenciesTestCase(unittest.TestCase):
         deps = dependencies.load(sio)
         self.assertEqual(len(deps), 5)
         self.assert_("feature:foo" in deps)
-        self.assert_("package:zope.app" in deps)
-        self.assert_("package:zope.schema" in deps)
+        self.assert_("zope.app" in deps)
+        self.assert_("zope.schema" in deps)
         self.assert_("feature:yes-really" in deps)
-        self.assert_("package:zope.yes_again" in deps)
+        self.assert_("zope.yes_again" in deps)
 
 
 def test_suite():

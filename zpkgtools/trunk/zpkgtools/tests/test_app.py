@@ -184,49 +184,23 @@ class CommandLineTestCase(unittest.TestCase):
         # Too many trailing numeric seqments
         eq(convert("mypkg-1_2_3alpha4_5"), None)
 
-
-class DistributionWithConflictingNamesTestCase(unittest.TestCase):
-    """Test that conflicting component names generates an error message."""
-
-    def setUp(self):
-        self.old_tempdir = tempfile.tempdir
-        self.stderr = sys.stderr
-        self.tmpdir = tempfile.mkdtemp(prefix="test_app_")
-        os.mkdir(os.path.join(self.tmpdir, "d1"))
-        os.mkdir(os.path.join(self.tmpdir, "d2"))
-        # define the resource map
-        self.mapfile = os.path.join(self.tmpdir, "resource.map")
-        f = open(self.mapfile, "w")
-        f.write("package:r    d1\n")
-        f.write("collection:r d2\n")
-        f.close()
-        # make collection:r depend on package:r
-        f = open(os.path.join(self.tmpdir, "d2", "DEPENDENCIES.cfg"), "w")
-        f.write("package:r\n")
-        f.close()
-        # make collection:r packagable
-        publicationfile = os.path.join(self.tmpdir, "d2",
-                                       publication.PUBLICATION_CONF)
-        f = open(publicationfile, "w")
-        f.write("Metadata-version: 1.0\n")
-        f.write("Name: foo\n")
-        f.close()
-        sys.stderr = StringIO()
-
-    def tearDown(self):
-        shutil.rmtree(self.tmpdir)
-        tempfile.tempdir = self.old_tempdir
-        sys.stderr = self.stderr
-
-    def test_conflicting_resource_names(self):
-        resource_map = "file://" + urllib.pathname2url(self.mapfile)
-        options = app.parse_args(["-f", "-m", resource_map, "collection:r"])
-        appobj = app.BuilderApplication(options)
-        appobj.load_resource()
-        self.assertRaises(SystemExit, appobj.build_distribution)
-        appobj.cleanup()
-        # I'm undecided whether the message itself should be checked.
-        self.assert_(sys.stderr.getvalue())
+    def test_control_build_type(self):
+        options = self.parse_args([])
+        self.assert_(options.build_type is None)
+        # collection
+        # short arg:
+        options = self.parse_args(["-c"])
+        self.assert_(options.build_type is "collection")
+        # long arg:
+        options = self.parse_args(["--collection"])
+        self.assert_(options.build_type is "collection")
+        # application
+        # short arg:
+        options = self.parse_args(["-a"])
+        self.assert_(options.build_type is "application")
+        # long arg:
+        options = self.parse_args(["--application"])
+        self.assert_(options.build_type is "application")
 
 
 class ApplicationSupportTestCase(unittest.TestCase):
@@ -237,37 +211,21 @@ class ApplicationSupportTestCase(unittest.TestCase):
         pkgmap = os.path.join(self.tmpdir, "packages.map")
         self.mapfile = "file://" + urllib.pathname2url(pkgmap)
         f = open(pkgmap, "w")
-        print >>f, ("collection:application  file://"
+        print >>f, ("application  file://"
                     + urllib.pathname2url(appdir))
         f.close()
         os.mkdir(appdir)
         f = open(os.path.join(appdir, publication.PUBLICATION_CONF), "w")
         print >>f, "Metadata-Version: 1.0"
         print >>f, "Name: sample application"
-        print >>f, "Installation-type: Application"
         f.close()
 
     def tearDown(self):
         shutil.rmtree(self.tmpdir)
 
-    def test_load_metadata(self):
-        # Check that when the metadata for an application distribution
-        # is loaded, that the resource_type is revised to reflect the
-        # application status.
-        argv = [CMD,
-                "-f", "-m", self.mapfile, "-v1.0",
-                "collection:application"]
-        options = app.parse_args(argv)
-        application = app.BuilderApplication(options)
-        self.assertEqual(application.resource_type, "collection")
-        #
-        application.load_resource()
-        self.assertEqual(application.resource_type, "application")
-
 
 def test_suite():
     suite = unittest.makeSuite(CommandLineTestCase)
-    suite.addTest(unittest.makeSuite(DistributionWithConflictingNamesTestCase))
     suite.addTest(unittest.makeSuite(ApplicationSupportTestCase))
     return suite
 

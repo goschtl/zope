@@ -28,7 +28,6 @@ from zpkgtools import config
 from zpkgtools import dependencies
 from zpkgtools import include
 from zpkgtools import loader
-from zpkgtools import locationmap
 from zpkgtools import package
 from zpkgtools import publication
 from zpkgtools import runlog
@@ -71,10 +70,9 @@ class BuilderApplication(Application):
     def __init__(self, options):
         Application.__init__(self, options)
         self.ip = None
-        self.resource = locationmap.normalizeResourceId(options.resource)
-        self.resource_type, self.resource_name = self.resource.split(":", 1)
+        self.resource = options.resource
         if not options.release_name:
-            options.release_name = self.resource_name
+            options.release_name = self.resource
         # Create a new directory for all temporary files to go in:
         self.tmpdir = tempfile.mkdtemp(prefix=options.program + "-")
         tempfile.tempdir = self.tmpdir
@@ -82,11 +80,18 @@ class BuilderApplication(Application):
             self.loader = loader.Loader(tag=options.revision_tag)
         else:
             self.loader = loader.Loader()
+        self.ip = include.InclusionProcessor(self.loader)
 
         if self.resource not in self.locations:
             self.error("unknown resource: %s" % self.resource)
         self.resource_url = self.locations[self.resource]
         self.handled_resources = sets.Set()
+        #
+        release_name = self.options.release_name
+        self.target_name = "%s-%s" % (release_name, self.options.version)
+        self.target_file = self.target_name + ".tar.bz2"
+        self.destination = os.path.join(self.tmpdir, self.target_name)
+        os.mkdir(self.destination)
 
     def build_distribution(self):
         """Create the distribution tree.
@@ -97,47 +102,55 @@ class BuilderApplication(Application):
         `build_package_distribution()` based on the type of the
         primary resource.
         """
-        # This could be either a package distribution or a collection
-        # distribution; it's the former if there's an __init__.py in
-        # the source directory.
-        os.mkdir(self.destination)
-        self.ip = include.InclusionProcessor(self.source, self.loader)
-        self.ip.add_manifest(self.destination)
-        self.handled_resources.add(self.resource)
-        name = "build_%s_distribution" % self.resource_type
-        method = getattr(self, name)
-        method()
+        top = Component(self.resource, self.resource_url, self.ip)
+        top.write_package(self.destination)
+        handled = sets.Set()
+        required = top.get_dependencies()
+        remaining = required
+        if self.options.build_type in ("application", "collection"):
+            depsdir = os.path.join(self.destination, "Dependencies")
+            first = True
+            while remaining:
+                resource = remaining.pop()
+                handled.add(resource)
+                if resource not in self.locations:
+                    # it's an external dependency, so we do nothing for now
+                    self.logger.warn("ignoring resource %r (no source)"
+                                     % resource)
+                    required.add(resource)
+                    continue
+                #
+                location = self.locations[resource]
+                self.logger.debug("loading resource %r from %s",
+                                  resource, location)
+                component = Component(resource, location, self.ip)
+                if first:
+                    os.mkdir(depsdir)
+                    first = False
+                deps = component.get_dependencies()
+                remaining |= (deps - handled)
+                fullname = ("%s-%s-%s"
+                            % (resource, top.name, self.options.version))
+                destination = os.path.join(depsdir, fullname)
+                component.write_package(destination)
+                component.write_setup_py()
+                component.write_setup_cfg()
+                component.write_manifest()
+        if required:
+            top.write_dependencies(required)
+        if self.options.build_type == "application":
+            top.write_setup_py(filename="install.py")
+            self.write_application_support(top)
+        else:
+            top.write_setup_py()
+        top.write_setup_cfg()
+        top.write_manifest()
 
-    def build_package_distribution(self):
-        pkgname = self.metadata.name
-        pkgdest = os.path.join(self.destination, pkgname)
-        specs = include.load(self.source, url=self.resource_url)
-        self.ip.addIncludes(self.source, specs.loads)
-        specs.collection.cook()
-        specs.distribution.cook()
-        try:
-            self.ip.createDistributionTree(pkgdest, specs.collection)
-        except zpkgtools.LoadingError, e:
-            self.error(str(e))
-        self.ip.addIncludes(self.destination, specs.distribution)
-        pkginfo = package.loadPackageInfo(pkgname, pkgdest, pkgname)
-        setup_cfg = os.path.join(self.destination, "setup.cfg")
-        if not os.path.exists(setup_cfg):
-            # only generate setup.cfg if it doesn't exist already
-            self.generate_setup_cfg(self.destination, pkginfo)
-        self.generate_package_setup(self.destination, self.resource_name)
-        deps_path = os.path.join(self.source, "DEPENDENCIES.cfg")
-        if os.path.isfile(deps_path):
-            shutil.copy(deps_path,
-                        os.path.join(self.destination, "DEPENDENCIES.cfg"))
-        self.ensure_publication_info()
-
-    def build_application_distribution(self):
-        packages, collections = self.assemble_collection()
-        # need to generate the configure script and Makefile.in
+    def write_application_support(self, component):
+        pubinfo = component.get_publication_info()
         metavars = {
-            "PACKAGE_FULL_NAME": self.metadata.name,
-            "PACKAGE_SHORT_NAME": self.resource_name,
+            "PACKAGE_FULL_NAME": pubinfo.name or component.name,
+            "PACKAGE_SHORT_NAME": component.name,
             "PACKAGE_VERSION": self.options.version,
             }
         appsupport = os.path.join(zpkgtools.__path__[0], "appsupport")
@@ -146,15 +159,12 @@ class BuilderApplication(Application):
             self.copy_template(appsupport, "README.txt", metavars)
         self.copy_template(appsupport, "configure", metavars)
         self.copy_template(appsupport, "Makefile.in", metavars)
-        self.generate_collection_setup(self.destination, self.resource_name,
-                                       packages, collections,
-                                       filename="install.py")
 
     def copy_template(self, sourcedir, name, metavars):
         template = os.path.join(sourcedir, name) + ".in"
         output = os.path.join(self.destination, name)
         self.ip.add_output(output)
-        f = open(template)
+        f = open(template, "rU")
         text = f.read()
         f.close()
         for var in metavars:
@@ -163,270 +173,6 @@ class BuilderApplication(Application):
         f.write(text)
         f.close()
         shutil.copymode(template, output)
-
-    def build_collection_distribution(self):
-        packages, collections = self.assemble_collection()
-        self.generate_collection_setup(self.destination, self.resource_name,
-                                       packages, collections)
-
-    def assemble_collection(self):
-        self.name_parts = sets.Set()
-        # Build the destination directory:
-        deps = self.add_component("collection",
-                                  self.resource_name,
-                                  self.source,
-                                  self.resource_url,
-                                  distribution=True)
-        remaining = deps - self.handled_resources
-        collections = []
-        packages = []
-        unhandled_resources = sets.Set()
-        while remaining:
-            resource = remaining.pop()
-            type, name = resource.split(":", 1)
-            #
-            if resource not in self.locations:
-                # it's an external dependency, so we do nothing for now
-                self.logger.warn("ignoring resource %r (no source)"
-                                 % resource)
-                unhandled_resources.add(resource)
-                # but we only want to warn about it once, so say we handled it
-                self.handled_resources.add(resource)
-                continue
-            #
-            if type == "package":
-                packages.append(name)
-            elif type == "collection":
-                collections.append(name)
-            else:
-                # must be an external dependency, 'cause we don't know about it
-                unhandled_resources.add(resource)
-                continue
-            #
-            location = self.locations[resource]
-            self.logger.debug("loading resource %r from %s",
-                              resource, location)
-            source = self.loader.load_mutable_copy(location)
-            self.handled_resources.add(resource)
-            deps = self.add_component(type, name, source, location)
-            if type == "package" and "." in name:
-                # this is a sub-package; always depend on the parent package
-                i = name.rfind(".")
-                deps.add("package:" + name[:i])
-            remaining |= (deps - self.handled_resources)
-        if unhandled_resources:
-            deps_path = os.path.join(self.destination, "DEPENDENCIES.cfg")
-            deps = list(unhandled_resources)
-            deps.sort()
-            f = open(deps_path, "w")
-            for dep in deps:
-                type, name = dep.split(":", 1)
-                if type == "package":
-                    dep = name
-                print >>f, dep
-            f.close()
-        return packages, collections
-
-    def add_component(self, type, name, source, url, distribution=False):
-        """Add a single component to a collection.
-
-        :return: Set of dependencies for the added component.
-        :rtype: sets.Set
-
-        :param type:
-          The type of the resource from the resource identifier.
-
-        :param name:
-          The name of the resource from the resource identifier.  This
-          is used as the directory name for the component within the
-          collection distribution.
-
-        :param source:
-          Directory containing the source of the component.
-
-        """
-        self.logger.debug("adding %s:%s (%s) from %s", type, name, url, source)
-        if name in self.name_parts:
-            self.error("resources of different types share the name %r;"
-                       " could not create component directories for each"
-                       % name)
-        self.name_parts.add(name)
-        destination = os.path.join(self.destination, name)
-        self.ip.add_manifest(destination)
-        specs = include.load(source, url=url)
-        self.ip.addIncludes(source, specs.loads)
-        specs.collection.cook()
-        specs.distribution.cook()
-
-        if type == "package":
-            self.add_package_component(name, destination, specs.collection)
-        elif type == "collection":
-            self.add_collection_component(name, destination, specs.collection)
-
-        if distribution:
-            self.ip.addIncludes(self.destination, specs.distribution)
-            self.ensure_publication_info()
-
-        self.create_manifest(destination)
-        deps_file = os.path.join(source, "DEPENDENCIES.cfg")
-        if os.path.isfile(deps_file):
-            f = open(deps_file)
-            try:
-                return dependencies.load(f)
-            finally:
-                f.close()
-        else:
-            return sets.Set()
-
-    def add_collection_component(self, name, destination, spec):
-        try:
-            self.ip.createDistributionTree(destination, spec)
-        except zpkgtools.LoadingError, e:
-            self.error(str(e))
-        # load package information and generate setup.cfg
-        pkginfo = package.loadCollectionInfo(destination)
-        self.generate_setup_cfg(destination, pkginfo)
-
-    def add_package_component(self, name, destination, spec):
-        os.mkdir(destination)
-        pkgdest = os.path.join(destination, name)
-        try:
-            self.ip.createDistributionTree(pkgdest, spec)
-        except zpkgtools.LoadingError, e:
-            self.error(str(e))
-        # load package information and generate setup.cfg
-        pkginfo = package.loadPackageInfo(name, pkgdest, name)
-        self.generate_setup_cfg(destination, pkginfo)
-        self.generate_package_setup(destination, name)
-
-    def ensure_publication_info(self):
-        pubinfo_dest = os.path.join(self.destination, self.resource_name,
-                                    publication.PUBLICATION_CONF)
-        if not os.path.exists(pubinfo_dest):
-            shutil.copy2(os.path.join(self.source,
-                                      publication.PUBLICATION_CONF),
-                         pubinfo_dest)
-            self.ip.add_output(pubinfo_dest)
-
-    def load_metadata(self):
-        metadata_file = os.path.join(self.source, publication.PUBLICATION_CONF)
-        if not os.path.isfile(metadata_file):
-            self.error("source-dir (%r) does not contain required"
-                       " publication data file" % self.source)
-        f = open(metadata_file)
-        try:
-            self.metadata = publication.load(f)
-        finally:
-            f.close()
-        if self.resource_type == "collection":
-            # If this is an application collection, change the
-            # resource_type to "application":
-            from email.Parser import Parser
-            parser = Parser()
-            f = open(metadata_file)
-            msg = parser.parse(f, headersonly=True)
-            apptypes = msg.get_all("Installation-type", [])
-            if len(apptypes) > 1:
-                self.error("installation-type can only be"
-                           " specified once in %s",
-                           publication.PUBLICATION_CONF)
-            if apptypes and apptypes[0].lower() == "application":
-                # This is an application rather than a normal collection
-                self.resource_type = "application"
-
-    def load_resource(self):
-        """Load the primary resource and initialize internal metadata."""
-        self.logger.debug("loading resource %r from %s",
-                          self.resource, self.resource_url)
-        self.source = self.loader.load_mutable_copy(self.resource_url)
-        self.load_metadata()
-        release_name = self.options.release_name
-        self.target_name = "%s-%s" % (release_name, self.options.version)
-        self.target_file = self.target_name + ".tar.bz2"
-        self.destination = os.path.join(self.tmpdir, self.target_name)
-
-    def generate_package_setup(self, destination, name):
-        """Generate the setup.py file for a package distribution.
-
-        :Parameters:
-          - `destination`: Directory to write the setup.py into.
-          - `name`: Name of the collection.
-
-        """
-        setup_py = os.path.join(destination, "setup.py")
-        self.ip.add_output(setup_py)
-        f = open(setup_py, "w")
-        print >>f, SETUP_HEADER
-        print >>f, "context = zpkgtools.setup.PackageContext("
-        print >>f, "    %r, %r, __file__)" % (name, self.options.version)
-        print >>f
-        print >>f, "context.setup()"
-        f.close()
-
-    def generate_collection_setup(self, destination, name,
-                                  packages, collections, filename="setup.py"):
-        """Generate the setup.py file for a collection distribution.
-
-        :Parameters:
-          - `destination`: Directory to write the setup.py into.
-          - `name`: Name of the collection.
-          - `packages`: List of packages that are included.
-          - `collections`: List of collections that are included.
-
-        Each of these components must be present in a child directory
-        of ``self.destination``; the directory name should match the
-        component name in these lists.
-        """
-        setup_py = os.path.join(destination, filename)
-        self.ip.add_output(setup_py)
-        f = open(setup_py, "w")
-        print >>f, SETUP_HEADER
-        print >>f, "context = zpkgtools.setup.CollectionContext("
-        print >>f, "    %r, %r, __file__," % (name, self.options.version)
-        if collections:
-            f.write("    collections=[%r" % collections[0])
-            for n in collections[1:]:
-                f.write(",\n                 %r" % n)
-            f.write("],\n")
-        if packages:
-            f.write("    packages=[%r" % packages[0])
-            for n in packages[1:]:
-                f.write(",\n              %r" % n)
-            f.write("],\n")
-        print >>f, "    )"
-        print >>f
-        print >>f, "context.setup()"
-        f.close()
-
-    def generate_setup_cfg(self, destination, pkginfo):
-        """Write a setup.cfg file for a distribution component.
-
-        :Parameters:
-          - `destination`: Directory the setup.cfg file should be
-            written to.
-          - `pkginfo`: Package information loaded from a package's
-            SETUP.cfg file.
-
-        The generated setup.cfg will contain some settings applied for
-        all packages, and the list of documentation files from the
-        component.
-        """
-        setup_cfg = os.path.join(destination, "setup.cfg")
-        self.ip.add_output(setup_cfg)
-        f = open(setup_cfg, "w")
-        if pkginfo.documentation:
-            prefix = "doc_files = "
-            s = "\n" + (" " * len(prefix))
-            f.write("[bdist_rpm]\n")
-            f.write(prefix)
-            f.write(s.join(pkginfo.documentation))
-            f.write("\n\n")
-        f.write("[install_lib]\n")
-        # generate .pyc files
-        f.write("compile = 1\n")
-        # generate .pyo files using "python -O"
-        f.write("optimize = 1\n")
-        f.close()
 
     def include_support_code(self):
         """Include any support code needed by the generated setup.py
@@ -485,26 +231,6 @@ class BuilderApplication(Application):
 
         self.ip.copyTree(source, destination)
 
-    def create_manifest(self, destination):
-        """Write out a MANIFEST file for the directory `destination`.
-
-        :param destination:
-          Directory in the output tree for which a manifest is
-          needed.
-
-        Once this has been called for a directory, no further files
-        should be written to the directory tree rooted at
-        `destination`.
-        """
-        manifest_path = os.path.join(destination, "MANIFEST")
-        self.ip.add_output(manifest_path)
-        manifest = self.ip.drop_manifest(destination)
-        # XXX should check whether MANIFEST exists already; how to handle?
-        f = file(manifest_path, "w")
-        for name in manifest:
-            print >>f, name
-        f.close()
-
     def create_tarball(self):
         """Generate a compressed tarball from the destination tree.
 
@@ -537,18 +263,147 @@ class BuilderApplication(Application):
         """
         try:
             try:
-                self.load_resource()
-                self.build_distribution()
+                # We have to include the support code first since
+                # build_distribution() is going to write out the
+                # top-level MANIFEST file.
                 if self.options.include_support_code:
                     self.include_support_code()
+                self.build_distribution()
             except zpkgtools.LoadingError, e:
                 self.error(str(e), e.exitcode)
-            self.create_manifest(self.destination)
             self.create_tarball()
             self.cleanup()
         except:
             print >>sys.stderr, "----\ntemporary files are in", self.tmpdir
             raise
+
+
+class Component:
+    def __init__(self, name, url, ip):
+        self.name = name
+        self.url = url
+        self.ip = ip
+        self.dependencies = None
+        self.destination = None
+        self.pubinfo = None
+        self.source = self.ip.loader.load_mutable_copy(self.url)
+        specs = include.load(self.source, url=self.url)
+        self.ip.addIncludes(self.source, specs.loads)
+        specs.collection.cook()
+        specs.distribution.cook()
+        self.collection = specs.collection
+        self.distribution = specs.distribution
+
+    def get_dependencies(self):
+        """Get the direct dependencies of this component.
+
+        :return: A set of the dependencies.
+        :rtype: `sets.Set`
+
+        For Python packages, the implied dependency on the parent
+        package is made explicit.
+        """
+        if self.dependencies is None:
+            deps_file = os.path.join(self.source, "DEPENDENCIES.cfg")
+            if os.path.isfile(deps_file):
+                f = open(deps_file, "rU")
+                try:
+                    self.dependencies = dependencies.load(f)
+                finally:
+                    f.close()
+            else:
+                self.dependencies = sets.Set()
+            if self.is_python_package() and "." in self.name:
+                self.dependencies.add(self.name[:self.name.rfind(".")])
+        return self.dependencies
+
+    def get_package_info(self):
+        destdir = os.path.join(self.destination, self.name)
+        if self.is_python_package():
+            return package.loadPackageInfo(self.name, destdir, self.name)
+        else:
+            return package.loadCollectionInfo(destdir)
+
+    def get_publication_info(self):
+        if self.pubinfo is None:
+            pubinfo_file = os.path.join(self.source,
+                                        publication.PUBLICATION_CONF)
+            if os.path.isfile(pubinfo_file):
+                f = open(pubinfo_file, "rU")
+                try:
+                    self.pubinfo = publication.load(f)
+                finally:
+                    f.close()
+        return self.pubinfo
+
+    def is_python_package(self):
+        """Return True iff this component represents a Python package."""
+        if self.destination:
+            dir = os.path.join(self.destination, self.name)
+        else:
+            dir = self.source
+        return os.path.isfile(os.path.join(dir, "__init__.py"))
+
+    def write_package(self, destination):
+        self.destination = destination
+        if not os.path.exists(destination):
+            os.mkdir(destination)
+        self.ip.add_manifest(destination)
+        self.ip.addIncludes(destination, self.distribution)
+        pkgdir = os.path.join(destination, self.name)
+        self.ip.createDistributionTree(pkgdir, self.collection)
+        # Be sure the packaging metadata is available, no matter what
+        # PACKAGE.cfg says; we'll need when we use the distribution.
+        # The DEPENDENCIES.cfg file is handled separately.
+        for metafile in (package.PACKAGE_CONF,
+                         publication.PUBLICATION_CONF,
+                         "DEPENDENCIES.cfg"):
+            dstname = os.path.join(destination, self.name, metafile)
+            srcname = os.path.join(self.source, self.name, metafile)
+            if os.path.exists(srcname) and not os.path.exists(dstname):
+                self.ip.copy_file(srcname, dstname)
+
+    def write_manifest(self):
+        manifest_path = os.path.join(self.destination, "MANIFEST")
+        self.ip.add_output(manifest_path)
+        manifest = self.ip.drop_manifest(self.destination)
+        # XXX should check whether MANIFEST exists already; how to handle?
+        f = file(manifest_path, "w")
+        for name in manifest:
+            print >>f, name
+        f.close()
+
+    def write_setup_cfg(self):
+        setup_cfg = os.path.join(self.destination, "setup.cfg")
+        self.ip.add_output(setup_cfg)
+        pkginfo = self.get_package_info()
+        f = open(setup_cfg, "w")
+        f.write("# THIS IS A GENERATED FILE.\n")
+        f.write("\n")
+        if pkginfo.documentation:
+            prefix = "doc_files = "
+            s = "\n" + (" " * len(prefix))
+            f.write("[bdist_rpm]\n")
+            f.write(prefix)
+            f.write(s.join(pkginfo.documentation))
+            f.write("\n\n")
+        f.write("[install_lib]\n")
+        # generate .pyc files
+        f.write("compile = 1\n")
+        # generate .pyo files using "python -O"
+        f.write("optimize = 1\n")
+        f.close()
+
+    def write_setup_py(self, filename="setup.py", version=None):
+        setup_py = os.path.join(self.destination, filename)
+        self.ip.add_output(setup_py)
+        f = open(setup_py, "w")
+        print >>f, SETUP_HEADER
+        print >>f, "context = zpkgtools.setup.PackageContext("
+        print >>f, "    %r, %r, __file__)" % (self.name, version)
+        print >>f
+        print >>f, "context.setup()"
+        f.close()
 
 
 SETUP_HEADER = """\
@@ -618,6 +473,14 @@ def parse_args(argv):
               " maps specified in the configuration"), metavar="MAP")
 
     # options specific to building a package:
+    parser.add_option(
+        "-a", "--application", dest="build_type",
+        action="store_const", const="application",
+        help="build an application distribution")
+    parser.add_option(
+        "-c", "--collection", dest="build_type",
+        action="store_const", const="collection",
+        help="build a collection distribution")
     parser.add_option(
         "-n", "--name", dest="release_name",
         help="base name of the distribution file", metavar="NAME")

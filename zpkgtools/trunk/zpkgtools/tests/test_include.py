@@ -33,7 +33,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.source = os.path.dirname(__file__)
         self.destination = tempfile.mkdtemp(prefix="test_include_")
         self.loader = loader.Loader()
-        self.processor = include.InclusionProcessor(self.source, self.loader)
+        self.processor = include.InclusionProcessor(self.loader)
         self.source = os.path.abspath(self.source)
         self.files_written = []
 
@@ -169,7 +169,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
 
     def test_createDistributionTree_creates_destination(self):
         os.rmdir(self.destination)
-        self.processor.createDistributionTree(self.destination)
+        spec = include.Specification(self.source, "<fake>", "test")
+        self.processor.createDistributionTree(self.destination, spec)
         self.assert_(os.path.isdir(self.destination))
         self.assert_(os.path.isfile(join(self.destination, "ignorethis.txt")))
 
@@ -196,7 +197,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
     def test_including_from_cvs_url(self):
         self.start_including_from_cvs_url()
         URL = "cvs://anonymous@cvs.zope.org:pserver/cvs-repository:Zope3"
-        self.processor.addSingleInclude("somedir", URL, self.destination)
+        self.processor.addSingleInclude("somedir", URL, self.destination,
+                                        self.source)
         url, = self.args[0]
         self.assertEqual(url, URL)
         path, dest = self.args[1]
@@ -205,7 +207,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
     def test_including_from_cvs_url_without_base(self):
         self.start_including_from_cvs_url()
         URL = "cvs://anonymous@cvs.zope.org:pserver/cvs-repository:Zope3"
-        self.processor.addSingleInclude("somedir", URL, self.destination)
+        self.processor.addSingleInclude("somedir", URL, self.destination,
+                                        self.source)
         url, = self.args[0]
         self.assertEqual(url, URL)
         path, dest = self.args[1]
@@ -232,7 +235,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
                           self.processor.addSingleInclude,
                           "somedir",
                           "repository:somedir:TAG",
-                          self.destination)
+                          self.destination,
+                          self.source)
 
     def test_including_from_url(self):
         URL = "http://www.example.org/"
@@ -246,7 +250,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
         try:
             self.processor.addSingleInclude("somefile.txt",
                                             URL,
-                                            self.destination)
+                                            self.destination,
+                                            self.source)
         finally:
             urllib2.urlopen = old_urlopen
         self.assert_(self.called)
@@ -263,7 +268,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
         FILENAME = "ignorethis.txt"
         self.processor.addSingleInclude("foo/splat.txt",
                                         FILENAME,
-                                        self.destination)
+                                        self.destination,
+                                        self.source)
         sourcefile = join(self.source, FILENAME)
         resultfile = join(self.destination, "foo", "splat.txt")
         self.assert_(os.path.isfile(resultfile))

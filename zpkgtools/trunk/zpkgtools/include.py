@@ -270,7 +270,7 @@ class InclusionProcessor:
     the output tree.
 
     """
-    def __init__(self, source, loader):
+    def __init__(self, loader):
         """Initialize the processor.
 
         :Parameters:
@@ -281,14 +281,10 @@ class InclusionProcessor:
             external resources.
 
         """
-        if not os.path.exists(source):
-            raise InclusionError("source directory does not exist: %r"
-                                 % source)
-        self.source = os.path.abspath(source)
         self.manifests = []
         self.loader = loader
 
-    def createDistributionTree(self, destination, spec=None):
+    def createDistributionTree(self, destination, spec):
         """Create the output tree according to `spec`.
 
         :Parameters:
@@ -299,8 +295,6 @@ class InclusionProcessor:
             include.  If omitted, an empty specification is used.
 
         """
-        if spec is None:
-            spec = Specification(self.source, None, "collection")
         destination = os.path.abspath(destination)
         if spec.includes:
             if not os.path.exists(destination):
@@ -402,7 +396,7 @@ class InclusionProcessor:
         for source, relpath in spec.includes.iteritems():
             self.addSingleInclude(relpath, source, destination, spec.source)
 
-    def addSingleInclude(self, relpath, source, destination, dir=None):
+    def addSingleInclude(self, relpath, source, destination, dir):
         """Process a single include specification line.
 
         :Parameters:
@@ -433,7 +427,7 @@ class InclusionProcessor:
         type = urllib.splittype(source)[0] or ''
         if len(type) in (0, 1):
             # figure it's a path ref, possibly w/ a Windows drive letter
-            source = os.path.join(dir or self.source, source)
+            source = os.path.join(dir, source)
             source = "file://" + urllib.pathname2url(source)
             type = "file"
         try:
