@@ -19,7 +19,7 @@ $Id$
 import sys, os
 
 here = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(here, 'src'))
+sys.path.insert(0, os.path.join(here, 'src'))
 
 import zope.app.tests.test
 
