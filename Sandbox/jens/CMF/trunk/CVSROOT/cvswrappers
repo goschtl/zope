@@ -1,4 +1,4 @@
-*.mif -f 'python /cvs-repository/CVSROOT/fixfm.py %s' -t 'python /cvs-repository/CVSROOT/fixfm.py %s %s' 
+*.mif -f 'python /cvs-repository/CVSROOT/fixfm.py f %s' -t 'python /cvs-repository/CVSROOT/fixfm.py t %s %s' 
 
 *.gif -kb
 *.jpg -kb
