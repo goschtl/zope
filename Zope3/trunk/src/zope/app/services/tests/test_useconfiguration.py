@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_useconfiguration.py,v 1.3 2003/06/07 05:32:01 stevea Exp $
+$Id: test_useconfiguration.py,v 1.4 2003/06/12 18:58:50 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -33,12 +33,13 @@ class TestUseConfiguration(PlacelessSetup, TestCase):
         obj = UseConfiguration(C())
         verifyObject(IUseConfiguration, obj)
 
-    def test(self):
+    def testBasic(self):
         obj = UseConfiguration(C())
         self.failIf(obj.usages())
         obj.addUsage('/a/b')
         obj.addUsage('/c/d')
         obj.addUsage('/c/e')
+        obj.addUsage('/c/d')
         locs = list(obj.usages())
         locs.sort()
         self.assertEqual(locs, ['/a/b', '/c/d', '/c/e'])
@@ -46,6 +47,22 @@ class TestUseConfiguration(PlacelessSetup, TestCase):
         locs = list(obj.usages())
         locs.sort()
         self.assertEqual(locs, ['/a/b', '/c/e'])
+        obj.removeUsage('/c/d')
+        self.assertEqual(locs, ['/a/b', '/c/e'])
+
+    def testRelativeAbsolute(self):
+        obj = UseConfiguration(C())
+        # Hack the object to have a parent path
+        obj.pp = "/a/"
+        obj.pplen = len(obj.pp)
+        obj.addUsage("foo")
+        self.assertEqual(obj.usages(), ("/a/foo",))
+        obj.removeUsage("/a/foo")
+        self.assertEqual(obj.usages(), ())
+        obj.addUsage("/a/bar")
+        self.assertEqual(obj.usages(), ("/a/bar",))
+        obj.removeUsage("bar")
+        self.assertEqual(obj.usages(), ())
 
 def test_suite():
     return TestSuite((
