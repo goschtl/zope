@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.6 2003/07/01 19:20:45 fdrake Exp $
+$Id: __init__.py,v 1.7 2003/07/02 17:52:41 fdrake Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -190,8 +190,9 @@ class ConfigureUtility(BrowserView):
         folder = zapi.getParent(self.context)
         iface = folder.resolve(self.request['interface'])
         name = self.request['name']
-        cr = self.context.queryRegistrations(name, iface)
-        form = zapi.getView(cr, "ChangeRegistrations", self.request)
+        iface = removeAllProxies(iface)
+        regstack = self.context.queryRegistrations(name, iface)
+        form = zapi.getView(regstack, "ChangeRegistrations", self.request)
         form.update()
         return form
 
