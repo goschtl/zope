@@ -65,10 +65,10 @@
     <div id="navigators">
 
       <!-- Navigation tree box -->
-      <metal:tree tal:condition="usage/objectview"
-                  use-macro="context/@@standard_macros/navigation_tree_box" />
+      <metal:tree use-macro="context/@@standard_macros/navigation_tree_box" />
+
+      <tal:block condition="usage/objectview">
       
-      <tal:usage condition="usage/objectview">
         <div class="box" id="commonTasks"
              tal:define="view context/@@commonTasks|nothing"
              tal:condition="view/strip|nothing">
@@ -78,7 +78,7 @@
             <span tal:replace="structure view" />
           </div>
         </div>
-      </tal:usage>
+      </tal:block>
 
       <!-- Tree of the help topics that appears on the help namespace -->
       <div class="box" id="help"
@@ -97,8 +97,7 @@
 
     <div id="workspace">
 
-      <div tal:condition="usage/objectview" id="breadcrumbs"
-           metal:define-macro="breadcrumbs"
+      <div id="breadcrumbs" metal:define-macro="breadcrumbs"
        > <div tal:omit-tag="" i18n:translate="">Location:&nbsp;</div><tal:block
            repeat="breadcrumb context/@@absolute_url/breadcrumbs"
           ><a href=""
