@@ -148,6 +148,61 @@ class PackageInfoTestCase(unittest.TestCase):
         self.assertRaises(ValueError, package.loadCollectionInfo,
                           self.tmpdir, None)
 
+    def test_data_files_1(self):
+        self.write_config("<data-files etc>\n"
+                          "  foo*\n"
+                          "</data-files>\n")
+        self.write_file("foo1.conf", "config goes here")
+        self.write_file("foo2.conf", "config goes here")
+        pkginfo = package.loadCollectionInfo(self.tmpdir, None)
+        pkginfo.data_files[0][1].sort()
+        self.assertEqual(pkginfo.data_files,
+                         [("etc", ["foo1.conf", "foo2.conf"])])
+
+    def test_data_files_2(self):
+        self.write_config("<data-files var>\n"
+                          "  foo2.conf\n"
+                          "</data-files>\n"
+                          "<data-files etc>\n"
+                          "  foo1.conf\n"
+                          "</data-files>\n")
+        self.write_file("foo1.conf", "config goes here")
+        self.write_file("foo2.conf", "config goes here")
+        pkginfo = package.loadCollectionInfo(self.tmpdir, None)
+        pkginfo.data_files.sort()
+        self.assertEqual(pkginfo.data_files,
+                         [("etc", ["foo1.conf"]),
+                           ("var", ["foo2.conf"])])
+
+    def test_data_files_error_has_value(self):
+        self.write_config("<data-files etc>\n"
+                          "  foo bar\n"
+                          "</data-files>\n")
+        self.assertRaises(cfgparser.ConfigurationError,
+                          package.loadCollectionInfo, self.tmpdir, None)
+
+    def test_data_files_error_has_nested_section(self):
+        self.write_config("<data-files etc>\n"
+                          "  <extension foo>\n"
+                          "  </extension>\n"
+                          "</data-files>\n")
+        self.assertRaises(cfgparser.ConfigurationError,
+                          package.loadCollectionInfo, self.tmpdir, None)
+
+    def test_data_files_error_section_without_name(self):
+        self.write_config("<data-files>\n"
+                          "</data-files>\n")
+        self.assertRaises(cfgparser.ConfigurationError,
+                          package.loadCollectionInfo, self.tmpdir, None)
+
+    def test_data_files_error_sections_with_same_name(self):
+        self.write_config("<data-files etc>\n"
+                          "</data-files>\n"
+                          "<data-files etc/>\n"
+                          "</data-files>\n")
+        self.assertRaises(cfgparser.ConfigurationError,
+                          package.loadCollectionInfo, self.tmpdir, None)
+
 
 def test_suite():
     suite = doctest.DocTestSuite("zpkgtools.package")

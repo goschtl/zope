@@ -257,3 +257,36 @@ setting.
     #undef ANOTHER
 
   at the top of the compilation unit.
+
+Installing Additional Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Files that would traditionally be installed by identifying them in the
+``data_files`` keyword argument to the ``distutils.core.setup()``
+function may be identified using `SETUP.cfg` as well.
+
+A series of **<data-files>** sections can be used for this purpose;
+one section should be given for each destination directory.  Each line
+of the section should give a glob pattern specifying files that should
+be installed in the directory identified by the name of the section.
+
+For example, this section::
+
+  <data-files etc>
+    myapp.conf
+  </data-files>
+
+will cause the file `myapp.conf`, found in the same directory as the
+`SETUP.cfg` which includes this section, to be copied to
+`$prefix/etc/myapp.conf`.
+
+This section::
+
+  <data-files etc/myapp>
+    default-config/*
+  </data-files>
+
+will cause all the files in the `default-config` directory (a sibling
+of the `SETUP.cfg` file containing this section) to be copied into the
+directory `$prefix/etc/myapp/`; this directory will be created if
+necessary.
