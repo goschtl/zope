@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testSecurityDirectives.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+$Id: testSecurityDirectives.py,v 1.3 2002/06/17 19:11:30 bwarsaw Exp $
 """
 
 import unittest, sys, os
@@ -38,7 +38,7 @@ from Zope.App.Security.Settings import Allow, Deny, Unset, Remove, Assign
 import Zope.App.Security
 defs_path = os.path.join(
     os.path.split(Zope.App.Security.__file__)[0],
-    'security-meta.zcml')
+    'meta.zcml')
 
 def configfile(s):
     return StringIO("""<zopeConfigure
