@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.19 2003/06/01 15:59:40 jim Exp $
+$Id: __init__.py,v 1.20 2003/06/07 13:00:01 stevea Exp $
 """
 from __future__ import generators
 
@@ -26,9 +26,8 @@ from zope.interface import moduleProvides
 from zope.context.wrapper import getdict, getdictcreate
 from zope.context.wrapper import getcontext, getinnercontext
 from zope.context.wrapper import getinnerwrapper, getbaseobject
-from zope.context.wrapper import ContextDescriptor, ContextAware
-from zope.context.wrapper import ContextMethod, ContextProperty
-from zope.context.wrapper import Wrapper
+from zope.context.wrapper import ContextDescriptor, ContextMethod
+from zope.context.wrapper import ContextProperty, Wrapper
 from zope.proxy import queryProxy, queryInnerProxy, isProxy, getProxiedObject
 from zope.context.interfaces import IWrapperIntrospection
 
@@ -54,7 +53,6 @@ def getInnerWrapperData(_ob):
     else:
         return None
 
-
 def getWrapperContainer(_ob):
     wrapper = queryInnerProxy(_ob, Wrapper)
     if wrapper is not None:
@@ -71,7 +69,6 @@ def getWrapperContext(_ob):
 
 def isWrapper(_ob):
     return isProxy(_ob, Wrapper)
-
 
 def ContainmentIterator(obj):
     wrapper = queryInnerProxy(obj, Wrapper)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.13 2003/06/02 18:38:40 jim Exp $
+$Id: interfaces.py,v 1.14 2003/06/07 13:00:01 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -94,9 +94,9 @@ class IWrapper(Interface):
     It provides a place to keep the object's context, in the form of
     a reference to its context object, and a dictionary of contextual metadata.
 
-    If the wrapped object's class derives from ContextAware, or a descriptor
-    on the wrapped object's class is a ContextDescriptor, then the 'self'
-    of the method will be rebound to be the wrapper rather than the object.
+    If a descriptor on the wrapped object's class is a ContextDescriptor,
+    then the 'self' of the method will be rebound to be the wrapper rather
+    than the object.
     Rebinding does not work at all if the wrapped object is a Classic Class
     instance.
     Such rebinding is supported for ordinary descriptors, but only for
