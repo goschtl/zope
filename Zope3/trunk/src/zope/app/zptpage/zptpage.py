@@ -82,7 +82,8 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
         debug_flags = request.debug
         request = ProxyFactory(request)
         instance = ProxyFactory(instance)
-        if args: args = ProxyFactory(args)
+        if args:
+            args = ProxyFactory(args)
         kw = ProxyFactory(keywords)
 
         namespace = self.pt_getContext(instance, request,
@@ -90,9 +91,6 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
         return self.pt_render(namespace, showtal=debug_flags.showTAL,
                               sourceAnnotations=debug_flags.sourceAnnotations)
-
-    source = property(getSource, setSource, None,
-                      """Source of the Page Template.""")
 
 
 class Sized(object):
