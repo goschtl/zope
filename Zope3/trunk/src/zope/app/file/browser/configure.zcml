@@ -108,7 +108,7 @@
 
   <browser:addform
       schema="zope.app.file.interfaces.IImage"
-      label="Add a Image"
+      label="Add an Image"
       content_factory="zope.app.file.image.Image"
       name="zope.app.file.Image"
       permission="zope.ManageContent"
