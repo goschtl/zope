@@ -197,7 +197,7 @@ class AddFormDirective(BaseFormDirective):
             # for=self.schema.
             menuItemDirective(
                 self._context, self.menu, self.for_, '@@' + self.name,
-                self.title, permission=self.permission,
+                self.title, permission=self.permission, layer=self.layer,
                 description=self.description)
 
     def _handle_arguments(self, leftover=None):
@@ -288,7 +288,8 @@ class EditFormDirective(EditFormDirectiveBase):
         if self.menu:
             menuItemDirective(
                 self._context, self.menu, self.for_ or self.schema,
-                '@@' + self.name, self.title, permission=self.permission)
+                '@@' + self.name, self.title, permission=self.permission,
+                layer=self.layer)
 
     def __call__(self):
         self._processWidgets()

@@ -68,8 +68,6 @@ Others
 
 * 298: Role/permission title and description should be messageids
 
-* 306: page/view-menu-layer configuration
-
 * 307: browser:addMenuItem and broken view references
 
 * 313: importchecker.py ignores assignment to module attributes 

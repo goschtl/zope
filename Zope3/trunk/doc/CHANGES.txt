@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - Implemented issue 306: page/view-menu-layer configuration
+
+        Added a layer argument to the menu directives and made sure that all
+        browser directives specify the layer for the menu directives.
+    
       - Implemented issue 292: Add factory to browser:resource directive 
 
       - Implemented issue 309: <schemadisplay> should support <widget>
