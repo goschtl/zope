@@ -7,6 +7,7 @@ from _Proxy import _Proxy as Proxy
 from ISecurityProxyFactory import ISecurityProxyFactory
 from Zope.Security.SecurityManagement import getSecurityManager
 import sys, os, types
+import datetime
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
     WATCH_CHECKERS = 1
@@ -359,6 +360,37 @@ _default_checkers = {
     type(iter(())): NamesChecker(['next']), # different in Python 2.3
     type(iter(_Sequence())): NamesChecker(['next']),
     type(Interface): _interfaceChecker,
+    datetime.timedelta: NamesChecker(['__repr__', '__str__', '__add__',
+                                      '__radd__', '__sub__', '__rsub__',
+                                      '__neg__', '__pos__', '__abs__',
+                                      '__mul__', '__rmul__', '__div__',
+                                      '__floordiv__', '__cmp__', 'days',
+                                      'seconds', 'microseconds']),
+    datetime.date: NamesChecker(['__repr__', '__str__', 'year', 'month', 'day',
+                                 'timetuple', 'toordinal', '__cmp__',
+                                 '__hash__', 'ctime', 'strftime', '__add__',
+                                 '__radd__', '__sub__', '__rsub__', 'weekday',
+                                 'isoweekday', 'isocalendar', 'isoformat',
+                                 'min', 'max', 'resolution']),
+    datetime.datetime: NamesChecker(['__repr__', '__str__', 'year', 'month',
+                                     'day', 'hour', 'minute', 'second',
+                                     'microsecond', 'timetuple',
+                                     'utctimetuple', 'toordinal', '__cmp__',
+                                     '__hash__', 'ctime', 'strftime',
+                                     '__add__', '__radd__', '__sub__',
+                                     '__rsub__', 'weekday', 'isoweekday',
+                                     'isocalendar', 'isoformat', 'min', 'max',
+                                     'resolution']),
+    datetime.datetimetz: NamesChecker(['__repr__', '__str__', 'year', 'month',
+                                       'day', 'hour', 'minute', 'second',
+                                       'microsecond', 'tzinfo', 'timetuple',
+                                       'utctimetuple', 'toordinal', '__cmp__',
+                                       '__hash__', 'ctime', 'strftime',
+                                       '__add__', '__radd__', '__sub__',
+                                       '__rsub__', 'weekday', 'isoweekday',
+                                       'isocalendar', 'isoformat', 'min',
+                                       'max', 'resolution', 'utcoffset',
+                                       'tzname', 'dst']),
     }
 
 
