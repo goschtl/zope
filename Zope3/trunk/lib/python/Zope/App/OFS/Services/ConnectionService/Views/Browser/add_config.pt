@@ -19,6 +19,10 @@
        </td>
      </tr>
      <tr>
+       <td>Permission</td>
+       <td tal:content="structure view/permission"><input type="text"></td>
+     </tr>
+     <tr>
        <td>Status</td>
        <td tal:content="structure view/status"><input type="text"></td>
      </tr>
