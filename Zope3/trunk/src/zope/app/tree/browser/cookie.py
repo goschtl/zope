@@ -13,10 +13,11 @@
 ##############################################################################
 """Stateful cookie tree
 
-$Id: cookie.py,v 1.5 2004/03/13 21:03:24 srichter Exp $
+$Id: cookie.py,v 1.6 2004/03/17 21:56:42 srichter Exp $
 """
 
 from zope.app import zapi
+from zope.app.container.interfaces import IContainer
 from zope.app.folder.interfaces import IFolder
 from zope.app.site.interfaces import ISite, ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -46,7 +47,7 @@ class CookieTreeView(StatefulTreeView):
     def folderTree(self, root=None):
         """Cookie tree with only folders (and site managers).
         """
-        filter = OnlyInterfacesFilter(IFolder, ISiteManager)
+        filter = OnlyInterfacesFilter(IContainer)
         return self.cookieTree(root, filter)
 
     def siteTree(self):
