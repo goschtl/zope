@@ -33,17 +33,18 @@ Now we add a search interface:
 
 Add the Views Service to ++etc++site.  Make sure it's marked "Active".
 
-Add a module to ++etc++services, called 'module'.
-Insert code:
+Add a module to ++etc++site/default called 'module'. Insert code:
 
 """
 from zope.app import zapi 
-from zope.app.catalog.interfaces import ICatalogQuery
+from zope.app.interfaces.catalog.catalog import ICatalogQuery
 
 class CatalogView: 
     def search(self): 
         request = self.request 
-        catalog = zapi.getUtility(self.context,ICatalogQuery, 
+        catalog = zapi.getUtility(
+            self.context,
+            ICatalogQuery, 
             name='blogCatalog') 
         terms = request['terms'] 
         return catalog.searchResults(author=terms)
@@ -52,12 +53,27 @@ class CatalogView:
 The "name" in the getUtility call is the name you gave the catalog utility
 when you added it.
 
-Go to ++etc++site/searches, add a page folder , 'pageFolder', click on it and
-go to Default Registration tab. Dotted name of factory is module.CatalogView
+Go to ++etc++site/searches, add a page folder, 'pageFolder', click on it and
+go to Default Registration tab. Specify the following properties:
 
-Add a page, 'search' to etc/searches/pageFolder.
-This, in it's simplest form, is
-'<span tal:replace="view/search"></span>'
+  For interface: zope.interface.Interface
+  Dotted name of factory: module.CatalogView
+  Permission: zope.View
+
+Add a page, 'search' to etc/searches/pageFolder:
+
+"""
+<html>
+  <tal:block define="results view/search">
+    <b>Results:</b>
+    <div tal:repeat="result results">
+      <a tal:define="url result/@@absolute_url"
+         tal:attributes="href url"
+         tal:content="url" />
+    </div>
+  </tal:block>
+</html>
+"""
 
 You can now access http://$ZOPE:$PORT/search?terms=authorname
 Where search is the name of the page in the pageFolder, authorname is the
