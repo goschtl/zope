@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.17 2003/05/28 17:19:22 jim Exp $
+$Id: __init__.py,v 1.18 2003/05/28 23:15:26 jim Exp $
 """
 from __future__ import generators
 
@@ -40,9 +40,22 @@ moduleProvides(IContextWrapper)
 __all__ = tuple(IContextWrapper)
 
 def ContextWrapper(_ob, _parent, **kw):
+    
     if type(_ob) in BasicTypes:
         # Don't wrap basic objects
         return _ob
+
+    wrapper = queryProxy(_ob, Wrapper, kw)
+    if wrapper is not kw: # using kw as marker
+        if _parent is getcontext(wrapper):
+            # This would be a redundant wrapper. We'll just use the
+            # one we've got.
+
+            # But we want tp make sure we have the same data
+            if kw:
+                dict = getdictcreate(wrapper)
+                dict.update(kw)
+            return _ob
 
     if type(_ob) is Proxy:
         # insert into proxies
@@ -54,27 +67,6 @@ def ContextWrapper(_ob, _parent, **kw):
 
     return _ob
 ContextWrapper = hookable(ContextWrapper)
-
-
-def getWrapperObject(_ob):
-    """Remove a context wrapper around an object with data
-
-    If the object is wrapped in a security proxy, then the object
-    is inserted inside an equivalent security proxy.
-    """
-
-    if type(_ob) in BasicTypes:
-        # Don't wrap basic objects
-        return _ob
-    elif type(_ob) is Proxy:
-        # insert into proxies
-        checker = getChecker(_ob)
-        _ob = getProxiedObject(_ob)
-        _ob = Proxy(getProxiedObject(_ob), checker)
-    else:
-        _ob = getProxiedObject(_ob)
-
-    return _ob
 
 def getWrapperData(_ob, create=False):
     wrapper = queryProxy(_ob, Wrapper)
