@@ -2,7 +2,10 @@ Installation
 ============
 
   - Since Wiki is not enabled by default, you need to include the Wiki
-    package in your products.zcml file::
+    package in your instance's configuration.  Create
+    $INSTANCE_HOME/package-includes/zwiki-configure by copying the file
+    package-includes/zwiki-configure.zcml from the Zope repository, or create
+    it with the following contents::
 
     <include package="zwiki" />
 
