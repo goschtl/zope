@@ -24,6 +24,8 @@ from zope.app.container.interfaces import IContained, IContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
 
+from zope.app.event.interfaces import IObjectEvent
+
 from zope.app.workflow.interfaces import IWorkflowEvent
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstance, IPIAdapter
@@ -57,7 +59,6 @@ class IAfterTransitionEvent(ITransitionEvent):
     """This event is published after the transition. This is important for
     objects that might change permissions when changing the status."""
 
-
 class IState(Interface):
     """Interface for state of a stateful workflow process definition."""
     # TODO: Should at least have a title, if not a value as well
@@ -70,7 +71,6 @@ class IState(Interface):
         default=None,
         required=False)
 
-
 class IStatefulStatesContainer(IProcessDefinitionElementContainer):
     """Container that stores States."""
 
@@ -78,7 +78,7 @@ class IStatefulStatesContainer(IProcessDefinitionElementContainer):
         """Add a state"""
 
     __setitem__.precondition = ItemTypePrecondition(IState)
-    
+
 
 
 class IStateContained(IContained):
@@ -92,13 +92,13 @@ class IStateContained(IContained):
 class ITransition(Interface):
     """Stateful workflow transition."""
 
-    sourceState = zope.schema.Choice( 
+    sourceState = zope.schema.Choice(
         title=_(u"Source State"),
         description=_(u"Name of the source state."),
         vocabulary=u"Workflow State Names",
         required=True)
 
-    destinationState = zope.schema.Choice( 
+    destinationState = zope.schema.Choice(
         title=_(u"Destination State"),
         description=_(u"Name of the destination state."),
         vocabulary=u"Workflow State Names",
@@ -121,7 +121,6 @@ class ITransition(Interface):
         vocabulary="Permission Ids",
         default=CheckerPublic,
         required=True)
-
 
     triggerMode = zope.schema.Choice(
         title=_(u"Trigger Mode"),
@@ -221,11 +220,6 @@ class IStatefulPIAdapter(IPIAdapter):
     def fireTransition(id):
         """Fire a outgoing transitions."""
 
-
-
-
-
-
 class IContentProcessRegistry(Interface):
     """Content Type <-> Process Definitions Registry
 
@@ -259,3 +253,12 @@ class IContentWorkflowsManager(IContentProcessRegistry):
         This method reads in all the interfaces this object implements and
         finds then the corresponding process names using the
         IContentProcessRegistry."""
+
+####################################################################
+
+class ITransitionEventUserTriggered(IObjectEvent):
+    """ Transition event triggered by user interface
+    """
+
+    kwargs = Attribute('Mapping containing information coming from the form')
+    form_action = Attribute('Form action')
