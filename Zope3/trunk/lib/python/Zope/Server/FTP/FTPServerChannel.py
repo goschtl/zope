@@ -13,12 +13,11 @@
 ##############################################################################
 """
 
-$Id: FTPServerChannel.py,v 1.3 2002/07/19 18:07:41 shane Exp $
+$Id: FTPServerChannel.py,v 1.4 2002/11/11 14:55:37 stevea Exp $
 """
 
 import posixpath
 import stat
-import sys
 import socket
 import time
 

@@ -13,14 +13,11 @@
 ##############################################################################
 """
 
-$Id: LineServerChannel.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: LineServerChannel.py,v 1.3 2002/11/11 14:55:37 stevea Exp $
 """
 
 import os
-import stat
-import socket
 import sys
-import time
 
 from Zope.Server.ServerChannelBase import ServerChannelBase
 from LineCommandParser import LineCommandParser
