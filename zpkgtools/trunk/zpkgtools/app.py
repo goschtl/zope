@@ -153,15 +153,6 @@ class Application:
         deps = self.add_component("collection",
                                   self.resource_name,
                                   self.source)
-        readme = os.path.join(self.source, "README")
-        readme_txt = readme + ".txt"
-        output_readme_txt = os.path.join(self.destination, "README.txt")
-        if os.path.isfile(readme_txt):
-            shutil.copy2(readme_txt, output_readme_txt)
-            self.ip.add_output(output_readme_txt)
-        elif os.path.isfile(readme):
-            shutil.copy2(readme, output_readme_txt)
-            self.ip.add_output(output_readme_txt)
         remaining = deps - self.handled_resources
         collections = []
         packages = []
