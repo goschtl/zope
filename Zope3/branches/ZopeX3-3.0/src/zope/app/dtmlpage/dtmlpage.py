@@ -17,7 +17,7 @@ $Id$
 from persistent import Persistent
 
 from zope.security.proxy import ProxyFactory
-from zope.documenttemplate.dt_html import HTML
+from zope.documenttemplate.untrusted import UntrustedHTML
 from zope.interface import implements
 
 from zope.app.annotation.interfaces import IAnnotatable
@@ -39,20 +39,12 @@ class DTMLPage(Persistent, Contained):
 
     def setSource(self, text, content_type='text/html'):
         '''See interface IDTMLPage'''
-        self.template = HTML(text)
+        self.template = UntrustedHTML(text)
         self.content_type = content_type
 
     def render(self, request, *args, **kw):
         """See interface IDTMLRenderPage"""
-
-        instance = ProxyFactory(self.__parent__)
-        request = ProxyFactory(request)
-
-        for k in kw:
-            kw[k] = ProxyFactory(kw[k])
-        kw['REQUEST'] = request
-
-        return self.template(instance, request, **kw)
+        return self.template(self.__parent__, request, REQUEST=request, **kw)
 
 
     __call__ = render

@@ -315,10 +315,8 @@
 $Id$
 """
 
-from zope.documenttemplate.dt_util import \
-     ParseError, parse_params, name_param
-from zope.documenttemplate.dt_util import \
-     render_blocks, InstanceDict, ValidationError, Eval
+from zope.documenttemplate.dt_util import ParseError, parse_params, name_param
+from zope.documenttemplate.dt_util import render_blocks, ValidationError, Eval
 
 import re
 from zope.documenttemplate.dt_insv import sequence_variables, opt
@@ -583,7 +581,7 @@ class InClass:
                     if mapping:
                         push(client)
                     else:
-                        push(InstanceDict(client, md))
+                        md._push_instance(client)
 
                     try:
                         append(render(section, md))
@@ -680,7 +678,7 @@ class InClass:
                 if mapping:
                     push(client)
                 else:
-                    push(InstanceDict(client, md))
+                    md._push_instance(client)
 
                 try:
                     append(render(section, md))

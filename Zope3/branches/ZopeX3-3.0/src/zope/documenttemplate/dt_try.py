@@ -18,9 +18,8 @@ $Id$
 
 import sys, traceback
 from StringIO import StringIO
-from zope.documenttemplate.dt_util \
-     import ParseError, parse_params, render_blocks
-from zope.documenttemplate.dt_util import InstanceDict
+from zope.documenttemplate.dt_util import ParseError, parse_params
+from zope.documenttemplate.dt_util import render_blocks
 from zope.documenttemplate.dt_return import DTReturn
 
 from types import StringType
@@ -181,7 +180,7 @@ class Try:
                 error_tb = f.getvalue()
                 ns = md.namespace(error_type=errname, error_value=v,
                     error_tb=error_tb)[0]
-                md._push(InstanceDict(ns,md))
+                md._push_instance(ns)
                 return render_blocks(handler, md)
             finally:
                 md._pop(1)

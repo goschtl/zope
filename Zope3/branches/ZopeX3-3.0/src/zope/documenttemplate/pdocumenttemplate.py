@@ -54,12 +54,6 @@ class InstanceDict:
 
         inst = self.self
 
-        if key[:1] == '_':
-            if key != '__str__':
-                raise KeyError, key # Don't divuldge private data
-            else:
-                return str(inst)
-
         try:
             r = getattr(inst, key)
         except AttributeError:
@@ -121,6 +115,12 @@ class TemplateDict:
 
     def _push(self, d):
         return self.dicts.push(d)
+
+    def _push_instance(self, inst):
+        self._push(InstanceDict(inst, self))
+
+    def _proxied(self):
+        return self
 
     def __init__(self):
         m = self.dicts = MultiMapping()

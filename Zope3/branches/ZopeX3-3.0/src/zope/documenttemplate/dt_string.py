@@ -17,8 +17,7 @@ $Id$
 """
 import re, thread
 
-from zope.documenttemplate.dt_util import \
-     ParseError, InstanceDict, TemplateDict, render_blocks
+from zope.documenttemplate.dt_util import ParseError, render_blocks
 from zope.documenttemplate.dt_var import Var, Call, Comment
 from zope.documenttemplate.dt_return import ReturnTag, DTReturn
 
@@ -43,6 +42,8 @@ class String:
       %(in results)]
 
     """
+
+    from zope.documenttemplate.dt_util import TemplateDict
 
     # Document Templates masquerade as functions:
     class func_code:
@@ -422,7 +423,7 @@ class String:
 
         pushed=None
         try:
-            if mapping.__class__ is TemplateDict:
+            if isinstance(mapping, self.TemplateDict):
                 pushed=0
         except:
             pass
@@ -436,7 +437,7 @@ class String:
                 push(self.globals)
                 pushed = pushed+1
         else:
-            md = TemplateDict()
+            md = self.TemplateDict()
             push = md._push
             shared_globals = self.shared_globals
             if shared_globals:
@@ -463,11 +464,11 @@ class String:
                 # if client is a tuple, it represents a "path" of clients
                 # which should be pushed onto the md in order.
                 for ob in client:
-                    push(InstanceDict(ob, md)) # Circ. Ref. 8-|
+                    md._push_instance(ob)
                     pushed += 1
             else:
                 # otherwise its just a normal client object.
-                push(InstanceDict(client, md)) # Circ. Ref. 8-|
+                md._push_instance(client)
                 pushed += 1
 
         if self._vars:
