@@ -14,7 +14,7 @@
 
 #include <Python.h>
 
-static PyObject *_checkers, *_defaultChecker, *_always_available, *NoProxy;
+static PyObject *_checkers, *_defaultChecker, *_available_by_default, *NoProxy;
 static PyObject *Proxy, *thread_local, *CheckerPublic;
 static PyObject *ForbiddenAttribute, *Unauthorized;
 
@@ -140,9 +140,9 @@ Checker_check_int(Checker *self, PyObject *object, PyObject *name)
 
   if (operator)
     {
-/*         elif name in _always_available: */
+/*         elif name in _available_by_default: */
 /*             return */
-      int ic = PySequence_Contains(_always_available, name);
+      int ic = PySequence_Contains(_available_by_default, name);
       if (ic < 0)
         return -1;
       if (ic)
@@ -577,7 +577,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
   if (CheckerPublic == NULL) return;
   Py_DECREF(m);
 
-  if ((_always_available = PyList_New(0)) == NULL) return;
+  if ((_available_by_default = PyList_New(0)) == NULL) return;
 
   m = Py_InitModule3("_zope_security_checker", module_methods,
                      "C optimizations for zope.security.checker");
@@ -590,7 +590,7 @@ if((str_##S = PyString_InternFromString(#S)) == NULL) return
   EXPORT(_checkers);
   EXPORT(NoProxy);
   EXPORT(_defaultChecker);
-  EXPORT(_always_available);
+  EXPORT(_available_by_default);
     
   Py_INCREF(&CheckerType);
   PyModule_AddObject(m, "Checker", (PyObject *)&CheckerType);
