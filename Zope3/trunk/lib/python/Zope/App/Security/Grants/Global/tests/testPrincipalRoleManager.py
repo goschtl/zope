@@ -16,10 +16,13 @@
 import sys
 import unittest
 
-from Zope.App.Security.Registries.RoleRegistry import roleRegistry as rregistry
-from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry as pregistry
-from Zope.App.Security.Grants.Global.PrincipalRoleManager import principalRoleManager
-from Zope.App.Security.Settings import Assign, Remove
+from Zope.App.Security.Registries.RoleRegistry \
+     import roleRegistry as rregistry
+from Zope.App.Security.Registries.PrincipalRegistry \
+     import principalRegistry as pregistry
+from Zope.App.Security.Grants.Global.PrincipalRoleManager \
+     import principalRoleManager
+from Zope.App.Security.Settings import Allow, Deny
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
 class Test(CleanUp, unittest.TestCase):
@@ -38,23 +41,23 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
                          [])
 
-    def testPrincipalRoleAssign(self):
+    def testPrincipalRoleAllow(self):
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         principalRoleManager.assignRoleToPrincipal(role, principal)
         self.assertEqual(principalRoleManager.getPrincipalsForRole(role),
-                         [(principal,Assign)])
+                         [(principal, Allow)])
         self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
-                         [(role,Assign)])
+                         [(role, Allow)])
 
-    def testPrincipalRoleRemove(self):
+    def testPrincipalRoleDeny(self):
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         principalRoleManager.removeRoleFromPrincipal(role, principal)
         self.assertEqual(principalRoleManager.getPrincipalsForRole(role),
-                         [(principal,Remove)])
+                         [(principal, Deny)])
         self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
-                         [(role,Remove)])
+                         [(role, Deny)])
 
     def testPrincipalRoleUnset(self):
         role = rregistry.defineRole('ARole', 'A Role').getId()
@@ -74,8 +77,8 @@ class Test(CleanUp, unittest.TestCase):
         principalRoleManager.assignRoleToPrincipal(role2, prin1)
         roles = principalRoleManager.getRolesForPrincipal(prin1)
         self.assertEqual(len(roles), 2)
-        self.failUnless((role1,Assign) in roles)
-        self.failUnless((role2,Assign) in roles)
+        self.failUnless((role1, Allow) in roles)
+        self.failUnless((role2, Allow) in roles)
 
     def testManyPrincipalsOneRole(self):
         role1 = rregistry.defineRole('Role One', 'Role #1').getId()
@@ -85,8 +88,8 @@ class Test(CleanUp, unittest.TestCase):
         principalRoleManager.assignRoleToPrincipal(role1, prin2)
         principals = principalRoleManager.getPrincipalsForRole(role1)
         self.assertEqual(len(principals), 2)
-        self.failUnless((prin1,Assign) in principals)
-        self.failUnless((prin2,Assign) in principals)
+        self.failUnless((prin1, Allow) in principals)
+        self.failUnless((prin2, Allow) in principals)
 
     def testPrincipalsAndRoles(self):
         role1 = rregistry.defineRole('Role One', 'Role #1').getId()
@@ -98,9 +101,9 @@ class Test(CleanUp, unittest.TestCase):
         principalRoleManager.assignRoleToPrincipal(role2, prin1)
         principalsAndRoles = principalRoleManager.getPrincipalsAndRoles()
         self.assertEqual(len(principalsAndRoles), 3)
-        self.failUnless((role1,prin1,Assign) in principalsAndRoles)
-        self.failUnless((role1,prin2,Assign) in principalsAndRoles)
-        self.failUnless((role2,prin1,Assign) in principalsAndRoles)
+        self.failUnless((role1, prin1, Allow) in principalsAndRoles)
+        self.failUnless((role1, prin2, Allow) in principalsAndRoles)
+        self.failUnless((role2, prin1, Allow) in principalsAndRoles)
 
 def test_suite():
     loader=unittest.TestLoader()

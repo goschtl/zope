@@ -13,19 +13,20 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: ZopeSecurityPolicy.py,v 1.3 2002/06/20 15:54:59 jim Exp $
+$Id: ZopeSecurityPolicy.py,v 1.4 2002/07/02 19:48:38 jim Exp $
 """
-__version__='$Revision: 1.3 $'[11:-2]
+__version__='$Revision: 1.4 $'[11:-2]
 
 from Zope.ComponentArchitecture import queryAdapter
 from Zope.Proxy.ContextWrapper import ContainmentIterator
 from Zope.Exceptions import Unauthorized, Forbidden
 from Zope.Security.ISecurityPolicy import ISecurityPolicy
-from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
+from Zope.App.Security.IRolePermissionManager \
+     import IRolePermissionManager, IRolePermissionMap
 from Zope.App.Security.IPrincipalPermissionManager \
-    import IPrincipalPermissionManager
+    import IPrincipalPermissionManager, IPrincipalPermissionMap
 from Zope.App.Security.IPrincipalRoleManager \
-    import IPrincipalRoleManager
+    import IPrincipalRoleManager, IPrincipalRoleMap
 from Zope.App.Security.IRolePermissionManager import IRolePermissionManager
 from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry 
 from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry 
@@ -36,9 +37,7 @@ from Zope.App.Security.Grants.Global.RolePermissionManager \
      import rolePermissionManager 
 from Zope.App.Security.Grants.Global.PrincipalRoleManager \
      import principalRoleManager
-from Zope.App.Security.Settings import Allow, Deny, Assign, Remove, Unset
-
-from types import StringType, StringTypes, TupleType, ListType, IntType, MethodType, NoneType
+from Zope.App.Security.Settings import Allow, Deny
 
 getPermissionsForPrincipal = \
                 principalPermissionManager.getPermissionsForPrincipal
@@ -88,7 +87,8 @@ class ZopeSecurityPolicy:
         # Check the placeful principal permissions and aggregate the
         # Roles in this context
         for c in ContainmentIterator(object):
-            ppm = queryAdapter(c, IPrincipalPermissionManager, None, globalContext)
+            ppm = queryAdapter(c, IPrincipalPermissionManager, None,
+                               globalContext)
             if ppm is not None: 
                 for principal in principals.keys():
                     setting = ppm.getSetting(permission, principal)
@@ -103,7 +103,7 @@ class ZopeSecurityPolicy:
                     for role, setting in prm.getRolesForPrincipal(principal):
                         if not (role in roles):
                             roles[role] = 1
-                            if setting is Assign:
+                            if setting is Allow:
                                 assigned_roles[role] = 1
         
         # now check the global principal permissions
@@ -121,7 +121,7 @@ class ZopeSecurityPolicy:
             for role, setting in global_roles:
                 if not (role in roles):
                     roles[role] = 1
-                    if setting is Assign:
+                    if setting is Allow:
                         assigned_roles[role] = 1
                         
         # Check the placeful role permissions, checking anonymous first
@@ -140,8 +140,8 @@ class ZopeSecurityPolicy:
         # Last, check if there are any global role settings
         getSetting = rolePermissionManager.getSetting
         for principal in principals.keys():
-            for role, role_setting in [('Anonymous', Assign)] + global_roles:
-                if role_setting is Assign:
+            for role, role_setting in [('Anonymous', Allow)] + global_roles:
+                if role_setting is Allow:
                     setting = getSetting(permission, role)
                     if setting == Allow:
                         seen_allow = 1 # Flag allow and continue
@@ -151,6 +151,69 @@ class ZopeSecurityPolicy:
                 return 1 # Allow on global role
 
         return 0 # Deny by default
+
+
+
+def permissionsOfPrincipal(principal, object):
+    permissions = {}
+    roles = {'Anonymous': Allow} # Everyone has anonymous
+    role_permissions = {}
+    orig = object
+
+    # Make two passes.
+
+    # First, collect what we know about the principal:
+    for object in ContainmentIterator(orig):
+
+        # Copy specific principal permissions
+        prinper = queryAdapter(object, IPrincipalPermissionMap)
+        if prinper is not None:
+            for permission, setting in prinper.getPermissionsForPrincipal(
+                principal):
+                if permission not in permissions:
+                    permissions[permission] = setting
+
+        # Collect principal roles
+        prinrole = queryAdapter(object, IPrincipalRoleMap)
+        if prinrole is not None:
+            for role, setting in prinrole.getRolesForPrincipal(principal):
+                if role not in roles:
+                    roles[role] = setting
+
+    # get global principal permissions
+    for permission, setting in getPermissionsForPrincipal(principal):
+        if permission not in permissions:
+            permissions[permission] = setting
+
+    # get glolbal principal roles
+    for role, setting in getRolesForPrincipal(principal):
+        if role not in roles:
+            roles[role] = setting
+
+    # Second, update permissions using principal 
+    for object in ContainmentIterator(orig):
+
+        # Collect role permissions
+        roleper = queryAdapter(object, IRolePermissionMap)
+        if roleper is not None:
+            for perm, role, setting in roleper.getRolesAndPermissions():
+                if role in roles and perm not in permissions:
+                    permissions[perm] = setting
+
+
+    for perm, role, setting in (
+        rolePermissionManager.getRolesAndPermissions()):
+        if role in roles and perm not in permissions:
+            permissions[perm] = setting
+
+
+    result = [permission
+              for permission in permissions
+              if permissions[permission] is Allow]
+
+    return result
+
+
 
 zopeSecurityPolicy=ZopeSecurityPolicy()
 

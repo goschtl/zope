@@ -25,7 +25,7 @@ from Zope.App.Security.Registries.PrincipalRegistry \
      import principalRegistry as pregistry
 from Zope.App.Security.Grants.AnnotationPrincipalRoleManager \
         import AnnotationPrincipalRoleManager
-from Zope.App.Security.Settings import Assign, Remove
+from Zope.App.Security.Settings import Allow, Deny
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
      import PlacefulSetup
 
@@ -36,7 +36,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        getService(None,"Adapters").provideAdapter(
+        getService(None, "Adapters").provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
                        
@@ -55,25 +55,25 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
                          [])
 
-    def testPrincipalRoleAssign(self):
+    def testPrincipalRoleAllow(self):
         principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         principalRoleManager.assignRoleToPrincipal(role, principal)
         self.assertEqual(principalRoleManager.getPrincipalsForRole(role),
-                         [(principal,Assign)])
+                         [(principal, Allow)])
         self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
-                         [(role,Assign)])
+                         [(role, Allow)])
 
-    def testPrincipalRoleRemove(self):
+    def testPrincipalRoleDeny(self):
         principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         principalRoleManager.removeRoleFromPrincipal(role, principal)
         self.assertEqual(principalRoleManager.getPrincipalsForRole(role),
-                         [(principal,Remove)])
+                         [(principal, Deny)])
         self.assertEqual(principalRoleManager.getRolesForPrincipal(principal),
-                         [(role,Remove)])
+                         [(role, Deny)])
 
     def testPrincipalRoleUnset(self):
         principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
@@ -95,8 +95,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         principalRoleManager.assignRoleToPrincipal(role2, prin1)
         roles = principalRoleManager.getRolesForPrincipal(prin1)
         self.assertEqual(len(roles), 2)
-        self.failUnless((role1,Assign) in roles)
-        self.failUnless((role2,Assign) in roles)
+        self.failUnless((role1, Allow) in roles)
+        self.failUnless((role2, Allow) in roles)
 
     def testManyPrincipalsOneRole(self):
         principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
@@ -107,8 +107,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         principalRoleManager.assignRoleToPrincipal(role1, prin2)
         principals = principalRoleManager.getPrincipalsForRole(role1)
         self.assertEqual(len(principals), 2)
-        self.failUnless((prin1,Assign) in principals)
-        self.failUnless((prin2,Assign) in principals)
+        self.failUnless((prin1, Allow) in principals)
+        self.failUnless((prin2, Allow) in principals)
 
     def testPrincipalsAndRoles(self):
         principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
@@ -123,9 +123,9 @@ class Test(PlacefulSetup, unittest.TestCase):
         principalRoleManager.assignRoleToPrincipal(role2, prin1)
         principalsAndRoles = principalRoleManager.getPrincipalsAndRoles()
         self.assertEqual(len(principalsAndRoles), 3)
-        self.failUnless((role1,prin1,Assign) in principalsAndRoles)
-        self.failUnless((role1,prin2,Assign) in principalsAndRoles)
-        self.failUnless((role2,prin1,Assign) in principalsAndRoles)
+        self.failUnless((role1, prin1, Allow) in principalsAndRoles)
+        self.failUnless((role1, prin2, Allow) in principalsAndRoles)
+        self.failUnless((role2, prin1, Allow) in principalsAndRoles)
 
 
 def test_suite():

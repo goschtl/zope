@@ -65,8 +65,3 @@ Deny = PermissionSetting('Deny',
 Unset = PermissionSetting('Unset',
     'Unset constant that denotes no setting for permission and role')
 
-Assign = PermissionSetting('Assign',
-    'Explicit assign setting for roles')
-
-Remove = PermissionSetting('Remove',
-    'Explicit remove setting for roles')

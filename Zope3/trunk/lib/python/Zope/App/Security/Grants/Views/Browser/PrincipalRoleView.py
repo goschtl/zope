@@ -14,7 +14,7 @@
 """ Management view component for principal-role management (Zope2's
     "local roles").
 
-$Id: PrincipalRoleView.py,v 1.2 2002/06/25 15:27:52 efge Exp $
+$Id: PrincipalRoleView.py,v 1.3 2002/07/02 19:48:39 jim Exp $
 """
 
 import time
@@ -68,9 +68,9 @@ class PrincipalRoleView(BrowserView):
                 setting = self.request.get(name, 'Unset')
                 if setting == 'Unset':
                     prm.unsetRoleForPrincipal(role, principal)
-                elif setting == 'Assign':
+                elif setting == 'Allow':
                     prm.assignRoleToPrincipal(role, principal)
-                elif setting == 'Remove':
+                elif setting == 'Deny':
                     prm.removeRoleFromPrincipal(role, principal)
                 else:
                     raise ValueError("Incorrect setting %s" % setting)
@@ -105,6 +105,6 @@ class PrincipalRoleGrid:
         return self._grid[(principal, role)]
 
     def listAvailableValues(self):
-        # XXX rather use Assign.getName() & co
-        return ('Unset', 'Assign', 'Remove')
+        # XXX rather use Allow.getName() & co
+        return ('Unset', 'Allow', 'Deny')
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testSecurityDirectives.py,v 1.4 2002/06/20 15:55:03 jim Exp $
+$Id: testSecurityDirectives.py,v 1.5 2002/07/02 19:48:40 jim Exp $
 """
 
 import unittest
@@ -25,7 +25,7 @@ from Zope.Configuration.xmlconfig import XMLConfig, xmlconfig
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
 import Zope.App.Security
-from Zope.App.Security.Settings import Allow, Deny, Unset, Remove, Assign
+from Zope.App.Security.Settings import Allow, Deny
 from Zope.App.Security.Registries.PrincipalRegistry import principalRegistry
 from Zope.App.Security.Registries.PermissionRegistry \
         import permissionRegistry as pregistry
@@ -209,10 +209,10 @@ class TestPrincipalRole(CleanUp, unittest.TestCase):
         roles = principal_role_mgr.getRolesForPrincipal("Bar")
 
         self.assertEqual(len( principals ), 1)
-        self.failUnless(("Bar",Assign) in principals)
+        self.failUnless(("Bar",Allow) in principals)
 
         self.assertEqual(len( roles ), 1)
-        self.failUnless(("Foo",Assign) in roles)
+        self.failUnless(("Foo",Allow) in roles)
 
 def test_suite():
     suite = unittest.TestSuite()

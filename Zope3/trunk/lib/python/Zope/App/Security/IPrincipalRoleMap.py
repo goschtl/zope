@@ -20,7 +20,9 @@ class IPrincipalRoleMap(Interface):
     """Mappings between principals and roles."""
 
     def getPrincipalsForRole(role_id):
-        """Return the list of (principal, setting) who have been assigned or 
+        """Get the principals that have been granted a role.
+
+        Return the list of (principal, setting) who have been assigned or 
         removed from a role.
 
         If no principals have been assigned this role,
@@ -28,7 +30,9 @@ class IPrincipalRoleMap(Interface):
         """
 
     def getRolesForPrincipal(principal_id):
-        """Return the list of (role, setting) assigned or removed from 
+        """Get the roles granted to a principal.
+
+        Return the list of (role, setting) assigned or removed from 
         this principal.
 
         If no roles have been assigned to
@@ -40,7 +44,11 @@ class IPrincipalRoleMap(Interface):
         """
 
     def getPrincipalsAndRoles():
-        """Return all the principal/role combinations along with the
-        setting for each combination.
+        """Get all settings.
+
+        Return all the principal/role combinations along with the
+        setting for each combination as a sequence of tuples with the
+        role, principal, and setting, in that order.
+
         """
         

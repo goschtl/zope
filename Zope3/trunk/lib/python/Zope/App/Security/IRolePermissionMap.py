@@ -21,7 +21,9 @@ class IRolePermissionMap(Interface):
     """Mappings between roles and permissions."""
 
     def getPermissionsForRole(role_id):
-        """Return a sequence of (permission id, setting) tuples for the given
+        """Get the premissions granted to a role.
+
+        Return a sequence of (permission id, setting) tuples for the given
         role.
 
         If no permissions have been granted to this
@@ -29,7 +31,9 @@ class IRolePermissionMap(Interface):
         """
 
     def getRolesForPermission(permission_id):
-        """Return a sequence of (role id, setting) tuples for the given
+        """Get the roles that have a permission.
+
+        Return a sequence of (role id, setting) tuples for the given
         permission.
 
         If no roles have been granted this permission, then the empty list is
@@ -42,8 +46,11 @@ class IRolePermissionMap(Interface):
         If there is no setting, Unset is returned
         """
 
-    def getPrincipalsAndRoles():
+    def getRolesAndPermissions():
         """Return a sequence of (principal_id, role_id, setting) here.
+
+        The settings are returned as a sequence of permission, role,
+        setting tuples.
 
         If no principal/role assertions have been made here, then the empty 
         list is returned.

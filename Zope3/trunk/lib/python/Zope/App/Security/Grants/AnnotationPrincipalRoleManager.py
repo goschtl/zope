@@ -19,7 +19,7 @@ from Zope.App.Security.IPrincipalRoleManager \
      import IPrincipalRoleManager
 from Zope.App.Security.Grants.PersistentLocalSecurityMap import \
      PersistentLocalSecurityMap
-from Zope.App.Security.Settings import Assign, Remove, Unset
+from Zope.App.Security.Settings import Allow, Deny, Unset
 
 annotation_key = 'Zope.App.Security.AnnotationPrincipalRoleManager'
 
@@ -34,12 +34,12 @@ class AnnotationPrincipalRoleManager:
     def assignRoleToPrincipal(self, role_id, principal_id):
         ''' See the interface IPrincipalRoleManager '''
         pp = self._getPrincipalRoles(create=1)
-        pp.addCell(role_id, principal_id, Assign)
+        pp.addCell(role_id, principal_id, Allow)
 
     def removeRoleFromPrincipal(self, role_id, principal_id):
         ''' See the interface IPrincipalRoleManager '''
         pp = self._getPrincipalRoles(create=1)
-        pp.addCell(role_id, principal_id, Remove)
+        pp.addCell(role_id, principal_id, Deny)
 
     def unsetRoleForPrincipal(self, role_id, principal_id):
         ''' See the interface IPrincipalRoleManager '''

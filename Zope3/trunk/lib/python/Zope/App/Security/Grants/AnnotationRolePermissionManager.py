@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: AnnotationRolePermissionManager.py,v 1.3 2002/06/24 16:00:44 efge Exp $
+$Id: AnnotationRolePermissionManager.py,v 1.4 2002/07/02 19:48:39 jim Exp $
 """
 
 from Zope.ComponentArchitecture import getAdapter
@@ -82,7 +82,7 @@ class AnnotationRolePermissionManager:
         '''See interface IRolePermissionMap'''
         rp = self._getRolePermissions()
         if rp:
-            return rp.getAllCells(role_id)
+            return rp.getAllCells()
         else:
             return []
 

@@ -14,7 +14,7 @@
 """Mappings between principals and roles."""
 
 from Zope.App.Security.Grants.LocalSecurityMap import LocalSecurityMap
-from Zope.App.Security.Settings import Assign, Remove, Unset
+from Zope.App.Security.Settings import Allow, Deny, Unset
 from Zope.App.Security.IPrincipalRoleManager import IPrincipalRoleManager
 from Zope.App.Security.IPrincipalRoleMap import IPrincipalRoleMap
 
@@ -27,11 +27,11 @@ class PrincipalRoleManager(LocalSecurityMap):
 
     def assignRoleToPrincipal( self, role_id, principal_id ):
         ''' See the interface IPrincipalRoleManager '''
-        self.addCell( role_id, principal_id, Assign )
+        self.addCell( role_id, principal_id, Allow )
 
     def removeRoleFromPrincipal( self, role_id, principal_id ):
         ''' See the interface IPrincipalRoleManager '''
-        self.addCell( role_id, principal_id, Remove )
+        self.addCell( role_id, principal_id, Deny )
 
     def unsetRoleForPrincipal( self, role_id, principal_id ):
         ''' See the interface IPrincipalRoleManager '''

@@ -20,7 +20,9 @@ class IPrincipalPermissionMap(Interface):
     """Mappings between principals and permissions."""
 
     def getPrincipalsForPermission(permission_id):
-        """Return the list of (principal_id, setting) tuples that describe
+        """Get the principas that have a permission.
+
+        Return the list of (principal_id, setting) tuples that describe
         security assertions for this permission.
 
         If no principals have been set for this permission, then the empty
@@ -28,7 +30,9 @@ class IPrincipalPermissionMap(Interface):
         """
 
     def getPermissionsForPrincipal(principal_id):
-        """Return the list of (permission, setting) tuples that describe
+        """Get the permissions granted to a principal.
+
+        Return the list of (permission, setting) tuples that describe
         security assertions for this principal.
 
         If no permissions have been set for this principal, then the empty
@@ -36,12 +40,19 @@ class IPrincipalPermissionMap(Interface):
         """
         
     def getSetting(permission_id, principal_id): 
-        """Get the setting (Allow/Deny/Unset) for a given permission and
+        """Get the setting for a permission and principal.
+
+        Get the setting (Allow/Deny/Unset) for a given permission and
         principal. 
         """
 
     def getPrincipalsAndPermissions():
-        """Get the principal security assertions here in the form
+        """Get all principal permission settings.
+
+        Get the principal security assertions here in the form
         of a list of three tuple containing 
         (permission id, principal id, setting)
         """
+
+
+
