@@ -2,63 +2,18 @@ import Zope
 from unittest import TestCase, TestSuite, makeSuite, main
 
 from Products.CMFCore.tests.base.dummy import DummyFolder
+from Products.CMFCore.tests.base.testcase import FSDVTest
 
-from Globals import package_home, DevelopmentMode
+from Globals import DevelopmentMode
 
-from os import remove, mkdir, rmdir, curdir, stat
-from os.path import join, abspath, dirname
-from shutil import copy2
-from time import sleep
+from os import remove, mkdir, rmdir
+from os.path import join
 
-try:
-    __file__
-except NameError:
-    # Test was called directly, so no __file__ global exists.
-    _prefix = abspath(curdir)
-else:
-    # Test was called by another test.
-    _prefix = abspath(dirname(__file__))
-
-# the path of our fake skin
-skin_path_name = join(_prefix, 'fake_skins', 'fake_skin')
-
-def _registerDirectory(self=None):
-    from Products.CMFCore.DirectoryView import registerDirectory
-    from Products.CMFCore.DirectoryView import addDirectoryViews
-    registerDirectory('fake_skins', _prefix)
-    if self is not None:
-        ob = self.ob = DummyFolder()
-        addDirectoryViews(ob, 'fake_skins', _prefix)
-
-#
-# XXX: 2002/08/12:  Another thumb-rule:  don't write to the filesystem
-#       as part of a unittest (failure modes are too hard to track down,
-#       and it should be possible to run them *anywhere*, including in
-#       a setup where the files / directories are readonly.
-#
-def _writeFile(filename, stuff):
-    # write some stuff to a file on disk
-    # make sure the file's modification time has changed
-    thePath = join(skin_path_name,filename)
-    try:
-        mtime1 = stat(thePath)[8]
-    except:
-        mtime1 = 0
-    mtime2 = mtime1
-    while mtime2==mtime1:
-        f = open(thePath,'w')
-        f.write(stuff)
-        f.close()
-        mtime2 = stat(thePath)[8]
-
-def _deleteFile(filename):
-    # nuke it
-    remove(join(skin_path_name,filename))
-
-class DirectoryViewTests1( TestCase ):
+class DirectoryViewTests1( FSDVTest ):
 
     def setUp(self):
-        _registerDirectory()
+        FSDVTest.setUp(self)
+        self._registerDirectory()
         self.ob = DummyFolder()
         
     def test_registerDirectory( self ):
@@ -71,38 +26,39 @@ class DirectoryViewTests1( TestCase ):
     #       you are hardwiring assumptions about the shape of
     #       SOFTWARE_HOME/INSTANCE_HOME).
     #
-    def test_getDirectoryInfo1( self ):
-        """ windows INSTANCE_HOME  """
-        from Products.CMFCore.DirectoryView import addDirectoryViews
-        addDirectoryViews(self.ob, 'fake_skins', _prefix)
-        self.ob.fake_skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')        
-        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+##     def test_getDirectoryInfo1( self ):
+##         """ windows INSTANCE_HOME  """
+##         from Products.CMFCore.DirectoryView import addDirectoryViews
+##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
+##         self.ob.fake_skin.manage_properties(r'Products\CMFCore\tests\fake_skins\fake_skin')        
+##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-    def test_getDirectoryInfo2( self ):
-        """ windows SOFTWARE_HOME  """
-        from Products.CMFCore.DirectoryView import addDirectoryViews
-        addDirectoryViews(self.ob, 'fake_skins', _prefix)
-        self.ob.fake_skin.manage_properties(r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')        
-        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+##     def test_getDirectoryInfo2( self ):
+##         """ windows SOFTWARE_HOME  """
+##         from Products.CMFCore.DirectoryView import addDirectoryViews
+##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
+##         self.ob.fake_skin.manage_properties(r'C:\Zope\2.5.1\Products\CMFCore\tests\fake_skins\fake_skin')        
+##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-    def test_getDirectoryInfo3( self ):
-        """ *nix INSTANCE_HOME  """
-        from Products.CMFCore.DirectoryView import addDirectoryViews
-        addDirectoryViews(self.ob, 'fake_skins', _prefix)
-        self.ob.fake_skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')        
-        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+##     def test_getDirectoryInfo3( self ):
+##         """ *nix INSTANCE_HOME  """
+##         from Products.CMFCore.DirectoryView import addDirectoryViews
+##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
+##         self.ob.fake_skin.manage_properties('Products/CMFCore/tests/fake_skins/fake_skin')        
+##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-    def test_getDirectoryInfo4( self ):
-        """ *nix SOFTWARE_HOME  """
-        from Products.CMFCore.DirectoryView import addDirectoryViews
-        addDirectoryViews(self.ob, 'fake_skins', _prefix)
-        self.ob.fake_skin.manage_properties('/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')        
-        self.failUnless(hasattr(self.ob.fake_skin,'test1'))
+##     def test_getDirectoryInfo4( self ):
+##         """ *nix SOFTWARE_HOME  """
+##         from Products.CMFCore.DirectoryView import addDirectoryViews
+##         addDirectoryViews(self.ob, 'fake_skins', _prefix)
+##         self.ob.fake_skin.manage_properties('/usr/local/zope/2.5.1/Products/CMFCore/tests/fake_skins/fake_skin')        
+##         self.failUnless(hasattr(self.ob.fake_skin,'test1'))
 
-class DirectoryViewTests2( TestCase ):
+class DirectoryViewTests2( FSDVTest ):
 
     def setUp( self ):
-        _registerDirectory(self)        
+        FSDVTest.setUp(self)
+        self._registerDirectory(self)        
 
     def test_addDirectoryViews( self ):
         """ Test addDirectoryViews  """
@@ -125,46 +81,28 @@ class DirectoryViewTests2( TestCase ):
         """Make sure the directory view is reading properties"""
         self.assertEqual(self.ob.fake_skin.testPT.title, 'Zope Pope')
 
-test1path = join(skin_path_name,'test1.py')
-test2path = join(skin_path_name,'test2.py')
-test3path = join(skin_path_name,'test3')
-
 if DevelopmentMode:
 
-  class DebugModeTests( TestCase ):
+  class DebugModeTests( FSDVTest ):
 
     def setUp( self ):
+        FSDVTest.setUp(self)
+        self.test1path = join(self.skin_path_name,'test1.py')
+        self.test2path = join(self.skin_path_name,'test2.py')
+        self.test3path = join(self.skin_path_name,'test3')
         
         # initialise skins
-        _registerDirectory(self)
+        self._registerDirectory(self)
 
         # add a method to the fake skin folder
-        _writeFile(test2path, "return 'test2'")
+        self._writeFile(self.test2path, "return 'test2'")
 
         # edit the test1 method
-        copy2(test1path,test1path+'.bak')
-        _writeFile(test1path, "return 'new test1'")
+        self._writeFile(self.test1path, "return 'new test1'")
 
         # add a new folder
-        mkdir(test3path)
+        mkdir(self.test3path)
         
-    def tearDown( self ):
-        
-        # undo FS changes
-        remove(test1path)
-        copy2(test1path+'.bak',test1path)
-        remove(test1path+'.bak')
-        try:        
-            remove(test2path)
-        except (IOError,OSError):
-            # it might be gone already
-            pass
-        try:
-            rmdir(test3path)
-        except (IOError,OSError):
-            # it might be gone already
-            pass
-
     def test_AddNewMethod( self ):
         """
         See if a method added to the skin folder can be found
@@ -189,13 +127,8 @@ if DevelopmentMode:
         """
         Make sure a deleted method goes away
         """
-        remove(test2path)
-        try:
-            self.ob.fake_skin.test2
-        except AttributeError:
-            pass
-        else:
-            self.fail('test2 still exists')
+        remove(self.test2path)
+        self.failIf(hasattr(self.ob.fake_skin,'test2'))
 
     def test_DeleteAddEditMethod( self ):
         """
@@ -204,27 +137,17 @@ if DevelopmentMode:
 
         This excecises yet another Win32 mtime weirdity.
         """
-        remove(test2path)
-        try:
-            self.ob.fake_skin.test2
-        except AttributeError:
-            pass
-        else:
-            self.fail('test2 still exists')
+        remove(self.test2path)
+        self.failIf(hasattr(self.ob.fake_skin,'test2'))
             
         # add method back to the fake skin folder
-        _writeFile(test2path, "return 'test2.2'")
-        
-        # we need to wait a second here or the mtime will actually
-        # have the same value, no human makes two edits in less
-        # than a second ;-)
-        sleep(1)
+        self._writeFile(self.test2path, "return 'test2.2'")
         
         # check
         self.assertEqual(self.ob.fake_skin.test2(),'test2.2')
 
         # edit method
-        _writeFile(test2path, "return 'test2.3'")
+        self._writeFile(self.test2path, "return 'test2.3'")
 
         # check
         self.assertEqual(self.ob.fake_skin.test2(),'test2.3')
@@ -233,13 +156,8 @@ if DevelopmentMode:
         """
         Make sure a deleted folder goes away
         """
-        rmdir(test3path)
-        try:
-            self.ob.fake_skin.test3
-        except AttributeError:
-            pass
-        else:
-            self.fail('test3 still exists')
+        rmdir(self.test3path)
+        self.failIf(hasattr(self.ob.fake_skin,'test3'))
 
 else:
 

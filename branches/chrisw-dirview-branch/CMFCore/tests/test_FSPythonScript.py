@@ -1,16 +1,14 @@
 import Zope
 from unittest import TestCase, TestSuite, makeSuite, main
 from Products.CMFCore.FSPythonScript import FSPythonScript
-from test_DirectoryView import skin_path_name
+from Products.CMFCore.tests.base.testcase import FSDVTest
 from os.path import join
 
-script_path = join(skin_path_name,'test1.py')
-
-class FSPythonScriptTests( TestCase ):
+class FSPythonScriptTests( FSDVTest ):
 
     def test_GetSize( self ):
         """ Test get_size returns correct value """
-        script = FSPythonScript('test1', script_path)
+        script = FSPythonScript('test1', join(self.skin_path_name,'test1.py'))
         self.assertEqual(len(script.read()),script.get_size())
 
 def test_suite():

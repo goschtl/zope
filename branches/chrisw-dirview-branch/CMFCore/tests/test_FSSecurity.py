@@ -6,22 +6,11 @@ from time import sleep
 
 from AccessControl.Permission import Permission
 from Products.CMFCore.tests.base.testcase import RequestTest
+from Products.CMFCore.tests.base.testcase import FSDVTest
 
-#
-# XXX: 2002/08/12:  Tests shouldn't depend on one another;  common
-#       stuff like this should be factored out into a utilty module.
-#
-from test_DirectoryView import _registerDirectory
-from test_DirectoryView import _prefix
-
-#
-# XXX: 2002/08/12:  don't write to the filesystem (see test_DirectoryView)
-#
-from test_DirectoryView import _writeFile
-from test_DirectoryView import _deleteFile
 from Globals import DevelopmentMode
 
-class FSSecurityBase( RequestTest ):
+class FSSecurityBase( RequestTest, FSDVTest ):
 
     def _checkSettings(self,object,permissionname,acquire=0,roles=[]):
         # check the roles and acquire settings for a permission on an
@@ -46,7 +35,8 @@ class FSSecurityBase( RequestTest ):
             
     def setUp( self ):
         # initialise skins
-        _registerDirectory(self)
+        FSDVTest.setUp(self)
+        self._registerDirectory(self)
         # set up ZODB
         RequestTest.setUp(self)
         # put object in ZODB
@@ -56,11 +46,8 @@ class FSSecurityBase( RequestTest ):
         root._setObject( 'fake_skin', self.ob.fake_skin )
 
     def tearDown( self ):
-        try:
-            _deleteFile('test5.py.security')
-        except:
-            pass
         RequestTest.tearDown(self)
+        FSDVTest.tearDown(self)
         
 class FSSecurityTests( FSSecurityBase ):
 
@@ -77,7 +64,7 @@ class FSSecurityTests( FSSecurityBase ):
         # baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
         # add .rpm with dodgy permission name
-        _writeFile('test5.py.security','Access stoopid contents::')
+        self._writeFile('test5.py.security','Access stoopid contents::')
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
         
@@ -86,7 +73,7 @@ class FSSecurityTests( FSSecurityBase ):
         # baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
         # add dodgy .rpm
-        _writeFile('test5.py.security','View:aquire:')
+        self._writeFile('test5.py.security','View:aquire:')
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
@@ -99,7 +86,7 @@ if DevelopmentMode:
             # baseline
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
             # add
-            _writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.security','View:acquire:Manager')
             # test            
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
@@ -107,20 +94,20 @@ if DevelopmentMode:
             """ Test deleting of a .security """
             # baseline
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
-            _writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.security','View:acquire:Manager')
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
             # delete
-            _deleteFile('test5.py.security')
+            self._deleteFile('test5.py.security')
             # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
 
         def test_editPRM( self ):
             """ Test editing a .security """
             # baseline
-            _writeFile('test5.py.security','View::Manager,Anonymous')
+            self._writeFile('test5.py.security','View::Manager,Anonymous')
             self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])           
             # edit
-            _writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.security','View:acquire:Manager')
             # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
@@ -128,15 +115,15 @@ if DevelopmentMode:
         def test_DelAddEditPRM( self ):
             """ Test deleting, then adding, then editing a .security file """
             # baseline
-            _writeFile('test5.py.security','View::Manager')
+            self._writeFile('test5.py.security','View::Manager')
             # delete
-            _deleteFile('test5.py.security')
+            self._deleteFile('test5.py.security')
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
             # add back
-            _writeFile('test5.py.security','View::Manager,Anonymous')
+            self._writeFile('test5.py.security','View::Manager,Anonymous')
             self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])
             # edit
-            _writeFile('test5.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.security','View:acquire:Manager')
             # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
