@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: type.py,v 1.3 2002/12/30 14:00:48 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -44,10 +44,11 @@ class TypeRegistry:
         self._reg = {}
 
     def register(self, interface, object):
-        if interface is not None and not IInterface.isImplementedBy(interface):
+        if interface is None or IInterface.isImplementedBy(interface):
+            self._reg[interface] = object
+        else:
             raise TypeError(
                 "The interface argument must be an interface (or None)")
-        self._reg[interface] = object
 
     def get(self, interface, default=None):
         """
