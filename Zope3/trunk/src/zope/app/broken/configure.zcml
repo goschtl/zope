@@ -3,8 +3,12 @@
     xmlns:event="http://namespaces.zope.org/event"
     >
 
+  <content class=".broken.Broken">
+    <allow interface="zope.app.interfaces.annotation.IAnnotations" />
+  </content>
+
   <event:subscribe
-      subscriber=".broken.installBroken"
+      subscriber=".broken.installBrokenSubscriber"
       event_types="zope.app.event.interfaces.IDatabaseOpenedEvent" 
       />
 
