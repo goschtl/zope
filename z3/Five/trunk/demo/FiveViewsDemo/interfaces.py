@@ -22,10 +22,6 @@ class ISimpleContent(IPublicSimpleContent,
                      IProtectedSimpleContent):
     """A Simple Content Interface"""
 
-class IFolder(Interface):
-    pass
-
-
 class IReadSimpleFolderView(Interface):
 
     def eagle():

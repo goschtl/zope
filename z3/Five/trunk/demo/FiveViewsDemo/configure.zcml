@@ -10,17 +10,12 @@
     permission="zope.ViewManagementScreens"
     />
 
-  <five:implements
-    class="OFS.Folder.Folder"
-    interface=".interfaces.IFolder"
-    />
-
   <five:viewable
     class="OFS.Folder.Folder"
     />
 
   <browser:page
-    for=".interfaces.IFolder"
+    for="Products.Five.interfaces.IFolder"
     class=".browser.SimpleFolderView"
     attribute="eagle"
     name="eagle.txt"
