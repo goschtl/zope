@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ PortalContent: Base class for all CMF content.
 
@@ -37,7 +37,7 @@ except ImportError:
     class ResourceLockedError( Exception ):
         pass
 
-try: 
+try:
     from webdav.WriteLockInterface import WriteLockInterface
     NoWL = 0
 except ImportError:
@@ -47,13 +47,13 @@ except ImportError:
 class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     """
         Base class for portal objects.
-        
+
         Provides hooks for reviewing, indexing, and CMF UI.
 
         Derived classes must implement the interface described in
         interfaces/DublinCore.py.
     """
-    
+
     if not NoWL:
         __implements__ = (WriteLockInterface, Contentish,)
     else:
@@ -96,7 +96,7 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
 
     # indexed methods
     # ---------------
-    
+
     security.declareProtected(View, 'SearchableText')
     def SearchableText(self):
         "Returns a concatination of all searchable text"
