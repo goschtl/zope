@@ -11,16 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Content Type convenience lookup functions 
+
 $Id$
 """
-
+__docformat__ = 'restructuredtext'
 from zope.app.interface import queryType
 from zope.app.content.interfaces import IContentType
 
 def queryContentType(object):
-    """Returns the interface implemented by object which implements IContentType.
-    """
+    """Returns the interface implemented by object which implements
+    ``IContentType``."""
     return queryType(object, IContentType)
 
 

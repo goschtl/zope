@@ -11,15 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Module Aliases Package
 
 modulealiases package allows you to make module alias declarations via zcml,
-e.g.:
+e.g.::
 
-<modulealias module="some.existing.package" alias="some.nonexistent.package" />
+  <modulealias
+      module="some.existing.package"
+      alias="some.nonexistent.package" />
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 import sys
 import types
 

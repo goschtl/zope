@@ -1,1 +1,1 @@
-"""Tests of the utility service views."""
+# Make this directory a package.

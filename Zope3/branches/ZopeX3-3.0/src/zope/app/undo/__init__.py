@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Undo Support
+
 $Id$
 """
 from datetime import datetime

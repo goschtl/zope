@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Zope-specific Page Templates
 
+$Id$
+"""
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 #from zope.app.pagetemplate.simpleviewclass import SimpleViewClass

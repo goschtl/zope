@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""List field tests
+
 $Id$
 """
 from unittest import main, makeSuite

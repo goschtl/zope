@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Zope Cursor component
+
 $Id$
 """
-
 from unittest import TestCase, main, makeSuite
 from zope.app.rdb import ZopeConnection
 from zope.app.rdb import ZopeCursor

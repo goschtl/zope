@@ -11,8 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interface that a TAL expression implementation provides to the METAL/TAL implementation."""
+"""Interface that a TAL expression implementation provides to the METAL/TAL
+implementation.
 
+$Id$
+"""
 from zope.interface import Attribute, Interface
 
 

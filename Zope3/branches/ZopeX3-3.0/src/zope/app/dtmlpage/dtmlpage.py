@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""DTML Page content component
+
 $Id$
 """
 from persistent import Persistent

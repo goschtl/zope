@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Dublin Core interfaces
+
 $Id$
 """
-
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Datetime, List

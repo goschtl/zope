@@ -11,8 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Folder content component
+
 $Id$
 """
-
 from folder import Folder, rootFolder

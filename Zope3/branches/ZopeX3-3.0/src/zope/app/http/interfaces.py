@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""Zope-specific HTTP interfaces
+
 $Id$
 """
 

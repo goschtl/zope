@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Not Found Error
+
 $Id$
 """
 from zope.interface.common.interfaces import IKeyError

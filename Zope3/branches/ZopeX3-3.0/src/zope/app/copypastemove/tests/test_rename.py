@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test renaming of components
+
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite

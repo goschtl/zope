@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Form and Widget specific 'browser' ZCML namespace interfaces
+
 $Id$
 """
 from zope.interface import Interface

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Duplication Error
+
 $Id$
 """
 from zope.interface import implements, Interface

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Dublin Core Annotatable Adapter
+
 $Id$
 """
 from persistent.dict import PersistentDict

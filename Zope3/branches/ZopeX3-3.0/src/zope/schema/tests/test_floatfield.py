@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Float field tests
+
 $Id$
 """
 from unittest import main, makeSuite

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""I18n-aware file and image interfaces.
+
 $Id$
 """
 from zope.i18n.interfaces import II18nAware

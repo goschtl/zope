@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""I18n-aware Image Content Component
+
 $Id$
 """
-
 from zope.interface import implements
 from zope.app.file.image import Image, getImageInfo
 from zope.app.i18nfile.i18nfile import I18nFile

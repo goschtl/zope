@@ -12,8 +12,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Driver program to test METAL and TAL implementation.
+"""Driver program to test METAL and TAL implementation.
 
 Usage: driver.py [options] [file]
 Options:
@@ -34,6 +33,8 @@ Options:
         Leave TAL/METAL attributes in output
     -i
         Leave I18N substitution strings un-interpolated.
+
+$Id$
 """
 
 import os

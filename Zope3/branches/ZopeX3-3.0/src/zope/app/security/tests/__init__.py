@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Security Tests
+
 $Id$
 """
-
 from zope.app import zapi
 from zope.app.security.permission import Permission
 from zope.app.security.interfaces import IPermission

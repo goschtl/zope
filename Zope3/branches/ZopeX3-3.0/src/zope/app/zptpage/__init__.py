@@ -11,8 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""ZPT Page content type
+
 $Id$
 """
-
 from zptpage import ZPTPage

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Generic field tests
+
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite

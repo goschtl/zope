@@ -11,9 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Event Package
 
 $Id$
 """
-
 from dispatching import publish

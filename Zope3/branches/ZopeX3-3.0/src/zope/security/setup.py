@@ -12,7 +12,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Security setup
 
+$Id$
+"""
 from distutils.core import setup, Extension
 
 setup(name="_Proxy", version = "0.1",

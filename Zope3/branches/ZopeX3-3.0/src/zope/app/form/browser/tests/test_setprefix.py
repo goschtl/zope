@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Widget name prefix tests
+
 $Id$
 """
 import unittest

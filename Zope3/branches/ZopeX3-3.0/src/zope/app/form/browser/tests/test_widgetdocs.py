@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Generic Text Widgets tests
+
 $Id$
 """
 import unittest

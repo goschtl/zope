@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Datetime Widget Tests
+
 $Id$
 """
 import unittest, doctest

@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-This set of tests exercises Objects.
+"""This set of tests exercises Object fields.
 
 $Id$
 """

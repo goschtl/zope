@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""I18n-aware File implementation
+
 $Id$
 """
 from persistent import Persistent

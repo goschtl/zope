@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Copy, Paste and Move support for content components
+
 $Id$
 """
 from zope.interface import implements, Invalid

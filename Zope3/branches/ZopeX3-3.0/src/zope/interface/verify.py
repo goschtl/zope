@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Verify interface implementations
 
+$Id$
+"""
 from zope.interface.exceptions import BrokenImplementation, DoesNotImplement
 from zope.interface.exceptions import BrokenMethodImplementation
 from types import FunctionType, MethodType

@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Iterable field tests
+
 $Id$
 """
 from UserDict import UserDict, IterableUserDict

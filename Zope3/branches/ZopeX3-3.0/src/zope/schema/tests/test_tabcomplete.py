@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Tests of the 'tab completion' example vocabulary.
 
-"""Tests of the 'tab completion' example vocabulary."""
-
+$Id$
+"""
 import unittest
 
 from zope.schema.interfaces import ITerm, IVocabularyQuery

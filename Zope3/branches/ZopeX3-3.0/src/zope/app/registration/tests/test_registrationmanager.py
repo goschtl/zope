@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Registration Manager tests
+
 $Id$
 """
 from unittest import TestSuite, TestCase, main, makeSuite

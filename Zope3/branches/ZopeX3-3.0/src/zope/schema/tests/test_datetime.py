@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Datetime Field tests
+
 $Id$
 """
 from unittest import main, makeSuite

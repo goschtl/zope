@@ -104,7 +104,7 @@ You can unsubscribe:
   >>> subs
   ['sub11', 'sub12 1', 'sub22', 'sub_1']
     
-  
+$Id$  
 """
 
 

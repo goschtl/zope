@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Generic Widget base classes
+
 $Id$
 """
 from zope.app.form.interfaces import IWidget, InputErrors

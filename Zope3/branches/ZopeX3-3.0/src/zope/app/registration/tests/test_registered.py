@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Registered components tests
+
 $Id$
 """
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test Login and Password
+
+$Id$
+"""
 import unittest
 
 from zope.app.security.loginpassword import LoginPassword

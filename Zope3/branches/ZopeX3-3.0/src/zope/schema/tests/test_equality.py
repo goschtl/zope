@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Field equality tests
+
 $Id$
 """
 from unittest import TestCase, TestSuite, makeSuite

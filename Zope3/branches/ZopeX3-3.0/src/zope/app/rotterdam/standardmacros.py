@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Rotterdam layer standard macros
+
 $Id$
 """
 from zope.app.basicskin.standardmacros import StandardMacros as BaseMacros
