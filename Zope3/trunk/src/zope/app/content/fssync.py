@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.4 2003/05/15 16:20:09 gvanrossum Exp $
+$Id: fssync.py,v 1.5 2003/05/15 16:57:19 gvanrossum Exp $
 """
 
 from zope.app.content.file import File
@@ -24,47 +24,49 @@ from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile, IContentDirectory
 from zope.proxy.context import ContextWrapper
 
-_attrs = ('contentType', )
-
-class ObjectFileAdapter(ObjectEntryAdapter):
+class FileAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for file objects."""
 
     __implements__ =  IObjectFile
 
     def getBody(self):
-        "See IObjectFile"
         return self.context.getData()
 
     def setBody(self, data):
-        "See IObjectFile"
         self.context.setData(data)
 
     def extra(self):
-        "See IObjectEntry"
-        return AttrMapping(self.context, _attrs)
+        return AttrMapping(self.context, ('contentType',))
 
-class ObjectDirectory(ObjectEntryAdapter):
+class DirectoryAdapter(ObjectEntryAdapter):
     """Folder adapter to provide a file-system representation."""
 
     __implements__ =  IContentDirectory
 
     def contents(self):
-        "See IObjectDirectory"
         result = []
         for name, object in self.context.items():
             object = ContextWrapper(object, self.context, name=name)
             result.append((name, object))
         return result
 
-class ZPTObjectFileAdapter(ObjectEntryAdapter):
+class ZPTPageAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for ZPT page objects."""
 
     __implements__ =  IObjectFile
 
     def getBody(self):
-        "See IObjectFile"
         return self.context.getSource()
 
     def setBody(self, data):
-        "See IObjectFile"
+        self.context.setSource(data)
+
+class DTMLPageAdapter(ObjectEntryAdapter):
+
+    __implements__ = IObjectFile
+
+    def getBody(self):
+        return self.context.getSource()
+
+    def setBody(self, data):
         self.context.setSource(data)

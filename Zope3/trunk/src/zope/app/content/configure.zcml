@@ -359,31 +359,33 @@
 
 <fssync:adapter factory="zope.app.fssync.classes.Default" />
 
-<fssync:adapter class=".file.File" factory=".fssync.ObjectFileAdapter" />
+<fssync:adapter class=".file.File" factory=".fssync.FileAdapter" />
 
-<fssync:adapter class=".image.Image" factory=".fssync.ObjectFileAdapter" />
+<fssync:adapter class=".image.Image" factory=".fssync.FileAdapter" />
 
-<fssync:adapter class=".folder.Folder" factory=".fssync.ObjectDirectory" />
+<fssync:adapter class=".folder.Folder" factory=".fssync.DirectoryAdapter" />
 
-<fssync:adapter class=".zpt.ZPTPage" factory=".fssync.ZPTObjectFileAdapter" />
+<fssync:adapter class=".zpt.ZPTPage" factory=".fssync.ZPTPageAdapter" />
+
+<fssync:adapter class=".dtmlpage.DTMLPage" factory=".fssync.DTMLPageAdapter" />
 
   <!-- zope:adapter directives -->
 
 <adapter
   for="zope.app.interfaces.content.file.IFile"
-  factory=".fssync.ObjectFileAdapter"
+  factory=".fssync.FileAdapter"
   provides="zope.app.interfaces.fssync.IObjectFile"
   />
 
 <adapter
   for="zope.app.interfaces.content.folder.IFolder"
-  factory=".fssync.ObjectDirectory"
+  factory=".fssync.DirectoryAdapter"
   provides="zope.app.interfaces.fssync.IObjectDirectory"
   />
 
 <adapter
   for="zope.app.interfaces.content.zpt.IZPTPage"
-  factory=".fssync.ObjectFileAdapter"
+  factory=".fssync.FileAdapter"
   provides="zope.app.interfaces.fssync.IObjectFile"
   />
 
