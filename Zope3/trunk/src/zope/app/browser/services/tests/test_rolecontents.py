@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_rolecontents.py,v 1.6 2003/08/17 06:05:57 philikon Exp $
+$Id: test_rolecontents.py,v 1.7 2003/09/21 17:31:05 jim Exp $
 """
 
 import unittest
@@ -22,7 +22,9 @@ from zope.interface import Interface, implements
 from zope.app.browser.services.role import Contents
 from zope.app.services.role import RoleService
 from zope.app.browser.container.tests.test_contents \
-     import BaseTestContentsBrowserView
+     import BaseTestContentsBrowserView, Principal
+from zope.app.content.folder import rootFolder
+from zope.app.container.contained import contained
 
 class IDummy(Interface):
     pass
@@ -33,15 +35,15 @@ class Dummy:
 class Test(BaseTestContentsBrowserView, unittest.TestCase):
 
     def _TestView__newContext(self):
-        from zope.app.content.folder import RootFolder
-        from zope.app.context import ContextWrapper
-        root = RootFolder()
+        root = rootFolder()
         container = RoleService()
-        return ContextWrapper(container, root, name='sample')
+        return contained(container, root, name='sample')
 
     def _TestView__newView(self, container):
         from zope.publisher.browser import TestRequest
-        return Contents(container, TestRequest())
+        request = TestRequest()
+        request.setUser(Principal())
+        return Contents(container, request)
 
 def test_suite():
     loader = unittest.TestLoader()
