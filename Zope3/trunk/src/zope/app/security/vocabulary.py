@@ -162,7 +162,7 @@ class PrincipalSource(object):
         ...     implements(ISourceQueriables)
         ...     __parent__ = None
         ...     def getQueriables(self):
-        ...         return 1, 2, 3
+        ...         return ('1', 1), ('2', 2), ('3', 3)
         >>> dummy2 = DummyService2()
         
         >>> from zope.app.component.localservice import testingNextService
@@ -173,18 +173,19 @@ class PrincipalSource(object):
 
         >>> source = PrincipalSource()
         >>> list(source.getQueriables())
-        [dummy1, 1, 2, 3]
+        [(u'0', dummy1), (u'0.1', 1), (u'0.2', 2), (u'0.3', 3)]
 
         >>> zapi.getService = temp
         """
+        i = 0
         auth = zapi.getService(zapi.servicenames.Authentication)
         while True:
             queriables = ISourceQueriables(auth, None)
             if queriables is None:
-                yield auth
+                yield unicode(i), auth
             else:
-                for queriable in queriables.getQueriables():
-                    yield queriable
+                for qid, queriable in queriables.getQueriables():
+                    yield unicode(i)+'.'+unicode(qid), queriable
             auth = queryNextService(auth, zapi.servicenames.Authentication)
             if auth is None:
                 break
