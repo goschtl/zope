@@ -13,9 +13,8 @@
 ##############################################################################
 """Site-management folder tests
 
-$Id: test_folder.py,v 1.4 2003/06/21 21:22:13 jim Exp $
+$Id: test_folder.py,v 1.1 2004/03/13 15:21:57 srichter Exp $
 """
-
 import unittest
 from zope.app.services.tests.test_registrationmanager \
      import RegistrationManagerContainerTests

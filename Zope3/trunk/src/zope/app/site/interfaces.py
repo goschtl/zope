@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces to support service managers.
+"""Interfaces for folders.
 
-$Id: service.py,v 1.20 2004/03/07 13:54:17 jim Exp $
+$Id: interfaces.py,v 1.1 2004/03/13 15:21:47 srichter Exp $
 """
-__metaclass__ = type
-
-import zope.schema
-from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.services import registration
-from zope.app.interfaces.services.registration import IComponentRegistration
-from zope.component.interfaces import IServiceService
 from zope.interface import Interface
+import zope.schema
+from zope.component.interfaces import IServiceService
+from zope.app.container.interfaces import IContainer
+from zope.app.container.constraints import ContainerTypesConstraint
+from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.interfaces.services import registration
+from zope.app.i18n import ZopeMessageIDFactory as _
+
 
 class ILocalService(registration.IRegisterable):
     """A local service isn't a local service if it doesn't implement this.
@@ -146,7 +147,7 @@ class ISiteManager(IServiceService, IComponentManager,
         """
 
 
-class IServiceRegistration(IComponentRegistration):
+class IServiceRegistration(registration.IComponentRegistration):
     """Service Registration
 
     Service registrations are dependent on the components that they
@@ -164,3 +165,25 @@ class IServiceRegistration(IComponentRegistration):
         required=True,
         min_length=1,
         )
+
+
+class ISiteManagementFolder(
+    registration.IRegistrationManagerContainer,
+    IContainer,
+    ):
+    """Component and component registration containers."""
+
+    __parent__ = zope.schema.Field(
+        constraint = ContainerTypesConstraint(
+            ISiteManager,
+            registration.IRegistrationManagerContainer,
+            ),
+        )
+
+class ISiteManagementFolders(IContainer, IComponentManager):
+    """A collection of ISiteManagementFolder objects.
+
+    An ISiteManagementFolders object supports simple containment as
+    well as package query and lookup.
+    
+    """

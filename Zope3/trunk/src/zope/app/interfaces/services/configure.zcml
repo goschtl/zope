@@ -1,7 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope">
-
-<module module=".service">
-  <allow attributes="ISite" />
-</module>
-
-</configure>

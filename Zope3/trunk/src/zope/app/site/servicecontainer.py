@@ -13,7 +13,7 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.9 2004/03/05 22:09:16 jim Exp $
+$Id: servicecontainer.py,v 1.1 2004/03/13 15:21:47 srichter Exp $
 """
 
 import zope.interface
@@ -22,7 +22,7 @@ from transaction import get_transaction
 from zope.app.container.contained import Contained
 from zope.app.event.function import Subscriber
 from zope.app import zapi
-from zope.app.interfaces.services.service import IPossibleSite, ISite
+from zope.app.site.interfaces import IPossibleSite, ISite
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService
 from zope.interface import implements

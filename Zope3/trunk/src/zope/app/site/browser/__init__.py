@@ -13,9 +13,8 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.27 2004/03/11 12:38:06 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/13 15:21:52 srichter Exp $
 """
-
 from zope.proxy import removeAllProxies
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -24,12 +23,12 @@ from zope.app.container.interfaces import INameChooser
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.service import ILocalService
+from zope.app.site.interfaces import ILocalService
 from zope.app.utility.interfaces import ILocalUtility
-from zope.app.services.service import ServiceRegistration
+from zope.app.site.service import ServiceRegistration
 from zope.publisher.browser import BrowserView
-from zope.app.interfaces.services.service import ISite, ISiteManager
-from zope.app.services.service import SiteManager
+from zope.app.site.interfaces import ISite, ISiteManager
+from zope.app.site.service import SiteManager
 from zope.app.component.nextservice import getNextServiceManager
 from zope.component.service import IGlobalServiceManager
 from zope.interface.interfaces import IMethod
@@ -516,7 +515,7 @@ class Interfaces:
     >>> pprint=PrettyPrinter(width=50).pprint
     >>> pprint(interface_view.getInterfaces())
     [{'doc': 'DCInterfaceDoc',
-      'id': 'zope.app.browser.services.service.DCInterface',
+      'id': 'zope.app.site.browser.DCInterface',
       'name': 'DCInterface'}]
         
 
@@ -558,7 +557,7 @@ class Detail:
     >>> provideInterface('', TestInterface, IContentType)
     >>> from zope.publisher.browser import TestRequest
     >>> request = TestRequest()
-    >>> form = {'id': 'zope.app.browser.services.service.TestInterface'}
+    >>> form = {'id': 'zope.app.site.browser.TestInterface'}
     >>> request.form = form
     >>> interface_details = Detail(TestClass(), request)
     >>> interface_details.setup()
@@ -645,7 +644,7 @@ class MethodDetail:
     >>> from zope.publisher.browser import TestRequest
     >>> request = TestRequest()
     >>> form = {
-    ... 'interface_id': 'zope.app.browser.services.service.TestInterface',
+    ... 'interface_id': 'zope.app.site.browser.TestInterface',
     ... 'method_id': 'testMethod'}
     >>> request.form = form
     >>> imethod_details = MethodDetail(TestClass(), request)

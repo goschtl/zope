@@ -13,9 +13,8 @@
 ##############################################################################
 """Unit tests for service adding and registration views.
 
-$Id: test_service.py,v 1.4 2003/11/21 17:11:57 jim Exp $
+$Id: test_service.py,v 1.1 2004/03/13 15:21:56 srichter Exp $
 """
-
 import unittest
 from zope.app.tests import ztapi
 from zope.interface import Interface, implements
@@ -34,7 +33,7 @@ class Foo:
 class TestComponentAdding(PlacelessSetup, unittest.TestCase):
 
     def test_nextURL(self):
-        from zope.app.browser.services.service import ComponentAdding
+        from zope.app.site.browser import ComponentAdding
 
         class AU:
             def __init__(self, context, request):
@@ -58,7 +57,7 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestComponentAdding))
-    suite.addTest(DocTestSuite('zope.app.browser.services.service',
+    suite.addTest(DocTestSuite('zope.app.site.browser',
                                setUp=setUp, tearDown=tearDown))
     return suite
 

@@ -11,11 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Service Registration tests.
 
-XXX longer description goes here.
-
-$Id: test_serviceregistration.py,v 1.4 2004/03/06 16:50:30 jim Exp $
+$Id: test_serviceregistration.py,v 1.1 2004/03/13 15:21:57 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -24,17 +22,16 @@ from zope.interface import Interface, implements
 
 from zope.component import getServiceManager
 from zope.app.traversing import traverse, getPath
-from zope.app.services.service import ServiceRegistration
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.service import ServiceRegistration
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.component.service import defineService
-from zope.app.interfaces.services.service import IBindingAware
+from zope.app.site.interfaces import IBindingAware
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import IRegistered
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app.site.interfaces import ISimpleService
 
-from zope.app.interfaces.dependable import IDependable
-from zope.app.interfaces.dependable import DependencyError
+from zope.app.interfaces.dependable import IDependable, DependencyError
 
 class ITestService(Interface):
     pass

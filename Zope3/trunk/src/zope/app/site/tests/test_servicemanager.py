@@ -11,21 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Service Manager Tests
 
-Revision information:
-$Id: test_servicemanager.py,v 1.17 2003/11/21 17:09:55 jim Exp $
+$Id: test_servicemanager.py,v 1.1 2004/03/13 15:21:57 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
-
 
 from zope.app import zapi
 from zope.app.tests import setup
 from zope.interface import Interface, implements
-from zope.app.services.service import ServiceManager
-from zope.app.services.service import ServiceRegistration
+from zope.app.site.service import ServiceManager
+from zope.app.site.service import ServiceRegistration
 from zope.component import getService, getServiceManager
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus

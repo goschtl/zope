@@ -23,9 +23,8 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.42 2004/03/07 13:54:18 jim Exp $
+$Id: service.py,v 1.1 2004/03/13 15:21:47 srichter Exp $
 """
-
 from transaction import get_transaction
 from zodbcode.module import PersistentModuleRegistry
 from zope.app.component.nextservice import getNextService
@@ -36,16 +35,12 @@ from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IContainer
 from zope.app.event.function import Subscriber
 from zope.app import zapi
-from zope.app.interfaces.services.service import IBindingAware
-from zope.app.interfaces.services.service import ILocalService
-from zope.app.interfaces.services.service import IPossibleSite
-from zope.app.interfaces.services.service import IServiceRegistration
-from zope.app.interfaces.services.service import ISite
-from zope.app.interfaces.services.service import ISiteManager
+from interfaces import IBindingAware, ILocalService, IServiceRegistration
+from interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.interfaces.services.registration import IRegistry
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.location import inside
-from zope.app.services.folder import SiteManagementFolder
+from zope.app.site.folder import SiteManagementFolder
 from zope.app.services.registration import ComponentRegistration
 from zope.app.services.registration import RegistrationStack
 from zope.app.traversing import getPath
