@@ -64,3 +64,18 @@ Using the Zope Debugger
       - basic - user:password used for http basic auth (it will be
         base64 encoded by the debug method).
 
+  Accessing objects (without the debugger)
+
+    You can use the application object to open a database connection
+    to access your objects.  If the application object is called, it
+    opens a database connection and fetches the root object::
+
+       root = app()
+
+    For example, to list the objects in the root folder:
+
+       print list(root)
+
+    Also note that, after initializing the application, by creating
+    the root object, you can access any global services setup diring
+    initialization. 
