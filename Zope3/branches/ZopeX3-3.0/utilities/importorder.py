@@ -28,7 +28,7 @@ Import Order:-
     entire directory .
 
 -D / --display
-   Displays Import oder for all .py files in the specified path. 
+   Displays Import order for all .py files in the specified path. 
 
 -f / --file
    It will order all imported python packages in a file.
