@@ -37,8 +37,7 @@ Test harness.
     run, except when errors occur.
 
 -p  progress
-    Show running progress.  It can be combined with -v or -vv (though the first
-    combination doesn't make much sense).
+    Show running progress.  It can be combined with -v or -vv.
 
 -L  Loop
     Keep running the selected tests in a loop.  You may experience
@@ -130,7 +129,14 @@ class ImmediateTestResult(unittest._TextTestResult):
         self.__super_init(stream, descriptions, verbosity)
         self._debug = debug
         self._progress = progress
+        self._progressWithNames = 0
         self._count = count
+        if progress and verbosity == 1:
+            self.dots = 0
+            self._progressWithNames = 1
+            self._lastWidth = 0
+            self._maxWidth = 80 # would be nice to determine terminal width
+            self._maxWidth -= len('xxxx/xxxx (xxx.x%): ') + 1
 
     def _print_traceback(self, msg, err, test, errlist):
         if self.showAll or self.dots:
@@ -149,6 +155,14 @@ class ImmediateTestResult(unittest._TextTestResult):
                                   (self.testsRun + 1) * 100.0 / self._count))
             if self.showAll:
                 self.stream.write(": ")
+            elif self._progressWithNames:
+                # XXX will break with multibyte strings
+                name = self.getDescription(test)
+                width = len(name)
+                if width < self._lastWidth:
+                    name += ' ' * (self._lastWidth - width)
+                self.stream.write(': %s' % name[:self._maxWidth])
+                self._lastWidth = width
             self.stream.flush()
         self.__super_startTest(test)
 
