@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: testZSP.py,v 1.5 2002/07/16 23:41:18 jim Exp $
+Revision information: $Id: testZSP.py,v 1.6 2002/11/08 18:35:06 stevea Exp $
 """
 
 
@@ -70,6 +70,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         getService(None,"Adapters").provideAdapter(
                        IAttributeAnnotatable, IAnnotations,
                        AttributeAnnotations)    
+
+        # set up some principals
         jim = principalRegistry.definePrincipal('jim', 'Jim', 'Jim Fulton',
                                                 'jim', '123')
         self.jim = jim.getId()
@@ -78,17 +80,25 @@ class Test(PlacefulSetup, unittest.TestCase):
                                                 'tim', '456')
         self.tim = tim.getId()
 
-        unknown = principalRegistry.defineDefaultPrincipal(
-            'unknown', 'Unknown', 'Nothing is known about this principal')
+        unknown = principalRegistry.defineDefaultPrincipal('unknown', 
+                    'Unknown', 'Nothing is known about this principal')
         self.unknown = unknown.getId()
         
-        read = permissionRegistry.definePermission(
-            'read', 'Read', 'Read something')
+        # set up some permissions
+        read = permissionRegistry.definePermission('read', 'Read', 
+                                                   'Read something')
         self.read = read.getId()
-        write = permissionRegistry.definePermission(
-            'write', 'Write', 'Write something')
+        write = permissionRegistry.definePermission('write', 'Write', 
+                                                    'Write something')
         self.write = write.getId()
+        create = permissionRegistry.definePermission('create', 'Create',
+                                                     'Create something')
+        self.create = create.getId()
+        update = permissionRegistry.definePermission('update', 'Update',
+                                                     'Update something')
+        self.update = update
 
+        # ... and some roles...
         peon = roleRegistry.defineRole('Peon', 'Site Peon')
         self.peon = peon.getId()
 
@@ -98,11 +108,17 @@ class Test(PlacefulSetup, unittest.TestCase):
         arole = roleRegistry.defineRole('Another', 'Another Role')
         self.arole = arole.getId()
 
-        rolePermissionManager.grantPermissionToRole(self.read, self.peon)
+        # grant and deny some permissions to a principal
+        principalPermissionManager.grantPermissionToPrincipal(self.create, self.jim)
+        principalPermissionManager.denyPermissionToPrincipal(self.update, self.jim)
         
+        # grant and deny some permissions to the roles
+        rolePermissionManager.grantPermissionToRole(self.read, self.peon)
+
         rolePermissionManager.grantPermissionToRole(self.read, self.manager)
         rolePermissionManager.grantPermissionToRole(self.write, self.manager)
 
+        # ... and assign roles to principals
         principalRoleManager.assignRoleToPrincipal(self.peon, self.jim)
         principalRoleManager.assignRoleToPrincipal(self.manager, self.tim)
 
@@ -134,7 +150,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             self.policy.checkPermission(
             self.read, None, Context(self.unknown)))
 
-        self.__assertPermissions(self.jim, ['read'])
+        self.__assertPermissions(self.jim, ['create', 'read'])
         self.__assertPermissions(self.tim, ['read', 'write'])
         self.__assertPermissions(self.unknown, [])
 
@@ -151,7 +167,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.failUnless(
             self.policy.checkPermission(self.write, None, Context(self.jim)))
 
-        self.__assertPermissions(self.jim, ['read', 'write'])
+        self.__assertPermissions(self.jim, ['create', 'read', 'write'])
 
     def __assertPermissions(self, user, expected, object=None):
         permissions = list(permissionsOfPrincipal(user, object))
@@ -199,13 +215,13 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.__assertPermissions(self.tim, ['read', 'test', 'write'], ob)
 
         self.failIf(self.policy.checkPermission(test, ob, Context(self.jim)))
-        self.__assertPermissions(self.jim, ['read'], ob)
+        self.__assertPermissions(self.jim, ['create', 'read'], ob)
 
 
         ARPM(ob3).grantPermissionToRole(test, self.peon)
         self.failUnless(self.policy.checkPermission(
             test, ob, Context(self.jim)))
-        self.__assertPermissions(self.jim, ['read', 'test'], ob)
+        self.__assertPermissions(self.jim, ['create', 'read', 'test'], ob)
 
 
 
@@ -213,7 +229,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             test, self.jim)
         self.failIf(self.policy.checkPermission(
             test, ob, Context(self.jim)))
-        self.__assertPermissions(self.jim, ['read'], ob)
+        self.__assertPermissions(self.jim, ['create', 'read'], ob)
 
         principalPermissionManager.unsetPermissionForPrincipal(
             test, self.jim)
@@ -265,13 +281,13 @@ class Test(PlacefulSetup, unittest.TestCase):
         APPM(ob3).grantPermissionToPrincipal(test, self.jim)
         self.failUnless(self.policy.checkPermission(test, ob,
                                                     Context(self.jim)))
-        self.__assertPermissions(self.jim, ['read', 'test'], ob)
+        self.__assertPermissions(self.jim, ['create', 'read', 'test'], ob)
 
 
         APPM(ob3).unsetPermissionForPrincipal(test, self.jim)
         self.failIf(self.policy.checkPermission(test, ob,
                                                 Context(self.jim)))
-        self.__assertPermissions(self.jim, ['read'], ob)
+        self.__assertPermissions(self.jim, ['create', 'read'], ob)
 
         # make sure placeless principal permissions override placeful ones
         APPM(ob).grantPermissionToPrincipal(test, self.tim)
