@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.11 2003/03/11 16:10:50 jim Exp $
+$Id: service.py,v 1.12 2003/03/13 17:04:57 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -90,6 +90,9 @@ class ConfigurationAdding(Adding):
     """Adding subclass for adding configurations."""
 
     menu_id = "add_configuration"
+
+    def nextURL(self):
+        return str(getView(self.context, "absolute_url", self.request))
 
 
 class EditConfiguration(BrowserView):
