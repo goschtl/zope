@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.21 2003/04/12 11:42:08 stevea Exp $
+$Id: event.py,v 1.22 2003/04/12 11:52:17 stevea Exp $
 """
 
 from __future__ import generators
@@ -84,7 +84,14 @@ class EventChannel(Subscribable):
 
     def _notify(clean_self, wrapped_self, event):
         subscriptionsForEvent = clean_self._registry.getAllForObject(event)
-        hubGet = getService(wrapped_self, HubIds).getObject
+        hubIdsService = queryService(wrapped_self, HubIds)
+        if hubIdsService is None:
+            # This will only happen if there is no HubIds service.
+            # This is only true at start-up, so we don't bother testing
+            # whether hubGet is None in the loop below.
+            hubGet = None
+        else:
+            hubGet = hubIdsService.getObject
         pathGet = getAdapter(wrapped_self, ITraverser).traverse
 
         badSubscribers = {}  # using a dict as a set
