@@ -3,76 +3,105 @@
 <!-- Simple Folder Directives -->
 
 <content class=".Folder.">
+
   <implements interface="Zope.App.OFS.Container.IContentContainer." />
+
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+  
   <factory
       id="Folder"
       permission="Zope.ManageContent"
       title="Folder"
       description="Minimal folder" />
+
   <allow
-      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" />
+      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.Read"
+      />
+
   <require
       permission="Zope.ManageServices"
-      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" />
+      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.Write"
+      />
+
   <require
       permission="Zope.View"
-      interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
+      interface="Zope.App.OFS.Container.IContainer.IReadContainer" 
+      />
+
   <require
       permission="Zope.ManageContent"
-      interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
+      interface="Zope.App.OFS.Container.IContainer.IWriteContainer"
+      />
+
 </content>
 
 <!-- XXX Do we really need RootFolder? -->
+
 <content class=".RootFolder.">
+
   <implements interface="Zope.App.OFS.Container.IContentContainer." />
+
   <require like_class=".Folder." />
+
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
 </content>
 
 <!-- Loaded Folder Directives -->
+
 <content class=".LoadedFolder.">
+
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
   <implements interface="Zope.App.OFS.Container.IContentContainer." />
+
   <factory
       id="LoadedFolder"
       permission="Zope.ManageContent"
       title="Loaded Folder"
-      description="A Folder having all the goodies." />
+      description="A Folder having all the goodies."
+      />
 
   <allow
-      interface="
-Zope.App.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" />
+      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.Read"
+      />
+
   <require
       permission="Zope.ManageServices"
-      interface="
-Zope.App.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" />
+      interface="Zope.App.ComponentArchitecture.IServiceManagerContainer.Write"
+      />
+
   <require
       permission="Zope.View"
-      interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
+      interface="Zope.App.OFS.Container.IContainer.IReadContainer"
+      />
+
   <require
       permission="Zope.ManageContent"
-      interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
+      interface="Zope.App.OFS.Container.IContainer.IWriteContainer"
+      />
+
   <require
       permission="Zope.View"
-      interface="
-           Zope.App.OFS.Container.IOrderedContainer.IReadOrderedContainer" />
+      interface="Zope.App.OFS.Container.IOrderedContainer.Read" 
+      />
+
   <require
       permission="Zope.ManageContent"
       interface="
-      Zope.App.OFS.Container.IOrderedContainer.IWriteOrderedContainer" />
+      Zope.App.OFS.Container.IOrderedContainer.Write" />
+
   <require
       permission="Zope.View"
-      interface="Zope.App.OFS.Container.IContainerLimit.IReadContainerLimit" />
+      interface="Zope.App.OFS.Container.IContainerLimit.IReadContainerLimit"
+      />
+
   <require
       permission="Zope.ManageContent"
-      interface=
-          "Zope.App.OFS.Container.IContainerLimit.IWriteContainerLimit" />
+      interface="Zope.App.OFS.Container.IContainerLimit.IWriteContainerLimit"
+      />
+
 </content>
-
-<adapter
-    factory="Zope.App.OFS.Annotation.AttributeAnnotations."
-    provides="Zope.App.OFS.Annotation.IAnnotations."
-    for=".Folder.IFolder." />
-
-<!-- Further Directives -->
 
 <include package=".Views" />
 

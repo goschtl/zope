@@ -5,26 +5,28 @@
   <permission id="Zope.AddImages" title="Add Images" />
 
   <content class=".Image.">
+
     <factory
         id="Image"
         permission="Zope.ManageContent"
         title="Image"
         description="An Image" />
+
     <require
         permission="Zope.View"
         interface="Zope.App.OFS.Content.File.IFile.IReadFile" />
+
     <require
         permission="Zope.View"
         interface=".Image.IImage" />
+
     <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Content.File.IFile.IWriteFile" />
-  </content>
 
-  <adapter
-      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
-      provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".Image.IImage" />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
+  </content>
 
   <content class=".I18nImage.">
     <factory
@@ -47,14 +49,10 @@
     <require
         permission="Zope.ManageContent"
         attributes="setDefaultLanguage removeLanguage" />
+
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
   </content>
-
-  <adapter
-      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
-      provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".I18nImage.II18nImage" />
-
-  <!-- Further Directives -->
 
   <include package=".Views" />
 

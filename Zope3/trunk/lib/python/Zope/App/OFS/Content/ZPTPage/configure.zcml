@@ -4,24 +4,26 @@
 >
 
   <content class=".ZPTPage.">
+
     <factory
         id="ZPTPage"
         permission="Zope.ManageContent"
         title="ZPT Page"
         description="A simple, content-based Page Template" />
+
     <require permission="Zope.View"
                       attributes="content_type __call__" />
+
     <require permission="Zope.ManageContent"
                       interface=".ZPTPage.IZPTPage" />
+
     <require permission="Zope.View"
                       interface=".ZPTPage.IRenderZPTPage" />
+
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
   </content>
 
-
-  <adapter
-      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
-      provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".ZPTPage.IZPTPage" />
 
 
   <include package=".Views" />

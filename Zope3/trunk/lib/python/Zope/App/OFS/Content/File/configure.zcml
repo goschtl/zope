@@ -1,38 +1,37 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-<!-- File Directives -->
-
 <content class=".File.">
+
   <factory
       id="File"
       permission="Zope.ManageContent"
       title="File"
       description="A File" />
+
   <require
       permission="Zope.View"
       interface=".IFile.IReadFile" />
+
   <require
       permission="Zope.ManageContent"
       interface=".IFile.IWriteFile" />
+
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
 </content>
 
-<adapter
-    factory="Zope.App.OFS.Annotation.AttributeAnnotations."
-    provides="Zope.App.OFS.Annotation.IAnnotations."
-    for=".IFile." />
-
-<!-- NaiveFile Directives -->
-
 <content class=".NaiveFile.">
+
   <factory
       id="NaiveFile"
       permission="Zope.ManageContent"
       title="Naive File"
       description="This is a simple file" />
   <require like_class=".File." />
-</content>
 
-<!-- I18n File Directives -->
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
+</content>
 
 <content class=".I18nFile.">
   <factory
@@ -52,10 +51,10 @@
   <require
       permission="Zope.ManageContent"
       attributes="setDefaultLanguage removeLanguage" />
+
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+
 </content>
-
-
-<!-- Further Directives -->
 
 <include package=".Views" />
 
