@@ -161,7 +161,7 @@ Zope 3 Unit Testing
 
  Writing Unit Tests For The Zope Core
 
-  If you're writing core code, you probably don't need to listen to
+  If you're not writing core code, you probably don't need to listen to
   any more of this.  :-) The rules for writing tests for Zope core
   code are simple:
 
