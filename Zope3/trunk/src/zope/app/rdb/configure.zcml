@@ -1,31 +1,29 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
->
+<configure xmlns="http://namespaces.zope.org/zope">
 
-<content class="zope.app.rdb.gadflyda.GadflyAdapter">
-  <factory
-      id="GadflyDA"
-      permission="zope.Public"
-      />
-  <require
-      permission="zope.Public"
-      interface="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
-      />
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-      />
-  <implements
-      interface=
-      "zope.app.interfaces.services.registration.IAttributeRegisterable"
-      />
-</content>
+  <content class="zope.app.rdb.gadflyda.GadflyAdapter">
 
-<content class="zope.app.rdb.ResultSet">
-  <require
-      permission="zope.View"
-      attributes="__getitem__ __getslice__ __len__ __iter__ __contains__
-                  index count __str__ __add__ __radd__"
-      />
-</content>
+    <factory
+        id="GadflyDA"
+        permission="zope.Public" />
 
-</zopeConfigure>
+    <require
+        permission="zope.Public"
+        interface="zope.app.interfaces.rdb.IZopeDatabaseAdapter" />
+
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+    <implements
+        interface=
+        "zope.app.interfaces.services.registration.IAttributeRegisterable" />
+
+  </content>
+
+  <content class="zope.app.rdb.ResultSet">
+    <require
+        permission="zope.View"
+        attributes="__getitem__ __getslice__ __len__ __iter__ __contains__
+                    index count __str__ __add__ __radd__" />
+  </content>
+
+</configure>

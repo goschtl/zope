@@ -1,11 +1,11 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:meta="http://namespaces.zope.org/meta">
 
-<directives namespace="http://namespaces.zope.org/rdb">
+  <meta:directive 
+      namespace="http://namespaces.zope.org/rdb"
+      name="provideConnection" 
+      schema=".metadirectives.IProvideConnectionDirective"
+      handler=".metaconfigure.connectionhandler" />
 
-  <directive name="provideConnection" attributes="name component dsn"
-             handler="zope.app.rdb.metaconfigure.connectionhandler" />
-
-</directives>
-
-
-</zopeConfigure>
+</configure>
