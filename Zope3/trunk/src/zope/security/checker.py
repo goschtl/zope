@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.19 2003/04/23 18:18:02 stevea Exp $
+$Id: checker.py,v 1.20 2003/04/25 12:48:01 stevea Exp $
 """
 
 import os
@@ -385,13 +385,10 @@ def _instanceChecker(inst):
     return checker
 
 def _classChecker(class_):
-    # XXX This function does not appear to be used.
-    #     What is it for?
-    checker = _checkers.get(class_, _typeChecker)
-    if checker is _typeChecker and issubclass(class_, Exception):
-        return NoProxy # XXX we should be more careful
+    if issubclass(class_, Exception):
+        return NoProxy  # XXX we should be more careful
 
-    return checker
+    return _typeChecker
 
 def _moduleChecker(module):
     return _checkers.get(module, _typeChecker)
