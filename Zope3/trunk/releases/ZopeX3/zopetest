@@ -29,10 +29,10 @@ sys.path.append(lib)
 
 ftesting = os.path.join(here, "skel", "etc", "ftesting.zcml")
 
-import zope.testing.test
+import zope.app.tests.test
 
-zope.testing.test.FTESTING = ftesting
+zope.app.tests.test.FTESTING = ftesting
 
 if __name__ == '__main__':
     args = sys.argv[:1] + ["-l", lib] + sys.argv[1:]
-    zope.testing.test.process_args(args)
+    zope.app.tests.test.process_args(args)
