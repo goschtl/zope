@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.11 2003/06/10 19:12:07 gvanrossum Exp $
+$Id: fsmerger.py,v 1.12 2003/06/10 19:12:26 gvanrossum Exp $
 """
 
 import os
@@ -92,7 +92,7 @@ class FSMerger(object):
     def merge_files(self, local, remote):
         """Merge remote file into local file."""
 
-        # Reset sticky conflict if file was edited
+        # Reset sticky conflict if file was edited or removed
         entry = self.metadata.getentry(local)
         conflict = entry.get("conflict")
         if conflict and (not os.path.exists(local) or
