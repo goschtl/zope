@@ -46,7 +46,7 @@ class EditView(BrowserView):
     to be edited.
 
     The automatically generated widgets are available by name through
-    the attributes widget_*. (E.g. view.widget_title for the title widget)
+    the attributes *_widget. (E.g. view.title_widget for the title widget)
     """
 
     errors = ()
