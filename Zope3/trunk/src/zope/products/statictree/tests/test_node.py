@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_node.py,v 1.1 2004/01/16 12:39:04 philikon Exp $
+$Id: test_node.py,v 1.2 2004/02/15 18:59:57 srichter Exp $
 """
 
 import unittest
@@ -95,7 +95,7 @@ class NodeTestCase(BaseTestCase):
         self.assertEqual(len(flat), len(self.root_node.getFlatNodes()))
         bdict = flat[0]
         node = bdict['node']
-        self.assertEqual(bdict['depth'], 0)
+        self.assertEqual(bdict['row-state'], [])
         self.assertEqual(node.getId(), 'b')
         self.assert_(node.hasChildren())
         self.assert_(node.context is self.items['b'])

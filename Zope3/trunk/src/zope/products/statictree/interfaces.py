@@ -13,7 +13,7 @@
 ##############################################################################
 """Static tree interfaces
 
-$Id: interfaces.py,v 1.1 2004/01/16 12:39:00 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/02/15 18:59:55 srichter Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -84,17 +84,35 @@ class INode(IUniqueId, IChildObjects):
         """
 
     def getFlatDicts():
-        """Return a tuple:
+        """Return information of all nodes in a flat tuple and the maximum
+        depth.
 
-          1st element: flat list of dictinaries containing nodes in
-          the tree and extra information (depth, toggled tree
-          state). Children of expanded nodes are shown.
+        The tuple consists of node information dictionaries. Each directionary
+        has the following keys:
 
-          2nd element: maximum depth
+          - 'node': This is the node itself.
+
+          - 'tree-state': A hash value that uniquely identifies the expansion
+            state of the node.
+
+          - 'row-state': When representing the node in a GUI it is necessary
+            to know whether the levels higher up are opened or not. We use
+            this information to decide whether we should or should not draw a
+            vertical line in the tree.
+
+            The 'row-state' value is simply a list of 'True' and
+            'False'. 'True' signifies that a level is open and more elements
+            of this level are expected further down.
+
+          - 'last-level-node': A boolean that signifies whether a node is the
+            last node of its level.
+            
+        This method is intended for output formats that cannot handle nested
+        values easily. An example here are Page Templates. 
         """
 
 class ITreeStateEncoder(Interface):
-    """This utility can encode and decode the ids of expended nodes
+    """This utility can encode and decode the ids of expanded nodes
     """
 
     def encodeTreeState(expanded_nodes):

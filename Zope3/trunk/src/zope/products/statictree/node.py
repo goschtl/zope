@@ -13,7 +13,7 @@
 ##############################################################################
 """A node in the treee
 
-$Id: node.py,v 1.1 2004/01/16 12:39:00 philikon Exp $
+$Id: node.py,v 1.2 2004/02/15 18:59:55 srichter Exp $
 """
 
 from zope.interface import implements
@@ -53,8 +53,7 @@ class Node:
 
     def _create_child_nodes(self):
         """Create child nodes and save the result so we don't have
-        to create that sequence every time
-        """
+        to create that sequence every time"""
         nodes = []
         for obj in self.getChildObjects():
             node = Node(obj, self._expanded_nodes, self.filter)
@@ -62,41 +61,35 @@ class Node:
         self._child_nodes = nodes
 
     def _get_child_objects_adapter(self):
-        """Lazily create the child objects adapter
-        """
+        """Lazily create the child objects adapter"""
         if not hasattr(self, '_child_objects_adapter'):
             self._child_objects_adapter = zapi.getAdapter(
                 self.context, IChildObjects)
         return self._child_objects_adapter
 
     def expand(self, recursive=False):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+        """See zope.products.statictree.interfaces.INode"""
         self.expanded = True
         if recursive:
             for node in self.getChildNodes():
                 node.expand(True)
 
     def collapse(self):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+        """See zope.products.statictree.interfaces.INode"""
         self.expanded = False
 
     def getId(self):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+        """See zope.products.statictree.interfaces.INode"""
         return self._id
 
     def hasChildren(self):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+        """See the zope.products.statictree.interfaces.INode"""
         # we could actually test for the length of the result of
         # getChildObjects(), but we need to watch performance
         return self._get_child_objects_adapter().hasChildren()
 
     def getChildObjects(self):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+        """See the zope.products.statictree.interfaces.INode"""
         filter = self.filter
         children = self._get_child_objects_adapter().getChildObjects()
         if filter:
@@ -104,8 +97,7 @@ class Node:
         return children
         
     def getChildNodes(self):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+        """See zope.products.statictree.interfaces.INode"""
         if not self.expanded:
             return []
         if not hasattr(self, '_child_nodes'):
@@ -115,39 +107,47 @@ class Node:
         return self._child_nodes[:]
 
     def getFlatNodes(self):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+        """See zope.products.statictree.interfaces.INode"""
         nodes = []
         for node in self.getChildNodes():
             nodes.append(node)
             nodes += node.getFlatNodes()
         return nodes
 
-    def getFlatDicts(self, depth=0, maxdepth=0):
-        """See the zope.products.statictree.interfaces.INode interface
-        """
+    def getFlatDicts(self, maxdepth=0, row_state=None):
+        """See zope.products.statictree.interfaces.INode"""
         nodes = []
+        if row_state == None:
+            row_state = []
         encoder = zapi.getUtility(self.context, ITreeStateEncoder)
 
-        if self.hasChildren() and depth > maxdepth:
-            maxdepth = depth
+        if self.hasChildren() and len(row_state) > maxdepth:
+            maxdepth = len(row_state)
 
-        for node in self.getChildNodes():
+        childNodes = self.getChildNodes()
+        for node in childNodes:
             id = node.getId()
             expanded_nodes = self._expanded_nodes[:]
             if id in self._expanded_nodes:
                 # if the node is already expanded, the toggle would
                 # collapse it
                 expanded_nodes.remove(id)
+                if not node is childNodes[-1]:
+                    row_state.append(True)
+                else:
+                    row_state.append(False)
             else:
                 # if it isn't expanded, the toggle would expand it
                 expanded_nodes += [id]
+                row_state.append(False)
             flatdict = {
-                'depth': depth,
                 'node': node,
                 'tree-state': encoder.encodeTreeState(expanded_nodes),
+                'row-state': row_state[:-1],
+                'last-level-node': node is childNodes[-1],
                 }
             nodes.append(flatdict)
-            child_nodes, maxdepth = node.getFlatDicts(depth+1, maxdepth)
+            child_nodes, maxdepth = node.getFlatDicts(maxdepth, row_state)
             nodes += child_nodes
+            row_state.pop()
         return nodes, maxdepth
