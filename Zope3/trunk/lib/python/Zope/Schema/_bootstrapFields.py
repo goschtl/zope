@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _bootstrapFields.py,v 1.3 2002/11/11 20:24:35 jim Exp $
+$Id: _bootstrapFields.py,v 1.4 2002/12/04 10:00:56 jim Exp $
 """
 __metaclass__ = type
 
@@ -39,6 +39,7 @@ class Field(Attribute):
     # Type restrictions, if any
     _type = None
     order = 0l
+    context = None
 
     constraint = None
     default = ValidatedProperty('default')
