@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.9 2003/08/06 14:45:10 srichter Exp $
+$Id: image.py,v 1.10 2003/08/19 14:37:44 fdrake Exp $
 """
 import struct
 from zope.app.content.file import File
@@ -38,7 +38,6 @@ class Image(File):
     def setData(self, data):
         super(Image, self).setData(data)
 
-        contentType = None
         contentType, self._width, self._height = getImageInfo(self.data)
         if contentType:
             self.contentType = contentType
