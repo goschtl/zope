@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.3 2002/12/28 17:49:25 stevea Exp $
+$Id: file.py,v 1.4 2002/12/31 20:15:02 jim Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -49,7 +49,7 @@ class File(Persistent):
 
 
     def getContentType(self):
-        '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
+        '''See interface IFile'''
         return self._contentType
 
 
