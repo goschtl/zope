@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.12 2003/07/12 01:22:13 richard Exp $
+$Id: __init__.py,v 1.13 2003/09/21 17:34:06 jim Exp $
 """
 
 import sys
@@ -141,15 +141,19 @@ def getSkin(wrapped_object, name, view_type):
 # View service
 
 def getView(object, name, request, context=None):
-    if context is None:
-        context = object
-    return getService(context, 'Views').getView(object, name, request)
+    v = queryView(object, name, request, context=context)
+    if v is not None:
+        return v
+    
+    raise ComponentLookupError("Couldn't find view", context, name)
 
 def queryView(object, name, request, default=None, context=None):
     if context is None:
         context = object
     return getService(context,
                       'Views').queryView(object, name, request, default)
+
+queryView = hookable(queryView)
 
 def getDefaultViewName(object, request, context=None):
     if context is None:
