@@ -1,7 +1,6 @@
 import Zope
 import OFS.Folder
 from unittest import TestCase, TestSuite, makeSuite, main
-from Acquisition import Implicit
 
 from Products.CMFCore.TypesTool import\
      FactoryTypeInformation as FTI,\
@@ -16,7 +15,8 @@ from Products.CMFCore.tests.base.testcase import \
 from Products.CMFCore.tests.base.security import \
      OmnipotentUser, UserWithRoles
 from Products.CMFCore.tests.base.dummy import \
-     DummyMethod, DummyContent, addDummy, DummyTypeInfo
+     DummyMethod, DummyContent, addDummy, DummyTypeInfo,\
+     DummyFactory, DummyFolder
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
@@ -310,53 +310,6 @@ class STIDataTests( TypeInfoTests ):
         self.assertEqual( ti.permission, 'Add Foos' )
         self.assertEqual( ti.constructor_path, 'foo_add' )
 
-
-class Foo:
-    """
-        Shim content object.
-    """
-    def __init__( self, id, *args, **kw ):
-        self.id = id
-        self._args = args
-        self._kw = {}
-        self._kw.update( kw )
-
-class FauxFactory:
-    """
-        Shim product factory.
-    """
-    def __init__( self, folder ):
-        self._folder = folder
-
-    def addFoo( self, id, *args, **kw ):
-        if self._folder._prefix:
-            id = '%s_%s' % ( self._folder._prefix, id )
-        foo = apply( Foo, ( id, ) + args, kw )
-        self._folder._setOb( id, foo )
-        if self._folder._prefix:
-            return id
-
-    __roles__ = ( 'FooAdder', )
-    __allow_access_to_unprotected_subobjects__ = { 'addFoo' : 1 }
-
-class FauxFolder( Implicit ):
-    """
-        Shim container
-    """
-    def __init__( self, fake_product=0, prefix='' ):
-        self._prefix = prefix
-
-        if fake_product:
-            self.manage_addProduct = { 'FooProduct' : FauxFactory( self ) }
-
-        self._objects = {}
-
-    def _setOb( self, id, obj ):
-        self._objects[id] = obj
-
-    def _getOb( self, id ):
-        return self._objects[id]
-
 class FTIConstructionTests( TestCase ):
 
     def setUp( self ):
@@ -366,7 +319,7 @@ class FTIConstructionTests( TestCase ):
         return apply( FTI, ( id, ), kw )
 
     def _makeFolder( self, fake_product=0 ):
-        return FauxFolder( fake_product )
+        return DummyFolder( fake_product )
 
     def test_isConstructionAllowed_wo_Container( self ):
 
@@ -419,7 +372,7 @@ class FTIConstructionTests_w_Roles( TestCase ):
                   , product='FooProduct'
                   , factory='addFoo'
                   )
-        folder = FauxFolder( fake_product=1, prefix=prefix )
+        folder = DummyFolder( fake_product=1,prefix=prefix )
         
         return ti, folder
 
@@ -512,8 +465,5 @@ def test_suite():
         makeSuite(FTIConstructionTests_w_Roles),
         ))
 
-def run():
-    main(defaultTest='test_suite')
-
 if __name__ == '__main__':
-    run()
+    main(defaultTest='test_suite')
