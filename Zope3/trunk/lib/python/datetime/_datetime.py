@@ -255,8 +255,6 @@ class basetime(object):
     See http://effbot.org/ideas/time-type.htm
     """
 
-    __slots__ = []
-
     def timetuple(self):
         raise NotImplementedError
 
