@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2005 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,15 +11,35 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ZPT View Classes
+"""Presentation component views.
 
 $Id$
 """
-__docformat__ = 'restructuredtext'
+__docformat__ = "reStructuredText"
+
+class PageFolderDefaultConfiguration(object):
+    "Make sure to update all page template registrations, when info changed"
+
+    def changed(self):
+        """Apply changes to existing configurations"""
+
+        folder = self.context
+        if folder.apply:
+            folder.applyDefaults()
+
 
 class Source(object):
-
+    """Set the content type of the rendered template code."""
     def __call__(self):
         self.request.response.setHeader('content-type',
                                         self.context.contentType)
         return self.context.source
+
+
+class PageRegistrationView(object):
+    """Helper class for the page edit form."""
+
+    def update(self):
+        super(PageRegistrationView, self).update()
+        if "UPDATE_SUBMIT" in self.request:
+            self.context.validate()
