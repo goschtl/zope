@@ -122,11 +122,11 @@ import sys
 import unittest
 import linecache
 import traceback
-from os.path import join, commonprefix
 
 from distutils.util import get_platform
 
 PROGRAM = sys.argv[0]
+PLAT_SPEC = "%s-%s" % (get_platform(), sys.version[0:3])
 
 # For Python's earlier than 2.2.2
 try:
@@ -251,12 +251,35 @@ class ImmediateTestRunner(unittest.TextTestRunner):
 
 # setup list of directories to put on the path
 
-def setup_path():
-    DIRS = [join('lib','python'),
-            ]
-    cwd = os.getcwd()
-    for d in DIRS:
-        sys.path.insert(0, join(cwd, d))
+class PathInit:
+    def __init__(self):
+        self.inplace = None
+        # Figure out if we should test in-place or test in-build.  If the -b
+        # or -B option was given, test in the place we were told to build in.
+        # Otherwise, we'll look for a build directory and if we find one,
+        # we'll test there, otherwise we'll test in-place.
+        #
+        # XXX build and build_inplace are globals created in process_args()
+        if build:
+            self.inplace = build_inplace
+        if self.inplace is None:
+            # Need to figure it out
+            if os.path.isdir(os.path.join('build', 'lib.%s' % PLAT_SPEC)):
+                self.inplace = False
+            else:
+                self.inplace = True
+        # Calculate which directories we're going to add to sys.path, and cd
+        # to the appropriate working directory
+        if self.inplace:
+            self.libdir = os.path.join('lib', 'python')
+        else:
+            self.libdir = 'lib.%s' % PLAT_SPEC
+            os.chdir('build')
+        # Hack sys.path
+        self.cwd = os.getcwd()
+        print 'Running tests from', self.cwd
+        sys.path.insert(0, os.path.join(self.cwd, self.libdir))
+
 
 def match(rx, s):
     if not rx:
@@ -266,13 +289,14 @@ def match(rx, s):
     else:
         return re.search(rx, s) is not None
 
+
 class TestFileFinder:
     def __init__(self, prefix):
         self.files = []
-        self.prefix = prefix
+        self._plen = len(prefix)+1
 
     def visit(self, rx, dir, files):
-        if not dir.endswith('tests'):
+        if os.path.split(dir)[-1] != 'tests':
             return
         # ignore tests that aren't in packages
         if not "__init__.py" in files:
@@ -280,10 +304,9 @@ class TestFileFinder:
                 return
             print "not a package", dir
             return
-
         # ignore tests when the package can't be imported, possibly due to
         # dependency failures.
-        pkg = dir[len(self.prefix)+1:].replace(os.sep, '.')
+        pkg = dir[self._plen:].replace(os.sep, '.')
         try:
             __import__(pkg)
         # We specifically do not want to catch ImportError since that's useful
@@ -291,18 +314,28 @@ class TestFileFinder:
         except RuntimeError, e:
             print 'skipping', pkg, 'because:', e
             return
-
         for file in files:
-            if file[:4] == "test" and file[-3:] == ".py":
-                path = join(dir, file)
+            if file.startswith('test') and os.path.splitext(file)[-1] == '.py':
+                path = os.path.join(dir, file)
                 if match(rx, path):
                     self.files.append(path)
 
+    def module_from_path(self, path):
+        """Return the Python package name indiciated by the filesystem path."""
+        assert path.endswith('.py')
+        path = path[self._plen:-3]
+        mod = path.replace(os.sep, '.')
+        return mod
+
+
 def find_tests(rx):
-    prefix = join('lib', 'python')
+    global finder
+    # pathinit is a global created in main()
+    prefix = pathinit.libdir
     finder = TestFileFinder(prefix)
     os.path.walk(prefix, finder.visit, rx)
     return finder.files
+
 
 def package_import(modname):
     mod = __import__(modname)
@@ -310,19 +343,9 @@ def package_import(modname):
         mod = getattr(mod, part)
     return mod
 
-def module_from_path(path):
-    """Return the Python package name indiciated by the filesystem path."""
-
-    assert path.endswith('.py')
-    path = path[:-3]
-    dirs = []
-    while path:
-        path, end = os.path.split(path)
-        dirs.insert(0, end)
-    return ".".join(dirs[2:])
 
 def get_suite(file):
-    modname = module_from_path(file)
+    modname = finder.module_from_path(file)
     try:
         mod = package_import(modname)
     except ImportError, err:
@@ -340,6 +363,7 @@ def get_suite(file):
         return None
     return suite_func()
 
+
 def filter_testcases(s, rx):
     new = unittest.TestSuite()
     for test in s._tests:
@@ -354,8 +378,9 @@ def filter_testcases(s, rx):
                 new.addTest(filtered)
     return new
 
+
 def gui_runner(files, test_filter):
-    sys.path.insert(0, join(os.getcwd(), 'utilities'))
+    sys.path.insert(0, os.path.join(os.getcwd(), 'utilities'))
     import unittestgui
     suites = []
     for file in files:
@@ -364,6 +389,7 @@ def gui_runner(files, test_filter):
     suites = ", ".join(suites)
     minimal = (GUI == 'minimal')
     unittestgui.main(suites, minimal)
+
 
 def runner(files, test_filter, debug):
     runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug,
@@ -384,6 +410,7 @@ def runner(files, test_filter, debug):
         else:
             raise
 
+
 def remove_stale_bytecode(arg, dirname, names):
     names = map(os.path.normcase, names)
     for name in names:
@@ -394,9 +421,13 @@ def remove_stale_bytecode(arg, dirname, names):
                 print "Removing stale bytecode file", fullname
                 os.unlink(fullname)
 
+
 def main(module_filter, test_filter):
+    global pathinit
+
     os.path.walk(os.curdir, remove_stale_bytecode, None)
-    setup_path()
+    # Initialize the path and cwd
+    pathinit = PathInit()
 
     # Initialize the logging module.
     import logging.config
@@ -415,7 +446,7 @@ def main(module_filter, test_filter):
         while 1:
             runner(files, test_filter, debug)
     elif TRACE:
-        coverdir = os.path.join(os.getcwd(),"coverage")
+        coverdir = os.path.join(os.getcwd(), "coverage")
         import trace
         tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],
                              trace=0, count=1)
@@ -521,11 +552,11 @@ def process_args(argv=None):
             val |= v
         gc.set_debug(v)
 
-    # XXX support not-build-in-place, when we get a setup.py
+    # Do the builds
     if build:
-        cmd = sys.executable + " stupid_build.py"
-        if VERBOSE:
-            print cmd
+        cmd = sys.executable + ' setup.py -q build'
+        if build_inplace:
+            cmd += '_ext -i'
         sts = os.system(cmd)
         if sts:
             print "Build failed", hex(sts)
@@ -571,8 +602,6 @@ def print_tb_last():
         if line: file.write('    %s\n' % line.strip())
         break
 
-if __name__ == "__main__":
-    process_args()
 
 # The following method is for debugging unit tests from a Python prompt:
 def debug(args=""):
@@ -581,18 +610,19 @@ def debug(args=""):
     Just run the debug function with a string containing command-line
     arguments. (The function uses a cheesy parser, aka split. ;)
 
-    For example, to debug the tests in package Zope.App.DublinCore::
+    For example, to debug the tests in package Zope.App.DublinCore:
 
       import test
       test.debug('Zope.App.DublinCore')
 
     At the first failure or error, an exception will be raised. At
-    that point, you can use pdb's post-mortem debugger::
+    that point, you can use pdb's post-mortem debugger:
 
       import pdb
       pdb.pm()
-
     """    
-    
     process_args(["", "-d"] + args.split())
     
+
+if __name__ == "__main__":
+    process_args()
