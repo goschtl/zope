@@ -50,6 +50,11 @@ Things that need to be done
     repositories.  Very low priority since we're using svn: and svn+ssh:
     for svn.zope.org.
 
+  - Support different types of generated archives; bzipped tarballs,
+    gzipped tarballs and ZIP archives should both be easily generated.
+    Perhaps a configuration option should specify which are produced
+    by default.  Low priority.
+
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
   separate directory hierarchies for installations using a different
