@@ -22,5 +22,5 @@ def process():
     _config = join(_prefix, 'etc', 'zope.conf')
 
     if exists(_config):
-        from Zope2 import configure
+        from Zope import configure
         configure(_config)
