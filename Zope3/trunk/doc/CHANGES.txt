@@ -66,6 +66,17 @@ Zope Changes
 
     Bug fixes
     
+    - All IContainer objects are tree items now by default. 
+
+    - Fixed Issue 126. HTML entities and elements are now correctly escaped
+      when editing via the browser. The fix has been made in the browser
+      widget code.
+
+    - Fixed Issue 195. The remove language buttons for I18n File and Image have
+      now a value. 
+
+    - Removed last TAB characters from Python code. 
+
     - The configuration machinery's resolve() method  can now handle single
       ".", which referes to the current package. Therefore you can reference a
       module in ZCML simply by ".". 
