@@ -9,9 +9,6 @@
         interface="Zope.App.RDB.IConnectionService."
         attributes="queryConfigurations queryConfigurationsFor
                     listConfigurationNames" />
-    <require
-        permission="Zope.ManageServices"
-        interface="Zope.App.OFS.Container.IContainer." />
   </content>
 
   <content class=".ConnectionConfiguration.">
