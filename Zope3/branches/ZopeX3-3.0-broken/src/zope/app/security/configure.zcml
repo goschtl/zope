@@ -41,7 +41,7 @@
   </content>
 
   <content class=".settings.PermissionSetting">
-    <require permission="zope.Security"
+    <require permission="zope.Public"
              attributes="getName getDescription __str__" />
   </content>
 
