@@ -106,9 +106,15 @@ class ILoginPasswordPrincipalSource(IPrincipalSource):
         effecting his security profile on the site.  """
 
 
-class IContainerPrincipalSource(IPrincipalSource, IContained):
+class IContainerPrincipalSource(IContainer):
     """This is a marker interface for specifying principal sources that are
     also containers. """
+    
+
+class IContainedPrincipalSource(IPrincipalSource, IContained):
+    """This is a marker interface for principal sources that can be directly
+    added to an authentication service. It ensures that principal source can
+    **only** be added to pluggable authentication services."""
 
     __parent__= Field(
         constraint = ContainerTypesConstraint(IPluggableAuthenticationService))
