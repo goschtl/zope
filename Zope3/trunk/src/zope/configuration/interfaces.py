@@ -13,68 +13,61 @@
 ##############################################################################
 
 from zope.interface import Interface
+from zope.schema import BytesLine
 
-class INonEmptyDirective(Interface):
+class IConfigurationContext(Interface):
+    """Configuration Context
 
-    def __call__(context,**kw):
-        """Compute subdirective handler
-
-        context -- an execution context that the directive may use for
-          things like resolving names
-
-        kw -- a dictionary containing the values of any attributes
-          that were specified on the directive
-
-        Return an ISubdirectiveHandler.
-        """
-
-class IEmptyDirective(Interface):
-
-    def __call__(context,**kw):
-        """Compute configuration actions
-
-        context -- an execution context that the directive may use for
-          things like resolving names
-
-        kw -- a dictionary containing the values of any attributes
-          that were specified on the directive
-
-        Return a sequence of configuration actions. Each action is a
-        tuple with:
-
-        - A discriminator, value used to identify conflicting
-          actions. Actions conflict if they have the same values
-          for their discriminators.
-
-        - callable object
-
-        - argument tuple
-
-        - and, optionally, a keyword argument dictionary.
-
-        The callable object will be called with the argument tuple and
-        keyword arguments to perform the action.
-        """
-
-
-class ISubdirectiveHandler(Interface):
-    """Handle subdirectives
-
-    Provide methods for registered subdirectives. The methods are
-    typically IEmptyDirective objects. They could, theoretically be
-    INonEmptyDirective objects.
-
-    Also provide a call that can provide additional configuration
-    actions.
-
+    The configuration context manages information about the state of
+    the configuration system, such as the package containing the
+    configuration file. More importantly, it provides methods for
+    importing objects and opening files relative to the package.
     """
 
-    def __call__():
-        """Return a sequence of configuration actions.
+    package = BytesLine(
+        title=u"The current package name",
+        description=u"""\
+          This is the name of the package containing the configuration
+          file being executed. If the configuration file was not
+          included by package, then this is None.
+          """,
+        required=False,
+        )
 
-        See IEmptyDirective for a definition of configuration actions.
+    def resolve(dottedname):
+        """Resolve a dotted name to an object
 
-        This method should be called *after* any subdirective methods are
-        called during the processing of the (sub)directive whose subdirectives
-        are being processed.  It may return an empty list.
+        A dotted name is constructed by concatenating a dotted module
+        name with a global name within the module using a dot.  For
+        example, the object named "spam" in the foo.bar module has a
+        dotted name of foo.bar.spam.  If the current package is a
+        prefix of a dotted name, then the package name can be relaced
+        with a leading dot, So, for example, if the configuration file
+        is in the foo package, then the dotted name foo.bar.spam can
+        be shortened to .bar.spam.
+
+        If the current package is multiple levels deel, multiple
+        leading dots can be used to refer to higher-level modules.
+        For example, if the current package is x.y.z, the dotted
+        object name ..foo refers to x.y.foo.
+        """
+
+    def path(filename):
+        """Compute a full file name for the given file
+
+        If the filename is relative to the package, then the returned
+        name will include the package path, otherwise, the original
+        file name is returned.
+        """
+
+    def action(self, discriminator, callable, args=(), kw={}):
+        """Record a configuration action
+
+        The job of most directives is to compute actions for later processing.
+        The action method is used to record those actions.  The discriminator
+        is used to to find actions that conflict. Actions conflict if they
+        have the same discriminator. The exception to this is the
+        special case of the discriminator with the value None. An
+        actions with a discriminator of None never conflicts with
+        other actions.
         """

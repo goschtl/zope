@@ -11,74 +11,78 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test directives
+
+$Id: directives.py,v 1.6 2003/07/28 22:22:47 jim Exp $
 """
-Test class for use by test modules
 
-$Id: directives.py,v 1.5 2003/06/04 10:22:20 stevea Exp $
-"""
+from zope.interface import Interface, implements
+from zope.schema import Text, BytesLine
+from zope.configuration.config import GroupingContextDecorator
+from zope.configuration.interfaces import IConfigurationContext
+from zope.configuration.fields import GlobalObject
 
-from zope.interface import directlyProvides, classProvides, implements
-from zope.configuration.interfaces import INonEmptyDirective
-from zope.configuration.interfaces import ISubdirectiveHandler
 
-protections=[]
+class F:
+    def __repr__(self):
+        return 'f'
+    def __call__(self, *a, **k):
+        pass
 
-count = 0
+f = F()
 
-def _increment():
-    global count
-    count += 1
+class ISimple(Interface):
 
-def increment(_context):
-    return [(None, _increment, (), )]
+    a = Text()
+    b = Text(required=False)
+    c = BytesLine()
 
-class protectClass:
+def simple(context, a=None, c=None, b=u"xxx"):
+    return [(('simple', a, b, c), f, (a, b, c))]
 
-    classProvides(INonEmptyDirective)
-    implements(ISubdirectiveHandler)
+def newsimple(context, a, c, b=u"xxx"):
+    context.action(('newsimple', a, b, c), f, (a, b, c))
 
-    def __init__(self, _context, name, permission=None, names=None):
-        self._name=name
-        self._permission=permission
-        self._names=names
-        self._children=[]
-        self.__context = _context
+
+class IPackaged(Interface):
+
+    package = GlobalObject()
+
+class IPackagedContext(IPackaged, IConfigurationContext):
+    pass
+
+class Packaged(GroupingContextDecorator):
+
+    implements(IPackagedContext)
+
+
+class IFactory(Interface):
+
+    factory = GlobalObject()
+
+def factory(context, factory):
+    context.action(('factory', 1,2), factory)
+
+class Complex:
+
+    def __init__(self, context, a, c, b=u"xxx"):
+        self.a, self.b, self.c = a, b, c
+        context.action("Complex.__init__")
+
+    def factory(self, context, factory):
+        return [(('Complex.factory', 1,2), factory, (self.a, ))]
+
+    def factory2(self, context, factory):
+        return [(('Complex.factory', 1,2), factory, (self.a, ))]
 
     def __call__(self):
-        if not self._children:
-            p = self._name, self._permission, self._names
-            d = self._name, self._names
-            return [(d, protections.append, (p,))]
-        else:
-            return ()
+        return [(('Complex', 1,2), f, (self.b, self.c))]
 
-    def protect(self, _context, permission=None, names=None):
-        if permission is None: permission=self._permission
-        if permission is None: raise 'no perm'
-        p=self._name, permission, names
-        d=self._name, names
-        self._children.append(p)
-        return [(d, protections.append, (p,))]
 
-    def subsub(self, _context):
-        #Dummy subdirective-with-subdirectives.  Define this and you
-        #can define 'protect' subdirectives within it.  This lets
-        #us excercise the subdirectives-of-subdirectives code.
-        #If you put a protect inside a subsub, that'll set children,
-        #so when the parser calls us, __call__ will return ().
-        return self
-    directlyProvides(subsub, INonEmptyDirective)
-
-done = []
-
-def doit(_context, name):
-    return [('d', done.append, (name,))]
-
-def clearDirectives():
-    del protections[:]
-    del done[:]
-
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(clearDirectives)
-del addCleanUp
+class Ik(Interface):
+    for_ = BytesLine()
+    class_ = BytesLine()
+    x = BytesLine()
+    
+def k(context, for_, class_, x):
+    context.action(('k', for_), f, (for_, class_, x))

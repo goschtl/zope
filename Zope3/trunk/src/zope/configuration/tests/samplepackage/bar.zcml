@@ -1,0 +1,6 @@
+<zopeConfigure>
+
+  <include file="bar1.zcml" />
+  <include file="bar2.zcml" />
+   
+</zopeConfigure>

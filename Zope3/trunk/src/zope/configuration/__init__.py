@@ -20,18 +20,3 @@ zope.configuration.meta.register.
 def namespace(suffix):
     return 'http://namespaces.zope.org/'+suffix
 
-import sys, os
-from zope.configuration.xmlconfig import XMLConfig
-
-def config(dir):
-    try:
-        XMLConfig(os.path.join(dir, 'site.zcml'))()
-    except:
-        # Use the ExceptionFormatter to provide XMLconfig debug info
-        from zope.exceptions.exceptionformatter import format_exception
-        exc_info = ['='*72, '\nZope Configuration Error\n', '='*72, '\n'] \
-                   + apply(format_exception, sys.exc_info())
-        sys.stderr.write(''.join(exc_info))
-        sys.exit(0) # Fatal config error
-
-__all__ = ["namespace", "config"]
