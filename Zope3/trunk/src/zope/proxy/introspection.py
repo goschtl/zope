@@ -17,15 +17,15 @@
 """Temporary hack module until there is a generic way to deal with proxies
 
 This module provides some standard machinery to recognize and remove
-proxies. It is hoped that it will be replaced by a cleaner
-implementation based on a common proxy base class.
+proxies. It is hoped that it will be replaced by a cleaner implementation
+based on a common proxy base class.
 
-This module requires that proxy implementations register themselvss
-with the module, by calling defineProxyType, however, it
-short-circuits the definitions for two types, which, hopefully will be
-the only two types that need to get registered. ;)
+This module requires that proxy implementations register themselves with the
+module, by calling defineProxyType, however, it short-circuits the definitions
+for two types, which, hopefully will be the only two types that need to get
+registered. ;)
 
-$Id: introspection.py,v 1.2 2002/12/25 14:15:16 jim Exp $
+$Id: introspection.py,v 1.3 2003/04/15 21:19:47 bwarsaw Exp $
 """
 from zope.proxy.interfaces import IProxyIntrospection
 
