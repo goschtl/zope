@@ -13,13 +13,13 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.6 2003/05/29 19:51:34 gvanrossum Exp $
+$Id: committer.py,v 1.7 2003/06/02 19:48:48 gvanrossum Exp $
 """
 
 import os
 import shutil
 
-from zope.component import queryAdapter, getService
+from zope.component import getAdapter, queryAdapter, getService
 from zope.xmlpickle import dumps, loads
 from zope.configuration.name import resolve
 from zope.proxy import removeAllProxies
@@ -31,10 +31,13 @@ from zope.app.interfaces.fssync \
      import IObjectEntry, IObjectDirectory, IObjectFile
 
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.fssync.classes import Default
 from zope.app.traversing import getPath, traverseName
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
+from zope.app.event import publish
+from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.app.event.objectevent import ObjectModifiedEvent
 
 class SynchronizationError(Exception):
     pass
@@ -52,12 +55,12 @@ class Committer(object):
         self.metadata = metadata
         self.conflicts = []
 
-    def report_conflict(self, fspath):
+    def report_conflict(self, fspath, ignore_conflicts=False):
         """Helper to report a conflict.
 
         Conflicts can be retrieved by calling get_errors().
         """
-        if fspath not in self.conflicts:
+        if not ignore_conflicts and fspath not in self.conflicts:
             self.conflicts.append(fspath)
 
     def get_errors(self):
@@ -74,7 +77,7 @@ class Committer(object):
         """
         return self.conflicts
 
-    def synch(self, container, name, fspath):
+    def synch(self, container, name, fspath, ignore_conflicts=False):
         """Synchronize an object or object tree from the filesystem.
 
         If the originals on the filesystem is not uptodate, errors are
@@ -97,14 +100,14 @@ class Committer(object):
             raise SynchronizationError("invalid separator in name %r" % name)
 
         if not name:
-            self.synch_dir(container, fspath)
+            self.synch_dir(container, fspath, ignore_conflicts)
         else:
             try:
                 traverseName(container, name)
             except:
-                self.synch_new(container, name, fspath)
+                self.synch_new(container, name, fspath, ignore_conflicts)
             else:
-                self.synch_old(container, name, fspath)
+                self.synch_old(container, name, fspath, ignore_conflicts)
 
             # Now update extra and annotations
             try:
@@ -116,13 +119,21 @@ class Committer(object):
                 extra = adapter.extra()
                 extrapath = fsutil.getextra(fspath)
                 if extra is not None and os.path.exists(extrapath):
-                    self.synch_dir(extra, extrapath)
+                    self.synch_dir(extra, extrapath, ignore_conflicts)
                 ann = queryAdapter(obj, IAnnotations)
                 annpath = fsutil.getannotations(fspath)
                 if ann is not None and os.path.exists(annpath):
-                    self.synch_dir(ann, annpath)
+                    # XXX This isn't quite right.  We ignore all
+                    # conflicts when updating the annotations, because
+                    # the normal cause of events is that the
+                    # ZopeDublinCore metadata appears out of date when
+                    # an object is modified or deleted.  Probably the
+                    # correct fix is to separate the up-to-date check
+                    # out into a separate pass (again!), but for now
+                    # ignoring out-of-date annotations is simpler.
+                    self.synch_dir(ann, annpath, ignore_conflicts=True)
 
-    def synch_dir(self, container, fspath):
+    def synch_dir(self, container, fspath, ignore_conflicts=False):
         """Helper to synchronize a directory."""
         adapter = self.get_adapter(container)
         nameset = {}
@@ -138,55 +149,56 @@ class Committer(object):
         names = nameset.keys()
         names.sort()
         for name in names:
-            self.synch(container, name, os.path.join(fspath, name))
+            self.synch(container, name, os.path.join(fspath, name),
+                       ignore_conflicts)
 
-    def synch_new(self, container, name, fspath):
+    def synch_new(self, container, name, fspath, ignore_conflicts=False):
         """Helper to synchronize a new object."""
         entry = self.metadata.getentry(fspath)
         if entry:
             if entry.get("flag") != "added":
-                self.report_conflict(fspath)
+                self.report_conflict(fspath, ignore_conflicts)
             else:
                 del entry["flag"]
                 if not os.path.exists(fspath):
-                    self.report_conflict(fspath)
+                    self.report_conflict(fspath, ignore_conflicts)
                     return
             self.create_object(container, name, entry, fspath)
             obj = traverseName(container, name)
             adapter = self.get_adapter(obj)
             if IObjectDirectory.isImplementedBy(adapter):
-                self.synch_dir(obj, fspath)
+                self.synch_dir(obj, fspath, ignore_conflicts)
 
-    def synch_old(self, container, name, fspath):
+    def synch_old(self, container, name, fspath, ignore_conflicts=False):
         """Helper to synchronize an existing object."""
         entry = self.metadata.getentry(fspath)
         if "conflict" in entry:
-            self.report_conflict(fspath)
+            self.report_conflict(fspath, ignore_conflicts)
         obj = traverseName(container, name)
         adapter = self.get_adapter(obj)
         if IObjectDirectory.isImplementedBy(adapter):
-            self.synch_dir(obj, fspath)
+            self.synch_dir(obj, fspath, ignore_conflicts)
             if entry.get("flag") == "removed":
-                del container[name]
+                self.delete_item(container, name)
                 entry.clear()
                 self.remove_all(fspath)
         else:
             if entry.get("flag") == "added":
-                self.report_conflict(fspath)
+                self.report_conflict(fspath, ignore_conflicts)
                 del entry["flag"]
             oldfspath = fsutil.getoriginal(fspath)
             if not os.path.exists(oldfspath):
-                self.report_conflict(fspath)
+                self.report_conflict(fspath, ignore_conflicts)
                 olddata = None
             else:
                 olddata = self.read_file(oldfspath)
                 curdata = adapter.getBody()
                 if curdata != olddata:
-                    self.report_conflict(fspath)
+                    self.report_conflict(fspath, ignore_conflicts)
             if entry.get("flag") == "removed":
                 if os.path.exists(fspath):
-                    self.report_conflict(fspath)
-                del container[name]
+                    self.report_conflict(fspath, ignore_conflicts)
+                self.delete_item(container, name)
                 entry.clear()
                 self.remove_all(fspath)
             else:
@@ -197,6 +209,7 @@ class Committer(object):
                     newdata = self.read_file(fspath)
                     if newdata != olddata:
                         adapter.setBody(newdata)
+                        publish(obj, ObjectModifiedEvent(obj))
                         newdata = adapter.getBody() # Normalize
                         self.write_file_and_original(newdata, fspath)
 
@@ -257,6 +270,9 @@ class Committer(object):
     def set_item(self, container, name, obj, replace=False):
         """Helper to set an item in a container or mapping."""
         if IContainer.isImplementedBy(container):
+            if not replace:
+                publish(container, ObjectCreatedEvent(obj))
+            container = getAdapter(container, IZopeContainer)
             if replace:
                 del container[name]
             newname = container.setObject(name, obj)
@@ -268,6 +284,12 @@ class Committer(object):
             # Not a container, must be a mapping
             # (This is used for extras and annotations)
             container[name] = obj
+
+    def delete_item(self, container, name):
+        """Helper to delete an item from a container or mapping."""
+        if IContainer.isImplementedBy(container):
+            container = getAdapter(container, IZopeContainer)
+        del container[name]
 
     def load_file(self, fspath):
         """Helper to load an xml pickle from a file."""

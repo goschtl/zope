@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.8 2003/05/29 18:04:26 gvanrossum Exp $
+$Id: test_committer.py,v 1.9 2003/06/02 19:48:49 gvanrossum Exp $
 """
 
 import os
@@ -22,7 +22,7 @@ import unittest
 
 from zope.component.service import serviceManager
 from zope.component.adapter import provideAdapter
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.exceptions import NotFoundError
 from zope.testing.cleanup import CleanUp
 
@@ -31,7 +31,7 @@ from zope.fssync import fsutil
 from zope.fssync.tests.mockmetadata import MockMetadata
 from zope.fssync.tests.tempfiles import TempFiles
 
-from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.interfaces.fssync import IGlobalFSSyncService
 from zope.app.interfaces.traversing import ITraversable
@@ -47,7 +47,7 @@ class Sample(object):
 
 class PretendContainer(object):
     
-    __implements__ = IContainer, ITraversable
+    __implements__ = IContainer, ITraversable, IZopeContainer
 
     def __init__(self):
         self.holding = {}
