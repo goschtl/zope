@@ -14,7 +14,7 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.3 2003/02/06 01:03:51 jack-e Exp $
+$Id: stateful.py,v 1.4 2003/02/06 15:02:33 jack-e Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.app.interfaces.workflow import IProcessDefinition
@@ -47,8 +47,8 @@ class ITransition(Interface):
     condition = Attribute("""The condition that is evaluated to decide if \
                              the condition is fired or not.""")
     # more attributes/methods to come
-    # permission
-    # description
+    # permission = Attribute("Permission for this Transition.")
+    # description = Attribute("Description for this Transition.")
 
 
 class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
@@ -62,15 +62,12 @@ class IStatefulProcessDefinition(IProcessDefinition):
     """Interface for stateful workflow process definition.
     """
 
-    # more attributes to come
-    # relevantDataSchema (persistent schema)
-    # relevantDataPermissions (checker)
+    # more methods/attributes to come
+    # relevantData - Permissions (checker)
 
     states = Attribute("State objects container.")
 
     transitions = Attribute("Transition objects container.")
-
-
 
     def addState(name, state):
         """Add a IState to the process definition.
@@ -110,6 +107,13 @@ class IStatefulProcessDefinition(IProcessDefinition):
         """Get the transition names.
         """
 
+    def setSchema(schema):
+        """Set the Schema for RelevantData.
+        """
+
+    def getSchema():
+        """Return the Schema for RelevantData.
+        """
 
 
 
@@ -120,10 +124,7 @@ class IStatefulProcessInstance(IProcessInstance):
     StatefulProcessDefinition.
     """
 
-    # more attributes to come
-    # relevantData (an object with attributes
-    #               with permissions and schema)
-
+    data = Attribute("Relevant Data object.")
 
     def initialize():
         """Initialize the ProcessInstance.
