@@ -166,7 +166,7 @@ class ImageTest(BrowserTestCase):
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Add a Image' in body)
+        self.assert_('Add an Image' in body)
         self.assert_('Content Type' in body)
         self.assert_('Data' in body)
         self.assert_('Object Name' in body)
