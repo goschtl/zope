@@ -61,6 +61,28 @@
       provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
+  <browser:view
+      for=".interfaces.IObjectManager"
+      name="+"
+      class=".adding.ContentAdding"
+      permission="zope2.ViewManagementScreens"
+      >
+
+    <browser:page name="index.html"  template="adding.pt" />
+    <browser:page name="action.html" attribute="action" />
+
+  </browser:view>
+
+  <adapter
+      for=".interfaces.IObjectManager"
+      factory=".adding.ObjectManagerNameChooser"
+      provides="zope.app.container.interfaces.INameChooser"
+      />
+
+  <!-- this is really lying, but it's to please checkContainer -->
+  <five:implements class="OFS.ObjectManager.ObjectManager"
+                   interface="zope.app.container.interfaces.IContainer" />
+
   <!-- make Zope 2's REQUEST implement the right thing -->
   <five:implements class="ZPublisher.HTTPRequest.HTTPRequest"
                    interface="zope.publisher.interfaces.browser.IBrowserRequest"

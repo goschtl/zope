@@ -78,8 +78,8 @@ class Traversable:
         # con Zope 3 into using Zope 2's checkPermission
         newInteraction()
         try:
-            kw = dict(path=[name], request=REQUEST)
-            return ITraverser(self).traverse(**kw).__of__(self)
+            return ITraverser(self).traverse(
+                path=[name], request=REQUEST).__of__(self)
         except (ComponentLookupError, NotFoundError,
                 AttributeError, KeyError, NotFound):
             pass

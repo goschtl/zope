@@ -11,12 +11,18 @@
 $Id$
 """
 
+# python
+import sys
+from datetime import datetime
+
+# Zope 2
 import Acquisition
 from  Acquisition import aq_inner, aq_parent, aq_base
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
+
+# Zope 3
 from interfaces import ITraversable
-from datetime import datetime
 from zope.interface import implements
 from zope.interface.common.mapping import IItemMapping
 from zope.component import getView
@@ -27,8 +33,14 @@ from zope.app.location import LocationProxy
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.submit import Update
 from zope.app.form.interfaces import WidgetsError, MissingInputError
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.event import notify
+from zope.app.form.utility import setUpWidgets, getWidgetsData
+from zope.app.form.interfaces import IInputWidget, WidgetsError
+from zope.schema.interfaces import ValidationError
+from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 
+# Five
+from Products.Five.pagetemplatefile import FivePageTemplateFile
 
 class BrowserView(Acquisition.Explicit):
     security = ClassSecurityInfo()
@@ -96,6 +108,32 @@ class SiteAbsoluteURL(AbsoluteURL):
                  'url': context.absolute_url()
                  },)
 
+class Macros:
+    implements(IItemMapping)
+
+    macro_pages = ()
+    aliases = {
+        'view': 'page',
+        'dialog': 'page',
+        'addingdialog': 'page'
+        }
+
+    def __getitem__(self, key):
+        key = self.aliases.get(key, key)
+        context = self.context
+        request = self.request
+        for name in self.macro_pages:
+            page = getView(context, name, request)
+            try:
+                v = page[key]
+            except KeyError:
+                pass
+            else:
+                return v
+        raise KeyError, key
+
+class StandardMacros(BrowserView, Macros):
+    pass
 
 class EditView(BrowserView):
     """Simple edit-view base class
@@ -111,7 +149,7 @@ class EditView(BrowserView):
     # Fall-back field names computes from schema
     fieldNames = property(lambda self: getFieldNamesInOrder(self.schema))
     # Fall-back template
-    generated_form = ViewPageTemplateFile('edit.pt')
+    generated_form = FivePageTemplateFile('edit.pt')
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
@@ -180,31 +218,99 @@ class EditView(BrowserView):
         self.update_status = status
         return status
 
+class AddView(EditView):
+    """Simple edit-view base class.
 
-class Macros:
+    Subclasses should provide a schema attribute defining the schema
+    to be edited.
+    """
 
-    implements(IItemMapping)
+    def _setUpWidgets(self):
+        setUpWidgets(self, self.schema, IInputWidget, names=self.fieldNames)
 
-    macro_pages = ()
-    aliases = {
-        'view': 'page',
-        'dialog': 'page',
-        'addingdialog': 'page'
-        }
+    def update(self):
 
-    def __getitem__(self, key):
-        key = self.aliases.get(key, key)
-        context = self.context
-        request = self.request
-        for name in self.macro_pages:
-            page = getView(context, name, request)
+        if self.update_status is not None:
+            # We've been called before. Just return the previous result.
+            return self.update_status
+
+        if self.request.form.has_key(Update):
+
+            self.update_status = ''
             try:
-                v = page[key]
-            except KeyError:
-                pass
-            else:
-                return v
-        raise KeyError, key
+                data = getWidgetsData(self, self.schema, names=self.fieldNames)
+                self.createAndAdd(data)
+            except WidgetsError, errors:
+                self.errors = errors
+                self.update_status = "An error occured."
+                return self.update_status
 
-class StandardMacros(BrowserView, Macros): pass
+            self.request.response.redirect(self.nextURL())
 
+        return self.update_status
+
+    def create(self, *args, **kw):
+        """Do the actual instantiation."""
+        # hack to please typical Zope 2 factories, which expect id and title
+        args = ('tmp_id', 'Temporary title') + args
+        return self._factory(*args, **kw)
+
+    def createAndAdd(self, data):
+        """Add the desired object using the data in the data argument.
+
+        The data argument is a dictionary with the data entered in the form.
+        """
+
+        args = []
+        if self._arguments:
+            for name in self._arguments:
+                args.append(data[name])
+
+        kw = {}
+        if self._keyword_arguments:
+            for name in self._keyword_arguments:
+                if name in data:
+                    kw[str(name)] = data[name]
+
+        content = self.create(*args, **kw)
+        adapted = self.schema(content)
+
+        errors = []
+
+        if self._set_before_add:
+            for name in self._set_before_add:
+                if name in data:
+                    field = self.schema[name]
+                    try:
+                        field.set(adapted, data[name])
+                    except ValidationError:
+                        errors.append(sys.exc_info()[1])
+
+        if errors:
+            raise WidgetsError(*errors)
+
+        notify(ObjectCreatedEvent(content))
+
+        content = self.add(content)
+
+        adapted = self.schema(content)
+
+        if self._set_after_add:
+            for name in self._set_after_add:
+                if name in data:
+                    field = self.schema[name]
+                    try:
+                        field.set(adapted, data[name])
+                    except ValidationError:
+                        errors.append(sys.exc_info()[1])
+
+        if errors:
+            raise WidgetsError(*errors)
+
+        return content
+
+    def add(self, content):
+        return self.context.add(content)
+
+    def nextURL(self):
+        return self.context.nextURL()

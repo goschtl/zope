@@ -294,6 +294,15 @@
       permission="zope2.Public"
       />
 
+  <five:traversable class="OFS.ObjectManager.ObjectManager" />
+  
+  <browser:addform
+     schema=".interfaces.IFieldSimpleContent"
+     content_factory=".simplecontent.FieldSimpleContent"
+     name="addsimplecontent.html"
+     permission="zope2.Public"
+     />
+
   <!-- stuff that we'll override in overrides.zcml -->
 
   <browser:page

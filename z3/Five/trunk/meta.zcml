@@ -165,11 +165,41 @@
 
     </meta:complexDirective>
 
+    <meta:complexDirective
+        name="view"
+        schema="zope.app.publisher.browser.metadirectives.IViewDirective"
+        handler=".browserconfigure.view"
+        >
+
+      <meta:subdirective
+          name="page"
+          schema="zope.app.publisher.browser.metadirectives.IViewPageSubdirective"
+          />
+
+      <meta:subdirective
+          name="defaultPage"
+          schema="zope.app.publisher.browser.metadirectives.IViewDefaultPageSubdirective"
+          />
+
+    </meta:complexDirective>
 
     <meta:complexDirective
         name="editform"
         schema="zope.app.form.browser.metadirectives.IEditFormDirective"
         handler=".browserconfigure.EditFormDirective"
+        >
+
+      <meta:subdirective
+          name="widget"
+          schema="zope.app.form.browser.metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
+
+    <meta:complexDirective
+        name="addform"
+        schema="zope.app.form.browser.metadirectives.IAddFormDirective"
+        handler=".browserconfigure.AddFormDirective"
         >
 
       <meta:subdirective
