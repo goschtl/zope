@@ -104,7 +104,8 @@ class BuilderApplication(Application):
             depsdir = os.path.join(self.destination, "Dependencies")
             first = True
             handled = sets.Set()
-            remaining = top.get_dependencies()
+            handled.add(self.resource)
+            remaining = top.get_dependencies() - handled
             while remaining:
                 resource = remaining.pop()
                 handled.add(resource)
