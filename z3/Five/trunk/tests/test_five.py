@@ -15,7 +15,7 @@ ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 
 import zope
-from zope.interface import directlyProvides
+from zope.interface import directlyProvides, Interface, implements
 from zope.component import getViewProviding
 from zope.schema import Choice, TextLine
 from zope.app.form.interfaces import IInputWidget
@@ -27,6 +27,8 @@ from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
 from Products.Five.resource import Resource, PageTemplateResource
 from Products.Five.traversable import FakeRequest
+from Products.Five.fiveconfigure import classViewable
+from OFS.Traversable import Traversable
 
 from Products import FiveTest
 _prefix = os.path.dirname(FiveTest.__file__)
@@ -312,8 +314,39 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         self.assertEquals("The eagle has landed", response.getBody())
 
 
+class IRecurse(Interface):
+    pass
+
+class Recurse(Traversable):
+
+    implements(IRecurse)
+
+    def view(self):
+        return self()
+
+    def __call__(self):
+        return 'foo'
+
+classViewable(Recurse)
+
+class RecursionTest(unittest.TestCase):
+
+    def setUp(self):
+        self.ob = Recurse()
+
+    def test_recursive_call(self):
+        from zope.app import zapi
+        from zope.publisher.interfaces.browser import IBrowserRequest
+        pres = zapi.getGlobalService('Presentation')
+        type = IBrowserRequest
+        pres.setDefaultViewName(IRecurse, type, 'view')
+        self.assertEquals(self.ob.view(), 'foo')
+        self.assertEquals(self.ob(), 'foo')
+
+
 def test_suite():
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(RecursionTest))
     suite.addTest(unittest.makeSuite(FiveTestCase))
     suite.addTest(unittest.makeSuite(PublishTestCase))
     return suite

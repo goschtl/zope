@@ -10,6 +10,8 @@
 
 $Id: traversable.py 5763 2004-07-28 20:15:11Z dreamcatcher $
 """
+
+import inspect
 from zExceptions import NotFound
 from zope.exceptions import NotFoundError
 from zope.component import getView, getDefaultViewName, ComponentLookupError
@@ -63,12 +65,31 @@ class Viewable:
             if not IBrowserRequest.providedBy(request):
                 request = FakeRequest()
         obj, path = self.__browser_default__(request)
-        if path:
+        if path and not simpleRecursion():
             meth = obj.unrestrictedTraverse(path)
             if meth is not None:
                 return meth(*args, **kw)
         return self.fallback_call__(*args, **kw)
     __call__.__five_method__ = True
+
+def simpleRecursion():
+    # This tests for simple recursion, which can easily happen
+    # in CMF, like the following:
+    # - Object has a method named 'view'
+    # - 'view' method calls '__call__'
+    # - five:viewable overrides call to use '__browser_default__'
+    #   to find a default view and call it
+    # - defaultView is set to 'view'
+    # Bang. Infinite recursion.
+    stack = inspect.stack()
+    try:
+        if len(stack) < 4:
+            return False
+        if stack[2][1:4] == stack[4][1:4]:
+            return True
+    finally:
+        del stack
+    return False
 
 class BrowserDefault(object):
 

@@ -30,6 +30,9 @@ class FakeRequest:
     def getPresentationSkin(self):
         return None
 
+    def has_key(self, key):
+        return False
+
 class Traversable:
     """A mixin to make an object traversable using an ITraverser adapter.
     """

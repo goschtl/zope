@@ -96,9 +96,9 @@ def classTraversable(class_):
             setattr(class_, '__fallback_traverse__', class_.__bobo_traverse__)
     if not hasattr(class_, '__fallback_traverse__'):
         setattr(class_, '__fallback_traverse__',
-                Traversable.__fallback_traverse__)
+                Traversable.__fallback_traverse__.im_func)
 
-    setattr(class_, '__bobo_traverse__', Traversable.__bobo_traverse__)
+    setattr(class_, '__bobo_traverse__', Traversable.__bobo_traverse__.im_func)
     setattr(class_, '__five_traversable__', True)
 
 def traversable(_context, class_):
@@ -127,7 +127,7 @@ def classViewable(class_):
             setattr(class_, '__fallback_default__', class_.__browser_default__)
     if not hasattr(class_, '__fallback_default__'):
         setattr(class_, '__fallback_default__',
-                Viewable.__fallback_default__)
+                Viewable.__fallback_default__.im_func)
 
     if hasattr(class_, '__call__'):
         # Only touch __call__ if the class is already callable.
@@ -137,10 +137,10 @@ def classViewable(class_):
             setattr(class_, 'fallback_call__', class_.__call__)
         if not hasattr(class_, 'fallback_call__'):
             setattr(class_, 'fallback_call__',
-                    Viewable.fallback_call__)
-        setattr(class_, '__call__', Viewable.__call__)
+                    Viewable.fallback_call__.im_func)
+        setattr(class_, '__call__', Viewable.__call__.im_func)
 
-    setattr(class_, '__browser_default__', Viewable.__browser_default__)
+    setattr(class_, '__browser_default__', Viewable.__browser_default__.im_func)
     setattr(class_, '__five_viewable__', True)
 
 def viewable(_context, class_):
