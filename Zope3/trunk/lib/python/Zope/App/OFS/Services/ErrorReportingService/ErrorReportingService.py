@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.12 2002/12/10 09:24:58 stevea Exp $
+$Id: ErrorReportingService.py,v 1.13 2002/12/19 22:52:00 gvanrossum Exp $
 """
 
 import time
@@ -22,7 +22,7 @@ from random import random
 from thread import allocate_lock
 from Persistence import Persistent
 from types import StringTypes
-from zLOG import LOG, ERROR
+import logging
 from Zope.Exceptions.ExceptionFormatter import format_exception
 from Zope.ContextWrapper import ContextMethod
 from Zope.App.OFS.Services.ErrorReportingService.IErrorReportingService \
@@ -114,10 +114,9 @@ class ErrorReportingService(Persistent):
             # We'll ignore these errors, and print something
             # useful instead, but also log the error.
             except:
-                LOG('SiteError', ERROR,
+                logging.getLogger('SiteError').exception(
                     'Error in ErrorReportingService while getting a str '
-                    'representation of an object ',
-                    error=sys.exc_info())
+                    'representation of an object')
                 strv = '<unprintable %s object>' % (
                         str(type(info[1]).__name__)
                         )
@@ -150,13 +149,14 @@ class ErrorReportingService(Persistent):
     raising = ContextMethod(raising)
 
     def _do_copy_to_zlog(self, now, strtype, url, info):
+        # XXX info is unused; logging.exception() will call sys.exc_info()
         when = _rate_restrict_pool.get(strtype,0)
         if now > when:
             next_when = max(when,
                             now - _rate_restrict_burst*_rate_restrict_period)
             next_when += _rate_restrict_period
             _rate_restrict_pool[strtype] = next_when
-            LOG('SiteError', ERROR, str(url), error=info)
+            logging.getLogger('SiteError').exception(str(url))
 
     def getProperties(self):
         return {

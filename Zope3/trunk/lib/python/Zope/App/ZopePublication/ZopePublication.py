@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 import sys
-from zLOG import LOG, ERROR, INFO
+import logging
 
 from Zope.ComponentArchitecture import getService
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
@@ -187,10 +187,9 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
                 # the ErrorReportingService, and that it will be in
                 # the zope log.
                 except:
-                    LOG('SiteError', ERROR,
+                    logging.getLogger('SiteError').exception(
                         'Error while reporting an error to the '
-                        'ErrorReportingService', 
-                        error=sys.exc_info())
+                        'ErrorReportingService')
 
             # Delegate Unauthorized errors to the authentication service
             # XXX Is this the right way to handle Unauthorized?  We need
@@ -217,10 +216,10 @@ class ZopePublication(object, PublicationTraverse, DefaultPublication):
 
             # Convert ConflictErrors to Retry exceptions.
             if retry_allowed and isinstance(exc_info[1], ConflictError):
-                LOG('Zope Publication', INFO,
-                    'Competing writes/reads at %s'
-                    % request.get('PATH_INFO', '???'),
-                    error=sys.exc_info())
+                logger.getLogger('ZopePublication').warn(
+                    'Competing writes/reads at %s',
+                    request.get('PATH_INFO', '???'),
+                    exc_info=True)
                 raise Retry
 
             # Let the response handle it as best it can.
