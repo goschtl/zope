@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the wiki ZCML namespace directives.
 
-$Id: test_directives.py,v 1.1 2003/08/02 17:26:15 srichter Exp $
+$Id: test_directives.py,v 1.2 2003/11/27 13:59:18 philikon Exp $
 """
 import unittest
 
@@ -26,15 +26,13 @@ from zope.configuration import xmlconfig
 from zope.interface import Interface
 import zope.app.dav.tests
 
-  
 class ISchema(Interface):
     pass
-
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(DirectivesTest, self).setUp()
         defineService(DAVSchema, IDAVSchemaService)
         serviceManager.provideService(DAVSchema, davSchemaService)
 
@@ -43,7 +41,6 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         self.context = xmlconfig.file("dav.zcml", zope.app.dav.tests)
         self.assertEqual(davSchemaService.queryNamespace(ISchema),
                          'http://www.zope3.org/dav-schema')
-
 
 def test_suite():
     return unittest.TestSuite((

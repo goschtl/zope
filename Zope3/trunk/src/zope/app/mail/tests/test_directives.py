@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_directives.py,v 1.8 2003/09/22 22:37:25 jim Exp $
+$Id: test_directives.py,v 1.9 2003/11/27 13:59:21 philikon Exp $
 """
 import os
 import unittest
@@ -47,7 +47,7 @@ class MaildirStub:
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(DirectivesTest, self).setUp()
         managerHandler('defineService', 'Mail', IMailService)
         managerHandler('defineService', 'Mail2', IMailService)
         provideInterface('zope.app.interfaces.mail.IMailService', IMailService)

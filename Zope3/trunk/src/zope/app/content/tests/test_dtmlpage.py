@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_dtmlpage.py,v 1.7 2003/11/21 17:12:01 jim Exp $
+$Id: test_dtmlpage.py,v 1.8 2003/11/27 13:59:17 philikon Exp $
 """
 
 import unittest
@@ -42,7 +42,7 @@ class Data(object):
 class DTMLPageTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(DTMLPageTests, self).setUp()
         ztapi.provideAdapter(None, ITraverser, Traverser)
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
         defineChecker(Data, NamesChecker(['URL', 'name', '__getitem__']))

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the workflow ZCML namespace directives.
 
-$Id: test_directives.py,v 1.2 2003/08/21 14:19:25 srichter Exp $
+$Id: test_directives.py,v 1.3 2003/11/27 13:59:21 philikon Exp $
 """
 import unittest
 
@@ -33,7 +33,7 @@ TestInterpreter = TestInterpreter()
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(DirectivesTest, self).setUp()
         self.context = xmlconfig.file("interpreter.zcml", tests)
 
     def testRegisterInterpreter(self):

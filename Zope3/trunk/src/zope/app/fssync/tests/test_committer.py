@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.18 2003/11/21 17:12:05 jim Exp $
+$Id: test_committer.py,v 1.19 2003/11/27 13:59:19 philikon Exp $
 """
 
 import os
@@ -111,13 +111,13 @@ class DictAdapter(Default):
                 del old[key]
 
 
-class TestBase(TempFiles, PlacelessSetup):
+class TestBase(PlacelessSetup, TempFiles):
 
     # Base class for test classes
 
     def setUp(self):
         # Set up standard services
-        PlacelessSetup.setUp(self)
+        super(TestBase, self).setUp()
 
         # Set up FSRegistryService
         serviceManager.defineService("FSRegistryService", IGlobalFSSyncService)

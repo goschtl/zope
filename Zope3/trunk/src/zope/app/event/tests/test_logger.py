@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_logger.py,v 1.11 2003/09/21 17:32:09 jim Exp $
+$Id: test_logger.py,v 1.12 2003/11/27 13:59:18 philikon Exp $
 """
 
 import unittest
@@ -40,7 +40,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
     eventlogger = Logger()
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestLogger1, self).setUp()
         from zope.app.interfaces.event import IPublisher
         getServiceManager(None).defineService(EventPublication, IPublisher)
         from zope.app.event.globalservice import eventPublisher

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.7 2003/11/21 17:11:57 jim Exp $
+$Id: test_translate.py,v 1.8 2003/11/27 13:59:15 philikon Exp $
 """
 
 import unittest
@@ -42,10 +42,10 @@ class Translate(Translate):
         self.request = request
         
 
-class TranslateTest(unittest.TestCase, PlacelessSetup):
+class TranslateTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TranslateTest, self).setUp()
 
         # Setup the registries
         ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,

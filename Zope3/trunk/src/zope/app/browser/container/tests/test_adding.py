@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.12 2003/11/21 17:11:54 jim Exp $
+$Id: test_adding.py,v 1.13 2003/11/27 13:59:11 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -80,7 +80,7 @@ class AbsoluteURL(BrowserView):
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
 
     def test(self):
         container = Container()

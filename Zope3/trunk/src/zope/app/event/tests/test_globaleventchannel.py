@@ -13,7 +13,7 @@
 ##############################################################################
 """A functional GlobalEventChannel test.
 
-$Id: test_globaleventchannel.py,v 1.4 2003/11/21 17:12:04 jim Exp $
+$Id: test_globaleventchannel.py,v 1.5 2003/11/27 13:59:18 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -123,7 +123,7 @@ class TestSubscribingAwareChannel(PlacelessSetup, TestCase):
         self.ec = GlobalEventChannel()
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestSubscribingAwareChannel, self).setUp()
         self.setUpChannel()
         self.subscriber = SubscriberStub()
         self.filter = lambda x: True
@@ -162,7 +162,7 @@ class TestAdaptingToISubscriberBase(PlacelessSetup, TestCase):
         raise NotImplementedError('You need to write a setUpChannel method.')
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestAdaptingToISubscriberBase, self).setUp()
         self.setUpChannel()
         self.subscriber = NonSubscriberStub()
         self.event = SomeEvent()

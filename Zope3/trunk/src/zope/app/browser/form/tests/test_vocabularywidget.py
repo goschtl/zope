@@ -109,7 +109,7 @@ class VocabularyWidgetTestBase(PlacelessSetup,
     """
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(VocabularyWidgetTestBase, self).setUp()
         self.registerViews()
 
     # makeField() uses the following class variables:

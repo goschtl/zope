@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.21 2003/11/21 17:11:56 jim Exp $
+$Id: test_add.py,v 1.22 2003/11/27 13:59:13 philikon Exp $
 """
 
 import unittest
@@ -92,7 +92,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         self._context = Context()
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         ztapi.provideAdapter(IFoo, IBar, FooBarAdapter)
 
     def _invoke_add(self, schema=I, name="addthis", permission="zope.Public",

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for Global Wiki Source Type Service.
 
-$Id: test_vocabulary.py,v 1.1 2003/07/31 18:48:42 srichter Exp $
+$Id: test_vocabulary.py,v 1.2 2003/11/27 13:59:24 philikon Exp $
 """
 import unittest
 
@@ -59,7 +59,7 @@ class SourceTypeTermTest(unittest.TestCase):
 class SourceTypeVocabularyTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(SourceTypeVocabularyTest, self).setUp()
         defineService("SourceTypeRegistry", IGlobalSourceTypeService)
         serviceManager.provideService("SourceTypeRegistry", SourceTypes)
         SourceTypes._clear()

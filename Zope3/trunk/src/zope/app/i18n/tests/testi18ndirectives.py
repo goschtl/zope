@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: testi18ndirectives.py,v 1.6 2003/08/17 06:06:43 philikon Exp $
+$Id: testi18ndirectives.py,v 1.7 2003/11/27 13:59:20 philikon Exp $
 """
 import os
 import unittest
@@ -40,7 +40,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
     # XXX: tests for other directives needed
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(DirectivesTest, self).setUp()
         self.context = xmlconfig.file('meta.zcml', zope.app.i18n)
 
     def testRegisterTranslations(self):

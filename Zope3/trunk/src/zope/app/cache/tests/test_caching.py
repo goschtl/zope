@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: test_caching.py,v 1.10 2003/11/21 17:12:00 jim Exp $
+$Id: test_caching.py,v 1.11 2003/11/27 13:59:16 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -52,7 +52,7 @@ class CachingServiceStub:
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         ztapi.provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_ftpview.py,v 1.4 2003/09/21 17:32:14 jim Exp $
+$Id: test_ftpview.py,v 1.5 2003/11/27 13:59:20 philikon Exp $
 """
 
 import datetime
@@ -104,7 +104,7 @@ def norm_info(info):
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         root = Directory()
         root['test'] = Directory()
         root['test2'] = Directory()

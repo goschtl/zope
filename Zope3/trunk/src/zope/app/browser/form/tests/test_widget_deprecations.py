@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_widget_deprecations.py,v 1.1 2003/08/13 21:28:04 garrett Exp $
+$Id: test_widget_deprecations.py,v 1.2 2003/11/27 13:59:13 philikon Exp $
 """
 import unittest
 import random
@@ -54,7 +54,7 @@ def warn(*args, **wk):
 class TestOldWidget(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestOldWidget, self).setUp()
         self._widget = OldWidget(Text(__name__='test'), TestRequest())
         widget.warn = warn
         browserwidget.warn = warn
@@ -80,7 +80,7 @@ class TestCurrentWidget(PlacelessSetup, unittest.TestCase):
     _WidgetFactory = BrowserWidget
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestCurrentWidget, self).setUp()
         self._widget = BrowserWidget(Text(__name__='test'), TestRequest())
         widget.warn = warn
         browserwidget.warn = warn

@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.17 2003/11/21 17:11:22 jim Exp $
+$Id: test_absoluteurl.py,v 1.18 2003/11/27 13:59:15 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -45,7 +45,7 @@ class TrivialContent(object):
 class TestAbsoluteURL(PlacelessSetup, TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestAbsoluteURL, self).setUp()
         from zope.app.browser.absoluteurl \
              import AbsoluteURL, SiteAbsoluteURL
         ztapi.browserView(None, 'absolute_url', [AbsoluteURL])

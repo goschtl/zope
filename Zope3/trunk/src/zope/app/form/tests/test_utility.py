@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.17 2003/11/21 17:12:04 jim Exp $
+$Id: test_utility.py,v 1.18 2003/11/27 13:59:19 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -114,7 +114,7 @@ class W(TextWidget):
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         ztapi.setDefaultViewName(IText, 'edit')
         ztapi.browserView(IText, 'edit', W)
 

@@ -14,7 +14,7 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: test_filters.py,v 1.2 2003/06/06 21:21:47 stevea Exp $
+$Id: test_filters.py,v 1.3 2003/11/27 13:59:26 philikon Exp $
 """
 import unittest, time
 
@@ -69,7 +69,7 @@ msgstr "hallo"
 '''
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestGettextExportImport, self).setUp()
         # Setup the negotiator service registry entry
         managerHandler('defineService', 'LanguageNegotiation', INegotiator)
         provideService('LanguageNegotiation', negotiator, 'zope.Public')

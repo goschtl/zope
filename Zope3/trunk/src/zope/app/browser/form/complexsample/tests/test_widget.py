@@ -126,7 +126,7 @@ class TestBase(PlacelessSetup, support.VerifyResults, unittest.TestCase):
     """Base class for all test classes."""
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestBase, self).setUp()
         # display
         ztapi.browserView(
             IVocabularyUniqueListField,

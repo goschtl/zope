@@ -13,7 +13,7 @@
 ##############################################################################
 """Test OnlineHelp
 
-$Id: test_onlinehelp.py,v 1.6 2003/11/21 17:12:08 jim Exp $
+$Id: test_onlinehelp.py,v 1.7 2003/11/27 13:59:22 philikon Exp $
 """
 import os
 from unittest import TestSuite, makeSuite
@@ -35,7 +35,7 @@ class I1(Interface):
 class TestOnlineHelp(PlacelessSetup, TestOnlineHelpTopic):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestOnlineHelp, self).setUp()
         ztapi.provideAdapter(None, ITraverser, Traverser)
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
         ztapi.provideAdapter(None, IPhysicallyLocatable,

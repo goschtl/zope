@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_componentpathwidget.py,v 1.4 2003/11/21 17:11:57 jim Exp $
+$Id: test_componentpathwidget.py,v 1.5 2003/11/27 13:59:14 philikon Exp $
 """
 __metaclass__ = type
 
@@ -56,7 +56,7 @@ class AbsoluteURL(BrowserView):
 class ComponentPathWidgetTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(ComponentPathWidgetTest, self).setUp()
         ztapi.provideAdapter(None, ITraverser, Traverser)
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
         ztapi.provideAdapter(None, IPhysicallyLocatable,

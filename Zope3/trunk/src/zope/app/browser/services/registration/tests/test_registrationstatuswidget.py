@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Widget Tests
 
-$Id: test_registrationstatuswidget.py,v 1.3 2003/08/13 21:28:20 garrett Exp $
+$Id: test_registrationstatuswidget.py,v 1.4 2003/11/27 13:59:14 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         
     def test_call(self):
         field = RegistrationStatus(__name__="status")

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_helpdirectives.py,v 1.7 2003/11/21 17:12:08 jim Exp $
+$Id: test_helpdirectives.py,v 1.8 2003/11/27 13:59:22 philikon Exp $
 """
 import unittest
 
@@ -36,7 +36,7 @@ class I1(Interface):
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(DirectivesTest, self).setUp()
         ztapi.provideAdapter(None, ITraverser, Traverser)
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
         ztapi.provideAdapter(None, IPhysicallyLocatable,

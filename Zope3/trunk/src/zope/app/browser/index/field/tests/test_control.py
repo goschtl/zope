@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for field index browser views
 
-$Id: test_control.py,v 1.1 2003/06/22 16:10:56 mgedmin Exp $
+$Id: test_control.py,v 1.2 2003/11/27 13:59:13 philikon Exp $
 """
 
 import unittest
@@ -55,7 +55,7 @@ class FieldIndexStub:
 class TestControlView(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestControlView, self).setUp()
         service_manager = getServiceManager(None)
         service_manager.defineService(HubIds, IObjectHub)
         service_manager.provideService(HubIds, ObjectHubStub())

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_imageupload.py,v 1.5 2003/11/21 17:11:54 jim Exp $
+$Id: test_imageupload.py,v 1.6 2003/11/27 13:59:12 philikon Exp $
 """
 
 import os
@@ -40,7 +40,7 @@ class IU(ImageUpload, EditView):
 class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
 
         # Configure the widget views
         ztapi.setDefaultViewName(IField, 'edit')

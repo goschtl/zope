@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.4 2003/11/03 21:37:56 jeremy Exp $
+$Id: test_registrationmanager.py,v 1.5 2003/11/27 13:59:26 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -39,7 +39,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
     """Testing for Registration Manager """
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         self.__manager = manager = RegistrationManager()
         self.names = []
         self.stateDict = {}

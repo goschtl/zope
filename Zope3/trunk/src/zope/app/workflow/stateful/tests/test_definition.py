@@ -14,7 +14,7 @@
 
 """Stateful workflow process definition.
 
-$Id: test_definition.py,v 1.3 2003/09/21 17:34:00 jim Exp $
+$Id: test_definition.py,v 1.4 2003/11/27 13:59:27 philikon Exp $
 """
 import unittest
 
@@ -53,7 +53,7 @@ class IDummyDataSchema(Interface):
 class StatefulProcessDefinitionTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(StatefulProcessDefinitionTests, self).setUp()
         self.pd = pd = StatefulProcessDefinition()
         self.doMinimalSetup()
 
@@ -138,7 +138,7 @@ class StatefulProcessDefinitionAttributesTests(PlacelessSetup,
                                                unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(StatefulProcessDefinitionAttributesTests, self).setUp()
         self.pd = pd = StatefulProcessDefinition()
         self.doMinimalSetup()
 

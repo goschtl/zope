@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventpublisher.py,v 1.6 2003/11/03 21:37:59 jeremy Exp $
+$Id: test_eventpublisher.py,v 1.7 2003/11/27 13:59:18 philikon Exp $
 """
 
 import unittest
@@ -44,7 +44,7 @@ class ObjectEvent:
 class TestEventService(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestEventService, self).setUp()
         self.service = GlobalEventPublisher()
         parent = object()
         self.event = ObjectAddedEvent(None, parent, 'foo')

@@ -15,7 +15,7 @@
 
 XXX Incomplete.
 
-$Id: test_bundle.py,v 1.4 2003/08/17 06:05:57 philikon Exp $
+$Id: test_bundle.py,v 1.5 2003/11/27 13:59:14 philikon Exp $
 """
 
 # standard library modules
@@ -49,7 +49,7 @@ class SampleClass(object):
 class TestBundleView(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestBundleView, self).setUp()
 
     def test_parseVersion(self):
         bv = BundleView(SampleClass(), None)

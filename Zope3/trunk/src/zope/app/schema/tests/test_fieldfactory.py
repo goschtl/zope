@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_fieldfactory.py,v 1.2 2003/08/17 06:07:58 philikon Exp $
+$Id: test_fieldfactory.py,v 1.3 2003/11/27 13:59:25 philikon Exp $
 """
 
 import unittest
@@ -34,7 +34,7 @@ class IFoo(Interface): pass
 class TestFieldFactory(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(TestFieldFactory, self).setUp()
         newSecurityManager(system_user)
         context = xmlconfig.file('tests/test_fieldfactory.zcml',
                                  zope.app.schema)

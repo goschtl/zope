@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.15 2003/11/21 17:12:01 jim Exp $
+$Id: test_sqlscript.py,v 1.16 2003/11/27 13:59:17 philikon Exp $
 """
 import unittest
 from zope.app.tests import ztapi
@@ -124,10 +124,10 @@ class LocatableStub:
         return str(id(self.obj))
 
 
-class SQLScriptTest(unittest.TestCase, PlacelessSetup):
+class SQLScriptTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(SQLScriptTest, self).setUp()
         classImplements(SQLScript, IAttributeAnnotatable)
         sm.defineService('SQLDatabaseConnections', IConnectionService)
         sm.provideService('SQLDatabaseConnections', ConnectionServiceStub())

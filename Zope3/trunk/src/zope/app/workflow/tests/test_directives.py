@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the workflow ZCML namespace directives.
 
-$Id: test_directives.py,v 1.4 2003/08/01 20:41:05 srichter Exp $
+$Id: test_directives.py,v 1.5 2003/11/27 13:59:27 philikon Exp $
 """
 import unittest
 
@@ -29,7 +29,7 @@ gIE = globalimportexport.globalImportExport
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(DirectivesTest, self).setUp()
         self.context = xmlconfig.file("workflow.zcml", directive_helpers)
 
     def testImportHandler(self):

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.14 2003/11/21 17:11:56 jim Exp $
+"""$Id: test_editview.py,v 1.15 2003/11/27 13:59:13 philikon Exp $
 """
 import unittest
 
@@ -79,7 +79,7 @@ class BarV(EditView):
 class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         ztapi.browserView(ITextLine, 'edit', TextWidget)
         ztapi.setDefaultViewName(ITextLine, "edit")
         ztapi.provideAdapter(IFoo, IBar, FooBarAdapter)

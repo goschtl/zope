@@ -25,19 +25,15 @@ gIE = globalimportexport.globalImportExport
 dh = directive_helpers
 
 class PDA:
-
     implements(dh.ITestProcessDefinitionA)
 
 class PDB:
-
     implements(dh.ITestProcessDefinitionB)
-
 
 class Test(PlacelessSetup, unittest.TestCase):
 
-
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(Test, self).setUp()
         gIE.addImportHandler(dh.ITestProcessDefinitionA,
                              dh.TestImportHandlerA)
         gIE.addImportHandler(dh.ITestProcessDefinitionB,
@@ -60,7 +56,6 @@ class Test(PlacelessSetup, unittest.TestCase):
                          'Exported A')
         self.assertEqual(gIE.exportProcessDefinition(None, PDB()),
                          'Exported B')
-
 
 def test_suite():
     loader=unittest.TestLoader()

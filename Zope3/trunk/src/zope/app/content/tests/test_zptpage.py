@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.15 2003/11/21 17:12:01 jim Exp $
+$Id: test_zptpage.py,v 1.16 2003/11/27 13:59:17 philikon Exp $
 """
 
 import unittest
@@ -48,7 +48,7 @@ class Data(object):
 class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(ZPTPageTests, self).setUp()
         ztapi.provideAdapter(None, ITraverser, Traverser)
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
         ztapi.provideAdapter(IZPTPage, ISearchableText, SearchableText)
@@ -193,7 +193,7 @@ class TestFileEmulation(unittest.TestCase):
 class ZPTSourceTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(ZPTSourceTest, self).setUp()
         ztapi.browserView(IZPTPage, 'source.html', ZPTSourceView)
 
     def testSourceView(self):

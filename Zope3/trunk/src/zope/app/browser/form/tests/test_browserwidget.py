@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.16 2003/08/16 17:23:37 sidnei Exp $
+$Id: test_browserwidget.py,v 1.17 2003/11/27 13:59:13 philikon Exp $
 """
 
 from zope.interface import Interface, implements
@@ -53,7 +53,7 @@ class BrowserWidgetTest(PlacelessSetup,
         self._widget = self._WidgetFactory(field, request)
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(BrowserWidgetTest, self).setUp()
         self.setUpContent()
 
     def test_required(self):

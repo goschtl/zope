@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_sqlcommand.py,v 1.5 2003/06/04 10:46:37 stevea Exp $
+$Id: test_sqlcommand.py,v 1.6 2003/11/27 13:59:24 philikon Exp $
 """
 
 import unittest
@@ -62,10 +62,10 @@ class ConnectionServiceStub:
         return ConnectionStub()
 
 
-class SQLCommandTest(unittest.TestCase, PlacelessSetup):
+class SQLCommandTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        PlacelessSetup.setUp(self)
+        super(SQLCommandTest, self).setUp()
         sm.defineService('SQLDatabaseConnections', IConnectionService)
         sm.provideService('SQLDatabaseConnections', ConnectionServiceStub())
         self._old_getNextServiceManager = nextservice.getNextServiceManager
