@@ -141,6 +141,12 @@ CMF 1.5.1beta (unreleased)
       about proxy role handling using .metadata files
       (http://collector.zope.org/CMF/177)
 
+  Other
+
+    - CMFCore.FSPropertiesObject: Added a deprecation warning to announce the
+      fact that .properties files will disappear in CMF 1.7 and should be 
+      replaced with CMFCore.FSMetadata (.metadata) files.
+
 CMF 1.5.0 (2004/10/21)
 
   New Features
