@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.14 2003/06/13 17:41:18 stevea Exp $
+$Id: committer.py,v 1.15 2003/06/16 15:55:48 gvanrossum Exp $
 """
 
 import os
@@ -257,17 +257,25 @@ class Committer(object):
         nameset = {}
         if IObjectDirectory.isImplementedBy(adapter):
             for name, obj in adapter.contents():
-                nameset[name] = 1
+                nameset[name] = os.path.join(fspath, name)
         else:
             for name in container:
-                nameset[name] = 1
+                nameset[name] = os.path.join(fspath, name)
         for name in self.metadata.getnames(fspath):
-            nameset[name] = 1
+            nameset[name] = os.path.join(fspath, name)
         # Sort the list of keys for repeatability
-        names = nameset.keys()
-        names.sort()
-        for name in names:
-            self.synch(container, name, os.path.join(fspath, name))
+        names_paths = nameset.items()
+        names_paths.sort()
+        subdirs = []
+        # Do the non-directories first
+        for name, path in names_paths:
+            if os.path.isdir(path):
+                subdirs.append((name, path))
+            else:
+                self.synch(container, name, path)
+        # Now do the directories
+        for name, path in subdirs:
+            self.synch(container, name, path)
 
     def synch_new(self, container, name, fspath):
         """Helper to synchronize a new object."""
