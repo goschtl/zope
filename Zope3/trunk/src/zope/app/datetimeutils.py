@@ -424,7 +424,7 @@ def _tzoffset(tz, t):
             else:
                 return offset
         else:
-            return 0 # XXX ??
+            return 0 # Assume UTC
 
 def _correctYear(year):
     # Y2K patch.
@@ -849,7 +849,7 @@ class DateTimeParser:
     def __parse_iso8601(self,s):
         """Parse an ISO 8601 compliant date.
 
-        XXX Not all allowed formats are recognized (for some examples see
+        TODO: Not all allowed formats are recognized (for some examples see
         http://www.cl.cam.ac.uk/~mgk25/iso-time.html).
         """
         year=0
