@@ -13,12 +13,11 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.10 2003/08/18 18:55:26 srichter Exp $
+$Id: __init__.py,v 1.11 2003/09/21 17:31:08 jim Exp $
 """
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.services.registration import AddComponentRegistration
 from zope.app.form.widget import CustomWidget
-from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
@@ -151,16 +150,14 @@ class Utilities:
                 conf.status = UnregisteredStatus
                 parent = zapi.getParent(conf)
                 name = zapi.getName(conf)
-                container = zapi.getAdapter(parent, IZopeContainer)
-                del container[name]
+                del parent[name]
 
         # 2) Delete the service objects
         for path, obj in services.items():
             parent = zapi.getParent(obj)
             name = zapi.getName(obj)
-            container = zapi.getAdapter(parent, IZopeContainer)
-            del container[name]
-
+            del parent[name]
+            
         s = _("Deleted: ${utility_names}")
         s.mapping = {'utility_names': ", ".join(todo)}
         return s
