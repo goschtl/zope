@@ -9,10 +9,12 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""HTTP PUT verb
+"""HTTP `PUT` verb
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.component import queryAdapter
 from zope.app.http.interfaces import INullResource
 from zope.app.filerepresentation.interfaces import IWriteFile
@@ -22,7 +24,7 @@ from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.interface import implements
 
 class NullResource(object):
-    """Object representing objects to be created by a PUT.
+    """Object representing objects to be created by a `PUT`.
     """
 
     implements(INullResource)

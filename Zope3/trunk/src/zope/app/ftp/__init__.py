@@ -16,6 +16,8 @@ and meta-data apis.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.component import queryAdapter
 from zope.proxy import removeAllProxies

@@ -9,10 +9,12 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""HTTP method OPTIONS
+"""HTTP method `OPTIONS`
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 _allowed_methods = ['PUT', 'DELETE', 'CONNECT', \
            'OPTIONS', 'PATCH', 'PROPFIND', 'PROPPATCH', 'MKCOL', \
            'COPY', 'MOVE', 'LOCK', 'UNLOCK', 'TRACE']
@@ -21,7 +23,7 @@ _allowed_methods = ['PUT', 'DELETE', 'CONNECT', \
 from zope.component import queryView
 
 class OPTIONS(object):
-    """OPTIONS handler for all objects
+    """`OPTIONS` handler for all objects
     """
 
     def __init__(self, context, request):

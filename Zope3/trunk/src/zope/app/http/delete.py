@@ -13,6 +13,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.filerepresentation.interfaces import IWriteDirectory
 
 class DELETE(object):

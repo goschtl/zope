@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve
 from interfaces import ISchemaManager
@@ -27,10 +28,10 @@ generations_key = 'zope.app.generations'
 class SchemaManager(object):
     """Schema manager
 
-       Schema managers implement ISchemaManager using scripts provided
+       Schema managers implement `ISchemaManager` using scripts provided
        as module methods.  You create a schema manager by providing
        mimumum and maximum generations and a package providing modules
-       named `moduleN`, where `N` is a generation number.  Each module
+       named ``moduleN``, where ``N`` is a generation number.  Each module
        provides a function, `evolve` that evolves a database from the
        previous generation.
 
@@ -340,7 +341,7 @@ def evolve(db, how=EVOLVE):
                     # An unguarded handler is intended here
                     get_transaction().abort()
                     logging.getLogger('zope.app.generations').exception(
-                        "Failed to evolve database to gneration %d for %s",
+                        "Failed to evolve database to generation %d for %s",
                         generation, key)
 
                     if generation < manager.minimum_generation:

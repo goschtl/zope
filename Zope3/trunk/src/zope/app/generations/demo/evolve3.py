@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 generation = 3
 

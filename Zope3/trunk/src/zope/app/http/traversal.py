@@ -16,6 +16,8 @@ We also never traverse to views.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.publisher.interfaces.http import IHTTPPublisher
 from zope.app.container.interfaces import ISimpleReadContainer, IItemContainer
 from zope.app.http.put import NullResource

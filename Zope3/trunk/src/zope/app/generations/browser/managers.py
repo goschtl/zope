@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app import zapi
 from zope.app.generations.interfaces import ISchemaManager
 from zope.app.generations.generations import generations_key, Context
@@ -93,8 +95,8 @@ class Managers(object):
 
              >>> view = Managers(None, request)
 
-           Now, if we call it's evolve method, it should see that the
-           app1 evolve button was pressed and evolve app1 the thect
+           Now, if we call it's `evolve` method, it should see that the
+           app1 evolve button was pressed and evolve app1 to the next
            generation.
 
              >>> status = view.evolve()

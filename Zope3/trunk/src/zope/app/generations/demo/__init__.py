@@ -18,6 +18,7 @@ the evolve function defined here with a generation number.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 key = 'zope.app.generations.demo-generation'
 
