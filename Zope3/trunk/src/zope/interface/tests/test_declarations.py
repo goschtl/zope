@@ -14,12 +14,12 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.3 2003/05/13 19:48:23 jim Exp $
+$Id: test_declarations.py,v 1.4 2003/05/18 17:53:06 jim Exp $
 """
 
 import unittest
 from zope.interface import *
-from zope.testing.doc import doctest
+from zope.testing.doctestunit import DocTestSuite
 from zope.interface import Interface
 
 class I1(Interface): pass
@@ -49,11 +49,6 @@ class Test(unittest.TestCase):
 
     # Note that most of the tests are in the doc strings of the
     # declarations module.
-
-    def test_doctest(self):
-        doctest(self, declarations)
-
-
 
     def test_ObjectSpecification_Simple(self):
         c = C()
@@ -161,6 +156,8 @@ class Test(unittest.TestCase):
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
+    suite.addTest(DocTestSuite("zope.interface.declarations"))
+    
     return suite
 
 
