@@ -27,12 +27,17 @@ from zope.component.tests.request import Request
 
 from zope.interface import Interface, implements
 
-class I1(Interface): pass
-class I2(Interface): pass
-class I3(Interface): pass
+class I1(Interface):
+    pass
+class I2(Interface):
+    pass
+class I3(Interface):
+    pass
+
 class Comp:
     implements(I2)
     def __init__(self, context, request=None): self.context = context
+
 class Comp2:
     implements(I3)
     def __init__(self, context, request=None): self.context = context
@@ -201,7 +206,8 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getView, ob, 'foo', Request(I2))
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test), Test)
 
-        getService(None, servicenames.Presentation).provideView(I1, 'foo', I2, [Comp])
+        getService(None, servicenames.Presentation).provideView(
+            I1, 'foo', I2, [Comp])
         c = getView(ob, 'foo', Request(I2))
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
@@ -213,6 +219,93 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryView(ob, 'foo2', Request(I2), Test), Test)
 
         self.assertEquals(queryView(ob, 'foo2', Request(I1), None), None)
+
+    def testView_w_provided(self):
+        from zope.component import getView, queryView, getService
+        from zope.component.exceptions import ComponentLookupError
+
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo', Request(I1), providing=I3)
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo', Request(I2), providing=I3)
+        self.assertEquals(
+            queryView(ob, 'foo', Request(I2), Test, providing=I3),
+            Test)
+
+        getService(None, servicenames.Presentation).provideView(
+            I1, 'foo', I2, [Comp])
+
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo', Request(I1), providing=I3)
+        self.assertRaises(ComponentLookupError,
+                          getView, ob, 'foo', Request(I2), providing=I3)
+        self.assertEquals(
+            queryView(ob, 'foo', Request(I2), Test, providing=I3),
+            Test)
+
+
+        getService(None, servicenames.Presentation).provideView(
+            I1, 'foo', I2, [Comp], providing=I3)
+        
+        c = getView(ob, 'foo', Request(I2), providing=I3)
+        self.assertEquals(c.__class__, Comp)
+        self.assertEquals(c.context, ob)
+
+    def testResource(self):
+
+        from zope.component import getResource, queryResource, getService
+        from zope.component.exceptions import ComponentLookupError
+
+        r1 = Request(I1)
+        r2 = Request(I2)
+
+        self.assertRaises(ComponentLookupError, getResource, ob, 'foo', r1)
+        self.assertRaises(ComponentLookupError, getResource, ob, 'foo', r2)
+        self.assertEquals(queryResource(ob, 'foo', r2, Test), Test)
+
+        getService(None, servicenames.Presentation).provideResource(
+            'foo', I2, [Comp])
+        c = getResource(ob, 'foo', r2)
+        self.assertEquals(c.__class__, Comp)
+        self.assertEquals(c.context, r2)
+
+        self.assertRaises(ComponentLookupError, getResource, ob, 'foo2', r1)
+        self.assertRaises(ComponentLookupError, getResource, ob, 'foo2', r2)
+        self.assertEquals(queryResource(ob, 'foo2', r2, Test), Test)
+
+        self.assertEquals(queryResource(ob, 'foo2', r1, None), None)
+
+    def testResource_w_provided(self):
+        from zope.component import getResource, queryResource, getService
+        from zope.component.exceptions import ComponentLookupError
+
+        r1 = Request(I1)
+        r2 = Request(I2)
+
+        self.assertRaises(ComponentLookupError,
+                          getResource, ob, 'foo', r1, providing=I3)
+        self.assertRaises(ComponentLookupError,
+                          getResource, ob, 'foo', r2, providing=I3)
+        self.assertEquals(queryResource(ob, 'foo', r2, Test, providing=I3),
+                          Test)
+
+        getService(None, servicenames.Presentation).provideResource(
+            'foo', I2, [Comp])
+
+        self.assertRaises(ComponentLookupError,
+                          getResource, ob, 'foo', r1, providing=I3)
+        self.assertRaises(ComponentLookupError,
+                          getResource, ob, 'foo', r2, providing=I3)
+        self.assertEquals(queryResource(ob, 'foo', r2, Test, providing=I3),
+                          Test)
+
+
+        getService(None, servicenames.Presentation).provideResource(
+            'foo', I2, [Comp], providing=I3)
+        
+        c = getResource(ob, 'foo', r2, providing=I3)
+        self.assertEquals(c.__class__, Comp)
+        self.assertEquals(c.context, r2)
 
     def testViewWithContextArgument(self):
         # Basically the same as testView, but exercising the context
@@ -228,7 +321,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(queryView(ob, 'foo', Request(I2), Test, context=ob),
                           Test)
 
-        getService(None, servicenames.Presentation).provideView(I1, 'foo', I2, [Comp])
+        getService(None, servicenames.Presentation).provideView(
+            I1, 'foo', I2, [Comp])
         c = getView(ob, 'foo', Request(I2), context=ob)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.15 2003/11/21 17:09:23 jim Exp $
+$Id: interfaces.py,v 1.16 2003/12/17 10:06:59 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -168,7 +168,8 @@ class IComponentArchitecture(Interface):
 
     # Presentation service
 
-    def getView(object, name, request, context=None):
+    def getView(object, name, request, context=None,
+                providing=Interface):
         """Get a named view for a given object.
 
         The request must implement IPresentationRequest: it provides
@@ -181,7 +182,8 @@ class IComponentArchitecture(Interface):
 
         """
 
-    def queryView(object, name, request, default=None, context=None):
+    def queryView(object, name, request,
+                  default=None, context=None, providing=Interface):
         """Look for a named view for a given object.
 
         The request must implement IPresentationRequest: it provides the view
@@ -219,7 +221,7 @@ class IComponentArchitecture(Interface):
 
         """
 
-    def getResource(wrapped_object, name, request):
+    def getResource(wrapped_object, name, request, providing=Interface):
         """Get a named resource for a given request
 
         The request must implement IPresentationRequest.
@@ -231,7 +233,8 @@ class IComponentArchitecture(Interface):
 
         """
 
-    def queryResource(wrapped_object, name, request, default=None):
+    def queryResource(wrapped_object, name, request,
+                      default=None, providing=Interface):
         """Get a named resource for a given request
 
         The request must implement IPresentationRequest.

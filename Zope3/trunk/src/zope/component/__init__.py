@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.14 2003/11/21 17:09:23 jim Exp $
+$Id: __init__.py,v 1.15 2003/12/17 10:06:59 jim Exp $
 """
 
 import sys
 import warnings
-from zope.interface import moduleProvides
+from zope.interface import moduleProvides, Interface
 from zope.component.interfaces import IComponentArchitecture
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
@@ -135,19 +135,21 @@ def getFactoryInterfaces(context, name):
 
 # Presentation service
 
-def getView(object, name, request, context=None):
-    v = queryView(object, name, request, context=context)
+def getView(object, name, request, context=None, providing=Interface):
+    v = queryView(object, name, request, context=context, providing=providing)
     if v is not None:
         return v
 
     raise ComponentLookupError("Couldn't find view",
                                name, object, context, request)
 
-def queryView(object, name, request, default=None, context=None):
+def queryView(object, name, request,
+              default=None, context=None, providing=Interface):
     if context is None:
         context = object
     s = getService(context, Presentation)
-    return s.queryView(object, name, request, default=default)
+    return s.queryView(object, name, request,
+                       default=default, providing=providing)
 
 queryView = hookable(queryView)
 
@@ -165,13 +167,13 @@ def queryDefaultViewName(object, request, default=None, context=None):
     s = getService(context, Presentation)
     return s.queryDefaultViewName(object, request, default)
 
-def getResource(wrapped_object, name, request):
-    v = queryResource(wrapped_object, name, request)
+def getResource(wrapped_object, name, request, providing=Interface):
+    v = queryResource(wrapped_object, name, request, providing=providing)
     if v is not None:
         return v
 
     raise ComponentLookupError("Couldn't find resource", name, request)
 
-def queryResource(context, name, request, default=None):
+def queryResource(context, name, request, default=None, providing=Interface):
     s = getService(context, Presentation)
-    return s.queryResource(name, request, default)
+    return s.queryResource(name, request, default, providing=providing)
