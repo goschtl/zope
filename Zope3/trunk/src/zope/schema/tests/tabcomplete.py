@@ -15,7 +15,7 @@
 """Example vocabulary for tab completion."""
 
 
-from zope.schema.interfaces import ITerm, ISubsetVocabulary, IVocabulary
+from zope.schema.interfaces import ITerm, IVocabulary
 from zope.interface import implements
 
 
@@ -60,29 +60,8 @@ class CompletionVocabulary(object):
         return len(self._values)
 
     def queryForPrefix(self, prefix):
-        return SubsetCompletionVocabulary(self._match_prefix(prefix),
-                                          self)
-
-    def _match_prefix(self, prefix):
         L = [v for v in self._values if v.startswith(prefix)]
         if L:
-            return L
+            return CompletionVocabulary(L)
         else:
             raise LookupError("no entries matching prefix %r" % prefix)
-
-
-class SubsetCompletionVocabulary(CompletionVocabulary):
-    implements(ISubsetVocabulary)
-
-    def __init__(self, values, master):
-        super(SubsetCompletionVocabulary, self).__init__(values)
-        self._master = master
-
-    def getMasterVocabulary(self):
-        return self._master
-
-    def queryForPrefix(self, prefix):
-        # Never nest more than one level; cause the real
-        # master to always be returned by getMasterVocabulary()
-        return SubsetCompletionVocabulary(self._match_prefix(prefix),
-                                          self._master)

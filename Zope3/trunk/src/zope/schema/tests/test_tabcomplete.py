@@ -29,11 +29,9 @@ class TabCompletionTests(unittest.TestCase):
         subset = self.vocab.queryForPrefix("a")
         L = [term.value for term in subset]
         self.assertEqual(L, ["abc"])
-        self.assert_(subset.getMasterVocabulary() is self.vocab)
         subset = self.vocab.queryForPrefix("def")
         L = [term.value for term in subset]
         self.assertEqual(L, ["def"])
-        self.assert_(subset.getMasterVocabulary() is self.vocab)
 
     def test_failed_query(self):
         self.assertRaises(LookupError, self.vocab.queryForPrefix, "g")

@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.23 2003/06/12 17:27:59 fdrake Exp $
+$Id: interfaces.py,v 1.24 2003/06/18 19:02:46 fdrake Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -447,13 +447,6 @@ class IIterableVocabulary(Interface):
 
     def __len__():
         """Return the number of valid terms, or sys.maxint."""
-
-
-class ISubsetVocabulary(Interface):
-    """Vocabulary which represents a subset of another vocabulary."""
-
-    def getMasterVocabulary():
-        """Returns the vocabulary that this is a subset of."""
 
 
 class IVocabulary(IIterableVocabulary, IBaseVocabulary):
