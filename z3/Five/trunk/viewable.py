@@ -70,7 +70,7 @@ class Viewable:
         return self.fallback_call__(*args, **kw)
     __call__.__five_method__ = True
 
-class BrowserDefault:
+class BrowserDefault(object):
 
     implements(IBrowserDefault)
 

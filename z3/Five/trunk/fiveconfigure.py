@@ -94,9 +94,9 @@ def classTraversable(class_):
             # if there's an existing bobo_traverse hook already, use that
             # as the traversal fallback method
             setattr(class_, '__fallback_traverse__', class_.__bobo_traverse__)
-        if not hasattr(class_, '__fallback_traverse__'):
-            setattr(class_, '__fallback_traverse__',
-                    Traversable.__fallback_traverse__)
+    if not hasattr(class_, '__fallback_traverse__'):
+        setattr(class_, '__fallback_traverse__',
+                Traversable.__fallback_traverse__)
 
     setattr(class_, '__bobo_traverse__', Traversable.__bobo_traverse__)
     setattr(class_, '__five_traversable__', True)
@@ -125,9 +125,9 @@ def classViewable(class_):
         # as the fallback
         if not isFiveMethod(class_.__browser_default__):
             setattr(class_, '__fallback_default__', class_.__browser_default__)
-        if not hasattr(class_, '__fallback_default__'):
-            setattr(class_, '__fallback_default__',
-                    Viewable.__fallback_default__)
+    if not hasattr(class_, '__fallback_default__'):
+        setattr(class_, '__fallback_default__',
+                Viewable.__fallback_default__)
 
     if hasattr(class_, '__call__'):
         # Only touch __call__ if the class is already callable.
