@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.18 2003/06/30 15:52:48 jeremy Exp $\n";
+"$Id: persistence.c,v 1.19 2003/06/30 21:31:07 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -789,12 +789,12 @@ static PyMemberDef persist_members[] = {
     {NULL}
 };
 
-/* We link this module statically for convenience.  If compiled as a shared
-   library instead, some compilers don't allow addresses of Python objects
-   defined in other libraries to be used in static initializers here.  The
-   DEFERRED_ADDRESS macro is used to tag the slots where such addresses
-   appear; the module init function must fill in the tagged slots at runtime.
-   The argument is for documentation -- the macro ignores it.
+/* This module is compiled as a shared library.  Some compilers don't
+   allow addresses of Python objects defined in other libraries to be
+   used in static initializers here.  The DEFERRED_ADDRESS macro is
+   used to tag the slots where such addresses appear; the module init
+   function must fill in the tagged slots at runtime.  The argument is
+   for documentation -- the macro ignores it.
 */
 #define DEFERRED_ADDRESS(ADDR) 0
 
@@ -846,7 +846,9 @@ static PyTypeObject PyPersist_Type = {
 /* PyPersist_MetaType / PersistentMetaClass exists to work around
    problems with the way Python 2.2 determines whether a class's
    instances will get an __dict__, or, more concretely, what the value
-   of tp_dictoffset should be.
+   of tp_dictoffset should be.  The problem is that types with a
+   custom tp_setattro field are not given an __dict__.  The work-around
+   requires a metaclass.
 
    The metaclass uses a custom tp_alloc function PyPersist_Alloc() to
    set tp_dictoffset to -1.  This assignment prevents type_new() from
