@@ -15,10 +15,10 @@
 
 Encapsulation of date/time values
 
-$Id: datetimeutils.py,v 1.6 2003/02/12 21:26:28 tseaver Exp $
+$Id: datetimeutils.py,v 1.7 2003/04/11 18:38:34 fdrake Exp $
 """
 
-__version__='$Revision: 1.6 $'[11:-2]
+__version__='$Revision: 1.7 $'[11:-2]
 
 import math
 import re
@@ -292,7 +292,7 @@ class _cache:
         try:   n=self._zmap[k.lower()]
         except KeyError:
             if numericTimeZoneMatch(k) == None:
-                raise 'DateTimeError','Unrecognized timezone: %s' % k
+                raise DateTimeError('Unrecognized timezone: %s' % k)
             return k
         try:
             return self._d[n]
