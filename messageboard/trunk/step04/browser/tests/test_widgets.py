@@ -30,20 +30,20 @@ class HTMLSourceWidgetTest(TextAreaWidgetTest):
         widget = self._widget
         widget.context.allowed_tags=('h1','pre')
         self.assertEqual(u'<h1>Blah</h1>',
-                         widget._convert(u'<h1>Blah</h1>')) 
+                         widget._toFieldValue(u'<h1>Blah</h1>')) 
         self.assertEqual(u'<pre>Blah</pre>',
-                         widget._convert(u'<pre>Blah</pre>') )
+                         widget._toFieldValue(u'<pre>Blah</pre>') )
         self.assertEqual(u'<h1><pre>Blah</pre></h1>',
-                         widget._convert(u'<h1><pre>Blah</pre></h1>')) 
+                         widget._toFieldValue(u'<h1><pre>Blah</pre></h1>')) 
         self.assertEqual(u'<h1 attr=".">Blah</h1>',
-                         widget._convert(u'<h1 attr=".">Blah</h1>')) 
+                         widget._toFieldValue(u'<h1 attr=".">Blah</h1>')) 
 
         self.assertEqual(u'Blah',
-                         widget._convert(u'<h2>Blah</h2>')) 
+                         widget._toFieldValue(u'<h2>Blah</h2>')) 
         self.assertEqual(u'<pre>Blah</pre>',
-                         widget._convert(u'<h2><pre>Blah</pre></h2>')) 
+                         widget._toFieldValue(u'<h2><pre>Blah</pre></h2>')) 
         self.assertEqual(u'Blah',
-                         widget._convert(u'<h2 a="b">Blah</h2>')) 
+                         widget._toFieldValue(u'<h2 a="b">Blah</h2>')) 
 
 
     def test_ForbiddenTagsConvert(self):
@@ -51,20 +51,20 @@ class HTMLSourceWidgetTest(TextAreaWidgetTest):
         widget.context.forbidden_tags=('h2','pre')
 
         self.assertEqual(u'<h1>Blah</h1>',
-                         widget._convert(u'<h1>Blah</h1>')) 
+                         widget._toFieldValue(u'<h1>Blah</h1>')) 
         self.assertEqual(u'<h1 a="b">Blah</h1>',
-                         widget._convert(u'<h1 a="b">Blah</h1>')) 
+                         widget._toFieldValue(u'<h1 a="b">Blah</h1>')) 
 
         self.assertEqual(u'Blah',
-                         widget._convert(u'<h2>Blah</h2>')) 
+                         widget._toFieldValue(u'<h2>Blah</h2>')) 
         self.assertEqual(u'Blah',
-                         widget._convert(u'<pre>Blah</pre>')) 
+                         widget._toFieldValue(u'<pre>Blah</pre>')) 
         self.assertEqual(u'Blah',
-                         widget._convert(u'<h2><pre>Blah</pre></h2>')) 
+                         widget._toFieldValue(u'<h2><pre>Blah</pre></h2>')) 
         self.assertEqual(u'Blah',
-                         widget._convert(u'<h2><pre>Blah</pre></h2>')) 
+                         widget._toFieldValue(u'<h2><pre>Blah</pre></h2>')) 
         self.assertEqual(u'<h1>Blah</h1>',
-                         widget._convert(u'<h1><pre>Blah</pre></h1>')) 
+                         widget._toFieldValue(u'<h1><pre>Blah</pre></h1>')) 
 
 
 def test_suite():
