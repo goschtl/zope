@@ -17,9 +17,10 @@ This module provides a function, asStructuredText, for rendering an
 interface as structured text.
 
 Revision information:
-$Id: document.py,v 1.3 2003/03/13 18:49:14 alga Exp $
+$Id: document.py,v 1.4 2003/04/14 08:31:00 jim Exp $
 """
 
+import zope.interface
 from string import maketrans
 
 def asStructuredText(I, munge=0):
@@ -34,10 +35,14 @@ def asStructuredText(I, munge=0):
     if I.getDoc():
         outp(_justify_and_indent(_trim_doc_string(I.getDoc()), level)+ "\n\n")
 
-    if I.getBases():
+    bases = [base
+             for base in I.getBases()
+             if base is not zope.interface.Interface
+             ]
+    if bases:
         outp((" " * level) + "This interface extends:\n\n")
         level = level + 1
-        for b in I.getBases():
+        for b in bases:
             item = "o %s" % b.getName()
             outp(_justify_and_indent(_trim_doc_string(item), level, munge)
                  + "\n\n")
