@@ -17,10 +17,12 @@ $Id$
 
 __metaclass__ = type
 
+from datetime import datetime
+
+from zope.interface import implements
+
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.datetimeutils import parseDatetimetz
-from datetime import datetime
-from zope.interface import implements
 
 class SimpleProperty:
 
