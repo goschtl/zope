@@ -39,7 +39,6 @@ from Products.CMFCore.tests.base.tidata import STI_SCRIPT
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.TypesTool import ScriptableTypeInformation as STI
 from Products.CMFCore.TypesTool import TypesTool
-from Products.CMFCore.utils import _getViewFor
 
 
 class TypesToolTests(SecurityTest):
@@ -58,30 +57,6 @@ class TypesToolTests(SecurityTest):
         del filters[0]
 
         SecurityTest.tearDown(self)
-
-    def test_processActions( self ):
-        """
-        Are the correct, permitted methods returned for actions?
-        """
-        site = self.site
-        portal = site._setObject( 'portal', PortalFolder(id='portal') )
-        portal.manage_addProduct = { 'FooProduct' : DummyFactory(portal) }
-        portal.invokeFactory( 'Dummy Content', 'actions_dummy' )
-        dummy = portal._getOb( 'actions_dummy' )
-
-        # so we can traverse to it:
-        dummy.view = DummyObject("view")
-        dummy.view2 = DummyObject("view2")
-        dummy.edit = DummyObject("edit")
-
-        default_view = dummy()
-        custom_view = _getViewFor( dummy, view='view2' )()
-        unpermitted_view = _getViewFor( dummy, view='edit' )()
-
-        self.failUnlessEqual(default_view, 'view')
-        self.failUnlessEqual(custom_view, 'view2')
-        self.failIf(unpermitted_view == 'edit')
-        self.failUnlessEqual(unpermitted_view, 'view')
 
     def test_allMetaTypes(self):
         """
@@ -242,30 +217,6 @@ class TypeInfoTests(TestCase):
         self.failUnless( 'edit' in visible )
         self.failUnless( 'objectproperties' in visible )
         self.failIf( 'slot' in visible )
-
-    def test_getActionById( self ):
-        ti = self._makeInstance( 'Foo' )
-        marker = []
-        self.assertEqual( id( ti.getActionById( 'view', marker ) )
-                        , id( marker ) )
-        self.assertRaises( ValueError, ti.getActionById, 'view' )
-
-        ti = self._makeInstance( **FTIDATA_ACTIONS[0] )
-        self.assertEqual( id( ti.getActionById( 'foo', marker ) )
-                        , id( marker ) )
-        self.assertRaises( ValueError, ti.getActionById, 'foo' )
-
-        action = ti.getActionById( 'view' )
-        self.assertEqual( action, '' )
-
-        action = ti.getActionById( 'edit' )
-        self.assertEqual( action, 'foo_edit' )
-
-        action = ti.getActionById( 'objectproperties' )
-        self.assertEqual( action, 'foo_properties' )
-
-        action = ti.getActionById( 'slot' )
-        self.assertEqual( action, 'foo_slot' )
 
     def test_MethodAliases_methods(self):
         ti = self._makeInstance( **FTIDATA_CMF15[0] )

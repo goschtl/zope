@@ -146,23 +146,11 @@ def _checkPermission(permission, obj):
 
     return context.user.allowed(obj, roles)
 
-security.declarePrivate('_verifyActionPermissions')
-def _verifyActionPermissions(obj, action):
-    # _verifyActionPermissions is deprecated and will be removed in CMF 1.6.
-    # This was only used by the deprecated _getViewFor function.
-    pp = action.getPermissions()
-    if not pp:
-        return 1
-    for p in pp:
-        if _checkPermission(p, obj):
-            return 1
-    return 0
-
 security.declarePublic( 'getActionContext' )
 def getActionContext( self ):
-    # getActionContext is deprecated and will be removed in CMF 1.6.
-    # This is only used by the deprecated _getViewFor function and the
-    # deprecated getActionById method.
+    # getActionContext is deprecated and will be removed as soon as the
+    # backwards compatibility code in TypeInformation._guessMethodAliases is
+    # removed.
     data = { 'object_url'   : ''
            , 'folder_url'   : ''
            , 'portal_url'   : ''
@@ -175,46 +163,6 @@ def getActionContext( self ):
            , 'member'       : None
            }
     return getEngine().getContext( data )
-
-security.declarePrivate('_getViewFor')
-def _getViewFor(obj, view='view'):
-    warn('__call__() and view() methods using _getViewFor() as well as '
-         '_getViewFor() itself are deprecated and will be removed in CMF 1.6. '
-         'Bypass these methods by defining \'(Default)\' and \'view\' Method '
-         'Aliases.',
-         DeprecationWarning)
-    ti = obj.getTypeInfo()
-
-    if ti is not None:
-
-        context = getActionContext( obj )
-        actions = ti.listActions()
-
-        for action in actions:
-            if action.getId() == view:
-                if _verifyActionPermissions( obj, action ):
-                    target = action.action(context).strip()
-                    if target.startswith('/'):
-                        target = target[1:]
-                    __traceback_info__ = ( ti.getId(), target )
-                    return obj.restrictedTraverse( target )
-
-        # "view" action is not present or not allowed.
-        # Find something that's allowed.
-        for action in actions:
-            if _verifyActionPermissions(obj, action):
-                target = action.action(context).strip()
-                if target.startswith('/'):
-                    target = target[1:]
-                __traceback_info__ = ( ti.getId(), target )
-                return obj.restrictedTraverse( target )
-
-        raise AccessControl_Unauthorized( 'No accessible views available for '
-                                    '%s' % '/'.join( obj.getPhysicalPath() ) )
-    else:
-        raise NotFound('Cannot find default view for "%s"' %
-                            '/'.join(obj.getPhysicalPath()))
-
 
 # If Zope ever provides a call to getRolesInContext() through
 # the SecurityManager API, the method below needs to be updated.
