@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.20 2003/07/28 22:22:21 jim Exp $
+$Id: _bootstrapfields.py,v 1.21 2003/08/13 21:19:30 garrett Exp $
 """
 __metaclass__ = type
 
@@ -44,9 +44,9 @@ class Field(Attribute):
     _type = None
     context = None
 
-    # if input for this Field is missing, and that's ok, then this is the
-    # value to use
+    # If a field has no assigned value, it will be set to missing_value.
     missing_value = None
+    _missing_value_marker = object()
 
     # Note that the "order" field has a dual existance:
     # 1. The class variable Field.order is used as a source for the
@@ -62,7 +62,7 @@ class Field(Attribute):
     def __init__(self, __name__='', __doc__='',
                  title=u'', description=u'',
                  required=True, readonly=False, constraint=None, default=None,
-                 ):
+                 missing_value=_missing_value_marker):
         """Pass in field values as keyword parameters.
 
 
@@ -132,6 +132,9 @@ class Field(Attribute):
         # Keep track of the order of field definitions
         Field.order += 1
         self.order = Field.order
+
+        if missing_value is not self._missing_value_marker:
+            self.missing_value = missing_value
 
     def bind(self, object):
         clone = self.__class__.__new__(self.__class__)
