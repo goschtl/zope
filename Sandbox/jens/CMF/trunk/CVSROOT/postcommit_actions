@@ -160,6 +160,9 @@ def detach(args):
     cmd = (("( exec 1> %s 2>&1; " + string.join(doctored_args, " ") +  " &)")
            % OUTPUT_LOG)
     
+    if VERBOSE:
+        complain("Reexecing detached, cmd:\n\t%s\n", cmd)
+
     os.system(cmd)
     os._exit(0)
 
@@ -170,6 +173,8 @@ def find_entries(repo):
     for t in traffic_table.table:
         if re.search(t[1], repo):
             got.append(t)
+    if VERBOSE:
+        complain("Resolved table entry:\n  %s\n", got)
     return got
 
 def do_mail(name, repo, addrs, subjs):
@@ -188,9 +193,11 @@ def do_mail(name, repo, addrs, subjs):
                                      string.join(addrs, ",")))
     if MSGFILENM:
         cmd = cmd + "< %s" % MSGFILENM
+
     if VERBOSE:
-        complain("do_mail doing command:\n\t%s\n", cmd)
+        complain("Doing mail cmd:\n\t%s\n", cmd)
     os.system(cmd)
+
     if MSGFILENM:
         os.unlink(MSGFILENM)
 
@@ -233,20 +240,25 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     except TypeError:
         repodir = remote['repodir']
 
-    os.system("%s%s%s %s/%s/ %s:%s"
-                    % ((VERBOSE and "set -x; ") or "",
-                       (DRYRUN and "echo ") or "",
-                       cmd,
-                       os.environ["CVSROOT"], repo,
-                       remote['host'], repodir))
+    if VERBOSE:
+        complain("Doing rsync cmd:\n\t%s\n", cmd)
+
+    os.system("%s%s%s %s/%s/ %s:%s" % ((VERBOSE and "set -x; ") or "",
+                                       (DRYRUN and "echo ") or "",
+                                       cmd,
+                                       os.environ["CVSROOT"], repo,
+                                       remote['host'], repodir))
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
     if not fnames:
         fnames = ["."]
-    os.system("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
-                                          (DRYRUN and "echo ") or "",
-                                          string.join(fnames, " ")))
+    cmd = ("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
+                                 (DRYRUN and "echo ") or "",
+                                 string.join(fnames, " ")))
+    if VERBOSE:
+        complain("Reexecing, cmd:\n\t%s\n", cmd)
+    os.system(cmd)
 
 def grok_file(s):
     """Separate "file,old-version,new-version"."""
