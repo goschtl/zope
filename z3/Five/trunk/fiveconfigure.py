@@ -73,13 +73,7 @@ def isFiveMethod(m):
 
 def classTraversable(class_):
     # If a class already has this attribute, it means it is either a
-    # subclass of api.Viewable or was already processed with this
-    # directive; in either case, do nothing... except in the case were
-    # the class overrides the attribute instead of getting it from
-    # a base class. In this case, we suppose that the class probably
-    # didn't bother with the base classes attribute anyway.
-    # If a class already has this attribute, it means it is either a
-    # subclass of api.Traversable or was already processed with this
+    # subclass of Traversable or was already processed with this
     # directive; in either case, do nothing... except in the case were
     # the class overrides __bobo_traverse__ instead of getting it from
     # a base class. In this case, we suppose that the class probably
@@ -112,7 +106,7 @@ def traversable(_context, class_):
 
 def classDefaultViewable(class_):
     # If a class already has this attribute, it means it is either a
-    # subclass of api.Viewable or was already processed with this
+    # subclass of DefaultViewable or was already processed with this
     # directive; in either case, do nothing... except in the case were
     # the class overrides the attribute instead of getting it from
     # a base class. In this case, we suppose that the class probably
@@ -137,7 +131,7 @@ def classDefaultViewable(class_):
 
 def defaultViewable(_context, class_):
     _context.action(
-        discriminator = ('five:viewable', class_,),
+        discriminator = ('five:defaultViewable', class_,),
         callable = classDefaultViewable,
         args = (class_,)
         )
@@ -147,7 +141,7 @@ def viewable(_context, class_):
     # should find all instances easily
     warnings.warn(
         'The five:viewable directive has been deprecated. '
-        'Please use the five:traversable directive instead',
+        'Please use the five:traversable directive instead.',
         DeprecationWarning)
 
     _context.action(
