@@ -8,7 +8,7 @@ class VProposal(persistent.Persistent):
     
     zope.interface.implements(IVProposal)
     
-    def __init__(self,title='',usecase='',concept='',todo='',issues=''):
+    def __init__(self,title=u'',usecase=u'',concept=u'',todo=u'',issues=u''):
         self.title = title
         self.usecase = usecase
         self.concept = concept
@@ -18,7 +18,7 @@ class VProposal(persistent.Persistent):
     def setTitle(self, title):
         """Set bug title."""
         dc = IZopeDublinCore(self)
-        dc.title = title
+        dc.title = unicode(title)
 
     def getTitle(self):
         """Get bug title."""

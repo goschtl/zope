@@ -18,7 +18,7 @@
     schema="..interfaces.IVProposal"
     label="Add an Proposal"
     content_factory="..vproposal.VProposal"
-    arguments="title usecase concept todo issues"
+    fields = "title usecase"
     name="AddProposal.html"
     permission="zope.ManageContent"
     />

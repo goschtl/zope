@@ -9,13 +9,13 @@
         <td tal:content="context/usecase">What Situations we will solve</td>
         </tr>
     <tr><th i18n:translate="">Concept</th>
-        <td tal:content="context/concept">Technical Concept</td>
+        <td tal:content="context/concept | nothing">Technical Concept</td>
         </tr>
     <tr><th i18n:translate="">Todo</th>
-        <td tal:content="context/todo">Steps to go</td>
+        <td tal:content="context/todo | nothing">Steps to go</td>
         </tr>
     <tr><th i18n:translate="">Issues</th>
-        <td tal:content="context/issues">Open Issues</td>
+        <td tal:content="context/issues | nothing">Open Issues</td>
         </tr>
   </table>
 <!-- * -->

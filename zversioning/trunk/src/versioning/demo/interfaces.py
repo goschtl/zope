@@ -12,3 +12,4 @@ class IVProposal(zope.interface.Interface):
     concept = Text(title=_("Concept"))
     todo = Text(title=_("Todo"))
     issues = Text(title=_("Open Issues"))
+    
