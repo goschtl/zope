@@ -22,7 +22,7 @@ import re
 import rfc822
 import sys
 
-usage = """usage: \%prog <options> directory
+usage = """usage: %prog <options> directory
 
 Convert an http tcpwatch recorded sesssion to a doctest file, which is
 written to standard output.
