@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.5 2003/06/07 06:37:26 stevea Exp $
+$Id: index.py,v 1.6 2003/06/22 16:08:14 mgedmin Exp $
 """
 
 from zope.component import getService
@@ -34,7 +34,7 @@ from zope.app.interfaces.services.hub import \
      IObjectUnregisteredHubEvent, \
      IObjectModifiedHubEvent
 
-from zope.app.interfaces.index.field  import IUIFieldIndex
+from zope.app.interfaces.index.field import IUIFieldIndex
 
 class FieldIndex(FieldIndexWrapper):
 
@@ -50,7 +50,7 @@ class FieldIndex(FieldIndexWrapper):
         value = getattr(object, self._indexed_attr, None)
         if value is None: return None
 
-        if callable(value): 
+        if callable(value):
             try: value = value()
             except: return None
 
