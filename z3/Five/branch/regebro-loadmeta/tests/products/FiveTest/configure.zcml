@@ -426,7 +426,7 @@
        can be imported -->
 
   <five:parrot
-      class=".browser.FancyContentView"
+      class=".metaconfigure.NorwegianBlue"
       name="Polly"
       />
       
