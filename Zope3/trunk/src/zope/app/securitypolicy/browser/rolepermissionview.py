@@ -33,7 +33,7 @@ class RolePermissionView(object):
         roles = getattr(self, '_roles', None)
         if roles is None:
             roles = [
-                (translate(role.title, context=self.request).strip(), role)
+                (translate(role.title, context=self.request, default=role.title).strip(), role)
                 for name, role in zapi.getUtilitiesFor(IRole)]
             roles.sort()
             roles = self._roles = [role for name, role in roles]
