@@ -79,12 +79,12 @@
 
   <page
       name="index.html"
-      for="zope.app.interfaces.content.i18nfile.II18nFile"
+      for="zope.app.interfaces.content.i18n.II18nFile"
       permission="zope.View"
       class="zope.app.browser.content.i18n.I18nFileView" />
 
   <pages
-      for="zope.app.interfaces.content.i18nfile.II18nFile"
+      for="zope.app.interfaces.content.i18n.II18nFile"
       permission="zope.View"
       class="zope.app.browser.content.i18n.I18nFileEdit">
 
@@ -93,15 +93,15 @@
 
   </pages>
 
-  <menuItems menu="zmi_views"
-      for="zope.app.interfaces.content.i18nfile.II18nFile">
+  <menuItems 
+      menu="zmi_views"
+      for="zope.app.interfaces.content.i18n.II18nFile">
 
       <!-- Keep original edit view, for now -->
       <menuItem title="Edit" action="editForm.html" />
 
       <!-- Supress the upload view from file -->
-      <menuItem title="Upload" action="editForm.html"
-                        filter="python: 0" />
+      <menuItem title="Upload" action="editForm.html" filter="python: 0" />
 
   </menuItems>
 
@@ -116,7 +116,7 @@
 <!-- Image -->
 
   <editform
-      schema="zope.app.content.image.IImage"
+      schema="zope.app.interfaces.content.image.IImage"
       name="upload.html"
       menu="zmi_views" title="Upload"
       label="Upload an image"
@@ -127,7 +127,7 @@
 
   <page
       name="index.html"
-      for="zope.app.content.image.IImage"
+      for="zope.app.interfaces.content.image.IImage"
       permission="zope.View"
       allowed_attributes="__call__ tag"
       class="zope.app.browser.content.image.ImageData"
@@ -143,7 +143,7 @@
 
   <icon
       name="zmi_icon"
-      for="zope.app.content.image.IImage"
+      for="zope.app.interfaces.content.image.IImage"
       file="image_icon.gif"
       />
 
@@ -167,25 +167,25 @@
 
   <page
       name="index.html"
-      for="zope.app.interfaces.content.i18nimage.II18nImage"
+      for="zope.app.interfaces.content.i18n.II18nImage"
       permission="zope.View"
       allowed_attributes="__call__ tag"
       class="zope.app.browser.content.i18nimage.I18nImageData"
       />
 
   <pages
-      for="zope.app.content.i18nimage.II18nImage"
+      for="zope.app.interfaces.content.i18n.II18nImage"
       permission="zope.ManageContent"
       class="zope.app.browser.content.i18nimage.I18nImageEdit">
 
       <page name="upload.html" template="i18nimageedit.pt" />
       <page name="uploadAction.html" attribute="action" />
 
-      </pages>
+  </pages>
 
   <menuItems
       menu="zmi_views"
-      for="zope.app.content.i18nimage.II18nImage"
+      for="zope.app.interfaces.content.i18n.II18nImage"
       >
 
       <!-- Keep the old "edit" form -->
@@ -210,14 +210,14 @@
 
   <page
       name="index.html"
-      for="zope.app.content.zpt.IZPTPage"
+      for="zope.app.interfaces.content.zpt.IZPTPage"
       class="zope.app.browser.content.zpt.ZPTPageEval"
       attribute="index"
       permission="zope.View" />
 
   <page
       name="source.html"
-      for="zope.app.content.zpt.IZPTPage"
+      for="zope.app.interfaces.content.zpt.IZPTPage"
       class="zope.app.content.zpt.ZPTSourceView"
       attribute="__call__"
       permission="zope.ManageContent" />
@@ -238,8 +238,8 @@
       />
 
   <editform
-      for="zope.app.content.zpt.IZPTPage"
-      schema="zope.app.content.zpt.IZPTPage"
+      for="zope.app.interfaces.content.zpt.IZPTPage"
+      schema="zope.app.interfaces.content.zpt.IZPTPage"
       name="edit.html"
       label="Edit a ZPT page"
       fields="source expand"
@@ -247,8 +247,8 @@
       menu="zmi_views" title="Edit"/>
 
   <editform
-      for="zope.app.content.zpt.IZPTPage"
-      schema="zope.app.content.zpt.IZPTPage"
+      for="zope.app.interfaces.content.zpt.IZPTPage"
+      schema="zope.app.interfaces.content.zpt.IZPTPage"
       name="inlineCode.html"
       label="Inline Code"
       fields="evaluateInlineCode"
@@ -257,7 +257,7 @@
       menu="zmi_views" title="Inline Code"/>
 
   <page
-      for="zope.app.content.zpt.IZPTPage"
+      for="zope.app.interfaces.content.zpt.IZPTPage"
       name="preview.html"
       menu="zmi_views" title="Preview"
       template="preview.pt"
@@ -265,7 +265,7 @@
 
   <icon 
       name="zmi_icon"
-      for="zope.app.content.zpt.IZPTPage" 
+      for="zope.app.interfaces.content.zpt.IZPTPage" 
       file="zpt.gif" />
 
 
@@ -357,20 +357,20 @@
 
   <page
       name="index.html"
-      for="zope.app.content.dtmlpage.IDTMLPage"
+      for="zope.app.interfaces.content.dtmlpage.IDTMLPage"
       permission="zope.View"
       class="zope.app.browser.content.dtmlpageeval.DTMLPageEval"
       attribute="index" />
 
   <editform
-      schema="zope.app.content.dtmlpage.IDTMLPage"
+      schema="zope.app.interfaces.content.dtmlpage.IDTMLPage"
       name="edit.html"
       menu="zmi_views"
       label="Edit a DTML page"
       permission="zope.ManageContent" />
 
   <page
-      for="zope.app.content.dtmlpage.IDTMLPage"
+      for="zope.app.interfaces.content.dtmlpage.IDTMLPage"
       name="preview.html"
       menu="zmi_views" title="Preview"
       template="preview.pt"
@@ -378,7 +378,7 @@
 
   <icon
       name="zmi_icon"
-      for="zope.app.content.dtmlpage.IDTMLPage"
+      for="zope.app.interfaces.content.dtmlpage.IDTMLPage"
       file="dtml.gif" />
 
 
