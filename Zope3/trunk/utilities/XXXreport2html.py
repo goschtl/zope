@@ -15,7 +15,7 @@
 
 Creates a HTML file from a XXXReport file.
 
-$Id: XXXreport2html.py,v 1.1 2002/12/07 16:52:08 ctheune Exp $
+$Id: XXXreport2html.py,v 1.2 2002/12/07 17:37:35 zagy Exp $
 """
 
 import sys
@@ -54,15 +54,15 @@ for x in inputfile.readlines():
         x = "-".join(splitted[2:])
     current[2].append(x)
 
-outputfile.write("""<html><head><title>XXX-Comment report for Zope 3</title>
+outputfile.write("""<html><head><title>XXX/TODO-Comment report for Zope 3</title>
 </head>
 
 <body>
-<h1>Zope 3 - Developer report tools: XXX comments</h1>
+<h1>Zope 3 - Developer report tools: XXX/TODO comments</h1>
 <hr>
 <h3>Summary</h3>
 <p>
- There are currently %(commentcount)s XXX comments.
+ There are currently %(commentcount)s XXX/TODO comments.
 </p>
 <hr/>
 <h3>Listing</h3>

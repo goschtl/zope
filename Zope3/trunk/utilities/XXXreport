@@ -1,12 +1,34 @@
 #!/bin/bash
-TMPFILE=/tmp/xxxtmp.txt
-TARGET=XXXreport.html
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+# $Id: XXXreport,v 1.2 2002/12/07 17:37:35 zagy Exp $
 
-rm $TARGET
-echo "Looking for XXX comments"
-grep "# XXX" ../* -niIr -A 3 > $TMPFILE
-echo "Beautifying XXX comments"
-python2.2 XXXreport2html.py $TMPFILE $TARGET
-rm $TMPFILE
-echo "Done."
+# This script assumes it is located in the utilities directory of Zope3
+ 
+
+PYTHON=`which python2.2`
+
+PATTERN='# ?(XXX|TODO)'
+TMPFILE=`mktemp` 
+TARGET=${1:-XXXreport.html}
+ZOPEBASE=`dirname $0`/../
+BASE=`dirname $0`
+
+# find also finds hidden files
+find $ZOPEBASE -! -name "*.pyc" -print0 | \
+    xargs -0 grep -niIr -A 3 -E "$PATTERN" | \
+    $PYTHON $BASE/XXXreport2html.py /dev/stdin $TARGET >/dev/null
+    
+rm -f $TMPFILE
 
