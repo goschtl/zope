@@ -13,9 +13,8 @@
 ##############################################################################
 """
 
-$Id: CommonFTPActivityLogger.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: CommonFTPActivityLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
-
 
 import time
 import sys
@@ -23,7 +22,6 @@ import sys
 from Zope.Server.Logger.FileLogger import FileLogger
 from Zope.Server.Logger.ResolvingLogger import ResolvingLogger
 from Zope.Server.Logger.UnresolvingLogger import UnresolvingLogger
-
 
 class CommonFTPActivityLogger:
     """Outputs hits in common HTTP log format.
@@ -47,10 +45,10 @@ class CommonFTPActivityLogger:
 
         now = time.localtime(time.time())
 
-        message = '%s [%s] "%s %s"' %(task.channel.username,
-                                      time.strftime('%Y/%m/%d %H:%M', now),
-                                      task.m_name[4:].upper(),
-                                      task.channel.cwd,
-                                      )
+        message = '%s [%s] "%s %s"' % (task.channel.username,
+                                       time.strftime('%Y/%m/%d %H:%M', now),
+                                       task.m_name[4:].upper(),
+                                       task.channel.cwd,
+                                       )
 
-        self.output.log('127.0.0.1', message)
+        self.output.logRequest('127.0.0.1', message)

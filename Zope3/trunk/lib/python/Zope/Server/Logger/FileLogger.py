@@ -13,75 +13,71 @@
 ##############################################################################
 """
 
-$Id: FileLogger.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: FileLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
 from types import StringType
 
-from ILogger import ILogger
-
+from IMessageLogger import IMessageLogger
 
 class FileLogger:
     """Simple File Logger
     """
 
-    __implements__ = ILogger
+    __implements__ = IMessageLogger
 
-
-    def __init__ (self, file, flush=1, mode='a'):
+    def __init__(self, file, flush=1, mode='a'):
         """pass this either a path or a file object."""
         if type(file) is StringType:
             if (file == '-'):
                 import sys
                 self.file = sys.stdout
             else:
-                self.file = open (file, mode)
+                self.file = open(file, mode)
         else:
             self.file = file
         self.do_flush = flush
 
 
-    def __repr__ (self):
+    def __repr__(self):
         return '<file logger: %s>' % self.file
 
 
-    def write (self, data):
-        self.file.write (data)
+    def write(self, data):
+        self.file.write(data)
         self.maybe_flush()
 
 
-    def writeline (self, line):
-        self.file.writeline (line)
+    def writeline(self, line):
+        self.file.writeline(line)
         self.maybe_flush()
 
 
-    def writelines (self, lines):
-        self.file.writelines (lines)
+    def writelines(self, lines):
+        self.file.writelines(lines)
         self.maybe_flush()
 
 
-    def maybe_flush (self):
+    def maybe_flush(self):
         if self.do_flush:
             self.file.flush()
 
-
-    def flush (self):
+    def flush(self):
         self.file.flush()
 
-
-    def softspace (self, *args):
+    def softspace(self, *args):
         pass
 
 
     ############################################################
     # Implementation methods for interface
-    # Zope.Server.Logger.ILogger
+    # Zope.Server.Logger.IMessageLogger
 
-    def log(self, message):
-        'See Zope.Server.Logger.ILogger.ILogger'
+    def logMessage(self, message):
+        'See Zope.Server.Logger.IMessageLogger.IMessageLogger'
         if message[-1] not in ('\r', '\n'):
-            self.write (message + '\n')
+            self.write(message + '\n')
         else:
-            self.write (message)
+            self.write(message)
 
     #
     ############################################################

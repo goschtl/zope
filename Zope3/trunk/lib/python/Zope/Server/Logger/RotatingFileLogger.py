@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: RotatingFileLogger.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: RotatingFileLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
 
 import time
@@ -36,23 +36,20 @@ class RotatingFileLogger(FileLogger):
 
     __implements__ = FileLogger.__implements__
 
-
-    def __init__ (self, file, freq=None, maxsize=None, flush=1, mode='a'):
+    def __init__(self, file, freq=None, maxsize=None, flush=1, mode='a'):
         self.filename = file
         self.mode = mode
-        self.file = open (file, mode)
+        self.file = open(file, mode)
         self.freq = freq
         self.maxsize = maxsize
         self.rotate_when = self.next_backup(self.freq)
         self.do_flush = flush
 
-
-    def __repr__ (self):
+    def __repr__(self):
         return '<rotating-file logger: %s>' % self.file
 
-
     # We back up at midnight every 1) day, 2) monday, or 3) 1st of month
-    def next_backup (self, freq):
+    def next_backup(self, freq):
         (yr, mo, day, hr, min, sec, wd, jday, dst) = \
              time.localtime(time.time())
         if freq == 'daily':
@@ -65,14 +62,12 @@ class RotatingFileLogger(FileLogger):
         else:
             return None                  # not a date-based backup
 
-
-    def maybe_flush (self):              # rotate first if necessary
+    def maybe_flush(self):              # rotate first if necessary
         self.maybe_rotate()
         if self.do_flush:                # from file_logger()
             self.file.flush()
 
-
-    def maybe_rotate (self):
+    def maybe_rotate(self):
         if self.freq and time.time() > self.rotate_when:
             self.rotate()
             self.rotate_when = self.next_backup(self.freq)
@@ -83,19 +78,18 @@ class RotatingFileLogger(FileLogger):
             except os.error:             # file not found, probably
                 self.rotate()            # will create a new file
 
-
-    def rotate (self):
-        (yr, mo, day, hr, min, sec, wd, jday, dst) = \
-             time.localtime(time.time())
+    def rotate(self):
+        yr, mo, day, hr, min, sec, wd, jday, dst = time.localtime(time.time())
         try:
             self.file.close()
             newname = '%s.ends%04d%02d%02d' % (self.filename, yr, mo, day)
             try:
                 open(newname, "r").close()      # check if file exists
                 newname = newname + "-%02d%02d%02d" % (hr, min, sec)
-            except:                             # YEARMODY is unique
+            except IOError:     # concatenation of YEAR MO DY is unique
                 pass
             os.rename(self.filename, newname)
             self.file = open(self.filename, self.mode)
-        except:
+        except IOError:
             pass
+

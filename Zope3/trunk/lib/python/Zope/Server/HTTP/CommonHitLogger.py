@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: CommonHitLogger.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: CommonHitLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
 
 import time
@@ -24,15 +24,16 @@ from Zope.Server.Logger.FileLogger import FileLogger
 from Zope.Server.Logger.ResolvingLogger import ResolvingLogger
 from Zope.Server.Logger.UnresolvingLogger import UnresolvingLogger
 
-
 class CommonHitLogger:
     """Outputs hits in common HTTP log format.
     """
 
     def __init__(self, logger_object=None, resolver=None):
         if logger_object is None:
+            # logger_object is an IMessageLogger
             logger_object = FileLogger(sys.stdout)
 
+        # self.output is an IRequestLogger
         if resolver is not None:
             self.output = ResolvingLogger(resolver, logger_object)
         else:
@@ -86,7 +87,7 @@ class CommonHitLogger:
         user_agent = req_headers.get('USER_AGENT', '')
         referer = req_headers.get('REFERER', '')
 
-        self.output.log(
+        self.output.logRequest(
             task.channel.addr[0],
             ' - %s [%s] "%s" %s %d "%s" "%s"\n' % (
                 user_name,

@@ -13,16 +13,16 @@
 ##############################################################################
 """
 
-$Id: ILogger.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: IRequestLogger.py,v 1.1 2002/11/08 14:34:58 stevea Exp $
 """
 
 from Interface import Interface
 
 
-class ILogger(Interface):
-    """This interface describes the methods any Logging object has to
-       implement.
+class IRequestLogger(Interface):
+    """This interface describes a requets logger, which logs
+    ip addresses and messages.
     """
 
-    def log(message):
-        """Logs the passed message at the appropriate place."""
+    def logRequest(ip, message):
+        """Logs the ip address and message at the appropriate place."""

@@ -15,7 +15,7 @@
 This server uses asyncore to accept connections and do initial
 processing but threads to do work.
 
-$Id: HTTPTask.py,v 1.2 2002/06/10 23:29:35 jim Exp $
+$Id: HTTPTask.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
 
 import socket
@@ -26,13 +26,11 @@ from http_date import build_http_date
 from Zope.Server.IHeaderOutput import IHeaderOutput
 from Zope.Server.ITask import ITask
 
-
 rename_headers = {
     'CONTENT_LENGTH' : 'CONTENT_LENGTH',
     'CONTENT_TYPE'   : 'CONTENT_TYPE',
     'CONNECTION'     : 'CONNECTION_TYPE',
     }
-
 
 class HTTPTask:
     """An HTTP task accepts a request and writes to a channel.
@@ -155,8 +153,8 @@ class HTTPTask:
     def buildResponseHeader(self):
         self.prepareResponseHeaders()
         first_line = 'HTTP/%s %s %s' % (self.version, self.status, self.reason)
-        lines = [first_line] + map(
-            lambda hv: '%s: %s' % hv, self.response_headers.items())
+        lines = [first_line] + ['%s: %s' % hv
+                                for hv in self.response_headers.items()]
         accum = self.accumulated_headers
         if accum is not None:
             lines.extend(accum)

@@ -13,18 +13,17 @@
 ##############################################################################
 """
 
-$Id: TailLogger.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: TailLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
 
-from ILogger import ILogger
-
+from IMessageLogger import IMessageLogger
 
 class TailLogger:
     """Keep track of the last <size> log messages"""
 
-    __implements__ = ILogger
+    __implements__ = IMessageLogger
 
-    def __init__ (self, logger, size=500):
+    def __init__(self, logger, size=500):
         self.size = size
         self.logger = logger
         self.messages = []
@@ -32,20 +31,20 @@ class TailLogger:
 
     ############################################################
     # Implementation methods for interface
-    # Zope.Server.Logger.ILogger
+    # Zope.Server.Logger.IMessageLogger
 
-    def log(self, message):
-        'See Zope.Server.Logger.ILogger.ILogger'
-        self.messages.append (strip_eol (message))
-        if len (self.messages) > self.size:
+    def logMessage(self, message):
+        'See Zope.Server.Logger.IMessageLogger.IMessageLogger'
+        self.messages.append(strip_eol(message))
+        if len(self.messages) > self.size:
             del self.messages[0]
-        self.logger.log (message)
+        self.logger.logMessage(message)
 
     #
     ############################################################
 
 
-def strip_eol (line):
+def strip_eol(line):
     while line and line[-1] in '\r\n':
         line = line[:-1]
     return line

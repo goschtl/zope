@@ -13,45 +13,41 @@
 ##############################################################################
 """
 
-$Id: SocketLogger.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: SocketLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
 
 import asynchat
 import socket
 
-from ILogger import ILogger
+from IMessageLogger import IMessageLogger
 
-
-class SocketLogger (asynchat.async_chat):
+class SocketLogger(asynchat.async_chat):
     """Log to a stream socket, asynchronously."""
 
-    __implements__ = ILogger
+    __implements__ = IMessageLogger
 
-    def __init__ (self, address):
-
+    def __init__(self, address):
         if type(address) == type(''):
-            self.create_socket (socket.AF_UNIX, socket.SOCK_STREAM)
+            self.create_socket(socket.AF_UNIX, socket.SOCK_STREAM)
         else:
-            self.create_socket (socket.AF_INET, socket.SOCK_STREAM)
+            self.create_socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        self.connect (address)
+        self.connect(address)
         self.address = address
 
-
-    def __repr__ (self):
+    def __repr__(self):
         return '<socket logger: address=%s>' % (self.address)
-
 
     ############################################################
     # Implementation methods for interface
-    # Zope.Server.Logger.ILogger
+    # Zope.Server.Logger.IMessageLogger
 
-    def log(self, message):
-        'See Zope.Server.Logger.ILogger.ILogger'
+    def logMessage(self, message):
+        'See Zope.Server.Logger.IMessageLogger.IMessageLogger'
         if message[-2:] != '\r\n':
-            self.socket.push (message + '\r\n')
+            self.socket.push(message + '\r\n')
         else:
-            self.socket.push (message)
+            self.socket.push(message)
 
     #
     ############################################################

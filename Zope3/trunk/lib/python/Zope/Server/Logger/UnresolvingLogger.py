@@ -13,27 +13,26 @@
 ##############################################################################
 """
 
-$Id: UnresolvingLogger.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: UnresolvingLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
-from ILogger import ILogger
-
+from IRequestLogger import IRequestLogger
 
 class UnresolvingLogger:
     """Just in case you don't want to resolve"""
 
-    __implements__ = ILogger
+    __implements__ = IRequestLogger
 
-    def __init__ (self, logger):
+    def __init__(self, logger):
         self.logger = logger
 
 
     ############################################################
     # Implementation methods for interface
-    # Zope.Server.Logger.ILogger
+    # Zope.Server.Logger.IRequestLogger
 
-    def log(self, ip, message):
-        'See Zope.Server.Logger.ILogger.ILogger'
-        self.logger.log ('%s: %s' % (ip, message))
+    def logRequest(self, ip, message):
+        'See Zope.Server.Logger.IRequestLogger.IRequestLogger'
+        self.logger.logMessage('%s: %s' % (ip, message))
 
     #
     ############################################################

@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: SyslogLogger.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: SyslogLogger.py,v 1.3 2002/11/08 14:34:58 stevea Exp $
 """
 
 import os
 import m_syslog
 
-from ILogger import ILogger
+from IMessageLogger import IMessageLogger
 
 
 class SyslogLogger(m_syslog.syslog_client):
@@ -34,7 +34,7 @@ class SyslogLogger(m_syslog.syslog_client):
        blocking send()
     """
 
-    __implements__ = ILogger
+    __implements__ = IMessageLogger
 
     svc_name = 'zope'
     pid_str  = str(os.getpid())
@@ -51,10 +51,10 @@ class SyslogLogger(m_syslog.syslog_client):
 
     ############################################################
     # Implementation methods for interface
-    # Zope.Server.Logger.ILogger
+    # Zope.Server.Logger.IMessageLogger
 
-    def log(self, message):
-        'See Zope.Server.Logger.ILogger.ILogger'
+    def logMessage(self, message):
+        'See Zope.Server.Logger.IMessageLogger.IMessageLogger'
         m_syslog.syslog_client.log (
             self,
             '%s[%s]: %s' % (self.svc_name, self.pid_str, message),
