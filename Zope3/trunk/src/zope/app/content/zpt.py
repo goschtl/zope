@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.7 2003/04/02 18:38:21 sidnei Exp $
+$Id: zpt.py,v 1.8 2003/04/10 09:10:35 paul Exp $
 """
 
 import re
@@ -46,7 +46,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
     def setSource(self, text, content_type='text/html'):
         '''See IZPTPage'''
         if not isinstance(text, unicode):
-            raise TypeError("source text must be Unicode")
+            raise TypeError("source text must be Unicode" , text)
 
         self.pt_edit(text.encode('utf-8'), content_type)
 
