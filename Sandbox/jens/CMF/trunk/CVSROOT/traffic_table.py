@@ -34,10 +34,10 @@ optional fields (optional fields have default values described)
 
 """
 
-remote = {'host': "www.zope.org",
+remote = {'host': "cvs.zope.org",
           'acct': "anonymous",
           'repodir': "/cvs-repository"}
-products_remote = {'host': "www.zope.org",
+products_remote = {'host': "cvs.zope.org",
                    'acct': "anonymous",
                    'repodir': "/cvs-repository",
                    'leading_path': "/Products/DC"}
