@@ -2,6 +2,12 @@ CMF 1.5.1beta (unreleased)
 
   New Features
 
+    - CatalogTool: All default FieldIndex instances used for indexing
+      DateTime values are now created as DateIndex instances instead. All
+      default TextIndex instances are now created as ZCTextIndex instances.
+      (CMF collector issues http://www.zope.org/Collectors/CMF/191 and
+      http://www.zope.org/Collectors/CMF/302)
+
     - CMFSetup: Improved 'skip purge' behavior of the skins import handler.
       If purging is disabled, it's now possible to modify existing skin
       configurations. You can use '*' as wildcard for skin-path ids and a
