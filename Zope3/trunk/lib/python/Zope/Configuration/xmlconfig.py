@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.11 2002/12/09 15:59:12 rdmurray Exp $
+$Id: xmlconfig.py,v 1.12 2002/12/12 16:46:43 mgedmin Exp $
 """
 
 import os
@@ -287,7 +287,14 @@ class XMLConfig:
     def include(self, _context, file='configure.zcml', package=None):
         if package is None and _context.packageWasSet():
             package = _context.package()
+        subpackages = False
         if package is not None:
+            if package.endswith('.*'):
+                # <include package="package.*" /> includes all subpackages
+                subpackages = True
+                parent = package = package[:-2]
+                if package == "":
+                    package = "."
             try:
                 package = _context.resolve(package)
                 if len(package.__path__) != 1:
@@ -306,7 +313,20 @@ class XMLConfig:
         else:
             prefix = os.path.dirname(self._stack[-1])
 
-        file_name = os.path.join(prefix, file)
+        if subpackages:
+            for subdir in os.listdir(prefix):
+                file_name = os.path.join(prefix, subdir, file)
+                if not os.access(file_name, os.F_OK):
+                    continue
+                subpackage = "%s.%s" % (parent, subdir)
+                subpackage = _context.resolve(subpackage)
+                self._include(file_name, subpackage)
+        else:
+            file_name = os.path.join(prefix, file)
+            self._include(file_name, package)
+        return ()
+
+    def _include(self, file_name, package):
 
         f = open(file_name)
         self._stack.append(file_name)
@@ -314,7 +334,6 @@ class XMLConfig:
                   self._directives)
         self._stack.pop()
         f.close()
-        return ()
 
     def __call__(self):
         self.organize()

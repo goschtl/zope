@@ -62,6 +62,21 @@ class Test(CleanUp, unittest.TestCase):
         x()
         file.close()
 
+    def testIncludeAll(self):
+        file = TempFile()
+        name = file.name
+        file.write(
+            """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+                 <include
+                     package="Zope.Configuration.tests.*"
+                     file="contact.zcml" />
+               </zopeConfigure>""")
+        file.flush()
+        from Zope.Configuration.xmlconfig import XMLConfig
+        x = XMLConfig(name)
+        x()
+        file.close()
+
     def testIncludeNoPackageAndIncluderNoPackage(self):
         from os.path import split
         file = TempFile()

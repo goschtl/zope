@@ -2,18 +2,28 @@ The include directive, which includes another zcml file.
 
 Attributes
 
-  * package, optional, a dotted name of the Python Package to include from
+  * package, optional, a dotted name of the Python Package to include from.
+    If the name ends in '.*', the appropriately named zcml files from all
+    direct subpackages of the given package are included (subpackages that do
+    not have appropriately named files are skipped without producing an error).
 
-  * file, the filename of the zcml file to include
-  
+  * file, optional, the filename of the zcml file to include (configure.zcml by
+    default)
+
 Example
 
   Including the Contact zcml file from the ZopeProducts.Contact package::
-  
+
     <include package=".Contact" file="Contact.zcml" />
-    
+
   Another spelling of the same thing::
-  
+
     <include package="ZopeProducts.Contact" file="Contact.zcml" />
-    
-  
+
+  Including every package in ZopeProducts::
+
+    <include package="ZopeProducts.*" />
+
+  Including meta.zcml from every subpackage of the current package::
+
+    <include package=".*" file="meta.zcml" />
