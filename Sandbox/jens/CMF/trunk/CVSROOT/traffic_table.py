@@ -80,6 +80,8 @@ def init_table():
          'addrs': ["zpt@mail.zope.org"]},
         {'path': "Products/PageTemplates",
          'addrs': ["zpt@mail.zope.org"]},
+        {'path': "Packages/ZTUtils",
+         'addrs': ["zpt@mail.zope.org"]},
         {'path': "Products/PresentationTemplates",
          'addrs': ["zpt@mail.zope.org"]},
 
