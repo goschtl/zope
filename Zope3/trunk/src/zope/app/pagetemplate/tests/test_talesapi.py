@@ -13,7 +13,7 @@
 ##############################################################################
 """Tales API Tests
 
-$Id: test_talesapi.py,v 1.6 2003/09/16 22:05:05 srichter Exp $
+$Id: test_talesapi.py,v 1.7 2003/09/23 19:12:30 jim Exp $
 """
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface import implements
@@ -72,6 +72,7 @@ def title_or_name():
     >>> api.title_or_name()
     u'apple cart'
 
+    >>> testObject = TestObject()
     >>> testObject.title = u""
     >>> api = ZopeTalesAPI(testObject)
     >>> api.title_or_name()
