@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: ut.py,v 1.6 2002/12/20 19:36:29 bwarsaw Exp $
+$Id: ut.py,v 1.7 2003/01/20 21:51:51 jim Exp $
 """
 
 import unittest
