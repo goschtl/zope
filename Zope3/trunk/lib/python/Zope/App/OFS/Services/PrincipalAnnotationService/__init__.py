@@ -11,3 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+
+"""Service and interfaces for storing IAnnotations for IPrincipals.
+
+$Id: __init__.py,v 1.2 2002/12/05 10:46:30 itamar Exp $
+"""
