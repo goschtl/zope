@@ -11,6 +11,9 @@
 
  Bugs Fixed
 
+  - Allowed sub-folders to have different syndication properties 
+    than parents (Tracker #421).
+
   - Added 'CMFDefault.Upgrade.upgrade_decor_skins' external method to
     convert existing sites which had installed skin directories from the
     now-deprecated 'CMFDecor' product (Tracker #434).  Added note
