@@ -128,7 +128,7 @@ class Checker(object):
             permission = self.set_permissions.get(name)
         else:
             permission = None
-            
+
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
@@ -138,7 +138,7 @@ class Checker(object):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized, name
+                raise Unauthorized(name=name, permission=permission)
 
         __traceback_supplement__ = (TracebackSupplement, object)
         raise ForbiddenAttribute, (name, object)
@@ -155,7 +155,7 @@ class Checker(object):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized, name
+                raise Unauthorized(name=name, permission=permission)
         elif name in _always_available:
             return
 
