@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.12 2004/02/07 05:35:08 richard Exp $
+$Id: __init__.py,v 1.13 2004/02/07 07:21:25 anthony Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -69,10 +69,9 @@ class ComponentAdding(Adding):
             l = id.rfind('.')
             if l >= 0:
                 id = id[l+1:]
-            i = 1
-            while ("%s-%s" % (id, i)) in self.context:
-                i=i+1
-            id = "%s-%s" % (id, i)
+            
+        chooser = zapi.getAdapter(self.context, INameChooser)
+        id = chooser.chooseName(id, None)
 
         # Call the superclass action() method.
         # As a side effect, self.added_object is set by add() above.

@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.11 2004/02/07 06:51:13 anthony Exp $
+$Id: bootstrap.py,v 1.12 2004/02/07 07:21:26 anthony Exp $
 """
 
 from zope.app import zapi
@@ -41,6 +41,7 @@ from zope.proxy import removeAllProxies
 from zope.app.event import function
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.hub import ISubscriptionControl
+from zope.app.interfaces.container import INameChooser
 
 class BootstrapSubscriberBase:
     """A startup event subscriber base class.
@@ -95,7 +96,7 @@ class BootstrapSubscriberBase:
                           if object_type.isImplementedBy(package[name]) ]
         if valid_objects:
             return None
-        name = object_name + '-1'
+        name = object_name 
         obj = object_factory()
         obj = removeAllProxies(obj)
         package[name] = obj
@@ -197,9 +198,10 @@ def addService(root_folder, service_type, service_factory, **kw):
     # calls at the end require a fully context-wrapped
     # registration; hence all the traverse() and traverseName() calls.
     package = getServiceManagerDefault(root_folder)
-    name = service_type + '-1'
+    chooser = zapi.getAdapter(package, INameChooser)
     service = service_factory()
     service = removeAllProxies(service)
+    name = chooser.chooseName(service_type, service)
     package[name] = service
 
     # Set additional attributes on the service

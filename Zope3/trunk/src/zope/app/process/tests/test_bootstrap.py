@@ -13,7 +13,7 @@
 ##############################################################################
 """Bootstrap tests
 
-$Id: test_bootstrap.py,v 1.7 2003/09/22 19:45:39 jim Exp $
+$Id: test_bootstrap.py,v 1.8 2004/02/07 07:21:26 anthony Exp $
 """
 
 import unittest
@@ -103,7 +103,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
             name = bs.ensureService(ErrorLogging, ErrorReportingService)
 
             if i == 0:
-                self.assertEqual(name, 'ErrorLogging-1')
+                self.assertEqual(name, 'ErrorLogging')
             else:
                 self.assertEqual(name, None)
 
@@ -114,7 +114,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
             package = traverse(root_folder, package_name)
 
             self.assert_(IErrorReportingService.isImplementedBy(
-                traverse(package, 'ErrorLogging-1')))
+                traverse(package, 'ErrorLogging')))
             get_transaction().commit()
             cx.close()
 
@@ -133,16 +133,16 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
         package = traverse(root_folder, package_name)
 
         self.assert_(IEventService.isImplementedBy(
-            traverse(package, 'EventPublication-1')))
+            traverse(package, 'EventPublication')))
 
         self.assert_(IObjectHub.isImplementedBy(
-            traverse(package, 'HubIds-1')))
+            traverse(package, 'HubIds')))
 
         self.assert_(IErrorReportingService.isImplementedBy(
-            traverse(package, 'ErrorLogging-1')))
+            traverse(package, 'ErrorLogging')))
 
         self.assert_(IPrincipalAnnotationService.isImplementedBy(
-            traverse(package, 'PrincipalAnnotation-1')))
+            traverse(package, 'PrincipalAnnotation')))
 
         cx.close()
 
@@ -166,22 +166,22 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
         package = traverse(root_folder, package_name)
 
         self.assert_(IEventService.isImplementedBy(
-            traverse(package, 'EventPublication-1')))
+            traverse(package, 'EventPublication')))
 
         self.assert_(IObjectHub.isImplementedBy(
-            traverse(package, 'HubIds-1')))
+            traverse(package, 'HubIds')))
 
         self.assertRaises(NotFoundError, traverse, root_folder,
-                          '/++etc++site/default/ErrorLogging-1')
+                          '/++etc++site/default/ErrorLogging')
 
         self.assert_(IErrorReportingService.isImplementedBy(
-            traverse(package, 'Errors-1')))
+            traverse(package, 'Errors')))
 
         self.assert_(IEventService.isImplementedBy(
-            traverse(package, 'EventPublication-1')))
+            traverse(package, 'EventPublication')))
 
         self.assert_(IPrincipalAnnotationService.isImplementedBy(
-            traverse(package, 'PrincipalAnnotation-1')))
+            traverse(package, 'PrincipalAnnotation')))
 
         cx.close()
 
@@ -201,7 +201,7 @@ class TestCreateInterfaceService(TestBootstrapSubscriberBase):
         package = traverse(root_folder, package_name)
 
         self.assert_(IInterfaceService.isImplementedBy(
-            traverse(package, 'Interfaces-1')))
+            traverse(package, 'Interfaces')))
 
         cx.close()
 
