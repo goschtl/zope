@@ -19,6 +19,7 @@ Scheduler        Packages/Scheduler
 StructuredText   Packages/StructuredText
 TreeDisplay      Packages/TreeDisplay
 SearchIndex      Packages/SearchIndex
+ZClasses      	 Packages/ZClasses
 
 Shared           Packages/Shared  __init__.py
 DC               -d Shared/DC Packages/Shared/DC  __init__.py
@@ -32,7 +33,7 @@ ZSQLMethods    -d Products/ZSQLMethods Packages/Products/ZSQLMethods
 ZGadflyDA      -d Products/ZGadflyDA Packages/Products/ZGadflyDA
 
 zs Components/GreyThing \
-  &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
+  &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys &ZClasses \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay &SearchIndex \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
