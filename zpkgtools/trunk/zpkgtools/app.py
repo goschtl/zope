@@ -406,7 +406,7 @@ class Component:
                          publication.PUBLICATION_CONF,
                          "DEPENDENCIES.cfg"):
             dstname = os.path.join(destination, self.name, metafile)
-            srcname = os.path.join(self.source, self.name, metafile)
+            srcname = os.path.join(self.source, metafile)
             if os.path.exists(srcname) and not os.path.exists(dstname):
                 self.ip.copy_file(srcname, dstname)
 

@@ -7,10 +7,6 @@ Things that need to be done
 
 - Package assembler script and distribution runtime
 
-  - When building a distribution that specifies explicit inclusions,
-    the packaging metadata (`*.cfg` except `PACKAGE.cfg`) files should
-    be included automatically.
-
   - We should have a way to express dependence on particular versions
     of Python, and a way to say which is preferred.  (This can be used
     when building an "application" distribution since that has some

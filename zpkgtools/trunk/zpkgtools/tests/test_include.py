@@ -136,9 +136,10 @@ class InclusionProcessorTestCase(unittest.TestCase):
             """)
         specs = include.load(self.source)
         # These are "uncooked", so wildcards haven't been expanded.
-        self.assertEqual(len(specs.collection.excludes), 2)
+        self.assertEqual(len(specs.collection.excludes), 3)
         self.assert_("foobar.txt" in specs.collection.excludes)
         self.assert_("doc/todo-*.txt" in specs.collection.excludes)
+        self.assert_(include.PACKAGE_CONF in specs.collection.excludes)
         # Now populate the source dir:
         self.write_file("foobar.txt", "some text\n")
         docdir = join(self.source, "doc")
@@ -148,12 +149,28 @@ class InclusionProcessorTestCase(unittest.TestCase):
             self.write_file(join("doc", "todo-2.txt"), "something else\n")
             # And check that cooking finds produces the right thing:
             specs.collection.cook()
-            self.assertEqual(len(specs.collection.excludes), 3)
+            self.assertEqual(len(specs.collection.excludes), 4)
             self.assert_("foobar.txt" in specs.collection.excludes)
             self.assert_("doc/todo-1.txt" in specs.collection.excludes)
             self.assert_("doc/todo-2.txt" in specs.collection.excludes)
+            self.assert_(include.PACKAGE_CONF in specs.collection.excludes)
         finally:
             shutil.rmtree(docdir)
+
+    def test_exclusions_with_explicit_package_conf(self):
+        self.write_file(include.PACKAGE_CONF, """\
+            <collection>
+              %s -
+            </collection>
+            """ % include.PACKAGE_CONF)
+        specs = include.load(self.source)
+        self.assertEqual(len(specs.collection.excludes), 2)
+        self.assert_(include.PACKAGE_CONF in specs.collection.excludes)
+
+        # Check the cooked collection:
+        specs.collection.cook()
+        self.assertEqual(len(specs.collection.excludes), 1)
+        self.assert_(include.PACKAGE_CONF in specs.collection.excludes)
 
     def test_unmatched_wildcards_in_exclusions(self):
         self.write_file(include.PACKAGE_CONF, """\

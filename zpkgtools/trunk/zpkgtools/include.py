@@ -84,6 +84,12 @@ def load(sourcedir, url=None):
             config = parser.load()
         finally:
             f.close()
+        if config.collection.excludes:
+            # XXX should make sure PACKAGE_CONF isn't already excluded
+            config.collection.excludes.append(PACKAGE_CONF)
+        elif not config.collection.includes:
+            # Nothing included or excluded; simply exclude PACKAGE_CONF:
+            config.collection.excludes.append(PACKAGE_CONF)
     else:
         config = schema.getConfiguration()
     return config
@@ -276,7 +282,8 @@ class Specification:
                     self.filename)
             for fn in expansions:
                 suffix = fn[len(prefix):]
-                excludes.append(suffix)
+                if suffix not in excludes:
+                    excludes.append(suffix)
         self.excludes[:] = excludes
 
 
@@ -370,6 +377,9 @@ class InclusionProcessor:
                 if specs.collection:
                     specs.collection.cook()
                     self.createDistributionTree(destdir, specs.collection)
+                    # Don't recurse into any directories here; those
+                    # were handled by the inner call to
+                    # self.createDistributionTree().
                     del dirs[:]
                     continue
 

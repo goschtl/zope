@@ -21,6 +21,7 @@ import urllib
 
 from StringIO import StringIO
 
+from zpkgsetup import package
 from zpkgsetup import publication
 from zpkgsetup.tests import tempfileapi as tempfile
 
@@ -271,6 +272,69 @@ class ComponentTestCase(unittest.TestCase):
     def test_non_validation_of_nonpackage_without_setup_cfg(self):
         self.assertRaises(zpkgtools.Error,
                           app.Component, "mypkg", self.mypkg_url, self.ip)
+
+    def test_component_metadata_is_copied_by_default(self):
+        self.write_app_file(publication.PUBLICATION_CONF,
+                            "Metadata-Version: 1.1\n"
+                            "Name: mypkg\n")
+        self.write_app_file(include.PACKAGE_CONF,
+                            "# nothing to specify\n")
+        self.write_app_file(package.PACKAGE_CONF,
+                            "# nothing to specify\n")
+        #
+        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        dest = tempfile.mkdtemp(prefix="test-app-dest-")
+        try:
+            c.write_package(dest)
+            c.write_manifest()
+            c.write_setup_cfg()
+            c.write_setup_py(version='1.2.3')
+            # done writing; make sure the expected metadata files are
+            # present:
+            pkgdest = os.path.join(dest, c.name)
+            self.assert_(isfile(pkgdest, publication.PUBLICATION_CONF))
+            self.assert_(isfile(pkgdest, package.PACKAGE_CONF))
+            self.failIf(os.path.exists(os.path.join(pkgdest,
+                                                    include.PACKAGE_CONF)))
+        finally:
+            shutil.rmtree(dest)
+
+    def test_component_metadata_is_copied_with_inclusions(self):
+        self.write_app_file(publication.PUBLICATION_CONF,
+                            "Metadata-Version: 1.1\n"
+                            "Name: mypkg\n")
+        self.write_app_file(include.PACKAGE_CONF,
+                            "<collection>\n"
+                            "  README.txt README\n"
+                            "</collection>\n")
+        self.write_app_file(package.PACKAGE_CONF,
+                            "# nothing to specify\n")
+        self.write_app_file("README",
+                            "some text\n")
+        #
+        c = app.Component("mypkg", self.mypkg_url, self.ip)
+        dest = tempfile.mkdtemp(prefix="test-app-dest-")
+        try:
+            c.write_package(dest)
+            c.write_manifest()
+            c.write_setup_cfg()
+            c.write_setup_py(version='1.2.3')
+            # done writing; make sure the expected metadata files are
+            # present:
+            pkgdest = os.path.join(dest, c.name)
+            self.assert_(isfile(pkgdest, publication.PUBLICATION_CONF))
+            self.assert_(isfile(pkgdest, package.PACKAGE_CONF))
+            self.assert_(isfile(pkgdest, "README.txt"))
+            self.failIf(os.path.exists(os.path.join(pkgdest,
+                                                    include.PACKAGE_CONF)))
+        finally:
+            shutil.rmtree(dest)
+
+
+def isfile(path, *args):
+    if args:
+        path = os.path.join(path, *args)
+    return os.path.isfile(path)
 
 
 def test_suite():
