@@ -82,14 +82,17 @@ class ResponseWrapper(object):
         return getattr(self._response, attr)
 
 
-grant_request = r"""
-POST /@@PrincipalRoles.html HTTP/1.1
+grant_request = (r"""
+POST /@@grant.html HTTP/1.1
 Authorization: Basic Z2xvYmFsbWdyOmdsb2JhbG1ncnB3
-Content-Length: 97
+Content-Length: 5796
 Content-Type: application/x-www-form-urlencoded
-Referer: http://localhost:8081/@@PrincipalRoles.html
 
-grid.zope.Manager.zope.mgr=Allow&principals%3Alist=zope.mgr&roles%3Alist=zope.Manager&APPLY=Apply"""
+field.principal=em9wZS5tZ3I_"""
+"""&field.principal.displayed=y"""
+"""&GRANT_SUBMIT=Change"""
+"""&field.em9wZS5tZ3I_.role.zope.Manager=allow"""
+"""&field.em9wZS5tZ3I_.role.zope.Manager-empty-marker=1""")
 
 class FunctionalTestSetup(object):
     """Keeps shared state across several functional test cases."""

@@ -61,6 +61,11 @@ def definePermission(id, title=None, description=None):
     ztapi.provideUtility(IPermission, permission, name=permission.id)
     return permission
 
+class FakeSiteManager:
+
+    def __init__(self, site):
+        self.__parent__ = site
+
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
@@ -69,7 +74,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         defineRole('member',  MessageID('Member', 'testdomain'))
         definePermission('read', MessageID('Read', 'testdomain'))
         definePermission('write', MessageID('Write', 'testdomain'))
-        self.view = RolePermissionView(RolePermissionManager(), None)
+        site = RolePermissionManager()
+        self.view = RolePermissionView(FakeSiteManager(site), None)
         ztapi.provideUtility(ITranslationDomain,
                              TranslationDomain(Member="A Member",
                                                Write="A Write",

@@ -68,7 +68,7 @@ class RolePermissionView(object):
             return [aq]+rest
 
     def permissionRoles(self):
-        context = self.context
+        context = self.context.__parent__
         roles = self.roles()
         return [PermissionRoles(permission, context, roles)
                 for permission in self.permissions()]
@@ -76,12 +76,12 @@ class RolePermissionView(object):
     def permissionForID(self, pid):
         roles = self.roles()
         perm = zapi.getUtility(IPermission, pid)
-        return PermissionRoles(perm, self.context, roles)
+        return PermissionRoles(perm, self.context.__parent__, roles)
 
     def roleForID(self, rid):
         permissions = self.permissions()
         role = zapi.getUtility(IRole, rid)
-        return RolePermissions(role, self.context, permissions)
+        return RolePermissions(role, self.context.__parent__, permissions)
 
 
     def update(self, testing=None):
@@ -91,7 +91,7 @@ class RolePermissionView(object):
         if 'SUBMIT' in self.request:
             roles       = [r.id for r in self.roles()]
             permissions = [p.id for p in self.permissions()]
-            prm         = IRolePermissionManager(self.context)
+            prm         = IRolePermissionManager(self.context.__parent__)
             for ip in range(len(permissions)):
                 rperm = self.request.get("p%s" % ip)
                 if rperm not in permissions: continue
@@ -111,7 +111,7 @@ class RolePermissionView(object):
             changed = True
 
         if 'SUBMIT_PERMS' in self.request:
-            prm = IRolePermissionManager(self.context)
+            prm = IRolePermissionManager(self.context.__parent__)
             roles = self.roles()
             rperm = self.request.get('permission_id')
             settings = self.request.get('settings', ())
@@ -130,7 +130,7 @@ class RolePermissionView(object):
 
         if 'SUBMIT_ROLE' in self.request:
             role_id = self.request.get('role_id')
-            prm = IRolePermissionManager(self.context)
+            prm = IRolePermissionManager(self.context.__parent__)
             allowed = self.request.get(Allow.getName(), ())
             denied = self.request.get(Deny.getName(), ())
             for permission in self.permissions():
