@@ -113,7 +113,7 @@ class SkinnableObjectManager (ObjectManager):
         Sneakily sets up the portal skin then returns the wrapper
         that Acquisition.Implicit.__of__() would return.
         '''
-        w_self = ImplicitAcquisitionWrapper(aq_base(self), parent)
+        w_self = ImplicitAcquisitionWrapper(self, parent)
         w_self.setupCurrentSkin()
         return w_self
 
