@@ -1,0 +1,212 @@
+<zope:zopeConfigure
+   xmlns:zope='http://namespaces.zope.org/zope'
+   xmlns='http://namespaces.zope.org/browser'
+   xmlns:form="http://namespaces.zope.org/form"
+   package="Zope.App.OFS.Services.ServiceManager"
+>
+
+<!-- ServiceManager -->
+
+  <defaultView 
+     for=".IServiceManager."
+     name="index.html"
+     />
+ 
+  <view 
+     for=".IServiceManager."
+     name="index.html"
+     template="Browser/Services.pt"
+     class=".Browser.Services."
+     permission="Zope.ManageServices" 
+     />
+
+  <menuItems menu="zmi_views" for=".IServiceManager.">
+    <menuItem title="Services"
+              action="@@index.html"/>
+    <menuItem title="Packages"
+              action="Packages/@@SelectedManagementView.html"/>
+    <menuItem title="Default Package"
+              action="Packages/default/@@SelectedManagementView.html"/>
+    </menuItems>
+
+<!-- Packages -->
+
+  <defaultView for=".IPackages." name="contents.html" />
+
+  <view
+      for=".IPackages."
+      permission="Zope.ManageServices" 
+      factory=".Browser.PackagesContents.">
+
+    <page name="contents.html"
+                  attribute="index"
+                  />
+    <page name="addPackage.html"
+                  attribute="addPackage"
+                  />
+    <page name="removeObjects.html"
+                  attribute="removeObjects"
+                  />
+  </view>
+
+  <menuItems menu="zmi_views" for=".IPackages.">
+    <menuItem title="Services"
+              action="@@contents.html"/>
+  </menuItems>
+
+  <defaultView for=".IPackage." name="contents.html" />
+
+
+<!-- Package -->
+
+  <view 
+     for=".IPackage."
+     permission="Zope.ManageServices"
+     factory="Zope.App.OFS.Container.Views.Browser.Contents."
+     >
+
+    <page name="contents.html" attribute="contents" />
+    <page name="removeObjects.html" attribute="removeObjects" />
+   </view>
+
+  <menuItems menu="zmi_views" for=".IPackage.">
+    <menuItem title="Services"
+              action="@@contents.html"/>
+  </menuItems>
+
+  <menu id="add_component" 
+        title="Menu of objects to be added to service managers"
+        />
+
+  <view 
+     name="+"
+     permission="Zope.ManageServices" 
+     for=".IPackage."
+     factory=".Browser.Adding.ComponentAdding">
+
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+
+  </view> 
+
+<!-- ConfigurationManager -->
+
+  <defaultView 
+     for=".IConfigurationManager."
+     name="contents.html"
+     />
+
+  <view 
+     for=".IConfigurationManager."
+     permission="Zope.ManageServices" 
+     factory=".Browser.EditConfiguration.">
+    <page name="contents.html" template="Browser/editConfiguration.pt" />
+  </view> 
+
+ <menuItems menu="zmi_views" for=".IConfigurationManager.">
+    <menuItem title="Configuration" action="contents.html" />
+ </menuItems>
+
+  <view 
+     for=".IConfigurationManager."
+     name="+"
+     permission="Zope.ManageServices" 
+     factory=".Browser.Adding.ConfigurationAdding">
+    <page name="index.html"  attribute="index"  />
+    <page name="action.html" attribute="action" />
+  </view> 
+
+  <menuItem menu="add_component"
+  	for="Zope.App.OFS.Container.IAdding."
+	action="Zope.App.OFS.Services.ServiceManager.ConfigurationManager"
+        title="Configuration"
+        />
+
+  <menu id="add_configuration" 
+        title="Menu of addable configuration objects"
+        />
+
+<!-- ServiceConfiguration -->
+
+  <defaultView 
+     for=".IServiceConfiguration."
+     name="index.html"
+     />
+
+  <menuItems menu="zmi_views" for=".IServiceConfiguration.">
+    <menuItem title="Edit"
+              action="index.html"/>
+    </menuItems>
+
+  <form:edit
+     for = ".IServiceConfiguration."
+     name = "index.html"
+     schema = "Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration."
+     label = "Service Configuration"
+     permission = "Zope.ManageServices"
+     template = "Browser/ServiceConfigEdit.pt"
+     />
+
+  <form:edit
+     for = ".IServiceConfiguration."
+     name = "ItemEdit"
+     schema = 
+     "Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurationSummary."
+     label = "Service Configuration"
+     template = "Browser/ServiceConfigEditPart.pt"
+     class = ".Browser.ServiceConfigURL."
+     permission = "Zope.ManageServices"
+     />
+
+  <view
+     for = ".IServiceConfiguration."
+     name = "ConfigurationSummary"
+     template = "Browser/ServiceConfigSummary.pt"
+     class = ".Browser.ServiceConfigURL."
+     permission="Zope.ManageServices" 
+     />  
+
+  <view 
+        for="Zope.App.OFS.Container.IAdding."
+        name="ServiceConfiguration"
+        factory=".Browser.AddServiceConfiguration."
+        permission="Zope.ManageServices" 
+        >
+
+      <page name="step1.html" template="Browser/add_service_1.pt" />
+      <page name="step2.html" template="Browser/add_service_2.pt" />
+      <page name="finish.html" attribute="action" />
+
+      </view>
+
+  <menuItem
+      for="Zope.App.OFS.Container.IAdding."
+      menu="add_configuration"
+      action="ServiceConfiguration"
+      title="Service"
+      />
+
+<!-- Persistent Modules -->
+
+  <view for="Persistence.IPersistentModuleManager."
+	factory=".Browser.EditModule."
+        >
+      <page name="edit.html" template="Views/Browser/edit_module.pt" />
+  </view>
+
+  <menuItems menu="zmi_views" for="Persistence.IPersistentModuleManager.">
+    <menuItem title="Edit" action="edit.html" />
+  </menuItems>
+
+  <view for="Zope.App.OFS.Container.IAdding."
+        name="Module"
+        factory=".Browser.AddModule."
+        >
+      <page name="index.html" template="Views/Browser/add_module.pt" />
+      <page name="action.html" attribute="action" />
+  </view>
+
+  <menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+     action="Module"  title="Module" />
+
+</zope:zopeConfigure>

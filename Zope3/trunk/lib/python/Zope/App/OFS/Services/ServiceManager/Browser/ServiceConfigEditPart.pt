@@ -1,0 +1,20 @@
+<div metal:use-macro="view/generated_form/macros/formbody">
+
+  <table metal:fill-slot="extra_info">
+    <tr>
+      <td>Service type</td>
+      <td tal:content="context/serviceType">Foo</td>    
+    </tr>
+    <tr>
+      <td>Component Path</td>
+      <td>
+       <a href="."
+          tal:content="context/componentPath"
+          tal:define="service context/getService"
+          tal:attributes="href service/@@absolute_url"
+          >Foo</a>
+      </td>    
+    </tr>
+  </table>
+
+</div>

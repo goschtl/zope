@@ -11,19 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Handle form to edit module
-
-$Id: EditModule.py,v 1.1 2002/10/02 22:18:00 jeremy Exp $
+"""
+$Id: INameResolver.py,v 1.2 2002/11/30 18:39:17 jim Exp $
 """
 
-from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.App.OFS.Services.ServiceManager.Module import Manager
+from Interface import Interface
 
-class EditModule(BrowserView):
+class INameResolver(Interface):
+    """Objects that can resolve dotted names to objects
+    """
 
-    def update(self):
-        if "source" in self.request:
-            self.context.update(self.request["source"])
-            return u"The source was updated."
-        else:
-            return u""
+    def resolve(dotted_name):
+        """Resolve the given dotted name to a module global variable.
+
+        If the name ends with a trailing dot, the last name segment
+        may be repeated.
+        """
+
+__doc__ = INameResolver.__doc__ + __doc__

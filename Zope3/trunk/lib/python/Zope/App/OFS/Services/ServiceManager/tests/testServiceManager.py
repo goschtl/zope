@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testServiceManager.py,v 1.3 2002/07/11 18:21:33 jim Exp $
+$Id: testServiceManager.py,v 1.4 2002/11/30 18:39:18 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -23,18 +23,19 @@ from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
 from Zope.App.OFS.Content.Folder.Folder import Folder
 from Zope.Proxy.ContextWrapper import getWrapperContext, getWrapperContainer
 from Zope.App.OFS.Services.ServiceManager.ServiceManager import ServiceManager
-from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
-     import ServiceDirective
+from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration \
+     import ServiceConfiguration
 from Zope.ComponentArchitecture import getService, getServiceManager
 from Zope.Exceptions import ZopeError
 from PlacefulSetup import PlacefulSetup
+from Zope.App.Traversing import traverse
+from Zope.App.OFS.Services.ConfigurationInterfaces \
+     import Active, Unregistered, Registered
+from Zope.ComponentArchitecture.GlobalServiceManager \
+     import serviceManager
 
-from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
-from Zope.App.Traversing.IContainmentRoot import IContainmentRoot
-from Zope.App.Traversing.PhysicalLocationAdapters \
-     import WrapperPhysicallyLocatable, RootPhysicallyLocatable
-
-class ITestService(Interface): pass
+class ITestService(Interface):
+    pass
 
 class TestService:
 
@@ -45,41 +46,28 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.buildFolders()
-        from Zope.ComponentArchitecture.GlobalAdapterService \
-             import provideAdapter
-        from Zope.App.OFS.Services.ServiceManager.IServiceManager \
-             import IServiceManager
-        from Zope.App.Traversing.ITraversable import ITraversable
-        from Zope.App.OFS.Container.IContainer import ISimpleReadContainer
-        from Zope.App.OFS.Container.ContainerTraversable \
-             import ContainerTraversable
-
-        provideAdapter(ISimpleReadContainer, ITraversable,
-                       ContainerTraversable)
-        provideAdapter(
-              None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
-        provideAdapter(
-              IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
-
-        from Zope.ComponentArchitecture.GlobalServiceManager \
-             import serviceManager
 
         serviceManager.defineService('test_service', ITestService)
 
     def _Test__new(self):
         return ServiceManager()
 
+    def createServiceManager(self):
+        self.rootFolder.setServiceManager(ServiceManager())
+
     def testGetService(self):
-        sm = ServiceManager()
-        self.rootFolder.setServiceManager(sm)
-        sm = getServiceManager(self.rootFolder)
+        self.createServiceManager()
+        sm = traverse(self.rootFolder, '++etc++Services')
+        default = traverse(sm, 'Packages/default')
+        
         ts = TestService()
-        sm.Packages['default'].setObject('test_service1', ts)
-        directive = ServiceDirective(
+        default.setObject('test_service1', ts)
+        configuration = ServiceConfiguration(
             'test_service',
             '/++etc++Services/Packages/default/test_service1')
-        sm.Packages['default'].setObject('test_service1_dir', directive)
-        sm.bindService(directive)
+
+        default['configure'].setObject('', configuration)
+        traverse(default, 'configure/1').status = Active
 
         testOb = getService(self.rootFolder, 'test_service')
         c = getWrapperContainer
@@ -87,27 +75,28 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.assertEqual(testOb, ts)
 
     def testAddService(self):
-        sm = ServiceManager()
-        self.rootFolder.setServiceManager(sm)
-        sm = getServiceManager(self.rootFolder)
-        ts = TestService()
-        sm.Packages['default'].setObject('test_service1', ts)
-        directive = ServiceDirective(
+        self.createServiceManager()
+        sm = traverse(self.rootFolder, '++etc++Services')
+        default = traverse(sm, 'Packages/default')
+
+        ts1 = TestService()
+        default.setObject('test_service1', ts1)
+        configuration = ServiceConfiguration(
             'test_service',
             '/++etc++Services/Packages/default/test_service1')
-        sm.Packages['default'].setObject('test_service1_dir', directive)
-        sm.bindService(directive)
+        default['configure'].setObject('', configuration)
+        traverse(default, 'configure/1').status = Active
 
         ts2 = TestService()
-        sm.Packages['default'].setObject('test_service2', ts)
-        directive = ServiceDirective(
+        default.setObject('test_service2', ts2)
+        configuration = ServiceConfiguration(
             'test_service',
             '/++etc++Services/Packages/default/test_service2')
-        sm.Packages['default'].setObject('test_service2_dir', directive)
-        sm.bindService(directive)
+        default['configure'].setObject('', configuration)
+        traverse(default, 'configure/2').status = Registered
 
         testOb = getService(self.rootFolder, 'test_service')
-        self.assertEqual(testOb, ts)
+        self.assertEqual(testOb, ts1)
 
 
     def testUnbindService(self):
@@ -118,24 +107,10 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         self.testGetService() # set up localservice
 
-        sm = getServiceManager(self.rootFolder)
-
-        directive = sm.Packages['default']['test_service1_dir']
-        sm.unbindService(directive)
-        self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
-
-    # XXX This should be a test on the adapter responsible for deleting.
-    def __testDeleteService(self):
-        """sure deleting a service generates a service generates a
-        removed event."""
-        self.rootFolder.setServiceManager(ServiceManager())
-        sm=getServiceManager(self.rootFolder)
-        ts = TestService()
+        sm = traverse(self.rootFolder, '++etc++Services')
+        traverse(sm, 'Packages/default/configure/1').status = Unregistered
         
-        sm.setObject('test_service1', ts)
-        sm.bindService('test_service', 'test_service1')
-        self.assertEqual(getService(self.rootFolder, 'test_service'), ts)
-        self.assertRaises(ZopeError, sm.__delitem__, 'test_service1')
+        self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
     
     def testContextServiceLookup(self):
         self.testGetService() # set up localservice
@@ -165,7 +140,55 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         service = getService(self.folder1, 'test_service')
         self.assertEqual(service, ts)
 
+    def test_resolve(self):
+        from Zope.Proxy.ContextWrapper import ContextWrapper as cw
+        from Zope.App.OFS.Services.ServiceManager.Module import Manager
+        import Zope.App.OFS.Services.ServiceManager.tests.Sample1
+        import Zope.App.OFS.Services.ServiceManager.tests.Sample2
+        
+        self.rootFolder.setServiceManager(ServiceManager())
+        sm=getServiceManager(self.rootFolder)
+        Packages = cw(sm.Packages, sm, name='Packages')
+        default = cw(Packages['default'], Packages, name='Packages')
+        default.setObject('m1', Manager())
+        manager = cw(default['m1'], default, name='m1')
+        manager.new('Zope.App.OFS.Services.ServiceManager.tests.Sample1',
+                    'x = "root m1"\n')
+        default.setObject('m2', Manager())
+        manager = cw(default['m2'], default, name='m1')
+        manager.new('XXX.ZZZ', 'x = "root m2"\nZZZ = 42\n')
 
+        self.folder1.setServiceManager(ServiceManager())
+        sm2=getServiceManager(self.folder1)
+        Packages = cw(sm2.Packages, sm2, name='Packages')
+        default = cw(Packages['default'], Packages, name='Packages')
+        default.setObject('m1', Manager())
+        manager = cw(default['m1'], default, name='m1')
+        manager.new('Zope.App.OFS.Services.ServiceManager.tests.Sample1',
+                    'x = "folder1 m1 1"')
+
+        self.assertEqual(
+          sm2.resolve("Zope.App.OFS.Services.ServiceManager.tests.Sample1.x"),
+          "folder1 m1 1")
+        self.assertEqual(
+          sm.resolve("Zope.App.OFS.Services.ServiceManager.tests.Sample1.x"),
+          "root m1")
+
+        self.assertEqual(
+          sm2.resolve("Zope.App.OFS.Services.ServiceManager.tests.Sample2.y"),
+          "sample 2")
+        self.assertEqual(
+          sm.resolve("Zope.App.OFS.Services.ServiceManager.tests.Sample2.y"),
+          "sample 2")
+        
+        self.assertEqual(sm.resolve("XXX.ZZZ.ZZZ"), 42)
+        self.assertEqual(sm.resolve("XXX.ZZZ."), 42)
+        self.assertEqual(sm.resolve("XXX.ZZZ.x"), "root m2")
+        
+        self.assertEqual(sm2.resolve("XXX.ZZZ.ZZZ"), 42)
+        self.assertEqual(sm2.resolve("XXX.ZZZ."), 42)
+        self.assertEqual(sm2.resolve("XXX.ZZZ.x"), "root m2")
+        
         
 def test_suite():
     loader=TestLoader()

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IBindingAware.py,v 1.4 2002/11/11 08:36:08 stevea Exp $
+$Id: IBindingAware.py,v 1.5 2002/11/30 18:39:16 jim Exp $
 """
 
 from Interface import Interface
@@ -22,14 +22,14 @@ from Interface import Interface
 class IBindingAware(Interface):
     
     def bound(name):
-        """
+        """Inform a service components that it's providing a service
 
         Called when an immediately-containing service manager binds
         this object to perform the named service.
         """
     
     def unbound(name):
-        """
+        """Inform a service components that it's no longer providing a service
 
         Called when an immediately-containing service manager unbinds
         this object from performing the named service.

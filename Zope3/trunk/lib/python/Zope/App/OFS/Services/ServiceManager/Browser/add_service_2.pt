@@ -8,11 +8,11 @@
          tal:attributes="value request/service_type" />
   <table>
      <tr>
-       <th>Service Type</th>
+       <td>Service Type</td>
        <td tal:content="request/service_type">Roles</td>
      </tr>
      <tr>
-       <th>Component</th>
+       <td>Component</td>
        <td><select name="component_path">
              <option tal:repeat="path view/components"
                      tal:attributes="value path"
@@ -20,12 +20,18 @@
            </select>
        </td>
      </tr>
-       <td colspan=2>
-          <input type="radio" name="status" value="" checked />Unregistered<br>
-          <input type="radio" name="status" value="register" />Registered<br>
-          <input type="radio" name="status" value="active" />Active<br>
-       </td>
      <tr>
+       <td>Status</td>
+       <td tal:content="structure view/status"><input type="text"></td>
+     </tr>
+     <tr>
+       <td>Title</td>
+       <td tal:content="structure view/title"><input type="text"></td>
+     </tr>
+     <tr>
+       <td>Description</td>
+       <td tal:content="structure view/description"><textarea></textarea></td>
+     </tr>
 
   </table>
   <input type="submit" />

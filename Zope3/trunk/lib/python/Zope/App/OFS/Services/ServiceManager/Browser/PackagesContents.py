@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: PackagesContents.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+Revision information: $Id: PackagesContents.py,v 1.2 2002/11/30 18:39:17 jim Exp $
 """
 from Zope.App.OFS.Container.Views.Browser.Contents import Contents
 from Zope.App.OFS.Services.ServiceManager.IServiceManager \

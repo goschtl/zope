@@ -11,17 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""Handle form to edit module
+
+$Id: EditModule.py,v 1.2 2002/11/30 18:39:17 jim Exp $
 """
-$Id: Adding.py,v 1.2 2002/07/11 18:21:32 jim Exp $
-"""
 
-from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
+from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.App.OFS.Services.ServiceManager.Module import Manager
 
+class EditModule(BrowserView):
 
-class ComponentAdding(ContentAdding):
-    """Adding component for service containers
-    """
-    
-    menu_id = "add_component"
-
-__doc__ = ComponentAdding.__doc__ + __doc__
+    def update(self):
+        if "source" in self.request:
+            self.context.update(self.request["source"])
+            return u"The source was updated."
+        else:
+            return u""

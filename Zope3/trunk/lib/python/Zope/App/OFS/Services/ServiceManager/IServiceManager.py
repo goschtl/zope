@@ -13,15 +13,14 @@
 ##############################################################################
 """
 
-$Id: IServiceManager.py,v 1.4 2002/07/11 18:21:32 jim Exp $
+$Id: IServiceManager.py,v 1.5 2002/11/30 18:39:16 jim Exp $
 """
 from Zope.ComponentArchitecture.IServiceService import IServiceService
-
+from Zope.App.OFS.Services.ConfigurationInterfaces import IConfigurable
 from IComponentManager import IComponentManager
-
 from Interface.Attribute import Attribute
 
-class IServiceManager(IServiceService, IComponentManager):
+class IServiceManager(IServiceService, IComponentManager, IConfigurable):
     """Service Managers act as containers for Services.
     
     If a Service Manager is asked for a service, it checks for those it
@@ -33,39 +32,12 @@ class IServiceManager(IServiceService, IComponentManager):
 
     Packages = Attribute("""Package container""")
     
-
-    def bindService(service_directive):
-        """Provide a service implementation.
-
-        If the named object implements IBindingAware, the wrapped object is
-        notified as per that interface.
+    def queryConfigurations(service_type):
+        """Return an IConfigurationRegistry for a service type
         """
 
-    def addService(service_directive):
-        """Add a registered service, but displace another active component
-
-        Register a service component, but don't make it active of
-        there is already a registered component providing the service.
-
-        """
-
-    def unbindService(service_directive):
-        """No longer provide a service implementation.
-
-        If the named object implements IBindingAware, the wrapped object is
-        notified as per that interface.
-        """
-
-    def disableService(service_type):
-        """Make the service type inactive in this service manager.
-
-        This doesn't unbind any services, but makes them all inactive.
-        """
-
-    def enableService(service_type, index):
-        """Make the service type inactive in this service manager.
-
-        This doesn't unbind any services, but makes them all inactive.
+    def createConfigurationsFor(configuration):
+        """Create and return an IConfigurationRegistry a service type
         """
 
     def getBoundService(name):
@@ -73,11 +45,10 @@ class IServiceManager(IServiceService, IComponentManager):
 
         Get the component currently bound to the named Service in this
         ServiceService.   Does not search context.
-        """
 
-    def getDirectives(service_type):
-        """Get the directives registered for a service
+        None is returned if the named service isn't bound locally.
         """
 
     def getBoundServiceTypes():
         """Get a sequence of the bound service types"""
+

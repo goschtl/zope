@@ -12,22 +12,27 @@
 # 
 ##############################################################################
 """
-$Id: IServiceDirective.py,v 1.1 2002/07/11 18:21:32 jim Exp $
+$Id: IServiceConfiguration.py,v 1.2 2002/11/30 18:39:16 jim Exp $
 """
 
-from Interface import Interface
 from Interface.Attribute import Attribute
+from Zope.App.OFS.Services.ConfigurationInterfaces import IConfiguration
 
-class IServiceDirective(Interface):
-    """Service Configuration Directives
+class IServiceConfiguration(IConfiguration):
+    """Service Configuration
+
+    Service configurations are dependent on the components that they
+    configure. They register themselves as component dependents.
+    
     """
 
-    service_type = Attribute("The service type id")
-    component_path = Attribute("The physical path to the component")
+    serviceType = Attribute("The service type id")
+
+    componentPath = Attribute("The physical path to the component")
 
     def getService(service_manager):
         """Return the service component named in the directive.
         """
 
-__doc__ = IServiceDirective.__doc__ + __doc__
+__doc__ = IServiceConfiguration.__doc__ + __doc__
 

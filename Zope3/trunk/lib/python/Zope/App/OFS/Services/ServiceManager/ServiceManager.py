@@ -17,8 +17,10 @@ In addition, a ServiceManager acts as a registry for persistent
 modules.  The Zope import hook uses the ServiceManager to search for
 modules.
 
-$Id: ServiceManager.py,v 1.9 2002/11/19 19:10:07 gvanrossum Exp $
+$Id: ServiceManager.py,v 1.10 2002/11/30 18:39:17 jim Exp $
 """
+
+import sys
 
 from Zope.Exceptions import NotFoundError, ZopeError
 
@@ -38,29 +40,34 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 
-from IBindingAware import IBindingAware
 from Packages import Packages
-from Package import Package
 from IServiceManager import IServiceManager
 
+from Zope.App.OFS.Services.Configuration import ConfigurationRegistry
+
 from Persistence.Module import PersistentModuleRegistry
+from Persistence.Module import PersistentModuleRegistry, PersistentModule
+from INameResolver import INameResolver
+
+ModuleType = type(INameResolver)
+ModuleType = ModuleType, PersistentModule
+
 
 class ServiceManager(PersistentModuleRegistry):
 
     __implements__ = (IServiceManager, ISimpleReadContainer,
-                      PersistentModuleRegistry.__implements__)
+                      PersistentModuleRegistry.__implements__,
+                      INameResolver)
 
     def __init__(self):
         super(ServiceManager, self).__init__()
+
         self.__bindings = {}
         # Bindings is of the form:
         #
-        # {service_type -> [directives]}
-        #
-        # Where the first directive is always the active directive.
+        # {service_type -> ConfigurationRegistry}
 
         self.Packages = Packages()
-        self.Packages.setObject('default', Package())
 
 
     def getServiceDefinitions(self):
@@ -88,30 +95,31 @@ class ServiceManager(PersistentModuleRegistry):
 
     def getService(self, name):
         "See Zope.ComponentArchitecture.IServiceService.IServiceService"
-        
-        service = self.__bindings.get(name)
 
-        if service:
-            service = service[0] # Get the active service directive
-            if service is not None: # not disabled
-                service = service.getService(self) # get the service
-                return service
+        # This is rather tricky. Normally, getting a service requires
+        # the use of other services, like the adapter service.  We
+        # need to be careful not to get into an infinate recursion by
+        # getting out getService to be called while looking up
+        # services, so we'll
+
+        if name == 'Services':
+            return self # We are the service service
+
+        if not getattr(self, '_v_calling', 0):
+            
+            self._v_calling = 1
+            try:
+                service = self.getBoundService(name)
+                if service:
+                    return service
+                    
+            finally:
+                self._v_calling = 0
 
         return getNextService(self, name)
 
     getService = ContextMethod(getService)
 
-
-    def getBoundService(self, name):
-        "See Zope.App.OFS.Services.ServiceManager.IServiceManager."
-
-        service = self.__bindings.get(name)
-        if service:
-            service = service[0] # Get the active service directive
-            service = service.getService(self) # get the service
-            return service
-
-        return None
 
     def getInterfaceFor(self, service_type):
         "See Zope.ComponentArchitecture.IServiceService.IServiceService"
@@ -123,141 +131,50 @@ class ServiceManager(PersistentModuleRegistry):
 
     getInterfaceFor = ContextMethod(getInterfaceFor)
 
-    def disableService(self, service_type):
+    def queryConfigurationsFor(self, configuration, default=None):
+        return self.queryConfigurations(configuration.serviceType, default)
+
+    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
+
+    def queryConfigurations(self, service_type, default=None):
+        registry = self.__bindings.get(service_type, default)
+        return ContextWrapper(registry, self)
+
+    queryConfigurations = ContextMethod(queryConfigurations)
+        
+
+    def createConfigurationsFor(self, configuration):
+        return self.createConfigurations(configuration.serviceType)
+
+    createConfigurationsFor = ContextMethod(createConfigurationsFor)
+
+    def createConfigurations(self, service_type):
+        registry = ConfigurationRegistry()
+        self.__bindings[service_type] = registry
+        self._p_changed = 1
+        return registry
+
+    createConfigurations = ContextMethod(createConfigurations)
+
+    def getBoundService(self, name):
         "See Zope.App.OFS.Services.ServiceManager.IServiceManager."
-        directives = self.__bindings.get(service_type)
-        if directives and directives[0] is not None:
-            service = directives[0].getService(self)
-            aware_service = queryAdapter(service, IBindingAware)
-            if aware_service is not None:
-                aware_service.unbound(service_type)
-            directives.insert(0, None)
-            self._p_changed = 1
-    
-    disableService = ContextMethod(disableService)
 
-    def enableService(self, service_type, index):
-        "See Zope.App.OFS.Services.ServiceManager.IServiceManager."
-        self._disableFirstBeforeEnable(service_type)
+        registry = self.queryConfigurations(name)
+        if registry:
+            configuration = registry.active()
+            if configuration is not None:
+                service = configuration.getService()
+                return service
+            
+        return None
 
-        directives = self.__bindings.get(service_type)
-        directive = directives[index]
-        del directives[index]
-        directives.insert(0, directive)
-
-        self._p_changed = 1
-
-        service = directive.getService(self)
-        aware_service = queryAdapter(service, IBindingAware)
-        if aware_service is not None:
-            aware_service.bound(service_type)
-    
-    enableService = ContextMethod(enableService)
-
-
-    def _disableFirstBeforeEnable(self, service_type):
-        # Disable the first (active) service or remove the
-        # disabled marker prior to enabling a service.
-        directives = self.__bindings.get(service_type)
-
-        if directives:
-            if directives[0] is None:
-                # remove deactivation marker
-                del directives[0]
-            else:
-                
-                old_service = queryAdapter(
-                    directives[0].getService(self), IBindingAware)
-                if old_service is not None:
-                    # unbind old service, if necessary
-                    old_service.unbound(service_type)
-    
-    _disableFirstBeforeEnable = ContextMethod(
-        _disableFirstBeforeEnable)
-
-    def bindService(self, directive):
-        "See "
-        "Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
-        service = directive.getService(self)
-        service_type = directive.service_type
-
-        interface = self.getInterfaceFor(service_type)
-        
-        if not interface.isImplementedBy(service):
-            raise InvalidService(service_type, directive, interface)
-
-        self._disableFirstBeforeEnable(service_type)
-
-        bindings = self.__bindings
-        if service_type not in bindings:
-            bindings[service_type] = [directive]
-        else:
-            directives = bindings[service_type]
-            directives.insert(0, directive)
-
-        self._p_changed = 1
-        
-        aware_service = queryAdapter(service, IBindingAware)
-        if aware_service is not None:
-            aware_service.bound(service_type)
-
-    bindService = ContextMethod(bindService)
-
-    def addService(self, directive):
-        "See "
-        "Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
-        service = directive.getService(self)
-        service_type = directive.service_type
-
-        interface = self.getInterfaceFor(service_type)
-        
-        if not interface.isImplementedBy(service):
-            raise InvalidService(service_type, directive, interface)
-
-        bindings = self.__bindings
-        if service_type not in bindings:
-            bindings[service_type] = []
-        bindings[service_type].append(directive)
-
-        self._p_changed = 1
-                
-        if len(bindings) == 1:
-            aware_service = queryAdapter(service, IBindingAware)
-            if aware_service is not None:
-                aware_service.bound(service_type)
-
-    addService = ContextMethod(addService)
-    
-    def unbindService(self, directive):
-        "See Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
-        service = directive.getService(self) # must be before unwrapping self
-        self = removeAllProxies(self)  
-        service_type = directive.service_type
-
-        directives = self.__bindings[service_type]
-        if directive not in directives:
-            raise KeyError(directive)
-        
-        aware_service = queryAdapter(service, IBindingAware)
-        if aware_service is not None:
-            aware_service.unbound(service_type)
-
-        self.__bindings[service_type] = [d for d in directives
-                                         if d != directive]
-
-        self._p_changed = 1
-    
-    unbindService = ContextMethod(unbindService)
-
-    def getDirectives(self, service_type):
-        "See "
-        "Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
-        return self.__bindings[service_type]
+    getBoundService = ContextMethod(getBoundService)
 
     def getBoundServiceTypes(self):
-        "See Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
-        return  self.__bindings.keys()
+        "See "
+        "Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
         
+        return  self.__bindings.keys()
 
     ############################################################
     # Implementation methods for interface
@@ -306,7 +223,7 @@ class ServiceManager(PersistentModuleRegistry):
 
     def findModule(self, name):
         # override to pass call up to next service manager 
-        mod = super(ServiceManager, self).findModule(name)
+        mod = super(ServiceManager, removeAllProxies(self)).findModule(name)
         if mod is not None:
             return mod
         
@@ -319,3 +236,50 @@ class ServiceManager(PersistentModuleRegistry):
             # direct way to ask if sm is the global service manager.
             return None
         return findModule(name)
+
+    findModule = ContextMethod(findModule)
+
+    def __import(self, module_name):
+
+        mod = self.findModule(module_name)
+        if mod is None:
+            mod = sys.modules.get(module_name)
+            if mod is None:
+                raise ImportError(module_name)
+
+        return mod
+
+    __import = ContextMethod(__import)
+
+    def resolve(self, name):
+        
+        name = name.strip()
+
+        if name.endswith('.') or name.endswith('+'):
+            name = name[:-1]
+            repeat = 1
+        else:
+            repeat = 0
+
+        names=name.split('.')
+        last=names[-1]
+        mod='.'.join(names[:-1])
+
+        if not mod:
+            return self.__import(name)
+
+        while 1:
+            m = self.__import(mod)
+            try:
+                a=getattr(m, last)
+            except AttributeError:
+                if not repeat:
+                    return self.__import(name)
+
+            else:
+                if not repeat or (not isinstance(a, ModuleType)):
+                    return a
+            mod += '.' + last
+
+    resolve = ContextMethod(resolve)
+

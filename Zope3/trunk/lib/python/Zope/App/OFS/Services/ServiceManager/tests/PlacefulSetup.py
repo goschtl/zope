@@ -14,27 +14,68 @@
 """
 
 Revision information:
-$Id: PlacefulSetup.py,v 1.6 2002/10/04 18:37:22 jim Exp $
+$Id: PlacefulSetup.py,v 1.7 2002/11/30 18:39:18 jim Exp $
 """
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
+from Zope import ComponentArchitecture as CA
+from Zope.App.ComponentArchitecture import hooks
+from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
+
+from Zope.App.Traversing import getPhysicalPathString
+from Zope.App.Traversing.DefaultTraversable import DefaultTraversable
+from Zope.App.Traversing.EtcNamespace import etc
+from Zope.App.Traversing.IContainmentRoot import IContainmentRoot
+from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
+from Zope.App.Traversing.ITraverser import ITraverser
+from Zope.App.Traversing.ITraversable import ITraversable
+from Zope.App.Traversing.Namespaces import provideNamespaceHandler
+from Zope.App.Traversing.PhysicalLocationAdapters \
+     import WrapperPhysicallyLocatable, RootPhysicallyLocatable
+from Zope.App.Traversing.Traverser import Traverser
+
+from Zope.App.OFS.Content.Folder.RootFolder import IRootFolder
+
+
+from Zope.App.OFS.Container.IContainer import ISimpleReadContainer
+from Zope.App.OFS.Container.ContainerTraversable import ContainerTraversable
+
+from Zope.ComponentArchitecture.GlobalViewService import provideView
+from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
+from Zope.App.ZopePublication.TraversalViews.AbsoluteURL \
+     import SiteAbsoluteURL, AbsoluteURL
 
 class PlacefulSetup(PlacelessSetup):
     
     def setUp(self):
         PlacelessSetup.setUp(self)
-        # set up etc namespace
-        from Zope.App.Traversing.Namespaces import provideNamespaceHandler
-        from Zope.App.Traversing.EtcNamespace import etc
-        provideNamespaceHandler("etc", etc)
         # set up placeful hooks, saving originals for tearDown
-        from Zope import ComponentArchitecture as CA
         self.__old_getServiceManager_hook = CA.getServiceManager_hook
-        from Zope.App.ComponentArchitecture import hooks
         CA.getServiceManager_hook = hooks.getServiceManager_hook
+        self.setUpTraversal()
+
+    def setUpTraversal(self):
+
+        provideAdapter(None, ITraverser, Traverser)
+        provideAdapter(None, ITraversable, DefaultTraversable)
+        
+        provideAdapter(
+            ISimpleReadContainer, ITraversable, ContainerTraversable)
+        provideAdapter(
+            None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
+        provideAdapter(
+            IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
+
+        # set up etc namespace
+        provideNamespaceHandler("etc", etc)
+
+        provideView(None, "absolute_url", IBrowserPresentation,
+                    AbsoluteURL)
+        provideView(IRootFolder, "absolute_url", IBrowserPresentation,
+                    SiteAbsoluteURL)
+
 
     def tearDown(self):
         # clean up folders and placeful service managers and services too?
-        from Zope import ComponentArchitecture as CA
         CA.getServiceManager_hook = self.__old_getServiceManager_hook
         PlacelessSetup.tearDown(self)
 
@@ -94,8 +135,10 @@ class PlacefulSetup(PlacelessSetup):
              name = "folder2_1_1")
 
     def createServiceManager(self, folder = None):
-        if folder is None: folder = self.rootFolder
-        from Zope.App.OFS.Services.ServiceManager.ServiceManager \
-             import ServiceManager
-        folder.setServiceManager(ServiceManager())
+        if folder is None:
+            folder = self.rootFolder
+        from Zope.App.OFS.Services.tests.TestingServiceManager \
+             import TestingServiceManager
+
+        folder.setServiceManager(TestingServiceManager())
 

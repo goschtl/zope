@@ -15,38 +15,43 @@
 
 XXX longer description goes here.
 
-$Id: AddServiceDirective.py,v 1.2 2002/11/18 13:26:36 stevea Exp $
+$Id: AddServiceConfiguration.py,v 1.2 2002/11/30 18:39:17 jim Exp $
 """
 __metaclass__ = type
 
 from Zope.ComponentArchitecture import getServiceManager
 from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
-     import ServiceDirective
+from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration \
+     import ServiceConfiguration
+from Zope.App.OFS.Services.ConfigurationInterfaces import IConfiguration
+from Zope.App.Forms.Utility import setUpWidgets, getWidgetsDataForContent
 
-class AddServiceDirective(BrowserView):
+class AddServiceConfiguration(BrowserView):
+
+    def __init__(self, *args):
+        super(AddServiceConfiguration, self).__init__(*args)
+        setUpWidgets(self, IConfiguration)
 
     def services(self):
         service = getServiceManager(self.context.context)
         definitions = service.getServiceDefinitions()
-        return [name for (name, interface) in definitions]
+        names = [name for (name, interface) in definitions]
+        names.sort()
+        return names
 
     def components(self):
         service_type = self.request['service_type']
         service = getServiceManager(self.context.context)
         type = service.getInterfaceFor(service_type)
-        return [info['path']
-                for info in service.queryComponent(type=type)
-                ]
+        paths = [info['path']
+                 for info in service.queryComponent(type=type)
+                 ]
+        paths.sort()
+        return paths
 
-    def action(self, service_type, component_path, status=""):
-        sd = ServiceDirective(service_type, component_path)
-        self.context.add(sd)
-        service = getServiceManager(self.context.context)
-        if status:
-            if status == 'register':
-                service.addService(sd)
-            else:
-                service.bindService(sd)
+    def action(self, service_type, component_path):
+        sd = ServiceConfiguration(service_type, component_path)
+        sd = self.context.add(sd)
+        getWidgetsDataForContent(self, IConfiguration, sd)
         self.request.response.redirect(self.context.nextURL())
 

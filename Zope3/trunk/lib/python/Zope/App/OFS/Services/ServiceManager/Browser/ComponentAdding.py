@@ -11,18 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""Handle form to create module
-
-$Id: AddModule.py,v 1.1 2002/10/02 22:18:00 jeremy Exp $
 """
 
-from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.App.OFS.Services.ServiceManager.Module import Manager
+$Id: ComponentAdding.py,v 1.2 2002/11/30 18:39:17 jim Exp $
+"""
 
-class AddModule(BrowserView):
+from Zope.App.OFS.Container.Views.Browser.Adding import Adding
+from Zope.App.OFS.Services.ServiceManager.IServiceAdding import IServiceAdding
 
-    def action(self, name, source):
-        mgr = Manager()
-        mgr = self.context.add(mgr)
-        mgr.new(name, source)
-        self.request.response.redirect(self.context.nextURL())
+class ServiceAdding(Adding):
+    
+    __implements__ = IServiceAdding
+

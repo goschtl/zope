@@ -10,6 +10,7 @@
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Services.ServiceManager.IServiceManager." />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
   </content>
 
   <content class=".Packages.">
@@ -22,6 +23,7 @@
     <require
         permission="Zope.ManageServices"
         interface=".IComponentManager." />
+
   </content>
 
   <content class=".Package.">
@@ -31,22 +33,52 @@
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
+
+  </content>
+
+   <content class=".ConfigurationManager.">
+    <require
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
+    <require
+        permission="Zope.ManageServices"
+    	attributes="arrange_object remove_objects" />
+    <factory 
+        id = "Zope.App.OFS.Services.ServiceManager.ConfigurationManager" 
+	permission = "Zope.ManageServices"
+	title = "Configuration Manager" />
   </content>
 
   <content class=".Module.Manager.">
     <require 
         permission="Zope.ManageCode"
 	interface="Persistence.IPersistentModuleManager." />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
    </content>
 
-  <content class=".ServiceDirective.">
+
+  <content class=".ServiceConfiguration.">
     <require
         permission="Zope.ManageServices"
-        interface=".IServiceDirective." />
+        interface=".IServiceConfiguration."
+        set_attributes="serviceType componentPath"
+        set_schema=
+            "Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration"
+        />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IAddNotifiable."
+        />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IDeleteNotifiable."
+        />
+
   </content>
-
-
-
-  <include package="Zope.App.OFS.Services.ServiceManager.Views" />
+  
+  <include package="Zope.App.OFS.Services.ServiceManager.Browser" />
 
 </zopeConfigure>
