@@ -30,7 +30,7 @@ class SetupContext:
         self.packages = []
         self.package_data = {}
         self.package_dir = {}
-        self.extensions = []
+        self.ext_modules = []
         self.scripts = []
         self.platforms = None
         self.classifiers = None
@@ -57,7 +57,7 @@ class SetupContext:
         directory = os.path.join(self._working_dir, pkgname)
         pkginfo = package.loadPackageInfo(pkgname, directory, reldir)
         self.scripts.extend(pkginfo.script)
-        self.extensions.extend(pkginfo.extensions)
+        self.ext_modules.extend(pkginfo.extensions)
         #
         # Generate setup.cfg the first time we run:
         #
@@ -65,11 +65,13 @@ class SetupContext:
         if os.path.exists(setup_cfg):
             return
         if pkginfo.documentation:
+            prefix = "doc_files = "
+            s = "\n" + (" " * len(prefix))
             f = open(setup_cfg, "w")
             f.write("[bdist_rpm]\n")
-            f.write("doc_files =")
-            for fn in pkginfo.documentation:
-                f.write(" %s\n" % fn)
+            f.write(prefix)
+            f.write(s.join(pkginfo.documentation))
+            f.write("\n")
             f.close()
 
     def scan_package(self, name, directory):
