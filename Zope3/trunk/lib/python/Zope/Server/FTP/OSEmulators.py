@@ -16,7 +16,7 @@
 Simulates OS-level directory listing output for *nix and MS-DOS (including
 Windows NT).  
 
-$Id: OSEmulators.py,v 1.3 2002/12/20 09:25:44 srichter Exp $
+$Id: OSEmulators.py,v 1.4 2002/12/20 20:42:15 srichter Exp $
 """
 
 import stat
@@ -50,6 +50,7 @@ def ls_longify((filename, stat_info)):
     else:
         dirchar = '-'
     date = ls_date(datetime.datetime.now(), stat_info[stat.ST_MTIME])
+
     return '%s%s %3d %-8s %-8s %8d %s %s' % (
             dirchar,
             mode,

@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem implementation for a real (unix-like) OS filesystem.
 
-$Id: OSFileSystem.py,v 1.4 2002/12/20 09:25:45 srichter Exp $
+$Id: OSFileSystem.py,v 1.5 2002/12/20 20:42:16 srichter Exp $
 """
 import os
 import re
@@ -237,7 +237,7 @@ class OSFileSystem(object):
 
 def safe_stat(path):
     try:
-        stat = os.stat(p)
-        return stat[0, 6], fromts(stat[7]), fromts(stat[8]), fromts(stat[9])
+        stat = os.stat(path)
+        return stat[:7] + (fromts(stat[7]), fromts(stat[8]), fromts(stat[9]))
     except OSError:
         return None

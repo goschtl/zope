@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testFTPServer.py,v 1.5 2002/12/20 09:49:23 srichter Exp $
+$Id: testFTPServer.py,v 1.6 2002/12/20 20:42:15 srichter Exp $
 """
 
 import unittest
@@ -184,8 +184,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(self.execute('HELP', 1), result)
 
 
-    # XXX: Test disabled due to ftplib error.
-    def XXXtestLIST(self):
+    def testLIST(self):
         conn = ftplib.FTP()
         try:
             conn.connect(LOCALHOST, self.port)
