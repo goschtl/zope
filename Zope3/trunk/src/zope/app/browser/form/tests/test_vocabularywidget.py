@@ -343,7 +343,7 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         request = self.makeRequest('field.f=foobar')
         w = getView(bound, "edit", request)
         self.assert_(w.haveData())
-        self.assertEqual(w._showData(), "foobar")
+        self.assertEqual(w.getData(), "foobar")
         self.assert_(isinstance(w, vocabularywidget.VocabularyEditWidget))
 
     def test_edit_with_modified_empty_value(self):
@@ -352,7 +352,7 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         # report haveData() properly.
         bound = self.makeField(BasicVocabulary(["splat", "foobar"]))
         bound.context.f = "splat"
-        w = getView(bound, "edit", request = self.makeRequest())
+        w = getView(bound, "edit", self.makeRequest())
         self.assert_(w.haveData())
 
 class SingleSelectionTests(SingleSelectionTestsBase):
