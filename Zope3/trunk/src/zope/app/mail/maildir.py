@@ -13,8 +13,6 @@
 ##############################################################################
 """Read/write access to Maildir folders.
 
-XXX check exception types
-
 $Id$
 """
 import os
@@ -72,9 +70,9 @@ class Maildir(object):
 
     def newMessage(self):
         "See zope.app.interfaces.mail.IMaildir"
-        # XXX http://www.qmail.org/man/man5/maildir.html says, that the first
-        #     step of the delivery process should be a chdir.  Chdirs and
-        #     threading do not mix.  Is that chdir really necessary?
+        # NOTE: http://www.qmail.org/man/man5/maildir.html says, that the first
+        #       step of the delivery process should be a chdir.  Chdirs and
+        #       threading do not mix.  Is that chdir really necessary?
         join = os.path.join
         subdir_tmp = join(self.path, 'tmp')
         subdir_new = join(self.path, 'new')
@@ -88,11 +86,11 @@ class Maildir(object):
             if not os.path.exists(filename):
                 break
             counter += 1
-            if counter >= 1000:  # XXX hardcoded magic number
+            if counter >= 1000:
                 raise RuntimeError("Failed to create unique file name in %s,"
                                    " are we under a DoS attack?" % subdir_tmp)
-            # XXX maildir.html (see above) says I should sleep for 2
-            # seconds, not 1
+            # NOTE: maildir.html (see above) says I should sleep for 2
+            #       seconds, not 1
             time.sleep(1)
         return MaildirMessageWriter(filename, join(subdir_new, unique))
 
@@ -120,14 +118,14 @@ class MaildirMessageWriter(object):
 
     def commit(self):
         if self._closed and self._aborted:
-            raise AssertionError('Cannot commit, message already aborted')
+            raise RuntimeError('Cannot commit, message already aborted')
         elif not self._closed:
             self._closed = True
             self._aborted = False
             self._fd.close()
             os.rename(self._filename, self._new_filename)
-            # XXX the same maildir.html says it should be a link, followed by
-            #     unlink.  But Win32 does not necessarily have hardlinks!
+            # NOTE: the same maildir.html says it should be a link, followed by
+            #       unlink.  But Win32 does not necessarily have hardlinks!
 
     def abort(self):
         if not self._closed:
@@ -136,4 +134,4 @@ class MaildirMessageWriter(object):
             self._fd.close()
             os.unlink(self._filename)
 
-    # XXX should there be a __del__ that does abort()?
+    # should there be a __del__ that does abort()?

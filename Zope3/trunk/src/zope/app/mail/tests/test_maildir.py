@@ -227,7 +227,7 @@ class TestMaildir(unittest.TestCase):
         writer.abort()
         self.assertEquals(self.fake_os_module._removed_files, ())
         # Once aborted, commit fails
-        self.assertRaises(AssertionError, writer.commit)
+        self.assertRaises(RuntimeError, writer.commit)
 
     def test_message_writer_commit(self):
         from zope.app.mail.maildir import MaildirMessageWriter

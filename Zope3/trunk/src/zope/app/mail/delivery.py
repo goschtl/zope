@@ -176,7 +176,7 @@ class QueueProcessorThread(threading.Thread):
                     fromaddr, toaddrs, message = self._parseMessage(message)
                     self.mailer.send(fromaddr, toaddrs, message)
                     unlink(filename)
-                    # XXX maybe log the Message-Id of the message sent
+                    # TODO: maybe log the Message-Id of the message sent
                     self.log.info("Mail from %s to %s sent.",
                                   fromaddr, ", ".join(toaddrs))
                     # Blanket except because we don't want

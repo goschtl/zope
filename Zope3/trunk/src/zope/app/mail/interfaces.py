@@ -36,7 +36,7 @@ Email sending from Zope 3 applications works as follows:
   but that is not a problem, because mail delivery problems dispatch an
   event instead of raising an exception.
 
-  XXX and there's the problem -- sending events causes unknown code to be
+  However, there is a problem -- sending events causes unknown code to be
   executed during the transaction commit phase.  There should be a way to
   start a new transaction for event processing after this one is commited.
 
