@@ -29,7 +29,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.26 2003/08/08 14:36:47 fdrake Exp $
+$Id: main.py,v 1.27 2003/08/08 21:45:39 fdrake Exp $
 """
 
 import os
@@ -324,8 +324,10 @@ def revert(opts, args):
     fs.multiple(args, fs.revert)
 
 def mkdir(opts, args):
-    """%(program)s revert [TARGET ...]
+    """%(program)s mkdir TARGET ...
 
+    Create new directories in directories that are already known to
+    %(program)s and schedule the new directories for addition.
     """
     fs = FSSync()
     fs.multiple(args, fs.mkdir)
