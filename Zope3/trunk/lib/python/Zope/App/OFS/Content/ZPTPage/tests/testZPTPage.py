@@ -14,12 +14,15 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: testZPTPage.py,v 1.4 2002/12/03 21:34:47 jeremy Exp $
+$Id: testZPTPage.py,v 1.5 2002/12/05 12:36:48 bcsaller Exp $
 """
 
 import unittest
 
-from Zope.App.OFS.Content.ZPTPage.ZPTPage import ZPTPage
+from Zope.App.OFS.Content.ZPTPage.ZPTPage import ZPTPage, \
+     SearchableText, IZPTPage
+from Zope.App.index.text.interfaces import ISearchableText
+from Zope.ComponentArchitecture import getAdapter
 
 # Wow, this is a lot of work. :(
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
@@ -43,8 +46,23 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         PlacelessSetup.setUp(self)
         provideAdapter(None, ITraverser, Traverser)
         provideAdapter(None, ITraversable, DefaultTraversable)
+        provideAdapter(IZPTPage, ISearchableText, SearchableText)
         defineChecker(Data, NamesChecker(['URL', 'name']))
+    
+    def testSearchableText(self):
+        page = ZPTPage()
+        text = 'this is a test\n' ## The source will return with a newline if its ommited
+        utext = u'another test\n'
+        
+        page.setSource(text)
+        searchableText = getAdapter(page, ISearchableText)
+        self.failUnlessEqual(searchableText.getSearchableText(), [unicode(text)])
 
+        page.setSource(utext)
+        self.failUnlessEqual(searchableText.getSearchableText(), [utext])
+        
+        
+        
     def testZPTRendering(self):
         page = ZPTPage()
         page.setSource(
@@ -69,6 +87,8 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             'zope'
             '</a></body></html>'
             )
+
+
 
 def test_suite():
    return unittest.makeSuite(ZPTPageTests)

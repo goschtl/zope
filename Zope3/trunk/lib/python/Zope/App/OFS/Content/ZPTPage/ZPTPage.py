@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.13 2002/11/12 17:30:09 stevea Exp $
+$Id: ZPTPage.py,v 1.14 2002/12/05 12:36:48 bcsaller Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -102,3 +102,25 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 
     source = property(getSource, setSource, None,
                       """Source of the Page Template.""")
+
+# Adapter for ISearchableText
+
+from Zope.App.index.text.interfaces import ISearchableText
+
+class SearchableText:
+
+    __implements__ = ISearchableText
+    __used_for__ = IZPTPage
+
+    def __init__(self, page):
+        self.page = page
+        
+    def getSearchableText(self):
+        try:
+            # XXX check about encoding here and in the ZPTPage.read
+            #     the exception should go away when we know how this
+            #     works in terms of conversion, for now on problems
+            #     don't index the object
+            return [unicode(self.page.source)]
+        except:
+            return None

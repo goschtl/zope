@@ -26,6 +26,10 @@
       interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 </content>
 
+<adapter factory=".ZPTPage.SearchableText"
+         provides="Zope.App.index.text.interfaces.ISearchableText"
+         for="Zope.App.OFS.Content.ZPTPage.ZPTPage.IZPTPage" />
+
 <include package=".Views" />
 
 </zopeConfigure>
