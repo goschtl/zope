@@ -13,10 +13,10 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.14 2003/09/21 17:33:27 jim Exp $
+$Id: translationservice.py,v 1.15 2004/02/20 22:02:32 fdrake Exp $
 """
 import re
-from zodb.btrees.OOBTree import OOBTree
+from BTrees.OOBTree import OOBTree
 
 from zope.app import zapi
 from zope.app.component.nextservice import queryNextService

@@ -13,9 +13,9 @@
 ##############################################################################
 """Attribute Annotations implementation 
 
-$Id: attributeannotations.py,v 1.8 2004/02/13 22:24:08 srichter Exp $
+$Id: attributeannotations.py,v 1.9 2004/02/20 22:02:27 fdrake Exp $
 """
-from zodb.btrees.OOBTree import OOBTree
+from BTrees.OOBTree import OOBTree
 from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
 from zope.proxy import removeAllProxies
 from zope.interface import implements

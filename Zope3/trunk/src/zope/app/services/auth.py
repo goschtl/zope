@@ -13,11 +13,11 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.23 2004/02/20 16:57:30 fdrake Exp $
+$Id: auth.py,v 1.24 2004/02/20 22:02:31 fdrake Exp $
 """
 
 from persistent import Persistent
-from zodb.btrees.OOBTree import OOBTree
+from BTrees.OOBTree import OOBTree
 
 from zope.exceptions import NotFoundError
 from zope.component import getAdapter, queryAdapter

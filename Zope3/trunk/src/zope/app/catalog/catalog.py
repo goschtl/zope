@@ -104,7 +104,7 @@ class CatalogBase(Persistent, SampleContainer):
                 pass
 
     def searchResults(self, **searchterms):
-        from zodb.btrees.IIBTree import intersection
+        from BTrees.IIBTree import intersection
         pendingResults = None
         for key, value in searchterms.items():
             index = self.get(key)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Register protection information for some standard low-level types
 
-$Id: _protections.py,v 1.8 2004/02/20 16:57:30 fdrake Exp $
+$Id: _protections.py,v 1.9 2004/02/20 22:02:31 fdrake Exp $
 """
 
 def protect():
@@ -47,10 +47,10 @@ def protect():
 
     _iteratorChecker = NamesChecker(['next'])
 
-    from zodb.btrees.IIBTree import IIBTree, IIBucket, IISet, IITreeSet
-    from zodb.btrees.IOBTree import IOBTree, IOBucket, IOSet, IOTreeSet
-    from zodb.btrees.OIBTree import OIBTree, OIBucket, OISet, OITreeSet
-    from zodb.btrees.OOBTree import OOBTree, OOBucket, OOSet, OOTreeSet
+    from BTrees.IIBTree import IIBTree, IIBucket, IISet, IITreeSet
+    from BTrees.IOBTree import IOBTree, IOBucket, IOSet, IOTreeSet
+    from BTrees.OIBTree import OIBTree, OIBucket, OISet, OITreeSet
+    from BTrees.OOBTree import OOBTree, OOBucket, OOSet, OOTreeSet
 
     _btree_checkers = {
         IIBTree: _btreeChecker,

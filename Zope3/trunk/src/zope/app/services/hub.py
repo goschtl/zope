@@ -13,15 +13,15 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.27 2004/02/20 16:57:30 fdrake Exp $
+$Id: hub.py,v 1.28 2004/02/20 22:02:31 fdrake Exp $
 """
 __metaclass__ = type
 
 import random
 
 from zope.app import zapi
-from zodb.btrees.IOBTree import IOBTree
-from zodb.btrees.OIBTree import OIBTree
+from BTrees.IOBTree import IOBTree
+from BTrees.OIBTree import OIBTree
 
 from zope.component import getAdapter, getService
 from zope.exceptions import NotFoundError

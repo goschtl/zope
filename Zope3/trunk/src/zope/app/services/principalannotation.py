@@ -21,7 +21,7 @@
 # Zope3 imports
 from persistent import Persistent
 from persistent.dict import PersistentDict
-from zodb.btrees.OOBTree import OOBTree
+from BTrees.OOBTree import OOBTree
 from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.annotation import IAnnotations
 from zope.interface import implements

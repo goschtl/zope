@@ -27,7 +27,7 @@ from persistence import Persistent
 from zope.server.http.http_date import build_http_date
 from zope.interface import implements
 from zope.app import zapi
-from zodb.btrees.OOBTree import OOBTree
+from BTrees.OOBTree import OOBTree
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 

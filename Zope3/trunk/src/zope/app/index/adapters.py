@@ -13,10 +13,10 @@
 ##############################################################################
 """Index-relevant adapters.
 
-$Id: adapters.py,v 1.6 2003/08/19 13:14:50 srichter Exp $
+$Id: adapters.py,v 1.7 2004/02/20 22:02:29 fdrake Exp $
 """
 from zope.index.interfaces import IQuerying, ISimpleQuery, IKeywordQuerying
-from zodb.btrees.IIBTree import IISet
+from BTrees.IIBTree import IISet
 
 class SimpleQuery:
     "Call an IQuerying search, return only the hubids"

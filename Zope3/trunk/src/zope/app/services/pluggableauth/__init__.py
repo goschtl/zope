@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.11 2004/02/20 16:57:31 fdrake Exp $
+$Id: __init__.py,v 1.12 2004/02/20 22:02:32 fdrake Exp $
 """
 import random
 import sys
@@ -21,8 +21,8 @@ import time
 import random
 
 from persistent import Persistent
-from zodb.btrees.IOBTree import IOBTree
-from zodb.btrees.OIBTree import OIBTree
+from BTrees.IOBTree import IOBTree
+from BTrees.OIBTree import OIBTree
 from zope.interface import implements
 from zope.component import queryAdapter
 from zope.app.services.servicenames import Authentication

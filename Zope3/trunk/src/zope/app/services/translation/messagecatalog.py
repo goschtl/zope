@@ -13,12 +13,12 @@
 ##############################################################################
 """A simple implementation of a Message Catalog.
 
-$Id: messagecatalog.py,v 1.9 2004/02/20 16:57:32 fdrake Exp $
+$Id: messagecatalog.py,v 1.10 2004/02/20 22:02:32 fdrake Exp $
 """
 from zope.interface import classProvides, providedBy, implements
 import time
 
-from zodb.btrees.OOBTree import OOBTree
+from BTrees.OOBTree import OOBTree
 from persistent import Persistent
 from zope.proxy import removeAllProxies
 from zope.component.interfaces import IFactory
