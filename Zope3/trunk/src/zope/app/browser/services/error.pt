@@ -12,7 +12,7 @@ file(s).
 </p>
 
 <form action="edit.html" method="post">
-<br/>
+<br />
 <table tal:define="props context/getProperties">
   <tr>
     <td align="left" valign="top">

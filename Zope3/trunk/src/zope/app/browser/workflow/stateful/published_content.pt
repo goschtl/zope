@@ -6,7 +6,7 @@
       <div metal:fill-slot="body">
         <div tal:repeat="obj view/listPublishedItems"
              tal:omit-tag="">
-          <div tal:content="obj/url"/><br/>
+          <div tal:content="obj/url"/><br />
           </div>
         </div>
     </body>

@@ -24,12 +24,12 @@
       <p>
        Created: 
        <span tal:replace="data/created">2000-01-01 01:01:01</span>
-       <br/>
+       <br />
        Content Last Modified: 
        <span tal:replace="data/modified">2000-01-01 01:01:01</span>
-       <br/>
+       <br />
        <span tal:repeat="creator data/creators">
-        Creator: <span tal:replace="creator">Bart Simpson</span> <br/>
+        Creator: <span tal:replace="creator">Bart Simpson</span> <br />
         </span>
       </p>
 

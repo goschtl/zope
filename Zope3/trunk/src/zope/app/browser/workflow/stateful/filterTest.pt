@@ -6,7 +6,7 @@
       <div metal:fill-slot="body">
         <div tal:repeat="obj view/filterTest"
              tal:omit-tag="">
-          <div tal:replace="obj"/><br/>
+          <div tal:replace="obj"/><br />
           </div>
         </div>
     </body>

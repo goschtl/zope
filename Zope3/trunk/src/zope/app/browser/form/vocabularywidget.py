@@ -378,7 +378,7 @@ class ActionHelper(object, TranslationHook):
 
     def renderAction(self, action, disabled=False):
         msgid = self.__actions[action]
-        return ("<input type='submit' name='%s.action-%s' value=%s %s/>"
+        return ("<input type='submit' name='%s.action-%s' value=%s %s />"
                 % (self.name, action, quoteattr(self.translate(msgid)),
                    disabled and "\n       disabled='disabled' " or ""))
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.11 2003/06/25 18:43:10 philikon Exp $
+$Id: test_field_widget.py,v 1.12 2003/06/25 21:18:55 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -140,7 +140,7 @@ class TestComponentLocationWidget(BaseTest):
             '<option>/++etc++site/default/c2</option>'
             '<option>/++etc++site/default/c3</option>'
             '</select>'
-            '<br/>'
+            '<br />'
             'dotted name: '
             '<input type="text" name="field.X.d" value="">'
             )
@@ -160,7 +160,7 @@ class TestComponentLocationWidget(BaseTest):
             '<option selected>/++etc++site/default/c2</option>'
             '<option>/++etc++site/default/c3</option>'
             '</select>'
-            '<br/>'
+            '<br />'
             'dotted name: '
             '<input type="text" name="field.X.d" value="">'
             )
@@ -192,7 +192,7 @@ class TestComponentLocationWidget(BaseTest):
             '<option>/++etc++site/default/c2</option>'
             '<option>/++etc++site/default/c3</option>'
             '</select>'
-            '<br/>'
+            '<br />'
             'dotted name: '
             '<input type="text" name="field.X.d" value="'
             'zope.app.browser.services.tests.test_field_widget'

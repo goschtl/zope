@@ -31,7 +31,7 @@
     </tr>
 
   <tr>
-    <td><br/></td>
+    <td><br /></td>
     <td>
         <input type="text" name="id"
                tal:condition="view/namesAccepted"

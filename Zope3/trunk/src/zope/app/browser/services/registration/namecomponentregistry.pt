@@ -34,11 +34,11 @@
               >Orange</a>
            <span tal:replace="registry/name"
                  tal:condition="registry/inactive" />
-           <br/>
+           <br />
            <span tal:content="structure registry/view" />
          </div>
 
-      <input type="submit" name="submit_update" value="Update" /><br/>
+      <input type="submit" name="submit_update" value="Update" /><br />
 
       </form>
 

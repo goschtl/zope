@@ -79,7 +79,7 @@
         <td width="20%">
           <div align="center">
             <div><input type="submit" name="saveSettings.html:method" 
-                        value="Save Settings" /></div><br/>
+                        value="Save Settings" /></div><br />
             <div><input type="submit" name="synchronize.html:method" 
                         value="Synchronize" /></div>
           </div>
@@ -87,7 +87,7 @@
       </tr>
     </form>
   </table>
-  <br/>
+  <br />
 
 <form action="./"
       tal:condition="view/canConnect">

@@ -13,7 +13,7 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.9 2003/06/25 18:43:08 philikon Exp $
+$Id: field.py,v 1.10 2003/06/25 21:18:53 philikon Exp $
 """
 __metaclass__ = type
 
@@ -156,7 +156,7 @@ class ComponentLocationWidget(Widget, BrowserView):
                                         name+'.p', path)
         inputmarkup = '<input type="text" name="%s.d" value="%s">' % (
                       name, dottedname)
-        HTML = 'path: %s<br/>dotted name: %s' % (selectmarkup, inputmarkup)
+        HTML = 'path: %s<br />dotted name: %s' % (selectmarkup, inputmarkup)
         return HTML
 
     def hidden(self):

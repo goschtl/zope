@@ -84,7 +84,7 @@
         <div class="body">
           <div tal:content="structure view/getTopicTree|nothing"
                tal:omit-tag="">content of topicTree</div>
-          <br/>
+          <br />
         </div>
           
       </div>

@@ -28,12 +28,12 @@
           </div>
           
         </div>
-        <br/>
+        <br />
         <div metal:define-macro="contents_transitions"
              tal:define="info view/getTransitions"
              tal:condition="info">
             Current Status: <div tal:replace="info/status"/>
-            <br/>
+            <br />
             Possible State Changes:
             <form action="@@fireTransition.html" method="get">
             <input type="hidden" name="workflow"
@@ -44,7 +44,7 @@
                 <input type="radio"
                        name="selTransition"
                        tal:attributes="value trans/name"/>
-                <span tal:replace="trans/title"/><br/>
+                <span tal:replace="trans/title"/><br />
               </div>
               <input type="submit" value="do it" />
               </form>

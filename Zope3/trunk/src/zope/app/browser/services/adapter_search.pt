@@ -20,12 +20,12 @@
       >
   <table>
     <tr>
-       <th>For/<br/>Provided</th>
+       <th>For/<br />Provided</th>
        <th>Configuration</th>
     </tr>
 
     <tr tal:repeat="config view/configInfo">
-      <td><span tal:replace="config/forInterface" />/<br/>
+      <td><span tal:replace="config/forInterface" />/<br />
           <span tal:replace="config/providedInterface" />
       </td>
       <td tal:content="structure config/view" />

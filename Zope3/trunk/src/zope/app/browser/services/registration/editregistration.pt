@@ -33,7 +33,7 @@
                 </span>
               </a>
               <span tal:condition="not:config/active">(disabled)</span>
-              <br/>
+              <br />
               <span tal:content="config/line2|default">
                 (No implementation summary)
               </span>
