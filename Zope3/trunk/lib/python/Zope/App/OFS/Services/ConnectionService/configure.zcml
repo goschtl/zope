@@ -1,28 +1,16 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
+     xmlns='http://namespaces.zope.org/zope'>
 
-   xmlns:service='http://namespaces.zope.org/service'
->
-  <content class=".ConnectionService.">
-
-    <factory
-        id="ConnectionService"
-        permission="Zope.ManageServices"
-        />
-
+<content class=".ConnectionService.">
+  <factory id="ConnectionService" permission="Zope.ManageServices" />
     <require
         permission="Zope.View"
         interface="Zope.App.RDB.IConnectionService." />
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IContainer." />
+</content>
 
-  </content>
-
-  <browser:menuItem menu="add_service" for="Zope.App.OFS.Container.IAdding."
-     action="ConnectionService"  title="RDBMS Connection Service" />
-
-  <include package=".Views" />
+<include package=".Views" />
 
 </zopeConfigure>

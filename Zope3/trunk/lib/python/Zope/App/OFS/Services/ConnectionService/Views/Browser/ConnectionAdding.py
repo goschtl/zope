@@ -15,11 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: ConnectionAdding.py,v 1.1 2002/06/24 16:18:50 srichter Exp $
+$Id: ConnectionAdding.py,v 1.2 2002/07/10 23:52:18 srichter Exp $
 """
 
 from Zope.App.OFS.Container.Views.Browser.Adding import Adding
-from Zope.App.OFS.Services.ConnectionService.IConnectionAdding import IConnectionAdding
+from Zope.App.OFS.Services.ConnectionService.IConnectionAdding import \
+     IConnectionAdding
 
 class ConnectionAdding(Adding):
     

@@ -11,11 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: IConnectionAdding.py,v 1.1 2002/06/24 16:18:50 srichter Exp $
+"""$Id: IConnectionAdding.py,v 1.2 2002/07/10 23:52:18 srichter Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding

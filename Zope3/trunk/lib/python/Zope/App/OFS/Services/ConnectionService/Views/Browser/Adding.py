@@ -12,15 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: Adding.py,v 1.1 2002/06/24 16:18:50 srichter Exp $
+$Id: Adding.py,v 1.2 2002/07/10 23:52:18 srichter Exp $
 """
 
 from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
 
-class ConnectionAdding(ContentAdding):
-    """Adding component for service containers
-    """
+class Adding(ContentAdding):
+    """Adding component for service containers"""
     
     menu_id = "add_connection"
-
-__doc__ = ConnectionAdding.__doc__ + __doc__
