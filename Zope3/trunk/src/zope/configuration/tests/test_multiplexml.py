@@ -33,7 +33,7 @@ ns='http://www.zope.org/NS/Zope3/test'
 
 class Test(CleanUp, unittest.TestCase):
 
-    def testNormal(self):
+    def testNormal_because_of_overrides(self):
         f2=tfile(template % ('',
             '''
             <test:protectClass
@@ -56,7 +56,7 @@ class Test(CleanUp, unittest.TestCase):
 
             '''
             <test:protectClass
-            name=".Contact" permission="splat" names="update"
+            name=".Contact" permission="splat1" names="update"
             />
             <test:increment />
             <test:increment />
@@ -67,7 +67,7 @@ class Test(CleanUp, unittest.TestCase):
         XMLConfig(str(f1))()
 
         self.assertEquals(protections, [
-            (".Contact", "splat", 'update'),
+            (".Contact", "splat1", 'update'),
             (".Contact", "splat", 'update2'),
             ])
 
@@ -110,6 +110,48 @@ class Test(CleanUp, unittest.TestCase):
         self.assertRaises(ZopeConfigurationConflictError, x)
 
         self.assertEquals(protections, [])
+
+    def testConflicting_not_due_to_extra_override(self):
+        f2=tfile(template % ('',
+            '''
+            <test:protectClass
+            name=".Contact" permission="splat" names="update"
+            />
+            <test:protectClass
+            name=".Contact" permission="splat" names="update2"
+            />
+            '''), 'f2')
+        f3=tfile(template % ('',
+            '''
+            <test:protectClass
+            name=".Contact" permission="splat" names="update2"
+            />
+            '''), 'f3')
+
+        f1=tfile(template % (
+            '''<directive name="protectClass" namespace="%s"
+            handler="zope.configuration.tests.directives.protectClass">
+            <subdirective name="protect" namespace="%s" />
+            </directive>''' % (ns, ns),
+            '''
+            <test:protectClass
+            name=".Contact" permission="splat1" names="update"
+            />
+            <include file="%s"/>
+            <include file="%s"/>
+            <test:protectClass
+              name=".Contact" permission="splat2" names="update2"
+            />
+            ''' % (f2, f3)), 'f1')
+
+        x=XMLConfig(str(f1))
+
+        x()
+
+        self.assertEquals(protections, [
+            (".Contact", "splat1", 'update'),
+            (".Contact", "splat2", 'update2'),
+            ])
 
 
     def testConflicting_in_same_location(self):

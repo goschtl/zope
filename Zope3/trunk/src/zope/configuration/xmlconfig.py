@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: xmlconfig.py,v 1.5 2003/01/02 16:52:38 bwarsaw Exp $
+$Id: xmlconfig.py,v 1.6 2003/03/11 20:11:18 jim Exp $
 """
 
 import os
@@ -373,6 +373,11 @@ class XMLConfig:
         # Check for conflicts
         conflicts = {}
         for des, actions in unique.items():
+
+            # We need to sort the actions by the paths so that the shortest
+            # path with a given prefix comes first:
+            actions.sort()
+
             path, i, loc, f = actions[0]
             for opath, i, oloc, f in actions[1:]:
                 # Test whether path is a prefix of opath
