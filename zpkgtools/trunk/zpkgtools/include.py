@@ -13,6 +13,7 @@
 ##############################################################################
 """Processor for inclusions when building a release."""
 
+import fnmatch
 import glob
 import os
 import posixpath
@@ -25,6 +26,7 @@ from zpkgtools import cvsloader
 
 # Names that are exluded from globbing results:
 EXCLUDE_NAMES = ["CVS", ".cvsignore", "RCS", "SCCS", ".svn"]
+EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]"]
 
 
 class InclusionError(Exception):
@@ -126,8 +128,14 @@ class InclusionProcessor:
                 if os.path.basename(n) not in EXCLUDE_NAMES]
 
     def filterNames(self, names):
-        return [n for n in names
-                if n not in EXCLUDE_NAMES]
+        names = [n for n in names
+                 if n not in EXCLUDE_NAMES]
+        # This is needed when building a distro from a working
+        # copy (likely a checkout) rather than a pristine export:
+        for pattern in EXCLUDE_PATTERNS:
+            names = [n for n in names
+                     if not fnmatch.fnmatch(n, pattern)]
+        return names
 
     def normalizePath(self, path, type, filename, lineno):
         if ":" in path:
