@@ -113,11 +113,9 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
                 if item not in chosen:
                     new_providers.append(item)
             providers = new_providers
-        self.action_providers = providers
+        self.action_providers = tuple(providers)
         if REQUEST is not None:
-            return self.manage_actionProviders(
-                            self
-                          , REQUEST
+            return self.manage_actionProviders( self , REQUEST
                           , manage_tabs_message='Properties changed.')
 
     #
@@ -145,18 +143,20 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
         """
         Add the name of a new action provider.
         """
-        if hasattr( self, provider_name ):
-            p_old = self.action_providers
-            p_new = p_old + ( provider_name, )
-            self.action_providers = p_new
+        ap = list( self.action_providers )[:]
+        if hasattr( self, provider_name ) and provider_name not in ap:
+            ap.append( provider_name )
+            self.action_providers = tuple( ap )
 
     security.declareProtected( ManagePortal, 'deleteActionProvider' )
     def deleteActionProvider( self, provider_name ):
-        """ remove an action provider """
+        """
+        Remove an action provider.
+        """
         if provider_name in self.action_providers:
-            p_old = list( self.action_providers )
-            del p_old[p_old.index( provider_name)]
-            self.action_providers = tuple( p_old )
+            ap = list( self.action_providers )
+            ap.remove( provider_name )
+            self.action_providers = tuple( ap )
 
     #
     #   'portal_actions' interface methods
