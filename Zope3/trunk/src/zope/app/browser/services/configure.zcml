@@ -331,31 +331,23 @@
         />
   </menuItems>
 
-  <pages
+  <page
+      name="contents.html"
       for="zope.app.interfaces.services.service.IServiceManager"
+      menu="zmi_views" title="Contents"
       permission="zope.ManageServices"
-      class="zope.app.browser.services.service.SiteManagementFoldersContents">
+      class="zope.app.browser.container.contents.Contents"
+      attribute="contents"
+      />
 
-    <page name="contents.html"
-          attribute="index"
-          menu="zmi_views" title="Contents"
-          />
-    <page name="addSiteManagementFolder.html"
-          attribute="addSiteManagementFolder"
-          />
-    <page name="removeObjects.html"
-          attribute="removeObjects"
-          />
-  </pages>
-
-
-  <!-- Disable the add action -->
+  <!-- Override the add action with a link to add a page folder -->
   <menuItem
       menu="zmi_actions"
       for="zope.app.interfaces.services.service.IServiceManager"
       title="Add"
-      action="@@contents.html"
-      filter="nothing"
+      action=
+      "@@contents.html?type_name=zope.app.services.folder.SiteManagementFolder"
+      permission="zope.ManageServices"
       />
 
   <pages
@@ -369,27 +361,21 @@
 
 <!-- SiteManagementFolder -->
 
-  <pages
+  <page
     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
     permission="zope.ManageServices" 
-    class="zope.app.browser.container.contents.JustContents">
+    class="zope.app.browser.container.contents.JustContents"
+    name="index.html" attribute="index" 
+    />
 
-    <page name="index.html" attribute="index" />
-
-  </pages>
-
-  <pages
+  <page
+     name="contents.html"
      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+     menu="zmi_views" title="Contents"
      permission="zope.ManageServices"
      class="zope.app.browser.container.contents.Contents"
-     >
-
-    <page name="contents.html"
-	  attribute="contents"
-	  menu="zmi_views" title="Contents"
-	  />
-    <page name="removeObjects.html" attribute="removeObjects" />
-   </pages>
+     attribute="contents"
+     />
 
   <view
      name="+"
@@ -461,31 +447,23 @@
 
 <!-- PageFolder -->
 
-  <pages
+  <page
+      name="index.html" 
       for="zope.app.interfaces.services.pagefolder.IPageFolder"
       permission="zope.ManageServices" 
-      class="zope.app.browser.container.contents.JustContents">
+      class="zope.app.browser.container.contents.JustContents"
+      attribute="index" 
+      />
 
-    <page name="index.html" attribute="index" />
-
-  </pages>
-
-  <pages
+  <page
       for="zope.app.interfaces.services.pagefolder.IPageFolder"
       permission="zope.ManageServices" 
-      class="zope.app.browser.services.pagefolder.PageFolderContents"
-      >
-
-    <page name="contents.html"
-                  attribute="index"
-                  />
-    <page name="add.html"
-                  attribute="add"
-                  />
-    <page name="removeObjects.html"
-                  attribute="removeObjects"
-                  />
-  </pages>
+      class="zope.app.browser.container.contents.Contents"
+      name="contents.html"
+      menu="zmi_views"
+      title="Contents"
+      attribute="contents"
+      />
 
   <editform
      schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo."
@@ -495,20 +473,14 @@
      label="Default configuration parameters"
      />
 
+  
+  <!-- Override the add action with a link to add a template -->
   <menuItem
      menu="zmi_actions"
      for="zope.app.interfaces.services.pagefolder.IPageFolder"
      title="Add"
-     action="."
-     filter="nothing"
-     />
-
-  <menuItem
-     menu="zmi_views"
-     for="zope.app.interfaces.services.pagefolder.IPageFolder"
-     title="Contents"
-     action="@@contents.html"
-     filter="context/configured"
+     action="contents.html?type_name=zope.app.services.zpt.template"
+     permission="zope.ManageServices"
      />
 
   <menuItem
