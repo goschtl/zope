@@ -442,7 +442,7 @@ static PyTypeObject Dialect_Type = {
 	0,					/* tp_descr_set */
 	0,					/* tp_dictoffset */
 	(initproc)dialect_init,			/* tp_init */
-	PyType_GenericAlloc,	                /* tp_alloc */
+	0, /*PyType_GenericAlloc,*/	                /* tp_alloc */
 	dialect_new,			        /* tp_new */
 	0,                           		/* tp_free */
 };
@@ -1504,6 +1504,9 @@ init_csv(void)
 
 	if (PyType_Ready(&Dialect_Type) < 0)
 		return;
+
+
+    Dialect_Type.tp_alloc = PyType_GenericAlloc;
 
 	if (PyType_Ready(&Reader_Type) < 0)
 		return;
