@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.19 2003/05/15 15:32:23 gvanrossum Exp $
+$Id: fssync.py,v 1.20 2003/05/15 15:41:42 gvanrossum Exp $
 """
 
 import os
@@ -259,6 +259,7 @@ class FSSync(object):
         self.metadata = metadata
         self.network = network
         self.network.setrooturl(rooturl)
+        self.fsmerger = FSMerger(self.metadata, self.reporter)
 
     def checkout(self, target):
         rootpath = self.network.rootpath
@@ -352,8 +353,7 @@ class FSSync(object):
                 sts, output = commands.getstatusoutput(cmd)
                 if sts:
                     raise Error("unzip failed:\n%s" % output)
-                m = FSMerger(self.metadata, self.reporter)
-                m.merge(join(localdir, tail), join(tmpdir, tail))
+                self.fsmerger.merge(join(localdir, tail), join(tmpdir, tail))
                 self.metadata.flush()
                 print "All done."
             finally:
@@ -445,7 +445,8 @@ class FSSync(object):
         flag = entry.get("flag")
         if isfile(target):
             if not entry:
-                print "?", target
+                if not self.fsmerger.ignore(target):
+                    print "?", target
             elif flag == "added":
                 print "A", target
             elif flag == "removed":
@@ -462,7 +463,7 @@ class FSSync(object):
         elif isdir(target):
             pname = join(target, "")
             if not entry:
-                if not descend_only:
+                if not descend_only and not self.fsmerger.ignore(target):
                     print "?", pname
             elif flag == "added":
                 print "A", pname
@@ -486,7 +487,8 @@ class FSSync(object):
                     self.status(join(target, namesdir[ncname]))
         elif exists(target):
             if not entry:
-                print "?", target
+                if not self.fsmerger.ignore(target):
+                    print "?", target
             elif flag:
                 print flag[0].upper() + "(unrecognized)", target
             else:
