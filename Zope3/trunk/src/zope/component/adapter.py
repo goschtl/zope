@@ -15,13 +15,16 @@
 
 $Id$
 """
+import sys
+import warnings
+from types import ClassType
+
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService, IRegistry
 from zope.component.service import GlobalService
 from zope.interface.adapter import AdapterRegistry
-from zope.interface import implements, providedBy, Interface
-import sys
-import warnings
+from zope.interface import implements, providedBy, Interface, implementedBy
+from zope.interface.interfaces import IInterface
 
 class IGlobalAdapterService(IAdapterService, IRegistry):
 
@@ -92,8 +95,35 @@ class GlobalAdapterService(AdapterService, GlobalService):
         AdapterRegistration(('R1',), 'P2', '', 'c2', 'd2')
         AdapterRegistration(('R1',), 'P2', 'bob', 'c1', 'd1')
 
+        Let's make sure that we can also register regular classes for
+        adaptation.
+
+        >>> class O1(object):
+        ...     pass
+        >>> class O2(object):
+        ...     pass
+        >>> class O3(object):
+        ...     def __init__(self, obj1, obj2=None):
+        ...         pass
+
+        >>> registry.register((O1, ), R1, '', O3)
+        >>> registry.queryAdapter(O1(), R1, '').__class__
+        <class 'zope.component.adapter.O3'>
+
+        >>> registry.register((O1, O2), R1, '', O3)
+        >>> registry.queryMultiAdapter((O1(), O2()), R1, '').__class__
+        <class 'zope.component.adapter.O3'>
         """
-        required = tuple(required)
+        ifaces = []
+        for iface in required:
+            if not IInterface.providedBy(iface) and iface is not None:
+                if not isinstance(iface, (type, ClassType)):
+                    raise TypeError(iface, IInterface)
+                iface = implementedBy(iface)
+
+            ifaces.append(iface)
+        required = tuple(ifaces)
+
         self._registrations[(required, provided, name)] = AdapterRegistration(
             required, provided, name, factory, info)
 
