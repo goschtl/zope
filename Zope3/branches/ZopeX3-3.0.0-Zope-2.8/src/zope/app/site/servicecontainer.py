@@ -18,7 +18,6 @@ $Id$
 
 import zope.interface
 
-import transaction
 from zope.app.container.contained import Contained
 from zope.app.site.interfaces import IPossibleSite, ISite
 from zope.component.exceptions import ComponentLookupError

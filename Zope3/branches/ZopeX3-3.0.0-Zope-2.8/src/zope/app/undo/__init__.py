@@ -16,6 +16,8 @@
 $Id$
 """
 from datetime import datetime
+
+import transaction
 from zope.interface import implements
 from zope.exceptions import NotFoundError
 
