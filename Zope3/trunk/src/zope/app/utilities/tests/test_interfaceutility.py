@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.2 2003/08/09 18:12:28 sidnei Exp $
+$Id: test_interfaceutility.py,v 1.3 2003/08/11 14:48:32 philikon Exp $
 """
 
 import unittest
@@ -125,10 +125,17 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
         iface_service = getService(self.rootFolder, Interfaces)
         self.assert_(iface_service != globalInterfaceService)
-        self.assertEqual(iface_service.items(),
-                         [('bob', foo), ('', bar)])
-        self.assertEqual(iface_service.items(base=IInterface),
-                         [('bob', foo), ('', bar)])
+
+        ifaces = iface_service.items()
+        self.assert_(len(ifaces), 2)
+        for pair in [('bob', foo), ('', bar)]:
+            self.assert_(pair in ifaces)
+
+        ifaces = iface_service.items(base=IInterface)
+        self.assert_(len(ifaces), 2)
+        for pair in [('bob', foo), ('', bar)]:
+            self.assert_(pair in ifaces)
+
         self.assertEqual(iface_service.items(base=Interface),
                          [])
 
