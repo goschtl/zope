@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.13 2003/03/07 16:44:40 jim Exp $
+$Id: editview.py,v 1.14 2003/03/07 21:28:51 jim Exp $
 """
 
 from datetime import datetime
@@ -133,7 +133,8 @@ class EditView(BrowserView):
                 data = getWidgetsData(self, self.schema,
                                       strict=False,
                                       set_missing=True,
-                                      names=self.fieldNames)
+                                      names=self.fieldNames,
+                                      exclude_readonly=True)
                 unchanged = self.apply_update(data)
             except WidgetsError, errors:
                 self.errors = errors
