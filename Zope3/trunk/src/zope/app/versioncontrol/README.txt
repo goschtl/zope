@@ -1,27 +1,24 @@
 Version Control
 ===============
 
-This package provides a framework for managing multiple versions of
-objects within a ZODB database.  The framework defines several
-interfaces that objects may provide to participate with the framework.
-For an object to particpate in version control, it must provide
-IVersionable.  IVersionable is an interface that promises that there
-will be adapters to:
+This package provides a framework for managing multiple versions of objects
+within a ZODB database.  The framework defines several interfaces that objects
+may provide to participate with the framework.  For an object to particpate in
+version control, it must provide `IVersionable`.  `IVersionable` is an
+interface that promises that there will be adapters to:
 
-- INonVersionedData, and
+- `INonVersionedData`, and
 
-- IPhysicallyLocatable.
+- `IPhysicallyLocatable`.
 
-It also requires that instances support IPersistent and IAnnotatable.
+It also requires that instances support `IPersistent` and `IAnnotatable`.
    
-Normally, these interfaces will be provided by adapters.  To simplify
-the example, we'll just create a class that already implements the
-required interfaces directly.  We need to be careful to avoid
-including the __name__ and __parent__ attributes in state copies, so
-even a fairly simple implementation of INonVersionedData has to deal
-with these for objects that contain their own location information.
-
-::
+Normally, these interfaces will be provided by adapters.  To simplify the
+example, we'll just create a class that already implements the required
+interfaces directly.  We need to be careful to avoid including the __name__
+and __parent__ attributes in state copies, so even a fairly simple
+implementation of INonVersionedData has to deal with these for objects that
+contain their own location information.
 
   >>> import persistent
   >>> import zope.interface
@@ -73,8 +70,8 @@ with these for objects that contain their own location information.
   ...                      zope.app.annotation.interfaces.IAnnotations,
   ...                      zope.app.annotation.attribute.AttributeAnnotations)
 
-Now we need to create a database with an instance of our sample object
-to work with::
+Now we need to create a database with an instance of our sample object to work
+with:
 
   >>> from ZODB.tests import util
   >>> db = util.DB()
@@ -86,10 +83,9 @@ to work with::
   >>> root["samp"] = samp
   >>> util.commit()
 
-Some basic queries may be asked of ojects without using an instance of
-IVersionControl.  In particular, we can determine whether an object
-can be managed by version control by checking for the IVersionable
-interface::
+Some basic queries may be asked of objects without using an instance of
+`IVersionControl`.  In particular, we can determine whether an object can be
+managed by version control by checking for the `IVersionable` interface:
 
   >>> interfaces.IVersionable.providedBy(samp)
   True
@@ -97,7 +93,7 @@ interface::
   False
 
 We can also determine whether an object is actually under version
-control using the IVersioned interface::
+control using the `IVersioned` interface:
 
   >>> interfaces.IVersioned.providedBy(samp)
   False
@@ -105,13 +101,11 @@ control using the IVersioned interface::
   False
 
 Placing an object under version control requires an instance of an
-IVersionControl object.  This package provides an implementation of
-this interface on the `Repository` class (from
-`zope.app.versioncontrol.repository`).  Only the IVersionControl instance is
-responsible for providing version control operations; an instance
-should never be asked to perform operations directly.
-
-::
+`IVersionControl` object.  This package provides an implementation of this
+interface on the `Repository` class (from
+`zope.app.versioncontrol.repository`).  Only the `IVersionControl` instance is
+responsible for providing version control operations; an instance should never
+be asked to perform operations directly.
 
   >>> import zope.app.versioncontrol.repository
   >>> import zope.interface.verify
@@ -125,7 +119,7 @@ should never be asked to perform operations directly.
 In order to actually use version control, there must be an
 interaction.  This is needed to allow the framework to determine the
 user making changes.  Let's set up an interaction now. First we need a
-principal. For our purposes, a principal just needs to have an id::
+principal. For our purposes, a principal just needs to have an id:
 
   >>> class FauxPrincipal:
   ...    def __init__(self, id):
@@ -133,7 +127,7 @@ principal. For our purposes, a principal just needs to have an id::
   >>> principal = FauxPrincipal('bob')
 
 Then we need to define an participation for the principal in the
-interaction::
+interaction:
 
   >>> class FauxParticipation:
   ...     interaction=None
@@ -141,13 +135,13 @@ interaction::
   ...         self.principal = principal
   >>> participation = FauxParticipation(principal)
 
-Finally, we can create the interaction::
+Finally, we can create the interaction:
 
   >>> import zope.security.management
   >>> zope.security.management.newInteraction(participation)
 
 Now, let's put an object under version control and verify that we can
-determine that fact by checking against the interface::
+determine that fact by checking against the interface:
 
   >>> repository.applyVersionControl(samp)
   >>> interfaces.IVersioned.providedBy(samp)
@@ -155,14 +149,14 @@ determine that fact by checking against the interface::
   >>> util.commit()
 
 Once an object is under version control, it's possible to get an
-information object that provides some interesting bits of data::
+information object that provides some interesting bits of data:
 
   >>> info = repository.getVersionInfo(samp)
   >>> type(info.history_id)
   <type 'str'>
 
 It's an error to ask for the version info for an object which isn't
-under revision control::
+under revision control:
 
   >>> samp2 = Sample()
   >>> repository.getVersionInfo(samp2)
@@ -177,10 +171,8 @@ under revision control::
 
 You can retrieve a version of an object using the `.history_id` and a
 version selector.  A version selector is a string that specifies which
-available version to return.  The value 'mainline' tells the
-IVersionControl to return the most recent version on the main branch.
-
-::
+available version to return.  The value `mainline` tells the
+`IVersionControl` to return the most recent version on the main branch.
 
   >>> ob = repository.getVersionOfResource(info.history_id, 'mainline')
   >>> type(ob)
@@ -201,12 +193,12 @@ applications, this parallels form-based changes to objects, but this
 is a matter of policy.
 
 Let's save some information about the current version of the object so
-we can see that it changes::
+we can see that it changes:
 
   >>> orig_history_id = info.history_id
   >>> orig_version_id = info.version_id
 
-Now, let's check out the object and add an attribute::
+Now, let's check out the object and add an attribute:
 
   >>> repository.checkoutResource(ob)
   >>> ob.value = 42
@@ -214,7 +206,7 @@ Now, let's check out the object and add an attribute::
   >>> util.commit()
 
 We can now compare information about the updated version with the
-original information::
+original information:
 
   >>> newinfo = repository.getVersionInfo(ob)
   >>> newinfo.history_id == orig_history_id
@@ -223,7 +215,7 @@ original information::
   True
 
 Retrieving both versions of the object allows use to see the
-differences between the two::
+differences between the two:
 
   >>> o1 = repository.getVersionOfResource(orig_history_id,
   ...                                      orig_version_id)
@@ -237,14 +229,14 @@ differences between the two::
   42
 
 We can determine whether an object that's been checked out is
-up-to-date with the most recent version from the repository::
+up-to-date with the most recent version from the repository:
 
   >>> repository.isResourceUpToDate(o1)
   False
   >>> repository.isResourceUpToDate(o2)
   True
 
-Asking whether a non-versioned object is up-to-date produces an error::
+Asking whether a non-versioned object is up-to-date produces an error:
 
   >>> repository.isResourceUpToDate(42)
   Traceback (most recent call last):
@@ -261,8 +253,6 @@ it was checked out.  Since we're only looking at changes that have
 been committed to the database, we'll start by making a change and
 committing it without checking a new version into the version control
 repository.
-
-::
 
   >>> repository.updateResource(samp)
   >>> repository.checkoutResource(samp)
@@ -284,8 +274,6 @@ that the object is considered up-to-date after a subsequent checkout.
 We'll also demonstrate that `checkinResource()` can take an optional
 message argument; we'll see later how this can be used.
 
-::
-
   >>> repository.checkinResource(samp, 'sample checkin')
   >>> util.commit()
 
@@ -302,7 +290,7 @@ message argument; we'll see later how this can be used.
 It's also possible to use version control to discard changes that
 haven't been checked in yet, even though they've been committed to the
 database for the "working copy".  This is done using the
-`uncheckoutResource()` method of the IVersionControl object::
+`uncheckoutResource()` method of the `IVersionControl` object:
 
   >>> samp.value
   43
@@ -324,7 +312,7 @@ database for the "working copy".  This is done using the
   '3'
 
 An old copy of an object can be "updated" to the most recent version
-of an object::
+of an object:
 
   >>> ob = repository.getVersionOfResource(orig_history_id, orig_version_id)
   >>> ob.__name__ = "foo"
@@ -340,7 +328,7 @@ of an object::
 
 It's possible to get a list of all the versions of a particular object
 from the repository as well.  We can use any copy of the object to
-make the request::
+make the request:
 
   >>> list(repository.getVersionIds(samp))
   ['1', '2', '3']
@@ -370,7 +358,7 @@ from the repository.  This package calls these names *labels*; they
 are similar to *tags* in CVS.
 
 Labels can be assigned to objects that are checked into the
-repository::
+repository:
 
   >>> repository.labelResource(samp, 'my-first-label')
   >>> repository.labelResource(samp, 'my-second-label')
@@ -382,13 +370,13 @@ retrieved using the repository's `getLabelsForResource()` method::
   ['my-first-label', 'my-second-label']
 
 The labels can be retrieved using any object that refers to the same
-line of history in the repository::
+line of history in the repository:
 
   >>> list(repository.getLabelsForResource(ob))
   ['my-first-label', 'my-second-label']
 
 Labels can be used to retrieve specific versions of an object from the
-repository::
+repository:
 
   >>> repository.getVersionInfo(samp).version_id
   '3'
@@ -397,7 +385,7 @@ repository::
   '3'
 
 It's also possible to move a label from one version to another, but
-only when this is specifically indicated as allowed::
+only when this is specifically indicated as allowed:
 
   >>> ob = repository.getVersionOfResource(orig_history_id, orig_version_id)
   >>> ob.__name__ = "bar"
@@ -424,8 +412,6 @@ Sticky settings
 Similar to CVS, this package supports a sort of "sticky" updating: if
 an object is updated to a specific date, determination of whether
 it is up-to-date or changed is based on the version it was updated to.
-
-::
 
   >>> repository.updateResource(samp, orig_version_id)
   >>> util.commit()
@@ -458,8 +444,6 @@ tests can hook that.
 
 Examining the change history
 ----------------------------
-
-::
 
   >>> actions = {
   ...	  interfaces.ACTION_CHECKIN: "Check in",
@@ -545,7 +529,7 @@ document at this time.  Branches will interact heavily with
 Supporting separately versioned subobjects
 ------------------------------------------
 
-INonVersionedData is responsible for dealing with parts of the object
+`INonVersionedData` is responsible for dealing with parts of the object
 state that should *not* be versioned as part of this object.  This can
 include both subobjects that are versioned independently as well as
 object-specific data that isn't part of the abstract resource the
@@ -556,7 +540,7 @@ implements these to interfaces.  In this example, we'll create a
 simple object that excluses any versionable subobjects and any
 subobjects with names that start with "bob".  Note that as for the
 `Sample` class above, we're still careful to consider the values for
-`__name__` and `__parent__` to be non-versioned::
+`__name__` and `__parent__` to be non-versioned:
 
   >>> def ignored_item(name, ob):
   ...     """Return True for non-versioned items."""
@@ -587,15 +571,15 @@ subobjects with names that start with "bob".  Note that as for the
   ...             if name not in self.__dict__:
   ...                 self.__dict__[name] = value
 
-Let's take a look at how the INonVersionedData interface is used.
+Let's take a look at how the `INonVersionedData` interface is used.
 We'll start by creating an instance of our sample container and
-storing it in the database::
+storing it in the database:
 
   >>> box = SampleContainer()
   >>> box.__name__ = "box"
   >>> root[box.__name__] = box
 
-We'll also add some contained objects::
+We'll also add some contained objects:
 
   >>> box.aList = [1, 2, 3]
 
@@ -613,7 +597,7 @@ We'll also add some contained objects::
 
   >>> util.commit()
 
-Let's apply version control to the container::
+Let's apply version control to the container:
 
   >>> repository.applyVersionControl(box)
 
@@ -642,31 +626,31 @@ The basic pattern for this trio of operations is simple:
    `getNonVersionedData()`.
 
 This is fairly simple to see in an example.  Step 1 is to save the
-non-versioned data::
+non-versioned data:
 
   >>> saved = box.getNonVersionedData()
 
 While the version control framework treats this as an opaque value, we
 can take a closer look to make sure we got what we expected (since we
-know our implementation)::
+know our implementation):
 
   >>> names = [name for (name, ob) in saved]
   >>> names.sort()
   >>> names
   ['__name__', 'bob_list', 'bob_samp', 'samp1']
 
-Step 2 is to remove the data from the object::
+Step 2 is to remove the data from the object:
 
   >>> box.removeNonVersionedData()
 
-The non-versioned data should no longer be part of the object::
+The non-versioned data should no longer be part of the object:
 
   >>> box.bob_samp
   Traceback (most recent call last):
     ...
   AttributeError: 'SampleContainer' object has no attribute 'bob_samp'
 
-While versioned data should remain present::
+While versioned data should remain present:
 
   >>> box.aList
   [1, 2, 3]
@@ -675,12 +659,12 @@ At this point, the version control framework will perform any
 appropriate state copies are needed.
 
 Once that's done, `restoreNonVersionedData()` will be called with the
-saved data to perform the restore operation::
+saved data to perform the restore operation:
 
   >>> box.restoreNonVersionedData(saved)
 
 We can verify that the restoraion has been performed by checking the
-non-versioned data::
+non-versioned data:
 
   >>> box.bob_list
   [3, 2, 1]
@@ -692,7 +676,7 @@ the container object's versioned and non-versioned data and watching
 how those attributes are affected by updating to specific versions
 using `updateResource()` and retrieving specific versions using
 `getVersionOfResource()`.  Let's start by generating some new
-revisions in the repository::
+revisions in the repository:
 
   >>> repository.checkoutResource(box)
   >>> util.commit()
@@ -714,7 +698,7 @@ revisions in the repository::
   >>> box.bob_list
   [3, 2, 1, 0]
 
-The list remaining method of the INonVersionedData interface is a
+The list-remaining method of the `INonVersionedData` interface is a
 little different, but remains very tightly tied to the details of the
 object's state.  The `listNonVersionedObjects()` method should return
 a sequence of all the objects that should not be copied as part of the
