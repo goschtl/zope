@@ -11,13 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Extra-lite parser for a ZConfig-like configuration syntax.
+"""Extra-lite parser for a `ZConfig`_-like configuration syntax.
 
 There is no support for external schemas; schemas are simpler and must
 be specified using Python data structures.
 
 There is no support for any %-directives, but dollar signs in values
-must be doubled to ensure compatibility with ZConfig.
+must be doubled to ensure compatibility with `ZConfig`_.
+
+.. _ZConfig:  http://www.zope.org/Members/fdrake/zconfig/
+
 """
 
 import re
