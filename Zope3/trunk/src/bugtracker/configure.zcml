@@ -386,6 +386,8 @@
   <i18n:registerTranslations directory="locales" />
 
   <!-- Register application with API Doc Tool -->
+  <!--
   <apidoc:rootModule module="bugtracker" />
+  -->
 
 </configure>
