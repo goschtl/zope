@@ -52,6 +52,7 @@ def createTestRequest(**kw):
 
 def test_suite():
     return unittest.TestSuite((
+        doctest.DocTestSuite('zope.app.pas.generic'),
         doctest.DocTestSuite('zope.app.pas.httpplugins'),
         doctest.DocTestSuite('zope.app.pas.zodb'),
         doctest.DocTestSuite('zope.app.pas.principalplugins'),

@@ -18,8 +18,9 @@ $Id$
 __docformat__ = "reStructuredText"
 import base64
 from persistent import Persistent
-from zope.interface import implements
+from zope.interface import implements, Interface
 from zope.publisher.interfaces.http import IHTTPRequest
+from zope.schema import TextLine 
 
 from zope.app.container.contained import Contained
 from interfaces import IExtractionPlugin, IChallengePlugin
@@ -64,6 +65,18 @@ class HTTPBasicAuthExtractor(Persistent, Contained):
         return None
 
 
+class IHTTPBasicAuthRealm(Interface):
+    """HTTP Basic Auth Realm
+
+    Represents the realm string that is used during basic HTTP authentication
+    """
+
+    realm = TextLine(title=u'Realm',
+                     description=u'HTTP Basic Authentication Realm',
+                     required=True,
+                     default=u'Zope3')
+    
+
 class HTTPBasicAuthChallenger(Persistent, Contained):
     """A Basic HTTP Authentication Challenge Plugin
 
@@ -89,7 +102,7 @@ class HTTPBasicAuthChallenger(Persistent, Contained):
     >>> challenger.challenge(request, response) is None
     True
     """
-    implements(IChallengePlugin)
+    implements(IChallengePlugin, IHTTPBasicAuthRealm)
 
     realm = 'Zope3'
     protocol = 'http auth'

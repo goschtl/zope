@@ -20,6 +20,11 @@
 
   </pages>
 
-
+  <editform
+      schema="..httpplugins.IHTTPBasicAuthRealm"
+      label="Change Realm"
+      name="edit.html"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Edit" />
 
 </zope:configure>
