@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: interfaces.py,v 1.3 2002/12/30 14:01:21 stevea Exp $
 """
 
 from zope.interface import Interface
@@ -174,7 +174,7 @@ class IInterface(IElement):
     def getBases():
         """Return a sequence of the base interfaces."""
 
-    def extends(other, strict=1):
+    def extends(other, strict=True):
         """Test whether the interface extends another interface
 
         A true value is returned in the interface extends the other
@@ -202,7 +202,7 @@ class IInterface(IElement):
         interface.
         """
 
-    def names(all=0):
+    def names(all=False):
         """Get the interface attribute names
 
         Return a sequence of the names of the attributes, including
@@ -213,7 +213,7 @@ class IInterface(IElement):
         attributes defined by nase classes will be included.
         """
 
-    def namesAndDescriptions(all=0):
+    def namesAndDescriptions(all=False):
         """Get the interface attribute names and descriptions
 
         Return a sequence of the names and descriptions of the
