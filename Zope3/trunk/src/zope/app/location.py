@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.7 2003/12/07 12:56:49 zagy Exp $
+$Id: location.py,v 1.8 2004/02/20 16:56:48 fdrake Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -288,7 +288,7 @@ def locationCopy(loc):
     persistent = CopyPersistent(loc)
 
     # Pickle the object to a temporary file
-    pickler = cPickle.Pickler(tmp, 2)
+    pickler = cPickle.Pickler(tmp, 1) # XXX disable until Python 2.3.4 
     pickler.persistent_id = persistent.id
     pickler.dump(loc)
 
@@ -361,6 +361,12 @@ class CopyPersistent:
                 if id(object) in self.pids_by_id:
                     return self.pids_by_id[id(object)]
                 pid = len(self.others_by_pid)
+
+                # The following is needed to overcome a bug
+                # in pickle.py. The pickle checks the boolean value
+                # if the id, rather than whether it is None.
+                pid += 1
+                
                 self.pids_by_id[id(object)] = pid
                 self.others_by_pid[pid] = object
                 return pid
