@@ -34,7 +34,7 @@ class Introspector:
     def isInterface(self):
         "Checks if the context is class or interface"
         try:
-            ck = self.context.namesAndDescriptions()
+            self.context.namesAndDescriptions()
             return True
         except: # XXX
             return False

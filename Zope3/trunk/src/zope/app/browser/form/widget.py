@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.34 2003/06/06 21:35:17 philikon Exp $
+$Id: widget.py,v 1.35 2003/06/30 22:44:13 jeremy Exp $
 """
 
 __metaclass__ = type
@@ -299,7 +299,6 @@ class CheckBoxWidget(BrowserWidget):
     def getData(self, optional=0):
         # When it's checked, its value is 'on'.
         # When a checkbox is unchecked, it does not appear in the form data.
-        field = self.context
         value = self.request.form.get(self.name, 'off')
         return value == 'on'
 
@@ -672,7 +671,7 @@ class FileWidget(TextWidget):
         try:
             seek = file.seek
             read = file.read
-        except AttributeError, e:
+        except AttributeError:
             return False
 
         seek(0)

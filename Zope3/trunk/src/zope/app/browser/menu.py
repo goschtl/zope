@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: menu.py,v 1.3 2003/06/06 21:35:15 philikon Exp $
+$Id: menu.py,v 1.4 2003/06/30 22:44:13 jeremy Exp $
 """
 
 from zope.interface import implements
@@ -26,9 +26,7 @@ class MenuAccessView(BrowserView):
     implements(IMenuAccessView)
 
     def __getitem__(self, menu_id):
-        context = self.context
-        request = self.request
-        browser_menu_service = getService(context, 'BrowserMenu')
+        browser_menu_service = getService(self.context, 'BrowserMenu')
         return browser_menu_service.getMenu(menu_id,
                                             self.context,
                                             self.request)

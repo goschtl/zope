@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.1 2003/06/21 21:22:02 jim Exp $
+$Id: __init__.py,v 1.2 2003/06/30 22:44:14 jeremy Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -51,7 +51,6 @@ class NameRegistryView(BrowserView):
             view.setPrefix(name)
             view.update()
             cfg = registry.active()
-            active = cfg is not None
             items.append(self._getItem(name, view, cfg))
 
         return items
