@@ -121,11 +121,27 @@ Topics
     multiple master templates is cumbersome and error-prone.
 
     To solve this, the skin facility introduces a top-level TAL
-    variable called 'usage'.  This variable has a value that sets
-    different modes of operation.  This variable can be tested, in the
-    master template, to make decisions about what blocks should be
-    used in the current usage. This allows to maintain a unique template,
-    helping to keep a consistent look and feel.
+    variable called 'usage'. The usage variable is there to allow you to
+    maintain a unique template for a whole application. This variable has
+    a value that sets different modes of operation. By testing usage,
+    you can decide which blocks should be shown or hidden when rendering the 
+    template. 
+
+    Having a unique template eases to enforce a coherent UI and consistent
+    look and feel by ensuring that structural elements do not move too much
+    on the screen.
+    
+    The main way to set the value of 'usage' for a page is through the menu 
+    it is registered to. A menu is a set of conceptually related links to
+    pages. When you click on one of those links, you should arrive to about
+    the same type of UI with identical (or at least similar) information
+    available. Getting usage from the menu will enforce (we hope) the
+    coherence of the UI. Actually, if a page is registered to a menu, its usage
+    value gets set from the usage value set on the menu through its ZCML
+    directive.
+
+    Anyway, usage can be overridden by initializing it through the page
+    configuration (ZCML directive).
 
     The values of the 'usage' are chosen to describe broad categories
     rather than individual templates or elements.  These are the
@@ -147,10 +163,6 @@ Topics
 
       <div tal:condition="usage/objectview" 
            tal:repeat="structure view/tabs"></div>
-
-    The main way to set the value of 'usage' for a view is through
-    menus defined in ZCML.  The second is through a usage parameter
-    which can be provided through some means.
 
   o Themes are style, look and feel
 
