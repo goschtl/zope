@@ -13,13 +13,12 @@
 ##############################################################################
 """
 
-$Id: test_containmentiterator.py,v 1.4 2003/05/27 14:18:30 jim Exp $
+$Id: test_iterators.py,v 1.1 2003/05/28 15:47:08 jim Exp $
 """
 
 import unittest
-
-from zope.context import Wrapper, getbaseobject
-from zope.context.containmentiterator import ContainmentIterator
+from zope.context import Wrapper, getbaseobject, ContainmentIterator
+from zope.context import ContextIterator
 
 class Test(unittest.TestCase):
 
@@ -32,6 +31,8 @@ class Test(unittest.TestCase):
         ob = Wrapper(Wrapper(ob3, Wrapper(ob2, ob1)), ob4)
         self.assertEqual(map(getbaseobject, ContainmentIterator(ob)),
                         [ 3, 2, 1 ])
+        self.assertEqual(map(getbaseobject, ContextIterator(ob)),
+                        [ 3, 4 ])
 
     def  testUnWrapped(self):
         self.assertEqual(map(getbaseobject, ContainmentIterator(9)), [ 9 ])
