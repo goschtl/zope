@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.10 2003/04/30 23:37:52 faassen Exp $
+$Id: control.py,v 1.11 2003/05/01 14:13:36 mgedmin Exp $
 """
 
 from __future__ import generators
@@ -80,6 +80,8 @@ class ControlView(BrowserView):
 
     def _cookInfo(self, hubid, score):
         location = canonicalPath(self.hub.getPath(hubid))
+        # XXX `location` is later used as a URL in a page template, using a
+        #     physical path instead of absolute_url will break virtual hosting.
         scoreLabel = "%.1f%%" % (100.0 * score)
         result = {
             'location': location,
