@@ -225,6 +225,9 @@ class TimeGenerator:
     def setupAgent(self, agent):
         pass
 
+    def teardownAgent(self, agent):
+        pass
+
     def turn(self):
 
         global _homes
@@ -241,12 +244,13 @@ class TimeGenerator:
                                                              a._action.__name__)
                     print e
                     print 
+                self.teardownAgent(a)
 
             agents = filter(WanderLust, agents)
 
             for a in agents:
+                self.setupAgent(a)
                 try:
-                    self.setupAgent(a)
                     home = a.getHome()
                     new_home = GreenerPastures(a)
                     home.transportAgent(a, new_home)
@@ -255,6 +259,8 @@ class TimeGenerator:
                     print 'moving "%s" from "%s" to "%s"' %(a, h,` new_home`)
                     print e
                     print 
+                self.teardownAgent(a)
+
 
 def WanderLust(agent):
     """ is agent ready to move """
