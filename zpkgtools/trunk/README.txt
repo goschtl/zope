@@ -20,3 +20,20 @@ Additional discussion related to the goals and design of this tool can
 be found in the Zope 3 wiki:
 
   http://dev.zope.org/Zope3/Zope3PackagingProposal
+
+
+Running the unit tests
+----------------------
+
+There are unit tests of the zpkgtools package in the zpkgtools.tests
+package.  This can most easily be run by running the *runtests.py*
+script::
+
+  $ python2.3 zpkgtools/tests/runtests.py
+  ......................................................................
+  ......................................................................
+  .......
+  ----------------------------------------------------------------------
+  Ran 147 tests in 1.057s
+
+  OK
