@@ -46,7 +46,7 @@ def get_table():
 def init_table():
     add_to_table([
         {'path': "CVSROOT",
-         'addrs': ["digicool-cvs@zope.org"],
+         'addrs': ["zope-cvs@zope.org"],
          'specials': [("repolinks", "adjustlinks.py")],
          'verbose': 1},
 
@@ -56,7 +56,7 @@ def init_table():
         # Catchall for when *no other entry* matches:
         {'path': None,
          'verbose': 1,
-         'addrs': ["digicool-cvs@zope.org"]},
+         'addrs': ["zope-cvs@zope.org"]},
 
         {'path': "Operations",
          'addrs': ["support@zope.com"]},
