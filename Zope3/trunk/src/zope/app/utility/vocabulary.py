@@ -230,7 +230,10 @@ class UtilityVocabulary(object):
 
     def __iter__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
-        return iter(self._terms.values())
+        # Sort the terms by the token (utility name)
+        values = self._terms.values()
+        values.sort(lambda x, y: cmp(x.token, y.token))
+        return iter(values)
 
     def __len__(self):
         """See zope.schema.interfaces.IIterableVocabulary"""
