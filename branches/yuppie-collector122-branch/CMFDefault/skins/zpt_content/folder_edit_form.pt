@@ -2,7 +2,7 @@
       xmlns:metal="http://xml.zope.org/namespaces/metal"
       metal:use-macro="here/main_template/macros/master">
 <body>
-<div metal:fill-slot="main">	  
+<div metal:fill-slot="main">  
 <div class="Desktop">
 <h2>Edit: <span tal:replace="here/getId">My ID</span></h2>
  
@@ -18,7 +18,7 @@
    <input type="text"
           name="title"
           value=""
-		  tal:attributes="value here/Title"
+          tal:attributes="value here/Title"
           size="65">
   </td>
  </tr>
@@ -29,16 +29,16 @@
   <td colspan="3">
    <textarea name="description:text" rows="5"
              cols="65" wrap="soft"
-			 tal:content="here/Description">
+             tal:content="here/Description">
    </textarea>
   </td>
  </tr>
 
- <tr valign="top">
-  <td> <br> </td>
+ <tr>
+  <td> <br /> </td>
   <td>
-   <input type="submit" name="choice" value=" Change ">
-   <input type="submit" name="choice" value=" Change and View ">
+   <input type="submit" name="change" value=" Change " />
+   <input type="submit" name="change_and_view" value=" Change and View " />
   </td>
  </tr>
  
