@@ -16,6 +16,9 @@ Requirements
 
 Zope X3 requires that Python 2.3.3 or newer be installed.
 
+Building the Zope X3 software requires a C compiler supported by the
+distutils.
+
 
 Building and installing the software
 ------------------------------------
@@ -82,7 +85,7 @@ complete.  The tests can be run using "make" as well:
   python2.3 install.py -q build
   python2.3 test.py -v
   Running UNIT tests at level 1
-  Running UNIT tests from /home/user/ZopeX3-3.0.0a1/build/lib.linux-i686-2.3
+  Running UNIT tests from /home/user/ZopeX3-3.0.0/build/lib.linux-i686-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
   Ran 4510 tests in 501.389s
@@ -105,7 +108,46 @@ You now have a complete Zope X3 installation.
 Windows
 ~~~~~~~
 
-XXX to be written
+Using the source distribution on Windows is possible, but is somewhat
+different from using the distribution on Unix.  You may want to using
+the Windows installer instead of the source distribution.  If you
+don't have a supported C compiler, you need to use the installer.
+
+In using the distribution on Windows, you will need to run Python
+directly several times with various command lines; you should be
+careful to use the same Python installation for each of these.  The
+default installation for Python 2.3.x on Windows places the Python
+interpreter at \Python23\python; this will be used in the examples,
+but you may need to use a different path to the interpreter if you
+installed Python in a non-default location.
+
+Build the Zope software by switching to the directory created by
+unpacking the source distribution, then running the command:
+
+  C:\ZopeX3-3.0.0> \Python23\python install.py -q build
+
+The unit tests for the Zope software can be run once this is complete.
+This is an optional step, and can take a while to complete.  The tests
+can be run using the command:
+
+  C:\ZopeX3-3.0.0> \Python23\python test.py -v
+  Running UNIT tests at level 1
+  Running UNIT tests from /home/user/ZopeX3-3.0.0/build/lib.linux-i686-2.3
+  [...lots of dots, one per test...]
+  ----------------------------------------------------------------------
+  Ran 4500 tests in 501.389s
+
+  OK
+
+The line before the final "OK" tells how many individual tests were
+run, and long it took to run them.  These numbers will vary based on
+release, operating system, and host platform.
+
+At this point, you can install the software using the command:
+
+  C:\ZopeX3-3.0.0> \Python23\python install.py -q install
+
+You now have a complete Zope X3 installation.
 
 
 Creating a Zope instance home
