@@ -99,9 +99,15 @@ class IOrderedContainer(IContainer):
     """
 
     def updateOrder(order):
-        """Revise the order of keys, replacing the current ordering
+        """Revise the order of keys, replacing the current ordering.
 
-        Raise something(XXX) if the set of keys passed in is not complete.
+        order is a list or a tuple containing the set of existing keys in
+        the new order. order must contain len(keys()) items and cannot
+        contain duplicate keys.
+
+        Raises TypeError if order is not a tuple or a list.
+
+        Raises ValueError if order contains an invalid set of keys.
         """
 
 class IOptionalNamesContainer(IContainer):
