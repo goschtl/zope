@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for zope.app.mail.maildir module
 
-$Id: test_maildir.py,v 1.4 2003/07/01 07:17:51 mgedmin Exp $
+$Id: test_maildir.py,v 1.5 2003/07/01 09:46:53 mgedmin Exp $
 """
 
 import unittest
@@ -126,7 +126,7 @@ class FakeFile:
     def writelines(self, lines):
         self._written += ''.join(lines)
 
-def fake_open(filename, mode):
+def fake_open(self, filename, mode):
     return FakeFile(filename, mode)
 
 
@@ -141,13 +141,13 @@ class TestMaildir(unittest.TestCase):
         maildir_module.os = self.fake_os_module = FakeOsModule()
         maildir_module.time = FakeTimeModule()
         maildir_module.socket = FakeSocketModule()
-        maildir_module.open = fake_open
+        maildir_module.MaildirMessageWriter.open = fake_open
 
     def tearDown(self):
         self.maildir_module.os = self.old_os_module
         self.maildir_module.time = self.old_time_module
         self.maildir_module.socket = self.old_socket_module
-        del self.maildir_module.open
+        self.maildir_module.MaildirMessageWriter.open = open
         self.fake_os_module._stat_never_fails = False
 
     def test_factory(self):

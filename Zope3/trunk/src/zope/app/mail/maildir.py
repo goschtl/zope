@@ -15,7 +15,7 @@
 
 XXX check exception types
 
-$Id: maildir.py,v 1.2 2003/06/30 22:44:38 jeremy Exp $
+$Id: maildir.py,v 1.3 2003/07/01 09:46:52 mgedmin Exp $
 """
 
 import os
@@ -101,10 +101,13 @@ class MaildirMessageWriter:
 
     implements(IMaildirMessageWriter)
 
+    # A hook for unit tests
+    open = open
+
     def __init__(self, filename, new_filename):
         self._filename = filename
         self._new_filename = new_filename
-        self._fd = open(filename, 'w')
+        self._fd = self.open(filename, 'w')
         self._closed = False
         self._aborted = False
 
