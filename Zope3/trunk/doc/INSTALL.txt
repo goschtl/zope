@@ -73,14 +73,14 @@ Resources
 
 Random Details
   
-    * There are some python scripts in the top-level directory that will help
-      you track changes during the development process.  Specifically,
-      'stupid_clean.py' should be run before you do a new 'stupid_build.py'
-      when you are doing a cvs update of your checkout, and 'test.py' will
-      run all of the unit tests (see UNITTEST.txt in the doc directory for more
-      information on unit tests).
+    * There are some python scripts in the top-level directory that
+      will help you track changes during the development process.
+      Specifically, 'setup.py' helps you build the extension modules,
+      and 'test.py' will run all of the unit tests (see UNITTEST.txt
+      in the doc directory for more information on unit tests).
 
-    * You should be using Python 2.2.2 or later to run anything related to Zope3.
+    * You should be using Python 2.2.2 or later to run anything
+      related to Zope3.
 
     * The python you run Zope with *must* have threads compiled in,
       which is *not* the case for a vanilla build.  When you build the
@@ -95,3 +95,13 @@ Random Details
 
     * If you just want to use Zope components it's not necessary to build Zope
       but it's a good idea since it will compile Python C extensions for you.
+
+Troubleshooting
+
+    * We've seen segfaults when running the test suite.  This was
+      invariably caused by having parts of Zope 2 or ZODB 3 (which goes
+      with Zope 2) installed in site-packages or elsewhere on Python's
+      module search path (sys.path); in particular, the presence of
+      Missing.so (from Zope 2's ExtensionClass) can cause this.  So
+      make sure you have no parts of Zope 2 or ZODB 3 on sys.path when
+      running Zope 3!
