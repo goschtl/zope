@@ -16,6 +16,7 @@
       factory=".annotatableadapter.ZDCAnnotatableAdapter"
       provides="zope.app.dublincore.interfaces.IWriteZopeDublinCore"
       for="zope.app.annotation.interfaces.IAnnotatable"
+      trusted="true"
       />
 
   <class class=".annotatableadapter.ZDCAnnotatableAdapter">
@@ -26,19 +27,9 @@
     <require
         permission="zope.app.dublincore.change"
         interface=".interfaces.IWritableGeneralDublinCore"
+        set_schema=".interfaces.IZopeDublinCore"
         />
   </class>
-
-  <content class=".annotatableadapter.ZDCAnnotationData">
-    <require
-        permission="zope.app.dublincore.view"
-        interface="zope.interface.common.mapping.IReadMapping"
-        />
-    <require
-        permission="zope.app.dublincore.change"
-        interface="zope.interface.common.mapping.IWriteMapping"
-        />
-  </content>
 
   <subscriber
       factory=".timeannotators.ModifiedAnnotator"
