@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.6 2003/06/13 17:41:18 stevea Exp $
+$Id: traversing.py,v 1.7 2003/12/07 11:31:13 zagy Exp $
 """
 
 from zope.interface import Interface
@@ -51,6 +51,12 @@ class IPhysicallyLocatable(Interface):
 
     def getName():
         """Return the last segment of the physical path.
+        """
+
+    def getNearestSite():
+        """Return the site the object is contained in
+        
+        If the object is a site, self is returned.
         """
 
 class ITraversable(Interface):

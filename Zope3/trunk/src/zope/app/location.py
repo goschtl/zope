@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.5 2003/11/20 07:30:31 philikon Exp $
+$Id: location.py,v 1.6 2003/12/07 11:31:13 zagy Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -21,6 +21,7 @@ from zope.app.interfaces.location import ILocation
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.traversing import ITraverser
+from zope.app.interfaces.services.service import ISite
 from zope.proxy import removeAllProxies
 from zope.proxy import ProxyBase, getProxiedObject
 from zope.app.decorator import DecoratorSpecificationDescriptor
@@ -198,8 +199,14 @@ class LocationPhysicallyLocatable:
         """
         return self.context.__name__
 
-
-
+    def getNearestSite(self):
+        "return the nearest site, see IPhysicallyLocatable"
+        if ISite.isImplementedBy(self.context):
+            return self
+        for parent in zapi.getParents(self.context):
+            if ISite.isImplementedBy(parent):
+                return parent
+        return self.getRoot()
 
 def inside(l1, l2):
     """Is l1 inside l2
