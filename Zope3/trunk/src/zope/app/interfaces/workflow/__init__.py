@@ -14,7 +14,7 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.8 2003/03/22 16:02:46 jack-e Exp $
+$Id: __init__.py,v 1.9 2003/03/26 16:35:26 jack-e Exp $
 """
 
 from zope.interface import Interface
@@ -155,13 +155,51 @@ class IProcessDefinitionImportExport(Interface):
     """ProcessDefinition Import/Export.
     """
 
-    def importProcessDefinition(process_definition):
+    def importProcessDefinition(context, data):
         """Import a Process Definition
         """
 
-    def exportProcessDefinition(pd_id):
+    def exportProcessDefinition(context, process_definition):
         """Export a Process Definition
         """
 
 
 
+class IGlobalProcessDefinitionImportExport(IProcessDefinitionImportExport):
+    """ Global ImportExport with additional method
+        to register import/export handlers.
+    """
+
+    def addImportHandler(interface, factory):
+        """add a factory for an import handler for a certain interface.
+        """
+
+    def addExportHandler(interface, factory):
+        """add a factory for an export handler for a certain interface.
+        """
+
+
+class IProcessDefinitionImportHandler(Interface):
+    """Handler for Import of ProcessDefinitions.
+    """
+    
+    def canImport(data):
+        """check if handler can import a processdefinition
+           based on the data given.
+        """
+
+    def doImport(data):
+        """create a ProcessDefinition from the data given.
+
+        returns a ProcessDefinition Instance.
+        """
+
+class IProcessDefinitionExportHandler(Interface):
+    """Handler for Export of ProcessDefinitions.
+    """
+
+    def doExport(process_definition):
+        """export a ProcessDefinition into a specific format.
+
+        returns the serialized value of the given ProcessDefintion.
+        """

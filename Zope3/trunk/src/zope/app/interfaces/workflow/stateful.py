@@ -14,7 +14,7 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.8 2003/03/22 16:02:46 jack-e Exp $
+$Id: stateful.py,v 1.9 2003/03/26 16:35:26 jack-e Exp $
 """
 import zope.schema
 from zope.proxy.context import ContextProperty
@@ -48,6 +48,16 @@ class AvailableStatesField(zope.schema.TextLine):
     allowed_values = ContextProperty(__allowed)
 
 
+class TriggerModeField(zope.schema.TextLine):
+    """Trigger Mode.
+    """
+
+    def __allowed(self):
+        return [u'Manual', u'Automatic']
+    
+    allowed_values = ContextProperty(__allowed)
+
+
 class ITransition(Interface):
     """Stateful workflow transition.
     """
@@ -71,6 +81,13 @@ class ITransition(Interface):
     permission = PermissionField(
         title=u"The permission needed to fire the Transition.")
 
+
+    triggerMode = TriggerModeField(
+        title=u"Trigger Mode",
+        description=u"How the Transition is triggered (Automatic/Manual)",
+        default=u"Manual")
+        
+    
 
     def getSourceState():
         """Get Source State."""
@@ -96,9 +113,18 @@ class ITransition(Interface):
     def setPermission(permission):
         """Set Permission."""
 
+    def getTriggerMode():
+        """Return the TriggerMode.
+        """
+
+    def setTriggerMode():
+        """Set TriggerMode.
+        """
+        
     def getProcessDefinition():
         """Return the ProcessDefinition Object.
         """
+
 
 
 
