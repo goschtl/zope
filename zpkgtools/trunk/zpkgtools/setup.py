@@ -144,7 +144,9 @@ class SetupContext:
                 else:
                     # an ordinary directory
                     self.scan_directory(name, path, fn)
-            else:
+            # Only add the file as package data if it's not a Python
+            # source file; Python files are copied in automatically.
+            elif not fn.endswith(".py"):
                 self.add_package_file(name, fn)
 
         # We need to check that any files that were labelled as
@@ -175,9 +177,6 @@ class SetupContext:
                                     os.path.join(directory, fn),
                                     posixpath.join(reldir, fn))
             else:
-                fnbase, ext = os.path.splitext(fn)
-                if ext in (".pyc", ".pyo", ".so", ".sl", ".pyd"):
-                    continue
                 self.add_package_file(pkgname, posixpath.join(reldir, fn))
 
     def scan_basic(self, pkginfo):
@@ -199,8 +198,5 @@ class SetupContext:
             self.package_dir[pkgname] = reldir
 
     def add_package_file(self, pkgname, relfn):
-        # Only add the file as package data if it's not a Python
-        # source file; Python files are copied in automatically.
-        if not relfn.endswith(".py"):
-            L = self.package_data.setdefault(pkgname, [])
-            L.append(relfn)
+        L = self.package_data.setdefault(pkgname, [])
+        L.append(relfn)
