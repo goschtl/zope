@@ -31,4 +31,6 @@
       class="zope.app.browser.container.contents.Contents"
       template="commontasks.pt" />
 
+
+
 </zope:configure>
