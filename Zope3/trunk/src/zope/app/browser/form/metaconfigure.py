@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metaconfigure.py,v 1.7 2003/12/07 10:04:49 gotcha Exp $
+$Id: metaconfigure.py,v 1.8 2004/01/05 08:04:16 philikon Exp $
 """
 
 __metaclass__ = type
@@ -45,8 +45,6 @@ class BaseFormDirective:
     permission = 'zope.Public'
     template = None
     class_ = None
-    title = None
-    label = None
 
     # default form information
     title = None
