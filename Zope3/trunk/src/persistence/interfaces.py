@@ -277,14 +277,6 @@ class ICache(Interface):
         number of incremental steps to take.
         """
 
-    def full_sweep():
-        """Perform a full sweep of the cache
-        """
-
-    def minimize():
-        """Remove as many objects as possible from the cache
-        """
-
     def invalidate(oids):
         """Invalidate the object for the given object ids
         """
