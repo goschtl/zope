@@ -13,14 +13,19 @@
 ##############################################################################
 """Implementation of workflow process definition.
 
-$Id: definition.py,v 1.8 2004/03/03 20:20:33 srichter Exp $
+$Id: definition.py,v 1.9 2004/04/15 22:11:17 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
 from zope.interface import implements
 
+from zope.schema.interfaces import ITokenizedTerm
+from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
+
+from zope.app import zapi
 from zope.app.container.contained import Contained, setitem, uncontained
+from zope.app.servicenames import Utilities
 from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 from zope.app.workflow.interfaces import IProcessDefinition
 
@@ -90,3 +95,48 @@ class ProcessDefinitionElementContainer(Persistent, Contained):
 
     def getProcessDefinition(self):
         return self.__parent__
+
+
+class ProcessDefinitionTerm:
+    """A term representing the name of a process definition."""
+    implements(ITokenizedTerm)
+
+    def __init__(self, name):
+        self.value = self.token = name
+
+
+class ProcessDefinitionVocabulary:
+    """Vocabulary providing available process definition names."""
+    implements(IVocabulary, IVocabularyTokenized)
+
+    def __init__(self, context):
+        self.utilities = zapi.getService(context, Utilities)
+
+    def __names(self):
+        return [name for name, util in self.utilities.getUtilitiesFor(
+                                            IProcessDefinition)]
+
+    def __contains__(self, value):
+        """See zope.schema.interfaces.IVocabulary"""
+        return value in self.__names()
+
+    def __iter__(self):
+        """See zope.schema.interfaces.IVocabulary"""
+        terms = [ProcessDefinitionTerm(name) for name in self.__names()]
+        return iter(terms)
+
+    def __len__(self):
+        """See zope.schema.interfaces.IVocabulary"""
+        return len(self.__names())
+
+    def getQuery(self):
+        """See zope.schema.interfaces.IVocabulary"""
+        return None
+
+    def getTerm(self, value):
+        """See zope.schema.interfaces.IVocabulary"""
+        return ProcessDefinitionTerm(value)
+
+    def getTermByToken(self, token):
+        """See zope.schema.interfaces.IVocabularyTokenized"""
+        return self.getTerm(token)
