@@ -13,64 +13,23 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.10 2003/05/28 13:48:16 gvanrossum Exp $
+$Id: test_merger.py,v 1.11 2003/05/28 14:40:04 gvanrossum Exp $
 """
 
 import os
-import shutil
 import unittest
-import tempfile
 
-from os.path import exists, isdir, isfile, realpath, normcase
+from os.path import exists
 
 from zope.fssync.merger import Merger
 
 from zope.fssync.tests.mockmetadata import MockMetadata
+from zope.fssync.tests.tempfiles import TempFiles
 
 added = {"flag": "added"}
 removed = {"flag": "removed"}
 
-class TestMerger(unittest.TestCase):
-
-    def setUp(self):
-        unittest.TestCase.setUp(self)
-        # Create a list of temporary files to clean up at the end
-        self.tempfiles = []
-
-    def tearDown(self):
-        # Clean up temporary files (or directories)
-        for fn in self.tempfiles:
-            if isdir(fn):
-                shutil.rmtree(fn)
-            elif isfile(fn):
-                os.remove(fn)
-        unittest.TestCase.tearDown(self)
-
-    def addfile(self, data, suffix="", mode="w"):
-        # Register a temporary file; write data to it if given
-        file = tempfile.mktemp(suffix)
-        self.tempfiles.append(file)
-        if data is not None:
-            f = open(file, mode)
-            try:
-                f.write(data)
-            finally:
-                f.close()
-        return file
-
-    def cmpfile(self, file1, file2, mode="r"):
-        # Compare two files; they must exist
-        f1 = open(file1, mode)
-        try:
-            data1 = f1.read()
-        finally:
-            f1.close()
-        f2 = open(file2, mode)
-        try:
-            data2 = f2.read()
-        finally:
-            f2.close()
-        return data1 == data2
+class TestMerger(TempFiles):
 
     diff3ok = None
 
@@ -82,9 +41,9 @@ class TestMerger(unittest.TestCase):
     def diff3_check(self):
         if not hasattr(os, "popen"):
             return False
-        f1 = self.addfile("a")
-        f2 = self.addfile("b")
-        f3 = self.addfile("b")
+        f1 = self.tempfile("a")
+        f2 = self.tempfile("b")
+        f3 = self.tempfile("b")
         pipe = os.popen("diff3 -m -E %s %s %s" % (f1, f2, f3), "r")
         output = pipe.read()
         sts = pipe.close()
@@ -93,9 +52,9 @@ class TestMerger(unittest.TestCase):
     def runtest(self, localdata, origdata, remotedata,
                 localmetadata, remotemetadata, exp_localdata,
                 exp_action, exp_state, exp_merge_state=None):
-        local = self.addfile(localdata)
-        orig = self.addfile(origdata)
-        remote = self.addfile(remotedata)
+        local = self.tempfile(localdata)
+        orig = self.tempfile(origdata)
+        remote = self.tempfile(remotedata)
         md = MockMetadata()
         if localmetadata is not None:
             md.setmetadata(local, localmetadata)

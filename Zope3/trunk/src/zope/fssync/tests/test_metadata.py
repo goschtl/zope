@@ -13,46 +13,24 @@
 ##############################################################################
 """Tests for the Metadata class.
 
-$Id: test_metadata.py,v 1.2 2003/05/12 20:41:23 gvanrossum Exp $
+$Id: test_metadata.py,v 1.3 2003/05/28 14:40:04 gvanrossum Exp $
 """
 
 import os
-import shutil
 import unittest
-import tempfile
 
-from os.path import exists, isdir, isfile, split, join, realpath, normcase
+from os.path import exists, dirname, isfile, join
 
 from zope.xmlpickle import loads, dumps
 
 from zope.fssync.metadata import Metadata
+from zope.fssync.tests.tempfiles import TempFiles
 
-class TestMetadata(unittest.TestCase):
-
-    def setUp(self):
-        unittest.TestCase.setUp(self)
-        # Create a list of temporary files to clean up at the end
-        self.tempfiles = []
-
-    def tearDown(self):
-        # Clean up temporary files (or directories)
-        for fn in self.tempfiles:
-            if isdir(fn):
-                shutil.rmtree(fn)
-            elif isfile(fn):
-                os.remove(fn)
-        unittest.TestCase.tearDown(self)
-
-    def adddir(self):
-        # Register and create a temporary directory
-        dir = tempfile.mktemp()
-        self.tempfiles.append(dir)
-        os.mkdir(dir)
-        return dir
+class TestMetadata(TempFiles):
 
     def test_initial_state(self):
         md = Metadata()
-        dir = self.adddir()
+        dir = self.tempdir()
         self.assertEqual(md.getnames(dir), [])
         foo = join(dir, "foo")
         self.assertEqual(md.getentry(foo), {})
@@ -60,7 +38,7 @@ class TestMetadata(unittest.TestCase):
 
     def test_adding(self):
         md = Metadata()
-        dir = self.adddir()
+        dir = self.tempdir()
         foo = join(dir, "foo")
         e = md.getentry(foo)
         e["hello"] = "world"
@@ -71,14 +49,14 @@ class TestMetadata(unittest.TestCase):
 
     def test_deleting(self):
         md, foo = self.test_adding()
-        dir = os.path.dirname(foo)
+        dir = dirname(foo)
         md.getentry(foo).clear()
         self.assertEqual(md.getentry(foo), {})
         self.assertEqual(md.getnames(dir), [])
 
     def test_flush(self):
         md, foo = self.test_adding()
-        dir = os.path.dirname(foo)
+        dir = dirname(foo)
         md.flush()
         efile = join(dir, "@@Zope", "Entries.xml")
         self.assert_(isfile(efile))

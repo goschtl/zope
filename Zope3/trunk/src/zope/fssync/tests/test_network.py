@@ -13,59 +13,26 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.3 2003/05/15 20:03:05 gvanrossum Exp $
+$Id: test_network.py,v 1.4 2003/05/28 14:40:04 gvanrossum Exp $
 """
 
 import os
-import shutil
 import unittest
-import tempfile
 
 from StringIO import StringIO
 
 from os.path import isdir, isfile, join
 
 from zope.fssync.fssync import Network, Error
+from zope.fssync.tests.tempfiles import TempFiles
 
 sample_rooturl = "http://user:passwd@host:8080/path"
 
-class TestNetwork(unittest.TestCase):
+class TestNetwork(TempFiles):
 
     def setUp(self):
-        unittest.TestCase.setUp(self)
+        TempFiles.setUp(self)
         self.network = Network()
-        # Create a list of temporary files to clean up at the end
-        self.tempfiles = []
-
-    def tearDown(self):
-        # Clean up temporary files (or directories)
-        for fn in self.tempfiles:
-            if isdir(fn):
-                shutil.rmtree(fn)
-            elif isfile(fn):
-                os.remove(fn)
-        unittest.TestCase.tearDown(self)
-
-    def adddir(self):
-        # Create and register a temporary directory
-        dir = tempfile.mktemp()
-        self.tempfiles.append(dir)
-        os.mkdir(dir)
-        return dir
-
-    def cmpfile(self, file1, file2, mode="r"):
-        # Compare two files; they must exist
-        f1 = open(file1, mode)
-        try:
-            data1 = f1.read()
-        finally:
-            f1.close()
-        f2 = open(file2, mode)
-        try:
-            data2 = f2.read()
-        finally:
-            f2.close()
-        return data1 == data2
 
     def test_initial_state(self):
         self.assertEqual(self.network.rooturl, None)
@@ -93,11 +60,11 @@ class TestNetwork(unittest.TestCase):
 
     def test_findrooturl_notfound(self):
         # XXX This test will fail if a file /tmp/@@Zope/Root exists :-(
-        target = self.adddir()
+        target = self.tempdir()
         self.assertEqual(self.network.findrooturl(target), None)
 
     def test_findrooturl_found(self):
-        target = self.adddir()
+        target = self.tempdir()
         zdir = join(target, "@@Zope")
         os.mkdir(zdir)
         rootfile = join(zdir, "Root")
@@ -108,7 +75,7 @@ class TestNetwork(unittest.TestCase):
 
     def test_saverooturl(self):
         self.network.setrooturl(sample_rooturl)
-        target = self.adddir()
+        target = self.tempdir()
         zdir = join(target, "@@Zope")
         os.mkdir(zdir)
         rootfile = join(zdir, "Root")
@@ -119,7 +86,7 @@ class TestNetwork(unittest.TestCase):
         self.assertEqual(data.strip(), sample_rooturl)
 
     def test_loadrooturl(self):
-        target = self.adddir()
+        target = self.tempdir()
         self.assertRaises(Error, self.network.loadrooturl, target)
         zdir = join(target, "@@Zope")
         os.mkdir(zdir)

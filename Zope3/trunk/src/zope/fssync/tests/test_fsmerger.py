@@ -13,55 +13,27 @@
 ##############################################################################
 """Tests for the FSMerger class.
 
-$Id: test_fsmerger.py,v 1.3 2003/05/28 13:48:16 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.4 2003/05/28 14:40:04 gvanrossum Exp $
 """
 
 import os
-import shutil
 import unittest
-import tempfile
 
 from os.path import exists, isdir, isfile, realpath, normcase, split, join
 
 from zope.fssync.fsmerger import FSMerger
 
 from zope.fssync.tests.mockmetadata import MockMetadata
+from zope.fssync.tests.tempfiles import TempFiles
 
-class TestFSMerger(unittest.TestCase):
+class TestFSMerger(TempFiles):
 
     def setUp(self):
+        TempFiles.setUp(self)
         # Create a mock metadata database
         self.metadata = MockMetadata()
-        # Create a list of temporary names to be removed in tearDown
-        self.tempnames = []
         # Create a handy entry
         self.entry = {"path": "/foo"}
-
-    def tearDown(self):
-        # Clean up temporary files and directories
-        for fn in self.tempnames:
-            if isdir(fn):
-                shutil.rmtree(fn)
-            elif isfile(fn):
-                os.remove(fn)
-
-    def addtempdir(self):
-        # Create and register a temporary directory
-        dir = tempfile.mktemp()
-        self.tempnames.append(dir)
-        os.mkdir(dir)
-        return dir
-
-    def addtempfile(self, data):
-        # Create and register a temporary file
-        filename = tempfile.mktemp()
-        self.tempnames.append(filename)
-        f = open(filename, "w")
-        try:
-            f.write(data)
-        finally:
-            f.close()
-        return filename
 
     diff3ok = None
 
@@ -73,9 +45,9 @@ class TestFSMerger(unittest.TestCase):
     def diff3_check(self):
         if not hasattr(os, "popen"):
             return False
-        f1 = self.addtempfile("a")
-        f2 = self.addtempfile("b")
-        f3 = self.addtempfile("b")
+        f1 = self.tempfile("a")
+        f2 = self.tempfile("b")
+        f3 = self.tempfile("b")
         pipe = os.popen("diff3 -m -E %s %s %s" % (f1, f2, f3), "r")
         output = pipe.read()
         sts = pipe.close()
@@ -235,8 +207,8 @@ class TestFSMerger(unittest.TestCase):
         reports = []
         m = FSMerger(self.metadata, reports.append)
 
-        localtopdir = self.addtempdir()
-        remotetopdir = self.addtempdir()
+        localtopdir = self.tempdir()
+        remotetopdir = self.tempdir()
         localdir = join(localtopdir, "local")
         remotedir = join(remotetopdir, "remote")
         os.mkdir(localdir)

@@ -13,16 +13,16 @@
 ##############################################################################
 """Tests for the functions in the fsutil module.
 
-$Id: test_fsutil.py,v 1.2 2003/05/15 11:25:40 gvanrossum Exp $
+$Id: test_fsutil.py,v 1.3 2003/05/28 14:40:04 gvanrossum Exp $
 """
 
 import os
-import tempfile
 import unittest
 
 from os.path import split, join, exists, isdir, isfile
 
 from zope.fssync import fsutil
+from zope.fssync.tests.tempfiles import TempFiles
 
 def FIX(path):
     # This fixes only relative paths
@@ -31,7 +31,7 @@ def FIX(path):
     parts = [mapping.get(x, x) for x in parts]
     return os.path.join(*parts)
 
-class TestFSUtil(unittest.TestCase):
+class TestFSUtil(TempFiles):
 
     def test_split(self):
         self.assertEqual(fsutil.split(FIX("foo/bar")), ("foo", "bar"))
@@ -58,30 +58,17 @@ class TestFSUtil(unittest.TestCase):
                          FIX("foo/@@Zope/Annotations/bar"))
 
     def test_ensuredir(self):
-        tmpdir = tempfile.mktemp()
-        try:
-            self.assertEqual(exists(tmpdir), False)
-            self.assertEqual(isdir(tmpdir), False)
-            fsutil.ensuredir(tmpdir)
-            self.assertEqual(isdir(tmpdir), True)
-            fsutil.ensuredir(tmpdir)
-            self.assertEqual(isdir(tmpdir), True)
-        finally:
-            if isdir(tmpdir):
-                os.rmdir(tmpdir)
+        tmpdir = self.tempfile(None)
+        self.assertEqual(exists(tmpdir), False)
+        self.assertEqual(isdir(tmpdir), False)
+        fsutil.ensuredir(tmpdir)
+        self.assertEqual(isdir(tmpdir), True)
+        fsutil.ensuredir(tmpdir)
+        self.assertEqual(isdir(tmpdir), True)
 
     def test_ensuredir_error(self):
-        tmpfile = tempfile.mktemp()
-        try:
-            f = open(tmpfile, "w")
-            try:
-                f.write("x\n")
-            finally:
-                f.close()
-            self.assertRaises(OSError, fsutil.ensuredir, tmpfile)
-        finally:
-            if isfile(tmpfile):
-                os.remove(tmpfile)
+        tmpfile = self.tempfile("x\n")
+        self.assertRaises(OSError, fsutil.ensuredir, tmpfile)
 
 def test_suite():
     loader = unittest.TestLoader()

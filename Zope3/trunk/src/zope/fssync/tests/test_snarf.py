@@ -13,17 +13,16 @@
 ##############################################################################
 """Tests for the Snarfer and Unsnarfer classes.
 
-$Id: test_snarf.py,v 1.1 2003/05/27 14:46:07 gvanrossum Exp $
+$Id: test_snarf.py,v 1.2 2003/05/28 14:40:04 gvanrossum Exp $
 """
 
 import os
-import shutil
 import unittest
-import tempfile
 
 from StringIO import StringIO
 
 from zope.fssync.snarf import copybytes, Snarfer, Unsnarfer
+from zope.fssync.tests.tempfiles import TempFiles
 
 class TestCopyBytes(unittest.TestCase):
 
@@ -54,38 +53,12 @@ class TestCopyBytes(unittest.TestCase):
         self.assertRaises(IOError, copybytes, 6, istr, ostr)
 
 
-class TestSnarfer(unittest.TestCase):
+class TestSnarfer(TempFiles):
 
     def setUp(self):
+        TempFiles.setUp(self)
         self.ostr = StringIO()
         self.snf = Snarfer(self.ostr)
-        self.tempfiles = []
-
-    def tearDown(self):
-        for tfn in self.tempfiles:
-            if os.path.isdir(tfn):
-                shutil.rmtree(tfn)
-            elif os.path.exists(tfn):
-                os.remove(tfn)
-
-    def writefile(self, fn, data):
-        fp = open(fn, "wb")
-        try:
-            fp.write(data)
-        finally:
-            fp.close()
-
-    def tempfile(self, data):
-        tfn = tempfile.mktemp()
-        self.tempfiles.append(tfn)
-        self.writefile(tfn, data)
-        return tfn
-
-    def tempdir(self):
-        tfn = tempfile.mktemp()
-        self.tempfiles.append(tfn)
-        os.mkdir(tfn)
-        return tfn
 
     def test_addstream(self):
         istr = StringIO("12345")
@@ -143,13 +116,13 @@ class TestSnarfer(unittest.TestCase):
         f1 = os.path.join(tfn, "f1")
         f1a = os.path.join(tfn, "f1~")
         f2 = os.path.join(tfn, "f2")
-        self.writefile(f1, "f1data")
-        self.writefile(f1a, "f1adata")
-        self.writefile(f2, "f2data")
+        self.writefile("f1data", f1)
+        self.writefile("f1adata", f1a)
+        self.writefile("f2data", f2)
         d1 = os.path.join(tfn, "d1")
         os.mkdir(d1)
         d1f1 = os.path.join(d1, "f1")
-        self.writefile(d1f1, "d1f1data")
+        self.writefile("d1f1data", d1f1)
         return tfn
 
 class TestUnsnarfer(unittest.TestCase):
