@@ -157,3 +157,34 @@ class IWidgetInputErrorView(Interface):
 
     def snippet():
         """Convert a widget input error to an html snippet."""
+
+
+class ITerms(Interface):
+    
+    def getTerm(value):
+        """Return an ITitledTokenizedTerm object for the given value
+        
+        LookupError is raised if the value isn't in the source
+        """
+        
+    def getValue(token):
+        """Return a value for a given identifier token
+        
+        LookupError is raised if there isn't a value in the source.
+        """
+
+class ISourceQueryView(Interface):
+    """View support for querying non-iterable vocabularies
+    """
+        
+    def render(name):
+        """Return a rendering of the search form elements
+        """
+
+    def results(name):
+        """Return the results of the query
+
+        The value returned is an iterable.
+
+        None may be returned to indicate that there are no results.
+        """

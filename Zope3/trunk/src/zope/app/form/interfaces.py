@@ -34,7 +34,7 @@ class WidgetInputError(UserError):
     
     implements(IWidgetInputError)
 
-    def __init__(self, field_name, widget_title, errors):
+    def __init__(self, field_name, widget_title, errors=None):
         """Initialize Error
 
         `errors` is a ``ValidationError`` or a list of ValidationError objects
@@ -180,7 +180,7 @@ class IInputWidget(IWidget):
     def applyChanges(content):
         """Validate the widget data and apply it to the content.
 
-        See `validate()` for validation performed.
+        Return a boolean indicating whether a change was actually applied.
         """
 
     def hasInput():

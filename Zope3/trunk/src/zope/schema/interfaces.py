@@ -462,7 +462,49 @@ class ITitledTokenizedTerm(ITokenizedTerm):
     
     title = TextLine(title=_(u"Title"))
 
-class IBaseVocabulary(Interface):
+class ISource(Interface):
+    """A set of values from which to choose
+
+    Sources represent sets of values. They are used to specify the
+    source for choice fields.
+
+    Sources can be large (even infinite), in which case, they need to
+    be queried to find out what their values are.
+    
+    """
+
+    def __contains__(value):
+        """Return whether the value is available in this source
+        """
+
+class ISourceQueriables(Interface):
+    """A collection of objects for querying sources
+    """
+
+    def getQueriables():
+        """Return an iterable of objects that can be queried
+
+        The returned obects should be two-tuples with:
+
+        - A unicode id
+
+          The id must uniquely identify the queriable object within
+          the set of queryable objects. Furthermore, in subsequent
+          calls, the same id should be used for a given queriable
+          object.
+
+        - A queryable object
+
+          This is an object for which there is a view is provided for
+          searcing for items.
+
+        """
+    
+
+# TODO, define iterable sources.  For now, we'll just use vocabularies.
+# Eventually, we'll replace vocabularies with iterable sources.
+    
+class IBaseVocabulary(ISource):
     """Representation of a vocabulary.
 
     At this most basic level, a vocabulary only need to support a test
@@ -470,9 +512,6 @@ class IBaseVocabulary(Interface):
     or by sequence __getitem__() (the later only being useful for
     vocabularies which are intrinsically ordered).
     """
-
-    def __contains__(value):
-        """Returns True if the value is available in this vocabulary."""
 
     def getTerm(value):
         """Return the ITerm object for the term 'value'.

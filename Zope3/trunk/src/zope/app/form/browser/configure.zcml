@@ -305,4 +305,31 @@
       permission="zope.Public"
       />
 
+  <!-- Source Views -->
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IChoice
+           zope.schema.interfaces.ISource"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".source.SourceDisplayWidget"
+      permission="zope.Public"
+      />
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IChoice
+           zope.schema.interfaces.ISource"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".source.SourceInputWidget"
+      permission="zope.Public"
+      />
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISequence
+           zope.schema.interfaces.ISource"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".source.SourceListInputWidget"
+      permission="zope.Public"
+      />
+     
+
 </configure>

@@ -33,7 +33,7 @@ from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate
 from zope.schema.interfaces import IURI, IId, IFromUnicode
-from zope.schema.interfaces import IVocabulary
+from zope.schema.interfaces import ISource, IVocabulary
 
 from zope.schema.interfaces import ValidationError, InvalidValue
 from zope.schema.interfaces import WrongType, WrongContainedType, NotUnique
@@ -175,12 +175,23 @@ class Choice(Field):
     """
     implements(IChoice)
 
-    def __init__(self, values=None, vocabulary=None, **kw):
+    def __init__(self, values=None, vocabulary=None, source=None, **kw):
         """Initialize object."""
-        assert not (values is None and vocabulary is None), \
-               "You must specify either values or vocabulary."
-        assert values is None or vocabulary is None, \
-               "You cannot specify both values and vocabulary."
+
+
+        if vocabulary is not None:
+            assert (isinstance(vocabulary, basestring)
+                    or IVocabulary.providedBy(vocabulary))
+            assert source is None, (
+                "You cannot specify both source and vocabulary.")
+        elif source is not None:
+            assert ISource.providedBy(source)
+            vocabulary = source
+        
+        assert not (values is None and vocabulary is None), (
+               "You must specify either values or vocabulary.")
+        assert values is None or vocabulary is None, (
+               "You cannot specify both values and vocabulary.")
         
         self.vocabulary = None
         self.vocabularyName = None
@@ -189,7 +200,7 @@ class Choice(Field):
         elif isinstance(vocabulary, (unicode, str)):
             self.vocabularyName = vocabulary
         else:
-            assert IVocabulary.providedBy(vocabulary)
+            assert ISource.providedBy(vocabulary)
             self.vocabulary = vocabulary
         # Before a default value is checked, it is validated. However, a
         # named vocabulary is usually not complete when these fields are
@@ -199,6 +210,8 @@ class Choice(Field):
         self._init_field = bool(self.vocabularyName)
         super(Choice, self).__init__(**kw)
         self._init_field = False
+
+    source = property(lambda self: self.vocabulary)
 
     def bind(self, object):
         """See zope.schema._bootstrapinterfaces.IField."""
