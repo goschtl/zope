@@ -83,10 +83,7 @@ with (this) {
         // If this collection is empty, load it from server
         // todo xxx optimize for the case where collection has null length
         if (isEmpty) {
-                loadingNode = createLoadingNode();
-                domNode.appendChild(loadingNode);
-                var url = baseurl + path + XML_CHILDREN_VIEW;
-                loadtreexml(url, this);
+                startLoadingChildren();
                 }
         else
                 {
@@ -95,6 +92,24 @@ with (this) {
 
         }
 } 
+
+navigationTreeNode.prototype.startLoadingChildren = function() {
+with (this) {
+        loadingNode = createLoadingNode();
+        domNode.appendChild(loadingNode);
+        var url = baseurl + path + XML_CHILDREN_VIEW;
+        loadtreexml(url, this);
+        }
+}
+
+navigationTreeNode.prototype.finishLoadingChildren = function() {
+with (this) {
+        isEmpty = 0;
+        refreshExpansion();
+        domNode.removeChild(loadingNode);
+        loadingNode = null;
+        }
+}
 
 navigationTreeNode.prototype.refreshExpansion = function() {
 with (this) {
@@ -328,9 +343,7 @@ function parseXML(responseXML, node) {
                 else {
                         //expanding nodes
                         addNavigationTreeNodes(data, node, 0);
-                        node.isEmpty = 0;
-                        node.refreshExpansion();
-                        node.domNode.removeChild(node.loadingNode);
+                        node.finishLoadingChildren();
                         }
                 }             
         }
