@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.13 2003/08/19 17:34:28 srichter Exp $
+$Id: test_cachingservice.py,v 1.14 2003/09/21 17:33:12 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -64,11 +64,11 @@ class CachingServiceSetup(EventSetup):
         if not cname:
             cname = name
         default = traverse(self.rootFolder, folder +'/++etc++site/default')
-        key = default.setObject(cname, cache)
-        cache = traverse(default, key)
+        default[cname] = cache
+        cache = traverse(default, cname)
         path = "%s/%s" % (zapi.getPath(default), name)
         registration = UtilityRegistration(name, ICache, path)
-        key = default.getRegistrationManager().setObject("", registration)
+        key = default.getRegistrationManager().addRegistration(registration)
         zapi.traverse(default.getRegistrationManager(), key).status = status
         return zapi.traverse(default, name)    
 
