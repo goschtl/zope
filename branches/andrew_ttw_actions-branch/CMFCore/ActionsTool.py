@@ -119,7 +119,7 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
         Manage TTW Action Providers
         """
         #import pdb; pdb.set_trace()
-        providers = self.listActionProviders()
+        providers = list(self.listActionProviders())
         new_providers = []
         if add_provider:
             providers.append(apname)
@@ -186,10 +186,11 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
             provider = getattr(self, provider_name)
             a = provider.listActions(info)
             #import pdb; pdb.set_trace()
-            if a and type(a[0]) is not {}:
+            if a and type(a[0]) is not type({}):
                 ai_objs.extend(list(a))
-            elif len(a) > 0:
-                actions.append(a)
+            else:
+                for i in a: 
+                    actions.append(i)
 
         if ai_objs:
             for ai in ai_objs:

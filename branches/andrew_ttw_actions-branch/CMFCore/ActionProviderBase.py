@@ -146,10 +146,12 @@ class ActionProviderBase:
             a = self._actions[idx]
             a.id = action['id']
             a.title = action['name']
-            if not a._action:
+            if action['action'] is not '':
                 a._action = Expression(text=action['action'])
+            #if not a._action:
+            #    a._action = Expression(text=action['action'])
             else:
-                a._action.text = action['action']
+                a._action = ''
             if action['condition'] is not '':
                 a.condition = Expression(text=action['condition'])
             else:
