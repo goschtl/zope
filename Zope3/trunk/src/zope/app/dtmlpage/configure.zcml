@@ -46,11 +46,6 @@
       permission="zope.ManageContent"
       />
 
-  <fssync:adapter
-      class=".dtmlpage.DTMLPage"
-      factory=".fssync.DTMLPageAdapter"
-      />
-
 
   <!-- browser directives -->
 
