@@ -13,9 +13,9 @@
 ##############################################################################
 """Bootstrap schema interfaces and exceptions
 
-$Id: _bootstrapinterfaces.py,v 1.1 2003/10/15 20:28:22 shane Exp $
+$Id: _bootstrapinterfaces.py,v 1.2 2003/12/01 16:19:44 jim Exp $
 """
-from zope.interface import Interface
+import zope.interface
 
 
 class StopValidation(Exception):
@@ -26,7 +26,7 @@ class StopValidation(Exception):
     """
 
 
-class ValidationError(Exception):
+class ValidationError(zope.interface.Invalid):
     """Raised if the Validation process fails."""
 
     def __cmp__(self, other):
@@ -35,7 +35,7 @@ class ValidationError(Exception):
     def __repr__(self):
         return ' '.join(map(str, self.args))
 
-class IFromUnicode(Interface):
+class IFromUnicode(zope.interface.Interface):
     """Parse a unicode string to a value
 
     We will often adapt fields to this interface to support views and
