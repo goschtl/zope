@@ -32,4 +32,11 @@
       resources="mgmt-main-1.png"
       />
 
+  <help:register
+      id="samples"
+      title="Samples"
+      doc_path="samples.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
 </configure>

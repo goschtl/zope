@@ -23,9 +23,10 @@ __docformat__ = 'restructuredtext'
 import os
 
 from zope.interface import implements
+from zope.configuration.exceptions import ConfigurationError
+
 from zope.app import zapi
 from zope.app.traversing.interfaces import IContainmentRoot
-
 from zope.app.onlinehelp.interfaces import IOnlineHelp, IOnlineHelpTopic
 from zope.app.onlinehelp.onlinehelptopic import OnlineHelpTopic
 

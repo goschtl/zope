@@ -12,4 +12,6 @@
 
   </meta:directives>
 
+  <meta:provides feature="onlinehelp" />
+
 </configure>
