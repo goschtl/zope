@@ -25,8 +25,9 @@ optional fields (optional fields have default values described)
    This dictionary must have the following fields:
 
     'host' - string naming the remote host
-    'acct' - the pserver acct that should have access (not yet implemented)
+    'acct' - the pserver acct that should have access (XXX not yet implemented)
     'repodir' - the repository directory to which syncs should be done.
+    'leading_path' - if any, substitute for leading path for remote component.
 
    The default value used for every entry is dictated by a module global
    variable, 'remote'.
@@ -36,6 +37,10 @@ optional fields (optional fields have default values described)
 remote = {'host': "www.zope.org",
           'acct': "anonymous",
           'repodir': "/cvs-repository"}
+products_remote = {'host': "www.zope.org",
+                   'acct': "anonymous",
+                   'repodir': "/cvs-repository",
+                   'leading_path': "/Products/DC"}
 
 zopeaddr = ["zope-checkins@zope.org"]
 
@@ -46,6 +51,9 @@ table = [
     {'path': "test", 'addrs': "klm@digicool.com"},
 
     {'path': "Zope2", 'addrs': zopeaddr},
+
+    {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
+     'remote': products_remote},
 
 
 ##     {'path': "Publishers/ZServer", 'addrs': zopeaddr},
