@@ -19,6 +19,8 @@ $Id$
 """
 import unittest
 
+__docformat__ = "reStructuredText"
+
 #############################################################################
 # If your tests change any global registries, then uncomment the
 # following import and include CleanUp as a base class of your

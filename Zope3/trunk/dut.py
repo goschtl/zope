@@ -18,6 +18,8 @@ $Id$
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 
+__docformat__ = "reStructuredText"
+
 def test_xxx():
     """
     """

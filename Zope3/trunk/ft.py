@@ -20,6 +20,8 @@ $Id$
 import unittest
 from zope.app.tests.functional import FunctionalTestCase
 
+__docformat__ = "reStructuredText"
+
 # If you are writing a functional test that simulates browser requests, use
 # BrowserTestCase instead of FunctionalTestCase
 

@@ -17,3 +17,5 @@ XXX longer description goes here.
 
 $Id$
 """
+__docformat__ = "reStructuredText"
+
