@@ -12,18 +12,16 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.2 2002/12/25 14:12:52 jim Exp $
+$Id: widget.py,v 1.3 2002/12/31 11:07:10 stevea Exp $
 """
 from zope.app.interfaces.forms import IWidget
-from zope.schema.interfaces import ValidationError
-from zope.app.interfaces.forms import WidgetInputError
 from zope.component.interfaces import IViewFactory
 
-class Widget(object):
+__metaclass__ = type
+
+class Widget:
     """Mix-in class providing some functionality common accross view types
     """
-
-
     __implements__ = IWidget
 
     _prefix = 'field.'
@@ -55,13 +53,13 @@ class Widget(object):
         raise TypeError("haveData has not been implemented")
 
     def getData(self):
-        raise TypeError("haveData has not been implemented")
+        raise TypeError("getData has not been implemented")
 
     title = property(lambda self: self.context.title)
 
     required = property(lambda self: self.context.required)
 
-class CustomWidget(object):
+class CustomWidget:
     """Custom Widget."""
     __implements__ = IViewFactory
 

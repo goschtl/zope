@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.4 2002/12/30 20:46:22 alga Exp $
+$Id: widget.py,v 1.5 2002/12/31 11:07:09 stevea Exp $
 """
 
 __metaclass__ = type
@@ -20,12 +20,12 @@ __metaclass__ = type
 import sys
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
-from zope.component import getAdapter
 from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.form.widget import Widget
-from zope.app.interfaces.forms import ConversionError, WidgetInputError, MissingInputError
+from zope.app.interfaces.forms import ConversionError, WidgetInputError
+from zope.app.interfaces.forms import MissingInputError
 from zope.schema.interfaces import ValidationError
 
 
