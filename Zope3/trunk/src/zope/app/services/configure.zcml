@@ -123,13 +123,6 @@
   />
 
 <adapter
-  for="zope.app.interfaces.services.pagefolder.IPageFolder"
-  provides="zope.app.interfaces.file.IFileFactory"
-  factory=".zpt.ZPTFactory"
-  permission="zope.ManageServices"
-  />
-
-<adapter
   for="zope.app.interfaces.services.registration.IRegisterable"
   provides="zope.app.interfaces.services.registration.IRegistered"
   factory="zope.app.services.registration.Registered"
@@ -295,33 +288,7 @@
         />
     </content>
 
-<!-- Page Folder -->
-
-  <content class="zope.app.services.pagefolder.PageFolder">
-    <factory
-      id = "zope.app.services.PageFolder"
-      permission = "zope.ManageServices"
-      title = "View Folder"
-      />
-    <require
-        permission="zope.View"
-        interface="zope.app.interfaces.container.IReadContainer" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer
-                   zope.app.interfaces.services.pagefolder.IPageFolderInfo"
-        set_schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo"
-        attributes="configured getRegistrationManager" 
-        />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-    </content>
-
-    <adapter
-        for="zope.app.interfaces.services.pagefolder.IPageFolder"
-        provides="zope.app.interfaces.context.IZopeContextWrapper"
-        factory="zope.app.services.pagefolder.PageFolderContextDecorator"
-        />
+<!-- Page Folder --> <include file="pagefolder.zcml" />
 
 <!-- Connection Service -->
 
@@ -472,11 +439,6 @@
     />
 
 <fssync:adapter
-    class=".pagefolder.PageFolder"
-    factory=".pagefolder.PageFolderAdapter"
-    />
-
-<fssync:adapter
     class=".zpt.ZPTTemplate"
     factory=".zpt.ZPTPageAdapter"
     />
@@ -505,13 +467,6 @@
   for="zope.app.interfaces.services.service.IServiceManager"
   provides="zope.app.interfaces.file.IDirectoryFactory"
   factory=".folder.SMFolderFactory"
-  permission="zope.ManageContent"
-  />
-
-<adapter 
-  for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-  provides="zope.app.interfaces.file.IDirectoryFactory"
-  factory=".pagefolder.PageFolderFactory"
   permission="zope.ManageContent"
   />
 

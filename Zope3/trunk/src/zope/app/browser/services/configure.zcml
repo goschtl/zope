@@ -365,49 +365,7 @@
 
 <!-- Persistent Modules --> <include package=".module" />
 
-<!-- PageFolder -->
-
-  <page
-      name="index.html" 
-      for="zope.app.interfaces.services.pagefolder.IPageFolder"
-      permission="zope.ManageServices" 
-      class="zope.app.browser.container.contents.JustContents"
-      attribute="index" 
-      />
-
-  <page
-      for="zope.app.interfaces.services.pagefolder.IPageFolder"
-      permission="zope.ManageServices" 
-      class="zope.app.browser.container.contents.Contents"
-      name="contents.html"
-      menu="zmi_views"
-      title="Contents"
-      attribute="contents"
-      />
-
-  <editform
-     schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo."
-     name="DefaultRegistration.html"
-     menu="zmi_views" title="Default Registration"
-     permission="zope.ManageServices"
-     label="Default registration parameters"
-     />
-
-  
-  <!-- Override the add action with a link to add a template -->
-  <menuItem
-     menu="zmi_actions"
-     for="zope.app.interfaces.services.pagefolder.IPageFolder"
-     title="Add"
-     action="contents.html?type_name=zope.app.services.zpt.template"
-     permission="zope.ManageServices"
-     />
-
-  <menuItem
-     menu="add_component"
-     for="zope.app.interfaces.container.IAdding"
-     action="zope.app.services.PageFolder"
-     title="Page Folder" />
+<!-- PageFolder --> <include file="pagefolder.zcml" />
 
 <!-- Session service -->
 
