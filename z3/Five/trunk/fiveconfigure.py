@@ -18,6 +18,10 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.component.servicenames import Adapters, Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+
+from AccessControl import getSecurityManager
+from zExceptions import Unauthorized
+
 from provideinterface import provideInterface
 from viewable import Viewable
 from api import BrowserView
@@ -72,7 +76,7 @@ def page(_context, name, permission, for_,
         if template:
             attribute = 'index'
             # class and template
-            new_class = SimpleViewClass(
+            new_class = makeClassForTemplate(
                 template, bases=(class_, ),
                 cdict=cdict)
         elif attribute != "__call__":
@@ -86,7 +90,7 @@ def page(_context, name, permission, for_,
     else:
         # template
         attribute = 'index'
-        new_class = SimpleViewClass(template, bases=(BrowserView,))
+        new_class = makeClassForTemplate(template)
 
     _handle_for(_context, for_)
 
@@ -198,18 +202,38 @@ def defaultSkin(_context, name):
 
 class ViewMixinForAttributes(BrowserView):
 
+    # we have an attribute that we can simply tell ZPublisher to go to
     def __browser_default__(self, request):
-        if hasattr(self, 'index'):
-            attr = 'index'
-        else:
-            attr = self.__page_attribute__
-        return self, (attr,)
+        return self, (self.__page_attribute__,)
 
-def SimpleViewClass(src, template=None, used_for=None, bases=(), cdict=None):
+    def __call__(self, *args, **kw):
+	attr = self.__page_attribute__
+        meth = getattr(self, attr)
+	#XXX not sure if this is really necessary; we need tests for this
+        #security_manager = getSecurityManager()
+        #if not security_manager.validate(meth, self, attr, meth):
+        #    raise Unauthorized
+        return meth(*args, **kw)
+
+class ViewMixinForTemplates(BrowserView):
+
+    # short cut to get to macros more easily
+    def __getitem__(self, name):
+        return self.index.macros[name]
+
+    # make the template publishable
+    def __call__(self, *args, **kw):
+	# we technically would have to validate here, but it doesn't
+	# seem to work because index is a ViewPageTemplateFile
+	#XXX not sure if we really need to validate here anyway
+        return self.index(self, *args, **kw)
+
+def makeClassForTemplate(src, template=None, used_for=None, bases=(), cdict=None):
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
     cdict.update({'index': ViewPageTemplateFile(src, template)})
+    bases += (ViewMixinForTemplates,)
     class_ = makeClass("SimpleViewClass from %s" % src, bases, cdict)
 
     if used_for is not None:
