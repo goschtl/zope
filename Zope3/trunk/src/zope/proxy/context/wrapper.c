@@ -146,7 +146,7 @@ ContextDescriptorType = {
     0,						/* tp_dictoffset */
     0,						/* tp_init */
     0,						/* tp_alloc */
-    0, /*PyType_GenericNew,*/				/* tp_new */
+    0, /*PyType_GenericNew,*/			/* tp_new */
     0,						/* tp_free */
 };
 
@@ -187,6 +187,7 @@ property_dealloc(PyObject *self)
     Py_XDECREF(gs->prop_del);
     Py_XDECREF(gs->prop_doc);
     ContextDescriptorType.tp_dealloc(self);
+    /* self->ob_type->tp_free(self); */
 }
 
 static PyObject *
@@ -279,6 +280,7 @@ property_traverse(PyObject *self, visitproc visit, void *arg)
     VISIT(prop_get);
     VISIT(prop_set);
     VISIT(prop_del);
+    VISIT(prop_doc);
 
     return 0;
 #undef VISIT
@@ -326,7 +328,7 @@ PyTypeObject ContextProperty_Type = {
 	property_init,					/* tp_init */
 	0, /*PyType_GenericAlloc,*/			/* tp_alloc */
 	0, /*PyType_GenericNew,*/			/* tp_new */
-	0, /*_PyObject_Del,*/				/* tp_free */
+	0, /*_PyObject_GC_Del,*/			/* tp_free */
 };
 
 /* end of ContextProperty */
@@ -354,12 +356,31 @@ typedef struct {
 } ContextMethod;
 
 static void
-cm_dealloc(PyObject *self)
+cm_dealloc(ContextMethod *cm)
 {
-    ContextMethod *cm = (ContextMethod *)self;
+    _PyObject_GC_UNTRACK((PyObject *)cm);
     Py_XDECREF(cm->cm_callable);
-    ContextDescriptorType.tp_dealloc(self);
+    /* ((PyObject *)cm)->ob_type->tp_free((PyObject *)cm); */
+    ContextDescriptorType.tp_dealloc((PyObject *)cm);
 }
+
+static int
+cm_traverse(ContextMethod *cm, visitproc visit, void *arg)
+{
+    if (!cm->cm_callable)
+        return 0;
+    return visit(cm->cm_callable, arg);
+}
+
+static int
+cm_clear(ContextMethod *cm)
+{
+    Py_XDECREF(cm->cm_callable);
+    cm->cm_callable = NULL;
+
+    return 0;
+}
+
 
 static PyObject *
 cm_descr_get(PyObject *self, PyObject *obj, PyObject *type)
@@ -390,12 +411,14 @@ cm_init(PyObject *self, PyObject *args, PyObject *kwds)
     ContextMethod *cm = (ContextMethod *)self;
     PyObject *callable;
 
-    if (!PyArg_ParseTuple(args, "O:callable", &callable))
+    if (!PyArg_UnpackTuple(args, "ContextMethod", 1, 1, &callable))
         return -1;
     Py_INCREF(callable);
     cm->cm_callable = callable;
     return 0;
 }
+
+
 
 static char ContextMethod_doc[] =
 "ContextMethod(function) -> method\n"
@@ -433,10 +456,11 @@ PyTypeObject ContextMethod_Type = {
 	0, /*PyObject_GenericGetAttr,*/			/* tp_getattro */
 	0,						/* tp_setattro */
 	0,						/* tp_as_buffer */
-	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,	/* tp_flags */
+	Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE |
+			    Py_TPFLAGS_HAVE_GC,		/* tp_flags */
 	ContextMethod_doc,				/* tp_doc */
-	0,						/* tp_traverse */
-	0,						/* tp_clear */
+	(traverseproc)cm_traverse,			/* tp_traverse */
+	(inquiry)cm_clear,				/* tp_clear */
 	0,						/* tp_richcompare */
 	0,						/* tp_weaklistoffset */
 	0,						/* tp_iter */
@@ -452,7 +476,7 @@ PyTypeObject ContextMethod_Type = {
 	cm_init,					/* tp_init */
 	0, /*PyType_GenericAlloc,*/			/* tp_alloc */
 	0, /*PyType_GenericNew,*/			/* tp_new */
-	0, /*_PyObject_Del,*/				/* tp_free */
+	0, /*_PyObject_GC_Del,*/				/* tp_free */
 };
 
 PyObject *
@@ -617,6 +641,7 @@ wrap_getattro(PyObject *self, PyObject *name)
 {
     PyObject *wrapped;
     PyObject *descriptor;
+    PyObject *wrapped_type;
 
     wrapped = Proxy_GET_OBJECT(self);
     if (wrapped == NULL) {
@@ -630,12 +655,15 @@ wrap_getattro(PyObject *self, PyObject *name)
         descriptor->ob_type->tp_descr_get != NULL &&
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) ||
          PyObject_TypeCheck(wrapped, &ContextAwareType))
-        )
+        ) {
+        wrapped_type = (PyObject *)wrapped->ob_type;
+        if (wrapped_type == NULL)
+            return NULL;
         return descriptor->ob_type->tp_descr_get(
                 descriptor,
                 self,
-                PyObject_Type(wrapped));
-
+                wrapped_type);
+    }
     return PyObject_GetAttr(wrapped, name);
 }
 
@@ -691,7 +719,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
             PyObject_TypeCheck(wrapped, &ContextAwareType))\
         ) { \
-        wrapped_type = PyObject_Type(wrapped); \
+        wrapped_type = (PyObject *) wrapped->ob_type; \
         if (wrapped_type == NULL) \
              return (BADVAL); \
         descriptor = descriptor->ob_type->tp_descr_get( \
@@ -1444,7 +1472,7 @@ initwrapper(void)
     ContextMethod_Type.tp_base = &ContextDescriptorType;
     ContextMethod_Type.tp_getattro = PyObject_GenericGetAttr;
     ContextMethod_Type.tp_alloc = PyType_GenericAlloc;
-    ContextMethod_Type.tp_free = _PyObject_Del;
+    ContextMethod_Type.tp_free = _PyObject_GC_Del;
     if (PyType_Ready(&ContextMethod_Type) < 0)
         return;
     Py_INCREF(&ContextMethod_Type);
@@ -1453,7 +1481,7 @@ initwrapper(void)
     ContextProperty_Type.tp_new = PyType_GenericNew;
     ContextProperty_Type.tp_base = &ContextDescriptorType;
     ContextProperty_Type.tp_getattro = PyObject_GenericGetAttr;
-    ContextProperty_Type.tp_free = _PyObject_Del;
+    ContextProperty_Type.tp_free = _PyObject_GC_Del;
     ContextProperty_Type.tp_alloc = PyType_GenericAlloc;
     if (PyType_Ready(&ContextProperty_Type) < 0)
         return;
