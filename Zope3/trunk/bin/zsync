@@ -5,7 +5,7 @@
 import os
 import sys
 
-here = os.path.realpath(os.path.dirname(sys.argv[0]))
+here = os.path.dirname(os.path.realpath(sys.argv[0]))
 srcdir = os.path.join(os.path.dirname(here), "src")
 
 if srcdir not in sys.path:
