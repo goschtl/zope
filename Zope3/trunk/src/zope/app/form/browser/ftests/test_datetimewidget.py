@@ -35,11 +35,6 @@ from zope.app.testing.functional import BrowserTestCase
 
 class IDatetimeTest(Interface):
 
-    d1 = Datetime(
-        required=True,
-        min=datetime(2003, 1, 1, tzinfo=tzinfo(0)),
-        max=datetime(2020, 12, 31, tzinfo=tzinfo(0)))
-
     d2 = Datetime(
         required=False)
 
@@ -49,6 +44,11 @@ class IDatetimeTest(Interface):
             datetime(2003, 9, 15, tzinfo=tzinfo(0)),
             datetime(2003, 10, 15, tzinfo=tzinfo(0))),
         missing_value=datetime(2000, 1, 1, tzinfo=tzinfo(0)))
+
+    d1 = Datetime(
+        required=True,
+        min=datetime(2003, 1, 1, tzinfo=tzinfo(0)),
+        max=datetime(2020, 12, 31, tzinfo=tzinfo(0)))
 
 registerEditForm(IDatetimeTest)
 

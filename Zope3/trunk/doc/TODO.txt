@@ -88,8 +88,6 @@ Others
 
 * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
 
-* 339: Improvements to generated forms
-
 * 340: Adding a big file eats a lot of memory / memory leak? 
 
 * 344: PAU registration error

@@ -30,11 +30,6 @@ from zope.app.testing.functional import BrowserTestCase
 
 class ITextLineTest(Interface):
 
-    s1 = TextLine(
-        required=True,
-        min_length=2,
-        max_length=10)
-
     s2 = TextLine(
         required=False,
         missing_value=u'')
@@ -42,6 +37,11 @@ class ITextLineTest(Interface):
     s3 = Choice(
         required=False,
         values=(u'Bob', u'is', u'Your', u'Uncle'))
+
+    s1 = TextLine(
+        required=True,
+        min_length=2,
+        max_length=10)
 
 registerEditForm(ITextLineTest)
 

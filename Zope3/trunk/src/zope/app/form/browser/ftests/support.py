@@ -84,7 +84,7 @@ def patternExists(pattern, source, flags=0):
 
 def validationErrorExists(field, error_msg, source):
     return patternExists(
-        'name="field.%s".*%s' % (field, error_msg), source, re.DOTALL)
+        '%s.*name="field.%s"' % (error_msg, field), source, re.DOTALL)
 
 
 def missingInputErrorExists(field, source):
@@ -94,7 +94,7 @@ def missingInputErrorExists(field, source):
 def invalidValueErrorExists(field, source):
     # assumes this error is displayed for select elements
     return patternExists(
-        'name="field.%s".*</select>.*Invalid value' % field,
+        'Invalid value.*name="field.%s".*</select>' % field,
         source, re.DOTALL)
 
 

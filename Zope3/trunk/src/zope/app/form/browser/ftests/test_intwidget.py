@@ -33,11 +33,6 @@ from zope.app.testing.functional import BrowserTestCase
 
 class IIntTest(Interface):
 
-    i1 = Int(
-        required=True,
-        min=1,
-        max=10)
-
     i2 = Int(
         required=False)
 
@@ -45,6 +40,11 @@ class IIntTest(Interface):
         required=False,
         values=(0, 1, 2, 3, 5, 7, 11),
         missing_value=0)
+
+    i1 = Int(
+        required=True,
+        min=1,
+        max=10)
 
 registerEditForm(IIntTest)
 

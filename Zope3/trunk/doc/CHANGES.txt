@@ -293,6 +293,8 @@ Zope Changes
 
     Restructuring
 
+      - Applied changes suggested in issue 339: Improvements to generated forms
+
       - Deprecated `zope.app.introspector`. You should use the public apidoc
         utilities isntead. A new "Introspector" tab was implemented that
         redirects you to the correct code browser documentation screen.

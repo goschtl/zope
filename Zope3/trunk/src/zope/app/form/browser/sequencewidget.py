@@ -70,8 +70,8 @@ class SequenceWidget(BrowserWidget, InputWidget):
             render.append('<tr><td>')
             if num_items > min_length:
                 render.append(
-                    '<input type="checkbox" name="%s.remove_%d" />' % (
-                    self.name, i)
+                    '<input class="editcheck" type="checkbox" '
+                    'name="%s.remove_%d" />' %(self.name, i)
                     )
             widget = self._getWidget(i)
             widget.setRenderedValue(value)

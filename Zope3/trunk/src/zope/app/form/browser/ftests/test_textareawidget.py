@@ -32,17 +32,17 @@ from zope.app.testing.functional import BrowserTestCase
 
 class ITextTest(Interface):
 
-    s1 = Text(
-        required=True,
-        min_length=2,
-        max_length=10)
-
     s2 = Text(
         required=False,
         missing_value=u'')
 
     s3 = Text(
         required=False)
+
+    s1 = Text(
+        required=True,
+        min_length=2,
+        max_length=10)
 
 registerEditForm(ITextTest)
 

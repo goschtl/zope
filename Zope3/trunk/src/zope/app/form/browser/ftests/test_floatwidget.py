@@ -34,7 +34,7 @@ from zope.app.testing.functional import BrowserTestCase
 class IFloatTest(Interface):
 
     f1 = Float(
-        required=True,
+        required=False,
         min=1.1,
         max=10.1)
 
@@ -42,7 +42,7 @@ class IFloatTest(Interface):
         required=False)
 
     f3 = Choice(
-        required=False,
+        required=True,
         values=(0.0, 1.1, 2.1, 3.1, 5.1, 7.1, 11.1),
         missing_value=0)
 
@@ -113,17 +113,17 @@ class Test(BrowserTestCase):
         # submit missing values for f2 and f3
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.f1' : '1.1',
+            'field.f1' : '',
             'field.f2' : '',
-            'field.f3-empty-marker' : '1' })
+            'field.f3' : '1.1' })
         self.assertEqual(response.getStatus(), 200)
         self.assert_(updatedMsgExists(response.getBody()))
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        self.assertEqual(object.f1, 1.1)
+        self.assertEqual(object.f1, None)
         self.assertEqual(object.f2, None) # None is default missing_value
-        self.assertEqual(object.f3, 0)  # 0 is from f3.missing_value=0
+        self.assertEqual(object.f3, 1.1)  # 0 is from f3.missing_value=0
 
 
     def test_required_validation(self):
@@ -139,9 +139,9 @@ class Test(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
 
         # confirm error msgs
-        self.assert_(missingInputErrorExists('f1', response.getBody()))
+        self.assert_(not missingInputErrorExists('f1', response.getBody()))
         self.assert_(not missingInputErrorExists('f2', response.getBody()))
-        self.assert_(not missingInputErrorExists('f3', response.getBody()))
+        self.assert_(missingInputErrorExists('f3', response.getBody()))
 
 
     def test_invalid_allowed_value(self):
