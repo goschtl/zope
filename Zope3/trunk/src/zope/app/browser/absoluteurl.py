@@ -14,26 +14,60 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.3 2003/03/01 21:13:59 sidnei Exp $
+$Id: absoluteurl.py,v 1.4 2003/04/15 10:57:08 alga Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.proxy.context import getWrapperContainer, getInnerWrapperData
 from zope.component import getView
 
-class AbsoluteURL(BrowserView):
+class AbsoluteURLBase(BrowserView):
 
     def __str__(self):
         context = self.context
         dict = getInnerWrapperData(context)
         name = dict and dict.get('name') or None
-        container = getWrapperContainer(context)
-        if name is None or container is None:
-            raise TypeError, 'Not enough context information to get a URL'
         if name == '.':
             name = dict.get('side_effect_name', name)
-
+            if name.startswith('++vh++'):
+                return self.request.getApplicationURL()
+        container = getWrapperContainer(context)
         return "%s/%s" % (getView(container, 'absolute_url', self.request),
                           name)
+
+    def breadcrumbs(self):
+        context = self.context
+        dict = getInnerWrapperData(context)
+        name = dict and dict.get('name') or None
+        container = getWrapperContainer(context)
+        base = getView(container, 'absolute_url', self.request).breadcrumbs()
+
+        if name == '.':
+            # The name is meaningless. There is a side-efect name
+            # that we need to preserve in the urls (only)
+            name = dict.get('side_effect_name', name)
+            if name.startswith('++vh++'):
+                return ({'name':'', 'url': self.request.getApplicationURL()}, )
+
+            # replace the last step in base with a step with the same
+            # name and an augmented url
+            base = base[:-1] + (
+                {'name': base[-1]['name'],
+                 'url': ("%s/%s" % (base[-1]['url'], name))}, )
+            return base
+
+        base += ({'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))}, )
+        return base
+
+
+class AbsoluteURL(AbsoluteURLBase):
+
+    def __str__(self):
+        dict = getInnerWrapperData(self.context)
+        name = dict and dict.get('name') or None
+        container = getWrapperContainer(self.context)
+        if name is None or container is None:
+            raise TypeError, 'Not enough context information to get a URL'
+        return super(AbsoluteURL, self).__str__()
 
     __call__ = __str__
 
@@ -45,40 +79,16 @@ class AbsoluteURL(BrowserView):
         if name is None or container is None:
             raise TypeError, 'Not enough context information to get a URL'
 
-        if name == '.':
-            # The name is meaningless. There is a side-efect name
-            # that we need to preserve in the urls (only)
-            name = dict.get('side_effect_name', name)
-            base = getView(container, 'absolute_url',
-                           self.request).breadcrumbs()
-
-            # replace the last step in base with a step with the same
-            # name and an augmented url
-            base = base[:-1] + ({
-                'name': base[-1]['name'],
-                'url': ("%s/%s" % (base[-1]['url'], name)),
-                }, )
-            return base
-
-        base = getView(container, 'absolute_url', self.request).breadcrumbs()
-        base += ({'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))}, )
-        return base
+        return super(AbsoluteURL, self).breadcrumbs()
 
 
-
-class SiteAbsoluteURL(BrowserView):
+class SiteAbsoluteURL(AbsoluteURLBase):
 
     def __str__(self):
-        context = self.context
-        dict = getInnerWrapperData(context)
+        dict = getInnerWrapperData(self.context)
         name = dict and dict.get('name') or None
         if name:
-            if name == '.':
-                name = dict.get('side_effect_name', name)
-            container = getWrapperContainer(context)
-            return "%s/%s" % (getView(container, 'absolute_url', self.request),
-                              name)
-
+            return super(SiteAbsoluteURL, self).__str__()
         return self.request.getApplicationURL()
 
     __call__ = __str__
@@ -88,18 +98,5 @@ class SiteAbsoluteURL(BrowserView):
         dict = getInnerWrapperData(context)
         name = dict and dict.get('name') or None
         if name:
-            # The name is meaningless. There is a side-efect name
-            # that we need to preserve in the urls (only)
-            if name == '.':
-                name = dict.get('side_effect_name', name)
-            container = getWrapperContainer(context)
-            base = getView(container, 'absolute_url',
-                           self.request).breadcrumbs()
-            # replace the last step in base with a step with the same
-            # name ans an augmented url
-            base = base[:-1] + (
-                {'name': base[-1]['name'],
-                 'url': ("%s/%s" % (base[-1]['url'], name))}, )
-            return base
-
+            return super(SiteAbsoluteURL, self).breadcrumbs()
         return ({'name':'', 'url': self.request.getApplicationURL()}, )

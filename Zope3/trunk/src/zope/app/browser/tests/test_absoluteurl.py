@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.6 2003/02/12 02:17:14 seanb Exp $
+$Id: test_absoluteurl.py,v 1.7 2003/04/15 10:57:08 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -41,7 +41,7 @@ class Root:
 class TrivialContent(object):
     """Trivial content object, used because instances of object are rocks."""
 
-class Test(PlacelessSetup, TestCase):
+class TestAbsoluteURL(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
@@ -128,9 +128,51 @@ class Test(PlacelessSetup, TestCase):
           {'name': 'c', 'url': 'http://foobar.com/++skin++ZopeTop/a/b/c'},
           ))
 
+    def testVirtualHosting(self):
+        request = TestRequest()
+        request.setViewType(IBrowserPresentation)
+
+        content = ContextWrapper(TrivialContent(), Root(), name='a')
+        content = ContextWrapper(TrivialContent(), content,
+                                 name='.',
+                                 side_effect_name="++vh++abc")
+        content = ContextWrapper(TrivialContent(), content, name='b')
+        content = ContextWrapper(TrivialContent(), content, name='c')
+        view = getView(content, 'absolute_url', request)
+        self.assertEqual(str(view), 'http://foobar.com/b/c')
+
+        breadcrumbs = view.breadcrumbs()
+        self.assertEqual(breadcrumbs,
+         ({'name':  '', 'url': 'http://foobar.com'},
+          {'name': 'b', 'url': 'http://foobar.com/b'},
+          {'name': 'c', 'url': 'http://foobar.com/b/c'},
+          ))
+
+    def testVirtualHostingInFront(self):
+        request = TestRequest()
+        request.setViewType(IBrowserPresentation)
+
+        root = Root()
+        content = ContextWrapper(root, root,
+                                 name='.',
+                                 side_effect_name="++vh++abc")
+        content = ContextWrapper(TrivialContent(), content, name='a')
+        content = ContextWrapper(TrivialContent(), content, name='b')
+        content = ContextWrapper(TrivialContent(), content, name='c')
+        view = getView(content, 'absolute_url', request)
+        self.assertEqual(str(view), 'http://foobar.com/a/b/c')
+
+        breadcrumbs = view.breadcrumbs()
+        self.assertEqual(breadcrumbs,
+         ({'name':  '', 'url': 'http://foobar.com'},
+          {'name': 'a', 'url': 'http://foobar.com/a'},
+          {'name': 'b', 'url': 'http://foobar.com/a/b'},
+          {'name': 'c', 'url': 'http://foobar.com/a/b/c'},
+          ))
+
 
 def test_suite():
-    return makeSuite(Test)
+    return makeSuite(TestAbsoluteURL)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
