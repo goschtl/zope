@@ -140,7 +140,7 @@ class XMLImportHandler(object):
         self.context = context
 
     def canImport(self, data):
-        # XXX Implementation needs more work !!
+        # TODO: Implementation needs more work !!
         # check if xml-data can be imported and represents a StatefulPD
         checker = XMLFormatChecker()
         parseString(data, checker)
