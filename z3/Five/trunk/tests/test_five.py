@@ -92,6 +92,10 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 """
         self.assertEquals(expected, view())
 
+    def test_macro_access(self):
+        view = self.folder.unrestrictedTraverse('testoid/seagull.html')
+        self.assertEquals('<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n', view())
+ 
     # this doesn't work; it looks like Zope 3 security gets involved,
     # but I do not yet understand where this could be.
 ##     def test_repeat_iterator(self):

@@ -89,4 +89,21 @@
     permission="zope.ViewManagementScreens" 
     />
 
+  <!-- macro page -->
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    template="bird.pt"
+    name="bird.pt"
+    permission="zope.ViewManagementScreens"
+    />
+
+  <!-- template page that uses macro page -->
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    template="seagull.pt"
+    name="seagull.html"
+    permission="zope.ViewManagementScreens"
+    />
+
 </configure>
