@@ -10,11 +10,6 @@
       type="zope.app.content.interfaces.IContentType"
       />
 
-  <interface 
-      interface=".interfaces.II18nImage" 
-      type="zope.app.content.interfaces.IContentType"
-      />
-
 
   <!-- content classes -->
 
@@ -44,35 +39,6 @@
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
        />
   </content>
-
-  <content class=".i18nimage.I18nImage">
-    <factory
-        id="zope.app.content.I18nImage"
-        title="I18n Image"
-        description="An Internationalized Image"
-        />
-    <require
-        permission="zope.View"
-        interface="zope.app.file.interfaces.IFile"
-        attributes="getImageSize"
-        />
-    <require
-        permission="zope.ManageContent"
-        set_schema="zope.app.file.interfaces.IFile"
-        />
-    <require
-        permission="zope.View"
-        attributes="getDefaultLanguage getAvailableLanguages getData"
-        />
-    <require
-        permission="zope.ManageContent"
-        attributes="setDefaultLanguage removeLanguage setData"
-        />
-    <implements
-       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
-       />
-  </content>
-
 
   <!-- include browser package -->
 

@@ -37,6 +37,11 @@ class I18nFile(Persistent):
 
         self.contentType = contentType or ''
 
+    #TODO: implement open method
+    def open(self, mode='r'):
+        """See interface 'zope.app.file.interface.IFile.'"""
+        pass
+
     def _create(self, data):
         """Create a new subobject of the appropriate type.  Should be
         overriden in subclasses.
