@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.15 2003/09/21 17:30:36 jim Exp $
+$Id: editwizard.py,v 1.16 2003/10/22 19:15:02 sidnei Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -75,7 +75,7 @@ class EditWizardView(EditView):
             )
 
     def widgets(self):
-        return [getattr(self, name+'_widget') 
+        return [getattr(self, name+'_widget')
             for name in self.currentPane().names
             ]
 
@@ -87,7 +87,7 @@ class EditWizardView(EditView):
     _update_called = 0
 
     # Message rendered at the top of the form, probably set by update()
-    feedback = u'' 
+    feedback = u''
 
     def update(self):
         '''Called before rendering each pane. It is responsible
@@ -119,7 +119,7 @@ class EditWizardView(EditView):
             else:
                 names = self.fieldNames
             data = getWidgetsData(
-                self, self.schema, strict=True, set_missing=True, 
+                self, self.schema, strict=True, set_missing=True,
                 names=names, exclude_readonly=True
                 )
             self.errors = {}
@@ -159,7 +159,7 @@ class EditWizardView(EditView):
             for k in self.fieldNames:
                 if k not in self.currentPane().names:
                     getattr(self, k).getInputValue()
-            self.show_submit = 1 
+            self.show_submit = 1
         except WidgetInputError,x:
             self.show_submit = 0
 
@@ -183,7 +183,7 @@ class EditWizardView(EditView):
         return not changed
 
     def renderHidden(self):
-        ''' Render state as hidden fields. Also render hidden fields to 
+        ''' Render state as hidden fields. Also render hidden fields to
             propagate self.storage if we are not using the session to do this.
         '''
         olist = []
@@ -195,9 +195,9 @@ class EditWizardView(EditView):
             ))
 
         if self.use_session:
-            # Need to output a unique key as a hidden field to identity this 
-            # particular wizard. We use this to ensure data for this view 
-            # doesn't conflict with other wizards in progress in other 
+            # Need to output a unique key as a hidden field to identity this
+            # particular wizard. We use this to ensure data for this view
+            # doesn't conflict with other wizards in progress in other
             # browser windows.
             # Otherwise, no more state to propagate
             raise NotImplementedError, 'use_session'
@@ -212,7 +212,7 @@ class EditWizardView(EditView):
 
 
 def EditWizardViewFactory(name, schema, permission, layer,
-                    panes, fields, template, default_template, bases, for_, 
+                    panes, fields, template, default_template, bases, for_,
                     menu=u'', usage=u'', use_session=True):
     # XXX What about the __implements__ of the bases?
     class_ = SimpleViewClass(template, used_for=schema, bases=bases)
