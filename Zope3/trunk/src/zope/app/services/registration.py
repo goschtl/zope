@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.7 2003/07/02 19:43:27 fdrake Exp $
+$Id: registration.py,v 1.8 2003/07/18 19:12:51 alga Exp $
 """
 __metaclass__ = type
 
@@ -31,7 +31,7 @@ from zope.app.interfaces.dependable import IDependable, DependencyError
 from zope.app.interfaces.services import registration as interfaces
 from zope.app.interfaces.services.module import IModuleManager
 from zope.proxy import removeAllProxies
-from zope.security.checker import InterfaceChecker
+from zope.security.checker import InterfaceChecker, CheckerPublic
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 from zope.proxy import getProxiedObject
 
