@@ -65,6 +65,10 @@
         interface=".interfaces.IMessage"
         />
     <require
+        permission="book.messageboard.View"
+        interface=".interfaces.IMessageContainer"
+        />
+    <require
         permission="book.messageboard.Add"
         set_schema=".interfaces.IMessage"
         />

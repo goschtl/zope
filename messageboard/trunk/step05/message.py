@@ -22,6 +22,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.size.interfaces import ISized
 
 from book.messageboard.interfaces import IMessage
+from book.messageboard.interfaces import IMessageContained, IMessageContainer
 
 class Message(BTreeContainer):
     """A simple implementation of a message.
@@ -46,7 +47,7 @@ class Message(BTreeContainer):
     >>> message.body
     u'Message Body'
     """
-    implements(IMessage)
+    implements(IMessage, IMessageContained, IMessageContainer)
 
     # See book.messageboard.interfaces.IMessage
     title = u''
@@ -84,7 +85,29 @@ class MessageSized(object):
         return ('item', len(self._message))
 
     def sizeForDisplay(self):
-        'See ISized'
+        """See ISized
+
+        Create the adapter first.
+
+        >>> size = MessageSized(Message())
+
+        Here are some examples of the expected output.
+
+        >>> size.sizeForDisplay()
+        u'0 replies, 0 attachments'
+        >>> size._message['msg1'] = Message()
+        >>> size.sizeForDisplay()
+        u'1 reply, 0 attachments'
+        >>> size._message['msg2'] =  Message()
+        >>> size.sizeForDisplay()
+        u'2 replies, 0 attachments'
+        >>> size._message['att1'] = object()
+        >>> size.sizeForDisplay()
+        u'2 replies, 1 attachment'
+        >>> size._message['att2'] = object()
+        >>> size.sizeForDisplay()
+        u'2 replies, 2 attachments'
+        """
         messages = 0
         for obj in self._message.values():
             if IMessage.providedBy(obj):
