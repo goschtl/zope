@@ -16,7 +16,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Thu Apr  1 17:02:04 2004\n"
+"POT-Creation-Date: Tue Apr  6 11:37:04 2004\n"
 "PO-Revision-Date: 2004-03-19 18:20+0000\n"
 "Last-Translator: Dmitry Vasiliev <dima@hlabs.spb.ru>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -60,7 +60,7 @@ msgstr "Управление ZODB"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:32
 msgid "Translation Domain Control"
-msgstr "Сервис переводов"
+msgstr "Управление сервисом переводов"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:41
 msgid "Manage Process"
@@ -349,24 +349,24 @@ msgstr ""
 # Default: "Invalidated."
 #: src/zope/app/cache/browser/cacheable.py:57
 msgid "cache-invalidated"
-msgstr ""
+msgstr "Кэшированные данные сброшены."
 
 # Default: "No cache associated with object."
 #: src/zope/app/cache/browser/cacheable.py:59
 msgid "no-cache-associated"
-msgstr ""
+msgstr "Нет кэша ассоциированного с объектом"
 
 #: src/zope/app/cache/browser/cacheable.py:71
 msgid "Saved changes."
-msgstr "Записанные изменения"
+msgstr "Изменения записаны."
 
 #: src/zope/app/cache/browser/cacheableedit.pt:15
 msgid "Currently the object uses ${cache_id_or_url}."
-msgstr ""
+msgstr "На данный момент объект использует ${cache_id_or_url}."
 
 #: src/zope/app/cache/browser/cacheableedit.pt:37
 msgid "Cache name"
-msgstr ""
+msgstr "Название кэша"
 
 # Default: "Save Changes"
 #: src/zope/app/cache/browser/cacheableedit.pt:45
@@ -384,23 +384,23 @@ msgstr "Сохранить"
 # Default: "Invalidate Cached Value"
 #: src/zope/app/cache/browser/cacheableedit.pt:47
 msgid "invalidate-cache-button"
-msgstr ""
+msgstr "Сбросить кэшированные данные"
 
 #: src/zope/app/cache/browser/cacheableedit.pt:5
 msgid "This edit form allows you to associate a cache with this object."
-msgstr ""
+msgstr "Данная форма позволяет ассоциировать кэш с данным объектом."
 
 #: src/zope/app/cache/browser/cacheableedit.pt:9
 msgid "Currently there is no cache associated with the object."
-msgstr ""
+msgstr "В данный момент нет кэша ассоциированного с данным объектом."
 
 #: src/zope/app/cache/browser/configure.zcml:12
 msgid "A RAM cache is a volatile (in memory) cache"
-msgstr ""
+msgstr "Данные кэша в памяти не сохраняются при перезапуске"
 
 #: src/zope/app/cache/browser/configure.zcml:12
 msgid "RAM Cache"
-msgstr ""
+msgstr "Кэш в памяти"
 
 #: src/zope/app/cache/browser/configure.zcml:26
 msgid "Statistics"
@@ -408,11 +408,11 @@ msgstr "Статистика"
 
 #: src/zope/app/cache/browser/configure.zcml:6
 msgid "Caches"
-msgstr ""
+msgstr "Кэши"
 
 #: src/zope/app/cache/browser/configure.zcml:6
 msgid "Caches can be used to make your site run faster."
-msgstr ""
+msgstr "Кэши могут быть использованы для ускорения работы сайта."
 
 #: src/zope/app/cache/browser/ramedit.pt:20
 msgid "Maximum cached entries"
@@ -430,25 +430,29 @@ msgstr "Время между обновлениями"
 msgid "You can configure the RAM Cache here."
 msgstr "Настройки кэша в памяти"
 
-#: src/zope/app/cache/browser/ramstats.pt:19
+#: src/zope/app/cache/browser/ramstats.pt:20
 msgid "Path"
 msgstr "Путь"
 
-#: src/zope/app/cache/browser/ramstats.pt:20
+#: src/zope/app/cache/browser/ramstats.pt:21
 msgid "Hits"
 msgstr "Запросов"
 
-#: src/zope/app/cache/browser/ramstats.pt:21
+#: src/zope/app/cache/browser/ramstats.pt:22
 msgid "Misses"
 msgstr "Отсутствовавшие"
 
-#: src/zope/app/cache/browser/ramstats.pt:22
+#: src/zope/app/cache/browser/ramstats.pt:23
 msgid "Size, bytes"
 msgstr "Размер, байты"
 
-#: src/zope/app/cache/browser/ramstats.pt:23
+#: src/zope/app/cache/browser/ramstats.pt:24
 msgid "Entries"
 msgstr "Записей"
+
+#: src/zope/app/cache/browser/ramstats.pt:6
+msgid "RAMCache statistics"
+msgstr "Статистика кэша в памяти"
 
 #: src/zope/app/catalog/browser/advanced.pt:10
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
@@ -692,7 +696,7 @@ msgstr "1 элемент"
 
 #: src/zope/app/container/size.py:41
 msgid "${items} items"
-msgstr "${items} элементов"
+msgstr "${items} элемента(ов)"
 
 #: src/zope/app/debugskin/error_debug.pt:12
 msgid "Error object: ${error_object}"
@@ -782,7 +786,7 @@ msgstr ""
 #: src/zope/app/errorservice/browser/configure.zcml:26
 #: src/zope/app/cache/browser/cacheableedit.pt:23
 #: src/zope/app/cache/browser/ramedit.pt:9
-#: src/zope/app/cache/browser/ramstats.pt:9
+#: src/zope/app/cache/browser/ramstats.pt:10
 msgid "Errors"
 msgstr "Ошибки"
 
@@ -1155,7 +1159,7 @@ msgstr "Удалить выбранные элементы"
 
 #: src/zope/app/form/browser/sequencewidget.py:88
 msgid "Add %s"
-msgstr ""
+msgstr "Добавить %s"
 
 #: src/zope/app/form/browser/vocabularywidget.py:273
 msgid "vocabulary-missing-single-value-for-display"
@@ -1333,21 +1337,23 @@ msgstr "Синхронизировать"
 
 #: src/zope/app/i18n/browser/configure.zcml:5
 msgid "Translation Domains"
-msgstr ""
+msgstr "Сервисы переводов"
 
 #: src/zope/app/i18n/browser/configure.zcml:5
 msgid ""
 "Translation Domains allow you to localize your software by       providing "
 "message translations."
 msgstr ""
+"Сервисы переводов позволят Вам локализовать Ваше программное обеспечение "
+"предоставляя переводы сообщений."
 
 #: src/zope/app/i18n/browser/configure.zcml:61
 msgid "Translation Domain"
-msgstr ""
+msgstr "Сервис переводов"
 
 #: src/zope/app/i18n/browser/configure.zcml:61
 msgid "A Persistent Translation Domain"
-msgstr ""
+msgstr "Сохраняемый сервис переводов"
 
 #: src/zope/app/i18n/browser/configure.zcml:69
 msgid "New Translation Domain Registration"
@@ -1359,7 +1365,7 @@ msgstr "Загрузка и сохранение сообщений"
 
 #: src/zope/app/i18n/browser/exportimport.pt:12
 msgid "Here you can export and import messages from your Translation Domain."
-msgstr ""
+msgstr "Здесь Вы можете загружать и сохранять сообщения для Вашего домена переводов."
 
 #: src/zope/app/i18n/browser/exportimport.pt:20
 #: src/zope/app/i18n/browser/synchronize.pt:43
@@ -1395,7 +1401,7 @@ msgstr "Обновить"
 
 #: src/zope/app/i18n/browser/synchronize.pt:122
 msgid "No connection could be made to remote data source."
-msgstr "Не может быть сделано попыток соединения к удаленному серверу."
+msgstr "Соединений с удаленным сервером данных не было."
 
 #: src/zope/app/i18n/browser/synchronize.pt:26
 msgid "Server URL"
@@ -1427,11 +1433,11 @@ msgid "Status"
 msgstr "Статус"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
-msgid "Up to Date"
+msgid "New Remote"
 msgstr ""
 
 #: src/zope/app/i18n/browser/synchronize.py:30
-msgid "New Remote"
+msgid "Up to Date"
 msgstr ""
 
 #: src/zope/app/i18n/browser/synchronize.py:30
@@ -1445,6 +1451,10 @@ msgstr ""
 #: src/zope/app/i18n/browser/synchronize.py:31
 msgid "Newer Local"
 msgstr ""
+
+#: src/zope/app/i18n/browser/translate.pt:102
+msgid "Add new messages"
+msgstr "Добавить новые сообщения"
 
 #: src/zope/app/i18n/browser/translate.pt:127
 msgid "Edit Messages"
@@ -2274,7 +2284,7 @@ msgstr ""
 #: src/zope/app/rdb/browser/configure.zcml:39
 #: src/zope/app/sqlscript/browser/configure.zcml:41
 msgid "test-page-title"
-msgstr ""
+msgstr "Тест"
 
 #: src/zope/app/rdb/browser/configure.zcml:49
 msgid "Add Database Connection Registration"
@@ -2282,67 +2292,67 @@ msgstr ""
 
 #: src/zope/app/rdb/browser/configure.zcml:5
 msgid "Database Adapter"
-msgstr ""
+msgstr "Адаптер базы данных"
 
 #: src/zope/app/rdb/browser/configure.zcml:5
 msgid "Database Adapters are used to connect to external       relational databases."
-msgstr ""
+msgstr "Адаптер базы данных используется для соединения с реляционными базами данных."
 
 #: src/zope/app/rdb/browser/gadflyda.zcml:14
 msgid "Gadfly DA"
-msgstr ""
+msgstr "Адаптер базы данных Gadfly"
 
 #: src/zope/app/rdb/browser/gadflyda.zcml:14
 msgid "A DA for the built-in 100% Pure Python Gadfly Database"
-msgstr ""
+msgstr "Адаптер для встроенной базы данных Gadfly написанной полностью на Python"
 
 #: src/zope/app/rdb/browser/gadflyda.zcml:5
 msgid "Add Gadfly Database Adapter"
-msgstr ""
+msgstr "Добавить адаптер базы данных Gadfly"
 
 #: src/zope/app/rdb/browser/rdbconnection.pt:14
 msgid "Connection URI:"
-msgstr ""
+msgstr "URI соединения:"
 
 #: src/zope/app/rdb/browser/rdbconnection.pt:16
 msgid "Template: dbi://username:password@host:port/dbname;param1=value..."
-msgstr ""
+msgstr "Шаблон: dbi://username:password@host:port/dbname;param1=value..."
 
 #: src/zope/app/rdb/browser/rdbconnection.pt:3
 msgid "Edit Relational Database Adapter"
-msgstr ""
+msgstr "Редактировать адаптер реляционной базы данных"
 
 # Default: "Connect"
 #: src/zope/app/rdb/browser/rdbconnection.pt:30
 msgid "connect-button"
-msgstr ""
+msgstr "Соединить"
 
 # Default: "Disconnect"
 #: src/zope/app/rdb/browser/rdbconnection.pt:33
 msgid "disconnect-button"
-msgstr ""
+msgstr "Разъединить"
 
 #: src/zope/app/rdb/browser/rdbtestresults.pt:11
 msgid "Executed Query:"
-msgstr ""
+msgstr "Выполнить запрос:"
 
 #: src/zope/app/rdb/browser/rdbtestresults.pt:3
 #: src/zope/app/rdb/browser/rdbtestsql.pt:3
 msgid "Database Adapter - Test Connection"
-msgstr ""
+msgstr "Адаптер базы данных - Тест соединения"
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:13
 msgid "Here you can enter an SQL statement, so you can test the connection."
-msgstr ""
+msgstr "Здесь Вы можете ввести SQL запрос для проверки соединения."
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:18
 msgid "Query"
-msgstr ""
+msgstr "Запрос"
 
 # Default: "Execute"
 #: src/zope/app/rdb/browser/rdbtestsql.pt:27
 msgid "execute-button"
-msgstr ""
+msgstr "Выполнить"
 
 #: src/zope/app/rdb/gadflyda.zcml:4
 msgid "Gadfly Database Adapter"
@@ -2442,17 +2452,26 @@ msgstr "Деактивировать"
 
 #: src/zope/app/registration/browser/registration.pt:29
 msgid "This object is currently inactive."
-msgstr ""
+msgstr "Данный объект в неактивном состоянии"
 
-#: src/zope/app/registration/browser/registration.pt:35
+# Default: "Activate"
+#: src/zope/app/registration/browser/registration.pt:30
+#: src/zope/app/site/browser/add_svc_config.pt:16
+#: src/zope/app/site/browser/services.pt:66
+#: src/zope/app/site/browser/tool.pt:90
+#: src/zope/app/utility/browser/utilities.pt:42
+msgid "activate-button"
+msgstr "Активировать"
+
+#: src/zope/app/registration/browser/registration.pt:36
 msgid "Advanced Options"
-msgstr "Расширенные опции"
+msgstr "Дополнительные опции"
 
-#: src/zope/app/registration/browser/registration.pt:42
+#: src/zope/app/registration/browser/registration.pt:43
 msgid "This object is not currently active."
 msgstr "Данный объект не активирован."
 
-#: src/zope/app/registration/browser/registration.pt:44
+#: src/zope/app/registration/browser/registration.pt:45
 msgid ""
 "This object won't actually be used unless it is registered to perform a "
 "specific function and is activated."
@@ -3320,7 +3339,7 @@ msgstr "Добавить сервис"
 #: src/zope/app/site/browser/__init__.py:144
 #: src/zope/app/schema/browser/schema_add.pt:8
 msgid "Add Utility"
-msgstr ""
+msgstr "Добавить утилиту"
 
 #: src/zope/app/site/browser/__init__.py:235
 msgid "Activated: ${activated_services}"
@@ -3372,14 +3391,6 @@ msgstr "Зарегистрировать"
 #: src/zope/app/site/browser/add_svc_config.pt:15
 msgid "Service name"
 msgstr "Название сервиса"
-
-# Default: "Activate"
-#: src/zope/app/site/browser/add_svc_config.pt:16
-#: src/zope/app/site/browser/services.pt:66
-#: src/zope/app/site/browser/tool.pt:90
-#: src/zope/app/utility/browser/utilities.pt:42
-msgid "activate-button"
-msgstr "Активировать"
 
 #: src/zope/app/site/browser/add_svc_config.pt:7
 msgid "Register this object to provide the following service(s):"
@@ -3486,9 +3497,8 @@ msgid "Registrations for ${service_name} service"
 msgstr "Регистрация для ${service_name} сервиса"
 
 #: src/zope/app/site/browser/interfacedetail.pt:80
-#, fuzzy
 msgid "Usage Summary"
-msgstr "Регистрации"
+msgstr ""
 
 #: src/zope/app/site/browser/interfacedetail.pt:81
 msgid "Implementation Summary"
@@ -3632,6 +3642,26 @@ msgstr "Заблокирован"
 msgid "Available Tools"
 msgstr "Доступный инструментарий"
 
+#: src/zope/app/site/browser/tools.py:159
+#: src/zope/app/site/browser/tools.py:303
+msgid "Deleted selected tools."
+msgstr "Удален выбранный инструментарий."
+
+#: src/zope/app/site/browser/tools.py:162
+#: src/zope/app/site/browser/tools.py:308
+msgid "Renamed selected tools."
+msgstr "Переименован выбранный инструментарий."
+
+#: src/zope/app/site/browser/tools.py:167
+#: src/zope/app/site/browser/tools.py:313
+msgid "Activated registrations."
+msgstr "Регистрации активированны."
+
+#: src/zope/app/site/browser/tools.py:170
+#: src/zope/app/site/browser/tools.py:316
+msgid "Deactivated registrations."
+msgstr "Регистрации деактивированны."
+
 #: src/zope/app/site/interfaces.py:161
 #: src/zope/app/container/browser/contents.pt:32
 #: src/zope/app/container/browser/index.pt:26
@@ -3663,40 +3693,50 @@ msgstr "1 Кб"
 msgid "${size} KB"
 msgstr "${size} Кб"
 
+# Default: "Add and Test"
+#: src/zope/app/sqlscript/browser/add.pt:11
+msgid "add-and-test"
+msgstr "Добавить и тестировать"
+
 #: src/zope/app/sqlscript/browser/configure.zcml:15
 msgid "Add a SQL Script"
-msgstr ""
+msgstr "Добавить SQL скрипт"
 
 #: src/zope/app/sqlscript/browser/configure.zcml:26
 msgid "Edit an SQL script"
-msgstr ""
+msgstr "Редактировать SQL скрипт"
 
 #: src/zope/app/sqlscript/browser/configure.zcml:60
 msgid "Caching"
-msgstr ""
+msgstr "Кэширование"
+
+# Default: "Add and Test"
+#: src/zope/app/sqlscript/browser/edit.pt:11
+msgid "change-and-test"
+msgstr "Изменить и тестировать"
 
 #: src/zope/app/sqlscript/browser/test.pt:14
 msgid "Argument Name"
-msgstr ""
+msgstr "Название аргумента"
 
 #: src/zope/app/sqlscript/browser/test.pt:16
 #: src/zope/app/workflow/browser/instance_index.pt:38
 msgid "Value"
-msgstr ""
+msgstr "Значение"
 
 # Default: "Test"
 #: src/zope/app/sqlscript/browser/test.pt:31
 msgid "test-button"
-msgstr ""
+msgstr "Тест"
 
 #: src/zope/app/sqlscript/browser/testresults.pt:28
 msgid "An Error occurred"
-msgstr ""
+msgstr "Ошибка"
 
 # Default: "Add SQL Scripts"
 #: src/zope/app/sqlscript/configure.zcml:21
 msgid "add-sql-scripts-permission"
-msgstr ""
+msgstr "Добавить SQL Скрипт"
 
 #: src/zope/app/sqlscript/configure.zcml:32
 #: src/zope/app/sqlscript/browser/configure.zcml:7
@@ -3706,19 +3746,19 @@ msgstr ""
 #: src/zope/app/sqlscript/configure.zcml:32
 #: src/zope/app/sqlscript/browser/configure.zcml:7
 msgid "SQL Script"
-msgstr ""
+msgstr "SQL скрипт"
 
 #: src/zope/app/sqlscript/interfaces.py:48
 msgid "Connection Name"
-msgstr ""
+msgstr "Название соединения"
 
 #: src/zope/app/sqlscript/interfaces.py:49
 msgid "The Connection Name for the connection to be used."
-msgstr ""
+msgstr "Название соединения которое будет использоваться."
 
 #: src/zope/app/sqlscript/interfaces.py:53
 msgid "Arguments"
-msgstr ""
+msgstr "Аргументы"
 
 #: src/zope/app/sqlscript/interfaces.py:54
 msgid ""
@@ -3738,11 +3778,11 @@ msgstr ""
 
 #: src/zope/app/undo/configure.zcml:100
 msgid "Undo!"
-msgstr "Отменить"
+msgstr "Отменить!"
 
 #: src/zope/app/undo/configure.zcml:109
 msgid "Redo!"
-msgstr "Вернуть"
+msgstr "Вернуть!"
 
 #: src/zope/app/undo/configure.zcml:118 src/zope/app/undo/undo_more.pt:5
 msgid "Undo more"
@@ -4227,11 +4267,11 @@ msgid "Stateful Transition"
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:128
-msgid "Content Workflows Manager"
+msgid "An utility to manage content and workflow interaction."
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:128
-msgid "An utility to manage content and workflow interaction."
+msgid "Content Workflows Manager"
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:14
@@ -4460,19 +4500,19 @@ msgstr ""
 
 #: src/zope/app/zopetop/widget_macros.pt:66
 msgid "Root Folder"
-msgstr ""
+msgstr "Корневая папка"
 
 #: src/zope/app/zptpage/browser/configure.zcml:23
 msgid "Templated Page"
-msgstr ""
+msgstr "Шаблон страницы"
 
 #: src/zope/app/zptpage/browser/configure.zcml:31
 msgid "Add a ZPT Page"
-msgstr ""
+msgstr "Добавить шаблон страницы"
 
 #: src/zope/app/zptpage/browser/configure.zcml:39
 msgid "Edit a ZPT page"
-msgstr ""
+msgstr "Редактировать шаблон страницы"
 
 #: src/zope/app/zptpage/browser/configure.zcml:49
 msgid "Inline Code"
@@ -4508,7 +4548,7 @@ msgstr ""
 
 #: src/zope/app/zptpage/interfaces.py:41
 msgid "Expand macros"
-msgstr ""
+msgstr "Подставлять макро-определения"
 
 #: src/zope/app/zptpage/interfaces.py:42
 msgid "Expand Macros so that they all are shown in the code."
@@ -4516,7 +4556,7 @@ msgstr ""
 
 #: src/zope/app/zptpage/interfaces.py:48
 msgid "Evaluate Inline Code"
-msgstr ""
+msgstr "Выполнять встроенный код"
 
 #: src/zope/app/zptpage/interfaces.py:49
 msgid ""
