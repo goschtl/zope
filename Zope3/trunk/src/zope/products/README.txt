@@ -9,6 +9,9 @@ part of core Zope. These add-on products:
     components (e.g. common content types) or they might provide
     examples used to document or teach.
 
+  - Are packages that will typically be overridden with any frequency
+    when building a custom application.
+
   - Do not require special software.  Anybody who can install Zope can
     run these packages without any additional software. This excludes
     most database interfaces, for example.
@@ -20,10 +23,9 @@ part of core Zope. These add-on products:
     people doing refactoring have a prayer of getting failing tests
     running without pulling their hare out.
 
-  - Will have identified contacts who are willing to help out by at
-    least answering questions when issues arise during refactoring.
-    They should include a MAINTAINER.txt file identifying that
-    contact.
+  - Have identified contacts who are willing to help out by at least
+    answering questions when issues arise during refactoring.  They
+    should include a MAINTAINER.txt file identifying that contact.
 
   - May be removed if they become too dificult to maintain or are
     hudged not to be worth the effort.
