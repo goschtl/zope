@@ -14,19 +14,23 @@
 """
 
 Revision information:
-$Id: test_xmlnavigationviews.py,v 1.8 2003/09/21 17:30:41 jim Exp $
+$Id: test_xmlnavigationviews.py,v 1.9 2003/11/21 17:11:59 jim Exp $
 """
 
 #import sys
 #sys.path.insert(0, r"c:\Zope3\src")
 
+from zope.app.tests import ztapi
+from zope.app.content.file import File
+from zope.app.traversing import traverse
 from zope.interface import implements
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.pagetemplate.tests.util import check_xml
+from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.browser.skins.rotterdam.tests import util
 from zope.app.browser.skins.rotterdam.xmlobject \
-    import ReadContainerXmlObjectView
+     import ReadContainerXmlObjectView
 from zope.app.interfaces.container import IReadContainer
 from zope.app.browser.skins.rotterdam.xmlobject import XmlObjectView
 from zope.publisher.browser import TestRequest
@@ -50,15 +54,11 @@ class TestXmlObject(EventSetup, TestCase):
         treeView = rcxov(self.rootFolder, TestRequest()).children
         check_xml(treeView(), util.read_output('test4.xml'))
 
-        from zope.app.content.file import File
-        from zope.app.traversing import traverse
         file1 = File()
         self.folder1_1_1["file1"] = file1
         self.file1 = traverse(self.rootFolder,
                               '/folder1/folder1_1/folder1_1_1/file1')
-        from zope.component.view import provideView
-        from zope.publisher.interfaces.browser import IBrowserPresentation
-        from zope.publisher.interfaces.browser import IBrowserPublisher
+
         class ReadContainerView(ReadContainerXmlObjectView):
             implements(IBrowserPublisher)
             def browserDefault(self, request):
@@ -67,8 +67,9 @@ class TestXmlObject(EventSetup, TestCase):
                 raise NotFoundError(self, name, request)
             def __call__(self):
                 return self.singleBranchTree()
-        provideView(IReadContainer, 'singleBranchTree.xml',
-                    IBrowserPresentation, ReadContainerView)
+            
+        ztapi.browserView(IReadContainer, 'singleBranchTree.xml',
+                          ReadContainerView)
 
         treeView = rcxov(self.folder1_1_1, TestRequest()).singleBranchTree
         check_xml(treeView(), util.read_output('test5.xml'))

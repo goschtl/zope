@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.56 2003/11/03 21:38:01 jeremy Exp $
+$Id: widget.py,v 1.57 2003/11/21 17:11:55 jim Exp $
 """
 __metaclass__ = type
 
@@ -23,6 +23,7 @@ from warnings import warn
 from xml.sax.saxutils import quoteattr
 
 from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.component import getService
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -49,17 +50,14 @@ class BrowserWidget(Widget, BrowserView):
     a lot of machinery to support translation and views:
 
     >>> setUp() # now we have to set up an error view...
-    >>> from zope.component.view import provideView
     >>> from zope.app.interfaces.form import IWidgetInputError
-    >>> from zope.publisher.browser import IBrowserPresentation
     >>> from zope.app.publisher.browser import BrowserView
     >>> from cgi import escape
     >>> class SnippetErrorView(BrowserView):
     ...     def __call__(self):
     ...         return escape(self.context.errors[0])
     ...
-    >>> provideView(IWidgetInputError, 'snippet',
-    ...             IBrowserPresentation, SnippetErrorView)
+    >>> ztapi.browserView(IWidgetInputError, 'snippet', SnippetErrorView)
     >>> from zope.publisher.browser import TestRequest
 
     And now the tests proper...

@@ -15,18 +15,17 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.16 2003/08/13 21:28:38 garrett Exp $
+$Id: test_utility.py,v 1.17 2003/11/21 17:12:04 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.interface import Interface, directlyProvides, implements
 from zope.schema import Text, accessors
 from zope.app.browser.form.widget import TextWidget
-from zope.component.view import provideView, setDefaultViewName
 from zope.schema.interfaces import IText
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidget, setUpWidgets, setUpEditWidgets
@@ -116,8 +115,8 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        setDefaultViewName(IText, IBrowserPresentation, 'edit')
-        provideView(IText, 'edit', IBrowserPresentation, W)
+        ztapi.setDefaultViewName(IText, 'edit')
+        ztapi.browserView(IText, 'edit', W)
 
 
     def test_setUpWidget(self):

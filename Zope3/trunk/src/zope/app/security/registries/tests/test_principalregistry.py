@@ -21,6 +21,7 @@ from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.servicenames import Adapters
 from zope.interface import implements
+from zope.app.tests import ztapi
 
 class Request:
 
@@ -45,7 +46,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         from zope.component import getService
         from zope.app.security.basicauthadapter import BasicAuthAdapter
         from zope.app.interfaces.security import ILoginPassword
-        getService(None,Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         self.reg = PrincipalRegistry()

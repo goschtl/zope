@@ -11,20 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.13 2003/08/13 21:28:04 garrett Exp $
+"""$Id: test_editview.py,v 1.14 2003/11/21 17:11:56 jim Exp $
 """
 import unittest
 
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.interface import Interface, implements
 from zope.schema import TextLine, accessors
 from zope.schema.interfaces import ITextLine
 from zope.publisher.browser import TestRequest
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.browser.form.editview import EditView
-from zope.component.view import provideView, setDefaultViewName
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.browser.form.widget import TextWidget
 from zope.app.browser.form.submit import Update
 from zope.component.exceptions import ComponentLookupError
@@ -81,9 +80,9 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideView(ITextLine, 'edit', IBrowserPresentation, TextWidget)
-        setDefaultViewName(ITextLine, IBrowserPresentation, "edit")
-        provideAdapter(IFoo, IBar, FooBarAdapter)
+        ztapi.browserView(ITextLine, 'edit', TextWidget)
+        ztapi.setDefaultViewName(ITextLine, "edit")
+        ztapi.provideAdapter(IFoo, IBar, FooBarAdapter)
 
     def test_setPrefix_and_widgets(self):
         v = EV(C(), TestRequest())

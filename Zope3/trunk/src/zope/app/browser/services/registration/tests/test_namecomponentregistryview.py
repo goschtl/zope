@@ -13,16 +13,15 @@
 ##############################################################################
 """Unit test for the generic NameComponentRegistry view mixin
 
-$Id: test_namecomponentregistryview.py,v 1.1 2003/06/21 21:22:03 jim Exp $
+$Id: test_namecomponentregistryview.py,v 1.2 2003/11/21 17:11:57 jim Exp $
 """
 
+from zope.app.tests import ztapi
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.component.view import provideView
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.publisher.browser import BrowserView
 from zope.app.browser.services.registration import NameComponentRegistryView
 from zope.app.interfaces.traversing import ITraversable, ITraverser
@@ -81,10 +80,9 @@ class AU(BrowserView):
 class Test(PlacelessSetup, TestCase):
 
     def test_update(self):
-        provideAdapter(None, ITraverser, Traverser)
-        provideView(I, 'ChangeRegistrations', IBrowserPresentation, V)
-        provideView(ITestRegistration, 'absolute_url', IBrowserPresentation,
-                    AU)
+        ztapi.provideAdapter(None, ITraverser, Traverser)
+        ztapi.browserView(I, 'ChangeRegistrations', V)
+        ztapi.browserView(ITestRegistration, 'absolute_url', AU)
 
         r1 = Registry(None)
         r2 = Registry(Registration('1'))

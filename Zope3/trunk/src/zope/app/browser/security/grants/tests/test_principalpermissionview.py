@@ -13,11 +13,12 @@
 ##############################################################################
 """
 
-$Id: test_principalpermissionview.py,v 1.8 2003/06/06 20:44:27 stevea Exp $
+$Id: test_principalpermissionview.py,v 1.9 2003/11/21 17:11:56 jim Exp $
 """
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.component import getService, getServiceManager
 from zope.app.services.servicenames import Permissions, Adapters
 from zope.app.services.servicenames import Authentication
@@ -157,10 +158,9 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         provideService(Authentication,
             DummyAuthenticationService(principals = self._principals))
-        provideAdapter=getService(None,Adapters).provideAdapter
-        provideAdapter(IAttributeAnnotatable,
+        ztapi.provideAdapter(IAttributeAnnotatable,
                        IPrincipalPermissionManager, DummyAdapter)
-        provideAdapter(
+        ztapi.provideAdapter(
             IAttributeAnnotatable, IAnnotations, AttributeAnnotations)
 
     def _makeOne(self):

@@ -11,6 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+from zope.app.tests import ztapi
 from zope.app.security.grants.rolepermission \
      import AnnotationRolePermissionManager
 from zope.app.interfaces.annotation import IAttributeAnnotatable
@@ -41,9 +42,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         defineService(Permissions, IPermissionService)
         provideService('Roles', roleRegistry)
         provideService(Permissions, permissionRegistry)
-        provideAdapter=getService(None,Adapters).provideAdapter
-        provideAdapter(IAttributeAnnotatable, IAnnotations,
-                       AttributeAnnotations)
+        ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
+                             AttributeAnnotations)
 
         read = permissionRegistry.definePermission('read', 'Read Something')
         self.read = read.getId()

@@ -13,7 +13,7 @@
 ##############################################################################
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component import getAdapter
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.traversing import traverse
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.content.folder import IFolder
@@ -45,7 +45,7 @@ class FolderMetaDataTest(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         PlacefulSetup.buildFolders(self)
-        provideAdapter(IFolder, IZopeDublinCore, ZDCAnnotatableAdapter)
+        ztapi.provideAdapter(IFolder, IZopeDublinCore, ZDCAnnotatableAdapter)
 
 def test_suite():
     return TestSuite((

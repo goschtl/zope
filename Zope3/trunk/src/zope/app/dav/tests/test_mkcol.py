@@ -13,11 +13,12 @@
 ##############################################################################
 """MKCOL tests
 
-$Id: test_mkcol.py,v 1.4 2003/09/21 17:30:45 jim Exp $
+$Id: test_mkcol.py,v 1.5 2003/11/21 17:12:02 jim Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.tests import ztapi
 from zope.component import getService
 from zope.app.services.servicenames import Adapters
 from zope.app.traversing import traverse
@@ -41,15 +42,14 @@ class TestPlacefulMKCOL(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         PlacefulSetup.buildFolders(self)
-        provideAdapter = getService(None, Adapters).provideAdapter
-        provideAdapter(IWriteContainer, IWriteDirectory, noop)
-        provideAdapter(IFolder, IDirectoryFactory, Cloner)
+        ztapi.provideAdapter(IWriteContainer, IWriteDirectory, noop)
+        ztapi.provideAdapter(IFolder, IDirectoryFactory, Cloner)
 
     def test_mkcol_not_folderish(self):
         root = self.rootFolder
         request = _createRequest('')
         container = traverse(root, 'folder1')
-        file = File('bla', 'text/plain', 'bla')
+        file = File('bla', 'text/plain', 'bla', container)
         container['bla'] = file
         file = traverse(container, 'bla')
         nr = NullResource(file, 'mkcol_test')

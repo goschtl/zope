@@ -14,11 +14,12 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.15 2003/10/06 19:29:49 sidnei Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.16 2003/11/21 17:12:12 jim Exp $
 """
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.component.service import serviceManager as services
 from zope.interface import implements
 
@@ -80,9 +81,9 @@ class Test(PlacefulSetup, unittest.TestCase):
 
 
 
-        getService(None,Adapters).provideAdapter(
-                       IAttributeAnnotatable, IAnnotations,
-                       AttributeAnnotations)
+        ztapi.provideAdapter(
+            IAttributeAnnotatable, IAnnotations,
+            AttributeAnnotations)
 
         # set up some principals
         self.jim = principalRegistry.definePrincipal('jim', 'Jim', 'Jim Fulton',
@@ -199,7 +200,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             self.write, None, Context(self.jim)))
 
     def testPlayfulPrincipalRole(self):
-        getService(None,Adapters).provideAdapter(
+        ztapi.provideAdapter(
             ITest,
             IPrincipalRoleManager, AnnotationPrincipalRoleManager)
 
@@ -221,7 +222,7 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testPlayfulRolePermissions(self):
 
         ARPM = AnnotationRolePermissionManager
-        getService(None,Adapters).provideAdapter(ITest,
+        ztapi.provideAdapter(ITest,
                             IRolePermissionManager, ARPM)
         test = permissionRegistry.definePermission('test', 'Test', '')
         test = test.getId()
@@ -275,7 +276,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testPlayfulPrinciplePermissions(self):
         APPM = AnnotationPrincipalPermissionManager
-        getService(None,Adapters).provideAdapter(ITest,
+        ztapi.provideAdapter(ITest,
                        IPrincipalPermissionManager, APPM)
 
         ob1 = TestClass()

@@ -13,14 +13,14 @@ from zope.app.services.tests.test_auth import AuthSetup
 #
 ##############################################################################
 """
-$Id: test_clipboard.py,v 1.6 2003/05/29 18:15:56 jim Exp $
+$Id: test_clipboard.py,v 1.7 2003/11/21 17:12:14 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
 from zope.component import getAdapter, getService, getServiceManager
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.services.principalannotation \
     import PrincipalAnnotationService
 from zope.app.interfaces.services.principalannotation \
@@ -35,7 +35,8 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         self.buildFolders()
 
-        provideAdapter(IAnnotations, IPrincipalClipboard, PrincipalClipboard)
+        ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
+                             PrincipalClipboard)
         root_sm = getServiceManager(None)
         svc = PrincipalAnnotationService()
         root_sm.defineService("PrincipalAnnotation", \

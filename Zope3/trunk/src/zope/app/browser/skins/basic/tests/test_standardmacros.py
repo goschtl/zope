@@ -13,17 +13,17 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.7 2003/06/06 21:35:18 philikon Exp $
+$Id: test_standardmacros.py,v 1.8 2003/11/21 17:11:58 jim Exp $
 """
 
 import unittest
+from zope.app.tests import ztapi
 from zope.interface import implements
-from zope.app.services.tests.placefulsetup\
+from zope.app.services.tests.placefulsetup \
            import PlacefulSetup
 from zope.component import getService
-from zope.app.services.servicenames import Views
+from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.interface import Interface
 from zope.app.browser.skins.basic.standardmacros import Macros
 
@@ -48,12 +48,6 @@ class I(Interface): pass
 class C:
     implements(I)
 
-class Request:
-    def getPresentationType(self):
-        return IBrowserPresentation
-    def getPresentationSkin(self):
-        return ''
-
 class page1(ViewWithMacros):
     pages = {'foo':'page1_foo',
              'bar':'page1_bar'}
@@ -73,18 +67,15 @@ def createMacrosInstance(pages):
             self.context = context
             self.request = request
         macro_pages = pages
-    return T(C(), Request())
+    return T(C(), TestRequest())
 
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        provideView = getService(None,Views).provideView
-        provideView(I, 'page1', IBrowserPresentation, [page1])
-        provideView(I, 'collides_with_page1', IBrowserPresentation,
-                    [collides_with_page1])
-        provideView(I, 'works_with_page1', IBrowserPresentation,
-                    [works_with_page1])
+        ztapi.browserView(I, 'page1', [page1])
+        ztapi.browserView(I, 'collides_with_page1', [collides_with_page1])
+        ztapi.browserView(I, 'works_with_page1',  [works_with_page1])
 
     def testSinglePage(self):
         macros = createMacrosInstance(('page1',))

@@ -12,15 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.4 2003/08/13 21:28:04 garrett Exp $
+$Id: test_objectwidget.py,v 1.5 2003/11/21 17:11:56 jim Exp $
 """
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.interface import Interface, implements
-from zope.component.view import provideView
 from zope.schema.interfaces import ITextLine
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import TestRequest
 from zope.schema import Object, TextLine
 from zope.app.browser.form.widget import TextWidget, ObjectWidget
@@ -40,7 +39,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
         return ObjectWidget(context, request, **kw)
 
     def setUpContent(self, desc=u''):
-        provideView(ITextLine, 'edit', IBrowserPresentation, [TextWidget])
+        ztapi.browserView(ITextLine, 'edit', TextWidget)
 
         class ITestContent(Interface):
             foo = self._FieldFactory(
@@ -68,7 +67,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
     def setUp(self):
         BrowserWidgetTest.setUp(self)
         self.field = Object(ITestContact, __name__=u'foo')
-        provideView(ITextLine, 'edit', IBrowserPresentation, [TextWidget])
+        ztapi.browserView(ITextLine, 'edit', [TextWidget])
 
     def test_applyChanges(self):
         self.request.form['field.foo.name'] = u'Foo Name'

@@ -13,11 +13,12 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.11 2003/09/21 17:30:25 jim Exp $
+$Id: test_adding.py,v 1.12 2003/11/21 17:11:54 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.browser.container.adding import Adding
 from zope.app.event.tests.placelesssetup import getEvents
@@ -27,13 +28,11 @@ from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.exceptions import UserError
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component.view import provideView
 from zope.component.factory import provideFactory
 from zope.component.interfaces import IFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import implements, Interface, directlyProvides
 from zope.publisher.browser import TestRequest, BrowserView
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.container.contained import contained
 import zope.security.checker
 from zope.exceptions import ForbiddenAttribute
@@ -87,7 +86,7 @@ class Test(PlacelessSetup, TestCase):
         container = Container()
         request = TestRequest()
         adding = Adding(container, request)
-        provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
+        ztapi.browserView(IAdding, "Thing", CreationView)
         self.assertEqual(adding.contentName, None)
         view = adding.publishTraverse(request, 'Thing=foo')
         self.assertEqual(view.action(), 'been there, done that')
@@ -104,7 +103,7 @@ class Test(PlacelessSetup, TestCase):
         container = Container()
         request = TestRequest()
         adding = Adding(container, request)
-        provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
+        ztapi.browserView(IAdding, "Thing", CreationView)
 
         self.assertEqual(adding.contentName, None)
         view = adding.publishTraverse(request, 'Thing=')
@@ -166,9 +165,8 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         adding = Adding(container, request)
         adding.__name__ = '+'
-        provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
-        provideView(Interface, "absolute_url", IBrowserPresentation,
-                    AbsoluteURL)
+        ztapi.browserView(IAdding, "Thing", CreationView)
+        ztapi.browserView(Interface, "absolute_url", AbsoluteURL)
         self.assertRaises(UserError, adding.action, '', 'foo')
         self.assertRaises(UserError, adding.action, 'Unknown', '')
         adding.action('Thing', 'foo')

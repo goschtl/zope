@@ -13,7 +13,7 @@
 ##############################################################################
 """Binding Tests
 
-$Id: test_binding.py,v 1.7 2003/08/21 14:19:28 srichter Exp $
+$Id: test_binding.py,v 1.8 2003/11/21 17:12:09 jim Exp $
 """
 import unittest
 
@@ -25,15 +25,15 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.traversing import ITraversable
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 
 
 class BindingTestCase(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(None, ITraverser, Traverser)
-        provideAdapter(None, ITraversable, DefaultTraversable)
+        ztapi.provideAdapter(None, ITraverser, Traverser)
+        ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
 
     def test_binding(self):
         comp = PTComponent(Content())

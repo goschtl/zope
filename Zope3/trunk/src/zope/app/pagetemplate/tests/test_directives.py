@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.6 2003/08/22 20:02:19 faassen Exp $
+$Id: test_directives.py,v 1.7 2003/11/21 17:12:09 jim Exp $
 """
 
 import unittest
@@ -21,7 +21,7 @@ from cStringIO import StringIO
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.interface import Interface, implements
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 
 import zope.app.pagetemplate
 
@@ -65,7 +65,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testTalesAPI1(self):
         from zope.app.pagetemplate.engine import Engine
 
-        provideAdapter(None, I, Adapter)
+        ztapi.provideAdapter(None, I, Adapter)
 
         xmlconfig(StringIO(template % (
             """

@@ -14,7 +14,7 @@
 """Test handler for AnnotationPrincipalPermissionManager module."""
 
 import unittest
-
+from zope.app.tests import ztapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.component import getService
 from zope.app.services.servicenames import Adapters
@@ -37,7 +37,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        getService(None,Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
 

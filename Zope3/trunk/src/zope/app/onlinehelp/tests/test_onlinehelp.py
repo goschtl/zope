@@ -13,11 +13,11 @@
 ##############################################################################
 """Test OnlineHelp
 
-$Id: test_onlinehelp.py,v 1.5 2003/09/21 17:32:31 jim Exp $
+$Id: test_onlinehelp.py,v 1.6 2003/11/21 17:12:08 jim Exp $
 """
 import os
 from unittest import TestSuite, makeSuite
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import Interface
 from zope.interface.verify import verifyObject
@@ -36,9 +36,10 @@ class TestOnlineHelp(PlacelessSetup, TestOnlineHelpTopic):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(None, ITraverser, Traverser)
-        provideAdapter(None, ITraversable, DefaultTraversable)
-        provideAdapter(None, IPhysicallyLocatable, LocationPhysicallyLocatable)
+        ztapi.provideAdapter(None, ITraverser, Traverser)
+        ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+        ztapi.provideAdapter(None, IPhysicallyLocatable,
+                             LocationPhysicallyLocatable)
         path = os.path.join(testdir(), 'help.txt')
         self.topic = OnlineHelp('Help', path, 'txt')
 

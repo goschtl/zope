@@ -14,14 +14,14 @@
 """
 Revision information:
 
-$Id: test_rename.py,v 1.2 2003/09/21 17:33:38 jim Exp $
+$Id: test_rename.py,v 1.3 2003/11/21 17:12:14 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.traversing import traverse
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.component import getAdapter
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.interfaces.container import IContainer
 from zope.app.copypastemove import ObjectMover
@@ -34,7 +34,7 @@ class RenameTest(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         PlacefulSetup.buildFolders(self)
-        provideAdapter(None, IObjectMover, ObjectMover)
+        ztapi.provideAdapter(None, IObjectMover, ObjectMover)
 
     def test_simplerename(self):
         root = self.rootFolder

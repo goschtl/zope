@@ -12,10 +12,10 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.14 2003/08/19 17:34:15 srichter Exp $
+$Id: test_sqlscript.py,v 1.15 2003/11/21 17:12:01 jim Exp $
 """
 import unittest
-
+from zope.app.tests import ztapi
 from zope.interface import implements, classImplements
 
 from zope.app.interfaces.rdb import IConnectionService
@@ -136,13 +136,13 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
         self.caching_service = CachingServiceStub()
         sm.defineService('Caching', ICachingService)
         sm.provideService('Caching', self.caching_service)
-        getService(None, Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
-        getService(None, Adapters).provideAdapter(
+        ztapi.provideAdapter(
             ISQLScript, IPhysicallyLocatable,
             LocatableStub)
-        getService(None, Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IAnnotatable, ICacheable,
             AnnotationCacheable)
 

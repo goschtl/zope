@@ -14,13 +14,13 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.25 2003/09/21 17:30:29 jim Exp $
+$Id: test_contents.py,v 1.26 2003/11/21 17:11:54 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.tests import ztapi
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component.adapter import provideAdapter
 
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.copypastemove import IObjectMover
@@ -60,10 +60,12 @@ class BaseTestContentsBrowserView(PlacefulSetup):
     def setUp(self):
         PlacefulSetup.setUp(self)
         PlacefulSetup.buildFolders(self)
-        provideAdapter(None, IObjectCopier, ObjectCopier)
-        provideAdapter(None, IObjectMover, ObjectMover)
+        
+        ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
+        ztapi.provideAdapter(None, IObjectMover, ObjectMover)
 
-        provideAdapter(IAnnotations, IPrincipalClipboard, PrincipalClipboard)
+        ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
+                             PrincipalClipboard)
         root_sm = getServiceManager(None)
         svc = PrincipalAnnotationService()
         root_sm.defineService("PrincipalAnnotation", \
@@ -111,8 +113,7 @@ class BaseTestContentsBrowserView(PlacefulSetup):
             created = datetime(2001, 1, 1, 1, 1, 1)
             modified = datetime(2002, 2, 2, 2, 2, 2)
 
-        from zope.component.adapter import provideAdapter
-        provideAdapter(IDocument, IZopeDublinCore, FauxDCAdapter)
+        ztapi.provideAdapter(IDocument, IZopeDublinCore, FauxDCAdapter)
 
         fc = self._TestView__newView(container)
         info = fc.listContentInfo()[0]
@@ -170,10 +171,11 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         PlacefulSetup.buildFolders(self)
-        provideAdapter(None, IObjectCopier, ObjectCopier)
-        provideAdapter(None, IObjectMover, ObjectMover)
+        ztapi.provideAdapter(None, IObjectCopier, ObjectCopier)
+        ztapi.provideAdapter(None, IObjectMover, ObjectMover)
 
-        provideAdapter(IAnnotations, IPrincipalClipboard, PrincipalClipboard)
+        ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
+                             PrincipalClipboard)
         root_sm = getServiceManager(None)
         svc = PrincipalAnnotationService()
         root_sm.defineService("PrincipalAnnotation", \

@@ -13,21 +13,20 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.9 2003/06/06 21:35:20 philikon Exp $
+$Id: test_menu.py,v 1.10 2003/11/21 17:11:59 jim Exp $
 """
 
 import unittest
+
+from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 
 from zope.component import getService, getServiceManager
-from zope.app.services.servicenames import Views
-from zope.app.services.tests.placefulsetup \
-           import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 
 from zope.app.browser.menu import MenuAccessView
-
+from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.publication.traversers import TestTraverser
 from zope.security.management import newSecurityManager
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
@@ -81,29 +80,21 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         defineService('BrowserMenu', IBrowserMenuService)
         provideService('BrowserMenu', Service())
-        getService(None,Views).provideView(
-            I, 'a3', IBrowserPresentation, [V])
-        getService(None, Views).provideView(None, '_traverse',
-                            IBrowserPresentation, [TestTraverser])
+        ztapi.browserView(I, 'a3', [V])
+        ztapi.browserView(None, '_traverse', [TestTraverser])
         defineChecker(C, NamesChecker(['a1', 'a2', 'a3', '__call__'],
                                       CheckerPublic,
                                       abad='waaa'))
 
     def test(self):
         newSecurityManager('who')
-        v = MenuAccessView(ProxyFactory(ob), Request())
+        v = MenuAccessView(ProxyFactory(ob), TestRequest())
         self.assertEqual(v['zmi_views'],
                          [{'description': '', 'title':'l1', 'action':'a1'},
                           {'description': '', 'title':'l2', 'action':'a2/a3'},
                           {'description': '', 'title':'l3', 'action':'@@a3'}
                           ])
 
-
-class Request:
-    def getPresentationType(self):
-        return IBrowserPresentation
-    def getPresentationSkin(self):
-        return ''
 
 def test_suite():
     loader = unittest.TestLoader()

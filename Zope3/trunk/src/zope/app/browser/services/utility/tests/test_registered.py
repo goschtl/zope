@@ -15,11 +15,11 @@
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.app.browser.services.utility import Utilities
 from zope.app.tests import placelesssetup
-from zope.component.view import provideView
 from zope.interface import Interface, implements
-from zope.publisher.browser import BrowserView, IBrowserPresentation
+from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
 
 
@@ -85,10 +85,9 @@ class UtilitiesView(Utilities, BrowserView):
 class RegisteredTest(placelesssetup.PlacelessSetup, unittest.TestCase):
 
     def test_utility(self):
-        provideView(IStub,
-                    "absolute_url",
-                    IBrowserPresentation,
-                    StubAbsoluteURL)
+        ztapi.browserView(IStub,
+                          "absolute_url",
+                          StubAbsoluteURL)
         utilityservice = StubLocalUtilityService()
         request = TestRequest()
         utilities = UtilitiesView(utilityservice, request)

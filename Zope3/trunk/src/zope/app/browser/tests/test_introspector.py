@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector view tests
 
-$Id: test_introspector.py,v 1.2 2003/07/02 15:23:02 alga Exp $
+$Id: test_introspector.py,v 1.3 2003/11/21 17:11:59 jim Exp $
 """
 
 import unittest
@@ -25,7 +25,7 @@ from zope.app.tests import setup
 from zope.interface import Interface, directlyProvidedBy
 from zope.interface import directlyProvides, implements
 from zope.app.component.globalinterfaceservice import provideInterface
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.interfaces.introspector import IIntrospector
 from zope.app.introspector import Introspector
 
@@ -49,7 +49,7 @@ class TestIntrospectorView(PlacefulSetup, unittest.TestCase):
 
         provideInterface(id, I1)
         provideInterface(id2, I2)
-        provideAdapter(None, IIntrospector, Introspector)
+        ztapi.provideAdapter(None, IIntrospector, Introspector)
 
 
     def test_getInterfaceURL(self):

@@ -13,7 +13,7 @@
 ##############################################################################
 """A functional GlobalEventChannel test.
 
-$Id: test_globaleventchannel.py,v 1.3 2003/06/07 06:37:25 stevea Exp $
+$Id: test_globaleventchannel.py,v 1.4 2003/11/21 17:12:04 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -21,7 +21,7 @@ from zope.app.interfaces.event import IEvent, ISubscribingAware, ISubscriber
 from zope.interface import Interface, implements
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component.tests.components import RecordingAdapter
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 
 class ISomeEvent(IEvent):
     pass
@@ -128,7 +128,7 @@ class TestSubscribingAwareChannel(PlacelessSetup, TestCase):
         self.subscriber = SubscriberStub()
         self.filter = lambda x: True
         self.subaware = SubAware()
-        provideAdapter(ISubscriberStub, ISubscribingAware, self.subaware)
+        ztapi.provideAdapter(ISubscriberStub, ISubscribingAware, self.subaware)
 
     def test_subscribe(self):
         self.ec.globalSubscribe(self.subscriber, ISomeEvent, self.filter)
@@ -167,7 +167,7 @@ class TestAdaptingToISubscriberBase(PlacelessSetup, TestCase):
         self.subscriber = NonSubscriberStub()
         self.event = SomeEvent()
         self.adapter = SubscriberAdapter()
-        provideAdapter(INonSubscriberStub, ISubscriber, self.adapter)
+        ztapi.provideAdapter(INonSubscriberStub, ISubscriber, self.adapter)
 
 class TestAdaptingToISubscriberOnNotify(TestAdaptingToISubscriberBase):
     def setUpChannel(self):

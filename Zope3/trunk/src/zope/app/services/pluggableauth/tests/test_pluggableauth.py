@@ -12,10 +12,11 @@
 #
 ##############################################################################
 """
-$Id: test_pluggableauth.py,v 1.6 2003/09/21 17:33:05 jim Exp $
+$Id: test_pluggableauth.py,v 1.7 2003/11/21 17:12:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.tests import ztapi
 from zope.app.services.auth import User
 from zope.app.services.servicenames import Adapters
 from zope.app.services.tests import placefulsetup
@@ -23,7 +24,6 @@ from zope.app.services.tests import placefulsetup
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.tests import setup
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.exceptions import NotFoundError
 
 from zope.app.services.pluggableauth import BTreePrincipalSource, \
@@ -44,18 +44,16 @@ import base64
 class Setup(placefulsetup.PlacefulSetup, TestCase):
 
     def setUp(self):
-        from zope.component.view import viewService
         from zope.app.interfaces.services.pluggableauth import IPrincipalSource
         sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
         from zope.component import getService
         from zope.app.security.basicauthadapter import BasicAuthAdapter
         from zope.app.interfaces.security import ILoginPassword
-        getService(None, Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
-        viewService.provideView(IPrincipalSource, "login",
-                                IBrowserPresentation,
-                                (PrincipalAuthenticationView,))
+        ztapi.browserView(IPrincipalSource, "login",
+                          (PrincipalAuthenticationView,))
 
         auth = setup.addService(sm, "TestPluggableAuthenticationService",
                                  PluggableAuthenticationService())

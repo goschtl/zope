@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.17 2003/09/21 17:32:11 jim Exp $
+$Id: test_committer.py,v 1.18 2003/11/21 17:12:05 jim Exp $
 """
 
 import os
@@ -21,7 +21,7 @@ import shutil
 import unittest
 
 from zope.component.service import serviceManager
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.exceptions import NotFoundError
 from zope.interface import implements
 
@@ -214,7 +214,7 @@ class TestCommitterModule(TestBase):
         self.assertEqual(container.items(), [("foo", ["hello", "world"])])
 
     def test_create_object_ifilefactory(self):
-        provideAdapter(IContainer, IFileFactory, file_factory_maker)
+        ztapi.provideAdapter(IContainer, IFileFactory, file_factory_maker)
         container = PretendContainer()
         entry = {"flag": "added"}
         data = ["hello", "world"]
@@ -224,7 +224,7 @@ class TestCommitterModule(TestBase):
         self.assertEqual(container.holding, {"foo": ["hello", "world"]})
 
     def test_create_object_idirectoryfactory(self):
-        provideAdapter(IContainer, IDirectoryFactory, directory_factory_maker)
+        ztapi.provideAdapter(IContainer, IDirectoryFactory, directory_factory_maker)
         container = PretendContainer()
         entry = {"flag": "added"}
         tfn = os.path.join(self.tempdir(), "foo")
@@ -242,8 +242,9 @@ class TestCheckerClass(TestBase):
         # Set up environment
         provideSynchronizer(PretendContainer, DirectoryAdapter)
         provideSynchronizer(dict, DictAdapter)
-        provideAdapter(IContainer, IFileFactory, file_factory_maker)
-        provideAdapter(IContainer, IDirectoryFactory, directory_factory_maker)
+        ztapi.provideAdapter(IContainer, IFileFactory, file_factory_maker)
+        ztapi.provideAdapter(IContainer, IDirectoryFactory,
+                             directory_factory_maker)
 
         # Set up fixed part of object tree
         self.parent = PretendContainer()

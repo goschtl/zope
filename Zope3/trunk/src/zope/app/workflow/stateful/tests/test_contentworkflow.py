@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.8 2003/09/21 17:33:59 jim Exp $
+$Id: test_contentworkflow.py,v 1.9 2003/11/21 17:12:16 jim Exp $
 """
 import unittest
 
@@ -36,7 +36,7 @@ from zope.app.workflow.stateful.contentworkflow import ContentWorkflowsManager
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
 from zope.app.workflow.tests.test_service import DummyProcessDefinition
 from zope.component import getServiceManager
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 from zope.interface.verify import verifyClass
 
@@ -75,8 +75,8 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
         setup.addService(self.sm, EventSubscription, self.events)
         clearEvents()
         eventPublisher.globalSubscribe(EventRecorder)
-        provideAdapter(IAnnotatable, IProcessInstanceContainer,
-                       ProcessInstanceContainerAdapter)
+        ztapi.provideAdapter(IAnnotatable, IProcessInstanceContainer,
+                             ProcessInstanceContainerAdapter)
 
     def testInterface(self):
         verifyClass(IContentWorkflowsManager, ContentWorkflowsManager)

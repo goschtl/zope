@@ -13,10 +13,11 @@
 ##############################################################################
 """Runtime View tests
 
-$Id: test_runtimeinfoview.py,v 1.7 2003/07/31 21:37:31 srichter Exp $
+$Id: test_runtimeinfoview.py,v 1.8 2003/11/21 17:11:53 jim Exp $
 """
 import unittest
 from types import DictType
+from zope.app.tests import ztapi
 
 from zope.app.applicationcontrol.applicationcontrol import applicationController
 from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
@@ -36,8 +37,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         return view
 
     def test_RuntimeInfoView(self):
-        getService(None,Adapters).provideAdapter(
-              IApplicationControl, IRuntimeInfo, RuntimeInfo)
+        ztapi.provideAdapter(IApplicationControl, IRuntimeInfo, RuntimeInfo)
         test_runtimeinfoview = self._TestView__newView(applicationController)
 
         test_format = test_runtimeinfoview.runtimeInfo()

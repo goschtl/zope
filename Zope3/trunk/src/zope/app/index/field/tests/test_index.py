@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for field index.
 
-$Id: test_index.py,v 1.4 2003/09/21 17:32:19 jim Exp $
+$Id: test_index.py,v 1.5 2003/11/21 17:12:07 jim Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
 from zope.component import getService
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.services.servicenames import HubIds
 from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
@@ -61,7 +61,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        provideAdapter(None, ISomeInterface, SomeAdapter)
+        ztapi.provideAdapter(None, ISomeInterface, SomeAdapter)
         self.buildFolders()
         self.index = FieldIndex('zope3')
         self.rootFolder['myIndex'] = self.index

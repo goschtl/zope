@@ -16,16 +16,15 @@
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.app.browser.form.tests import support
 from zope.app.browser.form import vocabularywidget
 from zope.app.interfaces.form import WidgetInputError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
-from zope.component.view import provideView
 from zope.interface.declarations import \
      directlyProvides, providedBy, implements
 from zope.publisher.browser import TestRequest
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.schema.interfaces import IVocabularyField
 from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema import vocabulary
@@ -129,32 +128,32 @@ class TestBase(PlacelessSetup, support.VerifyResults, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         # display
-        provideView(IVocabularyUniqueListField,
-                    "display",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyUniqueListFieldDisplayWidget)
-        provideView(ISampleVocabulary,
-                    "field-display-unique-list-widget",
-                    IBrowserPresentation,
-                    complexsample.SampleListDisplay)
+        ztapi.browserView(
+            IVocabularyUniqueListField,
+            "display",
+            vocabularywidget.VocabularyUniqueListFieldDisplayWidget)
+        ztapi.browserView(
+            ISampleVocabulary,
+            "field-display-unique-list-widget",
+            complexsample.SampleListDisplay)
         # edit
-        provideView(IVocabularyUniqueListField,
-                    "edit",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyUniqueListFieldEditWidget)
-        provideView(ISampleVocabulary,
-                    "field-edit-unique-list-widget",
-                    IBrowserPresentation,
-                    complexsample.SampleUniqueListEdit)
+        ztapi.browserView(
+            IVocabularyUniqueListField,
+            "edit",
+            vocabularywidget.VocabularyUniqueListFieldEditWidget)
+        ztapi.browserView(
+            ISampleVocabulary,
+            "field-edit-unique-list-widget",
+            complexsample.SampleUniqueListEdit)
         # query support (edit only)
-        provideView(IFancySampleVocabularyQuery,
-                    "widget-query-unique-list-helper",
-                    IBrowserPresentation,
-                    complexsample.FancySampleUniqueListQueryView)
-        provideView(ISampleVocabularyQuery,
-                    "widget-query-unique-list-helper",
-                    IBrowserPresentation,
-                    complexsample.SampleUniqueListQueryView)
+        ztapi.browserView(
+            IFancySampleVocabularyQuery,
+            "widget-query-unique-list-helper",
+            complexsample.FancySampleUniqueListQueryView)
+        ztapi.browserView(
+            ISampleVocabularyQuery,
+            "widget-query-unique-list-helper",
+            complexsample.SampleUniqueListQueryView)
 
     def createWidget(self, **kw):
         request = TestRequest(**kw)
@@ -907,32 +906,32 @@ class SingleSampleTests(TestBase):
         self.bound = self.unbound.bind(object())
         # register the single-selection widgets
         # display
-        provideView(IVocabularyField,
-                    "display",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyFieldDisplayWidget)
-        provideView(ISampleVocabulary,
-                    "field-display-widget",
-                    IBrowserPresentation,
-                    complexsample.SampleDisplay)
+        ztapi.browserView(
+            IVocabularyField,
+            "display",
+            vocabularywidget.VocabularyFieldDisplayWidget)
+        ztapi.browserView(
+            ISampleVocabulary,
+            "field-display-widget",
+            complexsample.SampleDisplay)
         # edit
-        provideView(IVocabularyField,
-                    "edit",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyFieldEditWidget)
-        provideView(ISampleVocabulary,
-                    "field-edit-widget",
-                    IBrowserPresentation,
-                    complexsample.SampleEdit)
+        ztapi.browserView(
+            IVocabularyField,
+            "edit",
+            vocabularywidget.VocabularyFieldEditWidget)
+        ztapi.browserView(
+            ISampleVocabulary,
+            "field-edit-widget",
+            complexsample.SampleEdit)
         # query support (edit only) -- 
-        provideView(IFancySampleVocabularyQuery,
-                    "widget-query-helper",
-                    IBrowserPresentation,
-                    complexsample.FancySampleQueryView)
-        provideView(ISampleVocabularyQuery,
-                    "widget-query-helper",
-                    IBrowserPresentation,
-                    complexsample.SampleQueryView)
+        ztapi.browserView(
+            IFancySampleVocabularyQuery,
+            "widget-query-helper",
+            complexsample.FancySampleQueryView)
+        ztapi.browserView(
+            ISampleVocabularyQuery,
+            "widget-query-helper",
+            complexsample.SampleQueryView)
 
     def test_display_empty(self):
         self.viewName = "display"

@@ -13,14 +13,13 @@
 ##############################################################################
 """Unit tests for service adding and registration views.
 
-$Id: test_service.py,v 1.3 2003/09/24 20:43:10 fdrake Exp $
+$Id: test_service.py,v 1.4 2003/11/21 17:11:57 jim Exp $
 """
 
 import unittest
+from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
-from zope.component.view import provideView
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
 from zope.testing.doctestunit import DocTestSuite
 
@@ -43,8 +42,8 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
             def __str__(self):
                 return self.context.url
             __call__ = __str__
-        provideView(IFoo, 'absolute_url', IBrowserPresentation, AU)
-        provideView(IFoo, 'registration.html', IBrowserPresentation, AU)
+        ztapi.browserView(IFoo, 'absolute_url', AU)
+        ztapi.browserView(IFoo, 'registration.html', AU)
 
         context = Foo('foo_url')
         request = TestRequest()

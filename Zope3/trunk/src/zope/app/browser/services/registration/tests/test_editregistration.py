@@ -15,10 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: test_editregistration.py,v 1.3 2003/09/21 17:31:00 jim Exp $
+$Id: test_editregistration.py,v 1.4 2003/11/21 17:11:57 jim Exp $
 """
 __metaclass__ = type
 
+from zope.app.tests import ztapi
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.services.registration import EditRegistration
 from zope.app.event.tests.placelesssetup import getEvents
@@ -28,11 +29,9 @@ from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.component.view import provideView
 from zope.interface import Interface, implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.container.contained import Contained
 
 class Container(dict):
@@ -63,7 +62,7 @@ class Test(PlacefulSetup, TestCase):
             def setPrefix(self, p):
                 self._prefix = p
 
-        provideView(I, 'ItemEdit', IBrowserPresentation, V)
+        ztapi.browserView(I, 'ItemEdit', V)
 
         c1 = C()
         c2 = C()

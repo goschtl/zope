@@ -14,7 +14,7 @@
 """Test handler for PrincipalRoleManager module."""
 
 import unittest
-
+from zope.app.tests import ztapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.component import getService
 from zope.app.services.servicenames import Adapters
@@ -36,7 +36,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        getService(None, Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
 

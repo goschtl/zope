@@ -13,9 +13,10 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: test_annotationcacheable.py,v 1.9 2003/08/19 17:34:12 srichter Exp $
+$Id: test_annotationcacheable.py,v 1.10 2003/11/21 17:12:00 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getService
 from zope.app.services.servicenames import Adapters
@@ -53,7 +54,7 @@ class CachingServiceStub:
 class TestAnnotationCacheable(PlacelessSetup, TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
-        getService(None, Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IAttributeAnnotatable, IAnnotations,
             AttributeAnnotations)
         self.service = CachingServiceStub()

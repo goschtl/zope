@@ -16,16 +16,15 @@
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.app.browser.form import vocabularywidget
 from zope.app.browser.form.tests import support
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.browser.form import IVocabularyQueryView
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
-from zope.component.view import provideView
 from zope.interface.declarations import implements
 from zope.publisher.browser import TestRequest
-from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.schema.interfaces import IVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IVocabularyField, IVocabularyListField
@@ -151,36 +150,35 @@ class SingleSelectionViews:
         # This is equivalent to the default configuration for
         # vocabulary field view registration from configure.zcml.
         # Single-selection views only.
-        provideView(IVocabularyField,
-                    "display",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyFieldDisplayWidget)
-        provideView(IVocabularyField,
-                    "edit",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyFieldEditWidget)
+        ztapi.browserView(
+            IVocabularyField,
+            "display",
+            vocabularywidget.VocabularyFieldDisplayWidget)
+        ztapi.browserView(
+            IVocabularyField,
+            "edit",
+            vocabularywidget.VocabularyFieldEditWidget)
         # Register the "basic" widgets:
-        provideView(IVocabularyTokenized,
-                    "field-display-widget",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyDisplayWidget)
-        provideView(IVocabularyTokenized,
-                    "field-edit-widget",
-                    IBrowserPresentation,
-                    # XXX indirect through a derived class to allow
-                    # testing of multiple concrete widgets
-                    self.singleSelectionEditWidget)
-        provideView(IIterableVocabularyQuery,
-                    "widget-query-helper",
-                    IBrowserPresentation,
-                    vocabularywidget.IterableVocabularyQueryView)
+        ztapi.browserView(
+            IVocabularyTokenized,
+            "field-display-widget",
+            vocabularywidget.VocabularyDisplayWidget)
+        ztapi.browserView(
+            IVocabularyTokenized,
+            "field-edit-widget",
+            # XXX indirect through a derived class to allow
+            # testing of multiple concrete widgets
+            self.singleSelectionEditWidget)
+        ztapi.browserView(
+            IIterableVocabularyQuery,
+            "widget-query-helper",
+            vocabularywidget.IterableVocabularyQueryView)
         # The following widget registration supports the specific
         # sample vocabulary we're using, used to demonstrate how to
         # override widget selection based on vocabulary:
-        provideView(ISampleVocabulary,
+        ztapi.browserView(ISampleVocabulary,
                     "field-display-widget",
-                    IBrowserPresentation,
-                    SampleDisplayWidget)
+                                        SampleDisplayWidget)
 
 
 class MultiSelectionViews:
@@ -189,34 +187,33 @@ class MultiSelectionViews:
         # This is equivalent to the default configuration for
         # vocabulary field view registration from configure.zcml.
         # Multi-selection views only.
-        provideView(IVocabularyListField,
-                    "display",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyListFieldDisplayWidget)
-        provideView(IVocabularyListField,
-                    "edit",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyListFieldEditWidget)
+        ztapi.browserView(
+            IVocabularyListField,
+            "display",
+            vocabularywidget.VocabularyListFieldDisplayWidget)
+        ztapi.browserView(
+            IVocabularyListField,
+            "edit",
+            vocabularywidget.VocabularyListFieldEditWidget)
         # Bind widgets to the vocabulary fields:
-        provideView(IVocabularyTokenized,
-                    "field-display-list-widget",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyListDisplayWidget)
-        provideView(IVocabularyTokenized,
-                    "field-edit-list-widget",
-                    IBrowserPresentation,
-                    vocabularywidget.VocabularyMultiEditWidget)
-        provideView(IIterableVocabularyQuery,
-                    "widget-query-list-helper",
-                    IBrowserPresentation,
-                    vocabularywidget.IterableVocabularyQueryMultiView)
+        ztapi.browserView(
+            IVocabularyTokenized,
+            "field-display-list-widget",
+            vocabularywidget.VocabularyListDisplayWidget)
+        ztapi.browserView(
+            IVocabularyTokenized,
+            "field-edit-list-widget",
+            vocabularywidget.VocabularyMultiEditWidget)
+        ztapi.browserView(
+            IIterableVocabularyQuery,
+            "widget-query-list-helper",
+            vocabularywidget.IterableVocabularyQueryMultiView)
         # The following widget registration supports the specific
         # sample vocabulary we're using, used to demonstrate how to
         # override widget selection based on vocabulary:
-        provideView(ISampleVocabulary,
+        ztapi.browserView(ISampleVocabulary,
                     "field-display-list-widget",
-                    IBrowserPresentation,
-                    SampleDisplayWidget)
+                                        SampleDisplayWidget)
 
 
 class SelectionTestBase(VocabularyWidgetTestBase):
@@ -502,10 +499,9 @@ class SingleSelectionQuerySupportTests(SingleSelectionViews,
 
     def registerViews(self):
         SingleSelectionViews.registerViews(self)
-        provideView(IMyVocabularyQuery,
-                    "widget-query-helper",
-                    IBrowserPresentation,
-                    MyQueryViewSingle)
+        ztapi.browserView(IMyVocabularyQuery,
+                          "widget-query-helper",
+                          MyQueryViewSingle)
 
 
 class MultiSelectionQuerySupportTests(MultiSelectionViews,
@@ -518,10 +514,9 @@ class MultiSelectionQuerySupportTests(MultiSelectionViews,
 
     def registerViews(self):
         MultiSelectionViews.registerViews(self)
-        provideView(IMyVocabularyQuery,
-                    "widget-query-list-helper",
-                    IBrowserPresentation,
-                    MyQueryViewMulti)
+        ztapi.browserView(IMyVocabularyQuery,
+                          "widget-query-list-helper",
+                          MyQueryViewMulti)
 
 
 def test_suite():

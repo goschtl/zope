@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.6 2003/09/21 17:30:41 jim Exp $
+$Id: test_translate.py,v 1.7 2003/11/21 17:11:57 jim Exp $
 """
 
 import unittest
 from StringIO import StringIO
 
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.component.factory import provideFactory
 
 from zope.app.browser.services.translation.translate \
@@ -48,7 +48,8 @@ class TranslateTest(unittest.TestCase, PlacelessSetup):
         PlacelessSetup.setUp(self)
 
         # Setup the registries
-        provideAdapter(IHTTPRequest, IUserPreferredCharsets, HTTPCharsets)
+        ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,
+                             HTTPCharsets)
         provideFactory('Message Catalog', MessageCatalog)
 
         service = TranslationService('default')

@@ -14,10 +14,11 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.14 2003/10/31 23:09:16 garrett Exp $
+$Id: test_objecthub.py,v 1.15 2003/11/21 17:12:13 jim Exp $
 """
 
 import unittest
+from zope.app.tests import ztapi
 from zope.app import zapi
 from zope.app.services.tests.objecthubsetup import ObjectHubSetup
 
@@ -235,8 +236,7 @@ class TestSearchRegistrations(BasicHubTest):
                 else:
                     return Traverser.traverse(self, location, *args, **kw)
 
-        from zope.component.adapter import provideAdapter
-        provideAdapter(None, ITraverser, DummyTraverser)
+        ztapi.provideAdapter(None, ITraverser, DummyTraverser)
 
         object_hub = self.object_hub
         location_hubid_object = [(location,

@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Tests
 
-$Id: test_content.py,v 1.4 2003/09/21 17:30:46 jim Exp $
+$Id: test_content.py,v 1.5 2003/11/21 17:12:16 jim Exp $
 """
 import unittest
 
@@ -35,7 +35,7 @@ from zope.app.utilities.content import \
      ContentComponentDefinition, ContentComponentDefinitionRegistration, \
      ContentComponentDefinitionMenuItem, ContentComponentInstance
 from zope.component import getServiceManager
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import Interface, classImplements
 from zope.schema import Int, TextLine, Text
@@ -53,9 +53,9 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
         self.rootFolder = setup.buildSampleFolderTree()
 
         # Define Menu Item Adapter
-        provideAdapter(IContentComponentDefinition,
-                       IContentComponentMenuItem,
-                       ContentComponentDefinitionMenuItem)
+        ztapi.provideAdapter(IContentComponentDefinition,
+                             IContentComponentMenuItem,
+                             ContentComponentDefinitionMenuItem)
 
         # Define Menu Service
         sm=getServiceManager(None)
@@ -114,9 +114,9 @@ class ContentComponentDefinitionMenuItemTests(unittest.TestCase):
         setup.placefulSetUp()
         classImplements(ContentComponentDefinition, ILocalUtility)
         classImplements(ContentComponentDefinition, IAttributeAnnotatable)
-        provideAdapter(IContentComponentDefinition,
-                       IContentComponentMenuItem,
-                       ContentComponentDefinitionMenuItem)
+        ztapi.provideAdapter(IContentComponentDefinition,
+                             IContentComponentMenuItem,
+                             ContentComponentDefinitionMenuItem)
         
         sm=getServiceManager(None)
         sm.defineService(BrowserMenu, IBrowserMenuService)

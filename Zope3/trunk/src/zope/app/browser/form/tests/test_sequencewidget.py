@@ -12,15 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_sequencewidget.py,v 1.4 2003/08/13 21:28:04 garrett Exp $
+$Id: test_sequencewidget.py,v 1.5 2003/11/21 17:11:56 jim Exp $
 """
 
 import unittest
 
-from zope.component.view import provideView
+from zope.app.tests import ztapi
 from zope.app.browser.form.widget import TextWidget
 from zope.schema.interfaces import ITextLine, ValidationError
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import TestRequest
 from zope.schema import Tuple, List, TextLine
 from zope.app.browser.form.widget import TupleSequenceWidget, \
@@ -42,7 +41,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         BrowserWidgetTest.setUp(self)
         self.field = Tuple(__name__=u'foo',
             value_type=TextLine(__name__=u'bar'))
-        provideView(ITextLine, 'edit', IBrowserPresentation, [TextWidget])
+        ztapi.browserView(ITextLine, 'edit', TextWidget)
 
     def test_haveNoData(self):
         self.failIf(self._widget.hasInput())

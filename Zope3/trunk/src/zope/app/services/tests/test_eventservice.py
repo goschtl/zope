@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.28 2003/09/21 17:33:15 jim Exp $
+$Id: test_eventservice.py,v 1.29 2003/11/21 17:12:13 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -37,7 +37,7 @@ from zope.app.interfaces.event import IEvent, ISubscribingAware
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.component.tests.components import RecordingAdapter
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.services.event import EventService
 from zope.app.tests import setup
@@ -922,9 +922,9 @@ class TestEventPublisher(EventSetup, TestCase):
 
     def testSubscriptionAwareInteraction(self):
         adapter = SubscribingAwareAdapter()
-        provideAdapter(IHasSubscribingAwareAdapter,
-                       ISubscribingAware,
-                       adapter)
+        ztapi.provideAdapter(IHasSubscribingAwareAdapter,
+                             ISubscribingAware,
+                             adapter)
         self.rootFolder["mySubscriber"] = HasSubscribingAwareAdapter()
         self.mySubscriber = self.rootFolder["mySubscriber"]
         filter = DummyFilter()

@@ -13,17 +13,17 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.20 2003/08/04 14:52:49 philikon Exp $
+$Id: test_add.py,v 1.21 2003/11/21 17:11:56 jim Exp $
 """
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.interface import Interface, implements
-from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
 from zope.component import getView
-from zope.component.adapter import provideAdapter
 
 from zope.app.browser.form.add import AddViewFactory, AddView
 from zope.app.browser.form.metaconfigure import AddFormDirective
@@ -93,7 +93,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         self._context = Context()
         PlacelessSetup.setUp(self)
-        provideAdapter(IFoo, IBar, FooBarAdapter)
+        ztapi.provideAdapter(IFoo, IBar, FooBarAdapter)
 
     def _invoke_add(self, schema=I, name="addthis", permission="zope.Public",
                     label="Add this", content_factory=C, class_=V,
@@ -143,7 +143,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         (descriminator, callable, args, kw) = self._context.last_action
 
         self.assertEqual(descriminator,
-                         ('view', IAdding, "addthis", IBrowserPresentation,
+                         ('view', IAdding, "addthis", IBrowserRequest,
                           "default"))
         self.assertEqual(callable, AddViewFactory)
 

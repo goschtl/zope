@@ -14,11 +14,12 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.14 2003/09/21 17:31:53 jim Exp $
+$Id: test_zptpage.py,v 1.15 2003/11/21 17:12:01 jim Exp $
 """
 
 import unittest
 
+from zope.app.tests import ztapi
 from zope.interface.verify import verifyClass
 from zope.exceptions import Forbidden
 
@@ -27,8 +28,6 @@ from zope.app.content.zpt import ZPTPage, SearchableText, ZPTSourceView
 from zope.app.interfaces.content.zpt import IZPTPage
 from zope.app.interfaces.index.text import ISearchableText
 from zope.component import getAdapter, getView
-from zope.component.view import provideView
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import TestRequest, BrowserView
 
 # Wow, this is a lot of work. :(
@@ -36,7 +35,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.traversing import ITraversable
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.security.checker import NamesChecker, defineChecker
 from zope.app.container.contained import contained
 
@@ -50,12 +49,11 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(None, ITraverser, Traverser)
-        provideAdapter(None, ITraversable, DefaultTraversable)
-        provideAdapter(IZPTPage, ISearchableText, SearchableText)
+        ztapi.provideAdapter(None, ITraverser, Traverser)
+        ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+        ztapi.provideAdapter(IZPTPage, ISearchableText, SearchableText)
         defineChecker(Data, NamesChecker(['URL', 'name']))
-        defineChecker(TestRequest, NamesChecker(['getPresentationType',
-                                                 'getPresentationSkin']))
+        defineChecker(TestRequest, NamesChecker(['getPresentationSkin']))
 
     def testSearchableText(self):
         page = ZPTPage()
@@ -121,7 +119,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         from zope.app.traversing.namespace import provideNamespaceHandler
         from zope.app.traversing.namespace import view
         provideNamespaceHandler('view', view)
-        provideView(IZPTPage, 'name', IBrowserPresentation, AU)
+        ztapi.browserView(IZPTPage, 'name', AU)
 
         page = ZPTPage()
         page.setSource(
@@ -129,7 +127,6 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             )
         page = contained(page, None, name='zpt')
         request = TestRequest()
-        request.setViewType(IBrowserPresentation)
         self.assertEquals(page.render(request), 'zpt\n')
 
 
@@ -197,7 +194,7 @@ class ZPTSourceTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideView(IZPTPage, 'source.html', IBrowserPresentation, ZPTSourceView)
+        ztapi.browserView(IZPTPage, 'source.html', ZPTSourceView)
 
     def testSourceView(self):
         page = ZPTPage()

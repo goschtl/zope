@@ -13,9 +13,10 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_widget_geddon_deprecations.py,v 1.2 2003/08/13 21:28:38 garrett Exp $
+$Id: test_widget_geddon_deprecations.py,v 1.3 2003/11/21 17:12:04 jim Exp $
 """
 
+from zope.app.tests import ztapi
 from zope.testing.doctestunit import DocTestSuite
 from zope.publisher.browser import TestRequest
 from zope.app.form import utility
@@ -23,8 +24,6 @@ from zope.app.form.widget import Widget, CustomWidget
 from zope.schema import Text
 from zope.schema.interfaces import IText
 from zope.app.tests.placelesssetup import setUp, tearDown
-from zope.component.view import provideView
-from zope.publisher.interfaces.browser import IBrowserPresentation
 import warnings
 
 class TestWidget(Widget):
@@ -127,7 +126,7 @@ def test_clients_using_wrong_name():
     >>> utility.warn = fakewarn
 
     >>> setUp()
-    >>> provideView(IText, 'test', IBrowserPresentation, TestWidget)
+    >>> ztapi.browserView(IText, 'test', TestWidget)
 
     >>> request = TestRequest()
     >>> view = TestView(None, request)

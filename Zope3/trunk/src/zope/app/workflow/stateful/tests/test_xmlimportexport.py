@@ -29,7 +29,7 @@ from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
 from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.component import getAdapter, getService, getServiceManager
 from zope.interface import implements, classImplements, Interface
 from zope.interface.verify import verifyClass
@@ -103,9 +103,10 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        provideAdapter(IAttributeAnnotatable, IAnnotations,
-                       AttributeAnnotations)
-        provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
+        ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
+                             AttributeAnnotations)
+        ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
+                             ZDCAnnotatableAdapter)
         sm = getServiceManager(None)
         sm.defineService(Permissions, IPermissionService)
         sm.provideService(Permissions, permissionRegistry)

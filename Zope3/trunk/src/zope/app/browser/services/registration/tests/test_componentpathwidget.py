@@ -13,11 +13,12 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_componentpathwidget.py,v 1.3 2003/09/21 17:30:59 jim Exp $
+$Id: test_componentpathwidget.py,v 1.4 2003/11/21 17:11:57 jim Exp $
 """
 __metaclass__ = type
 
 import unittest
+from zope.app.tests import ztapi
 from zope.app.browser.services.registration import ComponentPathWidget
 from zope.app.interfaces.services.registration import IComponentRegistration
 from zope.app.interfaces.traversing import IPhysicallyLocatable
@@ -25,12 +26,10 @@ from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.services.field import ComponentPath
 from zope.app.location import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from zope.component.adapter import provideAdapter
-from zope.component.view import provideView
+from zope.app.tests import ztapi
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements, Interface
 from zope.publisher.browser import TestRequest, BrowserView
-from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.container.contained import Contained
 
 class Component:
@@ -58,11 +57,11 @@ class ComponentPathWidgetTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(None, ITraverser, Traverser)
-        provideAdapter(None, ITraversable, DefaultTraversable)
-        provideAdapter(None, IPhysicallyLocatable, LocationPhysicallyLocatable)
-        provideView(Interface, "absolute_url", IBrowserPresentation,
-                    AbsoluteURL)
+        ztapi.provideAdapter(None, ITraverser, Traverser)
+        ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+        ztapi.provideAdapter(None, IPhysicallyLocatable,
+                             LocationPhysicallyLocatable)
+        ztapi.browserView(Interface, "absolute_url", AbsoluteURL)
 
         field = ComponentPath(None, title=u"Path")
         field.__name__ = u'path'

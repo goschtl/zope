@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.5 2003/07/11 08:33:00 beams Exp $
+$Id: test_creatorannotator.py,v 1.6 2003/11/21 17:12:03 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -21,7 +21,7 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.testing.cleanup import CleanUp
 
 from zope.interface import Interface, implements
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -74,7 +74,7 @@ class Test(PlacefulSetup, TestCase, CleanUp):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        provideAdapter(IDummyContent, IZopeDublinCore, DummyDCAdapter)
+        ztapi.provideAdapter(IDummyContent, IZopeDublinCore, DummyDCAdapter)
         noSecurityManager()
         
     def tearDown(self):

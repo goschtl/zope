@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.19 2003/09/21 17:30:46 jim Exp $
+$Id: test_auth.py,v 1.20 2003/11/21 17:12:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,6 +28,7 @@ from zope.app.traversing import traverse
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.interface import implements
 from zope.app.tests import setup
+from zope.app.tests import ztapi
 
 class Request:
 
@@ -52,7 +53,7 @@ class AuthSetup(EventSetup):
         from zope.component import getService
         from zope.app.security.basicauthadapter import BasicAuthAdapter
         from zope.app.interfaces.security import ILoginPassword
-        getService(None, Adapters).provideAdapter(
+        ztapi.provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         sm = traverse(self.rootFolder, '++etc++site')

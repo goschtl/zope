@@ -13,13 +13,12 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.7 2003/09/21 17:33:30 jim Exp $
+$Id: setup.py,v 1.8 2003/11/21 17:12:14 jim Exp $
 """
 
 import zope.component
 from zope.app import zapi
-from zope.component.adapter import provideAdapter
-from zope.component.view import provideView
+from zope.app.tests import ztapi
 from zope.interface import classImplements
 
 #------------------------------------------------------------------------
@@ -28,16 +27,16 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 def setUpAnnotations():
-    provideAdapter(IAttributeAnnotatable, IAnnotations,
-                   AttributeAnnotations)
+    ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
+                         AttributeAnnotations)
 
 #------------------------------------------------------------------------
 # Dependencies
 from zope.app.dependable import Dependable
 from zope.app.interfaces.dependable import IDependable
 def setUpDependable():
-    provideAdapter(IAttributeAnnotatable, IDependable,
-                   Dependable)
+    ztapi.provideAdapter(IAttributeAnnotatable, IDependable,
+                         Dependable)
 
 #------------------------------------------------------------------------
 # Traversal
@@ -51,25 +50,23 @@ from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
 from zope.app.location import LocationPhysicallyLocatable
 from zope.app.traversing.namespace import etc, provideNamespaceHandler
-from zope.publisher.interfaces.browser import IBrowserPresentation
-def setUpTraversal():
-    provideAdapter(None, ITraverser, Traverser)
-    provideAdapter(None, ITraversable, DefaultTraversable)
 
-    provideAdapter(
+def setUpTraversal():
+    ztapi.provideAdapter(None, ITraverser, Traverser)
+    ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+
+    ztapi.provideAdapter(
         ISimpleReadContainer, ITraversable, ContainerTraversable)
-    provideAdapter(
+    ztapi.provideAdapter(
         None, IPhysicallyLocatable, LocationPhysicallyLocatable)
-    provideAdapter(
+    ztapi.provideAdapter(
         IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
 
     # set up etc namespace
     provideNamespaceHandler("etc", etc)
 
-    provideView(None, "absolute_url", IBrowserPresentation,
-                AbsoluteURL)
-    provideView(IContainmentRoot, "absolute_url", IBrowserPresentation,
-                SiteAbsoluteURL)
+    ztapi.browserView(None, "absolute_url", AbsoluteURL)
+    ztapi.browserView(IContainmentRoot, "absolute_url", SiteAbsoluteURL)
 
 #------------------------------------------------------------------------
 # Use registration
@@ -77,8 +74,8 @@ from zope.app.interfaces.services.registration import IAttributeRegisterable
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.services.registration import Registered
 def setUpRegistered():
-    provideAdapter(IAttributeRegisterable, IRegistered,
-                   Registered)
+    ztapi.provideAdapter(IAttributeRegisterable, IRegistered,
+                         Registered)
 
 
 #------------------------------------------------------------------------

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for keyword index.
 
-$Id: test_index.py,v 1.2 2003/08/17 06:06:55 philikon Exp $
+$Id: test_index.py,v 1.3 2003/11/21 17:12:07 jim Exp $
 """
 
 import unittest
@@ -21,7 +21,7 @@ import unittest
 from zope.interface import Interface, Attribute, implements
 from zope.interface.verify import verifyObject
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.component.adapter import provideAdapter
+from zope.app.tests import ztapi
 from zope.app.services.hub import \
     ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, ObjectModifiedHubEvent
 from zope.app.index.keyword.index import KeywordCatalogIndex
@@ -62,7 +62,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        provideAdapter(None, ISomeInterface, SomeAdapter)
+        ztapi.provideAdapter(None, ISomeInterface, SomeAdapter)
         self.buildFolders()
         self.index = KeywordCatalogIndex('words')
         self.object = FakeSearchableObject()
