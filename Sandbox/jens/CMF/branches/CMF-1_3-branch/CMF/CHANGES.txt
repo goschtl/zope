@@ -2,6 +2,9 @@ CMF 1.3
 
   Bug Fixes
   
+    - Repair free-form subject entry on 'full_metadata_edit_form' (was
+      merging all keywords onto the same line, plus soft-wrapping!)
+
     - Ensured that Link, File, and Image content objects reindex themselves
       after edit (wrapping 'edit' as a WorkflowMethod no longer guarantees
       that).
