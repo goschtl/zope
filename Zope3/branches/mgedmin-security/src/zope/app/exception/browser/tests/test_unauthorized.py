@@ -60,7 +60,7 @@ class Test(TestCase, PlacelessSetup):
             pass
         request = TestRequest('/')
         authservice = DummyAuthService()
-        request.setUser(contained(DummyPrincipal(23), authservice))
+        request.setPrincipal(contained(DummyPrincipal(23), authservice))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 
@@ -81,7 +81,7 @@ class Test(TestCase, PlacelessSetup):
         authservice = DummyAuthService()
         psrc = DummyPrincipalSource()
         psrc = contained(psrc, authservice)
-        request.setUser(contained(DummyPrincipal(23), psrc))
+        request.setPrincipal(contained(DummyPrincipal(23), psrc))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 

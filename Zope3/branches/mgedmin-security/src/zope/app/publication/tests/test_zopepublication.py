@@ -139,7 +139,7 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
         self.out = StringIO()
         self.request = TestRequest('/f1/f2', outstream=self.out)
         self.user = Principal('test.principal')
-        self.request.setUser(self.user)
+        self.request.setPrincipal(self.user)
         from zope.interface import Interface
         self.presentation_type = Interface
         self.request._presentation_type = self.presentation_type
@@ -371,19 +371,19 @@ class ZopePublicationTests(BasePublicationTests):
 
         self.publication.beforeTraversal(self.request)
         user = getSecurityManager().getPrincipal()
-        self.assertEqual(user, self.request.user)
-        self.assertEqual(self.request.user.id, 'anonymous')
+        self.assertEqual(user, self.request.principal)
+        self.assertEqual(self.request.principal.id, 'anonymous')
         root = self.publication.getApplication(self.request)
         self.publication.callTraversalHooks(self.request, root)
-        self.assertEqual(self.request.user.id, 'anonymous')
+        self.assertEqual(self.request.principal.id, 'anonymous')
         ob = self.publication.traverseName(self.request, root, 'f1')
         self.publication.callTraversalHooks(self.request, ob)
-        self.assertEqual(self.request.user.id, 'test.anonymous')
+        self.assertEqual(self.request.principal.id, 'test.anonymous')
         ob = self.publication.traverseName(self.request, ob, 'f2')
         self.publication.afterTraversal(self.request, ob)
-        self.assertEqual(self.request.user.id, 'test.bob')
+        self.assertEqual(self.request.principal.id, 'test.bob')
         user = getSecurityManager().getPrincipal()
-        self.assertEqual(user, self.request.user)
+        self.assertEqual(user, self.request.principal)
 
     def testTransactionCommitAfterCall(self):
         root = self.db.open().root()

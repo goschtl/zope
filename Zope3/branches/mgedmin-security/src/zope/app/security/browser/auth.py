@@ -26,7 +26,7 @@ class HTTPAuthenticationLogin(object):
 
     def login(self, nextURL=None):
         """See zope.app.security.interfaces.ILogin"""
-        if isinstance(removeAllProxies(self.request.user), \
+        if isinstance(removeAllProxies(self.request.principal), \
                       UnauthenticatedPrincipal):
             self.request.unauthorized("basic realm='Zope'")
             return self.failed()
@@ -53,7 +53,7 @@ class HTTPAuthenticationLogout(object):
 
     def logout(self, nextURL=None):
         """See zope.app.security.interfaces.ILogout"""
-        if not isinstance(self.request.user, UnauthenticatedPrincipal):
+        if not isinstance(self.request.principal, UnauthenticatedPrincipal):
             self.request.unauthorized("basic realm='Zope'")
             if nextURL:
                 return self.redirect()

@@ -30,7 +30,8 @@ class UndoView(BrowserView):
         """
         request = self.request
         undo = zapi.getUtility(self.context, IUndoManager)
-        txn_info = undo.getPrincipalTransactions(request.user, first=0, last=1)
+        txn_info = undo.getPrincipalTransactions(request.principal, first=0,
+                                                 last=1)
         if txn_info:
             return txn_info[0].get('undo', False)
         return False
@@ -40,10 +41,11 @@ class UndoView(BrowserView):
         return where he/she came from"""
         request = self.request
         undo = zapi.getUtility(self.context, IUndoManager)
-        txn_info = undo.getPrincipalTransactions(request.user, first=0, last=1)
+        txn_info = undo.getPrincipalTransactions(request.principal, first=0,
+                                                 last=1)
         if txn_info:
             id = txn_info[0]['id']
-            undo.undoPrincipalTransactions(request.user, [id])
+            undo.undoPrincipalTransactions(request.principal, [id])
         target = request.get('HTTP_REFERER', '@@SelectedManagementView.html')
         request.response.redirect(target)
 
@@ -57,7 +59,7 @@ class UndoView(BrowserView):
         """Undo transactions that were issued by the authenticated
         user specified in 'ids'."""
         undo = zapi.getUtility(self.context, IUndoManager)
-        undo.undoPrincipalTransactions(self.request.user, ids)
+        undo.undoPrincipalTransactions(self.request.principal, ids)
         self._redirect()
 
     def _redirect(self):
@@ -76,5 +78,5 @@ class UndoView(BrowserView):
         if not showall:
             context = self.context
         undo = zapi.getUtility(self.context, IUndoManager)
-        return undo.getPrincipalTransactions(self.request.user, context,
+        return undo.getPrincipalTransactions(self.request.principal, context,
                                              first, last)

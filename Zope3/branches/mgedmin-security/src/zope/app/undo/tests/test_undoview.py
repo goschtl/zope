@@ -63,7 +63,7 @@ class TestIUndoManager:
         return list[first:abs(last)]
 
     def _emulatePublication(self, request):
-        self._user_name = request.user.id
+        self._user_name = request.principal.id
 
     def undoTransactions(self, ids):
         # just remove an element for now
@@ -96,7 +96,7 @@ class Test(PlacefulSetup, TestCase):
     def testPrincipalLastTransactionIsUndo(self):
         request = self.request
         bonobo = principalRegistry.getPrincipal('bonobo')
-        request.setUser(bonobo)
+        request.setPrincipal(bonobo)
 
         view = UndoView(self.folder1, request)
         self.failIf(view.principalLastTransactionIsUndo())
@@ -110,7 +110,7 @@ class Test(PlacefulSetup, TestCase):
     def testUndoPrincipalLastTransaction(self):
         request = self.request
         bonobo = principalRegistry.getPrincipal('bonobo')
-        request.setUser(bonobo)
+        request.setPrincipal(bonobo)
 
         self.undo._emulatePublication(request)
         view = UndoView(self.folder1, request)
@@ -135,7 +135,7 @@ class Test(PlacefulSetup, TestCase):
     def testGetPrincipalTransactions(self):
         request = self.request
         bonobo = principalRegistry.getPrincipal('bonobo')
-        request.setUser(bonobo)
+        request.setPrincipal(bonobo)
 
         view = UndoView(self.folder1, request)
         expected = self.undo.getPrincipalTransactions(bonobo)
@@ -152,7 +152,7 @@ class Test(PlacefulSetup, TestCase):
     def testUndoPrincipalTransactions(self):
         request = self.request
         bonobo = principalRegistry.getPrincipal('bonobo')
-        request.setUser(bonobo)
+        request.setPrincipal(bonobo)
         view = UndoView(self.folder1, request)
 
         # Just test whether it accepts the principal.  We know that

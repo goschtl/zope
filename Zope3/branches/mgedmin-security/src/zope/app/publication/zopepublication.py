@@ -72,12 +72,12 @@ class ZopePublication(PublicationTraverse):
             if p is None:
                 raise Unauthorized # If there's no default principal
 
-        request.setUser(p)
-        newSecurityManager(request.user)
+        request.setPrincipal(p)
+        newSecurityManager(request.principal)
         get_transaction().begin()
 
     def _maybePlacefullyAuthenticate(self, request, ob):
-        if not IUnauthenticatedPrincipal.providedBy(request.user):
+        if not IUnauthenticatedPrincipal.providedBy(request.principal):
             # We've already got an authenticated user. There's nothing to do.
             # Note that beforeTraversal guarentees that user is not None.
             return
@@ -101,8 +101,8 @@ class ZopePublication(PublicationTraverse):
                 # nothing to do here
                 return
 
-        request.setUser(principal)
-        newSecurityManager(request.user)
+        request.setPrincipal(principal)
+        newSecurityManager(request.principal)
 
 
     def callTraversalHooks(self, request, ob):
@@ -161,7 +161,7 @@ class ZopePublication(PublicationTraverse):
         This method is not part of the IPublication interface, since
         it's specific to this particular implementation.
         """
-        txn.setUser(request.user.id)
+        txn.setUser(request.principal.id)
 
         # Work around methods that are usually used for views
         bare = trustedRemoveSecurityProxy(ob)

@@ -49,7 +49,7 @@
 
       <metal:block define-macro="logged_user">
         <span tal:omit-tag="" i18n:translate="">User:</span>
-        <tal:block replace="request/user/title">
+        <tal:block replace="request/principal/title">
           User
         </tal:block>
       </metal:block>
