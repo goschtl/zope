@@ -34,6 +34,11 @@ The following command line options are provided:
   Load the configuration file `FILE` instead of the default
   configuration file.  `FILE` must exist.
 
+--distribution CLASS
+  Set the distribution class to be used by distutils.  By default, the
+  zpkgsetup.dist.ZPkgDistribution class is used, but this allows an
+  alternate class to be used instead.
+
 -f
   Don't load any configuration file, not even the default.
 
@@ -61,6 +66,13 @@ The following command line options are provided:
   Don't include the required support packages in the distribution.
   This can be used to generate smaller distributions when the
   ``zpkgsetup`` package is known to be available on target systems.
+
+--support RESOURCE
+  Include an additional resource in the Support/ directory of the
+  distribution, if the Support/ directory is included at all.  The
+  additional resource should normally be a top-level Python package.
+  This can be used to provide additional software to be used when
+  distutils is running for the distributed package.
 
 -v VERSION
   Set the version number of the release to `VERSION`.

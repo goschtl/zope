@@ -35,6 +35,11 @@ from zpkgtools import loader
 from zpkgtools import runlog
 
 
+DEFAULT_SUPPORT_PACKAGES = [
+    ("zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/trunk/zpkgsetup")),
+    ]
+
+
 class Application:
     """Application state and logic for **zpkg**."""
 
@@ -78,6 +83,7 @@ class BuilderApplication(Application):
             options.release_name = self.resource
         # Create a new directory for all temporary files to go in:
         self.tmpdir = tempfile.mkdtemp(prefix=options.program + "-")
+        self.old_tmpdir = tempfile.tempdir
         tempfile.tempdir = self.tmpdir
         if options.revision_tag:
             self.loader = loader.Loader(tag=options.revision_tag)
@@ -94,6 +100,9 @@ class BuilderApplication(Application):
         self.target_file = self.target_name + ".tgz"
         self.destination = os.path.join(self.tmpdir, self.target_name)
         os.mkdir(self.destination)
+        self.support_packages = DEFAULT_SUPPORT_PACKAGES[:]
+        self.support_packages.extend(
+            [(pkg, None) for pkg in options.support_packages])
 
     def build_distribution(self):
         """Create the distribution tree.
@@ -104,6 +113,7 @@ class BuilderApplication(Application):
         dep_sources = {} 
         top = self.get_component(self.resource, self.resource_url)
         top.write_package(self.destination)
+        distclass = self.options.distribution_class
         if self.options.collect:
             depsdir = os.path.join(self.destination, "Dependencies")
             first = True
@@ -136,15 +146,18 @@ class BuilderApplication(Application):
                 destination = os.path.join(depsdir, fullname)
                 self.add_manifest(destination)
                 component.write_package(destination)
-                component.write_setup_py(pathparts=["..", ".."])
+                component.write_setup_py(pathparts=["..", ".."],
+                                         distclass=distclass)
                 component.write_setup_cfg()
                 self.add_headers(component)
         if self.options.application:
             top.write_setup_py(filename="install.py",
-                               version=self.options.version)
+                               version=self.options.version,
+                               distclass=distclass)
             self.write_application_support(top)
         else:
-            top.write_setup_py(version=self.options.version)
+            top.write_setup_py(version=self.options.version,
+                               distclass=distclass)
         top.write_setup_cfg()
 
     def get_component(self, resource, location):
@@ -222,19 +235,20 @@ class BuilderApplication(Application):
         directory, but they won't be added to the set of packages that
         will be installed by the resulting distribution.
         """
-        old_loader = self.loader
-        if self.options.revision_tag:
+        cleanup = False
+        if self.options.revision_tag and self.options.revision_tag != "HEAD":
             # we really don't want the tagged version of the support code
-            self.loader = loader.Loader()
+            old_loader = self.loader
+            self.loader = loader.Loader("HEAD")
+            cleanup = True
         supportdest = os.path.join(self.destination, "Support")
         os.mkdir(supportdest)
         self.add_manifest(supportdest)
-        self.include_support_package(
-            "zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/trunk/"
-                          "zpkgsetup"))
-        if self.options.revision_tag:
+        for name, fallback_url in self.support_packages:
+            self.include_support_package(name, fallback_url)
+        if cleanup:
             self.loader.cleanup()
-        self.loader = old_loader
+            self.loader = old_loader
         source = os.path.join(zpkgtools.__path__[0], "support")
         dest = os.path.join(self.destination, "Support")
         files = os.listdir(source)
@@ -263,6 +277,10 @@ class BuilderApplication(Application):
             url = self.locations[name]
         else:
             url = fallback
+            if not url:
+                self.logger.warning("resource %s not configured;"
+                                    " no fallback URL" % name)
+                return
             self.logger.info("resource %s not configured;"
                              " using fallback URL" % name)
         if source is None:
@@ -300,6 +318,8 @@ class BuilderApplication(Application):
     def cleanup(self):
         """Remove all temporary data storage."""
         shutil.rmtree(self.tmpdir)
+        if self.tmpdir == tempfile.tempdir:
+            tempfile.tempdir = self.old_tmpdir
 
     def run(self):
         """Run the application, using the other methods of the
@@ -452,7 +472,8 @@ class Component:
         f.write("optimize = 1\n")
         f.close()
 
-    def write_setup_py(self, filename="setup.py", version=None, pathparts=[]):
+    def write_setup_py(self, filename="setup.py", version=None, pathparts=[],
+                       distclass=None):
         setup_py = os.path.join(self.destination, filename)
         self.ip.add_output(setup_py)
         f = open(setup_py, "w")
@@ -462,7 +483,11 @@ class Component:
             extrapath = ""
         print >>f, SETUP_HEADER % extrapath
         print >>f, "context = zpkgsetup.setup.SetupContext("
-        print >>f, "    %r, %r, __file__)" % (self.name, version)
+        if distclass:
+            print >>f, "    %r, %r, __file__," % (self.name, version)
+            print >>f, "    %r)" % distclass
+        else:
+            print >>f, "    %r, %r, __file__)" % (self.name, version)
         print >>f
         print >>f, "context.initialize()"
         print >>f, "context.setup()"
@@ -568,6 +593,13 @@ def parse_args(argv):
     parser.add_option(
         "-v", dest="version",
         help="version label for the new distribution")
+    parser.add_option(
+        "--support", dest="support_packages", action="append",
+        default=[],
+        help="name additional support package resource", metavar="RESOURCE")
+    parser.add_option(
+        "--distribution", dest="distribution_class",
+        help="name of the distribution class", metavar="CLASS")
 
     options, args = parser.parse_args(argv[1:])
     if len(args) != 1:

@@ -21,6 +21,8 @@ import urllib
 
 from StringIO import StringIO
 
+import zpkgsetup
+
 from zpkgsetup import package
 from zpkgsetup import publication
 from zpkgsetup.tests import tempfileapi as tempfile
@@ -234,6 +236,25 @@ class CommandLineTestCase(unittest.TestCase):
         self.failUnless(options.application)
         self.failUnless(options.collect)
 
+    def test_distribution_class(self):
+        options = self.parse_args([])
+        self.failIf(options.distribution_class)
+        # long arg:
+        options = self.parse_args(["--distribution", "pkg.mod.Cls"])
+        self.assertEqual(options.distribution_class, "pkg.mod.Cls")
+        options = self.parse_args(["--distribution=pkg.mod.Cls"])
+        self.assertEqual(options.distribution_class, "pkg.mod.Cls")
+
+    def test_support_packages(self):
+        options = self.parse_args([])
+        self.assertEqual(options.support_packages, [])
+        # one package:
+        options = self.parse_args(["--support", "pkg"])
+        self.assertEqual(options.support_packages, ["pkg"])
+        # two packages
+        options = self.parse_args(["--support", "pkg1", "--support=pkg2"])
+        self.assertEqual(options.support_packages, ["pkg1", "pkg2"])
+
 
 class ComponentTestCase(unittest.TestCase):
 
@@ -329,6 +350,136 @@ class ComponentTestCase(unittest.TestCase):
             shutil.rmtree(dest)
 
 
+class BuilderApplicationTestCase(unittest.TestCase):
+    """Tests of the BuilderApplication object.
+
+    These are pretty much functional tests since they start with a
+    command line, though they don't run in an external process.
+
+    """
+
+    def setUp(self):
+        self.app = None
+        self.extra_files = []
+
+    def tearDown(self):
+        if self.app is not None:
+            self.app.delayed_cleanup()
+            self.app = None
+        for fn in self.extra_files:
+            os.unlink(fn)
+
+    def createApplication(self, args):
+        options = app.parse_args([CMD] + args)
+        self.app = DelayedCleanupBuilderApplication(options)
+        return self.app
+
+    def createPackageMap(self):
+        input = os.path.join(os.path.dirname(__file__), "input")
+        input = os.path.abspath(input)
+        package_map = os.path.join(input, "tmp-packages.map")
+        shutil.copy(os.path.join(input, "packages.map"), package_map)
+        self.extra_files.append(package_map)
+        zpkgsetup_path = os.path.abspath(zpkgsetup.__path__[0])
+        zpkgsetup_path = "file://" + urllib.pathname2url(zpkgsetup_path)
+        f = open(package_map, "a")
+        print >>f
+        print >>f, "zpkgsetup", zpkgsetup_path
+        f.close()
+        # convert package_map to URL so relative names are resolved properly
+        return "file://" + urllib.pathname2url(package_map)
+
+    def test_adding_extra_support_code(self):
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-f", "-m", package_map, "--support", "package", "package"])
+        app.run()
+        # make sure the extra support code is actually present:
+        support_dir = os.path.join(app.destination, "Support")
+        package_dir = os.path.join(support_dir, "package")
+        self.assert_(os.path.isdir(package_dir))
+        self.assert_(isfile(package_dir, "__init__.py"))
+
+    def test_alternate_distclass(self):
+        # create the distribution tree:
+        package_map = self.createPackageMap()
+        app = self.createApplication(
+            ["-f", "-m", package_map,
+             "--distribution", "mysupport.MyDistribution", "package"])
+        app.run()
+
+        # Add the example distribution class to the built distro:
+        mysupport = os.path.join(app.destination, "Support", "mysupport.py")
+        f = open(mysupport, "w")
+        print >>f, "import distutils.dist"
+        print >>f, "class MyDistribution(distutils.dist.Distribution):"
+        print >>f, "    this_is_mine = 42"
+        f.close()
+
+        # Run the setup.py from the distro and check that we got the
+        # specialized distribution class.  This is really tricky since
+        # we're running what's intended to be an script run in it's
+        # own process inside our process, so we're trying to make
+        # __main__ really look like it's running a script.  And then
+        # we have to restore it.  There's something general lurking
+        # here....
+        import __builtin__
+        import __main__
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        old_sys_argv = sys.argv[:]
+        old_sys_path = sys.path[:]
+        old_main_dict = __main__.__dict__.copy()
+        old_cwd = os.getcwd()
+        setup_script = os.path.join(app.destination, "setup.py")
+        sio = StringIO()
+        d = {"__file__": setup_script,
+             "__name__": "__main__",
+             "__doc__": None,
+             "__builtins__": __builtin__.__dict__}
+        try:
+            sys.stdout = sys.stderr = sio
+            sys.path.insert(0, os.path.join(app.destination, "Support"))
+            sys.argv[:] = [setup_script, "-q", "-n", "--name"]
+            import mysupport
+            __main__.__dict__.clear()
+            __main__.__dict__.update(d)
+            os.chdir(app.destination)
+
+            execfile(setup_script, __main__.__dict__)
+            context = __main__.context
+
+        finally:
+            os.chdir(old_cwd)
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
+            sys.argv[:] = old_sys_argv
+            sys.path[:] = old_sys_path
+            __main__.__dict__.clear()
+            __main__.__dict__.update(old_main_dict)
+
+        # This makes sure that context.get_distribution_class()
+        # returns the expected class; the actual instance of the class
+        # that's used isn't available to us here, or we'd look at the
+        # instance instead.
+        #
+        cls = context.get_distribution_class()
+        self.assert_(cls is mysupport.MyDistribution)
+
+
+class DelayedCleanupBuilderApplication(app.BuilderApplication):
+
+    def create_tarball(self):
+        pass
+
+    def cleanup(self):
+        pass
+
+    def delayed_cleanup(self):
+        app.BuilderApplication.cleanup(self)
+
+
+
 def isfile(path, *args):
     if args:
         path = os.path.join(path, *args)
@@ -338,6 +489,7 @@ def isfile(path, *args):
 def test_suite():
     suite = unittest.makeSuite(CommandLineTestCase)
     suite.addTest(unittest.makeSuite(ComponentTestCase))
+    suite.addTest(unittest.makeSuite(BuilderApplicationTestCase))
     return suite
 
 if __name__ == "__main__":
