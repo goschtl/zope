@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IObjectHub.py,v 1.2 2002/06/10 23:29:29 jim Exp $
+$Id: IObjectHub.py,v 1.3 2002/06/25 10:45:46 dannu Exp $
 """
 
 from Zope.Event.IEventChannel import IEventChannel
@@ -122,7 +122,6 @@ class IObjectHub(IEventChannel):
         """Returns a location as a string.
         
         If there is no location, raise Zope.Exceptions.NotFoundError.
-        
         """
         
     def getObject(ruid):
@@ -132,3 +131,19 @@ class IObjectHub(IEventChannel):
         If there is no such object, passes through whatever error
         the traversal service raises.
         """
+
+    def register(location):
+        """Returns a new ruid for the given location if it is not 
+        already registered. 
+
+        It also emits a RuidObjectRegisteredEvent.  Raises an 
+        ObjectHubError if the location was previously registered. 
+        """
+
+    def unregister(ruid_or_location):
+        """Unregister an object identified either by location or by ruid.
+
+        It also emits a RuidObjectUnregisteredEvent. 
+        If the Ruid or location wasn't registered a 
+        Zope.Exceptions.NotFoundError is raised.
+        """ 

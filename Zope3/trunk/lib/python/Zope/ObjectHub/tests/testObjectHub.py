@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testObjectHub.py,v 1.3 2002/06/24 15:07:04 dannu Exp $
+$Id: testObjectHub.py,v 1.4 2002/06/25 10:45:46 dannu Exp $
 """
 
 import unittest, sys
@@ -32,13 +32,6 @@ from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectRegisteredEvent
 from Zope.ObjectHub.IRuidObjectEvent import IRuidObjectUnregisteredEvent
 
 import Zope.ObjectHub.RuidObjectEvent as RuidObjectEvent
-
-#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectRegisteredEvent
-#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectAddedEvent
-#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectUnregisteredEvent
-#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectModifiedEvent
-#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectContextChangedEvent
-#from  Zope.ObjectHub.RuidObjectEvent import RuidObjectRemovedEvent
 
 from Zope.Exceptions import NotFoundError
 from types import StringTypes
@@ -88,6 +81,8 @@ class LoggingSubscriber:
             # it is passed into the spec as None.
             if ruid is not None:
                 testcase.assertEqual(event.getRuid(), ruid)
+
+        self.events_received=[]
   
 class TransmitRuidObjectEventTest(unittest.TestCase):
     ruid = 23
@@ -156,7 +151,35 @@ class BasicHubTest(unittest.TestCase):
 
         # TODO: test that ObjectHub acts as an EventChannel
 
+class TestRegistrationEvents(BasicHubTest):
+    def testRegistration(self):
+        # check for notFoundError
+        self.assertRaises(NotFoundError,  self.object_hub.unregister, self.location)
+        self.assertRaises(NotFoundError,  self.object_hub.unregister, 42)
 
+        ruid = self.object_hub.register(self.location)
+        ruid2 = self.object_hub.register(self.new_location)
+
+        self.subscriber.verifyEventsReceived(self, [
+                (IRuidObjectRegisteredEvent, ruid, self.location),
+                (IRuidObjectRegisteredEvent, ruid2, self.new_location)
+            ])
+
+        # register again and check for error
+        self.assertRaises(ObjectHubError,  self.object_hub.register, self.location)
+
+        # unregister first object by location
+        self.object_hub.unregister(self.location)
+        self.subscriber.verifyEventsReceived(self, [
+                (IRuidObjectUnregisteredEvent, ruid, self.location)
+            ])
+        # unregister second object by ruid
+        self.object_hub.unregister(ruid2)
+        self.subscriber.verifyEventsReceived(self, [
+                (IRuidObjectUnregisteredEvent, ruid2, self.new_location)
+            ])
+
+        
 class TestObjectAddedEvent(BasicHubTest):
             
     def testLookingUpLocation(self):
@@ -396,6 +419,7 @@ def test_suite():
         unittest.makeSuite(TransmitRuidObjectContextChangedEventTest),
         unittest.makeSuite(TransmitRuidObjectRegisteredEventTest),
         unittest.makeSuite(TransmitRuidObjectUnregisteredEventTest),
+        unittest.makeSuite(TestRegistrationEvents),
         ))
 
 if __name__=='__main__':
