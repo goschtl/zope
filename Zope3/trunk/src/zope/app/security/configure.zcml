@@ -40,6 +40,11 @@
     <allow interface=".interfaces.IPrincipal" />
   </content>
 
+  <content class=".settings.PermissionSetting">
+    <require permission="zope.Security"
+             attributes="getName getDescription __str__" />
+  </content>
+
 
   <!-- Standard Permissions -->
 
