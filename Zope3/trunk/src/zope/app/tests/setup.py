@@ -80,22 +80,30 @@ def setUpTraversal():
 # Use registration
 from zope.app.registration.interfaces import IAttributeRegisterable
 from zope.app.registration.interfaces import IRegistered
+from zope.app.registration.interfaces import IComponentRegistration
+from zope.app.registration.interfaces import IRegistrationEvent
 from zope.app.registration.registration import Registered
+from zope.app.registration.registration import componentRegistrationEventNotify
 def setUpRegistered():
     ztapi.provideAdapter(IAttributeRegisterable, IRegistered,
                          Registered)
+    ztapi.subscribe((IComponentRegistration, IRegistrationEvent), None,
+                     componentRegistrationEventNotify)
 
 #------------------------------------------------------------------------
 # Service service lookup
 from zope.app.component.localservice import serviceServiceAdapter
 from zope.app.registration.interfaces import IRegistrationActivatedEvent
 from zope.app.registration.interfaces import IRegistrationDeactivatedEvent
-from zope.app.site.service import handleActivated, handleDeactivated
+from zope.app.site.interfaces import IBindingAware
+from zope.app.site.service import bindOnActivated, unbindOnDeactivated
 from zope.component.interfaces import IServiceService
 from zope.interface import Interface
 def setUpServiceService():
-    ztapi.subscribe((IRegistrationActivatedEvent,), None, handleActivated)
-    ztapi.subscribe((IRegistrationDeactivatedEvent,), None, handleDeactivated)
+    ztapi.subscribe((IBindingAware, IRegistrationActivatedEvent), None,
+                     bindOnActivated)
+    ztapi.subscribe((IBindingAware, IRegistrationDeactivatedEvent), None,
+                     unbindOnDeactivated)
     ztapi.provideAdapter(Interface, IServiceService, serviceServiceAdapter)
 
 #------------------------------------------------------------------------
@@ -187,7 +195,7 @@ def addUtility(servicemanager, name, iface, utility, suffix=''):
 
     This utility is useful for tests that need to set up utilities.
     """
-    
+
     folder_name = (name or (iface.__name__ + 'Utility')) + suffix
     default = zapi.traverse(servicemanager, 'default')
     default[folder_name] = utility

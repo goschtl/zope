@@ -303,14 +303,9 @@ class ServiceRegistration(ComponentRegistration):
         return self.name + " Service"
 
 
-def handleActivated(event):
-    if isinstance(event.object, ServiceRegistration):
-        service = event.object.component
-        if IBindingAware.providedBy(service):
-            service.bound(event.object.name)
+def bindOnActivated(bindingAwareService, event):
+    bindingAwareService.bound(event.object.name)
 
-def handleDeactivated(event):
-    if isinstance(event.object, ServiceRegistration):
-        service = event.object.component
-        if IBindingAware.providedBy(service):
-            service.unbound(event.object.name)
+def unbindOnDeactivated(bindingAwareService, event):
+    bindingAwareService.unbound(event.object.name)
+

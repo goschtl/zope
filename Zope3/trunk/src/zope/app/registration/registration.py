@@ -26,6 +26,7 @@ from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies, getProxiedObject
 from zope.security.checker import InterfaceChecker, CheckerPublic
 from zope.security.proxy import Proxy, removeSecurityProxy
+from zope.component import subscribers
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -1021,3 +1022,10 @@ class RegisterableContainer(object):
         l = name.rfind('.')
         mod = self.findModule(name[:l])
         return getattr(mod, name[l+1:])
+
+
+def componentRegistrationEventNotify(componentReg, event):
+    """Subscriber to dispatch registration events for components."""
+    adapters = subscribers((componentReg.component, event), None)
+    for adapter in adapters:
+        pass # getting them does the work

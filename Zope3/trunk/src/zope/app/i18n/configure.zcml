@@ -37,12 +37,14 @@
   </localUtility>
   
   <subscriber
-     for="..registration.interfaces.IRegistrationActivatedEvent"
+     for=".interfaces.ILocalTranslationDomain
+          ..registration.interfaces.IRegistrationActivatedEvent"
      handler=".translationdomain.setDomainOnActivation"
      />
 
   <subscriber
-     for="..registration.interfaces.IRegistrationDeactivatedEvent"
+     for=".interfaces.ILocalTranslationDomain
+          ..registration.interfaces.IRegistrationDeactivatedEvent"
      handler=".translationdomain.unsetDomainOnDeactivation"
      />  
 

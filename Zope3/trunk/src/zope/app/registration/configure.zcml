@@ -26,7 +26,7 @@
       />
 
   <class class=".registration.Registered">
-    <require 
+    <require
         permission="zope.ManageContent"
         attributes="addUsage removeUsage" />
     <allow attributes="usages registrations" />
@@ -54,7 +54,7 @@
         zope.app.container.interfaces.IWriteContainer
         .interfaces.IOrderedContainer
         zope.app.container.interfaces.INameChooser
-        " 
+        "
         />
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
@@ -84,5 +84,10 @@
       for=".interfaces.IRegisterable
            zope.app.container.interfaces.IObjectMovedEvent"
       />
+
+  <subscriber
+    handler=".registration.componentRegistrationEventNotify"
+    for=".interfaces.IComponentRegistration
+         .interfaces.IRegistrationEvent" />
 
 </configure>

@@ -69,12 +69,14 @@
   </localUtility>
 
   <subscriber
-     for="..registration.interfaces.IRegistrationActivatedEvent"
+     for=".interfaces.IRole
+          ..registration.interfaces.IRegistrationActivatedEvent"
      handler=".role.setIdOnActivation"
      />
 
   <subscriber
-     for="..registration.interfaces.IRegistrationDeactivatedEvent"
+     for=".interfaces.IRole
+          ..registration.interfaces.IRegistrationDeactivatedEvent"
      handler=".role.unsetIdOnDeactivation"
      />
 

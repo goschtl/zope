@@ -1,4 +1,4 @@
-<configure 
+<configure
     xmlns="http://namespaces.zope.org/zope"
     >
 
@@ -7,13 +7,15 @@
   </module>
 
   <subscriber
-     for="..registration.interfaces.IRegistrationActivatedEvent"
-     handler=".service.handleActivated"
+     for=".interfaces.IBindingAware
+          ..registration.interfaces.IRegistrationActivatedEvent"
+     handler=".service.bindOnActivated"
      />
 
   <subscriber
-     for="..registration.interfaces.IRegistrationDeactivatedEvent"
-     handler=".service.handleDeactivated"
+     for=".interfaces.IBindingAware
+          ..registration.interfaces.IRegistrationDeactivatedEvent"
+     handler=".service.unbindOnDeactivated"
      />
 
   <!-- Service Manager -->
@@ -65,14 +67,14 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IWriteContainer"
-        attributes="getRegistrationManager resolve" 
+        attributes="getRegistrationManager resolve"
         />
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     </content>
-  
-  <adapter 
+
+  <adapter
       for="zope.app.site.interfaces.ISiteManager"
       provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
       factory=".folder.SMFolderFactory"
