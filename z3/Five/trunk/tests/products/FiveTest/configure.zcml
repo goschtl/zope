@@ -14,13 +14,13 @@
     class=".browser.SimpleContentView"
     attribute="eagle"
     name="eagle.txt"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <browser:pages
     for=".interfaces.ISimpleContent"
     class=".browser.NoDocstringView"
-    permission="zope.Public">
+    permission="zope2.Public">
     <browser:page
       name="nodoc-method"
       attribute="method"
@@ -39,7 +39,7 @@
   <browser:pages
     for=".interfaces.ISimpleContent"
     class=".browser.SimpleContentView"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     >
     <browser:page
       name="eagle-page.txt"
@@ -57,7 +57,7 @@
     class=".browser.SimpleContentView"
     template="falcon.pt"
     name="falcon.html"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <!-- template page (with simple python expression) -->
@@ -65,7 +65,7 @@
     for=".interfaces.ISimpleContent"
     template="owl.pt"
     name="owl.html"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <!-- template page which calls on context using python -->
@@ -73,7 +73,7 @@
     for=".interfaces.ISimpleContent"
     template="flamingo.pt"
     name="flamingo.html"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <!-- template page which calls on context using path -->
@@ -81,7 +81,7 @@
     for=".interfaces.ISimpleContent"
     template="flamingo2.pt"
     name="flamingo2.html"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <!-- template/class page which calls on context, view, views -->
@@ -90,7 +90,7 @@
     class=".browser.SimpleContentView"
     template="condor.pt"
     name="condor.html"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <!-- test TALES -->
@@ -98,14 +98,14 @@
     for=".interfaces.ISimpleContent"
     template="ostrich.pt"
     name="ostrich.html"
-    permission="zope.ViewManagementScreens" 
+    permission="zope2.ViewManagementScreens" 
     />
 
   <browser:page
     for=".interfaces.ISimpleContent"
     template="ostrich2.pt"
     name="ostrich2.html"
-    permission="zope.ViewManagementScreens" 
+    permission="zope2.ViewManagementScreens" 
     />
 
   <!-- macro page -->
@@ -113,7 +113,7 @@
     for=".interfaces.ISimpleContent"
     template="bird.pt"
     name="bird.pt"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <!-- template page that uses macro page -->
@@ -122,7 +122,7 @@
     class=".browser.SimpleContentView"
     template="seagull.pt"
     name="seagull.html"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <!-- a publicly accessible page, attribute, template, template/class -->
@@ -132,14 +132,14 @@
     class=".browser.SimpleContentView"
     attribute="eagle"
     name="public_attribute_page"
-    permission="zope.Public"
+    permission="zope2.Public"
     />
 
   <browser:page
     for=".interfaces.ISimpleContent"
     template="owl.pt"
     name="public_template_page"
-    permission="zope.Public"
+    permission="zope2.Public"
     />
 
   <browser:page
@@ -147,7 +147,7 @@
     class=".browser.SimpleContentView"
     template="falcon.pt"
     name="public_template_class_page"
-    permission="zope.Public"
+    permission="zope2.Public"
     />
 
 </configure>

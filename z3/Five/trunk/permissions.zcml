@@ -5,92 +5,102 @@
        The title of the permission is what Zope 2 knows it under -->
 
   <permission
-    id="zope.AccessContentsInformation"
+    id="zope2.Public"
+    title="Public, everyone can access"
+    />
+
+  <permission
+    id="zope2.Private"
+    title="Private, no one can access"
+    />
+
+  <permission
+    id="zope2.AccessContentsInformation"
     title="Access contents information"
     />
 
   <permission
-    id="zope.ChangeImagesFiles"
+    id="zope2.ChangeImagesFiles"
     title="Change Images and Files"
     />
 
   <permission
-    id="zope.ChangeConfig"
+    id="zope2.ChangeConfig"
     title="Change configuration"
     />
 
   <permission
-    id="zope.ChangePermissions"
+    id="zope2.ChangePermissions"
     title="Change permissions"
     />
 
   <permission
-    id="zope.CopyOrMove"
+    id="zope2.CopyOrMove"
     title="Copy or Move"
     />
 
   <permission
-    id="zope.DefinePermissions"
+    id="zope2.DefinePermissions"
     title="Define permissions"
     />
 
   <permission
-    id="zope.DeleteObjects"
+    id="zope2.DeleteObjects"
     title="Delete objects"
     />
 
   <permission
-    id="zope.FTPAccess"
+    id="zope2.FTPAccess"
     title="FTP access"
     />
 
   <permission
-    id="zope.ImportExport"
+    id="zope2.ImportExport"
     title="Import/Export objects"
     />
 
   <permission
-    id="zope.ManageProperties"
+    id="zope2.ManageProperties"
     title="Manage properties"
     />
 
   <permission
-    id="zope.ManageUsers"
+    id="zope2.ManageUsers"
     title="Manage users"
     />
 
   <permission
-    id="zope.Undo"
+    id="zope2.Undo"
     title="Undo changes"
     />
 
   <permission
-    id="zope.View"
+    id="zope2.View"
     title="View"
     />			
 
   <permission
-    id="zope.ViewHistory"
+    id="zope2.ViewHistory"
     title="View History"
     />
 
   <permission
-    id="zope.ViewManagementScreens"
+    id="zope2.ViewManagementScreens"
     title="View management screens"
     />
 
   <permission
-    id="zope.WebDAVLock"
+    id="zope2.WebDAVLock"
     title="WebDAV Lock items"
     />
 		
   <permission
-    id="zope.WebDAVUnlock"
+    id="zope2.WebDAVUnlock"
     title="WebDAV Unlock items"
     />
 
   <permission
-    id="zope.WebDAVAccess"
+    id="zope2.WebDAVAccess"
     title="WebDAV access"
     />
 

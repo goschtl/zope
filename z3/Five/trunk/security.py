@@ -18,7 +18,7 @@ from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 
 CheckerPublic = 'zope.Public'
-CheckerPrivate = 'zope.Private'
+CheckerPrivate = 'zope2.Private'
 
 def getSecurityInfo(klass):
     sec = {}

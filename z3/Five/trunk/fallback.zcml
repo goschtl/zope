@@ -5,6 +5,10 @@
        found -->
 
   <include package="Products.Five" />
+  <include package="Products.Five" file="permissions.zcml" />
+
+  <redefinePermission from="zope2.Public" to="zope.Public" />
+
   <five:loadProducts />
 
 </configure>

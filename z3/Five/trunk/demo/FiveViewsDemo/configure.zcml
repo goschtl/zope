@@ -7,7 +7,7 @@
     class=".browser.SimpleContentView"
     attribute="eagle"
     name="eagle.txt"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
   <five:viewable
@@ -19,14 +19,14 @@
     class=".browser.SimpleFolderView"
     attribute="eagle"
     name="eagle.txt"
-    permission="zope.Public"
+    permission="zope2.Public"
     />
 
   <content class=".simplecontent.SimpleContent">
 
     <allow interface=".interfaces.IPublicSimpleContent" />
 
-    <require permission="zope.ViewManagementScreens"
+    <require permission="zope2.ViewManagementScreens"
 	     interface=".interfaces.IProtectedSimpleContent"
 	     />
 

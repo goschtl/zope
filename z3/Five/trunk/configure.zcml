@@ -3,7 +3,6 @@
 
   <include file="meta.zcml" />
   <include file="services.zcml" />
-  <include file="permissions.zcml" />
   <include file="interfaces.zcml" />
 
   <!-- do 'traditional' traversing by default; needed by ZPT -->
