@@ -22,8 +22,6 @@ $ python2.2 stupid_build.py
 Usage with a specific compiler such as mingw32:
 
 $ python2.2 stupid_build.py -c mingw32
-
-This module hopefully won't last long enough to need a license. ;-)
 """
 
 import sys, os
