@@ -42,10 +42,18 @@ class FieldIndexTest(TestCase):
 
         self.assertEqual(results.keys(), expected.keys())
 
+    def _rangesearch(self, minval, maxval, expected):
+
+        results = self.index.rangesearch(minval, maxval)
+
+        # results and expected are IISets() but we can not
+        # compare them directly since __eq__() does not seem
+        # to be implemented for BTrees
+        self.assertEqual(results.keys(), expected.keys())
+
 
     def test_interface(self):
         verifyClass(IFieldIndex, FieldIndex)
-
 
     def test_empty_index(self):
         self.assertEqual(self.index.documentCount(), 0)
@@ -56,20 +64,18 @@ class FieldIndexTest(TestCase):
         self.index.clear()
         self.assertEqual(self.index.documentCount(), 0)
 
-
     def test_hasdoc(self):
     
         self._populate_index()
+
         self.assertEqual(self.index.has_doc(1), 1)
         self.assertEqual(self.index.has_doc(2), 1)
         self.assertEqual(self.index.has_doc(3), 1)
         self.assertEqual(self.index.has_doc(4), 1)
         self.assertEqual(self.index.has_doc(5), 1)
-        self.assertEqual(self.index.has_doc(99), 0)
 
 
-
-    def test_indexdoc(self):
+    def test_simplesearch(self):
 
         self._populate_index()
 
@@ -79,14 +85,27 @@ class FieldIndexTest(TestCase):
         self._search('fox', IISet([4,5]))
         self._search('sucks', IISet([]))
 
-
-    def test_indexdoc(self):
+    def test_searchmultiple(self):
 
         self._populate_index()
 
         self._search(('the','quick') , IISet([1,2]))
         self._search(('the','fox','sucks',-2) , IISet([1,4,5]))
 
+    def test_rangesearch(self):
+
+        for i in range(100):
+            self.index.index_doc(i, i)
+
+        self._rangesearch(None, -20, IISet())
+        self._rangesearch(200, 400, IISet())
+        self._rangesearch(200, None, IISet())
+        self._rangesearch(40, 20, IISet())
+        self._rangesearch(40, 20, IISet())
+        self._rangesearch(20, 40, IISet(range(20,41)))
+        self._rangesearch(None, 20, IISet(range(0,21)))
+        self._rangesearch(80, None, IISet(range(80,100)))
+        self._rangesearch(80, None, IISet(range(80,100)))
 
     def test_reindexdoc(self):
 
@@ -95,7 +114,6 @@ class FieldIndexTest(TestCase):
 
         self._search('the', IISet())
         self._search('zope3', IISet([1]))
-
 
     def test_unindexdoc(self):
 

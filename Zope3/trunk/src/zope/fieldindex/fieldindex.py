@@ -33,7 +33,6 @@ class FieldIndex(Persistent):
     def __init__(self):
         self.clear()
 
-
     def clear(self):
         """ initialize forward and reverse mappings """
 
@@ -44,15 +43,12 @@ class FieldIndex(Persistent):
         # The reverse index maps a docid to its index value
         self._rev_index = IOBTree()
 
-
     def documentCount(self):
         """Return the number of documents in the index."""
         return len(self._rev_index)
 
-
     def has_doc(self, docid):
         return bool(self._rev_index.has_key(docid))
-
 
     def index_doc(self, docid, value):
 
@@ -64,7 +60,6 @@ class FieldIndex(Persistent):
 
         self._fwd_index[value].insert(docid)
         self._rev_index[docid] = value
-
 
     def unindex_doc(self, docid):
 
@@ -81,9 +76,7 @@ class FieldIndex(Persistent):
                 del self._fwd_index[value]
         except: pass
 
-
     def search(self, values):
-
 
         # values can either be a single value or a sequence of
         # values to be searched.
@@ -104,7 +97,10 @@ class FieldIndex(Persistent):
         
             try: result = IISet(self._fwd_index[values])
             except: result = IISet()    
-            
 
         return result 
+
+    def rangesearch(self, minvalue, maxvalue):
+    
+        return IISet(self._fwd_index.keys(minvalue, maxvalue))
 
