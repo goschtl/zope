@@ -186,8 +186,6 @@ def getVocabularyRegistry():
 def setVocabularyRegistry(registry):
     """Set the vocabulary registry."""
     global _vocabularies
-    if _vocabularies is not None:
-        raise ValueError("vocabulary registry has already been set")
     _vocabularies = registry
 
 def _clear():

@@ -23,17 +23,16 @@ from datetime import datetime
 
 from zope.component.interfaces import IFactory
 from zope.component.service import defineService, serviceManager
-from zope.component.tests.placelesssetup import PlacelessSetup as ComponentSetup
 from zope.interface import classImplements, implements
 from zope.schema.vocabulary import getVocabularyRegistry
 
 from zope.app import zapi
 from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import PlacelessSetup as SetupBase
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.file import File
 from zope.app.container.interfaces import INameChooser
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.event.tests.placelesssetup import PlacelessSetup as EventSetup
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
 from zope.app.dublincore.interfaces import IZopeDublinCore
@@ -68,11 +67,10 @@ class Root(object):
     __parent__ = None
     __name__ = ''
 
-class PlacelessSetup(ComponentSetup, EventSetup):
+class PlacelessSetup(SetupBase):
 
     def setUp(self):
-        ComponentSetup.setUp(self)
-        EventSetup.setUp(self)
+        SetupBase.setUp(self)
         classImplements(Bug, IAttributeAnnotatable)
         classImplements(BugTracker, IAttributeAnnotatable)
         classImplements(Comment, IAttributeAnnotatable)
