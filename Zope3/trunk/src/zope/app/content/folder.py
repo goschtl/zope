@@ -79,8 +79,9 @@ class Folder(Persistent, ServiceManagerContainer):
         if not (isinstance(name, str) or isinstance(name, unicode)):
             raise TypeError("Name must be a string rather than a %s" %
                             name.__class__.__name__)
-        try: unicode(name)
-        except UnicodeDecodeError:
+        try:
+            unicode(name)
+        except UnicodeError:
             raise TypeError("Name may not contain non-7-bit-ascii codes")
         if not name:
             raise TypeError("Name must not be empty")
