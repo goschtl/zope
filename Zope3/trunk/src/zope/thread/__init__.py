@@ -143,6 +143,7 @@ affects what we see:
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 try:
     import _zope_thread

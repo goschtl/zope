@@ -50,6 +50,7 @@ See the module doc strings for more information.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 from zope.interface.interface import Interface, _wire
 
