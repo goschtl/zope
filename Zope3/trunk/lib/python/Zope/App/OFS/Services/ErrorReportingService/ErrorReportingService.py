@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.7 2002/11/11 08:56:45 stevea Exp $
+$Id: ErrorReportingService.py,v 1.8 2002/11/11 13:08:14 pnaveen Exp $
 """
 
 import sys
@@ -69,12 +69,6 @@ class ErrorReportingService(Persistent):
     # Exceptions that happen all the time, so we dont need
     # to log them. Eventually this should be configured
     # through-the-web.
-    def _makestr(self, dictionary):
-        retVal = ''
-        for each in dictionary.keys():
-            retVal = retVal +str(each)+' : '+str(dictionary[each])+'<br> '
-        return retVal
-    
     def raising(self, info, request=None):
         """Log an exception.
         Called by ZopePublication.handleException method.
@@ -109,17 +103,12 @@ class ErrorReportingService(Persistent):
                                            request.user.getTitle(),
                                            request.user.getDescription()
                                            )
-                    # XXX bare except clause. Why is this here?
-                    # There should be a comment explaining why a bare
-                    # except clause is the right thing in this situation.
-                    except:
+                    #Incase of unauthorized access handle the AttributeError silently.
+                    except AttributeError:
                         pass
-                    try:
-                        req_html = self._makestr(request)
-                    # XXX bare except clause. Why is there here?
-                    except:
-                        pass
-                    
+
+                    req_html = ''.join(['%s : %s<br>' % item for item in request.items()])
+
                 try:
                     strv = str(info[1])
                 # XXX bare except clause. Why is this here?
