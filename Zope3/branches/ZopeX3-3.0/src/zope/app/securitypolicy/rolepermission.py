@@ -16,11 +16,10 @@ $Id$
 """
 from zope.interface import implements
 
-from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.security.permission import checkPermission, allPermissions
+from zope.app.security.permission import allPermissions
 from zope.app.securitypolicy.role import checkRole
 
 from zope.app.securitypolicy.interfaces import IRolePermissionManager

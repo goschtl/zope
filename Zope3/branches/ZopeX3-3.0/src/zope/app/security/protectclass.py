@@ -19,8 +19,6 @@ $Id$
 from zope.security.checker import defineChecker, getCheckerForInstancesOf
 from zope.security.checker import Checker, CheckerPublic
 
-from permission import checkPermission
-
 
 def protectName(class_, name, permission):
     """Set a permission on a particular name."""

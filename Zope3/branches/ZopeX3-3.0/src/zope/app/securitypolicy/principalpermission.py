@@ -22,7 +22,7 @@ from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.security.principal import checkPrincipal
-from zope.app.security.permission import checkPermission, allPermissions
+from zope.app.security.permission import allPermissions
 
 from zope.app.securitypolicy.securitymap import SecurityMap
 
