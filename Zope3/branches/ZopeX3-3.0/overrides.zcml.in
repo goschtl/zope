@@ -4,6 +4,6 @@
   <!-- Provide local overrides of standard configurations -->
 
   <!-- For example, define a different default skin -->
-  <!-- <browser:skin name="" layers="default" /> -->
+  <!-- <browser:defaultSkin name="" /> -->
 
 </configure>
