@@ -586,6 +586,8 @@ And the list will be filled with the individual exceptions::
   [RangeError(Range(2, 1))]
 
 
+  >>> del errors[:]
+
 
 
 
