@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.1 2004/03/13 18:01:16 srichter Exp $
+$Id: registration.py,v 1.2 2004/03/13 18:10:52 srichter Exp $
 """
 from persistent import Persistent
 from zope.app.container.contained import Contained
@@ -694,7 +694,7 @@ class ComponentRegistrationAdapter(ObjectEntryAdapter):
     and (b) add a function to factories.py, like this:
 
         def UtilityRegistration():
-            from zope.app.services.utility import UtilityRegistration
+            from zope.app.utility import UtilityRegistration
             return UtilityRegistration("", None, "")
 
     The file representation of a registration object is an XML pickle
@@ -709,7 +709,7 @@ class ComponentRegistrationAdapter(ObjectEntryAdapter):
     def factory(self):
         """See IObjectEntry."""
         name = self.context.__class__.__name__
-        return "zope.app.services.factories." + name
+        return "zope.app.registration.factories." + name
 
     def getBody(self):
         """See IObjectEntry."""
@@ -736,4 +736,4 @@ import sys
 sys.modules['zope.app.services.registrationmanager'
             ] = sys.modules['zope.app.registration']
 sys.modules['zope.app.services.configuration'
-            ] = sys.modules['zope.app.registration']
+            ] = sys.modules['zope.app.registration.registration']

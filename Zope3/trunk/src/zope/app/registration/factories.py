@@ -19,7 +19,7 @@ registration.py.
 The functions here may create invalid objects; a subsequent setBody()
 call to the adapter's setBody() method will make the object valid.
 
-$Id: factories.py,v 1.4 2004/03/13 15:21:34 srichter Exp $
+$Id: factories.py,v 1.1 2004/03/13 18:10:52 srichter Exp $
 """
 
 def CacheRegistration():
