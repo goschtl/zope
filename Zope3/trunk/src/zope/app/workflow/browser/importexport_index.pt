@@ -22,7 +22,7 @@
     Export: <a href="@@export.html">save as file</a>
   </p>
   
-  <pre tal:content="view/doExport"/>
+  <pre tal:content="view/exportDefinition"/>
 
 </div>
 </body>
