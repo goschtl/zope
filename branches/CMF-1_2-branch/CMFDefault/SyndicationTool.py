@@ -231,13 +231,14 @@ class SyndicationTool (UniqueObject, SimpleItem):
         """
         if not self.isSiteSyndicationAllowed():
             raise 'Syndication is Not Allowed'
+        if obj is None:
+            return self.syUpdatePeriod
         else:
             syInfo = getattr(obj, 'syndication_information',
                              None)
             if syInfo is not None:
                 return syInfo.syUpdatePeriod
             else:
-                #return self.syUpdatePeriod
                 return 'Syndication is Not Allowed'
     
     security.declarePublic('getUpdateFrequency')
@@ -252,6 +253,8 @@ class SyndicationTool (UniqueObject, SimpleItem):
         """
         if not self.isSiteSyndicationAllowed():
             raise 'Syndication is not Allowed'
+        if obj is None:
+            return self.syUpdateFrequency
         else:
             syInfo = getattr(obj, 'syndication_information',
                              None)
@@ -276,6 +279,9 @@ class SyndicationTool (UniqueObject, SimpleItem):
         #import pdb; pdb.set_trace()
         if not self.isSiteSyndicationAllowed():
             raise 'Syndication is not Allowed'
+        if obj is None:
+            when = self.syUpdateBase
+            return when.ISO()
         else:
             syInfo = getattr(obj, 'syndication_information',
                                None)
@@ -292,6 +298,9 @@ class SyndicationTool (UniqueObject, SimpleItem):
         """
         if not self.isSiteSyndicationAllowed():
             raise 'Syndication is not Allowed'
+        if obj is None:
+            when = syUpdateBase
+            return when.HTML4()
         else:
             syInfo = getattr(obj, 'syndication_information',
                                 None)
@@ -307,6 +316,8 @@ class SyndicationTool (UniqueObject, SimpleItem):
         """
         if not self.isSiteSyndicationAllowed():
             raise 'Syndication is not Allowed'
+        if obj is None:
+            return self.max_items
         else:
             syInfo = getattr(obj, 'syndication_information',
                                 None)
