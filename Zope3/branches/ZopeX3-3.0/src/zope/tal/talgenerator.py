@@ -635,12 +635,10 @@ class TALGenerator:
             if repeatWhitespace:
                 self.emitText(repeatWhitespace)
         if content:
+            todo["content"] = content
             if varname:
                 todo['i18nvar'] = (varname, I18N_CONTENT, None)
-                todo["content"] = content
                 self.pushProgram()
-            else:
-                todo["content"] = content
         elif replace:
             # tal:replace w/ i18n:name has slightly different semantics.  What
             # we're actually replacing then is the contents of the ${name}
@@ -736,7 +734,7 @@ class TALGenerator:
         optTag = todo.get("optional tag")
         msgid = todo.get('msgid')
         i18ncontext = todo.get("i18ncontext")
-        varname = todo.get('i18nvar')
+        varinfo = todo.get('i18nvar')
         i18ndata = todo.get('i18ndata')
 
         if implied > 0:
@@ -765,8 +763,8 @@ class TALGenerator:
         # Still, we should emit insertTranslation opcode before i18nVariable
         # in case tal:content, i18n:translate and i18n:name in the same tag
         if msgid is not None:
-            if (not varname) or (
-                varname and (varname[1] == I18N_CONTENT)):
+            if (not varinfo) or (
+                varinfo and (varinfo[1] == I18N_CONTENT)):
                 self.emitTranslation(msgid, i18ndata)
             self.i18nLevel -= 1
         if optTag:
@@ -776,7 +774,7 @@ class TALGenerator:
             # i18n:name, we need to make sure that optimize() won't collect
             # immediately following end tags into the same rawtextOffset, so
             # put a spacer here that the optimizer will recognize.
-            if varname:
+            if varinfo:
                 self.emit('noop')
             self.emitEndTag(name)
         # If i18n:name appeared in the same tag as tal:replace then we're
@@ -784,24 +782,24 @@ class TALGenerator:
         # of the expression go into the i18n substitution dictionary.
         if replace:
             self.emitSubstitution(replace, repldict)
-        elif varname:
-            # o varname[0] is the variable name
-            # o varname[1] is either
+        elif varinfo:
+            # o varinfo[0] is the variable name
+            # o varinfo[1] is either
             #   - I18N_REPLACE for implicit tal:replace
             #   - I18N_CONTENT for tal:content
             #   - I18N_EXPRESSION for explicit tal:replace
-            # o varname[2] will be None for the first two actions and the
+            # o varinfo[2] will be None for the first two actions and the
             #   replacement tal expression for the third action.
-            assert (varname[1]
+            assert (varinfo[1]
                     in [I18N_REPLACE, I18N_CONTENT, I18N_EXPRESSION])
-            self.emitI18nVariable(varname)
+            self.emitI18nVariable(varinfo)
         # Do not test for "msgid is not None", i.e. we only want to test for
         # explicit msgids here.  See comment above.
         if msgid is not None: 
             # in case tal:content, i18n:translate and i18n:name in the
             # same tag insertTranslation opcode has already been
             # emitted
-            if varname and (varname[1] <> I18N_CONTENT):
+            if varinfo and (varinfo[1] <> I18N_CONTENT):
                 self.emitTranslation(msgid, i18ndata)
         if repeat:
             self.emitRepeat(repeat)
