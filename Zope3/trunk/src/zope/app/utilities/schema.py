@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.6 2003/09/24 21:00:40 sidnei Exp $
+$Id: schema.py,v 1.7 2003/09/24 21:18:35 sidnei Exp $
 """
 from persistence.dict import PersistentDict
 from zope.security.proxy import trustedRemoveSecurityProxy
@@ -31,7 +31,7 @@ from zope.interface import directlyProvides, directlyProvidedBy
 from zope.schema import getFieldsInOrder, getFieldNamesInOrder
 from zope.app.container.contained import Contained, setitem, uncontained
 
-class SchemaUtility(PersistentInterfaceClass):
+class SchemaUtility(PersistentInterfaceClass, Contained):
 
     implements(IMutableSchema, ISchemaUtility)
 
