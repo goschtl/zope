@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.20 2003/05/15 15:41:42 gvanrossum Exp $
+$Id: fssync.py,v 1.21 2003/05/15 18:18:26 gvanrossum Exp $
 """
 
 import os
@@ -131,6 +131,8 @@ class Network(object):
             if roottype == "https" and not hasattr(httplib, "HTTPS"):
                 raise Error("https not supported by this Python build")
             netloc, rootpath = urllib.splithost(rest)
+            if not rootpath:
+                rootpath = "/"
             user_passwd, host_port = urllib.splituser(netloc)
 
         self.rooturl = rooturl
@@ -272,7 +274,7 @@ class FSSync(object):
         fsutil.ensuredir(target)
         i = rootpath.rfind("/")
         tail = rootpath[i+1:]
-        assert tail
+        tail = tail or "root"
         fp, headers = self.network.httpreq(rootpath, "@@toFS.zip")
         try:
             self.merge_zipfile(fp, target, tail)
