@@ -20,24 +20,24 @@
           <th class="EditAttributeName" i18n:translate="">Maximum cached entries</th>
           <td class="EditAttributeValue">
             <input type="text" name="maxEntries:int"   
-	           tal:attributes="value context/maxEntries"/>
-            
+                   tal:attributes="value context/maxEntries"/>
+
           </td>
         </tr>
         <tr>
           <th class="EditAttributeName" i18n:translate="">Maximum age of cached entries</th>
           <td class="EditAttributeValue">
             <input type="text" name="maxAge:int"   
-	           tal:attributes="value context/maxAge"/>
-            
+                   tal:attributes="value context/maxAge"/>
+
           </td>
         </tr>
         <tr>
           <th class="EditAttributeName" i18n:translate="">Time between cache cleanups</th>
           <td class="EditAttributeValue">
             <input type="text" name="cleanupInterval:int"   
-	           tal:attributes="value context/cleanupInterval"/>
-            
+                   tal:attributes="value context/cleanupInterval"/>
+
           </td>
         </tr>
       </table>

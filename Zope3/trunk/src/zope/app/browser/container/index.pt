@@ -45,12 +45,12 @@
           </a> 
         </td>
   
-	<td class="ContentTitle">
-	  <a href="subfolder_id"
-	     tal:attributes="href info/url"
+        <td class="ContentTitle">
+          <a href="subfolder_id"
+             tal:attributes="href info/url"
              tal:content="info/id"
-	  >ID here</a>
-	</td>
+          >ID here</a>
+        </td>
 
         <td><span tal:content="info/title|default">&nbsp;</span></td>
         <td><span tal:content="info/created|default">&nbsp;</span></td>
@@ -60,13 +60,13 @@
   
       <tr tal:condition="nothing">
   
-	<td class="ContentIcon">
-	  <img alt="Document" src="../../ZMI/www/document_icon.gif" />
-	</td>
+        <td class="ContentIcon">
+          <img alt="Document" src="../../ZMI/www/document_icon.gif" />
+        </td>
   
-	<td class="ContentTitle">
-	   <a href="document_id">Document Title or ID here</a>
-	</td>
+        <td class="ContentTitle">
+           <a href="document_id">Document Title or ID here</a>
+        </td>
   
       </tr>
     </tbody>

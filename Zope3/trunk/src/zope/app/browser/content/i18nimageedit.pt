@@ -3,11 +3,11 @@
     <style metal:fill-slot="headers" type="text/css">
       <!--
       .ContentIcon {
-	  width: 20px;
+          width: 20px;
       }
 
       .ContentTitle {
-	  text-align: left;
+          text-align: left;
       }
       -->
     </style>
@@ -30,7 +30,7 @@
             enctype="multipart/form-data">
 
         <table class="EditTable">
-	  <tbody>
+          <tbody>
 
             <tr>
               <th class="EditAttributeName">Content Type</th>
@@ -92,22 +92,22 @@
               </td>
             </tr>
 
-	    <tr>
-	      <th class="EditAttributeName">Dimensions</th>
-	      <td class="EditAttributeValue"
+            <tr>
+              <th class="EditAttributeName">Dimensions</th>
+              <td class="EditAttributeValue"
                   tal:content="python:view.getImageSize(
                                         request.get('language'))">
               </td>
-	    </tr>
-	    <tr>
-	      <th class="EditAttributeName">Size</th>
-	      <td class="EditAttributeValue"
+            </tr>
+            <tr>
+              <th class="EditAttributeName">Size</th>
+              <td class="EditAttributeValue"
                   tal:content="python:context.getSize(
                                         request.get('language'))">
               </td>
-	    </tr>
+            </tr>
 
-	  </tbody>
+          </tbody>
       </table>
 
       <input type="submit" name="edit" value="Save Changes" />

@@ -3,11 +3,11 @@
     <style metal:fill-slot="headers" type="text/css">
       <!--
       .ContentIcon {
-	  width: 20px;
+          width: 20px;
       }
 
       .ContentTitle {
-	  text-align: left;
+          text-align: left;
       }
       -->
     </style>
@@ -28,7 +28,7 @@
       <form action="edit.html" method="post">
 
         <table class="EditTable">
-	  <tbody>
+          <tbody>
 
             <tr>
               <th class="EditAttributeName">Content Type</th>
@@ -86,7 +86,7 @@
               </td>
             </tr>
 
-	  </tbody>
+          </tbody>
       </table>
 
       <input type="submit" name="edit" value="Save Changes" />

@@ -60,30 +60,30 @@
 
     <div tal:condition="request/queryText|nothing" tal:omit-tag="">
         <div tal:define="result view/query" tal:omit-tag="">
-	    <div tal:condition="not:result/total">
-	        No hits.  Please try another query.
-	    </div>
-	    <div tal:condition="result/total">
-		<div tal:content="
-		string:Hits ${result/first}-${result/last} of ${result/total}:"
-		/>
-		<div tal:repeat="info result/results">
-	            title=<span tal:replace="info/title" />;
-		    url=<a href="location"
-		            tal:attributes="href info/location"
+            <div tal:condition="not:result/total">
+                No hits.  Please try another query.
+            </div>
+            <div tal:condition="result/total">
+                <div tal:content="
+                string:Hits ${result/first}-${result/last} of ${result/total}:"
+                />
+                <div tal:repeat="info result/results">
+                    title=<span tal:replace="info/title" />;
+                    url=<a href="location"
+                            tal:attributes="href info/location"
                             tal:content="info/location">url</a>
-		</div>
-	    </div>
-	    <span tal:condition="exists:result/prev">
+                </div>
+            </div>
+            <span tal:condition="exists:result/prev">
                 <a href="next"
                    tal:attributes="href
                        string:?queryText=${request/queryText}&start=${view/prevBatch}">&lt;-- PREVIOUS BATCH</a>
-	    </span>
-	    <span tal:condition="exists:result/next">
+            </span>
+            <span tal:condition="exists:result/next">
                 <a href="next"
                    tal:attributes="href
                        string:?queryText=${request/queryText}&start=${view/nextBatch}">NEXT BATCH --&gt;</a>
-	    </span>
+            </span>
         </div>
     </div>
 

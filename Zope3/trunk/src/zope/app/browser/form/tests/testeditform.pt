@@ -24,11 +24,11 @@
         <tal:block repeat="field view/getFields">
           <tr>
             <th tal:content="field/title">Title:</th>
-	    <td tal:content="structure python: view.renderField(field)">
+            <td tal:content="structure python: view.renderField(field)">
               <input size="20" />
             </td>            
           </tr>
-	</tal:block>
+        </tal:block>
 
       </table>
  

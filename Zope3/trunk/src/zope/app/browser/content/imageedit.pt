@@ -9,7 +9,7 @@
       <table metal:fill-slot="extra_top">
         <tr>
           <td>Size</td>
-	  <td tal:content="view/size"
+          <td tal:content="view/size"
              >103 x 45 pixels, 43KB</td>            
         </tr>
       </table>

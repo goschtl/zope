@@ -81,19 +81,19 @@ th.introspector {
         <span
                         tal:content="python:details[2]">
                         Method Description</span></div>
-		</tal:block>
-	    </div>
+                </tal:block>
+            </div>
         </td>
     </tr>
     <!-- this section is currently not available
     <tr>
         <th class="introspector">Services:</th>
         <td>
-	    <div tal:repeat="servicedic services">
+            <div tal:repeat="servicedic services">
                 <span tal:define="dic repeat/servicedic/item">
                     <a tal:content="python:dic.keys()[0]"/>
                 </span>
-	    </div>
+            </div>
         </td>
     </tr>
     -->

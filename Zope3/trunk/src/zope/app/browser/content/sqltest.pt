@@ -14,13 +14,13 @@
         tal:condition="args">
       <tbody>
         <tr>
-	  <th>Argument Name</th>
-	  <th>Type</th>
-	  <th>Value</th>
+          <th>Argument Name</th>
+          <th>Type</th>
+          <th>Value</th>
         </tr>
 
         <tr tal:repeat="arg python: args.keys()">
-	  <td tal:content="arg"></td>
+          <td tal:content="arg"></td>
           <td tal:content="python: args[arg].get('type')"> </td>
           <td><input type="text" name="" size="10" value=""
                   tal:attributes="value python: args[arg].get('default');
