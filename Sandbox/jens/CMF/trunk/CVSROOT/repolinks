@@ -145,7 +145,7 @@
 /ZODB4/ThreadedAsync     /Packages/ThreadedAsync
 /ZODB4/Transaction	 /Zope3/lib/python/Transaction
 /ZODB4/zdaemon           /Packages/zdaemon
-/ZODB4/zLOG		 /Packages/zLOG
+/ZODB4/zLOG		 /Packages3/zLOG
 /ZODB4/ZConfig		 /Packages/ZConfig
 /ZODB4/logging           /Packages/logging
 /ZODB4/BDBStorage        /Packages3/bsddb3Storage/bsddb3Storage
