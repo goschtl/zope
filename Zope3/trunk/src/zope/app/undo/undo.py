@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: undo.py,v 1.2 2004/03/13 23:55:28 srichter Exp $
+$Id: undo.py,v 1.3 2004/03/18 14:33:21 philikon Exp $
 """
 from datetime import datetime
 from zope.interface import implements
@@ -46,12 +46,15 @@ class ZODBUndoManager:
         # description -> transaction description
 
         if user_name is not None:
-            # !?&%!! The 'user' in the transactions is some combination
-            # of 'path' and 'user'. 'path' seems to only ever be '/' at
-            # the moment - I can't find anything that calls it :-(
-            # At the moment the path is hacked onto the user_name in the 
-            # PageTemplate 'undo_log.pt' (to minimise the nastiness).
-            specification = {'user_name':user_name}
+
+            # XXX The 'user' in the transactions is a concatenation of
+            # 'path' and 'user' (id). 'path' used to be the path of
+            # the user folder in Zope 2. ZopePublication currently
+            # does not set a path, so it defaults to '/'. Maybe we can
+            # find a new meaning for 'path' in Zope 3 (the principal
+            # source?)
+            path = '/' # default for now
+            specification = {'user_name': path + ' ' + user_name}
         else:
             specification = None
         entries = self.__db.undoInfo(first, last, specification)

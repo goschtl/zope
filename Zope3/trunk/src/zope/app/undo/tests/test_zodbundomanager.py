@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zodbundomanager.py,v 1.1 2004/03/01 14:16:56 philikon Exp $
+$Id: test_zodbundomanager.py,v 1.2 2004/03/18 14:33:22 philikon Exp $
 """
 
 from time import time
@@ -24,16 +24,16 @@ from zope.app.undo.undo import ZODBUndoManager
 def dict(**kw): return kw
 
 testdata = [
-    dict(id='1', user_name='jim', time=time(), description='des 1'),
-    dict(id='2', user_name='jim', time=time(), description='des 2'),
-    dict(id='3', user_name='anthony', time=time(), description='des 3'),
-    dict(id='4', user_name='jim', time=time(), description='des 4'),
-    dict(id='5', user_name='anthony', time=time(), description='des 5'),
-    dict(id='6', user_name='anthony', time=time(), description='des 6'),
-    dict(id='7', user_name='jim', time=time(), description='des 7'),
-    dict(id='8', user_name='anthony', time=time(), description='des 8'),
-    dict(id='9', user_name='jim', time=time(), description='des 9'),
-    dict(id='10', user_name='jim', time=time(), description='des 10'),
+    dict(id='1', user_name='/ jim', time=time(), description='des 1'),
+    dict(id='2', user_name='/ jim', time=time(), description='des 2'),
+    dict(id='3', user_name='/ anthony', time=time(), description='des 3'),
+    dict(id='4', user_name='/ jim', time=time(), description='des 4'),
+    dict(id='5', user_name='/ anthony', time=time(), description='des 5'),
+    dict(id='6', user_name='/ anthony', time=time(), description='des 6'),
+    dict(id='7', user_name='/ jim', time=time(), description='des 7'),
+    dict(id='8', user_name='/ anthony', time=time(), description='des 8'),
+    dict(id='9', user_name='/ jim', time=time(), description='des 9'),
+    dict(id='10', user_name='/ jim', time=time(), description='des 10'),
     ]
 testdata.reverse()
 
