@@ -23,7 +23,7 @@ import zope.interface
 
 class IGlobalUtilityService(IUtilityService, IRegistry):
 
-    def provideUtility(providedInterface, component, name=''):
+    def provideUtility(providedInterface, component, name='', info=''):
         """Provide a utility
 
         A utility is a component that provides an interface.
